@@ -1,0 +1,15 @@
+$primary: #4e8afa;
+
+g[plait-mindmap="true"] {
+    .plait-richtext-container {
+        &.root-node {
+            font-size: 2rem;
+        }
+        cursor: default;
+        &[readonly=false] {
+            cursor: text;
+            display: inline-block;
+            min-width: 5px;
+        }
+    }
+}
