@@ -69,6 +69,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 (root as any).eachNode((node: MindmapNode) => {
                     const element = node.origin;
                     if (HAS_SELECTED_MINDMAP_ELEMENT.has(element)) {
+                        HAS_SELECTED_MINDMAP_ELEMENT.delete(element);
                         let path = [];
                         if (event.key === 'Tab') {
                             path = findPath(board, node).concat(node.children.length);
@@ -85,8 +86,8 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                             height: 24
                         };
                         setTimeout(() => {
-                            HAS_SELECTED_MINDMAP_ELEMENT.has(element) && HAS_SELECTED_MINDMAP_ELEMENT.delete(element);
                             const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
+                            HAS_SELECTED_MINDMAP_ELEMENT.set(newElement, true);
                             if (nodeComponent) {
                                 nodeComponent.startEditText();
                             }
