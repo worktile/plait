@@ -136,7 +136,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.redrawElement = (context: PlaitElementContext, changes: SimpleChanges) => {
-        console.log('redraw');
         const { element, selection } = context.elementInstance;
         const elementChange = changes['element'];
         if (isPlaitMindmap(element)) {

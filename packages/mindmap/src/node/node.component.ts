@@ -118,10 +118,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     drawSelectedState() {
-        // console.log('drawSelectedState');
         this.destroySelectedState();
         const selected = HAS_SELECTED_MINDMAP_ELEMENT.get(this.node.origin);
-        if (selected || this.isEditable) {
+        if (selected) {
             const { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
             const selectedStrokeG = drawRoundRectangle(
                 this.roughSVG as RoughSVG,
@@ -186,11 +185,15 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         if (this.initialized) {
             const node = changes['node'];
             if (node) {
+                MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
+                const selectedState = HAS_SELECTED_MINDMAP_ELEMENT.get(node.previousValue.origin);
+                if (selectedState) {
+                    HAS_SELECTED_MINDMAP_ELEMENT.set(this.node.origin, true);
+                }
                 this.drawNode();
                 this.drawLine();
                 this.updateRichtextLocation();
                 this.drawSelectedState();
-                MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
             }
         }
     }
