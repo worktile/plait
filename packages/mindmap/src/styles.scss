@@ -2,6 +2,7 @@ $primary: #4e8afa;
 
 g[plait-mindmap="true"] {
     .plait-richtext-container {
+        min-height: 24px;
         &.root-node {
             font-size: 2rem;
         }

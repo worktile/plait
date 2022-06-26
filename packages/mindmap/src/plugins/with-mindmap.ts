@@ -82,7 +82,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                             },
                             children: [],
                             width: 5,
-                            height: 22
+                            height: 24
                         };
                         setTimeout(() => {
                             HAS_SELECTED_MINDMAP_ELEMENT.has(element) && HAS_SELECTED_MINDMAP_ELEMENT.delete(element);
