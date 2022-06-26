@@ -13,7 +13,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../utils/weak-maps';
-import { PlaitBoard } from '../interfaces/board';
+import { PlaitBoardChangeEvent, PlaitBoard } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { createBoard } from '../plugins/create-board';
 import { withBoard } from '../plugins/with-board';
@@ -24,6 +24,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import rough from 'roughjs/bin/rough';
 import { Transforms } from '../transfroms';
 import { withSelection } from '../plugins/with-selection';
+import { Viewport } from '../interfaces';
 
 @Component({
     selector: 'plait-board',
@@ -57,11 +58,13 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
         return this.svg.nativeElement;
     }
 
-    @Input() value: PlaitElement[] = [];
+    @Input() plaitValue: PlaitElement[] = [];
 
-    @Input() plugins: PlaitPlugin[] = [];
+    @Input() plaitViewport!: Viewport;
 
-    @Output() valueChange: EventEmitter<PlaitElement[]> = new EventEmitter();
+    @Input() plaitPlugins: PlaitPlugin[] = [];
+
+    @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
 
     constructor(private cdr: ChangeDetectorRef, private renderer2: Renderer2) {}
 
@@ -72,16 +75,25 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
         this.initializeEvents();
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.cdr.detectChanges();
-            this.valueChange.emit(this.value);
+            const changeEvent: PlaitBoardChangeEvent = {
+                children: this.board.children,
+                operations: this.board.operations,
+                viewport: this.board.viewport,
+                selection: this.board.selection
+            };
+            this.plaitChange.emit(changeEvent);
         });
     }
 
     initializePlugins() {
-        let board = withSelection(withBoard(createBoard(this.host, this.value)));
-        this.plugins.forEach(plugin => {
+        let board = withSelection(withBoard(createBoard(this.host, this.plaitValue)));
+        this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
         });
         this.board = board;
+        if (this.plaitViewport) {
+            this.board.viewport = this.plaitViewport;
+        }
     }
 
     initializeEvents() {

@@ -25,3 +25,10 @@ export interface PlaitBoard {
     redrawElement: (context: PlaitElementContext, changes: SimpleChanges) => SVGGElement[];
     destroyElement: () => void;
 }
+
+export interface PlaitBoardChangeEvent {
+    children: PlaitElement[];
+    operations: PlaitOperation[];
+    viewport: Viewport;
+    selection: Selection | null;
+}
