@@ -2,15 +2,17 @@ $primary: #4e8afa;
 
 g[plait-mindmap="true"] {
     .plait-richtext-container {
-        min-height: 24px;
+        // min-height: 24px;
+        font-size: 14px;
         &.root-node {
-            font-size: 2rem;
+            font-size: 18px;
         }
         cursor: default;
+        display: inline-block;
+        min-width: 5px;
+        min-height: 24px;
         &[readonly=false] {
             cursor: text;
-            display: inline-block;
-            min-width: 5px;
         }
     }
 }

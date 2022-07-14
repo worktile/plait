@@ -48,13 +48,13 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
         return {
             getHeight(element: MindmapElement) {
                 if (element.isRoot) {
-                    return element.height * 2 + PEM * 0.4;
+                    return element.height + PEM * 0.4;
                 }
                 return element.height + PEM * 0.4;
             },
             getWidth(element: MindmapElement) {
                 if (element.isRoot) {
-                    return element.width * 2 + PEM * 1.6;
+                    return element.width + PEM * 1.6;
                 }
                 return element.width + PEM * 1.6;
             },

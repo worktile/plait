@@ -20,7 +20,7 @@ export const mockMindmapData: PlaitMindmap = {
                     },
                     children: [],
                     width: 64,
-                    height: 22
+                    height: 24
                 },
                 {
                     id: 'c909a4ed-c9ba-4812-b353-93bf18027f34',
@@ -29,11 +29,11 @@ export const mockMindmapData: PlaitMindmap = {
                     },
                     children: [],
                     width: 96,
-                    height: 22
+                    height: 24
                 }
             ],
             width: 48,
-            height: 22
+            height: 24
         },
         {
             id: 'c909a4ed-c9ba-4812-b353-93bf18027f32',
@@ -42,7 +42,7 @@ export const mockMindmapData: PlaitMindmap = {
             },
             children: [],
             width: 64,
-            height: 22
+            height: 24
         },
         {
             id: 'c909a4ed-c9ba-4812-b353-93bf18027f33',
@@ -51,7 +51,7 @@ export const mockMindmapData: PlaitMindmap = {
             },
             children: [],
             width: 64,
-            height: 22
+            height: 24
         },
         {
             id: 'c909a4ed-c9ba-4812-b353-93bf18027f34',
@@ -66,7 +66,7 @@ export const mockMindmapData: PlaitMindmap = {
                     },
                     children: [],
                     width: 64,
-                    height: 22
+                    height: 24
                 },
                 {
                     id: 'c909a4ed-c9ba-4812-b353-93bf18027f34',
@@ -75,7 +75,7 @@ export const mockMindmapData: PlaitMindmap = {
                     },
                     children: [],
                     width: 173,
-                    height: 22
+                    height: 24
                 },
                 {
                     id: 'c909a4ed-c9ba-4812-b353-93bf18027f34',
@@ -84,15 +84,15 @@ export const mockMindmapData: PlaitMindmap = {
                     },
                     children: [],
                     width: 96,
-                    height: 22
+                    height: 24
                 }
             ],
             width: 96,
-            height: 22
+            height: 24
         }
     ],
-    width: 64,
-    height: 22,
+    width: 72,
+    height: 24,
     isRoot: true,
     points: [[360, 280]]
 };
