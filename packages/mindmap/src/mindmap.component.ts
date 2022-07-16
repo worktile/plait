@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
-import { MINDMAP_KEY, PEM } from './constants';
+import { BASE, MINDMAP_KEY } from './constants';
 import { MindmapElement } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
 import { PlaitMindmap } from './interfaces/mindmap';
@@ -48,27 +48,27 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
         return {
             getHeight(element: MindmapElement) {
                 if (element.isRoot) {
-                    return element.height + PEM * 0.4;
+                    return element.height + BASE * 4;
                 }
-                return element.height + PEM * 0.4;
+                return element.height + BASE * 2;
             },
             getWidth(element: MindmapElement) {
                 if (element.isRoot) {
-                    return element.width + PEM * 1.6;
+                    return element.width + BASE * 6;
                 }
-                return element.width + PEM * 1.6;
+                return element.width + BASE * 4;
             },
             getHGap(element: MindmapElement) {
                 if (element.isRoot) {
-                    return PEM * 4;
+                    return BASE * 12;
                 }
-                return Math.round(PEM);
+                return BASE * 5;
             },
             getVGap(element: MindmapElement) {
                 if (element.isRoot) {
-                    return PEM * 4;
+                    return BASE * 12;
                 }
-                return Math.round(PEM);
+                return BASE * 3;
             }
         };
     }

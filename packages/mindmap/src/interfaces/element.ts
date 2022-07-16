@@ -10,13 +10,14 @@ export interface MindmapElement {
     
     // node style attributes
     fill?: string;
-    borderColor?: string;
-    borderWidth?: number;
+    strokeColor?: string;
+    strokeWidth?: number;
 
     // link style attributes
     linkLineColor?: string;
-    linkLinkWidth?: number;
+    linkLineWidth?: number;
     
     // topic
     fontSize?: number;
+    color?: string;
 }
