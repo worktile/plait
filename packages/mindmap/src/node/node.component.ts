@@ -1,4 +1,5 @@
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     Component,
     ComponentRef,
@@ -16,7 +17,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { MindmapNode } from '../interfaces/node';
 import { drawLine } from '../draw/line';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from '../utils/graph';
-import { MINDMAP_NODE_KEY, PRIMARY_COLOR } from '../constants';
+import { MINDMAP_NODE_KEY, PRIMARY_COLOR, ROOT_TOPIC_FONT_SIZE, TOPIC_COLOR, TOPIC_FONT_SIZE } from '../constants';
 import { HAS_SELECTED_MINDMAP_ELEMENT, ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { debounceTime } from 'rxjs/operators';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from '../draw/richtext';
@@ -39,7 +40,7 @@ import { findPath } from '../utils/mindmap';
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
+export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
     initialized = false;
 
     isEditable = false;
@@ -85,8 +86,11 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
     }
 
+    ngAfterViewInit(): void {
+        this.applyRichtextAttribute();
+    }
+
     drawNode() {
-        // console.log('drawNode');
         this.destroyNode();
         this.nodeG = drawNode(this.roughSVG as RoughSVG, this.node as MindmapNode);
         this.gGroup.prepend(this.nodeG);
@@ -162,6 +166,21 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         this.richtextComponentRef = richtextComponentRef;
         this.richtextG = richTextG;
         this.gGroup.append(richTextG);
+    }
+
+    applyRichtextAttribute() {
+        const richtextContainer = this.richtextG?.querySelector('.plait-richtext-container') as HTMLElement;
+        const fontSize = this.node.origin.fontSize
+            ? this.node.origin.fontSize
+            : this.node.origin.isRoot
+            ? ROOT_TOPIC_FONT_SIZE
+            : TOPIC_FONT_SIZE;
+        const color = this.node.origin.color
+            ? this.node.origin.color
+            : TOPIC_COLOR;
+        richtextContainer.style.fontSize = `${fontSize}px`;
+        richtextContainer.style.color = `${color}`;
+
     }
 
     destroyRichtext() {

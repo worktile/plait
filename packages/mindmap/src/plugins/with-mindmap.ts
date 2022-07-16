@@ -83,7 +83,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                             },
                             children: [],
                             width: 5,
-                            height: 24
+                            height: 22
                         };
                         setTimeout(() => {
                             const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);

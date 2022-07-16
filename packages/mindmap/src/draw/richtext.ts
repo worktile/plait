@@ -2,13 +2,10 @@ import { MindmapNode } from '../interfaces/node';
 import { drawRichtext, updateForeignObject } from 'richtext';
 import { ViewContainerRef } from '@angular/core';
 import { getRectangleByNode } from '../utils/graph';
-import { PEM } from '../constants';
+import { BASE } from '../constants';
 
 export function drawMindmapNodeRichtext(node: MindmapNode, viewContainerRef: ViewContainerRef, scale = 1) {
-    const { x, y, width, height } = getRectangleByNode(node);
-
-    const textX = (x + PEM * 0.8) / scale;
-    const textY = (y + PEM * 0.2) / scale;
+    const { textX, textY, width, height } = getRichtextRectangleByNode(node);
     const classList = [];
     if (node.origin.isRoot) {
         classList.push('root-node');
@@ -17,8 +14,17 @@ export function drawMindmapNodeRichtext(node: MindmapNode, viewContainerRef: Vie
 }
 
 export function updateMindmapNodeRichtextLocation(node: MindmapNode, g: SVGGElement, scale = 1) {
-    const { x, y, width, height } = getRectangleByNode(node);
-    const textX = (x + PEM * 0.8) / scale;
-    const textY = (y + PEM * 0.2) / scale;
+    const { textX, textY, width, height } = getRichtextRectangleByNode(node);
     updateForeignObject(g, width, height, textX, textY);
+}
+
+export function getRichtextRectangleByNode(node: MindmapNode, scale = 1) {
+    const { x, y, width, height } = getRectangleByNode(node);
+    
+    const offsetX = node.origin.isRoot ? BASE * 3 : BASE * 2;
+    const offsetY = node.origin.isRoot ? BASE * 2 : BASE * 1;
+
+    const textX = (x + offsetX) / scale;
+    const textY = (y + offsetY) / scale;
+    return { width, height, textX, textY };
 }

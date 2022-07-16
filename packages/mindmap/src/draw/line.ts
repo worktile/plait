@@ -1,6 +1,7 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { Point } from 'roughjs/bin/geometry';
 import { RoughSVG } from 'roughjs/bin/svg';
+import { GRAY_COLOR } from '../constants';
 import { MindmapNode } from '../interfaces/node';
 
 export function drawLine(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNode, isHorizontal = false, scale = 1) {
@@ -37,6 +38,10 @@ export function drawLine(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNo
         endX = Math.round(endNode.x + endNode.width / 2);
         endY = Math.round(endNode.y + endNode.height / 2);
     }
+
+    const stroke = node.origin.linkLineColor ? node.origin.linkLineColor : GRAY_COLOR;
+    const strokeWidth = node.origin.linkLineWidth ? node.origin.linkLineWidth : 2;
+
     if (isHorizontal) {
         const curve: Point[] = [
             [beginX / scale, beginY / scale],
@@ -45,7 +50,7 @@ export function drawLine(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNo
             [endX / scale, endY / scale]
         ];
         const points = pointsOnBezierCurves(curve);
-        return roughSVG.curve(points as any, { stroke: '#e67700' });
+        return roughSVG.curve(points as any, { stroke, strokeWidth });
     } else {
         const curve: Point[] = [
             [beginX / scale, beginY / scale],
@@ -54,6 +59,6 @@ export function drawLine(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNo
             [endX / scale, endY / scale]
         ];
         const points = pointsOnBezierCurves(curve);
-        return roughSVG.curve(points as any, { stroke: '#e67700' });
+        return roughSVG.curve(points as any, { stroke, strokeWidth });
     }
 }

@@ -7,4 +7,17 @@ export interface MindmapElement {
     isRoot?: boolean;
     width: number;
     height: number;
+    
+    // node style attributes
+    fill?: string;
+    strokeColor?: string;
+    strokeWidth?: number;
+
+    // link style attributes
+    linkLineColor?: string;
+    linkLineWidth?: number;
+    
+    // topic
+    fontSize?: number;
+    color?: string;
 }

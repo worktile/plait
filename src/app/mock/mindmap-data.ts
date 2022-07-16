@@ -2,97 +2,65 @@ import { PlaitMindmap } from 'mindmap';
 
 export const mockMindmapData: PlaitMindmap = {
     type: 'mindmap',
-    id: 'c909a4ed-c9ba-4812-b353-93bf18027f88',
-    value: {
-        children: [{ text: '脑图调研' }]
-    },
+    id: '1',
+    value: { children: [{ text: '脑图调研' }] },
     children: [
         {
-            id: 'c909a4ed-c9ba-4812-b353-93bf18027f31',
-            value: {
-                children: [{ text: '富文本' }]
-            },
+            id: '1-1',
+            value: { children: [{ text: '富文本' }] },
             children: [
                 {
-                    id: 'c909a4ed-c9ba-4812-b353-93bf18027f33',
-                    value: {
-                        children: [{ text: '布局算法' }]
-                    },
+                    id: '1-1-1',
+                    value: { children: [{ text: '布局算法' }] },
                     children: [],
-                    width: 64,
-                    height: 22
+                    width: 56,
+                    height: 24
                 },
                 {
-                    id: 'c909a4ed-c9ba-4812-b353-93bf18027f34',
-                    value: {
-                        children: [{ text: '知名脑图产品' }]
-                    },
+                    id: '1-1-2',
+                    value: { children: [{ text: '知名脑图产品' }] },
                     children: [],
-                    width: 96,
-                    height: 22
+                    width: 84,
+                    height: 24
                 }
             ],
-            width: 48,
-            height: 22
+            width: 42,
+            height: 24
         },
+        { id: '1-2', value: { children: [{ text: '绘图技术' }] }, children: [], width: 56, height: 24 },
+        { id: '1-3', value: { children: [{ text: '布局算法' }] }, children: [], width: 56, height: 24 },
         {
-            id: 'c909a4ed-c9ba-4812-b353-93bf18027f32',
-            value: {
-                children: [{ text: '绘图技术' }]
-            },
-            children: [],
-            width: 64,
-            height: 22
-        },
-        {
-            id: 'c909a4ed-c9ba-4812-b353-93bf18027f33',
-            value: {
-                children: [{ text: '布局算法' }]
-            },
-            children: [],
-            width: 64,
-            height: 22
-        },
-        {
-            id: 'c909a4ed-c9ba-4812-b353-93bf18027f34',
-            value: {
-                children: [{ text: '知名脑图产品' }]
-            },
+            id: '1-4',
+            value: { children: [{ text: '知名脑图产品' }] },
             children: [
                 {
-                    id: 'c909a4ed-c9ba-4812-b353-93bf18027f33',
-                    value: {
-                        children: [{ text: '布局算法' }]
-                    },
+                    id: '1-4-1',
+                    value: { children: [{ text: '布局算法' }] },
                     children: [],
-                    width: 64,
-                    height: 22
+                    width: 56,
+                    height: 24
                 },
                 {
-                    id: 'c909a4ed-c9ba-4812-b353-93bf18027f34',
-                    value: {
-                        children: [{ text: 'non-layerd-tidy-trees' }]
-                    },
+                    id: '1-4-2',
+                    value: { children: [{ text: 'non-layerd-tidy-trees' }] },
                     children: [],
-                    width: 173,
-                    height: 22
+                    width: 144.8046875,
+                    height: 24
                 },
                 {
-                    id: 'c909a4ed-c9ba-4812-b353-93bf18027f34',
-                    value: {
-                        children: [{ text: '知名脑图产品' }]
-                    },
+                    id: '1-4-3',
+                    value: { children: [{ text: '知名脑图产品' }] },
                     children: [],
-                    width: 96,
-                    height: 22
+                    width: 84,
+                    height: 24
                 }
             ],
-            width: 96,
-            height: 22
+            width: 84,
+            height: 24
         }
     ],
-    width: 64,
-    height: 22,
+    width: 72,
+    height: 24,
     isRoot: true,
     points: [[360, 280]]
 };
