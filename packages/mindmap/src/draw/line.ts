@@ -1,8 +1,8 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { Point } from 'roughjs/bin/geometry';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { GRAY_COLOR } from '../constants';
 import { MindmapNode } from '../interfaces/node';
+import { getLinkLineColorByMindmapElement } from '../utils/colors';
 
 export function drawLine(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNode, isHorizontal = false, scale = 1) {
     let beginX,
@@ -39,8 +39,8 @@ export function drawLine(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNo
         endY = Math.round(endNode.y + endNode.height / 2);
     }
 
-    const stroke = node.origin.linkLineColor ? node.origin.linkLineColor : GRAY_COLOR;
-    const strokeWidth = node.origin.linkLineWidth ? node.origin.linkLineWidth : 2;
+    const stroke = getLinkLineColorByMindmapElement(child.origin);
+    const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : 2;
 
     if (isHorizontal) {
         const curve: Point[] = [

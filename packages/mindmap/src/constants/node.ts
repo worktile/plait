@@ -4,7 +4,7 @@ export const NODE_FILL = '#FFFFFF';
 export const ROOT_NODE_FILL = '#F5F5F5';
 export const ROOT_TOPIC_FONT_SIZE = 18;
 
-export const STORKE_COLORS = [
+export const COLORS = [
     '#56ABFB',
     '#5DCFFF',
     '#5BE2EE',

@@ -29,13 +29,14 @@ import { findPath } from '../utils/mindmap';
     selector: 'plait-mindmap-node',
     template: `
         <plait-mindmap-node
-            *ngFor="let childNode of node?.children; trackBy: trackBy"
+            *ngFor="let childNode of node?.children;let i = index; trackBy: trackBy"
             [host]="host"
             [mindmapGGroup]="mindmapGGroup"
             [node]="childNode"
             [parent]="node"
             [selection]="selection"
             [board]="board"
+            [index]="i"
         ></plait-mindmap-node>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -52,6 +53,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     @Input() node!: MindmapNode;
 
     @Input() parent!: MindmapNode;
+
+    @Input() index!: number;
 
     @Input() mindmapGGroup!: SVGGElement;
 
@@ -74,6 +77,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     constructor(private viewContainerRef: ViewContainerRef) {}
 
     ngOnInit(): void {
+        MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
         this.gGroup = createG();
         this.gGroup.setAttribute(MINDMAP_NODE_KEY, 'true');
         this.mindmapGGroup.prepend(this.gGroup);
@@ -83,7 +87,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         this.drawRichtext();
         this.initialized = true;
         ELEMENT_GROUP_TO_COMPONENT.set(this.gGroup, this);
-        MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
     }
 
     ngAfterViewInit(): void {
