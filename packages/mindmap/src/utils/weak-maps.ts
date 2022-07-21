@@ -1,5 +1,5 @@
 import { PlaitMindmap } from '../interfaces/mindmap';
-import { MindmapNodeComponent } from '../node/node.component';
+import { MindmapNodeComponent } from '../node.component';
 import { PlaitBoard } from 'plait';
 import { MindmapElement } from '../interfaces/element';
 
