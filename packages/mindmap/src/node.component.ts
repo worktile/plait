@@ -29,7 +29,7 @@ import { findPath } from './utils/mindmap';
     selector: 'plait-mindmap-node',
     template: `
         <plait-mindmap-node
-            *ngFor="let childNode of node?.children;let i = index; trackBy: trackBy"
+            *ngFor="let childNode of node?.children; let i = index; trackBy: trackBy"
             [host]="host"
             [mindmapGGroup]="mindmapGGroup"
             [node]="childNode"
@@ -178,12 +178,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             : this.node.origin.isRoot
             ? ROOT_TOPIC_FONT_SIZE
             : TOPIC_FONT_SIZE;
-        const color = this.node.origin.color
-            ? this.node.origin.color
-            : TOPIC_COLOR;
+        const color = this.node.origin.color ? this.node.origin.color : TOPIC_COLOR;
         richtextContainer.style.fontSize = `${fontSize}px`;
         richtextContainer.style.color = `${color}`;
-
     }
 
     destroyRichtext() {
