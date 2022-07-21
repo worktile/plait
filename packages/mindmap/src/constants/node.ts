@@ -8,10 +8,7 @@ export const COLORS = [
     '#868AF6',
     '#D287F8',
     '#FB7FB7',
-    '#FA8888',
     '#F6C659',
-    '#73D897',
-    '#A9E072',
     '#5BE2EE',
     '#56ABFB',
     '#5DCFFF',
@@ -22,5 +19,8 @@ export const COLORS = [
     '#FB7894',
     '#F693E7',
     '#9A7EF4',
-    '#AAAAAA'
+    '#AAAAAA',
+    '#FA8888',
+    '#73D897',
+    '#A9E072'
 ];
