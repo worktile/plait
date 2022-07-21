@@ -12,18 +12,18 @@ import {
 } from '@angular/core';
 import { createG, toPoint, Selection, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PlaitBoard, Transforms } from 'plait';
 import { PlaitRichtextComponent, setFullSelectionAndFocus } from 'richtext';
-import { drawNode } from '../draw/node';
+import { drawNode } from './draw/node';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { MindmapNode } from '../interfaces/node';
-import { drawLine } from '../draw/line';
-import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from '../utils/graph';
-import { MINDMAP_NODE_KEY, PRIMARY_COLOR, ROOT_TOPIC_FONT_SIZE, TOPIC_COLOR, TOPIC_FONT_SIZE } from '../constants';
-import { HAS_SELECTED_MINDMAP_ELEMENT, ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
+import { MindmapNode } from './interfaces/node';
+import { drawLine } from './draw/line';
+import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
+import { MINDMAP_NODE_KEY, PRIMARY_COLOR, ROOT_TOPIC_FONT_SIZE, TOPIC_COLOR, TOPIC_FONT_SIZE } from './constants';
+import { HAS_SELECTED_MINDMAP_ELEMENT, ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { debounceTime } from 'rxjs/operators';
-import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from '../draw/richtext';
-import { MindmapElement } from '../interfaces/element';
+import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
+import { MindmapElement } from './interfaces/element';
 import { fromEvent } from 'rxjs';
-import { findPath } from '../utils/mindmap';
+import { findPath } from './utils/mindmap';
 
 @Component({
     selector: 'plait-mindmap-node',

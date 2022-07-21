@@ -3,7 +3,7 @@
  */
 
 export * from './mindmap.component';
-export * from './node/node.component';
+export * from './node.component';
 export * from './mindmap.module';
 export * from './utils';
 export * from './interfaces';
