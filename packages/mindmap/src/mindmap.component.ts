@@ -62,7 +62,7 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
                 if (element.isRoot) {
                     return BASE * 12;
                 }
-                return BASE * 5;
+                return BASE * 8;
             },
             getVGap(element: MindmapElement) {
                 if (element.isRoot) {
