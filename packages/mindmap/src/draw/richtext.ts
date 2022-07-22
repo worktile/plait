@@ -15,8 +15,8 @@ export function drawMindmapNodeRichtext(node: MindmapNode, viewContainerRef: Vie
 
 export function updateMindmapNodeRichtextLocation(node: MindmapNode, g: SVGGElement, scale = 1) {
     const { textX, textY, width, height } = getRichtextRectangleByNode(node);
-    // add BASE * 4， avoid changing lines
-    updateForeignObject(g, width + BASE * 4, height, textX, textY);
+    // add BASE * 10， avoid changing lines
+    updateForeignObject(g, width + BASE * 10, height, textX, textY);
 }
 
 export function getRichtextRectangleByNode(node: MindmapNode, scale = 1) {

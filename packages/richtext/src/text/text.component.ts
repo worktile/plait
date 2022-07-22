@@ -11,8 +11,8 @@ import {
     SimpleChanges
 } from '@angular/core';
 import { WITH_ZERO_WIDTH_CHAR, ZERO_WIDTH_CHAR } from '../utils/dom';
-import { Text, Element } from 'slate';
-import { ELEMENT_TO_NODE, NODE_TO_ELEMENT, NODE_TO_INDEX } from '../utils/weak-maps';
+import { Text, Element, Editor } from 'slate';
+import { ELEMENT_TO_NODE, IS_NATIVE_INPUT, NODE_TO_ELEMENT, NODE_TO_INDEX } from '../utils/weak-maps';
 
 @Component({
     selector: 'plait-text, span[plaitTextNode]',
@@ -34,6 +34,9 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
 
     @Input()
     parent?: Element;
+
+    @Input()
+    editor!: Editor;
 
     initialized = false;
 
@@ -79,7 +82,7 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
             return;
         }
         const textChange = changes['text'];
-        if (textChange) {
+        if (textChange && !IS_NATIVE_INPUT.get(this.editor)) {
             this.renderText();
         }
         this.updateWeakMap();
