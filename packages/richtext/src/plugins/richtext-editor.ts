@@ -45,7 +45,7 @@ export const RichtextEditor = {
     toDOMNode(editor: Editor, node: Node): HTMLElement {
         const domNode = Editor.isEditor(node) ? EDITOR_TO_ELEMENT.get(editor) : NODE_TO_ELEMENT.get(node);
         if (!domNode) {
-            throw new Error('');
+            throw new Error(`Cannot resolve a DOM node from Slate node: ${JSON.stringify(node)}`);
         }
         return domNode;
     },

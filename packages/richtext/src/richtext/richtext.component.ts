@@ -130,10 +130,10 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
     onChangeHandle() {
         this.plaitChange.emit({ value: this.editor.children[0] as Element, operations: this.editor.operations });
         const isValueChange = this.editor.operations.some(op => !Operation.isSelectionOperation(op));
+        if (isValueChange) {
+            this.cdr.detectChanges();
+        }
         if (!IS_NATIVE_INPUT.get(this.editor)) {
-            if (isValueChange) {
-                this.cdr.detectChanges();
-            }
             this.toNativeSelection();
         }
         IS_NATIVE_INPUT.set(this.editor, false);
