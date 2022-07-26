@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { withMindmap } from 'mindmap';
-import { PlaitElement, PlaitBoardChangeEvent, Viewport } from 'plait';
+import { PlaitElement, PlaitBoardChangeEvent, Viewport, PlaitBoardComponent } from 'plait';
 import { mockMindmapData } from '../mock/mindmap-data';
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
+import { saveAs } from 'file-saver';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
 
 @Component({
     selector: 'basic-board',
-    template: `
-        <plait-board [plaitPlugins]="plugins" [plaitValue]="value" [plaitViewport]="viewport" (plaitChange)="change($event)"></plait-board>
-    `
+    templateUrl: './board.component.html'
 })
 export class BasicBoardComponent implements OnInit {
     plugins = [withMindmap];
@@ -17,6 +17,9 @@ export class BasicBoardComponent implements OnInit {
     value: PlaitElement[] = [mockMindmapData];
 
     viewport!: Viewport;
+
+    @ViewChild('board', { read: PlaitBoardComponent, static: true })
+    boardComponent!: PlaitBoardComponent;
 
     ngOnInit(): void {
         const data = this.getLocalData() as PlaitBoardChangeEvent;
@@ -27,7 +30,8 @@ export class BasicBoardComponent implements OnInit {
     }
 
     change(event: PlaitBoardChangeEvent) {
-        this.setLocalData(JSON.stringify(event));
+        const data = { children: event.children, viewport: event.viewport };
+        this.setLocalData(JSON.stringify(data));
     }
 
     setLocalData(data: string) {
@@ -37,5 +41,25 @@ export class BasicBoardComponent implements OnInit {
     getLocalData() {
         const data = localStorage.getItem(`${LOCAL_DATA_KEY}`);
         return data ? JSON.parse(data) : null;
+    }
+
+    saveAsPNG() {
+        toBlob(this.boardComponent.svg.nativeElement)
+            .then((blob: Blob | null) => {
+                if (blob) {
+                    saveAs(blob, 'sprint-71.png');
+                }
+            })
+            .catch(function(error) {
+                console.error('oops, something went wrong!', error);
+            });
+    }
+
+    saveAsFile() {
+        const data = localStorage.getItem(`${LOCAL_DATA_KEY}`);
+        if (data) {
+            var blob = new Blob([data], {type: "text/json;charset=utf-8"});
+            saveAs(blob, new Date().getTime() + '.json')
+        }
     }
 }

@@ -19,17 +19,19 @@
     "@angular/platform-browser": "~13.3.9",
     "@angular/platform-browser-dynamic": "~13.3.9",
     "@angular/router": "~13.3.9",
+    "file-saver": "^2.0.5",
+    "html-to-image": "^1.9.0",
+    "immer": "^9.0.6",
     "is-hotkey": "^0.2.0",
     "mindmap-layouts": "^0.2.9",
+    "open-color": "1.9.1",
     "points-on-curve": "^1.0.0",
     "roughjs": "^4.5.2",
     "rxjs": "~6.6.0",
     "slate": "^0.73.1",
     "slate-history": "^0.66.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4",
-    "open-color": "1.9.1",
-    "immer": "^9.0.6"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~13.3.6",
@@ -40,6 +42,7 @@
     "@angular-eslint/template-parser": "13.2.1",
     "@angular/cli": "~13.3.6",
     "@angular/compiler-cli": "~13.3.9",
+    "@types/file-saver": "^2.0.5",
     "@types/is-hotkey": "^0.1.6",
     "@types/jasmine": "~3.8.0",
     "@types/node": "^12.11.1",
@@ -55,8 +58,8 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
     "ng-packagr": "^13.3.1",
-    "typescript": "~4.6.4",
     "prettier": "^1.16.4",
-    "pretty-quick": "^1.10.0"
+    "pretty-quick": "^1.10.0",
+    "typescript": "~4.6.4"
   }
 }
