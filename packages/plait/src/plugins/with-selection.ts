@@ -12,6 +12,10 @@ export function withSelection<T extends PlaitBoard>(board: T) {
     let end: Point | null = null;
 
     board.mousedown = (event: MouseEvent) => {
+        // avoid select text when double click svg
+        if (!(event.target instanceof HTMLElement && event.target.closest('.richtext'))) {
+            event.preventDefault();
+        }
         if (board.cursor === BaseCursorStatus.select) {
             start = toPoint(event.x, event.y, board.host);
         }
@@ -30,8 +34,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
     };
 
     board.mouseup = (event: MouseEvent) => {
-        if (start && end) {
-        } else if (start) {
+        if (start) {
             Transforms.setSelection(board, { anchor: start, focus: start });
         }
         start = null;
