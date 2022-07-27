@@ -7,6 +7,7 @@ import {
     OnChanges,
     OnDestroy,
     OnInit,
+    Renderer2,
     SimpleChanges,
     ViewContainerRef
 } from '@angular/core';
@@ -74,7 +75,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
     richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
 
-    constructor(private viewContainerRef: ViewContainerRef) {}
+    constructor(private viewContainerRef: ViewContainerRef, private render2: Renderer2) {}
 
     ngOnInit(): void {
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
@@ -159,6 +160,15 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         }
     }
 
+    updateGGroupClass() {
+        const selected = HAS_SELECTED_MINDMAP_ELEMENT.get(this.node.origin);
+        if (selected) {
+            this.render2.addClass(this.gGroup, 'active');
+        } else {
+            this.render2.removeClass(this.gGroup, 'active');
+        }
+    }
+
     destroySelectedState() {
         this.selectedMarks.forEach(g => g.remove());
         this.selectedMarks = [];
@@ -168,6 +178,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         const { richTextG, richtextComponentRef } = drawMindmapNodeRichtext(this.node as MindmapNode, this.viewContainerRef);
         this.richtextComponentRef = richtextComponentRef;
         this.richtextG = richTextG;
+        this.render2.addClass(richTextG, 'richtext');
         this.gGroup.append(richTextG);
     }
 
@@ -200,6 +211,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         const selection = changes['selection'];
         if (selection) {
             this.drawSelectedState();
+            this.gGroup && this.updateGGroupClass();
         }
         if (this.initialized) {
             const node = changes['node'];
@@ -259,7 +271,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
             const point = toPoint(event.x, event.y, this.host);
             if (!hitMindmapNode(this.board, point, this.node as MindmapNode)) {
-                event.preventDefault();
                 exitHandle();
             }
         });
@@ -281,6 +292,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             this.richtextComponentRef?.changeDetectorRef.markForCheck();
             this.isEditable = false;
             IS_TEXT_EDITABLE.set(this.board, false);
+            // remove selection
+            document.getSelection()?.removeAllRanges();
         };
     }
 

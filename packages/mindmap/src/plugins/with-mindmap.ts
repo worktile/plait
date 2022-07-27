@@ -30,8 +30,11 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
     board.mouseup = (event: MouseEvent) => {
         if (IS_TEXT_EDITABLE.get(board)) {
+            mouseup(event);
             return;
         }
+
+        // select mindmap node
         const point = toPoint(event.x, event.y, board.host);
         let selectedMindmap: PlaitMindmap | null = null;
         board.children.forEach((value: PlaitElement) => {
@@ -58,6 +61,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
     board.keydown = (event: KeyboardEvent) => {
         if (IS_TEXT_EDITABLE.get(board)) {
+            keydown(event);
             return;
         }
         if (event.key === 'Tab' || event.key === 'Enter') {
@@ -93,6 +97,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                             }
                         }, 0);
                         Transforms.insertNode(board, newElement, path);
+                        return;
                     }
                 });
             }
@@ -107,33 +112,43 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     if (HAS_SELECTED_MINDMAP_ELEMENT.has(node.origin)) {
                         const path = findPath(board, node);
                         Transforms.removeNode(board, path);
+                        return;
                     }
                 });
             }
         }
+        keydown(event);
     };
 
     board.dblclick = (event: MouseEvent) => {
         if (IS_TEXT_EDITABLE.get(board)) {
+            dblclick(event);
             return;
         }
-
         const point = toPoint(event.x, event.y, board.host);
-
+        let startEdit = false;
         board.children.forEach((value: PlaitElement) => {
             if (isPlaitMindmap(value)) {
                 const mindmapComponent = MINDMAP_TO_COMPONENT.get(value);
                 const root = mindmapComponent?.root;
                 (root as any).eachNode((node: MindmapNode) => {
+                    if (startEdit) {
+                        return;
+                    }
                     if (hitMindmapNode(board, point, node)) {
                         const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node.origin);
                         if (nodeComponent) {
                             nodeComponent.startEditText();
+                            startEdit = true;
                         }
                     }
                 });
             }
         });
+        if (startEdit) {
+            return;
+        }
+        dblclick(event);
     };
 
     board.redrawElement = (context: PlaitElementContext, changes: SimpleChanges) => {
