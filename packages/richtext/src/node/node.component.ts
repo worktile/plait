@@ -15,11 +15,11 @@ import { Text, Element, Editor } from 'slate';
 import { ELEMENT_TO_NODE, IS_NATIVE_INPUT, NODE_TO_ELEMENT, NODE_TO_INDEX } from '../utils/weak-maps';
 
 @Component({
-    selector: 'plait-text, span[plaitTextNode]',
+    selector: 'plait-node, span[plaitNode]',
     template: '',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
+export class PlaitNodeComponent implements OnInit, AfterViewInit, OnChanges {
     @HostBinding('class') classHost = 'plait-text-node';
 
     @HostBinding('[attr.data-plait-node]') nodeType = 'text';
@@ -27,7 +27,7 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
     attributes: string[] = [];
 
     @Input()
-    text?: Text | any;
+    node?: Text | any;
 
     @Input()
     index = 0;
@@ -40,9 +40,9 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
 
     initialized = false;
 
-    get dataTextContent() {
-        if (this.text && Text.isText(this.text)) {
-            return this.text.text;
+    get textContent() {
+        if (this.node && Text.isText(this.node)) {
+            return this.node.text;
         }
         return '';
     }
@@ -51,8 +51,8 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
         return this.elementRef.nativeElement.textContent;
     }
 
-    get isLastText() {
-        if (this.parent && this.text) {
+    get isLastNode() {
+        if (this.parent && this.node) {
             return this.index === this.parent.children.length - 1;
         }
         return false;
@@ -65,10 +65,10 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     updateWeakMap() {
-        if (this.text) {
-            ELEMENT_TO_NODE.set(this.elementRef.nativeElement, this.text);
-            NODE_TO_ELEMENT.set(this.text, this.elementRef.nativeElement);
-            NODE_TO_INDEX.set(this.text, this.index);
+        if (this.node) {
+            ELEMENT_TO_NODE.set(this.elementRef.nativeElement, this.node);
+            NODE_TO_ELEMENT.set(this.node, this.elementRef.nativeElement);
+            NODE_TO_INDEX.set(this.node, this.index);
         }
     }
 
@@ -81,8 +81,8 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
         if (!this.initialized) {
             return;
         }
-        const textChange = changes['text'];
-        if (textChange && !IS_NATIVE_INPUT.get(this.editor)) {
+        const nodeChange = changes['node'];
+        if (nodeChange && !IS_NATIVE_INPUT.get(this.editor)) {
             this.renderText();
         }
         this.updateWeakMap();
@@ -90,13 +90,13 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
 
     renderText() {
         let withZeroWidthChar = false;
-        if (this.isLastText && this.text && (this.text.text === '' || this.text.text.endsWith(`\n`))) {
+        if (this.isLastNode && this.node && (this.node.text === '' || this.node.text.endsWith(`\n`))) {
             withZeroWidthChar = true;
             this.elementRef.nativeElement.setAttribute(WITH_ZERO_WIDTH_CHAR, 'true');
         } else {
             this.elementRef.nativeElement.setAttribute(WITH_ZERO_WIDTH_CHAR, 'false');
         }
-        const textContent = this.dataTextContent + (withZeroWidthChar ? ZERO_WIDTH_CHAR : '');
+        const textContent = this.textContent + (withZeroWidthChar ? ZERO_WIDTH_CHAR : '');
         if (this.domTextContent !== textContent) {
             this.elementRef.nativeElement.textContent = textContent;
         }
@@ -112,8 +112,8 @@ export class PlaitTextComponent implements OnInit, AfterViewInit, OnChanges {
             this.renderer2.removeAttribute(this.elementRef.nativeElement, attr);
         });
         this.attributes = [];
-        for (const key in this.text) {
-            if (Object.prototype.hasOwnProperty.call(this.text, key) && key !== 'text' && !!this.text[key]) {
+        for (const key in this.node) {
+            if (Object.prototype.hasOwnProperty.call(this.node, key) && key !== 'text' && !!this.node[key]) {
                 const attr = `slate-${key}`;
                 this.renderer2.setAttribute(this.elementRef.nativeElement, attr, 'true');
                 this.attributes.push(attr);
