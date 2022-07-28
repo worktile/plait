@@ -1,0 +1,1 @@
+export const marks = ['bold', 'italic', 'underlined', 'strike'];

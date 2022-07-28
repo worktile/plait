@@ -3,53 +3,36 @@ import {
     ChangeDetectionStrategy,
     Component,
     ElementRef,
-    HostBinding,
     Input,
     OnChanges,
     OnInit,
     Renderer2,
     SimpleChanges
 } from '@angular/core';
-import { WITH_ZERO_WIDTH_CHAR, ZERO_WIDTH_CHAR } from '../utils/dom';
-import { Text, Element, Editor } from 'slate';
-import { ELEMENT_TO_NODE, IS_NATIVE_INPUT, NODE_TO_ELEMENT, NODE_TO_INDEX } from '../utils/weak-maps';
+import { Text, Element, Editor, Node } from 'slate';
+import { renderElement } from '../render';
+import { renderText } from '../render/text';
+import { updateWeakMap } from '../utils/node-relation';
 
 @Component({
-    selector: 'plait-node, span[plaitNode]',
+    selector: 'plait-node',
     template: '',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaitNodeComponent implements OnInit, AfterViewInit, OnChanges {
-    @HostBinding('class') classHost = 'plait-text-node';
-
-    @HostBinding('[attr.data-plait-node]') nodeType = 'text';
-
-    attributes: string[] = [];
-
     @Input()
-    node?: Text | any;
+    node!: Node;
 
     @Input()
     index = 0;
 
     @Input()
-    parent?: Element;
+    parent!: Element;
 
     @Input()
     editor!: Editor;
 
     initialized = false;
-
-    get textContent() {
-        if (this.node && Text.isText(this.node)) {
-            return this.node.text;
-        }
-        return '';
-    }
-
-    get domTextContent() {
-        return this.elementRef.nativeElement.textContent;
-    }
 
     get isLastNode() {
         if (this.parent && this.node) {
@@ -61,19 +44,11 @@ export class PlaitNodeComponent implements OnInit, AfterViewInit, OnChanges {
     constructor(private elementRef: ElementRef<HTMLElement>, public renderer2: Renderer2) {}
 
     ngOnInit(): void {
-        this.updateWeakMap();
-    }
-
-    updateWeakMap() {
-        if (this.node) {
-            ELEMENT_TO_NODE.set(this.elementRef.nativeElement, this.node);
-            NODE_TO_ELEMENT.set(this.node, this.elementRef.nativeElement);
-            NODE_TO_INDEX.set(this.node, this.index);
-        }
+        updateWeakMap(this.node, this.index, this.parent, this.elementRef.nativeElement);
     }
 
     ngAfterViewInit(): void {
-        this.renderText();
+        this.renderNode();
         this.initialized = true;
     }
 
@@ -82,42 +57,17 @@ export class PlaitNodeComponent implements OnInit, AfterViewInit, OnChanges {
             return;
         }
         const nodeChange = changes['node'];
-        if (nodeChange && !IS_NATIVE_INPUT.get(this.editor)) {
-            this.renderText();
+        if (nodeChange) {
+            this.renderNode();
         }
-        this.updateWeakMap();
+        updateWeakMap(this.node, this.index, this.parent, this.elementRef.nativeElement);
     }
 
-    renderText() {
-        let withZeroWidthChar = false;
-        if (this.isLastNode && this.node && (this.node.text === '' || this.node.text.endsWith(`\n`))) {
-            withZeroWidthChar = true;
-            this.elementRef.nativeElement.setAttribute(WITH_ZERO_WIDTH_CHAR, 'true');
+    renderNode() {
+        if (Text.isText(this.node)) {
+            renderText(this.editor, this.elementRef.nativeElement, this.node, this.isLastNode);
         } else {
-            this.elementRef.nativeElement.setAttribute(WITH_ZERO_WIDTH_CHAR, 'false');
-        }
-        const textContent = this.textContent + (withZeroWidthChar ? ZERO_WIDTH_CHAR : '');
-        if (this.domTextContent !== textContent) {
-            this.elementRef.nativeElement.textContent = textContent;
-        }
-        if (this.elementRef.nativeElement.childNodes.length === 0) {
-            const textNode = document.createTextNode('');
-            this.elementRef.nativeElement.appendChild(textNode);
-        }
-        this.applyTextMarks();
-    }
-
-    applyTextMarks() {
-        this.attributes.forEach(attr => {
-            this.renderer2.removeAttribute(this.elementRef.nativeElement, attr);
-        });
-        this.attributes = [];
-        for (const key in this.node) {
-            if (Object.prototype.hasOwnProperty.call(this.node, key) && key !== 'text' && !!this.node[key]) {
-                const attr = `slate-${key}`;
-                this.renderer2.setAttribute(this.elementRef.nativeElement, attr, 'true');
-                this.attributes.push(attr);
-            }
+            renderElement(this.editor, this.elementRef.nativeElement, this.node as any, this.isLastNode);
         }
     }
 }

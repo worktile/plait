@@ -18,9 +18,9 @@ import { BaseRange, createEditor, Editor, Element, Node, Operation, Range, Trans
 import { BeforeInputEvent, PlaitChangeEvent } from '../interface/event';
 import { RichtextEditor, toSlateRange } from '../plugins/richtext-editor';
 import { getDefaultView } from '../utils/dom';
-import { EDITOR_TO_ELEMENT, EDITOR_TO_ON_CHANGE, EDITOR_TO_WINDOW, ELEMENT_TO_NODE, IS_FOCUSED, IS_NATIVE_INPUT } from '../utils/weak-maps';
-import { withMarks } from '../plugins/with-marks';
+import { EDITOR_TO_ELEMENT, EDITOR_TO_ON_CHANGE, EDITOR_TO_WINDOW, ELEMENT_TO_NODE, IS_FOCUSED, IS_NATIVE_INPUT, NODE_TO_PARENT } from '../utils/weak-maps';
 import { PlaitCompositionEvent } from '../interface/composition';
+import { NODE_TO_INDEX } from 'richtext';
 
 const NATIVE_INPUT_TYPES = ['insertText'];
 
@@ -66,7 +66,7 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
     @Output()
     plaitComposition: EventEmitter<PlaitCompositionEvent> = new EventEmitter();
 
-    editor = withMarks(withRichtext(createEditor()));
+    editor = withRichtext(createEditor());
 
     get bindValue(): Element {
         return this.editor.children[0] as Element;
@@ -86,6 +86,8 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
     ngOnInit(): void {
         if (this.plaitValue) {
             this.editor.children = [this.plaitValue];
+            NODE_TO_PARENT.set(this.bindValue, this.editor);
+            NODE_TO_INDEX.set(this.bindValue, 0);
         }
     }
 

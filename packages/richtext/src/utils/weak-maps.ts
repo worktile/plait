@@ -6,6 +6,7 @@ import { Editor, Node } from 'slate';
 export const IS_FOCUSED: WeakMap<Editor, boolean> = new WeakMap();
 
 export const NODE_TO_INDEX: WeakMap<Node, number> = new WeakMap();
+export const NODE_TO_PARENT: WeakMap<Node, Node> = new WeakMap();
 
 export const EDITOR_TO_ELEMENT: WeakMap<Editor, HTMLElement> = new WeakMap();
 
