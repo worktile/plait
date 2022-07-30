@@ -21,6 +21,7 @@ import { getDefaultView } from '../utils/dom';
 import { EDITOR_TO_ELEMENT, EDITOR_TO_ON_CHANGE, EDITOR_TO_WINDOW, ELEMENT_TO_NODE, IS_FOCUSED, IS_NATIVE_INPUT, NODE_TO_PARENT } from '../utils/weak-maps';
 import { PlaitCompositionEvent } from '../interface/composition';
 import { NODE_TO_INDEX } from 'richtext';
+import { withLink } from '../plugins/link/with-link';
 
 const NATIVE_INPUT_TYPES = ['insertText'];
 
@@ -66,7 +67,7 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
     @Output()
     plaitComposition: EventEmitter<PlaitCompositionEvent> = new EventEmitter();
 
-    editor = withRichtext(createEditor());
+    editor = withLink(withRichtext(createEditor()));
 
     get bindValue(): Element {
         return this.editor.children[0] as Element;
@@ -134,6 +135,8 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
         const isValueChange = this.editor.operations.some(op => !Operation.isSelectionOperation(op));
         if (isValueChange) {
             this.cdr.detectChanges();
+            NODE_TO_PARENT.set(this.bindValue, this.editor);
+            NODE_TO_INDEX.set(this.bindValue, 0);
         }
         if (!IS_NATIVE_INPUT.get(this.editor)) {
             this.toNativeSelection();

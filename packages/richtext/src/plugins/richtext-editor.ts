@@ -56,34 +56,32 @@ export const RichtextEditor = {
         return toSlatePoint(editor, domPoint, true);
     },
     findPath(editor: Editor, node: Node): Path {
-        const path: Path = []
-        let child = node
-    
+        const path: Path = [];
+        let child = node;
+
         while (true) {
-          const parent = NODE_TO_PARENT.get(child)
-    
-          if (parent == null) {
-            if (Editor.isEditor(child)) {
-              return path
-            } else {
-              break
+            const parent = NODE_TO_PARENT.get(child);
+
+            if (parent == null) {
+                if (Editor.isEditor(child)) {
+                    return path;
+                } else {
+                    break;
+                }
             }
-          }
-    
-          const i = NODE_TO_INDEX.get(child)
-    
-          if (i == null) {
-            break
-          }
-    
-          path.unshift(i)
-          child = parent
+
+            const i = NODE_TO_INDEX.get(child);
+
+            if (i == null) {
+                break;
+            }
+
+            path.unshift(i);
+            child = parent;
         }
-    
-        throw new Error(
-          `Unable to find the path for Slate node: ${JSON.stringify(node)}`
-        )
-      },
+
+        throw new Error(`Unable to find the path for Slate node: ${JSON.stringify(node)}`);
+    }
 };
 
 export function toSlateRange(editor: Editor, domRange: DOMRange | DOMSelection, withNormalize: boolean): Range {
