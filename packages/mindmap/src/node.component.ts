@@ -279,6 +279,11 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 exitHandle();
                 this.drawSelectedState();
             }
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                exitHandle();
+                this.drawSelectedState();
+            }
         });
 
         const exitHandle = () => {
