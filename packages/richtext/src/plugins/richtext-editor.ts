@@ -1,5 +1,5 @@
 import { BaseEditor, Editor, Element, Node, Path, Point, Range } from 'slate';
-import { DOMRange, DOMPoint, DOMSelection, isDOMSelection, WITH_ZERO_WIDTH_CHAR } from '../utils/dom';
+import { DOMRange, DOMPoint, DOMSelection, isDOMSelection, WITH_ZERO_WIDTH_CHAR, normalizeDOMPoint } from '../utils/dom';
 import { EDITOR_TO_ELEMENT, EDITOR_TO_WINDOW, ELEMENT_TO_NODE, NODE_TO_ELEMENT, NODE_TO_INDEX, NODE_TO_PARENT } from '../utils/weak-maps';
 
 export interface RichtextEditor extends BaseEditor {
@@ -111,15 +111,27 @@ export function toSlateRange(editor: Editor, domRange: DOMRange | DOMSelection, 
 }
 
 export function toSlatePoint(editor: Editor, domPoint: DOMPoint, withNormalize: boolean): Point {
-    let [node, offset] = domPoint;
-    const parentNode = node.parentElement;
-    const textNode = parentNode?.closest<HTMLElement>('[plait-node="text"]');
+    const [nearestNode, nearestOffset] = normalizeDOMPoint(domPoint);
+    let offset = nearestOffset;
+    const parentNode = nearestNode.parentElement;
+    let textNode = parentNode?.closest<HTMLElement>('[plait-node="text"]');
+    if (withNormalize && parentNode && parentNode.hasAttribute('break-node')) {
+        const breakNodePosition = parentNode.getAttribute('break-node');
+        if (breakNodePosition === 'left') {
+            textNode = parentNode.parentElement?.querySelector('[plait-node="text"]');
+            offset = 0;
+        }
+        if (breakNodePosition === 'right') {
+            textNode = parentNode.parentElement?.querySelector('[plait-node="text"]');
+            offset = textNode?.textContent?.length || 0;
+        }
+    }
     if (textNode) {
         const text = ELEMENT_TO_NODE.get(textNode);
         if (text) {
             const path = RichtextEditor.findPath(editor, text);
             const widthZeroWidthChar = textNode.getAttribute(WITH_ZERO_WIDTH_CHAR) === 'true';
-            if (widthZeroWidthChar && offset === textNode.textContent?.length && withNormalize) {
+            if (widthZeroWidthChar && nearestOffset === textNode.textContent?.length && withNormalize) {
                 offset = offset - 1;
             }
             return { path, offset };

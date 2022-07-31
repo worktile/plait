@@ -7,6 +7,7 @@ import {
     OnChanges,
     OnInit,
     Renderer2,
+    SimpleChange,
     SimpleChanges
 } from '@angular/core';
 import { Text, Element, Editor, Node } from 'slate';
@@ -58,16 +59,16 @@ export class PlaitNodeComponent implements OnInit, AfterViewInit, OnChanges {
         }
         const nodeChange = changes['node'];
         if (nodeChange) {
-            this.renderNode();
+            this.renderNode(nodeChange);
         }
         updateWeakMap(this.node, this.index, this.parent, this.elementRef.nativeElement);
     }
 
-    renderNode() {
+    renderNode(nodeChange?: SimpleChange) {
         if (Text.isText(this.node)) {
             renderText(this.editor, this.elementRef.nativeElement, this.node, this.isLastNode);
         } else {
-            renderElement(this.editor, this.elementRef.nativeElement, this.node as any, this.isLastNode);
+            renderElement(this.editor, this.elementRef.nativeElement, this.node as any, this.isLastNode, nodeChange);
         }
     }
 }

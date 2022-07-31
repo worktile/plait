@@ -11,17 +11,27 @@ import {
     OnDestroy,
     OnInit,
     Output,
-    Renderer2,
+    Renderer2
 } from '@angular/core';
 import { withRichtext } from '../plugins/with-richtext';
 import { BaseRange, createEditor, Editor, Element, Node, Operation, Range, Transforms } from 'slate';
 import { BeforeInputEvent, PlaitChangeEvent } from '../interface/event';
 import { RichtextEditor, toSlateRange } from '../plugins/richtext-editor';
 import { getDefaultView } from '../utils/dom';
-import { EDITOR_TO_ELEMENT, EDITOR_TO_ON_CHANGE, EDITOR_TO_WINDOW, ELEMENT_TO_NODE, IS_FOCUSED, IS_NATIVE_INPUT, NODE_TO_PARENT } from '../utils/weak-maps';
+
+import {
+    EDITOR_TO_ELEMENT,
+    EDITOR_TO_ON_CHANGE,
+    EDITOR_TO_WINDOW,
+    ELEMENT_TO_NODE,
+    IS_FOCUSED,
+    IS_NATIVE_INPUT,
+    NODE_TO_PARENT
+} from '../utils/weak-maps';
 import { PlaitCompositionEvent } from '../interface/composition';
 import { NODE_TO_INDEX } from 'richtext';
-import { withLink } from '../plugins/link/with-link';
+import { hotkeys, IS_CHROME, IS_SAFARI } from 'plait';
+import { withInline } from '../plugins/with-inline';
 
 const NATIVE_INPUT_TYPES = ['insertText'];
 
@@ -45,7 +55,7 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
     @Input()
     plaitReadonly = false;
 
-    @HostBinding('[attr.contenteditable]') 
+    @HostBinding('[attr.contenteditable]')
     get contenteditable() {
         return this.plaitReadonly ? undefined : true;
     }
@@ -67,7 +77,7 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
     @Output()
     plaitComposition: EventEmitter<PlaitCompositionEvent> = new EventEmitter();
 
-    editor = withLink(withRichtext(createEditor()));
+    editor = withInline(withRichtext(createEditor()));
 
     get bindValue(): Element {
         return this.editor.children[0] as Element;
@@ -268,6 +278,119 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
 
     private onKeydown(event: KeyboardEvent) {
         this.editor.keydown(event);
+
+        const editor = this.editor;
+        if (!this.plaitReadonly && !this.isComposing && !event.defaultPrevented) {
+            const nativeEvent = event;
+            const { selection } = editor;
+
+            const element = editor.children[selection !== null ? selection.focus.path[0] : 0];
+            const isRTL = false;
+
+            // COMPAT: Certain browsers don't handle the selection updates
+            // properly. In Chrome, the selection isn't properly extended.
+            // And in Firefox, the selection isn't properly collapsed.
+            // (2017/10/17)
+            if (hotkeys.isMoveLineBackward(nativeEvent)) {
+                event.preventDefault();
+                Transforms.move(editor, { unit: 'line', reverse: true });
+                return;
+            }
+
+            if (hotkeys.isMoveLineForward(nativeEvent)) {
+                event.preventDefault();
+                Transforms.move(editor, { unit: 'line' });
+                return;
+            }
+
+            if (hotkeys.isExtendLineBackward(nativeEvent)) {
+                event.preventDefault();
+                Transforms.move(editor, {
+                    unit: 'line',
+                    edge: 'focus',
+                    reverse: true
+                });
+                return;
+            }
+
+            if (hotkeys.isExtendLineForward(nativeEvent)) {
+                event.preventDefault();
+                Transforms.move(editor, { unit: 'line', edge: 'focus' });
+                return;
+            }
+
+            // COMPAT: If a void node is selected, or a zero-width text node
+            // adjacent to an inline is selected, we need to handle these
+            // hotkeys manually because browsers won't be able to skip over
+            // the void node with the zero-width space not being an empty
+            // string.
+            if (hotkeys.isMoveBackward(nativeEvent)) {
+                event.preventDefault();
+
+                if (selection && Range.isCollapsed(selection)) {
+                    Transforms.move(editor, { reverse: !isRTL });
+                } else {
+                    Transforms.collapse(editor, { edge: 'start' });
+                }
+
+                return;
+            }
+
+            if (hotkeys.isMoveForward(nativeEvent)) {
+                event.preventDefault();
+
+                if (selection && Range.isCollapsed(selection)) {
+                    Transforms.move(editor, { reverse: isRTL });
+                } else {
+                    Transforms.collapse(editor, { edge: 'end' });
+                }
+
+                return;
+            }
+
+            if (hotkeys.isMoveWordBackward(nativeEvent)) {
+                event.preventDefault();
+
+                if (selection && Range.isExpanded(selection)) {
+                    Transforms.collapse(editor, { edge: 'focus' });
+                }
+
+                Transforms.move(editor, { unit: 'word', reverse: !isRTL });
+                return;
+            }
+
+            if (hotkeys.isMoveWordForward(nativeEvent)) {
+                event.preventDefault();
+
+                if (selection && Range.isExpanded(selection)) {
+                    Transforms.collapse(editor, { edge: 'focus' });
+                }
+
+                Transforms.move(editor, { unit: 'word', reverse: isRTL });
+                return;
+            }
+
+            // COMPAT: Certain browsers don't support the `beforeinput` event, so we
+            // fall back to guessing at the input intention for hotkeys.
+            // COMPAT: In iOS, some of these hotkeys are handled in the
+
+            if (IS_CHROME || IS_SAFARI) {
+                // COMPAT: Chrome and Safari support `beforeinput` event but do not fire
+                // an event when deleting backwards in a selected void inline node
+                if (
+                    selection &&
+                    (hotkeys.isDeleteBackward(nativeEvent) || hotkeys.isDeleteForward(nativeEvent)) &&
+                    Range.isCollapsed(selection)
+                ) {
+                    const currentNode = Node.parent(editor, selection.anchor.path);
+                    if (Element.isElement(currentNode) && Editor.isVoid(editor, currentNode) && Editor.isInline(editor, currentNode)) {
+                        event.preventDefault();
+                        Editor.deleteBackward(editor, { unit: 'block' });
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     private compositionStart(event: CompositionEvent) {
