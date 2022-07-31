@@ -1,4 +1,4 @@
-import { MindmapElement } from 'mindmap';
+import { MindmapElement } from '../interfaces/element';
 import { Path, PlaitBoard } from 'plait';
 import { isPlaitMindmap, MindmapNode } from '../interfaces';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';

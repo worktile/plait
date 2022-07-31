@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
-import { BASE, MINDMAP_KEY } from './constants';
+import { BASE, MINDMAP_KEY } from './constants/index';
 import { MindmapElement } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
 import { PlaitMindmap } from './interfaces/mindmap';
