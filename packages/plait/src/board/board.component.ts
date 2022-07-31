@@ -35,9 +35,8 @@ import { Viewport } from '../interfaces';
             [index]="index"
             [element]="item"
             [board]="board"
-            [viewport]="board.viewport"
             [selection]="board.selection"
-            [host]="host"
+            [host]="svgHost"
         ></plait-element>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -54,8 +53,12 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
     @ViewChild('svg', { static: true })
     svg!: ElementRef;
 
-    get host(): SVGElement {
+    get svgHost(): SVGElement {
         return this.svg.nativeElement;
+    }
+
+    get nativeElement() {
+        return this.elementRef.nativeElement;
     }
 
     @Input() plaitValue: PlaitElement[] = [];
@@ -66,11 +69,11 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
 
     @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
 
-    constructor(private cdr: ChangeDetectorRef, private renderer2: Renderer2) {}
+    constructor(private cdr: ChangeDetectorRef, private elementRef: ElementRef<HTMLElement>, private renderer2: Renderer2) {}
 
     ngOnInit(): void {
-        const roughSVG = rough.svg(this.host as SVGSVGElement, { options: { roughness: 0, strokeWidth: 1 } });
-        HOST_TO_ROUGH_SVG.set(this.host, roughSVG);
+        const roughSVG = rough.svg(this.svgHost as SVGSVGElement, { options: { roughness: 0, strokeWidth: 1 } });
+        HOST_TO_ROUGH_SVG.set(this.svgHost, roughSVG);
         this.initializePlugins();
         this.initializeEvents();
         BOARD_TO_ON_CHANGE.set(this.board, () => {
@@ -81,28 +84,35 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
                 viewport: this.board.viewport,
                 selection: this.board.selection
             };
+            if (this.plaitViewport !== this.board.viewport) {
+                this.plaitViewport = this.board.viewport;
+                this.transform(this.board.viewport)
+            }
             this.plaitChange.emit(changeEvent);
         });
+        if (this.plaitViewport) {
+            this.transform(this.plaitViewport);
+        }
     }
 
     initializePlugins() {
-        let board = withSelection(withBoard(createBoard(this.host, this.plaitValue)));
+        let board = withSelection(withBoard(createBoard(this.svgHost, this.plaitValue)));
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
         });
         this.board = board;
         if (this.plaitViewport) {
-            this.board.viewport = this.plaitViewport;
+            this.transform(this.plaitViewport);
         }
     }
 
     initializeEvents() {
-        fromEvent<MouseEvent>(this.host, 'mousedown')
+        fromEvent<MouseEvent>(this.nativeElement, 'mousedown')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousedown(event);
             });
-        fromEvent<MouseEvent>(this.host, 'mousemove')
+        fromEvent<MouseEvent>(this.nativeElement, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
@@ -112,12 +122,12 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
             .subscribe((event: MouseEvent) => {
                 this.board.mouseup(event);
             });
-        fromEvent<MouseEvent>(this.host, 'dblclick')
+        fromEvent<MouseEvent>(this.nativeElement, 'dblclick')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.dblclick(event);
             });
-        fromEvent<WheelEvent>(this.host, 'wheel')
+        fromEvent<WheelEvent>(this.nativeElement, 'wheel')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: WheelEvent) => {
                 event.preventDefault();
@@ -145,6 +155,10 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
             });
     }
 
+    transform(viewport: Viewport) {
+        this.renderer2.setAttribute(this.svgHost, 'style', `transform: translate(${viewport.offsetX}px, ${viewport.offsetY}px)`);
+    }
+
     trackBy = (index: number, element: PlaitElement) => {
         return index;
     };
@@ -152,6 +166,6 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
-        HOST_TO_ROUGH_SVG.delete(this.host);
+        HOST_TO_ROUGH_SVG.delete(this.svgHost);
     }
 }
