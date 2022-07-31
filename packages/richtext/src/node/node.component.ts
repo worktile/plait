@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { Text, Element, Editor, Node } from 'slate';
 import { CustomElement } from '../interface/custom-element';
-import { renderElement } from '../render';
+import { renderElement } from '../render/element';
 import { renderText } from '../render/text';
 import { updateWeakMap } from '../utils/node-relation';
 

@@ -29,7 +29,7 @@ import {
     NODE_TO_PARENT
 } from '../utils/weak-maps';
 import { PlaitCompositionEvent } from '../interface/composition';
-import { NODE_TO_INDEX } from 'richtext';
+import { NODE_TO_INDEX } from '../utils/weak-maps';
 import { hotkeys, IS_CHROME, IS_SAFARI } from 'plait';
 import { withInline } from '../plugins/with-inline';
 

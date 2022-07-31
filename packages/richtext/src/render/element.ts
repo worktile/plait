@@ -1,7 +1,7 @@
 import { SimpleChange } from '@angular/core';
 import { Editor, Element } from 'slate';
 import { LinkElement } from '../interface/custom-element';
-import { NODE_TO_ELEMENT } from '../utils';
+import { NODE_TO_ELEMENT } from '../utils/weak-maps';
 import { updateWeakMap } from '../utils/node-relation';
 import { renderText } from './text';
 
