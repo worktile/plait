@@ -34,19 +34,3 @@ export const renderText = (editor: Editor, textElement: HTMLElement, text: Text,
         textElement.appendChild(textNode);
     }
 };
-
-// const renderTextMarks = (textElement: HTMLElement, text: Text & any) => {
-//     marks.forEach(mark => {
-//         if (text[mark]) {
-//             if (!textElement.hasAttribute(mark)) {
-//                 const attr = `slate-${mark}`;
-//                 textElement.setAttribute(attr, 'true');
-//             }
-//         } else {
-//             if (textElement.hasAttribute(mark)) {
-//                 const attr = `slate-${mark}`;
-//                 textElement.removeAttribute(attr);
-//             }
-//         }
-//     });
-// };

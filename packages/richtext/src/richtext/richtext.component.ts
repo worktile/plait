@@ -373,7 +373,6 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
             // COMPAT: Certain browsers don't support the `beforeinput` event, so we
             // fall back to guessing at the input intention for hotkeys.
             // COMPAT: In iOS, some of these hotkeys are handled in the
-
             if (IS_CHROME || IS_SAFARI) {
                 // COMPAT: Chrome and Safari support `beforeinput` event but do not fire
                 // an event when deleting backwards in a selected void inline node

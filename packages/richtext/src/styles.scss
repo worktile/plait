@@ -23,16 +23,11 @@
     [slate-bold] {
         font-weight: bold;
     }
-
-    // [slate-inline-code] {
-    //     margin: 0 4px;
-    //     padding: 2px 3px;
-    //     border: 1px solid rgba($color: #000000, $alpha: 0.08);
-    //     border-radius: 2px;
-    //     background-color: rgba($color: #000000, $alpha: 0.06);
-    // }
+    
     [node-type="link"] {
-        color: #6698ff;
+        a {
+            color: #6698ff;
+        }
     }
 
     [break-node="left"], [break-node="right"] {

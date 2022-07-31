@@ -11,6 +11,7 @@ import {
     SimpleChanges
 } from '@angular/core';
 import { Text, Element, Editor, Node } from 'slate';
+import { CustomElement } from '../interface/custom-element';
 import { renderElement } from '../render';
 import { renderText } from '../render/text';
 import { updateWeakMap } from '../utils/node-relation';
@@ -46,6 +47,9 @@ export class PlaitNodeComponent implements OnInit, AfterViewInit, OnChanges {
 
     ngOnInit(): void {
         updateWeakMap(this.node, this.index, this.parent, this.elementRef.nativeElement);
+        if (CustomElement.isCustomElement(this.node)) {
+            this.elementRef.nativeElement.setAttribute('node-type', this.node.type);
+        }
     }
 
     ngAfterViewInit(): void {
