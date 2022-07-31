@@ -1,4 +1,4 @@
-import { Editor } from 'slate';
+import { Editor, Element, Node } from 'slate';
 import { EDITOR_TO_ON_CHANGE } from '../utils/weak-maps';
 import { RichtextEditor } from './richtext-editor';
 

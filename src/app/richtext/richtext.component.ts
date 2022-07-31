@@ -7,7 +7,11 @@ import { PlaitChangeEvent } from 'richtext';
 })
 export class BasicRichtextComponent implements OnInit {
     value = {
-        children: [{ text: '富文本' }]
+        children: [
+            { text: '富文本' },
+            { type: 'link', url: 'https://github.com/plait-org/plait', children: [{ text: 'https://github.com/plait-org/plait' }] },
+            { text: '' }
+        ]
     };
     ngOnInit(): void {}
 
