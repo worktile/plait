@@ -111,7 +111,7 @@ export function toSlateRange(editor: Editor, domRange: DOMRange | DOMSelection, 
 }
 
 export function toSlatePoint(editor: Editor, domPoint: DOMPoint, withNormalize: boolean): Point {
-    const [nearestNode, nearestOffset] = normalizeDOMPoint(domPoint);
+    const [nearestNode, nearestOffset] = (withNormalize && normalizeDOMPoint(domPoint)) || domPoint;
     let offset = nearestOffset;
     const parentNode = nearestNode.parentElement;
     let textNode = parentNode?.closest<HTMLElement>('[plait-node="text"]');
