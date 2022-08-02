@@ -4,7 +4,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build plait && ng build richtext && ng build layouts && ng build mindmap",
-    "build:demo": "ng build demo",
+    "build:demo": "ng build demo --baseHref=/plait/ --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint --fix",
