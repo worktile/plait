@@ -10,4 +10,18 @@ g[plait-mindmap="true"] {
             cursor: text;
         }
     }
+
+    .extend {
+        opacity: 0;
+        cursor: pointer;
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .collapsed {
+        .extend {
+            opacity: 1;
+        }
+    }
 }

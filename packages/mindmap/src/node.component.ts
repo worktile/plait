@@ -11,20 +11,21 @@ import {
     SimpleChanges,
     ViewContainerRef
 } from '@angular/core';
-import { createG, toPoint, Selection, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PlaitBoard, Transforms } from 'plait';
+import { createG, createText, toPoint, Selection, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PlaitBoard, Transforms, Point, rotate } from 'plait';
 import { PlaitRichtextComponent, setFullSelectionAndFocus } from 'richtext';
 import { drawNode } from './draw/node';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { MindmapNode } from './interfaces/node';
 import { drawLine } from './draw/line';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
-import { MINDMAP_NODE_KEY, PRIMARY_COLOR, ROOT_TOPIC_FONT_SIZE, TOPIC_COLOR, TOPIC_FONT_SIZE } from './constants';
+import { MINDMAP_NODE_KEY, PRIMARY_COLOR, ROOT_TOPIC_FONT_SIZE, STROKE_WIDTH, TOPIC_COLOR, TOPIC_FONT_SIZE } from './constants';
 import { HAS_SELECTED_MINDMAP_ELEMENT, ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, take } from 'rxjs/operators';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
 import { MindmapElement } from './interfaces/element';
 import { fromEvent } from 'rxjs';
-import { findPath } from './utils/mindmap';
+import { findPath, getChildrenCount } from './utils/mindmap';
+import { getLinkLineColorByMindmapElement } from './utils/colors';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -65,13 +66,15 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
     @Input() board!: PlaitBoard;
 
-    selectedMarks: SVGGElement[] = [];
+    activeG: SVGGElement[] = [];
 
     nodeG: SVGGElement | null = null;
 
     lineG?: SVGGElement;
 
     richtextG?: SVGGElement;
+
+    extendG?: SVGGElement;
 
     richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
 
@@ -86,6 +89,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         this.drawNode();
         this.drawLine();
         this.drawRichtext();
+        this.drawExtend();
         this.initialized = true;
         ELEMENT_GROUP_TO_COMPONENT.set(this.gGroup, this);
     }
@@ -140,7 +144,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 true
             );
             this.gGroup.appendChild(selectedStrokeG);
-            this.selectedMarks.push(selectedStrokeG);
+            this.activeG.push(selectedStrokeG);
             if (this.richtextComponentRef?.instance.plaitReadonly === true) {
                 const selectedBackgroundG = drawRoundRectangle(
                     this.roughSVG as RoughSVG,
@@ -155,9 +159,14 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 // 影响双击事件
                 selectedBackgroundG.style.pointerEvents = 'none';
                 this.gGroup.appendChild(selectedBackgroundG);
-                this.selectedMarks.push(selectedBackgroundG, selectedStrokeG);
+                this.activeG.push(selectedBackgroundG, selectedStrokeG);
             }
         }
+    }
+
+    destroySelectedState() {
+        this.activeG.forEach(g => g.remove());
+        this.activeG = [];
     }
 
     updateGGroupClass() {
@@ -169,17 +178,85 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         }
     }
 
-    destroySelectedState() {
-        this.selectedMarks.forEach(g => g.remove());
-        this.selectedMarks = [];
-    }
-
     drawRichtext() {
         const { richTextG, richtextComponentRef } = drawMindmapNodeRichtext(this.node as MindmapNode, this.viewContainerRef);
         this.richtextComponentRef = richtextComponentRef;
         this.richtextG = richTextG;
         this.render2.addClass(richTextG, 'richtext');
         this.gGroup.append(richTextG);
+    }
+
+    drawExtend() {
+        if (this.node.origin.isRoot) {
+            return;
+        }
+
+        // destroy
+        if (this.extendG) {
+            this.extendG.remove();
+        }
+
+        // create extend
+        this.extendG = createG();
+        this.extendG.classList.add('extend');
+        this.gGroup.append(this.extendG);
+
+        // inteactive
+        fromEvent(this.extendG, 'mousedown')
+            .pipe(take(1))
+            .subscribe(() => {
+                const isCollapsed = !this.node.origin.isCollapsed;
+                const newElement: Partial<MindmapElement> = { isCollapsed };
+                const path = findPath(this.board, this.node);
+                Transforms.setNode(this.board, newElement, path);
+            });
+
+        const { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
+        const stroke = getLinkLineColorByMindmapElement(this.node.origin);
+        const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
+        const extendLine = [
+            [x + width, y + height / 2],
+            [x + width + 8, y + height / 2]
+        ];
+        if (this.node.origin.isCollapsed) {
+            this.gGroup.classList.add('collapsed');
+
+            const extendLineG = this.roughSVG.line(extendLine[0][0], extendLine[0][1], extendLine[1][0], extendLine[1][1], {
+                strokeWidth,
+                stroke
+            });
+            this.extendG.appendChild(extendLineG);
+
+            const badge = this.roughSVG.circle(extendLine[1][0] + 8, extendLine[1][1], 16, { fill: stroke, stroke, fillStyle: 'solid' });
+            const badgeText = createText(extendLine[1][0] + 4, extendLine[1][1] + 4, '#fff', `${getChildrenCount(this.node.origin)}`);
+            badgeText.setAttribute('style', 'font-size: 12px');
+            this.extendG.appendChild(badge);
+            this.extendG.appendChild(badgeText);
+        } else {
+            this.gGroup.classList.remove('collapsed');
+
+            if (this.node.origin.children.length > 0) {
+                const hideCircleG = this.roughSVG.circle(extendLine[1][0] + 8, extendLine[1][1], 16, {
+                    fill: '#fff',
+                    stroke,
+                    strokeWidth,
+                    fillStyle: 'solid'
+                });
+                const hideArrowG = this.roughSVG.linearPath(
+                    [
+                        [extendLine[1][0] + 10, extendLine[1][1] - 3],
+                        [extendLine[1][0] + 4, extendLine[1][1]],
+                        [extendLine[1][0] + 10, extendLine[1][1] + 3]
+                    ],
+                    {
+                        stroke,
+                        strokeWidth
+                    }
+                );
+                this.extendG.appendChild(hideCircleG);
+                this.extendG.appendChild(hideArrowG);
+            }
+        }
     }
 
     applyRichtextAttribute() {
@@ -208,12 +285,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        const selection = changes['selection'];
-        if (selection) {
-            this.drawSelectedState();
-            this.gGroup && this.updateGGroupClass();
-        }
         if (this.initialized) {
+            const selection = changes['selection'];
+            if (selection) {
+                this.drawSelectedState();
+                this.gGroup && this.updateGGroupClass();
+            }
             const node = changes['node'];
             if (node) {
                 MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
@@ -224,6 +301,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 this.drawNode();
                 this.drawLine();
                 this.updateRichtextLocation();
+                this.drawExtend();
                 this.drawSelectedState();
             }
         }
