@@ -25,7 +25,8 @@ export const mockMindmapData: PlaitMindmap = {
                 }
             ],
             width: 42,
-            height: 24
+            height: 24,
+            isCollapsed: true
         },
         { id: '1-2', value: { children: [{ text: '绘图技术' }] }, children: [], width: 56, height: 24 },
         { id: '1-3', value: { children: [{ text: '布局算法' }] }, children: [], width: 56, height: 24 },

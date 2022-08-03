@@ -41,3 +41,10 @@ export function findUpElement(element: MindmapElement): { root: MindmapElement; 
     }
     return { root, branch };
 }
+
+export const getChildrenCount = (element: MindmapElement) => {
+    const count: number = element.children.reduce((p: number, c: MindmapElement) => {
+        return p + getChildrenCount(c);
+    }, 0);
+    return count + element.children.length;
+};

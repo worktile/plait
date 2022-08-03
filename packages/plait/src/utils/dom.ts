@@ -11,3 +11,12 @@ export function createG() {
     const newG = document.createElementNS(NS, 'g');
     return newG;
 }
+
+export function createText(x: number, y: number,fill: string, textContent: string) {
+    var text = document.createElementNS(NS, 'text');
+    text.setAttribute('x', `${x}`);
+    text.setAttribute('y', `${y}`);
+    text.setAttribute('fill', fill);
+    text.textContent = textContent;
+    return text;
+}

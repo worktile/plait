@@ -20,4 +20,6 @@ export interface MindmapElement {
     // topic
     fontSize?: number;
     color?: string;
+
+    isCollapsed?: boolean;
 }
