@@ -164,6 +164,11 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         }
     }
 
+    destroySelectedState() {
+        this.activeG.forEach(g => g.remove());
+        this.activeG = [];
+    }
+
     updateGGroupClass() {
         const selected = HAS_SELECTED_MINDMAP_ELEMENT.get(this.node.origin);
         if (selected) {
@@ -171,11 +176,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         } else {
             this.render2.removeClass(this.gGroup, 'active');
         }
-    }
-
-    destroySelectedState() {
-        this.activeG.forEach(g => g.remove());
-        this.activeG = [];
     }
 
     drawRichtext() {
@@ -190,12 +190,18 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         if (this.node.origin.isRoot) {
             return;
         }
+
+        // destroy
         if (this.extendG) {
             this.extendG.remove();
         }
+
+        // create extend
         this.extendG = createG();
         this.extendG.classList.add('extend');
         this.gGroup.append(this.extendG);
+
+        // inteactive
         fromEvent(this.extendG, 'mousedown')
             .pipe(take(1))
             .subscribe(() => {
@@ -204,37 +210,51 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
             });
+
         const { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
         const stroke = getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
-        const start = [x + width, y + height / 2];
-        const end = [start[0] + 8, start[1]];
+        const extendLine = [
+            [x + width, y + height / 2],
+            [x + width + 8, y + height / 2]
+        ];
         if (this.node.origin.isCollapsed) {
-            const extendLine = this.roughSVG.line(start[0], start[1], end[0], end[1], { strokeWidth, stroke });
-            this.extendG.appendChild(extendLine);
-            const circle = this.roughSVG.circle(end[0] + 8, end[1], 16, { fill: stroke, stroke, fillStyle: 'solid' });
-            this.extendG.appendChild(circle);
-            const text = createText(end[0] + 4, end[1] + 4, '#fff', `${getChildrenCount(this.node.origin)}`);
-            text.setAttribute('style', 'font-size: 12px');
-            this.extendG.appendChild(text);
             this.gGroup.classList.add('collapsed');
+
+            const extendLineG = this.roughSVG.line(extendLine[0][0], extendLine[0][1], extendLine[1][0], extendLine[1][1], {
+                strokeWidth,
+                stroke
+            });
+            this.extendG.appendChild(extendLineG);
+
+            const badge = this.roughSVG.circle(extendLine[1][0] + 8, extendLine[1][1], 16, { fill: stroke, stroke, fillStyle: 'solid' });
+            const badgeText = createText(extendLine[1][0] + 4, extendLine[1][1] + 4, '#fff', `${getChildrenCount(this.node.origin)}`);
+            badgeText.setAttribute('style', 'font-size: 12px');
+            this.extendG.appendChild(badge);
+            this.extendG.appendChild(badgeText);
         } else {
             this.gGroup.classList.remove('collapsed');
+
             if (this.node.origin.children.length > 0) {
-                const circle = this.roughSVG.circle(end[0] + 8, end[1], 16, { fill: '#fff', stroke, strokeWidth, fillStyle: 'solid' });
-                const arrowG = this.roughSVG.linearPath(
+                const hideCircleG = this.roughSVG.circle(extendLine[1][0] + 8, extendLine[1][1], 16, {
+                    fill: '#fff',
+                    stroke,
+                    strokeWidth,
+                    fillStyle: 'solid'
+                });
+                const hideArrowG = this.roughSVG.linearPath(
                     [
-                        [end[0] + 10, end[1] - 3],
-                        [end[0] + 4, end[1]],
-                        [end[0] + 10, end[1] + 3]
+                        [extendLine[1][0] + 10, extendLine[1][1] - 3],
+                        [extendLine[1][0] + 4, extendLine[1][1]],
+                        [extendLine[1][0] + 10, extendLine[1][1] + 3]
                     ],
                     {
                         stroke,
                         strokeWidth
                     }
                 );
-                this.extendG.appendChild(circle);
-                this.extendG.appendChild(arrowG);
+                this.extendG.appendChild(hideCircleG);
+                this.extendG.appendChild(hideArrowG);
             }
         }
     }
