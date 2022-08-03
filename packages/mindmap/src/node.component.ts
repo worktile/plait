@@ -265,12 +265,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        const selection = changes['selection'];
-        if (selection) {
-            this.drawSelectedState();
-            this.gGroup && this.updateGGroupClass();
-        }
         if (this.initialized) {
+            const selection = changes['selection'];
+            if (selection) {
+                this.drawSelectedState();
+                this.gGroup && this.updateGGroupClass();
+            }
             const node = changes['node'];
             if (node) {
                 MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
