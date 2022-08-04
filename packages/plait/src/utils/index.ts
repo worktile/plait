@@ -6,3 +6,4 @@ export * from './id-creator';
 export * from './weak-maps';
 export * from './helper';
 export * from './math';
+export * from './board';

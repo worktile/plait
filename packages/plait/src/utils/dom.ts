@@ -12,6 +12,11 @@ export function createG() {
     return newG;
 }
 
+export function createSVG() {
+    const svg = document.createElementNS(NS, 'svg');
+    return svg;
+}
+
 export function createText(x: number, y: number,fill: string, textContent: string) {
     var text = document.createElementNS(NS, 'text');
     text.setAttribute('x', `${x}`);
