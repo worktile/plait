@@ -1,5 +1,5 @@
 import { isPlaitMindmap, PlaitMindmap } from '../interfaces/mindmap';
-import { hotkeys, Path, PlaitBoard } from 'plait';
+import { hotkeys, Path, PlaitBoard, transformPoint } from 'plait';
 import { PlaitElementContext, PlaitElement } from 'plait';
 import { PlaitPlugin } from 'plait';
 import { PlaitMindmapComponent } from '../mindmap.component';
@@ -10,6 +10,7 @@ import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { findPath } from '../utils';
+import { withNodeDnd } from './with-dnd';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, mousemove, mouseup, keydown, redrawElement } = board;
@@ -28,14 +29,14 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         return drawElement(context);
     };
 
-    board.mouseup = (event: MouseEvent) => {
+    board.mousedown = (event: MouseEvent) => {
         if (IS_TEXT_EDITABLE.get(board)) {
             mouseup(event);
             return;
         }
 
         // select mindmap node
-        const point = toPoint(event.x, event.y, board.host);
+        const point = transformPoint(board, toPoint(event.x, event.y, board.host));
         let selectedMindmap: PlaitMindmap | null = null;
         board.children.forEach((value: PlaitElement) => {
             if (isPlaitMindmap(value)) {
@@ -56,7 +57,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 HAS_SELECTED_MINDMAP.has(board) && HAS_SELECTED_MINDMAP.delete(board);
             }
         });
-        mouseup(event);
+        mousedown(event);
     };
 
     board.keydown = (event: KeyboardEvent) => {
@@ -125,7 +126,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             dblclick(event);
             return;
         }
-        const point = toPoint(event.x, event.y, board.host);
+        const point = transformPoint(board, toPoint(event.x, event.y, board.host));
         let startEdit = false;
         board.children.forEach((value: PlaitElement) => {
             if (isPlaitMindmap(value)) {
@@ -172,5 +173,5 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         return drawElement(context);
     };
 
-    return board;
+    return withNodeDnd(board);
 };
