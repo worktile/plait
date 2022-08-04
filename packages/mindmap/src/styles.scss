@@ -24,4 +24,13 @@ g[plait-mindmap="true"] {
             opacity: 1;
         }
     }
+
+    .dragging-origin {
+        opacity: 0.6;
+    }
+}
+
+.dragging-fake-node {
+    cursor: pointer;
+    opacity: 0.4;
 }

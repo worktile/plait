@@ -11,7 +11,7 @@ import {
     SimpleChanges,
     ViewContainerRef
 } from '@angular/core';
-import { createG, createText, toPoint, Selection, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PlaitBoard, Transforms, Point, rotate } from 'plait';
+import { createG, createText, toPoint, Selection, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PlaitBoard, Transforms, transformPoint, Point, rotate } from 'plait';
 import { PlaitRichtextComponent, setFullSelectionAndFocus } from 'richtext';
 import { drawNode } from './draw/node';
 import { RoughSVG } from 'roughjs/bin/svg';
@@ -347,7 +347,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             }
         });
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
-            const point = toPoint(event.x, event.y, this.host);
+            const point = transformPoint(this.board, toPoint(event.x, event.y, this.host));
             if (!hitMindmapNode(this.board, point, this.node as MindmapNode)) {
                 exitHandle();
             }
