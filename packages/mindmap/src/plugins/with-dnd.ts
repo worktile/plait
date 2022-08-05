@@ -58,7 +58,6 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     if (hitMindmapNode(board, point, node) && !node.origin.isRoot) {
                         activeElement = node.origin;
                         dragStartPoint = point;
-                        console.log('bomb ! start 拖拽！');
                     }
                 });
             }
@@ -229,10 +228,16 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 if (dropTarget.detectResult === 'bottom') {
                     targetPath = Path.next(targetPath);
                 }
-                Transforms.moveNode(board, findPath(board, activeComponent.node), targetPath);
+                const originPath = findPath(board, activeComponent.node);
+                if (dropTarget.detectResult === 'right') {
+                    const newElement: Partial<MindmapElement> = { isCollapsed: false };
+                    Transforms.setNode(board, newElement, findPath(board, targetComponent.node));
+                }
+                Transforms.moveNode(board, originPath, targetPath);
             }
-
-            removeActiveOnDragOrigin(activeElement);
+            if (isDragging) {
+                removeActiveOnDragOrigin(activeElement);
+            }
             isDragging = false;
             activeElement = null;
             fakeDragNodeG?.remove();
@@ -240,8 +245,6 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             fakeDropNodeG?.remove();
             fakeDropNodeG = undefined;
             dropTarget = null;
-
-            console.log('bomb ! end 拖拽！');
         }
         mouseup(event);
     };

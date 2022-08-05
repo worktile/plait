@@ -45,15 +45,15 @@ export function drawRichtext(
     classList: string[] = [],
     edit = false
 ) {
-    const richTextG = createG();
+    const richtextG = createG();
     const foreignObject = createForeignObject(x, y, width, height);
-    richTextG.append(foreignObject);
+    richtextG.append(foreignObject);
     const richtextComponentRef = createRichtext(value, viewContainerRef, edit);
     foreignObject.append(richtextComponentRef.instance.editable);
     classList.forEach(name => {
         richtextComponentRef.instance.editable.classList.add(name);
     });
-    return { richtextComponentRef, richTextG };
+    return { richtextComponentRef, richtextG, foreignObject };
 }
 
 export function updateEditStatus(richtextComponentRef: ComponentRef<PlaitRichtextComponent>, edit: boolean) {

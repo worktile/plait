@@ -11,7 +11,17 @@ import {
     SimpleChanges,
     ViewContainerRef
 } from '@angular/core';
-import { createG, createText, toPoint, Selection, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PlaitBoard, Transforms, transformPoint, Point, rotate } from 'plait';
+import {
+    createG,
+    createText,
+    toPoint,
+    Selection,
+    HOST_TO_ROUGH_SVG,
+    IS_TEXT_EDITABLE,
+    PlaitBoard,
+    Transforms,
+    transformPoint,
+} from 'plait';
 import { PlaitRichtextComponent, setFullSelectionAndFocus } from 'richtext';
 import { drawNode } from './draw/node';
 import { RoughSVG } from 'roughjs/bin/svg';
@@ -73,6 +83,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     lineG?: SVGGElement;
 
     richtextG?: SVGGElement;
+
+    foreignObject?: SVGForeignObjectElement;
 
     extendG?: SVGGElement;
 
@@ -179,11 +191,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     }
 
     drawRichtext() {
-        const { richTextG, richtextComponentRef } = drawMindmapNodeRichtext(this.node as MindmapNode, this.viewContainerRef);
+        const { richtextG, richtextComponentRef, foreignObject } = drawMindmapNodeRichtext(this.node as MindmapNode, this.viewContainerRef);
         this.richtextComponentRef = richtextComponentRef;
-        this.richtextG = richTextG;
-        this.render2.addClass(richTextG, 'richtext');
-        this.gGroup.append(richTextG);
+        this.richtextG = richtextG;
+        this.foreignObject = foreignObject;
+        this.render2.addClass(richtextG, 'richtext');
+        this.gGroup.append(richtextG);
     }
 
     drawExtend() {
@@ -301,6 +314,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 this.drawNode();
                 this.drawLine();
                 this.updateRichtextLocation();
+                // resolve move node richtext lose issue
+                this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
                 this.drawExtend();
                 this.drawSelectedState();
             }
@@ -387,7 +402,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     ngOnDestroy(): void {
         this.destroyRichtext();
         this.gGroup.remove();
-        ELEMENT_GROUP_TO_COMPONENT.delete(this.gGroup);
-        MINDMAP_ELEMENT_TO_COMPONENT.delete(this.node.origin);
+        console.log('ngOnDestroy');
     }
 }
