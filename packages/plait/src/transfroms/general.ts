@@ -3,7 +3,8 @@ import { PlaitBoard } from '../interfaces/board';
 import { createDraft, finishDraft, isDraft } from 'immer';
 import { Viewport } from '../interfaces/viewport';
 import { Selection } from '../interfaces/selection';
-import { PlaitNode } from '../interfaces/node';
+import { Ancestor, PlaitNode } from '../interfaces/node';
+import { Path } from '../interfaces/path';
 
 export interface GeneralTransforms {
     transform: (board: PlaitBoard, op: PlaitOperation) => void;
@@ -36,6 +37,31 @@ const applyToDraft = (board: PlaitBoard, selection: Selection | null, viewport: 
                 );
             }
             parent.children.splice(index, 1);
+            break;
+        }
+        case 'move_node': {
+            const { path, newPath } = op;
+
+            if (Path.isAncestor(path, newPath)) {
+                throw new Error(`Cannot move a path [${path}] to new path [${newPath}] because the destination is inside itself.`);
+            }
+
+            const node = PlaitNode.get(board, path);
+            const parent = PlaitNode.parent(board, path);
+            const index = path[path.length - 1];
+
+            // This is tricky, but since the `path` and `newPath` both refer to
+            // the same snapshot in time, there's a mismatch. After either
+            // removing the original position, the second step's path can be out
+            // of date. So instead of using the `op.newPath` directly, we
+            // transform `op.path` to ascertain what the `newPath` would be after
+            // the operation was applied.
+            parent.children?.splice(index, 1);
+            const truePath = Path.transform(path, op)!;
+            const newParent = PlaitNode.get(board, Path.parent(truePath)) as Ancestor;
+            const newIndex = truePath[truePath.length - 1];
+
+            newParent.children?.splice(newIndex, 0, node);
             break;
         }
         case 'set_node': {

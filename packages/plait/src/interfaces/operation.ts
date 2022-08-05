@@ -14,6 +14,12 @@ export type RemoveNodeOperation = {
     path: Path;
 };
 
+export type MoveNodeOperation = {
+    type: 'move_node';
+    path: Path;
+    newPath: Path;
+};
+
 export type SetViewportOperation = {
     type: 'set_viewport';
     properties: Partial<Viewport>;
@@ -33,7 +39,7 @@ export type SetNodeOperation = {
     newProperties: Partial<PlaitNode>;
 };
 
-export type PlaitOperation = InsertNodeOperation | SetViewportOperation | SetSelectionOperation | SetNodeOperation | RemoveNodeOperation;
+export type PlaitOperation = InsertNodeOperation | SetViewportOperation | SetSelectionOperation | SetNodeOperation | RemoveNodeOperation | MoveNodeOperation;
 
 const isSetViewportOperation = (value: any): value is SetViewportOperation => {
     return value.type === 'set_viewport';
