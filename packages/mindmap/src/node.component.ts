@@ -402,6 +402,5 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     ngOnDestroy(): void {
         this.destroyRichtext();
         this.gGroup.remove();
-        console.log('ngOnDestroy');
     }
 }
