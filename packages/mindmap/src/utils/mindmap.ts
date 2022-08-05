@@ -48,3 +48,14 @@ export const getChildrenCount = (element: MindmapElement) => {
     }, 0);
     return count + element.children.length;
 };
+
+export const isChildElement = (origin: MindmapElement, child: MindmapElement) => {
+    let parent = findParentElement(child);
+    while (parent) {
+        if (parent === origin) {
+            return true;
+        }
+        parent = findParentElement(parent);
+    }
+    return false;
+}
