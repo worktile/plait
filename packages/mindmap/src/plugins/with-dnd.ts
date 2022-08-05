@@ -1,26 +1,20 @@
-import { isPlaitMindmap, PlaitMindmap } from '../interfaces/mindmap';
+import { isPlaitMindmap } from '../interfaces/mindmap';
 import {
     IS_TEXT_EDITABLE,
     Transforms,
-    idCreator,
     toPoint,
-    hotkeys,
     Path,
     PlaitBoard,
     Point,
-    createSVG,
-    PlaitElementContext,
     PlaitElement,
     PlaitPlugin,
     createG,
     HOST_TO_ROUGH_SVG,
     transformPoint
 } from 'plait';
-import { PlaitMindmapComponent } from '../mindmap.component';
-import { HAS_SELECTED_MINDMAP, HAS_SELECTED_MINDMAP_ELEMENT, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
+import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
-import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { findPath, isChildElement } from '../utils';
 import { MindmapElement } from '../interfaces/element';
@@ -133,14 +127,14 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                             return;
                         }
                         detectResult = dropDetector(node, detectCenterPoint);
-                        if (detectResult) {
+                        if (detectResult && isValidTarget(activeComponent.node.origin, node.origin)) {
                             dropTarget = { target: node.origin, detectResult };
                         }
                     });
                 }
             });
 
-            if (dropTarget && isValidTarget(activeComponent.node.origin, dropTarget.target)) {
+            if (dropTarget) {
                 if (dropTarget.detectResult === 'right') {
                     // 构造一条直线
                     const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
@@ -225,6 +219,19 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
     board.mouseup = (event: MouseEvent) => {
         if (activeElement) {
+            if (dropTarget) {
+                const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
+                const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
+                let targetPath = findPath(board, targetComponent.node);
+                if (dropTarget.detectResult === 'right') {
+                    targetPath.push(dropTarget.target.children.length);
+                }
+                if (dropTarget.detectResult === 'bottom') {
+                    targetPath = Path.next(targetPath);
+                }
+                Transforms.moveNode(board, findPath(board, activeComponent.node), targetPath);
+            }
+
             removeActiveOnDragOrigin(activeElement);
             isDragging = false;
             activeElement = null;
@@ -269,7 +276,7 @@ export const dropDetector = (node: MindmapNode, centerPoint: Point): DetectResul
 
 export const isValidTarget = (origin: MindmapElement, target: MindmapElement) => {
     return origin !== target && !isChildElement(origin, target);
-}
+};
 
 export const addActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin = true) => {
     const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
@@ -278,10 +285,10 @@ export const addActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin = 
     } else {
         activeComponent.gGroup.classList.add('dragging-child');
     }
-    activeElement.children.forEach((child) => {
+    activeElement.children.forEach(child => {
         addActiveOnDragOrigin(child, false);
     });
-}
+};
 
 export const removeActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin = true) => {
     const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
@@ -290,9 +297,9 @@ export const removeActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin
     } else {
         activeComponent.gGroup.classList.remove('dragging-child');
     }
-    activeElement.children.forEach((child) => {
-        addActiveOnDragOrigin(child, false);
+    activeElement.children.forEach(child => {
+        removeActiveOnDragOrigin(child, false);
     });
-}
+};
 
 export type DetectResult = 'top' | 'bottom' | 'right' | null;
