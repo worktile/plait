@@ -22,7 +22,7 @@ import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from '../utils
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { findPath } from '../utils';
+import { findPath, isChildElement } from '../utils';
 import { MindmapElement } from '../interfaces/element';
 import { MindmapNodeComponent } from '../node.component';
 import { drawNode } from '../draw/node';
@@ -30,6 +30,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { getRichtextRectangleByNode } from '../draw/richtext';
 import { updateForeignObject } from 'richtext';
 import { BASE, PRIMARY_COLOR } from '../constants';
+import { drawLine } from '../draw/line';
 
 export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, mouseup, keydown } = board;
@@ -37,9 +38,9 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     let activeElement: MindmapElement | null;
     let dragStartPoint: Point;
     let isDragging = false;
-    let fakeDragNodeG: SVGGElement;
-    let fakeDropNodeG: SVGGElement;
-    let dropTarget: { target: MindmapElement, detectResult: DetectResult }
+    let fakeDragNodeG: SVGGElement | undefined;
+    let fakeDropNodeG: SVGGElement | undefined;
+    let dropTarget: { target: MindmapElement; detectResult: DetectResult } | null = null;
 
     board.mousedown = (event: MouseEvent) => {
         if (IS_TEXT_EDITABLE.get(board)) {
@@ -82,16 +83,16 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 fakeDragNodeG.classList.add('dragging-fake-node');
                 fakeDropNodeG = createG();
                 const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
-                activeComponent.gGroup.classList.add('dragging-origin');
+                addActiveOnDragOrigin(activeElement);
                 activeComponent.mindmapGGroup.parentElement?.appendChild(fakeDropNodeG);
                 activeComponent.mindmapGGroup.parentElement?.appendChild(fakeDragNodeG);
             } else {
-                fakeDragNodeG.childNodes.forEach(node => {
+                fakeDragNodeG?.childNodes.forEach(node => {
                     node.remove();
                 });
-                fakeDropNodeG.childNodes.forEach(node => {
+                fakeDropNodeG?.childNodes.forEach(node => {
                     node.remove();
-                })
+                });
             }
 
             // fake dragging origin node
@@ -110,8 +111,8 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             const fakeNodeG = drawNode(roughSVG, fakeDragingNode);
             const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
             updateForeignObject(richtextG, width + BASE * 10, height, textX + offsetX, textY + offsetY);
-            fakeDragNodeG.append(fakeNodeG);
-            fakeDragNodeG.append(richtextG);
+            fakeDragNodeG?.append(fakeNodeG);
+            fakeDragNodeG?.append(richtextG);
 
             // drop position detect
             const detectCenterPoint = [
@@ -138,32 +139,83 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     });
                 }
             });
-            if (dropTarget) {
-                console.log('bomp !');
+
+            if (dropTarget && isValidTarget(activeComponent.node.origin, dropTarget.target)) {
                 if (dropTarget.detectResult === 'right') {
                     // 构造一条直线
                     const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
                     const { x, y, width, height } = getRectangleByNode(targetComponent.node);
                     const lineLength = 40;
-                    const linePoints = [[x + width, y + height / 2], [x + width + lineLength, y + height / 2]] as Point[];
+                    const linePoints = [
+                        [x + width, y + height / 2],
+                        [x + width + lineLength, y + height / 2]
+                    ] as Point[];
                     const lineSVGG = roughSVG.linearPath(linePoints, { stroke: PRIMARY_COLOR, strokeWidth: 2 });
                     // 构造一个矩形框坐标
-                    const fakeRectangleG = drawRoundRectangle(roughSVG, x + width + lineLength, y + height / 2 - 6, x + width + lineLength + 30, y + height / 2 - 6 + 12, { stroke: PRIMARY_COLOR, strokeWidth: 2, fill: PRIMARY_COLOR, fillStyle: 'solid' });
-                    fakeDropNodeG.appendChild(lineSVGG);
-                    fakeDropNodeG.appendChild(fakeRectangleG);
+                    const fakeRectangleG = drawRoundRectangle(
+                        roughSVG,
+                        x + width + lineLength,
+                        y + height / 2 - 6,
+                        x + width + lineLength + 30,
+                        y + height / 2 - 6 + 12,
+                        { stroke: PRIMARY_COLOR, strokeWidth: 2, fill: PRIMARY_COLOR, fillStyle: 'solid' }
+                    );
+                    fakeDropNodeG?.appendChild(lineSVGG);
+                    fakeDropNodeG?.appendChild(fakeRectangleG);
                 }
                 if (dropTarget.detectResult === 'top') {
-                    // 构造一条曲线
                     const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
+                    const targetRect = getRectangleByNode(targetComponent.node);
                     const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
-                    const { x, y, width, height } = getRectangleByNode(targetComponent.node);
-                    const lineLength = 40;
-                    const linePoints = [[x + width, y + height / 2], [x + width + lineLength, y + height / 2]] as Point[];
-                    const lineSVGG = roughSVG.linearPath(linePoints, { stroke: PRIMARY_COLOR, strokeWidth: 2 });
+                    const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
+                    let fakeY = targetRect.y - 30;
+                    if (targetIndex > 0) {
+                        const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
+                            parentComponent.node.origin.children[targetIndex - 1]
+                        ) as MindmapNodeComponent;
+                        const previousRect = getRectangleByNode(previousComponent.node);
+                        const topY = previousRect.y + previousRect.height;
+                        fakeY = topY + (targetRect.y - topY) / 5;
+                    }
+                    // 构造一条曲线
+                    const fakeNode: MindmapNode = { ...targetComponent.node, y: fakeY, width: 30, height: 12 };
+                    const linkSVGG = drawLine(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR);
                     // 构造一个矩形框坐标
-                    const fakeRectangleG = drawRoundRectangle(roughSVG, x + width + lineLength, y + height / 2 - 6, x + width + lineLength + 30, y + height / 2 - 6 + 12, { stroke: PRIMARY_COLOR, strokeWidth: 2, fill: PRIMARY_COLOR, fillStyle: 'solid' });
-                    fakeDropNodeG.appendChild(lineSVGG);
-                    fakeDropNodeG.appendChild(fakeRectangleG);
+                    const fakeRectangleG = drawRoundRectangle(roughSVG, targetRect.x, fakeY, targetRect.x + 30, fakeY + 12, {
+                        stroke: PRIMARY_COLOR,
+                        strokeWidth: 2,
+                        fill: PRIMARY_COLOR,
+                        fillStyle: 'solid'
+                    });
+                    fakeDropNodeG?.appendChild(linkSVGG);
+                    fakeDropNodeG?.appendChild(fakeRectangleG);
+                }
+                if (dropTarget.detectResult === 'bottom') {
+                    const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
+                    const targetRect = getRectangleByNode(targetComponent.node);
+                    const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
+                    const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
+                    let fakeY = targetRect.y + targetRect.height + 30;
+                    if (targetIndex < parentComponent.node.origin.children.length - 1) {
+                        const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
+                            parentComponent.node.origin.children[targetIndex + 1]
+                        ) as MindmapNodeComponent;
+                        const nextRect = getRectangleByNode(nextComponent.node);
+                        const topY = targetRect.y + targetRect.height;
+                        fakeY = topY + (nextRect.y - topY) / 5;
+                    }
+                    // 构造一条曲线
+                    const fakeNode: MindmapNode = { ...targetComponent.node, y: fakeY, width: 30, height: 12 };
+                    const linkSVGG = drawLine(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR);
+                    // 构造一个矩形框坐标
+                    const fakeRectangleG = drawRoundRectangle(roughSVG, targetRect.x, fakeY, targetRect.x + 30, fakeY + 12, {
+                        stroke: PRIMARY_COLOR,
+                        strokeWidth: 2,
+                        fill: PRIMARY_COLOR,
+                        fillStyle: 'solid'
+                    });
+                    fakeDropNodeG?.appendChild(linkSVGG);
+                    fakeDropNodeG?.appendChild(fakeRectangleG);
                 }
             }
         }
@@ -173,12 +225,14 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
     board.mouseup = (event: MouseEvent) => {
         if (activeElement) {
-            const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
-            activeComponent.gGroup.classList.remove('dragging-origin');
+            removeActiveOnDragOrigin(activeElement);
             isDragging = false;
             activeElement = null;
-            fakeDragNodeG.remove();
-            fakeDropNodeG.remove();
+            fakeDragNodeG?.remove();
+            fakeDragNodeG = undefined;
+            fakeDropNodeG?.remove();
+            fakeDropNodeG = undefined;
+            dropTarget = null;
 
             console.log('bomb ! end 拖拽！');
         }
@@ -199,26 +253,46 @@ export const dropDetector = (node: MindmapNode, centerPoint: Point): DetectResul
     const yCenter = node.y + node.height / 2;
     const xLeft = node.x;
     const xRight = x + width;
-
     if (node.origin.children.length === 0 || node.origin.isCollapsed) {
         if (centerPoint[0] > xRight && centerPoint[1] < node.x + node.width && centerPoint[1] > y && centerPoint[1] < y + height) {
-            console.log('child', (node.origin.value.children[0] as any).text);
-            return 'right';    
+            return 'right';
         }
     }
-
-    if (centerPoint[0] > xLeft && centerPoint[0] < xRight && centerPoint[1] > yTop && centerPoint[1] < yCenter) {
+    if (centerPoint[0] > xLeft && centerPoint[0] < xRight && centerPoint[1] > yTop && centerPoint[1] < yCenter && !node.origin.isRoot) {
         return 'top';
     }
-    if (centerPoint[0] > xLeft && centerPoint[0] < xRight && centerPoint[1] > yCenter && centerPoint[1] < yBottom) {
+    if (centerPoint[0] > xLeft && centerPoint[0] < xRight && centerPoint[1] > yCenter && centerPoint[1] < yBottom && !node.origin.isRoot) {
         return 'bottom';
     }
-
-    if (centerPoint[0] > xLeft && centerPoint[0] < xRight && centerPoint[1] > yCenter && centerPoint[1] < yBottom) {
-        return 'bottom';
-    }
-
     return null;
 };
+
+export const isValidTarget = (origin: MindmapElement, target: MindmapElement) => {
+    return origin !== target && !isChildElement(origin, target);
+}
+
+export const addActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin = true) => {
+    const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
+    if (isOrigin) {
+        activeComponent.gGroup.classList.add('dragging-origin');
+    } else {
+        activeComponent.gGroup.classList.add('dragging-child');
+    }
+    activeElement.children.forEach((child) => {
+        addActiveOnDragOrigin(child, false);
+    });
+}
+
+export const removeActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin = true) => {
+    const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
+    if (isOrigin) {
+        activeComponent.gGroup.classList.remove('dragging-origin');
+    } else {
+        activeComponent.gGroup.classList.remove('dragging-child');
+    }
+    activeElement.children.forEach((child) => {
+        addActiveOnDragOrigin(child, false);
+    });
+}
 
 export type DetectResult = 'top' | 'bottom' | 'right' | null;

@@ -5,7 +5,7 @@ import { STROKE_WIDTH } from '../constants';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 
-export function drawLine(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNode, isHorizontal = false, scale = 1) {
+export function drawLine(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNode, defaultStroke: string | null = null, isHorizontal = true, scale = 1) {
     let beginX,
         beginY,
         endX,
@@ -36,7 +36,7 @@ export function drawLine(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNo
         beginY = Math.round(beginNode.y + beginNode.height / 2);
     }
 
-    const stroke = getLinkLineColorByMindmapElement(child.origin);
+    const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
     const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
 
     if (isHorizontal) {

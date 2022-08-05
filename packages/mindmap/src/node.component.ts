@@ -116,7 +116,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             if (this.lineG) {
                 this.lineG.remove();
             }
-            this.lineG = drawLine(this.roughSVG as RoughSVG, this.parent as MindmapNode, this.node as MindmapNode, true, 1);
+            this.lineG = drawLine(this.roughSVG as RoughSVG, this.parent as MindmapNode, this.node as MindmapNode);
             this.gGroup.append(this.lineG);
         }
     }
