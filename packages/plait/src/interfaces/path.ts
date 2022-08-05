@@ -121,8 +121,9 @@ export const Path = {
 
                     if (Path.isAncestor(op, p) || Path.equals(op, p)) {
                         const copy = onp.slice();
-
-                        if (Path.endsBefore(op, onp) && op.length < onp.length) {
+                        // op.length <= onp.length is different for slate
+                        // resolve drag from [0, 0] to [0, 3] issue
+                        if (Path.endsBefore(op, onp) && op.length <= onp.length) {
                             copy[op.length - 1] -= 1;
                         }
 
@@ -150,7 +151,7 @@ export const Path = {
                     break;
                 }
             }
-            return;
+            return null;
         });
     }
 };
