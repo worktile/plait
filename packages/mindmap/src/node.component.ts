@@ -315,7 +315,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 this.drawLine();
                 this.updateRichtextLocation();
                 // resolve move node richtext lose issue
-                this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
+                if (this.foreignObject && this.foreignObject.children.length <= 0) {
+                    this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
+                }
                 this.drawExtend();
                 this.drawSelectedState();
             }
