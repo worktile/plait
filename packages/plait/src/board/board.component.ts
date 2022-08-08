@@ -1,4 +1,5 @@
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
@@ -46,10 +47,11 @@ import { Viewport } from '../interfaces/viewport';
             [selection]="board.selection"
             [host]="host"
         ></plait-element>
+        <ng-content></ng-content>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaitBoardComponent implements OnInit, OnDestroy {
+export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     zoom = 100;
 
     @HostBinding('class') hostClass = `plait-board-container`;
@@ -75,6 +77,8 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
 
     @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
 
+    @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
+
     constructor(private cdr: ChangeDetectorRef, private renderer2: Renderer2) {}
 
     ngOnInit(): void {
@@ -97,6 +101,10 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
                 this.updateViewport();
             }
         });
+    }
+
+    ngAfterViewInit(): void {
+        this.plaitBoardInitialized.emit(this.board);
     }
 
     initializePlugins() {
