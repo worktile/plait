@@ -2,3 +2,12 @@
 @import '../../packages/mindmap/src/styles.scss';
 @import '../../packages/plait/src/styles.scss';
 @import './richtext/richtext.component.scss';
+
+.layout-toolbar {
+    bottom: 20px;
+    right: 30px;
+    width: 120px;
+    select {
+        width: 100%;
+    }
+}

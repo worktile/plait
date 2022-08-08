@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { withMindmap } from 'mindmap';
-import { PlaitElement, PlaitBoardChangeEvent, Viewport } from 'plait';
+import { PlaitElement, PlaitBoardChangeEvent, Viewport, PlaitBoard, Transforms } from 'plait';
 import { mockMindmapData } from '../mock/mindmap-data';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
 
 @Component({
     selector: 'basic-board',
-    template: `
-        <plait-board [plaitPlugins]="plugins" [plaitValue]="value" [plaitViewport]="viewport" (plaitChange)="change($event)"></plait-board>
-    `
+    templateUrl: './board.component.html'
 })
 export class BasicBoardComponent implements OnInit {
     plugins = [withMindmap];
@@ -17,6 +15,8 @@ export class BasicBoardComponent implements OnInit {
     value: PlaitElement[] = [mockMindmapData];
 
     viewport!: Viewport;
+
+    board!: PlaitBoard;
 
     ngOnInit(): void {
         const data = this.getLocalData() as PlaitBoardChangeEvent;
@@ -37,5 +37,14 @@ export class BasicBoardComponent implements OnInit {
     getLocalData() {
         const data = localStorage.getItem(`${LOCAL_DATA_KEY}`);
         return data ? JSON.parse(data) : null;
+    }
+
+    layoutChange(event: Event) {
+        const value = (event.target as HTMLSelectElement).value;
+        Transforms.setNode(this.board, { layout: value }, [0]);
+    }
+
+    plaitBoardInitialized(value: PlaitBoard) {
+        this.board = value;
     }
 }

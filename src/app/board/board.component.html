@@ -1,0 +1,10 @@
+<plait-board [plaitPlugins]="plugins" [plaitValue]="value" [plaitViewport]="viewport" (plaitBoardInitialized)="plaitBoardInitialized($event)" (plaitChange)="change($event)">
+    <div class="plait-toolbar island layout-toolbar">
+        <select (change)="layoutChange($event)">
+            <option value="right">right</option>
+            <option value="left">left</option>
+            <option value="starndraw">standard</option>
+            <option value="downward">downward</option>
+        </select>
+    </div>
+</plait-board>
