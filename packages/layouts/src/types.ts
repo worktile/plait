@@ -6,6 +6,6 @@ export interface LayoutOptions {
 }
 
 export interface OriginNode {
-    children?: OriginNode[];
+    children: OriginNode[];
     isCollapsed?: boolean;
 }
