@@ -1,9 +1,57 @@
+@use  './theme.scss';
+
 .plait-board-container {
     display: block;
     width: 100%;
     height: 100%;
+    position: relative;
+
     // https://stackoverflow.com/questions/51313873/svg-foreignobject-not-working-properly-on-safari
     .plait-richtext-container {
         position: initial;
+    }
+
+    .plait-toolbar {
+        position: absolute;
+        display: flex;
+        height: 30px;
+        z-index: 100;
+
+        .item {
+            flex: 1 1 auto;
+            width: 50px;
+            padding: 4px 10px;
+            margin-right: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+            font-size: 14px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+
+    .island {
+        --padding: 2;
+        background-color: var(--iscard-bg-color);
+        box-shadow: var(--shadow-iscard);
+        border-radius: var(--border-radius-lg);
+        padding: calc(var(--padding) * var(--space-factor));
+        transition: box-shadow 0.5s ease-in-out;
+    }
+
+    .zoom-toolbar {
+        top: 20px;
+        right: 30px;
+
+        .item {
+            &.zoom-value {
+                width: 60px;
+            }
+
+            width: 40px;
+        }
     }
 }

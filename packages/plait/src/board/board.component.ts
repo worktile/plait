@@ -24,12 +24,19 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import rough from 'roughjs/bin/rough';
 import { Transforms } from '../transfroms';
 import { withSelection } from '../plugins/with-selection';
-import { Viewport } from '../interfaces';
+import { PlaitOperation } from '../interfaces/operation';
+import { getViewBox } from '../utils/board';
+import { Viewport } from '../interfaces/viewport';
 
 @Component({
     selector: 'plait-board',
     template: `
         <svg #svg width="100%" height="100%"></svg>
+        <div class="plait-toolbar island zoom-toolbar">
+            <button class="item" (mousedown)="zoomOut($event)">-</button>
+            <button class="item zoom-value" (mousedown)="resetZoom($event)">{{ zoom }}%</button>
+            <button class="item" (mousedown)="zoomIn($event)">+</button>
+        </div>
         <plait-element
             *ngFor="let item of board.children; let index = index; trackBy: trackBy"
             [index]="index"
@@ -43,6 +50,8 @@ import { Viewport } from '../interfaces';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaitBoardComponent implements OnInit, OnDestroy {
+    zoom = 100;
+
     @HostBinding('class') hostClass = `plait-board-container`;
 
     board!: PlaitBoard;
@@ -73,6 +82,7 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
         HOST_TO_ROUGH_SVG.set(this.host, roughSVG);
         this.initializePlugins();
         this.initializeEvents();
+        this.updateViewport();
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.cdr.detectChanges();
             const changeEvent: PlaitBoardChangeEvent = {
@@ -82,6 +92,10 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
                 selection: this.board.selection
             };
             this.plaitChange.emit(changeEvent);
+            // update viewBox
+            if (this.board.operations.some(op => PlaitOperation.isSetViewportOperation(op))) {
+                this.updateViewport();
+            }
         });
     }
 
@@ -143,6 +157,48 @@ export class PlaitBoardComponent implements OnInit, OnDestroy {
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keyup(event);
             });
+
+        window.onresize = () => {
+            const viewBoxModel = getViewBox(this.board);
+            const viewBoxValues = this.host.getAttribute('viewBox')?.split(',') as string[];
+            this.renderer2.setAttribute(
+                this.host,
+                'viewBox',
+                `${viewBoxValues[0].trim()}, ${viewBoxValues[1].trim()}, ${viewBoxModel.width}, ${viewBoxModel.height}`
+            );
+        };
+    }
+
+    updateViewport() {
+        this.zoom = Math.floor(this.board.viewport.zoom * 100);
+        const viewBox = getViewBox(this.board);
+        this.renderer2.setAttribute(this.host, 'viewBox', `${viewBox.minX}, ${viewBox.minY}, ${viewBox.width}, ${viewBox.height}`);
+    }
+
+    // 放大
+    zoomIn(event: MouseEvent) {
+        const viewport = this.board?.viewport as Viewport;
+        Transforms.setViewport(this.board, {
+            ...viewport,
+            zoom: viewport.zoom + 0.1
+        });
+    }
+
+    // 缩小
+    zoomOut(event: MouseEvent) {
+        const viewport = this.board?.viewport as Viewport;
+        Transforms.setViewport(this.board, {
+            ...viewport,
+            zoom: viewport.zoom - 0.1
+        });
+    }
+
+    resetZoom(event: MouseEvent) {
+        const viewport = this.board?.viewport as Viewport;
+        Transforms.setViewport(this.board, {
+            ...viewport,
+            zoom: 1
+        });
     }
 
     trackBy = (index: number, element: PlaitElement) => {

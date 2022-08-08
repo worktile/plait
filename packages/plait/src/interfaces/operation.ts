@@ -41,6 +41,11 @@ export type SetNodeOperation = {
 
 export type PlaitOperation = InsertNodeOperation | SetViewportOperation | SetSelectionOperation | SetNodeOperation | RemoveNodeOperation | MoveNodeOperation;
 
-const isSetViewportOperation = (value: any): value is SetViewportOperation => {
+export const isSetViewportOperation = (value: any): value is SetViewportOperation => {
     return value.type === 'set_viewport';
+};
+
+
+export const PlaitOperation = {
+    isSetViewportOperation
 };

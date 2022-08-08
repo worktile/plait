@@ -1,0 +1,14 @@
+.plait-board-container {
+    --theme-filter: none;
+    --iscard-bg-color: rgba(255, 255, 255, 0.96);
+    --sab: env(safe-area-inset-bottom);
+    --sal: env(safe-area-inset-left);
+    --sar: env(safe-area-inset-right);
+    --sat: env(safe-area-inset-top);
+    --shadow-iscard: 0 0 0 1px rgba(0, 0, 0, 0.01),
+        1px 1px 5px rgb(0 0 0 / 12%);
+    --space-factor: 0.25rem;
+
+    --border-radius-md: 0.375rem;
+    --border-radius-lg: 0.5rem;
+}
