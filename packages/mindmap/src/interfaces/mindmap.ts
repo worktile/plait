@@ -9,8 +9,16 @@ export interface PlaitMindmap extends PlaitElement {
     width: number;
     height: number;
     isRoot?: boolean;
+    layout?: MindmapLayout;
 }
 
 export const isPlaitMindmap = (value: any): value is PlaitMindmap => {
     return value.type === 'mindmap';
+};
+
+export enum MindmapLayout {
+    'right' = 'right',
+    'left' = 'left',
+    'standard' = 'standard',
+    'downward' = 'downward'
 };

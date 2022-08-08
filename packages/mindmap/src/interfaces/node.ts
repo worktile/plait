@@ -1,7 +1,6 @@
 import { MindmapElement } from './element';
 
 export interface MindmapNode {
-    id: string;
     depth: number;
     x: number;
     y: number;

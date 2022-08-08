@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inp
 import { BASE, MINDMAP_KEY } from './constants/index';
 import { MindmapElement } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
-import { PlaitMindmap } from './interfaces/mindmap';
+import { MindmapLayout, PlaitMindmap } from './interfaces/mindmap';
 import { createG, Selection, PlaitBoard } from 'plait';
-import { Layout } from 'layouts';
+import { RightLayout, LeftLayout, StandardLayout, DownwardLayout, LayoutOptions } from 'layouts';
 import { MINDMAP_TO_COMPONENT } from './plugins/weak-maps';
 
 @Component({
@@ -75,8 +75,24 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
 
     updateMindmap(doCheck = true) {
         MINDMAP_TO_COMPONENT.set(this.value, this);
-        const options = this.getOptions();
-        this.root = Layout.layout(this.value, options as any) as any;
+        const options = this.getOptions() as LayoutOptions;
+        switch (this.value.layout) {
+            case MindmapLayout.left:
+                this.root = (new LeftLayout().layout(this.value, options) as unknown) as MindmapNode;
+                break;
+            case MindmapLayout.right:
+                this.root = (new RightLayout().layout(this.value, options) as unknown) as MindmapNode;
+                break;
+            case MindmapLayout.standard:
+                this.root = (new StandardLayout().layout(this.value, options) as unknown) as MindmapNode;
+                break;
+            case MindmapLayout.downward:
+                this.root = (new DownwardLayout().layout(this.value, options) as unknown) as MindmapNode;
+                break;
+            default:
+                this.root = (new StandardLayout().layout(this.value, options) as unknown) as MindmapNode;
+                break;
+        }
         this.updateMindmapLocation();
         if (doCheck) {
             this.cdr.detectChanges();
