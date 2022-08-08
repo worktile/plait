@@ -288,7 +288,7 @@ export const addActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin = 
     } else {
         activeComponent.gGroup.classList.add('dragging-child');
     }
-    activeElement.children.forEach(child => {
+    !activeElement.isCollapsed && activeElement.children.forEach(child => {
         addActiveOnDragOrigin(child, false);
     });
 };
@@ -300,7 +300,7 @@ export const removeActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin
     } else {
         activeComponent.gGroup.classList.remove('dragging-child');
     }
-    activeElement.children.forEach(child => {
+    !activeElement.isCollapsed && activeElement.children.forEach(child => {
         removeActiveOnDragOrigin(child, false);
     });
 };

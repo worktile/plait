@@ -1,9 +1,8 @@
 import { isPlaitMindmap, PlaitMindmap } from '../interfaces/mindmap';
-import { hotkeys, Path, PlaitBoard, transformPoint } from 'plait';
+import { hotkeys, Path, PlaitBoard, toPoint, transformPoint, IS_TEXT_EDITABLE, Transforms, idCreator } from 'plait';
 import { PlaitElementContext, PlaitElement } from 'plait';
 import { PlaitPlugin } from 'plait';
 import { PlaitMindmapComponent } from '../mindmap.component';
-import { IS_TEXT_EDITABLE, Transforms, idCreator, toPoint } from 'plait';
 import { HAS_SELECTED_MINDMAP, HAS_SELECTED_MINDMAP_ELEMENT, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
@@ -13,7 +12,7 @@ import { findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, mousedown, mousemove, mouseup, keydown, redrawElement } = board;
+    const { drawElement, dblclick, mousedown, mousemove, mouseup, keydown } = board;
 
     board.drawElement = (context: PlaitElementContext) => {
         const { element, selection, viewContainerRef, host } = context.elementInstance;
