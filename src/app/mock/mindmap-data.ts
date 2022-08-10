@@ -63,5 +63,5 @@ export const mockMindmapData: PlaitMindmap = {
     width: 72,
     height: 24,
     isRoot: true,
-    points: [[60, 180]]
+    points: [[700, 300]]
 };
