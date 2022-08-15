@@ -3,7 +3,7 @@ import { Options } from 'roughjs/bin/core';
 import { Point } from 'roughjs/bin/geometry';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { MAX_RADIUS } from '../constants';
-import { PlaitBoard } from 'plait';
+import { PlaitBoard } from '@plait/core';
 
 export interface RectangleClient {
     x: number;

@@ -3,8 +3,8 @@ import { BASE, MINDMAP_KEY } from './constants/index';
 import { MindmapElement } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
 import { MindmapLayout, PlaitMindmap } from './interfaces/mindmap';
-import { createG, Selection, PlaitBoard } from 'plait';
-import { RightLayout, LeftLayout, StandardLayout, DownwardLayout, LayoutOptions } from 'layouts';
+import { createG, Selection, PlaitBoard } from '@plait/core';
+import { RightLayout, LeftLayout, StandardLayout, DownwardLayout, LayoutOptions } from '@plait/layouts';
 import { MINDMAP_TO_COMPONENT } from './plugins/weak-maps';
 
 @Component({

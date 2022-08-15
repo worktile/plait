@@ -1,5 +1,5 @@
 import { COLORS, TRANSPARENT } from '../constants';
-import { MindmapElement, PlaitMindmap } from '../interfaces';
+import { MindmapElement } from '../interfaces';
 import { findUpElement } from './mindmap';
 
 export const getStrokeByMindmapElement = (element: MindmapElement) => {

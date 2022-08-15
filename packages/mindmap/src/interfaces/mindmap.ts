@@ -1,4 +1,4 @@
-import { PlaitElement } from 'plait';
+import { PlaitElement } from '@plait/core';
 import { MindmapElement } from './element';
 import { Element } from 'slate';
 

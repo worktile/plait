@@ -21,8 +21,8 @@ import {
     PlaitBoard,
     Transforms,
     transformPoint,
-} from 'plait';
-import { PlaitRichtextComponent, setFullSelectionAndFocus } from 'richtext';
+} from '@plait/core';
+import { PlaitRichtextComponent, setFullSelectionAndFocus } from '@plait/richtext';
 import { drawNode } from './draw/node';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { MindmapNode } from './interfaces/node';

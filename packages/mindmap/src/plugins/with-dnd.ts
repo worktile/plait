@@ -11,7 +11,7 @@ import {
     createG,
     HOST_TO_ROUGH_SVG,
     transformPoint
-} from 'plait';
+} from '@plait/core';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
@@ -22,7 +22,7 @@ import { MindmapNodeComponent } from '../node.component';
 import { drawNode } from '../draw/node';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { getRichtextRectangleByNode } from '../draw/richtext';
-import { updateForeignObject } from 'richtext';
+import { updateForeignObject } from '@plait/richtext';
 import { BASE, PRIMARY_COLOR } from '../constants';
 import { drawLine } from '../draw/line';
 

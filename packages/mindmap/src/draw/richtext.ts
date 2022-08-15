@@ -1,5 +1,5 @@
 import { MindmapNode } from '../interfaces/node';
-import { drawRichtext, updateForeignObject } from 'richtext';
+import { drawRichtext, updateForeignObject } from '@plait/richtext';
 import { ViewContainerRef } from '@angular/core';
 import { getRectangleByNode } from '../utils/graph';
 import { BASE } from '../constants';

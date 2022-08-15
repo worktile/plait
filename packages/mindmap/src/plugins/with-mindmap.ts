@@ -1,7 +1,5 @@
 import { isPlaitMindmap, PlaitMindmap } from '../interfaces/mindmap';
-import { hotkeys, Path, PlaitBoard, toPoint, transformPoint, IS_TEXT_EDITABLE, Transforms, idCreator } from 'plait';
-import { PlaitElementContext, PlaitElement } from 'plait';
-import { PlaitPlugin } from 'plait';
+import { hotkeys, Path, PlaitBoard, toPoint, transformPoint, IS_TEXT_EDITABLE, Transforms, idCreator, PlaitElementContext, PlaitElement, PlaitPlugin } from '@plait/core';
 import { PlaitMindmapComponent } from '../mindmap.component';
 import { HAS_SELECTED_MINDMAP, HAS_SELECTED_MINDMAP_ELEMENT, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { hitMindmapNode } from '../utils/graph';

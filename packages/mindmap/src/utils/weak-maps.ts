@@ -1,6 +1,6 @@
 import { PlaitMindmap } from '../interfaces/mindmap';
 import { MindmapNodeComponent } from '../node.component';
-import { PlaitBoard } from 'plait';
+import { PlaitBoard } from '@plait/core';
 import { MindmapElement } from '../interfaces/element';
 
 export const HAS_SELECTED_MINDMAP_ELEMENT: WeakMap<MindmapElement, boolean> = new WeakMap();

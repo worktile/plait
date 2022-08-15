@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { PlaitModule } from 'plait';
-import { RichtextModule } from 'richtext';
+import { PlaitModule } from '@plait/core';
+import { RichtextModule } from '@plait/richtext';
 import { MindmapNodeComponent } from './node.component';
 import { PlaitMindmapComponent } from './mindmap.component';
 
