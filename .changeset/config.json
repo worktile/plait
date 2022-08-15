@@ -3,12 +3,12 @@
   "changelog": [
     "@changesets/changelog-github",
     {
-        "repo": "worktile/palit"
+        "repo": "worktile/plait"
     }
 ],
   "commit": false,
   "fixed": [],
-  "linked": [],
+  "linked": [["@plait/core", "@plait/richtext", "@plait/mindmap", "@plait/layouts"]],
   "access": "restricted",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
