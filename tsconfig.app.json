@@ -5,16 +5,16 @@
     "outDir": "./out-tsc/app",
     "types": [],
     "paths": {
-      "layouts": [
+      "@plait/layouts": [
         "packages/layouts/src/public-api",
       ],
-      "mindmap": [
+      "@plait/mindmap": [
         "packages/mindmap/src/public-api",
       ],
-      "plait": [
+      "@plait/core": [
         "packages/plait/src/public-api",
       ],
-      "richtext": [
+      "@plait/richtext": [
         "packages/richtext/src/public-api",
       ],
     },

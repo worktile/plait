@@ -30,7 +30,7 @@ import {
 } from '../utils/weak-maps';
 import { PlaitCompositionEvent } from '../interface/composition';
 import { NODE_TO_INDEX } from '../utils/weak-maps';
-import { hotkeys, IS_CHROME, IS_SAFARI } from 'plait';
+import { hotkeys, IS_CHROME, IS_SAFARI } from '@plait/core';
 import { withInline } from '../plugins/with-inline';
 
 const NATIVE_INPUT_TYPES = ['insertText'];

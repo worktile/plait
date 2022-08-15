@@ -1,4 +1,4 @@
-import { hotkeys } from 'plait';
+import { hotkeys } from '@plait/core';
 import { Editor, Element, Range, Transforms, Path } from 'slate';
 import { RichtextEditor } from './richtext-editor';
 

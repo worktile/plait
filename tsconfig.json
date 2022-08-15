@@ -4,19 +4,19 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "layouts": [
+      "@plait/layouts": [
         "dist/layouts/layouts",
         "dist/layouts"
       ],
-      "mindmap": [
+      "@plait/mindmap": [
         "dist/mindmap",
         "dist/mindmap/mindmap"
       ],
-      "plait": [
+      "@plait/core": [
         "dist/plait",
         "dist/plait/plait"
       ],
-      "richtext": [
+      "@plait/richtext": [
         "dist/richtext",
         "dist/richtext/richtext"
       ],
