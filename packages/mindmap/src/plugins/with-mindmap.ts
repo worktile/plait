@@ -28,6 +28,27 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         return drawElement(context);
     };
 
+    board.redrawElement = (context: PlaitElementContext, changes: SimpleChanges) => {
+        const { element, selection } = context.elementInstance;
+        const elementChange = changes['element'];
+        if (isPlaitMindmap(element)) {
+            const previousElement = (elementChange && elementChange.previousValue) || element;
+            const mindmapInstance = MINDMAP_TO_COMPONENT.get(previousElement);
+            if (!mindmapInstance) {
+                throw new Error('undefined mindmap component');
+            }
+            mindmapInstance.value = element;
+            mindmapInstance.selection = selection;
+            if (elementChange) {
+                mindmapInstance.updateMindmap();
+            } else {
+                mindmapInstance.doCheck();
+            }
+            return [mindmapInstance.mindmapGGroup];
+        }
+        return drawElement(context);
+    };
+
     board.mousedown = (event: MouseEvent) => {
         if (IS_TEXT_EDITABLE.get(board)) {
             mouseup(event);
@@ -149,27 +170,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
         dblclick(event);
-    };
-
-    board.redrawElement = (context: PlaitElementContext, changes: SimpleChanges) => {
-        const { element, selection } = context.elementInstance;
-        const elementChange = changes['element'];
-        if (isPlaitMindmap(element)) {
-            const previousElement = (elementChange && elementChange.previousValue) || element;
-            const mindmapInstance = MINDMAP_TO_COMPONENT.get(previousElement);
-            if (!mindmapInstance) {
-                throw new Error('undefined mindmap component');
-            }
-            mindmapInstance.value = element;
-            mindmapInstance.selection = selection;
-            if (elementChange) {
-                mindmapInstance.updateMindmap();
-            } else {
-                mindmapInstance.doCheck();
-            }
-            return [mindmapInstance.mindmapGGroup];
-        }
-        return drawElement(context);
     };
 
     return withNodeDnd(board);
