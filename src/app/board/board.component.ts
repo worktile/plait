@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { withMindmap } from 'mindmap';
-import { PlaitElement, PlaitBoardChangeEvent, Viewport, PlaitBoard, Transforms } from 'plait';
+import { withMindmap } from '@plait/mindmap';
+import { PlaitElement, PlaitBoardChangeEvent, Viewport, PlaitBoard, Transforms } from '@plait/core';
 import { mockMindmapData } from '../mock/mindmap-data';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';

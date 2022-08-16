@@ -1,4 +1,4 @@
-import { PlaitMindmap } from 'mindmap';
+import { PlaitMindmap } from '@plait/mindmap';
 
 export const mockMindmapData: PlaitMindmap = {
     type: 'mindmap',

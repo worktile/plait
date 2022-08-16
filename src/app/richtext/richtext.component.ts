@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PlaitChangeEvent } from 'richtext';
+import { PlaitChangeEvent } from '@plait/richtext';
 
 @Component({
     selector: 'basic-richtext',

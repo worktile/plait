@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { MindmapModule } from 'mindmap';
-import { PlaitModule } from 'plait';
-import { RichtextModule } from 'richtext';
+import { MindmapModule } from '@plait/mindmap';
+import { PlaitModule } from '@plait/core';
+import { RichtextModule } from '@plait/richtext';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BasicBoardComponent } from './board/board.component';
