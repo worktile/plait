@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build plait && ng build richtext && ng build layouts && ng build mindmap",
+    "build": "ng build plait && cpx \"./packages/plait/src/styles/*.scss\" ./dist/plait/styles/ && ng build richtext && cpx \"./packages/richtext/src/styles/*.scss\" ./dist/richtext/styles/ && ng build layouts && ng build mindmap && cpx \"./packages/mindmap/src/styles/*.scss\" ./dist/mindmap/styles/",
     "build:demo": "ng build demo --baseHref=/plait/ --configuration production",
     "pub:core": "cd dist/plait && npm publish --access public",
     "pub:richtext": "cd dist/richtext && npm publish --access public",
@@ -68,6 +68,7 @@
     "pretty-quick": "^1.10.0",
     "typescript": "~4.6.4",
     "@changesets/changelog-github": "^0.3.0",
-    "@changesets/cli": "^2.19.0"
+    "@changesets/cli": "^2.19.0",
+    "cpx": "^1.5.0"
   }
 }
