@@ -14,7 +14,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../utils/weak-maps';
-import { PlaitBoardChangeEvent, PlaitBoard } from '../interfaces/board';
+import { PlaitBoardChangeEvent, PlaitBoard, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { createBoard } from '../plugins/create-board';
 import { withBoard } from '../plugins/with-board';
@@ -75,6 +75,8 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @Input() plaitPlugins: PlaitPlugin[] = [];
 
+    @Input() readonly = false;
+
     @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
@@ -108,7 +110,8 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     initializePlugins() {
-        let board = withSelection(withBoard(createBoard(this.host, this.plaitValue)));
+        const options: PlaitBoardOptions = { readonly: this.readonly };
+        let board = withSelection(withBoard(createBoard(this.host, this.plaitValue, options)));
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
         });
