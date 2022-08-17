@@ -37,7 +37,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     let dropTarget: { target: MindmapElement; detectResult: DetectResult } | null = null;
 
     board.mousedown = (event: MouseEvent) => {
-        if (IS_TEXT_EDITABLE.get(board)) {
+        if (board.readonly || IS_TEXT_EDITABLE.get(board)) {
             mousedown(event);
             return;
         }
@@ -69,7 +69,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.mousemove = (event: MouseEvent) => {
-        if (activeElement && dragStartPoint) {
+        if (!board.readonly && activeElement && dragStartPoint) {
             if (!isDragging) {
                 isDragging = true;
                 fakeDragNodeG = createG();
@@ -217,7 +217,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.mouseup = (event: MouseEvent) => {
-        if (activeElement) {
+        if (!board.readonly && activeElement) {
             if (dropTarget) {
                 const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
                 const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
@@ -288,9 +288,10 @@ export const addActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin = 
     } else {
         activeComponent.gGroup.classList.add('dragging-child');
     }
-    !activeElement.isCollapsed && activeElement.children.forEach(child => {
-        addActiveOnDragOrigin(child, false);
-    });
+    !activeElement.isCollapsed &&
+        activeElement.children.forEach(child => {
+            addActiveOnDragOrigin(child, false);
+        });
 };
 
 export const removeActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin = true) => {
@@ -300,9 +301,10 @@ export const removeActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin
     } else {
         activeComponent.gGroup.classList.remove('dragging-child');
     }
-    !activeElement.isCollapsed && activeElement.children.forEach(child => {
-        removeActiveOnDragOrigin(child, false);
-    });
+    !activeElement.isCollapsed &&
+        activeElement.children.forEach(child => {
+            removeActiveOnDragOrigin(child, false);
+        });
 };
 
 export type DetectResult = 'top' | 'bottom' | 'right' | null;
