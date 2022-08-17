@@ -1,5 +1,11 @@
 # richtext
 
+## 0.0.5
+
+### Patch Changes
+
+-   [`6acda2a`](https://github.com/worktile/plait/commit/6acda2aea966964d17da2f03b9948a31d45b1e80) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - set contenteditable false when readonly
+
 ## 0.0.4
 
 ### Patch Changes

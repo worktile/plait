@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.5
+
+### Patch Changes
+
+-   [#18](https://github.com/worktile/plait/pull/18) [`b9d4198`](https://github.com/worktile/plait/commit/b9d4198f7f6f4c2281c8fac3fa22ce3610dee0af) Thanks [@Maple13](https://github.com/Maple13)! - fix(mindmap): add read-only processing
+
 ## 0.0.4
 
 ### Patch Changes
