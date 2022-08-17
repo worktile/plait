@@ -75,7 +75,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @Input() plaitPlugins: PlaitPlugin[] = [];
 
-    @Input() readonly = false;
+    @Input() plaitReadonly = false;
 
     @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
 
@@ -110,7 +110,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     initializePlugins() {
-        const options: PlaitBoardOptions = { readonly: this.readonly };
+        const options: PlaitBoardOptions = { readonly: this.plaitReadonly };
         let board = withSelection(withBoard(createBoard(this.host, this.plaitValue, options)));
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
