@@ -36,6 +36,8 @@ export function withSelection<T extends PlaitBoard>(board: T) {
     board.mouseup = (event: MouseEvent) => {
         if (start) {
             Transforms.setSelection(board, { anchor: start, focus: start });
+        } else {
+            Transforms.setSelection(board, null);
         }
         start = null;
         end = null;

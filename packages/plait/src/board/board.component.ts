@@ -124,21 +124,25 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe((event: MouseEvent) => {
                 this.board.mousedown(event);
             });
+
         fromEvent<MouseEvent>(this.host, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
             });
+
         fromEvent<MouseEvent>(document, 'mouseup')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mouseup(event);
             });
+
         fromEvent<MouseEvent>(this.host, 'dblclick')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.dblclick(event);
             });
+
         fromEvent<WheelEvent>(this.host, 'wheel')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: WheelEvent) => {
@@ -150,18 +154,25 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
                     offsetY: viewport?.offsetY - event.deltaY
                 });
             });
+
         fromEvent<KeyboardEvent>(document, 'keydown')
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !IS_TEXT_EDITABLE.get(this.board as PlaitBoard);
+                    return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection;
                 })
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keydown(event);
             });
+
         fromEvent<KeyboardEvent>(document, 'keyup')
-            .pipe(takeUntil(this.destroy$))
+            .pipe(
+                takeUntil(this.destroy$),
+                filter(() => {
+                    return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection;
+                })
+            )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keyup(event);
             });
