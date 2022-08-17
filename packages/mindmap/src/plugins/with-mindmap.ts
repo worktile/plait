@@ -1,5 +1,17 @@
 import { isPlaitMindmap, PlaitMindmap } from '../interfaces/mindmap';
-import { hotkeys, Path, PlaitBoard, toPoint, transformPoint, IS_TEXT_EDITABLE, Transforms, idCreator, PlaitElementContext, PlaitElement, PlaitPlugin } from '@plait/core';
+import {
+    hotkeys,
+    Path,
+    PlaitBoard,
+    toPoint,
+    transformPoint,
+    IS_TEXT_EDITABLE,
+    Transforms,
+    idCreator,
+    PlaitElementContext,
+    PlaitElement,
+    PlaitPlugin
+} from '@plait/core';
 import { PlaitMindmapComponent } from '../mindmap.component';
 import { HAS_SELECTED_MINDMAP, HAS_SELECTED_MINDMAP_ELEMENT, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { hitMindmapNode } from '../utils/graph';
@@ -79,7 +91,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.keydown = (event: KeyboardEvent) => {
-        if (IS_TEXT_EDITABLE.get(board)) {
+        if (board.readonly || IS_TEXT_EDITABLE.get(board)) {
             keydown(event);
             return;
         }
@@ -140,7 +152,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.dblclick = (event: MouseEvent) => {
-        if (IS_TEXT_EDITABLE.get(board)) {
+        if (board.readonly || IS_TEXT_EDITABLE.get(board)) {
             dblclick(event);
             return;
         }
