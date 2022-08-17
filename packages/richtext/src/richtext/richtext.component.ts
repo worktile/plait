@@ -57,7 +57,7 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
 
     @HostBinding('[attr.contenteditable]')
     get contenteditable() {
-        return this.plaitReadonly ? undefined : true;
+        return this.plaitReadonly ? false : true;
     }
 
     @HostBinding('[attr.readonly]')
