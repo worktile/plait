@@ -13,6 +13,7 @@ export interface PlaitBoard {
     operations: PlaitOperation[];
     selection: Selection | null;
     cursor: CursorStatus;
+    readonly: boolean;
     apply: (operation: PlaitOperation) => void;
     onChange: () => void;
     mousedown: (event: MouseEvent) => void;
@@ -31,4 +32,8 @@ export interface PlaitBoardChangeEvent {
     operations: PlaitOperation[];
     viewport: Viewport;
     selection: Selection | null;
+}
+
+export interface PlaitBoardOptions {
+    readonly: boolean;
 }

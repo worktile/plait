@@ -10,7 +10,6 @@
   "fixed": [],
   "linked": [["@plait/core", "@plait/richtext", "@plait/mindmap", "@plait/layouts"]],
   "access": "restricted",
-  "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": []
 }
