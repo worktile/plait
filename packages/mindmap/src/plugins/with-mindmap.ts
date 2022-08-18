@@ -13,13 +13,19 @@ import {
     PlaitPlugin
 } from '@plait/core';
 import { PlaitMindmapComponent } from '../mindmap.component';
-import { HAS_SELECTED_MINDMAP, HAS_SELECTED_MINDMAP_ELEMENT, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
+import {
+    HAS_SELECTED_MINDMAP,
+    HAS_SELECTED_MINDMAP_ELEMENT,
+    MINDMAP_ELEMENT_TO_COMPONENT,
+    SELECTED_MINDMAP_NODES
+} from '../utils/weak-maps';
 import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
+import { MindmapElement } from '../interfaces';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, mousemove, mouseup, keydown } = board;
@@ -67,7 +73,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
         // select mindmap node
         const point = transformPoint(board, toPoint(event.x, event.y, board.host));
+        const nodes: MindmapElement[] = [];
         let selectedMindmap: PlaitMindmap | null = null;
+
         board.children.forEach((value: PlaitElement) => {
             if (isPlaitMindmap(value)) {
                 const mindmapComponent = MINDMAP_TO_COMPONENT.get(value);
@@ -76,6 +84,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     if (hitMindmapNode(board, point, node)) {
                         HAS_SELECTED_MINDMAP_ELEMENT.set(node.origin, true);
                         selectedMindmap = value;
+                        nodes.push(node.origin);
                     } else {
                         HAS_SELECTED_MINDMAP_ELEMENT.has(node.origin) && HAS_SELECTED_MINDMAP_ELEMENT.delete(node.origin);
                     }
@@ -87,6 +96,14 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 HAS_SELECTED_MINDMAP.has(board) && HAS_SELECTED_MINDMAP.delete(board);
             }
         });
+
+        if (nodes.length > 0) {
+            SELECTED_MINDMAP_NODES.set(board, nodes);
+        }
+        if (nodes.length === 0 && SELECTED_MINDMAP_NODES.has(board)) {
+            SELECTED_MINDMAP_NODES.delete(board);
+        }
+
         mousedown(event);
     };
 
