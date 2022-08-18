@@ -18,7 +18,7 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         },
         children,
         operations: [],
-        selection: { anchor: [0, -1], focus: [-1, -1] },
+        selection: null,
         cursor: BaseCursorStatus.select,
         readonly: options.readonly,
         apply: (operation: PlaitOperation) => {

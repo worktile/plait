@@ -33,7 +33,7 @@ import { Viewport } from '../interfaces/viewport';
     selector: 'plait-board',
     template: `
         <svg #svg width="100%" height="100%"></svg>
-        <div class="plait-toolbar island zoom-toolbar">
+        <div *ngIf="isFocused" class="plait-toolbar island zoom-toolbar">
             <button class="item" (mousedown)="zoomOut($event)">-</button>
             <button class="item zoom-value" (mousedown)="resetZoom($event)">{{ zoom }}%</button>
             <button class="item" (mousedown)="zoomIn($event)">+</button>
@@ -67,6 +67,10 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     get host(): SVGElement {
         return this.svg.nativeElement;
+    }
+
+    get isFocused() {
+        return this.board?.selection;
     }
 
     @Input() plaitValue: PlaitElement[] = [];
@@ -149,13 +153,15 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         fromEvent<WheelEvent>(this.host, 'wheel')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: WheelEvent) => {
-                event.preventDefault();
-                const viewport = this.board.viewport;
-                Transforms.setViewport(this.board, {
-                    ...viewport,
-                    offsetX: viewport?.offsetX - event.deltaX,
-                    offsetY: viewport?.offsetY - event.deltaY
-                });
+                if (this.isFocused) {
+                    event.preventDefault();
+                    const viewport = this.board.viewport;
+                    Transforms.setViewport(this.board, {
+                        ...viewport,
+                        offsetX: viewport?.offsetX - event.deltaX,
+                        offsetY: viewport?.offsetY - event.deltaY
+                    });
+                }
             });
 
         fromEvent<KeyboardEvent>(document, 'keydown')
