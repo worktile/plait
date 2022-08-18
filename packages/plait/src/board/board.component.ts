@@ -153,8 +153,8 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         fromEvent<WheelEvent>(this.host, 'wheel')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: WheelEvent) => {
-                event.preventDefault();
                 if (this.isFocused) {
+                    event.preventDefault();
                     const viewport = this.board.viewport;
                     Transforms.setViewport(this.board, {
                         ...viewport,
