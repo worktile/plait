@@ -10,3 +10,5 @@ export const HAS_SELECTED_MINDMAP: WeakMap<PlaitBoard, PlaitMindmap> = new WeakM
 export const ELEMENT_GROUP_TO_COMPONENT: WeakMap<SVGGElement, MindmapNodeComponent> = new WeakMap();
 
 export const MINDMAP_ELEMENT_TO_COMPONENT: WeakMap<MindmapElement, MindmapNodeComponent> = new WeakMap();
+
+export const SELECTED_MINDMAP_NODES: WeakMap<PlaitBoard, MindmapElement[]> = new WeakMap();
