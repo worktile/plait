@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.6
+
+### Patch Changes
+
+-   [#21](https://github.com/worktile/plait/pull/21) [`e5dbb75`](https://github.com/worktile/plait/commit/e5dbb75659dc9d30f3cf7154c4b9735d7fdd2518) Thanks [@Maple13](https://github.com/Maple13)! - feat(board): add focus state and processing
+
 ## 0.0.5
 
 ### Patch Changes

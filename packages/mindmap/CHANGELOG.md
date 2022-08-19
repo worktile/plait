@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.0.6
+
+### Patch Changes
+
+-   [#22](https://github.com/worktile/plait/pull/22) [`fb730c3`](https://github.com/worktile/plait/commit/fb730c30f89e49ffbcf0cde6a21132334cd211b1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add shape property for mindmap element and support underline and round rectangle
+
+*   [#19](https://github.com/worktile/plait/pull/19) [`8abdd2f`](https://github.com/worktile/plait/commit/8abdd2f77827bc30e4df4ac8c4ed31ae05bf0d6f) Thanks [@Maple13](https://github.com/Maple13)! - feat(mindmap): add selected node set
+
 ## 0.0.5
 
 ### Patch Changes
