@@ -20,13 +20,13 @@ import {
     IS_TEXT_EDITABLE,
     PlaitBoard,
     Transforms,
-    transformPoint,
+    transformPoint
 } from '@plait/core';
 import { PlaitRichtextComponent, setFullSelectionAndFocus } from '@plait/richtext';
-import { drawNode } from './draw/node';
+import { drawRectangleNode } from './draw/shape';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { MindmapNode } from './interfaces/node';
-import { drawLine } from './draw/line';
+import { drawLink } from './draw/link';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { MINDMAP_NODE_KEY, PRIMARY_COLOR, ROOT_TOPIC_FONT_SIZE, STROKE_WIDTH, TOPIC_COLOR, TOPIC_FONT_SIZE } from './constants';
 import { HAS_SELECTED_MINDMAP_ELEMENT, ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
@@ -78,9 +78,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
     activeG: SVGGElement[] = [];
 
-    nodeG: SVGGElement | null = null;
+    shapeG: SVGGElement | null = null;
 
-    lineG?: SVGGElement;
+    linkG?: SVGGElement;
 
     richtextG?: SVGGElement;
 
@@ -98,8 +98,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         this.gGroup.setAttribute(MINDMAP_NODE_KEY, 'true');
         this.mindmapGGroup.prepend(this.gGroup);
         this.roughSVG = HOST_TO_ROUGH_SVG.get(this.host) as RoughSVG;
-        this.drawNode();
-        this.drawLine();
+        this.drawShape();
+        this.drawLink();
         this.drawRichtext();
         this.drawExtend();
         this.initialized = true;
@@ -110,33 +110,35 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         this.applyRichtextAttribute();
     }
 
-    drawNode() {
-        this.destroyNode();
-        this.nodeG = drawNode(this.roughSVG as RoughSVG, this.node as MindmapNode);
-        this.gGroup.prepend(this.nodeG);
-    }
-
-    destroyNode() {
-        if (this.nodeG) {
-            this.nodeG.remove();
-            this.nodeG = null;
+    drawShape() {
+        this.destroyShape();
+        if (MindmapElement.hasRoundRectangleShape(this.node.origin)) {
+            this.shapeG = drawRectangleNode(this.roughSVG as RoughSVG, this.node as MindmapNode);
+            this.gGroup.prepend(this.shapeG);
         }
     }
 
-    drawLine() {
+    destroyShape() {
+        if (this.shapeG) {
+            this.shapeG.remove();
+            this.shapeG = null;
+        }
+    }
+
+    drawLink() {
         if (this.parent) {
-            if (this.lineG) {
-                this.lineG.remove();
+            if (this.linkG) {
+                this.linkG.remove();
             }
-            this.lineG = drawLine(this.roughSVG as RoughSVG, this.parent as MindmapNode, this.node as MindmapNode);
-            this.gGroup.append(this.lineG);
+            this.linkG = drawLink(this.roughSVG as RoughSVG, this.parent as MindmapNode, this.node as MindmapNode);
+            this.gGroup.append(this.linkG);
         }
     }
 
     destroyLine() {
         if (this.parent) {
-            if (this.lineG) {
-                this.lineG.remove();
+            if (this.linkG) {
+                this.linkG.remove();
             }
         }
     }
@@ -145,7 +147,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         this.destroySelectedState();
         const selected = HAS_SELECTED_MINDMAP_ELEMENT.get(this.node.origin);
         if (selected) {
-            const { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
+            let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
             const selectedStrokeG = drawRoundRectangle(
                 this.roughSVG as RoughSVG,
                 x - 2,
@@ -224,21 +226,22 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 Transforms.setNode(this.board, newElement, path);
             });
 
-        const { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
+        const { x, y, width, height } = getRectangleByNode(this.node);
         const stroke = getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
+        const extendY = MindmapElement.hasRoundRectangleShape(this.node.origin) ? y + height / 2 : y + height;
         const extendLine = [
-            [x + width, y + height / 2],
-            [x + width + 8, y + height / 2]
+            [x + width, extendY],
+            [x + width + 8, extendY]
         ];
         if (this.node.origin.isCollapsed) {
             this.gGroup.classList.add('collapsed');
 
-            const extendLineG = this.roughSVG.line(extendLine[0][0], extendLine[0][1], extendLine[1][0], extendLine[1][1], {
+            const extendlinkG = this.roughSVG.line(extendLine[0][0], extendLine[0][1], extendLine[1][0], extendLine[1][1], {
                 strokeWidth,
                 stroke
             });
-            this.extendG.appendChild(extendLineG);
+            this.extendG.appendChild(extendlinkG);
 
             const badge = this.roughSVG.circle(extendLine[1][0] + 8, extendLine[1][1], 16, { fill: stroke, stroke, fillStyle: 'solid' });
             const badgeText = createText(extendLine[1][0] + 4, extendLine[1][1] + 4, '#fff', `${getChildrenCount(this.node.origin)}`);
@@ -311,8 +314,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 if (selectedState) {
                     HAS_SELECTED_MINDMAP_ELEMENT.set(this.node.origin, true);
                 }
-                this.drawNode();
-                this.drawLine();
+                this.drawShape();
+                this.drawLink();
                 this.updateRichtextLocation();
                 // resolve move node richtext lose issue
                 if (this.foreignObject && this.foreignObject.children.length <= 0) {

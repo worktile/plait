@@ -24,3 +24,9 @@ export const COLORS = [
     '#73D897',
     '#A9E072'
 ];
+
+
+export enum MindmapNodeShape {
+    roundRectangle = 'round-rectangle',
+    underline = 'underline'
+}

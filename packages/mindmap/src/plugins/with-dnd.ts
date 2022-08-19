@@ -19,12 +19,12 @@ import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { findPath, isChildElement } from '../utils';
 import { MindmapElement } from '../interfaces/element';
 import { MindmapNodeComponent } from '../node.component';
-import { drawNode } from '../draw/node';
+import { drawRectangleNode } from '../draw/shape';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { getRichtextRectangleByNode } from '../draw/richtext';
 import { updateForeignObject } from '@plait/richtext';
 import { BASE, PRIMARY_COLOR } from '../constants';
-import { drawLine } from '../draw/line';
+import { drawLink } from '../draw/link';
 
 export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, mouseup, keydown } = board;
@@ -101,7 +101,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 y: activeComponent.node.y + offsetY
             };
             const { textX, textY, width, height } = getRichtextRectangleByNode(activeComponent.node);
-            const fakeNodeG = drawNode(roughSVG, fakeDragingNode);
+            const fakeNodeG = drawRectangleNode(roughSVG, fakeDragingNode);
             const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
             updateForeignObject(richtextG, width + BASE * 10, height, textX + offsetX, textY + offsetY);
             fakeDragNodeG?.append(fakeNodeG);
@@ -172,7 +172,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     }
                     // 构造一条曲线
                     const fakeNode: MindmapNode = { ...targetComponent.node, y: fakeY, width: 30, height: 12 };
-                    const linkSVGG = drawLine(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR);
+                    const linkSVGG = drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR);
                     // 构造一个矩形框坐标
                     const fakeRectangleG = drawRoundRectangle(roughSVG, targetRect.x, fakeY, targetRect.x + 30, fakeY + 12, {
                         stroke: PRIMARY_COLOR,
@@ -199,7 +199,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     }
                     // 构造一条曲线
                     const fakeNode: MindmapNode = { ...targetComponent.node, y: fakeY, width: 30, height: 12 };
-                    const linkSVGG = drawLine(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR);
+                    const linkSVGG = drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR);
                     // 构造一个矩形框坐标
                     const fakeRectangleG = drawRoundRectangle(roughSVG, targetRect.x, fakeY, targetRect.x + 30, fakeY + 12, {
                         stroke: PRIMARY_COLOR,

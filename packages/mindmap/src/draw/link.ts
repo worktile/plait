@@ -1,11 +1,19 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { Point } from 'roughjs/bin/geometry';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { STROKE_WIDTH } from '../constants';
+import { MindmapElement } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
+import { Point } from '@plait/core';
 
-export function drawLine(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNode, defaultStroke: string | null = null, isHorizontal = true, scale = 1) {
+export function drawLink(
+    roughSVG: RoughSVG,
+    node: MindmapNode,
+    child: MindmapNode,
+    defaultStroke: string | null = null,
+    isHorizontal = true,
+    scale = 1
+) {
     let beginX,
         beginY,
         endX,
@@ -31,7 +39,8 @@ export function drawLine(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNo
         endX = Math.round(endNode.x + endNode.width / 2);
         endY = Math.round(endNode.y + endNode.vgap);
     }
-    if (beginNode.origin.isRoot) {
+
+    if (beginNode.origin.isRoot && MindmapElement.hasRoundRectangleShape(node.origin)) {
         beginX = Math.round(beginNode.x + beginNode.width / 2);
         beginY = Math.round(beginNode.y + beginNode.height / 2);
     }
@@ -44,8 +53,25 @@ export function drawLine(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNo
             [beginX / scale, beginY / scale],
             [Math.round(beginX + (beginNode.hgap + endNode.hgap) / 3) / scale, beginY / scale],
             [Math.round(endX - (beginNode.hgap + endNode.hgap) / 2) / scale, endY / scale],
-            [endX / scale, endY / scale]
+            [endX, endY]
         ];
+        if (MindmapElement.hasUnderlineShape(child.origin)) {
+            if (child.left) {
+                const underline = [
+                    [beginX - (beginNode.width - beginNode.hgap * 2), beginY],
+                    [beginX, beginY],
+                    [beginX, beginY]
+                ] as Point[];
+                curve = [...underline, ...curve];
+            } else {
+                const underline = [
+                    [endX, endY],
+                    [endX, endY],
+                    [endX + (endNode.width - endNode.hgap * 2), endY]
+                ] as Point[];
+                curve = [...curve, ...underline];
+            }
+        }
         const points = pointsOnBezierCurves(curve);
         return roughSVG.curve(points as any, { stroke, strokeWidth });
     } else {

@@ -11,4 +11,6 @@ export interface MindmapNode {
     children: MindmapNode[];
     origin: MindmapElement;
     parent: MindmapNode;
+    left: boolean;
+    up: boolean;
 }
