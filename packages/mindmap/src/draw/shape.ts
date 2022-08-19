@@ -4,7 +4,7 @@ import { MindmapNode } from '../interfaces/node';
 import { getStrokeByMindmapElement } from '../utils/colors';
 import { drawRoundRectangle, getRectangleByNode } from '../utils/graph';
 
-export function drawNode(roughSVG: RoughSVG, node: MindmapNode) {
+export function drawRectangleNode(roughSVG: RoughSVG, node: MindmapNode) {
     const { x, y, width, height } = getRectangleByNode(node);
 
     const fill = node.origin.fill ? node.origin.fill : node.origin.isRoot ? ROOT_NODE_FILL : NODE_FILL;
@@ -15,3 +15,4 @@ export function drawNode(roughSVG: RoughSVG, node: MindmapNode) {
 
     return nodeG;
 }
+
