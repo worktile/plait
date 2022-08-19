@@ -11,6 +11,8 @@ export class Node {
     depth = 0;
     children: Node[] = [];
     parent?: Node;
+    left = false;
+    up = false;
 
     constructor(origin: OriginNode, options: LayoutOptions, isolated?: boolean) {
         const hgap = options.getHGap(origin);
@@ -87,6 +89,7 @@ export class Node {
         const bb = me.getBoundingBox();
         me.eachNode(node => {
             node.x = node.x - (node.x - bb.left) * 2 - node.width;
+            node.left = true;
         });
         me.translate(bb.width, 0);
     }
@@ -96,6 +99,7 @@ export class Node {
         const bb = me.getBoundingBox();
         me.eachNode(node => {
             node.y = node.y - (node.y - bb.top) * 2 - node.height;
+            node.up = true;
         });
         me.translate(0, bb.height);
     }
