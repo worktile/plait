@@ -11,8 +11,7 @@ export function drawLink(
     node: MindmapNode,
     child: MindmapNode,
     defaultStroke: string | null = null,
-    isHorizontal = true,
-    scale = 1
+    isHorizontal = true
 ) {
     let beginX,
         beginY,
@@ -50,9 +49,9 @@ export function drawLink(
 
     if (isHorizontal) {
         let curve: Point[] = [
-            [beginX / scale, beginY / scale],
-            [Math.round(beginX + (beginNode.hgap + endNode.hgap) / 3) / scale, beginY / scale],
-            [Math.round(endX - (beginNode.hgap + endNode.hgap) / 2) / scale, endY / scale],
+            [beginX, beginY],
+            [Math.round(beginX + (beginNode.hgap + endNode.hgap) / 3), beginY],
+            [Math.round(endX - (beginNode.hgap + endNode.hgap) / 2), endY],
             [endX, endY]
         ];
         if (MindmapElement.hasUnderlineShape(child.origin)) {
@@ -76,10 +75,10 @@ export function drawLink(
         return roughSVG.curve(points as any, { stroke, strokeWidth });
     } else {
         const curve: Point[] = [
-            [beginX / scale, beginY / scale],
-            [beginX / scale, Math.round(beginY + (beginNode.vgap + endNode.vgap) / 2) / scale],
-            [endX / scale, Math.round(endY - (beginNode.vgap + endNode.vgap) / 2) / scale],
-            [endX / scale, endY / scale]
+            [beginX, beginY],
+            [beginX, Math.round(beginY + (beginNode.vgap + endNode.vgap) / 2)],
+            [endX, Math.round(endY - (beginNode.vgap + endNode.vgap) / 2)],
+            [endX, endY]
         ];
         const points = pointsOnBezierCurves(curve);
         return roughSVG.curve(points as any, { stroke, strokeWidth });
