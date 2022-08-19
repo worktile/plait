@@ -237,11 +237,11 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         if (this.node.origin.isCollapsed) {
             this.gGroup.classList.add('collapsed');
 
-            const extendlinkG = this.roughSVG.line(extendLine[0][0], extendLine[0][1], extendLine[1][0], extendLine[1][1], {
+            const extendLineG = this.roughSVG.line(extendLine[0][0], extendLine[0][1], extendLine[1][0], extendLine[1][1], {
                 strokeWidth,
                 stroke
             });
-            this.extendG.appendChild(extendlinkG);
+            this.extendG.appendChild(extendLineG);
 
             const badge = this.roughSVG.circle(extendLine[1][0] + 8, extendLine[1][1], 16, { fill: stroke, stroke, fillStyle: 'solid' });
             const badgeText = createText(extendLine[1][0] + 4, extendLine[1][1] + 4, '#fff', `${getChildrenCount(this.node.origin)}`);
