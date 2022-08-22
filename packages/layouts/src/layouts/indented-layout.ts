@@ -11,7 +11,6 @@ export class IndentedLayout {
         const root = new Node(treeData, options);
         this.convertX(root);
         seperate(root);
-        console.log(root);
         return root;
     }
 
