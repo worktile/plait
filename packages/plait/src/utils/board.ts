@@ -27,6 +27,10 @@ export function getViewBox(board: PlaitBoard): ViewBox {
     return { minX, minY: minY, width: viewBoxWidth, height: viewBoxHeight };
 }
 
+export function isNoSelectionElement(e: Event) {
+    return e.target instanceof HTMLElement && e.target?.closest('.plait-board-attached');
+}
+
 export type ViewBox = {
     minX: number;
     minY: number;
