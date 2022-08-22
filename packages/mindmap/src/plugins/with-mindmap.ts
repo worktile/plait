@@ -67,7 +67,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
     board.mousedown = (event: MouseEvent) => {
         if (IS_TEXT_EDITABLE.get(board)) {
-            mouseup(event);
+            mousedown(event);
             return;
         }
 

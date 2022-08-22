@@ -36,6 +36,8 @@ import { MindmapElement } from './interfaces/element';
 import { fromEvent } from 'rxjs';
 import { findPath, getChildrenCount } from './utils/mindmap';
 import { getLinkLineColorByMindmapElement } from './utils/colors';
+import { drawIndentedLink } from './draw/indented-link';
+import { MindmapLayout } from './interfaces';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -126,13 +128,22 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     }
 
     drawLink() {
-        if (this.parent) {
-            if (this.linkG) {
-                this.linkG.remove();
-            }
-            this.linkG = drawLink(this.roughSVG as RoughSVG, this.parent as MindmapNode, this.node as MindmapNode);
-            this.gGroup.append(this.linkG);
+        if (!this.parent) {
+            return;
         }
+
+        if (this.linkG) {
+            this.linkG.remove();
+        }
+
+        if (MindmapElement.hasLayout(this.node.origin, MindmapLayout.indented)) {
+            this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
+
+        } else {
+            this.linkG = drawLink(this.roughSVG, this.parent, this.node); 
+        }
+        
+        this.gGroup.append(this.linkG);
     }
 
     destroyLine() {
