@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.9
+
+### Patch Changes
+
+-   [#25](https://github.com/worktile/plait/pull/25) [`de68a9e`](https://github.com/worktile/plait/commit/de68a9eaab6cc6c778c0f1c8184663901fe24002) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add indented layout and draw indented layout link
+
 ## 0.0.6
 
 ### Patch Changes
