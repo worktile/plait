@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.8
+
+### Patch Changes
+
+-   [#24](https://github.com/worktile/plait/pull/24) [`2c5ce0e`](https://github.com/worktile/plait/commit/2c5ce0ef862b1f2766fb4bf74b05032267932a00) Thanks [@Maple13](https://github.com/Maple13)! - fix(core): fix misjudgment
+
 ## 0.0.7
 
 ### Patch Changes
