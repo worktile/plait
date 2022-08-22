@@ -2,29 +2,23 @@ import { Node } from '../hierarchy/node';
 import { OriginNode, LayoutOptions } from '../types';
 import { BaseMindLayout } from './base-mind';
 
-export class IndentedLayout extends BaseMindLayout {
+export class IndentedLayout {
     layout(treeData: OriginNode, options: LayoutOptions) {
-        return this.treeLayout(treeData, options, true);
+        return this.treeLayout(treeData, options);
     }
 
-    treeLayout(treeData: OriginNode, options: LayoutOptions, isHorizontal = false) {
+    treeLayout(treeData: OriginNode, options: LayoutOptions) {
         const root = new Node(treeData, options);
-        this.convert(root, isHorizontal);
+        this.convertX(root);
         seperate(root);
         console.log(root);
         return root;
     }
 
-    protected convert(node: Node, isHorizontal: boolean, d = 0) {
-        if (isHorizontal) {
-            node.x = d;
-            d = d + (node.width - node.hgap * 2) / 2 + 16;
-        } else {
-            node.y = d;
-            d += node.height;
-        }
+    protected convertX(node: Node, d = 0) {
+        node.x = d;
         node.children.forEach(child => {
-            this.convert(child, isHorizontal, d);
+            this.convertX(child, node.x + node.width / 2);
         });
     }
 }
@@ -34,7 +28,7 @@ function seperate(root: Node) {
     updateY(root);
     function updateY(node: Node) {
         node.children.forEach(child => {
-            child.y = previousBottom + 8;
+            child.y = previousBottom;
             previousBottom = child.y + child.height - child.vgap;
             updateY(child);
         });
