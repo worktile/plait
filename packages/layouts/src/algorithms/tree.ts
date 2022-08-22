@@ -1,12 +1,12 @@
 export class Tree {
-    w: number;
-    h: number;
+    width: number;
+    height: number;
     y: number;
-    c: Tree[];
-    cs: number;
+    children: Tree[];
+    childrenCount: number;
     x: number;
-    prelim: number;
-    mod: number;
+    preliminary: number;
+    modifier: number;// 描述整个子树应该水平移动多少
     shift: number;
     change: number;
     tl: any;
@@ -18,15 +18,15 @@ export class Tree {
     origin: any;
 
     constructor(width: number, height: number, y: number, children: Tree[], origin: any) {
-        this.w = width;
-        this.h = height;
+        this.width = width;
+        this.height = height;
         this.y = y;
-        this.c = children;
-        this.cs = children.length;
+        this.children = children;
+        this.childrenCount = children.length;
 
         this.x = 0;
-        this.prelim = 0; // 初步的水平坐标
-        this.mod = 0;
+        this.preliminary = 0; // 初步的水平坐标
+        this.modifier = 0;
         this.shift = 0;
         this.change = 0;
         this.tl = null; // Left thread

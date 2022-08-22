@@ -1,10 +1,10 @@
 import { OriginNode, LayoutOptions } from '../types';
-import { BaseLayout } from './layout';
+import { BaseMindLayout } from './base-mind';
 import { Node } from '../hierarchy/node';
 import { wrap } from '../hierarchy/wrap';
 import { layout } from '../algorithms/non-overlapping-tree-layout';
 
-export class StandardLayout extends BaseLayout {
+export class StandardLayout extends BaseMindLayout {
     layout(treeData: OriginNode, options: LayoutOptions) {
         const isHorizontal = true;
         const root = new Node(treeData, options);
