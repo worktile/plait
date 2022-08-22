@@ -138,7 +138,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
         if (MindmapElement.hasLayout(this.node.origin, MindmapLayout.indented)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
-
         } else {
             this.linkG = drawLink(this.roughSVG, this.parent, this.node); 
         }
