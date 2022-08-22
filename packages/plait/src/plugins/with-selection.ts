@@ -4,6 +4,7 @@ import { Point } from '../interfaces/point';
 import { Transforms } from '../transfroms';
 import { toPoint } from '../utils/dom';
 import { toRectangleClient } from '../utils/graph';
+import { isNoSelectionElement } from '../utils/board';
 
 export function withSelection<T extends PlaitBoard>(board: T) {
     const { mousedown, mousemove, mouseup } = board;
@@ -13,10 +14,10 @@ export function withSelection<T extends PlaitBoard>(board: T) {
 
     board.mousedown = (event: MouseEvent) => {
         // avoid select text when double click svg
-        if (!(event.target instanceof HTMLElement && event.target.closest('.richtext'))) {
+        if (!(event.target instanceof HTMLElement && event.target.closest('.richtext')) || isNoSelectionElement(event)) {
             event.preventDefault();
         }
-        if (board.cursor === BaseCursorStatus.select) {
+        if (!isNoSelectionElement(event) && board.cursor === BaseCursorStatus.select) {
             start = toPoint(event.x, event.y, board.host);
         }
         mousedown(event);
@@ -34,6 +35,10 @@ export function withSelection<T extends PlaitBoard>(board: T) {
     };
 
     board.mouseup = (event: MouseEvent) => {
+        if (isNoSelectionElement(event)) {
+            return mouseup(event);
+        }
+
         if (start) {
             Transforms.setSelection(board, { anchor: start, focus: start });
         } else {
@@ -41,6 +46,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         }
         start = null;
         end = null;
+
         mouseup(event);
     };
 

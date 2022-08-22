@@ -26,14 +26,14 @@ import rough from 'roughjs/bin/rough';
 import { Transforms } from '../transfroms';
 import { withSelection } from '../plugins/with-selection';
 import { PlaitOperation } from '../interfaces/operation';
-import { getViewBox } from '../utils/board';
+import { getViewBox, isNoSelectionElement } from '../utils/board';
 import { Viewport } from '../interfaces/viewport';
 
 @Component({
     selector: 'plait-board',
     template: `
-        <svg #svg width="100%" height="100%"></svg>
-        <div *ngIf="isFocused" class="plait-toolbar island zoom-toolbar">
+        <svg #svg width="100%" height="100%" style="position: relative"></svg>
+        <div *ngIf="isFocused" class="plait-toolbar island zoom-toolbar plait-board-attached">
             <button class="item" (mousedown)="zoomOut($event)">-</button>
             <button class="item zoom-value" (mousedown)="resetZoom($event)">{{ zoom }}%</button>
             <button class="item" (mousedown)="zoomIn($event)">+</button>
@@ -129,7 +129,9 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         fromEvent<MouseEvent>(this.host, 'mousedown')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
-                this.board.mousedown(event);
+                if (!isNoSelectionElement(event)) {
+                    this.board.mousedown(event);
+                }
             });
 
         fromEvent<MouseEvent>(this.host, 'mousemove')
@@ -141,7 +143,9 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         fromEvent<MouseEvent>(document, 'mouseup')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
-                this.board.mouseup(event);
+                if (!isNoSelectionElement(event)) {
+                    this.board.mouseup(event);
+                }
             });
 
         fromEvent<MouseEvent>(this.host, 'dblclick')
