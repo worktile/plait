@@ -4,7 +4,7 @@ import { Node } from '../hierarchy/node';
 import { wrap } from '../hierarchy/wrap';
 import { layout } from '../algorithms/non-overlapping-tree-layout';
 
-export class BaseLayout {
+export class BaseMindLayout {
     constructor() {}
 
     /**
@@ -47,7 +47,7 @@ export class BaseLayout {
         } else {
             root.x = tree.x;
         }
-        tree.c.forEach((child, i) => {
+        tree.children.forEach((child, i) => {
             this.convertBack(child, root.children[i], isHorizontal);
         });
     }

@@ -105,7 +105,7 @@ export class Node {
     }
 }
 
-function dfs(node: Node, callback: (node: Node) => void) {
+export function dfs(node: Node, callback: (node: Node) => void) {
     node.children.forEach(_node => {
         dfs(_node, callback);
     });

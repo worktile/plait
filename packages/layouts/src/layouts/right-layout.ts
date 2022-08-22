@@ -1,7 +1,7 @@
 import { OriginNode, LayoutOptions } from "../types";
-import { BaseLayout } from "./layout";
+import { BaseMindLayout } from "./base-mind";
 
-export class RightLayout extends BaseLayout {
+export class RightLayout extends BaseMindLayout {
     layout(treeData: OriginNode, options: LayoutOptions) {
         return this.treeLayout(treeData, options, true);
     }
