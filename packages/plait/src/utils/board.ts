@@ -28,7 +28,7 @@ export function getViewBox(board: PlaitBoard): ViewBox {
 }
 
 export function isNoSelectionElement(e: Event) {
-    return e.target instanceof HTMLElement && e.target?.closest('.plait-board-attached');
+    return (e.target as HTMLElement)?.closest('.plait-board-attached');
 }
 
 export type ViewBox = {
