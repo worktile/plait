@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.7
+
+### Patch Changes
+
+-   [#23](https://github.com/worktile/plait/pull/23) [`9cd6711`](https://github.com/worktile/plait/commit/9cd6711ddb5d8fab0b87e0c81614190fb282329e) Thanks [@Maple13](https://github.com/Maple13)! - feat(core): add filter processing of no selection elements
+
 ## 0.0.6
 
 ### Patch Changes
