@@ -24,9 +24,9 @@ export function drawLink(
             beginNode = child;
             endNode = node;
         }
-        beginX = Math.round(beginNode.x + beginNode.width - beginNode.hgap);
+        beginX = Math.round(beginNode.x + beginNode.width - beginNode.hGap);
         beginY = Math.round(beginNode.y + beginNode.height / 2);
-        endX = Math.round(endNode.x + endNode.hgap);
+        endX = Math.round(endNode.x + endNode.hGap);
         endY = Math.round(endNode.y + endNode.height / 2);
     } else {
         if (node.y > child.y) {
@@ -34,9 +34,9 @@ export function drawLink(
             endNode = node;
         }
         beginX = Math.round(beginNode.x + beginNode.width / 2);
-        beginY = Math.round(beginNode.y + beginNode.height - beginNode.vgap);
+        beginY = Math.round(beginNode.y + beginNode.height - beginNode.vGap);
         endX = Math.round(endNode.x + endNode.width / 2);
-        endY = Math.round(endNode.y + endNode.vgap);
+        endY = Math.round(endNode.y + endNode.vGap);
     }
 
     if (beginNode.origin.isRoot && MindmapElement.hasRoundRectangleShape(node.origin)) {
@@ -50,14 +50,14 @@ export function drawLink(
     if (isHorizontal) {
         let curve: Point[] = [
             [beginX, beginY],
-            [Math.round(beginX + (beginNode.hgap + endNode.hgap) / 3), beginY],
-            [Math.round(endX - (beginNode.hgap + endNode.hgap) / 2), endY],
+            [Math.round(beginX + (beginNode.hGap + endNode.hGap) / 3), beginY],
+            [Math.round(endX - (beginNode.hGap + endNode.hGap) / 2), endY],
             [endX, endY]
         ];
         if (MindmapElement.hasUnderlineShape(child.origin)) {
             if (child.left) {
                 const underline = [
-                    [beginX - (beginNode.width - beginNode.hgap * 2), beginY],
+                    [beginX - (beginNode.width - beginNode.hGap * 2), beginY],
                     [beginX, beginY],
                     [beginX, beginY]
                 ] as Point[];
@@ -66,7 +66,7 @@ export function drawLink(
                 const underline = [
                     [endX, endY],
                     [endX, endY],
-                    [endX + (endNode.width - endNode.hgap * 2), endY]
+                    [endX + (endNode.width - endNode.hGap * 2), endY]
                 ] as Point[];
                 curve = [...curve, ...underline];
             }
@@ -76,8 +76,8 @@ export function drawLink(
     } else {
         const curve: Point[] = [
             [beginX, beginY],
-            [beginX, Math.round(beginY + (beginNode.vgap + endNode.vgap) / 2)],
-            [endX, Math.round(endY - (beginNode.vgap + endNode.vgap) / 2)],
+            [beginX, Math.round(beginY + (beginNode.vGap + endNode.vGap) / 2)],
+            [endX, Math.round(endY - (beginNode.vGap + endNode.vGap) / 2)],
             [endX, endY]
         ];
         const points = pointsOnBezierCurves(curve);

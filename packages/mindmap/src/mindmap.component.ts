@@ -58,13 +58,13 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
                 }
                 return element.width + BASE * 4;
             },
-            getHGap(element: MindmapElement) {
+            getHorizontalGap(element: MindmapElement) {
                 if (element.isRoot) {
                     return BASE * 12;
                 }
                 return BASE * 8;
             },
-            getVGap(element: MindmapElement) {
+            getVerticalGap(element: MindmapElement) {
                 if (element.isRoot) {
                     return BASE * 12;
                 }
@@ -112,9 +112,9 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
     }
 
     updateMindmapLocation() {
-        const { x, y, vgap, hgap } = this.root;
-        const offsetX = x + hgap;
-        const offsetY = y + vgap;
+        const { x, y, hGap, vGap } = this.root;
+        const offsetX = x + hGap;
+        const offsetY = y + vGap;
         (this.root as any).eachNode((node: MindmapNode) => {
             node.x = node.x - offsetX + this.value.points[0][0];
             node.y = node.y - offsetY + this.value.points[0][1];

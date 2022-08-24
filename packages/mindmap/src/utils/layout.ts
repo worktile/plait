@@ -1,7 +1,8 @@
 import { MindmapElement } from "../interfaces";
 import { findParentElement, findUpElement } from "./mindmap";
+import { LayoutType } from '@plait/layouts';
 
-export const getLayoutByElement = (element: MindmapElement) => {
+export const getLayoutByElement = (element: MindmapElement): string => {
     let layout = element.layout;
     if (layout) {
         return layout;
@@ -13,5 +14,5 @@ export const getLayoutByElement = (element: MindmapElement) => {
         }
         parent = findParentElement(parent);
     }
-    return undefined;
+    return LayoutType.logic;
 };

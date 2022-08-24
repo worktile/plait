@@ -18,8 +18,8 @@ export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: M
     const beginRectangle = getRectangleByNode(beginNode);
     beginX = Math.round(beginNode.x + beginNode.width / 2);
     beginY = Math.round(beginRectangle.y + beginRectangle.height);
-    endX = Math.round(endNode.x + endNode.hgap);
-    endY = hasUnderline ? Math.round(endNode.y + endNode.height - endNode.vgap) : Math.round(endNode.y + endNode.height / 2);
+    endX = Math.round(endNode.x + endNode.hGap);
+    endY = hasUnderline ? Math.round(endNode.y + endNode.height - endNode.vGap) : Math.round(endNode.y + endNode.height / 2);
 
     const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
     const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
@@ -31,7 +31,7 @@ export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: M
         [beginX, endY],
         [endX, endY],
         [endX, endY],
-        hasUnderline ? [endX + (endNode.width - endNode.hgap * 2), endY] : [endX, endY]
+        hasUnderline ? [endX + (endNode.width - endNode.hGap * 2), endY] : [endX, endY]
     ];
 
     const points = pointsOnBezierCurves(curve);
