@@ -1,38 +1,39 @@
-import { OriginNode, LayoutOptions } from '../types';
+import { OriginNode, LayoutOptions, LayoutType } from '../types';
 import { BaseMindLayout } from './base-mind';
-import { Node } from '../hierarchy/node';
-import { wrap } from '../hierarchy/wrap';
+import { LayoutNode } from '../interfaces/node';
 import { layout } from '../algorithms/non-overlapping-tree-layout';
+import { buildLayoutTree } from '../interfaces/tree';
+import { BaseLayout } from './base-layout';
 
-export class StandardLayout extends BaseMindLayout {
-    layout(treeData: OriginNode, options: LayoutOptions) {
+export class StandardLayout extends BaseLayout {
+    layout(rootNode: OriginNode, options: LayoutOptions) {
         const isHorizontal = true;
-        const root = new Node(treeData, options);
-        // separate into left and right trees
-        const leftRoot = new Node(root.origin, options, true);
-        const rightRoot = new Node(root.origin, options, true);
-        const treeSize = treeData.children.length;
-        const rightTreeSize = Math.round(treeSize / 2);
-        for (let i = 0; i < treeSize; i++) {
-            const child = root.children[i];
-            if (i < rightTreeSize) {
-                rightRoot.children.push(child);
+        const primaryNodeCount = rootNode.children.length;
+        const rightNodeCount = Math.round(primaryNodeCount / 2);
+        const rightPrimaryNodes = [];
+        const leftPrimaryNodes = [];
+        const fakeRootNode = { ...rootNode };
+        for (let i = 0; i < primaryNodeCount; i++) {
+            const child = rootNode.children[i];
+            if (i < rightNodeCount) {
+                rightPrimaryNodes.push(child);
             } else {
-                leftRoot.children.push(child);
+                leftPrimaryNodes.push(child);
             }
         }
-        this.convert(leftRoot, isHorizontal);
-        this.convert(rightRoot, isHorizontal);
-        const leftTree = wrap(leftRoot, isHorizontal);
-        const rightTree = wrap(rightRoot, isHorizontal);
-        layout(leftTree);
-        layout(rightTree);
-        this.convertBack(leftTree, leftRoot, isHorizontal);
-        this.convertBack(rightTree, rightRoot, isHorizontal);
+        // right
+        fakeRootNode.children = rightPrimaryNodes;
+        const rightRoot = this.baseLayout(fakeRootNode, LayoutType.logic, options, true);
+        fakeRootNode.children = leftPrimaryNodes;
+        const leftRoot = this.baseLayout(fakeRootNode, LayoutType.logic, options, true);
         leftRoot.right2left();
         rightRoot.translate(leftRoot.x - rightRoot.x, leftRoot.y - rightRoot.y);
-        root.x = leftRoot.x;
-        root.y = rightRoot.y;
-        return root;
+        leftRoot.children.forEach(leftPrimaryNode => {
+            rightRoot.children.push(leftPrimaryNode);
+            leftPrimaryNode.parent = rightRoot;
+        });
+        rightRoot.x = leftRoot.x;
+        rightRoot.origin = rootNode;
+        return rightRoot;
     }
 }

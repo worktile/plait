@@ -1,6 +1,6 @@
-import { Tree } from './tree';
+import { LayoutTree } from '../interfaces/tree';
 
-function setExtremes(tree: Tree) {
+function setExtremes(tree: LayoutTree) {
     if (tree.childrenCount === 0) {
         tree.el = tree;
         tree.er = tree;
@@ -13,7 +13,7 @@ function setExtremes(tree: Tree) {
     }
 }
 
-function bottom(tree: Tree) {
+function bottom(tree: LayoutTree) {
     return tree.y + tree.height;
 }
 
@@ -39,7 +39,7 @@ function updateIYL(minY: number, i: number, ih: IYL | null) {
     return new IYL(minY, i, ih);
 }
 
-function distributeExtra(tree: Tree, i: number, si: number, distance: number) {
+function distributeExtra(tree: LayoutTree, i: number, si: number, distance: number) {
     // Are there intermediate children?
     if (si !== i - 1) {
         const nr = i - si;
@@ -49,7 +49,7 @@ function distributeExtra(tree: Tree, i: number, si: number, distance: number) {
     }
 }
 
-function moveSubtree(tree: Tree, i: number, si: number, distance: number) {
+function moveSubtree(tree: LayoutTree, i: number, si: number, distance: number) {
     // Move subtree by changing mod.
     tree.children[i].modifier += distance;
     tree.children[i].msel += distance;
@@ -57,16 +57,16 @@ function moveSubtree(tree: Tree, i: number, si: number, distance: number) {
     distributeExtra(tree, i, si, distance);
 }
 
-function nextLeftContour(tree: Tree) {
+function nextLeftContour(tree: LayoutTree) {
     return tree.childrenCount === 0 ? tree.tl : tree.children[0];
 }
 
-function nextRightContour(tree: Tree) {
+function nextRightContour(tree: LayoutTree) {
     return tree.childrenCount === 0 ? tree.tr : tree.children[tree.childrenCount - 1];
 }
 
-function setLeftThread(tree: Tree, i: number, cl: Tree, modsumcl: number) {
-    const li = tree.children[0].el as Tree;
+function setLeftThread(tree: LayoutTree, i: number, cl: LayoutTree, modsumcl: number) {
+    const li = tree.children[0].el as LayoutTree;
     li.tl = cl;
     // Change mod so that the sum of modifier after following thread is correct.
     const diff = modsumcl - cl.modifier - tree.children[0].msel;
@@ -79,8 +79,8 @@ function setLeftThread(tree: Tree, i: number, cl: Tree, modsumcl: number) {
 }
 
 // Symmetrical to setLeftThread
-function setRightThread(tree: Tree, i: number, sr: any, modsumsr: number) {
-    const ri = tree.children[i].er as Tree;
+function setRightThread(tree: LayoutTree, i: number, sr: any, modsumsr: number) {
+    const ri = tree.children[i].er as LayoutTree;
     ri.tr = sr;
     const diff = modsumsr - sr.modifier - tree.children[i].mser;
     ri.modifier += diff;
@@ -89,7 +89,7 @@ function setRightThread(tree: Tree, i: number, sr: any, modsumsr: number) {
     tree.children[i].mser = tree.children[i - 1].mser;
 }
 
-function seperate(tree: Tree, i: number, ih: IYL) {
+function seperate(tree: LayoutTree, i: number, ih: IYL) {
     // Right contour node of left siblings and its sum of modifiers.
     let sr = tree.children[i - 1];
     let mssr = sr.modifier;
@@ -134,24 +134,24 @@ function seperate(tree: Tree, i: number, ih: IYL) {
     }
 }
 
-function positionRoot(tree: Tree) {
+function positionRoot(tree: LayoutTree) {
     // Position root between children, taking into account their mod.
     tree.preliminary =
         (tree.children[0].preliminary + tree.children[0].modifier + tree.children[tree.childrenCount - 1].modifier + tree.children[tree.childrenCount - 1].preliminary + tree.children[tree.childrenCount - 1].width) / 2 - tree.width / 2;
 }
 
-function firstWalk(tree: Tree) {
+function firstWalk(tree: LayoutTree) {
     if (tree.childrenCount === 0) {
         setExtremes(tree);
         return;
     }
     firstWalk(tree.children[0]);
     // Create siblings in contour minimal vertical coordinate and index list
-    let ih = updateIYL(bottom(tree.children[0].el as Tree), 0, null);
+    let ih = updateIYL(bottom(tree.children[0].el as LayoutTree), 0, null);
     for (let i = 1; i < tree.childrenCount; i++) {
         firstWalk(tree.children[i]);
         // Store lowest vertical coordinate while extreme nodes still point in current subtree
-        const minY = bottom(tree.children[i].er as Tree);
+        const minY = bottom(tree.children[i].er as LayoutTree);
         seperate(tree, i, ih);
         ih = updateIYL(minY, i, ih);
     }
@@ -159,7 +159,7 @@ function firstWalk(tree: Tree) {
     setExtremes(tree);
 }
 
-function addChildSpacing(tree: Tree) {
+function addChildSpacing(tree: LayoutTree) {
     let d = 0;
     let modsumdelta = 0;
     for (let i = 0; i < tree.childrenCount; i++) {
@@ -169,7 +169,7 @@ function addChildSpacing(tree: Tree) {
     }
 }
 
-function secondWalk(tree: Tree, modsum: number) {
+function secondWalk(tree: LayoutTree, modsum: number) {
     modsum += tree.modifier;
     // Set absolute (no-relative) horizontal coordinates.
     tree.x = tree.preliminary + modsum;
@@ -179,7 +179,7 @@ function secondWalk(tree: Tree, modsum: number) {
     }
 }
 
-function layout(tree: Tree) {
+function layout(tree: LayoutTree) {
     firstWalk(tree);
     secondWalk(tree, 0);
 }

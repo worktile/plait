@@ -1,23 +1,26 @@
-export class Tree {
+import { IndentedLayout } from '../layouts/indented-layout';
+import { LayoutNode } from './node';
+
+export class LayoutTree {
     width: number;
     height: number;
     y: number;
-    children: Tree[];
+    children: LayoutTree[];
     childrenCount: number;
     x: number;
     preliminary: number;
-    modifier: number;// 描述整个子树应该水平移动多少
+    modifier: number; // 描述整个子树应该水平移动多少
     shift: number;
     change: number;
     tl: any;
     tr: any;
-    el: Tree | null;
-    er: Tree | null;
+    el: LayoutTree | null;
+    er: LayoutTree | null;
     msel: number;
     mser: number;
     origin: any;
 
-    constructor(width: number, height: number, y: number, children: Tree[], origin: any) {
+    constructor(width: number, height: number, y: number, children: LayoutTree[], origin: any) {
         this.width = width;
         this.height = height;
         this.y = y;
@@ -39,3 +42,12 @@ export class Tree {
         this.origin = origin;
     }
 }
+
+export const buildLayoutTree = (root: LayoutNode, isHorizontal: boolean) => {
+    const children: LayoutTree[] = [];
+    root.children.forEach(child => {
+        children.push(buildLayoutTree(child, isHorizontal));
+    });
+    if (isHorizontal) return new LayoutTree(root.height, root.width, root.x, children, root.origin);
+    return new LayoutTree(root.width, root.height, root.y, children, root.origin);
+};

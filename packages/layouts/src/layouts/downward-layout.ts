@@ -1,8 +1,8 @@
-import { OriginNode, LayoutOptions } from "../types";
-import { BaseMindLayout } from "./base-mind";
+import { OriginNode, LayoutOptions, LayoutType } from "../types";
+import { BaseLayout } from "./base-layout";
 
-export class DownwardLayout extends BaseMindLayout {
-    layout(treeData: OriginNode, options: LayoutOptions) {
-        return this.treeLayout(treeData, options);
+export class DownwardLayout extends BaseLayout {
+    layout(root: OriginNode, options: LayoutOptions) {
+        return this.baseLayout(root, LayoutType.logic, options);
     }
 }
