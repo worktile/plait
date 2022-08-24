@@ -27,28 +27,6 @@ export class LayoutNode {
             this.parent = parent;
         }
         this.layout = findLayoutType(this);
-        // if (!isolated && !origin.isCollapsed) {
-        //     const nodes: LayoutNode[] = [this];
-        //     let node: LayoutNode | undefined;
-        //     while ((node = nodes.pop())) {
-        //         if (!node.origin.isCollapsed) {
-        //             const children = node.origin.children;
-        //             const length = children ? children.length : 0;
-        //             node.children = [];
-        //             const layout = options.getLayout(node.origin);
-        //             if (children && length) {
-        //                 for (let i = 0; i < length; i++) {
-        //                     const isolated = layout !== options.getLayout(children[i]);
-        //                     const child = new LayoutNode(children[i], options, isolated);
-        //                     node.children.push(child);
-        //                     nodes.push(child);
-        //                     child.parent = node;
-        //                     child.depth = node.depth + 1;
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
         this.addGap(hGap, vGap);
     }
 
