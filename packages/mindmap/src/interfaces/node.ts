@@ -6,8 +6,8 @@ export interface MindmapNode {
     y: number;
     width: number;
     height: number;
-    hgap: number;
-    vgap: number;
+    hGap: number;
+    vGap: number;
     children: MindmapNode[];
     origin: MindmapElement;
     parent: MindmapNode;

@@ -1,4 +1,4 @@
-import { PlaitMindmap, MindmapNodeShape } from '@plait/mindmap';
+import { PlaitMindmap, MindmapNodeShape, MindmapLayout } from '@plait/mindmap';
 
 export const mockMindmapData: PlaitMindmap = {
     type: 'mindmap',
@@ -48,10 +48,28 @@ export const mockMindmapData: PlaitMindmap = {
                 {
                     id: '1-4-2',
                     value: { children: [{ text: 'non-layerd-tidy-trees' }] },
-                    children: [],
+                    children: [
+                        {
+                            id: '1-4-2-1',
+                            value: { children: [{ text: '鱼骨图哦' }] },
+                            children: [],
+                            width: 72,
+                            height: 24,
+                            shape: MindmapNodeShape.underline
+                        },
+                        {
+                            id: '1-4-2-1',
+                            value: { children: [{ text: '缩进布局' }] },
+                            children: [],
+                            width: 72,
+                            height: 24,
+                            shape: MindmapNodeShape.underline
+                        }
+                    ],
                     width: 144.8046875,
                     height: 24,
-                    shape: MindmapNodeShape.underline
+                    shape: MindmapNodeShape.underline,
+                    layout: MindmapLayout.right
                 },
                 {
                     id: '1-4-3',
@@ -64,6 +82,15 @@ export const mockMindmapData: PlaitMindmap = {
             ],
             width: 84,
             height: 24,
+            shape: MindmapNodeShape.underline,
+            layout: MindmapLayout.indented
+        },
+        {
+            id: '1-5',
+            value: { children: [{ text: 'xxxxxxx' }] },
+            children: [],
+            width: 72,
+            height: 24,
             shape: MindmapNodeShape.underline
         }
     ],
@@ -71,5 +98,6 @@ export const mockMindmapData: PlaitMindmap = {
     height: 24,
     isRoot: true,
     points: [[700, 300]],
-    shape: MindmapNodeShape.underline
+    shape: MindmapNodeShape.underline,
+    layout: MindmapLayout.right
 };

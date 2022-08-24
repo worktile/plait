@@ -55,11 +55,11 @@ export function drawRoundRectangle(rs: RoughSVG, x1: number, y1: number, x2: num
 }
 
 export function getRectangleByNode(node: MindmapNode) {
-    const x = Math.round(node.x + node.hgap);
-    let y = Math.round(node.y + node.vgap);
-    const width = Math.round(node.width - node.hgap * 2);
-    const height = Math.round(node.height - node.vgap * 2);
-    if (MindmapElement.hasUnderlineShape(node.origin) && !node.origin.isRoot && !MindmapElement.hasLayout(node.origin, MindmapLayout.indented)) {
+    const x = Math.round(node.x + node.hGap);
+    let y = Math.round(node.y + node.vGap);
+    const width = Math.round(node.width - node.hGap * 2);
+    const height = Math.round(node.height - node.vGap * 2);
+    if (MindmapElement.hasUnderlineShape(node.origin) && !node.origin.isRoot && !MindmapElement.hasLayout(node.parent.origin, MindmapLayout.indented)) {
         y = y - height / 2;
     }
     return {
