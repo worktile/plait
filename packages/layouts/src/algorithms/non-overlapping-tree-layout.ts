@@ -1,20 +1,20 @@
-import { Tree } from './tree';
+import { LayoutTree } from '../interfaces/tree';
 
-function moveSubtree(tree: Tree, i: number, distance: number) {
+function moveSubtree(tree: LayoutTree, i: number, distance: number) {
     // Move subtree by changing modifier.
     tree.children[i].modifier += distance;
 }
 
-function nextLeftContour(tree: Tree) {
+function nextLeftContour(tree: LayoutTree) {
     return tree.childrenCount === 0 ? tree : tree.children[0];
 }
 
-function nextRightContour(tree: Tree) {
+function nextRightContour(tree: LayoutTree) {
     return tree.childrenCount === 0 ? tree : tree.children[tree.childrenCount - 1];
 }
 
 // seperate left siblings
-function seperate(tree: Tree, i: number) {
+function seperate(tree: LayoutTree, i: number) {
     let leftNode = tree.children[i - 1];
     let rightNode = tree.children[i];
 
@@ -49,7 +49,7 @@ function seperate(tree: Tree, i: number) {
     }
 }
 
-function positionRoot(tree: Tree) {
+function positionRoot(tree: LayoutTree) {
     // Position root between children, taking into account their mod.
     tree.preliminary =
         (tree.children[0].preliminary +
@@ -62,7 +62,7 @@ function positionRoot(tree: Tree) {
 }
 
 // update node's modifier and root node preliminary
-function firstWalk(tree: Tree) {
+function firstWalk(tree: LayoutTree) {
     if (tree.childrenCount === 0) {
         return;
     }
@@ -74,7 +74,7 @@ function firstWalk(tree: Tree) {
     positionRoot(tree);
 }
 
-function secondWalk(tree: Tree, sumOfModifier: number) {
+function secondWalk(tree: LayoutTree, sumOfModifier: number) {
     sumOfModifier += tree.modifier;
     // Set absolute (no-relative) horizontal coordinates.
     tree.x = tree.preliminary + sumOfModifier;
@@ -83,7 +83,7 @@ function secondWalk(tree: Tree, sumOfModifier: number) {
     }
 }
 
-function layout(tree: Tree) {
+function layout(tree: LayoutTree) {
     firstWalk(tree);
     secondWalk(tree, 0);
 }
