@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.10
+
+### Patch Changes
+
+-   [#26](https://github.com/worktile/plait/pull/26) [`2c26069`](https://github.com/worktile/plait/commit/2c26069240cf262631b98f80ce251e4c88c4c642) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update node link and layout interface
+
 ## 0.0.9
 
 ### Patch Changes

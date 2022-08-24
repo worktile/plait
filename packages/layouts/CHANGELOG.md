@@ -1,5 +1,11 @@
 # layouts
 
+## 0.0.10
+
+### Patch Changes
+
+-   [#26](https://github.com/worktile/plait/pull/26) [`eba278e`](https://github.com/worktile/plait/commit/eba278e5a65b2f6f3d34e9aa6d0fe1dd7f8cd462) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor layouts and support nested layout
+
 ## 0.0.9
 
 ### Patch Changes
