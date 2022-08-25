@@ -405,8 +405,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             this.richtextComponentRef?.changeDetectorRef.markForCheck();
             this.isEditable = false;
             IS_TEXT_EDITABLE.set(this.board, false);
-            // remove selection
-            document.getSelection()?.removeAllRanges();
         };
     }
 
