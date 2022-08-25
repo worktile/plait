@@ -1,5 +1,5 @@
 <plait-board [plaitPlugins]="plugins" [plaitValue]="value" [plaitViewport]="viewport" (plaitBoardInitialized)="plaitBoardInitialized($event)" (plaitChange)="change($event)">
-    <div class="plait-toolbar island layout-toolbar">
+    <div class="plait-toolbar island layout-toolbar plait-board-attached">
         <select (change)="layoutChange($event)">
             <option value="right">right</option>
             <option value="left">left</option>
