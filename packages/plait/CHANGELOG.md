@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.11
+
+### Patch Changes
+
+-   [`c391d88`](https://github.com/worktile/plait/commit/c391d88cd62c619a6e3de269c0445880069a018c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove selection handle when mousedown and use style resolve
+
 ## 0.0.8
 
 ### Patch Changes

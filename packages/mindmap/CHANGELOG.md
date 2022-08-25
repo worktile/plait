@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.0.11
+
+### Patch Changes
+
+-   [`43a80ee`](https://github.com/worktile/plait/commit/43a80ee3603bc27fffc1af76f22849ea2de4bf64) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - should not remove all ranges
+
+*   [`977c837`](https://github.com/worktile/plait/commit/977c83764581056f80dc0065103b4285a6135585) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - export layout utils
+
 ## 0.0.10
 
 ### Patch Changes
