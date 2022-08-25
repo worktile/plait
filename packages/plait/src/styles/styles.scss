@@ -9,6 +9,11 @@
     // https://stackoverflow.com/questions/51313873/svg-foreignobject-not-working-properly-on-safari
     .plait-richtext-container {
         position: initial;
+        &[readonly="true"] {
+            ::selection {
+                background: none;
+            }
+        }
     }
 
     .plait-toolbar {
