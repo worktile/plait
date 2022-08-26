@@ -37,7 +37,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     let dropTarget: { target: MindmapElement; detectResult: DetectResult } | null = null;
 
     board.mousedown = (event: MouseEvent) => {
-        if (board.readonly || IS_TEXT_EDITABLE.get(board)) {
+        if (board.readonly || IS_TEXT_EDITABLE.get(board) || event.button === 2) {
             mousedown(event);
             return;
         }
@@ -62,9 +62,11 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 });
             }
         });
+
         if (activeElement) {
             event.preventDefault();
         }
+
         mousedown(event);
     };
 
@@ -73,7 +75,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             if (!isDragging) {
                 isDragging = true;
                 fakeDragNodeG = createG();
-                fakeDragNodeG.classList.add('dragging-fake-node');
+                fakeDragNodeG.classList.add('dragging', 'fake-node');
                 fakeDropNodeG = createG();
                 const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
                 addActiveOnDragOrigin(activeElement);

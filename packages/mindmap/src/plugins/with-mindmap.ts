@@ -10,7 +10,8 @@ import {
     idCreator,
     PlaitElementContext,
     PlaitElement,
-    PlaitPlugin
+    PlaitPlugin,
+    isNoSelectionElement
 } from '@plait/core';
 import { PlaitMindmapComponent } from '../mindmap.component';
 import {
@@ -26,6 +27,7 @@ import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
+import { clearSelectedElements } from '../utils/active-element';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, mousemove, mouseup, keydown } = board;
@@ -105,6 +107,19 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
 
         mousedown(event);
+    };
+
+    board.mouseup = (event: MouseEvent) => {
+        const isBoardInside = event.target instanceof Node && board.host.contains(event.target);
+        const isFakeNode = event.target instanceof HTMLElement && event.target.closest('.fake-node');
+        const noSelectionElement = isNoSelectionElement(event);
+        if (!isBoardInside && !noSelectionElement && !isFakeNode) {
+            const hasSelectedElement = SELECTED_MINDMAP_NODES.has(board);
+            if (hasSelectedElement) {
+                clearSelectedElements(board);
+            }
+        }
+        mouseup(event);
     };
 
     board.keydown = (event: KeyboardEvent) => {

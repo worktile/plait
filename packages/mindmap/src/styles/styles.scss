@@ -30,7 +30,9 @@ g[plait-mindmap="true"] {
     }
 }
 
-.dragging-fake-node {
-    cursor: pointer;
-    opacity: 0.6;
+.fake-node {
+    .dragging {
+        cursor: pointer;
+        opacity: 0.6;
+    }
 }

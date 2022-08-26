@@ -129,9 +129,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         fromEvent<MouseEvent>(this.host, 'mousedown')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
-                if (!isNoSelectionElement(event)) {
-                    this.board.mousedown(event);
-                }
+                this.board.mousedown(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'mousemove')
@@ -143,9 +141,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         fromEvent<MouseEvent>(document, 'mouseup')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
-                if (!isNoSelectionElement(event)) {
-                    this.board.mouseup(event);
-                }
+                this.board.mouseup(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'dblclick')
