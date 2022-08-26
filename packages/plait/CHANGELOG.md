@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.12
+
+### Patch Changes
+
+-   [`0065e89`](https://github.com/worktile/plait/commit/0065e8961a7c21f7ff5bceeae2f591099b17184f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support clear selection when mousedown ouside of board
+
 ## 0.0.11
 
 ### Patch Changes
