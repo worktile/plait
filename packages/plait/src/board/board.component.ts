@@ -101,11 +101,11 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
                 viewport: this.board.viewport,
                 selection: this.board.selection
             };
-            this.plaitChange.emit(changeEvent);
             // update viewBox
             if (this.board.operations.some(op => PlaitOperation.isSetViewportOperation(op))) {
                 this.updateViewport();
             }
+            this.plaitChange.emit(changeEvent);
         });
     }
 
