@@ -85,7 +85,8 @@ export function drawLink(
         return roughSVG.curve(points as any, { stroke, strokeWidth });
     }
 }
-export function drawDownward(
+
+export function drawDownwardLink(
     roughSVG: RoughSVG,
     node: MindmapNode,
     child: MindmapNode,
