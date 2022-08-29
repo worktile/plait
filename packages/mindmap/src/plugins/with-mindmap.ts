@@ -171,13 +171,30 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             if (plaitMindmap) {
                 const mindmapComponent = MINDMAP_TO_COMPONENT.get(plaitMindmap);
                 const root = mindmapComponent?.root;
+                let lastNode: MindmapNode | any = null;
                 (root as any).eachNode((node: MindmapNode) => {
                     if (HAS_SELECTED_MINDMAP_ELEMENT.has(node.origin)) {
+                        const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node.origin);
+                        if (mindmapNodeComponent?.parent.children) {
+                            const nodeIndex: number = mindmapNodeComponent?.parent.children.findIndex(
+                                item => item.origin.id === node.origin.id
+                            );
+                            if (mindmapNodeComponent?.parent.children[nodeIndex - 1]) {
+                                lastNode = mindmapNodeComponent?.parent.children[nodeIndex - 1];
+                            } else if (mindmapNodeComponent?.parent.children[nodeIndex + 1]) {
+                                lastNode = mindmapNodeComponent?.parent.children[nodeIndex + 1];
+                            } else {
+                                lastNode = mindmapNodeComponent?.parent;
+                            }
+                        }
                         const path = findPath(board, node);
                         Transforms.removeNode(board, path);
                         return;
                     }
                 });
+                if (lastNode) {
+                    HAS_SELECTED_MINDMAP_ELEMENT.set(lastNode.origin, true);
+                }
             }
         }
         keydown(event);
