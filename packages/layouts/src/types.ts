@@ -13,5 +13,6 @@ export interface OriginNode {
 
 export enum LayoutType {
     'logic' = 'logic',
-    'indented' = 'indented'
+    'indented' = 'indented',
+    'fishBone' = 'fish-bone'
 }

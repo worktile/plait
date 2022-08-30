@@ -36,6 +36,9 @@ export class BaseLayout {
                 indentMainAxle(root);
                 seperateSecondaryAxle(root);
                 break;
+            case LayoutType.fishBone:
+                
+                break;
             case LayoutType.logic:
             default:
                 this.seperateMainMxle(root, isHorizontal);
