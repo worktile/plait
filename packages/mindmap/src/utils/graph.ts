@@ -59,7 +59,7 @@ export function getRectangleByNode(node: MindmapNode) {
     let y = Math.round(node.y + node.vGap);
     const width = Math.round(node.width - node.hGap * 2);
     const height = Math.round(node.height - node.vGap * 2);
-    if (isHorizontal(node)) {
+    if (MindmapElement.hasUnderlineShape(node.origin) && !node.origin.isRoot && isHorizontalLayout(node)) {
         y = y - height / 2;
     }
     return {
@@ -70,10 +70,8 @@ export function getRectangleByNode(node: MindmapNode) {
     };
 }
 
-export function isHorizontal(node: MindmapNode) {
-    return MindmapElement.hasUnderlineShape(node.origin) &&
-        !node.origin.isRoot &&
-        !MindmapElement.hasLayout(node.parent.origin, MindmapLayout.indented) &&
+export function isHorizontalLayout(node: MindmapNode) {
+    return !MindmapElement.hasLayout(node.parent.origin, MindmapLayout.indented) &&
         !MindmapElement.hasLayout(node.parent.origin, MindmapLayout.upward) &&
         !MindmapElement.hasLayout(node.parent.origin, MindmapLayout.downward)
         ? true
