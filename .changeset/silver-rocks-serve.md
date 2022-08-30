@@ -2,4 +2,4 @@
 '@plait/mindmap': patch
 ---
 
-support upward layout
+fix underlineShape y value
