@@ -5,6 +5,7 @@ import { MindmapElement } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
+import { getRectangleByNode } from '../utils';
 
 export function drawLink(
     roughSVG: RoughSVG,
