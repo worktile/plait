@@ -85,39 +85,3 @@ export function drawLink(
         return roughSVG.curve(points as any, { stroke, strokeWidth });
     }
 }
-
-export function drawDownwardLink(
-    roughSVG: RoughSVG,
-    node: MindmapNode,
-    child: MindmapNode,
-    defaultStroke: string | null = null,
-    isHorizontal = true
-) {
-    const hasUnderline = MindmapElement.hasUnderlineShape(child.origin);
-    let beginX,
-        beginY,
-        endX,
-        endY,
-        beginNode = node,
-        endNode = child;
-    const beginRectangle = getRectangleByNode(beginNode);
-    const endRectangle = getRectangleByNode(endNode);
-
-    beginX = Math.round(beginNode.x + beginNode.width / 2);
-    beginY = Math.round(beginRectangle.y + beginRectangle.height);
-    endX = Math.round(endNode.x + endNode.hGap + endRectangle.width / 2);
-    endY = Math.round(endRectangle.y);
-
-    const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
-    const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
-
-    let curve: Point[] = [
-        [beginX, beginY],
-        [beginX, Math.round(beginY + (beginNode.hGap + endNode.hGap) / 2)],
-        [endX, Math.round(endY - (beginNode.hGap + endNode.hGap) / 3)],
-        [endX, endY]
-    ];
-
-    const points = pointsOnBezierCurves(curve);
-    return roughSVG.curve(points as any, { stroke, strokeWidth });
-}

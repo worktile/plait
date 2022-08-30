@@ -20,6 +20,7 @@ export enum MindmapLayout {
     'right' = 'right',
     'left' = 'left',
     'standard' = 'standard',
+    'upward' = 'upward',
     'downward' = 'downward',
     'indented' = 'indented'
-};
+}

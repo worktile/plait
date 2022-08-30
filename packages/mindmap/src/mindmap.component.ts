@@ -4,7 +4,7 @@ import { MindmapElement } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
 import { MindmapLayout, PlaitMindmap } from './interfaces/mindmap';
 import { createG, Selection, PlaitBoard } from '@plait/core';
-import { RightLayout, LeftLayout, StandardLayout, DownwardLayout, LayoutOptions, IndentedLayout } from '@plait/layouts';
+import { RightLayout, LeftLayout, StandardLayout, DownwardLayout, LayoutOptions, IndentedLayout, UpwardLayout } from '@plait/layouts';
 import { MINDMAP_TO_COMPONENT } from './plugins/weak-maps';
 
 @Component({
@@ -85,6 +85,9 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
                 break;
             case MindmapLayout.standard:
                 this.root = (new StandardLayout().layout(this.value, options) as unknown) as MindmapNode;
+                break;
+            case MindmapLayout.upward:
+                this.root = (new UpwardLayout().layout(this.value, options) as unknown) as MindmapNode;
                 break;
             case MindmapLayout.downward:
                 this.root = (new DownwardLayout().layout(this.value, options) as unknown) as MindmapNode;

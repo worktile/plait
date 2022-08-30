@@ -26,7 +26,7 @@ import { PlaitRichtextComponent, setFullSelectionAndFocus } from '@plait/richtex
 import { drawRectangleNode } from './draw/shape';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { MindmapNode } from './interfaces/node';
-import { drawDownwardLink, drawLink } from './draw/link';
+import { drawLink } from './draw/link';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { MINDMAP_NODE_KEY, PRIMARY_COLOR, ROOT_TOPIC_FONT_SIZE, STROKE_WIDTH, TOPIC_COLOR, TOPIC_FONT_SIZE } from './constants';
 import { HAS_SELECTED_MINDMAP_ELEMENT, ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
@@ -138,8 +138,11 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
         if (MindmapElement.hasLayout(this.parent.origin, MindmapLayout.indented)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
-        } else if (MindmapElement.hasLayout(this.parent.origin, MindmapLayout.downward)) {
-            this.linkG = drawDownwardLink(this.roughSVG, this.parent, this.node);
+        } else if (
+            MindmapElement.hasLayout(this.parent.origin, MindmapLayout.downward) ||
+            MindmapElement.hasLayout(this.parent.origin, MindmapLayout.upward)
+        ) {
+            this.linkG = drawLink(this.roughSVG, this.parent, this.node, null, false);
         } else {
             this.linkG = drawLink(this.roughSVG, this.parent, this.node);
         }
