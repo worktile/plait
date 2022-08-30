@@ -1,5 +1,5 @@
 ---
-'@plait/mindmap': major
+'@plait/mindmap': patch
 ---
 
 fix underlineShape y value
