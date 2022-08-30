@@ -14,12 +14,7 @@ import {
     isNoSelectionElement
 } from '@plait/core';
 import { PlaitMindmapComponent } from '../mindmap.component';
-import {
-    HAS_SELECTED_MINDMAP,
-    HAS_SELECTED_MINDMAP_ELEMENT,
-    MINDMAP_ELEMENT_TO_COMPONENT,
-    SELECTED_MINDMAP_NODES
-} from '../utils/weak-maps';
+import { MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from '../utils/weak-maps';
 import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
@@ -27,7 +22,12 @@ import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
-import { clearSelectedElements } from '../utils/active-element';
+import {
+    addSelectedMindmapElements,
+    clearAllSelectedMindmapElements,
+    deleteSelectedMindmapElements,
+    hasSelectedMindmapElement
+} from '../utils/active-element';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, mousemove, mouseup, keydown } = board;
@@ -84,28 +84,15 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 const root = mindmapComponent?.root;
                 (root as any).eachNode((node: MindmapNode) => {
                     if (hitMindmapNode(board, point, node)) {
-                        HAS_SELECTED_MINDMAP_ELEMENT.set(node.origin, true);
+                        addSelectedMindmapElements(board, node.origin);
                         selectedMindmap = value;
                         nodes.push(node.origin);
                     } else {
-                        HAS_SELECTED_MINDMAP_ELEMENT.has(node.origin) && HAS_SELECTED_MINDMAP_ELEMENT.delete(node.origin);
+                        hasSelectedMindmapElement(board, node.origin) && deleteSelectedMindmapElements(board, node.origin);
                     }
                 });
             }
-            if (selectedMindmap) {
-                HAS_SELECTED_MINDMAP.set(board, selectedMindmap);
-            } else {
-                HAS_SELECTED_MINDMAP.has(board) && HAS_SELECTED_MINDMAP.delete(board);
-            }
         });
-
-        if (nodes.length > 0) {
-            SELECTED_MINDMAP_NODES.set(board, nodes);
-        }
-        if (nodes.length === 0 && SELECTED_MINDMAP_NODES.has(board)) {
-            SELECTED_MINDMAP_NODES.delete(board);
-        }
-
         mousedown(event);
     };
 
@@ -114,9 +101,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         const isFakeNode = event.target instanceof HTMLElement && event.target.closest('.fake-node');
         const noSelectionElement = isNoSelectionElement(event);
         if (!isBoardInside && !noSelectionElement && !isFakeNode) {
-            const hasSelectedElement = SELECTED_MINDMAP_NODES.has(board);
+            const hasSelectedElement = SELECTED_MINDMAP_ELEMENTS.has(board);
             if (hasSelectedElement) {
-                clearSelectedElements(board);
+                clearAllSelectedMindmapElements(board);
             }
         }
         mouseup(event);
@@ -129,71 +116,70 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
         if (event.key === 'Tab' || event.key === 'Enter') {
             event.preventDefault();
-            const plaitMindmap = HAS_SELECTED_MINDMAP.get(board);
-            if (plaitMindmap) {
-                const mindmapComponent = MINDMAP_TO_COMPONENT.get(plaitMindmap);
-                const root = mindmapComponent?.root;
-                (root as any).eachNode((node: MindmapNode) => {
-                    const element = node.origin;
-                    if (HAS_SELECTED_MINDMAP_ELEMENT.has(element)) {
-                        HAS_SELECTED_MINDMAP_ELEMENT.delete(element);
-                        let path = [];
-                        if (event.key === 'Tab') {
-                            path = findPath(board, node).concat(node.children.length);
-                        } else {
-                            path = Path.next(findPath(board, node));
-                        }
-                        const newElement = {
-                            id: idCreator(),
-                            value: {
-                                children: [{ text: '' }]
-                            },
-                            children: [],
-                            width: 5,
-                            height: 22
-                        };
-                        setTimeout(() => {
-                            const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
-                            HAS_SELECTED_MINDMAP_ELEMENT.set(newElement, true);
-                            if (nodeComponent) {
-                                nodeComponent.startEditText();
-                            }
-                        }, 0);
-                        Transforms.insertNode(board, newElement, path);
-                        return;
+            const selectedNodes = SELECTED_MINDMAP_ELEMENTS.get(board);
+            if (selectedNodes?.length === 1) {
+                const selectedNode = selectedNodes[0];
+                deleteSelectedMindmapElements(board, selectedNode);
+                let path: number[] = [];
+                const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode);
+                if (event.key === 'Tab') {
+                    if (mindmapNodeComponent) {
+                        path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.children.length);
                     }
-                });
+                } else {
+                    if (mindmapNodeComponent) {
+                        path = Path.next(findPath(board, mindmapNodeComponent.node));
+                    }
+                }
+                const newElement = {
+                    id: idCreator(),
+                    value: {
+                        children: [{ text: '' }]
+                    },
+                    children: [],
+                    width: 5,
+                    height: 22
+                };
+                setTimeout(() => {
+                    const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
+                    addSelectedMindmapElements(board, newElement);
+                    if (nodeComponent) {
+                        nodeComponent.startEditText();
+                    }
+                }, 0);
+                Transforms.insertNode(board, newElement, path);
+                return;
             }
         }
         if (hotkeys.isDeleteBackward(event)) {
             event.preventDefault();
-            const plaitMindmap = HAS_SELECTED_MINDMAP.get(board);
-            if (plaitMindmap) {
-                const mindmapComponent = MINDMAP_TO_COMPONENT.get(plaitMindmap);
-                const root = mindmapComponent?.root;
-                let lastNode: MindmapNode | any = null;
-                (root as any).eachNode((node: MindmapNode) => {
-                    if (HAS_SELECTED_MINDMAP_ELEMENT.has(node.origin)) {
-                        const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node.origin);
-                        if (mindmapNodeComponent?.parent.children) {
-                            const nodeIndex: number = mindmapNodeComponent?.parent.children.findIndex(
-                                item => item.origin.id === node.origin.id
-                            );
-                            if (mindmapNodeComponent?.parent.children[nodeIndex - 1]) {
-                                lastNode = mindmapNodeComponent?.parent.children[nodeIndex - 1];
-                            } else if (mindmapNodeComponent?.parent.children[nodeIndex + 1]) {
-                                lastNode = mindmapNodeComponent?.parent.children[nodeIndex + 1];
-                            } else {
-                                lastNode = mindmapNodeComponent?.parent;
-                            }
-                        }
-                        const path = findPath(board, node);
+            const selectedNodes = SELECTED_MINDMAP_ELEMENTS.get(board);
+            if (selectedNodes && selectedNodes.length) {
+                selectedNodes?.forEach(node => {
+                    deleteSelectedMindmapElements(board, node);
+                    const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
+                    if (mindmapNodeComponent) {
+                        const path = findPath(board, mindmapNodeComponent.node);
                         Transforms.removeNode(board, path);
-                        return;
                     }
                 });
+            }
+            if (selectedNodes?.length === 1) {
+                let lastNode: MindmapNode | any = null;
+                const selectNode = selectedNodes[0];
+                const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectNode);
+                if (mindmapNodeComponent?.parent.children) {
+                    const nodeIndex: number = mindmapNodeComponent?.parent.children.findIndex(item => item.origin.id === selectNode.id);
+                    if (mindmapNodeComponent?.parent.children[nodeIndex - 1]) {
+                        lastNode = mindmapNodeComponent?.parent.children[nodeIndex - 1];
+                    } else if (mindmapNodeComponent?.parent.children[nodeIndex + 1]) {
+                        lastNode = mindmapNodeComponent?.parent.children[nodeIndex + 1];
+                    } else {
+                        lastNode = mindmapNodeComponent?.parent;
+                    }
+                }
                 if (lastNode) {
-                    HAS_SELECTED_MINDMAP_ELEMENT.set(lastNode.origin, true);
+                    addSelectedMindmapElements(board, lastNode.origin);
                 }
             }
         }

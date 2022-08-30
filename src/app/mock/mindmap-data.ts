@@ -58,7 +58,7 @@ export const mockMindmapData: PlaitMindmap = {
                             shape: MindmapNodeShape.underline
                         },
                         {
-                            id: '1-4-2-1',
+                            id: '1-4-2-2',
                             value: { children: [{ text: '缩进布局' }] },
                             children: [],
                             width: 72,
