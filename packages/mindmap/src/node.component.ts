@@ -136,10 +136,16 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             this.linkG.remove();
         }
 
+        let isHorizontal =
+            MindmapElement.hasLayout(this.parent.origin, MindmapLayout.downward) ||
+            MindmapElement.hasLayout(this.parent.origin, MindmapLayout.upward)
+                ? false
+                : true;
+
         if (MindmapElement.hasLayout(this.parent.origin, MindmapLayout.indented)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         } else {
-            this.linkG = drawLink(this.roughSVG, this.parent, this.node);
+            this.linkG = drawLink(this.roughSVG, this.parent, this.node, null, isHorizontal);
         }
 
         this.gGroup.append(this.linkG);
