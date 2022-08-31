@@ -105,6 +105,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         this.drawLink();
         this.drawRichtext();
         this.drawExtend();
+        this.drawActivG();
+        this.updateActiveClass();
         this.initialized = true;
         ELEMENT_GROUP_TO_COMPONENT.set(this.gGroup, this);
     }
@@ -160,8 +162,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         }
     }
 
-    drawSelectedState() {
-        this.destroySelectedState();
+    drawActivG() {
+        this.destroyActiveG();
         const selected = hasSelectedMindmapElement(this.board, this.node.origin);
         if (selected) {
             let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
@@ -195,12 +197,15 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         }
     }
 
-    destroySelectedState() {
+    destroyActiveG() {
         this.activeG.forEach(g => g.remove());
         this.activeG = [];
     }
 
-    updateGGroupClass() {
+    updateActiveClass() {
+        if (!this.gGroup) {
+            return;
+        }
         const selected = hasSelectedMindmapElement(this.board, this.node.origin);
         if (selected) {
             this.render2.addClass(this.gGroup, 'active');
@@ -321,8 +326,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         if (this.initialized) {
             const selection = changes['selection'];
             if (selection) {
-                this.drawSelectedState();
-                this.gGroup && this.updateGGroupClass();
+                this.drawActivG();
+                this.updateActiveClass();
             }
             const node = changes['node'];
             if (node) {
@@ -339,7 +344,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                     this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
                 }
                 this.drawExtend();
-                this.drawSelectedState();
+                this.drawActivG();
             }
         }
     }
@@ -355,7 +360,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             richtextInstance.plaitReadonly = false;
             this.richtextComponentRef.changeDetectorRef.markForCheck();
             setTimeout(() => {
-                this.drawSelectedState();
+                this.drawActivG();
                 setFullSelectionAndFocus(richtextInstance.editor);
             }, 0);
         }
@@ -392,12 +397,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         const keydown$ = fromEvent<KeyboardEvent>(document, 'keydown').subscribe((event: KeyboardEvent) => {
             if (event.key === 'Escape') {
                 exitHandle();
-                this.drawSelectedState();
+                this.drawActivG();
             }
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
                 exitHandle();
-                this.drawSelectedState();
+                this.drawActivG();
             }
         });
 
