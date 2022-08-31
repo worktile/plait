@@ -155,6 +155,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             event.preventDefault();
             const selectedNodes = SELECTED_MINDMAP_ELEMENTS.get(board);
             if (selectedNodes && selectedNodes.length) {
+                if (isPlaitMindmap(selectedNodes[0]) && board.children.length === 1 && !board.allowClearBoard) {
+                    return;
+                }
                 selectedNodes?.forEach(node => {
                     deleteSelectedMindmapElements(board, node);
                     const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
@@ -168,7 +171,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 let lastNode: MindmapNode | any = null;
                 const selectNode = selectedNodes[0];
                 const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectNode);
-                if (mindmapNodeComponent?.parent.children) {
+                if (mindmapNodeComponent?.parent?.children) {
                     const nodeIndex: number = mindmapNodeComponent?.parent.children.findIndex(item => item.origin.id === selectNode.id);
                     if (mindmapNodeComponent?.parent.children[nodeIndex - 1]) {
                         lastNode = mindmapNodeComponent?.parent.children[nodeIndex - 1];
