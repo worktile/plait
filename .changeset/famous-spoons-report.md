@@ -1,5 +1,0 @@
----
-'@plait/mindmap': patch
----
-
-remove HAS_SELECTED_MINDMAP and HAS_SELECTED_MINDMAP_ELEMENT, use SELECTED_MINDMAP_NODES

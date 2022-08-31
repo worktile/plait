@@ -1,5 +1,11 @@
 # layouts
 
+## 0.0.13
+
+### Patch Changes
+
+-   [#30](https://github.com/worktile/plait/pull/30) [`3979ddc`](https://github.com/worktile/plait/commit/3979ddca9481d52a22b488a0677fbb2e2afdd66c) Thanks [@WBbug](https://github.com/WBbug)! - support upward layout
+
 ## 0.0.10
 
 ### Patch Changes

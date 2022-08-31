@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.13
+
+### Patch Changes
+
+-   [#29](https://github.com/worktile/plait/pull/29) [`6ee54c6`](https://github.com/worktile/plait/commit/6ee54c6e2061d0013290bb8723b23b9fa36052ad) Thanks [@Ashy6](https://github.com/Ashy6)! - change the view and return the result
+
 ## 0.0.12
 
 ### Patch Changes

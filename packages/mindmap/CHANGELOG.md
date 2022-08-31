@@ -1,5 +1,21 @@
 # mindmap
 
+## 0.0.13
+
+### Patch Changes
+
+-   [#27](https://github.com/worktile/plait/pull/27) [`672a29d`](https://github.com/worktile/plait/commit/672a29ddaa410724a983b0a93e1e978163bdd8b8) Thanks [@MissLixf](https://github.com/MissLixf)! - support active last node when delete a node
+
+*   [#32](https://github.com/worktile/plait/pull/32) [`6e752b2`](https://github.com/worktile/plait/commit/6e752b22f1cd5913913f0df5731a67ecc1976f05) Thanks [@MissLixf](https://github.com/MissLixf)! - remove HAS_SELECTED_MINDMAP and HAS_SELECTED_MINDMAP_ELEMENT, use SELECTED_MINDMAP_NODES
+
+-   [`7fef390`](https://github.com/worktile/plait/commit/7fef390952899b55f8ea6c874c39f4b08832db50) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename selected-elements and add getSelectedMindmapElements
+
+*   [`b00f904`](https://github.com/worktile/plait/commit/b00f90439c14a5e8fcf772f192433925f0808cd2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update selected elements asap
+
+-   [#31](https://github.com/worktile/plait/pull/31) [`b294a30`](https://github.com/worktile/plait/commit/b294a3011f4312cc89f27ed84632fe8a458a049b) Thanks [@WBbug](https://github.com/WBbug)! - fix underlineShape y value
+
+*   [#30](https://github.com/worktile/plait/pull/30) [`8e14d72`](https://github.com/worktile/plait/commit/8e14d728562b52570203ddc221215fc75470fb93) Thanks [@WBbug](https://github.com/WBbug)! - support upward layout
+
 ## 0.0.12
 
 ### Patch Changes
