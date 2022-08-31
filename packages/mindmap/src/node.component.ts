@@ -29,7 +29,7 @@ import { MindmapNode } from './interfaces/node';
 import { drawLink } from './draw/link';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { MINDMAP_NODE_KEY, PRIMARY_COLOR, ROOT_TOPIC_FONT_SIZE, STROKE_WIDTH, TOPIC_COLOR, TOPIC_FONT_SIZE } from './constants';
-import { HAS_SELECTED_MINDMAP_ELEMENT, ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
+import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { debounceTime, take } from 'rxjs/operators';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
 import { MindmapElement } from './interfaces/element';
@@ -38,6 +38,7 @@ import { findPath, getChildrenCount } from './utils/mindmap';
 import { getLinkLineColorByMindmapElement } from './utils/colors';
 import { drawIndentedLink } from './draw/indented-link';
 import { MindmapLayout } from './interfaces';
+import { addSelectedMindmapElements, hasSelectedMindmapElement } from './utils/active-element';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -161,7 +162,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
     drawSelectedState() {
         this.destroySelectedState();
-        const selected = HAS_SELECTED_MINDMAP_ELEMENT.get(this.node.origin);
+        const selected = hasSelectedMindmapElement(this.board, this.node.origin);
         if (selected) {
             let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
             const selectedStrokeG = drawRoundRectangle(
@@ -200,7 +201,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     }
 
     updateGGroupClass() {
-        const selected = HAS_SELECTED_MINDMAP_ELEMENT.get(this.node.origin);
+        const selected = hasSelectedMindmapElement(this.board, this.node.origin);
         if (selected) {
             this.render2.addClass(this.gGroup, 'active');
         } else {
@@ -326,9 +327,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             const node = changes['node'];
             if (node) {
                 MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
-                const selectedState = HAS_SELECTED_MINDMAP_ELEMENT.get(node.previousValue.origin);
+                const selectedState = hasSelectedMindmapElement(this.board, node.previousValue.origin);
                 if (selectedState) {
-                    HAS_SELECTED_MINDMAP_ELEMENT.set(this.node.origin, true);
+                    addSelectedMindmapElements(this.board, this.node.origin);
                 }
                 this.drawShape();
                 this.drawLink();
