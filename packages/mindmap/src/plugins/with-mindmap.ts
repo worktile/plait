@@ -27,7 +27,7 @@ import {
     clearAllSelectedMindmapElements,
     deleteSelectedMindmapElements,
     hasSelectedMindmapElement
-} from '../utils/active-element';
+} from '../utils/selected-elements';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, mousemove, mouseup, keydown } = board;

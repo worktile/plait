@@ -3,3 +3,4 @@ export * from './weak-maps';
 export * from './mindmap';
 export * from './layout';
 export * from './colors';
+export * from './selected-elements';

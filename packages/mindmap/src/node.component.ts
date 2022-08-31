@@ -38,7 +38,7 @@ import { findPath, getChildrenCount } from './utils/mindmap';
 import { getLinkLineColorByMindmapElement } from './utils/colors';
 import { drawIndentedLink } from './draw/indented-link';
 import { MindmapLayout } from './interfaces';
-import { addSelectedMindmapElements, hasSelectedMindmapElement } from './utils/active-element';
+import { addSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 
 @Component({
     selector: 'plait-mindmap-node',
