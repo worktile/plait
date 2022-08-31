@@ -140,14 +140,14 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     width: 5,
                     height: 22
                 };
+                Transforms.insertNode(board, newElement, path);
+                addSelectedMindmapElements(board, newElement);
                 setTimeout(() => {
                     const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
-                    addSelectedMindmapElements(board, newElement);
                     if (nodeComponent) {
                         nodeComponent.startEditText();
                     }
                 }, 0);
-                Transforms.insertNode(board, newElement, path);
                 return;
             }
         }
