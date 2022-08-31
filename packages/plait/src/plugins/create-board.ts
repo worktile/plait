@@ -21,6 +21,7 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         selection: null,
         cursor: BaseCursorStatus.select,
         readonly: options.readonly,
+        allowClearBoard: options.allowClearBoard,
         apply: (operation: PlaitOperation) => {
             board.operations.push(operation);
 
