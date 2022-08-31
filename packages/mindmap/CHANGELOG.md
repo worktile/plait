@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.0.14
+
+### Patch Changes
+
+-   [`4ec3796`](https://github.com/worktile/plait/commit/4ec3796d3c4edb0c34b8c4194e669eba824b2209) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename active g and init active g
+
+*   [#33](https://github.com/worktile/plait/pull/33) [`bc533d0`](https://github.com/worktile/plait/commit/bc533d059a4f6b7e5f3674f1a0dc21c444ac8925) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add plaitAllowClearBoard determine whether to allow the board to be cleared
+
 ## 0.0.13
 
 ### Patch Changes
