@@ -24,18 +24,6 @@ export const shouldSave = (op: PlaitOperation, prev: PlaitOperation | undefined)
 };
 
 /**
- * Check whether an operation should overwrite the previous one.
- */
-
-export const shouldOverwrite = (op: PlaitOperation, prev: PlaitOperation | undefined): boolean => {
-    if (prev && op.type === 'set_selection' && prev.type === 'set_selection') {
-        return true;
-    }
-
-    return false;
-};
-
-/**
  * Check whether an operation should clear the redos stack.
  */
 

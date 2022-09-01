@@ -1,6 +1,6 @@
 import { PlaitBoard, PlaitOperation } from '../interfaces';
 import isHotkey from 'is-hotkey';
-import { shouldClear, shouldMerge, shouldOverwrite, shouldSave } from '../utils';
+import { shouldClear, shouldMerge, shouldSave } from '../utils';
 
 export function withHistroy<T extends PlaitBoard>(board: T) {
     const { apply, keydown } = board;
@@ -48,7 +48,6 @@ export function withHistroy<T extends PlaitBoard>(board: T) {
         const { undos } = history;
         const lastBatch = undos[undos.length - 1];
         const lastOp = lastBatch && lastBatch[lastBatch.length - 1];
-        const overwrite = shouldOverwrite(op, lastOp);
         let save = PlaitHistoryBoard.isSaving(board);
         let merge = PlaitHistoryBoard.isMerging(board);
 
@@ -63,15 +62,11 @@ export function withHistroy<T extends PlaitBoard>(board: T) {
                 } else if (operations.length !== 0) {
                     merge = true;
                 } else {
-                    merge = shouldMerge(op, lastOp) || overwrite;
+                    merge = shouldMerge(op, lastOp);
                 }
             }
 
             if (lastBatch && merge) {
-                if (overwrite) {
-                    lastBatch.pop();
-                }
-
                 lastBatch.push(op);
             } else {
                 const batch = [op];
