@@ -28,7 +28,15 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { MindmapNode } from './interfaces/node';
 import { drawLink } from './draw/link';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
-import { MINDMAP_NODE_KEY, PRIMARY_COLOR, ROOT_TOPIC_FONT_SIZE, STROKE_WIDTH, TOPIC_COLOR, TOPIC_FONT_SIZE } from './constants';
+import {
+    MindmapNodeShape,
+    MINDMAP_NODE_KEY,
+    PRIMARY_COLOR,
+    ROOT_TOPIC_FONT_SIZE,
+    STROKE_WIDTH,
+    TOPIC_COLOR,
+    TOPIC_FONT_SIZE
+} from './constants';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { debounceTime, take } from 'rxjs/operators';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
@@ -39,6 +47,7 @@ import { getLinkLineColorByMindmapElement } from './utils/colors';
 import { drawIndentedLink } from './draw/indented-link';
 import { addSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 import { getLayoutByElement } from './utils/layout';
+import { getNodeShapeByElement } from './utils/shape';
 import { isHorizontalLayout, MindmapLayoutType } from '@plait/layouts';
 
 @Component({
@@ -118,9 +127,14 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
     drawShape() {
         this.destroyShape();
-        if (MindmapElement.hasRoundRectangleShape(this.node.origin)) {
-            this.shapeG = drawRectangleNode(this.roughSVG as RoughSVG, this.node as MindmapNode);
-            this.gGroup.prepend(this.shapeG);
+        const shape = getNodeShapeByElement(this.node.origin) as MindmapNodeShape;
+        switch (shape) {
+            case MindmapNodeShape.roundRectangle:
+                this.shapeG = drawRectangleNode(this.roughSVG as RoughSVG, this.node as MindmapNode);
+                this.gGroup.prepend(this.shapeG);
+                break;
+            default:
+                break;
         }
     }
 
