@@ -16,7 +16,7 @@ export const shouldMerge = (op: PlaitOperation, prev: PlaitOperation | undefined
  */
 
 export const shouldSave = (op: PlaitOperation, prev: PlaitOperation | undefined): boolean => {
-    if (op.type === 'set_selection' && (op.properties == null || op.newProperties == null)) {
+    if (op.type === 'set_selection') {
         return false;
     }
 
