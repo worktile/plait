@@ -1,11 +1,11 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { STROKE_WIDTH } from '../constants';
+import { MindmapNodeShape, STROKE_WIDTH } from '../constants';
 import { MindmapElement } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
-import { getRectangleByNode } from '../utils';
+import { getNodeShapeByElement, getRectangleByNode } from '../utils';
 
 export function drawLink(
     roughSVG: RoughSVG,
@@ -40,7 +40,7 @@ export function drawLink(
         endY = Math.round(endNode.y + endNode.vGap);
     }
 
-    if (beginNode.origin.isRoot && MindmapElement.hasRoundRectangleShape(node.origin)) {
+    if (beginNode.origin.isRoot && (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.roundRectangle) {
         beginX = Math.round(beginNode.x + beginNode.width / 2);
         beginY = Math.round(beginNode.y + beginNode.height / 2);
     }
@@ -55,7 +55,8 @@ export function drawLink(
             [Math.round(endX - (beginNode.hGap + endNode.hGap) / 2), endY],
             [endX, endY]
         ];
-        if (MindmapElement.hasUnderlineShape(child.origin)) {
+        const shape = getNodeShapeByElement(child.origin) as MindmapNodeShape;
+        if (shape === MindmapNodeShape.underline) {
             if (child.left) {
                 const underline = [
                     [beginX - (beginNode.width - beginNode.hGap * 2), beginY],

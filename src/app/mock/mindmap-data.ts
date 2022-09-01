@@ -24,7 +24,7 @@ export const mockMindmapData: PlaitMindmap = {
                     children: [],
                     width: 84,
                     height: 24,
-                    shape: MindmapNodeShape.underline
+                    shape: MindmapNodeShape.roundRectangle
                 }
             ],
             width: 42,
@@ -92,7 +92,7 @@ export const mockMindmapData: PlaitMindmap = {
             children: [],
             width: 72,
             height: 24,
-            shape: MindmapNodeShape.underline
+            shape: MindmapNodeShape.roundRectangle
         }
     ],
     width: 72,

@@ -1,14 +1,14 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { STROKE_WIDTH } from '../constants';
+import { MindmapNodeShape, STROKE_WIDTH } from '../constants';
 import { MindmapElement } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
-import { getRectangleByNode } from '../utils';
+import { getNodeShapeByElement, getRectangleByNode } from '../utils';
 
 export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNode, defaultStroke: string | null = null) {
-    const hasUnderline = MindmapElement.hasUnderlineShape(child.origin);
+    const hasUnderline = (getNodeShapeByElement(child.origin) as MindmapNodeShape) === MindmapNodeShape.underline;
     let beginX,
         beginY,
         endX,
