@@ -28,7 +28,15 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { MindmapNode } from './interfaces/node';
 import { drawLink } from './draw/link';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
-import { MINDMAP_NODE_KEY, PRIMARY_COLOR, ROOT_TOPIC_FONT_SIZE, STROKE_WIDTH, TOPIC_COLOR, TOPIC_FONT_SIZE } from './constants';
+import {
+    MindmapNodeShape,
+    MINDMAP_NODE_KEY,
+    PRIMARY_COLOR,
+    ROOT_TOPIC_FONT_SIZE,
+    STROKE_WIDTH,
+    TOPIC_COLOR,
+    TOPIC_FONT_SIZE
+} from './constants';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { debounceTime, take } from 'rxjs/operators';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
@@ -37,8 +45,10 @@ import { fromEvent } from 'rxjs';
 import { findPath, getChildrenCount } from './utils/mindmap';
 import { getLinkLineColorByMindmapElement } from './utils/colors';
 import { drawIndentedLink } from './draw/indented-link';
-import { MindmapLayout } from './interfaces';
 import { addSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
+import { getLayoutByElement } from './utils/layout';
+import { getNodeShapeByElement } from './utils/shape';
+import { isHorizontalLayout, MindmapLayoutType } from '@plait/layouts';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -117,9 +127,14 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
     drawShape() {
         this.destroyShape();
-        if (MindmapElement.hasRoundRectangleShape(this.node.origin)) {
-            this.shapeG = drawRectangleNode(this.roughSVG as RoughSVG, this.node as MindmapNode);
-            this.gGroup.prepend(this.shapeG);
+        const shape = getNodeShapeByElement(this.node.origin) as MindmapNodeShape;
+        switch (shape) {
+            case MindmapNodeShape.roundRectangle:
+                this.shapeG = drawRectangleNode(this.roughSVG as RoughSVG, this.node as MindmapNode);
+                this.gGroup.prepend(this.shapeG);
+                break;
+            default:
+                break;
         }
     }
 
@@ -139,16 +154,11 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             this.linkG.remove();
         }
 
-        let isHorizontal =
-            MindmapElement.hasLayout(this.parent.origin, MindmapLayout.downward) ||
-            MindmapElement.hasLayout(this.parent.origin, MindmapLayout.upward)
-                ? false
-                : true;
-
-        if (MindmapElement.hasLayout(this.parent.origin, MindmapLayout.indented)) {
+        const layout = getLayoutByElement(this.parent.origin) as MindmapLayoutType;
+        if (MindmapElement.isIndentedLayout(this.parent.origin)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         } else {
-            this.linkG = drawLink(this.roughSVG, this.parent, this.node, null, isHorizontal);
+            this.linkG = drawLink(this.roughSVG, this.parent, this.node, null, isHorizontalLayout(layout));
         }
 
         this.gGroup.append(this.linkG);
@@ -252,10 +262,46 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         const stroke = getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         const extendY = MindmapElement.hasRoundRectangleShape(this.node.origin) ? y + height / 2 : y + height;
-        const extendLine = [
+        const nodeLayout = getLayoutByElement(this.node.origin) as MindmapLayoutType;
+
+        let extendLine = [
             [x + width, extendY],
             [x + width + 8, extendY]
         ];
+
+        let hideArrowG = this.roughSVG.linearPath(
+            [
+                [extendLine[1][0] + 10, extendLine[1][1] - 3],
+                [extendLine[1][0] + 4, extendLine[1][1]],
+                [extendLine[1][0] + 10, extendLine[1][1] + 3]
+            ],
+            {
+                stroke,
+                strokeWidth
+            }
+        );
+
+        if (isHorizontalLayout(nodeLayout)) {
+            if (this.parent.x > this.node.x) {
+                extendLine = [
+                    [x, extendY],
+                    [x - 26, extendY]
+                ];
+                hideArrowG = this.roughSVG.linearPath(
+                    [
+                        [extendLine[1][0] + 6, extendLine[1][1] - 3],
+                        [extendLine[1][0] + 12, extendLine[1][1]],
+                        [extendLine[1][0] + 6, extendLine[1][1] + 3]
+                    ],
+                    {
+                        stroke,
+                        strokeWidth
+                    }
+                );
+            }
+        } else {
+        }
+
         if (this.node.origin.isCollapsed) {
             this.gGroup.classList.add('collapsed');
 
@@ -280,17 +326,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                     strokeWidth,
                     fillStyle: 'solid'
                 });
-                const hideArrowG = this.roughSVG.linearPath(
-                    [
-                        [extendLine[1][0] + 10, extendLine[1][1] - 3],
-                        [extendLine[1][0] + 4, extendLine[1][1]],
-                        [extendLine[1][0] + 10, extendLine[1][1] + 3]
-                    ],
-                    {
-                        stroke,
-                        strokeWidth
-                    }
-                );
                 this.extendG.appendChild(hideCircleG);
                 this.extendG.appendChild(hideArrowG);
             }

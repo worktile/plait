@@ -11,6 +11,19 @@ export interface OriginNode {
     layout?: string;
 }
 
+export enum MindmapLayoutType {
+    'right' = 'right',
+    'left' = 'left',
+    'standard' = 'standard',
+    'upward' = 'upward',
+    'downward' = 'downward',
+    'rightBottomIndented' = 'right-bottom-indented',
+    'rightTopIndented' = 'right-top-indented',
+    'leftTopIndented' = 'left-top-indented',
+    'leftBottomIndented' = 'left-bottom-indented'
+}
+
+
 export enum LayoutType {
     'logic' = 'logic',
     'indented' = 'indented',

@@ -1,7 +1,7 @@
 import { Element } from 'slate';
 import { MindmapNodeShape } from '../constants/node';
 import { getLayoutByElement } from '../utils/layout';
-import { MindmapLayout } from './mindmap';
+import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
 
 export interface MindmapElement {
     id: string;
@@ -26,7 +26,7 @@ export interface MindmapElement {
     color?: string;
 
     // layout
-    layout?: MindmapLayout;
+    layout?: MindmapLayoutType;
 
     isCollapsed?: boolean;
 }
@@ -38,8 +38,12 @@ export const MindmapElement = {
     hasUnderlineShape(value: MindmapElement) {
         return value.shape === MindmapNodeShape.underline;
     },
-    hasLayout(value: MindmapElement, layout: MindmapLayout) {
+    hasLayout(value: MindmapElement, layout: MindmapLayoutType) {
         const _layout = getLayoutByElement(value);
         return _layout === layout;
+    },
+    isIndentedLayout(value: MindmapElement) {
+        const _layout = getLayoutByElement(value) as MindmapLayoutType;
+        return isIndentedLayout(_layout);
     }
 };

@@ -190,14 +190,18 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             });
 
         window.onresize = () => {
-            const viewBoxModel = getViewBox(this.board);
-            const viewBoxValues = this.host.getAttribute('viewBox')?.split(',') as string[];
-            this.renderer2.setAttribute(
-                this.host,
-                'viewBox',
-                `${viewBoxValues[0].trim()}, ${viewBoxValues[1].trim()}, ${viewBoxModel.width}, ${viewBoxModel.height}`
-            );
+            this.refreshViewport();
         };
+    }
+
+    refreshViewport() {
+        const viewBoxModel = getViewBox(this.board);
+        const viewBoxValues = this.host.getAttribute('viewBox')?.split(',') as string[];
+        this.renderer2.setAttribute(
+            this.host,
+            'viewBox',
+            `${viewBoxValues[0].trim()}, ${viewBoxValues[1].trim()}, ${viewBoxModel.width}, ${viewBoxModel.height}`
+        );
     }
 
     updateViewport() {

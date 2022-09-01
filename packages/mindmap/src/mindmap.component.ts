@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inp
 import { BASE, MINDMAP_KEY } from './constants/index';
 import { MindmapElement } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
-import { MindmapLayout, PlaitMindmap } from './interfaces/mindmap';
+import { PlaitMindmap } from './interfaces/mindmap';
 import { createG, Selection, PlaitBoard } from '@plait/core';
-import { RightLayout, LeftLayout, StandardLayout, DownwardLayout, LayoutOptions, IndentedLayout, UpwardLayout } from '@plait/layouts';
+import { LayoutOptions, GlobalLayout, MindmapLayoutType } from '@plait/layouts';
 import { MINDMAP_TO_COMPONENT } from './plugins/weak-maps';
+import { getLayoutByElement } from './utils';
 
 @Component({
     selector: 'plait-mindmap',
@@ -76,29 +77,8 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
     updateMindmap(doCheck = true) {
         MINDMAP_TO_COMPONENT.set(this.value, this);
         const options = this.getOptions() as LayoutOptions;
-        switch (this.value.layout) {
-            case MindmapLayout.left:
-                this.root = (new LeftLayout().layout(this.value, options) as unknown) as MindmapNode;
-                break;
-            case MindmapLayout.right:
-                this.root = (new RightLayout().layout(this.value, options) as unknown) as MindmapNode;
-                break;
-            case MindmapLayout.standard:
-                this.root = (new StandardLayout().layout(this.value, options) as unknown) as MindmapNode;
-                break;
-            case MindmapLayout.upward:
-                this.root = (new UpwardLayout().layout(this.value, options) as unknown) as MindmapNode;
-                break;
-            case MindmapLayout.downward:
-                this.root = (new DownwardLayout().layout(this.value, options) as unknown) as MindmapNode;
-                break;
-            case MindmapLayout.indented:
-                this.root = (new IndentedLayout().layout(this.value, options) as unknown) as MindmapNode;
-                break;
-            default:
-                this.root = (new StandardLayout().layout(this.value, options) as unknown) as MindmapNode;
-                break;
-        }
+        const mindmapLayoutType = getLayoutByElement(this.value);
+        this.root = GlobalLayout.layout(this.value, options, mindmapLayoutType) as any;
         this.updateMindmapLocation();
         if (doCheck) {
             this.cdr.detectChanges();
