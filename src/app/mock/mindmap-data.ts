@@ -1,4 +1,5 @@
-import { PlaitMindmap, MindmapNodeShape, MindmapLayout } from '@plait/mindmap';
+import { PlaitMindmap, MindmapNodeShape } from '@plait/mindmap';
+import { MindmapLayoutType } from '@plait/layouts';
 
 export const mockMindmapData: PlaitMindmap = {
     type: 'mindmap',
@@ -69,7 +70,7 @@ export const mockMindmapData: PlaitMindmap = {
                     width: 144.8046875,
                     height: 24,
                     shape: MindmapNodeShape.underline,
-                    layout: MindmapLayout.right
+                    layout: MindmapLayoutType.right
                 },
                 {
                     id: '1-4-3',
@@ -83,7 +84,7 @@ export const mockMindmapData: PlaitMindmap = {
             width: 84,
             height: 24,
             shape: MindmapNodeShape.underline,
-            layout: MindmapLayout.indented
+            layout: MindmapLayoutType.rightBottomIndented
         },
         {
             id: '1-5',
@@ -99,5 +100,5 @@ export const mockMindmapData: PlaitMindmap = {
     isRoot: true,
     points: [[700, 300]],
     shape: MindmapNodeShape.underline,
-    layout: MindmapLayout.right
+    layout: MindmapLayoutType.right
 };

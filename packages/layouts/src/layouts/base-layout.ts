@@ -1,16 +1,13 @@
 import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { LayoutNode } from '../interfaces/node';
 import { buildLayoutTree, LayoutTree } from '../interfaces/tree';
-import { LayoutOptions, LayoutType, OriginNode } from '../types';
+import { LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
+import { extractLayoutType } from '../utils/layout';
 
 export class BaseLayout {
     constructor() {}
 
-    layout(root: OriginNode, options: LayoutOptions) {
-        throw new Error('please override this method');
-    }
-
-    protected baseLayout(node: OriginNode, layoutType: string, options: LayoutOptions, isHorizontal = false) {
+    layout(node: OriginNode, layoutType: string, options: LayoutOptions, isHorizontal = false) {
         // build layout node
         const isolatedNodes: LayoutNode[] = [];
         const isolatedLayoutRoots: LayoutNode[] = [];
@@ -20,7 +17,12 @@ export class BaseLayout {
 
         // 2、handle sub node layout
         isolatedNodes.forEach((isolatedNode: LayoutNode) => {
-            const isolatedRoot = this.baseLayout(isolatedNode.origin, isolatedNode.layout, options, isHorizontal);
+            const isolatedRoot = this.layout(
+                isolatedNode.origin,
+                extractLayoutType(isolatedNode.layout as MindmapLayoutType),
+                options,
+                isHorizontal
+            );
             const { width, height } = isolatedRoot.getBoundingBox();
 
             // 3、set sub node as black box
@@ -37,7 +39,6 @@ export class BaseLayout {
                 seperateSecondaryAxle(root);
                 break;
             case LayoutType.fishBone:
-                
                 break;
             case LayoutType.logic:
             default:

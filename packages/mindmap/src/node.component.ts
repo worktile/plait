@@ -37,8 +37,9 @@ import { fromEvent } from 'rxjs';
 import { findPath, getChildrenCount } from './utils/mindmap';
 import { getLinkLineColorByMindmapElement } from './utils/colors';
 import { drawIndentedLink } from './draw/indented-link';
-import { MindmapLayout } from './interfaces';
 import { addSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
+import { getLayoutByElement } from './utils/layout';
+import { isHorizontalLayout, MindmapLayoutType } from '@plait/layouts';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -139,16 +140,11 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             this.linkG.remove();
         }
 
-        let isHorizontal =
-            MindmapElement.hasLayout(this.parent.origin, MindmapLayout.downward) ||
-            MindmapElement.hasLayout(this.parent.origin, MindmapLayout.upward)
-                ? false
-                : true;
-
-        if (MindmapElement.hasLayout(this.parent.origin, MindmapLayout.indented)) {
+        const layout = getLayoutByElement(this.parent.origin) as MindmapLayoutType;
+        if (MindmapElement.isIndentedLayout(this.parent.origin)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         } else {
-            this.linkG = drawLink(this.roughSVG, this.parent, this.node, null, isHorizontal);
+            this.linkG = drawLink(this.roughSVG, this.parent, this.node, null, isHorizontalLayout(layout));
         }
 
         this.gGroup.append(this.linkG);
