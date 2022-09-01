@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.15
+
+### Patch Changes
+
+-   [`a8ff74a`](https://github.com/worktile/plait/commit/a8ff74ab27602faca43131a4d436078e2e524bc1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor layout type
+
 ## 0.0.14
 
 ### Patch Changes
