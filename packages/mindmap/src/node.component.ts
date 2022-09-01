@@ -248,10 +248,46 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         const stroke = getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         const extendY = MindmapElement.hasRoundRectangleShape(this.node.origin) ? y + height / 2 : y + height;
-        const extendLine = [
+        const nodeLayout = getLayoutByElement(this.node.origin) as MindmapLayoutType;
+
+        let extendLine = [
             [x + width, extendY],
             [x + width + 8, extendY]
         ];
+
+        let hideArrowG = this.roughSVG.linearPath(
+            [
+                [extendLine[1][0] + 10, extendLine[1][1] - 3],
+                [extendLine[1][0] + 4, extendLine[1][1]],
+                [extendLine[1][0] + 10, extendLine[1][1] + 3]
+            ],
+            {
+                stroke,
+                strokeWidth
+            }
+        );
+
+        if (isHorizontalLayout(nodeLayout)) {
+            if (this.parent.x > this.node.x) {
+                extendLine = [
+                    [x, extendY],
+                    [x - 26, extendY]
+                ];
+                hideArrowG = this.roughSVG.linearPath(
+                    [
+                        [extendLine[1][0] + 6, extendLine[1][1] - 3],
+                        [extendLine[1][0] + 12, extendLine[1][1]],
+                        [extendLine[1][0] + 6, extendLine[1][1] + 3]
+                    ],
+                    {
+                        stroke,
+                        strokeWidth
+                    }
+                );
+            }
+        } else {
+        }
+
         if (this.node.origin.isCollapsed) {
             this.gGroup.classList.add('collapsed');
 
@@ -276,17 +312,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                     strokeWidth,
                     fillStyle: 'solid'
                 });
-                const hideArrowG = this.roughSVG.linearPath(
-                    [
-                        [extendLine[1][0] + 10, extendLine[1][1] - 3],
-                        [extendLine[1][0] + 4, extendLine[1][1]],
-                        [extendLine[1][0] + 10, extendLine[1][1] + 3]
-                    ],
-                    {
-                        stroke,
-                        strokeWidth
-                    }
-                );
                 this.extendG.appendChild(hideCircleG);
                 this.extendG.appendChild(hideArrowG);
             }
