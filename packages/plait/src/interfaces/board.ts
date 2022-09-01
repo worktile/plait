@@ -2,6 +2,7 @@ import { SimpleChanges } from '@angular/core';
 import { CursorStatus } from './cursor';
 import { PlaitElement } from './element';
 import { PlaitElementContext } from './element-context';
+import { PlaitHistory } from './history';
 import { PlaitOperation } from './operation';
 import { Selection } from './selection';
 import { Viewport } from './viewport';
@@ -15,6 +16,9 @@ export interface PlaitBoard {
     cursor: CursorStatus;
     readonly: boolean;
     allowClearBoard: boolean;
+    history: PlaitHistory;
+    undo: () => void;
+    redo: () => void;
     apply: (operation: PlaitOperation) => void;
     onChange: () => void;
     mousedown: (event: MouseEvent) => void;

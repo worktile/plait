@@ -18,10 +18,16 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         },
         children,
         operations: [],
+        history: {
+            redos: [],
+            undos: []
+        },
         selection: null,
         cursor: BaseCursorStatus.select,
         readonly: options.readonly,
         allowClearBoard: options.allowClearBoard,
+        undo: () => {},
+        redo: () => {},
         apply: (operation: PlaitOperation) => {
             board.operations.push(operation);
 

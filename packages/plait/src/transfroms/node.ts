@@ -25,7 +25,8 @@ export function setNode(board: PlaitBoard, props: Partial<PlaitNode>, path: Path
 }
 
 export function removeNode(board: PlaitBoard, path: Path) {
-    const operation: RemoveNodeOperation = { type: 'remove_node', path };
+    const node = PlaitNode.get(board, path);
+    const operation: RemoveNodeOperation = { type: 'remove_node', path, node };
     board.apply(operation);
 }
 

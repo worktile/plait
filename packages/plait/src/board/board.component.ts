@@ -28,6 +28,7 @@ import { withSelection } from '../plugins/with-selection';
 import { PlaitOperation } from '../interfaces/operation';
 import { getViewBox, isNoSelectionElement } from '../utils/board';
 import { Viewport } from '../interfaces/viewport';
+import { withHistroy } from '../plugins/with-history';
 
 @Component({
     selector: 'plait-board',
@@ -117,7 +118,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     initializePlugins() {
         const options: PlaitBoardOptions = { readonly: this.plaitReadonly, allowClearBoard: this.plaitAllowClearBoard };
-        let board = withSelection(withBoard(createBoard(this.host, this.plaitValue, options)));
+        let board = withHistroy(withSelection(withBoard(createBoard(this.host, this.plaitValue, options))));
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
         });

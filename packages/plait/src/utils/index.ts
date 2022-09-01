@@ -7,3 +7,4 @@ export * from './weak-maps';
 export * from './helper';
 export * from './math';
 export * from './board';
+export * from './history';

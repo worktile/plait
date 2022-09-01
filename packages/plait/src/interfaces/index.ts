@@ -11,3 +11,4 @@ export * from './plugin';
 export * from './point';
 export * from './selection';
 export * from './viewport';
+export * from './history';
