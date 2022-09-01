@@ -104,7 +104,6 @@ export function withHistroy<T extends PlaitBoard>(board: T) {
     return board;
 }
 
-export const HISTORY = new WeakMap<PlaitBoard, History>();
 export const SAVING = new WeakMap<PlaitBoard, boolean | undefined>();
 export const MERGING = new WeakMap<PlaitBoard, boolean | undefined>();
 

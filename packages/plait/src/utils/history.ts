@@ -5,7 +5,7 @@ import { PlaitOperation } from '../interfaces';
  */
 
 export const shouldMerge = (op: PlaitOperation, prev: PlaitOperation | undefined): boolean => {
-    if (op.type === 'set_selection') {
+    if (op.type === 'set_viewport') {
         return true;
     }
     return false;
