@@ -21,6 +21,7 @@ export class GlobalLayout {
                 resultRoot.down2up();
                 return resultRoot;
             }
+            return resultRoot;
         }
 
         if (isStandardLayout(layoutType)) {
