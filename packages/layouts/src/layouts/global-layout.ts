@@ -7,7 +7,21 @@ export class GlobalLayout {
         const baseLayout = new BaseLayout();
 
         if (isIndentedLayout(layoutType)) {
-            return baseLayout.layout(root, LayoutType.indented, options, true);
+            const resultRoot = baseLayout.layout(root, LayoutType.indented, options, true);
+            if (layoutType === MindmapLayoutType.rightTopIndented) {
+                resultRoot.down2up();
+                return resultRoot;
+            }
+            if (layoutType === MindmapLayoutType.leftBottomIndented) {
+                resultRoot.right2left();
+                return resultRoot;
+            }
+            if (layoutType === MindmapLayoutType.leftTopIndented) {
+                resultRoot.down2up();
+                resultRoot.right2left();
+                return resultRoot;
+            }
+            return resultRoot;
         }
 
         if (isLogicLayout(layoutType)) {
