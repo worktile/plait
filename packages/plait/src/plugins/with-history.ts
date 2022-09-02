@@ -1,5 +1,5 @@
 import { PlaitBoard, PlaitOperation } from '../interfaces';
-import isHotkey from 'is-hotkey';
+import { isHotkey } from 'is-hotkey';
 import { shouldClear, shouldMerge, shouldSave } from '../utils';
 
 export function withHistroy<T extends PlaitBoard>(board: T) {
