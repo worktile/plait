@@ -68,15 +68,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.mousedown = (event: MouseEvent) => {
-        if (IS_TEXT_EDITABLE.get(board)) {
-            mousedown(event);
-            return;
-        }
-
         // select mindmap node
         const point = transformPoint(board, toPoint(event.x, event.y, board.host));
         const nodes: MindmapElement[] = [];
-        let selectedMindmap: PlaitMindmap | null = null;
 
         board.children.forEach((value: PlaitElement) => {
             if (isPlaitMindmap(value)) {
@@ -85,7 +79,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 (root as any).eachNode((node: MindmapNode) => {
                     if (hitMindmapNode(board, point, node)) {
                         addSelectedMindmapElements(board, node.origin);
-                        selectedMindmap = value;
                         nodes.push(node.origin);
                     } else {
                         hasSelectedMindmapElement(board, node.origin) && deleteSelectedMindmapElements(board, node.origin);
