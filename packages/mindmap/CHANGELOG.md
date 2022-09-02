@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.0.16
+
+### Patch Changes
+
+-   [#38](https://github.com/worktile/plait/pull/38) [`75d140d`](https://github.com/worktile/plait/commit/75d140d29b08c31d693d5acd99a2c19a40b56eb8) Thanks [@Ashy6](https://github.com/Ashy6)! - new node shape extaned father node shape
+
+*   [#35](https://github.com/worktile/plait/pull/35) [`a3a81f3`](https://github.com/worktile/plait/commit/a3a81f31955145bfb555b04be9f6ae62ee070d88) Thanks [@WBbug](https://github.com/WBbug)! - add left extend icon
+
 ## 0.0.15
 
 ### Patch Changes

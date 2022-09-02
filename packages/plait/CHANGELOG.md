@@ -1,5 +1,13 @@
 # plait
 
+## 0.0.16
+
+### Patch Changes
+
+-   [#36](https://github.com/worktile/plait/pull/36) [`5d08a51`](https://github.com/worktile/plait/commit/5d08a51e22f08fa03b2c43b6242bd621397fa8f7) Thanks [@WBbug](https://github.com/WBbug)! - add refreshViewport function
+
+*   [#37](https://github.com/worktile/plait/pull/37) [`ec23b28`](https://github.com/worktile/plait/commit/ec23b285af91217569a682b41b06468863cd3c92) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support undo and redo
+
 ## 0.0.14
 
 ### Patch Changes
