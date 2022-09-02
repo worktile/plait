@@ -27,7 +27,7 @@ import { BASE, PRIMARY_COLOR } from '../constants';
 import { drawLink } from '../draw/link';
 
 export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
-    const { mousedown, mousemove, mouseup, keydown } = board;
+    const { mousedown, mousemove, globalMouseup, keydown } = board;
 
     let activeElement: MindmapElement | null;
     let dragStartPoint: Point;
@@ -218,7 +218,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
         mousemove(event);
     };
 
-    board.mouseup = (event: MouseEvent) => {
+    board.globalMouseup = (event: MouseEvent) => {
         if (!board.readonly && activeElement) {
             if (dropTarget) {
                 const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
@@ -248,7 +248,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             fakeDropNodeG = undefined;
             dropTarget = null;
         }
-        mouseup(event);
+        globalMouseup(event);
     };
 
     board.keydown = (event: KeyboardEvent) => {

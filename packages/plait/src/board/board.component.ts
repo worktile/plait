@@ -144,7 +144,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         fromEvent<MouseEvent>(document, 'mouseup')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
-                this.board.mouseup(event);
+                this.board.globalMouseup(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'dblclick')

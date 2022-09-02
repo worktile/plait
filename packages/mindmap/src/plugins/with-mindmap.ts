@@ -30,7 +30,7 @@ import {
 } from '../utils/selected-elements';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, mousedown, mousemove, mouseup, keydown } = board;
+    const { drawElement, dblclick, mousedown, globalMouseup, keydown } = board;
 
     board.drawElement = (context: PlaitElementContext) => {
         const { element, selection, viewContainerRef, host } = context.elementInstance;
@@ -89,7 +89,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         mousedown(event);
     };
 
-    board.mouseup = (event: MouseEvent) => {
+    board.globalMouseup = (event: MouseEvent) => {
         const isBoardInside = event.target instanceof Node && board.host.contains(event.target);
         const isFakeNode = event.target instanceof HTMLElement && event.target.closest('.fake-node');
         const noSelectionElement = isNoSelectionElement(event);
@@ -99,7 +99,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 clearAllSelectedMindmapElements(board);
             }
         }
-        mouseup(event);
+        globalMouseup(event);
     };
 
     board.keydown = (event: KeyboardEvent) => {

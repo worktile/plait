@@ -45,7 +45,7 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         },
         onChange: () => {},
         mousedown: (event: MouseEvent) => {},
-        mouseup: (event: MouseEvent) => {},
+        globalMouseup: (event: MouseEvent) => {},
         mousemove: (event: MouseEvent) => {},
         keydown: (event: KeyboardEvent) => {},
         keyup: (event: KeyboardEvent) => {},

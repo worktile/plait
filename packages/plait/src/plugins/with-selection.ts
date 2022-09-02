@@ -1,4 +1,3 @@
-import { BaseCursorStatus } from '../interfaces/cursor';
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transfroms';
@@ -7,15 +6,12 @@ import { toRectangleClient } from '../utils/graph';
 import { isNoSelectionElement } from '../utils/board';
 
 export function withSelection<T extends PlaitBoard>(board: T) {
-    const { mousedown, mousemove, mouseup } = board;
+    const { mousedown, mousemove, globalMouseup } = board;
 
     let start: Point | null = null;
     let end: Point | null = null;
 
     board.mousedown = (event: MouseEvent) => {
-        if (!isNoSelectionElement(event) && board.cursor === BaseCursorStatus.select) {
-            start = toPoint(event.x, event.y, board.host);
-        }
         mousedown(event);
     };
 
@@ -30,9 +26,13 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         mousemove(event);
     };
 
-    board.mouseup = (event: MouseEvent) => {
+    board.globalMouseup = (event: MouseEvent) => {
         if (isNoSelectionElement(event)) {
-            return mouseup(event);
+            return globalMouseup(event);
+        } else {
+            if (!start && event.target instanceof Node && board.host.contains(event.target)) {
+                start = toPoint(event.x, event.y, board.host);
+            }
         }
 
         if (start) {
@@ -43,7 +43,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         start = null;
         end = null;
 
-        mouseup(event);
+        globalMouseup(event);
     };
 
     return board;

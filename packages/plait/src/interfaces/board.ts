@@ -22,7 +22,7 @@ export interface PlaitBoard {
     apply: (operation: PlaitOperation) => void;
     onChange: () => void;
     mousedown: (event: MouseEvent) => void;
-    mouseup: (event: MouseEvent) => void;
+    globalMouseup: (event: MouseEvent) => void;
     mousemove: (event: MouseEvent) => void;
     keydown: (event: KeyboardEvent) => void;
     keyup: (event: KeyboardEvent) => void;
