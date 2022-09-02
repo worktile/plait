@@ -5,7 +5,9 @@ import { MindmapElement } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
-import { getNodeShapeByElement, getRectangleByNode } from '../utils';
+import { getLayoutByElement, getNodeShapeByElement, getRectangleByNode } from '../utils';
+import { MindmapLayoutType } from 'dist/layouts/types';
+import { isTopLayout } from 'packages/layouts/src/utils/layout';
 
 export function drawLink(
     roughSVG: RoughSVG,
@@ -76,13 +78,37 @@ export function drawLink(
         const points = pointsOnBezierCurves(curve);
         return roughSVG.curve(points as any, { stroke, strokeWidth });
     } else {
-        const curve: Point[] = [
+        let curve: Point[] = [
             [beginX, beginY],
             [beginX, Math.round(beginY + (beginNode.vGap + endNode.vGap) / 2)],
             [endX, Math.round(endY - (beginNode.vGap + endNode.vGap) / 2)],
             [endX, endY]
         ];
-        const points = pointsOnBezierCurves(curve);
+        let points = pointsOnBezierCurves(curve);
+        const layout = getLayoutByElement(node.origin) as MindmapLayoutType;
+
+        if (!node.origin.isRoot) {
+            if (isTopLayout(layout)) {
+                curve = [
+                    [beginX, beginY],
+                    [beginX, Math.round(beginY + (beginNode.vGap + endNode.vGap) / 2)],
+                    [endX, Math.round(endY - (beginNode.vGap + endNode.vGap) / 2)],
+                    [endX, endY - 12]
+                ];
+                points = pointsOnBezierCurves(curve);
+                points.push([endX, endY], [endX, endY - 12]);
+            } else {
+                curve = [
+                    [beginX, beginY + 12],
+                    [beginX, Math.round(beginY + (beginNode.vGap + endNode.vGap) / 2)],
+                    [endX, Math.round(endY - (beginNode.vGap + endNode.vGap) / 2)],
+                    [endX, endY]
+                ];
+                points = pointsOnBezierCurves(curve);
+                points.unshift([beginX, beginY], [beginX, beginY + 12]);
+            }
+        }
+
         return roughSVG.curve(points as any, { stroke, strokeWidth });
     }
 }

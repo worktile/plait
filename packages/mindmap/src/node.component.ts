@@ -48,7 +48,7 @@ import { drawIndentedLink } from './draw/indented-link';
 import { addSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 import { getLayoutByElement } from './utils/layout';
 import { getNodeShapeByElement } from './utils/shape';
-import { isHorizontalLayout, MindmapLayoutType } from '@plait/layouts';
+import { isHorizontalLayout, MindmapLayoutType, isTopLayout } from '@plait/layouts';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -270,11 +270,61 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             [x + width + 8, extendY]
         ];
 
-        let hideArrowG = this.roughSVG.linearPath(
+        let arrowYOffset = [-3, 0, 3];
+        let arrowXOffset = [10, 4, 10];
+
+        let extendLineXOffset = [width, width + 8];
+        let extendLineYOffset = [0, 0];
+
+        let extendLineGOffset = [0, 0, 0, 0];
+
+        if (isHorizontalLayout(nodeLayout)) {
+            if (this.parent.x > this.node.x) {
+                extendLineXOffset = [0, -26];
+                extendLineYOffset = [0, 0];
+                arrowXOffset = [6, 12, 6];
+            }
+        } else {
+            arrowXOffset = [4, 8, 12];
+            arrowYOffset = isTopLayout(nodeLayout) ? [-3, 4, -3] : [3, -4, 3];
+            extendLineGOffset = [0, 0, 8, -8];
+            extendLineXOffset = [width / 2, width / 2 - 8];
+            if ((getNodeShapeByElement(this.node.origin) as MindmapNodeShape) === MindmapNodeShape.roundRectangle) {
+                if (isTopLayout(nodeLayout)) {
+                    extendLineYOffset = [-height / 2, -height / 2 - 18];
+                } else {
+                    extendLineYOffset = [height / 2, height / 2 + 18];
+                }
+            } else {
+                if (isTopLayout(nodeLayout)) {
+                    extendLineYOffset = [-height, -height - 18];
+                } else {
+                    extendLineYOffset = [0, 18];
+                }
+            }
+        }
+
+        extendLine = [
+            [x + extendLineXOffset[0], extendY + extendLineYOffset[0]],
+            [x + extendLineXOffset[1], extendY + extendLineYOffset[1]]
+        ];
+
+        const extendLineG = this.roughSVG.line(
+            extendLine[0][0] + extendLineGOffset[0],
+            extendLine[0][1] + extendLineGOffset[1],
+            extendLine[1][0] + extendLineGOffset[2],
+            extendLine[1][1] + extendLineGOffset[3],
+            {
+                strokeWidth,
+                stroke
+            }
+        );
+
+        const hideArrowG = this.roughSVG.linearPath(
             [
-                [extendLine[1][0] + 10, extendLine[1][1] - 3],
-                [extendLine[1][0] + 4, extendLine[1][1]],
-                [extendLine[1][0] + 10, extendLine[1][1] + 3]
+                [extendLine[1][0] + arrowXOffset[0], extendLine[1][1] + arrowYOffset[0]],
+                [extendLine[1][0] + arrowXOffset[1], extendLine[1][1] + arrowYOffset[1]],
+                [extendLine[1][0] + arrowXOffset[2], extendLine[1][1] + arrowYOffset[2]]
             ],
             {
                 stroke,
@@ -282,34 +332,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             }
         );
 
-        if (isHorizontalLayout(nodeLayout)) {
-            if (this.parent.x > this.node.x) {
-                extendLine = [
-                    [x, extendY],
-                    [x - 26, extendY]
-                ];
-                hideArrowG = this.roughSVG.linearPath(
-                    [
-                        [extendLine[1][0] + 6, extendLine[1][1] - 3],
-                        [extendLine[1][0] + 12, extendLine[1][1]],
-                        [extendLine[1][0] + 6, extendLine[1][1] + 3]
-                    ],
-                    {
-                        stroke,
-                        strokeWidth
-                    }
-                );
-            }
-        } else {
-        }
-
         if (this.node.origin.isCollapsed) {
             this.gGroup.classList.add('collapsed');
 
-            const extendLineG = this.roughSVG.line(extendLine[0][0], extendLine[0][1], extendLine[1][0], extendLine[1][1], {
-                strokeWidth,
-                stroke
-            });
             this.extendG.appendChild(extendLineG);
 
             const badge = this.roughSVG.circle(extendLine[1][0] + 8, extendLine[1][1], 16, { fill: stroke, stroke, fillStyle: 'solid' });
