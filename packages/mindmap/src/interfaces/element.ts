@@ -32,12 +32,6 @@ export interface MindmapElement {
 }
 
 export const MindmapElement = {
-    hasRoundRectangleShape(value: MindmapElement) {
-        return value.shape === MindmapNodeShape.roundRectangle || value.shape === undefined || value.shape === null;
-    },
-    hasUnderlineShape(value: MindmapElement) {
-        return value.shape === MindmapNodeShape.underline;
-    },
     hasLayout(value: MindmapElement, layout: MindmapLayoutType) {
         const _layout = getLayoutByElement(value);
         return _layout === layout;

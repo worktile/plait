@@ -261,7 +261,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         const { x, y, width, height } = getRectangleByNode(this.node);
         const stroke = getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
-        const extendY = MindmapElement.hasRoundRectangleShape(this.node.origin) ? y + height / 2 : y + height;
+        const extendY =
+            (getNodeShapeByElement(this.node.origin) as MindmapNodeShape) === MindmapNodeShape.roundRectangle ? y + height / 2 : y + height;
         const nodeLayout = getLayoutByElement(this.node.origin) as MindmapLayoutType;
 
         let extendLine = [
