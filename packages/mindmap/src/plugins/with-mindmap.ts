@@ -78,7 +78,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 const root = mindmapComponent?.root;
                 (root as any).eachNode((node: MindmapNode) => {
                     if (hitMindmapNode(board, point, node)) {
-                        console.log('xxx');
                         addSelectedMindmapElements(board, node.origin);
                         nodes.push(node.origin);
                     } else {
