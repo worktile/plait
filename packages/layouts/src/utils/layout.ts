@@ -36,10 +36,12 @@ export const isStandardLayout = (layout: MindmapLayoutType) => {
 };
 
 export const isHorizontalLayout = (layout: MindmapLayoutType) => {
+    return layout === MindmapLayoutType.right || layout === MindmapLayoutType.left || layout === MindmapLayoutType.standard;
+};
+
+export const isTopLayout = (layout: MindmapLayoutType) => {
     return (
-        layout === MindmapLayoutType.right ||
-        layout === MindmapLayoutType.left ||
-        layout === MindmapLayoutType.standard
+        layout === MindmapLayoutType.leftTopIndented || layout === MindmapLayoutType.rightTopIndented || layout === MindmapLayoutType.upward
     );
 };
 
