@@ -33,5 +33,35 @@ export const LayoutDirectionsMap = {
     [MindmapLayoutType.rightTopIndented]: [LayoutDirection.right, LayoutDirection.top],
     [MindmapLayoutType.leftBottomIndented]: [LayoutDirection.left, LayoutDirection.bottom],
     [MindmapLayoutType.leftTopIndented]: [LayoutDirection.left, LayoutDirection.top]
-}
+};
 
+export const LayoutTypeMap = {
+    [LayoutDirection.right]: [
+        MindmapLayoutType.upward,
+        MindmapLayoutType.downward,
+        MindmapLayoutType.right,
+        MindmapLayoutType.rightBottomIndented,
+        MindmapLayoutType.rightTopIndented
+    ],
+    [LayoutDirection.left]: [
+        MindmapLayoutType.upward,
+        MindmapLayoutType.downward,
+        MindmapLayoutType.left,
+        MindmapLayoutType.leftTopIndented,
+        MindmapLayoutType.leftBottomIndented,
+    ],
+    [LayoutDirection.top]: [
+        MindmapLayoutType.upward,
+        MindmapLayoutType.left,
+        MindmapLayoutType.right,
+        MindmapLayoutType.rightTopIndented,
+        MindmapLayoutType.leftTopIndented,
+    ],
+    [LayoutDirection.bottom]: [
+        MindmapLayoutType.downward,
+        MindmapLayoutType.left,
+        MindmapLayoutType.right,
+        MindmapLayoutType.rightBottomIndented,
+        MindmapLayoutType.leftBottomIndented,
+    ]
+};
