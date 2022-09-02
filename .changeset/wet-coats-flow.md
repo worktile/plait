@@ -2,4 +2,4 @@
 '@plait/mindmap': patch
 ---
 
-add vertical direction line,fix vertical extend position
+change drawLink line,fix vertical extend position

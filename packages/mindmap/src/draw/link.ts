@@ -6,7 +6,7 @@ import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
 import { getLayoutByElement, getNodeShapeByElement, getRectangleByNode } from '../utils';
-import { MindmapLayoutType } from 'dist/layouts/types';
+import { MindmapLayoutType } from 'packages/layouts/src/types';
 import { isTopLayout } from 'packages/layouts/src/utils/layout';
 
 export function drawLink(
@@ -58,6 +58,37 @@ export function drawLink(
             [endX, endY]
         ];
         const shape = getNodeShapeByElement(child.origin) as MindmapNodeShape;
+
+        if (!node.origin.isRoot) {
+            if (node.x > child.x) {
+                curve = [
+                    [beginX, beginY],
+                    [Math.round(beginX + (beginNode.hGap + endNode.hGap) / 3), beginY],
+                    [Math.round(endX - (beginNode.hGap + endNode.hGap) / 2), endY],
+                    [endX - 12, endY]
+                ];
+                const line = [
+                    [endX - 12, endY],
+                    [endX - 12, endY],
+                    [endX, endY]
+                ] as Point[];
+                curve = [...curve, ...line];
+            } else {
+                curve = [
+                    [beginX + 12, beginY],
+                    [Math.round(beginX + (beginNode.hGap + endNode.hGap) / 2), beginY],
+                    [Math.round(endX - (beginNode.hGap + endNode.hGap) / 3), endY],
+                    [endX, endY]
+                ];
+                const line = [
+                    [beginX, beginY],
+                    [beginX + 12, beginY],
+                    [beginX + 12, beginY]
+                ] as Point[];
+                curve = [...line, ...curve];
+            }
+        }
+
         if (shape === MindmapNodeShape.underline) {
             if (child.left) {
                 const underline = [
@@ -75,6 +106,7 @@ export function drawLink(
                 curve = [...curve, ...underline];
             }
         }
+
         const points = pointsOnBezierCurves(curve);
         return roughSVG.curve(points as any, { stroke, strokeWidth });
     } else {
@@ -84,7 +116,6 @@ export function drawLink(
             [endX, Math.round(endY - (beginNode.vGap + endNode.vGap) / 2)],
             [endX, endY]
         ];
-        let points = pointsOnBezierCurves(curve);
         const layout = getLayoutByElement(node.origin) as MindmapLayoutType;
 
         if (!node.origin.isRoot) {
@@ -95,8 +126,14 @@ export function drawLink(
                     [endX, Math.round(endY - (beginNode.vGap + endNode.vGap) / 2)],
                     [endX, endY - 12]
                 ];
-                points = pointsOnBezierCurves(curve);
-                points.push([endX, endY], [endX, endY - 12]);
+
+                const line = [
+                    [endX, endY - 12],
+                    [endX, endY - 12],
+                    [endX, endY]
+                ] as Point[];
+
+                curve = [...curve, ...line];
             } else {
                 curve = [
                     [beginX, beginY + 12],
@@ -104,11 +141,17 @@ export function drawLink(
                     [endX, Math.round(endY - (beginNode.vGap + endNode.vGap) / 2)],
                     [endX, endY]
                 ];
-                points = pointsOnBezierCurves(curve);
-                points.unshift([beginX, beginY], [beginX, beginY + 12]);
+
+                const line = [
+                    [beginX, beginY],
+                    [beginX, beginY + 12],
+                    [beginX, beginY + 12]
+                ] as Point[];
+
+                curve = [...line, ...curve];
             }
         }
-
+        const points = pointsOnBezierCurves(curve);
         return roughSVG.curve(points as any, { stroke, strokeWidth });
     }
 }
