@@ -9,7 +9,6 @@ import {
     Input,
     NgZone,
     OnDestroy,
-    OnInit,
     Output,
     Renderer2
 } from '@angular/core';
@@ -40,7 +39,7 @@ const NATIVE_INPUT_TYPES = ['insertText'];
     templateUrl: './richtext.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
     @HostBinding('class') hostClass = 'plait-richtext-container';
 
     initialized = false;
@@ -49,8 +48,13 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
 
     eventListeners: (() => void)[] = [];
 
-    @Input()
-    plaitValue: Element | undefined;
+    @Input() set plaitValue(value: Element) {
+        this._plaitValue = value;
+        this.editor.children = [value];
+        NODE_TO_PARENT.set(this.bindValue, this.editor);
+        NODE_TO_INDEX.set(this.bindValue, 0);
+        this.cdr.markForCheck();
+    }
 
     @Input()
     plaitReadonly = false;
@@ -79,6 +83,8 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
 
     editor = withInline(withRichtext(createEditor()));
 
+    _plaitValue!: Element;
+
     get bindValue(): Element {
         return this.editor.children[0] as Element;
     }
@@ -93,14 +99,6 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit, OnDestroy 
         private cdr: ChangeDetectorRef,
         private elementRef: ElementRef<HTMLElement>
     ) {}
-
-    ngOnInit(): void {
-        if (this.plaitValue) {
-            this.editor.children = [this.plaitValue];
-            NODE_TO_PARENT.set(this.bindValue, this.editor);
-            NODE_TO_INDEX.set(this.bindValue, 0);
-        }
-    }
 
     ngAfterViewInit(): void {
         this.initialize();

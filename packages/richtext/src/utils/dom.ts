@@ -42,22 +42,22 @@ export const getDefaultView = (value: any): Window => {
 /**
  * Check if a DOM node is a comment node.
  */
- export const isDOMComment = (value: any): value is DOMComment => {
+export const isDOMComment = (value: any): value is DOMComment => {
     return isDOMNode(value) && value.nodeType === 8;
 };
 
 /**
  * Check if a DOM node is an element node.
  */
- export const isDOMElement = (value: any): value is DOMElement => {
+export const isDOMElement = (value: any): value is DOMElement => {
     return isDOMNode(value) && value.nodeType === 1;
 };
 
 /**
  * Check if a value is a DOM node.
  */
- export const isDOMNode = (value: any): value is DOMNode => {
-    const window = getDefaultView(value)
+export const isDOMNode = (value: any): value is DOMNode => {
+    const window = getDefaultView(value);
     return !!window && value instanceof window.Node;
 };
 
@@ -66,11 +66,7 @@ export const getDefaultView = (value: any): Window => {
  * `direction`.
  */
 
- export const getEditableChildAndIndex = (
-    parent: DOMElement,
-    index: number,
-    direction: 'forward' | 'backward'
-): [DOMNode, number] => {
+export const getEditableChildAndIndex = (parent: DOMElement, index: number, direction: 'forward' | 'backward'): [DOMNode, number] => {
     const { childNodes } = parent;
     let child = childNodes[index];
     let i = index;
@@ -108,26 +104,22 @@ export const getDefaultView = (value: any): Window => {
     }
 
     return [child, index];
-}
+};
 
 /**
  * Get the nearest editable child at `index` in a `parent`, preferring
  * `direction`.
  */
 
- export const getEditableChild = (
-    parent: DOMElement,
-    index: number,
-    direction: 'forward' | 'backward'
-): DOMNode => {
+export const getEditableChild = (parent: DOMElement, index: number, direction: 'forward' | 'backward'): DOMNode => {
     const [child] = getEditableChildAndIndex(parent, index, direction);
     return child;
-}
+};
 
 /**
  * Normalize a DOM point so that it always refers to a text node.
  */
- export const normalizeDOMPoint = (domPoint: DOMPoint): DOMPoint => {
+export const normalizeDOMPoint = (domPoint: DOMPoint): DOMPoint => {
     let [node, offset] = domPoint;
 
     // If it's an element node, its offset refers to the index of its children
@@ -135,9 +127,7 @@ export const getDefaultView = (value: any): Window => {
     if (isDOMElement(node) && node.childNodes.length) {
         let isLast = offset === node.childNodes.length;
         let index = isLast ? offset - 1 : offset;
-        ;[node, index] = getEditableChildAndIndex(node,
-            index,
-            isLast ? 'backward' : 'forward');
+        [node, index] = getEditableChildAndIndex(node, index, isLast ? 'backward' : 'forward');
 
         // If the editable child found is in front of input offset, we instead seek to its end
         isLast = index < offset;
@@ -150,8 +140,7 @@ export const getDefaultView = (value: any): Window => {
         }
 
         // Determine the new offset inside the text node.
-        offset =
-            isLast && node.textContent != null ? node.textContent.length : 0;
+        offset = isLast && node.textContent != null ? node.textContent.length : 0;
     }
 
     // Return the node and offset.
