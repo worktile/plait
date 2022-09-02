@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.17
+
+### Patch Changes
+
+-   [`68cd7a1`](https://github.com/worktile/plait/commit/68cd7a16a0db558c6faf4dea57fc8041bc421b8d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix isHotkey import error
+
 ## 0.0.16
 
 ### Patch Changes
