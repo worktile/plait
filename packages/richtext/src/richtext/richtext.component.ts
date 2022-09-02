@@ -48,14 +48,12 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
 
     eventListeners: (() => void)[] = [];
 
-    @Input() set plaitValue(value: Element | undefined) {
+    @Input() set plaitValue(value: Element) {
         this._plaitValue = value;
-        if (value) {
-            this.editor.children = [value];
-            NODE_TO_PARENT.set(this.bindValue, this.editor);
-            NODE_TO_INDEX.set(this.bindValue, 0);
-            this.cdr.markForCheck();
-        }
+        this.editor.children = [value];
+        NODE_TO_PARENT.set(this.bindValue, this.editor);
+        NODE_TO_INDEX.set(this.bindValue, 0);
+        this.cdr.markForCheck();
     }
 
     @Input()
@@ -85,7 +83,7 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
 
     editor = withInline(withRichtext(createEditor()));
 
-    _plaitValue: Element | undefined;
+    _plaitValue!: Element;
 
     get bindValue(): Element {
         return this.editor.children[0] as Element;

@@ -1,14 +1,11 @@
-import { PlaitOperation } from '../interfaces';
+import { MERGING, PlaitBoard, PlaitOperation, SAVING } from '../interfaces';
 
 /**
  * Check whether to merge an operation into the previous operation.
  */
 
 export const shouldMerge = (op: PlaitOperation, prev: PlaitOperation | undefined): boolean => {
-    if (
-        op.type === 'set_viewport' ||
-        (op.type === 'set_node' && prev?.type === 'set_node' && op?.newProperties?.width !== prev?.newProperties?.width)
-    ) {
+    if (op.type === 'set_viewport') {
         return true;
     }
     return false;
@@ -36,4 +33,44 @@ export const shouldClear = (op: PlaitOperation): boolean => {
     }
 
     return true;
+};
+
+export const PlaitHistoryBoard = {
+    /**
+     * Get the saving flag's current value.
+     */
+    isSaving(board: PlaitBoard): boolean | undefined {
+        return SAVING.get(board);
+    },
+
+    /**
+     * Get the merge flag's current value.
+     */
+
+    isMerging(board: PlaitBoard): boolean | undefined {
+        return MERGING.get(board);
+    },
+
+    /**
+     * Apply a series of changes inside a synchronous `fn`, without merging any of
+     * the new operations into previous save point in the history.
+     */
+
+    withoutMerging(board: PlaitBoard, fn: () => void): void {
+        const prev = PlaitHistoryBoard.isMerging(board);
+        MERGING.set(board, false);
+        fn();
+        MERGING.set(board, prev);
+    },
+    /**
+     * Apply a series of changes inside a synchronous `fn`, without saving any of
+     * their operations into the history.
+     */
+
+    withoutSaving(board: PlaitBoard, fn: () => void): void {
+        const prev = PlaitHistoryBoard.isSaving(board);
+        SAVING.set(board, false);
+        fn();
+        SAVING.set(board, prev);
+    }
 };

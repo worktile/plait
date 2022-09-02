@@ -20,7 +20,8 @@ import {
     IS_TEXT_EDITABLE,
     PlaitBoard,
     Transforms,
-    transformPoint
+    transformPoint,
+    MERGING
 } from '@plait/core';
 import { PlaitRichtextComponent, setFullSelectionAndFocus } from '@plait/richtext';
 import { drawRectangleNode } from './draw/shape';
@@ -416,6 +417,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
             const path = findPath(this.board, this.node);
             Transforms.setNode(this.board, newElement, path);
+            MERGING.set(this.board, true);
         });
         const composition$ = richtextInstance.plaitComposition.subscribe(event => {
             const { width, height } = richtextInstance.editable.getBoundingClientRect();
@@ -451,6 +453,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             mousedown$.unsubscribe();
             keydown$.unsubscribe();
             // editable status
+            MERGING.set(this.board, false);
             richtextInstance.plaitReadonly = true;
             this.richtextComponentRef?.changeDetectorRef.markForCheck();
             this.isEditable = false;

@@ -1,6 +1,6 @@
 import { PlaitBoard, PlaitOperation } from '../interfaces';
 import { isHotkey } from 'is-hotkey';
-import { shouldClear, shouldMerge, shouldSave } from '../utils';
+import { PlaitHistoryBoard, shouldClear, shouldMerge, shouldSave } from '../utils';
 
 export function withHistroy<T extends PlaitBoard>(board: T) {
     const { apply, keydown } = board;
@@ -98,46 +98,3 @@ export function withHistroy<T extends PlaitBoard>(board: T) {
 
     return board;
 }
-
-export const SAVING = new WeakMap<PlaitBoard, boolean | undefined>();
-export const MERGING = new WeakMap<PlaitBoard, boolean | undefined>();
-
-export const PlaitHistoryBoard = {
-    /**
-     * Get the saving flag's current value.
-     */
-    isSaving(board: PlaitBoard): boolean | undefined {
-        return SAVING.get(board);
-    },
-
-    /**
-     * Get the merge flag's current value.
-     */
-
-    isMerging(board: PlaitBoard): boolean | undefined {
-        return MERGING.get(board);
-    },
-
-    /**
-     * Apply a series of changes inside a synchronous `fn`, without merging any of
-     * the new operations into previous save point in the history.
-     */
-
-    withoutMerging(editor: PlaitBoard, fn: () => void): void {
-        const prev = PlaitHistoryBoard.isMerging(editor);
-        MERGING.set(editor, false);
-        fn();
-        MERGING.set(editor, prev);
-    },
-    /**
-     * Apply a series of changes inside a synchronous `fn`, without saving any of
-     * their operations into the history.
-     */
-
-    withoutSaving(editor: PlaitBoard, fn: () => void): void {
-        const prev = PlaitHistoryBoard.isSaving(editor);
-        SAVING.set(editor, false);
-        fn();
-        SAVING.set(editor, prev);
-    }
-};
