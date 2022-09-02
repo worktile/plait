@@ -60,3 +60,8 @@ export function updateEditStatus(richtextComponentRef: ComponentRef<PlaitRichtex
     richtextComponentRef.instance.plaitReadonly = edit ? false : true;
     richtextComponentRef.changeDetectorRef.markForCheck();
 }
+
+export function updateRichText(element: SlateElement, richtextComponentRef: ComponentRef<PlaitRichtextComponent>) {
+    richtextComponentRef.instance.plaitValue = element;
+    return richtextComponentRef;
+}

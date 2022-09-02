@@ -40,6 +40,7 @@ import {
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { debounceTime, take } from 'rxjs/operators';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
+import { updateRichText } from '@plait/richtext';
 import { MindmapElement } from './interfaces/element';
 import { fromEvent } from 'rxjs';
 import { findPath, getChildrenCount } from './utils/mindmap';
@@ -355,6 +356,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     }
 
     updateRichtextLocation() {
+        updateRichText(this.node.origin.value, this.richtextComponentRef!);
         updateMindmapNodeRichtextLocation(this.node as MindmapNode, this.richtextG as SVGGElement);
     }
 
