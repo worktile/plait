@@ -35,11 +35,15 @@ export const getAvailableSubLayouts = (layout: MindmapLayoutType): MindmapLayout
     const result: MindmapLayoutType[] = [];
     const layoutReverseDirections = LayoutDirectionsMap[layout].map(getLayoutReverseDirection);
     for (const key in MindmapLayoutType) {
-        const layoutDirections = LayoutDirectionsMap[key];
-        const exist = layoutDirections.some(d => layoutReverseDirections.includes(d));
-        if (!exist) {
-            result.push(key as MindmapLayoutType);
+        const layout = MindmapLayoutType[key as keyof typeof MindmapLayoutType];
+        const layoutDirections = LayoutDirectionsMap[layout];
+        if (layoutDirections) { // handle standrad
+            const exist = layoutDirections.some(d => layoutReverseDirections.includes(d));
+            if (!exist) {
+                result.push(layout);
+            }
         }
+        
     }
     return result;
 };
