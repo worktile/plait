@@ -14,21 +14,20 @@ import {
 import {
     createG,
     createText,
-    toPoint,
-    Selection,
     HOST_TO_ROUGH_SVG,
     IS_TEXT_EDITABLE,
+    MERGING,
     PlaitBoard,
-    Transforms,
+    Selection,
+    toPoint,
     transformPoint,
-    MERGING
+    Transforms
 } from '@plait/core';
-import { PlaitRichtextComponent, setFullSelectionAndFocus } from '@plait/richtext';
-import { drawRectangleNode } from './draw/shape';
+import { isHorizontalLayout, isTopLayout, MindmapLayoutType } from '@plait/layouts';
+import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { MindmapNode } from './interfaces/node';
-import { drawLink } from './draw/link';
-import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
+import { fromEvent, Subject } from 'rxjs';
+import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import {
     MindmapNodeShape,
     MINDMAP_NODE_KEY,
@@ -38,19 +37,19 @@ import {
     TOPIC_COLOR,
     TOPIC_FONT_SIZE
 } from './constants';
-import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
-import { debounceTime, take } from 'rxjs/operators';
-import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
-import { updateRichText } from '@plait/richtext';
-import { MindmapElement } from './interfaces/element';
-import { fromEvent } from 'rxjs';
-import { findPath, getChildrenCount } from './utils/mindmap';
-import { getLinkLineColorByMindmapElement } from './utils/colors';
 import { drawIndentedLink } from './draw/indented-link';
-import { addSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
+import { drawLink } from './draw/link';
+import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
+import { drawRectangleNode } from './draw/shape';
+import { MindmapElement } from './interfaces/element';
+import { MindmapNode } from './interfaces/node';
+import { getLinkLineColorByMindmapElement } from './utils/colors';
+import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { getLayoutByElement } from './utils/layout';
+import { findPath, getChildrenCount } from './utils/mindmap';
+import { addSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
-import { isHorizontalLayout, MindmapLayoutType, isTopLayout } from '@plait/layouts';
+import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -105,6 +104,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
     richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
 
+    destroy$: Subject<any> = new Subject();
+
     constructor(private viewContainerRef: ViewContainerRef, private render2: Renderer2) {}
 
     ngOnInit(): void {
@@ -113,14 +114,32 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         this.gGroup.setAttribute(MINDMAP_NODE_KEY, 'true');
         this.mindmapGGroup.prepend(this.gGroup);
         this.roughSVG = HOST_TO_ROUGH_SVG.get(this.host) as RoughSVG;
+        this.initializeEvents();
         this.drawShape();
         this.drawLink();
         this.drawRichtext();
-        this.drawExtend();
         this.drawActivG();
         this.updateActiveClass();
         this.initialized = true;
         ELEMENT_GROUP_TO_COMPONENT.set(this.gGroup, this);
+    }
+
+    initializeEvents() {
+        fromEvent<MouseEvent>(this.gGroup, 'mouseenter')
+            .pipe(takeUntil(this.destroy$), debounceTime(200))
+            .subscribe((event: MouseEvent) => {
+                if (this.gGroup.contains(event.target as HTMLElement)) {
+                    this.drawExtend();
+                }
+            });
+
+        fromEvent<MouseEvent>(this.gGroup, 'mouseleave')
+            .pipe(takeUntil(this.destroy$), debounceTime(200))
+            .subscribe((event: MouseEvent) => {
+                if (this.gGroup.contains(event.target as HTMLElement)) {
+                    this.destroyExtend();
+                }
+            });
     }
 
     ngAfterViewInit(): void {
@@ -241,9 +260,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         }
 
         // destroy
-        if (this.extendG) {
-            this.extendG.remove();
-        }
+        this.destroyExtend();
 
         // create extend
         this.extendG = createG();
@@ -258,6 +275,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 const newElement: Partial<MindmapElement> = { isCollapsed };
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
+                this.destroyExtend();
             });
 
         const { x, y, width, height } = getRectangleByNode(this.node);
@@ -360,6 +378,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         }
     }
 
+    destroyExtend() {
+        if (this.extendG) {
+            this.extendG.remove();
+        }
+    }
+
     applyRichtextAttribute() {
         const richtextContainer = this.richtextG?.querySelector('.plait-richtext-container') as HTMLElement;
         const fontSize = this.node.origin.fontSize
@@ -407,7 +431,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 if (this.foreignObject && this.foreignObject.children.length <= 0) {
                     this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
                 }
-                this.drawExtend();
                 this.drawActivG();
             }
         }
@@ -493,5 +516,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     ngOnDestroy(): void {
         this.destroyRichtext();
         this.gGroup.remove();
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 }

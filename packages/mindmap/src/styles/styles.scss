@@ -12,17 +12,7 @@ g[plait-mindmap="true"] {
     }
 
     .extend {
-        opacity: 0;
         cursor: pointer;
-        &:hover {
-            opacity: 1;
-        }
-    }
-
-    .collapsed {
-        .extend {
-            opacity: 1;
-        }
     }
 
     .dragging-origin, .dragging-child {
