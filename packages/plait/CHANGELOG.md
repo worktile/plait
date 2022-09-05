@@ -1,5 +1,13 @@
 # plait
 
+## 0.0.19
+
+### Patch Changes
+
+-   [`dc0a5dd`](https://github.com/worktile/plait/commit/dc0a5dd4016abf1ed339c414d2d9b8c6b3491b5d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - mouseup rename globalMouseup and complete withSelection
+
+*   [#41](https://github.com/worktile/plait/pull/41) [`b48a91e`](https://github.com/worktile/plait/commit/b48a91e207aa8624ab5c1475612d84101a75042d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - sync richtext when mandmap node change and merge width change operation
+
 ## 0.0.17
 
 ### Patch Changes

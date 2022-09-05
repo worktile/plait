@@ -1,5 +1,21 @@
 # mindmap
 
+## 0.0.19
+
+### Patch Changes
+
+-   [`dc0a5dd`](https://github.com/worktile/plait/commit/dc0a5dd4016abf1ed339c414d2d9b8c6b3491b5d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - mouseup rename globalMouseup and complete withSelection
+
+*   [#40](https://github.com/worktile/plait/pull/40) [`38e170f`](https://github.com/worktile/plait/commit/38e170f5b2fb8e0af11672c2860cc49e833f6be0) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix blur text error
+
+-   [#41](https://github.com/worktile/plait/pull/41) [`b48a91e`](https://github.com/worktile/plait/commit/b48a91e207aa8624ab5c1475612d84101a75042d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - sync richtext when mandmap node change and merge width change operation
+
+*   [#47](https://github.com/worktile/plait/pull/47) [`e2bd891`](https://github.com/worktile/plait/commit/e2bd8916fbadaf0fd9bf97ede6bd3a0dd87208d1) Thanks [@WBbug](https://github.com/WBbug)! - change stroke-width, redraw extendLine and arrow
+
+-   [#43](https://github.com/worktile/plait/pull/43) [`7c1cec1`](https://github.com/worktile/plait/commit/7c1cec19cbaf35bc77eb85f53c78680eb29653a5) Thanks [@Ashy6](https://github.com/Ashy6)! - support getAvailableSubLayouts
+
+*   [#42](https://github.com/worktile/plait/pull/42) [`a9396a6`](https://github.com/worktile/plait/commit/a9396a6537d057a1934b02df719394a693e36fc8) Thanks [@WBbug](https://github.com/WBbug)! - change drawLink line,fix vertical extend position
+
 ## 0.0.16
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # layouts
 
+## 0.0.19
+
+### Patch Changes
+
+-   [`7c6fd48`](https://github.com/worktile/plait/commit/7c6fd4835d6a8dfb32e59626d6ca6ae66fbe2d9c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix downward layout not work
+
+*   [#42](https://github.com/worktile/plait/pull/42) [`a9396a6`](https://github.com/worktile/plait/commit/a9396a6537d057a1934b02df719394a693e36fc8) Thanks [@WBbug](https://github.com/WBbug)! - add isTopLayout function
+
+-   [`4c11fa4`](https://github.com/worktile/plait/commit/4c11fa4d0723c77effdf0e4d6972819b81d52804) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - sub layout support isHorizontal
+
+*   [`aacc213`](https://github.com/worktile/plait/commit/aacc21348f0381112c7a05b00692e0fe21b01248) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support 4 kind indtend layout
+
 ## 0.0.15
 
 ### Patch Changes
