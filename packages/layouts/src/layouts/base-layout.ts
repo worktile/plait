@@ -2,7 +2,7 @@ import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { LayoutNode } from '../interfaces/node';
 import { buildLayoutTree, LayoutTree } from '../interfaces/tree';
 import { LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
-import { extractLayoutType } from '../utils/layout';
+import { extractLayoutType, isHorizontalLayout } from '../utils/layout';
 
 export class BaseLayout {
     constructor() {}
@@ -17,11 +17,12 @@ export class BaseLayout {
 
         // 2、handle sub node layout
         isolatedNodes.forEach((isolatedNode: LayoutNode) => {
+            const _isHorizontal = isHorizontalLayout(isolatedNode.layout as MindmapLayoutType);
             const isolatedRoot = this.layout(
                 isolatedNode.origin,
                 extractLayoutType(isolatedNode.layout as MindmapLayoutType),
                 options,
-                isHorizontal
+                _isHorizontal
             );
             const { width, height } = isolatedRoot.getBoundingBox();
 
@@ -56,7 +57,8 @@ export class BaseLayout {
             layoutRoot.translate(isolatedNode.x, isolatedNode.y);
             if (isolatedNode.parent) {
                 const index = isolatedNode.parent.children.indexOf(isolatedNode);
-                isolatedNode.parent.children[index] = Object.assign(isolatedNode.parent.children[index], layoutRoot);
+                const oldNode = isolatedNode.parent.children[index];
+                isolatedNode.parent.children[index] = Object.assign(oldNode, layoutRoot);
             }
         });
 

@@ -1,6 +1,7 @@
 import { LayoutDirection, LayoutDirectionsMap, MindmapElement } from '../interfaces';
 import { findParentElement } from './mindmap';
 import { MindmapLayoutType } from '@plait/layouts';
+import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 
 export const getLayoutByElement = (element: MindmapElement): MindmapLayoutType => {
     const layout = element.layout;
@@ -25,6 +26,17 @@ export const getLayoutParentByElement = (element: MindmapElement): MindmapLayout
     }
     return MindmapLayoutType.standard;
 };
+
+/**
+ * 获取正确的布局类型：
+ * 1. 假如根布局是 Standard、则子节点需要被定位左布局或右布局
+ * 2. 假如子节点的布局被纠正则返回纠正后的布局
+ * @param element 
+ */
+export const getCorectLayoutByElement = (element: MindmapElement) => {
+    const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
+    
+}
 
 /**
  * 获取指定布局下允许的子布局
