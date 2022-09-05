@@ -23,7 +23,6 @@ export enum MindmapLayoutType {
     'leftBottomIndented' = 'left-bottom-indented'
 }
 
-
 export enum LayoutType {
     'logic' = 'logic',
     'indented' = 'indented',

@@ -24,7 +24,7 @@ export enum LayoutDirection {
     'left' = 'left'
 }
 
-export const LayoutDirectionsMap = {
+export const LayoutDirectionsMap: LayoutDirectionMapType = {
     [MindmapLayoutType.right]: [LayoutDirection.right],
     [MindmapLayoutType.left]: [LayoutDirection.left],
     [MindmapLayoutType.upward]: [LayoutDirection.top],
@@ -33,5 +33,6 @@ export const LayoutDirectionsMap = {
     [MindmapLayoutType.rightTopIndented]: [LayoutDirection.right, LayoutDirection.top],
     [MindmapLayoutType.leftBottomIndented]: [LayoutDirection.left, LayoutDirection.bottom],
     [MindmapLayoutType.leftTopIndented]: [LayoutDirection.left, LayoutDirection.top]
-}
+};
 
+type LayoutDirectionMapType = { [key: string]: LayoutDirection[] };
