@@ -2,4 +2,4 @@
 '@plait/mindmap': patch
 ---
 
-change stroke-width, clean code
+change stroke-width, redraw extendLine and arrow
