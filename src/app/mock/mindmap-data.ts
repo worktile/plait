@@ -96,9 +96,8 @@ export const mockMindmapData: PlaitMindmap = {
         }
     ],
     width: 72,
-    height: 24,
+    height: 25,
     isRoot: true,
     points: [[700, 300]],
-    shape: MindmapNodeShape.underline,
     layout: MindmapLayoutType.right
 };
