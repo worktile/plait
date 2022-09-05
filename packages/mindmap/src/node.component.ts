@@ -30,6 +30,8 @@ import { MindmapNode } from './interfaces/node';
 import { drawLink } from './draw/link';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import {
+    EXTEND_OFFSET,
+    EXTEND_RADIUS,
     MindmapNodeShape,
     MINDMAP_NODE_KEY,
     PRIMARY_COLOR,
@@ -263,71 +265,76 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         const { x, y, width, height } = getRectangleByNode(this.node);
         const stroke = getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
-        const extendY =
-            (getNodeShapeByElement(this.node.origin) as MindmapNodeShape) === MindmapNodeShape.roundRectangle ? y + height / 2 : y + height;
+        const extendY = y + height / 2;
         const nodeLayout = getLayoutByElement(this.node.origin) as MindmapLayoutType;
 
-        let extendLine = [
+        let extendLineXY = [
             [x + width, extendY],
-            [x + width + 8, extendY]
+            [x + width + EXTEND_OFFSET, extendY]
         ];
 
-        let arrowYOffset = [-3, 0, 3];
-        let arrowXOffset = [10, 4, 10];
+        let arrowYOffset = [-4, 1, -0.6, 4];
+        let arrowXOffset = [10, 5.5, 5, 10];
 
-        let extendLineXOffset = [width, width + 8];
+        let extendLineXOffset = [0, 0];
         let extendLineYOffset = [0, 0];
 
-        let extendLineGOffset = [0, 0, 0, 0];
+        let circleOffset = [EXTEND_RADIUS / 2, 0];
 
         if (isHorizontalLayout(nodeLayout)) {
+            extendLineYOffset =
+                (getNodeShapeByElement(this.node.origin) as MindmapNodeShape) === MindmapNodeShape.roundRectangle
+                    ? [0, 0]
+                    : [height / 2, height / 2];
             if (this.parent.x > this.node.x) {
-                extendLineXOffset = [0, -26];
-                extendLineYOffset = [0, 0];
-                arrowXOffset = [6, 12, 6];
+                //左
+                extendLineXOffset = [-width, -width - EXTEND_OFFSET * 2];
+                circleOffset = [-EXTEND_RADIUS / 2, 0];
+                arrowXOffset = [-10, -5.5, -5, -10];
             }
         } else {
-            arrowXOffset = [4, 8, 12];
-            arrowYOffset = isTopLayout(nodeLayout) ? [-3, 4, -3] : [3, -4, 3];
-            extendLineGOffset = [0, 0, 8, -8];
-            extendLineXOffset = [width / 2, width / 2 - 8];
-            if ((getNodeShapeByElement(this.node.origin) as MindmapNodeShape) === MindmapNodeShape.roundRectangle) {
-                if (isTopLayout(nodeLayout)) {
-                    extendLineYOffset = [-height / 2, -height / 2 - 18];
-                } else {
-                    extendLineYOffset = [height / 2, height / 2 + 18];
-                }
+            arrowXOffset = [-4, 0.6, -1, 4];
+            if (isTopLayout(nodeLayout)) {
+                //上
+                extendLineXOffset = [-width / 2, -width / 2 - EXTEND_OFFSET];
+                extendLineYOffset = [-height / 2, -height / 2 - EXTEND_OFFSET];
+                arrowYOffset = [-10, -5.5, -5, -10];
+                circleOffset = [0, -EXTEND_RADIUS / 2];
             } else {
-                if (isTopLayout(nodeLayout)) {
-                    extendLineYOffset = [-height, -height - 18];
-                } else {
-                    extendLineYOffset = [0, 18];
-                }
+                //下
+                extendLineXOffset = [-width / 2, -width / 2 - EXTEND_OFFSET];
+                extendLineYOffset = [height / 2, height / 2 + EXTEND_OFFSET];
+                arrowYOffset = [10, 5.5, 5, 10];
+                circleOffset = [0, EXTEND_RADIUS / 2];
             }
         }
 
-        extendLine = [
-            [x + extendLineXOffset[0], extendY + extendLineYOffset[0]],
-            [x + extendLineXOffset[1], extendY + extendLineYOffset[1]]
+        extendLineXY = [
+            [extendLineXY[0][0] + extendLineXOffset[0], extendLineXY[0][1] + extendLineYOffset[0]],
+            [extendLineXY[1][0] + extendLineXOffset[1], extendLineXY[1][1] + extendLineYOffset[1]]
         ];
 
-        const extendLineG = this.roughSVG.line(
-            extendLine[0][0] + extendLineGOffset[0],
-            extendLine[0][1] + extendLineGOffset[1],
-            extendLine[1][0] + extendLineGOffset[2],
-            extendLine[1][1] + extendLineGOffset[3],
+        const extendLine = this.roughSVG.line(extendLineXY[0][0], extendLineXY[0][1], extendLineXY[1][0], extendLineXY[1][1], {
+            strokeWidth,
+            stroke
+        });
+
+        //绘制箭头
+        const hideArrowTopLine = this.roughSVG.line(
+            extendLineXY[1][0] + arrowXOffset[0],
+            extendLineXY[1][1] + arrowYOffset[0],
+            extendLineXY[1][0] + arrowXOffset[1],
+            extendLineXY[1][1] + arrowYOffset[1],
             {
-                strokeWidth,
-                stroke
+                stroke,
+                strokeWidth
             }
         );
-
-        const hideArrowG = this.roughSVG.linearPath(
-            [
-                [extendLine[1][0] + arrowXOffset[0], extendLine[1][1] + arrowYOffset[0]],
-                [extendLine[1][0] + arrowXOffset[1], extendLine[1][1] + arrowYOffset[1]],
-                [extendLine[1][0] + arrowXOffset[2], extendLine[1][1] + arrowYOffset[2]]
-            ],
+        const hideArrowBottomLine = this.roughSVG.line(
+            extendLineXY[1][0] + arrowXOffset[2],
+            extendLineXY[1][1] + arrowYOffset[2],
+            extendLineXY[1][0] + arrowXOffset[3],
+            extendLineXY[1][1] + arrowYOffset[3],
             {
                 stroke,
                 strokeWidth
@@ -337,10 +344,20 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         if (this.node.origin.isCollapsed) {
             this.gGroup.classList.add('collapsed');
 
-            this.extendG.appendChild(extendLineG);
+            this.extendG.appendChild(extendLine);
 
-            const badge = this.roughSVG.circle(extendLine[1][0] + 8, extendLine[1][1], 16, { fill: stroke, stroke, fillStyle: 'solid' });
-            const badgeText = createText(extendLine[1][0] + 4, extendLine[1][1] + 4, '#fff', `${getChildrenCount(this.node.origin)}`);
+            const badge = this.roughSVG.circle(extendLineXY[1][0] + circleOffset[0], extendLineXY[1][1] + circleOffset[1], EXTEND_RADIUS, {
+                fill: stroke,
+                stroke,
+                fillStyle: 'solid'
+            });
+            const badgeText = createText(
+                extendLineXY[1][0] + circleOffset[0] - 4,
+                extendLineXY[1][1] + circleOffset[1] + 4,
+                stroke,
+                `${getChildrenCount(this.node.origin)}`
+            );
+            badge.setAttribute('style', 'opacity: 0.15');
             badgeText.setAttribute('style', 'font-size: 12px');
             this.extendG.appendChild(badge);
             this.extendG.appendChild(badgeText);
@@ -348,14 +365,20 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             this.gGroup.classList.remove('collapsed');
 
             if (this.node.origin.children.length > 0) {
-                const hideCircleG = this.roughSVG.circle(extendLine[1][0] + 8, extendLine[1][1], 16, {
-                    fill: '#fff',
-                    stroke,
-                    strokeWidth,
-                    fillStyle: 'solid'
-                });
+                const hideCircleG = this.roughSVG.circle(
+                    extendLineXY[1][0] + circleOffset[0],
+                    extendLineXY[1][1] + circleOffset[1],
+                    EXTEND_RADIUS,
+                    {
+                        fill: '#fff',
+                        stroke,
+                        strokeWidth,
+                        fillStyle: 'solid'
+                    }
+                );
                 this.extendG.appendChild(hideCircleG);
-                this.extendG.appendChild(hideArrowG);
+                this.extendG.appendChild(hideArrowTopLine);
+                this.extendG.appendChild(hideArrowBottomLine);
             }
         }
     }
