@@ -37,7 +37,7 @@ export const getAvailableSubLayouts = (layout: MindmapLayoutType): MindmapLayout
     for (const key in MindmapLayoutType) {
         const layoutDirections = LayoutDirectionsMap[key];
         const exist = layoutDirections.some(d => layoutReverseDirections.includes(d));
-        if (exist) {
+        if (!exist) {
             result.push(key as MindmapLayoutType);
         }
     }
