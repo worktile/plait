@@ -17,6 +17,7 @@ import { BaseRange, createEditor, Editor, Element, Node, Operation, Range, Trans
 import { BeforeInputEvent, PlaitChangeEvent } from '../interface/event';
 import { RichtextEditor, toSlateRange } from '../plugins/richtext-editor';
 import { getDefaultView } from '../utils/dom';
+import { withHistory, HistoryEditor } from 'slate-history';
 
 import {
     EDITOR_TO_ELEMENT,
@@ -81,7 +82,7 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
     @Output()
     plaitComposition: EventEmitter<PlaitCompositionEvent> = new EventEmitter();
 
-    editor = withInline(withRichtext(createEditor()));
+    editor = withHistory(withInline(withRichtext(createEditor())));
 
     _plaitValue!: Element;
 
@@ -365,6 +366,21 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
                 }
 
                 Transforms.move(editor, { unit: 'word', reverse: isRTL });
+                return;
+            }
+
+            if (hotkeys.isUndo(nativeEvent)) {
+                event.preventDefault();
+                if (HistoryEditor.isHistoryEditor(editor)) {
+                    editor.undo();
+                }
+            }
+
+            if (hotkeys.isRedo(nativeEvent)) {
+                event.preventDefault();
+                if (HistoryEditor.isHistoryEditor(editor)) {
+                    editor.redo();
+                }
                 return;
             }
 
