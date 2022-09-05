@@ -1,4 +1,4 @@
-import { LayoutDirection, LayoutDirectionsMap, LayoutTypeMap, MindmapElement } from '../interfaces';
+import { LayoutDirection, LayoutDirectionsMap, MindmapElement } from '../interfaces';
 import { findParentElement } from './mindmap';
 import { MindmapLayoutType } from '@plait/layouts';
 
@@ -32,18 +32,24 @@ export const getLayoutParentByElement = (element: MindmapElement): MindmapLayout
  * @returns MindmapLayoutType[]
  */
 export const getAvailableSubLayouts = (layout: MindmapLayoutType): MindmapLayoutType[] => {
-    let result = new Set();
-    const res = new Set();
-    (LayoutDirectionsMap as { [key: string]: LayoutDirection[] })[layout].map((direction, i) => {
-        const layouts = (LayoutTypeMap as { [key: string]: MindmapLayoutType[] })[direction];
-        if (i) {
-            for (let layout of layouts) {
-                result.has(layout) && res.add(layout);
-            }
+    const result = [];
+    const direction = new Set();
+
+    const layoutDirections = (LayoutDirectionsMap as { [key: string]: LayoutDirection[] })[layout];
+    for (let [layoutType, directionType] of Object.entries(LayoutDirectionsMap)) {
+        if (!layoutDirections.find(it => directionType.includes(it))) {
+            !direction.has(layoutType) && direction.add(layoutType);
         }
-        result = new Set(layouts);
-    });
-    return (res.size ? [...res] : [...result]) as MindmapLayoutType[];
+    }
+
+    for (const key in MindmapLayoutType) {
+        const layout: MindmapLayoutType = (MindmapLayoutType as { [key: string]: MindmapLayoutType })[key];
+        if (!['standard', ...direction].includes(layout)) {
+            result.push(layout);
+        }
+    }
+
+    return result;
 };
 
 /**
