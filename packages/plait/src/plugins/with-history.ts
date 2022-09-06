@@ -56,7 +56,7 @@ export function withHistroy<T extends PlaitBoard>(board: T) {
         }
 
         if (save) {
-            if (merge == null) {
+            if (!merge) {
                 if (lastBatch == null) {
                     merge = false;
                 } else if (operations.length !== 0) {

@@ -5,7 +5,7 @@ import { MERGING, PlaitBoard, PlaitOperation, SAVING } from '../interfaces';
  */
 
 export const shouldMerge = (op: PlaitOperation, prev: PlaitOperation | undefined): boolean => {
-    if (op.type === 'set_viewport') {
+    if (op.type === 'set_viewport' && op.type === prev?.type) {
         return true;
     }
     return false;
