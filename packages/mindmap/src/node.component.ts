@@ -102,6 +102,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
     extendG?: SVGGElement;
 
+    maskG!: SVGGElement;
+
+    hoverMaskG = false;
+
+    hoverExtend = false;
+
     richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
 
     destroy$: Subject<any> = new Subject();
@@ -114,32 +120,14 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         this.gGroup.setAttribute(MINDMAP_NODE_KEY, 'true');
         this.mindmapGGroup.prepend(this.gGroup);
         this.roughSVG = HOST_TO_ROUGH_SVG.get(this.host) as RoughSVG;
-        this.initializeEvents();
         this.drawShape();
         this.drawLink();
         this.drawRichtext();
-        this.drawActivG();
+        this.drawActiveG();
         this.updateActiveClass();
+        this.drawMaskG();
         this.initialized = true;
         ELEMENT_GROUP_TO_COMPONENT.set(this.gGroup, this);
-    }
-
-    initializeEvents() {
-        fromEvent<MouseEvent>(this.gGroup, 'mouseenter')
-            .pipe(takeUntil(this.destroy$), debounceTime(200))
-            .subscribe((event: MouseEvent) => {
-                if (this.gGroup.contains(event.target as HTMLElement)) {
-                    this.drawExtend();
-                }
-            });
-
-        fromEvent<MouseEvent>(this.gGroup, 'mouseleave')
-            .pipe(takeUntil(this.destroy$), debounceTime(200))
-            .subscribe((event: MouseEvent) => {
-                if (this.gGroup.contains(event.target as HTMLElement)) {
-                    this.destroyExtend();
-                }
-            });
     }
 
     ngAfterViewInit(): void {
@@ -193,7 +181,44 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         }
     }
 
-    drawActivG() {
+    drawMaskG() {
+        this.destroyMaskG();
+
+        let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
+        this.maskG = drawRoundRectangle(
+            this.roughSVG as RoughSVG,
+            x - 2,
+            y - 2,
+            x + width + 20,
+            y + height + 15,
+            { stroke: 'none', fill: 'rgba(255,255,255,0)', fillStyle: 'solid' },
+            true
+        );
+        this.gGroup.appendChild(this.maskG);
+
+        fromEvent<MouseEvent>(this.maskG, 'mouseenter')
+            .pipe(takeUntil(this.destroy$), debounceTime(200))
+            .subscribe(() => {
+                this.hoverMaskG = true;
+                this.drawExtend();
+            });
+        fromEvent<MouseEvent>(this.maskG, 'mouseleave')
+            .pipe(takeUntil(this.destroy$), debounceTime(200))
+            .subscribe((e: MouseEvent) => {
+                this.hoverMaskG = false;
+                if ((e.target as HTMLElement).contains(this.maskG) && !this.hoverExtend) {
+                    this.destroyExtend();
+                }
+            });
+    }
+
+    destroyMaskG() {
+        if (this.maskG) {
+            this.maskG.remove();
+        }
+    }
+
+    drawActiveG() {
         this.destroyActiveG();
         const selected = hasSelectedMindmapElement(this.board, this.node.origin);
         if (selected) {
@@ -276,6 +301,19 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
                 this.destroyExtend();
+            });
+        fromEvent(this.extendG, 'mouseenter')
+            .pipe(take(1), takeUntil(this.destroy$), debounceTime(200))
+            .subscribe(() => {
+                this.hoverExtend = true;
+            });
+        fromEvent(this.extendG, 'mouseleave')
+            .pipe(take(1), takeUntil(this.destroy$), debounceTime(200))
+            .subscribe(() => {
+                this.hoverExtend = false;
+                if (!this.hoverMaskG) {
+                    this.destroyExtend();
+                }
             });
 
         const { x, y, width, height } = getRectangleByNode(this.node);
@@ -414,7 +452,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         if (this.initialized) {
             const selection = changes['selection'];
             if (selection) {
-                this.drawActivG();
+                this.drawActiveG();
                 this.updateActiveClass();
             }
             const node = changes['node'];
@@ -431,7 +469,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 if (this.foreignObject && this.foreignObject.children.length <= 0) {
                     this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
                 }
-                this.drawActivG();
+                this.drawActiveG();
+                this.drawMaskG();
             }
         }
     }
@@ -447,7 +486,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             richtextInstance.plaitReadonly = false;
             this.richtextComponentRef.changeDetectorRef.markForCheck();
             setTimeout(() => {
-                this.drawActivG();
+                this.drawActiveG();
                 setFullSelectionAndFocus(richtextInstance.editor);
             }, 0);
         }
@@ -485,12 +524,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         const keydown$ = fromEvent<KeyboardEvent>(document, 'keydown').subscribe((event: KeyboardEvent) => {
             if (event.key === 'Escape') {
                 exitHandle();
-                this.drawActivG();
+                this.drawActiveG();
             }
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
                 exitHandle();
-                this.drawActivG();
+                this.drawActiveG();
             }
         });
 
