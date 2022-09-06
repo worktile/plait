@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.20
+
+### Patch Changes
+
+-   [#48](https://github.com/worktile/plait/pull/48) [`04fbfae`](https://github.com/worktile/plait/commit/04fbfae4a9638abe2f6d56ba57c7f351b18984ae) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - update buffer
+
 ## 0.0.19
 
 ### Patch Changes
