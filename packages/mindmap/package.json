@@ -1,6 +1,6 @@
 {
   "name": "@plait/mindmap",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "peerDependencies": {
     "@angular/common": "^13.3.0",
     "@angular/core": "^13.3.0"
