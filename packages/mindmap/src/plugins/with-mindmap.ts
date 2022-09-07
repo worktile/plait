@@ -28,7 +28,6 @@ import {
     deleteSelectedMindmapElements,
     hasSelectedMindmapElement
 } from '../utils/selected-elements';
-import { CLIPBOARD_FORMAT_KEY } from '../constants';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment } = board;
