@@ -1,6 +1,5 @@
 ---
-'@plait/mindmap': major
-'@plait/core': major
+'@plait/mindmap': patch
 ---
 
 implement mindmap copy and paste
