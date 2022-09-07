@@ -32,7 +32,7 @@ import {
 } from '../utils/selected-elements';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment } = board;
+    const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
 
     board.drawElement = (context: PlaitElementContext) => {
         const { element, selection, viewContainerRef, host } = context.elementInstance;
@@ -245,6 +245,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
                 if (nodeComponent) {
                     const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
+                    console.log(path);
                     Transforms.insertNode(board, newElement, path);
                 }
             } else {
@@ -271,7 +272,28 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
     };
 
-    board.deleteFragment = (data: DataTransfer | null) => {};
+    board.deleteFragment = (data: DataTransfer | null) => {
+        if (data == null) {
+            deleteFragment(data);
+            return;
+        } else {
+            const selectedNode = getSelectedMindmapElements(board)?.[0];
+            if (selectedNode) {
+                const stringObj = JSON.stringify(selectedNode);
+                const encoded = window.btoa(encodeURIComponent(stringObj));
+                const text = extractNodesText(selectedNode);
+                data.setData(`application/${CLIP_BOARD_FORMAT_KEY}`, encoded);
+                data.setData(`text/plain`, text);
+                const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode);
+                if (nodeComponent) {
+                    const path = findPath(board, nodeComponent.node);
+                    deleteSelectedMindmapElements(board, selectedNode);
+                    Transforms.removeNode(board, path);
+                }
+            }
+            deleteFragment(data);
+        }
+    };
 
     return withNodeDnd(board);
 };

@@ -220,6 +220,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
                 })
             )
             .subscribe((event: ClipboardEvent) => {
+                event.preventDefault();
                 this.board?.deleteFragment(event.clipboardData);
             });
 
