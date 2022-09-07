@@ -536,6 +536,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             }
         });
         const keydown$ = fromEvent<KeyboardEvent>(document, 'keydown').subscribe((event: KeyboardEvent) => {
+            if (event.isComposing) {
+                return;
+            }
             if (event.key === 'Escape') {
                 exitHandle();
                 this.drawActiveG();
