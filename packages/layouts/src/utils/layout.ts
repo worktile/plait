@@ -45,6 +45,14 @@ export const isTopLayout = (layout: MindmapLayoutType) => {
     );
 };
 
+export const isRightLayout = (layout: MindmapLayoutType) => {
+    return (
+        layout === MindmapLayoutType.right ||
+        layout === MindmapLayoutType.rightTopIndented ||
+        layout === MindmapLayoutType.rightBottomIndented
+    );
+};
+
 export const extractLayoutType = (mindmapLayoutType: MindmapLayoutType): LayoutType => {
     if (isIndentedLayout(mindmapLayoutType)) {
         return LayoutType.indented;

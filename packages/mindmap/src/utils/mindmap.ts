@@ -58,4 +58,12 @@ export const isChildElement = (origin: MindmapElement, child: MindmapElement) =>
         parent = findParentElement(parent);
     }
     return false;
-}
+};
+
+export const isChildRight = (node: MindmapNode, child: MindmapNode) => {
+    return node.x < child.x;
+};
+
+export const isChildUp = (node: MindmapNode, child: MindmapNode) => {
+    return node.y > child.y;
+};
