@@ -2,4 +2,4 @@
 '@plait/mindmap': patch
 ---
 
-redraw indented link
+redraw indented link, add isChildRight, isChildUp function

@@ -5,8 +5,7 @@ import { MindmapElement } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
-import { getLayoutByElement, getNodeShapeByElement, getRectangleByNode } from '../utils';
-import { isRightLayout, isTopLayout, MindmapLayoutType } from '@plait/layouts';
+import { getNodeShapeByElement, getRectangleByNode, isChildRight, isChildUp } from '../utils';
 
 export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNode, defaultStroke: string | null = null) {
     const hasUnderline = (getNodeShapeByElement(child.origin) as MindmapNodeShape) === MindmapNodeShape.underline;
@@ -18,18 +17,17 @@ export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: M
         endNode = child;
     const beginRectangle = getRectangleByNode(beginNode);
     const endRectangle = getRectangleByNode(endNode);
-    const nodeLayout = getLayoutByElement(node.origin) as MindmapLayoutType;
 
     beginX = Math.round(beginNode.x + beginNode.width / 2);
-    beginY = isTopLayout(nodeLayout) ? Math.round(beginRectangle.y) : Math.round(beginRectangle.y + beginRectangle.height);
-    endX = isRightLayout(nodeLayout) ? Math.round(endNode.x + endNode.hGap) : Math.round(endNode.x + endNode.hGap + endRectangle.width);
+    beginY = isChildUp(node, child) ? Math.round(beginRectangle.y) : Math.round(beginRectangle.y + beginRectangle.height);
+    endX = isChildRight(node, child) ? Math.round(endNode.x + endNode.hGap) : Math.round(endNode.x + endNode.hGap + endRectangle.width);
     endY = hasUnderline ? Math.round(endNode.y + endNode.height - endNode.vGap) : Math.round(endNode.y + endNode.height / 2);
     //根据位置，设置正负参数
-    let plusMinus = isTopLayout(nodeLayout)
-        ? isRightLayout(nodeLayout)
+    let plusMinus = isChildUp(node, child)
+        ? isChildRight(node, child)
             ? [1, -1]
             : [-1, -1]
-        : isRightLayout(nodeLayout)
+        : isChildRight(node, child)
         ? [1, 1]
         : [-1, 1];
 
