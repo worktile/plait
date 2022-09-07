@@ -57,7 +57,7 @@ export const getCorrectLayoutByElement = (element: MindmapElement) => {
     }
 
     if (layout) {
-        const incorrectDirection = getInCorrectLayout(correctRootLayout, layout);
+        const incorrectDirection = getInCorrectLayoutDirection(correctRootLayout, layout);
         if (incorrectDirection) {
             return correctLayoutByDirection(layout, incorrectDirection);
         } else {
@@ -70,10 +70,10 @@ export const getCorrectLayoutByElement = (element: MindmapElement) => {
 
 export const isCorrectLayout = (root: MindmapElement, layout: MindmapLayoutType) => {
     const rootLayout = root.layout || getDefaultMindmapLayout();
-    return !getInCorrectLayout(rootLayout, layout);
+    return !getInCorrectLayoutDirection(rootLayout, layout);
 }
 
-export const getInCorrectLayout = (rootLayout: MindmapLayoutType, layout: MindmapLayoutType) => {
+export const getInCorrectLayoutDirection = (rootLayout: MindmapLayoutType, layout: MindmapLayoutType) => {
     const mindmapDirections = LayoutDirectionsMap[rootLayout];;
     const subLayoutDirections = LayoutDirectionsMap[layout];
     return subLayoutDirections.find(d => mindmapDirections.includes(getLayoutReverseDirection(d)));
@@ -160,10 +160,3 @@ export const getLayoutReverseDirection = (layoutDirection: LayoutDirection) => {
     }
     return reverseDirection;
 };
-
-/**
- * 更新父级布局后，修正子级布局
- * @param parentLayout
- * @param target
- */
-export const correctUnavailableLayout = (parentLayout: MindmapLayoutType, target: MindmapLayoutType) => {};

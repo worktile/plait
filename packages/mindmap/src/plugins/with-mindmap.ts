@@ -1,4 +1,4 @@
-import { isPlaitMindmap, PlaitMindmap } from '../interfaces/mindmap';
+import { isPlaitMindmap } from '../interfaces/mindmap';
 import {
     hotkeys,
     Path,
@@ -19,7 +19,7 @@ import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { findPath, getCorrectLayoutByElement } from '../utils';
+import { findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
 import {
@@ -79,7 +79,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 (root as any).eachNode((node: MindmapNode) => {
                     if (hitMindmapNode(board, point, node)) {
                         addSelectedMindmapElements(board, node.origin);
-                        console.log(getCorrectLayoutByElement(node.origin), 'getCorrectLayoutByElement');
                         nodes.push(node.origin);
                     } else {
                         hasSelectedMindmapElement(board, node.origin) && deleteSelectedMindmapElements(board, node.origin);
