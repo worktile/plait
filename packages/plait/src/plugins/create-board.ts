@@ -50,6 +50,9 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         keydown: (event: KeyboardEvent) => {},
         keyup: (event: KeyboardEvent) => {},
         dblclick: (event: MouseEvent) => {},
+        setFragment: (data: DataTransfer | null, clipboardFormatKey = 'x-plait-fragment') => {},
+        insertFragment: (data: DataTransfer | null, clipboardFormatKey = 'x-plait-fragment', ripeData?: string) => {},
+        deleteFragment: (data: DataTransfer | null) => {},
         drawElement: (context: PlaitElementContext) => [],
         redrawElement: (context: PlaitElementContext, changes: SimpleChanges) => [],
         destroyElement: () => {}
