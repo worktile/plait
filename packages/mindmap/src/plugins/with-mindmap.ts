@@ -20,7 +20,7 @@ import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { buildNodes, findPath } from '../utils';
+import { buildNodes, extractNodesText, findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
 import {
@@ -224,7 +224,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             if (selectedNode) {
                 const stringObj = JSON.stringify(selectedNode);
                 const encoded = window.btoa(encodeURIComponent(stringObj));
+                const text = extractNodesText(selectedNode);
                 data.setData(`application/${CLIP_BOARD_FORMAT_KEY}`, encoded);
+                data.setData(`text/plain`, text);
             }
             setFragment(data);
         }
