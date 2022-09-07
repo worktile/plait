@@ -39,6 +39,10 @@ export const getCorrectLayoutByElement = (element: MindmapElement) => {
     const rootLayout = root.layout || getDefaultMindmapLayout();
     let correctRootLayout = rootLayout;
 
+    if (element.isRoot) {
+        return correctRootLayout;
+    }
+
     const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
     let layout = component?.node.origin.layout;
 
@@ -54,6 +58,10 @@ export const getCorrectLayoutByElement = (element: MindmapElement) => {
     // handle root standard
     if (rootLayout === MindmapLayoutType.standard) {
         correctRootLayout = component?.node.left ? MindmapLayoutType.left : MindmapLayoutType.right;
+    }
+
+    if (parentComponent?.node.origin.isRoot) {
+        return correctRootLayout;
     }
 
     if (layout) {
