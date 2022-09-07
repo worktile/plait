@@ -1,5 +1,21 @@
 # mindmap
 
+## 0.0.23
+
+### Patch Changes
+
+-   [#62](https://github.com/worktile/plait/pull/62) [`e8ad96e`](https://github.com/worktile/plait/commit/e8ad96e65638a15fc8287d6f02451790c10dd5c8) Thanks [@Maple13](https://github.com/Maple13)! - fix mask position rendering error under different layouts
+
+*   [#60](https://github.com/worktile/plait/pull/60) [`8eb2505`](https://github.com/worktile/plait/commit/8eb2505faac9ec55da57b0d28f8d3067e5e6c506) Thanks [@WBbug](https://github.com/WBbug)! - fix link break
+
+-   [#59](https://github.com/worktile/plait/pull/59) [`3534ba5`](https://github.com/worktile/plait/commit/3534ba58177988cfde4575f488723b722570f2e0) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - implement mindmap copy and paste
+
+*   [`1baa7f5`](https://github.com/worktile/plait/commit/1baa7f57682ad1a06ba5d336b00a9e091b94a153) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent exit edit when node isComposing equals true
+
+-   [#58](https://github.com/worktile/plait/pull/58) [`8da4f27`](https://github.com/worktile/plait/commit/8da4f27f814af45dab9fe7f1d6e977004f2db1ec) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getCorrectLayoutByElement
+
+*   [`d8b9bea`](https://github.com/worktile/plait/commit/d8b9bea5e6f1d62ecdb6aa7b7ba270f6abb30dc8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct foreignObject buffer space
+
 ## 0.0.22
 
 ### Patch Changes
