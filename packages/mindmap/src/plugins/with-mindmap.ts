@@ -244,6 +244,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     Transforms.insertNode(board, newElement, path);
                 }
             }
+            insertFragment(data);
         }
     };
 
