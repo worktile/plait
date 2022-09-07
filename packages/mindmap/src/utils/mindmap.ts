@@ -1,9 +1,8 @@
-import { MindmapElement } from '../interfaces/element';
-import { Path, PlaitBoard } from '@plait/core';
-import { isPlaitMindmap, MindmapNode } from '../interfaces';
-import { MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from './weak-maps';
-import { idCreator } from '../../../plait/src/utils';
+import { idCreator, Path, PlaitBoard } from '@plait/core';
 import { Node } from 'slate';
+import { isPlaitMindmap, MindmapNode } from '../interfaces';
+import { MindmapElement } from '../interfaces/element';
+import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
