@@ -1,4 +1,4 @@
-import { isPlaitMindmap, PlaitMindmap } from '../interfaces/mindmap';
+import { isPlaitMindmap } from '../interfaces/mindmap';
 import {
     hotkeys,
     Path,

@@ -1,7 +1,8 @@
 import { LayoutDirection, LayoutDirectionsMap, MindmapElement } from '../interfaces';
-import { findParentElement } from './mindmap';
+import { findParentElement, findUpElement } from './mindmap';
 import { MindmapLayoutType } from '@plait/layouts';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
+import { MindmapNodeComponent } from '../node.component';
 
 export const getLayoutByElement = (element: MindmapElement): MindmapLayoutType => {
     const layout = element.layout;
@@ -24,22 +25,111 @@ export const getLayoutParentByElement = (element: MindmapElement): MindmapLayout
         }
         parent = findParentElement(parent);
     }
+    return getDefaultMindmapLayout();
+};
+
+/**
+ * get correctly layout：
+ * 1. root is standard -> left or right
+ * 2. correct layout by incorrect layout direction
+ * @param element
+ */
+export const getCorrectLayoutByElement = (element: MindmapElement) => {
+    const { root } = findUpElement(element);
+    const rootLayout = root.layout || getDefaultMindmapLayout();
+    let correctRootLayout = rootLayout;
+
+    if (element.isRoot) {
+        return correctRootLayout;
+    }
+
+    const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
+    let layout = component?.node.origin.layout;
+
+    let parentComponent: undefined | MindmapNodeComponent; 
+    let parent: MindmapElement | undefined = component?.parent?.origin;
+
+    while(!layout && parent) {
+        parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parent);
+        layout = parentComponent?.node.origin.layout;
+        parent = parentComponent?.parent?.origin;
+    }
+
+    // handle root standard
+    if (rootLayout === MindmapLayoutType.standard) {
+        correctRootLayout = component?.node.left ? MindmapLayoutType.left : MindmapLayoutType.right;
+    }
+
+    if (parentComponent?.node.origin.isRoot) {
+        return correctRootLayout;
+    }
+
+    if (layout) {
+        const incorrectDirection = getInCorrectLayoutDirection(correctRootLayout, layout);
+        if (incorrectDirection) {
+            return correctLayoutByDirection(layout, incorrectDirection);
+        } else {
+            return layout
+        }
+    } else {
+        return correctRootLayout;
+    }
+};
+
+export const isCorrectLayout = (root: MindmapElement, layout: MindmapLayoutType) => {
+    const rootLayout = root.layout || getDefaultMindmapLayout();
+    return !getInCorrectLayoutDirection(rootLayout, layout);
+}
+
+export const getInCorrectLayoutDirection = (rootLayout: MindmapLayoutType, layout: MindmapLayoutType) => {
+    const mindmapDirections = LayoutDirectionsMap[rootLayout];;
+    const subLayoutDirections = LayoutDirectionsMap[layout];
+    return subLayoutDirections.find(d => mindmapDirections.includes(getLayoutReverseDirection(d)));
+}
+
+export const correctLayoutByDirection = (layout: MindmapLayoutType, direction: LayoutDirection) => {
+    const isHorizontal = direction === LayoutDirection.left || direction === LayoutDirection.right ? true : false;
+    let inverseDirectionLayout = MindmapLayoutType.standard;
+    switch (layout) {
+        case MindmapLayoutType.left:
+            inverseDirectionLayout = MindmapLayoutType.right;
+            break;
+        case MindmapLayoutType.right:
+            inverseDirectionLayout = MindmapLayoutType.left;
+            break;
+        case MindmapLayoutType.downward:
+            inverseDirectionLayout = MindmapLayoutType.upward;
+            break;
+        case MindmapLayoutType.downward:
+            inverseDirectionLayout = MindmapLayoutType.upward;
+            break;
+        case MindmapLayoutType.rightBottomIndented:
+            inverseDirectionLayout = isHorizontal ? MindmapLayoutType.leftBottomIndented : MindmapLayoutType.rightTopIndented;
+            break;
+        case MindmapLayoutType.leftBottomIndented:
+            inverseDirectionLayout = isHorizontal ? MindmapLayoutType.rightBottomIndented : MindmapLayoutType.leftTopIndented;
+            break;
+        case MindmapLayoutType.rightTopIndented:
+            inverseDirectionLayout = isHorizontal ? MindmapLayoutType.leftTopIndented : MindmapLayoutType.rightBottomIndented;
+            break;
+        case MindmapLayoutType.leftTopIndented:
+            inverseDirectionLayout = isHorizontal ? MindmapLayoutType.rightTopIndented : MindmapLayoutType.leftBottomIndented;
+            break;
+    }
+    return inverseDirectionLayout;
+};
+
+export const getMindmapDirection = (root: MindmapElement) => {
+    const layout = root.layout || getDefaultMindmapLayout();
+    return LayoutDirectionsMap[layout];
+};
+
+export const getDefaultMindmapLayout = () => {
     return MindmapLayoutType.standard;
 };
 
 /**
- * 获取正确的布局类型：
- * 1. 假如根布局是 Standard、则子节点需要被定位左布局或右布局
- * 2. 假如子节点的布局被纠正则返回纠正后的布局
- * @param element 
- */
-export const getCorectLayoutByElement = (element: MindmapElement) => {
-    const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
-    
-}
-
-/**
- * 获取指定布局下允许的子布局
+ * get available sub layouts
  * @param layout
  * @returns MindmapLayoutType[]
  */
@@ -49,13 +139,13 @@ export const getAvailableSubLayouts = (layout: MindmapLayoutType): MindmapLayout
     for (const key in MindmapLayoutType) {
         const layout = MindmapLayoutType[key as keyof typeof MindmapLayoutType];
         const layoutDirections = LayoutDirectionsMap[layout];
-        if (layoutDirections) { // handle standrad
+        if (layoutDirections) {
+            // handle standrad
             const exist = layoutDirections.some(d => layoutReverseDirections.includes(d));
             if (!exist) {
                 result.push(layout);
             }
         }
-        
     }
     return result;
 };
@@ -78,10 +168,3 @@ export const getLayoutReverseDirection = (layoutDirection: LayoutDirection) => {
     }
     return reverseDirection;
 };
-
-/**
- * 更新父级布局后，修正子级布局
- * @param parentLayout
- * @param target
- */
-export const correctUnavailableLayout = (parentLayout: MindmapLayoutType, target: MindmapLayoutType) => {};
