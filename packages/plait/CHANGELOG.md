@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.22
+
+### Patch Changes
+
+-   [#56](https://github.com/worktile/plait/pull/56) [`3fe5f0d`](https://github.com/worktile/plait/commit/3fe5f0de1d2224f042fcbdada4b1b54b80bd471d) Thanks [@Maple13](https://github.com/Maple13)! - feat: add plait/core override function
+
 ## 0.0.21
 
 ### Patch Changes
