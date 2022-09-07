@@ -3,6 +3,7 @@ import { Path, PlaitBoard } from '@plait/core';
 import { isPlaitMindmap, MindmapNode } from '../interfaces';
 import { MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from './weak-maps';
 import { idCreator } from '../../../plait/src/utils';
+import { Node } from 'slate';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
@@ -81,4 +82,14 @@ export const buildNodes = (node: MindmapElement) => {
         }
         return newNode;
     }
+};
+export const extractNodesText = (node: MindmapElement) => {
+    let str = '';
+    if (node) {
+        str += Node.string(node.value.children[0]) + ' ';
+        for (const childNode of node.children) {
+            str += extractNodesText(childNode);
+        }
+    }
+    return str;
 };
