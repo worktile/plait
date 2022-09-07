@@ -82,15 +82,3 @@ export const buildNodes = (node: MindmapElement) => {
         return newNode;
     }
 };
-
-export const getSelectedNode = (board: PlaitBoard) => {
-    const selectedNodes = SELECTED_MINDMAP_ELEMENTS.get(board);
-    if (selectedNodes?.length) {
-        const selectedNode = selectedNodes[0];
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode);
-        const nodeData = nodeComponent?.node;
-        return nodeData;
-    } else {
-        return null;
-    }
-};
