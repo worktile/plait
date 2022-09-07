@@ -245,7 +245,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
                 if (nodeComponent) {
                     const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
-                    console.log(path);
                     Transforms.insertNode(board, newElement, path);
                 }
             } else {
