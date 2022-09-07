@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.0.22
+
+### Patch Changes
+
+-   [#56](https://github.com/worktile/plait/pull/56) [`3fe5f0d`](https://github.com/worktile/plait/commit/3fe5f0de1d2224f042fcbdada4b1b54b80bd471d) Thanks [@Maple13](https://github.com/Maple13)! - feat: add plait/core override function
+
+*   [#52](https://github.com/worktile/plait/pull/52) [`966e15f`](https://github.com/worktile/plait/commit/966e15fdf23db86629d7b7d77b69397cd3500f7e) Thanks [@Maple13](https://github.com/Maple13)! - feat(mindmap): display the expand and collapse buttons when hovering the node
+
 ## 0.0.21
 
 ### Patch Changes
