@@ -2,6 +2,7 @@ import { LayoutDirection, LayoutDirectionsMap, MindmapElement } from '../interfa
 import { findParentElement, findUpElement } from './mindmap';
 import { MindmapLayoutType } from '@plait/layouts';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
+import { MindmapNodeComponent } from '../node.component';
 
 export const getLayoutByElement = (element: MindmapElement): MindmapLayoutType => {
     const layout = element.layout;
@@ -34,24 +35,46 @@ export const getLayoutParentByElement = (element: MindmapElement): MindmapLayout
  * @param element
  */
 export const getCorrectLayoutByElement = (element: MindmapElement) => {
-    const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
-    const layout = component?.node.origin.layout;
     const { root } = findUpElement(element);
-    // 反方向布局纠正
+    const rootLayout = root.layout || getDefaultMindmapLayout();
+    let correctRootLayout = rootLayout;
+
+    const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
+    let layout = component?.node.origin.layout;
+
+    let parentComponent: undefined | MindmapNodeComponent; 
+    let parent: MindmapElement | undefined = component?.parent?.origin;
+
+    while(!layout && parent) {
+        parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parent);
+        layout = parentComponent?.node.origin.layout;
+        parent = parentComponent?.parent?.origin;
+    }
+
+    // 处理根节点
+    if (rootLayout === MindmapLayoutType.standard) {
+        correctRootLayout = component?.node.left ? MindmapLayoutType.left : MindmapLayoutType.right;
+    }
+
     if (layout) {
-        const incorrectDirection = getInCorrectLayout(root, layout);
+        const incorrectDirection = getInCorrectLayout(correctRootLayout, layout);
         if (incorrectDirection) {
             return correctLayoutByDirection(layout, incorrectDirection);
+        } else {
+            return layout
         }
+    } else {
+        return correctRootLayout;
     }
 };
 
 export const isCorrectLayout = (root: MindmapElement, layout: MindmapLayoutType) => {
-    return !getInCorrectLayout(root, layout);
+    const rootLayout = root.layout || getDefaultMindmapLayout();
+    return !getInCorrectLayout(rootLayout, layout);
 }
 
-export const getInCorrectLayout = (root: MindmapElement, layout: MindmapLayoutType) => {
-    const mindmapDirections = getMindmapDirection(root);
+export const getInCorrectLayout = (rootLayout: MindmapLayoutType, layout: MindmapLayoutType) => {
+    const mindmapDirections = LayoutDirectionsMap[rootLayout];;
     const subLayoutDirections = LayoutDirectionsMap[layout];
     return subLayoutDirections.find(d => mindmapDirections.includes(getLayoutReverseDirection(d)));
 }
