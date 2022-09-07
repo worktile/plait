@@ -1,4 +1,4 @@
-import { isPlaitMindmap, PlaitMindmap } from '../interfaces/mindmap';
+import { isPlaitMindmap } from '../interfaces/mindmap';
 import {
     hotkeys,
     Path,
@@ -11,7 +11,8 @@ import {
     PlaitElementContext,
     PlaitElement,
     PlaitPlugin,
-    isNoSelectionElement
+    isNoSelectionElement,
+    CLIP_BOARD_FORMAT_KEY
 } from '@plait/core';
 import { PlaitMindmapComponent } from '../mindmap.component';
 import { MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from '../utils/weak-maps';
@@ -19,16 +20,16 @@ import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { cloneNodes, findPath, getSelectedNode } from '../utils';
+import { buildNodes, findPath, getSelectedNode } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
 import {
     addSelectedMindmapElements,
     clearAllSelectedMindmapElements,
     deleteSelectedMindmapElements,
+    getSelectedMindmapElements,
     hasSelectedMindmapElement
 } from '../utils/selected-elements';
-import { CLIP_BOARD_FORMAT_KEY } from '../../../plait/src/constants';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment } = board;
@@ -237,10 +238,11 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             if (encoded) {
                 const decoded = decodeURIComponent(window.atob(encoded));
                 const nodeData = JSON.parse(decoded);
-                const newElement: MindmapElement = cloneNodes(nodeData);
-                const selectedNode = getSelectedNode(board);
-                if (selectedNode) {
-                    const path = findPath(board, selectedNode).concat(selectedNode.children.length);
+                const newElement: MindmapElement = buildNodes(nodeData);
+                const element = getSelectedMindmapElements(board)?.[0];
+                const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
+                if (nodeComponent) {
+                    const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
                     Transforms.insertNode(board, newElement, path);
                 }
             }

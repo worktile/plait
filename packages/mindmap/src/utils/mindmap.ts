@@ -69,7 +69,7 @@ export const isChildUp = (node: MindmapNode, child: MindmapNode) => {
     return node.y > child.y;
 };
 
-export const cloneNodes = (node: MindmapElement) => {
+export const buildNodes = (node: MindmapElement) => {
     if (node == null) {
         return {} as MindmapElement;
     } else {
@@ -77,7 +77,7 @@ export const cloneNodes = (node: MindmapElement) => {
         newNode.id = idCreator();
         newNode.children = [];
         for (const childNode of node.children) {
-            newNode.children.push(cloneNodes(childNode));
+            newNode.children.push(buildNodes(childNode));
         }
         return newNode;
     }
