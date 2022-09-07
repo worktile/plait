@@ -13,10 +13,11 @@ export function drawMindmapNodeRichtext(node: MindmapNode, viewContainerRef: Vie
     return drawRichtext(textX, textY, width, height, node.origin.value, viewContainerRef, classList);
 }
 
-export function updateMindmapNodeRichtextLocation(node: MindmapNode, g: SVGGElement) {
+export function updateMindmapNodeRichtextLocation(node: MindmapNode, g: SVGGElement, isEditable: boolean) {
     const { textX, textY, width, height } = getRichtextRectangleByNode(node);
-    // add BASE * 100， avoid changing lines
-    updateForeignObject(g, width + BASE * 100, height, textX, textY);
+    // add BASE * 10， avoid changing lines
+    const bufferSpace = isEditable ? BASE * 100 : 0;
+    updateForeignObject(g, width + bufferSpace, height, textX, textY);
 }
 
 export function getRichtextRectangleByNode(node: MindmapNode) {

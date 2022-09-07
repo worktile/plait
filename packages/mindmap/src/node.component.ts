@@ -456,9 +456,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         }
     }
 
-    updateRichtextLocation() {
+    updateRichtext() {
         updateRichText(this.node.origin.value, this.richtextComponentRef!);
-        updateMindmapNodeRichtextLocation(this.node as MindmapNode, this.richtextG as SVGGElement);
+        updateMindmapNodeRichtextLocation(this.node as MindmapNode, this.richtextG as SVGGElement, this.isEditable);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -477,7 +477,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 }
                 this.drawShape();
                 this.drawLink();
-                this.updateRichtextLocation();
+                this.updateRichtext();
                 // resolve move node richtext lose issue
                 if (this.foreignObject && this.foreignObject.children.length <= 0) {
                     this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
