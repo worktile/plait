@@ -33,8 +33,8 @@ export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: M
 
     let curve: Point[] = [
         [beginX, beginY],
-        [beginX, endY - (endNode.hGap * 3 * plusMinus[1]) / 5],
-        [beginX, endY - (endNode.hGap * 3 * plusMinus[1]) / 5],
+        [beginX, beginY],
+        [beginX, beginY],
         [beginX, endY - (endNode.hGap * 3 * plusMinus[1]) / 5],
         [beginX, endY - (endNode.hGap * plusMinus[1]) / 5],
         [beginX + (endNode.hGap * plusMinus[0]) / 4, endY],
