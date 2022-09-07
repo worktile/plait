@@ -26,9 +26,6 @@ export interface PlaitBoard {
     mousemove: (event: MouseEvent) => void;
     keydown: (event: KeyboardEvent) => void;
     keyup: (event: KeyboardEvent) => void;
-    setFragment: (data: DataTransfer | null) => void;
-    insertFragment: (data: DataTransfer | null) => void;
-    deleteFragment: (data: DataTransfer | null) => void;
     dblclick: (event: MouseEvent) => void;
     drawElement: (context: PlaitElementContext) => SVGGElement[];
     redrawElement: (context: PlaitElementContext, changes: SimpleChanges) => SVGGElement[];

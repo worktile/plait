@@ -30,7 +30,7 @@ import {
 } from '../utils/selected-elements';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment } = board;
+    const { drawElement, dblclick, mousedown, globalMouseup, keydown } = board;
 
     board.drawElement = (context: PlaitElementContext) => {
         const { element, selection, viewContainerRef, host } = context.elementInstance;
@@ -211,42 +211,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
         dblclick(event);
-    };
-
-    board.setFragment = (data: DataTransfer | null) => {
-        console.log('copy');
-        // const selectedNodes = SELECTED_MINDMAP_ELEMENTS.get(board);
-        // if (selectedNodes?.length) {
-        //     const selectedNode = selectedNodes[0];
-        //     const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode);
-        //     const nodeData = nodeComponent?.node.origin;
-        //     if (nodeComponent) {
-        //         // const div = contents.ownerDocument.createElement('div');
-        //         // div.appendChild(contents);
-        //         // div.setAttribute('hidden', 'true');
-        //         // contents.ownerDocument.body.appendChild(div);
-        //         // data.setData('text/html', div.innerHTML);
-        //         // data.setData('text/plain', getPlainText(div));
-        //         // contents.ownerDocument.body.removeChild(div);
-        //     }
-        //     setFragment(data);
-        // }
-        // setFragment(data);
-    };
-    board.insertFragment = (data: DataTransfer | null) => {
-        // const node = data?.getData('application/x-mindmap-fragment');
-        // if (node) {
-        //     const decoded = decodeURIComponent(window.atob(node));
-        //     const parsed = JSON.parse(decoded);
-        //     console.log(parsed);
-        // }
-        // console.log(node);
-        console.log('paste');
-        // insertFragment(data);
-    };
-
-    board.deleteFragment = (data: DataTransfer | null) => {
-        console.log('cut');
     };
 
     return withNodeDnd(board);

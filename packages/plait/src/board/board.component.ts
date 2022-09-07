@@ -189,39 +189,6 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.board?.keyup(event);
             });
 
-        fromEvent<ClipboardEvent>(this.host, 'copy')
-            .pipe(
-                takeUntil(this.destroy$),
-                filter(() => {
-                    return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection;
-                })
-            )
-            .subscribe((event: ClipboardEvent) => {
-                this.board?.setFragment(event.clipboardData);
-            });
-
-        fromEvent<ClipboardEvent>(this.host, 'paste')
-            .pipe(
-                takeUntil(this.destroy$),
-                filter(() => {
-                    return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection;
-                })
-            )
-            .subscribe((event: ClipboardEvent) => {
-                this.board?.insertFragment(event.clipboardData);
-            });
-
-        fromEvent<ClipboardEvent>(this.host, 'cut')
-            .pipe(
-                takeUntil(this.destroy$),
-                filter(() => {
-                    return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection;
-                })
-            )
-            .subscribe((event: ClipboardEvent) => {
-                this.board?.deleteFragment(event.clipboardData);
-            });
-
         window.onresize = () => {
             this.refreshViewport();
         };
