@@ -91,9 +91,9 @@ export function drawLink(
         if (shape === MindmapNodeShape.underline) {
             if (child.left) {
                 const underline = [
-                    [beginX - (beginNode.width - beginNode.hGap * 2), beginY],
-                    [beginX, beginY],
-                    [beginX, beginY]
+                    [Math.round(beginX - (beginNode.width - beginNode.hGap * 2)), beginY],
+                    [Math.round(beginX - (beginNode.width - beginNode.hGap * 2)), beginY],
+                    [Math.round(beginX - (beginNode.width - beginNode.hGap * 2)), beginY]
                 ] as Point[];
                 curve = [...underline, ...curve];
             } else {
