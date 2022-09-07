@@ -14,12 +14,14 @@ g[plait-mindmap="true"] {
     .extend {
         opacity: 0;
         cursor: pointer;
+
         &:hover {
             opacity: 1;
         }
     }
 
-    .collapsed {
+    .collapsed,
+    .focused {
         .extend {
             opacity: 1;
         }
