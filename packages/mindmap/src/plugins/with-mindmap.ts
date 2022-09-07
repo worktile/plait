@@ -247,6 +247,25 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
                     Transforms.insertNode(board, newElement, path);
                 }
+            } else {
+                const text = data.getData(`text/plain`);
+                if (text) {
+                    const newElement = {
+                        id: idCreator(),
+                        value: {
+                            children: [{ text }]
+                        },
+                        children: [],
+                        width: 200,
+                        height: 22
+                    };
+                    const element = getSelectedMindmapElements(board)?.[0];
+                    const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
+                    if (nodeComponent) {
+                        const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
+                        Transforms.insertNode(board, newElement, path);
+                    }
+                }
             }
             insertFragment(data);
         }
