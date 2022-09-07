@@ -5,7 +5,8 @@ import { MindmapElement } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
-import { getNodeShapeByElement, getRectangleByNode } from '../utils';
+import { getLayoutByElement, getNodeShapeByElement, getRectangleByNode } from '../utils';
+import { isRightLayout, isTopLayout, MindmapLayoutType } from '@plait/layouts';
 
 export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNode, defaultStroke: string | null = null) {
     const hasUnderline = (getNodeShapeByElement(child.origin) as MindmapNodeShape) === MindmapNodeShape.underline;
@@ -17,13 +18,20 @@ export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: M
         endNode = child;
     const beginRectangle = getRectangleByNode(beginNode);
     const endRectangle = getRectangleByNode(endNode);
+    const nodeLayout = getLayoutByElement(node.origin) as MindmapLayoutType;
 
     beginX = Math.round(beginNode.x + beginNode.width / 2);
-    beginY = node.y < child.y ? Math.round(beginRectangle.y + beginRectangle.height) : Math.round(beginRectangle.y);
-    endX = node.x < child.x ? Math.round(endNode.x + endNode.hGap) : Math.round(endNode.x + endNode.hGap + endRectangle.width);
+    beginY = isTopLayout(nodeLayout) ? Math.round(beginRectangle.y) : Math.round(beginRectangle.y + beginRectangle.height);
+    endX = isRightLayout(nodeLayout) ? Math.round(endNode.x + endNode.hGap) : Math.round(endNode.x + endNode.hGap + endRectangle.width);
     endY = hasUnderline ? Math.round(endNode.y + endNode.height - endNode.vGap) : Math.round(endNode.y + endNode.height / 2);
-    //方位参数
-    let plusMinus = node.y < child.y ? (node.x < child.x ? [1, 1] : [-1, 1]) : node.x < child.x ? [1, -1] : [-1, -1];
+    //根据位置，设置正负参数
+    let plusMinus = isTopLayout(nodeLayout)
+        ? isRightLayout(nodeLayout)
+            ? [1, -1]
+            : [-1, -1]
+        : isRightLayout(nodeLayout)
+        ? [1, 1]
+        : [-1, 1];
 
     let curve: Point[] = [
         [beginX, beginY],
