@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.24
+
+### Patch Changes
+
+-   [#63](https://github.com/worktile/plait/pull/63) [`83575fd`](https://github.com/worktile/plait/commit/83575fd9cb370025fa13578474443d5600569faa) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - mindmap support paste text
+
 ## 0.0.23
 
 ### Patch Changes

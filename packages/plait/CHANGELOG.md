@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.24
+
+### Patch Changes
+
+-   [#66](https://github.com/worktile/plait/pull/66) [`5172292`](https://github.com/worktile/plait/commit/5172292fc470254807a3bd767b0a5bd6e25ed661) Thanks [@Maple13](https://github.com/Maple13)! - prevent copy event default behavior and export constants
+
 ## 0.0.22
 
 ### Patch Changes
