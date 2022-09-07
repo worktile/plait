@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.0.24
+
+### Patch Changes
+
+-   [#63](https://github.com/worktile/plait/pull/63) [`83575fd`](https://github.com/worktile/plait/commit/83575fd9cb370025fa13578474443d5600569faa) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - mindmap support paste text
+
+*   [#67](https://github.com/worktile/plait/pull/67) [`d427227`](https://github.com/worktile/plait/commit/d427227f7fd151b6d2a38bd853a1f4a787f81e8c) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - implement mindmap cut function
+
 ## 0.0.23
 
 ### Patch Changes
