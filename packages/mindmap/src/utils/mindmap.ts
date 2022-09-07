@@ -1,7 +1,8 @@
 import { MindmapElement } from '../interfaces/element';
 import { Path, PlaitBoard } from '@plait/core';
 import { isPlaitMindmap, MindmapNode } from '../interfaces';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
+import { MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from './weak-maps';
+import { idCreator } from '../../../plait/src/utils';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
@@ -66,4 +67,18 @@ export const isChildRight = (node: MindmapNode, child: MindmapNode) => {
 
 export const isChildUp = (node: MindmapNode, child: MindmapNode) => {
     return node.y > child.y;
+};
+
+export const buildNodes = (node: MindmapElement) => {
+    if (node == null) {
+        return {} as MindmapElement;
+    } else {
+        const newNode: MindmapElement = { ...node };
+        newNode.id = idCreator();
+        newNode.children = [];
+        for (const childNode of node.children) {
+            newNode.children.push(buildNodes(childNode));
+        }
+        return newNode;
+    }
 };

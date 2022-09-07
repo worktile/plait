@@ -9,3 +9,4 @@ export * from './transfroms';
 export * from './interfaces';
 export * from './core/base/detector';
 export * from './core/element/element.component';
+export * from './constants';
