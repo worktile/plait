@@ -183,43 +183,60 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     drawMaskG() {
         this.destroyMaskG();
 
-        let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
+        const nodeLayout = getLayoutByElement(this.node.origin) as MindmapLayoutType;
+        const isHorizontal = isHorizontalLayout(nodeLayout);
+        const { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
+
         this.maskG = drawRoundRectangle(
             this.roughSVG as RoughSVG,
-            x - 2,
-            y - 2,
+            isHorizontal ? x - 10 : x - 2,
+            !isHorizontal ? y - 10 : y - 2,
             x + width + 20,
             y + height + 15,
             { stroke: 'none', fill: 'rgba(255,255,255,0)', fillStyle: 'solid' },
             true
         );
-        this.gGroup.appendChild(this.maskG);
+        this.maskG.classList.add('mask');
+        this.maskG.setAttribute('visibility', 'visible');
+        this.gGroup.append(this.maskG);
 
         fromEvent<MouseEvent>(this.maskG, 'mouseenter')
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !this.node.origin.isCollapsed;
+                    return !this.node.origin.isCollapsed && !this.isEditable;
                 })
             )
             .subscribe(() => {
-                this.gGroup.classList.toggle('focused');
+                this.gGroup.classList.add('hovered');
             });
         fromEvent<MouseEvent>(this.maskG, 'mouseleave')
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !this.node.origin.isCollapsed;
+                    return !this.node.origin.isCollapsed && !this.isEditable;
                 })
             )
             .subscribe(() => {
-                this.gGroup.classList.toggle('focused');
+                this.gGroup.classList.remove('hovered');
             });
     }
 
     destroyMaskG() {
         if (this.maskG) {
             this.maskG.remove();
+        }
+    }
+
+    enableMaskG() {
+        if (this.maskG) {
+            this.maskG.setAttribute('visibility', 'visible');
+        }
+    }
+
+    disabledMaskG() {
+        if (this.maskG) {
+            this.maskG.setAttribute('visibility', 'hidden');
         }
     }
 
@@ -237,6 +254,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 { stroke: PRIMARY_COLOR, strokeWidth: 2, fill: '' },
                 true
             );
+            // 影响 mask 移入移出事件
+            selectedStrokeG.style.pointerEvents = 'none';
             this.gGroup.appendChild(selectedStrokeG);
             this.activeG.push(selectedStrokeG);
             if (this.richtextComponentRef?.instance.plaitReadonly === true) {
@@ -491,6 +510,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
     startEditText() {
         this.isEditable = true;
+        this.disabledMaskG();
         IS_TEXT_EDITABLE.set(this.board, true);
         if (!this.richtextComponentRef) {
             throw new Error('undefined richtextComponentRef');
@@ -533,6 +553,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             const point = transformPoint(this.board, toPoint(event.x, event.y, this.host));
             if (!hitMindmapNode(this.board, point, this.node as MindmapNode)) {
                 exitHandle();
+                this.enableMaskG();
             }
         });
         const keydown$ = fromEvent<KeyboardEvent>(document, 'keydown').subscribe((event: KeyboardEvent) => {
@@ -542,11 +563,13 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             if (event.key === 'Escape') {
                 exitHandle();
                 this.drawActiveG();
+                this.enableMaskG();
             }
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
                 exitHandle();
                 this.drawActiveG();
+                this.enableMaskG();
             }
         });
 
