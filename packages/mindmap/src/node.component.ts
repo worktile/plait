@@ -201,9 +201,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 })
             )
             .subscribe(() => {
-                if (this.node.origin.isCollapsed) {
-                    this.gGroup.classList.toggle('focused');
-                }
+                this.gGroup.classList.toggle('focused');
             });
         fromEvent<MouseEvent>(this.maskG, 'mouseleave')
             .pipe(
@@ -213,9 +211,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 })
             )
             .subscribe(() => {
-                if (this.node.origin.isCollapsed) {
-                    this.gGroup.classList.toggle('focused');
-                }
+                this.gGroup.classList.toggle('focused');
             });
     }
 
@@ -308,26 +304,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
                 this.destroyExtend();
-            });
-        fromEvent<MouseEvent>(this.extendG, 'mouseenter')
-            .pipe(
-                takeUntil(this.destroy$),
-                filter(() => {
-                    return !this.node.origin.isCollapsed;
-                })
-            )
-            .subscribe(() => {
-                this.gGroup.classList.toggle('focused');
-            });
-        fromEvent<MouseEvent>(this.extendG, 'mouseleave')
-            .pipe(
-                takeUntil(this.destroy$),
-                filter(() => {
-                    return !this.node.origin.isCollapsed;
-                })
-            )
-            .subscribe(() => {
-                this.gGroup.classList.toggle('focused');
             });
 
         const { x, y, width, height } = getRectangleByNode(this.node);
