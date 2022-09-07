@@ -27,7 +27,7 @@ import { isHorizontalLayout, isTopLayout, MindmapLayoutType } from '@plait/layou
 import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
-import { debounceTime, take, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
 import {
     MindmapNodeShape,
     MINDMAP_NODE_KEY,
@@ -104,10 +104,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
 
     maskG!: SVGGElement;
 
-    hoverMaskG = false;
-
-    hoverExtend = false;
-
     richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
 
     destroy$: Subject<any> = new Subject();
@@ -126,6 +122,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         this.drawActiveG();
         this.updateActiveClass();
         this.drawMaskG();
+        this.drawExtend();
         this.initialized = true;
         ELEMENT_GROUP_TO_COMPONENT.set(this.gGroup, this);
     }
@@ -197,17 +194,27 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         this.gGroup.appendChild(this.maskG);
 
         fromEvent<MouseEvent>(this.maskG, 'mouseenter')
-            .pipe(takeUntil(this.destroy$), debounceTime(200))
+            .pipe(
+                takeUntil(this.destroy$),
+                filter(() => {
+                    return !this.node.origin.isCollapsed;
+                })
+            )
             .subscribe(() => {
-                this.hoverMaskG = true;
-                this.drawExtend();
+                if (this.node.origin.isCollapsed) {
+                    this.gGroup.classList.toggle('focused');
+                }
             });
         fromEvent<MouseEvent>(this.maskG, 'mouseleave')
-            .pipe(takeUntil(this.destroy$), debounceTime(200))
-            .subscribe((e: MouseEvent) => {
-                this.hoverMaskG = false;
-                if ((e.target as HTMLElement).contains(this.maskG) && !this.hoverExtend) {
-                    this.destroyExtend();
+            .pipe(
+                takeUntil(this.destroy$),
+                filter(() => {
+                    return !this.node.origin.isCollapsed;
+                })
+            )
+            .subscribe(() => {
+                if (this.node.origin.isCollapsed) {
+                    this.gGroup.classList.toggle('focused');
                 }
             });
     }
@@ -302,18 +309,25 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 Transforms.setNode(this.board, newElement, path);
                 this.destroyExtend();
             });
-        fromEvent(this.extendG, 'mouseenter')
-            .pipe(take(1), takeUntil(this.destroy$), debounceTime(200))
+        fromEvent<MouseEvent>(this.extendG, 'mouseenter')
+            .pipe(
+                takeUntil(this.destroy$),
+                filter(() => {
+                    return !this.node.origin.isCollapsed;
+                })
+            )
             .subscribe(() => {
-                this.hoverExtend = true;
+                this.gGroup.classList.toggle('focused');
             });
-        fromEvent(this.extendG, 'mouseleave')
-            .pipe(take(1), takeUntil(this.destroy$), debounceTime(200))
+        fromEvent<MouseEvent>(this.extendG, 'mouseleave')
+            .pipe(
+                takeUntil(this.destroy$),
+                filter(() => {
+                    return !this.node.origin.isCollapsed;
+                })
+            )
             .subscribe(() => {
-                this.hoverExtend = false;
-                if (!this.hoverMaskG) {
-                    this.destroyExtend();
-                }
+                this.gGroup.classList.toggle('focused');
             });
 
         const { x, y, width, height } = getRectangleByNode(this.node);
@@ -471,6 +485,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
                 }
                 this.drawActiveG();
                 this.drawMaskG();
+                this.drawExtend();
             }
         }
     }

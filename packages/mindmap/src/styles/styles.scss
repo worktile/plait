@@ -12,7 +12,15 @@ g[plait-mindmap="true"] {
     }
 
     .extend {
+        opacity: 0;
         cursor: pointer;
+    }
+
+    .collapsed,
+    .focused {
+        .extend {
+            opacity: 1;
+        }
     }
 
     .dragging-origin, .dragging-child {
