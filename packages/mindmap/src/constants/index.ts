@@ -2,7 +2,7 @@ export const BASE = 4;
 export const PRIMARY_COLOR = '#4e8afa';
 export const MINDMAP_NODE_KEY = 'node-group';
 export const MINDMAP_KEY = 'plait-mindmap';
-export const CLIPBOARD_FORMAT_KEY = 'x-theia-fragment';
+export const CLIPBOARD_FORMAT_KEY = 'x-mindmap-fragment';
 export const MAX_RADIUS = BASE * 4;
 
 export const TRANSPARENT = 'transparent';
