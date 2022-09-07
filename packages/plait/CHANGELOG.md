@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.21
+
+### Patch Changes
+
+-   [#51](https://github.com/worktile/plait/pull/51) [`34259f9`](https://github.com/worktile/plait/commit/34259f952132cfdbc179ab96314bf9565b611a60) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix set_viewport merge error
+
 ## 0.0.19
 
 ### Patch Changes

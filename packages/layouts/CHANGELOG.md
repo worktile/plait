@@ -1,5 +1,11 @@
 # layouts
 
+## 0.0.21
+
+### Patch Changes
+
+-   [#50](https://github.com/worktile/plait/pull/50) [`5079b01`](https://github.com/worktile/plait/commit/5079b0142f4c62ff8a4b6daea46be3a210568ae8) Thanks [@WBbug](https://github.com/WBbug)! - add isRightLayout function
+
 ## 0.0.19
 
 ### Patch Changes
