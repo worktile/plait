@@ -29,9 +29,9 @@ export const getLayoutParentByElement = (element: MindmapElement): MindmapLayout
 };
 
 /**
- * 获取正确的布局类型：
- * 1. 假如根布局是 Standard、则子节点需要被定位左布局或右布局
- * 2. 假如子节点的布局被纠正则返回纠正后的布局
+ * get correctly layout：
+ * 1. root is standard -> left or right
+ * 2. correct layout by incorrect layout direction
  * @param element
  */
 export const getCorrectLayoutByElement = (element: MindmapElement) => {
@@ -51,7 +51,7 @@ export const getCorrectLayoutByElement = (element: MindmapElement) => {
         parent = parentComponent?.parent?.origin;
     }
 
-    // 处理根节点
+    // handle root standard
     if (rootLayout === MindmapLayoutType.standard) {
         correctRootLayout = component?.node.left ? MindmapLayoutType.left : MindmapLayoutType.right;
     }
@@ -121,7 +121,7 @@ export const getDefaultMindmapLayout = () => {
 };
 
 /**
- * 获取指定布局下允许的子布局
+ * get available sub layouts
  * @param layout
  * @returns MindmapLayoutType[]
  */
