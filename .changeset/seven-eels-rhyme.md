@@ -3,4 +3,4 @@
 '@plait/core': patch
 ---
 
-mindmap support paste text
+implement mindmap cut function

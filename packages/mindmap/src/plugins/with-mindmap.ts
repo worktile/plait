@@ -32,7 +32,7 @@ import {
 } from '../utils/selected-elements';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment } = board;
+    const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
 
     board.drawElement = (context: PlaitElementContext) => {
         const { element, selection, viewContainerRef, host } = context.elementInstance;
@@ -271,7 +271,18 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
     };
 
-    board.deleteFragment = (data: DataTransfer | null) => {};
+    board.deleteFragment = (data: DataTransfer | null) => {
+        const selectedNode = getSelectedMindmapElements(board)?.[0];
+        if (selectedNode) {
+            const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode);
+            if (nodeComponent) {
+                const path = findPath(board, nodeComponent.node);
+                deleteSelectedMindmapElements(board, selectedNode);
+                Transforms.removeNode(board, path);
+            }
+        }
+        deleteFragment(data);
+    };
 
     return withNodeDnd(board);
 };
