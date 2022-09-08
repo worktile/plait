@@ -23,7 +23,7 @@ export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: M
     endX = node.left ? Math.round(endNode.x + endNode.hGap + endRectangle.width) : Math.round(endNode.x + endNode.hGap);
     endY = hasUnderline ? Math.round(endNode.y + endNode.height - endNode.vGap) : Math.round(endNode.y + endNode.height / 2);
     //根据位置，设置正负参数
-    let plusMinus = isChildUp(node, child) ? (node.left ? [-1, -1] : [1, -1]) : !node.left ? [-1, 1] : [1, 1];
+    let plusMinus = isChildUp(node, child) ? (node.left ? [-1, -1] : [1, -1]) : node.left ? [-1, 1] : [1, 1];
 
     let curve: Point[] = [
         [beginX, beginY],
