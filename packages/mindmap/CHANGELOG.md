@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.27
+
+### Patch Changes
+
+-   [`ad2d7de`](https://github.com/worktile/plait/commit/ad2d7dee5e97b3bb6183f20dfb2e079cc9799694) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - root node font-size default 18px
+
 ## 0.0.26
 
 ### Patch Changes
