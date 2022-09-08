@@ -130,7 +130,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
     }
 
     ngAfterViewInit(): void {
-        this.applyRichtextAttribute();
     }
 
     drawShape() {
@@ -452,18 +451,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         if (this.extendG) {
             this.extendG.remove();
         }
-    }
-
-    applyRichtextAttribute() {
-        const richtextContainer = this.richtextG?.querySelector('.plait-richtext-container') as HTMLElement;
-        const fontSize = this.node.origin.fontSize
-            ? this.node.origin.fontSize
-            : this.node.origin.isRoot
-            ? ROOT_TOPIC_FONT_SIZE
-            : TOPIC_FONT_SIZE;
-        const color = this.node.origin.color ? this.node.origin.color : TOPIC_COLOR;
-        richtextContainer.style.fontSize = `${fontSize}px`;
-        richtextContainer.style.color = `${color}`;
     }
 
     destroyRichtext() {

@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.25
+
+### Patch Changes
+
+-   [`094a3c0`](https://github.com/worktile/plait/commit/094a3c07507598dd91cb53197aa87bfd6b8f5c62) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - listener document copy/cut/paste replace host
+
 ## 0.0.24
 
 ### Patch Changes

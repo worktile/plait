@@ -1,5 +1,17 @@
 # mindmap
 
+## 0.0.25
+
+### Patch Changes
+
+-   [`a378e70`](https://github.com/worktile/plait/commit/a378e70eef8e87b98a02119abfd38a5ea6aad9d6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add plait-board-attached when dnd to avoid selection lose
+
+*   [#68](https://github.com/worktile/plait/pull/68) [`a184e8f`](https://github.com/worktile/plait/commit/a184e8feb0d1a8d6b9e1e0e6df87043c685b50f4) Thanks [@WBbug](https://github.com/WBbug)! - change horizon under indentedLayout link
+
+-   [`a67093e`](https://github.com/worktile/plait/commit/a67093edf0f92d75d9eaf0c569ef60f4a2ab558e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - keydown preventDefault just selectedElements > 0
+
+*   [`3012309`](https://github.com/worktile/plait/commit/3012309578e1b8e17413d556862dd1021049583e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - just keydown preventDefault and stopProgapation when selectedElements length > 0
+
 ## 0.0.24
 
 ### Patch Changes
