@@ -20,7 +20,7 @@ import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { buildNodes, extractNodesText, findPath } from '../utils';
+import { buildNodes, extractNodesText, findPath, getWidthByText } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
 import {
@@ -249,6 +249,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 }
             } else {
                 const text = data.getData(`text/plain`);
+                const textWidth = getWidthByText(text);
                 if (text) {
                     const newElement = {
                         id: idCreator(),
@@ -256,7 +257,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                             children: [{ text }]
                         },
                         children: [],
-                        width: 200,
+                        width: textWidth,
                         height: 22
                     };
                     const element = getSelectedMindmapElements(board)?.[0];

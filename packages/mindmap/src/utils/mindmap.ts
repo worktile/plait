@@ -92,3 +92,14 @@ export const extractNodesText = (node: MindmapElement) => {
     }
     return str;
 };
+
+export const getWidthByText = (text: string, font = 'normal 14px sans-serif') => {
+    const dom = document.createElement('span');
+    dom.style.display = 'inline-block';
+    dom.textContent = text;
+    dom.style.font = font;
+    document.body.appendChild(dom);
+    const width = dom.clientWidth;
+    document.body.removeChild(dom);
+    return width;
+};
