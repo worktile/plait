@@ -21,10 +21,6 @@ export interface MindmapElement {
     linkLineColor?: string;
     linkLineWidth?: number;
 
-    // topic
-    fontSize?: number;
-    color?: string;
-
     // layout
     layout?: MindmapLayoutType;
 
