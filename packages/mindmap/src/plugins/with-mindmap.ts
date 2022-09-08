@@ -14,13 +14,14 @@ import {
     isNoSelectionElement,
     CLIP_BOARD_FORMAT_KEY
 } from '@plait/core';
+import { getWidthByText } from '@plait/richtext';
 import { PlaitMindmapComponent } from '../mindmap.component';
 import { MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from '../utils/weak-maps';
 import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { buildNodes, extractNodesText, findPath, getWidthByText } from '../utils';
+import { buildNodes, extractNodesText, findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
 import {
@@ -216,60 +217,53 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.setFragment = (data: DataTransfer | null) => {
-        if (data == null) {
-            setFragment(data);
+        const selectedNode = getSelectedMindmapElements(board)?.[0];
+        if (selectedNode) {
+            const stringObj = JSON.stringify(selectedNode);
+            const encoded = window.btoa(encodeURIComponent(stringObj));
+            const text = extractNodesText(selectedNode);
+            data?.setData(`application/${CLIP_BOARD_FORMAT_KEY}`, encoded);
+            data?.setData(`text/plain`, text);
             return;
-        } else {
-            const selectedNode = getSelectedMindmapElements(board)?.[0];
-            if (selectedNode) {
-                const stringObj = JSON.stringify(selectedNode);
-                const encoded = window.btoa(encodeURIComponent(stringObj));
-                const text = extractNodesText(selectedNode);
-                data.setData(`application/${CLIP_BOARD_FORMAT_KEY}`, encoded);
-                data.setData(`text/plain`, text);
-            }
-            setFragment(data);
         }
+        setFragment(data);
     };
     board.insertFragment = (data: DataTransfer | null) => {
-        if (data == null) {
-            insertFragment(data);
-            return;
+        const encoded = data?.getData(`application/${CLIP_BOARD_FORMAT_KEY}`);
+        if (encoded) {
+            const decoded = decodeURIComponent(window.atob(encoded));
+            const nodeData = JSON.parse(decoded);
+            const newElement: MindmapElement = buildNodes(nodeData);
+            const element = getSelectedMindmapElements(board)?.[0];
+            const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
+            if (nodeComponent) {
+                const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
+                Transforms.insertNode(board, newElement, path);
+                return;
+            }
         } else {
-            const encoded = data?.getData(`application/${CLIP_BOARD_FORMAT_KEY}`);
-            if (encoded) {
-                const decoded = decodeURIComponent(window.atob(encoded));
-                const nodeData = JSON.parse(decoded);
-                const newElement: MindmapElement = buildNodes(nodeData);
+            const text = data?.getData(`text/plain`) as string;
+            const textWidth = getWidthByText(text, board.host.parentElement as any);
+            if (text) {
+                const newElement = {
+                    id: idCreator(),
+                    value: {
+                        children: [{ text }]
+                    },
+                    children: [],
+                    width: textWidth,
+                    height: 22
+                };
                 const element = getSelectedMindmapElements(board)?.[0];
                 const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
                 if (nodeComponent) {
                     const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
                     Transforms.insertNode(board, newElement, path);
-                }
-            } else {
-                const text = data.getData(`text/plain`);
-                const textWidth = getWidthByText(text);
-                if (text) {
-                    const newElement = {
-                        id: idCreator(),
-                        value: {
-                            children: [{ text }]
-                        },
-                        children: [],
-                        width: textWidth,
-                        height: 22
-                    };
-                    const element = getSelectedMindmapElements(board)?.[0];
-                    const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
-                    if (nodeComponent) {
-                        const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
-                        Transforms.insertNode(board, newElement, path);
-                    }
+                    return;
                 }
             }
-            insertFragment(data);
         }
+        insertFragment(data);
     };
 
     board.deleteFragment = (data: DataTransfer | null) => {
@@ -280,6 +274,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 const path = findPath(board, nodeComponent.node);
                 deleteSelectedMindmapElements(board, selectedNode);
                 Transforms.removeNode(board, path);
+                return;
             }
         }
         deleteFragment(data);

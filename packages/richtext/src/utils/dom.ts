@@ -147,6 +147,20 @@ export const normalizeDOMPoint = (domPoint: DOMPoint): DOMPoint => {
     return [node, offset];
 };
 
+export const getWidthByText = (text: string, container: HTMLElement) => {
+    const node = document.createElement('plait-node');
+    node.setAttribute('plait-node', 'text');
+    node.textContent = text;
+    node.style.display = 'inline-block';
+    const richtext = document.createElement('plait-richtext');
+    richtext.className = 'plait-richtext-container';
+    richtext.appendChild(node);
+    container?.appendChild(richtext);
+    const width = node.clientWidth;
+    container?.removeChild(richtext);
+    return width;
+};
+
 export const ZERO_WIDTH_CHAR = '\uFEFF';
 
 export const WITH_ZERO_WIDTH_CHAR = 'with-zero-width-char';
