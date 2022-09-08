@@ -9,6 +9,9 @@ g[plait-mindmap="true"] {
         &[readonly=false] {
             cursor: text;
         }
+        &.root-node {
+            font-size: 18px;
+        }
     }
 
     .extend {

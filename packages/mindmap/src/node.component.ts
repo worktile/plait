@@ -34,10 +34,7 @@ import {
     MindmapNodeShape,
     MINDMAP_NODE_KEY,
     PRIMARY_COLOR,
-    ROOT_TOPIC_FONT_SIZE,
-    STROKE_WIDTH,
-    TOPIC_COLOR,
-    TOPIC_FONT_SIZE
+    STROKE_WIDTH
 } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLink } from './draw/link';
