@@ -111,8 +111,8 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
         const selectedElements = SELECTED_MINDMAP_ELEMENTS.get(board);
         if (selectedElements && selectedElements.length > 0) {
-            event.preventDefault();
             if (event.key === 'Tab' || event.key === 'Enter') {
+                event.preventDefault();
                 const selectedElement = selectedElements[0];
                 deleteSelectedMindmapElements(board, selectedElement);
                 let path: number[] = [];
@@ -146,6 +146,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 return;
             }
             if (hotkeys.isDeleteBackward(event)) {
+                event.preventDefault();
                 if (isPlaitMindmap(selectedElements[0]) && board.children.length === 1 && !board.allowClearBoard) {
                     keydown(event);
                     return;
