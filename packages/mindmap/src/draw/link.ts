@@ -22,7 +22,6 @@ export function drawLink(
         beginNode = node,
         endNode = child;
     if (isHorizontal) {
-        const nodeParentLayout = getLayoutByElement(node.parent?.origin) as MindmapLayoutType;
         if (!isChildRight(node, child)) {
             beginNode = child;
             endNode = node;
@@ -33,17 +32,13 @@ export function drawLink(
         endY = Math.round(endNode.y + endNode.height / 2);
 
         if (
-            isIndentedLayout(nodeParentLayout) &&
-            (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.underline &&
-            !isChildRight(node, child)
+            node.parent &&
+            isIndentedLayout(getLayoutByElement(node.parent?.origin)) &&
+            (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.underline
         ) {
-            endY = Math.round(node.y + node.height / 2 + node.hGap / 2);
-        } else if (
-            isIndentedLayout(nodeParentLayout) &&
-            (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.underline &&
             isChildRight(node, child)
-        ) {
-            beginY = Math.round(node.y + node.height / 2 + node.hGap / 2);
+                ? (beginY = Math.round(node.y + node.height / 2 + node.hGap / 2))
+                : (endY = Math.round(node.y + node.height / 2 + node.hGap / 2));
         }
     } else {
         if (node.y > child.y) {
