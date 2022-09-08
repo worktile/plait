@@ -5,8 +5,8 @@ import { MindmapElement } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
-import { getLayoutByElement, getNodeShapeByElement, getRectangleByNode } from '../utils';
-import { MindmapLayoutType, isTopLayout } from '@plait/layouts';
+import { getLayoutByElement, getNodeShapeByElement, getRectangleByNode, isChildRight } from '../utils';
+import { MindmapLayoutType, isTopLayout, isIndentedLayout } from '@plait/layouts';
 
 export function drawLink(
     roughSVG: RoughSVG,
@@ -22,7 +22,8 @@ export function drawLink(
         beginNode = node,
         endNode = child;
     if (isHorizontal) {
-        if (node.x > child.x) {
+        const nodeParentLayout = getLayoutByElement(node.parent?.origin) as MindmapLayoutType;
+        if (!isChildRight(node, child)) {
             beginNode = child;
             endNode = node;
         }
@@ -30,6 +31,20 @@ export function drawLink(
         beginY = Math.round(beginNode.y + beginNode.height / 2);
         endX = Math.round(endNode.x + endNode.hGap);
         endY = Math.round(endNode.y + endNode.height / 2);
+
+        if (
+            isIndentedLayout(nodeParentLayout) &&
+            (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.underline &&
+            !isChildRight(node, child)
+        ) {
+            endY = Math.round(node.y + node.height / 2 + node.hGap / 2);
+        } else if (
+            isIndentedLayout(nodeParentLayout) &&
+            (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.underline &&
+            isChildRight(node, child)
+        ) {
+            beginY = Math.round(node.y + node.height / 2 + node.hGap / 2);
+        }
     } else {
         if (node.y > child.y) {
             beginNode = child;
