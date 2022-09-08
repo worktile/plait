@@ -109,14 +109,14 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             keydown(event);
             return;
         }
-        if (event.key === 'Tab' || event.key === 'Enter') {
+        const selectedElements = SELECTED_MINDMAP_ELEMENTS.get(board);
+        if (selectedElements && selectedElements.length > 0) {
             event.preventDefault();
-            const selectedNodes = SELECTED_MINDMAP_ELEMENTS.get(board);
-            if (selectedNodes?.length === 1) {
-                const selectedNode = selectedNodes[0];
-                deleteSelectedMindmapElements(board, selectedNode);
+            if (event.key === 'Tab' || event.key === 'Enter') {
+                const selectedElement = selectedElements[0];
+                deleteSelectedMindmapElements(board, selectedElement);
                 let path: number[] = [];
-                const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode);
+                const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
                 if (event.key === 'Tab') {
                     if (mindmapNodeComponent) {
                         path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.children.length);
@@ -145,19 +145,12 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 }, 0);
                 return;
             }
-        }
-        if (hotkeys.isDeleteBackward(event)) {
-            const selectedNodes = SELECTED_MINDMAP_ELEMENTS.get(board);
-            if (selectedNodes && selectedNodes.length) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                if (isPlaitMindmap(selectedNodes[0]) && board.children.length === 1 && !board.allowClearBoard) {
+            if (hotkeys.isDeleteBackward(event)) {
+                if (isPlaitMindmap(selectedElements[0]) && board.children.length === 1 && !board.allowClearBoard) {
                     keydown(event);
                     return;
                 }
-
-                selectedNodes?.forEach(node => {
+                selectedElements.forEach(node => {
                     deleteSelectedMindmapElements(board, node);
                     const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
                     if (mindmapNodeComponent) {
@@ -165,10 +158,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                         Transforms.removeNode(board, path);
                     }
                 });
-
-                if (selectedNodes?.length === 1) {
+                if (selectedElements.length === 1) {
                     let lastNode: MindmapNode | any = null;
-                    const selectNode = selectedNodes[0];
+                    const selectNode = selectedElements[0];
                     const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectNode);
                     if (mindmapNodeComponent?.parent?.children) {
                         const nodeIndex: number = mindmapNodeComponent?.parent.children.findIndex(item => item.origin.id === selectNode.id);
@@ -184,8 +176,10 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                         addSelectedMindmapElements(board, lastNode.origin);
                     }
                 }
+                return;
             }
         }
+
         keydown(event);
     };
 
