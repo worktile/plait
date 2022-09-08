@@ -189,7 +189,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.board?.keyup(event);
             });
 
-        fromEvent<ClipboardEvent>(this.host, 'copy')
+        fromEvent<ClipboardEvent>(document, 'copy')
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
@@ -201,7 +201,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.board?.setFragment(event.clipboardData);
             });
 
-        fromEvent<ClipboardEvent>(this.host, 'paste')
+        fromEvent<ClipboardEvent>(document, 'paste')
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
@@ -212,7 +212,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.board?.insertFragment(event.clipboardData);
             });
 
-        fromEvent<ClipboardEvent>(this.host, 'cut')
+        fromEvent<ClipboardEvent>(document, 'cut')
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
