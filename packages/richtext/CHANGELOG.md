@@ -1,5 +1,13 @@
 # richtext
 
+## 0.0.26
+
+### Patch Changes
+
+-   [`89359a9`](https://github.com/worktile/plait/commit/89359a92deed1981204d819c347dd581ba223793) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove topic font-size hand color
+
+*   [#69](https://github.com/worktile/plait/pull/69) [`0c86941`](https://github.com/worktile/plait/commit/0c86941b03f0ba65666f035274545ea03032494d) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - add calc width by text function
+
 ## 0.0.19
 
 ### Patch Changes

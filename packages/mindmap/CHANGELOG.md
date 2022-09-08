@@ -1,5 +1,17 @@
 # mindmap
 
+## 0.0.26
+
+### Patch Changes
+
+-   [`89359a9`](https://github.com/worktile/plait/commit/89359a92deed1981204d819c347dd581ba223793) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove topic font-size hand color
+
+*   [#70](https://github.com/worktile/plait/pull/70) [`43cd1e3`](https://github.com/worktile/plait/commit/43cd1e3849bc3a79339e76a5cb75b1bd5cfe98aa) Thanks [@WBbug](https://github.com/WBbug)! - fix logic horizon link break
+
+-   [`2316531`](https://github.com/worktile/plait/commit/2316531793d76de3e4d8a200e39c2f228caf947b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - keydown preventDefault just selectedElements > 0 and special key
+
+*   [#69](https://github.com/worktile/plait/pull/69) [`0c86941`](https://github.com/worktile/plait/commit/0c86941b03f0ba65666f035274545ea03032494d) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - add calc width by text function
+
 ## 0.0.25
 
 ### Patch Changes
