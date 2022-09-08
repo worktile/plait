@@ -75,7 +75,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             if (!isDragging) {
                 isDragging = true;
                 fakeDragNodeG = createG();
-                fakeDragNodeG.classList.add('dragging', 'fake-node');
+                fakeDragNodeG.classList.add('dragging', 'fake-node', 'plait-board-attached');
                 fakeDropNodeG = createG();
                 const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
                 addActiveOnDragOrigin(activeElement);
