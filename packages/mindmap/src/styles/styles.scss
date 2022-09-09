@@ -16,11 +16,7 @@ g[plait-mindmap="true"] {
 
     .extend {
         opacity: 0;
-        cursor: pointer;
-
-        &:hover {
-            opacity: 1;
-        }
+        cursor: default;
     }
 
     .collapsed,
@@ -32,6 +28,15 @@ g[plait-mindmap="true"] {
 
     .dragging-origin, .dragging-child {
         opacity: 0.6;
+    }
+}
+.plait-board-container.focused {
+    .extend {
+        cursor: pointer;
+
+        &:hover {
+            opacity: 1;
+        }
     }
 }
 

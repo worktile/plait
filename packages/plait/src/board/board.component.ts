@@ -13,22 +13,22 @@ import {
     Renderer2,
     ViewChild
 } from '@angular/core';
-import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../utils/weak-maps';
-import { PlaitBoardChangeEvent, PlaitBoard, PlaitBoardOptions } from '../interfaces/board';
-import { PlaitElement } from '../interfaces/element';
-import { createBoard } from '../plugins/create-board';
-import { withBoard } from '../plugins/with-board';
+import rough from 'roughjs/bin/rough';
+import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { PlaitPlugin } from '../interfaces/plugin';
-import { RoughSVG } from 'roughjs/bin/svg';
-import rough from 'roughjs/bin/rough';
-import { Transforms } from '../transfroms';
-import { withSelection } from '../plugins/with-selection';
+import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
+import { PlaitElement } from '../interfaces/element';
 import { PlaitOperation } from '../interfaces/operation';
-import { getViewBox, isNoSelectionElement } from '../utils/board';
+import { PlaitPlugin } from '../interfaces/plugin';
 import { Viewport } from '../interfaces/viewport';
+import { createBoard } from '../plugins/create-board';
+import { withBoard } from '../plugins/with-board';
 import { withHistroy } from '../plugins/with-history';
+import { withSelection } from '../plugins/with-selection';
+import { Transforms } from '../transfroms';
+import { getViewBox } from '../utils/board';
+import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../utils/weak-maps';
 
 @Component({
     selector: 'plait-board',
@@ -87,6 +87,11 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
+
+    @HostBinding('class.focused')
+    get focused() {
+        return this.isFocused;
+    }
 
     constructor(private cdr: ChangeDetectorRef, private renderer2: Renderer2) {}
 
