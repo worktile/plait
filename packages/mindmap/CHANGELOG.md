@@ -1,5 +1,15 @@
 # mindmap
 
+## 0.0.28
+
+### Patch Changes
+
+-   [#73](https://github.com/worktile/plait/pull/73) [`d2b1ecd`](https://github.com/worktile/plait/commit/d2b1ecd2c321473143db5cd46c2640128a5094c0) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - disable mindmap insert node and delete node when readonly
+
+*   [#71](https://github.com/worktile/plait/pull/71) [`1dfba82`](https://github.com/worktile/plait/commit/1dfba829fce633ecaa07167d23b82dd9029d3953) Thanks [@WBbug](https://github.com/WBbug)! - change vGap, change indent-link left judge
+
+-   [#74](https://github.com/worktile/plait/pull/74) [`0ac6fbf`](https://github.com/worktile/plait/commit/0ac6fbf482414af728c0069d589e113eb1f79645) Thanks [@Maple13](https://github.com/Maple13)! - read-only hover does not show the collapse button
+
 ## 0.0.27
 
 ### Patch Changes

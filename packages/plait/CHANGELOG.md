@@ -1,5 +1,13 @@
 # plait
 
+## 0.0.28
+
+### Patch Changes
+
+-   [`a22fa0e`](https://github.com/worktile/plait/commit/a22fa0e20aa40ccb4ba1636efff1dc87019b5d75) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - undos skip set_viewport
+
+*   [#74](https://github.com/worktile/plait/pull/74) [`0ac6fbf`](https://github.com/worktile/plait/commit/0ac6fbf482414af728c0069d589e113eb1f79645) Thanks [@Maple13](https://github.com/Maple13)! - add focused class when board gets focus
+
 ## 0.0.25
 
 ### Patch Changes
