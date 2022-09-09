@@ -252,7 +252,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     },
                     children: [],
                     width: textWidth,
-                    height: 22
+                    height: 24
                 };
                 const element = getSelectedMindmapElements(board)?.[0];
                 const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
