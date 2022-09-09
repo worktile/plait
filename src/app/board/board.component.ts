@@ -18,7 +18,7 @@ export class BasicBoardComponent implements OnInit {
 
     board!: PlaitBoard;
 
-    readonly = true;
+    readonly = false;
 
     ngOnInit(): void {
         const data = this.getLocalData() as PlaitBoardChangeEvent;
