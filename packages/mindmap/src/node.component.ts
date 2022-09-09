@@ -453,21 +453,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         updateMindmapNodeRichtextLocation(this.node as MindmapNode, this.richtextG as SVGGElement, this.isEditable);
     }
 
-    updateSelectionAttribute() {
-        if (this.selection) {
-            this.gGroup.setAttribute('selection', 'true');
-        } else {
-            this.gGroup.removeAttribute('selection');
-        }
-    }
-
     ngOnChanges(changes: SimpleChanges): void {
         if (this.initialized) {
             const selection = changes['selection'];
             if (selection) {
                 this.drawActiveG();
                 this.updateActiveClass();
-                this.updateSelectionAttribute();
             }
             const node = changes['node'];
             if (node) {

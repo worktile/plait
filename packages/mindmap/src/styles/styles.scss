@@ -30,7 +30,7 @@ g[plait-mindmap="true"] {
         opacity: 0.6;
     }
 }
-g[selection="true"] {
+.plait-board-container.focused {
     .extend {
         cursor: pointer;
 
