@@ -1,5 +1,4 @@
 import {
-    AfterViewInit,
     ChangeDetectionStrategy,
     Component,
     ComponentRef,
@@ -28,14 +27,7 @@ import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
-import {
-    EXTEND_OFFSET,
-    EXTEND_RADIUS,
-    MindmapNodeShape,
-    MINDMAP_NODE_KEY,
-    PRIMARY_COLOR,
-    STROKE_WIDTH
-} from './constants';
+import { EXTEND_OFFSET, EXTEND_RADIUS, MindmapNodeShape, MINDMAP_NODE_KEY, PRIMARY_COLOR, STROKE_WIDTH } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLink } from './draw/link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
@@ -66,7 +58,7 @@ import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './util
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
+export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     initialized = false;
 
     isEditable = false;
@@ -124,9 +116,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         this.drawExtend();
         this.initialized = true;
         ELEMENT_GROUP_TO_COMPONENT.set(this.gGroup, this);
-    }
-
-    ngAfterViewInit(): void {
     }
 
     drawShape() {
@@ -200,7 +189,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !this.node.origin.isCollapsed && !this.isEditable;
+                    return !!this.selection && !this.node.origin.isCollapsed && !this.isEditable;
                 })
             )
             .subscribe(() => {
@@ -210,7 +199,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !this.node.origin.isCollapsed && !this.isEditable;
+                    return !!this.selection && !this.node.origin.isCollapsed && !this.isEditable;
                 })
             )
             .subscribe(() => {
@@ -464,12 +453,21 @@ export class MindmapNodeComponent implements OnInit, OnChanges, AfterViewInit, O
         updateMindmapNodeRichtextLocation(this.node as MindmapNode, this.richtextG as SVGGElement, this.isEditable);
     }
 
+    updateSelectionAttribute() {
+        if (this.selection) {
+            this.gGroup.setAttribute('selection', 'true');
+        } else {
+            this.gGroup.removeAttribute('selection');
+        }
+    }
+
     ngOnChanges(changes: SimpleChanges): void {
         if (this.initialized) {
             const selection = changes['selection'];
             if (selection) {
                 this.drawActiveG();
                 this.updateActiveClass();
+                this.updateSelectionAttribute();
             }
             const node = changes['node'];
             if (node) {
