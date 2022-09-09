@@ -230,6 +230,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
     board.insertFragment = (data: DataTransfer | null) => {
         if (board.readonly) {
+            insertFragment(data);
             return;
         }
         const encoded = data?.getData(`application/${CLIP_BOARD_FORMAT_KEY}`);
@@ -270,11 +271,8 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.deleteFragment = (data: DataTransfer | null) => {
-        if (board.readonly) {
-            return;
-        }
         const selectedNode = getSelectedMindmapElements(board)?.[0];
-        if (selectedNode) {
+        if (selectedNode && !board.readonly) {
             const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode);
             if (nodeComponent) {
                 const path = findPath(board, nodeComponent.node);
