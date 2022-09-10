@@ -36,3 +36,9 @@ export function rotate(x1: number, y1: number, x2: number, y2: number, angle: nu
     // https://math.stackexchange.com/questions/2204520/how-do-i-rotate-a-line-segment-in-a-specific-point-on-the-line
     return [(x1 - x2) * Math.cos(angle) - (y1 - y2) * Math.sin(angle) + x2, (x1 - x2) * Math.sin(angle) + (y1 - y2) * Math.cos(angle) + y2];
 }
+
+export function distanceBetweenPointAndPoint(x1: number, y1: number, x2: number, y2: number) {
+    const dx = x1 - x2;
+    const dy = y1 - y2;
+    return Math.hypot(dx, dy);
+}
