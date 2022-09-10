@@ -84,7 +84,7 @@ export const mockMindmapData: PlaitMindmap = {
             width: 84,
             height: 24,
             shape: MindmapNodeShape.underline,
-            layout: MindmapLayoutType.rightBottomIndented
+            layout: MindmapLayoutType.right
         },
         {
             id: '1-5',
@@ -98,6 +98,6 @@ export const mockMindmapData: PlaitMindmap = {
     width: 72,
     height: 25,
     isRoot: true,
-    points: [[700, 300]],
+    points: [[460, 360]],
     layout: MindmapLayoutType.right
 };

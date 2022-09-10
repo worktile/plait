@@ -5,6 +5,12 @@ export interface LayoutOptions {
     getVerticalGap: (node: OriginNode) => number;
 }
 
+export interface LayoutContext {
+    toLeft: boolean;
+    toTop: boolean;
+    isHorizontal: boolean;
+}
+
 export interface OriginNode {
     children: OriginNode[];
     isCollapsed?: boolean;

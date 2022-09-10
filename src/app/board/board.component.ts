@@ -21,11 +21,11 @@ export class BasicBoardComponent implements OnInit {
     readonly = false;
 
     ngOnInit(): void {
-        const data = this.getLocalData() as PlaitBoardChangeEvent;
-        if (data) {
-            this.value = data.children;
-            this.viewport = data.viewport;
-        }
+        // const data = this.getLocalData() as PlaitBoardChangeEvent;
+        // if (data) {
+        //     this.value = data.children;
+        //     this.viewport = data.viewport;
+        // }
     }
 
     change(event: PlaitBoardChangeEvent) {

@@ -1,13 +1,13 @@
 import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { LayoutNode } from '../interfaces/node';
 import { buildLayoutTree, LayoutTree } from '../interfaces/tree';
-import { LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
-import { extractLayoutType, isHorizontalLayout } from '../utils/layout';
+import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
+import { extractLayoutType, isHorizontalLayout, isLeftLayout, isTopLayout } from '../utils/layout';
 
 export class BaseLayout {
     constructor() {}
 
-    layout(node: OriginNode, layoutType: string, options: LayoutOptions, isHorizontal = false) {
+    layout(node: OriginNode, layoutType: string, options: LayoutOptions, context: LayoutContext, isHorizontal = false) {
         // build layout node
         const isolatedNodes: LayoutNode[] = [];
         const isolatedLayoutRoots: LayoutNode[] = [];
@@ -17,15 +17,24 @@ export class BaseLayout {
 
         // 2、handle sub node layout
         isolatedNodes.forEach((isolatedNode: LayoutNode) => {
-            const _isHorizontal = isHorizontalLayout(isolatedNode.layout as MindmapLayoutType);
+            const _mindmapLayoutType = isolatedNode.layout as MindmapLayoutType;
+            const toTop = context.toTop || (context.isHorizontal && isTopLayout(_mindmapLayoutType));
+            const toLeft = context.toLeft || (!context.isHorizontal && isLeftLayout(_mindmapLayoutType));
+            const _isHorizontal = isHorizontalLayout(_mindmapLayoutType);
             const isolatedRoot = this.layout(
                 isolatedNode.origin,
-                extractLayoutType(isolatedNode.layout as MindmapLayoutType),
+                extractLayoutType(_mindmapLayoutType),
                 options,
+                { toTop, toLeft, isHorizontal: context.isHorizontal },
                 _isHorizontal
             );
             const { width, height } = isolatedRoot.getBoundingBox();
-
+            if (!context.toTop && toTop) {
+                isolatedRoot.down2up();
+            }
+            if (!context.toLeft && toLeft) {
+                isolatedRoot.right2left();
+            }
             // 3、set sub node as black box
             isolatedNode.width = width;
             isolatedNode.height = height;

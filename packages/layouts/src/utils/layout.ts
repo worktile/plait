@@ -45,11 +45,11 @@ export const isTopLayout = (layout: MindmapLayoutType) => {
     );
 };
 
-export const isRightLayout = (layout: MindmapLayoutType) => {
+export const isLeftLayout = (layout: MindmapLayoutType) => {
     return (
-        layout === MindmapLayoutType.right ||
-        layout === MindmapLayoutType.rightTopIndented ||
-        layout === MindmapLayoutType.rightBottomIndented
+        layout === MindmapLayoutType.left ||
+        layout === MindmapLayoutType.leftTopIndented ||
+        layout === MindmapLayoutType.leftBottomIndented
     );
 };
 

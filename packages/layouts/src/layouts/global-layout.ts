@@ -1,44 +1,12 @@
 import { LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
-import { isHorizontalLayout, isIndentedLayout, isLogicLayout, isStandardLayout } from '../utils/layout';
+import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isLogicLayout, isStandardLayout, isTopLayout } from '../utils/layout';
 import { BaseLayout } from './base-layout';
 
 export class GlobalLayout {
-    static layout(root: OriginNode, options: LayoutOptions, layoutType: MindmapLayoutType) {
+    static layout(root: OriginNode, options: LayoutOptions, mindmapLayoutType: MindmapLayoutType) {
         const baseLayout = new BaseLayout();
 
-        if (isIndentedLayout(layoutType)) {
-            const resultRoot = baseLayout.layout(root, LayoutType.indented, options, true);
-            if (layoutType === MindmapLayoutType.rightTopIndented) {
-                resultRoot.down2up();
-                return resultRoot;
-            }
-            if (layoutType === MindmapLayoutType.leftBottomIndented) {
-                resultRoot.right2left();
-                return resultRoot;
-            }
-            if (layoutType === MindmapLayoutType.leftTopIndented) {
-                resultRoot.down2up();
-                resultRoot.right2left();
-                return resultRoot;
-            }
-            return resultRoot;
-        }
-
-        if (isLogicLayout(layoutType)) {
-            const isHorizontal = isHorizontalLayout(layoutType);
-            const resultRoot = baseLayout.layout(root, LayoutType.logic, options, isHorizontal);
-            if (layoutType === MindmapLayoutType.left) {
-                resultRoot.right2left();
-                return resultRoot;
-            }
-            if (layoutType === MindmapLayoutType.upward) {
-                resultRoot.down2up();
-                return resultRoot;
-            }
-            return resultRoot;
-        }
-
-        if (isStandardLayout(layoutType)) {
+        if (isStandardLayout(mindmapLayoutType)) {
             const primaryNodeCount = root.children.length;
             const rightNodeCount = Math.round(primaryNodeCount / 2);
             const rightPrimaryNodes = [];
@@ -54,9 +22,9 @@ export class GlobalLayout {
             }
             // right
             fakeRootNode.children = rightPrimaryNodes;
-            const rightRoot = baseLayout.layout(fakeRootNode, LayoutType.logic, options, true);
+            const rightRoot = baseLayout.layout(fakeRootNode, LayoutType.logic, options, { toLeft: false, toTop: false, isHorizontal: true }, true);
             fakeRootNode.children = leftPrimaryNodes;
-            const leftRoot = baseLayout.layout(fakeRootNode, LayoutType.logic, options, true);
+            const leftRoot = baseLayout.layout(fakeRootNode, LayoutType.logic, options, { toLeft: true, toTop: false, isHorizontal: true }, true);
             leftRoot.right2left();
             rightRoot.translate(leftRoot.x - rightRoot.x, leftRoot.y - rightRoot.y);
             leftRoot.children.forEach(leftPrimaryNode => {
@@ -68,7 +36,19 @@ export class GlobalLayout {
             return rightRoot;
         }
 
-        // 默认逻辑右布局
-        return baseLayout.layout(root, LayoutType.logic, options, true);
+        const isIndented = isIndentedLayout(mindmapLayoutType);
+        // const isLogic = isLogicLayout(mindmapLayoutType);
+        const layoutType = isIndented ? LayoutType.indented : LayoutType.logic;
+        const isHorizontal = isIndented ? true : isHorizontalLayout(mindmapLayoutType);
+        const toTop = isTopLayout(mindmapLayoutType);
+        const toLeft = isLeftLayout(mindmapLayoutType);
+        const resultRoot = baseLayout.layout(root, layoutType, options, { toTop, toLeft, isHorizontal }, isHorizontal);
+        if (toTop) {
+            resultRoot.down2up();
+        }
+        if (toLeft) {
+            resultRoot.right2left();
+        }
+        return resultRoot;
     }
 }
