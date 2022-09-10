@@ -25,12 +25,15 @@ import { getRichtextRectangleByNode } from '../draw/richtext';
 import { updateForeignObject } from '@plait/richtext';
 import { BASE, PRIMARY_COLOR } from '../constants';
 import { drawLink } from '../draw/link';
+import { distanceBetweenPointAndPoint } from '@plait/core';
+
+const DRAG_MOVE_BUFFER = 5;
 
 export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup, keydown } = board;
 
     let activeElement: MindmapElement | null;
-    let dragStartPoint: Point;
+    let startPoint: Point;
     let isDragging = false;
     let fakeDragNodeG: SVGGElement | undefined;
     let fakeDropNodeG: SVGGElement | undefined;
@@ -57,7 +60,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     }
                     if (hitMindmapNode(board, point, node) && !node.origin.isRoot) {
                         activeElement = node.origin;
-                        dragStartPoint = point;
+                        startPoint = point;
                     }
                 });
             }
@@ -71,7 +74,13 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.mousemove = (event: MouseEvent) => {
-        if (!board.readonly && activeElement && dragStartPoint) {
+        if (!board.readonly && activeElement && startPoint) {
+            const endPoint = transformPoint(board, toPoint(event.x, event.y, board.host));
+            const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1])
+            if (distance < DRAG_MOVE_BUFFER) {
+                return;
+            }
+            
             if (!isDragging) {
                 isDragging = true;
                 fakeDragNodeG = createG();
@@ -91,9 +100,8 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             }
 
             // fake dragging origin node
-            const end = transformPoint(board, toPoint(event.x, event.y, board.host));
-            const offsetX = end[0] - dragStartPoint[0];
-            const offsetY = end[1] - dragStartPoint[1];
+            const offsetX = endPoint[0] - startPoint[0];
+            const offsetY = endPoint[1] - startPoint[1];
             const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
             const roughSVG = HOST_TO_ROUGH_SVG.get(board.host) as RoughSVG;
             const fakeDragingNode: MindmapNode = {
