@@ -67,6 +67,9 @@ export class BaseLayout {
             if (isolatedNode.parent) {
                 const index = isolatedNode.parent.children.indexOf(isolatedNode);
                 const oldNode = isolatedNode.parent.children[index];
+                const offsetX = layoutRoot.x - oldNode.x;
+                const offsetY = layoutRoot.y - oldNode.y;
+                isolatedNode.parent.children.forEach(child => child.translate(offsetX, offsetY));
                 isolatedNode.parent.children[index] = Object.assign(oldNode, layoutRoot);
             }
         });

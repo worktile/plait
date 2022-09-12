@@ -49,9 +49,9 @@ function seperate(tree: LayoutTree, i: number) {
     }
 }
 
-function positionRoot(tree: LayoutTree) {
+function positionRootCenter(tree: LayoutTree) {
     // Position root between children, taking into account their mod.
-    tree.preliminary =
+    const preliminary =
         (tree.children[0].preliminary +
             tree.children[0].modifier +
             tree.children[tree.childrenCount - 1].modifier +
@@ -59,6 +59,12 @@ function positionRoot(tree: LayoutTree) {
             tree.children[tree.childrenCount - 1].width) /
             2 -
         tree.width / 2;
+    // move sub tree when preliminary to avoid root shifting to left
+    if(preliminary > 0) {
+        tree.preliminary = preliminary;
+    } else {
+        tree.children.forEach((c, index) => { moveSubtree(tree, index, Math.abs(preliminary))});
+    }
 }
 
 // update node's modifier and root node preliminary
@@ -71,7 +77,7 @@ function firstWalk(tree: LayoutTree) {
         firstWalk(tree.children[i]);
         seperate(tree, i);
     }
-    positionRoot(tree);
+    positionRootCenter(tree);
 }
 
 function secondWalk(tree: LayoutTree, sumOfModifier: number) {
