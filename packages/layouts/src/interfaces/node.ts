@@ -1,4 +1,4 @@
-import { LayoutOptions, LayoutType, OriginNode } from '../types';
+import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
 import { findLayoutType } from '../utils/layout';
 
 export class LayoutNode {
@@ -14,9 +14,9 @@ export class LayoutNode {
     parent?: LayoutNode;
     left = false;
     up = false;
-    layout: string;
+    layout: MindmapLayoutType;// no standrad
 
-    constructor(origin: OriginNode, options: LayoutOptions, parent?: LayoutNode, isolated?: boolean) {
+    constructor(origin: OriginNode, options: LayoutOptions, context: LayoutContext, parent?: LayoutNode) {
         const hGap = options.getHorizontalGap(origin);
         const vGap = options.getVerticalGap(origin);
         this.origin = origin;
@@ -26,7 +26,8 @@ export class LayoutNode {
         if (parent) {
             this.parent = parent;
         }
-        this.layout = findLayoutType(this);
+        const layout = findLayoutType(this);
+        this.layout = layout && layout !== MindmapLayoutType.standard ? layout : context.rootLayoutType;
         this.addGap(hGap, vGap);
     }
 

@@ -8,7 +8,7 @@ export interface LayoutOptions {
 export interface LayoutContext {
     toLeft: boolean;
     toTop: boolean;
-    isHorizontal: boolean;
+    rootLayoutType: MindmapLayoutType;
 }
 
 export interface OriginNode {

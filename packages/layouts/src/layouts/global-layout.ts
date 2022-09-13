@@ -22,9 +22,21 @@ export class GlobalLayout {
             }
             // right
             fakeRootNode.children = rightPrimaryNodes;
-            const rightRoot = baseLayout.layout(fakeRootNode, LayoutType.logic, options, { toLeft: false, toTop: false, isHorizontal: true }, true);
+            const rightRoot = baseLayout.layout(
+                fakeRootNode,
+                LayoutType.logic,
+                options,
+                { toLeft: false, toTop: false, rootLayoutType: mindmapLayoutType },
+                true
+            );
             fakeRootNode.children = leftPrimaryNodes;
-            const leftRoot = baseLayout.layout(fakeRootNode, LayoutType.logic, options, { toLeft: true, toTop: false, isHorizontal: true }, true);
+            const leftRoot = baseLayout.layout(
+                fakeRootNode,
+                LayoutType.logic,
+                options,
+                { toLeft: true, toTop: false, rootLayoutType: mindmapLayoutType },
+                true
+            );
             leftRoot.right2left();
             rightRoot.translate(leftRoot.x - rightRoot.x, leftRoot.y - rightRoot.y);
             leftRoot.children.forEach(leftPrimaryNode => {
@@ -42,7 +54,7 @@ export class GlobalLayout {
         const isHorizontal = isIndented ? true : isHorizontalLayout(mindmapLayoutType);
         const toTop = isTopLayout(mindmapLayoutType);
         const toLeft = isLeftLayout(mindmapLayoutType);
-        const resultRoot = baseLayout.layout(root, layoutType, options, { toTop, toLeft, isHorizontal }, isHorizontal);
+        const resultRoot = baseLayout.layout(root, layoutType, options, { toTop, toLeft, rootLayoutType: mindmapLayoutType }, isHorizontal);
         if (toTop) {
             resultRoot.down2up();
         }

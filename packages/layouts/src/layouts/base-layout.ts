@@ -13,34 +13,36 @@ export class BaseLayout {
         const isolatedLayoutRoots: LayoutNode[] = [];
 
         // 1、build layout node
-        const root = this.buildLayoutNode(node, options, isolatedNodes);
+        const root = this.buildLayoutNode(node, options, context, isolatedNodes);
 
         // 2、handle sub node layout
-        isolatedNodes.forEach((isolatedNode: LayoutNode) => {
-            const _mindmapLayoutType = isolatedNode.layout as MindmapLayoutType;
-            const toTop = context.toTop || (context.isHorizontal && isTopLayout(_mindmapLayoutType));
-            const toLeft = context.toLeft || (!context.isHorizontal && isLeftLayout(_mindmapLayoutType));
-            const _isHorizontal = isHorizontalLayout(_mindmapLayoutType);
-            const isolatedRoot = this.layout(
-                isolatedNode.origin,
-                extractLayoutType(_mindmapLayoutType),
-                options,
-                { toTop, toLeft, isHorizontal: context.isHorizontal },
-                _isHorizontal
-            );
-            const { width, height } = isolatedRoot.getBoundingBox();
-            if (!context.toTop && toTop) {
-                isolatedRoot.down2up();
-            }
-            if (!context.toLeft && toLeft) {
-                isolatedRoot.right2left();
-            }
-            // 3、set sub node as black box
-            isolatedNode.width = width;
-            isolatedNode.height = height;
+        isolatedNodes
+            .filter(v => v.origin.children.length > 0)
+            .forEach((isolatedNode: LayoutNode) => {
+                const _mindmapLayoutType = isolatedNode.layout as MindmapLayoutType;
+                const toTop = context.toTop || (isHorizontalLayout(context.rootLayoutType) && isTopLayout(_mindmapLayoutType));
+                const toLeft = context.toLeft || (!isHorizontalLayout(context.rootLayoutType) && isLeftLayout(_mindmapLayoutType));
+                const _isHorizontal = isHorizontalLayout(_mindmapLayoutType);
+                const isolatedRoot = this.layout(
+                    isolatedNode.origin,
+                    extractLayoutType(_mindmapLayoutType),
+                    options,
+                    { toTop, toLeft, rootLayoutType: context.rootLayoutType },
+                    _isHorizontal
+                );
+                const { width, height } = isolatedRoot.getBoundingBox();
+                if (!context.toTop && toTop) {
+                    isolatedRoot.down2up();
+                }
+                if (!context.toLeft && toLeft) {
+                    isolatedRoot.right2left();
+                }
+                // 3、set sub node as black box
+                isolatedNode.width = width;
+                isolatedNode.height = height;
 
-            isolatedLayoutRoots.push(isolatedRoot);
-        });
+                isolatedLayoutRoots.push(isolatedRoot);
+            });
 
         // 4、layout handle
         switch (layoutType) {
@@ -60,19 +62,26 @@ export class BaseLayout {
         }
 
         // 5、apply isolated nodes to root
-        isolatedNodes.forEach((isolatedNode: LayoutNode, index) => {
-            const layoutRoot = isolatedLayoutRoots[index];
-            layoutRoot.parent = isolatedNode.parent;
-            layoutRoot.translate(isolatedNode.x, isolatedNode.y);
-            if (isolatedNode.parent) {
-                const index = isolatedNode.parent.children.indexOf(isolatedNode);
-                const oldNode = isolatedNode.parent.children[index];
-                const offsetX = layoutRoot.x - oldNode.x;
-                const offsetY = layoutRoot.y - oldNode.y;
-                isolatedNode.parent.children.forEach(child => child.translate(offsetX, offsetY));
-                isolatedNode.parent.children[index] = Object.assign(oldNode, layoutRoot);
-            }
-        });
+        isolatedNodes
+            .filter(v => v.origin.children.length > 0)
+            .forEach((isolatedNode: LayoutNode, index) => {
+                const layoutRoot = isolatedLayoutRoots[index];
+                layoutRoot.parent = isolatedNode.parent;
+                const { x, y } = layoutRoot;
+                layoutRoot.translate(isolatedNode.x, isolatedNode.y);
+                if (isolatedNode.parent) {
+                    const index = isolatedNode.parent.children.indexOf(isolatedNode);
+                    const oldNode = isolatedNode.parent.children[index];
+                    isolatedNode.parent.children[index] = Object.assign(oldNode, layoutRoot);
+                    const parentNodeIsHorizontalLayout = isHorizontalLayout(isolatedNode.parent.layout);
+                    if (x > 0 && parentNodeIsHorizontalLayout) {
+                        isolatedNode.parent.children.filter(child => child !== oldNode).forEach(child => child.translate(x, 0));
+                    }
+                    if (y > 0 && !parentNodeIsHorizontalLayout) {
+                        isolatedNode.parent.children.filter(child => child !== oldNode).forEach(child => child.translate(0, y));
+                    }
+                }
+            });
 
         return root;
     }
@@ -90,8 +99,8 @@ export class BaseLayout {
         });
     }
 
-    private buildLayoutNode(node: OriginNode, options: LayoutOptions, isolatedNodes: LayoutNode[]) {
-        const root = new LayoutNode(node, options);
+    private buildLayoutNode(origin: OriginNode, options: LayoutOptions, context: LayoutContext, isolatedNodes: LayoutNode[]) {
+        const root = new LayoutNode(origin, options, context);
         if (!root.origin.isCollapsed) {
             const nodes: LayoutNode[] = [root];
             let node: LayoutNode | undefined;
@@ -102,10 +111,13 @@ export class BaseLayout {
                     node.children = [];
                     if (children && length) {
                         for (let i = 0; i < length; i++) {
-                            const child = new LayoutNode(children[i], options, node);
+                            const child = new LayoutNode(children[i], options, context, node);
                             node.children.push(child);
                             child.depth = node.depth + 1;
-                            const isolated = node.layout !== child.layout;
+                            const isolated =
+                                node.layout !== child.layout &&
+                                (extractLayoutType(node.layout) !== extractLayoutType(child.layout) ||
+                                    isHorizontalLayout(node.layout) !== isHorizontalLayout(child.layout));
                             if (isolated && !child.origin.isCollapsed) {
                                 isolatedNodes.push(child);
                             } else {

@@ -1,16 +1,16 @@
 import { LayoutNode } from '../interfaces/node';
 import { LayoutType, MindmapLayoutType } from '../types';
 
-export function findLayoutType(node: LayoutNode): string {
+export function findLayoutType(node: LayoutNode): MindmapLayoutType | null {
     if (node.origin.layout) {
-        return node.origin.layout;
+        return node.origin.layout as MindmapLayoutType;
     }
 
     if (node.parent) {
         return findLayoutType(node.parent);
     }
 
-    return LayoutType.logic;
+    return null;
 }
 
 export const isIndentedLayout = (layout: MindmapLayoutType) => {
@@ -36,7 +36,12 @@ export const isStandardLayout = (layout: MindmapLayoutType) => {
 };
 
 export const isHorizontalLayout = (layout: MindmapLayoutType) => {
-    return layout === MindmapLayoutType.right || layout === MindmapLayoutType.left || layout === MindmapLayoutType.standard;
+    return (
+        layout === MindmapLayoutType.right ||
+        layout === MindmapLayoutType.left ||
+        layout === MindmapLayoutType.standard ||
+        isIndentedLayout(layout)
+    );
 };
 
 export const isTopLayout = (layout: MindmapLayoutType) => {
@@ -47,9 +52,7 @@ export const isTopLayout = (layout: MindmapLayoutType) => {
 
 export const isLeftLayout = (layout: MindmapLayoutType) => {
     return (
-        layout === MindmapLayoutType.left ||
-        layout === MindmapLayoutType.leftTopIndented ||
-        layout === MindmapLayoutType.leftBottomIndented
+        layout === MindmapLayoutType.left || layout === MindmapLayoutType.leftTopIndented || layout === MindmapLayoutType.leftBottomIndented
     );
 };
 
