@@ -22,7 +22,7 @@ import {
     transformPoint,
     Transforms
 } from '@plait/core';
-import { isHorizontalLayout, isTopLayout, MindmapLayoutType } from '@plait/layouts';
+import { isHorizontalLayout, isLeftLayout, isTopLayout, MindmapLayoutType } from '@plait/layouts';
 import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
@@ -36,7 +36,7 @@ import { MindmapElement } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
 import { getLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
-import { getLayoutByElement } from './utils/layout';
+import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
 import { findPath, getChildrenCount } from './utils/mindmap';
 import { addSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
@@ -316,7 +316,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const stroke = getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         const extendY = y + height / 2;
-        const nodeLayout = getLayoutByElement(this.node.origin) as MindmapLayoutType;
+        const nodeLayout = getCorrectLayoutByElement(this.node.origin) as MindmapLayoutType;
 
         let extendLineXY = [
             [x + width, extendY],
@@ -336,7 +336,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 (getNodeShapeByElement(this.node.origin) as MindmapNodeShape) === MindmapNodeShape.roundRectangle
                     ? [0, 0]
                     : [height / 2, height / 2];
-            if (this.parent.x > this.node.x) {
+            if (isLeftLayout(nodeLayout)) {
                 //左
                 extendLineXOffset = [-width, -width - EXTEND_OFFSET * 2];
                 circleOffset = [-EXTEND_RADIUS / 2, 0];
