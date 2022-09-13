@@ -46,10 +46,10 @@ export const getCorrectLayoutByElement = (element: MindmapElement) => {
     const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
     let layout = component?.node.origin.layout;
 
-    let parentComponent: undefined | MindmapNodeComponent; 
+    let parentComponent: undefined | MindmapNodeComponent;
     let parent: MindmapElement | undefined = component?.parent?.origin;
 
-    while(!layout && parent) {
+    while (!layout && parent) {
         parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parent);
         layout = parentComponent?.node.origin.layout;
         parent = parentComponent?.parent?.origin;
@@ -69,7 +69,7 @@ export const getCorrectLayoutByElement = (element: MindmapElement) => {
         if (incorrectDirection) {
             return correctLayoutByDirection(layout, incorrectDirection);
         } else {
-            return layout
+            return layout;
         }
     } else {
         return correctRootLayout;
@@ -79,13 +79,13 @@ export const getCorrectLayoutByElement = (element: MindmapElement) => {
 export const isCorrectLayout = (root: MindmapElement, layout: MindmapLayoutType) => {
     const rootLayout = root.layout || getDefaultMindmapLayout();
     return !getInCorrectLayoutDirection(rootLayout, layout);
-}
+};
 
 export const getInCorrectLayoutDirection = (rootLayout: MindmapLayoutType, layout: MindmapLayoutType) => {
-    const mindmapDirections = LayoutDirectionsMap[rootLayout];;
+    const mindmapDirections = LayoutDirectionsMap[rootLayout];
     const subLayoutDirections = LayoutDirectionsMap[layout];
     return subLayoutDirections.find(d => mindmapDirections.includes(getLayoutReverseDirection(d)));
-}
+};
 
 export const correctLayoutByDirection = (layout: MindmapLayoutType, direction: LayoutDirection) => {
     const isHorizontal = direction === LayoutDirection.left || direction === LayoutDirection.right ? true : false;

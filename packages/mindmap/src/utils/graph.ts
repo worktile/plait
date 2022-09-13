@@ -4,9 +4,8 @@ import { Point } from 'roughjs/bin/geometry';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { MAX_RADIUS, MindmapNodeShape } from '../constants';
 import { PlaitBoard } from '@plait/core';
-import { MindmapElement } from '../interfaces';
 import { getLayoutByElement } from './layout';
-import { isHorizontalLayout, MindmapLayoutType } from '@plait/layouts';
+import { isHorizontalLayout, isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
 import { getNodeShapeByElement } from './shape';
 
 export interface RectangleClient {
@@ -64,7 +63,7 @@ export function getRectangleByNode(node: MindmapNode) {
     const height = Math.round(node.height - node.vGap * 2);
     if (!node.origin.isRoot && (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.underline) {
         const layout = getLayoutByElement(node.parent.origin) as MindmapLayoutType;
-        if (isHorizontalLayout(layout)) {
+        if (isHorizontalLayout(layout) && !isIndentedLayout(layout)) {
             y = y - height / 2;
         }
     }
