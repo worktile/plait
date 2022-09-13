@@ -76,6 +76,9 @@ export const buildNodes = (node: MindmapElement) => {
         const newNode: MindmapElement = { ...node };
         newNode.id = idCreator();
         newNode.children = [];
+        if (newNode.isRoot) {
+            delete newNode.isRoot;
+        }
         for (const childNode of node.children) {
             newNode.children.push(buildNodes(childNode));
         }
