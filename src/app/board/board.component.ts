@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { withMindmap } from '@plait/mindmap';
+import { findPath, getSelectedMindmapElements, MINDMAP_ELEMENT_TO_COMPONENT, withMindmap } from '@plait/mindmap';
 import { PlaitElement, PlaitBoardChangeEvent, Viewport, PlaitBoard, Transforms } from '@plait/core';
 import { mockMindmapData } from '../mock/mindmap-data';
 
@@ -43,7 +43,12 @@ export class BasicBoardComponent implements OnInit {
 
     layoutChange(event: Event) {
         const value = (event.target as HTMLSelectElement).value;
-        Transforms.setNode(this.board, { layout: value }, [0]);
+        const selectedElements = getSelectedMindmapElements(this.board)?.[0];
+
+        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements);
+
+        const path = nodeComponent ? findPath(this.board, nodeComponent.node) : [0];
+        Transforms.setNode(this.board, { layout: value }, path);
     }
 
     plaitBoardInitialized(value: PlaitBoard) {
