@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.29
+
+### Patch Changes
+
+-   [`6b699e8`](https://github.com/worktile/plait/commit/6b699e82c37a7bd8a2d0560d0f1da4c7e11b9422) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add distanceBetweenPointAndPoint
+
 ## 0.0.28
 
 ### Patch Changes

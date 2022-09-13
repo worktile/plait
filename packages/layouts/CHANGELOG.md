@@ -1,5 +1,13 @@
 # layouts
 
+## 0.0.29
+
+### Patch Changes
+
+-   [`d8ab659`](https://github.com/worktile/plait/commit/d8ab6594f255aafb89cf96e53cbb80e08facf633) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct silbings by the node with sub layout
+
+*   [`e77a8e7`](https://github.com/worktile/plait/commit/e77a8e77e577d0e4c6aa62e548bcaff30520fe1a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - sub layout support direction turn
+
 ## 0.0.21
 
 ### Patch Changes

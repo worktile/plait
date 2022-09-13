@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.0.29
+
+### Patch Changes
+
+-   [`81cf183`](https://github.com/worktile/plait/commit/81cf18386891d22fdaac1dc200f57732c8d4bcc2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add DRAG_MOVE_BUFFER distance before begin drag
+
+*   [#76](https://github.com/worktile/plait/pull/76) [`15e8202`](https://github.com/worktile/plait/commit/15e8202b5ab141b48194b96bedda8802d370b7e8) Thanks [@WBbug](https://github.com/WBbug)! - use getCorrectLayoutByElement to draw extend
+
 ## 0.0.28
 
 ### Patch Changes
