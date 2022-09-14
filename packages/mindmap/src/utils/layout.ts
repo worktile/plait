@@ -91,6 +91,19 @@ export const getBranchMindmapLayouts = (element: MindmapElement) => {
     return layouts;
 };
 
+export const getBranchDirectionsByLayouts = (branchLayouts: MindmapLayoutType[]) => {
+    const branchDirections: LayoutDirection[] = [];
+    branchLayouts.forEach(l => {
+        const directions = LayoutDirectionsMap[l];
+        directions.forEach(d => {
+            if (!branchDirections.includes(d) && !branchDirections.includes(getLayoutReverseDirection(d))) {
+                branchDirections.push(d);
+            }
+        });
+    });
+    return branchDirections;
+};
+
 export const isCorrectLayout = (root: MindmapElement, layout: MindmapLayoutType) => {
     const rootLayout = root.layout || getDefaultMindmapLayout();
     return !getInCorrectLayoutDirection(rootLayout, layout);
@@ -153,11 +166,6 @@ export const getAvailableSubLayouts = (layout: MindmapLayoutType): MindmapLayout
     return getAvailableSubLayoutsByLayoutDirections(currentLayoutDirections);
 };
 
-/**
- * get available sub layouts
- * @param layout
- * @returns MindmapLayoutType[]
- */
 export const getAvailableSubLayoutsByLayoutDirections = (directions: LayoutDirection[]): MindmapLayoutType[] => {
     const result: MindmapLayoutType[] = [];
     const reverseDirections = directions.map(getLayoutReverseDirection);
