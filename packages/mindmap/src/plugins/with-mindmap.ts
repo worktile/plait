@@ -21,7 +21,7 @@ import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { buildNodes, extractNodesText, findPath } from '../utils';
+import { buildNodes, extractNodesText, findParentElement, findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
 import {
@@ -112,7 +112,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
         const selectedElements = SELECTED_MINDMAP_ELEMENTS.get(board);
         if (selectedElements && selectedElements.length > 0) {
-            if (event.key === 'Tab' || event.key === 'Enter') {
+            if (event.key === 'Tab' || (event.key === 'Enter' && !selectedElements[0].isRoot)) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
                 deleteSelectedMindmapElements(board, selectedElement);
@@ -125,6 +125,19 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 } else {
                     if (mindmapNodeComponent) {
                         path = Path.next(findPath(board, mindmapNodeComponent.node));
+
+                        const parentElement = findParentElement(selectedElement);
+                        const nodeIndex: number = mindmapNodeComponent.parent.children.findIndex(
+                            item => item.origin.id === selectedElements[0].id
+                        );
+                        if (
+                            parentElement &&
+                            parentElement.rightNodeCount &&
+                            parentElement.isRoot &&
+                            nodeIndex <= parentElement.rightNodeCount - 1
+                        ) {
+                            Transforms.setNode(board, { rightNodeCount: parentElement.rightNodeCount + 1 }, [0]);
+                        }
                     }
                 }
                 const newElement = {
@@ -146,6 +159,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 }, 0);
                 return;
             }
+
             if (hotkeys.isDeleteBackward(event)) {
                 event.preventDefault();
                 if (isPlaitMindmap(selectedElements[0]) && board.children.length === 1 && !board.allowClearBoard) {
@@ -158,6 +172,21 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     if (mindmapNodeComponent) {
                         const path = findPath(board, mindmapNodeComponent.node);
                         Transforms.removeNode(board, path);
+
+                        const parentElement = findParentElement(selectedElements[0]);
+                        const nodeIndex: number = mindmapNodeComponent?.parent.children.findIndex(
+                            item => item.origin.id === selectedElements[0].id
+                        );
+
+                        if (
+                            parentElement &&
+                            parentElement.rightNodeCount &&
+                            parentElement.isRoot &&
+                            nodeIndex <= parentElement.rightNodeCount - 1
+                        ) {
+                            const rightNodeCount = parentElement.rightNodeCount - 1 < 0 ? 0 : parentElement.rightNodeCount - 1;
+                            Transforms.setNode(board, { rightNodeCount }, [0]);
+                        }
                     }
                 });
                 if (selectedElements.length === 1) {
