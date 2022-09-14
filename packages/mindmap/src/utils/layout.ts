@@ -134,15 +134,25 @@ export const getDefaultMindmapLayout = () => {
  * @returns MindmapLayoutType[]
  */
 export const getAvailableSubLayouts = (layout: MindmapLayoutType): MindmapLayoutType[] => {
+    const currentLayoutDirections = LayoutDirectionsMap[layout];
+    return getAvailableSubLayoutsByLayoutDirections(currentLayoutDirections);
+};
+
+/**
+ * get available sub layouts
+ * @param layout
+ * @returns MindmapLayoutType[]
+ */
+export const getAvailableSubLayoutsByLayoutDirections = (directions: LayoutDirection[]): MindmapLayoutType[] => {
     const result: MindmapLayoutType[] = [];
-    const layoutReverseDirections = LayoutDirectionsMap[layout].map(getLayoutReverseDirection);
+    const reverseDirections = directions.map(getLayoutReverseDirection);
     for (const key in MindmapLayoutType) {
         const layout = MindmapLayoutType[key as keyof typeof MindmapLayoutType];
         const layoutDirections = LayoutDirectionsMap[layout];
         if (layoutDirections) {
-            // handle standrad
-            const exist = layoutDirections.some(d => layoutReverseDirections.includes(d));
-            if (!exist) {
+            const hasSameDirection = layoutDirections.some(d => directions.includes(d));
+            const hasReverseDirection = layoutDirections.some(r => reverseDirections.includes(r));
+            if (hasSameDirection && !hasReverseDirection) {
                 result.push(layout);
             }
         }
