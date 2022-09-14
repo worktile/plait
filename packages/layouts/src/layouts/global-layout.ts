@@ -8,13 +8,12 @@ export class GlobalLayout {
 
         if (isStandardLayout(mindmapLayoutType)) {
             const primaryNodeCount = root.children.length;
-            const rightNodeCount = Math.round(primaryNodeCount / 2);
             const rightPrimaryNodes = [];
             const leftPrimaryNodes = [];
             const fakeRootNode = { ...root };
             for (let i = 0; i < primaryNodeCount; i++) {
                 const child = root.children[i];
-                if (i < rightNodeCount) {
+                if (i < root.rightNodeCount) {
                     rightPrimaryNodes.push(child);
                 } else {
                     leftPrimaryNodes.push(child);
