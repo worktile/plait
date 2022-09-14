@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.0.31
+
+### Patch Changes
+
+-   [`d9aff21`](https://github.com/worktile/plait/commit/d9aff21815af7e6ffabff14c0f122b8a476cec74) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getBranchMindmapLayouts: get layout array from element and it's parent element
+
+*   [`57da5cb`](https://github.com/worktile/plait/commit/57da5cbc89e8933e128a469cadb61efdf3b1f468) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getBranchDirectionsByLayouts: get all directions of current branch
+
 ## 0.0.30
 
 ### Patch Changes
