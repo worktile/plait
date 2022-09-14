@@ -17,8 +17,6 @@ import {
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
-    PlaitHistoryBoard,
-    PlaitNode,
     Selection,
     toPoint,
     transformPoint,
@@ -28,7 +26,7 @@ import { isHorizontalLayout, isLeftLayout, isTopLayout, MindmapLayoutType } from
 import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
-import { debounceTime, filter, skip, take, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
 import { EXTEND_OFFSET, EXTEND_RADIUS, MindmapNodeShape, MINDMAP_NODE_KEY, PRIMARY_COLOR, STROKE_WIDTH } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLink } from './draw/link';
@@ -42,7 +40,7 @@ import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
 import { findPath, getChildrenCount } from './utils/mindmap';
 import { addSelectedMindmapElements, deleteSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
-import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from './utils/weak-maps';
+import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 
 @Component({
     selector: 'plait-mindmap-node',
