@@ -27,6 +27,7 @@ import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
+import { Operation } from 'slate';
 import { EXTEND_OFFSET, EXTEND_RADIUS, MindmapNodeShape, MINDMAP_NODE_KEY, PRIMARY_COLOR, STROKE_WIDTH } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLink } from './draw/link';
@@ -502,7 +503,10 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const valueChange$ = richtextInstance.plaitChange
             .pipe(
                 debounceTime(0),
-                filter(event => event.operations[0]?.type !== 'set_selection')
+                filter(event => {
+                    // 过滤掉 operations 中全是 set_selection 的操作
+                    return !event.operations.every(op => Operation.isSelectionOperation(op));
+                })
             )
             .subscribe(event => {
                 if (richtext === event.value) {
