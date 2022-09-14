@@ -1,5 +1,11 @@
 # layouts
 
+## 0.0.30
+
+### Patch Changes
+
+-   [`bbd19cd`](https://github.com/worktile/plait/commit/bbd19cd80c3a290364993b20f27a80faf3a0bc31) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct silbings tranlate logic on sub node layout
+
 ## 0.0.29
 
 ### Patch Changes

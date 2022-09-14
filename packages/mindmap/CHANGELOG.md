@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.0.30
+
+### Patch Changes
+
+-   [#75](https://github.com/worktile/plait/pull/75) [`193d5ec`](https://github.com/worktile/plait/commit/193d5ec797d181a81885fe56d42046d7407a2881) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - remove root property when copy root node
+
+*   [`af2ba53`](https://github.com/worktile/plait/commit/af2ba53fa66872048aad595db91eb9a43d563cc9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify getAvailableSubLayouts logic - use direction include
+
 ## 0.0.29
 
 ### Patch Changes
