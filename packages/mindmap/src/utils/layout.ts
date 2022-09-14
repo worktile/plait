@@ -76,6 +76,21 @@ export const getCorrectLayoutByElement = (element: MindmapElement) => {
     }
 };
 
+export const getBranchMindmapLayouts = (element: MindmapElement) => {
+    const layouts: MindmapLayoutType[] = [];
+    if (element.layout) {
+        layouts.unshift(element.layout);
+    }
+    let parent = findParentElement(element);
+    while (parent) {
+        if (parent.layout) {
+            layouts.unshift(parent.layout);
+        }
+        parent = findParentElement(parent);
+    }
+    return layouts;
+};
+
 export const isCorrectLayout = (root: MindmapElement, layout: MindmapLayoutType) => {
     const rootLayout = root.layout || getDefaultMindmapLayout();
     return !getInCorrectLayoutDirection(rootLayout, layout);
