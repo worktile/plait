@@ -442,7 +442,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     destroyRichtext() {
-        deleteSelectedMindmapElements(this.board, this.node.origin);
         if (this.richtextG) {
             this.richtextG.remove();
         }
@@ -502,20 +501,26 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
         let richtext = richtextInstance.plaitValue;
         // 增加 debounceTime 等待 DOM 渲染完成后再去取文本宽高
-        const valueChange$ = richtextInstance.plaitChange.pipe(debounceTime(0), skip(1)).subscribe(event => {
-            if (richtext === event.value) {
-                return;
-            }
-            richtext = event.value;
+        const valueChange$ = richtextInstance.plaitChange
+            .pipe(
+                debounceTime(0),
+                filter(event => event.operations[0]?.type !== 'set_selection')
+            )
+            .subscribe(event => {
+                console.log(event.value === richtext, 'event');
+                if (richtext === event.value) {
+                    return;
+                }
+                richtext = event.value;
 
-            // 更新富文本、更新宽高
-            const { width, height } = richtextInstance.editable.getBoundingClientRect();
-            const newElement = { value: richtext, width, height } as MindmapElement;
+                // 更新富文本、更新宽高
+                const { width, height } = richtextInstance.editable.getBoundingClientRect();
+                const newElement = { value: richtext, width, height } as MindmapElement;
 
-            const path = findPath(this.board, this.node);
-            Transforms.setNode(this.board, newElement, path);
-            MERGING.set(this.board, true);
-        });
+                const path = findPath(this.board, this.node);
+                Transforms.setNode(this.board, newElement, path);
+                MERGING.set(this.board, true);
+            });
         const composition$ = richtextInstance.plaitComposition.subscribe(event => {
             const { width, height } = richtextInstance.editable.getBoundingClientRect();
             if (event.isComposing && (width !== this.node.origin.width || height !== this.node.origin.height)) {
@@ -571,6 +576,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnDestroy(): void {
         this.destroyRichtext();
+        deleteSelectedMindmapElements(this.board, this.node.origin);
         this.gGroup.remove();
         this.destroy$.next();
         this.destroy$.complete();
