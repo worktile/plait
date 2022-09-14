@@ -17,6 +17,8 @@ import {
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
+    PlaitHistoryBoard,
+    PlaitNode,
     Selection,
     toPoint,
     transformPoint,
@@ -26,7 +28,7 @@ import { isHorizontalLayout, isLeftLayout, isTopLayout, MindmapLayoutType } from
 import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
-import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, skip, take, takeUntil } from 'rxjs/operators';
 import { EXTEND_OFFSET, EXTEND_RADIUS, MindmapNodeShape, MINDMAP_NODE_KEY, PRIMARY_COLOR, STROKE_WIDTH } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLink } from './draw/link';
@@ -38,9 +40,9 @@ import { getLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
 import { findPath, getChildrenCount } from './utils/mindmap';
-import { addSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
+import { addSelectedMindmapElements, deleteSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
-import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
+import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from './utils/weak-maps';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -440,6 +442,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     destroyRichtext() {
+        deleteSelectedMindmapElements(this.board, this.node.origin);
         if (this.richtextG) {
             this.richtextG.remove();
         }
@@ -499,7 +502,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
         let richtext = richtextInstance.plaitValue;
         // 增加 debounceTime 等待 DOM 渲染完成后再去取文本宽高
-        const valueChange$ = richtextInstance.plaitChange.pipe(debounceTime(0)).subscribe(event => {
+        const valueChange$ = richtextInstance.plaitChange.pipe(debounceTime(0), skip(1)).subscribe(event => {
             if (richtext === event.value) {
                 return;
             }
@@ -520,6 +523,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
+                MERGING.set(this.board, true);
             }
         });
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
