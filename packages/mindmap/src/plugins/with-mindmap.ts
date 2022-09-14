@@ -134,7 +134,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     },
                     children: [],
                     width: 5,
-                    height: 22
+                    height: 24
                 };
                 Transforms.insertNode(board, newElement, path);
                 addSelectedMindmapElements(board, newElement);
