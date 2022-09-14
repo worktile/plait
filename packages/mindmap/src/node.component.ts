@@ -507,7 +507,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 filter(event => event.operations[0]?.type !== 'set_selection')
             )
             .subscribe(event => {
-                console.log(event.value === richtext, 'event');
                 if (richtext === event.value) {
                     return;
                 }
