@@ -555,7 +555,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 this.enableMaskG();
             }
 
-            if (event.key === 'Tab' && !event.shiftKey) {
+            if (event.key === 'Tab') {
                 event.preventDefault();
                 if (this.isEditable) {
                     exitHandle();
