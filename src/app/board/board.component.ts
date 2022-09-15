@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { findPath, getSelectedMindmapElements, MINDMAP_ELEMENT_TO_COMPONENT, withMindmap } from '@plait/mindmap';
 import { PlaitElement, PlaitBoardChangeEvent, Viewport, PlaitBoard, Transforms } from '@plait/core';
-import { MindmapLayoutType } from '@plait/layouts';
-import { createMindmapData } from '../mock/mindmap-data';
+import { mockMindmapData } from '../mock/mindmap-data';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
 
@@ -13,7 +12,7 @@ const LOCAL_DATA_KEY = 'plait-board-change-data';
 export class BasicBoardComponent implements OnInit {
     plugins = [withMindmap];
 
-    value: PlaitElement[] = createMindmapData(4, MindmapLayoutType.right);
+    value: PlaitElement[] = [mockMindmapData];
 
     viewport!: Viewport;
 

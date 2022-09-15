@@ -1,122 +1,104 @@
 import { PlaitMindmap, MindmapNodeShape } from '@plait/mindmap';
 import { MindmapLayoutType } from '@plait/layouts';
 
-export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutType) => {
-    const mindmapData: PlaitMindmap = {
-        type: 'mindmap',
-        id: '1',
-        value: { children: [{ text: '脑图调研' }] },
-        children: [
-            {
-                id: '1-1',
-                value: { children: [{ text: '富文本' }] },
-                children: [
-                    {
-                        id: '1-1-1',
-                        value: { children: [{ text: '布局算法' }] },
-                        children: [],
-                        width: 56,
-                        height: 24,
-                        shape: MindmapNodeShape.underline
-                    },
-                    {
-                        id: '1-1-2',
-                        value: { children: [{ text: '知名脑图产品' }] },
-                        children: [],
-                        width: 84,
-                        height: 24,
-                        shape: MindmapNodeShape.roundRectangle
-                    }
-                ],
-                width: 42,
-                height: 24,
-                isCollapsed: true,
-                shape: MindmapNodeShape.underline
-            },
-            {
-                id: '1-2',
-                value: { children: [{ text: '绘图技术' }] },
-                children: [],
-                width: 56,
-                height: 24,
-                shape: MindmapNodeShape.underline
-            },
-            {
-                id: '1-3',
-                value: { children: [{ text: '布局算法' }] },
-                children: [],
-                width: 56,
-                height: 24,
-                shape: MindmapNodeShape.underline
-            },
-            {
-                id: '1-4',
-                value: { children: [{ text: '知名脑图产品' }] },
-                children: [
-                    {
-                        id: '1-4-1',
-                        value: { children: [{ text: '布局算法' }] },
-                        children: [],
-                        width: 56,
-                        height: 24,
-                        shape: MindmapNodeShape.underline
-                    },
-                    {
-                        id: '1-4-2',
-                        value: { children: [{ text: 'non-layerd-tidy-trees' }] },
-                        children: [
-                            {
-                                id: '1-4-2-1',
-                                value: { children: [{ text: '鱼骨图哦' }] },
-                                children: [],
-                                width: 72,
-                                height: 24,
-                                shape: MindmapNodeShape.underline
-                            },
-                            {
-                                id: '1-4-2-2',
-                                value: { children: [{ text: '缩进布局' }] },
-                                children: [],
-                                width: 72,
-                                height: 24,
-                                shape: MindmapNodeShape.underline
-                            }
-                        ],
-                        width: 144.8046875,
-                        height: 24,
-                        shape: MindmapNodeShape.underline,
-                        layout: MindmapLayoutType.right
-                    },
-                    {
-                        id: '1-4-3',
-                        value: { children: [{ text: '知名脑图产品' }] },
-                        children: [],
-                        width: 84,
-                        height: 24,
-                        shape: MindmapNodeShape.underline
-                    }
-                ],
-                width: 84,
-                height: 24,
-                shape: MindmapNodeShape.underline,
-                layout: MindmapLayoutType.right
-            },
-            {
-                id: '1-5',
-                value: { children: [{ text: 'xxxxxxx' }] },
-                children: [],
-                width: 72,
-                height: 24,
-                shape: MindmapNodeShape.roundRectangle
-            }
-        ],
-        width: 72,
-        height: 25,
-        isRoot: true,
-        points: [[460, 360]],
-        rightNodeCount,
-        layout
-    };
-
-    return [mindmapData];
+export const mockMindmapData: PlaitMindmap = {
+    type: 'mindmap',
+    id: '1',
+    rightNodeCount: 4,
+    value: { children: [{ text: '脑图调研' }] },
+    children: [
+        {
+            id: '1-1',
+            value: { children: [{ text: '富文本' }] },
+            children: [
+                {
+                    id: '1-1-1',
+                    value: { children: [{ text: '布局算法' }] },
+                    children: [],
+                    width: 56,
+                    height: 24,
+                    shape: MindmapNodeShape.underline
+                },
+                {
+                    id: '1-1-2',
+                    value: { children: [{ text: '知名脑图产品' }] },
+                    children: [],
+                    width: 84,
+                    height: 24,
+                    shape: MindmapNodeShape.roundRectangle
+                }
+            ],
+            width: 42,
+            height: 24,
+            isCollapsed: true,
+            shape: MindmapNodeShape.underline
+        },
+        { id: '1-2', value: { children: [{ text: '绘图技术' }] }, children: [], width: 56, height: 24, shape: MindmapNodeShape.underline },
+        { id: '1-3', value: { children: [{ text: '布局算法' }] }, children: [], width: 56, height: 24, shape: MindmapNodeShape.underline },
+        {
+            id: '1-4',
+            value: { children: [{ text: '知名脑图产品' }] },
+            children: [
+                {
+                    id: '1-4-1',
+                    value: { children: [{ text: '布局算法' }] },
+                    children: [],
+                    width: 56,
+                    height: 24,
+                    shape: MindmapNodeShape.underline
+                },
+                {
+                    id: '1-4-2',
+                    value: { children: [{ text: 'non-layerd-tidy-trees' }] },
+                    children: [
+                        {
+                            id: '1-4-2-1',
+                            value: { children: [{ text: '鱼骨图哦' }] },
+                            children: [],
+                            width: 72,
+                            height: 24,
+                            shape: MindmapNodeShape.underline
+                        },
+                        {
+                            id: '1-4-2-2',
+                            value: { children: [{ text: '缩进布局' }] },
+                            children: [],
+                            width: 72,
+                            height: 24,
+                            shape: MindmapNodeShape.underline
+                        }
+                    ],
+                    width: 144.8046875,
+                    height: 24,
+                    shape: MindmapNodeShape.underline,
+                    layout: MindmapLayoutType.right
+                },
+                {
+                    id: '1-4-3',
+                    value: { children: [{ text: '知名脑图产品' }] },
+                    children: [],
+                    width: 84,
+                    height: 24,
+                    shape: MindmapNodeShape.underline
+                }
+            ],
+            width: 84,
+            height: 24,
+            shape: MindmapNodeShape.underline,
+            layout: MindmapLayoutType.right
+        },
+        {
+            id: '1-5',
+            value: { children: [{ text: 'xxxxxxx' }] },
+            children: [],
+            width: 72,
+            height: 24,
+            shape: MindmapNodeShape.roundRectangle
+        }
+    ],
+    width: 72,
+    height: 25,
+    isRoot: true,
+    points: [[460, 360]],
+    layout: MindmapLayoutType.right
 };

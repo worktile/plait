@@ -1,10 +1,11 @@
-import { idCreator, Path, PlaitBoard, Transforms } from '@plait/core';
+import { idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { Node } from 'slate';
-import { isPlaitMindmap, MindmapNode } from '../interfaces';
+import { isPlaitMindmap, MindmapNode, PlaitMindmap } from '../interfaces';
 import { MindmapElement } from '../interfaces/element';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { MindmapLayoutType } from '@plait/layouts';
 import { getRootLayout } from './layout';
+import { MindmapNodeShape } from '../constants';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
@@ -125,4 +126,46 @@ export const changeRightNodeCount = (board: PlaitBoard, selectedElement: Mindmap
             );
         }
     }
+};
+
+export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutType) => {
+    const mindmapData: PlaitElement = {
+        type: 'mindmap',
+        id: '1',
+        isRoot: true,
+        rightNodeCount,
+        layout,
+        width: 72,
+        height: 28,
+        points: [[230, 208]],
+        value: { children: [{ text: '思维导图' }] },
+        shape: MindmapNodeShape.roundRectangle,
+        children: [
+            {
+                id: '1-1',
+                value: { children: [{ text: '新建节点' }] },
+                children: [],
+                width: 56,
+                height: 24,
+                shape: MindmapNodeShape.roundRectangle
+            },
+            {
+                id: '1-2',
+                value: { children: [{ text: '新建节点' }] },
+                children: [],
+                width: 56,
+                height: 24,
+                shape: MindmapNodeShape.roundRectangle
+            },
+            {
+                id: '1-3',
+                value: { children: [{ text: '新建节点' }] },
+                children: [],
+                width: 56,
+                height: 24,
+                shape: MindmapNodeShape.roundRectangle
+            }
+        ]
+    };
+    return [mindmapData];
 };
