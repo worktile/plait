@@ -27,14 +27,24 @@ import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
+import {
+    EXTEND_OFFSET,
+    EXTEND_RADIUS,
+    MindmapNodeShape,
+    MINDMAP_NODE_KEY,
+    PRIMARY_COLOR,
+    QUICK_INSERT_CIRCLE_COLOR,
+    QUICK_INSERT_CIRCLE_OFFSET,
+    QUICK_INSERT_INNER_CROSS_COLOR,
+    STROKE_WIDTH
+} from './constants';
 import { Operation } from 'slate';
-import { EXTEND_OFFSET, EXTEND_RADIUS, MindmapNodeShape, MINDMAP_NODE_KEY, PRIMARY_COLOR, STROKE_WIDTH } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLink } from './draw/link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
 import { MindmapElement } from './interfaces/element';
-import { MindmapNode } from './interfaces/node';
+import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { getLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
@@ -289,19 +299,127 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         this.gGroup.append(richtextG);
     }
 
+    private drawQuickInsert(offset = 0) {
+        const quickInsertG = createG();
+        quickInsertG.classList.add('quick-insert');
+        this.extendG?.append(quickInsertG);
+        const { x, y, width, height } = getRectangleByNode(this.node);
+
+        /**
+         * 方位：
+         *    1. 左、左上、左下
+         *    2. 右、右上、右下
+         *    3. 上、上左、上右
+         *    4. 下、下左、下右
+         */
+        const shape = getNodeShapeByElement(this.node.origin);
+        const underlineCoordinates: ExtendUnderlineCoordinateType = {
+            // 画线方向：右向左 <--
+            [MindmapLayoutType.left]: {
+                // EXTEND_RADIUS * 0.5 是 左方向，折叠/收起的偏移量
+                startX: x - (offset > 0 ? offset + EXTEND_RADIUS * 0.5 : 0),
+                startY: y + height,
+                endX: x - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - EXTEND_RADIUS,
+                endY: y + height
+            },
+            // 画线方向：左向右 -->
+            [MindmapLayoutType.right]: {
+                startX: x + width + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                startY: y + height,
+                endX: x + width + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + EXTEND_RADIUS,
+                endY: y + height
+            },
+            // 画线方向：下向上 -->
+            [MindmapLayoutType.upward]: {
+                startX: x + width * 0.5,
+                startY: y - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                endX: x + width * 0.5,
+                endY: y - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - EXTEND_RADIUS
+            },
+            // 画线方向：上向下 -->
+            [MindmapLayoutType.downward]: {
+                startX: x + width * 0.5,
+                startY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                endX: x + width * 0.5,
+                endY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + EXTEND_RADIUS
+            }
+        };
+        if (shape === MindmapNodeShape.roundRectangle) {
+            underlineCoordinates[MindmapLayoutType.left].startY -= height * 0.5;
+            underlineCoordinates[MindmapLayoutType.left].endY -= height * 0.5;
+            underlineCoordinates[MindmapLayoutType.right].startY -= height * 0.5;
+            underlineCoordinates[MindmapLayoutType.right].endY -= height * 0.5;
+        }
+        const stroke = getLinkLineColorByMindmapElement(this.node.origin);
+        const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
+        const nodeLayout = getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
+        const underlineCoordinate = underlineCoordinates[nodeLayout];
+        const underline = this.roughSVG.line(
+            underlineCoordinate.startX,
+            underlineCoordinate.startY,
+            underlineCoordinate.endX,
+            underlineCoordinate.endY,
+            { stroke, strokeWidth }
+        );
+        const circleCoordinates = {
+            startX: underlineCoordinate.endX,
+            startY: underlineCoordinate.endY
+        };
+        const circle = this.roughSVG.circle(circleCoordinates.startX, circleCoordinates.startY, EXTEND_RADIUS, {
+            fill: QUICK_INSERT_CIRCLE_COLOR,
+            stroke: QUICK_INSERT_CIRCLE_COLOR,
+            fillStyle: 'solid'
+        });
+        const innerCrossCoordinates = {
+            horizontal: {
+                startX: circleCoordinates.startX - EXTEND_RADIUS * 0.5 + 3,
+                startY: circleCoordinates.startY,
+                endX: circleCoordinates.startX + EXTEND_RADIUS * 0.5 - 3,
+                endY: circleCoordinates.startY
+            },
+            vertical: {
+                startX: circleCoordinates.startX,
+                startY: circleCoordinates.startY - EXTEND_RADIUS * 0.5 + 3,
+                endX: circleCoordinates.startX,
+                endY: circleCoordinates.startY + EXTEND_RADIUS * 0.5 - 3
+            }
+        };
+        const innerCrossHLine = this.roughSVG.line(
+            innerCrossCoordinates.horizontal.startX,
+            innerCrossCoordinates.horizontal.startY,
+            innerCrossCoordinates.horizontal.endX,
+            innerCrossCoordinates.horizontal.endY,
+            {
+                stroke: QUICK_INSERT_INNER_CROSS_COLOR,
+                strokeWidth
+            }
+        );
+        const innerRingVLine = this.roughSVG.line(
+            innerCrossCoordinates.vertical.startX,
+            innerCrossCoordinates.vertical.startY,
+            innerCrossCoordinates.vertical.endX,
+            innerCrossCoordinates.vertical.endY,
+            {
+                stroke: QUICK_INSERT_INNER_CROSS_COLOR,
+                strokeWidth
+            }
+        );
+        quickInsertG.appendChild(underline);
+        quickInsertG.appendChild(circle);
+        quickInsertG.appendChild(innerCrossHLine);
+        quickInsertG.appendChild(innerRingVLine);
+    }
+
     drawExtend() {
         if (this.node.origin.isRoot) {
             return;
         }
-
         // destroy
         this.destroyExtend();
-
         // create extend
         this.extendG = createG();
         this.extendG.classList.add('extend');
         this.gGroup.append(this.extendG);
-
         // inteactive
         fromEvent(this.extendG, 'mouseup')
             .pipe(take(1))
@@ -429,6 +547,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 this.extendG.appendChild(hideCircleG);
                 this.extendG.appendChild(hideArrowTopLine);
                 this.extendG.appendChild(hideArrowBottomLine);
+                this.drawQuickInsert(EXTEND_RADIUS);
+            } else {
+                this.drawQuickInsert();
             }
         }
     }
