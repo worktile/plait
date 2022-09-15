@@ -22,7 +22,7 @@ import {
     transformPoint,
     Transforms
 } from '@plait/core';
-import { isHorizontalLayout, isLeftLayout, isTopLayout, MindmapLayoutType } from '@plait/layouts';
+import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isTopLayout, MindmapLayoutType } from '@plait/layouts';
 import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
@@ -449,7 +449,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
         let circleOffset = [EXTEND_RADIUS / 2, 0];
 
-        if (isHorizontalLayout(nodeLayout)) {
+        if (isHorizontalLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
             extendLineYOffset =
                 (getNodeShapeByElement(this.node.origin) as MindmapNodeShape) === MindmapNodeShape.roundRectangle
                     ? [0, 0]
