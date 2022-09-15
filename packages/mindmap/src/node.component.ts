@@ -303,14 +303,13 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         this.gGroup.append(this.extendG);
 
         // inteactive
-        fromEvent(this.extendG, 'mousedown')
+        fromEvent(this.extendG, 'mouseup')
             .pipe(take(1))
             .subscribe(() => {
                 const isCollapsed = !this.node.origin.isCollapsed;
                 const newElement: Partial<MindmapElement> = { isCollapsed };
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
-                this.destroyExtend();
             });
 
         const { x, y, width, height } = getRectangleByNode(this.node);
