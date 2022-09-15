@@ -12,7 +12,8 @@ import {
     PlaitElement,
     PlaitPlugin,
     isNoSelectionElement,
-    CLIP_BOARD_FORMAT_KEY
+    CLIP_BOARD_FORMAT_KEY,
+    PlaitHistoryBoard
 } from '@plait/core';
 import { getWidthByText } from '@plait/richtext';
 import { PlaitMindmapComponent } from '../mindmap.component';
@@ -21,7 +22,7 @@ import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { buildNodes, extractNodesText, findPath } from '../utils';
+import { buildNodes, changeRightNodeCount, extractNodesText, findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
 import {
@@ -112,7 +113,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
         const selectedElements = SELECTED_MINDMAP_ELEMENTS.get(board);
         if (selectedElements && selectedElements.length > 0) {
-            if (event.key === 'Tab' || event.key === 'Enter') {
+            if (event.key === 'Tab' || (event.key === 'Enter' && !selectedElements[0].isRoot)) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
                 deleteSelectedMindmapElements(board, selectedElement);
@@ -120,11 +121,20 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
                 if (event.key === 'Tab') {
                     if (mindmapNodeComponent) {
-                        path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.children.length);
+                        path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.origin.children.length);
+                        const isCollapsed = mindmapNodeComponent.node.origin.isCollapsed;
+                        if (isCollapsed) {
+                            const newElement: Partial<MindmapElement> = { isCollapsed: false };
+                            const boardPath = findPath(board, mindmapNodeComponent.node);
+                            PlaitHistoryBoard.withoutSaving(board, () => {
+                                Transforms.setNode(board, newElement, boardPath);
+                            });
+                        }
                     }
                 } else {
                     if (mindmapNodeComponent) {
                         path = Path.next(findPath(board, mindmapNodeComponent.node));
+                        changeRightNodeCount(board, selectedElement, 1);
                     }
                 }
                 const newElement = {
@@ -134,7 +144,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     },
                     children: [],
                     width: 5,
-                    height: 22
+                    height: 24
                 };
                 Transforms.insertNode(board, newElement, path);
                 addSelectedMindmapElements(board, newElement);
@@ -146,6 +156,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 }, 0);
                 return;
             }
+
             if (hotkeys.isDeleteBackward(event)) {
                 event.preventDefault();
                 if (isPlaitMindmap(selectedElements[0]) && board.children.length === 1 && !board.allowClearBoard) {
@@ -157,6 +168,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
                     if (mindmapNodeComponent) {
                         const path = findPath(board, mindmapNodeComponent.node);
+                        changeRightNodeCount(board, selectedElements[0], -1);
                         Transforms.removeNode(board, path);
                     }
                 });
@@ -228,6 +240,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
         setFragment(data);
     };
+
     board.insertFragment = (data: DataTransfer | null) => {
         if (board.readonly) {
             insertFragment(data);

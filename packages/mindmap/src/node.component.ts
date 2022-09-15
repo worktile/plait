@@ -33,21 +33,23 @@ import {
     MindmapNodeShape,
     MINDMAP_NODE_KEY,
     PRIMARY_COLOR,
-    QUICK_INSERT_CIRCLE_DIAMETER,
+    QUICK_INSERT_CIRCLE_COLOR,
     QUICK_INSERT_CIRCLE_OFFSET,
+    QUICK_INSERT_INNER_CROSS_COLOR,
     STROKE_WIDTH
 } from './constants';
+import { Operation } from 'slate';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLink } from './draw/link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
 import { MindmapElement } from './interfaces/element';
-import { MindmapNode } from './interfaces/node';
+import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { getLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
 import { findPath, getChildrenCount } from './utils/mindmap';
-import { addSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
+import { addSelectedMindmapElements, deleteSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 
@@ -297,10 +299,10 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         this.gGroup.append(richtextG);
     }
 
-    private drawQuickInsert(svgG: SVGGElement, offset: number) {
+    private drawQuickInsert(offset = 0) {
         const quickInsertG = createG();
         quickInsertG.classList.add('quick-insert');
-        svgG.append(quickInsertG);
+        this.extendG?.append(quickInsertG);
         const { x, y, width, height } = getRectangleByNode(this.node);
 
         /**
@@ -310,37 +312,21 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
          *    3. 上、上左、上右
          *    4. 下、下左、下右
          */
-        type ExcludeMindmapLayoutType = Exclude<
-            MindmapLayoutType,
-            | MindmapLayoutType.standard
-            | MindmapLayoutType.leftBottomIndented
-            | MindmapLayoutType.leftTopIndented
-            | MindmapLayoutType.rightTopIndented
-            | MindmapLayoutType.rightBottomIndented
-        >;
-        type UnderlineCoordinateType = {
-            [key in ExcludeMindmapLayoutType]: {
-                startX: number;
-                startY: number;
-                endX: number;
-                endY: number;
-            };
-        };
         const shape = getNodeShapeByElement(this.node.origin);
-        const underlineCoordinates: UnderlineCoordinateType = {
+        const underlineCoordinates: ExtendUnderlineCoordinateType = {
             // 画线方向：右向左 <--
             [MindmapLayoutType.left]: {
                 // EXTEND_RADIUS * 0.5 是 左方向，折叠/收起的偏移量
                 startX: x - (offset > 0 ? offset + EXTEND_RADIUS * 0.5 : 0),
                 startY: y + height,
-                endX: x - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - QUICK_INSERT_CIRCLE_DIAMETER,
+                endX: x - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - EXTEND_RADIUS,
                 endY: y + height
             },
             // 画线方向：左向右 -->
             [MindmapLayoutType.right]: {
                 startX: x + width + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
                 startY: y + height,
-                endX: x + width + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + QUICK_INSERT_CIRCLE_DIAMETER,
+                endX: x + width + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + EXTEND_RADIUS,
                 endY: y + height
             },
             // 画线方向：下向上 -->
@@ -348,14 +334,14 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 startX: x + width * 0.5,
                 startY: y - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
                 endX: x + width * 0.5,
-                endY: y - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - QUICK_INSERT_CIRCLE_DIAMETER
+                endY: y - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - EXTEND_RADIUS
             },
             // 画线方向：上向下 -->
             [MindmapLayoutType.downward]: {
                 startX: x + width * 0.5,
                 startY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
                 endX: x + width * 0.5,
-                endY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + QUICK_INSERT_CIRCLE_DIAMETER
+                endY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + EXTEND_RADIUS
             }
         };
         if (shape === MindmapNodeShape.roundRectangle) {
@@ -366,7 +352,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
         const stroke = getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
-        const nodeLayout = getCorrectLayoutByElement(this.node.origin) as ExcludeMindmapLayoutType;
+        const nodeLayout = getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
         const underlineCoordinate = underlineCoordinates[nodeLayout];
         const underline = this.roughSVG.line(
             underlineCoordinate.startX,
@@ -379,48 +365,48 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             startX: underlineCoordinate.endX,
             startY: underlineCoordinate.endY
         };
-        const circle = this.roughSVG.circle(circleCoordinates.startX, circleCoordinates.startY, QUICK_INSERT_CIRCLE_DIAMETER, {
-            fill: '#56ABFB',
-            stroke: '#56ABFB',
+        const circle = this.roughSVG.circle(circleCoordinates.startX, circleCoordinates.startY, EXTEND_RADIUS, {
+            fill: QUICK_INSERT_CIRCLE_COLOR,
+            stroke: QUICK_INSERT_CIRCLE_COLOR,
             fillStyle: 'solid'
         });
-        const innerRingCoordinates = {
+        const innerCrossCoordinates = {
             horizontal: {
-                startX: circleCoordinates.startX - QUICK_INSERT_CIRCLE_DIAMETER * 0.5 + 3,
+                startX: circleCoordinates.startX - EXTEND_RADIUS * 0.5 + 3,
                 startY: circleCoordinates.startY,
-                endX: circleCoordinates.startX + QUICK_INSERT_CIRCLE_DIAMETER * 0.5 - 3,
+                endX: circleCoordinates.startX + EXTEND_RADIUS * 0.5 - 3,
                 endY: circleCoordinates.startY
             },
             vertical: {
                 startX: circleCoordinates.startX,
-                startY: circleCoordinates.startY - QUICK_INSERT_CIRCLE_DIAMETER * 0.5 + 3,
+                startY: circleCoordinates.startY - EXTEND_RADIUS * 0.5 + 3,
                 endX: circleCoordinates.startX,
-                endY: circleCoordinates.startY + QUICK_INSERT_CIRCLE_DIAMETER * 0.5 - 3
+                endY: circleCoordinates.startY + EXTEND_RADIUS * 0.5 - 3
             }
         };
-        const innerRingHLine = this.roughSVG.line(
-            innerRingCoordinates.horizontal.startX,
-            innerRingCoordinates.horizontal.startY,
-            innerRingCoordinates.horizontal.endX,
-            innerRingCoordinates.horizontal.endY,
+        const innerCrossHLine = this.roughSVG.line(
+            innerCrossCoordinates.horizontal.startX,
+            innerCrossCoordinates.horizontal.startY,
+            innerCrossCoordinates.horizontal.endX,
+            innerCrossCoordinates.horizontal.endY,
             {
-                stroke: 'white',
+                stroke: QUICK_INSERT_INNER_CROSS_COLOR,
                 strokeWidth
             }
         );
         const innerRingVLine = this.roughSVG.line(
-            innerRingCoordinates.vertical.startX,
-            innerRingCoordinates.vertical.startY,
-            innerRingCoordinates.vertical.endX,
-            innerRingCoordinates.vertical.endY,
+            innerCrossCoordinates.vertical.startX,
+            innerCrossCoordinates.vertical.startY,
+            innerCrossCoordinates.vertical.endX,
+            innerCrossCoordinates.vertical.endY,
             {
-                stroke: 'white',
+                stroke: QUICK_INSERT_INNER_CROSS_COLOR,
                 strokeWidth
             }
         );
         quickInsertG.appendChild(underline);
         quickInsertG.appendChild(circle);
-        quickInsertG.appendChild(innerRingHLine);
+        quickInsertG.appendChild(innerCrossHLine);
         quickInsertG.appendChild(innerRingVLine);
     }
 
@@ -433,19 +419,15 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         // create extend
         this.extendG = createG();
         this.extendG.classList.add('extend');
-        const folderG = createG();
-        folderG.classList.add('folder');
-        this.extendG.append(folderG);
         this.gGroup.append(this.extendG);
         // inteactive
-        fromEvent(folderG, 'mousedown')
+        fromEvent(this.extendG, 'mousedown')
             .pipe(take(1))
             .subscribe(() => {
                 const isCollapsed = !this.node.origin.isCollapsed;
                 const newElement: Partial<MindmapElement> = { isCollapsed };
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
-                this.destroyExtend();
             });
 
         const { x, y, width, height } = getRectangleByNode(this.node);
@@ -530,7 +512,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         if (this.node.origin.isCollapsed) {
             this.gGroup.classList.add('collapsed');
 
-            folderG.appendChild(extendLine);
+            this.extendG.appendChild(extendLine);
 
             const badge = this.roughSVG.circle(extendLineXY[1][0] + circleOffset[0], extendLineXY[1][1] + circleOffset[1], EXTEND_RADIUS, {
                 fill: stroke,
@@ -545,8 +527,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             );
             badge.setAttribute('style', 'opacity: 0.15');
             badgeText.setAttribute('style', 'font-size: 12px');
-            folderG.appendChild(badge);
-            folderG.appendChild(badgeText);
+            this.extendG.appendChild(badge);
+            this.extendG.appendChild(badgeText);
         } else {
             this.gGroup.classList.remove('collapsed');
 
@@ -562,12 +544,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                         fillStyle: 'solid'
                     }
                 );
-                folderG.appendChild(hideCircleG);
-                folderG.appendChild(hideArrowTopLine);
-                folderG.appendChild(hideArrowBottomLine);
-                this.drawQuickInsert(this.extendG, EXTEND_RADIUS);
+                this.extendG.appendChild(hideCircleG);
+                this.extendG.appendChild(hideArrowTopLine);
+                this.extendG.appendChild(hideArrowBottomLine);
+                this.drawQuickInsert(EXTEND_RADIUS);
             } else {
-                this.drawQuickInsert(this.extendG, 0);
+                this.drawQuickInsert();
             }
         }
     }
@@ -638,20 +620,28 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
         let richtext = richtextInstance.plaitValue;
         // 增加 debounceTime 等待 DOM 渲染完成后再去取文本宽高
-        const valueChange$ = richtextInstance.plaitChange.pipe(debounceTime(0)).subscribe(event => {
-            if (richtext === event.value) {
-                return;
-            }
-            richtext = event.value;
+        const valueChange$ = richtextInstance.plaitChange
+            .pipe(
+                debounceTime(0),
+                filter(event => {
+                    // 过滤掉 operations 中全是 set_selection 的操作
+                    return !event.operations.every(op => Operation.isSelectionOperation(op));
+                })
+            )
+            .subscribe(event => {
+                if (richtext === event.value) {
+                    return;
+                }
+                richtext = event.value;
 
-            // 更新富文本、更新宽高
-            const { width, height } = richtextInstance.editable.getBoundingClientRect();
-            const newElement = { value: richtext, width, height } as MindmapElement;
+                // 更新富文本、更新宽高
+                const { width, height } = richtextInstance.editable.getBoundingClientRect();
+                const newElement = { value: richtext, width, height } as MindmapElement;
 
-            const path = findPath(this.board, this.node);
-            Transforms.setNode(this.board, newElement, path);
-            MERGING.set(this.board, true);
-        });
+                const path = findPath(this.board, this.node);
+                Transforms.setNode(this.board, newElement, path);
+                MERGING.set(this.board, true);
+            });
         const composition$ = richtextInstance.plaitComposition.subscribe(event => {
             const { width, height } = richtextInstance.editable.getBoundingClientRect();
             if (event.isComposing && (width !== this.node.origin.width || height !== this.node.origin.height)) {
@@ -659,6 +649,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
+                MERGING.set(this.board, true);
             }
         });
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
@@ -668,29 +659,42 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 this.enableMaskG();
             }
         });
-        const keydown$ = fromEvent<KeyboardEvent>(document, 'keydown').subscribe((event: KeyboardEvent) => {
+        const editor = richtextInstance.editor;
+        const { keydown } = editor;
+        editor.keydown = (event: KeyboardEvent) => {
             if (event.isComposing) {
                 return;
             }
             if (event.key === 'Escape') {
+                event.preventDefault();
+                event.stopPropagation();
                 exitHandle();
                 this.drawActiveG();
                 this.enableMaskG();
+                return;
             }
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
+                event.stopPropagation();
                 exitHandle();
                 this.drawActiveG();
                 this.enableMaskG();
+                return;
             }
-        });
-
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                event.stopPropagation();
+                exitHandle();
+                this.drawActiveG();
+                this.drawMaskG();
+            }
+        };
         const exitHandle = () => {
             // unsubscribe
             valueChange$.unsubscribe();
             composition$.unsubscribe();
             mousedown$.unsubscribe();
-            keydown$.unsubscribe();
+            editor.keydown = keydown; // reset keydown
             // editable status
             MERGING.set(this.board, false);
             richtextInstance.plaitReadonly = true;
@@ -706,6 +710,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnDestroy(): void {
         this.destroyRichtext();
+        deleteSelectedMindmapElements(this.board, this.node.origin);
         this.gGroup.remove();
         this.destroy$.next();
         this.destroy$.complete();

@@ -76,6 +76,34 @@ export const getCorrectLayoutByElement = (element: MindmapElement) => {
     }
 };
 
+export const getBranchMindmapLayouts = (element: MindmapElement) => {
+    const layouts: MindmapLayoutType[] = [];
+    if (element.layout) {
+        layouts.unshift(element.layout);
+    }
+    let parent = findParentElement(element);
+    while (parent) {
+        if (parent.layout) {
+            layouts.unshift(parent.layout);
+        }
+        parent = findParentElement(parent);
+    }
+    return layouts;
+};
+
+export const getBranchDirectionsByLayouts = (branchLayouts: MindmapLayoutType[]) => {
+    const branchDirections: LayoutDirection[] = [];
+    branchLayouts.forEach(l => {
+        const directions = LayoutDirectionsMap[l];
+        directions.forEach(d => {
+            if (!branchDirections.includes(d) && !branchDirections.includes(getLayoutReverseDirection(d))) {
+                branchDirections.push(d);
+            }
+        });
+    });
+    return branchDirections;
+};
+
 export const isCorrectLayout = (root: MindmapElement, layout: MindmapLayoutType) => {
     const rootLayout = root.layout || getDefaultMindmapLayout();
     return !getInCorrectLayoutDirection(rootLayout, layout);
@@ -134,15 +162,20 @@ export const getDefaultMindmapLayout = () => {
  * @returns MindmapLayoutType[]
  */
 export const getAvailableSubLayouts = (layout: MindmapLayoutType): MindmapLayoutType[] => {
+    const currentLayoutDirections = LayoutDirectionsMap[layout];
+    return getAvailableSubLayoutsByLayoutDirections(currentLayoutDirections);
+};
+
+export const getAvailableSubLayoutsByLayoutDirections = (directions: LayoutDirection[]): MindmapLayoutType[] => {
     const result: MindmapLayoutType[] = [];
-    const layoutReverseDirections = LayoutDirectionsMap[layout].map(getLayoutReverseDirection);
+    const reverseDirections = directions.map(getLayoutReverseDirection);
     for (const key in MindmapLayoutType) {
         const layout = MindmapLayoutType[key as keyof typeof MindmapLayoutType];
         const layoutDirections = LayoutDirectionsMap[layout];
         if (layoutDirections) {
-            // handle standrad
-            const exist = layoutDirections.some(d => layoutReverseDirections.includes(d));
-            if (!exist) {
+            const hasSameDirection = layoutDirections.some(d => directions.includes(d));
+            const hasReverseDirection = layoutDirections.some(r => reverseDirections.includes(r));
+            if (hasSameDirection && !hasReverseDirection) {
                 result.push(layout);
             }
         }
@@ -167,4 +200,8 @@ export const getLayoutReverseDirection = (layoutDirection: LayoutDirection) => {
             break;
     }
     return reverseDirection;
+};
+
+export const getRootLayout = (root: MindmapElement) => {
+    return root.layout || getDefaultMindmapLayout();
 };

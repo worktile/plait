@@ -12,6 +12,13 @@ export function withSelection<T extends PlaitBoard>(board: T) {
     let end: Point | null = null;
 
     board.mousedown = (event: MouseEvent) => {
+        if (isNoSelectionElement(event)) {
+            mousedown(event);
+            return;
+        }
+        if (event.target instanceof Node && board.host.contains(event.target)) {
+            start = toPoint(event.x, event.y, board.host);
+        }
         mousedown(event);
     };
 
@@ -29,12 +36,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
     board.globalMouseup = (event: MouseEvent) => {
         if (isNoSelectionElement(event)) {
             return globalMouseup(event);
-        } else {
-            if (!start && event.target instanceof Node && board.host.contains(event.target)) {
-                start = toPoint(event.x, event.y, board.host);
-            }
         }
-
         if (start) {
             Transforms.setSelection(board, { anchor: start, focus: start });
         } else {

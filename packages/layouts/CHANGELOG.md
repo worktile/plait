@@ -1,5 +1,17 @@
 # layouts
 
+## 0.0.32
+
+### Patch Changes
+
+-   [#79](https://github.com/worktile/plait/pull/79) [`eb1fb40`](https://github.com/worktile/plait/commit/eb1fb4075b805783f9e17feca51f879ac9a6e179) Thanks [@WBbug](https://github.com/WBbug)! - change rightNode count
+
+## 0.0.30
+
+### Patch Changes
+
+-   [`bbd19cd`](https://github.com/worktile/plait/commit/bbd19cd80c3a290364993b20f27a80faf3a0bc31) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct silbings tranlate logic on sub node layout
+
 ## 0.0.29
 
 ### Patch Changes

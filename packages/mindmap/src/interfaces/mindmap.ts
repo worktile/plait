@@ -11,6 +11,7 @@ export interface PlaitMindmap extends PlaitElement {
     height: number;
     isRoot?: boolean;
     layout?: MindmapLayoutType;
+    rightNodeCount: number;
 }
 
 export const isPlaitMindmap = (value: any): value is PlaitMindmap => {

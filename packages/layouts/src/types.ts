@@ -15,6 +15,7 @@ export interface OriginNode {
     children: OriginNode[];
     isCollapsed?: boolean;
     layout?: string;
+    rightNodeCount: number;
 }
 
 export enum MindmapLayoutType {

@@ -1,5 +1,35 @@
 # mindmap
 
+## 0.0.32
+
+### Patch Changes
+
+-   [`094d50f`](https://github.com/worktile/plait/commit/094d50f2caecd56521d4c01b9c10d85a6d59e75a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use richtext keydown handle node exit edit action
+
+*   [#81](https://github.com/worktile/plait/pull/81) [`955d760`](https://github.com/worktile/plait/commit/955d760feb215a41927b73d2c5163fa5977f6773) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - open collapsed parent node when insert node
+
+-   [#80](https://github.com/worktile/plait/pull/80) [`ce86b99`](https://github.com/worktile/plait/commit/ce86b99afb2773fc8618eea2c877045d9fdf926f) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support tab key to add continuously
+
+*   [#79](https://github.com/worktile/plait/pull/79) [`eb1fb40`](https://github.com/worktile/plait/commit/eb1fb4075b805783f9e17feca51f879ac9a6e179) Thanks [@WBbug](https://github.com/WBbug)! - add rightNodeCount property, change logic layout insert and delete Node logic
+
+-   [#78](https://github.com/worktile/plait/pull/78) [`41c88ad`](https://github.com/worktile/plait/commit/41c88ad9a1b63ed94c4430c87ec3854ffe6c6173) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - remove empty text node when exec undo and delete node element when destroy
+
+## 0.0.31
+
+### Patch Changes
+
+-   [`d9aff21`](https://github.com/worktile/plait/commit/d9aff21815af7e6ffabff14c0f122b8a476cec74) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getBranchMindmapLayouts: get layout array from element and it's parent element
+
+*   [`57da5cb`](https://github.com/worktile/plait/commit/57da5cbc89e8933e128a469cadb61efdf3b1f468) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getBranchDirectionsByLayouts: get all directions of current branch
+
+## 0.0.30
+
+### Patch Changes
+
+-   [#75](https://github.com/worktile/plait/pull/75) [`193d5ec`](https://github.com/worktile/plait/commit/193d5ec797d181a81885fe56d42046d7407a2881) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - remove root property when copy root node
+
+*   [`af2ba53`](https://github.com/worktile/plait/commit/af2ba53fa66872048aad595db91eb9a43d563cc9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify getAvailableSubLayouts logic - use direction include
+
 ## 0.0.29
 
 ### Patch Changes

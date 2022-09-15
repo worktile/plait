@@ -8,6 +8,7 @@ export interface MindmapElement {
     value: Element;
     children: MindmapElement[];
     isRoot?: boolean;
+    rightNodeCount?: number;
     width: number;
     height: number;
 
