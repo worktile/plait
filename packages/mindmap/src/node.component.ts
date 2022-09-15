@@ -539,38 +539,42 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 this.enableMaskG();
             }
         });
-        const keydown$ = fromEvent<KeyboardEvent>(document, 'keydown').subscribe((event: KeyboardEvent) => {
+        const editor = richtextInstance.editor;
+        const { keydown } = editor;
+        editor.keydown = (event: KeyboardEvent) => {
             if (event.isComposing) {
                 return;
             }
             if (event.key === 'Escape') {
+                event.preventDefault();
+                event.stopPropagation();
                 exitHandle();
                 this.drawActiveG();
                 this.enableMaskG();
+                return;
             }
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
+                event.stopPropagation();
                 exitHandle();
                 this.drawActiveG();
                 this.enableMaskG();
+                return;
             }
-
             if (event.key === 'Tab') {
                 event.preventDefault();
-                if (this.isEditable) {
-                    exitHandle();
-                    this.drawActiveG();
-                    this.drawMaskG();
-                }
+                event.stopPropagation();
+                exitHandle();
+                this.drawActiveG();
+                this.drawMaskG();
             }
-        });
-
+        };
         const exitHandle = () => {
             // unsubscribe
             valueChange$.unsubscribe();
             composition$.unsubscribe();
             mousedown$.unsubscribe();
-            keydown$.unsubscribe();
+            editor.keydown = keydown; // reset keydown
             // editable status
             MERGING.set(this.board, false);
             richtextInstance.plaitReadonly = true;
