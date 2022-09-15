@@ -27,7 +27,16 @@ import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
-import { EXTEND_OFFSET, EXTEND_RADIUS, MindmapNodeShape, MINDMAP_NODE_KEY, PRIMARY_COLOR, STROKE_WIDTH } from './constants';
+import {
+    EXTEND_OFFSET,
+    EXTEND_RADIUS,
+    MindmapNodeShape,
+    MINDMAP_NODE_KEY,
+    PRIMARY_COLOR,
+    QUICK_INSERT_CIRCLE_DIAMETER,
+    QUICK_INSERT_CIRCLE_OFFSET,
+    STROKE_WIDTH
+} from './constants';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLink } from './draw/link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
@@ -288,21 +297,141 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         this.gGroup.append(richtextG);
     }
 
+    private drawQuickInsert(svgG: SVGGElement, offset: number) {
+        const quickInsertG = createG();
+        quickInsertG.classList.add('quick-insert');
+        svgG.append(quickInsertG);
+        const { x, y, width, height } = getRectangleByNode(this.node);
+
+        /**
+         * 方位：
+         *    1. 左、左上、左下
+         *    2. 右、右上、右下
+         *    3. 上、上左、上右
+         *    4. 下、下左、下右
+         */
+        type ExcludeMindmapLayoutType = Exclude<
+            MindmapLayoutType,
+            | MindmapLayoutType.standard
+            | MindmapLayoutType.leftBottomIndented
+            | MindmapLayoutType.leftTopIndented
+            | MindmapLayoutType.rightTopIndented
+            | MindmapLayoutType.rightBottomIndented
+        >;
+        type UnderlineCoordinateType = {
+            [key in ExcludeMindmapLayoutType]: {
+                startX: number;
+                startY: number;
+                endX: number;
+                endY: number;
+            };
+        };
+        const underlineCoordinates: UnderlineCoordinateType = {
+            // 画线方向：右向左 <--
+            [MindmapLayoutType.left]: {
+                // EXTEND_RADIUS * 0.5 是 左方向，折叠/收起的偏移量
+                startX: x - (offset > 0 ? offset + EXTEND_RADIUS * 0.5 : 0),
+                startY: y + height,
+                endX: x - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - QUICK_INSERT_CIRCLE_DIAMETER,
+                endY: y + height
+            },
+            // 画线方向：左向右 -->
+            [MindmapLayoutType.right]: {
+                startX: x + width + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                startY: y + height,
+                endX: x + width + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + QUICK_INSERT_CIRCLE_DIAMETER,
+                endY: y + height
+            },
+            // 画线方向：下向上 -->
+            [MindmapLayoutType.upward]: {
+                startX: x + width * 0.5,
+                startY: y - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                endX: x + width * 0.5,
+                endY: y - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - QUICK_INSERT_CIRCLE_DIAMETER
+            },
+            // 画线方向：上向下 -->
+            [MindmapLayoutType.downward]: {
+                startX: x + width * 0.5,
+                startY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                endX: x + width * 0.5,
+                endY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + QUICK_INSERT_CIRCLE_DIAMETER
+            }
+        };
+        const stroke = getLinkLineColorByMindmapElement(this.node.origin);
+        const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
+        const nodeLayout = getCorrectLayoutByElement(this.node.origin) as ExcludeMindmapLayoutType;
+        const underlineCoordinate = underlineCoordinates[nodeLayout];
+        const underline = this.roughSVG.line(
+            underlineCoordinate.startX,
+            underlineCoordinate.startY,
+            underlineCoordinate.endX,
+            underlineCoordinate.endY,
+            { stroke, strokeWidth }
+        );
+        const circleCoordinates = {
+            startX: underlineCoordinate.endX,
+            startY: underlineCoordinate.endY
+        };
+        const circle = this.roughSVG.circle(circleCoordinates.startX, circleCoordinates.startY, QUICK_INSERT_CIRCLE_DIAMETER, {
+            fill: '#56ABFB',
+            stroke: '#56ABFB',
+            fillStyle: 'solid'
+        });
+        const innerRingCoordinates = {
+            horizontal: {
+                startX: circleCoordinates.startX - QUICK_INSERT_CIRCLE_DIAMETER * 0.5 + 3,
+                startY: circleCoordinates.startY,
+                endX: circleCoordinates.startX + QUICK_INSERT_CIRCLE_DIAMETER * 0.5 - 3,
+                endY: circleCoordinates.startY
+            },
+            vertical: {
+                startX: circleCoordinates.startX,
+                startY: circleCoordinates.startY - QUICK_INSERT_CIRCLE_DIAMETER * 0.5 + 3,
+                endX: circleCoordinates.startX,
+                endY: circleCoordinates.startY + QUICK_INSERT_CIRCLE_DIAMETER * 0.5 - 3
+            }
+        };
+        const innerRingHLine = this.roughSVG.line(
+            innerRingCoordinates.horizontal.startX,
+            innerRingCoordinates.horizontal.startY,
+            innerRingCoordinates.horizontal.endX,
+            innerRingCoordinates.horizontal.endY,
+            {
+                stroke: 'white',
+                strokeWidth
+            }
+        );
+        const innerRingVLine = this.roughSVG.line(
+            innerRingCoordinates.vertical.startX,
+            innerRingCoordinates.vertical.startY,
+            innerRingCoordinates.vertical.endX,
+            innerRingCoordinates.vertical.endY,
+            {
+                stroke: 'white',
+                strokeWidth
+            }
+        );
+        quickInsertG.appendChild(underline);
+        quickInsertG.appendChild(circle);
+        quickInsertG.appendChild(innerRingHLine);
+        quickInsertG.appendChild(innerRingVLine);
+    }
+
     drawExtend() {
         if (this.node.origin.isRoot) {
             return;
         }
-
         // destroy
         this.destroyExtend();
-
         // create extend
         this.extendG = createG();
         this.extendG.classList.add('extend');
+        const folderG = createG();
+        folderG.classList.add('folder');
+        this.extendG.append(folderG);
         this.gGroup.append(this.extendG);
-
         // inteactive
-        fromEvent(this.extendG, 'mousedown')
+        fromEvent(folderG, 'mousedown')
             .pipe(take(1))
             .subscribe(() => {
                 const isCollapsed = !this.node.origin.isCollapsed;
@@ -394,7 +523,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         if (this.node.origin.isCollapsed) {
             this.gGroup.classList.add('collapsed');
 
-            this.extendG.appendChild(extendLine);
+            folderG.appendChild(extendLine);
 
             const badge = this.roughSVG.circle(extendLineXY[1][0] + circleOffset[0], extendLineXY[1][1] + circleOffset[1], EXTEND_RADIUS, {
                 fill: stroke,
@@ -409,8 +538,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             );
             badge.setAttribute('style', 'opacity: 0.15');
             badgeText.setAttribute('style', 'font-size: 12px');
-            this.extendG.appendChild(badge);
-            this.extendG.appendChild(badgeText);
+            folderG.appendChild(badge);
+            folderG.appendChild(badgeText);
         } else {
             this.gGroup.classList.remove('collapsed');
 
@@ -426,9 +555,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                         fillStyle: 'solid'
                     }
                 );
-                this.extendG.appendChild(hideCircleG);
-                this.extendG.appendChild(hideArrowTopLine);
-                this.extendG.appendChild(hideArrowBottomLine);
+                folderG.appendChild(hideCircleG);
+                folderG.appendChild(hideArrowTopLine);
+                folderG.appendChild(hideArrowBottomLine);
+                this.drawQuickInsert(this.extendG, EXTEND_RADIUS);
+            } else {
+                this.drawQuickInsert(this.extendG, 0);
             }
         }
     }
