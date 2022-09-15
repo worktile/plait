@@ -326,6 +326,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 endY: number;
             };
         };
+        const shape = getNodeShapeByElement(this.node.origin);
         const underlineCoordinates: UnderlineCoordinateType = {
             // 画线方向：右向左 <--
             [MindmapLayoutType.left]: {
@@ -357,6 +358,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 endY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + QUICK_INSERT_CIRCLE_DIAMETER
             }
         };
+        if (shape === MindmapNodeShape.roundRectangle) {
+            underlineCoordinates[MindmapLayoutType.left].startY -= height * 0.5;
+            underlineCoordinates[MindmapLayoutType.left].endY -= height * 0.5;
+            underlineCoordinates[MindmapLayoutType.right].startY -= height * 0.5;
+            underlineCoordinates[MindmapLayoutType.right].endY -= height * 0.5;
+        }
         const stroke = getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         const nodeLayout = getCorrectLayoutByElement(this.node.origin) as ExcludeMindmapLayoutType;
