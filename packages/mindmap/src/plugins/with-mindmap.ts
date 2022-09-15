@@ -21,7 +21,7 @@ import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { buildNodes, extractNodesText, findParentElement, findPath } from '../utils';
+import { buildNodes, changeRightNodeCount, extractNodesText, findParentElement, findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
 import {
@@ -126,20 +126,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 } else {
                     if (mindmapNodeComponent) {
                         path = Path.next(findPath(board, mindmapNodeComponent.node));
-
-                        const parentElement = findParentElement(selectedElement);
-                        const nodeIndex: number = mindmapNodeComponent.parent.children.findIndex(
-                            item => item.origin.id === selectedElements[0].id
-                        );
-                        if (
-                            parentElement &&
-                            parentElement.isRoot &&
-                            parentElement.layout === MindmapLayoutType.standard &&
-                            parentElement.rightNodeCount &&
-                            nodeIndex <= parentElement.rightNodeCount - 1
-                        ) {
-                            Transforms.setNode(board, { rightNodeCount: parentElement.rightNodeCount + 1 }, [0]);
-                        }
+                        changeRightNodeCount(board, selectedElement, 1);
                     }
                 }
                 const newElement = {
@@ -173,23 +160,8 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
                     if (mindmapNodeComponent) {
                         const path = findPath(board, mindmapNodeComponent.node);
+                        changeRightNodeCount(board, selectedElements[0], -1);
                         Transforms.removeNode(board, path);
-
-                        const parentElement = findParentElement(selectedElements[0]);
-                        const nodeIndex: number = mindmapNodeComponent?.parent.children.findIndex(
-                            item => item.origin.id === selectedElements[0].id
-                        );
-
-                        if (
-                            parentElement &&
-                            parentElement.isRoot &&
-                            parentElement.rightNodeCount &&
-                            parentElement.layout === MindmapLayoutType.standard &&
-                            nodeIndex <= parentElement.rightNodeCount - 1
-                        ) {
-                            const rightNodeCount = parentElement.rightNodeCount - 1 < 0 ? 0 : parentElement.rightNodeCount - 1;
-                            Transforms.setNode(board, { rightNodeCount }, [0]);
-                        }
                     }
                 });
                 if (selectedElements.length === 1) {

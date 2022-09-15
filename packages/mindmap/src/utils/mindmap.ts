@@ -1,8 +1,10 @@
-import { idCreator, Path, PlaitBoard } from '@plait/core';
+import { idCreator, Path, PlaitBoard, Transforms } from '@plait/core';
 import { Node } from 'slate';
 import { isPlaitMindmap, MindmapNode } from '../interfaces';
 import { MindmapElement } from '../interfaces/element';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
+import { MindmapLayoutType } from '@plait/layouts';
+import { getRootLayout } from './layout';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
@@ -94,4 +96,33 @@ export const extractNodesText = (node: MindmapElement) => {
         }
     }
     return str;
+};
+
+export const changeRightNodeCount = (board: PlaitBoard, selectedElement: MindmapElement, changeNumber: number) => {
+    const parentElement = findParentElement(selectedElement);
+    const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
+    if (mindmapNodeComponent) {
+        const nodeIndex: number = mindmapNodeComponent.parent.children.findIndex(item => item.origin.id === selectedElement.id);
+        if (
+            parentElement &&
+            parentElement.isRoot &&
+            getRootLayout(parentElement) === MindmapLayoutType.standard &&
+            parentElement.rightNodeCount &&
+            nodeIndex <= parentElement.rightNodeCount - 1
+        ) {
+            const path = findPath(board, mindmapNodeComponent.parent);
+            Transforms.setNode(
+                board,
+                {
+                    rightNodeCount:
+                        changeNumber >= 0
+                            ? parentElement.rightNodeCount + changeNumber
+                            : parentElement.rightNodeCount + changeNumber < 0
+                            ? 0
+                            : parentElement.rightNodeCount + changeNumber
+                },
+                path
+            );
+        }
+    }
 };
