@@ -62,26 +62,45 @@ export class BaseLayout {
         }
 
         // 5、apply isolated nodes to root
+        const attachedMetaOfIsolatedNodes: { parent: LayoutNode; offsetX: number; offsetY: number }[] = []; // store the offset caused by isolated nodes to avoid multiple offset accumulation
         isolatedNodes
             .filter(v => v.origin.children.length > 0)
             .forEach((isolatedNode: LayoutNode, index) => {
-                const layoutRoot = isolatedLayoutRoots[index];
-                layoutRoot.parent = isolatedNode.parent;
-                const { x, y } = layoutRoot;
-                layoutRoot.translate(isolatedNode.x, isolatedNode.y);
                 if (isolatedNode.parent) {
-                    const index = isolatedNode.parent.children.indexOf(isolatedNode);
-                    const oldNode = isolatedNode.parent.children[index];
-                    isolatedNode.parent.children[index] = Object.assign(oldNode, layoutRoot);
+                    const layoutRoot = isolatedLayoutRoots[index];
+                    layoutRoot.parent = isolatedNode.parent;
+                    let offsetX , offsetY;
                     const parentNodeIsHorizontalLayout = isHorizontalLayout(isolatedNode.parent.layout);
-                    if (x > 0 && parentNodeIsHorizontalLayout) {
-                        isolatedNode.parent.children.filter(child => child !== oldNode).forEach(child => child.translate(x, 0));
+                    // the cross direction does not need to be transformed
+                    if (parentNodeIsHorizontalLayout) {
+                        offsetX = layoutRoot.x;
+                        offsetY = 0;
+                    } else {
+                        offsetX = 0;
+                        offsetY = layoutRoot.y;
                     }
-                    if (y > 0 && !parentNodeIsHorizontalLayout) {
-                        isolatedNode.parent.children.filter(child => child !== oldNode).forEach(child => child.translate(0, y));
+                    layoutRoot.translate(isolatedNode.x - offsetX, isolatedNode.y - offsetY);
+                    const _index = isolatedNode.parent.children.indexOf(isolatedNode);
+                    const oldNode = isolatedNode.parent.children[_index];
+                    isolatedNode.parent.children[_index] = Object.assign(oldNode, layoutRoot);
+                    const meta = attachedMetaOfIsolatedNodes.find(m => m.parent === isolatedNode.parent);
+                    if (meta) {
+                        if (meta.offsetX < offsetX) {
+                            meta.offsetX = offsetX;
+                        }
+                        if (meta.offsetX < offsetY) {
+                            meta.offsetX = offsetY;
+                        }
+                    } else {
+                        attachedMetaOfIsolatedNodes.push({ parent: isolatedNode.parent, offsetX, offsetY });
                     }
                 }
             });
+
+        // 6、correct the offset of sibling nodes caused by sub-layout
+        attachedMetaOfIsolatedNodes.forEach(meta => {
+            meta.parent.children.forEach(child => child.translate(meta.offsetX, meta.offsetY));
+        });
 
         return root;
     }
