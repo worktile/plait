@@ -354,60 +354,62 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         const nodeLayout = getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
         const underlineCoordinate = underlineCoordinates[nodeLayout];
-        const underline = this.roughSVG.line(
-            underlineCoordinate.startX,
-            underlineCoordinate.startY,
-            underlineCoordinate.endX,
-            underlineCoordinate.endY,
-            { stroke, strokeWidth }
-        );
-        const circleCoordinates = {
-            startX: underlineCoordinate.endX,
-            startY: underlineCoordinate.endY
-        };
-        const circle = this.roughSVG.circle(circleCoordinates.startX, circleCoordinates.startY, EXTEND_RADIUS, {
-            fill: QUICK_INSERT_CIRCLE_COLOR,
-            stroke: QUICK_INSERT_CIRCLE_COLOR,
-            fillStyle: 'solid'
-        });
-        const innerCrossCoordinates = {
-            horizontal: {
-                startX: circleCoordinates.startX - EXTEND_RADIUS * 0.5 + 3,
-                startY: circleCoordinates.startY,
-                endX: circleCoordinates.startX + EXTEND_RADIUS * 0.5 - 3,
-                endY: circleCoordinates.startY
-            },
-            vertical: {
-                startX: circleCoordinates.startX,
-                startY: circleCoordinates.startY - EXTEND_RADIUS * 0.5 + 3,
-                endX: circleCoordinates.startX,
-                endY: circleCoordinates.startY + EXTEND_RADIUS * 0.5 - 3
-            }
-        };
-        const innerCrossHLine = this.roughSVG.line(
-            innerCrossCoordinates.horizontal.startX,
-            innerCrossCoordinates.horizontal.startY,
-            innerCrossCoordinates.horizontal.endX,
-            innerCrossCoordinates.horizontal.endY,
-            {
-                stroke: QUICK_INSERT_INNER_CROSS_COLOR,
-                strokeWidth
-            }
-        );
-        const innerRingVLine = this.roughSVG.line(
-            innerCrossCoordinates.vertical.startX,
-            innerCrossCoordinates.vertical.startY,
-            innerCrossCoordinates.vertical.endX,
-            innerCrossCoordinates.vertical.endY,
-            {
-                stroke: QUICK_INSERT_INNER_CROSS_COLOR,
-                strokeWidth
-            }
-        );
-        quickInsertG.appendChild(underline);
-        quickInsertG.appendChild(circle);
-        quickInsertG.appendChild(innerCrossHLine);
-        quickInsertG.appendChild(innerRingVLine);
+        if (underlineCoordinate) {
+            const underline = this.roughSVG.line(
+                underlineCoordinate.startX,
+                underlineCoordinate.startY,
+                underlineCoordinate.endX,
+                underlineCoordinate.endY,
+                { stroke, strokeWidth }
+            );
+            const circleCoordinates = {
+                startX: underlineCoordinate.endX,
+                startY: underlineCoordinate.endY
+            };
+            const circle = this.roughSVG.circle(circleCoordinates.startX, circleCoordinates.startY, EXTEND_RADIUS, {
+                fill: QUICK_INSERT_CIRCLE_COLOR,
+                stroke: QUICK_INSERT_CIRCLE_COLOR,
+                fillStyle: 'solid'
+            });
+            const innerCrossCoordinates = {
+                horizontal: {
+                    startX: circleCoordinates.startX - EXTEND_RADIUS * 0.5 + 3,
+                    startY: circleCoordinates.startY,
+                    endX: circleCoordinates.startX + EXTEND_RADIUS * 0.5 - 3,
+                    endY: circleCoordinates.startY
+                },
+                vertical: {
+                    startX: circleCoordinates.startX,
+                    startY: circleCoordinates.startY - EXTEND_RADIUS * 0.5 + 3,
+                    endX: circleCoordinates.startX,
+                    endY: circleCoordinates.startY + EXTEND_RADIUS * 0.5 - 3
+                }
+            };
+            const innerCrossHLine = this.roughSVG.line(
+                innerCrossCoordinates.horizontal.startX,
+                innerCrossCoordinates.horizontal.startY,
+                innerCrossCoordinates.horizontal.endX,
+                innerCrossCoordinates.horizontal.endY,
+                {
+                    stroke: QUICK_INSERT_INNER_CROSS_COLOR,
+                    strokeWidth
+                }
+            );
+            const innerRingVLine = this.roughSVG.line(
+                innerCrossCoordinates.vertical.startX,
+                innerCrossCoordinates.vertical.startY,
+                innerCrossCoordinates.vertical.endX,
+                innerCrossCoordinates.vertical.endY,
+                {
+                    stroke: QUICK_INSERT_INNER_CROSS_COLOR,
+                    strokeWidth
+                }
+            );
+            quickInsertG.appendChild(underline);
+            quickInsertG.appendChild(circle);
+            quickInsertG.appendChild(innerCrossHLine);
+            quickInsertG.appendChild(innerRingVLine);
+        }
     }
 
     drawExtend() {
