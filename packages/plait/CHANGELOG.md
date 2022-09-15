@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.33
+
+### Patch Changes
+
+-   [`cb662d5`](https://github.com/worktile/plait/commit/cb662d5e0639a5312b3c7b9d7212debad5450ebf) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - [with-selection]: remove set start logic on mouseup
+
 ## 0.0.29
 
 ### Patch Changes

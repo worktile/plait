@@ -1,5 +1,11 @@
 # layouts
 
+## 0.0.33
+
+### Patch Changes
+
+-   [`0e34051`](https://github.com/worktile/plait/commit/0e34051a1556ca3f2ad101a9ce1748568812993f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct the offset of sibling nodes caused by sub-layout
+
 ## 0.0.32
 
 ### Patch Changes

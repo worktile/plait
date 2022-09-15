@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.0.33
+
+### Patch Changes
+
+-   [#82](https://github.com/worktile/plait/pull/82) [`12f2481`](https://github.com/worktile/plait/commit/12f2481a0a193d88720cf9c54ae0390c11746302) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - implement quick insert of mindmap
+
+*   [`52fb467`](https://github.com/worktile/plait/commit/52fb46795638ebc8447c9d31ae9918f4d9cbe48c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - resolve expand node or collapsed node lose selection problem
+
 ## 0.0.32
 
 ### Patch Changes
