@@ -1,5 +1,11 @@
 # layouts
 
+## 0.0.32
+
+### Patch Changes
+
+-   [#79](https://github.com/worktile/plait/pull/79) [`eb1fb40`](https://github.com/worktile/plait/commit/eb1fb4075b805783f9e17feca51f879ac9a6e179) Thanks [@WBbug](https://github.com/WBbug)! - change rightNode count
+
 ## 0.0.30
 
 ### Patch Changes

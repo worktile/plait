@@ -1,5 +1,19 @@
 # mindmap
 
+## 0.0.32
+
+### Patch Changes
+
+-   [`094d50f`](https://github.com/worktile/plait/commit/094d50f2caecd56521d4c01b9c10d85a6d59e75a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use richtext keydown handle node exit edit action
+
+*   [#81](https://github.com/worktile/plait/pull/81) [`955d760`](https://github.com/worktile/plait/commit/955d760feb215a41927b73d2c5163fa5977f6773) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - open collapsed parent node when insert node
+
+-   [#80](https://github.com/worktile/plait/pull/80) [`ce86b99`](https://github.com/worktile/plait/commit/ce86b99afb2773fc8618eea2c877045d9fdf926f) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support tab key to add continuously
+
+*   [#79](https://github.com/worktile/plait/pull/79) [`eb1fb40`](https://github.com/worktile/plait/commit/eb1fb4075b805783f9e17feca51f879ac9a6e179) Thanks [@WBbug](https://github.com/WBbug)! - add rightNodeCount property, change logic layout insert and delete Node logic
+
+-   [#78](https://github.com/worktile/plait/pull/78) [`41c88ad`](https://github.com/worktile/plait/commit/41c88ad9a1b63ed94c4430c87ec3854ffe6c6173) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - remove empty text node when exec undo and delete node element when destroy
+
 ## 0.0.31
 
 ### Patch Changes
