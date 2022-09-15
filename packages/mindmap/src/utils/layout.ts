@@ -201,3 +201,7 @@ export const getLayoutReverseDirection = (layoutDirection: LayoutDirection) => {
     }
     return reverseDirection;
 };
+
+export const getRootLayout = (root: MindmapElement) => {
+    return root.layout || getDefaultMindmapLayout();
+};

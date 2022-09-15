@@ -1,8 +1,11 @@
-import { idCreator, Path, PlaitBoard } from '@plait/core';
+import { idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { Node } from 'slate';
-import { isPlaitMindmap, MindmapNode } from '../interfaces';
+import { isPlaitMindmap, MindmapNode, PlaitMindmap } from '../interfaces';
 import { MindmapElement } from '../interfaces/element';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
+import { MindmapLayoutType } from '@plait/layouts';
+import { getRootLayout } from './layout';
+import { MindmapNodeShape } from '../constants';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
@@ -94,4 +97,75 @@ export const extractNodesText = (node: MindmapElement) => {
         }
     }
     return str;
+};
+
+export const changeRightNodeCount = (board: PlaitBoard, selectedElement: MindmapElement, changeNumber: number) => {
+    const parentElement = findParentElement(selectedElement);
+    const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
+    if (mindmapNodeComponent) {
+        const nodeIndex: number = mindmapNodeComponent.parent.children.findIndex(item => item.origin.id === selectedElement.id);
+        if (
+            parentElement &&
+            parentElement.isRoot &&
+            getRootLayout(parentElement) === MindmapLayoutType.standard &&
+            parentElement.rightNodeCount &&
+            nodeIndex <= parentElement.rightNodeCount - 1
+        ) {
+            const path = findPath(board, mindmapNodeComponent.parent);
+            Transforms.setNode(
+                board,
+                {
+                    rightNodeCount:
+                        changeNumber >= 0
+                            ? parentElement.rightNodeCount + changeNumber
+                            : parentElement.rightNodeCount + changeNumber < 0
+                            ? 0
+                            : parentElement.rightNodeCount + changeNumber
+                },
+                path
+            );
+        }
+    }
+};
+
+export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutType) => {
+    const mindmapData: PlaitElement = {
+        type: 'mindmap',
+        id: idCreator(),
+        isRoot: true,
+        rightNodeCount,
+        layout,
+        width: 72,
+        height: 28,
+        points: [[230, 208]],
+        value: { children: [{ text: '思维导图' }] },
+        shape: MindmapNodeShape.roundRectangle,
+        children: [
+            {
+                id: idCreator(),
+                value: { children: [{ text: '新建节点' }] },
+                children: [],
+                width: 56,
+                height: 24,
+                shape: MindmapNodeShape.roundRectangle
+            },
+            {
+                id: idCreator(),
+                value: { children: [{ text: '新建节点' }] },
+                children: [],
+                width: 56,
+                height: 24,
+                shape: MindmapNodeShape.roundRectangle
+            },
+            {
+                id: idCreator(),
+                value: { children: [{ text: '新建节点' }] },
+                children: [],
+                width: 56,
+                height: 24,
+                shape: MindmapNodeShape.roundRectangle
+            }
+        ]
+    };
+    return [mindmapData];
 };

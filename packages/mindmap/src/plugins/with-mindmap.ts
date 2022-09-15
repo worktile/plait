@@ -22,7 +22,7 @@ import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { buildNodes, extractNodesText, findPath } from '../utils';
+import { buildNodes, changeRightNodeCount, extractNodesText, findParentElement, findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
 import {
@@ -32,6 +32,7 @@ import {
     getSelectedMindmapElements,
     hasSelectedMindmapElement
 } from '../utils/selected-elements';
+import { MindmapLayoutType } from '@plait/layouts';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
@@ -113,7 +114,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
         const selectedElements = SELECTED_MINDMAP_ELEMENTS.get(board);
         if (selectedElements && selectedElements.length > 0) {
-            if (event.key === 'Tab' || event.key === 'Enter') {
+            if (event.key === 'Tab' || (event.key === 'Enter' && !selectedElements[0].isRoot)) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
                 deleteSelectedMindmapElements(board, selectedElement);
@@ -134,6 +135,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 } else {
                     if (mindmapNodeComponent) {
                         path = Path.next(findPath(board, mindmapNodeComponent.node));
+                        changeRightNodeCount(board, selectedElement, 1);
                     }
                 }
                 const newElement = {
@@ -155,6 +157,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 }, 0);
                 return;
             }
+
             if (hotkeys.isDeleteBackward(event)) {
                 event.preventDefault();
                 if (isPlaitMindmap(selectedElements[0]) && board.children.length === 1 && !board.allowClearBoard) {
@@ -166,6 +169,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
                     if (mindmapNodeComponent) {
                         const path = findPath(board, mindmapNodeComponent.node);
+                        changeRightNodeCount(board, selectedElements[0], -1);
                         Transforms.removeNode(board, path);
                     }
                 });
