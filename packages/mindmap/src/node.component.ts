@@ -421,7 +421,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         this.extendG.classList.add('extend');
         this.gGroup.append(this.extendG);
         // inteactive
-        fromEvent(this.extendG, 'mousedown')
+        fromEvent(this.extendG, 'mouseup')
             .pipe(take(1))
             .subscribe(() => {
                 const isCollapsed = !this.node.origin.isCollapsed;
