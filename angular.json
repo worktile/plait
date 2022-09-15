@@ -32,7 +32,12 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@plait/core/src/assets",
+                "output": "/assets"
+              }
             ],
             "styles": [
               "src/styles.scss"

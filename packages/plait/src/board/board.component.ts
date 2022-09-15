@@ -35,6 +35,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
     template: `
         <svg #svg width="100%" height="100%" style="position: relative"></svg>
         <div *ngIf="isFocused" class="plait-toolbar island zoom-toolbar plait-board-attached">
+            <img src="../assets/new-space.svg" />
             <button class="item" (mousedown)="zoomOut($event)">-</button>
             <button class="item zoom-value" (mousedown)="resetZoom($event)">{{ zoom }}%</button>
             <button class="item" (mousedown)="zoomIn($event)">+</button>
