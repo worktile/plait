@@ -1,4 +1,4 @@
-import { MindmapLayoutType } from '../../../layouts/src/types';
+import { MindmapLayoutType } from '@plait/layouts';
 import { MindmapElement } from './element';
 
 export interface MindmapNode {
