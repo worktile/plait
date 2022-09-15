@@ -31,6 +31,7 @@ import {
     getSelectedMindmapElements,
     hasSelectedMindmapElement
 } from '../utils/selected-elements';
+import { MindmapLayoutType } from '@plait/layouts';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
@@ -132,8 +133,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                         );
                         if (
                             parentElement &&
-                            parentElement.rightNodeCount &&
                             parentElement.isRoot &&
+                            parentElement.layout === MindmapLayoutType.standard &&
+                            parentElement.rightNodeCount &&
                             nodeIndex <= parentElement.rightNodeCount - 1
                         ) {
                             Transforms.setNode(board, { rightNodeCount: parentElement.rightNodeCount + 1 }, [0]);
@@ -180,8 +182,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
                         if (
                             parentElement &&
-                            parentElement.rightNodeCount &&
                             parentElement.isRoot &&
+                            parentElement.rightNodeCount &&
+                            parentElement.layout === MindmapLayoutType.standard &&
                             nodeIndex <= parentElement.rightNodeCount - 1
                         ) {
                             const rightNodeCount = parentElement.rightNodeCount - 1 < 0 ? 0 : parentElement.rightNodeCount - 1;
