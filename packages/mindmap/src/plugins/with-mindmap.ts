@@ -12,7 +12,8 @@ import {
     PlaitElement,
     PlaitPlugin,
     isNoSelectionElement,
-    CLIP_BOARD_FORMAT_KEY
+    CLIP_BOARD_FORMAT_KEY,
+    PlaitHistoryBoard
 } from '@plait/core';
 import { getWidthByText } from '@plait/richtext';
 import { PlaitMindmapComponent } from '../mindmap.component';
@@ -120,7 +121,15 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
                 if (event.key === 'Tab') {
                     if (mindmapNodeComponent) {
-                        path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.children.length);
+                        path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.origin.children.length);
+                        const isCollapsed = mindmapNodeComponent.node.origin.isCollapsed;
+                        if (isCollapsed) {
+                            const newElement: Partial<MindmapElement> = { isCollapsed: false };
+                            const boardPath = findPath(board, mindmapNodeComponent.node);
+                            PlaitHistoryBoard.withoutSaving(board, () => {
+                                Transforms.setNode(board, newElement, boardPath);
+                            });
+                        }
                     }
                 } else {
                     if (mindmapNodeComponent) {
