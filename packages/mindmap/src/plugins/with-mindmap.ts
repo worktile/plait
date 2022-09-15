@@ -22,7 +22,7 @@ import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { buildNodes, changeRightNodeCount, extractNodesText, findParentElement, findPath } from '../utils';
+import { buildNodes, changeRightNodeCount, extractNodesText, findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
 import {
@@ -32,7 +32,6 @@ import {
     getSelectedMindmapElements,
     hasSelectedMindmapElement
 } from '../utils/selected-elements';
-import { MindmapLayoutType } from '@plait/layouts';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
@@ -241,6 +240,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
         setFragment(data);
     };
+
     board.insertFragment = (data: DataTransfer | null) => {
         if (board.readonly) {
             insertFragment(data);
