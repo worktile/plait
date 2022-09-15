@@ -131,7 +131,7 @@ export const changeRightNodeCount = (board: PlaitBoard, selectedElement: Mindmap
 export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutType) => {
     const mindmapData: PlaitElement = {
         type: 'mindmap',
-        id: '1',
+        id: idCreator(),
         isRoot: true,
         rightNodeCount,
         layout,
@@ -142,7 +142,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
         shape: MindmapNodeShape.roundRectangle,
         children: [
             {
-                id: '1-1',
+                id: idCreator(),
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
@@ -150,7 +150,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
                 shape: MindmapNodeShape.roundRectangle
             },
             {
-                id: '1-2',
+                id: idCreator(),
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
@@ -158,7 +158,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
                 shape: MindmapNodeShape.roundRectangle
             },
             {
-                id: '1-3',
+                id: idCreator(),
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
