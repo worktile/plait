@@ -7,11 +7,11 @@
         <ng-template [ngTemplateOutlet]="adaptTemplate"></ng-template>
     </a>
     <div class="divider"></div>
-    <a class="toolbar-item plait-action-icon" (mousedown)="zoomOut($event)">
+    <a class="toolbar-item plait-action-icon" (mousedown)="zoomOut()">
         <ng-template [ngTemplateOutlet]="zoomOutTemplate"></ng-template>
     </a>
-    <div class="toolbar-item zoom-value" (mousedown)="resetZoom($event)">{{ zoom }}%</div>
-    <a class="toolbar-item plait-action-icon" (mousedown)="zoomIn($event)">
+    <div class="toolbar-item zoom-value" (mousedown)="resetZoom()">{{ zoom * 10 }}%</div>
+    <a class="toolbar-item plait-action-icon" (mousedown)="zoomIn()">
         <ng-template [ngTemplateOutlet]="zoomInTemplate"></ng-template>
     </a>
 </div>

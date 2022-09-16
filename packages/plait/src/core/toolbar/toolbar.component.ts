@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 import { Transforms } from '../../transfroms';
 import { Viewport } from '../../interfaces/viewport';
 import { PlaitBoard } from '../../interfaces/board';
@@ -8,19 +8,19 @@ import { PlaitBoard } from '../../interfaces/board';
     templateUrl: './toolbar.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaitToolbarComponent implements OnInit, OnDestroy {
+export class PlaitToolbarComponent {
     @HostBinding('class') hostClass = `zoom-toolbar`;
 
     @Input()
     board!: PlaitBoard;
 
-    public get zoom(): number {
-        return Math.floor(this.board.viewport.zoom * 100);
+    public zoom: number = 10;
+
+    private get zoomFactor(): number {
+        return (2 * this.zoom - 10) / this.zoom;
     }
 
-    constructor(private cdr: ChangeDetectorRef, private renderer2: Renderer2) {}
-
-    ngOnInit(): void {}
+    constructor() {}
 
     // 适应画布
     adapt() {
@@ -34,30 +34,37 @@ export class PlaitToolbarComponent implements OnInit, OnDestroy {
     }
 
     // 放大
-    zoomIn(event: MouseEvent) {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            zoom: viewport.zoom + 0.1
-        });
+    zoomIn() {
+        if (this.zoom >= 40) {
+            return;
+        }
+        this.zoom++;
+        this.zoomChange();
     }
 
     // 缩小
-    zoomOut(event: MouseEvent) {
+    zoomOut() {
+        if (this.zoom <= 2) {
+            return;
+        }
+        this.zoom--;
+        this.zoomChange();
+    }
+
+    zoomChange() {
         const viewport = this.board?.viewport as Viewport;
         Transforms.setViewport(this.board, {
             ...viewport,
-            zoom: viewport.zoom - 0.1
+            zoom: this.zoomFactor
         });
     }
 
-    resetZoom(event?: MouseEvent) {
+    resetZoom() {
         const viewport = this.board?.viewport as Viewport;
         Transforms.setViewport(this.board, {
             ...viewport,
             zoom: 1
         });
+        this.zoom = 10;
     }
-
-    ngOnDestroy(): void {}
 }

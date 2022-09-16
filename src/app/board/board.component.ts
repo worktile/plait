@@ -52,8 +52,6 @@ export class BasicBoardComponent implements OnInit {
     }
 
     plaitBoardInitialized(value: PlaitBoard) {
-        console.log(12313);
-        
         this.board = value;
     }
 }
