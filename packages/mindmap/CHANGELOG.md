@@ -1,5 +1,15 @@
 # mindmap
 
+## 0.0.34
+
+### Patch Changes
+
+-   [#85](https://github.com/worktile/plait/pull/85) [`39d10fd`](https://github.com/worktile/plait/commit/39d10fd29a2b60dc454d5a3f1e0ef2b3ba11b0a3) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix mindmap quick insert error
+
+*   [#86](https://github.com/worktile/plait/pull/86) [`6462049`](https://github.com/worktile/plait/commit/6462049b87a0024182b152edd8d7275bbff26b5b) Thanks [@WBbug](https://github.com/WBbug)! - fix horizontalLayout judge ,add not indentedLayout
+
+-   [#87](https://github.com/worktile/plait/pull/87) [`97e12d9`](https://github.com/worktile/plait/commit/97e12d9b5a3c04a3d5d2eff51a2be7dc45974d34) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - support quick insert of mindmap indented layout
+
 ## 0.0.33
 
 ### Patch Changes
