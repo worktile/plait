@@ -17,14 +17,7 @@ export interface MindmapNode {
 }
 
 // mindmap node extend 支持的布局类型
-export type ExtendLayoutType = Exclude<
-    MindmapLayoutType,
-    | MindmapLayoutType.standard
-    | MindmapLayoutType.leftBottomIndented
-    | MindmapLayoutType.leftTopIndented
-    | MindmapLayoutType.rightTopIndented
-    | MindmapLayoutType.rightBottomIndented
->;
+export type ExtendLayoutType = Exclude<MindmapLayoutType, MindmapLayoutType.standard>;
 export type CoordinateType = {
     startX: number;
     startY: number;
