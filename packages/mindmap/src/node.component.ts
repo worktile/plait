@@ -342,6 +342,30 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 startY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
                 endX: x + width * 0.5,
                 endY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + EXTEND_RADIUS
+            },
+            [MindmapLayoutType.leftBottomIndented]: {
+                startX: x + width * 0.5,
+                startY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                endX: x + width * 0.5,
+                endY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + EXTEND_RADIUS
+            },
+            [MindmapLayoutType.leftTopIndented]: {
+                startX: x + width * 0.5,
+                startY: y - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                endX: x + width * 0.5,
+                endY: y - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - EXTEND_RADIUS
+            },
+            [MindmapLayoutType.rightBottomIndented]: {
+                startX: x + width * 0.5,
+                startY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                endX: x + width * 0.5,
+                endY: y + height + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + EXTEND_RADIUS
+            },
+            [MindmapLayoutType.rightTopIndented]: {
+                startX: x + width * 0.5,
+                startY: y - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                endX: x + width * 0.5,
+                endY: y - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - EXTEND_RADIUS
             }
         };
         if (shape === MindmapNodeShape.roundRectangle) {
