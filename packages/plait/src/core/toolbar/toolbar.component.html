@@ -10,7 +10,7 @@
     <a class="toolbar-item plait-action-icon" (mousedown)="zoomOut()">
         <ng-template [ngTemplateOutlet]="zoomOutTemplate"></ng-template>
     </a>
-    <div class="toolbar-item zoom-value" (mousedown)="resetZoom()">{{ zoom * 10 }}%</div>
+    <div class="toolbar-item zoom-value" (mousedown)="resetZoom()">{{ viewZoom }}%</div>
     <a class="toolbar-item plait-action-icon" (mousedown)="zoomIn()">
         <ng-template [ngTemplateOutlet]="zoomInTemplate"></ng-template>
     </a>

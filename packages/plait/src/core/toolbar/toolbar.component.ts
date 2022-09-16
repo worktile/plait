@@ -14,10 +14,10 @@ export class PlaitToolbarComponent {
     @Input()
     board!: PlaitBoard;
 
-    public zoom: number = 10;
+    public viewZoom: number = 100;
 
-    private get zoomFactor(): number {
-        return (2 * this.zoom - 10) / this.zoom;
+    private get zoom(): number {
+        return (2 * this.viewZoom - 100) / this.viewZoom;
     }
 
     constructor() {}
@@ -35,19 +35,19 @@ export class PlaitToolbarComponent {
 
     // 放大
     zoomIn() {
-        if (this.zoom >= 40) {
+        if (this.viewZoom >= 400) {
             return;
         }
-        this.zoom++;
+        this.viewZoom += 10;
         this.zoomChange();
     }
 
     // 缩小
     zoomOut() {
-        if (this.zoom <= 2) {
+        if (this.viewZoom <= 20) {
             return;
         }
-        this.zoom--;
+        this.viewZoom -= 10;
         this.zoomChange();
     }
 
@@ -55,7 +55,7 @@ export class PlaitToolbarComponent {
         const viewport = this.board?.viewport as Viewport;
         Transforms.setViewport(this.board, {
             ...viewport,
-            zoom: this.zoomFactor
+            zoom: this.zoom
         });
     }
 
@@ -65,6 +65,6 @@ export class PlaitToolbarComponent {
             ...viewport,
             zoom: 1
         });
-        this.zoom = 10;
+        this.viewZoom = 100;
     }
 }
