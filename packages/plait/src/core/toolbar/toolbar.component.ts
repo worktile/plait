@@ -24,6 +24,12 @@ export class PlaitToolbarComponent implements OnInit, OnDestroy {
 
     // 适应画布
     adapt() {
+        const viewport = this.board?.viewport as Viewport;
+        Transforms.setViewport(this.board, {
+            ...viewport,
+            offsetX: 0,
+            offsetY: 0
+        });
         this.resetZoom();
     }
 
