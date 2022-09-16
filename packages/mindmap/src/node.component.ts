@@ -49,7 +49,7 @@ import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './
 import { getLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
-import { findPath, getChildrenCount } from './utils/mindmap';
+import { createEmptyNode, findPath, getChildrenCount } from './utils/mindmap';
 import { addSelectedMindmapElements, deleteSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
@@ -442,24 +442,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 map(e => e.stopPropagation())
             )
             .subscribe(() => {
-                const newElement = {
-                    id: idCreator(),
-                    value: {
-                        children: [{ text: '' }]
-                    },
-                    children: [],
-                    width: 5,
-                    height: 24
-                };
-                const path = findPath(this.board, this.node).concat(this.node.origin.children.length);
-                Transforms.insertNode(this.board, newElement, path);
-                addSelectedMindmapElements(this.board, newElement);
-                setTimeout(() => {
-                    const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
-                    if (nodeComponent) {
-                        nodeComponent.startEditText();
-                    }
-                });
+                createEmptyNode(this.board, this.node, 'child');
             });
     }
 
@@ -665,7 +648,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const richtextInstance = this.richtextComponentRef.instance;
         if (richtextInstance.plaitReadonly) {
             richtextInstance.plaitReadonly = false;
-            this.richtextComponentRef.changeDetectorRef.markForCheck();
+            this.richtextComponentRef.changeDetectorRef.detectChanges();
             setTimeout(() => {
                 this.drawActiveG();
                 setFullSelectionAndFocus(richtextInstance.editor);
