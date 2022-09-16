@@ -14,6 +14,7 @@ import {
     createG,
     createText,
     HOST_TO_ROUGH_SVG,
+    idCreator,
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
@@ -26,7 +27,7 @@ import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isTopLayout, Mindma
 import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
-import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, map, take, takeUntil } from 'rxjs/operators';
 import {
     EXTEND_OFFSET,
     EXTEND_RADIUS,
@@ -434,6 +435,32 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             quickInsertG.appendChild(innerCrossHLine);
             quickInsertG.appendChild(innerRingVLine);
         }
+
+        fromEvent(quickInsertG, 'mouseup')
+            .pipe(
+                take(1),
+                map(e => e.stopPropagation())
+            )
+            .subscribe(() => {
+                const newElement = {
+                    id: idCreator(),
+                    value: {
+                        children: [{ text: '' }]
+                    },
+                    children: [],
+                    width: 5,
+                    height: 24
+                };
+                const path = findPath(this.board, this.node).concat(this.node.origin.children.length);
+                Transforms.insertNode(this.board, newElement, path);
+                addSelectedMindmapElements(this.board, newElement);
+                setTimeout(() => {
+                    const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
+                    if (nodeComponent) {
+                        nodeComponent.startEditText();
+                    }
+                });
+            });
     }
 
     drawExtend() {
