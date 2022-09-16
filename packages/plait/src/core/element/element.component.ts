@@ -9,11 +9,11 @@ import {
     SimpleChanges,
     ViewContainerRef
 } from '@angular/core';
-import { PlaitElement } from '../../interfaces/element';
 import { PlaitBoard } from '../../interfaces/board';
+import { PlaitElement } from '../../interfaces/element';
 import { Selection } from '../../interfaces/selection';
-import { createG } from '../../utils/dom';
 import { Viewport } from '../../interfaces/viewport';
+import { createG } from '../../utils/dom';
 
 @Component({
     selector: 'plait-element',
@@ -56,6 +56,7 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         if (first && this.viewport.offsetX === 0 && this.viewport.offsetY === 0) {
             return;
         }
+        console.log(this.viewport);
         this.renderer2.setAttribute(this.groupG, 'transform', `translate(${this.viewport.offsetX} ${this.viewport.offsetY})`);
     }
 

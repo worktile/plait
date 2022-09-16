@@ -1,5 +1,5 @@
-import { PlaitMindmap, MindmapNodeShape } from '@plait/mindmap';
 import { MindmapLayoutType } from '@plait/layouts';
+import { MindmapNodeShape, PlaitMindmap } from '@plait/mindmap';
 
 export const mockMindmapData: PlaitMindmap = {
     type: 'mindmap',
@@ -33,8 +33,22 @@ export const mockMindmapData: PlaitMindmap = {
             isCollapsed: true,
             shape: MindmapNodeShape.underline
         },
-        { id: '1-2', value: { children: [{ text: '绘图技术' }] }, children: [], width: 56, height: 24, shape: MindmapNodeShape.underline },
-        { id: '1-3', value: { children: [{ text: '布局算法' }] }, children: [], width: 56, height: 24, shape: MindmapNodeShape.underline },
+        {
+            id: '1-2',
+            value: { children: [{ text: '绘图技术' }] },
+            children: [],
+            width: 56,
+            height: 24,
+            shape: MindmapNodeShape.underline
+        },
+        {
+            id: '1-3',
+            value: { children: [{ text: '布局算法' }] },
+            children: [],
+            width: 56,
+            height: 24,
+            shape: MindmapNodeShape.underline
+        },
         {
             id: '1-4',
             value: { children: [{ text: '知名脑图产品' }] },
@@ -84,6 +98,7 @@ export const mockMindmapData: PlaitMindmap = {
             ],
             width: 84,
             height: 24,
+            isCollapsed: true,
             shape: MindmapNodeShape.underline,
             layout: MindmapLayoutType.right
         },

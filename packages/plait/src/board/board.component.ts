@@ -33,21 +33,23 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
 @Component({
     selector: 'plait-board',
     template: `
-        <svg #svg width="100%" height="100%" style="position: relative"></svg>
+        <div #container>
+            <svg #svg width="100%" height="100%" style="position: relative" preserveAspectRatio="xMidYMid meet"></svg>
+            <plait-element
+                *ngFor="let item of board.children; let index = index; trackBy: trackBy"
+                [index]="index"
+                [element]="item"
+                [board]="board"
+                [viewport]="board.viewport"
+                [selection]="board.selection"
+                [host]="host"
+            ></plait-element>
+        </div>
         <div *ngIf="isFocused" class="plait-toolbar island zoom-toolbar plait-board-attached">
             <button class="item" (mousedown)="zoomOut($event)">-</button>
             <button class="item zoom-value" (mousedown)="resetZoom($event)">{{ zoom }}%</button>
             <button class="item" (mousedown)="zoomIn($event)">+</button>
         </div>
-        <plait-element
-            *ngFor="let item of board.children; let index = index; trackBy: trackBy"
-            [index]="index"
-            [element]="item"
-            [board]="board"
-            [viewport]="board.viewport"
-            [selection]="board.selection"
-            [host]="host"
-        ></plait-element>
         <ng-content></ng-content>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -93,7 +95,10 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         return this.isFocused;
     }
 
-    constructor(private cdr: ChangeDetectorRef, private renderer2: Renderer2) {}
+    @ViewChild('container', { read: ElementRef, static: true })
+    contentContainer!: ElementRef;
+
+    constructor(private cdr: ChangeDetectorRef, private renderer2: Renderer2, private elementRef: ElementRef) {}
 
     ngOnInit(): void {
         const roughSVG = rough.svg(this.host as SVGSVGElement, { options: { roughness: 0, strokeWidth: 1 } });
@@ -113,12 +118,14 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             if (this.board.operations.some(op => PlaitOperation.isSetViewportOperation(op))) {
                 this.updateViewport();
             }
+            this.updateContainerStyle();
             this.plaitChange.emit(changeEvent);
         });
     }
 
     ngAfterViewInit(): void {
         this.plaitBoardInitialized.emit(this.board);
+        this.updateContainerStyle();
     }
 
     initializePlugins() {
@@ -158,19 +165,21 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.board.dblclick(event);
             });
 
-        fromEvent<WheelEvent>(this.host, 'wheel')
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((event: WheelEvent) => {
-                if (this.isFocused) {
-                    event.preventDefault();
-                    const viewport = this.board.viewport;
-                    Transforms.setViewport(this.board, {
-                        ...viewport,
-                        offsetX: viewport?.offsetX - event.deltaX,
-                        offsetY: viewport?.offsetY - event.deltaY
-                    });
-                }
-            });
+        // fromEvent<WheelEvent>(this.host, 'wheel')
+        //     .pipe(takeUntil(this.destroy$))
+        //     .subscribe((event: WheelEvent) => {
+        //         if (this.isFocused) {
+        //             event.preventDefault();
+        //             const viewport = this.board.viewport;
+        //             const { currentX, currentY, isAllowX, isAllowY } = this.computedScrollArea(event);
+
+        //             Transforms.setViewport(this.board, {
+        //                 ...viewport,
+        //                 offsetX: isAllowX ? currentX : viewport?.offsetX,
+        //                 offsetY: isAllowY ? currentY : viewport?.offsetY
+        //             });
+        //         }
+        //     });
 
         fromEvent<KeyboardEvent>(document, 'keydown')
             .pipe(
@@ -233,6 +242,64 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         window.onresize = () => {
             this.refreshViewport();
         };
+    }
+
+    computedScrollArea(e: WheelEvent) {
+        const viewport = this.board.viewport;
+        const rootGroupG = this.host.firstChild;
+        const rootGroupGRect = (rootGroupG as SVGElement)?.getBoundingClientRect();
+
+        const currentX = viewport?.offsetX - e.deltaX;
+        const currentY = viewport?.offsetY - e.deltaY;
+
+        const isAllowLX = rootGroupGRect.width * 2 > Math.abs(currentX);
+        const isAllowTY = rootGroupGRect.height > Math.abs(currentY);
+        const isAllowRX = rootGroupGRect.width / 2 > Math.abs(currentX);
+        const isAllowBY = rootGroupGRect.height / 2 > Math.abs(currentY);
+
+        const isAllowX = String(currentX).includes('-') ? isAllowLX : isAllowRX;
+        const isAllowY = String(currentY).includes('-') ? isAllowTY : isAllowBY;
+        return {
+            currentX,
+            currentY,
+            isAllowX,
+            isAllowY
+        };
+    }
+
+    updateContainerStyle() {
+        const parentElement = this.elementRef.nativeElement?.parentElement;
+        const parentRect = parentElement?.getBoundingClientRect();
+        const rootGroupG = this.host.firstChild;
+        const rootGroupGRect = (rootGroupG as SVGElement)?.getBoundingClientRect();
+
+        const parentWidth = `${parentRect.width + 20}px`;
+        const parentHeight = `${parentRect.height + 20}px`;
+        this.renderer2.setStyle(this.contentContainer.nativeElement, 'overflow', 'auto');
+        this.renderer2.setStyle(this.contentContainer.nativeElement, 'width', parentWidth);
+        this.renderer2.setStyle(this.contentContainer.nativeElement, 'height', parentHeight);
+        this.renderer2.setStyle(this.contentContainer.nativeElement, 'maxWidth', parentWidth);
+        this.renderer2.setStyle(this.contentContainer.nativeElement, 'maxHeight', parentHeight);
+
+        // const hostWidth = parentRect.width * 2 + rootGroupGRect.width / 2;
+        // const hostHeight = parentRect.width * 2 + rootGroupGRect.width / 2;
+        const hostWidth = (parentRect.width - rootGroupGRect.width / 2) * 2;
+        const hostHeight = parentRect.width * 2 + rootGroupGRect.width / 2;
+        console.log(parentRect.width, rootGroupGRect.width, hostWidth, hostHeight);
+        this.renderer2.setStyle(this.host, 'display', 'block');
+        this.renderer2.setStyle(this.host, 'width', `${hostWidth}px`);
+        this.renderer2.setStyle(this.host, 'height', `${hostHeight}px`);
+        this.renderer2.setStyle(this.host, 'cursor', this.plaitReadonly ? 'grab' : 'default');
+
+        // const mindX = `${(hostWidth - rootGroupGRect.width) / 2 - rootGroupGRect.width / 2}`;
+        const mindX = `0`;
+        const mindY = `${hostHeight / 2 - rootGroupGRect.height / 2}`;
+        console.log(mindX, mindY);
+        this.renderer2.setAttribute(
+            this.host,
+            'viewBox',
+            `${String(mindX).includes('-') ? mindX : -mindX}, ${String(mindY).includes('-') ? mindY : -mindY}, ${hostWidth}, ${hostHeight}`
+        );
     }
 
     refreshViewport() {
