@@ -1,5 +1,5 @@
 ---
-'@plait/core': major
+'@plait/core': patch
 ---
 
 1. change plait toolbar style
