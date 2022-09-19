@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inp
 import { Transforms } from '../../transfroms';
 import { Viewport } from '../../interfaces/viewport';
 import { PlaitBoard } from '../../interfaces/board';
-import { BaseCursorStatus } from '../../interfaces';
+import { BaseCursorStatus, CursorStatus } from '../../interfaces';
 
 @Component({
     selector: 'plait-toolbar',
@@ -15,7 +15,11 @@ export class PlaitToolbarComponent {
     @Input()
     board!: PlaitBoard;
 
-    public isDragMoveModel: boolean = false;
+    public get isDragMoveModel(): boolean {
+        return this.cursorStatus === BaseCursorStatus.drag;
+    }
+
+    public cursorStatus: CursorStatus = BaseCursorStatus.select;
 
     public viewZoom: number = 100;
 
@@ -26,17 +30,17 @@ export class PlaitToolbarComponent {
     constructor(private cdr: ChangeDetectorRef) {}
 
     openDragMove() {
-        this.isDragMoveModel = true;
-        this.cdr.detectChanges()
+        this.cursorStatus = BaseCursorStatus.drag;
+        this.cdr.detectChanges();
     }
 
     closeDragMove() {
-        this.isDragMoveModel = false;
-        this.cdr.detectChanges()
+        this.cursorStatus = BaseCursorStatus.select;
+        this.cdr.detectChanges();
     }
 
     dragMove() {
-        this.isDragMoveModel = !this.isDragMoveModel;
+        this.isDragMoveModel ? this.closeDragMove() : this.openDragMove();
     }
 
     // 适应画布
