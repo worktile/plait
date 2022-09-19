@@ -1,11 +1,11 @@
 import { idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { Node } from 'slate';
-import { isPlaitMindmap, MindmapNode, PlaitMindmap } from '../interfaces';
+import { isPlaitMindmap, MindmapNode } from '../interfaces';
 import { MindmapElement } from '../interfaces/element';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { MindmapLayoutType } from '@plait/layouts';
 import { getRootLayout } from './layout';
-import { MindmapNodeShape } from '../constants';
+import { MindmapNodeShape, NODE_MIN_WIDTH } from '../constants';
 import { addSelectedMindmapElements } from './selected-elements';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
@@ -140,31 +140,27 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
         height: 28,
         points: [[230, 208]],
         value: { children: [{ text: '思维导图' }] },
-        shape: MindmapNodeShape.roundRectangle,
         children: [
             {
                 id: idCreator(),
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: 24,
-                shape: MindmapNodeShape.roundRectangle
+                height: 24
             },
             {
                 id: idCreator(),
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: 24,
-                shape: MindmapNodeShape.roundRectangle
+                height: 24
             },
             {
                 id: idCreator(),
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: 24,
-                shape: MindmapNodeShape.roundRectangle
+                height: 24
             }
         ]
     };
@@ -179,7 +175,7 @@ export const createEmptyNode = (board: PlaitBoard, node: MindmapNode, layerLevel
             children: [{ text: '' }]
         },
         children: [],
-        width: 5,
+        width: NODE_MIN_WIDTH,
         height: 24
     };
     const path = layerLevel === 'child' ? findPath(board, node).concat(node.origin.children.length) : Path.next(findPath(board, node));

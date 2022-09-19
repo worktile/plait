@@ -32,6 +32,7 @@ import {
     getSelectedMindmapElements,
     hasSelectedMindmapElement
 } from '../utils/selected-elements';
+import { isVirtualKey } from '../utils/is-virtual-key';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
@@ -173,6 +174,13 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     }
                 }
                 return;
+            }
+
+            // auto enter edit status
+            if (!isVirtualKey(event)) {
+                const selectedElement = selectedElements[0];
+                const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
+                mindmapNodeComponent?.startEditText();
             }
         }
 

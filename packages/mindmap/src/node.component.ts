@@ -33,6 +33,7 @@ import {
     EXTEND_RADIUS,
     MindmapNodeShape,
     MINDMAP_NODE_KEY,
+    NODE_MIN_WIDTH,
     PRIMARY_COLOR,
     QUICK_INSERT_CIRCLE_COLOR,
     QUICK_INSERT_CIRCLE_OFFSET,
@@ -678,18 +679,22 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 richtext = event.value;
 
                 // 更新富文本、更新宽高
-                const { width, height } = richtextInstance.editable.getBoundingClientRect();
+                let { width, height } = richtextInstance.editable.getBoundingClientRect();
+                if (width < NODE_MIN_WIDTH) {
+                    width = NODE_MIN_WIDTH;
+                }
                 const newElement = { value: richtext, width, height } as MindmapElement;
-
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
                 MERGING.set(this.board, true);
             });
         const composition$ = richtextInstance.plaitComposition.subscribe(event => {
-            const { width, height } = richtextInstance.editable.getBoundingClientRect();
+            let { width, height } = richtextInstance.editable.getBoundingClientRect();
+            if (width < NODE_MIN_WIDTH) {
+                width = NODE_MIN_WIDTH;
+            }
             if (event.isComposing && (width !== this.node.origin.width || height !== this.node.origin.height)) {
                 const newElement: Partial<MindmapElement> = { width, height };
-
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
                 MERGING.set(this.board, true);

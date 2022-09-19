@@ -3,6 +3,7 @@ export const TOPIC_FONT_SIZE = 14;
 export const NODE_FILL = '#FFFFFF';
 export const ROOT_NODE_FILL = '#F5F5F5';
 export const ROOT_TOPIC_FONT_SIZE = 18;
+export const NODE_MIN_WIDTH = 18;
 
 export const COLORS = [
     '#868AF6',

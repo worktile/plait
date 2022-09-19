@@ -16,21 +16,18 @@ export const mockMindmapData: PlaitMindmap = {
                     value: { children: [{ text: '布局算法' }] },
                     children: [],
                     width: 56,
-                    height: 24,
-                    shape: MindmapNodeShape.roundRectangle
+                    height: 24
                 },
                 {
                     id: '1-1-2',
                     value: { children: [{ text: '知名脑图产品' }] },
                     children: [],
                     width: 84,
-                    height: 24,
-                    shape: MindmapNodeShape.roundRectangle
+                    height: 24
                 }
             ],
             width: 42,
-            height: 24,
-            shape: MindmapNodeShape.roundRectangle
+            height: 24
         },
         {
             id: '1-4',
@@ -41,8 +38,7 @@ export const mockMindmapData: PlaitMindmap = {
                     value: { children: [{ text: '布局算法' }] },
                     children: [],
                     width: 56,
-                    height: 24,
-                    shape: MindmapNodeShape.roundRectangle
+                    height: 24
                 },
                 {
                     id: '1-4-2',
@@ -53,34 +49,29 @@ export const mockMindmapData: PlaitMindmap = {
                             value: { children: [{ text: '鱼骨图哦' }] },
                             children: [],
                             width: 72,
-                            height: 24,
-                            shape: MindmapNodeShape.roundRectangle
+                            height: 24
                         },
                         {
                             id: '1-4-2-2',
                             value: { children: [{ text: '缩进布局' }] },
                             children: [],
                             width: 72,
-                            height: 24,
-                            shape: MindmapNodeShape.roundRectangle
+                            height: 24
                         }
                     ],
                     width: 144.8046875,
-                    height: 24,
-                    shape: MindmapNodeShape.roundRectangle
+                    height: 24
                 },
                 {
                     id: '1-4-3',
                     value: { children: [{ text: '知名脑图产品' }] },
                     children: [],
                     width: 84,
-                    height: 24,
-                    shape: MindmapNodeShape.roundRectangle
+                    height: 24
                 }
             ],
             width: 84,
-            height: 24,
-            shape: MindmapNodeShape.roundRectangle
+            height: 24
         },
         {
             id: '1-5',
@@ -91,26 +82,22 @@ export const mockMindmapData: PlaitMindmap = {
                     value: { children: [{ text: '鱼骨图哦' }] },
                     children: [],
                     width: 72,
-                    height: 24,
-                    shape: MindmapNodeShape.roundRectangle
+                    height: 24
                 },
                 {
                     id: '1-5-2',
                     value: { children: [{ text: '缩进布局' }] },
                     children: [],
                     width: 72,
-                    height: 24,
-                    shape: MindmapNodeShape.roundRectangle
+                    height: 24
                 }
             ],
             width: 48,
-            height: 24,
-            shape: MindmapNodeShape.roundRectangle
+            height: 24
         }
     ],
     width: 72,
     height: 25,
     isRoot: true,
-    points: [[560, 360]],
-    layout: MindmapLayoutType.rightBottomIndented
+    points: [[560, 360]]
 };
