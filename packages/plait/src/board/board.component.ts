@@ -34,11 +34,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
     selector: 'plait-board',
     template: `
         <svg #svg width="100%" height="100%" style="position: relative"></svg>
-        <div *ngIf="isFocused" class="plait-toolbar island zoom-toolbar plait-board-attached">
-            <button class="item" (mousedown)="zoomOut($event)">-</button>
-            <button class="item zoom-value" (mousedown)="resetZoom($event)">{{ zoom }}%</button>
-            <button class="item" (mousedown)="zoomIn($event)">+</button>
-        </div>
+        <plait-toolbar *ngIf="isFocused" [board]="board"></plait-toolbar>
         <plait-element
             *ngFor="let item of board.children; let index = index; trackBy: trackBy"
             [index]="index"
@@ -53,8 +49,6 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
-    zoom = 100;
-
     @HostBinding('class') hostClass = `plait-board-container`;
 
     board!: PlaitBoard;
@@ -246,35 +240,8 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     updateViewport() {
-        this.zoom = Math.floor(this.board.viewport.zoom * 100);
         const viewBox = getViewBox(this.board);
         this.renderer2.setAttribute(this.host, 'viewBox', `${viewBox.minX}, ${viewBox.minY}, ${viewBox.width}, ${viewBox.height}`);
-    }
-
-    // 放大
-    zoomIn(event: MouseEvent) {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            zoom: viewport.zoom + 0.1
-        });
-    }
-
-    // 缩小
-    zoomOut(event: MouseEvent) {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            zoom: viewport.zoom - 0.1
-        });
-    }
-
-    resetZoom(event: MouseEvent) {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            zoom: 1
-        });
     }
 
     trackBy = (index: number, element: PlaitElement) => {
