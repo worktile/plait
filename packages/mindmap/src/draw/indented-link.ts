@@ -32,9 +32,9 @@ export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: M
         [beginX, endY - (endNode.hGap * 3 * plusMinus[1]) / 5],
         [beginX, endY - (endNode.hGap * plusMinus[1]) / 5],
         [beginX + (endNode.hGap * plusMinus[0]) / 4, endY],
-        [endX - (endNode.vGap * plusMinus[0]) / 4, endY],
-        [endX - (endNode.vGap * plusMinus[0]) / 4, endY],
-        [endX - (endNode.vGap * plusMinus[0]) / 4, endY],
+        [beginX + (endNode.hGap * plusMinus[0] * 3) / 5, endY],
+        [beginX + (endNode.hGap * plusMinus[0] * 3) / 5, endY],
+        [beginX + (endNode.hGap * plusMinus[0] * 3) / 5, endY],
         hasUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY]
     ];
 
