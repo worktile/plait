@@ -6,6 +6,7 @@ export const mockMindmapData: PlaitMindmap = {
     id: '1',
     rightNodeCount: 4,
     value: { children: [{ text: '脑图调研' }] },
+    shape: MindmapNodeShape.underline,
     children: [
         {
             id: '1-1',
