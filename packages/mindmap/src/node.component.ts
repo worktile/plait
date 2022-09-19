@@ -370,7 +370,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 endY: y - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - EXTEND_RADIUS
             }
         };
-        if (shape === MindmapNodeShape.roundRectangle) {
+        if (shape === MindmapNodeShape.roundRectangle || this.node.origin.isRoot) {
             underlineCoordinates[MindmapLayoutType.left].startY -= height * 0.5;
             underlineCoordinates[MindmapLayoutType.left].endY -= height * 0.5;
             underlineCoordinates[MindmapLayoutType.right].startY -= height * 0.5;
