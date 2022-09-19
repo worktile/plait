@@ -22,7 +22,7 @@ import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { buildNodes, changeRightNodeCount, extractNodesText, findPath } from '../utils';
+import { buildNodes, changeRightNodeCount, createEmptyNode, extractNodesText, findPath } from '../utils';
 import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
 import {
@@ -121,7 +121,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
                 if (event.key === 'Tab') {
                     if (mindmapNodeComponent) {
-                        path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.origin.children.length);
                         const isCollapsed = mindmapNodeComponent.node.origin.isCollapsed;
                         if (isCollapsed) {
                             const newElement: Partial<MindmapElement> = { isCollapsed: false };
@@ -130,31 +129,14 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                                 Transforms.setNode(board, newElement, boardPath);
                             });
                         }
+                        createEmptyNode(board, mindmapNodeComponent.node, 'child');
                     }
                 } else {
                     if (mindmapNodeComponent) {
-                        path = Path.next(findPath(board, mindmapNodeComponent.node));
                         changeRightNodeCount(board, selectedElement, 1);
+                        createEmptyNode(board, mindmapNodeComponent.node, 'sibing');
                     }
                 }
-                const newElement = {
-                    id: idCreator(),
-                    value: {
-                        children: [{ text: '' }]
-                    },
-                    children: [],
-                    width: 5,
-                    height: 24
-                };
-                Transforms.insertNode(board, newElement, path);
-                addSelectedMindmapElements(board, newElement);
-                setTimeout(() => {
-                    const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
-                    if (nodeComponent) {
-                        nodeComponent.startEditText();
-                    }
-                }, 0);
-                return;
             }
 
             if (hotkeys.isDeleteBackward(event)) {

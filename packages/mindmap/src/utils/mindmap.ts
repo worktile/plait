@@ -6,6 +6,7 @@ import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { MindmapLayoutType } from '@plait/layouts';
 import { getRootLayout } from './layout';
 import { MindmapNodeShape } from '../constants';
+import { addSelectedMindmapElements } from './selected-elements';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
@@ -168,4 +169,26 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
         ]
     };
     return [mindmapData];
+};
+
+// layoutLevel 用来表示插入兄弟节点还是子节点
+export const createEmptyNode = (board: PlaitBoard, node: MindmapNode, layerLevel: 'sibing' | 'child') => {
+    const newElement = {
+        id: idCreator(),
+        value: {
+            children: [{ text: '' }]
+        },
+        children: [],
+        width: 5,
+        height: 24
+    };
+    const path = layerLevel === 'child' ? findPath(board, node).concat(node.origin.children.length) : Path.next(findPath(board, node));
+    Transforms.insertNode(board, newElement, path);
+    addSelectedMindmapElements(board, newElement);
+    setTimeout(() => {
+        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
+        if (nodeComponent) {
+            nodeComponent.startEditText();
+        }
+    });
 };

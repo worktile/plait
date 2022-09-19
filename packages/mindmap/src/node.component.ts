@@ -14,6 +14,7 @@ import {
     createG,
     createText,
     HOST_TO_ROUGH_SVG,
+    idCreator,
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
@@ -26,7 +27,7 @@ import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isTopLayout, Mindma
 import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
-import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, map, take, takeUntil } from 'rxjs/operators';
 import {
     EXTEND_OFFSET,
     EXTEND_RADIUS,
@@ -48,7 +49,7 @@ import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './
 import { getLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
-import { findPath, getChildrenCount } from './utils/mindmap';
+import { createEmptyNode, findPath, getChildrenCount } from './utils/mindmap';
 import { addSelectedMindmapElements, deleteSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
@@ -434,6 +435,15 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             quickInsertG.appendChild(innerCrossHLine);
             quickInsertG.appendChild(innerRingVLine);
         }
+
+        fromEvent(quickInsertG, 'mouseup')
+            .pipe(
+                take(1),
+                map(e => e.stopPropagation())
+            )
+            .subscribe(() => {
+                createEmptyNode(this.board, this.node, 'child');
+            });
     }
 
     drawExtend() {
@@ -638,7 +648,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const richtextInstance = this.richtextComponentRef.instance;
         if (richtextInstance.plaitReadonly) {
             richtextInstance.plaitReadonly = false;
-            this.richtextComponentRef.changeDetectorRef.markForCheck();
+            this.richtextComponentRef.changeDetectorRef.detectChanges();
             setTimeout(() => {
                 this.drawActiveG();
                 setFullSelectionAndFocus(richtextInstance.editor);
