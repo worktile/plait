@@ -1,5 +1,11 @@
 # layouts
 
+## 0.0.35
+
+### Patch Changes
+
+-   [`bebc7c3`](https://github.com/worktile/plait/commit/bebc7c343e3f3ecceecc4f1bcfc58fca87dfee4f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - layout gap refactor, support indented layout level gap/extend width/extend height of indented layout
+
 ## 0.0.33
 
 ### Patch Changes

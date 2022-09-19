@@ -1,5 +1,15 @@
 # mindmap
 
+## 0.0.35
+
+### Patch Changes
+
+-   [`bebc7c3`](https://github.com/worktile/plait/commit/bebc7c343e3f3ecceecc4f1bcfc58fca87dfee4f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - layout gap refactor, support indented layout level gap/extend width/extend height of indented layout
+
+*   [#88](https://github.com/worktile/plait/pull/88) [`63baaeb`](https://github.com/worktile/plait/commit/63baaeb931539babcfe7b81d14f11879e19009ab) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - implement quick insert node function of mindmap
+
+-   [#90](https://github.com/worktile/plait/pull/90) [`b012c7a`](https://github.com/worktile/plait/commit/b012c7a32127b08862555b4afbebf4a23e084dfa) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - root node support quick insert of mindmap
+
 ## 0.0.34
 
 ### Patch Changes

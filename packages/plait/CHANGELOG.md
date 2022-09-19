@@ -1,5 +1,15 @@
 # plait
 
+## 0.0.35
+
+### Patch Changes
+
+-   [#84](https://github.com/worktile/plait/pull/84) [`65e9d11`](https://github.com/worktile/plait/commit/65e9d11cc098e2898d201f3f571a579c8234c618) Thanks [@Ashy6](https://github.com/Ashy6)! - add toolbar for board
+
+*   [#84](https://github.com/worktile/plait/pull/84) [`65e9d11`](https://github.com/worktile/plait/commit/65e9d11cc098e2898d201f3f571a579c8234c618) Thanks [@Ashy6](https://github.com/Ashy6)! - 1. change plait toolbar style
+    2. support adapt of board
+    3. fix zoomIn and zoomOut
+
 ## 0.0.33
 
 ### Patch Changes
