@@ -168,7 +168,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
 };
 
 // layoutLevel 用来表示插入兄弟节点还是子节点
-export const createEmptyNode = (board: PlaitBoard, node: MindmapNode, layerLevel: 'sibing' | 'child') => {
+export const createEmptyNode = (board: PlaitBoard, path: Path) => {
     const newElement = {
         id: idCreator(),
         value: {
@@ -178,7 +178,6 @@ export const createEmptyNode = (board: PlaitBoard, node: MindmapNode, layerLevel
         width: NODE_MIN_WIDTH,
         height: 24
     };
-    const path = layerLevel === 'child' ? findPath(board, node).concat(node.origin.children.length) : Path.next(findPath(board, node));
     Transforms.insertNode(board, newElement, path);
     addSelectedMindmapElements(board, newElement);
     setTimeout(() => {
