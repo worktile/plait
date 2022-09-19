@@ -9,7 +9,7 @@ import { PlaitBoard } from '../../interfaces/board';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaitToolbarComponent {
-    @HostBinding('class') hostClass = `zoom-toolbar`;
+    @HostBinding('class') hostClass = `plait-board-toolbar`;
 
     @Input()
     board!: PlaitBoard;
