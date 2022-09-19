@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input } from '@angular/core';
 import { Transforms } from '../../transfroms';
 import { Viewport } from '../../interfaces/viewport';
 import { PlaitBoard } from '../../interfaces/board';
+import { BaseCursorStatus } from '../../interfaces';
 
 @Component({
     selector: 'plait-toolbar',
@@ -14,7 +15,7 @@ export class PlaitToolbarComponent {
     @Input()
     board!: PlaitBoard;
 
-    public openDragMoveModel: boolean = false;
+    public isDragMoveModel: boolean = false;
 
     public viewZoom: number = 100;
 
@@ -22,10 +23,20 @@ export class PlaitToolbarComponent {
         return (2 * this.viewZoom - 100) / this.viewZoom;
     }
 
-    constructor() {}
+    constructor(private cdr: ChangeDetectorRef) {}
+
+    openDragMove() {
+        this.isDragMoveModel = true;
+        this.cdr.detectChanges()
+    }
+
+    closeDragMove() {
+        this.isDragMoveModel = false;
+        this.cdr.detectChanges()
+    }
 
     dragMove() {
-        this.openDragMoveModel = !this.openDragMoveModel
+        this.isDragMoveModel = !this.isDragMoveModel;
     }
 
     // 适应画布

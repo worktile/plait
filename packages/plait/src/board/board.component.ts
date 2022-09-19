@@ -17,7 +17,8 @@ import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
+import { PlaitToolbarComponent } from '../core/toolbar/toolbar.component';
+import { DragMove, PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitOperation } from '../interfaces/operation';
 import { PlaitPlugin } from '../interfaces/plugin';
@@ -33,8 +34,14 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
 @Component({
     selector: 'plait-board',
     template: `
-        <svg #svg width="100%" height="100%" style="position: relative"></svg>
-        <plait-toolbar *ngIf="isFocused" [board]="board"></plait-toolbar>
+        <svg
+            #svg
+            width="100%"
+            height="100%"
+            style="position: relative"
+            [style.cursor]="dragMove.isDragMoving ? 'grabbing' : plaitToolbar?.isDragMoveModel ? 'grab' : 'auto'"
+        ></svg>
+        <plait-toolbar #plaitToolbar *ngIf="isFocused" [board]="board"></plait-toolbar>
         <plait-element
             *ngFor="let item of board.children; let index = index; trackBy: trackBy"
             [index]="index"
@@ -59,6 +66,16 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('svg', { static: true })
     svg!: ElementRef;
+
+    @ViewChild('plaitToolbar', { static: false })
+    plaitToolbar!: PlaitToolbarComponent;
+
+    public dragMove: DragMove = {
+        dragMoveModel: false,
+        isDragMoving: false,
+        x: 0,
+        y: 0
+    };
 
     get host(): SVGElement {
         return this.svg.nativeElement;
@@ -132,18 +149,21 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousedown(event);
+                this.isFocused && this.plaitToolbar.isDragMoveModel && this.initDragMove(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
+                this.isFocused && this.dragMove.isDragMoving && this.dragMoving(event);
             });
 
         fromEvent<MouseEvent>(document, 'mouseup')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.globalMouseup(event);
+                this.isFocused && this.dragMoveEnd(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'dblclick')
@@ -175,6 +195,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keydown(event);
+                this.isFocused && event.code === 'Space' && this.openDragMoveModel();
             });
 
         fromEvent<KeyboardEvent>(document, 'keyup')
@@ -186,6 +207,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keyup(event);
+                this.isFocused && event.code === 'Space' && this.closeDragMoveModel();
             });
 
         fromEvent<ClipboardEvent>(document, 'copy')
@@ -247,6 +269,42 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     trackBy = (index: number, element: PlaitElement) => {
         return index;
     };
+
+    openDragMoveModel() {
+        this.dragMove.dragMoveModel = true;
+        this.plaitToolbar.openDragMove();
+        this.cdr.detectChanges();
+    }
+
+    closeDragMoveModel() {
+        this.dragMove.dragMoveModel = false;
+        this.plaitToolbar.closeDragMove();
+        this.cdr.detectChanges();
+    }
+
+    initDragMove(e: MouseEvent) {
+        this.dragMove.isDragMoving = true;
+        this.dragMove.x = e.x;
+        this.dragMove.y = e.y;
+        this.cdr.detectChanges();
+    }
+
+    dragMoving(e: MouseEvent) {
+        const viewport = this.board?.viewport as Viewport;
+        Transforms.setViewport(this.board, {
+            ...viewport,
+            offsetX: viewport.offsetX + (e.x - this.dragMove.x),
+            offsetY: viewport.offsetY + (e.y - this.dragMove.y)
+        });
+        this.dragMove.x = e.x;
+        this.dragMove.y = e.y;
+    }
+
+    dragMoveEnd(e: MouseEvent) {
+        this.dragMove.isDragMoving = false;
+        this.dragMove.x = 0;
+        this.dragMove.y = 0;
+    }
 
     ngOnDestroy(): void {
         this.destroy$.next();
