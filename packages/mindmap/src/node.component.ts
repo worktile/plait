@@ -202,7 +202,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !!this.selection && !this.node.origin.isCollapsed && !this.isEditable;
+                    return !!this.selection && !this.node.origin.isCollapsed;
                 })
             )
             .subscribe(() => {
@@ -212,7 +212,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !!this.selection && !this.node.origin.isCollapsed && !this.isEditable;
+                    return !!this.selection && !this.node.origin.isCollapsed;
                 })
             )
             .subscribe(() => {
