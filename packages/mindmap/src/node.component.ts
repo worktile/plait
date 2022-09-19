@@ -46,7 +46,7 @@ import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './dr
 import { drawRectangleNode } from './draw/shape';
 import { MindmapElement } from './interfaces/element';
 import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
-import { getLinkLineColorByMindmapElement } from './utils/colors';
+import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
 import { createEmptyNode, findPath, getChildrenCount } from './utils/mindmap';
@@ -375,7 +375,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             underlineCoordinates[MindmapLayoutType.right].startY -= height * 0.5;
             underlineCoordinates[MindmapLayoutType.right].endY -= height * 0.5;
         }
-        const stroke = getLinkLineColorByMindmapElement(this.node.origin);
+        const stroke = this.node.origin.isRoot
+            ? getRootLinkLineColorByMindmapElement(this.node.origin)
+            : getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         const nodeLayout = getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
         const underlineCoordinate = underlineCoordinates[nodeLayout];
@@ -447,15 +449,16 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     drawExtend() {
-        if (this.node.origin.isRoot) {
-            return;
-        }
         // destroy
         this.destroyExtend();
         // create extend
         this.extendG = createG();
         this.extendG.classList.add('extend');
         this.gGroup.append(this.extendG);
+        if (this.node.origin.isRoot) {
+            this.drawQuickInsert();
+            return;
+        }
         // inteactive
         fromEvent(this.extendG, 'mouseup')
             .pipe(take(1))

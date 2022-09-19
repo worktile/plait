@@ -33,3 +33,10 @@ export const getLinkLineColorByMindmapElement = (element: MindmapElement) => {
         throw new Error('root element should not have link line');
     }
 };
+
+export const getRootLinkLineColorByMindmapElement = (root: MindmapElement) => {
+    const index = root.children.length;
+    const length = COLORS.length;
+    const remainder = index % length;
+    return COLORS[remainder];
+};
