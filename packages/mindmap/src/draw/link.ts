@@ -108,9 +108,9 @@ export function drawLink(
                 curve = [...underline, ...curve];
             } else {
                 const underline = [
-                    [endX + (endNode.width - endNode.hGap * 2), endY],
-                    [endX + (endNode.width - endNode.hGap * 2), endY],
-                    [endX + (endNode.width - endNode.hGap * 2), endY]
+                    [Math.round(endX + (endNode.width - endNode.hGap * 2)), endY],
+                    [Math.round(endX + (endNode.width - endNode.hGap * 2)), endY],
+                    [Math.round(endX + (endNode.width - endNode.hGap * 2)), endY]
                 ] as Point[];
                 curve = [...curve, ...underline];
             }
