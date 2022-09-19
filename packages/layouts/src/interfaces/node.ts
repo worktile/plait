@@ -17,8 +17,8 @@ export class LayoutNode {
     layout: MindmapLayoutType;// no standrad
 
     constructor(origin: OriginNode, options: LayoutOptions, context: LayoutContext, parent?: LayoutNode) {
-        const hGap = options.getHorizontalGap(origin);
-        const vGap = options.getVerticalGap(origin);
+        const hGap = options.getHorizontalGap(origin, parent);
+        const vGap = options.getVerticalGap(origin, parent);
         this.origin = origin;
         this.width = options.getWidth(origin);
         this.height = options.getHeight(origin);

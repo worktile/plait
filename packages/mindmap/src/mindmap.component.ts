@@ -4,9 +4,9 @@ import { MindmapElement } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
 import { PlaitMindmap } from './interfaces/mindmap';
 import { createG, Selection, PlaitBoard } from '@plait/core';
-import { LayoutOptions, GlobalLayout, MindmapLayoutType, OriginNode } from '@plait/layouts';
+import { LayoutOptions, GlobalLayout, OriginNode, LayoutNode, MindmapLayoutType, isIndentedLayout, isHorizontalLayout } from '@plait/layouts';
 import { MINDMAP_TO_COMPONENT } from './plugins/weak-maps';
-import { getLayoutByElement } from './utils';
+import { getLayoutByElement, getRootLayout } from './utils';
 
 @Component({
     selector: 'plait-mindmap',
@@ -46,6 +46,22 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
     }
 
     getOptions() {
+        function getMainAxle(element: MindmapElement, parent?: LayoutNode) {
+            if (element.isRoot) {
+                return BASE * 12;
+            }
+            if (parent && parent.isRoot()) {
+                return BASE * 8;
+            }
+            return BASE * 3;
+        }
+
+        function getSecondAxle(element: MindmapElement, parent?: LayoutNode) {
+            if (element.isRoot) {
+                return BASE * 12;
+            }
+            return BASE * 7;
+        }
         return {
             getHeight(element: MindmapElement) {
                 if (element.isRoot) {
@@ -59,17 +75,37 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
                 }
                 return element.width + BASE * 4;
             },
-            getHorizontalGap(element: MindmapElement) {
-                if (element.isRoot) {
-                    return BASE * 12;
+            getHorizontalGap(element: MindmapElement, parent?: LayoutNode) {
+                const _layout = (parent && parent.layout) || getRootLayout(element);
+                const isHorizontal = isHorizontalLayout(_layout);
+                if (!isHorizontal) {
+                    return getMainAxle(element, parent);
+                } else {
+                    return getSecondAxle(element, parent);
                 }
-                return BASE * 8;
             },
-            getVerticalGap(element: MindmapElement) {
-                if (element.isRoot) {
-                    return BASE * 12;
+            getVerticalGap(element: MindmapElement, parent?: LayoutNode) {
+                const _layout = (parent && parent.layout) || getRootLayout(element);
+                if (isIndentedLayout(_layout)) {
+                    let gap = BASE;
+                    const isRoot = element.isRoot || (parent && parent.isRoot());
+                    if (isRoot) {
+                        gap = BASE * 2;
+                    }
+                    return gap;
                 }
-                return BASE * 7;
+                const isHorizontal = isHorizontalLayout(_layout);
+                if (isHorizontal) {
+                    return getMainAxle(element, parent);
+                } else {
+                    return getSecondAxle(element, parent);
+                }
+            },
+            getExtendHeight(node: OriginNode) {
+                return BASE * 6;
+            },
+            getIndentedCrossLevelGap() {
+                return BASE * 2;
             }
         };
     }

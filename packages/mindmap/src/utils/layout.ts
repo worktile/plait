@@ -112,6 +112,9 @@ export const isCorrectLayout = (root: MindmapElement, layout: MindmapLayoutType)
 export const getInCorrectLayoutDirection = (rootLayout: MindmapLayoutType, layout: MindmapLayoutType) => {
     const mindmapDirections = LayoutDirectionsMap[rootLayout];
     const subLayoutDirections = LayoutDirectionsMap[layout];
+    if (!subLayoutDirections) {
+        throw new Error(`unexpection layout: ${layout} on correct layout`)
+    }
     return subLayoutDirections.find(d => mindmapDirections.includes(getLayoutReverseDirection(d)));
 };
 

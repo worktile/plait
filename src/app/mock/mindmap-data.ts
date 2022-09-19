@@ -17,7 +17,7 @@ export const mockMindmapData: PlaitMindmap = {
                     children: [],
                     width: 56,
                     height: 24,
-                    shape: MindmapNodeShape.underline
+                    shape: MindmapNodeShape.roundRectangle
                 },
                 {
                     id: '1-1-2',
@@ -30,11 +30,8 @@ export const mockMindmapData: PlaitMindmap = {
             ],
             width: 42,
             height: 24,
-            isCollapsed: true,
-            shape: MindmapNodeShape.underline
+            shape: MindmapNodeShape.roundRectangle
         },
-        { id: '1-2', value: { children: [{ text: '绘图技术' }] }, children: [], width: 56, height: 24, shape: MindmapNodeShape.underline },
-        { id: '1-3', value: { children: [{ text: '布局算法' }] }, children: [], width: 56, height: 24, shape: MindmapNodeShape.underline },
         {
             id: '1-4',
             value: { children: [{ text: '知名脑图产品' }] },
@@ -45,7 +42,7 @@ export const mockMindmapData: PlaitMindmap = {
                     children: [],
                     width: 56,
                     height: 24,
-                    shape: MindmapNodeShape.underline
+                    shape: MindmapNodeShape.roundRectangle
                 },
                 {
                     id: '1-4-2',
@@ -57,7 +54,7 @@ export const mockMindmapData: PlaitMindmap = {
                             children: [],
                             width: 72,
                             height: 24,
-                            shape: MindmapNodeShape.underline
+                            shape: MindmapNodeShape.roundRectangle
                         },
                         {
                             id: '1-4-2-2',
@@ -65,13 +62,12 @@ export const mockMindmapData: PlaitMindmap = {
                             children: [],
                             width: 72,
                             height: 24,
-                            shape: MindmapNodeShape.underline
+                            shape: MindmapNodeShape.roundRectangle
                         }
                     ],
                     width: 144.8046875,
                     height: 24,
-                    shape: MindmapNodeShape.underline,
-                    layout: MindmapLayoutType.right
+                    shape: MindmapNodeShape.roundRectangle
                 },
                 {
                     id: '1-4-3',
@@ -79,19 +75,35 @@ export const mockMindmapData: PlaitMindmap = {
                     children: [],
                     width: 84,
                     height: 24,
-                    shape: MindmapNodeShape.underline
+                    shape: MindmapNodeShape.roundRectangle
                 }
             ],
             width: 84,
             height: 24,
-            shape: MindmapNodeShape.underline,
-            layout: MindmapLayoutType.right
+            shape: MindmapNodeShape.roundRectangle
         },
         {
             id: '1-5',
             value: { children: [{ text: 'xxxxxxx' }] },
-            children: [],
-            width: 72,
+            children: [
+                {
+                    id: '1-5-1',
+                    value: { children: [{ text: '鱼骨图哦' }] },
+                    children: [],
+                    width: 72,
+                    height: 24,
+                    shape: MindmapNodeShape.roundRectangle
+                },
+                {
+                    id: '1-5-2',
+                    value: { children: [{ text: '缩进布局' }] },
+                    children: [],
+                    width: 72,
+                    height: 24,
+                    shape: MindmapNodeShape.roundRectangle
+                }
+            ],
+            width: 48,
             height: 24,
             shape: MindmapNodeShape.roundRectangle
         }
@@ -99,6 +111,6 @@ export const mockMindmapData: PlaitMindmap = {
     width: 72,
     height: 25,
     isRoot: true,
-    points: [[460, 360]],
-    layout: MindmapLayoutType.right
+    points: [[560, 360]],
+    layout: MindmapLayoutType.rightBottomIndented
 };

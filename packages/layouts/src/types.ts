@@ -1,8 +1,13 @@
+import { LayoutNode } from './interfaces/node';
+
 export interface LayoutOptions {
     getHeight: (node: OriginNode) => number;
     getWidth: (node: OriginNode) => number;
-    getHorizontalGap: (node: OriginNode) => number;
-    getVerticalGap: (node: OriginNode) => number;
+    getHorizontalGap: (node: OriginNode, parent?: LayoutNode) => number;
+    getVerticalGap: (node: OriginNode, parent?: LayoutNode) => number;
+    getExtendWidth?: (node: OriginNode) => number;
+    getExtendHeight: (node: OriginNode) => number;
+    getIndentedCrossLevelGap: () => number;
 }
 
 export interface LayoutContext {

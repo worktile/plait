@@ -2,18 +2,18 @@ import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { LayoutNode } from '../interfaces/node';
 import { buildLayoutTree, LayoutTree } from '../interfaces/tree';
 import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
-import { extractLayoutType, isHorizontalLayout, isLeftLayout, isTopLayout } from '../utils/layout';
+import { extractLayoutType, isHorizontalLayout, isIndentedLayout, isLeftLayout, isTopLayout } from '../utils/layout';
 
 export class BaseLayout {
     constructor() {}
 
-    layout(node: OriginNode, layoutType: string, options: LayoutOptions, context: LayoutContext, isHorizontal = false) {
+    layout(node: OriginNode, layoutType: string, options: LayoutOptions, context: LayoutContext, isHorizontal = false, parent?: LayoutNode) {
         // build layout node
         const isolatedNodes: LayoutNode[] = [];
         const isolatedLayoutRoots: LayoutNode[] = [];
 
         // 1、build layout node
-        const root = this.buildLayoutNode(node, options, context, isolatedNodes);
+        const root = this.buildLayoutNode(node, options, context, isolatedNodes, parent);
 
         // 2、handle sub node layout
         isolatedNodes
@@ -28,7 +28,8 @@ export class BaseLayout {
                     extractLayoutType(_mindmapLayoutType),
                     options,
                     { toTop, toLeft, rootLayoutType: context.rootLayoutType },
-                    _isHorizontal
+                    _isHorizontal,
+                    isolatedNode.parent
                 );
                 const { width, height } = isolatedRoot.getBoundingBox();
                 if (!context.toTop && toTop) {
@@ -48,7 +49,7 @@ export class BaseLayout {
         switch (layoutType) {
             case LayoutType.indented:
                 indentMainAxle(root);
-                seperateSecondaryAxle(root);
+                seperateSecondaryAxle(root, options);
                 break;
             case LayoutType.fishBone:
                 break;
@@ -69,7 +70,7 @@ export class BaseLayout {
                 if (isolatedNode.parent) {
                     const layoutRoot = isolatedLayoutRoots[index];
                     layoutRoot.parent = isolatedNode.parent;
-                    let offsetX , offsetY;
+                    let offsetX, offsetY;
                     const parentNodeIsHorizontalLayout = isHorizontalLayout(isolatedNode.parent.layout);
                     // the cross direction does not need to be transformed
                     if (parentNodeIsHorizontalLayout) {
@@ -118,8 +119,14 @@ export class BaseLayout {
         });
     }
 
-    private buildLayoutNode(origin: OriginNode, options: LayoutOptions, context: LayoutContext, isolatedNodes: LayoutNode[]) {
-        const root = new LayoutNode(origin, options, context);
+    private buildLayoutNode(
+        origin: OriginNode,
+        options: LayoutOptions,
+        context: LayoutContext,
+        isolatedNodes: LayoutNode[],
+        parent?: LayoutNode
+    ) {
+        const root = new LayoutNode(origin, options, context, parent);
         if (!root.origin.isCollapsed) {
             const nodes: LayoutNode[] = [root];
             let node: LayoutNode | undefined;
@@ -158,13 +165,23 @@ function indentMainAxle(node: LayoutNode, d = 0) {
     });
 }
 
-function seperateSecondaryAxle(root: LayoutNode) {
-    let previousBottom = root.y + root.height - root.vGap;
+function seperateSecondaryAxle(root: LayoutNode, options: LayoutOptions) {
+    let previousBottom = root.y + root.height;
+    let previousNode: null | LayoutNode = null;
     updateY(root);
     function updateY(node: LayoutNode) {
         node.children.forEach(child => {
-            child.y = previousBottom;
-            previousBottom = child.y + child.height - child.vGap;
+            let y = previousBottom + child.vGap;
+            if (previousNode && isIndentedLayout(previousNode.layout) && previousNode.origin.children.length > 0) {
+                if (previousNode.origin.isCollapsed) {
+                    y = y + options.getExtendHeight(child.origin);
+                } else {
+                    y = y + options.getIndentedCrossLevelGap();
+                }
+            }
+            child.y = y;
+            previousNode = child;
+            previousBottom = child.y + child.height;
             updateY(child);
         });
     }
