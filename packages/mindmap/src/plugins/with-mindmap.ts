@@ -129,12 +129,14 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                                 Transforms.setNode(board, newElement, boardPath);
                             });
                         }
-                        createEmptyNode(board, mindmapNodeComponent.node, 'child');
+                        const path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.origin.children.length);
+                        createEmptyNode(board, path);
                     }
                 } else {
                     if (mindmapNodeComponent) {
+                        const path = Path.next(findPath(board, mindmapNodeComponent.node));
                         changeRightNodeCount(board, selectedElement, 1);
-                        createEmptyNode(board, mindmapNodeComponent.node, 'sibing');
+                        createEmptyNode(board, path);
                     }
                 }
             }
