@@ -23,7 +23,7 @@ import {
     transformPoint,
     Transforms
 } from '@plait/core';
-import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isTopLayout, MindmapLayoutType } from '@plait/layouts';
+import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isStandardLayout, isTopLayout, MindmapLayoutType, OriginNode } from '@plait/layouts';
 import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
@@ -45,7 +45,7 @@ import { drawLink } from './draw/link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
 import { MindmapElement } from './interfaces/element';
-import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
+import { CoordinateType, ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
@@ -379,7 +379,11 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             ? getRootLinkLineColorByMindmapElement(this.node.origin)
             : getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
-        const nodeLayout = getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
+        let nodeLayout = getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
+        if (this.node.origin.isRoot && isStandardLayout(nodeLayout)) {
+            const root = this.node.origin as OriginNode;
+            nodeLayout = root.children.length >= root.rightNodeCount ? MindmapLayoutType.left : MindmapLayoutType.right;
+        }
         const underlineCoordinate = underlineCoordinates[nodeLayout];
         if (underlineCoordinate) {
             const underline = this.roughSVG.line(
