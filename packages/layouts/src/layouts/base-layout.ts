@@ -172,7 +172,7 @@ function seperateSecondaryAxle(root: LayoutNode, options: LayoutOptions) {
     function updateY(node: LayoutNode) {
         node.children.forEach(child => {
             let y = previousBottom + child.vGap;
-            if (previousNode && isIndentedLayout(previousNode.layout) && previousNode.origin.children.length > 0) {
+            if (previousNode && (isIndentedLayout(previousNode.layout) || previousNode.layout === MindmapLayoutType.downward) && previousNode.origin.children.length > 0) {
                 if (previousNode.origin.isCollapsed) {
                     y = y + options.getExtendHeight(child.origin);
                 } else {
