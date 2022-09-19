@@ -14,6 +14,8 @@ export class PlaitToolbarComponent {
     @Input()
     board!: PlaitBoard;
 
+    public openDragMoveModel: boolean = false;
+
     public viewZoom: number = 100;
 
     private get zoom(): number {
@@ -21,6 +23,10 @@ export class PlaitToolbarComponent {
     }
 
     constructor() {}
+
+    dragMove() {
+        this.openDragMoveModel = !this.openDragMoveModel
+    }
 
     // 适应画布
     adapt() {
@@ -51,20 +57,16 @@ export class PlaitToolbarComponent {
         this.zoomChange();
     }
 
+    resetZoom() {
+        this.viewZoom = 100;
+        this.zoomChange();
+    }
+
     zoomChange() {
         const viewport = this.board?.viewport as Viewport;
         Transforms.setViewport(this.board, {
             ...viewport,
             zoom: this.zoom
         });
-    }
-
-    resetZoom() {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            zoom: 1
-        });
-        this.viewZoom = 100;
     }
 }
