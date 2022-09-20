@@ -313,8 +313,8 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         const viewport = this.board?.viewport as Viewport;
         Transforms.setViewport(this.board, {
             ...viewport,
-            offsetX: viewport.offsetX + (e.x - this.dragMove.x),
-            offsetY: viewport.offsetY + (e.y - this.dragMove.y)
+            offsetX: viewport.offsetX + ((e.x - this.dragMove.x) * 100) / this.viewZoom,
+            offsetY: viewport.offsetY + ((e.y - this.dragMove.y) * 100) / this.viewZoom
         });
         this.dragMove.x = e.x;
         this.dragMove.y = e.y;
