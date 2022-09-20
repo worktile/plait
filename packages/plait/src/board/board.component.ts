@@ -17,7 +17,7 @@ import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { PlaitToolbarComponent } from '../core/toolbar/toolbar.component';
+import { BaseCursorStatus, CursorStatus } from '../interfaces';
 import { DragMove, PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitOperation } from '../interfaces/operation';
@@ -39,9 +39,20 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
             width="100%"
             height="100%"
             style="position: relative"
-            [style.cursor]="dragMove.isDragMoving ? 'grabbing' : plaitToolbar?.isDragMoveModel ? 'grab' : 'auto'"
+            [style.cursor]="dragMove.isDragMoving ? 'grabbing' : isDragMoveModel ? 'grab' : 'auto'"
         ></svg>
-        <plait-toolbar #plaitToolbar *ngIf="isFocused" [board]="board"></plait-toolbar>
+        <plait-toolbar
+            #plaitToolbar
+            *ngIf="isFocused && plaitToolbarVisible"
+            [board]="board"
+            [viewZoom]="viewZoom"
+            [isDragMoveModel]="isDragMoveModel"
+            (dragMoveHandle)="dragMoveHandle()"
+            (adaptHandle)="adaptHandle()"
+            (zoomInHandle)="zoomInHandle()"
+            (zoomOutHandle)="zoomOutHandle()"
+            (resetZoomHandel)="resetZoomHandel()"
+        ></plait-toolbar>
         <plait-element
             *ngFor="let item of board.children; let index = index; trackBy: trackBy"
             [index]="index"
@@ -62,13 +73,25 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     roughSVG!: RoughSVG;
 
+    /* 设置工具栏的显示隐藏，默认隐藏 */
+    public plaitToolbarVisible: boolean = false;
+
     destroy$: Subject<any> = new Subject();
 
     @ViewChild('svg', { static: true })
     svg!: ElementRef;
 
-    @ViewChild('plaitToolbar', { static: false })
-    plaitToolbar!: PlaitToolbarComponent;
+    public get isDragMoveModel(): boolean {
+        return this.cursorStatus === BaseCursorStatus.drag;
+    }
+
+    public cursorStatus: CursorStatus = BaseCursorStatus.select;
+
+    public viewZoom: number = 100;
+
+    private get zoom(): number {
+        return (2 * this.viewZoom - 100) / this.viewZoom;
+    }
 
     public dragMove: DragMove = {
         dragMoveModel: false,
@@ -149,7 +172,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousedown(event);
-                this.isFocused && this.plaitToolbar.isDragMoveModel && this.initDragMove(event);
+                this.isFocused && this.isDragMoveModel && this.initDragMove(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'mousemove')
@@ -272,13 +295,13 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     openDragMoveModel() {
         this.dragMove.dragMoveModel = true;
-        this.plaitToolbar.openDragMove();
+        this.openDragMove();
         this.cdr.detectChanges();
     }
 
     closeDragMoveModel() {
         this.dragMove.dragMoveModel = false;
-        this.plaitToolbar.closeDragMove();
+        this.closeDragMove();
         this.cdr.detectChanges();
     }
 
@@ -304,6 +327,63 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dragMove.isDragMoving = false;
         this.dragMove.x = 0;
         this.dragMove.y = 0;
+    }
+
+    openDragMove() {
+        this.cursorStatus = BaseCursorStatus.drag;
+        this.cdr.detectChanges();
+    }
+
+    closeDragMove() {
+        this.cursorStatus = BaseCursorStatus.select;
+        this.cdr.detectChanges();
+    }
+
+    // 拖拽模式
+    dragMoveHandle() {
+        this.isDragMoveModel ? this.closeDragMove() : this.openDragMove();
+    }
+
+    // 适应画布
+    adaptHandle() {
+        const viewport = this.board?.viewport as Viewport;
+        Transforms.setViewport(this.board, {
+            ...viewport,
+            offsetX: 0,
+            offsetY: 0
+        });
+        this.resetZoomHandel();
+    }
+
+    // 放大
+    zoomInHandle() {
+        if (this.viewZoom >= 400) {
+            return;
+        }
+        this.viewZoom += 10;
+        this.zoomChange();
+    }
+
+    // 缩小
+    zoomOutHandle() {
+        if (this.viewZoom <= 20) {
+            return;
+        }
+        this.viewZoom -= 10;
+        this.zoomChange();
+    }
+
+    resetZoomHandel() {
+        this.viewZoom = 100;
+        this.zoomChange();
+    }
+
+    zoomChange() {
+        const viewport = this.board?.viewport as Viewport;
+        Transforms.setViewport(this.board, {
+            ...viewport,
+            zoom: this.zoom
+        });
     }
 
     ngOnDestroy(): void {

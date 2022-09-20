@@ -1,8 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input } from '@angular/core';
-import { Transforms } from '../../transfroms';
-import { Viewport } from '../../interfaces/viewport';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { PlaitBoard } from '../../interfaces/board';
-import { BaseCursorStatus, CursorStatus } from '../../interfaces';
 
 @Component({
     selector: 'plait-toolbar',
@@ -15,73 +12,42 @@ export class PlaitToolbarComponent {
     @Input()
     board!: PlaitBoard;
 
-    public get isDragMoveModel(): boolean {
-        return this.cursorStatus === BaseCursorStatus.drag;
-    }
+    @Input()
+    viewZoom!: number;
 
-    public cursorStatus: CursorStatus = BaseCursorStatus.select;
+    @Input()
+    isDragMoveModel!: boolean;
 
-    public viewZoom: number = 100;
+    @Output() dragMoveHandle = new EventEmitter();
 
-    private get zoom(): number {
-        return (2 * this.viewZoom - 100) / this.viewZoom;
-    }
+    @Output() adaptHandle = new EventEmitter();
 
-    constructor(private cdr: ChangeDetectorRef) {}
+    @Output() zoomInHandle = new EventEmitter();
 
-    openDragMove() {
-        this.cursorStatus = BaseCursorStatus.drag;
-        this.cdr.detectChanges();
-    }
+    @Output() zoomOutHandle = new EventEmitter();
 
-    closeDragMove() {
-        this.cursorStatus = BaseCursorStatus.select;
-        this.cdr.detectChanges();
-    }
+    @Output() resetZoomHandel = new EventEmitter();
 
     dragMove() {
-        this.isDragMoveModel ? this.closeDragMove() : this.openDragMove();
+        this.dragMoveHandle.emit();
     }
 
     // 适应画布
     adapt() {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            offsetX: 0,
-            offsetY: 0
-        });
-        this.resetZoom();
+        this.adaptHandle.emit();
     }
 
     // 放大
     zoomIn() {
-        if (this.viewZoom >= 400) {
-            return;
-        }
-        this.viewZoom += 10;
-        this.zoomChange();
+        this.zoomInHandle.emit();
     }
 
     // 缩小
     zoomOut() {
-        if (this.viewZoom <= 20) {
-            return;
-        }
-        this.viewZoom -= 10;
-        this.zoomChange();
+        this.zoomOutHandle.emit();
     }
 
     resetZoom() {
-        this.viewZoom = 100;
-        this.zoomChange();
-    }
-
-    zoomChange() {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            zoom: this.zoom
-        });
+        this.resetZoomHandel.emit();
     }
 }
