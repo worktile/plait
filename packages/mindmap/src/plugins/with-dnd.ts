@@ -175,7 +175,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 }
             }
 
-            if (dropTarget) {
+            if (dropTarget?.target) {
                 drawPlaceholderDropNodeG(dropTarget, roughSVG, fakeDropNodeG);
             }
         }
@@ -185,26 +185,42 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
     board.globalMouseup = (event: MouseEvent) => {
         if (!board.readonly && activeElement) {
-            if (dropTarget) {
+            if (dropTarget?.target) {
                 const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
                 const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
                 let targetPath = findPath(board, targetComponent.node);
                 if (dropTarget.detectResult === 'right') {
                     targetPath.push(dropTarget.target.children.length);
                 }
-                // if (dropTarget.detectResult === 'left') {
-                //     targetPath.push(dropTarget.target.children.length);
-                // }
+                if (dropTarget.detectResult === 'left') {
+                    targetPath.push(dropTarget.target.children.length);
+                }
                 if (dropTarget.detectResult === 'bottom') {
                     targetPath = Path.next(targetPath);
                 }
                 const originPath = findPath(board, activeComponent.node);
-                if (dropTarget.detectResult === 'right') {
-                    const newElement: Partial<MindmapElement> = { isCollapsed: false };
+                if (
+                    targetComponent.node.origin.isRoot &&
+                    (targetComponent.node.origin.rightNodeCount || targetComponent.node.origin.rightNodeCount === 0)
+                ) {
+                    let rightNodeCount,
+                        newElement: Partial<MindmapElement> = {};
+                    if (dropTarget.detectResult === 'left') {
+                        rightNodeCount =
+                            targetComponent.node.origin?.rightNodeCount > targetComponent.node.children.length
+                                ? targetComponent.node.children.length - 1
+                                : targetComponent.node.origin.rightNodeCount - 1;
+                        newElement = { rightNodeCount };
+                    }
+                    if (dropTarget.detectResult === 'right') {
+                        rightNodeCount = targetComponent.node.origin.rightNodeCount + 1;
+                        newElement = { isCollapsed: false, rightNodeCount };
+                    }
                     Transforms.setNode(board, newElement, findPath(board, targetComponent.node));
                 }
                 Transforms.moveNode(board, originPath, targetPath);
             }
+
             if (isDragging) {
                 removeActiveOnDragOrigin(activeElement);
             }
