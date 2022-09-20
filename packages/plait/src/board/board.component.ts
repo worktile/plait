@@ -3,6 +3,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ContentChild,
     ElementRef,
     EventEmitter,
     HostBinding,
@@ -11,6 +12,7 @@ import {
     OnInit,
     Output,
     Renderer2,
+    TemplateRef,
     ViewChild
 } from '@angular/core';
 import rough from 'roughjs/bin/rough';
@@ -42,8 +44,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
             [style.cursor]="dragMove.isDragMoving ? 'grabbing' : isDragMoveModel ? 'grab' : 'auto'"
         ></svg>
         <plait-toolbar
-            #plaitToolbar
-            *ngIf="isFocused && plaitToolbarVisible"
+            *ngIf="isFocused && !toolbarTemplateRef"
             [board]="board"
             [viewZoom]="viewZoom"
             [isDragMoveModel]="isDragMoveModel"
@@ -73,13 +74,13 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     roughSVG!: RoughSVG;
 
-    /* 设置工具栏的显示隐藏，默认隐藏 */
-    public plaitToolbarVisible: boolean = false;
-
     destroy$: Subject<any> = new Subject();
 
     @ViewChild('svg', { static: true })
     svg!: ElementRef;
+
+    @ContentChild('plaitToolbar')
+    public toolbarTemplateRef!: TemplateRef<any>;
 
     public get isDragMoveModel(): boolean {
         return this.cursorStatus === BaseCursorStatus.drag;
@@ -94,7 +95,6 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public dragMove: DragMove = {
-        dragMoveModel: false,
         isDragMoving: false,
         x: 0,
         y: 0
@@ -294,13 +294,11 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     openDragMoveModel() {
-        this.dragMove.dragMoveModel = true;
         this.openDragMove();
         this.cdr.detectChanges();
     }
 
     closeDragMoveModel() {
-        this.dragMove.dragMoveModel = false;
         this.closeDragMove();
         this.cdr.detectChanges();
     }
