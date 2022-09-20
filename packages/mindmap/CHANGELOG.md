@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.0.37
+
+### Patch Changes
+
+-   [#105](https://github.com/worktile/plait/pull/105) [`f408d0a`](https://github.com/worktile/plait/commit/f408d0a598b13bd74f8a0180dfcdcd18259b996c) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix idented layout dnd style of mindmap
+
+*   [#102](https://github.com/worktile/plait/pull/102) [`561b0ed`](https://github.com/worktile/plait/commit/561b0ed44a2581ae229303146c8e32454936a30a) Thanks [@WBbug](https://github.com/WBbug)! - remove math.round
+
 ## 0.0.36
 
 ### Patch Changes

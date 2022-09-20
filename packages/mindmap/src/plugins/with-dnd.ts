@@ -16,7 +16,7 @@ import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { DetectResult, MindmapNode, RootBaseDirection } from '../interfaces/node';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { drawPlaceholderDropNodeG, findPath, isChildElement } from '../utils';
+import { drawPlaceholderDropNodeG, findPath, getCorrectLayoutByElement, isChildElement } from '../utils';
 import { MindmapElement } from '../interfaces/element';
 import { MindmapNodeComponent } from '../node.component';
 import { drawRectangleNode } from '../draw/shape';
@@ -25,6 +25,8 @@ import { getRichtextRectangleByNode } from '../draw/richtext';
 import { updateForeignObject } from '@plait/richtext';
 import { BASE } from '../constants';
 import { distanceBetweenPointAndPoint } from '@plait/core';
+import { drawIndentedLink } from '../draw/indented-link';
+import { isIndentedLayout } from '@plait/layouts';
 
 const DRAG_MOVE_BUFFER = 5;
 
