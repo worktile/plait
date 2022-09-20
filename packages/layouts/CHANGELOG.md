@@ -1,5 +1,11 @@
 # layouts
 
+## 0.0.36
+
+### Patch Changes
+
+-   [`f0fe4bb`](https://github.com/worktile/plait/commit/f0fe4bb34d17493b4e6498a77b6138d808fd13b2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct indented layout extend gap
+
 ## 0.0.35
 
 ### Patch Changes
