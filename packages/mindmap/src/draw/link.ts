@@ -26,34 +26,32 @@ export function drawLink(
             beginNode = child;
             endNode = node;
         }
-        beginX = Math.round(beginNode.x + beginNode.width - beginNode.hGap);
-        beginY = Math.round(beginNode.y + beginNode.height / 2);
-        endX = Math.round(endNode.x + endNode.hGap);
-        endY = Math.round(endNode.y + endNode.height / 2);
+        beginX = beginNode.x + beginNode.width - beginNode.hGap;
+        beginY = beginNode.y + beginNode.height / 2;
+        endX = endNode.x + endNode.hGap;
+        endY = endNode.y + endNode.height / 2;
 
         if (
             node.parent &&
             isIndentedLayout(getLayoutByElement(node.parent?.origin)) &&
             (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.underline
         ) {
-            isChildRight(node, child)
-                ? (beginY = Math.round(node.y + node.height / 2 + node.hGap / 2))
-                : (endY = Math.round(node.y + node.height / 2 + node.hGap / 2));
+            isChildRight(node, child) ? (beginY = node.y + node.height - node.vGap) : (endY = node.y + node.height - node.vGap);
         }
     } else {
         if (node.y > child.y) {
             beginNode = child;
             endNode = node;
         }
-        beginX = Math.round(beginNode.x + beginNode.width / 2);
-        beginY = Math.round(beginNode.y + beginNode.height - beginNode.vGap);
-        endX = Math.round(endNode.x + endNode.width / 2);
-        endY = Math.round(endNode.y + endNode.vGap);
+        beginX = beginNode.x + beginNode.width / 2;
+        beginY = beginNode.y + beginNode.height - beginNode.vGap;
+        endX = endNode.x + endNode.width / 2;
+        endY = endNode.y + endNode.vGap;
     }
 
     if (beginNode.origin.isRoot && (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.roundRectangle) {
-        beginX = Math.round(beginNode.x + beginNode.width / 2);
-        beginY = Math.round(beginNode.y + beginNode.height / 2);
+        beginX = beginNode.x + beginNode.width / 2;
+        beginY = beginNode.y + beginNode.height / 2;
     }
 
     const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
@@ -62,8 +60,8 @@ export function drawLink(
     if (isHorizontal) {
         let curve: Point[] = [
             [beginX, beginY],
-            [Math.round(beginX + (beginNode.hGap + endNode.hGap) / 3), beginY],
-            [Math.round(endX - (beginNode.hGap + endNode.hGap) / 2), endY],
+            [beginX + (beginNode.hGap + endNode.hGap) / 3, beginY],
+            [endX - (beginNode.hGap + endNode.hGap) / 2, endY],
             [endX, endY]
         ];
         const shape = getNodeShapeByElement(child.origin) as MindmapNodeShape;
@@ -72,8 +70,8 @@ export function drawLink(
             if (node.x > child.x) {
                 curve = [
                     [beginX, beginY],
-                    [Math.round(beginX + (beginNode.hGap + endNode.hGap) / 3), beginY],
-                    [Math.round(endX - (beginNode.hGap + endNode.hGap) / 2), endY],
+                    [beginX + (beginNode.hGap + endNode.hGap) / 3, beginY],
+                    [endX - (beginNode.hGap + endNode.hGap) / 2, endY],
                     [endX - 12, endY]
                 ];
                 const line = [
@@ -85,8 +83,8 @@ export function drawLink(
             } else {
                 curve = [
                     [beginX + 12, beginY],
-                    [Math.round(beginX + (beginNode.hGap + endNode.hGap) / 2), beginY],
-                    [Math.round(endX - (beginNode.hGap + endNode.hGap) / 3), endY],
+                    [beginX + (beginNode.hGap + endNode.hGap) / 2, beginY],
+                    [endX - (beginNode.hGap + endNode.hGap) / 3, endY],
                     [endX, endY]
                 ];
                 const line = [
@@ -101,16 +99,16 @@ export function drawLink(
         if (shape === MindmapNodeShape.underline) {
             if (child.left) {
                 const underline = [
-                    [Math.round(beginX - (beginNode.width - beginNode.hGap * 2)), beginY],
-                    [Math.round(beginX - (beginNode.width - beginNode.hGap * 2)), beginY],
-                    [Math.round(beginX - (beginNode.width - beginNode.hGap * 2)), beginY]
+                    [beginX - (beginNode.width - beginNode.hGap * 2), beginY],
+                    [beginX - (beginNode.width - beginNode.hGap * 2), beginY],
+                    [beginX - (beginNode.width - beginNode.hGap * 2), beginY]
                 ] as Point[];
                 curve = [...underline, ...curve];
             } else {
                 const underline = [
-                    [Math.round(endX + (endNode.width - endNode.hGap * 2)), endY],
-                    [Math.round(endX + (endNode.width - endNode.hGap * 2)), endY],
-                    [Math.round(endX + (endNode.width - endNode.hGap * 2)), endY]
+                    [endX + (endNode.width - endNode.hGap * 2), endY],
+                    [endX + (endNode.width - endNode.hGap * 2), endY],
+                    [endX + (endNode.width - endNode.hGap * 2), endY]
                 ] as Point[];
                 curve = [...curve, ...underline];
             }
@@ -121,8 +119,8 @@ export function drawLink(
     } else {
         let curve: Point[] = [
             [beginX, beginY],
-            [beginX, Math.round(beginY + (beginNode.vGap + endNode.vGap) / 2)],
-            [endX, Math.round(endY - (beginNode.vGap + endNode.vGap) / 2)],
+            [beginX, beginY + (beginNode.vGap + endNode.vGap) / 2],
+            [endX, endY - (beginNode.vGap + endNode.vGap) / 2],
             [endX, endY]
         ];
         const layout = getLayoutByElement(node.origin) as MindmapLayoutType;
@@ -131,8 +129,8 @@ export function drawLink(
             if (isTopLayout(layout)) {
                 curve = [
                     [beginX, beginY],
-                    [beginX, Math.round(beginY + (beginNode.vGap + endNode.vGap) / 2)],
-                    [endX, Math.round(endY - (beginNode.vGap + endNode.vGap) / 2)],
+                    [beginX, beginY + (beginNode.vGap + endNode.vGap) / 2],
+                    [endX, endY - (beginNode.vGap + endNode.vGap) / 2],
                     [endX, endY - 12]
                 ];
 
@@ -146,8 +144,8 @@ export function drawLink(
             } else {
                 curve = [
                     [beginX, beginY + 12],
-                    [beginX, Math.round(beginY + (beginNode.vGap + endNode.vGap) / 2)],
-                    [endX, Math.round(endY - (beginNode.vGap + endNode.vGap) / 2)],
+                    [beginX, beginY + (beginNode.vGap + endNode.vGap) / 2],
+                    [endX, endY - (beginNode.vGap + endNode.vGap) / 2],
                     [endX, endY]
                 ];
 
