@@ -1,5 +1,23 @@
 # mindmap
 
+## 0.0.36
+
+### Patch Changes
+
+-   [#96](https://github.com/worktile/plait/pull/96) [`87fca5f`](https://github.com/worktile/plait/commit/87fca5f0047ab44af60fd914c5da676ae8b9038e) Thanks [@WBbug](https://github.com/WBbug)! - change indented-link curve
+
+*   [#98](https://github.com/worktile/plait/pull/98) [`19c356e`](https://github.com/worktile/plait/commit/19c356ea857346476a1b5e404b1e1ded96b62a9a) Thanks [@WBbug](https://github.com/WBbug)! - use math.round draw link
+
+-   [#95](https://github.com/worktile/plait/pull/95) [`673d3ba`](https://github.com/worktile/plait/commit/673d3bae0b553f5d18ae7b5dd97e5d0b4c1efe7a) Thanks [@WBbug](https://github.com/WBbug)! - fix create node error
+
+*   [`3e21041`](https://github.com/worktile/plait/commit/3e2104178b8f98dce181da3ef864f7f84c57d65f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add min width for new node;auto enter edit status when press keyboard
+
+-   [#94](https://github.com/worktile/plait/pull/94) [`39f6c59`](https://github.com/worktile/plait/commit/39f6c59e6145a97f35f320dd593c2a9aac00346f) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - support standrad layout quick insert
+
+*   [#100](https://github.com/worktile/plait/pull/100) [`34fdccb`](https://github.com/worktile/plait/commit/34fdccb6f11d9c20a8c320acfbbcda7937aa997e) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix edit node hover event available
+
+-   [#97](https://github.com/worktile/plait/pull/97) [`2dfa72a`](https://github.com/worktile/plait/commit/2dfa72abfd4bb2fb123169b3f87b644cb2db09ca) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix root node quick insert icon out of position
+
 ## 0.0.35
 
 ### Patch Changes
