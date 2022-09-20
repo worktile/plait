@@ -13,7 +13,8 @@ export function drawLink(
     node: MindmapNode,
     child: MindmapNode,
     defaultStroke: string | null = null,
-    isHorizontal = true
+    isHorizontal = true,
+    needDrawUnderline = true
 ) {
     let beginX,
         beginY,
@@ -36,7 +37,11 @@ export function drawLink(
             isIndentedLayout(getLayoutByElement(node.parent?.origin)) &&
             (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.underline
         ) {
-            isChildRight(node, child) ? (beginY = node.y + node.height - node.vGap) : (endY = node.y + node.height - node.vGap);
+            if (isChildRight(node, child)) {
+                beginY = node.y + node.height - node.vGap;
+            } else {
+                endY = node.y + node.height - node.vGap;
+            }
         }
     } else {
         if (node.y > child.y) {
@@ -96,7 +101,7 @@ export function drawLink(
             }
         }
 
-        if (shape === MindmapNodeShape.underline) {
+        if (needDrawUnderline && shape === MindmapNodeShape.underline) {
             if (child.left) {
                 const underline = [
                     [beginX - (beginNode.width - beginNode.hGap * 2), beginY],
