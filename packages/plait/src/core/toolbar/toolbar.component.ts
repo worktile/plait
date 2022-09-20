@@ -1,6 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
-import { Transforms } from '../../transfroms';
-import { Viewport } from '../../interfaces/viewport';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { PlaitBoard } from '../../interfaces/board';
 
 @Component({
@@ -14,57 +12,42 @@ export class PlaitToolbarComponent {
     @Input()
     board!: PlaitBoard;
 
-    public viewZoom: number = 100;
+    @Input()
+    viewZoom!: number;
 
-    private get zoom(): number {
-        return (2 * this.viewZoom - 100) / this.viewZoom;
+    @Input()
+    isDragMoveModel!: boolean;
+
+    @Output() dragMoveHandle = new EventEmitter();
+
+    @Output() adaptHandle = new EventEmitter();
+
+    @Output() zoomInHandle = new EventEmitter();
+
+    @Output() zoomOutHandle = new EventEmitter();
+
+    @Output() resetZoomHandel = new EventEmitter();
+
+    dragMove() {
+        this.dragMoveHandle.emit();
     }
-
-    constructor() {}
 
     // 适应画布
     adapt() {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            offsetX: 0,
-            offsetY: 0
-        });
-        this.resetZoom();
+        this.adaptHandle.emit();
     }
 
     // 放大
     zoomIn() {
-        if (this.viewZoom >= 400) {
-            return;
-        }
-        this.viewZoom += 10;
-        this.zoomChange();
+        this.zoomInHandle.emit();
     }
 
     // 缩小
     zoomOut() {
-        if (this.viewZoom <= 20) {
-            return;
-        }
-        this.viewZoom -= 10;
-        this.zoomChange();
-    }
-
-    zoomChange() {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            zoom: this.zoom
-        });
+        this.zoomOutHandle.emit();
     }
 
     resetZoom() {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            zoom: 1
-        });
-        this.viewZoom = 100;
+        this.resetZoomHandel.emit();
     }
 }
