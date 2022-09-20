@@ -30,7 +30,7 @@ import { withBoard } from '../plugins/with-board';
 import { withHistroy } from '../plugins/with-history';
 import { withSelection } from '../plugins/with-selection';
 import { Transforms } from '../transfroms';
-import { getViewBox, transformZoom } from '../utils/board';
+import { getViewBox, transformViewZoom, transformZoom } from '../utils/board';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../utils/weak-maps';
 
 @Component({
@@ -46,6 +46,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
         <plait-toolbar
             *ngIf="isFocused && !toolbarTemplateRef"
             [board]="board"
+            [viewZoom]="viewZoom"
             [isDragMoveModel]="isDragMoveModel"
             (dragMoveHandle)="dragMoveHandle()"
             (adaptHandle)="adaptHandle()"
@@ -87,7 +88,15 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public cursorStatus: CursorStatus = BaseCursorStatus.select;
 
-    public viewZoom: number = 100;
+    private _viewZoom: number = 100;
+
+    public get viewZoom(): number {
+        const vZoom = transformZoom(this.board.viewport.zoom);
+        if (this._viewZoom !== vZoom) {
+            this._viewZoom = vZoom;
+        }
+        return vZoom;
+    }
 
     public dragMove: DragMove = {
         isDragMoving: false,
@@ -308,8 +317,8 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         const viewport = this.board?.viewport as Viewport;
         Transforms.setViewport(this.board, {
             ...viewport,
-            offsetX: viewport.offsetX + ((e.x - this.dragMove.x) * 100) / this.viewZoom,
-            offsetY: viewport.offsetY + ((e.y - this.dragMove.y) * 100) / this.viewZoom
+            offsetX: viewport.offsetX + ((e.x - this.dragMove.x) * 100) / this._viewZoom,
+            offsetY: viewport.offsetY + ((e.y - this.dragMove.y) * 100) / this._viewZoom
         });
         this.dragMove.x = e.x;
         this.dragMove.y = e.y;
@@ -339,24 +348,24 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // 放大
     zoomInHandle() {
-        if (this.viewZoom >= 400) {
+        if (this._viewZoom >= 400) {
             return;
         }
-        this.viewZoom += 10;
+        this._viewZoom += 10;
         this.zoomChange();
     }
 
     // 缩小
     zoomOutHandle() {
-        if (this.viewZoom <= 20) {
+        if (this._viewZoom <= 20) {
             return;
         }
-        this.viewZoom -= 10;
+        this._viewZoom -= 10;
         this.zoomChange();
     }
 
     resetZoomHandel() {
-        this.viewZoom = 100;
+        this._viewZoom = 100;
         this.zoomChange();
     }
 
@@ -364,7 +373,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         const viewport = this.board?.viewport as Viewport;
         Transforms.setViewport(this.board, {
             ...viewport,
-            zoom: transformZoom(this.viewZoom)
+            zoom: transformViewZoom(this._viewZoom)
         });
     }
 
