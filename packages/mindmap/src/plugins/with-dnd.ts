@@ -16,7 +16,7 @@ import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { findPath, isChildElement } from '../utils';
+import { findPath, getCorrectLayoutByElement, isChildElement } from '../utils';
 import { MindmapElement } from '../interfaces/element';
 import { MindmapNodeComponent } from '../node.component';
 import { drawRectangleNode } from '../draw/shape';
@@ -26,6 +26,8 @@ import { updateForeignObject } from '@plait/richtext';
 import { BASE, PRIMARY_COLOR } from '../constants';
 import { drawLink } from '../draw/link';
 import { distanceBetweenPointAndPoint } from '@plait/core';
+import { drawIndentedLink } from '../draw/indented-link';
+import { isIndentedLayout } from '@plait/layouts';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -76,11 +78,11 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     board.mousemove = (event: MouseEvent) => {
         if (!board.readonly && activeElement && startPoint) {
             const endPoint = transformPoint(board, toPoint(event.x, event.y, board.host));
-            const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1])
+            const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance < DRAG_MOVE_BUFFER) {
                 return;
             }
-            
+
             if (!isDragging) {
                 isDragging = true;
                 fakeDragNodeG = createG();
@@ -182,7 +184,10 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     }
                     // 构造一条曲线
                     const fakeNode: MindmapNode = { ...targetComponent.node, y: fakeY, width: 30, height: 12 };
-                    const linkSVGG = drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR);
+                    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
+                    const linkSVGG = isIndentedLayout(layout)
+                        ? drawIndentedLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR)
+                        : drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR);
                     // 构造一个矩形框坐标
                     const fakeRectangleG = drawRoundRectangle(roughSVG, targetRect.x, fakeY, targetRect.x + 30, fakeY + 12, {
                         stroke: PRIMARY_COLOR,
@@ -209,7 +214,10 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     }
                     // 构造一条曲线
                     const fakeNode: MindmapNode = { ...targetComponent.node, y: fakeY, width: 30, height: 12 };
-                    const linkSVGG = drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR);
+                    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
+                    const linkSVGG = isIndentedLayout(layout)
+                        ? drawIndentedLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR)
+                        : drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR);
                     // 构造一个矩形框坐标
                     const fakeRectangleG = drawRoundRectangle(roughSVG, targetRect.x, fakeY, targetRect.x + 30, fakeY + 12, {
                         stroke: PRIMARY_COLOR,
