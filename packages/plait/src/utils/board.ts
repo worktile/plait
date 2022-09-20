@@ -31,6 +31,20 @@ export function isNoSelectionElement(e: Event) {
     return (e.target as HTMLElement)?.closest('.plait-board-attached');
 }
 
+/**
+ * viewZoom 转 zoom
+ * @param viewZoom 视图上显示的 zoom 缩放级别 %
+ * @returns zoom 真实的 zoom
+ */
+export const getZoom = (viewZoom: number): number => (2 * viewZoom - 100) / viewZoom;
+
+/**
+ * zoom 转 viewZoom
+ * @param zoom this.board.viewport.zoom
+ * @returns 视图上显示的 zoom 缩放级别 %
+ */
+export const getViewZoom = (zoom: number): number => Number((100 / (2 - zoom)).toFixed(0));
+
 export type ViewBox = {
     minX: number;
     minY: number;

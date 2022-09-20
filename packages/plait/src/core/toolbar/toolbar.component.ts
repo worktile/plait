@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { PlaitBoard } from '../../interfaces/board';
+import { getViewZoom } from '../../utils';
 
 @Component({
     selector: 'plait-toolbar',
@@ -12,8 +13,9 @@ export class PlaitToolbarComponent {
     @Input()
     board!: PlaitBoard;
 
-    @Input()
-    viewZoom!: number;
+    public get viewZoom(): number {
+        return getViewZoom(this.board.viewport.zoom);
+    }
 
     @Input()
     isDragMoveModel!: boolean;
