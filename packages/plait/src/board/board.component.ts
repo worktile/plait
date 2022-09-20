@@ -294,20 +294,19 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     openDragMoveModel() {
-        this.openDragMove();
-        this.cdr.detectChanges();
+        this.cursorStatus = BaseCursorStatus.drag;
+        this.cdr.detectChanges()
     }
 
     closeDragMoveModel() {
-        this.closeDragMove();
-        this.cdr.detectChanges();
+        this.cursorStatus = BaseCursorStatus.select;
+        this.cdr.detectChanges()
     }
 
     initDragMove(e: MouseEvent) {
         this.dragMove.isDragMoving = true;
         this.dragMove.x = e.x;
         this.dragMove.y = e.y;
-        this.cdr.detectChanges();
     }
 
     dragMoving(e: MouseEvent) {
@@ -327,19 +326,9 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dragMove.y = 0;
     }
 
-    openDragMove() {
-        this.cursorStatus = BaseCursorStatus.drag;
-        this.cdr.detectChanges();
-    }
-
-    closeDragMove() {
-        this.cursorStatus = BaseCursorStatus.select;
-        this.cdr.detectChanges();
-    }
-
     // 拖拽模式
     dragMoveHandle() {
-        this.isDragMoveModel ? this.closeDragMove() : this.openDragMove();
+        this.isDragMoveModel ? this.closeDragMoveModel() : this.openDragMoveModel();
     }
 
     // 适应画布
