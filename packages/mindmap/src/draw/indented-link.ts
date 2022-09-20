@@ -18,10 +18,10 @@ export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: M
     const beginRectangle = getRectangleByNode(beginNode);
     const endRectangle = getRectangleByNode(endNode);
 
-    beginX = Math.round(beginNode.x + beginNode.width / 2);
-    beginY = isChildUp(node, child) ? Math.round(beginRectangle.y) : Math.round(beginRectangle.y + beginRectangle.height);
-    endX = node.left ? Math.round(endNode.x + endNode.hGap + endRectangle.width) : Math.round(endNode.x + endNode.hGap);
-    endY = hasUnderline ? Math.round(endNode.y + endNode.height - endNode.vGap) : Math.round(endNode.y + endNode.height / 2);
+    beginX = beginNode.x + beginNode.width / 2;
+    beginY = isChildUp(node, child) ? beginRectangle.y : beginRectangle.y + beginRectangle.height;
+    endX = node.left ? endNode.x + endNode.hGap + endRectangle.width : endNode.x + endNode.hGap;
+    endY = hasUnderline ? endNode.y + endNode.height - endNode.vGap : endNode.y + endNode.height / 2;
     //根据位置，设置正负参数
     let plusMinus = isChildUp(node, child) ? (node.left ? [-1, -1] : [1, -1]) : node.left ? [-1, 1] : [1, 1];
 
@@ -29,10 +29,10 @@ export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: M
         [beginX, beginY],
         [beginX, beginY],
         [beginX, beginY],
-        [beginX, Math.round(endY - (endNode.hGap * 3 * plusMinus[1]) / 5)],
-        [beginX, Math.round(endY - (endNode.hGap * plusMinus[1]) / 5)],
-        [Math.round(beginX + (endNode.hGap * plusMinus[0]) / 4), endY],
-        [Math.round(beginX + (endNode.hGap * plusMinus[0] * 3) / 5), endY],
+        [beginX, endY - (endNode.hGap * 3 * plusMinus[1]) / 5],
+        [beginX, endY - (endNode.hGap * plusMinus[1]) / 5],
+        [beginX + (endNode.hGap * plusMinus[0]) / 4, endY],
+        [beginX + (endNode.hGap * plusMinus[0] * 3) / 5, endY],
         hasUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY],
         hasUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY],
         hasUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY]
