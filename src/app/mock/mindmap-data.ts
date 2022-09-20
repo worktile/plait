@@ -4,7 +4,7 @@ import { MindmapLayoutType } from '@plait/layouts';
 export const mockMindmapData: PlaitMindmap = {
     type: 'mindmap',
     id: '1',
-    rightNodeCount: 5,
+    rightNodeCount: 3,
     value: { children: [{ text: '脑图调研' }] },
     shape: MindmapNodeShape.underline,
     children: [
