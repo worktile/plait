@@ -1,12 +1,11 @@
 import { RoughSVG } from 'roughjs/bin/svg';
 import { PRIMARY_COLOR } from '../constants';
 import { drawLink } from '../draw/link';
-import { MindmapElement, MindmapNode } from '../interfaces';
+import { DetectResult, MindmapElement, MindmapNode } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import { drawRoundRectangle, getRectangleByNode } from './graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { Point } from '@plait/core';
-import { DetectResult } from '../plugins/with-dnd';
 
 export const drawPlaceholderDropNodeG = (
     dropTarget: { target: MindmapElement; detectResult: DetectResult },

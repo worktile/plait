@@ -13,8 +13,8 @@ import {
     transformPoint
 } from '@plait/core';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
-import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from '../utils/graph';
-import { MindmapNode } from '../interfaces/node';
+import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
+import { DetectResult, MindmapNode, RootBaseDirection } from '../interfaces/node';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { drawPlaceholderDropNodeG, findPath, isChildElement } from '../utils';
 import { MindmapElement } from '../interfaces/element';
@@ -23,10 +23,8 @@ import { drawRectangleNode } from '../draw/shape';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { getRichtextRectangleByNode } from '../draw/richtext';
 import { updateForeignObject } from '@plait/richtext';
-import { BASE, PRIMARY_COLOR } from '../constants';
-import { drawLink } from '../draw/link';
+import { BASE } from '../constants';
 import { distanceBetweenPointAndPoint } from '@plait/core';
-import { PlaitMindmapComponent } from '../mindmap.component';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -167,7 +165,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 if (rootBaseDirection === 'left') {
                     const leftNode = board.children[0].children?.slice(rightNodeCount, board.children[0].children.length);
                     if (leftNode?.length) {
-                        const lastLeftNode = leftNode[leftNode.length];
+                        const lastLeftNode = leftNode[leftNode.length - 1];
                         dropTarget = { target: lastLeftNode as MindmapElement, detectResult: 'bottom' };
                     } else {
                         dropTarget = { target: root?.origin as MindmapElement, detectResult: 'left' };
@@ -310,7 +308,3 @@ export const removeActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin
             removeActiveOnDragOrigin(child, false);
         });
 };
-
-export type DetectResult = 'top' | 'bottom' | 'right' | 'left' | null;
-
-export type RootBaseDirection = 'right' | 'left' | null;
