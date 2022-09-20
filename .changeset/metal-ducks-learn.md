@@ -2,4 +2,4 @@
 '@plait/mindmap': patch
 ---
 
-adjust idented layout node style of mindmap
+fix idented layout dnd style of mindmap
