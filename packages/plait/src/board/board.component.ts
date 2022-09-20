@@ -30,7 +30,7 @@ import { withBoard } from '../plugins/with-board';
 import { withHistroy } from '../plugins/with-history';
 import { withSelection } from '../plugins/with-selection';
 import { Transforms } from '../transfroms';
-import { getViewBox, getZoom } from '../utils/board';
+import { getViewBox, transformZoom } from '../utils/board';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../utils/weak-maps';
 
 @Component({
@@ -364,7 +364,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         const viewport = this.board?.viewport as Viewport;
         Transforms.setViewport(this.board, {
             ...viewport,
-            zoom: getZoom(this.viewZoom)
+            zoom: transformZoom(this.viewZoom)
         });
     }
 

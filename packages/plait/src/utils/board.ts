@@ -36,14 +36,14 @@ export function isNoSelectionElement(e: Event) {
  * @param viewZoom 视图上显示的 zoom 缩放级别 %
  * @returns zoom 真实的 zoom
  */
-export const getZoom = (viewZoom: number): number => (2 * viewZoom - 100) / viewZoom;
+export const transformViewZoom = (viewZoom: number): number => Number((100 / (2 - viewZoom)).toFixed(0));
 
 /**
  * zoom 转 viewZoom
  * @param zoom this.board.viewport.zoom
  * @returns 视图上显示的 zoom 缩放级别 %
  */
-export const getViewZoom = (zoom: number): number => Number((100 / (2 - zoom)).toFixed(0));
+export const transformZoom = (zoom: number): number => (2 * zoom - 100) / zoom;
 
 export type ViewBox = {
     minX: number;
