@@ -41,7 +41,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
             width="100%"
             height="100%"
             style="position: relative"
-            [style.cursor]="dragMove.isDragMoving ? 'grabbing' : isDragMoveModel ? 'grab' : 'auto'"
+            [style.cursor]="isDragMoveModel ? (dragMove.isDragMoving ? 'grabbing' : 'grab') : 'auto'"
         ></svg>
         <plait-toolbar
             *ngIf="isFocused && !toolbarTemplateRef"
@@ -179,7 +179,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
-                this.isFocused && this.dragMove.isDragMoving && this.dragMoving(event);
+                this.isFocused && this.isDragMoveModel && this.dragMove.isDragMoving && this.dragMoving(event);
             });
 
         fromEvent<MouseEvent>(document, 'mouseup')
@@ -295,12 +295,12 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     openDragMoveModel() {
         this.cursorStatus = BaseCursorStatus.drag;
-        this.cdr.detectChanges()
+        this.cdr.detectChanges();
     }
 
     closeDragMoveModel() {
         this.cursorStatus = BaseCursorStatus.select;
-        this.cdr.detectChanges()
+        this.cdr.detectChanges();
     }
 
     initDragMove(e: MouseEvent) {
