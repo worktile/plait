@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.37
+
+### Patch Changes
+
+-   [#99](https://github.com/worktile/plait/pull/99) [`9596e78`](https://github.com/worktile/plait/commit/9596e789effddb671f4dbfa8da51bc90879d2994) Thanks [@Ashy6](https://github.com/Ashy6)! - support drag and drop mode for plait-board
+
 ## 0.0.35
 
 ### Patch Changes

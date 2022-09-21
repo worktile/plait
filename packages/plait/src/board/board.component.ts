@@ -3,6 +3,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ContentChild,
     ElementRef,
     EventEmitter,
     HostBinding,
@@ -11,13 +12,15 @@ import {
     OnInit,
     Output,
     Renderer2,
+    TemplateRef,
     ViewChild
 } from '@angular/core';
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
+import { BaseCursorStatus, CursorStatus } from '../interfaces';
+import { DragMove, PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitOperation } from '../interfaces/operation';
 import { PlaitPlugin } from '../interfaces/plugin';
@@ -27,14 +30,30 @@ import { withBoard } from '../plugins/with-board';
 import { withHistroy } from '../plugins/with-history';
 import { withSelection } from '../plugins/with-selection';
 import { Transforms } from '../transfroms';
-import { getViewBox } from '../utils/board';
+import { getViewBox, transformViewZoom, transformZoom } from '../utils/board';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../utils/weak-maps';
 
 @Component({
     selector: 'plait-board',
     template: `
-        <svg #svg width="100%" height="100%" style="position: relative"></svg>
-        <plait-toolbar *ngIf="isFocused" [board]="board"></plait-toolbar>
+        <svg
+            #svg
+            width="100%"
+            height="100%"
+            style="position: relative"
+            [style.cursor]="isDragMoveModel ? (dragMove.isDragMoving ? 'grabbing' : 'grab') : 'auto'"
+        ></svg>
+        <plait-toolbar
+            *ngIf="isFocused && !toolbarTemplateRef"
+            [board]="board"
+            [viewZoom]="viewZoom"
+            [isDragMoveModel]="isDragMoveModel"
+            (dragMoveHandle)="dragMoveHandle()"
+            (adaptHandle)="adaptHandle()"
+            (zoomInHandle)="zoomInHandle()"
+            (zoomOutHandle)="zoomOutHandle()"
+            (resetZoomHandel)="resetZoomHandel()"
+        ></plait-toolbar>
         <plait-element
             *ngFor="let item of board.children; let index = index; trackBy: trackBy"
             [index]="index"
@@ -59,6 +78,31 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('svg', { static: true })
     svg!: ElementRef;
+
+    @ContentChild('plaitToolbar')
+    public toolbarTemplateRef!: TemplateRef<any>;
+
+    public get isDragMoveModel(): boolean {
+        return this.cursorStatus === BaseCursorStatus.drag;
+    }
+
+    public cursorStatus: CursorStatus = BaseCursorStatus.select;
+
+    private _viewZoom: number = 100;
+
+    public get viewZoom(): number {
+        const vZoom = transformZoom(this.board.viewport.zoom);
+        if (this._viewZoom !== vZoom) {
+            this._viewZoom = vZoom;
+        }
+        return vZoom;
+    }
+
+    public dragMove: DragMove = {
+        isDragMoving: false,
+        x: 0,
+        y: 0
+    };
 
     get host(): SVGElement {
         return this.svg.nativeElement;
@@ -132,18 +176,21 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousedown(event);
+                this.isFocused && this.isDragMoveModel && this.initDragMove(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
+                this.isFocused && this.isDragMoveModel && this.dragMove.isDragMoving && this.dragMoving(event);
             });
 
         fromEvent<MouseEvent>(document, 'mouseup')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.globalMouseup(event);
+                this.isFocused && this.dragMoveEnd(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'dblclick')
@@ -175,6 +222,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keydown(event);
+                this.isFocused && event.code === 'Space' && this.openDragMoveModel();
             });
 
         fromEvent<KeyboardEvent>(document, 'keyup')
@@ -186,6 +234,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keyup(event);
+                this.isFocused && event.code === 'Space' && this.closeDragMoveModel();
             });
 
         fromEvent<ClipboardEvent>(document, 'copy')
@@ -247,6 +296,86 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     trackBy = (index: number, element: PlaitElement) => {
         return index;
     };
+
+    openDragMoveModel() {
+        this.cursorStatus = BaseCursorStatus.drag;
+        this.cdr.detectChanges();
+    }
+
+    closeDragMoveModel() {
+        this.cursorStatus = BaseCursorStatus.select;
+        this.cdr.detectChanges();
+    }
+
+    initDragMove(e: MouseEvent) {
+        this.dragMove.isDragMoving = true;
+        this.dragMove.x = e.x;
+        this.dragMove.y = e.y;
+    }
+
+    dragMoving(e: MouseEvent) {
+        const viewport = this.board?.viewport as Viewport;
+        Transforms.setViewport(this.board, {
+            ...viewport,
+            offsetX: viewport.offsetX + ((e.x - this.dragMove.x) * 100) / this._viewZoom,
+            offsetY: viewport.offsetY + ((e.y - this.dragMove.y) * 100) / this._viewZoom
+        });
+        this.dragMove.x = e.x;
+        this.dragMove.y = e.y;
+    }
+
+    dragMoveEnd(e: MouseEvent) {
+        this.dragMove.isDragMoving = false;
+        this.dragMove.x = 0;
+        this.dragMove.y = 0;
+    }
+
+    // 拖拽模式
+    dragMoveHandle() {
+        this.isDragMoveModel ? this.closeDragMoveModel() : this.openDragMoveModel();
+    }
+
+    // 适应画布
+    adaptHandle() {
+        const viewport = this.board?.viewport as Viewport;
+        Transforms.setViewport(this.board, {
+            ...viewport,
+            offsetX: 0,
+            offsetY: 0
+        });
+        this.resetZoomHandel();
+    }
+
+    // 放大
+    zoomInHandle() {
+        if (this._viewZoom >= 400) {
+            return;
+        }
+        this._viewZoom += 10;
+        this.zoomChange();
+    }
+
+    // 缩小
+    zoomOutHandle() {
+        if (this._viewZoom <= 20) {
+            return;
+        }
+        this._viewZoom -= 10;
+        this.zoomChange();
+    }
+
+    resetZoomHandel() {
+        this._viewZoom = 100;
+        this.zoomChange();
+    }
+
+    zoomChange() {
+        const viewport = this.board?.viewport as Viewport;
+        Transforms.setViewport(this.board, {
+            ...viewport,
+            zoom: transformViewZoom(this._viewZoom)
+        });
+    }
 
     ngOnDestroy(): void {
         this.destroy$.next();

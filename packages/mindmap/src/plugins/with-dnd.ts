@@ -14,7 +14,7 @@ import {
 } from '@plait/core';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
-import { MindmapNode } from '../interfaces/node';
+import { DetectResult, MindmapNode, RootBaseDirection } from '../interfaces/node';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { drawPlaceholderDropNodeG, findPath, getCorrectLayoutByElement, isChildElement } from '../utils';
 import { MindmapElement } from '../interfaces/element';
@@ -171,7 +171,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                         dropTarget = { target: root?.origin as MindmapElement, detectResult: 'left' };
                     }
                     if (leftNode?.length) {
-                        const lastLeftNode = leftNode[leftNode.length];
+                        const lastLeftNode = leftNode[leftNode.length - 1];
                         dropTarget = { target: lastLeftNode as MindmapElement, detectResult: 'bottom' };
                     }
                 }
@@ -312,7 +312,3 @@ export const removeActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin
             removeActiveOnDragOrigin(child, false);
         });
 };
-
-export type DetectResult = 'top' | 'bottom' | 'right' | 'left' | null;
-
-export type RootBaseDirection = 'right' | 'left' | null;
