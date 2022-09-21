@@ -123,6 +123,11 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
 
+    @HostBinding('class.move')
+    get cursor() {
+        return this.board.cursor === BaseCursorStatus.move;
+    }
+
     @HostBinding('class.focused')
     get focused() {
         return this.isFocused;
@@ -320,11 +325,6 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // 拖拽模式
     changeMoveMode(cursorStatus: BaseCursorStatus) {
-        if (cursorStatus === BaseCursorStatus.move) {
-            (this.elementRef.nativeElement as HTMLElement).classList.add('move');
-        } else {
-            (this.elementRef.nativeElement as HTMLElement).classList.remove('move');
-        }
         updateCursorStatus(this.board, cursorStatus);
         this.cdr.markForCheck();
     }

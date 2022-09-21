@@ -33,7 +33,6 @@ import {
     hasSelectedMindmapElement
 } from '../utils/selected-elements';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { BaseCursorStatus } from 'packages/plait/src/interfaces';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
@@ -83,7 +82,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 const mindmapComponent = MINDMAP_TO_COMPONENT.get(value);
                 const root = mindmapComponent?.root;
                 (root as any).eachNode((node: MindmapNode) => {
-                    if (hitMindmapNode(board, point, node) && board.cursor !== BaseCursorStatus.move) {
+                    if (hitMindmapNode(board, point, node)) {
                         addSelectedMindmapElements(board, node.origin);
                         nodes.push(node.origin);
                     } else {
@@ -206,7 +205,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     if (startEdit) {
                         return;
                     }
-                    if (hitMindmapNode(board, point, node) && board.cursor !== BaseCursorStatus.move) {
+                    if (hitMindmapNode(board, point, node)) {
                         const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node.origin);
                         if (nodeComponent) {
                             nodeComponent.startEditText();
