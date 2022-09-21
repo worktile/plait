@@ -9,6 +9,7 @@ import { Point } from '@plait/core';
 import { getCorrectLayoutByElement } from './layout';
 import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
 import { drawIndentedLink } from '../draw/indented-link';
+import { isLeftLayout, isTopLayout } from '@plait/layouts';
 
 export const drawPlaceholderDropNodeG = (
     dropTarget: { target: MindmapElement; detectResult: DetectResult },
@@ -19,7 +20,7 @@ export const drawPlaceholderDropNodeG = (
     const targetRect = getRectangleByNode(targetComponent.node);
 
     if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
-        drawStraightDropNodeG(targetRect, dropTarget.detectResult, roughSVG, fakeDropNodeG);
+        drawStraightDropNodeG(targetRect, dropTarget.detectResult, targetComponent, roughSVG, fakeDropNodeG);
     }
 
     if (dropTarget.detectResult && ['top', 'bottom'].includes(dropTarget.detectResult)) {
@@ -52,6 +53,7 @@ export const drawCurvePlaceholderDropNodeG = (
     fakeDropNodeG: SVGGElement | undefined
 ) => {
     let fakeY = targetRect.y - 30;
+    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
     if (detectResult === 'top') {
         if (targetIndex > 0) {
             const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
@@ -60,6 +62,18 @@ export const drawCurvePlaceholderDropNodeG = (
             const previousRect = getRectangleByNode(previousComponent.node);
             const topY = previousRect.y + previousRect.height;
             fakeY = topY + (targetRect.y - topY) / 5;
+        }
+        // 左下、右下、下布局且是最上面的节点
+        if (targetIndex === 0) {
+            if (layout === MindmapLayoutType.leftBottomIndented || layout === MindmapLayoutType.rightBottomIndented) {
+                fakeY = targetRect.y;
+            }
+        }
+        // 左上、右上、上布局且是最上面的节点
+        if (targetIndex === parentComponent.node.origin.children.length - 1) {
+            if (isTopLayout(layout)) {
+                fakeY = targetRect.y - targetRect.height;
+            }
         }
     }
     if (detectResult === 'bottom') {
@@ -72,12 +86,15 @@ export const drawCurvePlaceholderDropNodeG = (
             const topY = targetRect.y + targetRect.height;
             fakeY = topY + (nextRect.y - topY) / 5;
         }
+        // 左上、右上并且是当前分支第一个
+        if (targetIndex === 0 && isTopLayout(layout)) {
+            fakeY = targetRect.y + targetRect.height;
+        }
     }
     let fakeX = targetComponent.node.x;
     let fakeRectangleStartX = targetRect.x,
         fakeRectangleEndX = targetRect.x + 30;
-    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
-    if (layout === MindmapLayoutType.left) {
+    if (isLeftLayout(layout)) {
         fakeX = targetComponent.node.x + targetComponent.node.width - 30;
         fakeRectangleStartX = targetRect.x + targetRect.width - 30;
         fakeRectangleEndX = targetRect.x + targetRect.width;
@@ -106,6 +123,7 @@ export const drawStraightDropNodeG = (
         height: number;
     },
     detectResult: DetectResult,
+    targetComponent: MindmapNodeComponent,
     roughSVG: RoughSVG,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
@@ -115,12 +133,16 @@ export const drawStraightDropNodeG = (
     let endLinePoint = x + width + lineLength;
     let startRectanglePoint = x + width + lineLength;
     let endRectanglePoint = x + lineLength + width + 30;
-
+    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
     if (detectResult === 'left') {
         startLinePoint = x - lineLength;
         endLinePoint = x;
         startRectanglePoint = x - lineLength - 30;
         endRectanglePoint = x - lineLength;
+    }
+    // 含左侧布局（左、左下、左上）不允许拖拽到右侧
+    if (isLeftLayout(layout) && detectResult === 'right') {
+        return;
     }
     // 构造一条直线
     let linePoints = [
