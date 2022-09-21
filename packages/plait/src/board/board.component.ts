@@ -30,7 +30,7 @@ import { withBoard } from '../plugins/with-board';
 import { withHistroy } from '../plugins/with-history';
 import { withSelection } from '../plugins/with-selection';
 import { Transforms } from '../transfroms';
-import { getViewBox, transformViewZoom, transformZoom } from '../utils/board';
+import { getViewBox, transformViewZoom, transformZoom, updateCursorStatus } from '../utils/board';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../utils/weak-maps';
 
 @Component({
@@ -41,14 +41,13 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
             width="100%"
             height="100%"
             style="position: relative"
-            [style.cursor]="isDragMoveModel ? (dragMove.isDragMoving ? 'grabbing' : 'grab') : 'auto'"
+            [style.cursor]="cursorStatus === 'drag' ? (dragMove.isDragMoving ? 'grabbing' : 'grab') : 'auto'"
         ></svg>
         <plait-toolbar
             *ngIf="isFocused && !toolbarTemplateRef"
-            [board]="board"
+            [cursorStatus]="cursorStatus"
             [viewZoom]="viewZoom"
-            [isDragMoveModel]="isDragMoveModel"
-            (dragMoveHandle)="dragMoveHandle()"
+            (dragMoveHandle)="changeDragMode($event)"
             (adaptHandle)="adaptHandle()"
             (zoomInHandle)="zoomInHandle()"
             (zoomOutHandle)="zoomOutHandle()"
@@ -81,10 +80,6 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ContentChild('plaitToolbar')
     public toolbarTemplateRef!: TemplateRef<any>;
-
-    public get isDragMoveModel(): boolean {
-        return this.cursorStatus === BaseCursorStatus.drag;
-    }
 
     public cursorStatus: CursorStatus = BaseCursorStatus.select;
 
@@ -176,14 +171,14 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousedown(event);
-                this.isFocused && this.isDragMoveModel && this.initDragMove(event);
+                this.isFocused && this.board.cursor === BaseCursorStatus.drag && this.initDragMove(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
-                this.isFocused && this.isDragMoveModel && this.dragMove.isDragMoving && this.dragMoving(event);
+                this.isFocused && this.board.cursor === BaseCursorStatus.drag && this.dragMove.isDragMoving && this.dragMoving(event);
             });
 
         fromEvent<MouseEvent>(document, 'mouseup')
@@ -222,7 +217,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keydown(event);
-                this.isFocused && event.code === 'Space' && this.openDragMoveModel();
+                this.isFocused && event.code === 'Space' && this.changeDragMode(BaseCursorStatus.drag);
             });
 
         fromEvent<KeyboardEvent>(document, 'keyup')
@@ -234,7 +229,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keyup(event);
-                this.isFocused && event.code === 'Space' && this.closeDragMoveModel();
+                this.isFocused && event.code === 'Space' && this.changeDragMode(BaseCursorStatus.select);
             });
 
         fromEvent<ClipboardEvent>(document, 'copy')
@@ -297,16 +292,6 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         return index;
     };
 
-    openDragMoveModel() {
-        this.cursorStatus = BaseCursorStatus.drag;
-        this.cdr.detectChanges();
-    }
-
-    closeDragMoveModel() {
-        this.cursorStatus = BaseCursorStatus.select;
-        this.cdr.detectChanges();
-    }
-
     initDragMove(e: MouseEvent) {
         this.dragMove.isDragMoving = true;
         this.dragMove.x = e.x;
@@ -331,8 +316,10 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     // 拖拽模式
-    dragMoveHandle() {
-        this.isDragMoveModel ? this.closeDragMoveModel() : this.openDragMoveModel();
+    changeDragMode(cursorStatus: BaseCursorStatus) {
+        this.cursorStatus = cursorStatus;
+        updateCursorStatus(this.board, cursorStatus);
+        this.cdr.markForCheck();
     }
 
     // 适应画布

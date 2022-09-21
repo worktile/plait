@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
-import { PlaitBoard } from '../../interfaces/board';
+import { BaseCursorStatus, CursorStatus } from '../../interfaces';
 
 @Component({
     selector: 'plait-toolbar',
@@ -9,16 +9,11 @@ import { PlaitBoard } from '../../interfaces/board';
 export class PlaitToolbarComponent {
     @HostBinding('class') hostClass = `plait-board-toolbar`;
 
-    @Input()
-    board!: PlaitBoard;
+    @Input() cursorStatus!: CursorStatus;
 
-    @Input()
-    viewZoom!: number;
+    @Input() viewZoom!: number;
 
-    @Input()
-    isDragMoveModel!: boolean;
-
-    @Output() dragMoveHandle = new EventEmitter();
+    @Output() dragMoveHandle: EventEmitter<BaseCursorStatus> = new EventEmitter();
 
     @Output() adaptHandle = new EventEmitter();
 
@@ -29,7 +24,11 @@ export class PlaitToolbarComponent {
     @Output() resetZoomHandel = new EventEmitter();
 
     dragMove() {
-        this.dragMoveHandle.emit();
+        if (this.cursorStatus !== BaseCursorStatus.drag) {
+            this.dragMoveHandle.emit(BaseCursorStatus.drag);
+        } else {
+            this.dragMoveHandle.emit(BaseCursorStatus.select);
+        }
     }
 
     // 适应画布

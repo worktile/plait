@@ -1,4 +1,4 @@
-import { PlaitBoard, Point } from '../interfaces';
+import { BaseCursorStatus, PlaitBoard, Point } from '../interfaces';
 
 export function transformPoints(board: PlaitBoard, points: Point[]) {
     const newPoints = points.map(point => {
@@ -43,7 +43,13 @@ export const transformViewZoom = (viewZoom: number): number => (2 * viewZoom - 1
  * @param zoom this.board.viewport.zoom
  * @returns 视图上显示的 zoom 缩放级别 %
  */
-export const transformZoom =  (zoom: number): number => Number((100 / (2 - zoom)).toFixed(0));
+export const transformZoom = (zoom: number): number => Number((100 / (2 - zoom)).toFixed(0));
+
+export const updateCursorStatus = (board: PlaitBoard, cursor: BaseCursorStatus) => {
+    if (cursor) {
+        board.cursor = cursor;
+    }
+};
 
 export type ViewBox = {
     minX: number;
