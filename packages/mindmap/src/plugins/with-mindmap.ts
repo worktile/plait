@@ -142,7 +142,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 return;
             }
 
-            if (hotkeys.isDeleteBackward(event)) {
+            if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
                 if (isPlaitMindmap(selectedElements[0]) && board.children.length === 1 && !board.allowClearBoard) {
                     keydown(event);
