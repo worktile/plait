@@ -41,11 +41,11 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
             width="100%"
             height="100%"
             style="position: relative"
-            [style.cursor]="cursorStatus === 'drag' ? (dragMove.isDragMoving ? 'grabbing' : 'grab') : 'auto'"
+            [style.cursor]="board.cursor === 'drag' ? (dragMove.isDragMoving ? 'grabbing' : 'grab') : 'auto'"
         ></svg>
         <plait-toolbar
             *ngIf="isFocused && !toolbarTemplateRef"
-            [cursorStatus]="cursorStatus"
+            [cursorStatus]="board.cursor"
             [viewZoom]="viewZoom"
             (dragMoveHandle)="changeDragMode($event)"
             (adaptHandle)="adaptHandle()"
@@ -80,8 +80,6 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ContentChild('plaitToolbar')
     public toolbarTemplateRef!: TemplateRef<any>;
-
-    public cursorStatus: CursorStatus = BaseCursorStatus.select;
 
     private _viewZoom: number = 100;
 
@@ -317,7 +315,6 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // 拖拽模式
     changeDragMode(cursorStatus: BaseCursorStatus) {
-        this.cursorStatus = cursorStatus;
         updateCursorStatus(this.board, cursorStatus);
         this.cdr.markForCheck();
     }
