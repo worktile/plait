@@ -14,7 +14,6 @@ import {
     createG,
     createText,
     HOST_TO_ROUGH_SVG,
-    idCreator,
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
@@ -46,7 +45,7 @@ import { drawLink } from './draw/link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
 import { MindmapElement } from './interfaces/element';
-import { CoordinateType, ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
+import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';

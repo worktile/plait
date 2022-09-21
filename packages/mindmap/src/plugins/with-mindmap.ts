@@ -118,7 +118,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
                 deleteSelectedMindmapElements(board, selectedElement);
-                let path: number[] = [];
                 const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
                 if (event.key === 'Tab') {
                     if (mindmapNodeComponent) {
@@ -140,6 +139,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                         createEmptyNode(board, path);
                     }
                 }
+                return;
             }
 
             if (hotkeys.isDeleteBackward(event)) {
@@ -183,6 +183,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 const selectedElement = selectedElements[0];
                 const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
                 mindmapNodeComponent?.startEditText();
+                return;
             }
         }
 
