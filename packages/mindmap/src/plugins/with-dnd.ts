@@ -22,10 +22,10 @@ import { MindmapNodeComponent } from '../node.component';
 import { drawRectangleNode } from '../draw/shape';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { getRichtextRectangleByNode } from '../draw/richtext';
-import { NODE_TO_ELEMENT, updateForeignObject } from '@plait/richtext';
+import { updateForeignObject } from '@plait/richtext';
 import { BASE } from '../constants';
 import { distanceBetweenPointAndPoint } from '@plait/core';
-import { isStandardLayout, MindmapLayoutType } from '../../../layouts/src/public-api';
+import { isStandardLayout } from '@plait/layouts';
 
 const DRAG_MOVE_BUFFER = 5;
 
