@@ -16,16 +16,16 @@ import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { DetectResult, MindmapNode, RootBaseDirection } from '../interfaces/node';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { drawPlaceholderDropNodeG, findPath, getCorrectLayoutByElement, isChildElement } from '../utils';
+import { drawPlaceholderDropNodeG, findPath, getCorrectLayoutByElement, getLayoutByElement, isChildElement } from '../utils';
 import { MindmapElement } from '../interfaces/element';
 import { MindmapNodeComponent } from '../node.component';
 import { drawRectangleNode } from '../draw/shape';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { getRichtextRectangleByNode } from '../draw/richtext';
-import { updateForeignObject } from '@plait/richtext';
+import { NODE_TO_ELEMENT, updateForeignObject } from '@plait/richtext';
 import { BASE } from '../constants';
 import { distanceBetweenPointAndPoint } from '@plait/core';
-import { isStandardLayout } from '../../../layouts/src/public-api';
+import { isStandardLayout, MindmapLayoutType } from '../../../layouts/src/public-api';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -201,25 +201,25 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     targetPath = Path.next(targetPath);
                 }
                 const originPath = findPath(board, activeComponent.node);
-                if (
-                    targetComponent.node.origin.isRoot &&
-                    (targetComponent.node.origin.rightNodeCount || targetComponent.node.origin.rightNodeCount === 0)
-                ) {
-                    let rightNodeCount,
-                        newElement: Partial<MindmapElement> = {};
-                    if (dropTarget.detectResult === 'left') {
-                        rightNodeCount =
-                            targetComponent.node.origin?.rightNodeCount > targetComponent.node.children.length
-                                ? targetComponent.node.children.length - 1
-                                : targetComponent.node.origin.rightNodeCount - 1;
-                        newElement = { rightNodeCount };
-                    }
-                    if (dropTarget.detectResult === 'right') {
-                        rightNodeCount = targetComponent.node.origin.rightNodeCount + 1;
+                const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
+                const layout = getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapElement);
+
+                if (dropTarget.detectResult === 'right') {
+                    let newElement: Partial<MindmapElement> = { isCollapsed: false };
+                    if (targetComponent.node.origin.isRoot) {
+                        targetPath = findPath(board, targetComponent.node);
+                        targetPath.push(0);
+                        const rightNodeCount = (targetComponent.node.origin.rightNodeCount as number) + 1;
                         newElement = { isCollapsed: false, rightNodeCount };
                     }
+
                     Transforms.setNode(board, newElement, findPath(board, targetComponent.node));
                 }
+
+                if (isStandardLayout(layout)) {
+                    updateRightNodeCount(board, activeComponent, targetComponent);
+                }
+
                 Transforms.moveNode(board, originPath, targetPath);
             }
 
@@ -311,4 +311,35 @@ export const removeActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin
         activeElement.children.forEach(child => {
             removeActiveOnDragOrigin(child, false);
         });
+};
+
+export const updateRightNodeCount = (board: PlaitBoard, activeComponent: MindmapNodeComponent, targetComponent: MindmapNodeComponent) => {
+    let rightNodeCount;
+    const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
+    const activeIndex = mindmapComponent?.root.children.indexOf(activeComponent.node) as number;
+    const targetIndex = mindmapComponent?.root.children.indexOf(targetComponent.node) as number;
+    const isActiveOnRight = activeIndex !== -1 && activeIndex <= (activeComponent.parent.origin.rightNodeCount as number) - 1;
+    const isTargetOnRight =
+        targetComponent.parent && targetIndex !== -1 && targetIndex <= (targetComponent.parent.origin.rightNodeCount as number) - 1;
+    const isBothOnRight = !!(isActiveOnRight && isTargetOnRight);
+    const rootChildCount = board.children[0].children?.length as number;
+    const rootRightNodeCount = mindmapComponent?.root.origin.rightNodeCount as number;
+
+    if (!isBothOnRight) {
+        if (isActiveOnRight) {
+            rightNodeCount = rootChildCount < rootRightNodeCount ? rootChildCount - 1 : rootRightNodeCount - 1;
+            Transforms.setNode(board, { rightNodeCount }, findPath(board, activeComponent.parent));
+        }
+
+        if (isTargetOnRight) {
+            rightNodeCount = rootChildCount < rootRightNodeCount ? rootRightNodeCount : rootRightNodeCount + 1;
+            Transforms.setNode(board, { rightNodeCount }, findPath(board, targetComponent.parent));
+        }
+
+        //二级子节点拖动到左侧
+        if (targetComponent.node.origin.isRoot && targetIndex > rootRightNodeCount - 1 && rootChildCount < rootRightNodeCount) {
+            rightNodeCount = rootChildCount;
+            Transforms.setNode(board, { rightNodeCount }, findPath(board, targetComponent.node));
+        }
+    }
 };
