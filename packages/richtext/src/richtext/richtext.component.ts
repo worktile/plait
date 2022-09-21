@@ -32,6 +32,7 @@ import { PlaitCompositionEvent } from '../interface/composition';
 import { NODE_TO_INDEX } from '../utils/weak-maps';
 import { hotkeys, IS_CHROME, IS_SAFARI } from '@plait/core';
 import { withInline } from '../plugins/with-inline';
+import { isKeyHotkey } from 'is-hotkey';
 
 const NATIVE_INPUT_TYPES = ['insertText'];
 
@@ -381,6 +382,12 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
                 if (HistoryEditor.isHistoryEditor(editor)) {
                     editor.redo();
                 }
+                return;
+            }
+
+            if (isKeyHotkey('mod+a', event)) {
+                event.preventDefault();
+                Transforms.select(editor, [0]);
                 return;
             }
 
