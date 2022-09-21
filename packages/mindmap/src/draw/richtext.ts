@@ -1,14 +1,18 @@
-import { MindmapNode } from '../interfaces/node';
-import { drawRichtext, updateForeignObject } from '@plait/richtext';
 import { ViewContainerRef } from '@angular/core';
-import { getRectangleByNode } from '../utils/graph';
+import { drawRichtext, updateForeignObject } from '@plait/richtext';
 import { BASE } from '../constants';
+import { MindmapNode } from '../interfaces/node';
+import { getRectangleByNode } from '../utils/graph';
 
 export function drawMindmapNodeRichtext(node: MindmapNode, viewContainerRef: ViewContainerRef) {
     const { textX, textY, width, height } = getRichtextRectangleByNode(node);
     const classList = [];
     if (node.origin.isRoot) {
         classList.push('root-node');
+    } else if (node.parent?.origin?.isRoot) {
+        classList.push('root-child-node');
+    } else {
+        classList.push('child-node');
     }
     return drawRichtext(textX, textY, width, height, node.origin.value, viewContainerRef, classList);
 }
