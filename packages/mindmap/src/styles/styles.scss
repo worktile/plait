@@ -6,11 +6,16 @@ g[plait-mindmap="true"] {
         display: inline-block;
         min-width: 5px;
         min-height: 24px;
+        font-family: PingFangSC-Medium, "PingFang SC";
+
         &[readonly=false] {
             cursor: text;
         }
         &.root-node {
             font-size: 18px;
+        }
+        &:not(.root-node) {
+            font-weight: 400;
         }
     }
 
