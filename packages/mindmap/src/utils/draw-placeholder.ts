@@ -7,7 +7,8 @@ import { drawRoundRectangle, getRectangleByNode } from './graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { Point } from '@plait/core';
 import { getCorrectLayoutByElement } from './layout';
-import { MindmapLayoutType } from '@plait/layouts';
+import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
+import { drawIndentedLink } from '../draw/indented-link';
 
 export const drawPlaceholderDropNodeG = (
     dropTarget: { target: MindmapElement; detectResult: DetectResult },
@@ -83,7 +84,9 @@ export const drawCurvePlaceholderDropNodeG = (
     }
     // 构造一条曲线
     const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30, height: 12 };
-    const linkSVGG = drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, undefined, false);
+    const linkSVGG = isIndentedLayout(layout)
+        ? drawIndentedLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR)
+        : drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR);
     // 构造一个矩形框坐标
     const fakeRectangleG = drawRoundRectangle(roughSVG, fakeRectangleStartX, fakeY, fakeRectangleEndX, fakeY + 12, {
         stroke: PRIMARY_COLOR,
