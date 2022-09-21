@@ -166,6 +166,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 if (rootBaseDirection === 'left') {
                     const leftNode = board.children[0].children?.slice(rightNodeCount, board.children[0].children.length);
                     const layout = getCorrectLayoutByElement(root?.origin as MindmapElement);
+                    // 标准布局并且左侧没有节点，向左划一条基本直线（左布局下不需要此线）
                     if (!leftNode?.length && isStandardLayout(layout)) {
                         dropTarget = { target: root?.origin as MindmapElement, detectResult: 'left' };
                     }
