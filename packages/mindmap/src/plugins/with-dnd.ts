@@ -13,20 +13,19 @@ import {
     transformPoint
 } from '@plait/core';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
-import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from '../utils/graph';
+import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { drawPlaceholderDropNodeG, findPath, isChildElement } from '../utils';
+import { drawPlaceholderDropNodeG, findPath, getCorrectLayoutByElement, isChildElement } from '../utils';
 import { MindmapElement } from '../interfaces/element';
 import { MindmapNodeComponent } from '../node.component';
 import { drawRectangleNode } from '../draw/shape';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { getRichtextRectangleByNode } from '../draw/richtext';
 import { updateForeignObject } from '@plait/richtext';
-import { BASE, PRIMARY_COLOR } from '../constants';
-import { drawLink } from '../draw/link';
+import { BASE } from '../constants';
 import { distanceBetweenPointAndPoint } from '@plait/core';
-import { PlaitMindmapComponent } from '../mindmap.component';
+import { isStandardLayout } from '../../../layouts/src/public-api';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -166,11 +165,13 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
                 if (rootBaseDirection === 'left') {
                     const leftNode = board.children[0].children?.slice(rightNodeCount, board.children[0].children.length);
+                    const layout = getCorrectLayoutByElement(root?.origin as MindmapElement);
+                    if (!leftNode?.length && isStandardLayout(layout)) {
+                        dropTarget = { target: root?.origin as MindmapElement, detectResult: 'left' };
+                    }
                     if (leftNode?.length) {
                         const lastLeftNode = leftNode[leftNode.length];
                         dropTarget = { target: lastLeftNode as MindmapElement, detectResult: 'bottom' };
-                    } else {
-                        dropTarget = { target: root?.origin as MindmapElement, detectResult: 'left' };
                     }
                 }
             }
