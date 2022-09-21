@@ -1,5 +1,13 @@
 # richtext
 
+## 0.0.38
+
+### Patch Changes
+
+-   [`e74e46b`](https://github.com/worktile/plait/commit/e74e46b247ecf176c9f77badf8fc84fa39dabe1b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - composition event stopPropagation
+
+*   [`83c2968`](https://github.com/worktile/plait/commit/83c2968cd453c74b8e6c8c8f7f2d74b9784bf9a8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle mod+a all select richtext and prevent default action
+
 ## 0.0.26
 
 ### Patch Changes

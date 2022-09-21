@@ -1,5 +1,13 @@
 # plait
 
+## 0.0.38
+
+### Patch Changes
+
+-   [#113](https://github.com/worktile/plait/pull/113) [`f45dfea`](https://github.com/worktile/plait/commit/f45dfead327d4863ccb27efd768676aee95576ab) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix: add updateCursorStatus func
+
+*   [#111](https://github.com/worktile/plait/pull/111) [`746ef40`](https://github.com/worktile/plait/commit/746ef408af726127d9bb021a36704aad2caa4145) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix: fix the error of undo after dragging
+
 ## 0.0.37
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # mindmap
 
+## 0.0.38
+
+### Patch Changes
+
+-   [#108](https://github.com/worktile/plait/pull/108) [`bfa68a2`](https://github.com/worktile/plait/commit/bfa68a20da1fff6a52dd8c0c7fdb8da7b8b0153a) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix not disable mindmap quick insert when readonly
+
+*   [#116](https://github.com/worktile/plait/pull/116) [`7215a6c`](https://github.com/worktile/plait/commit/7215a6caaa7835f45e085e2ddf8300ebe34fc049) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix dnd idented layout style of mindmap
+
+-   [#107](https://github.com/worktile/plait/pull/107) [`9c8ae63`](https://github.com/worktile/plait/commit/9c8ae63f846983311a9abf5d09b76c5fca8a5c06) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix left layout dnd style of mindmap
+
+*   [#118](https://github.com/worktile/plait/pull/118) [`7aa4fa9`](https://github.com/worktile/plait/commit/7aa4fa93ef772179e7b135cf167be052832c8c6d) Thanks [@Maple13](https://github.com/Maple13)! - text node adds level class
+
+-   [`c8170e8`](https://github.com/worktile/plait/commit/c8170e8884fcd012849263641d64f6cff9b15ca3) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct node isEditable status error
+
+*   [`68cfa48`](https://github.com/worktile/plait/commit/68cfa485383f40851ec89f9229a167c37905c7a0) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add delete handle for selected mindmap node
+
+-   [#115](https://github.com/worktile/plait/pull/115) [`ed06d70`](https://github.com/worktile/plait/commit/ed06d70da89b10a79f163359516ab5a0ba2652ad) Thanks [@Maple13](https://github.com/Maple13)! - modify the default strokeColor when the root node shape is roundRectangle
+
 ## 0.0.37
 
 ### Patch Changes
