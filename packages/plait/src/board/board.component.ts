@@ -62,7 +62,9 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
             [selection]="board.selection"
             [host]="host"
         ></plait-element>
-        <ng-content></ng-content>
+        <ng-container *ngIf="isFocused">
+            <ng-content></ng-content>
+        </ng-container>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -183,7 +185,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.globalMouseup(event);
-                this.isFocused && this.dragMoveEnd(event);
+                this.dragMoveEnd(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'dblclick')
@@ -294,6 +296,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dragMove.isDragMoving = true;
         this.dragMove.x = e.x;
         this.dragMove.y = e.y;
+        this.cdr.detectChanges();
     }
 
     dragMoving(e: MouseEvent) {
