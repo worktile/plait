@@ -25,8 +25,7 @@ import { getRichtextRectangleByNode } from '../draw/richtext';
 import { updateForeignObject } from '@plait/richtext';
 import { BASE } from '../constants';
 import { distanceBetweenPointAndPoint } from '@plait/core';
-import { drawIndentedLink } from '../draw/indented-link';
-import { isIndentedLayout } from '@plait/layouts';
+import { isStandardLayout } from '../../../layouts/src/public-api';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -166,11 +165,14 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
                 if (rootBaseDirection === 'left') {
                     const leftNode = board.children[0].children?.slice(rightNodeCount, board.children[0].children.length);
+                    const layout = getCorrectLayoutByElement(root?.origin as MindmapElement);
+                    // 标准布局并且左侧没有节点，向左划一条基本直线（左布局下不需要此线）
+                    if (!leftNode?.length && isStandardLayout(layout)) {
+                        dropTarget = { target: root?.origin as MindmapElement, detectResult: 'left' };
+                    }
                     if (leftNode?.length) {
                         const lastLeftNode = leftNode[leftNode.length - 1];
                         dropTarget = { target: lastLeftNode as MindmapElement, detectResult: 'bottom' };
-                    } else {
-                        dropTarget = { target: root?.origin as MindmapElement, detectResult: 'left' };
                     }
                 }
             }

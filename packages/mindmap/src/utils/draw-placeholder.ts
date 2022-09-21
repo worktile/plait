@@ -6,6 +6,8 @@ import { MindmapNodeComponent } from '../node.component';
 import { drawRoundRectangle, getRectangleByNode } from './graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { Point } from '@plait/core';
+import { getCorrectLayoutByElement } from './layout';
+import { MindmapLayoutType } from '@plait/layouts';
 
 export const drawPlaceholderDropNodeG = (
     dropTarget: { target: MindmapElement; detectResult: DetectResult },
@@ -70,12 +72,20 @@ export const drawCurvePlaceholderDropNodeG = (
             fakeY = topY + (nextRect.y - topY) / 5;
         }
     }
-
+    let fakeX = targetComponent.node.x;
+    let fakeRectangleStartX = targetRect.x,
+        fakeRectangleEndX = targetRect.x + 30;
+    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
+    if (layout === MindmapLayoutType.left) {
+        fakeX = targetComponent.node.x + targetComponent.node.width - 30;
+        fakeRectangleStartX = targetRect.x + targetRect.width - 30;
+        fakeRectangleEndX = targetRect.x + targetRect.width;
+    }
     // 构造一条曲线
-    const fakeNode: MindmapNode = { ...targetComponent.node, y: fakeY, width: 30, height: 12 };
-    const linkSVGG = drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR);
+    const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30, height: 12 };
+    const linkSVGG = drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, undefined, false);
     // 构造一个矩形框坐标
-    const fakeRectangleG = drawRoundRectangle(roughSVG, targetRect.x, fakeY, targetRect.x + 30, fakeY + 12, {
+    const fakeRectangleG = drawRoundRectangle(roughSVG, fakeRectangleStartX, fakeY, fakeRectangleEndX, fakeY + 12, {
         stroke: PRIMARY_COLOR,
         strokeWidth: 2,
         fill: PRIMARY_COLOR,
