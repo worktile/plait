@@ -217,7 +217,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 }
 
                 if (isStandardLayout(layout)) {
-                    standardDrag(board, activeComponent, targetComponent);
+                    updateRightNodeCount(board, activeComponent, targetComponent);
                 }
 
                 Transforms.moveNode(board, originPath, targetPath);
@@ -313,7 +313,7 @@ export const removeActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin
         });
 };
 
-export const standardDrag = (board: PlaitBoard, activeComponent: MindmapNodeComponent, targetComponent: MindmapNodeComponent) => {
+export const updateRightNodeCount = (board: PlaitBoard, activeComponent: MindmapNodeComponent, targetComponent: MindmapNodeComponent) => {
     let rightNodeCount;
     const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
     const activeIndex = mindmapComponent?.root.children.indexOf(activeComponent.node) as number;
@@ -322,31 +322,23 @@ export const standardDrag = (board: PlaitBoard, activeComponent: MindmapNodeComp
     const isTargetOnRight =
         targetComponent.parent && targetIndex !== -1 && targetIndex <= (targetComponent.parent.origin.rightNodeCount as number) - 1;
     const isBothOnRight = !!(isActiveOnRight && isTargetOnRight);
+    const rootChildCount = board.children[0].children?.length as number;
+    const rootRightNodeCount = mindmapComponent?.root.origin.rightNodeCount as number;
 
     if (!isBothOnRight) {
         if (isActiveOnRight) {
-            rightNodeCount =
-                activeComponent.parent.children.length < (activeComponent.parent.origin.rightNodeCount as number)
-                    ? activeComponent.parent.children.length - 1
-                    : (activeComponent.parent.origin.rightNodeCount as number) - 1;
+            rightNodeCount = rootChildCount < rootRightNodeCount ? rootChildCount - 1 : rootRightNodeCount - 1;
             Transforms.setNode(board, { rightNodeCount }, findPath(board, activeComponent.parent));
         }
 
         if (isTargetOnRight) {
-            rightNodeCount =
-                targetComponent.parent.children.length < (targetComponent.parent.origin.rightNodeCount as number)
-                    ? targetComponent.parent.origin.rightNodeCount
-                    : (targetComponent.parent.origin.rightNodeCount as number) + 1;
+            rightNodeCount = rootChildCount < rootRightNodeCount ? rootRightNodeCount : rootRightNodeCount + 1;
             Transforms.setNode(board, { rightNodeCount }, findPath(board, targetComponent.parent));
         }
 
         //二级子节点拖动到左侧
-        if (
-            targetComponent.node.origin.isRoot &&
-            targetIndex > (targetComponent.node.origin.rightNodeCount as number) - 1 &&
-            targetComponent.node.children.length < (targetComponent.node.origin.rightNodeCount as number)
-        ) {
-            rightNodeCount = targetComponent.node.children.length;
+        if (targetComponent.node.origin.isRoot && targetIndex > rootRightNodeCount - 1 && rootChildCount < rootRightNodeCount) {
+            rightNodeCount = rootChildCount;
             Transforms.setNode(board, { rightNodeCount }, findPath(board, targetComponent.node));
         }
     }
