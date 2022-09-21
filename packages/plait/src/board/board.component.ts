@@ -176,21 +176,21 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousedown(event);
-                this.isFocused && this.isDragMoveModel && this.initDragMove(event);
+                this.initDragMove(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
-                this.isFocused && this.isDragMoveModel && this.dragMove.isDragMoving && this.dragMoving(event);
+                this.dragMoving(event);
             });
 
         fromEvent<MouseEvent>(document, 'mouseup')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.globalMouseup(event);
-                this.isFocused && this.dragMoveEnd(event);
+                this.dragMoveEnd(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'dblclick')
@@ -222,7 +222,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keydown(event);
-                this.isFocused && event.code === 'Space' && this.openDragMoveModel();
+                this.isFocused && event.code === 'Space' && !this.isDragMoveModel && this.openDragMoveModel();
             });
 
         fromEvent<KeyboardEvent>(document, 'keyup')
@@ -234,7 +234,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keyup(event);
-                this.isFocused && event.code === 'Space' && this.closeDragMoveModel();
+                event.code === 'Space' && this.closeDragMoveModel();
             });
 
         fromEvent<ClipboardEvent>(document, 'copy')
@@ -308,20 +308,25 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     initDragMove(e: MouseEvent) {
-        this.dragMove.isDragMoving = true;
-        this.dragMove.x = e.x;
-        this.dragMove.y = e.y;
+        if (this.isDragMoveModel) {
+            this.dragMove.isDragMoving = true;
+            this.dragMove.x = e.x;
+            this.dragMove.y = e.y;
+            this.cdr.detectChanges();
+        }
     }
 
     dragMoving(e: MouseEvent) {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            offsetX: viewport.offsetX + ((e.x - this.dragMove.x) * 100) / this._viewZoom,
-            offsetY: viewport.offsetY + ((e.y - this.dragMove.y) * 100) / this._viewZoom
-        });
-        this.dragMove.x = e.x;
-        this.dragMove.y = e.y;
+        if (this.isDragMoveModel && this.dragMove.isDragMoving) {
+            const viewport = this.board?.viewport as Viewport;
+            Transforms.setViewport(this.board, {
+                ...viewport,
+                offsetX: viewport.offsetX + ((e.x - this.dragMove.x) * 100) / this._viewZoom,
+                offsetY: viewport.offsetY + ((e.y - this.dragMove.y) * 100) / this._viewZoom
+            });
+            this.dragMove.x = e.x;
+            this.dragMove.y = e.y;
+        }
     }
 
     dragMoveEnd(e: MouseEvent) {
