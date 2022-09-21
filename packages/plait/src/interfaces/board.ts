@@ -47,8 +47,8 @@ export interface PlaitBoardOptions {
     allowClearBoard: boolean;
 }
 
-export interface DragMove {
-    isDragMoving: boolean;
+export interface Move {
+    isMoving: boolean;
     x: number;
     y: number;
 }

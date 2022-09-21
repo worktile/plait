@@ -53,6 +53,7 @@ import { createEmptyNode, findPath, getChildrenCount } from './utils/mindmap';
 import { addSelectedMindmapElements, deleteSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
+import { BaseCursorStatus } from 'packages/plait/src/interfaces';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -201,7 +202,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !!this.selection && !this.node.origin.isCollapsed;
+                    return !!this.selection && !this.node.origin.isCollapsed && this.board.cursor !== BaseCursorStatus.move;
                 })
             )
             .subscribe(() => {

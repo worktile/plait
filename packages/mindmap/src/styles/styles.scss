@@ -39,6 +39,11 @@ g[plait-mindmap="true"] {
         }
     }
 }
+.plait-board-container.move {
+    .extend {
+        display: none;
+    }
+}
 
 .fake-node {
     .dragging {

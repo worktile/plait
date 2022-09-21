@@ -26,6 +26,7 @@ import { updateForeignObject } from '@plait/richtext';
 import { BASE } from '../constants';
 import { distanceBetweenPointAndPoint } from '@plait/core';
 import { isStandardLayout } from '@plait/layouts';
+import { BaseCursorStatus } from 'packages/plait/src/interfaces';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -58,7 +59,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     if (activeElement) {
                         return;
                     }
-                    if (hitMindmapNode(board, point, node) && !node.origin.isRoot) {
+                    if (hitMindmapNode(board, point, node) && !node.origin.isRoot && board.cursor !== BaseCursorStatus.move) {
                         activeElement = node.origin;
                         startPoint = point;
                     }
