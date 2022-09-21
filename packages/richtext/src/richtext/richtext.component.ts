@@ -283,10 +283,7 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
         if (!this.plaitReadonly && !this.isComposing && !event.defaultPrevented) {
             const nativeEvent = event;
             const { selection } = editor;
-
-            const element = editor.children[selection !== null ? selection.focus.path[0] : 0];
             const isRTL = false;
-
             // COMPAT: Certain browsers don't handle the selection updates
             // properly. In Chrome, the selection isn't properly extended.
             // And in Firefox, the selection isn't properly collapsed.
@@ -416,11 +413,13 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
     private compositionStart(event: CompositionEvent) {
         this.isComposing = true;
         this.plaitComposition.emit({ originEvent: event, isComposing: this.isComposing });
+        event.stopPropagation();
     }
 
     private compositionUpdate(event: CompositionEvent) {
         this.isComposing = true;
         this.plaitComposition.emit({ originEvent: event, isComposing: this.isComposing });
+        event.stopPropagation();
     }
 
     private compositionEnd(event: CompositionEvent) {
@@ -428,6 +427,7 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
         this.plaitComposition.emit({ originEvent: event, isComposing: this.isComposing });
         preventDefaultIME(event, this.editor);
         Editor.insertText(this.editor, event.data);
+        event.stopPropagation();
     }
 
     private onFocus(event: FocusEvent) {
