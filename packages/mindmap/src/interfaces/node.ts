@@ -27,3 +27,7 @@ export type CoordinateType = {
 export type ExtendUnderlineCoordinateType = {
     [key in ExtendLayoutType]: CoordinateType;
 };
+
+export type DetectResult = 'top' | 'bottom' | 'right' | 'left' | null;
+
+export type RootBaseDirection = 'right' | 'left' | null;

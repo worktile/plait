@@ -7,7 +7,13 @@ import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
 import { getNodeShapeByElement, getRectangleByNode, isChildRight, isChildUp } from '../utils';
 
-export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: MindmapNode, defaultStroke: string | null = null) {
+export function drawIndentedLink(
+    roughSVG: RoughSVG,
+    node: MindmapNode,
+    child: MindmapNode,
+    defaultStroke: string | null = null,
+    needDrawUnderline = true
+) {
     const hasUnderline = (getNodeShapeByElement(child.origin) as MindmapNodeShape) === MindmapNodeShape.underline;
     let beginX,
         beginY,
@@ -33,9 +39,9 @@ export function drawIndentedLink(roughSVG: RoughSVG, node: MindmapNode, child: M
         [beginX, endY - (endNode.hGap * plusMinus[1]) / 5],
         [beginX + (endNode.hGap * plusMinus[0]) / 4, endY],
         [beginX + (endNode.hGap * plusMinus[0] * 3) / 5, endY],
-        hasUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY],
-        hasUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY],
-        hasUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY]
+        hasUnderline && needDrawUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY],
+        hasUnderline && needDrawUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY],
+        hasUnderline && needDrawUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY]
     ];
 
     const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);

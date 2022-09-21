@@ -15,4 +15,3 @@ export function drawRectangleNode(roughSVG: RoughSVG, node: MindmapNode) {
 
     return nodeG;
 }
-

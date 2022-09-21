@@ -6,3 +6,4 @@ export * from './shape';
 export * from './colors';
 export * from './selected-elements';
 export * from './is-virtual-key';
+export * from './draw-placeholder';
