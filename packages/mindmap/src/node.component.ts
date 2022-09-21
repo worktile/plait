@@ -302,6 +302,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     private drawQuickInsert(offset = 0) {
+        if (this.board.readonly) {
+            return;
+        }
         const quickInsertG = createG();
         quickInsertG.classList.add('quick-insert');
         this.extendG?.append(quickInsertG);
