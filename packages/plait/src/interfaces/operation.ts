@@ -75,21 +75,12 @@ export const inverse = (op: PlaitOperation): PlaitOperation => {
                 return op;
             }
 
-            // If the move happens completely within a single parent the path and
-            // newPath are stable with respect to each other.
             if (Path.isSibling(path, newPath)) {
-                return { ...op, path: newPath, newPath: path };
+                const inversePath = Path.transform(path, op)!;
+                return { ...op, path: inversePath, newPath: path };
             }
 
-            // If the move does not happen within a single parent it is possible
-            // for the move to impact the true path to the location where the node
-            // was removed from and where it was inserted. We have to adjust for this
-            // and find the original path. We can accomplish this (only in non-sibling)
-            // moves by looking at the impact of the move operation on the node
-            // after the original move path.
-            const inversePath = Path.transform(path, op)!;
-            const inverseNewPath = Path.transform(Path.next(path), op)!;
-            return { ...op, path: inversePath, newPath: inverseNewPath };
+            return { ...op, path: newPath, newPath: path };
         }
 
         case 'set_node': {
