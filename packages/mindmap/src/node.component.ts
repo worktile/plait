@@ -426,7 +426,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 innerCrossCoordinates.horizontal.endY,
                 {
                     stroke: QUICK_INSERT_INNER_CROSS_COLOR,
-                    strokeWidth
+                    strokeWidth: 2
                 }
             );
             const innerRingVLine = this.roughSVG.line(
@@ -436,7 +436,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 innerCrossCoordinates.vertical.endY,
                 {
                     stroke: QUICK_INSERT_INNER_CROSS_COLOR,
-                    strokeWidth
+                    strokeWidth: 2
                 }
             );
             quickInsertG.appendChild(underline);
@@ -542,7 +542,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             extendLineXY[1][1] + arrowYOffset[1],
             {
                 stroke,
-                strokeWidth
+                strokeWidth: 2
             }
         );
         const hideArrowBottomLine = this.roughSVG.line(
@@ -552,7 +552,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             extendLineXY[1][1] + arrowYOffset[3],
             {
                 stroke,
-                strokeWidth
+                strokeWidth: 2
             }
         );
 
@@ -583,7 +583,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 const hideCircleG = this.roughSVG.circle(
                     extendLineXY[1][0] + circleOffset[0],
                     extendLineXY[1][1] + circleOffset[1],
-                    EXTEND_RADIUS,
+                    EXTEND_RADIUS - 1,
                     {
                         fill: '#fff',
                         stroke,
