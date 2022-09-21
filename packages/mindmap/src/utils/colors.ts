@@ -1,4 +1,4 @@
-import { COLORS, TRANSPARENT } from '../constants';
+import { COLORS, ROOT_NODE_STROKE } from '../constants';
 import { MindmapElement } from '../interfaces';
 import { findUpElement } from './mindmap';
 
@@ -14,7 +14,7 @@ export const getStrokeByMindmapElement = (element: MindmapElement) => {
         const remainder = index % length;
         return COLORS[remainder];
     } else {
-        return TRANSPARENT;
+        return ROOT_NODE_STROKE;
     }
 };
 
