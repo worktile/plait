@@ -106,6 +106,9 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     get isFocused() {
+        if (!this.board?.selection && this.board.cursor === BaseCursorStatus.move) {
+            this.changeMoveMode(BaseCursorStatus.select);
+        }
         return this.board?.selection;
     }
 
