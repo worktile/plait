@@ -222,6 +222,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     destroyMaskG() {
         if (this.maskG) {
             this.maskG.remove();
+            this.gGroup.classList.remove('hovered');
         }
     }
 
