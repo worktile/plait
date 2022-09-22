@@ -17,7 +17,8 @@ export const mockMindmapData: PlaitMindmap = {
                     value: { children: [{ text: '布局算法' }] },
                     children: [],
                     width: 56,
-                    height: 24
+                    height: 24,
+                    shape: MindmapNodeShape.roundRectangle
                 },
                 {
                     id: '1-1-2',
