@@ -711,7 +711,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 Transforms.setNode(this.board, newElement, path);
                 MERGING.set(this.board, true);
             });
-        const composition$ = richtextInstance.plaitComposition.subscribe(event => {
+        const composition$ = richtextInstance.plaitComposition.pipe(debounceTime(0)).subscribe(event => {
             let { width, height } = richtextInstance.editable.getBoundingClientRect();
             if (width < NODE_MIN_WIDTH) {
                 width = NODE_MIN_WIDTH;
