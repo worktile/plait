@@ -1,12 +1,12 @@
 $primary: #4e8afa;
 
-g[plait-mindmap="true"] {
+g[plait-mindmap='true'] {
     .plait-richtext-container {
         cursor: default;
         display: inline-block;
         min-width: 5px;
         min-height: 24px;
-        &[readonly=false] {
+        &[readonly='false'] {
             cursor: text;
         }
         &.root-node {
@@ -26,7 +26,8 @@ g[plait-mindmap="true"] {
         }
     }
 
-    .dragging-origin, .dragging-child {
+    .dragging-origin,
+    .dragging-child {
         opacity: 0.6;
     }
 }
@@ -39,8 +40,20 @@ g[plait-mindmap="true"] {
         }
     }
 }
+.plait-board-container.readonly-move {
+    :not(.collapsed) > .extend {
+        .quick-insert {
+            display: none;
+        }
+    }
+}
 .plait-board-container.move {
-    .extend {
+    .collapsed {
+        .extend:hover {
+            cursor: grab;
+        }
+    }
+    :not(.collapsed) > .extend {
         display: none;
     }
 }

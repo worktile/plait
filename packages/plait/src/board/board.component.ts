@@ -67,10 +67,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
-    @HostBinding('class')
-    get hostClass() {
-        return `plait-board-container ${this.board.cursor}`;
-    }
+    @HostBinding('class') hostClass = `plait-board-container`;
 
     board!: PlaitBoard;
 
@@ -128,6 +125,16 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
+
+    @HostBinding('class.readonly-move')
+    get readonly() {
+        return this.board.cursor === BaseCursorStatus.move && this.plaitReadonly;
+    }
+
+    @HostBinding('class.move')
+    get move() {
+        return this.board.cursor === BaseCursorStatus.move && !this.plaitReadonly;
+    }
 
     @HostBinding('class.focused')
     get focused() {
@@ -240,7 +247,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keyup(event);
-                this.isFocused && event.code === 'Space' && this.changeMoveMode(BaseCursorStatus.select);
+                this.isFocused && !this.plaitReadonly && event.code === 'Space' && this.changeMoveMode(BaseCursorStatus.select);
             });
 
         fromEvent<ClipboardEvent>(document, 'copy')
