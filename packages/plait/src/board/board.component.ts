@@ -17,6 +17,7 @@ import {
     TemplateRef,
     ViewChild
 } from '@angular/core';
+import { getSelectedMindmapElements } from '@plait/mindmap';
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
@@ -71,7 +72,10 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
 export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
     hasInitialized = false;
 
-    @HostBinding('class') hostClass = `plait-board-container`;
+    @HostBinding('class')
+    get hostClass() {
+        return `plait-board-container ${this.board.cursor}`;
+    }
 
     board!: PlaitBoard;
 
@@ -110,9 +114,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     }
 
     get isFocused() {
-        if (!this.board?.selection && this.board.cursor === BaseCursorStatus.move) {
-            this.changeMoveMode(BaseCursorStatus.select);
-        }
         return this.board?.selection;
     }
 
@@ -132,12 +133,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     @HostBinding('class.readonly')
     get readonly() {
-        return this.plaitReadonly;
-    }
-
-    @HostBinding('class.move')
-    get move() {
-        return this.board.cursor === BaseCursorStatus.move && !this.plaitReadonly;
+        return this.board.cursor === BaseCursorStatus.move && this.plaitReadonly;
     }
 
     @HostBinding('class.focused')
@@ -199,6 +195,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousedown(event);
+                this.setCursorStatus();
                 this.isFocused && this.isMoveMode && this.initMove(event);
             });
 
@@ -246,8 +243,11 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keydown(event);
                 if (this.isFocused && event.code === 'Space') {
-                    this.changeMoveMode(BaseCursorStatus.move);
-                    event.preventDefault();
+                    const currentNodes = getSelectedMindmapElements(this.board);
+                    if (!currentNodes.length) {
+                        this.changeMoveMode(BaseCursorStatus.move);
+                        event.preventDefault();
+                    }
                 }
             });
 
@@ -322,6 +322,15 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     trackBy = (index: number, element: PlaitElement) => {
         return index;
     };
+
+    setCursorStatus() {
+        if (!this.isFocused && this.isMoveMode) {
+            this.changeMoveMode(BaseCursorStatus.select);
+        }
+        if (this.plaitReadonly) {
+            this.changeMoveMode(BaseCursorStatus.move);
+        }
+    }
 
     initMove(e: MouseEvent) {
         this.plaitBoardMove.isMoving = true;

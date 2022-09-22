@@ -40,13 +40,6 @@ g[plait-mindmap='true'] {
         }
     }
 }
-.plait-board-container.readonly {
-    :not(.collapsed) > .extend {
-        .quick-insert {
-            display: none;
-        }
-    }
-}
 .plait-board-container.move {
     .collapsed {
         .extend:hover {
@@ -55,6 +48,19 @@ g[plait-mindmap='true'] {
     }
     :not(.collapsed) > .extend {
         display: none;
+    }
+}
+.plait-board-container.readonly {
+    .collapsed {
+        .extend:hover {
+            cursor: pointer;
+        }
+    }
+    :not(.collapsed) > .extend {
+        display: block;
+        .quick-insert {
+            display: none;
+        }
     }
 }
 
