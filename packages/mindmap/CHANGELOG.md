@@ -1,5 +1,17 @@
 # mindmap
 
+## 0.0.39
+
+### Patch Changes
+
+-   [#120](https://github.com/worktile/plait/pull/120) [`dd9de02`](https://github.com/worktile/plait/commit/dd9de0292e117b36a200a2a0659927974f1f4f5f) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - adjust quick insert cross icon and extend icon border width
+
+*   [#123](https://github.com/worktile/plait/pull/123) [`f3b5362`](https://github.com/worktile/plait/commit/f3b53621e299d185d7b9f817febc979a7e2e4bfc) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix keydown enter key remove extend icon
+
+-   [#122](https://github.com/worktile/plait/pull/122) [`64e428d`](https://github.com/worktile/plait/commit/64e428d77a655891744efc043824875410babd57) Thanks [@Ashy6](https://github.com/Ashy6)! - moveMode and drop to disable node
+
+*   [#121](https://github.com/worktile/plait/pull/121) [`49c0148`](https://github.com/worktile/plait/commit/49c0148bc7c2981fcadf127879570899fb45c5be) Thanks [@WBbug](https://github.com/WBbug)! - add detectResult judge
+
 ## 0.0.38
 
 ### Patch Changes

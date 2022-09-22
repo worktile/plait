@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.39
+
+### Patch Changes
+
+-   [#122](https://github.com/worktile/plait/pull/122) [`64e428d`](https://github.com/worktile/plait/commit/64e428d77a655891744efc043824875410babd57) Thanks [@Ashy6](https://github.com/Ashy6)! - moveMode and drop to disable node
+
 ## 0.0.38
 
 ### Patch Changes
