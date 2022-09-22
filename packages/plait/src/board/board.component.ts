@@ -71,10 +71,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
 export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
     hasInitialized = false;
 
-    @HostBinding('class')
-    get hostClass() {
-        return `plait-board-container ${this.board.cursor}`;
-    }
+    @HostBinding('class') hostClass = `plait-board-container`;
 
     board!: PlaitBoard;
 
