@@ -21,7 +21,8 @@ import {
     Selection,
     toPoint,
     transformPoint,
-    Transforms
+    Transforms,
+    transformZoom
 } from '@plait/core';
 import {
     isHorizontalLayout,
@@ -708,18 +709,25 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 if (width < NODE_MIN_WIDTH) {
                     width = NODE_MIN_WIDTH;
                 }
-                const newElement = { value: richtext, width, height } as MindmapElement;
+                const newElement = {
+                    value: richtext,
+                    width: width / (transformZoom(this.board.viewport.zoom) / 100),
+                    height: height / (transformZoom(this.board.viewport.zoom) / 100)
+                } as MindmapElement;
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
                 MERGING.set(this.board, true);
             });
-        const composition$ = richtextInstance.plaitComposition.subscribe(event => {
+        const composition$ = richtextInstance.plaitComposition.pipe(debounceTime(0)).subscribe(event => {
             let { width, height } = richtextInstance.editable.getBoundingClientRect();
             if (width < NODE_MIN_WIDTH) {
                 width = NODE_MIN_WIDTH;
             }
             if (event.isComposing && (width !== this.node.origin.width || height !== this.node.origin.height)) {
-                const newElement: Partial<MindmapElement> = { width, height };
+                const newElement: Partial<MindmapElement> = {
+                    width: width / (transformZoom(this.board.viewport.zoom) / 100),
+                    height: height / (transformZoom(this.board.viewport.zoom) / 100)
+                };
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
                 MERGING.set(this.board, true);

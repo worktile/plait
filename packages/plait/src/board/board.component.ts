@@ -8,10 +8,12 @@ import {
     EventEmitter,
     HostBinding,
     Input,
+    OnChanges,
     OnDestroy,
     OnInit,
     Output,
     Renderer2,
+    SimpleChanges,
     TemplateRef,
     ViewChild
 } from '@angular/core';
@@ -66,8 +68,13 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
-    @HostBinding('class') hostClass = `plait-board-container`;
+export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
+    hasInitialized = false;
+
+    @HostBinding('class')
+    get hostClass() {
+        return `plait-board-container ${this.board.cursor}`;
+    }
 
     board!: PlaitBoard;
 
@@ -163,6 +170,15 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             }
             this.plaitChange.emit(changeEvent);
         });
+        this.hasInitialized = true;
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        const valueChange = changes['plaitValue'];
+        if (valueChange && this.hasInitialized) {
+            this.board.children = valueChange.currentValue;
+            this.cdr.markForCheck();
+        }
     }
 
     ngAfterViewInit(): void {
