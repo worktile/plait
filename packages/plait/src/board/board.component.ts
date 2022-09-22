@@ -20,7 +20,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { BaseCursorStatus } from '../interfaces';
-import { Move, PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
+import { PlaitBoardMove, PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitOperation } from '../interfaces/operation';
 import { PlaitPlugin } from '../interfaces/plugin';
@@ -41,7 +41,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
             width="100%"
             height="100%"
             style="position: relative"
-            [style.cursor]="isMoveMode ? (move.isMoving ? 'grabbing' : 'grab') : 'auto'"
+            [style.cursor]="isMoveMode ? (plaitBoardMove.isMoving ? 'grabbing' : 'grab') : 'auto'"
         ></svg>
         <plait-toolbar
             *ngIf="isFocused && !toolbarTemplateRef"
@@ -94,7 +94,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         return vZoom;
     }
 
-    public move: Move = {
+    public plaitBoardMove: PlaitBoardMove = {
         isMoving: false,
         x: 0,
         y: 0
@@ -186,7 +186,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
-                this.isFocused && this.isMoveMode && this.move.isMoving && this.moving(event);
+                this.isFocused && this.isMoveMode && this.plaitBoardMove.isMoving && this.moving(event);
             });
 
         fromEvent<MouseEvent>(document, 'mouseup')
@@ -304,9 +304,9 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     initMove(e: MouseEvent) {
-        this.move.isMoving = true;
-        this.move.x = e.x;
-        this.move.y = e.y;
+        this.plaitBoardMove.isMoving = true;
+        this.plaitBoardMove.x = e.x;
+        this.plaitBoardMove.y = e.y;
         this.cdr.detectChanges();
     }
 
@@ -314,17 +314,17 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         const viewport = this.board?.viewport as Viewport;
         Transforms.setViewport(this.board, {
             ...viewport,
-            offsetX: viewport.offsetX + ((e.x - this.move.x) * 100) / this._viewZoom,
-            offsetY: viewport.offsetY + ((e.y - this.move.y) * 100) / this._viewZoom
+            offsetX: viewport.offsetX + ((e.x - this.plaitBoardMove.x) * 100) / this._viewZoom,
+            offsetY: viewport.offsetY + ((e.y - this.plaitBoardMove.y) * 100) / this._viewZoom
         });
-        this.move.x = e.x;
-        this.move.y = e.y;
+        this.plaitBoardMove.x = e.x;
+        this.plaitBoardMove.y = e.y;
     }
 
     moveEnd() {
-        this.move.isMoving = false;
-        this.move.x = 0;
-        this.move.y = 0;
+        this.plaitBoardMove.isMoving = false;
+        this.plaitBoardMove.x = 0;
+        this.plaitBoardMove.y = 0;
     }
 
     // 拖拽模式
