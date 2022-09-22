@@ -126,9 +126,9 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
 
-    @HostBinding('class.readonly-move')
+    @HostBinding('class.readonly')
     get readonly() {
-        return this.board.cursor === BaseCursorStatus.move && this.plaitReadonly;
+        return this.plaitReadonly;
     }
 
     @HostBinding('class.move')

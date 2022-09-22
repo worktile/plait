@@ -40,7 +40,7 @@ g[plait-mindmap='true'] {
         }
     }
 }
-.plait-board-container.readonly-move {
+.plait-board-container.readonly {
     :not(.collapsed) > .extend {
         .quick-insert {
             display: none;
