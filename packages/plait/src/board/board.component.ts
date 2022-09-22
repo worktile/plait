@@ -67,7 +67,10 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
-    @HostBinding('class') hostClass = `plait-board-container`;
+    @HostBinding('class')
+    get hostClass() {
+        return `plait-board-container ${this.board.cursor}`;
+    }
 
     board!: PlaitBoard;
 
@@ -125,11 +128,6 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
     @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
-
-    @HostBinding('class.move')
-    get cursor() {
-        return this.board.cursor === BaseCursorStatus.move;
-    }
 
     @HostBinding('class.focused')
     get focused() {

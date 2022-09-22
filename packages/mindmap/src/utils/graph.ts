@@ -76,6 +76,7 @@ export function getRectangleByNode(node: MindmapNode) {
 }
 
 export function hitMindmapNode(board: PlaitBoard, point: Point, node: MindmapNode) {
+    if (board.cursor === BaseCursorStatus.move) return false;
     const { x, y, width, height } = getRectangleByNode(node);
-    return point[0] >= x && point[0] <= x + width && point[1] >= y && point[1] <= y + height && board.cursor !== BaseCursorStatus.move;
+    return point[0] >= x && point[0] <= x + width && point[1] >= y && point[1] <= y + height;
 }
