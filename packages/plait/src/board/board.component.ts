@@ -19,8 +19,8 @@ import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { BaseCursorStatus, CursorStatus } from '../interfaces';
-import { DragMove, PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
+import { BaseCursorStatus } from '../interfaces';
+import { PlaitBoardMove, PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitOperation } from '../interfaces/operation';
 import { PlaitPlugin } from '../interfaces/plugin';
@@ -41,13 +41,13 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
             width="100%"
             height="100%"
             style="position: relative"
-            [style.cursor]="board.cursor === 'drag' ? (dragMove.isDragMoving ? 'grabbing' : 'grab') : 'auto'"
+            [style.cursor]="isMoveMode ? (plaitBoardMove.isMoving ? 'grabbing' : 'grab') : 'auto'"
         ></svg>
         <plait-toolbar
             *ngIf="isFocused && !toolbarTemplateRef"
             [cursorStatus]="board.cursor"
             [viewZoom]="viewZoom"
-            (dragMoveHandle)="changeDragMode($event)"
+            (moveHandle)="changeMoveMode($event)"
             (adaptHandle)="adaptHandle()"
             (zoomInHandle)="zoomInHandle()"
             (zoomOutHandle)="zoomOutHandle()"
@@ -67,7 +67,10 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../util
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
-    @HostBinding('class') hostClass = `plait-board-container`;
+    @HostBinding('class')
+    get hostClass() {
+        return `plait-board-container ${this.board.cursor}`;
+    }
 
     board!: PlaitBoard;
 
@@ -91,17 +94,24 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         return vZoom;
     }
 
-    public dragMove: DragMove = {
-        isDragMoving: false,
+    public plaitBoardMove: PlaitBoardMove = {
+        isMoving: false,
         x: 0,
         y: 0
     };
+
+    public get isMoveMode(): boolean {
+        return this.board.cursor === BaseCursorStatus.move;
+    }
 
     get host(): SVGElement {
         return this.svg.nativeElement;
     }
 
     get isFocused() {
+        if (!this.board?.selection && this.board.cursor === BaseCursorStatus.move) {
+            this.changeMoveMode(BaseCursorStatus.select);
+        }
         return this.board?.selection;
     }
 
@@ -124,7 +134,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         return this.isFocused;
     }
 
-    constructor(private cdr: ChangeDetectorRef, private renderer2: Renderer2) {}
+    constructor(private cdr: ChangeDetectorRef, private elementRef: ElementRef, private renderer2: Renderer2) {}
 
     ngOnInit(): void {
         const roughSVG = rough.svg(this.host as SVGSVGElement, { options: { roughness: 0, strokeWidth: 1 } });
@@ -169,21 +179,21 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousedown(event);
-                this.isFocused && this.board.cursor === BaseCursorStatus.drag && this.initDragMove(event);
+                this.isFocused && this.isMoveMode && this.initMove(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
-                this.isFocused && this.board.cursor === BaseCursorStatus.drag && this.dragMove.isDragMoving && this.dragMoving(event);
+                this.isFocused && this.isMoveMode && this.plaitBoardMove.isMoving && this.moving(event);
             });
 
         fromEvent<MouseEvent>(document, 'mouseup')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.globalMouseup(event);
-                this.isFocused && this.dragMoveEnd(event);
+                this.isFocused && this.moveEnd();
             });
 
         fromEvent<MouseEvent>(this.host, 'dblclick')
@@ -215,7 +225,10 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keydown(event);
-                this.isFocused && event.code === 'Space' && this.changeDragMode(BaseCursorStatus.drag);
+                if (this.isFocused && event.code === 'Space') {
+                    this.changeMoveMode(BaseCursorStatus.move);
+                    event.preventDefault();
+                }
             });
 
         fromEvent<KeyboardEvent>(document, 'keyup')
@@ -227,7 +240,7 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keyup(event);
-                this.isFocused && event.code === 'Space' && this.changeDragMode(BaseCursorStatus.select);
+                this.isFocused && event.code === 'Space' && this.changeMoveMode(BaseCursorStatus.select);
             });
 
         fromEvent<ClipboardEvent>(document, 'copy')
@@ -290,31 +303,32 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
         return index;
     };
 
-    initDragMove(e: MouseEvent) {
-        this.dragMove.isDragMoving = true;
-        this.dragMove.x = e.x;
-        this.dragMove.y = e.y;
+    initMove(e: MouseEvent) {
+        this.plaitBoardMove.isMoving = true;
+        this.plaitBoardMove.x = e.x;
+        this.plaitBoardMove.y = e.y;
+        this.cdr.detectChanges();
     }
 
-    dragMoving(e: MouseEvent) {
+    moving(e: MouseEvent) {
         const viewport = this.board?.viewport as Viewport;
         Transforms.setViewport(this.board, {
             ...viewport,
-            offsetX: viewport.offsetX + ((e.x - this.dragMove.x) * 100) / this._viewZoom,
-            offsetY: viewport.offsetY + ((e.y - this.dragMove.y) * 100) / this._viewZoom
+            offsetX: viewport.offsetX + ((e.x - this.plaitBoardMove.x) * 100) / this._viewZoom,
+            offsetY: viewport.offsetY + ((e.y - this.plaitBoardMove.y) * 100) / this._viewZoom
         });
-        this.dragMove.x = e.x;
-        this.dragMove.y = e.y;
+        this.plaitBoardMove.x = e.x;
+        this.plaitBoardMove.y = e.y;
     }
 
-    dragMoveEnd(e: MouseEvent) {
-        this.dragMove.isDragMoving = false;
-        this.dragMove.x = 0;
-        this.dragMove.y = 0;
+    moveEnd() {
+        this.plaitBoardMove.isMoving = false;
+        this.plaitBoardMove.x = 0;
+        this.plaitBoardMove.y = 0;
     }
 
     // 拖拽模式
-    changeDragMode(cursorStatus: BaseCursorStatus) {
+    changeMoveMode(cursorStatus: BaseCursorStatus) {
         updateCursorStatus(this.board, cursorStatus);
         this.cdr.markForCheck();
     }

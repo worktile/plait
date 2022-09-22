@@ -17,12 +17,21 @@ import {
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
+    BaseCursorStatus,
     Selection,
     toPoint,
     transformPoint,
     Transforms
 } from '@plait/core';
-import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isStandardLayout, isTopLayout, MindmapLayoutType, OriginNode } from '@plait/layouts';
+import {
+    isHorizontalLayout,
+    isIndentedLayout,
+    isLeftLayout,
+    isStandardLayout,
+    isTopLayout,
+    MindmapLayoutType,
+    OriginNode
+} from '@plait/layouts';
 import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
@@ -201,7 +210,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !!this.selection && !this.node.origin.isCollapsed;
+                    return !!this.selection && !this.node.origin.isCollapsed && this.board.cursor !== BaseCursorStatus.move;
                 })
             )
             .subscribe(() => {

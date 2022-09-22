@@ -13,7 +13,7 @@ export class PlaitToolbarComponent {
 
     @Input() viewZoom!: number;
 
-    @Output() dragMoveHandle: EventEmitter<BaseCursorStatus> = new EventEmitter();
+    @Output() moveHandle: EventEmitter<BaseCursorStatus> = new EventEmitter();
 
     @Output() adaptHandle = new EventEmitter();
 
@@ -24,10 +24,10 @@ export class PlaitToolbarComponent {
     @Output() resetZoomHandel = new EventEmitter();
 
     dragMove() {
-        if (this.cursorStatus !== BaseCursorStatus.drag) {
-            this.dragMoveHandle.emit(BaseCursorStatus.drag);
+        if (this.cursorStatus !== BaseCursorStatus.move) {
+            this.moveHandle.emit(BaseCursorStatus.move);
         } else {
-            this.dragMoveHandle.emit(BaseCursorStatus.select);
+            this.moveHandle.emit(BaseCursorStatus.select);
         }
     }
 
