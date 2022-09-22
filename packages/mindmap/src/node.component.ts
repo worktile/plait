@@ -504,7 +504,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         ];
 
         let arrowYOffset = [-4, 1, -0.6, 4];
-        let arrowXOffset = [10, 5.5, 5, 10];
+        let arrowXOffset = [10, 5.5, 5.5, 10];
 
         let extendLineXOffset = [0, 0];
         let extendLineYOffset = [0, 0];
@@ -520,7 +520,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 //左
                 extendLineXOffset = [-width, -width - EXTEND_OFFSET * 2];
                 circleOffset = [-EXTEND_RADIUS / 2, 0];
-                arrowXOffset = [-10, -5.5, -5, -10];
+                arrowXOffset = [-10, -5.5, -5.5, -10];
             }
         } else {
             arrowXOffset = [-4, 0.6, -1, 4];
@@ -528,13 +528,13 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 //上
                 extendLineXOffset = [-width / 2, -width / 2 - EXTEND_OFFSET];
                 extendLineYOffset = [-height / 2, -height / 2 - EXTEND_OFFSET];
-                arrowYOffset = [-10, -5.5, -5, -10];
+                arrowYOffset = [-10, -5.5, -5.5, -10];
                 circleOffset = [0, -EXTEND_RADIUS / 2];
             } else {
                 //下
                 extendLineXOffset = [-width / 2, -width / 2 - EXTEND_OFFSET];
                 extendLineYOffset = [height / 2, height / 2 + EXTEND_OFFSET];
-                arrowYOffset = [10, 5.5, 5, 10];
+                arrowYOffset = [10, 5.5, 5.5, 10];
                 circleOffset = [0, EXTEND_RADIUS / 2];
             }
         }
