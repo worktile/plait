@@ -227,7 +227,10 @@ export class PlaitBoardComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keydown(event);
-                this.isFocused && event.code === 'Space' && this.changeMoveMode(BaseCursorStatus.move);
+                if (this.isFocused && event.code === 'Space') {
+                    this.changeMoveMode(BaseCursorStatus.move);
+                    event.preventDefault();
+                }
             });
 
         fromEvent<KeyboardEvent>(document, 'keyup')
