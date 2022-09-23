@@ -17,7 +17,6 @@ import {
     TemplateRef,
     ViewChild
 } from '@angular/core';
-import { getSelectedMindmapElements } from '@plait/mindmap';
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
@@ -243,11 +242,8 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keydown(event);
                 if (this.isFocused && event.code === 'Space') {
-                    const currentNodes = getSelectedMindmapElements(this.board);
-                    if (!currentNodes.length) {
-                        this.changeMoveMode(BaseCursorStatus.move);
-                        event.preventDefault();
-                    }
+                    this.changeMoveMode(BaseCursorStatus.move);
+                    event.preventDefault();
                 }
             });
 
