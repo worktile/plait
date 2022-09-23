@@ -658,13 +658,18 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 if (selectedState) {
                     addSelectedMindmapElements(this.board, this.node.origin);
                 }
-                this.drawShape();
-                this.drawLink();
-                this.updateRichtext();
                 // resolve move node richtext lose issue
                 if (this.foreignObject && this.foreignObject.children.length <= 0) {
                     this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
                 }
+                // performance optimize
+                const isEquals = MindmapNode.isEquals(node.currentValue, node.previousValue);
+                if (isEquals) {
+                    return;
+                }
+                this.drawShape();
+                this.drawLink();
+                this.updateRichtext();
                 this.drawActiveG();
                 this.drawMaskG();
                 this.drawExtend();
