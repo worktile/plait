@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.40
+
+### Patch Changes
+
+-   [`9e31d7c`](https://github.com/worktile/plait/commit/9e31d7c81d01300083c1361805bb5b634c36d126) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support rerender when value change
+
 ## 0.0.39
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # mindmap
 
+## 0.0.40
+
+### Patch Changes
+
+-   [#128](https://github.com/worktile/plait/pull/128) [`831a548`](https://github.com/worktile/plait/commit/831a5481761558115c9f3f23a3483d28a549f56d) Thanks [@WBbug](https://github.com/WBbug)! - clear zoom effect
+
+*   [#129](https://github.com/worktile/plait/pull/129) [`241e9fa`](https://github.com/worktile/plait/commit/241e9fa6abc078e1d12fb6cd60a6dd84c8302ecf) Thanks [@WBbug](https://github.com/WBbug)! - get dom attribute after render
+
+-   [#127](https://github.com/worktile/plait/pull/127) [`5e8a56b`](https://github.com/worktile/plait/commit/5e8a56bd82692e2ccb2ea28f7c2629a542429f30) Thanks [@WBbug](https://github.com/WBbug)! - redraw arrow
+
+*   [#125](https://github.com/worktile/plait/pull/125) [`b4898bb`](https://github.com/worktile/plait/commit/b4898bb868d068232fc3f0a153d7cf8ccab5f88c) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix quick insert icon offset of mindmap
+
 ## 0.0.39
 
 ### Patch Changes
