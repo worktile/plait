@@ -133,7 +133,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     @HostBinding('class.readonly')
     get readonly() {
-        return this.board.cursor === BaseCursorStatus.move && this.plaitReadonly;
+        return this.plaitReadonly;
     }
 
     @HostBinding('class.focused')
@@ -324,11 +324,10 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     };
 
     setCursorStatus() {
-        if (!this.isFocused && this.isMoveMode) {
-            this.changeMoveMode(BaseCursorStatus.select);
-        }
         if (this.plaitReadonly) {
             this.changeMoveMode(BaseCursorStatus.move);
+        } else if (!this.isFocused) {
+            this.changeMoveMode(BaseCursorStatus.select);
         }
     }
 
