@@ -182,7 +182,8 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             if (!isVirtualKey(event)) {
                 const selectedElement = selectedElements[0];
                 const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
-                mindmapNodeComponent?.startEditText();
+                const space = event.code === 'Space';
+                mindmapNodeComponent?.startEditText(space, !space);
                 return;
             }
         }
@@ -208,7 +209,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     if (hitMindmapNode(board, point, node)) {
                         const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node.origin);
                         if (nodeComponent) {
-                            nodeComponent.startEditText();
+                            nodeComponent.startEditText(false, false);
                             startEdit = true;
                         }
                     }
