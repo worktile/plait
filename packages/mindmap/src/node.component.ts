@@ -121,6 +121,10 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     destroy$: Subject<any> = new Subject();
 
+    public get cursorMove(): boolean {
+        return this.board.cursor === BaseCursorStatus.move;
+    }
+
     constructor(private viewContainerRef: ViewContainerRef, private render2: Renderer2) {}
 
     ngOnInit(): void {
@@ -211,7 +215,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !!this.selection && !this.node.origin.isCollapsed && this.board.cursor !== BaseCursorStatus.move;
+                    return !!this.selection && !this.node.origin.isCollapsed && !this.cursorMove;
                 })
             )
             .subscribe(() => {
@@ -485,7 +489,10 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
         // inteactive
         fromEvent(this.extendG, 'mouseup')
-            .pipe(take(1))
+            .pipe(
+                filter(() => !this.cursorMove || this.board.readonly),
+                take(1)
+            )
             .subscribe(() => {
                 const isCollapsed = !this.node.origin.isCollapsed;
                 const newElement: Partial<MindmapElement> = { isCollapsed };

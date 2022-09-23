@@ -17,6 +17,7 @@ import {
     TemplateRef,
     ViewChild
 } from '@angular/core';
+import { getSelectedMindmapElements } from '@plait/mindmap';
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
@@ -113,9 +114,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     }
 
     get isFocused() {
-        if (!this.board?.selection && this.board.cursor === BaseCursorStatus.move) {
-            this.changeMoveMode(BaseCursorStatus.select);
-        }
         return this.board?.selection;
     }
 
@@ -132,6 +130,11 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
+
+    @HostBinding('class.readonly')
+    get readonly() {
+        return this.plaitReadonly;
+    }
 
     @HostBinding('class.focused')
     get focused() {
@@ -192,6 +195,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousedown(event);
+                this.setCursorStatus();
                 this.isFocused && this.isMoveMode && this.initMove(event);
             });
 
@@ -239,8 +243,11 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keydown(event);
                 if (this.isFocused && event.code === 'Space') {
-                    this.changeMoveMode(BaseCursorStatus.move);
-                    event.preventDefault();
+                    const currentNodes = getSelectedMindmapElements(this.board);
+                    if (!currentNodes.length) {
+                        this.changeMoveMode(BaseCursorStatus.move);
+                        event.preventDefault();
+                    }
                 }
             });
 
@@ -253,7 +260,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keyup(event);
-                this.isFocused && event.code === 'Space' && this.changeMoveMode(BaseCursorStatus.select);
+                this.isFocused && !this.plaitReadonly && event.code === 'Space' && this.changeMoveMode(BaseCursorStatus.select);
             });
 
         fromEvent<ClipboardEvent>(document, 'copy')
@@ -315,6 +322,14 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     trackBy = (index: number, element: PlaitElement) => {
         return index;
     };
+
+    setCursorStatus() {
+        if (this.plaitReadonly) {
+            this.changeMoveMode(BaseCursorStatus.move);
+        } else if (!this.isFocused) {
+            this.changeMoveMode(BaseCursorStatus.select);
+        }
+    }
 
     initMove(e: MouseEvent) {
         this.plaitBoardMove.isMoving = true;
