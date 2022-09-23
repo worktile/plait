@@ -4,6 +4,8 @@
 
 ### Patch Changes
 
+-   [#132](https://github.com/worktile/plait/pull/132) [`f320419`](https://github.com/worktile/plait/commit/f32041981d7a249342e386328fb645f93b8e261f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - mindmap node rerender performance optimize
+
 -   [#128](https://github.com/worktile/plait/pull/128) [`831a548`](https://github.com/worktile/plait/commit/831a5481761558115c9f3f23a3483d28a549f56d) Thanks [@WBbug](https://github.com/WBbug)! - clear zoom effect
 
 *   [#129](https://github.com/worktile/plait/pull/129) [`241e9fa`](https://github.com/worktile/plait/commit/241e9fa6abc078e1d12fb6cd60a6dd84c8302ecf) Thanks [@WBbug](https://github.com/WBbug)! - get dom attribute after render
