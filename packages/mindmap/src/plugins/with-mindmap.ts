@@ -182,8 +182,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             if (!isVirtualKey(event)) {
                 const selectedElement = selectedElements[0];
                 const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
-                const space = event.code === 'Space';
-                mindmapNodeComponent?.startEditText(space, !space);
+                const isSpaceKey = event.code === 'Space';
+                const isClear = isSpaceKey ? false : true;
+                mindmapNodeComponent?.startEditText(isSpaceKey, isClear);
                 return;
             }
         }
