@@ -48,7 +48,6 @@ export interface PlaitBoardOptions {
 }
 
 export interface PlaitBoardMove {
-    isMoving: boolean;
     x: number;
     y: number;
 }

@@ -13,7 +13,11 @@ import {
     PlaitPlugin,
     isNoSelectionElement,
     CLIP_BOARD_FORMAT_KEY,
-    PlaitHistoryBoard
+    PlaitHistoryBoard,
+    BaseCursorStatus,
+    PLAIT_BOARD_TO_COMPONENT,
+    updateCursorStatus,
+    PlaitBoardComponent
 } from '@plait/core';
 import { getWidthByText } from '@plait/richtext';
 import { PlaitMindmapComponent } from '../mindmap.component';
@@ -187,6 +191,11 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             }
         }
 
+        if (board.selection && event.code === 'Space') {
+            if (selectedElements?.length) {
+                return;
+            }
+        }
         keydown(event);
     };
 

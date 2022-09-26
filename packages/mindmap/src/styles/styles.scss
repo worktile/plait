@@ -41,6 +41,14 @@ g[plait-mindmap='true'] {
     }
 }
 .plait-board-container.move {
+    svg {
+        cursor: grab;
+    }
+    .zoom-toolbar {
+        svg {
+            cursor: pointer;
+        }
+    }
     .collapsed {
         .extend:hover {
             cursor: grab;
@@ -61,6 +69,11 @@ g[plait-mindmap='true'] {
         .quick-insert {
             display: none;
         }
+    }
+}
+.plait-board-container.moving {
+    svg {
+        cursor: grabbing;
     }
 }
 
