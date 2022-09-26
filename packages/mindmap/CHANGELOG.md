@@ -1,5 +1,19 @@
 # mindmap
 
+## 0.0.41
+
+### Patch Changes
+
+-   [#140](https://github.com/worktile/plait/pull/140) [`9753374`](https://github.com/worktile/plait/commit/9753374477d2406b471fc0e5fbaf81e76a9ce243) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix: restore performance optimize
+
+*   [#137](https://github.com/worktile/plait/pull/137) [`1ac0654`](https://github.com/worktile/plait/commit/1ac0654111c98bc185d2e1b45861987a6e02e512) Thanks [@WBbug](https://github.com/WBbug)! - add offset when number more than 10 or equal to 1
+
+-   [#135](https://github.com/worktile/plait/pull/135) [`0d94d19`](https://github.com/worktile/plait/commit/0d94d19aeb17fd29271c4d6494cc577397c56081) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support shortcut(Space) enter edit and cursor is end, support clear node text when press input keyboard
+
+*   [#136](https://github.com/worktile/plait/pull/136) [`996c96f`](https://github.com/worktile/plait/commit/996c96f63e2acc83253500b3970d8082db163ad0) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix: fix collapsed tab insert error
+
+-   [#139](https://github.com/worktile/plait/pull/139) [`0232dcb`](https://github.com/worktile/plait/commit/0232dcb3bc8ea02882b9319359fcf3ae7017fde5) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - support richtext paste function
+
 ## 0.0.40
 
 ### Patch Changes

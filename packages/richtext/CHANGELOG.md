@@ -1,5 +1,13 @@
 # richtext
 
+## 0.0.41
+
+### Patch Changes
+
+-   [#135](https://github.com/worktile/plait/pull/135) [`0d94d19`](https://github.com/worktile/plait/commit/0d94d19aeb17fd29271c4d6494cc577397c56081) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support shortcut(Space) enter edit and cursor is end, support clear node text when press input keyboard
+
+*   [#139](https://github.com/worktile/plait/pull/139) [`0232dcb`](https://github.com/worktile/plait/commit/0232dcb3bc8ea02882b9319359fcf3ae7017fde5) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - support richtext paste function
+
 ## 0.0.38
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # plait
 
+
+
+## 0.0.41
+
+### Patch Changes
+
+-   [#138](https://github.com/worktile/plait/pull/138) [`b9bebb`](https://github.com/worktile/plait/commit/b9bebb4c4642c4141c3349131a94810ca65130e1) Thanks [@Ashy6](https://github.com/Ashy6)! - refactor(core): use withMove plugin #WIK-8741
+
+
 ## 0.0.40
 
 ### Patch Changes
