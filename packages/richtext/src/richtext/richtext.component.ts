@@ -448,6 +448,7 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
         if (hasEditableTarget(this.editor, event.target)) {
             this.editor.insertData(event.clipboardData as DataTransfer);
             this.plaitChange.emit({ value: this.editor.children[0] as Element, operations: this.editor.operations });
+            this.cdr.detectChanges();
         }
         event.stopPropagation();
     }
