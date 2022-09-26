@@ -1,5 +1,6 @@
 import {
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     ComponentRef,
     Input,
@@ -121,7 +122,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     destroy$: Subject<any> = new Subject();
 
-    constructor(private viewContainerRef: ViewContainerRef, private render2: Renderer2) {}
+    constructor(private viewContainerRef: ViewContainerRef, private render2: Renderer2, private cdr: ChangeDetectorRef) {}
 
     ngOnInit(): void {
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
@@ -696,9 +697,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                     return;
                 }
                 richtext = event.value;
-
                 // 更新富文本、更新宽高
                 let { width, height } = richtextInstance.editable.getBoundingClientRect();
+                console.log(width, height);
                 if (width < NODE_MIN_WIDTH) {
                     width = NODE_MIN_WIDTH;
                 }

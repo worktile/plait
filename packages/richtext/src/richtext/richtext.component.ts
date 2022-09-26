@@ -16,7 +16,7 @@ import { withRichtext } from '../plugins/with-richtext';
 import { BaseRange, createEditor, Editor, Element, Node, Operation, Range, Transforms } from 'slate';
 import { BeforeInputEvent, PlaitChangeEvent } from '../interface/event';
 import { RichtextEditor, toSlateRange } from '../plugins/richtext-editor';
-import { getDefaultView } from '../utils/dom';
+import { DOMNode, getDefaultView, isDOMNode } from '../utils/dom';
 import { withHistory, HistoryEditor } from 'slate-history';
 
 import {
@@ -33,6 +33,7 @@ import { NODE_TO_INDEX } from '../utils/weak-maps';
 import { hotkeys, IS_CHROME, IS_SAFARI } from '@plait/core';
 import { withInline } from '../plugins/with-inline';
 import { isKeyHotkey } from 'is-hotkey';
+import { Subject } from 'rxjs';
 
 const NATIVE_INPUT_TYPES = ['insertText'];
 
@@ -49,6 +50,8 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
     isComposing = false;
 
     eventListeners: (() => void)[] = [];
+
+    destroy$: Subject<any> = new Subject();
 
     @Input() set plaitValue(value: Element) {
         this._plaitValue = value;
@@ -122,6 +125,7 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
             this.addEventListener('compositionend', (evt: Event) => this.compositionEnd(evt as CompositionEvent));
             this.addEventListener('focus', (evt: Event) => this.onFocus(evt as FocusEvent));
             this.addEventListener('blur', (evt: Event) => this.onBlur(evt as FocusEvent));
+            this.addEventListener('paste', (evt: Event) => this.onPaste(evt as ClipboardEvent));
             // 监控选区改变
             this.addEventListener(
                 'selectionchange',
@@ -440,6 +444,14 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
         this.plaitBlur.emit(event);
     }
 
+    private onPaste(event: ClipboardEvent) {
+        if (hasEditableTarget(this.editor, event.target)) {
+            this.editor.insertData(event.clipboardData as DataTransfer);
+            this.plaitChange.emit({ value: this.editor.children[0] as Element, operations: this.editor.operations });
+        }
+        event.stopPropagation();
+    }
+
     private toNativeSelection() {
         if (this.isComposing) {
             return;
@@ -522,6 +534,8 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
         EDITOR_TO_WINDOW.delete(this.editor);
         EDITOR_TO_ELEMENT.delete(this.editor);
         ELEMENT_TO_NODE.delete(this.editable);
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 }
 
@@ -547,4 +561,7 @@ const preventDefaultIME = (event: Event, editor: RichtextEditor) => {
         const textNode = domSelection.anchorNode;
         textNode.splitText(textNode.length - insertText.length).remove();
     }
+};
+const hasEditableTarget = (editor: RichtextEditor, target: EventTarget | null): target is DOMNode => {
+    return isDOMNode(target) && RichtextEditor.hasDOMNode(editor, target, { editable: true });
 };

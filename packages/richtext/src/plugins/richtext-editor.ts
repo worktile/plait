@@ -1,9 +1,19 @@
 import { BaseEditor, Editor, Element, Node, Path, Point, Range } from 'slate';
-import { DOMRange, DOMPoint, DOMSelection, isDOMSelection, WITH_ZERO_WIDTH_CHAR, normalizeDOMPoint } from '../utils/dom';
+import {
+    DOMRange,
+    DOMPoint,
+    DOMSelection,
+    isDOMSelection,
+    WITH_ZERO_WIDTH_CHAR,
+    normalizeDOMPoint,
+    DOMNode,
+    isDOMElement
+} from '../utils/dom';
 import { EDITOR_TO_ELEMENT, EDITOR_TO_WINDOW, ELEMENT_TO_NODE, NODE_TO_ELEMENT, NODE_TO_INDEX, NODE_TO_PARENT } from '../utils/weak-maps';
 
 export interface RichtextEditor extends BaseEditor {
     keydown: (event: KeyboardEvent) => void;
+    insertData: (data: DataTransfer) => void;
 }
 
 export const RichtextEditor = {
@@ -81,6 +91,24 @@ export const RichtextEditor = {
         }
 
         throw new Error(`Unable to find the path for Slate node: ${JSON.stringify(node)}`);
+    },
+    hasDOMNode(editor: Editor, target: DOMNode, options: { editable?: boolean } = {}): boolean {
+        const { editable = false } = options;
+        let targetEl;
+
+        // COMPAT: In Firefox, reading `target.nodeType` will throw an error if
+        // target is originating from an internal "restricted" element (e.g. a
+        // stepper arrow on a number input). (2018/05/04)
+        // https://github.com/ianstormtaylor/slate/issues/1819
+        try {
+            targetEl = (isDOMElement(target) ? target : target.parentElement) as HTMLElement;
+        } catch (err) {
+            throw err;
+        }
+        if (!targetEl) {
+            return false;
+        }
+        return !editable || targetEl.isContentEditable || !!targetEl.getAttribute('data-slate-zero-width');
     }
 };
 
