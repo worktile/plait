@@ -16,7 +16,7 @@ import { withRichtext } from '../plugins/with-richtext';
 import { BaseRange, createEditor, Editor, Element, Node, Operation, Range, Transforms } from 'slate';
 import { BeforeInputEvent, PlaitChangeEvent } from '../interface/event';
 import { RichtextEditor, toSlateRange } from '../plugins/richtext-editor';
-import { DOMNode, getDefaultView, hasEditableTarget, isDOMNode } from '../utils/dom';
+import { DOMNode, getDefaultView, isDOMNode } from '../utils/dom';
 import { withHistory, HistoryEditor } from 'slate-history';
 
 import {
@@ -33,7 +33,6 @@ import { NODE_TO_INDEX } from '../utils/weak-maps';
 import { hotkeys, IS_CHROME, IS_SAFARI } from '@plait/core';
 import { withInline } from '../plugins/with-inline';
 import { isKeyHotkey } from 'is-hotkey';
-import { Subject } from 'rxjs';
 
 const NATIVE_INPUT_TYPES = ['insertText'];
 
@@ -556,4 +555,7 @@ const preventDefaultIME = (event: Event, editor: RichtextEditor) => {
         const textNode = domSelection.anchorNode;
         textNode.splitText(textNode.length - insertText.length).remove();
     }
+};
+export const hasEditableTarget = (editor: RichtextEditor, target: EventTarget | null): target is DOMNode => {
+    return isDOMNode(target) && RichtextEditor.hasDOMNode(editor, target, { editable: true });
 };
