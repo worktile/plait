@@ -122,7 +122,11 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     destroy$: Subject<any> = new Subject();
 
-    constructor(private viewContainerRef: ViewContainerRef, private render2: Renderer2, private cdr: ChangeDetectorRef) {}
+    public get cursorMove(): boolean {
+        return this.board.cursor === BaseCursorStatus.move;
+    }
+
+    constructor(private viewContainerRef: ViewContainerRef, private render2: Renderer2) {}
 
     ngOnInit(): void {
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
@@ -212,7 +216,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !!this.selection && !this.node.origin.isCollapsed && this.board.cursor !== BaseCursorStatus.move;
+                    return !!this.selection && !this.node.origin.isCollapsed && !this.cursorMove;
                 })
             )
             .subscribe(() => {
@@ -486,7 +490,10 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
         // inteactive
         fromEvent(this.extendG, 'mouseup')
-            .pipe(take(1))
+            .pipe(
+                filter(() => !this.cursorMove || this.board.readonly),
+                take(1)
+            )
             .subscribe(() => {
                 const isCollapsed = !this.node.origin.isCollapsed;
                 const newElement: Partial<MindmapElement> = { isCollapsed };
@@ -574,25 +581,29 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         );
 
         if (this.node.origin.isCollapsed) {
-            this.gGroup.classList.add('collapsed');
-
-            this.extendG.appendChild(extendLine);
-
             const badge = this.roughSVG.circle(extendLineXY[1][0] + circleOffset[0], extendLineXY[1][1] + circleOffset[1], EXTEND_RADIUS, {
                 fill: stroke,
                 stroke,
                 fillStyle: 'solid'
             });
+
+            let numberOffset = 0;
+            if (getChildrenCount(this.node.origin) >= 10) numberOffset = -2;
+            if (getChildrenCount(this.node.origin) === 1) numberOffset = 1;
+
             const badgeText = createText(
-                extendLineXY[1][0] + circleOffset[0] - 4,
+                extendLineXY[1][0] + circleOffset[0] - 4 + numberOffset,
                 extendLineXY[1][1] + circleOffset[1] + 4,
                 stroke,
                 `${getChildrenCount(this.node.origin)}`
             );
+
+            this.gGroup.classList.add('collapsed');
             badge.setAttribute('style', 'opacity: 0.15');
             badgeText.setAttribute('style', 'font-size: 12px');
             this.extendG.appendChild(badge);
             this.extendG.appendChild(badgeText);
+            this.extendG.appendChild(extendLine);
         } else {
             this.gGroup.classList.remove('collapsed');
 
@@ -652,13 +663,18 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 if (selectedState) {
                     addSelectedMindmapElements(this.board, this.node.origin);
                 }
-                this.drawShape();
-                this.drawLink();
-                this.updateRichtext();
                 // resolve move node richtext lose issue
                 if (this.foreignObject && this.foreignObject.children.length <= 0) {
                     this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
                 }
+                // performance optimize
+                const isEquals = MindmapNode.isEquals(node.currentValue, node.previousValue);
+                if (isEquals) {
+                    return;
+                }
+                this.drawShape();
+                this.drawLink();
+                this.updateRichtext();
                 this.drawActiveG();
                 this.drawMaskG();
                 this.drawExtend();

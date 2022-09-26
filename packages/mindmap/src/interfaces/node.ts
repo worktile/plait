@@ -16,6 +16,14 @@ export interface MindmapNode {
     up: boolean;
 }
 
+export const MindmapNode = {
+    isEquals(node: MindmapNode, otherNode: MindmapNode) {
+        const hasSameSize = node.x === otherNode.x && node.y === otherNode.y && node.width === otherNode.width && node.height === otherNode.height;
+        const hasSameOrigin = node.origin === otherNode.origin;
+        return hasSameSize && hasSameOrigin;
+    }
+};
+
 // mindmap node extend 支持的布局类型
 export type ExtendLayoutType = Exclude<MindmapLayoutType, MindmapLayoutType.standard>;
 export type CoordinateType = {
