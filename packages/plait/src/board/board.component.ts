@@ -22,29 +22,24 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { BaseCursorStatus } from '../interfaces';
-import { PlaitBoardMove, PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
+import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitOperation } from '../interfaces/operation';
 import { PlaitPlugin } from '../interfaces/plugin';
 import { Viewport } from '../interfaces/viewport';
 import { createBoard } from '../plugins/create-board';
 import { withBoard } from '../plugins/with-board';
-import { withHistroy } from '../plugins/with-history';
+import { withHistory } from '../plugins/with-history';
+import { withMove } from '../plugins/with-move';
 import { withSelection } from '../plugins/with-selection';
 import { Transforms } from '../transfroms';
 import { getViewBox, transformViewZoom, transformZoom, updateCursorStatus } from '../utils/board';
-import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../utils/weak-maps';
+import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO_COMPONENT } from '../utils/weak-maps';
 
 @Component({
     selector: 'plait-board',
     template: `
-        <svg
-            #svg
-            width="100%"
-            height="100%"
-            style="position: relative"
-            [style.cursor]="isMoveMode ? (plaitBoardMove.isMoving ? 'grabbing' : 'grab') : 'auto'"
-        ></svg>
+        <svg #svg width="100%" height="100%" style="position: relative"></svg>
         <plait-toolbar
             *ngIf="isFocused && !toolbarTemplateRef"
             [cursorStatus]="board.cursor"
@@ -98,11 +93,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         return vZoom;
     }
 
-    public plaitBoardMove: PlaitBoardMove = {
-        isMoving: false,
-        x: 0,
-        y: 0
-    };
+    public isMoving: boolean = false;
 
     public get isMoveMode(): boolean {
         return this.board.cursor === BaseCursorStatus.move;
@@ -135,6 +126,11 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         return this.plaitReadonly;
     }
 
+    @HostBinding('class.moving')
+    get moving() {
+        return this.isMoving;
+    }
+
     @HostBinding('class.focused')
     get focused() {
         return this.isFocused;
@@ -148,6 +144,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.initializePlugins();
         this.initializeEvents();
         this.updateViewport();
+        PLAIT_BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.cdr.detectChanges();
             const changeEvent: PlaitBoardChangeEvent = {
@@ -179,7 +176,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     initializePlugins() {
         const options: PlaitBoardOptions = { readonly: this.plaitReadonly, allowClearBoard: this.plaitAllowClearBoard };
-        let board = withHistroy(withSelection(withBoard(createBoard(this.host, this.plaitValue, options))));
+        let board = withMove(withHistory(withSelection(withBoard(createBoard(this.host, this.plaitValue, options)))));
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
         });
@@ -194,22 +191,19 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousedown(event);
-                this.setCursorStatus();
-                this.isFocused && this.isMoveMode && this.initMove(event);
+                this.cdr.detectChanges();
             });
 
         fromEvent<MouseEvent>(this.host, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
-                this.isFocused && this.isMoveMode && this.plaitBoardMove.isMoving && this.moving(event);
             });
 
         fromEvent<MouseEvent>(document, 'mouseup')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.globalMouseup(event);
-                this.isFocused && this.moveEnd();
             });
 
         fromEvent<MouseEvent>(this.host, 'dblclick')
@@ -241,10 +235,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keydown(event);
-                if (this.isFocused && event.code === 'Space') {
-                    this.changeMoveMode(BaseCursorStatus.move);
-                    event.preventDefault();
-                }
+                this.cdr.detectChanges();
             });
 
         fromEvent<KeyboardEvent>(document, 'keyup')
@@ -256,7 +247,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keyup(event);
-                this.isFocused && !this.plaitReadonly && event.code === 'Space' && this.changeMoveMode(BaseCursorStatus.select);
+                this.cdr.detectChanges();
             });
 
         fromEvent<ClipboardEvent>(document, 'copy')
@@ -319,38 +310,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         return index;
     };
 
-    setCursorStatus() {
-        if (this.plaitReadonly) {
-            this.changeMoveMode(BaseCursorStatus.move);
-        } else if (!this.isFocused) {
-            this.changeMoveMode(BaseCursorStatus.select);
-        }
-    }
-
-    initMove(e: MouseEvent) {
-        this.plaitBoardMove.isMoving = true;
-        this.plaitBoardMove.x = e.x;
-        this.plaitBoardMove.y = e.y;
-        this.cdr.detectChanges();
-    }
-
-    moving(e: MouseEvent) {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            offsetX: viewport.offsetX + ((e.x - this.plaitBoardMove.x) * 100) / this._viewZoom,
-            offsetY: viewport.offsetY + ((e.y - this.plaitBoardMove.y) * 100) / this._viewZoom
-        });
-        this.plaitBoardMove.x = e.x;
-        this.plaitBoardMove.y = e.y;
-    }
-
-    moveEnd() {
-        this.plaitBoardMove.isMoving = false;
-        this.plaitBoardMove.x = 0;
-        this.plaitBoardMove.y = 0;
-    }
-
     // 拖拽模式
     changeMoveMode(cursorStatus: BaseCursorStatus) {
         updateCursorStatus(this.board, cursorStatus);
@@ -403,5 +362,9 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.destroy$.next();
         this.destroy$.complete();
         HOST_TO_ROUGH_SVG.delete(this.host);
+    }
+
+    movingChange(isMoving: boolean) {
+        this.isMoving = isMoving;
     }
 }

@@ -2,7 +2,7 @@ import { PlaitBoard, PlaitOperation } from '../interfaces';
 import { isHotkey } from 'is-hotkey';
 import { PlaitHistoryBoard, shouldClear, shouldMerge, shouldSave } from '../utils';
 
-export function withHistroy<T extends PlaitBoard>(board: T) {
+export function withHistory<T extends PlaitBoard>(board: T) {
     const { apply, keydown } = board;
     board.history = { undos: [], redos: [] };
 
