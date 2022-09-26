@@ -183,7 +183,7 @@ export const createEmptyNode = (board: PlaitBoard, path: Path) => {
     setTimeout(() => {
         const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
         if (nodeComponent) {
-            nodeComponent.startEditText();
+            nodeComponent.startEditText(true, false);
         }
     });
 };

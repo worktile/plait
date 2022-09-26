@@ -50,7 +50,7 @@ import {
     QUICK_INSERT_INNER_CROSS_COLOR,
     STROKE_WIDTH
 } from './constants';
-import { Operation } from 'slate';
+import { Editor, Operation } from 'slate';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLink } from './draw/link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
@@ -682,7 +682,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-    startEditText() {
+    startEditText(isEnd: boolean, isClear: boolean) {
         this.isEditable = true;
         this.disabledMaskG();
         IS_TEXT_EDITABLE.set(this.board, true);
@@ -693,10 +693,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         if (richtextInstance.plaitReadonly) {
             richtextInstance.plaitReadonly = false;
             this.richtextComponentRef.changeDetectorRef.detectChanges();
-            setTimeout(() => {
-                this.drawActiveG();
-                setFullSelectionAndFocus(richtextInstance.editor);
-            }, 0);
+            this.drawActiveG();
+            const location = isEnd ? Editor.end(richtextInstance.editor, [0]) : [0];
+            setFullSelectionAndFocus(richtextInstance.editor, location);
+            if (isClear) {
+                Editor.deleteBackward(richtextInstance.editor);
+            }
         }
         let richtext = richtextInstance.plaitValue;
         // 增加 debounceTime 等待 DOM 渲染完成后再去取文本宽高
