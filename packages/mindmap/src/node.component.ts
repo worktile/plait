@@ -580,25 +580,29 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         );
 
         if (this.node.origin.isCollapsed) {
-            this.gGroup.classList.add('collapsed');
-
-            this.extendG.appendChild(extendLine);
-
             const badge = this.roughSVG.circle(extendLineXY[1][0] + circleOffset[0], extendLineXY[1][1] + circleOffset[1], EXTEND_RADIUS, {
                 fill: stroke,
                 stroke,
                 fillStyle: 'solid'
             });
+
+            let numberOffset = 0;
+            if (getChildrenCount(this.node.origin) >= 10) numberOffset = -2;
+            if (getChildrenCount(this.node.origin) === 1) numberOffset = 1;
+
             const badgeText = createText(
-                extendLineXY[1][0] + circleOffset[0] - 4,
+                extendLineXY[1][0] + circleOffset[0] - 4 + numberOffset,
                 extendLineXY[1][1] + circleOffset[1] + 4,
                 stroke,
                 `${getChildrenCount(this.node.origin)}`
             );
+
+            this.gGroup.classList.add('collapsed');
             badge.setAttribute('style', 'opacity: 0.15');
             badgeText.setAttribute('style', 'font-size: 12px');
             this.extendG.appendChild(badge);
             this.extendG.appendChild(badgeText);
+            this.extendG.appendChild(extendLine);
         } else {
             this.gGroup.classList.remove('collapsed');
 
