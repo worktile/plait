@@ -122,6 +122,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 if (event.key === 'Tab') {
                     if (mindmapNodeComponent) {
                         const isCollapsed = mindmapNodeComponent.node.origin.isCollapsed;
+                        const path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.origin.children.length);
                         if (isCollapsed) {
                             const newElement: Partial<MindmapElement> = { isCollapsed: false };
                             const boardPath = findPath(board, mindmapNodeComponent.node);
@@ -129,7 +130,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                                 Transforms.setNode(board, newElement, boardPath);
                             });
                         }
-                        const path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.origin.children.length);
                         createEmptyNode(board, path);
                     }
                 } else {
