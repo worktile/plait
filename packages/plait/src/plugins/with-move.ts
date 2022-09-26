@@ -1,4 +1,3 @@
-import { getSelectedMindmapElements } from '@plait/mindmap';
 import { PlaitBoardComponent } from '../board/board.component';
 import { BaseCursorStatus, PlaitBoard, PlaitBoardMove, Viewport } from '../interfaces';
 import { Transforms } from '../transfroms';
@@ -14,15 +13,16 @@ export function withMove<T extends PlaitBoard>(board: T) {
 
     board.mousedown = (event: MouseEvent) => {
         if (board.readonly) {
-            changeMoveMode(BaseCursorStatus.move);
+            updateCursorStatus(board, BaseCursorStatus.move);
         } else if (!board.selection) {
-            changeMoveMode(BaseCursorStatus.select);
+            updateCursorStatus(board, BaseCursorStatus.select);
         }
         if (board.cursor === BaseCursorStatus.move && board.selection) {
             const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
             boardComponent.movingChange(true);
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
+            boardComponent.cdr.detectChanges();
         }
         mousedown(event);
     };
@@ -54,24 +54,20 @@ export function withMove<T extends PlaitBoard>(board: T) {
 
     board.keydown = (event: KeyboardEvent) => {
         if (board.selection && event.code === 'Space') {
-            const currentNodes = getSelectedMindmapElements(board);
-            if (!currentNodes.length) {
-                changeMoveMode(BaseCursorStatus.move);
-                event.preventDefault();
-            }
+            updateCursorStatus(board, BaseCursorStatus.move);
+            const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
+            boardComponent.cdr.detectChanges();
+            event.preventDefault();
         }
         keydown(event);
     };
 
     board.keyup = (event: KeyboardEvent) => {
-        board.selection && !board.readonly && event.code === 'Space' && changeMoveMode(BaseCursorStatus.select);
+        board.selection && !board.readonly && event.code === 'Space' && updateCursorStatus(board, BaseCursorStatus.select);
+        const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
+        boardComponent.cdr.detectChanges();
         keyup(event);
     };
-
-    // 拖拽模式
-    function changeMoveMode(cursorStatus: BaseCursorStatus) {
-        updateCursorStatus(board, cursorStatus);
-    }
 
     return board;
 }

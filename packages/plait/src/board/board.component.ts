@@ -136,7 +136,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         return this.isFocused;
     }
 
-    constructor(private cdr: ChangeDetectorRef, private elementRef: ElementRef, private renderer2: Renderer2) {}
+    constructor(public cdr: ChangeDetectorRef, private elementRef: ElementRef, private renderer2: Renderer2) {}
 
     ngOnInit(): void {
         const roughSVG = rough.svg(this.host as SVGSVGElement, { options: { roughness: 0, strokeWidth: 1 } });
@@ -191,7 +191,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousedown(event);
-                this.cdr.detectChanges();
             });
 
         fromEvent<MouseEvent>(this.host, 'mousemove')
@@ -235,7 +234,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keydown(event);
-                this.cdr.detectChanges();
             });
 
         fromEvent<KeyboardEvent>(document, 'keyup')
@@ -247,7 +245,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keyup(event);
-                this.cdr.detectChanges();
             });
 
         fromEvent<ClipboardEvent>(document, 'copy')
