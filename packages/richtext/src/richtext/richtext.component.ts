@@ -16,7 +16,7 @@ import { withRichtext } from '../plugins/with-richtext';
 import { BaseRange, createEditor, Editor, Element, Node, Operation, Range, Transforms } from 'slate';
 import { BeforeInputEvent, PlaitChangeEvent } from '../interface/event';
 import { RichtextEditor, toSlateRange } from '../plugins/richtext-editor';
-import { DOMNode, getDefaultView, isDOMNode } from '../utils/dom';
+import { DOMNode, getDefaultView, hasEditableTarget, isDOMNode } from '../utils/dom';
 import { withHistory, HistoryEditor } from 'slate-history';
 
 import {
@@ -50,8 +50,6 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
     isComposing = false;
 
     eventListeners: (() => void)[] = [];
-
-    destroy$: Subject<any> = new Subject();
 
     @Input() set plaitValue(value: Element) {
         this._plaitValue = value;
@@ -447,8 +445,6 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
     private onPaste(event: ClipboardEvent) {
         if (hasEditableTarget(this.editor, event.target)) {
             this.editor.insertData(event.clipboardData as DataTransfer);
-            this.plaitChange.emit({ value: this.editor.children[0] as Element, operations: this.editor.operations });
-            this.cdr.detectChanges();
         }
         event.stopPropagation();
     }
@@ -535,8 +531,6 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
         EDITOR_TO_WINDOW.delete(this.editor);
         EDITOR_TO_ELEMENT.delete(this.editor);
         ELEMENT_TO_NODE.delete(this.editable);
-        this.destroy$.next();
-        this.destroy$.complete();
     }
 }
 
@@ -562,7 +556,4 @@ const preventDefaultIME = (event: Event, editor: RichtextEditor) => {
         const textNode = domSelection.anchorNode;
         textNode.splitText(textNode.length - insertText.length).remove();
     }
-};
-const hasEditableTarget = (editor: RichtextEditor, target: EventTarget | null): target is DOMNode => {
-    return isDOMNode(target) && RichtextEditor.hasDOMNode(editor, target, { editable: true });
 };
