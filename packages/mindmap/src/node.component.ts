@@ -1,5 +1,6 @@
 import {
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     ComponentRef,
     Input,
@@ -712,7 +713,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                     return;
                 }
                 richtext = event.value;
-
+                this.updateRichtext();
                 // 更新富文本、更新宽高
                 let { width, height } = richtextInstance.editable.getBoundingClientRect();
                 if (width < NODE_MIN_WIDTH) {
