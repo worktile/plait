@@ -7,6 +7,7 @@ import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
 import { getCorrectLayoutByElement, getLayoutByElement, getNodeShapeByElement, getRectangleByNode, isChildRight } from '../utils';
 import { MindmapLayoutType, isTopLayout, isIndentedLayout } from '@plait/layouts';
+import { isStandardLayout } from '../../../layouts/src/public-api';
 
 export function drawLink(
     roughSVG: RoughSVG,
@@ -56,7 +57,23 @@ export function drawLink(
 
     const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
     const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
-
+    const layout = getCorrectLayoutByElement(node.origin) as MindmapLayoutType;
+    if (endNode.origin.isRoot) {
+        if (layout === MindmapLayoutType.left || isStandardLayout(layout)) {
+            endX -= strokeWidth;
+        }
+        if (layout === MindmapLayoutType.upward) {
+            endY -= strokeWidth;
+        }
+    }
+    if (beginNode.origin.isRoot) {
+        if (layout === MindmapLayoutType.right || isStandardLayout(layout)) {
+            beginX += strokeWidth;
+        }
+        if (layout === MindmapLayoutType.downward) {
+            beginY += strokeWidth;
+        }
+    }
     if (isHorizontal) {
         let curve: Point[] = [
             [beginX, beginY],
@@ -123,7 +140,6 @@ export function drawLink(
             [endX, endY - (beginNode.vGap + endNode.vGap) / 2],
             [endX, endY]
         ];
-        const layout = getCorrectLayoutByElement(node.origin) as MindmapLayoutType;
 
         if (!node.origin.isRoot) {
             if (isTopLayout(layout)) {

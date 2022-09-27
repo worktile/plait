@@ -4,7 +4,8 @@ import { MindmapNodeShape, STROKE_WIDTH } from '../constants';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
-import { getNodeShapeByElement, getRectangleByNode, isChildUp } from '../utils';
+import { getCorrectLayoutByElement, getNodeShapeByElement, getRectangleByNode, isChildUp } from '../utils';
+import { MindmapLayoutType } from '@plait/layouts';
 
 export function drawIndentedLink(
     roughSVG: RoughSVG,
@@ -29,7 +30,16 @@ export function drawIndentedLink(
     endY = isUnderlineShap ? endNode.y + endNode.height - endNode.vGap : endNode.y + endNode.height / 2;
     //根据位置，设置正负参数
     let plusMinus = isChildUp(node, child) ? (node.left ? [-1, -1] : [1, -1]) : node.left ? [-1, 1] : [1, 1];
-
+    const layout = getCorrectLayoutByElement(node.origin);
+    const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
+    if (beginNode.origin.isRoot) {
+        if (layout === MindmapLayoutType.leftBottomIndented || layout === MindmapLayoutType.rightBottomIndented) {
+            beginY += strokeWidth;
+        }
+        if (layout === MindmapLayoutType.leftTopIndented || layout === MindmapLayoutType.rightTopIndented) {
+            beginY -= strokeWidth;
+        }
+    }
     let curve: Point[] = [
         [beginX, beginY],
         [beginX, beginY],
@@ -44,7 +54,6 @@ export function drawIndentedLink(
     ];
 
     const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
-    const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
 
     const points = pointsOnBezierCurves(curve);
     return roughSVG.curve(points as any, { stroke, strokeWidth });

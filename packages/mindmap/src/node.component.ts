@@ -334,9 +334,14 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
          */
         const shape = getNodeShapeByElement(this.node.origin);
         // 形状是矩形要偏移边框的线宽
+        const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         let offsetBorderLineWidth = 0;
         if (shape === MindmapNodeShape.roundRectangle && offset === 0) {
-            offsetBorderLineWidth = STROKE_WIDTH;
+            offsetBorderLineWidth = strokeWidth;
+        }
+        let offsetRootBorderLineWidth = 0;
+        if (this.node.origin.isRoot) {
+            offsetRootBorderLineWidth = strokeWidth;
         }
         // 当没有子节点时，需要缩小的偏移量
         const extraOffset = 3;
@@ -344,75 +349,102 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             // 画线方向：右向左 <--
             [MindmapLayoutType.left]: {
                 // EXTEND_RADIUS * 0.5 是 左方向，折叠/收起的偏移量
-                startX: x - (offset > 0 ? offset + EXTEND_RADIUS * 0.5 : 0),
+                startX: x - (offset > 0 ? offset + EXTEND_RADIUS * 0.5 : 0) - offsetRootBorderLineWidth,
                 startY: y + height,
-                endX: x - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) - EXTEND_RADIUS,
+                endX:
+                    x -
+                    offsetBorderLineWidth -
+                    offsetRootBorderLineWidth -
+                    (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) -
+                    EXTEND_RADIUS,
                 endY: y + height
             },
             // 画线方向：左向右 -->
             [MindmapLayoutType.right]: {
-                startX: x + width + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                startX: x + width + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + offsetRootBorderLineWidth,
                 startY: y + height,
                 endX:
                     x +
                     width +
                     offsetBorderLineWidth +
                     (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) +
-                    EXTEND_RADIUS,
+                    EXTEND_RADIUS +
+                    offsetRootBorderLineWidth,
                 endY: y + height
             },
             // 画线方向：下向上 -->
             [MindmapLayoutType.upward]: {
                 startX: x + width * 0.5,
-                startY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                startY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - offsetRootBorderLineWidth,
                 endX: x + width * 0.5,
-                endY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) - EXTEND_RADIUS
+                endY:
+                    y -
+                    offsetBorderLineWidth -
+                    (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) -
+                    EXTEND_RADIUS -
+                    offsetRootBorderLineWidth
             },
             // 画线方向：上向下 -->
             [MindmapLayoutType.downward]: {
                 startX: x + width * 0.5,
-                startY: y + height + offsetBorderLineWidth + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                startY:
+                    y + height + offsetBorderLineWidth + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + offsetRootBorderLineWidth,
                 endX: x + width * 0.5,
                 endY:
                     y +
                     height +
                     offsetBorderLineWidth +
                     (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) +
-                    EXTEND_RADIUS
+                    EXTEND_RADIUS +
+                    offsetRootBorderLineWidth
             },
             [MindmapLayoutType.leftBottomIndented]: {
                 startX: x + width * 0.5,
-                startY: y + height + offsetBorderLineWidth + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                startY:
+                    y + height + offsetBorderLineWidth + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + offsetRootBorderLineWidth,
                 endX: x + width * 0.5,
                 endY:
                     y +
                     height +
                     offsetBorderLineWidth +
                     (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) +
-                    EXTEND_RADIUS
+                    EXTEND_RADIUS +
+                    offsetRootBorderLineWidth
             },
             [MindmapLayoutType.leftTopIndented]: {
                 startX: x + width * 0.5,
-                startY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                startY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - offsetRootBorderLineWidth,
                 endX: x + width * 0.5,
-                endY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - EXTEND_RADIUS
+                endY:
+                    y -
+                    offsetBorderLineWidth -
+                    (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) -
+                    EXTEND_RADIUS -
+                    offsetRootBorderLineWidth
             },
             [MindmapLayoutType.rightBottomIndented]: {
                 startX: x + width * 0.5,
-                startY: y + height + offsetBorderLineWidth + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                startY:
+                    y + height + offsetBorderLineWidth + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + offsetRootBorderLineWidth,
                 endX: x + width * 0.5,
                 endY:
                     y +
                     height +
                     offsetBorderLineWidth +
                     (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) +
-                    EXTEND_RADIUS
+                    EXTEND_RADIUS +
+                    offsetRootBorderLineWidth
             },
             [MindmapLayoutType.rightTopIndented]: {
                 startX: x + width * 0.5,
-                startY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0),
+                startY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - offsetRootBorderLineWidth,
                 endX: x + width * 0.5,
-                endY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - EXTEND_RADIUS
+                endY:
+                    y -
+                    offsetBorderLineWidth -
+                    (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) -
+                    EXTEND_RADIUS -
+                    offsetRootBorderLineWidth
             }
         };
         if (shape === MindmapNodeShape.roundRectangle || this.node.origin.isRoot) {
@@ -424,7 +456,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const stroke = this.node.origin.isRoot
             ? getRootLinkLineColorByMindmapElement(this.node.origin)
             : getLinkLineColorByMindmapElement(this.node.origin);
-        const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         let nodeLayout = getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
         if (this.node.origin.isRoot && isStandardLayout(nodeLayout)) {
             const root = this.node.origin as OriginNode;
