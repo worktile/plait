@@ -22,7 +22,7 @@ export function withMove<T extends PlaitBoard>(board: T) {
             boardComponent.movingChange(true);
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
-            boardComponent.cdr.detectChanges();
+            boardComponent.cdr.markForCheck();
         }
         mousedown(event);
     };
@@ -54,18 +54,22 @@ export function withMove<T extends PlaitBoard>(board: T) {
 
     board.keydown = (event: KeyboardEvent) => {
         if (board.selection && event.code === 'Space') {
-            updateCursorStatus(board, BaseCursorStatus.move);
-            const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
-            boardComponent.cdr.detectChanges();
+            if (board.cursor !== BaseCursorStatus.move) {
+                updateCursorStatus(board, BaseCursorStatus.move);
+                const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
+                boardComponent.cdr.markForCheck();
+            }
             event.preventDefault();
         }
         keydown(event);
     };
 
     board.keyup = (event: KeyboardEvent) => {
-        board.selection && !board.readonly && event.code === 'Space' && updateCursorStatus(board, BaseCursorStatus.select);
-        const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
-        boardComponent.cdr.detectChanges();
+        if (board.selection && !board.readonly && event.code === 'Space') {
+            updateCursorStatus(board, BaseCursorStatus.select);
+            const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
+            boardComponent.cdr.markForCheck();
+        }
         keyup(event);
     };
 
