@@ -54,11 +54,6 @@ export function drawLink(
         endY = endNode.y + endNode.vGap;
     }
 
-    if (beginNode.origin.isRoot && (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.roundRectangle) {
-        beginX = beginNode.x + beginNode.width / 2;
-        beginY = beginNode.y + beginNode.height / 2;
-    }
-
     const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
     const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
 
@@ -73,6 +68,7 @@ export function drawLink(
 
         if (!node.origin.isRoot) {
             if (node.x > child.x) {
+                console.log('右');
                 curve = [
                     [beginX, beginY],
                     [beginX + (beginNode.hGap + endNode.hGap) / 3, beginY],
@@ -86,6 +82,7 @@ export function drawLink(
                 ] as Point[];
                 curve = [...curve, ...line];
             } else {
+                console.log('左');
                 curve = [
                     [beginX + 12, beginY],
                     [beginX + (beginNode.hGap + endNode.hGap) / 2, beginY],
