@@ -134,13 +134,13 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                                 Transforms.setNode(board, newElement, boardPath);
                             });
                         }
-                        createEmptyNode(board, path);
+                        createEmptyNode(board, mindmapNodeComponent.node.origin, path);
                     }
                 } else {
                     if (mindmapNodeComponent) {
                         const path = Path.next(findPath(board, mindmapNodeComponent.node));
                         changeRightNodeCount(board, selectedElement, 1);
-                        createEmptyNode(board, path);
+                        createEmptyNode(board, mindmapNodeComponent.parent.origin, path);
                     }
                 }
                 return;
