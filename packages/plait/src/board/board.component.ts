@@ -128,7 +128,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     @HostBinding('class.moving')
     get moving() {
-        return this.isMoving;
+        return this.board.cursor === BaseCursorStatus.move && this.isMoving;
     }
 
     @HostBinding('class.focused')
