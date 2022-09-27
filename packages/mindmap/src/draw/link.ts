@@ -5,7 +5,7 @@ import { MindmapElement } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
-import { getLayoutByElement, getNodeShapeByElement, getRectangleByNode, isChildRight } from '../utils';
+import { getCorrectLayoutByElement, getLayoutByElement, getNodeShapeByElement, getRectangleByNode, isChildRight } from '../utils';
 import { MindmapLayoutType, isTopLayout, isIndentedLayout } from '@plait/layouts';
 
 export function drawLink(
@@ -128,7 +128,7 @@ export function drawLink(
             [endX, endY - (beginNode.vGap + endNode.vGap) / 2],
             [endX, endY]
         ];
-        const layout = getLayoutByElement(node.origin) as MindmapLayoutType;
+        const layout = getCorrectLayoutByElement(node.origin) as MindmapLayoutType;
 
         if (!node.origin.isRoot) {
             if (isTopLayout(layout)) {
