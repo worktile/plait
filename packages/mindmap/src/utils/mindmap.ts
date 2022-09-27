@@ -140,27 +140,31 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
         height: 28,
         points: [[230, 208]],
         value: { children: [{ text: '思维导图' }] },
+        shape: MindmapNodeShape.roundRectangle,
         children: [
             {
                 id: idCreator(),
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: 24
+                height: 24,
+                shape: MindmapNodeShape.roundRectangle
             },
             {
                 id: idCreator(),
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: 24
+                height: 24,
+                shape: MindmapNodeShape.roundRectangle
             },
             {
                 id: idCreator(),
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: 24
+                height: 24,
+                shape: MindmapNodeShape.roundRectangle
             }
         ]
     };
@@ -169,11 +173,15 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
 
 // layoutLevel 用来表示插入兄弟节点还是子节点
 export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapElement, path: Path) => {
-    let fill, strokeColor, strokeWidth;
+    let fill,
+        strokeColor,
+        strokeWidth,
+        shape = MindmapNodeShape.roundRectangle;
     if (!inheritNode.isRoot) {
         fill = inheritNode.fill;
         strokeColor = inheritNode.strokeColor;
         strokeWidth = inheritNode.strokeWidth;
+        shape = inheritNode.shape as MindmapNodeShape;
     }
 
     const newElement = {
@@ -186,7 +194,8 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapElement, 
         height: 24,
         fill,
         strokeColor,
-        strokeWidth
+        strokeWidth,
+        shape
     };
     Transforms.insertNode(board, newElement, path);
     addSelectedMindmapElements(board, newElement);
