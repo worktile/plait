@@ -168,7 +168,14 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
 };
 
 // layoutLevel 用来表示插入兄弟节点还是子节点
-export const createEmptyNode = (board: PlaitBoard, path: Path) => {
+export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapElement, path: Path) => {
+    let fill, strokeColor, strokeWidth;
+    if (!inheritNode.isRoot) {
+        fill = inheritNode.fill;
+        strokeColor = inheritNode.strokeColor;
+        strokeWidth = inheritNode.strokeWidth;
+    }
+
     const newElement = {
         id: idCreator(),
         value: {
@@ -176,7 +183,10 @@ export const createEmptyNode = (board: PlaitBoard, path: Path) => {
         },
         children: [],
         width: NODE_MIN_WIDTH,
-        height: 24
+        height: 24,
+        fill,
+        strokeColor,
+        strokeWidth
     };
     Transforms.insertNode(board, newElement, path);
     addSelectedMindmapElements(board, newElement);

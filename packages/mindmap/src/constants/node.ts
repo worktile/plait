@@ -6,26 +6,7 @@ export const ROOT_NODE_STROKE = '#F5F5F5';
 export const ROOT_TOPIC_FONT_SIZE = 18;
 export const NODE_MIN_WIDTH = 18;
 
-export const COLORS = [
-    '#868AF6',
-    '#D287F8',
-    '#FB7FB7',
-    '#F6C659',
-    '#5BE2EE',
-    '#56ABFB',
-    '#5DCFFF',
-    '#40E0C3',
-    '#84E17E',
-    '#F4D66D',
-    '#FF9F73',
-    '#FB7894',
-    '#F693E7',
-    '#9A7EF4',
-    '#AAAAAA',
-    '#FA8888',
-    '#73D897',
-    '#A9E072'
-];
+export const COLORS = ['#A287E1', '#6F81DB', '#6EC4C4', '#DFB85D', '#B1C774', '#77C386', '#C28976', '#E48484', '#E482D4', '#69B1E4'];
 
 export enum MindmapNodeShape {
     roundRectangle = 'round-rectangle',
