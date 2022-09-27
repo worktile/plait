@@ -136,7 +136,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         return this.isFocused;
     }
 
-    constructor(public cdr: ChangeDetectorRef, private elementRef: ElementRef, private renderer2: Renderer2) {}
+    constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2) {}
 
     ngOnInit(): void {
         const roughSVG = rough.svg(this.host as SVGSVGElement, { options: { roughness: 0, strokeWidth: 1 } });
