@@ -103,7 +103,7 @@ export const drawCurvePlaceholderDropNodeG = (
     const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30, height: 12 };
     const linkSVGG = isIndentedLayout(layout)
         ? drawIndentedLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, false)
-        : drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, undefined);
+        : drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, undefined, false);
     // 构造一个矩形框坐标
     const fakeRectangleG = drawRoundRectangle(roughSVG, fakeRectangleStartX, fakeY, fakeRectangleEndX, fakeY + 12, {
         stroke: PRIMARY_COLOR,
