@@ -18,7 +18,8 @@ export interface MindmapNode {
 
 export const MindmapNode = {
     isEquals(node: MindmapNode, otherNode: MindmapNode) {
-        const hasSameSize = node.x === otherNode.x && node.y === otherNode.y && node.width === otherNode.width && node.height === otherNode.height;
+        const hasSameSize =
+            node.x === otherNode.x && node.y === otherNode.y && node.width === otherNode.width && node.height === otherNode.height;
         const hasSameOrigin = node.origin === otherNode.origin;
         return hasSameSize && hasSameOrigin;
     }
@@ -36,6 +37,4 @@ export type ExtendUnderlineCoordinateType = {
     [key in ExtendLayoutType]: CoordinateType;
 };
 
-export type DetectResult = 'top' | 'bottom' | 'right' | 'left' | null;
-
-export type RootBaseDirection = 'right' | 'left' | null;
+export type DetectResult = 'top' | 'bottom' | 'right' | 'left';
