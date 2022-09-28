@@ -18,51 +18,43 @@ export const directionDetector = (targetNode: MindmapNode, centerPoint: Point): 
     const bottom = targetNode.y + targetNode.height;
     const left = targetNode.x;
     const right = targetNode.x + targetNode.width;
+    const direction: DetectResult[] = [];
 
-    if (centerPoint[0] > left && centerPoint[0] < xCenter && centerPoint[1] > y && centerPoint[1] < y + height) {
-        const direction: DetectResult[] = ['left'];
-        if (centerPoint[0] > x && centerPoint[0] < xCenter) {
+    // x 轴
+    if (centerPoint[1] > y && centerPoint[1] < y + height) {
+        if (centerPoint[0] > left && centerPoint[0] < xCenter) {
+            direction.push('left');
+        }
+        if (centerPoint[0] > xCenter && centerPoint[0] < right) {
+            direction.push('right');
+        }
+        // 重合区域，返回两个方向
+        if ((centerPoint[0] > x && centerPoint[0] < xCenter) || (centerPoint[0] > xCenter && centerPoint[0] < x + width)) {
             if (centerPoint[1] < yCenter) {
                 direction.push('top');
             } else {
                 direction.push('bottom');
             }
         }
-        return direction;
+        return direction.length ? direction : null;
     }
 
-    if (centerPoint[0] > xCenter && centerPoint[0] < right && centerPoint[1] > y && centerPoint[1] < y + height) {
-        const direction: DetectResult[] = ['right'];
-        if (centerPoint[0] > xCenter && centerPoint[0] < x + width) {
-            if (centerPoint[1] < yCenter) {
-                direction.push('top');
-            } else {
-                direction.push('bottom');
-            }
+    // y 轴
+    if (centerPoint[0] > x && centerPoint[0] < x + width) {
+        if (centerPoint[1] > top && centerPoint[1] < yCenter) {
+            direction.push('top');
         }
-        return direction;
-    }
-    if (centerPoint[0] > x && centerPoint[0] < x + width && centerPoint[1] > top && centerPoint[1] < yCenter) {
-        const direction: DetectResult[] = ['top'];
-        if (centerPoint[1] > y && centerPoint[1] < y + height) {
+        if (centerPoint[1] > yCenter && centerPoint[1] < bottom) {
+            direction.push('bottom');
+        }
+        if ((centerPoint[1] > y && centerPoint[1] < y + height) || (centerPoint[1] > yCenter && centerPoint[1] < y + height)) {
             if (centerPoint[0] < xCenter) {
                 direction.push('left');
             } else {
                 direction.push('right');
             }
         }
-        return direction;
-    }
-    if (centerPoint[0] > x && centerPoint[0] < x + width && centerPoint[1] > yCenter && centerPoint[1] < bottom) {
-        const direction: DetectResult[] = ['bottom'];
-        if (centerPoint[1] > yCenter && centerPoint[1] < y + height) {
-            if (centerPoint[0] < xCenter) {
-                direction.push('left');
-            } else {
-                direction.push('right');
-            }
-        }
-        return direction;
+        return direction.length ? direction : null;
     }
 
     return null;
