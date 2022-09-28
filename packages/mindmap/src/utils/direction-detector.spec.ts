@@ -33,7 +33,7 @@ describe('direction-detector', () => {
      *   (860,268.5) ----------------------------------------------- (988, 268.5)
      *              |  (888, 280.5)   ------------  (960, 280.5)    |
      *              |                |             |                |
-     *              |                |    296.5    |                |
+     *              |                | (924,296.5) |                |
      *              |                |             |                |
      *              |  (888, 312.5)   ------------- (960, 312.5)    |
      *   (860,324.5) ----------------------------------------------- (988, 324.5)
@@ -43,25 +43,53 @@ describe('direction-detector', () => {
     it('should get left direction', () => {
         centerPoint = [870, 283.5];
         const direction = directionDetector(targetNode, centerPoint);
-        expect(direction).toBe('left');
+        expect(direction).toContain('left');
+    });
+
+    it('should get left and top direction', () => {
+        centerPoint = [900, 283.5];
+        const direction = directionDetector(targetNode, centerPoint);
+        expect(direction).toContain('left');
+        expect(direction).toContain('top');
+    });
+
+    it('should get left and bottom direction', () => {
+        centerPoint = [900, 300];
+        const direction = directionDetector(targetNode, centerPoint);
+        expect(direction).toContain('left');
+        expect(direction).toContain('bottom');
     });
 
     it('should get right direction', () => {
         centerPoint = [970, 283.5];
         const direction = directionDetector(targetNode, centerPoint);
-        expect(direction).toBe('right');
+        expect(direction).toContain('right');
+    });
+
+    it('should get right and top direction', () => {
+        centerPoint = [930, 283.5];
+        const direction = directionDetector(targetNode, centerPoint);
+        expect(direction).toContain('right');
+        expect(direction).toContain('top');
+    });
+
+    it('should get right and bottom direction', () => {
+        centerPoint = [930, 300];
+        const direction = directionDetector(targetNode, centerPoint);
+        expect(direction).toContain('right');
+        expect(direction).toContain('bottom');
     });
 
     it('should get top direction', () => {
         centerPoint = [900, 290];
         const direction = directionDetector(targetNode, centerPoint);
-        expect(direction).toBe('top');
+        expect(direction).toContain('top');
     });
 
     it('should get bottom direction', () => {
         centerPoint = [900, 300];
         const direction = directionDetector(targetNode, centerPoint);
-        expect(direction).toBe('bottom');
+        expect(direction).toContain('bottom');
     });
 
     it('should get null', () => {

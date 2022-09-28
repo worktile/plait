@@ -14,16 +14,9 @@ import {
 } from '@plait/core';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
-import { DetectResult, MindmapNode, RootBaseDirection } from '../interfaces/node';
+import { DetectResult, MindmapNode } from '../interfaces/node';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import {
-    drawPlaceholderDropNodeG,
-    directionDetector,
-    findPath,
-    getCorrectLayoutByElement,
-    getLayoutByElement,
-    isChildElement
-} from '../utils';
+import { drawPlaceholderDropNodeG, directionDetector, findPath, getCorrectLayoutByElement, isChildElement } from '../utils';
 import { MindmapElement } from '../interfaces/element';
 import { MindmapNodeComponent } from '../node.component';
 import { drawRectangleNode } from '../draw/shape';
@@ -128,8 +121,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             const { x, y } = getRectangleByNode(fakeDragingNode);
             const detectCenterPoint = [x + width / 2, y + height / 2] as Point;
 
-            let detectResult: DetectResult = null;
-            let rootBaseDirection: RootBaseDirection = null;
+            let detectResult: DetectResult[] | null = null;
             board.children.forEach((value: PlaitElement) => {
                 if (detectResult) {
                     return;
@@ -145,11 +137,12 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                         detectResult = directionDetector(node, detectCenterPoint);
                         dropTarget = null;
                         if (detectResult && isValidTarget(activeComponent.node.origin, node.origin)) {
-                            dropTarget = { target: node.origin, detectResult };
+                            dropTarget = { target: node.origin, detectResult: detectResult[0] };
                         }
                     });
                 }
             });
+
             if (dropTarget?.target) {
                 if (dropTarget.target.isRoot) {
                     const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
@@ -157,27 +150,27 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     const rightNodeCount = board.children[0].rightNodeCount;
                     // 如果有内容，画一条底部的曲线
                     // 如果没内容，画一条向左/向右的直线
-                    if (rootBaseDirection === 'right') {
-                        if (!!rightNodeCount) {
-                            const lastRightNode = board.children[0].children?.find((node, index) => index === rightNodeCount - 1);
-                            dropTarget = { target: lastRightNode as MindmapElement, detectResult: 'bottom' };
-                        } else {
-                            dropTarget = { target: root?.origin as MindmapElement, detectResult: 'right' };
-                        }
-                    }
+                    // if (rootBaseDirection === 'right') {
+                    //     if (!!rightNodeCount) {
+                    //         const lastRightNode = board.children[0].children?.find((node, index) => index === rightNodeCount - 1);
+                    //         dropTarget = { target: lastRightNode as MindmapElement, detectResult: 'bottom' };
+                    //     } else {
+                    //         dropTarget = { target: root?.origin as MindmapElement, detectResult: 'right' };
+                    //     }
+                    // }
 
-                    if (rootBaseDirection === 'left') {
-                        const leftNode = board.children[0].children?.slice(rightNodeCount, board.children[0].children.length);
-                        const layout = getCorrectLayoutByElement(root?.origin as MindmapElement);
-                        // 标准布局并且左侧没有节点，向左划一条基本直线（左布局下不需要此线）
-                        if (!leftNode?.length && isStandardLayout(layout)) {
-                            dropTarget = { target: root?.origin as MindmapElement, detectResult: 'left' };
-                        }
-                        if (leftNode?.length) {
-                            const lastLeftNode = leftNode[leftNode.length - 1];
-                            dropTarget = { target: lastLeftNode as MindmapElement, detectResult: 'bottom' };
-                        }
-                    }
+                    // if (rootBaseDirection === 'left') {
+                    //     const leftNode = board.children[0].children?.slice(rightNodeCount, board.children[0].children.length);
+                    //     const layout = getCorrectLayoutByElement(root?.origin as MindmapElement);
+                    //     // 标准布局并且左侧没有节点，向左划一条基本直线（左布局下不需要此线）
+                    //     if (!leftNode?.length && isStandardLayout(layout)) {
+                    //         dropTarget = { target: root?.origin as MindmapElement, detectResult: 'left' };
+                    //     }
+                    //     if (leftNode?.length) {
+                    //         const lastLeftNode = leftNode[leftNode.length - 1];
+                    //         dropTarget = { target: lastLeftNode as MindmapElement, detectResult: 'bottom' };
+                    //     }
+                    // }
                 }
                 drawPlaceholderDropNodeG(dropTarget, roughSVG, fakeDropNodeG);
             }
