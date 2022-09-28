@@ -1,13 +1,18 @@
 # plait
 
+## 0.0.42
 
+### Patch Changes
+
+-   [#149](https://github.com/worktile/plait/pull/149) [`fab99b0`](https://github.com/worktile/plait/commit/fab99b0aa9732a13abc0450afc53ab5aeb7689da) Thanks [@Ashy6](https://github.com/Ashy6)! - modify the way changes are detected
+
+*   [#146](https://github.com/worktile/plait/pull/146) [`472c0b4`](https://github.com/worktile/plait/commit/472c0b46e95c36025731dde7fb66970917b3fa44) Thanks [@Ashy6](https://github.com/Ashy6)! - fix: stop cursor grabbing when Space up
 
 ## 0.0.41
 
 ### Patch Changes
 
 -   [#138](https://github.com/worktile/plait/pull/138) [`b9bebb`](https://github.com/worktile/plait/commit/b9bebb4c4642c4141c3349131a94810ca65130e1) Thanks [@Ashy6](https://github.com/Ashy6)! - refactor(core): use withMove plugin #WIK-8741
-
 
 ## 0.0.40
 
