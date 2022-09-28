@@ -13,7 +13,7 @@
     "pub:mindmap": "cd dist/mindmap && npm publish --access public",
     "pub:layouts": "cd dist/layouts && npm publish --access public",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "test": "ng test mindmap",
     "lint": "ng lint --fix",
     "pretty": "pretty-quick --staged"
   },
