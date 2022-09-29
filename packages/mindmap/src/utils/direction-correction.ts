@@ -30,12 +30,8 @@ export const directionCorrection = (node: MindmapNode, detectResults: DetectResu
             return getAllowedDirection(detectResults, ['left', 'top', 'bottom']);
         }
 
-        if (layout === MindmapLayoutType.left) {
-            return getAllowedDirection(detectResults, ['right', 'top', 'bottom']);
-        }
-
-        if (layout === MindmapLayoutType.right) {
-            return getAllowedDirection(detectResults, ['left', 'top', 'bottom']);
+        if ([MindmapLayoutType.left, MindmapLayoutType.right].includes(layout)) {
+            return getAllowedDirection(detectResults, ['left', 'right', 'top']);
         }
 
         if ([MindmapLayoutType.leftBottomIndented, MindmapLayoutType.rightBottomIndented].includes(layout)) {
