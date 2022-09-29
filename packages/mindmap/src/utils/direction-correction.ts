@@ -1,5 +1,5 @@
 import { DetectResult, MindmapElement, MindmapNode } from '../interfaces';
-import { isRightLayout, isLeftLayout, MindmapLayoutType, isStandardLayout } from '@plait/layouts';
+import { isBottomLayout, isRightLayout, isLeftLayout, MindmapLayoutType, isStandardLayout, isTopLayout } from '@plait/layouts';
 import { getCorrectLayoutByElement } from './layout';
 
 export const directionCorrection = (node: MindmapNode, detectResults: DetectResult[]): DetectResult[] | null => {
@@ -26,20 +26,20 @@ export const directionCorrection = (node: MindmapNode, detectResults: DetectResu
             return getAllowedDirection(detectResults, ['top', 'bottom']);
         }
 
-        if ([MindmapLayoutType.upward, MindmapLayoutType.downward].includes(layout)) {
-            return getAllowedDirection(detectResults, ['left', 'top', 'bottom']);
-        }
-
-        if ([MindmapLayoutType.left, MindmapLayoutType.right].includes(layout)) {
-            return getAllowedDirection(detectResults, ['left', 'right', 'top']);
-        }
-
-        if ([MindmapLayoutType.leftBottomIndented, MindmapLayoutType.rightBottomIndented].includes(layout)) {
-            return getAllowedDirection(detectResults, ['left', 'right', 'top']);
-        }
-
-        if ([MindmapLayoutType.leftTopIndented, MindmapLayoutType.rightTopIndented].includes(layout)) {
+        if (isTopLayout(layout)) {
             return getAllowedDirection(detectResults, ['left', 'right', 'bottom']);
+        }
+
+        if (isBottomLayout(layout)) {
+            return getAllowedDirection(detectResults, ['left', 'right', 'top']);
+        }
+
+        if (layout === MindmapLayoutType.left) {
+            return getAllowedDirection(detectResults, ['right', 'top', 'bottom']);
+        }
+
+        if (layout === MindmapLayoutType.right) {
+            return getAllowedDirection(detectResults, ['left', 'top', 'bottom']);
         }
     }
 
@@ -47,11 +47,12 @@ export const directionCorrection = (node: MindmapNode, detectResults: DetectResu
 };
 
 export const getAllowedDirection = (detectResults: DetectResult[], illegalDirections: DetectResult[]): DetectResult[] | null => {
+    const directions = detectResults;
     illegalDirections.forEach(item => {
-        const bottomDirectionIndex = detectResults.findIndex(direction => direction === item);
+        const bottomDirectionIndex = directions.findIndex(direction => direction === item);
         if (bottomDirectionIndex !== -1) {
-            detectResults.splice(bottomDirectionIndex, 1);
+            directions.splice(bottomDirectionIndex, 1);
         }
     });
-    return detectResults.length ? detectResults : null;
+    return directions.length ? directions : null;
 };
