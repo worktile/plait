@@ -18,9 +18,10 @@ export const drawPlaceholderDropNodeG = (
 ) => {
     const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
     const targetRect = getRectangleByNode(targetComponent.node);
+    console.log(dropTarget.detectResult);
     if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
-        const layout = getCorrectLayoutByElement(targetComponent.node.origin);
         // 含左侧布局（左、左下、左上）不允许拖拽到右侧
+        const layout = getCorrectLayoutByElement(targetComponent.node.origin);
         if (isLeftLayout(layout) && dropTarget.detectResult === 'right') {
             return;
         }
@@ -29,16 +30,18 @@ export const drawPlaceholderDropNodeG = (
         }
         const lastChildNodeIndex = targetComponent.node.children.length - 1;
         const lastChildNode = targetComponent.node.children[lastChildNodeIndex];
-        const lastChildRect = getRectangleByNode(lastChildNode);
-        const lastChildComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
-            dropTarget.target.children[dropTarget.target.children.length - 1]
-        ) as MindmapNodeComponent;
+        // 没有子节点就插到左右
+        if (!lastChildNode) {
+            drawStraightDropNodeG(targetRect, dropTarget.detectResult, targetComponent, roughSVG, fakeDropNodeG);
+            return;
+        }
+
         // 如果有子节点，那么就插入到最后一个节点的下方
         if (targetComponent.node.children.length > 0) {
             // 标准布局，根节点
             if (targetComponent.node.origin.isRoot && isStandardLayout(layout)) {
+                const rightNodeCount = targetComponent.node.origin.rightNodeCount as number;
                 if (dropTarget.detectResult === 'left') {
-                    const rightNodeCount = targetComponent.node.origin.rightNodeCount as number;
                     // 下一个节点将插入到正左
                     if (targetComponent.node.children.length === rightNodeCount) {
                         drawStraightDropNodeG(targetRect, dropTarget.detectResult, targetComponent, roughSVG, fakeDropNodeG);
@@ -46,17 +49,29 @@ export const drawPlaceholderDropNodeG = (
                     }
                 }
                 if (dropTarget.detectResult === 'right') {
+                    const rightLastChildNodeIndex = rightNodeCount > 0 ? rightNodeCount - 1 : 0;
+                    const rightLastChildNode = targetComponent.node.children[rightLastChildNodeIndex];
+                    const rightLastChildRect = getRectangleByNode(rightLastChildNode);
+                    const rightLastChildComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
+                        dropTarget.target.children[rightLastChildNodeIndex]
+                    ) as MindmapNodeComponent;
                     drawCurvePlaceholderDropNodeG(
-                        lastChildRect,
+                        rightLastChildRect,
                         'bottom',
                         lastChildNodeIndex,
-                        lastChildComponent,
+                        rightLastChildComponent,
                         roughSVG,
                         targetComponent,
                         fakeDropNodeG
                     );
+                    return;
                 }
             }
+
+            const lastChildRect = getRectangleByNode(lastChildNode);
+            const lastChildComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
+                dropTarget.target.children[dropTarget.target.children.length - 1]
+            ) as MindmapNodeComponent;
 
             drawCurvePlaceholderDropNodeG(
                 lastChildRect,
@@ -74,7 +89,22 @@ export const drawPlaceholderDropNodeG = (
 
     if (targetComponent.parent && dropTarget.detectResult && ['top', 'bottom'].includes(dropTarget.detectResult)) {
         const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
-        const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
+        let targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
+        const rightNodeCount = targetComponent.parent.origin.rightNodeCount as number;
+        // 如果是标准布局根节点的左侧，需要调整 targetIndex
+        if (parentComponent.node.origin.isRoot) {
+            const parentLayout = getCorrectLayoutByElement(parentComponent.node.origin);
+            if (isStandardLayout(parentLayout)) {
+                // 左的第一个节点
+                if (targetIndex === rightNodeCount) {
+                    targetIndex = dropTarget.detectResult === 'top' ? 0 : 2;
+                }
+                // 右的最后一个节点
+                else if (targetIndex === rightNodeCount - 1) {
+                    targetIndex = dropTarget.detectResult === 'top' ? rightNodeCount - 1 : rightNodeCount + 1;
+                }
+            }
+        }
         drawCurvePlaceholderDropNodeG(
             targetRect,
             dropTarget.detectResult,
