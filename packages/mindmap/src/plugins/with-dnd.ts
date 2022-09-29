@@ -16,7 +16,14 @@ import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { DetectResult, MindmapNode } from '../interfaces/node';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { drawPlaceholderDropNodeG, directionDetector, findPath, getCorrectLayoutByElement, isChildElement } from '../utils';
+import {
+    drawPlaceholderDropNodeG,
+    directionDetector,
+    findPath,
+    getCorrectLayoutByElement,
+    isChildElement,
+    directionCorrection
+} from '../utils';
 import { MindmapElement } from '../interfaces/element';
 import { MindmapNodeComponent } from '../node.component';
 import { drawRectangleNode } from '../draw/shape';
@@ -134,7 +141,10 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                         if (detectResult) {
                             return;
                         }
-                        detectResult = directionDetector(node, detectCenterPoint);
+                        const directions = directionDetector(node, detectCenterPoint);
+                        if (directions) {
+                            detectResult = directionCorrection(node, directions);
+                        }
                         dropTarget = null;
                         if (detectResult && isValidTarget(activeComponent.node.origin, node.origin)) {
                             dropTarget = { target: node.origin, detectResult: detectResult[0] };
