@@ -9,10 +9,9 @@ export function transformPoints(board: PlaitBoard, points: Point[]) {
 }
 
 export function transformPoint(board: PlaitBoard, point: Point) {
-    const { width, height } = board.host.getBoundingClientRect();
     const viewBox = getViewBox(board);
-    const x = (point[0] / width) * viewBox.width + viewBox.minX;
-    const y = (point[1] / height) * viewBox.height + viewBox.minY;
+    const x = (point[0] / viewBox.viewportWidth) * viewBox.width + viewBox.minX;
+    const y = (point[1] / viewBox.viewportHeight) * viewBox.height + viewBox.minY;
     const newPoint = [x, y] as Point;
 
     return newPoint;

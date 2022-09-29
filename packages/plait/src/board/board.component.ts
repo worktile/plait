@@ -25,7 +25,6 @@ import { SCROLL_BAR_WIDTH } from '../constants';
 import { BaseCursorStatus } from '../interfaces';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
-import { PlaitOperation } from '../interfaces/operation';
 import { PlaitPlugin } from '../interfaces/plugin';
 import { Viewport } from '../interfaces/viewport';
 import { createBoard } from '../plugins/create-board';
@@ -150,10 +149,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 viewport: this.board.viewport,
                 selection: this.board.selection
             };
-            // update viewBox
-            if (this.board.operations.some(op => PlaitOperation.isSetViewportOperation(op))) {
-                this.updateViewport();
-            }
+            this.updateViewport();
             this.plaitChange.emit(changeEvent);
         });
         this.hasInitialized = true;

@@ -18,8 +18,8 @@ export interface ViewportInterface {
 export const Viewport: ViewportInterface = {
     isViewport: (value: any): value is Viewport => {
         return (
-            !isNullOrUndefined(value.offsetX) &&
-            !isNullOrUndefined(value.offsetY) &&
+            !isNullOrUndefined(value.offsetXRatio) &&
+            !isNullOrUndefined(value.offsetYRatio) &&
             !isNullOrUndefined(value.zoom) &&
             !isNullOrUndefined(value.viewBackgroundColor)
         );
