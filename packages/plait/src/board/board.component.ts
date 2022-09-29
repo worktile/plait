@@ -140,7 +140,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         const roughSVG = rough.svg(this.host as SVGSVGElement, { options: { roughness: 0, strokeWidth: 1 } });
         HOST_TO_ROUGH_SVG.set(this.host, roughSVG);
         this.initializePlugins();
-        this.initContainerSize();
         this.initializeEvents();
         PLAIT_BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ON_CHANGE.set(this.board, () => {
@@ -170,6 +169,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     ngAfterViewInit(): void {
         this.plaitBoardInitialized.emit(this.board);
+        this.initContainerSize();
         this.updateViewport();
     }
 
@@ -325,11 +325,13 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     }
 
     viewportChange(viewBox: ViewBox) {
+        const offsetXRatio = this.board.viewport.offsetXRatio;
+        const offsetYRatio = this.board.viewport.offsetYRatio;
         const viewportBox = getViewportClientBox(this.board);
         const { minX, minY, width, height, viewportWidth, viewportHeight } = viewBox;
         const box = [minX, minY, width, height];
-        const scrollLeft = (viewportWidth - viewportBox.width) * this.board.viewport.offsetXRatio;
-        const scrollTop = (viewportHeight - viewportBox.height) * this.board.viewport.offsetYRatio;
+        const scrollLeft = (viewportWidth - viewportBox.width) * offsetXRatio;
+        const scrollTop = (viewportHeight - viewportBox.height) * offsetYRatio;
 
         this.resizeViewport();
         this.renderer2.setStyle(this.host, 'display', 'block');
@@ -362,7 +364,11 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         const rootGroupBox = (rootGroup as SVGGraphicsElement).getBBox();
         const viewportWidth = viewportBox.width - 2 * this.autoFitPadding;
         const viewportHeight = viewportBox.height - 2 * this.autoFitPadding;
-        const zoom = Math.min(viewportWidth / rootGroupBox.width, viewportHeight / rootGroupBox.height);
+
+        let zoom = this.board.viewport.zoom;
+        if (viewportWidth < rootGroupBox.width || viewportHeight < rootGroupBox.height) {
+            zoom = Math.min(viewportWidth / rootGroupBox.width, viewportHeight / rootGroupBox.height);
+        }
 
         this.setViewport({
             zoom: calculateZoom(zoom),
