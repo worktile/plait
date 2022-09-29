@@ -7,11 +7,19 @@ import { BaseCursorStatus, CursorStatus } from '../../interfaces';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaitToolbarComponent {
+    _viewZoom = 100;
+
     @HostBinding('class') hostClass = `plait-board-toolbar`;
 
     @Input() cursorStatus!: CursorStatus;
 
-    @Input() viewZoom!: number;
+    @Input()
+    set viewZoom(zoom: number) {
+        this._viewZoom = Math.floor(zoom * 100);
+    }
+    get viewZoom() {
+        return this._viewZoom;
+    }
 
     @Output() moveHandle: EventEmitter<BaseCursorStatus> = new EventEmitter();
 

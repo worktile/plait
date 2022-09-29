@@ -3,8 +3,8 @@ import { ExtendedType } from './custom-types';
 
 export interface BaseViewport {
     [key: string]: any;
-    offsetX: number;
-    offsetY: number;
+    offsetXRatio: number;
+    offsetYRatio: number;
     zoom: number;
     viewBackgroundColor: string;
 }
