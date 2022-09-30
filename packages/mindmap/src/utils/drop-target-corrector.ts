@@ -31,6 +31,7 @@ export const readjustmentDropTarget = (dropTarget: {
                         newDropTarget.target = targetComponent.node.children[rightNodeCount - 1].origin;
                         newDropTarget.detectResult = 'bottom';
                     }
+                    return newDropTarget;
                 }
             }
             // 当有子节点是，目标节点是 root 时，默认插入最后一个子节点的下方
