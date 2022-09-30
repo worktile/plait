@@ -155,34 +155,6 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             });
 
             if (dropTarget?.target) {
-                if (dropTarget.target.isRoot) {
-                    const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
-                    const root = mindmapComponent?.root;
-                    const rightNodeCount = board.children[0].rightNodeCount;
-                    // 如果有内容，画一条底部的曲线
-                    // 如果没内容，画一条向左/向右的直线
-                    // if (rootBaseDirection === 'right') {
-                    //     if (!!rightNodeCount) {
-                    //         const lastRightNode = board.children[0].children?.find((node, index) => index === rightNodeCount - 1);
-                    //         dropTarget = { target: lastRightNode as MindmapElement, detectResult: 'bottom' };
-                    //     } else {
-                    //         dropTarget = { target: root?.origin as MindmapElement, detectResult: 'right' };
-                    //     }
-                    // }
-
-                    // if (rootBaseDirection === 'left') {
-                    //     const leftNode = board.children[0].children?.slice(rightNodeCount, board.children[0].children.length);
-                    //     const layout = getCorrectLayoutByElement(root?.origin as MindmapElement);
-                    //     // 标准布局并且左侧没有节点，向左划一条基本直线（左布局下不需要此线）
-                    //     if (!leftNode?.length && isStandardLayout(layout)) {
-                    //         dropTarget = { target: root?.origin as MindmapElement, detectResult: 'left' };
-                    //     }
-                    //     if (leftNode?.length) {
-                    //         const lastLeftNode = leftNode[leftNode.length - 1];
-                    //         dropTarget = { target: lastLeftNode as MindmapElement, detectResult: 'bottom' };
-                    //     }
-                    // }
-                }
                 const newDropTarget = readjustmentDropTarget(dropTarget);
                 drawPlaceholderDropNodeG(newDropTarget, roughSVG, fakeDropNodeG);
             }
