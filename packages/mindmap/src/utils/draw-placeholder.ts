@@ -18,7 +18,6 @@ export const drawPlaceholderDropNodeG = (
 ) => {
     const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
     const targetRect = getRectangleByNode(targetComponent.node);
-
     if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
         drawStraightDropNodeG(targetRect, dropTarget.detectResult, targetComponent, roughSVG, fakeDropNodeG);
     }
@@ -133,16 +132,11 @@ export const drawStraightDropNodeG = (
     let endLinePoint = x + width + lineLength;
     let startRectanglePoint = x + width + lineLength;
     let endRectanglePoint = x + lineLength + width + 30;
-    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
     if (detectResult === 'left') {
         startLinePoint = x - lineLength;
         endLinePoint = x;
         startRectanglePoint = x - lineLength - 30;
         endRectanglePoint = x - lineLength;
-    }
-    // 含左侧布局（左、左下、左上）不允许拖拽到右侧
-    if (isLeftLayout(layout) && detectResult === 'right') {
-        return;
     }
     // 构造一条直线
     let linePoints = [

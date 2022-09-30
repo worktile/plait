@@ -13,11 +13,7 @@ import {
     PlaitPlugin,
     isNoSelectionElement,
     CLIP_BOARD_FORMAT_KEY,
-    PlaitHistoryBoard,
-    BaseCursorStatus,
-    PLAIT_BOARD_TO_COMPONENT,
-    updateCursorStatus,
-    PlaitBoardComponent
+    PlaitHistoryBoard
 } from '@plait/core';
 import { getWidthByText } from '@plait/richtext';
 import { PlaitMindmapComponent } from '../mindmap.component';
