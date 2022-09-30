@@ -12,7 +12,7 @@ import { drawIndentedLink } from '../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
 
 export const drawPlaceholderDropNodeG = (
-    dropTarget: { target: MindmapElement; detectResult: DetectResult; targetIndex: number },
+    dropTarget: { target: MindmapElement; detectResult: DetectResult },
     roughSVG: RoughSVG,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
@@ -24,10 +24,7 @@ export const drawPlaceholderDropNodeG = (
 
     if (targetComponent.parent && dropTarget.detectResult && ['top', 'bottom'].includes(dropTarget.detectResult)) {
         const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
-        const targetIndex =
-            dropTarget.targetIndex >= 0
-                ? dropTarget.targetIndex
-                : parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
+        const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
         drawCurvePlaceholderDropNodeG(
             targetRect,
             dropTarget.detectResult,

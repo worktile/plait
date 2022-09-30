@@ -8,18 +8,12 @@ import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 export const readjustmentDropTarget = (dropTarget: {
     target: MindmapElement;
     detectResult: DetectResult;
-}): { target: MindmapElement; detectResult: DetectResult; targetIndex: number } => {
+}): { target: MindmapElement; detectResult: DetectResult } => {
     if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
         const { target, detectResult } = dropTarget;
-        const newDropTarget = { target, detectResult, targetIndex: -1 };
+        const newDropTarget = { target, detectResult };
         const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(target) as MindmapNodeComponent;
         if (targetComponent.node.children.length > 0) {
-            // 当有子节点是，目标节点是 root 时，默认插入最后一个子节点的下方
-            const lastChildNodeIndex = targetComponent.node.children.length - 1;
-            newDropTarget.target = targetComponent.node.children[lastChildNodeIndex].origin;
-            newDropTarget.targetIndex = lastChildNodeIndex;
-            newDropTarget.detectResult = 'bottom';
-
             const layout = getCorrectLayoutByElement(targetComponent.node.origin);
             // 标准布局，根节点
             if (targetComponent.node.origin.isRoot && isStandardLayout(layout)) {
@@ -27,27 +21,24 @@ export const readjustmentDropTarget = (dropTarget: {
                 if (detectResult === 'left') {
                     // 作为左的第一个节点
                     if (targetComponent.node.children.length === rightNodeCount) {
-                        newDropTarget.target = target;
-                        newDropTarget.detectResult = 'left';
                         return newDropTarget;
                     }
-                }
-                if (detectResult === 'right') {
+                } else {
                     // 作为右的第一个节点或最后一个节点
                     if (rightNodeCount === 0) {
                         newDropTarget.target = target;
-                        newDropTarget.detectResult = 'right';
-                        return newDropTarget;
                     } else {
                         newDropTarget.target = targetComponent.node.children[rightNodeCount - 1].origin;
-                        return newDropTarget;
+                        newDropTarget.detectResult = 'bottom';
                     }
-
                 }
             }
+            // 当有子节点是，目标节点是 root 时，默认插入最后一个子节点的下方
+            const lastChildNodeIndex = targetComponent.node.children.length - 1;
+            newDropTarget.target = targetComponent.node.children[lastChildNodeIndex].origin;
+            newDropTarget.detectResult = 'bottom';
         }
         return newDropTarget;
-    } else {
-        return dropTarget as any;
     }
+    return dropTarget;
 };
