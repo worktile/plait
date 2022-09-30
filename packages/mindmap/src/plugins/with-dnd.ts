@@ -22,7 +22,8 @@ import {
     findPath,
     getCorrectLayoutByElement,
     isChildElement,
-    directionCorrection
+    directionCorrector,
+    readjustmentDropTarget
 } from '../utils';
 import { MindmapElement } from '../interfaces/element';
 import { MindmapNodeComponent } from '../node.component';
@@ -143,7 +144,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                         }
                         const directions = directionDetector(node, detectCenterPoint);
                         if (directions) {
-                            detectResult = directionCorrection(node, directions);
+                            detectResult = directionCorrector(node, directions);
                         }
                         dropTarget = null;
                         if (detectResult && isValidTarget(activeComponent.node.origin, node.origin)) {
@@ -182,7 +183,8 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     //     }
                     // }
                 }
-                drawPlaceholderDropNodeG(dropTarget, roughSVG, fakeDropNodeG);
+                const newDropTarget = readjustmentDropTarget(dropTarget);
+                drawPlaceholderDropNodeG(newDropTarget, roughSVG, fakeDropNodeG);
             }
         }
 

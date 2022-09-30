@@ -2,7 +2,7 @@ import { DetectResult, MindmapElement, MindmapNode } from '../interfaces';
 import { isBottomLayout, isRightLayout, isLeftLayout, MindmapLayoutType, isStandardLayout, isTopLayout } from '@plait/layouts';
 import { getCorrectLayoutByElement } from './layout';
 
-export const directionCorrection = (node: MindmapNode, detectResults: DetectResult[]): DetectResult[] | null => {
+export const directionCorrector = (node: MindmapNode, detectResults: DetectResult[]): DetectResult[] | null => {
     const layout = getCorrectLayoutByElement(node?.origin as MindmapElement);
 
     if (!node.origin.isRoot) {
