@@ -54,24 +54,26 @@ export const drawCurvePlaceholderDropNodeG = (
 ) => {
     let fakeY = targetRect.y - 30;
     const layout = getCorrectLayoutByElement(targetComponent.node.origin);
-    if (targetIndex > 0) {
-        const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
-            parentComponent.node.origin.children[targetIndex - 1]
-        ) as MindmapNodeComponent;
-        const previousRect = getRectangleByNode(previousComponent.node);
-        const topY = previousRect.y + previousRect.height;
-        fakeY = topY + (targetRect.y - topY) / 5;
-    }
-    // 左下、右下、下布局且是最上面的节点
-    if (targetIndex === 0) {
-        if (layout === MindmapLayoutType.leftBottomIndented || layout === MindmapLayoutType.rightBottomIndented) {
-            fakeY = targetRect.y;
+    if (detectResult === 'bottom') {
+        if (targetIndex > 0) {
+            const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
+                parentComponent.node.origin.children[targetIndex - 1]
+            ) as MindmapNodeComponent;
+            const previousRect = getRectangleByNode(previousComponent.node);
+            const topY = previousRect.y + previousRect.height;
+            fakeY = topY + (targetRect.y - topY) / 5;
         }
-    }
-    // 左上、右上、上布局且是最上面的节点
-    if (targetIndex === parentComponent.node.origin.children.length - 1) {
-        if (isTopLayout(layout)) {
-            fakeY = targetRect.y - targetRect.height;
+        // 左下、右下、下布局且是最上面的节点
+        if (targetIndex === 0) {
+            if (layout === MindmapLayoutType.leftBottomIndented || layout === MindmapLayoutType.rightBottomIndented) {
+                fakeY = targetRect.y;
+            }
+        }
+        // 左上、右上、上布局且是最上面的节点
+        if (targetIndex === parentComponent.node.origin.children.length - 1) {
+            if (isTopLayout(layout)) {
+                fakeY = targetRect.y - targetRect.height;
+            }
         }
     }
     if (detectResult === 'bottom') {
