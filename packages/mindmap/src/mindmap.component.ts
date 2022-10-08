@@ -47,20 +47,22 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
 
     getOptions() {
         function getMainAxle(element: MindmapElement, parent?: LayoutNode) {
+            const strokeWidth = element.strokeWidth || STROKE_WIDTH;
             if (element.isRoot) {
                 return BASE * 12;
             }
             if (parent && parent.isRoot()) {
-                return BASE * 3 + STROKE_WIDTH / 2;
+                return BASE * 3 + strokeWidth / 2;
             }
-            return BASE * 3 + STROKE_WIDTH / 2;
+            return BASE * 3 + strokeWidth / 2;
         }
 
         function getSecondAxle(element: MindmapElement, parent?: LayoutNode) {
+            const strokeWidth = element.strokeWidth || STROKE_WIDTH;
             if (element.isRoot) {
-                return BASE * 10 + STROKE_WIDTH / 2;
+                return BASE * 10 + strokeWidth / 2;
             }
-            return BASE * 6 + STROKE_WIDTH / 2;
+            return BASE * 6 + strokeWidth / 2;
         }
         return {
             getHeight(element: MindmapElement) {
@@ -78,8 +80,9 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
             getHorizontalGap(element: MindmapElement, parent?: LayoutNode) {
                 const _layout = (parent && parent.layout) || getRootLayout(element);
                 const isHorizontal = isHorizontalLayout(_layout);
+                const strokeWidth = element.strokeWidth || STROKE_WIDTH;
                 if (isIndentedLayout(_layout)) {
-                    return BASE * 4 + STROKE_WIDTH;
+                    return BASE * 4 + strokeWidth;
                 }
                 if (!isHorizontal) {
                     return getMainAxle(element, parent);
