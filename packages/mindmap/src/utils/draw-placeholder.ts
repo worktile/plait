@@ -102,9 +102,8 @@ export const drawCurvePlaceholderDropNodeG = (
             }
         } else {
             const isRightLast = parentComponent.node.children[rightNodeCount - 1] === targetComponent.node;
-            const isLast = parentComponent.node.children[parentComponent.node.origin.children.length - 1] === targetComponent.node;
             // 拖拽至最后一个节点的下方或右侧的最后一个节点的下方
-            if (isRightLast || isLast) {
+            if (isRightLast) {
                 fakeY = targetRect.y + targetRect.height + 30;
             }
         }
