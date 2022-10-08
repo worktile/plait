@@ -54,7 +54,7 @@ export const drawCurvePlaceholderDropNodeG = (
 ) => {
     let fakeY = targetRect.y - 30;
     const layout = getCorrectLayoutByElement(targetComponent.node.origin);
-    if (detectResult === 'bottom') {
+    if (detectResult === 'top') {
         if (targetIndex > 0) {
             const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
                 parentComponent.node.origin.children[targetIndex - 1]
