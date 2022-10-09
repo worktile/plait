@@ -1,5 +1,17 @@
 # mindmap
 
+## 0.0.43
+
+### Patch Changes
+
+-   [#158](https://github.com/worktile/plait/pull/158) [`6e55b69`](https://github.com/worktile/plait/commit/6e55b69e0d8aa3f6cd3eb324d6e1cbf1d9ee6ec3) Thanks [@WBbug](https://github.com/WBbug)! - change verticalGap and horizontalGap
+
+*   [#155](https://github.com/worktile/plait/pull/155) [`0f5cde0`](https://github.com/worktile/plait/commit/0f5cde0be6a51a1faf67480e7805ac450b02c548) Thanks [@Maple13](https://github.com/Maple13)! - limit the scroll area
+
+-   [#161](https://github.com/worktile/plait/pull/161) [`0a5605c`](https://github.com/worktile/plait/commit/0a5605ca75bdc461ee194deade2c0c9bee232563) Thanks [@WBbug](https://github.com/WBbug)! - stopPropagation when click quickInsert
+
+*   [#156](https://github.com/worktile/plait/pull/156) [`7fc510a`](https://github.com/worktile/plait/commit/7fc510a642be703b1234d1ea6aa89f0e23cb7905) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix: add hasSameParentOriginChildren judge
+
 ## 0.0.42
 
 ### Patch Changes

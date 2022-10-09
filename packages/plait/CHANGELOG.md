@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.43
+
+### Patch Changes
+
+-   [#155](https://github.com/worktile/plait/pull/155) [`0f5cde0`](https://github.com/worktile/plait/commit/0f5cde0be6a51a1faf67480e7805ac450b02c548) Thanks [@Maple13](https://github.com/Maple13)! - limit the scroll area
+
 ## 0.0.42
 
 ### Patch Changes
