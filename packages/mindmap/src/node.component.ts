@@ -61,7 +61,7 @@ import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement 
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
 import { createEmptyNode, findPath, getChildrenCount } from './utils/mindmap';
-import { addSelectedMindmapElements, deleteSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
+import { addSelectedMindmapElements, clearAllSelectedMindmapElements, deleteSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 
@@ -527,6 +527,13 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             .subscribe(() => {
                 const path = findPath(this.board, this.node).concat(this.node.origin.children.length);
                 createEmptyNode(this.board, this.node.origin, path);
+            });
+
+        fromEvent(quickInsertG, 'mousedown')
+            .pipe(take(1))
+            .subscribe(e => {
+                e.stopPropagation();
+                clearAllSelectedMindmapElements(this.board);
             });
     }
 

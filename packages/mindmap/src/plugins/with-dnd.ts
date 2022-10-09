@@ -40,8 +40,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     let dropTarget: { target: MindmapElement; detectResult: DetectResult } | null = null;
 
     board.mousedown = (event: MouseEvent) => {
-        const isQuickInsert = (event.target as HTMLElement).closest('.quick-insert');
-        if (board.readonly || IS_TEXT_EDITABLE.get(board) || event.button === 2 || isQuickInsert) {
+        if (board.readonly || IS_TEXT_EDITABLE.get(board) || event.button === 2) {
             mousedown(event);
             return;
         }

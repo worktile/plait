@@ -2,4 +2,4 @@
 '@plait/mindmap': patch
 ---
 
-return when click quickInsert
+stopPropagation when click quickInsert
