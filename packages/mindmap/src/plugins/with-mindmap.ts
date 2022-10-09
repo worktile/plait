@@ -77,6 +77,11 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.mousedown = (event: MouseEvent) => {
+        const isQuickInsert = (event.target as HTMLElement).closest('.quick-insert');
+        if (isQuickInsert) {
+            mousedown(event);
+            return;
+        }
         // select mindmap node
         const point = transformPoint(board, toPoint(event.x, event.y, board.host));
         const nodes: MindmapElement[] = [];
