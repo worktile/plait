@@ -526,8 +526,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
         fromEvent(quickInsertG, 'mouseup')
             .pipe(
-                take(1),
-                map(e => e.stopPropagation())
+                map(e => e.stopPropagation()),
+                take(1)
             )
             .subscribe(() => {
                 const path = findPath(this.board, this.node).concat(this.node.origin.children.length);
@@ -536,8 +536,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
         fromEvent(quickInsertG, 'mousedown')
             .pipe(
-                take(1),
-                map(e => e.stopPropagation())
+                map(e => e.stopPropagation()),
+                take(1)
             )
             .subscribe(() => {
                 clearAllSelectedMindmapElements(this.board);
