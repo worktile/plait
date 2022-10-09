@@ -720,11 +720,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 if (this.foreignObject && this.foreignObject.children.length <= 0) {
                     this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
                 }
-                // // performance optimize
-                // const isEquals = MindmapNode.isEquals(node.currentValue, node.previousValue);
-                // if (isEquals) {
-                //     return;
-                // }
+                // performance optimize
+                const isEquals = MindmapNode.isEquals(node.currentValue, node.previousValue);
+                if (isEquals) {
+                    return;
+                }
+
                 this.drawShape();
                 this.drawLink();
                 this.updateRichtext();

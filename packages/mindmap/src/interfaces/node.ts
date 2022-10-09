@@ -18,9 +18,14 @@ export interface MindmapNode {
 
 export const MindmapNode = {
     isEquals(node: MindmapNode, otherNode: MindmapNode) {
-        const hasSameSize = node.x === otherNode.x && node.y === otherNode.y && node.width === otherNode.width && node.height === otherNode.height;
+        const hasSameSize =
+            node.x === otherNode.x && node.y === otherNode.y && node.width === otherNode.width && node.height === otherNode.height;
         const hasSameOrigin = node.origin === otherNode.origin;
-        return hasSameSize && hasSameOrigin;
+        let hasSameParentOriginChildren = false;
+        if (node.parent && otherNode.parent) {
+            hasSameParentOriginChildren = node.parent.origin.children == otherNode.parent.origin.children;
+        }
+        return hasSameSize && hasSameOrigin && hasSameParentOriginChildren;
     }
 };
 
