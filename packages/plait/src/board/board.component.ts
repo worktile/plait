@@ -21,10 +21,10 @@ import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { SCROLL_BAR_WIDTH } from '../constants';
 import { BaseCursorStatus } from '../interfaces';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
-import { PlaitOperation } from '../interfaces/operation';
 import { PlaitPlugin } from '../interfaces/plugin';
 import { Viewport } from '../interfaces/viewport';
 import { createBoard } from '../plugins/create-board';
@@ -33,32 +33,34 @@ import { withHistory } from '../plugins/with-history';
 import { withMove } from '../plugins/with-move';
 import { withSelection } from '../plugins/with-selection';
 import { Transforms } from '../transfroms';
-import { getViewBox, transformViewZoom, transformZoom, updateCursorStatus } from '../utils/board';
+import { calculateZoom, getViewBox, getViewportClientBox, updateCursorStatus, ViewBox } from '../utils/board';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO_COMPONENT } from '../utils/weak-maps';
 
 @Component({
     selector: 'plait-board',
     template: `
-        <svg #svg width="100%" height="100%" style="position: relative"></svg>
+        <div class="container" #container>
+            <svg #svg width="100%" height="100%" style="position: relative"></svg>
+            <plait-element
+                *ngFor="let item of board.children; let index = index; trackBy: trackBy"
+                [index]="index"
+                [element]="item"
+                [board]="board"
+                [viewport]="board.viewport"
+                [selection]="board.selection"
+                [host]="host"
+            ></plait-element>
+        </div>
         <plait-toolbar
             *ngIf="isFocused && !toolbarTemplateRef"
             [cursorStatus]="board.cursor"
-            [viewZoom]="viewZoom"
+            [viewZoom]="board.viewport!.zoom"
             (moveHandle)="changeMoveMode($event)"
             (adaptHandle)="adaptHandle()"
             (zoomInHandle)="zoomInHandle()"
             (zoomOutHandle)="zoomOutHandle()"
             (resetZoomHandel)="resetZoomHandel()"
         ></plait-toolbar>
-        <plait-element
-            *ngFor="let item of board.children; let index = index; trackBy: trackBy"
-            [index]="index"
-            [element]="item"
-            [board]="board"
-            [viewport]="board.viewport"
-            [selection]="board.selection"
-            [host]="host"
-        ></plait-element>
         <ng-content></ng-content>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -66,34 +68,15 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO
 export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
     hasInitialized = false;
 
-    @HostBinding('class')
-    get hostClass() {
-        return `plait-board-container ${this.board.cursor}`;
-    }
-
     board!: PlaitBoard;
 
     roughSVG!: RoughSVG;
 
     destroy$: Subject<any> = new Subject();
 
-    @ViewChild('svg', { static: true })
-    svg!: ElementRef;
-
-    @ContentChild('plaitToolbar')
-    public toolbarTemplateRef!: TemplateRef<any>;
-
-    private _viewZoom: number = 100;
-
-    public get viewZoom(): number {
-        const vZoom = transformZoom(this.board.viewport.zoom);
-        if (this._viewZoom !== vZoom) {
-            this._viewZoom = vZoom;
-        }
-        return vZoom;
-    }
-
     public isMoving: boolean = false;
+
+    autoFitPadding = 8;
 
     public get isMoveMode(): boolean {
         return this.board.cursor === BaseCursorStatus.move;
@@ -121,6 +104,11 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
 
+    @HostBinding('class')
+    get hostClass() {
+        return `plait-board-container ${this.board.cursor}`;
+    }
+
     @HostBinding('class.readonly')
     get readonly() {
         return this.plaitReadonly;
@@ -136,14 +124,22 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         return this.isFocused;
     }
 
-    constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2) {}
+    @ViewChild('svg', { static: true })
+    svg!: ElementRef;
+
+    @ContentChild('plaitToolbar')
+    public toolbarTemplateRef!: TemplateRef<any>;
+
+    @ViewChild('container', { read: ElementRef, static: true })
+    contentContainer!: ElementRef;
+
+    constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2, private elementRef: ElementRef) {}
 
     ngOnInit(): void {
         const roughSVG = rough.svg(this.host as SVGSVGElement, { options: { roughness: 0, strokeWidth: 1 } });
         HOST_TO_ROUGH_SVG.set(this.host, roughSVG);
         this.initializePlugins();
         this.initializeEvents();
-        this.updateViewport();
         PLAIT_BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.cdr.detectChanges();
@@ -153,10 +149,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 viewport: this.board.viewport,
                 selection: this.board.selection
             };
-            // update viewBox
-            if (this.board.operations.some(op => PlaitOperation.isSetViewportOperation(op))) {
-                this.updateViewport();
-            }
+            this.updateViewport();
             this.plaitChange.emit(changeEvent);
         });
         this.hasInitialized = true;
@@ -172,6 +165,8 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     ngAfterViewInit(): void {
         this.plaitBoardInitialized.emit(this.board);
+        this.initContainerSize();
+        this.updateViewport();
     }
 
     initializePlugins() {
@@ -209,20 +204,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.dblclick(event);
-            });
-
-        fromEvent<WheelEvent>(this.host, 'wheel')
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((event: WheelEvent) => {
-                if (this.isFocused) {
-                    event.preventDefault();
-                    const viewport = this.board.viewport;
-                    Transforms.setViewport(this.board, {
-                        ...viewport,
-                        offsetX: viewport?.offsetX - event.deltaX,
-                        offsetY: viewport?.offsetY - event.deltaY
-                    });
-                }
             });
 
         fromEvent<KeyboardEvent>(document, 'keydown')
@@ -283,24 +264,83 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 this.board?.deleteFragment(event.clipboardData);
             });
 
+        fromEvent<Event>(this.contentContainer.nativeElement, 'scroll')
+            .pipe(
+                takeUntil(this.destroy$),
+                filter(() => {
+                    return !!this.isFocused;
+                })
+            )
+            .subscribe((event: Event) => {
+                const scrollLeft = (event.target as HTMLElement).scrollLeft;
+                const scrollTop = (event.target as HTMLElement).scrollTop;
+                this.getScrollOffset(scrollLeft, scrollTop);
+                this.setScroll(scrollLeft, scrollTop);
+            });
+
         window.onresize = () => {
-            this.refreshViewport();
+            this.updateViewport();
         };
     }
 
-    refreshViewport() {
-        const viewBoxModel = getViewBox(this.board);
-        const viewBoxValues = this.host.getAttribute('viewBox')?.split(',') as string[];
-        this.renderer2.setAttribute(
-            this.host,
-            'viewBox',
-            `${viewBoxValues[0].trim()}, ${viewBoxValues[1].trim()}, ${viewBoxModel.width}, ${viewBoxModel.height}`
-        );
+    initContainerSize() {
+        this.renderer2.setStyle(this.contentContainer.nativeElement, 'overflow', 'auto');
+        this.resizeViewport();
+    }
+
+    resizeViewport() {
+        const container = this.elementRef.nativeElement?.parentElement;
+        const containerRect = container?.getBoundingClientRect();
+        const width = `${containerRect.width + SCROLL_BAR_WIDTH}px`;
+        const height = `${containerRect.height + SCROLL_BAR_WIDTH}px`;
+
+        this.renderer2.setStyle(this.contentContainer.nativeElement, 'width', width);
+        this.renderer2.setStyle(this.contentContainer.nativeElement, 'height', height);
+        this.renderer2.setStyle(this.contentContainer.nativeElement, 'maxWidth', width);
+        this.renderer2.setStyle(this.contentContainer.nativeElement, 'maxHeight', height);
+    }
+
+    setScroll(left: number, top: number) {
+        const container = this.contentContainer.nativeElement as HTMLElement;
+        container.scrollTo({
+            top,
+            left
+        });
+    }
+
+    getScrollOffset(left: number, top: number) {
+        const viewportBox = getViewportClientBox(this.board);
+        const viewBox = getViewBox(this.board);
+        const scrollLeftRatio = left / (viewBox.viewportWidth - viewportBox.width);
+        const scrollTopRatio = top / (viewBox.viewportHeight - viewportBox.height);
+
+        this.setViewport({
+            offsetXRatio: scrollLeftRatio,
+            offsetYRatio: scrollTopRatio
+        });
+    }
+
+    viewportChange(viewBox: ViewBox) {
+        const offsetXRatio = this.board.viewport.offsetXRatio;
+        const offsetYRatio = this.board.viewport.offsetYRatio;
+        const viewportBox = getViewportClientBox(this.board);
+        const { minX, minY, width, height, viewportWidth, viewportHeight } = viewBox;
+        const box = [minX, minY, width, height];
+        const scrollLeft = (viewportWidth - viewportBox.width) * offsetXRatio;
+        const scrollTop = (viewportHeight - viewportBox.height) * offsetYRatio;
+
+        this.resizeViewport();
+        this.renderer2.setStyle(this.host, 'display', 'block');
+        this.renderer2.setStyle(this.host, 'width', `${viewportWidth}px`);
+        this.renderer2.setStyle(this.host, 'height', `${viewportHeight}px`);
+        this.renderer2.setStyle(this.host, 'cursor', this.plaitReadonly ? 'grab' : 'default');
+        this.renderer2.setAttribute(this.host, 'viewBox', box.join());
+        this.setScroll(scrollLeft, scrollTop);
     }
 
     updateViewport() {
         const viewBox = getViewBox(this.board);
-        this.renderer2.setAttribute(this.host, 'viewBox', `${viewBox.minX}, ${viewBox.minY}, ${viewBox.width}, ${viewBox.height}`);
+        this.viewportChange(viewBox);
     }
 
     trackBy = (index: number, element: PlaitElement) => {
@@ -315,43 +355,51 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     // 适应画布
     adaptHandle() {
-        const viewport = this.board?.viewport as Viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            offsetX: 0,
-            offsetY: 0
+        const viewportBox = getViewportClientBox(this.board);
+        const rootGroup = this.host.firstChild;
+        const rootGroupBox = (rootGroup as SVGGraphicsElement).getBBox();
+        const viewportWidth = viewportBox.width - 2 * this.autoFitPadding;
+        const viewportHeight = viewportBox.height - 2 * this.autoFitPadding;
+
+        let zoom = this.board.viewport.zoom;
+        if (viewportWidth < rootGroupBox.width || viewportHeight < rootGroupBox.height) {
+            zoom = Math.min(viewportWidth / rootGroupBox.width, viewportHeight / rootGroupBox.height);
+        }
+
+        this.setViewport({
+            zoom: calculateZoom(zoom),
+            offsetXRatio: 0.5,
+            offsetYRatio: 0.5
         });
-        this.resetZoomHandel();
     }
 
     // 放大
     zoomInHandle() {
-        if (this._viewZoom >= 400) {
-            return;
-        }
-        this._viewZoom += 10;
-        this.zoomChange();
+        const zoom = this.board.viewport.zoom;
+        this.setViewport({
+            zoom: calculateZoom(zoom + 0.1)
+        });
     }
 
     // 缩小
     zoomOutHandle() {
-        if (this._viewZoom <= 20) {
-            return;
-        }
-        this._viewZoom -= 10;
-        this.zoomChange();
+        const zoom = this.board.viewport.zoom;
+        this.setViewport({
+            zoom: calculateZoom(zoom - 0.1)
+        });
     }
 
     resetZoomHandel() {
-        this._viewZoom = 100;
-        this.zoomChange();
+        this.setViewport({
+            zoom: 1
+        });
     }
 
-    zoomChange() {
-        const viewport = this.board?.viewport as Viewport;
+    setViewport(options: Partial<Viewport>) {
+        const viewport = this.board?.viewport;
         Transforms.setViewport(this.board, {
             ...viewport,
-            zoom: transformViewZoom(this._viewZoom)
+            ...options
         });
     }
 

@@ -3,8 +3,8 @@ import { ExtendedType } from './custom-types';
 
 export interface BaseViewport {
     [key: string]: any;
-    offsetX: number;
-    offsetY: number;
+    offsetXRatio: number;
+    offsetYRatio: number;
     zoom: number;
     viewBackgroundColor: string;
 }
@@ -18,8 +18,8 @@ export interface ViewportInterface {
 export const Viewport: ViewportInterface = {
     isViewport: (value: any): value is Viewport => {
         return (
-            !isNullOrUndefined(value.offsetX) &&
-            !isNullOrUndefined(value.offsetY) &&
+            !isNullOrUndefined(value.offsetXRatio) &&
+            !isNullOrUndefined(value.offsetYRatio) &&
             !isNullOrUndefined(value.zoom) &&
             !isNullOrUndefined(value.viewBackgroundColor)
         );

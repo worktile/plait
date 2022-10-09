@@ -1,18 +1,18 @@
-import { PlaitElement } from '../interfaces/element';
-import { PlaitOperation } from '../interfaces/operation';
-import { PlaitBoard, PlaitBoardOptions } from '../interfaces/board';
-import { PlaitElementContext } from '../interfaces/element-context';
 import { SimpleChanges } from '@angular/core';
-import { FLUSHING } from '../utils/weak-maps';
-import { Transforms } from '../transfroms';
+import { PlaitBoard, PlaitBoardOptions } from '../interfaces/board';
 import { BaseCursorStatus } from '../interfaces/cursor';
+import { PlaitElement } from '../interfaces/element';
+import { PlaitElementContext } from '../interfaces/element-context';
+import { PlaitOperation } from '../interfaces/operation';
+import { Transforms } from '../transfroms';
+import { FLUSHING } from '../utils/weak-maps';
 
 export function createBoard(host: SVGElement, children: PlaitElement[], options: PlaitBoardOptions): PlaitBoard {
     const board: PlaitBoard = {
         host,
         viewport: {
-            offsetX: 0,
-            offsetY: 0,
+            offsetXRatio: 0.5,
+            offsetYRatio: 0.5,
             zoom: 1,
             viewBackgroundColor: '#000'
         },
