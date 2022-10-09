@@ -25,6 +25,7 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         selection: null,
         cursor: BaseCursorStatus.select,
         readonly: options.readonly,
+        fullscreen: options.fullscreen,
         allowClearBoard: options.allowClearBoard,
         undo: () => {},
         redo: () => {},

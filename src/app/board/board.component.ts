@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
 import { findPath, getSelectedMindmapElements, MINDMAP_ELEMENT_TO_COMPONENT, withMindmap } from '@plait/mindmap';
-import { PlaitElement, PlaitBoardChangeEvent, Viewport, PlaitBoard, Transforms } from '@plait/core';
 import { mockMindmapData } from '../mock/mindmap-data';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
@@ -19,6 +19,8 @@ export class BasicBoardComponent implements OnInit {
     board!: PlaitBoard;
 
     readonly = false;
+
+    fullscreen = true;
 
     ngOnInit(): void {
         // const data = this.getLocalData() as PlaitBoardChangeEvent;

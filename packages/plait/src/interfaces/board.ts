@@ -15,6 +15,7 @@ export interface PlaitBoard {
     selection: Selection | null;
     cursor: CursorStatus;
     readonly: boolean;
+    fullscreen: boolean;
     allowClearBoard: boolean;
     history: PlaitHistory;
     undo: () => void;
@@ -45,6 +46,7 @@ export interface PlaitBoardChangeEvent {
 export interface PlaitBoardOptions {
     readonly: boolean;
     allowClearBoard: boolean;
+    fullscreen: boolean;
 }
 
 export interface PlaitBoardMove {
