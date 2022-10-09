@@ -1,5 +1,21 @@
 # mindmap
 
+## 0.0.42
+
+### Patch Changes
+
+-   [#144](https://github.com/worktile/plait/pull/144) [`570c3ca`](https://github.com/worktile/plait/commit/570c3ca653fce3df8096a65529fca56a57dcb247) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - remove draw link underlin when dnd and adjust quick insert icon space of mindmap
+
+*   [#147](https://github.com/worktile/plait/pull/147) [`aa995c3`](https://github.com/worktile/plait/commit/aa995c33f6aa9f748e3d32aeee896c57eb9e1a4f) Thanks [@WBbug](https://github.com/WBbug)! - change default color array, inherit node when create new node
+
+-   [#151](https://github.com/worktile/plait/pull/151) [`b225f06`](https://github.com/worktile/plait/commit/b225f06353931ab57fe3b51d8ffe0c22c9b33faa) Thanks [@WBbug](https://github.com/WBbug)! - add default shape, set shape when create node
+
+*   [#148](https://github.com/worktile/plait/pull/148) [`8da92c1`](https://github.com/worktile/plait/commit/8da92c190febbac6a342b41c4290ebd30d0366ee) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix draw link root node line incorrect
+
+-   [#150](https://github.com/worktile/plait/pull/150) [`4d429a9`](https://github.com/worktile/plait/commit/4d429a9b172c447d0696a8862b78ec1310cd8aaa) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix root node line overflow and quick insert line overflow of mindmap
+
+*   [#145](https://github.com/worktile/plait/pull/145) [`055e265`](https://github.com/worktile/plait/commit/055e265e67bbe03f4d1bd5739e6fb7c384b05af9) Thanks [@WBbug](https://github.com/WBbug)! - use getCorrectLayoutByElement to get layout
+
 ## 0.0.41
 
 ### Patch Changes

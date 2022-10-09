@@ -17,7 +17,7 @@ export function createSVG() {
     return svg;
 }
 
-export function createText(x: number, y: number,fill: string, textContent: string) {
+export function createText(x: number, y: number, fill: string, textContent: string) {
     var text = document.createElementNS(NS, 'text');
     text.setAttribute('x', `${x}`);
     text.setAttribute('y', `${y}`);

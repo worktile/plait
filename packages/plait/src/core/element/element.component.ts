@@ -9,11 +9,11 @@ import {
     SimpleChanges,
     ViewContainerRef
 } from '@angular/core';
-import { PlaitElement } from '../../interfaces/element';
 import { PlaitBoard } from '../../interfaces/board';
+import { PlaitElement } from '../../interfaces/element';
 import { Selection } from '../../interfaces/selection';
-import { createG } from '../../utils/dom';
 import { Viewport } from '../../interfaces/viewport';
+import { createG } from '../../utils/dom';
 
 @Component({
     selector: 'plait-element',
@@ -41,7 +41,6 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnInit(): void {
         this.initialize();
-        this.transform(true);
         this.drawElement();
     }
 
@@ -52,13 +51,6 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         this.host.append(this.groupG);
     }
 
-    transform(first = false) {
-        if (first && this.viewport.offsetX === 0 && this.viewport.offsetY === 0) {
-            return;
-        }
-        this.renderer2.setAttribute(this.groupG, 'transform', `translate(${this.viewport.offsetX} ${this.viewport.offsetY})`);
-    }
-
     drawElement() {
         const gArray = this.board.drawElement({ elementInstance: this });
         gArray.forEach(g => {
@@ -67,10 +59,6 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        const viewport = changes['viewport'];
-        if (this.initialized && viewport) {
-            this.transform();
-        }
         if (this.initialized) {
             this.board.redrawElement({ elementInstance: this }, changes);
         }
