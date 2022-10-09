@@ -21,11 +21,11 @@ export const MindmapNode = {
         const hasSameSize =
             node.x === otherNode.x && node.y === otherNode.y && node.width === otherNode.width && node.height === otherNode.height;
         const hasSameOrigin = node.origin === otherNode.origin;
-        let hasSameParent = false;
+        let hasSameParentOriginChildren = false;
         if (node.parent && otherNode.parent) {
-            hasSameParent = node.parent.origin.children.length === otherNode.parent.origin.children.length;
+            hasSameParentOriginChildren = node.parent.origin.children == otherNode.parent.origin.children;
         }
-        return hasSameSize && hasSameOrigin && hasSameParent;
+        return hasSameSize && hasSameOrigin && hasSameParentOriginChildren;
     }
 };
 
