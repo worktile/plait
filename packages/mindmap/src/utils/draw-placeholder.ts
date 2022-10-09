@@ -151,9 +151,9 @@ export const drawStraightDropNodeG = (
     const strokeWidth = targetComponent.node.origin.linkLineWidth ? targetComponent.node.origin.linkLineWidth : STROKE_WIDTH;
     if (isIndentedLayout(layout)) {
         const hGap = BASE * 4;
-        const vGap = BASE;
+        const vGap = BASE * 6;
         const offsetX = hGap + strokeWidth;
-        const offsetY = (vGap + strokeWidth) * 2;
+        const offsetY = vGap + strokeWidth;
         if (isLeftLayout(layout)) {
             fakeX = x - offsetX;
         }
