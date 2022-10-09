@@ -14,10 +14,7 @@ import {
     isNoSelectionElement,
     CLIP_BOARD_FORMAT_KEY,
     PlaitHistoryBoard,
-    BaseCursorStatus,
-    PLAIT_BOARD_TO_COMPONENT,
-    updateCursorStatus,
-    PlaitBoardComponent
+    MERGING
 } from '@plait/core';
 import { getWidthByText } from '@plait/richtext';
 import { PlaitMindmapComponent } from '../mindmap.component';
@@ -26,9 +23,17 @@ import { hitMindmapNode } from '../utils/graph';
 import { MindmapNode } from '../interfaces/node';
 import { SimpleChanges } from '@angular/core';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { buildNodes, changeRightNodeCount, createEmptyNode, extractNodesText, findPath } from '../utils';
+import {
+    buildNodes,
+    changeRightNodeCount,
+    createEmptyNode,
+    extractNodesText,
+    findPath,
+    getAvailableSubLayoutsByLayoutDirections,
+    getBranchDirectionsByLayouts,
+    getBranchMindmapLayouts
+} from '../utils';
 import { withNodeDnd } from './with-dnd';
-import { MindmapElement } from '../interfaces';
 import {
     addSelectedMindmapElements,
     clearAllSelectedMindmapElements,
@@ -37,9 +42,11 @@ import {
     hasSelectedMindmapElement
 } from '../utils/selected-elements';
 import { isVirtualKey } from '../utils/is-virtual-key';
+import { LayoutNode, MindmapLayoutType } from '@plait/layouts';
+import { MindmapElement } from '../interfaces/element';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
+    const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment, onChange } = board;
 
     board.drawElement = (context: PlaitElementContext) => {
         const { element, selection, viewContainerRef, host } = context.elementInstance;
@@ -299,6 +306,39 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             }
         }
         deleteFragment(data);
+    };
+
+    board.onChange = () => {
+        onChange();
+        // 根据父节点修正当前节点布局
+        board.children.forEach((value: PlaitElement) => {
+            if (isPlaitMindmap(value)) {
+                const mindmapComponent = MINDMAP_TO_COMPONENT.get(value);
+                const root = mindmapComponent?.root;
+                (root as any).eachNode((node: LayoutNode) => {
+                    if (node.parent) {
+                        const branchLayouts = getBranchMindmapLayouts((node.parent as unknown) as MindmapElement);
+                        let nodeLayout = node.layout;
+                        if (node.layout === MindmapLayoutType.standard) {
+                            nodeLayout = node.left ? MindmapLayoutType.left : MindmapLayoutType.right;
+                        }
+                        if (branchLayouts[0] === MindmapLayoutType.standard) {
+                            branchLayouts[0] = node.left ? MindmapLayoutType.left : MindmapLayoutType.right;
+                        }
+                        const branchDirections = getBranchDirectionsByLayouts(branchLayouts);
+                        const subLayouts = getAvailableSubLayoutsByLayoutDirections(branchDirections);
+                        if (subLayouts.length && subLayouts.findIndex(item => item === nodeLayout) < 0) {
+                            const path = findPath(board, (node as unknown) as MindmapNode);
+                            if (path.every(item => item >= 0)) {
+                                MERGING.set(board, true);
+                                Transforms.setNode(board, { layout: null }, path);
+                                MERGING.set(board, false);
+                            }
+                        }
+                    }
+                });
+            }
+        });
     };
 
     return withNodeDnd(board);

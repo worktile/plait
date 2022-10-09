@@ -14,7 +14,7 @@ export class LayoutNode {
     parent?: LayoutNode;
     left = false;
     up = false;
-    layout: MindmapLayoutType;// no standrad
+    layout: MindmapLayoutType; // no standrad
 
     constructor(origin: OriginNode, options: LayoutOptions, context: LayoutContext, parent?: LayoutNode) {
         const hGap = options.getHorizontalGap(origin, parent);

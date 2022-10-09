@@ -22,8 +22,7 @@ import {
     toPoint,
     transformPoint,
     Transforms,
-    transformZoom,
-    PlaitHistoryBoard
+    transformZoom
 } from '@plait/core';
 import {
     isHorizontalLayout,
@@ -59,13 +58,7 @@ import { MindmapElement } from './interfaces/element';
 import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
-import {
-    getAvailableSubLayoutsByLayoutDirections,
-    getBranchDirectionsByLayouts,
-    getBranchMindmapLayouts,
-    getCorrectLayoutByElement,
-    getLayoutByElement
-} from './utils/layout';
+import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
 import { createEmptyNode, findPath, getChildrenCount } from './utils/mindmap';
 import { addSelectedMindmapElements, deleteSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
@@ -727,28 +720,11 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 if (this.foreignObject && this.foreignObject.children.length <= 0) {
                     this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
                 }
-                // performance optimize
-                const isEquals = MindmapNode.isEquals(node.currentValue, node.previousValue);
+                // // performance optimize
+                // const isEquals = MindmapNode.isEquals(node.currentValue, node.previousValue);
                 // if (isEquals) {
                 //     return;
                 // }
-                // 判断当前节点的父节点允许的布局，如果不符合，修正当前节点的布局
-                if (node.currentValue.parent) {
-                    const branchLayouts = getBranchMindmapLayouts(node.currentValue.parent);
-                    if (branchLayouts[0] === MindmapLayoutType.standard) {
-                        branchLayouts[0] = node.currentValue.left ? MindmapLayoutType.left : MindmapLayoutType.right;
-                    }
-                    const branchDirections = getBranchDirectionsByLayouts(branchLayouts);
-                    const subLayouts = getAvailableSubLayoutsByLayoutDirections(branchDirections);
-                    if (subLayouts.length && subLayouts.findIndex(item => item === node.currentValue.layout) < 0) {
-                        const path = findPath(this.board, this.node);
-                        Promise.resolve().then(() => {
-                            PlaitHistoryBoard.withoutSaving(this.board, () => {
-                                Transforms.setNode(this.board, { layout: null }, path);
-                            });
-                        });
-                    }
-                }
                 this.drawShape();
                 this.drawLink();
                 this.updateRichtext();
