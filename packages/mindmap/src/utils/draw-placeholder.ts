@@ -25,7 +25,6 @@ export const drawPlaceholderDropNodeG = (
     if (targetComponent.parent && dropTarget.detectResult && ['top', 'bottom'].includes(dropTarget.detectResult)) {
         const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
         const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
-        console.log(targetIndex);
         drawCurvePlaceholderDropNodeG(
             targetRect,
             dropTarget.detectResult,
