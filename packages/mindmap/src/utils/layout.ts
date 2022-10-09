@@ -3,6 +3,7 @@ import { findParentElement, findUpElement } from './mindmap';
 import { MindmapLayoutType } from '@plait/layouts';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { MindmapNodeComponent } from '../node.component';
+import { Transforms, PlaitBoard, Path, PlaitNode } from '@plait/core';
 
 export const getLayoutByElement = (element: MindmapElement): MindmapLayoutType => {
     const layout = element.layout;
@@ -207,4 +208,25 @@ export const getLayoutReverseDirection = (layoutDirection: LayoutDirection) => {
 
 export const getRootLayout = (root: MindmapElement) => {
     return root.layout || getDefaultMindmapLayout();
+};
+
+export const setMindmapLayout = (board: PlaitBoard, layout: MindmapLayoutType, path: Path) => {
+    const node = PlaitNode.get(board, path);
+    if (node) {
+        let mindmapLayout = layout;
+        if (mindmapLayout === MindmapLayoutType.standard) {
+            mindmapLayout = node.left ? MindmapLayoutType.left : MindmapLayoutType.right;
+        }
+        const branchDirections = getBranchDirectionsByLayouts([mindmapLayout]);
+        const subLayouts = getAvailableSubLayoutsByLayoutDirections(branchDirections);
+        node.children?.forEach((value: PlaitNode, index) => {
+            if (value.layout && subLayouts.length && subLayouts.findIndex(item => item === value.layout) < 0) {
+                Transforms.setNode(board, { layout: null }, [...path, index]);
+            }
+            if (value.children?.length) {
+                setMindmapLayout(board, layout, [...path, index]);
+            }
+        });
+    }
+    Transforms.setNode(board, { layout }, path);
 };
