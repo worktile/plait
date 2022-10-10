@@ -22,6 +22,7 @@ export function drawLink(
         endY,
         beginNode = node,
         endNode = child;
+    const layout = getCorrectLayoutByElement(node.origin) as MindmapLayoutType;
     if (isHorizontal) {
         if (!isChildRight(node, child)) {
             beginNode = child;
@@ -52,11 +53,15 @@ export function drawLink(
         beginY = beginNode.y + beginNode.height - beginNode.vGap;
         endX = endNode.x + endNode.width / 2;
         endY = endNode.y + endNode.vGap;
+        if (!needDrawUnderline) {
+            // beginY = beginNode.y + beginNode.height + beginNode.vGap;
+            console.log('修改位置', beginY, child.y, child.vGap);
+        }
     }
 
     const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
     const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
-    const layout = getCorrectLayoutByElement(node.origin) as MindmapLayoutType;
+
     if (endNode.origin.isRoot) {
         if (layout === MindmapLayoutType.left || isStandardLayout(layout)) {
             endX -= strokeWidth;
@@ -154,7 +159,16 @@ export function drawLink(
                     [endX, endY - 12],
                     [endX, endY]
                 ] as Point[];
-
+                if (!needDrawUnderline) {
+                    console.log('传进来的坐标', child.x, child.y);
+                    console.log(endX, endY);
+                    // const circle = roughSVG.circle(beginX, beginY, 5, {
+                    //     fill: 'red',
+                    //     stroke: 'red',
+                    //     fillStyle: 'solid'
+                    // });
+                    // return circle;
+                }
                 curve = [...curve, ...line];
             } else {
                 curve = [
@@ -163,7 +177,6 @@ export function drawLink(
                     [endX, endY - (beginNode.vGap + endNode.vGap) / 2],
                     [endX, endY]
                 ];
-
                 const line = [
                     [beginX, beginY],
                     [beginX, beginY + 12],

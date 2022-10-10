@@ -7,7 +7,7 @@ import { drawRoundRectangle, getRectangleByNode } from './graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { Point } from '@plait/core';
 import { getCorrectLayoutByElement } from './layout';
-import { isBottomLayout, isIndentedLayout, isRightLayout, MindmapLayoutType } from '@plait/layouts';
+import { isBottomLayout, isIndentedLayout, isRightLayout, isVerticalLayout, MindmapLayoutType } from '@plait/layouts';
 import { drawIndentedLink } from '../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
 import { isStandardLayout } from '@plait/layouts';
@@ -192,6 +192,35 @@ export const drawStraightDropNodeG = (
         const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30, height: 12 };
         const linkSVGG = drawIndentedLink(roughSVG, targetComponent.node, fakeNode, PRIMARY_COLOR, false);
         fakeDropNodeG?.appendChild(linkSVGG);
+    } else if (isVerticalLayout(layout)) {
+        if (!targetComponent.node.origin.isRoot) {
+            const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
+            const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
+            if (detectResult === 'left' && targetIndex > 0) {
+                const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
+                    parentComponent.node.origin.children[targetIndex - 1]
+                ) as MindmapNodeComponent;
+                const previousRect = getRectangleByNode(previousComponent.node);
+                const space = Math.abs(previousRect.x + previousRect.width) - Math.abs(targetRect.x); // 绝对值相减求出间距
+                const offsetX = space / 2;
+                fakeX = targetRect.x - offsetX;
+                fakeY = targetComponent.node.y;
+                // startRectanglePointX = fakeX;
+                // startRectanglePointY = fakeY;
+                // endRectanglePointX = startRectanglePointX + 30;
+                // endRectanglePointY = startRectanglePointY + 12;
+            }
+            const circle = roughSVG.circle(fakeX, fakeY, 5, {
+                fill: PRIMARY_COLOR,
+                stroke: PRIMARY_COLOR,
+                fillStyle: 'solid'
+            });
+            fakeDropNodeG?.appendChild(circle);
+            console.log(fakeX, fakeY);
+            const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30, height: 12 };
+            const linkSVGG = drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, false, false);
+            fakeDropNodeG?.appendChild(linkSVGG);
+        }
     } else {
         let linkSVGG = roughSVG.linearPath(linePoints, { stroke: PRIMARY_COLOR, strokeWidth });
         fakeDropNodeG?.appendChild(linkSVGG);
