@@ -1,7 +1,6 @@
 import { PlaitBoardComponent } from '../board/board.component';
-import { BaseCursorStatus, PlaitBoard, PlaitBoardMove, Viewport } from '../interfaces';
-import { Transforms } from '../transfroms';
-import { PLAIT_BOARD_TO_COMPONENT, transformZoom, updateCursorStatus } from '../utils';
+import { BaseCursorStatus, PlaitBoard, PlaitBoardMove } from '../interfaces';
+import { PLAIT_BOARD_TO_COMPONENT, updateCursorStatus } from '../utils';
 
 export function withMove<T extends PlaitBoard>(board: T) {
     const { mousedown, mousemove, globalMouseup, keydown, keyup } = board;
@@ -30,12 +29,6 @@ export function withMove<T extends PlaitBoard>(board: T) {
     board.mousemove = (event: MouseEvent) => {
         const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
         if (board.cursor === BaseCursorStatus.move && board.selection && boardComponent.isMoving) {
-            const viewport = board?.viewport as Viewport;
-            Transforms.setViewport(board, {
-                ...viewport,
-                offsetX: viewport.offsetX + ((event.x - plaitBoardMove.x) * 100) / transformZoom(board.viewport.zoom),
-                offsetY: viewport.offsetY + ((event.y - plaitBoardMove.y) * 100) / transformZoom(board.viewport.zoom)
-            });
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
         }

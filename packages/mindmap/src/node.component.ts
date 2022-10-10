@@ -61,7 +61,12 @@ import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement 
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
 import { createEmptyNode, findPath, getChildrenCount } from './utils/mindmap';
-import { addSelectedMindmapElements, deleteSelectedMindmapElements, hasSelectedMindmapElement } from './utils/selected-elements';
+import {
+    addSelectedMindmapElements,
+    clearAllSelectedMindmapElements,
+    deleteSelectedMindmapElements,
+    hasSelectedMindmapElement
+} from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 
@@ -521,12 +526,21 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
         fromEvent(quickInsertG, 'mouseup')
             .pipe(
-                take(1),
-                map(e => e.stopPropagation())
+                map(e => e.stopPropagation()),
+                take(1)
             )
             .subscribe(() => {
                 const path = findPath(this.board, this.node).concat(this.node.origin.children.length);
                 createEmptyNode(this.board, this.node.origin, path);
+            });
+
+        fromEvent(quickInsertG, 'mousedown')
+            .pipe(
+                map(e => e.stopPropagation()),
+                take(1)
+            )
+            .subscribe(() => {
+                clearAllSelectedMindmapElements(this.board);
             });
     }
 
@@ -720,11 +734,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 if (this.foreignObject && this.foreignObject.children.length <= 0) {
                     this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
                 }
-                // // performance optimize
-                // const isEquals = MindmapNode.isEquals(node.currentValue, node.previousValue);
-                // if (isEquals) {
-                //     return;
-                // }
+                // performance optimize
+                const isEquals = MindmapNode.isEquals(node.currentValue, node.previousValue);
+                if (isEquals) {
+                    return;
+                }
+
                 this.drawShape();
                 this.drawLink();
                 this.updateRichtext();

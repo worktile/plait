@@ -1,30 +1,28 @@
-import { isPlaitMindmap } from '../interfaces/mindmap';
+import { SimpleChanges } from '@angular/core';
 import {
     hotkeys,
+    idCreator,
+    IS_TEXT_EDITABLE,
     Path,
     PlaitBoard,
-    toPoint,
-    transformPoint,
-    IS_TEXT_EDITABLE,
-    Transforms,
-    idCreator,
-    PlaitElementContext,
     PlaitElement,
-    PlaitPlugin,
     isNoSelectionElement,
     CLIP_BOARD_FORMAT_KEY,
-    PlaitHistoryBoard
+    PlaitElementContext,
+    PlaitHistoryBoard,
+    PlaitPlugin,
+    toPoint,
+    transformPoint,
+    Transforms
 } from '@plait/core';
 import { getWidthByText } from '@plait/richtext';
-import { PlaitMindmapComponent } from '../mindmap.component';
-import { MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from '../utils/weak-maps';
-import { hitMindmapNode } from '../utils/graph';
-import { MindmapNode } from '../interfaces/node';
-import { SimpleChanges } from '@angular/core';
-import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { buildNodes, changeRightNodeCount, createEmptyNode, extractNodesText, findPath } from '../utils';
-import { withNodeDnd } from './with-dnd';
 import { MindmapElement } from '../interfaces';
+import { isPlaitMindmap } from '../interfaces/mindmap';
+import { MindmapNode } from '../interfaces/node';
+import { PlaitMindmapComponent } from '../mindmap.component';
+import { buildNodes, changeRightNodeCount, createEmptyNode, extractNodesText, findPath } from '../utils';
+import { hitMindmapNode } from '../utils/graph';
+import { isVirtualKey } from '../utils/is-virtual-key';
 import {
     addSelectedMindmapElements,
     clearAllSelectedMindmapElements,
@@ -32,7 +30,9 @@ import {
     getSelectedMindmapElements,
     hasSelectedMindmapElement
 } from '../utils/selected-elements';
-import { isVirtualKey } from '../utils/is-virtual-key';
+import { MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from '../utils/weak-maps';
+import { MINDMAP_TO_COMPONENT } from './weak-maps';
+import { withNodeDnd } from './with-dnd';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
@@ -75,7 +75,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     board.mousedown = (event: MouseEvent) => {
         // select mindmap node
         const point = transformPoint(board, toPoint(event.x, event.y, board.host));
-        const nodes: MindmapElement[] = [];
 
         board.children.forEach((value: PlaitElement) => {
             if (isPlaitMindmap(value)) {
@@ -84,7 +83,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 (root as any).eachNode((node: MindmapNode) => {
                     if (hitMindmapNode(board, point, node)) {
                         addSelectedMindmapElements(board, node.origin);
-                        nodes.push(node.origin);
                     } else {
                         hasSelectedMindmapElement(board, node.origin) && deleteSelectedMindmapElements(board, node.origin);
                     }

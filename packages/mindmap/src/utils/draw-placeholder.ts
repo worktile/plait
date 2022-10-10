@@ -1,5 +1,5 @@
 import { RoughSVG } from 'roughjs/bin/svg';
-import { PRIMARY_COLOR } from '../constants';
+import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../constants';
 import { drawLink } from '../draw/link';
 import { DetectResult, MindmapElement, MindmapNode } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
@@ -7,7 +7,7 @@ import { drawRoundRectangle, getRectangleByNode } from './graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { Point } from '@plait/core';
 import { getCorrectLayoutByElement } from './layout';
-import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
+import { isBottomLayout, isIndentedLayout, isRightLayout, MindmapLayoutType } from '@plait/layouts';
 import { drawIndentedLink } from '../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
 import { isStandardLayout } from '@plait/layouts';
@@ -149,28 +149,61 @@ export const drawStraightDropNodeG = (
     const lineLength = 40;
     let startLinePoint = x + width;
     let endLinePoint = x + width + lineLength;
-    let startRectanglePoint = x + width + lineLength;
-    let endRectanglePoint = x + lineLength + width + 30;
+    let startRectanglePointX = x + width + lineLength;
+    let endRectanglePointX = x + lineLength + width + 30;
+    let startRectanglePointY = y + height / 2 - 6;
+    let endRectanglePointY = y + height / 2 - 6 + 12;
     if (detectResult === 'left') {
         startLinePoint = x - lineLength;
         endLinePoint = x;
-        startRectanglePoint = x - lineLength - 30;
-        endRectanglePoint = x - lineLength;
+        startRectanglePointX = x - lineLength - 30;
+        endRectanglePointX = x - lineLength;
     }
+    let fakeY = targetComponent.node.y;
+    let fakeX = targetRect.x;
+    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
     // 构造一条直线
     let linePoints = [
         [startLinePoint, y + height / 2],
         [endLinePoint, y + height / 2]
     ] as Point[];
-    const lineSVGG = roughSVG.linearPath(linePoints, { stroke: PRIMARY_COLOR, strokeWidth: 2 });
+    const strokeWidth = targetComponent.node.origin.linkLineWidth ? targetComponent.node.origin.linkLineWidth : STROKE_WIDTH;
+    if (isIndentedLayout(layout)) {
+        const hGap = BASE * 4;
+        const vGap = BASE * 6;
+        const offsetX = hGap + strokeWidth;
+        const offsetY = vGap + strokeWidth;
+        if (isLeftLayout(layout)) {
+            fakeX = x - offsetX;
+        }
+        if (isRightLayout(layout)) {
+            fakeX = x + width - offsetX;
+        }
+        if (isTopLayout(layout)) {
+            fakeY = y - offsetY;
+        }
+        if (isBottomLayout(layout)) {
+            fakeY = y + height + offsetY;
+        }
+        startRectanglePointX = fakeX;
+        startRectanglePointY = fakeY;
+        endRectanglePointX = startRectanglePointX + 30;
+        endRectanglePointY = startRectanglePointY + 12;
+        const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30, height: 12 };
+        const linkSVGG = drawIndentedLink(roughSVG, targetComponent.node, fakeNode, PRIMARY_COLOR, false);
+        fakeDropNodeG?.appendChild(linkSVGG);
+    } else {
+        let linkSVGG = roughSVG.linearPath(linePoints, { stroke: PRIMARY_COLOR, strokeWidth });
+        fakeDropNodeG?.appendChild(linkSVGG);
+    }
 
     // 构造一个矩形框坐标
-    let fakeRectangleG = drawRoundRectangle(roughSVG, startRectanglePoint, y + height / 2 - 6, endRectanglePoint, y + height / 2 - 6 + 12, {
+    let fakeRectangleG = drawRoundRectangle(roughSVG, startRectanglePointX, startRectanglePointY, endRectanglePointX, endRectanglePointY, {
         stroke: PRIMARY_COLOR,
         strokeWidth: 2,
         fill: PRIMARY_COLOR,
         fillStyle: 'solid'
     });
-    fakeDropNodeG?.appendChild(lineSVGG);
+
     fakeDropNodeG?.appendChild(fakeRectangleG);
 };

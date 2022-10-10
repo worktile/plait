@@ -1,4 +1,4 @@
-import { isStandardLayout } from '@plait/layouts';
+import { isStandardLayout, isIndentedLayout } from '@plait/layouts';
 import { DetectResult, MindmapElement } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import { getCorrectLayoutByElement } from './layout';
@@ -9,12 +9,12 @@ export const readjustmentDropTarget = (dropTarget: {
     target: MindmapElement;
     detectResult: DetectResult;
 }): { target: MindmapElement; detectResult: DetectResult } => {
-    if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
-        const { target, detectResult } = dropTarget;
-        const newDropTarget = { target, detectResult };
-        const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(target) as MindmapNodeComponent;
-        if (targetComponent.node.children.length > 0) {
-            const layout = getCorrectLayoutByElement(targetComponent.node.origin);
+    const { target, detectResult } = dropTarget;
+    const newDropTarget = { target, detectResult };
+    const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(target) as MindmapNodeComponent;
+    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
+    if (targetComponent.node.children.length > 0 && dropTarget.detectResult) {
+        if (['right', 'left'].includes(dropTarget.detectResult)) {
             // 标准布局，根节点
             if (targetComponent.node.origin.isRoot && isStandardLayout(layout)) {
                 const rightNodeCount = targetComponent.node.origin.rightNodeCount as number;
@@ -38,6 +38,13 @@ export const readjustmentDropTarget = (dropTarget: {
             const lastChildNodeIndex = targetComponent.node.children.length - 1;
             newDropTarget.target = targetComponent.node.children[lastChildNodeIndex].origin;
             newDropTarget.detectResult = 'bottom';
+        }
+        if (['top', 'bottom'].includes(dropTarget.detectResult)) {
+            // 缩进布局移动至第一个节点
+            if (targetComponent.node.origin.isRoot && isIndentedLayout(layout)) {
+                newDropTarget.target = targetComponent.node.children[0].origin;
+                newDropTarget.detectResult = dropTarget.detectResult === 'top' ? 'bottom' : 'top';
+            }
         }
         return newDropTarget;
     }
