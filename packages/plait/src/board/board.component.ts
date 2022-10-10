@@ -74,9 +74,21 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     destroy$: Subject<any> = new Subject();
 
+    autoFitPadding = 8;
+
     public isMoving: boolean = false;
 
-    autoFitPadding = 8;
+    @Input() plaitValue: PlaitElement[] = [];
+
+    @Input() plaitViewport!: Viewport;
+
+    @Input() plaitPlugins: PlaitPlugin[] = [];
+
+    @Input() plaitOptions!: PlaitBoardOptions;
+
+    @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
+
+    @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
 
     public get isMoveMode(): boolean {
         return this.board.cursor === BaseCursorStatus.move;
@@ -90,22 +102,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         return this.board?.selection;
     }
 
-    @Input() plaitValue: PlaitElement[] = [];
-
-    @Input() plaitViewport!: Viewport;
-
-    @Input() plaitPlugins: PlaitPlugin[] = [];
-
-    @Input() plaitReadonly = false;
-
-    @Input() plaitFullscreen = false;
-
-    @Input() plaitAllowClearBoard = false;
-
-    @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
-
-    @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
-
     @HostBinding('class')
     get hostClass() {
         return `plait-board-container ${this.board.cursor}`;
@@ -113,7 +109,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     @HostBinding('class.readonly')
     get readonly() {
-        return this.plaitReadonly;
+        return this.board.options.readonly;
     }
 
     @HostBinding('class.moving')
@@ -174,12 +170,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     }
 
     initializePlugins() {
-        const options: PlaitBoardOptions = {
-            readonly: this.plaitReadonly,
-            allowClearBoard: this.plaitAllowClearBoard,
-            fullscreen: this.plaitFullscreen
-        };
-        let board = withMove(withHistory(withSelection(withBoard(createBoard(this.host, this.plaitValue, options)))));
+        let board = withMove(withHistory(withSelection(withBoard(createBoard(this.host, this.plaitValue, this.plaitOptions)))));
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
         });
@@ -298,8 +289,8 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     resizeViewport() {
         const container = this.elementRef.nativeElement?.parentElement;
         const containerRect = container?.getBoundingClientRect();
-        const fullscreen = this.board.fullscreen;
-        const scrollBarWidth = fullscreen ? 0 : SCROLL_BAR_WIDTH;
+        const hideScrollbar = this.board.options.hideScrollbar;
+        const scrollBarWidth = hideScrollbar ? 0 : SCROLL_BAR_WIDTH;
         const width = `${containerRect.width + scrollBarWidth}px`;
         const height = `${containerRect.height + scrollBarWidth}px`;
 
@@ -410,7 +401,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             ...viewport,
             ...options
         });
-        this.updateViewport();
     }
 
     ngOnDestroy(): void {

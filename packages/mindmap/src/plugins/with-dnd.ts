@@ -1,31 +1,22 @@
-import { isPlaitMindmap, PlaitMindmap } from '../interfaces/mindmap';
 import {
-    IS_TEXT_EDITABLE,
-    Transforms,
-    toPoint,
-    Path,
-    PlaitBoard,
-    Point,
-    PlaitElement,
-    PlaitPlugin,
-    createG,
-    HOST_TO_ROUGH_SVG,
-    transformPoint
+    createG, distanceBetweenPointAndPoint, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, Path,
+    PlaitBoard, PlaitElement,
+    PlaitPlugin, Point, toPoint, transformPoint, Transforms
 } from '@plait/core';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
-import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
-import { DetectResult, MindmapNode, RootBaseDirection } from '../interfaces/node';
-import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { drawPlaceholderDropNodeG, findPath, getCorrectLayoutByElement, getLayoutByElement, isChildElement } from '../utils';
-import { MindmapElement } from '../interfaces/element';
-import { MindmapNodeComponent } from '../node.component';
-import { drawRectangleNode } from '../draw/shape';
-import { RoughSVG } from 'roughjs/bin/svg';
-import { getRichtextRectangleByNode } from '../draw/richtext';
-import { updateForeignObject } from '@plait/richtext';
-import { BASE } from '../constants';
-import { distanceBetweenPointAndPoint } from '@plait/core';
 import { isStandardLayout } from '@plait/layouts';
+import { updateForeignObject } from '@plait/richtext';
+import { RoughSVG } from 'roughjs/bin/svg';
+import { BASE } from '../constants';
+import { getRichtextRectangleByNode } from '../draw/richtext';
+import { drawRectangleNode } from '../draw/shape';
+import { MindmapElement } from '../interfaces/element';
+import { isPlaitMindmap, PlaitMindmap } from '../interfaces/mindmap';
+import { DetectResult, MindmapNode, RootBaseDirection } from '../interfaces/node';
+import { MindmapNodeComponent } from '../node.component';
+import { drawPlaceholderDropNodeG, findPath, getCorrectLayoutByElement, isChildElement } from '../utils';
+import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
+import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
+import { MINDMAP_TO_COMPONENT } from './weak-maps';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -40,7 +31,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     let dropTarget: { target: MindmapElement; detectResult: DetectResult } | null = null;
 
     board.mousedown = (event: MouseEvent) => {
-        if (board.readonly || IS_TEXT_EDITABLE.get(board) || event.button === 2) {
+        if (board.options.readonly || IS_TEXT_EDITABLE.get(board) || event.button === 2) {
             mousedown(event);
             return;
         }
@@ -74,7 +65,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.mousemove = (event: MouseEvent) => {
-        if (!board.readonly && activeElement && startPoint) {
+        if (!board.options.readonly && activeElement && startPoint) {
             const endPoint = transformPoint(board, toPoint(event.x, event.y, board.host));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance < DRAG_MOVE_BUFFER) {
@@ -186,7 +177,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.globalMouseup = (event: MouseEvent) => {
-        if (!board.readonly && activeElement) {
+        if (!board.options.readonly && activeElement) {
             if (dropTarget?.target) {
                 const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
                 const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;

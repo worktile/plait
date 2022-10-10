@@ -106,7 +106,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.keydown = (event: KeyboardEvent) => {
-        if (board.readonly || IS_TEXT_EDITABLE.get(board)) {
+        if (board.options.readonly || IS_TEXT_EDITABLE.get(board)) {
             keydown(event);
             return;
         }
@@ -142,7 +142,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
-                if (isPlaitMindmap(selectedElements[0]) && board.children.length === 1 && !board.allowClearBoard) {
+                if (isPlaitMindmap(selectedElements[0]) && board.children.length === 1 && !board.options.allowClearBoard) {
                     keydown(event);
                     return;
                 }
@@ -196,7 +196,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.dblclick = (event: MouseEvent) => {
-        if (board.readonly || IS_TEXT_EDITABLE.get(board)) {
+        if (board.options.readonly || IS_TEXT_EDITABLE.get(board)) {
             dblclick(event);
             return;
         }
@@ -240,7 +240,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.insertFragment = (data: DataTransfer | null) => {
-        if (board.readonly) {
+        if (board.options.readonly) {
             insertFragment(data);
             return;
         }
@@ -283,7 +283,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
     board.deleteFragment = (data: DataTransfer | null) => {
         const selectedNode = getSelectedMindmapElements(board)?.[0];
-        if (selectedNode && !board.readonly) {
+        if (selectedNode && !board.options.readonly) {
             const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode);
             if (nodeComponent) {
                 const path = findPath(board, nodeComponent.node);

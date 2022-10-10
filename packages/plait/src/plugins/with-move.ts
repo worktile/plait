@@ -11,7 +11,7 @@ export function withMove<T extends PlaitBoard>(board: T) {
     };
 
     board.mousedown = (event: MouseEvent) => {
-        if (board.readonly) {
+        if (board.options.readonly) {
             updateCursorStatus(board, BaseCursorStatus.move);
         } else if (!board.selection) {
             updateCursorStatus(board, BaseCursorStatus.select);
@@ -58,7 +58,7 @@ export function withMove<T extends PlaitBoard>(board: T) {
     };
 
     board.keyup = (event: KeyboardEvent) => {
-        if (board.selection && !board.readonly && event.code === 'Space') {
+        if (board.selection && !board.options.readonly && event.code === 'Space') {
             updateCursorStatus(board, BaseCursorStatus.select);
             const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
             boardComponent.cdr.markForCheck();
