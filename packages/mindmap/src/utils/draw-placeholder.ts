@@ -10,6 +10,7 @@ import { getCorrectLayoutByElement } from './layout';
 import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
 import { drawIndentedLink } from '../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
+import { isStandardLayout } from '@plait/layouts';
 
 export const drawPlaceholderDropNodeG = (
     dropTarget: { target: MindmapElement; detectResult: DetectResult },
@@ -90,6 +91,23 @@ export const drawCurvePlaceholderDropNodeG = (
             fakeY = targetRect.y + targetRect.height;
         }
     }
+    const parentNodeLayout = getCorrectLayoutByElement(parentComponent.node.origin);
+    if (isStandardLayout(parentNodeLayout)) {
+        const rightNodeCount = parentComponent.node.origin.rightNodeCount as number;
+        if (detectResult === 'top') {
+            const isLeftFirst = parentComponent.node.children[rightNodeCount] === targetComponent.node;
+            // 拖拽至左第一个节点的情况
+            if (isLeftFirst) {
+                fakeY = targetRect.y - targetRect.height;
+            }
+        } else {
+            const isRightLast = parentComponent.node.children[rightNodeCount - 1] === targetComponent.node;
+            // 拖拽至最后一个节点的下方或右侧的最后一个节点的下方
+            if (isRightLast) {
+                fakeY = targetRect.y + targetRect.height + 30;
+            }
+        }
+    }
     let fakeX = targetComponent.node.x;
     let fakeRectangleStartX = targetRect.x,
         fakeRectangleEndX = targetRect.x + 30;
@@ -98,6 +116,7 @@ export const drawCurvePlaceholderDropNodeG = (
         fakeRectangleStartX = targetRect.x + targetRect.width - 30;
         fakeRectangleEndX = targetRect.x + targetRect.width;
     }
+
     // 构造一条曲线
     const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30, height: 12 };
     const linkSVGG = isIndentedLayout(layout)
