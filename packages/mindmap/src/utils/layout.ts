@@ -1,6 +1,6 @@
-import { LayoutDirection, LayoutDirectionsMap, MindmapElement } from '../interfaces';
-import { findParentElement, findUpElement } from './mindmap';
-import { MindmapLayoutType } from '@plait/layouts';
+import { LayoutDirection, LayoutDirectionsMap, MindmapElement, MindmapNode } from '../interfaces';
+import { findParentElement, findPath, findUpElement } from './mindmap';
+import { LayoutNode, MindmapLayoutType } from '@plait/layouts';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { MindmapNodeComponent } from '../node.component';
 import { Transforms, PlaitBoard, Path, PlaitNode } from '@plait/core';
@@ -163,11 +163,19 @@ export const getDefaultMindmapLayout = () => {
 /**
  * get available sub layouts
  * @param layout
+ * @param parentLayout
  * @returns MindmapLayoutType[]
  */
-export const getAvailableSubLayouts = (layout: MindmapLayoutType): MindmapLayoutType[] => {
+export const getAvailableSubLayouts = (layout: MindmapLayoutType, parentLayout?: MindmapLayoutType): MindmapLayoutType[] => {
     const currentLayoutDirections = LayoutDirectionsMap[layout];
-    return getAvailableSubLayoutsByLayoutDirections(currentLayoutDirections);
+    let availableSubLayouts = getAvailableSubLayoutsByLayoutDirections(currentLayoutDirections);
+    if (parentLayout) {
+        const parentAvailableSubLayouts = getParentAvailableSubLayouts(parentLayout);
+        availableSubLayouts = availableSubLayouts.filter(layout =>
+            parentAvailableSubLayouts.some(parentAvailableSubLayout => parentAvailableSubLayout === layout)
+        );
+    }
+    return availableSubLayouts;
 };
 
 export const getAvailableSubLayoutsByLayoutDirections = (directions: LayoutDirection[]): MindmapLayoutType[] => {
@@ -185,6 +193,11 @@ export const getAvailableSubLayoutsByLayoutDirections = (directions: LayoutDirec
         }
     }
     return result;
+};
+
+export const getParentAvailableSubLayouts = (parentLayout: MindmapLayoutType) => {
+    const parentDirections = getBranchDirectionsByLayouts([parentLayout]);
+    return getAvailableSubLayoutsByLayoutDirections(parentDirections);
 };
 
 export const getLayoutReverseDirection = (layoutDirection: LayoutDirection) => {
@@ -211,22 +224,25 @@ export const getRootLayout = (root: MindmapElement) => {
 };
 
 export const setMindmapLayout = (board: PlaitBoard, layout: MindmapLayoutType, path: Path) => {
+    correctNodeLayout(board, layout, path);
+    Transforms.setNode(board, { layout }, path);
+};
+
+export const correctNodeLayout = (board: PlaitBoard, layout: MindmapLayoutType, path: Path) => {
     const node = PlaitNode.get(board, path);
     if (node) {
         let mindmapLayout = layout;
         if (mindmapLayout === MindmapLayoutType.standard) {
             mindmapLayout = node.left ? MindmapLayoutType.left : MindmapLayoutType.right;
         }
-        const branchDirections = getBranchDirectionsByLayouts([mindmapLayout]);
-        const subLayouts = getAvailableSubLayoutsByLayoutDirections(branchDirections);
+        const subLayouts = getParentAvailableSubLayouts(mindmapLayout);
         node.children?.forEach((value: PlaitNode, index) => {
             if (value.layout && subLayouts.length && subLayouts.findIndex(item => item === value.layout) < 0) {
                 Transforms.setNode(board, { layout: null }, [...path, index]);
             }
             if (value.children?.length) {
-                setMindmapLayout(board, layout, [...path, index]);
+                correctNodeLayout(board, layout, [...path, index]);
             }
         });
     }
-    Transforms.setNode(board, { layout }, path);
 };

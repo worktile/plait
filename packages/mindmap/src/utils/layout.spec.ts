@@ -1,4 +1,4 @@
-import { getAvailableSubLayouts } from "./layout";
+import { getAvailableSubLayouts } from './layout';
 import { MindmapLayoutType } from '@plait/layouts';
 
 describe('layout', () => {
@@ -16,6 +16,12 @@ describe('layout', () => {
             expect(availableSubLayouts.includes(MindmapLayoutType.rightBottomIndented)).toBeTrue();
             expect(availableSubLayouts.includes(MindmapLayoutType.downward)).toBeTrue();
             expect(availableSubLayouts.length).toEqual(3);
+        });
+        it(`shoulde get 'upward', 'rightTopIndented' when layout equals rightTopIndented`, () => {
+            const availableSubLayouts = getAvailableSubLayouts(MindmapLayoutType.upward, MindmapLayoutType.rightTopIndented);
+            expect(availableSubLayouts.includes(MindmapLayoutType.upward)).toBeTrue();
+            expect(availableSubLayouts.includes(MindmapLayoutType.rightTopIndented)).toBeTrue();
+            expect(availableSubLayouts.length).toEqual(2);
         });
     });
 });
