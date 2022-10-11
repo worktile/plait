@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.44
+
+### Patch Changes
+
+-   [#162](https://github.com/worktile/plait/pull/162) [`653b8d4`](https://github.com/worktile/plait/commit/653b8d422aad64ec27baa8d134e055bd626f43fe) Thanks [@Maple13](https://github.com/Maple13)! - integrate board options parameters
+
 ## 0.0.43
 
 ### Patch Changes
