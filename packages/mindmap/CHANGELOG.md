@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.0.45
+
+### Patch Changes
+
+-   [#170](https://github.com/worktile/plait/pull/170) [`f3d287e`](https://github.com/worktile/plait/commit/f3d287ee8da99afb2678f41873683f69ef64bebd) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Add debounceTime to resolve the problem that last insert text operation cannot be subscribed.
+
+*   [#169](https://github.com/worktile/plait/pull/169) [`e4db480`](https://github.com/worktile/plait/commit/e4db4805617c34d92726bbde2baf31171bbcf2ca) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - feat: add MindmapQueries export and add getAvailableSubLayoutsByElement function
+
 ## 0.0.44
 
 ### Patch Changes
