@@ -812,13 +812,15 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 MERGING.set(this.board, true);
             }
         });
-        const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
-            const point = transformPoint(this.board, toPoint(event.x, event.y, this.host));
-            if (!hitMindmapNode(this.board, point, this.node as MindmapNode)) {
-                exitHandle();
-                this.enableMaskG();
-            }
-        });
+        const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown')
+            .pipe(debounceTime(0)) // wait composition input and insert text operation complete
+            .subscribe((event: MouseEvent) => {
+                const point = transformPoint(this.board, toPoint(event.x, event.y, this.host));
+                if (!hitMindmapNode(this.board, point, this.node as MindmapNode)) {
+                    exitHandle();
+                    this.enableMaskG();
+                }
+            });
         const editor = richtextInstance.editor;
         const { keydown } = editor;
         editor.keydown = (event: KeyboardEvent) => {
