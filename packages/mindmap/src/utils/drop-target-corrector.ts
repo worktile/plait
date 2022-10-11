@@ -10,7 +10,6 @@ export const readjustmentDropTarget = (dropTarget: {
     detectResult: DetectResult;
 }): { target: MindmapElement; detectResult: DetectResult } => {
     const { target, detectResult } = dropTarget;
-    console.log('原始的target', target.value.children[0], detectResult);
     const newDropTarget = { target, detectResult };
     const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(target) as MindmapNodeComponent;
     const layout = getCorrectLayoutByElement(targetComponent.node.origin);

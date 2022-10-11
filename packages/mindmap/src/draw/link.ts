@@ -1,11 +1,10 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { MindmapNodeShape, STROKE_WIDTH } from '../constants';
-import { MindmapElement } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
-import { getCorrectLayoutByElement, getLayoutByElement, getNodeShapeByElement, getRectangleByNode, isChildRight } from '../utils';
+import { getCorrectLayoutByElement, getLayoutByElement, getNodeShapeByElement, isChildRight } from '../utils';
 import { MindmapLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
 
 export function drawLink(
@@ -53,10 +52,6 @@ export function drawLink(
         beginY = beginNode.y + beginNode.height - beginNode.vGap;
         endX = endNode.x + endNode.width / 2;
         endY = endNode.y + endNode.vGap;
-        if (!needDrawUnderline) {
-            // beginY = beginNode.y + beginNode.height + beginNode.vGap;
-            console.log('修改位置', beginY, child.y, child.vGap);
-        }
     }
 
     const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
@@ -159,16 +154,6 @@ export function drawLink(
                     [endX, endY - 12],
                     [endX, endY]
                 ] as Point[];
-                if (!needDrawUnderline) {
-                    console.log('传进来的坐标', child.x, child.y);
-                    console.log(endX, endY);
-                    // const circle = roughSVG.circle(beginX, beginY, 5, {
-                    //     fill: 'red',
-                    //     stroke: 'red',
-                    //     fillStyle: 'solid'
-                    // });
-                    // return circle;
-                }
                 curve = [...curve, ...line];
             } else {
                 curve = [

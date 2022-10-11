@@ -7,7 +7,7 @@ import { drawRoundRectangle, getRectangleByNode } from './graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { Point } from '@plait/core';
 import { getCorrectLayoutByElement } from './layout';
-import { isBottomLayout, isIndentedLayout, isRightLayout, isVerticalLayout, MindmapLayoutType } from '@plait/layouts';
+import { isBottomLayout, isHorizontalLayout, isIndentedLayout, isRightLayout, isVerticalLayout, MindmapLayoutType } from '@plait/layouts';
 import { drawIndentedLink } from '../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
 import { isStandardLayout } from '@plait/layouts';
@@ -54,6 +54,7 @@ export const drawCurvePlaceholderDropNodeG = (
 ) => {
     let fakeY = targetRect.y - 30;
     const layout = getCorrectLayoutByElement(targetComponent.node.origin);
+    const strokeWidth = targetComponent.node.origin.linkLineWidth ? targetComponent.node.origin.linkLineWidth : STROKE_WIDTH;
     if (detectResult === 'top') {
         if (targetIndex > 0) {
             const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
@@ -110,20 +111,38 @@ export const drawCurvePlaceholderDropNodeG = (
     }
     let fakeX = targetComponent.node.x;
     let fakeRectangleStartX = targetRect.x,
-        fakeRectangleEndX = targetRect.x + 30;
+        fakeRectangleEndX = targetRect.x + 30,
+        fakeRectangleStartY = fakeY,
+        fakeRectangleEndY = fakeRectangleStartY + 12;
     if (isLeftLayout(layout)) {
         fakeX = targetComponent.node.x + targetComponent.node.width - 30;
         fakeRectangleStartX = targetRect.x + targetRect.width - 30;
         fakeRectangleEndX = targetRect.x + targetRect.width;
+    }
+    if ([MindmapLayoutType.upward, MindmapLayoutType.downward].includes(layout)) {
+        parentComponent = targetComponent;
+        targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
+        fakeX = targetRect.x - 2;
+        const vGap = BASE * 6 + strokeWidth;
+        if (isTopLayout(layout) && layout === MindmapLayoutType.upward) {
+            fakeY = targetRect.y - vGap;
+            fakeRectangleStartY = fakeY - vGap + strokeWidth;
+        }
+        if (isBottomLayout(layout) && layout === MindmapLayoutType.downward) {
+            fakeY = targetRect.y + targetRect.height + vGap;
+            fakeRectangleStartY = fakeY + vGap - strokeWidth;
+        }
+        fakeRectangleStartX = fakeX;
+        fakeRectangleEndY = fakeRectangleStartY + 12;
     }
 
     // 构造一条曲线
     const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30, height: 12 };
     const linkSVGG = isIndentedLayout(layout)
         ? drawIndentedLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, false)
-        : drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, undefined, false);
+        : drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, isHorizontalLayout(layout), false);
     // 构造一个矩形框坐标
-    const fakeRectangleG = drawRoundRectangle(roughSVG, fakeRectangleStartX, fakeY, fakeRectangleEndX, fakeY + 12, {
+    const fakeRectangleG = drawRoundRectangle(roughSVG, fakeRectangleStartX, fakeRectangleStartY, fakeRectangleEndX, fakeRectangleEndY, {
         stroke: PRIMARY_COLOR,
         strokeWidth: 2,
         fill: PRIMARY_COLOR,
@@ -194,30 +213,60 @@ export const drawStraightDropNodeG = (
         fakeDropNodeG?.appendChild(linkSVGG);
     } else if (isVerticalLayout(layout)) {
         if (!targetComponent.node.origin.isRoot) {
+            /**
+             * 计算逻辑：
+             *  1. 移动到左侧：当前节点 startX - 偏移值，偏移值计算如下：
+             *      a. 第一个节点： 固定值（来源于 getMainAxle，第二级节点：BASE * 8，其他 BASE * 3 + strokeWidth / 2）；
+             *      b. 第二个节点到最后一个节点之间：上一个节点到当前节点间距的一半（(当前节点 startX - 上一个节点的 endX) / 2)，endX = 当前节点的 startX + width;
+             *  2. 移动到右侧：当前节点 x + width + 偏移值，偏移值计算如下：
+             *      a. 第二个节点到最后一个节点之间的右侧：当前节点到下一个节点间距的一半（(下一个节点 startX - 当前节点的 endX) / 2)，endX = 当前节点的 startX + width;
+             *      b. 最后一个节点的右侧：固定值（来源于 getMainAxle，第二级节点：BASE * 8，其他 BASE * 3 + strokeWidth / 2）；
+             */
+            fakeY = targetComponent.node.y;
             const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
             const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
-            if (detectResult === 'left' && targetIndex > 0) {
-                const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
-                    parentComponent.node.origin.children[targetIndex - 1]
-                ) as MindmapNodeComponent;
-                const previousRect = getRectangleByNode(previousComponent.node);
-                const space = Math.abs(previousRect.x + previousRect.width) - Math.abs(targetRect.x); // 绝对值相减求出间距
-                const offsetX = space / 2;
-                fakeX = targetRect.x - offsetX;
-                fakeY = targetComponent.node.y;
-                // startRectanglePointX = fakeX;
-                // startRectanglePointY = fakeY;
-                // endRectanglePointX = startRectanglePointX + 30;
-                // endRectanglePointY = startRectanglePointY + 12;
+
+            if (detectResult === 'left') {
+                let offsetX = 0;
+                const isFirstNode = targetIndex === 0;
+                if (isFirstNode) {
+                    offsetX = parentComponent.node.origin.isRoot ? BASE * 8 : BASE * 3 + strokeWidth / 2;
+                } else {
+                    const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
+                        parentComponent.node.origin.children[targetIndex - 1]
+                    ) as MindmapNodeComponent;
+                    const previousRect = getRectangleByNode(previousComponent.node);
+                    const space = targetRect.x - (previousRect.x + previousRect.width);
+                    offsetX = space / 2;
+                }
+                fakeX = targetRect.x - offsetX - width / 2 - Math.ceil(strokeWidth / 2);
             }
-            const circle = roughSVG.circle(fakeX, fakeY, 5, {
-                fill: PRIMARY_COLOR,
-                stroke: PRIMARY_COLOR,
-                fillStyle: 'solid'
-            });
-            fakeDropNodeG?.appendChild(circle);
-            console.log(fakeX, fakeY);
-            const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30, height: 12 };
+            if (detectResult === 'right') {
+                let offsetX = 0;
+                const isLastNode = targetIndex === parentComponent.node.origin.children.length - 1;
+                if (isLastNode) {
+                    offsetX = parentComponent.node.origin.isRoot ? BASE * 8 : BASE * 3 + strokeWidth / 2;
+                } else {
+                    const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
+                        parentComponent.node.origin.children[targetIndex + 1]
+                    ) as MindmapNodeComponent;
+                    const nextRect = getRectangleByNode(nextComponent.node);
+                    const space = nextRect.x - (targetRect.x + targetRect.width);
+                    offsetX = space / 2;
+                }
+                fakeX = targetRect.x + width + offsetX - width / 2 - Math.ceil(strokeWidth / 2);
+            }
+            startRectanglePointX = fakeX;
+            if (isTopLayout(layout)) {
+                // 因为矩形是从左上角为起点向下画的，所以需要向上偏移一个矩形的高度（-12）
+                startRectanglePointY = fakeY + height + targetComponent.node.vGap - 12;
+            }
+            if (isBottomLayout(layout)) {
+                startRectanglePointY = fakeY + targetComponent.node.vGap;
+            }
+            endRectanglePointX = startRectanglePointX + 30;
+            endRectanglePointY = startRectanglePointY + 12;
+            const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30 };
             const linkSVGG = drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, false, false);
             fakeDropNodeG?.appendChild(linkSVGG);
         }

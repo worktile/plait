@@ -183,14 +183,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         if (MindmapElement.isIndentedLayout(this.parent.origin)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         } else {
-            console.log('node:', isHorizontalLayout(layout), this.node.origin.value.children[0], this.node.x, this.node.y);
             this.linkG = drawLink(this.roughSVG, this.parent, this.node, null, isHorizontalLayout(layout));
-            const circle = this.roughSVG.circle(this.node.x, this.node.y, 5, {
-                fill: 'green',
-                stroke: 'green',
-                fillStyle: 'solid'
-            });
-            this.gGroup.append(circle);
         }
 
         this.gGroup.append(this.linkG);
