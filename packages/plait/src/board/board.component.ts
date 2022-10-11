@@ -263,10 +263,27 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 this.board?.deleteFragment(event.clipboardData);
             });
 
-        fromEvent<Event>(this.contentContainer.nativeElement, 'scroll')
+        fromEvent<WheelEvent>(this.contentContainer.nativeElement, 'wheel')
             .pipe(
                 takeUntil(this.destroy$),
-                filter(() => {
+                filter((e: WheelEvent) => {
+                    if (!this.isFocused) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    return !!this.isFocused;
+                })
+            )
+            .subscribe();
+
+        fromEvent<MouseEvent>(this.contentContainer.nativeElement, 'scroll')
+            .pipe(
+                takeUntil(this.destroy$),
+                filter((e: MouseEvent) => {
+                    if (!this.isFocused) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
                     return !!this.isFocused;
                 })
             )
