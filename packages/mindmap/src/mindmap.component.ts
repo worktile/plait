@@ -6,7 +6,8 @@ import { PlaitMindmap } from './interfaces/mindmap';
 import { createG, Selection, PlaitBoard } from '@plait/core';
 import { LayoutOptions, GlobalLayout, OriginNode, LayoutNode, isIndentedLayout, isHorizontalLayout } from '@plait/layouts';
 import { MINDMAP_TO_COMPONENT } from './plugins/weak-maps';
-import { getLayoutByElement, getRootLayout } from './utils';
+import { getRootLayout } from './utils';
+import * as MindmapQueries from './queries';
 
 @Component({
     selector: 'plait-mindmap',
@@ -114,7 +115,7 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
     updateMindmap(doCheck = true) {
         MINDMAP_TO_COMPONENT.set(this.value, this);
         const options = this.getOptions() as LayoutOptions;
-        const mindmapLayoutType = getLayoutByElement(this.value);
+        const mindmapLayoutType = MindmapQueries.getLayoutByElement(this.value);
         this.root = GlobalLayout.layout(this.value as OriginNode, options, mindmapLayoutType) as any;
         this.updateMindmapLocation();
         if (doCheck) {

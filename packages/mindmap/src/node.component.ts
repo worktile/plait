@@ -58,7 +58,6 @@ import { MindmapElement } from './interfaces/element';
 import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
-import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
 import { createEmptyNode, findPath, getChildrenCount } from './utils/mindmap';
 import {
     addSelectedMindmapElements,
@@ -67,6 +66,7 @@ import {
     hasSelectedMindmapElement
 } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
+import * as MindmapQueries from './queries';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 
 @Component({
@@ -178,7 +178,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             this.linkG.remove();
         }
 
-        const layout = getLayoutByElement(this.parent.origin) as MindmapLayoutType;
+        const layout = MindmapQueries.getLayoutByElement(this.parent.origin) as MindmapLayoutType;
         if (MindmapElement.isIndentedLayout(this.parent.origin)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         } else {
@@ -199,7 +199,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     drawMaskG() {
         this.destroyMaskG();
 
-        const nodeLayout = getLayoutByElement(this.node.origin) as MindmapLayoutType;
+        const nodeLayout = MindmapQueries.getLayoutByElement(this.node.origin) as MindmapLayoutType;
         const isHorizontal = isHorizontalLayout(nodeLayout);
         const { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
 
@@ -460,7 +460,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const stroke = this.node.origin.isRoot
             ? getRootLinkLineColorByMindmapElement(this.node.origin)
             : getLinkLineColorByMindmapElement(this.node.origin);
-        let nodeLayout = getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
+        let nodeLayout = MindmapQueries.getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
         if (this.node.origin.isRoot && isStandardLayout(nodeLayout)) {
             const root = this.node.origin as OriginNode;
             nodeLayout = root.children.length >= root.rightNodeCount ? MindmapLayoutType.left : MindmapLayoutType.right;
@@ -571,7 +571,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const stroke = getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         const extendY = y + height / 2;
-        const nodeLayout = getCorrectLayoutByElement(this.node.origin) as MindmapLayoutType;
+        const nodeLayout = MindmapQueries.getCorrectLayoutByElement(this.node.origin) as MindmapLayoutType;
 
         let extendLineXY = [
             [x + width, extendY],
