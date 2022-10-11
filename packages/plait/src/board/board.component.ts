@@ -307,7 +307,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         const container = this.elementRef.nativeElement?.parentElement;
         const containerRect = container?.getBoundingClientRect();
         const hideScrollbar = this.board.options.hideScrollbar;
-        const scrollBarWidth = hideScrollbar ? 0 : SCROLL_BAR_WIDTH;
+        const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
         const width = `${containerRect.width + scrollBarWidth}px`;
         const height = `${containerRect.height + scrollBarWidth}px`;
 
