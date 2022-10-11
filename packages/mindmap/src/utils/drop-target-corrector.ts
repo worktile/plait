@@ -1,4 +1,4 @@
-import { isStandardLayout, isIndentedLayout, isHorizontalLayout, isVerticalLayout } from '@plait/layouts';
+import { isStandardLayout, isIndentedLayout, isHorizontalLayout, isVerticalLayout, MindmapLayoutType } from '@plait/layouts';
 import { DetectResult, MindmapElement } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import { getCorrectLayoutByElement } from './layout';
@@ -15,8 +15,8 @@ export const readjustmentDropTarget = (dropTarget: {
     const layout = getCorrectLayoutByElement(targetComponent.node.origin);
     if (targetComponent.node.children.length > 0 && dropTarget.detectResult) {
         if (['right', 'left'].includes(dropTarget.detectResult)) {
-            // 标准布局，根节点
             if (targetComponent.node.origin.isRoot) {
+                // 标准布局，根节点
                 if (isStandardLayout(layout)) {
                     const rightNodeCount = targetComponent.node.origin.rightNodeCount as number;
                     if (detectResult === 'left') {
@@ -34,37 +34,29 @@ export const readjustmentDropTarget = (dropTarget: {
                         }
                         return newDropTarget;
                     }
-                    // 当有子节点是，目标节点是 root 时，默认插入最后一个子节点的下方
-                    const lastChildNodeIndex = targetComponent.node.children.length - 1;
-                    newDropTarget.target = targetComponent.node.children[lastChildNodeIndex].origin;
-                    if (isHorizontalLayout(layout)) {
-                        newDropTarget.detectResult = 'bottom';
-                    }
-                    if (isVerticalLayout(layout)) {
-                        newDropTarget.detectResult = 'right';
-                    }
                 }
             }
+            // 上下布局的根节点只可以探测到上或者下，子节点的左右探测不处理，跳过。
+            if (isVerticalLayout(layout)) {
+                return newDropTarget;
+            }
+            // 剩下是水平布局的默认情况：插入最后一个子节点的下方
+            const lastChildNodeIndex = targetComponent.node.children.length - 1;
+            newDropTarget.target = targetComponent.node.children[lastChildNodeIndex].origin;
+            newDropTarget.detectResult = 'bottom';
         }
         if (['top', 'bottom'].includes(dropTarget.detectResult)) {
-            if (targetComponent.node.children.length > 0 && dropTarget.detectResult) {
-                // 缩进布局移动至第一个节点
-                if (targetComponent.node.origin.isRoot) {
-                    if (isIndentedLayout(layout)) {
-                        newDropTarget.target = targetComponent.node.children[0].origin;
-                        newDropTarget.detectResult = dropTarget.detectResult === 'top' ? 'bottom' : 'top';
-                        return newDropTarget;
-                    }
-                }
-                // 当有子节点是，目标节点是 root 时，默认插入最后一个子节点的下方
+            // 缩进布局移动至第一个节点
+            if (isIndentedLayout(layout)) {
+                newDropTarget.target = targetComponent.node.children[0].origin;
+                newDropTarget.detectResult = dropTarget.detectResult === 'top' ? 'bottom' : 'top';
+                return newDropTarget;
+            }
+            // 上下布局，只有根节点才会插到右边
+            if (isVerticalLayout(layout) && targetComponent.node.origin.isRoot) {
                 const lastChildNodeIndex = targetComponent.node.children.length - 1;
                 newDropTarget.target = targetComponent.node.children[lastChildNodeIndex].origin;
-                if (isHorizontalLayout(layout)) {
-                    newDropTarget.detectResult = 'bottom';
-                }
-                if (isVerticalLayout(layout)) {
-                    newDropTarget.detectResult = 'right';
-                }
+                newDropTarget.detectResult = 'right';
                 return newDropTarget;
             }
         }
