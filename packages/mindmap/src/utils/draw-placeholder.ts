@@ -6,7 +6,7 @@ import { MindmapNodeComponent } from '../node.component';
 import { drawRoundRectangle, getRectangleByNode } from './graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { Point } from '@plait/core';
-import { getCorrectLayoutByElement } from './layout';
+import * as MindmapQueries from '../queries';
 import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
 import { drawIndentedLink } from '../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
@@ -53,7 +53,7 @@ export const drawCurvePlaceholderDropNodeG = (
     fakeDropNodeG: SVGGElement | undefined
 ) => {
     let fakeY = targetRect.y - 30;
-    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
+    const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
     if (detectResult === 'top') {
         if (targetIndex > 0) {
             const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
@@ -133,7 +133,7 @@ export const drawStraightDropNodeG = (
     let endLinePoint = x + width + lineLength;
     let startRectanglePoint = x + width + lineLength;
     let endRectanglePoint = x + lineLength + width + 30;
-    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
+    const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
     if (detectResult === 'left') {
         startLinePoint = x - lineLength;
         endLinePoint = x;

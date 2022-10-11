@@ -1,11 +1,11 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { MindmapNodeShape, STROKE_WIDTH } from '../constants';
-import { MindmapElement } from '../interfaces';
+import * as MindmapQueries from '../queries';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
-import { getCorrectLayoutByElement, getLayoutByElement, getNodeShapeByElement, getRectangleByNode, isChildRight } from '../utils';
+import { getNodeShapeByElement, getRectangleByNode, isChildRight } from '../utils';
 import { MindmapLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
 
 export function drawLink(
@@ -34,7 +34,7 @@ export function drawLink(
 
         if (
             node.parent &&
-            isIndentedLayout(getLayoutByElement(node.parent?.origin)) &&
+            isIndentedLayout(MindmapQueries.getLayoutByElement(node.parent?.origin)) &&
             (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.underline
         ) {
             if (isChildRight(node, child)) {
@@ -56,7 +56,7 @@ export function drawLink(
 
     const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
     const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
-    const layout = getCorrectLayoutByElement(node.origin) as MindmapLayoutType;
+    const layout = MindmapQueries.getCorrectLayoutByElement(node.origin) as MindmapLayoutType;
     if (endNode.origin.isRoot) {
         if (layout === MindmapLayoutType.left || isStandardLayout(layout)) {
             endX -= strokeWidth;

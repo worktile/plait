@@ -1,7 +1,16 @@
 import {
-    createG, distanceBetweenPointAndPoint, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, Path,
-    PlaitBoard, PlaitElement,
-    PlaitPlugin, Point, toPoint, transformPoint, Transforms
+    createG,
+    distanceBetweenPointAndPoint,
+    HOST_TO_ROUGH_SVG,
+    IS_TEXT_EDITABLE,
+    Path,
+    PlaitBoard,
+    PlaitElement,
+    PlaitPlugin,
+    Point,
+    toPoint,
+    transformPoint,
+    Transforms
 } from '@plait/core';
 import { isStandardLayout } from '@plait/layouts';
 import { updateForeignObject } from '@plait/richtext';
@@ -13,10 +22,11 @@ import { MindmapElement } from '../interfaces/element';
 import { isPlaitMindmap, PlaitMindmap } from '../interfaces/mindmap';
 import { DetectResult, MindmapNode, RootBaseDirection } from '../interfaces/node';
 import { MindmapNodeComponent } from '../node.component';
-import { drawPlaceholderDropNodeG, findPath, getCorrectLayoutByElement, isChildElement } from '../utils';
+import { drawPlaceholderDropNodeG, findPath, isChildElement } from '../utils';
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
+import * as MindmapQueries from '../queries';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -156,7 +166,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
                 if (rootBaseDirection === 'left') {
                     const leftNode = board.children[0].children?.slice(rightNodeCount, board.children[0].children.length);
-                    const layout = getCorrectLayoutByElement(root?.origin as MindmapElement);
+                    const layout = MindmapQueries.getCorrectLayoutByElement(root?.origin as MindmapElement);
                     // 标准布局并且左侧没有节点，向左划一条基本直线（左布局下不需要此线）
                     if (!leftNode?.length && isStandardLayout(layout)) {
                         dropTarget = { target: root?.origin as MindmapElement, detectResult: 'left' };
@@ -193,7 +203,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 }
                 const originPath = findPath(board, activeComponent.node);
                 const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
-                const layout = getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapElement);
+                const layout = MindmapQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapElement);
 
                 let newElement: Partial<MindmapElement> = { isCollapsed: false },
                     rightTargetPath = findPath(board, targetComponent.node);
