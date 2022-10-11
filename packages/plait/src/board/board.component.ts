@@ -74,7 +74,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     destroy$: Subject<any> = new Subject();
 
-    autoFitPadding = 8;
+    private autoFitPadding = 8;
 
     public isMoving: boolean = false;
 
@@ -156,9 +156,12 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        const valueChange = changes['plaitValue'];
-        if (valueChange && this.hasInitialized) {
-            this.board.children = valueChange.currentValue;
+        if (this.hasInitialized) {
+            const valueChange = changes['plaitValue'];
+            const options = changes['plaitOptions'];
+
+            if (valueChange) this.board.children = valueChange.currentValue;
+            if (options) this.board.options = options.currentValue;
             this.cdr.markForCheck();
         }
     }
@@ -169,7 +172,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.updateViewport();
     }
 
-    initializePlugins() {
+    private initializePlugins() {
         let board = withMove(withHistory(withSelection(withBoard(createBoard(this.host, this.plaitValue, this.plaitOptions)))));
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
@@ -180,7 +183,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         }
     }
 
-    initializeEvents() {
+    private initializeEvents() {
         fromEvent<MouseEvent>(this.host, 'mousedown')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
@@ -307,7 +310,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         const container = this.elementRef.nativeElement?.parentElement;
         const containerRect = container?.getBoundingClientRect();
         const hideScrollbar = this.board.options.hideScrollbar;
-        const scrollBarWidth = hideScrollbar ? 0 : SCROLL_BAR_WIDTH;
+        const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
         const width = `${containerRect.width + scrollBarWidth}px`;
         const height = `${containerRect.height + scrollBarWidth}px`;
 
@@ -347,16 +350,19 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         const scrollLeft = (viewportWidth - viewportBox.width) * offsetXRatio;
         const scrollTop = (viewportHeight - viewportBox.height) * offsetYRatio;
 
-        this.resizeViewport();
         this.renderer2.setStyle(this.host, 'display', 'block');
         this.renderer2.setStyle(this.host, 'width', `${viewportWidth}px`);
         this.renderer2.setStyle(this.host, 'height', `${viewportHeight}px`);
         this.renderer2.setStyle(this.host, 'cursor', this.isMoveMode ? 'grab' : 'default');
-        this.renderer2.setAttribute(this.host, 'viewBox', box.join());
+
+        if (width > 0 && height > 0) {
+            this.renderer2.setAttribute(this.host, 'viewBox', box.join());
+        }
         this.setScroll(scrollLeft, scrollTop);
     }
 
     updateViewport() {
+        this.resizeViewport();
         this.viewportChange();
     }
 

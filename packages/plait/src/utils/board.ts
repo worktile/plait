@@ -35,7 +35,7 @@ export function getViewBox(board: PlaitBoard): ViewBox {
 
 export function getViewportClientBox(board: PlaitBoard) {
     const hideScrollbar = board.options.hideScrollbar;
-    const scrollBarWidth = hideScrollbar ? 0 : SCROLL_BAR_WIDTH;
+    const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
     const container = board.host?.parentElement as HTMLElement;
     const containerRect = container?.getBoundingClientRect();
     const width = containerRect.width - scrollBarWidth;
