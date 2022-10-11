@@ -1,6 +1,5 @@
 import {
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
     ComponentRef,
     Input,
@@ -12,13 +11,13 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import {
+    BaseCursorStatus,
     createG,
     createText,
     HOST_TO_ROUGH_SVG,
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
-    BaseCursorStatus,
     Selection,
     toPoint,
     transformPoint,
@@ -38,6 +37,7 @@ import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, filter, map, take, takeUntil } from 'rxjs/operators';
+import { Editor, Operation } from 'slate';
 import {
     EXTEND_OFFSET,
     EXTEND_RADIUS,
@@ -50,7 +50,6 @@ import {
     QUICK_INSERT_INNER_CROSS_COLOR,
     STROKE_WIDTH
 } from './constants';
-import { Editor, Operation } from 'slate';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLink } from './draw/link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
@@ -322,7 +321,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     private drawQuickInsert(offset = 0) {
-        if (this.board.readonly) {
+        if (this.board.options.readonly) {
             return;
         }
         const quickInsertG = createG();
@@ -558,7 +557,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         // inteactive
         fromEvent(this.extendG, 'mouseup')
             .pipe(
-                filter(() => !this.cursorMove || this.board.readonly),
+                filter(() => !this.cursorMove || this.board.options.readonly),
                 take(1)
             )
             .subscribe(() => {
