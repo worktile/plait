@@ -1,5 +1,13 @@
 # plait
 
+## 0.0.45
+
+### Patch Changes
+
+-   [#167](https://github.com/worktile/plait/pull/167) [`19f250a`](https://github.com/worktile/plait/commit/19f250a3fbe3a6ad01096f6d23d830f048ffed55) Thanks [@Maple13](https://github.com/Maple13)! - synchronize options on Changes
+
+*   [#167](https://github.com/worktile/plait/pull/167) [`19f250a`](https://github.com/worktile/plait/commit/19f250a3fbe3a6ad01096f6d23d830f048ffed55) Thanks [@Maple13](https://github.com/Maple13)! - fix scrollbar width calculation error
+
 ## 0.0.44
 
 ### Patch Changes
