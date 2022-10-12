@@ -31,7 +31,6 @@ export class BaseLayout {
                     _isHorizontal,
                     isolatedNode.parent
                 );
-                const { width, height } = isolatedRoot.getBoundingBox();
                 if (!context.toTop && toTop) {
                     isolatedRoot.down2up();
                 }
@@ -39,8 +38,10 @@ export class BaseLayout {
                     isolatedRoot.right2left();
                 }
                 // 3、set sub node as black box
+                const { width, height } = isolatedRoot.getBoundingBox();
                 isolatedNode.width = width;
                 isolatedNode.height = height;
+                isolatedNode.blackNode = isolatedRoot;
 
                 isolatedLayoutRoots.push(isolatedRoot);
             });

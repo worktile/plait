@@ -7,6 +7,8 @@ export class LayoutNode {
     vGap = 0;
     hGap = 0;
     origin: OriginNode;
+    blackNode?: LayoutNode;
+    boundingBox?: BoundingBox;
     width = 0;
     height = 0;
     depth = 0;
@@ -47,19 +49,25 @@ export class LayoutNode {
         dfs(this, callback);
     }
 
-    getBoundingBox() {
-        const bb = {
+    getBoundingBox(): BoundingBox {
+        const bb: BoundingBox = {
             left: Number.MAX_VALUE,
             top: Number.MAX_VALUE,
+            right: Number.MIN_VALUE,
+            bottom: Number.MIN_VALUE,
             width: 0,
-            height: 0
+            height: 0,
+
         };
         this.eachNode(node => {
             bb.left = Math.min(bb.left, node.x);
             bb.top = Math.min(bb.top, node.y);
-            bb.width = Math.max(bb.width, node.x + node.width);
-            bb.height = Math.max(bb.height, node.y + node.height);
+            bb.right = Math.max(bb.right, node.x + node.width);
+            bb.bottom = Math.max(bb.bottom, node.y + node.height);
         });
+        bb.width = bb.right - bb.left;
+        bb.height = bb.bottom - bb.top;
+        this.boundingBox = bb;
         return bb;
     }
 
@@ -96,4 +104,14 @@ export function dfs(node: LayoutNode, callback: (node: LayoutNode) => void) {
         dfs(_node, callback);
     });
     callback(node);
+}
+
+
+export interface BoundingBox {
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+    width: number;
+    height: number;
 }

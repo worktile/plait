@@ -51,19 +51,24 @@ function seperate(tree: LayoutTree, i: number) {
 
 function positionRootCenter(tree: LayoutTree) {
     // Position root between children, taking into account their mod.
-    const preliminary =
-        (tree.children[0].preliminary +
-            tree.children[0].modifier +
-            tree.children[tree.childrenCount - 1].modifier +
-            tree.children[tree.childrenCount - 1].preliminary +
-            tree.children[tree.childrenCount - 1].width) /
-            2 -
-        tree.width / 2;
+    const startNode = tree.children[0];
+    let startX = startNode.preliminary + startNode.modifier;
+    if (startNode.origin.blackNode && startNode.origin.blackNode.boundingBox && startNode.origin.blackNode.x > startNode.origin.blackNode.boundingBox.left) {
+        startX = startX + (startNode.origin.blackNode.x - startNode.origin.blackNode.boundingBox.left);
+    }
+    const endNode = tree.children[tree.childrenCount - 1];
+    let endX = endNode.modifier + endNode.preliminary + endNode.width;
+    if (endNode.origin.blackNode && endNode.origin.blackNode.boundingBox && (endNode.origin.blackNode.x + endNode.origin.blackNode.width) < endNode.origin.blackNode.boundingBox.right) {
+        endX = endX - (endNode.origin.blackNode.boundingBox.right - (endNode.origin.blackNode.x + endNode.origin.blackNode.width));
+    }
+    const preliminary = (startX + endX) / 2 - tree.width / 2;
     // move sub tree when preliminary to avoid root shifting to left
-    if(preliminary > 0) {
+    if (preliminary > 0) {
         tree.preliminary = preliminary;
     } else {
-        tree.children.forEach((c, index) => { moveSubtree(tree, index, Math.abs(preliminary))});
+        tree.children.forEach((c, index) => {
+            moveSubtree(tree, index, Math.abs(preliminary));
+        });
     }
 }
 
