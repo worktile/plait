@@ -12,7 +12,7 @@ import {
     transformPoint,
     Transforms
 } from '@plait/core';
-import { isStandardLayout } from '@plait/layouts';
+import { isStandardLayout, isVerticalLogicLayout } from '@plait/layouts';
 import { updateForeignObject } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { BASE } from '../constants';
@@ -170,19 +170,30 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
                 const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
                 let targetPath = findPath(board, targetComponent.node);
-                if (dropTarget.detectResult === 'right') {
-                    targetPath.push(dropTarget.target.children.length);
-                }
-                if (dropTarget.detectResult === 'left') {
-                    targetPath.push(dropTarget.target.children.length);
-                }
-                if (dropTarget.detectResult === 'bottom') {
-                    targetPath = Path.next(targetPath);
-                }
-                const originPath = findPath(board, activeComponent.node);
                 const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
                 const layout = MindmapQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapElement);
-
+                if (isVerticalLogicLayout(layout)) {
+                    if (dropTarget.detectResult === 'top') {
+                        targetPath.push(dropTarget.target.children.length);
+                    }
+                    if (dropTarget.detectResult === 'bottom') {
+                        targetPath.push(dropTarget.target.children.length);
+                    }
+                    if (dropTarget.detectResult === 'right') {
+                        targetPath = Path.next(targetPath);
+                    }
+                } else {
+                    if (dropTarget.detectResult === 'right') {
+                        targetPath.push(dropTarget.target.children.length);
+                    }
+                    if (dropTarget.detectResult === 'left') {
+                        targetPath.push(dropTarget.target.children.length);
+                    }
+                    if (dropTarget.detectResult === 'bottom') {
+                        targetPath = Path.next(targetPath);
+                    }
+                }
+                const originPath = findPath(board, activeComponent.node);
                 let newElement: Partial<MindmapElement> = { isCollapsed: false },
                     rightTargetPath = findPath(board, targetComponent.node);
 
