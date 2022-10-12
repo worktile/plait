@@ -20,9 +20,16 @@ import { getRichtextRectangleByNode } from '../draw/richtext';
 import { drawRectangleNode } from '../draw/shape';
 import { MindmapElement } from '../interfaces/element';
 import { isPlaitMindmap, PlaitMindmap } from '../interfaces/mindmap';
-import { DetectResult, MindmapNode, RootBaseDirection } from '../interfaces/node';
+import { DetectResult, MindmapNode } from '../interfaces/node';
 import { MindmapNodeComponent } from '../node.component';
-import { directionCorrector, directionDetector, drawPlaceholderDropNodeG, findPath, isChildElement, readjustmentDropTarget } from '../utils';
+import {
+    directionCorrector,
+    directionDetector,
+    drawPlaceholderDropNodeG,
+    findPath,
+    isChildElement,
+    readjustmentDropTarget
+} from '../utils';
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';

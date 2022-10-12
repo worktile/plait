@@ -7,7 +7,14 @@ import { drawRoundRectangle, getRectangleByNode } from './graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { Point } from '@plait/core';
 import { MindmapQueries } from '../queries';
-import { isBottomLayout, isHorizontalLayout, isIndentedLayout, isRightLayout, isVerticalLayout, MindmapLayoutType } from '@plait/layouts';
+import {
+    isBottomLayout,
+    isHorizontalLayout,
+    isIndentedLayout,
+    isRightLayout,
+    isVerticalLogicLayout,
+    MindmapLayoutType
+} from '@plait/layouts';
 import { drawIndentedLink } from '../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
 import { isStandardLayout } from '@plait/layouts';
@@ -211,7 +218,7 @@ export const drawStraightDropNodeG = (
         const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30, height: 12 };
         const linkSVGG = drawIndentedLink(roughSVG, targetComponent.node, fakeNode, PRIMARY_COLOR, false);
         fakeDropNodeG?.appendChild(linkSVGG);
-    } else if (isVerticalLayout(layout)) {
+    } else if (isVerticalLogicLayout(layout)) {
         if (!targetComponent.node.origin.isRoot) {
             /**
              * 计算逻辑：

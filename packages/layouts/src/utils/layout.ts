@@ -44,7 +44,11 @@ export const isHorizontalLayout = (layout: MindmapLayoutType) => {
     );
 };
 
-export const isVerticalLayout = (layout: MindmapLayoutType) => {
+export const isHorizontalLogicLayout = (layout: MindmapLayoutType) => {
+    return layout === MindmapLayoutType.right || layout === MindmapLayoutType.left || layout === MindmapLayoutType.standard;
+};
+
+export const isVerticalLogicLayout = (layout: MindmapLayoutType) => {
     return layout === MindmapLayoutType.upward || layout === MindmapLayoutType.downward;
 };
 
