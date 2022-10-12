@@ -32,7 +32,6 @@ export function withMove<T extends PlaitBoard>(board: T) {
             const left = event.x - plaitBoardMove.x;
             const top = event.y - plaitBoardMove.y;
             boardComponent.setScroll(boardComponent.scrollLeft - left, boardComponent.scrollTop - top);
-            boardComponent.getScrollOffset();
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
         }

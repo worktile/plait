@@ -298,7 +298,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 const scrollLeft = (event.target as HTMLElement).scrollLeft;
                 const scrollTop = (event.target as HTMLElement).scrollTop;
                 this.setScroll(scrollLeft, scrollTop);
-                this.getScrollOffset();
             });
 
         window.onresize = () => {
@@ -328,13 +327,10 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     setScroll(left: number, top: number) {
         this.scrollLeft = left;
         this.scrollTop = top;
-    }
-
-    getScrollOffset() {
         const viewportBox = getViewportClientBox(this.board);
         const viewBox = getViewBox(this.board);
-        const scrollLeftRatio = this.scrollLeft / (viewBox.viewportWidth - viewportBox.width);
-        const scrollTopRatio = this.scrollTop / (viewBox.viewportHeight - viewportBox.height);
+        const scrollLeftRatio = left / (viewBox.viewportWidth - viewportBox.width);
+        const scrollTopRatio = top / (viewBox.viewportHeight - viewportBox.height);
 
         this.setViewport({
             offsetXRatio: scrollLeftRatio,
@@ -379,6 +375,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     // 拖拽模式
     changeMoveMode(cursorStatus: BaseCursorStatus) {
         updateCursorStatus(this.board, cursorStatus);
+        this.renderer2.setStyle(this.host, 'cursor', 'grab');
         this.cdr.markForCheck();
     }
 
