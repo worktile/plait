@@ -47,7 +47,7 @@ export const readjustmentDropTarget = (dropTarget: {
         }
         if (['top', 'bottom'].includes(dropTarget.detectResult)) {
             // 缩进布局移动至第一个节点
-            if (isIndentedLayout(layout)) {
+            if (isIndentedLayout(layout) && targetComponent.node.origin.isRoot) {
                 newDropTarget.target = targetComponent.node.children[0].origin;
                 newDropTarget.detectResult = dropTarget.detectResult === 'top' ? 'bottom' : 'top';
                 return newDropTarget;

@@ -12,7 +12,7 @@ import {
     transformPoint,
     Transforms
 } from '@plait/core';
-import { isStandardLayout } from '@plait/layouts';
+import { isStandardLayout, isIndentedLayout, isTopLayout } from '@plait/layouts';
 import { updateForeignObject } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { BASE } from '../constants';
@@ -34,7 +34,6 @@ import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { MindmapQueries } from '../queries';
-
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -154,13 +153,11 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     });
                 }
             });
-
             if (dropTarget?.target) {
                 dropTarget = readjustmentDropTarget(dropTarget);
                 drawPlaceholderDropNodeG(dropTarget, roughSVG, fakeDropNodeG);
             }
         }
-
         mousemove(event);
     };
 
@@ -169,6 +166,10 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             if (dropTarget?.target) {
                 const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
                 const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
+                const originPath = findPath(board, activeComponent.node);
+                const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
+                const layout = MindmapQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapElement);
+
                 let targetPath = findPath(board, targetComponent.node);
                 if (dropTarget.detectResult === 'right') {
                     targetPath.push(dropTarget.target.children.length);
@@ -176,13 +177,14 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 if (dropTarget.detectResult === 'left') {
                     targetPath.push(dropTarget.target.children.length);
                 }
-                if (dropTarget.detectResult === 'bottom') {
+                // isIndentedTopLayout: leftTopIndented, rightTopIndented
+                const isTopIndentedLayout = isIndentedLayout(layout) && isTopLayout(layout);
+                if (
+                    (!isTopIndentedLayout && dropTarget.detectResult === 'bottom') ||
+                    (isTopIndentedLayout && dropTarget.detectResult === 'top')
+                ) {
                     targetPath = Path.next(targetPath);
                 }
-                const originPath = findPath(board, activeComponent.node);
-                const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
-                const layout = MindmapQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapElement);
-
                 let newElement: Partial<MindmapElement> = { isCollapsed: false },
                     rightTargetPath = findPath(board, targetComponent.node);
 
@@ -199,7 +201,6 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     }
                     Transforms.setNode(board, newElement, rightTargetPath as Path);
                 }
-
                 Transforms.moveNode(board, originPath, targetPath);
             }
 
