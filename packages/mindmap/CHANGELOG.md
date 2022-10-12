@@ -1,5 +1,31 @@
 # mindmap
 
+## 0.0.47
+
+### Patch Changes
+
+-   [#160](https://github.com/worktile/plait/pull/160) [`a4413c9`](https://github.com/worktile/plait/commit/a4413c9c52ad31d52e9c9248bfd2ae4c9c6afbed) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix style issues with moving one side of a standard layout to the other of mindmap dnd
+
+*   [#154](https://github.com/worktile/plait/pull/154) [`e128dd7`](https://github.com/worktile/plait/commit/e128dd75d4aea49614545e9229bc9aa187c3d681) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - feat: add direction-correction function
+
+-   [#165](https://github.com/worktile/plait/pull/165) [`a4a54ce`](https://github.com/worktile/plait/commit/a4a54ce81bd8792ccb093a0cd4255c9c331ba531) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - change verticalGap and horizontalGap
+
+*   [#168](https://github.com/worktile/plait/pull/168) [`91ed054`](https://github.com/worktile/plait/commit/91ed0546bac66eb82801f178b214e964b1980022) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - adjust upward and downward layout dnd style
+
+-   [#165](https://github.com/worktile/plait/pull/165) [`a4a54ce`](https://github.com/worktile/plait/commit/a4a54ce81bd8792ccb093a0cd4255c9c331ba531) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - limit the scroll area
+
+*   [#165](https://github.com/worktile/plait/pull/165) [`a4a54ce`](https://github.com/worktile/plait/commit/a4a54ce81bd8792ccb093a0cd4255c9c331ba531) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - stopPropagation when click quickInsert
+
+-   [#153](https://github.com/worktile/plait/pull/153) [`cd185d2`](https://github.com/worktile/plait/commit/cd185d229065bd051b2f1ee8732f5a3f1a2e8418) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor(mindmap): refactor directionDetector function
+
+*   [#157](https://github.com/worktile/plait/pull/157) [`1b167ba`](https://github.com/worktile/plait/commit/1b167ba0c54e2dcf723b93ffe0894676b76ea0ad) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - adjust logic layout dnd style
+
+-   [#175](https://github.com/worktile/plait/pull/175) [`00fdc81`](https://github.com/worktile/plait/commit/00fdc814914a7a1051320c3368e61b468e04fa05) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor: change MindmapQueries export
+
+*   [#165](https://github.com/worktile/plait/pull/165) [`a4a54ce`](https://github.com/worktile/plait/commit/a4a54ce81bd8792ccb093a0cd4255c9c331ba531) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - adjust idented layout dnd style of mindmap
+
+-   [#165](https://github.com/worktile/plait/pull/165) [`a4a54ce`](https://github.com/worktile/plait/commit/a4a54ce81bd8792ccb093a0cd4255c9c331ba531) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix: add hasSameParentOriginChildren judge
+
 ## 0.0.46
 
 ### Patch Changes
