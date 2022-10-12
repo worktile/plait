@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.46
+
+### Patch Changes
+
+-   [#172](https://github.com/worktile/plait/pull/172) [`d4956b0`](https://github.com/worktile/plait/commit/d4956b07e6a2c4b90c82083dad544df3bc31f5bc) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - feat: add setMindmapLayout function and MindmapTransforms
+
 ## 0.0.45
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.46
+
+### Patch Changes
+
+-   [#174](https://github.com/worktile/plait/pull/174) [`c556abf`](https://github.com/worktile/plait/commit/c556abf84536eaf961740f465b047913a222af04) Thanks [@Ashy6](https://github.com/Ashy6)! - fix adaptHandel zoom change when default equal 1.0
+
 ## 0.0.45
 
 ### Patch Changes
