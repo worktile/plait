@@ -1,11 +1,5 @@
 # plait
 
-<<<<<<< HEAD
-## 0.0.42
-
-### Patch Changes
-
-=======
 ## 0.0.45
 
 ### Patch Changes
@@ -34,7 +28,6 @@
 
 ### Patch Changes
 
->>>>>>> 8388570beb8e630e34235a86235ad38c6d8fda6e
 -   [#149](https://github.com/worktile/plait/pull/149) [`fab99b0`](https://github.com/worktile/plait/commit/fab99b0aa9732a13abc0450afc53ab5aeb7689da) Thanks [@Ashy6](https://github.com/Ashy6)! - modify the way changes are detected
 
 *   [#146](https://github.com/worktile/plait/pull/146) [`472c0b4`](https://github.com/worktile/plait/commit/472c0b46e95c36025731dde7fb66970917b3fa44) Thanks [@Ashy6](https://github.com/Ashy6)! - fix: stop cursor grabbing when Space up
