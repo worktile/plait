@@ -148,8 +148,8 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             });
 
             if (dropTarget?.target) {
-                const newDropTarget = readjustmentDropTarget(dropTarget);
-                drawPlaceholderDropNodeG(newDropTarget, roughSVG, fakeDropNodeG);
+                dropTarget = readjustmentDropTarget(dropTarget);
+                drawPlaceholderDropNodeG(dropTarget, roughSVG, fakeDropNodeG);
             }
         }
 
