@@ -1,8 +1,9 @@
-import { isStandardLayout, isIndentedLayout, isHorizontalLayout, isVerticalLayout, MindmapLayoutType } from '@plait/layouts';
+import { isStandardLayout, isIndentedLayout, isVerticalLayout } from '@plait/layouts';
 import { DetectResult, MindmapElement } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
-import { getCorrectLayoutByElement } from './layout';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
+import { getCorrectLayoutByElement } from '../queries';
+
 
 /* 根据布局调整 target 以及 direction */
 export const readjustmentDropTarget = (dropTarget: {

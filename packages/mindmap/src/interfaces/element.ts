@@ -1,7 +1,7 @@
 import { Element } from 'slate';
 import { MindmapNodeShape } from '../constants/node';
-import { getLayoutByElement } from '../utils/layout';
 import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
+import * as MindmapQueries from '../queries';
 
 export interface MindmapElement {
     id: string;
@@ -30,11 +30,11 @@ export interface MindmapElement {
 
 export const MindmapElement = {
     hasLayout(value: MindmapElement, layout: MindmapLayoutType) {
-        const _layout = getLayoutByElement(value);
+        const _layout = MindmapQueries.getLayoutByElement(value);
         return _layout === layout;
     },
     isIndentedLayout(value: MindmapElement) {
-        const _layout = getLayoutByElement(value) as MindmapLayoutType;
+        const _layout = MindmapQueries.getLayoutByElement(value) as MindmapLayoutType;
         return isIndentedLayout(_layout);
     }
 };

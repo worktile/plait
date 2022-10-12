@@ -1,5 +1,34 @@
 # mindmap
 
+<<<<<<< HEAD
+=======
+## 0.0.45
+
+### Patch Changes
+
+-   [#170](https://github.com/worktile/plait/pull/170) [`f3d287e`](https://github.com/worktile/plait/commit/f3d287ee8da99afb2678f41873683f69ef64bebd) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Add debounceTime to resolve the problem that last insert text operation cannot be subscribed.
+
+*   [#169](https://github.com/worktile/plait/pull/169) [`e4db480`](https://github.com/worktile/plait/commit/e4db4805617c34d92726bbde2baf31171bbcf2ca) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - feat: add MindmapQueries export and add getAvailableSubLayoutsByElement function
+
+## 0.0.44
+
+### Patch Changes
+
+-   [#162](https://github.com/worktile/plait/pull/162) [`653b8d4`](https://github.com/worktile/plait/commit/653b8d422aad64ec27baa8d134e055bd626f43fe) Thanks [@Maple13](https://github.com/Maple13)! - integrate board options parameters
+
+## 0.0.43
+
+### Patch Changes
+
+-   [#158](https://github.com/worktile/plait/pull/158) [`6e55b69`](https://github.com/worktile/plait/commit/6e55b69e0d8aa3f6cd3eb324d6e1cbf1d9ee6ec3) Thanks [@WBbug](https://github.com/WBbug)! - change verticalGap and horizontalGap
+
+*   [#155](https://github.com/worktile/plait/pull/155) [`0f5cde0`](https://github.com/worktile/plait/commit/0f5cde0be6a51a1faf67480e7805ac450b02c548) Thanks [@Maple13](https://github.com/Maple13)! - limit the scroll area
+
+-   [#161](https://github.com/worktile/plait/pull/161) [`0a5605c`](https://github.com/worktile/plait/commit/0a5605ca75bdc461ee194deade2c0c9bee232563) Thanks [@WBbug](https://github.com/WBbug)! - stopPropagation when click quickInsert
+
+*   [#156](https://github.com/worktile/plait/pull/156) [`7fc510a`](https://github.com/worktile/plait/commit/7fc510a642be703b1234d1ea6aa89f0e23cb7905) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix: add hasSameParentOriginChildren judge
+
+>>>>>>> 8388570beb8e630e34235a86235ad38c6d8fda6e
 ## 0.0.42
 
 ### Patch Changes

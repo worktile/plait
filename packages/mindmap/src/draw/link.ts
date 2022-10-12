@@ -4,8 +4,9 @@ import { MindmapNodeShape, STROKE_WIDTH } from '../constants';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
-import { getCorrectLayoutByElement, getLayoutByElement, getNodeShapeByElement, isChildRight } from '../utils';
+import { getNodeShapeByElement, isChildRight } from '../utils';
 import { MindmapLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
+import { getCorrectLayoutByElement, getLayoutByElement } from '../queries';
 
 export function drawLink(
     roughSVG: RoughSVG,
@@ -56,7 +57,6 @@ export function drawLink(
 
     const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
     const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
-
     if (endNode.origin.isRoot) {
         if (layout === MindmapLayoutType.left || isStandardLayout(layout)) {
             endX -= strokeWidth;

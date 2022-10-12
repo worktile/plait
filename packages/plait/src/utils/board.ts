@@ -9,9 +9,10 @@ export function transformPoints(board: PlaitBoard, points: Point[]) {
 }
 
 export function transformPoint(board: PlaitBoard, point: Point) {
-    const viewBox = getViewBox(board);
-    const x = (point[0] / viewBox.viewportWidth) * viewBox.width + viewBox.minX;
-    const y = (point[1] / viewBox.viewportHeight) * viewBox.height + viewBox.minY;
+    const { width, height } = board.host.getBoundingClientRect();
+    const viewBox = (board.host as SVGSVGElement).viewBox.baseVal;
+    const x = (point[0] / width) * viewBox.width + viewBox.x;
+    const y = (point[1] / height) * viewBox.height + viewBox.y;
     const newPoint = [x, y] as Point;
 
     return newPoint;
@@ -33,10 +34,12 @@ export function getViewBox(board: PlaitBoard): ViewBox {
 }
 
 export function getViewportClientBox(board: PlaitBoard) {
+    const hideScrollbar = board.options.hideScrollbar;
+    const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
     const container = board.host?.parentElement as HTMLElement;
     const containerRect = container?.getBoundingClientRect();
-    const width = containerRect.width - SCROLL_BAR_WIDTH;
-    const height = containerRect.height - SCROLL_BAR_WIDTH;
+    const width = containerRect.width - scrollBarWidth;
+    const height = containerRect.height - scrollBarWidth;
 
     return {
         width,
