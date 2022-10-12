@@ -120,7 +120,8 @@ export const drawCurvePlaceholderDropNodeG = (
     let fakeRectangleStartX = targetRect.x,
         fakeRectangleEndX = targetRect.x + 30,
         fakeRectangleStartY = fakeY,
-        fakeRectangleEndY = fakeRectangleStartY + 12;
+        fakeRectangleEndY = fakeRectangleStartY + 12,
+        width = 30;
     if (isLeftLayout(layout)) {
         fakeX = targetComponent.node.x + targetComponent.node.width - 30;
         fakeRectangleStartX = targetRect.x + targetRect.width - 30;
@@ -129,7 +130,8 @@ export const drawCurvePlaceholderDropNodeG = (
     if ([MindmapLayoutType.upward, MindmapLayoutType.downward].includes(layout)) {
         parentComponent = targetComponent;
         targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
-        fakeX = targetRect.x - 2;
+        fakeX = parentComponent.node.x;
+        width = parentComponent.node.width;
         const vGap = BASE * 6 + strokeWidth;
         if (isTopLayout(layout) && layout === MindmapLayoutType.upward) {
             fakeY = targetRect.y - vGap;
@@ -139,12 +141,13 @@ export const drawCurvePlaceholderDropNodeG = (
             fakeY = targetRect.y + targetRect.height + vGap;
             fakeRectangleStartY = fakeY + vGap - strokeWidth;
         }
-        fakeRectangleStartX = fakeX;
+        fakeRectangleStartX = fakeX + Math.ceil(parentComponent.node.width / 2) - parentComponent.node.hGap - Math.ceil(strokeWidth / 2);
+        fakeRectangleEndX = fakeRectangleStartX + 30;
         fakeRectangleEndY = fakeRectangleStartY + 12;
     }
 
     // 构造一条曲线
-    const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30, height: 12 };
+    const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width, height: 12 };
     const linkSVGG = isIndentedLayout(layout)
         ? drawIndentedLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, false)
         : drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, isHorizontalLayout(layout), false);
