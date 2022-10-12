@@ -1,5 +1,13 @@
 # layouts
 
+## 0.0.47
+
+### Patch Changes
+
+-   [#154](https://github.com/worktile/plait/pull/154) [`e128dd7`](https://github.com/worktile/plait/commit/e128dd75d4aea49614545e9229bc9aa187c3d681) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - feat: add direction-correction function
+
+*   [#175](https://github.com/worktile/plait/pull/175) [`00fdc81`](https://github.com/worktile/plait/commit/00fdc814914a7a1051320c3368e61b468e04fa05) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor: change MindmapQueries export
+
 ## 0.0.36
 
 ### Patch Changes
