@@ -387,10 +387,12 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         let zoom = this.board.viewport.zoom;
         if (viewportWidth < rootGroupBox.width || viewportHeight < rootGroupBox.height) {
             zoom = Math.min(viewportWidth / rootGroupBox.width, viewportHeight / rootGroupBox.height);
+        } else {
+            zoom = 1;
         }
 
         this.setViewport({
-            zoom: calculateZoom(zoom),
+            zoom,
             offsetXRatio: 0.5,
             offsetYRatio: 0.5
         });

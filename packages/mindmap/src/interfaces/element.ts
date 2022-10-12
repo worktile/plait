@@ -3,6 +3,7 @@ import { MindmapNodeShape } from '../constants/node';
 import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
 
+
 export interface MindmapElement {
     id: string;
     value: Element;

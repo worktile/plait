@@ -35,6 +35,7 @@ import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { MindmapQueries } from '../queries';
 
+
 const DRAG_MOVE_BUFFER = 5;
 
 export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {

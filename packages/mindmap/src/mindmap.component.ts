@@ -9,6 +9,7 @@ import { MINDMAP_TO_COMPONENT } from './plugins/weak-maps';
 import { getRootLayout } from './utils';
 import { MindmapQueries } from './queries';
 
+
 @Component({
     selector: 'plait-mindmap',
     template: `

@@ -179,6 +179,7 @@ export const drawStraightDropNodeG = (
     let endRectanglePointX = x + lineLength + width + 30;
     let startRectanglePointY = y + height / 2 - 6;
     let endRectanglePointY = y + height / 2 - 6 + 12;
+
     if (detectResult === 'left') {
         startLinePoint = x - lineLength;
         endLinePoint = x;
