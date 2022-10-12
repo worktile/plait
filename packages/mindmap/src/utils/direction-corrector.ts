@@ -1,6 +1,6 @@
 import { DetectResult, MindmapElement, MindmapNode } from '../interfaces';
 import { isBottomLayout, isRightLayout, isLeftLayout, MindmapLayoutType, isStandardLayout, isTopLayout } from '@plait/layouts';
-import MindmapQueries from '../queries';
+import { MindmapQueries } from '../queries';
 
 export const directionCorrector = (node: MindmapNode, detectResults: DetectResult[]): DetectResult[] | null => {
     const layout = MindmapQueries.getCorrectLayoutByElement(node?.origin as MindmapElement);
