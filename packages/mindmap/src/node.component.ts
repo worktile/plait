@@ -1,6 +1,5 @@
 import {
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
     ComponentRef,
     Input,
@@ -12,13 +11,13 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import {
+    BaseCursorStatus,
     createG,
     createText,
     HOST_TO_ROUGH_SVG,
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
-    BaseCursorStatus,
     Selection,
     toPoint,
     transformPoint,
@@ -38,6 +37,7 @@ import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, filter, map, take, takeUntil } from 'rxjs/operators';
+import { Editor, Operation } from 'slate';
 import {
     EXTEND_OFFSET,
     EXTEND_RADIUS,
@@ -50,7 +50,6 @@ import {
     QUICK_INSERT_INNER_CROSS_COLOR,
     STROKE_WIDTH
 } from './constants';
-import { Editor, Operation } from 'slate';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLink } from './draw/link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
@@ -59,7 +58,6 @@ import { MindmapElement } from './interfaces/element';
 import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
-import { getCorrectLayoutByElement, getLayoutByElement } from './utils/layout';
 import { createEmptyNode, findPath, getChildrenCount } from './utils/mindmap';
 import {
     addSelectedMindmapElements,
@@ -68,6 +66,7 @@ import {
     hasSelectedMindmapElement
 } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
+import MindmapQueries from './queries';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 
 @Component({
@@ -179,7 +178,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             this.linkG.remove();
         }
 
-        const layout = getLayoutByElement(this.parent.origin) as MindmapLayoutType;
+        const layout = MindmapQueries.getLayoutByElement(this.parent.origin) as MindmapLayoutType;
         if (MindmapElement.isIndentedLayout(this.parent.origin)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         } else {
@@ -200,7 +199,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     drawMaskG() {
         this.destroyMaskG();
 
-        const nodeLayout = getLayoutByElement(this.node.origin) as MindmapLayoutType;
+        const nodeLayout = MindmapQueries.getLayoutByElement(this.node.origin) as MindmapLayoutType;
         const isHorizontal = isHorizontalLayout(nodeLayout);
         const { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
 
@@ -322,7 +321,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     private drawQuickInsert(offset = 0) {
-        if (this.board.readonly) {
+        if (this.board.options.readonly) {
             return;
         }
         const quickInsertG = createG();
@@ -461,7 +460,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const stroke = this.node.origin.isRoot
             ? getRootLinkLineColorByMindmapElement(this.node.origin)
             : getLinkLineColorByMindmapElement(this.node.origin);
-        let nodeLayout = getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
+        let nodeLayout = MindmapQueries.getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
         if (this.node.origin.isRoot && isStandardLayout(nodeLayout)) {
             const root = this.node.origin as OriginNode;
             nodeLayout = root.children.length >= root.rightNodeCount ? MindmapLayoutType.left : MindmapLayoutType.right;
@@ -558,7 +557,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         // inteactive
         fromEvent(this.extendG, 'mouseup')
             .pipe(
-                filter(() => !this.cursorMove || this.board.readonly),
+                filter(() => !this.cursorMove || this.board.options.readonly),
                 take(1)
             )
             .subscribe(() => {
@@ -572,7 +571,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const stroke = getLinkLineColorByMindmapElement(this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         const extendY = y + height / 2;
-        const nodeLayout = getCorrectLayoutByElement(this.node.origin) as MindmapLayoutType;
+        const nodeLayout = MindmapQueries.getCorrectLayoutByElement(this.node.origin) as MindmapLayoutType;
 
         let extendLineXY = [
             [x + width, extendY],
@@ -813,13 +812,15 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 MERGING.set(this.board, true);
             }
         });
-        const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
-            const point = transformPoint(this.board, toPoint(event.x, event.y, this.host));
-            if (!hitMindmapNode(this.board, point, this.node as MindmapNode)) {
-                exitHandle();
-                this.enableMaskG();
-            }
-        });
+        const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown')
+            .pipe(debounceTime(0)) // wait composition input and insert text operation complete
+            .subscribe((event: MouseEvent) => {
+                const point = transformPoint(this.board, toPoint(event.x, event.y, this.host));
+                if (!hitMindmapNode(this.board, point, this.node as MindmapNode)) {
+                    exitHandle();
+                    this.enableMaskG();
+                }
+            });
         const editor = richtextInstance.editor;
         const { keydown } = editor;
         editor.keydown = (event: KeyboardEvent) => {

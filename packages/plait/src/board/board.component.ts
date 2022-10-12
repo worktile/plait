@@ -22,7 +22,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { SCROLL_BAR_WIDTH } from '../constants';
-import { BaseCursorStatus } from '../interfaces';
+import { BaseCursorStatus, PlaitOperation } from '../interfaces';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitPlugin } from '../interfaces/plugin';
@@ -33,7 +33,7 @@ import { withHistory } from '../plugins/with-history';
 import { withMove } from '../plugins/with-move';
 import { withSelection } from '../plugins/with-selection';
 import { Transforms } from '../transfroms';
-import { calculateZoom, getViewBox, getViewportClientBox, updateCursorStatus, ViewBox } from '../utils/board';
+import { calculateZoom, getViewBox, getViewportClientBox, updateCursorStatus } from '../utils/board';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO_COMPONENT } from '../utils/weak-maps';
 
 @Component({
@@ -74,9 +74,21 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     destroy$: Subject<any> = new Subject();
 
+    private autoFitPadding = 8;
+
     public isMoving: boolean = false;
 
-    autoFitPadding = 8;
+    @Input() plaitValue: PlaitElement[] = [];
+
+    @Input() plaitViewport!: Viewport;
+
+    @Input() plaitPlugins: PlaitPlugin[] = [];
+
+    @Input() plaitOptions!: PlaitBoardOptions;
+
+    @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
+
+    @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
 
     public get isMoveMode(): boolean {
         return this.board.cursor === BaseCursorStatus.move;
@@ -90,20 +102,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         return this.board?.selection;
     }
 
-    @Input() plaitValue: PlaitElement[] = [];
-
-    @Input() plaitViewport!: Viewport;
-
-    @Input() plaitPlugins: PlaitPlugin[] = [];
-
-    @Input() plaitReadonly = false;
-
-    @Input() plaitAllowClearBoard = false;
-
-    @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
-
-    @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
-
     @HostBinding('class')
     get hostClass() {
         return `plait-board-container ${this.board.cursor}`;
@@ -111,7 +109,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     @HostBinding('class.readonly')
     get readonly() {
-        return this.plaitReadonly;
+        return this.board.options.readonly;
     }
 
     @HostBinding('class.moving')
@@ -149,16 +147,21 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 viewport: this.board.viewport,
                 selection: this.board.selection
             };
-            this.updateViewport();
+            if (this.board.operations.some(op => PlaitOperation.isSetViewportOperation(op))) {
+                this.updateViewport();
+            }
             this.plaitChange.emit(changeEvent);
         });
         this.hasInitialized = true;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        const valueChange = changes['plaitValue'];
-        if (valueChange && this.hasInitialized) {
-            this.board.children = valueChange.currentValue;
+        if (this.hasInitialized) {
+            const valueChange = changes['plaitValue'];
+            const options = changes['plaitOptions'];
+
+            if (valueChange) this.board.children = valueChange.currentValue;
+            if (options) this.board.options = options.currentValue;
             this.cdr.markForCheck();
         }
     }
@@ -169,9 +172,8 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.updateViewport();
     }
 
-    initializePlugins() {
-        const options: PlaitBoardOptions = { readonly: this.plaitReadonly, allowClearBoard: this.plaitAllowClearBoard };
-        let board = withMove(withHistory(withSelection(withBoard(createBoard(this.host, this.plaitValue, options)))));
+    private initializePlugins() {
+        let board = withMove(withHistory(withSelection(withBoard(createBoard(this.host, this.plaitValue, this.plaitOptions)))));
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
         });
@@ -181,7 +183,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         }
     }
 
-    initializeEvents() {
+    private initializeEvents() {
         fromEvent<MouseEvent>(this.host, 'mousedown')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
@@ -264,10 +266,27 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 this.board?.deleteFragment(event.clipboardData);
             });
 
-        fromEvent<Event>(this.contentContainer.nativeElement, 'scroll')
+        fromEvent<WheelEvent>(this.contentContainer.nativeElement, 'wheel')
             .pipe(
                 takeUntil(this.destroy$),
-                filter(() => {
+                filter((e: WheelEvent) => {
+                    if (!this.isFocused) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    return !!this.isFocused;
+                })
+            )
+            .subscribe();
+
+        fromEvent<MouseEvent>(this.contentContainer.nativeElement, 'scroll')
+            .pipe(
+                takeUntil(this.destroy$),
+                filter((e: MouseEvent) => {
+                    if (!this.isFocused) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
                     return !!this.isFocused;
                 })
             )
@@ -275,7 +294,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 const scrollLeft = (event.target as HTMLElement).scrollLeft;
                 const scrollTop = (event.target as HTMLElement).scrollTop;
                 this.getScrollOffset(scrollLeft, scrollTop);
-                this.setScroll(scrollLeft, scrollTop);
             });
 
         window.onresize = () => {
@@ -291,8 +309,10 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     resizeViewport() {
         const container = this.elementRef.nativeElement?.parentElement;
         const containerRect = container?.getBoundingClientRect();
-        const width = `${containerRect.width + SCROLL_BAR_WIDTH}px`;
-        const height = `${containerRect.height + SCROLL_BAR_WIDTH}px`;
+        const hideScrollbar = this.board.options.hideScrollbar;
+        const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
+        const width = `${containerRect.width + scrollBarWidth}px`;
+        const height = `${containerRect.height + scrollBarWidth}px`;
 
         this.renderer2.setStyle(this.contentContainer.nativeElement, 'width', width);
         this.renderer2.setStyle(this.contentContainer.nativeElement, 'height', height);
@@ -320,7 +340,8 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         });
     }
 
-    viewportChange(viewBox: ViewBox) {
+    viewportChange() {
+        const viewBox = getViewBox(this.board);
         const offsetXRatio = this.board.viewport.offsetXRatio;
         const offsetYRatio = this.board.viewport.offsetYRatio;
         const viewportBox = getViewportClientBox(this.board);
@@ -329,18 +350,20 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         const scrollLeft = (viewportWidth - viewportBox.width) * offsetXRatio;
         const scrollTop = (viewportHeight - viewportBox.height) * offsetYRatio;
 
-        this.resizeViewport();
         this.renderer2.setStyle(this.host, 'display', 'block');
         this.renderer2.setStyle(this.host, 'width', `${viewportWidth}px`);
         this.renderer2.setStyle(this.host, 'height', `${viewportHeight}px`);
-        this.renderer2.setStyle(this.host, 'cursor', this.plaitReadonly ? 'grab' : 'default');
-        this.renderer2.setAttribute(this.host, 'viewBox', box.join());
+        this.renderer2.setStyle(this.host, 'cursor', this.isMoveMode ? 'grab' : 'default');
+
+        if (width > 0 && height > 0) {
+            this.renderer2.setAttribute(this.host, 'viewBox', box.join());
+        }
         this.setScroll(scrollLeft, scrollTop);
     }
 
     updateViewport() {
-        const viewBox = getViewBox(this.board);
-        this.viewportChange(viewBox);
+        this.resizeViewport();
+        this.viewportChange();
     }
 
     trackBy = (index: number, element: PlaitElement) => {

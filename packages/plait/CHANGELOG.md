@@ -1,5 +1,29 @@
 # plait
 
+## 0.0.45
+
+### Patch Changes
+
+-   [#167](https://github.com/worktile/plait/pull/167) [`19f250a`](https://github.com/worktile/plait/commit/19f250a3fbe3a6ad01096f6d23d830f048ffed55) Thanks [@Maple13](https://github.com/Maple13)! - synchronize options on Changes
+
+*   [#167](https://github.com/worktile/plait/pull/167) [`19f250a`](https://github.com/worktile/plait/commit/19f250a3fbe3a6ad01096f6d23d830f048ffed55) Thanks [@Maple13](https://github.com/Maple13)! - fix scrollbar width calculation error
+
+## 0.0.44
+
+### Patch Changes
+
+-   [#162](https://github.com/worktile/plait/pull/162) [`653b8d4`](https://github.com/worktile/plait/commit/653b8d422aad64ec27baa8d134e055bd626f43fe) Thanks [@Maple13](https://github.com/Maple13)! - board adds the fullscreen property, use fullscreen to control whether the width and height of the canvas include the scroll bar distance
+
+*   [#164](https://github.com/worktile/plait/pull/164) [`ed5cc33`](https://github.com/worktile/plait/commit/ed5cc3395d6a5457f81f5b818395bc07da5a38f4) Thanks [@Maple13](https://github.com/Maple13)! - disable scrolling when board is not focused
+
+-   [#162](https://github.com/worktile/plait/pull/162) [`653b8d4`](https://github.com/worktile/plait/commit/653b8d422aad64ec27baa8d134e055bd626f43fe) Thanks [@Maple13](https://github.com/Maple13)! - integrate board options parameters
+
+## 0.0.43
+
+### Patch Changes
+
+-   [#155](https://github.com/worktile/plait/pull/155) [`0f5cde0`](https://github.com/worktile/plait/commit/0f5cde0be6a51a1faf67480e7805ac450b02c548) Thanks [@Maple13](https://github.com/Maple13)! - limit the scroll area
+
 ## 0.0.42
 
 ### Patch Changes
