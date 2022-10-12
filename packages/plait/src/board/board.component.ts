@@ -351,7 +351,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.renderer2.setStyle(this.host, 'display', 'block');
         this.renderer2.setStyle(this.host, 'width', `${viewportWidth}px`);
         this.renderer2.setStyle(this.host, 'height', `${viewportHeight}px`);
-        this.renderer2.setStyle(this.host, 'cursor', this.isMoveMode ? 'grab' : 'default');
 
         if (width > 0 && height > 0) {
             this.renderer2.setAttribute(this.host, 'viewBox', box.join());
@@ -375,7 +374,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     // 拖拽模式
     changeMoveMode(cursorStatus: BaseCursorStatus) {
         updateCursorStatus(this.board, cursorStatus);
-        this.renderer2.setStyle(this.host, 'cursor', 'grab');
         this.cdr.markForCheck();
     }
 
