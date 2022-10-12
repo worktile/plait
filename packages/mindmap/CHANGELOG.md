@@ -1,7 +1,5 @@
 # mindmap
 
-<<<<<<< HEAD
-=======
 ## 0.0.45
 
 ### Patch Changes
@@ -28,7 +26,6 @@
 
 *   [#156](https://github.com/worktile/plait/pull/156) [`7fc510a`](https://github.com/worktile/plait/commit/7fc510a642be703b1234d1ea6aa89f0e23cb7905) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix: add hasSameParentOriginChildren judge
 
->>>>>>> 8388570beb8e630e34235a86235ad38c6d8fda6e
 ## 0.0.42
 
 ### Patch Changes
