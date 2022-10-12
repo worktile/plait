@@ -78,6 +78,10 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     public isMoving: boolean = false;
 
+    scrollLeft!: number;
+
+    scrollTop!: number;
+
     @Input() plaitValue: PlaitElement[] = [];
 
     @Input() plaitViewport!: Viewport;
@@ -293,7 +297,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             .subscribe((event: Event) => {
                 const scrollLeft = (event.target as HTMLElement).scrollLeft;
                 const scrollTop = (event.target as HTMLElement).scrollTop;
-                this.getScrollOffset(scrollLeft, scrollTop);
+                this.setScroll(scrollLeft, scrollTop);
             });
 
         window.onresize = () => {
@@ -321,14 +325,8 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     }
 
     setScroll(left: number, top: number) {
-        const container = this.contentContainer.nativeElement as HTMLElement;
-        container.scrollTo({
-            top,
-            left
-        });
-    }
-
-    getScrollOffset(left: number, top: number) {
+        this.scrollLeft = left;
+        this.scrollTop = top;
         const viewportBox = getViewportClientBox(this.board);
         const viewBox = getViewBox(this.board);
         const scrollLeftRatio = left / (viewBox.viewportWidth - viewportBox.width);
@@ -347,18 +345,21 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         const viewportBox = getViewportClientBox(this.board);
         const { minX, minY, width, height, viewportWidth, viewportHeight } = viewBox;
         const box = [minX, minY, width, height];
-        const scrollLeft = (viewportWidth - viewportBox.width) * offsetXRatio;
-        const scrollTop = (viewportHeight - viewportBox.height) * offsetYRatio;
+        this.scrollLeft = (viewportWidth - viewportBox.width) * offsetXRatio;
+        this.scrollTop = (viewportHeight - viewportBox.height) * offsetYRatio;
 
         this.renderer2.setStyle(this.host, 'display', 'block');
         this.renderer2.setStyle(this.host, 'width', `${viewportWidth}px`);
         this.renderer2.setStyle(this.host, 'height', `${viewportHeight}px`);
-        this.renderer2.setStyle(this.host, 'cursor', this.isMoveMode ? 'grab' : 'default');
 
         if (width > 0 && height > 0) {
             this.renderer2.setAttribute(this.host, 'viewBox', box.join());
         }
-        this.setScroll(scrollLeft, scrollTop);
+        const container = this.contentContainer.nativeElement as HTMLElement;
+        container.scrollTo({
+            top: this.scrollTop,
+            left: this.scrollLeft
+        });
     }
 
     updateViewport() {
