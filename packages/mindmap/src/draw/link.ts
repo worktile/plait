@@ -57,7 +57,6 @@ export function drawLink(
 
     const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
     const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
-    const layout = MindmapQueries.getCorrectLayoutByElement(node.origin) as MindmapLayoutType;
     if (endNode.origin.isRoot) {
         if (layout === MindmapLayoutType.left || isStandardLayout(layout)) {
             endX -= strokeWidth;
