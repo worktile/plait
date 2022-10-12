@@ -10,6 +10,6 @@ export * from './interfaces';
 export * from './plugins/weak-maps';
 export * from './plugins/with-mindmap';
 export * from './constants';
-// eslint-disable-next-line prettier/prettier
-export * as MindmapQueries from './queries/index';
-export * as MindmapTransforms from'./transforms/index';
+export * from './queries/index';
+export * from './transforms/index';
+

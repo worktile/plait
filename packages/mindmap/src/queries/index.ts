@@ -4,7 +4,7 @@ import { getCorrectLayoutByElement } from './get-correct-layout-by-element';
 import { getLayoutByElement } from './get-layout-by-element';
 import { getLayoutParentByElement } from './get-layout-parent-by-element';
 
-export {
+export const MindmapQueries = {
     getAvailableSubLayoutsByElement,
     getLayoutParentByElement,
     getBranchMindmapLayouts,

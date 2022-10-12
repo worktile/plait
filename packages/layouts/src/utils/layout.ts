@@ -58,9 +58,25 @@ export const isTopLayout = (layout: MindmapLayoutType) => {
     );
 };
 
+export const isBottomLayout = (layout: MindmapLayoutType) => {
+    return (
+        layout === MindmapLayoutType.leftBottomIndented ||
+        layout === MindmapLayoutType.rightBottomIndented ||
+        layout === MindmapLayoutType.downward
+    );
+};
+
 export const isLeftLayout = (layout: MindmapLayoutType) => {
     return (
         layout === MindmapLayoutType.left || layout === MindmapLayoutType.leftTopIndented || layout === MindmapLayoutType.leftBottomIndented
+    );
+};
+
+export const isRightLayout = (layout: MindmapLayoutType) => {
+    return (
+        layout === MindmapLayoutType.right ||
+        layout === MindmapLayoutType.rightTopIndented ||
+        layout === MindmapLayoutType.rightBottomIndented
     );
 };
 
