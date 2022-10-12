@@ -52,8 +52,8 @@ export const readjustmentDropTarget = (dropTarget: {
                 newDropTarget.detectResult = dropTarget.detectResult === 'top' ? 'bottom' : 'top';
                 return newDropTarget;
             }
-            // 上下布局，只有根节点才会插到右边
-            if (isVerticalLayout(layout) && targetComponent.node.origin.isRoot) {
+            // 上下布局，插到右边
+            if (isVerticalLayout(layout)) {
                 const lastChildNodeIndex = targetComponent.node.children.length - 1;
                 newDropTarget.target = targetComponent.node.children[lastChildNodeIndex].origin;
                 newDropTarget.detectResult = 'right';
