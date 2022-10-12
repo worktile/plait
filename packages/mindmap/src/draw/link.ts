@@ -6,7 +6,7 @@ import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
 import { getNodeShapeByElement, isChildRight } from '../utils';
 import { MindmapLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
-import { getCorrectLayoutByElement, getLayoutByElement } from '../queries';
+import MindmapQueries from '../queries';
 
 export function drawLink(
     roughSVG: RoughSVG,
@@ -22,7 +22,7 @@ export function drawLink(
         endY,
         beginNode = node,
         endNode = child;
-    const layout = getCorrectLayoutByElement(node.origin) as MindmapLayoutType;
+    const layout = MindmapQueries.getCorrectLayoutByElement(node.origin) as MindmapLayoutType;
     if (isHorizontal) {
         if (!isChildRight(node, child)) {
             beginNode = child;
@@ -35,7 +35,7 @@ export function drawLink(
 
         if (
             node.parent &&
-            isIndentedLayout(getLayoutByElement(node.parent?.origin)) &&
+            isIndentedLayout(MindmapQueries.getLayoutByElement(node.parent?.origin)) &&
             (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.underline
         ) {
             if (isChildRight(node, child)) {

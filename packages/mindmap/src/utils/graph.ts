@@ -4,7 +4,7 @@ import { Point } from 'roughjs/bin/geometry';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { MAX_RADIUS, MindmapNodeShape } from '../constants';
 import { BaseCursorStatus, PlaitBoard } from '@plait/core';
-import * as MindmapQueries from '../queries';
+import MindmapQueries from '../queries';
 import { isHorizontalLayout, isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
 import { getNodeShapeByElement } from './shape';
 

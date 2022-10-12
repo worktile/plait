@@ -7,7 +7,7 @@ import { createG, Selection, PlaitBoard } from '@plait/core';
 import { LayoutOptions, GlobalLayout, OriginNode, LayoutNode, isIndentedLayout, isHorizontalLayout } from '@plait/layouts';
 import { MINDMAP_TO_COMPONENT } from './plugins/weak-maps';
 import { getRootLayout } from './utils';
-import * as MindmapQueries from './queries';
+import MindmapQueries from './queries';
 
 @Component({
     selector: 'plait-mindmap',

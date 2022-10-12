@@ -6,7 +6,7 @@ import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
 import { getNodeShapeByElement, getRectangleByNode, isChildUp } from '../utils';
 import { MindmapLayoutType } from '@plait/layouts';
-import * as MindmapQueries from '../queries';
+import MindmapQueries from '../queries';
 
 export function drawIndentedLink(
     roughSVG: RoughSVG,

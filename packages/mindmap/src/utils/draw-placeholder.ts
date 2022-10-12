@@ -6,7 +6,7 @@ import { MindmapNodeComponent } from '../node.component';
 import { drawRoundRectangle, getRectangleByNode } from './graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { Point } from '@plait/core';
-import { getCorrectLayoutByElement } from '../queries';
+import MindmapQueries from '../queries';
 import { isBottomLayout, isHorizontalLayout, isIndentedLayout, isRightLayout, isVerticalLayout, MindmapLayoutType } from '@plait/layouts';
 import { drawIndentedLink } from '../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
@@ -53,7 +53,7 @@ export const drawCurvePlaceholderDropNodeG = (
     fakeDropNodeG: SVGGElement | undefined
 ) => {
     let fakeY = targetRect.y - 30;
-    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
+    const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
     const strokeWidth = targetComponent.node.origin.linkLineWidth ? targetComponent.node.origin.linkLineWidth : STROKE_WIDTH;
     if (detectResult === 'top') {
         if (targetIndex > 0) {
@@ -92,7 +92,7 @@ export const drawCurvePlaceholderDropNodeG = (
             fakeY = targetRect.y + targetRect.height;
         }
     }
-    const parentNodeLayout = getCorrectLayoutByElement(parentComponent.node.origin);
+    const parentNodeLayout = MindmapQueries.getCorrectLayoutByElement(parentComponent.node.origin);
     if (isStandardLayout(parentNodeLayout)) {
         const rightNodeCount = parentComponent.node.origin.rightNodeCount as number;
         if (detectResult === 'top') {
@@ -180,7 +180,7 @@ export const drawStraightDropNodeG = (
     }
     let fakeY = targetComponent.node.y;
     let fakeX = targetRect.x;
-    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
+    const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
     // 构造一条直线
     let linePoints = [
         [startLinePoint, y + height / 2],

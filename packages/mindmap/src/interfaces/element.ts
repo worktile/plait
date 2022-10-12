@@ -1,7 +1,7 @@
 import { Element } from 'slate';
 import { MindmapNodeShape } from '../constants/node';
 import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
-import * as MindmapQueries from '../queries';
+import MindmapQueries from '../queries';
 
 export interface MindmapElement {
     id: string;

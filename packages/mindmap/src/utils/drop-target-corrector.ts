@@ -2,8 +2,7 @@ import { isStandardLayout, isIndentedLayout, isVerticalLayout } from '@plait/lay
 import { DetectResult, MindmapElement } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
-import { getCorrectLayoutByElement } from '../queries';
-
+import MindmapQueries from '../queries';
 
 /* 根据布局调整 target 以及 direction */
 export const readjustmentDropTarget = (dropTarget: {
@@ -13,7 +12,7 @@ export const readjustmentDropTarget = (dropTarget: {
     const { target, detectResult } = dropTarget;
     const newDropTarget = { target, detectResult };
     const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(target) as MindmapNodeComponent;
-    const layout = getCorrectLayoutByElement(targetComponent.node.origin);
+    const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
     if (targetComponent.node.children.length > 0 && dropTarget.detectResult) {
         if (['right', 'left'].includes(dropTarget.detectResult)) {
             if (targetComponent.node.origin.isRoot) {
