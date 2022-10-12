@@ -26,7 +26,7 @@ import { directionCorrector, directionDetector, drawPlaceholderDropNodeG, findPa
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
-import { MindmapQueries} from '../queries';
+import { MindmapQueries } from '../queries';
 
 const DRAG_MOVE_BUFFER = 5;
 

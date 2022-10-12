@@ -66,7 +66,7 @@ import {
     hasSelectedMindmapElement
 } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
-import { MindmapQueries} from './queries';
+import { MindmapQueries } from './queries';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 
 @Component({

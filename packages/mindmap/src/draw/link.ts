@@ -6,7 +6,7 @@ import { getLinkLineColorByMindmapElement } from '../utils/colors';
 import { Point } from '@plait/core';
 import { getNodeShapeByElement, isChildRight } from '../utils';
 import { MindmapLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
-import { MindmapQueries} from '../queries';
+import { MindmapQueries } from '../queries';
 
 export function drawLink(
     roughSVG: RoughSVG,

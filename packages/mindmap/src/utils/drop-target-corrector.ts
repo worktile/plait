@@ -2,7 +2,7 @@ import { isStandardLayout, isIndentedLayout, isVerticalLayout } from '@plait/lay
 import { DetectResult, MindmapElement } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
-import { MindmapQueries} from '../queries';
+import { MindmapQueries } from '../queries';
 
 /* 根据布局调整 target 以及 direction */
 export const readjustmentDropTarget = (dropTarget: {
