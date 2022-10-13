@@ -15,7 +15,7 @@ export class PlaitToolbarComponent {
 
     @Input()
     set viewZoom(zoom: number) {
-        this._viewZoom = Math.floor(zoom * 100);
+        this._viewZoom = Number(((zoom ?? 1) * 100).toFixed(0));
     }
     get viewZoom() {
         return this._viewZoom;
