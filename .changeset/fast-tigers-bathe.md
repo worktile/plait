@@ -1,6 +1,6 @@
 ---
-'@plait/mindmap': minor
-'@plait/core': minor
+'@plait/mindmap': patch
+'@plait/core': patch
 ---
 
 course add drag status
