@@ -14,6 +14,7 @@ import {
 } from '@plait/core';
 import {
     isBottomLayout,
+    isHorizontalLayout,
     isIndentedLayout,
     isLeftLayout,
     isLogicLayout,
@@ -181,7 +182,9 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 let targetPath = findPath(board, targetComponent.node);
                 const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
                 const layout = MindmapQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapElement);
+                console.log(targetPath);
                 targetPath = updatePathByLayoutAnddropTarget(targetPath, layout, dropTarget);
+                console.log(targetPath);
                 const originPath = findPath(board, activeComponent.node);
                 let newElement: Partial<MindmapElement> = { isCollapsed: false },
                     rightTargetPath = findPath(board, targetComponent.node);
@@ -273,7 +276,7 @@ const updatePathByLayoutAnddropTarget = (
         }
     }
     // 逻辑布局/标准布局：上下是兄弟节点，左右是子节点
-    if (isLogicLayout(layout) || isStandardLayout(layout)) {
+    if (isHorizontalLayout(layout) || isStandardLayout(layout)) {
         if (dropTarget.detectResult === 'right') {
             targetPath.push(dropTarget.target.children.length);
         }
