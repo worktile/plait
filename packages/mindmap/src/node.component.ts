@@ -21,8 +21,7 @@ import {
     Selection,
     toPoint,
     transformPoint,
-    Transforms,
-    transformZoom
+    Transforms
 } from '@plait/core';
 import {
     isHorizontalLayout,
@@ -56,6 +55,7 @@ import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './dr
 import { drawRectangleNode } from './draw/shape';
 import { MindmapElement } from './interfaces/element';
 import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
+import { MindmapQueries } from './queries';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { createEmptyNode, findPath, getChildrenCount } from './utils/mindmap';
@@ -66,7 +66,6 @@ import {
     hasSelectedMindmapElement
 } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
-import { MindmapQueries } from './queries';
 
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 
@@ -791,8 +790,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 }
                 const newElement = {
                     value: richtext,
-                    width: width / (transformZoom(this.board.viewport.zoom) / 100),
-                    height: height / (transformZoom(this.board.viewport.zoom) / 100)
+                    width: width / this.board.viewport.zoom,
+                    height: height / this.board.viewport.zoom
                 } as MindmapElement;
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
@@ -805,8 +804,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             }
             if (event.isComposing && (width !== this.node.origin.width || height !== this.node.origin.height)) {
                 const newElement: Partial<MindmapElement> = {
-                    width: width / (transformZoom(this.board.viewport.zoom) / 100),
-                    height: height / (transformZoom(this.board.viewport.zoom) / 100)
+                    width: width / this.board.viewport.zoom,
+                    height: height / this.board.viewport.zoom
                 };
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);

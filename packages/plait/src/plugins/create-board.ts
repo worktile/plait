@@ -4,7 +4,7 @@ import { BaseCursorStatus } from '../interfaces/cursor';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitElementContext } from '../interfaces/element-context';
 import { PlaitOperation } from '../interfaces/operation';
-import { Transforms } from '../transfroms';
+import { Transforms } from '../transforms';
 import { FLUSHING } from '../utils/weak-maps';
 
 export function createBoard(host: SVGElement, children: PlaitElement[], options: PlaitBoardOptions): PlaitBoard {

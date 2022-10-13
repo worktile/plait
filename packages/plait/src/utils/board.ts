@@ -1,6 +1,15 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { BaseCursorStatus, PlaitBoard, Point } from '../interfaces';
 
+export type ViewBox = {
+    minX: number;
+    minY: number;
+    width: number;
+    height: number;
+    viewportWidth: number;
+    viewportHeight: number;
+};
+
 export function transformPoints(board: PlaitBoard, points: Point[]) {
     const newPoints = points.map(point => {
         return transformPoint(board, point);
@@ -89,31 +98,8 @@ export function isNoSelectionElement(e: Event) {
     return (e.target as HTMLElement)?.closest('.plait-board-attached');
 }
 
-/**
- * viewZoom 转 zoom
- * @param viewZoom 视图上显示的 zoom 缩放级别 %
- * @returns zoom 真实的 zoom
- */
-export const transformViewZoom = (viewZoom: number): number => 2 - 100 / viewZoom;
-
-/**
- * zoom 转 viewZoom
- * @param zoom this.board.viewport.zoom
- * @returns 视图上显示的 zoom 缩放级别 %
- */
-export const transformZoom = (zoom: number): number => Number((100 / (2 - zoom)).toFixed(0));
-
 export const updateCursorStatus = (board: PlaitBoard, cursor: BaseCursorStatus) => {
     if (cursor) {
         board.cursor = cursor;
     }
-};
-
-export type ViewBox = {
-    minX: number;
-    minY: number;
-    width: number;
-    height: number;
-    viewportWidth: number;
-    viewportHeight: number;
 };
