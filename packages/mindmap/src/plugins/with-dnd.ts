@@ -274,10 +274,10 @@ const updatePathByLayoutAnddropTarget = (
     }
     // 逻辑布局/标准布局：上下是兄弟节点，左右是子节点
     if (isLogicLayout(layout) || isStandardLayout(layout)) {
-        if (isRightLayout(layout) && dropTarget.detectResult === 'right') {
+        if (dropTarget.detectResult === 'right') {
             targetPath.push(dropTarget.target.children.length);
         }
-        if (isLeftLayout(layout) && dropTarget.detectResult === 'left') {
+        if (dropTarget.detectResult === 'left') {
             targetPath.push(dropTarget.target.children.length);
         }
         // 如果是上，位置不变，下插入到下一个兄弟节点
