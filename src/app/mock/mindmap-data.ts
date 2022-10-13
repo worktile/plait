@@ -7,7 +7,7 @@ export const mockMindmapData: PlaitMindmap = {
     rightNodeCount: 3,
     value: { children: [{ text: 'root' }] },
     shape: MindmapNodeShape.underline,
-    layout: MindmapLayoutType.upward,
+    layout: MindmapLayoutType.rightTopIndented,
     children: [
         {
             id: '1-1',
