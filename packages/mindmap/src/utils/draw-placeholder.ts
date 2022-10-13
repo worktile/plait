@@ -72,12 +72,22 @@ export const drawCurvePlaceholderDropNodeG = (
     if (targetComponent === activeComponent) {
         return;
     }
-    if (detectResult === 'top' && previousComponent === activeComponent) {
-        return;
+    if (isIndentedLayout(layout)) {
+        if (detectResult === 'bottom' && previousComponent === activeComponent) {
+            return;
+        }
+        if (detectResult === 'top' && nextComponent === activeComponent) {
+            return;
+        }
+    } else {
+        if (detectResult === 'top' && previousComponent === activeComponent) {
+            return;
+        }
+        if (detectResult === 'bottom' && nextComponent === activeComponent) {
+            return;
+        }
     }
-    if (detectResult === 'bottom' && nextComponent === activeComponent) {
-        return;
-    }
+
     if (detectResult === 'top') {
         if (targetIndex > 0) {
             const previousRect = getRectangleByNode(previousComponent.node);
