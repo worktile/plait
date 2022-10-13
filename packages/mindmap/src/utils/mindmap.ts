@@ -1,4 +1,13 @@
-import { idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
+import {
+    idCreator,
+    Path,
+    PlaitBoard,
+    PlaitElement,
+    Transforms,
+    PLAIT_BOARD_TO_COMPONENT,
+    SCROLL_BAR_WIDTH,
+    PlaitBoardComponent
+} from '@plait/core';
 import { Node } from 'slate';
 import { isPlaitMindmap, MindmapNode } from '../interfaces';
 import { MindmapElement } from '../interfaces/element';
@@ -201,8 +210,36 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapElement, 
     addSelectedMindmapElements(board, newElement);
     setTimeout(() => {
         const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
+        const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
         if (nodeComponent) {
             nodeComponent.startEditText(true, false);
+            // todo: 新增节点重置偏移
+            const { x, y } = isOutExtent(
+                (nodeComponent.activeG[0] as SVGGElement).getBoundingClientRect(),
+                ((boardComponent.host as SVGAElement).parentNode as HTMLElement).getBoundingClientRect(),
+                boardComponent.autoFitPadding
+            );
+            if (x || y) {
+                boardComponent.setScroll(boardComponent.scrollLeft - x, boardComponent.scrollTop - y);
+            }
         }
     });
+};
+
+const isOutExtent = (node: DOMRect, boundary: DOMRect, skewing: number): { x: number; y: number } => {
+    const result = { x: 0, y: 0 };
+    if (!node || !boundary) return result;
+    result.x =
+        node.left < boundary.left + skewing
+            ? boundary.left - node.left + skewing
+            : node.right > boundary.right - SCROLL_BAR_WIDTH - skewing
+            ? boundary.right - node.right - SCROLL_BAR_WIDTH - skewing
+            : 0;
+    result.y =
+        node.top < boundary.top + skewing
+            ? boundary.top - node.top + skewing
+            : node.bottom > boundary.bottom - SCROLL_BAR_WIDTH - skewing
+            ? boundary.bottom - node.bottom - SCROLL_BAR_WIDTH - skewing
+            : 0;
+    return result;
 };

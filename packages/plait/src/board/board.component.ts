@@ -74,7 +74,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     destroy$: Subject<any> = new Subject();
 
-    private autoFitPadding = 8;
+    public autoFitPadding = 8;
 
     public isMoving: boolean = false;
 
