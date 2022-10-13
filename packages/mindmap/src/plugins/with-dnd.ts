@@ -166,7 +166,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
             if (dropTarget?.target) {
                 dropTarget = readjustmentDropTarget(dropTarget);
-                drawPlaceholderDropNodeG(dropTarget, roughSVG, fakeDropNodeG);
+                drawPlaceholderDropNodeG(dropTarget, roughSVG, fakeDropNodeG, activeComponent);
             }
         }
 

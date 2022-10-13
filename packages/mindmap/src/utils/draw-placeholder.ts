@@ -22,12 +22,13 @@ import { isStandardLayout } from '@plait/layouts';
 export const drawPlaceholderDropNodeG = (
     dropTarget: { target: MindmapElement; detectResult: DetectResult },
     roughSVG: RoughSVG,
-    fakeDropNodeG: SVGGElement | undefined
+    fakeDropNodeG: SVGGElement | undefined,
+    activeComponent: MindmapNodeComponent
 ) => {
     const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
     const targetRect = getRectangleByNode(targetComponent.node);
     if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
-        drawStraightDropNodeG(targetRect, dropTarget.detectResult, targetComponent, roughSVG, fakeDropNodeG);
+        drawStraightDropNodeG(targetRect, dropTarget.detectResult, targetComponent, roughSVG, fakeDropNodeG, activeComponent);
     }
 
     if (targetComponent.parent && dropTarget.detectResult && ['top', 'bottom'].includes(dropTarget.detectResult)) {
@@ -40,7 +41,8 @@ export const drawPlaceholderDropNodeG = (
             targetComponent,
             roughSVG,
             parentComponent,
-            fakeDropNodeG
+            fakeDropNodeG,
+            activeComponent
         );
     }
 };
@@ -57,16 +59,27 @@ export const drawCurvePlaceholderDropNodeG = (
     targetComponent: MindmapNodeComponent,
     roughSVG: RoughSVG,
     parentComponent: MindmapNodeComponent,
-    fakeDropNodeG: SVGGElement | undefined
+    fakeDropNodeG: SVGGElement | undefined,
+    activeComponent: MindmapNodeComponent
 ) => {
     let fakeY = targetRect.y - 30;
     const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
     const strokeWidth = targetComponent.node.origin.linkLineWidth ? targetComponent.node.origin.linkLineWidth : STROKE_WIDTH;
+    const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
+        parentComponent.node.origin.children[targetIndex - 1]
+    ) as MindmapNodeComponent;
+    const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parentComponent.node.origin.children[targetIndex + 1]) as MindmapNodeComponent;
+    if (targetComponent === activeComponent) {
+        return;
+    }
+    if (detectResult === 'top' && previousComponent === activeComponent) {
+        return;
+    }
+    if (detectResult === 'bottom' && nextComponent === activeComponent) {
+        return;
+    }
     if (detectResult === 'top') {
         if (targetIndex > 0) {
-            const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
-                parentComponent.node.origin.children[targetIndex - 1]
-            ) as MindmapNodeComponent;
             const previousRect = getRectangleByNode(previousComponent.node);
             const topY = previousRect.y + previousRect.height;
             fakeY = topY + (targetRect.y - topY) / 5;
@@ -87,9 +100,6 @@ export const drawCurvePlaceholderDropNodeG = (
     if (detectResult === 'bottom') {
         fakeY = targetRect.y + targetRect.height + 30;
         if (targetIndex < parentComponent.node.origin.children.length - 1) {
-            const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
-                parentComponent.node.origin.children[targetIndex + 1]
-            ) as MindmapNodeComponent;
             const nextRect = getRectangleByNode(nextComponent.node);
             const topY = targetRect.y + targetRect.height;
             fakeY = topY + (nextRect.y - topY) / 5;
@@ -159,9 +169,6 @@ export const drawCurvePlaceholderDropNodeG = (
                 if (isLastNode) {
                     fakeY = targetRect.y - targetRect.height - BASE;
                 } else {
-                    const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
-                        parentComponent.node.origin.children[targetIndex + 1]
-                    ) as MindmapNodeComponent;
                     const nextRect = getRectangleByNode(nextComponent.node);
                     fakeY = targetRect.y - Math.abs((nextRect.y + nextRect.height - targetRect.y) / 2);
                 }
@@ -172,9 +179,6 @@ export const drawCurvePlaceholderDropNodeG = (
                     const parentRect = getRectangleByNode(parentComponent.node);
                     fakeY = parentRect.y - Math.abs((targetRect.y + targetRect.height - parentRect.y) / 2);
                 } else {
-                    const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
-                        parentComponent.node.origin.children[targetIndex - 1]
-                    ) as MindmapNodeComponent;
                     const previousRect = getRectangleByNode(previousComponent.node);
                     fakeY = previousRect.y - Math.abs((targetRect.y + targetRect.height - previousRect.y) / 2);
                 }
@@ -211,8 +215,24 @@ export const drawStraightDropNodeG = (
     detectResult: DetectResult,
     targetComponent: MindmapNodeComponent,
     roughSVG: RoughSVG,
-    fakeDropNodeG: SVGGElement | undefined
+    fakeDropNodeG: SVGGElement | undefined,
+    activeComponent: MindmapNodeComponent
 ) => {
+    const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
+    const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
+    const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
+        parentComponent.node.origin.children[targetIndex - 1]
+    ) as MindmapNodeComponent;
+    const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parentComponent.node.origin.children[targetIndex + 1]) as MindmapNodeComponent;
+    if (targetComponent === activeComponent) {
+        return;
+    }
+    if (detectResult === 'left' && previousComponent === activeComponent) {
+        return;
+    }
+    if (detectResult === 'right' && nextComponent === activeComponent) {
+        return;
+    }
     const { x, y, width, height } = targetRect;
     const lineLength = 40;
     let startLinePoint = x + width;
@@ -273,8 +293,6 @@ export const drawStraightDropNodeG = (
              *      b. 最后一个节点的右侧：固定值（来源于 getMainAxle，第二级节点：BASE * 8，其他 BASE * 3 + strokeWidth / 2）；
              */
             fakeY = targetComponent.node.y;
-            const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
-            const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
 
             if (detectResult === 'left') {
                 let offsetX = 0;
@@ -282,9 +300,6 @@ export const drawStraightDropNodeG = (
                 if (isFirstNode) {
                     offsetX = parentComponent.node.origin.isRoot ? BASE * 8 : BASE * 3 + strokeWidth / 2;
                 } else {
-                    const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
-                        parentComponent.node.origin.children[targetIndex - 1]
-                    ) as MindmapNodeComponent;
                     const previousRect = getRectangleByNode(previousComponent.node);
                     const space = targetRect.x - (previousRect.x + previousRect.width);
                     offsetX = space / 2;
@@ -297,9 +312,6 @@ export const drawStraightDropNodeG = (
                 if (isLastNode) {
                     offsetX = parentComponent.node.origin.isRoot ? BASE * 8 : BASE * 3 + strokeWidth / 2;
                 } else {
-                    const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
-                        parentComponent.node.origin.children[targetIndex + 1]
-                    ) as MindmapNodeComponent;
                     const nextRect = getRectangleByNode(nextComponent.node);
                     const space = nextRect.x - (targetRect.x + targetRect.width);
                     offsetX = space / 2;
