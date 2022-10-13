@@ -1,4 +1,4 @@
-import { isStandardLayout, isIndentedLayout, isVerticalLogicLayout } from '@plait/layouts';
+import { isStandardLayout, isIndentedLayout, isVerticalLogicLayout, isTopLayout } from '@plait/layouts';
 import { DetectResult, MindmapElement } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
@@ -39,7 +39,7 @@ export const readjustmentDropTarget = (dropTarget: {
             // 缩进布局探测到第一个子节点
             if (isIndentedLayout(layout)) {
                 newDropTarget.target = targetComponent.node.children[0].origin;
-                newDropTarget.detectResult = dropTarget.detectResult === 'top' ? 'bottom' : 'top';
+                newDropTarget.detectResult = isTopLayout(layout) ? 'bottom' : 'top';
                 return newDropTarget;
             }
             // 上下布局的根节点只可以探测到上或者下，子节点的左右探测不处理，跳过。
@@ -55,7 +55,7 @@ export const readjustmentDropTarget = (dropTarget: {
             // 缩进布局移动至第一个节点
             if (isIndentedLayout(layout) && targetComponent.node.origin.isRoot) {
                 newDropTarget.target = targetComponent.node.children[0].origin;
-                newDropTarget.detectResult = dropTarget.detectResult === 'top' ? 'bottom' : 'top';
+                newDropTarget.detectResult = isTopLayout(layout) ? 'bottom' : 'top';
                 return newDropTarget;
             }
             // 上下布局，插到右边
