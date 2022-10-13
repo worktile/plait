@@ -127,22 +127,62 @@ export const drawCurvePlaceholderDropNodeG = (
         fakeRectangleStartX = targetRect.x + targetRect.width - 30;
         fakeRectangleEndX = targetRect.x + targetRect.width;
     }
-    if ([MindmapLayoutType.upward, MindmapLayoutType.downward].includes(layout)) {
+    if (isVerticalLogicLayout(layout)) {
         parentComponent = targetComponent;
         targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
         fakeX = parentComponent.node.x;
         width = parentComponent.node.width;
         const vGap = BASE * 6 + strokeWidth;
-        if (isTopLayout(layout) && layout === MindmapLayoutType.upward) {
+        if (isTopLayout(layout) && detectResult === 'top') {
             fakeY = targetRect.y - vGap;
             fakeRectangleStartY = fakeY - vGap + strokeWidth;
         }
-        if (isBottomLayout(layout) && layout === MindmapLayoutType.downward) {
+        if (isBottomLayout(layout) && detectResult === 'bottom') {
             fakeY = targetRect.y + targetRect.height + vGap;
             fakeRectangleStartY = fakeY + vGap - strokeWidth;
         }
         fakeRectangleStartX = fakeX + Math.ceil(parentComponent.node.width / 2) - parentComponent.node.hGap - Math.ceil(strokeWidth / 2);
         fakeRectangleEndX = fakeRectangleStartX + 30;
+        fakeRectangleEndY = fakeRectangleStartY + 12;
+    }
+    if (isIndentedLayout(layout)) {
+        // 偏移一个 Gap
+        if (isLeftLayout(layout)) {
+            fakeX -= BASE * 4;
+        }
+        if (isRightLayout(layout)) {
+            fakeX += BASE * 4;
+        }
+        if (isTopLayout(layout)) {
+            if (detectResult === 'top') {
+                const isLastNode = targetIndex === parentComponent.node.origin.children.length - 1;
+                if (isLastNode) {
+                    fakeY = targetRect.y - targetRect.height - BASE;
+                } else {
+                    const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
+                        parentComponent.node.origin.children[targetIndex + 1]
+                    ) as MindmapNodeComponent;
+                    const nextRect = getRectangleByNode(nextComponent.node);
+                    fakeY = targetRect.y - Math.abs((nextRect.y + nextRect.height - targetRect.y) / 2);
+                }
+            }
+            if (detectResult === 'bottom') {
+                const isFirstNode = targetIndex === 0;
+                if (isFirstNode) {
+                    const parentRect = getRectangleByNode(parentComponent.node);
+                    fakeY = parentRect.y - Math.abs((targetRect.y + targetRect.height - parentRect.y) / 2);
+                } else {
+                    const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
+                        parentComponent.node.origin.children[targetIndex - 1]
+                    ) as MindmapNodeComponent;
+                    const previousRect = getRectangleByNode(previousComponent.node);
+                    fakeY = previousRect.y - Math.abs((targetRect.y + targetRect.height - previousRect.y) / 2);
+                }
+            }
+        }
+        fakeRectangleStartX = fakeX;
+        fakeRectangleEndX = fakeRectangleStartX + 30;
+        fakeRectangleStartY = fakeY;
         fakeRectangleEndY = fakeRectangleStartY + 12;
     }
 
@@ -161,7 +201,6 @@ export const drawCurvePlaceholderDropNodeG = (
     fakeDropNodeG?.appendChild(linkSVGG);
     fakeDropNodeG?.appendChild(fakeRectangleG);
 };
-
 export const drawStraightDropNodeG = (
     targetRect: {
         x: number;
@@ -201,13 +240,13 @@ export const drawStraightDropNodeG = (
     if (isIndentedLayout(layout)) {
         const hGap = BASE * 4;
         const vGap = BASE * 6;
-        const offsetX = hGap + strokeWidth;
-        const offsetY = vGap + strokeWidth;
+        const offsetX = hGap + width / 2 + strokeWidth;
+        const offsetY = vGap + height / 2 + strokeWidth;
         if (isLeftLayout(layout)) {
             fakeX = x - offsetX;
         }
         if (isRightLayout(layout)) {
-            fakeX = x + width - offsetX;
+            fakeX = x + offsetX;
         }
         if (isTopLayout(layout)) {
             fakeY = y - offsetY;

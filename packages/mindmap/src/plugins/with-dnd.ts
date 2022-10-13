@@ -181,7 +181,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 let targetPath = findPath(board, targetComponent.node);
                 const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
                 const layout = MindmapQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapElement);
-                updatePathByLayoutAnddropTarget(targetPath, layout, dropTarget);
+                targetPath = updatePathByLayoutAnddropTarget(targetPath, layout, dropTarget);
                 const originPath = findPath(board, activeComponent.node);
                 let newElement: Partial<MindmapElement> = { isCollapsed: false },
                     rightTargetPath = findPath(board, targetComponent.node);
@@ -300,6 +300,7 @@ const updatePathByLayoutAnddropTarget = (
             targetPath.push(dropTarget.target.children.length);
         }
     }
+    return targetPath;
 };
 
 export const updateRightNodeCount = (
