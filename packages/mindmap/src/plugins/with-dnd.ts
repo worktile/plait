@@ -12,7 +12,17 @@ import {
     transformPoint,
     Transforms
 } from '@plait/core';
-import { isStandardLayout } from '@plait/layouts';
+import {
+    isBottomLayout,
+    isIndentedLayout,
+    isLeftLayout,
+    isLogicLayout,
+    isRightLayout,
+    isStandardLayout,
+    isTopLayout,
+    isVerticalLogicLayout,
+    MindmapLayoutType
+} from '@plait/layouts';
 import { updateForeignObject } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { BASE } from '../constants';
@@ -34,7 +44,6 @@ import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { MindmapQueries } from '../queries';
-
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -170,19 +179,10 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
                 const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
                 let targetPath = findPath(board, targetComponent.node);
-                if (dropTarget.detectResult === 'right') {
-                    targetPath.push(dropTarget.target.children.length);
-                }
-                if (dropTarget.detectResult === 'left') {
-                    targetPath.push(dropTarget.target.children.length);
-                }
-                if (dropTarget.detectResult === 'bottom') {
-                    targetPath = Path.next(targetPath);
-                }
-                const originPath = findPath(board, activeComponent.node);
                 const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
                 const layout = MindmapQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapElement);
-
+                updatePathByLayoutAnddropTarget(targetPath, layout, dropTarget);
+                const originPath = findPath(board, activeComponent.node);
                 let newElement: Partial<MindmapElement> = { isCollapsed: false },
                     rightTargetPath = findPath(board, targetComponent.node);
 
@@ -252,6 +252,54 @@ export const removeActiveOnDragOrigin = (activeElement: MindmapElement, isOrigin
         activeElement.children.forEach(child => {
             removeActiveOnDragOrigin(child, false);
         });
+};
+
+const updatePathByLayoutAnddropTarget = (
+    targetPath: Path,
+    layout: MindmapLayoutType,
+    dropTarget: { target: MindmapElement; detectResult: DetectResult }
+) => {
+    // 上下布局：左右是兄弟节点，上下是子节点
+    if (isVerticalLogicLayout(layout)) {
+        if (isTopLayout(layout) && dropTarget.detectResult === 'top') {
+            targetPath.push(dropTarget.target.children.length);
+        }
+        if (isBottomLayout(layout) && dropTarget.detectResult === 'bottom') {
+            targetPath.push(dropTarget.target.children.length);
+        }
+        // 如果是左，位置不变，右则插入到下一个兄弟节点
+        if (dropTarget.detectResult === 'right') {
+            targetPath = Path.next(targetPath);
+        }
+    }
+    // 逻辑布局/标准布局：上下是兄弟节点，左右是子节点
+    if (isLogicLayout(layout) || isStandardLayout(layout)) {
+        if (isRightLayout(layout) && dropTarget.detectResult === 'right') {
+            targetPath.push(dropTarget.target.children.length);
+        }
+        if (isLeftLayout(layout) && dropTarget.detectResult === 'left') {
+            targetPath.push(dropTarget.target.children.length);
+        }
+        // 如果是上，位置不变，下插入到下一个兄弟节点
+        if (dropTarget.detectResult === 'bottom') {
+            targetPath = Path.next(targetPath);
+        }
+    }
+    // 缩进布局：上下是兄弟节点，左右是子节点，但上（左上/右上），探测到上是子节点，下则位置不变，反之同理。
+    if (isIndentedLayout(layout)) {
+        if (isTopLayout(layout) && dropTarget.detectResult === 'top') {
+            targetPath = Path.next(targetPath);
+        }
+        if (isBottomLayout(layout) && dropTarget.detectResult === 'bottom') {
+            targetPath = Path.next(targetPath);
+        }
+        if (isLeftLayout(layout) && dropTarget.detectResult === 'left') {
+            targetPath.push(dropTarget.target.children.length);
+        }
+        if (isRightLayout(layout) && dropTarget.detectResult === 'right') {
+            targetPath.push(dropTarget.target.children.length);
+        }
+    }
 };
 
 export const updateRightNodeCount = (
