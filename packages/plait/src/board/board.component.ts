@@ -32,7 +32,7 @@ import { withBoard } from '../plugins/with-board';
 import { withHistory } from '../plugins/with-history';
 import { withMove } from '../plugins/with-move';
 import { withSelection } from '../plugins/with-selection';
-import { Transforms } from '../transfroms';
+import { Transforms } from '../transforms';
 import { calculateZoom, getViewBox, getViewportClientBox, updateCursorStatus } from '../utils/board';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO_COMPONENT } from '../utils/weak-maps';
 

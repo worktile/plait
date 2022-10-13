@@ -1,9 +1,9 @@
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
-import { Transforms } from '../transfroms';
+import { Transforms } from '../transforms';
+import { isNoSelectionElement } from '../utils/board';
 import { toPoint } from '../utils/dom';
 import { toRectangleClient } from '../utils/graph';
-import { isNoSelectionElement } from '../utils/board';
 
 export function withSelection<T extends PlaitBoard>(board: T) {
     const { mousedown, mousemove, globalMouseup } = board;
