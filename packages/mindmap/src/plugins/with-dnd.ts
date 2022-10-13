@@ -182,9 +182,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 let targetPath = findPath(board, targetComponent.node);
                 const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
                 const layout = MindmapQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapElement);
-                console.log(targetPath);
                 targetPath = updatePathByLayoutAnddropTarget(targetPath, layout, dropTarget);
-                console.log(targetPath);
                 const originPath = findPath(board, activeComponent.node);
                 let newElement: Partial<MindmapElement> = { isCollapsed: false },
                     rightTargetPath = findPath(board, targetComponent.node);
