@@ -386,9 +386,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             scrollTop = viewportBox.height / 2 - nweHhBox.top;
         }
 
-        this.scrollTop = scrollTop;
-        this.scrollLeft = scrollLeft;
-
         this.setScroll(scrollLeft, scrollTop);
         this.updateViewport();
     }
