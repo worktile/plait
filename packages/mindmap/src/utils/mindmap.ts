@@ -2,20 +2,20 @@ import {
     idCreator,
     Path,
     PlaitBoard,
+    PlaitBoardComponent,
     PlaitElement,
-    Transforms,
     PLAIT_BOARD_TO_COMPONENT,
     SCROLL_BAR_WIDTH,
-    PlaitBoardComponent
+    Transforms
 } from '@plait/core';
+import { MindmapLayoutType } from '@plait/layouts';
 import { Node } from 'slate';
+import { MindmapNodeShape, NODE_MIN_WIDTH } from '../constants';
 import { isPlaitMindmap, MindmapNode } from '../interfaces';
 import { MindmapElement } from '../interfaces/element';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
-import { MindmapLayoutType } from '@plait/layouts';
 import { getRootLayout } from './layout';
-import { MindmapNodeShape, NODE_MIN_WIDTH } from '../constants';
 import { addSelectedMindmapElements } from './selected-elements';
+import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
@@ -212,16 +212,16 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapElement, 
         const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
         const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
         if (nodeComponent) {
-            nodeComponent.startEditText(true, false);
             // todo: 新增节点重置偏移
-            const { x, y } = isOutExtent(
-                (nodeComponent.activeG[0] as SVGGElement).getBoundingClientRect(),
-                ((boardComponent.host as SVGAElement).parentNode as HTMLElement).getBoundingClientRect(),
-                boardComponent.autoFitPadding
-            );
+            const shapeGRect = (nodeComponent.shapeG as SVGGElement).getBoundingClientRect();
+            const canvasRect = boardComponent.contentContainer.nativeElement.getBoundingClientRect();
+            const autoFitPadding = boardComponent.autoFitPadding;
+            const { x, y } = isOutExtent(shapeGRect, canvasRect, autoFitPadding);
             if (x || y) {
                 boardComponent.setScroll(boardComponent.scrollLeft - x, boardComponent.scrollTop - y);
             }
+
+            nodeComponent.startEditText(true, false);
         }
     });
 };

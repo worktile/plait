@@ -33,7 +33,7 @@ import { withHistory } from '../plugins/with-history';
 import { withMove } from '../plugins/with-move';
 import { withSelection } from '../plugins/with-selection';
 import { Transforms } from '../transforms';
-import { calculateZoom, getViewBox, getViewportClientBox, updateCursorStatus } from '../utils/board';
+import { calculateBBox, calculateZoom, getViewBox, getViewportClientBox, invert, transformMat3, updateCursorStatus } from '../utils';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO_COMPONENT } from '../utils/weak-maps';
 
 @Component({
@@ -81,6 +81,10 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     scrollLeft!: number;
 
     scrollTop!: number;
+
+    focusPoint: number[] = [];
+
+    matrix: number[] = [];
 
     @Input() plaitValue: PlaitElement[] = [];
 
@@ -154,12 +158,21 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             if (this.board.operations.some(op => PlaitOperation.isSetViewportOperation(op))) {
                 this.updateViewport();
             }
+            if (this.board.operations.some(op => ['set_node', 'remove_node'].includes(op.type))) {
+                this.calculateViewport();
+            }
             this.plaitChange.emit(changeEvent);
         });
         this.hasInitialized = true;
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
+    setMatrix() {
+        const viewBox = getViewBox(this.board);
+        const zoom = this.board.viewport.zoom;
+        this.matrix = [zoom, 0, 0, 0, zoom, 0, -this.scrollLeft - zoom * viewBox.minX, -this.scrollTop - zoom * viewBox.minY, 1];
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
         if (this.hasInitialized) {
             const valueChange = changes['plaitValue'];
             const options = changes['plaitOptions'];
@@ -338,6 +351,45 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         });
     }
 
+    updateScroll() {
+        const container = this.contentContainer.nativeElement as HTMLElement;
+        container.scrollTo({
+            top: this.scrollTop,
+            left: this.scrollLeft
+        });
+    }
+
+    calculateViewport() {
+        const viewBox = getViewBox(this.board);
+        const { minX, minY, viewportWidth } = viewBox;
+
+        const viewportBox = getViewportClientBox(this.board) as any;
+        const nweHhBox = calculateBBox(this.board);
+
+        let scrollLeft = this.scrollLeft;
+        let scrollTop = this.scrollTop;
+        const zoom = this.board.viewport.zoom;
+        const matrix = this.matrix;
+        const focusPoint = this.focusPoint;
+
+        if (matrix) {
+            const g = [focusPoint[0] - viewportBox.x, focusPoint[1] - viewportBox.y, 1];
+            const b = invert([], matrix);
+            const x = transformMat3([], [g[0], g[1], 1], b as []);
+            const k = [zoom, 0, 0, 0, zoom, 0, -zoom * minX, -zoom * minY, 1];
+            const c = transformMat3([], x, k);
+
+            scrollLeft = c[0] - g[0];
+            scrollTop = c[1] - g[1];
+        } else {
+            scrollLeft = (viewportWidth - viewportBox.width) / 2;
+            scrollTop = viewportBox.height / 2 - nweHhBox.top;
+        }
+
+        this.setScroll(scrollLeft, scrollTop);
+        this.updateViewport();
+    }
+
     viewportChange() {
         const viewBox = getViewBox(this.board);
         const offsetXRatio = this.board.viewport.offsetXRatio;
@@ -355,16 +407,14 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         if (width > 0 && height > 0) {
             this.renderer2.setAttribute(this.host, 'viewBox', box.join());
         }
-        const container = this.contentContainer.nativeElement as HTMLElement;
-        container.scrollTo({
-            top: this.scrollTop,
-            left: this.scrollLeft
-        });
+        this.focusPoint = [viewportBox.x, viewportBox.y];
+        this.setMatrix();
     }
 
     updateViewport() {
         this.resizeViewport();
         this.viewportChange();
+        this.updateScroll();
     }
 
     trackBy = (index: number, element: PlaitElement) => {
