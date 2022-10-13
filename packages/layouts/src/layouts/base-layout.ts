@@ -1,5 +1,5 @@
 import { layout } from '../algorithms/non-overlapping-tree-layout';
-import { LayoutNode } from '../interfaces/node';
+import { BlackNode, LayoutNode } from '../interfaces/node';
 import { buildLayoutTree, LayoutTree } from '../interfaces/tree';
 import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
 import { extractLayoutType, isHorizontalLayout, isIndentedLayout, isLeftLayout, isTopLayout } from '../utils/layout';
@@ -7,7 +7,14 @@ import { extractLayoutType, isHorizontalLayout, isIndentedLayout, isLeftLayout, 
 export class BaseLayout {
     constructor() {}
 
-    layout(node: OriginNode, layoutType: string, options: LayoutOptions, context: LayoutContext, isHorizontal = false, parent?: LayoutNode) {
+    layout(
+        node: OriginNode,
+        layoutType: string,
+        options: LayoutOptions,
+        context: LayoutContext,
+        isHorizontal = false,
+        parent?: LayoutNode
+    ) {
         // build layout node
         const isolatedNodes: LayoutNode[] = [];
         const isolatedLayoutRoots: LayoutNode[] = [];
@@ -31,7 +38,6 @@ export class BaseLayout {
                     _isHorizontal,
                     isolatedNode.parent
                 );
-                const { width, height } = isolatedRoot.getBoundingBox();
                 if (!context.toTop && toTop) {
                     isolatedRoot.down2up();
                 }
@@ -39,8 +45,21 @@ export class BaseLayout {
                     isolatedRoot.right2left();
                 }
                 // 3、set sub node as black box
-                isolatedNode.width = width;
-                isolatedNode.height = height;
+                const boundingBox = isolatedRoot.getBoundingBox();
+                isolatedNode.width = boundingBox.width;
+                isolatedNode.height = boundingBox.height;
+                isolatedNode.blackNode = new BlackNode(
+                    boundingBox.left,
+                    boundingBox.right,
+                    boundingBox.top,
+                    boundingBox.bottom,
+                    boundingBox.width,
+                    boundingBox.height,
+                    isolatedRoot.x,
+                    isolatedRoot.y,
+                    isolatedRoot.width,
+                    isolatedRoot.height
+                );
 
                 isolatedLayoutRoots.push(isolatedRoot);
             });
@@ -172,7 +191,11 @@ function seperateSecondaryAxle(root: LayoutNode, options: LayoutOptions) {
     function updateY(node: LayoutNode) {
         node.children.forEach(child => {
             let y = previousBottom + child.vGap;
-            if (previousNode && (isIndentedLayout(previousNode.layout) || previousNode.layout === MindmapLayoutType.downward) && previousNode.origin.children.length > 0) {
+            if (
+                previousNode &&
+                (isIndentedLayout(previousNode.layout) || previousNode.layout === MindmapLayoutType.downward) &&
+                previousNode.origin.children.length > 0
+            ) {
                 if (previousNode.origin.isCollapsed) {
                     y = y + options.getExtendHeight(child.origin);
                 } else {

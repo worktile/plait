@@ -51,19 +51,37 @@ function seperate(tree: LayoutTree, i: number) {
 
 function positionRootCenter(tree: LayoutTree) {
     // Position root between children, taking into account their mod.
-    const preliminary =
-        (tree.children[0].preliminary +
-            tree.children[0].modifier +
-            tree.children[tree.childrenCount - 1].modifier +
-            tree.children[tree.childrenCount - 1].preliminary +
-            tree.children[tree.childrenCount - 1].width) /
-            2 -
-        tree.width / 2;
+    const startNode = tree.children[0];
+    let startX = startNode.preliminary + startNode.modifier;
+    /**
+     *                ---------
+     *              |   parent  |
+     *                ---------
+     *  -------------           
+     * |     | ------ |        | ------ |
+     * |     | child1 |        | child2 |
+     * |     | ------ |        | ------ |
+     * |    black     |
+     * |              |
+     *  -------------
+     * The parent is in the center of child 1 and child 2, not black and child2
+     */
+    if (startNode.origin.blackNode && startNode.origin.blackNode.rootX > startNode.origin.blackNode.left) {
+        startX = startX + (startNode.origin.blackNode.rootX - startNode.origin.blackNode.left);
+    }
+    const endNode = tree.children[tree.childrenCount - 1];
+    let endX = endNode.modifier + endNode.preliminary + endNode.width;
+    if (endNode.origin.blackNode && (endNode.origin.blackNode.rootX + endNode.origin.blackNode.rootWidth) < endNode.origin.blackNode.right) {
+        endX = endX - (endNode.origin.blackNode.right - (endNode.origin.blackNode.rootX + endNode.origin.blackNode.rootWidth));
+    }
+    const preliminary = (startX + endX) / 2 - tree.width / 2;
     // move sub tree when preliminary to avoid root shifting to left
-    if(preliminary > 0) {
+    if (preliminary > 0) {
         tree.preliminary = preliminary;
     } else {
-        tree.children.forEach((c, index) => { moveSubtree(tree, index, Math.abs(preliminary))});
+        tree.children.forEach((c, index) => {
+            moveSubtree(tree, index, Math.abs(preliminary));
+        });
     }
 }
 

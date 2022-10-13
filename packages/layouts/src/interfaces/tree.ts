@@ -1,4 +1,4 @@
-import { LayoutNode } from './node';
+import { BoundingBox, LayoutNode, toHorizontal } from './node';
 
 export class LayoutTree {
     width: number;
@@ -17,9 +17,9 @@ export class LayoutTree {
     er: LayoutTree | null;
     msel: number;
     mser: number;
-    origin: any;
+    origin: LayoutNode;
 
-    constructor(width: number, height: number, y: number, children: LayoutTree[], origin: any) {
+    constructor(width: number, height: number, y: number, children: LayoutTree[], origin: LayoutNode) {
         this.width = width;
         this.height = height;
         this.y = y;
@@ -47,6 +47,11 @@ export const buildLayoutTree = (root: LayoutNode, isHorizontal: boolean) => {
     root.children.forEach(child => {
         children.push(buildLayoutTree(child, isHorizontal));
     });
-    if (isHorizontal) return new LayoutTree(root.height, root.width, root.x, children, root.origin);
-    return new LayoutTree(root.width, root.height, root.y, children, root.origin);
+    if (isHorizontal) {
+        if (root.blackNode) {
+            root.blackNode = toHorizontal(root.blackNode);
+        }
+        return new LayoutTree(root.height, root.width, root.x, children, root);
+    }
+    return new LayoutTree(root.width, root.height, root.y, children, root);
 };
