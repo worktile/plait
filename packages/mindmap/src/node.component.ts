@@ -729,6 +729,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 if (selectedState) {
                     addSelectedMindmapElements(this.board, this.node.origin);
                 }
+                if (!selectedState && this.isEditable) {
+                    this.isEditable = false;
+                }
                 // resolve move node richtext lose issue
                 if (this.foreignObject && this.foreignObject.children.length <= 0) {
                     this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
