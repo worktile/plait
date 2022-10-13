@@ -170,7 +170,7 @@ export const drawCurvePlaceholderDropNodeG = (
                 const isFirstNode = targetIndex === 0;
                 if (isFirstNode) {
                     const parentRect = getRectangleByNode(parentComponent.node);
-                    fakeY = parentRect.y - Math.abs((targetRect.y + targetRect.height - parentRect.y) / 2);
+                    fakeY = parentRect.y - parentRect.height / 2 - BASE;
                 } else {
                     const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
                         parentComponent.node.origin.children[targetIndex - 1]
