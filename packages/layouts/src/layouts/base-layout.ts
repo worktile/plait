@@ -2,7 +2,13 @@ import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { BlackNode, LayoutNode } from '../interfaces/node';
 import { buildLayoutTree, LayoutTree } from '../interfaces/tree';
 import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
-import { extractLayoutType, isHorizontalLayout, isIndentedLayout, isLeftLayout, isTopLayout } from '../utils/layout';
+import {
+    extractLayoutType,
+    isHorizontalLayout,
+    isLeftLayout,
+    isTopLayout,
+    isHorizontalLogicLayout
+} from '../utils/layout';
 
 export class BaseLayout {
     constructor() {}
@@ -38,7 +44,7 @@ export class BaseLayout {
                     _isHorizontal,
                     isolatedNode.parent
                 );
-                if (!context.toTop && toTop) {
+                if (!context.toTop && toTop && layoutType !== LayoutType.indented) {
                     isolatedRoot.down2up();
                 }
                 if (!context.toLeft && toLeft) {
@@ -191,11 +197,7 @@ function seperateSecondaryAxle(root: LayoutNode, options: LayoutOptions) {
     function updateY(node: LayoutNode) {
         node.children.forEach(child => {
             let y = previousBottom + child.vGap;
-            if (
-                previousNode &&
-                (isIndentedLayout(previousNode.layout) || previousNode.layout === MindmapLayoutType.downward) &&
-                previousNode.origin.children.length > 0
-            ) {
+            if (previousNode && !isHorizontalLogicLayout(previousNode.layout) && previousNode.origin.children.length > 0) {
                 if (previousNode.origin.isCollapsed) {
                     y = y + options.getExtendHeight(child.origin);
                 } else {
