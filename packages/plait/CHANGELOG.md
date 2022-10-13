@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.48
+
+### Patch Changes
+
+-   [#182](https://github.com/worktile/plait/pull/182) [`0d3c9a9`](https://github.com/worktile/plait/commit/0d3c9a9db946c9a2fb094d5559a5561a22875c62) Thanks [@Ashy6](https://github.com/Ashy6)! - fix drag and drop moving canvas
+
 ## 0.0.47
 
 ### Patch Changes
