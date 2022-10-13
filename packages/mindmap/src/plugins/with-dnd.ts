@@ -10,7 +10,9 @@ import {
     Point,
     toPoint,
     transformPoint,
-    Transforms
+    Transforms,
+    BaseCursorStatus,
+    updateCursorStatus
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -101,6 +103,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
             if (!isDragging) {
                 isDragging = true;
+                updateCursorStatus(board, BaseCursorStatus.drag);
                 fakeDragNodeG = createG();
                 fakeDragNodeG.classList.add('dragging', 'fake-node', 'plait-board-attached');
                 fakeDropNodeG = createG();
@@ -207,6 +210,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 removeActiveOnDragOrigin(activeElement);
             }
             isDragging = false;
+            updateCursorStatus(board, BaseCursorStatus.select);
             activeElement = null;
             fakeDragNodeG?.remove();
             fakeDragNodeG = undefined;
