@@ -53,6 +53,19 @@ function positionRootCenter(tree: LayoutTree) {
     // Position root between children, taking into account their mod.
     const startNode = tree.children[0];
     let startX = startNode.preliminary + startNode.modifier;
+    /**
+     *                ---------
+     *              |   parent  |
+     *                ---------
+     *  -------------           
+     * |     | ------ |        | ------ |
+     * |     | child1 |        | child2 |
+     * |     | ------ |        | ------ |
+     * |    black     |
+     * |              |
+     *  -------------
+     * The parent is in the center of child 1 and child 2, not black and child2
+     */
     if (startNode.origin.blackNode && startNode.origin.blackNode.rootX > startNode.origin.blackNode.left) {
         startX = startX + (startNode.origin.blackNode.rootX - startNode.origin.blackNode.left);
     }
