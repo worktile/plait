@@ -53,13 +53,13 @@ function positionRootCenter(tree: LayoutTree) {
     // Position root between children, taking into account their mod.
     const startNode = tree.children[0];
     let startX = startNode.preliminary + startNode.modifier;
-    if (startNode.origin.blackNode && startNode.origin.blackNode.boundingBox && startNode.origin.blackNode.x > startNode.origin.blackNode.boundingBox.left) {
-        startX = startX + (startNode.origin.blackNode.x - startNode.origin.blackNode.boundingBox.left);
+    if (startNode.origin.blackNode && startNode.origin.blackNode.rootX > startNode.origin.blackNode.left) {
+        startX = startX + (startNode.origin.blackNode.rootX - startNode.origin.blackNode.left);
     }
     const endNode = tree.children[tree.childrenCount - 1];
     let endX = endNode.modifier + endNode.preliminary + endNode.width;
-    if (endNode.origin.blackNode && endNode.origin.blackNode.boundingBox && (endNode.origin.blackNode.x + endNode.origin.blackNode.width) < endNode.origin.blackNode.boundingBox.right) {
-        endX = endX - (endNode.origin.blackNode.boundingBox.right - (endNode.origin.blackNode.x + endNode.origin.blackNode.width));
+    if (endNode.origin.blackNode && (endNode.origin.blackNode.rootX + endNode.origin.blackNode.rootWidth) < endNode.origin.blackNode.right) {
+        endX = endX - (endNode.origin.blackNode.right - (endNode.origin.blackNode.rootX + endNode.origin.blackNode.rootWidth));
     }
     const preliminary = (startX + endX) / 2 - tree.width / 2;
     // move sub tree when preliminary to avoid root shifting to left

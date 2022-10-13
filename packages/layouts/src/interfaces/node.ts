@@ -7,8 +7,7 @@ export class LayoutNode {
     vGap = 0;
     hGap = 0;
     origin: OriginNode;
-    blackNode?: LayoutNode;
-    boundingBox?: BoundingBox;
+    blackNode?: BlackNode;
     width = 0;
     height = 0;
     depth = 0;
@@ -16,7 +15,7 @@ export class LayoutNode {
     parent?: LayoutNode;
     left = false;
     up = false;
-    layout: MindmapLayoutType;// no standrad
+    layout: MindmapLayoutType;
 
     constructor(origin: OriginNode, options: LayoutOptions, context: LayoutContext, parent?: LayoutNode) {
         const hGap = options.getHorizontalGap(origin, parent);
@@ -56,8 +55,7 @@ export class LayoutNode {
             right: Number.MIN_VALUE,
             bottom: Number.MIN_VALUE,
             width: 0,
-            height: 0,
-
+            height: 0
         };
         this.eachNode(node => {
             bb.left = Math.min(bb.left, node.x);
@@ -67,7 +65,6 @@ export class LayoutNode {
         });
         bb.width = bb.right - bb.left;
         bb.height = bb.bottom - bb.top;
-        this.boundingBox = bb;
         return bb;
     }
 
@@ -106,7 +103,6 @@ export function dfs(node: LayoutNode, callback: (node: LayoutNode) => void) {
     callback(node);
 }
 
-
 export interface BoundingBox {
     left: number;
     top: number;
@@ -114,4 +110,56 @@ export interface BoundingBox {
     bottom: number;
     width: number;
     height: number;
+}
+
+export class BlackNode {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+    width: number;
+    height: number;
+    rootX: number;
+    rootY: number;
+    rootWidth: number;
+    rootHeight: number;
+
+    constructor(
+        left: number,
+        right: number,
+        top: number,
+        bottom: number,
+        width: number,
+        height: number,
+        rootX: number,
+        rootY: number,
+        rootWidth: number,
+        rootHeight: number
+    ) {
+        this.left = left;
+        this.right = right;
+        this.top = top;
+        this.bottom = bottom;
+        this.width = width;
+        this.height = height;
+        this.rootX = rootX;
+        this.rootY = rootY;
+        this.rootWidth = rootWidth;
+        this.rootHeight = rootHeight;
+    }
+}
+
+export function toHorizontal(black: BlackNode): BlackNode {
+    return {
+        left: black.top,
+        right: black.bottom,
+        top: black.left,
+        bottom: black.right,
+        width: black.height,
+        height: black.width,
+        rootX: black.rootY,
+        rootY: black.rootX,
+        rootWidth: black.rootHeight,
+        rootHeight: black.rootWidth
+    };
 }
