@@ -1,5 +1,15 @@
 # mindmap
 
+## 0.0.49
+
+### Patch Changes
+
+-   [#188](https://github.com/worktile/plait/pull/188) [`1b500f7`](https://github.com/worktile/plait/commit/1b500f72121f76e1e27594200a708a65f3188cc7) Thanks [@Maple13](https://github.com/Maple13)! - modify transforms naming error, remove useless zoom calculation
+
+*   [#187](https://github.com/worktile/plait/pull/187) [`ae90e72`](https://github.com/worktile/plait/commit/ae90e72bb661cf609807ae52db1311efdd999239) Thanks [@Ashy6](https://github.com/Ashy6)! - new node element always in canvas
+
+-   [#190](https://github.com/worktile/plait/pull/190) [`ef4cd22`](https://github.com/worktile/plait/commit/ef4cd22672f72d916f23717672427d349369d18f) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix mindmap dnd style and data
+
 ## 0.0.47
 
 ### Patch Changes

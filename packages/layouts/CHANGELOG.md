@@ -1,5 +1,13 @@
 # layouts
 
+## 0.0.49
+
+### Patch Changes
+
+-   [#186](https://github.com/worktile/plait/pull/186) [`1626aa6`](https://github.com/worktile/plait/commit/1626aa6716628c52bf688b65e7e8f1e5a2ae5527) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct logic layout's parent node position when child node is nested layout
+
+*   [`809f403`](https://github.com/worktile/plait/commit/809f40328224eaa27887b74481eb200f2d96d323) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct the upward layout when parent layout is indented layout
+
 ## 0.0.47
 
 ### Patch Changes
