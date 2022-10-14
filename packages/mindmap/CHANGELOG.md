@@ -1,5 +1,15 @@
 # mindmap
 
+## 0.0.50
+
+### Patch Changes
+
+-   [#194](https://github.com/worktile/plait/pull/194) [`a27baa7`](https://github.com/worktile/plait/commit/a27baa7bfe37279f988a1071bc0fe0e7ecb3c397) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix dnd style of mindmap indent layout
+
+*   [#195](https://github.com/worktile/plait/pull/195) [`0ae6eaa`](https://github.com/worktile/plait/commit/0ae6eaa7c48e6e8f1f2e9a86e3ad583d95654b0b) Thanks [@Ashy6](https://github.com/Ashy6)! - course add drag status
+
+-   [#196](https://github.com/worktile/plait/pull/196) [`e62a8e9`](https://github.com/worktile/plait/commit/e62a8e9ebb3bdf3486f5c0b8352dfbb9f0f4bb71) Thanks [@Maple13](https://github.com/Maple13)! - calculate position using matrix, fix node edit state error
+
 ## 0.0.49
 
 ### Patch Changes
