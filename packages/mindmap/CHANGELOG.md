@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.51
+
+### Patch Changes
+
+-   [#193](https://github.com/worktile/plait/pull/193) [`0289747`](https://github.com/worktile/plait/commit/02897476178fa06f66cd5eaf0847a8e7c610cb42) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - fix dnd data error of mindmap upward and downward style
+
 ## 0.0.50
 
 ### Patch Changes
