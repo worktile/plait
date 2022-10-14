@@ -443,7 +443,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         }
 
         this.setViewport({
-            zoom,
+            zoom: calculateZoom(zoom),
             offsetXRatio: 0.5,
             offsetYRatio: 0.5
         });
