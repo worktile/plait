@@ -14,10 +14,9 @@ import {
 } from '@plait/core';
 import {
     isBottomLayout,
-    isHorizontalLayout,
+    isHorizontalLogicLayout,
     isIndentedLayout,
     isLeftLayout,
-    isLogicLayout,
     isRightLayout,
     isStandardLayout,
     isTopLayout,
@@ -273,8 +272,8 @@ const updatePathByLayoutAnddropTarget = (
             targetPath = Path.next(targetPath);
         }
     }
-    // 逻辑布局/标准布局：上下是兄弟节点，左右是子节点
-    if (isHorizontalLayout(layout) || isStandardLayout(layout)) {
+    // 水平布局/标准布局：上下是兄弟节点，左右是子节点
+    if (isHorizontalLogicLayout(layout)) {
         if (dropTarget.detectResult === 'right') {
             targetPath.push(dropTarget.target.children.length);
         }
