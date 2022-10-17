@@ -1,11 +1,11 @@
 import {
     idCreator,
+    isOutExtent,
     Path,
     PlaitBoard,
     PlaitBoardComponent,
     PlaitElement,
     PLAIT_BOARD_TO_COMPONENT,
-    SCROLL_BAR_WIDTH,
     Transforms
 } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
@@ -213,33 +213,18 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapElement, 
         const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
         if (nodeComponent) {
             // todo: 新增节点重置偏移
-            const shapeGRect = (nodeComponent.shapeG as SVGGElement).getBoundingClientRect();
-            const canvasRect = boardComponent.contentContainer.nativeElement.getBoundingClientRect();
-            const autoFitPadding = boardComponent.autoFitPadding;
-            const { x, y } = isOutExtent(shapeGRect, canvasRect, autoFitPadding);
-            if (x || y) {
-                boardComponent.setScroll(boardComponent.scrollLeft - x, boardComponent.scrollTop - y);
-            }
+            requestAnimationFrame(() => {
+                boardComponent?.calculateViewport();
+                const shapeGRect = (nodeComponent.shapeG as SVGGElement).getBoundingClientRect();
+                const autoFitPadding = boardComponent.autoFitPadding;
+                const { x, y } = isOutExtent(board, shapeGRect, autoFitPadding);
+
+                if (x || y) {
+                    boardComponent.setScroll(boardComponent.scrollLeft - x, boardComponent.scrollTop - y);
+                }
+            });
 
             nodeComponent.startEditText(true, false);
         }
     });
-};
-
-const isOutExtent = (node: DOMRect, boundary: DOMRect, skewing: number): { x: number; y: number } => {
-    const result = { x: 0, y: 0 };
-    if (!node || !boundary) return result;
-    result.x =
-        node.left < boundary.left + skewing
-            ? boundary.left - node.left + skewing
-            : node.right > boundary.right - SCROLL_BAR_WIDTH - skewing
-            ? boundary.right - node.right - SCROLL_BAR_WIDTH - skewing
-            : 0;
-    result.y =
-        node.top < boundary.top + skewing
-            ? boundary.top - node.top + skewing
-            : node.bottom > boundary.bottom - SCROLL_BAR_WIDTH - skewing
-            ? boundary.bottom - node.bottom - SCROLL_BAR_WIDTH - skewing
-            : 0;
-    return result;
 };

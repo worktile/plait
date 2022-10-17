@@ -1,6 +1,7 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { PlaitBoard } from '../interfaces';
 import { ViewBox } from './board';
+import { PLAIT_BOARD_TO_COMPONENT } from './weak-maps';
 
 export function invert(oldMatrix: number[], newMatrix: number[]) {
     let n = newMatrix[0],
@@ -105,4 +106,27 @@ export function getViewBox(board: PlaitBoard): ViewBox {
     const height = viewportHeight / zoom;
 
     return { minX, minY, width, height, viewportWidth, viewportHeight };
+}
+
+export function isOutExtent(board: PlaitBoard, node: DOMRect, gap: number): { x: number; y: number } {
+    const result = { x: 0, y: 0 };
+
+    if (!node) return result;
+
+    const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board);
+    const scrollBarWidth = board.options.hideScrollbar ? SCROLL_BAR_WIDTH : 0;
+    const canvasRect = boardComponent!.contentContainer.nativeElement.getBoundingClientRect();
+
+    if (node.left < canvasRect.left + gap) {
+        result.x = canvasRect.left - node.left - gap;
+    } else if (node.right > canvasRect.right - scrollBarWidth - gap) {
+        result.x = canvasRect.right - scrollBarWidth - gap - node.right - node.width;
+    }
+
+    if (node.top < canvasRect.top + gap) {
+        result.y = canvasRect.top - node.top - gap;
+    } else if (node.bottom > canvasRect.bottom - scrollBarWidth - gap) {
+        result.y = canvasRect.bottom - scrollBarWidth - gap - node.bottom - node.height;
+    }
+    return result;
 }
