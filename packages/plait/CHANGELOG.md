@@ -1,5 +1,15 @@
 # plait
 
+## 0.0.52
+
+### Patch Changes
+
+-   [#200](https://github.com/worktile/plait/pull/200) [`d454f54`](https://github.com/worktile/plait/commit/d454f543eb1dc3e2782df2021bf2d721c2713f98) Thanks [@Ashy6](https://github.com/Ashy6)! - set min zoom 0.2
+
+*   [#201](https://github.com/worktile/plait/pull/201) [`e8f61cb`](https://github.com/worktile/plait/commit/e8f61cb65f10b574e0d5783b1abae179297865a6) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix: fix scrollbar can not display
+
+-   [#202](https://github.com/worktile/plait/pull/202) [`7fb3f90`](https://github.com/worktile/plait/commit/7fb3f904a2a453b92ce69fcf177a5dc61aafd2d4) Thanks [@Maple13](https://github.com/Maple13)! - fixed the problem of node occlusion and jumping when adding new nodes
+
 ## 0.0.50
 
 ### Patch Changes

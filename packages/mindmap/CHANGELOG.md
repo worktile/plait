@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.52
+
+### Patch Changes
+
+-   [#202](https://github.com/worktile/plait/pull/202) [`7fb3f90`](https://github.com/worktile/plait/commit/7fb3f904a2a453b92ce69fcf177a5dc61aafd2d4) Thanks [@Maple13](https://github.com/Maple13)! - fixed the problem of node occlusion and jumping when adding new nodes
+
 ## 0.0.51
 
 ### Patch Changes
