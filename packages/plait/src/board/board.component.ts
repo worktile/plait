@@ -40,7 +40,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO
     selector: 'plait-board',
     template: `
         <div class="container" #container>
-            <svg #svg width="100%" height="100%" style="position: relative"></svg>
+            <svg #svg width="100%" height="100%" style="position: relative;"></svg>
             <plait-element
                 *ngFor="let item of board.children; let index = index; trackBy: trackBy"
                 [index]="index"
