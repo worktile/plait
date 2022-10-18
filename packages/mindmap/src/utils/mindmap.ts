@@ -228,3 +228,11 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapElement, 
         }
     });
 };
+
+export const findLastChild = (child: MindmapNode) => {
+    let result = child;
+    while (result.children.length !== 0) {
+        result = result.children[result.children.length - 1];
+    }
+    return result;
+};
