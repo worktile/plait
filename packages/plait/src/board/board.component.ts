@@ -161,7 +161,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             if (this.board.operations.some(op => ['set_node', 'remove_node'].includes(op.type))) {
                 this.calculateViewport();
             }
-            this.setContainerScrolling(this.board.operations);
             this.plaitChange.emit(changeEvent);
         });
         this.hasInitialized = true;
@@ -284,17 +283,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 this.board?.deleteFragment(event.clipboardData);
             });
 
-        fromEvent<WheelEvent>(this.contentContainer.nativeElement, 'wheel')
-            .pipe(
-                takeUntil(this.destroy$),
-                filter(() => {
-                    return !!this.isFocused;
-                })
-            )
-            .subscribe(() => {
-                this.initContainerSize();
-            });
-
         fromEvent<MouseEvent>(this.contentContainer.nativeElement, 'scroll')
             .pipe(
                 takeUntil(this.destroy$),
@@ -313,13 +301,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         };
     }
 
-    setContainerScrolling(ops: PlaitOperation[]) {
-        const isSetSelection = this.board.operations.some(op => 'set_selection' === op.type);
-        isSetSelection && this.renderer2.setStyle(this.contentContainer.nativeElement, 'overflow', this.isFocused ? 'auto' : 'hidden');
-    }
-
     initContainerSize() {
-        this.renderer2.setStyle(this.contentContainer.nativeElement, 'overflow', this.isFocused ? 'auto' : 'hidden');
         this.resizeViewport();
     }
 
