@@ -179,12 +179,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             if (this.index > 0) {
                 const brotherNode = this.parent.children[this.index - 1];
                 const lastChildNode = findLastChild(brotherNode);
-                this.mindmapGGroup.childNodes.forEach(GGRoupnode => {
-                    let GGRoupComponent = ELEMENT_GROUP_TO_COMPONENT.get(GGRoupnode as SVGGElement);
-                    if (GGRoupComponent?.node === lastChildNode) {
-                        targetNode = GGRoupnode;
-                    }
-                });
+                const lastChildComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(lastChildNode.origin);
+                targetNode = lastChildComponent?.gGroup as Node;
             }
             this.mindmapGGroup.insertBefore(this.gGroup, targetNode as Node);
         }
