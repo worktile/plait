@@ -66,8 +66,7 @@ import {
     hasSelectedMindmapElement
 } from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
-
-import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
+import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from './utils/weak-maps';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -147,6 +146,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         this.drawExtend();
         this.initialized = true;
         ELEMENT_GROUP_TO_COMPONENT.set(this.gGroup, this);
+        addSelectedMindmapElements(this.board, this.node.origin);
     }
 
     drawShape() {
