@@ -173,24 +173,20 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         if (this.node.origin.isRoot) {
             this.mindmapGGroup.prepend(this.gGroup);
         } else {
-            const nodeIndex = this.parent.children.indexOf(this.node);
-            if (nodeIndex === 0) {
-                this.mindmapGGroup.childNodes.forEach(node => {
-                    const nodeComponent = ELEMENT_GROUP_TO_COMPONENT.get(node as SVGGElement);
-                    if (nodeComponent?.node === this.parent) {
-                        this.mindmapGGroup.insertBefore(this.gGroup, node);
-                    }
-                });
-            } else {
-                const brotherNode = this.parent.children[nodeIndex - 1];
-                const lastChild = findLastChild(brotherNode);
-                this.mindmapGGroup.childNodes.forEach(node => {
-                    let nodeComponent = ELEMENT_GROUP_TO_COMPONENT.get(node as SVGGElement);
-                    if (nodeComponent?.node === lastChild) {
-                        this.mindmapGGroup.insertBefore(this.gGroup, node);
+            const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(this.parent.origin);
+            let targetNode = parentComponent?.gGroup as Node;
+
+            if (this.index > 0) {
+                const brotherNode = this.parent.children[this.index - 1];
+                const lastChildNode = findLastChild(brotherNode);
+                this.mindmapGGroup.childNodes.forEach(GGRoupnode => {
+                    let GGRoupComponent = ELEMENT_GROUP_TO_COMPONENT.get(GGRoupnode as SVGGElement);
+                    if (GGRoupComponent?.node === lastChildNode) {
+                        targetNode = GGRoupnode;
                     }
                 });
             }
+            this.mindmapGGroup.insertBefore(this.gGroup, targetNode as Node);
         }
     }
 
