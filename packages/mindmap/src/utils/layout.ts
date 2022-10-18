@@ -41,8 +41,8 @@ export const correctLayoutByDirection = (layout: MindmapLayoutType, direction: L
         case MindmapLayoutType.downward:
             inverseDirectionLayout = MindmapLayoutType.upward;
             break;
-        case MindmapLayoutType.downward:
-            inverseDirectionLayout = MindmapLayoutType.upward;
+        case MindmapLayoutType.upward:
+            inverseDirectionLayout = MindmapLayoutType.downward;
             break;
         case MindmapLayoutType.rightBottomIndented:
             inverseDirectionLayout = isHorizontal ? MindmapLayoutType.leftBottomIndented : MindmapLayoutType.rightTopIndented;
