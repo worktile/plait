@@ -58,7 +58,7 @@ import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './
 import { MindmapQueries } from './queries';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
-import { createEmptyNode, findPath, getChildrenCount } from './utils/mindmap';
+import { createEmptyNode, findLastChild, findPath, getChildrenCount } from './utils/mindmap';
 import {
     addSelectedMindmapElements,
     clearAllSelectedMindmapElements,
@@ -136,7 +136,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
         this.gGroup = createG();
         this.gGroup.setAttribute(MINDMAP_NODE_KEY, 'true');
-        this.mindmapGGroup.prepend(this.gGroup);
+        this.insertGroup();
         this.roughSVG = HOST_TO_ROUGH_SVG.get(this.host) as RoughSVG;
         this.drawShape();
         this.drawLink();
@@ -166,6 +166,23 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         if (this.shapeG) {
             this.shapeG.remove();
             this.shapeG = null;
+        }
+    }
+
+    insertGroup() {
+        if (this.node.origin.isRoot) {
+            this.mindmapGGroup.prepend(this.gGroup);
+        } else {
+            const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(this.parent.origin);
+            let targetNode = parentComponent?.gGroup as Node;
+
+            if (this.index > 0) {
+                const brotherNode = this.parent.children[this.index - 1];
+                const lastChildNode = findLastChild(brotherNode);
+                const lastChildComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(lastChildNode.origin);
+                targetNode = lastChildComponent?.gGroup as Node;
+            }
+            this.mindmapGGroup.insertBefore(this.gGroup, targetNode as Node);
         }
     }
 
