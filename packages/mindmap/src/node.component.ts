@@ -50,7 +50,7 @@ import {
     STROKE_WIDTH
 } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
-import { drawLink } from './draw/link';
+import { drawLogicLink } from './draw/logic-link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
 import { MindmapElement } from './interfaces/element';
@@ -199,7 +199,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         if (MindmapElement.isIndentedLayout(this.parent.origin)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         } else {
-            this.linkG = drawLink(this.roughSVG, this.parent, this.node, null, isHorizontalLayout(layout));
+            this.linkG = drawLogicLink(this.roughSVG, this.node, this.parent, isHorizontalLayout(layout));
         }
 
         this.gGroup.append(this.linkG);
