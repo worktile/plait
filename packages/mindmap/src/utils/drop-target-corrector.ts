@@ -11,7 +11,6 @@ export const readjustmentDropTarget = (dropTarget: {
 }): { target: MindmapElement; detectResult: DetectResult } => {
     const { target, detectResult } = dropTarget;
     const newDropTarget = { target, detectResult };
-    console.log('原始方向：', detectResult);
     const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(target) as MindmapNodeComponent;
     if (targetComponent.node.children.length > 0 && dropTarget.detectResult) {
         if (['right', 'left'].includes(dropTarget.detectResult)) {
