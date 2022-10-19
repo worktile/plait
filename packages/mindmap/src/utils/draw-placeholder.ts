@@ -60,7 +60,7 @@ export const drawCurvePlaceholderDropNodeG = (
     fakeDropNodeG: SVGGElement | undefined
 ) => {
     let fakeY = targetRect.y - 30;
-    const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
+    const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.parent.origin);
     const strokeWidth = targetComponent.node.origin.linkLineWidth ? targetComponent.node.origin.linkLineWidth : STROKE_WIDTH;
     if (detectResult === 'top') {
         if (targetIndex > 0) {
@@ -230,7 +230,7 @@ export const drawStraightDropNodeG = (
     }
     let fakeY = targetComponent.node.y;
     let fakeX = targetRect.x;
-    const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
+    const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.parent.origin);
     // 构造一条直线
     let linePoints = [
         [startLinePoint, y + height / 2],
