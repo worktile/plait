@@ -12,10 +12,10 @@ export const readjustmentDropTarget = (dropTarget: {
     const { target, detectResult } = dropTarget;
     const newDropTarget = { target, detectResult };
     const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(target) as MindmapNodeComponent;
-    const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
     if (targetComponent.node.children.length > 0 && dropTarget.detectResult) {
         if (['right', 'left'].includes(dropTarget.detectResult)) {
             if (targetComponent.node.origin.isRoot) {
+                const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
                 // 标准布局，根节点
                 if (isStandardLayout(layout)) {
                     const rightNodeCount = targetComponent.node.origin.rightNodeCount as number;
@@ -36,6 +36,7 @@ export const readjustmentDropTarget = (dropTarget: {
                     }
                 }
             }
+            const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.parent.origin);
             // 缩进布局探测到第一个子节点
             if (isIndentedLayout(layout)) {
                 newDropTarget.target = targetComponent.node.children[0].origin;
@@ -53,13 +54,17 @@ export const readjustmentDropTarget = (dropTarget: {
         }
         if (['top', 'bottom'].includes(dropTarget.detectResult)) {
             // 缩进布局移动至第一个节点
-            if (isIndentedLayout(layout) && targetComponent.node.origin.isRoot) {
+            const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
+            if (targetComponent.node.origin.isRoot && isIndentedLayout(layout)) {
                 newDropTarget.target = targetComponent.node.children[0].origin;
                 newDropTarget.detectResult = isTopLayout(layout) ? 'bottom' : 'top';
                 return newDropTarget;
             }
             // 上下布局，插到右边
-            if (isVerticalLogicLayout(layout)) {
+            const parentLayout = MindmapQueries.getCorrectLayoutByElement(
+                targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
+            );
+            if (isVerticalLogicLayout(parentLayout)) {
                 const lastChildNodeIndex = targetComponent.node.children.length - 1;
                 newDropTarget.target = targetComponent.node.children[lastChildNodeIndex].origin;
                 newDropTarget.detectResult = 'right';

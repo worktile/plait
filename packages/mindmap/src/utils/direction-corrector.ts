@@ -3,25 +3,25 @@ import { isBottomLayout, isRightLayout, isLeftLayout, MindmapLayoutType, isStand
 import { MindmapQueries } from '../queries';
 
 export const directionCorrector = (node: MindmapNode, detectResults: DetectResult[]): DetectResult[] | null => {
-    const layout = MindmapQueries.getCorrectLayoutByElement(node?.origin as MindmapElement);
-
     if (!node.origin.isRoot) {
-        if (isLeftLayout(layout)) {
+        const parentlayout = MindmapQueries.getCorrectLayoutByElement(node?.parent.origin as MindmapElement);
+        if (isLeftLayout(parentlayout)) {
             return getAllowedDirection(detectResults, ['right']);
         }
 
-        if (isRightLayout(layout)) {
+        if (isRightLayout(parentlayout)) {
             return getAllowedDirection(detectResults, ['left']);
         }
 
-        if (layout === MindmapLayoutType.upward) {
+        if (parentlayout === MindmapLayoutType.upward) {
             return getAllowedDirection(detectResults, ['bottom']);
         }
 
-        if (layout === MindmapLayoutType.downward) {
+        if (parentlayout === MindmapLayoutType.downward) {
             return getAllowedDirection(detectResults, ['top']);
         }
     } else {
+        const layout = MindmapQueries.getCorrectLayoutByElement(node?.origin as MindmapElement);
         if (isStandardLayout(layout)) {
             return getAllowedDirection(detectResults, ['top', 'bottom']);
         }
