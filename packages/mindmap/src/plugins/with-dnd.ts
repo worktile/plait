@@ -169,6 +169,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
             if (dropTarget?.target) {
                 dropTarget = readjustmentDropTarget(dropTarget);
+                console.log('调整后的方向：', dropTarget.detectResult);
                 drawPlaceholderDropNodeG(dropTarget, roughSVG, fakeDropNodeG);
             }
         }
