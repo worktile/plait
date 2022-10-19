@@ -1,4 +1,4 @@
-import { isStandardLayout, isIndentedLayout, isVerticalLogicLayout, isTopLayout } from '@plait/layouts';
+import { isStandardLayout, isIndentedLayout, isVerticalLogicLayout, isTopLayout, MindmapLayoutType } from '@plait/layouts';
 import { DetectResult, MindmapElement } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
@@ -48,6 +48,15 @@ export const readjustmentDropTarget = (dropTarget: {
             // 上下布局的根节点只可以探测到上或者下，子节点的左右探测不处理，跳过。
             if (isVerticalLogicLayout(parentLayout)) {
                 return newDropTarget;
+            }
+            // 处理左右布局下的混合布局
+            if ([MindmapLayoutType.left, MindmapLayoutType.right].includes(parentLayout)) {
+                const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
+                if (isIndentedLayout(layout)) {
+                    newDropTarget.target = targetComponent.node.children[0].origin;
+                    newDropTarget.detectResult = isTopLayout(layout) ? 'bottom' : 'top';
+                    return newDropTarget;
+                }
             }
             // 剩下是水平布局的默认情况：插入最后一个子节点的下方
             const lastChildNodeIndex = targetComponent.node.children.length - 1;

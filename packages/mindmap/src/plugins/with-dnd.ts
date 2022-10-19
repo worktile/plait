@@ -168,7 +168,9 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             });
 
             if (dropTarget?.target) {
+                console.log('原来的布局：', dropTarget.detectResult);
                 dropTarget = readjustmentDropTarget(dropTarget);
+                console.log('调整后的布局：', dropTarget.detectResult);
                 drawPlaceholderDropNodeG(dropTarget, roughSVG, fakeDropNodeG);
             }
         }
