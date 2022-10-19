@@ -36,15 +36,15 @@ export const readjustmentDropTarget = (dropTarget: {
                     }
                 }
             }
-            const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.parent.origin);
+            const parentLayout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.parent.origin);
             // 缩进布局探测到第一个子节点
-            if (isIndentedLayout(layout)) {
+            if (isIndentedLayout(parentLayout)) {
                 newDropTarget.target = targetComponent.node.children[0].origin;
-                newDropTarget.detectResult = isTopLayout(layout) ? 'bottom' : 'top';
+                newDropTarget.detectResult = isTopLayout(parentLayout) ? 'bottom' : 'top';
                 return newDropTarget;
             }
             // 上下布局的根节点只可以探测到上或者下，子节点的左右探测不处理，跳过。
-            if (isVerticalLogicLayout(layout)) {
+            if (isVerticalLogicLayout(parentLayout)) {
                 return newDropTarget;
             }
             // 剩下是水平布局的默认情况：插入最后一个子节点的下方
