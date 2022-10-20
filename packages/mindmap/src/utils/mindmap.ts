@@ -216,7 +216,9 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapElement, 
             // todo: 新增节点重置偏移
             requestAnimationFrame(() => {
                 boardComponent?.calculateViewport();
-                const shapeGRect = (nodeComponent.shapeG as SVGGElement).getBoundingClientRect();
+                const activeG = nodeComponent.shapeG ?? nodeComponent.activeG[0];
+                if (!activeG) return;
+                const shapeGRect = (activeG as SVGGElement)?.getBoundingClientRect();
                 const autoFitPadding = boardComponent.autoFitPadding;
                 const { x, y } = isOutExtent(board, shapeGRect, autoFitPadding);
 
