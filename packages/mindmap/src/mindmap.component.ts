@@ -4,7 +4,7 @@ import { MindmapElement } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
 import { PlaitMindmap } from './interfaces/mindmap';
 import { createG, Selection, PlaitBoard } from '@plait/core';
-import { LayoutOptions, GlobalLayout, OriginNode, LayoutNode, isIndentedLayout, isHorizontalLayout } from '@plait/layouts';
+import { LayoutOptions, GlobalLayout, OriginNode, LayoutNode, isIndentedLayout, isHorizontalLayout, isFishBoneLayout } from '@plait/layouts';
 import { MINDMAP_TO_COMPONENT } from './plugins/weak-maps';
 import { getRootLayout } from './utils';
 import { MindmapQueries } from './queries';
@@ -81,6 +81,12 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
             },
             getHorizontalGap(element: MindmapElement, parent?: LayoutNode) {
                 const _layout = (parent && parent.layout) || getRootLayout(element);
+                if (isFishBoneLayout(_layout)) {
+                    if (element.isRoot || element.layout) {
+                        return 40;
+                    }
+                    return 0;
+                }
                 const isHorizontal = isHorizontalLayout(_layout);
                 const strokeWidth = element.strokeWidth || STROKE_WIDTH;
                 if (isIndentedLayout(_layout)) {
@@ -94,6 +100,13 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
             },
             getVerticalGap(element: MindmapElement, parent?: LayoutNode) {
                 const _layout = (parent && parent.layout) || getRootLayout(element);
+                if (isFishBoneLayout(_layout)) {
+                    const isRoot = element.isRoot || (parent && parent.isRoot());
+                    if (isRoot) {
+                        return 20;
+                    }
+                    return 12;
+                }
                 if (isIndentedLayout(_layout)) {
                     return BASE;
                 }

@@ -68,6 +68,7 @@ import {
 import { getNodeShapeByElement } from './utils/shape';
 
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
+import { drawFishBoneLink } from './draw/fish-bone-link';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -112,7 +113,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     shapeG: SVGGElement | null = null;
 
-    linkG?: SVGGElement;
+    linkG?: SVGGElement[];
 
     richtextG?: SVGGElement;
 
@@ -192,23 +193,26 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         if (this.linkG) {
-            this.linkG.remove();
+            this.linkG.forEach((g) => g.remove());
         }
 
         const layout = MindmapQueries.getLayoutByElement(this.parent.origin) as MindmapLayoutType;
         if (MindmapElement.isIndentedLayout(this.parent.origin)) {
-            this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
-        } else {
-            this.linkG = drawLink(this.roughSVG, this.parent, this.node, null, isHorizontalLayout(layout));
+            this.linkG = [drawIndentedLink(this.roughSVG, this.parent, this.node)];
+        } else if (MindmapElement.hasLayout(this.parent.origin, MindmapLayoutType.rightFishBone)) {
+            this.linkG = drawFishBoneLink(this.roughSVG, this.parent, this.node);
+        }
+        else {
+            this.linkG = [drawLink(this.roughSVG, this.parent, this.node, null, isHorizontalLayout(layout))];
         }
 
-        this.gGroup.append(this.linkG);
+        this.linkG?.forEach(g => this.gGroup.append(g));
     }
 
     destroyLine() {
         if (this.parent) {
             if (this.linkG) {
-                this.linkG.remove();
+                this.linkG.forEach((g) => g.remove());
             }
         }
     }
@@ -366,7 +370,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
         // 当没有子节点时，需要缩小的偏移量
         const extraOffset = 3;
-        const underlineCoordinates: ExtendUnderlineCoordinateType = {
+        const underlineCoordinates: any = {
             // 画线方向：右向左 <--
             [MindmapLayoutType.left]: {
                 // EXTEND_RADIUS * 0.5 是 左方向，折叠/收起的偏移量

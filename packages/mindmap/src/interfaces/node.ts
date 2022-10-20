@@ -1,4 +1,4 @@
-import { MindmapLayoutType } from '@plait/layouts';
+import { LayoutNode, MindmapLayoutType } from '@plait/layouts';
 import { MindmapElement } from './element';
 
 export interface MindmapNode {
@@ -15,6 +15,10 @@ export interface MindmapNode {
     left: boolean;
     up: boolean;
 }
+
+// export function isLayoutNode(value: MindmapNode): value is LayoutNode {
+//     return true;
+// }
 
 export const MindmapNode = {
     isEquals(node: MindmapNode, otherNode: MindmapNode) {

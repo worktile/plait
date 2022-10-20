@@ -1,3 +1,5 @@
+import { indetnedLayout  } from '../algorithms/indented';
+import { fishBoneLayout  } from '../algorithms/fish-bone';
 import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { BlackNode, LayoutNode } from '../interfaces/node';
 import { buildLayoutTree, LayoutTree } from '../interfaces/tree';
@@ -73,10 +75,11 @@ export class BaseLayout {
         // 4、layout handle
         switch (layoutType) {
             case LayoutType.indented:
-                indentMainAxle(root);
-                seperateSecondaryAxle(root, options);
+                indetnedLayout.indentMainAxle(root);
+                indetnedLayout.seperateSecondaryAxle(root, options);
                 break;
             case LayoutType.fishBone:
+                fishBoneLayout.layout(root, options);
                 break;
             case LayoutType.logic:
             default:
@@ -180,35 +183,6 @@ export class BaseLayout {
             }
         }
         return root;
-    }
-}
-
-function indentMainAxle(node: LayoutNode, d = 0) {
-    node.x = d;
-    node.children.forEach(child => {
-        indentMainAxle(child, node.x + node.width / 2);
-    });
-}
-
-function seperateSecondaryAxle(root: LayoutNode, options: LayoutOptions) {
-    let previousBottom = root.y + root.height;
-    let previousNode: null | LayoutNode = null;
-    updateY(root);
-    function updateY(node: LayoutNode) {
-        node.children.forEach(child => {
-            let y = previousBottom + child.vGap;
-            if (previousNode && !isHorizontalLogicLayout(previousNode.layout) && previousNode.origin.children.length > 0) {
-                if (previousNode.origin.isCollapsed) {
-                    y = y + options.getExtendHeight(child.origin);
-                } else {
-                    y = y + options.getIndentedCrossLevelGap();
-                }
-            }
-            child.y = y;
-            previousNode = child;
-            previousBottom = child.y + child.height;
-            updateY(child);
-        });
     }
 }
 

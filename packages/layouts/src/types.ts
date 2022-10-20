@@ -32,7 +32,10 @@ export enum MindmapLayoutType {
     'rightBottomIndented' = 'right-bottom-indented',
     'rightTopIndented' = 'right-top-indented',
     'leftTopIndented' = 'left-top-indented',
-    'leftBottomIndented' = 'left-bottom-indented'
+    'leftBottomIndented' = 'left-bottom-indented',
+    'leftFishBone' = 'left-fish-bone',
+    'rightFishBone' = 'right-fish-bone'
+
 }
 
 export enum LayoutType {

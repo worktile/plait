@@ -31,6 +31,12 @@ export const isLogicLayout = (layout: MindmapLayoutType) => {
     );
 };
 
+export const isFishBoneLayout = (layout: MindmapLayoutType) => {
+    return (
+        layout === MindmapLayoutType.rightFishBone || layout === MindmapLayoutType.left
+    );
+};
+
 export const isStandardLayout = (layout: MindmapLayoutType) => {
     return layout === MindmapLayoutType.standard;
 };
@@ -89,6 +95,9 @@ export const extractLayoutType = (mindmapLayoutType: MindmapLayoutType): LayoutT
     }
     if (isLogicLayout(mindmapLayoutType)) {
         return LayoutType.logic;
+    }
+    if (isFishBoneLayout(mindmapLayoutType)) {
+        return LayoutType.fishBone;
     }
     return LayoutType.logic;
 };

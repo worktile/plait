@@ -11,10 +11,10 @@ export class LayoutTree {
     modifier: number; // 描述整个子树应该水平移动多少
     shift: number;
     change: number;
-    tl: any;
-    tr: any;
-    el: LayoutTree | null;
-    er: LayoutTree | null;
+    leftThread: any;
+    rightThread: any;
+    leftExtreme: LayoutTree | null;
+    rightExtreme: LayoutTree | null;
     msel: number;
     mser: number;
     origin: LayoutNode;
@@ -31,10 +31,10 @@ export class LayoutTree {
         this.modifier = 0;
         this.shift = 0;
         this.change = 0;
-        this.tl = null; // Left thread
-        this.tr = null; // Right thread
-        this.el = null; // extreme left nodes
-        this.er = null; // extreme right nodes
+        this.leftThread = null;
+        this.rightThread = null;
+        this.leftExtreme = null;
+        this.rightExtreme = null;
         //sum of modifiers at the extreme nodes
         this.msel = 0;
         this.mser = 0;

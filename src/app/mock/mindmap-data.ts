@@ -35,36 +35,66 @@ export const mockMindmapData: PlaitMindmap = {
             children: [
                 {
                     id: '1-4-1',
-                    value: { children: [{ text: '布局算法' }] },
+                    value: { children: [{ text: '1-4-1' }] },
                     children: [],
                     width: 56,
                     height: 24
                 },
                 {
                     id: '1-4-2',
-                    value: { children: [{ text: 'non-layerd-tidy-trees' }] },
+                    value: { children: [{ text: '1-4-2' }] },
                     children: [
                         {
                             id: '1-4-2-1',
-                            value: { children: [{ text: '鱼骨图哦' }] },
-                            children: [],
+                            value: { children: [{ text: '1-4-2-1' }] },
+                            children: [
+                                {
+                                    id: '1-4-2-1-1',
+                                    value: { children: [{ text: '1-4-2-1-1' }] },
+                                    children: [],
+                                    width: 72,
+                                    height: 24
+                                },
+                                {
+                                    id: '1-4-2-1-2',
+                                    value: { children: [{ text: '1-4-2-1-2' }] },
+                                    children: [],
+                                    width: 72,
+                                    height: 24
+                                },
+                            ],
                             width: 72,
                             height: 24
                         },
                         {
                             id: '1-4-2-2',
-                            value: { children: [{ text: '缩进布局' }] },
+                            value: { children: [{ text: '1-4-2-2' }] },
+                            children: [],
+                            width: 72,
+                            height: 24
+                        },
+                        {
+                            id: '1-4-2-3',
+                            value: { children: [{ text: '1-4-2-3' }] },
+                            children: [],
+                            width: 72,
+                            height: 24
+                        },
+                        {
+                            id: '1-4-2-4',
+                            value: { children: [{ text: '1-4-2-4' }] },
                             children: [],
                             width: 72,
                             height: 24
                         }
                     ],
                     width: 144.8046875,
-                    height: 24
+                    height: 24,
+                    layout: MindmapLayoutType.rightFishBone
                 },
                 {
                     id: '1-4-3',
-                    value: { children: [{ text: '知名脑图产品' }] },
+                    value: { children: [{ text: '1-4-3' }] },
                     children: [],
                     width: 84,
                     height: 24
@@ -99,5 +129,6 @@ export const mockMindmapData: PlaitMindmap = {
     width: 72,
     height: 25,
     isRoot: true,
-    points: [[560, 360]]
+    points: [[60, 360]],
+    layout: MindmapLayoutType.rightFishBone
 };

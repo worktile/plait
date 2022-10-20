@@ -1,5 +1,5 @@
 import { LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
-import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isLogicLayout, isStandardLayout, isTopLayout } from '../utils/layout';
+import { extractLayoutType, isHorizontalLayout, isIndentedLayout, isLeftLayout, isLogicLayout, isStandardLayout, isTopLayout } from '../utils/layout';
 import { BaseLayout } from './base-layout';
 
 export class GlobalLayout {
@@ -49,11 +49,11 @@ export class GlobalLayout {
 
         const isIndented = isIndentedLayout(mindmapLayoutType);
         // const isLogic = isLogicLayout(mindmapLayoutType);
-        const layoutType = isIndented ? LayoutType.indented : LayoutType.logic;
+        // const layoutType = isIndented ? LayoutType.indented : LayoutType.logic;
         const isHorizontal = isIndented ? true : isHorizontalLayout(mindmapLayoutType);
         const toTop = isTopLayout(mindmapLayoutType);
         const toLeft = isLeftLayout(mindmapLayoutType);
-        const resultRoot = baseLayout.layout(root, layoutType, options, { toTop, toLeft, rootLayoutType: mindmapLayoutType }, isHorizontal);
+        const resultRoot = baseLayout.layout(root, extractLayoutType(mindmapLayoutType), options, { toTop, toLeft, rootLayoutType: mindmapLayoutType }, isHorizontal);
         if (toTop) {
             resultRoot.down2up();
         }

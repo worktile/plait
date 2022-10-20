@@ -33,7 +33,9 @@ export const LayoutDirectionsMap: LayoutDirectionMapType = {
     [MindmapLayoutType.rightBottomIndented]: [LayoutDirection.right, LayoutDirection.bottom],
     [MindmapLayoutType.rightTopIndented]: [LayoutDirection.right, LayoutDirection.top],
     [MindmapLayoutType.leftBottomIndented]: [LayoutDirection.left, LayoutDirection.bottom],
-    [MindmapLayoutType.leftTopIndented]: [LayoutDirection.left, LayoutDirection.top]
+    [MindmapLayoutType.leftTopIndented]: [LayoutDirection.left, LayoutDirection.top],
+    [MindmapLayoutType.rightFishBone]: [LayoutDirection.right, LayoutDirection.top, LayoutDirection.bottom],
+    [MindmapLayoutType.left]: [LayoutDirection.left, LayoutDirection.top, LayoutDirection.bottom],
 };
 
 type LayoutDirectionMapType = { [key: string]: LayoutDirection[] };
