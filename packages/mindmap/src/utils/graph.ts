@@ -1,25 +1,9 @@
 import { MindmapNode } from '../interfaces/node';
 import { Options } from 'roughjs/bin/core';
-import { Point } from 'roughjs/bin/geometry';
+import { Point, RectangleClient } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { MAX_RADIUS, MindmapNodeShape } from '../constants';
+import { MAX_RADIUS } from '../constants';
 import { BaseCursorStatus, PlaitBoard } from '@plait/core';
-import { MindmapQueries } from '../queries';
-import { isHorizontalLayout, isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
-import { getNodeShapeByElement } from './shape';
-
-export interface RectangleClient {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-}
-
-export interface EllipseClient {
-    center: Point;
-    width: number;
-    height: number;
-}
 
 export function toRectangleClient(points: [Point, Point]): RectangleClient {
     const xArray = points.map(ele => ele[0]);
@@ -56,17 +40,11 @@ export function drawRoundRectangle(rs: RoughSVG, x1: number, y1: number, x2: num
     );
 }
 
-export function getRectangleByNode(node: MindmapNode) {
+export function getRectangleByNode(node: MindmapNode): RectangleClient {
     const x = node.x + node.hGap;
     let y = node.y + node.vGap;
     const width = node.width - node.hGap * 2;
     const height = node.height - node.vGap * 2;
-    if (!node.origin.isRoot && (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.underline) {
-        const layout = MindmapQueries.getLayoutByElement(node.parent.origin) as MindmapLayoutType;
-        if (isHorizontalLayout(layout) && !isIndentedLayout(layout)) {
-            y = y - height / 2;
-        }
-    }
     return {
         x,
         y,
