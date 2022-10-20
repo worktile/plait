@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.54
+
+### Patch Changes
+
+-   [#216](https://github.com/worktile/plait/pull/216) [`6c5b1a4`](https://github.com/worktile/plait/commit/6c5b1a45c0681773b57760e71b854bc5b017c440) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - the target element does not exist when repairing the new node
+
 ## 0.0.53
 
 ### Patch Changes
