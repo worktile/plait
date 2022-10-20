@@ -1,5 +1,6 @@
-import { LayoutDirection, LayoutDirectionsMap, MindmapElement } from '../interfaces';
+import { MindmapElement } from '../interfaces';
 import { MindmapLayoutType } from '@plait/layouts';
+import { LayoutDirection, LayoutDirectionsMap } from '../interfaces/layout';
 
 export const getBranchDirectionsByLayouts = (branchLayouts: MindmapLayoutType[]) => {
     const branchDirections: LayoutDirection[] = [];

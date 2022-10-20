@@ -190,8 +190,9 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapElement, 
         fill = inheritNode.fill;
         strokeColor = inheritNode.strokeColor;
         strokeWidth = inheritNode.strokeWidth;
-        shape = inheritNode.shape as MindmapNodeShape;
     }
+
+    shape = inheritNode.shape as MindmapNodeShape;
 
     const newElement = {
         id: idCreator(),
