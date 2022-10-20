@@ -3,7 +3,7 @@ import { DetectResult, MindmapElement } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { MindmapQueries } from '../queries';
-import { isFixedLayout } from './layout';
+import { isMixedLayout } from './layout';
 
 /* 根据布局调整 target 以及 direction */
 export const readjustmentDropTarget = (dropTarget: {
@@ -19,7 +19,7 @@ export const readjustmentDropTarget = (dropTarget: {
             targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
         );
         if (['right', 'left'].includes(dropTarget.detectResult)) {
-            if (!isFixedLayout(parentLayout, layout)) {
+            if (!isMixedLayout(parentLayout, layout)) {
                 if (targetComponent.node.origin.isRoot) {
                     const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
                     // 标准布局，根节点

@@ -19,7 +19,7 @@ import {
 import { drawIndentedLink } from '../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
 import { isStandardLayout } from '@plait/layouts';
-import { isFixedLayout } from './layout';
+import { isMixedLayout } from './layout';
 
 export const drawPlaceholderDropNodeG = (
     dropTarget: { target: MindmapElement; detectResult: DetectResult },
@@ -220,7 +220,7 @@ export const drawStraightDropNodeG = (
         targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
     );
     const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
-    if (!isFixedLayout(parentLayout, layout)) {
+    if (!isMixedLayout(parentLayout, layout)) {
         // 构造一条直线
         let linePoints = [
             [startLinePoint, y + height / 2],

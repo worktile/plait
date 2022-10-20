@@ -19,7 +19,7 @@ export const isCorrectLayout = (root: MindmapElement, layout: MindmapLayoutType)
     return !getInCorrectLayoutDirection(rootLayout, layout);
 };
 
-export const isFixedLayout = (parentLayout: MindmapLayoutType, layout: MindmapLayoutType) => {
+export const isMixedLayout = (parentLayout: MindmapLayoutType, layout: MindmapLayoutType) => {
     return (!isIndentedLayout(parentLayout) && isIndentedLayout(layout)) || (isIndentedLayout(parentLayout) && !isIndentedLayout(layout));
 };
 
