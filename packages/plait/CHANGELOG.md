@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.53
+
+### Patch Changes
+
+-   [#207](https://github.com/worktile/plait/pull/207) [`3cddec3`](https://github.com/worktile/plait/commit/3cddec3a6e767f893bbdbd7e7703c4f14199b714) Thanks [@Maple13](https://github.com/Maple13)! - disable artboard swipe when not in focus
+
 ## 0.0.52
 
 ### Patch Changes
