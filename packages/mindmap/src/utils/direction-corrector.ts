@@ -5,6 +5,12 @@ import { MindmapQueries } from '../queries';
 export const directionCorrector = (node: MindmapNode, detectResults: DetectResult[]): DetectResult[] | null => {
     if (!node.origin.isRoot) {
         const parentlayout = MindmapQueries.getCorrectLayoutByElement(node?.parent.origin as MindmapElement);
+        if (isStandardLayout(parentlayout)) {
+            const idx = node.parent.children.findIndex(x => x === node);
+            const isLeft = idx >= (node.parent.origin.rightNodeCount || 0);
+            return getAllowedDirection(detectResults, [isLeft ? 'right' : 'left']);
+        }
+
         if (isLeftLayout(parentlayout)) {
             return getAllowedDirection(detectResults, ['right']);
         }
