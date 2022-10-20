@@ -19,6 +19,7 @@ import {
 import { drawIndentedLink } from '../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
 import { isStandardLayout } from '@plait/layouts';
+import { isFixedLayout } from './layout';
 
 export const drawPlaceholderDropNodeG = (
     dropTarget: { target: MindmapElement; detectResult: DetectResult },
@@ -60,74 +61,48 @@ export const drawCurvePlaceholderDropNodeG = (
     parentComponent: MindmapNodeComponent,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
-    let fakeY = targetRect.y - 30;
+    const parentNodeLayout = MindmapQueries.getCorrectLayoutByElement(parentComponent.node.origin);
     const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.parent.origin);
     const strokeWidth = targetComponent.node.origin.linkLineWidth ? targetComponent.node.origin.linkLineWidth : STROKE_WIDTH;
-    if (detectResult === 'top') {
-        if (targetIndex > 0) {
-            const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
-                parentComponent.node.origin.children[targetIndex - 1]
-            ) as MindmapNodeComponent;
-            const previousRect = getRectangleByNode(previousComponent.node);
-            const topY = previousRect.y + previousRect.height;
-            fakeY = topY + (targetRect.y - topY) / 5;
-        }
-        // 左下、右下、下布局且是最上面的节点
-        if (targetIndex === 0) {
-            if (layout === MindmapLayoutType.leftBottomIndented || layout === MindmapLayoutType.rightBottomIndented) {
-                fakeY = targetRect.y;
-            }
-        }
-        // 左上、右上、上布局且是最上面的节点
-        if (targetIndex === parentComponent.node.origin.children.length - 1) {
-            if (isTopLayout(layout)) {
-                fakeY = targetRect.y - targetRect.height;
-            }
-        }
-    }
-    if (detectResult === 'bottom') {
-        fakeY = targetRect.y + targetRect.height + 30;
-        if (targetIndex < parentComponent.node.origin.children.length - 1) {
-            const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
-                parentComponent.node.origin.children[targetIndex + 1]
-            ) as MindmapNodeComponent;
-            const nextRect = getRectangleByNode(nextComponent.node);
-            const topY = targetRect.y + targetRect.height;
-            fakeY = topY + (nextRect.y - topY) / 5;
-        }
-        // 左上、右上并且是当前分支第一个
-        if (targetIndex === 0 && isTopLayout(layout)) {
-            fakeY = targetRect.y + targetRect.height;
-        }
-    }
-    const parentNodeLayout = MindmapQueries.getCorrectLayoutByElement(parentComponent.node.origin);
-    if (isStandardLayout(parentNodeLayout)) {
-        const rightNodeCount = parentComponent.node.origin.rightNodeCount as number;
-        if (detectResult === 'top') {
-            const isLeftFirst = parentComponent.node.children[rightNodeCount] === targetComponent.node;
-            // 拖拽至左第一个节点的情况
-            if (isLeftFirst) {
-                fakeY = targetRect.y - targetRect.height;
-            }
-        } else {
-            const isRightLast = parentComponent.node.children[rightNodeCount - 1] === targetComponent.node;
-            // 拖拽至最后一个节点的下方或右侧的最后一个节点的下方
-            if (isRightLast) {
-                fakeY = targetRect.y + targetRect.height + 30;
-            }
-        }
-    }
-    let fakeX = targetComponent.node.x;
-    let fakeRectangleStartX = targetRect.x,
+    let fakeX = targetComponent.node.x,
+        fakeY = targetRect.y - 30,
+        fakeRectangleStartX = targetRect.x,
         fakeRectangleEndX = targetRect.x + 30,
         fakeRectangleStartY = fakeY,
         fakeRectangleEndY = fakeRectangleStartY + 12,
         width = 30;
+
     if (isLeftLayout(layout)) {
         fakeX = targetComponent.node.x + targetComponent.node.width - 30;
         fakeRectangleStartX = targetRect.x + targetRect.width - 30;
         fakeRectangleEndX = targetRect.x + targetRect.width;
     }
+    if (isHorizontalLogicLayout(parentNodeLayout)) {
+        fakeY = getHorizontalFakeY(detectResult as 'top' | 'bottom', targetIndex, parentComponent.node, targetRect, layout, fakeY);
+        if (isStandardLayout(parentNodeLayout)) {
+            const rightNodeCount = parentComponent.node.origin.rightNodeCount || 0;
+            const idx = parentComponent.node.children.findIndex(x => x === targetComponent.node);
+            const isLeft = idx >= rightNodeCount;
+            // 标准布局的左，需要调整 x
+            if (isLeft) {
+                fakeX = targetComponent.node.x + targetComponent.node.width - 30;
+                fakeRectangleStartX = targetRect.x + targetRect.width - 30;
+                fakeRectangleEndX = targetRect.x + targetRect.width;
+            }
+            const isLeftFirst = idx === rightNodeCount;
+            const isRightLast = idx === rightNodeCount - 1;
+            // 拖拽至左第一个节点的情况
+            if (detectResult === 'top' && isLeftFirst) {
+                fakeY = targetRect.y - targetRect.height;
+            }
+            if (detectResult === 'bottom' && isRightLast) {
+                fakeY = targetRect.y + targetRect.height + 30;
+            }
+        }
+        fakeRectangleStartY = fakeY;
+        fakeRectangleEndY = fakeRectangleStartY + 12;
+    }
+
     if (isVerticalLogicLayout(layout)) {
         parentComponent = targetComponent;
         targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
@@ -245,8 +220,7 @@ export const drawStraightDropNodeG = (
         targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
     );
     const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
-    const isFixedLayout = layout !== parentLayout;
-    if (!isFixedLayout) {
+    if (!isFixedLayout(parentLayout, layout)) {
         // 构造一条直线
         let linePoints = [
             [startLinePoint, y + height / 2],
@@ -345,6 +319,45 @@ export const drawStraightDropNodeG = (
             }
         }
     }
+};
+
+export const getHorizontalFakeY = (
+    detectResult: 'top' | 'bottom',
+    targetIndex: number,
+    parentNode: MindmapNode,
+    targetRect: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    },
+    layout: MindmapLayoutType,
+    fakeY: number
+) => {
+    if (detectResult === 'top') {
+        if (targetIndex === 0 && isTopLayout(layout)) {
+            fakeY = targetRect.y + targetRect.height;
+        }
+        if (targetIndex > 0) {
+            const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parentNode.origin.children[targetIndex - 1]) as MindmapNodeComponent;
+            const previousRect = getRectangleByNode(previousComponent.node);
+            const topY = previousRect.y + previousRect.height;
+            fakeY = topY + (targetRect.y - topY) / 5;
+        }
+    }
+    if (detectResult === 'bottom') {
+        fakeY = targetRect.y + targetRect.height + 30;
+        if (targetIndex < parentNode.origin.children.length - 1) {
+            const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parentNode.origin.children[targetIndex + 1]) as MindmapNodeComponent;
+            const nextRect = getRectangleByNode(nextComponent.node);
+            const topY = targetRect.y + targetRect.height;
+            fakeY = topY + (nextRect.y - topY) / 5;
+        }
+        if (targetIndex === parentNode.origin.children.length - 1) {
+            fakeY = targetRect.y + targetRect.height + 30;
+        }
+    }
+    return fakeY;
 };
 
 export const getIndentedFakePoint = (
