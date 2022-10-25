@@ -77,12 +77,13 @@ export const inverse = (op: PlaitOperation): PlaitOperation => {
 
             if (Path.isSibling(path, newPath)) {
                 const inversePath = Path.transform(path, op)!;
+                // fix #WIK-8981
                 if (Path.endsBefore(inversePath, path) && path.length <= inversePath.length) {
                     path[inversePath.length - 1] += 1;
                 }
                 return { ...op, path: inversePath, newPath: path };
             }
-
+            // fix #WIK-8981
             if (Path.endsBefore(newPath, path) && newPath.length <= path.length) {
                 path[newPath.length - 1] += 1;
             }
