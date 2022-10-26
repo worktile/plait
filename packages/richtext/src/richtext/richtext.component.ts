@@ -413,6 +413,13 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
 
     private compositionStart(event: CompositionEvent) {
         this.isComposing = true;
+        const { selection } = this.editor;
+        if (selection) {
+            // delete selecttion content when ime start
+            if (Range.isExpanded(selection)) {
+                Editor.deleteFragment(this.editor);
+            }
+        }
         this.plaitComposition.emit({ originEvent: event, isComposing: this.isComposing });
         event.stopPropagation();
     }
