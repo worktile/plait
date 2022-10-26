@@ -1,5 +1,31 @@
 # mindmap
 
+## 0.0.54
+
+### Patch Changes
+
+-   [#216](https://github.com/worktile/plait/pull/216) [`6c5b1a4`](https://github.com/worktile/plait/commit/6c5b1a45c0681773b57760e71b854bc5b017c440) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - the target element does not exist when repairing the new node
+
+## 0.0.53
+
+### Patch Changes
+
+-   [#209](https://github.com/worktile/plait/pull/209) [`6a23d47`](https://github.com/worktile/plait/commit/6a23d473310849ebcef76e7de922ccdac3adf6e2) Thanks [@WBbug](https://github.com/WBbug)! - use correctLayout
+
+*   [#208](https://github.com/worktile/plait/pull/208) [`4e4f2bd`](https://github.com/worktile/plait/commit/4e4f2bdaa1c0c8435fdb9575e78752a5a8941f1c) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - adjust dropTarget and detectResult with parent layout of mindmap dnd
+
+-   [#210](https://github.com/worktile/plait/pull/210) [`5b6fd55`](https://github.com/worktile/plait/commit/5b6fd55d79b7fd3f9af8488b836249bfedc13c4e) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - Mixed layouts in left and right layouts are supported of mindmap dnd
+
+*   [#206](https://github.com/worktile/plait/pull/206) [`3ec162c`](https://github.com/worktile/plait/commit/3ec162c6a920940d9edc6e1d7435a87e9d9f3a9a) Thanks [@WBbug](https://github.com/WBbug)! - fix gGroup insert logic
+
+-   [`8fc1859`](https://github.com/worktile/plait/commit/8fc1859174ee79f69c56b3f405c20fb9c59d227a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update logic link curve
+
+*   [#205](https://github.com/worktile/plait/pull/205) [`4516bdf`](https://github.com/worktile/plait/commit/4516bdf64c715fefb3dcbb28638d802033a5103c) Thanks [@WBbug](https://github.com/WBbug)! - fix correctLayoutByDirection function
+
+-   [#211](https://github.com/worktile/plait/pull/211) [`88761c6`](https://github.com/worktile/plait/commit/88761c6c1ddfe898b2e753089e50fe47b065f167) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor logic link draw method
+
+*   [#213](https://github.com/worktile/plait/pull/213) [`bf23412`](https://github.com/worktile/plait/commit/bf23412060592592cb0b6d1e99ac85d83f0fe762) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - mixed layouts in standared layouts are supported of mindmap dnd
+
 ## 0.0.52
 
 ### Patch Changes
