@@ -151,7 +151,7 @@ export const Path = {
                     break;
                 }
             }
-            return null;
+            return p;
         });
     }
 };
