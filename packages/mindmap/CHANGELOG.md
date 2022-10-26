@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.55
+
+### Patch Changes
+
+-   [#212](https://github.com/worktile/plait/pull/212) [`e587b9c`](https://github.com/worktile/plait/commit/e587b9cd87ef701adb3350155dbcceb70100854c) Thanks [@Maple13](https://github.com/Maple13)! - calculate slip based on matrix
+
 ## 0.0.54
 
 ### Patch Changes
