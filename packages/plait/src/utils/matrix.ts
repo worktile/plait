@@ -1,6 +1,5 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { PlaitBoard } from '../interfaces';
-import { ViewBox } from './board';
 import { PLAIT_BOARD_TO_COMPONENT } from './weak-maps';
 
 export function invert(oldMatrix: number[], newMatrix: number[]) {
@@ -34,40 +33,92 @@ export function invert(oldMatrix: number[], newMatrix: number[]) {
 }
 
 export function transformMat3(e: number[], t: number[], n: number[]) {
-    const r = t[0];
-    const a = t[1];
-    const i = t[2];
-
-    return (e[0] = r * n[0] + a * n[3] + i * n[6]), (e[1] = r * n[1] + a * n[4] + i * n[7]), (e[2] = r * n[2] + a * n[5] + i * n[8]), e;
+    e = [t[0] * n[0] + t[1] * n[3] + t[2] * n[6], t[0] * n[1] + t[1] * n[4] + t[2] * n[7], t[0] * n[2] + t[1] * n[5] + t[2] * n[8]];
+    return e;
 }
 
-export function getViewportClientBox(board: PlaitBoard) {
-    const hideScrollbar = board.options.hideScrollbar;
-    const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
-    const container = board.host?.parentElement as HTMLElement;
-    const containerRect = container?.getBoundingClientRect();
-    const width = containerRect.width - scrollBarWidth;
-    const height = containerRect.height - scrollBarWidth;
-    const x = containerRect.x || containerRect.left;
-    const y = containerRect.y || containerRect.top;
+export function convertPoint(arr: number[]) {
+    return Array.isArray(arr)
+        ? {
+              x: arr[0],
+              y: arr[1]
+          }
+        : arr;
+}
+
+export function invertClient(board: PlaitBoard, point: number[], matrix: number[]) {
+    const convert = convertPoint(point);
+    const clientBox = getViewportClientBox(board);
+    const newPoint = [convert.x - clientBox.x, convert.y - clientBox.y, 1];
+    const invertMatrix = invert([], matrix);
+    const newMatrix = transformMat3([], [newPoint[0], newPoint[1], 1], invertMatrix as []);
+
+    return [newMatrix[0], newMatrix[1]];
+}
+
+export function invertViewport(point: number[], matrix: number[]) {
+    const newPoint = convertPoint(point);
+    const invertMatrix = invert([], matrix);
+    return transformMat3([], [newPoint.x, newPoint.y, 1], invertMatrix as []);
+}
+
+export function convertViewport(point: number[], matrix: number[]) {
+    const newPoint = convertPoint(point);
+    return transformMat3([], [newPoint.x, newPoint.y, 1], matrix);
+}
+
+export function getViewportCanvasBox(board: PlaitBoard, matrix: number[]) {
+    const clientBox = getViewportClientBox(board);
+    const client = invertClient(board, [clientBox.minX, clientBox.minY], matrix);
+    const newClient = invertClient(board, [clientBox.maxX, clientBox.maxY], matrix);
 
     return {
-        width,
-        height,
-        x,
-        y
+        minX: client[0],
+        minY: client[1],
+        maxX: newClient[0],
+        maxY: newClient[1],
+        x: client[0],
+        y: client[1],
+        width: newClient[0] - client[0],
+        height: newClient[1] - client[1]
     };
 }
 
-export function calculateBBox(board: PlaitBoard) {
-    const viewportBox = getViewportClientBox(board);
+export function getViewportClientBox(board: PlaitBoard) {
+    const container = board.host?.parentElement as HTMLElement;
+    const containerRect = container?.getBoundingClientRect();
+    const x = containerRect.x || containerRect.left;
+    const y = containerRect.y || containerRect.top;
+    const width = containerRect.width - SCROLL_BAR_WIDTH;
+    const height = containerRect.height - SCROLL_BAR_WIDTH;
+
+    return {
+        minX: x,
+        minY: y,
+        maxX: x + width,
+        maxY: y + height,
+        x,
+        y,
+        width,
+        height
+    };
+}
+
+export function getGraphicsBBox(board: PlaitBoard) {
     const rootGroup = board.host.firstChild;
-    const zoom = board.viewport.zoom;
+    const rootGroupBox = (rootGroup as SVGGraphicsElement).getBBox();
+    return rootGroupBox;
+}
+
+export function calculateBBox(board: PlaitBoard, zoom: number) {
+    const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board);
+    // const clientBox = getViewportClientBox(board);
+    const rootGroup = board.host.firstChild;
     const rootGroupBox = (rootGroup as SVGGraphicsElement).getBBox();
 
     let box = {} as any;
-    const containerWidth = viewportBox.width / zoom;
-    const containerHeight = viewportBox.height / zoom;
+    const containerWidth = boardComponent!.width / zoom;
+    const containerHeight = boardComponent!.height / zoom;
 
     if (rootGroupBox.width < containerWidth) {
         const offsetX = rootGroupBox.x + rootGroupBox.width / 2;
@@ -91,42 +142,4 @@ export function calculateBBox(board: PlaitBoard) {
 
     // 在新的缩放比容器宽高下的内容盒子位置
     return box;
-}
-
-export function getViewBox(board: PlaitBoard): ViewBox {
-    const viewportBox = getViewportClientBox(board);
-    const rootGroupBBox = calculateBBox(board);
-    const padding = [viewportBox.height / 2, viewportBox.width / 2];
-    const zoom = board.viewport.zoom;
-    const minX = rootGroupBBox.left - padding[1] / zoom;
-    const minY = rootGroupBBox.top - padding[0] / zoom;
-    const viewportWidth = (rootGroupBBox.right - rootGroupBBox.left) * zoom + 2 * padding[1];
-    const viewportHeight = (rootGroupBBox.bottom - rootGroupBBox.top) * zoom + 2 * padding[0];
-    const width = viewportWidth / zoom;
-    const height = viewportHeight / zoom;
-
-    return { minX, minY, width, height, viewportWidth, viewportHeight };
-}
-
-export function isOutExtent(board: PlaitBoard, node: DOMRect, gap: number): { x: number; y: number } {
-    const result = { x: 0, y: 0 };
-
-    if (!node) return result;
-
-    const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board);
-    const scrollBarWidth = board.options.hideScrollbar ? SCROLL_BAR_WIDTH : 0;
-    const canvasRect = boardComponent!.contentContainer.nativeElement.getBoundingClientRect();
-
-    if (node.left < canvasRect.left + gap) {
-        result.x = canvasRect.left - node.left - gap;
-    } else if (node.right > canvasRect.right - scrollBarWidth - gap) {
-        result.x = canvasRect.right - scrollBarWidth - gap - node.right - node.width;
-    }
-
-    if (node.top < canvasRect.top + gap) {
-        result.y = canvasRect.top - node.top - gap;
-    } else if (node.bottom > canvasRect.bottom - scrollBarWidth - gap) {
-        result.y = canvasRect.bottom - scrollBarWidth - gap - node.bottom - node.height;
-    }
-    return result;
 }

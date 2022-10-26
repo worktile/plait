@@ -1,13 +1,4 @@
-import {
-    idCreator,
-    isOutExtent,
-    Path,
-    PlaitBoard,
-    PlaitBoardComponent,
-    PlaitElement,
-    PLAIT_BOARD_TO_COMPONENT,
-    Transforms
-} from '@plait/core';
+import { idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH } from '../constants';
@@ -211,22 +202,7 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapElement, 
     addSelectedMindmapElements(board, newElement);
     setTimeout(() => {
         const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
-        const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
         if (nodeComponent) {
-            // todo: 新增节点重置偏移
-            requestAnimationFrame(() => {
-                boardComponent?.calculateViewport();
-                const activeG = nodeComponent.shapeG ?? nodeComponent.activeG[0];
-                if (!activeG) return;
-                const shapeGRect = (activeG as SVGGElement)?.getBoundingClientRect();
-                const autoFitPadding = boardComponent.autoFitPadding;
-                const { x, y } = isOutExtent(board, shapeGRect, autoFitPadding);
-
-                if (x || y) {
-                    boardComponent.setScroll(boardComponent.scrollLeft - x, boardComponent.scrollTop - y);
-                }
-            });
-
             nodeComponent.startEditText(true, false);
         }
     });

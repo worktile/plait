@@ -11,10 +11,9 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
     const board: PlaitBoard = {
         host,
         viewport: {
-            offsetXRatio: 0.5,
-            offsetYRatio: 0.5,
             zoom: 1,
-            viewBackgroundColor: '#000'
+            viewBackgroundColor: '#000',
+            canvasPoint: []
         },
         children,
         operations: [],

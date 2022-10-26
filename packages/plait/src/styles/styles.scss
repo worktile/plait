@@ -7,7 +7,7 @@
     position: relative;
     overflow: hidden;
 
-    .container {
+    .viewport-container {
         width: 100%;
         height: 100%;
         overflow: hidden;
@@ -46,7 +46,7 @@
     }
 
     &.focused {
-        .container {
+        .viewport-container {
             overflow: auto;
         }
     }
