@@ -1,5 +1,6 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { PlaitBoard } from '../interfaces';
+import { PLAIT_BOARD_TO_COMPONENT } from './weak-maps';
 
 export function invert(oldMatrix: number[], newMatrix: number[]) {
     let n = newMatrix[0],
@@ -84,14 +85,12 @@ export function getViewportCanvasBox(board: PlaitBoard, matrix: number[]) {
 }
 
 export function getViewportClientBox(board: PlaitBoard) {
-    const hideScrollbar = board.options.hideScrollbar;
-    const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
     const container = board.host?.parentElement as HTMLElement;
     const containerRect = container?.getBoundingClientRect();
     const x = containerRect.x || containerRect.left;
     const y = containerRect.y || containerRect.top;
-    const width = containerRect.width - scrollBarWidth;
-    const height = containerRect.height - scrollBarWidth;
+    const width = containerRect.width - SCROLL_BAR_WIDTH;
+    const height = containerRect.height - SCROLL_BAR_WIDTH;
 
     return {
         minX: x,
@@ -112,13 +111,14 @@ export function getGraphicsBBox(board: PlaitBoard) {
 }
 
 export function calculateBBox(board: PlaitBoard, zoom: number) {
-    const clientBox = getViewportClientBox(board);
+    const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board);
+    // const clientBox = getViewportClientBox(board);
     const rootGroup = board.host.firstChild;
     const rootGroupBox = (rootGroup as SVGGraphicsElement).getBBox();
 
     let box = {} as any;
-    const containerWidth = clientBox.width / zoom;
-    const containerHeight = clientBox.height / zoom;
+    const containerWidth = boardComponent!.width / zoom;
+    const containerHeight = boardComponent!.height / zoom;
 
     if (rootGroupBox.width < containerWidth) {
         const offsetX = rootGroupBox.x + rootGroupBox.width / 2;

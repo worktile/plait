@@ -15,10 +15,6 @@
 
     svg {
         transform: matrix(1, 0, 0, 1, 0, 0);
-
-        & > g:first-child {
-            transform: matrix(1, 0, 0, 1, 0, 0);
-        }
     }
 
     // https://stackoverflow.com/questions/51313873/svg-foreignobject-not-working-properly-on-safari

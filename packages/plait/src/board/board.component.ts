@@ -90,10 +90,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     private zoom = 1;
 
-    private width = 0;
-
-    private height = 0;
-
     private viewportCanvasBox = {};
 
     private canvasWidth!: number;
@@ -107,6 +103,10 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     private matrix!: number[];
 
     private resizeObserver!: ResizeObserver;
+
+    width = 0;
+
+    height = 0;
 
     scrollLeft!: number;
 
@@ -181,7 +181,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 viewport: this.board.viewport,
                 selection: this.board.selection
             };
-            if (this.board.operations.some(op => ['insert_node', 'remove_node'].includes(op.type))) {
+            if (this.board.operations.length > 0) {
                 this.updateViewport();
             }
             this.plaitChange.emit(changeEvent);
@@ -196,7 +196,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
             if (valueChange) {
                 this.board.children = valueChange.currentValue;
-                this.set(this.board.viewport);
             }
             if (options) this.board.options = options.currentValue;
             this.cdr.markForCheck();
@@ -207,7 +206,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.plaitBoardInitialized.emit(this.board);
         this.initContainerSize();
         this.setViewport(1);
-        this.set(this.plaitViewport);
+        this.plaitViewport ? this.initCanvas(this.plaitViewport) : this.focusGraphicCenter();
     }
 
     private initializePlugins() {
@@ -403,7 +402,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         const clientBox = getViewportClientBox(this.board);
         const matrix = this.matrix;
         const box = calculateBBox(this.board, zoom);
-        const padding = [clientBox.height / 2, clientBox.width / 2];
+        const padding = [this.height / 2, this.width / 2];
         const rootGroupWidth = box.right - box.left;
         const rootGroupHeight = box.bottom - box.top;
         const canvasWidth = rootGroupWidth * zoom + 2 * padding[1];
@@ -470,14 +469,10 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             let left = this.scrollLeft;
             let top = this.scrollTop;
 
-            if (point[0] < 0) {
-                left -= Math.abs(point[0]);
-            } else if (fullPoint[0] > width - SCROLL_BAR_WIDTH) {
+            if (fullPoint[0] > width - SCROLL_BAR_WIDTH) {
                 left += fullPoint[0] - width + SCROLL_BAR_WIDTH;
             }
-            if (point[1] < 0) {
-                top -= Math.abs(point[1]) + SCROLL_BAR_WIDTH;
-            } else if (fullPoint[1] > height - SCROLL_BAR_WIDTH) {
+            if (fullPoint[1] > height - SCROLL_BAR_WIDTH) {
                 top += fullPoint[1] - height + SCROLL_BAR_WIDTH;
             }
             (left === this.scrollLeft && top === this.scrollTop) || this.setScroll(left, top);
@@ -489,8 +484,9 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.renderer2.setStyle(this.host, 'display', 'block');
         this.renderer2.setStyle(this.host, 'width', `${this.canvasWidth}px`);
         this.renderer2.setStyle(this.host, 'height', `${this.canvasHeight}px`);
-
-        this.renderer2.setAttribute(this.host, 'viewBox', this.viewBox.join(','));
+        if (this.viewBox && this.viewBox[2] > 0 && this.viewBox[3] > 0) {
+            this.renderer2.setAttribute(this.host, 'viewBox', this.viewBox.join(','));
+        }
 
         this.contentContainer.nativeElement.scrollLeft = this.scrollLeft;
         this.contentContainer.nativeElement.scrollTop = this.scrollTop;
@@ -506,8 +502,8 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.moveTo(point, zoom);
     }
 
-    set(viewport: Viewport) {
-        const canvasPoint = viewport.canvasPoint;
+    initCanvas(viewport: Viewport) {
+        const canvasPoint = viewport?.canvasPoint;
 
         if (canvasPoint) {
             this.restoreCanvasPoint(canvasPoint, viewport.zoom);
@@ -515,6 +511,31 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             this.setViewport(viewport.zoom);
             this.setScroll(this.scrollLeft, this.scrollTop);
         }
+    }
+
+    focusGraphicCenter() {
+        const rootGroup = this.board.host.firstChild;
+        const rootGroupBox = (rootGroup as SVGGraphicsElement).getBBox();
+        this.focus([rootGroupBox.x + rootGroupBox.width / 2, rootGroupBox.y + rootGroupBox.height / 2]);
+        this.change();
+        this.setViewport(1);
+    }
+
+    focus(point: number[]) {
+        const clientBox = getViewportClientBox(this.board);
+        const matrix = transformMat3([], [point[0], point[1], 1], this.matrix);
+        const newPoint = [clientBox.width / 2, clientBox.height / 2];
+        const scrollLeft = newPoint[0] - matrix[0];
+        const scrollTop = newPoint[1] - matrix[1];
+
+        this.setScrollLeft(this.scrollLeft - scrollLeft);
+        this.setScrollTop(this.scrollTop - scrollTop);
+        this.setMatrix();
+    }
+
+    resetFocusPoint() {
+        const clientBox = getViewportClientBox(this.board);
+        this.focusPoint = [clientBox.x + clientBox.width / 2, clientBox.y + clientBox.height / 2];
     }
 
     setViewportSetting() {
@@ -538,23 +559,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     changeMoveMode(cursorStatus: BaseCursorStatus) {
         updateCursorStatus(this.board, cursorStatus);
         this.cdr.markForCheck();
-    }
-
-    focus(point: number[]) {
-        const clientBox = getViewportClientBox(this.board);
-        const matrix = transformMat3([], [point[0], point[1], 1], this.matrix);
-        const newPoint = [clientBox.width / 2, clientBox.height / 2];
-        const scrollLeft = newPoint[0] - matrix[0];
-        const scrollTop = newPoint[1] - matrix[1];
-
-        this.setScrollLeft(this.scrollLeft - scrollLeft);
-        this.setScrollTop(this.scrollTop - scrollTop);
-        this.setMatrix();
-    }
-
-    resetFocusPoint() {
-        const clientBox = getViewportClientBox(this.board);
-        this.focusPoint = [clientBox.x + clientBox.width / 2, clientBox.y + clientBox.height / 2];
     }
 
     // 适应画布

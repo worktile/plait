@@ -11,7 +11,6 @@ import {
     PlaitElementContext,
     PlaitHistoryBoard,
     PlaitPlugin,
-    PLAIT_BOARD_TO_COMPONENT,
     toPoint,
     transformPoint,
     Transforms
@@ -36,7 +35,7 @@ import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { withNodeDnd } from './with-dnd';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment, onChange } = board;
+    const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
 
     board.drawElement = (context: PlaitElementContext) => {
         const { element, selection, viewContainerRef, host } = context.elementInstance;
@@ -294,24 +293,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             }
         }
         deleteFragment(data);
-    };
-
-    board.onChange = () => {
-        const selectedElements = SELECTED_MINDMAP_ELEMENTS.get(board);
-        if (selectedElements) {
-            const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements[0]);
-            const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board);
-            if (mindmapNodeComponent) {
-                boardComponent!.scrollIntoView({
-                    x: mindmapNodeComponent.node.x,
-                    y: mindmapNodeComponent.node.y,
-                    width: mindmapNodeComponent.node.width,
-                    height: mindmapNodeComponent.node.height
-                });
-            }
-        }
-
-        onChange();
     };
 
     return withNodeDnd(board);

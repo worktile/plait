@@ -1,7 +1,7 @@
-import { PlaitBoard } from '@plait/core';
+import { PlaitBoard, PLAIT_BOARD_TO_COMPONENT } from '@plait/core';
 import { MindmapElement } from '../interfaces';
 import { coerceArray } from './util';
-import { SELECTED_MINDMAP_ELEMENTS } from './weak-maps';
+import { MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from './weak-maps';
 
 export function clearAllSelectedMindmapElements(board: PlaitBoard) {
     let selectedElements = getSelectedMindmapElements(board);
@@ -15,6 +15,9 @@ export function addSelectedMindmapElements(board: PlaitBoard, elementOrElements:
     }
     let selectedElements = getSelectedMindmapElements(board);
     SELECTED_MINDMAP_ELEMENTS.set(board, [...selectedElements, ...coerceArray(elementOrElements)]);
+    setTimeout(() => {
+        scrollIntoNode(board, coerceArray(elementOrElements));
+    });
 }
 
 export function hasSelectedMindmapElement(board: PlaitBoard, elementOrElements: MindmapElement | MindmapElement[]) {
@@ -36,4 +39,19 @@ export function deleteSelectedMindmapElements(board: PlaitBoard, elementOrElemen
 export function getSelectedMindmapElements(board: PlaitBoard) {
     let selectedElements = SELECTED_MINDMAP_ELEMENTS.get(board);
     return selectedElements || [];
+}
+
+export function scrollIntoNode(board: PlaitBoard, elements: MindmapElement[]) {
+    if (elements) {
+        const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(elements[0]);
+        const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board);
+        if (mindmapNodeComponent) {
+            boardComponent!.scrollIntoView({
+                x: mindmapNodeComponent.node.x,
+                y: mindmapNodeComponent.node.y,
+                width: mindmapNodeComponent.node.width,
+                height: mindmapNodeComponent.node.height
+            });
+        }
+    }
 }
