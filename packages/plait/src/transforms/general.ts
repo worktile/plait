@@ -42,6 +42,10 @@ const applyToDraft = (board: PlaitBoard, selection: Selection | null, viewport: 
         case 'move_node': {
             const { path, newPath } = op;
 
+            if (Path.isAncestor(path, newPath)) {
+                throw new Error(`Cannot move a path [${path}] to new path [${newPath}] because the destination is inside itself.`);
+            }
+
             const node = PlaitNode.get(board, path);
             const parent = PlaitNode.parent(board, path);
             const index = path[path.length - 1];
