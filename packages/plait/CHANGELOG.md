@@ -1,5 +1,11 @@
 # plait
 
+## 0.0.56
+
+### Patch Changes
+
+-   [#218](https://github.com/worktile/plait/pull/218) [`e01a9a4`](https://github.com/worktile/plait/commit/e01a9a433316cc811685550ecb938ccbf53220d3) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - correctly move operation and move reverse logic
+
 ## 0.0.55
 
 ### Patch Changes

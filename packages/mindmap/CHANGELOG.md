@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.0.56
+
+### Patch Changes
+
+-   [#220](https://github.com/worktile/plait/pull/220) [`03ba0c2`](https://github.com/worktile/plait/commit/03ba0c293f49f18c6c9f3695ffde2f3fbfffc28a) Thanks [@Maple13](https://github.com/Maple13)! - fix mask display and rendering exception
+
 ## 0.0.55
 
 ### Patch Changes

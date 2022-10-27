@@ -1,5 +1,11 @@
 # richtext
 
+## 0.0.56
+
+### Patch Changes
+
+-   [`d7594a3`](https://github.com/worktile/plait/commit/d7594a3b60e68d56b68183606345d000fd30b205) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - resolve ime issue: plait-node alwaly is deleted when full selection and ime input
+
 ## 0.0.41
 
 ### Patch Changes
