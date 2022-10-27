@@ -75,6 +75,8 @@ export const inverse = (op: PlaitOperation): PlaitOperation => {
                 return op;
             }
 
+            // when operation path is [0,0] -> [0,2], should exec Path.transform to get [0,1] -> [0,0]
+            // shoud not return [0,2] -> [0,0] #WIK-8981
             // if (Path.isSibling(path, newPath)) {
             //     return { ...op, path: newPath, newPath: path };
             // }
