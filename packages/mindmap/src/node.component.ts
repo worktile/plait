@@ -24,9 +24,11 @@ import {
     Transforms
 } from '@plait/core';
 import {
+    isBottomLayout,
     isHorizontalLayout,
     isIndentedLayout,
     isLeftLayout,
+    isRightLayout,
     isStandardLayout,
     isTopLayout,
     MindmapLayoutType,
@@ -216,22 +218,62 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     drawMaskG() {
         this.destroyMaskG();
 
+        const lineWidthOffset = 2;
+        const extendOffset = 15;
         const nodeLayout = MindmapQueries.getLayoutByElement(this.node.origin) as MindmapLayoutType;
-        const isHorizontal = isHorizontalLayout(nodeLayout);
+        const isTop = isTopLayout(nodeLayout);
+        const isRight = isRightLayout(nodeLayout);
+        const isBottom = isBottomLayout(nodeLayout);
+        const isLeft = isLeftLayout(nodeLayout);
         const { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
 
+        let drawX = x;
+        let drawY = y;
+        let drawWidth = x + width;
+        let drawHeight = y + height;
+
+        switch (true) {
+            case isTop:
+                drawX = x - lineWidthOffset;
+                drawY = y - extendOffset;
+                drawWidth = x + width + lineWidthOffset;
+                drawHeight = y + height + lineWidthOffset;
+                break;
+            case isBottom:
+                drawX = x - lineWidthOffset;
+                drawY = y - lineWidthOffset;
+                drawWidth = x + width + lineWidthOffset;
+                drawHeight = y + height + extendOffset;
+                break;
+            case isLeft:
+                drawX = x - extendOffset;
+                drawY = y - lineWidthOffset;
+                drawWidth = x + width + lineWidthOffset;
+                drawHeight = y + height + lineWidthOffset;
+                break;
+            case isRight:
+                drawX = x - lineWidthOffset;
+                drawY = y - lineWidthOffset;
+                drawWidth = x + width + extendOffset;
+                drawHeight = y + height + lineWidthOffset;
+                break;
+        }
         this.maskG = drawRoundRectangle(
             this.roughSVG as RoughSVG,
-            isHorizontal ? x - 10 : x - 2,
-            !isHorizontal ? y - 10 : y - 2,
-            x + width + 20,
-            y + height + 15,
+            drawX,
+            drawY,
+            drawWidth,
+            drawHeight,
             { stroke: 'none', fill: 'rgba(255,255,255,0)', fillStyle: 'solid' },
             true
         );
         this.maskG.classList.add('mask');
         this.maskG.setAttribute('visibility', 'visible');
         this.gGroup.append(this.maskG);
+
+        if (this.isEditable) {
+            this.disabledMaskG();
+        }
 
         fromEvent<MouseEvent>(this.maskG, 'mouseenter')
             .pipe(
