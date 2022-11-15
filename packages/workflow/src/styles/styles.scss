@@ -1,0 +1,16 @@
+g[plait-workflow='true']{
+    .port-group {
+        // display: none;
+        .port {
+            cursor: crosshair;
+        }
+    }
+    .workflow-node {
+        &:hover {
+            .port-group {
+                display: block; 
+            }
+        }
+    }
+   
+}

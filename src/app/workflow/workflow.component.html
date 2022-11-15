@@ -1,2 +1,9 @@
-<plait-workflow>
-</plait-workflow>
+<plait-board
+    [plaitPlugins]="plugins"
+    [plaitValue]="value"
+    [plaitViewport]="viewport"
+    (plaitBoardInitialized)="plaitBoardInitialized($event)"
+    (plaitChange)="change($event)"
+>
+    
+</plait-board>

@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { PlaitModule } from '@plait/core';
-import { PlaitWorkflowComponent } from './workflow.component';
+import { WorkflowNodeComponent } from './node.component';
+import { WorkflowTransitionComponent } from './transition.component';
 
 @NgModule({
-    declarations: [PlaitWorkflowComponent],
+    declarations: [WorkflowNodeComponent, WorkflowTransitionComponent],
     imports: [BrowserModule, PlaitModule],
-    exports: [PlaitWorkflowComponent]
+    exports: [WorkflowNodeComponent, WorkflowTransitionComponent]
 })
 export class WorkflowModule {}
