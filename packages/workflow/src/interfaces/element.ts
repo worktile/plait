@@ -17,8 +17,6 @@ export interface WorkflowElement extends PlaitElement {
     id: string;
     type: WorkflowCategoryType | WorkflowTransitionType | WorkflowOriginType;
     value: Element;
-    x?: number;
-    y?: number;
     width?: number;
     height?: number;
     from?: WorkflowTransitionLinkType[];

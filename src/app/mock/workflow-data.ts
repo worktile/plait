@@ -10,31 +10,25 @@ export const mockWorkflowData: WorkflowElement[] = [
         id: '1001',
         value: { children: [{ text: '要做' }] },
         type: 'todo',
-        points: [],
+        points: [[400, 268.5]],
         width: 120,
-        height: 38,
-        x: 400,
-        y: 268.5
+        height: 38
     },
     {
         id: '1002',
         value: { children: [{ text: '进行中' }] },
         type: 'in_progess',
-        points: [],
+        points: [[600, 268.5]],
         width: 120,
-        height: 38,
-        x: 600,
-        y: 268.5
+        height: 38
     },
     {
         id: '1003',
         value: { children: [{ text: '已完成' }] },
         type: 'done',
-        points: [],
+        points: [[800, 268.5]],
         width: 120,
-        height: 38,
-        x: 800,
-        y: 268.5
+        height: 38
     },
     {
         id: '002',
@@ -51,12 +45,12 @@ export const mockWorkflowData: WorkflowElement[] = [
         from: [
             {
                 id: '1001',
-                port: 0
+                port: 3
             }
         ],
         to: {
             id: '1002',
-            port: 7
+            port: 0
         },
         points: []
     },
