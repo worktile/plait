@@ -37,6 +37,7 @@ import {
     calculateBBox,
     calculateZoom,
     convertViewport,
+    createG,
     getViewportCanvasBox,
     getViewportClientBox,
     invert,
@@ -59,6 +60,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO
                 [viewport]="board.viewport"
                 [selection]="board.selection"
                 [host]="host"
+                [rootG]="rootG"
             ></plait-element>
         </div>
         <plait-toolbar
@@ -83,6 +85,8 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     roughSVG!: RoughSVG;
 
     destroy$: Subject<any> = new Subject();
+
+    rootG: SVGElement;
 
     public autoFitPadding = 8;
 
@@ -165,11 +169,15 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     @ViewChild('container', { read: ElementRef, static: true })
     contentContainer!: ElementRef;
 
-    constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2, private elementRef: ElementRef) {}
+    constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2, private elementRef: ElementRef) {
+        this.rootG = createG();
+        this.renderer2.addClass(this.rootG, 'root-group');
+    }
 
     ngOnInit(): void {
         const roughSVG = rough.svg(this.host as SVGSVGElement, { options: { roughness: 0, strokeWidth: 1 } });
         HOST_TO_ROUGH_SVG.set(this.host, roughSVG);
+        this.svg.nativeElement.prepend(this.rootG);
         this.initializePlugins();
         this.initializeEvents();
         PLAIT_BOARD_TO_COMPONENT.set(this.board, this);

@@ -1,7 +1,9 @@
-import { getNodePorts } from './get-node-ports';
-import { getPortsNodeByTransition } from './get-ports-node-by-transition';
+import { getPointByTransition } from './get-point-by-transition';
+import { getRichtextRectByTranstion } from './get-richtext-rect-by-transition';
+import { getTranstionsByNode } from './get-transtions-by-node';
 
 export const WorkflowQueries = {
-    getNodePorts,
-    getPortsNodeByTransition
+    getPointByTransition,
+    getTranstionsByNode,
+    getRichtextRectByTranstion
 };

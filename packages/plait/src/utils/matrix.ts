@@ -105,7 +105,7 @@ export function getViewportClientBox(board: PlaitBoard) {
 }
 
 export function getGraphicsBBox(board: PlaitBoard) {
-    const rootGroup = board.host.firstChild;
+    const rootGroup = board.host;
     const rootGroupBox = (rootGroup as SVGGraphicsElement).getBBox();
     return rootGroupBox;
 }
@@ -113,7 +113,7 @@ export function getGraphicsBBox(board: PlaitBoard) {
 export function calculateBBox(board: PlaitBoard, zoom: number) {
     const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board);
     // const clientBox = getViewportClientBox(board);
-    const rootGroup = board.host.firstChild;
+    const rootGroup = board.host;
     const rootGroupBox = (rootGroup as SVGGraphicsElement).getBBox();
 
     let box = {} as any;

@@ -1,16 +1,25 @@
-g[plait-workflow='true']{
-    .port-group {
-        // display: none;
-        .port {
-            cursor: crosshair;
-        }
+.workflow-element {
+    &-port-group {
+        display: none;
+        cursor: crosshair;
     }
-    .workflow-node {
-        &:hover {
-            .port-group {
-                display: block; 
-            }
-        }
+    &-richtext {
+        text-align: center;
     }
-   
+    &-text {
+        height: 100%;
+        display: inline-flex;
+        align-items: center;
+    }
+    cursor: auto;
+    &.active {
+        // border: 2px solid red;
+        cursor: all-scroll;
+    }
 }
+.workflow-transition-text {
+    text-align: center;
+    background: pink;
+}
+
+

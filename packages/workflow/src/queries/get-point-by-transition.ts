@@ -1,9 +1,9 @@
-import { getNodePorts } from './get-node-ports';
 import { WORKFLOW_START_RADIOUS } from '../constants';
 import { Point, PlaitBoard } from '@plait/core';
 import { isWorkflowOrigin, WorkflowElement, WorkflowPortsNode, WorkflowTransitionLinkType } from '../interfaces';
+import { getNodePorts } from '../utils/graph';
 
-export const getPortsNodeByTransition: (board: PlaitBoard, transition: WorkflowElement) => WorkflowPortsNode = (
+export const getPointByTransition: (board: PlaitBoard, transition: WorkflowElement) => WorkflowPortsNode = (
     board: PlaitBoard,
     transition: WorkflowElement
 ) => {

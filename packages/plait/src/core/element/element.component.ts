@@ -37,6 +37,8 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
 
     @Input() host!: SVGElement;
 
+    @Input() rootG!: SVGElement;
+
     constructor(public renderer2: Renderer2, public viewContainerRef: ViewContainerRef) {}
 
     ngOnInit(): void {
@@ -48,7 +50,7 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         this.initialized = true;
         this.groupG = createG();
         this.renderer2.setAttribute(this.groupG, 'plait-element-group', this.index.toString());
-        this.host.append(this.groupG);
+        this.rootG.append(this.groupG);
     }
 
     drawElement() {

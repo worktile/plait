@@ -1,18 +1,18 @@
 import { WORKFLOW_START_RADIOUS } from '../constants';
 import { WorkflowElement } from '../interfaces';
-import { getRectangleByNode } from '../utils/graph';
+import { getRectangleByNode } from './graph';
 
-export function getRichtextRectangleByNode(node: WorkflowElement) {
+export function getRectangleRichtext(node: WorkflowElement) {
     let { x, y, width, height } = getRectangleByNode(node);
-    const textX = x + 40;
-    const textY = y + 10;
+    const textX = x;
+    const textY = y;
     return { width, height, textX, textY };
 }
 
-export function getRichtextCircleByNode(node: WorkflowElement) {
+export function getCircleRichtext(node: WorkflowElement) {
     let [centerPoint] = node.points;
-    const textX = centerPoint[0] - 14;
-    const textY = centerPoint[1] - 10;
+    const textX = centerPoint[0] - WORKFLOW_START_RADIOUS / 2;
+    const textY = centerPoint[1] - WORKFLOW_START_RADIOUS / 2;
     const width = WORKFLOW_START_RADIOUS;
     const height = WORKFLOW_START_RADIOUS;
     return { textX, textY, width, height };

@@ -32,7 +32,7 @@ export const mockWorkflowData: WorkflowElement[] = [
     },
     {
         id: '002',
-        value: { children: [{ text: '连线2' }] },
+        value: { children: [{ text: '任何状态' }] },
         type: 'global',
         from: [],
         to: { id: '1002', port: 5 },

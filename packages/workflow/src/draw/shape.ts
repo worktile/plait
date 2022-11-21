@@ -1,9 +1,8 @@
 import { Options } from 'roughjs/bin/core';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { WORKFLOW_NODE_PORT_RADIOUS, WORKFLOW_START_RADIOUS } from '../constants';
+import { WORKFLOW_NODE_PORT_RADIOUS } from '../constants';
 import { WorkflowCategoryType, WorkflowElement } from '../interfaces';
-import { WorkflowQueries } from '../queries';
-import { drawRoundRectangle, getRectangleByNode } from '../utils/graph';
+import { drawRoundRectangle, getNodePorts, getRectangleByNode } from '../utils/graph';
 
 export function drawCircleNode(roughSVG: RoughSVG, node: WorkflowElement, radious: number, options?: Options | undefined) {
     const [centerPoint] = node.points;
@@ -12,7 +11,6 @@ export function drawCircleNode(roughSVG: RoughSVG, node: WorkflowElement, radiou
 
 export function drawRectangleNode(roughSVG: RoughSVG, node: WorkflowElement) {
     const { x, y, width, height } = getRectangleByNode(node);
-
     const nodeG = drawRoundRectangle(roughSVG, x, y, x + width, y + height, {
         stroke: '#F5F5F5',
         strokeWidth: 2,
@@ -24,9 +22,14 @@ export function drawRectangleNode(roughSVG: RoughSVG, node: WorkflowElement) {
 }
 
 export function drawLinkPorts(roughSVG: RoughSVG, node: WorkflowElement) {
-    const linkPorts = WorkflowQueries.getNodePorts(node);
+    const linkPorts = getNodePorts(node);
     return linkPorts.map(port => {
-        return roughSVG.circle(port[0], port[1], WORKFLOW_NODE_PORT_RADIOUS, { stroke: '#6698FF', strokeWidth: 2 });
+        return roughSVG.circle(port[0], port[1], WORKFLOW_NODE_PORT_RADIOUS, {
+            stroke: '#6698FF',
+            strokeWidth: 2,
+            fill: 'transparent',
+            fillStyle: 'solid'
+        });
     });
 }
 

@@ -1,97 +1,81 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
-import { createG, HOST_TO_ROUGH_SVG, PlaitBoard, Selection } from '@plait/core';
-import { RoughSVG } from 'roughjs/bin/svg';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    NgZone,
+    OnDestroy,
+    OnInit,
+    Renderer2,
+    ViewContainerRef
+} from '@angular/core';
 import { WorkflowQueries } from './queries';
-import { drawLinkByTransitionType } from './draw/link';
-// import AStar from './utils/AStar';
-import { WorkflowElement, WorkflowTransitionType } from './interfaces';
-import { WORKFLOW_KEY } from './constants';
+import { drawLineByTransitionType } from './draw/line';
+import { WorkflowTransitionType } from './interfaces';
+import { WorkflowBaseComponent } from './workflow-base.component';
+import { WORKFLOW_TRANSTION_KEY } from './constants';
+import { drawRichtext } from '@plait/richtext';
 
 @Component({
     selector: 'plait-workflow-transition',
     template: '',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkflowTransitionComponent implements OnInit {
-    @Input() node!: WorkflowElement;
-
-    @Input() selection: Selection | null = null;
-
-    @Input() host!: SVGElement;
-
-    @Input() board!: PlaitBoard;
-
-    gGroup!: SVGGElement;
-
-    roughSVG!: RoughSVG;
-
-    shapeG: SVGGElement | null = null;
-
-    workflowGGroup!: SVGGElement;
-
-    // aStar: AStar;
-
-    constructor(private viewContainerRef: ViewContainerRef, private render2: Renderer2) {
-        // this.aStar = new AStar();
-        this.workflowGGroup = createG();
-        this.workflowGGroup.setAttribute(WORKFLOW_KEY, 'true');
+export class WorkflowTransitionComponent extends WorkflowBaseComponent implements OnInit, OnDestroy {
+    constructor(
+        public viewContainerRef: ViewContainerRef,
+        public render2: Renderer2,
+        public cdr: ChangeDetectorRef,
+        public elementRef: ElementRef,
+        public zone: NgZone
+    ) {
+        super(viewContainerRef, render2, cdr, elementRef, zone);
     }
 
     ngOnInit(): void {
-        this.gGroup = createG();
-        this.roughSVG = HOST_TO_ROUGH_SVG.get(this.host) as RoughSVG;
-        this.workflowGGroup.prepend(this.gGroup);
-        this.render2.addClass(this.gGroup, 'workflow-transition');
-        this.drawShape();
+        super.ngOnInit();
+        this.render2.addClass(this.workflowGGroup, WORKFLOW_TRANSTION_KEY);
+        this.drawLine();
+        this.drawRichtext();
     }
 
-    drawShape() {
-        this.destroyShape();
-        const portsNode = WorkflowQueries.getPortsNodeByTransition(this.board, this.node);
-        // to do: 根据开始和结束点画线
-        // // const endPort = this.transition.to.port;
-        // // console.log(this.transition, endNode.endPoint);
-        // if (node.startPoint && this.transition.from.length) {
-        //     // 开始节点
-        //     // 结束节点
-        //     const startNode = this.value.children.find(item => item.id === this.transition.from[0]?.id);
-        //     const endNode = this.value.children.find(item => item.id === this.transition.to?.id);
-        //     let { startPoint, endPoint, fakeStartPoint, fakeEndPoint, points } = computedProbablyPoints(
-        //         node.startPoint,
-        //         node.endPoint,
-        //         startNode,
-        //         endNode
-        //     );
-        //     // 画点
-        //     points.forEach(item => {
-        //         const point = this.roughSVG.circle(item[0], item[1], 5, { stroke: '#8069BF', strokeWidth: 2 });
-        //         this.gGroup.prepend(point);
-        //     });
-        //     const routes = this.aStar.start(fakeStartPoint, fakeEndPoint, points);
-        //     console.log(routes, 'routes');
-        //     const linkG = this.roughSVG.linearPath(routes, {
-        //         fillStyle: 'solid',
-        //         stroke: '#999',
-        //         strokeWidth: 2
-        //     });
-        //     this.gGroup.prepend(linkG);
-        // } else {
-        const linkG = drawLinkByTransitionType(this.roughSVG, portsNode, this.node.type as WorkflowTransitionType);
-        if (linkG) {
-            this.gGroup.prepend(linkG);
-        }
-        // }
-        // if (node) {
-        // this.shapeG = this.roughSVG.line(endNode.portPoints[0], endNode.portPoints[1], endNode.portPoints[0], endNode.portPoints[1] + 100);
-        // this.workflowGGroup.prepend(this.gGroup);
-        // this.shapeG = drawRectangleNode(this.roughSVG, this.node);
-        // this.render2.addClass(this.shapeG, 'workflow-' + this.node.statusCategory);
+    redrawElement() {
+        this.drawLine();
+        this.drawRichtext();
     }
 
-    destroyShape() {
-        if (this.shapeG) {
-            this.shapeG.remove();
-            this.shapeG = null;
+    drawLine() {
+        const transitionLine = this.workflowGGroup.querySelector(`.${WORKFLOW_TRANSTION_KEY}-line`);
+        if (transitionLine) {
+            transitionLine.remove();
         }
+        const point = WorkflowQueries.getPointByTransition(this.board, this.node);
+        const linkG = drawLineByTransitionType(this.board, this.roughSVG, point, this.node.type as WorkflowTransitionType);
+        this.render2.addClass(linkG, WORKFLOW_TRANSTION_KEY + '-line');
+        this.workflowGGroup.prepend(linkG!);
+    }
+
+    drawRichtext() {
+        super.destroyRichtext();
+        const textClient = WorkflowQueries.getRichtextRectByTranstion(this.board, this.node);
+        if (textClient) {
+            const { textX, textY, width, height } = textClient;
+            const richtext = drawRichtext(textX, textY, width, height, this.node.value, this.viewContainerRef, [
+                WORKFLOW_TRANSTION_KEY + '-' + this.node.type + '-text',
+                WORKFLOW_TRANSTION_KEY + '-text'
+            ]);
+            if (richtext) {
+                const { richtextG, richtextComponentRef, foreignObject } = richtext;
+                this.richtextComponentRef = richtextComponentRef;
+                this.richtextG = richtextG;
+                this.foreignObject = foreignObject;
+                this.render2.addClass(richtextG, 'richtext');
+                this.workflowGGroup.append(richtextG);
+            }
+        }
+    }
+
+    ngOnDestroy(): void {
+        super.ngOnDestroy();
     }
 }
