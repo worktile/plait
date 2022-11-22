@@ -90,6 +90,7 @@ export class WorkflowBaseComponent implements OnInit, OnDestroy {
 
     updateWorkflow(doCheck = true) {
         WORKFLOW_ELEMENT_TO_COMPONENT.set(this.node, this);
+        this.destroyActiveG();
         if (doCheck) {
             this.cdr.detectChanges();
         }
@@ -105,10 +106,18 @@ export class WorkflowBaseComponent implements OnInit, OnDestroy {
             this.drawActiveG();
         } else {
             this.render2.removeClass(this.workflowGGroup, 'active');
+            this.destroyActiveG();
         }
     }
 
-    drawActiveG() {}
+    drawActiveG() {
+        this.destroyActiveG();
+    }
+
+    destroyActiveG() {
+        this.activeG.forEach(g => g.remove());
+        this.activeG = [];
+    }
 
     doCheck() {
         this.cdr.markForCheck();

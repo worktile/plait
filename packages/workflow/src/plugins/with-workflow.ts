@@ -3,9 +3,13 @@ import { isNoSelectionElement, PlaitBoard, PlaitElementContext, PlaitPlugin, toP
 import { isWorkflowNode, isWorkflowOrigin, isWorkflowTransition, WorkflowElement } from '../interfaces';
 import { WorkflowNodeComponent } from '../node.component';
 import { WorkflowTransitionComponent } from '../transition.component';
-import { hitWorkflowNode, hitWorkflowPortNode, hitWorkflowTranstion } from '../utils';
-import { deleteSelectedWorkflowElement, hasSelectedWorkflowElement, setSelectedWorkflowElement } from '../utils/selected-elements';
-import { WorkflowBaseComponent } from '../workflow-base.component';
+import {
+    deleteSelectedWorkflowElement,
+    hasSelectedWorkflowElement,
+    hitWorkflowNode,
+    hitWorkflowTranstion,
+    setSelectedWorkflowElement
+} from '../utils';
 import { WORKFLOW_ACTIVE_ELEMENT, WORKFLOW_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { withNodeDnd } from './with-dnd';
 
@@ -68,7 +72,6 @@ export const withWorkflow: PlaitPlugin = (board: PlaitBoard) => {
 
     board.globalMouseup = (event: MouseEvent) => {
         const isBoardInside = event.target instanceof Node && board.host.contains(event.target);
-        // const isFakeNode = event.target instanceof HTMLElement && event.target.closest('.fake-node');
         const noSelectionElement = isNoSelectionElement(event);
         if (!isBoardInside && !noSelectionElement) {
             const hasSelectedElement = WORKFLOW_ACTIVE_ELEMENT.has(board);

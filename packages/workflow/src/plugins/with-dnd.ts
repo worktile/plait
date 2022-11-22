@@ -15,11 +15,12 @@ import {
     updateCursorStatus
 } from '@plait/core';
 import { isWorkflowNode, isWorkflowTransition, WorkflowElement } from '../interfaces';
-import { hitWorkflowNode, hitWorkflowTranstion } from '../utils/graph';
+import { getNodePorts, hitWorkflowNode, hitWorkflowPortNode, hitWorkflowTranstion, isInCircle } from '../utils/graph';
 import { WorkflowBaseComponent } from '../workflow-base.component';
 import { WORKFLOW_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { WorkflowQueries } from '../queries/index';
 import { WorkflowTransitionComponent } from '../transition.component';
+import { WorkflowNodeComponent } from '../node.component';
 
 export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup, keydown } = board;
@@ -27,6 +28,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     let activeComponent: WorkflowBaseComponent | undefined;
     let activeElement: WorkflowElement | null;
     let startPoint: Point | null;
+    let changePort: 'start' | 'end' | null;
     let isDragging = false;
     let offsetX: number = 0;
     let offsetY: number = 0;
@@ -38,18 +40,15 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
         }
         const point = transformPoint(board, toPoint(event.x, event.y, board.host));
         (board.children as WorkflowElement[]).forEach(value => {
-            if (activeComponent) {
-                return;
-            }
             if (isWorkflowNode(value) && hitWorkflowNode(point, value)) {
                 activeComponent = WORKFLOW_ELEMENT_TO_COMPONENT.get(value);
                 startPoint = point;
                 activeElement = value;
-            }
-
-            if (isWorkflowTransition(value) && hitWorkflowTranstion(event, value)) {
+            } else if (isWorkflowTransition(value) && hitWorkflowTranstion(event, value)) {
                 activeComponent = WORKFLOW_ELEMENT_TO_COMPONENT.get(value);
                 activeElement = value;
+                changePort = hitWorkflowPortNode(board, point, value);
+                startPoint = changePort ? point : null;
             }
         });
         mousedown(event);
@@ -61,10 +60,10 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             if (!isDragging) {
                 isDragging = true;
             } else {
+                offsetX = endPoint[0] - startPoint[0];
+                offsetY = endPoint[1] - startPoint[1];
                 // 拖拽节点
-                if (activeElement) {
-                    offsetX = endPoint[0] - startPoint[0];
-                    offsetY = endPoint[1] - startPoint[1];
+                if (activeElement && isWorkflowNode(activeElement)) {
                     activeComponent?.render2.setStyle(activeComponent.workflowGGroup, 'transform', `translate(${offsetX}px, ${offsetY}px)`);
                     const transtions = WorkflowQueries.getTranstionsByNode(board, activeElement!);
                     if (!transtions.length) {
@@ -72,7 +71,21 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     }
                     transtions.map(item => {
                         const transtionComponent = WORKFLOW_ELEMENT_TO_COMPONENT.get(item) as WorkflowTransitionComponent;
-                        transtionComponent.redrawElement();
+                        transtionComponent.updateWorkflow();
+                        if (item.type !== 'global') {
+                            transtionComponent.drawActiveG(0, 0, null, { stroke: '#333' });
+                        }
+                    });
+                }
+                // 拖拽连线
+                if (activeElement && isWorkflowTransition(activeElement)) {
+                    (activeComponent as WorkflowTransitionComponent).drawActiveG(offsetX, offsetY, changePort);
+                    (board.children as WorkflowElement[]).forEach(value => {
+                        if (isWorkflowNode(value)) {
+                            const componet = WORKFLOW_ELEMENT_TO_COMPONENT.get(value) as WorkflowNodeComponent;
+                            componet.drawLinkPorts();
+                            componet.setPortDisplay(true);
+                        }
                     });
                 }
             }
@@ -81,15 +94,49 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.globalMouseup = (event: MouseEvent) => {
-        if (!board.options.readonly && activeElement && activeElement?.points.length) {
-            const [x, y] = activeElement?.points[0] as Path;
+        if (!board.options.readonly && activeElement) {
             const path = board.children.findIndex(item => item.id === activeElement?.id);
-            Transforms.setNode(board, { ...activeElement, points: [[x + offsetX, y + offsetY]] }, [path]);
+            if (isWorkflowNode(activeElement) && activeElement?.points.length) {
+                const [x, y] = activeElement?.points[0] as Path;
+                Transforms.setNode(board, { ...activeElement, points: [[x + offsetX, y + offsetY]] }, [path]);
+            }
+            if (isWorkflowTransition(activeElement) && changePort) {
+                const point = WorkflowQueries.getPointByTransition(board, activeElement);
+                let currentPoint: Point;
+                if (changePort === 'start') {
+                    // 判断当前点位是否是接口的点位
+                    currentPoint = [point.startPoint![0] + offsetX, point.startPoint![1] + offsetY] as Point;
+                }
+                if (changePort === 'end') {
+                    // 判断当前点位是否是接口的点位
+                    currentPoint = [point.endPoint![0] + offsetX, point.endPoint![1] + offsetY] as Point;
+                }
+                if (currentPoint!) {
+                    (board.children as WorkflowElement[]).forEach(value => {
+                        if (isWorkflowNode(value)) {
+                            const componet = WORKFLOW_ELEMENT_TO_COMPONENT.get(value) as WorkflowNodeComponent;
+                            componet.setPortDisplay(false);
+
+                            const ports = getNodePorts(value);
+                            const index = ports.findIndex(item => isInCircle(item, currentPoint));
+                            if (index > -1) {
+                                if (changePort === 'start') {
+                                    Transforms.setNode(board, { ...activeElement, from: { id: value.id, port: index } }, [path]);
+                                } else {
+                                    Transforms.setNode(board, { ...activeElement, to: { id: value.id, port: index } }, [path]);
+                                }
+                            }
+                        }
+                    });
+                }
+            }
             activeComponent?.render2.setStyle(activeComponent.workflowGGroup, 'transform', null);
             isDragging = false;
             activeComponent = undefined;
             activeElement = null;
             startPoint = null;
+            offsetX = 0;
+            offsetY = 0;
         }
         globalMouseup(event);
     };

@@ -1,6 +1,6 @@
 .workflow-element {
-    &-port-group {
-        display: none;
+    &-port {
+        opacity: 0;
         cursor: crosshair;
     }
     &-richtext {
@@ -13,8 +13,10 @@
     }
     cursor: auto;
     &.active {
-        // border: 2px solid red;
-        cursor: all-scroll;
+        // cursor: all-scroll;
+    }
+    .active-port {
+        cursor: crosshair;
     }
 }
 .workflow-transition-text {

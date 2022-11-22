@@ -1,28 +1,23 @@
 import {
-    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    ComponentRef,
     ElementRef,
-    Input,
     NgZone,
-    OnChanges,
     OnDestroy,
     OnInit,
     Renderer2,
-    SimpleChanges,
     ViewContainerRef
 } from '@angular/core';
-import { BaseCursorStatus, createG, HOST_TO_ROUGH_SVG, PlaitBoard, Selection } from '@plait/core';
-import { drawRichtext, PlaitRichtextComponent } from '@plait/richtext';
+import { BaseCursorStatus, createG } from '@plait/core';
+import { drawRichtext } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { fromEvent, Subject } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { WORKFLOW_KEY, WORKFLOW_PORT_KEY, WORKFLOW_START_RADIOUS } from './constants';
 import { drawCircleNode, drawLinkPorts, drawRectangleNode } from './draw/shape';
-import { isWorkflowNode, WorkflowElement } from './interfaces';
-import { getCircleRichtext, getRectangleRichtext } from './utils';
+import { isWorkflowNode } from './interfaces';
+import { drawRoundRectangle, getCircleRichtext, getRectangleByNode, getRectangleRichtext } from './utils';
 import { WorkflowBaseComponent } from './workflow-base.component';
 
 @Component({
@@ -31,7 +26,7 @@ import { WorkflowBaseComponent } from './workflow-base.component';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkflowNodeComponent extends WorkflowBaseComponent implements OnInit, OnDestroy {
-    portGGroup!: SVGGElement;
+    portGGroup!: SVGGElement | null;
 
     public get cursorMove(): boolean {
         return this.board.cursor === BaseCursorStatus.move;
@@ -58,14 +53,14 @@ export class WorkflowNodeComponent extends WorkflowBaseComponent implements OnIn
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(event => {
                     if (this.workflowGGroup.contains(event.target as HTMLElement)) {
-                        this.setportGroupDisplay('block');
+                        this.setPortDisplay(true);
                     }
                 });
             fromEvent(this.workflowGGroup, 'mouseout')
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(event => {
                     if (!(event.target as HTMLElement).closest('.' + WORKFLOW_PORT_KEY)) {
-                        this.setportGroupDisplay('none');
+                        this.setPortDisplay(false);
                     }
                 });
         });
@@ -86,6 +81,28 @@ export class WorkflowNodeComponent extends WorkflowBaseComponent implements OnIn
         this.workflowGGroup.append(this.nodeG);
     }
 
+    drawActiveG() {
+        super.drawActiveG();
+        let { x, y, width, height } = getRectangleByNode(this.node);
+        const selectedStrokeG = drawRoundRectangle(
+            this.roughSVG as RoughSVG,
+            x,
+            y,
+            x + width,
+            y + height,
+            { stroke: '#4e8afa', strokeWidth: 2, fill: '' },
+            true
+        );
+        selectedStrokeG.style.pointerEvents = 'none';
+        this.workflowGGroup.appendChild(selectedStrokeG);
+        this.activeG.push(selectedStrokeG);
+        const linkPorts = drawLinkPorts(this.roughSVG, this.node);
+        linkPorts.map(linkPort => {
+            this.workflowGGroup.appendChild(linkPort);
+            this.activeG.push(linkPort);
+        });
+    }
+
     updateWorkflow() {
         super.updateWorkflow();
         if (this.portGGroup) {
@@ -97,19 +114,28 @@ export class WorkflowNodeComponent extends WorkflowBaseComponent implements OnIn
     }
 
     drawLinkPorts() {
+        this.destroyLinkPorts();
         this.portGGroup = createG();
         this.portGGroup.classList.add(WORKFLOW_PORT_KEY + '-group');
         this.workflowGGroup.append(this.portGGroup);
         const linkPorts = drawLinkPorts(this.roughSVG, this.node);
         linkPorts.map(linkPort => {
+            linkPort.classList.add(WORKFLOW_PORT_KEY);
             fromEvent(linkPort, 'mouseout')
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(event => {
-                    this.setportGroupDisplay('none');
+                    this.setPortDisplay(false);
                 });
-            this.portGGroup.append(linkPort);
+            this.portGGroup!.append(linkPort);
             this.render2.addClass(linkPort, WORKFLOW_PORT_KEY);
         });
+    }
+
+    destroyLinkPorts() {
+        if (this.portGGroup) {
+            this.portGGroup.remove();
+            this.portGGroup = null;
+        }
     }
 
     drawRichtext() {
@@ -135,8 +161,11 @@ export class WorkflowNodeComponent extends WorkflowBaseComponent implements OnIn
         }
     }
 
-    setportGroupDisplay(value: 'none' | 'block') {
-        this.render2.setStyle(this.portGGroup, 'display', value);
+    setPortDisplay(display: boolean) {
+        let portsElement = this.portGGroup?.querySelectorAll('.' + WORKFLOW_PORT_KEY);
+        portsElement!.forEach(element => {
+            this.render2.setStyle(element, 'opacity', display ? 1 : 0);
+        });
     }
 
     ngOnDestroy(): void {

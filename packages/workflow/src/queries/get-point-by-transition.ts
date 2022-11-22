@@ -20,7 +20,7 @@ export const getPointByTransition: (board: PlaitBoard, transition: WorkflowEleme
     }
 
     if (transition.type === 'directed') {
-        const { id: startId, port: startPort } = transition.from![0];
+        const { id: startId, port: startPort } = transition.from!;
         const node = board.children.find(item => item.id === startId) as WorkflowElement;
         ports = getNodePorts(node);
         startPoint = ports[startPort] as Point;

@@ -34,7 +34,6 @@ export const mockWorkflowData: WorkflowElement[] = [
         id: '002',
         value: { children: [{ text: '任何状态' }] },
         type: 'global',
-        from: [],
         to: { id: '1002', port: 5 },
         points: []
     },
@@ -42,12 +41,10 @@ export const mockWorkflowData: WorkflowElement[] = [
         id: '003',
         value: { children: [{ text: '连线3' }] },
         type: 'directed',
-        from: [
-            {
-                id: '1001',
-                port: 3
-            }
-        ],
+        from: {
+            id: '1001',
+            port: 3
+        },
         to: {
             id: '1002',
             port: 0
@@ -55,15 +52,13 @@ export const mockWorkflowData: WorkflowElement[] = [
         points: []
     },
     {
-        id: '003',
+        id: '004',
         value: { children: [{ text: '连线3' }] },
         type: 'directed',
-        from: [
-            {
-                id: '1002',
-                port: 1
-            }
-        ],
+        from: {
+            id: '1002',
+            port: 1
+        },
         to: {
             id: '1003',
             port: 3

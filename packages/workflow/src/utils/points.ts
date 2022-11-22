@@ -154,7 +154,7 @@ export const findStartNextOrEndPrePoint = (rect: RectangleClient, point: Point) 
         // 起点或终点在下边
         return [point[0], rect.y + rect.height + MIN_DISTANCE] as Point;
     }
-    return null;
+    return point;
 };
 
 // 计算出给定点可以形成的最大的矩形的四个顶点

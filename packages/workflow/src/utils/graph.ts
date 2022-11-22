@@ -1,9 +1,11 @@
-import { RectangleClient, Point, transformPoint, toPoint } from '@plait/core';
+import { RectangleClient, Point, transformPoint, toPoint, PlaitBoard } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { Options } from 'roughjs/bin/core';
 import { WorkflowElement } from '../interfaces';
 import { WORKFLOW_ELEMENT_TO_COMPONENT } from '../plugins/weak-maps';
 import { WorkflowBaseComponent } from '../workflow-base.component';
+import { WorkflowQueries } from '../queries';
+import { WORKFLOW_NODE_PORT_RADIOUS } from '../constants';
 
 export function getRectangleByNode(node: WorkflowElement): RectangleClient {
     const [x, y] = node.points[0];
@@ -81,9 +83,30 @@ export function hitWorkflowNode(point: Point, node: WorkflowElement) {
     return point[0] >= x && point[0] <= x + width && point[1] >= y && point[1] <= y + height;
 }
 
-export function hitWorkflowPortNode(point: Point, node: WorkflowElement) {
-    const ports = getNodePorts(node);
-    // return point[0] >= x && point[0] <= x + width && point[1] >= y && point[1] <= y + height;
+export function hitWorkflowPortNode(board: PlaitBoard, point: Point, node: WorkflowElement) {
+    const pointWithStartAndEnd = WorkflowQueries.getPointByTransition(board, node);
+
+    const { startPoint, endPoint } = pointWithStartAndEnd;
+    let startDistance;
+    if (pointWithStartAndEnd.type === 'directed') {
+        startDistance = Math.pow(startPoint![0] - point[0], 2) + Math.pow(startPoint![1] - point[1], 2);
+        if (startDistance < Math.pow(WORKFLOW_NODE_PORT_RADIOUS, 2)) {
+            pointWithStartAndEnd.startPoint = point;
+            return 'start';
+        }
+    }
+
+    const endDistance = Math.pow(endPoint![0] - point[0], 2) + Math.pow(endPoint![1] - point[1], 2);
+    if (endDistance < Math.pow(WORKFLOW_NODE_PORT_RADIOUS, 2)) {
+        pointWithStartAndEnd.endPoint = point;
+        return 'end';
+    }
+    return null;
+}
+
+export function isInCircle(circleCentre: Point, point: Point) {
+    const distance = Math.pow(circleCentre![0] - point[0], 2) + Math.pow(circleCentre![1] - point[1], 2);
+    return distance < Math.pow(WORKFLOW_NODE_PORT_RADIOUS, 2);
 }
 
 export function hitWorkflowTranstion(event: MouseEvent, node: WorkflowElement) {

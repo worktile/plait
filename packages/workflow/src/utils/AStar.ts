@@ -1,4 +1,4 @@
-import { checkIsSamePoint, getNextPoints } from './utils';
+import { checkIsSamePoint, getNextPoints } from './points';
 import { Point } from '@plait/core';
 
 export interface PointInfo {

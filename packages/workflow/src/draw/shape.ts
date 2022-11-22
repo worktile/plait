@@ -9,13 +9,14 @@ export function drawCircleNode(roughSVG: RoughSVG, node: WorkflowElement, radiou
     return roughSVG.circle(centerPoint[0], centerPoint[1], radious, options);
 }
 
-export function drawRectangleNode(roughSVG: RoughSVG, node: WorkflowElement) {
+export function drawRectangleNode(roughSVG: RoughSVG, node: WorkflowElement, options: Options = {}) {
     const { x, y, width, height } = getRectangleByNode(node);
     const nodeG = drawRoundRectangle(roughSVG, x, y, x + width, y + height, {
         stroke: '#F5F5F5',
         strokeWidth: 2,
         fill: getColorByStatusCategory(node.type as WorkflowCategoryType),
-        fillStyle: 'solid'
+        fillStyle: 'solid',
+        ...options
     });
 
     return nodeG;
