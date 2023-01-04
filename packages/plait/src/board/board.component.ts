@@ -175,15 +175,15 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         PLAIT_BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.cdr.detectChanges();
+            if (this.board.operations.length > 0) {
+                this.updateViewport();
+            }
             const changeEvent: PlaitBoardChangeEvent = {
                 children: this.board.children,
                 operations: this.board.operations,
                 viewport: this.board.viewport,
                 selection: this.board.selection
             };
-            if (this.board.operations.length > 0) {
-                this.updateViewport();
-            }
             this.plaitChange.emit(changeEvent);
         });
         this.hasInitialized = true;
@@ -204,8 +204,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     ngAfterViewInit(): void {
         this.plaitBoardInitialized.emit(this.board);
-        this.initContainerSize();
-        this.setViewport(1);
+        this.initContainer();
         this.plaitViewport ? this.initCanvas(this.plaitViewport) : this.focusGraphicCenter();
     }
 
@@ -350,20 +349,31 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
                 this.width = width + scrollBarWidth;
                 this.height = height + scrollBarWidth;
-                this.changeSize();
+                this.updateViewport();
             }
         });
         this.resizeObserver.observe(this.elementRef.nativeElement);
     }
 
-    initContainerSize() {
-        const clientBox = getViewportClientBox(this.board);
-        this.width = clientBox.width;
-        this.height = clientBox.height;
-        this.resizeViewport();
+    initContainer() {
+        const { width, height } = getViewportClientBox(this.board);
+        this.width = width;
+        this.height = height;
+        this.resizeContainer();
     }
 
-    resizeViewport() {
+    initCanvas(viewport: Viewport) {
+        const canvasPoint = viewport?.canvasPoint;
+
+        if (canvasPoint) {
+            this.restoreCanvasPoint(canvasPoint, viewport.zoom);
+        } else {
+            this.setViewport(viewport.zoom);
+            this.setScroll(this.scrollLeft, this.scrollTop);
+        }
+    }
+
+    resizeContainer() {
         const container = this.elementRef.nativeElement?.parentElement;
         const containerRect = container?.getBoundingClientRect();
         const hideScrollbar = this.board.options.hideScrollbar;
@@ -377,15 +387,15 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.renderer2.setStyle(this.contentContainer.nativeElement, 'maxHeight', height);
     }
 
+    updateViewport() {
+        const clientBox = getViewportClientBox(this.board);
+        this.setViewport(this.board.viewport.zoom, [clientBox.x, clientBox.y]);
+    }
+
     setMatrix() {
         const viewBox = this.viewBox;
         const zoom = this.zoom;
         this.matrix = [zoom, 0, 0, 0, zoom, 0, -this.scrollLeft - zoom * viewBox[0], -this.scrollTop - zoom * viewBox[1], 1];
-    }
-
-    updateViewport() {
-        const clientBox = getViewportClientBox(this.board);
-        this.setViewport(this.board.viewport.zoom, [clientBox.x, clientBox.y]);
     }
 
     setViewport(zoom?: number, focusPoint?: number[]) {
@@ -427,9 +437,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.canvasHeight = canvasHeight;
         this.zoom = zoom;
         this.viewBox = viewBox;
-        this.setScrollLeft(scrollLeft);
-        this.setScrollTop(scrollTop);
-        this.change();
+        this.setScroll(scrollLeft, scrollTop);
     }
 
     setScrollLeft(left: number) {
@@ -449,20 +457,19 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     setScroll(left: number, top: number) {
         this.setScrollLeft(left);
         this.setScrollTop(top);
-        this.change();
+        this.setViewBox();
     }
 
     moveTo(point: number[], zoom: number) {
         zoom = zoom ?? this.zoom;
-        const r = invertViewport([0, 0], this.matrix);
-        this.setScroll(this.scrollLeft + (point[0] - r[0]) * zoom, this.scrollTop + (point[1] - r[1]) * zoom);
+        const invert = invertViewport([0, 0], this.matrix);
+        this.setScroll(this.scrollLeft + (point[0] - invert[0]) * zoom, this.scrollTop + (point[1] - invert[1]) * zoom);
     }
 
     scrollIntoView(node: { x: number; y: number; width: number; height: number }) {
         const canvasRect = this.host.getBoundingClientRect();
 
         if (!(canvasRect.width <= this.width && canvasRect.height <= this.height)) {
-            const point = convertViewport([node.x, node.y], this.matrix);
             const fullPoint = convertViewport([node.x + node.width, node.y + node.height], this.matrix);
             const width = this.width;
             const height = this.height;
@@ -479,11 +486,12 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         }
     }
 
-    change() {
-        this.resizeViewport();
+    setViewBox() {
+        this.resizeContainer();
         this.renderer2.setStyle(this.host, 'display', 'block');
         this.renderer2.setStyle(this.host, 'width', `${this.canvasWidth}px`);
         this.renderer2.setStyle(this.host, 'height', `${this.canvasHeight}px`);
+
         if (this.viewBox && this.viewBox[2] > 0 && this.viewBox[3] > 0) {
             this.renderer2.setAttribute(this.host, 'viewBox', this.viewBox.join(','));
         }
@@ -502,29 +510,18 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.moveTo(point, zoom);
     }
 
-    initCanvas(viewport: Viewport) {
-        const canvasPoint = viewport?.canvasPoint;
-
-        if (canvasPoint) {
-            this.restoreCanvasPoint(canvasPoint, viewport.zoom);
-        } else {
-            this.setViewport(viewport.zoom);
-            this.setScroll(this.scrollLeft, this.scrollTop);
-        }
-    }
-
     focusGraphicCenter() {
         const rootGroup = this.board.host.firstChild;
-        const rootGroupBox = (rootGroup as SVGGraphicsElement).getBBox();
-        this.focus([rootGroupBox.x + rootGroupBox.width / 2, rootGroupBox.y + rootGroupBox.height / 2]);
-        this.change();
+        const { x, y, width, height } = (rootGroup as SVGGraphicsElement).getBBox();
+        this.focus([x + width / 2, y + height / 2]);
+        this.setViewBox();
         this.setViewport(1);
     }
 
     focus(point: number[]) {
-        const clientBox = getViewportClientBox(this.board);
+        const { width, height } = getViewportClientBox(this.board);
+        const newPoint = [width / 2, height / 2];
         const matrix = transformMat3([], [point[0], point[1], 1], this.matrix);
-        const newPoint = [clientBox.width / 2, clientBox.height / 2];
         const scrollLeft = newPoint[0] - matrix[0];
         const scrollTop = newPoint[1] - matrix[1];
 
@@ -534,21 +531,21 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     }
 
     resetFocusPoint() {
-        const clientBox = getViewportClientBox(this.board);
-        this.focusPoint = [clientBox.x + clientBox.width / 2, clientBox.y + clientBox.height / 2];
+        const { x, y, width, height } = getViewportClientBox(this.board);
+        this.focusPoint = [x + width / 2, y + height / 2];
     }
 
     setViewportSetting() {
         const viewport = this.board?.viewport;
-        Transforms.setViewport(this.board, {
-            ...viewport,
-            zoom: this.zoom,
-            canvasPoint: invertViewport([0, 0], this.matrix)
-        });
-    }
+        const canvasPoint = invertViewport([0, 0], this.matrix);
 
-    changeSize() {
-        this.updateViewport();
+        if (!canvasPoint.every((item, index) => item === viewport.canvasPoint[index])) {
+            Transforms.setViewport(this.board, {
+                ...viewport,
+                zoom: this.zoom,
+                canvasPoint
+            });
+        }
     }
 
     trackBy = (index: number, element: PlaitElement) => {
@@ -594,6 +591,10 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.setViewport(1);
     }
 
+    movingChange(isMoving: boolean) {
+        this.isMoving = isMoving;
+    }
+
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
@@ -601,9 +602,5 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         if (this.resizeObserver) {
             this.resizeObserver.disconnect();
         }
-    }
-
-    movingChange(isMoving: boolean) {
-        this.isMoving = isMoving;
     }
 }
