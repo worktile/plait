@@ -34,10 +34,10 @@ import {
     MindmapLayoutType,
     OriginNode
 } from '@plait/layouts';
-import { PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
+import { hasEditableTarget, PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { fromEvent, Subject } from 'rxjs';
-import { debounceTime, filter, map, take, takeUntil } from 'rxjs/operators';
+import { fromEvent, Subject, timer } from 'rxjs';
+import { debounceTime, filter, map, take, takeUntil, tap } from 'rxjs/operators';
 import { Editor, Operation } from 'slate';
 import {
     EXTEND_OFFSET,
@@ -874,15 +874,19 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 MERGING.set(this.board, true);
             }
         });
-        const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown')
-            .pipe(debounceTime(0)) // wait composition input and insert text operation complete
-            .subscribe((event: MouseEvent) => {
-                const point = transformPoint(this.board, toPoint(event.x, event.y, this.host));
-                if (!hitMindmapNode(this.board, point, this.node as MindmapNode)) {
+        const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
+            const point = transformPoint(this.board, toPoint(event.x, event.y, this.host));
+            const clickInNode = hitMindmapNode(this.board, point, this.node as MindmapNode);
+            if (clickInNode && !hasEditableTarget(richtextInstance.editor, event.target)) {
+                event.preventDefault();
+            } else if (!clickInNode) {
+                // handle composition input state, like: 中文组合输入中
+                timer(0).subscribe(() => {
                     exitHandle();
                     this.enableMaskG();
-                }
-            });
+                });
+            }
+        });
         const editor = richtextInstance.editor;
         const { keydown } = editor;
         editor.keydown = (event: KeyboardEvent) => {
