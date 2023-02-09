@@ -5,7 +5,7 @@ export interface BaseViewport {
     [key: string]: any;
     zoom: number;
     viewBackgroundColor: string;
-    canvasPoint: number[];
+    canvasPoint?: number[];
 }
 
 export type Viewport = ExtendedType<'Viewport', BaseViewport>;

@@ -26,10 +26,6 @@ export function transformPoint(board: PlaitBoard, point: Point) {
     return newPoint;
 }
 
-export function calculateZoom(zoom: number, minZoom = 0.2, maxZoom = 4) {
-    return zoom < minZoom ? minZoom : zoom > maxZoom ? maxZoom : zoom;
-}
-
 export function isNoSelectionElement(e: Event) {
     return (e.target as HTMLElement)?.closest('.plait-board-attached');
 }
