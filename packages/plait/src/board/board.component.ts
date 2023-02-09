@@ -396,6 +396,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         const scrollTop = newPoint[1] - matrix[1];
         this.setScrollLeft(this.scrollLeft - scrollLeft);
         this.setScrollTop(this.scrollTop - scrollTop);
+        this.setMatrix();
     }
 
     resetFocusPoint() {
@@ -540,6 +541,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         }
         this.focus([rootGroupBox.x + rootGroupBox.width / 2, rootGroupBox.y + rootGroupBox.height / 2]);
         this.resetFocusPoint();
+        this.setViewport(zoom);
         this.setViewBox();
     }
 
