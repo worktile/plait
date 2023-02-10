@@ -1,5 +1,6 @@
 import { Element } from 'slate';
 import { PlaitElement, Point } from '@plait/core';
+import { Position } from '../utils/path';
 
 export const isWorkflowNode = (value: PlaitElement): value is WorkflowElement => {
     return ['todo', 'in_progess', 'done'].includes(value.type);
@@ -25,8 +26,8 @@ export interface WorkflowElement extends PlaitElement {
 }
 
 export interface WorkflowPortsNode extends WorkflowElement {
-    endPoint: Point;
-    startPoint: Point | null;
+    endPoint: { point: Point; position: Position } | null;
+    startPoint: { point: Point; position: Position } | null;
 }
 
 export interface WorkflowTransitionLinkType {

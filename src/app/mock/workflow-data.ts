@@ -9,6 +9,11 @@ export const mockWorkflowData: WorkflowElement[] = [
     {
         id: '1001',
         value: { children: [{ text: '要做' }] },
+        // 需要修改的字段
+        // data: {
+        //     value: { children: [{ text: '要做' }] }
+        //     //...
+        // },
         type: 'todo',
         points: [[400, 268.5]],
         width: 120,
@@ -43,31 +48,31 @@ export const mockWorkflowData: WorkflowElement[] = [
         type: 'directed',
         from: {
             id: '1001',
-            port: 3
-        },
-        to: {
-            id: '1002',
-            port: 0
-        },
-        points: []
-    },
-    {
-        id: '004',
-        value: { children: [{ text: '连线3' }] },
-        type: 'directed',
-        from: {
-            id: '1002',
             port: 1
         },
         to: {
-            id: '1003',
-            port: 3
+            id: '1002',
+            port: 7
         },
-        conditions: [
-            {
-                operation: 'all'
-            }
-        ],
         points: []
     }
+    // {
+    //     id: '004',
+    //     value: { children: [{ text: '连线3' }] },
+    //     type: 'directed',
+    //     from: {
+    //         id: '1002',
+    //         port: 1
+    //     },
+    //     to: {
+    //         id: '1003',
+    //         port: 3
+    //     },
+    //     conditions: [
+    //         {
+    //             operation: 'all'
+    //         }
+    //     ],
+    //     points: []
+    // }
 ];

@@ -51,10 +51,12 @@ export class WorkflowTransitionComponent extends WorkflowBaseComponent implement
         if (transitionLine) {
             transitionLine.remove();
         }
-        const point = WorkflowQueries.getPointByTransition(this.board, this.node);
-        const linkG = drawLineByTransitionType(this.board, this.roughSVG, point, this.node.type as WorkflowTransitionType, options);
-        this.render2.addClass(linkG, WORKFLOW_TRANSTION_KEY + '-line');
-        this.workflowGGroup.prepend(linkG!);
+        const port = WorkflowQueries.getPointByTransition(this.board, this.node);
+        if (port) {
+            const linkG = drawLineByTransitionType(this.board, this.roughSVG, port, this.node.type as WorkflowTransitionType, options);
+            this.render2.addClass(linkG, WORKFLOW_TRANSTION_KEY + '-line');
+            this.workflowGGroup.prepend(linkG!);
+        }
     }
 
     drawRichtext() {
@@ -82,42 +84,44 @@ export class WorkflowTransitionComponent extends WorkflowBaseComponent implement
         const transitionLine = this.workflowGGroup.querySelector(`.${WORKFLOW_TRANSTION_KEY}-line`) as HTMLElement;
         transitionLine.style.opacity = '0';
         const point = WorkflowQueries.getPointByTransition(this.board, this.node);
-        if (changePort && changePort === 'start') {
-            point.startPoint = [point.startPoint![0] + offsetX, point.startPoint![1] + offsetY];
-        }
-        if (changePort && changePort === 'end') {
-            point.endPoint = [point.endPoint![0] + offsetX, point.endPoint![1] + offsetY];
-        }
-        const selectedStrokeG = drawLineByTransitionType(this.board, this.roughSVG, point, this.node.type as WorkflowTransitionType, {
-            stroke: '#4e8afa',
-            ...options
-        });
-        selectedStrokeG!.style.pointerEvents = 'none';
-        this.workflowGGroup.appendChild(selectedStrokeG!);
-        this.activeG.push(selectedStrokeG!);
-
-        // draw port
-        if (this.node.type !== 'global') {
-            let linkPorts = [point.endPoint];
-            if (this.node.type === 'directed') {
-                linkPorts.unshift(point.startPoint!);
+        if (point) {
+            if (changePort && changePort === 'start') {
+                point.startPoint!.point = [point.startPoint!.point[0] + offsetX, point.startPoint!.point[1] + offsetY];
             }
-            const selectedLinkPort = linkPorts.map(port => {
-                return this.roughSVG.circle(port![0], port![1], WORKFLOW_NODE_PORT_RADIOUS, {
-                    stroke: '#6698FF',
-                    strokeWidth: 2,
-                    fill: 'transparent',
-                    fillStyle: 'solid'
-                });
+            if (changePort && changePort === 'end') {
+                point.endPoint!.point = [point.endPoint!.point[0] + offsetX, point.endPoint!.point[1] + offsetY];
+            }
+            const selectedStrokeG = drawLineByTransitionType(this.board, this.roughSVG, point, this.node.type as WorkflowTransitionType, {
+                stroke: '#4e8afa',
+                ...options
             });
-            selectedLinkPort.forEach(item => {
-                this.render2.addClass(item, 'active-port');
-                this.workflowGGroup.appendChild(item!);
-                this.activeG.push(item!);
-            });
-        }
+            selectedStrokeG!.style.pointerEvents = 'none';
+            this.workflowGGroup.appendChild(selectedStrokeG!);
+            this.activeG.push(selectedStrokeG!);
 
-        // to do : draw text
+            // draw port
+            if (this.node.type !== 'global') {
+                let linkPorts = [point.endPoint];
+                if (this.node.type === 'directed') {
+                    linkPorts.unshift(point.startPoint!);
+                }
+                const selectedLinkPort = linkPorts.map(port => {
+                    return this.roughSVG.circle(port!.point[0], port!.point[1], WORKFLOW_NODE_PORT_RADIOUS, {
+                        stroke: '#6698FF',
+                        strokeWidth: 2,
+                        fill: 'transparent',
+                        fillStyle: 'solid'
+                    });
+                });
+                selectedLinkPort.forEach(item => {
+                    this.render2.addClass(item, 'active-port');
+                    this.workflowGGroup.appendChild(item!);
+                    this.activeG.push(item!);
+                });
+            }
+
+            // to do : draw text
+        }
     }
 
     destroyActiveG() {

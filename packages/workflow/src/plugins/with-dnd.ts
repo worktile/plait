@@ -103,31 +103,33 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             if (isWorkflowTransition(activeElement) && changePort) {
                 const point = WorkflowQueries.getPointByTransition(board, activeElement);
                 let currentPoint: Point;
-                if (changePort === 'start') {
-                    // 判断当前点位是否是接口的点位
-                    currentPoint = [point.startPoint![0] + offsetX, point.startPoint![1] + offsetY] as Point;
-                }
-                if (changePort === 'end') {
-                    // 判断当前点位是否是接口的点位
-                    currentPoint = [point.endPoint![0] + offsetX, point.endPoint![1] + offsetY] as Point;
-                }
-                if (currentPoint!) {
-                    (board.children as WorkflowElement[]).forEach(value => {
-                        if (isWorkflowNode(value)) {
-                            const componet = WORKFLOW_ELEMENT_TO_COMPONENT.get(value) as WorkflowNodeComponent;
-                            componet.setPortDisplay(false);
+                if (point) {
+                    if (changePort === 'start') {
+                        // 判断当前点位是否是接口的点位
+                        currentPoint = [point.startPoint!.point[0] + offsetX, point.startPoint!.point[1] + offsetY] as Point;
+                    }
+                    if (changePort === 'end') {
+                        // 判断当前点位是否是接口的点位
+                        currentPoint = [point.endPoint!.point[0] + offsetX, point.endPoint!.point[1] + offsetY] as Point;
+                    }
+                    if (currentPoint!) {
+                        (board.children as WorkflowElement[]).forEach(value => {
+                            if (isWorkflowNode(value)) {
+                                const componet = WORKFLOW_ELEMENT_TO_COMPONENT.get(value) as WorkflowNodeComponent;
+                                componet.setPortDisplay(false);
 
-                            const ports = getNodePorts(value);
-                            const index = ports.findIndex(item => isInCircle(item, currentPoint));
-                            if (index > -1) {
-                                if (changePort === 'start') {
-                                    Transforms.setNode(board, { ...activeElement, from: { id: value.id, port: index } }, [path]);
-                                } else {
-                                    Transforms.setNode(board, { ...activeElement, to: { id: value.id, port: index } }, [path]);
+                                const ports = getNodePorts(value);
+                                const index = ports.findIndex(item => isInCircle(item.point, currentPoint));
+                                if (index > -1) {
+                                    if (changePort === 'start') {
+                                        Transforms.setNode(board, { ...activeElement, from: { id: value.id, port: index } }, [path]);
+                                    } else {
+                                        Transforms.setNode(board, { ...activeElement, to: { id: value.id, port: index } }, [path]);
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             }
             activeComponent?.render2.setStyle(activeComponent.workflowGGroup, 'transform', null);

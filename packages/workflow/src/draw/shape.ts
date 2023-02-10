@@ -24,8 +24,8 @@ export function drawRectangleNode(roughSVG: RoughSVG, node: WorkflowElement, opt
 
 export function drawLinkPorts(roughSVG: RoughSVG, node: WorkflowElement) {
     const linkPorts = getNodePorts(node);
-    return linkPorts.map(port => {
-        return roughSVG.circle(port[0], port[1], WORKFLOW_NODE_PORT_RADIOUS, {
+    return linkPorts.map(({ position, point }) => {
+        return roughSVG.circle(point[0], point[1], WORKFLOW_NODE_PORT_RADIOUS, {
             stroke: '#6698FF',
             strokeWidth: 2,
             fill: 'transparent',

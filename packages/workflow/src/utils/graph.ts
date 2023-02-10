@@ -6,6 +6,7 @@ import { WORKFLOW_ELEMENT_TO_COMPONENT } from '../plugins/weak-maps';
 import { WorkflowBaseComponent } from '../workflow-base.component';
 import { WorkflowQueries } from '../queries';
 import { WORKFLOW_NODE_PORT_RADIOUS } from '../constants';
+import { Position } from './path';
 
 export function getRectangleByNode(node: WorkflowElement): RectangleClient {
     const [x, y] = node.points[0];
@@ -58,7 +59,27 @@ export function drawRoundRectangle(rs: RoughSVG, x1: number, y1: number, x2: num
     );
 }
 
-export const getNodePorts: (node: WorkflowElement) => Point[] = (node: WorkflowElement) => {
+// export const getNodePorts: (node: WorkflowElement) => Point[] = (node: WorkflowElement) => {
+//     /**
+//      *  ---- 0 ----- 1 ----- 2 ----
+//      * ｜                          ｜
+//      * 7                           3
+//      * ｜                          ｜
+//      *  ---- 6 ----- 5 ----- 4 ----
+//      */
+//     const { x, y, width, height } = getRectangleByNode(node);
+//     const port0 = [x + width / 4, y];
+//     const port1 = [x + width / 2, y];
+//     const port2 = [x + (width / 4) * 3, y];
+//     const port3 = [x + width, y + height / 2];
+//     const port4 = [x + (width / 4) * 3, y + height];
+//     const port5 = [x + width / 2, y + height];
+//     const port6 = [x + width / 4, y + height];
+//     const port7 = [x, y + height / 2];
+//     return [port0, port1, port2, port3, port4, port5, port6, port7] as Point[];
+// };
+
+export const getNodePorts: (node: WorkflowElement) => { position: Position; point: Point }[] = (node: WorkflowElement) => {
     /**
      *  ---- 0 ----- 1 ----- 2 ----
      * ｜                          ｜
@@ -67,15 +88,39 @@ export const getNodePorts: (node: WorkflowElement) => Point[] = (node: WorkflowE
      *  ---- 6 ----- 5 ----- 4 ----
      */
     const { x, y, width, height } = getRectangleByNode(node);
-    const port0 = [x + width / 4, y];
-    const port1 = [x + width / 2, y];
-    const port2 = [x + (width / 4) * 3, y];
-    const port3 = [x + width, y + height / 2];
-    const port4 = [x + (width / 4) * 3, y + height];
-    const port5 = [x + width / 2, y + height];
-    const port6 = [x + width / 4, y + height];
-    const port7 = [x, y + height / 2];
-    return [port0, port1, port2, port3, port4, port5, port6, port7] as Point[];
+    const port0 = {
+        position: Position.Top,
+        point: [x + width / 4, y] as Point
+    };
+    const port1 = {
+        position: Position.Top,
+        point: [x + width / 2, y] as Point
+    };
+    const port2 = {
+        position: Position.Top,
+        point: [x + (width / 4) * 3, y] as Point
+    };
+    const port3 = {
+        position: Position.Right,
+        point: [x + width, y + height / 2] as Point
+    };
+    const port4 = {
+        position: Position.Bottom,
+        point: [x + (width / 4) * 3, y + height] as Point
+    };
+    const port5 = {
+        position: Position.Bottom,
+        point: [x + width / 2, y + height] as Point
+    };
+    const port6 = {
+        position: Position.Bottom,
+        point: [x + width / 4, y + height] as Point
+    };
+    const port7 = {
+        position: Position.Bottom,
+        point: [x, y + height / 2] as Point
+    };
+    return [port0, port1, port2, port3, port4, port5, port6, port7];
 };
 
 export function hitWorkflowNode(point: Point, node: WorkflowElement) {
@@ -85,22 +130,24 @@ export function hitWorkflowNode(point: Point, node: WorkflowElement) {
 
 export function hitWorkflowPortNode(board: PlaitBoard, point: Point, node: WorkflowElement) {
     const pointWithStartAndEnd = WorkflowQueries.getPointByTransition(board, node);
+    if (pointWithStartAndEnd) {
+        const { startPoint, endPoint } = pointWithStartAndEnd;
+        let startDistance;
+        if (pointWithStartAndEnd.type === 'directed') {
+            startDistance = Math.pow(startPoint!.point[0] - point[0], 2) + Math.pow(startPoint!.point[1] - point[1], 2);
+            if (startDistance < Math.pow(WORKFLOW_NODE_PORT_RADIOUS, 2)) {
+                pointWithStartAndEnd.startPoint!.point = point;
+                return 'start';
+            }
+        }
 
-    const { startPoint, endPoint } = pointWithStartAndEnd;
-    let startDistance;
-    if (pointWithStartAndEnd.type === 'directed') {
-        startDistance = Math.pow(startPoint![0] - point[0], 2) + Math.pow(startPoint![1] - point[1], 2);
-        if (startDistance < Math.pow(WORKFLOW_NODE_PORT_RADIOUS, 2)) {
-            pointWithStartAndEnd.startPoint = point;
-            return 'start';
+        const endDistance = Math.pow(endPoint!.point[0] - point[0], 2) + Math.pow(endPoint!.point[1] - point[1], 2);
+        if (endDistance < Math.pow(WORKFLOW_NODE_PORT_RADIOUS, 2)) {
+            pointWithStartAndEnd.endPoint!.point = point;
+            return 'end';
         }
     }
 
-    const endDistance = Math.pow(endPoint![0] - point[0], 2) + Math.pow(endPoint![1] - point[1], 2);
-    if (endDistance < Math.pow(WORKFLOW_NODE_PORT_RADIOUS, 2)) {
-        pointWithStartAndEnd.endPoint = point;
-        return 'end';
-    }
     return null;
 }
 
