@@ -1,5 +1,5 @@
 /*
- * Public API Surface of mindmap
+ * Public API Surface of flow
  */
 
 export * from './flow.module';
