@@ -1,5 +1,5 @@
 {
-  "name": "@plait/workflow",
+  "name": "@plait/flow",
   "version": "0.0.56",
   "peerDependencies": {
     "@angular/common": "^13.3.0",

@@ -10,8 +10,8 @@
       ],
       "parserOptions": {
         "project": [
-          "packages/workflow/tsconfig.lib.json",
-          "packages/workflow/tsconfig.spec.json"
+          "packages/flow/tsconfig.lib.json",
+          "packages/flow/tsconfig.spec.json"
         ],
         "createDefaultProgram": true
       },

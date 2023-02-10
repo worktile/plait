@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Viewport } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
-import { withWorkflow } from '@plait/workflow';
-import { mockWorkflowData } from '../mock/workflow-data';
+import { withFlow } from '@plait/flow';
+import { mockFlowData } from '../mock/flow-data';
 
-const LOCAL_DATA_KEY = 'plait-board-workflow-change-data';
+const LOCAL_DATA_KEY = 'plait-board-flow-change-data';
 
 @Component({
-    selector: 'basic-workflow',
-    templateUrl: './workflow.component.html'
+    selector: 'basic-flow',
+    templateUrl: './flow.component.html'
 })
-export class BasicWorkflowComponent implements OnInit {
-    plugins = [withWorkflow];
+export class BasicFlowComponent implements OnInit {
+    plugins = [withFlow];
 
-    value: PlaitElement[] = mockWorkflowData;
+    value: PlaitElement[] = mockFlowData;
 
     viewport!: Viewport;
 

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BasicBoardComponent } from './board/board.component';
 import { BasicRichtextComponent } from './richtext/richtext.component';
-import { BasicWorkflowComponent } from './workflow/workflow.component';
+import { BasicFlowComponent } from './flow/flow.component';
 
 const routes: Routes = [
     {
@@ -14,8 +14,8 @@ const routes: Routes = [
         component: BasicRichtextComponent
     },
     {
-        path: 'workflow',
-        component: BasicWorkflowComponent
+        path: 'flow',
+        component: BasicFlowComponent
     }
 ];
 @NgModule({

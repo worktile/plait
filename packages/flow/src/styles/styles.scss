@@ -1,11 +1,11 @@
-g[plait-workflow='true']{
+g[plait-flow='true']{
     .port-group {
         // display: none;
         .port {
             cursor: crosshair;
         }
     }
-    .workflow-node {
+    .flow-node {
         &:hover {
             .port-group {
                 display: block; 

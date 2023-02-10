@@ -5,8 +5,8 @@
     "outDir": "./out-tsc/app",
     "types": [],
     "paths": {
-      "@plait/workflow": [
-        "packages/workflow/src/public-api",
+      "@plait/flow": [
+        "packages/flow/src/public-api",
       ],
       "@plait/layouts": [
         "packages/layouts/src/public-api",
