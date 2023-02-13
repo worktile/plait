@@ -19,6 +19,7 @@ export class LayoutNode {
     left = false;
     up = false;
     layout: MindmapLayoutType;
+    verticalConnectingPosition?: ConnectingPosition;
 
     constructor(origin: OriginNode, options: LayoutOptions, context: LayoutContext, parent?: LayoutNode) {
         const hGap = options.getHorizontalGap(origin, parent);
@@ -32,6 +33,10 @@ export class LayoutNode {
         }
         const layout = findLayoutType(this);
         this.layout = layout && layout !== MindmapLayoutType.standard ? layout : context.rootLayoutType;
+        const verticalConnectingPosition = options.getVerticalConnectingPosition(origin, parent);
+        if (verticalConnectingPosition) {
+            this.verticalConnectingPosition = verticalConnectingPosition;
+        }
         this.addGap(hGap, vGap);
     }
 
@@ -166,3 +171,12 @@ export function toHorizontal(black: LayoutBlockNode): LayoutBlockNode {
         rootHeight: black.rootWidth
     };
 }
+
+/**
+ * Connecting position, affecting horizontal layout
+ */
+export enum ConnectingPosition {
+    middle = 'middle',
+    bottom = 'bottom'
+}
+

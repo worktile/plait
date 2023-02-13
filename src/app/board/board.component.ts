@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Viewport } from '@plait/core';
+import { PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
-import { findPath, getSelectedMindmapElements, MindmapTransforms, MINDMAP_ELEMENT_TO_COMPONENT, withMindmap } from '@plait/mindmap';
+import { findPath, getSelectedMindmapElements, MindmapNodeShape, MindmapTransforms, MINDMAP_ELEMENT_TO_COMPONENT, withMindmap } from '@plait/mindmap';
 import { mockMindmapData } from '../mock/mindmap-data';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
@@ -48,6 +48,16 @@ export class BasicBoardComponent implements OnInit {
 
         const path = nodeComponent ? findPath(this.board, nodeComponent.node) : [0];
         MindmapTransforms.setMindmapLayout(this.board, value, path);
+    }
+
+    shapeChange(event: Event) {
+        const value = (event.target as HTMLSelectElement).value as MindmapNodeShape;
+        const selectedElements = getSelectedMindmapElements(this.board)?.[0];
+
+        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements);
+
+        const path = nodeComponent ? findPath(this.board, nodeComponent.node) : [0];
+        Transforms.setNode(this.board, { shape: value }, path);
     }
 
     plaitBoardInitialized(value: PlaitBoard) {

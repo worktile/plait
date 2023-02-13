@@ -5,7 +5,7 @@
     (plaitBoardInitialized)="plaitBoardInitialized($event)"
     (plaitChange)="change($event)"
 >
-    <div class="plait-toolbar island layout-toolbar plait-board-attached">
+    <div class="plait-toolbar island plait-board-attached layout-setting-toolbar">
         <select (change)="layoutChange($event)">
             <option value="right">right</option>
             <option value="left">left</option>
@@ -16,6 +16,12 @@
             <option value="right-top-indented">right-top-indented</option>
             <option value="left-bottom-indented">left-bottom-indented</option>
             <option value="left-top-indented">left-top-indented</option>
+        </select>
+    </div>
+    <div class="plait-toolbar island plait-board-attached shape-setting-toolbar">
+        <select (change)="shapeChange($event)">
+            <option value="round-rectangle">round-rectangle</option>
+            <option value="underline">underline</option>
         </select>
     </div>
 </plait-board>

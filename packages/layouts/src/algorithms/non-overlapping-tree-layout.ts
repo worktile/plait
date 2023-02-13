@@ -53,7 +53,11 @@ function positionRootCenter(treeNode: LayoutTreeNode) {
     // Position root between children, taking into account their mod.
     const startNode = treeNode.children[0];
     let startX = startNode.preliminary + startNode.modifier;
+    const endNode = treeNode.children[treeNode.childrenCount - 1] ;
+    let endX = endNode.modifier + endNode.preliminary + endNode.width;
+
     /**
+     * nested layout: handle block node
      *                ---------
      *              |   parent  |
      *                ---------
@@ -69,12 +73,23 @@ function positionRootCenter(treeNode: LayoutTreeNode) {
     if (startNode.origin.blackNode && startNode.origin.blackNode.rootX > startNode.origin.blackNode.left) {
         startX = startX + (startNode.origin.blackNode.rootX - startNode.origin.blackNode.left);
     }
-    const endNode = treeNode.children[treeNode.childrenCount - 1];
-    let endX = endNode.modifier + endNode.preliminary + endNode.width;
     if (endNode.origin.blackNode && (endNode.origin.blackNode.rootX + endNode.origin.blackNode.rootWidth) < endNode.origin.blackNode.right) {
         endX = endX - (endNode.origin.blackNode.right - (endNode.origin.blackNode.rootX + endNode.origin.blackNode.rootWidth));
     }
-    const preliminary = (startX + endX) / 2 - treeNode.width / 2;
+
+    /**
+     * has underline shape: handle connecting position
+     */
+    if (startNode.origin.verticalConnectingPosition && endNode.origin.verticalConnectingPosition) {
+        startX = startX + startNode.width - startNode.origin.vGap;
+        endX = endX - endNode.origin.vGap;
+    }
+    let treeNodeOffset = treeNode.width / 2;
+    if (treeNode.origin.verticalConnectingPosition) {
+        treeNodeOffset = treeNode.width - treeNode.origin.vGap;
+    }
+
+    const preliminary = (startX + endX) / 2 - treeNodeOffset;
     // move sub tree when preliminary to avoid root shifting to left
     if (preliminary > 0) {
         treeNode.preliminary = preliminary;

@@ -1,14 +1,22 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
-import { BASE, MINDMAP_KEY, STROKE_WIDTH } from './constants/index';
+import { BASE, MindmapNodeShape, MINDMAP_KEY, STROKE_WIDTH } from './constants/index';
 import { MindmapElement } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
 import { PlaitMindmap } from './interfaces/mindmap';
 import { createG, Selection, PlaitBoard } from '@plait/core';
-import { LayoutOptions, GlobalLayout, OriginNode, LayoutNode, isIndentedLayout, isHorizontalLayout } from '@plait/layouts';
+import {
+    LayoutOptions,
+    GlobalLayout,
+    OriginNode,
+    LayoutNode,
+    isIndentedLayout,
+    isHorizontalLayout,
+    ConnectingPosition,
+    isHorizontalLogicLayout
+} from '@plait/layouts';
 import { MINDMAP_TO_COMPONENT } from './plugins/weak-maps';
 import { getRootLayout } from './utils';
 import { MindmapQueries } from './queries';
-
 
 @Component({
     selector: 'plait-mindmap',
@@ -103,6 +111,12 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
                 } else {
                     return getSecondAxle(element, parent);
                 }
+            },
+            getVerticalConnectingPosition(element: MindmapElement, parent?: LayoutNode) {
+                if (element.shape === MindmapNodeShape.underline && parent && isHorizontalLogicLayout(parent.layout)) {
+                    return ConnectingPosition.bottom;
+                }
+                return undefined;
             },
             getExtendHeight(node: OriginNode) {
                 return BASE * 6;
