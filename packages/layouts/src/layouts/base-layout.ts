@@ -1,6 +1,6 @@
 import { layout } from '../algorithms/non-overlapping-tree-layout';
-import { BlackNode, LayoutNode } from '../interfaces/node';
-import { buildLayoutTree, LayoutTree } from '../interfaces/tree';
+import { LayoutBlockNode, LayoutNode } from '../interfaces/layout-node';
+import { buildLayoutTree, LayoutTreeNode } from '../interfaces/layout-tree-node';
 import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
 import {
     extractLayoutType,
@@ -54,7 +54,7 @@ export class BaseLayout {
                 const boundingBox = isolatedRoot.getBoundingBox();
                 isolatedNode.width = boundingBox.width;
                 isolatedNode.height = boundingBox.height;
-                isolatedNode.blackNode = new BlackNode(
+                isolatedNode.blackNode = new LayoutBlockNode(
                     boundingBox.left,
                     boundingBox.right,
                     boundingBox.top,
@@ -212,7 +212,7 @@ function seperateSecondaryAxle(root: LayoutNode, options: LayoutOptions) {
     }
 }
 
-function setLayoutTreeResult(tree: LayoutTree, root: LayoutNode, isHorizontal: Boolean) {
+function setLayoutTreeResult(tree: LayoutTreeNode, root: LayoutNode, isHorizontal: Boolean) {
     if (isHorizontal) {
         root.y = tree.x;
     } else {

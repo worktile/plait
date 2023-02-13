@@ -1,13 +1,16 @@
 import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
 import { findLayoutType } from '../utils/layout';
 
+/**
+ * abstract layout node
+ */
 export class LayoutNode {
     x = 0;
     y = 0;
     vGap = 0;
     hGap = 0;
     origin: OriginNode;
-    blackNode?: BlackNode;
+    blackNode?: LayoutBlockNode;
     width = 0;
     height = 0;
     depth = 0;
@@ -112,7 +115,7 @@ export interface BoundingBox {
     height: number;
 }
 
-export class BlackNode {
+export class LayoutBlockNode {
     left: number;
     right: number;
     top: number;
@@ -149,7 +152,7 @@ export class BlackNode {
     }
 }
 
-export function toHorizontal(black: BlackNode): BlackNode {
+export function toHorizontal(black: LayoutBlockNode): LayoutBlockNode {
     return {
         left: black.top,
         right: black.bottom,

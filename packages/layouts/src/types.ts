@@ -1,4 +1,4 @@
-import { LayoutNode } from './interfaces/node';
+import { LayoutNode } from './interfaces/layout-node';
 
 export interface LayoutOptions {
     getHeight: (node: OriginNode) => number;

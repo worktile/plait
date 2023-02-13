@@ -1,22 +1,22 @@
-import { LayoutTree } from '../interfaces/tree';
+import { LayoutTreeNode } from '../interfaces/layout-tree-node';
 
-function moveSubtree(tree: LayoutTree, i: number, distance: number) {
+function moveSubtree(treeNode: LayoutTreeNode, i: number, distance: number) {
     // Move subtree by changing modifier.
-    tree.children[i].modifier += distance;
+    treeNode.children[i].modifier += distance;
 }
 
-function nextLeftContour(tree: LayoutTree) {
-    return tree.childrenCount === 0 ? tree : tree.children[0];
+function nextLeftContour(treeNode: LayoutTreeNode) {
+    return treeNode.childrenCount === 0 ? treeNode : treeNode.children[0];
 }
 
-function nextRightContour(tree: LayoutTree) {
-    return tree.childrenCount === 0 ? tree : tree.children[tree.childrenCount - 1];
+function nextRightContour(treeNode: LayoutTreeNode) {
+    return treeNode.childrenCount === 0 ? treeNode : treeNode.children[treeNode.childrenCount - 1];
 }
 
 // seperate left siblings
-function seperate(tree: LayoutTree, i: number) {
-    let leftNode = tree.children[i - 1];
-    let rightNode = tree.children[i];
+function seperate(treeNode: LayoutTreeNode, i: number) {
+    let leftNode = treeNode.children[i - 1];
+    let rightNode = treeNode.children[i];
 
     let rightContourOfLeftNode = leftNode.modifier + leftNode.preliminary + leftNode.width;
     let leftContourOfRightNode = rightNode.modifier + rightNode.preliminary;
@@ -45,13 +45,13 @@ function seperate(tree: LayoutTree, i: number) {
 
     const distance = rightContourOfLeftNode - leftContourOfRightNode;
     if (distance > 0) {
-        moveSubtree(tree, i, distance);
+        moveSubtree(treeNode, i, distance);
     }
 }
 
-function positionRootCenter(tree: LayoutTree) {
+function positionRootCenter(treeNode: LayoutTreeNode) {
     // Position root between children, taking into account their mod.
-    const startNode = tree.children[0];
+    const startNode = treeNode.children[0];
     let startX = startNode.preliminary + startNode.modifier;
     /**
      *                ---------
@@ -69,47 +69,47 @@ function positionRootCenter(tree: LayoutTree) {
     if (startNode.origin.blackNode && startNode.origin.blackNode.rootX > startNode.origin.blackNode.left) {
         startX = startX + (startNode.origin.blackNode.rootX - startNode.origin.blackNode.left);
     }
-    const endNode = tree.children[tree.childrenCount - 1];
+    const endNode = treeNode.children[treeNode.childrenCount - 1];
     let endX = endNode.modifier + endNode.preliminary + endNode.width;
     if (endNode.origin.blackNode && (endNode.origin.blackNode.rootX + endNode.origin.blackNode.rootWidth) < endNode.origin.blackNode.right) {
         endX = endX - (endNode.origin.blackNode.right - (endNode.origin.blackNode.rootX + endNode.origin.blackNode.rootWidth));
     }
-    const preliminary = (startX + endX) / 2 - tree.width / 2;
+    const preliminary = (startX + endX) / 2 - treeNode.width / 2;
     // move sub tree when preliminary to avoid root shifting to left
     if (preliminary > 0) {
-        tree.preliminary = preliminary;
+        treeNode.preliminary = preliminary;
     } else {
-        tree.children.forEach((c, index) => {
-            moveSubtree(tree, index, Math.abs(preliminary));
+        treeNode.children.forEach((c, index) => {
+            moveSubtree(treeNode, index, Math.abs(preliminary));
         });
     }
 }
 
 // update node's modifier and root node preliminary
-function firstWalk(tree: LayoutTree) {
-    if (tree.childrenCount === 0) {
+function firstWalk(treeNode: LayoutTreeNode) {
+    if (treeNode.childrenCount === 0) {
         return;
     }
-    firstWalk(tree.children[0]);
-    for (let i = 1; i < tree.childrenCount; i++) {
-        firstWalk(tree.children[i]);
-        seperate(tree, i);
+    firstWalk(treeNode.children[0]);
+    for (let i = 1; i < treeNode.childrenCount; i++) {
+        firstWalk(treeNode.children[i]);
+        seperate(treeNode, i);
     }
-    positionRootCenter(tree);
+    positionRootCenter(treeNode);
 }
 
-function secondWalk(tree: LayoutTree, sumOfModifier: number) {
-    sumOfModifier += tree.modifier;
+function secondWalk(treeNode: LayoutTreeNode, sumOfModifier: number) {
+    sumOfModifier += treeNode.modifier;
     // Set absolute (no-relative) horizontal coordinates.
-    tree.x = tree.preliminary + sumOfModifier;
-    for (let i = 0; i < tree.childrenCount; i++) {
-        secondWalk(tree.children[i], sumOfModifier);
+    treeNode.x = treeNode.preliminary + sumOfModifier;
+    for (let i = 0; i < treeNode.childrenCount; i++) {
+        secondWalk(treeNode.children[i], sumOfModifier);
     }
 }
 
-function layout(tree: LayoutTree) {
-    firstWalk(tree);
-    secondWalk(tree, 0);
+function layout(treeNode: LayoutTreeNode) {
+    firstWalk(treeNode);
+    secondWalk(treeNode, 0);
 }
 
 export { layout };
