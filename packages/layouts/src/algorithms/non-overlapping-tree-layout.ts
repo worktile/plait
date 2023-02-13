@@ -57,7 +57,7 @@ function positionRootCenter(treeNode: LayoutTreeNode) {
     let endX = endNode.modifier + endNode.preliminary + endNode.width;
 
     /**
-     * nested layout: handle block node
+     * nested layout: handle black node
      *                ---------
      *              |   parent  |
      *                ---------
