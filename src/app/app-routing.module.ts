@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BasicBoardComponent } from './board/board.component';
 import { BasicRichtextComponent } from './richtext/richtext.component';
+import { BasicFlowComponent } from './flow/flow.component';
 
 const routes: Routes = [
     {
@@ -11,6 +12,10 @@ const routes: Routes = [
     {
         path: 'richtext',
         component: BasicRichtextComponent
+    },
+    {
+        path: 'flow',
+        component: BasicFlowComponent
     }
 ];
 @NgModule({

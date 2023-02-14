@@ -6,7 +6,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build plait && cpx \"./packages/plait/src/styles/*.scss\" ./dist/plait/styles/ && ng build richtext && cpx \"./packages/richtext/src/styles/*.scss\" ./dist/richtext/styles/ && ng build layouts && ng build mindmap && cpx \"./packages/mindmap/src/styles/*.scss\" ./dist/mindmap/styles/",
+    "build": "npm run build:core && npm run build:richtext && ng build layouts && npm run build:mindmap && npm run build:flow",
+    "build:core": "ng build plait && cpx \"./packages/plait/src/styles/*.scss\" ./dist/plait/styles/",
+    "build:mindmap": " ng build mindmap && cpx \"./packages/mindmap/src/styles/*.scss\" ./dist/mindmap/styles/",
+    "build:richtext": "ng build richtext && cpx \"./packages/richtext/src/styles/*.scss\" ./dist/richtext/styles/",
+    "build:flow": "ng build flow && cpx \"./packages/flow/src/styles/*.scss\" ./dist/flow/styles/",
     "build:demo": "ng build demo --baseHref=/plait/ --configuration production",
     "pub:core": "cd dist/plait && npm publish --access public",
     "pub:richtext": "cd dist/richtext && npm publish --access public",
