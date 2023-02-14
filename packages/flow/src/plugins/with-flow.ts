@@ -1,5 +1,5 @@
 import { PlaitBoard, PlaitElementContext, PlaitPlugin } from '@plait/core';
-import { isFlowEdgeElement, isFlowElement } from '../interfaces';
+import { isFlowElement, isFlowEdgeElement } from '../interfaces';
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowEdgeComponent } from '../flow-edge.component';
 

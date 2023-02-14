@@ -17,7 +17,7 @@ import { FlowBaseComponent } from './flow-base.component';
     template: '',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FlowEdgeComponent extends FlowBaseComponent implements OnInit, OnDestroy {
+export class FlowEdgeComponent extends FlowBaseComponent implements OnDestroy {
     constructor(
         public viewContainerRef: ViewContainerRef,
         public render2: Renderer2,
@@ -26,22 +26,6 @@ export class FlowEdgeComponent extends FlowBaseComponent implements OnInit, OnDe
         public zone: NgZone
     ) {
         super(viewContainerRef, render2, cdr, elementRef, zone);
-    }
-
-    ngOnInit(): void {
-        super.ngOnInit();
-    }
-
-    updateWorkflow() {
-        super.updateWorkflow();
-    }
-
-    drawActiveG() {
-        super.drawActiveG();
-    }
-
-    destroyActiveG() {
-        super.destroyActiveG();
     }
 
     ngOnDestroy(): void {
