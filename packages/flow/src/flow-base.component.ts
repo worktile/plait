@@ -12,8 +12,7 @@ import {
 } from '@angular/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { FlowElement } from './interfaces';
-import { createG, HOST_TO_ROUGH_SVG, PlaitBoard, Selection } from '@plait/core';
-import { FLOW_KEY } from './constants';
+import { PlaitBoard, Selection } from '@plait/core';
 import { PlaitRichtextComponent } from '@plait/richtext';
 import { Subject } from 'rxjs';
 
