@@ -93,7 +93,7 @@ export const mockMindmapData: PlaitMindmap = {
                 }
             ],
             width: 48,
-            height: 24,
+            height: 24
         }
     ],
     width: 72,

@@ -4,6 +4,10 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
+      "@plait/flow": [
+        "dist/flow",
+        "dist/flow/flow"
+      ],
       "@plait/layouts": [
         "dist/layouts/layouts",
         "dist/layouts"
