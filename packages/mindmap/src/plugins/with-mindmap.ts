@@ -1,6 +1,7 @@
-import { SimpleChanges } from '@angular/core';
+import { SimpleChanges, ViewContainerRef } from '@angular/core';
 import {
     CLIP_BOARD_FORMAT_KEY,
+    ELEMENT_TO_PLUGIN_COMPONENT,
     hotkeys,
     idCreator,
     isNoSelectionElement,
@@ -8,9 +9,9 @@ import {
     Path,
     PlaitBoard,
     PlaitElement,
-    PlaitElementContext,
     PlaitHistoryBoard,
     PlaitPlugin,
+    PlaitPluginElementContext,
     toPoint,
     transformPoint,
     Transforms
@@ -31,37 +32,41 @@ import {
     hasSelectedMindmapElement
 } from '../utils/selected-elements';
 import { MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from '../utils/weak-maps';
-import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { withNodeDnd } from './with-dnd';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
+    const {
+        drawElement,
+        redrawElement,
+        destroyElement,
+        dblclick,
+        mousedown,
+        globalMouseup,
+        keydown,
+        insertFragment,
+        setFragment,
+        deleteFragment
+    } = board;
 
-    board.drawElement = (context: PlaitElementContext) => {
-        const { element, selection, viewContainerRef, host } = context.elementInstance;
-        if (isPlaitMindmap(element)) {
+    board.drawElement = (context: PlaitPluginElementContext, viewContainerRef: ViewContainerRef) => {
+        if (isPlaitMindmap(context.element)) {
             const mindmapComponentRef = viewContainerRef.createComponent(PlaitMindmapComponent);
             const mindmapInstance = mindmapComponentRef.instance;
-            mindmapInstance.value = element;
-            mindmapInstance.selection = selection;
-            mindmapInstance.host = host;
-            mindmapInstance.board = board;
+            mindmapInstance.initializeContext(context);
             return [mindmapInstance.mindmapGGroup];
         }
-        return drawElement(context);
+        return drawElement(context, viewContainerRef);
     };
 
-    board.redrawElement = (context: PlaitElementContext, changes: SimpleChanges) => {
-        const { element, selection } = context.elementInstance;
+    board.redrawElement = (context: PlaitPluginElementContext, viewContainerRef: ViewContainerRef, changes: SimpleChanges) => {
         const elementChange = changes['element'];
-        if (isPlaitMindmap(element)) {
-            const previousElement = (elementChange && elementChange.previousValue) || element;
-            const mindmapInstance = MINDMAP_TO_COMPONENT.get(previousElement);
+        if (isPlaitMindmap(context.element)) {
+            const previousElement = (elementChange && elementChange.previousValue) || context.element;
+            const mindmapInstance = ELEMENT_TO_PLUGIN_COMPONENT.get(previousElement) as PlaitMindmapComponent;
             if (!mindmapInstance) {
                 throw new Error('undefined mindmap component');
             }
-            mindmapInstance.value = element;
-            mindmapInstance.selection = selection;
+            mindmapInstance.initializeContext(context);
             if (elementChange) {
                 mindmapInstance.updateMindmap();
             } else {
@@ -69,7 +74,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             }
             return [mindmapInstance.mindmapGGroup];
         }
-        return drawElement(context);
+        return redrawElement(context, viewContainerRef, changes);
     };
 
     board.mousedown = (event: MouseEvent) => {
@@ -78,7 +83,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
         board.children.forEach((value: PlaitElement) => {
             if (isPlaitMindmap(value)) {
-                const mindmapComponent = MINDMAP_TO_COMPONENT.get(value);
+                const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitMindmapComponent;
                 const root = mindmapComponent?.root;
                 (root as any).eachNode((node: MindmapNode) => {
                     if (hitMindmapNode(board, point, node)) {
@@ -204,7 +209,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         let startEdit = false;
         board.children.forEach((value: PlaitElement) => {
             if (isPlaitMindmap(value)) {
-                const mindmapComponent = MINDMAP_TO_COMPONENT.get(value);
+                const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitMindmapComponent;
                 const root = mindmapComponent?.root;
                 (root as any).eachNode((node: MindmapNode) => {
                     if (startEdit) {

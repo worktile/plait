@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inp
 import { BASE, MindmapNodeShape, MINDMAP_KEY, STROKE_WIDTH } from './constants/index';
 import { MindmapElement } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
-import { PlaitMindmap } from './interfaces/mindmap';
-import { createG, Selection, PlaitBoard } from '@plait/core';
+import { createG, PlaitPluginElementComponent } from '@plait/core';
 import {
     LayoutOptions,
     GlobalLayout,
@@ -14,7 +13,6 @@ import {
     ConnectingPosition,
     isHorizontalLogicLayout
 } from '@plait/layouts';
-import { MINDMAP_TO_COMPONENT } from './plugins/weak-maps';
 import { getRootLayout } from './utils';
 import { MindmapQueries } from './queries';
 
@@ -31,22 +29,15 @@ import { MindmapQueries } from './queries';
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaitMindmapComponent implements OnInit, OnDestroy {
+export class PlaitMindmapComponent extends PlaitPluginElementComponent implements OnInit, OnDestroy {
     @HostBinding('class') hostClass = `plait-mindmap`;
 
     root!: MindmapNode;
 
     mindmapGGroup!: SVGGElement;
 
-    @Input() value!: PlaitMindmap;
-
-    @Input() selection: Selection | null = null;
-
-    @Input() host!: SVGElement;
-
-    @Input() board!: PlaitBoard;
-
     constructor(private cdr: ChangeDetectorRef) {
+        super();
         this.mindmapGGroup = createG();
         this.mindmapGGroup.setAttribute(MINDMAP_KEY, 'true');
     }
@@ -128,10 +119,9 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
     }
 
     updateMindmap(doCheck = true) {
-        MINDMAP_TO_COMPONENT.set(this.value, this);
         const options = this.getOptions() as LayoutOptions;
-        const mindmapLayoutType = MindmapQueries.getLayoutByElement(this.value);
-        this.root = GlobalLayout.layout(this.value as OriginNode, options, mindmapLayoutType) as any;
+        const mindmapLayoutType = MindmapQueries.getLayoutByElement((this.element as unknown) as MindmapElement);
+        this.root = GlobalLayout.layout((this.element as unknown) as OriginNode, options, mindmapLayoutType) as any;
         this.updateMindmapLocation();
         if (doCheck) {
             this.cdr.detectChanges();
@@ -144,7 +134,6 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.mindmapGGroup.remove();
-        MINDMAP_TO_COMPONENT.delete(this.value);
     }
 
     updateMindmapLocation() {
@@ -152,8 +141,8 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
         const offsetX = x + hGap;
         const offsetY = y + vGap;
         (this.root as any).eachNode((node: MindmapNode) => {
-            node.x = node.x - offsetX + this.value.points[0][0];
-            node.y = node.y - offsetY + this.value.points[0][1];
+            node.x = node.x - offsetX + this.element.points[0][0];
+            node.y = node.y - offsetY + this.element.points[0][1];
         });
     }
 }

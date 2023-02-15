@@ -1,6 +1,6 @@
 export * from './board';
 export * from './cursor';
-export * from './element-context';
+export * from '../core/element/context';
 export * from './custom-types';
 export * from './element';
 export * from './graph';

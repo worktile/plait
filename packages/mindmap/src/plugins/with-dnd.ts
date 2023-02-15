@@ -12,7 +12,8 @@ import {
     transformPoint,
     Transforms,
     BaseCursorStatus,
-    updateCursorStatus
+    updateCursorStatus,
+    ELEMENT_TO_PLUGIN_COMPONENT
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -44,8 +45,8 @@ import {
 } from '../utils';
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
-import { MINDMAP_TO_COMPONENT } from './weak-maps';
 import { MindmapQueries } from '../queries';
+import { PlaitMindmapComponent } from '../mindmap.component';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -72,7 +73,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 return;
             }
             if (isPlaitMindmap(value)) {
-                const mindmapComponent = MINDMAP_TO_COMPONENT.get(value);
+                const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitMindmapComponent;
                 const root = mindmapComponent?.root;
                 (root as any).eachNode((node: MindmapNode) => {
                     if (activeElement) {
@@ -148,7 +149,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     return;
                 }
                 if (isPlaitMindmap(value)) {
-                    const mindmapComponent = MINDMAP_TO_COMPONENT.get(value);
+                    const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitMindmapComponent;
                     const root = mindmapComponent?.root;
 
                     (root as any).eachNode((node: MindmapNode) => {
@@ -182,7 +183,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
                 const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
                 let targetPath = findPath(board, targetComponent.node);
-                const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
+                const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(board.children[0] as PlaitMindmap) as PlaitMindmapComponent;
                 const layout = MindmapQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapElement);
                 targetPath = updatePathByLayoutAnddropTarget(targetPath, layout, dropTarget);
                 const originPath = findPath(board, activeComponent.node);
@@ -314,7 +315,7 @@ export const updateRightNodeCount = (
     detectResult: DetectResult
 ) => {
     let rightNodeCount;
-    const mindmapComponent = MINDMAP_TO_COMPONENT.get(board.children[0] as PlaitMindmap);
+    const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(board.children[0] as PlaitMindmap) as PlaitMindmapComponent;
     const activeIndex = mindmapComponent?.root.children.indexOf(activeComponent.node) as number;
     const targetIndex = mindmapComponent?.root.children.indexOf(targetComponent.node) as number;
     const isActiveOnRight = activeIndex !== -1 && activeIndex <= (activeComponent.parent.origin.rightNodeCount as number) - 1;

@@ -14,6 +14,7 @@ import { PlaitElement } from '../../interfaces/element';
 import { Selection } from '../../interfaces/selection';
 import { Viewport } from '../../interfaces/viewport';
 import { createG } from '../../utils/dom';
+import { PlaitPluginElementContext } from './context';
 
 @Component({
     selector: 'plait-element',
@@ -52,7 +53,7 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     drawElement() {
-        const gArray = this.board.drawElement({ elementInstance: this });
+        const gArray = this.board.drawElement(this.getContext(), this.viewContainerRef);
         gArray.forEach(g => {
             this.groupG.appendChild(g);
         });
@@ -60,12 +61,21 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.initialized) {
-            this.board.redrawElement({ elementInstance: this }, changes);
+            this.board.redrawElement(this.getContext(), this.viewContainerRef, changes);
         }
     }
 
+    getContext(): PlaitPluginElementContext {
+        return {
+            element: this.element,
+            selection: this.selection,
+            board: this.board,
+            host: this.host,
+        };
+    }
+
     ngOnDestroy(): void {
-        this.board.destroyElement();
+        this.board.destroyElement(this.getContext());
         this.groupG.remove();
     }
 }
