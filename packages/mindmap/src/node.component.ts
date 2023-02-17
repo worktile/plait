@@ -55,7 +55,7 @@ import { drawIndentedLink } from './draw/indented-link';
 import { drawLogicLink } from './draw/logic-link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
-import { MindmapElement } from './interfaces/element';
+import { MindmapNodeElement } from './interfaces/element';
 import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { MindmapQueries } from './queries';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
@@ -77,7 +77,7 @@ import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './util
         <plait-mindmap-node
             *ngFor="let childNode of node?.children; let i = index; trackBy: trackBy"
             [host]="host"
-            [mindmapGGroup]="mindmapGGroup"
+            [mindmapG]="mindmapG"
             [node]="childNode"
             [parent]="node"
             [selection]="selection"
@@ -102,7 +102,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     @Input() index!: number;
 
-    @Input() mindmapGGroup!: SVGGElement;
+    @Input() mindmapG!: SVGGElement;
 
     @Input() selection: Selection | null = null;
 
@@ -173,7 +173,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     insertGroup() {
         if (this.node.origin.isRoot) {
-            this.mindmapGGroup.prepend(this.gGroup);
+            this.mindmapG.prepend(this.gGroup);
         } else {
             const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(this.parent.origin);
             let targetNode = parentComponent?.gGroup as Node;
@@ -184,7 +184,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 const lastChildComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(lastChildNode.origin);
                 targetNode = lastChildComponent?.gGroup as Node;
             }
-            this.mindmapGGroup.insertBefore(this.gGroup, targetNode as Node);
+            this.mindmapG.insertBefore(this.gGroup, targetNode as Node);
         }
     }
 
@@ -198,7 +198,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         const layout = MindmapQueries.getLayoutByElement(this.parent.origin) as MindmapLayoutType;
-        if (MindmapElement.isIndentedLayout(this.parent.origin)) {
+        if (MindmapNodeElement.isIndentedLayout(this.parent.origin)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         } else {
             this.linkG = drawLogicLink(this.roughSVG, this.node, this.parent, isHorizontalLayout(layout));
@@ -621,7 +621,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             )
             .subscribe(() => {
                 const isCollapsed = !this.node.origin.isCollapsed;
-                const newElement: Partial<MindmapElement> = { isCollapsed };
+                const newElement: Partial<MindmapNodeElement> = { isCollapsed };
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
             });
@@ -854,7 +854,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                     value: richtext,
                     width: width / this.board.viewport.zoom,
                     height: height / this.board.viewport.zoom
-                } as MindmapElement;
+                } as MindmapNodeElement;
                 const path = findPath(this.board, this.node);
                 Transforms.setNode(this.board, newElement, path);
                 MERGING.set(this.board, true);
@@ -865,7 +865,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 width = NODE_MIN_WIDTH;
             }
             if (event.isComposing && (width !== this.node.origin.width || height !== this.node.origin.height)) {
-                const newElement: Partial<MindmapElement> = {
+                const newElement: Partial<MindmapNodeElement> = {
                     width: width / this.board.viewport.zoom,
                     height: height / this.board.viewport.zoom
                 };

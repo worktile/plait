@@ -55,8 +55,8 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         setFragment: (data: DataTransfer | null) => {},
         insertFragment: (data: DataTransfer | null) => {},
         deleteFragment: (data: DataTransfer | null) => {},
-        drawElement: (context: PlaitPluginElementContext, viewContainerRef: ViewContainerRef) => [],
-        redrawElement: (context: PlaitPluginElementContext, viewContainerRef: ViewContainerRef, changes: SimpleChanges) => [],
+        drawElement: (context: PlaitPluginElementContext) => [],
+        redrawElement: (context: PlaitPluginElementContext, previousContext) => {},
         destroyElement: (context: PlaitPluginElementContext) => {}
     };
     return board;

@@ -6,7 +6,6 @@ import {
     OnDestroy,
     OnInit,
     Renderer2,
-    SimpleChanges,
     ViewContainerRef
 } from '@angular/core';
 import { PlaitBoard } from '../../interfaces/board';
@@ -15,6 +14,7 @@ import { Selection } from '../../interfaces/selection';
 import { Viewport } from '../../interfaces/viewport';
 import { createG } from '../../utils/dom';
 import { PlaitPluginElementContext } from './context';
+import { PlaitPluginElementComponent } from './plugin-element';
 
 @Component({
     selector: 'plait-element',
@@ -24,7 +24,11 @@ import { PlaitPluginElementContext } from './context';
 export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
     initialized = false;
 
-    groupG!: SVGGElement;
+    gGroup!: SVGGElement;
+
+    instance?: PlaitPluginElementComponent<PlaitElement>;
+
+    context?: PlaitPluginElementContext;
 
     @Input() index!: number;
 
@@ -47,35 +51,61 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
 
     initialize() {
         this.initialized = true;
-        this.groupG = createG();
-        this.renderer2.setAttribute(this.groupG, 'plait-element-group', this.index.toString());
-        this.host.append(this.groupG);
+        this.gGroup = createG();
+        this.renderer2.setAttribute(this.gGroup, 'plait-element-group', this.index.toString());
+        this.host.append(this.gGroup);
     }
 
     drawElement() {
-        const gArray = this.board.drawElement(this.getContext(), this.viewContainerRef);
-        gArray.forEach(g => {
-            this.groupG.appendChild(g);
-        });
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        if (this.initialized) {
-            this.board.redrawElement(this.getContext(), this.viewContainerRef, changes);
+        const context = this.getContext();
+        const result = this.board.drawElement(context.current);
+        if (Array.isArray(result)) {
+            result.forEach(g => {
+                this.gGroup.appendChild(g);
+            });
+        } else {
+            const componentRef = this.viewContainerRef.createComponent(result);
+            const instance = componentRef.instance;
+            instance.context = context.current;
+            this.gGroup.appendChild(instance.g);
+            this.instance = instance;
         }
     }
 
-    getContext(): PlaitPluginElementContext {
-        return {
+    ngOnChanges(): void {
+        if (this.initialized) {
+            const context = this.getContext();
+            if (this.instance) {
+                this.instance.context = context.current;
+            }
+            const result = this.board.redrawElement(context.current, context.previous);
+            if (result && result.length > 0) {
+                this.gGroup.childNodes.forEach(g => g.remove());
+                result.forEach(g => {
+                    this.gGroup.appendChild(g);
+                });
+            }
+        }
+    }
+
+    getContext(): { current: PlaitPluginElementContext; previous?: PlaitPluginElementContext } {
+        const current = {
             element: this.element,
             selection: this.selection,
             board: this.board,
-            host: this.host,
+            host: this.host
         };
+        if (this.context) {
+            const previous = { ...this.context };
+            this.context = current;
+            return { current, previous };
+        } else {
+            return { current };
+        }
     }
 
     ngOnDestroy(): void {
-        this.board.destroyElement(this.getContext());
-        this.groupG.remove();
+        this.gGroup.remove();
+        this.board.destroyElement(this.getContext().current);
     }
 }

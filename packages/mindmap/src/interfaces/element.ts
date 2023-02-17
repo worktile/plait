@@ -1,17 +1,17 @@
 import { Element } from 'slate';
 import { MindmapNodeShape } from '../constants/node';
 import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
+import { PlaitElement, Point } from '@plait/core';
 import { MindmapQueries } from '../queries';
 
-
-export interface MindmapElement {
+export interface MindmapNodeElement extends PlaitElement {
     id: string;
     value: Element;
-    children: MindmapElement[];
-    isRoot?: boolean;
+    children: MindmapNodeElement[];
     rightNodeCount?: number;
     width: number;
     height: number;
+    isRoot?: boolean;
 
     // node style attributes
     fill?: string;
@@ -25,16 +25,26 @@ export interface MindmapElement {
 
     // layout
     layout?: MindmapLayoutType;
-
     isCollapsed?: boolean;
 }
 
-export const MindmapElement = {
-    hasLayout(value: MindmapElement, layout: MindmapLayoutType) {
+export interface PlaitMindmap extends MindmapNodeElement {
+    type: 'mindmap';
+    points: Point[];
+}
+
+export const PlaitMindmap = {
+    isPlaitMindmap: (value: any): value is PlaitMindmap => {
+        return value.type === 'mindmap';
+    }
+};
+
+export const MindmapNodeElement = {
+    hasLayout(value: MindmapNodeElement, layout: MindmapLayoutType) {
         const _layout = MindmapQueries.getLayoutByElement(value);
         return _layout === layout;
     },
-    isIndentedLayout(value: MindmapElement) {
+    isIndentedLayout(value: MindmapNodeElement) {
         const _layout = MindmapQueries.getLayoutByElement(value) as MindmapLayoutType;
         return isIndentedLayout(_layout);
     }
