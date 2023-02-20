@@ -2,8 +2,8 @@ import { idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/co
 import { MindmapLayoutType } from '@plait/layouts';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH } from '../constants';
-import { isPlaitMindmap, MindmapNode } from '../interfaces';
-import { MindmapElement } from '../interfaces/element';
+import { MindmapNode, PlaitMindmap } from '../interfaces';
+import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { addSelectedMindmapElements } from './selected-elements';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
@@ -20,14 +20,14 @@ export function findPath(board: PlaitBoard, node: MindmapNode): Path {
             break;
         }
     }
-    if (isPlaitMindmap(_node.origin)) {
+    if (PlaitMindmap.isPlaitMindmap(_node.origin)) {
         const index = board.children.indexOf(_node.origin);
         path.push(index);
     }
     return path.reverse();
 }
 
-export function findParentElement(element: MindmapElement): MindmapElement | undefined {
+export function findParentElement(element: MindmapNodeElement): MindmapNodeElement | undefined {
     const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
     if (component && component.parent) {
         return component.parent.origin;
@@ -35,7 +35,7 @@ export function findParentElement(element: MindmapElement): MindmapElement | und
     return undefined;
 }
 
-export function findUpElement(element: MindmapElement): { root: MindmapElement; branch?: MindmapElement } {
+export function findUpElement(element: MindmapNodeElement): { root: MindmapNodeElement; branch?: MindmapNodeElement } {
     let branch;
     let root = element;
     let parent = findParentElement(element);
@@ -47,14 +47,14 @@ export function findUpElement(element: MindmapElement): { root: MindmapElement; 
     return { root, branch };
 }
 
-export const getChildrenCount = (element: MindmapElement) => {
-    const count: number = element.children.reduce((p: number, c: MindmapElement) => {
+export const getChildrenCount = (element: MindmapNodeElement) => {
+    const count: number = element.children.reduce((p: number, c: MindmapNodeElement) => {
         return p + getChildrenCount(c);
     }, 0);
     return count + element.children.length;
 };
 
-export const isChildElement = (origin: MindmapElement, child: MindmapElement) => {
+export const isChildElement = (origin: MindmapNodeElement, child: MindmapNodeElement) => {
     let parent = findParentElement(child);
     while (parent) {
         if (parent === origin) {
@@ -73,11 +73,11 @@ export const isChildUp = (node: MindmapNode, child: MindmapNode) => {
     return node.y > child.y;
 };
 
-export const buildNodes = (node: MindmapElement) => {
+export const buildNodes = (node: MindmapNodeElement) => {
     if (node == null) {
-        return {} as MindmapElement;
+        return {} as MindmapNodeElement;
     } else {
-        const newNode: MindmapElement = { ...node };
+        const newNode: MindmapNodeElement = { ...node };
         newNode.id = idCreator();
         newNode.children = [];
         if (newNode.isRoot) {
@@ -89,7 +89,7 @@ export const buildNodes = (node: MindmapElement) => {
         return newNode;
     }
 };
-export const extractNodesText = (node: MindmapElement) => {
+export const extractNodesText = (node: MindmapNodeElement) => {
     let str = '';
     if (node) {
         str += Node.string(node.value.children[0]) + ' ';
@@ -100,7 +100,7 @@ export const extractNodesText = (node: MindmapElement) => {
     return str;
 };
 
-export const changeRightNodeCount = (board: PlaitBoard, selectedElement: MindmapElement, changeNumber: number) => {
+export const changeRightNodeCount = (board: PlaitBoard, selectedElement: MindmapNodeElement, changeNumber: number) => {
     const parentElement = findParentElement(selectedElement);
     const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
     if (mindmapNodeComponent) {
@@ -172,7 +172,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
 };
 
 // layoutLevel 用来表示插入兄弟节点还是子节点
-export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapElement, path: Path) => {
+export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapNodeElement, path: Path) => {
     let fill,
         strokeColor,
         strokeWidth,

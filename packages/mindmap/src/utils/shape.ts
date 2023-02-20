@@ -1,8 +1,8 @@
 import { MindmapNodeShape } from '../constants';
-import { MindmapElement } from '../interfaces';
+import { MindmapNodeElement } from '../interfaces';
 import { findParentElement } from './mindmap';
 
-export const getNodeShapeByElement = (element: MindmapElement): MindmapNodeShape => {
+export const getNodeShapeByElement = (element: MindmapNodeElement): MindmapNodeShape => {
     let nodeShape = element.shape;
     if (nodeShape) {
         return nodeShape;

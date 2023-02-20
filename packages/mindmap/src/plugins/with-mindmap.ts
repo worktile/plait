@@ -17,8 +17,7 @@ import {
     Transforms
 } from '@plait/core';
 import { getWidthByText } from '@plait/richtext';
-import { MindmapElement } from '../interfaces';
-import { isPlaitMindmap } from '../interfaces/mindmap';
+import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { PlaitMindmapComponent } from '../mindmap.component';
 import { buildNodes, changeRightNodeCount, createEmptyNode, extractNodesText, findPath } from '../utils';
@@ -37,8 +36,6 @@ import { withNodeDnd } from './with-dnd';
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const {
         drawElement,
-        redrawElement,
-        destroyElement,
         dblclick,
         mousedown,
         globalMouseup,
@@ -48,33 +45,11 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         deleteFragment
     } = board;
 
-    board.drawElement = (context: PlaitPluginElementContext, viewContainerRef: ViewContainerRef) => {
-        if (isPlaitMindmap(context.element)) {
-            const mindmapComponentRef = viewContainerRef.createComponent(PlaitMindmapComponent);
-            const mindmapInstance = mindmapComponentRef.instance;
-            mindmapInstance.initializeContext(context);
-            return [mindmapInstance.mindmapGGroup];
+    board.drawElement = (context: PlaitPluginElementContext) => {
+        if (PlaitMindmap.isPlaitMindmap(context.element)) {
+            return PlaitMindmapComponent;
         }
-        return drawElement(context, viewContainerRef);
-    };
-
-    board.redrawElement = (context: PlaitPluginElementContext, viewContainerRef: ViewContainerRef, changes: SimpleChanges) => {
-        const elementChange = changes['element'];
-        if (isPlaitMindmap(context.element)) {
-            const previousElement = (elementChange && elementChange.previousValue) || context.element;
-            const mindmapInstance = ELEMENT_TO_PLUGIN_COMPONENT.get(previousElement) as PlaitMindmapComponent;
-            if (!mindmapInstance) {
-                throw new Error('undefined mindmap component');
-            }
-            mindmapInstance.initializeContext(context);
-            if (elementChange) {
-                mindmapInstance.updateMindmap();
-            } else {
-                mindmapInstance.doCheck();
-            }
-            return [mindmapInstance.mindmapGGroup];
-        }
-        return redrawElement(context, viewContainerRef, changes);
+        return drawElement(context);
     };
 
     board.mousedown = (event: MouseEvent) => {
@@ -82,7 +57,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         const point = transformPoint(board, toPoint(event.x, event.y, board.host));
 
         board.children.forEach((value: PlaitElement) => {
-            if (isPlaitMindmap(value)) {
+            if (PlaitMindmap.isPlaitMindmap(value)) {
                 const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitMindmapComponent;
                 const root = mindmapComponent?.root;
                 (root as any).eachNode((node: MindmapNode) => {
@@ -127,7 +102,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                         const isCollapsed = mindmapNodeComponent.node.origin.isCollapsed;
                         const path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.origin.children.length);
                         if (isCollapsed) {
-                            const newElement: Partial<MindmapElement> = { isCollapsed: false };
+                            const newElement: Partial<MindmapNodeElement> = { isCollapsed: false };
                             const boardPath = findPath(board, mindmapNodeComponent.node);
                             PlaitHistoryBoard.withoutSaving(board, () => {
                                 Transforms.setNode(board, newElement, boardPath);
@@ -147,7 +122,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
-                if (isPlaitMindmap(selectedElements[0]) && board.children.length === 1 && !board.options.allowClearBoard) {
+                if (PlaitMindmap.isPlaitMindmap(selectedElements[0]) && board.children.length === 1 && !board.options.allowClearBoard) {
                     keydown(event);
                     return;
                 }
@@ -208,7 +183,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         const point = transformPoint(board, toPoint(event.x, event.y, board.host));
         let startEdit = false;
         board.children.forEach((value: PlaitElement) => {
-            if (isPlaitMindmap(value)) {
+            if (PlaitMindmap.isPlaitMindmap(value)) {
                 const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitMindmapComponent;
                 const root = mindmapComponent?.root;
                 (root as any).eachNode((node: MindmapNode) => {
@@ -253,7 +228,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         if (encoded) {
             const decoded = decodeURIComponent(window.atob(encoded));
             const nodeData = JSON.parse(decoded);
-            const newElement: MindmapElement = buildNodes(nodeData);
+            const newElement: MindmapNodeElement = buildNodes(nodeData);
             const element = getSelectedMindmapElements(board)?.[0];
             const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
             if (nodeComponent) {
