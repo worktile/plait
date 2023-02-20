@@ -133,10 +133,6 @@ export class PlaitMindmapComponent extends PlaitPluginElementComponent<PlaitMind
         }
     }
 
-    doCheck() {
-        this.cdr.markForCheck();
-    }
-
     updateMindmapLocation(element: PlaitMindmap) {
         const { x, y, hGap, vGap } = this.root;
         const offsetX = x + hGap;
