@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { BasicBoardComponent } from './board/board.component';
+import { BasicBoardEditorComponent } from './editor/editor.component';
 import { BasicRichtextComponent } from './richtext/richtext.component';
 import { BasicFlowComponent } from './flow/flow.component';
 
 const routes: Routes = [
     {
         path: '',
-        component: BasicBoardComponent
+        component: BasicBoardEditorComponent
     },
     {
         path: 'richtext',

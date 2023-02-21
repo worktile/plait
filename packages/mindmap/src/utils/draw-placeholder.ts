@@ -1,7 +1,7 @@
 import { RoughSVG } from 'roughjs/bin/svg';
 import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../constants';
 import { drawLink } from '../draw/link';
-import { DetectResult, MindmapElement, MindmapNode } from '../interfaces';
+import { DetectResult, MindmapNodeElement, MindmapNode } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import { drawRoundRectangle, getRectangleByNode } from './graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
@@ -22,7 +22,7 @@ import { isStandardLayout } from '@plait/layouts';
 import { isMixedLayout } from './layout';
 
 export const drawPlaceholderDropNodeG = (
-    dropTarget: { target: MindmapElement; detectResult: DetectResult },
+    dropTarget: { target: MindmapNodeElement; detectResult: DetectResult },
     roughSVG: RoughSVG,
     fakeDropNodeG: SVGGElement | undefined
 ) => {

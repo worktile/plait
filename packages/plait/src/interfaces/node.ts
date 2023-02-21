@@ -4,7 +4,6 @@ import { Path } from './path';
 export interface PlaitNode {
     [key: string]: any;
     children?: PlaitNode[];
-    id?: string;
 }
 
 export type Ancestor = PlaitBoard | PlaitNode;

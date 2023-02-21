@@ -1,10 +1,13 @@
-import { BoundingBox, LayoutNode, toHorizontal } from './node';
+import { LayoutNode, toHorizontal } from './layout-node';
 
-export class LayoutTree {
+/**
+ * abstract tree node for tree layout algorithm
+ */
+export class LayoutTreeNode {
     width: number;
     height: number;
     y: number;
-    children: LayoutTree[];
+    children: LayoutTreeNode[];
     childrenCount: number;
     x: number;
     preliminary: number;
@@ -13,13 +16,13 @@ export class LayoutTree {
     change: number;
     tl: any;
     tr: any;
-    el: LayoutTree | null;
-    er: LayoutTree | null;
+    el: LayoutTreeNode | null;
+    er: LayoutTreeNode | null;
     msel: number;
     mser: number;
     origin: LayoutNode;
 
-    constructor(width: number, height: number, y: number, children: LayoutTree[], origin: LayoutNode) {
+    constructor(width: number, height: number, y: number, children: LayoutTreeNode[], origin: LayoutNode) {
         this.width = width;
         this.height = height;
         this.y = y;
@@ -43,7 +46,7 @@ export class LayoutTree {
 }
 
 export const buildLayoutTree = (root: LayoutNode, isHorizontal: boolean) => {
-    const children: LayoutTree[] = [];
+    const children: LayoutTreeNode[] = [];
     root.children.forEach(child => {
         children.push(buildLayoutTree(child, isHorizontal));
     });
@@ -51,7 +54,7 @@ export const buildLayoutTree = (root: LayoutNode, isHorizontal: boolean) => {
         if (root.blackNode) {
             root.blackNode = toHorizontal(root.blackNode);
         }
-        return new LayoutTree(root.height, root.width, root.x, children, root);
+        return new LayoutTreeNode(root.height, root.width, root.x, children, root);
     }
-    return new LayoutTree(root.width, root.height, root.y, children, root);
+    return new LayoutTreeNode(root.width, root.height, root.y, children, root);
 };

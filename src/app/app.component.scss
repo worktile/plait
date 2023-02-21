@@ -4,9 +4,18 @@
 @import './richtext/richtext.component.scss';
 @import '../../packages/flow/src/styles/styles.scss';
 
-.layout-toolbar {
-    bottom: 20px;
-    right: 30px;
+.layout-setting-toolbar {
+    bottom: 30px;
+    right: 40px;
+    width: 120px;
+    select {
+        width: 100%;
+    }
+}
+
+.shape-setting-toolbar {
+    bottom: 30px;
+    right: 200px;
     width: 120px;
     select {
         width: 100%;

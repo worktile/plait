@@ -1,13 +1,16 @@
 import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
 import { findLayoutType } from '../utils/layout';
 
+/**
+ * abstract layout node
+ */
 export class LayoutNode {
     x = 0;
     y = 0;
     vGap = 0;
     hGap = 0;
     origin: OriginNode;
-    blackNode?: BlackNode;
+    blackNode?: LayoutBlockNode;
     width = 0;
     height = 0;
     depth = 0;
@@ -16,6 +19,7 @@ export class LayoutNode {
     left = false;
     up = false;
     layout: MindmapLayoutType;
+    verticalConnectingPosition?: ConnectingPosition;
 
     constructor(origin: OriginNode, options: LayoutOptions, context: LayoutContext, parent?: LayoutNode) {
         const hGap = options.getHorizontalGap(origin, parent);
@@ -29,6 +33,10 @@ export class LayoutNode {
         }
         const layout = findLayoutType(this);
         this.layout = layout && layout !== MindmapLayoutType.standard ? layout : context.rootLayoutType;
+        const verticalConnectingPosition = options.getVerticalConnectingPosition(origin, parent);
+        if (verticalConnectingPosition) {
+            this.verticalConnectingPosition = verticalConnectingPosition;
+        }
         this.addGap(hGap, vGap);
     }
 
@@ -112,7 +120,7 @@ export interface BoundingBox {
     height: number;
 }
 
-export class BlackNode {
+export class LayoutBlockNode {
     left: number;
     right: number;
     top: number;
@@ -149,7 +157,7 @@ export class BlackNode {
     }
 }
 
-export function toHorizontal(black: BlackNode): BlackNode {
+export function toHorizontal(black: LayoutBlockNode): LayoutBlockNode {
     return {
         left: black.top,
         right: black.bottom,
@@ -163,3 +171,12 @@ export function toHorizontal(black: BlackNode): BlackNode {
         rootHeight: black.rootWidth
     };
 }
+
+/**
+ * Connecting position, affecting horizontal layout
+ */
+export enum ConnectingPosition {
+    middle = 'middle',
+    bottom = 'bottom'
+}
+

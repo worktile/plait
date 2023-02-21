@@ -56,7 +56,6 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO
                 [index]="index"
                 [element]="item"
                 [board]="board"
-                [viewport]="board.viewport"
                 [selection]="board.selection"
                 [host]="host"
             ></plait-element>

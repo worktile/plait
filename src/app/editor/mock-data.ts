@@ -48,14 +48,14 @@ export const mockMindmapData: PlaitMindmap = {
                             id: '1-4-2-1',
                             value: { children: [{ text: '鱼骨图哦' }] },
                             children: [],
-                            width: 72,
+                            width: 56,
                             height: 24
                         },
                         {
                             id: '1-4-2-2',
                             value: { children: [{ text: '缩进布局' }] },
                             children: [],
-                            width: 72,
+                            width: 56,
                             height: 24
                         }
                     ],
@@ -81,14 +81,14 @@ export const mockMindmapData: PlaitMindmap = {
                     id: '1-5-1',
                     value: { children: [{ text: '鱼骨图哦' }] },
                     children: [],
-                    width: 72,
+                    width: 56,
                     height: 24
                 },
                 {
                     id: '1-5-2',
                     value: { children: [{ text: '缩进布局' }] },
                     children: [],
-                    width: 72,
+                    width: 56,
                     height: 24
                 }
             ],

@@ -1,11 +1,12 @@
-import { SimpleChanges } from '@angular/core';
+import { SimpleChanges, ViewContainerRef } from '@angular/core';
 import { CursorStatus } from './cursor';
-import { PlaitElement } from './element';
-import { PlaitElementContext } from './element-context';
+import { ComponentType, PlaitElement } from './element';
+import { PlaitPluginElementContext } from '../core/element/context';
 import { PlaitHistory } from './history';
 import { PlaitOperation } from './operation';
 import { Selection } from './selection';
 import { Viewport } from './viewport';
+import { PlaitPluginElementComponent } from '../core/element/plugin-element';
 
 export interface PlaitBoard {
     host: SVGElement;
@@ -29,9 +30,9 @@ export interface PlaitBoard {
     insertFragment: (data: DataTransfer | null) => void;
     deleteFragment: (data: DataTransfer | null) => void;
     dblclick: (event: MouseEvent) => void;
-    drawElement: (context: PlaitElementContext) => SVGGElement[];
-    redrawElement: (context: PlaitElementContext, changes: SimpleChanges) => SVGGElement[];
-    destroyElement: () => void;
+    drawElement: (context: PlaitPluginElementContext) => SVGGElement[] | ComponentType<PlaitPluginElementComponent>;
+    redrawElement: (context: PlaitPluginElementContext, previousContext?: PlaitPluginElementContext) => SVGGElement[] | void;
+    destroyElement: (context: PlaitPluginElementContext) => void;
 }
 
 export interface PlaitBoardChangeEvent {

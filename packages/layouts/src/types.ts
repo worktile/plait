@@ -1,10 +1,11 @@
-import { LayoutNode } from './interfaces/node';
+import { LayoutNode, ConnectingPosition } from './interfaces/layout-node';
 
 export interface LayoutOptions {
     getHeight: (node: OriginNode) => number;
     getWidth: (node: OriginNode) => number;
     getHorizontalGap: (node: OriginNode, parent?: LayoutNode) => number;
     getVerticalGap: (node: OriginNode, parent?: LayoutNode) => number;
+    getVerticalConnectingPosition: (node: OriginNode, parent?: LayoutNode) => ConnectingPosition;
     getExtendWidth?: (node: OriginNode) => number;
     getExtendHeight: (node: OriginNode) => number;
     getIndentedCrossLevelGap: () => number;
