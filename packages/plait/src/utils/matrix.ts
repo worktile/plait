@@ -1,9 +1,8 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { PlaitBoard } from '../interfaces';
-import { PLAIT_BOARD_TO_COMPONENT } from './weak-maps';
 
 /**
- * 反转矩阵
+ * 逆矩阵
  * [a c e]
  * [b d f]
  * [0 0 1]
@@ -11,55 +10,58 @@ import { PLAIT_BOARD_TO_COMPONENT } from './weak-maps';
  * @param matrix 新矩阵
  * @returns 逆矩阵
  */
-export function invert(newMatrix: number[], matrix: number[]) {
-    let n = matrix[0],
-        r = matrix[1],
-        a = matrix[2],
-        i = matrix[3],
-        o = matrix[4],
-        c = matrix[5],
-        l = matrix[6],
-        s = matrix[7],
-        u = matrix[8],
-        d = u * o - c * s,
-        h = -u * i + c * l,
-        f = s * i - o * l,
-        p = n * d + r * h + a * f;
+export function invertMatrix(newMatrix: number[], matrix: number[]) {
+    const [n, r, a, i, o, c, l, s, u] = matrix;
+    const determinant = u * o - c * s;
+    const h = -u * i + c * l;
+    const f = s * i - o * l;
+    const product = n * determinant + r * h + a * f;
 
-    if (p) {
-        p = 1 / p;
-        newMatrix[0] = d * p;
-        newMatrix[1] = (-u * r + a * s) * p;
-        newMatrix[2] = (c * r - a * o) * p;
-        newMatrix[3] = h * p;
-        newMatrix[4] = (u * n - a * l) * p;
-        newMatrix[5] = (-c * n + a * i) * p;
-        newMatrix[6] = f * p;
-        newMatrix[7] = (-s * n + r * l) * p;
-        newMatrix[8] = (o * n - r * i) * p;
-        return newMatrix;
+    if (!product) {
+        return null;
     }
-    return null;
+
+    const reciprocal = 1 / product;
+    newMatrix[0] = determinant * reciprocal;
+    newMatrix[1] = (-u * r + a * s) * reciprocal;
+    newMatrix[2] = (c * r - a * o) * reciprocal;
+    newMatrix[3] = h * reciprocal;
+    newMatrix[4] = (u * n - a * l) * reciprocal;
+    newMatrix[5] = (-c * n + a * i) * reciprocal;
+    newMatrix[6] = f * reciprocal;
+    newMatrix[7] = (-s * n + r * l) * reciprocal;
+    newMatrix[8] = (o * n - r * i) * reciprocal;
+
+    return newMatrix;
 }
 
 /**
+ * 将视图坐标与反转矩阵相乘，以得到原始坐标
  * 使用给定的矩阵进行转换
- * @param out 输出介绍向量
+ * 矩阵与向量乘法，3 维向量与3x3矩阵的乘积
+ * [m11 m12 m13][v1]
+ * [m21 m22 m23][v2]
+ * [m31 m32 m33][v3]
+ * @param out 输出结果向量
  * @param t 要转换的向量
  * @param n 矩阵转换
- * @returns
+ * @returns [v1 * m11 + v2 * m12 + v3 * m13, v1 * m21 + v2 * m22 + v3 * m23, v1 * m31 + v2 * m32 + v3 * m33];
  */
-export function transformMat3(out: number[], t: number[], n: number[]) {
-    out = [t[0] * n[0] + t[1] * n[3] + t[2] * n[6], t[0] * n[1] + t[1] * n[4] + t[2] * n[7], t[0] * n[2] + t[1] * n[5] + t[2] * n[8]];
+export function transformMat3(out: number[], vector: number[], matrix: number[]) {
+    out = [
+        vector[0] * matrix[0] + vector[1] * matrix[3] + vector[2] * matrix[6],
+        vector[0] * matrix[1] + vector[1] * matrix[4] + vector[2] * matrix[7],
+        vector[0] * matrix[2] + vector[1] * matrix[5] + vector[2] * matrix[8]
+    ];
     return out;
 }
 
 /**
- * 转换出正确的 point
+ * 规范 point
  * @param point
  * @returns point
  */
-export function convertPoint(point: number[]) {
+export function normalizePoint(point: number[]) {
     return Array.isArray(point)
         ? {
               x: point[0],
@@ -69,26 +71,20 @@ export function convertPoint(point: number[]) {
 }
 
 /**
- * 反转 viewport
- * @param point
- * @param matrix 矩阵
- * @returns
+ * 将一个点坐标反转回它的原始坐标
+ * @param point 表示要反转的点的视图坐标，它是一个长度为 2 的数组，存储点的 x 和 y 坐标
+ * @param matrix 表示视图矩阵，是在视图中对图形进行缩放和平移时使用的矩阵
+ * @returns 最终结果是一个长度为 3 的数组，存储点的 x，y 和 w 坐标（w 坐标是点的齐次坐标)
  */
-export function invertViewport(point: number[], matrix: number[]) {
-    const newPoint = convertPoint(point);
-    const invertMatrix = invert([], matrix);
-    return transformMat3([], [newPoint.x, newPoint.y, 1], invertMatrix as []);
+export function invertViewportCoordinates(point: number[], matrix: number[]) {
+    const { x, y } = normalizePoint(point);
+    const invertedMatrix = invertMatrix([], matrix);
+    return transformMat3([], [x, y, 1], invertedMatrix as []);
 }
 
-/**
- * 转换 viewport
- * @param point
- * @param matrix
- * @returns
- */
-export function convertViewport(point: number[], matrix: number[]) {
-    const newPoint = convertPoint(point);
-    return transformMat3([], [newPoint.x, newPoint.y, 1], matrix);
+export function convertToViewportCoordinates(point: number[], matrix: number[]) {
+    const { x, y } = normalizePoint(point);
+    return transformMat3([], [x, y, 1], matrix);
 }
 
 /**
@@ -96,8 +92,8 @@ export function convertViewport(point: number[], matrix: number[]) {
  * @param board
  * @returns
  */
-export function getContentContainerClientBox(board: PlaitBoard) {
-    const hideScrollbar = board.options.hideScrollbar;
+export function getViewportContainerBox(board: PlaitBoard) {
+    const { hideScrollbar } = board.options;
     const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
     const container = board.host?.parentElement as HTMLElement;
     const containerRect = container?.getBoundingClientRect();
@@ -124,28 +120,26 @@ export function getContentContainerClientBox(board: PlaitBoard) {
  * @returns
  */
 export function getBoardClientBox(board: PlaitBoard) {
-    const hideScrollbar = board.options.hideScrollbar;
-    const boardEl = board.host?.parentElement?.parentElement as HTMLElement;
+    const { hideScrollbar } = board.options;
     const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
+    const boardEl = board.host?.parentElement?.parentElement as HTMLElement;
     const elRect = boardEl?.getBoundingClientRect();
-    const width = elRect.width + scrollBarWidth;
-    const height = elRect.height + scrollBarWidth;
 
-    return { width, height };
+    return {
+        width: elRect.width + scrollBarWidth,
+        height: elRect.height + scrollBarWidth
+    };
 }
 
 /**
- * 获取 rootGroup 的最小矩阵坐标
- * @param board 当前 board 对象
- * @param zoom 缩放比
- * @returns 返回首个 rootGroup 相对于当前 svg 空间的最小矩阵的坐标
+ * 获取 rootGroup 相对于当前 svg 空间的最小矩阵坐标
  */
 export function getRootGroupBBox(board: PlaitBoard, zoom: number) {
-    const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board);
-    const rootGroup = board.host.firstChild;
-    const rootGroupBox = (rootGroup as SVGGraphicsElement).getBBox();
-    const containerWidth = boardComponent!.contentContainerWidth / zoom;
-    const containerHeight = boardComponent!.contentContainerHeight / zoom;
+    const rootGroup = board.host.firstChild as SVGGraphicsElement;
+    const rootGroupBox = rootGroup.getBBox();
+    const viewportContainerBox = getViewportContainerBox(board);
+    const containerWidth = viewportContainerBox.width / zoom;
+    const containerHeight = viewportContainerBox.height / zoom;
     let left: number;
     let right: number;
     let top: number;
@@ -170,10 +164,6 @@ export function getRootGroupBBox(board: PlaitBoard, zoom: number) {
         bottom = rootGroupBox.y + rootGroupBox.height;
     }
     return {
-        x: rootGroupBox.x,
-        y: rootGroupBox.y,
-        width: rootGroupBox.width,
-        height: rootGroupBox.height,
         left,
         right,
         top,
@@ -188,6 +178,6 @@ export function getRootGroupBBox(board: PlaitBoard, zoom: number) {
  * @param maxZoom 最大缩放比
  * @returns 正确的缩放比
  */
-export function calculateZoom(zoom: number, minZoom = 0.2, maxZoom = 4) {
+export function clampZoomLevel(zoom: number, minZoom = 0.2, maxZoom = 4) {
     return zoom < minZoom ? minZoom : zoom > maxZoom ? maxZoom : zoom;
 }

@@ -35,11 +35,10 @@ import { withSelection } from '../plugins/with-selection';
 import { Transforms } from '../transforms';
 import {
     getRootGroupBBox,
-    calculateZoom,
-    convertViewport,
-    getContentContainerClientBox,
-    invert,
-    invertViewport,
+    clampZoomLevel,
+    convertToViewportCoordinates,
+    getViewportContainerBox,
+    invertViewportCoordinates,
     transformMat3,
     updateCursorStatus,
     getBoardClientBox
@@ -49,7 +48,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO
 @Component({
     selector: 'plait-board',
     template: `
-        <div class="viewport-container" #container>
+        <div class="viewport-container" #viewportContainer>
             <svg #svg width="100%" height="100%" style="position: relative;"></svg>
             <plait-element
                 *ngFor="let item of board.children; let index = index; trackBy: trackBy"
@@ -84,27 +83,23 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     destroy$: Subject<any> = new Subject();
 
-    contentContainerWidth = 0;
-
-    contentContainerHeight = 0;
-
-    scrollLeft!: number;
-
-    scrollTop!: number;
-
     private zoom = 1;
 
-    private canvasWidth!: number;
+    private viewportWidth!: number;
 
-    private canvasHeight!: number;
+    private viewportHeight!: number;
 
     private viewBox!: number[];
 
-    private focusPoint: number[] = [0, 0];
+    private focusPoint!: number[];
 
-    private matrix!: number[];
+    private autoFitPadding = 8;
 
-    public autoFitPadding = 8;
+    private scrollBarWidth = SCROLL_BAR_WIDTH;
+
+    public scrollLeft!: number;
+
+    public scrollTop!: number;
 
     public isMoving = false;
 
@@ -160,8 +155,8 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     @ContentChild('plaitToolbar')
     public toolbarTemplateRef!: TemplateRef<any>;
 
-    @ViewChild('container', { read: ElementRef, static: true })
-    contentContainer!: ElementRef;
+    @ViewChild('viewportContainer', { read: ElementRef, static: true })
+    viewportContainer!: ElementRef;
 
     constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2, private elementRef: ElementRef) {}
 
@@ -201,8 +196,9 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     ngAfterViewInit(): void {
         this.plaitBoardInitialized.emit(this.board);
-        this.initContainer();
-        this.initCanvas();
+        this.initViewportContainer();
+        this.setViewport(this.board.viewport?.zoom ?? this.zoom);
+        this.initViewport();
     }
 
     private initializePlugins() {
@@ -211,6 +207,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             board = plugin(board);
         });
         this.board = board;
+        this.scrollBarWidth = this.plaitOptions.hideScrollbar ? SCROLL_BAR_WIDTH : 0;
         if (this.plaitViewport) {
             this.board.viewport = this.plaitViewport;
         }
@@ -299,7 +296,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 this.board?.deleteFragment(event.clipboardData);
             });
 
-        fromEvent<MouseEvent>(this.contentContainer.nativeElement, 'mousemove')
+        fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'mousemove')
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
@@ -310,7 +307,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 this.focusPoint = [e.clientX, e.clientY];
             });
 
-        fromEvent<MouseEvent>(this.contentContainer.nativeElement, 'mouseleave')
+        fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'mouseleave')
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
@@ -318,10 +315,10 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
                 })
             )
             .subscribe((e: MouseEvent) => {
-                this.resetFocusPoint();
+                this.resetCenterFocusPoint();
             });
 
-        fromEvent<MouseEvent>(this.contentContainer.nativeElement, 'scroll')
+        fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'scroll')
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
@@ -330,8 +327,11 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             )
             .subscribe((event: Event) => {
                 const { scrollLeft, scrollTop } = event.target as HTMLElement;
-                (Math.abs(this.scrollLeft - scrollLeft) <= 1 && Math.abs(this.scrollTop - scrollTop) <= 1) ||
-                    this.setScroll(scrollLeft, scrollTop);
+                if (Math.abs(this.scrollLeft - scrollLeft) >= 1 || Math.abs(this.scrollTop - scrollTop) >= 1) {
+                    this.setScrollLeft(scrollLeft);
+                    this.setScrollTop(scrollTop);
+                    this.setViewportSetting();
+                }
             });
         this.resizeElement();
     }
@@ -339,13 +339,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     resizeElement() {
         this.resizeObserver = new ResizeObserver(entries => {
             for (let entry of entries) {
-                const { width, height } = entry.contentRect;
-                const hideScrollbar = this.board.options.hideScrollbar;
-                const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
-                this.contentContainerWidth = width + scrollBarWidth;
-                this.contentContainerHeight = height + scrollBarWidth;
-
-                const { x, y } = getContentContainerClientBox(this.board);
+                const { x, y } = getViewportContainerBox(this.board);
                 this.setViewport(this.board.viewport.zoom, [x, y]);
                 this.setViewBox();
             }
@@ -353,68 +347,92 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.resizeObserver.observe(this.elementRef.nativeElement);
     }
 
-    initContainer() {
-        const contentContainer = this.contentContainer.nativeElement;
-        const containerRect = getBoardClientBox(this.board);
-        const containerWidth = containerRect.width;
-        const containerHeight = containerRect.height;
-
-        this.renderer2.setStyle(contentContainer, 'width', `${containerWidth}px`);
-        this.renderer2.setStyle(contentContainer, 'height', `${containerHeight}px`);
-        this.renderer2.setStyle(contentContainer, 'maxWidth', `${containerWidth}px`);
-        this.renderer2.setStyle(contentContainer, 'maxHeight', `${containerHeight}px`);
-
-        const { width, height } = getContentContainerClientBox(this.board);
-        this.contentContainerWidth = width;
-        this.contentContainerHeight = height;
+    initViewportContainer() {
+        const { width, height } = getBoardClientBox(this.board);
+        this.renderer2.setStyle(this.viewportContainer.nativeElement, 'width', `${width}px`);
+        this.renderer2.setStyle(this.viewportContainer.nativeElement, 'height', `${height}px`);
     }
 
-    initCanvas() {
+    initViewport() {
         const viewport = this.board.viewport;
         const canvasPoint = viewport?.canvasPoint;
         const zoom = viewport?.zoom ?? this.zoom;
-        this.setViewport(zoom);
 
         if (canvasPoint) {
-            const newCanvasPoint = invertViewport([0, 0], this.matrix);
-            const scrollLeft = canvasPoint ? this.scrollLeft + (canvasPoint[0] - newCanvasPoint[0]) * zoom : this.scrollLeft;
-            const scrollTop = canvasPoint ? this.scrollTop + (canvasPoint[1] - newCanvasPoint[1]) * zoom : this.scrollTop;
-            this.setScrollLeft(scrollLeft);
-            this.setScrollTop(scrollTop);
+            const matrix = this.getMatrix();
+            const [pointX, pointY] = invertViewportCoordinates([0, 0], matrix);
+            const left = this.scrollLeft + (canvasPoint[0] - pointX) * zoom;
+            const top = this.scrollTop + (canvasPoint[1] - pointY) * zoom;
+            this.setScroll(left, top);
         } else {
-            const { x, y, width, height } = getRootGroupBBox(this.board, zoom);
-            this.focus([x + width / 2, y + height / 2]);
+            this.resetCenterFocusPoint();
+            this.adaptHandle();
         }
-        this.setViewBox();
     }
 
-    focus(point: number[]) {
-        const { width, height } = getContentContainerClientBox(this.board);
-        const newPoint = [width / 2, height / 2];
-        const matrix = transformMat3([], [point[0], point[1], 1], this.matrix);
-        const scrollLeft = newPoint[0] - matrix[0];
-        const scrollTop = newPoint[1] - matrix[1];
-        this.setScrollLeft(this.scrollLeft - scrollLeft);
-        this.setScrollTop(this.scrollTop - scrollTop);
-        this.setMatrix();
+    setViewport(zoom = this.zoom, focusPoint = this.focusPoint) {
+        zoom = clampZoomLevel(zoom);
+
+        const scrollBarWidth = this.scrollBarWidth;
+        const viewportContainerBox = getViewportContainerBox(this.board);
+        const groupBBox = getRootGroupBBox(this.board, zoom);
+        const horizontalPadding = viewportContainerBox.width / 2;
+        const verticalPadding = viewportContainerBox.height / 2;
+        const viewportWidth = (groupBBox.right - groupBBox.left) * zoom + 2 * horizontalPadding + scrollBarWidth;
+        const viewportHeight = (groupBBox.bottom - groupBBox.top) * zoom + 2 * verticalPadding + scrollBarWidth;
+
+        const viewBox = [
+            groupBBox.left - horizontalPadding / zoom,
+            groupBBox.top - verticalPadding / zoom,
+            viewportWidth / zoom,
+            viewportHeight / zoom
+        ];
+        const matrix = this.getMatrix();
+        let scrollLeft;
+        let scrollTop;
+
+        if (matrix.length > 0) {
+            const viewportContainerPoint = [focusPoint[0] - viewportContainerBox.x, focusPoint[1] - viewportContainerBox.y, 1];
+            const point = invertViewportCoordinates([viewportContainerPoint[0], viewportContainerPoint[1]], matrix);
+            const newMatrix = [zoom, 0, 0, 0, zoom, 0, -zoom * viewBox[0], -zoom * viewBox[1], 1];
+            const newPoint = transformMat3([], point, newMatrix);
+
+            scrollLeft = newPoint[0] - viewportContainerPoint[0];
+            scrollTop = newPoint[1] - viewportContainerPoint[1];
+        } else {
+            scrollLeft = horizontalPadding;
+            scrollTop = verticalPadding;
+        }
+        this.viewportWidth = viewportWidth;
+        this.viewportHeight = viewportHeight;
+        this.zoom = zoom;
+        this.viewBox = viewBox;
+        this.setScrollLeft(scrollLeft);
+        this.setScrollTop(scrollTop);
     }
 
-    resetFocusPoint() {
-        const { x, y, width, height } = getContentContainerClientBox(this.board);
+    getMatrix() {
+        const { viewBox, zoom, scrollLeft, scrollTop } = this;
+        if (scrollLeft >= 0 && scrollTop >= 0) {
+            return [zoom, 0, 0, 0, zoom, 0, -scrollLeft - zoom * viewBox[0], -scrollTop - zoom * viewBox[1], 1];
+        }
+        return [];
+    }
+
+    resetCenterFocusPoint() {
+        const { x, y, width, height } = getViewportContainerBox(this.board);
         this.focusPoint = [x + width / 2, y + height / 2];
     }
 
     setScrollLeft(left: number) {
-        const hideScrollbar = this.board.options.hideScrollbar;
-        const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
-        const width = this.canvasWidth - this.contentContainerWidth + scrollBarWidth;
+        const viewportContainerBox = getViewportContainerBox(this.board);
+        const width = this.viewportWidth - viewportContainerBox.width + this.scrollBarWidth;
         this.scrollLeft = left < 0 ? 0 : left > width ? width : left;
     }
 
     setScrollTop(top: number) {
-        const hideScrollbar = this.board.options.hideScrollbar;
-        const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
-        const height = this.canvasHeight - this.contentContainerHeight + scrollBarWidth;
+        const viewportContainerBox = getViewportContainerBox(this.board);
+        const height = this.viewportHeight - viewportContainerBox.height + this.scrollBarWidth;
         this.scrollTop = top < 0 ? 0 : top > height ? height : top;
     }
 
@@ -424,88 +442,65 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.setViewBox();
     }
 
-    scrollIntoView(node: { x: number; y: number; width: number; height: number }) {
+    scrollNodeIntoView(node: { x: number; y: number; width: number; height: number }) {
         this.setViewport();
+        this.setViewBox();
+
         const canvasRect = this.host.getBoundingClientRect();
-        if (!(canvasRect.width <= this.contentContainerWidth && canvasRect.height <= this.contentContainerHeight)) {
-            const fullPoint = convertViewport([node.x + node.width, node.y + node.height], this.matrix);
-            const width = this.contentContainerWidth;
-            const height = this.contentContainerHeight;
-            const hideScrollbar = this.board.options.hideScrollbar;
-            const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
-            let left = this.scrollLeft;
-            let top = this.scrollTop;
-            if (fullPoint[0] > width - scrollBarWidth) {
-                left += fullPoint[0] - width + scrollBarWidth;
+        const viewportContainerBox = getViewportContainerBox(this.board);
+
+        if (canvasRect.width > viewportContainerBox.width || canvasRect.height > viewportContainerBox.height) {
+            const nodePoint = [node.x + node.width, node.y + node.height];
+            const matrix = this.getMatrix();
+            const viewportNodePoint = convertToViewportCoordinates(nodePoint, matrix);
+            const scrollBarWidth = this.scrollBarWidth;
+
+            let newLeft = this.scrollLeft;
+            let newTop = this.scrollTop;
+
+            if (viewportNodePoint[0] > viewportContainerBox.width - scrollBarWidth) {
+                newLeft += viewportNodePoint[0] - (viewportContainerBox.width - scrollBarWidth);
             }
-            if (fullPoint[1] > height - scrollBarWidth) {
-                top += fullPoint[1] - height + scrollBarWidth;
+
+            if (viewportNodePoint[1] > viewportContainerBox.height - scrollBarWidth) {
+                newTop += viewportNodePoint[1] - (viewportContainerBox.height - scrollBarWidth);
             }
-            if (left !== this.scrollLeft || top !== this.scrollTop) {
-                this.setScroll(left, top);
+
+            if (newLeft !== this.scrollLeft || newTop !== this.scrollTop) {
+                this.setScroll(newLeft, newTop);
             }
         }
-    }
-
-    setMatrix() {
-        const { viewBox, zoom, scrollLeft, scrollTop } = this;
-        this.matrix = [zoom, 0, 0, 0, zoom, 0, -scrollLeft - zoom * viewBox[0], -scrollTop - zoom * viewBox[1], 1];
-    }
-
-    setViewport(zoom?: number, focusPoint?: number[]) {
-        zoom = calculateZoom(zoom ?? this.zoom);
-        focusPoint = focusPoint ?? this.focusPoint;
-
-        const { x, y, width, height } = getContentContainerClientBox(this.board);
-        const { left, right, top, bottom } = getRootGroupBBox(this.board, zoom);
-        const padding = [height / 2, width / 2];
-        const rootGroupWidth = right - left;
-        const rootGroupHeight = bottom - top;
-        const canvasWidth = rootGroupWidth * zoom + 2 * padding[1];
-        const canvasHeight = rootGroupHeight * zoom + 2 * padding[0];
-        const viewBox = [left - padding[1] / zoom, top - padding[0] / zoom, canvasWidth / zoom, canvasHeight / zoom];
-        let scrollLeft;
-        let scrollTop;
-
-        if (this.matrix) {
-            const canvasPoint = [focusPoint[0] - x, focusPoint[1] - y, 1];
-            const invertMatrix = invert([], this.matrix);
-            const matrix1 = transformMat3([], [canvasPoint[0], canvasPoint[1], 1], invertMatrix as []);
-            const matrix2 = [zoom, 0, 0, 0, zoom, 0, -zoom * viewBox[0], -zoom * viewBox[1], 1];
-            const newMatrix = transformMat3([], matrix1, matrix2);
-            scrollLeft = newMatrix[0] - canvasPoint[0];
-            scrollTop = newMatrix[1] - canvasPoint[1];
-        } else {
-            scrollLeft = (canvasWidth - width) / 2;
-            scrollTop = padding[0] / 2 - top;
-        }
-        this.canvasWidth = canvasWidth;
-        this.canvasHeight = canvasHeight;
-        this.zoom = zoom;
-        this.viewBox = viewBox;
-        this.setScrollLeft(scrollLeft);
-        this.setScrollTop(scrollTop);
-        this.setMatrix();
     }
 
     setViewBox() {
-        this.renderer2.setStyle(this.host, 'display', 'block');
-        this.renderer2.setStyle(this.host, 'width', `${this.canvasWidth}px`);
-        this.renderer2.setStyle(this.host, 'height', `${this.canvasHeight}px`);
-        if (this.viewBox && this.viewBox[2] > 0 && this.viewBox[3] > 0) {
-            this.renderer2.setAttribute(this.host, 'viewBox', this.viewBox.join(','));
-        }
-        this.contentContainer.nativeElement.scrollLeft = this.scrollLeft;
-        this.contentContainer.nativeElement.scrollTop = this.scrollTop;
-
-        this.setMatrix();
+        this.updateViewBoxStyles();
+        this.updateViewportScrolling();
         this.setViewportSetting();
+    }
+
+    private updateViewBoxStyles() {
+        const { host, viewportWidth, viewportHeight, viewBox } = this;
+
+        this.renderer2.setStyle(host, 'display', 'block');
+        this.renderer2.setStyle(host, 'width', `${viewportWidth}px`);
+        this.renderer2.setStyle(host, 'height', `${viewportHeight}px`);
+
+        if (viewBox && viewBox[2] > 0 && viewBox[3] > 0) {
+            this.renderer2.setAttribute(host, 'viewBox', viewBox.join(' '));
+        }
+    }
+
+    private updateViewportScrolling() {
+        const { viewportContainer, scrollLeft, scrollTop } = this;
+        viewportContainer.nativeElement.scrollLeft = scrollLeft;
+        viewportContainer.nativeElement.scrollTop = scrollTop;
     }
 
     setViewportSetting() {
         const viewport = this.board?.viewport;
         const oldCanvasPoint = viewport?.canvasPoint ?? [];
-        const canvasPoint = invertViewport([0, 0], this.matrix);
+        const matrix = this.getMatrix();
+        const canvasPoint = invertViewportCoordinates([0, 0], matrix);
 
         if (!canvasPoint.every((item, index) => item === oldCanvasPoint[index])) {
             Transforms.setViewport(this.board, {
@@ -520,38 +515,45 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         return index;
     };
 
-    // 拖拽模式
     changeMoveMode(cursorStatus: BaseCursorStatus) {
         updateCursorStatus(this.board, cursorStatus);
         this.cdr.markForCheck();
     }
 
-    // 适应画布
     adaptHandle() {
-        const { width, height } = getContentContainerClientBox(this.board);
-        const rootGroup = this.host.firstChild;
-        const rootGroupBox = (rootGroup as SVGGraphicsElement).getBBox();
-        const viewportWidth = width - 2 * this.autoFitPadding;
-        const viewportHeight = height - 2 * this.autoFitPadding;
-        let zoom = this.zoom;
+        const containerBox = getViewportContainerBox(this.board);
+        const rootGroup = this.host.firstChild as SVGGraphicsElement;
+        const matrix = this.getMatrix();
+
+        const rootGroupBox = rootGroup.getBBox();
+        const centerPoint = [containerBox.width / 2, containerBox.height / 2];
+        const rootGroupCenterX = rootGroupBox.x + rootGroupBox.width / 2;
+        const rootGroupCenterY = rootGroupBox.y + rootGroupBox.height / 2;
+        const transformedPoint = transformMat3([], [rootGroupCenterX, rootGroupCenterY, 1], matrix);
+
+        const offsetLeft = centerPoint[0] - transformedPoint[0];
+        const offsetTop = centerPoint[1] - transformedPoint[1];
+
+        const viewportWidth = containerBox.width - 2 * this.autoFitPadding;
+        const viewportHeight = containerBox.height - 2 * this.autoFitPadding;
+        let newZoom = this.zoom;
         if (viewportWidth < rootGroupBox.width || viewportHeight < rootGroupBox.height) {
-            zoom = Math.min(viewportWidth / rootGroupBox.width, viewportHeight / rootGroupBox.height);
+            newZoom = Math.min(viewportWidth / rootGroupBox.width, viewportHeight / rootGroupBox.height);
         } else {
-            zoom = 1;
+            newZoom = 1;
         }
-        this.focus([rootGroupBox.x + rootGroupBox.width / 2, rootGroupBox.y + rootGroupBox.height / 2]);
-        this.resetFocusPoint();
-        this.setViewport(zoom);
+
+        this.setScrollLeft(this.scrollLeft - offsetLeft);
+        this.setScrollTop(this.scrollTop - offsetTop);
+        this.setViewport(newZoom);
         this.setViewBox();
     }
 
-    // 放大
     zoomInHandle() {
         this.setViewport(this.zoom + 0.1);
         this.setViewBox();
     }
 
-    // 缩小
     zoomOutHandle() {
         this.setViewport(this.zoom - 0.1);
         this.setViewBox();
