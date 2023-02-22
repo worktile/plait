@@ -456,26 +456,24 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         if (canvasRect.width > viewportContainerBox.width || canvasRect.height > viewportContainerBox.height) {
             const matrix = this.getMatrix();
             const scrollBarWidth = this.scrollBarWidth;
-            const viewportNodePoint = convertToViewportCoordinates([node.x, node.y], matrix);
-            const viewportFullNodePoint = convertToViewportCoordinates([node.x + node.width, node.y + node.height], matrix);
+            const [nodePointX, nodePointY] = convertToViewportCoordinates([node.x, node.y], matrix);
+            const [fullNodePointX, fullNodePointY] = convertToViewportCoordinates([node.x + node.width, node.y + node.height], matrix);
 
             let newLeft = this.scrollLeft;
             let newTop = this.scrollTop;
 
-            if (viewportNodePoint[0] < 0) {
-                newLeft -= Math.abs(viewportNodePoint[0]);
-            } else {
-                if (viewportFullNodePoint[0] > viewportContainerBox.width - scrollBarWidth) {
-                    newLeft += viewportFullNodePoint[0] - viewportContainerBox.width + scrollBarWidth;
-                }
+            if (nodePointX < 0) {
+                newLeft -= Math.abs(nodePointX);
+            }
+            if (nodePointX > 0 && fullNodePointX > viewportContainerBox.width) {
+                newLeft += fullNodePointX - viewportContainerBox.width + scrollBarWidth;
             }
 
-            if (viewportNodePoint[1] < 0) {
-                newTop -= Math.abs(viewportNodePoint[1]);
-            } else {
-                if (viewportFullNodePoint[1] > viewportContainerBox.height - scrollBarWidth) {
-                    newTop += viewportFullNodePoint[1] - viewportContainerBox.height + scrollBarWidth;
-                }
+            if (nodePointY < 0) {
+                newTop -= Math.abs(nodePointY);
+            }
+            if (nodePointY > 0 && fullNodePointY > viewportContainerBox.height) {
+                newTop += fullNodePointY - viewportContainerBox.height + scrollBarWidth;
             }
 
             if (newLeft !== this.scrollLeft || newTop !== this.scrollTop) {
