@@ -207,7 +207,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
             board = plugin(board);
         });
         this.board = board;
-        this.scrollBarWidth = this.plaitOptions.hideScrollbar ? SCROLL_BAR_WIDTH : 0;
+        this.scrollBarWidth = this.plaitOptions?.hideScrollbar ? SCROLL_BAR_WIDTH : 0;
         if (this.plaitViewport) {
             this.board.viewport = this.plaitViewport;
         }
@@ -217,6 +217,9 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         fromEvent<MouseEvent>(this.host, 'mousedown')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
+                if (!this.focusPoint) {
+                    this.focusPoint = [event.clientX, event.clientY];
+                }
                 this.board.mousedown(event);
             });
 
@@ -340,6 +343,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.resizeObserver = new ResizeObserver(entries => {
             for (let entry of entries) {
                 const { x, y } = getViewportContainerBox(this.board);
+                this.initViewportContainer();
                 this.setViewport(this.board.viewport.zoom, [x, y]);
                 this.setViewBox();
             }
@@ -450,20 +454,28 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         const viewportContainerBox = getViewportContainerBox(this.board);
 
         if (canvasRect.width > viewportContainerBox.width || canvasRect.height > viewportContainerBox.height) {
-            const nodePoint = [node.x + node.width, node.y + node.height];
             const matrix = this.getMatrix();
-            const viewportNodePoint = convertToViewportCoordinates(nodePoint, matrix);
             const scrollBarWidth = this.scrollBarWidth;
+            const viewportNodePoint = convertToViewportCoordinates([node.x, node.y], matrix);
+            const viewportFullNodePoint = convertToViewportCoordinates([node.x + node.width, node.y + node.height], matrix);
 
             let newLeft = this.scrollLeft;
             let newTop = this.scrollTop;
 
-            if (viewportNodePoint[0] > viewportContainerBox.width - scrollBarWidth) {
-                newLeft += viewportNodePoint[0] - (viewportContainerBox.width - scrollBarWidth);
+            if (viewportNodePoint[0] < 0) {
+                newLeft -= Math.abs(viewportNodePoint[0]);
+            } else {
+                if (viewportFullNodePoint[0] > viewportContainerBox.width - scrollBarWidth) {
+                    newLeft += viewportFullNodePoint[0] - viewportContainerBox.width + scrollBarWidth;
+                }
             }
 
-            if (viewportNodePoint[1] > viewportContainerBox.height - scrollBarWidth) {
-                newTop += viewportNodePoint[1] - (viewportContainerBox.height - scrollBarWidth);
+            if (viewportNodePoint[1] < 0) {
+                newTop -= Math.abs(viewportNodePoint[1]);
+            } else {
+                if (viewportFullNodePoint[1] > viewportContainerBox.height - scrollBarWidth) {
+                    newTop += viewportFullNodePoint[1] - viewportContainerBox.height + scrollBarWidth;
+                }
             }
 
             if (newLeft !== this.scrollLeft || newTop !== this.scrollTop) {
