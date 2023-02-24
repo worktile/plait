@@ -6,6 +6,8 @@ export const mockFlowData: FlowElement[] = [
             value: { children: [{ text: '开始' }] }
         },
         type: FlowElementType.node,
+        width: 120,
+        height: 38,
         points: [[248, 153]]
     },
     {
@@ -16,7 +18,11 @@ export const mockFlowData: FlowElement[] = [
         type: FlowElementType.node,
         points: [[400, 268.5]],
         width: 120,
-        height: 38
+        height: 38,
+        options: {
+            stroke: '#5dcfff',
+            fill: '#5dcfff'
+        }
     },
     {
         id: '1002',
@@ -26,7 +32,11 @@ export const mockFlowData: FlowElement[] = [
         type: FlowElementType.node,
         points: [[600, 268.5]],
         width: 120,
-        height: 38
+        height: 38,
+        options: {
+            stroke: '#ffcd5d',
+            fill: '#ffcd5d'
+        }
     },
     {
         id: '1003',
@@ -36,7 +46,27 @@ export const mockFlowData: FlowElement[] = [
         type: FlowElementType.node,
         points: [[800, 268.5]],
         width: 120,
-        height: 38
+        height: 38,
+        options: {
+            stroke: '#73d897',
+            fill: '#73d897'
+        }
+    },
+    {
+        id: '001',
+        data: {
+            value: { children: [{ text: '连线1' }] }
+        },
+        type: FlowElementType.edge,
+        source: {
+            id: '1001',
+            position: FlowPosition.top
+        },
+        target: {
+            id: '1002',
+            position: FlowPosition.top
+        },
+        points: []
     },
     {
         id: '002',
@@ -45,12 +75,28 @@ export const mockFlowData: FlowElement[] = [
         },
         type: FlowElementType.edge,
         source: {
-            id: '1001',
+            id: '1',
             position: FlowPosition.bottom
         },
         target: {
+            id: '1001',
+            position: FlowPosition.left
+        },
+        points: []
+    },
+    {
+        id: '003',
+        data: {
+            value: { children: [{ text: '连线3' }] }
+        },
+        type: FlowElementType.edge,
+        source: {
             id: '1002',
-            position: FlowPosition.top
+            position: FlowPosition.right
+        },
+        target: {
+            id: '1003',
+            position: FlowPosition.left
         },
         points: []
     }

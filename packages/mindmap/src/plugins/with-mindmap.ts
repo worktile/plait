@@ -34,16 +34,7 @@ import { MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from '../util
 import { withNodeDnd } from './with-dnd';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const {
-        drawElement,
-        dblclick,
-        mousedown,
-        globalMouseup,
-        keydown,
-        insertFragment,
-        setFragment,
-        deleteFragment
-    } = board;
+    const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMindmap.isPlaitMindmap(context.element)) {

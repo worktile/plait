@@ -6,7 +6,7 @@ export const isFlowEdgeElement = (value: PlaitElement): value is FlowElement => 
 };
 
 export interface FlowEdge extends FlowElement {
-    source: {
+    source?: {
         id: string;
         position: FlowPosition;
         handleId?: string;
@@ -18,3 +18,15 @@ export interface FlowEdge extends FlowElement {
     };
     [key: string]: any;
 }
+
+export interface FlowXYPosition {
+    x: number;
+    y: number;
+}
+
+export interface FlowDimensions {
+    width: number;
+    height: number;
+}
+
+export interface FlowRect extends FlowDimensions, FlowXYPosition {}
