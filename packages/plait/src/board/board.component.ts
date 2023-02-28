@@ -22,7 +22,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { SCROLL_BAR_WIDTH } from '../constants';
-import { BaseCursorStatus } from '../interfaces';
+import { PlaitPointerType } from '../interfaces';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitPlugin } from '../interfaces/plugin';
@@ -30,7 +30,7 @@ import { Viewport } from '../interfaces/viewport';
 import { createBoard } from '../plugins/create-board';
 import { withBoard } from '../plugins/with-board';
 import { withHistory } from '../plugins/with-history';
-import { withMove } from '../plugins/with-move';
+import { withHandPointer } from '../plugins/with-hand';
 import { withSelection } from '../plugins/with-selection';
 import { Transforms } from '../transforms';
 import {
@@ -40,8 +40,8 @@ import {
     getViewportContainerBox,
     invertViewportCoordinates,
     transformMat3,
-    updateCursorStatus,
-    getBoardClientBox
+    getBoardClientBox,
+    updatePointerType
 } from '../utils';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO_COMPONENT } from '../utils/weak-maps';
 
@@ -55,14 +55,13 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO
                 [index]="index"
                 [element]="item"
                 [board]="board"
-                [viewport]="board.viewport"
                 [selection]="board.selection"
                 [host]="host"
             ></plait-element>
         </div>
         <plait-toolbar
             *ngIf="isFocused && !toolbarTemplateRef"
-            [cursorStatus]="board.cursor"
+            [pointerType]="board.pointer"
             [viewZoom]="board.viewport!.zoom"
             (moveHandle)="changeMoveMode($event)"
             (adaptHandle)="adaptHandle()"
@@ -117,10 +116,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
 
-    public get isMoveMode(): boolean {
-        return this.board.cursor === BaseCursorStatus.move;
-    }
-
     get host(): SVGElement {
         return this.svg.nativeElement;
     }
@@ -131,7 +126,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     @HostBinding('class')
     get hostClass() {
-        return `plait-board-container ${this.board.cursor}`;
+        return `plait-board-container ${this.board.pointer}`;
     }
 
     @HostBinding('class.readonly')
@@ -141,7 +136,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
 
     @HostBinding('class.moving')
     get moving() {
-        return this.board.cursor === BaseCursorStatus.move && this.isMoving;
+        return this.board.pointer === PlaitPointerType.hand && this.isMoving;
     }
 
     @HostBinding('class.focused')
@@ -202,7 +197,7 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     }
 
     private initializePlugins() {
-        let board = withMove(withHistory(withSelection(withBoard(createBoard(this.host, this.plaitValue, this.plaitOptions)))));
+        let board = withHandPointer(withHistory(withSelection(withBoard(createBoard(this.host, this.plaitValue, this.plaitOptions)))));
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
         });
@@ -525,8 +520,8 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         return index;
     };
 
-    changeMoveMode(cursorStatus: BaseCursorStatus) {
-        updateCursorStatus(this.board, cursorStatus);
+    changeMoveMode(cursorStatus: PlaitPointerType) {
+        updatePointerType(this.board, cursorStatus);
         this.cdr.markForCheck();
     }
 

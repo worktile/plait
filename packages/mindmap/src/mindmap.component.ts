@@ -1,54 +1,58 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
-import { BASE, MINDMAP_KEY, STROKE_WIDTH } from './constants/index';
-import { MindmapElement } from './interfaces/element';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    HostBinding,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    SimpleChanges
+} from '@angular/core';
+import { BASE, MindmapNodeShape, MINDMAP_KEY, STROKE_WIDTH } from './constants/index';
+import { MindmapNodeElement, PlaitMindmap } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
-import { PlaitMindmap } from './interfaces/mindmap';
-import { createG, Selection, PlaitBoard } from '@plait/core';
-import { LayoutOptions, GlobalLayout, OriginNode, LayoutNode, isIndentedLayout, isHorizontalLayout } from '@plait/layouts';
-import { MINDMAP_TO_COMPONENT } from './plugins/weak-maps';
+import { createG, PlaitPluginElementComponent, BeforeContextChange, PlaitElement, PlaitPluginElementContext } from '@plait/core';
+import {
+    LayoutOptions,
+    GlobalLayout,
+    OriginNode,
+    LayoutNode,
+    isIndentedLayout,
+    isHorizontalLayout,
+    ConnectingPosition,
+    isHorizontalLogicLayout
+} from '@plait/layouts';
 import { getRootLayout } from './utils';
 import { MindmapQueries } from './queries';
-
 
 @Component({
     selector: 'plait-mindmap',
     template: `
-        <plait-mindmap-node
-            [mindmapGGroup]="mindmapGGroup"
-            [host]="host"
-            [node]="root"
-            [selection]="selection"
-            [board]="board"
-        ></plait-mindmap-node>
+        <plait-mindmap-node [mindmapG]="g" [host]="host" [node]="root" [selection]="selection" [board]="board"></plait-mindmap-node>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaitMindmapComponent implements OnInit, OnDestroy {
-    @HostBinding('class') hostClass = `plait-mindmap`;
-
+export class PlaitMindmapComponent extends PlaitPluginElementComponent<PlaitMindmap> implements OnInit, BeforeContextChange<PlaitMindmap> {
     root!: MindmapNode;
 
-    mindmapGGroup!: SVGGElement;
-
-    @Input() value!: PlaitMindmap;
-
-    @Input() selection: Selection | null = null;
-
-    @Input() host!: SVGElement;
-
-    @Input() board!: PlaitBoard;
-
-    constructor(private cdr: ChangeDetectorRef) {
-        this.mindmapGGroup = createG();
-        this.mindmapGGroup.setAttribute(MINDMAP_KEY, 'true');
+    constructor(public cdr: ChangeDetectorRef) {
+        super(cdr);
     }
 
     ngOnInit(): void {
-        this.updateMindmap(false);
+        super.ngOnInit();
+        this.updateMindmap();
+    }
+
+    beforeContextChange(value: PlaitPluginElementContext<PlaitMindmap>) {
+        if (value.element !== this.element && this.initialized) {
+            this.updateMindmap(true, value.element);
+        }
     }
 
     getOptions() {
-        function getMainAxle(element: MindmapElement, parent?: LayoutNode) {
+        function getMainAxle(element: MindmapNodeElement, parent?: LayoutNode) {
             const strokeWidth = element.strokeWidth || STROKE_WIDTH;
             if (element.isRoot) {
                 return BASE * 12;
@@ -59,7 +63,7 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
             return BASE * 3 + strokeWidth / 2;
         }
 
-        function getSecondAxle(element: MindmapElement, parent?: LayoutNode) {
+        function getSecondAxle(element: MindmapNodeElement, parent?: LayoutNode) {
             const strokeWidth = element.strokeWidth || STROKE_WIDTH;
             if (element.isRoot) {
                 return BASE * 10 + strokeWidth / 2;
@@ -67,19 +71,19 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
             return BASE * 6 + strokeWidth / 2;
         }
         return {
-            getHeight(element: MindmapElement) {
+            getHeight(element: MindmapNodeElement) {
                 if (element.isRoot) {
                     return element.height + BASE * 4;
                 }
                 return element.height + BASE * 2;
             },
-            getWidth(element: MindmapElement) {
+            getWidth(element: MindmapNodeElement) {
                 if (element.isRoot) {
                     return element.width + BASE * 6;
                 }
                 return element.width + BASE * 4;
             },
-            getHorizontalGap(element: MindmapElement, parent?: LayoutNode) {
+            getHorizontalGap(element: MindmapNodeElement, parent?: LayoutNode) {
                 const _layout = (parent && parent.layout) || getRootLayout(element);
                 const isHorizontal = isHorizontalLayout(_layout);
                 const strokeWidth = element.strokeWidth || STROKE_WIDTH;
@@ -92,7 +96,7 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
                     return getSecondAxle(element, parent);
                 }
             },
-            getVerticalGap(element: MindmapElement, parent?: LayoutNode) {
+            getVerticalGap(element: MindmapNodeElement, parent?: LayoutNode) {
                 const _layout = (parent && parent.layout) || getRootLayout(element);
                 if (isIndentedLayout(_layout)) {
                     return BASE;
@@ -104,6 +108,12 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
                     return getSecondAxle(element, parent);
                 }
             },
+            getVerticalConnectingPosition(element: MindmapNodeElement, parent?: LayoutNode) {
+                if (element.shape === MindmapNodeShape.underline && parent && isHorizontalLogicLayout(parent.layout)) {
+                    return ConnectingPosition.bottom;
+                }
+                return undefined;
+            },
             getExtendHeight(node: OriginNode) {
                 return BASE * 6;
             },
@@ -113,33 +123,23 @@ export class PlaitMindmapComponent implements OnInit, OnDestroy {
         };
     }
 
-    updateMindmap(doCheck = true) {
-        MINDMAP_TO_COMPONENT.set(this.value, this);
+    updateMindmap(doCheck = false, element: PlaitMindmap = this.element) {
         const options = this.getOptions() as LayoutOptions;
-        const mindmapLayoutType = MindmapQueries.getLayoutByElement(this.value);
-        this.root = GlobalLayout.layout(this.value as OriginNode, options, mindmapLayoutType) as any;
-        this.updateMindmapLocation();
+        const mindmapLayoutType = MindmapQueries.getLayoutByElement((element as unknown) as MindmapNodeElement);
+        this.root = GlobalLayout.layout((element as unknown) as OriginNode, options, mindmapLayoutType) as any;
+        this.updateMindmapLocation(element);
         if (doCheck) {
             this.cdr.detectChanges();
         }
     }
 
-    doCheck() {
-        this.cdr.markForCheck();
-    }
-
-    ngOnDestroy(): void {
-        this.mindmapGGroup.remove();
-        MINDMAP_TO_COMPONENT.delete(this.value);
-    }
-
-    updateMindmapLocation() {
+    updateMindmapLocation(element: PlaitMindmap) {
         const { x, y, hGap, vGap } = this.root;
         const offsetX = x + hGap;
         const offsetY = y + vGap;
         (this.root as any).eachNode((node: MindmapNode) => {
-            node.x = node.x - offsetX + this.value.points[0][0];
-            node.y = node.y - offsetY + this.value.points[0][1];
+            node.x = node.x - offsetX + this.element.points[0][0];
+            node.y = node.y - offsetY + this.element.points[0][1];
         });
     }
 }

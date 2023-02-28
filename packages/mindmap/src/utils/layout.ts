@@ -1,4 +1,4 @@
-import { LayoutDirection, LayoutDirectionsMap, MindmapElement } from '../interfaces';
+import { LayoutDirection, LayoutDirectionsMap, MindmapNodeElement } from '../interfaces';
 import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
 
 export const getBranchDirectionsByLayouts = (branchLayouts: MindmapLayoutType[]) => {
@@ -14,7 +14,7 @@ export const getBranchDirectionsByLayouts = (branchLayouts: MindmapLayoutType[])
     return branchDirections;
 };
 
-export const isCorrectLayout = (root: MindmapElement, layout: MindmapLayoutType) => {
+export const isCorrectLayout = (root: MindmapNodeElement, layout: MindmapLayoutType) => {
     const rootLayout = root.layout || getDefaultMindmapLayout();
     return !getInCorrectLayoutDirection(rootLayout, layout);
 };
@@ -64,7 +64,7 @@ export const correctLayoutByDirection = (layout: MindmapLayoutType, direction: L
     return inverseDirectionLayout;
 };
 
-export const getMindmapDirection = (root: MindmapElement) => {
+export const getMindmapDirection = (root: MindmapNodeElement) => {
     const layout = root.layout || getDefaultMindmapLayout();
     return LayoutDirectionsMap[layout];
 };
@@ -109,6 +109,6 @@ export const getLayoutReverseDirection = (layoutDirection: LayoutDirection) => {
     return reverseDirection;
 };
 
-export const getRootLayout = (root: MindmapElement) => {
+export const getRootLayout = (root: MindmapNodeElement) => {
     return root.layout || getDefaultMindmapLayout();
 };

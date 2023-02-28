@@ -1,5 +1,5 @@
 import { PlaitBoard, PLAIT_BOARD_TO_COMPONENT } from '@plait/core';
-import { MindmapElement } from '../interfaces';
+import { MindmapNodeElement } from '../interfaces';
 import { coerceArray } from './util';
 import { MINDMAP_ELEMENT_TO_COMPONENT, SELECTED_MINDMAP_ELEMENTS } from './weak-maps';
 
@@ -9,7 +9,7 @@ export function clearAllSelectedMindmapElements(board: PlaitBoard) {
     SELECTED_MINDMAP_ELEMENTS.delete(board);
 }
 
-export function addSelectedMindmapElements(board: PlaitBoard, elementOrElements: MindmapElement | MindmapElement[]) {
+export function addSelectedMindmapElements(board: PlaitBoard, elementOrElements: MindmapNodeElement | MindmapNodeElement[]) {
     if (hasSelectedMindmapElement(board, elementOrElements)) {
         deleteSelectedMindmapElements(board, elementOrElements);
     }
@@ -20,13 +20,13 @@ export function addSelectedMindmapElements(board: PlaitBoard, elementOrElements:
     });
 }
 
-export function hasSelectedMindmapElement(board: PlaitBoard, elementOrElements: MindmapElement | MindmapElement[]) {
+export function hasSelectedMindmapElement(board: PlaitBoard, elementOrElements: MindmapNodeElement | MindmapNodeElement[]) {
     let selectedElements = getSelectedMindmapElements(board);
     const selectedElementIds = selectedElements.map(node => node && node.id);
     return coerceArray(elementOrElements).every(node => selectedElementIds?.includes(node.id));
 }
 
-export function deleteSelectedMindmapElements(board: PlaitBoard, elementOrElements: MindmapElement | MindmapElement[]) {
+export function deleteSelectedMindmapElements(board: PlaitBoard, elementOrElements: MindmapNodeElement | MindmapNodeElement[]) {
     if (!hasSelectedMindmapElement(board, elementOrElements)) {
         return;
     }
@@ -41,7 +41,7 @@ export function getSelectedMindmapElements(board: PlaitBoard) {
     return selectedElements || [];
 }
 
-export function scrollIntoNode(board: PlaitBoard, elements: MindmapElement[]) {
+export function scrollIntoNode(board: PlaitBoard, elements: MindmapNodeElement[]) {
     if (elements) {
         const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(elements[0]);
         const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board);

@@ -1,8 +1,8 @@
-import { SimpleChanges } from '@angular/core';
+import { SimpleChanges, ViewContainerRef } from '@angular/core';
 import { PlaitBoard, PlaitBoardOptions } from '../interfaces/board';
-import { BaseCursorStatus } from '../interfaces/cursor';
+import { PlaitPointerType } from '../interfaces/pointer';
 import { PlaitElement } from '../interfaces/element';
-import { PlaitElementContext } from '../interfaces/element-context';
+import { PlaitPluginElementContext } from '../core/element/context';
 import { PlaitOperation } from '../interfaces/operation';
 import { Transforms } from '../transforms';
 import { FLUSHING } from '../utils/weak-maps';
@@ -21,7 +21,7 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
             undos: []
         },
         selection: null,
-        cursor: BaseCursorStatus.select,
+        pointer: PlaitPointerType.selection,
         options: options || {
             readonly: false,
             allowClearBoard: false,
@@ -54,9 +54,9 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         setFragment: (data: DataTransfer | null) => {},
         insertFragment: (data: DataTransfer | null) => {},
         deleteFragment: (data: DataTransfer | null) => {},
-        drawElement: (context: PlaitElementContext) => [],
-        redrawElement: (context: PlaitElementContext, changes: SimpleChanges) => [],
-        destroyElement: () => {}
+        drawElement: (context: PlaitPluginElementContext) => [],
+        redrawElement: (context: PlaitPluginElementContext, previousContext) => {},
+        destroyElement: (context: PlaitPluginElementContext) => {}
     };
     return board;
 }

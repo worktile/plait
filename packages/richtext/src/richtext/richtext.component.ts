@@ -563,6 +563,7 @@ const preventDefaultIME = (event: Event, editor: RichtextEditor) => {
         textNode.splitText(textNode.length - insertText.length).remove();
     }
 };
+
 export const hasEditableTarget = (editor: RichtextEditor, target: EventTarget | null): target is DOMNode => {
     return isDOMNode(target) && RichtextEditor.hasDOMNode(editor, target, { editable: true });
 };
