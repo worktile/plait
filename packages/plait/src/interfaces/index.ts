@@ -1,5 +1,5 @@
 export * from './board';
-export * from './cursor';
+export * from './pointer';
 export * from '../core/element/context';
 export * from './custom-types';
 export * from './element';

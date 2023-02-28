@@ -1,5 +1,5 @@
 import { SimpleChanges, ViewContainerRef } from '@angular/core';
-import { CursorStatus } from './cursor';
+import { PlaitPointerType } from './pointer';
 import { ComponentType, PlaitElement } from './element';
 import { PlaitPluginElementContext } from '../core/element/context';
 import { PlaitHistory } from './history';
@@ -14,7 +14,7 @@ export interface PlaitBoard {
     children: PlaitElement[];
     operations: PlaitOperation[];
     selection: Selection | null;
-    cursor: CursorStatus;
+    pointer: PlaitPointerType;
     history: PlaitHistory;
     options: PlaitBoardOptions;
     undo: () => void;

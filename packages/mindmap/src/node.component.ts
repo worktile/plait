@@ -11,7 +11,7 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import {
-    BaseCursorStatus,
+    PlaitPointerType,
     createG,
     createText,
     HOST_TO_ROUGH_SVG,
@@ -128,8 +128,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     destroy$: Subject<any> = new Subject();
 
-    public get cursorMove(): boolean {
-        return this.board.cursor === BaseCursorStatus.move;
+    public get handActive(): boolean {
+        return this.board.pointer === PlaitPointerType.hand;
     }
 
     constructor(private viewContainerRef: ViewContainerRef, private render2: Renderer2) {}
@@ -279,7 +279,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !!this.selection && !this.node.origin.isCollapsed && !this.cursorMove;
+                    return !!this.selection && !this.node.origin.isCollapsed && !this.handActive;
                 })
             )
             .subscribe(() => {
@@ -616,7 +616,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         // inteactive
         fromEvent(this.extendG, 'mouseup')
             .pipe(
-                filter(() => !this.cursorMove || this.board.options.readonly),
+                filter(() => !this.handActive || this.board.options.readonly),
                 take(1)
             )
             .subscribe(() => {

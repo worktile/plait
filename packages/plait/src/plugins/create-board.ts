@@ -1,6 +1,6 @@
 import { SimpleChanges, ViewContainerRef } from '@angular/core';
 import { PlaitBoard, PlaitBoardOptions } from '../interfaces/board';
-import { BaseCursorStatus } from '../interfaces/cursor';
+import { PlaitPointerType } from '../interfaces/pointer';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitPluginElementContext } from '../core/element/context';
 import { PlaitOperation } from '../interfaces/operation';
@@ -22,7 +22,7 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
             undos: []
         },
         selection: null,
-        cursor: BaseCursorStatus.select,
+        pointer: PlaitPointerType.selection,
         options: options || {
             readonly: false,
             allowClearBoard: false,

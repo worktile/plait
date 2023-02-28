@@ -1,4 +1,4 @@
-import { BaseCursorStatus, PlaitBoard, Point } from '../interfaces';
+import { PlaitPointerType, PlaitBoard, Point } from '../interfaces';
 
 export type ViewBox = {
     minX: number;
@@ -34,8 +34,8 @@ export function isNoSelectionElement(e: Event) {
     return (e.target as HTMLElement)?.closest('.plait-board-attached');
 }
 
-export const updateCursorStatus = (board: PlaitBoard, cursor: BaseCursorStatus) => {
-    if (cursor) {
-        board.cursor = cursor;
+export const updatePointerType = (board: PlaitBoard, pointer: PlaitPointerType) => {
+    if (pointer) {
+        board.pointer = pointer;
     }
 };

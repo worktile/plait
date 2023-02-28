@@ -11,8 +11,6 @@ import {
     toPoint,
     transformPoint,
     Transforms,
-    BaseCursorStatus,
-    updateCursorStatus,
     ELEMENT_TO_PLUGIN_COMPONENT
 } from '@plait/core';
 import {
@@ -103,7 +101,6 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
             if (!isDragging) {
                 isDragging = true;
-                updateCursorStatus(board, BaseCursorStatus.drag);
                 fakeDragNodeG = createG();
                 fakeDragNodeG.classList.add('dragging', 'fake-node', 'plait-board-attached');
                 fakeDropNodeG = createG();
@@ -210,7 +207,6 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 removeActiveOnDragOrigin(activeElement);
             }
             isDragging = false;
-            updateCursorStatus(board, BaseCursorStatus.select);
             activeElement = null;
             fakeDragNodeG?.remove();
             fakeDragNodeG = undefined;
