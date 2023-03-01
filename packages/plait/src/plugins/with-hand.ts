@@ -31,7 +31,8 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         if (board.pointer === PlaitPointerType.hand && board.selection && boardComponent.isMoving) {
             const left = event.x - plaitBoardMove.x;
             const top = event.y - plaitBoardMove.y;
-            boardComponent.setScroll(boardComponent.scrollLeft - left, boardComponent.scrollTop - top);
+            const { scrollLeft, scrollTop } = boardComponent.viewportState;
+            boardComponent.setScroll(scrollLeft! - left, scrollTop! - top);
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
         }
