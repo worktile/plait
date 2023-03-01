@@ -46,7 +46,7 @@ export function scrollIntoNode(board: PlaitBoard, elements: MindmapNodeElement[]
         const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(elements[0]);
         const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board);
         if (mindmapNodeComponent) {
-            boardComponent!.scrollIntoView({
+            boardComponent!.scrollNodeIntoView({
                 x: mindmapNodeComponent.node.x,
                 y: mindmapNodeComponent.node.y,
                 width: mindmapNodeComponent.node.width,

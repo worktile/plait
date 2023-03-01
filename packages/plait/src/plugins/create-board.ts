@@ -12,8 +12,7 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         host,
         viewport: {
             zoom: 1,
-            viewBackgroundColor: '#000',
-            canvasPoint: []
+            viewBackgroundColor: '#000'
         },
         children,
         operations: [],
