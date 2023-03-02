@@ -1,4 +1,10 @@
-# Plait platform
+<div align="center">
+  <h2>
+    Plait </br>
+    A completely customizable framework for building all-in-one drawing whiteboards. </br>
+  <br />
+  </h3>
+</div>
 
 # Development
 **start-up**
@@ -13,6 +19,5 @@ npm run start
 ```
 
 **privew url**
-board: [http://localhost:4200/mindmap](http://localhost:7100)
 
-richtext: [http://localhost:4200/richtext](http://localhost:7100/richtext)
+mindmap board: [http://localhost:7100/](http://localhost:7100)
