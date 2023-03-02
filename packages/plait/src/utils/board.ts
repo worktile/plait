@@ -1,4 +1,5 @@
-import { PlaitPointerType, PlaitBoard, Point } from '../interfaces';
+import { PlaitBoard } from '../interfaces/board';
+import { Point } from '../interfaces/point';
 
 export type ViewBox = {
     minX: number;
@@ -29,9 +30,3 @@ export function transformPoint(board: PlaitBoard, point: Point) {
 export function isNoSelectionElement(e: Event) {
     return (e.target as HTMLElement)?.closest('.plait-board-attached');
 }
-
-export const updatePointerType = (board: PlaitBoard, pointer: PlaitPointerType) => {
-    if (pointer) {
-        board.pointer = pointer;
-    }
-};

@@ -1,6 +1,7 @@
 import { PlaitBoardComponent } from '../board/board.component';
 import { PlaitPointerType, PlaitBoard, PlaitBoardMove } from '../interfaces';
-import { PLAIT_BOARD_TO_COMPONENT, updatePointerType } from '../utils';
+import { updatePointerType } from '../transforms/board';
+import { PLAIT_BOARD_TO_COMPONENT } from '../utils';
 
 export function withHandPointer<T extends PlaitBoard>(board: T) {
     const { mousedown, mousemove, globalMouseup, keydown, keyup } = board;

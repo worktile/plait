@@ -22,7 +22,6 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { SCROLL_BAR_WIDTH } from '../constants';
-import { PlaitPointerType } from '../interfaces';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions, PlaitBoardViewport } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitPlugin } from '../interfaces/plugin';
@@ -40,10 +39,12 @@ import {
     getViewportContainerBox,
     invertViewportCoordinates,
     transformMat3,
-    getBoardClientBox,
-    updatePointerType
+    getBoardClientBox
 } from '../utils';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO_COMPONENT } from '../utils/weak-maps';
+import { BoardComponentInterface } from './board.component.interface';
+import { RectangleClient } from '../interfaces/graph';
+import { PlaitPointerType } from '../interfaces/pointer';
 
 @Component({
     selector: 'plait-board',
@@ -61,9 +62,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO
         </div>
         <plait-toolbar
             *ngIf="isFocused && !toolbarTemplateRef"
-            [pointerType]="board.pointer"
-            [viewZoom]="board.viewport!.zoom"
-            (moveHandle)="changeMoveMode($event)"
+            [board]="board"
             (adaptHandle)="adaptHandle()"
             (zoomInHandle)="zoomInHandle()"
             (zoomOutHandle)="zoomOutHandle()"
@@ -73,7 +72,7 @@ import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
+export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnChanges, AfterViewInit, OnDestroy {
     hasInitialized = false;
 
     board!: PlaitBoard;
@@ -425,44 +424,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         this.setViewport();
     }
 
-    scrollNodeIntoView(node: { x: number; y: number; width: number; height: number }) {
-        this.calcViewBox();
-        this.updateViewBoxStyles();
-        this.updateViewportScrolling();
-        this.setViewport();
-
-        const svgRect = this.host.getBoundingClientRect();
-        const viewportContainerBox = getViewportContainerBox(this.board);
-
-        if (svgRect.width > viewportContainerBox.width || svgRect.height > viewportContainerBox.height) {
-            const matrix = this.getMatrix();
-            const scrollBarWidth = this.viewportState.scrollBarWidth;
-            const [nodePointX, nodePointY] = convertToViewportCoordinates([node.x, node.y], matrix);
-            const [fullNodePointX, fullNodePointY] = convertToViewportCoordinates([node.x + node.width, node.y + node.height], matrix);
-
-            let newLeft = this.viewportState.scrollLeft!;
-            let newTop = this.viewportState.scrollTop!;
-
-            if (nodePointX < 0) {
-                newLeft -= Math.abs(nodePointX);
-            }
-            if (nodePointX > 0 && fullNodePointX > viewportContainerBox.width) {
-                newLeft += fullNodePointX - viewportContainerBox.width + scrollBarWidth;
-            }
-
-            if (nodePointY < 0) {
-                newTop -= Math.abs(nodePointY);
-            }
-            if (nodePointY > 0 && fullNodePointY > viewportContainerBox.height) {
-                newTop += fullNodePointY - viewportContainerBox.height + scrollBarWidth;
-            }
-
-            if (newLeft !== this.viewportState.scrollLeft! || newTop !== this.viewportState.scrollTop!) {
-                this.setScroll(newLeft, newTop);
-            }
-        }
-    }
-
     private updateViewBoxStyles() {
         const { host, viewportState } = this;
         const { viewportWidth, viewportHeight, viewBox } = viewportState;
@@ -501,11 +462,6 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
     trackBy = (index: number, element: PlaitElement) => {
         return index;
     };
-
-    changeMoveMode(cursorStatus: PlaitPointerType) {
-        updatePointerType(this.board, cursorStatus);
-        this.cdr.markForCheck();
-    }
 
     adaptHandle() {
         const containerBox = getViewportContainerBox(this.board);
@@ -570,6 +526,51 @@ export class PlaitBoardComponent implements OnInit, OnChanges, AfterViewInit, On
         HOST_TO_ROUGH_SVG.delete(this.host);
         if (this.resizeObserver) {
             this.resizeObserver.disconnect();
+        }
+    }
+
+    markForCheck() {
+        this.cdr.markForCheck();
+    }
+
+    scrollToRectangle(client: RectangleClient) {
+        this.calcViewBox();
+        this.updateViewBoxStyles();
+        this.updateViewportScrolling();
+        this.setViewport();
+
+        const svgRect = this.host.getBoundingClientRect();
+        const viewportContainerBox = getViewportContainerBox(this.board);
+
+        if (svgRect.width > viewportContainerBox.width || svgRect.height > viewportContainerBox.height) {
+            const matrix = this.getMatrix();
+            const scrollBarWidth = this.viewportState.scrollBarWidth;
+            const [nodePointX, nodePointY] = convertToViewportCoordinates([client.x, client.y], matrix);
+            const [fullNodePointX, fullNodePointY] = convertToViewportCoordinates(
+                [client.x + client.width, client.y + client.height],
+                matrix
+            );
+
+            let newLeft = this.viewportState.scrollLeft!;
+            let newTop = this.viewportState.scrollTop!;
+
+            if (nodePointX < 0) {
+                newLeft -= Math.abs(nodePointX);
+            }
+            if (nodePointX > 0 && fullNodePointX > viewportContainerBox.width) {
+                newLeft += fullNodePointX - viewportContainerBox.width + scrollBarWidth;
+            }
+
+            if (nodePointY < 0) {
+                newTop -= Math.abs(nodePointY);
+            }
+            if (nodePointY > 0 && fullNodePointY > viewportContainerBox.height) {
+                newTop += fullNodePointY - viewportContainerBox.height + scrollBarWidth;
+            }
+
+            if (newLeft !== this.viewportState.scrollLeft! || newTop !== this.viewportState.scrollTop!) {
+                this.setScroll(newLeft, newTop);
+            }
         }
     }
 }

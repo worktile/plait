@@ -16,7 +16,7 @@ export function addSelectedMindmapElements(board: PlaitBoard, elementOrElements:
     let selectedElements = getSelectedMindmapElements(board);
     SELECTED_MINDMAP_ELEMENTS.set(board, [...selectedElements, ...coerceArray(elementOrElements)]);
     setTimeout(() => {
-        scrollIntoNode(board, coerceArray(elementOrElements));
+        scrollToNode(board, coerceArray(elementOrElements));
     });
 }
 
@@ -41,12 +41,12 @@ export function getSelectedMindmapElements(board: PlaitBoard) {
     return selectedElements || [];
 }
 
-export function scrollIntoNode(board: PlaitBoard, elements: MindmapNodeElement[]) {
+export function scrollToNode(board: PlaitBoard, elements: MindmapNodeElement[]) {
     if (elements) {
         const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(elements[0]);
         const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board);
         if (mindmapNodeComponent) {
-            boardComponent!.scrollNodeIntoView({
+            boardComponent!.scrollToRectangle({
                 x: mindmapNodeComponent.node.x,
                 y: mindmapNodeComponent.node.y,
                 width: mindmapNodeComponent.node.width,

@@ -1,4 +1,3 @@
-import { SimpleChanges, ViewContainerRef } from '@angular/core';
 import { PlaitPointerType } from './pointer';
 import { ComponentType, PlaitElement } from './element';
 import { PlaitPluginElementContext } from '../core/element/context';

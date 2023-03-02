@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
-import { PlaitPointerType } from '../../interfaces';
+import { PlaitBoard, PlaitPointerType } from '../../interfaces';
+import { updatePointerType } from '../../transforms/board';
 
 @Component({
     selector: 'plait-toolbar',
@@ -7,23 +8,20 @@ import { PlaitPointerType } from '../../interfaces';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaitToolbarComponent {
-    _viewZoom = 100;
-
     PlaitPointerType = PlaitPointerType;
 
     @HostBinding('class') hostClass = `plait-board-toolbar`;
 
-    @Input() pointerType!: PlaitPointerType;
+    @Input() board!: PlaitBoard;
 
-    @Input()
-    set viewZoom(zoom: number) {
-        this._viewZoom = Number(((zoom ?? 1) * 100).toFixed(0));
-    }
-    get viewZoom() {
-        return this._viewZoom;
+    get zoom() {
+        const zoom = this.board?.viewport.zoom || 1;
+        return Number((zoom * 100).toFixed(0));
     }
 
-    @Output() moveHandle: EventEmitter<PlaitPointerType> = new EventEmitter();
+    get pointerType() {
+        return this.board.pointer || PlaitPointerType.selection;
+    }
 
     @Output() adaptHandle = new EventEmitter();
 
@@ -33,12 +31,8 @@ export class PlaitToolbarComponent {
 
     @Output() resetZoomHandel = new EventEmitter();
 
-    dragMove() {
-        if (this.pointerType !== PlaitPointerType.hand) {
-            this.moveHandle.emit(PlaitPointerType.hand);
-        } else {
-            this.moveHandle.emit(PlaitPointerType.selection);
-        }
+    activeHand() {
+        updatePointerType(this.board, this.pointerType === PlaitPointerType.hand ? PlaitPointerType.selection : PlaitPointerType.hand);
     }
 
     // 适应画布
