@@ -1,7 +1,8 @@
 <div align="center">
   <h2>
     Plait </br>
-    A completely customizable framework for building all-in-one drawing whiteboards. </br>
+    A completely customizable framework </br>
+    for building all-in-one drawing whiteboards. </br>
   <br />
   </h3>
 </div>
