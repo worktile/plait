@@ -12,16 +12,18 @@ import {
     PlaitHistoryBoard,
     PlaitPlugin,
     PlaitPluginElementContext,
+    RectangleClient,
     toPoint,
     transformPoint,
-    Transforms
+    Transforms,
+    Selection
 } from '@plait/core';
 import { getWidthByText } from '@plait/richtext';
 import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { PlaitMindmapComponent } from '../mindmap.component';
 import { buildNodes, changeRightNodeCount, createEmptyNode, extractNodesText, findPath } from '../utils';
-import { hitMindmapNode } from '../utils/graph';
+import { getRectangleByNode, hitMindmapNode, toRectangleClient } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
 import {
     addSelectedMindmapElements,
@@ -42,7 +44,8 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         keydown,
         insertFragment,
         setFragment,
-        deleteFragment
+        deleteFragment,
+        isIntersectionSelection
     } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
@@ -52,38 +55,47 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         return drawElement(context);
     };
 
-    board.mousedown = (event: MouseEvent) => {
-        // select mindmap node
-        const point = transformPoint(board, toPoint(event.x, event.y, board.host));
-
-        board.children.forEach((value: PlaitElement) => {
-            if (PlaitMindmap.isPlaitMindmap(value)) {
-                const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitMindmapComponent;
-                const root = mindmapComponent?.root;
-                (root as any).eachNode((node: MindmapNode) => {
-                    if (hitMindmapNode(board, point, node)) {
-                        addSelectedMindmapElements(board, node.origin);
-                    } else {
-                        hasSelectedMindmapElement(board, node.origin) && deleteSelectedMindmapElements(board, node.origin);
-                    }
-                });
-            }
-        });
-        mousedown(event);
-    };
-
-    board.globalMouseup = (event: MouseEvent) => {
-        const isBoardInside = event.target instanceof Node && board.host.contains(event.target);
-        const isFakeNode = event.target instanceof HTMLElement && event.target.closest('.fake-node');
-        const noSelectionElement = isNoSelectionElement(event);
-        if (!isBoardInside && !noSelectionElement && !isFakeNode) {
-            const hasSelectedElement = SELECTED_MINDMAP_ELEMENTS.has(board);
-            if (hasSelectedElement) {
-                clearAllSelectedMindmapElements(board);
-            }
+    board.isIntersectionSelection = (element) => {
+        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
+        if (nodeComponent && board.selection) {
+            const target = getRectangleByNode(nodeComponent.node);
+            return RectangleClient.isIntersect(RectangleClient.toRectangleClient([board.selection.anchor, board.selection.focus]), target);
         }
-        globalMouseup(event);
-    };
+        return isIntersectionSelection(element);
+    }
+
+    // board.mousedown = (event: MouseEvent) => {
+    //     // select mindmap node
+    //     const point = transformPoint(board, toPoint(event.x, event.y, board.host));
+
+    //     board.children.forEach((value: PlaitElement) => {
+    //         if (PlaitMindmap.isPlaitMindmap(value)) {
+    //             const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitMindmapComponent;
+    //             const root = mindmapComponent?.root;
+    //             (root as any).eachNode((node: MindmapNode) => {
+    //                 if (hitMindmapNode(board, point, node)) {
+    //                     addSelectedMindmapElements(board, node.origin);
+    //                 } else {
+    //                     hasSelectedMindmapElement(board, node.origin) && deleteSelectedMindmapElements(board, node.origin);
+    //                 }
+    //             });
+    //         }
+    //     });
+    //     mousedown(event);
+    // };
+
+    // board.globalMouseup = (event: MouseEvent) => {
+    //     const isBoardInside = event.target instanceof Node && board.host.contains(event.target);
+    //     const isFakeNode = event.target instanceof HTMLElement && event.target.closest('.fake-node');
+    //     const noSelectionElement = isNoSelectionElement(event);
+    //     if (!isBoardInside && !noSelectionElement && !isFakeNode) {
+    //         const hasSelectedElement = SELECTED_MINDMAP_ELEMENTS.has(board);
+    //         if (hasSelectedElement) {
+    //             clearAllSelectedMindmapElements(board);
+    //         }
+    //     }
+    //     globalMouseup(event);
+    // };
 
     board.keydown = (event: KeyboardEvent) => {
         if (board.options.readonly || IS_TEXT_EDITABLE.get(board)) {

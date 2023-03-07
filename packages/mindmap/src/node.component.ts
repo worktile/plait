@@ -38,7 +38,7 @@ import { hasEditableTarget, PlaitRichtextComponent, setFullSelectionAndFocus, up
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject, timer } from 'rxjs';
 import { debounceTime, filter, map, take, takeUntil, tap } from 'rxjs/operators';
-import { Editor, Operation } from 'slate';
+import { Editor, Operation, Node as SlateNode } from 'slate';
 import {
     EXTEND_OFFSET,
     EXTEND_RADIUS,
@@ -320,6 +320,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         this.destroyActiveG();
         const selected = hasSelectedMindmapElement(this.board, this.node.origin);
         if (selected) {
+            console.log('节点选中：', SlateNode.string(this.node.origin.value));
             let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
             const selectedStrokeG = drawRoundRectangle(
                 this.roughSVG as RoughSVG,

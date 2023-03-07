@@ -30,7 +30,7 @@ import { createBoard } from '../plugins/create-board';
 import { withBoard } from '../plugins/with-board';
 import { withHistory } from '../plugins/with-history';
 import { withHandPointer } from '../plugins/with-hand';
-import { withSelection } from '../plugins/with-selection';
+import { getElementIdsIntersectionSelection, withSelection } from '../plugins/with-selection';
 import { Transforms } from '../transforms';
 import {
     getRootGroupBBox,
@@ -41,9 +41,9 @@ import {
     transformMat3,
     getBoardClientBox
 } from '../utils';
-import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO_COMPONENT } from '../utils/weak-maps';
+import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO_COMPONENT, SELECTED_ELEMENT_IDS } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
-import { RectangleClient } from '../interfaces/graph';
+import { RectangleClient } from '../interfaces/rectangle-client';
 import { PlaitPointerType } from '../interfaces/pointer';
 
 @Component({
@@ -151,6 +151,14 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         this.initializeEvents();
         PLAIT_BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ON_CHANGE.set(this.board, () => {
+
+            // with selection action
+            if (this.board.operations.find((value) => value.type === 'set_selection')) {
+                const elementIds = getElementIdsIntersectionSelection(this.board)
+                SELECTED_ELEMENT_IDS.set(this.board, elementIds);
+                console.log('elementIds: ', elementIds);
+            }
+
             this.cdr.detectChanges();
             const changeEvent: PlaitBoardChangeEvent = {
                 children: this.board.children,
@@ -212,6 +220,12 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
+            });
+
+        fromEvent<MouseEvent>(this.host, 'mouseup')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: MouseEvent) => {
+                this.board.mouseup(event);
             });
 
         fromEvent<MouseEvent>(document, 'mouseup')

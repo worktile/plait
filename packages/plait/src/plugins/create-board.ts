@@ -46,8 +46,9 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         },
         onChange: () => {},
         mousedown: (event: MouseEvent) => {},
-        globalMouseup: (event: MouseEvent) => {},
         mousemove: (event: MouseEvent) => {},
+        mouseup: (event: MouseEvent) => {},
+        globalMouseup: (event: MouseEvent) => {},
         keydown: (event: KeyboardEvent) => {},
         keyup: (event: KeyboardEvent) => {},
         dblclick: (event: MouseEvent) => {},
@@ -56,7 +57,9 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         deleteFragment: (data: DataTransfer | null) => {},
         drawElement: (context: PlaitPluginElementContext) => [],
         redrawElement: (context: PlaitPluginElementContext, previousContext) => {},
-        destroyElement: (context: PlaitPluginElementContext) => {}
+        destroyElement: (context: PlaitPluginElementContext) => {},
+        isWithinSelection: element => false,
+        isIntersectionSelection: element => false
     };
     return board;
 }

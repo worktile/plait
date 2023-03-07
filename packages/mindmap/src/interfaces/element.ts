@@ -5,7 +5,6 @@ import { PlaitElement, Point } from '@plait/core';
 import { MindmapQueries } from '../queries';
 
 export interface MindmapNodeElement extends PlaitElement {
-    id: string;
     value: Element;
     children: MindmapNodeElement[];
     rightNodeCount?: number;
