@@ -1,11 +1,10 @@
-import { idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
+import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH } from '../constants';
 import { MindmapNode, PlaitMindmap } from '../interfaces';
 import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
-import { addSelectedMindmapElements } from './selected-elements';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
@@ -199,7 +198,7 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapNodeEleme
         shape
     };
     Transforms.insertNode(board, newElement, path);
-    addSelectedMindmapElements(board, newElement);
+    addSelectedElement(board, newElement);
     setTimeout(() => {
         const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
         if (nodeComponent) {

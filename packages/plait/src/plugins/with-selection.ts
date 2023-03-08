@@ -1,15 +1,13 @@
-import { PlaitNode } from '../interfaces/node';
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom';
-import { depthFirstRecursion } from '../utils/tree';
-import { PlaitElement } from '../interfaces/element';
 import { RectangleClient } from '../interfaces/rectangle-client';
+import { cacheselectedElements, calcElementIntersectionSelection } from '../utils/selected-element';
 
 export function withSelection<T extends PlaitBoard>(board: T) {
-    const { mousedown, mousemove, mouseup } = board;
+    const { mousedown, mousemove, mouseup, onChange } = board;
 
     let start: Point | null = null;
     let end: Point | null = null;
@@ -43,15 +41,18 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         mouseup(event);
     };
 
+    board.onChange = () => {
+        // calc selected elements entry
+        try {
+            if (board.operations.find(value => value.type === 'set_selection')) {
+                const elementIds = calcElementIntersectionSelection(board);
+                cacheselectedElements(board, elementIds);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+        onChange();
+    };
+
     return board;
 }
-
-export const getElementIdsIntersectionSelection = (board: PlaitBoard) => {
-    const elementIds: string[] = [];
-    depthFirstRecursion<PlaitNode>(board, node => {
-        if (PlaitElement.isElement(node) && board.isIntersectionSelection(node)) {
-            elementIds.push(node.id);
-        }
-    });
-    return elementIds;
-};

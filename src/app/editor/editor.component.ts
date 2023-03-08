@@ -1,7 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
+import { getSelectedElements, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
-import { findPath, getSelectedMindmapElements, MindmapNodeShape, MindmapTransforms, MINDMAP_ELEMENT_TO_COMPONENT, withMindmap } from '@plait/mindmap';
+import {
+    findPath,
+    MindmapNodeElement,
+    MindmapNodeShape,
+    MindmapTransforms,
+    MINDMAP_ELEMENT_TO_COMPONENT,
+    withMindmap
+} from '@plait/mindmap';
 import { mockMindmapData } from './mock-data';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
@@ -42,9 +49,9 @@ export class BasicBoardEditorComponent implements OnInit {
 
     layoutChange(event: Event) {
         const value = (event.target as HTMLSelectElement).value as MindmapLayoutType;
-        const selectedElements = getSelectedMindmapElements(this.board)?.[0];
+        const selectedElements = getSelectedElements(this.board)?.[0];
 
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements);
+        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements as MindmapNodeElement);
 
         const path = nodeComponent ? findPath(this.board, nodeComponent.node) : [0];
         MindmapTransforms.setMindmapLayout(this.board, value, path);
@@ -52,9 +59,9 @@ export class BasicBoardEditorComponent implements OnInit {
 
     shapeChange(event: Event) {
         const value = (event.target as HTMLSelectElement).value as MindmapNodeShape;
-        const selectedElements = getSelectedMindmapElements(this.board)?.[0];
+        const selectedElements = getSelectedElements(this.board)?.[0];
 
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements);
+        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements as MindmapNodeElement);
 
         const path = nodeComponent ? findPath(this.board, nodeComponent.node) : [0];
         Transforms.setNode(this.board, { shape: value }, path);

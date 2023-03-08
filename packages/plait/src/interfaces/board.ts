@@ -12,6 +12,8 @@ export interface PlaitBoard {
     viewport: Viewport;
     children: PlaitElement[];
     operations: PlaitOperation[];
+    // record pointer selection or drag selection
+    // it will be dirty when board viewport change
     selection: Selection | null;
     pointer: PlaitPointerType;
     history: PlaitHistory;

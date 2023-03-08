@@ -21,7 +21,8 @@ import {
     Selection,
     toPoint,
     transformPoint,
-    Transforms
+    Transforms,
+    isSelectedElement
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -37,7 +38,7 @@ import {
 import { hasEditableTarget, PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject, timer } from 'rxjs';
-import { debounceTime, filter, map, take, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, filter, map, take, takeUntil } from 'rxjs/operators';
 import { Editor, Operation, Node as SlateNode } from 'slate';
 import {
     EXTEND_OFFSET,
@@ -61,14 +62,7 @@ import { MindmapQueries } from './queries';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
 import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { createEmptyNode, findLastChild, findPath, getChildrenCount } from './utils/mindmap';
-import {
-    addSelectedMindmapElements,
-    clearAllSelectedMindmapElements,
-    deleteSelectedMindmapElements,
-    hasSelectedMindmapElement
-} from './utils/selected-elements';
 import { getNodeShapeByElement } from './utils/shape';
-
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 
 @Component({
@@ -318,7 +312,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     drawActiveG() {
         this.destroyActiveG();
-        const selected = hasSelectedMindmapElement(this.board, this.node.origin);
+        const selected = isSelectedElement(this.board, this.node.origin);
         if (selected) {
             console.log('节点选中：', SlateNode.string(this.node.origin.value));
             let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
@@ -363,7 +357,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         if (!this.gGroup) {
             return;
         }
-        const selected = hasSelectedMindmapElement(this.board, this.node.origin);
+        const selected = isSelectedElement(this.board, this.node.origin);
         if (selected) {
             this.render2.addClass(this.gGroup, 'active');
         } else {
@@ -592,15 +586,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 const path = findPath(this.board, this.node).concat(this.node.origin.children.length);
                 createEmptyNode(this.board, this.node.origin, path);
             });
-
-        fromEvent(quickInsertG, 'mousedown')
-            .pipe(
-                map(e => e.stopPropagation()),
-                take(1)
-            )
-            .subscribe(() => {
-                clearAllSelectedMindmapElements(this.board);
-            });
     }
 
     drawExtend() {
@@ -785,11 +770,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             const node = changes['node'];
             if (node) {
                 MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
-                const selectedState = hasSelectedMindmapElement(this.board, node.previousValue.origin);
-                if (selectedState) {
-                    addSelectedMindmapElements(this.board, this.node.origin);
-                }
-                if (!selectedState && this.isEditable) {
+                if (!isSelectedElement(this.board, node.previousValue.origin) && this.isEditable) {
                     this.isEditable = false;
                 }
                 // resolve move node richtext lose issue
@@ -939,7 +920,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnDestroy(): void {
         this.destroyRichtext();
-        deleteSelectedMindmapElements(this.board, this.node.origin);
         this.gGroup.remove();
         this.destroy$.next();
         this.destroy$.complete();
