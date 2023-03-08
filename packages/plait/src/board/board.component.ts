@@ -83,8 +83,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     viewportState: PlaitBoardViewport = {
         zoom: 1,
-        autoFitPadding: 8,
-        scrollBarWidth: SCROLL_BAR_WIDTH
+        autoFitPadding: 8
     };
 
     public isMoving = false;
@@ -192,13 +191,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
         if (this.plaitViewport) {
             this.board.viewport = this.plaitViewport;
+            this.updateViewportState({
+                zoom: this.plaitViewport?.zoom ?? 1
+            });
         }
-
-        const scrollBarWidth = this.plaitOptions?.hideScrollbar ? SCROLL_BAR_WIDTH : 0;
-        this.updateViewportState({
-            scrollBarWidth,
-            zoom: this.board.viewport?.zoom ?? 1
-        });
     }
 
     private initializeEvents() {
@@ -330,8 +326,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         this.renderer2.setStyle(this.viewportContainer.nativeElement, 'height', `${height}px`);
     }
 
-    initViewport() {
-        const viewport = this.board.viewport;
+    initViewport(viewport = this.board.viewport) {
         const originationCoord = viewport?.originationCoord;
         const zoom = viewport?.zoom ?? this.viewportState.zoom;
 
@@ -351,7 +346,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     calcViewBox(zoom = this.viewportState.zoom) {
         zoom = clampZoomLevel(zoom);
 
-        const scrollBarWidth = this.viewportState.scrollBarWidth;
+        const scrollBarWidth = this.plaitOptions?.hideScrollbar ? SCROLL_BAR_WIDTH : 0;
         const viewportContainerBox = getViewportContainerBox(this.board);
         const groupBBox = getRootGroupBBox(this.board, zoom);
         const horizontalPadding = viewportContainerBox.width / 2;
@@ -404,14 +399,16 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     setScrollLeft(left: number) {
         const viewportContainerBox = getViewportContainerBox(this.board);
-        const { viewportWidth, scrollBarWidth } = this.viewportState;
+        const scrollBarWidth = this.plaitOptions?.hideScrollbar ? SCROLL_BAR_WIDTH : 0;
+        const { viewportWidth } = this.viewportState;
         const width = viewportWidth! - viewportContainerBox.width + scrollBarWidth;
         this.viewportState.scrollLeft = left < 0 ? 0 : left > width ? width : left;
     }
 
     setScrollTop(top: number) {
         const viewportContainerBox = getViewportContainerBox(this.board);
-        const { viewportHeight, scrollBarWidth } = this.viewportState;
+        const scrollBarWidth = this.plaitOptions?.hideScrollbar ? SCROLL_BAR_WIDTH : 0;
+        const { viewportHeight } = this.viewportState;
         const height = viewportHeight! - viewportContainerBox.height + scrollBarWidth;
         this.viewportState.scrollTop = top < 0 ? 0 : top > height ? height : top;
     }
@@ -543,8 +540,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         const viewportContainerBox = getViewportContainerBox(this.board);
 
         if (svgRect.width > viewportContainerBox.width || svgRect.height > viewportContainerBox.height) {
+            const scrollBarWidth = this.plaitOptions?.hideScrollbar ? SCROLL_BAR_WIDTH : 0;
             const matrix = this.getMatrix();
-            const scrollBarWidth = this.viewportState.scrollBarWidth;
             const [nodePointX, nodePointY] = convertToViewportCoordinates([client.x, client.y], matrix);
             const [fullNodePointX, fullNodePointY] = convertToViewportCoordinates(
                 [client.x + client.width, client.y + client.height],
