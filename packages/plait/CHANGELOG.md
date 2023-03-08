@@ -1,5 +1,13 @@
 # plait
 
+## 0.0.58
+
+### Patch Changes
+
+-   [#232](https://github.com/worktile/plait/pull/232) [`33beb32`](https://github.com/worktile/plait/commit/33beb326070c0d66d544037d110e6b6773ef7fa2) Thanks [@Maple13](https://github.com/Maple13)! - optimize parameter usage
+
+*   [`6888f93`](https://github.com/worktile/plait/commit/6888f93633a88f7677deab6c8fa90f09585e9cff) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - export BoardTransforms
+
 ## 0.0.57
 
 ### Patch Changes
