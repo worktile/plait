@@ -8,6 +8,7 @@ export interface PlaitElement extends PlaitNode {
 }
 
 export const PlaitElement = {
+    // board node don't contain id
     isElement: (value: any): value is PlaitElement => {
         return !!value.id;
     }

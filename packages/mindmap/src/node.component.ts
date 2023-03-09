@@ -832,9 +832,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 this.updateRichtext();
                 // 更新富文本、更新宽高
                 let { width, height } = richtextInstance.editable.getBoundingClientRect();
-                if (height === 40) {
-                    console.log(height, 'height');
-                }
                 if (width < NODE_MIN_WIDTH) {
                     width = NODE_MIN_WIDTH;
                 }
