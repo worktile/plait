@@ -12,6 +12,6 @@ export const BOARD_TO_ON_CHANGE = new WeakMap<PlaitBoard, () => void>();
 
 export const HOST_TO_ROUGH_SVG = new WeakMap<SVGElement, RoughSVG>();
 
-export const BOARD_TO_COMPONENT = new WeakMap<PlaitBoard, BoardComponentInterface>();
+export const PLAIT_BOARD_TO_COMPONENT = new WeakMap<PlaitBoard, BoardComponentInterface>();
 
 export const BOARD_TO_SELECTED_ELEMENT = new WeakMap<PlaitBoard, PlaitElement[]>();

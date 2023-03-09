@@ -41,7 +41,7 @@ import {
     transformMat3,
     getBoardClientBox
 } from '../utils';
-import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, BOARD_TO_COMPONENT } from '../utils/weak-maps';
+import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO_COMPONENT } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import { PlaitPointerType } from '../interfaces/pointer';
@@ -148,7 +148,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         HOST_TO_ROUGH_SVG.set(this.host, roughSVG);
         this.initializePlugins();
         this.initializeEvents();
-        BOARD_TO_COMPONENT.set(this.board, this);
+        PLAIT_BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.cdr.detectChanges();
             const changeEvent: PlaitBoardChangeEvent = {

@@ -4,7 +4,7 @@ import { PLAIT_BOARD_TO_COMPONENT } from '../utils';
 
 export const updatePointerType = (board: PlaitBoard, pointer: PlaitPointerType) => {
     board.pointer = pointer;
-    const boardComponent = BOARD_TO_COMPONENT.get(board);
+    const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board);
     boardComponent?.markForCheck();
 };
 
