@@ -12,6 +12,8 @@ export interface PlaitBoard {
     viewport: Viewport;
     children: PlaitElement[];
     operations: PlaitOperation[];
+    // record pointer selection or drag selection
+    // it will be dirty when board viewport change
     selection: Selection | null;
     pointer: PlaitPointerType;
     history: PlaitHistory;
@@ -21,8 +23,9 @@ export interface PlaitBoard {
     apply: (operation: PlaitOperation) => void;
     onChange: () => void;
     mousedown: (event: MouseEvent) => void;
-    globalMouseup: (event: MouseEvent) => void;
     mousemove: (event: MouseEvent) => void;
+    mouseup: (event: MouseEvent) => void;
+    globalMouseup: (event: MouseEvent) => void;
     keydown: (event: KeyboardEvent) => void;
     keyup: (event: KeyboardEvent) => void;
     setFragment: (data: DataTransfer | null) => void;
@@ -32,6 +35,8 @@ export interface PlaitBoard {
     drawElement: (context: PlaitPluginElementContext) => SVGGElement[] | ComponentType<PlaitPluginElementComponent>;
     redrawElement: (context: PlaitPluginElementContext, previousContext?: PlaitPluginElementContext) => SVGGElement[] | void;
     destroyElement: (context: PlaitPluginElementContext) => void;
+    isIntersectionSelection: (element: PlaitElement) => boolean;
+    isWithinSelection: (element: PlaitElement) => boolean;
 }
 
 export interface PlaitBoardChangeEvent {

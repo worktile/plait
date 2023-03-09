@@ -43,7 +43,7 @@ import {
 } from '../utils';
 import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO_COMPONENT } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
-import { RectangleClient } from '../interfaces/graph';
+import { RectangleClient } from '../interfaces/rectangle-client';
 import { PlaitPointerType } from '../interfaces/pointer';
 
 @Component({
@@ -208,6 +208,12 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
+            });
+
+        fromEvent<MouseEvent>(this.host, 'mouseup')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: MouseEvent) => {
+                this.board.mouseup(event);
             });
 
         fromEvent<MouseEvent>(document, 'mouseup')

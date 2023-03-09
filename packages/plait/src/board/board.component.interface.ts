@@ -1,4 +1,4 @@
-import { RectangleClient } from "../interfaces/graph";
+import { RectangleClient } from "../interfaces/rectangle-client";
 
 export interface BoardComponentInterface {
     markForCheck: () => void;
