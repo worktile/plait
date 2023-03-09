@@ -60,7 +60,6 @@ export interface PlaitBoardMove {
 export interface PlaitBoardViewport {
     zoom: number;
     autoFitPadding: number;
-    scrollBarWidth: number;
     focusPoint?: number[];
     viewBox?: number[];
     viewportWidth?: number;

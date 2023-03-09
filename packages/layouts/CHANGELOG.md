@@ -1,5 +1,11 @@
 # layouts
 
+## 0.0.57
+
+### Patch Changes
+
+-   [`5a3e6f6`](https://github.com/worktile/plait/commit/5a3e6f6fc1f298875d50c369d1135e645934a791) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct right/left/standard layout, reference connecting position in layout
+
 ## 0.0.49
 
 ### Patch Changes
