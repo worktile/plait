@@ -22,7 +22,9 @@ import {
     toPoint,
     transformPoint,
     Transforms,
-    isSelectedElement
+    isSelectedElement,
+    removeSelectedElement,
+    addSelectedElement
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -770,6 +772,11 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             const node = changes['node'];
             if (node) {
                 MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
+                const isSelected = isSelectedElement(this.board, node.previousValue.origin);
+                if (isSelected) {
+                    removeSelectedElement(this.board, node.previousValue.origin);
+                    addSelectedElement(this.board, node.currentValue.origin);
+                }
                 if (!isSelectedElement(this.board, node.previousValue.origin) && this.isEditable) {
                     this.isEditable = false;
                 }
@@ -919,6 +926,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     };
 
     ngOnDestroy(): void {
+        removeSelectedElement(this.board, this.node.origin);
         this.destroyRichtext();
         this.gGroup.remove();
         this.destroy$.next();

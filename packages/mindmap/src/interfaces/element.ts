@@ -1,8 +1,9 @@
 import { Element } from 'slate';
 import { MindmapNodeShape } from '../constants/node';
 import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
-import { PlaitElement, Point } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point } from '@plait/core';
 import { MindmapQueries } from '../queries';
+import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils';
 
 export interface MindmapNodeElement extends PlaitElement {
     value: Element;
@@ -46,5 +47,8 @@ export const MindmapNodeElement = {
     isIndentedLayout(value: MindmapNodeElement) {
         const _layout = MindmapQueries.getLayoutByElement(value) as MindmapLayoutType;
         return isIndentedLayout(_layout);
+    },
+    isMindmapNodeElement(board: PlaitBoard, element: PlaitElement) {
+        return !!MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
     }
 };

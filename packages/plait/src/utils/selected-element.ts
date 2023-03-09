@@ -14,7 +14,7 @@ export const calcElementIntersectionSelection = (board: PlaitBoard) => {
     return selectedElements;
 };
 
-export const cacheselectedElements = (board: PlaitBoard, selectedElements: PlaitElement[]) => {
+export const cacheSelectedElements = (board: PlaitBoard, selectedElements: PlaitElement[]) => {
     BOARD_TO_SELECTED_ELEMENT.set(board, selectedElements);
 };
 
@@ -24,13 +24,13 @@ export const getSelectedElements = (board: PlaitBoard) => {
 
 export const addSelectedElement = (board: PlaitBoard, element: PlaitElement) => {
     const selectedElements = getSelectedElements(board);
-    cacheselectedElements(board, [...selectedElements, element]);
+    cacheSelectedElements(board, [...selectedElements, element]);
 };
 
 export const removeSelectedElement = (board: PlaitBoard, element: PlaitElement) => {
     const selectedElements = getSelectedElements(board);
-    const newselectedElements = selectedElements.filter(value => value === element);
-    cacheselectedElements(board, newselectedElements);
+    const newselectedElements = selectedElements.filter(value => value !== element);
+    cacheSelectedElements(board, newselectedElements);
 };
 
 export const isSelectedElement = (board: PlaitBoard, element: PlaitElement) => {

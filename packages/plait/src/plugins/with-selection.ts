@@ -4,7 +4,7 @@ import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom';
 import { RectangleClient } from '../interfaces/rectangle-client';
-import { cacheselectedElements, calcElementIntersectionSelection } from '../utils/selected-element';
+import { cacheSelectedElements, calcElementIntersectionSelection } from '../utils/selected-element';
 
 export function withSelection<T extends PlaitBoard>(board: T) {
     const { mousedown, mousemove, mouseup, onChange } = board;
@@ -46,7 +46,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         try {
             if (board.operations.find(value => value.type === 'set_selection')) {
                 const elementIds = calcElementIntersectionSelection(board);
-                cacheselectedElements(board, elementIds);
+                cacheSelectedElements(board, elementIds);
             }
         } catch (error) {
             console.error(error);
