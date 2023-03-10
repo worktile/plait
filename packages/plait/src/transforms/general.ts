@@ -159,6 +159,7 @@ export const GeneralTransforms: GeneralTransforms = {
             } else {
                 board.selection = null;
             }
+
             board.viewport = isDraft(viewport) ? (finishDraft(viewport) as Viewport) : viewport;
         }
     }

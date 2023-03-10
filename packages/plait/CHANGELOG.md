@@ -1,5 +1,27 @@
 # plait
 
+## 0.0.58
+
+### Patch Changes
+
+-   [#232](https://github.com/worktile/plait/pull/232) [`33beb32`](https://github.com/worktile/plait/commit/33beb326070c0d66d544037d110e6b6773ef7fa2) Thanks [@Maple13](https://github.com/Maple13)! - optimize parameter usage
+
+*   [`6888f93`](https://github.com/worktile/plait/commit/6888f93633a88f7677deab6c8fa90f09585e9cff) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - export BoardTransforms
+
+## 0.0.57
+
+### Patch Changes
+
+-   [`f4d5b3b`](https://github.com/worktile/plait/commit/f4d5b3b42f6273a8324674278096402e2dc41f1d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename cursor to pointer
+
+*   [`2af223f`](https://github.com/worktile/plait/commit/2af223fa6f55b0062da255dd752ae1de236d43a8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract plugin-element-component as base classs, add global ELEMENT_TO_PLUGIN_COMPONENT
+
+-   [#226](https://github.com/worktile/plait/pull/226) [`000192c`](https://github.com/worktile/plait/commit/000192cc5eee3a81e58f59c2c43e494b6b0dd81a) Thanks [@Maple13](https://github.com/Maple13)! - refactor viewport
+
+*   [`cbbe631`](https://github.com/worktile/plait/commit/cbbe631ee4818dd83ede05127554ce8d679e4211) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add update updatePointerType func and add BoardComponentInterface
+
+-   [`03804a0`](https://github.com/worktile/plait/commit/03804a0c4dd52d9918a2b73c814385edc6e4d447) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - resolve the issue that onChange event is fired unexpectedly
+
 ## 0.0.56
 
 ### Patch Changes

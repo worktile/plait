@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { PlaitElement, PlaitPluginElementContext } from '../../interfaces';
+import { addSelectedElement, isSelectedElement, removeSelectedElement } from '../../utils/selected-element';
 import { createG } from '../../utils/dom';
 import { hasBeforeContextChange } from './before-context-change';
 
@@ -15,6 +16,13 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
     set context(value: PlaitPluginElementContext<T>) {
         if (hasBeforeContextChange<T>(this)) {
             this.beforeContextChange(value);
+        }
+        const elementChanged = this.element && this.element !== value.element;
+        if (elementChanged) {
+            if (isSelectedElement(this.board, this.element)) {
+                removeSelectedElement(this.board, this.element);
+                addSelectedElement(this.board, value.element);
+            }
         }
         this._context = value;
         if (this.element) {
@@ -62,6 +70,7 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
 
     ngOnDestroy(): void {
         ELEMENT_TO_PLUGIN_COMPONENT.delete(this.element);
+        removeSelectedElement(this.board, this.element);
         this.g.remove();
     }
 }

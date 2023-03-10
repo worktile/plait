@@ -67,6 +67,7 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         if (this.initialized) {
             const context = this.getContext();
             if (this.instance) {
+                
                 this.instance.context = context.current;
             }
             const result = this.board.redrawElement(context.current, context.previous);

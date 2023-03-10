@@ -1,18 +1,8 @@
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    HostBinding,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
-    SimpleChanges
-} from '@angular/core';
-import { BASE, MindmapNodeShape, MINDMAP_KEY, STROKE_WIDTH } from './constants/index';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { BASE, MindmapNodeShape, STROKE_WIDTH } from './constants/index';
 import { MindmapNodeElement, PlaitMindmap } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
-import { createG, PlaitPluginElementComponent, BeforeContextChange, PlaitElement, PlaitPluginElementContext } from '@plait/core';
+import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext } from '@plait/core';
 import {
     LayoutOptions,
     GlobalLayout,

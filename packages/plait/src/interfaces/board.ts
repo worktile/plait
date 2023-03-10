@@ -1,5 +1,4 @@
-import { SimpleChanges, ViewContainerRef } from '@angular/core';
-import { CursorStatus } from './cursor';
+import { PlaitPointerType } from './pointer';
 import { ComponentType, PlaitElement } from './element';
 import { PlaitPluginElementContext } from '../core/element/context';
 import { PlaitHistory } from './history';
@@ -13,8 +12,10 @@ export interface PlaitBoard {
     viewport: Viewport;
     children: PlaitElement[];
     operations: PlaitOperation[];
+    // record pointer selection or drag selection
+    // it will be dirty when board viewport change
     selection: Selection | null;
-    cursor: CursorStatus;
+    pointer: PlaitPointerType;
     history: PlaitHistory;
     options: PlaitBoardOptions;
     undo: () => void;
@@ -22,8 +23,9 @@ export interface PlaitBoard {
     apply: (operation: PlaitOperation) => void;
     onChange: () => void;
     mousedown: (event: MouseEvent) => void;
-    globalMouseup: (event: MouseEvent) => void;
     mousemove: (event: MouseEvent) => void;
+    mouseup: (event: MouseEvent) => void;
+    globalMouseup: (event: MouseEvent) => void;
     keydown: (event: KeyboardEvent) => void;
     keyup: (event: KeyboardEvent) => void;
     setFragment: (data: DataTransfer | null) => void;
@@ -33,6 +35,8 @@ export interface PlaitBoard {
     drawElement: (context: PlaitPluginElementContext) => SVGGElement[] | ComponentType<PlaitPluginElementComponent>;
     redrawElement: (context: PlaitPluginElementContext, previousContext?: PlaitPluginElementContext) => SVGGElement[] | void;
     destroyElement: (context: PlaitPluginElementContext) => void;
+    isIntersectionSelection: (element: PlaitElement) => boolean;
+    isWithinSelection: (element: PlaitElement) => boolean;
 }
 
 export interface PlaitBoardChangeEvent {
@@ -51,4 +55,15 @@ export interface PlaitBoardOptions {
 export interface PlaitBoardMove {
     x: number;
     y: number;
+}
+
+export interface PlaitBoardViewport {
+    zoom: number;
+    autoFitPadding: number;
+    focusPoint?: number[];
+    viewBox?: number[];
+    viewportWidth?: number;
+    viewportHeight?: number;
+    scrollLeft?: number;
+    scrollTop?: number;
 }
