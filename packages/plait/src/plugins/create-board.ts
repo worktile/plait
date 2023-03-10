@@ -1,6 +1,6 @@
 import { SimpleChanges, ViewContainerRef } from '@angular/core';
 import { PlaitBoard, PlaitBoardOptions } from '../interfaces/board';
-import { BaseCursorStatus } from '../interfaces/cursor';
+import { PlaitPointerType } from '../interfaces/pointer';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitPluginElementContext } from '../core/element/context';
 import { PlaitOperation } from '../interfaces/operation';
@@ -12,8 +12,7 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         host,
         viewport: {
             zoom: 1,
-            viewBackgroundColor: '#000',
-            canvasPoint: []
+            viewBackgroundColor: '#000'
         },
         children,
         operations: [],
@@ -22,7 +21,7 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
             undos: []
         },
         selection: null,
-        cursor: BaseCursorStatus.select,
+        pointer: PlaitPointerType.selection,
         options: options || {
             readonly: false,
             allowClearBoard: false,
@@ -47,8 +46,9 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         },
         onChange: () => {},
         mousedown: (event: MouseEvent) => {},
-        globalMouseup: (event: MouseEvent) => {},
         mousemove: (event: MouseEvent) => {},
+        mouseup: (event: MouseEvent) => {},
+        globalMouseup: (event: MouseEvent) => {},
         keydown: (event: KeyboardEvent) => {},
         keyup: (event: KeyboardEvent) => {},
         dblclick: (event: MouseEvent) => {},
@@ -57,7 +57,9 @@ export function createBoard(host: SVGElement, children: PlaitElement[], options:
         deleteFragment: (data: DataTransfer | null) => {},
         drawElement: (context: PlaitPluginElementContext) => [],
         redrawElement: (context: PlaitPluginElementContext, previousContext) => {},
-        destroyElement: (context: PlaitPluginElementContext) => {}
+        destroyElement: (context: PlaitPluginElementContext) => {},
+        isWithinSelection: element => false,
+        isIntersectionSelection: element => false
     };
     return board;
 }
