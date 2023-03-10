@@ -1,5 +1,5 @@
 import { DEFAULT_POSITIONS } from '../constants';
-import { FlowHandle } from '../interfaces';
+import { FlowHandle, FlowPosition } from '../interfaces';
 
 /**
  * getDefaultHandles

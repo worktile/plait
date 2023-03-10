@@ -1,9 +1,13 @@
 import { Options } from 'roughjs/bin/core';
-import { FlowElement, FlowPosition } from './element';
+import { FlowElement, FlowElementType, FlowPosition } from './element';
+import { PlaitElement } from '@plait/core';
 
+export const isFlowNodeElement = (value: PlaitElement): value is FlowNode => {
+    return value.type === FlowElementType.node;
+};
 export interface FlowHandle {
-    id: string;
     position: FlowPosition;
+    id?: string;
     offsetX?: number;
     offsetY?: number;
 }

@@ -29,7 +29,7 @@ import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withNodeDnd } from './with-dnd';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, mousedown, globalMouseup, keydown, insertFragment, setFragment, deleteFragment } = board;
+    const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isIntersectionSelection } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMindmap.isPlaitMindmap(context.element)) {

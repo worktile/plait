@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
 import { drawRichtext } from '@plait/richtext';
-import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext, HOST_TO_ROUGH_SVG } from '@plait/core';
+import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext, HOST_TO_ROUGH_SVG, createG } from '@plait/core';
 import { FlowNode } from './interfaces';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { drawRectangleNode } from './draw/node';
-import { getRectangleByNode } from './utils/get-rectangle-by-node';
+import { SELECTED_FlOW_ELEMENTS } from './plugins/weak-maps';
+import { getClientByNode } from './queries/get-client-by-node';
+import { drawHandles, drawNode } from './draw/node';
 
 @Component({
     selector: 'plait-flow-node',
@@ -14,11 +15,15 @@ import { getRectangleByNode } from './utils/get-rectangle-by-node';
 export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> implements OnInit, BeforeContextChange<FlowNode>, OnDestroy {
     nodeG: SVGGElement | null = null;
 
+    activeNodeG: SVGGElement | null = null;
+
     roughSVG!: RoughSVG;
 
     foreignObject?: SVGForeignObjectElement;
 
     richtextG?: SVGGElement;
+
+    handlesG: SVGGElement | null = null;
 
     constructor(public cdr: ChangeDetectorRef, public viewContainerRef: ViewContainerRef, public render2: Renderer2) {
         super(cdr);
@@ -35,18 +40,28 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
         if (value.element !== this.element && this.initialized) {
             this.updateElement(true, value.element);
         }
+        if (value.selection !== this.selection && this.initialized) {
+            const activeElement = SELECTED_FlOW_ELEMENTS.get(this.board);
+            const isActive = activeElement && activeElement[0] === this.element;
+            if (isActive) {
+                this.drawActiveElement(value.element);
+            } else {
+                this.destroyActiveElement();
+                this.destroyHandles();
+            }
+        }
     }
 
-    drawElement() {
+    drawElement(element: FlowNode = this.element) {
         this.destroyElement();
-        this.nodeG = drawRectangleNode(this.roughSVG, this.element);
-        this.g.append(this.nodeG);
+        this.nodeG = drawNode(this.roughSVG, element);
+        this.g.prepend(this.nodeG);
     }
 
-    drawRichtext() {
+    drawRichtext(element: FlowNode = this.element) {
         this.destroyRichtext();
-        const { x, y, width, height } = getRectangleByNode(this.element);
-        const richtext = drawRichtext(x, y, width, height, this.element.data.value, this.viewContainerRef);
+        const { x, y, width, height } = getClientByNode(element);
+        const richtext = drawRichtext(x, y, width, height, element.data.value, this.viewContainerRef);
         if (richtext) {
             const { richtextG } = richtext;
             this.richtextG = richtextG;
@@ -55,9 +70,26 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
         }
     }
 
+    drawActiveElement(element: FlowNode = this.element) {
+        this.destroyActiveElement();
+        this.activeNodeG = drawNode(this.roughSVG, element, { stroke: '#4e8afa', strokeWidth: 2, fill: '' }, true);
+        this.g.prepend(this.activeNodeG);
+    }
+
+    drawHandles(element: FlowNode = this.element) {
+        this.destroyHandles();
+        const handles = drawHandles(this.roughSVG, element);
+        this.handlesG = createG();
+        handles.map(item => {
+            this.handlesG?.append(item);
+        });
+        this.g.append(this.handlesG);
+    }
+
     updateElement(doCheck = false, element: FlowNode = this.element) {
-        this.destroyElement();
-        this.drawRichtext();
+        this.drawElement(element);
+        this.drawRichtext(element);
+        this.drawHandles(element);
         if (doCheck) {
             this.cdr.detectChanges();
         }
@@ -70,9 +102,23 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
         }
     }
 
+    destroyActiveElement() {
+        if (this.activeNodeG) {
+            this.activeNodeG.remove();
+            this.activeNodeG = null;
+        }
+    }
+
     destroyRichtext() {
         if (this.richtextG) {
             this.richtextG.remove();
+        }
+    }
+
+    destroyHandles() {
+        if (this.handlesG) {
+            this.handlesG.remove();
+            this.handlesG = null;
         }
     }
 
