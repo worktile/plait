@@ -37,16 +37,16 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
         }
     }
 
-    drawElement() {
+    drawElement(element: FlowNode = this.element) {
         this.destroyElement();
-        this.nodeG = drawRectangleNode(this.roughSVG, this.element);
+        this.nodeG = drawRectangleNode(this.roughSVG, element);
         this.g.append(this.nodeG);
     }
 
-    drawRichtext() {
+    drawRichtext(element: FlowNode = this.element) {
         this.destroyRichtext();
-        const { x, y, width, height } = getRectangleByNode(this.element);
-        const richtext = drawRichtext(x, y, width, height, this.element.data.value, this.viewContainerRef);
+        const { x, y, width, height } = getRectangleByNode(element);
+        const richtext = drawRichtext(x, y, width, height, element.data.value, this.viewContainerRef);
         if (richtext) {
             const { richtextG } = richtext;
             this.richtextG = richtextG;
@@ -56,8 +56,8 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
     }
 
     updateElement(doCheck = false, element: FlowNode = this.element) {
-        this.destroyElement();
-        this.drawRichtext();
+        this.drawElement(element);
+        this.drawRichtext(element);
         if (doCheck) {
             this.cdr.detectChanges();
         }

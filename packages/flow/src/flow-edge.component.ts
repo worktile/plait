@@ -29,20 +29,14 @@ export class FlowEdgeComponent extends PlaitPluginElementComponent<FlowEdge> imp
         }
     }
 
-    updateFlowEdge(doCheck = false, element: FlowEdge = this.element) {
-        if (doCheck) {
-            this.cdr.detectChanges();
-        }
-    }
-
-    drawElement() {
+    drawElement(element: FlowEdge = this.element) {
         this.destroyElement();
         this.nodeG = drawEdge(this.board, this.roughSVG, this.element);
         this.g.append(this.nodeG);
     }
 
     updateElement(doCheck = false, element: FlowEdge = this.element) {
-        this.destroyElement();
+        this.drawElement(element);
         if (doCheck) {
             this.cdr.detectChanges();
         }
