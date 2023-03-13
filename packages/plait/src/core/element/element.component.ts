@@ -40,8 +40,6 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
 
     @Input() selection: Selection | null = null;
 
-    @Input() host!: SVGElement;
-
     constructor(public renderer2: Renderer2, public viewContainerRef: ViewContainerRef) {}
 
     ngOnInit(): void {
@@ -53,7 +51,7 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         this.initialized = true;
         this.gGroup = createG();
         this.renderer2.setAttribute(this.gGroup, 'plait-element-group', this.index.toString());
-        this.host.append(this.gGroup);
+        PlaitBoard.getElementHost(this.board).append(this.gGroup);
     }
 
     drawElement() {
@@ -94,7 +92,6 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
             element: this.element,
             selection: this.selection,
             board: this.board,
-            host: this.host
         };
         if (this.context) {
             const previous = { ...this.context };

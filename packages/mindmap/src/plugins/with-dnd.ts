@@ -1,7 +1,6 @@
 import {
     createG,
     distanceBetweenPointAndPoint,
-    HOST_TO_ROUGH_SVG,
     IS_TEXT_EDITABLE,
     Path,
     PlaitBoard,
@@ -121,7 +120,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             const offsetX = endPoint[0] - startPoint[0];
             const offsetY = endPoint[1] - startPoint[1];
             const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
-            const roughSVG = HOST_TO_ROUGH_SVG.get(board.host) as RoughSVG;
+            const roughSVG = PlaitBoard.getRoughSVG(board);
             const fakeDragingNode: MindmapNode = {
                 ...activeComponent.node,
                 children: [],

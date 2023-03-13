@@ -6,6 +6,9 @@ import { PlaitOperation } from './operation';
 import { Selection } from './selection';
 import { Viewport } from './viewport';
 import { PlaitPluginElementComponent } from '../core/element/plugin-element';
+import { BOARD_TO_COMPONENT, BOARD_TO_ELEMENT_HOST, BOARD_TO_HOST, BOARD_TO_ROUGH_SVG } from '../utils/weak-maps';
+import { RoughSVG } from 'roughjs/bin/svg';
+import { BoardComponentInterface } from '../board/board.component.interface';
 
 export interface PlaitBoard {
     host: SVGElement;
@@ -67,3 +70,18 @@ export interface PlaitBoardViewport {
     scrollLeft?: number;
     scrollTop?: number;
 }
+
+export const PlaitBoard = {
+    getHost(board: PlaitBoard) {
+        return BOARD_TO_HOST.get(board) as SVGSVGElement;
+    },
+    getElementHost(board: PlaitBoard) {
+        return BOARD_TO_ELEMENT_HOST.get(board) as SVGGElement;
+    },
+    getRoughSVG(board: PlaitBoard) {
+        return BOARD_TO_ROUGH_SVG.get(board) as RoughSVG;
+    },
+    getComponent(board: PlaitBoard) {
+        return BOARD_TO_COMPONENT.get(board) as BoardComponentInterface;
+    }
+};
