@@ -4,5 +4,4 @@ export interface PlaitPluginElementContext<T extends PlaitElement = PlaitElement
     element: T;
     selection: Selection | null;
     board: PlaitBoard;
-    host: SVGElement;
 }
