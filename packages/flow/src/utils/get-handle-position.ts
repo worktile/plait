@@ -1,6 +1,7 @@
-import { FlowHandle, FlowPosition, FlowRect, FlowXYPosition } from '../interfaces';
+import { FlowHandle, FlowPosition } from '../interfaces';
+import { RectangleClient, XYPosition } from '@plait/core';
 
-export function getHandlePosition(position: FlowPosition, nodeRect: FlowRect, handle: FlowHandle | null = null): FlowXYPosition {
+export function getHandlePosition(position: FlowPosition, nodeRect: RectangleClient, handle: FlowHandle | null = null): XYPosition {
     const x = (handle?.offsetX || 0) + nodeRect.x;
     const y = (handle?.offsetY || 0) + nodeRect.y;
     const width = nodeRect.width;

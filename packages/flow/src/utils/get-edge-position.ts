@@ -1,5 +1,6 @@
-import { FlowHandle, FlowPosition, FlowRect } from '../interfaces';
+import { FlowHandle, FlowPosition } from '../interfaces';
 import { getHandlePosition } from '../utils/get-handle-position';
+import { RectangleClient } from '@plait/core';
 
 interface EdgePositions {
     sourceX: number;
@@ -9,10 +10,10 @@ interface EdgePositions {
 }
 
 export const getEdgePositions = (
-    sourceNodeRect: FlowRect,
+    sourceNodeRect: RectangleClient,
     sourceHandle: FlowHandle,
     sourcePosition: FlowPosition,
-    targetNodeRect: FlowRect,
+    targetNodeRect: RectangleClient,
     targetHandle: FlowHandle,
     targetPosition: FlowPosition
 ): EdgePositions => {

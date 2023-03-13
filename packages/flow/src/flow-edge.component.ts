@@ -25,7 +25,7 @@ export class FlowEdgeComponent extends PlaitPluginElementComponent<FlowEdge> imp
 
     beforeContextChange(value: PlaitPluginElementContext<FlowEdge>) {
         if (value.element !== this.element && this.initialized) {
-            this.updateElement(true, value.element);
+            this.drawElement(value.element);
         }
     }
 
@@ -35,22 +35,10 @@ export class FlowEdgeComponent extends PlaitPluginElementComponent<FlowEdge> imp
         this.g.append(this.nodeG);
     }
 
-    updateElement(doCheck = false, element: FlowEdge = this.element) {
-        this.drawElement(element);
-        if (doCheck) {
-            this.cdr.detectChanges();
-        }
-    }
-
     destroyElement() {
         if (this.nodeG) {
             this.nodeG.remove();
             this.nodeG = null;
         }
-    }
-
-    ngOnDestroy(): void {
-        super.ngOnDestroy();
-        this.destroyElement();
     }
 }

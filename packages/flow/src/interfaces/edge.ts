@@ -18,15 +18,3 @@ export interface FlowEdge extends FlowElement {
     };
     [key: string]: any;
 }
-
-export interface FlowXYPosition {
-    x: number;
-    y: number;
-}
-
-export interface FlowDimensions {
-    width: number;
-    height: number;
-}
-
-export interface FlowRect extends FlowDimensions, FlowXYPosition {}

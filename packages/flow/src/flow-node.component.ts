@@ -33,7 +33,7 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
 
     beforeContextChange(value: PlaitPluginElementContext<FlowNode>) {
         if (value.element !== this.element && this.initialized) {
-            this.updateElement(true, value.element);
+            this.updateElement(value.element);
         }
     }
 
@@ -48,19 +48,15 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
         const { x, y, width, height } = getRectangleByNode(element);
         const richtext = drawRichtext(x, y, width, height, element.data.value, this.viewContainerRef);
         if (richtext) {
-            const { richtextG } = richtext;
-            this.richtextG = richtextG;
-            this.render2.addClass(richtextG, 'flow-node-richtext');
-            this.g.append(richtextG);
+            this.richtextG = richtext.richtextG;
+            this.render2.addClass(this.richtextG, 'flow-node-richtext');
+            this.g.append(this.richtextG);
         }
     }
 
-    updateElement(doCheck = false, element: FlowNode = this.element) {
+    updateElement(element: FlowNode = this.element) {
         this.drawElement(element);
         this.drawRichtext(element);
-        if (doCheck) {
-            this.cdr.detectChanges();
-        }
     }
 
     destroyElement() {
@@ -74,11 +70,5 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
         if (this.richtextG) {
             this.richtextG.remove();
         }
-    }
-
-    ngOnDestroy(): void {
-        super.ngOnDestroy();
-        this.destroyElement();
-        this.destroyRichtext();
     }
 }
