@@ -3,21 +3,17 @@ import {
     IS_TEXT_EDITABLE,
     Path,
     PlaitBoard,
-    PlaitElement,
     PlaitPlugin,
-    PlaitPluginElementContext,
     Point,
     Transforms,
-    isNoSelectionElement,
     toPoint,
     transformPoint
 } from '@plait/core';
 import { FlowNodeComponent } from '../flow-node.component';
-import { FlowEdge, FlowElement, isFlowNodeElement } from '../interfaces';
+import { FlowElement, isFlowNodeElement } from '../interfaces';
 import { getEdgesByNode } from '../queries/get-edges-by-node';
-import { FlowNode } from '../interfaces/node';
 import { FlowEdgeComponent } from '../flow-edge.component';
-import { isHitFlowNode } from '../queries/is-hit-flow-node';
+import { isHitFlowNode } from '../queries/is-hit-flow-element';
 
 export const withFloweDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup, keydown } = board;
@@ -38,8 +34,8 @@ export const withFloweDnd: PlaitPlugin = (board: PlaitBoard) => {
         (board.children as FlowElement[]).forEach(value => {
             if (isFlowNodeElement(value)) {
                 const flowNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as FlowNodeComponent;
-                const hitFlowNode = isHitFlowNode(event, board, point, flowNodeComponent.element);
-                if (hitFlowNode) {
+                const hitFlowElement = isHitFlowNode(flowNodeComponent.element, point);
+                if (hitFlowElement) {
                     activeComponent = flowNodeComponent;
                     activeElement = value;
                     startPoint = point;

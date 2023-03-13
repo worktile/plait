@@ -1,9 +1,15 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
 import { drawRichtext } from '@plait/richtext';
-import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext, HOST_TO_ROUGH_SVG, createG } from '@plait/core';
+import {
+    PlaitPluginElementComponent,
+    BeforeContextChange,
+    PlaitPluginElementContext,
+    HOST_TO_ROUGH_SVG,
+    createG,
+    getSelectedElements
+} from '@plait/core';
 import { FlowNode } from './interfaces';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { SELECTED_FlOW_ELEMENTS } from './plugins/weak-maps';
 import { getClientByNode } from './queries/get-client-by-node';
 import { drawHandles, drawNode } from './draw/node';
 
@@ -37,17 +43,18 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
     }
 
     beforeContextChange(value: PlaitPluginElementContext<FlowNode>) {
+        const selectedElements = getSelectedElements(this.board);
+        const isActive = selectedElements.includes(this.element);
         if (value.element !== this.element && this.initialized) {
-            this.updateElement(true, value.element);
+            this.updateElement(true, value.element, isActive);
         }
         if (value.selection !== this.selection && this.initialized) {
-            const activeElement = SELECTED_FlOW_ELEMENTS.get(this.board);
-            const isActive = activeElement && activeElement[0] === this.element;
             if (isActive) {
+                this.drawHandles();
                 this.drawActiveElement(value.element);
             } else {
-                this.destroyActiveElement();
                 this.destroyHandles();
+                this.destroyActiveElement();
             }
         }
     }
@@ -86,10 +93,10 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
         this.g.append(this.handlesG);
     }
 
-    updateElement(doCheck = false, element: FlowNode = this.element) {
+    updateElement(doCheck = false, element: FlowNode = this.element, active = false) {
         this.drawElement(element);
         this.drawRichtext(element);
-        this.drawHandles(element);
+        active && this.drawHandles(element);
         if (doCheck) {
             this.cdr.detectChanges();
         }

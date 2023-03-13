@@ -1,10 +1,16 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
-import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext, HOST_TO_ROUGH_SVG, createG } from '@plait/core';
+import {
+    PlaitPluginElementComponent,
+    BeforeContextChange,
+    PlaitPluginElementContext,
+    HOST_TO_ROUGH_SVG,
+    createG,
+    BOARD_TO_SELECTED_ELEMENT
+} from '@plait/core';
 import { FlowEdge } from './interfaces';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawEdge, drawEdgeHandles, getEdgePoints } from './draw/edge';
 import { drawRichtext } from '@plait/richtext';
-import { SELECTED_FlOW_ELEMENTS } from './plugins/weak-maps';
 import { drawHandles } from './draw/node';
 
 @Component({
@@ -39,7 +45,7 @@ export class FlowEdgeComponent extends PlaitPluginElementComponent<FlowEdge> imp
             this.updateElement(true, value.element);
         }
         if (value.selection !== this.selection && this.initialized) {
-            const activeElement = SELECTED_FlOW_ELEMENTS.get(this.board);
+            const activeElement = BOARD_TO_SELECTED_ELEMENT.get(this.board);
             const isActive = activeElement && activeElement[0] === this.element;
             if (isActive) {
                 this.drawActiveElement(value.element);

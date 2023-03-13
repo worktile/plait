@@ -1,7 +1,7 @@
 import { FlowElement, FlowElementType, FlowPosition } from './element';
 import { PlaitElement } from '@plait/core';
 
-export const isFlowEdgeElement = (value: PlaitElement): value is FlowElement => {
+export const isFlowEdgeElement = (value: PlaitElement): value is FlowEdge => {
     return value.type === FlowElementType.edge;
 };
 
