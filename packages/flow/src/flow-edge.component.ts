@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext, HOST_TO_ROUGH_SVG } from '@plait/core';
+import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext } from '@plait/core';
 import { FlowEdge } from './interfaces';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawEdge } from './draw/edge';
+import { PlaitBoard } from '@plait/core';
 
 @Component({
     selector: 'plait-flow-edge',
@@ -21,7 +22,7 @@ export class FlowEdgeComponent<T = string> extends PlaitPluginElementComponent<F
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.roughSVG = HOST_TO_ROUGH_SVG.get(this.host) as RoughSVG;
+        this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.drawElement();
     }
 
