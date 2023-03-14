@@ -36,8 +36,8 @@ export const mockFlowData: FlowElement<Element>[] = [
         width: 120,
         height: 38,
         styles: {
-            stroke: '#ffcd5d',
-            fill: '#ffcd5d'
+            stroke: 'rgb(179, 212, 255)',
+            fill: 'rgb(222, 235, 255)'
         }
     },
     {
@@ -50,8 +50,8 @@ export const mockFlowData: FlowElement<Element>[] = [
         width: 120,
         height: 38,
         styles: {
-            stroke: '#73d897',
-            fill: '#73d897'
+            stroke: 'rgb(171, 245, 209)',
+            fill: 'rgb(227, 252, 239)'
         }
     },
     {

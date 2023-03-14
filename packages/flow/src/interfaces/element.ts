@@ -16,10 +16,19 @@ export enum FlowPosition {
     bottom = 'bottom'
 }
 
+export interface FlowHandle {
+    position: FlowPosition;
+    offsetX?: number;
+    offsetY?: number;
+}
+
 export interface FlowElementStyles {
     stroke?: string;
     strokeWidth?: number;
     fill?: string;
+    fillStyle?: string;
+    activeStroke?: string;
+    activeFill?: string;
 }
 
 export interface FlowElement<T = unknown> extends PlaitElement {
