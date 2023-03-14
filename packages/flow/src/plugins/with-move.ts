@@ -10,20 +10,16 @@ import {
     transformPoint
 } from '@plait/core';
 import { FlowNodeComponent } from '../flow-node.component';
-import { FlowEdge, FlowElement, isFlowElement, isFlowNodeElement } from '../interfaces';
+import { FlowElement, isFlowNodeElement } from '../interfaces';
 import { getEdgesByNode } from '../queries/get-edges-by-node';
 import { FlowEdgeComponent } from '../flow-edge.component';
-import { isHitFlowEdge, isHitFlowNode } from '../queries/is-hit-flow-element';
-import { isFlowEdgeElement } from '../interfaces/edge';
-import { getHandleSource } from '../queries/get-handle-souce';
-import { withFloweMove } from './with-move';
+import { isHitFlowNode } from '../queries/is-hit-flow-element';
 
-export const withFloweDnd: PlaitPlugin = (board: PlaitBoard) => {
+export const withFloweMove: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup, keydown } = board;
 
     let activeComponent: FlowNodeComponent | FlowEdgeComponent | null;
     let activeElement: FlowElement | null;
-    let handleSource: 'source' | 'target' | null;
     let startPoint: Point | null;
     let isDragging = false;
     let offsetX: number = 0;
@@ -36,17 +32,13 @@ export const withFloweDnd: PlaitPlugin = (board: PlaitBoard) => {
         }
         const point = transformPoint(board, toPoint(event.x, event.y, board.host));
         (board.children as FlowElement[]).forEach(value => {
-            if (isFlowElement(value)) {
-                const flowNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as FlowNodeComponent | FlowEdgeComponent;
-                const hitFlowElement =
-                    isHitFlowNode(flowNodeComponent.element, point) || isHitFlowEdge(flowNodeComponent.element as FlowEdge, [point, point]);
+            if (isFlowNodeElement(value)) {
+                const flowNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as FlowNodeComponent;
+                const hitFlowElement = isHitFlowNode(flowNodeComponent.element, point);
                 if (hitFlowElement) {
                     activeComponent = flowNodeComponent;
                     activeElement = value;
                     startPoint = point;
-                    if (isFlowEdgeElement(value)) {
-                        handleSource = getHandleSource(point, board, value);
-                    }
                 }
             }
         });
@@ -71,15 +63,6 @@ export const withFloweDnd: PlaitPlugin = (board: PlaitBoard) => {
                         });
                     }
                 }
-
-                if (activeElement && isFlowEdgeElement(activeElement)) {
-                    if (handleSource === 'source') {
-                        (activeComponent as FlowEdgeComponent).drawActiveElement(activeElement, { x: offsetX, y: offsetY });
-                    }
-                    if (handleSource === 'target') {
-                        (activeComponent as FlowEdgeComponent).drawActiveElement(activeElement, { x: 0, y: 0 }, { x: offsetX, y: offsetY });
-                    }
-                }
             }
         }
         mousemove(event);
@@ -102,5 +85,6 @@ export const withFloweDnd: PlaitPlugin = (board: PlaitBoard) => {
         }
         globalMouseup(event);
     };
-    return withFloweMove(board);
+
+    return board;
 };

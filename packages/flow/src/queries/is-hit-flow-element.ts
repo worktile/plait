@@ -12,17 +12,17 @@ export function isHitFlowNode(element: FlowElement, point: Point) {
     return false;
 }
 
-export function isHitFlowEdge(element: FlowEdge, board: PlaitBoard) {
+export function isHitFlowEdge(element: FlowEdge, points: [Point, Point]) {
     const nodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(element) as FlowEdgeComponent;
     const path = nodeComponent.nodeG?.querySelector('path');
     const pathLength = path?.getTotalLength();
     let threshold = 5;
     let minDistance = Number.MAX_VALUE;
-    if (board.selection) {
-        const clickReact = RectangleClient.toRectangleClient([board.selection.anchor, board.selection.focus]);
+    if (points) {
+        const clickReact = RectangleClient.toRectangleClient(points);
         for (var i = 0; i < pathLength!; i++) {
-            var point = path?.getPointAtLength(i);
-            var distance = Math.sqrt(Math.pow(point!.x - clickReact.x, 2) + Math.pow(point!.y - clickReact.y, 2));
+            var pathPoint = path?.getPointAtLength(i);
+            var distance = Math.sqrt(Math.pow(pathPoint!.x - clickReact.x, 2) + Math.pow(pathPoint!.y - clickReact.y, 2));
             if (distance < minDistance) {
                 minDistance = distance;
             }

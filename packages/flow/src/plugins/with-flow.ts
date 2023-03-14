@@ -5,6 +5,7 @@ import { FlowEdgeComponent } from '../flow-edge.component';
 import { withFloweDnd } from './with-dnd';
 import { isHitFlowEdge } from '../queries/is-hit-flow-element';
 import { getClientByNode } from '../queries/get-client-by-node';
+import { withFloweMove } from './with-move';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, isIntersectionSelection } = board;
@@ -30,10 +31,10 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                 );
             }
             if (isFlowEdgeElement(element)) {
-                return isHitFlowEdge(element, board);
+                return isHitFlowEdge(element, [board.selection.anchor, board.selection.focus]);
             }
         }
         return isIntersectionSelection(element);
     };
-    return withFloweDnd(board);
+    return withFloweMove(board);
 };

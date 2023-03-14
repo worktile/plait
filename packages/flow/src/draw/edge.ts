@@ -7,6 +7,8 @@ import { getFlowNodeById } from '../queries/get-node-by-id';
 import { getEdgePositions } from '../utils/get-edge-position';
 import { getClientByNode } from '../queries/get-client-by-node';
 import { getHandlePosition } from '../utils';
+import { getHandlesByEdge } from '../queries/get-handles-by-edge';
+import { HANDLE_DIAMETER } from '../constants';
 
 /**
  * getEdgePoints
@@ -14,7 +16,18 @@ import { getHandlePosition } from '../utils';
  * @param edge FlowEdge
  * @returns
  */
-export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
+export const getEdgePoints = (
+    board: PlaitBoard,
+    edge: FlowEdge,
+    sourceOffset = {
+        x: 0,
+        y: 0
+    },
+    targetOffset = {
+        x: 0,
+        y: 0
+    }
+) => {
     const sourceNode = getFlowNodeById(board, edge.source?.id!);
     const targetNode = getFlowNodeById(board, edge.target?.id!);
 
@@ -25,16 +38,16 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
 
     const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
         {
-            x: sourceNodeX,
-            y: sourceNodeY,
+            x: sourceNodeX + sourceOffset.x,
+            y: sourceNodeY + sourceOffset.y,
             width: sourceNodeWidth,
             height: sourceNodeHeight
         },
         edge.source!,
         sourcePosition,
         {
-            x: targetNodeX,
-            y: targetNodeY,
+            x: targetNodeX + targetOffset.x,
+            y: targetNodeY + targetOffset.y,
             width: targetNodeWidth,
             height: targetNodeHeight
         },
@@ -60,8 +73,21 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
  * @param active boolaen
  * @returns
  */
-export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, active = false) => {
-    const [pathPoints, labelX, labelY, offsetX, offsetY] = getEdgePoints(board, edge);
+export const drawEdge = (
+    board: PlaitBoard,
+    roughSVG: RoughSVG,
+    edge: FlowEdge,
+    active = false,
+    sourceOffset = {
+        x: 0,
+        y: 0
+    },
+    targetOffset = {
+        x: 0,
+        y: 0
+    }
+) => {
+    const [pathPoints, labelX, labelY] = getEdgePoints(board, edge, sourceOffset, targetOffset);
     const options: Options = edge.options || {};
     const path = pathPoints.reduce<string>((res, p, i) => {
         let segment = '';
@@ -83,28 +109,10 @@ export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, 
 };
 
 export const drawEdgeHandles = (board: PlaitBoard, roughSVG: RoughSVG, edges: FlowEdge) => {
-    const handles = [];
-    let sourceNode, targetNode;
-    if (edges.source) {
-        sourceNode = getFlowNodeById(board, edges.source.id);
-        handles.push({
-            position: edges.source.position,
-            id: edges.source.handleId,
-            nodeRect: getClientByNode(sourceNode)
-        });
-    }
-    if (edges.target) {
-        targetNode = getFlowNodeById(board, edges.target.id);
-        handles.push({
-            position: edges.target.position,
-            id: edges.target.handleId,
-            nodeRect: getClientByNode(targetNode)
-        });
-    }
-
+    const handles = getHandlesByEdge(board, edges);
     return handles.map(handle => {
         const position = getHandlePosition(handle.position, handle.nodeRect, handle);
-        return roughSVG.circle(position.x, position.y, 8, {
+        return roughSVG.circle(position.x, position.y, HANDLE_DIAMETER, {
             stroke: '#6698FF',
             strokeWidth: 2,
             fill: '#fff',

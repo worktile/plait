@@ -70,9 +70,19 @@ export class FlowEdgeComponent extends PlaitPluginElementComponent<FlowEdge> imp
         this.g.prepend(this.nodeG);
     }
 
-    drawActiveElement(element: FlowEdge = this.element) {
+    drawActiveElement(
+        element: FlowEdge = this.element,
+        sourceOffset = {
+            x: 0,
+            y: 0
+        },
+        targetOffset = {
+            x: 0,
+            y: 0
+        }
+    ) {
         this.destroyElement();
-        this.nodeG = drawEdge(this.board, this.roughSVG, element, true);
+        this.nodeG = drawEdge(this.board, this.roughSVG, element, true, sourceOffset, targetOffset);
         this.g.prepend(this.nodeG);
         this.drawHandles();
     }
