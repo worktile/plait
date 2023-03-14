@@ -41,23 +41,31 @@ import {
     transformMat3,
     getBoardClientBox
 } from '../utils';
-import { BOARD_TO_ON_CHANGE, HOST_TO_ROUGH_SVG, IS_TEXT_EDITABLE, PLAIT_BOARD_TO_COMPONENT } from '../utils/weak-maps';
+import {
+    BOARD_TO_ON_CHANGE,
+    IS_TEXT_EDITABLE,
+    BOARD_TO_COMPONENT,
+    BOARD_TO_ELEMENT_HOST,
+    BOARD_TO_HOST,
+    BOARD_TO_ROUGH_SVG
+} from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import { PlaitPointerType } from '../interfaces/pointer';
+
+const ElementHostClass = 'element-host';
 
 @Component({
     selector: 'plait-board',
     template: `
         <div class="viewport-container" #viewportContainer>
-            <svg #svg width="100%" height="100%" style="position: relative;"></svg>
+            <svg #svg width="100%" height="100%" style="position: relative;"><g class="element-host"></g></svg>
             <plait-element
                 *ngFor="let item of board.children; let index = index; trackBy: trackBy"
                 [index]="index"
                 [element]="item"
                 [board]="board"
                 [selection]="board.selection"
-                [host]="host"
             ></plait-element>
         </div>
         <plait-toolbar
@@ -102,12 +110,12 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
 
-    get host(): SVGElement {
-        return this.svg.nativeElement;
-    }
-
     get isFocused() {
         return this.board?.selection;
+    }
+
+    get host(): SVGElement {
+        return this.svg.nativeElement;
     }
 
     @HostBinding('class')
@@ -139,16 +147,19 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @ViewChild('viewportContainer', { read: ElementRef, static: true })
     viewportContainer!: ElementRef;
 
-    constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2, private elementRef: ElementRef) {}
+    constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2, private elementRef: ElementRef<SVGSVGElement>) {}
 
     ngOnInit(): void {
+        const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;
         const roughSVG = rough.svg(this.host as SVGSVGElement, {
             options: { roughness: 0, strokeWidth: 1 }
         });
-        HOST_TO_ROUGH_SVG.set(this.host, roughSVG);
         this.initializePlugins();
         this.initializeEvents();
-        PLAIT_BOARD_TO_COMPONENT.set(this.board, this);
+        BOARD_TO_COMPONENT.set(this.board, this);
+        BOARD_TO_ROUGH_SVG.set(this.board, roughSVG);
+        BOARD_TO_HOST.set(this.board, this.elementRef.nativeElement);
+        BOARD_TO_ELEMENT_HOST.set(this.board, elementHost);
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.cdr.detectChanges();
             const changeEvent: PlaitBoardChangeEvent = {
@@ -526,10 +537,15 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
-        HOST_TO_ROUGH_SVG.delete(this.host);
         if (this.resizeObserver) {
             this.resizeObserver.disconnect();
         }
+        BOARD_TO_ROUGH_SVG.delete(this.board);
+        BOARD_TO_COMPONENT.delete(this.board);
+        BOARD_TO_ROUGH_SVG.delete(this.board);
+        BOARD_TO_HOST.delete(this.board);
+        BOARD_TO_ELEMENT_HOST.delete(this.board);
+        BOARD_TO_ON_CHANGE.delete(this.board);
     }
 
     markForCheck() {

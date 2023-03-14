@@ -19,7 +19,7 @@ import { MindmapQueries } from './queries';
 @Component({
     selector: 'plait-mindmap',
     template: `
-        <plait-mindmap-node [mindmapG]="g" [host]="host" [node]="root" [selection]="selection" [board]="board"></plait-mindmap-node>
+        <plait-mindmap-node [mindmapG]="g" [node]="root" [selection]="selection" [board]="board"></plait-mindmap-node>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
