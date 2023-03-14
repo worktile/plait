@@ -1,5 +1,14 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
-import { drawRichtext } from '@plait/richtext';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ComponentRef,
+    OnDestroy,
+    OnInit,
+    Renderer2,
+    ViewContainerRef
+} from '@angular/core';
+import { PlaitRichtextComponent, drawRichtext } from '@plait/richtext';
 import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext, HOST_TO_ROUGH_SVG } from '@plait/core';
 import { FlowNode } from './interfaces';
 import { RoughSVG } from 'roughjs/bin/svg';
@@ -16,9 +25,9 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
 
     roughSVG!: RoughSVG;
 
-    foreignObject?: SVGForeignObjectElement;
-
     richtextG?: SVGGElement;
+
+    richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
 
     constructor(public cdr: ChangeDetectorRef, public viewContainerRef: ViewContainerRef, public render2: Renderer2) {
         super(cdr);
@@ -46,12 +55,11 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
     drawRichtext(element: FlowNode = this.element) {
         this.destroyRichtext();
         const { x, y, width, height } = getRectangleByNode(element);
-        const richtext = drawRichtext(x, y, width, height, element.data.value, this.viewContainerRef);
-        if (richtext) {
-            this.richtextG = richtext.richtextG;
-            this.render2.addClass(this.richtextG, 'flow-node-richtext');
-            this.g.append(this.richtextG);
-        }
+        const { richtextG, richtextComponentRef } = drawRichtext(x, y, width, height, element.data.value, this.viewContainerRef);
+        this.richtextComponentRef = richtextComponentRef;
+        this.richtextG = richtextG;
+        this.render2.addClass(this.richtextG, 'flow-node-richtext');
+        this.g.append(this.richtextG);
     }
 
     updateElement(element: FlowNode = this.element) {
@@ -69,6 +77,9 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
     destroyRichtext() {
         if (this.richtextG) {
             this.richtextG.remove();
+        }
+        if (this.richtextComponentRef) {
+            this.richtextComponentRef.destroy();
         }
     }
 }
