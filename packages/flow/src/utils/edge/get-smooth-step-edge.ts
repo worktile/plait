@@ -1,5 +1,5 @@
-import { FlowPosition } from "../interfaces";
-import { getEdgeCenter } from "./get-edge-center";
+import { FlowPosition } from "../../interfaces";
+import { getEdgeCenter } from "./edge";
 import { XYPosition } from '@plait/core';
 
 export interface GetSmoothStepPathParams {

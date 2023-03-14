@@ -9,11 +9,10 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import { PlaitRichtextComponent, drawRichtext } from '@plait/richtext';
-import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext, PlaitBoard } from '@plait/core';
+import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext, PlaitBoard, normalizePoint } from '@plait/core';
 import { FlowNode } from './interfaces';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawRectangleNode } from './draw/node';
-import { getRectangleByNode } from './utils/get-rectangle-by-node';
 import { Element } from 'slate';
 
 @Component({
@@ -57,8 +56,15 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
     drawRichtext(element: FlowNode<T> = this.element) {
         this.destroyRichtext();
         if (element.data?.text) {
-            const { x, y, width, height } = getRectangleByNode(element);
-            const { richtextG, richtextComponentRef } = drawRichtext(x, y, width, height, element.data.text, this.viewContainerRef);
+            const { x, y } = normalizePoint(element.points![0]);
+            const { richtextG, richtextComponentRef } = drawRichtext(
+                x,
+                y,
+                element.width,
+                element.height,
+                element.data.text,
+                this.viewContainerRef
+            );
             this.richtextComponentRef = richtextComponentRef;
             this.richtextG = richtextG;
             this.render2.addClass(this.richtextG, 'flow-node-richtext');

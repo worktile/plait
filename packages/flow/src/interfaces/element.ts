@@ -16,7 +16,7 @@ export enum FlowPosition {
     bottom = 'bottom'
 }
 
-export interface FlowElementStyle {
+export interface FlowElementStyles {
     stroke?: string;
     strokeWidth?: number;
     fill?: string;
@@ -30,7 +30,7 @@ export interface FlowElement<T = unknown> extends PlaitElement {
         icon?: string;
     };
     deletable?: boolean;
-    styles?: FlowElementStyle;
+    styles?: FlowElementStyles;
 }
 
 export const FlowElement = {

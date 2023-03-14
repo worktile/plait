@@ -21,7 +21,7 @@ export const mockFlowData: FlowElement<Element>[] = [
         points: [[400, 268.5]],
         width: 120,
         height: 38,
-        options: {
+        styles: {
             stroke: '#5dcfff',
             fill: '#5dcfff'
         }
@@ -35,7 +35,7 @@ export const mockFlowData: FlowElement<Element>[] = [
         points: [[600, 268.5]],
         width: 120,
         height: 38,
-        options: {
+        styles: {
             stroke: '#ffcd5d',
             fill: '#ffcd5d'
         }
@@ -49,7 +49,7 @@ export const mockFlowData: FlowElement<Element>[] = [
         points: [[800, 268.5]],
         width: 120,
         height: 38,
-        options: {
+        styles: {
             stroke: '#73d897',
             fill: '#73d897'
         }

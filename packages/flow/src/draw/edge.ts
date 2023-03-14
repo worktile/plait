@@ -2,9 +2,9 @@ import { PlaitBoard } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { FlowEdge } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getBend, getPoints } from '../utils/get-smooth-step-edge';
+import { getBend, getPoints } from '../utils/edge/get-smooth-step-edge';
 import { getFlowNodeById } from '../queries/get-node-by-id';
-import { getEdgePositions } from '../utils/get-edge-position';
+import { getEdgePositions } from '../utils';
 
 export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, options: Options = {}) => {
     const sourceNode = getFlowNodeById(board, edge.source?.id!);
