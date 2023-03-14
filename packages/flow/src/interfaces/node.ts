@@ -1,6 +1,4 @@
-import { Options } from 'roughjs/bin/core';
 import { FlowElement, FlowPosition } from './element';
-
 export interface FlowHandle {
     id: string;
     position: FlowPosition;
@@ -8,10 +6,8 @@ export interface FlowHandle {
     offsetY?: number;
 }
 
-export interface FlowNode extends FlowElement {
+export interface FlowNode<T = unknown> extends FlowElement<T> {
     width: number;
     height: number;
     handles?: FlowHandle[];
-    options?: Options;
-    [key: string]: any;
 }

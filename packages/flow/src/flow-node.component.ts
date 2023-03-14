@@ -14,13 +14,15 @@ import { FlowNode } from './interfaces';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawRectangleNode } from './draw/node';
 import { getRectangleByNode } from './utils/get-rectangle-by-node';
+import { Element } from 'slate';
 
 @Component({
     selector: 'plait-flow-node',
     template: '',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> implements OnInit, BeforeContextChange<FlowNode>, OnDestroy {
+export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginElementComponent<FlowNode<T>>
+    implements OnInit, BeforeContextChange<FlowNode<T>>, OnDestroy {
     nodeG: SVGGElement | null = null;
 
     roughSVG!: RoughSVG;
@@ -40,7 +42,7 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
         this.drawRichtext();
     }
 
-    beforeContextChange(value: PlaitPluginElementContext<FlowNode>) {
+    beforeContextChange(value: PlaitPluginElementContext<FlowNode<T>>) {
         if (value.element !== this.element && this.initialized) {
             this.updateElement(value.element);
         }
@@ -52,17 +54,19 @@ export class FlowNodeComponent extends PlaitPluginElementComponent<FlowNode> imp
         this.g.append(this.nodeG);
     }
 
-    drawRichtext(element: FlowNode = this.element) {
+    drawRichtext(element: FlowNode<T> = this.element) {
         this.destroyRichtext();
-        const { x, y, width, height } = getRectangleByNode(element);
-        const { richtextG, richtextComponentRef } = drawRichtext(x, y, width, height, element.data.value, this.viewContainerRef);
-        this.richtextComponentRef = richtextComponentRef;
-        this.richtextG = richtextG;
-        this.render2.addClass(this.richtextG, 'flow-node-richtext');
-        this.g.append(this.richtextG);
+        if (element.data?.text) {
+            const { x, y, width, height } = getRectangleByNode(element);
+            const { richtextG, richtextComponentRef } = drawRichtext(x, y, width, height, element.data.text, this.viewContainerRef);
+            this.richtextComponentRef = richtextComponentRef;
+            this.richtextG = richtextG;
+            this.render2.addClass(this.richtextG, 'flow-node-richtext');
+            this.g.append(this.richtextG);
+        }
     }
 
-    updateElement(element: FlowNode = this.element) {
+    updateElement(element: FlowNode<T> = this.element) {
         this.drawElement(element);
         this.drawRichtext(element);
     }

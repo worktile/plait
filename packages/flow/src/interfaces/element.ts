@@ -1,4 +1,3 @@
-import { Element, Point } from 'slate';
 import { PlaitElement } from '@plait/core';
 
 export const isFlowElement = (value: PlaitElement): value is FlowElement => {
@@ -17,12 +16,23 @@ export enum FlowPosition {
     bottom = 'bottom'
 }
 
-export interface FlowElement extends PlaitElement {
+export interface FlowElementStyle {
+    stroke?: string;
+    strokeWidth?: number;
+    fill?: string;
+}
+
+export interface FlowElement<T = unknown> extends PlaitElement {
     id: string;
     type: FlowElementType;
-    data: {
-        value: Element;
-        [key: string]: any;
+    data?: {
+        text?: T;
+        icon?: string;
     };
     deletable?: boolean;
+    styles?: FlowElementStyle;
 }
+
+export const FlowElement = {
+    isFlowElement
+};

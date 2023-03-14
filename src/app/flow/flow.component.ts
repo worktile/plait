@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Viewport } from '@plait/core';
-import { MindmapLayoutType } from '@plait/layouts';
 import { withFlow } from '@plait/flow';
 import { mockFlowData } from './flow-data';
 
