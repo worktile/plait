@@ -24,7 +24,8 @@ import {
     Transforms,
     isSelectedElement,
     removeSelectedElement,
-    addSelectedElement
+    addSelectedElement,
+    drawRoundRectangle
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -62,7 +63,7 @@ import { MindmapNodeElement } from './interfaces/element';
 import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { MindmapQueries } from './queries';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
-import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
+import { getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { createEmptyNode, findLastChild, findPath, getChildrenCount } from './utils/mindmap';
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
