@@ -1,7 +1,6 @@
 import { PlaitBoardComponent } from '../board/board.component';
 import { PlaitPointerType, PlaitBoard, PlaitBoardMove } from '../interfaces';
 import { updatePointerType } from '../transforms/board';
-import { PLAIT_BOARD_TO_COMPONENT } from '../utils';
 
 export function withHandPointer<T extends PlaitBoard>(board: T) {
     const { mousedown, mousemove, globalMouseup, keydown, keyup } = board;
@@ -18,7 +17,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
             updatePointerType(board, PlaitPointerType.selection);
         }
         if (board.pointer === PlaitPointerType.hand && board.selection) {
-            const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
+            const boardComponent = PlaitBoard.getComponent(board) as PlaitBoardComponent;
             boardComponent.movingChange(true);
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
@@ -28,7 +27,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     };
 
     board.mousemove = (event: MouseEvent) => {
-        const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
+        const boardComponent = PlaitBoard.getComponent(board) as PlaitBoardComponent;
         if (board.pointer === PlaitPointerType.hand && board.selection && boardComponent.isMoving) {
             const left = event.x - plaitBoardMove.x;
             const top = event.y - plaitBoardMove.y;
@@ -42,7 +41,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
 
     board.globalMouseup = (event: MouseEvent) => {
         if (board.selection) {
-            const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
+            const boardComponent = PlaitBoard.getComponent(board) as PlaitBoardComponent;
             boardComponent.movingChange(false);
             plaitBoardMove.x = 0;
             plaitBoardMove.y = 0;
@@ -54,8 +53,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         if (board.selection && event.code === 'Space') {
             if (board.pointer !== PlaitPointerType.hand) {
                 updatePointerType(board, PlaitPointerType.hand);
-                const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
-                boardComponent.cdr.markForCheck();
+                PlaitBoard.getComponent(board).cdr.markForCheck();
             }
             event.preventDefault();
         }
@@ -65,8 +63,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     board.keyup = (event: KeyboardEvent) => {
         if (board.selection && !board.options.readonly && event.code === 'Space') {
             updatePointerType(board, PlaitPointerType.selection);
-            const boardComponent = PLAIT_BOARD_TO_COMPONENT.get(board) as PlaitBoardComponent;
-            boardComponent.cdr.markForCheck();
+            PlaitBoard.getComponent(board).cdr.markForCheck();
         }
         keyup(event);
     };

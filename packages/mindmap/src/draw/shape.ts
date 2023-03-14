@@ -2,7 +2,8 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { NODE_FILL, ROOT_NODE_FILL, STROKE_WIDTH, TRANSPARENT } from '../constants';
 import { MindmapNode } from '../interfaces/node';
 import { getStrokeByMindmapElement } from '../utils/colors';
-import { drawRoundRectangle, getRectangleByNode } from '../utils/graph';
+import { getRectangleByNode } from '../utils/graph';
+import { drawRoundRectangle } from '@plait/core';
 
 export function drawRectangleNode(roughSVG: RoughSVG, node: MindmapNode) {
     const { x, y, width, height } = getRectangleByNode(node);

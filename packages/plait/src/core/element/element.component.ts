@@ -1,13 +1,4 @@
-import {
-    ChangeDetectionStrategy,
-    Component,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
-    Renderer2,
-    ViewContainerRef
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
 import { PlaitBoard } from '../../interfaces/board';
 import { PlaitElement } from '../../interfaces/element';
 import { Selection } from '../../interfaces/selection';
@@ -40,8 +31,6 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
 
     @Input() selection: Selection | null = null;
 
-    @Input() host!: SVGElement;
-
     constructor(public renderer2: Renderer2, public viewContainerRef: ViewContainerRef) {}
 
     ngOnInit(): void {
@@ -53,7 +42,7 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         this.initialized = true;
         this.gGroup = createG();
         this.renderer2.setAttribute(this.gGroup, 'plait-element-group', this.index.toString());
-        this.host.append(this.gGroup);
+        PlaitBoard.getElementHost(this.board).append(this.gGroup);
     }
 
     drawElement() {
@@ -76,7 +65,6 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         if (this.initialized) {
             const context = this.getContext();
             if (this.instance) {
-                
                 this.instance.context = context.current;
             }
             const result = this.board.redrawElement(context.current, context.previous);
@@ -94,7 +82,6 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
             element: this.element,
             selection: this.selection,
             board: this.board,
-            host: this.host
         };
         if (this.context) {
             const previous = { ...this.context };

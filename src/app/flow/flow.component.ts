@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Viewport } from '@plait/core';
-import { MindmapLayoutType } from '@plait/layouts';
 import { withFlow } from '@plait/flow';
-import { mockFlowData } from '../mock/flow-data';
+import { mockFlowData } from './flow-data';
 
 const LOCAL_DATA_KEY = 'plait-board-flow-change-data';
 

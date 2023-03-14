@@ -14,7 +14,6 @@ import {
     PlaitPointerType,
     createG,
     createText,
-    HOST_TO_ROUGH_SVG,
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
@@ -24,7 +23,8 @@ import {
     Transforms,
     isSelectedElement,
     removeSelectedElement,
-    addSelectedElement
+    addSelectedElement,
+    drawRoundRectangle
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -62,7 +62,7 @@ import { MindmapNodeElement } from './interfaces/element';
 import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { MindmapQueries } from './queries';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
-import { drawRoundRectangle, getRectangleByNode, hitMindmapNode } from './utils/graph';
+import { getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { createEmptyNode, findLastChild, findPath, getChildrenCount } from './utils/mindmap';
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
@@ -72,7 +72,6 @@ import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './util
     template: `
         <plait-mindmap-node
             *ngFor="let childNode of node?.children; let i = index; trackBy: trackBy"
-            [host]="host"
             [mindmapG]="mindmapG"
             [node]="childNode"
             [parent]="node"
@@ -102,8 +101,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     @Input() selection: Selection | null = null;
 
-    @Input() host!: SVGElement;
-
     @Input() board!: PlaitBoard;
 
     activeG: SVGGElement[] = [];
@@ -132,10 +129,10 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnInit(): void {
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
+        this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.gGroup = createG();
         this.gGroup.setAttribute(MINDMAP_NODE_KEY, 'true');
         this.insertGroup();
-        this.roughSVG = HOST_TO_ROUGH_SVG.get(this.host) as RoughSVG;
         this.drawShape();
         this.drawLink();
         this.drawRichtext();
@@ -860,12 +857,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             }
         });
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
-            const point = transformPoint(this.board, toPoint(event.x, event.y, this.host));
+            const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
             const clickInNode = hitMindmapNode(this.board, point, this.node as MindmapNode);
             if (clickInNode && !hasEditableTarget(richtextInstance.editor, event.target)) {
                 event.preventDefault();
             } else if (!clickInNode) {
-                // handle composition input state, like: 中文组合输入中
+                // handle composition input state, like: Chinese IME Composition Input
                 timer(0).subscribe(() => {
                     exitHandle();
                     this.enableMaskG();

@@ -47,10 +47,6 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
         return this.context && this.context.board;
     }
 
-    get host() {
-        return this.context && this.context.host;
-    }
-
     constructor(public cdr: ChangeDetectorRef) {
         this.g = createG();
     }
