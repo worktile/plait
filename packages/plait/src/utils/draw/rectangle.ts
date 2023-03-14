@@ -1,5 +1,6 @@
 import { Options } from 'roughjs/bin/core';
 import { RoughSVG } from 'roughjs/bin/svg';
+import { MAX_RADIUS } from '../../constants';
 
 /**
  * drawRoundRectangle
@@ -18,8 +19,8 @@ export function drawRoundRectangle(rs: RoughSVG, x1: number, y1: number, x2: num
 
     const defaultRadius = Math.min(width, height) / 8;
     let radius = defaultRadius;
-    if (defaultRadius > 16) {
-        radius = outline ? 16 + 2 : 16;
+    if (defaultRadius > MAX_RADIUS) {
+        radius = outline ? MAX_RADIUS + 2 : MAX_RADIUS;
     }
 
     const point1 = [x1 + radius, y1];

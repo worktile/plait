@@ -3,9 +3,9 @@ import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../constants';
 import { drawLink } from '../draw/link';
 import { DetectResult, MindmapNodeElement, MindmapNode } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
-import { drawRoundRectangle, getRectangleByNode } from './graph';
+import { getRectangleByNode } from './graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
-import { Point } from '@plait/core';
+import { Point, drawRoundRectangle } from '@plait/core';
 import { MindmapQueries } from '../queries';
 import {
     isBottomLayout,
