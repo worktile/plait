@@ -9,7 +9,7 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import { PlaitRichtextComponent, drawRichtext } from '@plait/richtext';
-import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext, HOST_TO_ROUGH_SVG } from '@plait/core';
+import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext, PlaitBoard } from '@plait/core';
 import { FlowNode } from './interfaces';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawRectangleNode } from './draw/node';
@@ -37,7 +37,7 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.roughSVG = HOST_TO_ROUGH_SVG.get(this.host) as RoughSVG;
+        this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.drawElement();
         this.drawRichtext();
     }
