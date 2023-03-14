@@ -1,9 +1,11 @@
 import { FlowElement, FlowElementType, FlowPosition } from '@plait/flow';
-export const mockFlowData: FlowElement[] = [
+import { Element } from 'slate';
+
+export const mockFlowData: FlowElement<Element>[] = [
     {
         id: '1',
         data: {
-            value: { children: [{ text: '开始' }] }
+            text: { children: [{ text: '开始' }] }
         },
         type: FlowElementType.node,
         width: 120,
@@ -13,7 +15,7 @@ export const mockFlowData: FlowElement[] = [
     {
         id: '1001',
         data: {
-            value: { children: [{ text: '要做' }] }
+            text: { children: [{ text: '要做' }] }
         },
         type: FlowElementType.node,
         points: [[400, 268.5]],
@@ -27,7 +29,7 @@ export const mockFlowData: FlowElement[] = [
     {
         id: '1002',
         data: {
-            value: { children: [{ text: '进行中' }] }
+            text: { children: [{ text: '进行中' }] }
         },
         type: FlowElementType.node,
         points: [[600, 268.5]],
@@ -41,7 +43,7 @@ export const mockFlowData: FlowElement[] = [
     {
         id: '1003',
         data: {
-            value: { children: [{ text: '已完成' }] }
+            text: { children: [{ text: '已完成' }] }
         },
         type: FlowElementType.node,
         points: [[800, 268.5]],
@@ -55,7 +57,7 @@ export const mockFlowData: FlowElement[] = [
     {
         id: '001',
         data: {
-            value: { children: [{ text: '连线1' }] }
+            text: { children: [{ text: '连线1' }] }
         },
         type: FlowElementType.edge,
         source: {
@@ -71,7 +73,7 @@ export const mockFlowData: FlowElement[] = [
     {
         id: '002',
         data: {
-            value: { children: [{ text: '连线2' }] }
+            text: { children: [{ text: '连线2' }] }
         },
         type: FlowElementType.edge,
         source: {
@@ -87,7 +89,7 @@ export const mockFlowData: FlowElement[] = [
     {
         id: '003',
         data: {
-            value: { children: [{ text: '连线3' }] }
+            text: { children: [{ text: '连线3' }] }
         },
         type: FlowElementType.edge,
         source: {
