@@ -1,13 +1,4 @@
-import {
-    ChangeDetectionStrategy,
-    Component,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
-    Renderer2,
-    ViewContainerRef
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
 import { PlaitBoard } from '../../interfaces/board';
 import { PlaitElement } from '../../interfaces/element';
 import { Selection } from '../../interfaces/selection';
@@ -74,7 +65,6 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         if (this.initialized) {
             const context = this.getContext();
             if (this.instance) {
-                
                 this.instance.context = context.current;
             }
             const result = this.board.redrawElement(context.current, context.previous);
