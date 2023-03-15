@@ -5,6 +5,9 @@
     "outDir": "./out-tsc/app",
     "types": [],
     "paths": {
+      "@plait/flow": [
+        "packages/flow/src/public-api",
+      ],
       "@plait/layouts": [
         "packages/layouts/src/public-api",
       ],
@@ -16,7 +19,7 @@
       ],
       "@plait/richtext": [
         "packages/richtext/src/public-api",
-      ],
+      ]
     },
     "forceConsistentCasingInFileNames": true,
     "strict": true,
