@@ -1,4 +1,4 @@
-import { DEFAULT_POSITIONS } from '../../constants';
+import { DEFAULT_POSITIONS } from '../../constants/handle';
 import { FlowHandle } from '../../interfaces/element';
 
 /**

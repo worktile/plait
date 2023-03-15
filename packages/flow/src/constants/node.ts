@@ -1,5 +1,5 @@
-import { DEAFULT_STYLES } from '../constants';
 import { Options } from 'roughjs/bin/core';
+import { DEAFULT_STYLES } from './default';
 
 export const OUTLINE_BUFFR = 3;
 

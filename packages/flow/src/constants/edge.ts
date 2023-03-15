@@ -1,5 +1,5 @@
 import { Options } from 'roughjs/bin/core';
-import { DEAFULT_STYLES } from '../constants';
+import { DEAFULT_STYLES } from './default';
 
 export const HIT_THERSHOLD = 5;
 

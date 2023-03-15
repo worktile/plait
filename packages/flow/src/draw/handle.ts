@@ -1,11 +1,11 @@
 import { RoughSVG } from 'roughjs/bin/svg';
 import { PlaitBoard, normalizePoint } from '@plait/core';
-import { DEAFULT_HANDLE_STYLES, HANDLE_RADIUS } from '../constants';
 import { getDefaultHandles } from '../utils/handle/get-default-handles';
 import { FlowNode } from '../interfaces/node';
 import { FlowEdge } from '../interfaces/edge';
 import { getHandlePosition } from '../utils/handle/get-handle-position';
 import { getEdgeHandles } from '../utils/handle/get-edge-handles';
+import { DEAFULT_HANDLE_STYLES, HANDLE_RADIUS } from '../constants/handle';
 
 /**
  * drawHandles

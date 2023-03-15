@@ -1,8 +1,8 @@
 import { ELEMENT_TO_PLUGIN_COMPONENT, RectangleClient } from '@plait/core';
 import { PlaitBoard } from '@plait/core';
 import { FlowEdgeComponent } from '../../flow-edge.component';
-import { HIT_THERSHOLD } from '../../constants';
 import { FlowEdge } from '../../interfaces/edge';
+import { HIT_THERSHOLD } from '../../constants/edge';
 
 /**
  * isHitFlowEdge
@@ -15,7 +15,6 @@ export function isHitFlowEdge(element: FlowEdge, board: PlaitBoard) {
     const path = edgeComponent.nodeG?.querySelector('path');
     const pathLength = path?.getTotalLength();
     let minDistance = Number.MAX_VALUE;
-    console.log(pathLength, 'pathLength')
     if (board.selection) {
         const clickReact = RectangleClient.toRectangleClient([board.selection.anchor, board.selection.focus]);
         for (var i = 0; i < pathLength!; i++) {

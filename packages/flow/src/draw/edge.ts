@@ -1,10 +1,10 @@
 import { PlaitBoard } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { DEAFULT_EDGE_ACTIVE_STYLES, DEAFULT_EDGE_STYLES } from '../constants';
 import { FlowEdge } from '../interfaces/edge';
 import { FlowElementStyles } from '../interfaces/element';
 import { getBend } from '../utils/edge/get-smooth-step-edge';
 import { getEdgePoints } from '../utils/edge/edge';
+import { DEAFULT_EDGE_ACTIVE_STYLES, DEAFULT_EDGE_STYLES } from '../constants/edge';
 
 /**
  * drawEdge

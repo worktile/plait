@@ -1,8 +1,8 @@
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawRoundRectangle, normalizePoint } from '@plait/core';
-import { DEAFULT_NODE_ACTIVE_STYLES, DEAFULT_NODE_STYLES, OUTLINE_BUFFR } from '../constants';
 import { FlowElementStyles } from '../interfaces/element';
 import { FlowNode } from '../interfaces/node';
+import { DEAFULT_NODE_ACTIVE_STYLES, DEAFULT_NODE_STYLES, OUTLINE_BUFFR } from '../constants/node';
 
 export function drawNode(roughSVG: RoughSVG, node: FlowNode, outline = false) {
     let nodeStyles: FlowElementStyles = {
