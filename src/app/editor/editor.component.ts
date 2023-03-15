@@ -20,7 +20,7 @@ const LOCAL_DATA_KEY = 'plait-board-change-data';
 export class BasicBoardEditorComponent implements OnInit {
     plugins = [withMindmap];
 
-    value: PlaitElement[] = [mockMindmapData];
+    value: PlaitElement[] = [...mockMindmapData];
 
     viewport!: Viewport;
 
