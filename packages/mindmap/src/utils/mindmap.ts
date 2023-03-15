@@ -1,9 +1,10 @@
-import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
+import { addSelectedElement, ELEMENT_TO_PLUGIN_COMPONENT, idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH } from '../constants';
 import { MindmapNode, PlaitMindmap } from '../interfaces';
 import { MindmapNodeElement } from '../interfaces/element';
+import { PlaitMindmapComponent } from '../mindmap.component';
 import { getRootLayout } from './layout';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 
@@ -44,6 +45,13 @@ export function findUpElement(element: MindmapNodeElement): { root: MindmapNodeE
         parent = findParentElement(parent);
     }
     return { root, branch };
+}
+
+export function getMindmapComponent(node: MindmapNode) {
+    while (!node.origin?.isRoot) {
+        node = node.parent;
+    }
+    return ELEMENT_TO_PLUGIN_COMPONENT.get(node.origin as PlaitMindmap) as PlaitMindmapComponent;
 }
 
 export const getChildrenCount = (element: MindmapNodeElement) => {
