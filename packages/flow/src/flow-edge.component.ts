@@ -4,13 +4,14 @@ import {
     BeforeContextChange,
     PlaitPluginElementContext,
     BOARD_TO_SELECTED_ELEMENT,
-    createG
+    createG,
+    isSelectedElement
 } from '@plait/core';
-import { FlowEdge } from './interfaces';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawEdge } from './draw/edge';
 import { PlaitBoard } from '@plait/core';
 import { drawEdgeHandles } from './draw/handle';
+import { FlowEdge } from './interfaces/edge';
 
 @Component({
     selector: 'plait-flow-edge',
@@ -40,8 +41,7 @@ export class FlowEdgeComponent<T = string> extends PlaitPluginElementComponent<F
             this.drawElement(value.element);
         }
         if (value.selection !== this.selection && this.initialized) {
-            const activeElement = BOARD_TO_SELECTED_ELEMENT.get(this.board);
-            const isActive = activeElement && activeElement[0] === this.element;
+            const isActive = isSelectedElement(this.board, value.element);
             this.drawElement(value.element, isActive);
             if (isActive) {
                 this.drawHandles();

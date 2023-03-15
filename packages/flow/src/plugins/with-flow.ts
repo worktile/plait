@@ -6,10 +6,12 @@ import {
     RectangleClient,
     normalizePoint
 } from '@plait/core';
-import { FlowEdge, FlowElement, FlowNode } from '../interfaces';
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowEdgeComponent } from '../flow-edge.component';
-import { isHitFlowEdge } from '../queries/is-hit-flow-element';
+import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
+import { FlowElement } from '../interfaces/element';
+import { FlowEdge } from '../interfaces/edge';
+import { FlowNode } from '../interfaces/node';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, isIntersectionSelection } = board;

@@ -1,4 +1,4 @@
-import { FlowPosition } from "../../interfaces";
+import { FlowPosition } from "../../interfaces/element";
 import { getEdgeCenter } from "./edge";
 import { XYPosition } from '@plait/core';
 

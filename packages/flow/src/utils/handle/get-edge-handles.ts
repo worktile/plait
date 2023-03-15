@@ -1,6 +1,6 @@
 import { PlaitBoard, normalizePoint } from '@plait/core';
-import { FlowEdge, FlowEdgeHandle } from '../interfaces';
-import { getFlowNodeById } from './get-node-by-id';
+import { FlowEdge, FlowEdgeHandle } from '../../interfaces/edge';
+import { getFlowNodeById } from '../get-node-by-id';
 
 /**
  * getEdgeHandles
@@ -14,16 +14,9 @@ export const getEdgeHandles = (board: PlaitBoard, edges: FlowEdge) => {
     let sourceNode, targetNode;
     if (edges.source) {
         sourceNode = getFlowNodeById(board, edges.source.id);
-        const { x, y } = normalizePoint(sourceNode.points![0]);
         handles.push({
             position: edges.source.position,
             node: sourceNode,
-            nodeRect: {
-                x,
-                y,
-                width: sourceNode.width,
-                height: sourceNode.height
-            },
             source: 'source'
         });
     }
@@ -33,12 +26,6 @@ export const getEdgeHandles = (board: PlaitBoard, edges: FlowEdge) => {
         handles.push({
             position: edges.target.position,
             node: targetNode,
-            nodeRect: {
-                x,
-                y,
-                width: targetNode.width,
-                height: targetNode.height
-            },
             source: 'target'
         });
     }

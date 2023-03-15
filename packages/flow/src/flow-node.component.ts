@@ -15,14 +15,14 @@ import {
     PlaitPluginElementContext,
     PlaitBoard,
     normalizePoint,
-    getSelectedElements,
-    createG
+    createG,
+    isSelectedElement
 } from '@plait/core';
-import { FlowNode } from './interfaces';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { Element } from 'slate';
 import { drawNodeHandles } from './draw/handle';
-import { drawNode } from './draw/node';
+import { drawActiveMask, drawNode } from './draw/node';
+import { FlowNode } from './interfaces/node';
 
 @Component({
     selector: 'plait-flow-node',
@@ -33,7 +33,7 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
     implements OnInit, BeforeContextChange<FlowNode<T>>, OnDestroy {
     nodeG: SVGGElement | null = null;
 
-    activeNodeG: SVGGElement | null = null;
+    activeMaskG: SVGGElement | null = null;
 
     roughSVG!: RoughSVG;
 
@@ -59,12 +59,11 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
             this.updateElement(value.element);
         }
         if (value.selection !== this.selection && this.initialized) {
-            const selectedElements = getSelectedElements(this.board);
-            if (selectedElements.includes(this.element)) {
-                this.drawActiveElement(value.element);
+            if (isSelectedElement(this.board, value.element)) {
+                this.drawActiveMask(value.element);
                 this.drawHandles();
             } else {
-                this.destroyActiveElement();
+                this.destroyActiveMask();
                 this.destroyHandles();
             }
         }
@@ -76,10 +75,10 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
         this.g.append(this.nodeG);
     }
 
-    drawActiveElement(element: FlowNode = this.element) {
-        this.destroyActiveElement();
-        this.activeNodeG = drawNode(this.roughSVG, element, true);
-        this.g.prepend(this.activeNodeG);
+    drawActiveMask(element: FlowNode = this.element) {
+        this.destroyActiveMask();
+        this.activeMaskG = drawActiveMask(this.roughSVG, element);
+        this.g.prepend(this.activeMaskG);
     }
 
     drawRichtext(element: FlowNode<T> = this.element) {
@@ -130,10 +129,10 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
         }
     }
 
-    destroyActiveElement() {
-        if (this.activeNodeG) {
-            this.activeNodeG.remove();
-            this.activeNodeG = null;
+    destroyActiveMask() {
+        if (this.activeMaskG) {
+            this.activeMaskG.remove();
+            this.activeMaskG = null;
         }
     }
 

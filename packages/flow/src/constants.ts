@@ -1,5 +1,5 @@
-import { FlowPosition } from './interfaces';
 import { Options } from 'roughjs/bin/core';
+import { FlowPosition } from './interfaces/element';
 
 export const OUTLINE_BUFFR = 3;
 

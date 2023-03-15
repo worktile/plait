@@ -12,7 +12,6 @@ export type FlowEdgeHandleType = 'source' | 'target';
 
 export interface FlowEdgeHandle extends FlowHandle {
     node: FlowNode;
-    nodeRect: RectangleClient;
     source?: FlowEdgeHandleType;
 }
 

@@ -1,9 +1,10 @@
 import { PlaitBoard } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { FlowEdge, FlowElementStyles } from '../interfaces';
-import { getEdgePoints } from '../queries/get-edge-points';
 import { DEAFULT_EDGE_ACTIVE_STYLES, DEAFULT_EDGE_STYLES } from '../constants';
-import { getBend } from '../utils';
+import { FlowEdge } from '../interfaces/edge';
+import { FlowElementStyles } from '../interfaces/element';
+import { getBend } from '../utils/edge/get-smooth-step-edge';
+import { getEdgePoints } from '../utils/edge/edge';
 
 /**
  * drawEdge
@@ -25,6 +26,7 @@ export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, 
             stroke: edge.styles?.activeStroke || DEAFULT_EDGE_ACTIVE_STYLES.stroke
         };
     }
+    console.log(pathPoints, 'pathPoints')
     const path = pathPoints.reduce<string>((res, p, i) => {
         let segment = '';
         if (i > 0 && i < pathPoints.length - 1) {
