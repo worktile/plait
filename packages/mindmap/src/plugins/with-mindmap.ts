@@ -22,7 +22,7 @@ import {
 import { getWidthByText } from '@plait/richtext';
 import { MindmapLayoutType } from '@plait/layouts';
 import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
-import { MindmapNode } from '../interfaces/node';
+import { clipboardNode, MindmapNode } from '../interfaces/node';
 import { PlaitMindmapComponent } from '../mindmap.component';
 import { buildNodes, changeRightNodeCount, createEmptyNode, extractNodesText, findPath } from '../utils';
 import { getRectangleByNode, getRectangleByNodes, hitMindmapNode } from '../utils/graph';
@@ -176,13 +176,13 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         let selectedLayoutNode = (MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode as MindmapNodeElement) as MindmapNodeComponent)?.node;
         const nodesRectangle = getRectangleByNodes([selectedLayoutNode]);
         const selectNodeRectangle = getRectangleByNode(selectedLayoutNode);
+        const clipboardNode: clipboardNode = {
+            nodeData: selectedNode,
+            point: [selectNodeRectangle.x - nodesRectangle.x, selectNodeRectangle.y - nodesRectangle.y]
+        };
 
         if (selectedNode) {
-            const stringObj = JSON.stringify({
-                nodeData: selectedNode,
-                relativeX: selectNodeRectangle.x - nodesRectangle.x,
-                relativeY: selectNodeRectangle.y - nodesRectangle.y
-            });
+            const stringObj = JSON.stringify(clipboardNode);
             const encoded = window.btoa(encodeURIComponent(stringObj));
             const text = extractNodesText(selectedNode as MindmapNodeElement);
             data?.setData(`application/${CLIP_BOARD_FORMAT_KEY}`, encoded);
@@ -200,9 +200,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         const encoded = data?.getData(`application/${CLIP_BOARD_FORMAT_KEY}`);
         if (encoded) {
             const decoded = decodeURIComponent(window.atob(encoded));
-            const { nodeData, relativeX, relativeY } = JSON.parse(decoded);
+            const { nodeData, point } = JSON.parse(decoded) as clipboardNode;
 
-            const newElement: MindmapNodeElement = buildNodes(nodeData);
+            const newElement: MindmapNodeElement = buildNodes(nodeData as MindmapNodeElement);
             const element = getSelectedElements(board)?.[0];
             const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
 
@@ -211,13 +211,12 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 Transforms.insertNode(board, newElement, path);
                 return;
             } else if (targetPoint) {
-                const point = transformPoint(board, targetPoint);
                 const mindmap = {
                     ...newElement,
                     layout: newElement.layout ?? MindmapLayoutType.standard,
                     isCollapsed: false,
                     isRoot: true,
-                    points: [[point[0] + relativeX, point[1] + relativeY]],
+                    points: [[targetPoint[0] + point[0], targetPoint[1] + point[1]]],
                     rightNodeCount: newElement.children.length,
                     type: 'mindmap'
                 };

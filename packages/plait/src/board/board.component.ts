@@ -40,7 +40,9 @@ import {
     invertViewportCoordinates,
     transformMat3,
     getBoardClientBox,
-    toPoint
+    toPoint,
+    getBoardClientRect,
+    transformPoint
 } from '../utils';
 import {
     BOARD_TO_ON_CHANGE,
@@ -283,9 +285,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 })
             )
             .subscribe(([clipboardEvent, mouseEvent]: [ClipboardEvent, MouseEvent]) => {
-                const targetPoint = toPoint(mouseEvent.x, mouseEvent.y, this.board.host);
+                const targetPoint = transformPoint(this.board, toPoint(mouseEvent.x, mouseEvent.y, this.board.host));
                 const buffer = 5;
-                const clientRect = (this.board.host.closest('.plait-board-container') as HTMLElement).getBoundingClientRect();
+                const clientRect = getBoardClientRect(this.board);
+
                 if (
                     mouseEvent.x < clientRect.x + buffer ||
                     mouseEvent.x > clientRect.right - buffer ||

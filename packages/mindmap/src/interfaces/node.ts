@@ -1,4 +1,5 @@
 import { MindmapLayoutType } from '@plait/layouts';
+import { PlaitElement, Point } from '@plait/core';
 import { MindmapNodeElement } from './element';
 
 export interface MindmapNode {
@@ -31,12 +32,14 @@ export const MindmapNode = {
 
 // mindmap node extend 支持的布局类型
 export type ExtendLayoutType = Exclude<MindmapLayoutType, MindmapLayoutType.standard>;
+
 export type CoordinateType = {
     startX: number;
     startY: number;
     endX: number;
     endY: number;
 };
+
 export type ExtendUnderlineCoordinateType = {
     [key in ExtendLayoutType]: CoordinateType;
 };
@@ -44,3 +47,8 @@ export type ExtendUnderlineCoordinateType = {
 export type DetectResult = 'top' | 'bottom' | 'right' | 'left' | null;
 
 export type RootBaseDirection = 'right' | 'left' | null;
+
+export type clipboardNode = {
+    nodeData: PlaitElement;
+    point: Point;
+};
