@@ -8,9 +8,16 @@ import {
     Renderer2,
     ViewContainerRef
 } from '@angular/core';
-import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext, createG, isSelectedElement } from '@plait/core';
+import {
+    PlaitPluginElementComponent,
+    BeforeContextChange,
+    PlaitPluginElementContext,
+    createG,
+    isSelectedElement,
+    drawArrow
+} from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { drawEdge, drawRichtextBackground } from './draw/edge';
+import { drawEdge, drawEdgeMarkers, drawRichtextBackground } from './draw/edge';
 import { PlaitBoard } from '@plait/core';
 import { drawEdgeHandles } from './draw/handle';
 import { FlowEdge } from './interfaces/edge';
@@ -37,6 +44,8 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
 
     richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
 
+    sourceMarkerG?: SVGGElement[] | null = null;
+
     constructor(public cdr: ChangeDetectorRef, public viewContainerRef: ViewContainerRef, public render2: Renderer2) {
         super(cdr);
     }
@@ -46,6 +55,7 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.drawElement();
         this.drawRichtext();
+        this.drawMarkers();
     }
 
     beforeContextChange(value: PlaitPluginElementContext<FlowEdge<T>>) {
@@ -56,6 +66,7 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
             const isActive = isSelectedElement(this.board, value.element);
             this.drawElement(value.element, isActive);
             this.drawRichtext(value.element, isActive);
+            this.drawMarkers(value.element, isActive);
             if (isActive) {
                 this.drawHandles();
             } else {
@@ -97,6 +108,14 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         }
     }
 
+    drawMarkers(element: FlowEdge<T> = this.element, active = false) {
+        this.destroyMarkers();
+        this.sourceMarkerG = drawEdgeMarkers(this.roughSVG, this.board, element, active);
+        this.sourceMarkerG!.map(arrowline => {
+            this.g.append(arrowline);
+        });
+    }
+
     destroyHandles() {
         if (this.handlesG) {
             this.handlesG.remove();
@@ -121,6 +140,15 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         }
         if (this.richtextBackgroundG) {
             this.richtextBackgroundG.remove();
+            this.richtextBackgroundG = null;
+        }
+    }
+
+    destroyMarkers() {
+        if (this.sourceMarkerG) {
+            this.sourceMarkerG.map(item => {
+                item.remove();
+            });
             this.richtextBackgroundG = null;
         }
     }

@@ -2,4 +2,4 @@
 '@plait/flow': patch
 ---
 
-support edge text render
+support edge text and edge marker render

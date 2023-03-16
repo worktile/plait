@@ -5,7 +5,7 @@ export const HIT_THERSHOLD = 10;
 
 export const DEAFULT_EDGE_STYLES: Options = {
     ...DEAFULT_STYLES,
-    stroke: '#999',
+    stroke: '#ccc',
     fill: '#fff'
 };
 

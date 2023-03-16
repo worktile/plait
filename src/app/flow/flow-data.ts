@@ -66,7 +66,8 @@ export const mockFlowData: FlowElement<Element>[] = [
         },
         target: {
             id: '1002',
-            position: FlowPosition.top
+            position: FlowPosition.top,
+            marker: true
         },
         points: []
     },
@@ -82,7 +83,8 @@ export const mockFlowData: FlowElement<Element>[] = [
         },
         target: {
             id: '1001',
-            position: FlowPosition.left
+            position: FlowPosition.left,
+            marker: true
         },
         points: []
     },
@@ -98,7 +100,8 @@ export const mockFlowData: FlowElement<Element>[] = [
         },
         target: {
             id: '1003',
-            position: FlowPosition.left
+            position: FlowPosition.left,
+            marker: true
         },
         points: []
     }

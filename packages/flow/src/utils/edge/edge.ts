@@ -1,9 +1,10 @@
-import { FlowHandle, FlowPosition } from '../../interfaces/element';
+import { FlowElementStyles, FlowHandle, FlowPosition } from '../../interfaces/element';
 import { getHandleXYPosition } from '../handle/get-handle-position';
 import { PlaitBoard, RectangleClient, normalizePoint } from '@plait/core';
 import { getPoints } from './get-smooth-step-edge';
 import { getFlowNodeById } from '../get-node-by-id';
 import { FlowEdge } from '../../interfaces/edge';
+import { DEAFULT_EDGE_ACTIVE_STYLES, DEAFULT_EDGE_STYLES } from '../../constants/edge';
 
 interface EdgePositions {
     sourceX: number;
@@ -96,4 +97,18 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
         center: { x: undefined, y: undefined },
         offset: 30
     });
+};
+
+export const getEdgeStyle = (edge: FlowEdge, active: boolean) => {
+    let edgeStyles: FlowElementStyles = {
+        ...DEAFULT_EDGE_STYLES,
+        ...(edge.styles || {})
+    };
+    if (active) {
+        edgeStyles = {
+            ...edgeStyles,
+            stroke: edge.styles?.activeStroke || DEAFULT_EDGE_ACTIVE_STYLES.stroke
+        };
+    }
+    return edgeStyles;
 };
