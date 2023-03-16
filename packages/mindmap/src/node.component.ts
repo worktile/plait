@@ -119,7 +119,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
 
-    destroy$: Subject<any> = new Subject();
+    destroy$ = new Subject<void>();
 
     public get handActive(): boolean {
         return this.board.pointer === PlaitPointerType.hand;

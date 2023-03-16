@@ -23,7 +23,7 @@
       "@plait/richtext": [
         "dist/richtext",
         "dist/richtext/richtext"
-      ],
+      ]
     },
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
@@ -41,7 +41,8 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
