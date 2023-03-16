@@ -1,5 +1,5 @@
 import { FlowHandle, FlowPosition } from '../../interfaces/element';
-import { getHandlePosition } from '../handle/get-handle-position';
+import { getHandleXYPosition } from '../handle/get-handle-position';
 import { PlaitBoard, RectangleClient, normalizePoint } from '@plait/core';
 import { getPoints } from './get-smooth-step-edge';
 import { getFlowNodeById } from '../get-node-by-id';
@@ -20,8 +20,8 @@ export const getEdgePositions = (
     targetHandle: FlowHandle,
     targetPosition: FlowPosition
 ): EdgePositions => {
-    const sourceHandlePos = getHandlePosition(sourcePosition, sourceNodeRect, sourceHandle);
-    const targetHandlePos = getHandlePosition(targetPosition, targetNodeRect, targetHandle);
+    const sourceHandlePos = getHandleXYPosition(sourcePosition, sourceNodeRect, sourceHandle);
+    const targetHandlePos = getHandleXYPosition(targetPosition, targetNodeRect, targetHandle);
     return {
         sourceX: sourceHandlePos.x,
         sourceY: sourceHandlePos.y,

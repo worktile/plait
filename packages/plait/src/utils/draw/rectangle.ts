@@ -13,12 +13,21 @@ import { MAX_RADIUS } from '../../constants';
  * @param outline boolean
  * @returns SVGGElement
  */
-export function drawRoundRectangle(rs: RoughSVG, x1: number, y1: number, x2: number, y2: number, options: Options, outline = false) {
+export function drawRoundRectangle(
+    rs: RoughSVG,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    options: Options,
+    outline = false,
+    borderRadius?: number
+) {
     const width = Math.abs(x1 - x2);
     const height = Math.abs(y1 - y2);
 
     const defaultRadius = Math.min(width, height) / 8;
-    let radius = defaultRadius;
+    let radius = borderRadius || defaultRadius;
     if (defaultRadius > MAX_RADIUS) {
         radius = outline ? MAX_RADIUS + 2 : MAX_RADIUS;
     }

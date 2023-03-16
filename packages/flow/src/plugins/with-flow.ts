@@ -27,8 +27,8 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.isIntersectionSelection = element => {
-        const nodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(element) as FlowNodeComponent | FlowEdgeComponent;
-        if (FlowElement.isFlowElement(element) && nodeComponent && board.selection) {
+        const elementComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(element) as FlowNodeComponent | FlowEdgeComponent;
+        if (FlowElement.isFlowElement(element) && elementComponent && board.selection) {
             if (FlowNode.isFlowNodeElement(element)) {
                 const { x, y } = normalizePoint(element.points![0]);
                 return RectangleClient.isIntersect(RectangleClient.toRectangleClient([board.selection!.anchor, board.selection!.focus]), {

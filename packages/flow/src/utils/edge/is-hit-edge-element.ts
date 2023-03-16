@@ -1,8 +1,9 @@
-import { RectangleClient, distanceBetweenPointAndSegment } from '@plait/core';
+import { RectangleClient, distanceBetweenPointAndRectangle, distanceBetweenPointAndSegment } from '@plait/core';
 import { PlaitBoard } from '@plait/core';
 import { FlowEdge } from '../../interfaces/edge';
 import { HIT_THERSHOLD } from '../../constants/edge';
 import { getEdgePoints } from './edge';
+import { getEdgeTextBackgroundRect, getEdgeTextRect } from './text';
 
 /**
  * isHitFlowEdge
@@ -26,8 +27,16 @@ export function isHitFlowEdge(edge: FlowEdge, board: PlaitBoard) {
                 }
             }
         });
-        return minDistance < HIT_THERSHOLD;
+        const hitFlowEdgeText = isHitFlowEdgeText(edge, board, clickReact);
+        const hitFlowEdge = minDistance < HIT_THERSHOLD;
+        return hitFlowEdge || hitFlowEdgeText;
     }
-
     return false;
+}
+
+export function isHitFlowEdgeText(edge: FlowEdge, board: PlaitBoard, clickReact: RectangleClient) {
+    const textRect = getEdgeTextRect(board, edge);
+    const textBackgroundRect = getEdgeTextBackgroundRect(textRect);
+    const distance = distanceBetweenPointAndRectangle(clickReact.x, clickReact.y, textBackgroundRect);
+    return distance === 0;
 }

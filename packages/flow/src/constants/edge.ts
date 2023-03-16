@@ -1,11 +1,12 @@
 import { Options } from 'roughjs/bin/core';
 import { DEAFULT_STYLES } from './default';
 
-export const HIT_THERSHOLD = 5;
+export const HIT_THERSHOLD = 10;
 
 export const DEAFULT_EDGE_STYLES: Options = {
     ...DEAFULT_STYLES,
-    stroke: '#999'
+    stroke: '#999',
+    fill: '#fff'
 };
 
 export const DEAFULT_EDGE_ACTIVE_STYLES: Options = {
