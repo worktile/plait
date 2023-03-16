@@ -87,7 +87,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     roughSVG!: RoughSVG;
 
-    destroy$: Subject<any> = new Subject();
+    destroy$ = new Subject<void>();
 
     viewportState: PlaitBoardViewport = {
         zoom: 1,
