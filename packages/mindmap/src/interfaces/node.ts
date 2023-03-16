@@ -47,8 +47,3 @@ export type ExtendUnderlineCoordinateType = {
 export type DetectResult = 'top' | 'bottom' | 'right' | 'left' | null;
 
 export type RootBaseDirection = 'right' | 'left' | null;
-
-export type clipboardNode = {
-    nodeData: PlaitElement;
-    point: Point;
-};

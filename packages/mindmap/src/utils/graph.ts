@@ -1,7 +1,7 @@
 import { MindmapNode } from '../interfaces/node';
 import { Point, RectangleClient } from '@plait/core';
 import { PlaitPointerType, PlaitBoard } from '@plait/core';
-import { LayoutNode } from '@plait/layouts';
+import { depthFirstRecursion } from '@plait/core';
 
 export function toRectangleClient(points: [Point, Point]): RectangleClient {
     const xArray = points.map(ele => ele[0]);
@@ -36,8 +36,8 @@ export function getRectangleByNodes(mindmapNodes: MindmapNode[]): RectangleClien
     };
 
     mindmapNodes.forEach(mindmapNode => {
-        ((mindmapNode as unknown) as LayoutNode).eachNode(node => {
-            const rectangleNode = getRectangleByNode((node as unknown) as MindmapNode);
+        depthFirstRecursion(mindmapNode, node => {
+            const rectangleNode = getRectangleByNode(node);
             nodesRectangle.x = Math.min(rectangleNode.x, nodesRectangle.x);
             nodesRectangle.y = Math.min(rectangleNode.y, nodesRectangle.y);
             const right = Math.max(rectangleNode.x + rectangleNode.width, nodesRectangle.x + nodesRectangle.width);
