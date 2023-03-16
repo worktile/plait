@@ -1,10 +1,20 @@
-import { PlaitBoard, PlaitPlugin, PlaitPluginElementContext } from '@plait/core';
-import { FlowEdge, FlowElement } from '../interfaces';
+import {
+    ELEMENT_TO_PLUGIN_COMPONENT,
+    PlaitBoard,
+    PlaitPlugin,
+    PlaitPluginElementContext,
+    RectangleClient,
+    normalizePoint
+} from '@plait/core';
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowEdgeComponent } from '../flow-edge.component';
+import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
+import { FlowElement } from '../interfaces/element';
+import { FlowEdge } from '../interfaces/edge';
+import { FlowNode } from '../interfaces/node';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement } = board;
+    const { drawElement, isIntersectionSelection } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (FlowElement.isFlowElement(context.element)) {
@@ -15,5 +25,25 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
         }
         return drawElement(context);
     };
+
+    board.isIntersectionSelection = element => {
+        const nodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(element) as FlowNodeComponent | FlowEdgeComponent;
+        if (FlowElement.isFlowElement(element) && nodeComponent && board.selection) {
+            if (FlowNode.isFlowNodeElement(element)) {
+                const { x, y } = normalizePoint(element.points![0]);
+                return RectangleClient.isIntersect(RectangleClient.toRectangleClient([board.selection!.anchor, board.selection!.focus]), {
+                    x,
+                    y,
+                    width: element.width,
+                    height: element.height
+                });
+            }
+            if (FlowEdge.isFlowEdgeElement(element)) {
+                return isHitFlowEdge(element, board);
+            }
+        }
+        return isIntersectionSelection(element);
+    };
+
     return board;
 };

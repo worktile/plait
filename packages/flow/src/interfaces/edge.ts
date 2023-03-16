@@ -1,11 +1,19 @@
-import { FlowElement, FlowElementType, FlowPosition } from './element';
-import { PlaitElement } from '@plait/core';
+import { FlowElement, FlowElementType, FlowHandle, FlowPosition } from './element';
+import { PlaitElement, RectangleClient } from '@plait/core';
+import { FlowNode } from './node';
 
-export const isFlowEdgeElement = (value: PlaitElement): value is FlowElement => {
+export const isFlowEdgeElement = (value: PlaitElement): value is FlowEdge => {
     return value.type === FlowElementType.edge;
 };
 
 export type FlowEdgeMarkerType = 'arrow' | 'none';
+
+export type FlowEdgeHandleType = 'source' | 'target';
+
+export interface FlowEdgeHandle extends FlowHandle {
+    node: FlowNode;
+    source?: FlowEdgeHandleType;
+}
 
 export interface FlowEdge<T = unknown> extends FlowElement<T> {
     source?: {
