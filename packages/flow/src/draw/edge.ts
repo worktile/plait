@@ -1,4 +1,4 @@
-import { PlaitBoard } from '@plait/core';
+import { BOARD_TO_HOST, PlaitBoard, drawRoundRectangle } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { FlowEdge } from '../interfaces/edge';
 import { FlowElementStyles } from '../interfaces/element';
@@ -15,7 +15,7 @@ import { DEAFULT_EDGE_ACTIVE_STYLES, DEAFULT_EDGE_STYLES } from '../constants/ed
  * @returns
  */
 export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, active = false) => {
-    const [pathPoints, labelX, labelY] = getEdgePoints(board, edge);
+    const [pathPoints] = getEdgePoints(board, edge);
     let edgeStyles: FlowElementStyles = {
         ...DEAFULT_EDGE_STYLES,
         ...(edge.styles || {})
@@ -26,16 +26,8 @@ export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, 
             stroke: edge.styles?.activeStroke || DEAFULT_EDGE_ACTIVE_STYLES.stroke
         };
     }
-    const path = pathPoints.reduce<string>((res, p, i) => {
-        let segment = '';
-        if (i > 0 && i < pathPoints.length - 1) {
-            segment = getBend(pathPoints[i - 1], p, pathPoints[i + 1], 5);
-        } else {
-            segment = `${i === 0 ? 'M' : 'L'}${p.x} ${p.y}`;
-        }
-        res += segment;
-        return res;
-    }, '');
-
-    return roughSVG.path(path, edgeStyles);
+    return roughSVG.linearPath(
+        pathPoints.map(item => [item.x, item.y]),
+        edgeStyles
+    );
 };

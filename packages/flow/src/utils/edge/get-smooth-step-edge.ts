@@ -1,19 +1,6 @@
-import { FlowPosition } from "../../interfaces/element";
-import { getEdgeCenter } from "./edge";
+import { FlowPosition } from '../../interfaces/element';
+import { getEdgeCenter } from './edge';
 import { XYPosition } from '@plait/core';
-
-export interface GetSmoothStepPathParams {
-    sourceX: number;
-    sourceY: number;
-    sourcePosition?: FlowPosition;
-    targetX: number;
-    targetY: number;
-    targetPosition?: FlowPosition;
-    borderRadius?: number;
-    centerX?: number;
-    centerY?: number;
-    offset?: number;
-}
 
 const handleDirections = {
     [FlowPosition.left]: { x: -1, y: 0 },
@@ -21,46 +8,6 @@ const handleDirections = {
     [FlowPosition.top]: { x: 0, y: -1 },
     [FlowPosition.bottom]: { x: 0, y: 1 }
 };
-
-
-export function getSmoothStepPath({
-    sourceX,
-    sourceY,
-    sourcePosition = FlowPosition.bottom,
-    targetX,
-    targetY,
-    targetPosition = FlowPosition.top,
-    borderRadius = 5,
-    centerX,
-    centerY,
-    offset = 20,
-  // eslint-disable-next-line prettier/prettier
-  }: GetSmoothStepPathParams): [path: string, labelX: number, labelY: number, offsetX: number, offsetY: number] {
-    const [points, labelX, labelY, offsetX, offsetY] = getPoints({
-      source: { x: sourceX, y: sourceY },
-      sourcePosition,
-      target: { x: targetX, y: targetY },
-      targetPosition,
-      center: { x: centerX, y: centerY },
-      offset,
-    });
-  
-    const path = points.reduce<string>((res, p, i) => {
-      let segment = '';
-  
-      if (i > 0 && i < points.length - 1) {
-        segment = getBend(points[i - 1], p, points[i + 1], borderRadius);
-      } else {
-        segment = `${i === 0 ? 'M' : 'L'}${p.x} ${p.y}`;
-      }
-  
-      res += segment;
-  
-      return res;
-    }, '');
-  
-    return [path, labelX, labelY, offsetX, offsetY];
-  }
 
 // ith this function we try to mimic a orthogonal edge routing behaviour
 // It's not as good as a real orthogonal edge routing but it's faster and good enough as a default for step and smooth step edges
@@ -158,7 +105,6 @@ export function getPoints({
 
     return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
 }
-
 
 const getDirection = ({
     source,

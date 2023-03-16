@@ -1,8 +1,8 @@
-import { ELEMENT_TO_PLUGIN_COMPONENT, RectangleClient } from '@plait/core';
+import { RectangleClient, distanceBetweenPointAndSegment } from '@plait/core';
 import { PlaitBoard } from '@plait/core';
-import { FlowEdgeComponent } from '../../flow-edge.component';
 import { FlowEdge } from '../../interfaces/edge';
 import { HIT_THERSHOLD } from '../../constants/edge';
+import { getEdgePoints } from './edge';
 
 /**
  * isHitFlowEdge
@@ -10,20 +10,22 @@ import { HIT_THERSHOLD } from '../../constants/edge';
  * @param board PlaitBoard
  * @returns boolean
  */
-export function isHitFlowEdge(element: FlowEdge, board: PlaitBoard) {
-    const edgeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(element) as FlowEdgeComponent;
-    const path = edgeComponent.nodeG?.querySelector('path');
-    const pathLength = path?.getTotalLength();
+export function isHitFlowEdge(edge: FlowEdge, board: PlaitBoard) {
+    const [pathPoints] = getEdgePoints(board, edge);
     let minDistance = Number.MAX_VALUE;
     if (board.selection) {
         const clickReact = RectangleClient.toRectangleClient([board.selection.anchor, board.selection.focus]);
-        for (var i = 0; i < pathLength!; i++) {
-            var point = path?.getPointAtLength(i);
-            var distance = Math.sqrt(Math.pow(point!.x - clickReact.x, 2) + Math.pow(point!.y - clickReact.y, 2));
-            if (distance < minDistance) {
-                minDistance = distance;
+        pathPoints.map((path, index) => {
+            if (index < pathPoints.length - 1) {
+                const nextPath = pathPoints[index + 1];
+                if (!(nextPath.x === path.x && nextPath.y === path.y)) {
+                    let distance = distanceBetweenPointAndSegment(clickReact.x, clickReact.y, path.x, path.y, nextPath.x, nextPath.y);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                    }
+                }
             }
-        }
+        });
         return minDistance < HIT_THERSHOLD;
     }
 
