@@ -36,6 +36,7 @@ import {
     directionDetector,
     drawPlaceholderDropNodeG,
     findPath,
+    findUpElement,
     isChildElement,
     readjustmentDropTarget
 } from '../utils';
@@ -178,7 +179,8 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
                 const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
                 let targetPath = findPath(board, targetComponent.node);
-                const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(board.children[0] as PlaitMindmap) as PlaitMindmapComponent;
+                const mindmapElement = findUpElement(dropTarget.target).root;
+                const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(mindmapElement as PlaitMindmap) as PlaitMindmapComponent;
                 const layout = MindmapQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapNodeElement);
                 targetPath = updatePathByLayoutAnddropTarget(targetPath, layout, dropTarget);
                 const originPath = findPath(board, activeComponent.node);
@@ -309,14 +311,15 @@ export const updateRightNodeCount = (
     detectResult: DetectResult
 ) => {
     let rightNodeCount;
-    const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(board.children[0] as PlaitMindmap) as PlaitMindmapComponent;
+    const mindmapElement = findUpElement(targetComponent.node.origin).root;
+    const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(mindmapElement as PlaitMindmap) as PlaitMindmapComponent;
     const activeIndex = mindmapComponent?.root.children.indexOf(activeComponent.node) as number;
     const targetIndex = mindmapComponent?.root.children.indexOf(targetComponent.node) as number;
     const isActiveOnRight = activeIndex !== -1 && activeIndex <= (activeComponent.parent.origin.rightNodeCount as number) - 1;
     const isTargetOnRight =
         targetComponent.parent && targetIndex !== -1 && targetIndex <= (targetComponent.parent.origin.rightNodeCount as number) - 1;
     const isBothOnRight = isActiveOnRight && isTargetOnRight;
-    const rootChildCount = board.children[0].children?.length as number;
+    const rootChildCount = mindmapComponent.root.children?.length as number;
     const rootRightNodeCount = mindmapComponent?.root.origin.rightNodeCount as number;
 
     if (!isBothOnRight) {
