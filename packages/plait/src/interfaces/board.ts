@@ -9,6 +9,7 @@ import { PlaitPluginElementComponent } from '../core/element/plugin-element';
 import { BOARD_TO_COMPONENT, BOARD_TO_ELEMENT_HOST, BOARD_TO_HOST, BOARD_TO_ROUGH_SVG } from '../utils/weak-maps';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { BoardComponentInterface } from '../board/board.component.interface';
+import { Point } from './point';
 
 export interface PlaitBoard {
     host: SVGElement;
@@ -32,7 +33,7 @@ export interface PlaitBoard {
     keydown: (event: KeyboardEvent) => void;
     keyup: (event: KeyboardEvent) => void;
     setFragment: (data: DataTransfer | null) => void;
-    insertFragment: (data: DataTransfer | null) => void;
+    insertFragment: (data: DataTransfer | null, targetPoint?: Point) => void;
     deleteFragment: (data: DataTransfer | null) => void;
     dblclick: (event: MouseEvent) => void;
     drawElement: (context: PlaitPluginElementContext) => SVGGElement[] | ComponentType<PlaitPluginElementComponent>;

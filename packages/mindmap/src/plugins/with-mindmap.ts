@@ -12,6 +12,7 @@ import {
     PlaitHistoryBoard,
     PlaitPlugin,
     PlaitPluginElementContext,
+    Point,
     RectangleClient,
     removeSelectedElement,
     toPoint,
@@ -19,14 +20,16 @@ import {
     Transforms
 } from '@plait/core';
 import { getWidthByText } from '@plait/richtext';
+import { MindmapLayoutType } from '@plait/layouts';
 import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { PlaitMindmapComponent } from '../mindmap.component';
 import { buildNodes, changeRightNodeCount, createEmptyNode, extractNodesText, findPath } from '../utils';
-import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
+import { getRectangleByNode, getRectangleByNodes, hitMindmapNode } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withNodeDnd } from './with-dnd';
+import { MindmapNodeComponent } from '../node.component';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isIntersectionSelection } = board;
@@ -169,8 +172,17 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
     board.setFragment = (data: DataTransfer | null) => {
         const selectedNode = getSelectedElements(board)?.[0];
+
+        let selectedLayoutNode = (MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode as MindmapNodeElement) as MindmapNodeComponent)?.node;
+        const nodesRectangle = getRectangleByNodes([selectedLayoutNode]);
+        const selectNodeRectangle = getRectangleByNode(selectedLayoutNode);
+
         if (selectedNode) {
-            const stringObj = JSON.stringify(selectedNode);
+            const stringObj = JSON.stringify({
+                nodeData: selectedNode,
+                relativeX: selectNodeRectangle.x - nodesRectangle.x,
+                relativeY: selectNodeRectangle.y - nodesRectangle.y
+            });
             const encoded = window.btoa(encodeURIComponent(stringObj));
             const text = extractNodesText(selectedNode as MindmapNodeElement);
             data?.setData(`application/${CLIP_BOARD_FORMAT_KEY}`, encoded);
@@ -180,21 +192,37 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         setFragment(data);
     };
 
-    board.insertFragment = (data: DataTransfer | null) => {
+    board.insertFragment = (data: DataTransfer | null, targetPoint?: Point) => {
         if (board.options.readonly) {
-            insertFragment(data);
+            insertFragment(data, targetPoint);
             return;
         }
         const encoded = data?.getData(`application/${CLIP_BOARD_FORMAT_KEY}`);
         if (encoded) {
             const decoded = decodeURIComponent(window.atob(encoded));
-            const nodeData = JSON.parse(decoded);
+            const { nodeData, relativeX, relativeY } = JSON.parse(decoded);
+
             const newElement: MindmapNodeElement = buildNodes(nodeData);
             const element = getSelectedElements(board)?.[0];
             const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
+
             if (nodeComponent) {
                 const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
                 Transforms.insertNode(board, newElement, path);
+                return;
+            } else if (targetPoint) {
+                const point = transformPoint(board, targetPoint);
+                const mindmap = {
+                    ...newElement,
+                    layout: newElement.layout ?? MindmapLayoutType.standard,
+                    isCollapsed: false,
+                    isRoot: true,
+                    points: [[point[0] + relativeX, point[1] + relativeY]],
+                    rightNodeCount: newElement.children.length,
+                    type: 'mindmap'
+                };
+
+                Transforms.insertNode(board, mindmap, [board.children.length]);
                 return;
             }
         } else {
@@ -219,7 +247,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 }
             }
         }
-        insertFragment(data);
+        insertFragment(data, targetPoint);
     };
 
     board.deleteFragment = (data: DataTransfer | null) => {

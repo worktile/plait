@@ -1,6 +1,7 @@
 import { MindmapNode } from '../interfaces/node';
 import { Point, RectangleClient } from '@plait/core';
 import { PlaitPointerType, PlaitBoard } from '@plait/core';
+import { LayoutNode } from '@plait/layouts';
 
 export function toRectangleClient(points: [Point, Point]): RectangleClient {
     const xArray = points.map(ele => ele[0]);
@@ -24,6 +25,29 @@ export function getRectangleByNode(node: MindmapNode): RectangleClient {
         width,
         height
     };
+}
+
+export function getRectangleByNodes(mindmapNodes: MindmapNode[]): RectangleClient {
+    const nodesRectangle: RectangleClient = {
+        x: Number.MAX_VALUE,
+        y: Number.MAX_VALUE,
+        width: 0,
+        height: 0
+    };
+
+    mindmapNodes.forEach(mindmapNode => {
+        ((mindmapNode as unknown) as LayoutNode).eachNode(node => {
+            const rectangleNode = getRectangleByNode((node as unknown) as MindmapNode);
+            nodesRectangle.x = Math.min(rectangleNode.x, nodesRectangle.x);
+            nodesRectangle.y = Math.min(rectangleNode.y, nodesRectangle.y);
+            const right = Math.max(rectangleNode.x + rectangleNode.width, nodesRectangle.x + nodesRectangle.width);
+            const bottom = Math.max(rectangleNode.y + rectangleNode.height, nodesRectangle.y + nodesRectangle.height);
+            nodesRectangle.width = right - nodesRectangle.x;
+            nodesRectangle.height = bottom - nodesRectangle.y;
+        });
+    });
+
+    return nodesRectangle;
 }
 
 export function hitMindmapNode(board: PlaitBoard, point: Point, node: MindmapNode) {

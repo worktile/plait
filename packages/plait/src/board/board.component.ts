@@ -20,7 +20,7 @@ import {
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions, PlaitBoardViewport } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
@@ -39,7 +39,8 @@ import {
     getViewportContainerBox,
     invertViewportCoordinates,
     transformMat3,
-    getBoardClientBox
+    getBoardClientBox,
+    toPoint
 } from '../utils';
 import {
     BOARD_TO_ON_CHANGE,
@@ -275,13 +276,16 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
         fromEvent<ClipboardEvent>(document, 'paste')
             .pipe(
+                withLatestFrom(fromEvent<MouseEvent>(this.host, 'mousemove')),
                 takeUntil(this.destroy$),
                 filter(() => {
                     return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection;
                 })
             )
-            .subscribe((event: ClipboardEvent) => {
-                this.board?.insertFragment(event.clipboardData);
+            .subscribe(([clipboardEvent, mouseEvent]: [ClipboardEvent, MouseEvent]) => {
+                const targetPoint = toPoint((mouseEvent as MouseEvent).x, (mouseEvent as MouseEvent).y, this.board.host);
+
+                this.board?.insertFragment(clipboardEvent.clipboardData, targetPoint);
             });
 
         fromEvent<ClipboardEvent>(document, 'cut')
