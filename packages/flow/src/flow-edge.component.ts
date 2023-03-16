@@ -97,11 +97,6 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         }
     }
 
-    drawMarker() {
-        if (this.element.target?.marker) {
-        }
-    }
-
     destroyHandles() {
         if (this.handlesG) {
             this.handlesG.remove();
