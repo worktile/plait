@@ -3,14 +3,6 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { FlowEdge } from '../interfaces/edge';
 import { getEdgePoints, getEdgeStyle } from '../utils/edge/edge';
 
-/**
- * drawEdge
- * @param board PlaitBoard
- * @param roughSVG RoughSVG
- * @param edge FlowEdge
- * @param active boolaen
- * @returns
- */
 export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, active = false) => {
     const [pathPoints] = getEdgePoints(board, edge);
     const edgeStyles = getEdgeStyle(edge, active);
@@ -20,14 +12,6 @@ export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, 
     );
 };
 
-/**
- * drawRichtextBackground
- * @param roughSVG RoughSVG
- * @param edge FlowEdge
- * @param textBackgroundRect RectangleClient
- * @param active boolean
- * @returns SVGGElement[]
- */
 export const drawRichtextBackground = (roughSVG: RoughSVG, edge: FlowEdge, textBackgroundRect: RectangleClient, active = false) => {
     const edgeStyles = getEdgeStyle(edge, active);
     const { x, y, width, height } = textBackgroundRect;

@@ -7,12 +7,6 @@ import { getHandleXYPosition } from '../utils/handle/get-handle-position';
 import { getEdgeHandles } from '../utils/handle/get-edge-handles';
 import { DEAFULT_HANDLE_STYLES, HANDLE_RADIUS } from '../constants/handle';
 
-/**
- * drawHandles
- * @param roughSVG RoughSVG
- * @param node FlowNode
- * @returns RoughSVG[]
- */
 export function drawNodeHandles(roughSVG: RoughSVG, node: FlowNode) {
     const handles = node.handles || getDefaultHandles();
     const { x, y } = normalizePoint(node.points![0]);
@@ -31,13 +25,6 @@ export function drawNodeHandles(roughSVG: RoughSVG, node: FlowNode) {
     });
 }
 
-/**
- * drawEdgeHandles
- * @param board PlaitBoard
- * @param roughSVG RoughSVG
- * @param edges FlowEdge
- * @returns RoughSVG[]
- */
 export function drawEdgeHandles(board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge) {
     const handles = getEdgeHandles(board, edge);
     return handles.map(handle => {

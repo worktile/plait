@@ -3,11 +3,11 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { Options } from 'roughjs/bin/core';
 import { Point } from '../../interfaces';
 
-export function arrowPoints(start: Point, end: Point, maxLineLength = 10, degree = 40) {
+export function arrowPoints(start: Point, end: Point, maxHypotenuseLength = 10, degree = 40) {
     const width = Math.abs(start[0] - end[0]);
     const height = Math.abs(start[1] - end[1]);
     let hypotenuse = Math.hypot(width, height); // 斜边
-    const realRotateLine = hypotenuse > maxLineLength * 2 ? maxLineLength : hypotenuse / 2;
+    const realRotateLine = hypotenuse > maxHypotenuseLength * 2 ? maxHypotenuseLength : hypotenuse / 2;
     const rotateWidth = (realRotateLine / hypotenuse) * width;
     const rotateHeight = (realRotateLine / hypotenuse) * height;
     const rotatePoint = [
@@ -19,16 +19,8 @@ export function arrowPoints(start: Point, end: Point, maxLineLength = 10, degree
     return { pointLeft, pointRight };
 }
 
-/**
- *
- * @param rs RoughSVG
- * @param start Point
- * @param end Point
- * @param options Options
- * @returns SVGGElement[]
- */
-export function drawArrow(rs: RoughSVG, start: Point, end: Point, options: Options): SVGGElement[] {
-    const { pointLeft, pointRight } = arrowPoints(start, end);
+export function drawArrow(rs: RoughSVG, start: Point, end: Point, options: Options, maxHypotenuseLength = 10, degree = 40): SVGGElement[] {
+    const { pointLeft, pointRight } = arrowPoints(start, end, maxHypotenuseLength, degree);
     const arrowLineLeft = rs.linearPath([pointLeft, end], options);
     const arrowLineRight = rs.linearPath([pointRight, end], options);
     return [arrowLineLeft, arrowLineRight];

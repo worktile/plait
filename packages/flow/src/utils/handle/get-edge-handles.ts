@@ -2,13 +2,6 @@ import { PlaitBoard, normalizePoint } from '@plait/core';
 import { FlowEdge, FlowEdgeHandle } from '../../interfaces/edge';
 import { getFlowNodeById } from '../get-node-by-id';
 
-/**
- * getEdgeHandles
- * @param board PlaitBoard
- * @param edges FlowEdge
- * @returns FlowEdgeHandle[]
- */
-
 export const getEdgeHandles = (board: PlaitBoard, edges: FlowEdge) => {
     const handles: FlowEdgeHandle[] = [];
     let sourceNode, targetNode;

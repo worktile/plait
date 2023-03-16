@@ -52,12 +52,6 @@ export function getEdgeCenter({
     return [centerX, centerY, xOffset, yOffset];
 }
 
-/**
- * getEdgePoints
- * @param board PlaitBoard
- * @param edge FlowEdge
- * @returns `{source: XYPosition; sourcePosition: FlowPosition; target: XYPosition; targetPosition: FlowPosition; center: Partial<XYPosition>;offset: number;}`
- */
 export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
     const sourceNode = getFlowNodeById(board, edge.source?.id!);
     const targetNode = getFlowNodeById(board, edge.target?.id!);
