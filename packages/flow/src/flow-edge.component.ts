@@ -8,14 +8,7 @@ import {
     Renderer2,
     ViewContainerRef
 } from '@angular/core';
-import {
-    PlaitPluginElementComponent,
-    BeforeContextChange,
-    PlaitPluginElementContext,
-    createG,
-    isSelectedElement,
-    drawArrow
-} from '@plait/core';
+import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext, createG, isSelectedElement } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawEdge, drawEdgeMarkers, drawRichtextBackground } from './draw/edge';
 import { PlaitBoard } from '@plait/core';
@@ -149,7 +142,7 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
             this.sourceMarkerG.map(item => {
                 item.remove();
             });
-            this.richtextBackgroundG = null;
+            this.sourceMarkerG = null;
         }
     }
 }
