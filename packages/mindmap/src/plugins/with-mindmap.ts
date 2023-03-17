@@ -1,6 +1,5 @@
 import {
     addSelectedElement,
-    CLIP_BOARD_FORMAT_KEY,
     ELEMENT_TO_PLUGIN_COMPONENT,
     getSelectedElements,
     hotkeys,
@@ -20,16 +19,15 @@ import {
     Transforms
 } from '@plait/core';
 import { getWidthByText } from '@plait/richtext';
-import { MindmapLayoutType } from '@plait/layouts';
 import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { PlaitMindmapComponent } from '../mindmap.component';
-import { buildNodes, changeRightNodeCount, createEmptyNode, extractNodesText, findPath } from '../utils';
-import { getRectangleByNode, getRectangleByNodes, hitMindmapNode } from '../utils/graph';
+import { changeRightNodeCount, createEmptyNode, filterChildElement, findPath } from '../utils';
+import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withNodeDnd } from './with-dnd';
-import { MindmapNodeComponent } from '../node.component';
+import { buildClipboardData, getDataFromClipboard, insertClipboardData, setClipboardData } from '../utils/clipboard';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isIntersectionSelection } = board;
@@ -171,23 +169,11 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.setFragment = (data: DataTransfer | null) => {
-        let selectedNode = getSelectedElements(board)?.[0];
+        const selectedNodes = filterChildElement(getSelectedElements(board));
 
-        let selectedLayoutNode = (MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode as MindmapNodeElement) as MindmapNodeComponent)?.node;
-        const nodesRectangle = getRectangleByNodes([selectedLayoutNode]);
-        const selectNodeRectangle = getRectangleByNode(selectedLayoutNode);
-
-        selectedNode = {
-            ...selectedNode,
-            points: [[selectNodeRectangle.x - nodesRectangle.x, selectNodeRectangle.y - nodesRectangle.y]]
-        };
-
-        if (selectedNode) {
-            const stringObj = JSON.stringify(selectedNode);
-            const encoded = window.btoa(encodeURIComponent(stringObj));
-            const text = extractNodesText(selectedNode as MindmapNodeElement);
-            data?.setData(`application/${CLIP_BOARD_FORMAT_KEY}`, encoded);
-            data?.setData(`text/plain`, text);
+        if (selectedNodes.length) {
+            const nodeData = buildClipboardData(selectedNodes);
+            setClipboardData(data, nodeData);
             return;
         }
         setFragment(data);
@@ -198,33 +184,10 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             insertFragment(data, targetPoint);
             return;
         }
-        const encoded = data?.getData(`application/${CLIP_BOARD_FORMAT_KEY}`);
-        if (encoded) {
-            const decoded = decodeURIComponent(window.atob(encoded));
-            const nodeData = JSON.parse(decoded);
 
-            const newElement: MindmapNodeElement = buildNodes(nodeData as MindmapNodeElement);
-            const element = getSelectedElements(board)?.[0];
-            const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
-
-            if (nodeComponent) {
-                const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
-                Transforms.insertNode(board, newElement, path);
-                return;
-            } else if (targetPoint) {
-                const mindmap = {
-                    ...newElement,
-                    layout: newElement.layout ?? MindmapLayoutType.standard,
-                    isCollapsed: false,
-                    isRoot: true,
-                    points: [[targetPoint[0] + nodeData.points[0][0], targetPoint[1] + nodeData.points[0][1]]],
-                    rightNodeCount: newElement.children.length,
-                    type: 'mindmap'
-                };
-
-                Transforms.insertNode(board, mindmap, [board.children.length]);
-                return;
-            }
+        const nodesData = getDataFromClipboard(data);
+        if (nodesData.length) {
+            insertClipboardData(board, nodesData, targetPoint || [0, 0]);
         } else {
             const text = data?.getData(`text/plain`) as string;
             const textWidth = getWidthByText(text, board.host.parentElement as any);
