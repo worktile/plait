@@ -1,5 +1,5 @@
-import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
-import { MindmapLayoutType } from '@plait/layouts';
+import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
+import { LayoutType, MindmapLayoutType } from '@plait/layouts';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH } from '../constants';
 import { MindmapNode, PlaitMindmap } from '../interfaces';
@@ -64,6 +64,20 @@ export const isChildElement = (origin: MindmapNodeElement, child: MindmapNodeEle
     return false;
 };
 
+export const filterChildElement = (nodes: PlaitElement[]) => {
+    let result: PlaitElement[] = [];
+    nodes.forEach(element => {
+        const isChild = nodes.some(node => {
+            return isChildElement(node as MindmapNodeElement, element as MindmapNodeElement);
+        });
+
+        if (!isChild) {
+            result.push(element);
+        }
+    });
+    return result;
+};
+
 export const isChildRight = (node: MindmapNode, child: MindmapNode) => {
     return node.x < child.x;
 };
@@ -81,6 +95,10 @@ export const buildNodes = (node: MindmapNodeElement) => {
         newNode.children = [];
         if (newNode.isRoot) {
             delete newNode.isRoot;
+            delete newNode.rightNodeCount;
+        }
+        if (newNode.layout === MindmapLayoutType.standard) {
+            delete newNode.layout;
         }
         for (const childNode of node.children) {
             newNode.children.push(buildNodes(childNode));
@@ -88,6 +106,24 @@ export const buildNodes = (node: MindmapNodeElement) => {
         return newNode;
     }
 };
+
+export const buildMindmap = (node: MindmapNodeElement, points: Point): MindmapNodeElement => {
+    if (node) {
+        const mindmap = buildNodes(node);
+        return {
+            ...mindmap,
+            layout: mindmap.layout ?? MindmapLayoutType.standard,
+            isCollapsed: false,
+            isRoot: true,
+            points: [points],
+            rightNodeCount: mindmap.children.length,
+            type: 'mindmap'
+        };
+    } else {
+        return {} as MindmapNodeElement;
+    }
+};
+
 export const extractNodesText = (node: MindmapNodeElement) => {
     let str = '';
     if (node) {
