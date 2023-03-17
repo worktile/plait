@@ -40,7 +40,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
             }
             if (FlowEdge.isFlowEdgeElement(element)) {
                 const clickReact = RectangleClient.toRectangleClient([board.selection.anchor, board.selection.focus]);
-                return isHitFlowEdge(element, board, [clickReact.x, clickReact.y]);
+                return isHitFlowEdge(board, element, [clickReact.x, clickReact.y]);
             }
         }
         return isIntersectionSelection(element);

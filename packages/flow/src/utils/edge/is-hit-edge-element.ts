@@ -5,7 +5,7 @@ import { HIT_THERSHOLD } from '../../constants/edge';
 import { getEdgePoints } from './edge';
 import { getEdgeTextBackgroundRect, getEdgeTextRect } from './text';
 
-export function isHitFlowEdge(edge: FlowEdge, board: PlaitBoard, point: Point) {
+export function isHitFlowEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
     const [pathPoints] = getEdgePoints(board, edge);
     let minDistance = Number.MAX_VALUE;
     if (board.selection) {
@@ -20,14 +20,14 @@ export function isHitFlowEdge(edge: FlowEdge, board: PlaitBoard, point: Point) {
                 }
             }
         });
-        const hitFlowEdgeText = isHitFlowEdgeText(edge, board, point);
+        const hitFlowEdgeText = isHitFlowEdgeText(board, edge, point);
         const hitFlowEdge = minDistance < HIT_THERSHOLD;
         return hitFlowEdge || hitFlowEdgeText;
     }
     return false;
 }
 
-export function isHitFlowEdgeText(edge: FlowEdge, board: PlaitBoard, point: Point) {
+export function isHitFlowEdgeText(board: PlaitBoard, edge: FlowEdge, point: Point) {
     const textRect = getEdgeTextRect(board, edge);
     const textBackgroundRect = getEdgeTextBackgroundRect(textRect);
     const distance = distanceBetweenPointAndRectangle(point[0], point[1], textBackgroundRect);

@@ -47,8 +47,6 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         super.ngOnInit();
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.drawElement();
-        this.drawRichtext();
-        this.drawMarkers();
     }
 
     beforeContextChange(value: PlaitPluginElementContext<FlowEdge<T>>) {
@@ -58,8 +56,6 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         if (value.selection !== this.selection && this.initialized) {
             const isActive = isSelectedElement(this.board, value.element);
             this.drawElement(value.element, isActive);
-            this.drawRichtext(value.element, isActive);
-            this.drawMarkers(value.element, isActive);
             if (isActive) {
                 this.drawHandles();
             } else {
@@ -69,6 +65,12 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
     }
 
     drawElement(element: FlowEdge<T> = this.element, active = false) {
+        this.drawEdge(element, active);
+        this.drawRichtext(element, active);
+        this.drawMarkers(element, active);
+    }
+
+    drawEdge(element: FlowEdge<T> = this.element, active = false) {
         this.destroyElement();
         this.nodeG = drawEdge(this.board, this.roughSVG, element, active);
         this.g.append(this.nodeG);
@@ -103,7 +105,7 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
 
     drawMarkers(element: FlowEdge<T> = this.element, active = false) {
         this.destroyMarkers();
-        this.sourceMarkerG = drawEdgeMarkers(this.roughSVG, this.board, element, active);
+        this.sourceMarkerG = drawEdgeMarkers(this.board, this.roughSVG, element, active);
         this.sourceMarkerG!.map(arrowline => {
             this.g.append(arrowline);
         });

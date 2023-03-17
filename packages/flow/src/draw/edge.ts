@@ -18,7 +18,7 @@ export const drawRichtextBackground = (roughSVG: RoughSVG, edge: FlowEdge, textB
     return drawRoundRectangle(roughSVG, x, y, x + width, y + height, edgeStyles, false, height / 2);
 };
 
-export const drawEdgeMarkers = (roughSVG: RoughSVG, board: PlaitBoard, edge: FlowEdge, active = false) => {
+export const drawEdgeMarkers = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, active = false) => {
     const [pathPoints] = getEdgePoints(board, edge);
     const edgeStyles = getEdgeStyle(edge, active);
     const edgeMarkers: SVGGElement[] = [];
