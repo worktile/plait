@@ -451,8 +451,8 @@ export class PlaitRichtextComponent implements AfterViewInit, OnDestroy {
     private onPaste(event: ClipboardEvent) {
         if (hasEditableTarget(this.editor, event.target)) {
             this.editor.insertData(event.clipboardData as DataTransfer);
+            event.stopPropagation();
         }
-        event.stopPropagation();
     }
 
     private toNativeSelection() {
