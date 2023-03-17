@@ -27,7 +27,7 @@ import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withNodeDnd } from './with-dnd';
-import { buildClipBoardData, getDataFromClipBoard, insertClipBoardData, setClipBoardData } from '../utils/clipboard';
+import { buildClipboardData, getDataFromClipboard, insertClipboardData, setClipboardData } from '../utils/clipboard';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isIntersectionSelection } = board;
@@ -172,8 +172,8 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         const selectedNodes = filterChildElement(getSelectedElements(board));
 
         if (selectedNodes.length) {
-            const nodeData = buildClipBoardData(selectedNodes);
-            setClipBoardData(data, nodeData);
+            const nodeData = buildClipboardData(selectedNodes);
+            setClipboardData(data, nodeData);
             return;
         }
         setFragment(data);
@@ -185,9 +185,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
 
-        const nodesData = getDataFromClipBoard(data);
+        const nodesData = getDataFromClipboard(data);
         if (nodesData.length) {
-            insertClipBoardData(board, nodesData, targetPoint || [0, 0]);
+            insertClipboardData(board, nodesData, targetPoint || [0, 0]);
         } else {
             const text = data?.getData(`text/plain`) as string;
             const textWidth = getWidthByText(text, board.host.parentElement as any);

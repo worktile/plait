@@ -5,7 +5,7 @@ import { getRectangleByNode, getRectangleByNodes } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapNodeComponent } from '../node.component';
 
-export const buildClipBoardData = (selectedNodes: PlaitElement[]) => {
+export const buildClipboardData = (selectedNodes: PlaitElement[]) => {
     let result: PlaitElement[] = [];
     const selectedMindmapNodes = Array.from(selectedNodes, node => {
         return (MINDMAP_ELEMENT_TO_COMPONENT.get(node as MindmapNodeElement) as MindmapNodeComponent)?.node;
@@ -24,7 +24,7 @@ export const buildClipBoardData = (selectedNodes: PlaitElement[]) => {
     return result;
 };
 
-export const setClipBoardData = (data: DataTransfer | null, nodeData: PlaitElement[]) => {
+export const setClipboardData = (data: DataTransfer | null, nodeData: PlaitElement[]) => {
     const stringObj = JSON.stringify(nodeData);
     const encoded = window.btoa(encodeURIComponent(stringObj));
     const text = nodeData.reduce((string, currentNode) => {
@@ -34,7 +34,7 @@ export const setClipBoardData = (data: DataTransfer | null, nodeData: PlaitEleme
     data?.setData(`text/plain`, text);
 };
 
-export const getDataFromClipBoard = (data: DataTransfer | null) => {
+export const getDataFromClipboard = (data: DataTransfer | null) => {
     const encoded = data?.getData(`application/${CLIP_BOARD_FORMAT_KEY}`);
     let nodesData: PlaitElement[] = [];
     if (encoded) {
@@ -44,7 +44,7 @@ export const getDataFromClipBoard = (data: DataTransfer | null) => {
     return nodesData;
 };
 
-export const insertClipBoardData = (board: PlaitBoard, nodesData: PlaitElement[], targetPoint: Point) => {
+export const insertClipboardData = (board: PlaitBoard, nodesData: PlaitElement[], targetPoint: Point) => {
     let selectedElementPath: Path, newElement: MindmapNodeElement, path: Path;
     const element = getSelectedElements(board)?.[0];
     const selectedComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement) as MindmapNodeComponent;
