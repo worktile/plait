@@ -16,3 +16,5 @@ export * from './constants/node';
 export * from './utils/edge/edge';
 export * from './utils/edge/get-smooth-step-edge';
 export * from './utils/handle/get-handle-position';
+export * from './utils/edge/is-hit-edge-element';
+export * from './utils/edge/text';

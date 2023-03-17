@@ -156,7 +156,7 @@ export const getWidthByText = (text: string, container: HTMLElement) => {
     richtext.className = 'plait-richtext-container';
     richtext.appendChild(node);
     container?.appendChild(richtext);
-    const width = node.clientWidth;
+    const width = node.getBoundingClientRect().width;
     container?.removeChild(richtext);
     return width;
 };

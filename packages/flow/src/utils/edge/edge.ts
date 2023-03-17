@@ -1,9 +1,10 @@
-import { FlowHandle, FlowPosition } from '../../interfaces/element';
-import { getHandlePosition } from '../handle/get-handle-position';
+import { FlowElementStyles, FlowHandle, FlowPosition } from '../../interfaces/element';
+import { getHandleXYPosition } from '../handle/get-handle-position';
 import { PlaitBoard, RectangleClient, normalizePoint } from '@plait/core';
 import { getPoints } from './get-smooth-step-edge';
 import { getFlowNodeById } from '../get-node-by-id';
 import { FlowEdge } from '../../interfaces/edge';
+import { DEAFULT_EDGE_ACTIVE_STYLES, DEAFULT_EDGE_STYLES } from '../../constants/edge';
 
 interface EdgePositions {
     sourceX: number;
@@ -20,8 +21,8 @@ export const getEdgePositions = (
     targetHandle: FlowHandle,
     targetPosition: FlowPosition
 ): EdgePositions => {
-    const sourceHandlePos = getHandlePosition(sourcePosition, sourceNodeRect, sourceHandle);
-    const targetHandlePos = getHandlePosition(targetPosition, targetNodeRect, targetHandle);
+    const sourceHandlePos = getHandleXYPosition(sourcePosition, sourceNodeRect, sourceHandle);
+    const targetHandlePos = getHandleXYPosition(targetPosition, targetNodeRect, targetHandle);
     return {
         sourceX: sourceHandlePos.x,
         sourceY: sourceHandlePos.y,
@@ -51,12 +52,6 @@ export function getEdgeCenter({
     return [centerX, centerY, xOffset, yOffset];
 }
 
-/**
- * getEdgePoints
- * @param board PlaitBoard
- * @param edge FlowEdge
- * @returns `{source: XYPosition; sourcePosition: FlowPosition; target: XYPosition; targetPosition: FlowPosition; center: Partial<XYPosition>;offset: number;}`
- */
 export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
     const sourceNode = getFlowNodeById(board, edge.source?.id!);
     const targetNode = getFlowNodeById(board, edge.target?.id!);
@@ -96,4 +91,18 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
         center: { x: undefined, y: undefined },
         offset: 30
     });
+};
+
+export const getEdgeStyle = (edge: FlowEdge, active: boolean) => {
+    let edgeStyles: FlowElementStyles = {
+        ...DEAFULT_EDGE_STYLES,
+        ...(edge.styles || {})
+    };
+    if (active) {
+        edgeStyles = {
+            ...edgeStyles,
+            stroke: edge.styles?.activeStroke || DEAFULT_EDGE_ACTIVE_STYLES.stroke
+        };
+    }
+    return edgeStyles;
 };

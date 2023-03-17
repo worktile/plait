@@ -46,7 +46,7 @@ export const mockFlowData: FlowElement<Element>[] = [
             text: { children: [{ text: '已完成' }] }
         },
         type: FlowElementType.node,
-        points: [[800, 268.5]],
+        points: [[900, 268.5]],
         width: 120,
         height: 38,
         styles: {
@@ -57,7 +57,7 @@ export const mockFlowData: FlowElement<Element>[] = [
     {
         id: '001',
         data: {
-            text: { children: [{ text: '连线1' }] }
+            text: { children: [{ text: '连线连线连线' }] }
         },
         type: FlowElementType.edge,
         source: {
@@ -66,7 +66,8 @@ export const mockFlowData: FlowElement<Element>[] = [
         },
         target: {
             id: '1002',
-            position: FlowPosition.top
+            position: FlowPosition.top,
+            marker: true
         },
         points: []
     },
@@ -82,7 +83,8 @@ export const mockFlowData: FlowElement<Element>[] = [
         },
         target: {
             id: '1001',
-            position: FlowPosition.left
+            position: FlowPosition.left,
+            marker: true
         },
         points: []
     },
@@ -98,7 +100,8 @@ export const mockFlowData: FlowElement<Element>[] = [
         },
         target: {
             id: '1003',
-            position: FlowPosition.left
+            position: FlowPosition.left,
+            marker: true
         },
         points: []
     }

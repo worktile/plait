@@ -1,3 +1,5 @@
+import { RectangleClient } from '../interfaces/rectangle-client';
+
 // https://stackoverflow.com/a/6853926/232122
 export function distanceBetweenPointAndSegment(x: number, y: number, x1: number, y1: number, x2: number, y2: number) {
     const A = x - x1;
@@ -41,4 +43,11 @@ export function distanceBetweenPointAndPoint(x1: number, y1: number, x2: number,
     const dx = x1 - x2;
     const dy = y1 - y2;
     return Math.hypot(dx, dy);
+}
+
+// https://stackoverflow.com/questions/5254838/calculating-distance-between-a-point-and-a-rectangular-box-nearest-point
+export function distanceBetweenPointAndRectangle(x: number, y: number, rect: RectangleClient) {
+    var dx = Math.max(rect.x - x, 0, x - (rect.x + rect.width));
+    var dy = Math.max(rect.y - y, 0, y - (rect.y + rect.height));
+    return Math.sqrt(dx * dx + dy * dy);
 }

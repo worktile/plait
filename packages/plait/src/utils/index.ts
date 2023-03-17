@@ -10,4 +10,5 @@ export * from './matrix';
 export * from './weak-maps';
 export * from './selected-element';
 export * from './draw/rectangle';
+export * from './draw/arrow';
 export * from './tree';
