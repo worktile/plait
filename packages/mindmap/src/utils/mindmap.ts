@@ -116,7 +116,7 @@ export const buildMindmap = (node: MindmapNodeElement, points: Point): MindmapNo
             isCollapsed: false,
             isRoot: true,
             points: [points],
-            rightNodeCount: mindmap.children.length,
+            rightNodeCount: mindmap.children.length || 3,
             type: 'mindmap'
         };
     } else {

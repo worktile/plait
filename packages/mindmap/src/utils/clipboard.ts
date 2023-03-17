@@ -1,4 +1,4 @@
-import { CLIP_BOARD_FORMAT_KEY, getSelectedElements, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
+import { CLIP_BOARD_FORMAT_KEY, getSelectedElements, idCreator, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
 import { MindmapNodeElement } from '../interfaces';
 import { buildMindmap, buildNodes, extractNodesText, findPath } from '../utils';
 import { getRectangleByNode, getRectangleByNodes } from '../utils/graph';
@@ -68,4 +68,27 @@ export const insertClipboardData = (board: PlaitBoard, nodesData: PlaitElement[]
         Transforms.insertNode(board, newElement, path);
         return;
     });
+};
+
+export const insertClipboardText = (board: PlaitBoard, text: string, textWidth: number) => {
+    const selectedElements = getSelectedElements(board);
+    if (text && selectedElements.length === 1) {
+        const newElement = {
+            id: idCreator(),
+            value: {
+                children: [{ text }]
+            },
+            children: [],
+            width: textWidth,
+            height: 24
+        };
+        const element = selectedElements[0];
+        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
+
+        if (nodeComponent) {
+            const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
+            Transforms.insertNode(board, newElement, path);
+            return;
+        }
+    }
 };
