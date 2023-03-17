@@ -30,3 +30,7 @@ export function transformPoint(board: PlaitBoard, point: Point) {
 export function isNoSelectionElement(e: Event) {
     return (e.target as HTMLElement)?.closest('.plait-board-attached');
 }
+
+export function getBoardClientRect(board: PlaitBoard) {
+    return (board.host.closest('.plait-board-container') as HTMLElement).getBoundingClientRect();
+}
