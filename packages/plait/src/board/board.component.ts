@@ -345,6 +345,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                     this.updateViewBoxStyles();
                     this.updateViewportScrolling();
                     this.setViewport();
+                    this.cdr.markForCheck();
                 }
             }
         });
