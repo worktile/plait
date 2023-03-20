@@ -1,4 +1,15 @@
-import { CLIP_BOARD_FORMAT_KEY, getSelectedElements, idCreator, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
+import {
+    addSelectedElement,
+    CLIP_BOARD_FORMAT_KEY,
+    getSelectedElements,
+    idCreator,
+    Path,
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    removeSelectedElement,
+    Transforms
+} from '@plait/core';
 import { MindmapNodeElement } from '../interfaces';
 import { buildMindmap, buildNodes, extractNodesText, findPath } from '../utils';
 import { getRectangleByNode, getRectangleByNodes } from '../utils/graph';
@@ -46,15 +57,20 @@ export const getDataFromClipboard = (data: DataTransfer | null) => {
 
 export const insertClipboardData = (board: PlaitBoard, nodesData: PlaitElement[], targetPoint: Point) => {
     let selectedElementPath: Path, newElement: MindmapNodeElement, path: Path;
-    const element = getSelectedElements(board)?.[0];
-    const selectedComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement) as MindmapNodeComponent;
+    const _board = board;
+    const selectedElements = getSelectedElements(board);
+    const selectedComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements[0] as MindmapNodeElement) as MindmapNodeComponent;
+
+    selectedElements.forEach(element => {
+        removeSelectedElement(_board, element);
+    });
 
     if (selectedComponent) {
         selectedElementPath = findPath(board, selectedComponent.node);
     }
 
     nodesData.forEach((item: PlaitElement, index: number) => {
-        if (getSelectedElements(board).length === 1) {
+        if (selectedElements.length === 1) {
             newElement = buildNodes(item as MindmapNodeElement);
             path = selectedElementPath.concat(selectedComponent.node.children.length + index);
         } else {
@@ -66,6 +82,7 @@ export const insertClipboardData = (board: PlaitBoard, nodesData: PlaitElement[]
         }
 
         Transforms.insertNode(board, newElement, path);
+        addSelectedElement(board, newElement);
         return;
     });
 };
@@ -85,7 +102,9 @@ export const insertClipboardText = (board: PlaitBoard, text: string, textWidth: 
 
     if (nodeComponent) {
         const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
+        removeSelectedElement(board, element);
         Transforms.insertNode(board, newElement, path);
+        addSelectedElement(board, newElement);
         return;
     }
 };
