@@ -1,6 +1,6 @@
 import { ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants';
 import { Node } from 'slate';
-import { PlaitElement } from 'dist/plait/interfaces';
+import { PlaitElement } from '@plait/core';
 
 export function getSizeByNode(node: PlaitElement, container: HTMLElement, targetIsRoot: boolean) {
     const fontSize = targetIsRoot ? ROOT_TOPIC_FONT_SIZE : TOPIC_FONT_SIZE;

@@ -2,4 +2,4 @@
 '@plait/mindmap': patch
 ---
 
-set width and height when buildMindmap and buildNodes
+add getSizeByNode, set width and height when buildMindmap and buildNodes
