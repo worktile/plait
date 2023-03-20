@@ -336,11 +336,16 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     resizeElement() {
         this.resizeObserver = new ResizeObserver(entries => {
             for (let entry of entries) {
-                this.initViewportContainer();
-                this.calcViewBox(this.board.viewport.zoom);
-                this.updateViewBoxStyles();
-                this.updateViewportScrolling();
-                this.setViewport();
+                const rect = entry.contentRect;
+                const { width, height } = getBoardClientBox(this.board);
+
+                if (!this.board.options.readonly && width && height && (width !== rect.width || height !== rect.height)) {
+                    this.initViewportContainer();
+                    this.calcViewBox(this.board.viewport.zoom);
+                    this.updateViewBoxStyles();
+                    this.updateViewportScrolling();
+                    this.setViewport();
+                }
             }
         });
         this.resizeObserver.observe(this.elementRef.nativeElement);
