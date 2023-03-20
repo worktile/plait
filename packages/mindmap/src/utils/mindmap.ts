@@ -144,7 +144,7 @@ export const extractNodesText = (node: MindmapNodeElement) => {
 export const changeRightNodeCount = (board: PlaitBoard, selectedElement: MindmapNodeElement, changeNumber: number) => {
     const parentElement = findParentElement(selectedElement);
     const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
-    if (mindmapNodeComponent) {
+    if (mindmapNodeComponent && parentElement) {
         const nodeIndex: number = mindmapNodeComponent.parent.children.findIndex(item => item.origin.id === selectedElement.id);
         if (
             parentElement &&
