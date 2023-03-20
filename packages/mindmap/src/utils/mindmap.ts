@@ -1,7 +1,7 @@
 import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
-import { LayoutType, MindmapLayoutType } from '@plait/layouts';
+import { MindmapLayoutType } from '@plait/layouts';
 import { Node } from 'slate';
-import { MindmapNodeShape, NODE_MIN_WIDTH } from '../constants';
+import { MindmapNodeShape, MINDMAP_NODE_HEIGHT, NODE_HEIGHT, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants';
 import { MindmapNode, PlaitMindmap } from '../interfaces';
 import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
@@ -96,6 +96,8 @@ export const buildNodes = (node: MindmapNodeElement) => {
         if (newNode.isRoot) {
             delete newNode.isRoot;
             delete newNode.rightNodeCount;
+            newNode.width = Math.round((newNode.width * TOPIC_FONT_SIZE) / ROOT_TOPIC_FONT_SIZE);
+            newNode.height = NODE_HEIGHT;
         }
         if (newNode.layout === MindmapLayoutType.standard) {
             delete newNode.layout;
@@ -110,6 +112,12 @@ export const buildNodes = (node: MindmapNodeElement) => {
 export const buildMindmap = (node: MindmapNodeElement, points: Point): MindmapNodeElement => {
     if (node) {
         const mindmap = buildNodes(node);
+
+        if (!node.isRoot) {
+            mindmap.width = Math.round((node.width * ROOT_TOPIC_FONT_SIZE) / TOPIC_FONT_SIZE);
+            mindmap.height = MINDMAP_NODE_HEIGHT;
+        }
+
         return {
             ...mindmap,
             layout: mindmap.layout ?? MindmapLayoutType.standard,
