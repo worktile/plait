@@ -71,24 +71,21 @@ export const insertClipboardData = (board: PlaitBoard, nodesData: PlaitElement[]
 };
 
 export const insertClipboardText = (board: PlaitBoard, text: string, textWidth: number) => {
-    const selectedElements = getSelectedElements(board);
-    if (text && selectedElements.length === 1) {
-        const newElement = {
-            id: idCreator(),
-            value: {
-                children: [{ text }]
-            },
-            children: [],
-            width: textWidth,
-            height: 24
-        };
-        const element = selectedElements[0];
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
+    const newElement = {
+        id: idCreator(),
+        value: {
+            children: [{ text }]
+        },
+        children: [],
+        width: textWidth,
+        height: 24
+    };
+    const element = getSelectedElements(board)[0];
+    const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
 
-        if (nodeComponent) {
-            const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
-            Transforms.insertNode(board, newElement, path);
-            return;
-        }
+    if (nodeComponent) {
+        const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
+        Transforms.insertNode(board, newElement, path);
+        return;
     }
 };
