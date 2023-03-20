@@ -121,11 +121,10 @@ export const buildMindmap = (node: MindmapNodeElement, points: Point, board?: Pl
 
     return {
         ...mindmap,
-        layout: node.layout ?? MindmapLayoutType.standard,
+        layout: node.layout ?? MindmapLayoutType.right,
         isCollapsed: false,
         isRoot: true,
         points: [points],
-        rightNodeCount: mindmap.children.length,
         type: 'mindmap'
     };
 };
