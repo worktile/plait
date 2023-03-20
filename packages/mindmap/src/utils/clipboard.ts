@@ -28,7 +28,7 @@ export const setClipboardData = (data: DataTransfer | null, nodeData: PlaitEleme
     const stringObj = JSON.stringify(nodeData);
     const encoded = window.btoa(encodeURIComponent(stringObj));
     const text = nodeData.reduce((string, currentNode) => {
-        return string + extractNodesText(currentNode.nodeData as MindmapNodeElement);
+        return string + extractNodesText(currentNode as MindmapNodeElement);
     }, '');
     data?.setData(`application/${CLIP_BOARD_FORMAT_KEY}`, encoded);
     data?.setData(`text/plain`, text);
@@ -55,13 +55,14 @@ export const insertClipboardData = (board: PlaitBoard, nodesData: PlaitElement[]
 
     nodesData.forEach((item: PlaitElement, index: number) => {
         if (getSelectedElements(board).length === 1) {
-            newElement = buildNodes(item as MindmapNodeElement);
+            newElement = buildNodes(item as MindmapNodeElement, board);
             path = selectedElementPath.concat(selectedComponent.node.children.length + index);
         } else {
-            newElement = buildMindmap(item as MindmapNodeElement, [
-                targetPoint[0] + item.points![0][0],
-                targetPoint[1] + item.points![0][1]
-            ]);
+            newElement = buildMindmap(
+                item as MindmapNodeElement,
+                [targetPoint[0] + item.points![0][0], targetPoint[1] + item.points![0][1]],
+                board
+            );
             path = [board.children.length];
         }
 

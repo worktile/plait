@@ -190,7 +190,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             insertClipboardData(board, nodesData, targetPoint || [0, 0]);
         } else {
             const text = data?.getData(`text/plain`) as string;
-            const textWidth = getWidthByText(text, board.host.parentElement as any);
+            const textWidth = getWidthByText(text, board.host.parentElement as HTMLElement);
             if (text) {
                 const newElement = {
                     id: idCreator(),
