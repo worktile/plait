@@ -57,12 +57,11 @@ export const getDataFromClipboard = (data: DataTransfer | null) => {
 
 export const insertClipboardData = (board: PlaitBoard, nodesData: PlaitElement[], targetPoint: Point) => {
     let selectedElementPath: Path, newElement: MindmapNodeElement, path: Path;
-    const _board = board;
     const selectedElements = getSelectedElements(board);
     const selectedComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements[0] as MindmapNodeElement) as MindmapNodeComponent;
 
     selectedElements.forEach(element => {
-        removeSelectedElement(_board, element);
+        removeSelectedElement(board, element);
     });
 
     if (selectedComponent) {
