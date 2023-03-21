@@ -12,6 +12,7 @@ import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
 import { FlowElement } from '../interfaces/element';
 import { FlowEdge } from '../interfaces/edge';
 import { FlowNode } from '../interfaces/node';
+import { withFlowDnd } from './with-dnd';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, isIntersectionSelection } = board;
@@ -39,12 +40,11 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                 });
             }
             if (FlowEdge.isFlowEdgeElement(element)) {
-                const clickReact = RectangleClient.toRectangleClient([board.selection.anchor, board.selection.focus]);
-                return isHitFlowEdge(board, element, [clickReact.x, clickReact.y]);
+                return isHitFlowEdge(board, element, board.selection.anchor);
             }
         }
         return isIntersectionSelection(element);
     };
 
-    return board;
+    return withFlowDnd(board);
 };

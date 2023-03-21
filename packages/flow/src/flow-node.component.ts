@@ -43,6 +43,8 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
 
     handlesG: SVGGElement | null = null;
 
+    perviousStatus: 'active' | 'default' = 'default';
+
     constructor(public cdr: ChangeDetectorRef, public viewContainerRef: ViewContainerRef, public render2: Renderer2) {
         super(cdr);
     }
@@ -59,13 +61,16 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
             this.updateElement(value.element);
         }
         if (value.selection !== this.selection && this.initialized) {
-            if (isSelectedElement(this.board, value.element)) {
+            const isActive = isSelectedElement(this.board, value.element);
+            if (this.perviousStatus === 'default' && isActive) {
                 this.drawActiveMask(value.element);
                 this.drawHandles();
-            } else {
+            }
+            if (this.perviousStatus === 'active' && !isActive) {
                 this.destroyActiveMask();
                 this.destroyHandles();
             }
+            this.perviousStatus = isActive ? 'active' : 'default';
         }
     }
 
@@ -106,6 +111,7 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
         this.handlesG = createG();
         handles.map(item => {
             this.handlesG?.append(item);
+            this.render2.addClass(item, 'flow-node-handle');
         });
         this.g.append(this.handlesG);
     }
