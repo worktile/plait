@@ -2,7 +2,7 @@ import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Point, T
 import { MindmapLayoutType } from '@plait/layouts';
 import { getSizeByText } from '@plait/richtext';
 import { Node } from 'slate';
-import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants';
+import { MindmapNodeShape, NODE_DEFAULT_HEIGHT, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants/node';
 import { MindmapNode, PlaitMindmap } from '../interfaces';
 import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
@@ -190,7 +190,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: 24,
+                height: NODE_DEFAULT_HEIGHT,
                 shape: MindmapNodeShape.roundRectangle
             },
             {
@@ -198,7 +198,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: 24,
+                height: NODE_DEFAULT_HEIGHT,
                 shape: MindmapNodeShape.roundRectangle
             },
             {
@@ -206,7 +206,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: 24,
+                height: NODE_DEFAULT_HEIGHT,
                 shape: MindmapNodeShape.roundRectangle
             }
         ]
@@ -235,7 +235,7 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapNodeEleme
         },
         children: [],
         width: NODE_MIN_WIDTH,
-        height: 24,
+        height: NODE_DEFAULT_HEIGHT,
         fill,
         strokeColor,
         strokeWidth,

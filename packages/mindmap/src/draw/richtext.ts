@@ -1,6 +1,12 @@
 import { ViewContainerRef } from '@angular/core';
 import { drawRichtext, updateForeignObject } from '@plait/richtext';
-import { BASE } from '../constants';
+import { BASE } from '../constants/default';
+import {
+    CHILD_NODE_TEXT_HORIZONTAL_GAP,
+    CHILD_NODE_TEXT_VERTICAL_GAP,
+    ROOT_NODE_TEXT_HORIZONTAL_GAP,
+    ROOT_NODE_TEXT_VERTICAL_GAP
+} from '../constants/node';
 import { MindmapNode } from '../interfaces/node';
 import { getRectangleByNode } from '../utils/graph';
 
@@ -27,8 +33,8 @@ export function updateMindmapNodeRichtextLocation(node: MindmapNode, g: SVGGElem
 export function getRichtextRectangleByNode(node: MindmapNode) {
     let { x, y, width, height } = getRectangleByNode(node);
 
-    const offsetX = node.origin.isRoot ? BASE * 3 : BASE * 2;
-    const offsetY = node.origin.isRoot ? BASE * 2 : BASE * 1;
+    const offsetX = node.origin.isRoot ? ROOT_NODE_TEXT_HORIZONTAL_GAP : CHILD_NODE_TEXT_HORIZONTAL_GAP;
+    const offsetY = node.origin.isRoot ? ROOT_NODE_TEXT_VERTICAL_GAP : CHILD_NODE_TEXT_VERTICAL_GAP;
 
     const textX = x + offsetX;
     const textY = y + offsetY;

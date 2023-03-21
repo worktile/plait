@@ -4,6 +4,7 @@ import { copyNewNode, extractNodesText, findPath, transformNodeToRoot, transform
 import { getRectangleByNode, getRectangleByNodes } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapNodeComponent } from '../node.component';
+import { NODE_DEFAULT_HEIGHT } from '../constants/node';
 
 export const buildClipboardData = (selectedElements: MindmapNodeElement[]) => {
     let result: MindmapNodeElement[] = [];
@@ -84,7 +85,7 @@ export const insertClipboardText = (board: PlaitBoard, text: string, textWidth: 
         },
         children: [],
         width: textWidth,
-        height: 24
+        height: NODE_DEFAULT_HEIGHT
     };
     const element = getSelectedElements(board)[0];
     const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);

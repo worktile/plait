@@ -135,8 +135,8 @@ export function getBoardClientBox(board: PlaitBoard) {
  * 获取 rootGroup 相对于当前 svg 空间的最小矩阵坐标
  */
 export function getRootGroupBBox(board: PlaitBoard, zoom: number) {
-    const rootGroup = board.host.firstChild as SVGGraphicsElement;
-    const rootGroupBox = rootGroup.getBBox();
+    const elementHost = PlaitBoard.getElementHost(board);
+    const rootGroupBox = elementHost.getBBox();
     const viewportContainerBox = getViewportContainerBox(board);
     const containerWidth = viewportContainerBox.width / zoom;
     const containerHeight = viewportContainerBox.height / zoom;
