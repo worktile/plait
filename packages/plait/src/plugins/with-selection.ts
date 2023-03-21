@@ -8,20 +8,22 @@ import { cacheSelectedElements, calcElementIntersectionSelection } from '../util
 import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 
 export function withSelection<T extends PlaitBoard>(board: T) {
-    const { mousedown, mousemove, mouseup, onChange } = board;
+    const { mousedown, globalMousemove, globalMouseup, onChange } = board;
 
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
 
     board.mousedown = (event: MouseEvent) => {
-        start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        if (event.button === 0) {
+            start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        }
         mousedown(event);
     };
 
-    board.mousemove = (event: MouseEvent) => {
-        const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+    board.globalMousemove = (event: MouseEvent) => {
         if (start) {
+            const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
             if (Math.hypot(width, height) > 5) {
                 end = movedTarget;
@@ -36,10 +38,10 @@ export function withSelection<T extends PlaitBoard>(board: T) {
                 PlaitBoard.getHost(board).append(selectionMovingG);
             }
         }
-        mousemove(event);
+        globalMousemove(event);
     };
 
-    board.mouseup = (event: MouseEvent) => {
+    board.globalMouseup = (event: MouseEvent) => {
         if (start && end) {
             selectionMovingG?.remove();
             Transforms.setSelection(board, { anchor: start, focus: end });
@@ -50,7 +52,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         start = null;
         end = null;
 
-        mouseup(event);
+        globalMouseup(event);
     };
 
     board.onChange = () => {
