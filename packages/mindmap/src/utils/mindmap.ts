@@ -2,7 +2,7 @@ import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Point, T
 import { MindmapLayoutType } from '@plait/layouts';
 import { getSizeByText } from '@plait/richtext';
 import { Node } from 'slate';
-import { MindmapNodeShape, NODE_MIN_HEIGHT, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants';
+import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants';
 import { MindmapNode, PlaitMindmap } from '../interfaces';
 import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
@@ -107,8 +107,7 @@ export const transformRootToNode = (board: PlaitBoard, node: MindmapNodeElement)
     const { width, height } = getSizeByText(text, board.host.parentElement as HTMLElement, TOPIC_FONT_SIZE);
 
     newNode.width = Math.max(width, NODE_MIN_WIDTH);
-    //临时代码，处理最小高度样式带来的影响
-    newNode.height = Math.max(height, NODE_MIN_HEIGHT);
+    newNode.height = height;
 
     if (newNode.layout === MindmapLayoutType.standard) {
         delete newNode.layout;
