@@ -21,13 +21,12 @@ import { getSizeByText } from '@plait/richtext';
 import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { PlaitMindmapComponent } from '../mindmap.component';
-import { changeRightNodeCount, createEmptyNode, filterChildElement, findPath } from '../utils';
+import { changeRightNodeCount, createEmptyNode, filterChildElement, findPath, shouldChangeRightNodeCount } from '../utils';
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withNodeDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
-import { TOPIC_FONT_SIZE } from '../constants';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isIntersectionSelection } = board;
@@ -54,8 +53,8 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
         const selectedElements = getSelectedElements(board) as MindmapNodeElement[];
-        if (selectedElements && selectedElements.length === 1) {
-            if (event.key === 'Tab' || (event.key === 'Enter' && !selectedElements[0].isRoot)) {
+        if (selectedElements) {
+            if ((event.key === 'Tab' || (event.key === 'Enter' && !selectedElements[0].isRoot)) && selectedElements.length === 1) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
                 removeSelectedElement(board, selectedElement);
@@ -76,7 +75,11 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 } else {
                     if (mindmapNodeComponent) {
                         const path = Path.next(findPath(board, mindmapNodeComponent.node));
-                        changeRightNodeCount(board, selectedElement, 1);
+                        const parentPath: Path = mindmapNodeComponent.parent ? findPath(board, mindmapNodeComponent!.parent) : [];
+                        if (shouldChangeRightNodeCount(selectedElement)) {
+                            changeRightNodeCount(board, parentPath, 1);
+                        }
+
                         createEmptyNode(board, mindmapNodeComponent.parent.origin, path);
                     }
                 }
@@ -89,14 +92,29 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                     keydown(event);
                     return;
                 }
-                selectedElements.forEach(node => {
-                    const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
-                    if (mindmapNodeComponent) {
-                        const path = findPath(board, mindmapNodeComponent.node);
-                        changeRightNodeCount(board, selectedElements[0], -1);
-                        Transforms.removeNode(board, path);
-                    }
-                });
+
+                //翻转，从下到上修改，防止找不到 path
+                filterChildElement(selectedElements)
+                    .reverse()
+                    .map(node => {
+                        const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
+                        if (mindmapNodeComponent) {
+                            const path = findPath(board, mindmapNodeComponent.node);
+                            const parentPath: Path = mindmapNodeComponent.parent ? findPath(board, mindmapNodeComponent!.parent) : [];
+
+                            return () => {
+                                if (shouldChangeRightNodeCount(node)) {
+                                    changeRightNodeCount(board, parentPath, -1);
+                                }
+                                Transforms.removeNode(board, path);
+                            };
+                        }
+                        return () => {};
+                    })
+                    .forEach(action => {
+                        action();
+                    });
+
                 if (selectedElements.length === 1) {
                     let lastNode: MindmapNode | any = null;
                     const selectNode = selectedElements[0];
