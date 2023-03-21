@@ -223,6 +223,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
             });
+        fromEvent<MouseEvent>(document, 'mousemove')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: MouseEvent) => {
+                this.board.globalMousemove(event);
+            });
 
         fromEvent<MouseEvent>(this.host, 'mouseup')
             .pipe(takeUntil(this.destroy$))
