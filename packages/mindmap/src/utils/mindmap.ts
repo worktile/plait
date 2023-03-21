@@ -65,10 +65,10 @@ export const isChildElement = (origin: MindmapNodeElement, child: MindmapNodeEle
     return false;
 };
 
-export const filterChildElement = (nodes: MindmapNodeElement[]) => {
+export const filterChildElement = (elements: MindmapNodeElement[]) => {
     let result: MindmapNodeElement[] = [];
-    nodes.forEach(element => {
-        const isChild = nodes.some(node => {
+    elements.forEach(element => {
+        const isChild = elements.some(node => {
             return isChildElement(node, element);
         });
 
@@ -104,7 +104,7 @@ export const transformRootToNode = (board: PlaitBoard, node: MindmapNodeElement)
     delete newNode.rightNodeCount;
 
     const text = Node.string(node.value.children[0]) || ' ';
-    const { width, height } = getSizeByText(text, board.host.parentElement as HTMLElement, TOPIC_FONT_SIZE);
+    const { width, height } = getSizeByText(text, board.host.parentElement as HTMLElement);
 
     newNode.width = Math.max(width, NODE_MIN_WIDTH);
     newNode.height = height;

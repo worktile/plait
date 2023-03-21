@@ -169,10 +169,10 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.setFragment = (data: DataTransfer | null) => {
-        const selectedNodes = filterChildElement(getSelectedElements(board) as MindmapNodeElement[]);
+        const selectedElements = filterChildElement(getSelectedElements(board) as MindmapNodeElement[]);
 
-        if (selectedNodes.length) {
-            const elements = buildClipboardData(selectedNodes);
+        if (selectedElements.length) {
+            const elements = buildClipboardData(selectedElements);
             setClipboardData(data, elements);
             return;
         }
@@ -190,7 +190,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             insertClipboardData(board, elements, targetPoint || [0, 0]);
         } else {
             const text = data?.getData(`text/plain`) as string;
-            const { width } = getSizeByText(text, board.host.parentElement as HTMLElement, TOPIC_FONT_SIZE);
+            const { width } = getSizeByText(text, board.host.parentElement as HTMLElement);
             const selectedElements = getSelectedElements(board);
             if (text && selectedElements.length === 1) {
                 insertClipboardText(board, text, width);
@@ -200,9 +200,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.deleteFragment = (data: DataTransfer | null) => {
-        const selectedNode = getSelectedElements(board)?.[0];
-        if (selectedNode && !board.options.readonly) {
-            const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode as MindmapNodeElement);
+        const selectedElement = getSelectedElements(board)?.[0];
+        if (selectedElement && !board.options.readonly) {
+            const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement as MindmapNodeElement);
             if (nodeComponent) {
                 const path = findPath(board, nodeComponent.node);
                 Transforms.removeNode(board, path);

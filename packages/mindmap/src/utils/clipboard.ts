@@ -5,15 +5,15 @@ import { getRectangleByNode, getRectangleByNodes } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapNodeComponent } from '../node.component';
 
-export const buildClipboardData = (selectedNodes: MindmapNodeElement[]) => {
+export const buildClipboardData = (selectedElements: MindmapNodeElement[]) => {
     let result: MindmapNodeElement[] = [];
-    const selectedMindmapNodes = Array.from(selectedNodes, node => {
+    const selectedMindmapNodes = Array.from(selectedElements, node => {
         return (MINDMAP_ELEMENT_TO_COMPONENT.get(node) as MindmapNodeComponent)?.node;
     });
 
     const nodesRectangle = getRectangleByNodes(selectedMindmapNodes);
 
-    selectedNodes.forEach((node, index) => {
+    selectedElements.forEach((node, index) => {
         const nodeRectangle = getRectangleByNode(selectedMindmapNodes[index]);
         result.push({
             ...node,
@@ -44,19 +44,19 @@ export const getDataFromClipboard = (data: DataTransfer | null) => {
     return nodesData;
 };
 
-export const insertClipboardData = (board: PlaitBoard, nodesData: PlaitElement[], targetPoint: Point) => {
+export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[], targetPoint: Point) => {
     let selectedElementPath: Path, newElement: MindmapNodeElement, path: Path;
-    const element = getSelectedElements(board)?.[0];
-    const selectedComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement) as MindmapNodeComponent;
+    const selectedElements = getSelectedElements(board);
+    const selectedComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements[0] as MindmapNodeElement) as MindmapNodeComponent;
 
     if (selectedComponent) {
         selectedElementPath = findPath(board, selectedComponent.node);
     }
 
-    nodesData.forEach((item: PlaitElement, index: number) => {
+    elements.forEach((item: PlaitElement, index: number) => {
         newElement = copyNewNode(item as MindmapNodeElement);
 
-        if (getSelectedElements(board).length === 1) {
+        if (selectedElements.length === 1) {
             if (item.isRoot) {
                 newElement = transformRootToNode(board, newElement);
             }

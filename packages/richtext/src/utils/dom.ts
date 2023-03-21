@@ -147,13 +147,14 @@ export const normalizeDOMPoint = (domPoint: DOMPoint): DOMPoint => {
     return [node, offset];
 };
 
-export const getSizeByText = (text: string, container: HTMLElement, fontSize: number) => {
+export const getSizeByText = (text: string, container: HTMLElement, fontSize?: number) => {
     const fakeNode = document.createElement('plait-node');
-
+    if (fontSize) {
+        fakeNode.style.fontSize = `${fontSize}px`;
+    }
     fakeNode.setAttribute('plait-node', 'text');
     fakeNode.textContent = text;
     fakeNode.style.display = 'inline-block';
-    fakeNode.style.fontSize = `${fontSize}px`;
     const richtext = document.createElement('plait-richtext');
     richtext.className = 'plait-richtext-container';
     richtext.appendChild(fakeNode);
