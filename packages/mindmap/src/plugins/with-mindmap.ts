@@ -106,7 +106,10 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                                 if (shouldChangeRightNodeCount(node)) {
                                     changeRightNodeCount(board, parentPath, -1);
                                 }
-                                Transforms.removeNode(board, path);
+                                //临时代码，防止清空画布
+                                if (board.children.length > 1) {
+                                    Transforms.removeNode(board, path);
+                                }
                             };
                         }
                         return () => {};
