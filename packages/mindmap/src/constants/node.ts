@@ -1,3 +1,5 @@
+import { BASE } from './default';
+
 export const TOPIC_COLOR = '#333';
 export const TOPIC_FONT_SIZE = 14;
 export const NODE_FILL = '#FFFFFF';
@@ -12,3 +14,9 @@ export enum MindmapNodeShape {
     roundRectangle = 'round-rectangle',
     underline = 'underline'
 }
+
+export const CHILD_NODE_TEXT_VERTICAL_GAP = BASE * 1.5;
+export const ROOT_NODE_TEXT_VERTICAL_GAP = BASE * 2;
+
+export const CHILD_NODE_TEXT_HORIZONTAL_GAP = BASE * 2;
+export const ROOT_NODE_TEXT_HORIZONTAL_GAP = BASE * 3;
