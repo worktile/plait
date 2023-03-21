@@ -17,7 +17,7 @@ import {
     transformPoint,
     Transforms
 } from '@plait/core';
-import { getWidthByText } from '@plait/richtext';
+import { getSizeByText } from '@plait/richtext';
 import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { PlaitMindmapComponent } from '../mindmap.component';
@@ -27,6 +27,7 @@ import { isVirtualKey } from '../utils/is-virtual-key';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withNodeDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
+import { TOPIC_FONT_SIZE } from '../constants';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isIntersectionSelection } = board;
@@ -168,11 +169,11 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.setFragment = (data: DataTransfer | null) => {
-        const selectedNodes = filterChildElement(getSelectedElements(board));
+        const selectedElements = filterChildElement(getSelectedElements(board) as MindmapNodeElement[]);
 
-        if (selectedNodes.length) {
-            const nodeData = buildClipboardData(selectedNodes);
-            setClipboardData(data, nodeData);
+        if (selectedElements.length) {
+            const elements = buildClipboardData(selectedElements);
+            setClipboardData(data, elements);
             return;
         }
         setFragment(data);
@@ -184,24 +185,24 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
 
-        const nodesData = getDataFromClipboard(data);
-        if (nodesData.length) {
-            insertClipboardData(board, nodesData, targetPoint || [0, 0]);
+        const elements = getDataFromClipboard(data);
+        if (elements.length) {
+            insertClipboardData(board, elements, targetPoint || [0, 0]);
         } else {
             const text = data?.getData(`text/plain`) as string;
-            const textWidth = getWidthByText(text, board.host.parentElement as any);
+            const { width } = getSizeByText(text, board.host.parentElement as HTMLElement);
             const selectedElements = getSelectedElements(board);
             if (text && selectedElements.length === 1) {
-                insertClipboardText(board, text, textWidth);
+                insertClipboardText(board, text, width);
             }
         }
         insertFragment(data, targetPoint);
     };
 
     board.deleteFragment = (data: DataTransfer | null) => {
-        const selectedNode = getSelectedElements(board)?.[0];
-        if (selectedNode && !board.options.readonly) {
-            const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedNode as MindmapNodeElement);
+        const selectedElement = getSelectedElements(board)?.[0];
+        if (selectedElement && !board.options.readonly) {
+            const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement as MindmapNodeElement);
             if (nodeComponent) {
                 const path = findPath(board, nodeComponent.node);
                 Transforms.removeNode(board, path);

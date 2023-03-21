@@ -147,18 +147,22 @@ export const normalizeDOMPoint = (domPoint: DOMPoint): DOMPoint => {
     return [node, offset];
 };
 
-export const getWidthByText = (text: string, container: HTMLElement) => {
-    const node = document.createElement('plait-node');
-    node.setAttribute('plait-node', 'text');
-    node.textContent = text;
-    node.style.display = 'inline-block';
+export const getSizeByText = (text: string, container: HTMLElement, fontSize?: number) => {
+    const fakeNode = document.createElement('plait-node');
+    if (fontSize) {
+        fakeNode.style.fontSize = `${fontSize}px`;
+    }
+    fakeNode.setAttribute('plait-node', 'text');
+    fakeNode.textContent = text;
+    fakeNode.style.display = 'inline-block';
     const richtext = document.createElement('plait-richtext');
     richtext.className = 'plait-richtext-container';
-    richtext.appendChild(node);
+    richtext.appendChild(fakeNode);
     container?.appendChild(richtext);
-    const width = node.getBoundingClientRect().width;
+    const { width, height } = fakeNode.getBoundingClientRect();
     container?.removeChild(richtext);
-    return width;
+
+    return { width, height };
 };
 
 export const ZERO_WIDTH_CHAR = '\uFEFF';
