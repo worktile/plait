@@ -1,7 +1,7 @@
 import { Point } from './point';
 
 export const SELECTION_BORDER_COLOR = '#6698FF';
-export const SELECTION_FILL_COLOR = '#6698FF26';
+export const SELECTION_FILL_COLOR = '#6698FF19'; // 主色 0.1 透明度
 
 export interface Selection {
     anchor: Point;

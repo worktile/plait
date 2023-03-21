@@ -12,7 +12,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
 
     let start: Point | null = null;
     let end: Point | null = null;
-    let roughSvg: SVGGElement;
+    let selectionMovingG: SVGGElement;
 
     board.mousedown = (event: MouseEvent) => {
         start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
@@ -25,15 +25,15 @@ export function withSelection<T extends PlaitBoard>(board: T) {
             const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
             if (Math.hypot(width, height) > 5) {
                 end = movedTarget;
-                roughSvg?.remove();
+                selectionMovingG?.remove();
                 const rough = PlaitBoard.getRoughSVG(board);
-                roughSvg = rough.rectangle(x, y, width, height, {
+                selectionMovingG = rough.rectangle(x, y, width, height, {
                     stroke: SELECTION_BORDER_COLOR,
                     strokeWidth: 1,
                     fill: SELECTION_FILL_COLOR,
                     fillStyle: 'solid'
                 });
-                PlaitBoard.getHost(board).append(roughSvg);
+                PlaitBoard.getHost(board).append(selectionMovingG);
             }
         }
         mousemove(event);
@@ -41,7 +41,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
 
     board.mouseup = (event: MouseEvent) => {
         if (start && end) {
-            roughSvg?.remove();
+            selectionMovingG?.remove();
             Transforms.setSelection(board, { anchor: start, focus: end });
         } else if (start) {
             Transforms.setSelection(board, { anchor: start, focus: start });
