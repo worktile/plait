@@ -98,12 +98,7 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         offsetY = 0,
         edgeHandle: FlowEdgeHandleType | null
     ) {
-        this.perviousStatus = 'active';
-        // edge
-        this.destroyEdge();
-        this.nodeG = drawEdge(this.board, this.roughSVG, element, active, offsetX, offsetY, edgeHandle);
-        this.g.append(this.nodeG);
-
+        this.drawEdge(element, active, offsetX, offsetY, edgeHandle);
         // text
         this.destroyRichtext();
         if (element.data?.text && this.textRect) {
@@ -127,33 +122,19 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
                 true
             );
         }
-
-        // marker
-        this.destroyMarkers();
-        this.sourceMarkerG = drawEdgeMarkers(this.board, this.roughSVG, element, active, offsetX, offsetY, edgeHandle);
-        this.sourceMarkerG!.map(arrowline => {
-            this.g.append(arrowline);
-        });
-
-        // handle
-        this.destroyHandles();
-        const handles = drawEdgeHandles(this.board, this.roughSVG, this.element, offsetX, offsetY, edgeHandle);
-        this.handlesG = createG();
-        handles.map(item => {
-            this.handlesG?.append(item);
-        });
-        this.g.append(this.handlesG);
+        this.drawMarkers(element, active, offsetX, offsetY, edgeHandle);
+        this.drawHandles(element, offsetX, offsetY, edgeHandle);
     }
 
-    drawEdge(element: FlowEdge<T> = this.element, active = false) {
+    drawEdge(element: FlowEdge<T> = this.element, active = false, offsetX = 0, offsetY = 0, edgeHandle?: FlowEdgeHandleType | null) {
         this.destroyEdge();
-        this.nodeG = drawEdge(this.board, this.roughSVG, element, active);
+        this.nodeG = drawEdge(this.board, this.roughSVG, element, active, offsetX, offsetY, edgeHandle);
         this.g.append(this.nodeG);
     }
 
-    drawHandles(element: FlowEdge<T> = this.element) {
+    drawHandles(element: FlowEdge<T> = this.element, offsetX = 0, offsetY = 0, edgeHandle?: FlowEdgeHandleType | null) {
         this.destroyHandles();
-        const handles = drawEdgeHandles(this.board, this.roughSVG, element);
+        const handles = drawEdgeHandles(this.board, this.roughSVG, element, offsetX, offsetY, edgeHandle);
         this.handlesG = createG();
         handles.map(item => {
             this.handlesG?.append(item);
@@ -177,9 +158,9 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         }
     }
 
-    drawMarkers(element: FlowEdge<T> = this.element, active = false) {
+    drawMarkers(element: FlowEdge<T> = this.element, active = false, offsetX = 0, offsetY = 0, edgeHandle?: FlowEdgeHandleType | null) {
         this.destroyMarkers();
-        this.sourceMarkerG = drawEdgeMarkers(this.board, this.roughSVG, element, active);
+        this.sourceMarkerG = drawEdgeMarkers(this.board, this.roughSVG, element, active, offsetX, offsetY, edgeHandle);
         this.sourceMarkerG!.map(arrowline => {
             this.g.append(arrowline);
         });
