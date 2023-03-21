@@ -1,11 +1,11 @@
 import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
+import { getSizeByText } from '@plait/richtext';
 import { Node } from 'slate';
-import { MindmapNodeShape, NODE_MIN_WIDTH } from '../constants';
+import { MindmapNodeShape, NODE_MIN_HEIGHT, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants';
 import { MindmapNode, PlaitMindmap } from '../interfaces';
 import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
-import { getSizeByNode } from './node';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
@@ -87,44 +87,48 @@ export const isChildUp = (node: MindmapNode, child: MindmapNode) => {
     return node.y > child.y;
 };
 
-export const buildNodes = (node: MindmapNodeElement, board?: PlaitBoard) => {
+export const copyNewNode = (node: MindmapNodeElement) => {
     const newNode: MindmapNodeElement = { ...node };
     newNode.id = idCreator();
     newNode.children = [];
-    if (newNode.isRoot) {
-        delete newNode.isRoot;
-        delete newNode.rightNodeCount;
 
-        const { width, height } = getSizeByNode(node, board!.host.parentElement as HTMLElement, false);
-        newNode.width = width;
-        newNode.height = height;
-    }
-    if (newNode.layout === MindmapLayoutType.standard) {
-        delete newNode.layout;
-    }
     for (const childNode of node.children) {
-        newNode.children.push(buildNodes(childNode));
+        newNode.children.push(copyNewNode(childNode));
     }
     return newNode;
 };
 
-export const buildMindmap = (node: MindmapNodeElement, points: Point, board?: PlaitBoard): MindmapNodeElement => {
-    if (!node.isRoot) {
-        const { width, height } = getSizeByNode(node, board!.host.parentElement as HTMLElement, true);
-        node.width = width;
-        node.height = height;
-    } else {
-        delete node.isRoot;
+export const transformRootToNode = (node: MindmapNodeElement, board: PlaitBoard) => {
+    const newNode: MindmapNodeElement = { ...node };
+    delete newNode.isRoot;
+    delete newNode.rightNodeCount;
+
+    const text = Node.string(node.value.children[0]) || ' ';
+    const { width, height } = getSizeByText(text, board.host.parentElement as HTMLElement, TOPIC_FONT_SIZE);
+
+    newNode.width = Math.max(width, NODE_MIN_WIDTH);
+    //临时代码，处理最小高度样式带来的影响
+    newNode.height = Math.max(height, NODE_MIN_HEIGHT);
+
+    if (newNode.layout === MindmapLayoutType.standard) {
+        delete newNode.layout;
     }
 
-    const mindmap = buildNodes(node);
+    return newNode;
+};
+
+export const transformNodeToRoot = (node: MindmapNodeElement, board?: PlaitBoard): MindmapNodeElement => {
+    const text = Node.string(node.value.children[0]) || ' ';
+
+    const { width, height } = getSizeByText(text, board!.host.parentElement as HTMLElement, ROOT_TOPIC_FONT_SIZE);
+    node.width = Math.max(width, NODE_MIN_WIDTH);
+    node.height = height;
 
     return {
-        ...mindmap,
+        ...node,
         layout: node.layout ?? MindmapLayoutType.right,
         isCollapsed: false,
         isRoot: true,
-        points: [points],
         type: 'mindmap'
     };
 };

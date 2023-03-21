@@ -17,7 +17,7 @@ import {
     transformPoint,
     Transforms
 } from '@plait/core';
-import { getWidthByText } from '@plait/richtext';
+import { getSizeByText } from '@plait/richtext';
 import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { PlaitMindmapComponent } from '../mindmap.component';
@@ -27,6 +27,7 @@ import { isVirtualKey } from '../utils/is-virtual-key';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withNodeDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
+import { TOPIC_FONT_SIZE } from '../constants';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isIntersectionSelection } = board;
@@ -189,10 +190,10 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             insertClipboardData(board, nodesData, targetPoint || [0, 0]);
         } else {
             const text = data?.getData(`text/plain`) as string;
-            const textWidth = getWidthByText(text, board.host.parentElement as HTMLElement);
+            const { width } = getSizeByText(text, board.host.parentElement as HTMLElement, TOPIC_FONT_SIZE);
             const selectedElements = getSelectedElements(board);
             if (text && selectedElements.length === 1) {
-                insertClipboardText(board, text, textWidth);
+                insertClipboardText(board, text, width);
             }
         }
         insertFragment(data, targetPoint);

@@ -1,6 +1,6 @@
 import { CLIP_BOARD_FORMAT_KEY, getSelectedElements, idCreator, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
 import { MindmapNodeElement } from '../interfaces';
-import { buildMindmap, buildNodes, extractNodesText, findPath } from '../utils';
+import { copyNewNode, extractNodesText, findPath, transformNodeToRoot, transformRootToNode } from '../utils';
 import { getRectangleByNode, getRectangleByNodes } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapNodeComponent } from '../node.component';
@@ -54,15 +54,20 @@ export const insertClipboardData = (board: PlaitBoard, nodesData: PlaitElement[]
     }
 
     nodesData.forEach((item: PlaitElement, index: number) => {
+        newElement = copyNewNode(item as MindmapNodeElement);
+
         if (getSelectedElements(board).length === 1) {
-            newElement = buildNodes(item as MindmapNodeElement, board);
+            if (item.isRoot) {
+                newElement = transformRootToNode(newElement, board);
+            }
             path = selectedElementPath.concat(selectedComponent.node.children.length + index);
         } else {
-            newElement = buildMindmap(
-                item as MindmapNodeElement,
-                [targetPoint[0] + item.points![0][0], targetPoint[1] + item.points![0][1]],
-                board
-            );
+            const point: Point = [targetPoint[0] + item.points![0][0], targetPoint[1] + item.points![0][1]];
+            newElement.points = [point];
+            if (!item.isRoot) {
+                newElement = transformNodeToRoot(newElement, board);
+            }
+
             path = [board.children.length];
         }
 
