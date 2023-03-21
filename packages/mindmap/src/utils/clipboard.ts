@@ -58,14 +58,14 @@ export const insertClipboardData = (board: PlaitBoard, nodesData: PlaitElement[]
 
         if (getSelectedElements(board).length === 1) {
             if (item.isRoot) {
-                newElement = transformRootToNode(newElement, board);
+                newElement = transformRootToNode(board, newElement);
             }
             path = selectedElementPath.concat(selectedComponent.node.children.length + index);
         } else {
             const point: Point = [targetPoint[0] + item.points![0][0], targetPoint[1] + item.points![0][1]];
             newElement.points = [point];
             if (!item.isRoot) {
-                newElement = transformNodeToRoot(newElement, board);
+                newElement = transformNodeToRoot(board, newElement);
             }
 
             path = [board.children.length];

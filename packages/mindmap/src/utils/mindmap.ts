@@ -98,7 +98,7 @@ export const copyNewNode = (node: MindmapNodeElement) => {
     return newNode;
 };
 
-export const transformRootToNode = (node: MindmapNodeElement, board: PlaitBoard) => {
+export const transformRootToNode = (board: PlaitBoard, node: MindmapNodeElement) => {
     const newNode: MindmapNodeElement = { ...node };
     delete newNode.isRoot;
     delete newNode.rightNodeCount;
@@ -117,10 +117,10 @@ export const transformRootToNode = (node: MindmapNodeElement, board: PlaitBoard)
     return newNode;
 };
 
-export const transformNodeToRoot = (node: MindmapNodeElement, board?: PlaitBoard): MindmapNodeElement => {
+export const transformNodeToRoot = (board: PlaitBoard, node: MindmapNodeElement): MindmapNodeElement => {
     const text = Node.string(node.value.children[0]) || ' ';
 
-    const { width, height } = getSizeByText(text, board!.host.parentElement as HTMLElement, ROOT_TOPIC_FONT_SIZE);
+    const { width, height } = getSizeByText(text, board.host.parentElement as HTMLElement, ROOT_TOPIC_FONT_SIZE);
     node.width = Math.max(width, NODE_MIN_WIDTH);
     node.height = height;
 
