@@ -204,7 +204,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         this.board = board;
 
         if (this.plaitViewport) {
-            this.board.viewport = this.plaitViewport;
+            this.board.viewport = {
+                ...this.plaitViewport,
+                offsetX: 0,
+                offsetY: 0
+            };
             this.updateViewportState({
                 zoom: this.plaitViewport?.zoom ?? 1
             });

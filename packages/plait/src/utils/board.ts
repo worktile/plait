@@ -6,8 +6,8 @@ export type ViewBox = {
     minY: number;
     width: number;
     height: number;
-    viewportWidth: number;
-    viewportHeight: number;
+    viewportWidth?: number;
+    viewportHeight?: number;
 };
 
 export function transformPoints(board: PlaitBoard, points: Point[]) {
@@ -24,6 +24,21 @@ export function transformPoint(board: PlaitBoard, point: Point) {
     const y = (point[1] / height) * viewBox.height + viewBox.y;
     const newPoint = [x, y] as Point;
 
+    return newPoint;
+}
+
+/**
+ * 反转 Point
+ * @param board PlaitBoard
+ * @param point Point
+ * @returns Point
+ */
+export function invertTransformPoint(board: PlaitBoard, point: Point) {
+    const { width, height } = board.host.getBoundingClientRect();
+    const viewBox = (board.host as SVGSVGElement).viewBox.baseVal;
+    const x = (width * (point[0] - viewBox.x)) / viewBox.width;
+    const y = (height * (point[1] - viewBox.y)) / viewBox.height;
+    const newPoint = [x, y] as Point;
     return newPoint;
 }
 
