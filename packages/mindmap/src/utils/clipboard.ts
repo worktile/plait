@@ -5,10 +5,10 @@ import { getRectangleByNode, getRectangleByNodes } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapNodeComponent } from '../node.component';
 
-export const buildClipboardData = (selectedNodes: PlaitElement[]) => {
-    let result: PlaitElement[] = [];
+export const buildClipboardData = (selectedNodes: MindmapNodeElement[]) => {
+    let result: MindmapNodeElement[] = [];
     const selectedMindmapNodes = Array.from(selectedNodes, node => {
-        return (MINDMAP_ELEMENT_TO_COMPONENT.get(node as MindmapNodeElement) as MindmapNodeComponent)?.node;
+        return (MINDMAP_ELEMENT_TO_COMPONENT.get(node) as MindmapNodeComponent)?.node;
     });
 
     const nodesRectangle = getRectangleByNodes(selectedMindmapNodes);
@@ -24,11 +24,11 @@ export const buildClipboardData = (selectedNodes: PlaitElement[]) => {
     return result;
 };
 
-export const setClipboardData = (data: DataTransfer | null, nodeData: PlaitElement[]) => {
-    const stringObj = JSON.stringify(nodeData);
+export const setClipboardData = (data: DataTransfer | null, elements: MindmapNodeElement[]) => {
+    const stringObj = JSON.stringify(elements);
     const encoded = window.btoa(encodeURIComponent(stringObj));
-    const text = nodeData.reduce((string, currentNode) => {
-        return string + extractNodesText(currentNode as MindmapNodeElement);
+    const text = elements.reduce((string, currentNode) => {
+        return string + extractNodesText(currentNode);
     }, '');
     data?.setData(`application/${CLIP_BOARD_FORMAT_KEY}`, encoded);
     data?.setData(`text/plain`, text);

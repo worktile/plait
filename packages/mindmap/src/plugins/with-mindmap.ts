@@ -169,11 +169,11 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.setFragment = (data: DataTransfer | null) => {
-        const selectedNodes = filterChildElement(getSelectedElements(board));
+        const selectedNodes = filterChildElement(getSelectedElements(board) as MindmapNodeElement[]);
 
         if (selectedNodes.length) {
-            const nodeData = buildClipboardData(selectedNodes);
-            setClipboardData(data, nodeData);
+            const elements = buildClipboardData(selectedNodes);
+            setClipboardData(data, elements);
             return;
         }
         setFragment(data);
@@ -185,9 +185,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
 
-        const nodesData = getDataFromClipboard(data);
-        if (nodesData.length) {
-            insertClipboardData(board, nodesData, targetPoint || [0, 0]);
+        const elements = getDataFromClipboard(data);
+        if (elements.length) {
+            insertClipboardData(board, elements, targetPoint || [0, 0]);
         } else {
             const text = data?.getData(`text/plain`) as string;
             const { width } = getSizeByText(text, board.host.parentElement as HTMLElement, TOPIC_FONT_SIZE);

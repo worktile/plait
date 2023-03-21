@@ -65,11 +65,11 @@ export const isChildElement = (origin: MindmapNodeElement, child: MindmapNodeEle
     return false;
 };
 
-export const filterChildElement = (nodes: PlaitElement[]) => {
-    let result: PlaitElement[] = [];
+export const filterChildElement = (nodes: MindmapNodeElement[]) => {
+    let result: MindmapNodeElement[] = [];
     nodes.forEach(element => {
         const isChild = nodes.some(node => {
-            return isChildElement(node as MindmapNodeElement, element as MindmapNodeElement);
+            return isChildElement(node, element);
         });
 
         if (!isChild) {
