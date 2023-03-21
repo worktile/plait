@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { BASE, MindmapNodeShape, STROKE_WIDTH } from './constants/index';
+import { BASE, STROKE_WIDTH } from './constants/default';
+import {
+    CHILD_NODE_TEXT_HORIZONTAL_GAP,
+    CHILD_NODE_TEXT_VERTICAL_GAP,
+    ROOT_NODE_TEXT_HORIZONTAL_GAP,
+    ROOT_NODE_TEXT_VERTICAL_GAP,
+    MindmapNodeShape
+} from './constants/node';
 import { MindmapNodeElement, PlaitMindmap } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
 import { PlaitPluginElementComponent, BeforeContextChange, PlaitPluginElementContext } from '@plait/core';
@@ -62,16 +69,12 @@ export class PlaitMindmapComponent extends PlaitPluginElementComponent<PlaitMind
         }
         return {
             getHeight(element: MindmapNodeElement) {
-                if (element.isRoot) {
-                    return element.height + BASE * 4;
-                }
-                return element.height + BASE * 2;
+                const textGap = element.isRoot ? ROOT_NODE_TEXT_VERTICAL_GAP : CHILD_NODE_TEXT_VERTICAL_GAP;
+                return element.height + textGap * 2;
             },
             getWidth(element: MindmapNodeElement) {
-                if (element.isRoot) {
-                    return element.width + BASE * 6;
-                }
-                return element.width + BASE * 4;
+                const textGap = element.isRoot ? ROOT_NODE_TEXT_HORIZONTAL_GAP : CHILD_NODE_TEXT_HORIZONTAL_GAP;
+                return element.width + textGap * 2;
             },
             getHorizontalGap(element: MindmapNodeElement, parent?: LayoutNode) {
                 const _layout = (parent && parent.layout) || getRootLayout(element);
