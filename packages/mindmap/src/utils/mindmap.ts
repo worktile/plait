@@ -1,4 +1,4 @@
-import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
+import { addSelectedElement, getBoardViewportContainer, idCreator, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
 import { getSizeByText } from '@plait/richtext';
 import { Node } from 'slate';
@@ -104,7 +104,7 @@ export const transformRootToNode = (board: PlaitBoard, node: MindmapNodeElement)
     delete newNode.rightNodeCount;
 
     const text = Node.string(node.value.children[0]) || ' ';
-    const { width, height } = getSizeByText(text, board.host.parentElement as HTMLElement);
+    const { width, height } = getSizeByText(text, getBoardViewportContainer(board));
 
     newNode.width = Math.max(width, NODE_MIN_WIDTH);
     newNode.height = height;
@@ -119,7 +119,7 @@ export const transformRootToNode = (board: PlaitBoard, node: MindmapNodeElement)
 export const transformNodeToRoot = (board: PlaitBoard, node: MindmapNodeElement): MindmapNodeElement => {
     const text = Node.string(node.value.children[0]) || ' ';
 
-    const { width, height } = getSizeByText(text, board.host.parentElement as HTMLElement, ROOT_TOPIC_FONT_SIZE);
+    const { width, height } = getSizeByText(text, getBoardViewportContainer(board), ROOT_TOPIC_FONT_SIZE);
     node.width = Math.max(width, NODE_MIN_WIDTH);
     node.height = height;
 

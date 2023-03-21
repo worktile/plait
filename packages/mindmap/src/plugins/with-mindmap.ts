@@ -142,7 +142,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             dblclick(event);
             return;
         }
-        const point = transformPoint(board, toPoint(event.x, event.y, board.host));
+        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         let startEdit = false;
         board.children.forEach((value: PlaitElement) => {
             if (PlaitMindmap.isPlaitMindmap(value)) {
@@ -190,7 +190,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             insertClipboardData(board, elements, targetPoint || [0, 0]);
         } else {
             const text = data?.getData(`text/plain`) as string;
-            const { width } = getSizeByText(text, board.host.parentElement as HTMLElement);
+            const { width } = getSizeByText(text, PlaitBoard.getHost(board).parentElement as HTMLElement);
             const selectedElements = getSelectedElements(board);
             if (text && selectedElements.length === 1) {
                 insertClipboardText(board, text, width);

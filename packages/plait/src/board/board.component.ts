@@ -117,7 +117,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         return this.board?.selection;
     }
 
-    get host(): SVGElement {
+    get host(): SVGSVGElement {
         return this.svg.nativeElement;
     }
 
@@ -161,7 +161,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         this.initializeEvents();
         BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ROUGH_SVG.set(this.board, roughSVG);
-        BOARD_TO_HOST.set(this.board, this.elementRef.nativeElement);
+        BOARD_TO_HOST.set(this.board, this.host);
         BOARD_TO_ELEMENT_HOST.set(this.board, elementHost);
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.cdr.detectChanges();
@@ -197,7 +197,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     private initializePlugins() {
-        let board = withHandPointer(withHistory(withSelection(withBoard(createBoard(this.host, this.plaitValue, this.plaitOptions)))));
+        let board = withHandPointer(withHistory(withSelection(withBoard(createBoard(this.plaitValue, this.plaitOptions)))));
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
         });
@@ -285,7 +285,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 })
             )
             .subscribe(([clipboardEvent, mouseEvent]: [ClipboardEvent, MouseEvent]) => {
-                const targetPoint = transformPoint(this.board, toPoint(mouseEvent.x, mouseEvent.y, this.board.host));
+                const targetPoint = transformPoint(this.board, toPoint(mouseEvent.x, mouseEvent.y, this.host));
                 const buffer = 5;
                 const clientRect = getBoardClientRect(this.board);
 
