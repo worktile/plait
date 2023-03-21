@@ -5,6 +5,7 @@ import { transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import { cacheSelectedElements, calcElementIntersectionSelection } from '../utils/selected-element';
+import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 
 export function withSelection<T extends PlaitBoard>(board: T) {
     const { mousedown, mousemove, mouseup, onChange } = board;
@@ -26,7 +27,12 @@ export function withSelection<T extends PlaitBoard>(board: T) {
                 end = movedTarget;
                 roughSvg?.remove();
                 const rough = PlaitBoard.getRoughSVG(board);
-                roughSvg = rough.rectangle(x, y, width, height, { stroke: '#4e8afa', strokeWidth: 1 });
+                roughSvg = rough.rectangle(x, y, width, height, {
+                    stroke: SELECTION_BORDER_COLOR,
+                    strokeWidth: 1,
+                    fill: SELECTION_FILL_COLOR,
+                    fillStyle: 'solid'
+                });
                 PlaitBoard.getHost(board).append(roughSvg);
             }
         }
