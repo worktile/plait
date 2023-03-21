@@ -18,8 +18,8 @@ export function transformPoints(board: PlaitBoard, points: Point[]) {
 }
 
 export function transformPoint(board: PlaitBoard, point: Point) {
-    const { width, height } = board.host.getBoundingClientRect();
-    const viewBox = (board.host as SVGSVGElement).viewBox.baseVal;
+    const { width, height } = PlaitBoard.getHost(board).getBoundingClientRect();
+    const viewBox = PlaitBoard.getHost(board).viewBox.baseVal;
     const x = (point[0] / width) * viewBox.width + viewBox.x;
     const y = (point[1] / height) * viewBox.height + viewBox.y;
     const newPoint = [x, y] as Point;
@@ -47,5 +47,9 @@ export function isNoSelectionElement(e: Event) {
 }
 
 export function getBoardClientRect(board: PlaitBoard) {
-    return (board.host.closest('.plait-board-container') as HTMLElement).getBoundingClientRect();
+    return (PlaitBoard.getHost(board).closest('.plait-board-container') as HTMLElement).getBoundingClientRect();
+}
+
+export function getBoardViewportContainer(board: PlaitBoard) {
+    return PlaitBoard.getHost(board).parentElement as HTMLElement;
 }

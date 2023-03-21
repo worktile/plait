@@ -17,18 +17,18 @@ export const mockMindmapData: PlaitMindmap[] = [
                         value: { children: [{ text: '布局算法' }] },
                         children: [],
                         width: 56,
-                        height: 24
+                        height: 20
                     },
                     {
                         id: '1-1-2',
                         value: { children: [{ text: '知名脑图产品' }] },
                         children: [],
                         width: 84,
-                        height: 24
+                        height: 20
                     }
                 ],
                 width: 42,
-                height: 24
+                height: 20
             },
             {
                 id: '1-4',
@@ -39,7 +39,7 @@ export const mockMindmapData: PlaitMindmap[] = [
                         value: { children: [{ text: '布局算法' }] },
                         children: [],
                         width: 56,
-                        height: 24
+                        height: 20
                     },
                     {
                         id: '1-4-2',
@@ -50,29 +50,29 @@ export const mockMindmapData: PlaitMindmap[] = [
                                 value: { children: [{ text: '鱼骨图哦' }] },
                                 children: [],
                                 width: 56,
-                                height: 24
+                                height: 20
                             },
                             {
                                 id: '1-4-2-2',
                                 value: { children: [{ text: '缩进布局' }] },
                                 children: [],
                                 width: 56,
-                                height: 24
+                                height: 20
                             }
                         ],
                         width: 144.8046875,
-                        height: 24
+                        height: 20
                     },
                     {
                         id: '1-4-3',
                         value: { children: [{ text: '知名脑图产品' }] },
                         children: [],
                         width: 84,
-                        height: 24
+                        height: 20
                     }
                 ],
                 width: 84,
-                height: 24
+                height: 20
             },
             {
                 id: '1-5',
@@ -83,18 +83,18 @@ export const mockMindmapData: PlaitMindmap[] = [
                         value: { children: [{ text: '鱼骨图哦' }] },
                         children: [],
                         width: 56,
-                        height: 24
+                        height: 20
                     },
                     {
                         id: '1-5-2',
                         value: { children: [{ text: '缩进布局' }] },
                         children: [],
                         width: 56,
-                        height: 24
+                        height: 20
                     }
                 ],
                 width: 48,
-                height: 24
+                height: 20
             }
         ],
         width: 72,
@@ -113,14 +113,14 @@ export const mockMindmapData: PlaitMindmap[] = [
                 value: { children: [{ text: '富文本' }] },
                 children: [],
                 width: 42,
-                height: 24
+                height: 20
             },
             {
                 id: '2-2',
                 value: { children: [{ text: '知名脑图产品' }] },
                 children: [],
                 width: 84,
-                height: 24
+                height: 20
             },
             {
                 id: '2-3',
@@ -131,18 +131,18 @@ export const mockMindmapData: PlaitMindmap[] = [
                         value: { children: [{ text: '鱼骨图哦' }] },
                         children: [],
                         width: 56,
-                        height: 24
+                        height: 20
                     },
                     {
                         id: '2-3-2',
                         value: { children: [{ text: '缩进布局' }] },
                         children: [],
                         width: 56,
-                        height: 24
+                        height: 20
                     }
                 ],
                 width: 48,
-                height: 24
+                height: 20
             }
         ],
         width: 72,

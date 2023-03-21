@@ -14,12 +14,12 @@ export function withSelection<T extends PlaitBoard>(board: T) {
     let end: Point | null = null;
     let hostPickSVGG: SVGGElement[] = [];
     board.mousedown = (event: MouseEvent) => {
-        start = transformPoint(board, toPoint(event.x, event.y, board.host));
+        start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         mousedown(event);
     };
 
     board.mousemove = (event: MouseEvent) => {
-        const movedTarget = transformPoint(board, toPoint(event.x, event.y, board.host));
+        const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (start) {
             const rectangleClient = RectangleClient.toRectangleClient([start, movedTarget]);
             if (Math.hypot(rectangleClient.width, rectangleClient.height) > 5) {

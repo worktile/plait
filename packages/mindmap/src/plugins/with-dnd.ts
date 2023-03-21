@@ -64,7 +64,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
         }
 
         // 确认是否 hit 节点
-        const point = transformPoint(board, toPoint(event.x, event.y, board.host));
+        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         board.children.forEach((value: PlaitElement) => {
             if (activeElement) {
                 return;
@@ -93,7 +93,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
     board.mousemove = (event: MouseEvent) => {
         if (!board.options.readonly && activeElement && startPoint) {
-            const endPoint = transformPoint(board, toPoint(event.x, event.y, board.host));
+            const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance < DRAG_MOVE_BUFFER) {
                 return;

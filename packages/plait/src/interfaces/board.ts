@@ -12,7 +12,6 @@ import { BoardComponentInterface } from '../board/board.component.interface';
 import { Point } from './point';
 
 export interface PlaitBoard {
-    host: SVGElement;
     viewport: Viewport;
     children: PlaitElement[];
     operations: PlaitOperation[];
