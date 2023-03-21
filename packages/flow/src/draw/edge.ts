@@ -38,13 +38,13 @@ export const drawEdgeMarkers = (
     const [pathPoints] = getEdgePoints(board, edge, offsetX, offsetY, edgeHandle);
     const edgeStyles = getEdgeStyle(edge, active);
     const edgeMarkers: SVGGElement[] = [];
-    if (edge.target.marker || edge.source?.marker) {
-        let [start, end] = pathPoints.splice(-2);
+    if (edge.target.marker) {
+        const [start, end] = pathPoints.splice(-2);
         const targetMarker = drawArrow(roughSVG, [start.x, start.y], [end.x, end.y], edgeStyles);
         edgeMarkers.push(...targetMarker);
     }
     if (edge.source?.marker) {
-        let [end, start] = pathPoints.splice(0, 2);
+        const [end, start] = pathPoints.splice(0, 2);
         const sourceMarker = drawArrow(roughSVG, [start.x, start.y], [end.x, end.y], edgeStyles);
         edgeMarkers.push(...sourceMarker);
     }
