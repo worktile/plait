@@ -21,15 +21,12 @@ export function withSelection<T extends PlaitBoard>(board: T) {
     board.mousemove = (event: MouseEvent) => {
         const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (start) {
-            const rectangleClient = RectangleClient.toRectangleClient([start, movedTarget]);
-            if (Math.hypot(rectangleClient.width, rectangleClient.height) > 5) {
+            const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
+            if (Math.hypot(width, height) > 5) {
                 end = movedTarget;
                 roughSvg?.remove();
                 const rough = PlaitBoard.getRoughSVG(board);
-                roughSvg = rough.rectangle(rectangleClient.x, rectangleClient.y, rectangleClient.width, rectangleClient.height, {
-                    stroke: '#4e8afa',
-                    strokeWidth: 1
-                });
+                roughSvg = rough.rectangle(x, y, width, height, { stroke: '#4e8afa', strokeWidth: 1 });
                 PlaitBoard.getHost(board).append(roughSvg);
             }
         }
