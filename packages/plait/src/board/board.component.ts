@@ -50,7 +50,8 @@ import {
     BOARD_TO_COMPONENT,
     BOARD_TO_ELEMENT_HOST,
     BOARD_TO_HOST,
-    BOARD_TO_ROUGH_SVG
+    BOARD_TO_ROUGH_SVG,
+    IS_SELECTING
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import { RectangleClient } from '../interfaces/rectangle-client';
@@ -134,6 +135,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @HostBinding('class.moving')
     get moving() {
         return this.board.pointer === PlaitPointerType.hand && this.isMoving;
+    }
+
+    @HostBinding('class.selecting')
+    get selecting() {
+        return IS_SELECTING.get(this.board);
     }
 
     @HostBinding('class.focused')
