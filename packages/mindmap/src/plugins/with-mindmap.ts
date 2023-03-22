@@ -30,13 +30,21 @@ import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertCl
 import { TOPIC_FONT_SIZE } from '../constants';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isIntersectionSelection } = board;
+    const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isIntersectionSelection, getRectangle } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMindmap.isPlaitMindmap(context.element)) {
             return PlaitMindmapComponent;
         }
         return drawElement(context);
+    };
+
+    board.getRectangle = element => {
+        const mindmapElement = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
+        if (mindmapElement) {
+            return getRectangleByNode(mindmapElement.node);
+        }
+        return getRectangle(element);
     };
 
     board.isIntersectionSelection = element => {
