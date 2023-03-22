@@ -19,8 +19,8 @@ export class PlaitToolbarComponent {
         return Number((zoom * 100).toFixed(0));
     }
 
-    get pointerType() {
-        return this.board.pointer || PlaitPointerType.selection;
+    get isHand() {
+        return this.board.pointer === PlaitPointerType.hand;
     }
 
     @Output() adaptHandle = new EventEmitter();
@@ -32,7 +32,7 @@ export class PlaitToolbarComponent {
     @Output() resetZoomHandel = new EventEmitter();
 
     activeHand() {
-        updatePointerType(this.board, this.pointerType === PlaitPointerType.hand ? PlaitPointerType.selection : PlaitPointerType.hand);
+        updatePointerType(this.board, this.isHand ? PlaitPointerType.selection : PlaitPointerType.hand);
     }
 
     // 适应画布

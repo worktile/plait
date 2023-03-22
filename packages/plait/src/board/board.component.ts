@@ -97,8 +97,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         autoFitPadding: 8
     };
 
-    public isMoving = false;
-
     private resizeObserver!: ResizeObserver;
 
     @Input() plaitValue: PlaitElement[] = [];
@@ -129,11 +127,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @HostBinding('class.readonly')
     get readonly() {
         return this.board.options.readonly;
-    }
-
-    @HostBinding('class.moving')
-    get moving() {
-        return this.board.pointer === PlaitPointerType.hand && this.isMoving;
     }
 
     @HostBinding('class.focused')
@@ -554,10 +547,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         this.updateViewBoxStyles();
         this.updateViewportScrolling();
         this.setViewport();
-    }
-
-    movingChange(isMoving: boolean) {
-        this.isMoving = isMoving;
     }
 
     ngOnDestroy(): void {

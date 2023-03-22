@@ -1,5 +1,5 @@
 <div class="zoom-toolbar island plait-board-attached">
-    <a class="toolbar-item plait-action-icon" [ngClass]="{ 'icon-active': pointerType === PlaitPointerType.hand}" (click)="activeHand()">
+    <a class="toolbar-item plait-action-icon" [ngClass]="{ 'icon-active': isHand }" (click)="activeHand()">
         <ng-template [ngTemplateOutlet]="dragMoveTemplate"></ng-template>
     </a>
     <div class="divider"></div>
