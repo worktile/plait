@@ -568,15 +568,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     scrollToRectangle(client: RectangleClient) {
-        this.calcViewBox();
-        this.updateViewBoxStyles();
-        this.updateViewportScrolling();
-        this.setViewport();
-
         const svgRect = this.host.getBoundingClientRect();
         const viewportContainerBox = getViewportContainerBox(this.board);
 
         if (svgRect.width > viewportContainerBox.width || svgRect.height > viewportContainerBox.height) {
+            const margin = 20;
             const scrollBarWidth = this.plaitOptions?.hideScrollbar ? SCROLL_BAR_WIDTH : 0;
             const matrix = this.getMatrix();
             const [nodePointX, nodePointY] = convertToViewportCoordinates([client.x, client.y], matrix);
@@ -589,17 +585,17 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             let newTop = this.viewportState.scrollTop!;
 
             if (nodePointX < 0) {
-                newLeft -= Math.abs(nodePointX);
+                newLeft -= Math.abs(nodePointX - margin);
             }
             if (nodePointX > 0 && fullNodePointX > viewportContainerBox.width) {
-                newLeft += fullNodePointX - viewportContainerBox.width + scrollBarWidth;
+                newLeft += fullNodePointX - viewportContainerBox.width + margin + scrollBarWidth;
             }
 
             if (nodePointY < 0) {
-                newTop -= Math.abs(nodePointY);
+                newTop -= Math.abs(nodePointY - margin);
             }
             if (nodePointY > 0 && fullNodePointY > viewportContainerBox.height) {
-                newTop += fullNodePointY - viewportContainerBox.height + scrollBarWidth;
+                newTop += fullNodePointY - viewportContainerBox.height + margin + scrollBarWidth;
             }
 
             if (newLeft !== this.viewportState.scrollLeft! || newTop !== this.viewportState.scrollTop!) {

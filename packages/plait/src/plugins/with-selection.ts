@@ -4,7 +4,7 @@ import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom';
 import { RectangleClient } from '../interfaces/rectangle-client';
-import { cacheSelectedElements, calcElementIntersectionSelection } from '../utils/selected-element';
+import { cacheSelectedElements, calcElementIntersectionSelection, getSelectedElements } from '../utils/selected-element';
 import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 
@@ -75,6 +75,14 @@ export function withSelection<T extends PlaitBoard>(board: T) {
                     fillStyle: 'solid'
                 });
                 PlaitBoard.getHost(board).append(selectionOuterG);
+
+                // scroll to selected element
+                const nodes = getSelectedElements(board);
+                if (nodes.length === 1) {
+                    const rectangleClient = board.getRectangle(nodes[0]);
+                    const boardComponent = PlaitBoard.getComponent(board);
+                    boardComponent.scrollToRectangle(rectangleClient!);
+                }
             }
         } catch (error) {
             console.error(error);
