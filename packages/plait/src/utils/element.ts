@@ -2,40 +2,31 @@ import { PlaitBoard, PlaitElement, RectangleClient } from '../interfaces';
 import { depthFirstRecursion } from './tree';
 
 export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement[], recursion: boolean): RectangleClient {
-    let boundaryRectangle: RectangleClient = {
-        x: Number.MAX_VALUE,
-        y: Number.MAX_VALUE,
+    const boundaryBox = {
+        left: Number.MAX_VALUE,
+        top: Number.MAX_VALUE,
+        right: Number.MIN_VALUE,
+        bottom: Number.MIN_VALUE,
         width: 0,
         height: 0
     };
 
-    const calcNodeRectangleClient = (node: PlaitElement, index?: number) => {
-        const crrentRectangleNode = board.getRectangle(node);
-        if (crrentRectangleNode) {
-            const { width, height, x, y } = crrentRectangleNode;
-            boundaryRectangle = index === 0 ? { width, height, x, y } : boundaryRectangle;
-            const minX = index === 0 ? x : Math.min(x, boundaryRectangle.x);
-            const minY = index === 0 ? y : Math.min(y, boundaryRectangle.y);
-            const right = Math.max(x + width, boundaryRectangle.x + boundaryRectangle.width);
-            const bottom = Math.max(y + height, boundaryRectangle.y + boundaryRectangle.height);
-            boundaryRectangle.width = right - minX;
-            boundaryRectangle.height = bottom - minY;
-            boundaryRectangle.x = minX;
-            boundaryRectangle.y = minY;
+    const calcRectangleClient = (node: PlaitElement, index?: number) => {
+        const nodeRectangle = board.getRectangle(node);
+        if (nodeRectangle) {
+            boundaryBox.left = Math.min(boundaryBox.left, nodeRectangle.x);
+            boundaryBox.top = Math.min(boundaryBox.top, nodeRectangle.y);
+            boundaryBox.right = Math.max(boundaryBox.right, nodeRectangle.x + nodeRectangle.width);
+            boundaryBox.bottom = Math.max(boundaryBox.bottom, nodeRectangle.y + nodeRectangle.height);
         }
     };
 
     elements.forEach((element, index) => {
         if (recursion) {
-            depthFirstRecursion(element, node => calcNodeRectangleClient(node));
+            depthFirstRecursion(element, node => calcRectangleClient(node));
         } else {
-            calcNodeRectangleClient(element, index);
+            calcRectangleClient(element, index);
         }
     });
-    // 处理边框
-    boundaryRectangle.x -= 2;
-    boundaryRectangle.width += 4;
-    boundaryRectangle.y -= 2;
-    boundaryRectangle.height += 4;
-    return boundaryRectangle;
+    return { x: boundaryBox.left, y: boundaryBox.top, width: boundaryBox.width, height: boundaryBox.height };
 }
