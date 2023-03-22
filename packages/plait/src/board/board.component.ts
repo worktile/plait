@@ -141,6 +141,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         return this.isFocused;
     }
 
+    get nativeElement(): HTMLElement {
+        return this.elementRef.nativeElement;
+    }
+
     @ViewChild('svg', { static: true })
     svg!: ElementRef;
 
@@ -150,7 +154,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @ViewChild('viewportContainer', { read: ElementRef, static: true })
     viewportContainer!: ElementRef;
 
-    constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2, private elementRef: ElementRef<SVGSVGElement>) {}
+    constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2, private elementRef: ElementRef<HTMLElement>) {}
 
     ngOnInit(): void {
         const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;
@@ -348,7 +352,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 this.setViewport();
             }
         });
-        this.resizeObserver.observe(this.elementRef.nativeElement);
+        this.resizeObserver.observe(this.nativeElement);
     }
 
     private updateViewportState(state: Partial<PlaitBoardViewport>) {

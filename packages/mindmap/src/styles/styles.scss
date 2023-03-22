@@ -15,31 +15,32 @@ g[plait-mindmap='true'] {
     }
 
     .extend {
-        opacity: 0;
+        display: none;
         cursor: default;
     }
 
     .collapsed,
-    .hovered {
-        .extend {
-            opacity: 1;
-        }
-    }
-
     .dragging-origin,
     .dragging-child {
         opacity: 0.6;
     }
 }
-.plait-board-container.focused {
+.plait-board-container.focused:not(.selection-moving) {
     .extend {
         cursor: pointer;
-
         &:hover {
-            opacity: 1;
+            display: block;
+        }
+    }
+    g[plait-mindmap='true'] {
+        .hovered {
+            .extend {
+                display: block;
+            }
         }
     }
 }
+
 .plait-board-container.hand {
     svg {
         cursor: grab;
