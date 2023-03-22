@@ -54,7 +54,6 @@ import {
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import { RectangleClient } from '../interfaces/rectangle-client';
-import { PlaitPointerType } from '../interfaces/pointer';
 
 const ElementHostClass = 'element-host';
 
@@ -98,6 +97,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     };
 
     private resizeObserver!: ResizeObserver;
+
+    private hostResizeObserver!: ResizeObserver;
 
     @Input() plaitValue: PlaitElement[] = [];
 
@@ -158,6 +159,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         this.initializeEvents();
         this.viewportScrollListener();
         this.elementResizeListener();
+        this.resizeAndRecalculateViewport();
         BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ROUGH_SVG.set(this.board, roughSVG);
         BOARD_TO_HOST.set(this.board, this.host);
@@ -340,13 +342,17 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     private elementResizeListener() {
         this.resizeObserver = new ResizeObserver(() => {
-            this.initViewportContainer();
-            this.calcViewBox(this.board.viewport.zoom);
-            this.updateViewBoxStyles();
-            this.updateViewportScrolling();
-            this.setViewport();
+            this.updateViewport();
         });
         this.resizeObserver.observe(this.nativeElement);
+    }
+
+    private resizeAndRecalculateViewport() {
+        const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;
+        this.hostResizeObserver = new ResizeObserver(() => {
+            this.updateViewport();
+        });
+        this.hostResizeObserver.observe(elementHost);
     }
 
     private updateViewportState(state: Partial<PlaitBoardViewport>) {
@@ -354,6 +360,13 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             ...this.viewportState,
             ...state
         };
+    }
+
+    private updateViewport() {
+        this.initViewportContainer();
+        this.calcViewBox(this.board.viewport.zoom);
+        this.updateViewBoxStyles();
+        this.updateViewportScrolling();
     }
 
     initViewportContainer() {
@@ -552,9 +565,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
-        if (this.resizeObserver) {
-            this.resizeObserver.disconnect();
-        }
+        this.resizeObserver && this.resizeObserver?.disconnect();
+        this.hostResizeObserver && this.hostResizeObserver?.disconnect();
         BOARD_TO_ROUGH_SVG.delete(this.board);
         BOARD_TO_COMPONENT.delete(this.board);
         BOARD_TO_ROUGH_SVG.delete(this.board);
