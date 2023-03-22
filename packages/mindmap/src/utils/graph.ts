@@ -27,7 +27,7 @@ export function getRectangleByNode(node: MindmapNode): RectangleClient {
     };
 }
 
-export function getRectangleByNodes(mindmapNodes: MindmapNode[], isIncludeChildren = true): RectangleClient {
+export function getRectangleByNodes(mindmapNodes: MindmapNode[], recursion = true): RectangleClient {
     const nodesRectangle: RectangleClient = {
         x: Number.MAX_VALUE,
         y: Number.MAX_VALUE,
@@ -46,7 +46,7 @@ export function getRectangleByNodes(mindmapNodes: MindmapNode[], isIncludeChildr
     };
 
     mindmapNodes.forEach(mindmapNode => {
-        if (isIncludeChildren) {
+        if (recursion) {
             depthFirstRecursion(mindmapNode, calcNodeRectangleClient);
         } else {
             calcNodeRectangleClient(mindmapNode);
