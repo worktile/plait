@@ -72,7 +72,6 @@ export function withSelection<T extends PlaitBoard>(board: T) {
                 outerSelectionG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
                     stroke: SELECTION_BORDER_COLOR,
                     strokeWidth: 1,
-                    fill: SELECTION_FILL_COLOR,
                     fillStyle: 'solid'
                 });
                 PlaitBoard.getHost(board).append(outerSelectionG);
