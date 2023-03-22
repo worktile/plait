@@ -11,7 +11,7 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
         height: 0
     };
 
-    const calcRectangleClient = (node: PlaitElement, index?: number) => {
+    const calcRectangleClient = (node: PlaitElement) => {
         const nodeRectangle = board.getRectangle(node);
         if (nodeRectangle) {
             boundaryBox.left = Math.min(boundaryBox.left, nodeRectangle.x);
@@ -21,11 +21,11 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
         }
     };
 
-    elements.forEach((element, index) => {
+    elements.forEach(element => {
         if (recursion) {
             depthFirstRecursion(element, node => calcRectangleClient(node));
         } else {
-            calcRectangleClient(element, index);
+            calcRectangleClient(element);
         }
     });
     return { x: boundaryBox.left, y: boundaryBox.top, width: boundaryBox.width, height: boundaryBox.height };
