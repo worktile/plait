@@ -1,5 +1,5 @@
 ---
-'@plait/core': major
+'@plait/core': patch
 ---
 
 draw outer selection rectangle
