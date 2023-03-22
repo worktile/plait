@@ -27,7 +27,7 @@ export function getRectangleByNode(node: MindmapNode): RectangleClient {
     };
 }
 
-export function getRectangleByNodes(mindmapNodes: MindmapNode[]): RectangleClient {
+export function getRectangleByNodes(mindmapNodes: MindmapNode[], isIncludeChildren = true): RectangleClient {
     const nodesRectangle: RectangleClient = {
         x: Number.MAX_VALUE,
         y: Number.MAX_VALUE,
@@ -35,16 +35,22 @@ export function getRectangleByNodes(mindmapNodes: MindmapNode[]): RectangleClien
         height: 0
     };
 
+    const calcNodeRectangleClient = (node: MindmapNode) => {
+        const rectangleNode = getRectangleByNode(node);
+        nodesRectangle.x = Math.min(rectangleNode.x, nodesRectangle.x);
+        nodesRectangle.y = Math.min(rectangleNode.y, nodesRectangle.y);
+        const right = Math.max(rectangleNode.x + rectangleNode.width, nodesRectangle.x + nodesRectangle.width);
+        const bottom = Math.max(rectangleNode.y + rectangleNode.height, nodesRectangle.y + nodesRectangle.height);
+        nodesRectangle.width = right - nodesRectangle.x;
+        nodesRectangle.height = bottom - nodesRectangle.y;
+    };
+
     mindmapNodes.forEach(mindmapNode => {
-        depthFirstRecursion(mindmapNode, node => {
-            const rectangleNode = getRectangleByNode(node);
-            nodesRectangle.x = Math.min(rectangleNode.x, nodesRectangle.x);
-            nodesRectangle.y = Math.min(rectangleNode.y, nodesRectangle.y);
-            const right = Math.max(rectangleNode.x + rectangleNode.width, nodesRectangle.x + nodesRectangle.width);
-            const bottom = Math.max(rectangleNode.y + rectangleNode.height, nodesRectangle.y + nodesRectangle.height);
-            nodesRectangle.width = right - nodesRectangle.x;
-            nodesRectangle.height = bottom - nodesRectangle.y;
-        });
+        if (isIncludeChildren) {
+            depthFirstRecursion(mindmapNode, calcNodeRectangleClient);
+        } else {
+            calcNodeRectangleClient(mindmapNode);
+        }
     });
 
     return nodesRectangle;
