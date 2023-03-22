@@ -6,24 +6,25 @@ import { toPoint } from '../utils/dom';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import { cacheSelectedElements, calcElementIntersectionSelection } from '../utils/selected-element';
 import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
+import { getRectangleByElements } from '../utils/element';
 
 export function withSelection<T extends PlaitBoard>(board: T) {
-    const { mousedown, globalMousemove, globalMouseup, onChange } = board;
+    const { mousedown, mousemove, mouseup, onChange } = board;
 
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
+    let outerSelectionG: SVGGElement;
 
     board.mousedown = (event: MouseEvent) => {
-        if (event.button === 0) {
-            start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        }
+        outerSelectionG?.remove();
+        start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         mousedown(event);
     };
 
-    board.globalMousemove = (event: MouseEvent) => {
+    board.mousemove = (event: MouseEvent) => {
+        const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (start) {
-            const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
             if (Math.hypot(width, height) > 5) {
                 end = movedTarget;
@@ -38,10 +39,10 @@ export function withSelection<T extends PlaitBoard>(board: T) {
                 PlaitBoard.getHost(board).append(selectionMovingG);
             }
         }
-        globalMousemove(event);
+        mousemove(event);
     };
 
-    board.globalMouseup = (event: MouseEvent) => {
+    board.mouseup = (event: MouseEvent) => {
         if (start && end) {
             selectionMovingG?.remove();
             Transforms.setSelection(board, { anchor: start, focus: end });
@@ -52,7 +53,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         start = null;
         end = null;
 
-        globalMouseup(event);
+        mouseup(event);
     };
 
     board.onChange = () => {
@@ -61,6 +62,16 @@ export function withSelection<T extends PlaitBoard>(board: T) {
             if (board.operations.find(value => value.type === 'set_selection')) {
                 const elementIds = calcElementIntersectionSelection(board);
                 cacheSelectedElements(board, elementIds);
+                const { x, y, width, height } = getRectangleByElements(board, elementIds, false);
+                const rough = PlaitBoard.getRoughSVG(board);
+                // 2 is border
+                outerSelectionG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
+                    stroke: SELECTION_BORDER_COLOR,
+                    strokeWidth: 1,
+                    fill: SELECTION_FILL_COLOR,
+                    fillStyle: 'solid'
+                });
+                PlaitBoard.getHost(board).append(outerSelectionG);
             }
         } catch (error) {
             console.error(error);
