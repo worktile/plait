@@ -163,6 +163,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         });
         this.initializePlugins();
         this.initializeEvents();
+        this.viewportScrollListener();
+        this.elementResizeListener();
         BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ROUGH_SVG.set(this.board, roughSVG);
         BOARD_TO_HOST.set(this.board, this.host);
@@ -321,7 +323,9 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 this.board?.setFragment(event.clipboardData);
                 this.board?.deleteFragment(event.clipboardData);
             });
+    }
 
+    private viewportScrollListener() {
         fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'scroll')
             .pipe(
                 takeUntil(this.destroy$),
@@ -339,18 +343,15 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                     this.setViewport();
                 }
             });
-        this.resizeElement();
     }
 
-    resizeElement() {
-        this.resizeObserver = new ResizeObserver(entries => {
-            for (let entry of entries) {
-                this.initViewportContainer();
-                this.calcViewBox(this.board.viewport.zoom);
-                this.updateViewBoxStyles();
-                this.updateViewportScrolling();
-                this.setViewport();
-            }
+    private elementResizeListener() {
+        this.resizeObserver = new ResizeObserver(() => {
+            this.initViewportContainer();
+            this.calcViewBox(this.board.viewport.zoom);
+            this.updateViewBoxStyles();
+            this.updateViewportScrolling();
+            this.setViewport();
         });
         this.resizeObserver.observe(this.nativeElement);
     }
