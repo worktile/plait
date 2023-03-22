@@ -159,8 +159,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         });
         this.initializePlugins();
         this.initializeEvents();
-        this.setupViewportScrollListener();
-        this.setupElementSizeListener();
+        this.viewportScrollListener();
+        this.elementResizeListener();
         BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ROUGH_SVG.set(this.board, roughSVG);
         BOARD_TO_HOST.set(this.board, this.host);
@@ -316,7 +316,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             });
     }
 
-    private setupViewportScrollListener() {
+    private viewportScrollListener() {
         fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'scroll')
             .pipe(
                 takeUntil(this.destroy$),
@@ -336,7 +336,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             });
     }
 
-    private setupElementSizeListener() {
+    private elementResizeListener() {
         this.resizeObserver = new ResizeObserver(() => {
             this.initViewportContainer();
             this.calcViewBox(this.board.viewport.zoom);

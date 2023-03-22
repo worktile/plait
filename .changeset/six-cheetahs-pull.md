@@ -2,4 +2,4 @@
 '@plait/core': patch
 ---
 
-rename setupViewportScrollListener and setupElementSizeListener
+rename viewportScrollListener and elementResizeListener
