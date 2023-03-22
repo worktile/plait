@@ -6,7 +6,6 @@ import { toPoint } from '../utils/dom';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import { cacheSelectedElements, calcElementIntersectionSelection } from '../utils/selected-element';
 import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
-import { IS_SELECTING } from '../utils';
 
 export function withSelection<T extends PlaitBoard>(board: T) {
     const { mousedown, globalMousemove, globalMouseup, onChange } = board;
@@ -28,7 +27,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
             const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
             if (Math.hypot(width, height) > 5) {
                 end = movedTarget;
-                IS_SELECTING.set(board, true);
+                PlaitBoard.getBoardNativeElement(board).classList.add('selection-moving');
                 selectionMovingG?.remove();
                 const rough = PlaitBoard.getRoughSVG(board);
                 selectionMovingG = rough.rectangle(x, y, width, height, {
@@ -45,7 +44,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
 
     board.globalMouseup = (event: MouseEvent) => {
         if (start && end) {
-            IS_SELECTING.set(board, false);
+            PlaitBoard.getBoardNativeElement(board).classList.remove('selection-moving');
             selectionMovingG?.remove();
             Transforms.setSelection(board, { anchor: start, focus: end });
         } else if (start) {

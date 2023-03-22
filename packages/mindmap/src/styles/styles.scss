@@ -25,7 +25,7 @@ g[plait-mindmap='true'] {
         opacity: 0.6;
     }
 }
-.plait-board-container.focused:not(.selecting) {
+.plait-board-container.focused:not(.selection-moving) {
     .extend {
         cursor: pointer;
         &:hover {

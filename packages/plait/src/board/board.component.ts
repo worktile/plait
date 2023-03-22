@@ -50,8 +50,7 @@ import {
     BOARD_TO_COMPONENT,
     BOARD_TO_ELEMENT_HOST,
     BOARD_TO_HOST,
-    BOARD_TO_ROUGH_SVG,
-    IS_SELECTING
+    BOARD_TO_ROUGH_SVG
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import { RectangleClient } from '../interfaces/rectangle-client';
@@ -137,14 +136,13 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         return this.board.pointer === PlaitPointerType.hand && this.isMoving;
     }
 
-    @HostBinding('class.selecting')
-    get selecting() {
-        return IS_SELECTING.get(this.board);
-    }
-
     @HostBinding('class.focused')
     get focused() {
         return this.isFocused;
+    }
+
+    get nativeElement(): HTMLElement {
+        return this.elementRef.nativeElement;
     }
 
     @ViewChild('svg', { static: true })
@@ -156,7 +154,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @ViewChild('viewportContainer', { read: ElementRef, static: true })
     viewportContainer!: ElementRef;
 
-    constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2, private elementRef: ElementRef<SVGSVGElement>) {}
+    constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2, private elementRef: ElementRef<HTMLElement>) {}
 
     ngOnInit(): void {
         const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;
@@ -354,7 +352,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 this.setViewport();
             }
         });
-        this.resizeObserver.observe(this.elementRef.nativeElement);
+        this.resizeObserver.observe(this.nativeElement);
     }
 
     private updateViewportState(state: Partial<PlaitBoardViewport>) {
