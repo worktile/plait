@@ -25,10 +25,10 @@ import { FlowEdgeHandle } from '@plait/flow';
 export const FLOW_EDGE_DRAGING_INFO: WeakMap<FlowElement, FlowEdgeDragInfo> = new WeakMap();
 
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
-    const { mousedown, mousemove, globalMouseup, keydown } = board;
+    const { mousedown, mousemove, globalMouseup } = board;
 
     let isDragging = false;
-    let activeElement: FlowNode | FlowEdge<Element> | null;
+    let activeElement: FlowEdge<Element> | null;
     let activeComponent: FlowEdgeComponent | null;
     let startPoint: Point | null;
     let handleType: FlowEdgeHandleType | null;
@@ -77,7 +77,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                         offsetY,
                         handleType
                     });
-                    activeComponent?.drawElement(activeElement, true);
+                    activeComponent?.updateElement(activeElement, true);
                     hitNodeHandle = getHitNodeHandle(board, activeElement, endPoint);
                     if (!isShowNodeEdge) {
                         isShowNodeEdge = true;

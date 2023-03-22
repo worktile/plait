@@ -20,9 +20,9 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { drawEdge, drawEdgeMarkers, drawRichtextBackground } from './draw/edge';
 import { PlaitBoard } from '@plait/core';
 import { drawEdgeHandles } from './draw/handle';
-import { PlaitRichtextComponent, drawRichtext } from '@plait/richtext';
+import { PlaitRichtextComponent, drawRichtext, updateForeignObject } from '@plait/richtext';
 import { Element } from 'slate';
-import { getEdgeTextBackgroundRect, getEdgeTextRect } from './utils/edge/text';
+import { getEdgeTextBackgroundRect, getEdgeTextRect, getEdgeTextXYPosition } from './utils/edge/text';
 import { FlowEdge } from './interfaces/edge';
 
 @Component({
@@ -87,7 +87,14 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
             this.drawRichtext(element, this.textRect!, active);
         }
         this.drawMarkers(element, active);
-        active && this.drawHandles(element);
+        this.drawHandles(element, active);
+    }
+
+    updateElement(element: FlowEdge<T> = this.element, active = false) {
+        this.drawEdge(element, active);
+        this.updateRichtextPosition(element, active);
+        this.drawMarkers(element, active);
+        this.drawHandles(element, active);
     }
 
     drawEdge(element: FlowEdge<T> = this.element, active = false) {
@@ -96,15 +103,17 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         this.g.append(this.nodeG);
     }
 
-    drawHandles(element: FlowEdge<T> = this.element) {
-        this.destroyHandles();
-        const handles = drawEdgeHandles(this.board, this.roughSVG, element);
-        this.handlesG = createG();
-        handles.map(item => {
-            this.handlesG?.append(item);
-            this.render2.addClass(item, 'flow-handle');
-        });
-        this.g.append(this.handlesG);
+    drawHandles(element: FlowEdge<T> = this.element, active = false) {
+        if (active) {
+            this.destroyHandles();
+            const handles = drawEdgeHandles(this.board, this.roughSVG, element);
+            this.handlesG = createG();
+            handles.map(item => {
+                this.handlesG?.append(item);
+                this.render2.addClass(item, 'flow-handle');
+            });
+            this.g.append(this.handlesG);
+        }
     }
 
     drawRichtext(element: FlowEdge<T> = this.element, textRect: RectangleClient, active = false) {
@@ -123,12 +132,31 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         }
     }
 
+    updateRichtextPosition(element: FlowEdge<T> = this.element, active = false) {
+        if (element.data?.text && this.richtextG) {
+            const { x, y } = getEdgeTextXYPosition(this.board, this.element, this.textRect!.width, this.textRect!.height);
+            const { width, height } = this.textRect!;
+            updateForeignObject(this.richtextG!, width, height, x, y);
+            const textBackgroundRect = getEdgeTextBackgroundRect({
+                x,
+                y,
+                width,
+                height
+            });
+            this.destroyRichtextBackgroundG();
+            this.richtextBackgroundG = drawRichtextBackground(this.roughSVG, element, textBackgroundRect!, active);
+            this.richtextG?.prepend(this.richtextBackgroundG);
+        }
+    }
+
     drawMarkers(element: FlowEdge<T> = this.element, active = false) {
-        this.destroyMarkers();
-        this.sourceMarkerG = drawEdgeMarkers(this.board, this.roughSVG, element, active);
-        this.sourceMarkerG!.map(arrowline => {
-            this.g.append(arrowline);
-        });
+        if (element.target.marker || element.source?.marker) {
+            this.destroyMarkers();
+            this.sourceMarkerG = drawEdgeMarkers(this.board, this.roughSVG, element, active);
+            this.sourceMarkerG!.map(arrowline => {
+                this.g.append(arrowline);
+            });
+        }
     }
 
     destroyHandles() {
@@ -148,11 +176,15 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
     destroyRichtext() {
         if (this.richtextG) {
             this.richtextG.remove();
-            this.richtextBackgroundG = null;
+            this.richtextG = null;
         }
         if (this.richtextComponentRef) {
             this.richtextComponentRef.destroy();
         }
+        this.destroyRichtextBackgroundG();
+    }
+
+    destroyRichtextBackgroundG() {
         if (this.richtextBackgroundG) {
             this.richtextBackgroundG.remove();
             this.richtextBackgroundG = null;

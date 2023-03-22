@@ -1,11 +1,11 @@
-import { FlowEdge, FlowEdgeHandleType } from '../../interfaces/edge';
+import { FlowEdge } from '../../interfaces/edge';
 import { BOARD_TO_HOST, PlaitBoard, RectangleClient, XYPosition } from '@plait/core';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText } from '@plait/richtext';
 import { BaseText, Element } from 'slate';
 import { getEdgePoints } from './edge';
 
 // 使用 getSizeByText，渲染 dom 获取文本宽度，频繁调用会有性能问题
-export function getEdgeTextRect(board: PlaitBoard, edge: FlowEdge, offsetX = 0, offsetY = 0): RectangleClient {
+export function getEdgeTextRect(board: PlaitBoard, edge: FlowEdge): RectangleClient {
     const host = BOARD_TO_HOST.get(board);
     const text = ((edge.data?.text as Element).children[0] as BaseText).text;
     const { width } = getSizeByText(text, host!.parentElement as HTMLElement);
