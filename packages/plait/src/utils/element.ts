@@ -6,9 +6,7 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
         left: Number.MAX_VALUE,
         top: Number.MAX_VALUE,
         right: Number.MIN_VALUE,
-        bottom: Number.MIN_VALUE,
-        width: 0,
-        height: 0
+        bottom: Number.MIN_VALUE
     };
 
     const calcRectangleClient = (node: PlaitElement) => {
@@ -28,5 +26,10 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
             calcRectangleClient(element);
         }
     });
-    return { x: boundaryBox.left, y: boundaryBox.top, width: boundaryBox.width, height: boundaryBox.height };
+    return {
+        x: boundaryBox.left,
+        y: boundaryBox.top,
+        width: boundaryBox.right - boundaryBox.left,
+        height: boundaryBox.bottom - boundaryBox.top
+    };
 }
