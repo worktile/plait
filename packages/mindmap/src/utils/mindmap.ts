@@ -1,12 +1,12 @@
 import { addSelectedElement, getBoardViewportContainer, idCreator, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
-import { getSizeByText } from '@plait/richtext';
 import { Node } from 'slate';
-import { MindmapNodeShape, NODE_DEFAULT_HEIGHT, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants/node';
+import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants/node';
 import { MindmapNode, PlaitMindmap } from '../interfaces';
 import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
+import { TEXT_DEFAULT_HEIGHT, getSizeByText } from '@plait/richtext';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
@@ -190,7 +190,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: NODE_DEFAULT_HEIGHT,
+                height: TEXT_DEFAULT_HEIGHT,
                 shape: MindmapNodeShape.roundRectangle
             },
             {
@@ -198,7 +198,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: NODE_DEFAULT_HEIGHT,
+                height: TEXT_DEFAULT_HEIGHT,
                 shape: MindmapNodeShape.roundRectangle
             },
             {
@@ -206,7 +206,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: NODE_DEFAULT_HEIGHT,
+                height: TEXT_DEFAULT_HEIGHT,
                 shape: MindmapNodeShape.roundRectangle
             }
         ]
@@ -235,7 +235,7 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapNodeEleme
         },
         children: [],
         width: NODE_MIN_WIDTH,
-        height: NODE_DEFAULT_HEIGHT,
+        height: TEXT_DEFAULT_HEIGHT,
         fill,
         strokeColor,
         strokeWidth,

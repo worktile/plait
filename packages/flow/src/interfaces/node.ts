@@ -7,9 +7,6 @@ export const isFlowNodeElement = (value: PlaitElement): value is FlowNode => {
 
 export interface FlowNodeHandle extends FlowHandle {
     id: string;
-    position: FlowPosition;
-    offsetX?: number;
-    offsetY?: number;
 }
 
 export interface FlowNode<T = unknown> extends FlowElement<T> {

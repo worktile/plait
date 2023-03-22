@@ -2,9 +2,11 @@ import { FlowElementStyles, FlowHandle, FlowPosition } from '../../interfaces/el
 import { getHandleXYPosition } from '../handle/get-handle-position';
 import { PlaitBoard, RectangleClient, normalizePoint } from '@plait/core';
 import { getPoints } from './get-smooth-step-edge';
-import { getFlowNodeById } from '../get-node-by-id';
+import { getFakeFlowNodeById, getFlowNodeById } from '../get-node-by-id';
 import { FlowEdge } from '../../interfaces/edge';
 import { DEAFULT_EDGE_ACTIVE_STYLES, DEAFULT_EDGE_STYLES } from '../../constants/edge';
+import { FLOW_EDGE_DRAGING_INFO } from '../../plugins/with-edge-dnd';
+import { FlowNode } from '../../interfaces/node';
 
 interface EdgePositions {
     sourceX: number;
@@ -53,11 +55,23 @@ export function getEdgeCenter({
 }
 
 export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
-    const sourceNode = getFlowNodeById(board, edge.source?.id!);
-    const targetNode = getFlowNodeById(board, edge.target?.id!);
+    let sourceNode: FlowNode, targetNode: FlowNode;
+    const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && FLOW_EDGE_DRAGING_INFO.get(edge);
 
-    const { x: sourceNodeX, y: sourceNodeY } = normalizePoint(sourceNode.points![0]);
-    const { x: targetNodeX, y: targetNodeY } = normalizePoint(targetNode.points![0]);
+    if (dragEdgeInfo && dragEdgeInfo.handleType === 'source') {
+        sourceNode = getFakeFlowNodeById(board, edge.source?.id!, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);
+    } else {
+        sourceNode = getFlowNodeById(board, edge.source?.id!);
+    }
+
+    if (dragEdgeInfo && dragEdgeInfo.handleType === 'target') {
+        targetNode = getFakeFlowNodeById(board, edge.target?.id!, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);
+    } else {
+        targetNode = getFlowNodeById(board, edge.target?.id!);
+    }
+
+    let { x: sourceNodeX, y: sourceNodeY } = normalizePoint(sourceNode.points![0]);
+    let { x: targetNodeX, y: targetNodeY } = normalizePoint(targetNode.points![0]);
     const { width: sourceNodeWidth, height: sourceNodeHeight } = sourceNode;
     const { width: targetNodeWidth, height: targetNodeHeight } = targetNode;
 
