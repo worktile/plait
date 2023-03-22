@@ -111,7 +111,7 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
         this.handlesG = createG();
         handles.map(item => {
             this.handlesG?.append(item);
-            this.render2.addClass(item, 'flow-node-handle');
+            this.render2.addClass(item, 'flow-handle');
         });
         this.g.append(this.handlesG);
     }

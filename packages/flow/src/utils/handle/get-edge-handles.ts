@@ -1,25 +1,34 @@
-import { PlaitBoard, normalizePoint } from '@plait/core';
+import { PlaitBoard } from '@plait/core';
 import { FlowEdge, FlowEdgeHandle } from '../../interfaces/edge';
-import { getFlowNodeById } from '../get-node-by-id';
+import { getFakeFlowNodeById, getFlowNodeById } from '../get-node-by-id';
+import { FLOW_EDGE_DRAGING_INFO } from '../../plugins/with-edge-dnd';
 
-export const getEdgeHandles = (board: PlaitBoard, edges: FlowEdge) => {
+export const getEdgeHandles = (board: PlaitBoard, edge: FlowEdge) => {
     const handles: FlowEdgeHandle[] = [];
     let sourceNode, targetNode;
-    if (edges.source) {
-        sourceNode = getFlowNodeById(board, edges.source.id);
+    const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && FLOW_EDGE_DRAGING_INFO.get(edge);
+    if (edge.source) {
+        if (dragEdgeInfo && dragEdgeInfo.handleType === 'source') {
+            sourceNode = getFakeFlowNodeById(board, edge.source.id, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);
+        } else {
+            sourceNode = getFlowNodeById(board, edge.source.id);
+        }
         handles.push({
-            position: edges.source.position,
+            position: edge.source.position,
             node: sourceNode,
-            source: 'source'
+            type: 'source'
         });
     }
-    if (edges.target) {
-        targetNode = getFlowNodeById(board, edges.target.id);
-        const { x, y } = normalizePoint(targetNode.points![0]);
+    if (edge.target) {
+        if (dragEdgeInfo && dragEdgeInfo.handleType === 'target') {
+            targetNode = getFakeFlowNodeById(board, edge.target.id, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);
+        } else {
+            targetNode = getFlowNodeById(board, edge.target.id);
+        }
         handles.push({
-            position: edges.target.position,
+            position: edge.target.position,
             node: targetNode,
-            source: 'target'
+            type: 'target'
         });
     }
     return handles;

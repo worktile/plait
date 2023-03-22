@@ -4,8 +4,8 @@ import { getEdgeHandles } from './get-edge-handles';
 import { HANDLE_RADIUS } from '../../constants/handle';
 import { getHandleXYPosition } from './get-handle-position';
 
-export function getHandleSource(point: Point, board: PlaitBoard, edge: FlowEdge): FlowEdgeHandleType | null {
-    let handleSource = null;
+export function getHandleType(board: PlaitBoard, point: Point, edge: FlowEdge): FlowEdgeHandleType | null {
+    let handleType = null;
     const handles = getEdgeHandles(board, edge);
     handles.find(handle => {
         const { x, y } = normalizePoint(handle.node.points![0]);
@@ -20,9 +20,9 @@ export function getHandleSource(point: Point, board: PlaitBoard, edge: FlowEdge)
             handle
         );
         const distance = distanceBetweenPointAndPoint(position.x, position.y, point[0], point[1]);
-        if (distance < Math.pow(HANDLE_RADIUS, 2)) {
-            handleSource = handle.source;
+        if (distance < HANDLE_RADIUS) {
+            handleType = handle.type;
         }
     });
-    return handleSource;
+    return handleType;
 }

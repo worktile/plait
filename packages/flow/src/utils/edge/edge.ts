@@ -2,9 +2,11 @@ import { FlowElementStyles, FlowHandle, FlowPosition } from '../../interfaces/el
 import { getHandleXYPosition } from '../handle/get-handle-position';
 import { PlaitBoard, RectangleClient, normalizePoint } from '@plait/core';
 import { getPoints } from './get-smooth-step-edge';
-import { getFlowNodeById } from '../get-node-by-id';
-import { FlowEdge, FlowEdgeHandleType } from '../../interfaces/edge';
+import { getFakeFlowNodeById, getFlowNodeById } from '../get-node-by-id';
+import { FlowEdge } from '../../interfaces/edge';
 import { DEAFULT_EDGE_ACTIVE_STYLES, DEAFULT_EDGE_STYLES } from '../../constants/edge';
+import { FLOW_EDGE_DRAGING_INFO } from '../../plugins/with-edge-dnd';
+import { FlowNode } from '../../interfaces/node';
 
 interface EdgePositions {
     sourceX: number;
@@ -52,25 +54,26 @@ export function getEdgeCenter({
     return [centerX, centerY, xOffset, yOffset];
 }
 
-export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge, offsetX = 0, offsetY = 0, edgeHandle?: FlowEdgeHandleType | null) => {
-    const sourceNode = getFlowNodeById(board, edge.source?.id!);
-    const targetNode = getFlowNodeById(board, edge.target?.id!);
+export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
+    let sourceNode: FlowNode, targetNode: FlowNode;
+    const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && FLOW_EDGE_DRAGING_INFO.get(edge);
+
+    if (dragEdgeInfo && dragEdgeInfo.handleType === 'source') {
+        sourceNode = getFakeFlowNodeById(board, edge.source?.id!, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);
+    } else {
+        sourceNode = getFlowNodeById(board, edge.source?.id!);
+    }
+
+    if (dragEdgeInfo && dragEdgeInfo.handleType === 'target') {
+        targetNode = getFakeFlowNodeById(board, edge.target?.id!, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);
+    } else {
+        targetNode = getFlowNodeById(board, edge.target?.id!);
+    }
 
     let { x: sourceNodeX, y: sourceNodeY } = normalizePoint(sourceNode.points![0]);
     let { x: targetNodeX, y: targetNodeY } = normalizePoint(targetNode.points![0]);
     const { width: sourceNodeWidth, height: sourceNodeHeight } = sourceNode;
     const { width: targetNodeWidth, height: targetNodeHeight } = targetNode;
-
-    if (edgeHandle && (offsetX || offsetY)) {
-        if (edgeHandle === 'source') {
-            sourceNodeX += offsetX;
-            sourceNodeY += offsetY;
-        }
-        if (edgeHandle === 'target') {
-            targetNodeX += offsetX;
-            targetNodeY += offsetY;
-        }
-    }
 
     const { position: sourcePosition } = edge.source!;
     const { position: targetPosition } = edge.target;

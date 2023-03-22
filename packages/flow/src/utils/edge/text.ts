@@ -10,7 +10,7 @@ export function getEdgeTextRect(board: PlaitBoard, edge: FlowEdge, offsetX = 0, 
     const text = ((edge.data?.text as Element).children[0] as BaseText).text;
     const { width } = getSizeByText(text, host!.parentElement as HTMLElement);
     const height = TEXT_DEFAULT_HEIGHT;
-    const { x, y } = getEdgeTextXYPosition(board, edge, offsetX, offsetY, width, height);
+    const { x, y } = getEdgeTextXYPosition(board, edge, width, height);
     return {
         x,
         y,
@@ -19,16 +19,8 @@ export function getEdgeTextRect(board: PlaitBoard, edge: FlowEdge, offsetX = 0, 
     };
 }
 
-export function getEdgeTextXYPosition(
-    board: PlaitBoard,
-    edge: FlowEdge,
-    offsetX = 0,
-    offsetY = 0,
-    width: number,
-    height: number,
-    edgeHandle?: FlowEdgeHandleType | null
-): XYPosition {
-    const [pathPoints, labelX, labelY] = getEdgePoints(board, edge, offsetX, offsetY, edgeHandle);
+export function getEdgeTextXYPosition(board: PlaitBoard, edge: FlowEdge, width: number, height: number): XYPosition {
+    const [pathPoints, labelX, labelY] = getEdgePoints(board, edge);
     const x = labelX - width / 2;
     const y = labelY - height / 2;
     return {

@@ -3,7 +3,7 @@ import { PlaitBoard, normalizePoint } from '@plait/core';
 import { getDefaultHandles } from '../utils/handle/get-default-handles';
 import { FlowNode } from '../interfaces/node';
 import { getHandleXYPosition } from '../utils/handle/get-handle-position';
-import { FlowEdge, FlowEdgeHandleType } from '../interfaces/edge';
+import { FlowEdge } from '../interfaces/edge';
 import { getEdgeHandles } from '../utils/handle/get-edge-handles';
 import { DEAFULT_HANDLE_STYLES, HANDLE_RADIUS } from '../constants/handle';
 
@@ -25,23 +25,10 @@ export function drawNodeHandles(roughSVG: RoughSVG, node: FlowNode) {
     });
 }
 
-export function drawEdgeHandles(
-    board: PlaitBoard,
-    roughSVG: RoughSVG,
-    edge: FlowEdge,
-    offsetX = 0,
-    offsetY = 0,
-    edgeHandle?: FlowEdgeHandleType | null
-) {
+export function drawEdgeHandles(board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge) {
     const handles = getEdgeHandles(board, edge);
     return handles.map(handle => {
         let { x, y } = normalizePoint(handle.node.points![0]);
-        if (edgeHandle) {
-            if (edgeHandle === handle.source && (offsetX || offsetY)) {
-                x = x + offsetX;
-                y = y + offsetY;
-            }
-        }
         const position = getHandleXYPosition(
             handle.position,
             {

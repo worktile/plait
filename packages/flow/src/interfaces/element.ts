@@ -16,11 +16,6 @@ export enum FlowPosition {
     bottom = 'bottom'
 }
 
-export enum FlowHandleDirection {
-    x = 'x',
-    y = 'y'
-}
-
 export interface FlowHandle {
     position: FlowPosition;
     offsetX?: number;

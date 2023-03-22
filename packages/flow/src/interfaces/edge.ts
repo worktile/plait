@@ -12,7 +12,13 @@ export type FlowEdgeHandleType = 'source' | 'target';
 
 export interface FlowEdgeHandle extends FlowHandle {
     node: FlowNode;
-    source?: FlowEdgeHandleType;
+    type?: FlowEdgeHandleType;
+}
+
+export interface FlowEdgeDragInfo {
+    offsetX: number;
+    offsetY: number;
+    handleType: FlowEdgeHandleType;
 }
 
 export interface FlowEdge<T = unknown> extends FlowElement<T> {

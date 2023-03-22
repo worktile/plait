@@ -12,7 +12,7 @@ import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
 import { FlowElement } from '../interfaces/element';
 import { FlowEdge } from '../interfaces/edge';
 import { FlowNode } from '../interfaces/node';
-import { withFlowDnd } from './with-dnd';
+import { withFlowEdgeDnd } from './with-edge-dnd';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, isIntersectionSelection } = board;
@@ -40,11 +40,11 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                 });
             }
             if (FlowEdge.isFlowEdgeElement(element)) {
-                return isHitFlowEdge(board, element, board.selection.anchor);
+                return isHitFlowEdge(board, element, board.selection.focus);
             }
         }
         return isIntersectionSelection(element);
     };
 
-    return withFlowDnd(board);
+    return withFlowEdgeDnd(board);
 };

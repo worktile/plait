@@ -6,7 +6,7 @@ export * from './flow.module';
 export * from './flow-node.component';
 export * from './flow-edge.component';
 export * from './plugins/with-flow';
-export * from './plugins/with-dnd';
+export * from './plugins/with-edge-dnd';
 export * from './interfaces/element';
 export * from './interfaces/edge';
 export * from './interfaces/node';

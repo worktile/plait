@@ -22,8 +22,8 @@ import { PlaitBoard } from '@plait/core';
 import { drawEdgeHandles } from './draw/handle';
 import { PlaitRichtextComponent, drawRichtext } from '@plait/richtext';
 import { Element } from 'slate';
-import { getEdgeTextBackgroundRect, getEdgeTextRect, getEdgeTextXYPosition } from './utils/edge/text';
-import { FlowEdge, FlowEdgeHandleType } from './interfaces/edge';
+import { getEdgeTextBackgroundRect, getEdgeTextRect } from './utils/edge/text';
+import { FlowEdge } from './interfaces/edge';
 
 @Component({
     selector: 'plait-flow-edge',
@@ -72,7 +72,6 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
                 this.drawElement(value.element, isActive);
                 this.drawHandles();
             }
-
             if (this.perviousStatus === 'active' && !isActive) {
                 this.drawElement(value.element);
                 this.destroyHandles();
@@ -91,53 +90,19 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         active && this.drawHandles(element);
     }
 
-    drawDraggingElement(
-        element: FlowEdge<T> = this.element,
-        active = true,
-        offsetX = 0,
-        offsetY = 0,
-        edgeHandle: FlowEdgeHandleType | null
-    ) {
-        this.drawEdge(element, active, offsetX, offsetY, edgeHandle);
-        // text
-        this.destroyRichtext();
-        if (element.data?.text && this.textRect) {
-            const textXYPosition = getEdgeTextXYPosition(
-                this.board,
-                this.element,
-                offsetX,
-                offsetY,
-                this.textRect.width,
-                this.textRect.height,
-                edgeHandle
-            );
-            this.drawRichtext(
-                element,
-                {
-                    x: textXYPosition.x,
-                    y: textXYPosition.y,
-                    width: this.textRect.width,
-                    height: this.textRect.height
-                },
-                true
-            );
-        }
-        this.drawMarkers(element, active, offsetX, offsetY, edgeHandle);
-        this.drawHandles(element, offsetX, offsetY, edgeHandle);
-    }
-
-    drawEdge(element: FlowEdge<T> = this.element, active = false, offsetX = 0, offsetY = 0, edgeHandle?: FlowEdgeHandleType | null) {
+    drawEdge(element: FlowEdge<T> = this.element, active = false) {
         this.destroyEdge();
-        this.nodeG = drawEdge(this.board, this.roughSVG, element, active, offsetX, offsetY, edgeHandle);
+        this.nodeG = drawEdge(this.board, this.roughSVG, element, active);
         this.g.append(this.nodeG);
     }
 
-    drawHandles(element: FlowEdge<T> = this.element, offsetX = 0, offsetY = 0, edgeHandle?: FlowEdgeHandleType | null) {
+    drawHandles(element: FlowEdge<T> = this.element) {
         this.destroyHandles();
-        const handles = drawEdgeHandles(this.board, this.roughSVG, element, offsetX, offsetY, edgeHandle);
+        const handles = drawEdgeHandles(this.board, this.roughSVG, element);
         this.handlesG = createG();
         handles.map(item => {
             this.handlesG?.append(item);
+            this.render2.addClass(item, 'flow-handle');
         });
         this.g.append(this.handlesG);
     }
@@ -158,9 +123,9 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         }
     }
 
-    drawMarkers(element: FlowEdge<T> = this.element, active = false, offsetX = 0, offsetY = 0, edgeHandle?: FlowEdgeHandleType | null) {
+    drawMarkers(element: FlowEdge<T> = this.element, active = false) {
         this.destroyMarkers();
-        this.sourceMarkerG = drawEdgeMarkers(this.board, this.roughSVG, element, active, offsetX, offsetY, edgeHandle);
+        this.sourceMarkerG = drawEdgeMarkers(this.board, this.roughSVG, element, active);
         this.sourceMarkerG!.map(arrowline => {
             this.g.append(arrowline);
         });
