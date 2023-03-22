@@ -14,10 +14,10 @@ export function withSelection<T extends PlaitBoard>(board: T) {
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
-    let outerSelectionG: SVGGElement;
+    let selectionOuterG: SVGGElement;
 
     board.mousedown = (event: MouseEvent) => {
-        outerSelectionG?.remove();
+        selectionOuterG?.remove();
         if (event.button === 0) {
             start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         }
@@ -69,12 +69,12 @@ export function withSelection<T extends PlaitBoard>(board: T) {
                 const { x, y, width, height } = getRectangleByElements(board, elementIds, false);
                 const rough = PlaitBoard.getRoughSVG(board);
                 // 2 is border
-                outerSelectionG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
+                selectionOuterG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
                     stroke: SELECTION_BORDER_COLOR,
                     strokeWidth: 1,
                     fillStyle: 'solid'
                 });
-                PlaitBoard.getHost(board).append(outerSelectionG);
+                PlaitBoard.getHost(board).append(selectionOuterG);
             }
         } catch (error) {
             console.error(error);
