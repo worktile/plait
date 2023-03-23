@@ -1,5 +1,41 @@
 # plait
 
+## 0.1.0
+
+### Minor Changes
+
+-   [`42708c2`](https://github.com/worktile/plait/commit/42708c2880be02ed30280d75fc21bb3f143c7537) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Release v0.1.0 to welcome new members @plait/flow 🎉 🎉 🎉 !
+
+### Patch Changes
+
+-   [#256](https://github.com/worktile/plait/pull/256) [`ed51de2`](https://github.com/worktile/plait/commit/ed51de2682322e703d14d20b2ed3e7b6ca92a917) Thanks [@Ashy6](https://github.com/Ashy6)! - Handle box selection boundary case and right mouse button
+
+*   [#235](https://github.com/worktile/plait/pull/235) [`e0be632`](https://github.com/worktile/plait/commit/e0be632e0fd4f4bb47d2a2f75ca2fe2c69653ec2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add element host
+
+-   [#241](https://github.com/worktile/plait/pull/241) [`8719a47`](https://github.com/worktile/plait/commit/8719a473310f9201e89c6ba131d6458e41884f74) Thanks [@WBbug](https://github.com/WBbug)! - add copy create mindmap, add getRectangleByNodes
+
+*   [#268](https://github.com/worktile/plait/pull/268) [`0336a2a`](https://github.com/worktile/plait/commit/0336a2a3f0e614cddd412b7a8a49792a727400ea) Thanks [@WBbug](https://github.com/WBbug)! - change selection type, add range type
+
+-   [`e6db0bb`](https://github.com/worktile/plait/commit/e6db0bbde464f0f9415f885287e80c99bd11a643) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix save host error in BOARD_TO_HOST
+
+*   [#261](https://github.com/worktile/plait/pull/261) [`6dae534`](https://github.com/worktile/plait/commit/6dae5346338cb6f4ac0793c0f4db1d1027dbd3e2) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - draw outer selection rectangle
+
+-   [#267](https://github.com/worktile/plait/pull/267) [`c843502`](https://github.com/worktile/plait/commit/c84350267f6e593011f83874ec87961da72961a1) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - set selection when mousedown and mousemove
+
+*   [#255](https://github.com/worktile/plait/pull/255) [`4bd2bb9`](https://github.com/worktile/plait/commit/4bd2bb95e2c860e499bd3c583a58fc4c83954c1c) Thanks [@WBbug](https://github.com/WBbug)! - fix multipule delete, change changeRightNodeCount function, delete allowClearBoard option in core
+
+-   [#258](https://github.com/worktile/plait/pull/258) [`d400f04`](https://github.com/worktile/plait/commit/d400f046487eecc28d6b9ca9a0d5eae10cadcdf7) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - implement getRectangle function
+
+*   [#252](https://github.com/worktile/plait/pull/252) [`968c2f1`](https://github.com/worktile/plait/commit/968c2f152080bc30b69153dca97c9a75840d9862) Thanks [@Ashy6](https://github.com/Ashy6)! - draw moving selection g
+
+-   [#257](https://github.com/worktile/plait/pull/257) [`69ac1ed`](https://github.com/worktile/plait/commit/69ac1ed06ee2c227b6f52dac940ff97a179873bb) Thanks [@Maple13](https://github.com/Maple13)! - rename viewportScrollListener and elementResizeListener
+
+*   [#259](https://github.com/worktile/plait/pull/259) [`9d217b1`](https://github.com/worktile/plait/commit/9d217b1cdf2afb5f2a34d217ef26cc4892154d60) Thanks [@Ashy6](https://github.com/Ashy6)! - extend style processing when the box is selected
+
+-   [#253](https://github.com/worktile/plait/pull/253) [`0a0fb38`](https://github.com/worktile/plait/commit/0a0fb381fb63e81716c2a824bd90e1988b0a5771) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add get rectangle hook
+
+*   [#262](https://github.com/worktile/plait/pull/262) [`8b65ff5`](https://github.com/worktile/plait/commit/8b65ff5b9804e089381f3932420f56e41dab743a) Thanks [@Ashy6](https://github.com/Ashy6)! - refactor with-hand to viewport-moving state
+
 ## 0.0.58
 
 ### Patch Changes

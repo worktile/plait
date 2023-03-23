@@ -1,5 +1,41 @@
 # mindmap
 
+## 0.1.0
+
+### Minor Changes
+
+-   [`42708c2`](https://github.com/worktile/plait/commit/42708c2880be02ed30280d75fc21bb3f143c7537) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Release v0.1.0 to welcome new members @plait/flow 🎉 🎉 🎉 !
+
+### Patch Changes
+
+-   [#235](https://github.com/worktile/plait/pull/235) [`e0be632`](https://github.com/worktile/plait/commit/e0be632e0fd4f4bb47d2a2f75ca2fe2c69653ec2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add element host
+
+*   [#244](https://github.com/worktile/plait/pull/244) [`784150a`](https://github.com/worktile/plait/commit/784150ae8279dd159e7844e68ac01b867058ecda) Thanks [@WBbug](https://github.com/WBbug)! - handle multiple copy and paste
+
+-   [#241](https://github.com/worktile/plait/pull/241) [`8719a47`](https://github.com/worktile/plait/commit/8719a473310f9201e89c6ba131d6458e41884f74) Thanks [@WBbug](https://github.com/WBbug)! - add copy create mindmap, add getRectangleByNodes
+
+*   [#250](https://github.com/worktile/plait/pull/250) [`03132ca`](https://github.com/worktile/plait/commit/03132ca42f28fcadbfb456843047c166261370b9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add text gap constant and apply to text render
+
+-   [#268](https://github.com/worktile/plait/pull/268) [`0336a2a`](https://github.com/worktile/plait/commit/0336a2a3f0e614cddd412b7a8a49792a727400ea) Thanks [@WBbug](https://github.com/WBbug)! - change selection type, add range type
+
+*   [#245](https://github.com/worktile/plait/pull/245) [`8987ff6`](https://github.com/worktile/plait/commit/8987ff6b1a59b966377bf5b2fb53c96af62aa78a) Thanks [@WBbug](https://github.com/WBbug)! - fix delete error, add parentElement judge
+
+-   [#237](https://github.com/worktile/plait/pull/237) [`24899d5`](https://github.com/worktile/plait/commit/24899d56f6cd5fd15ba56762fed741ed847d9c2f) Thanks [@WBbug](https://github.com/WBbug)! - change mindmapComponent select in updateRightNodeCount function
+
+*   [`e6db0bb`](https://github.com/worktile/plait/commit/e6db0bbde464f0f9415f885287e80c99bd11a643) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix save host error in BOARD_TO_HOST
+
+-   [#255](https://github.com/worktile/plait/pull/255) [`4bd2bb9`](https://github.com/worktile/plait/commit/4bd2bb95e2c860e499bd3c583a58fc4c83954c1c) Thanks [@WBbug](https://github.com/WBbug)! - fix multipule delete, change changeRightNodeCount function, delete allowClearBoard option in core
+
+*   [#265](https://github.com/worktile/plait/pull/265) [`0fa71d4`](https://github.com/worktile/plait/commit/0fa71d4d8901deb8129fc73bd922f43aaa56084c) Thanks [@WBbug](https://github.com/WBbug)! - add deleteSelectedElements function , use when cut and delete
+
+-   [#247](https://github.com/worktile/plait/pull/247) [`51bc0c8`](https://github.com/worktile/plait/commit/51bc0c81067a0ea92d02063fef8ca170d4706273) Thanks [@WBbug](https://github.com/WBbug)! - change getWidthByText to getSizeByText, separate buildNodes and buildMindmap function
+
+*   [#259](https://github.com/worktile/plait/pull/259) [`9d217b1`](https://github.com/worktile/plait/commit/9d217b1cdf2afb5f2a34d217ef26cc4892154d60) Thanks [@Ashy6](https://github.com/Ashy6)! - extend style processing when the box is selected
+
+-   [#262](https://github.com/worktile/plait/pull/262) [`8b65ff5`](https://github.com/worktile/plait/commit/8b65ff5b9804e089381f3932420f56e41dab743a) Thanks [@Ashy6](https://github.com/Ashy6)! - refactor with-hand to viewport-moving state
+
+*   [#246](https://github.com/worktile/plait/pull/246) [`1fd3e1f`](https://github.com/worktile/plait/commit/1fd3e1f61711a21247fcd25aea89bd4b1ace20f9) Thanks [@WBbug](https://github.com/WBbug)! - add judge, only select one node can paste text as node
+
 ## 0.0.57
 
 ### Patch Changes

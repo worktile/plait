@@ -1,5 +1,17 @@
 # richtext
 
+## 0.1.0
+
+### Minor Changes
+
+-   [`42708c2`](https://github.com/worktile/plait/commit/42708c2880be02ed30280d75fc21bb3f143c7537) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Release v0.1.0 to welcome new members @plait/flow 🎉 🎉 🎉 !
+
+### Patch Changes
+
+-   [#243](https://github.com/worktile/plait/pull/243) [`ea16885`](https://github.com/worktile/plait/commit/ea168853f54555dd0bcb157c1245600dbe58fbb0) Thanks [@WBbug](https://github.com/WBbug)! - fix can't paste in demo
+
+*   [#247](https://github.com/worktile/plait/pull/247) [`51bc0c8`](https://github.com/worktile/plait/commit/51bc0c81067a0ea92d02063fef8ca170d4706273) Thanks [@WBbug](https://github.com/WBbug)! - change getWidthByText to getSizeByText, separate buildNodes and buildMindmap function
+
 ## 0.0.56
 
 ### Patch Changes
