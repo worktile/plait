@@ -117,19 +117,24 @@ export const transformRootToNode = (board: PlaitBoard, node: MindmapNodeElement)
 };
 
 export const transformNodeToRoot = (board: PlaitBoard, node: MindmapNodeElement): MindmapNodeElement => {
-    const text = Node.string(node.value.children[0]) || '思维导图';
+    const newElement = { ...node };
+    let text = Node.string(newElement.value);
+
+    if (!text) {
+        text = '思维导图';
+        newElement.value = { children: [{ text }] };
+    }
 
     const { width, height } = getSizeByText(text, getBoardViewportContainer(board), ROOT_TOPIC_FONT_SIZE);
-    node.width = Math.max(width, NODE_MIN_WIDTH);
-    node.height = height;
+    newElement.width = Math.max(width, NODE_MIN_WIDTH);
+    newElement.height = height;
 
     return {
-        ...node,
-        layout: node.layout ?? MindmapLayoutType.right,
+        ...newElement,
+        layout: newElement.layout ?? MindmapLayoutType.right,
         isCollapsed: false,
         isRoot: true,
-        type: 'mindmap',
-        value: { children: [{ text }] }
+        type: 'mindmap'
     };
 };
 
