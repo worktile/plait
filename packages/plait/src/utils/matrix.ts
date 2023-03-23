@@ -1,6 +1,7 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { PlaitBoard } from '../interfaces';
 import { getBoardViewportContainer } from './board';
+import { getRectangleByElements } from './element';
 
 /**
  * 逆矩阵
@@ -134,8 +135,7 @@ export function getBoardClientBox(board: PlaitBoard) {
  * 获取 rootGroup 相对于当前 svg 空间的最小矩阵坐标
  */
 export function getRootGroupBBox(board: PlaitBoard, zoom: number) {
-    const elementHost = PlaitBoard.getElementHost(board);
-    const rootGroupBox = elementHost.getBBox();
+    const rootGroupBox = getRectangleByElements(board, board.children, true);
     const viewportContainerBox = getViewportContainerBox(board);
     const containerWidth = viewportContainerBox.width / zoom;
     const containerHeight = viewportContainerBox.height / zoom;
