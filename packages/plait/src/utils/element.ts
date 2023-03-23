@@ -33,3 +33,7 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
         height: boundaryBox.bottom - boundaryBox.top
     };
 }
+
+export function getBoardRectangle(board: PlaitBoard): RectangleClient {
+    return getRectangleByElements(board, board.children, true);
+}

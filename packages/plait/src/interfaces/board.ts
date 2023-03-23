@@ -11,6 +11,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { BoardComponentInterface } from '../board/board.component.interface';
 import { Point } from './point';
 import { RectangleClient } from './rectangle-client';
+import { getRectangleByElements } from '../utils/element';
 
 export interface PlaitBoard {
     viewport: Viewport;
@@ -88,5 +89,11 @@ export const PlaitBoard = {
     },
     getBoardNativeElement(board: PlaitBoard) {
         return PlaitBoard.getComponent(board).nativeElement;
+    },
+    getRectangle(board: PlaitBoard) {
+        return getRectangleByElements(board, board.children, true);
+    },
+    getViewportContainer(board: PlaitBoard) {
+        return PlaitBoard.getHost(board).parentElement as HTMLElement;
     }
 };

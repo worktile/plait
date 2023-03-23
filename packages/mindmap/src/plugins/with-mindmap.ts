@@ -182,7 +182,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         const selectedElements = filterChildElement(getSelectedElements(board) as MindmapNodeElement[]);
 
         if (selectedElements.length) {
-            const elements = buildClipboardData(selectedElements);
+            const elements = buildClipboardData(board, selectedElements);
             setClipboardData(data, elements);
             return;
         }
