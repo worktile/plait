@@ -114,6 +114,8 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     },
                     path
                 );
+            } else {
+                activeComponent?.drawElement(activeElement, true);
             }
             if (isShowNodeEdge) {
                 flowNodeElements.map(item => {

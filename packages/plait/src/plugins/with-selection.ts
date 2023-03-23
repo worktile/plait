@@ -21,6 +21,9 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         if (event.button === 0) {
             start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         }
+        if (start) {
+            Transforms.setSelection(board, { anchor: start, focus: start });
+        }
         mousedown(event);
     };
 
@@ -30,6 +33,9 @@ export function withSelection<T extends PlaitBoard>(board: T) {
             const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
             if (Math.hypot(width, height) > 5) {
                 end = movedTarget;
+                if (movedTarget) {
+                    Transforms.setSelection(board, { anchor: start, focus: end });
+                }
                 PlaitBoard.getBoardNativeElement(board).classList.add('selection-moving');
                 selectionMovingG?.remove();
                 const rough = PlaitBoard.getRoughSVG(board);
@@ -49,14 +55,10 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         if (start && end) {
             PlaitBoard.getBoardNativeElement(board).classList.remove('selection-moving');
             selectionMovingG?.remove();
-            Transforms.setSelection(board, { anchor: start, focus: end });
-        } else if (start) {
-            Transforms.setSelection(board, { anchor: start, focus: start });
         }
 
         start = null;
         end = null;
-
         globalMouseup(event);
     };
 
