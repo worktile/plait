@@ -117,7 +117,7 @@ export const transformRootToNode = (board: PlaitBoard, node: MindmapNodeElement)
 };
 
 export const transformNodeToRoot = (board: PlaitBoard, node: MindmapNodeElement): MindmapNodeElement => {
-    const text = Node.string(node.value.children[0]) || ' ';
+    const text = Node.string(node.value.children[0]) || '思维导图';
 
     const { width, height } = getSizeByText(text, getBoardViewportContainer(board), ROOT_TOPIC_FONT_SIZE);
     node.width = Math.max(width, NODE_MIN_WIDTH);
@@ -128,7 +128,8 @@ export const transformNodeToRoot = (board: PlaitBoard, node: MindmapNodeElement)
         layout: node.layout ?? MindmapLayoutType.right,
         isCollapsed: false,
         isRoot: true,
-        type: 'mindmap'
+        type: 'mindmap',
+        value: { children: [{ text }] }
     };
 };
 
@@ -261,4 +262,28 @@ export const findLastChild = (child: MindmapNode) => {
         result = result.children[result.children.length - 1];
     }
     return result;
+};
+
+export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindmapNodeElement[]) => {
+    //翻转，从下到上修改，防止找不到 path
+    filterChildElement(selectedElements)
+        .reverse()
+        .map(node => {
+            const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
+            if (mindmapNodeComponent) {
+                const path = findPath(board, mindmapNodeComponent.node);
+                const parentPath: Path = mindmapNodeComponent.parent ? findPath(board, mindmapNodeComponent!.parent) : [];
+
+                return () => {
+                    if (shouldChangeRightNodeCount(node)) {
+                        changeRightNodeCount(board, parentPath, -1);
+                    }
+                    Transforms.removeNode(board, path);
+                };
+            }
+            return () => {};
+        })
+        .forEach(action => {
+            action();
+        });
 };
