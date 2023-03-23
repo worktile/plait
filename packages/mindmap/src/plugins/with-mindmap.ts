@@ -21,7 +21,14 @@ import { getSizeByText } from '@plait/richtext';
 import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { PlaitMindmapComponent } from '../mindmap.component';
-import { changeRightNodeCount, createEmptyNode, filterChildElement, findPath, shouldChangeRightNodeCount } from '../utils';
+import {
+    changeRightNodeCount,
+    createEmptyNode,
+    deleteSelectedELements,
+    filterChildElement,
+    findPath,
+    shouldChangeRightNodeCount
+} from '../utils';
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
@@ -96,28 +103,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
-
-                //翻转，从下到上修改，防止找不到 path
-                filterChildElement(selectedElements)
-                    .reverse()
-                    .map(node => {
-                        const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
-                        if (mindmapNodeComponent) {
-                            const path = findPath(board, mindmapNodeComponent.node);
-                            const parentPath: Path = mindmapNodeComponent.parent ? findPath(board, mindmapNodeComponent!.parent) : [];
-
-                            return () => {
-                                if (shouldChangeRightNodeCount(node)) {
-                                    changeRightNodeCount(board, parentPath, -1);
-                                }
-                                Transforms.removeNode(board, path);
-                            };
-                        }
-                        return () => {};
-                    })
-                    .forEach(action => {
-                        action();
-                    });
+                deleteSelectedELements(board, selectedElements);
 
                 if (selectedElements.length === 1) {
                     let lastNode: MindmapNode | any = null;
@@ -222,15 +208,8 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.deleteFragment = (data: DataTransfer | null) => {
-        const selectedElement = getSelectedElements(board)?.[0];
-        if (selectedElement && !board.options.readonly) {
-            const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement as MindmapNodeElement);
-            if (nodeComponent) {
-                const path = findPath(board, nodeComponent.node);
-                Transforms.removeNode(board, path);
-                return;
-            }
-        }
+        const selectedElements = getSelectedElements(board) as MindmapNodeElement[];
+        deleteSelectedELements(board, selectedElements);
         deleteFragment(data);
     };
 
