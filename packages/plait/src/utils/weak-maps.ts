@@ -2,6 +2,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { BoardComponentInterface } from '../board/board.component.interface';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitBoard } from '../interfaces/board';
+import { Point } from '../interfaces/point';
 
 // record richtext type status
 export const FLUSHING: WeakMap<PlaitBoard, boolean> = new WeakMap();
@@ -19,3 +20,5 @@ export const BOARD_TO_HOST = new WeakMap<PlaitBoard, SVGSVGElement>();
 export const BOARD_TO_ELEMENT_HOST = new WeakMap<PlaitBoard, SVGGElement>();
 
 export const BOARD_TO_SELECTED_ELEMENT = new WeakMap<PlaitBoard, PlaitElement[]>();
+
+export const BOARD_TO_MOVING_POINT = new WeakMap<PlaitBoard, Point>();

@@ -1,6 +1,5 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { PlaitBoard } from '../interfaces';
-import { getBoardViewportContainer } from './board';
 
 /**
  * 逆矩阵
@@ -96,8 +95,8 @@ export function convertToViewportCoordinates(point: number[], matrix: number[]) 
 export function getViewportContainerBox(board: PlaitBoard) {
     const { hideScrollbar } = board.options;
     const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
-    const container = getBoardViewportContainer(board);
-    const containerRect = container?.getBoundingClientRect();
+    const container = PlaitBoard.getViewportContainer(board);
+    const containerRect = container.getBoundingClientRect();
     const x = containerRect.x || containerRect.left;
     const y = containerRect.y || containerRect.top;
     const width = containerRect.width - scrollBarWidth;
@@ -123,7 +122,7 @@ export function getViewportContainerBox(board: PlaitBoard) {
 export function getBoardClientBox(board: PlaitBoard) {
     const { hideScrollbar } = board.options;
     const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
-    const viewportRect = getBoardViewportContainer(board).getBoundingClientRect();
+    const viewportRect = PlaitBoard.getViewportContainer(board).getBoundingClientRect();
     return {
         width: viewportRect.width + scrollBarWidth,
         height: viewportRect.height + scrollBarWidth

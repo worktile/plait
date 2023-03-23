@@ -20,7 +20,7 @@ import {
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
-import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions, PlaitBoardViewport } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
@@ -41,8 +41,8 @@ import {
     transformMat3,
     getBoardClientBox,
     toPoint,
-    getBoardClientRect,
-    transformPoint
+    transformPoint,
+    distanceBetweenPointAndRectangle
 } from '../utils';
 import {
     BOARD_TO_ON_CHANGE,
@@ -50,7 +50,8 @@ import {
     BOARD_TO_COMPONENT,
     BOARD_TO_ELEMENT_HOST,
     BOARD_TO_HOST,
-    BOARD_TO_ROUGH_SVG
+    BOARD_TO_ROUGH_SVG,
+    BOARD_TO_MOVING_POINT
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import { RectangleClient } from '../interfaces/rectangle-client';
@@ -222,9 +223,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             .subscribe((event: MouseEvent) => {
                 this.board.mousemove(event);
             });
+
         fromEvent<MouseEvent>(document, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
+                BOARD_TO_MOVING_POINT.set(this.board, [event.x, event.y]);
                 this.board.globalMousemove(event);
             });
 
@@ -282,26 +285,18 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
         fromEvent<ClipboardEvent>(document, 'paste')
             .pipe(
-                withLatestFrom(fromEvent<MouseEvent>(this.host, 'mousemove')),
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection;
+                    return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection && !this.readonly;
                 })
             )
-            .subscribe(([clipboardEvent, mouseEvent]: [ClipboardEvent, MouseEvent]) => {
-                const targetPoint = transformPoint(this.board, toPoint(mouseEvent.x, mouseEvent.y, this.host));
-                const buffer = 5;
-                const clientRect = getBoardClientRect(this.board);
-
-                if (
-                    mouseEvent.x < clientRect.x + buffer ||
-                    mouseEvent.x > clientRect.right - buffer ||
-                    mouseEvent.y < clientRect.y + buffer ||
-                    mouseEvent.y > clientRect.bottom - buffer
-                ) {
-                    return;
+            .subscribe((clipboardEvent: ClipboardEvent) => {
+                const mousePoint = BOARD_TO_MOVING_POINT.get(this.board);
+                const rect = this.nativeElement.getBoundingClientRect();
+                if (mousePoint && distanceBetweenPointAndRectangle(mousePoint[0], mousePoint[1], rect) === 0) {
+                    const targetPoint = transformPoint(this.board, toPoint(mousePoint[0], mousePoint[1], this.host));
+                    this.board.insertFragment(clipboardEvent.clipboardData, targetPoint);
                 }
-                this.board?.insertFragment(clipboardEvent.clipboardData, targetPoint);
             });
 
         fromEvent<ClipboardEvent>(document, 'cut')
