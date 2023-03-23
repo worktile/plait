@@ -88,10 +88,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
-                if (PlaitMindmap.isPlaitMindmap(selectedElements[0]) && !board.options.allowClearBoard) {
-                    keydown(event);
-                    return;
-                }
 
                 //翻转，从下到上修改，防止找不到 path
                 filterChildElement(selectedElements)
