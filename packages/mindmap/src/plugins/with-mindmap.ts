@@ -15,7 +15,8 @@ import {
     removeSelectedElement,
     toPoint,
     transformPoint,
-    Transforms
+    Transforms,
+    Range
 } from '@plait/core';
 import { getSizeByText } from '@plait/richtext';
 import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
@@ -53,13 +54,14 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         return getRectangle(element);
     };
 
-    board.isIntersectionSelection = element => {
+    board.isIntersectionSelection = (element, range: Range) => {
         const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
         if (nodeComponent && board.selection) {
             const target = getRectangleByNode(nodeComponent.node);
-            return RectangleClient.isIntersect(RectangleClient.toRectangleClient([board.selection.anchor, board.selection.focus]), target);
+            return RectangleClient.isIntersect(RectangleClient.toRectangleClient([range.anchor, range.focus]), target);
         }
-        return isIntersectionSelection(element);
+
+        return isIntersectionSelection(element, range);
     };
 
     board.keydown = (event: KeyboardEvent) => {

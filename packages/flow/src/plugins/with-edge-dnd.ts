@@ -49,7 +49,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
         (board.children as FlowElement[]).forEach((value, index) => {
             if (FlowEdge.isFlowEdgeElement<Element>(value) && board.selection) {
                 const flowEdgeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as FlowEdgeComponent;
-                const hitFlowEdge = isHitFlowEdge(board, value, board.selection.focus);
+                const hitFlowEdge = isHitFlowEdge(board, value, board.selection.ranges[0].focus);
                 if (hitFlowEdge) {
                     activeComponent = flowEdgeComponent;
                     activeElement = value as FlowEdge<Element>;
