@@ -14,13 +14,12 @@ import {
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowEdgeComponent } from '../flow-edge.component';
 import { FlowElement } from '../interfaces/element';
-import { FlowEdge, FlowEdgeDragInfo, FlowEdgeHandleType } from '../interfaces/edge';
+import { FlowEdge, FlowEdgeDragInfo, FlowEdgeHandle, FlowEdgeHandleType } from '../interfaces/edge';
 import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
 import { getHandleType } from '../utils/handle/get-handle-type';
 import { FlowNode } from '../interfaces/node';
 import { Element } from 'slate';
 import { getHitNodeHandle } from '../utils/edge/get-hit-node-handle';
-import { FlowEdgeHandle } from '@plait/flow';
 
 export const FLOW_EDGE_DRAGING_INFO: WeakMap<FlowElement, FlowEdgeDragInfo> = new WeakMap();
 
@@ -114,6 +113,8 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     },
                     path
                 );
+            } else {
+                activeComponent?.drawElement(activeElement, true);
             }
             if (isShowNodeEdge) {
                 flowNodeElements.map(item => {
