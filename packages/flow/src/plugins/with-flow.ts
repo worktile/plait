@@ -27,12 +27,12 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
         return drawElement(context);
     };
 
-    board.isIntersectionSelection = element => {
+    board.isIntersectionSelection = (element, range) => {
         const elementComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(element) as FlowNodeComponent | FlowEdgeComponent;
         if (FlowElement.isFlowElement(element) && elementComponent && board.selection) {
             if (FlowNode.isFlowNodeElement(element)) {
                 const { x, y } = normalizePoint(element.points![0]);
-                return RectangleClient.isIntersect(RectangleClient.toRectangleClient([board.selection!.anchor, board.selection!.focus]), {
+                return RectangleClient.isIntersect(RectangleClient.toRectangleClient([range.anchor, range.focus]), {
                     x,
                     y,
                     width: element.width,
@@ -40,10 +40,10 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                 });
             }
             if (FlowEdge.isFlowEdgeElement(element)) {
-                return isHitFlowEdge(board, element, board.selection.focus);
+                return isHitFlowEdge(board, element, board.selection.ranges[0].focus);
             }
         }
-        return isIntersectionSelection(element);
+        return isIntersectionSelection(element, range);
     };
 
     return withFlowEdgeDnd(board);
