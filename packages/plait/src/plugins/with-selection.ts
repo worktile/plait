@@ -22,7 +22,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
             start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         }
         if (start) {
-            Transforms.setSelection(board, { anchor: start, focus: start });
+            Transforms.setSelection(board, { ranges: [{ anchor: start, focus: start }] });
         }
         mousedown(event);
     };
@@ -34,7 +34,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
             if (Math.hypot(width, height) > 5) {
                 end = movedTarget;
                 if (movedTarget) {
-                    Transforms.setSelection(board, { anchor: start, focus: end });
+                    Transforms.setSelection(board, { ranges: [{ anchor: start, focus: start }] });
                 }
                 PlaitBoard.getBoardNativeElement(board).classList.add('selection-moving');
                 selectionMovingG?.remove();
@@ -55,9 +55,6 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         if (start && end) {
             PlaitBoard.getBoardNativeElement(board).classList.remove('selection-moving');
             selectionMovingG?.remove();
-            Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
-        } else if (start) {
-            Transforms.setSelection(board, { ranges: [{ anchor: start, focus: start }] });
         }
 
         start = null;
