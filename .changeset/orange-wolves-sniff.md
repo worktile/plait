@@ -1,5 +1,5 @@
 ---
-'@plait/core': minor
+'@plait/core': patch
 ---
 
 implement getRectangle function
