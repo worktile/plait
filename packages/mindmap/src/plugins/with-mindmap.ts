@@ -88,7 +88,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
-                if (PlaitMindmap.isPlaitMindmap(selectedElements[0]) && board.children.length === 1 && !board.options.allowClearBoard) {
+                if (PlaitMindmap.isPlaitMindmap(selectedElements[0]) && !board.options.allowClearBoard) {
                     keydown(event);
                     return;
                 }
@@ -106,10 +106,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                                 if (shouldChangeRightNodeCount(node)) {
                                     changeRightNodeCount(board, parentPath, -1);
                                 }
-                                //临时代码，防止清空画布
-                                if (board.children.length > 1) {
-                                    Transforms.removeNode(board, path);
-                                }
+                                Transforms.removeNode(board, path);
                             };
                         }
                         return () => {};
