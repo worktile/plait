@@ -6,4 +6,4 @@
 '@plait/richtext': minor
 ---
 
-release v0.1.0
+Release 0.1.0 to welcome new members @plait/flow 🎉 🎉 🎉 !
