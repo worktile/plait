@@ -143,33 +143,37 @@ export const extractNodesText = (node: MindmapNodeElement) => {
     return str;
 };
 
-export const changeRightNodeCount = (board: PlaitBoard, selectedElement: MindmapNodeElement, changeNumber: number) => {
+export const changeRightNodeCount = (board: PlaitBoard, parentPath: Path, changeNumber: number) => {
+    const _rightNodeCount = board.children[parentPath[0]].rightNodeCount;
+    Transforms.setNode(
+        board,
+        {
+            rightNodeCount:
+                changeNumber >= 0
+                    ? _rightNodeCount! + changeNumber
+                    : _rightNodeCount! + changeNumber < 0
+                    ? 0
+                    : _rightNodeCount! + changeNumber
+        },
+        parentPath
+    );
+};
+
+export const shouldChangeRightNodeCount = (selectedElement: MindmapNodeElement) => {
     const parentElement = findParentElement(selectedElement);
     const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
-    if (mindmapNodeComponent && parentElement) {
+    if (parentElement && mindmapNodeComponent) {
         const nodeIndex: number = mindmapNodeComponent.parent.children.findIndex(item => item.origin.id === selectedElement.id);
         if (
-            parentElement &&
             parentElement.isRoot &&
             getRootLayout(parentElement) === MindmapLayoutType.standard &&
             parentElement.rightNodeCount &&
             nodeIndex <= parentElement.rightNodeCount - 1
         ) {
-            const path = findPath(board, mindmapNodeComponent.parent);
-            Transforms.setNode(
-                board,
-                {
-                    rightNodeCount:
-                        changeNumber >= 0
-                            ? parentElement.rightNodeCount + changeNumber
-                            : parentElement.rightNodeCount + changeNumber < 0
-                            ? 0
-                            : parentElement.rightNodeCount + changeNumber
-                },
-                path
-            );
+            return true;
         }
     }
+    return false;
 };
 
 export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutType) => {

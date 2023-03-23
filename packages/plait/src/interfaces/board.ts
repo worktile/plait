@@ -54,7 +54,6 @@ export interface PlaitBoardChangeEvent {
 
 export interface PlaitBoardOptions {
     readonly: boolean;
-    allowClearBoard: boolean;
     hideScrollbar: boolean;
 }
 
