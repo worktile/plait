@@ -3,7 +3,7 @@ import { ComponentType, PlaitElement } from './element';
 import { PlaitPluginElementContext } from '../core/element/context';
 import { PlaitHistory } from './history';
 import { PlaitOperation } from './operation';
-import { Selection } from './selection';
+import { Selection ,Range} from './selection';
 import { Viewport } from './viewport';
 import { PlaitPluginElementComponent } from '../core/element/plugin-element';
 import { BOARD_TO_COMPONENT, BOARD_TO_ELEMENT_HOST, BOARD_TO_HOST, BOARD_TO_ROUGH_SVG } from '../utils/weak-maps';
@@ -40,7 +40,7 @@ export interface PlaitBoard {
     drawElement: (context: PlaitPluginElementContext) => SVGGElement[] | ComponentType<PlaitPluginElementComponent>;
     redrawElement: (context: PlaitPluginElementContext, previousContext?: PlaitPluginElementContext) => SVGGElement[] | void;
     destroyElement: (context: PlaitPluginElementContext) => void;
-    isIntersectionSelection: (element: PlaitElement) => boolean;
+    isIntersectionSelection: (element: PlaitElement, range: Range) => boolean;
     getRectangle: (element: PlaitElement) => RectangleClient | null;
     isWithinSelection: (element: PlaitElement) => boolean;
 }

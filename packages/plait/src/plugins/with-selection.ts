@@ -49,9 +49,9 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         if (start && end) {
             PlaitBoard.getBoardNativeElement(board).classList.remove('selection-moving');
             selectionMovingG?.remove();
-            Transforms.setSelection(board, { anchor: start, focus: end });
+            Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
         } else if (start) {
-            Transforms.setSelection(board, { anchor: start, focus: start });
+            Transforms.setSelection(board, { ranges: [{ anchor: start, focus: start }] });
         }
 
         start = null;
@@ -67,14 +67,15 @@ export function withSelection<T extends PlaitBoard>(board: T) {
                 const elementIds = calcElementIntersectionSelection(board);
                 cacheSelectedElements(board, elementIds);
                 const { x, y, width, height } = getRectangleByElements(board, elementIds, false);
-                const rough = PlaitBoard.getRoughSVG(board);
-                // 2 is border
-                selectionOuterG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
-                    stroke: SELECTION_BORDER_COLOR,
-                    strokeWidth: 1,
-                    fillStyle: 'solid'
-                });
-                PlaitBoard.getHost(board).append(selectionOuterG);
+                if (width > 0 && height > 0) {
+                    const rough = PlaitBoard.getRoughSVG(board);
+                    selectionOuterG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
+                        stroke: SELECTION_BORDER_COLOR,
+                        strokeWidth: 1,
+                        fillStyle: 'solid'
+                    });
+                    PlaitBoard.getHost(board).append(selectionOuterG);
+                }
             }
         } catch (error) {
             console.error(error);
