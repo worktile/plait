@@ -17,7 +17,7 @@ import {
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
-    Selection,
+    Range,
     toPoint,
     transformPoint,
     Transforms,
@@ -99,7 +99,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     @Input() mindmapG!: SVGGElement;
 
-    @Input() selection: Selection | null = null;
+    @Input() selection: Range | null = null;
 
     @Input() board!: PlaitBoard;
 

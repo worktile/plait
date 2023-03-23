@@ -1,7 +1,7 @@
-import { PlaitBoard, PlaitElement, Selection } from '../../interfaces';
+import { PlaitBoard, PlaitElement, Range } from '../../interfaces';
 
 export interface PlaitPluginElementContext<T extends PlaitElement = PlaitElement> {
     element: T;
-    selection: Selection | null;
+    selection: Range | null;
     board: PlaitBoard;
 }

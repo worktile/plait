@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
 import { PlaitBoard } from '../../interfaces/board';
 import { PlaitElement } from '../../interfaces/element';
-import { Selection } from '../../interfaces/selection';
+import { Range } from '../../interfaces/selection';
 import { Viewport } from '../../interfaces/viewport';
 import { createG } from '../../utils/dom';
 import { PlaitPluginElementContext } from './context';
@@ -29,7 +29,7 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
 
     @Input() viewport!: Viewport;
 
-    @Input() selection: Selection | null = null;
+    @Input() selection: Range | null = null;
 
     constructor(public renderer2: Renderer2, public viewContainerRef: ViewContainerRef) {}
 
@@ -81,7 +81,7 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         const current = {
             element: this.element,
             selection: this.selection,
-            board: this.board,
+            board: this.board
         };
         if (this.context) {
             const previous = { ...this.context };

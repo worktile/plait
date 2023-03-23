@@ -3,7 +3,7 @@ import { ComponentType, PlaitElement } from './element';
 import { PlaitPluginElementContext } from '../core/element/context';
 import { PlaitHistory } from './history';
 import { PlaitOperation } from './operation';
-import { Selection } from './selection';
+import { Range } from './selection';
 import { Viewport } from './viewport';
 import { PlaitPluginElementComponent } from '../core/element/plugin-element';
 import { BOARD_TO_COMPONENT, BOARD_TO_ELEMENT_HOST, BOARD_TO_HOST, BOARD_TO_ROUGH_SVG } from '../utils/weak-maps';
@@ -18,7 +18,7 @@ export interface PlaitBoard {
     operations: PlaitOperation[];
     // record pointer selection or drag selection
     // it will be dirty when board viewport change
-    selection: Selection | null;
+    selection: Range | null;
     pointer: PlaitPointerType;
     history: PlaitHistory;
     options: PlaitBoardOptions;
@@ -49,7 +49,7 @@ export interface PlaitBoardChangeEvent {
     children: PlaitElement[];
     operations: PlaitOperation[];
     viewport: Viewport;
-    selection: Selection | null;
+    selection: Range | null;
 }
 
 export interface PlaitBoardOptions {

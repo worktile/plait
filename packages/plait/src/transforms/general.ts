@@ -2,7 +2,7 @@ import { PlaitOperation } from '../interfaces/operation';
 import { PlaitBoard } from '../interfaces/board';
 import { createDraft, finishDraft, isDraft } from 'immer';
 import { Viewport } from '../interfaces/viewport';
-import { Selection } from '../interfaces/selection';
+import { Range } from '../interfaces/selection';
 import { Ancestor, PlaitNode } from '../interfaces/node';
 import { Path } from '../interfaces/path';
 
@@ -10,7 +10,7 @@ export interface GeneralTransforms {
     transform: (board: PlaitBoard, op: PlaitOperation) => void;
 }
 
-const applyToDraft = (board: PlaitBoard, selection: Selection | null, viewport: Viewport, op: PlaitOperation) => {
+const applyToDraft = (board: PlaitBoard, selection: Range | null, viewport: Viewport, op: PlaitOperation) => {
     switch (op.type) {
         case 'insert_node': {
             const { path, node } = op;
@@ -155,7 +155,7 @@ export const GeneralTransforms: GeneralTransforms = {
             board.children = finishDraft(board.children);
 
             if (selection) {
-                board.selection = isDraft(selection) ? (finishDraft(selection) as Selection) : selection;
+                board.selection = isDraft(selection) ? (finishDraft(selection) as Range) : selection;
             } else {
                 board.selection = null;
             }

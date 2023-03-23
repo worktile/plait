@@ -1,6 +1,6 @@
 import { PlaitNode } from './node';
 import { Path } from './path';
-import { Selection } from './selection';
+import { Range } from './selection';
 import { Viewport } from './viewport';
 
 export type InsertNodeOperation = {
@@ -29,8 +29,8 @@ export type SetViewportOperation = {
 
 export type SetSelectionOperation = {
     type: 'set_selection';
-    properties: Selection | null;
-    newProperties: Selection | null;
+    properties: Range | null;
+    newProperties: Range | null;
 };
 
 export type SetNodeOperation = {
