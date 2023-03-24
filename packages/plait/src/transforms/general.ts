@@ -128,8 +128,7 @@ const applyToDraft = (board: PlaitBoard, selection: Selection | null, viewport: 
                 if (selection === null) {
                     selection = op.newProperties;
                 } else {
-                    selection.anchor = newProperties.anchor;
-                    selection.focus = newProperties.focus;
+                    selection.ranges = newProperties.ranges;
                 }
             }
             break;

@@ -21,6 +21,9 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         if (event.button === 0) {
             start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         }
+        if (start) {
+            Transforms.setSelection(board, { ranges: [{ anchor: start, focus: start }] });
+        }
         mousedown(event);
     };
 
@@ -30,6 +33,9 @@ export function withSelection<T extends PlaitBoard>(board: T) {
             const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
             if (Math.hypot(width, height) > 5) {
                 end = movedTarget;
+                if (end) {
+                    Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
+                }
                 PlaitBoard.getBoardNativeElement(board).classList.add('selection-moving');
                 selectionMovingG?.remove();
                 const rough = PlaitBoard.getRoughSVG(board);
@@ -49,14 +55,10 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         if (start && end) {
             PlaitBoard.getBoardNativeElement(board).classList.remove('selection-moving');
             selectionMovingG?.remove();
-            Transforms.setSelection(board, { anchor: start, focus: end });
-        } else if (start) {
-            Transforms.setSelection(board, { anchor: start, focus: start });
         }
 
         start = null;
         end = null;
-
         globalMouseup(event);
     };
 
@@ -67,14 +69,16 @@ export function withSelection<T extends PlaitBoard>(board: T) {
                 const elementIds = calcElementIntersectionSelection(board);
                 cacheSelectedElements(board, elementIds);
                 const { x, y, width, height } = getRectangleByElements(board, elementIds, false);
-                const rough = PlaitBoard.getRoughSVG(board);
-                // 2 is border
-                selectionOuterG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
-                    stroke: SELECTION_BORDER_COLOR,
-                    strokeWidth: 1,
-                    fillStyle: 'solid'
-                });
-                PlaitBoard.getHost(board).append(selectionOuterG);
+                if (width > 0 && height > 0) {
+                    const rough = PlaitBoard.getRoughSVG(board);
+                    selectionOuterG?.remove();
+                    selectionOuterG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
+                        stroke: SELECTION_BORDER_COLOR,
+                        strokeWidth: 1,
+                        fillStyle: 'solid'
+                    });
+                    PlaitBoard.getHost(board).append(selectionOuterG);
+                }
             }
         } catch (error) {
             console.error(error);

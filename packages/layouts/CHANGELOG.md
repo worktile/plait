@@ -1,5 +1,11 @@
 # layouts
 
+## 0.1.0
+
+### Minor Changes
+
+-   [`42708c2`](https://github.com/worktile/plait/commit/42708c2880be02ed30280d75fc21bb3f143c7537) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Release v0.1.0 to welcome new members @plait/flow 🎉 🎉 🎉 !
+
 ## 0.0.57
 
 ### Patch Changes

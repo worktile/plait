@@ -1,19 +1,27 @@
-import { CLIP_BOARD_FORMAT_KEY, getSelectedElements, idCreator, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
+import {
+    CLIP_BOARD_FORMAT_KEY,
+    getRectangleByElements,
+    getSelectedElements,
+    idCreator,
+    Path,
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    Transforms
+} from '@plait/core';
 import { MindmapNodeElement } from '../interfaces';
 import { copyNewNode, extractNodesText, findPath, transformNodeToRoot, transformRootToNode } from '../utils';
-import { getRectangleByNode, getRectangleByNodes } from '../utils/graph';
+import { getRectangleByNode } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapNodeComponent } from '../node.component';
-import { NODE_DEFAULT_HEIGHT } from '../constants/node';
+import { TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
 
-export const buildClipboardData = (selectedElements: MindmapNodeElement[]) => {
+export const buildClipboardData = (board: PlaitBoard, selectedElements: MindmapNodeElement[]) => {
     let result: MindmapNodeElement[] = [];
     const selectedMindmapNodes = Array.from(selectedElements, node => {
         return (MINDMAP_ELEMENT_TO_COMPONENT.get(node) as MindmapNodeComponent)?.node;
     });
-
-    const nodesRectangle = getRectangleByNodes(selectedMindmapNodes);
-
+    const nodesRectangle = getRectangleByElements(board, selectedElements, true);
     selectedElements.forEach((node, index) => {
         const nodeRectangle = getRectangleByNode(selectedMindmapNodes[index]);
         result.push({
@@ -85,7 +93,7 @@ export const insertClipboardText = (board: PlaitBoard, text: string, textWidth: 
         },
         children: [],
         width: textWidth,
-        height: NODE_DEFAULT_HEIGHT
+        height: TEXT_DEFAULT_HEIGHT
     };
     const element = getSelectedElements(board)[0];
     const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);

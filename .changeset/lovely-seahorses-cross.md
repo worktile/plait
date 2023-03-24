@@ -2,4 +2,4 @@
 '@plait/core': patch
 ---
 
-add get rectangle hook
+fix can not select node

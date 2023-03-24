@@ -1,7 +1,7 @@
 import { PlaitBoard, drawRoundRectangle, RectangleClient, drawArrow } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { FlowEdge } from '../interfaces/edge';
 import { getEdgePoints, getEdgeStyle } from '../utils/edge/edge';
+import { FlowEdge } from '../interfaces/edge';
 
 export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, active = false) => {
     const [pathPoints] = getEdgePoints(board, edge);
@@ -27,7 +27,6 @@ export const drawEdgeMarkers = (board: PlaitBoard, roughSVG: RoughSVG, edge: Flo
         const targetMarker = drawArrow(roughSVG, [start.x, start.y], [end.x, end.y], edgeStyles);
         edgeMarkers.push(...targetMarker);
     }
-
     if (edge.source?.marker) {
         const [end, start] = pathPoints.splice(0, 2);
         const sourceMarker = drawArrow(roughSVG, [start.x, start.y], [end.x, end.y], edgeStyles);

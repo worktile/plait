@@ -1,12 +1,12 @@
-import { addSelectedElement, getBoardViewportContainer, idCreator, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
+import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
-import { getSizeByText } from '@plait/richtext';
 import { Node } from 'slate';
-import { MindmapNodeShape, NODE_DEFAULT_HEIGHT, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants/node';
+import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE } from '../constants/node';
 import { MindmapNode, PlaitMindmap } from '../interfaces';
 import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
+import { TEXT_DEFAULT_HEIGHT, getSizeByText } from '@plait/richtext';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
@@ -104,7 +104,7 @@ export const transformRootToNode = (board: PlaitBoard, node: MindmapNodeElement)
     delete newNode.rightNodeCount;
 
     const text = Node.string(node.value.children[0]) || ' ';
-    const { width, height } = getSizeByText(text, getBoardViewportContainer(board));
+    const { width, height } = getSizeByText(text, PlaitBoard.getViewportContainer(board));
 
     newNode.width = Math.max(width, NODE_MIN_WIDTH);
     newNode.height = height;
@@ -117,15 +117,21 @@ export const transformRootToNode = (board: PlaitBoard, node: MindmapNodeElement)
 };
 
 export const transformNodeToRoot = (board: PlaitBoard, node: MindmapNodeElement): MindmapNodeElement => {
-    const text = Node.string(node.value.children[0]) || ' ';
+    const newElement = { ...node };
+    let text = Node.string(newElement.value);
 
-    const { width, height } = getSizeByText(text, getBoardViewportContainer(board), ROOT_TOPIC_FONT_SIZE);
-    node.width = Math.max(width, NODE_MIN_WIDTH);
-    node.height = height;
+    if (!text) {
+        text = '思维导图';
+        newElement.value = { children: [{ text }] };
+    }
+
+    const { width, height } = getSizeByText(text, PlaitBoard.getViewportContainer(board), ROOT_TOPIC_FONT_SIZE);
+    newElement.width = Math.max(width, NODE_MIN_WIDTH);
+    newElement.height = height;
 
     return {
-        ...node,
-        layout: node.layout ?? MindmapLayoutType.right,
+        ...newElement,
+        layout: newElement.layout ?? MindmapLayoutType.right,
         isCollapsed: false,
         isRoot: true,
         type: 'mindmap'
@@ -143,33 +149,37 @@ export const extractNodesText = (node: MindmapNodeElement) => {
     return str;
 };
 
-export const changeRightNodeCount = (board: PlaitBoard, selectedElement: MindmapNodeElement, changeNumber: number) => {
+export const changeRightNodeCount = (board: PlaitBoard, parentPath: Path, changeNumber: number) => {
+    const _rightNodeCount = board.children[parentPath[0]].rightNodeCount;
+    Transforms.setNode(
+        board,
+        {
+            rightNodeCount:
+                changeNumber >= 0
+                    ? _rightNodeCount! + changeNumber
+                    : _rightNodeCount! + changeNumber < 0
+                    ? 0
+                    : _rightNodeCount! + changeNumber
+        },
+        parentPath
+    );
+};
+
+export const shouldChangeRightNodeCount = (selectedElement: MindmapNodeElement) => {
     const parentElement = findParentElement(selectedElement);
     const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
-    if (mindmapNodeComponent && parentElement) {
+    if (parentElement && mindmapNodeComponent) {
         const nodeIndex: number = mindmapNodeComponent.parent.children.findIndex(item => item.origin.id === selectedElement.id);
         if (
-            parentElement &&
             parentElement.isRoot &&
             getRootLayout(parentElement) === MindmapLayoutType.standard &&
             parentElement.rightNodeCount &&
             nodeIndex <= parentElement.rightNodeCount - 1
         ) {
-            const path = findPath(board, mindmapNodeComponent.parent);
-            Transforms.setNode(
-                board,
-                {
-                    rightNodeCount:
-                        changeNumber >= 0
-                            ? parentElement.rightNodeCount + changeNumber
-                            : parentElement.rightNodeCount + changeNumber < 0
-                            ? 0
-                            : parentElement.rightNodeCount + changeNumber
-                },
-                path
-            );
+            return true;
         }
     }
+    return false;
 };
 
 export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutType) => {
@@ -190,7 +200,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: NODE_DEFAULT_HEIGHT,
+                height: TEXT_DEFAULT_HEIGHT,
                 shape: MindmapNodeShape.roundRectangle
             },
             {
@@ -198,7 +208,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: NODE_DEFAULT_HEIGHT,
+                height: TEXT_DEFAULT_HEIGHT,
                 shape: MindmapNodeShape.roundRectangle
             },
             {
@@ -206,7 +216,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
                 value: { children: [{ text: '新建节点' }] },
                 children: [],
                 width: 56,
-                height: NODE_DEFAULT_HEIGHT,
+                height: TEXT_DEFAULT_HEIGHT,
                 shape: MindmapNodeShape.roundRectangle
             }
         ]
@@ -235,7 +245,7 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapNodeEleme
         },
         children: [],
         width: NODE_MIN_WIDTH,
-        height: NODE_DEFAULT_HEIGHT,
+        height: TEXT_DEFAULT_HEIGHT,
         fill,
         strokeColor,
         strokeWidth,
@@ -257,4 +267,28 @@ export const findLastChild = (child: MindmapNode) => {
         result = result.children[result.children.length - 1];
     }
     return result;
+};
+
+export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindmapNodeElement[]) => {
+    //翻转，从下到上修改，防止找不到 path
+    filterChildElement(selectedElements)
+        .reverse()
+        .map(node => {
+            const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
+            if (mindmapNodeComponent) {
+                const path = findPath(board, mindmapNodeComponent.node);
+                const parentPath: Path = mindmapNodeComponent.parent ? findPath(board, mindmapNodeComponent!.parent) : [];
+
+                return () => {
+                    if (shouldChangeRightNodeCount(node)) {
+                        changeRightNodeCount(board, parentPath, -1);
+                    }
+                    Transforms.removeNode(board, path);
+                };
+            }
+            return () => {};
+        })
+        .forEach(action => {
+            action();
+        });
 };

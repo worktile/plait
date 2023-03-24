@@ -7,7 +7,12 @@ import { BOARD_TO_SELECTED_ELEMENT } from './weak-maps';
 export const calcElementIntersectionSelection = (board: PlaitBoard) => {
     const selectedElements: PlaitElement[] = [];
     depthFirstRecursion<PlaitNode>(board, node => {
-        if (PlaitElement.isElement(node) && board.isIntersectionSelection(node)) {
+        if (
+            PlaitElement.isElement(node) &&
+            board.selection?.ranges.some(range => {
+                return board.isIntersectionSelection(node, range);
+            })
+        ) {
             selectedElements.push(node);
         }
     });

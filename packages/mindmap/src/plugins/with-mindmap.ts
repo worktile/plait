@@ -15,19 +15,26 @@ import {
     removeSelectedElement,
     toPoint,
     transformPoint,
-    Transforms
+    Transforms,
+    Range
 } from '@plait/core';
 import { getSizeByText } from '@plait/richtext';
 import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { PlaitMindmapComponent } from '../mindmap.component';
-import { changeRightNodeCount, createEmptyNode, filterChildElement, findPath } from '../utils';
+import {
+    changeRightNodeCount,
+    createEmptyNode,
+    deleteSelectedELements,
+    filterChildElement,
+    findPath,
+    shouldChangeRightNodeCount
+} from '../utils';
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withNodeDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
-import { TOPIC_FONT_SIZE } from '../constants';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isIntersectionSelection, getRectangle } = board;
@@ -47,13 +54,14 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         return getRectangle(element);
     };
 
-    board.isIntersectionSelection = element => {
+    board.isIntersectionSelection = (element, range: Range) => {
         const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
         if (nodeComponent && board.selection) {
             const target = getRectangleByNode(nodeComponent.node);
-            return RectangleClient.isIntersect(RectangleClient.toRectangleClient([board.selection.anchor, board.selection.focus]), target);
+            return RectangleClient.isIntersect(RectangleClient.toRectangleClient([range.anchor, range.focus]), target);
         }
-        return isIntersectionSelection(element);
+
+        return isIntersectionSelection(element, range);
     };
 
     board.keydown = (event: KeyboardEvent) => {
@@ -62,8 +70,8 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
         const selectedElements = getSelectedElements(board) as MindmapNodeElement[];
-        if (selectedElements && selectedElements.length === 1) {
-            if (event.key === 'Tab' || (event.key === 'Enter' && !selectedElements[0].isRoot)) {
+        if (selectedElements) {
+            if ((event.key === 'Tab' || (event.key === 'Enter' && !selectedElements[0].isRoot)) && selectedElements.length === 1) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
                 removeSelectedElement(board, selectedElement);
@@ -84,7 +92,11 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 } else {
                     if (mindmapNodeComponent) {
                         const path = Path.next(findPath(board, mindmapNodeComponent.node));
-                        changeRightNodeCount(board, selectedElement, 1);
+                        const parentPath: Path = mindmapNodeComponent.parent ? findPath(board, mindmapNodeComponent!.parent) : [];
+                        if (shouldChangeRightNodeCount(selectedElement)) {
+                            changeRightNodeCount(board, parentPath, 1);
+                        }
+
                         createEmptyNode(board, mindmapNodeComponent.parent.origin, path);
                     }
                 }
@@ -93,18 +105,8 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
-                if (PlaitMindmap.isPlaitMindmap(selectedElements[0]) && board.children.length === 1 && !board.options.allowClearBoard) {
-                    keydown(event);
-                    return;
-                }
-                selectedElements.forEach(node => {
-                    const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
-                    if (mindmapNodeComponent) {
-                        const path = findPath(board, mindmapNodeComponent.node);
-                        changeRightNodeCount(board, selectedElements[0], -1);
-                        Transforms.removeNode(board, path);
-                    }
-                });
+                deleteSelectedELements(board, selectedElements);
+
                 if (selectedElements.length === 1) {
                     let lastNode: MindmapNode | any = null;
                     const selectNode = selectedElements[0];
@@ -180,7 +182,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         const selectedElements = filterChildElement(getSelectedElements(board) as MindmapNodeElement[]);
 
         if (selectedElements.length) {
-            const elements = buildClipboardData(selectedElements);
+            const elements = buildClipboardData(board, selectedElements);
             setClipboardData(data, elements);
             return;
         }
@@ -208,15 +210,8 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.deleteFragment = (data: DataTransfer | null) => {
-        const selectedElement = getSelectedElements(board)?.[0];
-        if (selectedElement && !board.options.readonly) {
-            const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement as MindmapNodeElement);
-            if (nodeComponent) {
-                const path = findPath(board, nodeComponent.node);
-                Transforms.removeNode(board, path);
-                return;
-            }
-        }
+        const selectedElements = getSelectedElements(board) as MindmapNodeElement[];
+        deleteSelectedELements(board, selectedElements);
         deleteFragment(data);
     };
 
