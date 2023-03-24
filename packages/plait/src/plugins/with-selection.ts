@@ -33,8 +33,8 @@ export function withSelection<T extends PlaitBoard>(board: T) {
             const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
             if (Math.hypot(width, height) > 5) {
                 end = movedTarget;
-                if (movedTarget) {
-                    Transforms.setSelection(board, { ranges: [{ anchor: start, focus: start }] });
+                if (end) {
+                    Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
                 }
                 PlaitBoard.getBoardNativeElement(board).classList.add('selection-moving');
                 selectionMovingG?.remove();
@@ -71,6 +71,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
                 const { x, y, width, height } = getRectangleByElements(board, elementIds, false);
                 if (width > 0 && height > 0) {
                     const rough = PlaitBoard.getRoughSVG(board);
+                    selectionOuterG?.remove();
                     selectionOuterG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
                         stroke: SELECTION_BORDER_COLOR,
                         strokeWidth: 1,
