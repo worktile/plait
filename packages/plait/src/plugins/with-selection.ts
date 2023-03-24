@@ -8,6 +8,7 @@ import { cacheSelectedElements, calcElementIntersectionSelection, getSelectedEle
 import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { isIntersectionElement, isIntersectionSelectedElement } from '../utils/selection';
+import { BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 
 export function withSelection(board: PlaitBoard) {
     const { mousedown, globalMousemove, globalMouseup, onChange } = board;
@@ -45,7 +46,7 @@ export function withSelection(board: PlaitBoard) {
             selectionMovingG?.remove();
             if (Math.hypot(width, height) > 5) {
                 end = movedTarget;
-                if (end && !intersectionSelectedElement) {
+                if (end) {
                     Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
                 }
                 PlaitBoard.getBoardNativeElement(board).classList.add('selection-moving');
@@ -80,11 +81,14 @@ export function withSelection(board: PlaitBoard) {
         try {
             selectionOuterG?.remove();
             if (board.operations.find(value => value.type === 'set_selection')) {
-                const elementIds = calcElementIntersectionSelection(board);
-                cacheSelectedElements(board, elementIds);
-                const { x, y, width, height } = getRectangleByElements(board, elementIds, false);
+                const temporaryElements = getTemporaryElements(board);
+                const elements = temporaryElements ? temporaryElements : calcElementIntersectionSelection(board);
+
+                cacheSelectedElements(board, elements);
+                const { x, y, width, height } = getRectangleByElements(board, elements, false);
                 if (width > 0 && height > 0) {
                     const rough = PlaitBoard.getRoughSVG(board);
+                    selectionOuterG?.remove();
                     selectionOuterG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
                         stroke: SELECTION_BORDER_COLOR,
                         strokeWidth: 1,
@@ -93,6 +97,7 @@ export function withSelection(board: PlaitBoard) {
                     PlaitBoard.getHost(board).append(selectionOuterG);
                 }
             }
+            deleteTemporaryElements(board);
         } catch (error) {
             console.error(error);
         }
@@ -100,4 +105,12 @@ export function withSelection(board: PlaitBoard) {
     };
 
     return board;
+}
+
+export function getTemporaryElements(board: PlaitBoard) {
+    return BOARD_TO_TEMPORARY_ELEMENTS.get(board);
+}
+
+export function deleteTemporaryElements(board: PlaitBoard) {
+    BOARD_TO_TEMPORARY_ELEMENTS.delete(board);
 }

@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.1.1
+
+### Patch Changes
+
+-   [#272](https://github.com/worktile/plait/pull/272) [`3364882`](https://github.com/worktile/plait/commit/336488248c70839177ac3a93a54369969024667e) Thanks [@WBbug](https://github.com/WBbug)! - set selection when copy
+
+*   [#272](https://github.com/worktile/plait/pull/272) [`19c2e15`](https://github.com/worktile/plait/commit/19c2e154b4a85ded3289dadd40a5d5698c83e394) Thanks [@WBbug](https://github.com/WBbug)! - add set selection with temporary elements
+
 ## 0.1.0
 
 ### Minor Changes

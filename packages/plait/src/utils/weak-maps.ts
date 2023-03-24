@@ -22,3 +22,6 @@ export const BOARD_TO_ELEMENT_HOST = new WeakMap<PlaitBoard, SVGGElement>();
 export const BOARD_TO_SELECTED_ELEMENT = new WeakMap<PlaitBoard, PlaitElement[]>();
 
 export const BOARD_TO_MOVING_POINT = new WeakMap<PlaitBoard, Point>();
+
+// save no standard selected elements
+export const BOARD_TO_TEMPORARY_ELEMENTS = new WeakMap<PlaitBoard, PlaitElement[]>();
