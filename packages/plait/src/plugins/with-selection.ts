@@ -5,9 +5,9 @@ import { transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import { cacheSelectedElements, calcElementIntersectionSelection } from '../utils/selected-element';
-import { PlaitElement, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
+import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
-import { BOARD_TO_TEMPORARY } from '../utils';
+import { BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 
 export function withSelection<T extends PlaitBoard>(board: T) {
     const { mousedown, globalMousemove, globalMouseup, onChange } = board;
@@ -94,16 +94,9 @@ export function withSelection<T extends PlaitBoard>(board: T) {
 }
 
 export function getTemporaryElements(board: PlaitBoard) {
-    return BOARD_TO_TEMPORARY.get(board);
-}
-
-export function setTemporaryElements(board: PlaitBoard, elements: PlaitElement[]) {
-    setTimeout(() => {
-        BOARD_TO_TEMPORARY.set(board, elements);
-        Transforms.setSelection(board, { ranges: [] });
-    });
+    return BOARD_TO_TEMPORARY_ELEMENTS.get(board);
 }
 
 export function deleteTemporaryElements(board: PlaitBoard) {
-    BOARD_TO_TEMPORARY.delete(board);
+    BOARD_TO_TEMPORARY_ELEMENTS.delete(board);
 }

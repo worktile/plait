@@ -7,8 +7,7 @@ import {
     PlaitBoard,
     PlaitElement,
     Point,
-    Transforms,
-    setTemporaryElements
+    Transforms
 } from '@plait/core';
 import { MindmapNodeElement } from '../interfaces';
 import { copyNewNode, extractNodesText, findPath, transformNodeToRoot, transformRootToNode } from '../utils';
@@ -84,8 +83,7 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
         Transforms.insertNode(board, newElement, path);
         return;
     });
-
-    setTemporaryElements(board, newELements);
+    Transforms.setSelectionWithTemporaryElements(board, newELements);
 };
 
 export const insertClipboardText = (board: PlaitBoard, text: string, textWidth: number) => {
