@@ -67,15 +67,11 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         // calc selected elements entry
         try {
             if (board.operations.find(value => value.type === 'set_selection')) {
-                let elementIds = calcElementIntersectionSelection(board);
                 const temporaryElements = BOARD_TO_TEMPORARY.get(board);
+                const elements = temporaryElements ? temporaryElements : calcElementIntersectionSelection(board);
 
-                if (temporaryElements) {
-                    elementIds = temporaryElements;
-                }
-
-                cacheSelectedElements(board, elementIds);
-                const { x, y, width, height } = getRectangleByElements(board, elementIds, false);
+                cacheSelectedElements(board, elements);
+                const { x, y, width, height } = getRectangleByElements(board, elements, false);
                 if (width > 0 && height > 0) {
                     const rough = PlaitBoard.getRoughSVG(board);
                     selectionOuterG?.remove();
