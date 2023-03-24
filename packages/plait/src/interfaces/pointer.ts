@@ -1,4 +1,5 @@
 export enum PlaitPointerType {
     'hand' = 'hand',
-    'selection' = 'selection'
+    'selection' = 'selection',
+    'move' = 'move'
 }

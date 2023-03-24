@@ -15,7 +15,7 @@ import { FlowNode } from '../interfaces/node';
 import { withFlowEdgeDnd } from './with-edge-dnd';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, isIntersectionSelection } = board;
+    const { drawElement, isIntersectionSelection, isMovable } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (FlowElement.isFlowElement(context.element)) {
@@ -44,6 +44,13 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
             }
         }
         return isIntersectionSelection(element, range);
+    };
+
+    board.isMovable = element => {
+        if (FlowNode.isFlowNodeElement(element)) {
+            return true;
+        }
+        return isMovable(element);
     };
 
     return withFlowEdgeDnd(board);

@@ -55,7 +55,7 @@ import {
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import { RectangleClient } from '../interfaces/rectangle-client';
-import { PlaitPointerType } from '../interfaces/pointer';
+import { withMove } from '../plugins/with-move';
 
 const ElementHostClass = 'element-host';
 
@@ -197,7 +197,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     private initializePlugins() {
-        let board = withHandPointer(withHistory(withSelection(withBoard(createBoard(this.plaitValue, this.plaitOptions)))));
+        let board = withHandPointer(withHistory(withSelection(withMove(withBoard(createBoard(this.plaitValue, this.plaitOptions))))));
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
         });
