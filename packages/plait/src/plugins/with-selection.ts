@@ -4,10 +4,14 @@ import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom';
 import { RectangleClient } from '../interfaces/rectangle-client';
-import { cacheSelectedElements, calcElementIntersectionSelection, getSelectedElements } from '../utils/selected-element';
+import {
+    cacheSelectedElements,
+    calcElementIntersectionSelection,
+    getSelectedElements,
+    isIntersectionElements
+} from '../utils/selected-element';
 import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
-import { isIntersectionElement, isIntersectionSelectedElement } from '../utils/selection';
 import { BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 
 export function withSelection(board: PlaitBoard) {
@@ -17,8 +21,6 @@ export function withSelection(board: PlaitBoard) {
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
     let selectionOuterG: SVGGElement;
-    let intersectionElement = false;
-    let intersectionSelectedElement = false;
 
     board.mousedown = (event: MouseEvent) => {
         if (event.button === 0) {
@@ -27,12 +29,14 @@ export function withSelection(board: PlaitBoard) {
         if (start) {
             const ranges = [{ anchor: start, focus: start }];
             const selectedElements = getSelectedElements(board);
-            intersectionSelectedElement = isIntersectionSelectedElement(board, selectedElements, ranges);
+            const intersectionSelectedElement = isIntersectionElements(board, selectedElements, ranges);
             if (intersectionSelectedElement) {
-                intersectionElement = true;
+                start = null;
             } else {
                 Transforms.setSelection(board, { ranges: ranges });
-                intersectionElement = isIntersectionElement(board);
+                if (calcElementIntersectionSelection(board).length) {
+                    start = null;
+                }
             }
         }
 
@@ -40,7 +44,7 @@ export function withSelection(board: PlaitBoard) {
     };
 
     board.globalMousemove = (event: MouseEvent) => {
-        if (start && !intersectionElement) {
+        if (start) {
             const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
             selectionMovingG?.remove();
@@ -71,8 +75,6 @@ export function withSelection(board: PlaitBoard) {
 
         start = null;
         end = null;
-        intersectionElement = false;
-        intersectionSelectedElement = false;
         globalMouseup(event);
     };
 
