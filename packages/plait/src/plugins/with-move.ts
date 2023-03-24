@@ -7,6 +7,7 @@ import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
 import { getSelectedElements, isIntersectionElements } from '../utils/selected-element';
 import { MERGING } from '../interfaces';
+import { throttleRAF } from '../utils/utils';
 
 export function withMove(board: PlaitBoard) {
     const { mousedown, mousemove, globalMouseup } = board;
@@ -49,10 +50,10 @@ export function withMove(board: PlaitBoard) {
             } else {
                 offsetX = endPoint[0] - startPoint[0];
                 offsetY = endPoint[1] - startPoint[1];
-                activeElements.map(activeElement => {
-                    const [x, y] = activeElement?.points![0];
-                    const index = board.children.findIndex(item => item.id === activeElement.id);
-                    window.requestAnimationFrame(() => {
+                throttleRAF(() => {
+                    activeElements!.map(activeElement => {
+                        const [x, y] = activeElement?.points![0];
+                        const index = board.children.findIndex(item => item.id === activeElement.id);
                         Transforms.setNode(
                             board,
                             {

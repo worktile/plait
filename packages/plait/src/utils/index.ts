@@ -13,3 +13,4 @@ export * from './draw/rectangle';
 export * from './draw/arrow';
 export * from './tree';
 export * from './element';
+export * from './utils';
