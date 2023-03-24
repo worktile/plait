@@ -37,7 +37,7 @@ export function withMove(board: PlaitBoard) {
             });
         } else {
             board.children.forEach(value => {
-                let isIntersectionSelection = board.selection?.ranges.some(range => {
+                const isIntersectionSelection = board.selection?.ranges.some(range => {
                     return board.isIntersectionSelection(value, range);
                 });
                 if (PlaitElement.isElement(value) && board.isMovable(value) && isIntersectionSelection) {

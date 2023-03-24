@@ -25,8 +25,8 @@ export function withSelection(board: PlaitBoard) {
         }
         if (start) {
             const ranges = [{ anchor: start, focus: start }];
-            const selectedRootElements = getSelectedElements(board);
-            intersectionSelectedElement = isIntersectionSelectedElement(board, selectedRootElements, ranges);
+            const selectedElements = getSelectedElements(board);
+            intersectionSelectedElement = isIntersectionSelectedElement(board, selectedElements, ranges);
             if (intersectionSelectedElement) {
                 intersectionElement = true;
             } else {

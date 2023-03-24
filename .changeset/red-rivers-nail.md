@@ -4,4 +4,4 @@
 '@plait/core': patch
 ---
 
-add with move plugin
+add withMove plugin
