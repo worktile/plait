@@ -8,7 +8,7 @@ import {
     PlaitElement,
     Point,
     Transforms,
-    BOARD_TO_TEMPORARY
+    setTemporaryElements
 } from '@plait/core';
 import { MindmapNodeElement } from '../interfaces';
 import { copyNewNode, extractNodesText, findPath, transformNodeToRoot, transformRootToNode } from '../utils';
@@ -85,10 +85,7 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
         return;
     });
 
-    setTimeout(() => {
-        BOARD_TO_TEMPORARY.set(board, newELements);
-        Transforms.setSelection(board, { ranges: [] });
-    });
+    setTemporaryElements(board, newELements);
 };
 
 export const insertClipboardText = (board: PlaitBoard, text: string, textWidth: number) => {

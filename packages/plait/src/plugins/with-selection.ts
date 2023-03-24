@@ -5,7 +5,7 @@ import { transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import { cacheSelectedElements, calcElementIntersectionSelection } from '../utils/selected-element';
-import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
+import { PlaitElement, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_TEMPORARY } from '../utils';
 
@@ -67,7 +67,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         // calc selected elements entry
         try {
             if (board.operations.find(value => value.type === 'set_selection')) {
-                const temporaryElements = BOARD_TO_TEMPORARY.get(board);
+                const temporaryElements = getTemporaryElements(board);
                 const elements = temporaryElements ? temporaryElements : calcElementIntersectionSelection(board);
 
                 cacheSelectedElements(board, elements);
@@ -82,7 +82,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
                     PlaitBoard.getHost(board).append(selectionOuterG);
                 }
             }
-            BOARD_TO_TEMPORARY.delete(board);
+            deleteTemporaryElements(board);
         } catch (error) {
             console.error(error);
         }
@@ -90,4 +90,19 @@ export function withSelection<T extends PlaitBoard>(board: T) {
     };
 
     return board;
+}
+
+export function getTemporaryElements(board: PlaitBoard) {
+    return BOARD_TO_TEMPORARY.get(board);
+}
+
+export function setTemporaryElements(board: PlaitBoard, elements: PlaitElement[]) {
+    setTimeout(() => {
+        BOARD_TO_TEMPORARY.set(board, elements);
+        Transforms.setSelection(board, { ranges: [] });
+    });
+}
+
+export function deleteTemporaryElements(board: PlaitBoard) {
+    BOARD_TO_TEMPORARY.delete(board);
 }
