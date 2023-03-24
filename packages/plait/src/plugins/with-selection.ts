@@ -7,6 +7,7 @@ import { RectangleClient } from '../interfaces/rectangle-client';
 import { cacheSelectedElements, calcElementIntersectionSelection } from '../utils/selected-element';
 import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
+import { BOARD_TO_TEMPORARY } from '../utils';
 
 export function withSelection<T extends PlaitBoard>(board: T) {
     const { mousedown, globalMousemove, globalMouseup, onChange } = board;
@@ -66,7 +67,13 @@ export function withSelection<T extends PlaitBoard>(board: T) {
         // calc selected elements entry
         try {
             if (board.operations.find(value => value.type === 'set_selection')) {
-                const elementIds = calcElementIntersectionSelection(board);
+                let elementIds = calcElementIntersectionSelection(board);
+                const temporaryElements = BOARD_TO_TEMPORARY.get(board);
+
+                if (temporaryElements) {
+                    elementIds = temporaryElements;
+                }
+
                 cacheSelectedElements(board, elementIds);
                 const { x, y, width, height } = getRectangleByElements(board, elementIds, false);
                 if (width > 0 && height > 0) {
@@ -80,6 +87,7 @@ export function withSelection<T extends PlaitBoard>(board: T) {
                     PlaitBoard.getHost(board).append(selectionOuterG);
                 }
             }
+            BOARD_TO_TEMPORARY.delete(board);
         } catch (error) {
             console.error(error);
         }
