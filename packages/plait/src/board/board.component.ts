@@ -191,6 +191,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     ngAfterViewInit(): void {
         this.plaitBoardInitialized.emit(this.board);
         this.initViewportContainer();
+        this.initViewport();
     }
 
     private initializePlugins() {
@@ -332,10 +333,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     private elementResizeListener() {
-        // this.resizeObserver = new ResizeObserver(() => {
-        //     this.updateViewportS();
-        // });
-        // this.resizeObserver.observe(this.nativeElement);
+        this.resizeObserver = new ResizeObserver(() => {
+            this.initViewportContainer();
+        });
+        this.resizeObserver.observe(this.nativeElement);
     }
 
     private updateViewportState(state: Partial<PlaitBoardViewport>) {
@@ -349,13 +350,25 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         this.setViewport();
     }
 
+    initViewport() {
+        const originationCoord = this.board.viewport?.originationCoord;
+        !originationCoord && this.adaptHandle();
+    }
+
     applyViewport(board: PlaitBoard) {
         const { viewport } = board;
         const zoom = viewport?.zoom;
+        const originationCoord = viewport.originationCoord!;
 
-        this.calcViewBox(zoom);
-        this.adjustViewport();
-        this.updateViewBoxStyles();
+        !this.viewportState.viewBox && this.calcViewBox(zoom);
+        const matrix = this.getMatrix();
+        const [pointX, pointY] = invertViewportCoordinates([0, 0], matrix);
+        const scrollLeft = this.viewportState.scrollLeft!;
+        const scrollTop = this.viewportState.scrollTop!;
+        const left = scrollLeft + (originationCoord[0] - pointX) * zoom;
+        const top = scrollTop + (originationCoord[1] - pointY) * zoom;
+        this.setScrollLeft(left);
+        this.setScrollTop(top);
         this.updateViewportScrolling();
     }
 
@@ -363,24 +376,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         const { width, height } = getBoardClientBox(this.board);
         this.renderer2.setStyle(this.viewportContainer.nativeElement, 'width', `${width}px`);
         this.renderer2.setStyle(this.viewportContainer.nativeElement, 'height', `${height}px`);
-    }
-
-    adjustViewport(viewport = this.board.viewport) {
-        const originationCoord = viewport?.originationCoord;
-        const zoom = viewport?.zoom ?? this.viewportState.zoom;
-
-        if (originationCoord) {
-            const matrix = this.getMatrix();
-            const [pointX, pointY] = invertViewportCoordinates([0, 0], matrix);
-            const scrollLeft = this.viewportState.scrollLeft!;
-            const scrollTop = this.viewportState.scrollTop!;
-            const left = scrollLeft + (originationCoord[0] - pointX) * zoom;
-            const top = scrollTop + (originationCoord[1] - pointY) * zoom;
-            this.setScrollLeft(left);
-            this.setScrollTop(top);
-        } else {
-            this.adaptHandle();
-        }
     }
 
     calcViewBox(zoom: number) {
@@ -427,6 +422,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         });
         this.setScrollLeft(scrollLeft);
         this.setScrollTop(scrollTop);
+        this.updateViewBoxStyles();
     }
 
     getMatrix(zoom = this.viewportState.zoom): number[] {
