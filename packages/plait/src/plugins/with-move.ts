@@ -22,9 +22,9 @@ export function withMove(board: PlaitBoard) {
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
         const ranges = [{ anchor: point, focus: point }];
         let movableElements = board.children.filter(item => PlaitElement.isElement(item) && board.isMovable(item));
-        const selectedRootElements = getSelectedElements(board).filter(item => movableElements.includes(item));
         if (movableElements.length) {
             startPoint = point;
+            const selectedRootElements = getSelectedElements(board).filter(item => movableElements.includes(item));
             const intersectionSelectedElement = isIntersectionElements(board, selectedRootElements, ranges);
             if (intersectionSelectedElement) {
                 activeElements = selectedRootElements;
