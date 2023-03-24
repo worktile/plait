@@ -69,14 +69,12 @@ export function withMove(board: PlaitBoard) {
     };
 
     board.globalMouseup = event => {
-        if (isMoving) {
-            startPoint = null;
-            offsetX = 0;
-            offsetY = 0;
-            isMoving = false;
-            activeElements = [];
-            MERGING.set(board, false);
-        }
+        startPoint = null;
+        offsetX = 0;
+        offsetY = 0;
+        isMoving = false;
+        activeElements = [];
+        MERGING.set(board, false);
 
         globalMouseup(event);
     };
