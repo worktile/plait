@@ -3,7 +3,7 @@ import { ComponentType, PlaitElement } from './element';
 import { PlaitPluginElementContext } from '../core/element/context';
 import { PlaitHistory } from './history';
 import { PlaitOperation } from './operation';
-import { Selection ,Range} from './selection';
+import { Selection, Range } from './selection';
 import { Viewport } from './viewport';
 import { PlaitPluginElementComponent } from '../core/element/plugin-element';
 import { BOARD_TO_COMPONENT, BOARD_TO_ELEMENT_HOST, BOARD_TO_HOST, BOARD_TO_ROUGH_SVG } from '../utils/weak-maps';
@@ -64,10 +64,6 @@ export interface PlaitBoardMove {
 }
 
 export interface PlaitBoardViewport {
-    zoom: number;
-    autoFitPadding: number;
-    focusPoint?: number[];
-    viewBox?: number[];
     viewportWidth?: number;
     viewportHeight?: number;
     scrollLeft?: number;

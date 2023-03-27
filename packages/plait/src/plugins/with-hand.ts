@@ -1,6 +1,7 @@
 import { PlaitBoardComponent } from '../board/board.component';
 import { PlaitPointerType, PlaitBoard, PlaitBoardMove } from '../interfaces';
 import { updatePointerType } from '../transforms/board';
+import { setScroll } from '../utils/viewport';
 
 export function withHandPointer<T extends PlaitBoard>(board: T) {
     const { mousedown, mousemove, globalMouseup, keydown, keyup } = board;
@@ -32,7 +33,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
             const left = event.x - plaitBoardMove.x;
             const top = event.y - plaitBoardMove.y;
             const { scrollLeft, scrollTop } = boardComponent.viewportState;
-            boardComponent.setScroll(scrollLeft! - left, scrollTop! - top);
+            setScroll(board, scrollLeft! - left, scrollTop! - top);
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
         }
