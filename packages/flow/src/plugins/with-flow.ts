@@ -40,7 +40,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                 });
             }
             if (FlowEdge.isFlowEdgeElement(element)) {
-                return isHitFlowEdge(board, element, board.selection.ranges[0].focus);
+                return isHitFlowEdge(board, element, range.focus);
             }
         }
         return isIntersectionSelection(element, range);

@@ -7,7 +7,7 @@ import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
 import { getSelectedElements, isIntersectionElements } from '../utils/selected-element';
 import { MERGING } from '../interfaces';
-import { throttleRAF } from '../utils/utils';
+import { throttleRAF } from '../utils/common';
 
 export function withMove(board: PlaitBoard) {
     const { mousedown, mousemove, globalMouseup } = board;
@@ -31,7 +31,7 @@ export function withMove(board: PlaitBoard) {
                 activeElements = selectedRootElements;
             } else {
                 activeElements = movableElements.filter(item =>
-                    board.selection?.ranges.some(range => {
+                    ranges.some(range => {
                         return board.isIntersectionSelection(item, range);
                     })
                 );
