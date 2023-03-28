@@ -1,5 +1,5 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
-import { PlaitBoard, PlaitBoardViewport, RectangleClient } from '../interfaces';
+import { PlaitBoard, RectangleClient } from '../interfaces';
 import { Transforms } from '../transforms';
 import {
     clampZoomLevel,
@@ -7,7 +7,8 @@ import {
     getRootGroupBBox,
     getViewportContainerBox,
     invertViewportCoordinates,
-    transformMat3
+    transformMat3,
+    ViewportBox
 } from './matrix';
 
 export function getMatrix(board: PlaitBoard, zoom?: number): number[] {
@@ -36,9 +37,29 @@ export function setScroll(board: PlaitBoard, left: number, top: number) {
     boardComponent.viewportState.scrollTop = top < 0 ? 0 : top > height ? height : top;
 }
 
-export function calcViewBox(board: PlaitBoard, zoom: number) {
-    zoom = clampZoomLevel(zoom);
+function calculateScroll(matrix: number[], zoom: number, viewBox: number[], viewportContainerBox: ViewportBox) {
+    const viewportCenter = [viewportContainerBox.width / 2, viewportContainerBox.height / 2];
+    if (matrix.length === 0) {
+        return { scrollLeft: viewportCenter[0], scrollTop: viewportCenter[1] };
+    }
 
+    // 视口坐标系转换到世界坐标系, 计算视口中心在世界坐标系下的位置
+    const point = invertViewportCoordinates(viewportCenter, matrix);
+    // 使用新的缩放比例和 viewBox 创建一个新的矩阵
+    // 这个新矩阵将用于将世界坐标系下的点转换到视口坐标系
+    const newMatrix = [zoom, 0, 0, 0, zoom, 0, -zoom * viewBox[0], -zoom * viewBox[1], 1];
+    // 将世界坐标系下的点（point）转换到视口坐标系下（transformMat3），得到一个新的点（newPoint）。
+    // 这是为了计算视口中心在新矩阵变换下的位置
+    const newPoint = transformMat3([], point, newMatrix);
+
+    return {
+        scrollLeft: newPoint[0] - viewportCenter[0],
+        scrollTop: newPoint[1] - viewportCenter[1]
+    };
+}
+
+export function calcViewBox(board: PlaitBoard, zoom: number) {
+    clampZoomLevel(zoom);
     const { hideScrollbar } = board.options;
     const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
     const viewportContainerBox = getViewportContainerBox(board);
@@ -55,23 +76,7 @@ export function calcViewBox(board: PlaitBoard, zoom: number) {
         viewportHeight / zoom
     ];
     const matrix = getMatrix(board);
-    let scrollLeft;
-    let scrollTop;
-
-    if (matrix.length > 0) {
-        const focusX = viewportContainerBox.x + viewportContainerBox.width / 2;
-        const focusY = viewportContainerBox.y + viewportContainerBox.height / 2;
-        const viewportContainerPoint = [focusX - viewportContainerBox.x, focusY - viewportContainerBox.y, 1];
-        const point = invertViewportCoordinates([viewportContainerPoint[0], viewportContainerPoint[1]], matrix);
-        const newMatrix = [zoom, 0, 0, 0, zoom, 0, -zoom * viewBox[0], -zoom * viewBox[1], 1];
-        const newPoint = transformMat3([], point, newMatrix);
-
-        scrollLeft = newPoint[0] - viewportContainerPoint[0];
-        scrollTop = newPoint[1] - viewportContainerPoint[1];
-    } else {
-        scrollLeft = horizontalPadding;
-        scrollTop = verticalPadding;
-    }
+    const { scrollLeft, scrollTop } = calculateScroll(matrix, zoom, viewBox, viewportContainerBox);
 
     const matrix2 = [zoom, 0, 0, 0, zoom, 0, -scrollLeft! - zoom * viewBox![0], -scrollTop! - zoom * viewBox![1], 1];
     const originationCoord = invertViewportCoordinates([0, 0], matrix2);

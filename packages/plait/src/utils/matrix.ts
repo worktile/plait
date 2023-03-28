@@ -1,7 +1,17 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { PlaitBoard } from '../interfaces';
-import { getBoardViewportContainer } from './board';
 import { getRectangleByElements } from './element';
+
+export interface ViewportBox {
+    minX: number;
+    minY: number;
+    maxX: number;
+    maxY: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
 
 /**
  * 逆矩阵
@@ -94,7 +104,7 @@ export function convertToViewportCoordinates(point: number[], matrix: number[]) 
  * @param board
  * @returns
  */
-export function getViewportContainerBox(board: PlaitBoard) {
+export function getViewportContainerBox(board: PlaitBoard): ViewportBox {
     const { hideScrollbar } = board.options;
     const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
     const container = PlaitBoard.getViewportContainer(board);
