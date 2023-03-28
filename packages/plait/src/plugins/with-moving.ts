@@ -6,10 +6,11 @@ import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
 import { getSelectedElements, isIntersectionElements } from '../utils/selected-element';
-import { MERGING } from '../interfaces';
+import { MERGING, PlaitNode } from '../interfaces';
 import { throttleRAF } from '../utils/common';
+import { addMovingElements, removeMovingElements } from '../utils/moving-element';
 
-export function withMove(board: PlaitBoard) {
+export function withMoving(board: PlaitBoard) {
     const { mousedown, mousemove, globalMouseup } = board;
 
     let offsetX = 0;
@@ -51,7 +52,7 @@ export function withMove(board: PlaitBoard) {
                 offsetX = endPoint[0] - startPoint[0];
                 offsetY = endPoint[1] - startPoint[1];
                 throttleRAF(() => {
-                    activeElements!.map(activeElement => {
+                    const currentElements = activeElements!.map(activeElement => {
                         const [x, y] = activeElement?.points![0];
                         const index = board.children.findIndex(item => item.id === activeElement.id);
                         Transforms.setNode(
@@ -62,7 +63,9 @@ export function withMove(board: PlaitBoard) {
                             [index]
                         );
                         MERGING.set(board, true);
+                        return PlaitNode.get(board, [index]);
                     });
+                    addMovingElements(board, currentElements as PlaitElement[]);
                 });
             }
         }
@@ -75,6 +78,7 @@ export function withMove(board: PlaitBoard) {
         offsetY = 0;
         isMoving = false;
         activeElements = [];
+        removeMovingElements(board);
         MERGING.set(board, false);
 
         globalMouseup(event);

@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, distanceBetweenPointAndPoint, normalizePoint } from '@plait/core';
-import { getDefaultHandles } from '../handle/get-default-handles';
+import { getDefaultHandles } from './get-default-handles';
 import { FlowNode } from '../../interfaces/node';
-import { getHandleXYPosition } from '../handle/get-handle-position';
+import { getHandleXYPosition } from './get-handle-position';
 import { HANDLE_RADIUS } from '../../constants/handle';
 import { FlowEdge, FlowEdgeHandle } from '../../interfaces/edge';
 import { FLOW_EDGE_DRAGING_INFO } from '../../plugins/with-edge-dnd';
