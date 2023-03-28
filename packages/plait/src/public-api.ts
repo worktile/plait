@@ -14,3 +14,4 @@ export * from './plait.module';
 export * from './transforms';
 export * from './utils';
 export * from './plugins/with-selection';
+export * from './plugins/with-moving';
