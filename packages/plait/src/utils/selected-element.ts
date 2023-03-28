@@ -3,6 +3,7 @@ import { PlaitElement } from '../interfaces/element';
 import { PlaitNode } from '../interfaces/node';
 import { depthFirstRecursion } from './tree';
 import { BOARD_TO_SELECTED_ELEMENT } from './weak-maps';
+import { Range } from '../interfaces/selection';
 
 export const calcElementIntersectionSelection = (board: PlaitBoard) => {
     const selectedElements: PlaitElement[] = [];
@@ -17,6 +18,20 @@ export const calcElementIntersectionSelection = (board: PlaitBoard) => {
         }
     });
     return selectedElements;
+};
+
+export const isIntersectionElements = (board: PlaitBoard, elements: PlaitElement[], ranges: Range[]) => {
+    let isIntersectionElements = false;
+    if (elements.length) {
+        elements.map(item => {
+            if (!isIntersectionElements) {
+                isIntersectionElements = ranges.some(range => {
+                    return board.isIntersectionSelection(item, range);
+                });
+            }
+        });
+    }
+    return isIntersectionElements;
 };
 
 export const cacheSelectedElements = (board: PlaitBoard, selectedElements: PlaitElement[]) => {

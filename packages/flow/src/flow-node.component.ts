@@ -119,6 +119,8 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
     updateElement(element: FlowNode<T> = this.element) {
         this.drawElement(element);
         this.drawRichtext(element);
+        this.drawActiveMask(element);
+        this.drawHandles(element);
     }
 
     destroyHandles() {

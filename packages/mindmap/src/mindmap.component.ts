@@ -131,8 +131,8 @@ export class PlaitMindmapComponent extends PlaitPluginElementComponent<PlaitMind
         const offsetX = x + hGap;
         const offsetY = y + vGap;
         (this.root as any).eachNode((node: MindmapNode) => {
-            node.x = node.x - offsetX + this.element.points[0][0];
-            node.y = node.y - offsetY + this.element.points[0][1];
+            node.x = node.x - offsetX + element.points[0][0];
+            node.y = node.y - offsetY + element.points[0][1];
         });
     }
 }

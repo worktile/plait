@@ -1,4 +1,3 @@
-import { SimpleChanges, ViewContainerRef } from '@angular/core';
 import { PlaitBoard, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitPointerType } from '../interfaces/pointer';
 import { PlaitElement } from '../interfaces/element';
@@ -59,6 +58,7 @@ export function createBoard(children: PlaitElement[], options: PlaitBoardOptions
         destroyElement: (context: PlaitPluginElementContext) => {},
         isWithinSelection: element => false,
         isIntersectionSelection: element => false,
+        isMovable: element => false,
         getRectangle: element => null
     };
     return board;
