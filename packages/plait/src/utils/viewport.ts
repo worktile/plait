@@ -1,6 +1,7 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { PlaitBoard, RectangleClient } from '../interfaces';
 import { Transforms } from '../transforms';
+import { getRectangleByElements } from './element';
 import {
     clampZoomLevel,
     convertToViewportCoordinates,
@@ -43,13 +44,8 @@ function calculateScroll(matrix: number[], zoom: number, viewBox: number[], view
         return { scrollLeft: viewportCenter[0], scrollTop: viewportCenter[1] };
     }
 
-    // 视口坐标系转换到世界坐标系, 计算视口中心在世界坐标系下的位置
     const point = invertViewportCoordinates(viewportCenter, matrix);
-    // 使用新的缩放比例和 viewBox 创建一个新的矩阵
-    // 这个新矩阵将用于将世界坐标系下的点转换到视口坐标系
     const newMatrix = [zoom, 0, 0, 0, zoom, 0, -zoom * viewBox[0], -zoom * viewBox[1], 1];
-    // 将世界坐标系下的点（point）转换到视口坐标系下（transformMat3），得到一个新的点（newPoint）。
-    // 这是为了计算视口中心在新矩阵变换下的位置
     const newPoint = transformMat3([], point, newMatrix);
 
     return {
@@ -89,6 +85,35 @@ export function calcViewBox(board: PlaitBoard, zoom: number) {
         viewBox,
         originationCoord
     };
+}
+
+export function fitViewport(board: PlaitBoard) {
+    const boardComponent = PlaitBoard.getComponent(board);
+    const containerBox = getViewportContainerBox(board);
+    const rootGroupBox = getRectangleByElements(board, board.children, true);
+    const matrix = getMatrix(board);
+
+    const rootGroupCenter = [rootGroupBox.x + rootGroupBox.width / 2, rootGroupBox.y + rootGroupBox.height / 2];
+    const transformedRootGroupCenter = transformMat3([], [...rootGroupCenter, 1], matrix);
+
+    const containerCenter = [containerBox.width / 2, containerBox.height / 2];
+    const offsetLeft = containerCenter[0] - transformedRootGroupCenter[0];
+    const offsetTop = containerCenter[1] - transformedRootGroupCenter[1];
+
+    const autoFitPadding = 8;
+    const viewportWidth = containerBox.width - 2 * autoFitPadding;
+    const viewportHeight = containerBox.height - 2 * autoFitPadding;
+    const { scrollLeft, scrollTop } = boardComponent.viewportState;
+
+    let newZoom = board.viewport.zoom;
+    if (viewportWidth < rootGroupBox.width || viewportHeight < rootGroupBox.height) {
+        newZoom = Math.min(viewportWidth / rootGroupBox.width, viewportHeight / rootGroupBox.height);
+    } else {
+        newZoom = 1;
+    }
+
+    setScroll(board, scrollLeft! - offsetLeft, scrollTop! - offsetTop);
+    setViewport(board, newZoom);
 }
 
 export function setViewport(board: PlaitBoard, zoom?: number) {

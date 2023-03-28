@@ -49,7 +49,7 @@ import {
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import { getRectangleByElements } from '../utils/element';
-import { calcViewBox, getMatrix, setScroll, setViewport } from '../utils/viewport';
+import { calcViewBox, fitViewport, getMatrix, setScroll, setViewport } from '../utils/viewport';
 
 const ElementHostClass = 'element-host';
 
@@ -382,31 +382,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     };
 
     adaptHandle() {
-        const containerBox = getViewportContainerBox(this.board);
-        const rootGroupBox = getRectangleByElements(this.board, this.board.children, true);
-        const matrix = getMatrix(this.board);
-
-        const rootGroupCenter = [rootGroupBox.x + rootGroupBox.width / 2, rootGroupBox.y + rootGroupBox.height / 2];
-        const transformedRootGroupCenter = transformMat3([], [...rootGroupCenter, 1], matrix);
-
-        const containerCenter = [containerBox.width / 2, containerBox.height / 2];
-        const offsetLeft = containerCenter[0] - transformedRootGroupCenter[0];
-        const offsetTop = containerCenter[1] - transformedRootGroupCenter[1];
-
-        const autoFitPadding = 8;
-        const viewportWidth = containerBox.width - 2 * autoFitPadding;
-        const viewportHeight = containerBox.height - 2 * autoFitPadding;
-        const { scrollLeft, scrollTop } = this.viewportState;
-
-        let newZoom = this.board.viewport.zoom;
-        if (viewportWidth < rootGroupBox.width || viewportHeight < rootGroupBox.height) {
-            newZoom = Math.min(viewportWidth / rootGroupBox.width, viewportHeight / rootGroupBox.height);
-        } else {
-            newZoom = 1;
-        }
-
-        setScroll(this.board, scrollLeft! - offsetLeft, scrollTop! - offsetTop);
-        setViewport(this.board, newZoom);
+        fitViewport(this.board);
     }
 
     zoomInHandle() {
