@@ -1,0 +1,1 @@
+export const ATTACHED_ELEMENT_CLASS_NAME = 'plait-board-attached';

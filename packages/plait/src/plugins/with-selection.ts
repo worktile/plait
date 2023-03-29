@@ -13,6 +13,7 @@ import {
 import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
+import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
 
 export function withSelection(board: PlaitBoard) {
     const { mousedown, globalMousemove, globalMouseup, onChange } = board;
@@ -71,6 +72,16 @@ export function withSelection(board: PlaitBoard) {
         if (start && end) {
             PlaitBoard.getBoardNativeElement(board).classList.remove('selection-moving');
             selectionMovingG?.remove();
+        }
+
+        if (PlaitBoard.isFocus(board)) {
+            const isInBoard = event.target instanceof Node && PlaitBoard.getBoardNativeElement(board).contains(event.target);
+            const isAttachedElement = (event.target instanceof HTMLElement) && event.target.closest(`.${ATTACHED_ELEMENT_CLASS_NAME}`);
+            // Clear selection when mouse board outside area
+            // The framework needs to determine whether the board is focused through selection
+            if (!isInBoard && !start && !isAttachedElement) {
+                Transforms.setSelection(board, null);
+            }
         }
 
         start = null;

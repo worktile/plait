@@ -28,10 +28,6 @@ export function transformPoint(board: PlaitBoard, point: Point) {
     return newPoint;
 }
 
-export function isNoSelectionElement(e: Event) {
-    return (e.target as HTMLElement)?.closest('.plait-board-attached');
-}
-
 export function isInPlaitBoard(board: PlaitBoard, x: number, y: number) {
     const plaitBoardElement = PlaitBoard.getBoardNativeElement(board);
     const plaitBoardRect = plaitBoardElement.getBoundingClientRect();

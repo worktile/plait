@@ -6,7 +6,7 @@ import { PlaitOperation } from './operation';
 import { Selection, Range } from './selection';
 import { Viewport } from './viewport';
 import { PlaitPluginElementComponent } from '../core/element/plugin-element';
-import { BOARD_TO_COMPONENT, BOARD_TO_ELEMENT_HOST, BOARD_TO_HOST, BOARD_TO_ROUGH_SVG } from '../utils/weak-maps';
+import { BOARD_TO_COMPONENT, BOARD_TO_ELEMENT_HOST, BOARD_TO_HOST, BOARD_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../utils/weak-maps';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { BoardComponentInterface } from '../board/board.component.interface';
 import { Point } from './point';
@@ -96,5 +96,14 @@ export const PlaitBoard = {
     },
     getViewportContainer(board: PlaitBoard) {
         return PlaitBoard.getHost(board).parentElement as HTMLElement;
+    },
+    isFocus(board: PlaitBoard) {
+        return !!board.selection;
+    },
+    isReadonly(board: PlaitBoard) {
+        return board.options.readonly;
+    },
+    hasBeenTextEditing(board: PlaitBoard) {
+        return !!IS_TEXT_EDITABLE.get(board);
     }
 };
