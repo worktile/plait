@@ -1,6 +1,6 @@
 import { BOARD_TO_HOST } from '../utils/weak-maps';
 import { PlaitBoard } from '../interfaces/board';
-import { isInPliatBordElement, transformPoint } from '../utils/board';
+import { isInPlaitBoard, transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
@@ -10,14 +10,14 @@ import { MERGING, PlaitNode } from '../interfaces';
 import { throttleRAF } from '../utils/common';
 import { addMovingElements, removeMovingElements } from '../utils/moving-element';
 
+let offsetX = 0;
+let offsetY = 0;
+let isMoving = false;
+let startPoint: Point | null;
+let activeElements: PlaitElement[] | null = [];
+
 export function withMoving(board: PlaitBoard) {
     const { mousedown, mousemove, globalMouseup, globalMousemove } = board;
-
-    let offsetX = 0;
-    let offsetY = 0;
-    let isMoving = false;
-    let startPoint: Point | null;
-    let activeElements: PlaitElement[] | null = [];
 
     board.mousedown = event => {
         const host = BOARD_TO_HOST.get(board);
@@ -76,25 +76,28 @@ export function withMoving(board: PlaitBoard) {
 
     board.globalMousemove = event => {
         if (isMoving) {
-            const inPliatBordElement = isInPliatBordElement(board, event.x, event.y);
+            const inPliatBordElement = isInPlaitBoard(board, event.x, event.y);
             if (!inPliatBordElement) {
-                board.globalMouseup(event);
+                cancelMove(board);
             }
         }
         globalMousemove(event);
     };
 
     board.globalMouseup = event => {
-        startPoint = null;
-        offsetX = 0;
-        offsetY = 0;
-        isMoving = false;
-        activeElements = [];
-        removeMovingElements(board);
-        MERGING.set(board, false);
-
+        cancelMove(board);
         globalMouseup(event);
     };
 
     return board;
+}
+
+export function cancelMove(board: PlaitBoard) {
+    startPoint = null;
+    offsetX = 0;
+    offsetY = 0;
+    isMoving = false;
+    activeElements = [];
+    removeMovingElements(board);
+    MERGING.set(board, false);
 }
