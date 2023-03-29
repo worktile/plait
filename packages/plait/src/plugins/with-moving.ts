@@ -85,7 +85,9 @@ export function withMoving(board: PlaitBoard) {
     };
 
     board.globalMouseup = event => {
-        cancelMove(board);
+        if (isMoving) {
+            cancelMove(board);
+        }
         globalMouseup(event);
     };
 
