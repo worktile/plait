@@ -1,5 +1,6 @@
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
+import { BOARD_TO_COMPONENT } from './weak-maps';
 
 export type ViewBox = {
     minX: number;
@@ -29,4 +30,10 @@ export function transformPoint(board: PlaitBoard, point: Point) {
 
 export function isNoSelectionElement(e: Event) {
     return (e.target as HTMLElement)?.closest('.plait-board-attached');
+}
+
+export function isInPliatBordElement(board: PlaitBoard, x: number, y: number) {
+    const plaitBoardElement = BOARD_TO_COMPONENT.get(board)?.nativeElement as HTMLElement;
+    const { x: boardX, y: boardY, width, height } = plaitBoardElement.getBoundingClientRect();
+    return x > boardX && x < boardX + width && y > boardY && y < boardY + height;
 }
