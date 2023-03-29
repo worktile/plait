@@ -10,14 +10,14 @@ import { MERGING, PlaitNode } from '../interfaces';
 import { throttleRAF } from '../utils/common';
 import { addMovingElements, removeMovingElements } from '../utils/moving-element';
 
-let offsetX = 0;
-let offsetY = 0;
-let isMoving = false;
-let startPoint: Point | null;
-let activeElements: PlaitElement[] | null = [];
-
 export function withMoving(board: PlaitBoard) {
     const { mousedown, mousemove, globalMouseup, globalMousemove } = board;
+
+    let offsetX = 0;
+    let offsetY = 0;
+    let isMoving = false;
+    let startPoint: Point | null;
+    let activeElements: PlaitElement[] | null = [];
 
     board.mousedown = event => {
         const host = BOARD_TO_HOST.get(board);
@@ -89,15 +89,15 @@ export function withMoving(board: PlaitBoard) {
         globalMouseup(event);
     };
 
-    return board;
-}
+    function cancelMove(board: PlaitBoard) {
+        startPoint = null;
+        offsetX = 0;
+        offsetY = 0;
+        isMoving = false;
+        activeElements = [];
+        removeMovingElements(board);
+        MERGING.set(board, false);
+    }
 
-export function cancelMove(board: PlaitBoard) {
-    startPoint = null;
-    offsetX = 0;
-    offsetY = 0;
-    isMoving = false;
-    activeElements = [];
-    removeMovingElements(board);
-    MERGING.set(board, false);
+    return board;
 }
