@@ -15,7 +15,7 @@ export function withMoving(board: PlaitBoard) {
 
     let offsetX = 0;
     let offsetY = 0;
-    let isMoving = false;
+    let isPreventDefault = false;
     let startPoint: Point | null;
     let activeElements: PlaitElement[] | null = [];
 
@@ -44,38 +44,39 @@ export function withMoving(board: PlaitBoard) {
 
     board.mousemove = event => {
         if (startPoint && activeElements?.length) {
+            if (!isPreventDefault) {
+                isPreventDefault = true;
+            }
             const host = BOARD_TO_HOST.get(board);
             const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
-            if (!isMoving) {
-                isMoving = true;
-            } else {
-                // 阻止拖拽过程中画布默认滚动行为
-                event.preventDefault();
-                offsetX = endPoint[0] - startPoint[0];
-                offsetY = endPoint[1] - startPoint[1];
-                throttleRAF(() => {
-                    const currentElements = activeElements!.map(activeElement => {
-                        const [x, y] = activeElement?.points![0];
-                        const index = board.children.findIndex(item => item.id === activeElement.id);
-                        Transforms.setNode(
-                            board,
-                            {
-                                points: [[x + offsetX, y + offsetY]]
-                            },
-                            [index]
-                        );
-                        MERGING.set(board, true);
-                        return PlaitNode.get(board, [index]);
-                    });
-                    addMovingElements(board, currentElements as PlaitElement[]);
+            offsetX = endPoint[0] - startPoint[0];
+            offsetY = endPoint[1] - startPoint[1];
+            throttleRAF(() => {
+                const currentElements = activeElements!.map(activeElement => {
+                    const [x, y] = activeElement?.points![0];
+                    const index = board.children.findIndex(item => item.id === activeElement.id);
+                    Transforms.setNode(
+                        board,
+                        {
+                            points: [[x + offsetX, y + offsetY]]
+                        },
+                        [index]
+                    );
+                    MERGING.set(board, true);
+                    return PlaitNode.get(board, [index]);
                 });
-            }
+                addMovingElements(board, currentElements as PlaitElement[]);
+            });
+        }
+        if (isPreventDefault) {
+            // 阻止 move 过程中触发画布滚动行为
+            event.preventDefault();
         }
         mousemove(event);
     };
 
     board.globalMousemove = event => {
-        if (isMoving) {
+        if (startPoint) {
             const inPliatBordElement = isInPlaitBoard(board, event.x, event.y);
             if (!inPliatBordElement) {
                 cancelMove(board);
@@ -85,7 +86,8 @@ export function withMoving(board: PlaitBoard) {
     };
 
     board.globalMouseup = event => {
-        if (isMoving) {
+        isPreventDefault = false;
+        if (startPoint) {
             cancelMove(board);
         }
         globalMouseup(event);
@@ -95,7 +97,6 @@ export function withMoving(board: PlaitBoard) {
         startPoint = null;
         offsetX = 0;
         offsetY = 0;
-        isMoving = false;
         activeElements = [];
         removeMovingElements(board);
         MERGING.set(board, false);
