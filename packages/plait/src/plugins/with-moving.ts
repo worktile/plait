@@ -1,6 +1,6 @@
 import { BOARD_TO_HOST } from '../utils/weak-maps';
 import { PlaitBoard } from '../interfaces/board';
-import { transformPoint } from '../utils/board';
+import { isInPlaitBoard, transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
@@ -11,7 +11,7 @@ import { throttleRAF } from '../utils/common';
 import { addMovingElements, removeMovingElements } from '../utils/moving-element';
 
 export function withMoving(board: PlaitBoard) {
-    const { mousedown, mousemove, globalMouseup } = board;
+    const { mousedown, mousemove, globalMouseup, globalMousemove } = board;
 
     let offsetX = 0;
     let offsetY = 0;
@@ -49,6 +49,8 @@ export function withMoving(board: PlaitBoard) {
             if (!isMoving) {
                 isMoving = true;
             } else {
+                // 阻止拖拽过程中画布默认滚动行为
+                event.preventDefault();
                 offsetX = endPoint[0] - startPoint[0];
                 offsetY = endPoint[1] - startPoint[1];
                 throttleRAF(() => {
@@ -72,7 +74,24 @@ export function withMoving(board: PlaitBoard) {
         mousemove(event);
     };
 
+    board.globalMousemove = event => {
+        if (isMoving) {
+            const inPliatBordElement = isInPlaitBoard(board, event.x, event.y);
+            if (!inPliatBordElement) {
+                cancelMove(board);
+            }
+        }
+        globalMousemove(event);
+    };
+
     board.globalMouseup = event => {
+        if (isMoving) {
+            cancelMove(board);
+        }
+        globalMouseup(event);
+    };
+
+    function cancelMove(board: PlaitBoard) {
         startPoint = null;
         offsetX = 0;
         offsetY = 0;
@@ -80,9 +99,7 @@ export function withMoving(board: PlaitBoard) {
         activeElements = [];
         removeMovingElements(board);
         MERGING.set(board, false);
-
-        globalMouseup(event);
-    };
+    }
 
     return board;
 }

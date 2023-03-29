@@ -1,5 +1,6 @@
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
+import { distanceBetweenPointAndRectangle } from './math';
 
 export type ViewBox = {
     minX: number;
@@ -29,4 +30,11 @@ export function transformPoint(board: PlaitBoard, point: Point) {
 
 export function isNoSelectionElement(e: Event) {
     return (e.target as HTMLElement)?.closest('.plait-board-attached');
+}
+
+export function isInPlaitBoard(board: PlaitBoard, x: number, y: number) {
+    const plaitBoardElement = PlaitBoard.getBoardNativeElement(board);
+    const plaitBoardRect = plaitBoardElement.getBoundingClientRect();
+    const distances = distanceBetweenPointAndRectangle(x, y, plaitBoardRect);
+    return distances === 0;
 }
