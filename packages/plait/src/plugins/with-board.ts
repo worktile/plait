@@ -10,13 +10,14 @@ export function withBoard(board: PlaitBoard) {
 
         const operations = board.operations;
         if (operations.length > 0 && ['remove_node', 'insert_node', 'set_node'].includes(operations[0].type)) {
-            setViewport(board);
+            // setViewport(board);
+
         }
 
         const setViewportOp = operations.find(op => op.type === 'set_viewport');
         if (setViewportOp) {
-            const boardComponent = PlaitBoard.getComponent(board);
-            boardComponent.applyViewport();
+            // const boardComponent = PlaitBoard.getComponent(board);
+            // boardComponent.applyViewport();
         }
 
         if (onContextChange) {

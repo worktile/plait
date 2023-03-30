@@ -15,11 +15,13 @@ import {
 export function getMatrix(board: PlaitBoard, zoom?: number): number[] {
     zoom = zoom ?? board.viewport.zoom;
     const boardComponent = PlaitBoard.getComponent(board);
+    // 当前的
     const { scrollLeft, scrollTop } = boardComponent.viewportState;
     const viewBoxStr = PlaitBoard.getHost(board).getAttribute('viewBox');
     const viewBox = viewBoxStr ? viewBoxStr.split(' ').map(item => Number(item)) : [];
 
     if (scrollLeft! >= 0 && scrollTop! >= 0) {
+        console.log(`matrix: ${[zoom, 0, 0, 0, zoom, 0, -scrollLeft! - zoom * viewBox![0], -scrollTop! - zoom * viewBox![1], 1]}`);
         return [zoom, 0, 0, 0, zoom, 0, -scrollLeft! - zoom * viewBox![0], -scrollTop! - zoom * viewBox![1], 1];
     }
     return [];
@@ -54,11 +56,11 @@ function calculateScroll(matrix: number[], zoom: number, viewBox: number[], view
     };
 }
 
-export function calcViewBox(board: PlaitBoard, zoom: number) {
-    clampZoomLevel(zoom);
+export function getViewBox(board: PlaitBoard, zoom: number) {
     const { hideScrollbar } = board.options;
     const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
     const viewportContainerBox = getViewportContainerBox(board);
+    // 确认获取的是什么? 是实际内容占的宽高？
     const groupBBox = getRootGroupBBox(board, zoom);
     const horizontalPadding = viewportContainerBox.width / 2;
     const verticalPadding = viewportContainerBox.height / 2;
@@ -71,12 +73,37 @@ export function calcViewBox(board: PlaitBoard, zoom: number) {
         viewportWidth / zoom,
         viewportHeight / zoom
     ];
+    return viewBox;
+}
+
+export function calcViewBox(board: PlaitBoard, zoom: number) {
+    clampZoomLevel(zoom);
+    const { hideScrollbar } = board.options;
+    const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
+    // 确认计算时为啥要减去 scrollBarWidth
+    const viewportContainerBox = getViewportContainerBox(board);
+    // 确认获取的是什么? 是实际内容占的宽高？
+    const groupBBox = getRootGroupBBox(board, zoom);
+    const horizontalPadding = viewportContainerBox.width / 2;
+    const verticalPadding = viewportContainerBox.height / 2;
+    const viewportWidth = (groupBBox.right - groupBBox.left) * zoom + 2 * horizontalPadding + scrollBarWidth;
+    const viewportHeight = (groupBBox.bottom - groupBBox.top) * zoom + 2 * verticalPadding + scrollBarWidth;
+
+    const viewBox = [
+        groupBBox.left - horizontalPadding / zoom,
+        groupBBox.top - verticalPadding / zoom,
+        viewportWidth / zoom,
+        viewportHeight / zoom
+    ];
+
+    // 当前渲染的矩阵数据
     const matrix = getMatrix(board);
     const { scrollLeft, scrollTop } = calculateScroll(matrix, zoom, viewBox, viewportContainerBox);
 
     const matrix2 = [zoom, 0, 0, 0, zoom, 0, -scrollLeft! - zoom * viewBox![0], -scrollTop! - zoom * viewBox![1], 1];
+    console.log(`matrix2: ${matrix2}`);
     const originationCoord = invertViewportCoordinates([0, 0], matrix2);
-
+    console.log(`originationCoord: ${originationCoord}`);
     return {
         viewportWidth,
         viewportHeight,
@@ -126,6 +153,7 @@ export function setViewport(board: PlaitBoard, zoom?: number) {
         zoom,
         originationCoord
     });
+    console.log(`set originationCoord: ${originationCoord}`);
 }
 
 export function scrollToRectangle(board: PlaitBoard, client: RectangleClient) {

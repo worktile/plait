@@ -36,7 +36,9 @@ import {
     getBoardClientBox,
     toPoint,
     transformPoint,
-    distanceBetweenPointAndRectangle
+    distanceBetweenPointAndRectangle,
+    invertViewportCoordinates,
+    getRootGroupBBox
 } from '../utils';
 import {
     BOARD_TO_ON_CHANGE,
@@ -49,7 +51,8 @@ import {
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import { getRectangleByElements } from '../utils/element';
-import { calcViewBox, fitViewport, getMatrix, setScroll, setViewport } from '../utils/viewport';
+import { calcViewBox, fitViewport, getMatrix, getViewBox, setScroll, setViewport } from '../utils/viewport';
+import isHotkey from 'is-hotkey';
 
 const ElementHostClass = 'element-host';
 
@@ -88,6 +91,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     destroy$ = new Subject<void>();
 
     viewportState: PlaitBoardViewport = {};
+
+    origination: { x: number; y: number } = { x: 0, y: 0 };
+
+    zoom = 1;
 
     private resizeObserver!: ResizeObserver;
 
@@ -148,16 +155,20 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         const roughSVG = rough.svg(this.host as SVGSVGElement, {
             options: { roughness: 0, strokeWidth: 1 }
         });
+        this.roughSVG = roughSVG;
         this.initializePlugins();
         this.initializeEvents();
         this.viewportScrollListener();
         this.elementResizeListener();
+        this.mouseLeaveListener();
         BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ROUGH_SVG.set(this.board, roughSVG);
         BOARD_TO_HOST.set(this.board, this.host);
         BOARD_TO_ELEMENT_HOST.set(this.board, elementHost);
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.cdr.detectChanges();
+            this.initializeViewport();
+            this.updateScrollOffset();
             const changeEvent: PlaitBoardChangeEvent = {
                 children: this.board.children,
                 operations: this.board.operations,
@@ -167,6 +178,15 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             this.plaitChange.emit(changeEvent);
         });
         this.hasInitialized = true;
+    }
+
+    mouseLeaveListener() {
+        fromEvent<MouseEvent>(this.host, 'mouseleave')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: MouseEvent) => {
+                console.log('leave');
+                BOARD_TO_MOVING_POINT.delete(this.board);
+            });
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -183,7 +203,9 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     ngAfterViewInit(): void {
         this.plaitBoardInitialized.emit(this.board);
         this.initViewportContainer();
-        this.initViewport();
+        // this.initViewport();
+        this.initializeViewport();
+        this.initializeScrollOffset();
     }
 
     private initializePlugins() {
@@ -244,6 +266,16 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 })
             )
             .subscribe((event: KeyboardEvent) => {
+                if (isHotkey(['mod+=', 'mod++'], { byKey: true })(event)) {
+                    console.log('zoom in');
+                    event.preventDefault();
+                    this.zoomInHandle(false);
+                }
+                if (isHotkey('mod+-', { byKey: true })(event)) {
+                    console.log('zoom out');
+                    this.zoomOutHandle();
+                    event.preventDefault();
+                }
                 this.board?.keydown(event);
             });
 
@@ -310,12 +342,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             )
             .subscribe((event: Event) => {
                 const { scrollLeft, scrollTop } = event.target as HTMLElement;
-                const left = this.viewportState.scrollLeft!;
-                const top = this.viewportState.scrollTop!;
-                if (Math.abs(left - scrollLeft) >= 1 || Math.abs(top - scrollTop) >= 1) {
-                    setScroll(this.board, scrollLeft, scrollTop);
-                    setViewport(this.board);
-                }
+                const viewBox = getViewBox(this.board, this.zoom);
+                this.origination = {
+                    x: scrollLeft / this.zoom + viewBox[0],
+                    y: scrollTop / this.zoom + viewBox[1]
+                };
             });
     }
 
@@ -326,13 +357,27 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         this.resizeObserver.observe(this.nativeElement);
     }
 
-    private initViewport() {
-        const originationCoord = this.board.viewport?.originationCoord;
-        if (originationCoord) {
-            this.applyViewport();
-        } else {
-            this.adaptHandle();
-        }
+    private initializeViewport() {
+        const viewBox = getViewBox(this.board, this.zoom);
+        this.setSVGViewBox(viewBox);
+    }
+
+    private initializeScrollOffset() {
+        const viewBox = getViewBox(this.board, this.zoom);
+        const centerX = viewBox[0] + viewBox[2] / 2;
+        const centerY = viewBox[1] + viewBox[3] / 2;
+        const viewportContainerBox = getViewportContainerBox(this.board);
+        this.origination.x = centerX - viewportContainerBox.width / 2 / this.zoom;
+        this.origination.y = centerY - viewportContainerBox.height / 2 / this.zoom;
+        this.updateScrollOffset();
+    }
+
+    private updateScrollOffset() {
+        const viewBox = getViewBox(this.board, this.zoom);
+        const scrollLeft = (this.origination.x - viewBox[0]) * this.zoom;
+        const scrollTop = (this.origination.y - viewBox[1]) * this.zoom;
+        this.viewportContainer.nativeElement.scrollLeft = scrollLeft;
+        this.viewportContainer.nativeElement.scrollTop = scrollTop;
     }
 
     applyViewport() {
@@ -370,6 +415,17 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         }
     }
 
+    private setSVGViewBox(viewBox: number[]) {
+        const { host, viewportState } = this;
+        this.renderer2.setStyle(host, 'display', 'block');
+        this.renderer2.setStyle(host, 'width', `${viewBox[2] * this.zoom}px`);
+        this.renderer2.setStyle(host, 'height', `${viewBox[3] * this.zoom}px`);
+
+        if (viewBox && viewBox[2] > 0 && viewBox[3] > 0) {
+            this.renderer2.setAttribute(host, 'viewBox', viewBox.join(' '));
+        }
+    }
+
     private updateViewportScrolling() {
         const { viewportContainer, viewportState } = this;
         const { scrollLeft, scrollTop } = viewportState;
@@ -385,16 +441,51 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fitViewport(this.board);
     }
 
-    zoomInHandle() {
-        setViewport(this.board, this.board.viewport.zoom + 0.1);
+    zoomInHandle(isCenter = true) {
+        const mousePoint = BOARD_TO_MOVING_POINT.get(this.board);
+        const rect = this.nativeElement.getBoundingClientRect();
+        const viewportContainerBox = getViewportContainerBox(this.board);
+        let focusPoint = [viewportContainerBox.width / 2, viewportContainerBox.height / 2];
+        // if (!isCenter && mousePoint && distanceBetweenPointAndRectangle(mousePoint[0], mousePoint[1], rect) === 0) {
+        //     focusPoint = toPoint(mousePoint[0], mousePoint[1], this.nativeElement as any);
+        //     console.log(`focusPoint: ${focusPoint}`);
+        // }
+        console.log(`focusPoint: ${focusPoint}`);
+        const centerX = this.origination.x + focusPoint[0] / this.zoom;
+        const centerY = this.origination.y + focusPoint[1] / this.zoom;
+        this.zoom = this.zoom + 0.1;
+        const viewBox = getViewBox(this.board, this.zoom);
+        this.setSVGViewBox(viewBox);
+        const newX = centerX - focusPoint[0] / this.zoom;
+        const newY = centerY - focusPoint[1] / this.zoom;
+        const offsetX = newX - this.origination.x;
+        const offsetY = newY - this.origination.y;
+        this.origination.y = centerY - focusPoint[1] / this.zoom;
+        this.updateScrollOffset();
     }
 
     zoomOutHandle() {
-        setViewport(this.board, this.board.viewport.zoom - 0.1);
+        const viewportContainerBox = getViewportContainerBox(this.board);
+        const centerX = this.origination.x + viewportContainerBox.width / 2 / this.zoom;
+        const centerY = this.origination.y + viewportContainerBox.height / 2 / this.zoom;
+        this.zoom = this.zoom - 0.1;
+        const viewBox = getViewBox(this.board, this.zoom);
+        this.setSVGViewBox(viewBox);
+        this.origination.x = centerX - viewportContainerBox.width / 2 / this.zoom;
+        this.origination.y = centerY - viewportContainerBox.height / 2 / this.zoom;
+        this.updateScrollOffset();
     }
 
     resetZoomHandel() {
-        setViewport(this.board, 1);
+        const viewportContainerBox = getViewportContainerBox(this.board);
+        const centerX = this.origination.x + viewportContainerBox.width / 2 / this.zoom;
+        const centerY = this.origination.y + viewportContainerBox.height / 2 / this.zoom;
+        this.zoom = 1;
+        const viewBox = getViewBox(this.board, this.zoom);
+        this.setSVGViewBox(viewBox);
+        this.origination.x = centerX - viewportContainerBox.width / 2 / this.zoom;
+        this.origination.y = centerY - viewportContainerBox.height / 2 / this.zoom;
+        this.updateScrollOffset();
     }
 
     ngOnDestroy(): void {

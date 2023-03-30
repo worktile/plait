@@ -155,24 +155,24 @@ export function getRootGroupBBox(board: PlaitBoard, zoom: number) {
     let top: number;
     let bottom: number;
 
-    if (rootGroupBox.width < containerWidth) {
-        const offsetX = rootGroupBox.x + rootGroupBox.width / 2;
-        const containerX = containerWidth / 2;
-        left = offsetX - containerX;
-        right = offsetX + containerX;
-    } else {
+    // if (rootGroupBox.width < containerWidth) {
+    //     const offsetX = rootGroupBox.x + rootGroupBox.width / 2;
+    //     const containerX = containerWidth / 2;
+    //     left = offsetX - containerX;
+    //     right = offsetX + containerX;
+    // } else {
         left = rootGroupBox.x;
         right = rootGroupBox.x + rootGroupBox.width;
-    }
-    if (rootGroupBox.height < containerHeight) {
-        const offsetY = rootGroupBox.y + rootGroupBox.height / 2;
-        const containerY = containerHeight / 2;
-        top = offsetY - containerY;
-        bottom = offsetY + containerY;
-    } else {
+    // }
+    // if (rootGroupBox.height < containerHeight) {
+    //     const offsetY = rootGroupBox.y + rootGroupBox.height / 2;
+    //     const containerY = containerHeight / 2;
+    //     top = offsetY - containerY;
+    //     bottom = offsetY + containerY;
+    // } else {
         top = rootGroupBox.y;
         bottom = rootGroupBox.y + rootGroupBox.height;
-    }
+    // }
     return {
         left,
         right,
