@@ -12,7 +12,7 @@ import {
 } from '../utils/selected-element';
 import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
-import { BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
+import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
 
 export function withSelection(board: PlaitBoard) {
@@ -51,10 +51,8 @@ export function withSelection(board: PlaitBoard) {
             selectionMovingG?.remove();
             if (Math.hypot(width, height) > 5) {
                 end = movedTarget;
-                if (end) {
-                    Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
-                }
-                PlaitBoard.getBoardNativeElement(board).classList.add('selection-moving');
+                Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
+                setSelectionMoving(board);
                 const rough = PlaitBoard.getRoughSVG(board);
                 selectionMovingG = rough.rectangle(x, y, width, height, {
                     stroke: SELECTION_BORDER_COLOR,
@@ -70,13 +68,13 @@ export function withSelection(board: PlaitBoard) {
 
     board.globalMouseup = (event: MouseEvent) => {
         if (start && end) {
-            PlaitBoard.getBoardNativeElement(board).classList.remove('selection-moving');
             selectionMovingG?.remove();
+            clearSelectionMoving(board);
         }
 
         if (PlaitBoard.isFocus(board)) {
             const isInBoard = event.target instanceof Node && PlaitBoard.getBoardNativeElement(board).contains(event.target);
-            const isAttachedElement = (event.target instanceof HTMLElement) && event.target.closest(`.${ATTACHED_ELEMENT_CLASS_NAME}`);
+            const isAttachedElement = event.target instanceof HTMLElement && event.target.closest(`.${ATTACHED_ELEMENT_CLASS_NAME}`);
             // Clear selection when mouse board outside area
             // The framework needs to determine whether the board is focused through selection
             if (!isInBoard && !start && !isAttachedElement) {
@@ -124,4 +122,18 @@ export function getTemporaryElements(board: PlaitBoard) {
 
 export function deleteTemporaryElements(board: PlaitBoard) {
     BOARD_TO_TEMPORARY_ELEMENTS.delete(board);
+}
+
+export function isSelectionMoving(board: PlaitBoard) {
+    return !!BOARD_TO_IS_SELECTION_MOVING.get(board);
+}
+
+export function setSelectionMoving(board: PlaitBoard) {
+    PlaitBoard.getBoardNativeElement(board).classList.add('selection-moving');
+    BOARD_TO_IS_SELECTION_MOVING.set(board, true);
+}
+
+export function clearSelectionMoving(board: PlaitBoard) {
+    PlaitBoard.getBoardNativeElement(board).classList.remove('selection-moving');
+    BOARD_TO_IS_SELECTION_MOVING.delete(board);
 }
