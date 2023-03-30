@@ -20,6 +20,12 @@ g[plait-mindmap='true'] {
     }
 
     .collapsed,
+    .hovered {
+        .extend {
+            display: block;
+        }
+    }
+
     .dragging-origin,
     .dragging-child {
         opacity: 0.6;
