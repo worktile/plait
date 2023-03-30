@@ -15,13 +15,13 @@ g[plait-mindmap='true'] {
     }
 
     .extend {
-        display: none;
+        opacity: 0;
         cursor: default;
     }
 
     .collapsed {
         .extend {
-            display: block;
+            opacity: 1;
         }
     }
 
@@ -34,13 +34,14 @@ g[plait-mindmap='true'] {
     .extend {
         cursor: pointer;
         &:hover {
-            display: block;
+            opacity: 1;
         }
     }
+
     g[plait-mindmap='true'] {
         .hovered {
             .extend {
-                display: block;
+                opacity: 1;
             }
         }
     }
