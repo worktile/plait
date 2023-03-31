@@ -3,10 +3,9 @@ import { ExtendedType } from './custom-types';
 
 export interface BaseViewport {
     [key: string]: any;
-    zoom: number;
     viewBackgroundColor: string;
-    // viewportContainer 左上角在 SVG 坐标系中的位置
-    originationCoord?: number[];
+    zoom: number;
+    origination?: number[];
 }
 
 export type Viewport = ExtendedType<'Viewport', BaseViewport>;
