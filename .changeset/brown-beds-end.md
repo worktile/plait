@@ -2,4 +2,4 @@
 '@plait/mindmap': patch
 ---
 
-add collapsedG
+add collapseG, listen collapseG mouseUp event
