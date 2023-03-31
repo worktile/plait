@@ -1,5 +1,5 @@
 ---
-'@plait/core': major
+'@plait/core': patch
 ---
 
 set selection when end of moving
