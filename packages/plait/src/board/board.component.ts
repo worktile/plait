@@ -33,7 +33,6 @@ import { withSelection } from '../plugins/with-selection';
 import { toPoint, transformPoint, distanceBetweenPointAndRectangle } from '../utils';
 import {
     BOARD_TO_ON_CHANGE,
-    IS_TEXT_EDITABLE,
     BOARD_TO_COMPONENT,
     BOARD_TO_ELEMENT_HOST,
     BOARD_TO_HOST,
@@ -50,10 +49,8 @@ import {
     changeZoom,
     getViewportContainerRect
 } from '../utils/viewport';
-import isHotkey from 'is-hotkey';
+import { isHotkey } from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
-import { RectangleClient } from '../interfaces/rectangle-client';
-import { withMoving } from '../plugins/with-moving';
 
 const ElementHostClass = 'element-host';
 
