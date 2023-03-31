@@ -19,7 +19,9 @@
 
     // https://stackoverflow.com/questions/51313873/svg-foreignobject-not-working-properly-on-safari
     .plait-richtext-container {
-        position: initial;
+        // chrome show position is not correct, safari not working when don't assigned position property
+        // can not assign absolute, because safari can not show correctly position 
+        position: fixed;
         &[readonly='true'] {
             ::selection {
                 background: none;

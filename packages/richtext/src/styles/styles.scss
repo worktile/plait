@@ -5,6 +5,13 @@
     white-space: pre-wrap;
     font-size: 14px;
 
+    .plait-node {
+        display: inline-block;
+        min-height: 20px;// firefox english abc height is 16px when font-size assign 14px, other browser height is 20px
+        line-height: 20px; // firefox english can not vertical middle 
+        min-width: 5px; // safari can not not show  cursor when text is empty
+    }
+
     [slate-underlined][slate-strike] {
         text-decoration: underline line-through;
     }

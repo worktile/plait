@@ -19,7 +19,10 @@ import { updateWeakMap } from '../utils/node-relation';
 @Component({
     selector: 'plait-node',
     template: '',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: {
+        class: 'plait-node'
+    }
 })
 export class PlaitNodeComponent implements OnInit, AfterViewInit, OnChanges {
     @Input()
