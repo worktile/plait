@@ -44,7 +44,7 @@ import { BoardComponentInterface } from './board.component.interface';
 import {
     fitViewport,
     getViewBox,
-    initializeScrollOffset,
+    initializeViewportContainerOffset,
     initializeViewport,
     setViewport,
     changeZoom,
@@ -190,7 +190,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         this.plaitBoardInitialized.emit(this.board);
         this.initViewportContainer();
         initializeViewport(this.board);
-        initializeScrollOffset(this.board);
+        initializeViewportContainerOffset(this.board);
     }
 
     private initializePlugins() {

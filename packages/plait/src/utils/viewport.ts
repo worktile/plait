@@ -28,19 +28,19 @@ export function getElementHostBBox(board: PlaitBoard, zoom: number) {
     let bottom: number;
 
     if (childrenRect.width < containerWidth) {
-        const offsetX = Math.ceil(childrenRect.x + childrenRect.width / 2);
-        const containerX = Math.ceil(containerWidth / 2);
-        left = offsetX - containerX;
-        right = offsetX + containerX;
+        const centerX = Math.ceil(childrenRect.x + childrenRect.width / 2);
+        const halfContainerWidth = Math.ceil(containerWidth / 2);
+        left = centerX - halfContainerWidth;
+        right = centerX + halfContainerWidth;
     } else {
         left = childrenRect.x;
         right = childrenRect.x + childrenRect.width;
     }
     if (childrenRect.height < containerHeight) {
-        const offsetY = Math.ceil(childrenRect.y + childrenRect.height / 2);
-        const containerY = Math.ceil(containerHeight / 2);
-        top = offsetY - containerY;
-        bottom = offsetY + containerY;
+        const centerY = Math.ceil(childrenRect.y + childrenRect.height / 2);
+        const halfContainerHeight = Math.ceil(containerHeight / 2);
+        top = centerY - halfContainerHeight;
+        bottom = centerY + halfContainerHeight;
     } else {
         top = childrenRect.y;
         bottom = childrenRect.y + childrenRect.height;
@@ -117,7 +117,7 @@ export function initializeViewport(board: PlaitBoard) {
     setSVGViewBox(board, viewBox);
 }
 
-export function initializeScrollOffset(board: PlaitBoard) {
+export function initializeViewportContainerOffset(board: PlaitBoard) {
     if (!board.viewport?.origination) {
         const zoom = board.viewport.zoom;
 
