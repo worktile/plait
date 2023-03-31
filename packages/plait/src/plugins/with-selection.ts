@@ -104,7 +104,7 @@ export function withSelection(board: PlaitBoard) {
                         strokeWidth: 1,
                         fillStyle: 'solid'
                     });
-                    selectionOuterG.classList.add('selected-outer-container');
+                    selectionOuterG.classList.add('selected-outer');
                     PlaitBoard.getHost(board).append(selectionOuterG);
                 }
             }
