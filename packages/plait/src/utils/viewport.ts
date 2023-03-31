@@ -28,7 +28,7 @@ export function getElementHostBBox(board: PlaitBoard, zoom: number) {
     let bottom: number;
 
     if (childrenRect.width < containerWidth) {
-        const centerX = Math.ceil(childrenRect.x + childrenRect.width / 2);
+        const centerX = childrenRect.x + Math.ceil(childrenRect.width / 2);
         const halfContainerWidth = Math.ceil(containerWidth / 2);
         left = centerX - halfContainerWidth;
         right = centerX + halfContainerWidth;
@@ -37,7 +37,7 @@ export function getElementHostBBox(board: PlaitBoard, zoom: number) {
         right = childrenRect.x + childrenRect.width;
     }
     if (childrenRect.height < containerHeight) {
-        const centerY = Math.ceil(childrenRect.y + childrenRect.height / 2);
+        const centerY = childrenRect.y + Math.ceil(childrenRect.height / 2);
         const halfContainerHeight = Math.ceil(containerHeight / 2);
         top = centerY - halfContainerHeight;
         bottom = centerY + halfContainerHeight;
@@ -107,8 +107,8 @@ export function updateViewportContainerOffset(board: PlaitBoard, origination?: n
 
 export function setViewportContainerScroll(board: PlaitBoard, left: number, top: number) {
     const viewportContainer = PlaitBoard.getViewportContainer(board);
-    viewportContainer.scrollLeft = Math.floor(left);
-    viewportContainer.scrollTop = Math.floor(top);
+    viewportContainer.scrollLeft = Math.ceil(left);
+    viewportContainer.scrollTop = Math.ceil(top);
 }
 
 export function initializeViewport(board: PlaitBoard) {
