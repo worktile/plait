@@ -21,12 +21,6 @@ const LOCAL_DATA_KEY = 'plait-board-change-data';
 export class BasicBoardEditorComponent implements OnInit {
     plugins = [withMindmap];
 
-    options: PlaitBoardOptions = {
-        readonly: true,
-        hideScrollbar: true,
-        allowClearBoard: false
-    };
-
     value: PlaitElement[] = [...mockMindmapData];
 
     viewport!: Viewport;
