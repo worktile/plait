@@ -1,5 +1,13 @@
 # @plait/flow
 
+## 0.1.1
+
+### Patch Changes
+
+-   [#273](https://github.com/worktile/plait/pull/273) [`2e894d5`](https://github.com/worktile/plait/commit/2e894d5ee5ada069ca5c6ccfd968a0665a0e1422) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add withMove plugin
+
+*   [#274](https://github.com/worktile/plait/pull/274) [`7ca6fa3`](https://github.com/worktile/plait/commit/7ca6fa32f080645ff907f392eb8bc6139b8d7b67) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add BOARD_TO_MOVING_ELEMENT and redraw edges when node change
+
 ## 0.1.0
 
 ### Minor Changes

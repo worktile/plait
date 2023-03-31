@@ -1,5 +1,15 @@
 # mindmap
 
+## 0.1.2
+
+### Patch Changes
+
+-   [#277](https://github.com/worktile/plait/pull/277) [`d69933a`](https://github.com/worktile/plait/commit/d69933aa50e97bd63d6fefc356a10023f5d67f5e) Thanks [@WBbug](https://github.com/WBbug)! - fix extend style
+
+*   [#273](https://github.com/worktile/plait/pull/273) [`2e894d5`](https://github.com/worktile/plait/commit/2e894d5ee5ada069ca5c6ccfd968a0665a0e1422) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add withMove plugin
+
+-   [#280](https://github.com/worktile/plait/pull/280) [`7d301b1`](https://github.com/worktile/plait/commit/7d301b141ade646586723ef27b72ee21172251c7) Thanks [@WBbug](https://github.com/WBbug)! - delete element when destroy
+
 ## 0.1.1
 
 ### Patch Changes

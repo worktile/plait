@@ -1,5 +1,27 @@
 # plait
 
+## 0.1.2
+
+### Patch Changes
+
+-   [#279](https://github.com/worktile/plait/pull/279) [`d7f7fe5`](https://github.com/worktile/plait/commit/d7f7fe50fea4b97250eba4d5e2b782ac642030e6) Thanks [@aaaaaajie](https://github.com/aaaaaajie)! - set selection when end of moving
+
+*   [#275](https://github.com/worktile/plait/pull/275) [`b05d582`](https://github.com/worktile/plait/commit/b05d5828ecb944ea9f1e0fa472eb996671f33bcb) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - cancel move when point is outside of plaitBoard
+
+-   [`e4c3278`](https://github.com/worktile/plait/commit/e4c327814f87d2df64c49b20b6128d60609911bd) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support clear board selection
+
+*   [`fd63afd`](https://github.com/worktile/plait/commit/fd63afd0cef0970becd475d5985b44abf2104927) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add global selection moving state
+
+-   [#276](https://github.com/worktile/plait/pull/276) [`d6565c2`](https://github.com/worktile/plait/commit/d6565c2ae9d67296a95539e08e5e13d933f3826d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix move event trigger error
+
+*   [#278](https://github.com/worktile/plait/pull/278) [`8e1a45a`](https://github.com/worktile/plait/commit/8e1a45a9c8962409ab59d66ca9fcea95d666948a) Thanks [@WBbug](https://github.com/WBbug)! - change min value
+
+-   [#273](https://github.com/worktile/plait/pull/273) [`2e894d5`](https://github.com/worktile/plait/commit/2e894d5ee5ada069ca5c6ccfd968a0665a0e1422) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add withMove plugin
+
+*   [#274](https://github.com/worktile/plait/pull/274) [`7ca6fa3`](https://github.com/worktile/plait/commit/7ca6fa32f080645ff907f392eb8bc6139b8d7b67) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add BOARD_TO_MOVING_ELEMENT and redraw edges when node change
+
+-   [#263](https://github.com/worktile/plait/pull/263) [`16acd6b`](https://github.com/worktile/plait/commit/16acd6bb2fbcc06d07c6370c80dd5ab08603a88c) Thanks [@Maple13](https://github.com/Maple13)! - refactored rolling scheme calculation logic
+
 ## 0.1.1
 
 ### Patch Changes
