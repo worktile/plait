@@ -115,6 +115,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     extendG?: SVGGElement;
 
+    collapsedG?: SVGGElement;
+
     maskG!: SVGGElement;
 
     richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
@@ -576,10 +578,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         fromEvent(quickInsertG, 'mouseup')
-            .pipe(
-                map(e => e.stopPropagation()),
-                take(1)
-            )
+            .pipe(take(1))
             .subscribe(() => {
                 const path = findPath(this.board, this.node).concat(this.node.origin.children.length);
                 createEmptyNode(this.board, this.node.origin, path);
@@ -591,14 +590,17 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         this.destroyExtend();
         // create extend
         this.extendG = createG();
+        this.collapsedG = createG();
         this.extendG.classList.add('extend');
+        this.collapsedG.classList.add('collapse-container');
         this.gGroup.append(this.extendG);
+        this.extendG.append(this.collapsedG);
         if (this.node.origin.isRoot) {
             this.drawQuickInsert();
             return;
         }
         // inteactive
-        fromEvent(this.extendG, 'mouseup')
+        fromEvent(this.collapsedG, 'mouseup')
             .pipe(
                 filter(() => !this.handActive || this.board.options.readonly),
                 take(1)
@@ -710,9 +712,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             this.gGroup.classList.add('collapsed');
             badge.setAttribute('style', 'opacity: 0.15');
             badgeText.setAttribute('style', 'font-size: 12px');
-            this.extendG.appendChild(badge);
-            this.extendG.appendChild(badgeText);
-            this.extendG.appendChild(extendLine);
+            this.collapsedG.appendChild(badge);
+            this.collapsedG.appendChild(badgeText);
+            this.collapsedG.appendChild(extendLine);
         } else {
             this.gGroup.classList.remove('collapsed');
 
@@ -728,9 +730,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                         fillStyle: 'solid'
                     }
                 );
-                this.extendG.appendChild(hideCircleG);
-                this.extendG.appendChild(hideArrowTopLine);
-                this.extendG.appendChild(hideArrowBottomLine);
+                this.collapsedG.appendChild(hideCircleG);
+                this.collapsedG.appendChild(hideArrowTopLine);
+                this.collapsedG.appendChild(hideArrowBottomLine);
                 this.drawQuickInsert(EXTEND_RADIUS);
             } else {
                 this.drawQuickInsert();
