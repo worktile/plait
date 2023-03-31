@@ -920,6 +920,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnDestroy(): void {
         removeSelectedElement(this.board, this.node.origin);
+        MINDMAP_ELEMENT_TO_COMPONENT.delete(this.node.origin);
         this.destroyRichtext();
         this.gGroup.remove();
         this.destroy$.next();
