@@ -30,7 +30,7 @@ import { withBoard } from '../plugins/with-board';
 import { withHistory } from '../plugins/with-history';
 import { withHandPointer } from '../plugins/with-hand';
 import { withSelection } from '../plugins/with-selection';
-import { getBoardClientBox, toPoint, transformPoint, distanceBetweenPointAndRectangle } from '../utils';
+import { toPoint, transformPoint, distanceBetweenPointAndRectangle } from '../utils';
 import {
     BOARD_TO_ON_CHANGE,
     IS_TEXT_EDITABLE,
@@ -41,7 +41,15 @@ import {
     BOARD_TO_MOVING_POINT
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
-import { fitViewport, getViewBox, initializeScrollOffset, initializeViewport, setViewport, changeZoom } from '../utils/viewport';
+import {
+    fitViewport,
+    getViewBox,
+    initializeScrollOffset,
+    initializeViewport,
+    setViewport,
+    changeZoom,
+    getViewportContainerRect
+} from '../utils/viewport';
 import isHotkey from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
 
@@ -82,8 +90,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     destroy$ = new Subject<void>();
 
     private resizeObserver!: ResizeObserver;
-
-    private hostResizeObserver!: ResizeObserver;
 
     @Input() plaitValue: PlaitElement[] = [];
 
@@ -248,12 +254,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             )
             .subscribe((event: KeyboardEvent) => {
                 if (isHotkey(['mod+=', 'mod++'], { byKey: true })(event)) {
-                    console.log('zoom in');
                     event.preventDefault();
                     this.zoomInHandle(false);
                 }
                 if (isHotkey('mod+-', { byKey: true })(event)) {
-                    console.log('zoom out');
                     this.zoomOutHandle();
                     event.preventDefault();
                 }
@@ -338,7 +342,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     initViewportContainer() {
-        const { width, height } = getBoardClientBox(this.board);
+        const { width, height } = getViewportContainerRect(this.board);
         this.renderer2.setStyle(this.viewportContainer.nativeElement, 'width', `${width}px`);
         this.renderer2.setStyle(this.viewportContainer.nativeElement, 'height', `${height}px`);
     }
@@ -367,7 +371,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         this.destroy$.next();
         this.destroy$.complete();
         this.resizeObserver && this.resizeObserver?.disconnect();
-        this.hostResizeObserver && this.hostResizeObserver?.disconnect();
         BOARD_TO_ROUGH_SVG.delete(this.board);
         BOARD_TO_COMPONENT.delete(this.board);
         BOARD_TO_ROUGH_SVG.delete(this.board);
