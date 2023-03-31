@@ -115,8 +115,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     extendG?: SVGGElement;
 
-    collapsedG?: SVGGElement;
-
     maskG!: SVGGElement;
 
     richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
@@ -590,17 +588,17 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         this.destroyExtend();
         // create extend
         this.extendG = createG();
-        this.collapsedG = createG();
+        const collapseG = createG();
         this.extendG.classList.add('extend');
-        this.collapsedG.classList.add('collapse-container');
+        collapseG.classList.add('collapse-container');
         this.gGroup.append(this.extendG);
-        this.extendG.append(this.collapsedG);
+        this.extendG.append(collapseG);
         if (this.node.origin.isRoot) {
             this.drawQuickInsert();
             return;
         }
         // inteactive
-        fromEvent(this.collapsedG, 'mouseup')
+        fromEvent(collapseG, 'mouseup')
             .pipe(
                 filter(() => !this.handActive || this.board.options.readonly),
                 take(1)
@@ -712,9 +710,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             this.gGroup.classList.add('collapsed');
             badge.setAttribute('style', 'opacity: 0.15');
             badgeText.setAttribute('style', 'font-size: 12px');
-            this.collapsedG.appendChild(badge);
-            this.collapsedG.appendChild(badgeText);
-            this.collapsedG.appendChild(extendLine);
+            collapseG.appendChild(badge);
+            collapseG.appendChild(badgeText);
+            collapseG.appendChild(extendLine);
         } else {
             this.gGroup.classList.remove('collapsed');
 
@@ -730,9 +728,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                         fillStyle: 'solid'
                     }
                 );
-                this.collapsedG.appendChild(hideCircleG);
-                this.collapsedG.appendChild(hideArrowTopLine);
-                this.collapsedG.appendChild(hideArrowBottomLine);
+                collapseG.appendChild(hideCircleG);
+                collapseG.appendChild(hideArrowTopLine);
+                collapseG.appendChild(hideArrowBottomLine);
                 this.drawQuickInsert(EXTEND_RADIUS);
             } else {
                 this.drawQuickInsert();
