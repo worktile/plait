@@ -9,6 +9,7 @@ import {
     MINDMAP_ELEMENT_TO_COMPONENT,
     withMindmap
 } from '@plait/mindmap';
+import { PlaitBoardOptions } from '../../../dist/plait/interfaces';
 import { mockMindmapData } from './mock-data';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
@@ -19,6 +20,12 @@ const LOCAL_DATA_KEY = 'plait-board-change-data';
 })
 export class BasicBoardEditorComponent implements OnInit {
     plugins = [withMindmap];
+
+    options: PlaitBoardOptions = {
+        readonly: true,
+        hideScrollbar: true,
+        allowClearBoard: false
+    };
 
     value: PlaitElement[] = [...mockMindmapData];
 

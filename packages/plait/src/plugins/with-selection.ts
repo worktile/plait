@@ -50,17 +50,19 @@ export function withSelection(board: PlaitBoard) {
             const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
             selectionMovingG?.remove();
             if (Math.hypot(width, height) > 5) {
-                end = movedTarget;
-                Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
-                setSelectionMoving(board);
-                const rough = PlaitBoard.getRoughSVG(board);
-                selectionMovingG = rough.rectangle(x, y, width, height, {
-                    stroke: SELECTION_BORDER_COLOR,
-                    strokeWidth: 1,
-                    fill: SELECTION_FILL_COLOR,
-                    fillStyle: 'solid'
-                });
-                PlaitBoard.getHost(board).append(selectionMovingG);
+                if (!board.options.readonly) {
+                    end = movedTarget;
+                    Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
+                    setSelectionMoving(board);
+                    const rough = PlaitBoard.getRoughSVG(board);
+                    selectionMovingG = rough.rectangle(x, y, width, height, {
+                        stroke: SELECTION_BORDER_COLOR,
+                        strokeWidth: 1,
+                        fill: SELECTION_FILL_COLOR,
+                        fillStyle: 'solid'
+                    });
+                    PlaitBoard.getHost(board).append(selectionMovingG);
+                }
             }
         }
         globalMousemove(event);
@@ -92,20 +94,22 @@ export function withSelection(board: PlaitBoard) {
         // calc selected elements entry
         try {
             selectionOuterG?.remove();
-            if (board.operations.find(value => value.type === 'set_selection')) {
-                const temporaryElements = getTemporaryElements(board);
-                const elements = temporaryElements ? temporaryElements : calcElementIntersectionSelection(board);
-                cacheSelectedElements(board, elements);
-                const { x, y, width, height } = getRectangleByElements(board, elements, false);
-                if (width > 0 && height > 0) {
-                    const rough = PlaitBoard.getRoughSVG(board);
-                    selectionOuterG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
-                        stroke: SELECTION_BORDER_COLOR,
-                        strokeWidth: 1,
-                        fillStyle: 'solid'
-                    });
-                    selectionOuterG.classList.add('selection-outer');
-                    PlaitBoard.getHost(board).append(selectionOuterG);
+            if (!board.options.readonly) {
+                if (board.operations.find(value => value.type === 'set_selection')) {
+                    const temporaryElements = getTemporaryElements(board);
+                    const elements = temporaryElements ? temporaryElements : calcElementIntersectionSelection(board);
+                    cacheSelectedElements(board, elements);
+                    const { x, y, width, height } = getRectangleByElements(board, elements, false);
+                    if (width > 0 && height > 0) {
+                        const rough = PlaitBoard.getRoughSVG(board);
+                        selectionOuterG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
+                            stroke: SELECTION_BORDER_COLOR,
+                            strokeWidth: 1,
+                            fillStyle: 'solid'
+                        });
+                        selectionOuterG.classList.add('selection-outer');
+                        PlaitBoard.getHost(board).append(selectionOuterG);
+                    }
                 }
             }
             deleteTemporaryElements(board);
