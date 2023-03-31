@@ -63,13 +63,6 @@ export interface PlaitBoardMove {
     y: number;
 }
 
-export interface PlaitBoardViewport {
-    viewportWidth?: number;
-    viewportHeight?: number;
-    scrollLeft?: number;
-    scrollTop?: number;
-}
-
 export const PlaitBoard = {
     getHost(board: PlaitBoard) {
         return BOARD_TO_HOST.get(board) as SVGSVGElement;
