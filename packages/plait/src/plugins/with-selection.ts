@@ -70,6 +70,7 @@ export function withSelection(board: PlaitBoard) {
         if (start && end) {
             selectionMovingG?.remove();
             clearSelectionMoving(board);
+            Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
         }
 
         if (PlaitBoard.isFocus(board)) {
@@ -103,6 +104,7 @@ export function withSelection(board: PlaitBoard) {
                         strokeWidth: 1,
                         fillStyle: 'solid'
                     });
+                    selectionOuterG.classList.add('selection-outer');
                     PlaitBoard.getHost(board).append(selectionOuterG);
                 }
             }
