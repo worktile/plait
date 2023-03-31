@@ -37,7 +37,17 @@ import { withNodeDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isIntersectionSelection, getRectangle } = board;
+    const {
+        drawElement,
+        dblclick,
+        keydown,
+        insertFragment,
+        setFragment,
+        deleteFragment,
+        isIntersectionSelection,
+        getRectangle,
+        isMovable
+    } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMindmap.isPlaitMindmap(context.element)) {
@@ -62,6 +72,13 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
 
         return isIntersectionSelection(element, range);
+    };
+
+    board.isMovable = element => {
+        if (PlaitMindmap.isPlaitMindmap(element) && element.isRoot) {
+            return true;
+        }
+        return isMovable(element);
     };
 
     board.keydown = (event: KeyboardEvent) => {

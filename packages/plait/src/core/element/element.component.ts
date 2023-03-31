@@ -81,7 +81,7 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         const current = {
             element: this.element,
             selection: this.selection,
-            board: this.board,
+            board: this.board
         };
         if (this.context) {
             const previous = { ...this.context };

@@ -52,6 +52,8 @@ import {
 } from '../utils/viewport';
 import isHotkey from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
+import { RectangleClient } from '../interfaces/rectangle-client';
+import { withMoving } from '../plugins/with-moving';
 
 const ElementHostClass = 'element-host';
 
@@ -103,10 +105,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
 
-    get isFocused() {
-        return this.board?.selection;
-    }
-
     get host(): SVGSVGElement {
         return this.svg.nativeElement;
     }
@@ -122,8 +120,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     @HostBinding('class.focused')
-    get focused() {
-        return this.isFocused;
+    get isFocused() {
+        return PlaitBoard.isFocus(this.board);
     }
 
     get nativeElement(): HTMLElement {
@@ -248,9 +246,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<KeyboardEvent>(document, 'keydown')
             .pipe(
                 takeUntil(this.destroy$),
-                filter(() => {
-                    return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection;
-                })
+                filter(() => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: KeyboardEvent) => {
                 if (isHotkey(['mod+=', 'mod++'], { byKey: true })(event)) {
@@ -267,9 +263,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<KeyboardEvent>(document, 'keyup')
             .pipe(
                 takeUntil(this.destroy$),
-                filter(() => {
-                    return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection;
-                })
+                filter(() => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: KeyboardEvent) => {
                 this.board?.keyup(event);
@@ -278,9 +272,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<ClipboardEvent>(document, 'copy')
             .pipe(
                 takeUntil(this.destroy$),
-                filter(() => {
-                    return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection;
-                })
+                filter(() => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: ClipboardEvent) => {
                 event.preventDefault();
@@ -290,9 +282,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<ClipboardEvent>(document, 'paste')
             .pipe(
                 takeUntil(this.destroy$),
-                filter(() => {
-                    return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection && !this.readonly;
-                })
+                filter(() => this.isFocused && !PlaitBoard.isReadonly(this.board) && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((clipboardEvent: ClipboardEvent) => {
                 const mousePoint = BOARD_TO_MOVING_POINT.get(this.board);
@@ -306,9 +296,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<ClipboardEvent>(document, 'cut')
             .pipe(
                 takeUntil(this.destroy$),
-                filter(() => {
-                    return !IS_TEXT_EDITABLE.get(this.board) && !!this.board.selection;
-                })
+                filter(() => this.isFocused && !PlaitBoard.isReadonly(this.board) && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: ClipboardEvent) => {
                 event.preventDefault();
@@ -321,9 +309,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'scroll')
             .pipe(
                 takeUntil(this.destroy$),
-                filter(() => {
-                    return !!this.isFocused;
-                })
+                filter(() => this.isFocused)
             )
             .subscribe((event: Event) => {
                 const { scrollLeft, scrollTop } = event.target as HTMLElement;

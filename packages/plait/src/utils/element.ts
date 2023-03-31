@@ -5,8 +5,8 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
     const boundaryBox = {
         left: Number.MAX_VALUE,
         top: Number.MAX_VALUE,
-        right: Number.MIN_VALUE,
-        bottom: Number.MIN_VALUE
+        right: Number.NEGATIVE_INFINITY,
+        bottom: Number.NEGATIVE_INFINITY
     };
 
     const calcRectangleClient = (node: PlaitElement) => {

@@ -57,7 +57,7 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
     let selectedElementPath: Path, newElement: MindmapNodeElement, path: Path;
     const selectedElements = getSelectedElements(board);
     const selectedComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements[0] as MindmapNodeElement) as MindmapNodeComponent;
-
+    let newELements: PlaitElement[] = [];
     if (selectedComponent) {
         selectedElementPath = findPath(board, selectedComponent.node);
     }
@@ -79,10 +79,11 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
 
             path = [board.children.length];
         }
-
+        newELements.push(newElement);
         Transforms.insertNode(board, newElement, path);
         return;
     });
+    Transforms.setSelectionWithTemporaryElements(board, newELements);
 };
 
 export const insertClipboardText = (board: PlaitBoard, text: string, textWidth: number) => {

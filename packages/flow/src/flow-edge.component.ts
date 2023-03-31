@@ -100,7 +100,7 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
     drawEdge(element: FlowEdge<T> = this.element, active = false) {
         this.destroyEdge();
         this.nodeG = drawEdge(this.board, this.roughSVG, element, active);
-        this.g.append(this.nodeG);
+        this.g.prepend(this.nodeG);
     }
 
     drawHandles(element: FlowEdge<T> = this.element, active = false) {

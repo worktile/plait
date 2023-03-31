@@ -13,3 +13,5 @@ export * from './draw/arrow';
 export * from './tree';
 export * from './element';
 export * from './viewport';
+export * from './common';
+export * from './moving-element';

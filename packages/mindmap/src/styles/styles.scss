@@ -15,11 +15,16 @@ g[plait-mindmap='true'] {
     }
 
     .extend {
-        display: none;
+        opacity: 0;
         cursor: default;
     }
 
-    .collapsed,
+    .collapsed {
+        .extend {
+            opacity: 1;
+        }
+    }
+
     .dragging-origin,
     .dragging-child {
         opacity: 0.6;
@@ -29,13 +34,14 @@ g[plait-mindmap='true'] {
     .extend {
         cursor: pointer;
         &:hover {
-            display: block;
+            opacity: 1;
         }
     }
+
     g[plait-mindmap='true'] {
         .hovered {
             .extend {
-                display: block;
+                opacity: 1;
             }
         }
     }

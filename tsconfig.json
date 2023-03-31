@@ -5,24 +5,19 @@
     "baseUrl": "./",
     "paths": {
       "@plait/flow": [
-        "dist/flow",
-        "dist/flow/flow"
+        "dist/flow"
       ],
       "@plait/layouts": [
-        "dist/layouts/layouts",
         "dist/layouts"
       ],
       "@plait/mindmap": [
-        "dist/mindmap",
-        "dist/mindmap/mindmap"
+        "dist/mindmap"
       ],
       "@plait/core": [
-        "dist/plait",
-        "dist/plait/plait"
+        "dist/core"
       ],
       "@plait/richtext": [
-        "dist/richtext",
-        "dist/richtext/richtext"
+        "dist/richtext"
       ]
     },
     "outDir": "./dist/out-tsc",

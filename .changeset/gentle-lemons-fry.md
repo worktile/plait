@@ -2,4 +2,4 @@
 '@plait/core': patch
 ---
 
-fix can not select node
+support clear board selection
