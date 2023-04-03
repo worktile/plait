@@ -94,7 +94,7 @@ export function setSVGViewBox(board: PlaitBoard, viewBox: number[]) {
     }
 }
 
-export function updateViewportContainerOffset(board: PlaitBoard, origination?: number[]) {
+export function updateViewportOffset(board: PlaitBoard, origination?: number[]) {
     origination = origination ?? board.viewport.origination;
     if (!origination) return;
 
@@ -102,13 +102,20 @@ export function updateViewportContainerOffset(board: PlaitBoard, origination?: n
     const viewBox = getViewBox(board, zoom);
     const scrollLeft = (origination![0] - viewBox[0]) * zoom;
     const scrollTop = (origination![1] - viewBox[1]) * zoom;
-    setViewportContainerScroll(board, scrollLeft, scrollTop);
+    updateViewportContainerScroll(board, scrollLeft, scrollTop);
 }
 
-export function setViewportContainerScroll(board: PlaitBoard, left: number, top: number) {
+export function updateViewportContainerScroll(board: PlaitBoard, left: number, top: number) {
     const viewportContainer = PlaitBoard.getViewportContainer(board);
     viewportContainer.scrollLeft = Math.ceil(left);
     viewportContainer.scrollTop = Math.ceil(top);
+}
+
+export function initViewportContainer(board: PlaitBoard) {
+    const { width, height } = getViewportContainerRect(board);
+    const viewportContainer = PlaitBoard.getViewportContainer(board);
+    viewportContainer.style.width = `${width}px`;
+    viewportContainer.style.height = `${height}px`;
 }
 
 export function initializeViewport(board: PlaitBoard) {
@@ -121,15 +128,15 @@ export function initializeViewportContainerOffset(board: PlaitBoard) {
     if (!board.viewport?.origination) {
         const zoom = board.viewport.zoom;
 
-        const viewportContainerBox = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
+        const viewportContainerRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
         const viewBox = getViewBox(board, zoom);
         const centerX = viewBox[0] + viewBox[2] / 2;
         const centerY = viewBox[1] + viewBox[3] / 2;
-        const origination = [centerX - viewportContainerBox.width / 2 / zoom, centerY - viewportContainerBox.height / 2 / zoom];
-        updateViewportContainerOffset(board, origination);
+        const origination = [centerX - viewportContainerRect.width / 2 / zoom, centerY - viewportContainerRect.height / 2 / zoom];
+        updateViewportOffset(board, origination);
         return;
     }
-    updateViewportContainerOffset(board);
+    updateViewportOffset(board);
 }
 
 export function setViewport(board: PlaitBoard, origination: number[], zoom?: number) {
@@ -166,15 +173,15 @@ export function changeZoom(board: PlaitBoard, newZoom: number, isCenter = true) 
 
 export function fitViewport(board: PlaitBoard) {
     const viewportContainerRect = getViewportContainerRect(board);
-    const rootGroupBox = getRectangleByElements(board, board.children, true);
+    const elementHostBox = getRectangleByElements(board, board.children, true);
     const zoom = board.viewport.zoom;
     const autoFitPadding = 8;
     const viewportWidth = viewportContainerRect.width - 2 * autoFitPadding;
     const viewportHeight = viewportContainerRect.height - 2 * autoFitPadding;
 
     let newZoom = zoom;
-    if (viewportWidth < rootGroupBox.width || viewportHeight < rootGroupBox.height) {
-        newZoom = Math.min(viewportWidth / rootGroupBox.width, viewportHeight / rootGroupBox.height);
+    if (viewportWidth < elementHostBox.width || viewportHeight < elementHostBox.height) {
+        newZoom = Math.min(viewportWidth / elementHostBox.width, viewportHeight / elementHostBox.height);
     } else {
         newZoom = 1;
     }
