@@ -1,5 +1,13 @@
 # mindmap
 
+## 0.1.3
+
+### Patch Changes
+
+-   [`4401da6`](https://github.com/worktile/plait/commit/4401da6a2a019d8c7078387eee6529a240b2e887) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct richtext position and size style
+
+*   [#281](https://github.com/worktile/plait/pull/281) [`48e2989`](https://github.com/worktile/plait/commit/48e29896073761bc7c5142c880e1fd2dbc886896) Thanks [@WBbug](https://github.com/WBbug)! - add collapseG, listen collapseG mouseUp event
+
 ## 0.1.2
 
 ### Patch Changes

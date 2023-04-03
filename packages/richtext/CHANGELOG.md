@@ -1,5 +1,11 @@
 # richtext
 
+## 0.1.3
+
+### Patch Changes
+
+-   [`4401da6`](https://github.com/worktile/plait/commit/4401da6a2a019d8c7078387eee6529a240b2e887) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct richtext position and size style
+
 ## 0.1.0
 
 ### Minor Changes

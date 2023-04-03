@@ -1,5 +1,17 @@
 # plait
 
+## 0.1.3
+
+### Patch Changes
+
+-   [`4401da6`](https://github.com/worktile/plait/commit/4401da6a2a019d8c7078387eee6529a240b2e887) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct richtext position and size style
+
+*   [#285](https://github.com/worktile/plait/pull/285) [`717cd1c`](https://github.com/worktile/plait/commit/717cd1c1eea7d0dafb15fe6ec0889cadc3c13dca) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct viewport update flow
+
+-   [#284](https://github.com/worktile/plait/pull/284) [`0c01a0e`](https://github.com/worktile/plait/commit/0c01a0ef802f3172eaca1cfc5987ff459ef1905b) Thanks [@Maple13](https://github.com/Maple13)! - optimize resize processing
+
+*   [#282](https://github.com/worktile/plait/pull/282) [`26d11a5`](https://github.com/worktile/plait/commit/26d11a5b1d3d7714aa36bc8e232ac78119270ea1) Thanks [@WBbug](https://github.com/WBbug)! - fix import error
+
 ## 0.1.2
 
 ### Patch Changes
