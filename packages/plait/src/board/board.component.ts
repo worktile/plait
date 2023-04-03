@@ -21,7 +21,7 @@ import {
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil, tap, throttle, throttleTime } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitPlugin } from '../interfaces/plugin';
@@ -38,22 +38,23 @@ import {
     BOARD_TO_ELEMENT_HOST,
     BOARD_TO_HOST,
     BOARD_TO_ROUGH_SVG,
-    BOARD_TO_MOVING_POINT,
-    BOARD_TO_SCROLLING
+    BOARD_TO_MOVING_POINT
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import {
     fitViewport,
     getViewBox,
-    initializeViewportContainerOffset,
-    initializeViewport,
+    initializeViewportOffset,
+    initializeViewBox,
     setViewport,
     changeZoom,
     getViewportContainerRect,
     updateViewportOrigination,
     getViewportOrigination,
     isViewportScrolling,
-    clearViewportScrolling
+    clearViewportScrolling,
+    initializeViewportContainer,
+    updateViewportOffset
 } from '../utils/viewport';
 import { isHotkey } from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
@@ -197,9 +198,9 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     ngAfterViewInit(): void {
         this.plaitBoardInitialized.emit(this.board);
-        this.initializeViewportContainer();
-        initializeViewport(this.board);
-        initializeViewportContainerOffset(this.board);
+        initializeViewportContainer(this.board);
+        initializeViewBox(this.board);
+        initializeViewportOffset(this.board);
     }
 
     private initializePlugins() {
@@ -348,15 +349,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     private elementResizeListener() {
         this.resizeObserver = new ResizeObserver(() => {
-            this.initializeViewportContainer();
+            initializeViewportContainer(this.board);
+            initializeViewBox(this.board);
+            updateViewportOffset(this.board);
         });
         this.resizeObserver.observe(this.nativeElement);
-    }
-
-    initializeViewportContainer() {
-        const { width, height } = getViewportContainerRect(this.board);
-        this.renderer2.setStyle(this.viewportContainer.nativeElement, 'width', `${width}px`);
-        this.renderer2.setStyle(this.viewportContainer.nativeElement, 'height', `${height}px`);
     }
 
     trackBy = (index: number, element: PlaitElement) => {

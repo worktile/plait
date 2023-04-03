@@ -1,6 +1,6 @@
 import { Subscription, timer } from 'rxjs';
 import { PlaitBoard } from '../interfaces/board';
-import { initializeViewport, updateViewportContainerOffset } from '../utils/viewport';
+import { initializeViewBox, updateViewportOffset } from '../utils/viewport';
 
 export function withViewport(board: PlaitBoard) {
     const { onChange } = board;
@@ -13,15 +13,15 @@ export function withViewport(board: PlaitBoard) {
             return onChange();
         }
         if (isSetViewport) {
-            initializeViewport(board);
-            updateViewportContainerOffset(board);
+            initializeViewBox(board);
+            updateViewportOffset(board);
         } else {
             if (timerSubscription) {
                 timerSubscription.unsubscribe();
             }
             timerSubscription = timer(500).subscribe(() => {
-                initializeViewport(board);
-                updateViewportContainerOffset(board);
+                initializeViewBox(board);
+                updateViewportOffset(board);
             });
         }
         onChange();
