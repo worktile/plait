@@ -49,7 +49,7 @@ export function withSelection(board: PlaitBoard) {
             const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
             selectionMovingG?.remove();
-            if (Math.hypot(width, height) > 5) {
+            if (!board.options.readonly && Math.hypot(width, height) > 5) {
                 if (!board.options.readonly) {
                     end = movedTarget;
                     Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });

@@ -9,7 +9,6 @@ import {
     MINDMAP_ELEMENT_TO_COMPONENT,
     withMindmap
 } from '@plait/mindmap';
-import { PlaitBoardOptions } from '../../../dist/plait/interfaces';
 import { mockMindmapData } from './mock-data';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
