@@ -1,5 +1,11 @@
 # plait
 
+## 0.1.4
+
+### Patch Changes
+
+-   [`32c1276`](https://github.com/worktile/plait/commit/32c12769e8d43b03bfe91cf1a36691b0772ba419) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct isAttachedElement value in with selection
+
 ## 0.1.3
 
 ### Patch Changes
