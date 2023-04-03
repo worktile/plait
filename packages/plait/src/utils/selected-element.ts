@@ -11,7 +11,7 @@ export const calcElementIntersectionSelection = (board: PlaitBoard) => {
         if (
             PlaitElement.isElement(node) &&
             board.selection?.ranges.some(range => {
-                return board.isIntersectionSelection(node, range);
+                return board.isHitSelection(node, range);
             })
         ) {
             selectedElements.push(node);
@@ -26,7 +26,7 @@ export const isIntersectionElements = (board: PlaitBoard, elements: PlaitElement
         elements.map(item => {
             if (!isIntersectionElements) {
                 isIntersectionElements = ranges.some(range => {
-                    return board.isIntersectionSelection(item, range);
+                    return board.isHitSelection(item, range);
                 });
             }
         });

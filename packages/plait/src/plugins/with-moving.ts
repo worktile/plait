@@ -33,7 +33,7 @@ export function withMoving(board: PlaitBoard) {
             } else {
                 activeElements = movableElements.filter(item =>
                     ranges.some(range => {
-                        return board.isIntersectionSelection(item, range);
+                        return board.isHitSelection(item, range);
                     })
                 );
             }

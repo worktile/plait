@@ -19,7 +19,7 @@ import { getEdgesByNodeId } from '../utils/edge/get-edges-by-node';
 import { OUTLINE_BUFFR } from '../constants/node';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, isIntersectionSelection, isMovable, onChange } = board;
+    const { drawElement, isHitSelection, isMovable, onChange } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (FlowElement.isFlowElement(context.element)) {
@@ -31,7 +31,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
         return drawElement(context);
     };
 
-    board.isIntersectionSelection = (element, range) => {
+    board.isHitSelection = (element, range) => {
         const elementComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(element) as FlowNodeComponent | FlowEdgeComponent;
         if (FlowElement.isFlowElement(element) && elementComponent && board.selection) {
             if (FlowNode.isFlowNodeElement(element)) {
@@ -49,7 +49,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                 return isHitFlowEdge(board, element, range.focus);
             }
         }
-        return isIntersectionSelection(element, range);
+        return isHitSelection(element, range);
     };
 
     board.isMovable = element => {
