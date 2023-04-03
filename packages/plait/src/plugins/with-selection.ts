@@ -25,6 +25,7 @@ export function withSelection(board: PlaitBoard) {
 
     board.mousedown = (event: MouseEvent) => {
         if (board.pointer === PlaitPointerType.hand && board.selection) {
+            mousedown(event);
             return;
         }
         if (event.button === 0) {
