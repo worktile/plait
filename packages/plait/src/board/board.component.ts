@@ -20,7 +20,7 @@ import {
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitPlugin } from '../interfaces/plugin';
@@ -37,7 +37,8 @@ import {
     BOARD_TO_ELEMENT_HOST,
     BOARD_TO_HOST,
     BOARD_TO_ROUGH_SVG,
-    BOARD_TO_MOVING_POINT
+    BOARD_TO_MOVING_POINT,
+    BOARD_TO_SCROLLING
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import {
@@ -47,10 +48,15 @@ import {
     initializeViewport,
     setViewport,
     changeZoom,
-    getViewportContainerRect
+    getViewportContainerRect,
+    updateViewportOrigination,
+    getViewportOrigination,
+    isViewportScrolling,
+    clearViewportScrolling
 } from '../utils/viewport';
 import { isHotkey } from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
+import { Point } from '../interfaces';
 
 const ElementHostClass = 'element-host';
 
@@ -185,7 +191,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     ngAfterViewInit(): void {
         this.plaitBoardInitialized.emit(this.board);
-        this.initViewportContainer();
+        this.initializeViewportContainer();
         initializeViewport(this.board);
         initializeViewportContainerOffset(this.board);
     }
@@ -306,25 +312,40 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'scroll')
             .pipe(
                 takeUntil(this.destroy$),
-                filter(() => this.isFocused)
+                filter(() => {
+                    const isScrolling = isViewportScrolling(this.board);
+                    if (isScrolling) {
+                        clearViewportScrolling(this.board);
+                    }
+                    return !isScrolling && this.isFocused;
+                }),
+                tap((event: Event) => {
+                    const { scrollLeft, scrollTop } = event.target as HTMLElement;
+                    const zoom = this.board.viewport.zoom;
+                    const viewBox = getViewBox(this.board, zoom);
+                    const origination = [scrollLeft / zoom + viewBox[0], scrollTop / zoom + viewBox[1]] as Point;
+                    updateViewportOrigination(this.board, origination);
+                    return origination;
+                }),
+                debounceTime(3000)
             )
             .subscribe((event: Event) => {
-                const { scrollLeft, scrollTop } = event.target as HTMLElement;
-                const zoom = this.board.viewport.zoom;
-                const viewBox = getViewBox(this.board, zoom);
-                const origination = [scrollLeft / zoom + viewBox[0], scrollTop / zoom + viewBox[1]];
-                setViewport(this.board, origination);
+                const origination = getViewportOrigination(this.board) as Point;
+                if (Point.isEquals(origination, this.board.viewport.origination)) {
+                    return;
+                }
+                setViewport(this.board, getViewportOrigination(this.board) as Point);
             });
     }
 
     private elementResizeListener() {
         this.resizeObserver = new ResizeObserver(() => {
-            this.initViewportContainer();
+            this.initializeViewportContainer();
         });
         this.resizeObserver.observe(this.nativeElement);
     }
 
-    initViewportContainer() {
+    initializeViewportContainer() {
         const { width, height } = getViewportContainerRect(this.board);
         this.renderer2.setStyle(this.viewportContainer.nativeElement, 'width', `${width}px`);
         this.renderer2.setStyle(this.viewportContainer.nativeElement, 'height', `${height}px`);

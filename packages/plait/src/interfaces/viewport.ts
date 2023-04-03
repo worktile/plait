@@ -1,11 +1,12 @@
 import { isNullOrUndefined } from '../utils/helper';
 import { ExtendedType } from './custom-types';
+import { Point } from './point';
 
 export interface BaseViewport {
     [key: string]: any;
     viewBackgroundColor: string;
     zoom: number;
-    origination?: number[];
+    origination?: Point;
 }
 
 export type Viewport = ExtendedType<'Viewport', BaseViewport>;
