@@ -1,4 +1,4 @@
-import { PlaitPointerType, PlaitBoard, PlaitBoardMove } from '../interfaces';
+import { PlaitPointerType, PlaitBoard, PlaitBoardMove, Point } from '../interfaces';
 import { updatePointerType } from '../transforms/board';
 import { updateViewportContainerScroll } from '../utils/viewport';
 
@@ -32,7 +32,6 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
             const left = viewportContainer.scrollLeft - (event.x - plaitBoardMove.x);
             const top = viewportContainer.scrollTop - (event.y - plaitBoardMove.y);
             updateViewportContainerScroll(board, left, top);
-
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
         }

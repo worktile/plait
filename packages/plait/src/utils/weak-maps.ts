@@ -23,9 +23,13 @@ export const BOARD_TO_SELECTED_ELEMENT = new WeakMap<PlaitBoard, PlaitElement[]>
 
 export const BOARD_TO_MOVING_POINT = new WeakMap<PlaitBoard, Point>();
 
+export const BOARD_TO_VIEWPORT_ORIGINATION = new WeakMap<PlaitBoard, Point>();
+
 export const BOARD_TO_IS_SELECTION_MOVING = new WeakMap<PlaitBoard, boolean>();
 
 // save no standard selected elements
 export const BOARD_TO_TEMPORARY_ELEMENTS = new WeakMap<PlaitBoard, PlaitElement[]>();
 
 export const BOARD_TO_MOVING_ELEMENT = new WeakMap<PlaitBoard, PlaitElement[]>();
+
+export const BOARD_TO_SCROLLING = new WeakMap<PlaitBoard, boolean>()
