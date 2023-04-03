@@ -8,6 +8,7 @@ import {
     EventEmitter,
     HostBinding,
     Input,
+    NgZone,
     OnChanges,
     OnDestroy,
     OnInit,
@@ -20,7 +21,7 @@ import {
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil, tap, throttle, throttleTime } from 'rxjs/operators';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitPlugin } from '../interfaces/plugin';
@@ -140,7 +141,12 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @ViewChild('viewportContainer', { read: ElementRef, static: true })
     viewportContainer!: ElementRef;
 
-    constructor(public cdr: ChangeDetectorRef, private renderer2: Renderer2, private elementRef: ElementRef<HTMLElement>) {}
+    constructor(
+        public cdr: ChangeDetectorRef,
+        private renderer2: Renderer2,
+        private elementRef: ElementRef<HTMLElement>,
+        private ngZone: NgZone
+    ) {}
 
     ngOnInit(): void {
         const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;
@@ -309,33 +315,35 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     private viewportScrollListener() {
-        fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'scroll')
-            .pipe(
-                takeUntil(this.destroy$),
-                filter(() => {
-                    const isScrolling = isViewportScrolling(this.board);
-                    if (isScrolling) {
-                        clearViewportScrolling(this.board);
+        this.ngZone.runOutsideAngular(() => {
+            fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'scroll')
+                .pipe(
+                    takeUntil(this.destroy$),
+                    filter(() => {
+                        const isScrolling = isViewportScrolling(this.board);
+                        if (isScrolling) {
+                            clearViewportScrolling(this.board);
+                        }
+                        return !isScrolling && this.isFocused;
+                    }),
+                    tap((event: Event) => {
+                        const { scrollLeft, scrollTop } = event.target as HTMLElement;
+                        const zoom = this.board.viewport.zoom;
+                        const viewBox = getViewBox(this.board, zoom);
+                        const origination = [scrollLeft / zoom + viewBox[0], scrollTop / zoom + viewBox[1]] as Point;
+                        updateViewportOrigination(this.board, origination);
+                        return origination;
+                    }),
+                    debounceTime(500)
+                )
+                .subscribe((event: Event) => {
+                    const origination = getViewportOrigination(this.board) as Point;
+                    if (Point.isEquals(origination, this.board.viewport.origination)) {
+                        return;
                     }
-                    return !isScrolling && this.isFocused;
-                }),
-                tap((event: Event) => {
-                    const { scrollLeft, scrollTop } = event.target as HTMLElement;
-                    const zoom = this.board.viewport.zoom;
-                    const viewBox = getViewBox(this.board, zoom);
-                    const origination = [scrollLeft / zoom + viewBox[0], scrollTop / zoom + viewBox[1]] as Point;
-                    updateViewportOrigination(this.board, origination);
-                    return origination;
-                }),
-                debounceTime(3000)
-            )
-            .subscribe((event: Event) => {
-                const origination = getViewportOrigination(this.board) as Point;
-                if (Point.isEquals(origination, this.board.viewport.origination)) {
-                    return;
-                }
-                setViewport(this.board, getViewportOrigination(this.board) as Point);
-            });
+                    setViewport(this.board, getViewportOrigination(this.board) as Point);
+                });
+        });
     }
 
     private elementResizeListener() {

@@ -107,8 +107,11 @@ export function updateViewportContainerOffset(board: PlaitBoard) {
 
 export function setViewportContainerScroll(board: PlaitBoard, left: number, top: number) {
     const viewportContainer = PlaitBoard.getViewportContainer(board);
-    viewportContainer.scrollLeft = left;
-    viewportContainer.scrollTop = top;
+    if (viewportContainer.scrollLeft !== left || viewportContainer.scrollTop !== top) {
+        viewportContainer.scrollLeft = left;
+        viewportContainer.scrollTop = top;
+        setViewportScrolling(board);
+    }
 }
 
 export function initializeViewport(board: PlaitBoard) {
@@ -206,7 +209,7 @@ export const isViewportScrolling = (board: PlaitBoard) => {
     return !!BOARD_TO_SCROLLING.get(board);
 }
 
-export const updateViewportScrolling = (board: PlaitBoard) => {
+export const setViewportScrolling = (board: PlaitBoard) => {
     BOARD_TO_SCROLLING.set(board, true);
 }
 
