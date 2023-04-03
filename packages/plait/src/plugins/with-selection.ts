@@ -79,10 +79,11 @@ export function withSelection(board: PlaitBoard) {
 
         if (PlaitBoard.isFocus(board)) {
             const isInBoard = event.target instanceof Node && PlaitBoard.getBoardNativeElement(board).contains(event.target);
-            const isAttachedElement = event.target instanceof HTMLElement && event.target.closest(`.${ATTACHED_ELEMENT_CLASS_NAME}`);
+            const isInDocument = event.target instanceof Node && document.contains(event.target);
+            const isAttachedElement = event.target instanceof Element && event.target.closest(`.${ATTACHED_ELEMENT_CLASS_NAME}`);
             // Clear selection when mouse board outside area
             // The framework needs to determine whether the board is focused through selection
-            if (!isInBoard && !start && !isAttachedElement) {
+            if (!isInBoard && !start && !isAttachedElement && isInDocument) {
                 Transforms.setSelection(board, null);
             }
         }
