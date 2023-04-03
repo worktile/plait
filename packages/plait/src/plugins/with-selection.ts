@@ -10,7 +10,7 @@ import {
     getSelectedElements,
     isIntersectionElements
 } from '../utils/selected-element';
-import { SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
+import { PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
@@ -24,6 +24,9 @@ export function withSelection(board: PlaitBoard) {
     let selectionOuterG: SVGGElement;
 
     board.mousedown = (event: MouseEvent) => {
+        if (board.pointer === PlaitPointerType.hand && board.selection) {
+            return;
+        }
         if (event.button === 0) {
             start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         }

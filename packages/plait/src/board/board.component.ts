@@ -47,7 +47,7 @@ import {
     initializeViewport,
     setViewport,
     changeZoom,
-    getViewportContainerRect
+    initViewportContainer
 } from '../utils/viewport';
 import { isHotkey } from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
@@ -185,7 +185,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     ngAfterViewInit(): void {
         this.plaitBoardInitialized.emit(this.board);
-        this.initViewportContainer();
+        initViewportContainer(this.board);
         initializeViewport(this.board);
         initializeViewportContainerOffset(this.board);
     }
@@ -319,15 +319,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     private elementResizeListener() {
         this.resizeObserver = new ResizeObserver(() => {
-            this.initViewportContainer();
+            initViewportContainer(this.board);
+            initializeViewport(this.board);
+            initializeViewportContainerOffset(this.board);
         });
         this.resizeObserver.observe(this.nativeElement);
-    }
-
-    initViewportContainer() {
-        const { width, height } = getViewportContainerRect(this.board);
-        this.renderer2.setStyle(this.viewportContainer.nativeElement, 'width', `${width}px`);
-        this.renderer2.setStyle(this.viewportContainer.nativeElement, 'height', `${height}px`);
     }
 
     trackBy = (index: number, element: PlaitElement) => {
