@@ -57,7 +57,7 @@ export function createBoard(children: PlaitElement[], options: PlaitBoardOptions
         redrawElement: (context: PlaitPluginElementContext, previousContext) => {},
         destroyElement: (context: PlaitPluginElementContext) => {},
         isWithinSelection: element => false,
-        isIntersectionSelection: element => false,
+        isHitSelection: element => false,
         isMovable: element => false,
         getRectangle: element => null
     };

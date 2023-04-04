@@ -41,7 +41,7 @@ export interface PlaitBoard {
     drawElement: (context: PlaitPluginElementContext) => SVGGElement[] | ComponentType<PlaitPluginElementComponent>;
     redrawElement: (context: PlaitPluginElementContext, previousContext?: PlaitPluginElementContext) => SVGGElement[] | void;
     destroyElement: (context: PlaitPluginElementContext) => void;
-    isIntersectionSelection: (element: PlaitElement, range: Range) => boolean;
+    isHitSelection: (element: PlaitElement, range: Range) => boolean;
     isMovable: (element: PlaitElement) => boolean;
     getRectangle: (element: PlaitElement) => RectangleClient | null;
     isWithinSelection: (element: PlaitElement) => boolean;
