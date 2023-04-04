@@ -59,6 +59,7 @@ import {
 import { isHotkey } from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
 import { Point } from '../interfaces';
+import { withMoving } from '../public-api';
 
 const ElementHostClass = 'element-host';
 
@@ -204,7 +205,9 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     private initializePlugins() {
-        let board = withHandPointer(withHistory(withSelection(withBoard(withViewport(createBoard(this.plaitValue, this.plaitOptions))))));
+        let board = withHandPointer(
+            withHistory(withSelection(withMoving(withBoard(withViewport(createBoard(this.plaitValue, this.plaitOptions))))))
+        );
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
         });
