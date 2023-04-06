@@ -43,7 +43,7 @@ export function withMoving(board: PlaitBoard) {
     };
 
     board.mousemove = event => {
-        if (startPoint && activeElements?.length && !IS_TEXT_EDITABLE.get(board)) {
+        if (startPoint && activeElements?.length && !PlaitBoard.hasBeenTextEditing(board)) {
             if (!isPreventDefault) {
                 isPreventDefault = true;
             }
