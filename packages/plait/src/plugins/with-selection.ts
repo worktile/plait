@@ -2,7 +2,7 @@ import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
-import { toPoint } from '../utils/dom';
+import { createSelectionOuterG, toPoint } from '../utils/dom';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import {
     cacheSelectedElements,
@@ -101,14 +101,9 @@ export function withSelection(board: PlaitBoard) {
                 const temporaryElements = getTemporaryElements(board);
                 const elements = temporaryElements ? temporaryElements : calcElementIntersectionSelection(board);
                 cacheSelectedElements(board, elements);
-                const { x, y, width, height } = getRectangleByElements(board, elements, false);
+                const { width, height } = getRectangleByElements(board, elements, false);
                 if (width > 0 && height > 0) {
-                    const rough = PlaitBoard.getRoughSVG(board);
-                    selectionOuterG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
-                        stroke: SELECTION_BORDER_COLOR,
-                        strokeWidth: 1,
-                        fillStyle: 'solid'
-                    });
+                    selectionOuterG = createSelectionOuterG(board, elements);
                     selectionOuterG.classList.add('selection-outer');
                     PlaitBoard.getHost(board).append(selectionOuterG);
                 }

@@ -4,14 +4,6 @@ import { MAX_RADIUS } from '../../constants';
 
 /**
  * drawRoundRectangle
- * @param rs RoughSVG
- * @param x1 number
- * @param y1 number
- * @param x2 number
- * @param y2 number
- * @param options Options
- * @param outline boolean
- * @returns SVGGElement
  */
 export function drawRoundRectangle(
     rs: RoughSVG,

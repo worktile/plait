@@ -1,4 +1,8 @@
 import { Point } from 'roughjs/bin/geometry';
+import { PlaitBoard } from '../interfaces/board';
+import { PlaitElement } from '../interfaces/element';
+import { getRectangleByElements } from './element';
+import { SELECTION_BORDER_COLOR } from '../interfaces/selection';
 
 export const NS = 'http://www.w3.org/2000/svg';
 
@@ -24,4 +28,14 @@ export function createText(x: number, y: number, fill: string, textContent: stri
     text.setAttribute('fill', fill);
     text.textContent = textContent;
     return text;
+}
+
+export function createSelectionOuterG(board: PlaitBoard, selectElements: PlaitElement[]) {
+    const { x, y, width, height } = getRectangleByElements(board, selectElements, false);
+    const rough = PlaitBoard.getRoughSVG(board);
+    return rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
+        stroke: SELECTION_BORDER_COLOR,
+        strokeWidth: 1,
+        fillStyle: 'solid'
+    });
 }

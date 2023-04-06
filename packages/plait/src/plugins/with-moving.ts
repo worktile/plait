@@ -1,14 +1,14 @@
-import { BOARD_TO_HOST, IS_TEXT_EDITABLE } from '../utils/weak-maps';
+import { BOARD_TO_HOST } from '../utils/weak-maps';
 import { PlaitBoard } from '../interfaces/board';
 import { isInPlaitBoard, transformPoint } from '../utils/board';
-import { toPoint } from '../utils/dom';
+import { createSelectionOuterG, toPoint } from '../utils/dom';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
 import { getSelectedElements, isIntersectionElements } from '../utils/selected-element';
 import { MERGING, PlaitNode } from '../interfaces';
 import { throttleRAF } from '../utils/common';
-import { addMovingElements, removeMovingElements } from '../utils/moving-element';
+import { addMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
 
 export function withMoving(board: PlaitBoard) {
     const { mousedown, mousemove, globalMouseup, globalMousemove } = board;
@@ -18,6 +18,7 @@ export function withMoving(board: PlaitBoard) {
     let isPreventDefault = false;
     let startPoint: Point | null;
     let activeElements: PlaitElement[] | null = [];
+    let selectionOuterG: SVGGElement;
 
     board.mousedown = event => {
         const host = BOARD_TO_HOST.get(board);
@@ -26,6 +27,7 @@ export function withMoving(board: PlaitBoard) {
         let movableElements = board.children.filter(item => PlaitElement.isElement(item) && board.isMovable(item));
         if (movableElements.length) {
             startPoint = point;
+            selectionOuterG?.remove();
             const selectedRootElements = getSelectedElements(board).filter(item => movableElements.includes(item));
             const intersectionSelectedElement = isIntersectionElements(board, selectedRootElements, ranges);
             if (intersectionSelectedElement) {
@@ -88,6 +90,12 @@ export function withMoving(board: PlaitBoard) {
     board.globalMouseup = event => {
         isPreventDefault = false;
         if (startPoint) {
+            if (getMovingElements(board).length) {
+                const elements = getSelectedElements(board);
+                selectionOuterG = createSelectionOuterG(board, elements);
+                selectionOuterG.classList.add('selection-outer');
+                PlaitBoard.getHost(board).append(selectionOuterG);
+            }
             cancelMove(board);
         }
         globalMouseup(event);
