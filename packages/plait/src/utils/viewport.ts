@@ -157,11 +157,11 @@ export function changeZoom(board: PlaitBoard, newZoom: number, isCenter = true) 
 
     const mousePoint = BOARD_TO_MOVING_POINT.get(board);
     const nativeElement = PlaitBoard.getBoardNativeElement(board);
-    const rect = nativeElement.getBoundingClientRect();
+    const nativeElementRect = nativeElement.getBoundingClientRect();
     const viewportContainerRect = getViewportContainerRect(board);
     let focusPoint = [viewportContainerRect.width / 2, viewportContainerRect.height / 2];
 
-    if (!isCenter && mousePoint && distanceBetweenPointAndRectangle(mousePoint[0], mousePoint[1], rect) === 0) {
+    if (!isCenter && mousePoint && distanceBetweenPointAndRectangle(mousePoint[0], mousePoint[1], nativeElementRect) === 0) {
         focusPoint = toPoint(mousePoint[0], mousePoint[1], (nativeElement as unknown) as SVGElement);
     }
 
@@ -174,12 +174,13 @@ export function changeZoom(board: PlaitBoard, newZoom: number, isCenter = true) 
 }
 
 export function fitViewport(board: PlaitBoard) {
+    const nativeElementRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
     const viewportContainerRect = getViewportContainerRect(board);
     const elementHostBox = getRectangleByElements(board, board.children, true);
     const zoom = board.viewport.zoom;
     const autoFitPadding = 8;
-    const viewportWidth = viewportContainerRect.width - 2 * autoFitPadding;
-    const viewportHeight = viewportContainerRect.height - 2 * autoFitPadding;
+    const viewportWidth = nativeElementRect.width - 2 * autoFitPadding;
+    const viewportHeight = nativeElementRect.height - 2 * autoFitPadding;
 
     let newZoom = zoom;
     if (viewportWidth < elementHostBox.width || viewportHeight < elementHostBox.height) {
