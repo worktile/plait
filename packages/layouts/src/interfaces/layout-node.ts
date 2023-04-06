@@ -53,7 +53,7 @@ export class LayoutNode {
     }
 
     eachNode(callback: (node: LayoutNode) => void) {
-        dfs(this, callback);
+        depthFirstRecursion(this, callback);
     }
 
     getBoundingBox(): BoundingBox {
@@ -104,9 +104,9 @@ export class LayoutNode {
     }
 }
 
-export function dfs(node: LayoutNode, callback: (node: LayoutNode) => void) {
-    node.children.forEach(_node => {
-        dfs(_node, callback);
+function depthFirstRecursion(node: LayoutNode, callback: (node: LayoutNode) => void) {
+    node.children?.forEach(child => {
+        depthFirstRecursion(child, callback);
     });
     callback(node);
 }
