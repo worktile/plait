@@ -104,7 +104,7 @@ export function withSelection(board: PlaitBoard) {
                 const { x, y, width, height } = getRectangleByElements(board, elements, false);
                 if (width > 0 && height > 0) {
                     const rough = PlaitBoard.getRoughSVG(board);
-                    selectionOuterG = rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
+                    selectionOuterG = rough.rectangle(x - 3, y - 3, width + 6, height + 6, {
                         stroke: SELECTION_BORDER_COLOR,
                         strokeWidth: 1,
                         fillStyle: 'solid'
