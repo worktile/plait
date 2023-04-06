@@ -1,5 +1,17 @@
 # mindmap
 
+## 0.1.5
+
+### Patch Changes
+
+-   [#291](https://github.com/worktile/plait/pull/291) [`5206cb5`](https://github.com/worktile/plait/commit/5206cb5ae8dac1f3b36989dfb716860e0e185384) Thanks [@WBbug](https://github.com/WBbug)! - change text gap
+
+*   [#290](https://github.com/worktile/plait/pull/290) [`699f9fd`](https://github.com/worktile/plait/commit/699f9fdfe843f9a7fe80bc2ba6708dd00de452ca) Thanks [@WBbug](https://github.com/WBbug)! - fix min width wrong when zoom
+
+-   [#286](https://github.com/worktile/plait/pull/286) [`d526031`](https://github.com/worktile/plait/commit/d5260317eb11ed0f9fb9101cd11eb2060883a4b3) Thanks [@WBbug](https://github.com/WBbug)! - change isIntersectionSelection to isHitSelection
+
+*   [#288](https://github.com/worktile/plait/pull/288) [`02adb8e`](https://github.com/worktile/plait/commit/02adb8eb2af064e89c2755836174c17c2af9d59e) Thanks [@WBbug](https://github.com/WBbug)! - add line-height style
+
 ## 0.1.3
 
 ### Patch Changes

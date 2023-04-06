@@ -1,5 +1,17 @@
 # plait
 
+## 0.1.5
+
+### Patch Changes
+
+-   [#289](https://github.com/worktile/plait/pull/289) [`b451983`](https://github.com/worktile/plait/commit/b451983b55b653cff2f708aaaf63424afe552a25) Thanks [@WBbug](https://github.com/WBbug)! - add withMoving
+
+*   [#286](https://github.com/worktile/plait/pull/286) [`d526031`](https://github.com/worktile/plait/commit/d5260317eb11ed0f9fb9101cd11eb2060883a4b3) Thanks [@WBbug](https://github.com/WBbug)! - change isIntersectionSelection to isHitSelection
+
+-   [#292](https://github.com/worktile/plait/pull/292) [`5b79308`](https://github.com/worktile/plait/commit/5b7930884b2acb99a6fa2d7b0495edfac1a9300b) Thanks [@WBbug](https://github.com/WBbug)! - prevent move when text is editing
+
+*   [#287](https://github.com/worktile/plait/pull/287) [`be85200`](https://github.com/worktile/plait/commit/be852000408d8fe8b14448643290019eacd47dda) Thanks [@Maple13](https://github.com/Maple13)! - handle scroll bar width impact in fitViewport
+
 ## 0.1.4
 
 ### Patch Changes
