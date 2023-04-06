@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.1.3
+
+### Patch Changes
+
+-   [#286](https://github.com/worktile/plait/pull/286) [`d526031`](https://github.com/worktile/plait/commit/d5260317eb11ed0f9fb9101cd11eb2060883a4b3) Thanks [@WBbug](https://github.com/WBbug)! - change isIntersectionSelection to isHitSelection
+
 ## 0.1.2
 
 ### Patch Changes
