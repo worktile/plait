@@ -1,4 +1,4 @@
-import { BOARD_TO_HOST } from '../utils/weak-maps';
+import { BOARD_TO_HOST, IS_TEXT_EDITABLE } from '../utils/weak-maps';
 import { PlaitBoard } from '../interfaces/board';
 import { isInPlaitBoard, transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom';
@@ -43,7 +43,7 @@ export function withMoving(board: PlaitBoard) {
     };
 
     board.mousemove = event => {
-        if (startPoint && activeElements?.length) {
+        if (startPoint && activeElements?.length && !PlaitBoard.hasBeenTextEditing(board)) {
             if (!isPreventDefault) {
                 isPreventDefault = true;
             }
