@@ -182,7 +182,7 @@ export function fitViewport(board: PlaitBoard) {
     const viewportContainerRect = getViewportContainerRect(board);
     const elementHostBox = getRectangleByElements(board, board.children, true);
     const zoom = board.viewport.zoom;
-    const autoFitPadding = 20;
+    const autoFitPadding = 16;
     const viewportWidth = nativeElementRect.width - 2 * autoFitPadding;
     const viewportHeight = nativeElementRect.height - 2 * autoFitPadding;
 
