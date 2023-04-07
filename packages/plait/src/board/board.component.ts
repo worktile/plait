@@ -59,6 +59,7 @@ import { isHotkey } from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
 import { Point } from '../interfaces';
 import { withMoving } from '../plugins/with-moving';
+import { getMovingElements } from '../utils/moving-element';
 
 const ElementHostClass = 'element-host';
 

@@ -52,6 +52,11 @@
             overflow: auto;
         }
     }
+    &.element-moving {
+        .selection-outer {
+            opacity: 0;
+        }
+    }
 }
 
 .zoom-toolbar {

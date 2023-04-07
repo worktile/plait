@@ -1,4 +1,4 @@
-import { BOARD_TO_HOST, IS_TEXT_EDITABLE } from '../utils/weak-maps';
+import { BOARD_TO_HOST } from '../utils/weak-maps';
 import { PlaitBoard } from '../interfaces/board';
 import { isInPlaitBoard, transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom';
@@ -65,6 +65,7 @@ export function withMoving(board: PlaitBoard) {
                     MERGING.set(board, true);
                     return PlaitNode.get(board, [index]);
                 });
+                PlaitBoard.getBoardNativeElement(board).classList.add('element-moving');
                 addMovingElements(board, currentElements as PlaitElement[]);
             });
         }
@@ -77,8 +78,8 @@ export function withMoving(board: PlaitBoard) {
 
     board.globalMousemove = event => {
         if (startPoint) {
-            const inPliatBordElement = isInPlaitBoard(board, event.x, event.y);
-            if (!inPliatBordElement) {
+            const inPlaitBoardElement = isInPlaitBoard(board, event.x, event.y);
+            if (!inPlaitBoardElement) {
                 cancelMove(board);
             }
         }
@@ -100,6 +101,7 @@ export function withMoving(board: PlaitBoard) {
         activeElements = [];
         removeMovingElements(board);
         MERGING.set(board, false);
+        PlaitBoard.getBoardNativeElement(board).classList.remove('element-moving');
     }
 
     return board;

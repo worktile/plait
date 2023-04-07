@@ -10,7 +10,7 @@ import {
     getSelectedElements,
     isIntersectionElements
 } from '../utils/selected-element';
-import { PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
+import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
@@ -22,6 +22,7 @@ export function withSelection(board: PlaitBoard) {
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
     let selectionOuterG: SVGGElement;
+    let previousSelectedElements: PlaitElement[];
 
     board.mousedown = (event: MouseEvent) => {
         if (board.pointer === PlaitPointerType.hand && board.selection) {
@@ -96,24 +97,31 @@ export function withSelection(board: PlaitBoard) {
     board.onChange = () => {
         // calc selected elements entry
         try {
-            selectionOuterG?.remove();
             if (board.operations.find(value => value.type === 'set_selection')) {
+                selectionOuterG?.remove();
                 const temporaryElements = getTemporaryElements(board);
                 const elements = temporaryElements ? temporaryElements : calcElementIntersectionSelection(board);
                 cacheSelectedElements(board, elements);
-                const { x, y, width, height } = getRectangleByElements(board, elements, false);
+                previousSelectedElements = elements;
+                const { width, height } = getRectangleByElements(board, elements, false);
                 if (width > 0 && height > 0 && elements.length > 1) {
-                    const rough = PlaitBoard.getRoughSVG(board);
-                    selectionOuterG = rough.rectangle(x - 2.5, y - 2.5, width + 5, height + 5, {
-                        stroke: SELECTION_BORDER_COLOR,
-                        strokeWidth: 1,
-                        fillStyle: 'solid'
-                    });
+                    selectionOuterG = createSelectionOuterG(board, elements);
                     selectionOuterG.classList.add('selection-outer');
                     PlaitBoard.getHost(board).append(selectionOuterG);
                 }
+                deleteTemporaryElements(board);
+            } else {
+                const currentSelectedElements = getSelectedElements(board);
+                if (currentSelectedElements.length && currentSelectedElements.length > 1) {
+                    const selectedElementChange = currentSelectedElements.some(item => !previousSelectedElements.includes(item));
+                    if (selectedElementChange) {
+                        selectionOuterG?.remove();
+                        selectionOuterG = createSelectionOuterG(board, currentSelectedElements);
+                        selectionOuterG.classList.add('selection-outer');
+                        PlaitBoard.getHost(board).append(selectionOuterG);
+                    }
+                }
             }
-            deleteTemporaryElements(board);
         } catch (error) {
             console.error(error);
         }
@@ -143,4 +151,14 @@ export function setSelectionMoving(board: PlaitBoard) {
 export function clearSelectionMoving(board: PlaitBoard) {
     PlaitBoard.getBoardNativeElement(board).classList.remove('selection-moving');
     BOARD_TO_IS_SELECTION_MOVING.delete(board);
+}
+
+export function createSelectionOuterG(board: PlaitBoard, selectElements: PlaitElement[]) {
+    const { x, y, width, height } = getRectangleByElements(board, selectElements, false);
+    const rough = PlaitBoard.getRoughSVG(board);
+    return rough.rectangle(x - 2.5, y - 2.5, width + 5, height + 5, {
+        stroke: SELECTION_BORDER_COLOR,
+        strokeWidth: 1,
+        fillStyle: 'solid'
+    });
 }
