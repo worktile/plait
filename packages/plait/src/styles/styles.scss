@@ -54,7 +54,7 @@
     }
     &.element-moving {
         .selection-outer {
-            display: none;
+            opacity: 0;
         }
     }
 }
