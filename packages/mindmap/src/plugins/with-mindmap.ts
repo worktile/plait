@@ -77,7 +77,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
         const selectedElements = getSelectedElements(board) as MindmapNodeElement[];
-        if (selectedElements) {
+        if (selectedElements.length) {
             if ((event.key === 'Tab' || (event.key === 'Enter' && !selectedElements[0].isRoot)) && selectedElements.length === 1) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
