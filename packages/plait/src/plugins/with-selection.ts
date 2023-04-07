@@ -111,16 +111,19 @@ export function withSelection(board: PlaitBoard) {
                 }
                 deleteTemporaryElements(board);
             } else {
-                const currentSelectedElements = getSelectedElements(board);
-                if (currentSelectedElements.length && currentSelectedElements.length > 1) {
-                    const selectedElementChange = currentSelectedElements.some(item => !previousSelectedElements.includes(item));
-                    if (selectedElementChange) {
-                        selectionOuterG?.remove();
-                        selectionOuterG = createSelectionOuterG(board, currentSelectedElements);
-                        selectionOuterG.classList.add('selection-outer');
-                        PlaitBoard.getHost(board).append(selectionOuterG);
+                // wait node destroy and remove selected element state
+                setTimeout(() => {
+                    const currentSelectedElements = getSelectedElements(board);
+                    if (currentSelectedElements.length && currentSelectedElements.length > 1) {
+                        const selectedElementChange = currentSelectedElements.some(item => !previousSelectedElements.includes(item));
+                        if (selectedElementChange) {
+                            selectionOuterG?.remove();
+                            selectionOuterG = createSelectionOuterG(board, currentSelectedElements);
+                            selectionOuterG.classList.add('selection-outer');
+                            PlaitBoard.getHost(board).append(selectionOuterG);
+                        }
                     }
-                }
+                });
             }
         } catch (error) {
             console.error(error);

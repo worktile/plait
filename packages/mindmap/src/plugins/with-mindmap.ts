@@ -137,6 +137,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
             // auto enter edit status
             if (!isVirtualKey(event)) {
+                event.preventDefault();
                 const selectedElement = selectedElements[0];
                 const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
                 const isSpaceKey = event.code === 'Space';
