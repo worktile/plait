@@ -7,6 +7,7 @@ import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText } from '@plait/richtext';
+import { STROKE_WIDTH } from '../constants';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
@@ -124,6 +125,11 @@ export const transformNodeToRoot = (board: PlaitBoard, node: MindmapNodeElement)
         text = '思维导图';
         newElement.value = { children: [{ text }] };
     }
+
+    delete newElement?.strokeColor;
+    delete newElement?.fill;
+    delete newElement?.shape;
+    delete newElement?.strokeWidth;
 
     const { width, height } = getSizeByText(text, PlaitBoard.getViewportContainer(board), ROOT_TOPIC_FONT_SIZE);
     newElement.width = Math.max(width, NODE_MIN_WIDTH);
