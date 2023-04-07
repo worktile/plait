@@ -1,5 +1,11 @@
 # plait
 
+## 0.1.7
+
+### Patch Changes
+
+-   [`5d45fe0`](https://github.com/worktile/plait/commit/5d45fe0892d0972f7af812aa8fadb18659c37af0) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - set correctly origination when container scrolled
+
 ## 0.1.6
 
 ### Patch Changes
