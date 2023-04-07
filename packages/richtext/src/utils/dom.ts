@@ -157,6 +157,7 @@ export const getSizeByText = (text: string, container: HTMLElement, fontSize?: n
     fakeNode.style.display = 'inline-block';
     const richtext = document.createElement('plait-richtext');
     richtext.className = 'plait-richtext-container';
+    richtext.style.lineHeight = 'normal';
     richtext.appendChild(fakeNode);
     container?.appendChild(richtext);
     const { width, height } = fakeNode.getBoundingClientRect();

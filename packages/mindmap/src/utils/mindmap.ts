@@ -6,8 +6,7 @@ import { MindmapNode, PlaitMindmap } from '../interfaces';
 import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
-import { TEXT_DEFAULT_HEIGHT, getSizeByText } from '@plait/richtext';
-import { STROKE_WIDTH } from '../constants';
+import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
@@ -196,7 +195,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
         rightNodeCount,
         layout,
         width: 72,
-        height: 28,
+        height: ROOT_DEFAULT_HEIGHT,
         points: [[230, 208]],
         value: { children: [{ text: '思维导图' }] },
         shape: MindmapNodeShape.roundRectangle,
