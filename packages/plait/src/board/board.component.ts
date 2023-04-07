@@ -339,7 +339,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                     if (Point.isEquals(origination, this.board.viewport.origination)) {
                         return;
                     }
-                    setViewport(this.board, getViewportOrigination(this.board) as Point);
+                    setViewport(this.board, origination);
                     setIsFromScrolling(this.board, true);
                 });
         });
