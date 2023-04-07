@@ -78,8 +78,8 @@ export function withMoving(board: PlaitBoard) {
 
     board.globalMousemove = event => {
         if (startPoint) {
-            const inPlaitBordElement = isInPlaitBoard(board, event.x, event.y);
-            if (!inPlaitBordElement) {
+            const inPlaitBoardElement = isInPlaitBoard(board, event.x, event.y);
+            if (!inPlaitBoardElement) {
                 cancelMove(board);
             }
         }

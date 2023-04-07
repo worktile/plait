@@ -2,7 +2,7 @@ import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
-import { createSelectionOuterG, toPoint } from '../utils/dom';
+import { toPoint } from '../utils/dom';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import {
     cacheSelectedElements,
@@ -151,4 +151,14 @@ export function setSelectionMoving(board: PlaitBoard) {
 export function clearSelectionMoving(board: PlaitBoard) {
     PlaitBoard.getBoardNativeElement(board).classList.remove('selection-moving');
     BOARD_TO_IS_SELECTION_MOVING.delete(board);
+}
+
+export function createSelectionOuterG(board: PlaitBoard, selectElements: PlaitElement[]) {
+    const { x, y, width, height } = getRectangleByElements(board, selectElements, false);
+    const rough = PlaitBoard.getRoughSVG(board);
+    return rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
+        stroke: SELECTION_BORDER_COLOR,
+        strokeWidth: 1,
+        fillStyle: 'solid'
+    });
 }
