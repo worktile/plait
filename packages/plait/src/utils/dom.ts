@@ -33,7 +33,7 @@ export function createText(x: number, y: number, fill: string, textContent: stri
 export function createSelectionOuterG(board: PlaitBoard, selectElements: PlaitElement[]) {
     const { x, y, width, height } = getRectangleByElements(board, selectElements, false);
     const rough = PlaitBoard.getRoughSVG(board);
-    return rough.rectangle(x - 2, y - 2, width + 4, height + 4, {
+    return rough.rectangle(x - 2.5, y - 2.5, width + 5, height + 5, {
         stroke: SELECTION_BORDER_COLOR,
         strokeWidth: 1,
         fillStyle: 'solid'

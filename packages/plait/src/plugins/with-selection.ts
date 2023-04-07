@@ -104,7 +104,7 @@ export function withSelection(board: PlaitBoard) {
                 cacheSelectedElements(board, elements);
                 previousSelectedElements = elements;
                 const { width, height } = getRectangleByElements(board, elements, false);
-                if (width > 0 && height > 0) {
+                if (width > 0 && height > 0 && elements.length > 1) {
                     selectionOuterG = createSelectionOuterG(board, elements);
                     selectionOuterG.classList.add('selection-outer');
                     PlaitBoard.getHost(board).append(selectionOuterG);
@@ -113,11 +113,8 @@ export function withSelection(board: PlaitBoard) {
             } else {
                 const currentSelectedElements = getSelectedElements(board);
                 if (currentSelectedElements.length) {
-                    const previousSelectedElementsPoint = previousSelectedElements.map(item => item.points);
-                    const redrawSelectionOuterG = currentSelectedElements.some(
-                        item => !previousSelectedElementsPoint.includes(item.points)
-                    );
-                    if (redrawSelectionOuterG) {
+                    const selectedElementChange = currentSelectedElements.some(item => !previousSelectedElements.includes(item));
+                    if (selectedElementChange) {
                         selectionOuterG?.remove();
                         selectionOuterG = createSelectionOuterG(board, currentSelectedElements);
                         selectionOuterG.classList.add('selection-outer');

@@ -131,11 +131,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         return PlaitBoard.isFocus(this.board);
     }
 
-    @HostBinding('class.moving')
-    get isMoving() {
-        return getMovingElements(this.board).length;
-    }
-
     get nativeElement(): HTMLElement {
         return this.elementRef.nativeElement;
     }

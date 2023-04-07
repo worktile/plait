@@ -18,7 +18,6 @@ export function withMoving(board: PlaitBoard) {
     let isPreventDefault = false;
     let startPoint: Point | null;
     let activeElements: PlaitElement[] | null = [];
-    let selectionOuterG: SVGGElement;
 
     board.mousedown = event => {
         const host = BOARD_TO_HOST.get(board);
@@ -27,7 +26,6 @@ export function withMoving(board: PlaitBoard) {
         let movableElements = board.children.filter(item => PlaitElement.isElement(item) && board.isMovable(item));
         if (movableElements.length) {
             startPoint = point;
-            selectionOuterG?.remove();
             const selectedRootElements = getSelectedElements(board).filter(item => movableElements.includes(item));
             const intersectionSelectedElement = isIntersectionElements(board, selectedRootElements, ranges);
             if (intersectionSelectedElement) {
@@ -67,6 +65,7 @@ export function withMoving(board: PlaitBoard) {
                     MERGING.set(board, true);
                     return PlaitNode.get(board, [index]);
                 });
+                PlaitBoard.getBoardNativeElement(board).classList.add('element-moving');
                 addMovingElements(board, currentElements as PlaitElement[]);
             });
         }
@@ -102,6 +101,7 @@ export function withMoving(board: PlaitBoard) {
         activeElements = [];
         removeMovingElements(board);
         MERGING.set(board, false);
+        PlaitBoard.getBoardNativeElement(board).classList.remove('element-moving');
     }
 
     return board;
