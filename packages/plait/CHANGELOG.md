@@ -1,5 +1,15 @@
 # plait
 
+## 0.1.6
+
+### Patch Changes
+
+-   [#296](https://github.com/worktile/plait/pull/296) [`fa37ef5`](https://github.com/worktile/plait/commit/fa37ef5f2b113edb3f3b889b2e81778f0c8d1f09) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - redraw selectionOuterG at moving end
+
+*   [`6dccf68`](https://github.com/worktile/plait/commit/6dccf68276fba72ba656d577c5b93626a224d937) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add IS_FROM_SCROLLING and IS_FROM_VIEWPORT_CHANGE to prevent viewport and scroll call circle
+
+-   [#295](https://github.com/worktile/plait/pull/295) [`84f21a4`](https://github.com/worktile/plait/commit/84f21a40938b59a6bb99952fe754ead34c42aa39) Thanks [@WBbug](https://github.com/WBbug)! - change outerG position and primary color
+
 ## 0.1.5
 
 ### Patch Changes

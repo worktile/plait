@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.1.6
+
+### Patch Changes
+
+-   [#297](https://github.com/worktile/plait/pull/297) [`92fc60f`](https://github.com/worktile/plait/commit/92fc60fa60bfe763ac86c6164b1adb60c761da46) Thanks [@WBbug](https://github.com/WBbug)! - change inherit attribute
+
 ## 0.1.5
 
 ### Patch Changes
