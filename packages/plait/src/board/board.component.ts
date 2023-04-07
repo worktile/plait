@@ -60,6 +60,7 @@ import { isHotkey } from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
 import { Point } from '../interfaces';
 import { withMoving } from '../plugins/with-moving';
+import { getMovingElements } from '../utils/moving-element';
 
 const ElementHostClass = 'element-host';
 
@@ -128,6 +129,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @HostBinding('class.focused')
     get isFocused() {
         return PlaitBoard.isFocus(this.board);
+    }
+
+    @HostBinding('class.moving')
+    get isMoving() {
+        return getMovingElements(this.board).length;
     }
 
     get nativeElement(): HTMLElement {

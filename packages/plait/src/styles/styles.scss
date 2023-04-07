@@ -52,6 +52,11 @@
             overflow: auto;
         }
     }
+    &.moving {
+        .selection-outer {
+            display: none;
+        }
+    }
 }
 
 .zoom-toolbar {

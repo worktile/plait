@@ -1,14 +1,14 @@
 import { BOARD_TO_HOST } from '../utils/weak-maps';
 import { PlaitBoard } from '../interfaces/board';
 import { isInPlaitBoard, transformPoint } from '../utils/board';
-import { createSelectionOuterG, toPoint } from '../utils/dom';
+import { toPoint } from '../utils/dom';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
 import { getSelectedElements, isIntersectionElements } from '../utils/selected-element';
 import { MERGING, PlaitNode } from '../interfaces';
 import { throttleRAF } from '../utils/common';
-import { addMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
+import { addMovingElements, removeMovingElements } from '../utils/moving-element';
 
 export function withMoving(board: PlaitBoard) {
     const { mousedown, mousemove, globalMouseup, globalMousemove } = board;
@@ -79,8 +79,8 @@ export function withMoving(board: PlaitBoard) {
 
     board.globalMousemove = event => {
         if (startPoint) {
-            const inPliatBordElement = isInPlaitBoard(board, event.x, event.y);
-            if (!inPliatBordElement) {
+            const inPlaitBordElement = isInPlaitBoard(board, event.x, event.y);
+            if (!inPlaitBordElement) {
                 cancelMove(board);
             }
         }
@@ -90,12 +90,6 @@ export function withMoving(board: PlaitBoard) {
     board.globalMouseup = event => {
         isPreventDefault = false;
         if (startPoint) {
-            if (getMovingElements(board).length) {
-                const elements = getSelectedElements(board);
-                selectionOuterG = createSelectionOuterG(board, elements);
-                selectionOuterG.classList.add('selection-outer');
-                PlaitBoard.getHost(board).append(selectionOuterG);
-            }
             cancelMove(board);
         }
         globalMouseup(event);

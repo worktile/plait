@@ -10,7 +10,7 @@ import {
     getSelectedElements,
     isIntersectionElements
 } from '../utils/selected-element';
-import { PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
+import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
@@ -22,6 +22,7 @@ export function withSelection(board: PlaitBoard) {
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
     let selectionOuterG: SVGGElement;
+    let previousSelectedElements: PlaitElement[];
 
     board.mousedown = (event: MouseEvent) => {
         if (board.pointer === PlaitPointerType.hand && board.selection) {
@@ -96,19 +97,34 @@ export function withSelection(board: PlaitBoard) {
     board.onChange = () => {
         // calc selected elements entry
         try {
-            selectionOuterG?.remove();
             if (board.operations.find(value => value.type === 'set_selection')) {
+                selectionOuterG?.remove();
                 const temporaryElements = getTemporaryElements(board);
                 const elements = temporaryElements ? temporaryElements : calcElementIntersectionSelection(board);
                 cacheSelectedElements(board, elements);
+                previousSelectedElements = elements;
                 const { width, height } = getRectangleByElements(board, elements, false);
                 if (width > 0 && height > 0) {
                     selectionOuterG = createSelectionOuterG(board, elements);
                     selectionOuterG.classList.add('selection-outer');
                     PlaitBoard.getHost(board).append(selectionOuterG);
                 }
+                deleteTemporaryElements(board);
+            } else {
+                const currentSelectedElements = getSelectedElements(board);
+                if (currentSelectedElements.length) {
+                    const previousSelectedElementsPoint = previousSelectedElements.map(item => item.points);
+                    const redrawSelectionOuterG = currentSelectedElements.some(
+                        item => !previousSelectedElementsPoint.includes(item.points)
+                    );
+                    if (redrawSelectionOuterG) {
+                        selectionOuterG?.remove();
+                        selectionOuterG = createSelectionOuterG(board, currentSelectedElements);
+                        selectionOuterG.classList.add('selection-outer');
+                        PlaitBoard.getHost(board).append(selectionOuterG);
+                    }
+                }
             }
-            deleteTemporaryElements(board);
         } catch (error) {
             console.error(error);
         }
