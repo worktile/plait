@@ -112,7 +112,7 @@ export function withSelection(board: PlaitBoard) {
                 deleteTemporaryElements(board);
             } else {
                 const currentSelectedElements = getSelectedElements(board);
-                if (currentSelectedElements.length) {
+                if (currentSelectedElements.length && currentSelectedElements.length > 1) {
                     const selectedElementChange = currentSelectedElements.some(item => !previousSelectedElements.includes(item));
                     if (selectedElementChange) {
                         selectionOuterG?.remove();
