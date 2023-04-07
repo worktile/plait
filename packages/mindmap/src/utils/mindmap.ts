@@ -128,6 +128,8 @@ export const transformNodeToRoot = (board: PlaitBoard, node: MindmapNodeElement)
 
     delete newElement?.strokeColor;
     delete newElement?.fill;
+    delete newElement?.shape;
+    delete newElement?.strokeWidth;
 
     const { width, height } = getSizeByText(text, PlaitBoard.getViewportContainer(board), ROOT_TOPIC_FONT_SIZE);
     newElement.width = Math.max(width, NODE_MIN_WIDTH);
@@ -135,12 +137,10 @@ export const transformNodeToRoot = (board: PlaitBoard, node: MindmapNodeElement)
 
     return {
         ...newElement,
-        shape: MindmapNodeShape.roundRectangle,
         layout: newElement.layout ?? MindmapLayoutType.right,
         isCollapsed: false,
         isRoot: true,
-        type: 'mindmap',
-        strokeWidth: STROKE_WIDTH
+        type: 'mindmap'
     };
 };
 
