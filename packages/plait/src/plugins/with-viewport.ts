@@ -1,6 +1,6 @@
 import { Subscription, timer } from 'rxjs';
 import { PlaitBoard } from '../interfaces/board';
-import { initializeViewBox, updateViewportOffset } from '../utils/viewport';
+import { initializeViewBox, isFromScrolling, setIsFromScrolling, updateViewportOffset } from '../utils/viewport';
 
 export function withViewport(board: PlaitBoard) {
     const { onChange } = board;
@@ -10,6 +10,10 @@ export function withViewport(board: PlaitBoard) {
         const isSetViewport = board.operations.some(op => op.type === 'set_viewport');
         const isOnlySetSelection = board.operations.some(op => op.type === 'set_selection');
         if (isOnlySetSelection) {
+            return onChange();
+        }
+        if (isSetViewport && isFromScrolling(board)) {
+            setIsFromScrolling(board, false);
             return onChange();
         }
         if (isSetViewport) {

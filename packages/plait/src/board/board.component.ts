@@ -48,13 +48,12 @@ import {
     initializeViewBox,
     setViewport,
     changeZoom,
-    getViewportContainerRect,
-    updateViewportOrigination,
     getViewportOrigination,
-    isViewportScrolling,
-    clearViewportScrolling,
+    isFromViewportChange,
+    setIsFromViewportChange,
     initializeViewportContainer,
-    updateViewportOffset
+    updateViewportOffset,
+    setIsFromScrolling
 } from '../utils/viewport';
 import { isHotkey } from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
@@ -324,28 +323,23 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 .pipe(
                     takeUntil(this.destroy$),
                     filter(() => {
-                        const isScrolling = isViewportScrolling(this.board);
-                        if (isScrolling) {
-                            clearViewportScrolling(this.board);
+                        if (isFromViewportChange(this.board)) {
+                            setIsFromViewportChange(this.board, false);
+                            return false;
                         }
-                        return !isScrolling && this.isFocused;
-                    }),
-                    tap((event: Event) => {
-                        const { scrollLeft, scrollTop } = event.target as HTMLElement;
-                        const zoom = this.board.viewport.zoom;
-                        const viewBox = getViewBox(this.board, zoom);
-                        const origination = [scrollLeft / zoom + viewBox[0], scrollTop / zoom + viewBox[1]] as Point;
-                        updateViewportOrigination(this.board, origination);
-                        return origination;
-                    }),
-                    debounceTime(500)
+                        return this.isFocused;
+                    })
                 )
                 .subscribe((event: Event) => {
-                    const origination = getViewportOrigination(this.board) as Point;
+                    const { scrollLeft, scrollTop } = event.target as HTMLElement;
+                    const zoom = this.board.viewport.zoom;
+                    const viewBox = getViewBox(this.board, zoom);
+                    const origination = [scrollLeft / zoom + viewBox[0], scrollTop / zoom + viewBox[1]] as Point;
                     if (Point.isEquals(origination, this.board.viewport.origination)) {
                         return;
                     }
                     setViewport(this.board, getViewportOrigination(this.board) as Point);
+                    setIsFromScrolling(this.board, true);
                 });
         });
     }

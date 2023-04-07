@@ -31,5 +31,3 @@ export const BOARD_TO_IS_SELECTION_MOVING = new WeakMap<PlaitBoard, boolean>();
 export const BOARD_TO_TEMPORARY_ELEMENTS = new WeakMap<PlaitBoard, PlaitElement[]>();
 
 export const BOARD_TO_MOVING_ELEMENT = new WeakMap<PlaitBoard, PlaitElement[]>();
-
-export const BOARD_TO_SCROLLING = new WeakMap<PlaitBoard, boolean>()

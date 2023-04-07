@@ -4,7 +4,11 @@ import { Transforms } from '../transforms';
 import { toPoint } from './dom';
 import { getRectangleByElements } from './element';
 import { distanceBetweenPointAndRectangle } from './math';
-import { BOARD_TO_MOVING_POINT, BOARD_TO_SCROLLING, BOARD_TO_VIEWPORT_ORIGINATION } from './weak-maps';
+import { BOARD_TO_MOVING_POINT, BOARD_TO_VIEWPORT_ORIGINATION } from './weak-maps';
+
+const IS_FROM_SCROLLING = new WeakMap<PlaitBoard, boolean>();
+
+const IS_FROM_VIEWPORT_CHANGE = new WeakMap<PlaitBoard, boolean>();
 
 export function getViewportContainerRect(board: PlaitBoard) {
     const { hideScrollbar } = board.options;
@@ -110,7 +114,7 @@ export function updateViewportContainerScroll(board: PlaitBoard, left: number, t
     if (viewportContainer.scrollLeft !== left || viewportContainer.scrollTop !== top) {
         viewportContainer.scrollLeft = left;
         viewportContainer.scrollTop = top;
-        setViewportScrolling(board);
+        setIsFromViewportChange(board, true);
     }
 }
 
@@ -216,16 +220,20 @@ export const getViewportOrigination = (board: PlaitBoard) => {
     }
 };
 
-export const isViewportScrolling = (board: PlaitBoard) => {
-    return !!BOARD_TO_SCROLLING.get(board);
+export const isFromScrolling = (board: PlaitBoard) => {
+    return !!IS_FROM_SCROLLING.get(board);
 };
 
-export const setViewportScrolling = (board: PlaitBoard) => {
-    BOARD_TO_SCROLLING.set(board, true);
+export const setIsFromScrolling = (board: PlaitBoard, state: boolean) => {
+    IS_FROM_SCROLLING.set(board, state);
 };
 
-export const clearViewportScrolling = (board: PlaitBoard) => {
-    BOARD_TO_SCROLLING.delete(board);
+export const isFromViewportChange = (board: PlaitBoard) => {
+    return !!IS_FROM_VIEWPORT_CHANGE.get(board);
+};
+
+export const setIsFromViewportChange = (board: PlaitBoard, state: boolean) => {
+    IS_FROM_VIEWPORT_CHANGE.set(board, state);
 };
 
 export function scrollToRectangle(board: PlaitBoard, client: RectangleClient) {}
