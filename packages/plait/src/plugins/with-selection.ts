@@ -122,6 +122,8 @@ export function withSelection(board: PlaitBoard) {
                             selectionOuterG.classList.add('selection-outer');
                             PlaitBoard.getHost(board).append(selectionOuterG);
                         }
+                    } else {
+                        selectionOuterG?.remove();
                     }
                 });
             }
