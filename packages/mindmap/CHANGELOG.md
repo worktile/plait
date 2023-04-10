@@ -1,5 +1,15 @@
 # mindmap
 
+## 0.1.8
+
+### Patch Changes
+
+-   [#301](https://github.com/worktile/plait/pull/301) [`9ca65d9`](https://github.com/worktile/plait/commit/9ca65d9384f21fda200980d60b2dde770d2ee7b8) Thanks [@WBbug](https://github.com/WBbug)! - change judge condition
+
+*   [#299](https://github.com/worktile/plait/pull/299) [`52ecb12`](https://github.com/worktile/plait/commit/52ecb12296a6323710939ba3ecdf392e822927ff) Thanks [@WBbug](https://github.com/WBbug)! - change root default height
+
+-   [`f897b3d`](https://github.com/worktile/plait/commit/f897b3de35c371d2166e99d7785abdbbd1191721) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - wait node destroy and remove selected element state
+
 ## 0.1.6
 
 ### Patch Changes

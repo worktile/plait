@@ -1,5 +1,17 @@
 # plait
 
+## 0.1.8
+
+### Patch Changes
+
+-   [#298](https://github.com/worktile/plait/pull/298) [`5a9841f`](https://github.com/worktile/plait/commit/5a9841f441adaeaca3e188b6c5a44e442a6ea476) Thanks [@Maple13](https://github.com/Maple13)! - when fitting to the canvas, the spacing is modified to 20px
+
+*   [`c464232`](https://github.com/worktile/plait/commit/c46423284f4d4536dcbd19e67b5bdae88367b6a1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use debounce func with leading when update viewport in onChange hook
+
+-   [#300](https://github.com/worktile/plait/pull/300) [`d879c8b`](https://github.com/worktile/plait/commit/d879c8b675b0ee711a7cddc41b23fea939674812) Thanks [@Maple13](https://github.com/Maple13)! - when fitting to the canvas, the spacing is modified to 16
+
+*   [`f897b3d`](https://github.com/worktile/plait/commit/f897b3de35c371d2166e99d7785abdbbd1191721) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - wait node destroy and remove selected element state
+
 ## 0.1.7
 
 ### Patch Changes

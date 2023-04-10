@@ -1,5 +1,11 @@
 # richtext
 
+## 0.1.8
+
+### Patch Changes
+
+-   [#299](https://github.com/worktile/plait/pull/299) [`52ecb12`](https://github.com/worktile/plait/commit/52ecb12296a6323710939ba3ecdf392e822927ff) Thanks [@WBbug](https://github.com/WBbug)! - change root default height
+
 ## 0.1.3
 
 ### Patch Changes
