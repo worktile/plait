@@ -19,6 +19,6 @@ npm run start
 
 ```
 
-**privew url**
+**preview url**
 
-mindmap board: [http://localhost:7100/](http://localhost:7100)
+mind-map board: [http://localhost:7100/](http://localhost:7100)
