@@ -21,7 +21,7 @@ import {
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitPlugin } from '../interfaces/plugin';
@@ -48,7 +48,6 @@ import {
     initializeViewBox,
     setViewport,
     changeZoom,
-    getViewportOrigination,
     isFromViewportChange,
     setIsFromViewportChange,
     initializeViewportContainer,
@@ -59,7 +58,6 @@ import { isHotkey } from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
 import { Point } from '../interfaces';
 import { withMoving } from '../plugins/with-moving';
-import { getMovingElements } from '../utils/moving-element';
 
 const ElementHostClass = 'element-host';
 

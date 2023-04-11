@@ -109,12 +109,12 @@ export function updateViewportOffset(board: PlaitBoard) {
     updateViewportContainerScroll(board, scrollLeft, scrollTop);
 }
 
-export function updateViewportContainerScroll(board: PlaitBoard, left: number, top: number) {
+export function updateViewportContainerScroll(board: PlaitBoard, left: number, top: number, isFromViewportChange: boolean = true) {
     const viewportContainer = PlaitBoard.getViewportContainer(board);
     if (viewportContainer.scrollLeft !== left || viewportContainer.scrollTop !== top) {
         viewportContainer.scrollLeft = left;
         viewportContainer.scrollTop = top;
-        setIsFromViewportChange(board, true);
+        isFromViewportChange && setIsFromViewportChange(board, true);
     }
 }
 
