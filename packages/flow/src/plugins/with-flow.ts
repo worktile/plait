@@ -19,7 +19,7 @@ import { getEdgesByNodeId } from '../utils/edge/get-edges-by-node';
 import { OUTLINE_BUFFR } from '../constants/node';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, isHitSelection, isMovable, onChange } = board;
+    const { drawElement, isHitSelection, isMovable, onChange, getRectangle } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (FlowElement.isFlowElement(context.element)) {
@@ -57,6 +57,19 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
             return true;
         }
         return isMovable(element);
+    };
+
+    board.getRectangle = element => {
+        if (FlowNode.isFlowNodeElement(element)) {
+            const { width, height, points } = element;
+            return {
+                x: points![0][0],
+                y: points![0][1],
+                width,
+                height
+            };
+        }
+        return getRectangle(element);
     };
 
     board.onChange = () => {
