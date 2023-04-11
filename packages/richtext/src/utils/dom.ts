@@ -166,6 +166,26 @@ export const getSizeByText = (text: string, container: HTMLElement, fontSize?: n
     return { width, height };
 };
 
+export const getRichtextContentSize = (editable: HTMLElement) => {
+    const boundaryBox = {
+        left: Number.MAX_VALUE,
+        top: Number.MAX_VALUE,
+        right: Number.NEGATIVE_INFINITY,
+        bottom: Number.NEGATIVE_INFINITY
+    };
+    for (let index = 0; index < editable.childElementCount; index++) {
+        const element = editable.children.item(index);
+        const nodeRectangle = element?.getBoundingClientRect();
+        if (nodeRectangle) {
+            boundaryBox.left = Math.min(boundaryBox.left, nodeRectangle.x);
+            boundaryBox.top = Math.min(boundaryBox.top, nodeRectangle.y);
+            boundaryBox.right = Math.max(boundaryBox.right, nodeRectangle.x + nodeRectangle.width);
+            boundaryBox.bottom = Math.max(boundaryBox.bottom, nodeRectangle.y + nodeRectangle.height);
+        }
+    }
+    return { width: boundaryBox.right - boundaryBox.left, height: boundaryBox.bottom - boundaryBox.top };
+};
+
 export const ZERO_WIDTH_CHAR = '\uFEFF';
 
 export const WITH_ZERO_WIDTH_CHAR = 'with-zero-width-char';

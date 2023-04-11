@@ -21,7 +21,7 @@
     .plait-richtext-container {
         // chrome show position is not correct, safari not working when don't assigned position property
         // can not assign absolute, because safari can not show correctly position 
-        position: fixed;
+        position: initial;
         &[readonly='true'] {
             ::selection {
                 background: none;
