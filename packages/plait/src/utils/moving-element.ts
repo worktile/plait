@@ -7,8 +7,8 @@ export const getMovingElements = (board: PlaitBoard) => {
 
 export const addMovingElements = (board: PlaitBoard, elements: PlaitElement[]) => {
     const movingElements = getMovingElements(board);
-    const neweElements = elements.filter(item => !movingElements.find(movingElement => movingElement.key === item.key));
-    cacheMovingElements(board, [...movingElements, ...neweElements]);
+    const newElements = elements.filter(item => !movingElements.find(movingElement => movingElement.key === item.key));
+    cacheMovingElements(board, [...movingElements, ...newElements]);
 };
 
 export const removeMovingElements = (board: PlaitBoard) => {
