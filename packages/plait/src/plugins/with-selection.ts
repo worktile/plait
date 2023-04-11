@@ -29,10 +29,15 @@ export function withSelection(board: PlaitBoard) {
             mousedown(event);
             return;
         }
+
         if (event.button === 0) {
             start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         }
-        if (start) {
+
+        if (board.options.readonly) {
+            Transforms.setSelection(board, { ranges: [] });
+            start = null;
+        } else if (start) {
             const ranges = [{ anchor: start, focus: start }];
             const selectedElements = getSelectedElements(board);
             const intersectionSelectedElement = isIntersectionElements(board, selectedElements, ranges);
