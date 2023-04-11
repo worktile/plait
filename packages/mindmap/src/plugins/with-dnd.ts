@@ -98,7 +98,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 return;
             }
 
-            if (!isDragging) {
+            if (!isDragging(board)) {
                 setIsDragging(board, true);
                 fakeDragNodeG = createG();
                 fakeDragNodeG.classList.add('dragging', 'fake-node', 'plait-board-attached');
