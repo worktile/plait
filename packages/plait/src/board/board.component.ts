@@ -353,7 +353,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     trackBy = (index: number, element: PlaitElement) => {
-        return index;
+        return element.id;
     };
 
     adaptHandle() {
