@@ -1,13 +1,4 @@
-import {
-    addSelectedElement,
-    getSelectedElements,
-    idCreator,
-    Path,
-    PlaitBoard,
-    PlaitElement,
-    removeSelectedElement,
-    Transforms
-} from '@plait/core';
+import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE } from '../constants/node';
@@ -305,8 +296,4 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
         .forEach(action => {
             action();
         });
-
-    getSelectedElements(board).forEach(element => {
-        removeSelectedElement(board, element);
-    });
 };
