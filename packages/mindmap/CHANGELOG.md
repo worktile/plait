@@ -1,5 +1,17 @@
 # mindmap
 
+## 0.1.9
+
+### Patch Changes
+
+-   [#302](https://github.com/worktile/plait/pull/302) [`735c007`](https://github.com/worktile/plait/commit/735c007b8f0935ccd895d0360edb290339d30841) Thanks [@WBbug](https://github.com/WBbug)! - change logic of after delete selected elements, fix trackBy
+
+*   [#305](https://github.com/worktile/plait/pull/305) [`b52171b`](https://github.com/worktile/plait/commit/b52171b0f9565f5f2c54680f65394b007f6fc70f) Thanks [@WBbug](https://github.com/WBbug)! - add judge when delete node in destroy
+
+-   [`da1f3e2`](https://github.com/worktile/plait/commit/da1f3e2c2a28050f79f464fc62cd8b7ede9cca0a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct richtext style and add get richtext content size func
+
+*   [`81dcd07`](https://github.com/worktile/plait/commit/81dcd0717147203bae51c563b84544f1ece5d863) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add is-dragging state in with-dnd
+
 ## 0.1.8
 
 ### Patch Changes
