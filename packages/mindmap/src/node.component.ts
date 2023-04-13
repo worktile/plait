@@ -598,7 +598,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             this.drawQuickInsert();
             return;
         }
-        // inteactive
+        // interactive
         fromEvent(collapseG, 'mouseup')
             .pipe(
                 filter(() => !this.handActive || this.board.options.readonly),
