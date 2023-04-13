@@ -74,13 +74,13 @@ export class BaseLayout {
         switch (layoutType) {
             case LayoutType.indented:
                 indentMainAxle(root);
-                seperateSecondaryAxle(root, options);
+                separateSecondaryAxle(root, options);
                 break;
             case LayoutType.fishBone:
                 break;
             case LayoutType.logic:
             default:
-                this.seperateMainMxle(root, isHorizontal);
+                this.separateSecondaryAxle(root, isHorizontal);
                 const layoutTree = buildLayoutTree(root, isHorizontal);
                 layout(layoutTree);
                 setLayoutTreeResult(layoutTree, root, isHorizontal);
@@ -131,7 +131,7 @@ export class BaseLayout {
         return root;
     }
 
-    private seperateMainMxle(node: LayoutNode, isHorizontal: boolean, d = 0) {
+    private separateSecondaryAxle(node: LayoutNode, isHorizontal: boolean, d = 0) {
         if (isHorizontal) {
             node.x = d;
             d += node.width;
@@ -140,7 +140,7 @@ export class BaseLayout {
             d += node.height;
         }
         node.children.forEach(child => {
-            this.seperateMainMxle(child, isHorizontal, d);
+            this.separateSecondaryAxle(child, isHorizontal, d);
         });
     }
 
@@ -190,7 +190,7 @@ function indentMainAxle(node: LayoutNode, d = 0) {
     });
 }
 
-function seperateSecondaryAxle(root: LayoutNode, options: LayoutOptions) {
+function separateSecondaryAxle(root: LayoutNode, options: LayoutOptions) {
     let previousBottom = root.y + root.height;
     let previousNode: null | LayoutNode = null;
     updateY(root);

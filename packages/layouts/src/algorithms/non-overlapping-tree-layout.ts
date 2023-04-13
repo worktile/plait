@@ -13,8 +13,8 @@ function nextRightContour(treeNode: LayoutTreeNode) {
     return treeNode.childrenCount === 0 ? treeNode : treeNode.children[treeNode.childrenCount - 1];
 }
 
-// seperate left siblings
-function seperate(treeNode: LayoutTreeNode, i: number) {
+// separate left siblings
+function separate(treeNode: LayoutTreeNode, i: number) {
     let leftNode = treeNode.children[i - 1];
     let rightNode = treeNode.children[i];
 
@@ -108,7 +108,7 @@ function firstWalk(treeNode: LayoutTreeNode) {
     firstWalk(treeNode.children[0]);
     for (let i = 1; i < treeNode.childrenCount; i++) {
         firstWalk(treeNode.children[i]);
-        seperate(treeNode, i);
+        separate(treeNode, i);
     }
     positionRootCenter(treeNode);
 }
