@@ -40,8 +40,8 @@ import {
 import { hasEditableTarget, PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject, timer } from 'rxjs';
-import { debounceTime, filter, map, take, takeUntil } from 'rxjs/operators';
-import { Editor, Operation, Node as SlateNode } from 'slate';
+import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
+import { Editor, Operation } from 'slate';
 import {
     EXTEND_OFFSET,
     EXTEND_RADIUS,
@@ -66,6 +66,7 @@ import { getRectangleByNode, hitMindmapNode } from './utils/graph';
 import { createEmptyNode, findLastChild, findPath, getChildrenCount } from './utils/mindmap';
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
+import { getRichtextContentSize } from '@plait/richtext';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -597,7 +598,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             this.drawQuickInsert();
             return;
         }
-        // inteactive
+        // interactive
         fromEvent(collapseG, 'mouseup')
             .pipe(
                 filter(() => !this.handActive || this.board.options.readonly),
@@ -828,7 +829,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 richtext = event.value;
                 this.updateRichtext();
                 // 更新富文本、更新宽高
-                let { width, height } = richtextInstance.editable.getBoundingClientRect();
+                let { width, height } = getRichtextContentSize(richtextInstance.editable);
                 const newElement = {
                     value: richtext,
                     width: width < NODE_MIN_WIDTH * this.board.viewport.zoom ? NODE_MIN_WIDTH : width / this.board.viewport.zoom,
@@ -839,7 +840,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 MERGING.set(this.board, true);
             });
         const composition$ = richtextInstance.plaitComposition.pipe(debounceTime(0)).subscribe(event => {
-            let { width, height } = richtextInstance.editable.getBoundingClientRect();
+            let { width, height } = getRichtextContentSize(richtextInstance.editable);
             if (width < NODE_MIN_WIDTH) {
                 width = NODE_MIN_WIDTH;
             }
@@ -917,7 +918,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnDestroy(): void {
         removeSelectedElement(this.board, this.node.origin);
-        MINDMAP_ELEMENT_TO_COMPONENT.delete(this.node.origin);
+        if (MINDMAP_ELEMENT_TO_COMPONENT.get(this.node.origin) === this) {
+            MINDMAP_ELEMENT_TO_COMPONENT.delete(this.node.origin);
+        }
         this.destroyRichtext();
         this.gGroup.remove();
         this.destroy$.next();

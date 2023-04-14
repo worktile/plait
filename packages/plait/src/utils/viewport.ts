@@ -23,7 +23,7 @@ export function getViewportContainerRect(board: PlaitBoard) {
 
 export function getElementHostBBox(board: PlaitBoard, zoom: number) {
     const childrenRect = getRectangleByElements(board, board.children, true);
-    const viewportContainerRect = getViewportContainerRect(board);
+    const viewportContainerRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
     const containerWidth = viewportContainerRect.width / zoom;
     const containerHeight = viewportContainerRect.height / zoom;
     let left: number;
@@ -71,7 +71,7 @@ export function clampZoomLevel(zoom: number, minZoom = 0.2, maxZoom = 4) {
 export function getViewBox(board: PlaitBoard, zoom: number) {
     const { hideScrollbar } = board.options;
     const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
-    const viewportContainerRect = getViewportContainerRect(board);
+    const viewportContainerRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
     const elementHostBBox = getElementHostBBox(board, zoom);
     const horizontalPadding = viewportContainerRect.width / 2;
     const verticalPadding = viewportContainerRect.height / 2;
@@ -109,12 +109,12 @@ export function updateViewportOffset(board: PlaitBoard) {
     updateViewportContainerScroll(board, scrollLeft, scrollTop);
 }
 
-export function updateViewportContainerScroll(board: PlaitBoard, left: number, top: number) {
+export function updateViewportContainerScroll(board: PlaitBoard, left: number, top: number, isFromViewportChange: boolean = true) {
     const viewportContainer = PlaitBoard.getViewportContainer(board);
     if (viewportContainer.scrollLeft !== left || viewportContainer.scrollTop !== top) {
         viewportContainer.scrollLeft = left;
         viewportContainer.scrollTop = top;
-        setIsFromViewportChange(board, true);
+        isFromViewportChange && setIsFromViewportChange(board, true);
     }
 }
 

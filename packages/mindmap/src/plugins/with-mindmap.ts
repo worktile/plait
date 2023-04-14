@@ -27,6 +27,7 @@ import {
     createEmptyNode,
     deleteSelectedELements,
     filterChildElement,
+    findParentElement,
     findPath,
     shouldChangeRightNodeCount
 } from '../utils';
@@ -114,23 +115,28 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 event.preventDefault();
                 deleteSelectedELements(board, selectedElements);
 
-                if (selectedElements.length === 1) {
-                    let lastNode: MindmapNode | any = null;
-                    const selectNode = selectedElements[0];
-                    const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectNode);
-                    if (mindmapNodeComponent?.parent?.children) {
-                        const nodeIndex: number = mindmapNodeComponent?.parent.children.findIndex(item => item.origin.id === selectNode.id);
-                        if (mindmapNodeComponent?.parent.children[nodeIndex - 1]) {
-                            lastNode = mindmapNodeComponent?.parent.children[nodeIndex - 1];
-                        } else if (mindmapNodeComponent?.parent.children[nodeIndex + 1]) {
-                            lastNode = mindmapNodeComponent?.parent.children[nodeIndex + 1];
-                        } else {
-                            lastNode = mindmapNodeComponent?.parent;
-                        }
+                let lastNode: MindmapNode | any = null;
+                const elementGroup = filterChildElement(selectedElements);
+                const selectNode = elementGroup[0];
+                const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectNode);
+                const nodeIndex = mindmapNodeComponent?.parent?.children.findIndex(item => item.origin.id === selectNode.id);
+                const isSameParent = elementGroup.every(element => {
+                    return findParentElement(element) && findParentElement(elementGroup[0]) === findParentElement(element);
+                });
+
+                if (selectedElements.length && isSameParent) {
+                    const childCount = mindmapNodeComponent!.parent?.children.length - elementGroup.length;
+                    if (childCount === 0) {
+                        lastNode = mindmapNodeComponent?.parent;
+                    } else if (nodeIndex === 0) {
+                        lastNode = mindmapNodeComponent?.parent.children[elementGroup.length];
+                    } else if (nodeIndex! > 0) {
+                        lastNode = mindmapNodeComponent?.parent.children[nodeIndex! - 1];
                     }
-                    if (lastNode) {
-                        addSelectedElement(board, lastNode.origin);
-                    }
+                }
+
+                if (lastNode) {
+                    addSelectedElement(board, lastNode.origin);
                 }
                 return;
             }

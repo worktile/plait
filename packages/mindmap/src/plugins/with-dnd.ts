@@ -52,7 +52,6 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
     let activeElement: MindmapNodeElement | null;
     let startPoint: Point;
-    let isDragging = false;
     let fakeDragNodeG: SVGGElement | undefined;
     let fakeDropNodeG: SVGGElement | undefined;
     let dropTarget: { target: MindmapNodeElement; detectResult: DetectResult } | null = null;
@@ -99,8 +98,8 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 return;
             }
 
-            if (!isDragging) {
-                isDragging = true;
+            if (!isDragging(board)) {
+                setIsDragging(board, true);
                 fakeDragNodeG = createG();
                 fakeDragNodeG.classList.add('dragging', 'fake-node', 'plait-board-attached');
                 fakeDropNodeG = createG();
@@ -122,21 +121,21 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
             const offsetY = endPoint[1] - startPoint[1];
             const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
             const roughSVG = PlaitBoard.getRoughSVG(board);
-            const fakeDragingNode: MindmapNode = {
+            const fakeDraggingNode: MindmapNode = {
                 ...activeComponent.node,
                 children: [],
                 x: activeComponent.node.x + offsetX,
                 y: activeComponent.node.y + offsetY
             };
             const { textX, textY, width, height } = getRichtextRectangleByNode(activeComponent.node);
-            const fakeNodeG = drawRectangleNode(roughSVG, fakeDragingNode);
+            const fakeNodeG = drawRectangleNode(roughSVG, fakeDraggingNode);
             const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
             updateForeignObject(richtextG, width + BASE * 10, height, textX + offsetX, textY + offsetY);
             fakeDragNodeG?.append(fakeNodeG);
             fakeDragNodeG?.append(richtextG);
 
             // drop position detect
-            const { x, y } = getRectangleByNode(fakeDragingNode);
+            const { x, y } = getRectangleByNode(fakeDraggingNode);
             const detectCenterPoint = [x + width / 2, y + height / 2] as Point;
 
             let detectResult: DetectResult[] | null = null;
@@ -182,7 +181,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 const mindmapElement = findUpElement(dropTarget.target).root;
                 const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(mindmapElement as PlaitMindmap) as PlaitMindmapComponent;
                 const layout = MindmapQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindmapNodeElement);
-                targetPath = updatePathByLayoutAnddropTarget(targetPath, layout, dropTarget);
+                targetPath = updatePathByLayoutAndDropTarget(targetPath, layout, dropTarget);
                 const originPath = findPath(board, activeComponent.node);
                 let newElement: Partial<MindmapNodeElement> = { isCollapsed: false },
                     rightTargetPath = findPath(board, targetComponent.node);
@@ -204,10 +203,10 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 Transforms.moveNode(board, originPath, targetPath);
             }
 
-            if (isDragging) {
+            if (isDragging(board)) {
                 removeActiveOnDragOrigin(activeElement);
             }
-            isDragging = false;
+            setIsDragging(board, false);
             activeElement = null;
             fakeDragNodeG?.remove();
             fakeDragNodeG = undefined;
@@ -255,7 +254,7 @@ export const removeActiveOnDragOrigin = (activeElement: MindmapNodeElement, isOr
         });
 };
 
-const updatePathByLayoutAnddropTarget = (
+const updatePathByLayoutAndDropTarget = (
     targetPath: Path,
     layout: MindmapLayoutType,
     dropTarget: { target: MindmapNodeElement; detectResult: DetectResult }
@@ -339,4 +338,14 @@ export const updateRightNodeCount = (
             Transforms.setNode(board, { rightNodeCount }, findPath(board, targetComponent.node));
         }
     }
+};
+
+const IS_DRAGGING = new WeakMap<PlaitBoard, boolean>();
+
+export const isDragging = (board: PlaitBoard) => {
+    return !!IS_DRAGGING.get(board);
+};
+
+export const setIsDragging = (board: PlaitBoard, state: boolean) => {
+    IS_DRAGGING.set(board, state);
 };

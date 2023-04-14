@@ -5,7 +5,7 @@ import { initializeViewBox, isFromScrolling, setIsFromScrolling, updateViewportO
 export function withViewport(board: PlaitBoard) {
     const { onChange } = board;
 
-    const throttleUpdate = () => debounce(
+    const throttleUpdate = debounce(
         () => {
             initializeViewBox(board);
             updateViewportOffset(board);

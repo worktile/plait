@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.1.4
+
+### Patch Changes
+
+-   [#306](https://github.com/worktile/plait/pull/306) [`5313937`](https://github.com/worktile/plait/commit/5313937e0ff9e2852c79faf64fcf3ca443944613) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix: add getRectangle hook
+
 ## 0.1.3
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # plait
 
+## 0.1.9
+
+### Patch Changes
+
+-   [#302](https://github.com/worktile/plait/pull/302) [`735c007`](https://github.com/worktile/plait/commit/735c007b8f0935ccd895d0360edb290339d30841) Thanks [@WBbug](https://github.com/WBbug)! - change logic of after delete selected elements, fix trackBy
+
+*   [`5ab5a70`](https://github.com/worktile/plait/commit/5ab5a70673199bebf68b6a722dbfce5860a6bde6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct with-hand hand with-viewport can not fire viewport update issues
+
+-   [#303](https://github.com/worktile/plait/pull/303) [`776fd04`](https://github.com/worktile/plait/commit/776fd0403ed7b7f019cc5e4958ac9ce64ce5b9a8) Thanks [@WBbug](https://github.com/WBbug)! - fix can select when board is readonly
+
+*   [`da1f3e2`](https://github.com/worktile/plait/commit/da1f3e2c2a28050f79f464fc62cd8b7ede9cca0a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct richtext style and add get richtext content size func
+
+-   [#304](https://github.com/worktile/plait/pull/304) [`fc62414`](https://github.com/worktile/plait/commit/fc62414d0c54757f198b1311798296f6bfec492f) Thanks [@Maple13](https://github.com/Maple13)! - fix the calculation error caused by the influence of hideScrollbar property
+
 ## 0.1.8
 
 ### Patch Changes

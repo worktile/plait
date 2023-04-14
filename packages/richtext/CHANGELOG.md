@@ -1,5 +1,11 @@
 # richtext
 
+## 0.1.9
+
+### Patch Changes
+
+-   [`da1f3e2`](https://github.com/worktile/plait/commit/da1f3e2c2a28050f79f464fc62cd8b7ede9cca0a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct richtext style and add get richtext content size func
+
 ## 0.1.8
 
 ### Patch Changes

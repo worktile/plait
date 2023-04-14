@@ -31,7 +31,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
             const viewportContainer = PlaitBoard.getViewportContainer(board);
             const left = viewportContainer.scrollLeft - (event.x - plaitBoardMove.x);
             const top = viewportContainer.scrollTop - (event.y - plaitBoardMove.y);
-            updateViewportContainerScroll(board, left, top);
+            updateViewportContainerScroll(board, left, top, false);
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
         }
