@@ -2,10 +2,10 @@
     .flow-node-richtext,
     .flow-edge-richtext {
         .plait-richtext-container {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: inherit;
             width: 100%;
         }
     }
