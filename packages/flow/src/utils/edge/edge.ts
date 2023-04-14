@@ -5,8 +5,8 @@ import { getPoints } from './get-smooth-step-edge';
 import { getFakeFlowNodeById, getFlowNodeById } from '../get-node-by-id';
 import { FlowEdge } from '../../interfaces/edge';
 import { DEAFULT_EDGE_ACTIVE_STYLES, DEAFULT_EDGE_STYLES } from '../../constants/edge';
-import { FLOW_EDGE_DRAGING_INFO } from '../../plugins/with-edge-dnd';
 import { FlowNode } from '../../interfaces/node';
+import { getEdgeDragingInfo } from './draging-edge';
 
 interface EdgePositions {
     sourceX: number;
@@ -56,7 +56,7 @@ export function getEdgeCenter({
 
 export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
     let sourceNode: FlowNode, targetNode: FlowNode;
-    const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && FLOW_EDGE_DRAGING_INFO.get(edge);
+    const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && getEdgeDragingInfo(edge);
 
     if (dragEdgeInfo && dragEdgeInfo.handleType === 'source') {
         sourceNode = getFakeFlowNodeById(board, edge.source?.id!, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);

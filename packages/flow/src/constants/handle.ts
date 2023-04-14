@@ -4,7 +4,7 @@ import { DEAFULT_STYLES } from './default';
 
 export const DEFAULT_POSITIONS = [FlowPosition.top, FlowPosition.right, FlowPosition.bottom, FlowPosition.left];
 
-export const HANDLE_RADIUS = 8;
+export const HANDLE_DIAMETER = 8;
 
 export const DEAFULT_HANDLE_STYLES: Options = {
     ...DEAFULT_STYLES,

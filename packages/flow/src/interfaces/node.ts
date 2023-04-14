@@ -1,7 +1,7 @@
-import { FlowElement, FlowElementType, FlowHandle, FlowPosition } from './element';
+import { FlowElement, FlowElementType, FlowHandle } from './element';
 import { PlaitElement } from '@plait/core';
 
-export const isFlowNodeElement = (value: PlaitElement): value is FlowNode => {
+export const isFlowNodeElement = <T>(value: PlaitElement): value is FlowNode<T> => {
     return FlowElementType.node === value.type;
 };
 

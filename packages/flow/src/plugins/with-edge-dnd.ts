@@ -19,10 +19,10 @@ import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
 import { getHandleType } from '../utils/handle/get-handle-type';
 import { FlowNode } from '../interfaces/node';
 import { Element } from 'slate';
-import { getHitNodeHandle } from '../utils/handle/get-hit-node-handle';
+import { getHitNodeHandleByEdge } from '../utils/handle/get-hit-node-handle-by-edge';
 import { getFlowElementsByType } from '../utils/get-node-by-id';
-
-export const FLOW_EDGE_DRAGING_INFO: WeakMap<FlowElement, FlowEdgeDragInfo> = new WeakMap();
+import { deleteEdgeDragingInfo, setEdgeDragingInfo } from '../utils/edge/draging-edge';
+import { renderAllNodesHandle } from '../utils/node/render-all-nodes-handle';
 
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup } = board;
@@ -72,24 +72,17 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 offsetX = endPoint[0] - startPoint[0];
                 offsetY = endPoint[1] - startPoint[1];
                 if (activeElement && FlowEdge.isFlowEdgeElement(activeElement) && handleType) {
-                    FLOW_EDGE_DRAGING_INFO.set(activeElement, {
+                    setEdgeDragingInfo(activeElement, {
                         offsetX,
                         offsetY,
                         handleType
                     });
                     activeComponent?.updateElement(activeElement, true);
-                    hitNodeHandle = getHitNodeHandle(board, activeElement, endPoint);
+                    hitNodeHandle = getHitNodeHandleByEdge(board, activeElement, endPoint);
                     if (!isShowNodeEdge) {
                         isShowNodeEdge = true;
                         // 所有的 node 节点显示 handle
-                        flowNodeElements = getFlowElementsByType(board, FlowElementType.node) as FlowNode[];
-                        flowNodeElements.map(item => {
-                            const flowNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(item) as FlowNodeComponent;
-                            flowNodeComponent.drawHandles();
-                        });
-                    }
-                    if (!hitNodeHandle) {
-                        FLOW_EDGE_DRAGING_INFO.delete(activeElement);
+                        flowNodeElements = renderAllNodesHandle(board);
                     }
                 }
             }
@@ -126,7 +119,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     }
                 });
             }
-            FLOW_EDGE_DRAGING_INFO.delete(activeElement);
+            deleteEdgeDragingInfo(activeElement);
         }
         isDragging = false;
         activeElement = null;

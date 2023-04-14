@@ -1,40 +1,34 @@
-import { PlaitBoard, Point, distanceBetweenPointAndPoint, normalizePoint } from '@plait/core';
-import { getDefaultHandles } from './get-default-handles';
+import { Point, distanceBetweenPointAndPoint, normalizePoint } from '@plait/core';
 import { FlowNode } from '../../interfaces/node';
+import { getDefaultHandles } from './get-default-handles';
 import { getHandleXYPosition } from './get-handle-position';
-import { HANDLE_RADIUS } from '../../constants/handle';
-import { FlowEdge, FlowEdgeHandle } from '../../interfaces/edge';
-import { FLOW_EDGE_DRAGING_INFO } from '../../plugins/with-edge-dnd';
+import { HANDLE_DIAMETER } from '../../constants/handle';
+import { FlowHandle } from '../../interfaces/element';
 
-export const getHitNodeHandle = (board: PlaitBoard, edge: FlowEdge, currentPoint: Point) => {
-    const flowEdgeDragInfo = FLOW_EDGE_DRAGING_INFO.get(edge);
-    if (!flowEdgeDragInfo) {
-        return null;
-    }
-    let edgeHandle: FlowEdgeHandle | null = null;
-    const flowNodeElements = board.children.filter(item => FlowNode.isFlowNodeElement(item)) as FlowNode[];
-    flowNodeElements.map(item => {
-        const handles = item.handles || getDefaultHandles();
-        handles.filter(handle => {
-            const { x, y } = normalizePoint(item.points![0]);
+export function getHitFlowNodeHandle(node: FlowNode, point: Point) {
+    const handles = node.handles || getDefaultHandles();
+    let hitHandle: (FlowHandle & { handlePoint: Point }) | null = null;
+    handles.map(handle => {
+        if (!hitHandle) {
+            const { x, y } = normalizePoint(node.points![0]);
             let { x: handleX, y: handleY } = getHandleXYPosition(
                 handle.position,
                 {
                     x,
                     y,
-                    width: item.width,
-                    height: item.height
+                    width: node.width,
+                    height: node.height
                 },
                 handle
             );
-            const distance = distanceBetweenPointAndPoint(handleX, handleY, currentPoint[0], currentPoint[1]);
-            if (distance < HANDLE_RADIUS && flowEdgeDragInfo.handleType && edge) {
-                edgeHandle = {
+            const distance = distanceBetweenPointAndPoint(handleX, handleY, point[0], point[1]);
+            if (distance < HANDLE_DIAMETER / 2) {
+                hitHandle = {
                     ...handle,
-                    node: item
+                    handlePoint: [handleX, handleY]
                 };
             }
-        });
+        }
     });
-    return edgeHandle;
-};
+    return hitHandle;
+}

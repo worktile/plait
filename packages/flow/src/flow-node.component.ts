@@ -105,7 +105,7 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
         }
     }
 
-    drawHandles(element: FlowNode = this.element) {
+    drawHandles(element: FlowNode<T> = this.element) {
         this.destroyHandles();
         const handles = drawNodeHandles(this.roughSVG, element);
         this.handlesG = createG();
