@@ -7,16 +7,17 @@ import {
 } from '../utils';
 import { MindmapLayoutType } from '@plait/layouts';
 import { getBranchMindmapLayouts } from './get-branch-mindmap-layouts-by-element';
+import { PlaitBoard } from '@plait/core';
 
 /**
  *  get available sub layouts by element
  * @param element
  * @returns MindmapLayoutType[]
  */
-export const getAvailableSubLayoutsByElement = (element: MindmapNodeElement) => {
+export const getAvailableSubLayoutsByElement = (board: PlaitBoard,element: MindmapNodeElement) => {
     const parentElement = findParentElement(element);
     if (parentElement) {
-        const branchLayouts = getBranchMindmapLayouts(parentElement);
+        const branchLayouts = getBranchMindmapLayouts(board, parentElement);
         if (branchLayouts[0] === MindmapLayoutType.standard) {
             const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
             if (component) {

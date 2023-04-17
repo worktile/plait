@@ -102,52 +102,52 @@ export const mockMindmapData: PlaitMindmap[] = [
         isRoot: true,
         points: [[560, 360]]
     },
-    {
-        type: 'mindmap',
-        id: '2',
-        rightNodeCount: 3,
-        value: { children: [{ text: '脑图调研' }] },
-        children: [
-            {
-                id: '2-1',
-                value: { children: [{ text: '富文本' }] },
-                children: [],
-                width: 42,
-                height: 20
-            },
-            {
-                id: '2-2',
-                value: { children: [{ text: '知名脑图产品' }] },
-                children: [],
-                width: 84,
-                height: 20
-            },
-            {
-                id: '2-3',
-                value: { children: [{ text: 'xxxxxxx' }] },
-                children: [
-                    {
-                        id: '2-3-1',
-                        value: { children: [{ text: '鱼骨图哦' }] },
-                        children: [],
-                        width: 56,
-                        height: 20
-                    },
-                    {
-                        id: '2-3-2',
-                        value: { children: [{ text: '缩进布局' }] },
-                        children: [],
-                        width: 56,
-                        height: 20
-                    }
-                ],
-                width: 48,
-                height: 20
-            }
-        ],
-        width: 72,
-        height: 25,
-        isRoot: true,
-        points: [[560, 700]]
-    }
+    // {
+    //     type: 'mindmap',
+    //     id: '2',
+    //     rightNodeCount: 3,
+    //     value: { children: [{ text: '脑图调研' }] },
+    //     children: [
+    //         {
+    //             id: '2-1',
+    //             value: { children: [{ text: '富文本' }] },
+    //             children: [],
+    //             width: 42,
+    //             height: 20
+    //         },
+    //         {
+    //             id: '2-2',
+    //             value: { children: [{ text: '知名脑图产品' }] },
+    //             children: [],
+    //             width: 84,
+    //             height: 20
+    //         },
+    //         {
+    //             id: '2-3',
+    //             value: { children: [{ text: 'xxxxxxx' }] },
+    //             children: [
+    //                 {
+    //                     id: '2-3-1',
+    //                     value: { children: [{ text: '鱼骨图哦' }] },
+    //                     children: [],
+    //                     width: 56,
+    //                     height: 20
+    //                 },
+    //                 {
+    //                     id: '2-3-2',
+    //                     value: { children: [{ text: '缩进布局' }] },
+    //                     children: [],
+    //                     width: 56,
+    //                     height: 20
+    //                 }
+    //             ],
+    //             width: 48,
+    //             height: 20
+    //         }
+    //     ],
+    //     width: 72,
+    //     height: 25,
+    //     isRoot: true,
+    //     points: [[560, 700]]
+    // }
 ];

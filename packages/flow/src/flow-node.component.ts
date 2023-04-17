@@ -60,18 +60,18 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
         if (value.element !== this.element && this.initialized) {
             this.updateElement(value.element);
         }
-        if (value.selection !== this.selection && this.initialized) {
-            const isActive = isSelectedElement(this.board, value.element);
-            if (this.perviousStatus === 'default' && isActive) {
-                this.drawActiveMask(value.element);
-                this.drawHandles();
-            }
-            if (this.perviousStatus === 'active' && !isActive) {
-                this.destroyActiveMask();
-                this.destroyHandles();
-            }
-            this.perviousStatus = isActive ? 'active' : 'default';
-        }
+        // if (value.selection !== this.selection && this.initialized) {
+        //     const isActive = isSelectedElement(this.board, value.element);
+        //     if (this.perviousStatus === 'default' && isActive) {
+        //         this.drawActiveMask(value.element);
+        //         this.drawHandles();
+        //     }
+        //     if (this.perviousStatus === 'active' && !isActive) {
+        //         this.destroyActiveMask();
+        //         this.destroyHandles();
+        //     }
+        //     this.perviousStatus = isActive ? 'active' : 'default';
+        // }
     }
 
     drawElement(element: FlowNode = this.element) {

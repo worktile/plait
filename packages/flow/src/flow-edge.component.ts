@@ -67,17 +67,17 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         if (value.element !== this.element && this.initialized) {
             this.drawElement(value.element, isActive);
         }
-        if (value.selection !== this.selection && this.initialized) {
-            if (isActive) {
-                this.drawElement(value.element, isActive);
-                this.drawHandles();
-            }
-            if (this.perviousStatus === 'active' && !isActive) {
-                this.drawElement(value.element);
-                this.destroyHandles();
-            }
-            this.perviousStatus = isActive ? 'active' : 'default';
-        }
+        // if (value.selection !== this.selection && this.initialized) {
+        //     if (isActive) {
+        //         this.drawElement(value.element, isActive);
+        //         this.drawHandles();
+        //     }
+        //     if (this.perviousStatus === 'active' && !isActive) {
+        //         this.drawElement(value.element);
+        //         this.destroyHandles();
+        //     }
+        //     this.perviousStatus = isActive ? 'active' : 'default';
+        // }
     }
 
     drawElement(element: FlowEdge<T> = this.element, active = false) {

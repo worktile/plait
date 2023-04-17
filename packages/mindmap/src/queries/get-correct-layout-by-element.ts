@@ -1,8 +1,9 @@
+import { PlaitBoard } from '@plait/core';
 import { MindmapNodeElement } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import {
     correctLayoutByDirection,
-    findUpElement,
+    findMindmap,
     getDefaultMindmapLayout,
     getInCorrectLayoutDirection,
     MINDMAP_ELEMENT_TO_COMPONENT
@@ -13,10 +14,9 @@ import { MindmapLayoutType } from '@plait/layouts';
  * get correctly layout：
  * 1. root is standard -> left or right
  * 2. correct layout by incorrect layout direction
- * @param element
  */
-export const getCorrectLayoutByElement = (element: MindmapNodeElement) => {
-    const { root } = findUpElement(element);
+export const getCorrectLayoutByElement = (board: PlaitBoard, element: MindmapNodeElement) => {
+    const root = findMindmap(board, element);
     const rootLayout = root.layout || getDefaultMindmapLayout();
     let correctRootLayout = rootLayout;
 

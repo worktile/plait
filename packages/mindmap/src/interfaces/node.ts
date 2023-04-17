@@ -1,5 +1,5 @@
 import { MindmapLayoutType } from '@plait/layouts';
-import { PlaitElement, Point } from '@plait/core';
+import { Path, PlaitElement, Point } from '@plait/core';
 import { MindmapNodeElement } from './element';
 
 export interface MindmapNode {
@@ -18,6 +18,17 @@ export interface MindmapNode {
 }
 
 export const MindmapNode = {
+    get(root: MindmapNode, path: Path) {
+        let node = root;
+        for (let i = 0; i < path.length; i++) {
+            const p = path[i];
+            if (!node || !node.children || !node.children[p]) {
+                throw new Error(`Cannot find a descendant at path [${path}]`);
+            }
+            node = node.children[p];
+        }
+        return node;
+    },
     isEquals(node: MindmapNode, otherNode: MindmapNode) {
         const hasSameSize =
             node.x === otherNode.x && node.y === otherNode.y && node.width === otherNode.width && node.height === otherNode.height;

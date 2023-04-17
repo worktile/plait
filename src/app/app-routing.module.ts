@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BasicBoardEditorComponent } from './editor/editor.component';
 import { BasicRichtextComponent } from './richtext/richtext.component';
-import { BasicFlowComponent } from './flow/flow.component';
+// import { BasicFlowComponent } from './flow/flow.component';
 
 const routes: Routes = [
     {
@@ -13,10 +13,10 @@ const routes: Routes = [
         path: 'richtext',
         component: BasicRichtextComponent
     },
-    {
-        path: 'flow',
-        component: BasicFlowComponent
-    }
+    // {
+    //     path: 'flow',
+    //     component: BasicFlowComponent
+    // }
 ];
 @NgModule({
     imports: [

@@ -1,13 +1,11 @@
 import {
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     ComponentRef,
-    Input,
-    OnChanges,
     OnDestroy,
     OnInit,
     Renderer2,
-    SimpleChanges,
     ViewContainerRef
 } from '@angular/core';
 import {
@@ -17,14 +15,18 @@ import {
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
-    Selection,
     toPoint,
     transformPoint,
     Transforms,
-    isSelectedElement,
-    removeSelectedElement,
-    addSelectedElement,
-    drawRoundRectangle
+    drawRoundRectangle,
+    PlaitPluginElementComponent,
+    NODE_TO_PARENT,
+    PlaitElement,
+    NODE_TO_INDEX,
+    ELEMENT_TO_PLUGIN_COMPONENT,
+    BeforeContextChange,
+    PlaitPluginElementContext,
+    OnContextChanged
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -46,7 +48,6 @@ import {
     EXTEND_OFFSET,
     EXTEND_RADIUS,
     MindmapNodeShape,
-    MINDMAP_NODE_KEY,
     NODE_MIN_WIDTH,
     PRIMARY_COLOR,
     QUICK_INSERT_CIRCLE_COLOR,
@@ -63,46 +64,37 @@ import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './
 import { MindmapQueries } from './queries';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
 import { getRectangleByNode, hitMindmapNode } from './utils/graph';
-import { createEmptyNode, findLastChild, findPath, getChildrenCount } from './utils/mindmap';
+import { createEmptyNode, findMindmap, getChildrenCount } from './utils/mindmap';
 import { getNodeShapeByElement } from './utils/shape';
-import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
+import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 
 @Component({
     selector: 'plait-mindmap-node',
     template: `
-        <plait-mindmap-node
-            *ngFor="let childNode of node?.children; let i = index; trackBy: trackBy"
-            [mindmapG]="mindmapG"
-            [node]="childNode"
-            [parent]="node"
-            [selection]="selection"
+        <plait-children
+            *ngIf="!element.isCollapsed"
             [board]="board"
-            [index]="i"
-        ></plait-mindmap-node>
+            [parent]="element"
+            [effect]="effect"
+            [parentG]="mindmapG"
+        ></plait-children>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
-    initialized = false;
-
+export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElement> extends PlaitPluginElementComponent<T>
+    implements OnInit, OnDestroy, OnContextChanged<T> {
     isEditable = false;
 
     roughSVG!: RoughSVG;
 
-    gGroup!: SVGGElement;
+    node!: MindmapNode;
 
-    @Input() node!: MindmapNode;
+    parent!: MindmapNode;
 
-    @Input() parent!: MindmapNode;
+    index!: number;
 
-    @Input() index!: number;
-
-    @Input() mindmapG!: SVGGElement;
-
-    @Input() selection: Selection | null = null;
-
-    @Input() board!: PlaitBoard;
+    mindmapG!: SVGGElement;
 
     activeG: SVGGElement[] = [];
 
@@ -126,14 +118,50 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         return this.board.pointer === PlaitPointerType.hand;
     }
 
-    constructor(private viewContainerRef: ViewContainerRef, private render2: Renderer2) {}
+    constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef, private render2: Renderer2) {
+        super(cdr);
+    }
+
+    onContextChanged(value: PlaitPluginElementContext<T>, previous: PlaitPluginElementContext<T>) {
+        const newNode = ELEMENT_TO_NODE.get(value.element) as MindmapNode;
+        const parent = NODE_TO_PARENT.get(value.element);
+        if (parent && PlaitElement.isElement(parent)) {
+            this.parent = ELEMENT_TO_NODE.get(parent as MindmapNodeElement) as MindmapNode;
+        }
+        
+        // resolve move node richtext lose issue
+        if (this.node !== newNode) {
+            if (this.foreignObject && this.foreignObject.children.length <= 0) {
+                this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
+            }
+        }
+
+        const isSameNode = MindmapNode.isEquals(this.node, newNode);
+        this.node = newNode;
+        this.drawActiveG();
+        this.updateActiveClass();
+        if (!isSameNode) {
+            this.drawShape();
+            this.drawLink();
+            this.updateRichtext();
+            this.drawMaskG();
+            this.drawExtend();
+        }
+    }
 
     ngOnInit(): void {
-        MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
+        super.ngOnInit();
+        // ELEMENT_GROUP_TO_COMPONENT.set(this.g, this);
+        this.node = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
+        const parent = NODE_TO_PARENT.get(this.element);
+        if (parent && PlaitElement.isElement(parent)) {
+            this.parent = ELEMENT_TO_NODE.get(parent as MindmapNodeElement) as MindmapNode;
+        }
+        this.index = NODE_TO_INDEX.get(this.element) || 0;
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
-        this.gGroup = createG();
-        this.gGroup.setAttribute(MINDMAP_NODE_KEY, 'true');
-        this.insertGroup();
+        const mindmap = findMindmap(this.board, this.element);
+        this.mindmapG = ELEMENT_TO_PLUGIN_COMPONENT.get(mindmap)?.g || this.g;
+        // this.insertGroup();
         this.drawShape();
         this.drawLink();
         this.drawRichtext();
@@ -141,8 +169,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         this.updateActiveClass();
         this.drawMaskG();
         this.drawExtend();
-        this.initialized = true;
-        ELEMENT_GROUP_TO_COMPONENT.set(this.gGroup, this);
     }
 
     drawShape() {
@@ -150,8 +176,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const shape = getNodeShapeByElement(this.node.origin) as MindmapNodeShape;
         switch (shape) {
             case MindmapNodeShape.roundRectangle:
-                this.shapeG = drawRectangleNode(this.roughSVG as RoughSVG, this.node as MindmapNode);
-                this.gGroup.prepend(this.shapeG);
+                this.shapeG = drawRectangleNode(this.board, this.node as MindmapNode);
+                this.elementG.prepend(this.shapeG);
                 break;
             default:
                 break;
@@ -162,23 +188,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         if (this.shapeG) {
             this.shapeG.remove();
             this.shapeG = null;
-        }
-    }
-
-    insertGroup() {
-        if (this.node.origin.isRoot) {
-            this.mindmapG.prepend(this.gGroup);
-        } else {
-            const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(this.parent.origin);
-            let targetNode = parentComponent?.gGroup as Node;
-
-            if (this.index > 0) {
-                const brotherNode = this.parent.children[this.index - 1];
-                const lastChildNode = findLastChild(brotherNode);
-                const lastChildComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(lastChildNode.origin);
-                targetNode = lastChildComponent?.gGroup as Node;
-            }
-            this.mindmapG.insertBefore(this.gGroup, targetNode as Node);
         }
     }
 
@@ -193,12 +202,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
         const layout = MindmapQueries.getLayoutByElement(this.parent.origin) as MindmapLayoutType;
         if (MindmapNodeElement.isIndentedLayout(this.parent.origin)) {
-            this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
+            this.linkG = drawIndentedLink(this.board, this.parent, this.node);
         } else {
-            this.linkG = drawLogicLink(this.roughSVG, this.node, this.parent, isHorizontalLayout(layout));
+            this.linkG = drawLogicLink(this.board, this.node, this.parent, isHorizontalLayout(layout));
         }
 
-        this.gGroup.append(this.linkG);
+        this.elementG.append(this.linkG);
     }
 
     destroyLine() {
@@ -211,7 +220,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     drawMaskG() {
         this.destroyMaskG();
-
         const lineWidthOffset = 2;
         const extendOffset = 15;
         const nodeLayout = MindmapQueries.getLayoutByElement(this.node.origin) as MindmapLayoutType;
@@ -263,7 +271,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         );
         this.maskG.classList.add('mask');
         this.maskG.setAttribute('visibility', 'visible');
-        this.gGroup.append(this.maskG);
+        this.elementG.append(this.maskG);
 
         if (this.isEditable) {
             this.disabledMaskG();
@@ -273,28 +281,28 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !!this.selection && !this.node.origin.isCollapsed && !this.handActive;
+                    return PlaitBoard.isFocus(this.board) && !this.element.isCollapsed && !this.handActive;
                 })
             )
             .subscribe(() => {
-                this.gGroup.classList.add('hovered');
+                this.elementG.classList.add('hovered');
             });
         fromEvent<MouseEvent>(this.maskG, 'mouseleave')
             .pipe(
                 takeUntil(this.destroy$),
                 filter(() => {
-                    return !!this.selection && !this.node.origin.isCollapsed;
+                    return PlaitBoard.isFocus(this.board) && !this.element.isCollapsed;
                 })
             )
             .subscribe(() => {
-                this.gGroup.classList.remove('hovered');
+                this.elementG.classList.remove('hovered');
             });
     }
 
     destroyMaskG() {
         if (this.maskG) {
             this.maskG.remove();
-            this.gGroup.classList.remove('hovered');
+            this.elementG.classList.remove('hovered');
         }
     }
 
@@ -312,8 +320,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
 
     drawActiveG() {
         this.destroyActiveG();
-        const selected = isSelectedElement(this.board, this.node.origin);
-        if (selected) {
+        if (this.selected) {
             let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
             const selectedStrokeG = drawRoundRectangle(
                 this.roughSVG as RoughSVG,
@@ -326,7 +333,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             );
             // 影响 mask 移入移出事件
             selectedStrokeG.style.pointerEvents = 'none';
-            this.gGroup.appendChild(selectedStrokeG);
+            this.elementG.appendChild(selectedStrokeG);
             this.activeG.push(selectedStrokeG);
             if (this.richtextComponentRef?.instance.plaitReadonly === true) {
                 const selectedBackgroundG = drawRoundRectangle(
@@ -341,7 +348,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 selectedBackgroundG.style.opacity = '0.15';
                 // 影响双击事件
                 selectedBackgroundG.style.pointerEvents = 'none';
-                this.gGroup.appendChild(selectedBackgroundG);
+                this.elementG.appendChild(selectedBackgroundG);
                 this.activeG.push(selectedBackgroundG, selectedStrokeG);
             }
         }
@@ -353,14 +360,13 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     updateActiveClass() {
-        if (!this.gGroup) {
+        if (!this.g) {
             return;
         }
-        const selected = isSelectedElement(this.board, this.node.origin);
-        if (selected) {
-            this.render2.addClass(this.gGroup, 'active');
+        if (this.selected) {
+            this.render2.addClass(this.g, 'active');
         } else {
-            this.render2.removeClass(this.gGroup, 'active');
+            this.render2.removeClass(this.g, 'active');
         }
     }
 
@@ -370,7 +376,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         this.richtextG = richtextG;
         this.foreignObject = foreignObject;
         this.render2.addClass(richtextG, 'richtext');
-        this.gGroup.append(richtextG);
+        this.elementG.append(richtextG);
     }
 
     private drawQuickInsert(offset = 0) {
@@ -512,8 +518,8 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
         const stroke = this.node.origin.isRoot
             ? getRootLinkLineColorByMindmapElement(this.node.origin)
-            : getLinkLineColorByMindmapElement(this.node.origin);
-        let nodeLayout = MindmapQueries.getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
+            : getLinkLineColorByMindmapElement(this.board, this.node.origin);
+        let nodeLayout = MindmapQueries.getCorrectLayoutByElement(this.board, this.node.origin) as ExtendLayoutType;
         if (this.node.origin.isRoot && isStandardLayout(nodeLayout)) {
             const root = this.node.origin as OriginNode;
             nodeLayout = root.children.length >= root.rightNodeCount ? MindmapLayoutType.left : MindmapLayoutType.right;
@@ -579,7 +585,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         fromEvent(quickInsertG, 'mouseup')
             .pipe(take(1))
             .subscribe(() => {
-                const path = findPath(this.board, this.node).concat(this.node.origin.children.length);
+                const path = PlaitBoard.findPath(this.board, this.element).concat(this.node.origin.children.length);
                 createEmptyNode(this.board, this.node.origin, path);
             });
     }
@@ -592,7 +598,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const collapseG = createG();
         this.extendG.classList.add('extend');
         collapseG.classList.add('collapse-container');
-        this.gGroup.append(this.extendG);
+        this.elementG.append(this.extendG);
         this.extendG.append(collapseG);
         if (this.node.origin.isRoot) {
             this.drawQuickInsert();
@@ -607,15 +613,15 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             .subscribe(() => {
                 const isCollapsed = !this.node.origin.isCollapsed;
                 const newElement: Partial<MindmapNodeElement> = { isCollapsed };
-                const path = findPath(this.board, this.node);
+                const path = PlaitBoard.findPath(this.board, this.element);
                 Transforms.setNode(this.board, newElement, path);
             });
 
         const { x, y, width, height } = getRectangleByNode(this.node);
-        const stroke = getLinkLineColorByMindmapElement(this.node.origin);
+        const stroke = getLinkLineColorByMindmapElement(this.board, this.node.origin);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         const extendY = y + height / 2;
-        const nodeLayout = MindmapQueries.getCorrectLayoutByElement(this.node.origin) as MindmapLayoutType;
+        const nodeLayout = MindmapQueries.getCorrectLayoutByElement(this.board, this.node.origin) as MindmapLayoutType;
 
         let extendLineXY = [
             [x + width, extendY],
@@ -708,14 +714,14 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                 `${getChildrenCount(this.node.origin)}`
             );
 
-            this.gGroup.classList.add('collapsed');
+            this.elementG.classList.add('collapsed');
             badge.setAttribute('style', 'opacity: 0.15');
             badgeText.setAttribute('style', 'font-size: 12px');
             collapseG.appendChild(badge);
             collapseG.appendChild(badgeText);
             collapseG.appendChild(extendLine);
         } else {
-            this.gGroup.classList.remove('collapsed');
+            this.elementG.classList.remove('collapsed');
 
             if (this.node.origin.children.length > 0) {
                 const hideCircleG = this.roughSVG.circle(
@@ -759,41 +765,6 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         updateMindmapNodeRichtextLocation(this.node as MindmapNode, this.richtextG as SVGGElement, this.isEditable);
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (this.initialized) {
-            const selection = changes['selection'];
-            if (selection) {
-                this.drawActiveG();
-                this.updateActiveClass();
-            }
-            const node = changes['node'];
-            if (node) {
-                MINDMAP_ELEMENT_TO_COMPONENT.set(this.node.origin, this);
-                const isSelected = isSelectedElement(this.board, node.previousValue.origin);
-                if (isSelected) {
-                    removeSelectedElement(this.board, node.previousValue.origin);
-                    addSelectedElement(this.board, node.currentValue.origin);
-                }
-                // resolve move node richtext lose issue
-                if (this.foreignObject && this.foreignObject.children.length <= 0) {
-                    this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
-                }
-                // performance optimize
-                const isEquals = MindmapNode.isEquals(node.currentValue, node.previousValue);
-                if (isEquals) {
-                    return;
-                }
-
-                this.drawShape();
-                this.drawLink();
-                this.updateRichtext();
-                this.drawActiveG();
-                this.drawMaskG();
-                this.drawExtend();
-            }
-        }
-    }
-
     startEditText(isEnd: boolean, isClear: boolean) {
         this.isEditable = true;
         this.disabledMaskG();
@@ -835,7 +806,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                     width: width < NODE_MIN_WIDTH * this.board.viewport.zoom ? NODE_MIN_WIDTH : width / this.board.viewport.zoom,
                     height: height / this.board.viewport.zoom
                 } as MindmapNodeElement;
-                const path = findPath(this.board, this.node);
+                const path = PlaitBoard.findPath(this.board, this.element);
                 Transforms.setNode(this.board, newElement, path);
                 MERGING.set(this.board, true);
             });
@@ -849,7 +820,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
                     width: width / this.board.viewport.zoom,
                     height: height / this.board.viewport.zoom
                 };
-                const path = findPath(this.board, this.node);
+                const path = PlaitBoard.findPath(this.board, this.element);
                 Transforms.setNode(this.board, newElement, path);
                 MERGING.set(this.board, true);
             }
@@ -917,12 +888,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
     };
 
     ngOnDestroy(): void {
-        removeSelectedElement(this.board, this.node.origin);
+        super.ngOnDestroy();
         if (MINDMAP_ELEMENT_TO_COMPONENT.get(this.node.origin) === this) {
             MINDMAP_ELEMENT_TO_COMPONENT.delete(this.node.origin);
         }
         this.destroyRichtext();
-        this.gGroup.remove();
+        this.elementG.remove();
         this.destroy$.next();
         this.destroy$.complete();
     }

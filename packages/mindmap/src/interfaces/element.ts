@@ -36,6 +36,13 @@ export interface PlaitMindmap extends MindmapNodeElement {
 export const PlaitMindmap = {
     isPlaitMindmap: (value: any): value is PlaitMindmap => {
         return value.type === 'mindmap';
+    },
+    isMindmapNode: (value: any): value is MindmapNodeElement => {
+        if (!value.type) {
+            return true;
+        } else {
+            return false;
+        }
     }
 };
 

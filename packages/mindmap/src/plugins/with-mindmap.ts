@@ -22,20 +22,21 @@ import { getSizeByText } from '@plait/richtext';
 import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { PlaitMindmapComponent } from '../mindmap.component';
+import { MindmapNodeComponent } from '../node.component';
 import {
     changeRightNodeCount,
     createEmptyNode,
     deleteSelectedELements,
     filterChildElement,
     findParentElement,
-    findPath,
     shouldChangeRightNodeCount
 } from '../utils';
 import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
+import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withNodeDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
+import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isHitSelection, getRectangle, isMovable } = board;
@@ -43,22 +44,24 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMindmap.isPlaitMindmap(context.element)) {
             return PlaitMindmapComponent;
+        } else {
+            return MindmapNodeComponent;
         }
         return drawElement(context);
     };
 
     board.getRectangle = element => {
-        const mindmapElement = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
-        if (mindmapElement) {
-            return getRectangleByNode(mindmapElement.node);
+        const node = ELEMENT_TO_NODE.get(element as MindmapNodeElement);
+        if (node) {
+            return getRectangleByNode(node);
         }
         return getRectangle(element);
     };
 
     board.isHitSelection = (element, range: Range) => {
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
-        if (nodeComponent && board.selection) {
-            const target = getRectangleByNode(nodeComponent.node);
+        const node = ELEMENT_TO_NODE.get(element as MindmapNodeElement);
+        if (node && board.selection) {
+            const target = getRectangleByNode(node);
             return RectangleClient.isIntersect(RectangleClient.toRectangleClient([range.anchor, range.focus]), target);
         }
 
@@ -79,38 +82,28 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
         const selectedElements = getSelectedElements(board) as MindmapNodeElement[];
         if (selectedElements.length) {
-            if ((event.key === 'Tab' || (event.key === 'Enter' && !selectedElements[0].isRoot)) && selectedElements.length === 1) {
+            if (selectedElements.length === 1 && (event.key === 'Tab' || (event.key === 'Enter' && !selectedElements[0].isRoot))) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
                 removeSelectedElement(board, selectedElement);
-                const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
+                const selectedElementPath = PlaitBoard.findPath(board, selectedElement);
                 if (event.key === 'Tab') {
-                    if (mindmapNodeComponent) {
-                        const isCollapsed = mindmapNodeComponent.node.origin.isCollapsed;
-                        const path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.origin.children.length);
-                        if (isCollapsed) {
-                            const newElement: Partial<MindmapNodeElement> = { isCollapsed: false };
-                            const boardPath = findPath(board, mindmapNodeComponent.node);
-                            PlaitHistoryBoard.withoutSaving(board, () => {
-                                Transforms.setNode(board, newElement, boardPath);
-                            });
-                        }
-                        createEmptyNode(board, mindmapNodeComponent.node.origin, path);
+                    const isCollapsed = selectedElement.isCollapsed;
+                    if (isCollapsed) {
+                        const newElement: Partial<MindmapNodeElement> = { isCollapsed: false };
+                        PlaitHistoryBoard.withoutSaving(board, () => {
+                            Transforms.setNode(board, newElement, selectedElementPath);
+                        });
                     }
+                    createEmptyNode(board, selectedElement, findNewChildNodePath(board, selectedElement));
                 } else {
-                    if (mindmapNodeComponent) {
-                        const path = Path.next(findPath(board, mindmapNodeComponent.node));
-                        const parentPath: Path = mindmapNodeComponent.parent ? findPath(board, mindmapNodeComponent!.parent) : [];
-                        if (shouldChangeRightNodeCount(selectedElement)) {
-                            changeRightNodeCount(board, parentPath, 1);
-                        }
-
-                        createEmptyNode(board, mindmapNodeComponent.parent.origin, path);
+                    if (shouldChangeRightNodeCount(selectedElement)) {
+                        changeRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
                     }
+                    createEmptyNode(board, selectedElement, findNewSiblingNodePath(board, selectedElement));
                 }
                 return;
             }
-
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
                 deleteSelectedELements(board, selectedElements);
@@ -123,8 +116,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 const isSameParent = elementGroup.every(element => {
                     return findParentElement(element) && findParentElement(elementGroup[0]) === findParentElement(element);
                 });
-
-                if (selectedElements.length && isSameParent) {
+                if (isSameParent) {
                     const childCount = mindmapNodeComponent!.parent?.children.length - elementGroup.length;
                     if (childCount === 0) {
                         lastNode = mindmapNodeComponent?.parent;
@@ -134,13 +126,11 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                         lastNode = mindmapNodeComponent?.parent.children[nodeIndex! - 1];
                     }
                 }
-
                 if (lastNode) {
                     addSelectedElement(board, lastNode.origin);
                 }
                 return;
             }
-
             // auto enter edit status
             if (!isVirtualKey(event)) {
                 event.preventDefault();
@@ -158,6 +148,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 return;
             }
         }
+
         keydown(event);
     };
 
@@ -217,7 +208,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             const { width } = getSizeByText(text, PlaitBoard.getHost(board).parentElement as HTMLElement);
             const selectedElements = getSelectedElements(board);
             if (text && selectedElements.length === 1) {
-                insertClipboardText(board, text, width);
+                insertClipboardText(board, selectedElements[0], text, width);
             }
         }
         insertFragment(data, targetPoint);

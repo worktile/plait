@@ -3,13 +3,13 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { MindmapNodeShape, STROKE_WIDTH } from '../constants';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
-import { Point } from '@plait/core';
+import { PlaitBoard, Point } from '@plait/core';
 import { getNodeShapeByElement, isChildRight } from '../utils';
 import { MindmapLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
 
 export function drawLink(
-    roughSVG: RoughSVG,
+    board: PlaitBoard,
     node: MindmapNode,
     child: MindmapNode,
     defaultStroke: string | null = null,
@@ -22,7 +22,7 @@ export function drawLink(
         endY,
         beginNode = node,
         endNode = child;
-    const layout = MindmapQueries.getCorrectLayoutByElement(node.origin) as MindmapLayoutType;
+    const layout = MindmapQueries.getCorrectLayoutByElement(board, node.origin) as MindmapLayoutType;
     if (isHorizontal) {
         if (!isChildRight(node, child)) {
             beginNode = child;
@@ -55,7 +55,7 @@ export function drawLink(
         endY = endNode.y + endNode.vGap;
     }
 
-    const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
+    const stroke = defaultStroke || getLinkLineColorByMindmapElement(board, child.origin);
     const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
     if (endNode.origin.isRoot) {
         if (layout === MindmapLayoutType.left || isStandardLayout(layout)) {
@@ -131,7 +131,7 @@ export function drawLink(
         }
 
         const points = pointsOnBezierCurves(curve);
-        return roughSVG.curve(points as any, { stroke, strokeWidth });
+        return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke, strokeWidth });
     } else {
         let curve: Point[] = [
             [beginX, beginY],
@@ -172,6 +172,6 @@ export function drawLink(
             }
         }
         const points = pointsOnBezierCurves(curve);
-        return roughSVG.curve(points as any, { stroke, strokeWidth });
+        return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke, strokeWidth });
     }
 }

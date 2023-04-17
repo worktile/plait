@@ -1,31 +1,32 @@
+import { NODE_TO_INDEX, PlaitBoard } from '@plait/core';
 import { COLORS, ROOT_NODE_STROKE } from '../constants';
 import { MindmapNodeElement } from '../interfaces';
-import { findUpElement } from './mindmap';
+import { findMindmapBranch } from './mindmap';
 
-export const getStrokeByMindmapElement = (element: MindmapNodeElement) => {
+export const getStrokeByMindmapElement = (board: PlaitBoard, element: MindmapNodeElement) => {
     let stroke = element.strokeColor;
     if (stroke) {
         return stroke;
     }
-    const { root, branch } = findUpElement(element);
-    if (branch) {
-        const index = root.children.indexOf(branch);
+    if (element.isRoot) {
+        return ROOT_NODE_STROKE;
+    } else {
+        const branch = findMindmapBranch(board, element);
+        const index = NODE_TO_INDEX.get(branch) || 0;
         const length = COLORS.length;
         const remainder = index % length;
         return COLORS[remainder];
-    } else {
-        return ROOT_NODE_STROKE;
     }
 };
 
-export const getLinkLineColorByMindmapElement = (element: MindmapNodeElement) => {
+export const getLinkLineColorByMindmapElement = (board: PlaitBoard, element: MindmapNodeElement) => {
     let color = element.linkLineColor;
     if (color) {
         return color;
     }
-    const { root, branch } = findUpElement(element);
-    if (branch) {
-        const index = root.children.indexOf(branch);
+    if (!element.isRoot) {
+        const branch = findMindmapBranch(board, element);
+        const index = NODE_TO_INDEX.get(branch) || 0;
         const length = COLORS.length;
         const remainder = index % length;
         return COLORS[remainder];
