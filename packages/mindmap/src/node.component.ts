@@ -63,10 +63,10 @@ import { MindmapNodeElement } from './interfaces/element';
 import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { MindmapQueries } from './queries';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
-import { getRectangleByNode, hitMindmapNode } from './utils/graph';
+import { getRectangleByNode, hitMindmapElement } from './utils/graph';
 import { createEmptyNode, findMindmap, getChildrenCount } from './utils/mindmap';
 import { getNodeShapeByElement } from './utils/shape';
-import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
+import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 
 @Component({
@@ -766,6 +766,7 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
     }
 
     startEditText(isEnd: boolean, isClear: boolean) {
+        console.log(`开始编辑：`);
         this.isEditable = true;
         this.disabledMaskG();
         IS_TEXT_EDITABLE.set(this.board, true);
@@ -827,7 +828,7 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
         });
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
             const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
-            const clickInNode = hitMindmapNode(this.board, point, this.node as MindmapNode);
+            const clickInNode = hitMindmapElement(this.board, point, this.element);
             if (clickInNode && !hasEditableTarget(richtextInstance.editor, event.target)) {
                 event.preventDefault();
             } else if (!clickInNode) {
@@ -889,9 +890,6 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        if (MINDMAP_ELEMENT_TO_COMPONENT.get(this.node.origin) === this) {
-            MINDMAP_ELEMENT_TO_COMPONENT.delete(this.node.origin);
-        }
         this.destroyRichtext();
         this.elementG.remove();
         this.destroy$.next();

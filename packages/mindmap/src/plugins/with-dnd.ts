@@ -13,7 +13,9 @@ import {
     ELEMENT_TO_PLUGIN_COMPONENT,
     getSelectedElements,
     PlaitNode,
-    NODE_TO_PARENT
+    NODE_TO_PARENT,
+    depthFirstRecursion,
+    PlaitPointerType
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -42,14 +44,14 @@ import {
     isChildElement,
     readjustmentDropTarget
 } from '../utils';
-import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
+import { getRectangleByNode, hitMindmapElement } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapQueries } from '../queries';
 import { PlaitMindmapComponent } from '../mindmap.component';
 
 const DRAG_MOVE_BUFFER = 5;
 
-export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
+export const withDND: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup, keydown } = board;
 
     let activeElement: MindmapNodeElement | null;
@@ -59,37 +61,34 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
     let dropTarget: { target: MindmapNodeElement; detectResult: DetectResult } | null = null;
 
     board.mousedown = (event: MouseEvent) => {
-        if (board.options.readonly || IS_TEXT_EDITABLE.get(board) || event.button === 2) {
+        if (
+            PlaitBoard.isReadonly(board) ||
+            PlaitBoard.hasBeenTextEditing(board) ||
+            event.button === 2 ||
+            board.pointer === PlaitPointerType.hand
+        ) {
             mousedown(event);
             return;
         }
-
-        // 确认是否 hit 节点
-        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const selectedElements = getSelectedElements(board);
-        board.children.forEach((value: PlaitElement) => {
-            if (activeElement) {
-                return;
-            }
-            if (PlaitMindmap.isPlaitMindmap(value)) {
-                const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitMindmapComponent;
-                const root = mindmapComponent?.root;
-                (root as any).eachNode((node: MindmapNode) => {
-                    if (activeElement) {
-                        return;
-                    }
-                    if (hitMindmapNode(board, point, node) && !node.origin.isRoot && selectedElements.length <= 1) {
+        if (selectedElements.length > 0) {
+            mousedown(event);
+            return;
+        }
+        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        board.children
+            .filter(value => PlaitMindmap.isPlaitMindmap(value))
+            .forEach(mindmap => {
+                depthFirstRecursion<MindmapNodeElement>(mindmap as MindmapNodeElement, node => {
+                    if (!activeElement && hitMindmapElement(board, point, node) && !node.isRoot) {
                         activeElement = node.origin;
                         startPoint = point;
                     }
                 });
-            }
-        });
-
+            });
         if (activeElement) {
             event.preventDefault();
         }
-
         mousedown(event);
     };
 

@@ -1,7 +1,9 @@
 import { MindmapNode } from '../interfaces/node';
-import { Point, RectangleClient } from '@plait/core';
+import { Point, RectangleClient, distanceBetweenPointAndRectangle } from '@plait/core';
 import { PlaitPointerType, PlaitBoard } from '@plait/core';
 import { depthFirstRecursion } from '@plait/core';
+import { MindmapNodeElement } from '../interfaces';
+import { ELEMENT_TO_NODE } from './weak-maps';
 
 export function toRectangleClient(points: [Point, Point]): RectangleClient {
     const xArray = points.map(ele => ele[0]);
@@ -27,8 +29,11 @@ export function getRectangleByNode(node: MindmapNode): RectangleClient {
     };
 }
 
-export function hitMindmapNode(board: PlaitBoard, point: Point, node: MindmapNode) {
-    if (board.pointer === PlaitPointerType.hand) return false;
-    const { x, y, width, height } = getRectangleByNode(node);
-    return point[0] >= x && point[0] <= x + width && point[1] >= y && point[1] <= y + height;
+export function hitMindmapElement(board: PlaitBoard, point: Point, element: MindmapNodeElement) {
+    const node = ELEMENT_TO_NODE.get(element);
+    if (node && distanceBetweenPointAndRectangle(point[0], point[1], getRectangleByNode(node)) === 0) {
+        return true;
+    } else {
+        return false;
+    }
 }

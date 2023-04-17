@@ -4,7 +4,6 @@ import {
     getSelectedElements,
     hotkeys,
     IS_TEXT_EDITABLE,
-    Path,
     PlaitBoard,
     PlaitElement,
     PlaitHistoryBoard,
@@ -16,7 +15,8 @@ import {
     toPoint,
     transformPoint,
     Transforms,
-    Range
+    Range,
+    depthFirstRecursion
 } from '@plait/core';
 import { getSizeByText } from '@plait/richtext';
 import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
@@ -31,12 +31,13 @@ import {
     findParentElement,
     shouldChangeRightNodeCount
 } from '../utils';
-import { getRectangleByNode, hitMindmapNode } from '../utils/graph';
+import { getRectangleByNode, hitMindmapElement } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
 import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
-import { withNodeDnd } from './with-dnd';
+import { withDND } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
+import { enterNodeEdit } from '../utils/node';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isHitSelection, getRectangle, isMovable } = board;
@@ -64,7 +65,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             const target = getRectangleByNode(node);
             return RectangleClient.isIntersect(RectangleClient.toRectangleClient([range.anchor, range.focus]), target);
         }
-
         return isHitSelection(element, range);
     };
 
@@ -135,10 +135,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             if (!isVirtualKey(event)) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
-                const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
-                const isSpaceKey = event.code === 'Space';
-                const isClear = isSpaceKey ? false : true;
-                mindmapNodeComponent?.startEditText(isSpaceKey, isClear);
+                enterNodeEdit(selectedElement);
                 return;
             }
         }
@@ -158,26 +155,16 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        let startEdit = false;
-        board.children.forEach((value: PlaitElement) => {
-            if (PlaitMindmap.isPlaitMindmap(value)) {
-                const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitMindmapComponent;
-                const root = mindmapComponent?.root;
-                (root as any).eachNode((node: MindmapNode) => {
-                    if (startEdit) {
-                        return;
-                    }
-                    if (hitMindmapNode(board, point, node)) {
-                        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node.origin);
-                        if (nodeComponent) {
-                            nodeComponent.startEditText(false, false);
-                            startEdit = true;
-                        }
+        board.children
+            .filter(value => PlaitMindmap.isPlaitMindmap(value))
+            .forEach(mindmap => {
+                depthFirstRecursion<MindmapNodeElement>(mindmap as MindmapNodeElement, node => {
+                    if (!PlaitBoard.hasBeenTextEditing(board) && hitMindmapElement(board, point, node) && !node.isRoot) {
+                        enterNodeEdit(node);
                     }
                 });
-            }
-        });
-        if (startEdit) {
+            });
+        if (PlaitBoard.hasBeenTextEditing(board)) {
             return;
         }
         dblclick(event);
@@ -220,5 +207,5 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         deleteFragment(data);
     };
 
-    return withNodeDnd(board);
+    return withDND(board);
 };

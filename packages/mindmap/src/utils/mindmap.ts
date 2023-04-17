@@ -7,6 +7,7 @@ import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
+import { enterNodeEdit } from './node';
 
 export function findParentElement(element: MindmapNodeElement): MindmapNodeElement | undefined {
     const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
@@ -238,10 +239,7 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapNodeEleme
     Transforms.insertNode(board, newElement, path);
     addSelectedElement(board, newElement);
     setTimeout(() => {
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
-        if (nodeComponent) {
-            nodeComponent.startEditText(true, false);
-        }
+        enterNodeEdit(newElement);
     });
 };
 
