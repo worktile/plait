@@ -7,22 +7,19 @@ import {
     PlaitPlugin,
     Point,
     Transforms,
-    isSelectedElement,
     toPoint,
     transformPoint
 } from '@plait/core';
-import { FlowNodeComponent } from '../flow-node.component';
 import { FlowEdgeComponent } from '../flow-edge.component';
-import { FlowElement, FlowElementType } from '../interfaces/element';
-import { FlowEdge, FlowEdgeDragInfo, FlowEdgeHandle, FlowEdgeHandleType } from '../interfaces/edge';
+import { FlowElement } from '../interfaces/element';
+import { FlowEdge, FlowEdgeHandle, FlowEdgeHandleType } from '../interfaces/edge';
 import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
 import { getHandleType } from '../utils/handle/get-handle-type';
 import { FlowNode } from '../interfaces/node';
 import { Element } from 'slate';
 import { getHitNodeHandleByEdge } from '../utils/handle/get-hit-node-handle-by-edge';
-import { getFlowElementsByType } from '../utils/get-node-by-id';
-import { deleteEdgeDragingInfo, setEdgeDragingInfo } from '../utils/edge/draging-edge';
-import { renderAllNodesHandle } from '../utils/node/render-all-nodes-handle';
+import { deleteEdgeDraggingInfo, addEdgeDraggingInfo } from '../utils/edge/dragging-edge';
+import { destroyAllNodesHandle, drawAllNodesHandle } from '../utils/node/render-all-nodes-handle';
 
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup } = board;
@@ -72,7 +69,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 offsetX = endPoint[0] - startPoint[0];
                 offsetY = endPoint[1] - startPoint[1];
                 if (activeElement && FlowEdge.isFlowEdgeElement(activeElement) && handleType) {
-                    setEdgeDragingInfo(activeElement, {
+                    addEdgeDraggingInfo(activeElement, {
                         offsetX,
                         offsetY,
                         handleType
@@ -82,7 +79,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     if (!isShowNodeEdge) {
                         isShowNodeEdge = true;
                         // 所有的 node 节点显示 handle
-                        flowNodeElements = renderAllNodesHandle(board);
+                        flowNodeElements = drawAllNodesHandle(board);
                     }
                 }
             }
@@ -108,18 +105,12 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     path
                 );
             } else {
+                deleteEdgeDraggingInfo(activeElement);
                 activeComponent?.drawElement(activeElement, true);
             }
             if (isShowNodeEdge) {
-                flowNodeElements.map(item => {
-                    const flowNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(item) as FlowNodeComponent;
-                    flowNodeComponent.destroyHandles();
-                    if (isSelectedElement(board, item)) {
-                        flowNodeComponent.destroyActiveMask();
-                    }
-                });
+                destroyAllNodesHandle(board, flowNodeElements);
             }
-            deleteEdgeDragingInfo(activeElement);
         }
         isDragging = false;
         activeElement = null;

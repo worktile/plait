@@ -1,18 +1,8 @@
-import {
-    ELEMENT_TO_PLUGIN_COMPONENT,
-    PlaitBoard,
-    PlaitPlugin,
-    PlaitPluginElementContext,
-    getMovingElements,
-    getSelectedElements,
-    isSelectedElement,
-    toPoint,
-    transformPoint
-} from '@plait/core';
+import { ELEMENT_TO_PLUGIN_COMPONENT, PlaitBoard, PlaitPlugin, PlaitPluginElementContext, getMovingElements } from '@plait/core';
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowEdgeComponent } from '../flow-edge.component';
 import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
-import { FlowElement } from '../interfaces/element';
+import { FlowElement, FlowElementType } from '../interfaces/element';
 import { FlowEdge } from '../interfaces/edge';
 import { FlowNode } from '../interfaces/node';
 import { withFlowEdgeDnd } from './with-edge-dnd';
@@ -21,7 +11,7 @@ import { withEdgeCreate } from './with-edge-create';
 import { isHitFlowNode } from '../utils/node/is-hit-node';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, isHitSelection, isMovable, onChange, getRectangle } = board;
+    const { drawElement, isHitSelection, isMovable, onChange, getRectangle, mousemove } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (FlowElement.isFlowElement(context.element)) {

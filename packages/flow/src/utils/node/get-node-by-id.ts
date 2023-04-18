@@ -1,6 +1,6 @@
 import { PlaitBoard } from '@plait/core';
-import { FlowNode } from '../interfaces/node';
-import { FlowElement, FlowElementType } from '../interfaces/element';
+import { FlowNode } from '../../interfaces/node';
+import { FlowElement, FlowElementType } from '../../interfaces/element';
 
 export function getFlowNodeById(board: PlaitBoard, id: string): FlowNode {
     let node = board.children.find(item => item.id === id) as FlowNode;

@@ -5,7 +5,7 @@ import { getHandleXYPosition } from './get-handle-position';
 import { HANDLE_DIAMETER } from '../../constants/handle';
 import { FlowHandle } from '../../interfaces/element';
 
-export function getHitFlowNodeHandle(node: FlowNode, point: Point) {
+export function getHitFlowNodeHandle(node: FlowNode, point: Point): (FlowHandle & { handlePoint: Point }) | null {
     const handles = node.handles || getDefaultHandles();
     let hitHandle: (FlowHandle & { handlePoint: Point }) | null = null;
     handles.map(handle => {
