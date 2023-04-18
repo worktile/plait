@@ -1,34 +1,34 @@
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawRoundRectangle, normalizePoint } from '@plait/core';
-import { FlowElementStyles } from '../interfaces/element';
+import { FlowBaseData, FlowElementStyles } from '../interfaces/element';
 import { FlowNode } from '../interfaces/node';
-import { DEAFULT_NODE_ACTIVE_STYLES, DEAFULT_NODE_STYLES, OUTLINE_BUFFR } from '../constants/node';
+import { DEFAULT_NODE_ACTIVE_STYLES, DEFAULT_NODE_STYLES, OUTLINE_BUFFER } from '../constants/node';
 
-export function drawNode(roughSVG: RoughSVG, node: FlowNode, outline = false) {
+export function drawNode<T extends FlowBaseData>(roughSVG: RoughSVG, node: FlowNode<T>, outline = false) {
     let nodeStyles: FlowElementStyles = {
-        ...DEAFULT_NODE_STYLES,
+        ...DEFAULT_NODE_STYLES,
         ...(node.styles || {})
     };
     let { x, y } = normalizePoint(node.points![0]);
     let { width, height } = node;
-    x = x + OUTLINE_BUFFR;
-    y = y + OUTLINE_BUFFR;
-    width = width - OUTLINE_BUFFR * 2;
-    height = height - OUTLINE_BUFFR * 2;
+    x = x + OUTLINE_BUFFER;
+    y = y + OUTLINE_BUFFER;
+    width = width - OUTLINE_BUFFER * 2;
+    height = height - OUTLINE_BUFFER * 2;
     const nodeG = drawRoundRectangle(roughSVG, x, y, x + width, y + height, nodeStyles, outline);
     return nodeG;
 }
 
-export function drawActiveMask(roughSVG: RoughSVG, node: FlowNode) {
+export function drawActiveMask<T extends FlowBaseData>(roughSVG: RoughSVG, node: FlowNode<T>) {
     let nodeStyles: FlowElementStyles = {
-        ...DEAFULT_NODE_ACTIVE_STYLES,
+        ...DEFAULT_NODE_ACTIVE_STYLES,
         ...(node.styles || {})
     };
     let { x, y } = normalizePoint(node.points![0]);
     let { width, height } = node;
     nodeStyles = {
         ...nodeStyles,
-        stroke: node.styles?.activeStroke || DEAFULT_NODE_ACTIVE_STYLES.stroke
+        stroke: node.styles?.activeStroke || DEFAULT_NODE_ACTIVE_STYLES.stroke
     };
     const nodeG = drawRoundRectangle(roughSVG, x, y, x + width, y + height, nodeStyles, true);
     return nodeG;

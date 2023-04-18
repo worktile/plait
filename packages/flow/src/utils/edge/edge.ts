@@ -1,11 +1,11 @@
-import { FlowElementStyles, FlowHandle, FlowPosition } from '../../interfaces/element';
+import { FlowBaseData, FlowElementStyles, FlowHandle, FlowPosition } from '../../interfaces/element';
 import { getHandleXYPosition } from '../handle/get-handle-position';
 import { PlaitBoard, RectangleClient, normalizePoint } from '@plait/core';
 import { getPoints } from './get-smooth-step-edge';
 import { getFakeFlowNodeById, getFlowNodeById } from '../get-node-by-id';
 import { FlowEdge } from '../../interfaces/edge';
-import { DEAFULT_EDGE_ACTIVE_STYLES, DEAFULT_EDGE_STYLES } from '../../constants/edge';
-import { FLOW_EDGE_DRAGING_INFO } from '../../plugins/with-edge-dnd';
+import { DEFAULT_EDGE_ACTIVE_STYLES, DEFAULT_EDGE_STYLES } from '../../constants/edge';
+import { FLOW_EDGE_DRAGGING_INFO } from '../../plugins/with-edge-dnd';
 import { FlowNode } from '../../interfaces/node';
 
 interface EdgePositions {
@@ -56,7 +56,7 @@ export function getEdgeCenter({
 
 export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
     let sourceNode: FlowNode, targetNode: FlowNode;
-    const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && FLOW_EDGE_DRAGING_INFO.get(edge);
+    const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && FLOW_EDGE_DRAGGING_INFO.get(edge);
 
     if (dragEdgeInfo && dragEdgeInfo.handleType === 'source') {
         sourceNode = getFakeFlowNodeById(board, edge.source?.id!, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);
@@ -107,15 +107,15 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
     });
 };
 
-export const getEdgeStyle = (edge: FlowEdge, active: boolean) => {
+export const getEdgeStyle = <T extends FlowBaseData>(edge: FlowEdge<T>, active: boolean) => {
     let edgeStyles: FlowElementStyles = {
-        ...DEAFULT_EDGE_STYLES,
+        ...DEFAULT_EDGE_STYLES,
         ...(edge.styles || {})
     };
     if (active) {
         edgeStyles = {
             ...edgeStyles,
-            stroke: edge.styles?.activeStroke || DEAFULT_EDGE_ACTIVE_STYLES.stroke
+            stroke: edge.styles?.activeStroke || DEFAULT_EDGE_ACTIVE_STYLES.stroke
         };
     }
     return edgeStyles;

@@ -1,14 +1,14 @@
 import { Options } from 'roughjs/bin/core';
-import { DEAFULT_STYLES } from './default';
+import { DEFAULT_STYLES } from './default';
 
 export const HIT_THERSHOLD = 10;
 
-export const DEAFULT_EDGE_STYLES: Options = {
-    ...DEAFULT_STYLES,
+export const DEFAULT_EDGE_STYLES: Options = {
+    ...DEFAULT_STYLES,
     stroke: '#ccc',
     fill: '#fff'
 };
 
-export const DEAFULT_EDGE_ACTIVE_STYLES: Options = {
+export const DEFAULT_EDGE_ACTIVE_STYLES: Options = {
     stroke: 'rgb(38, 132, 255)'
 };

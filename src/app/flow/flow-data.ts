@@ -1,7 +1,6 @@
 import { FlowElement, FlowElementType, FlowPosition } from '@plait/flow';
-import { Element } from 'slate';
 
-export const mockFlowData: FlowElement<Element>[] = [
+export const mockFlowData: FlowElement[] = [
     {
         id: '1',
         data: {

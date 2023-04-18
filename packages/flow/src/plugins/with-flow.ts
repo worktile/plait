@@ -16,7 +16,7 @@ import { FlowEdge } from '../interfaces/edge';
 import { FlowNode } from '../interfaces/node';
 import { withFlowEdgeDnd } from './with-edge-dnd';
 import { getEdgesByNodeId } from '../utils/edge/get-edges-by-node';
-import { OUTLINE_BUFFR } from '../constants/node';
+import { OUTLINE_BUFFER } from '../constants/node';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, isHitSelection, isMovable, onChange, getRectangle } = board;
@@ -38,10 +38,10 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                 const { x, y } = normalizePoint(element.points![0]);
                 const isSelected = isSelectedElement(board, element);
                 const isIntersectNode = RectangleClient.isIntersect(RectangleClient.toRectangleClient([range.anchor, range.focus]), {
-                    x: isSelected ? x : x + OUTLINE_BUFFR,
-                    y: isSelected ? y : y + OUTLINE_BUFFR,
-                    width: isSelected ? element.width : element.width - OUTLINE_BUFFR * 2,
-                    height: isSelected ? element.height : element.height - OUTLINE_BUFFR * 2
+                    x: isSelected ? x : x + OUTLINE_BUFFER,
+                    y: isSelected ? y : y + OUTLINE_BUFFER,
+                    width: isSelected ? element.width : element.width - OUTLINE_BUFFER * 2,
+                    height: isSelected ? element.height : element.height - OUTLINE_BUFFER * 2
                 });
                 return isIntersectNode;
             }
