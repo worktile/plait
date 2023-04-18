@@ -766,7 +766,6 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
     }
 
     startEditText(isEnd: boolean, isClear: boolean) {
-        console.log(`开始编辑：`);
         this.isEditable = true;
         this.disabledMaskG();
         IS_TEXT_EDITABLE.set(this.board, true);

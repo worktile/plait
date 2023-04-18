@@ -1,20 +1,21 @@
-import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, PlaitNode, Transforms } from '@plait/core';
+import { addSelectedElement, idCreator, NODE_TO_PARENT, Path, PlaitBoard, PlaitElement, PlaitNode, Transforms } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE } from '../constants/node';
 import { MindmapNode } from '../interfaces';
 import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEdit } from './node';
 
 export function findParentElement(element: MindmapNodeElement): MindmapNodeElement | undefined {
-    const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
-    if (component && component.parent) {
-        return component.parent.origin;
+    const parent = NODE_TO_PARENT.get(element);
+    if (PlaitElement.isElement(parent)) {
+        return parent as MindmapNodeElement;
     }
-    return undefined;
+    {
+        return undefined;
+    }
 }
 
 export function findMindmap(board: PlaitBoard, element: MindmapNodeElement) {
@@ -152,9 +153,8 @@ export const changeRightNodeCount = (board: PlaitBoard, parentPath: Path, change
 
 export const shouldChangeRightNodeCount = (selectedElement: MindmapNodeElement) => {
     const parentElement = findParentElement(selectedElement);
-    const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
-    if (parentElement && mindmapNodeComponent) {
-        const nodeIndex: number = mindmapNodeComponent.parent.children.findIndex(item => item.origin.id === selectedElement.id);
+    if (parentElement) {
+        const nodeIndex: number = parentElement.children.findIndex(item => item.origin.id === selectedElement.id);
         if (
             parentElement.isRoot &&
             getRootLayout(parentElement) === MindmapLayoutType.standard &&

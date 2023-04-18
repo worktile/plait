@@ -33,7 +33,7 @@ import {
 } from '../utils';
 import { getRectangleByNode, hitMindmapElement } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
+import { ELEMENT_TO_NODE } from '../utils/weak-maps';
 import { withDND } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
@@ -111,7 +111,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 let lastNode: MindmapNode | any = null;
                 const elementGroup = filterChildElement(selectedElements);
                 const selectNode = elementGroup[0];
-                const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectNode);
+                const mindmapNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(selectNode);
                 const nodeIndex = mindmapNodeComponent?.parent?.children.findIndex(item => item.origin.id === selectNode.id);
                 const isSameParent = elementGroup.every(element => {
                     return findParentElement(element) && findParentElement(elementGroup[0]) === findParentElement(element);

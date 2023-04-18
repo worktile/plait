@@ -45,9 +45,7 @@ import {
     readjustmentDropTarget
 } from '../utils';
 import { getRectangleByNode, hitMindmapElement } from '../utils/graph';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapQueries } from '../queries';
-import { PlaitMindmapComponent } from '../mindmap.component';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -71,7 +69,7 @@ export const withDND: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
         const selectedElements = getSelectedElements(board);
-        if (selectedElements.length > 0) {
+        if (selectedElements.length > 1) {
             mousedown(event);
             return;
         }
@@ -81,7 +79,7 @@ export const withDND: PlaitPlugin = (board: PlaitBoard) => {
             .forEach(mindmap => {
                 depthFirstRecursion<MindmapNodeElement>(mindmap as MindmapNodeElement, node => {
                     if (!activeElement && hitMindmapElement(board, point, node) && !node.isRoot) {
-                        activeElement = node.origin;
+                        activeElement = node;
                         startPoint = point;
                     }
                 });
@@ -93,22 +91,22 @@ export const withDND: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.mousemove = (event: MouseEvent) => {
-        if (!board.options.readonly && activeElement && startPoint) {
+        if (activeElement && startPoint) {
             const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance < DRAG_MOVE_BUFFER) {
                 return;
             }
+            const activeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(activeElement) as MindmapNodeComponent;
 
             if (!isDragging(board)) {
                 setIsDragging(board, true);
                 fakeDragNodeG = createG();
                 fakeDragNodeG.classList.add('dragging', 'fake-node', 'plait-board-attached');
                 fakeDropNodeG = createG();
-                const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
                 addActiveOnDragOrigin(activeElement);
-                // activeComponent.mindmapG.parentElement?.appendChild(fakeDropNodeG);
-                // activeComponent.mindmapG.parentElement?.appendChild(fakeDragNodeG);
+                PlaitBoard.getElementHost(board).append(fakeDragNodeG);
+                PlaitBoard.getElementHost(board).append(fakeDropNodeG);
             } else {
                 fakeDragNodeG?.childNodes.forEach(node => {
                     node.remove();
@@ -121,7 +119,6 @@ export const withDND: PlaitPlugin = (board: PlaitBoard) => {
             // fake dragging origin node
             const offsetX = endPoint[0] - startPoint[0];
             const offsetY = endPoint[1] - startPoint[1];
-            const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
             const roughSVG = PlaitBoard.getRoughSVG(board);
             const fakeDraggingNode: MindmapNode = {
                 ...activeComponent.node,
@@ -139,32 +136,25 @@ export const withDND: PlaitPlugin = (board: PlaitBoard) => {
             // drop position detect
             const { x, y } = getRectangleByNode(fakeDraggingNode);
             const detectCenterPoint = [x + width / 2, y + height / 2] as Point;
-
             let detectResult: DetectResult[] | null = null;
-            board.children.forEach((value: PlaitElement) => {
-                if (detectResult) {
-                    return;
-                }
-                if (PlaitMindmap.isPlaitMindmap(value)) {
-                    const mindmapComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitMindmapComponent;
-                    const root = mindmapComponent?.root;
-
-                    (root as any).eachNode((node: MindmapNode) => {
+            board.children
+                .filter(value => PlaitMindmap.isPlaitMindmap(value))
+                .forEach(mindmap => {
+                    depthFirstRecursion<MindmapNodeElement>(mindmap as MindmapNodeElement, element => {
                         if (detectResult) {
                             return;
                         }
-                        const directions = directionDetector(node, detectCenterPoint);
+                        const directions = directionDetector(element, detectCenterPoint);
                         if (directions) {
-                            detectResult = directionCorrector(board, node, directions);
+                            detectResult = directionCorrector(board, element, directions);
                         }
                         dropTarget = null;
-                        if (detectResult && isValidTarget(activeComponent.node.origin, node.origin)) {
-                            dropTarget = { target: node.origin, detectResult: detectResult[0] };
+                        if (detectResult && isValidTarget(activeElement as MindmapNodeElement, element)) {
+                            dropTarget = { target: element, detectResult: detectResult[0] };
                         }
                     });
-                }
-            });
-
+                });
+            console.log(dropTarget);
             if (dropTarget?.target) {
                 dropTarget = readjustmentDropTarget(board, dropTarget);
                 drawPlaceholderDropNodeG(board, dropTarget, roughSVG, fakeDropNodeG);
@@ -175,7 +165,7 @@ export const withDND: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.globalMouseup = (event: MouseEvent) => {
-        if (!board.options.readonly && activeElement) {
+        if (activeElement) {
             if (dropTarget?.target) {
                 let targetPath = PlaitBoard.findPath(board, dropTarget.target);
                 const rightTargetPath = [...targetPath];
@@ -212,6 +202,7 @@ export const withDND: PlaitPlugin = (board: PlaitBoard) => {
             fakeDropNodeG?.remove();
             fakeDropNodeG = undefined;
             dropTarget = null;
+            console.log(`cancel darg`);
         }
         globalMouseup(event);
     };
@@ -228,7 +219,7 @@ export const isValidTarget = (origin: MindmapNodeElement, target: MindmapNodeEle
 };
 
 export const addActiveOnDragOrigin = (activeElement: MindmapNodeElement, isOrigin = true) => {
-    const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
+    const activeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(activeElement) as MindmapNodeComponent;
     if (isOrigin) {
         activeComponent.g.classList.add('dragging-origin');
     } else {
@@ -241,7 +232,7 @@ export const addActiveOnDragOrigin = (activeElement: MindmapNodeElement, isOrigi
 };
 
 export const removeActiveOnDragOrigin = (activeElement: MindmapNodeElement, isOrigin = true) => {
-    const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
+    const activeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(activeElement) as MindmapNodeComponent;
     if (isOrigin) {
         activeComponent.g.classList.remove('dragging-origin');
     } else {

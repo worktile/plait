@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges, ViewContainerRef } from '@angular/core';
 import { PlaitBoard } from '../../interfaces/board';
 import { PlaitElement } from '../../interfaces/element';
 import { PlaitPluginElementContext } from './context';
@@ -6,7 +6,7 @@ import { ELEMENT_TO_PLUGIN_COMPONENT, PlaitPluginElementComponent } from './plug
 import { PlaitEffect } from '../children/effect';
 import { Ancestor, PlaitNode } from '../../interfaces/node';
 import { NODE_TO_INDEX, NODE_TO_PARENT } from '../../utils/weak-maps';
-import { isSelectedElement } from '../../utils';
+import { addSelectedElement, isSelectedElement, removeSelectedElement } from '../../utils';
 
 @Component({
     selector: 'plait-element',
@@ -17,8 +17,6 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
     initialized = false;
 
     instance?: PlaitPluginElementComponent<PlaitElement>;
-
-    context?: PlaitPluginElementContext;
 
     @Input() index!: number;
 
@@ -47,15 +45,12 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
 
     drawElement() {
         const context = this.getContext();
-        const result = this.board.drawElement(context.current);
+        const result = this.board.drawElement(context);
         if (Array.isArray(result)) {
-            result.forEach(g => {
-                this.parentG.prepend(g);
-            });
         } else {
             const componentRef = this.viewContainerRef.createComponent(result);
             const instance = componentRef.instance;
-            instance.context = context.current;
+            instance.context = context;
             this.insertG(instance.g);
             this.instance = instance;
         }
@@ -80,45 +75,35 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-    ngOnChanges(): void {
+    ngOnChanges(simpleChanges: SimpleChanges): void {
         if (this.initialized) {
             NODE_TO_INDEX.set(this.element, this.index);
             NODE_TO_PARENT.set(this.element, this.parent);
+            const elementChanged = simpleChanges['element'];
             const context = this.getContext();
-            if (this.instance) {
-                this.instance.context = context.current;
+            if (elementChanged && isSelectedElement(this.board, elementChanged.previousValue)) {
+                context.selected = true;
+                removeSelectedElement(this.board, elementChanged.previousValue);
+                addSelectedElement(this.board, this.element);
             }
-            const result = this.board.redrawElement(context.current, context.previous);
-            if (result && result.length > 0) {
-                this.parentG.childNodes.forEach(g => g.remove());
-                result.forEach(g => {
-                    this.parentG.appendChild(g);
-                });
+            if (this.instance) {
+                this.instance.context = context;
             }
         }
     }
 
-    getContext(): { current: PlaitPluginElementContext; previous?: PlaitPluginElementContext } {
-        let isSelected = isSelectedElement(this.board, this.element);
-        if (this.context && this.context.element && !isSelected) {
-            isSelected = isSelectedElement(this.board, this.context.element);
-        }
-        const current: PlaitPluginElementContext = {
+    getContext(): PlaitPluginElementContext {
+        const isSelected = isSelectedElement(this.board, this.element);
+        const context: PlaitPluginElementContext = {
             element: this.element,
             board: this.board,
             selected: isSelected,
             effect: this.effect
         };
-        if (this.context) {
-            const previous = { ...this.context };
-            this.context = current;
-            return { current, previous };
-        } else {
-            return { current };
-        }
+        return context;
     }
 
     ngOnDestroy(): void {
-        this.board.destroyElement(this.getContext().current);
+        this.board.destroyElement(this.getContext());
     }
 }

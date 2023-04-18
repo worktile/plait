@@ -1,34 +1,35 @@
-import { DetectResult, MindmapNodeElement, MindmapNode } from '../interfaces';
+import { DetectResult, MindmapNodeElement } from '../interfaces';
 import { isBottomLayout, isRightLayout, isLeftLayout, MindmapLayoutType, isStandardLayout, isTopLayout } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
-import { PlaitBoard } from '@plait/core';
+import { NODE_TO_PARENT, PlaitBoard } from '@plait/core';
 
-export const directionCorrector = (board: PlaitBoard, node: MindmapNode, detectResults: DetectResult[]): DetectResult[] | null => {
-    if (!node.origin.isRoot) {
-        const parentlayout = MindmapQueries.getCorrectLayoutByElement(board, node?.parent.origin as MindmapNodeElement);
-        if (isStandardLayout(parentlayout)) {
-            const idx = node.parent.children.findIndex(x => x === node);
-            const isLeft = idx >= (node.parent.origin.rightNodeCount || 0);
+export const directionCorrector = (board: PlaitBoard, element: MindmapNodeElement, detectResults: DetectResult[]): DetectResult[] | null => {
+    if (!element.isRoot) {
+        const parent = NODE_TO_PARENT.get(element) as MindmapNodeElement;
+        const parentLayout = MindmapQueries.getCorrectLayoutByElement(board, parent);
+        if (isStandardLayout(parentLayout)) {
+            const idx = parent.children.findIndex(x => x === element);
+            const isLeft = idx >= (parent.rightNodeCount || 0);
             return getAllowedDirection(detectResults, [isLeft ? 'right' : 'left']);
         }
 
-        if (isLeftLayout(parentlayout)) {
+        if (isLeftLayout(parentLayout)) {
             return getAllowedDirection(detectResults, ['right']);
         }
 
-        if (isRightLayout(parentlayout)) {
+        if (isRightLayout(parentLayout)) {
             return getAllowedDirection(detectResults, ['left']);
         }
 
-        if (parentlayout === MindmapLayoutType.upward) {
+        if (parentLayout === MindmapLayoutType.upward) {
             return getAllowedDirection(detectResults, ['bottom']);
         }
 
-        if (parentlayout === MindmapLayoutType.downward) {
+        if (parentLayout === MindmapLayoutType.downward) {
             return getAllowedDirection(detectResults, ['top']);
         }
     } else {
-        const layout = MindmapQueries.getCorrectLayoutByElement(board, node?.origin as MindmapNodeElement);
+        const layout = MindmapQueries.getCorrectLayoutByElement(board, element);
         if (isStandardLayout(layout)) {
             return getAllowedDirection(detectResults, ['top', 'bottom']);
         }

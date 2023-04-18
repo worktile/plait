@@ -1,9 +1,8 @@
 import { Element } from 'slate';
 import { MindmapNodeShape } from '../constants/node';
 import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
-import { PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
+import { NODE_TO_PARENT, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
 import { MindmapQueries } from '../queries';
-import { findMindmap, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils';
 
 export interface MindmapNodeElement extends PlaitElement {
     value: Element;
@@ -55,6 +54,14 @@ export const MindmapNodeElement = {
             return true;
         } else {
             return false;
+        }
+    },
+    findParent(board: PlaitBoard, element: MindmapNodeElement) {
+        const parent = NODE_TO_PARENT.get(element);
+        if (parent && parent !== board) {
+            return parent as MindmapNodeElement;
+        } else {
+            return undefined;
         }
     }
 };

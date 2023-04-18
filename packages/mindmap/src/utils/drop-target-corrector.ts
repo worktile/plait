@@ -1,10 +1,10 @@
 import { isStandardLayout, isIndentedLayout, isVerticalLogicLayout, isTopLayout, MindmapLayoutType } from '@plait/layouts';
-import { DetectResult, MindmapNodeElement } from '../interfaces';
+import { DetectResult, MindmapNode, MindmapNodeElement } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { MindmapQueries } from '../queries';
 import { isMixedLayout } from './layout';
-import { PlaitBoard } from '@plait/core';
+import { NODE_TO_PARENT, PlaitBoard } from '@plait/core';
+import { ELEMENT_TO_NODE } from './weak-maps';
 
 /* 根据布局调整 target 以及 direction */
 export const readjustmentDropTarget = (
@@ -15,24 +15,25 @@ export const readjustmentDropTarget = (
     }
 ): { target: MindmapNodeElement; detectResult: DetectResult } => {
     const { target, detectResult } = dropTarget;
+    const targetParent = NODE_TO_PARENT.get(target);
     const newDropTarget = { target, detectResult };
-    const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(target) as MindmapNodeComponent;
-    if (targetComponent.node.children.length > 0 && dropTarget.detectResult) {
-        const layout = MindmapQueries.getCorrectLayoutByElement(board, targetComponent.node.origin);
+    const targetNode = ELEMENT_TO_NODE.get(target) as MindmapNode;
+    if (targetNode.children.length > 0 && dropTarget.detectResult) {
+        const layout = MindmapQueries.getCorrectLayoutByElement(board, target);
         const parentLayout = MindmapQueries.getCorrectLayoutByElement(
             board,
-            targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
+            target.isRoot ? target : targetParent as MindmapNodeElement
         );
         if (['right', 'left'].includes(dropTarget.detectResult)) {
             if (!isMixedLayout(parentLayout, layout)) {
-                if (targetComponent.node.origin.isRoot) {
-                    const layout = MindmapQueries.getCorrectLayoutByElement(board, targetComponent.node.origin);
+                if (target.isRoot) {
+                    const layout = MindmapQueries.getCorrectLayoutByElement(board, target);
                     // 标准布局，根节点
                     if (isStandardLayout(layout)) {
-                        const rightNodeCount = targetComponent.node.origin.rightNodeCount as number;
+                        const rightNodeCount = target.rightNodeCount as number;
                         if (detectResult === 'left') {
                             // 作为左的第一个节点
-                            if (targetComponent.node.children.length === rightNodeCount) {
+                            if (targetNode.children.length === rightNodeCount) {
                                 return newDropTarget;
                             }
                         } else {
@@ -40,7 +41,7 @@ export const readjustmentDropTarget = (
                             if (rightNodeCount === 0) {
                                 newDropTarget.target = target;
                             } else {
-                                newDropTarget.target = targetComponent.node.children[rightNodeCount - 1].origin;
+                                newDropTarget.target = targetNode.children[rightNodeCount - 1].origin;
                                 newDropTarget.detectResult = 'bottom';
                             }
                             return newDropTarget;
@@ -50,7 +51,7 @@ export const readjustmentDropTarget = (
 
                 // 缩进布局探测到第一个子节点
                 if (isIndentedLayout(parentLayout)) {
-                    newDropTarget.target = targetComponent.node.children[0].origin;
+                    newDropTarget.target = targetNode.children[0].origin;
                     newDropTarget.detectResult = isTopLayout(parentLayout) ? 'bottom' : 'top';
                     return newDropTarget;
                 }
@@ -59,15 +60,15 @@ export const readjustmentDropTarget = (
                     return newDropTarget;
                 }
                 // 剩下是水平布局的默认情况：插入最后一个子节点的下方
-                const lastChildNodeIndex = targetComponent.node.children.length - 1;
-                newDropTarget.target = targetComponent.node.children[lastChildNodeIndex].origin;
+                const lastChildNodeIndex = targetNode.children.length - 1;
+                newDropTarget.target = targetNode.children[lastChildNodeIndex].origin;
                 newDropTarget.detectResult = 'bottom';
             } else {
                 // 处理左右布局下的混合布局
                 if ([MindmapLayoutType.left, MindmapLayoutType.right].includes(parentLayout)) {
-                    const layout = MindmapQueries.getCorrectLayoutByElement(board, targetComponent.node.origin);
+                    const layout = MindmapQueries.getCorrectLayoutByElement(board, target);
                     if (isIndentedLayout(layout)) {
-                        newDropTarget.target = targetComponent.node.children[0].origin;
+                        newDropTarget.target = targetNode.children[0].origin;
                         newDropTarget.detectResult = isTopLayout(layout) ? 'bottom' : 'top';
                         return newDropTarget;
                     }
@@ -76,19 +77,19 @@ export const readjustmentDropTarget = (
         }
         if (['top', 'bottom'].includes(dropTarget.detectResult)) {
             // 缩进布局移动至第一个节点
-            if (targetComponent.node.origin.isRoot && isIndentedLayout(layout)) {
-                newDropTarget.target = targetComponent.node.children[0].origin;
+            if (target.isRoot && isIndentedLayout(layout)) {
+                newDropTarget.target = targetNode.children[0].origin;
                 newDropTarget.detectResult = isTopLayout(layout) ? 'bottom' : 'top';
                 return newDropTarget;
             }
             // 上下布局，插到右边
             const parentLayout = MindmapQueries.getCorrectLayoutByElement(
                 board,
-                targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
+                target.isRoot ? target : targetParent as MindmapNodeElement
             );
             if (isVerticalLogicLayout(parentLayout)) {
-                const lastChildNodeIndex = targetComponent.node.children.length - 1;
-                newDropTarget.target = targetComponent.node.children[lastChildNodeIndex].origin;
+                const lastChildNodeIndex = targetNode.children.length - 1;
+                newDropTarget.target = targetNode.children[lastChildNodeIndex].origin;
                 newDropTarget.detectResult = 'right';
                 return newDropTarget;
             }

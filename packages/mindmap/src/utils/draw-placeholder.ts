@@ -4,8 +4,7 @@ import { drawLink } from '../draw/link';
 import { DetectResult, MindmapNodeElement, MindmapNode } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import { getRectangleByNode } from './graph';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
-import { PlaitBoard, Point, drawRoundRectangle } from '@plait/core';
+import { NODE_TO_PARENT, PlaitBoard, Point, drawRoundRectangle } from '@plait/core';
 import { MindmapQueries } from '../queries';
 import {
     isBottomLayout,
@@ -20,6 +19,7 @@ import { drawIndentedLink } from '../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
 import { isStandardLayout } from '@plait/layouts';
 import { isMixedLayout } from './layout';
+import { ELEMENT_TO_NODE } from './weak-maps';
 
 export const drawPlaceholderDropNodeG = (
     board: PlaitBoard,
@@ -27,23 +27,23 @@ export const drawPlaceholderDropNodeG = (
     roughSVG: RoughSVG,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
-    const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
-    const targetRect = getRectangleByNode(targetComponent.node);
+    const targetNode = ELEMENT_TO_NODE.get(dropTarget.target) as MindmapNode;
+    const targetParent = MindmapNodeElement.findParent(board, dropTarget.target);
+    const targetParentNode = targetParent && ELEMENT_TO_NODE.get(targetParent);
+    const targetRect = getRectangleByNode(targetNode);
     if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
-        drawStraightDropNodeG(board, targetRect, dropTarget.detectResult, targetComponent, roughSVG, fakeDropNodeG);
+        drawStraightDropNodeG(board, targetRect, dropTarget.detectResult, targetNode, roughSVG, fakeDropNodeG);
     }
 
-    if (targetComponent.parent && dropTarget.detectResult && ['top', 'bottom'].includes(dropTarget.detectResult)) {
-        const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
-        const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
+    if (targetParent && dropTarget.detectResult && ['top', 'bottom'].includes(dropTarget.detectResult)) {
+        const targetIndex = targetParent.children.indexOf(targetNode.origin);
         drawCurvePlaceholderDropNodeG(
             board,
             targetRect,
             dropTarget.detectResult,
             targetIndex,
-            targetComponent,
-            roughSVG,
-            parentComponent,
+            targetNode,
+            targetParentNode as MindmapNode,
             fakeDropNodeG
         );
     }
@@ -59,15 +59,14 @@ export const drawCurvePlaceholderDropNodeG = (
     },
     detectResult: DetectResult,
     targetIndex: number,
-    targetComponent: MindmapNodeComponent,
-    roughSVG: RoughSVG,
-    parentComponent: MindmapNodeComponent,
+    targetNode: MindmapNode,
+    parentNode: MindmapNode,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
-    const parentNodeLayout = MindmapQueries.getCorrectLayoutByElement(board, parentComponent.node.origin);
-    const layout = MindmapQueries.getCorrectLayoutByElement(board, targetComponent.node.parent.origin);
-    const strokeWidth = targetComponent.node.origin.linkLineWidth ? targetComponent.node.origin.linkLineWidth : STROKE_WIDTH;
-    let fakeX = targetComponent.node.x,
+    const parentNodeLayout = MindmapQueries.getCorrectLayoutByElement(board, parentNode.origin);
+    const layout = MindmapQueries.getCorrectLayoutByElement(board, parentNode.origin);
+    const strokeWidth = targetNode.origin.linkLineWidth ? targetNode.origin.linkLineWidth : STROKE_WIDTH;
+    let fakeX = targetNode.x,
         fakeY = targetRect.y - 30,
         fakeRectangleStartX = targetRect.x,
         fakeRectangleEndX = targetRect.x + 30,
@@ -76,19 +75,19 @@ export const drawCurvePlaceholderDropNodeG = (
         width = 30;
 
     if (isLeftLayout(layout)) {
-        fakeX = targetComponent.node.x + targetComponent.node.width - 30;
+        fakeX = targetNode.x + targetNode.width - 30;
         fakeRectangleStartX = targetRect.x + targetRect.width - 30;
         fakeRectangleEndX = targetRect.x + targetRect.width;
     }
     if (isHorizontalLogicLayout(parentNodeLayout)) {
-        fakeY = getHorizontalFakeY(detectResult as 'top' | 'bottom', targetIndex, parentComponent.node, targetRect, layout, fakeY);
+        fakeY = getHorizontalFakeY(detectResult as 'top' | 'bottom', targetIndex, parentNode, targetRect, layout, fakeY);
         if (isStandardLayout(parentNodeLayout)) {
-            const rightNodeCount = parentComponent.node.origin.rightNodeCount || 0;
-            const idx = parentComponent.node.children.findIndex(x => x === targetComponent.node);
+            const rightNodeCount = parentNode.origin.rightNodeCount || 0;
+            const idx = parentNode.children.findIndex(x => x === targetNode);
             const isLeft = idx >= rightNodeCount;
             // 标准布局的左，需要调整 x
             if (isLeft) {
-                fakeX = targetComponent.node.x + targetComponent.node.width - 30;
+                fakeX = targetNode.x + targetNode.width - 30;
                 fakeRectangleStartX = targetRect.x + targetRect.width - 30;
                 fakeRectangleEndX = targetRect.x + targetRect.width;
             }
@@ -189,7 +188,7 @@ export const drawStraightDropNodeG = (
         height: number;
     },
     detectResult: DetectResult,
-    targetComponent: MindmapNodeComponent,
+    targetNode: MindmapNode,
     roughSVG: RoughSVG,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
@@ -208,9 +207,9 @@ export const drawStraightDropNodeG = (
         startRectanglePointX = x - lineLength - 30;
         endRectanglePointX = x - lineLength;
     }
-    let fakeY = targetComponent.node.y;
+    let fakeY = targetNode.y;
     let fakeX = targetRect.x;
-    const strokeWidth = targetComponent.node.origin.linkLineWidth ? targetComponent.node.origin.linkLineWidth : STROKE_WIDTH;
+    const strokeWidth = targetNode.origin.linkLineWidth ? targetNode.origin.linkLineWidth : STROKE_WIDTH;
     const pointOptions = {
         fakeX,
         fakeY,
@@ -222,9 +221,9 @@ export const drawStraightDropNodeG = (
     };
     const parentLayout = MindmapQueries.getCorrectLayoutByElement(
         board,
-        targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
+        targetNode.origin.isRoot ? targetNode.origin : targetNode.parent.origin
     );
-    const layout = MindmapQueries.getCorrectLayoutByElement(board, targetComponent.node.origin);
+    const layout = MindmapQueries.getCorrectLayoutByElement(board, targetNode.origin);
     if (!isMixedLayout(parentLayout, layout)) {
         // 构造一条直线
         let linePoints = [
@@ -233,10 +232,10 @@ export const drawStraightDropNodeG = (
         ] as Point[];
         if (isIndentedLayout(parentLayout)) {
             const fakePoint = getIndentedFakePoint(parentLayout, pointOptions);
-            drawIndentNodeG(board, fakeDropNodeG as SVGGElement, fakePoint, targetComponent.node);
+            drawIndentNodeG(board, fakeDropNodeG as SVGGElement, fakePoint, targetNode);
             return;
         } else if (isVerticalLogicLayout(parentLayout)) {
-            if (!targetComponent.node.origin.isRoot) {
+            if (!targetNode.origin.isRoot) {
                 /**
                  * 计算逻辑：
                  *  1. 移动到左侧：当前节点 startX - 偏移值，偏移值计算如下：
@@ -246,9 +245,9 @@ export const drawStraightDropNodeG = (
                  *      a. 第二个节点到最后一个节点之间的右侧：当前节点到下一个节点间距的一半（(下一个节点 startX - 当前节点的 endX) / 2)，endX = 当前节点的 startX + width;
                  *      b. 最后一个节点的右侧：固定值（来源于 getMainAxle，第二级节点：BASE * 8，其他 BASE * 3 + strokeWidth / 2）；
                  */
-                fakeY = targetComponent.node.y;
+                fakeY = targetNode.y;
                 const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
-                const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
+                const targetIndex = parentComponent.node.origin.children.indexOf(targetNode.origin);
 
                 if (detectResult === 'left') {
                     let offsetX = 0;
@@ -283,14 +282,14 @@ export const drawStraightDropNodeG = (
                 startRectanglePointX = fakeX;
                 if (isTopLayout(parentLayout)) {
                     // 因为矩形是从左上角为起点向下画的，所以需要向上偏移一个矩形的高度（-12）
-                    startRectanglePointY = fakeY + height + targetComponent.node.vGap - 12;
+                    startRectanglePointY = fakeY + height + targetNode.vGap - 12;
                 }
                 if (isBottomLayout(parentLayout)) {
-                    startRectanglePointY = fakeY + targetComponent.node.vGap;
+                    startRectanglePointY = fakeY + targetNode.vGap;
                 }
                 endRectanglePointX = startRectanglePointX + 30;
                 endRectanglePointY = startRectanglePointY + 12;
-                const fakeNode: MindmapNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30 };
+                const fakeNode: MindmapNode = { ...targetNode, x: fakeX, y: fakeY, width: 30 };
                 const linkSVGG = drawLink(board, parentComponent.node, fakeNode, PRIMARY_COLOR, false, false);
                 fakeDropNodeG?.appendChild(linkSVGG);
             }
@@ -319,7 +318,7 @@ export const drawStraightDropNodeG = (
         if (isHorizontalLogicLayout(parentLayout)) {
             if (isIndentedLayout(layout)) {
                 const fakePoint = getIndentedFakePoint(layout, pointOptions);
-                drawIndentNodeG(board, fakeDropNodeG as SVGGElement, fakePoint, targetComponent.node);
+                drawIndentNodeG(board, fakeDropNodeG as SVGGElement, fakePoint, targetNode);
                 return;
             }
         }

@@ -1,6 +1,7 @@
 import { Point } from '@plait/core';
-import { DetectResult, MindmapNode } from '../interfaces';
+import { DetectResult, MindmapNode, MindmapNodeElement } from '../interfaces';
 import { getRectangleByNode } from './graph';
+import { ELEMENT_TO_NODE } from './weak-maps';
 
 /**
  *
@@ -9,15 +10,16 @@ import { getRectangleByNode } from './graph';
  * @returns DetectResult[] | null
  */
 
-export const directionDetector = (targetNode: MindmapNode, centerPoint: Point): DetectResult[] | null => {
-    const { x, y, width, height } = getRectangleByNode(targetNode);
+export const directionDetector = (targetElement: MindmapNodeElement, centerPoint: Point): DetectResult[] | null => {
+    const node = ELEMENT_TO_NODE.get(targetElement) as MindmapNode;
+    const { x, y, width, height } = getRectangleByNode(node);
     const yCenter = y + height / 2;
     const xCenter = x + width / 2;
 
-    const top = targetNode.y;
-    const bottom = targetNode.y + targetNode.height;
-    const left = targetNode.x;
-    const right = targetNode.x + targetNode.width;
+    const top = node.y;
+    const bottom = node.y + node.height;
+    const left = node.x;
+    const right = node.x + node.width;
     const direction: DetectResult[] = [];
 
     // x 轴

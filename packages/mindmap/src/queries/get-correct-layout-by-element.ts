@@ -1,12 +1,12 @@
-import { PlaitBoard } from '@plait/core';
-import { MindmapNodeElement } from '../interfaces';
+import { NODE_TO_PARENT, PlaitBoard } from '@plait/core';
+import { MindmapNode, MindmapNodeElement } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import {
+    ELEMENT_TO_NODE,
     correctLayoutByDirection,
     findMindmap,
     getDefaultMindmapLayout,
-    getInCorrectLayoutDirection,
-    MINDMAP_ELEMENT_TO_COMPONENT
+    getInCorrectLayoutDirection
 } from '../utils';
 import { MindmapLayoutType } from '@plait/layouts';
 
@@ -17,6 +17,7 @@ import { MindmapLayoutType } from '@plait/layouts';
  */
 export const getCorrectLayoutByElement = (board: PlaitBoard, element: MindmapNodeElement) => {
     const root = findMindmap(board, element);
+    const node = ELEMENT_TO_NODE.get(element) as MindmapNode;
     const rootLayout = root.layout || getDefaultMindmapLayout();
     let correctRootLayout = rootLayout;
 
@@ -24,24 +25,23 @@ export const getCorrectLayoutByElement = (board: PlaitBoard, element: MindmapNod
         return correctRootLayout;
     }
 
-    const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
-    let layout = component?.node.origin.layout;
-
-    let parentComponent: undefined | MindmapNodeComponent;
-    let parent: MindmapNodeElement | undefined = component?.parent?.origin;
-
-    while (!layout && parent) {
-        parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parent);
-        layout = parentComponent?.node.origin.layout;
-        parent = parentComponent?.parent?.origin;
+    let layout = element.layout;
+    let parent = NODE_TO_PARENT.get(element) as MindmapNodeElement;
+    let ancestor = parent;
+    while (!layout && ancestor) {
+        layout = ancestor.layout;
+        ancestor = NODE_TO_PARENT.get(element) as MindmapNodeElement;
+        if (ancestor) {
+            parent = ancestor;
+        }
     }
 
     // handle root standard
     if (rootLayout === MindmapLayoutType.standard) {
-        correctRootLayout = component?.node.left ? MindmapLayoutType.left : MindmapLayoutType.right;
+        correctRootLayout = node.left ? MindmapLayoutType.left : MindmapLayoutType.right;
     }
 
-    if (parentComponent?.node.origin.isRoot) {
+    if (parent.isRoot) {
         return correctRootLayout;
     }
 

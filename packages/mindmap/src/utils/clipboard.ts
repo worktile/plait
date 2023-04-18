@@ -9,17 +9,16 @@ import {
     Point,
     Transforms
 } from '@plait/core';
-import { MindmapNodeElement } from '../interfaces';
-import { copyNewNode, extractNodesText, transformNodeToRoot, transformRootToNode } from '../utils';
+import { MindmapNode, MindmapNodeElement } from '../interfaces';
+import { copyNewNode, ELEMENT_TO_NODE, extractNodesText, transformNodeToRoot, transformRootToNode } from '../utils';
 import { getRectangleByNode } from '../utils/graph';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapNodeComponent } from '../node.component';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindmapNodeElement[]) => {
     let result: MindmapNodeElement[] = [];
-    const selectedMindmapNodes = Array.from(selectedElements, node => {
-        return (MINDMAP_ELEMENT_TO_COMPONENT.get(node) as MindmapNodeComponent)?.node;
+    const selectedMindmapNodes = Array.from(selectedElements, ele => {
+        return ELEMENT_TO_NODE.get(ele) as MindmapNode;
     });
     const nodesRectangle = getRectangleByElements(board, selectedElements, true);
     selectedElements.forEach((node, index) => {
