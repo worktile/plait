@@ -13,6 +13,13 @@ export const mockMindmapData: PlaitMindmap[] = [
                 value: { children: [{ text: '富文本' }] },
                 children: [
                     {
+                        id: 'abc',
+                        value: { children: [{ text: '布局算法' }] },
+                        children: [],
+                        width: 56,
+                        height: 20
+                    },
+                    {
                         id: '1-1-1',
                         value: { children: [{ text: '布局算法' }] },
                         children: [],
@@ -24,6 +31,24 @@ export const mockMindmapData: PlaitMindmap[] = [
                         value: { children: [{ text: '知名脑图产品' }] },
                         children: [],
                         width: 84,
+                        height: 20
+                    },
+                    {
+                        id: '1-1-4',
+                        value: { children: [{ text: '知名脑图产品' }] },
+                        children: [],
+                        width: 84,
+                        height: 20
+                    },
+                    {
+                        id: '1-1-3',
+                        type: 'abstract',
+                        isAbstract: true,
+                        value: { children: [{ text: '概要' }] },
+                        children: [],
+                        start: 0,
+                        end: 0,
+                        width: 28,
                         height: 20
                     }
                 ],

@@ -24,7 +24,9 @@ import {
     isSelectedElement,
     removeSelectedElement,
     addSelectedElement,
-    drawRoundRectangle
+    drawRoundRectangle,
+    getRectangleByElements,
+    Point
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -52,7 +54,8 @@ import {
     QUICK_INSERT_CIRCLE_COLOR,
     QUICK_INSERT_CIRCLE_OFFSET,
     QUICK_INSERT_INNER_CROSS_COLOR,
-    STROKE_WIDTH
+    STROKE_WIDTH,
+    GRAY_COLOR
 } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLogicLink } from './draw/logic-link';
@@ -67,6 +70,7 @@ import { createEmptyNode, findLastChild, findPath, getChildrenCount } from './ut
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
+import { pointsOnBezierCurves } from 'points-on-curve';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -196,6 +200,30 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         } else {
             this.linkG = drawLogicLink(this.roughSVG, this.node, this.parent, isHorizontalLayout(layout));
+        }
+
+        if (this.node.origin.type === 'abstract') {
+            const startNode = this.parent.children[this.node.origin.start];
+            const endNode = this.parent.children[this.node.origin.end];
+            const startRec = getRectangleByElements(this.board, [startNode.origin], true);
+            const endRec = getRectangleByElements(this.board, [endNode.origin], true);
+            const abstractRec = getRectangleByNode(this.node);
+
+            const y = Math.max(startRec.y + startRec.height, endRec.y + endRec.height);
+            const startPoint: Point = [startRec.x, y + 10];
+            const endPoint: Point = [endRec.x + endRec.width, y + 10];
+            const abstractRecCenter: Point = [abstractRec.x + abstractRec.width / 2, abstractRec.y - 10];
+            console.log('==============', this.node, abstractRec);
+            this.linkG = this.roughSVG.path(
+                `M${startPoint[0]},${startPoint[1]} Q${startPoint[0]},${abstractRecCenter[1]} ${abstractRecCenter[0]},${
+                    abstractRecCenter[1]
+                } Q${endPoint[0]},${abstractRecCenter[1]} ${endPoint[0]},${endPoint[1]} M${abstractRecCenter[0]},${abstractRecCenter[1] +
+                    10} L${abstractRecCenter[0]},${abstractRecCenter[1]}`,
+                {
+                    stroke: GRAY_COLOR,
+                    strokeWidth: 2
+                }
+            );
         }
 
         this.gGroup.append(this.linkG);

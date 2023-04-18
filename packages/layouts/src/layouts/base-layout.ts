@@ -2,13 +2,7 @@ import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { LayoutBlockNode, LayoutNode } from '../interfaces/layout-node';
 import { buildLayoutTree, LayoutTreeNode } from '../interfaces/layout-tree-node';
 import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
-import {
-    extractLayoutType,
-    isHorizontalLayout,
-    isLeftLayout,
-    isTopLayout,
-    isHorizontalLogicLayout
-} from '../utils/layout';
+import { extractLayoutType, isHorizontalLayout, isLeftLayout, isTopLayout, isHorizontalLogicLayout } from '../utils/layout';
 
 export class BaseLayout {
     constructor() {}
@@ -27,7 +21,6 @@ export class BaseLayout {
 
         // 1、build layout node
         const root = this.buildLayoutNode(node, options, context, isolatedNodes, parent);
-
         // 2、handle sub node layout
         isolatedNodes
             .filter(v => v.origin.children.length > 0)
@@ -117,12 +110,11 @@ export class BaseLayout {
                         if (meta.offsetX < offsetY) {
                             meta.offsetX = offsetY;
                         }
-                    } else {
+                    } else if (!isolatedNode.origin.isAbstract) {
                         attachedMetaOfIsolatedNodes.push({ parent: isolatedNode.parent, offsetX, offsetY });
                     }
                 }
             });
-
         // 6、correct the offset of sibling nodes caused by sub-layout
         attachedMetaOfIsolatedNodes.forEach(meta => {
             meta.parent.children.forEach(child => child.translate(meta.offsetX, meta.offsetY));
@@ -133,9 +125,22 @@ export class BaseLayout {
 
     private separateSecondaryAxle(node: LayoutNode, isHorizontal: boolean, d = 0) {
         if (isHorizontal) {
+            if (node.origin.isAbstract) {
+                for (let i = node.origin.start!; i <= node.origin.end!; i++) {
+                    const right = node.parent?.children[i].getBoundingBox().right;
+                    d = Math.max(right!, d);
+                }
+            }
             node.x = d;
+
             d += node.width;
         } else {
+            if (node.origin.isAbstract) {
+                for (let i = node.origin.start!; i <= node.origin.end!; i++) {
+                    const bottom = node.parent?.children[i].getBoundingBox().bottom;
+                    d = Math.max(bottom!, d);
+                }
+            }
             node.y = d;
             d += node.height;
         }
@@ -148,7 +153,7 @@ export class BaseLayout {
         origin: OriginNode,
         options: LayoutOptions,
         context: LayoutContext,
-        isolatedNodes: LayoutNode[],
+        isolatedNodes: (LayoutNode | any)[],
         parent?: LayoutNode
     ) {
         const root = new LayoutNode(origin, options, context, parent);
@@ -166,9 +171,10 @@ export class BaseLayout {
                             node.children.push(child);
                             child.depth = node.depth + 1;
                             const isolated =
-                                node.layout !== child.layout &&
-                                (extractLayoutType(node.layout) !== extractLayoutType(child.layout) ||
-                                    isHorizontalLayout(node.layout) !== isHorizontalLayout(child.layout));
+                                (node.layout !== child.layout &&
+                                    (extractLayoutType(node.layout) !== extractLayoutType(child.layout) ||
+                                        isHorizontalLayout(node.layout) !== isHorizontalLayout(child.layout))) ||
+                                child.origin.isAbstract;
                             if (isolated && !child.origin.isCollapsed) {
                                 isolatedNodes.push(child);
                             } else {
