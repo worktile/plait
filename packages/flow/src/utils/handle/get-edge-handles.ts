@@ -1,12 +1,12 @@
 import { PlaitBoard } from '@plait/core';
 import { FlowEdge, FlowEdgeHandle } from '../../interfaces/edge';
 import { getFakeFlowNodeById, getFlowNodeById } from '../get-node-by-id';
-import { FLOW_EDGE_DRAGING_INFO } from '../../plugins/with-edge-dnd';
+import { FLOW_EDGE_DRAGGING_INFO } from '../../plugins/with-edge-dnd';
 
 export const getEdgeHandles = (board: PlaitBoard, edge: FlowEdge) => {
     const handles: FlowEdgeHandle[] = [];
     let sourceNode, targetNode;
-    const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && FLOW_EDGE_DRAGING_INFO.get(edge);
+    const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && FLOW_EDGE_DRAGGING_INFO.get(edge);
     if (edge.source) {
         if (dragEdgeInfo && dragEdgeInfo.handleType === 'source') {
             sourceNode = getFakeFlowNodeById(board, edge.source.id, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);

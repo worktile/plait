@@ -19,17 +19,17 @@ import {
     isSelectedElement
 } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { Element } from 'slate';
 import { drawNodeHandles } from './draw/handle';
 import { drawActiveMask, drawNode } from './draw/node';
 import { FlowNode } from './interfaces/node';
+import { FlowBaseData } from './interfaces/element';
 
 @Component({
     selector: 'plait-flow-node',
     template: '',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginElementComponent<FlowNode<T>>
+export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends PlaitPluginElementComponent<FlowNode<T>>
     implements OnInit, BeforeContextChange<FlowNode<T>>, OnDestroy {
     nodeG: SVGGElement | null = null;
 
@@ -86,7 +86,7 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
         this.g.prepend(this.activeMaskG);
     }
 
-    drawRichtext(element: FlowNode<T> = this.element) {
+    drawRichtext(element: FlowNode = this.element) {
         this.destroyRichtext();
         if (element.data?.text) {
             const { x, y } = normalizePoint(element.points![0]);
@@ -116,7 +116,7 @@ export class FlowNodeComponent<T extends Element = Element> extends PlaitPluginE
         this.g.append(this.handlesG);
     }
 
-    updateElement(element: FlowNode<T> = this.element) {
+    updateElement(element: FlowNode = this.element) {
         this.drawElement(element);
         this.drawRichtext(element);
         this.drawActiveMask(element);

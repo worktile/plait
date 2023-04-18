@@ -4,10 +4,10 @@ import { FlowNode } from '../../interfaces/node';
 import { getHandleXYPosition } from './get-handle-position';
 import { HANDLE_RADIUS } from '../../constants/handle';
 import { FlowEdge, FlowEdgeHandle } from '../../interfaces/edge';
-import { FLOW_EDGE_DRAGING_INFO } from '../../plugins/with-edge-dnd';
+import { FLOW_EDGE_DRAGGING_INFO } from '../../plugins/with-edge-dnd';
 
 export const getHitNodeHandle = (board: PlaitBoard, edge: FlowEdge, currentPoint: Point) => {
-    const flowEdgeDragInfo = FLOW_EDGE_DRAGING_INFO.get(edge);
+    const flowEdgeDragInfo = FLOW_EDGE_DRAGGING_INFO.get(edge);
     if (!flowEdgeDragInfo) {
         return null;
     }

@@ -1,6 +1,7 @@
 import { PlaitElement } from '@plait/core';
+import { Element } from 'slate';
 
-export const isFlowElement = (value: PlaitElement): value is FlowElement => {
+export const isFlowElement = <T extends FlowBaseData>(value: PlaitElement): value is FlowElement<T> => {
     return [FlowElementType.node, FlowElementType.edge].includes(value.type as FlowElementType);
 };
 
@@ -31,13 +32,15 @@ export interface FlowElementStyles {
     activeFill?: string;
 }
 
-export interface FlowElement<T = unknown> extends PlaitElement {
+export interface FlowBaseData {
+    text?: Element;
+    icon?: string;
+}
+
+export interface FlowElement<T extends FlowBaseData = FlowBaseData> extends PlaitElement {
     id: string;
     type: FlowElementType;
-    data?: {
-        text?: T;
-        icon?: string;
-    };
+    data?: T;
     deletable?: boolean;
     styles?: FlowElementStyles;
 }

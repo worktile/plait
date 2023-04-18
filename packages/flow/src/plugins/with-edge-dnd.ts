@@ -18,17 +18,16 @@ import { FlowEdge, FlowEdgeDragInfo, FlowEdgeHandle, FlowEdgeHandleType } from '
 import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
 import { getHandleType } from '../utils/handle/get-handle-type';
 import { FlowNode } from '../interfaces/node';
-import { Element } from 'slate';
 import { getHitNodeHandle } from '../utils/handle/get-hit-node-handle';
 import { getFlowElementsByType } from '../utils/get-node-by-id';
 
-export const FLOW_EDGE_DRAGING_INFO: WeakMap<FlowElement, FlowEdgeDragInfo> = new WeakMap();
+export const FLOW_EDGE_DRAGGING_INFO: WeakMap<FlowElement, FlowEdgeDragInfo> = new WeakMap();
 
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup } = board;
 
     let isDragging = false;
-    let activeElement: FlowEdge<Element> | null;
+    let activeElement: FlowEdge | null;
     let activeComponent: FlowEdgeComponent | null;
     let startPoint: Point | null;
     let handleType: FlowEdgeHandleType | null;
@@ -47,12 +46,12 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
         (board.children as FlowElement[]).forEach((value, index) => {
-            if (FlowEdge.isFlowEdgeElement<Element>(value) && board.selection) {
+            if (FlowEdge.isFlowEdgeElement(value) && board.selection) {
                 const flowEdgeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as FlowEdgeComponent;
                 const hitFlowEdge = isHitFlowEdge(board, value, board.selection.ranges[0].focus);
                 if (hitFlowEdge) {
                     activeComponent = flowEdgeComponent;
-                    activeElement = value as FlowEdge<Element>;
+                    activeElement = value as FlowEdge;
                     startPoint = point;
                     handleType = getHandleType(board, point, value);
                     path = [index];
@@ -72,7 +71,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 offsetX = endPoint[0] - startPoint[0];
                 offsetY = endPoint[1] - startPoint[1];
                 if (activeElement && FlowEdge.isFlowEdgeElement(activeElement) && handleType) {
-                    FLOW_EDGE_DRAGING_INFO.set(activeElement, {
+                    FLOW_EDGE_DRAGGING_INFO.set(activeElement, {
                         offsetX,
                         offsetY,
                         handleType
@@ -89,7 +88,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                         });
                     }
                     if (!hitNodeHandle) {
-                        FLOW_EDGE_DRAGING_INFO.delete(activeElement);
+                        FLOW_EDGE_DRAGGING_INFO.delete(activeElement);
                     }
                 }
             }
@@ -126,7 +125,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     }
                 });
             }
-            FLOW_EDGE_DRAGING_INFO.delete(activeElement);
+            FLOW_EDGE_DRAGGING_INFO.delete(activeElement);
         }
         isDragging = false;
         activeElement = null;
