@@ -33,30 +33,38 @@ function separate(treeNode: LayoutTreeNode, i: number) {
     let leftContourOfRightNode = rightNode.modifier + rightNode.preliminary;
     let sumOfLeftModifier = leftNode.modifier;
 
-    let nodeParent = treeNode;
+    let leftNodeParent = treeNode;
+    let rightNodeParent = treeNode;
     let sumOfAbstractModifier = 0;
-    rightContourOfLeftNode = compareAbstractRight(nodeParent, leftNode, sumOfAbstractModifier, rightContourOfLeftNode);
+
+    rightContourOfLeftNode = compareAbstractRight(leftNodeParent, leftNode, sumOfAbstractModifier, rightContourOfLeftNode);
+    leftContourOfRightNode = compareAbstractLeft(rightNodeParent, rightNode, leftContourOfRightNode);
+
     while (true) {
         if (leftNode.childrenCount > 0) {
-            nodeParent = leftNode;
+            leftNodeParent = leftNode;
             leftNode = nextRightContour(leftNode);
             let right = sumOfLeftModifier + leftNode.modifier + leftNode.preliminary + leftNode.width;
             sumOfLeftModifier += leftNode.modifier;
-            sumOfAbstractModifier += nodeParent.modifier;
+            sumOfAbstractModifier += leftNodeParent.modifier;
             if (right > rightContourOfLeftNode) {
                 rightContourOfLeftNode = right;
             }
         }
 
-        rightContourOfLeftNode = compareAbstractRight(nodeParent, leftNode, sumOfAbstractModifier, rightContourOfLeftNode);
+        rightContourOfLeftNode = compareAbstractRight(leftNodeParent, leftNode, sumOfAbstractModifier, rightContourOfLeftNode);
 
         if (rightNode.childrenCount > 0) {
+            rightNodeParent = rightNode;
             rightNode = nextLeftContour(rightNode);
             let left = rightNode.modifier + rightNode.preliminary;
             if (left < leftContourOfRightNode) {
                 leftContourOfRightNode = left;
             }
         }
+
+        leftContourOfRightNode = compareAbstractLeft(rightNodeParent, rightNode, leftContourOfRightNode);
+
         if (leftNode.childrenCount === 0 && rightNode.childrenCount === 0) {
             break;
         }
@@ -136,6 +144,7 @@ function firstWalk(treeNode: LayoutTreeNode) {
         separate(treeNode, i);
     }
     positionRootCenter(treeNode);
+    console.log('=======treeNode=======', treeNode);
 }
 
 function secondWalk(treeNode: LayoutTreeNode, sumOfModifier: number) {
@@ -222,6 +231,26 @@ function compareAbstractRight(
         result = abstract.modifier + abstract.width + sumOfAbstractModifier;
     }
     if (rightContourOfLeftNode > result) {
+        result = rightContourOfLeftNode;
+    }
+
+    return result;
+}
+
+function compareAbstractLeft(nodeParent: LayoutTreeNode, rightNode: LayoutTreeNode, rightContourOfLeftNode: number) {
+    let result = 0;
+    const nodeIndex = nodeParent.children.findIndex(child => {
+        return child.origin.origin.id === rightNode.origin.origin.id;
+    });
+
+    const abstract = nodeParent.children.find(child => {
+        return child.origin.origin.start === nodeIndex;
+    });
+
+    if (abstract) {
+        result = abstract.modifier + abstract.preliminary;
+    }
+    if (rightContourOfLeftNode < result) {
         result = rightContourOfLeftNode;
     }
 
