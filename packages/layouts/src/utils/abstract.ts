@@ -6,6 +6,6 @@ export const isAbstract = (origin: any) => {
 
 export const getChildrenSkipAbstract = (treeNode: LayoutTreeNode) => {
     return treeNode.children.filter(child => {
-        return isAbstract(child.origin.origin);
+        return !isAbstract(child.origin.origin);
     });
 };

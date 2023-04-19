@@ -203,7 +203,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             this.linkG = drawLogicLink(this.roughSVG, this.node, this.parent, isHorizontalLayout(layout));
         }
         if (isAbstract(this.node.origin)) {
-            this.linkG = drawAbstractLink(this.roughSVG, this.board, this.node, this.parent);
+            this.linkG = drawAbstractLink(this.board, this.node);
         }
 
         this.gGroup.append(this.linkG);

@@ -3,7 +3,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { GRAY_COLOR, MindmapNodeShape, STROKE_WIDTH } from '../constants';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
-import { PlaitBoard, Point, getRectangleByElements } from '@plait/core';
+import { PlaitBoard, Point, createG, getRectangleByElements } from '@plait/core';
 import { getNodeShapeByElement, getRectangleByNode, isChildRight } from '../utils';
 import { MindmapLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
@@ -176,26 +176,26 @@ export function drawLink(
     }
 }
 
-export function drawAbstractLink(roughSVG: RoughSVG, board: PlaitBoard, node: MindmapNode, parent: MindmapNode) {
-    const startNode = parent.children[node.origin.start!];
-    const endNode = parent.children[node.origin.end!];
-    const startRec = getRectangleByElements(board, [startNode.origin], true);
-    const endRec = getRectangleByElements(board, [endNode.origin], true);
-    const abstractRec = getRectangleByNode(node);
-    let contentNode = parent.children.slice(node.origin.start, node.origin.end! + 1).map(node => {
+export function drawAbstractLink(board: PlaitBoard, node: MindmapNode) {
+    const distanceBuffer = 15;
+    const parent = node.parent;
+    const abstractRectangle = getRectangleByNode(node);
+    let includedElements = parent.children.slice(node.origin.start, node.origin.end! + 1).map(node => {
         return node.origin;
     });
-    const contentRec = getRectangleByElements(board, contentNode, true);
-    const y = contentRec.y + contentRec.height;
-    const startPoint: Point = [startRec.x, y + 10];
-    const endPoint: Point = [endRec.x + endRec.width, y + 10];
-    const abstractRecCenter: Point = [abstractRec.x + abstractRec.width / 2, abstractRec.y - 10];
-    return roughSVG.path(
-        `M${startPoint[0]},${startPoint[1]} Q${startPoint[0]},${abstractRecCenter[1]} ${abstractRecCenter[0]},${abstractRecCenter[1]} Q${
-            endPoint[0]
-        },${abstractRecCenter[1]} ${endPoint[0]},${endPoint[1]} M${abstractRecCenter[0]},${abstractRecCenter[1] + 10} L${
-            abstractRecCenter[0]
-        },${abstractRecCenter[1]}`,
+    const includedElementsRectangle = getRectangleByElements(board, includedElements, true);
+    const leftTop: Point = [includedElementsRectangle.x, includedElementsRectangle.y + includedElementsRectangle.height + distanceBuffer];
+    const rightTop: Point = [
+        includedElementsRectangle.x + includedElementsRectangle.width,
+        includedElementsRectangle.y + includedElementsRectangle.height + distanceBuffer
+    ];
+    const abstractCenterTop: Point = [abstractRectangle.x + abstractRectangle.width / 2, abstractRectangle.y - distanceBuffer];
+    return PlaitBoard.getRoughSVG(board).path(
+        `M${leftTop[0]},${leftTop[1]} Q${leftTop[0]},${abstractCenterTop[1]} ${abstractCenterTop[0]},${abstractCenterTop[1]} Q${
+            rightTop[0]
+        },${abstractCenterTop[1]} ${rightTop[0]},${rightTop[1]} M${abstractCenterTop[0]},${abstractCenterTop[1] + distanceBuffer} L${
+            abstractCenterTop[0]
+        },${abstractCenterTop[1]}`,
         {
             stroke: GRAY_COLOR,
             strokeWidth: 2
