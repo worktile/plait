@@ -1,5 +1,5 @@
 import { LayoutTreeNode } from '../interfaces/layout-tree-node';
-import { getEndNodeSkipAbstract, isAbstract } from '../utils/abstract';
+import { getChildrenSkipAbstract, isAbstract } from '../utils/abstract';
 
 function moveSubtree(treeNode: LayoutTreeNode, i: number, distance: number) {
     // Move subtree by changing modifier.
@@ -11,8 +11,8 @@ function nextLeftContour(treeNode: LayoutTreeNode) {
 }
 
 function nextRightContour(treeNode: LayoutTreeNode) {
-    let endNode = getEndNodeSkipAbstract(treeNode);
-    return treeNode.childrenCount === 0 ? treeNode : endNode;
+    let children = getChildrenSkipAbstract(treeNode);
+    return treeNode.childrenCount === 0 ? treeNode : children[children.length - 1];
 }
 
 // separate left siblings
@@ -75,7 +75,8 @@ function positionRootCenter(treeNode: LayoutTreeNode) {
     // Position root between children, taking into account their mod.
     const startNode = treeNode.children[0];
     let startX = startNode.preliminary + startNode.modifier;
-    const endNode = getEndNodeSkipAbstract(treeNode);
+    const children = getChildrenSkipAbstract(treeNode);
+    const endNode = children[children.length - 1];
     let endX = endNode.modifier + endNode.preliminary + endNode.width;
 
     /**
@@ -153,10 +154,10 @@ function abstractHandle(treeNode: LayoutTreeNode, i: number) {
         return;
     }
     const abstractStartNode = treeNode.children[abstract.origin.origin.start!];
-    const contentStartX = abstractStartNode.modifier;
+    const includeElementStartX = abstractStartNode.modifier;
 
     let abstractEndNode = treeNode.children[abstract.origin.origin.end!];
-    let contentEndX = abstractEndNode.modifier + abstractEndNode.preliminary + abstractEndNode.width;
+    let includeElementEndX = abstractEndNode.modifier + abstractEndNode.preliminary + abstractEndNode.width;
 
     let abstractWidth = abstract.origin.blackNode
         ? abstract.origin.blackNode.rootX * 2 + abstract.origin.blackNode.rootWidth
@@ -171,28 +172,28 @@ function abstractHandle(treeNode: LayoutTreeNode, i: number) {
             abstractEndNode = nextRightContour(abstractEndNode);
             let right = sumOfLeftModifier + abstractEndNode.modifier + abstractEndNode.preliminary + abstractEndNode.width;
 
-            contentEndX = compareAbstractRight(nodeParent, abstractEndNode, sumOfLeftModifier, contentEndX);
+            includeElementEndX = compareAbstractRight(nodeParent, abstractEndNode, sumOfLeftModifier, includeElementEndX);
 
             sumOfLeftModifier += abstractEndNode.modifier;
 
-            if (right > contentEndX) {
-                contentEndX = right;
+            if (right > includeElementEndX) {
+                includeElementEndX = right;
             }
         }
         if (abstractEndNode.childrenCount === 0 && abstractEndNode.childrenCount === 0) {
             break;
         }
     }
-    const abstractContentWidth = contentEndX - contentStartX;
+    const abstractIncludeElementWidth = includeElementEndX - includeElementStartX;
     //概要，和起始节点对齐
     const abstractIndex = treeNode.children.indexOf(abstract);
     treeNode.children[abstractIndex].modifier = abstractStartNode.modifier;
     //「判断概要」和「概括的内容宽度」
-    if (abstractContentWidth > abstractWidth) {
-        const distance = (abstractContentWidth - abstractWidth) / 2;
+    if (abstractIncludeElementWidth > abstractWidth) {
+        const distance = (abstractIncludeElementWidth - abstractWidth) / 2;
         moveSubtree(treeNode, abstractIndex, distance);
     } else {
-        const distance = (abstractWidth - abstractContentWidth) / 2;
+        const distance = (abstractWidth - abstractIncludeElementWidth) / 2;
         for (let i = abstract.origin.origin.start!; i < abstract.origin.origin.end! + 1; i++) {
             moveSubtree(treeNode, i, distance);
         }

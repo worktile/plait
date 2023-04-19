@@ -1,3 +1,4 @@
+import { isAbstract } from '../utils/abstract';
 import { LayoutNode, toHorizontal } from './layout-node';
 
 /**
