@@ -42,7 +42,6 @@ export const mockMindmapData: PlaitMindmap[] = [
                     },
                     {
                         id: '1-1-3',
-                        type: 'abstract',
                         isAbstract: true,
                         value: { children: [{ text: '概要' }] },
                         children: [],

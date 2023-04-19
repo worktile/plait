@@ -2,7 +2,7 @@ import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { LayoutBlockNode, LayoutNode } from '../interfaces/layout-node';
 import { buildLayoutTree, LayoutTreeNode } from '../interfaces/layout-tree-node';
 import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
-import { extractLayoutType, isHorizontalLayout, isLeftLayout, isTopLayout, isHorizontalLogicLayout } from '../utils/layout';
+import { extractLayoutType, isHorizontalLayout, isLeftLayout, isTopLayout, isHorizontalLogicLayout, isAbstract } from '../utils/layout';
 
 export class BaseLayout {
     constructor() {}
@@ -110,7 +110,7 @@ export class BaseLayout {
                         if (meta.offsetX < offsetY) {
                             meta.offsetX = offsetY;
                         }
-                    } else if (!isolatedNode.origin.isAbstract) {
+                    } else if (!isAbstract(isolatedNode.origin)) {
                         attachedMetaOfIsolatedNodes.push({ parent: isolatedNode.parent, offsetX, offsetY });
                     }
                 }
@@ -125,7 +125,7 @@ export class BaseLayout {
 
     private separateSecondaryAxle(node: LayoutNode, isHorizontal: boolean, d = 0) {
         if (isHorizontal) {
-            if (node.origin.isAbstract) {
+            if (isAbstract(node.origin)) {
                 for (let i = node.origin.start!; i <= node.origin.end!; i++) {
                     const right = node.parent?.children[i].getBoundingBox().right;
                     d = Math.max(right!, d);
@@ -135,7 +135,7 @@ export class BaseLayout {
 
             d += node.width;
         } else {
-            if (node.origin.isAbstract) {
+            if (isAbstract(node.origin)) {
                 for (let i = node.origin.start!; i <= node.origin.end!; i++) {
                     const bottom = node.parent?.children[i].getBoundingBox().bottom;
                     d = Math.max(bottom!, d);
@@ -174,7 +174,7 @@ export class BaseLayout {
                                 (node.layout !== child.layout &&
                                     (extractLayoutType(node.layout) !== extractLayoutType(child.layout) ||
                                         isHorizontalLayout(node.layout) !== isHorizontalLayout(child.layout))) ||
-                                child.origin.isAbstract;
+                                isAbstract(child.origin);
                             if (isolated && !child.origin.isCollapsed) {
                                 isolatedNodes.push(child);
                             } else {

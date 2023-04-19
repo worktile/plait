@@ -1,10 +1,10 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { MindmapNodeShape, STROKE_WIDTH } from '../constants';
+import { GRAY_COLOR, MindmapNodeShape, STROKE_WIDTH } from '../constants';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
-import { Point } from '@plait/core';
-import { getNodeShapeByElement, isChildRight } from '../utils';
+import { PlaitBoard, Point, getRectangleByElements } from '@plait/core';
+import { getNodeShapeByElement, getRectangleByNode, isChildRight } from '../utils';
 import { MindmapLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
 
@@ -174,4 +174,31 @@ export function drawLink(
         const points = pointsOnBezierCurves(curve);
         return roughSVG.curve(points as any, { stroke, strokeWidth });
     }
+}
+
+export function drawAbstractLink(roughSVG: RoughSVG, board: PlaitBoard, node: MindmapNode, parent: MindmapNode) {
+    const startNode = parent.children[node.origin.start!];
+    const endNode = parent.children[node.origin.end!];
+    const startRec = getRectangleByElements(board, [startNode.origin], true);
+    const endRec = getRectangleByElements(board, [endNode.origin], true);
+    const abstractRec = getRectangleByNode(node);
+    let contentNode = parent.children.slice(node.origin.start, node.origin.end! + 1).map(node => {
+        return node.origin;
+    });
+    const contentRec = getRectangleByElements(board, contentNode, true);
+    const y = contentRec.y + contentRec.height;
+    const startPoint: Point = [startRec.x, y + 10];
+    const endPoint: Point = [endRec.x + endRec.width, y + 10];
+    const abstractRecCenter: Point = [abstractRec.x + abstractRec.width / 2, abstractRec.y - 10];
+    return roughSVG.path(
+        `M${startPoint[0]},${startPoint[1]} Q${startPoint[0]},${abstractRecCenter[1]} ${abstractRecCenter[0]},${abstractRecCenter[1]} Q${
+            endPoint[0]
+        },${abstractRecCenter[1]} ${endPoint[0]},${endPoint[1]} M${abstractRecCenter[0]},${abstractRecCenter[1] + 10} L${
+            abstractRecCenter[0]
+        },${abstractRecCenter[1]}`,
+        {
+            stroke: GRAY_COLOR,
+            strokeWidth: 2
+        }
+    );
 }

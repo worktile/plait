@@ -20,11 +20,11 @@ export interface LayoutContext {
 export interface OriginNode {
     children: OriginNode[];
     isCollapsed?: boolean;
-    isAbstract?: boolean;
     start?: number;
     end?: number;
     id?: string;
     layout?: string;
+    value?: any;
     rightNodeCount: number;
 }
 

@@ -81,8 +81,6 @@ export class BasicBoardEditorComponent implements OnInit {
                 this.board,
                 {
                     id: idCreator(),
-                    type: 'abstract',
-                    isAbstract: true,
                     value: { children: [{ text: '概要' }] },
                     children: [],
                     start,
