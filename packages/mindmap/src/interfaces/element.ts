@@ -26,6 +26,9 @@ export interface MindmapNodeElement extends PlaitElement {
     // layout
     layout?: MindmapLayoutType;
     isCollapsed?: boolean;
+
+    start?: number;
+    end?: number;
 }
 
 export interface PlaitMindmap extends MindmapNodeElement {

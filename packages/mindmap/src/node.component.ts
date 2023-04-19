@@ -24,13 +24,16 @@ import {
     isSelectedElement,
     removeSelectedElement,
     addSelectedElement,
-    drawRoundRectangle
+    drawRoundRectangle,
+    getRectangleByElements,
+    Point
 } from '@plait/core';
 import {
     isBottomLayout,
     isHorizontalLayout,
     isIndentedLayout,
     isLeftLayout,
+    isAbstract,
     isRightLayout,
     isStandardLayout,
     isTopLayout,
@@ -52,7 +55,8 @@ import {
     QUICK_INSERT_CIRCLE_COLOR,
     QUICK_INSERT_CIRCLE_OFFSET,
     QUICK_INSERT_INNER_CROSS_COLOR,
-    STROKE_WIDTH
+    STROKE_WIDTH,
+    GRAY_COLOR
 } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLogicLink } from './draw/logic-link';
@@ -67,6 +71,7 @@ import { createEmptyNode, findLastChild, findPath, getChildrenCount } from './ut
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
+import { drawAbstractLink } from './draw/link';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -196,6 +201,9 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         } else {
             this.linkG = drawLogicLink(this.roughSVG, this.node, this.parent, isHorizontalLayout(layout));
+        }
+        if (isAbstract(this.node.origin)) {
+            this.linkG = drawAbstractLink(this.board, this.node);
         }
 
         this.gGroup.append(this.linkG);

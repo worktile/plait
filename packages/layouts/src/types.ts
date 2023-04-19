@@ -20,6 +20,8 @@ export interface LayoutContext {
 export interface OriginNode {
     children: OriginNode[];
     isCollapsed?: boolean;
+    start?: number;
+    end?: number;
     layout?: string;
     rightNodeCount: number;
 }

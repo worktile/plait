@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { getSelectedElements, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
+import { getSelectedElements, idCreator, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
 import {
     findPath,
@@ -7,7 +7,8 @@ import {
     MindmapNodeShape,
     MindmapTransforms,
     MINDMAP_ELEMENT_TO_COMPONENT,
-    withMindmap
+    withMindmap,
+    GRAY_COLOR
 } from '@plait/mindmap';
 import { mockMindmapData } from './mock-data';
 
@@ -65,6 +66,33 @@ export class BasicBoardEditorComponent implements OnInit {
 
         const path = nodeComponent ? findPath(this.board, nodeComponent.node) : [0];
         Transforms.setNode(this.board, { shape: value }, path);
+    }
+
+    setAbstract(event: Event) {
+        const selectedElements = getSelectedElements(this.board);
+        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements[selectedElements.length - 1] as MindmapNodeElement);
+
+        const start = nodeComponent?.parent.children.findIndex(child => {
+            return child.origin.id === selectedElements[0].id;
+        });
+        if (nodeComponent && start !== undefined) {
+            const path = [...findPath(this.board, nodeComponent.parent), nodeComponent.parent.children.length];
+            Transforms.insertNode(
+                this.board,
+                {
+                    id: idCreator(),
+                    value: { children: [{ text: '概要' }] },
+                    children: [],
+                    start,
+                    end: start + selectedElements.length - 1,
+                    width: 28,
+                    height: 20,
+                    strokeColor: GRAY_COLOR,
+                    linkLineColor: GRAY_COLOR
+                },
+                path
+            );
+        }
     }
 
     plaitBoardInitialized(value: PlaitBoard) {
