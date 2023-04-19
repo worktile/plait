@@ -2,7 +2,8 @@ import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { LayoutBlockNode, LayoutNode } from '../interfaces/layout-node';
 import { buildLayoutTree, LayoutTreeNode } from '../interfaces/layout-tree-node';
 import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
-import { extractLayoutType, isHorizontalLayout, isLeftLayout, isTopLayout, isHorizontalLogicLayout, isAbstract } from '../utils/layout';
+import { isAbstract } from '../utils/abstract';
+import { extractLayoutType, isHorizontalLayout, isLeftLayout, isTopLayout, isHorizontalLogicLayout } from '../utils/layout';
 
 export class BaseLayout {
     constructor() {}
@@ -153,7 +154,7 @@ export class BaseLayout {
         origin: OriginNode,
         options: LayoutOptions,
         context: LayoutContext,
-        isolatedNodes: (LayoutNode | any)[],
+        isolatedNodes: LayoutNode[],
         parent?: LayoutNode
     ) {
         const root = new LayoutNode(origin, options, context, parent);

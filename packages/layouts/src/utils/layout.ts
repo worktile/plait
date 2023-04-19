@@ -92,7 +92,3 @@ export const extractLayoutType = (mindmapLayoutType: MindmapLayoutType): LayoutT
     }
     return LayoutType.logic;
 };
-
-export const isAbstract = (origin: any) => {
-    return typeof origin.start === 'number' && !isNaN(origin.start) && typeof origin.end === 'number' && !isNaN(origin.end);
-};

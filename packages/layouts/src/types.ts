@@ -22,9 +22,7 @@ export interface OriginNode {
     isCollapsed?: boolean;
     start?: number;
     end?: number;
-    id?: string;
     layout?: string;
-    value?: any;
     rightNodeCount: number;
 }
 
