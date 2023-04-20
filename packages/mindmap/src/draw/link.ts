@@ -175,30 +175,3 @@ export function drawLink(
         return roughSVG.curve(points as any, { stroke, strokeWidth });
     }
 }
-
-export function drawAbstractLink(board: PlaitBoard, node: MindmapNode) {
-    const distanceBuffer = 15;
-    const parent = node.parent;
-    const abstractRectangle = getRectangleByNode(node);
-    let includedElements = parent.children.slice(node.origin.start, node.origin.end! + 1).map(node => {
-        return node.origin;
-    });
-    const includedElementsRectangle = getRectangleByElements(board, includedElements, true);
-    const leftTop: Point = [includedElementsRectangle.x, includedElementsRectangle.y + includedElementsRectangle.height + distanceBuffer];
-    const rightTop: Point = [
-        includedElementsRectangle.x + includedElementsRectangle.width,
-        includedElementsRectangle.y + includedElementsRectangle.height + distanceBuffer
-    ];
-    const abstractCenterTop: Point = [abstractRectangle.x + abstractRectangle.width / 2, abstractRectangle.y - distanceBuffer];
-    return PlaitBoard.getRoughSVG(board).path(
-        `M${leftTop[0]},${leftTop[1]} Q${leftTop[0]},${abstractCenterTop[1]} ${abstractCenterTop[0]},${abstractCenterTop[1]} Q${
-            rightTop[0]
-        },${abstractCenterTop[1]} ${rightTop[0]},${rightTop[1]} M${abstractCenterTop[0]},${abstractCenterTop[1] + distanceBuffer} L${
-            abstractCenterTop[0]
-        },${abstractCenterTop[1]}`,
-        {
-            stroke: GRAY_COLOR,
-            strokeWidth: 2
-        }
-    );
-}
