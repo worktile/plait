@@ -45,17 +45,3 @@ export class LayoutTreeNode {
         this.origin = origin;
     }
 }
-
-export const buildLayoutTree = (root: LayoutNode, isHorizontal: boolean) => {
-    const children: LayoutTreeNode[] = [];
-    root.children.forEach(child => {
-        children.push(buildLayoutTree(child, isHorizontal));
-    });
-    if (isHorizontal) {
-        if (root.blackNode) {
-            root.blackNode = toHorizontal(root.blackNode);
-        }
-        return new LayoutTreeNode(root.height, root.width, root.x, children, root);
-    }
-    return new LayoutTreeNode(root.width, root.height, root.y, children, root);
-};

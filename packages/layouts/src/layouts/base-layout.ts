@@ -1,9 +1,10 @@
 import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { LayoutBlockNode, LayoutNode } from '../interfaces/layout-node';
-import { buildLayoutTree, LayoutTreeNode } from '../interfaces/layout-tree-node';
 import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
 import { isAbstract } from '../utils/abstract';
-import { extractLayoutType, isHorizontalLayout, isLeftLayout, isTopLayout, isHorizontalLogicLayout } from '../utils/layout';
+import { extractLayoutType, isHorizontalLayout, isLeftLayout, isTopLayout } from '../utils/layout';
+import * as indent from './indent';
+import * as logic from './logic';
 
 export class BaseLayout {
     constructor() {}
@@ -22,6 +23,9 @@ export class BaseLayout {
 
         // 1、build layout node
         const root = this.buildLayoutNode(node, options, context, isolatedNodes, parent);
+
+        console.log(isolatedNodes);
+
         // 2、handle sub node layout
         isolatedNodes
             .filter(v => v.origin.children.length > 0)
@@ -67,17 +71,17 @@ export class BaseLayout {
         // 4、layout handle
         switch (layoutType) {
             case LayoutType.indented:
-                indentMainAxle(root);
-                separateSecondaryAxle(root, options);
+                indent.separateXAxle(root);
+                indent.separateYAxle(root, options);
                 break;
             case LayoutType.fishBone:
                 break;
             case LayoutType.logic:
             default:
-                this.separateSecondaryAxle(root, isHorizontal);
-                const layoutTree = buildLayoutTree(root, isHorizontal);
+                logic.separateYAxle(root, isHorizontal);
+                const layoutTree = logic.buildLayoutTree(root, isHorizontal);
                 layout(layoutTree);
-                setLayoutTreeResult(layoutTree, root, isHorizontal);
+                logic.setLayoutTreeResult(layoutTree, root, isHorizontal);
                 break;
         }
 
@@ -124,32 +128,6 @@ export class BaseLayout {
         return root;
     }
 
-    private separateSecondaryAxle(node: LayoutNode, isHorizontal: boolean, d = 0) {
-        if (isHorizontal) {
-            if (isAbstract(node.origin)) {
-                for (let i = node.origin.start!; i <= node.origin.end!; i++) {
-                    const right = node.parent?.children[i].getBoundingBox().right;
-                    d = Math.max(right!, d);
-                }
-            }
-            node.x = d;
-
-            d += node.width;
-        } else {
-            if (isAbstract(node.origin)) {
-                for (let i = node.origin.start!; i <= node.origin.end!; i++) {
-                    const bottom = node.parent?.children[i].getBoundingBox().bottom;
-                    d = Math.max(bottom!, d);
-                }
-            }
-            node.y = d;
-            d += node.height;
-        }
-        node.children.forEach(child => {
-            this.separateSecondaryAxle(child, isHorizontal, d);
-        });
-    }
-
     private buildLayoutNode(
         origin: OriginNode,
         options: LayoutOptions,
@@ -188,44 +166,4 @@ export class BaseLayout {
         }
         return root;
     }
-}
-
-function indentMainAxle(node: LayoutNode, d = 0) {
-    node.x = d;
-    node.children.forEach(child => {
-        indentMainAxle(child, node.x + node.width / 2);
-    });
-}
-
-function separateSecondaryAxle(root: LayoutNode, options: LayoutOptions) {
-    let previousBottom = root.y + root.height;
-    let previousNode: null | LayoutNode = null;
-    updateY(root);
-    function updateY(node: LayoutNode) {
-        node.children.forEach(child => {
-            let y = previousBottom + child.vGap;
-            if (previousNode && !isHorizontalLogicLayout(previousNode.layout) && previousNode.origin.children.length > 0) {
-                if (previousNode.origin.isCollapsed) {
-                    y = y + options.getExtendHeight(child.origin);
-                } else {
-                    y = y + options.getIndentedCrossLevelGap();
-                }
-            }
-            child.y = y;
-            previousNode = child;
-            previousBottom = child.y + child.height;
-            updateY(child);
-        });
-    }
-}
-
-function setLayoutTreeResult(tree: LayoutTreeNode, root: LayoutNode, isHorizontal: Boolean) {
-    if (isHorizontal) {
-        root.y = tree.x;
-    } else {
-        root.x = tree.x;
-    }
-    tree.children.forEach((child, i) => {
-        setLayoutTreeResult(child, root.children[i], isHorizontal);
-    });
 }
