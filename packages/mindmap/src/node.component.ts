@@ -59,7 +59,7 @@ import {
     GRAY_COLOR
 } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
-import { drawLogicLink } from './draw/logic-link';
+import { drawLogicLink } from './draw/link/logic-link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
 import { MindmapNodeElement } from './interfaces/element';
@@ -71,7 +71,7 @@ import { createEmptyNode, findLastChild, findPath, getChildrenCount } from './ut
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_GROUP_TO_COMPONENT, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
-import { drawAbstractLink } from './draw/link';
+import { drawAbstractLink } from './draw/link/abstract-link';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -199,13 +199,12 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const layout = MindmapQueries.getLayoutByElement(this.parent.origin) as MindmapLayoutType;
         if (MindmapNodeElement.isIndentedLayout(this.parent.origin)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
-        } else {
+        } else if (isAbstract(this.node.origin)) {
+            this.linkG = drawAbstractLink(this.board, this.node, isHorizontalLayout(layout));
+        }
+        else {
             this.linkG = drawLogicLink(this.roughSVG, this.node, this.parent, isHorizontalLayout(layout));
         }
-        if (isAbstract(this.node.origin)) {
-            this.linkG = drawAbstractLink(this.board, this.node);
-        }
-
         this.gGroup.append(this.linkG);
     }
 
