@@ -161,7 +161,7 @@ function abstractHandle(treeNode: LayoutTreeNode, i: number) {
 
     let abstractWidth = abstract.origin.blackNode
         ? abstract.origin.blackNode.rootX * 2 + abstract.origin.blackNode.rootWidth
-        : abstract.origin.width;
+        : abstract.width;
     let sumOfLeftModifier = abstractEndNode.modifier;
 
     let nodeParent = treeNode;
