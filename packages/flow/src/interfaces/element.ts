@@ -41,7 +41,7 @@ export interface FlowElement<T extends FlowBaseData = FlowBaseData> extends Plai
     id: string;
     type: FlowElementType;
     data?: T;
-    deletable?: boolean;
+    undeletable?: boolean;
     styles?: FlowElementStyles;
 }
 
