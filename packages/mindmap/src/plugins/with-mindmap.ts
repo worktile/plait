@@ -34,7 +34,7 @@ import {
 import { getRectangleByNode, hitMindmapElement } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
 import { ELEMENT_TO_NODE } from '../utils/weak-maps';
-import { withDND } from './with-dnd';
+// import { withDND } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEdit } from '../utils/node';
@@ -107,28 +107,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
                 deleteSelectedELements(board, selectedElements);
-
-                let lastNode: MindmapNode | any = null;
-                const elementGroup = filterChildElement(selectedElements);
-                const selectNode = elementGroup[0];
-                const mindmapNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(selectNode);
-                const nodeIndex = mindmapNodeComponent?.parent?.children.findIndex(item => item.origin.id === selectNode.id);
-                const isSameParent = elementGroup.every(element => {
-                    return findParentElement(element) && findParentElement(elementGroup[0]) === findParentElement(element);
-                });
-                if (isSameParent) {
-                    const childCount = mindmapNodeComponent!.parent?.children.length - elementGroup.length;
-                    if (childCount === 0) {
-                        lastNode = mindmapNodeComponent?.parent;
-                    } else if (nodeIndex === 0) {
-                        lastNode = mindmapNodeComponent?.parent.children[elementGroup.length];
-                    } else if (nodeIndex! > 0) {
-                        lastNode = mindmapNodeComponent?.parent.children[nodeIndex! - 1];
-                    }
-                }
-                if (lastNode) {
-                    addSelectedElement(board, lastNode.origin);
-                }
                 return;
             }
             // auto enter edit status
@@ -207,5 +185,6 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         deleteFragment(data);
     };
 
-    return withDND(board);
+    // return withDND(board);
+    return board;
 };
