@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.1.5
+
+### Patch Changes
+
+-   [#307](https://github.com/worktile/plait/pull/307) [`d6cb0ee`](https://github.com/worktile/plait/commit/d6cb0eee6a5c3bac4f6f0ee739e240a55c54d43d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix the text is not centered
+
 ## 0.1.4
 
 ### Patch Changes

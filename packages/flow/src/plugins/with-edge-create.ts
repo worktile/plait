@@ -15,8 +15,7 @@ import { FlowNode } from '../interfaces/node';
 import { FlowNodeComponent } from '../flow-node.component';
 import { isHitFlowNode } from '../utils/node/is-hit-node';
 import { FlowElementType, FlowHandle } from '../interfaces/element';
-import { Element } from 'slate';
-import { isEdgeDragging, addEdgeDraggingInfo } from '../utils/edge/dragging-edge';
+import { isEdgeDragging } from '../utils/edge/dragging-edge';
 import { getHitFlowNodeHandle } from '../utils/handle/get-hit-node-handle';
 import { FlowEdge, FlowEdgeInfo } from '../interfaces/edge';
 import { getFlowElementsByType } from '../utils/node/get-node-by-id';
@@ -40,7 +39,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
         const selectElements = getSelectedElements(board);
         let hitFlowEdgeHandle = false;
         if (selectElements.length && FlowEdge.isFlowEdgeElement(selectElements[0])) {
-            // 如果点击到了已经存在的 edge 的 handle，执行 drag 逻辑而不是新增
+            // 如果点击到了已经存在的 edge 的 handle，执行 drag 逻辑而不是新增 edge
             hitFlowEdgeHandle = isHitFlowEdge(board, selectElements[0], point);
         }
         nodes.map(value => {
@@ -61,9 +60,9 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.mousemove = (event: MouseEvent) => {
-        // 鼠标移入flowNode 展示 handle
+        // 鼠标移入 flowNode 展示 handles
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const flowNodes = getFlowElementsByType(board, FlowElementType.node) as FlowNode<Element>[];
+        const flowNodes = getFlowElementsByType(board, FlowElementType.node) as FlowNode[];
         flowNodes.forEach((value, index) => {
             const flowNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as FlowNodeComponent;
             const isSelected = isSelectedElement(board, value);

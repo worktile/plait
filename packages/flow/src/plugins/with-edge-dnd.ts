@@ -24,8 +24,7 @@ import { destroyAllNodesHandle, drawAllNodesHandle } from '../utils/node/render-
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup } = board;
 
-    let isDragging = false;
-    let activeElement: FlowEdge<Element> | null;
+    let activeElement: FlowEdge | null;
     let activeComponent: FlowEdgeComponent | null;
     let startPoint: Point | null;
     let handleType: FlowEdgeHandleType | null;
@@ -44,12 +43,12 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
         (board.children as FlowElement[]).forEach((value, index) => {
-            if (FlowEdge.isFlowEdgeElement<Element>(value) && board.selection) {
+            if (FlowEdge.isFlowEdgeElement(value) && board.selection) {
                 const flowEdgeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as FlowEdgeComponent;
                 const hitFlowEdge = isHitFlowEdge(board, value, board.selection.ranges[0].focus);
                 if (hitFlowEdge) {
                     activeComponent = flowEdgeComponent;
-                    activeElement = value as FlowEdge<Element>;
+                    activeElement = value as FlowEdge;
                     startPoint = point;
                     handleType = getHandleType(board, point, value);
                     path = [index];
@@ -63,24 +62,20 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
         if (!board.options.readonly && startPoint) {
             const host = BOARD_TO_HOST.get(board);
             const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
-            if (!isDragging) {
-                isDragging = true;
-            } else {
-                offsetX = endPoint[0] - startPoint[0];
-                offsetY = endPoint[1] - startPoint[1];
-                if (activeElement && FlowEdge.isFlowEdgeElement(activeElement) && handleType) {
-                    addEdgeDraggingInfo(activeElement, {
-                        offsetX,
-                        offsetY,
-                        handleType
-                    });
-                    activeComponent?.updateElement(activeElement, true);
-                    hitNodeHandle = getHitNodeHandleByEdge(board, activeElement, endPoint);
-                    if (!isShowNodeEdge) {
-                        isShowNodeEdge = true;
-                        // 所有的 node 节点显示 handle
-                        flowNodeElements = drawAllNodesHandle(board);
-                    }
+            offsetX = endPoint[0] - startPoint[0];
+            offsetY = endPoint[1] - startPoint[1];
+            if (activeElement && FlowEdge.isFlowEdgeElement(activeElement) && handleType) {
+                addEdgeDraggingInfo(activeElement, {
+                    offsetX,
+                    offsetY,
+                    handleType
+                });
+                activeComponent?.updateElement(activeElement, true);
+                hitNodeHandle = getHitNodeHandleByEdge(board, activeElement, endPoint);
+                if (!isShowNodeEdge) {
+                    isShowNodeEdge = true;
+                    // 所有的 node 节点显示 handle
+                    flowNodeElements = drawAllNodesHandle(board);
                 }
             }
         }
@@ -88,7 +83,8 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.globalMouseup = (event: MouseEvent) => {
-        if (!board.options.readonly && activeElement && FlowEdge.isFlowEdgeElement(activeElement) && handleType) {
+        if (!board.options.readonly && startPoint && activeElement && FlowEdge.isFlowEdgeElement(activeElement) && handleType) {
+            deleteEdgeDraggingInfo(activeElement);
             if (hitNodeHandle) {
                 const { position, offsetX: handleOffsetX, offsetY: handleOffsetY, node } = hitNodeHandle;
                 Transforms.setNode(
@@ -105,14 +101,12 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     path
                 );
             } else {
-                deleteEdgeDraggingInfo(activeElement);
                 activeComponent?.drawElement(activeElement, true);
             }
             if (isShowNodeEdge) {
                 destroyAllNodesHandle(board, flowNodeElements);
             }
         }
-        isDragging = false;
         activeElement = null;
         activeComponent = null;
         startPoint = null;

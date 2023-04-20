@@ -2,7 +2,7 @@ import { ELEMENT_TO_PLUGIN_COMPONENT, PlaitBoard, PlaitPlugin, PlaitPluginElemen
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowEdgeComponent } from '../flow-edge.component';
 import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
-import { FlowElement, FlowElementType } from '../interfaces/element';
+import { FlowElement } from '../interfaces/element';
 import { FlowEdge } from '../interfaces/edge';
 import { FlowNode } from '../interfaces/node';
 import { withFlowEdgeDnd } from './with-edge-dnd';

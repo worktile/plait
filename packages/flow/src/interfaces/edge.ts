@@ -1,8 +1,8 @@
-import { FlowElement, FlowElementType, FlowHandle, FlowPosition } from './element';
+import { FlowBaseData, FlowElement, FlowElementType, FlowHandle, FlowPosition } from './element';
 import { PlaitElement } from '@plait/core';
 import { FlowNode } from './node';
 
-export function isFlowEdgeElement<T>(value: PlaitElement): value is FlowEdge<T> {
+export function isFlowEdgeElement(value: PlaitElement): value is FlowEdge {
     return value.type === FlowElementType.edge;
 }
 
@@ -28,7 +28,7 @@ export interface FlowEdgeInfo {
     marker?: FlowEdgeMarkerType;
 }
 
-export interface FlowEdge<T = unknown> extends FlowElement<T> {
+export interface FlowEdge<T extends FlowBaseData = FlowBaseData> extends FlowElement<T> {
     source?: FlowEdgeInfo;
     target: FlowEdgeInfo;
 }

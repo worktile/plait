@@ -1,14 +1,8 @@
 import { PlaitBoard, Transforms } from '@plait/core';
 import { FlowEdge } from '../../interfaces/edge';
+import { FlowBaseData } from '../../interfaces/element';
 
-export function createFlowEdge<T>(
-    board: PlaitBoard,
-    data: {
-        text?: T;
-        icon?: string;
-    },
-    edge: FlowEdge
-) {
+export function createFlowEdge<T extends FlowBaseData = FlowBaseData>(board: PlaitBoard, data: T, edge: FlowEdge) {
     Transforms.insertNode(
         board,
         {

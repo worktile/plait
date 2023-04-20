@@ -24,13 +24,14 @@ import { PlaitRichtextComponent, drawRichtext, updateForeignObject } from '@plai
 import { Element } from 'slate';
 import { getEdgeTextBackgroundRect, getEdgeTextRect, getEdgeTextXYPosition } from './utils/edge/text';
 import { FlowEdge } from './interfaces/edge';
+import { FlowBaseData } from './interfaces/element';
 
 @Component({
     selector: 'plait-flow-edge',
     template: '',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginElementComponent<FlowEdge<T>>
+export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends PlaitPluginElementComponent<FlowEdge<T>>
     implements OnInit, BeforeContextChange<FlowEdge<T>>, OnDestroy {
     nodeG: SVGGElement | null = null;
 
@@ -80,7 +81,7 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         }
     }
 
-    drawElement(element: FlowEdge<T> = this.element, active = false) {
+    drawElement(element: FlowEdge = this.element, active = false) {
         this.drawEdge(element, active);
         if (element.data?.text) {
             this.textRect = getEdgeTextRect(this.board, element);
@@ -97,13 +98,13 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         this.drawHandles(element, active);
     }
 
-    drawEdge(element: FlowEdge<T> = this.element, active = false) {
+    drawEdge(element: FlowEdge = this.element, active = false) {
         this.destroyEdge();
         this.nodeG = drawEdge(this.board, this.roughSVG, element, active);
         this.g.prepend(this.nodeG);
     }
 
-    drawHandles(element: FlowEdge<T> = this.element, active = false) {
+    drawHandles(element: FlowEdge = this.element, active = false) {
         if (active) {
             this.destroyHandles();
             const handles = drawEdgeHandles(this.board, this.roughSVG, element);
@@ -116,7 +117,7 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         }
     }
 
-    drawRichtext(element: FlowEdge<T> = this.element, textRect: RectangleClient, active = false) {
+    drawRichtext(element: FlowEdge = this.element, textRect: RectangleClient, active = false) {
         this.destroyRichtext();
         if (element.data?.text && textRect) {
             const { x, y, width, height } = textRect!;
@@ -149,7 +150,7 @@ export class FlowEdgeComponent<T extends Element = Element> extends PlaitPluginE
         }
     }
 
-    drawMarkers(element: FlowEdge<T> = this.element, active = false) {
+    drawMarkers(element: FlowEdge = this.element, active = false) {
         if (element.target.marker || element.source?.marker) {
             this.destroyMarkers();
             this.sourceMarkerG = drawEdgeMarkers(this.board, this.roughSVG, element, active);

@@ -16,6 +16,6 @@ export function getFakeFlowNodeById(board: PlaitBoard, id: string, offsetX = 0, 
     };
 }
 
-export function getFlowElementsByType<T>(board: PlaitBoard, type: FlowElementType) {
-    return (board.children as FlowElement<T>[]).filter(item => item.type === type);
+export function getFlowElementsByType(board: PlaitBoard, type: FlowElementType) {
+    return (board.children as FlowElement[]).filter(item => item.type === type);
 }

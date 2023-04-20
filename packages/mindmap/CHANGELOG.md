@@ -1,5 +1,11 @@
 # mindmap
 
+## 0.1.10
+
+### Patch Changes
+
+-   [#308](https://github.com/worktile/plait/pull/308) [`638e711`](https://github.com/worktile/plait/commit/638e7110c77e77f4fc702423513e51097e1cc699) Thanks [@WBbug](https://github.com/WBbug)! - forbidden drag when multiple select
+
 ## 0.1.9
 
 ### Patch Changes

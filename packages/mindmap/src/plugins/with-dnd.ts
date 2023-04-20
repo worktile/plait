@@ -10,7 +10,8 @@ import {
     toPoint,
     transformPoint,
     Transforms,
-    ELEMENT_TO_PLUGIN_COMPONENT
+    ELEMENT_TO_PLUGIN_COMPONENT,
+    getSelectedElements
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -64,6 +65,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
         // 确认是否 hit 节点
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const selectedElements = getSelectedElements(board);
         board.children.forEach((value: PlaitElement) => {
             if (activeElement) {
                 return;
@@ -75,7 +77,7 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     if (activeElement) {
                         return;
                     }
-                    if (hitMindmapNode(board, point, node) && !node.origin.isRoot) {
+                    if (hitMindmapNode(board, point, node) && !node.origin.isRoot && selectedElements.length <= 1) {
                         activeElement = node.origin;
                         startPoint = point;
                     }
