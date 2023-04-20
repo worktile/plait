@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Viewport } from '@plait/core';
 import { withFlow } from '@plait/flow';
 import { mockFlowData } from './flow-data';
+import { withDraw } from './plugins/with-draw';
 
 const LOCAL_DATA_KEY = 'plait-board-flow-change-data';
 
@@ -10,7 +11,7 @@ const LOCAL_DATA_KEY = 'plait-board-flow-change-data';
     templateUrl: './flow.component.html'
 })
 export class BasicFlowComponent implements OnInit {
-    plugins = [withFlow];
+    plugins = [withFlow, withDraw];
 
     value: PlaitElement[] = mockFlowData;
 

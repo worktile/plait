@@ -10,6 +10,7 @@ export * from './weak-maps';
 export * from './selected-element';
 export * from './draw/rectangle';
 export * from './draw/arrow';
+export * from './draw/circle';
 export * from './tree';
 export * from './element';
 export * from './viewport';

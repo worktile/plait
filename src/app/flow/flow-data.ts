@@ -1,14 +1,20 @@
-import { FlowElement, FlowElementType, FlowPosition } from '@plait/flow';
+import { FlowBaseData, FlowElement, FlowElementType, FlowPosition } from '@plait/flow';
 
-export const mockFlowData: FlowElement[] = [
+export interface WorkflowType extends FlowBaseData {
+    initialState?: boolean;
+}
+
+export const mockFlowData: FlowElement<WorkflowType>[] = [
     {
         id: '1',
         data: {
-            text: { children: [{ text: '开始' }] }
+            text: { children: [{ text: '开始' }] },
+            initialState: true
         },
         type: FlowElementType.node,
         width: 120,
         height: 38,
+        handles: [],
         points: [[248, 153]]
     },
     {
@@ -73,7 +79,7 @@ export const mockFlowData: FlowElement[] = [
     {
         id: '002',
         data: {
-            text: { children: [{ text: '连线2' }] }
+            text: { children: [{ text: 'create' }] }
         },
         type: FlowElementType.edge,
         source: {

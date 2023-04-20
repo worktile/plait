@@ -1,7 +1,7 @@
 import { FlowBaseData, FlowElement, FlowElementType, FlowPosition } from './element';
 import { PlaitElement } from '@plait/core';
 
-export const isFlowNodeElement = (value: PlaitElement): value is FlowNode => {
+export const isFlowNodeElement = <T extends FlowBaseData>(value: PlaitElement): value is FlowNode<T> => {
     return FlowElementType.node === value.type;
 };
 
