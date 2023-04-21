@@ -36,6 +36,7 @@ import { isVirtualKey } from '../utils/is-virtual-key';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withNodeDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
+import { AbstractNode } from '@plait/layouts';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isHitSelection, getRectangle, isMovable } = board;
@@ -79,7 +80,11 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
         const selectedElements = getSelectedElements(board) as MindmapNodeElement[];
         if (selectedElements.length) {
-            if ((event.key === 'Tab' || (event.key === 'Enter' && !selectedElements[0].isRoot)) && selectedElements.length === 1) {
+            if (
+                (event.key === 'Tab' ||
+                    (event.key === 'Enter' && !selectedElements[0].isRoot && !AbstractNode.isAbstract(selectedElements[0]))) &&
+                selectedElements.length === 1
+            ) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
                 removeSelectedElement(board, selectedElement);
@@ -87,7 +92,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 if (event.key === 'Tab') {
                     if (mindmapNodeComponent) {
                         const isCollapsed = mindmapNodeComponent.node.origin.isCollapsed;
-                        const path = findPath(board, mindmapNodeComponent.node).concat(mindmapNodeComponent.node.origin.children.length);
+                        const path = findPath(board, mindmapNodeComponent.node).concat(
+                            mindmapNodeComponent.node.origin.children.filter(child => !AbstractNode.isAbstract(child)).length
+                        );
                         if (isCollapsed) {
                             const newElement: Partial<MindmapNodeElement> = { isCollapsed: false };
                             const boardPath = findPath(board, mindmapNodeComponent.node);

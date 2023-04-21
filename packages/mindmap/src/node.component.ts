@@ -33,7 +33,7 @@ import {
     isHorizontalLayout,
     isIndentedLayout,
     isLeftLayout,
-    isAbstract,
+    AbstractNode,
     isRightLayout,
     isStandardLayout,
     isTopLayout,
@@ -197,10 +197,10 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         const layout = MindmapQueries.getLayoutByElement(this.parent.origin) as MindmapLayoutType;
-        if (MindmapNodeElement.isIndentedLayout(this.parent.origin)) {
-            this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
-        } else if (isAbstract(this.node.origin)) {
+        if (AbstractNode.isAbstract(this.node.origin)) {
             this.linkG = drawAbstractLink(this.board, this.node, isHorizontalLayout(layout));
+        } else if (MindmapNodeElement.isIndentedLayout(this.parent.origin)) {
+            this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         }
         else {
             this.linkG = drawLogicLink(this.roughSVG, this.node, this.parent, isHorizontalLayout(layout));
@@ -586,7 +586,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         fromEvent(quickInsertG, 'mouseup')
             .pipe(take(1))
             .subscribe(() => {
-                const path = findPath(this.board, this.node).concat(this.node.origin.children.length);
+                const path = findPath(this.board, this.node).concat(this.node.origin.children.filter(child => !AbstractNode.isAbstract(child)).length);
                 createEmptyNode(this.board, this.node.origin, path);
             });
     }

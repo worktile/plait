@@ -1,5 +1,4 @@
-import { isAbstract } from '../utils/abstract';
-import { LayoutNode, toHorizontal } from './layout-node';
+import { LayoutNode } from './layout-node';
 
 /**
  * abstract tree node for tree layout algorithm

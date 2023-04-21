@@ -1,5 +1,5 @@
-import { LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
-import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isLogicLayout, isStandardLayout, isTopLayout } from '../utils/layout';
+import { LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../interfaces/mindmap';
+import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isStandardLayout, isTopLayout } from '../utils/layout';
 import { BaseLayout } from './base-layout';
 
 export class GlobalLayout {

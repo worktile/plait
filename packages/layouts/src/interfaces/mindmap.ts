@@ -1,4 +1,4 @@
-import { LayoutNode, ConnectingPosition } from './interfaces/layout-node';
+import { LayoutNode, ConnectingPosition } from './layout-node';
 
 export interface LayoutOptions {
     getHeight: (node: OriginNode) => number;
@@ -20,11 +20,24 @@ export interface LayoutContext {
 export interface OriginNode {
     children: OriginNode[];
     isCollapsed?: boolean;
-    start?: number;
-    end?: number;
     layout?: string;
     rightNodeCount: number;
 }
+
+export interface AbstractNode extends OriginNode {
+    start: number;
+    end: number;
+}
+
+export const AbstractNode = {
+    isAbstract(value: any): value is AbstractNode {
+        if (typeof value.start === 'number' && typeof value.end === 'number') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+};
 
 export enum MindmapLayoutType {
     'right' = 'right',
