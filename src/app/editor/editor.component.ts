@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { getSelectedElements, idCreator, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
-import { MindmapLayoutType } from '@plait/layouts';
+import { MindmapLayoutType, isBottomLayout, isIndentedLayout, isLeftLayout, isRightLayout, isTopLayout } from '@plait/layouts';
 import {
     findPath,
     MindmapNodeElement,
@@ -8,7 +8,8 @@ import {
     MindmapTransforms,
     MINDMAP_ELEMENT_TO_COMPONENT,
     withMindmap,
-    GRAY_COLOR
+    GRAY_COLOR,
+    MindmapQueries
 } from '@plait/mindmap';
 import { mockMindmapData } from './mock-data';
 
@@ -77,11 +78,26 @@ export class BasicBoardEditorComponent implements OnInit {
         });
         if (nodeComponent && start !== undefined) {
             const path = [...findPath(this.board, nodeComponent.parent), nodeComponent.parent.children.length];
+            let nodeLayout = MindmapQueries.getLayoutByElement(nodeComponent.node.origin);
+            let layout: MindmapLayoutType = MindmapLayoutType.right;
+            if (isLeftLayout(nodeLayout)) {
+                layout = MindmapLayoutType.left;
+            }
+            if (isRightLayout(nodeLayout)) {
+                layout = MindmapLayoutType.right;
+            }
+            if (isBottomLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
+                layout = MindmapLayoutType.downward;
+            }
+            if (isTopLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
+                layout = MindmapLayoutType.upward;
+            }
             Transforms.insertNode(
                 this.board,
                 {
                     id: idCreator(),
                     value: { children: [{ text: '概要' }] },
+                    layout,
                     children: [],
                     start,
                     end: start + selectedElements.length - 1,

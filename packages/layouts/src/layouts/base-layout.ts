@@ -24,8 +24,6 @@ export class BaseLayout {
         // 1、build layout node
         const root = this.buildLayoutNode(node, options, context, isolatedNodes, parent);
 
-        console.log(isolatedNodes);
-
         // 2、handle sub node layout
         isolatedNodes
             .filter(v => v.origin.children.length > 0)
@@ -107,7 +105,9 @@ export class BaseLayout {
                     const _index = isolatedNode.parent.children.indexOf(isolatedNode);
                     const oldNode = isolatedNode.parent.children[_index];
                     isolatedNode.parent.children[_index] = Object.assign(oldNode, layoutRoot);
-                    const meta = attachedMetaOfIsolatedNodes.find(m => m.parent === isolatedNode.parent);
+                    const meta = attachedMetaOfIsolatedNodes.find(
+                        m => m.parent === isolatedNode.parent && !isAbstract(isolatedNode.origin)
+                    );
                     if (meta) {
                         if (meta.offsetX < offsetX) {
                             meta.offsetX = offsetX;
