@@ -1,5 +1,6 @@
 import { LayoutTreeNode } from '../interfaces/layout-tree-node';
-import { getChildrenSkipAbstract, isAbstract } from '../utils/abstract';
+import { getChildrenSkipAbstract } from '../utils/abstract';
+import { AbstractNode } from '../interfaces/mindmap';
 
 function moveSubtree(treeNode: LayoutTreeNode, i: number, distance: number) {
     // Move subtree by changing modifier.
@@ -17,7 +18,7 @@ function nextRightContour(treeNode: LayoutTreeNode) {
 
 // separate left siblings
 function separate(treeNode: LayoutTreeNode, i: number) {
-    if (isAbstract(treeNode.children[i].origin.origin)) {
+    if (AbstractNode.isAbstract(treeNode.children[i].origin.origin)) {
         return;
     }
 
@@ -148,15 +149,16 @@ function secondWalk(treeNode: LayoutTreeNode, sumOfModifier: number) {
 
 function abstractHandle(treeNode: LayoutTreeNode, i: number) {
     const abstract = treeNode.children.find(abstract => {
-        return abstract.origin.origin.end === i - 1;
+        return AbstractNode.isAbstract(abstract.origin.origin) && abstract.origin.origin.end === i - 1;
     });
     if (!abstract) {
         return;
     }
-    const abstractStartNode = treeNode.children[abstract.origin.origin.start!];
+    const abstractNode = abstract.origin.origin as AbstractNode;
+    const abstractStartNode = treeNode.children[abstractNode.start];
     const includeElementStartX = abstractStartNode.modifier;
 
-    let abstractEndNode = treeNode.children[abstract.origin.origin.end!];
+    let abstractEndNode = treeNode.children[abstractNode.end];
     let includeElementEndX = abstractEndNode.modifier + abstractEndNode.preliminary + abstractEndNode.width;
 
     let abstractWidth = abstract.origin.blackNode
@@ -194,7 +196,7 @@ function abstractHandle(treeNode: LayoutTreeNode, i: number) {
         moveSubtree(treeNode, abstractIndex, distance);
     } else {
         const distance = (abstractWidth - abstractIncludeElementWidth) / 2;
-        for (let i = abstract.origin.origin.start!; i < abstract.origin.origin.end! + 1; i++) {
+        for (let i = abstractNode.start; i < abstractNode.end + 1; i++) {
             moveSubtree(treeNode, i, distance);
         }
     }
@@ -209,7 +211,7 @@ function compareAbstractRight(
     let result = 0;
     const leftNodeIndex = nodeParent.children.indexOf(leftNode);
     const abstract = nodeParent.children.find(child => {
-        return child.origin.origin.end === leftNodeIndex;
+        return  AbstractNode.isAbstract(child.origin.origin) && child.origin.origin.end === leftNodeIndex;
     });
 
     if (abstract) {
@@ -229,7 +231,7 @@ function compareAbstractLeft(nodeParent: LayoutTreeNode, rightNode: LayoutTreeNo
     });
 
     const abstract = nodeParent.children.find(child => {
-        return child.origin.origin.start === nodeIndex;
+        return AbstractNode.isAbstract(child.origin.origin) && child.origin.origin.start === nodeIndex;
     });
 
     if (abstract) {

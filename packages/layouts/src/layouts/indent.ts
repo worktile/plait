@@ -1,13 +1,11 @@
 import { LayoutNode } from '../interfaces/layout-node';
-import { LayoutTreeNode } from '../interfaces/layout-tree-node';
-import { LayoutOptions } from '../types';
-import { getChildrenSkipAbstract, isAbstract } from '../utils/abstract';
+import { AbstractNode, LayoutOptions } from '../interfaces/mindmap';
 import { isHorizontalLogicLayout } from '../utils/layout';
 
 export function separateXAxle(node: LayoutNode, d = 0) {
     node.x = d;
     node.children.forEach(child => {
-        if (isAbstract(child.origin)) {
+        if (AbstractNode.isAbstract(child.origin)) {
             let width = 0;
             for (let i = child.origin.start!; i <= child.origin.end!; i++) {
                 const box = node.children[i].getBoundingBox();
@@ -27,12 +25,13 @@ export function separateYAxle(root: LayoutNode, options: LayoutOptions) {
     function updateY(node: LayoutNode) {
         node.children.forEach((child, index) => {
             const abstract = node.children.find(child => {
-                return child.origin.end === index - 1;
+                return AbstractNode.isAbstract(child.origin) && child.origin.end === index - 1;
             });
             if (abstract) {
+                const abstractNode = abstract.origin as AbstractNode;
                 const abstractIndex = node.children.indexOf(abstract);
-                const startNode = node.children[abstract.origin.start!];
-                let endNode = node.children[abstract.origin.end!];
+                const startNode = node.children[abstractNode.start];
+                let endNode = node.children[abstractNode.end];
                 let parentNode = node;
                 const elementTop = startNode.y;
                 //与start节点对齐
@@ -41,12 +40,12 @@ export function separateYAxle(root: LayoutNode, options: LayoutOptions) {
                 while (endNode?.children.length) {
                     parentNode = endNode;
                     let children = parentNode.children.filter(child => {
-                        return !isAbstract(child.origin);
+                        return !AbstractNode.isAbstract(child.origin);
                     });
                     endNode = children[children.length - 1];
                     const endNodeIndex = endNode.parent!.children.indexOf(endNode);
                     const abstract = parentNode.children.find(child => {
-                        return child.origin.end === endNodeIndex;
+                        return AbstractNode.isAbstract(child.origin) && child.origin.end === endNodeIndex;
                     });
                     elementBottom = abstract
                         ? Math.max(abstract.y + abstract.height, endNode.y + endNode.height)
@@ -64,7 +63,7 @@ export function separateYAxle(root: LayoutNode, options: LayoutOptions) {
                 //比较两者高度
                 if (abstractRootCenter > elementCenter) {
                     distance = abstractRootCenter - elementCenter;
-                    for (let i = abstract.origin.start!; i <= abstract.origin.end!; i++) {
+                    for (let i = abstractNode.start; i <= abstractNode.end; i++) {
                         node.children[i].eachNode(child => {
                             child.y += distance;
                         });
@@ -76,7 +75,7 @@ export function separateYAxle(root: LayoutNode, options: LayoutOptions) {
                 const attach = previousNode?.origin.isCollapsed ? options.getExtendHeight(child.origin) : 0;
                 previousBottom = Math.max(abstract.y + abstractHeight, endNode.y + endNode.height) - attach;
             }
-            if (isAbstract(child.origin)) {
+            if (AbstractNode.isAbstract(child.origin)) {
                 return;
             }
 

@@ -33,7 +33,7 @@ import {
     isHorizontalLayout,
     isIndentedLayout,
     isLeftLayout,
-    isAbstract,
+    AbstractNode,
     isRightLayout,
     isStandardLayout,
     isTopLayout,
@@ -199,7 +199,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         const layout = MindmapQueries.getLayoutByElement(this.parent.origin) as MindmapLayoutType;
         if (MindmapNodeElement.isIndentedLayout(this.parent.origin)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
-        } else if (isAbstract(this.node.origin)) {
+        } else if (AbstractNode.isAbstract(this.node.origin)) {
             this.linkG = drawAbstractLink(this.board, this.node, isHorizontalLayout(layout));
         }
         else {

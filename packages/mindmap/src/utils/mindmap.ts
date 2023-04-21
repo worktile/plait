@@ -1,5 +1,5 @@
 import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
-import { MindmapLayoutType } from '@plait/layouts';
+import { AbstractNode, MindmapLayoutType } from '@plait/layouts';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE } from '../constants/node';
 import { MindmapNode, PlaitMindmap } from '../interfaces';
@@ -256,6 +256,7 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapNodeEleme
         strokeWidth,
         shape
     };
+
     Transforms.insertNode(board, newElement, path);
     addSelectedElement(board, newElement);
     setTimeout(() => {
@@ -276,14 +277,56 @@ export const findLastChild = (child: MindmapNode) => {
 
 export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindmapNodeElement[]) => {
     //翻转，从下到上修改，防止找不到 path
-    filterChildElement(selectedElements)
-        .reverse()
+    const deletableElements = filterChildElement(selectedElements).reverse();
+
+    const relativeAbstracts: AbstractNode[] = [];
+    const accumulativeProperties = new WeakMap<AbstractNode, { start: number, end: number }>;
+
+    deletableElements.forEach(node => {
+        const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
+        if (mindmapNodeComponent && mindmapNodeComponent.parent) {
+            const index = mindmapNodeComponent.parent.origin.children.indexOf(node);
+            const abstracts = mindmapNodeComponent.parent.children.filter(value => AbstractNode.isAbstract(value.origin));
+            abstracts.forEach(abstract => {
+                const abstractNode = abstract.origin as AbstractNode;
+                if (index >= abstractNode.start && index <= abstractNode.end) {
+                    let newProperties = accumulativeProperties.get(abstractNode);
+                    if (!newProperties) {
+                        newProperties = { start: abstractNode.start, end: abstractNode.end };
+                        accumulativeProperties.set(abstractNode, newProperties);
+                        relativeAbstracts.push(abstractNode);
+                    }
+                    newProperties.end = newProperties.end - 1;
+                }
+            });
+        }
+    });
+
+    const abstractHandles = relativeAbstracts.map((value) => {
+        const newProperties = accumulativeProperties.get(value);
+        if (newProperties) {
+            const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(value as MindmapNodeElement);
+            if (mindmapNodeComponent) {
+                const path = findPath(board, mindmapNodeComponent.node);
+                return () => {
+                    if (newProperties.start > newProperties.end) {
+                        Transforms.removeNode(board, path);
+                    } else {
+                        Transforms.setNode(board, newProperties, path);
+                    }
+                }
+            }
+        }
+        return () => {}
+    });
+
+    const deletableHandles = deletableElements
         .map(node => {
             const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
             if (mindmapNodeComponent) {
                 const path = findPath(board, mindmapNodeComponent.node);
-                const parentPath: Path = mindmapNodeComponent.parent ? findPath(board, mindmapNodeComponent!.parent) : [];
-
+                const parent = mindmapNodeComponent.parent;
+                const parentPath: Path = parent ? findPath(board, mindmapNodeComponent!.parent) : [];
                 return () => {
                     if (shouldChangeRightNodeCount(node)) {
                         changeRightNodeCount(board, parentPath, -1);
@@ -292,8 +335,8 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
                 };
             }
             return () => {};
-        })
-        .forEach(action => {
-            action();
         });
+
+    abstractHandles.forEach((action) => action());
+    deletableHandles.forEach((action) => action());
 };

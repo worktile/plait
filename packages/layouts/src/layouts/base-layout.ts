@@ -1,7 +1,6 @@
 import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { LayoutBlockNode, LayoutNode } from '../interfaces/layout-node';
-import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
-import { isAbstract } from '../utils/abstract';
+import { AbstractNode, LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../interfaces/mindmap';
 import { extractLayoutType, isHorizontalLayout, isLeftLayout, isTopLayout } from '../utils/layout';
 import * as indent from './indent';
 import * as logic from './logic';
@@ -106,7 +105,7 @@ export class BaseLayout {
                     const oldNode = isolatedNode.parent.children[_index];
                     isolatedNode.parent.children[_index] = Object.assign(oldNode, layoutRoot);
                     const meta = attachedMetaOfIsolatedNodes.find(
-                        m => m.parent === isolatedNode.parent && !isAbstract(isolatedNode.origin)
+                        m => m.parent === isolatedNode.parent && !AbstractNode.isAbstract(isolatedNode.origin)
                     );
                     if (meta) {
                         if (meta.offsetX < offsetX) {
@@ -115,7 +114,7 @@ export class BaseLayout {
                         if (meta.offsetX < offsetY) {
                             meta.offsetX = offsetY;
                         }
-                    } else if (!isAbstract(isolatedNode.origin)) {
+                    } else if (!AbstractNode.isAbstract(isolatedNode.origin)) {
                         attachedMetaOfIsolatedNodes.push({ parent: isolatedNode.parent, offsetX, offsetY });
                     }
                 }
@@ -153,7 +152,7 @@ export class BaseLayout {
                                 (node.layout !== child.layout &&
                                     (extractLayoutType(node.layout) !== extractLayoutType(child.layout) ||
                                         isHorizontalLayout(node.layout) !== isHorizontalLayout(child.layout))) ||
-                                isAbstract(child.origin);
+                                AbstractNode.isAbstract(child.origin);
                             if (isolated && !child.origin.isCollapsed) {
                                 isolatedNodes.push(child);
                             } else {
