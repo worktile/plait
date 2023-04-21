@@ -7,6 +7,7 @@ import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
+import { MindmapNodeComponent } from '../node.component';
 
 export function findPath(board: PlaitBoard, node: MindmapNode): Path {
     const path = [];
@@ -257,6 +258,14 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapNodeEleme
         shape
     };
 
+    const index = path[path.length - 1];
+    const abstractNode = inheritNode.children.find((child) => AbstractNode.isAbstract(child) && index > child.start && index <= child.end + 1);
+    if (abstractNode) {
+        const abstractComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(abstractNode) as MindmapNodeComponent;
+        const path = findPath(board, abstractComponent.node)
+        Transforms.setNode(board, { end: (abstractNode as AbstractNode).end + 1 },path );
+    }
+
     Transforms.insertNode(board, newElement, path);
     addSelectedElement(board, newElement);
     setTimeout(() => {
@@ -280,7 +289,7 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
     const deletableElements = filterChildElement(selectedElements).reverse();
 
     const relativeAbstracts: AbstractNode[] = [];
-    const accumulativeProperties = new WeakMap<AbstractNode, { start: number, end: number }>;
+    const accumulativeProperties = new WeakMap<AbstractNode, { start: number, end: number }>();
 
     deletableElements.forEach(node => {
         const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);

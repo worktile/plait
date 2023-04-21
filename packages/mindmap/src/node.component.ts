@@ -586,7 +586,7 @@ export class MindmapNodeComponent implements OnInit, OnChanges, OnDestroy {
         fromEvent(quickInsertG, 'mouseup')
             .pipe(take(1))
             .subscribe(() => {
-                const path = findPath(this.board, this.node).concat(this.node.origin.children.length);
+                const path = findPath(this.board, this.node).concat(this.node.origin.children.filter(child => !AbstractNode.isAbstract(child)).length);
                 createEmptyNode(this.board, this.node.origin, path);
             });
     }
