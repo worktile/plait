@@ -1,12 +1,14 @@
-import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { PlaitElement, PlaitPluginElementContext } from '../../interfaces';
 import { addSelectedElement, isSelectedElement, removeSelectedElement } from '../../utils/selected-element';
 import { createG } from '../../utils/dom';
-import { hasBeforeContextChange } from './before-context-change';
+import { hasBeforeContextChange, hasOnContextChanged } from './context-change';
 
 @Directive()
 export abstract class PlaitPluginElementComponent<T extends PlaitElement = PlaitElement> implements OnInit, OnDestroy {
-    g: SVGGElement;
+    g!: SVGGElement;
+
+    rootG?: SVGGElement;
 
     initialized = false;
 
@@ -17,18 +19,25 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
         if (hasBeforeContextChange<T>(this)) {
             this.beforeContextChange(value);
         }
-        const elementChanged = this.element && this.element !== value.element;
-        if (elementChanged) {
-            if (isSelectedElement(this.board, this.element)) {
-                removeSelectedElement(this.board, this.element);
-                addSelectedElement(this.board, value.element);
-            }
-        }
+        const previousContext = this._context;
         this._context = value;
         if (this.element) {
             ELEMENT_TO_PLUGIN_COMPONENT.set(this.element, this);
         }
-        this.onContextChange();
+        if (this.initialized) {
+            this.cdr.markForCheck();
+            if (hasOnContextChanged<T>(this)) {
+                this.onContextChanged(value, previousContext);
+            }
+        } else {
+            if (PlaitElement.isRootElement(this.element) && this.element.children && this.element.children.length > 0) {
+                this.g = createG();
+                this.rootG = createG();
+                this.rootG.append(this.g);
+            } else {
+                this.g = createG();
+            }
+        }
     }
 
     get context() {
@@ -39,35 +48,33 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
         return this.context && this.context.element;
     }
 
-    get selection() {
-        return this.context && this.context.selection;
-    }
-
     get board() {
         return this.context && this.context.board;
     }
 
-    constructor(public cdr: ChangeDetectorRef) {
-        this.g = createG();
+    get selected() {
+        return this.context && this.context.selected;
     }
 
-    onContextChange() {
-        if (!this.initialized) {
-            return;
-        }
-        this.cdr.markForCheck();
+    get effect() {
+        return this.context && this.context.effect;
     }
+
+    constructor(protected cdr: ChangeDetectorRef) {}
 
     ngOnInit(): void {
-        const type = this.element?.type || 'default-plugin-element';
-        this.g.setAttribute(`plait-${type}`, 'true');
+        if (this.element.type) {
+            (this.rootG || this.g).setAttribute(`plait-${this.element.type}`, 'true');
+        }
         this.initialized = true;
     }
 
     ngOnDestroy(): void {
-        ELEMENT_TO_PLUGIN_COMPONENT.delete(this.element);
+        if (ELEMENT_TO_PLUGIN_COMPONENT.get(this.element) === this) {
+            ELEMENT_TO_PLUGIN_COMPONENT.delete(this.element);
+        }
         removeSelectedElement(this.board, this.element);
-        this.g.remove();
+        (this.rootG || this.g).remove();
     }
 }
 

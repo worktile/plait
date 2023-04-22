@@ -173,6 +173,7 @@ export const getRichtextContentSize = (editable: HTMLElement) => {
         right: Number.NEGATIVE_INFINITY,
         bottom: Number.NEGATIVE_INFINITY
     };
+    const editableRectangle = editable.getBoundingClientRect();
     for (let index = 0; index < editable.childElementCount; index++) {
         const element = editable.children.item(index);
         const nodeRectangle = element?.getBoundingClientRect();
@@ -183,7 +184,7 @@ export const getRichtextContentSize = (editable: HTMLElement) => {
             boundaryBox.bottom = Math.max(boundaryBox.bottom, nodeRectangle.y + nodeRectangle.height);
         }
     }
-    return { width: boundaryBox.right - boundaryBox.left, height: boundaryBox.bottom - boundaryBox.top };
+    return { width: boundaryBox.right - boundaryBox.left, height: editableRectangle.height };
 };
 
 export const ZERO_WIDTH_CHAR = '\uFEFF';
