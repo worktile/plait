@@ -10,7 +10,7 @@ import {
     Transforms
 } from '@plait/core';
 import { MindmapNodeElement } from '../interfaces';
-import { copyNewNode, extractNodesText, findPath, transformNodeToRoot, transformRootToNode } from '../utils';
+import { copyNewNode, extractNodesText, transformNodeToRoot, transformRootToNode } from '../utils';
 import { getRectangleByNode } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapNodeComponent } from '../node.component';
@@ -54,13 +54,9 @@ export const getDataFromClipboard = (data: DataTransfer | null) => {
 };
 
 export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[], targetPoint: Point) => {
-    let selectedElementPath: Path, newElement: MindmapNodeElement, path: Path;
+    let newElement: MindmapNodeElement, path: Path;
     const selectedElements = getSelectedElements(board);
-    const selectedComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements[0] as MindmapNodeElement) as MindmapNodeComponent;
     let newELements: PlaitElement[] = [];
-    if (selectedComponent) {
-        selectedElementPath = findPath(board, selectedComponent.node);
-    }
 
     elements.forEach((item: PlaitElement, index: number) => {
         newElement = copyNewNode(item as MindmapNodeElement);
@@ -69,7 +65,8 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
             if (item.isRoot) {
                 newElement = transformRootToNode(board, newElement);
             }
-            path = selectedElementPath.concat(selectedComponent.node.children.length + index);
+            const selectedElementPath = PlaitBoard.findPath(board, selectedElements[0]);
+            path = selectedElementPath.concat((selectedElements[0].children || []).length + index);
         } else {
             const point: Point = [targetPoint[0] + item.points![0][0], targetPoint[1] + item.points![0][1]];
             newElement.points = [point];
@@ -86,7 +83,7 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
     Transforms.setSelectionWithTemporaryElements(board, newELements);
 };
 
-export const insertClipboardText = (board: PlaitBoard, text: string, textWidth: number) => {
+export const insertClipboardText = (board: PlaitBoard, parentElement: PlaitElement, text: string, textWidth: number) => {
     const newElement = {
         id: idCreator(),
         value: {
@@ -96,12 +93,7 @@ export const insertClipboardText = (board: PlaitBoard, text: string, textWidth: 
         width: textWidth,
         height: TEXT_DEFAULT_HEIGHT
     };
-    const element = getSelectedElements(board)[0];
-    const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
-
-    if (nodeComponent) {
-        const path = findPath(board, nodeComponent.node).concat(nodeComponent.node.children.length);
-        Transforms.insertNode(board, newElement, path);
-        return;
-    }
+    const path = PlaitBoard.findPath(board, parentElement).concat((parentElement.children || []).length);
+    Transforms.insertNode(board, newElement, path);
+    return;
 };

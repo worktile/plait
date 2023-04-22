@@ -60,7 +60,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (value.element !== this.element && this.initialized) {
             this.updateElement(value.element);
         }
-        if (value.selection !== this.selection && this.initialized) {
+        if (this.initialized) {
             const isActive = isSelectedElement(this.board, value.element);
             if (this.perviousStatus === 'default' && isActive) {
                 this.drawActiveMask(value.element);

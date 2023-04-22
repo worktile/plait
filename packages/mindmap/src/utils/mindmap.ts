@@ -1,31 +1,13 @@
-import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
+import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, PlaitNode, Transforms } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE } from '../constants/node';
-import { MindmapNode, PlaitMindmap } from '../interfaces';
+import { MindmapNode } from '../interfaces';
 import { MindmapNodeElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
-
-export function findPath(board: PlaitBoard, node: MindmapNode): Path {
-    const path = [];
-    let _node: MindmapNode | undefined = node;
-    while (true) {
-        const component = MINDMAP_ELEMENT_TO_COMPONENT.get(_node.origin);
-        if (component && component.parent) {
-            _node = component?.parent;
-            path.push(component.index);
-        } else {
-            break;
-        }
-    }
-    if (PlaitMindmap.isPlaitMindmap(_node.origin)) {
-        const index = board.children.indexOf(_node.origin);
-        path.push(index);
-    }
-    return path.reverse();
-}
+import { enterNodeEdit } from './node';
 
 export function findParentElement(element: MindmapNodeElement): MindmapNodeElement | undefined {
     const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
@@ -45,6 +27,16 @@ export function findUpElement(element: MindmapNodeElement): { root: MindmapNodeE
         parent = findParentElement(parent);
     }
     return { root, branch };
+}
+
+export function findMindmap(board: PlaitBoard, element: MindmapNodeElement) {
+    const path = PlaitBoard.findPath(board, element);
+    return PlaitNode.get(board, path.slice(0, 1));
+}
+
+export function findMindmapBranch(board: PlaitBoard, element: MindmapNodeElement) {
+    const path = PlaitBoard.findPath(board, element);
+    return PlaitNode.get(board, path.slice(0, 2));
 }
 
 export const getChildrenCount = (element: MindmapNodeElement) => {
@@ -259,10 +251,7 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapNodeEleme
     Transforms.insertNode(board, newElement, path);
     addSelectedElement(board, newElement);
     setTimeout(() => {
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(newElement);
-        if (nodeComponent) {
-            nodeComponent.startEditText(true, false);
-        }
+        enterNodeEdit(newElement);
     });
 };
 
@@ -278,20 +267,14 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
     //翻转，从下到上修改，防止找不到 path
     filterChildElement(selectedElements)
         .reverse()
-        .map(node => {
-            const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
-            if (mindmapNodeComponent) {
-                const path = findPath(board, mindmapNodeComponent.node);
-                const parentPath: Path = mindmapNodeComponent.parent ? findPath(board, mindmapNodeComponent!.parent) : [];
-
-                return () => {
-                    if (shouldChangeRightNodeCount(node)) {
-                        changeRightNodeCount(board, parentPath, -1);
-                    }
-                    Transforms.removeNode(board, path);
-                };
-            }
-            return () => {};
+        .map(element => {
+            const path = PlaitBoard.findPath(board, element);
+            return () => {
+                if (shouldChangeRightNodeCount(element)) {
+                    changeRightNodeCount(board, path.slice(0, 1), -1);
+                }
+                Transforms.removeNode(board, path);
+            };
         })
         .forEach(action => {
             action();
