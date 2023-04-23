@@ -45,25 +45,23 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMindmap.isMindmap(context.element)) {
             return PlaitMindmapComponent;
-        } else if(MindmapNodeElement.isMindmapNodeElement(board, context.element)) {
+        } else if (MindmapNodeElement.isMindmapNodeElement(board, context.element)) {
             return MindmapNodeComponent;
         }
         return drawElement(context);
     };
 
     board.getRectangle = element => {
-        const node = ELEMENT_TO_NODE.get(element as MindmapNodeElement);
-        if (node) {
-            return getRectangleByNode(node);
+        if (MindmapNodeElement.isMindmapNodeElement(board, element)) {
+            return getRectangleByNode(MindmapNodeElement.getNode(board, element));
         }
         return getRectangle(element);
     };
 
     board.isHitSelection = (element, range: Range) => {
-        const node = ELEMENT_TO_NODE.get(element as MindmapNodeElement);
-        if (node && board.selection) {
-            const target = getRectangleByNode(node);
-            return RectangleClient.isIntersect(RectangleClient.toRectangleClient([range.anchor, range.focus]), target);
+        if (MindmapNodeElement.isMindmapNodeElement(board, element) && board.selection) {
+            const client = getRectangleByNode(MindmapNodeElement.getNode(board, element));;
+            return RectangleClient.isIntersect(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
         }
         return isHitSelection(element, range);
     };
