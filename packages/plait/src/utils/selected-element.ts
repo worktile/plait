@@ -1,5 +1,5 @@
 import { PlaitBoard } from '../interfaces/board';
-import { Ancestor, PlaitNode } from '../interfaces/node';
+import { Ancestor } from '../interfaces/node';
 import { depthFirstRecursion } from './tree';
 import { BOARD_TO_SELECTED_ELEMENT } from './weak-maps';
 import { Range } from '../interfaces/selection';
@@ -9,7 +9,7 @@ export const calcElementIntersectionSelection = (board: PlaitBoard) => {
     const selectedElements: PlaitElement[] = [];
     depthFirstRecursion<Ancestor>(board, node => {
         if (
-            PlaitElement.isElement(node) &&
+            !PlaitBoard.isBoard(node) &&
             board.selection?.ranges.some(range => {
                 return board.isHitSelection(node, range);
             })

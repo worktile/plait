@@ -23,7 +23,7 @@ import {
     NODE_TO_PARENT,
     PlaitElement,
     NODE_TO_INDEX,
-    ELEMENT_TO_PLUGIN_COMPONENT,
+    ELEMENT_TO_COMPONENT,
     PlaitPluginElementContext,
     OnContextChanged
 } from '@plait/core';
@@ -58,7 +58,7 @@ import { drawIndentedLink } from './draw/indented-link';
 import { drawLogicLink } from './draw/logic-link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
-import { MindmapNodeElement } from './interfaces/element';
+import { MindmapNodeElement, PlaitMindmap } from './interfaces/element';
 import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { MindmapQueries } from './queries';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
@@ -125,9 +125,8 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.element, this);
         super.ngOnInit();
         this.node = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
-        const parent = NODE_TO_PARENT.get(this.element);
-        if (parent && PlaitElement.isElement(parent)) {
-            this.parent = ELEMENT_TO_NODE.get(parent as MindmapNodeElement) as MindmapNode;
+        if (!PlaitMindmap.isMindmap(this.element)) {
+            this.parent = MindmapNodeElement.getNode(this.board, MindmapNodeElement.getParent(this.element));
         }
         this.index = NODE_TO_INDEX.get(this.element) || 0;
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
@@ -142,10 +141,9 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
     }
 
     onContextChanged(value: PlaitPluginElementContext<T>, previous: PlaitPluginElementContext<T>) {
-        const newNode = ELEMENT_TO_NODE.get(value.element) as MindmapNode;
-        const parent = NODE_TO_PARENT.get(value.element);
-        if (parent && PlaitElement.isElement(parent)) {
-            this.parent = ELEMENT_TO_NODE.get(parent as MindmapNodeElement) as MindmapNode;
+        const newNode = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
+        if (!PlaitMindmap.isMindmap(this.element)) {
+            this.parent = MindmapNodeElement.getNode(this.board, MindmapNodeElement.getParent(this.element));
         }
 
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.element, this);
@@ -157,11 +155,11 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
             }
         }
 
-        const isSameNode = MindmapNode.isEquals(this.node, newNode);
+        const isEquals = MindmapNode.isEquals(this.node, newNode);
         this.node = newNode;
         this.drawActiveG();
         this.updateActiveClass();
-        if (!isSameNode) {
+        if (!isEquals) {
             this.drawShape();
             this.drawLink();
             this.updateRichtext();

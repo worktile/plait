@@ -1,6 +1,6 @@
 import {
     addSelectedElement,
-    ELEMENT_TO_PLUGIN_COMPONENT,
+    ELEMENT_TO_COMPONENT,
     getSelectedElements,
     hotkeys,
     IS_TEXT_EDITABLE,
