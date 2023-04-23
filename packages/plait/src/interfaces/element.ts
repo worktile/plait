@@ -1,3 +1,4 @@
+import { ELEMENT_TO_PLUGIN_COMPONENT, PlaitPluginElementComponent } from '../core/element/plugin-element';
 import { NODE_TO_PARENT } from '../utils';
 import { PlaitBoard } from './board';
 import { Point } from './point';
@@ -21,6 +22,9 @@ export const PlaitElement = {
         } else {
             return false;
         }
+    },
+    getComponent(value: PlaitElement) {
+        return ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitPluginElementComponent;
     }
 }
 

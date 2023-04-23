@@ -63,7 +63,7 @@ import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './
 import { MindmapQueries } from './queries';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
 import { getRectangleByNode, hitMindmapElement } from './utils/graph';
-import { createEmptyNode, findMindmap, getChildrenCount } from './utils/mindmap';
+import { createEmptyNode, getChildrenCount } from './utils/mindmap';
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
@@ -76,7 +76,7 @@ import { getRichtextContentSize } from '@plait/richtext';
             [board]="board"
             [parent]="element"
             [effect]="effect"
-            [parentG]="mindmapG"
+            [parentG]="parentG"
         ></plait-children>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -93,7 +93,7 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
 
     index!: number;
 
-    mindmapG!: SVGGElement;
+    parentG!: SVGGElement;
 
     activeG: SVGGElement[] = [];
 
@@ -131,9 +131,7 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
         }
         this.index = NODE_TO_INDEX.get(this.element) || 0;
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
-        const mindmap = findMindmap(this.board, this.element);
-        this.mindmapG = ELEMENT_TO_PLUGIN_COMPONENT.get(mindmap)?.rootG as SVGGElement;
-        // this.insertGroup();
+        this.parentG = PlaitElement.getComponent(MindmapNodeElement.getRoot(this.board, this.element)).rootG as SVGGElement;
         this.drawShape();
         this.drawLink();
         this.drawRichtext();

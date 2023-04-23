@@ -62,5 +62,9 @@ export const MindmapNodeElement = {
         }
         const parent = NODE_TO_PARENT.get(node) as MindmapNodeElement;
         return parent;
+    },
+    getRoot(board: PlaitBoard, element: MindmapNodeElement) {
+        const path = PlaitBoard.findPath(board, element);
+        return PlaitNode.get(board, path.slice(0, 1)) as PlaitMindmap;
     }
 };
