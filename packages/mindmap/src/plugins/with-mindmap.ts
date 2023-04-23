@@ -37,7 +37,7 @@ import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-map
 import { withNodeDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
-import { enterNodeEdit } from '../utils/node';
+import { enterNodeEditing } from '../utils/node';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isHitSelection, getRectangle, isMovable } = board;
@@ -133,7 +133,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             if (!isVirtualKey(event)) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
-                enterNodeEdit(selectedElement);
+                enterNodeEditing(selectedElement);
                 return;
             }
         }
@@ -158,7 +158,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             .forEach(mindmap => {
                 depthFirstRecursion<MindmapNodeElement>(mindmap as MindmapNodeElement, node => {
                     if (!PlaitBoard.hasBeenTextEditing(board) && hitMindmapElement(board, point, node)) {
-                        enterNodeEdit(node);
+                        enterNodeEditing(node);
                     }
                 });
             });
