@@ -3,8 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { PlaitBoardComponent } from './board/board.component';
 import { PlaitElementComponent } from './core/element/element.component';
 import { PlaitToolbarComponent } from './core/toolbar/toolbar.component';
+import { PlaitChildrenElement } from './core/children/children.component';
 
-const COMPONENTS = [PlaitBoardComponent, PlaitElementComponent, PlaitToolbarComponent];
+const COMPONENTS = [PlaitBoardComponent, PlaitChildrenElement, PlaitElementComponent, PlaitToolbarComponent];
 
 @NgModule({
     declarations: [...COMPONENTS],

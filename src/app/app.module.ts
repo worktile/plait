@@ -11,8 +11,8 @@ import { BasicRichtextComponent } from './richtext/richtext.component';
 import { BasicFlowComponent } from './flow/flow.component';
 
 @NgModule({
-    declarations: [AppComponent, BasicRichtextComponent, BasicBoardEditorComponent, BasicFlowComponent],
-    imports: [BrowserModule, RichtextModule, AppRoutingModule, PlaitModule, MindmapModule, FlowModule],
+    declarations: [AppComponent, BasicRichtextComponent, BasicFlowComponent, BasicBoardEditorComponent],
+    imports: [BrowserModule, RichtextModule, AppRoutingModule, PlaitModule, FlowModule, MindmapModule],
     providers: [],
     bootstrap: [AppComponent]
 })
