@@ -58,7 +58,7 @@ export const MindmapNodeElement = {
     },
     getParent(node: MindmapNodeElement) {
         if (PlaitMindmap.isMindmap(node)) {
-            throw new Error('root node can not get parent');
+            throw new Error('mind root node can not get parent');
         }
         const parent = NODE_TO_PARENT.get(node) as MindmapNodeElement;
         return parent;
