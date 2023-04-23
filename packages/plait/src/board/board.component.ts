@@ -56,7 +56,7 @@ import {
 } from '../utils/viewport';
 import { isHotkey } from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
-import { Point } from '../interfaces';
+import { Point } from '../interfaces/point';
 import { withMoving } from '../plugins/with-moving';
 
 const ElementHostClass = 'element-host';
@@ -66,13 +66,7 @@ const ElementHostClass = 'element-host';
     template: `
         <div class="viewport-container" #viewportContainer>
             <svg #svg width="100%" height="100%" style="position: relative;"><g class="element-host"></g></svg>
-            <plait-element
-                *ngFor="let item of board.children; let index = index; trackBy: trackBy"
-                [index]="index"
-                [element]="item"
-                [board]="board"
-                [selection]="board.selection"
-            ></plait-element>
+            <plait-children [board]="board" [effect]="effect"></plait-children>
         </div>
         <plait-toolbar
             *ngIf="isFocused && !toolbarTemplateRef"
@@ -88,6 +82,8 @@ const ElementHostClass = 'element-host';
 })
 export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnChanges, AfterViewInit, OnDestroy {
     hasInitialized = false;
+
+    effect = {};
 
     board!: PlaitBoard;
 
@@ -141,12 +137,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @ViewChild('viewportContainer', { read: ElementRef, static: true })
     viewportContainer!: ElementRef;
 
-    constructor(
-        public cdr: ChangeDetectorRef,
-        private renderer2: Renderer2,
-        private elementRef: ElementRef<HTMLElement>,
-        private ngZone: NgZone
-    ) {}
+    constructor(public cdr: ChangeDetectorRef, private elementRef: ElementRef<HTMLElement>, private ngZone: NgZone) {}
 
     ngOnInit(): void {
         const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;
@@ -164,7 +155,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         BOARD_TO_HOST.set(this.board, this.host);
         BOARD_TO_ELEMENT_HOST.set(this.board, elementHost);
         BOARD_TO_ON_CHANGE.set(this.board, () => {
-            this.cdr.detectChanges();
+            this.detect();
             const changeEvent: PlaitBoardChangeEvent = {
                 children: this.board.children,
                 operations: this.board.operations,
@@ -174,6 +165,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             this.plaitChange.emit(changeEvent);
         });
         this.hasInitialized = true;
+    }
+
+    detect() {
+        this.effect = {};
+        this.cdr.detectChanges();
     }
 
     mouseLeaveListener() {

@@ -1,5 +1,5 @@
 import {
-    ELEMENT_TO_PLUGIN_COMPONENT,
+    ELEMENT_TO_COMPONENT,
     PlaitBoard,
     PlaitPlugin,
     PlaitPluginElementContext,
@@ -32,7 +32,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.isHitSelection = (element, range) => {
-        const elementComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(element) as FlowNodeComponent | FlowEdgeComponent;
+        const elementComponent = ELEMENT_TO_COMPONENT.get(element) as FlowNodeComponent | FlowEdgeComponent;
         if (FlowElement.isFlowElement(element) && elementComponent && board.selection) {
             if (FlowNode.isFlowNodeElement(element)) {
                 const { x, y } = normalizePoint(element.points![0]);
@@ -80,7 +80,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
             if (FlowNode.isFlowNodeElement(moveElement)) {
                 const relationEdges = getEdgesByNodeId(board, moveElement.id);
                 relationEdges.map(item => {
-                    const flowEdgeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(item) as FlowEdgeComponent;
+                    const flowEdgeComponent = ELEMENT_TO_COMPONENT.get(item) as FlowEdgeComponent;
                     flowEdgeComponent.drawElement();
                 });
             }

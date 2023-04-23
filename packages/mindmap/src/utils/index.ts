@@ -9,3 +9,5 @@ export * from './draw-placeholder';
 export * from './direction-detector';
 export * from './direction-corrector';
 export * from './drop-target-corrector';
+export * from './node';
+export * from './path';

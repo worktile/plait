@@ -1,0 +1,11 @@
+@mixin font-size-14 {
+    font-size: 14px;
+    min-height: 20px;
+    line-height: 20px;
+}
+
+@mixin font-size-18 {
+    font-size: 18px;
+    min-height: 25px;
+    line-height: 25px;
+}

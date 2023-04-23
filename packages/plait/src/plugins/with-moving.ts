@@ -6,9 +6,10 @@ import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
 import { getSelectedElements, isIntersectionElements } from '../utils/selected-element';
-import { MERGING, PlaitNode } from '../interfaces';
+import { PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
 import { addMovingElements, removeMovingElements } from '../utils/moving-element';
+import { MERGING } from '../interfaces/history';
 
 export function withMoving(board: PlaitBoard) {
     const { mousedown, mousemove, globalMouseup, globalMousemove } = board;
@@ -23,7 +24,7 @@ export function withMoving(board: PlaitBoard) {
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
         const ranges = [{ anchor: point, focus: point }];
-        let movableElements = board.children.filter(item => PlaitElement.isElement(item) && board.isMovable(item));
+        let movableElements = board.children.filter(item => board.isMovable(item));
         if (movableElements.length) {
             startPoint = point;
             const selectedRootElements = getSelectedElements(board).filter(item => movableElements.includes(item));

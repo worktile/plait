@@ -154,7 +154,7 @@
 
 -   [`f4d5b3b`](https://github.com/worktile/plait/commit/f4d5b3b42f6273a8324674278096402e2dc41f1d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename cursor to pointer
 
-*   [`2af223f`](https://github.com/worktile/plait/commit/2af223fa6f55b0062da255dd752ae1de236d43a8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract plugin-element-component as base classs, add global ELEMENT_TO_PLUGIN_COMPONENT
+*   [`2af223f`](https://github.com/worktile/plait/commit/2af223fa6f55b0062da255dd752ae1de236d43a8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract plugin-element-component as base classs, add global ELEMENT_TO_COMPONENT
 
 -   [#226](https://github.com/worktile/plait/pull/226) [`000192c`](https://github.com/worktile/plait/commit/000192cc5eee3a81e58f59c2c43e494b6b0dd81a) Thanks [@Maple13](https://github.com/Maple13)! - refactor viewport
 
