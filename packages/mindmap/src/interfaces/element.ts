@@ -57,11 +57,10 @@ export const MindmapNodeElement = {
         }
     },
     getParent(node: MindmapNodeElement) {
-        const parent = NODE_TO_PARENT.get(node);
-        if (parent && PlaitBoard.isBoard(parent)) {
-            return undefined;
-        } else {
-            return parent;
+        if (PlaitMindmap.isMindmap(node)) {
+            throw new Error('root node can not get parent');
         }
+        const parent = NODE_TO_PARENT.get(node) as MindmapNodeElement;
+        return parent;
     }
 };
