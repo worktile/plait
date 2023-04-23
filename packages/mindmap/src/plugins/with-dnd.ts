@@ -104,10 +104,9 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 fakeDragNodeG = createG();
                 fakeDragNodeG.classList.add('dragging', 'fake-node', 'plait-board-attached');
                 fakeDropNodeG = createG();
-                const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
                 addActiveOnDragOrigin(activeElement);
-                activeComponent.mindmapG.parentElement?.appendChild(fakeDropNodeG);
-                activeComponent.mindmapG.parentElement?.appendChild(fakeDragNodeG);
+                PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
+                PlaitBoard.getHost(board).appendChild(fakeDragNodeG);
             } else {
                 fakeDragNodeG?.childNodes.forEach(node => {
                     node.remove();

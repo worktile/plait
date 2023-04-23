@@ -29,16 +29,6 @@ export function findUpElement(element: MindmapNodeElement): { root: MindmapNodeE
     return { root, branch };
 }
 
-export function findMindmap(board: PlaitBoard, element: MindmapNodeElement) {
-    const path = PlaitBoard.findPath(board, element);
-    return PlaitNode.get(board, path.slice(0, 1));
-}
-
-export function findMindmapBranch(board: PlaitBoard, element: MindmapNodeElement) {
-    const path = PlaitBoard.findPath(board, element);
-    return PlaitNode.get(board, path.slice(0, 2));
-}
-
 export const getChildrenCount = (element: MindmapNodeElement) => {
     const count: number = element.children.reduce((p: number, c: MindmapNodeElement) => {
         return p + getChildrenCount(c);
