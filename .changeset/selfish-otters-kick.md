@@ -5,4 +5,4 @@
 '@plait/richtext': patch
 ---
 
-refactor mindmap node component structure
+refactor plait core plugin element component structure
