@@ -1,4 +1,4 @@
-import { ELEMENT_TO_PLUGIN_COMPONENT, PlaitPluginElementComponent } from '../core/element/plugin-element';
+import { ELEMENT_TO_COMPONENT, PlaitPluginElementComponent } from '../core/element/plugin-element';
 import { NODE_TO_PARENT } from '../utils';
 import { PlaitBoard } from './board';
 import { Point } from './point';
@@ -12,9 +12,6 @@ export interface PlaitElement {
 }
 
 export const PlaitElement = {
-    isElement(value: any): value is PlaitElement {
-        return !!value.id;
-    },
     isRootElement(value: PlaitElement) {
         const parent = NODE_TO_PARENT.get(value);
         if (parent && PlaitBoard.isBoard(parent)) {
@@ -24,7 +21,7 @@ export const PlaitElement = {
         }
     },
     getComponent(value: PlaitElement) {
-        return ELEMENT_TO_PLUGIN_COMPONENT.get(value) as PlaitPluginElementComponent;
+        return ELEMENT_TO_COMPONENT.get(value) as PlaitPluginElementComponent;
     }
 }
 

@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Directive, Inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { PlaitElement, PlaitPluginElementContext } from '../../interfaces';
-import { addSelectedElement, isSelectedElement, removeSelectedElement } from '../../utils/selected-element';
+import { removeSelectedElement } from '../../utils/selected-element';
 import { createG } from '../../utils/dom';
 import { hasBeforeContextChange, hasOnContextChanged } from './context-change';
 
@@ -22,7 +22,7 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
         const previousContext = this._context;
         this._context = value;
         if (this.element) {
-            ELEMENT_TO_PLUGIN_COMPONENT.set(this.element, this);
+            ELEMENT_TO_COMPONENT.set(this.element, this);
         }
         if (this.initialized) {
             this.cdr.markForCheck();
@@ -70,12 +70,12 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
     }
 
     ngOnDestroy(): void {
-        if (ELEMENT_TO_PLUGIN_COMPONENT.get(this.element) === this) {
-            ELEMENT_TO_PLUGIN_COMPONENT.delete(this.element);
+        if (ELEMENT_TO_COMPONENT.get(this.element) === this) {
+            ELEMENT_TO_COMPONENT.delete(this.element);
         }
         removeSelectedElement(this.board, this.element);
         (this.rootG || this.g).remove();
     }
 }
 
-export const ELEMENT_TO_PLUGIN_COMPONENT = new WeakMap<PlaitElement, PlaitPluginElementComponent>();
+export const ELEMENT_TO_COMPONENT = new WeakMap<PlaitElement, PlaitPluginElementComponent>();

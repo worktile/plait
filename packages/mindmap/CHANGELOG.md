@@ -112,7 +112,7 @@
 
 ### Patch Changes
 
--   [`2af223f`](https://github.com/worktile/plait/commit/2af223fa6f55b0062da255dd752ae1de236d43a8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract plugin-element-component as base classs, add global ELEMENT_TO_PLUGIN_COMPONENT
+-   [`2af223f`](https://github.com/worktile/plait/commit/2af223fa6f55b0062da255dd752ae1de236d43a8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract plugin-element-component as base classs, add global ELEMENT_TO_COMPONENT
 
 *   [`4e62c1d`](https://github.com/worktile/plait/commit/4e62c1db0e67e22f4205a1cdabc53b0bad3fb624) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent node editing blur when click the area between richtext and node
 

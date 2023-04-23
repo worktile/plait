@@ -1,4 +1,4 @@
-import { PlaitElement } from '../interfaces/element';
+import { PlaitNode } from '../interfaces/node';
 import { Path } from './path';
 import { Selection } from './selection';
 import { Viewport } from './viewport';
@@ -6,13 +6,13 @@ import { Viewport } from './viewport';
 export type InsertNodeOperation = {
     type: 'insert_node';
     path: Path;
-    node: PlaitElement;
+    node: PlaitNode;
 };
 
 export type RemoveNodeOperation = {
     type: 'remove_node';
     path: Path;
-    node: PlaitElement;
+    node: PlaitNode;
 };
 
 export type MoveNodeOperation = {
@@ -36,8 +36,8 @@ export type SetSelectionOperation = {
 export type SetNodeOperation = {
     type: 'set_node';
     path: Path;
-    properties: Partial<PlaitElement>;
-    newProperties: Partial<PlaitElement>;
+    properties: Partial<PlaitNode>;
+    newProperties: Partial<PlaitNode>;
 };
 
 export type PlaitOperation =

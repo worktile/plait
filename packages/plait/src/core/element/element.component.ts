@@ -12,7 +12,7 @@ import {
 import { PlaitBoard } from '../../interfaces/board';
 import { PlaitElement } from '../../interfaces/element';
 import { PlaitPluginElementContext } from './context';
-import { ELEMENT_TO_PLUGIN_COMPONENT, PlaitPluginElementComponent } from './plugin-element';
+import { ELEMENT_TO_COMPONENT, PlaitPluginElementComponent } from './plugin-element';
 import { PlaitEffect } from '../children/effect';
 import { Ancestor, PlaitNode } from '../../interfaces/node';
 import { NODE_TO_INDEX, NODE_TO_PARENT } from '../../utils/weak-maps';
@@ -70,13 +70,13 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         if (PlaitBoard.isBoard(this.parent)) {
             this.parentG.prepend(g);
         } else {
-            const parentComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(this.parent);
+            const parentComponent = ELEMENT_TO_COMPONENT.get(this.parent);
             let parentNodeG = parentComponent?.g as SVGGElement;
             let siblingG = parentNodeG;
             if (this.index > 0) {
                 const brotherElement = (this.parent.children || [])[this.index - 1];
                 const lastElement = PlaitNode.last(this.board, PlaitBoard.findPath(this.board, brotherElement));
-                const lastComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(lastElement);
+                const lastComponent = ELEMENT_TO_COMPONENT.get(lastElement);
                 if (lastComponent) {
                     siblingG = lastComponent.g;
                 }
