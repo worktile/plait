@@ -3,6 +3,7 @@ import { MindmapNodeShape } from '../constants/node';
 import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
 import { NODE_TO_PARENT, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
 import { MindmapQueries } from '../queries';
+import { ELEMENT_TO_NODE } from '../utils';
 
 export interface MindmapNodeElement extends PlaitElement {
     value: Element;
@@ -66,5 +67,12 @@ export const MindmapNodeElement = {
     getRoot(board: PlaitBoard, element: MindmapNodeElement) {
         const path = PlaitBoard.findPath(board, element);
         return PlaitNode.get(board, path.slice(0, 1)) as PlaitMindmap;
+    },
+    getNode(board: PlaitBoard, element: MindmapNodeElement) {
+        const node = ELEMENT_TO_NODE.get(element);
+        if (!node) {
+            throw new Error(`can not get node from ${JSON.stringify(element)}`);
+        }
+        return node;
     }
 };
