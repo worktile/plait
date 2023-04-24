@@ -70,16 +70,12 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         if (PlaitBoard.isBoard(this.parent)) {
             this.parentG.prepend(g);
         } else {
-            const parentComponent = ELEMENT_TO_COMPONENT.get(this.parent);
-            let parentNodeG = parentComponent?.g as SVGGElement;
-            let siblingG = parentNodeG;
+            let siblingG = PlaitElement.getComponent(this.parent).g;
             if (this.index > 0) {
-                const brotherElement = (this.parent.children || [])[this.index - 1];
+                const brotherElement = (this.parent.children as PlaitElement[])[this.index - 1];
                 const lastElement = PlaitNode.last(this.board, PlaitBoard.findPath(this.board, brotherElement));
-                const lastComponent = ELEMENT_TO_COMPONENT.get(lastElement);
-                if (lastComponent) {
-                    siblingG = lastComponent.g;
-                }
+                const siblingElement = lastElement || brotherElement;
+                siblingG = PlaitElement.getComponent(siblingElement).g;
             }
             this.parentG.insertBefore(g, siblingG);
         }
