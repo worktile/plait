@@ -28,53 +28,10 @@ export function separateYAxle(root: LayoutNode, options: LayoutOptions) {
                 return AbstractNode.isAbstract(child.origin) && child.origin.end === index - 1;
             });
             if (abstract) {
-                const abstractNode = abstract.origin as AbstractNode;
-                const abstractIndex = node.children.indexOf(abstract);
-                const startNode = node.children[abstractNode.start];
-                let endNode = node.children[abstractNode.end];
-                let parentNode = node;
-                const elementTop = startNode.y;
-                //与start节点对齐
-                node.children[abstractIndex].y = startNode.y;
-                let elementBottom = endNode.y + endNode.height;
-                while (endNode?.children.length) {
-                    parentNode = endNode;
-                    let children = parentNode.children.filter(child => {
-                        return !AbstractNode.isAbstract(child.origin);
-                    });
-                    endNode = children[children.length - 1];
-                    const endNodeIndex = endNode.parent!.children.indexOf(endNode);
-                    const abstract = parentNode.children.find(child => {
-                        return AbstractNode.isAbstract(child.origin) && child.origin.end === endNodeIndex;
-                    });
-                    elementBottom = abstract
-                        ? Math.max(abstract.y + abstract.height, endNode.y + endNode.height)
-                        : endNode.y + endNode.height;
-                }
-                const elementsHeight = elementBottom - elementTop;
-                const abstractHeight = abstract.blackNode ? abstract.blackNode.height : abstract.height;
-
-                const abstractRootCenter = abstract.blackNode
-                    ? abstract.blackNode.rootY + abstract.blackNode.rootHeight / 2
-                    : abstract.height / 2;
-
-                const elementCenter = elementsHeight / 2;
-                let distance = 0;
-                //比较两者高度
-                if (abstractRootCenter > elementCenter) {
-                    distance = abstractRootCenter - elementCenter;
-                    for (let i = abstractNode.start; i <= abstractNode.end; i++) {
-                        node.children[i].eachNode(child => {
-                            child.y += distance;
-                        });
-                    }
-                } else {
-                    distance = elementCenter - abstractRootCenter;
-                    node.children[abstractIndex].y += distance;
-                }
                 const attach = previousNode?.origin.isCollapsed ? options.getExtendHeight(child.origin) : 0;
-                previousBottom = Math.max(abstract.y + abstractHeight, endNode.y + endNode.height) - attach;
+                previousBottom = abstractHandle(node, abstract) + attach;
             }
+
             if (AbstractNode.isAbstract(child.origin)) {
                 return;
             }
@@ -93,4 +50,53 @@ export function separateYAxle(root: LayoutNode, options: LayoutOptions) {
             updateY(child);
         });
     }
+}
+
+function abstractHandle(node: LayoutNode, abstract: LayoutNode) {
+    const abstractNode = abstract.origin as AbstractNode;
+    const abstractIndex = node.children.indexOf(abstract);
+    const startNode = node.children[abstractNode.start];
+
+    let endNode = node.children[abstractNode.end];
+
+    const elementTop = startNode.y;
+    let elementBottom = endNode.y + endNode.height;
+    let parentNode = node;
+
+    //概要和起始节点对齐
+    node.children[abstractIndex].y = startNode.y;
+
+    while (endNode?.children.length) {
+        parentNode = endNode;
+        const children = parentNode.children.filter(child => {
+            return !AbstractNode.isAbstract(child.origin);
+        });
+        endNode = children[children.length - 1];
+
+        const endNodeIndex = endNode.parent!.children.indexOf(endNode);
+        const abstract = parentNode.children.find(child => {
+            return AbstractNode.isAbstract(child.origin) && child.origin.end === endNodeIndex;
+        });
+        elementBottom = abstract ? Math.max(abstract.y + abstract.height, endNode.y + endNode.height) : endNode.y + endNode.height;
+    }
+
+    const elementsHeight = elementBottom - elementTop;
+    const abstractHeight = abstract.blackNode ? abstract.blackNode.height : abstract.height;
+
+    const abstractRootCenter = abstract.blackNode ? abstract.blackNode.rootY + abstract.blackNode.rootHeight / 2 : abstract.height / 2;
+    const elementCenter = elementsHeight / 2;
+    let distance = 0;
+    //比较两者高度
+    if (abstractRootCenter > elementCenter) {
+        distance = abstractRootCenter - elementCenter;
+        for (let i = abstractNode.start; i <= abstractNode.end; i++) {
+            node.children[i].eachNode(child => {
+                child.y += distance;
+            });
+        }
+    } else {
+        distance = elementCenter - abstractRootCenter;
+        node.children[abstractIndex].y += distance;
+    }
+    return Math.max(abstract.y + abstractHeight, endNode.y + endNode.height);
 }

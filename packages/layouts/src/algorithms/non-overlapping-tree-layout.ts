@@ -31,10 +31,9 @@ function separate(treeNode: LayoutTreeNode, i: number) {
 
     let leftNodeParent = treeNode;
     let rightNodeParent = treeNode;
-    let sumOfAbstractModifier = 0;
 
-    rightContourOfLeftNode = compareAbstractRight(leftNodeParent, leftNode, sumOfAbstractModifier, rightContourOfLeftNode);
-    leftContourOfRightNode = compareAbstractLeft(rightNodeParent, rightNode, leftContourOfRightNode);
+    rightContourOfLeftNode = compareWithAbstract(leftNodeParent, leftNode, rightContourOfLeftNode, sumOfLeftModifier - leftNode.modifier);
+    leftContourOfRightNode = compareWithAbstract(rightNodeParent, rightNode, leftContourOfRightNode);
 
     while (true) {
         if (leftNode.childrenCount > 0) {
@@ -42,13 +41,10 @@ function separate(treeNode: LayoutTreeNode, i: number) {
             leftNode = nextRightContour(leftNode);
             let right = sumOfLeftModifier + leftNode.modifier + leftNode.preliminary + leftNode.width;
             sumOfLeftModifier += leftNode.modifier;
-            sumOfAbstractModifier += leftNodeParent.modifier;
             if (right > rightContourOfLeftNode) {
                 rightContourOfLeftNode = right;
             }
         }
-
-        rightContourOfLeftNode = compareAbstractRight(leftNodeParent, leftNode, sumOfAbstractModifier, rightContourOfLeftNode);
 
         if (rightNode.childrenCount > 0) {
             rightNodeParent = rightNode;
@@ -59,7 +55,13 @@ function separate(treeNode: LayoutTreeNode, i: number) {
             }
         }
 
-        leftContourOfRightNode = compareAbstractLeft(rightNodeParent, rightNode, leftContourOfRightNode);
+        rightContourOfLeftNode = compareWithAbstract(
+            leftNodeParent,
+            leftNode,
+            rightContourOfLeftNode,
+            sumOfLeftModifier - leftNode.modifier
+        );
+        leftContourOfRightNode = compareWithAbstract(rightNodeParent, rightNode, leftContourOfRightNode);
 
         if (leftNode.childrenCount === 0 && rightNode.childrenCount === 0) {
             break;
@@ -131,7 +133,14 @@ function firstWalk(treeNode: LayoutTreeNode) {
     }
     firstWalk(treeNode.children[0]);
     for (let i = 1; i < treeNode.childrenCount; i++) {
-        abstractHandle(treeNode, i);
+        const abstract = treeNode.children.find(abstract => {
+            return AbstractNode.isAbstract(abstract.origin.origin) && abstract.origin.origin.end === i - 1;
+        });
+
+        if (abstract) {
+            abstractHandle(treeNode, abstract, i);
+        }
+
         firstWalk(treeNode.children[i]);
         separate(treeNode, i);
     }
@@ -147,49 +156,39 @@ function secondWalk(treeNode: LayoutTreeNode, sumOfModifier: number) {
     }
 }
 
-function abstractHandle(treeNode: LayoutTreeNode, i: number) {
-    const abstract = treeNode.children.find(abstract => {
-        return AbstractNode.isAbstract(abstract.origin.origin) && abstract.origin.origin.end === i - 1;
-    });
-    if (!abstract) {
-        return;
-    }
+function abstractHandle(treeNode: LayoutTreeNode, abstract: LayoutTreeNode, i: number) {
     const abstractNode = abstract.origin.origin as AbstractNode;
-    const abstractStartNode = treeNode.children[abstractNode.start];
-    const includeElementStartX = abstractStartNode.modifier;
+    const abstractIndex = treeNode.children.indexOf(abstract);
+    const startNode = treeNode.children[abstractNode.start];
 
-    let abstractEndNode = treeNode.children[abstractNode.end];
-    let includeElementEndX = abstractEndNode.modifier + abstractEndNode.preliminary + abstractEndNode.width;
+    let endNode = treeNode.children[abstractNode.end];
 
-    let abstractWidth = abstract.origin.blackNode
+    const includeElementStartX = startNode.modifier;
+    let includeElementEndX = endNode.modifier + endNode.preliminary + endNode.width;
+
+    let sumOfLeftModifier = endNode.modifier;
+    let nodeParent = treeNode;
+    //概要和起始节点对齐
+    treeNode.children[abstractIndex].modifier = startNode.modifier;
+
+    while (endNode.childrenCount) {
+        nodeParent = endNode;
+        endNode = nextRightContour(endNode);
+        let right = sumOfLeftModifier + endNode.modifier + endNode.preliminary + endNode.width;
+
+        includeElementEndX = compareWithAbstract(nodeParent, endNode, includeElementEndX, sumOfLeftModifier);
+        sumOfLeftModifier += endNode.modifier;
+
+        if (right > includeElementEndX) {
+            includeElementEndX = right;
+        }
+    }
+
+    const abstractWidth = abstract.origin.blackNode
         ? abstract.origin.blackNode.rootX * 2 + abstract.origin.blackNode.rootWidth
         : abstract.width;
-    let sumOfLeftModifier = abstractEndNode.modifier;
-
-    let nodeParent = treeNode;
-
-    while (true) {
-        if (abstractEndNode.childrenCount > 0) {
-            nodeParent = abstractEndNode;
-            abstractEndNode = nextRightContour(abstractEndNode);
-            let right = sumOfLeftModifier + abstractEndNode.modifier + abstractEndNode.preliminary + abstractEndNode.width;
-
-            includeElementEndX = compareAbstractRight(nodeParent, abstractEndNode, sumOfLeftModifier, includeElementEndX);
-
-            sumOfLeftModifier += abstractEndNode.modifier;
-
-            if (right > includeElementEndX) {
-                includeElementEndX = right;
-            }
-        }
-        if (abstractEndNode.childrenCount === 0 && abstractEndNode.childrenCount === 0) {
-            break;
-        }
-    }
     const abstractIncludeElementWidth = includeElementEndX - includeElementStartX;
-    //概要，和起始节点对齐
-    const abstractIndex = treeNode.children.indexOf(abstract);
-    treeNode.children[abstractIndex].modifier = abstractStartNode.modifier;
+
     //「判断概要」和「概括的内容宽度」
     if (abstractIncludeElementWidth > abstractWidth) {
         const distance = (abstractIncludeElementWidth - abstractWidth) / 2;
@@ -202,46 +201,20 @@ function abstractHandle(treeNode: LayoutTreeNode, i: number) {
     }
 }
 
-function compareAbstractRight(
-    nodeParent: LayoutTreeNode,
-    leftNode: LayoutTreeNode,
-    sumOfAbstractModifier: number,
-    rightContourOfLeftNode: number
-) {
-    let result = 0;
-    const leftNodeIndex = nodeParent.children.indexOf(leftNode);
+function compareWithAbstract(nodeParent: LayoutTreeNode, node: LayoutTreeNode, compareTarget: number, sumOfAbstractModifier?: number) {
+    const isCompareRight = typeof sumOfAbstractModifier === 'number';
+    const nodeIndex = nodeParent.children.indexOf(node);
     const abstract = nodeParent.children.find(child => {
-        return  AbstractNode.isAbstract(child.origin.origin) && child.origin.origin.end === leftNodeIndex;
+        const abstractNode = child.origin.origin as AbstractNode;
+        return isCompareRight ? abstractNode.end === nodeIndex : abstractNode.start === nodeIndex;
     });
 
     if (abstract) {
-        result = abstract.modifier + abstract.width + sumOfAbstractModifier;
+        return isCompareRight
+            ? Math.max(abstract.modifier + abstract.width + sumOfAbstractModifier, compareTarget)
+            : Math.min(abstract.modifier + abstract.preliminary, compareTarget);
     }
-    if (rightContourOfLeftNode > result) {
-        result = rightContourOfLeftNode;
-    }
-
-    return result;
-}
-
-function compareAbstractLeft(nodeParent: LayoutTreeNode, rightNode: LayoutTreeNode, rightContourOfLeftNode: number) {
-    let result = 0;
-    const nodeIndex = nodeParent.children.findIndex(child => {
-        return child.origin.origin === rightNode.origin.origin;
-    });
-
-    const abstract = nodeParent.children.find(child => {
-        return AbstractNode.isAbstract(child.origin.origin) && child.origin.origin.start === nodeIndex;
-    });
-
-    if (abstract) {
-        result = abstract.modifier + abstract.preliminary;
-    }
-    if (rightContourOfLeftNode < result) {
-        result = rightContourOfLeftNode;
-    }
-
-    return result;
+    return compareTarget;
 }
 
 function layout(treeNode: LayoutTreeNode) {
