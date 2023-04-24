@@ -74,7 +74,7 @@ export class BasicBoardEditorComponent implements OnInit {
             return child.origin.id === selectedElements[0].id;
         });
         if (nodeComponent && start !== undefined) {
-            const path = [...findPath(this.board, nodeComponent.parent), nodeComponent.parent.children.length];
+            const path = [...PlaitBoard.findPath(this.board, nodeComponent.parent.origin ), nodeComponent.parent.children.length];
             let nodeLayout = MindmapQueries.getLayoutByElement(nodeComponent.node.origin);
             let layout: MindmapLayoutType = MindmapLayoutType.right;
             if (isLeftLayout(nodeLayout)) {
