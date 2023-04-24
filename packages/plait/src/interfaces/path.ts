@@ -1,9 +1,52 @@
 import produce from 'immer';
 import { PlaitOperation } from './operation';
 
+export interface PathLevelsOptions {
+    reverse?: boolean;
+}
+
 export type Path = number[];
 
 export const Path = {
+    /**
+     * Get a list of ancestor paths for a given path.
+     *
+     * The paths are sorted from shallowest to deepest ancestor. However, if the
+     * `reverse: true` option is passed, they are reversed.
+     */
+    ancestors(path: Path, options: PathLevelsOptions = {}): Path[] {
+        const { reverse = false } = options;
+        let paths = Path.levels(path, options);
+
+        if (reverse) {
+            paths = paths.slice(1);
+        } else {
+            paths = paths.slice(0, -1);
+        }
+
+        return paths;
+    },
+    /**
+     * Get a list of paths at every level down to a path. Note: this is the same
+     * as `Path.ancestors`, but including the path itself.
+     *
+     * The paths are sorted from shallowest to deepest. However, if the `reverse:
+     * true` option is passed, they are reversed.
+     */
+    levels(path: Path, options: PathLevelsOptions = {}): Path[] {
+        const { reverse = false } = options;
+        const list: Path[] = [];
+
+        for (let i = 0; i <= path.length; i++) {
+            list.push(path.slice(0, i));
+        }
+
+        if (reverse) {
+            list.reverse();
+        }
+
+        return list;
+    },
     parent(path: Path): Path {
         if (path.length === 0) {
             throw new Error(`Cannot get the parent path of the root path [${path}].`);

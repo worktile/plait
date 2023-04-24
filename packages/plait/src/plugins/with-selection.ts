@@ -6,7 +6,7 @@ import { toPoint } from '../utils/dom';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import {
     cacheSelectedElements,
-    calcElementIntersectionSelection,
+    getHitElements,
     getSelectedElements,
     isIntersectionElements
 } from '../utils/selected-element';
@@ -41,7 +41,7 @@ export function withSelection(board: PlaitBoard) {
 
             Transforms.setSelection(board, { ranges: ranges });
 
-            if (calcElementIntersectionSelection(board).length || board.pointer === PlaitPointerType.hand) {
+            if (getHitElements(board).length || board.pointer === PlaitPointerType.hand) {
                 start = null;
             }
         }
@@ -101,7 +101,7 @@ export function withSelection(board: PlaitBoard) {
                 if (board.operations.find(value => value.type === 'set_selection')) {
                     selectionOuterG?.remove();
                     const temporaryElements = getTemporaryElements(board);
-                    const elements = temporaryElements ? temporaryElements : calcElementIntersectionSelection(board);
+                    const elements = temporaryElements ? temporaryElements : getHitElements(board);
                     cacheSelectedElements(board, elements);
                     previousSelectedElements = elements;
                     const { width, height } = getRectangleByElements(board, elements, false);

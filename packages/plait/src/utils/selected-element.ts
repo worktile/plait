@@ -5,18 +5,28 @@ import { BOARD_TO_SELECTED_ELEMENT } from './weak-maps';
 import { Range } from '../interfaces/selection';
 import { PlaitElement } from '../interfaces/element';
 
-export const calcElementIntersectionSelection = (board: PlaitBoard) => {
+export const getHitElements = (board: PlaitBoard) => {
     const selectedElements: PlaitElement[] = [];
-    depthFirstRecursion<Ancestor>(board, node => {
-        if (
-            !PlaitBoard.isBoard(node) &&
-            board.selection?.ranges.some(range => {
-                return board.isHitSelection(node, range);
-            })
-        ) {
-            selectedElements.push(node);
+    depthFirstRecursion<Ancestor>(
+        board,
+        node => {
+            if (
+                !PlaitBoard.isBoard(node) &&
+                board.selection?.ranges.some(range => {
+                    return board.isHitSelection(node, range);
+                })
+            ) {
+                selectedElements.push(node);
+            }
+        },
+        node => {
+            if (PlaitBoard.isBoard(node) || board.isRecursion(node)) {
+                return true;
+            } else {
+                return false;
+            }
         }
-    });
+    );
     return selectedElements;
 };
 

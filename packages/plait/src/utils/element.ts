@@ -21,11 +21,16 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
 
     elements.forEach(element => {
         if (recursion) {
-            depthFirstRecursion(element, node => calcRectangleClient(node));
+            depthFirstRecursion(
+                element,
+                node => calcRectangleClient(node),
+                node => board.isRecursion(node)
+            );
         } else {
             calcRectangleClient(element);
         }
     });
+
     return {
         x: boundaryBox.left,
         y: boundaryBox.top,

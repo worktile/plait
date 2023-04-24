@@ -40,7 +40,7 @@ import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEditing } from '../utils/node';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isHitSelection, getRectangle, isMovable } = board;
+    const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isHitSelection, getRectangle, isMovable, isRecursion } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMindmap.isMindmap(context.element)) {
@@ -56,6 +56,13 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             return getRectangleByNode(MindmapNodeElement.getNode(board, element));
         }
         return getRectangle(element);
+    };
+
+    board.isRecursion = element => {
+        if (MindmapNodeElement.isMindmapNodeElement(board, element) && element.isCollapsed) {
+            return false;
+        }
+        return isRecursion(element);
     };
 
     board.isHitSelection = (element, range: Range) => {
