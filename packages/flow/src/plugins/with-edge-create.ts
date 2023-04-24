@@ -8,123 +8,115 @@ import {
     toPoint,
     transformPoint,
     drawLine,
-    getSelectedElements,
-    idCreator
+    idCreator,
+    throttleRAF,
+    removeSelectedElement,
+    getSelectedElements
 } from '@plait/core';
 import { FlowNode } from '../interfaces/node';
 import { FlowNodeComponent } from '../flow-node.component';
 import { isHitFlowNode } from '../utils/node/is-hit-node';
-import { FlowElementType, FlowHandle } from '../interfaces/element';
+import { FlowElementType } from '../interfaces/element';
 import { isEdgeDragging } from '../utils/edge/dragging-edge';
-import { getHitFlowNodeHandle } from '../utils/handle/get-hit-node-handle';
-import { FlowEdge, FlowEdgeInfo } from '../interfaces/edge';
-import { getFlowElementsByType } from '../utils/node/get-node-by-id';
-import { drawAllNodesHandle } from '../utils/node/render-all-nodes-handle';
-import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
+import { FlowEdgeHandle } from '../interfaces/edge';
+import { getFlowElementsByType } from '../utils/node/get-node';
+import { destroyAllNodesHandle, drawAllNodesHandle } from '../utils/node/render-all-nodes-handle';
+import { getHitNodeHandle } from '../utils/handle/get-hit-node-handle';
 import { addCreateEdgeInfo, deleteCreateEdgeInfo } from '../utils/edge/create-edge';
 import { DEFAULT_PLACEHOLDER_ACTIVE_STYLES } from '../constants/edge';
 
 export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
-    const { mousedown, mousemove, mouseup } = board;
+    const { mousedown, globalMousemove, globalMouseup } = board;
 
-    let edgeSource: FlowEdgeInfo | null;
-    let edgeTarget: FlowEdgeInfo | null;
-    let hitFlowNodeHandle: (FlowHandle & { handlePoint: Point }) | null = null;
+    let sourceFlowNodeHandle: (FlowEdgeHandle & { handlePoint: Point }) | null = null;
+    let targetFlowNodeHandle: (FlowEdgeHandle & { handlePoint: Point }) | null = null;
     let placeholderEdge: SVGElement;
     let flowNodeElements: FlowNode[] = [];
+    let drawNodeHandles = true;
 
     board.mousedown = event => {
-        const nodes = getFlowElementsByType(board, FlowElementType.node) as FlowNode[];
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const selectElements = getSelectedElements(board);
-        let hitFlowEdgeHandle = false;
-        if (selectElements.length && FlowEdge.isFlowEdgeElement(selectElements[0])) {
-            // 如果点击到了已经存在的 edge 的 handle，执行 drag 逻辑而不是新增 edge
-            hitFlowEdgeHandle = isHitFlowEdge(board, selectElements[0], point);
-        }
-        nodes.map(value => {
-            if (!hitFlowNodeHandle && !hitFlowEdgeHandle) {
-                hitFlowNodeHandle = getHitFlowNodeHandle(value, point);
-                if (hitFlowNodeHandle) {
-                    edgeSource = {
-                        id: value.id,
-                        position: hitFlowNodeHandle.position
-                    };
-                }
-            }
-        });
-        if (edgeSource) {
-            return;
+        sourceFlowNodeHandle = getHitNodeHandle(board, point);
+        if (sourceFlowNodeHandle) {
+            const selectedElements = getSelectedElements(board);
+            selectedElements.map(item => {
+                removeSelectedElement(board, item);
+            });
         }
         mousedown(event);
     };
 
-    board.mousemove = (event: MouseEvent) => {
-        // 鼠标移入 flowNode 展示 handles
-        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const flowNodes = getFlowElementsByType(board, FlowElementType.node) as FlowNode[];
-        flowNodes.forEach((value, index) => {
-            const flowNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as FlowNodeComponent;
-            const isSelected = isSelectedElement(board, value);
-            if (!isSelected && !isEdgeDragging(board)) {
-                const hitFlowNode = isHitFlowNode(board, value, [point, point]);
-                if (hitFlowNode) {
-                    flowNodeComponent.drawHandles(value);
-                } else if (!getHitFlowNodeHandle(value, point)) {
-                    flowNodeComponent.destroyHandles();
-                }
-            }
-        });
-
-        if (edgeSource && hitFlowNodeHandle) {
+    board.globalMousemove = (event: MouseEvent) => {
+        if (sourceFlowNodeHandle) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             placeholderEdge?.remove();
-            placeholderEdge = drawLine(
-                PlaitBoard.getRoughSVG(board),
-                hitFlowNodeHandle.handlePoint,
-                point,
-                DEFAULT_PLACEHOLDER_ACTIVE_STYLES
-            );
-            BOARD_TO_HOST.get(board)?.append(placeholderEdge);
-            flowNodeElements = drawAllNodesHandle(board);
-        }
-        mousemove(event);
-    };
+            throttleRAF(() => {
+                if (sourceFlowNodeHandle) {
+                    placeholderEdge = drawLine(
+                        PlaitBoard.getRoughSVG(board),
+                        sourceFlowNodeHandle.handlePoint,
+                        point,
+                        DEFAULT_PLACEHOLDER_ACTIVE_STYLES
+                    );
+                }
+                BOARD_TO_HOST.get(board)?.append(placeholderEdge);
+                if (drawNodeHandles) {
+                    drawNodeHandles = false;
+                    flowNodeElements = drawAllNodesHandle(board);
+                }
+            });
 
-    board.mouseup = (event: MouseEvent) => {
-        if (placeholderEdge) {
-            hitFlowNodeHandle = null;
-            deleteCreateEdgeInfo(board);
-            // 判断结束位置
-            const nodes = getFlowElementsByType(board, FlowElementType.node) as FlowNode[];
-            const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-            nodes.map(value => {
-                if (!hitFlowNodeHandle) {
-                    hitFlowNodeHandle = getHitFlowNodeHandle(value, point);
-                    if (hitFlowNodeHandle) {
-                        edgeTarget = {
-                            id: value.id,
-                            position: hitFlowNodeHandle.position,
+            if (placeholderEdge) {
+                targetFlowNodeHandle = null;
+                targetFlowNodeHandle = getHitNodeHandle(board, point);
+                if (targetFlowNodeHandle && targetFlowNodeHandle.handlePoint.toString() !== sourceFlowNodeHandle.handlePoint.toString()) {
+                    addCreateEdgeInfo(board, {
+                        id: idCreator(),
+                        type: FlowElementType.edge,
+                        source: {
+                            id: sourceFlowNodeHandle.node.id,
+                            position: sourceFlowNodeHandle.position
+                        },
+                        target: {
+                            id: targetFlowNodeHandle.node.id,
+                            position: targetFlowNodeHandle.position,
                             marker: 'arrow'
-                        };
+                        }
+                    });
+                }
+            }
+            return;
+        } else {
+            // 鼠标移入 flowNode 展示 handles
+            const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const flowNodes = getFlowElementsByType(board, FlowElementType.node) as FlowNode[];
+            flowNodes.forEach((value, index) => {
+                const flowNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as FlowNodeComponent;
+                const isSelected = isSelectedElement(board, value);
+                if (!isSelected && !isEdgeDragging(board)) {
+                    const hitFlowNode = isHitFlowNode(board, value, [point, point]);
+                    if (hitFlowNode) {
+                        flowNodeComponent.drawHandles(value);
+                    } else if (!getHitNodeHandle(board, point)) {
+                        flowNodeComponent.destroyHandles();
                     }
                 }
             });
-            if (edgeSource && edgeTarget) {
-                addCreateEdgeInfo(board, {
-                    id: idCreator(),
-                    type: FlowElementType.edge,
-                    source: edgeSource,
-                    target: edgeTarget
-                });
-            }
-            edgeSource = null;
-            edgeTarget = null;
-            flowNodeElements = [];
-            placeholderEdge?.remove();
         }
+        globalMousemove(event);
+    };
 
-        mouseup(event);
+    board.globalMouseup = (event: MouseEvent) => {
+        globalMouseup(event);
+        if (placeholderEdge) {
+            sourceFlowNodeHandle = null;
+            targetFlowNodeHandle = null;
+            placeholderEdge?.remove();
+            deleteCreateEdgeInfo(board);
+            drawNodeHandles = true;
+            destroyAllNodesHandle(board, flowNodeElements);
+            flowNodeElements = [];
+        }
     };
 
     return board;

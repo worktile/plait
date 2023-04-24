@@ -71,5 +71,5 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
         }
     };
 
-    return withEdgeCreate(withFlowEdgeDnd(board));
+    return withFlowEdgeDnd(withEdgeCreate(board));
 };

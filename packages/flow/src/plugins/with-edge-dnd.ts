@@ -7,17 +7,17 @@ import {
     PlaitPlugin,
     Point,
     Transforms,
+    getSelectedElements,
+    throttleRAF,
     toPoint,
     transformPoint
 } from '@plait/core';
 import { FlowEdgeComponent } from '../flow-edge.component';
-import { FlowElement } from '../interfaces/element';
 import { FlowEdge, FlowEdgeHandle, FlowEdgeHandleType } from '../interfaces/edge';
 import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
-import { getHandleType } from '../utils/handle/get-handle-type';
+import { getHitHandleType } from '../utils/handle/get-hit-handle-type';
 import { FlowNode } from '../interfaces/node';
-import { Element } from 'slate';
-import { getHitNodeHandleByEdge } from '../utils/handle/get-hit-node-handle-by-edge';
+import { getHitNodeHandle } from '../utils/handle/get-hit-node-handle';
 import { deleteEdgeDraggingInfo, addEdgeDraggingInfo } from '../utils/edge/dragging-edge';
 import { destroyAllNodesHandle, drawAllNodesHandle } from '../utils/node/render-all-nodes-handle';
 
@@ -33,7 +33,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     let flowNodeElements: FlowNode[] = [];
     let path: Path = [];
     let hitNodeHandle: FlowEdgeHandle | null = null;
-    let isShowNodeEdge = false;
+    let drawNodeHandles = true;
 
     board.mousedown = (event: MouseEvent) => {
         if (board.options.readonly || IS_TEXT_EDITABLE.get(board) || event.button === 2) {
@@ -42,48 +42,53 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
         }
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
-        (board.children as FlowElement[]).forEach((value, index) => {
-            if (FlowEdge.isFlowEdgeElement(value) && board.selection) {
-                const flowEdgeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as FlowEdgeComponent;
-                const hitFlowEdge = isHitFlowEdge(board, value, board.selection.ranges[0].focus);
-                if (hitFlowEdge) {
+        const selectElements = getSelectedElements(board);
+        let isHitEdgeHandle = false;
+        if (selectElements.length && FlowEdge.isFlowEdgeElement(selectElements[0])) {
+            isHitEdgeHandle = isHitFlowEdge(board, selectElements[0], point);
+            if (isHitEdgeHandle) {
+                activeElement = selectElements[0] as FlowEdge;
+                handleType = getHitHandleType(board, point, activeElement);
+                if (handleType) {
+                    const flowEdgeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(activeElement) as FlowEdgeComponent;
                     activeComponent = flowEdgeComponent;
-                    activeElement = value as FlowEdge;
                     startPoint = point;
-                    handleType = getHandleType(board, point, value);
-                    path = [index];
+                    path = [board.children.findIndex(item => item.id === activeElement?.id)];
                 }
+                return;
             }
-        });
+        }
         mousedown(event);
     };
 
     board.mousemove = (event: MouseEvent) => {
-        if (!board.options.readonly && startPoint) {
+        if (!board.options.readonly && startPoint && handleType) {
             const host = BOARD_TO_HOST.get(board);
             const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
             offsetX = endPoint[0] - startPoint[0];
             offsetY = endPoint[1] - startPoint[1];
-            if (activeElement && FlowEdge.isFlowEdgeElement(activeElement) && handleType) {
+            if (activeElement) {
                 addEdgeDraggingInfo(activeElement, {
                     offsetX,
                     offsetY,
                     handleType
                 });
-                activeComponent?.updateElement(activeElement, true);
-                hitNodeHandle = getHitNodeHandleByEdge(board, activeElement, endPoint);
-                if (!isShowNodeEdge) {
-                    isShowNodeEdge = true;
-                    // 所有的 node 节点显示 handle
-                    flowNodeElements = drawAllNodesHandle(board);
-                }
+                throttleRAF(() => {
+                    activeComponent?.updateElement(activeElement!, true);
+                    hitNodeHandle = getHitNodeHandle(board, endPoint);
+                    if (drawNodeHandles) {
+                        drawNodeHandles = false;
+                        // 所有的 node 节点显示 handle
+                        flowNodeElements = drawAllNodesHandle(board);
+                    }
+                });
             }
         }
         mousemove(event);
     };
 
     board.globalMouseup = (event: MouseEvent) => {
-        if (!board.options.readonly && startPoint && activeElement && FlowEdge.isFlowEdgeElement(activeElement) && handleType) {
+        if (!board.options.readonly && handleType && activeElement) {
             deleteEdgeDraggingInfo(activeElement);
             if (hitNodeHandle) {
                 const { position, offsetX: handleOffsetX, offsetY: handleOffsetY, node } = hitNodeHandle;
@@ -103,9 +108,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
             } else {
                 activeComponent?.drawElement(activeElement, true);
             }
-            if (isShowNodeEdge) {
-                destroyAllNodesHandle(board, flowNodeElements);
-            }
+            destroyAllNodesHandle(board, flowNodeElements);
         }
         activeElement = null;
         activeComponent = null;
@@ -115,7 +118,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
         offsetY = 0;
         flowNodeElements = [];
         path = [];
-        isShowNodeEdge = false;
+        drawNodeHandles = true;
         globalMouseup(event);
     };
     return board;

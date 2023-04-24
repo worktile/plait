@@ -58,7 +58,9 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     ngOnInit(): void {
         super.ngOnInit();
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
-        this.drawElement();
+        const isActive = isSelectedElement(this.board, this.element);
+        this.drawElement(this.element, isActive);
+        this.perviousStatus = isActive ? 'active' : 'default';
     }
 
     beforeContextChange(value: PlaitPluginElementContext<FlowEdge<T>>) {
@@ -68,6 +70,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (value.element !== this.element && this.initialized) {
             this.drawElement(value.element, isActive);
         }
+
         if (value.selection !== this.selection && this.initialized) {
             if (isActive) {
                 this.drawElement(value.element, isActive);

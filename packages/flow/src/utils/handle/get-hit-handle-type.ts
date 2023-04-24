@@ -4,7 +4,7 @@ import { getEdgeHandles } from './get-edge-handles';
 import { HANDLE_DIAMETER } from '../../constants/handle';
 import { getHandleXYPosition } from './get-handle-position';
 
-export function getHandleType(board: PlaitBoard, point: Point, edge: FlowEdge): FlowEdgeHandleType | null {
+export function getHitHandleType(board: PlaitBoard, point: Point, edge: FlowEdge): FlowEdgeHandleType | null {
     let handleType = null;
     const handles = getEdgeHandles(board, edge);
     handles.find(handle => {

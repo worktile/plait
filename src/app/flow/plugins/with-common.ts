@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitPlugin, Transforms, getSelectedElements, hotkeys } from '@plait/core';
+import { PlaitBoard, PlaitPlugin, Transforms, addSelectedElement, getSelectedElements, hotkeys } from '@plait/core';
 import { FlowEdge, FlowNode, createFlowEdge, getCreateEdgeInfo, getEdgesByNodeId, getFlowNodeById } from '@plait/flow';
 import { Element, Text } from 'slate';
 
@@ -21,6 +21,8 @@ export const withCommon: PlaitPlugin = (board: PlaitBoard) => {
                 },
                 newEdge
             );
+            const node = board.children[board.children.length - 1];
+            addSelectedElement(board, node);
         }
         mouseup(event);
     };

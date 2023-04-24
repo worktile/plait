@@ -1,6 +1,6 @@
 import { PlaitBoard } from '@plait/core';
 import { FlowEdge, FlowEdgeHandle } from '../../interfaces/edge';
-import { getFakeFlowNodeById, getFlowNodeById } from '../node/get-node-by-id';
+import { getFakeFlowNodeById, getFlowNodeById } from '../node/get-node';
 import { getEdgeDraggingInfo } from '../edge/dragging-edge';
 
 export const getEdgeHandles = (board: PlaitBoard, edge: FlowEdge) => {

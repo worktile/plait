@@ -1,34 +1,38 @@
-import { Point, distanceBetweenPointAndPoint, normalizePoint } from '@plait/core';
-import { FlowNode } from '../../interfaces/node';
+import { PlaitBoard, Point, distanceBetweenPointAndPoint, normalizePoint } from '@plait/core';
 import { getDefaultHandles } from './get-default-handles';
+import { FlowNode } from '../../interfaces/node';
 import { getHandleXYPosition } from './get-handle-position';
 import { HANDLE_DIAMETER } from '../../constants/handle';
-import { FlowHandle } from '../../interfaces/element';
+import { FlowEdgeHandle } from '../../interfaces/edge';
+import { getFlowElementsByType } from '../node/get-node';
+import { FlowElementType } from '../../public-api';
 
-export function getHitFlowNodeHandle(node: FlowNode, point: Point): (FlowHandle & { handlePoint: Point }) | null {
-    const handles = node.handles || getDefaultHandles();
-    let hitHandle: (FlowHandle & { handlePoint: Point }) | null = null;
-    handles.map(handle => {
-        if (!hitHandle) {
-            const { x, y } = normalizePoint(node.points![0]);
+export function getHitNodeHandle(board: PlaitBoard, currentPoint: Point): (FlowEdgeHandle & { handlePoint: Point }) | null {
+    let nodeHandle: (FlowEdgeHandle & { handlePoint: Point }) | null = null;
+    const flowNodeElements = getFlowElementsByType(board, FlowElementType.node) as FlowNode[];
+    flowNodeElements.map(item => {
+        const handles = item.handles || getDefaultHandles();
+        handles.filter(handle => {
+            const { x, y } = normalizePoint(item.points![0]);
             let { x: handleX, y: handleY } = getHandleXYPosition(
                 handle.position,
                 {
                     x,
                     y,
-                    width: node.width,
-                    height: node.height
+                    width: item.width,
+                    height: item.height
                 },
                 handle
             );
-            const distance = distanceBetweenPointAndPoint(handleX, handleY, point[0], point[1]);
+            const distance = distanceBetweenPointAndPoint(handleX, handleY, currentPoint[0], currentPoint[1]);
             if (distance < HANDLE_DIAMETER / 2) {
-                hitHandle = {
+                nodeHandle = {
                     ...handle,
-                    handlePoint: [handleX, handleY]
+                    handlePoint: [handleX, handleY],
+                    node: item
                 };
             }
-        }
+        });
     });
-    return hitHandle;
+    return nodeHandle;
 }

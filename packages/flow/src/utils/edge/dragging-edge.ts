@@ -1,5 +1,5 @@
 import { PlaitBoard } from '@plait/core';
-import { getFlowElementsByType } from '../node/get-node-by-id';
+import { getFlowElementsByType } from '../node/get-node';
 import { FlowElement, FlowElementType } from '../../interfaces/element';
 import { FlowEdge, FlowEdgeDragInfo } from '../../interfaces/edge';
 

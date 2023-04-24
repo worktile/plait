@@ -1,4 +1,4 @@
-import { Point, distanceBetweenPointAndRectangle, distanceBetweenPointAndSegment } from '@plait/core';
+import { Point, distanceBetweenPointAndRectangle, distanceBetweenPointAndSegment, isSelectedElement } from '@plait/core';
 import { PlaitBoard } from '@plait/core';
 import { FlowEdge } from '../../interfaces/edge';
 import { HIT_THRESHOLD } from '../../constants/edge';
@@ -8,6 +8,7 @@ import { getEdgeTextBackgroundRect, getEdgeTextRect } from './text';
 export function isHitFlowEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
     const [pathPoints] = getEdgePoints(board, edge);
     let minDistance = Number.MAX_VALUE;
+    const isSelected = isSelectedElement(board, edge);
     if (board.selection) {
         pathPoints.map((path, index) => {
             if (index < pathPoints.length - 1) {
@@ -24,7 +25,7 @@ export function isHitFlowEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
         const hitFlowEdge = minDistance < HIT_THRESHOLD;
         return hitFlowEdge || hitFlowEdgeText;
     }
-    return false;
+    return isSelected && false;
 }
 
 export function isHitFlowEdgeText(board: PlaitBoard, edge: FlowEdge, point: Point) {

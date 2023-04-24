@@ -1,7 +1,7 @@
 import { FlowElementType } from '../../interfaces/element';
 import { FlowNode } from '../../interfaces/node';
 import { ELEMENT_TO_PLUGIN_COMPONENT, PlaitBoard, isSelectedElement } from '@plait/core';
-import { getFlowElementsByType } from './get-node-by-id';
+import { getFlowElementsByType } from './get-node';
 import { FlowNodeComponent } from '../../flow-node.component';
 
 export function drawAllNodesHandle(board: PlaitBoard) {

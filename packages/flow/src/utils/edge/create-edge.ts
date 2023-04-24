@@ -1,8 +1,8 @@
-import { PlaitBoard, Transforms } from '@plait/core';
+import { Path, PlaitBoard, Transforms } from '@plait/core';
 import { FlowEdge } from '../../interfaces/edge';
 import { FlowBaseData } from '../../interfaces/element';
 
-export function createFlowEdge<T extends FlowBaseData = FlowBaseData>(board: PlaitBoard, data: T, edge: FlowEdge) {
+export function createFlowEdge<T extends FlowBaseData = FlowBaseData>(board: PlaitBoard, data: T, edge: FlowEdge, path?: Path) {
     Transforms.insertNode(
         board,
         {
@@ -10,7 +10,7 @@ export function createFlowEdge<T extends FlowBaseData = FlowBaseData>(board: Pla
             ...edge,
             point: []
         },
-        [board.children.length - 1]
+        path || [board.children.length]
     );
 }
 

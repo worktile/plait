@@ -2,7 +2,7 @@ import { FlowElementStyles, FlowHandle, FlowPosition } from '../../interfaces/el
 import { getHandleXYPosition } from '../handle/get-handle-position';
 import { PlaitBoard, RectangleClient, normalizePoint } from '@plait/core';
 import { getPoints } from './get-smooth-step-edge';
-import { getFakeFlowNodeById, getFlowNodeById } from '../node/get-node-by-id';
+import { getFakeFlowNodeById, getFlowNodeById } from '../node/get-node';
 import { FlowEdge } from '../../interfaces/edge';
 import { DEFAULT_EDGE_ACTIVE_STYLES, DEFAULT_EDGE_STYLES } from '../../constants/edge';
 import { FlowNode } from '../../interfaces/node';
