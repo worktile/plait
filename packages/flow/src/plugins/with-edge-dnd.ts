@@ -1,6 +1,6 @@
 import {
     BOARD_TO_HOST,
-    ELEMENT_TO_PLUGIN_COMPONENT,
+    ELEMENT_TO_COMPONENT,
     IS_TEXT_EDITABLE,
     Path,
     PlaitBoard,
@@ -47,7 +47,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
         (board.children as FlowElement[]).forEach((value, index) => {
             if (FlowEdge.isFlowEdgeElement(value) && board.selection) {
-                const flowEdgeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as FlowEdgeComponent;
+                const flowEdgeComponent = ELEMENT_TO_COMPONENT.get(value) as FlowEdgeComponent;
                 const hitFlowEdge = isHitFlowEdge(board, value, board.selection.ranges[0].focus);
                 if (hitFlowEdge) {
                     activeComponent = flowEdgeComponent;
@@ -83,7 +83,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                         // 所有的 node 节点显示 handle
                         flowNodeElements = getFlowElementsByType(board, FlowElementType.node) as FlowNode[];
                         flowNodeElements.map(item => {
-                            const flowNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(item) as FlowNodeComponent;
+                            const flowNodeComponent = ELEMENT_TO_COMPONENT.get(item) as FlowNodeComponent;
                             flowNodeComponent.drawHandles();
                         });
                     }
@@ -118,7 +118,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
             }
             if (isShowNodeEdge) {
                 flowNodeElements.map(item => {
-                    const flowNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(item) as FlowNodeComponent;
+                    const flowNodeComponent = ELEMENT_TO_COMPONENT.get(item) as FlowNodeComponent;
                     flowNodeComponent.destroyHandles();
                     if (isSelectedElement(board, item)) {
                         flowNodeComponent.destroyActiveMask();

@@ -15,6 +15,7 @@ export function drawMindmapNodeRichtext(node: MindmapNode, viewContainerRef: Vie
     const classList = [];
     if (node.origin.isRoot) {
         classList.push('root-node');
+        classList.push('font-size-18');
     } else if (node.parent?.origin?.isRoot) {
         classList.push('root-child-node');
     } else {

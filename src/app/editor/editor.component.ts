@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { getSelectedElements, idCreator, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
 import { MindmapLayoutType, isBottomLayout, isIndentedLayout, isLeftLayout, isRightLayout, isTopLayout } from '@plait/layouts';
 import {
-    findPath,
     MindmapNodeElement,
     MindmapNodeShape,
     MindmapTransforms,
@@ -51,22 +50,20 @@ export class BasicBoardEditorComponent implements OnInit {
 
     layoutChange(event: Event) {
         const value = (event.target as HTMLSelectElement).value as MindmapLayoutType;
-        const selectedElements = getSelectedElements(this.board)?.[0];
-
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements as MindmapNodeElement);
-
-        const path = nodeComponent ? findPath(this.board, nodeComponent.node) : [0];
-        MindmapTransforms.setMindmapLayout(this.board, value, path);
+        const selectedElement = getSelectedElements(this.board)?.[0];
+        if (selectedElement) {
+            const path = PlaitBoard.findPath(this.board, selectedElement);
+            MindmapTransforms.setMindmapLayout(this.board, value, path);
+        }
     }
 
     shapeChange(event: Event) {
         const value = (event.target as HTMLSelectElement).value as MindmapNodeShape;
-        const selectedElements = getSelectedElements(this.board)?.[0];
-
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements as MindmapNodeElement);
-
-        const path = nodeComponent ? findPath(this.board, nodeComponent.node) : [0];
-        Transforms.setNode(this.board, { shape: value }, path);
+        const selectedElement = getSelectedElements(this.board)?.[0];
+        if (selectedElement) {
+            const path = PlaitBoard.findPath(this.board, selectedElement);
+            Transforms.setNode(this.board, { shape: value }, path);
+        }
     }
 
     setAbstract(event: Event) {

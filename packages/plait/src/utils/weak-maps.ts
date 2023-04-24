@@ -3,9 +3,16 @@ import { BoardComponentInterface } from '../board/board.component.interface';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
+import { Ancestor, PlaitNode } from '../interfaces/node';
 
 // record richtext type status
-export const FLUSHING: WeakMap<PlaitBoard, boolean> = new WeakMap();
+export const IS_BOARD_CACHE = new WeakMap<Object, boolean>();
+
+export const FLUSHING = new WeakMap<PlaitBoard, boolean>();
+
+export const NODE_TO_INDEX = new WeakMap<PlaitNode, number>();
+
+export const NODE_TO_PARENT = new WeakMap<PlaitNode, Ancestor>();
 
 export const IS_TEXT_EDITABLE = new WeakMap<PlaitBoard, boolean>();
 

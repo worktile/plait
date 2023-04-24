@@ -1,9 +1,9 @@
 import { Element } from 'slate';
 import { MindmapNodeShape } from '../constants/node';
 import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
-import { PlaitBoard, PlaitElement, Point } from '@plait/core';
+import { NODE_TO_PARENT, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
 import { MindmapQueries } from '../queries';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils';
+import { ELEMENT_TO_NODE } from '../utils';
 
 export interface MindmapNodeElement extends PlaitElement {
     value: Element;
@@ -37,7 +37,7 @@ export interface PlaitMindmap extends MindmapNodeElement {
 }
 
 export const PlaitMindmap = {
-    isPlaitMindmap: (value: any): value is PlaitMindmap => {
+    isMindmap: (value: any): value is PlaitMindmap => {
         return value.type === 'mindmap';
     }
 };
@@ -51,7 +51,31 @@ export const MindmapNodeElement = {
         const _layout = MindmapQueries.getLayoutByElement(value) as MindmapLayoutType;
         return isIndentedLayout(_layout);
     },
-    isMindmapNodeElement(board: PlaitBoard, element: PlaitElement) {
-        return !!MINDMAP_ELEMENT_TO_COMPONENT.get(element as MindmapNodeElement);
+    isMindmapNodeElement(board: PlaitBoard, element: PlaitElement): element is MindmapNodeElement {
+        const path = PlaitBoard.findPath(board, element);
+        const rootElement = PlaitNode.get(board, path.slice(0, 1));
+        if (PlaitMindmap.isMindmap(rootElement)) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    getParent(node: MindmapNodeElement) {
+        if (PlaitMindmap.isMindmap(node)) {
+            throw new Error('mind root node can not get parent');
+        }
+        const parent = NODE_TO_PARENT.get(node) as MindmapNodeElement;
+        return parent;
+    },
+    getRoot(board: PlaitBoard, element: MindmapNodeElement) {
+        const path = PlaitBoard.findPath(board, element);
+        return PlaitNode.get(board, path.slice(0, 1)) as PlaitMindmap;
+    },
+    getNode(board: PlaitBoard, element: MindmapNodeElement) {
+        const node = ELEMENT_TO_NODE.get(element);
+        if (!node) {
+            throw new Error(`can not get node from ${JSON.stringify(element)}`);
+        }
+        return node;
     }
 };

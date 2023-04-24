@@ -6,12 +6,23 @@ import { PlaitOperation } from './operation';
 import { Selection, Range } from './selection';
 import { Viewport } from './viewport';
 import { PlaitPluginElementComponent } from '../core/element/plugin-element';
-import { BOARD_TO_COMPONENT, BOARD_TO_ELEMENT_HOST, BOARD_TO_HOST, BOARD_TO_ROUGH_SVG, IS_TEXT_EDITABLE } from '../utils/weak-maps';
+import {
+    BOARD_TO_COMPONENT,
+    BOARD_TO_ELEMENT_HOST,
+    BOARD_TO_HOST,
+    BOARD_TO_ROUGH_SVG,
+    IS_BOARD_CACHE,
+    IS_TEXT_EDITABLE,
+    NODE_TO_INDEX,
+    NODE_TO_PARENT
+} from '../utils/weak-maps';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { BoardComponentInterface } from '../board/board.component.interface';
 import { Point } from './point';
 import { RectangleClient } from './rectangle-client';
 import { getRectangleByElements } from '../utils/element';
+import { Path } from './path';
+import { Ancestor, PlaitNode } from './node';
 
 export interface PlaitBoard {
     viewport: Viewport;
@@ -65,6 +76,36 @@ export interface PlaitBoardMove {
 }
 
 export const PlaitBoard = {
+    isBoard(value: any): value is PlaitBoard {
+        const cachedIsBoard = IS_BOARD_CACHE.get(value);
+        if (cachedIsBoard !== undefined) {
+            return cachedIsBoard;
+        }
+        const isBoard = typeof value.onChange === 'function' && typeof value.apply === 'function';
+        IS_BOARD_CACHE.set(value, isBoard);
+        return isBoard;
+    },
+    findPath(board: PlaitBoard, node: PlaitNode): Path {
+        const path: Path = [];
+        let child: Ancestor = node;
+        while (true) {
+            const parent = NODE_TO_PARENT.get(child as PlaitElement);
+            if (parent == null) {
+                if (PlaitBoard.isBoard(child)) {
+                    return path;
+                } else {
+                    break;
+                }
+            }
+            const i = NODE_TO_INDEX.get(child as PlaitElement);
+            if (i == null) {
+                break;
+            }
+            path.unshift(i);
+            child = parent;
+        }
+        throw new Error(`Unable to find the path for Slate node: ${JSON.stringify(node)}`);
+    },
     getHost(board: PlaitBoard) {
         return BOARD_TO_HOST.get(board) as SVGSVGElement;
     },
