@@ -892,6 +892,9 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
         this.destroyRichtext();
         this.destroy$.next();
         this.destroy$.complete();
+        if (ELEMENT_TO_NODE.get(this.element) === this.node) {
+            ELEMENT_TO_NODE.delete(this.element);
+        }
         if (MINDMAP_ELEMENT_TO_COMPONENT.get(this.element) === this) {
             MINDMAP_ELEMENT_TO_COMPONENT.delete(this.element);
         }

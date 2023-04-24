@@ -58,6 +58,7 @@ export function createBoard(children: PlaitElement[], options: PlaitBoardOptions
         destroyElement: (context: PlaitPluginElementContext) => {},
         isWithinSelection: element => false,
         isHitSelection: element => false,
+        isRecursion: element => true,
         isMovable: element => false,
         getRectangle: element => null
     };
