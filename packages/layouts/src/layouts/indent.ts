@@ -1,5 +1,6 @@
 import { LayoutNode } from '../interfaces/layout-node';
 import { AbstractNode, LayoutOptions } from '../interfaces/mindmap';
+import { getAbstractNodeByEndNode2, getChildrenSkipAbstract2 } from '../public-api';
 import { isHorizontalLogicLayout } from '../utils/layout';
 
 export function separateXAxle(node: LayoutNode, d = 0) {
@@ -56,47 +57,42 @@ function abstractHandle(node: LayoutNode, abstract: LayoutNode) {
     const abstractNode = abstract.origin as AbstractNode;
     const abstractIndex = node.children.indexOf(abstract);
     const startNode = node.children[abstractNode.start];
-
-    let endNode = node.children[abstractNode.end];
-
-    const elementTop = startNode.y;
-    let elementBottom = endNode.y + endNode.height;
-    let parentNode = node;
+    const endNode = node.children[abstractNode.end];
 
     //概要和起始节点对齐
     node.children[abstractIndex].y = startNode.y;
 
-    while (endNode?.children.length) {
-        parentNode = endNode;
-        const children = parentNode.children.filter(child => {
-            return !AbstractNode.isAbstract(child.origin);
-        });
-        endNode = children[children.length - 1];
+    const topContour = startNode.y;
+    let bottomContour = endNode.y + endNode.height;
 
-        const endNodeIndex = endNode.parent!.children.indexOf(endNode);
-        const abstract = parentNode.children.find(child => {
-            return AbstractNode.isAbstract(child.origin) && child.origin.end === endNodeIndex;
-        });
-        elementBottom = abstract ? Math.max(abstract.y + abstract.height, endNode.y + endNode.height) : endNode.y + endNode.height;
+    let bottomContourNode: LayoutNode | null = endNode;
+    let bottomContourParenNode = node;
+
+    while (bottomContourNode?.children.length) {
+        bottomContourParenNode = bottomContourNode;
+        const children = getChildrenSkipAbstract2(bottomContourParenNode);
+        bottomContourNode = children[children.length - 1];
+
+        const abstract = getAbstractNodeByEndNode2(bottomContourParenNode, bottomContourNode);
+        bottomContour = abstract
+            ? Math.max(abstract.y + abstract.height, bottomContourNode.y + bottomContourNode.height)
+            : bottomContourNode.y + bottomContourNode.height;
     }
 
-    const elementsHeight = elementBottom - elementTop;
+    const abstractIncludedHeight = bottomContour - topContour;
     const abstractHeight = abstract.blackNode ? abstract.blackNode.height : abstract.height;
-
-    const abstractRootCenter = abstract.blackNode ? abstract.blackNode.rootY + abstract.blackNode.rootHeight / 2 : abstract.height / 2;
-    const elementCenter = elementsHeight / 2;
-    let distance = 0;
+    const abstractCompareHeight = abstract.blackNode ? abstract.blackNode.rootY * 2 + abstract.blackNode.rootHeight : abstract.height;
     //比较两者高度
-    if (abstractRootCenter > elementCenter) {
-        distance = abstractRootCenter - elementCenter;
+    if (abstractCompareHeight > abstractIncludedHeight) {
+        const distance = (abstractCompareHeight - abstractIncludedHeight) / 2;
         for (let i = abstractNode.start; i <= abstractNode.end; i++) {
             node.children[i].eachNode(child => {
                 child.y += distance;
             });
         }
     } else {
-        distance = elementCenter - abstractRootCenter;
+        const distance = (abstractIncludedHeight - abstractCompareHeight) / 2;
         node.children[abstractIndex].y += distance;
     }
-    return Math.max(abstract.y + abstractHeight, endNode.y + endNode.height);
+    return Math.max(abstract.y + abstractHeight, startNode.y + abstractIncludedHeight);
 }
