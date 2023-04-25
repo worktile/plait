@@ -1,5 +1,11 @@
 # richtext
 
+## 0.1.11
+
+### Patch Changes
+
+-   [`d289c23`](https://github.com/worktile/plait/commit/d289c2358c4cd0bb093790d9f663e8043fce759b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct line-height when font size assign 18
+
 ## 0.1.9
 
 ### Patch Changes

@@ -1,4 +1,4 @@
-import { PlaitNode } from './node';
+import { PlaitNode } from '../interfaces/node';
 import { Path } from './path';
 import { Selection } from './selection';
 import { Viewport } from './viewport';

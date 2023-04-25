@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.1.6
+
+### Patch Changes
+
+-   [#310](https://github.com/worktile/plait/pull/310) [`d1a9e6f`](https://github.com/worktile/plait/commit/d1a9e6fa9f5205ad077adb876e76a2cf653de73c) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor T type
+
 ## 0.1.5
 
 ### Patch Changes

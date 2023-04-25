@@ -1,6 +1,6 @@
 import {
     BOARD_TO_HOST,
-    ELEMENT_TO_PLUGIN_COMPONENT,
+    ELEMENT_TO_COMPONENT,
     IS_TEXT_EDITABLE,
     Path,
     PlaitBoard,
@@ -50,7 +50,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 activeElement = selectElements[0] as FlowEdge;
                 handleType = getHitHandleType(board, point, activeElement);
                 if (handleType) {
-                    const flowEdgeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(activeElement) as FlowEdgeComponent;
+                    const flowEdgeComponent = ELEMENT_TO_COMPONENT.get(activeElement) as FlowEdgeComponent;
                     activeComponent = flowEdgeComponent;
                     startPoint = point;
                     path = [board.children.findIndex(item => item.id === activeElement?.id)];

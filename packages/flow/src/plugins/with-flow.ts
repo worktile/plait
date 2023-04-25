@@ -1,4 +1,4 @@
-import { ELEMENT_TO_PLUGIN_COMPONENT, PlaitBoard, PlaitPlugin, PlaitPluginElementContext, getMovingElements } from '@plait/core';
+import { PlaitBoard, PlaitPlugin, PlaitPluginElementContext, ELEMENT_TO_COMPONENT, getMovingElements } from '@plait/core';
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowEdgeComponent } from '../flow-edge.component';
 import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
@@ -24,7 +24,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.isHitSelection = (element, range) => {
-        const elementComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(element) as FlowNodeComponent | FlowEdgeComponent;
+        const elementComponent = ELEMENT_TO_COMPONENT.get(element) as FlowNodeComponent | FlowEdgeComponent;
         if (FlowElement.isFlowElement(element) && elementComponent && board.selection) {
             if (FlowNode.isFlowNodeElement(element)) {
                 return isHitFlowNode(board, element, [range.anchor, range.focus]);
@@ -64,7 +64,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
             if (FlowNode.isFlowNodeElement(moveElement)) {
                 const relationEdges = getEdgesByNodeId(board, moveElement.id);
                 relationEdges.map(item => {
-                    const flowEdgeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(item) as FlowEdgeComponent;
+                    const flowEdgeComponent = ELEMENT_TO_COMPONENT.get(item) as FlowEdgeComponent;
                     flowEdgeComponent.drawElement();
                 });
             }

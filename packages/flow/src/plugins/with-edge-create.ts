@@ -1,6 +1,6 @@
 import {
     BOARD_TO_HOST,
-    ELEMENT_TO_PLUGIN_COMPONENT,
+    ELEMENT_TO_COMPONENT,
     PlaitBoard,
     PlaitPlugin,
     Point,
@@ -91,7 +91,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const flowNodes = getFlowElementsByType(board, FlowElementType.node) as FlowNode[];
             flowNodes.forEach((value, index) => {
-                const flowNodeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(value) as FlowNodeComponent;
+                const flowNodeComponent = ELEMENT_TO_COMPONENT.get(value) as FlowNodeComponent;
                 const isSelected = isSelectedElement(board, value);
                 if (!isSelected && !isEdgeDragging(board)) {
                     const hitFlowNode = isHitFlowNode(board, value, [point, point]);
