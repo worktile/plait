@@ -176,17 +176,17 @@ function abstractHandle(treeNode: LayoutTreeNode, abstract: LayoutTreeNode, i: n
         }
     }
 
-    const abstractWidth = abstract.origin.blackNode
+    const abstractBranchWidth = abstract.origin.blackNode
         ? abstract.origin.blackNode.rootX * 2 + abstract.origin.blackNode.rootWidth
         : abstract.width;
     const abstractIncludeElementWidth = includeElementEndX - includeElementStartX;
 
     //「判断概要」和「概括的内容宽度」
-    if (abstractIncludeElementWidth > abstractWidth) {
-        const distance = (abstractIncludeElementWidth - abstractWidth) / 2;
+    if (abstractIncludeElementWidth > abstractBranchWidth) {
+        const distance = (abstractIncludeElementWidth - abstractBranchWidth) / 2;
         moveSubtree(treeNode, abstractIndex, distance);
     } else {
-        const distance = (abstractWidth - abstractIncludeElementWidth) / 2;
+        const distance = (abstractBranchWidth - abstractIncludeElementWidth) / 2;
         for (let i = abstractNode.start; i < abstractNode.end + 1; i++) {
             moveSubtree(treeNode, i, distance);
         }
