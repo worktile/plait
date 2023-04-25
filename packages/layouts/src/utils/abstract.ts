@@ -31,9 +31,3 @@ export const getAbstractNodeByEndNode2 = (nodeParent: LayoutNode, endNode: Layou
         return abstractNode.end === nodeIndex;
     });
 };
-
-export const getChildrenSkipAbstract2 = (treeNode: LayoutNode) => {
-    return treeNode.children.filter(child => {
-        return !AbstractNode.isAbstract(child.origin);
-    });
-};

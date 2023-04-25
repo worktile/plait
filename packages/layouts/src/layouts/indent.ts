@@ -1,6 +1,6 @@
 import { LayoutNode } from '../interfaces/layout-node';
 import { AbstractNode, LayoutOptions } from '../interfaces/mindmap';
-import { getAbstractNodeByEndNode2, getChildrenSkipAbstract2 } from '../public-api';
+import { getAbstractNodeByEndNode2 } from '../public-api';
 import { isHorizontalLogicLayout } from '../utils/layout';
 
 export function separateXAxle(node: LayoutNode, d = 0) {
@@ -70,7 +70,9 @@ function abstractHandle(node: LayoutNode, abstract: LayoutNode) {
 
     while (bottomContourNode?.children.length) {
         bottomContourParenNode = bottomContourNode;
-        const children = getChildrenSkipAbstract2(bottomContourParenNode);
+        const children = bottomContourParenNode.children.filter(child => {
+            return !AbstractNode.isAbstract(child.origin);
+        });
         bottomContourNode = children[children.length - 1];
 
         const abstract = getAbstractNodeByEndNode2(bottomContourParenNode, bottomContourNode);
@@ -81,17 +83,17 @@ function abstractHandle(node: LayoutNode, abstract: LayoutNode) {
 
     const abstractIncludedHeight = bottomContour - topContour;
     const abstractHeight = abstract.blackNode ? abstract.blackNode.height : abstract.height;
-    const abstractCompareHeight = abstract.blackNode ? abstract.blackNode.rootY * 2 + abstract.blackNode.rootHeight : abstract.height;
+    const abstractBranchHeight = abstract.blackNode ? abstract.blackNode.rootY * 2 + abstract.blackNode.rootHeight : abstract.height;
     //比较两者高度
-    if (abstractCompareHeight > abstractIncludedHeight) {
-        const distance = (abstractCompareHeight - abstractIncludedHeight) / 2;
+    if (abstractBranchHeight > abstractIncludedHeight) {
+        const distance = (abstractBranchHeight - abstractIncludedHeight) / 2;
         for (let i = abstractNode.start; i <= abstractNode.end; i++) {
             node.children[i].eachNode(child => {
                 child.y += distance;
             });
         }
     } else {
-        const distance = (abstractIncludedHeight - abstractCompareHeight) / 2;
+        const distance = (abstractIncludedHeight - abstractBranchHeight) / 2;
         node.children[abstractIndex].y += distance;
     }
     return Math.max(abstract.y + abstractHeight, startNode.y + abstractIncludedHeight);
