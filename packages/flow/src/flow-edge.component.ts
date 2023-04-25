@@ -64,9 +64,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     }
 
     beforeContextChange(value: PlaitPluginElementContext<FlowEdge<T>>) {
-        // 判断是否选中这里使用 this.element
-        // 因为在 beforeContextChange 执行时，选中节点数据并没有更新
-        const isActive = isSelectedElement(this.board, this.element);
+        const isActive = isSelectedElement(this.board, value.element);
         if (value.element !== this.element && this.initialized) {
             this.drawElement(value.element, isActive);
         }

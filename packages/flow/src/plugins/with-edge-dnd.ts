@@ -7,6 +7,7 @@ import {
     PlaitPlugin,
     Point,
     Transforms,
+    addSelectedElement,
     getSelectedElements,
     throttleRAF,
     toPoint,
@@ -54,8 +55,8 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     activeComponent = flowEdgeComponent;
                     startPoint = point;
                     path = [board.children.findIndex(item => item.id === activeElement?.id)];
+                    return;
                 }
-                return;
             }
         }
         mousedown(event);

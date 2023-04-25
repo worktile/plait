@@ -11,7 +11,7 @@ export function getHandleXYPosition(position: FlowPosition, nodeRect: RectangleC
         case FlowPosition.top:
             return {
                 x: x + width / 2,
-                y: y
+                y
             };
         case FlowPosition.right:
             return {
