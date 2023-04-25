@@ -1,5 +1,5 @@
+import { AbstractNode, MindmapLayoutType } from '@plait/layouts';
 import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, PlaitNode, Transforms } from '@plait/core';
-import { MindmapLayoutType } from '@plait/layouts';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE } from '../constants/node';
 import { MindmapNode } from '../interfaces';
@@ -238,6 +238,15 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapNodeEleme
         strokeWidth,
         shape
     };
+
+    const index = path[path.length - 1];
+    const abstractNode = inheritNode.children.find(
+        child => AbstractNode.isAbstract(child) && index > child.start && index <= child.end + 1
+    );
+    if (abstractNode) {
+        const path = PlaitBoard.findPath(board, abstractNode as MindmapNodeElement);
+        Transforms.setNode(board, { end: (abstractNode as AbstractNode).end + 1 }, path);
+    }
     Transforms.insertNode(board, newElement, path);
     addSelectedElement(board, newElement);
     setTimeout(() => {
@@ -255,18 +264,56 @@ export const findLastChild = (child: MindmapNode) => {
 
 export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindmapNodeElement[]) => {
     //翻转，从下到上修改，防止找不到 path
-    filterChildElement(selectedElements)
-        .reverse()
-        .map(element => {
-            const path = PlaitBoard.findPath(board, element);
-            return () => {
-                if (shouldChangeRightNodeCount(element)) {
-                    changeRightNodeCount(board, path.slice(0, 1), -1);
+    const deletableElements = filterChildElement(selectedElements).reverse();
+
+    const relativeAbstracts: AbstractNode[] = [];
+    const accumulativeProperties = new WeakMap<AbstractNode, { start: number; end: number }>();
+
+    deletableElements.forEach(node => {
+        const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
+        if (mindmapNodeComponent && mindmapNodeComponent.parent) {
+            const index = mindmapNodeComponent.parent.origin.children.indexOf(node);
+            const abstracts = mindmapNodeComponent.parent.children.filter(value => AbstractNode.isAbstract(value.origin));
+            abstracts.forEach(abstract => {
+                const abstractNode = abstract.origin as AbstractNode;
+                if (index >= abstractNode.start && index <= abstractNode.end) {
+                    let newProperties = accumulativeProperties.get(abstractNode);
+                    if (!newProperties) {
+                        newProperties = { start: abstractNode.start, end: abstractNode.end };
+                        accumulativeProperties.set(abstractNode, newProperties);
+                        relativeAbstracts.push(abstractNode);
+                    }
+                    newProperties.end = newProperties.end - 1;
                 }
-                Transforms.removeNode(board, path);
+            });
+        }
+    });
+
+    const abstractHandles = relativeAbstracts.map(value => {
+        const newProperties = accumulativeProperties.get(value);
+        if (newProperties) {
+            const path = PlaitBoard.findPath(board, value as MindmapNodeElement);
+            return () => {
+                if (newProperties.start > newProperties.end) {
+                    Transforms.removeNode(board, path);
+                } else {
+                    Transforms.setNode(board, newProperties, path);
+                }
             };
-        })
-        .forEach(action => {
-            action();
-        });
+        }
+        return () => {};
+    });
+
+    const deletableHandles = deletableElements.map(node => {
+        const path = PlaitBoard.findPath(board, node);
+        return () => {
+            if (shouldChangeRightNodeCount(node)) {
+                changeRightNodeCount(board, path.slice(0, path.length - 1), -1);
+            }
+            Transforms.removeNode(board, path);
+        };
+    });
+
+    abstractHandles.forEach(action => action());
+    deletableHandles.forEach(action => action());
 };

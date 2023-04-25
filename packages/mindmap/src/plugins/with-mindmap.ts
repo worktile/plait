@@ -1,11 +1,9 @@
 import {
     addSelectedElement,
-    ELEMENT_TO_COMPONENT,
     getSelectedElements,
     hotkeys,
     IS_TEXT_EDITABLE,
     PlaitBoard,
-    PlaitElement,
     PlaitHistoryBoard,
     PlaitPlugin,
     PlaitPluginElementContext,
@@ -36,6 +34,7 @@ import { isVirtualKey } from '../utils/is-virtual-key';
 import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withNodeDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
+import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEditing } from '../utils/node';
 
@@ -60,7 +59,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
 
     board.isHitSelection = (element, range: Range) => {
         if (MindmapNodeElement.isMindmapNodeElement(board, element) && board.selection) {
-            const client = getRectangleByNode(MindmapNodeElement.getNode(board, element));;
+            const client = getRectangleByNode(MindmapNodeElement.getNode(board, element));
             return RectangleClient.isIntersect(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
         }
         return isHitSelection(element, range);
@@ -80,14 +79,17 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
         const selectedElements = getSelectedElements(board) as MindmapNodeElement[];
         if (selectedElements.length) {
-            if (selectedElements.length === 1 && (event.key === 'Tab' || (event.key === 'Enter' && !selectedElements[0].isRoot))) {
+            if (
+                selectedElements.length === 1 &&
+                (event.key === 'Tab' ||
+                    (event.key === 'Enter' && !selectedElements[0].isRoot && !AbstractNode.isAbstract(selectedElements[0])))
+            ) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
                 removeSelectedElement(board, selectedElement);
                 const selectedElementPath = PlaitBoard.findPath(board, selectedElement);
                 if (event.key === 'Tab') {
-                    const isCollapsed = selectedElement.isCollapsed;
-                    if (isCollapsed) {
+                    if (selectedElement.isCollapsed) {
                         const newElement: Partial<MindmapNodeElement> = { isCollapsed: false };
                         PlaitHistoryBoard.withoutSaving(board, () => {
                             Transforms.setNode(board, newElement, selectedElementPath);

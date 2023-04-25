@@ -1,4 +1,4 @@
-import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
+import { LayoutContext, LayoutOptions, MindmapLayoutType, OriginNode } from './mindmap';
 import { findLayoutType } from '../utils/layout';
 
 /**

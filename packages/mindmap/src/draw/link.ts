@@ -1,10 +1,10 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { MindmapNodeShape, STROKE_WIDTH } from '../constants';
+import { GRAY_COLOR, MindmapNodeShape, STROKE_WIDTH } from '../constants';
 import { MindmapNode } from '../interfaces/node';
 import { getLinkLineColorByMindmapElement } from '../utils/colors';
-import { Point } from '@plait/core';
-import { getNodeShapeByElement, isChildRight } from '../utils';
+import { PlaitBoard, Point, createG, getRectangleByElements } from '@plait/core';
+import { getNodeShapeByElement, getRectangleByNode, isChildRight } from '../utils';
 import { MindmapLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
 

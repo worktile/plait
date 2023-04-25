@@ -1,4 +1,6 @@
 import { LayoutTreeNode } from '../interfaces/layout-tree-node';
+import { getAbstractNodeByEndNode, getAbstractNodeByStartNode, getChildrenSkipAbstract } from '../utils/abstract';
+import { AbstractNode } from '../interfaces/mindmap';
 
 function moveSubtree(treeNode: LayoutTreeNode, i: number, distance: number) {
     // Move subtree by changing modifier.
@@ -6,40 +8,54 @@ function moveSubtree(treeNode: LayoutTreeNode, i: number, distance: number) {
 }
 
 function nextLeftContour(treeNode: LayoutTreeNode) {
-    return treeNode.childrenCount === 0 ? treeNode : treeNode.children[0];
+    return treeNode.childrenCount === 0 ? null : treeNode.children[0];
 }
 
 function nextRightContour(treeNode: LayoutTreeNode) {
-    return treeNode.childrenCount === 0 ? treeNode : treeNode.children[treeNode.childrenCount - 1];
+    let children = getChildrenSkipAbstract(treeNode);
+    return treeNode.childrenCount === 0 ? null : children[children.length - 1];
 }
 
 // separate left siblings
 function separate(treeNode: LayoutTreeNode, i: number) {
-    let leftNode = treeNode.children[i - 1];
-    let rightNode = treeNode.children[i];
+    if (AbstractNode.isAbstract(treeNode.children[i].origin.origin)) {
+        return;
+    }
+
+    let leftNode: LayoutTreeNode | null = treeNode.children[i - 1];
+    let rightNode: LayoutTreeNode | null = treeNode.children[i];
 
     let rightContourOfLeftNode = leftNode.modifier + leftNode.preliminary + leftNode.width;
     let leftContourOfRightNode = rightNode.modifier + rightNode.preliminary;
-    let sumOfLeftModifier = leftNode.modifier;
+    let sumOfLeftModifier = 0;
 
-    while (true) {
-        if (leftNode.childrenCount > 0) {
-            leftNode = nextRightContour(leftNode);
+    let leftNodeParent = treeNode;
+    let rightNodeParent = treeNode;
+
+    while (leftNode || rightNode) {
+        if (leftNode) {
             let right = sumOfLeftModifier + leftNode.modifier + leftNode.preliminary + leftNode.width;
-            sumOfLeftModifier += leftNode.modifier;
+
             if (right > rightContourOfLeftNode) {
                 rightContourOfLeftNode = right;
             }
+            rightContourOfLeftNode = compareAbstractRight(leftNodeParent, leftNode, rightContourOfLeftNode, sumOfLeftModifier);
+
+            leftNodeParent = leftNode;
+            sumOfLeftModifier = leftNode.modifier + sumOfLeftModifier;
+            leftNode = nextRightContour(leftNode);
         }
-        if (rightNode.childrenCount > 0) {
-            rightNode = nextLeftContour(rightNode);
+
+        if (rightNode) {
             let left = rightNode.modifier + rightNode.preliminary;
             if (left < leftContourOfRightNode) {
                 leftContourOfRightNode = left;
             }
-        }
-        if (leftNode.childrenCount === 0 && rightNode.childrenCount === 0) {
-            break;
+
+            leftContourOfRightNode = compareAbstractLeft(rightNodeParent, rightNode, leftContourOfRightNode);
+
+            rightNodeParent = rightNode;
+            rightNode = nextLeftContour(rightNode);
         }
     }
 
@@ -53,7 +69,8 @@ function positionRootCenter(treeNode: LayoutTreeNode) {
     // Position root between children, taking into account their mod.
     const startNode = treeNode.children[0];
     let startX = startNode.preliminary + startNode.modifier;
-    const endNode = treeNode.children[treeNode.childrenCount - 1] ;
+    const children = getChildrenSkipAbstract(treeNode);
+    const endNode = children[children.length - 1];
     let endX = endNode.modifier + endNode.preliminary + endNode.width;
 
     /**
@@ -61,7 +78,7 @@ function positionRootCenter(treeNode: LayoutTreeNode) {
      *                ---------
      *              |   parent  |
      *                ---------
-     *  -------------           
+     *  -------------
      * |     | ------ |        | ------ |
      * |     | child1 |        | child2 |
      * |     | ------ |        | ------ |
@@ -73,7 +90,7 @@ function positionRootCenter(treeNode: LayoutTreeNode) {
     if (startNode.origin.blackNode && startNode.origin.blackNode.rootX > startNode.origin.blackNode.left) {
         startX = startX + (startNode.origin.blackNode.rootX - startNode.origin.blackNode.left);
     }
-    if (endNode.origin.blackNode && (endNode.origin.blackNode.rootX + endNode.origin.blackNode.rootWidth) < endNode.origin.blackNode.right) {
+    if (endNode.origin.blackNode && endNode.origin.blackNode.rootX + endNode.origin.blackNode.rootWidth < endNode.origin.blackNode.right) {
         endX = endX - (endNode.origin.blackNode.right - (endNode.origin.blackNode.rootX + endNode.origin.blackNode.rootWidth));
     }
 
@@ -107,6 +124,14 @@ function firstWalk(treeNode: LayoutTreeNode) {
     }
     firstWalk(treeNode.children[0]);
     for (let i = 1; i < treeNode.childrenCount; i++) {
+        const abstract = treeNode.children.find(abstract => {
+            return AbstractNode.isAbstract(abstract.origin.origin) && abstract.origin.origin.end === i - 1;
+        });
+
+        if (abstract) {
+            abstractHandle(treeNode, abstract, i);
+        }
+
         firstWalk(treeNode.children[i]);
         separate(treeNode, i);
     }
@@ -120,6 +145,69 @@ function secondWalk(treeNode: LayoutTreeNode, sumOfModifier: number) {
     for (let i = 0; i < treeNode.childrenCount; i++) {
         secondWalk(treeNode.children[i], sumOfModifier);
     }
+}
+
+function abstractHandle(treeNode: LayoutTreeNode, abstract: LayoutTreeNode, i: number) {
+    const abstractNode = abstract.origin.origin as AbstractNode;
+    const abstractIndex = treeNode.children.indexOf(abstract);
+    const startNode = treeNode.children[abstractNode.start];
+
+    let endNode = treeNode.children[abstractNode.end];
+
+    const includeElementStartX = startNode.modifier;
+    let includeElementEndX = endNode.modifier + endNode.preliminary + endNode.width;
+
+    let sumOfLeftModifier = endNode.modifier;
+    let nodeParent = treeNode;
+    //概要和起始节点对齐
+    treeNode.children[abstractIndex].modifier = startNode.modifier;
+
+    while (endNode.childrenCount) {
+        nodeParent = endNode;
+        const nexRightNode = nextRightContour(endNode);
+        endNode = nexRightNode ? nexRightNode : endNode;
+        let right = sumOfLeftModifier + endNode.modifier + endNode.preliminary + endNode.width;
+
+        includeElementEndX = compareAbstractRight(nodeParent, endNode, includeElementEndX, sumOfLeftModifier);
+        sumOfLeftModifier += endNode.modifier;
+
+        if (right > includeElementEndX) {
+            includeElementEndX = right;
+        }
+    }
+
+    const abstractBranchWidth = abstract.origin.blackNode
+        ? abstract.origin.blackNode.rootX * 2 + abstract.origin.blackNode.rootWidth
+        : abstract.width;
+    const abstractIncludeElementWidth = includeElementEndX - includeElementStartX;
+
+    //「判断概要」和「概括的内容宽度」
+    if (abstractIncludeElementWidth > abstractBranchWidth) {
+        const distance = (abstractIncludeElementWidth - abstractBranchWidth) / 2;
+        moveSubtree(treeNode, abstractIndex, distance);
+    } else {
+        const distance = (abstractBranchWidth - abstractIncludeElementWidth) / 2;
+        for (let i = abstractNode.start; i < abstractNode.end + 1; i++) {
+            moveSubtree(treeNode, i, distance);
+        }
+    }
+}
+
+function compareAbstractRight(nodeParent: LayoutTreeNode, node: LayoutTreeNode, compareTarget: number, sumOfAbstractModifier: number) {
+    const abstract = getAbstractNodeByEndNode(nodeParent, node);
+    if (abstract) {
+        return Math.max(abstract.modifier + abstract.width + sumOfAbstractModifier, compareTarget);
+    }
+    return compareTarget;
+}
+
+function compareAbstractLeft(nodeParent: LayoutTreeNode, node: LayoutTreeNode, compareTarget: number) {
+    const abstract = getAbstractNodeByStartNode(nodeParent, node);
+
+    if (abstract) {
+        return Math.min(abstract.modifier + abstract.preliminary, compareTarget);
+    }
+    return compareTarget;
 }
 
 function layout(treeNode: LayoutTreeNode) {

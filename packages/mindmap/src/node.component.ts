@@ -20,10 +20,8 @@ import {
     Transforms,
     drawRoundRectangle,
     PlaitPluginElementComponent,
-    NODE_TO_PARENT,
     PlaitElement,
     NODE_TO_INDEX,
-    ELEMENT_TO_COMPONENT,
     PlaitPluginElementContext,
     OnContextChanged
 } from '@plait/core';
@@ -32,6 +30,7 @@ import {
     isHorizontalLayout,
     isIndentedLayout,
     isLeftLayout,
+    AbstractNode,
     isRightLayout,
     isStandardLayout,
     isTopLayout,
@@ -55,7 +54,7 @@ import {
     STROKE_WIDTH
 } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
-import { drawLogicLink } from './draw/logic-link';
+import { drawLogicLink } from './draw/link/logic-link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
 import { MindmapNodeElement, PlaitMindmap } from './interfaces/element';
@@ -67,6 +66,7 @@ import { createEmptyNode, getChildrenCount } from './utils/mindmap';
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
+import { drawAbstractLink } from './draw/link/abstract-link';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -198,12 +198,13 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
         }
 
         const layout = MindmapQueries.getLayoutByElement(this.parent.origin) as MindmapLayoutType;
-        if (MindmapNodeElement.isIndentedLayout(this.parent.origin)) {
-            this.linkG = drawIndentedLink(PlaitBoard.getRoughSVG(this.board), this.parent, this.node);
+        if (AbstractNode.isAbstract(this.node.origin)) {
+            this.linkG = drawAbstractLink(this.board, this.node, isHorizontalLayout(layout));
+        } else if (MindmapNodeElement.isIndentedLayout(this.parent.origin)) {
+            this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         } else {
-            this.linkG = drawLogicLink(PlaitBoard.getRoughSVG(this.board), this.node, this.parent, isHorizontalLayout(layout));
+            this.linkG = drawLogicLink(this.roughSVG, this.node, this.parent, isHorizontalLayout(layout));
         }
-
         this.g.append(this.linkG);
     }
 
@@ -582,7 +583,9 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
         fromEvent(quickInsertG, 'mouseup')
             .pipe(take(1))
             .subscribe(() => {
-                const path = PlaitBoard.findPath(this.board, this.element).concat(this.node.origin.children.length);
+                const path = PlaitBoard.findPath(this.board, this.element).concat(
+                    this.element.children.filter(child => !AbstractNode.isAbstract(child)).length
+                );
                 createEmptyNode(this.board, this.node.origin, path);
             });
     }

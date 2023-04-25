@@ -1,14 +1,9 @@
 import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { LayoutBlockNode, LayoutNode } from '../interfaces/layout-node';
-import { buildLayoutTree, LayoutTreeNode } from '../interfaces/layout-tree-node';
-import { LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../types';
-import {
-    extractLayoutType,
-    isHorizontalLayout,
-    isLeftLayout,
-    isTopLayout,
-    isHorizontalLogicLayout
-} from '../utils/layout';
+import { AbstractNode, LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../interfaces/mindmap';
+import { extractLayoutType, isHorizontalLayout, isLeftLayout, isTopLayout } from '../utils/layout';
+import * as indent from './indent';
+import * as logic from './logic';
 
 export class BaseLayout {
     constructor() {}
@@ -73,17 +68,17 @@ export class BaseLayout {
         // 4、layout handle
         switch (layoutType) {
             case LayoutType.indented:
-                indentMainAxle(root);
-                separateSecondaryAxle(root, options);
+                indent.separateXAxle(root);
+                indent.separateYAxle(root, options);
                 break;
             case LayoutType.fishBone:
                 break;
             case LayoutType.logic:
             default:
-                this.separateSecondaryAxle(root, isHorizontal);
-                const layoutTree = buildLayoutTree(root, isHorizontal);
+                logic.separateYAxle(root, isHorizontal);
+                const layoutTree = logic.buildLayoutTree(root, isHorizontal);
                 layout(layoutTree);
-                setLayoutTreeResult(layoutTree, root, isHorizontal);
+                logic.setLayoutTreeResult(layoutTree, root, isHorizontal);
                 break;
         }
 
@@ -109,7 +104,9 @@ export class BaseLayout {
                     const _index = isolatedNode.parent.children.indexOf(isolatedNode);
                     const oldNode = isolatedNode.parent.children[_index];
                     isolatedNode.parent.children[_index] = Object.assign(oldNode, layoutRoot);
-                    const meta = attachedMetaOfIsolatedNodes.find(m => m.parent === isolatedNode.parent);
+                    const meta = attachedMetaOfIsolatedNodes.find(
+                        m => m.parent === isolatedNode.parent && !AbstractNode.isAbstract(isolatedNode.origin)
+                    );
                     if (meta) {
                         if (meta.offsetX < offsetX) {
                             meta.offsetX = offsetX;
@@ -117,31 +114,17 @@ export class BaseLayout {
                         if (meta.offsetX < offsetY) {
                             meta.offsetX = offsetY;
                         }
-                    } else {
+                    } else if (!AbstractNode.isAbstract(isolatedNode.origin)) {
                         attachedMetaOfIsolatedNodes.push({ parent: isolatedNode.parent, offsetX, offsetY });
                     }
                 }
             });
-
         // 6、correct the offset of sibling nodes caused by sub-layout
         attachedMetaOfIsolatedNodes.forEach(meta => {
             meta.parent.children.forEach(child => child.translate(meta.offsetX, meta.offsetY));
         });
 
         return root;
-    }
-
-    private separateSecondaryAxle(node: LayoutNode, isHorizontal: boolean, d = 0) {
-        if (isHorizontal) {
-            node.x = d;
-            d += node.width;
-        } else {
-            node.y = d;
-            d += node.height;
-        }
-        node.children.forEach(child => {
-            this.separateSecondaryAxle(child, isHorizontal, d);
-        });
     }
 
     private buildLayoutNode(
@@ -166,9 +149,10 @@ export class BaseLayout {
                             node.children.push(child);
                             child.depth = node.depth + 1;
                             const isolated =
-                                node.layout !== child.layout &&
-                                (extractLayoutType(node.layout) !== extractLayoutType(child.layout) ||
-                                    isHorizontalLayout(node.layout) !== isHorizontalLayout(child.layout));
+                                (node.layout !== child.layout &&
+                                    (extractLayoutType(node.layout) !== extractLayoutType(child.layout) ||
+                                        isHorizontalLayout(node.layout) !== isHorizontalLayout(child.layout))) ||
+                                AbstractNode.isAbstract(child.origin);
                             if (isolated && !child.origin.isCollapsed) {
                                 isolatedNodes.push(child);
                             } else {
@@ -181,44 +165,4 @@ export class BaseLayout {
         }
         return root;
     }
-}
-
-function indentMainAxle(node: LayoutNode, d = 0) {
-    node.x = d;
-    node.children.forEach(child => {
-        indentMainAxle(child, node.x + node.width / 2);
-    });
-}
-
-function separateSecondaryAxle(root: LayoutNode, options: LayoutOptions) {
-    let previousBottom = root.y + root.height;
-    let previousNode: null | LayoutNode = null;
-    updateY(root);
-    function updateY(node: LayoutNode) {
-        node.children.forEach(child => {
-            let y = previousBottom + child.vGap;
-            if (previousNode && !isHorizontalLogicLayout(previousNode.layout) && previousNode.origin.children.length > 0) {
-                if (previousNode.origin.isCollapsed) {
-                    y = y + options.getExtendHeight(child.origin);
-                } else {
-                    y = y + options.getIndentedCrossLevelGap();
-                }
-            }
-            child.y = y;
-            previousNode = child;
-            previousBottom = child.y + child.height;
-            updateY(child);
-        });
-    }
-}
-
-function setLayoutTreeResult(tree: LayoutTreeNode, root: LayoutNode, isHorizontal: Boolean) {
-    if (isHorizontal) {
-        root.y = tree.x;
-    } else {
-        root.x = tree.x;
-    }
-    tree.children.forEach((child, i) => {
-        setLayoutTreeResult(child, root.children[i], isHorizontal);
-    });
 }

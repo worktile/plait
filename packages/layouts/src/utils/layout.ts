@@ -1,5 +1,5 @@
 import { LayoutNode } from '../interfaces/layout-node';
-import { LayoutType, MindmapLayoutType } from '../types';
+import { LayoutType, MindmapLayoutType } from '../interfaces/mindmap';
 
 export function findLayoutType(node: LayoutNode): MindmapLayoutType | null {
     if (node.origin.layout) {
