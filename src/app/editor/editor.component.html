@@ -5,6 +5,9 @@
     (plaitBoardInitialized)="plaitBoardInitialized($event)"
     (plaitChange)="change($event)"
 >
+    <div class="plait-toolbar island plait-board-attached abstract-setting-toolbar">
+        <button (click)="setAbstract($event)">设置概要</button>
+    </div>
     <div class="plait-toolbar island plait-board-attached layout-setting-toolbar">
         <select (change)="layoutChange($event)">
             <option value="right">right</option>

@@ -2,17 +2,14 @@ import { PlaitBoard, Point, distanceBetweenPointAndPoint, normalizePoint } from 
 import { getDefaultHandles } from './get-default-handles';
 import { FlowNode } from '../../interfaces/node';
 import { getHandleXYPosition } from './get-handle-position';
-import { HANDLE_RADIUS } from '../../constants/handle';
-import { FlowEdge, FlowEdgeHandle } from '../../interfaces/edge';
-import { FLOW_EDGE_DRAGGING_INFO } from '../../plugins/with-edge-dnd';
+import { HANDLE_DIAMETER } from '../../constants/handle';
+import { FlowEdgeHandle } from '../../interfaces/edge';
+import { getFlowElementsByType } from '../node/get-node';
+import { FlowElementType } from '../../public-api';
 
-export const getHitNodeHandle = (board: PlaitBoard, edge: FlowEdge, currentPoint: Point) => {
-    const flowEdgeDragInfo = FLOW_EDGE_DRAGGING_INFO.get(edge);
-    if (!flowEdgeDragInfo) {
-        return null;
-    }
-    let edgeHandle: FlowEdgeHandle | null = null;
-    const flowNodeElements = board.children.filter(item => FlowNode.isFlowNodeElement(item)) as FlowNode[];
+export function getHitNodeHandle(board: PlaitBoard, currentPoint: Point): (FlowEdgeHandle & { handlePoint: Point }) | null {
+    let nodeHandle: (FlowEdgeHandle & { handlePoint: Point }) | null = null;
+    const flowNodeElements = getFlowElementsByType(board, FlowElementType.node) as FlowNode[];
     flowNodeElements.map(item => {
         const handles = item.handles || getDefaultHandles();
         handles.filter(handle => {
@@ -28,13 +25,14 @@ export const getHitNodeHandle = (board: PlaitBoard, edge: FlowEdge, currentPoint
                 handle
             );
             const distance = distanceBetweenPointAndPoint(handleX, handleY, currentPoint[0], currentPoint[1]);
-            if (distance < HANDLE_RADIUS && flowEdgeDragInfo.handleType && edge) {
-                edgeHandle = {
+            if (distance < HANDLE_DIAMETER / 2) {
+                nodeHandle = {
                     ...handle,
+                    handlePoint: [handleX, handleY],
                     node: item
                 };
             }
         });
     });
-    return edgeHandle;
-};
+    return nodeHandle;
+}

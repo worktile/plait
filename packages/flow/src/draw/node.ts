@@ -1,10 +1,10 @@
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawRoundRectangle, normalizePoint } from '@plait/core';
-import { FlowBaseData, FlowElementStyles } from '../interfaces/element';
+import { FlowElementStyles } from '../interfaces/element';
 import { FlowNode } from '../interfaces/node';
 import { DEFAULT_NODE_ACTIVE_STYLES, DEFAULT_NODE_STYLES, OUTLINE_BUFFER } from '../constants/node';
 
-export function drawNode<T extends FlowBaseData>(roughSVG: RoughSVG, node: FlowNode<T>, outline = false) {
+export function drawNode(roughSVG: RoughSVG, node: FlowNode, outline = false) {
     let nodeStyles: FlowElementStyles = {
         ...DEFAULT_NODE_STYLES,
         ...(node.styles || {})
@@ -19,7 +19,7 @@ export function drawNode<T extends FlowBaseData>(roughSVG: RoughSVG, node: FlowN
     return nodeG;
 }
 
-export function drawActiveMask<T extends FlowBaseData>(roughSVG: RoughSVG, node: FlowNode<T>) {
+export function drawActiveMask(roughSVG: RoughSVG, node: FlowNode) {
     let nodeStyles: FlowElementStyles = {
         ...DEFAULT_NODE_ACTIVE_STYLES,
         ...(node.styles || {})

@@ -1,7 +1,7 @@
 import { Point, distanceBetweenPointAndRectangle, distanceBetweenPointAndSegment } from '@plait/core';
 import { PlaitBoard } from '@plait/core';
 import { FlowEdge } from '../../interfaces/edge';
-import { HIT_THERSHOLD } from '../../constants/edge';
+import { HIT_THRESHOLD } from '../../constants/edge';
 import { getEdgePoints } from './edge';
 import { getEdgeTextBackgroundRect, getEdgeTextRect } from './text';
 
@@ -21,7 +21,7 @@ export function isHitFlowEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
             }
         });
         const hitFlowEdgeText = isHitFlowEdgeText(board, edge, point);
-        const hitFlowEdge = minDistance < HIT_THERSHOLD;
+        const hitFlowEdge = minDistance < HIT_THRESHOLD;
         return hitFlowEdge || hitFlowEdgeText;
     }
     return false;

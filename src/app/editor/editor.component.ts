@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { getSelectedElements, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
-import { MindmapLayoutType } from '@plait/layouts';
+import { getSelectedElements, idCreator, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
+import { MindmapLayoutType, isBottomLayout, isIndentedLayout, isLeftLayout, isRightLayout, isTopLayout } from '@plait/layouts';
 import {
-    findPath,
     MindmapNodeElement,
     MindmapNodeShape,
     MindmapTransforms,
     MINDMAP_ELEMENT_TO_COMPONENT,
-    withMindmap
+    withMindmap,
+    GRAY_COLOR,
+    MindmapQueries
 } from '@plait/mindmap';
 import { mockMindmapData } from './mock-data';
 
@@ -49,22 +50,62 @@ export class BasicBoardEditorComponent implements OnInit {
 
     layoutChange(event: Event) {
         const value = (event.target as HTMLSelectElement).value as MindmapLayoutType;
-        const selectedElements = getSelectedElements(this.board)?.[0];
-
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements as MindmapNodeElement);
-
-        const path = nodeComponent ? findPath(this.board, nodeComponent.node) : [0];
-        MindmapTransforms.setMindmapLayout(this.board, value, path);
+        const selectedElement = getSelectedElements(this.board)?.[0];
+        if (selectedElement) {
+            const path = PlaitBoard.findPath(this.board, selectedElement);
+            MindmapTransforms.setMindmapLayout(this.board, value, path);
+        }
     }
 
     shapeChange(event: Event) {
         const value = (event.target as HTMLSelectElement).value as MindmapNodeShape;
-        const selectedElements = getSelectedElements(this.board)?.[0];
+        const selectedElement = getSelectedElements(this.board)?.[0];
+        if (selectedElement) {
+            const path = PlaitBoard.findPath(this.board, selectedElement);
+            Transforms.setNode(this.board, { shape: value }, path);
+        }
+    }
 
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements as MindmapNodeElement);
+    setAbstract(event: Event) {
+        const selectedElements = getSelectedElements(this.board);
+        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements[selectedElements.length - 1] as MindmapNodeElement);
 
-        const path = nodeComponent ? findPath(this.board, nodeComponent.node) : [0];
-        Transforms.setNode(this.board, { shape: value }, path);
+        const start = nodeComponent?.parent.children.findIndex(child => {
+            return child.origin.id === selectedElements[0].id;
+        });
+        if (nodeComponent && start !== undefined) {
+            const path = [...PlaitBoard.findPath(this.board, nodeComponent.parent.origin ), nodeComponent.parent.children.length];
+            let nodeLayout = MindmapQueries.getLayoutByElement(nodeComponent.node.origin);
+            let layout: MindmapLayoutType = MindmapLayoutType.right;
+            if (isLeftLayout(nodeLayout)) {
+                layout = MindmapLayoutType.left;
+            }
+            if (isRightLayout(nodeLayout)) {
+                layout = MindmapLayoutType.right;
+            }
+            if (isBottomLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
+                layout = MindmapLayoutType.downward;
+            }
+            if (isTopLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
+                layout = MindmapLayoutType.upward;
+            }
+            Transforms.insertNode(
+                this.board,
+                {
+                    id: idCreator(),
+                    value: { children: [{ text: '概要' }] },
+                    layout,
+                    children: [],
+                    start,
+                    end: start + selectedElements.length - 1,
+                    width: 28,
+                    height: 20,
+                    strokeColor: GRAY_COLOR,
+                    linkLineColor: GRAY_COLOR
+                },
+                path
+            );
+        }
     }
 
     plaitBoardInitialized(value: PlaitBoard) {

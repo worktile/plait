@@ -2,4 +2,4 @@
 '@plait/flow': patch
 ---
 
-refactor T type
+support delete element

@@ -1,12 +1,12 @@
-import { FlowBaseData, FlowElementStyles, FlowHandle, FlowPosition } from '../../interfaces/element';
+import { FlowElementStyles, FlowHandle, FlowPosition } from '../../interfaces/element';
 import { getHandleXYPosition } from '../handle/get-handle-position';
 import { PlaitBoard, RectangleClient, normalizePoint } from '@plait/core';
 import { getPoints } from './get-smooth-step-edge';
-import { getFakeFlowNodeById, getFlowNodeById } from '../get-node-by-id';
+import { getFakeFlowNodeById, getFlowNodeById } from '../node/get-node';
 import { FlowEdge } from '../../interfaces/edge';
 import { DEFAULT_EDGE_ACTIVE_STYLES, DEFAULT_EDGE_STYLES } from '../../constants/edge';
-import { FLOW_EDGE_DRAGGING_INFO } from '../../plugins/with-edge-dnd';
 import { FlowNode } from '../../interfaces/node';
+import { getEdgeDraggingInfo } from './dragging-edge';
 
 interface EdgePositions {
     sourceX: number;
@@ -56,7 +56,7 @@ export function getEdgeCenter({
 
 export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
     let sourceNode: FlowNode, targetNode: FlowNode;
-    const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && FLOW_EDGE_DRAGGING_INFO.get(edge);
+    const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && getEdgeDraggingInfo(edge);
 
     if (dragEdgeInfo && dragEdgeInfo.handleType === 'source') {
         sourceNode = getFakeFlowNodeById(board, edge.source?.id!, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);
@@ -107,7 +107,7 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
     });
 };
 
-export const getEdgeStyle = <T extends FlowBaseData>(edge: FlowEdge<T>, active: boolean) => {
+export const getEdgeStyle = (edge: FlowEdge, active: boolean) => {
     let edgeStyles: FlowElementStyles = {
         ...DEFAULT_EDGE_STYLES,
         ...(edge.styles || {})

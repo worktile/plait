@@ -1,13 +1,4 @@
-import {
-    ELEMENT_TO_PLUGIN_COMPONENT,
-    PlaitBoard,
-    PlaitPlugin,
-    PlaitPluginElementContext,
-    RectangleClient,
-    getMovingElements,
-    isSelectedElement,
-    normalizePoint
-} from '@plait/core';
+import { PlaitBoard, PlaitPlugin, PlaitPluginElementContext, ELEMENT_TO_COMPONENT, getMovingElements } from '@plait/core';
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowEdgeComponent } from '../flow-edge.component';
 import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
@@ -16,10 +7,11 @@ import { FlowEdge } from '../interfaces/edge';
 import { FlowNode } from '../interfaces/node';
 import { withFlowEdgeDnd } from './with-edge-dnd';
 import { getEdgesByNodeId } from '../utils/edge/get-edges-by-node';
-import { OUTLINE_BUFFER } from '../constants/node';
+import { withEdgeCreate } from './with-edge-create';
+import { isHitFlowNode } from '../utils/node/is-hit-node';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, isHitSelection, isMovable, onChange, getRectangle } = board;
+    const { drawElement, isHitSelection, isMovable, onChange, getRectangle, mousemove } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (FlowElement.isFlowElement(context.element)) {
@@ -32,18 +24,10 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.isHitSelection = (element, range) => {
-        const elementComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(element) as FlowNodeComponent | FlowEdgeComponent;
+        const elementComponent = ELEMENT_TO_COMPONENT.get(element) as FlowNodeComponent | FlowEdgeComponent;
         if (FlowElement.isFlowElement(element) && elementComponent && board.selection) {
             if (FlowNode.isFlowNodeElement(element)) {
-                const { x, y } = normalizePoint(element.points![0]);
-                const isSelected = isSelectedElement(board, element);
-                const isIntersectNode = RectangleClient.isIntersect(RectangleClient.toRectangleClient([range.anchor, range.focus]), {
-                    x: isSelected ? x : x + OUTLINE_BUFFER,
-                    y: isSelected ? y : y + OUTLINE_BUFFER,
-                    width: isSelected ? element.width : element.width - OUTLINE_BUFFER * 2,
-                    height: isSelected ? element.height : element.height - OUTLINE_BUFFER * 2
-                });
-                return isIntersectNode;
+                return isHitFlowNode(board, element, [range.anchor, range.focus]);
             }
             if (FlowEdge.isFlowEdgeElement(element)) {
                 return isHitFlowEdge(board, element, range.focus);
@@ -80,12 +64,12 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
             if (FlowNode.isFlowNodeElement(moveElement)) {
                 const relationEdges = getEdgesByNodeId(board, moveElement.id);
                 relationEdges.map(item => {
-                    const flowEdgeComponent = ELEMENT_TO_PLUGIN_COMPONENT.get(item) as FlowEdgeComponent;
+                    const flowEdgeComponent = ELEMENT_TO_COMPONENT.get(item) as FlowEdgeComponent;
                     flowEdgeComponent.drawElement();
                 });
             }
         }
     };
 
-    return withFlowEdgeDnd(board);
+    return withFlowEdgeDnd(withEdgeCreate(board));
 };

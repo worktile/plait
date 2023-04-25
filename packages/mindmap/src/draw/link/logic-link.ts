@@ -1,12 +1,12 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { MindmapNodeShape, STROKE_WIDTH } from '../constants';
-import { MindmapNode } from '../interfaces/node';
-import { getLinkLineColorByMindmapElement } from '../utils/colors';
+import { MindmapNodeShape, STROKE_WIDTH } from '../../constants';
+import { MindmapNode } from '../../interfaces/node';
+import { getLinkLineColorByMindmapElement } from '../../utils/colors';
 import { Point } from '@plait/core';
-import { getRectangleByNode } from '../utils';
-import { getLinkDirection, getPointByPlacement, movePoint, transformPlacement } from '../utils/point-placement';
-import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
+import { getRectangleByNode } from '../../utils';
+import { getLinkDirection, getPointByPlacement, movePoint, transformPlacement } from '../../utils/point-placement';
+import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
 
 export function drawLogicLink(roughSVG: RoughSVG, node: MindmapNode, parent: MindmapNode, isHorizontal: boolean) {
     const stroke = getLinkLineColorByMindmapElement(node.origin);
@@ -18,7 +18,8 @@ export function drawLogicLink(roughSVG: RoughSVG, node: MindmapNode, parent: Min
     const parentClient = getRectangleByNode(parent);
     const linkDirection = getLinkDirection(node, isHorizontal);
 
-    // ① 确定起始点
+    // ① ensure begin placement and end placement
+    // begin placement represent parent connector position and end placement represent child connector
     const beginPlacement: PointPlacement = [HorizontalPlacement.right, VerticalPlacement.middle];
     const endPlacement: PointPlacement = [HorizontalPlacement.left, VerticalPlacement.middle];
 
