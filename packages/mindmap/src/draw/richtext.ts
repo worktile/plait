@@ -21,7 +21,7 @@ export function drawMindmapNodeRichtext(node: MindmapNode, viewContainerRef: Vie
     } else {
         classList.push('child-node');
     }
-    return drawRichtext(textX, textY, width, height, node.origin.value, viewContainerRef, classList);
+    return drawRichtext(textX, textY, width, height, node.origin.data.topic, viewContainerRef, classList);
 }
 
 export function updateMindmapNodeRichtextLocation(node: MindmapNode, g: SVGGElement, isEditable: boolean) {

@@ -47,7 +47,7 @@ import { PlaitMindmapComponent } from '../mindmap.component';
 
 const DRAG_MOVE_BUFFER = 5;
 
-export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
+export const withDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup, keydown } = board;
 
     let activeElement: MindElement | null;

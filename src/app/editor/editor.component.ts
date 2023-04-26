@@ -6,7 +6,7 @@ import {
     MindmapNodeShape,
     MindmapTransforms,
     MINDMAP_ELEMENT_TO_COMPONENT,
-    withMindmap,
+    withMind,
     GRAY_COLOR,
     MindmapQueries
 } from '@plait/mindmap';
@@ -19,7 +19,7 @@ const LOCAL_DATA_KEY = 'plait-board-change-data';
     templateUrl: './editor.component.html'
 })
 export class BasicBoardEditorComponent implements OnInit {
-    plugins = [withMindmap];
+    plugins = [withMind];
 
     value: PlaitElement[] = [...mockMindmapData];
 

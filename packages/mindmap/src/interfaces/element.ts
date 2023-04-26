@@ -4,9 +4,10 @@ import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
 import { NODE_TO_PARENT, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
 import { MindmapQueries } from '../queries';
 import { ELEMENT_TO_NODE } from '../utils';
+import { BaseData } from './element-data';
 
-export interface MindElement extends PlaitElement {
-    value: Element;
+export interface MindElement<T = BaseData> extends PlaitElement {
+    data: T;
     children: MindElement[];
     rightNodeCount?: number;
     width: number;

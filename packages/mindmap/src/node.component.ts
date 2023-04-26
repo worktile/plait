@@ -67,6 +67,8 @@ import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
+import { EmojiDrawer } from './plugins/emoji/emoji.drawer';
+import { PlaitMindEmojiBoard } from './plugins/emoji/with-mind-emoji';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -112,6 +114,8 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
 
     destroy$ = new Subject<void>();
+
+    emojiDrawers: EmojiDrawer[] = [];
 
     public get handActive(): boolean {
         return this.board.pointer === PlaitPointerType.hand;
@@ -178,6 +182,18 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
                 break;
             default:
                 break;
+        }
+    }
+
+    drawEmojis() {
+        this.emojiDrawers.forEach((drawer) => drawer.destroy());
+        this.emojiDrawers = [];
+        if (this.element.data.emojis) {
+            this.emojiDrawers = this.element.data.emojis.map((emojiItem) => {
+                const drawer = new EmojiDrawer(this.board as PlaitMindEmojiBoard, this.viewContainerRef);
+                drawer.draw(emojiItem, this.element);
+                return drawer;
+            });
         }
     }
 
@@ -761,7 +777,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     }
 
     updateRichtext() {
-        updateRichText(this.node.origin.value, this.richtextComponentRef!);
+        updateRichText(this.node.origin.data.topic, this.richtextComponentRef!);
         updateMindmapNodeRichtextLocation(this.node as MindmapNode, this.richtextG as SVGGElement, this.isEditable);
     }
 
@@ -802,7 +818,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
                 // 更新富文本、更新宽高
                 let { width, height } = getRichtextContentSize(richtextInstance.editable);
                 const newElement = {
-                    value: richtext,
+                    data: { topic: richtext },
                     width: width < NODE_MIN_WIDTH * this.board.viewport.zoom ? NODE_MIN_WIDTH : width / this.board.viewport.zoom,
                     height: height / this.board.viewport.zoom
                 } as MindElement;
