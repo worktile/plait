@@ -1,8 +1,9 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Viewport } from '@plait/core';
-import { FlowEdge, withFlow } from '@plait/flow';
+import { withFlow } from '@plait/flow';
 import { mockFlowData } from './flow-data';
 import { withCommon } from './plugins/with-common';
+import { withDraw } from './plugins/with-draw';
 
 const LOCAL_DATA_KEY = 'plait-board-flow-change-data';
 
@@ -11,7 +12,7 @@ const LOCAL_DATA_KEY = 'plait-board-flow-change-data';
     templateUrl: './flow.component.html'
 })
 export class BasicFlowComponent implements OnInit {
-    plugins = [withCommon, withFlow];
+    plugins = [withCommon, withFlow, withDraw];
 
     value: PlaitElement[] = mockFlowData;
 
