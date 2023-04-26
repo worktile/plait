@@ -9,15 +9,15 @@ import {
     Point,
     Transforms
 } from '@plait/core';
-import { MindmapNodeElement } from '../interfaces';
+import { MindElement } from '../interfaces';
 import { copyNewNode, extractNodesText, transformNodeToRoot, transformRootToNode } from '../utils';
 import { getRectangleByNode } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapNodeComponent } from '../node.component';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
 
-export const buildClipboardData = (board: PlaitBoard, selectedElements: MindmapNodeElement[]) => {
-    let result: MindmapNodeElement[] = [];
+export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[]) => {
+    let result: MindElement[] = [];
     const selectedMindmapNodes = Array.from(selectedElements, node => {
         return (MINDMAP_ELEMENT_TO_COMPONENT.get(node) as MindmapNodeComponent)?.node;
     });
@@ -33,7 +33,7 @@ export const buildClipboardData = (board: PlaitBoard, selectedElements: MindmapN
     return result;
 };
 
-export const setClipboardData = (data: DataTransfer | null, elements: MindmapNodeElement[]) => {
+export const setClipboardData = (data: DataTransfer | null, elements: MindElement[]) => {
     const stringObj = JSON.stringify(elements);
     const encoded = window.btoa(encodeURIComponent(stringObj));
     const text = elements.reduce((string, currentNode) => {
@@ -54,12 +54,12 @@ export const getDataFromClipboard = (data: DataTransfer | null) => {
 };
 
 export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[], targetPoint: Point) => {
-    let newElement: MindmapNodeElement, path: Path;
+    let newElement: MindElement, path: Path;
     const selectedElements = getSelectedElements(board);
     let newELements: PlaitElement[] = [];
 
     elements.forEach((item: PlaitElement, index: number) => {
-        newElement = copyNewNode(item as MindmapNodeElement);
+        newElement = copyNewNode(item as MindElement);
 
         if (selectedElements.length === 1) {
             if (item.isRoot) {

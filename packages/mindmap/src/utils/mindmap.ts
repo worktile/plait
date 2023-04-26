@@ -3,13 +3,13 @@ import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, PlaitNod
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE } from '../constants/node';
 import { MindmapNode } from '../interfaces';
-import { MindmapNodeElement } from '../interfaces/element';
+import { MindElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node';
 
-export function findParentElement(element: MindmapNodeElement): MindmapNodeElement | undefined {
+export function findParentElement(element: MindElement): MindElement | undefined {
     const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
     if (component && component.parent) {
         return component.parent.origin;
@@ -17,7 +17,7 @@ export function findParentElement(element: MindmapNodeElement): MindmapNodeEleme
     return undefined;
 }
 
-export function findUpElement(element: MindmapNodeElement): { root: MindmapNodeElement; branch?: MindmapNodeElement } {
+export function findUpElement(element: MindElement): { root: MindElement; branch?: MindElement } {
     let branch;
     let root = element;
     let parent = findParentElement(element);
@@ -29,14 +29,14 @@ export function findUpElement(element: MindmapNodeElement): { root: MindmapNodeE
     return { root, branch };
 }
 
-export const getChildrenCount = (element: MindmapNodeElement) => {
-    const count: number = element.children.reduce((p: number, c: MindmapNodeElement) => {
+export const getChildrenCount = (element: MindElement) => {
+    const count: number = element.children.reduce((p: number, c: MindElement) => {
         return p + getChildrenCount(c);
     }, 0);
     return count + element.children.length;
 };
 
-export const isChildElement = (origin: MindmapNodeElement, child: MindmapNodeElement) => {
+export const isChildElement = (origin: MindElement, child: MindElement) => {
     let parent = findParentElement(child);
     while (parent) {
         if (parent === origin) {
@@ -47,8 +47,8 @@ export const isChildElement = (origin: MindmapNodeElement, child: MindmapNodeEle
     return false;
 };
 
-export const filterChildElement = (elements: MindmapNodeElement[]) => {
-    let result: MindmapNodeElement[] = [];
+export const filterChildElement = (elements: MindElement[]) => {
+    let result: MindElement[] = [];
     elements.forEach(element => {
         const isChild = elements.some(node => {
             return isChildElement(node, element);
@@ -69,8 +69,8 @@ export const isChildUp = (node: MindmapNode, child: MindmapNode) => {
     return node.y > child.y;
 };
 
-export const copyNewNode = (node: MindmapNodeElement) => {
-    const newNode: MindmapNodeElement = { ...node };
+export const copyNewNode = (node: MindElement) => {
+    const newNode: MindElement = { ...node };
     newNode.id = idCreator();
     newNode.children = [];
 
@@ -80,8 +80,8 @@ export const copyNewNode = (node: MindmapNodeElement) => {
     return newNode;
 };
 
-export const transformRootToNode = (board: PlaitBoard, node: MindmapNodeElement) => {
-    const newNode: MindmapNodeElement = { ...node };
+export const transformRootToNode = (board: PlaitBoard, node: MindElement) => {
+    const newNode: MindElement = { ...node };
     delete newNode.isRoot;
     delete newNode.rightNodeCount;
 
@@ -98,7 +98,7 @@ export const transformRootToNode = (board: PlaitBoard, node: MindmapNodeElement)
     return newNode;
 };
 
-export const transformNodeToRoot = (board: PlaitBoard, node: MindmapNodeElement): MindmapNodeElement => {
+export const transformNodeToRoot = (board: PlaitBoard, node: MindElement): MindElement => {
     const newElement = { ...node };
     let text = Node.string(newElement.value);
 
@@ -125,7 +125,7 @@ export const transformNodeToRoot = (board: PlaitBoard, node: MindmapNodeElement)
     };
 };
 
-export const extractNodesText = (node: MindmapNodeElement) => {
+export const extractNodesText = (node: MindElement) => {
     let str = '';
     if (node) {
         str += Node.string(node.value.children[0]) + ' ';
@@ -152,7 +152,7 @@ export const changeRightNodeCount = (board: PlaitBoard, parentPath: Path, change
     );
 };
 
-export const shouldChangeRightNodeCount = (selectedElement: MindmapNodeElement) => {
+export const shouldChangeRightNodeCount = (selectedElement: MindElement) => {
     const parentElement = findParentElement(selectedElement);
     const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
     if (parentElement && mindmapNodeComponent) {
@@ -212,7 +212,7 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
 };
 
 // layoutLevel 用来表示插入兄弟节点还是子节点
-export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapNodeElement, path: Path) => {
+export const createEmptyNode = (board: PlaitBoard, inheritNode: MindElement, path: Path) => {
     let fill,
         strokeColor,
         strokeWidth,
@@ -244,7 +244,7 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindmapNodeEleme
         child => AbstractNode.isAbstract(child) && index > child.start && index <= child.end + 1
     );
     if (abstractNode) {
-        const path = PlaitBoard.findPath(board, abstractNode as MindmapNodeElement);
+        const path = PlaitBoard.findPath(board, abstractNode as MindElement);
         Transforms.setNode(board, { end: (abstractNode as AbstractNode).end + 1 }, path);
     }
     Transforms.insertNode(board, newElement, path);
@@ -262,7 +262,7 @@ export const findLastChild = (child: MindmapNode) => {
     return result;
 };
 
-export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindmapNodeElement[]) => {
+export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindElement[]) => {
     //翻转，从下到上修改，防止找不到 path
     const deletableElements = filterChildElement(selectedElements).reverse();
 
@@ -292,7 +292,7 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
     const abstractHandles = relativeAbstracts.map(value => {
         const newProperties = accumulativeProperties.get(value);
         if (newProperties) {
-            const path = PlaitBoard.findPath(board, value as MindmapNodeElement);
+            const path = PlaitBoard.findPath(board, value as MindElement);
             return () => {
                 if (newProperties.start > newProperties.end) {
                     Transforms.removeNode(board, path);

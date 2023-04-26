@@ -1,6 +1,6 @@
 import { MindmapLayoutType } from '@plait/layouts';
 import { Path, PlaitElement, Point } from '@plait/core';
-import { MindmapNodeElement } from './element';
+import { MindElement } from './element';
 
 export interface MindmapNode {
     depth: number;
@@ -11,7 +11,7 @@ export interface MindmapNode {
     hGap: number;
     vGap: number;
     children: MindmapNode[];
-    origin: MindmapNodeElement;
+    origin: MindElement;
     parent: MindmapNode;
     left: boolean;
     up: boolean;

@@ -1,7 +1,7 @@
-import { PlaitMindmap } from '@plait/mindmap';
+import { PlaitMind } from '@plait/mindmap';
 import { MindmapLayoutType } from '@plait/layouts';
 
-export const mockMindmapData: PlaitMindmap[] = [
+export const mockMindmapData: PlaitMind[] = [
     {
         type: 'mindmap',
         id: '1',

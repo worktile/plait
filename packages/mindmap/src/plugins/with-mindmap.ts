@@ -17,7 +17,7 @@ import {
     depthFirstRecursion
 } from '@plait/core';
 import { getSizeByText } from '@plait/richtext';
-import { MindmapNodeElement, PlaitMindmap } from '../interfaces';
+import { MindElement, PlaitMind } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
 import { PlaitMindmapComponent } from '../mindmap.component';
 import { MindmapNodeComponent } from '../node.component';
@@ -42,38 +42,38 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isHitSelection, getRectangle, isMovable, isRecursion } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
-        if (PlaitMindmap.isMindmap(context.element)) {
+        if (PlaitMind.isMind(context.element)) {
             return PlaitMindmapComponent;
-        } else if (MindmapNodeElement.isMindmapNodeElement(board, context.element)) {
+        } else if (MindElement.isMindElement(board, context.element)) {
             return MindmapNodeComponent;
         }
         return drawElement(context);
     };
 
     board.getRectangle = element => {
-        if (MindmapNodeElement.isMindmapNodeElement(board, element)) {
-            return getRectangleByNode(MindmapNodeElement.getNode(board, element));
+        if (MindElement.isMindElement(board, element)) {
+            return getRectangleByNode(MindElement.getNode(board, element));
         }
         return getRectangle(element);
     };
 
     board.isRecursion = element => {
-        if (MindmapNodeElement.isMindmapNodeElement(board, element) && element.isCollapsed) {
+        if (MindElement.isMindElement(board, element) && element.isCollapsed) {
             return false;
         }
         return isRecursion(element);
     };
 
     board.isHitSelection = (element, range: Range) => {
-        if (MindmapNodeElement.isMindmapNodeElement(board, element) && board.selection) {
-            const client = getRectangleByNode(MindmapNodeElement.getNode(board, element));
+        if (MindElement.isMindElement(board, element) && board.selection) {
+            const client = getRectangleByNode(MindElement.getNode(board, element));
             return RectangleClient.isIntersect(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
         }
         return isHitSelection(element, range);
     };
 
     board.isMovable = element => {
-        if (PlaitMindmap.isMindmap(element) && element.isRoot) {
+        if (PlaitMind.isMind(element) && element.isRoot) {
             return true;
         }
         return isMovable(element);
@@ -84,7 +84,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
             keydown(event);
             return;
         }
-        const selectedElements = getSelectedElements(board) as MindmapNodeElement[];
+        const selectedElements = getSelectedElements(board) as MindElement[];
         if (selectedElements.length) {
             if (
                 selectedElements.length === 1 &&
@@ -97,7 +97,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
                 const selectedElementPath = PlaitBoard.findPath(board, selectedElement);
                 if (event.key === 'Tab') {
                     if (selectedElement.isCollapsed) {
-                        const newElement: Partial<MindmapNodeElement> = { isCollapsed: false };
+                        const newElement: Partial<MindElement> = { isCollapsed: false };
                         PlaitHistoryBoard.withoutSaving(board, () => {
                             Transforms.setNode(board, newElement, selectedElementPath);
                         });
@@ -163,9 +163,9 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         }
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         board.children
-            .filter(value => PlaitMindmap.isMindmap(value))
+            .filter(value => PlaitMind.isMind(value))
             .forEach(mindmap => {
-                depthFirstRecursion<MindmapNodeElement>(mindmap as MindmapNodeElement, node => {
+                depthFirstRecursion<MindElement>(mindmap as MindElement, node => {
                     if (!PlaitBoard.hasBeenTextEditing(board) && hitMindmapElement(board, point, node)) {
                         enterNodeEditing(node);
                     }
@@ -178,7 +178,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.setFragment = (data: DataTransfer | null) => {
-        const selectedElements = filterChildElement(getSelectedElements(board) as MindmapNodeElement[]);
+        const selectedElements = filterChildElement(getSelectedElements(board) as MindElement[]);
 
         if (selectedElements.length) {
             const elements = buildClipboardData(board, selectedElements);
@@ -209,7 +209,7 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.deleteFragment = (data: DataTransfer | null) => {
-        const selectedElements = getSelectedElements(board) as MindmapNodeElement[];
+        const selectedElements = getSelectedElements(board) as MindElement[];
         deleteSelectedELements(board, selectedElements);
         deleteFragment(data);
     };

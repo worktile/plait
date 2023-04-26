@@ -1,4 +1,4 @@
-import { MindmapNodeElement } from '../interfaces';
+import { MindElement } from '../interfaces';
 import {
     findParentElement,
     getAvailableSubLayoutsByLayoutDirections,
@@ -13,7 +13,7 @@ import { getBranchMindmapLayouts } from './get-branch-mindmap-layouts-by-element
  * @param element
  * @returns MindmapLayoutType[]
  */
-export const getAvailableSubLayoutsByElement = (element: MindmapNodeElement) => {
+export const getAvailableSubLayoutsByElement = (element: MindElement) => {
     const parentElement = findParentElement(element);
     if (parentElement) {
         const branchLayouts = getBranchMindmapLayouts(parentElement);

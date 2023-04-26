@@ -1,10 +1,10 @@
-import { DetectResult, MindmapNodeElement, MindmapNode } from '../interfaces';
+import { DetectResult, MindElement, MindmapNode } from '../interfaces';
 import { isBottomLayout, isRightLayout, isLeftLayout, MindmapLayoutType, isStandardLayout, isTopLayout } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
 
 export const directionCorrector = (node: MindmapNode, detectResults: DetectResult[]): DetectResult[] | null => {
     if (!node.origin.isRoot) {
-        const parentlayout = MindmapQueries.getCorrectLayoutByElement(node?.parent.origin as MindmapNodeElement);
+        const parentlayout = MindmapQueries.getCorrectLayoutByElement(node?.parent.origin as MindElement);
         if (isStandardLayout(parentlayout)) {
             const idx = node.parent.children.findIndex(x => x === node);
             const isLeft = idx >= (node.parent.origin.rightNodeCount || 0);
@@ -27,7 +27,7 @@ export const directionCorrector = (node: MindmapNode, detectResults: DetectResul
             return getAllowedDirection(detectResults, ['top']);
         }
     } else {
-        const layout = MindmapQueries.getCorrectLayoutByElement(node?.origin as MindmapNodeElement);
+        const layout = MindmapQueries.getCorrectLayoutByElement(node?.origin as MindElement);
         if (isStandardLayout(layout)) {
             return getAllowedDirection(detectResults, ['top', 'bottom']);
         }

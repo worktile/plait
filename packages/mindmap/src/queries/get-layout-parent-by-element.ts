@@ -1,4 +1,4 @@
-import { MindmapNodeElement } from '../interfaces';
+import { MindElement } from '../interfaces';
 import { findParentElement, getDefaultMindmapLayout } from '../utils';
 import { MindmapLayoutType } from '@plait/layouts';
 
@@ -7,7 +7,7 @@ import { MindmapLayoutType } from '@plait/layouts';
  * @param element
  * @returns MindmapLayoutType
  */
-export const getLayoutParentByElement = (element: MindmapNodeElement): MindmapLayoutType => {
+export const getLayoutParentByElement = (element: MindElement): MindmapLayoutType => {
     let parent = findParentElement(element);
     while (parent) {
         if (parent.layout) {

@@ -1,4 +1,4 @@
-import { MindmapNodeElement } from '../interfaces';
+import { MindElement } from '../interfaces';
 import { MindmapNodeComponent } from '../node.component';
 import {
     correctLayoutByDirection,
@@ -15,7 +15,7 @@ import { MindmapLayoutType } from '@plait/layouts';
  * 2. correct layout by incorrect layout direction
  * @param element
  */
-export const getCorrectLayoutByElement = (element: MindmapNodeElement) => {
+export const getCorrectLayoutByElement = (element: MindElement) => {
     const { root } = findUpElement(element);
     const rootLayout = root.layout || getDefaultMindmapLayout();
     let correctRootLayout = rootLayout;
@@ -28,7 +28,7 @@ export const getCorrectLayoutByElement = (element: MindmapNodeElement) => {
     let layout = component?.node.origin.layout;
 
     let parentComponent: undefined | MindmapNodeComponent;
-    let parent: MindmapNodeElement | undefined = component?.parent?.origin;
+    let parent: MindElement | undefined = component?.parent?.origin;
 
     while (!layout && parent) {
         parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parent);

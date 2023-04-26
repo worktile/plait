@@ -1,9 +1,9 @@
-import { MindmapNodeElement } from '../interfaces';
+import { MindElement } from '../interfaces';
 import { findParentElement } from '../utils';
 import { MindmapLayoutType } from '@plait/layouts';
 import { getCorrectLayoutByElement } from './get-correct-layout-by-element';
 
-export const getBranchMindmapLayouts = (element: MindmapNodeElement) => {
+export const getBranchMindmapLayouts = (element: MindElement) => {
     const layouts: MindmapLayoutType[] = [];
     if (element.layout) {
         //getCorrectLayoutByElement含有递归操作，getBranchMindmapLayouts本身也有递归操作，有待优化

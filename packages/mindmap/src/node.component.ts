@@ -57,7 +57,7 @@ import { drawIndentedLink } from './draw/indented-link';
 import { drawLogicLink } from './draw/link/logic-link';
 import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
-import { MindmapNodeElement, PlaitMindmap } from './interfaces/element';
+import { MindElement, PlaitMind } from './interfaces/element';
 import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { MindmapQueries } from './queries';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
@@ -81,7 +81,7 @@ import { drawAbstractLink } from './draw/link/abstract-link';
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElement> extends PlaitPluginElementComponent<T>
+export class MindmapNodeComponent<T extends MindElement = MindElement> extends PlaitPluginElementComponent<T>
     implements OnInit, OnDestroy, OnContextChanged<T> {
     isEditable = false;
 
@@ -125,12 +125,12 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.element, this);
         super.ngOnInit();
         this.node = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
-        if (!PlaitMindmap.isMindmap(this.element)) {
-            this.parent = MindmapNodeElement.getNode(this.board, MindmapNodeElement.getParent(this.element));
+        if (!PlaitMind.isMind(this.element)) {
+            this.parent = MindElement.getNode(this.board, MindElement.getParent(this.element));
         }
         this.index = NODE_TO_INDEX.get(this.element) || 0;
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
-        this.parentG = PlaitElement.getComponent(MindmapNodeElement.getRoot(this.board, this.element)).rootG as SVGGElement;
+        this.parentG = PlaitElement.getComponent(MindElement.getRoot(this.board, this.element)).rootG as SVGGElement;
         this.drawShape();
         this.drawLink();
         this.drawRichtext();
@@ -142,8 +142,8 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
 
     onContextChanged(value: PlaitPluginElementContext<T>, previous: PlaitPluginElementContext<T>) {
         const newNode = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
-        if (!PlaitMindmap.isMindmap(this.element)) {
-            this.parent = MindmapNodeElement.getNode(this.board, MindmapNodeElement.getParent(this.element));
+        if (!PlaitMind.isMind(this.element)) {
+            this.parent = MindElement.getNode(this.board, MindElement.getParent(this.element));
         }
 
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.element, this);
@@ -200,7 +200,7 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
         const layout = MindmapQueries.getLayoutByElement(this.parent.origin) as MindmapLayoutType;
         if (AbstractNode.isAbstract(this.node.origin)) {
             this.linkG = drawAbstractLink(this.board, this.node, isHorizontalLayout(layout));
-        } else if (MindmapNodeElement.isIndentedLayout(this.parent.origin)) {
+        } else if (MindElement.isIndentedLayout(this.parent.origin)) {
             this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
         } else {
             this.linkG = drawLogicLink(this.roughSVG, this.node, this.parent, isHorizontalLayout(layout));
@@ -612,7 +612,7 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
             )
             .subscribe(() => {
                 const isCollapsed = !this.node.origin.isCollapsed;
-                const newElement: Partial<MindmapNodeElement> = { isCollapsed };
+                const newElement: Partial<MindElement> = { isCollapsed };
                 const path = PlaitBoard.findPath(this.board, this.element);
                 Transforms.setNode(this.board, newElement, path);
             });
@@ -805,7 +805,7 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
                     value: richtext,
                     width: width < NODE_MIN_WIDTH * this.board.viewport.zoom ? NODE_MIN_WIDTH : width / this.board.viewport.zoom,
                     height: height / this.board.viewport.zoom
-                } as MindmapNodeElement;
+                } as MindElement;
                 const path = PlaitBoard.findPath(this.board, this.element);
                 Transforms.setNode(this.board, newElement, path);
                 MERGING.set(this.board, true);
@@ -816,7 +816,7 @@ export class MindmapNodeComponent<T extends MindmapNodeElement = MindmapNodeElem
                 width = NODE_MIN_WIDTH;
             }
             if (event.isComposing && (width !== this.node.origin.width || height !== this.node.origin.height)) {
-                const newElement: Partial<MindmapNodeElement> = {
+                const newElement: Partial<MindElement> = {
                     width: width / this.board.viewport.zoom,
                     height: height / this.board.viewport.zoom
                 };

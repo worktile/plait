@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { getSelectedElements, idCreator, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
 import { MindmapLayoutType, isBottomLayout, isIndentedLayout, isLeftLayout, isRightLayout, isTopLayout } from '@plait/layouts';
 import {
-    MindmapNodeElement,
+    MindElement,
     MindmapNodeShape,
     MindmapTransforms,
     MINDMAP_ELEMENT_TO_COMPONENT,
@@ -68,7 +68,7 @@ export class BasicBoardEditorComponent implements OnInit {
 
     setAbstract(event: Event) {
         const selectedElements = getSelectedElements(this.board);
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements[selectedElements.length - 1] as MindmapNodeElement);
+        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements[selectedElements.length - 1] as MindElement);
 
         const start = nodeComponent?.parent.children.findIndex(child => {
             return child.origin.id === selectedElements[0].id;

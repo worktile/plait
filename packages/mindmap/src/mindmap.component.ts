@@ -7,7 +7,7 @@ import {
     ROOT_NODE_TEXT_VERTICAL_GAP,
     MindmapNodeShape
 } from './constants/node';
-import { MindmapNodeElement, PlaitMindmap } from './interfaces/element';
+import { MindElement, PlaitMind } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
 import { BeforeContextChange, PlaitPluginElementContext, depthFirstRecursion, createG } from '@plait/core';
 import {
@@ -32,7 +32,7 @@ import { MindmapNodeComponent } from './node.component';
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaitMindmapComponent extends MindmapNodeComponent<PlaitMindmap> implements OnInit, BeforeContextChange<PlaitMindmap> {
+export class PlaitMindmapComponent extends MindmapNodeComponent<PlaitMind> implements OnInit, BeforeContextChange<PlaitMind> {
     root!: MindmapNode;
 
     rootG!: SVGGElement;
@@ -42,7 +42,7 @@ export class PlaitMindmapComponent extends MindmapNodeComponent<PlaitMindmap> im
         super.ngOnInit();
     }
 
-    beforeContextChange(value: PlaitPluginElementContext<PlaitMindmap>) {
+    beforeContextChange(value: PlaitPluginElementContext<PlaitMind>) {
         if (value.element !== this.element && this.initialized) {
             this.updateMindmap(value.element);
         }
@@ -50,12 +50,12 @@ export class PlaitMindmapComponent extends MindmapNodeComponent<PlaitMindmap> im
 
     updateMindmap(element = this.element) {
         const options = getOptions() as LayoutOptions;
-        const mindmapLayoutType = MindmapQueries.getLayoutByElement((element as unknown) as MindmapNodeElement);
+        const mindmapLayoutType = MindmapQueries.getLayoutByElement((element as unknown) as MindElement);
         this.root = (GlobalLayout.layout((element as unknown) as OriginNode, options, mindmapLayoutType) as unknown) as MindmapNode;
         this.updateMindmapLocation(element);
     }
 
-    updateMindmapLocation(element: PlaitMindmap) {
+    updateMindmapLocation(element: PlaitMind) {
         const { x, y, hGap, vGap } = this.root;
         const offsetX = x + hGap;
         const offsetY = y + vGap;
@@ -68,7 +68,7 @@ export class PlaitMindmapComponent extends MindmapNodeComponent<PlaitMindmap> im
 }
 
 function getOptions() {
-    function getMainAxle(element: MindmapNodeElement, parent?: LayoutNode) {
+    function getMainAxle(element: MindElement, parent?: LayoutNode) {
         const strokeWidth = element.strokeWidth || STROKE_WIDTH;
         if (element.isRoot) {
             return BASE * 12;
@@ -79,7 +79,7 @@ function getOptions() {
         return BASE * 3 + strokeWidth / 2;
     }
 
-    function getSecondAxle(element: MindmapNodeElement, parent?: LayoutNode) {
+    function getSecondAxle(element: MindElement, parent?: LayoutNode) {
         const strokeWidth = element.strokeWidth || STROKE_WIDTH;
         if (element.isRoot) {
             return BASE * 10 + strokeWidth / 2;
@@ -87,15 +87,15 @@ function getOptions() {
         return BASE * 6 + strokeWidth / 2;
     }
     return {
-        getHeight(element: MindmapNodeElement) {
+        getHeight(element: MindElement) {
             const textGap = element.isRoot ? ROOT_NODE_TEXT_VERTICAL_GAP : CHILD_NODE_TEXT_VERTICAL_GAP;
             return element.height + textGap * 2;
         },
-        getWidth(element: MindmapNodeElement) {
+        getWidth(element: MindElement) {
             const textGap = element.isRoot ? ROOT_NODE_TEXT_HORIZONTAL_GAP : CHILD_NODE_TEXT_HORIZONTAL_GAP;
             return element.width + textGap * 2;
         },
-        getHorizontalGap(element: MindmapNodeElement, parent?: LayoutNode) {
+        getHorizontalGap(element: MindElement, parent?: LayoutNode) {
             const _layout = (parent && parent.layout) || getRootLayout(element);
             const isHorizontal = isHorizontalLayout(_layout);
             const strokeWidth = element.strokeWidth || STROKE_WIDTH;
@@ -108,7 +108,7 @@ function getOptions() {
                 return getSecondAxle(element, parent);
             }
         },
-        getVerticalGap(element: MindmapNodeElement, parent?: LayoutNode) {
+        getVerticalGap(element: MindElement, parent?: LayoutNode) {
             const _layout = (parent && parent.layout) || getRootLayout(element);
             if (isIndentedLayout(_layout)) {
                 return BASE;
@@ -120,7 +120,7 @@ function getOptions() {
                 return getSecondAxle(element, parent);
             }
         },
-        getVerticalConnectingPosition(element: MindmapNodeElement, parent?: LayoutNode) {
+        getVerticalConnectingPosition(element: MindElement, parent?: LayoutNode) {
             if (element.shape === MindmapNodeShape.underline && parent && isHorizontalLogicLayout(parent.layout)) {
                 return ConnectingPosition.bottom;
             }

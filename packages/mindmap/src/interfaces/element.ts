@@ -5,9 +5,9 @@ import { NODE_TO_PARENT, PlaitBoard, PlaitElement, PlaitNode, Point } from '@pla
 import { MindmapQueries } from '../queries';
 import { ELEMENT_TO_NODE } from '../utils';
 
-export interface MindmapNodeElement extends PlaitElement {
+export interface MindElement extends PlaitElement {
     value: Element;
-    children: MindmapNodeElement[];
+    children: MindElement[];
     rightNodeCount?: number;
     width: number;
     height: number;
@@ -31,47 +31,47 @@ export interface MindmapNodeElement extends PlaitElement {
     end?: number;
 }
 
-export interface PlaitMindmap extends MindmapNodeElement {
+export interface PlaitMind extends MindElement {
     type: 'mindmap';
     points: Point[];
 }
 
-export const PlaitMindmap = {
-    isMindmap: (value: any): value is PlaitMindmap => {
+export const PlaitMind = {
+    isMind: (value: any): value is PlaitMind => {
         return value.type === 'mindmap';
     }
 };
 
-export const MindmapNodeElement = {
-    hasLayout(value: MindmapNodeElement, layout: MindmapLayoutType) {
+export const MindElement = {
+    hasLayout(value: MindElement, layout: MindmapLayoutType) {
         const _layout = MindmapQueries.getLayoutByElement(value);
         return _layout === layout;
     },
-    isIndentedLayout(value: MindmapNodeElement) {
+    isIndentedLayout(value: MindElement) {
         const _layout = MindmapQueries.getLayoutByElement(value) as MindmapLayoutType;
         return isIndentedLayout(_layout);
     },
-    isMindmapNodeElement(board: PlaitBoard, element: PlaitElement): element is MindmapNodeElement {
+    isMindElement(board: PlaitBoard, element: PlaitElement): element is MindElement {
         const path = PlaitBoard.findPath(board, element);
         const rootElement = PlaitNode.get(board, path.slice(0, 1));
-        if (PlaitMindmap.isMindmap(rootElement)) {
+        if (PlaitMind.isMind(rootElement)) {
             return true;
         } else {
             return false;
         }
     },
-    getParent(node: MindmapNodeElement) {
-        if (PlaitMindmap.isMindmap(node)) {
+    getParent(node: MindElement) {
+        if (PlaitMind.isMind(node)) {
             throw new Error('mind root node can not get parent');
         }
-        const parent = NODE_TO_PARENT.get(node) as MindmapNodeElement;
+        const parent = NODE_TO_PARENT.get(node) as MindElement;
         return parent;
     },
-    getRoot(board: PlaitBoard, element: MindmapNodeElement) {
+    getRoot(board: PlaitBoard, element: MindElement) {
         const path = PlaitBoard.findPath(board, element);
-        return PlaitNode.get(board, path.slice(0, 1)) as PlaitMindmap;
+        return PlaitNode.get(board, path.slice(0, 1)) as PlaitMind;
     },
-    getNode(board: PlaitBoard, element: MindmapNodeElement) {
+    getNode(board: PlaitBoard, element: MindElement) {
         const node = ELEMENT_TO_NODE.get(element);
         if (!node) {
             throw new Error(`can not get node from ${JSON.stringify(element)}`);
