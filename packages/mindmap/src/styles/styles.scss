@@ -25,6 +25,10 @@ g[plait-mindmap='true'] {
     .dragging-child {
         opacity: 0.6;
     }
+
+    .node-emojis-container {
+        display: flex;
+    }
 }
 .plait-board-container.focused:not(.selection-moving) {
     .extend {

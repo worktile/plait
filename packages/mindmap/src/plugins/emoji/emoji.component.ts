@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit } from "@
 import { EmojiItem } from "../../interfaces";
 
 @Component({
-    selector: 'mind-emoji',
+    selector: 'mind-node-emoji',
     template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -20,6 +20,8 @@ export class MindEmojiComponent implements OnInit {
     constructor(private elementRef: ElementRef<HTMLElement>) {}
 
     ngOnInit(): void {
-        
+        const emoji = `👌🏻`;
+        this.nativeElement.innerHTML = emoji;
+        this.nativeElement.style.fontSize = `${this.fontSize}px`;
     }
 }

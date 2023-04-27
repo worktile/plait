@@ -4,11 +4,19 @@ import { MindEmojiComponent } from './emoji.component';
 import { PlaitMindEmojiBoard } from './with-mind-emoji';
 import { createForeignObject } from '@plait/richtext';
 import { createG } from '@plait/core';
+import { getRectangleByNode } from '../../utils/graph';
+import {
+    CHILD_NODE_TEXT_HORIZONTAL_GAP,
+    CHILD_NODE_TEXT_VERTICAL_GAP,
+    ROOT_NODE_TEXT_HORIZONTAL_GAP,
+    ROOT_NODE_TEXT_VERTICAL_GAP
+} from '../../constants/node';
+import { getEmojiFontSize, getEmojiSize } from './emoji';
 
 export class EmojiDrawer {
-    emoji?: EmojiItem;
-    element?: MindElement;
-    componentRef?: ComponentRef<MindEmojiComponent>;
+    private emoji?: EmojiItem;
+    private element?: MindElement;
+    componentRef: ComponentRef<MindEmojiComponent> | null = null;
 
     constructor(private board: PlaitMindEmojiBoard, private viewContainerRef: ViewContainerRef) {}
 
@@ -24,43 +32,58 @@ export class EmojiDrawer {
     }
 
     get nativeElement() {
-        return this.componentRef?.instance.nativeElement;
+        if (this.componentRef) {
+            return this.componentRef.instance.nativeElement;
+        } else {
+            return null;
+        }
     }
 
     destroy() {
         if (this.componentRef) {
             this.componentRef.destroy();
+            this.componentRef = null;
         }
     }
 }
 
-export class EmojiListDrawer {
+export class EmojisDrawer {
     emojiDrawers: EmojiDrawer[] = [];
-
-    foreignObject?: SVGForeignObjectElement;
 
     g?: SVGGElement;
 
     constructor(private board: PlaitMindEmojiBoard, private viewContainerRef: ViewContainerRef) {}
 
-    drawEmojiList(element: MindElement) {
+    drawEmojis(element: MindElement) {
         this.destroy();
-
-        if (element.data.emojis) {
+        if (MindElement.hasEmojis(element)) {
             const node = MindElement.getNode(this.board, element);
             this.g = createG();
-            // 给出正确的坐标，给出正确的宽和高
-            this.foreignObject = createForeignObject(node.x, node.y, 100, 30);
+            this.g.classList.add('emojis');
+            let { x, y } = getRectangleByNode(MindElement.getNode(this.board, element));
+            const offsetX = node.origin.isRoot ? ROOT_NODE_TEXT_HORIZONTAL_GAP : CHILD_NODE_TEXT_HORIZONTAL_GAP;
+            const offsetY = node.origin.isRoot ? ROOT_NODE_TEXT_VERTICAL_GAP : CHILD_NODE_TEXT_VERTICAL_GAP;
+            x = x + offsetX;
+            y = y + offsetY;
+            const { width, height } = getEmojiSize(element);
+            const fontSize = getEmojiFontSize(element);
+            const foreignObject = createForeignObject(x, y, width, height);
+            this.g.append(foreignObject);
+            const container = document.createElement('div');
+            container.classList.add('node-emojis-container');
+            container.classList.add(`emoji-font-size-${fontSize}`);
+            foreignObject.append(container);
             this.emojiDrawers = element.data.emojis.map(emojiItem => {
-                const drawer = new EmojiDrawer(this.board as PlaitMindEmojiBoard, this.viewContainerRef);
+                const drawer = new EmojiDrawer(this.board, this.viewContainerRef);
                 drawer.draw(emojiItem, element);
                 return drawer;
             });
-            this.g.append(this.foreignObject);
-            this.emojiDrawers.forEach((drawer) => {
-                this.foreignObject?.append(drawer.nativeElement!)
+            this.emojiDrawers.forEach(drawer => {
+                container.append(drawer.nativeElement!);
             });
+            return this.g;
         }
+        return undefined;
     }
 
     destroy() {

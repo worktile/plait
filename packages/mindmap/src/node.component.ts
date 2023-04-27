@@ -67,7 +67,7 @@ import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
-import { EmojiDrawer } from './plugins/emoji/emoji.drawer';
+import { EmojiDrawer, EmojisDrawer } from './plugins/emoji/emoji.drawer';
 import { PlaitMindEmojiBoard } from './plugins/emoji/with-mind-emoji';
 
 @Component({
@@ -115,7 +115,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
 
     destroy$ = new Subject<void>();
 
-    emojiDrawers: EmojiDrawer[] = [];
+    emojisDrawer!: EmojisDrawer;
 
     public get handActive(): boolean {
         return this.board.pointer === PlaitPointerType.hand;
@@ -126,6 +126,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     }
 
     ngOnInit(): void {
+        this.emojisDrawer = new EmojisDrawer(this.board as PlaitMindEmojiBoard, this.viewContainerRef);
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.element, this);
         super.ngOnInit();
         this.node = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
@@ -138,6 +139,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
         this.drawShape();
         this.drawLink();
         this.drawRichtext();
+        this.drawEmojis();
         this.drawActiveG();
         this.updateActiveClass();
         this.drawMaskG();
@@ -169,6 +171,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
             this.updateRichtext();
             this.drawMaskG();
             this.drawExtend();
+            this.drawEmojis();
         }
     }
 
@@ -186,14 +189,9 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     }
 
     drawEmojis() {
-        this.emojiDrawers.forEach((drawer) => drawer.destroy());
-        this.emojiDrawers = [];
-        if (this.element.data.emojis) {
-            this.emojiDrawers = this.element.data.emojis.map((emojiItem) => {
-                const drawer = new EmojiDrawer(this.board as PlaitMindEmojiBoard, this.viewContainerRef);
-                drawer.draw(emojiItem, this.element);
-                return drawer;
-            });
+        const g = this.emojisDrawer.drawEmojis(this.element);
+        if (g) {
+            this.g.append(g);
         }
     }
 
@@ -822,6 +820,9 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
                     width: width < NODE_MIN_WIDTH * this.board.viewport.zoom ? NODE_MIN_WIDTH : width / this.board.viewport.zoom,
                     height: height / this.board.viewport.zoom
                 } as MindElement;
+                if (MindElement.hasEmojis(this.element)) {
+                    newElement.data.emojis = this.element.data.emojis;
+                }
                 const path = PlaitBoard.findPath(this.board, this.element);
                 Transforms.setNode(this.board, newElement, path);
                 MERGING.set(this.board, true);

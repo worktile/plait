@@ -10,7 +10,7 @@ export const mockMindmapData: PlaitMind[] = [
         children: [
             {
                 id: '1-1',
-                data: { topic: { children: [{ text: '富文本' }] } },
+                data: { topic: { children: [{ text: '富文本' }] }, emojis: [{ name: '1F98F' }, { name: '1F98F' }] },
                 children: [
                     {
                         id: 'abc',

@@ -1,8 +1,9 @@
 import { ConnectingPosition, LayoutNode, LayoutOptions, OriginNode, isHorizontalLayout, isHorizontalLogicLayout, isIndentedLayout } from "@plait/layouts";
 import { MindElement } from "./interfaces/element";
 import { BASE, STROKE_WIDTH } from "./constants/default";
-import { CHILD_NODE_TEXT_HORIZONTAL_GAP, CHILD_NODE_TEXT_VERTICAL_GAP, MindmapNodeShape, ROOT_NODE_TEXT_HORIZONTAL_GAP, ROOT_NODE_TEXT_VERTICAL_GAP } from "./constants/node";
+import { CHILD_EMOJI_TEXT_HORIZONTAL_GAP, CHILD_NODE_TEXT_HORIZONTAL_GAP, CHILD_NODE_TEXT_VERTICAL_GAP, MindmapNodeShape, ROOT_EMOJI_TEXT_HORIZONTAL_GAP, ROOT_NODE_TEXT_HORIZONTAL_GAP, ROOT_NODE_TEXT_VERTICAL_GAP } from "./constants/node";
 import { getRootLayout } from "./utils/layout";
+import { getEmojiSize } from "./plugins/emoji/emoji";
 
 export const getLayoutOptions = () => {
     function getMainAxle(element: MindElement, parent?: LayoutNode) {
@@ -31,7 +32,12 @@ export const getLayoutOptions = () => {
         },
         getWidth(element: MindElement) {
             const textGap = element.isRoot ? ROOT_NODE_TEXT_HORIZONTAL_GAP : CHILD_NODE_TEXT_HORIZONTAL_GAP;
-            return element.width + textGap * 2;
+            const emojiGap = element.isRoot ? ROOT_EMOJI_TEXT_HORIZONTAL_GAP : CHILD_EMOJI_TEXT_HORIZONTAL_GAP;
+            if (MindElement.hasEmojis(element)) {
+                return textGap + getEmojiSize(element).width + emojiGap + element.width + textGap;
+            } else {
+                return textGap + element.width + textGap;
+            }
         },
         getHorizontalGap(element: MindElement, parent?: LayoutNode) {
             const _layout = (parent && parent.layout) || getRootLayout(element);

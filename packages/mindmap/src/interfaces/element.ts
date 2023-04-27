@@ -4,7 +4,7 @@ import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
 import { NODE_TO_PARENT, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
 import { MindmapQueries } from '../queries';
 import { ELEMENT_TO_NODE } from '../utils';
-import { BaseData } from './element-data';
+import { BaseData, EmojiData } from './element-data';
 
 export interface MindElement<T = BaseData> extends PlaitElement {
     data: T;
@@ -78,5 +78,15 @@ export const MindElement = {
             throw new Error(`can not get node from ${JSON.stringify(element)}`);
         }
         return node;
+    },
+    hasEmojis(element: MindElement): element is MindElement<EmojiData> {
+        if (element.data.emojis) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    getEmojis(element: MindElement<EmojiData>) {
+        return element.data.emojis;
     }
 };
