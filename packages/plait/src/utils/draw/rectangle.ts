@@ -38,3 +38,62 @@ export function drawRoundRectangle(
         options
     );
 }
+
+export function drawAbstractRoundRectangle(
+    rs: RoughSVG,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    isHorizontal: boolean,
+    options: Options
+) {
+    const width = Math.abs(x1 - x2);
+    const height = Math.abs(y1 - y2);
+
+    const radius = 3;
+    const handleGap = 4;
+    const handleLength = 10;
+
+    const handleSpace = handleLength + handleGap * 2;
+
+    if (isHorizontal) {
+        const handleSideLine = (width - handleSpace - radius * 2) / 2;
+        const sideLine = height - radius * 2;
+        return rs.path(
+            `M${x1 + radius},${y1}
+            l${handleSideLine},0
+            m${handleSpace},0
+            l${handleSideLine},0
+            a${radius},${radius},0,0,1,${radius},${radius}
+            l0,${sideLine}
+            a${radius},${radius},0,0,1,-${radius},${radius}
+            l-${handleSideLine},0
+            m-${handleSpace},0
+            l-${handleSideLine},0
+            a${radius},${radius},0,0,1,-${radius},-${radius}
+            l0,-${sideLine}
+            a${radius},${radius},0,0,1,${radius},-${radius}`,
+            options
+        );
+    } else {
+        const handleSideLine = (height - handleSpace - radius * 2) / 2;
+        const sideLine = width - radius * 2;
+        return rs.path(
+            `M${x1 + radius},${y1}
+            l${sideLine},0
+            a${radius},${radius},0,0,1,${radius},${radius}
+            l0,${handleSideLine}
+            m0,${handleSpace}
+            l0,${handleSideLine}
+            a${radius},${radius},0,0,1,-${radius},${radius}
+            l-${sideLine},0
+            a${radius},${radius},0,0,1,-${radius},-${radius}
+            l0,-${handleSideLine}
+            m0,-${handleSpace}
+            l0,-${handleSideLine}
+            a${radius},${radius},0,0,1,${radius},-${radius}`,
+            options
+        );
+    }
+}

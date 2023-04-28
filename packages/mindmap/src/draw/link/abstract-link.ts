@@ -3,7 +3,7 @@ import { MindmapNode } from '../../interfaces/node';
 import { getRectangleByNode } from '../../utils/graph';
 import { GRAY_COLOR } from '../../constants/default';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
-import { getLinkDirection, getPointByPlacement, movePoint, transformPlacement } from '../../utils/point-placement';
+import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../../utils/point-placement';
 
 export function drawAbstractLink(board: PlaitBoard, node: MindmapNode, isHorizontal: boolean) {
     const linkPadding = 15;
@@ -14,7 +14,7 @@ export function drawAbstractLink(board: PlaitBoard, node: MindmapNode, isHorizon
     });
     const includedElementsRectangle = getRectangleByElements(board, includedElements, true);
 
-    const linkDirection = getLinkDirection(node, isHorizontal);
+    const linkDirection = getLayoutDirection(node, isHorizontal);
     const bezierBeginPlacement = [HorizontalPlacement.right, VerticalPlacement.top] as PointPlacement;
     const bezierEndPlacement = [HorizontalPlacement.right, VerticalPlacement.bottom] as PointPlacement;
     const abstractConnectorPlacement = [HorizontalPlacement.left, VerticalPlacement.middle] as PointPlacement;
@@ -27,7 +27,7 @@ export function drawAbstractLink(board: PlaitBoard, node: MindmapNode, isHorizon
     let bezierEndPoint = getPointByPlacement(includedElementsRectangle, bezierEndPlacement);
     let abstractConnectorPoint = getPointByPlacement(abstractRectangle, abstractConnectorPlacement);
 
-    let curveDistance = 0
+    let curveDistance = 0;
     if (isHorizontal) {
         curveDistance = Math.abs(abstractConnectorPoint[0] - bezierBeginPoint[0]) - linkPadding * 2;
     } else {
@@ -39,7 +39,7 @@ export function drawAbstractLink(board: PlaitBoard, node: MindmapNode, isHorizon
     bezierEndPoint = movePoint(bezierEndPoint, linkPadding, linkDirection);
     let c2 = movePoint(bezierEndPoint, curveDistance, linkDirection);
     let bezierConnectorPoint = movePoint(abstractConnectorPoint, -linkPadding, linkDirection);
-    
+
     const link = PlaitBoard.getRoughSVG(board).path(
         `M${bezierBeginPoint[0]},${bezierBeginPoint[1]} Q${c1[0]},${c1[1]} ${bezierConnectorPoint[0]},${bezierConnectorPoint[1]} Q${c2[0]},${c2[1]} ${bezierEndPoint[0]},${bezierEndPoint[1]} M${abstractConnectorPoint[0]},${abstractConnectorPoint[1]} L${bezierConnectorPoint[0]},${bezierConnectorPoint[1]}`,
         {
