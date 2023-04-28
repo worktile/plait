@@ -1,6 +1,5 @@
 $primary: #4e8afa;
 
-
 g[plait-mindmap='true'] {
     .plait-richtext-container {
         cursor: default;
@@ -26,7 +25,7 @@ g[plait-mindmap='true'] {
         opacity: 0.6;
     }
 }
-.plait-board-container.focused:not(.selection-moving) {
+.plait-board-container.focused:not(.selection-moving):not(.element-moving) {
     .extend {
         cursor: pointer;
         &:hover {
