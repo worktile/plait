@@ -67,6 +67,7 @@ import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
+import { drawAbstractIncludedOutline } from './draw/abstract';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -92,6 +93,8 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     parent!: MindmapNode;
 
     index!: number;
+
+    abstractIncludedOutlineG?: SVGGElement;
 
     parentG!: SVGGElement;
 
@@ -318,7 +321,11 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
 
     drawActiveG() {
         this.destroyActiveG();
+        this.abstractIncludedOutlineG?.remove();
         if (this.selected) {
+            if (AbstractNode.isAbstract(this.element)) {
+                this.drawAbstractIncludedOutline();
+            }
             let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
             const selectedStrokeG = drawRoundRectangle(
                 this.roughSVG as RoughSVG,
@@ -760,6 +767,11 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
         }
     }
 
+    drawAbstractIncludedOutline() {
+        this.abstractIncludedOutlineG = drawAbstractIncludedOutline(this.board, this.roughSVG, this.element);
+        PlaitBoard.getHost(this.board).append(this.abstractIncludedOutlineG);
+    }
+
     updateRichtext() {
         updateRichText(this.node.origin.value, this.richtextComponentRef!);
         updateMindmapNodeRichtextLocation(this.node as MindmapNode, this.richtextG as SVGGElement, this.isEditable);
@@ -889,6 +901,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
+        this.abstractIncludedOutlineG?.remove();
         this.destroyRichtext();
         this.destroy$.next();
         this.destroy$.complete();

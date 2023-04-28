@@ -28,5 +28,13 @@ export const RectangleClient = {
         const yMax = Math.max(...yArray);
         const rect = { x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin };
         return rect;
+    },
+    getOutlineRectangle: (rectangle: RectangleClient, offset: number) => {
+        return {
+            x: rectangle.x + offset,
+            y: rectangle.y + offset,
+            width: rectangle.width + Math.abs(offset) * 2,
+            height: rectangle.height + Math.abs(offset) * 2
+        };
     }
 };
