@@ -1,27 +1,24 @@
 import { drawAbstractRoundRectangle, createG, getRectangleByElements, PlaitBoard, RectangleClient } from '@plait/core';
 import { ABSTRACT_HANDLE_COLOR, ABSTRACT_HANDLE_LENGTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET, PRIMARY_COLOR } from '../constants';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { MindmapNode } from '../interfaces';
+import { MindElement, MindmapNode } from '../interfaces';
 import { MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
 
-export function drawAbstractIncludedOutline(board: PlaitBoard, roughSVG: RoughSVG, parent: MindmapNode, node: MindmapNode) {
+export function drawAbstractIncludedOutline(board: PlaitBoard, roughSVG: RoughSVG, element: MindElement) {
     const abstractIncludedG = createG();
-    let rectangle: SVGGElement;
 
-    const element = node.origin;
+    const parentElement = MindElement.getParent(element);
     const nodeLayout = MindmapQueries.getCorrectLayoutByElement(element) as MindmapLayoutType;
     const isHorizontal = isHorizontalLayout(nodeLayout);
 
-    const includedOrigin = parent.children.slice(element.start!, element.end! + 1).map(element => {
-        return element.origin;
-    });
-    let abstractRectangle = getRectangleByElements(board, includedOrigin, true);
+    const includedElements = parentElement.children.slice(element.start!, element.end! + 1);
+    let abstractRectangle = getRectangleByElements(board, includedElements, true);
 
     abstractRectangle = RectangleClient.getOutlineRectangle(abstractRectangle, -ABSTRACT_INCLUDED_OUTLINE_OFFSET);
-    rectangle = drawAbstractRoundRectangle(
+    const rectangle = drawAbstractRoundRectangle(
         roughSVG,
         abstractRectangle.x,
         abstractRectangle.y,
@@ -44,7 +41,7 @@ export function drawAbstractIncludedOutline(board: PlaitBoard, roughSVG: RoughSV
     const startPlacement = [HorizontalPlacement.center, VerticalPlacement.top] as PointPlacement;
     const endPlacement = [HorizontalPlacement.center, VerticalPlacement.bottom] as PointPlacement;
 
-    const linkDirection = getLayoutDirection(node, isHorizontal);
+    const linkDirection = getLayoutDirection(MindElement.getNode(board, element), isHorizontal);
 
     transformPlacement(startPlacement, linkDirection);
     transformPlacement(endPlacement, linkDirection);

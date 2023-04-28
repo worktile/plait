@@ -324,7 +324,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
         this.abstractIncludedOutlineG?.remove();
         if (this.selected) {
             if (AbstractNode.isAbstract(this.element)) {
-                this.updateAbstractIncludedOutline();
+                this.drawAbstractIncludedOutline();
             }
             let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
             const selectedStrokeG = drawRoundRectangle(
@@ -767,8 +767,8 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
         }
     }
 
-    updateAbstractIncludedOutline() {
-        this.abstractIncludedOutlineG = drawAbstractIncludedOutline(this.board, this.roughSVG, this.parent, this.node);
+    drawAbstractIncludedOutline() {
+        this.abstractIncludedOutlineG = drawAbstractIncludedOutline(this.board, this.roughSVG, this.element);
         PlaitBoard.getHost(this.board).append(this.abstractIncludedOutlineG);
     }
 
