@@ -1,4 +1,4 @@
-import { drawAbstractRoundRectangle, createG, getRectangleByElements, PlaitBoard } from '@plait/core';
+import { drawAbstractRoundRectangle, createG, getRectangleByElements, PlaitBoard, RectangleClient } from '@plait/core';
 import { ABSTRACT_HANDLE_COLOR, ABSTRACT_HANDLE_LENGTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET, PRIMARY_COLOR } from '../constants';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { MindmapNode } from '../interfaces';
@@ -18,18 +18,22 @@ export function drawAbstractIncludedOutline(board: PlaitBoard, roughSVG: RoughSV
     const includedOrigin = parent.children.slice(element.start!, element.end! + 1).map(element => {
         return element.origin;
     });
-    let { x, y, width, height } = getRectangleByElements(board, includedOrigin, true);
+    let abstractRectangle = getRectangleByElements(board, includedOrigin, true);
 
-    x -= ABSTRACT_INCLUDED_OUTLINE_OFFSET;
-    y -= ABSTRACT_INCLUDED_OUTLINE_OFFSET;
-    width += ABSTRACT_INCLUDED_OUTLINE_OFFSET * 2;
-    height += ABSTRACT_INCLUDED_OUTLINE_OFFSET * 2;
-
-    rectangle = drawAbstractRoundRectangle(roughSVG, x, y, x + width, y + height, isHorizontal, {
-        stroke: PRIMARY_COLOR,
-        strokeWidth: 1,
-        fillStyle: 'solid'
-    });
+    abstractRectangle = RectangleClient.getOutlineRectangle(abstractRectangle, -ABSTRACT_INCLUDED_OUTLINE_OFFSET);
+    rectangle = drawAbstractRoundRectangle(
+        roughSVG,
+        abstractRectangle.x,
+        abstractRectangle.y,
+        abstractRectangle.x + abstractRectangle.width,
+        abstractRectangle.y + abstractRectangle.height,
+        isHorizontal,
+        {
+            stroke: PRIMARY_COLOR,
+            strokeWidth: 1,
+            fillStyle: 'solid'
+        }
+    );
 
     const handleOptions = {
         stroke: ABSTRACT_HANDLE_COLOR,
@@ -45,9 +49,8 @@ export function drawAbstractIncludedOutline(board: PlaitBoard, roughSVG: RoughSV
     transformPlacement(startPlacement, linkDirection);
     transformPlacement(endPlacement, linkDirection);
 
-    const rect = { x, y, width, height };
-    let startCenterPoint = getPointByPlacement(rect, startPlacement);
-    let endCenterPoint = getPointByPlacement(rect, endPlacement);
+    let startCenterPoint = getPointByPlacement(abstractRectangle, startPlacement);
+    let endCenterPoint = getPointByPlacement(abstractRectangle, endPlacement);
 
     const startPoint1 = movePoint(startCenterPoint, -ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
     const startPoint2 = movePoint(startCenterPoint, ABSTRACT_HANDLE_LENGTH / 2, linkDirection);

@@ -94,7 +94,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
 
     index!: number;
 
-    abstractIncludeG?: SVGGElement;
+    abstractIncludedOutlineG?: SVGGElement;
 
     parentG!: SVGGElement;
 
@@ -321,7 +321,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
 
     drawActiveG() {
         this.destroyActiveG();
-        this.abstractIncludeG?.remove();
+        this.abstractIncludedOutlineG?.remove();
         if (this.selected) {
             if (AbstractNode.isAbstract(this.element)) {
                 this.updateAbstractIncludedOutline();
@@ -768,8 +768,8 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     }
 
     updateAbstractIncludedOutline() {
-        this.abstractIncludeG = drawAbstractIncludedOutline(this.board, this.roughSVG, this.parent, this.node);
-        PlaitBoard.getHost(this.board).append(this.abstractIncludeG);
+        this.abstractIncludedOutlineG = drawAbstractIncludedOutline(this.board, this.roughSVG, this.parent, this.node);
+        PlaitBoard.getHost(this.board).append(this.abstractIncludedOutlineG);
     }
 
     updateRichtext() {
@@ -901,6 +901,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
+        this.abstractIncludedOutlineG?.remove();
         this.destroyRichtext();
         this.destroy$.next();
         this.destroy$.complete();
