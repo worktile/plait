@@ -9,13 +9,15 @@ export function drawAbstractActive(roughSVG: RoughSVG, x: number, y: number, wid
     let startHandleMask: SVGElement;
     let endHandle: SVGElement;
     let endHandleMask: SVGElement;
+    const handleLength = 10;
+
     rectangle = drawAbstractRoundRectangle(roughSVG, x, y, x + width, y + height, isHorizontalRec, {
         stroke: PRIMARY_COLOR,
         strokeWidth: 1,
         fillStyle: 'solid'
     });
     if (isHorizontalRec) {
-        startHandle = roughSVG.line(x, y + height / 2 - 4, x, y + height / 2 + 4, {
+        startHandle = roughSVG.line(x, y + height / 2 - handleLength / 2, x, y + height / 2 + handleLength / 2, {
             stroke: ABSTRACT_HANDLE,
             strokeWidth: 3,
             fillStyle: 'solid'
@@ -28,7 +30,7 @@ export function drawAbstractActive(roughSVG: RoughSVG, x: number, y: number, wid
             fillStyle: 'solid'
         });
 
-        endHandle = roughSVG.line(x + width, y + height / 2 - 4, x + width, y + height / 2 + 4, {
+        endHandle = roughSVG.line(x + width, y + height / 2 - handleLength / 2, x + width, y + height / 2 + handleLength / 2, {
             stroke: ABSTRACT_HANDLE,
             strokeWidth: 3,
             fillStyle: 'solid'
@@ -41,7 +43,7 @@ export function drawAbstractActive(roughSVG: RoughSVG, x: number, y: number, wid
             fillStyle: 'solid'
         });
     } else {
-        startHandle = roughSVG.line(x + width / 2 - 4, y, x + width / 2 + 4, y, {
+        startHandle = roughSVG.line(x + width / 2 - handleLength / 2, y, x + width / 2 + handleLength / 2, y, {
             stroke: ABSTRACT_HANDLE,
             strokeWidth: 3,
             fillStyle: 'solid'
@@ -54,7 +56,7 @@ export function drawAbstractActive(roughSVG: RoughSVG, x: number, y: number, wid
             fillStyle: 'solid'
         });
 
-        endHandle = roughSVG.line(x + width / 2 - 4, y + height, x + width / 2 + 4, y + height, {
+        endHandle = roughSVG.line(x + width / 2 - handleLength / 2, y + height, x + width / 2 + handleLength / 2, y + height, {
             stroke: ABSTRACT_HANDLE,
             strokeWidth: 3,
             fillStyle: 'solid'

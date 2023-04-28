@@ -44,6 +44,7 @@ import { fromEvent, Subject, timer } from 'rxjs';
 import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
 import { Editor, Operation } from 'slate';
 import {
+    ABSTRACT_OFFSET,
     EXTEND_OFFSET,
     EXTEND_RADIUS,
     MindmapNodeShape,
@@ -330,7 +331,12 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
                 });
                 let { x, y, width, height } = getRectangleByElements(this.board, includeOrigin, true);
 
-                this.updateAbstractActiveG(x - 3.5, y - 3.5, width + 7, height + 7);
+                this.updateAbstractActiveG(
+                    x - ABSTRACT_OFFSET,
+                    y - ABSTRACT_OFFSET,
+                    width + ABSTRACT_OFFSET * 2,
+                    height + ABSTRACT_OFFSET * 2
+                );
             }
             let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
             const selectedStrokeG = drawRoundRectangle(

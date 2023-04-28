@@ -16,6 +16,7 @@ import { MindmapQueries } from '../queries';
 import { MindmapNode } from '../interfaces/node';
 import { abstractHandlePosition } from '../interfaces/abstract';
 import { MindElement } from '../interfaces';
+import { ABSTRACT_OFFSET } from '../constants';
 
 export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, globalMousemove, globalMouseup } = board;
@@ -71,10 +72,10 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                 return element.origin;
             });
             let { x, y, width, height } = getRectangleByElements(board, includeOrigin, true);
-            x -= 3.5;
-            y -= 3.5;
-            width += 7;
-            height += 7;
+            x -= ABSTRACT_OFFSET;
+            y -= ABSTRACT_OFFSET;
+            width += ABSTRACT_OFFSET * 2;
+            height += ABSTRACT_OFFSET * 2;
 
             if (handleSide === abstractHandlePosition.start) {
                 const abstractNode = abstractParentNode.children
@@ -85,8 +86,9 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                 const maxNode = abstractNode ? abstractParentNode.children[abstractNode.origin.end! + 1] : abstractParentNode.children[0];
 
                 const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-                const maxBorder = getRectangleByNode(maxNode)[isHorizontal ? 'x' : 'y'] - 3.5;
-                const minBorder = getRectangleByNode(abstractParentNode.children[abstractElement.end!])[isHorizontal ? 'x' : 'y'] - 3.5;
+                const maxBorder = getRectangleByNode(maxNode)[isHorizontal ? 'x' : 'y'] - ABSTRACT_OFFSET;
+                const minBorder =
+                    getRectangleByNode(abstractParentNode.children[abstractElement.end!])[isHorizontal ? 'x' : 'y'] - ABSTRACT_OFFSET;
 
                 movePosition = Math.max(maxBorder, Math.min(minBorder, isHorizontal ? movedTarget[0] : movedTarget[1]));
 
@@ -110,8 +112,8 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                 const maxEndRec = getRectangleByElements(board, [maxNode.origin], true);
                 const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
 
-                const minBorder = minEndRec[isHorizontal ? 'x' : 'y'] + minEndRec[isHorizontal ? 'width' : 'height'] + 3.5;
-                const maxBorder = maxEndRec[isHorizontal ? 'x' : 'y'] + maxEndRec[isHorizontal ? 'width' : 'height'] + 3.5;
+                const minBorder = minEndRec[isHorizontal ? 'x' : 'y'] + minEndRec[isHorizontal ? 'width' : 'height'] + ABSTRACT_OFFSET;
+                const maxBorder = maxEndRec[isHorizontal ? 'x' : 'y'] + maxEndRec[isHorizontal ? 'width' : 'height'] + ABSTRACT_OFFSET;
 
                 movePosition = Math.max(minBorder, Math.min(maxBorder, isHorizontal ? movedTarget[0] : movedTarget[1]));
 
@@ -142,7 +144,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                     const recXOrY = isHorizontal ? rec.x : rec.y;
                     const recWidthOrHeight = isHorizontal ? rec.width : rec.height;
                     if (index === 0) {
-                        return movePosition >= recXOrY - 3.5 && movePosition <= recXOrY + recWidthOrHeight / 2;
+                        return movePosition >= recXOrY - ABSTRACT_OFFSET && movePosition <= recXOrY + recWidthOrHeight / 2;
                     } else {
                         return (
                             movePosition <= recXOrY + recWidthOrHeight / 2 &&
@@ -160,7 +162,9 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                     const recXOrY = isHorizontal ? rec.x : rec.y;
                     const recWidthOrHeight = isHorizontal ? rec.width : rec.height;
                     if (index === recArray.length - 1) {
-                        return movePosition <= recXOrY + recWidthOrHeight + 3.5 && movePosition >= recXOrY + recWidthOrHeight / 2;
+                        return (
+                            movePosition <= recXOrY + recWidthOrHeight + ABSTRACT_OFFSET && movePosition >= recXOrY + recWidthOrHeight / 2
+                        );
                     } else {
                         return (
                             movePosition >= recXOrY + recWidthOrHeight / 2 &&
