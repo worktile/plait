@@ -5,13 +5,8 @@ import { PlaitMindEmojiBoard } from './with-mind-emoji';
 import { createForeignObject } from '@plait/richtext';
 import { createG } from '@plait/core';
 import { getRectangleByNode } from '../../utils/graph';
-import {
-    CHILD_NODE_TEXT_HORIZONTAL_GAP,
-    CHILD_NODE_TEXT_VERTICAL_GAP,
-    ROOT_NODE_TEXT_HORIZONTAL_GAP,
-    ROOT_NODE_TEXT_VERTICAL_GAP
-} from '../../constants/node';
-import { getEmojiFontSize, getEmojiSize } from './emoji';
+import { getEmojiFontSize, getEmojisRectangle } from './emoji';
+import { NodeSpace } from '../../utils/node-space';
 
 export class EmojiDrawer {
     private emoji?: EmojiItem;
@@ -61,11 +56,9 @@ export class EmojisDrawer {
             this.g = createG();
             this.g.classList.add('emojis');
             let { x, y } = getRectangleByNode(MindElement.getNode(this.board, element));
-            const offsetX = node.origin.isRoot ? ROOT_NODE_TEXT_HORIZONTAL_GAP : CHILD_NODE_TEXT_HORIZONTAL_GAP;
-            const offsetY = node.origin.isRoot ? ROOT_NODE_TEXT_VERTICAL_GAP : CHILD_NODE_TEXT_VERTICAL_GAP;
-            x = x + offsetX;
-            y = y + offsetY;
-            const { width, height } = getEmojiSize(element);
+            x = x + NodeSpace.getEmojiHorizontalSpace(element);
+            y = y + NodeSpace.getEmojiVerticalSpace(element);
+            const { width, height } = getEmojisRectangle(element);
             const fontSize = getEmojiFontSize(element);
             const foreignObject = createForeignObject(x, y, width, height);
             this.g.append(foreignObject);

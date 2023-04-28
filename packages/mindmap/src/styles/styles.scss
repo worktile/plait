@@ -1,6 +1,5 @@
 $primary: #4e8afa;
 
-
 g[plait-mindmap='true'] {
     .plait-richtext-container {
         cursor: default;
@@ -28,6 +27,13 @@ g[plait-mindmap='true'] {
 
     .node-emojis-container {
         display: flex;
+        ::-moz-selection {
+            /* Code for Firefox */
+            background: none;
+        }
+        ::selection {
+            background: none;
+        }
     }
 }
 .plait-board-container.focused:not(.selection-moving) {

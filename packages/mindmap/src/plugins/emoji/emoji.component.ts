@@ -20,8 +20,7 @@ export class MindEmojiComponent implements OnInit {
     constructor(private elementRef: ElementRef<HTMLElement>) {}
 
     ngOnInit(): void {
-        const emoji = `👌🏻`;
-        this.nativeElement.innerHTML = emoji;
+        this.nativeElement.innerHTML = this.emojiItem.name;
         this.nativeElement.style.fontSize = `${this.fontSize}px`;
     }
 }

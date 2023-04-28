@@ -6,11 +6,11 @@ export const mockMindmapData: PlaitMind[] = [
         type: 'mindmap',
         id: '1',
         rightNodeCount: 3,
-        data: { topic: { children: [{ text: '脑图调研' }] } },
+        data: { topic: { children: [{ text: '脑图调研' }] }, emojis: [{ name: '🏀' }, { name: '🌈' }] },
         children: [
             {
                 id: '1-1',
-                data: { topic: { children: [{ text: '富文本' }] }, emojis: [{ name: '1F98F' }, { name: '1F98F' }] },
+                data: { topic: { children: [{ text: '富文本' }] }, emojis: [{ name: '🤩' }, { name: '🤘' }] },
                 children: [
                     {
                         id: 'abc',

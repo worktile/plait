@@ -1,28 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { BASE, STROKE_WIDTH } from './constants/default';
-import {
-    CHILD_NODE_TEXT_HORIZONTAL_GAP,
-    CHILD_NODE_TEXT_VERTICAL_GAP,
-    ROOT_NODE_TEXT_HORIZONTAL_GAP,
-    ROOT_NODE_TEXT_VERTICAL_GAP,
-    MindmapNodeShape
-} from './constants/node';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MindElement, PlaitMind } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
-import { BeforeContextChange, PlaitPluginElementContext, depthFirstRecursion, createG } from '@plait/core';
-import {
-    LayoutOptions,
-    GlobalLayout,
-    OriginNode,
-    LayoutNode,
-    isIndentedLayout,
-    isHorizontalLayout,
-    ConnectingPosition,
-    isHorizontalLogicLayout
-} from '@plait/layouts';
+import { BeforeContextChange, PlaitPluginElementContext, depthFirstRecursion } from '@plait/core';
+import { GlobalLayout, OriginNode } from '@plait/layouts';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { MindmapQueries } from './queries';
-import { getRootLayout } from './utils/layout';
 import { MindmapNodeComponent } from './node.component';
 import { getLayoutOptions } from './layout-option';
 
