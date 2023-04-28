@@ -13,3 +13,5 @@ export const EXTEND_RADIUS = 16;
 export const QUICK_INSERT_CIRCLE_OFFSET = 9;
 export const QUICK_INSERT_CIRCLE_COLOR = '#6698FF';
 export const QUICK_INSERT_INNER_CROSS_COLOR = 'white';
+
+export const ABSTRACT_HANDLE = '#6698FF80'; //PRIMARY_COLOR 50% 透明度

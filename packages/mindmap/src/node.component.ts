@@ -23,7 +23,8 @@ import {
     PlaitElement,
     NODE_TO_INDEX,
     PlaitPluginElementContext,
-    OnContextChanged
+    OnContextChanged,
+    getRectangleByElements
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -67,6 +68,7 @@ import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
+import { drawAbstractActive } from './draw/abstract-active';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -108,6 +110,8 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     extendG?: SVGGElement;
 
     maskG!: SVGGElement;
+
+    abstractIncludeG?: SVGGElement;
 
     richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
 
@@ -319,6 +323,15 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     drawActiveG() {
         this.destroyActiveG();
         if (this.selected) {
+            if (AbstractNode.isAbstract(this.element)) {
+                const includeElements = this.parent.children.slice(this.element.start, this.element.end! + 1);
+                const includeOrigin = includeElements.map(element => {
+                    return element.origin;
+                });
+                let { x, y, width, height } = getRectangleByElements(this.board, includeOrigin, true);
+
+                this.updateAbstractActiveG(x - 3.5, y - 3.5, width + 7, height + 7);
+            }
             let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
             const selectedStrokeG = drawRoundRectangle(
                 this.roughSVG as RoughSVG,
@@ -355,6 +368,15 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     destroyActiveG() {
         this.activeG.forEach(g => g.remove());
         this.activeG = [];
+    }
+
+    updateAbstractActiveG(x: number, y: number, width: number, height: number) {
+        this.abstractIncludeG?.remove();
+        const nodeLayout = MindmapQueries.getCorrectLayoutByElement(this.element) as MindmapLayoutType;
+
+        this.abstractIncludeG = drawAbstractActive(this.roughSVG, x, y, width, height, !isHorizontalLayout(nodeLayout));
+        PlaitBoard.getHost(this.board).append(this.abstractIncludeG);
+        this.activeG.push(this.abstractIncludeG);
     }
 
     updateActiveClass() {
@@ -890,6 +912,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     ngOnDestroy(): void {
         super.ngOnDestroy();
         this.destroyRichtext();
+        this.abstractIncludeG?.remove();
         this.destroy$.next();
         this.destroy$.complete();
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {

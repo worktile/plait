@@ -4,12 +4,7 @@ import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom';
 import { RectangleClient } from '../interfaces/rectangle-client';
-import {
-    cacheSelectedElements,
-    getHitElements,
-    getSelectedElements,
-    isIntersectionElements
-} from '../utils/selected-element';
+import { cacheSelectedElements, getHitElements, getSelectedElements, isIntersectionElements } from '../utils/selected-element';
 import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR, Selection } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
@@ -25,7 +20,11 @@ export function withSelection(board: PlaitBoard) {
     let previousSelectedElements: PlaitElement[];
 
     board.mousedown = (event: MouseEvent) => {
-        if (event.button === 0) {
+        const abstractHandle =
+            (event.target as HTMLElement).closest('.abstract-start-handle-mask') ||
+            (event.target as HTMLElement).closest('.abstract-end-handle-mask');
+
+        if (event.button === 0 && !abstractHandle) {
             start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         }
 

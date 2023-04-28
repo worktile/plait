@@ -38,3 +38,58 @@ export function drawRoundRectangle(
         options
     );
 }
+
+export function drawAbstractRoundRectangle(
+    rs: RoughSVG,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    isHorizontalRec: boolean,
+    options: Options
+) {
+    const width = Math.abs(x1 - x2);
+    const height = Math.abs(y1 - y2);
+
+    let radius = 3;
+
+    const handleSideLine = (width - 18 - 6) / 2;
+    const sideLine = height - radius * 2;
+    if (isHorizontalRec) {
+        const handleSideLine = (height - 18 - 6) / 2;
+        const sideLine = width - radius * 2;
+        return rs.path(
+            `M${x1 + radius},${y1}
+            l${sideLine},0
+            a${radius},${radius},0,0,1,${radius},${radius}
+            l0,${handleSideLine}
+            m0,${18}
+            l0,${handleSideLine}
+            a${radius},${radius},0,0,1,-${radius},${radius}
+            l-${sideLine},0
+            a${radius},${radius},0,0,1,-${radius},-${radius}
+            l0,-${handleSideLine}
+            m0,-${18}
+            l0,-${handleSideLine}
+            a${radius},${radius},0,0,1,${radius},-${radius}`,
+            options
+        );
+    } else {
+        return rs.path(
+            `M${x1 + radius},${y1}
+            l${handleSideLine},0
+            m${18},0
+            l${handleSideLine},0
+            a${radius},${radius},0,0,1,${radius},${radius}
+            l0,${sideLine}
+            a${radius},${radius},0,0,1,-${radius},${radius}
+            l-${handleSideLine},0
+            m-${18},0
+            l-${handleSideLine},0
+            a${radius},${radius},0,0,1,-${radius},-${radius}
+            l0,-${sideLine}
+            a${radius},${radius},0,0,1,${radius},-${radius}`,
+            options
+        );
+    }
+}

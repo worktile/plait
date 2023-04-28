@@ -1,6 +1,5 @@
 $primary: #4e8afa;
 
-
 g[plait-mindmap='true'] {
     .plait-richtext-container {
         cursor: default;
@@ -84,5 +83,21 @@ g[plait-mindmap='true'] {
     .dragging {
         cursor: pointer;
         opacity: 0.6;
+    }
+}
+
+.abstract-start-handle-mask:hover {
+    cursor: ns-resize;
+}
+.abstract-end-handle-mask:hover {
+    cursor: ns-resize;
+}
+
+.abstract-horizontal {
+    .abstract-start-handle-mask:hover {
+        cursor: ew-resize;
+    }
+    .abstract-end-handle-mask:hover {
+        cursor: ew-resize;
     }
 }
