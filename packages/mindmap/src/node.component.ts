@@ -769,9 +769,15 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
         }
     }
 
-    updateAbstractIncludedOutline(offset?: Point, handlePosition?: AbstractHandlePosition) {
+    updateAbstractIncludedOutline(resizingLocation?: number, handlePosition?: AbstractHandlePosition) {
         this.abstractIncludedOutlineG?.remove();
-        this.abstractIncludedOutlineG = drawAbstractIncludedOutline(this.board, this.roughSVG, this.element, offset, handlePosition);
+        this.abstractIncludedOutlineG = drawAbstractIncludedOutline(
+            this.board,
+            this.roughSVG,
+            this.element,
+            handlePosition,
+            resizingLocation
+        );
         PlaitBoard.getHost(this.board).append(this.abstractIncludedOutlineG);
     }
 

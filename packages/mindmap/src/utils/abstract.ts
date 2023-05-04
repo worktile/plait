@@ -1,51 +1,43 @@
 import { PlaitBoard, RectangleClient, getRectangleByElements } from '@plait/core';
 import { AbstractHandlePosition, MindElement } from '../interfaces';
 import { AbstractNode } from '@plait/layouts';
-import { ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../constants';
 
-export const getRectangleByOffset = (
+export const getRectangleByResizingLocation = (
     abstractRectangle: RectangleClient,
-    offset: number,
+    location: number,
     handlePosition: AbstractHandlePosition,
     isHorizontal: boolean
 ) => {
-    const rectangle = RectangleClient.getOutlineRectangle(abstractRectangle, -ABSTRACT_INCLUDED_OUTLINE_OFFSET);
-    return isHorizontal
-        ? handlePosition === AbstractHandlePosition.start
-            ? {
-                  ...rectangle,
-                  y: offset + rectangle.y,
-                  height: rectangle.height - offset
-              }
-            : {
-                  ...rectangle,
-                  height: rectangle.height + offset
-              }
-        : handlePosition === AbstractHandlePosition.start
-        ? {
-              ...rectangle,
-              x: offset + rectangle.x,
-              width: rectangle.width - offset
-          }
-        : {
-              ...rectangle,
-              width: rectangle.width + offset
-          };
+    if (isHorizontal) {
+        if (handlePosition === AbstractHandlePosition.start) {
+            return {
+                ...abstractRectangle,
+                y: location,
+                height: abstractRectangle.height + abstractRectangle.y - location
+            };
+        } else {
+            return {
+                ...abstractRectangle,
+                height: location - abstractRectangle.y
+            };
+        }
+    } else {
+        if (handlePosition === AbstractHandlePosition.start) {
+            return {
+                ...abstractRectangle,
+                x: location,
+                width: abstractRectangle.width + abstractRectangle.x - location
+            };
+        } else {
+            return {
+                ...abstractRectangle,
+                width: location - abstractRectangle.x
+            };
+        }
+    }
 };
 
-export const abstractOffsetHandle = (
-    board: PlaitBoard,
-    handlePosition: AbstractHandlePosition,
-    parent: MindElement,
-    element: MindElement,
-    isHorizontal: boolean,
-    offset: number
-) => {
-    const scope = getLimitedScope(board, handlePosition, parent, element, isHorizontal);
-    return Math.min(scope.max, Math.max(scope.min, offset));
-};
-
-export const getLimitedScope = (
+export const getLocationScope = (
     board: PlaitBoard,
     handlePosition: AbstractHandlePosition,
     parent: MindElement,
@@ -67,13 +59,12 @@ export const getLimitedScope = (
         }
 
         const minNodeRectangle = getRectangleByElements(board, [minNode], true);
-        const startNodeRectangle = getRectangleByElements(board, [startNode], true);
         const endNodeRectangle = getRectangleByElements(board, [endNode], false);
 
         if (isHorizontal) {
-            return { max: endNodeRectangle.y - startNodeRectangle.y, min: minNodeRectangle.y - startNodeRectangle.y };
+            return { max: endNodeRectangle.y, min: minNodeRectangle.y };
         } else {
-            return { max: endNodeRectangle.x - startNodeRectangle.x, min: minNodeRectangle.x - startNodeRectangle.x };
+            return { max: endNodeRectangle.x, min: minNodeRectangle.x };
         }
     } else {
         const abstractNode = parent.children.filter(child => AbstractNode.isAbstract(child) && child.start > element.end!);
@@ -88,18 +79,17 @@ export const getLimitedScope = (
         }
 
         const maxNodeRectangle = getRectangleByElements(board, [maxNode], true);
-        const endNodeRectangle = getRectangleByElements(board, [endNode], true);
         const startNodeRectangle = getRectangleByElements(board, [startNode], false);
 
         if (isHorizontal) {
             return {
-                max: maxNodeRectangle.y + maxNodeRectangle.height - (endNodeRectangle.y + endNodeRectangle.height),
-                min: startNodeRectangle.y + startNodeRectangle.height - (endNodeRectangle.y + endNodeRectangle.height)
+                max: maxNodeRectangle.y + maxNodeRectangle.height,
+                min: startNodeRectangle.y + startNodeRectangle.height
             };
         } else {
             return {
-                max: maxNodeRectangle.x + maxNodeRectangle.width - (endNodeRectangle.x + endNodeRectangle.width),
-                min: startNodeRectangle.x + startNodeRectangle.width - (endNodeRectangle.x + endNodeRectangle.width)
+                max: maxNodeRectangle.x + maxNodeRectangle.width,
+                min: startNodeRectangle.x + startNodeRectangle.width
             };
         }
     }
