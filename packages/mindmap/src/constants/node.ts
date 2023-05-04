@@ -1,5 +1,3 @@
-import { BASE } from './default';
-
 export const TOPIC_COLOR = '#333';
 export const TOPIC_FONT_SIZE = 14;
 export const NODE_FILL = '#FFFFFF';
@@ -18,3 +16,5 @@ export enum MindmapNodeShape {
 export const ABSTRACT_HANDLE_COLOR = '#6698FF80'; //PRIMARY_COLOR 50% 透明度
 export const ABSTRACT_INCLUDED_OUTLINE_OFFSET = 3.5;
 export const ABSTRACT_HANDLE_LENGTH = 12;
+
+export const TOPIC_DEFAULT_MAX_WORD_COUNT = 34;

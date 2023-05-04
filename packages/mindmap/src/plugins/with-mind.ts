@@ -23,7 +23,7 @@ import { PlaitMindmapComponent } from '../mindmap.component';
 import { MindmapNodeComponent } from '../node.component';
 import {
     changeRightNodeCount,
-    createEmptyNode,
+    insertMindElement,
     deleteSelectedELements,
     filterChildElement,
     findParentElement,
@@ -37,10 +37,11 @@ import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertCl
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEditing } from '../utils/node';
-import { withAbstract } from './with-abstract';
 import { withEmoji } from './emoji/with-mind-emoji';
+import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants';
+import { withAbstract } from './with-abstract';
 
-export const withMind: PlaitPlugin = (board: PlaitBoard) => {
+export const withMind = (board: PlaitBoard) => {
     const {
         drawElement,
         dblclick,
@@ -115,12 +116,12 @@ export const withMind: PlaitPlugin = (board: PlaitBoard) => {
                             Transforms.setNode(board, newElement, selectedElementPath);
                         });
                     }
-                    createEmptyNode(board, selectedElement, findNewChildNodePath(board, selectedElement));
+                    insertMindElement(board, selectedElement, findNewChildNodePath(board, selectedElement));
                 } else {
                     if (shouldChangeRightNodeCount(selectedElement)) {
                         changeRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
                     }
-                    createEmptyNode(board, selectedElement, findNewSiblingNodePath(board, selectedElement));
+                    insertMindElement(board, selectedElement, findNewSiblingNodePath(board, selectedElement));
                 }
                 return;
             }
@@ -212,10 +213,14 @@ export const withMind: PlaitPlugin = (board: PlaitBoard) => {
             insertClipboardData(board, elements, targetPoint || [0, 0]);
         } else {
             const text = data?.getData(`text/plain`) as string;
-            const { width } = getSizeByText(text, PlaitBoard.getHost(board).parentElement as HTMLElement);
+            const { width, height } = getSizeByText(
+                text,
+                PlaitBoard.getHost(board).parentElement as HTMLElement,
+                TOPIC_DEFAULT_MAX_WORD_COUNT
+            );
             const selectedElements = getSelectedElements(board);
             if (text && selectedElements.length === 1) {
-                insertClipboardText(board, selectedElements[0], text, width);
+                insertClipboardText(board, selectedElements[0], text, width, height);
             }
         }
         insertFragment(data, targetPoint);

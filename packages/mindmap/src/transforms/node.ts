@@ -17,6 +17,15 @@ export const setTopic = (board: PlaitBoard, element: MindElement, topic: Element
     Transforms.setNode(board, newElement, path);
 };
 
+export const setTopicSize = (board: PlaitBoard, element: MindElement, width: number, height: number) => {
+    const newElement = {
+        width: width < NODE_MIN_WIDTH * board.viewport.zoom ? NODE_MIN_WIDTH : width / board.viewport.zoom,
+        height: height / board.viewport.zoom
+    };
+    const path = PlaitBoard.findPath(board, element);
+    Transforms.setNode(board, newElement, path);
+};
+
 export const addEmoji = (board: PlaitBoard, element: MindElement, emojiItem: EmojiItem) => {
     const emojis = element.data.emojis || [];
     emojis.push(emojiItem);

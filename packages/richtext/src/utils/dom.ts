@@ -147,7 +147,7 @@ export const normalizeDOMPoint = (domPoint: DOMPoint): DOMPoint => {
     return [node, offset];
 };
 
-export const getSizeByText = (text: string, container: HTMLElement, fontSize?: number) => {
+export const getSizeByText = (text: string, container: HTMLElement, maxWordCount?: number, fontSize?: number) => {
     const fakeNode = document.createElement('plait-node');
     if (fontSize) {
         fakeNode.style.fontSize = `${fontSize}px`;
@@ -158,6 +158,9 @@ export const getSizeByText = (text: string, container: HTMLElement, fontSize?: n
     const richtext = document.createElement('plait-richtext');
     richtext.className = 'plait-richtext-container';
     richtext.style.lineHeight = 'normal';
+    if (maxWordCount) {
+        richtext.style.maxWidth = `${maxWordCount}em`;
+    }
     richtext.appendChild(fakeNode);
     container?.appendChild(richtext);
     const { width, height } = fakeNode.getBoundingClientRect();

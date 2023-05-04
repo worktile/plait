@@ -1,5 +1,5 @@
 import { AbstractNode, MindmapLayoutType } from '@plait/layouts';
-import { addSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, PlaitNode, Transforms } from '@plait/core';
+import { addSelectedElement, idCreator, isNullOrUndefined, Path, PlaitBoard, PlaitElement, PlaitNode, Transforms } from '@plait/core';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE } from '../constants/node';
 import { MindmapNode } from '../interfaces';
@@ -211,8 +211,42 @@ export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutT
     return [mindmapData];
 };
 
+export const createMindElement = (
+    text: string,
+    width: number,
+    height: number,
+    options: { fill?: string; strokeColor?: string; strokeWidth?: number; shape?: MindmapNodeShape }
+) => {
+    const newElement: MindElement = {
+        id: idCreator(),
+        data: {
+            topic: { children: [{ text }] }
+        },
+        children: [],
+        width,
+        height,
+        fill: options.fill,
+        strokeColor: options.strokeColor,
+        strokeWidth: options.strokeWidth,
+        shape: options.shape
+    };
+    if (options.fill) {
+        newElement.fill = options.fill;
+    }
+    if (options.strokeColor) {
+        newElement.strokeColor = options.strokeColor;
+    }
+    if (!isNullOrUndefined(options.strokeWidth)) {
+        newElement.strokeWidth = options.strokeWidth;
+    }
+    if (options.shape) {
+        newElement.shape = options.shape;
+    }
+    return newElement;
+};
+
 // layoutLevel 用来表示插入兄弟节点还是子节点
-export const createEmptyNode = (board: PlaitBoard, inheritNode: MindElement, path: Path) => {
+export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, path: Path) => {
     let fill,
         strokeColor,
         strokeWidth,
@@ -225,19 +259,7 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindElement, pat
 
     shape = inheritNode.shape as MindmapNodeShape;
 
-    const newElement = {
-        id: idCreator(),
-        data: {
-            topic: { children: [{ text: '' }] }
-        },
-        children: [],
-        width: NODE_MIN_WIDTH,
-        height: TEXT_DEFAULT_HEIGHT,
-        fill,
-        strokeColor,
-        strokeWidth,
-        shape
-    };
+    const newElement = createMindElement('', NODE_MIN_WIDTH, TEXT_DEFAULT_HEIGHT, { fill, strokeColor, strokeWidth, shape });
 
     const index = path[path.length - 1];
     const abstractNode = inheritNode.children.find(
