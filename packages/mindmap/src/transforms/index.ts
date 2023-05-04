@@ -1,9 +1,10 @@
 import { setLayout } from './layout';
-import { addEmoji, removeEmoji, setTopic } from './node';
+import { addEmoji, removeEmoji, setTopic, setTopicSize } from './node';
 
 export const MindTransforms = {
     setLayout,
     setTopic,
+    setTopicSize,
     addEmoji,
     removeEmoji
 };

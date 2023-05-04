@@ -56,14 +56,14 @@ import {
 } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLogicLink } from './draw/link/logic-link';
-import { drawMindmapNodeRichtext, updateMindmapNodeRichtextLocation } from './draw/richtext';
+import { drawMindmapNodeRichtext, updateMindNodeTopicSize } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
 import { MindElement, PlaitMind } from './interfaces/element';
 import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
 import { MindmapQueries } from './queries';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
 import { getRectangleByNode, hitMindmapElement } from './utils/graph';
-import { createEmptyNode, getChildrenCount } from './utils/mindmap';
+import { insertMindElement, getChildrenCount } from './utils/mindmap';
 import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
@@ -610,7 +610,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
                 const path = PlaitBoard.findPath(this.board, this.element).concat(
                     this.element.children.filter(child => !AbstractNode.isAbstract(child)).length
                 );
-                createEmptyNode(this.board, this.node.origin, path);
+                insertMindElement(this.board, this.node.origin, path);
             });
     }
 
@@ -798,17 +798,19 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
 
     updateRichtext() {
         updateRichText(this.node.origin.data.topic, this.richtextComponentRef!);
-        updateMindmapNodeRichtextLocation(this.node as MindmapNode, this.richtextG as SVGGElement, this.isEditable);
+        updateMindNodeTopicSize(this.node, this.richtextG as SVGGElement, this.isEditable);
     }
 
     startEditText(isEnd: boolean, isClear: boolean) {
-        this.isEditable = true;
-        this.disabledMaskG();
-        IS_TEXT_EDITABLE.set(this.board, true);
         if (!this.richtextComponentRef) {
             throw new Error('undefined richtextComponentRef');
         }
         const richtextInstance = this.richtextComponentRef.instance;
+
+        this.isEditable = true;
+        IS_TEXT_EDITABLE.set(this.board, true);
+        this.disabledMaskG();
+        updateMindNodeTopicSize(this.node, this.richtextG as SVGGElement, this.isEditable);
         if (richtextInstance.plaitReadonly) {
             richtextInstance.plaitReadonly = false;
             this.richtextComponentRef.changeDetectorRef.detectChanges();
@@ -818,9 +820,14 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
             if (isClear) {
                 Editor.deleteBackward(richtextInstance.editor);
             }
+            // handle invalid width and height (old data)
+            let { width, height } = getRichtextContentSize(richtextInstance.editable);
+            if (width !== this.element.width || height !== this.element.height) {
+                MindTransforms.setTopicSize(this.board, this.element, width, height);
+            }
         }
         let richtext = richtextInstance.plaitValue;
-        // 增加 debounceTime 等待 DOM 渲染完成后再去取文本宽高
+        // use debounceTime to wait DOM render complete
         const valueChange$ = richtextInstance.plaitChange
             .pipe(
                 debounceTime(0),
@@ -908,6 +915,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
             richtextInstance.plaitReadonly = true;
             this.richtextComponentRef?.changeDetectorRef.markForCheck();
             this.isEditable = false;
+            updateMindNodeTopicSize(this.node, this.richtextG as SVGGElement, this.isEditable);
             IS_TEXT_EDITABLE.set(this.board, false);
         };
     }

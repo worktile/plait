@@ -10,7 +10,7 @@ import {
     Transforms
 } from '@plait/core';
 import { MindElement } from '../interfaces';
-import { copyNewNode, extractNodesText, transformNodeToRoot, transformRootToNode } from '../utils';
+import { copyNewNode, insertMindElement, extractNodesText, transformNodeToRoot, transformRootToNode, createMindElement } from '../utils';
 import { getRectangleByNode } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapNodeComponent } from '../node.component';
@@ -83,16 +83,8 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
     Transforms.setSelectionWithTemporaryElements(board, newELements);
 };
 
-export const insertClipboardText = (board: PlaitBoard, parentElement: PlaitElement, text: string, textWidth: number) => {
-    const newElement = {
-        id: idCreator(),
-        value: {
-            children: [{ text }]
-        },
-        children: [],
-        width: textWidth,
-        height: TEXT_DEFAULT_HEIGHT
-    };
+export const insertClipboardText = (board: PlaitBoard, parentElement: PlaitElement, text: string, width: number, height: number) => {
+    const newElement = createMindElement(text, width, height, {});
     const path = PlaitBoard.findPath(board, parentElement).concat((parentElement.children || []).length);
     Transforms.insertNode(board, newElement, path);
     return;

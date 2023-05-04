@@ -5,6 +5,8 @@
     position: relative;
     outline: none;
     white-space: pre-wrap;
+    white-space: break-spaces;
+    word-break: break-all;
     @include mixins.font-size-14();
 
     &.font-size-18 {

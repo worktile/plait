@@ -6,7 +6,7 @@ import { getRectangleByNode } from '../utils/graph';
 import { NodeSpace } from '../utils/node-space';
 
 export function drawMindmapNodeRichtext(node: MindmapNode, viewContainerRef: ViewContainerRef) {
-    const { x, y, width, height } = getRichtextRectangleByNode(node);
+    const { x, y } = getRichtextRectangleByNode(node);
     const classList = [];
     if (node.origin.isRoot) {
         classList.push('root-node');
@@ -16,14 +16,17 @@ export function drawMindmapNodeRichtext(node: MindmapNode, viewContainerRef: Vie
     } else {
         classList.push('child-node');
     }
-    return drawRichtext(x, y, width, height, node.origin.data.topic, viewContainerRef, classList);
+    return drawRichtext(x, y, node.origin.width, node.origin.height, node.origin.data.topic, viewContainerRef, classList);
 }
 
-export function updateMindmapNodeRichtextLocation(node: MindmapNode, g: SVGGElement, isEditable: boolean) {
+export function updateMindNodeTopicSize(node: MindmapNode, g: SVGGElement, isEditable: boolean) {
     const { x, y, width, height } = getRichtextRectangleByNode(node);
-    // add BASE * 10， avoid changing lines
-    const bufferSpace = isEditable ? BASE * 100 : 0;
-    updateForeignObject(g, width + bufferSpace, height, x, y);
+    if (isEditable) {
+        // add 999， avoid changing lines when paste more text
+        updateForeignObject(g, width + 999, height + 999, x, y);
+    } else {
+        updateForeignObject(g, node.origin.width, node.origin.height, x, y);
+    }
 }
 
 export function getRichtextRectangleByNode(node: MindmapNode) {
