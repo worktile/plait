@@ -1,6 +1,6 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
 import { EmojiItem, MindElement, PlaitMind } from '../../interfaces';
-import { MindEmojiComponent } from './emoji.component';
+import { MindEmojiBaseComponent } from './emoji-base.component';
 import { PlaitMindEmojiBoard } from './with-mind-emoji';
 import { createForeignObject } from '@plait/richtext';
 import { createG } from '@plait/core';
@@ -9,16 +9,12 @@ import { getEmojiFontSize, getEmojisRectangle } from './emoji';
 import { NodeSpace } from '../../utils/node-space';
 
 export class EmojiDrawer {
-    private emoji?: EmojiItem;
-    private element?: MindElement;
-    componentRef: ComponentRef<MindEmojiComponent> | null = null;
+    componentRef: ComponentRef<MindEmojiBaseComponent> | null = null;
 
     constructor(private board: PlaitMindEmojiBoard, private viewContainerRef: ViewContainerRef) {}
 
     draw(emoji: EmojiItem, element: MindElement) {
         this.destroy();
-        this.emoji = emoji;
-        this.element = element;
         const componentType = this.board.drawEmoji(emoji, element);
         this.componentRef = this.viewContainerRef.createComponent(componentType);
         this.componentRef.instance.emojiItem = emoji;

@@ -11,3 +11,4 @@ export * from './plugins/with-mind';
 export * from './constants';
 export * from './queries/index';
 export * from './transforms/index';
+export * from './plugins/emoji';

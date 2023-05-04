@@ -1,15 +1,6 @@
 import { Element } from 'slate';
 
-export enum ItemPlacement {
-    'before',
-    'top'
-}
-
-export interface BaseItem {
-    placement?: ItemPlacement
-}
-
-export interface EmojiItem extends BaseItem {
+export interface EmojiItem {
     name: string;
 }
 

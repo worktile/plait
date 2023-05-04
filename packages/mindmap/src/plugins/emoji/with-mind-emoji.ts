@@ -1,17 +1,17 @@
 import { ComponentType, PlaitBoard, PlaitPlugin } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
 import { EmojiItem } from '../../interfaces/element-data';
-import { MindEmojiComponent } from './emoji.component';
+import { MindEmojiBaseComponent } from './emoji-base.component';
 
 export interface PlaitMindEmojiBoard extends PlaitBoard {
-    drawEmoji: (emoji: EmojiItem, element: MindElement) => ComponentType<MindEmojiComponent>;
+    drawEmoji: (emoji: EmojiItem, element: MindElement) => ComponentType<MindEmojiBaseComponent>;
 }
 
-export const withEmoji: PlaitPlugin = (board: PlaitBoard) => {
+export const withEmoji = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitMindEmojiBoard;
 
     newBoard.drawEmoji = (emoji: EmojiItem, element: MindElement) => {
-        return MindEmojiComponent;
+        throw new Error('Not implement drawEmoji method error.');
     }
 
     return newBoard;

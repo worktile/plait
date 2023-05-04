@@ -1,23 +1,16 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit } from "@angular/core";
-import { EmojiItem } from "../../interfaces";
+import { MindEmojiBaseComponent } from "@plait/mindmap";
 
 @Component({
     selector: 'mind-node-emoji',
     template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MindEmojiComponent implements OnInit {
-    @Input()
-    fontSize: number = 14;
+export class MindEmojiComponent extends MindEmojiBaseComponent implements OnInit {
 
-    @Input()
-    emojiItem!: EmojiItem;
-
-    get nativeElement () {
-        return this.elementRef.nativeElement;
+    constructor(protected elementRef: ElementRef<HTMLElement>) {
+        super(elementRef);
     }
-
-    constructor(private elementRef: ElementRef<HTMLElement>) {}
 
     ngOnInit(): void {
         this.nativeElement.innerHTML = this.emojiItem.name;

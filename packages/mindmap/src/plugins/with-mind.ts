@@ -37,9 +37,9 @@ import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertCl
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEditing } from '../utils/node';
-import { withEmoji } from './emoji/with-mind-emoji';
+import { PlaitMindEmojiBoard, withEmoji } from './emoji/with-mind-emoji';
 
-export const withMind: PlaitPlugin = (board: PlaitBoard) => {
+export const withMind = (board: PlaitBoard) => {
     const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isHitSelection, getRectangle, isMovable, isRecursion } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {

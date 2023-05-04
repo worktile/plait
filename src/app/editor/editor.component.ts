@@ -11,6 +11,7 @@ import {
     MindmapQueries
 } from '@plait/mindmap';
 import { mockMindmapData } from './mock-data';
+import { withEmojiExtend } from './emoji/with-emoji-extend';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
 
@@ -19,7 +20,7 @@ const LOCAL_DATA_KEY = 'plait-board-change-data';
     templateUrl: './editor.component.html'
 })
 export class BasicBoardEditorComponent implements OnInit {
-    plugins = [withMind];
+    plugins = [withMind, withEmojiExtend];
 
     value: PlaitElement[] = [...mockMindmapData];
 
