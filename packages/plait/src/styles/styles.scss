@@ -23,6 +23,10 @@
         // can not assign absolute, because safari can not show correctly position 
         position: initial;
         &[readonly='true'] {
+            ::-moz-selection {
+                /* Code for Firefox */
+                background: none;
+            }
             ::selection {
                 background: none;
             }

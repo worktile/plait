@@ -24,6 +24,17 @@ g[plait-mindmap='true'] {
     .dragging-child {
         opacity: 0.6;
     }
+
+    .node-emojis-container {
+        display: flex;
+        ::-moz-selection {
+            /* Code for Firefox */
+            background: none;
+        }
+        ::selection {
+            background: none;
+        }
+    }
 }
 .plait-board-container.focused:not(.selection-moving):not(.element-moving) {
     .extend {

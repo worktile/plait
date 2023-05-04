@@ -1,17 +1,12 @@
 import { ViewContainerRef } from '@angular/core';
 import { drawRichtext, updateForeignObject } from '@plait/richtext';
 import { BASE } from '../constants/default';
-import {
-    CHILD_NODE_TEXT_HORIZONTAL_GAP,
-    CHILD_NODE_TEXT_VERTICAL_GAP,
-    ROOT_NODE_TEXT_HORIZONTAL_GAP,
-    ROOT_NODE_TEXT_VERTICAL_GAP
-} from '../constants/node';
 import { MindmapNode } from '../interfaces/node';
 import { getRectangleByNode } from '../utils/graph';
+import { NodeSpace } from '../utils/node-space';
 
 export function drawMindmapNodeRichtext(node: MindmapNode, viewContainerRef: ViewContainerRef) {
-    const { textX, textY, width, height } = getRichtextRectangleByNode(node);
+    const { x, y, width, height } = getRichtextRectangleByNode(node);
     const classList = [];
     if (node.origin.isRoot) {
         classList.push('root-node');
@@ -21,23 +16,19 @@ export function drawMindmapNodeRichtext(node: MindmapNode, viewContainerRef: Vie
     } else {
         classList.push('child-node');
     }
-    return drawRichtext(textX, textY, width, height, node.origin.value, viewContainerRef, classList);
+    return drawRichtext(x, y, width, height, node.origin.data.topic, viewContainerRef, classList);
 }
 
 export function updateMindmapNodeRichtextLocation(node: MindmapNode, g: SVGGElement, isEditable: boolean) {
-    const { textX, textY, width, height } = getRichtextRectangleByNode(node);
+    const { x, y, width, height } = getRichtextRectangleByNode(node);
     // add BASE * 10， avoid changing lines
     const bufferSpace = isEditable ? BASE * 100 : 0;
-    updateForeignObject(g, width + bufferSpace, height, textX, textY);
+    updateForeignObject(g, width + bufferSpace, height, x, y);
 }
 
 export function getRichtextRectangleByNode(node: MindmapNode) {
     let { x, y, width, height } = getRectangleByNode(node);
-
-    const offsetX = node.origin.isRoot ? ROOT_NODE_TEXT_HORIZONTAL_GAP : CHILD_NODE_TEXT_HORIZONTAL_GAP;
-    const offsetY = node.origin.isRoot ? ROOT_NODE_TEXT_VERTICAL_GAP : CHILD_NODE_TEXT_VERTICAL_GAP;
-
-    const textX = x + offsetX;
-    const textY = y + offsetY;
-    return { width, height, textX, textY };
+    x = x + NodeSpace.getTextHorizontalSpace(node.origin);
+    y = y + NodeSpace.getTextVerticalSpace(node.origin);
+    return { width, height, x, y };
 }

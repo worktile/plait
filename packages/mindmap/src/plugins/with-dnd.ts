@@ -47,7 +47,7 @@ import { PlaitMindmapComponent } from '../mindmap.component';
 
 const DRAG_MOVE_BUFFER = 5;
 
-export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
+export const withDnd = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup, keydown } = board;
 
     let activeElement: MindElement | null;
@@ -127,16 +127,16 @@ export const withNodeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 x: activeComponent.node.x + offsetX,
                 y: activeComponent.node.y + offsetY
             };
-            const { textX, textY, width, height } = getRichtextRectangleByNode(activeComponent.node);
+            const textRectangle = getRichtextRectangleByNode(activeComponent.node);
             const fakeNodeG = drawRectangleNode(board, fakeDraggingNode);
             const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
-            updateForeignObject(richtextG, width + BASE * 10, height, textX + offsetX, textY + offsetY);
+            updateForeignObject(richtextG, textRectangle.width + BASE * 10, textRectangle.height, textRectangle.x + offsetX, textRectangle.y + offsetY);
             fakeDragNodeG?.append(fakeNodeG);
             fakeDragNodeG?.append(richtextG);
 
             // drop position detect
             const { x, y } = getRectangleByNode(fakeDraggingNode);
-            const detectCenterPoint = [x + width / 2, y + height / 2] as Point;
+            const detectCenterPoint = [x + textRectangle.width / 2, y + textRectangle.height / 2] as Point;
 
             let detectResult: DetectResult[] | null = null;
             board.children.forEach((value: PlaitElement) => {

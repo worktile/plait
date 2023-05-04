@@ -15,12 +15,6 @@ export enum MindmapNodeShape {
     underline = 'underline'
 }
 
-export const ROOT_NODE_TEXT_HORIZONTAL_GAP = BASE * 4;
-export const ROOT_NODE_TEXT_VERTICAL_GAP = BASE * 2;
-
-export const CHILD_NODE_TEXT_HORIZONTAL_GAP = BASE * 3;
-export const CHILD_NODE_TEXT_VERTICAL_GAP = BASE * 1.5;
-
 export const ABSTRACT_HANDLE_COLOR = '#6698FF80'; //PRIMARY_COLOR 50% 透明度
 export const ABSTRACT_INCLUDED_OUTLINE_OFFSET = 3.5;
 export const ABSTRACT_HANDLE_LENGTH = 12;

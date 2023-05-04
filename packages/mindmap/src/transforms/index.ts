@@ -1,5 +1,9 @@
-import { setMindmapLayout } from './set-mindmap-layout';
+import { setLayout } from './layout';
+import { addEmoji, removeEmoji, setTopic } from './node';
 
-export const MindmapTransforms = {
-    setMindmapLayout
+export const MindTransforms = {
+    setLayout,
+    setTopic,
+    addEmoji,
+    removeEmoji
 };

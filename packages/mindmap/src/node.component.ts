@@ -68,6 +68,9 @@ import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
+import { EmojisDrawer } from './plugins/emoji/emoji.drawer';
+import { PlaitMindEmojiBoard } from './plugins/emoji/with-mind-emoji';
+import { MindTransforms } from './transforms';
 import { drawAbstractIncludedOutline } from './draw/abstract';
 import { AbstractHandlePosition } from './interfaces';
 
@@ -118,6 +121,8 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
 
     destroy$ = new Subject<void>();
 
+    emojisDrawer!: EmojisDrawer;
+
     public get handActive(): boolean {
         return this.board.pointer === PlaitPointerType.hand;
     }
@@ -127,6 +132,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     }
 
     ngOnInit(): void {
+        this.emojisDrawer = new EmojisDrawer(this.board as PlaitMindEmojiBoard, this.viewContainerRef);
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.element, this);
         super.ngOnInit();
         this.node = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
@@ -139,6 +145,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
         this.drawShape();
         this.drawLink();
         this.drawRichtext();
+        this.drawEmojis();
         this.drawActiveG();
         this.updateActiveClass();
         this.drawMaskG();
@@ -170,6 +177,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
             this.updateRichtext();
             this.drawMaskG();
             this.drawExtend();
+            this.drawEmojis();
         }
     }
 
@@ -183,6 +191,13 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
                 break;
             default:
                 break;
+        }
+    }
+
+    drawEmojis() {
+        const g = this.emojisDrawer.drawEmojis(this.element);
+        if (g) {
+            this.g.append(g);
         }
     }
 
@@ -782,7 +797,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     }
 
     updateRichtext() {
-        updateRichText(this.node.origin.value, this.richtextComponentRef!);
+        updateRichText(this.node.origin.data.topic, this.richtextComponentRef!);
         updateMindmapNodeRichtextLocation(this.node as MindmapNode, this.richtextG as SVGGElement, this.isEditable);
     }
 
@@ -818,17 +833,10 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
                 if (richtext === event.value) {
                     return;
                 }
-                richtext = event.value;
                 this.updateRichtext();
                 // 更新富文本、更新宽高
                 let { width, height } = getRichtextContentSize(richtextInstance.editable);
-                const newElement = {
-                    value: richtext,
-                    width: width < NODE_MIN_WIDTH * this.board.viewport.zoom ? NODE_MIN_WIDTH : width / this.board.viewport.zoom,
-                    height: height / this.board.viewport.zoom
-                } as MindElement;
-                const path = PlaitBoard.findPath(this.board, this.element);
-                Transforms.setNode(this.board, newElement, path);
+                MindTransforms.setTopic(this.board, this.element, event.value, width, height);
                 MERGING.set(this.board, true);
             });
         const composition$ = richtextInstance.plaitComposition.pipe(debounceTime(0)).subscribe(event => {

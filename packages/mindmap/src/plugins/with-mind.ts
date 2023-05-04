@@ -31,15 +31,16 @@ import {
 } from '../utils';
 import { getRectangleByNode, hitMindmapElement } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
-import { withNodeDnd } from './with-dnd';
+import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
+import { withDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEditing } from '../utils/node';
 import { withAbstract } from './with-abstract';
+import { withEmoji } from './emoji/with-mind-emoji';
 
-export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
+export const withMind: PlaitPlugin = (board: PlaitBoard) => {
     const {
         drawElement,
         dblclick,
@@ -226,5 +227,5 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         deleteFragment(data);
     };
 
-    return withAbstract(withNodeDnd(board));
+    return withEmoji(withAbstract(withDnd(board)));
 };

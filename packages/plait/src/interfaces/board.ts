@@ -105,7 +105,7 @@ export const PlaitBoard = {
             path.unshift(i);
             child = parent;
         }
-        throw new Error(`Unable to find the path for Slate node: ${JSON.stringify(node)}`);
+        throw new Error(`Unable to find the path for Plait node: ${JSON.stringify(node)}`);
     },
     getHost(board: PlaitBoard) {
         return BOARD_TO_HOST.get(board) as SVGSVGElement;

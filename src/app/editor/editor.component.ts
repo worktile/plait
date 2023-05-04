@@ -4,13 +4,14 @@ import { MindmapLayoutType, isBottomLayout, isIndentedLayout, isLeftLayout, isRi
 import {
     MindElement,
     MindmapNodeShape,
-    MindmapTransforms,
+    MindTransforms,
     MINDMAP_ELEMENT_TO_COMPONENT,
-    withMindmap,
+    withMind,
     GRAY_COLOR,
     MindmapQueries
 } from '@plait/mindmap';
 import { mockMindmapData } from './mock-data';
+import { withEmojiExtend } from './emoji/with-emoji-extend';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
 
@@ -19,7 +20,7 @@ const LOCAL_DATA_KEY = 'plait-board-change-data';
     templateUrl: './editor.component.html'
 })
 export class BasicBoardEditorComponent implements OnInit {
-    plugins = [withMindmap];
+    plugins = [withMind, withEmojiExtend];
 
     value: PlaitElement[] = [...mockMindmapData];
 
@@ -53,7 +54,7 @@ export class BasicBoardEditorComponent implements OnInit {
         const selectedElement = getSelectedElements(this.board)?.[0];
         if (selectedElement) {
             const path = PlaitBoard.findPath(this.board, selectedElement);
-            MindmapTransforms.setMindmapLayout(this.board, value, path);
+            MindTransforms.setLayout(this.board, value, path);
         }
     }
 

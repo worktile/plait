@@ -227,8 +227,8 @@ export const createEmptyNode = (board: PlaitBoard, inheritNode: MindElement, pat
 
     const newElement = {
         id: idCreator(),
-        value: {
-            children: [{ text: '' }]
+        data: {
+            topic: { children: [{ text: '' }] }
         },
         children: [],
         width: NODE_MIN_WIDTH,
