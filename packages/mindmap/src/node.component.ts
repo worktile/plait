@@ -67,8 +67,9 @@ import { getNodeShapeByElement } from './utils/shape';
 import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
-import { EmojiDrawer, EmojisDrawer } from './plugins/emoji/emoji.drawer';
+import { EmojisDrawer } from './plugins/emoji/emoji.drawer';
 import { PlaitMindEmojiBoard } from './plugins/emoji/with-mind-emoji';
+import { MindTransforms } from './transforms';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -811,20 +812,10 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
                 if (richtext === event.value) {
                     return;
                 }
-                richtext = event.value;
                 this.updateRichtext();
                 // 更新富文本、更新宽高
                 let { width, height } = getRichtextContentSize(richtextInstance.editable);
-                const newElement = {
-                    data: { topic: richtext },
-                    width: width < NODE_MIN_WIDTH * this.board.viewport.zoom ? NODE_MIN_WIDTH : width / this.board.viewport.zoom,
-                    height: height / this.board.viewport.zoom
-                } as MindElement;
-                if (MindElement.hasEmojis(this.element)) {
-                    newElement.data.emojis = this.element.data.emojis;
-                }
-                const path = PlaitBoard.findPath(this.board, this.element);
-                Transforms.setNode(this.board, newElement, path);
+                MindTransforms.setTopic(this.board, this.element, event.value, width, height);
                 MERGING.set(this.board, true);
             });
         const composition$ = richtextInstance.plaitComposition.pipe(debounceTime(0)).subscribe(event => {

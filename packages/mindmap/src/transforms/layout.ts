@@ -1,7 +1,7 @@
 import { PlaitBoard, Path, PlaitNode, Transforms } from '@plait/core';
 import { isHorizontalLogicLayout, isVerticalLogicLayout, MindmapLayoutType } from '@plait/layouts';
 
-export const setMindmapLayout = (board: PlaitBoard, layout: MindmapLayoutType, path: Path) => {
+export const setLayout = (board: PlaitBoard, layout: MindmapLayoutType, path: Path) => {
     correctLogicLayoutNode(board, layout, path);
     Transforms.setNode(board, { layout }, path);
 };

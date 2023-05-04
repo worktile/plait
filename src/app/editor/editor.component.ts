@@ -4,7 +4,7 @@ import { MindmapLayoutType, isBottomLayout, isIndentedLayout, isLeftLayout, isRi
 import {
     MindElement,
     MindmapNodeShape,
-    MindmapTransforms,
+    MindTransforms,
     MINDMAP_ELEMENT_TO_COMPONENT,
     withMind,
     GRAY_COLOR,
@@ -54,7 +54,7 @@ export class BasicBoardEditorComponent implements OnInit {
         const selectedElement = getSelectedElements(this.board)?.[0];
         if (selectedElement) {
             const path = PlaitBoard.findPath(this.board, selectedElement);
-            MindmapTransforms.setMindmapLayout(this.board, value, path);
+            MindTransforms.setLayout(this.board, value, path);
         }
     }
 
