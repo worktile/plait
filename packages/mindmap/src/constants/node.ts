@@ -14,3 +14,7 @@ export enum MindmapNodeShape {
     roundRectangle = 'round-rectangle',
     underline = 'underline'
 }
+
+export const ABSTRACT_HANDLE_COLOR = '#6698FF80'; //PRIMARY_COLOR 50% 透明度
+export const ABSTRACT_INCLUDED_OUTLINE_OFFSET = 3.5;
+export const ABSTRACT_HANDLE_LENGTH = 12;

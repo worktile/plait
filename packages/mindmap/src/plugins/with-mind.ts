@@ -31,7 +31,7 @@ import {
 } from '../utils';
 import { getRectangleByNode, hitMindmapElement } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
+import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { AbstractNode } from '@plait/layouts';
@@ -40,7 +40,7 @@ import { enterNodeEditing } from '../utils/node';
 import { withAbstract } from './with-abstract';
 import { withEmoji } from './emoji/with-mind-emoji';
 
-export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
+export const withMind: PlaitPlugin = (board: PlaitBoard) => {
     const {
         drawElement,
         dblclick,
