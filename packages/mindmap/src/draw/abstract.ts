@@ -1,13 +1,20 @@
 import { drawAbstractRoundRectangle, createG, getRectangleByElements, PlaitBoard, RectangleClient } from '@plait/core';
 import { ABSTRACT_HANDLE_COLOR, ABSTRACT_HANDLE_LENGTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET, PRIMARY_COLOR } from '../constants';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { MindElement, MindmapNode } from '../interfaces';
+import { AbstractHandlePosition, MindElement } from '../interfaces';
 import { MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
+import { getRectangleByResizingLocation, getLocationScope } from '../utils/abstract';
 
-export function drawAbstractIncludedOutline(board: PlaitBoard, roughSVG: RoughSVG, element: MindElement) {
+export function drawAbstractIncludedOutline(
+    board: PlaitBoard,
+    roughSVG: RoughSVG,
+    element: MindElement,
+    handlePosition: AbstractHandlePosition = AbstractHandlePosition.start,
+    resizingLocation?: number
+) {
     const abstractIncludedG = createG();
 
     const parentElement = MindElement.getParent(element);
@@ -17,7 +24,14 @@ export function drawAbstractIncludedOutline(board: PlaitBoard, roughSVG: RoughSV
     const includedElements = parentElement.children.slice(element.start!, element.end! + 1);
     let abstractRectangle = getRectangleByElements(board, includedElements, true);
 
+    if (resizingLocation) {
+        const scope = getLocationScope(board, handlePosition, parentElement, element, isHorizontal);
+        const location = Math.min(scope.max, Math.max(scope.min, resizingLocation));
+        abstractRectangle = getRectangleByResizingLocation(abstractRectangle, location, handlePosition, isHorizontal);
+    }
+
     abstractRectangle = RectangleClient.getOutlineRectangle(abstractRectangle, -ABSTRACT_INCLUDED_OUTLINE_OFFSET);
+
     const rectangle = drawAbstractRoundRectangle(
         roughSVG,
         abstractRectangle.x,
