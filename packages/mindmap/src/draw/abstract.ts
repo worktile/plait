@@ -1,23 +1,33 @@
-import { drawAbstractRoundRectangle, createG, getRectangleByElements, PlaitBoard, RectangleClient } from '@plait/core';
-import { ABSTRACT_HANDLE_COLOR, ABSTRACT_HANDLE_LENGTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET, PRIMARY_COLOR } from '../constants';
+import { drawAbstractRoundRectangle, createG, getRectangleByElements, PlaitBoard, Point } from '@plait/core';
+import { ABSTRACT_HANDLE_COLOR, ABSTRACT_HANDLE_LENGTH, PRIMARY_COLOR } from '../constants';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { MindElement, MindmapNode } from '../interfaces';
+import { AbstractHandlePosition, MindElement } from '../interfaces';
 import { MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
+import { abstractOffsetHandle, getRectangleByOffset } from '../utils/abstract';
 
-export function drawAbstractIncludedOutline(board: PlaitBoard, roughSVG: RoughSVG, element: MindElement) {
+export function drawAbstractIncludedOutline(
+    board: PlaitBoard,
+    roughSVG: RoughSVG,
+    element: MindElement,
+    offsetPoint: Point = [0, 0],
+    handlePosition: AbstractHandlePosition = AbstractHandlePosition.start
+) {
     const abstractIncludedG = createG();
 
     const parentElement = MindElement.getParent(element);
     const nodeLayout = MindmapQueries.getCorrectLayoutByElement(element) as MindmapLayoutType;
     const isHorizontal = isHorizontalLayout(nodeLayout);
+    let offset = isHorizontal ? offsetPoint[1] : offsetPoint[0];
 
     const includedElements = parentElement.children.slice(element.start!, element.end! + 1);
     let abstractRectangle = getRectangleByElements(board, includedElements, true);
 
-    abstractRectangle = RectangleClient.getOutlineRectangle(abstractRectangle, -ABSTRACT_INCLUDED_OUTLINE_OFFSET);
+    offset = abstractOffsetHandle(board, handlePosition, parentElement, element, isHorizontal, offset);
+    abstractRectangle = getRectangleByOffset(abstractRectangle, offset, handlePosition, isHorizontal);
+
     const rectangle = drawAbstractRoundRectangle(
         roughSVG,
         abstractRectangle.x,

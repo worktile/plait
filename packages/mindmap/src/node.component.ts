@@ -23,7 +23,8 @@ import {
     PlaitElement,
     NODE_TO_INDEX,
     PlaitPluginElementContext,
-    OnContextChanged
+    OnContextChanged,
+    Point
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -68,6 +69,7 @@ import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
 import { drawAbstractIncludedOutline } from './draw/abstract';
+import { AbstractHandlePosition } from './interfaces';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -324,7 +326,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
         this.abstractIncludedOutlineG?.remove();
         if (this.selected) {
             if (AbstractNode.isAbstract(this.element)) {
-                this.drawAbstractIncludedOutline();
+                this.updateAbstractIncludedOutline();
             }
             let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
             const selectedStrokeG = drawRoundRectangle(
@@ -767,8 +769,9 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
         }
     }
 
-    drawAbstractIncludedOutline() {
-        this.abstractIncludedOutlineG = drawAbstractIncludedOutline(this.board, this.roughSVG, this.element);
+    updateAbstractIncludedOutline(offset?: Point, handlePosition?: AbstractHandlePosition) {
+        this.abstractIncludedOutlineG?.remove();
+        this.abstractIncludedOutlineG = drawAbstractIncludedOutline(this.board, this.roughSVG, this.element, offset, handlePosition);
         PlaitBoard.getHost(this.board).append(this.abstractIncludedOutlineG);
     }
 

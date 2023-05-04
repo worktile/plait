@@ -37,9 +37,21 @@ import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertCl
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEditing } from '../utils/node';
+import { withAbstract } from './with-abstract';
 
 export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, dblclick, keydown, insertFragment, setFragment, deleteFragment, isHitSelection, getRectangle, isMovable, isRecursion } = board;
+    const {
+        drawElement,
+        dblclick,
+        keydown,
+        insertFragment,
+        setFragment,
+        deleteFragment,
+        isHitSelection,
+        getRectangle,
+        isMovable,
+        isRecursion
+    } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMind.isMind(context.element)) {
@@ -214,5 +226,5 @@ export const withMindmap: PlaitPlugin = (board: PlaitBoard) => {
         deleteFragment(data);
     };
 
-    return withNodeDnd(board);
+    return withAbstract(withNodeDnd(board));
 };
