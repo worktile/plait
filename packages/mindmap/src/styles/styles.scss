@@ -36,7 +36,7 @@ g[plait-mindmap='true'] {
         }
     }
 }
-.plait-board-container.focused:not(.selection-moving) {
+.plait-board-container.focused:not(.selection-moving):not(.element-moving) {
     .extend {
         cursor: pointer;
         &:hover {

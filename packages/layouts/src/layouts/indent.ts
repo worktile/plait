@@ -1,6 +1,6 @@
 import { LayoutNode } from '../interfaces/layout-node';
 import { AbstractNode, LayoutOptions } from '../interfaces/mindmap';
-import { getAbstractNodeByEndNode2 } from '../public-api';
+import { findAbstractByEndNode, getNonAbstractChildren } from '../utils/abstract';
 import { isHorizontalLogicLayout } from '../utils/layout';
 
 export function separateXAxle(node: LayoutNode, d = 0) {
@@ -70,12 +70,10 @@ function abstractHandle(node: LayoutNode, abstract: LayoutNode) {
 
     while (bottomContourNode?.children.length) {
         bottomContourParenNode = bottomContourNode;
-        const children = bottomContourParenNode.children.filter(child => {
-            return !AbstractNode.isAbstract(child.origin);
-        });
-        bottomContourNode = children[children.length - 1];
+        const children = getNonAbstractChildren(bottomContourParenNode);
+        bottomContourNode = children[getNonAbstractChildren.length - 1];
 
-        const abstract = getAbstractNodeByEndNode2(bottomContourParenNode, bottomContourNode);
+        const abstract = findAbstractByEndNode(bottomContourParenNode, bottomContourNode);
         bottomContour = abstract
             ? Math.max(abstract.y + abstract.height, bottomContourNode.y + bottomContourNode.height)
             : bottomContourNode.y + bottomContourNode.height;

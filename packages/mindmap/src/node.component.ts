@@ -23,7 +23,8 @@ import {
     PlaitElement,
     NODE_TO_INDEX,
     PlaitPluginElementContext,
-    OnContextChanged
+    OnContextChanged,
+    Point
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -70,6 +71,8 @@ import { drawAbstractLink } from './draw/link/abstract-link';
 import { EmojisDrawer } from './plugins/emoji/emoji.drawer';
 import { PlaitMindEmojiBoard } from './plugins/emoji/with-mind-emoji';
 import { MindTransforms } from './transforms';
+import { drawAbstractIncludedOutline } from './draw/abstract';
+import { AbstractHandlePosition } from './interfaces';
 
 @Component({
     selector: 'plait-mindmap-node',
@@ -95,6 +98,8 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     parent!: MindmapNode;
 
     index!: number;
+
+    abstractIncludedOutlineG?: SVGGElement;
 
     parentG!: SVGGElement;
 
@@ -333,7 +338,11 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
 
     drawActiveG() {
         this.destroyActiveG();
+        this.abstractIncludedOutlineG?.remove();
         if (this.selected) {
+            if (AbstractNode.isAbstract(this.element)) {
+                this.updateAbstractIncludedOutline();
+            }
             let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
             const selectedStrokeG = drawRoundRectangle(
                 this.roughSVG as RoughSVG,
@@ -775,6 +784,18 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
         }
     }
 
+    updateAbstractIncludedOutline(resizingLocation?: number, handlePosition?: AbstractHandlePosition) {
+        this.abstractIncludedOutlineG?.remove();
+        this.abstractIncludedOutlineG = drawAbstractIncludedOutline(
+            this.board,
+            this.roughSVG,
+            this.element,
+            handlePosition,
+            resizingLocation
+        );
+        PlaitBoard.getHost(this.board).append(this.abstractIncludedOutlineG);
+    }
+
     updateRichtext() {
         updateRichText(this.node.origin.data.topic, this.richtextComponentRef!);
         updateMindmapNodeRichtextLocation(this.node as MindmapNode, this.richtextG as SVGGElement, this.isEditable);
@@ -897,6 +918,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
+        this.abstractIncludedOutlineG?.remove();
         this.destroyRichtext();
         this.destroy$.next();
         this.destroy$.complete();

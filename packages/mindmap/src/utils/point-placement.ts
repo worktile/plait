@@ -21,7 +21,7 @@ export const getPointByPlacement = (client: RectangleClient, placement: PointPla
     return [x, y];
 };
 
-export const getLinkDirection = (node: MindmapNode, isHorizontal: boolean) => {
+export const getLayoutDirection = (node: MindmapNode, isHorizontal: boolean) => {
     if (isHorizontal) {
         if (node.left) {
             return LayoutDirection.left;
