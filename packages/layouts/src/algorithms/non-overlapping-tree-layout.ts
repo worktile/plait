@@ -1,5 +1,5 @@
 import { LayoutTreeNode } from '../interfaces/layout-tree-node';
-import { getAbstractNodeByEndNode, getAbstractNodeByStartNode, getChildrenSkipAbstract } from '../utils/abstract';
+import { findAbstractByEndNode, findAbstractByStartNode, getNonAbstractChildren } from '../utils/abstract';
 import { AbstractNode } from '../interfaces/mindmap';
 
 function moveSubtree(treeNode: LayoutTreeNode, i: number, distance: number) {
@@ -12,7 +12,7 @@ function nextLeftContour(treeNode: LayoutTreeNode) {
 }
 
 function nextRightContour(treeNode: LayoutTreeNode) {
-    let children = getChildrenSkipAbstract(treeNode);
+    let children = getNonAbstractChildren(treeNode);
     return treeNode.childrenCount === 0 ? null : children[children.length - 1];
 }
 
@@ -69,7 +69,7 @@ function positionRootCenter(treeNode: LayoutTreeNode) {
     // Position root between children, taking into account their mod.
     const startNode = treeNode.children[0];
     let startX = startNode.preliminary + startNode.modifier;
-    const children = getChildrenSkipAbstract(treeNode);
+    const children = getNonAbstractChildren(treeNode);
     const endNode = children[children.length - 1];
     let endX = endNode.modifier + endNode.preliminary + endNode.width;
 
@@ -194,7 +194,7 @@ function abstractHandle(treeNode: LayoutTreeNode, abstract: LayoutTreeNode, i: n
 }
 
 function compareAbstractRight(nodeParent: LayoutTreeNode, node: LayoutTreeNode, compareTarget: number, sumOfAbstractModifier: number) {
-    const abstract = getAbstractNodeByEndNode(nodeParent, node);
+    const abstract = findAbstractByEndNode(nodeParent, node);
     if (abstract) {
         return Math.max(abstract.modifier + abstract.width + sumOfAbstractModifier, compareTarget);
     }
@@ -202,7 +202,7 @@ function compareAbstractRight(nodeParent: LayoutTreeNode, node: LayoutTreeNode, 
 }
 
 function compareAbstractLeft(nodeParent: LayoutTreeNode, node: LayoutTreeNode, compareTarget: number) {
-    const abstract = getAbstractNodeByStartNode(nodeParent, node);
+    const abstract = findAbstractByStartNode(nodeParent, node);
 
     if (abstract) {
         return Math.min(abstract.modifier + abstract.preliminary, compareTarget);
