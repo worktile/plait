@@ -10,17 +10,16 @@ import {
     transformPoint
 } from '@plait/core';
 import { AbstractNode, MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils';
 import { AbstractHandlePosition, MindElement } from '../interfaces';
-import { MindmapQueries } from '../public-api';
-import { findPositionLeftIndex, getHitAbstractHandle, getLocationScope } from '../utils/abstract';
+import { MindmapNodeComponent, MindmapQueries } from '../public-api';
+import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope } from '../utils/abstract-resize';
 
 export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, mouseup } = board;
     let activeAbstractElement: PlaitElement | undefined;
     let abstractHandlePosition: AbstractHandlePosition | null;
     let startPoint: Point | undefined;
-    let result: { end: number } | { start: number } | undefined;
+    let newProperty: { end: number } | { start: number } | undefined;
 
     board.mousedown = (event: MouseEvent) => {
         const activeAbstractElements = getSelectedElements(board).filter(element => AbstractNode.isAbstract(element));
@@ -44,8 +43,9 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         getSelectedElements(board);
         const host = BOARD_TO_HOST.get(board);
         const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
-        const abstractComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeAbstractElement as MindElement);
-        if (abstractHandlePosition && abstractComponent) {
+
+        if (abstractHandlePosition && activeAbstractElement) {
+            const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindmapNodeComponent;
             const nodeLayout = MindmapQueries.getCorrectLayoutByElement(activeAbstractElement as MindElement) as MindmapLayoutType;
             const isHorizontal = isHorizontalLayout(nodeLayout);
             const parentElement = MindElement.getParent(abstractComponent.element);
@@ -54,8 +54,18 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
             const scope = getLocationScope(board, abstractHandlePosition, parentElement, abstractComponent.element, isHorizontal);
             const location = Math.min(scope.max, Math.max(scope.min, resizingLocation));
 
-            const locationIndex = findPositionLeftIndex(board, parentElement, location, isHorizontal);
-            result = abstractHandlePosition === AbstractHandlePosition.start ? { start: locationIndex + 1 } : { end: locationIndex };
+            const locationIndex = findLocationLeftIndex(board, parentElement, location, isHorizontal);
+            const isPropertyUnchanged =
+                (abstractHandlePosition === AbstractHandlePosition.start &&
+                    locationIndex === (activeAbstractElement as MindElement).start!) ||
+                (abstractHandlePosition === AbstractHandlePosition.end && locationIndex === (activeAbstractElement as MindElement).end!);
+
+            if (isPropertyUnchanged) {
+                newProperty = undefined;
+            } else {
+                newProperty =
+                    abstractHandlePosition === AbstractHandlePosition.start ? { start: locationIndex + 1 } : { end: locationIndex };
+            }
 
             abstractComponent!.updateAbstractIncludedOutline(location, abstractHandlePosition);
         }
@@ -65,9 +75,14 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     board.mouseup = (event: MouseEvent) => {
         startPoint = undefined;
         abstractHandlePosition = null;
-        if (result && activeAbstractElement) {
-            const path = PlaitBoard.findPath(board, activeAbstractElement);
-            Transforms.setNode(board, result, path);
+        if (activeAbstractElement) {
+            if (newProperty) {
+                const path = PlaitBoard.findPath(board, activeAbstractElement);
+                Transforms.setNode(board, newProperty, path);
+            } else {
+                const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindmapNodeComponent;
+                abstractComponent!.updateAbstractIncludedOutline();
+            }
         }
         mouseup(event);
     };

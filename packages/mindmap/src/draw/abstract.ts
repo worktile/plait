@@ -6,7 +6,7 @@ import { MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
-import { getRectangleByResizingLocation, getLocationScope } from '../utils/abstract';
+import { getRectangleByResizingLocation } from '../utils/abstract-resize';
 
 export function drawAbstractIncludedOutline(
     board: PlaitBoard,

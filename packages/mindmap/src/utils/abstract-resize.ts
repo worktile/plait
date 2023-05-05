@@ -2,7 +2,7 @@ import { PlaitBoard, Point, RectangleClient, getRectangleByElements } from '@pla
 import { AbstractHandlePosition, MindElement } from '../interfaces';
 import { AbstractNode, MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { ABSTRACT_HANDLE_MASK_WIDTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../constants';
-import { MindmapQueries } from '../public-api';
+import { MindmapQueries } from '../queries';
 
 export const getRectangleByResizingLocation = (
     abstractRectangle: RectangleClient,
@@ -112,8 +112,8 @@ export const getHitAbstractHandle = (board: PlaitBoard, element: MindElement, po
     let abstractRectangle = getRectangleByElements(board, includedElements, true);
     abstractRectangle = RectangleClient.getOutlineRectangle(abstractRectangle, -ABSTRACT_INCLUDED_OUTLINE_OFFSET);
 
-    const startHandleRec = buildAbstractHandleRec(abstractRectangle, isHorizontal, AbstractHandlePosition.start);
-    const endHandleRec = buildAbstractHandleRec(abstractRectangle, isHorizontal, AbstractHandlePosition.end);
+    const startHandleRec = getAbstractHandleRectangle(abstractRectangle, isHorizontal, AbstractHandlePosition.start);
+    const endHandleRec = getAbstractHandleRectangle(abstractRectangle, isHorizontal, AbstractHandlePosition.end);
 
     const pointRec = RectangleClient.toRectangleClient([point, point]);
     if (RectangleClient.isIntersect(pointRec, startHandleRec)) return AbstractHandlePosition.start;
@@ -121,7 +121,7 @@ export const getHitAbstractHandle = (board: PlaitBoard, element: MindElement, po
     return null;
 };
 
-export const buildAbstractHandleRec = (rectangle: RectangleClient, isHorizontal: boolean, position: AbstractHandlePosition) => {
+export const getAbstractHandleRectangle = (rectangle: RectangleClient, isHorizontal: boolean, position: AbstractHandlePosition) => {
     let result;
     if (position === AbstractHandlePosition.start) {
         const location = isHorizontal ? rectangle.y : rectangle.x;
@@ -147,7 +147,7 @@ export const buildAbstractHandleRec = (rectangle: RectangleClient, isHorizontal:
     return result;
 };
 
-export function findPositionLeftIndex(board: PlaitBoard, parentElement: MindElement, location: number, isHorizontal: boolean) {
+export function findLocationLeftIndex(board: PlaitBoard, parentElement: MindElement, location: number, isHorizontal: boolean) {
     const children = parentElement.children.filter(child => {
         return !AbstractNode.isAbstract(child);
     });
