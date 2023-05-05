@@ -1,7 +1,7 @@
 import { AbstractNode, MindmapLayoutType } from '@plait/layouts';
 import { addSelectedElement, idCreator, isNullOrUndefined, Path, PlaitBoard, PlaitElement, PlaitNode, Transforms } from '@plait/core';
 import { Node } from 'slate';
-import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE } from '../constants/node';
+import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node';
 import { MindmapNode } from '../interfaces';
 import { MindElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
@@ -84,9 +84,10 @@ export const transformRootToNode = (board: PlaitBoard, node: MindElement) => {
     const newNode: MindElement = { ...node };
     delete newNode.isRoot;
     delete newNode.rightNodeCount;
+    delete newNode.type;
 
-    const text = Node.string(node.value.children[0]) || ' ';
-    const { width, height } = getSizeByText(text, PlaitBoard.getViewportContainer(board));
+    const text = Node.string(node.data.topic.children[0]) || ' ';
+    const { width, height } = getSizeByText(text, PlaitBoard.getViewportContainer(board), TOPIC_DEFAULT_MAX_WORD_COUNT);
 
     newNode.width = Math.max(width, NODE_MIN_WIDTH);
     newNode.height = height;
@@ -100,11 +101,11 @@ export const transformRootToNode = (board: PlaitBoard, node: MindElement) => {
 
 export const transformNodeToRoot = (board: PlaitBoard, node: MindElement): MindElement => {
     const newElement = { ...node };
-    let text = Node.string(newElement.value);
+    let text = Node.string(newElement.data.topic);
 
     if (!text) {
         text = '思维导图';
-        newElement.value = { children: [{ text }] };
+        newElement.data.topic = { children: [{ text }] };
     }
 
     delete newElement?.strokeColor;
@@ -112,7 +113,7 @@ export const transformNodeToRoot = (board: PlaitBoard, node: MindElement): MindE
     delete newElement?.shape;
     delete newElement?.strokeWidth;
 
-    const { width, height } = getSizeByText(text, PlaitBoard.getViewportContainer(board), ROOT_TOPIC_FONT_SIZE);
+    const { width, height } = getSizeByText(text, PlaitBoard.getViewportContainer(board), TOPIC_DEFAULT_MAX_WORD_COUNT, ROOT_TOPIC_FONT_SIZE);
     newElement.width = Math.max(width, NODE_MIN_WIDTH);
     newElement.height = height;
 
@@ -128,7 +129,7 @@ export const transformNodeToRoot = (board: PlaitBoard, node: MindElement): MindE
 export const extractNodesText = (node: MindElement) => {
     let str = '';
     if (node) {
-        str += Node.string(node.value.children[0]) + ' ';
+        str += Node.string(node.data.topic.children[0]) + ' ';
         for (const childNode of node.children) {
             str += extractNodesText(childNode);
         }
