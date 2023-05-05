@@ -6,7 +6,7 @@ import { MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
-import { getRectangleByResizingLocation, getLocationScope } from '../utils/abstract';
+import { getRectangleByResizingLocation } from '../utils/abstract-resize';
 
 export function drawAbstractIncludedOutline(
     board: PlaitBoard,
@@ -23,14 +23,11 @@ export function drawAbstractIncludedOutline(
 
     const includedElements = parentElement.children.slice(element.start!, element.end! + 1);
     let abstractRectangle = getRectangleByElements(board, includedElements, true);
+    abstractRectangle = RectangleClient.getOutlineRectangle(abstractRectangle, -ABSTRACT_INCLUDED_OUTLINE_OFFSET);
 
     if (resizingLocation) {
-        const scope = getLocationScope(board, handlePosition, parentElement, element, isHorizontal);
-        const location = Math.min(scope.max, Math.max(scope.min, resizingLocation));
-        abstractRectangle = getRectangleByResizingLocation(abstractRectangle, location, handlePosition, isHorizontal);
+        abstractRectangle = getRectangleByResizingLocation(abstractRectangle, resizingLocation, handlePosition, isHorizontal);
     }
-
-    abstractRectangle = RectangleClient.getOutlineRectangle(abstractRectangle, -ABSTRACT_INCLUDED_OUTLINE_OFFSET);
 
     const rectangle = drawAbstractRoundRectangle(
         roughSVG,
