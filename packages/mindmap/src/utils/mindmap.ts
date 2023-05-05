@@ -215,7 +215,14 @@ export const createMindElement = (
     text: string,
     width: number,
     height: number,
-    options: { fill?: string; strokeColor?: string; strokeWidth?: number; shape?: MindmapNodeShape }
+    options: {
+        fill?: string;
+        strokeColor?: string;
+        strokeWidth?: number;
+        shape?: MindmapNodeShape;
+        layout?: MindmapLayoutType;
+        linkLineColor?: string;
+    }
 ) => {
     const newElement: MindElement = {
         id: idCreator(),
@@ -241,6 +248,12 @@ export const createMindElement = (
     }
     if (options.shape) {
         newElement.shape = options.shape;
+    }
+    if (options.layout) {
+        newElement.layout = options.layout;
+    }
+    if (options.linkLineColor) {
+        newElement.linkLineColor = options.linkLineColor;
     }
     return newElement;
 };

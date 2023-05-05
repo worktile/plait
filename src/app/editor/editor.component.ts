@@ -8,7 +8,8 @@ import {
     MINDMAP_ELEMENT_TO_COMPONENT,
     withMind,
     GRAY_COLOR,
-    MindmapQueries
+    MindmapQueries,
+    createMindElement
 } from '@plait/mindmap';
 import { mockMindmapData } from './mock-data';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
@@ -75,7 +76,7 @@ export class BasicBoardEditorComponent implements OnInit {
             return child.origin.id === selectedElements[0].id;
         });
         if (nodeComponent && start !== undefined) {
-            const path = [...PlaitBoard.findPath(this.board, nodeComponent.parent.origin ), nodeComponent.parent.children.length];
+            const path = [...PlaitBoard.findPath(this.board, nodeComponent.parent.origin), nodeComponent.parent.children.length];
             let nodeLayout = MindmapQueries.getLayoutByElement(nodeComponent.node.origin);
             let layout: MindmapLayoutType = MindmapLayoutType.right;
             if (isLeftLayout(nodeLayout)) {
@@ -90,22 +91,10 @@ export class BasicBoardEditorComponent implements OnInit {
             if (isTopLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
                 layout = MindmapLayoutType.upward;
             }
-            Transforms.insertNode(
-                this.board,
-                {
-                    id: idCreator(),
-                    value: { children: [{ text: '概要' }] },
-                    layout,
-                    children: [],
-                    start,
-                    end: start + selectedElements.length - 1,
-                    width: 28,
-                    height: 20,
-                    strokeColor: GRAY_COLOR,
-                    linkLineColor: GRAY_COLOR
-                },
-                path
-            );
+            const mindElement = createMindElement('概要', 28, 20, { strokeColor: GRAY_COLOR, linkLineColor: GRAY_COLOR, layout });
+            mindElement.start = start;
+            mindElement.end = start + selectedElements.length - 1;
+            Transforms.insertNode(this.board, mindElement, path);
         }
     }
 
