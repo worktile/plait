@@ -11,7 +11,7 @@
     "build:mindmap": " ng build mindmap && cpx \"./packages/mindmap/src/styles/*.scss\" ./dist/mindmap/styles/",
     "build:richtext": "ng build richtext && cpx \"./packages/richtext/src/styles/*.scss\" ./dist/richtext/styles/",
     "build:flow": "ng build flow && cpx \"./packages/flow/src/styles/*.scss\" ./dist/flow/styles/",
-    "build:demo": "ng build demo --baseHref=/plait/ --configuration production",
+    "build:demo": "ng build demo --configuration production",
     "pub:core": "cd dist/core && npm publish --access public",
     "pub:richtext": "cd dist/richtext && npm publish --access public",
     "pub:mindmap": "cd dist/mindmap && npm publish --access public",
