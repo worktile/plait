@@ -48,10 +48,10 @@ export class EmojisDrawer {
     drawEmojis(element: MindElement) {
         this.destroy();
         if (MindElement.hasEmojis(element)) {
-            const node = MindElement.getNode(this.board, element);
+            const node = MindElement.getNode(element);
             this.g = createG();
             this.g.classList.add('emojis');
-            let { x, y } = getRectangleByNode(MindElement.getNode(this.board, element));
+            let { x, y } = getRectangleByNode(MindElement.getNode(element));
             x = x + NodeSpace.getEmojiHorizontalSpace(element);
             y = y + NodeSpace.getEmojiVerticalSpace(element);
             const { width, height } = getEmojisRectangle(element);

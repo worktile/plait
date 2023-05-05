@@ -137,7 +137,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
         super.ngOnInit();
         this.node = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
         if (!PlaitMind.isMind(this.element)) {
-            this.parent = MindElement.getNode(this.board, MindElement.getParent(this.element));
+            this.parent = MindElement.getNode(MindElement.getParent(this.element));
         }
         this.index = NODE_TO_INDEX.get(this.element) || 0;
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
@@ -155,7 +155,7 @@ export class MindmapNodeComponent<T extends MindElement = MindElement> extends P
     onContextChanged(value: PlaitPluginElementContext<T>, previous: PlaitPluginElementContext<T>) {
         const newNode = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
         if (!PlaitMind.isMind(this.element)) {
-            this.parent = MindElement.getNode(this.board, MindElement.getParent(this.element));
+            this.parent = MindElement.getNode(MindElement.getParent(this.element));
         }
 
         MINDMAP_ELEMENT_TO_COMPONENT.set(this.element, this);

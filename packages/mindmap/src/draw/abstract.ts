@@ -6,7 +6,7 @@ import { MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { MindmapQueries } from '../queries';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
-import { getRectangleByResizingLocation } from '../utils/abstract-resize';
+import { getRectangleByResizingLocation } from '../utils/abstract/resize';
 
 export function drawAbstractIncludedOutline(
     board: PlaitBoard,
@@ -52,7 +52,7 @@ export function drawAbstractIncludedOutline(
     const startPlacement = [HorizontalPlacement.center, VerticalPlacement.top] as PointPlacement;
     const endPlacement = [HorizontalPlacement.center, VerticalPlacement.bottom] as PointPlacement;
 
-    const linkDirection = getLayoutDirection(MindElement.getNode(board, element), isHorizontal);
+    const linkDirection = getLayoutDirection(MindElement.getNode(element), isHorizontal);
 
     transformPlacement(startPlacement, linkDirection);
     transformPlacement(endPlacement, linkDirection);

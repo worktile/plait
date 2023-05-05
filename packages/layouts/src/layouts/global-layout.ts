@@ -8,19 +8,19 @@ export class GlobalLayout {
 
         if (isStandardLayout(mindmapLayoutType)) {
             const primaryNodeCount = root.children.length;
-            const rightPrimaryNodes = [];
-            const leftPrimaryNodes = [];
+            const rightBranchNodes = [];
+            const leftBranchNodes = [];
             const fakeRootNode = { ...root };
             for (let i = 0; i < primaryNodeCount; i++) {
                 const child = root.children[i];
                 if (i < root.rightNodeCount) {
-                    rightPrimaryNodes.push(child);
+                    rightBranchNodes.push(child);
                 } else {
-                    leftPrimaryNodes.push(child);
+                    leftBranchNodes.push(child);
                 }
             }
             // right
-            fakeRootNode.children = rightPrimaryNodes;
+            fakeRootNode.children = rightBranchNodes;
             const rightRoot = baseLayout.layout(
                 fakeRootNode,
                 LayoutType.logic,
@@ -28,7 +28,7 @@ export class GlobalLayout {
                 { toLeft: false, toTop: false, rootLayoutType: mindmapLayoutType },
                 true
             );
-            fakeRootNode.children = leftPrimaryNodes;
+            fakeRootNode.children = leftBranchNodes;
             const leftRoot = baseLayout.layout(
                 fakeRootNode,
                 LayoutType.logic,

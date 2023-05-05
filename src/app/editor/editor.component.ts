@@ -77,21 +77,7 @@ export class BasicBoardEditorComponent implements OnInit {
         });
         if (nodeComponent && start !== undefined) {
             const path = [...PlaitBoard.findPath(this.board, nodeComponent.parent.origin), nodeComponent.parent.children.length];
-            let nodeLayout = MindmapQueries.getLayoutByElement(nodeComponent.node.origin);
-            let layout: MindmapLayoutType = MindmapLayoutType.right;
-            if (isLeftLayout(nodeLayout)) {
-                layout = MindmapLayoutType.left;
-            }
-            if (isRightLayout(nodeLayout)) {
-                layout = MindmapLayoutType.right;
-            }
-            if (isBottomLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
-                layout = MindmapLayoutType.downward;
-            }
-            if (isTopLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
-                layout = MindmapLayoutType.upward;
-            }
-            const mindElement = createMindElement('概要', 28, 20, { strokeColor: GRAY_COLOR, linkLineColor: GRAY_COLOR, layout });
+            const mindElement = createMindElement('概要', 28, 20, { strokeColor: GRAY_COLOR, linkLineColor: GRAY_COLOR });
             mindElement.start = start;
             mindElement.end = start + selectedElements.length - 1;
             Transforms.insertNode(this.board, mindElement, path);

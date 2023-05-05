@@ -39,3 +39,14 @@ export const findAbstractByStartNode = <T extends { children: T[] } = LayoutNode
         return AbstractNode.isAbstract(child) && child.start === index;
     });
 };
+
+export const isChildOfAbstract = (node: LayoutNode) => {
+    let parent: LayoutNode | undefined = node.parent;
+    while (parent) {
+        if (AbstractNode.isAbstract(parent.origin)) {
+            return true;
+        }
+        parent = parent?.parent;
+    }
+    return false;
+};

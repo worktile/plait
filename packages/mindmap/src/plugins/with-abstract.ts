@@ -12,7 +12,7 @@ import {
 import { AbstractNode, MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { AbstractHandlePosition, MindElement } from '../interfaces';
 import { MindmapNodeComponent, MindmapQueries } from '../public-api';
-import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope } from '../utils/abstract-resize';
+import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope } from '../utils/abstract/resize';
 
 export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, mouseup } = board;
@@ -57,7 +57,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
             const locationIndex = findLocationLeftIndex(board, parentElement, location, isHorizontal);
             const isPropertyUnchanged =
                 (abstractHandlePosition === AbstractHandlePosition.start &&
-                    locationIndex === (activeAbstractElement as MindElement).start!) ||
+                    locationIndex + 1 === (activeAbstractElement as MindElement).start!) ||
                 (abstractHandlePosition === AbstractHandlePosition.end && locationIndex === (activeAbstractElement as MindElement).end!);
 
             if (isPropertyUnchanged) {

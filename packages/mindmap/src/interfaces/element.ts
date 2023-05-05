@@ -72,7 +72,7 @@ export const MindElement = {
         const path = PlaitBoard.findPath(board, element);
         return PlaitNode.get(board, path.slice(0, 1)) as PlaitMind;
     },
-    getNode(board: PlaitBoard, element: MindElement) {
+    getNode(element: MindElement) {
         const node = ELEMENT_TO_NODE.get(element);
         if (!node) {
             throw new Error(`can not get node from ${JSON.stringify(element)}`);

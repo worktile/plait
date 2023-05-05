@@ -1,8 +1,8 @@
 import { PlaitBoard, Point, RectangleClient, getRectangleByElements } from '@plait/core';
-import { AbstractHandlePosition, MindElement } from '../interfaces';
+import { AbstractHandlePosition, MindElement } from '../../interfaces';
 import { AbstractNode, MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
-import { ABSTRACT_HANDLE_MASK_WIDTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../constants';
-import { MindmapQueries } from '../queries';
+import { ABSTRACT_HANDLE_MASK_WIDTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../../constants';
+import { MindmapQueries } from '../../queries';
 
 export const getRectangleByResizingLocation = (
     abstractRectangle: RectangleClient,
