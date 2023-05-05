@@ -39,8 +39,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
-            "baseHref": "/plait/"
+            "scripts": []
           },
           "configurations": {
             "production": {
