@@ -9,7 +9,7 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { AbstractNode, MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
+import { AbstractNode, MindmapLayoutType, isHorizontalLayout, isStandardLayout } from '@plait/layouts';
 import { AbstractHandlePosition, MindElement } from '../interfaces';
 import { MindmapNodeComponent, MindmapQueries } from '../public-api';
 import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope } from '../utils/abstract/resize';
@@ -50,11 +50,29 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
             const isHorizontal = isHorizontalLayout(nodeLayout);
             const parentElement = MindElement.getParent(abstractComponent.element);
 
+            let children = parentElement.children.filter(child => {
+                return !AbstractNode.isAbstract(child);
+            });
+            let element = abstractComponent.element;
+            const parentLayout = MindmapQueries.getLayoutByElement(parentElement);
+            if (isStandardLayout(parentLayout)) {
+                const rightNodeCount = parentElement.rightNodeCount!;
+                if ((activeAbstractElement as MindElement).end! < rightNodeCount) {
+                    children = children.slice(0, rightNodeCount);
+                }
+                if ((activeAbstractElement as MindElement).start! >= rightNodeCount) {
+                    children = children.slice(rightNodeCount, children.length);
+                    // element.start! -= rightNodeCount;
+                    // element.end! -= rightNodeCount;
+                }
+            }
+
             const resizingLocation = isHorizontal ? endPoint[1] : endPoint[0];
-            const scope = getLocationScope(board, abstractHandlePosition, parentElement, abstractComponent.element, isHorizontal);
+            const scope = getLocationScope(board, abstractHandlePosition, children, element, isHorizontal);
             const location = Math.min(scope.max, Math.max(scope.min, resizingLocation));
 
-            const locationIndex = findLocationLeftIndex(board, parentElement, location, isHorizontal);
+            const locationIndex = findLocationLeftIndex(board, children, location, isHorizontal);
+
             const isPropertyUnchanged =
                 (abstractHandlePosition === AbstractHandlePosition.start &&
                     locationIndex + 1 === (activeAbstractElement as MindElement).start!) ||
