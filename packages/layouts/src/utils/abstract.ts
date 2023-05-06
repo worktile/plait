@@ -60,7 +60,7 @@ export const isChildOfAbstract = (node: LayoutNode) => {
     return false;
 };
 
-export const getCorrectStartEnd = (abstract: any, parent: any) => {
+export const getCorrectStartEnd = (abstract: LayoutNode, parent: LayoutNode) => {
     let start = (abstract.origin as AbstractNode).start;
     let end = (abstract.origin as AbstractNode).end;
     if (isStandardLayout(parent.layout)) {

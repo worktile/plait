@@ -46,9 +46,6 @@ export const getLocationScope = (
     element: MindElement,
     isHorizontal: boolean
 ) => {
-
-
-    
     const startNode = parentChildren[element.start!];
     const endNode = parentChildren[element.end!];
 
