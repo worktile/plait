@@ -7,7 +7,7 @@ import {
     getInCorrectLayoutDirection,
     MINDMAP_ELEMENT_TO_COMPONENT
 } from '../utils';
-import { MindmapLayoutType } from '@plait/layouts';
+import { AbstractNode, MindmapLayoutType, getAbstractLayout, isIndentedLayout, LayoutNode, isChildOfAbstract } from '@plait/layouts';
 
 /**
  * get correctly layout：
@@ -34,6 +34,12 @@ export const getCorrectLayoutByElement = (element: MindElement) => {
         parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parent);
         layout = parentComponent?.node.origin.layout;
         parent = parentComponent?.parent?.origin;
+    }
+    if (
+        (AbstractNode.isAbstract(element) || isChildOfAbstract((MindElement.getNode(element) as unknown) as LayoutNode)) &&
+        isIndentedLayout(layout!)
+    ) {
+        return getAbstractLayout(layout!);
     }
 
     // handle root standard

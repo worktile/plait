@@ -1,5 +1,6 @@
-import { LayoutContext, LayoutOptions, MindmapLayoutType, OriginNode } from './mindmap';
-import { findLayoutType } from '../utils/layout';
+import { AbstractNode, LayoutContext, LayoutOptions, MindmapLayoutType, OriginNode } from './mindmap';
+import { findLayoutType, getAbstractLayout, isIndentedLayout } from '../utils/layout';
+import { isChildOfAbstract } from '../utils/abstract';
 
 /**
  * abstract layout node
@@ -33,6 +34,11 @@ export class LayoutNode {
         }
         const layout = findLayoutType(this);
         this.layout = layout && layout !== MindmapLayoutType.standard ? layout : context.rootLayoutType;
+
+        if ((AbstractNode.isAbstract(origin) || isChildOfAbstract(this)) && isIndentedLayout(this.layout)) {
+            this.layout = getAbstractLayout(this.layout);
+        }
+
         const verticalConnectingPosition = options.getVerticalConnectingPosition(origin, parent);
         if (verticalConnectingPosition) {
             this.verticalConnectingPosition = verticalConnectingPosition;
@@ -179,4 +185,3 @@ export enum ConnectingPosition {
     middle = 'middle',
     bottom = 'bottom'
 }
-

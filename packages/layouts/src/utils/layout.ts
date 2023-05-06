@@ -92,3 +92,11 @@ export const extractLayoutType = (mindmapLayoutType: MindmapLayoutType): LayoutT
     }
     return LayoutType.logic;
 };
+
+export const getAbstractLayout = (mindmapLayoutType: MindmapLayoutType) => {
+    if (isRightLayout(mindmapLayoutType)) {
+        return MindmapLayoutType.right;
+    } else {
+        return MindmapLayoutType.left;
+    }
+};
