@@ -12,7 +12,6 @@ export const getLayoutByElement = (element: MindElement): MindmapLayoutType => {
         AbstractNode.isAbstract(element) ||
         (isChildOfAbstract((MindElement.getNode(element) as unknown) as LayoutNode) && isIndentedLayout(layout!))
     ) {
-        // console.log('=======2=======', 2);
         const parentLayout = getLayoutParentByElement(element);
         return getAbstractLayout(parentLayout);
     }
