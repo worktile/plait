@@ -71,7 +71,7 @@ function abstractHandle(node: LayoutNode, abstract: LayoutNode) {
     while (bottomContourNode?.children.length) {
         bottomContourParenNode = bottomContourNode;
         const children = getNonAbstractChildren(bottomContourParenNode);
-        bottomContourNode = children[getNonAbstractChildren.length - 1];
+        bottomContourNode = children[children.length - 1];
 
         const abstract = findAbstractByEndNode(bottomContourParenNode, bottomContourNode);
         bottomContour = abstract
