@@ -7,6 +7,7 @@ import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { MindmapQueries } from './queries';
 import { MindmapNodeComponent } from './node.component';
 import { getLayoutOptions } from './layout-option';
+import { getDefaultMindmapLayout } from './utils/layout';
 
 @Component({
     selector: 'plait-mindmap',
@@ -32,12 +33,8 @@ export class PlaitMindmapComponent extends MindmapNodeComponent<PlaitMind> imple
     }
 
     updateMindmap(element = this.element) {
-        const mindmapLayoutType = MindmapQueries.getLayoutByElement((element as unknown) as MindElement);
-        this.root = (GlobalLayout.layout(
-            (element as unknown) as OriginNode,
-            getLayoutOptions(),
-            mindmapLayoutType
-        ) as unknown) as MindmapNode;
+        const mindLayoutType = element.layout || getDefaultMindmapLayout();
+        this.root = (GlobalLayout.layout((element as unknown) as OriginNode, getLayoutOptions(), mindLayoutType) as unknown) as MindmapNode;
         this.updateMindmapLocation(element);
     }
 
