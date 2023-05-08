@@ -1,16 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { getSelectedElements, idCreator, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
-import { MindmapLayoutType, isBottomLayout, isIndentedLayout, isLeftLayout, isRightLayout, isTopLayout } from '@plait/layouts';
-import {
-    MindElement,
-    MindmapNodeShape,
-    MindTransforms,
-    MINDMAP_ELEMENT_TO_COMPONENT,
-    withMind,
-    GRAY_COLOR,
-    MindmapQueries,
-    createMindElement
-} from '@plait/mind';
+import { getSelectedElements, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
+import { MindmapLayoutType } from '@plait/layouts';
+import { MindmapNodeShape, MindTransforms, withMind, setAbstract, canSetAbstract } from '@plait/mind';
 import { mockMindmapData } from './mock-data';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
 
@@ -70,17 +61,12 @@ export class BasicBoardEditorComponent implements OnInit {
 
     setAbstract(event: Event) {
         const selectedElements = getSelectedElements(this.board);
-        const nodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElements[selectedElements.length - 1] as MindElement);
-
-        const start = nodeComponent?.parent.children.findIndex(child => {
-            return child.origin.id === selectedElements[0].id;
+        const ableSetAbstract = selectedElements.every(element => {
+            return canSetAbstract(element);
         });
-        if (nodeComponent && start !== undefined) {
-            const path = [...PlaitBoard.findPath(this.board, nodeComponent.parent.origin), nodeComponent.parent.children.length];
-            const mindElement = createMindElement('概要', 28, 20, { strokeColor: GRAY_COLOR, linkLineColor: GRAY_COLOR });
-            mindElement.start = start;
-            mindElement.end = start + selectedElements.length - 1;
-            Transforms.insertNode(this.board, mindElement, path);
+
+        if (ableSetAbstract) {
+            setAbstract(this.board, selectedElements);
         }
     }
 
