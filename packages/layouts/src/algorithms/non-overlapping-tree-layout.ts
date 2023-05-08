@@ -124,13 +124,13 @@ function firstWalk(treeNode: LayoutTreeNode) {
     }
     firstWalk(treeNode.children[0]);
     for (let i = 1; i < treeNode.childrenCount; i++) {
-        const abstracts = treeNode.children.filter(abstract => {
-            return AbstractNode.isAbstract(abstract.origin.origin);
-        });
-
-        const abstract = abstracts.find(abstract => {
-            const { end } = getCorrectStartEnd(abstract.origin, treeNode.origin);
-            return end === i - 1;
+        const abstract = treeNode.children.find(abstract => {
+            let correctEnd = null;
+            if (AbstractNode.isAbstract(abstract.origin.origin)) {
+                let { end } = getCorrectStartEnd(abstract.origin.origin, treeNode.origin);
+                correctEnd = end;
+            }
+            return correctEnd === i - 1;
         });
 
         if (abstract) {
@@ -153,7 +153,7 @@ function secondWalk(treeNode: LayoutTreeNode, sumOfModifier: number) {
 }
 
 function abstractHandle(treeNode: LayoutTreeNode, abstract: LayoutTreeNode, i: number) {
-    const { start, end } = getCorrectStartEnd(abstract.origin, treeNode.origin);
+    const { start, end } = getCorrectStartEnd(abstract.origin.origin as AbstractNode, treeNode.origin);
 
     const abstractIndex = treeNode.children.indexOf(abstract);
     const startNode = treeNode.children[start];

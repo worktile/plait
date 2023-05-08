@@ -17,7 +17,7 @@ export function setLayoutTreeResult(tree: LayoutTreeNode, root: LayoutNode, isHo
 export function separateYAxle(node: LayoutNode, isHorizontal: boolean, d = 0) {
     if (isHorizontal) {
         if (AbstractNode.isAbstract(node.origin)) {
-            const { start, end } = getCorrectStartEnd(node, node.parent!);
+            const { start, end } = getCorrectStartEnd(node.origin, node.parent!);
 
             for (let i = start!; i <= end!; i++) {
                 const right = node.parent?.children[i].getBoundingBox().right;

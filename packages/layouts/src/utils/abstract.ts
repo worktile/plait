@@ -23,7 +23,7 @@ export const findAbstractByEndNode = <T extends { children: T[] } = LayoutNode |
         }
         if (child instanceof LayoutTreeNode && parentNode instanceof LayoutTreeNode) {
             if (AbstractNode.isAbstract(child.origin.origin)) {
-                const { end } = getCorrectStartEnd(child.origin, parentNode.origin);
+                const { end } = getCorrectStartEnd(child.origin.origin, parentNode.origin);
                 return end === index;
             }
             return false;
@@ -40,7 +40,7 @@ export const findAbstractByStartNode = <T extends { children: T[] } = LayoutNode
         }
         if (child instanceof LayoutTreeNode && parentNode instanceof LayoutTreeNode) {
             if (AbstractNode.isAbstract(child.origin.origin)) {
-                const { start } = getCorrectStartEnd(child.origin, parentNode.origin);
+                const { start } = getCorrectStartEnd(child.origin.origin, parentNode.origin);
                 return start === index;
             }
             return false;
@@ -60,9 +60,9 @@ export const isChildOfAbstract = (node: LayoutNode) => {
     return false;
 };
 
-export const getCorrectStartEnd = (abstract: LayoutNode, parent: LayoutNode) => {
-    let start = (abstract.origin as AbstractNode).start;
-    let end = (abstract.origin as AbstractNode).end;
+export const getCorrectStartEnd = (abstract: AbstractNode, parent: LayoutNode) => {
+    let start = abstract.start;
+    let end = abstract.end;
     if (isStandardLayout(parent.layout)) {
         const rightNodeCount = parent.origin.rightNodeCount;
         if (start >= rightNodeCount) {

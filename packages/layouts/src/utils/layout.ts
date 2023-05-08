@@ -31,7 +31,7 @@ export const isLogicLayout = (layout: MindmapLayoutType) => {
     );
 };
 
-export const isStandardLayout = (layout: MindmapLayoutType | undefined) => {
+export const isStandardLayout = (layout: MindmapLayoutType) => {
     return layout === MindmapLayoutType.standard;
 };
 
