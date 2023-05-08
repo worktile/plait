@@ -1,5 +1,13 @@
 import { AbstractNode, MindmapLayoutType } from '@plait/layouts';
-import { addSelectedElement, idCreator, isNullOrUndefined, Path, PlaitBoard, PlaitElement, PlaitNode, Transforms } from '@plait/core';
+import {
+    addSelectedElement,
+    idCreator,
+    isNullOrUndefined,
+    Path,
+    PlaitBoard,
+    Point,
+    Transforms
+} from '@plait/core';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node';
 import { MindmapNode } from '../interfaces';
@@ -113,7 +121,12 @@ export const transformNodeToRoot = (board: PlaitBoard, node: MindElement): MindE
     delete newElement?.shape;
     delete newElement?.strokeWidth;
 
-    const { width, height } = getSizeByText(text, PlaitBoard.getViewportContainer(board), TOPIC_DEFAULT_MAX_WORD_COUNT, ROOT_TOPIC_FONT_SIZE);
+    const { width, height } = getSizeByText(
+        text,
+        PlaitBoard.getViewportContainer(board),
+        TOPIC_DEFAULT_MAX_WORD_COUNT,
+        ROOT_TOPIC_FONT_SIZE
+    );
     newElement.width = Math.max(width, NODE_MIN_WIDTH);
     newElement.height = height;
 
@@ -170,46 +183,17 @@ export const shouldChangeRightNodeCount = (selectedElement: MindElement) => {
     return false;
 };
 
-export const createMindmapData = (rightNodeCount: number, layout: MindmapLayoutType) => {
-    const mindmapData: PlaitElement = {
-        type: 'mindmap',
-        id: idCreator(),
-        isRoot: true,
-        rightNodeCount,
-        layout,
-        width: 72,
-        height: ROOT_DEFAULT_HEIGHT,
-        points: [[230, 208]],
-        value: { children: [{ text: '思维导图' }] },
-        shape: MindmapNodeShape.roundRectangle,
-        children: [
-            {
-                id: idCreator(),
-                value: { children: [{ text: '新建节点' }] },
-                children: [],
-                width: 56,
-                height: TEXT_DEFAULT_HEIGHT,
-                shape: MindmapNodeShape.roundRectangle
-            },
-            {
-                id: idCreator(),
-                value: { children: [{ text: '新建节点' }] },
-                children: [],
-                width: 56,
-                height: TEXT_DEFAULT_HEIGHT,
-                shape: MindmapNodeShape.roundRectangle
-            },
-            {
-                id: idCreator(),
-                value: { children: [{ text: '新建节点' }] },
-                children: [],
-                width: 56,
-                height: TEXT_DEFAULT_HEIGHT,
-                shape: MindmapNodeShape.roundRectangle
-            }
-        ]
-    };
-    return [mindmapData];
+export const createDefaultMindMapElement = (point: Point, rightNodeCount: number, layout: MindmapLayoutType) => {
+    const root = createMindElement('思维导图', 72, ROOT_DEFAULT_HEIGHT, { shape: MindmapNodeShape.roundRectangle, layout });
+    root.rightNodeCount = rightNodeCount;
+    root.isRoot = true;
+    root.type = 'mindmap';
+    root.points = [point];
+    const children = [1, 1, 1].map(() => {
+        return createMindElement('新建节点', 56, TEXT_DEFAULT_HEIGHT, { shape: MindmapNodeShape.roundRectangle });
+    });
+    root.children = children;
+    return root;
 };
 
 export const createMindElement = (
