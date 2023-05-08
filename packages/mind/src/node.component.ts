@@ -87,7 +87,7 @@ import { AbstractHandlePosition } from './interfaces';
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MindmapNodeComponent<T extends MindElement = MindElement> extends PlaitPluginElementComponent<T>
+export class MindNodeComponent<T extends MindElement = MindElement> extends PlaitPluginElementComponent<T>
     implements OnInit, OnDestroy, OnContextChanged<T> {
     isEditable = false;
 

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { MindmapModule } from '@plait/mind';
+import { MindModule } from '@plait/mind';
 import { FlowModule } from '@plait/flow';
 import { PlaitModule } from '@plait/core';
 import { RichtextModule } from '@plait/richtext';
@@ -12,7 +12,7 @@ import { BasicFlowComponent } from './flow/flow.component';
 
 @NgModule({
     declarations: [AppComponent, BasicRichtextComponent, BasicFlowComponent, BasicBoardEditorComponent],
-    imports: [BrowserModule, RichtextModule, AppRoutingModule, PlaitModule, FlowModule, MindmapModule],
+    imports: [BrowserModule, RichtextModule, AppRoutingModule, PlaitModule, FlowModule, MindModule],
     providers: [],
     bootstrap: [AppComponent]
 })

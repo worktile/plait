@@ -155,9 +155,9 @@ export const changeRightNodeCount = (board: PlaitBoard, parentPath: Path, change
 
 export const shouldChangeRightNodeCount = (selectedElement: MindElement) => {
     const parentElement = findParentElement(selectedElement);
-    const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
-    if (parentElement && mindmapNodeComponent) {
-        const nodeIndex: number = mindmapNodeComponent.parent.children.findIndex(item => item.origin.id === selectedElement.id);
+    const MindNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
+    if (parentElement && MindNodeComponent) {
+        const nodeIndex: number = MindNodeComponent.parent.children.findIndex(item => item.origin.id === selectedElement.id);
         if (
             parentElement.isRoot &&
             getRootLayout(parentElement) === MindmapLayoutType.standard &&
@@ -306,10 +306,10 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
     const accumulativeProperties = new WeakMap<AbstractNode, { start: number; end: number }>();
 
     deletableElements.forEach(node => {
-        const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
-        if (mindmapNodeComponent && mindmapNodeComponent.parent) {
-            const index = mindmapNodeComponent.parent.origin.children.indexOf(node);
-            const abstracts = mindmapNodeComponent.parent.children.filter(value => AbstractNode.isAbstract(value.origin));
+        const MindNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
+        if (MindNodeComponent && MindNodeComponent.parent) {
+            const index = MindNodeComponent.parent.origin.children.indexOf(node);
+            const abstracts = MindNodeComponent.parent.children.filter(value => AbstractNode.isAbstract(value.origin));
             abstracts.forEach(abstract => {
                 const abstractNode = abstract.origin as AbstractNode;
                 if (index >= abstractNode.start && index <= abstractNode.end) {

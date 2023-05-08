@@ -1,22 +1,21 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { MindElement, PlaitMind } from './interfaces/element';
+import { PlaitMind } from './interfaces/element';
 import { MindmapNode } from './interfaces/node';
 import { BeforeContextChange, PlaitPluginElementContext, depthFirstRecursion } from '@plait/core';
 import { GlobalLayout, OriginNode } from '@plait/layouts';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
-import { MindmapQueries } from './queries';
-import { MindmapNodeComponent } from './node.component';
+import { MindNodeComponent } from './node.component';
 import { getLayoutOptions } from './layout-option';
 import { getDefaultMindmapLayout } from './utils/layout';
 
 @Component({
-    selector: 'plait-mindmap',
+    selector: 'plait-mind',
     template: `
         <plait-children [board]="board" [parent]="element" [effect]="effect" [parentG]="rootG"></plait-children>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaitMindmapComponent extends MindmapNodeComponent<PlaitMind> implements OnInit, BeforeContextChange<PlaitMind> {
+export class PlaitMindComponent extends MindNodeComponent<PlaitMind> implements OnInit, BeforeContextChange<PlaitMind> {
     root!: MindmapNode;
 
     rootG!: SVGGElement;

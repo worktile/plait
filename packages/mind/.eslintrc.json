@@ -10,8 +10,8 @@
       ],
       "parserOptions": {
         "project": [
-          "packages/mindmap/tsconfig.lib.json",
-          "packages/mindmap/tsconfig.spec.json"
+          "packages/mind/tsconfig.lib.json",
+          "packages/mind/tsconfig.spec.json"
         ],
         "createDefaultProgram": true
       },

@@ -19,8 +19,8 @@ import {
 import { getSizeByText } from '@plait/richtext';
 import { MindElement, PlaitMind } from '../interfaces';
 import { MindmapNode } from '../interfaces/node';
-import { PlaitMindmapComponent } from '../mindmap.component';
-import { MindmapNodeComponent } from '../node.component';
+import { PlaitMindComponent } from '../mind.component';
+import { MindNodeComponent } from '../node.component';
 import {
     changeRightNodeCount,
     insertMindElement,
@@ -57,9 +57,9 @@ export const withMind = (board: PlaitBoard) => {
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMind.isMind(context.element)) {
-            return PlaitMindmapComponent;
+            return PlaitMindComponent;
         } else if (MindElement.isMindElement(board, context.element)) {
-            return MindmapNodeComponent;
+            return MindNodeComponent;
         }
         return drawElement(context);
     };
@@ -132,19 +132,19 @@ export const withMind = (board: PlaitBoard) => {
                 let lastNode: MindmapNode | any = null;
                 const elementGroup = filterChildElement(selectedElements);
                 const selectNode = elementGroup[0];
-                const mindmapNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectNode);
-                const nodeIndex = mindmapNodeComponent?.parent?.children.findIndex(item => item.origin.id === selectNode.id);
+                const MindNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectNode);
+                const nodeIndex = MindNodeComponent?.parent?.children.findIndex(item => item.origin.id === selectNode.id);
                 const isSameParent = elementGroup.every(element => {
                     return findParentElement(element) && findParentElement(elementGroup[0]) === findParentElement(element);
                 });
                 if (isSameParent) {
-                    const childCount = mindmapNodeComponent!.parent?.children.length - elementGroup.length;
+                    const childCount = MindNodeComponent!.parent?.children.length - elementGroup.length;
                     if (childCount === 0) {
-                        lastNode = mindmapNodeComponent?.parent;
+                        lastNode = MindNodeComponent?.parent;
                     } else if (nodeIndex === 0) {
-                        lastNode = mindmapNodeComponent?.parent.children[elementGroup.length];
+                        lastNode = MindNodeComponent?.parent.children[elementGroup.length];
                     } else if (nodeIndex! > 0) {
-                        lastNode = mindmapNodeComponent?.parent.children[nodeIndex! - 1];
+                        lastNode = MindNodeComponent?.parent.children[nodeIndex! - 1];
                     }
                 }
                 if (lastNode) {

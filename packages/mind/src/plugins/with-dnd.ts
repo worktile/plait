@@ -31,7 +31,7 @@ import { getRichtextRectangleByNode } from '../draw/richtext';
 import { drawRectangleNode } from '../draw/shape';
 import { MindElement, PlaitMind } from '../interfaces/element';
 import { DetectResult, MindmapNode } from '../interfaces/node';
-import { MindmapNodeComponent } from '../node.component';
+import { MindNodeComponent } from '../node.component';
 import {
     directionCorrector,
     directionDetector,
@@ -43,7 +43,7 @@ import {
 import { getRectangleByNode, hitMindmapElement } from '../utils/graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindmapQueries } from '../queries';
-import { PlaitMindmapComponent } from '../mindmap.component';
+import { PlaitMindComponent } from '../mind.component';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -70,7 +70,7 @@ export const withDnd = (board: PlaitBoard) => {
                 return;
             }
             if (PlaitMind.isMind(value)) {
-                const mindmapComponent = ELEMENT_TO_COMPONENT.get(value) as PlaitMindmapComponent;
+                const mindmapComponent = ELEMENT_TO_COMPONENT.get(value) as PlaitMindComponent;
                 const root = mindmapComponent?.root;
                 (root as any).eachNode((node: MindmapNode) => {
                     if (activeElement) {
@@ -119,7 +119,7 @@ export const withDnd = (board: PlaitBoard) => {
             // fake dragging origin node
             const offsetX = endPoint[0] - startPoint[0];
             const offsetY = endPoint[1] - startPoint[1];
-            const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
+            const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindNodeComponent;
             const roughSVG = PlaitBoard.getRoughSVG(board);
             const fakeDraggingNode: MindmapNode = {
                 ...activeComponent.node,
@@ -144,7 +144,7 @@ export const withDnd = (board: PlaitBoard) => {
                     return;
                 }
                 if (PlaitMind.isMind(value)) {
-                    const mindmapComponent = ELEMENT_TO_COMPONENT.get(value) as PlaitMindmapComponent;
+                    const mindmapComponent = ELEMENT_TO_COMPONENT.get(value) as PlaitMindComponent;
                     const root = mindmapComponent?.root;
 
                     (root as any).eachNode((node: MindmapNode) => {
@@ -175,11 +175,11 @@ export const withDnd = (board: PlaitBoard) => {
     board.globalMouseup = (event: MouseEvent) => {
         if (!board.options.readonly && activeElement) {
             if (dropTarget?.target) {
-                const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
-                const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
+                const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindNodeComponent;
+                const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindNodeComponent;
                 let targetPath = PlaitBoard.findPath(board, targetComponent.element);
                 const mindmapElement = findUpElement(dropTarget.target).root;
-                const mindmapComponent = ELEMENT_TO_COMPONENT.get(mindmapElement as PlaitMind) as PlaitMindmapComponent;
+                const mindmapComponent = ELEMENT_TO_COMPONENT.get(mindmapElement as PlaitMind) as PlaitMindComponent;
                 const layout = MindmapQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindElement);
                 targetPath = updatePathByLayoutAndDropTarget(targetPath, layout, dropTarget);
                 const originPath = PlaitBoard.findPath(board, activeComponent.element);
@@ -229,7 +229,7 @@ export const isValidTarget = (origin: MindElement, target: MindElement) => {
 };
 
 export const addActiveOnDragOrigin = (activeElement: MindElement, isOrigin = true) => {
-    const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
+    const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindNodeComponent;
     if (isOrigin) {
         activeComponent.g.classList.add('dragging-origin');
     } else {
@@ -242,7 +242,7 @@ export const addActiveOnDragOrigin = (activeElement: MindElement, isOrigin = tru
 };
 
 export const removeActiveOnDragOrigin = (activeElement: MindElement, isOrigin = true) => {
-    const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindmapNodeComponent;
+    const activeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(activeElement) as MindNodeComponent;
     if (isOrigin) {
         activeComponent.g.classList.remove('dragging-origin');
     } else {
@@ -305,13 +305,13 @@ const updatePathByLayoutAndDropTarget = (
 
 export const updateRightNodeCount = (
     board: PlaitBoard,
-    activeComponent: MindmapNodeComponent,
-    targetComponent: MindmapNodeComponent,
+    activeComponent: MindNodeComponent,
+    targetComponent: MindNodeComponent,
     detectResult: DetectResult
 ) => {
     let rightNodeCount;
     const mindmapElement = findUpElement(targetComponent.node.origin).root;
-    const mindmapComponent = ELEMENT_TO_COMPONENT.get(mindmapElement as PlaitMind) as PlaitMindmapComponent;
+    const mindmapComponent = ELEMENT_TO_COMPONENT.get(mindmapElement as PlaitMind) as PlaitMindComponent;
     const activeIndex = mindmapComponent?.root.children.indexOf(activeComponent.node) as number;
     const targetIndex = mindmapComponent?.root.children.indexOf(targetComponent.node) as number;
     const isActiveOnRight = activeIndex !== -1 && activeIndex <= (activeComponent.parent.origin.rightNodeCount as number) - 1;

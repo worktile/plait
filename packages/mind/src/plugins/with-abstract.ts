@@ -11,7 +11,7 @@ import {
 } from '@plait/core';
 import { AbstractNode, LayoutNode, MindmapLayoutType, isHorizontalLayout, isStandardLayout } from '@plait/layouts';
 import { AbstractHandlePosition, MindElement } from '../interfaces';
-import { MindmapNodeComponent, MindmapQueries } from '../public-api';
+import { MindNodeComponent, MindmapQueries } from '../public-api';
 import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope } from '../utils/abstract/resize';
 import { separateChildren } from '../utils/abstract/common';
 
@@ -46,7 +46,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
 
         if (abstractHandlePosition && activeAbstractElement) {
-            const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindmapNodeComponent;
+            const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;
             const element = abstractComponent.element;
             const nodeLayout = MindmapQueries.getCorrectLayoutByElement(activeAbstractElement as MindElement) as MindmapLayoutType;
             const isHorizontal = isHorizontalLayout(nodeLayout);
@@ -106,7 +106,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                 const path = PlaitBoard.findPath(board, activeAbstractElement);
                 Transforms.setNode(board, newProperty, path);
             } else {
-                const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindmapNodeComponent;
+                const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;
                 abstractComponent!.updateAbstractIncludedOutline();
             }
         }

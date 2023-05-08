@@ -1,10 +1,10 @@
 /*
- * Public API Surface of mindmap
+ * Public API Surface of mind
  */
 
-export * from './mindmap.component';
+export * from './mind.component';
 export * from './node.component';
-export * from './mindmap.module';
+export * from './mind.module';
 export * from './utils';
 export * from './interfaces';
 export * from './plugins/with-mind';

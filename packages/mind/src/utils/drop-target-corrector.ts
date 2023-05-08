@@ -1,6 +1,6 @@
 import { isStandardLayout, isIndentedLayout, isVerticalLogicLayout, isTopLayout, MindmapLayoutType } from '@plait/layouts';
 import { DetectResult, MindElement } from '../interfaces';
-import { MindmapNodeComponent } from '../node.component';
+import { MindNodeComponent } from '../node.component';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { MindmapQueries } from '../queries';
 import { isMixedLayout } from './layout';
@@ -12,7 +12,7 @@ export const readjustmentDropTarget = (dropTarget: {
 }): { target: MindElement; detectResult: DetectResult } => {
     const { target, detectResult } = dropTarget;
     const newDropTarget = { target, detectResult };
-    const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(target) as MindmapNodeComponent;
+    const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(target) as MindNodeComponent;
     if (targetComponent.node.children.length > 0 && dropTarget.detectResult) {
         const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
         const parentLayout = MindmapQueries.getCorrectLayoutByElement(

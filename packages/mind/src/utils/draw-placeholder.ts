@@ -2,7 +2,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../constants';
 import { drawLink } from '../draw/link';
 import { DetectResult, MindElement, MindmapNode } from '../interfaces';
-import { MindmapNodeComponent } from '../node.component';
+import { MindNodeComponent } from '../node.component';
 import { getRectangleByNode } from './graph';
 import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { Point, drawRoundRectangle } from '@plait/core';
@@ -26,14 +26,14 @@ export const drawPlaceholderDropNodeG = (
     roughSVG: RoughSVG,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
-    const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindmapNodeComponent;
+    const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindNodeComponent;
     const targetRect = getRectangleByNode(targetComponent.node);
     if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
         drawStraightDropNodeG(targetRect, dropTarget.detectResult, targetComponent, roughSVG, fakeDropNodeG);
     }
 
     if (targetComponent.parent && dropTarget.detectResult && ['top', 'bottom'].includes(dropTarget.detectResult)) {
-        const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
+        const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindNodeComponent;
         const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
         drawCurvePlaceholderDropNodeG(
             targetRect,
@@ -56,9 +56,9 @@ export const drawCurvePlaceholderDropNodeG = (
     },
     detectResult: DetectResult,
     targetIndex: number,
-    targetComponent: MindmapNodeComponent,
+    targetComponent: MindNodeComponent,
     roughSVG: RoughSVG,
-    parentComponent: MindmapNodeComponent,
+    parentComponent: MindNodeComponent,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
     const parentNodeLayout = MindmapQueries.getCorrectLayoutByElement(parentComponent.node.origin);
@@ -105,7 +105,7 @@ export const drawCurvePlaceholderDropNodeG = (
 
     if (isVerticalLogicLayout(layout)) {
         parentComponent = targetComponent;
-        targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
+        targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindNodeComponent;
         fakeX = parentComponent.node.x;
         width = parentComponent.node.width;
         const vGap = BASE * 6 + strokeWidth;
@@ -137,7 +137,7 @@ export const drawCurvePlaceholderDropNodeG = (
                 } else {
                     const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
                         parentComponent.node.origin.children[targetIndex + 1]
-                    ) as MindmapNodeComponent;
+                    ) as MindNodeComponent;
                     const nextRect = getRectangleByNode(nextComponent.node);
                     fakeY = targetRect.y - Math.abs((nextRect.y + nextRect.height - targetRect.y) / 2);
                 }
@@ -150,7 +150,7 @@ export const drawCurvePlaceholderDropNodeG = (
                 } else {
                     const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
                         parentComponent.node.origin.children[targetIndex - 1]
-                    ) as MindmapNodeComponent;
+                    ) as MindNodeComponent;
                     const previousRect = getRectangleByNode(previousComponent.node);
                     fakeY = previousRect.y - Math.abs((targetRect.y + targetRect.height - previousRect.y) / 2);
                 }
@@ -185,7 +185,7 @@ export const drawStraightDropNodeG = (
         height: number;
     },
     detectResult: DetectResult,
-    targetComponent: MindmapNodeComponent,
+    targetComponent: MindNodeComponent,
     roughSVG: RoughSVG,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
@@ -242,7 +242,7 @@ export const drawStraightDropNodeG = (
                  *      b. 最后一个节点的右侧：固定值（来源于 getMainAxle，第二级节点：BASE * 8，其他 BASE * 3 + strokeWidth / 2）；
                  */
                 fakeY = targetComponent.node.y;
-                const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindmapNodeComponent;
+                const parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindNodeComponent;
                 const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
 
                 if (detectResult === 'left') {
@@ -253,7 +253,7 @@ export const drawStraightDropNodeG = (
                     } else {
                         const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
                             parentComponent.node.origin.children[targetIndex - 1]
-                        ) as MindmapNodeComponent;
+                        ) as MindNodeComponent;
                         const previousRect = getRectangleByNode(previousComponent.node);
                         const space = targetRect.x - (previousRect.x + previousRect.width);
                         offsetX = space / 2;
@@ -268,7 +268,7 @@ export const drawStraightDropNodeG = (
                     } else {
                         const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(
                             parentComponent.node.origin.children[targetIndex + 1]
-                        ) as MindmapNodeComponent;
+                        ) as MindNodeComponent;
                         const nextRect = getRectangleByNode(nextComponent.node);
                         const space = nextRect.x - (targetRect.x + targetRect.width);
                         offsetX = space / 2;
@@ -339,7 +339,7 @@ export const getHorizontalFakeY = (
             fakeY = targetRect.y + targetRect.height;
         }
         if (targetIndex > 0) {
-            const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parentNode.origin.children[targetIndex - 1]) as MindmapNodeComponent;
+            const previousComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parentNode.origin.children[targetIndex - 1]) as MindNodeComponent;
             const previousRect = getRectangleByNode(previousComponent.node);
             const topY = previousRect.y + previousRect.height;
             fakeY = topY + (targetRect.y - topY) / 5;
@@ -348,7 +348,7 @@ export const getHorizontalFakeY = (
     if (detectResult === 'bottom') {
         fakeY = targetRect.y + targetRect.height + 30;
         if (targetIndex < parentNode.origin.children.length - 1) {
-            const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parentNode.origin.children[targetIndex + 1]) as MindmapNodeComponent;
+            const nextComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parentNode.origin.children[targetIndex + 1]) as MindNodeComponent;
             const nextRect = getRectangleByNode(nextComponent.node);
             const topY = targetRect.y + targetRect.height;
             fakeY = topY + (nextRect.y - topY) / 5;

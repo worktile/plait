@@ -1,5 +1,5 @@
 import { MindElement } from '../interfaces';
-import { MindmapNodeComponent } from '../node.component';
+import { MindNodeComponent } from '../node.component';
 import {
     correctLayoutByDirection,
     findUpElement,
@@ -27,7 +27,7 @@ export const getCorrectLayoutByElement = (element: MindElement) => {
     const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
     let layout = component?.node.origin.layout;
 
-    let parentComponent: undefined | MindmapNodeComponent;
+    let parentComponent: undefined | MindNodeComponent;
     let parent: MindElement | undefined = component?.parent?.origin;
 
     while (!layout && parent) {

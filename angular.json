@@ -204,23 +204,23 @@
         }
       }
     },
-    "mindmap": {
+    "mind": {
       "projectType": "library",
-      "root": "packages/mindmap",
-      "sourceRoot": "packages/mindmap/src",
+      "root": "packages/mind",
+      "sourceRoot": "packages/mind/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "packages/mindmap/ng-package.json"
+            "project": "packages/mind/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "packages/mindmap/tsconfig.lib.prod.json"
+              "tsConfig": "packages/mind/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "packages/mindmap/tsconfig.lib.json"
+              "tsConfig": "packages/mind/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -228,17 +228,17 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "packages/mindmap/src/test.ts",
-            "tsConfig": "packages/mindmap/tsconfig.spec.json",
-            "karmaConfig": "packages/mindmap/karma.conf.js"
+            "main": "packages/mind/src/test.ts",
+            "tsConfig": "packages/mind/tsconfig.spec.json",
+            "karmaConfig": "packages/mind/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "packages/mindmap/**/*.ts",
-              "packages/mindmap/**/*.html"
+              "packages/mind/**/*.ts",
+              "packages/mind/**/*.html"
             ]
           }
         }
