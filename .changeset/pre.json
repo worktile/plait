@@ -9,6 +9,7 @@
     "@plait/richtext": "0.1.11"
   },
   "changesets": [
+    "breezy-bears-cheat",
     "clever-guests-occur",
     "cool-suns-enjoy",
     "dirty-walls-remember",
