@@ -9,10 +9,11 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { AbstractNode, MindmapLayoutType, isHorizontalLayout, isStandardLayout } from '@plait/layouts';
+import { AbstractNode, LayoutNode, MindmapLayoutType, isHorizontalLayout, isStandardLayout } from '@plait/layouts';
 import { AbstractHandlePosition, MindElement } from '../interfaces';
 import { MindmapNodeComponent, MindmapQueries } from '../public-api';
 import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope } from '../utils/abstract/resize';
+import { separateChildren } from '../utils/abstract/common';
 
 export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, mouseup } = board;
@@ -46,32 +47,31 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
 
         if (abstractHandlePosition && activeAbstractElement) {
             const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindmapNodeComponent;
+            const element = abstractComponent.element;
             const nodeLayout = MindmapQueries.getCorrectLayoutByElement(activeAbstractElement as MindElement) as MindmapLayoutType;
             const isHorizontal = isHorizontalLayout(nodeLayout);
-            const parentElement = MindElement.getParent(abstractComponent.element);
+            const parentElement = MindElement.getParent(element);
 
-            let children = parentElement.children.filter(child => {
-                return !AbstractNode.isAbstract(child);
-            });
-            let element = abstractComponent.element;
+            let children = parentElement.children;
+
             const parentLayout = MindmapQueries.getLayoutByElement(parentElement);
             if (isStandardLayout(parentLayout)) {
                 const rightNodeCount = parentElement.rightNodeCount!;
+                const { leftChildren, rightChildren } = separateChildren(parentElement);
                 if ((activeAbstractElement as MindElement).end! < rightNodeCount) {
-                    children = children.slice(0, rightNodeCount);
+                    children = rightChildren;
                 }
                 if ((activeAbstractElement as MindElement).start! >= rightNodeCount) {
-                    children = children.slice(rightNodeCount, children.length);
-                    // element.start! -= rightNodeCount;
-                    // element.end! -= rightNodeCount;
+                    children = leftChildren;
                 }
             }
 
             const resizingLocation = isHorizontal ? endPoint[1] : endPoint[0];
-            const scope = getLocationScope(board, abstractHandlePosition, children, element, isHorizontal);
+            const parent = (MindElement.getNode(parentElement) as unknown) as LayoutNode;
+            const scope = getLocationScope(board, abstractHandlePosition, children, element, parent, isHorizontal);
             const location = Math.min(scope.max, Math.max(scope.min, resizingLocation));
 
-            const locationIndex = findLocationLeftIndex(board, children, location, isHorizontal);
+            let locationIndex = findLocationLeftIndex(board, children, location, isHorizontal);
 
             const isPropertyUnchanged =
                 (abstractHandlePosition === AbstractHandlePosition.start &&
@@ -81,6 +81,14 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
             if (isPropertyUnchanged) {
                 newProperty = undefined;
             } else {
+                if (isStandardLayout(parent.layout)) {
+                    const rightNodeCount = parent.origin.rightNodeCount;
+                    let start = element.start!;
+                    if (start >= rightNodeCount) {
+                        locationIndex += rightNodeCount;
+                    }
+                }
+
                 newProperty =
                     abstractHandlePosition === AbstractHandlePosition.start ? { start: locationIndex + 1 } : { end: locationIndex };
             }

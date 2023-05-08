@@ -1,8 +1,9 @@
 import { PlaitBoard, Point, RectangleClient, getRectangleByElements } from '@plait/core';
 import { AbstractHandlePosition, MindElement } from '../../interfaces';
-import { AbstractNode, MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
+import { AbstractNode, LayoutNode, MindmapLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { ABSTRACT_HANDLE_MASK_WIDTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../../constants';
 import { MindmapQueries } from '../../queries';
+import { getCorrectStartEnd } from '@plait/layouts';
 
 export const getRectangleByResizingLocation = (
     abstractRectangle: RectangleClient,
@@ -44,17 +45,26 @@ export const getLocationScope = (
     handlePosition: AbstractHandlePosition,
     parentChildren: MindElement[],
     element: MindElement,
+    parent: LayoutNode,
     isHorizontal: boolean
 ) => {
-    const startNode = parentChildren[element.start!];
-    const endNode = parentChildren[element.end!];
+    const node = (MindElement.getNode(element) as unknown) as LayoutNode;
+    const { start, end } = getCorrectStartEnd(node.origin as AbstractNode, parent);
+
+    const startNode = parentChildren[start];
+    const endNode = parentChildren[end];
 
     if (handlePosition === AbstractHandlePosition.start) {
         const abstractNode = parentChildren.filter(child => AbstractNode.isAbstract(child) && child.end < element.start!);
         let minNode;
 
         if (abstractNode.length) {
-            const index = abstractNode.map(node => node.end!).sort((a, b) => b - a)[0];
+            const index = abstractNode
+                .map(node => {
+                    const { end } = getCorrectStartEnd(node as AbstractNode, parent);
+                    return end;
+                })
+                .sort((a, b) => b - a)[0];
             minNode = parentChildren[index + 1];
         } else {
             minNode = parentChildren[0];
@@ -79,7 +89,12 @@ export const getLocationScope = (
         let maxNode;
 
         if (abstractNode.length) {
-            const index = abstractNode.map(node => node.end!).sort((a, b) => a - b)[0];
+            const index = abstractNode
+                .map(node => {
+                    const { start } = getCorrectStartEnd(node as AbstractNode, parent);
+                    return start;
+                })
+                .sort((a, b) => a - b)[0];
             maxNode = parentChildren[index - 1];
         } else {
             const children = parentChildren.filter(child => !AbstractNode.isAbstract(child));
@@ -148,18 +163,21 @@ export const getAbstractHandleRectangle = (rectangle: RectangleClient, isHorizon
 };
 
 export function findLocationLeftIndex(board: PlaitBoard, parentChildren: MindElement[], location: number, isHorizontal: boolean) {
-    const recArray = parentChildren.map(child => {
+    const children = parentChildren.filter(child => {
+        return !AbstractNode.isAbstract(child);
+    });
+    const recArray = children.map(child => {
         return getRectangleByElements(board, [child], false);
     });
 
-    const firstRec = getRectangleByElements(board, [parentChildren[0]], true);
+    const firstRec = getRectangleByElements(board, [children[0]], true);
     const fakeLeftRec = {
         x: firstRec.x - firstRec.width,
         y: firstRec.y - firstRec.height,
         width: firstRec.width,
         height: firstRec.height
     };
-    const lastRec = getRectangleByElements(board, [parentChildren[parentChildren.length - 1]], true);
+    const lastRec = getRectangleByElements(board, [children[children.length - 1]], true);
     const fakeRightRec = {
         x: lastRec.x + lastRec.width,
         y: lastRec.y + lastRec.height,
