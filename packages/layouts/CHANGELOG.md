@@ -1,5 +1,23 @@
 # layouts
 
+## 0.2.0-next.0
+
+### Minor Changes
+
+-   [`304f2b9`](https://github.com/worktile/plait/commit/304f2b9a613266e5f73b4d3b3403f6ad7aa1b9a2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename package name to mind
+
+### Patch Changes
+
+-   [#341](https://github.com/worktile/plait/pull/341) [`c8a88a7`](https://github.com/worktile/plait/commit/c8a88a74d3c7b430841791c04a89cc70a570ea7a) Thanks [@WBbug](https://github.com/WBbug)! - change layout when node is abstract
+
+*   [#330](https://github.com/worktile/plait/pull/330) [`55a4d32`](https://github.com/worktile/plait/commit/55a4d322455416600da7eb26431052de4f58050f) Thanks [@WBbug](https://github.com/WBbug)! - add abstract
+
+-   [#342](https://github.com/worktile/plait/pull/342) [`005b600`](https://github.com/worktile/plait/commit/005b600391db12d114d4a9b85cf1538e8f2e0834) Thanks [@WBbug](https://github.com/WBbug)! - fix abstract layout in standard layout
+
+*   [#343](https://github.com/worktile/plait/pull/343) [`a714c5a`](https://github.com/worktile/plait/commit/a714c5aacd454c35747fa599642ee8c866893c5d) Thanks [@WBbug](https://github.com/WBbug)! - fix get wrong length
+
+-   [#336](https://github.com/worktile/plait/pull/336) [`08379df`](https://github.com/worktile/plait/commit/08379dfa822039a1ca81c121e41aeb3c34efccbd) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor abstract util method
+
 ## 0.1.0
 
 ### Minor Changes

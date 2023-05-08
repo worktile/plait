@@ -1,4 +1,42 @@
-# mindmap
+# mind
+
+## 0.2.0-next.0
+
+### Minor Changes
+
+-   [`fb968a4`](https://github.com/worktile/plait/commit/fb968a49fa95ab8c23c0512ba40aa931c6af0ab1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - mindmap rename to mind
+
+*   [#321](https://github.com/worktile/plait/pull/321) [`fe2bbb6`](https://github.com/worktile/plait/commit/fe2bbb60e0a452f98383a81eff0fb77a32f7ddc7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor plait core plugin element component structure
+
+-   [`304f2b9`](https://github.com/worktile/plait/commit/304f2b9a613266e5f73b4d3b3403f6ad7aa1b9a2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename package name to mind
+
+### Patch Changes
+
+-   [#341](https://github.com/worktile/plait/pull/341) [`c8a88a7`](https://github.com/worktile/plait/commit/c8a88a74d3c7b430841791c04a89cc70a570ea7a) Thanks [@WBbug](https://github.com/WBbug)! - change layout when node is abstract
+
+*   [#330](https://github.com/worktile/plait/pull/330) [`55a4d32`](https://github.com/worktile/plait/commit/55a4d322455416600da7eb26431052de4f58050f) Thanks [@WBbug](https://github.com/WBbug)! - abstract link adapter to logic layouts
+
+-   [#340](https://github.com/worktile/plait/pull/340) [`9c73bf0`](https://github.com/worktile/plait/commit/9c73bf0fe611c4cab6ee272ffdf6d34b97476612) Thanks [@WBbug](https://github.com/WBbug)! - achieve drag change abstract included node
+
+*   [#337](https://github.com/worktile/plait/pull/337) [`844d3c4`](https://github.com/worktile/plait/commit/844d3c42023ef8b5c37225e57298eb43b062ae6c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support mind node emoji label
+
+-   [#330](https://github.com/worktile/plait/pull/330) [`55a4d32`](https://github.com/worktile/plait/commit/55a4d322455416600da7eb26431052de4f58050f) Thanks [@WBbug](https://github.com/WBbug)! - add abstract
+
+*   [`ba12a1e`](https://github.com/worktile/plait/commit/ba12a1eaaf8f475a771a893e70bfc422cd02b087) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - can not invoke getNode before auto layout execution
+
+-   [#342](https://github.com/worktile/plait/pull/342) [`005b600`](https://github.com/worktile/plait/commit/005b600391db12d114d4a9b85cf1538e8f2e0834) Thanks [@WBbug](https://github.com/WBbug)! - fix abstract layout in standard layout
+
+*   [#339](https://github.com/worktile/plait/pull/339) [`da6c2d9`](https://github.com/worktile/plait/commit/da6c2d953cd64b5e9fd67bd7615e4524e82658b6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - limit mind node max word count
+
+-   [#334](https://github.com/worktile/plait/pull/334) [`256598c`](https://github.com/worktile/plait/commit/256598cc442a127e3828f2961cdd4a5319043bdc) Thanks [@WBbug](https://github.com/WBbug)! - let extend doesn't show when element is moving
+
+*   [#335](https://github.com/worktile/plait/pull/335) [`3c02181`](https://github.com/worktile/plait/commit/3c021816eefeb53fb003d6f87b7effd515d994c3) Thanks [@WBbug](https://github.com/WBbug)! - add drawAbstractIncludedOutline
+
+-   [`076e435`](https://github.com/worktile/plait/commit/076e4356bcef2f5d142d6fcc4d1cf0a9903ae681) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - createMindElement support more options
+
+*   [#338](https://github.com/worktile/plait/pull/338) [`e7a157b`](https://github.com/worktile/plait/commit/e7a157bf19fb2c0cb3865912f78f21c557121532) Thanks [@WBbug](https://github.com/WBbug)! - update AbstractIncludedOutline when mouse move
+
+-   [`dddac29`](https://github.com/worktile/plait/commit/dddac293890e2904a550ae9e5fc6de54f757138f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix mind node topic data structure error when node is copied and pasted
 
 ## 0.1.11
 

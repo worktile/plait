@@ -8,5 +8,27 @@
     "@plait/core": "0.1.9",
     "@plait/richtext": "0.1.11"
   },
-  "changesets": []
+  "changesets": [
+    "clever-guests-occur",
+    "cool-suns-enjoy",
+    "dirty-walls-remember",
+    "dull-icons-add",
+    "fair-ads-mix",
+    "gentle-donkeys-attend",
+    "green-pets-beg",
+    "honest-cats-count",
+    "light-berries-doubt",
+    "nervous-guests-tie",
+    "nervous-starfishes-worry",
+    "proud-rats-give",
+    "quiet-files-thank",
+    "rotten-cherries-remember",
+    "rotten-jokes-tan",
+    "selfish-otters-kick",
+    "slow-dots-notice",
+    "stale-pears-beg",
+    "twenty-starfishes-dream",
+    "unlucky-ravens-tap",
+    "witty-mirrors-breathe"
+  ]
 }
