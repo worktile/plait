@@ -1,6 +1,6 @@
 ---
 '@plait/flow': minor
-'@plait/mindmap': minor
+'@plait/mind': minor
 '@plait/core': minor
 ---
 

@@ -1,6 +1,6 @@
 ---
 '@plait/layouts': patch
-'@plait/mindmap': patch
+'@plait/mind': patch
 ---
 
 change layout when node is abstract

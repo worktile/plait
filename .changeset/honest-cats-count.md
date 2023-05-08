@@ -1,6 +1,6 @@
 ---
 '@plait/layouts': patch
-'@plait/mindmap': patch
+'@plait/mind': patch
 ---
 
 fix abstract layout in standard layout

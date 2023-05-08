@@ -10,7 +10,7 @@ import {
     GRAY_COLOR,
     MindmapQueries,
     createMindElement
-} from '@plait/mindmap';
+} from '@plait/mind';
 import { mockMindmapData } from './mock-data';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
 

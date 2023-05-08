@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit } from "@angular/core";
-import { MindEmojiBaseComponent } from "@plait/mindmap";
+import { MindEmojiBaseComponent } from "@plait/mind";
 
 @Component({
     selector: 'mind-node-emoji',

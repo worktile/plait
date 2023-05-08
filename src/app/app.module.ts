@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { MindmapModule } from '@plait/mindmap';
+import { MindmapModule } from '@plait/mind';
 import { FlowModule } from '@plait/flow';
 import { PlaitModule } from '@plait/core';
 import { RichtextModule } from '@plait/richtext';

@@ -10,8 +10,8 @@
       "@plait/layouts": [
         "dist/layouts"
       ],
-      "@plait/mindmap": [
-        "dist/mindmap"
+      "@plait/mind": [
+        "dist/mind"
       ],
       "@plait/core": [
         "dist/core"

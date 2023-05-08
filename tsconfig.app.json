@@ -11,7 +11,7 @@
       "@plait/layouts": [
         "packages/layouts/src/public-api",
       ],
-      "@plait/mindmap": [
+      "@plait/mind": [
         "packages/mindmap/src/public-api",
       ],
       "@plait/core": [

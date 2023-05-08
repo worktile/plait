@@ -13,7 +13,7 @@ Run `ng build mindmap` to build the project. The build artifacts will be stored 
 
 ## Publishing
 
-After building your library with `ng build mindmap`, go to the dist folder `cd dist/mindmap` and run `npm publish`.
+After building your library with `ng build mindmap`, go to the dist folder `cd dist/mind` and run `npm publish`.
 
 ## Running unit tests
 

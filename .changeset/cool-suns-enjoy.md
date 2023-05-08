@@ -1,5 +1,5 @@
 ---
-'@plait/mindmap': patch
+'@plait/mind': patch
 ---
 
 abstract link adapter to logic layouts

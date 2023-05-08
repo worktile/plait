@@ -4,7 +4,7 @@
   "initialVersions": {
     "@plait/flow": "0.1.6",
     "@plait/layouts": "0.1.0",
-    "@plait/mindmap": "0.1.11",
+    "@plait/mind": "0.1.11",
     "@plait/core": "0.1.9",
     "@plait/richtext": "0.1.11"
   },

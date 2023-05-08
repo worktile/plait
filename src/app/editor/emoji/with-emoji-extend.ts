@@ -1,4 +1,4 @@
-import { BaseData, EmojiData, EmojiItem, MindElement, PlaitMindEmojiBoard } from '@plait/mindmap';
+import { BaseData, EmojiData, EmojiItem, MindElement, PlaitMindEmojiBoard } from '@plait/mind';
 import { MindEmojiComponent } from './emoji.component';
 import { PlaitBoard, PlaitPlugin } from '@plait/core';
 

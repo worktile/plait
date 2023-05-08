@@ -8,7 +8,7 @@
 ],
   "commit": false,
   "fixed": [],
-  "linked": [["@plait/core", "@plait/richtext", "@plait/mindmap", "@plait/layouts"]],
+  "linked": [["@plait/core", "@plait/richtext", "@plait/mind", "@plait/layouts"]],
   "access": "restricted",
   "updateInternalDependencies": "patch",
   "ignore": []

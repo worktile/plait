@@ -1,5 +1,5 @@
 ---
-'@plait/mindmap': patch
+'@plait/mind': patch
 ---
 
 update AbstractIncludedOutline when mouse move
