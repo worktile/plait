@@ -1,5 +1,5 @@
 import { LayoutTreeNode } from '../interfaces/layout-tree-node';
-import { findAbstractByEndNode, findAbstractByStartNode, getNonAbstractChildren } from '../utils/abstract';
+import { findAbstractByEndNode, findAbstractByStartNode, getNonAbstractChildren, getCorrectStartEnd } from '../utils/abstract';
 import { AbstractNode } from '../interfaces/mindmap';
 
 function moveSubtree(treeNode: LayoutTreeNode, i: number, distance: number) {
@@ -125,7 +125,12 @@ function firstWalk(treeNode: LayoutTreeNode) {
     firstWalk(treeNode.children[0]);
     for (let i = 1; i < treeNode.childrenCount; i++) {
         const abstract = treeNode.children.find(abstract => {
-            return AbstractNode.isAbstract(abstract.origin.origin) && abstract.origin.origin.end === i - 1;
+            let correctEnd = null;
+            if (AbstractNode.isAbstract(abstract.origin.origin)) {
+                let { end } = getCorrectStartEnd(abstract.origin.origin, treeNode.origin);
+                correctEnd = end;
+            }
+            return correctEnd === i - 1;
         });
 
         if (abstract) {
@@ -148,11 +153,12 @@ function secondWalk(treeNode: LayoutTreeNode, sumOfModifier: number) {
 }
 
 function abstractHandle(treeNode: LayoutTreeNode, abstract: LayoutTreeNode, i: number) {
-    const abstractNode = abstract.origin.origin as AbstractNode;
-    const abstractIndex = treeNode.children.indexOf(abstract);
-    const startNode = treeNode.children[abstractNode.start];
+    const { start, end } = getCorrectStartEnd(abstract.origin.origin as AbstractNode, treeNode.origin);
 
-    let endNode = treeNode.children[abstractNode.end];
+    const abstractIndex = treeNode.children.indexOf(abstract);
+    const startNode = treeNode.children[start];
+
+    let endNode = treeNode.children[end];
 
     const includeElementStartX = startNode.modifier;
     let includeElementEndX = endNode.modifier + endNode.preliminary + endNode.width;
@@ -187,7 +193,7 @@ function abstractHandle(treeNode: LayoutTreeNode, abstract: LayoutTreeNode, i: n
         moveSubtree(treeNode, abstractIndex, distance);
     } else {
         const distance = (abstractBranchWidth - abstractIncludeElementWidth) / 2;
-        for (let i = abstractNode.start; i < abstractNode.end + 1; i++) {
+        for (let i = start; i < end + 1; i++) {
             moveSubtree(treeNode, i, distance);
         }
     }

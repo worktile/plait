@@ -1,4 +1,4 @@
-import { LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../interfaces/mindmap';
+import { AbstractNode, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../interfaces/mindmap';
 import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isStandardLayout, isTopLayout } from '../utils/layout';
 import { BaseLayout } from './base-layout';
 
@@ -13,6 +13,16 @@ export class GlobalLayout {
             const fakeRootNode = { ...root };
             for (let i = 0; i < primaryNodeCount; i++) {
                 const child = root.children[i];
+
+                if (AbstractNode.isAbstract(child) && child.end < root.rightNodeCount) {
+                    rightBranchNodes.push(child);
+                    continue;
+                }
+                if (AbstractNode.isAbstract(child) && child.start >= root.rightNodeCount) {
+                    leftBranchNodes.push(child);
+                    continue;
+                }
+
                 if (i < root.rightNodeCount) {
                     rightBranchNodes.push(child);
                 } else {

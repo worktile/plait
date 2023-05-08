@@ -1,6 +1,7 @@
 import { LayoutNode, toHorizontal } from '../interfaces/layout-node';
 import { LayoutTreeNode } from '../interfaces/layout-tree-node';
 import { AbstractNode } from '../interfaces/mindmap';
+import { getCorrectStartEnd } from '../utils/abstract';
 
 export function setLayoutTreeResult(tree: LayoutTreeNode, root: LayoutNode, isHorizontal: Boolean) {
     if (isHorizontal) {
@@ -16,7 +17,9 @@ export function setLayoutTreeResult(tree: LayoutTreeNode, root: LayoutNode, isHo
 export function separateYAxle(node: LayoutNode, isHorizontal: boolean, d = 0) {
     if (isHorizontal) {
         if (AbstractNode.isAbstract(node.origin)) {
-            for (let i = node.origin.start!; i <= node.origin.end!; i++) {
+            const { start, end } = getCorrectStartEnd(node.origin, node.parent!);
+
+            for (let i = start!; i <= end!; i++) {
                 const right = node.parent?.children[i].getBoundingBox().right;
                 d = Math.max(right!, d);
             }
