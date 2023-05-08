@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { getSelectedElements, idCreator, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
-import { MindmapLayoutType, isBottomLayout, isIndentedLayout, isLeftLayout, isRightLayout, isTopLayout } from '@plait/layouts';
+import { getSelectedElements, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
+import { MindmapLayoutType } from '@plait/layouts';
 import {
     MindElement,
     MindmapNodeShape,
@@ -8,10 +8,9 @@ import {
     MINDMAP_ELEMENT_TO_COMPONENT,
     withMind,
     GRAY_COLOR,
-    MindmapQueries,
     createMindElement
 } from '@plait/mind';
-import { mockMindmapData } from './mock-data';
+import { mockData } from './mock-data';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
@@ -23,7 +22,7 @@ const LOCAL_DATA_KEY = 'plait-board-change-data';
 export class BasicBoardEditorComponent implements OnInit {
     plugins = [withMind, withEmojiExtend];
 
-    value: PlaitElement[] = [...mockMindmapData];
+    value: PlaitElement[] = [...mockData];
 
     viewport!: Viewport;
 
