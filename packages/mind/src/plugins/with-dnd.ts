@@ -14,6 +14,7 @@ import {
     getSelectedElements
 } from '@plait/core';
 import {
+    AbstractNode,
     isBottomLayout,
     isHorizontalLogicLayout,
     isIndentedLayout,
@@ -76,7 +77,14 @@ export const withDnd = (board: PlaitBoard) => {
                     if (activeElement) {
                         return;
                     }
-                    if (hitMindmapElement(board, point, node.origin) && !node.origin.isRoot && selectedElements.length <= 1) {
+
+                    const canDrag =
+                        hitMindmapElement(board, point, node.origin) &&
+                        !node.origin.isRoot &&
+                        !AbstractNode.isAbstract(node.origin) &&
+                        selectedElements.length <= 1;
+
+                    if (canDrag) {
                         activeElement = node.origin;
                         startPoint = point;
                     }
@@ -130,7 +138,13 @@ export const withDnd = (board: PlaitBoard) => {
             const textRectangle = getRichtextRectangleByNode(activeComponent.node);
             const fakeNodeG = drawRectangleNode(board, fakeDraggingNode);
             const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
-            updateForeignObject(richtextG, textRectangle.width + BASE * 10, textRectangle.height, textRectangle.x + offsetX, textRectangle.y + offsetY);
+            updateForeignObject(
+                richtextG,
+                textRectangle.width + BASE * 10,
+                textRectangle.height,
+                textRectangle.x + offsetX,
+                textRectangle.y + offsetY
+            );
             fakeDragNodeG?.append(fakeNodeG);
             fakeDragNodeG?.append(richtextG);
 
