@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.2.0-next.1
+
+### Patch Changes
+
+-   [`da64e36`](https://github.com/worktile/plait/commit/da64e36cda13300ea6c30535dfdb4a6525f70482) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename isIntersect to isHit and fix isHit float calculate error
+
 ## 0.2.0-next.0
 
 ### Minor Changes

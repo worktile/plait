@@ -1,5 +1,15 @@
 # plait
 
+## 0.2.0-next.2
+
+### Patch Changes
+
+-   [`da64e36`](https://github.com/worktile/plait/commit/da64e36cda13300ea6c30535dfdb4a6525f70482) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename isIntersect to isHit and fix isHit float calculate error
+
+*   [`773cbfa`](https://github.com/worktile/plait/commit/773cbfa17b13dda5365d493ef99ddd316bda033e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix last method can not get correctly node when children is empty array
+
+-   [`46719b3`](https://github.com/worktile/plait/commit/46719b3f20982a97cbca9b056ffcb8aeb4d95ec7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add base drawer and implement quick insert drawer
+
 ## 0.2.0-next.0
 
 ### Minor Changes
