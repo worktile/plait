@@ -2,17 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { getSelectedElements, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
 import { MindmapLayoutType } from '@plait/layouts';
 import { mockData } from './mock-data';
-import {
-    MindElement,
-    MindmapNodeShape,
-    MindTransforms,
-    MINDMAP_ELEMENT_TO_COMPONENT,
-    withMind,
-    GRAY_COLOR,
-    createMindElement,
-    setAbstract,
-    canSetAbstract
-} from '@plait/mind';
+import { MindmapNodeShape, MindTransforms, withMind, setAbstract, canSetAbstract } from '@plait/mind';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
