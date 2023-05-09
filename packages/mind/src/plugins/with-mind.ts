@@ -14,7 +14,8 @@ import {
     transformPoint,
     Transforms,
     Range,
-    depthFirstRecursion
+    depthFirstRecursion,
+    PlaitElement
 } from '@plait/core';
 import { getSizeByText } from '@plait/richtext';
 import { MindElement, PlaitMind } from '../interfaces';
@@ -130,21 +131,21 @@ export const withMind = (board: PlaitBoard) => {
                 deleteSelectedELements(board, selectedElements);
 
                 let lastNode: MindmapNode | any = null;
-                const elementGroup = filterChildElement(selectedElements);
-                const selectNode = elementGroup[0];
-                const MindNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectNode);
-                const nodeIndex = MindNodeComponent?.parent?.children.findIndex(item => item.origin.id === selectNode.id);
-                const isSameParent = elementGroup.every(element => {
-                    return findParentElement(element) && findParentElement(elementGroup[0]) === findParentElement(element);
+                const firstLevelElements = filterChildElement(selectedElements);
+                const firstElement = firstLevelElements[0];
+                const firstComponent = PlaitElement.getComponent(firstElement) as MindNodeComponent;
+                const nodeIndex = firstComponent?.parent?.children.findIndex(item => item.origin.id === firstElement.id);
+                const isSameParent = firstLevelElements.every(element => {
+                    return findParentElement(element) && findParentElement(firstLevelElements[0]) === findParentElement(element);
                 });
                 if (isSameParent) {
-                    const childCount = MindNodeComponent!.parent?.children.length - elementGroup.length;
+                    const childCount = firstComponent!.parent?.children.length - firstLevelElements.length;
                     if (childCount === 0) {
-                        lastNode = MindNodeComponent?.parent;
+                        lastNode = firstComponent?.parent;
                     } else if (nodeIndex === 0) {
-                        lastNode = MindNodeComponent?.parent.children[elementGroup.length];
+                        lastNode = firstComponent?.parent.children[firstLevelElements.length];
                     } else if (nodeIndex! > 0) {
-                        lastNode = MindNodeComponent?.parent.children[nodeIndex! - 1];
+                        lastNode = firstComponent?.parent.children[nodeIndex! - 1];
                     }
                 }
 
