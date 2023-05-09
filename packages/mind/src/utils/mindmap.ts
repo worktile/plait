@@ -113,7 +113,12 @@ export const transformNodeToRoot = (board: PlaitBoard, node: MindElement): MindE
     delete newElement?.shape;
     delete newElement?.strokeWidth;
 
-    const { width, height } = getSizeByText(text, PlaitBoard.getViewportContainer(board), TOPIC_DEFAULT_MAX_WORD_COUNT, ROOT_TOPIC_FONT_SIZE);
+    const { width, height } = getSizeByText(
+        text,
+        PlaitBoard.getViewportContainer(board),
+        TOPIC_DEFAULT_MAX_WORD_COUNT,
+        ROOT_TOPIC_FONT_SIZE
+    );
     newElement.width = Math.max(width, NODE_MIN_WIDTH);
     newElement.height = height;
 
@@ -352,4 +357,21 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
 
     abstractHandles.forEach(action => action());
     deletableHandles.forEach(action => action());
+};
+
+export const divideElementByParent = (elements: MindElement[]) => {
+    const abstractIncludedGroups = [];
+    const parentElements: MindElement[] = [];
+
+    for (let i = 0; i < elements.length; i++) {
+        const parent = MindElement.getParent(elements[i]);
+        const parentIndex = parentElements.indexOf(parent);
+        if (parentIndex === -1) {
+            parentElements.push(parent);
+            abstractIncludedGroups.push([elements[i]]);
+        } else {
+            abstractIncludedGroups[parentIndex].push(elements[i]);
+        }
+    }
+    return { parentElements, abstractIncludedGroups };
 };

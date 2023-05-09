@@ -1,9 +1,10 @@
-import { AbstractNode } from '@plait/layouts';
+import { AbstractNode, isStandardLayout } from '@plait/layouts';
 import { MindElement } from '../../interfaces/element';
-import { PlaitBoard, PlaitElement, Transforms } from '@plait/core';
+import { Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { MindNodeComponent } from '../../node.component';
-import { createMindElement, filterChildElement, findParentElement } from '../mindmap';
+import { createMindElement, divideElementByParent, filterChildElement } from '../mindmap';
 import { GRAY_COLOR } from '../../constants';
+import { MindmapQueries } from '../../queries';
 
 export const separateChildren = (parentElement: MindElement) => {
     const rightNodeCount = parentElement.rightNodeCount!;
@@ -51,29 +52,48 @@ export const canSetAbstract = (element: PlaitElement) => {
 
 export const setAbstract = (board: PlaitBoard, elements: PlaitElement[]) => {
     let elementGroup = filterChildElement(elements as MindElement[]);
+    const { parentElements, abstractIncludedGroups } = divideElementByParent(elementGroup);
 
-    while (elementGroup.length) {
-        const parent = findParentElement(elementGroup[0]);
-        let abstractIncludedElements = elementGroup.filter(element => {
-            return findParentElement(element) && parent === findParentElement(element);
-        });
+    abstractIncludedGroups.forEach((group, index) => {
+        const groupParent = parentElements[index];
+        setAbstractByElements(board, groupParent, group);
+    });
+};
 
-        const indexArray = abstractIncludedElements.map(child => parent!.children.indexOf(child)).sort((a, b) => a - b);
-        const start = indexArray[0];
-        const end = indexArray[indexArray.length - 1];
-        const component = PlaitElement.getComponent(abstractIncludedElements[0]) as MindNodeComponent;
-        const path = [...PlaitBoard.findPath(board, component.parent.origin), component.parent.children.length];
+export const setAbstractByElements = (board: PlaitBoard, groupParent: MindElement, group: MindElement[]) => {
+    const indexArray = group.map(child => groupParent!.children.indexOf(child)).sort((a, b) => a - b);
+    const rightNodeCount = groupParent?.rightNodeCount;
+    const start = indexArray[0],
+        end = indexArray[indexArray.length - 1];
 
-        const mindElement = createMindElement('概要', 28, 20, {
-            strokeColor: GRAY_COLOR,
-            linkLineColor: GRAY_COLOR
-        });
-        mindElement.start = start;
-        mindElement.end = end;
-        Transforms.insertNode(board, mindElement, path);
+    if (
+        isStandardLayout(MindmapQueries.getLayoutByElement(groupParent)) &&
+        rightNodeCount &&
+        start < rightNodeCount &&
+        end >= rightNodeCount
+    ) {
+        const childrenLength = groupParent.children.length;
+        const path = [...PlaitBoard.findPath(board, groupParent), childrenLength];
+        const leftChildren = indexArray.filter(index => index >= rightNodeCount);
+        const rightCHildren = indexArray.filter(index => index < rightNodeCount);
 
-        elementGroup = elementGroup.filter(element => {
-            return !findParentElement(element) || findParentElement(elementGroup[0]) !== findParentElement(element);
-        });
+        insetAbstractNode(board, path, rightCHildren[0], rightCHildren[rightCHildren.length - 1]);
+        insetAbstractNode(board, Path.next(path), leftChildren[0], leftChildren[leftChildren.length - 1]);
+    } else {
+        const path = [...PlaitBoard.findPath(board, groupParent), groupParent.children.length];
+
+        insetAbstractNode(board, path, start, end);
     }
+};
+
+export const insetAbstractNode = (board: PlaitBoard, path: Path, start: number, end: number) => {
+    const mindElement = createMindElement('概要', 28, 20, {
+        strokeColor: GRAY_COLOR,
+        linkLineColor: GRAY_COLOR
+    });
+
+    mindElement.start = start;
+    mindElement.end = end;
+
+    Transforms.insertNode(board, mindElement, path);
 };
