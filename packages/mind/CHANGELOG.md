@@ -1,5 +1,11 @@
 # mind
 
+## 0.2.0-next.1
+
+### Patch Changes
+
+-   [`deb3a01`](https://github.com/worktile/plait/commit/deb3a01864a7135bd268e1879dca802c861cbe56) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct createMindmapData logic and rename to createDefaultMindMapElement
+
 ## 0.2.0-next.0
 
 ### Minor Changes
