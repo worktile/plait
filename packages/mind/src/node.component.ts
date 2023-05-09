@@ -35,7 +35,7 @@ import {
     isRightLayout,
     isStandardLayout,
     isTopLayout,
-    MindmapLayoutType,
+    MindLayoutType,
     OriginNode
 } from '@plait/layouts';
 import { hasEditableTarget, PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
@@ -46,7 +46,7 @@ import { Editor, Operation } from 'slate';
 import {
     EXTEND_OFFSET,
     EXTEND_RADIUS,
-    MindmapNodeShape,
+    MindNodeShape,
     NODE_MIN_WIDTH,
     PRIMARY_COLOR,
     QUICK_INSERT_CIRCLE_COLOR,
@@ -59,13 +59,13 @@ import { drawLogicLink } from './draw/link/logic-link';
 import { drawMindmapNodeRichtext, updateMindNodeTopicSize } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
 import { MindElement, PlaitMind } from './interfaces/element';
-import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
-import { MindmapQueries } from './queries';
-import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
+import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindNode } from './interfaces/node';
+import { MindQueries } from './queries';
+import { getLinkLineColorByMindElement, getRootLinkLineColorByMindElement } from './utils/colors';
 import { getRectangleByNode, hitMindmapElement } from './utils/graph';
-import { insertMindElement, getChildrenCount } from './utils/mindmap';
+import { insertMindElement, getChildrenCount } from './utils/mind';
 import { getNodeShapeByElement } from './utils/shape';
-import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
+import { ELEMENT_TO_NODE, MIND_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
 import { EmojisDrawer } from './plugins/emoji/emoji.drawer';
@@ -73,9 +73,11 @@ import { PlaitMindEmojiBoard } from './plugins/emoji/with-mind-emoji';
 import { MindTransforms } from './transforms';
 import { drawAbstractIncludedOutline } from './draw/abstract';
 import { AbstractHandlePosition } from './interfaces';
+import { QuickInsertDrawer } from './drawer/quick-insert.drawer';
+import { hasAfterDraw } from './drawer/base/base';
 
 @Component({
-    selector: 'plait-mindmap-node',
+    selector: 'plait-mind-node',
     template: `
         <plait-children
             *ngIf="!element.isCollapsed"
@@ -93,9 +95,9 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
 
     roughSVG!: RoughSVG;
 
-    node!: MindmapNode;
+    node!: MindNode;
 
-    parent!: MindmapNode;
+    parent!: MindNode;
 
     index!: number;
 
@@ -123,6 +125,8 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
 
     emojisDrawer!: EmojisDrawer;
 
+    quickInsertDrawer!: QuickInsertDrawer;
+
     public get handActive(): boolean {
         return this.board.pointer === PlaitPointerType.hand;
     }
@@ -133,9 +137,10 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
 
     ngOnInit(): void {
         this.emojisDrawer = new EmojisDrawer(this.board as PlaitMindEmojiBoard, this.viewContainerRef);
-        MINDMAP_ELEMENT_TO_COMPONENT.set(this.element, this);
+        this.quickInsertDrawer = new QuickInsertDrawer(this.board);
+        MIND_ELEMENT_TO_COMPONENT.set(this.element, this);
         super.ngOnInit();
-        this.node = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
+        this.node = ELEMENT_TO_NODE.get(this.element) as MindNode;
         if (!PlaitMind.isMind(this.element)) {
             this.parent = MindElement.getNode(MindElement.getParent(this.element));
         }
@@ -150,15 +155,16 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         this.updateActiveClass();
         this.drawMaskG();
         this.drawExtend();
+        this.drawQuickInsert();
     }
 
     onContextChanged(value: PlaitPluginElementContext<T>, previous: PlaitPluginElementContext<T>) {
-        const newNode = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
+        const newNode = ELEMENT_TO_NODE.get(this.element) as MindNode;
         if (!PlaitMind.isMind(this.element)) {
             this.parent = MindElement.getNode(MindElement.getParent(this.element));
         }
 
-        MINDMAP_ELEMENT_TO_COMPONENT.set(this.element, this);
+        MIND_ELEMENT_TO_COMPONENT.set(this.element, this);
 
         // resolve move node richtext lose issue
         if (this.node !== newNode) {
@@ -167,7 +173,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
             }
         }
 
-        const isEquals = MindmapNode.isEquals(this.node, newNode);
+        const isEquals = MindNode.isEquals(this.node, newNode);
         this.node = newNode;
         this.drawActiveG();
         this.updateActiveClass();
@@ -177,20 +183,8 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
             this.updateRichtext();
             this.drawMaskG();
             this.drawExtend();
+            this.drawQuickInsert();
             this.drawEmojis();
-        }
-    }
-
-    drawShape() {
-        this.destroyShape();
-        const shape = getNodeShapeByElement(this.node.origin) as MindmapNodeShape;
-        switch (shape) {
-            case MindmapNodeShape.roundRectangle:
-                this.shapeG = drawRectangleNode(this.board, this.node as MindmapNode);
-                this.g.prepend(this.shapeG);
-                break;
-            default:
-                break;
         }
     }
 
@@ -198,6 +192,30 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         const g = this.emojisDrawer.drawEmojis(this.element);
         if (g) {
             this.g.append(g);
+        }
+    }
+
+    drawQuickInsert() {
+        this.quickInsertDrawer.destroy();
+        if (this.quickInsertDrawer.canDraw(this.element)) {
+            const g = this.quickInsertDrawer.draw(this.element);
+            if (hasAfterDraw(this.quickInsertDrawer)) {
+                this.quickInsertDrawer.afterDraw(this.element);
+            }
+            this.extendG?.appendChild(g);
+        }
+    }
+
+    drawShape() {
+        this.destroyShape();
+        const shape = getNodeShapeByElement(this.node.origin) as MindNodeShape;
+        switch (shape) {
+            case MindNodeShape.roundRectangle:
+                this.shapeG = drawRectangleNode(this.board, this.node as MindNode);
+                this.g.prepend(this.shapeG);
+                break;
+            default:
+                break;
         }
     }
 
@@ -217,7 +235,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
             this.linkG.remove();
         }
 
-        const layout = MindmapQueries.getLayoutByElement(this.parent.origin) as MindmapLayoutType;
+        const layout = MindQueries.getLayoutByElement(this.parent.origin) as MindLayoutType;
         if (AbstractNode.isAbstract(this.node.origin)) {
             this.linkG = drawAbstractLink(this.board, this.node, isHorizontalLayout(layout));
         } else if (MindElement.isIndentedLayout(this.parent.origin)) {
@@ -240,12 +258,12 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         this.destroyMaskG();
         const lineWidthOffset = 2;
         const extendOffset = 15;
-        const nodeLayout = MindmapQueries.getLayoutByElement(this.node.origin) as MindmapLayoutType;
+        const nodeLayout = MindQueries.getLayoutByElement(this.node.origin) as MindLayoutType;
         const isTop = isTopLayout(nodeLayout);
         const isRight = isRightLayout(nodeLayout);
         const isBottom = isBottomLayout(nodeLayout);
         const isLeft = isLeftLayout(nodeLayout);
-        const { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
+        const { x, y, width, height } = getRectangleByNode(this.node as MindNode);
 
         let drawX = x;
         let drawY = y;
@@ -343,7 +361,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
             if (AbstractNode.isAbstract(this.element)) {
                 this.updateAbstractIncludedOutline();
             }
-            let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
+            let { x, y, width, height } = getRectangleByNode(this.node as MindNode);
             const selectedStrokeG = drawRoundRectangle(
                 this.roughSVG as RoughSVG,
                 x - 2,
@@ -393,7 +411,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
     }
 
     drawRichtext() {
-        const { richtextG, richtextComponentRef, foreignObject } = drawMindmapNodeRichtext(this.node as MindmapNode, this.viewContainerRef);
+        const { richtextG, richtextComponentRef, foreignObject } = drawMindmapNodeRichtext(this.node as MindNode, this.viewContainerRef);
         this.richtextComponentRef = richtextComponentRef;
         this.richtextG = richtextG;
         this.foreignObject = foreignObject;
@@ -401,221 +419,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         this.g.append(richtextG);
     }
 
-    private drawQuickInsert(offset = 0) {
-        if (this.board.options.readonly) {
-            return;
-        }
-        const quickInsertG = createG();
-        quickInsertG.classList.add('quick-insert');
-        this.extendG?.append(quickInsertG);
-        const { x, y, width, height } = getRectangleByNode(this.node);
-
-        /**
-         * 方位：
-         *    1. 左、左上、左下
-         *    2. 右、右上、右下
-         *    3. 上、上左、上右
-         *    4. 下、下左、下右
-         */
-        const shape = getNodeShapeByElement(this.node.origin);
-        // 形状是矩形要偏移边框的线宽
-        const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
-        let offsetBorderLineWidth = 0;
-        if (shape === MindmapNodeShape.roundRectangle && offset === 0) {
-            offsetBorderLineWidth = strokeWidth;
-        }
-        let offsetRootBorderLineWidth = 0;
-        if (this.node.origin.isRoot) {
-            offsetRootBorderLineWidth = strokeWidth;
-        }
-        // 当没有子节点时，需要缩小的偏移量
-        const extraOffset = 3;
-        const underlineCoordinates: ExtendUnderlineCoordinateType = {
-            // 画线方向：右向左 <--
-            [MindmapLayoutType.left]: {
-                // EXTEND_RADIUS * 0.5 是 左方向，折叠/收起的偏移量
-                startX: x - (offset > 0 ? offset + EXTEND_RADIUS * 0.5 : 0) - offsetRootBorderLineWidth,
-                startY: y + height,
-                endX:
-                    x -
-                    offsetBorderLineWidth -
-                    offsetRootBorderLineWidth -
-                    (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) -
-                    EXTEND_RADIUS,
-                endY: y + height
-            },
-            // 画线方向：左向右 -->
-            [MindmapLayoutType.right]: {
-                startX: x + width + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + offsetRootBorderLineWidth,
-                startY: y + height,
-                endX:
-                    x +
-                    width +
-                    offsetBorderLineWidth +
-                    (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) +
-                    EXTEND_RADIUS +
-                    offsetRootBorderLineWidth,
-                endY: y + height
-            },
-            // 画线方向：下向上 -->
-            [MindmapLayoutType.upward]: {
-                startX: x + width * 0.5,
-                startY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - offsetRootBorderLineWidth,
-                endX: x + width * 0.5,
-                endY:
-                    y -
-                    offsetBorderLineWidth -
-                    (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) -
-                    EXTEND_RADIUS -
-                    offsetRootBorderLineWidth
-            },
-            // 画线方向：上向下 -->
-            [MindmapLayoutType.downward]: {
-                startX: x + width * 0.5,
-                startY:
-                    y + height + offsetBorderLineWidth + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + offsetRootBorderLineWidth,
-                endX: x + width * 0.5,
-                endY:
-                    y +
-                    height +
-                    offsetBorderLineWidth +
-                    (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) +
-                    EXTEND_RADIUS +
-                    offsetRootBorderLineWidth
-            },
-            [MindmapLayoutType.leftBottomIndented]: {
-                startX: x + width * 0.5,
-                startY:
-                    y + height + offsetBorderLineWidth + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + offsetRootBorderLineWidth,
-                endX: x + width * 0.5,
-                endY:
-                    y +
-                    height +
-                    offsetBorderLineWidth +
-                    (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) +
-                    EXTEND_RADIUS +
-                    offsetRootBorderLineWidth
-            },
-            [MindmapLayoutType.leftTopIndented]: {
-                startX: x + width * 0.5,
-                startY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - offsetRootBorderLineWidth,
-                endX: x + width * 0.5,
-                endY:
-                    y -
-                    offsetBorderLineWidth -
-                    (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) -
-                    EXTEND_RADIUS -
-                    offsetRootBorderLineWidth
-            },
-            [MindmapLayoutType.rightBottomIndented]: {
-                startX: x + width * 0.5,
-                startY:
-                    y + height + offsetBorderLineWidth + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + offsetRootBorderLineWidth,
-                endX: x + width * 0.5,
-                endY:
-                    y +
-                    height +
-                    offsetBorderLineWidth +
-                    (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET - extraOffset : 0) +
-                    EXTEND_RADIUS +
-                    offsetRootBorderLineWidth
-            },
-            [MindmapLayoutType.rightTopIndented]: {
-                startX: x + width * 0.5,
-                startY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - offsetRootBorderLineWidth,
-                endX: x + width * 0.5,
-                endY:
-                    y -
-                    offsetBorderLineWidth -
-                    (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) -
-                    EXTEND_RADIUS -
-                    offsetRootBorderLineWidth
-            }
-        };
-        if (shape === MindmapNodeShape.roundRectangle || this.node.origin.isRoot) {
-            underlineCoordinates[MindmapLayoutType.left].startY -= height * 0.5;
-            underlineCoordinates[MindmapLayoutType.left].endY -= height * 0.5;
-            underlineCoordinates[MindmapLayoutType.right].startY -= height * 0.5;
-            underlineCoordinates[MindmapLayoutType.right].endY -= height * 0.5;
-        }
-        const stroke = this.node.origin.isRoot
-            ? getRootLinkLineColorByMindmapElement(this.element)
-            : getLinkLineColorByMindmapElement(this.element);
-        let nodeLayout = MindmapQueries.getCorrectLayoutByElement(this.node.origin) as ExtendLayoutType;
-        if (this.node.origin.isRoot && isStandardLayout(nodeLayout)) {
-            const root = this.node.origin as OriginNode;
-            nodeLayout = root.children.length >= root.rightNodeCount ? MindmapLayoutType.left : MindmapLayoutType.right;
-        }
-        const underlineCoordinate = underlineCoordinates[nodeLayout];
-        if (underlineCoordinate) {
-            const underline = this.roughSVG.line(
-                underlineCoordinate.startX,
-                underlineCoordinate.startY,
-                underlineCoordinate.endX,
-                underlineCoordinate.endY,
-                { stroke, strokeWidth }
-            );
-            const circleCoordinates = {
-                startX: underlineCoordinate.endX,
-                startY: underlineCoordinate.endY
-            };
-            const circle = this.roughSVG.circle(circleCoordinates.startX, circleCoordinates.startY, EXTEND_RADIUS, {
-                fill: QUICK_INSERT_CIRCLE_COLOR,
-                stroke: QUICK_INSERT_CIRCLE_COLOR,
-                fillStyle: 'solid'
-            });
-            const innerCrossCoordinates = {
-                horizontal: {
-                    startX: circleCoordinates.startX - EXTEND_RADIUS * 0.5 + 3,
-                    startY: circleCoordinates.startY,
-                    endX: circleCoordinates.startX + EXTEND_RADIUS * 0.5 - 3,
-                    endY: circleCoordinates.startY
-                },
-                vertical: {
-                    startX: circleCoordinates.startX,
-                    startY: circleCoordinates.startY - EXTEND_RADIUS * 0.5 + 3,
-                    endX: circleCoordinates.startX,
-                    endY: circleCoordinates.startY + EXTEND_RADIUS * 0.5 - 3
-                }
-            };
-            const innerCrossHLine = this.roughSVG.line(
-                innerCrossCoordinates.horizontal.startX,
-                innerCrossCoordinates.horizontal.startY,
-                innerCrossCoordinates.horizontal.endX,
-                innerCrossCoordinates.horizontal.endY,
-                {
-                    stroke: QUICK_INSERT_INNER_CROSS_COLOR,
-                    strokeWidth: 2
-                }
-            );
-            const innerRingVLine = this.roughSVG.line(
-                innerCrossCoordinates.vertical.startX,
-                innerCrossCoordinates.vertical.startY,
-                innerCrossCoordinates.vertical.endX,
-                innerCrossCoordinates.vertical.endY,
-                {
-                    stroke: QUICK_INSERT_INNER_CROSS_COLOR,
-                    strokeWidth: 2
-                }
-            );
-            quickInsertG.appendChild(underline);
-            quickInsertG.appendChild(circle);
-            quickInsertG.appendChild(innerCrossHLine);
-            quickInsertG.appendChild(innerRingVLine);
-        }
-
-        fromEvent(quickInsertG, 'mouseup')
-            .pipe(take(1))
-            .subscribe(() => {
-                const path = PlaitBoard.findPath(this.board, this.element).concat(
-                    this.element.children.filter(child => !AbstractNode.isAbstract(child)).length
-                );
-                insertMindElement(this.board, this.node.origin, path);
-            });
-    }
-
     drawExtend() {
-        // destroy
         this.destroyExtend();
         // create extend
         this.extendG = createG();
@@ -625,7 +429,6 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         this.g.append(this.extendG);
         this.extendG.append(collapseG);
         if (this.node.origin.isRoot) {
-            this.drawQuickInsert();
             return;
         }
         // interactive
@@ -642,10 +445,10 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
             });
 
         const { x, y, width, height } = getRectangleByNode(this.node);
-        const stroke = getLinkLineColorByMindmapElement(this.element);
+        const stroke = getLinkLineColorByMindElement(this.element);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         const extendY = y + height / 2;
-        const nodeLayout = MindmapQueries.getCorrectLayoutByElement(this.element) as MindmapLayoutType;
+        const nodeLayout = MindQueries.getCorrectLayoutByElement(this.element) as MindLayoutType;
 
         let extendLineXY = [
             [x + width, extendY],
@@ -662,7 +465,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
 
         if (isHorizontalLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
             extendLineYOffset =
-                (getNodeShapeByElement(this.node.origin) as MindmapNodeShape) === MindmapNodeShape.roundRectangle
+                (getNodeShapeByElement(this.node.origin) as MindNodeShape) === MindNodeShape.roundRectangle
                     ? [0, 0]
                     : [height / 2, height / 2];
             if (isLeftLayout(nodeLayout)) {
@@ -746,7 +549,6 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
             collapseG.appendChild(extendLine);
         } else {
             this.g.classList.remove('collapsed');
-
             if (this.node.origin.children.length > 0) {
                 const hideCircleG = this.roughSVG.circle(
                     extendLineXY[1][0] + circleOffset[0],
@@ -762,9 +564,6 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
                 collapseG.appendChild(hideCircleG);
                 collapseG.appendChild(hideArrowTopLine);
                 collapseG.appendChild(hideArrowBottomLine);
-                this.drawQuickInsert(EXTEND_RADIUS);
-            } else {
-                this.drawQuickInsert();
             }
         }
     }
@@ -920,7 +719,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         };
     }
 
-    trackBy = (index: number, node: MindmapNode) => {
+    trackBy = (index: number, node: MindNode) => {
         return node.origin.id;
     };
 
@@ -933,8 +732,8 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {
             ELEMENT_TO_NODE.delete(this.element);
         }
-        if (MINDMAP_ELEMENT_TO_COMPONENT.get(this.element) === this) {
-            MINDMAP_ELEMENT_TO_COMPONENT.delete(this.element);
+        if (MIND_ELEMENT_TO_COMPONENT.get(this.element) === this) {
+            MIND_ELEMENT_TO_COMPONENT.delete(this.element);
         }
     }
 }

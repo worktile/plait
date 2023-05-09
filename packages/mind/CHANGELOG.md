@@ -1,5 +1,17 @@
 # mind
 
+## 0.2.0-next.2
+
+### Patch Changes
+
+-   [#344](https://github.com/worktile/plait/pull/344) [`47ac10f`](https://github.com/worktile/plait/commit/47ac10f3ebe5e142c2b7d250bc639409bff6198f) Thanks [@WBbug](https://github.com/WBbug)! - add abstract util function
+
+*   [`da64e36`](https://github.com/worktile/plait/commit/da64e36cda13300ea6c30535dfdb4a6525f70482) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename isIntersect to isHit and fix isHit float calculate error
+
+-   [#346](https://github.com/worktile/plait/pull/346) [`37e66e7`](https://github.com/worktile/plait/commit/37e66e73c110a6059d3265af30b26fc32ad0e37e) Thanks [@WBbug](https://github.com/WBbug)! - forbidden drag when node is abstract
+
+*   [`46719b3`](https://github.com/worktile/plait/commit/46719b3f20982a97cbca9b056ffcb8aeb4d95ec7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add base drawer and implement quick insert drawer
+
 ## 0.2.0-next.1
 
 ### Patch Changes

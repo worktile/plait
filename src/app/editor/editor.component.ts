@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { getSelectedElements, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
-import { MindmapLayoutType } from '@plait/layouts';
+import { MindLayoutType } from '@plait/layouts';
 import { mockData } from './mock-data';
-import { MindmapNodeShape, MindTransforms, withMind, setAbstract, canSetAbstract } from '@plait/mind';
+import { MindNodeShape, MindTransforms, withMind, setAbstract, canSetAbstract } from '@plait/mind';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
@@ -42,7 +42,7 @@ export class BasicBoardEditorComponent implements OnInit {
     }
 
     layoutChange(event: Event) {
-        const value = (event.target as HTMLSelectElement).value as MindmapLayoutType;
+        const value = (event.target as HTMLSelectElement).value as MindLayoutType;
         const selectedElement = getSelectedElements(this.board)?.[0];
         if (selectedElement) {
             const path = PlaitBoard.findPath(this.board, selectedElement);
@@ -51,7 +51,7 @@ export class BasicBoardEditorComponent implements OnInit {
     }
 
     shapeChange(event: Event) {
-        const value = (event.target as HTMLSelectElement).value as MindmapNodeShape;
+        const value = (event.target as HTMLSelectElement).value as MindNodeShape;
         const selectedElement = getSelectedElements(this.board)?.[0];
         if (selectedElement) {
             const path = PlaitBoard.findPath(this.board, selectedElement);

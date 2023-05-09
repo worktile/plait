@@ -1,6 +1,6 @@
 import { LayoutNode } from '../interfaces/layout-node';
 import { LayoutTreeNode } from '../interfaces/layout-tree-node';
-import { AbstractNode } from '../interfaces/mindmap';
+import { AbstractNode } from '../interfaces/mind';
 import { isStandardLayout } from './layout';
 
 export const getNonAbstractChildren = <T extends { children: T[] } = LayoutNode | LayoutTreeNode>(parentNode: T) => {

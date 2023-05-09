@@ -1,5 +1,5 @@
 import { Point } from '@plait/core';
-import { DetectResult, MindmapNode } from '../interfaces';
+import { DetectResult, MindNode } from '../interfaces';
 import { getRectangleByNode } from './graph';
 
 /**
@@ -9,7 +9,7 @@ import { getRectangleByNode } from './graph';
  * @returns DetectResult[] | null
  */
 
-export const directionDetector = (targetNode: MindmapNode, centerPoint: Point): DetectResult[] | null => {
+export const directionDetector = (targetNode: MindNode, centerPoint: Point): DetectResult[] | null => {
     const { x, y, width, height } = getRectangleByNode(targetNode);
     const yCenter = y + height / 2;
     const xCenter = x + width / 2;

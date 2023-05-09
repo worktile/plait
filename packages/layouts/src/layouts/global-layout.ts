@@ -1,9 +1,9 @@
-import { AbstractNode, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../interfaces/mindmap';
+import { AbstractNode, LayoutOptions, LayoutType, MindLayoutType, OriginNode } from '../interfaces/mind';
 import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isStandardLayout, isTopLayout } from '../utils/layout';
 import { BaseLayout } from './base-layout';
 
 export class GlobalLayout {
-    static layout(root: OriginNode, options: LayoutOptions, mindmapLayoutType: MindmapLayoutType) {
+    static layout(root: OriginNode, options: LayoutOptions, mindmapLayoutType: MindLayoutType) {
         const baseLayout = new BaseLayout();
 
         if (isStandardLayout(mindmapLayoutType)) {

@@ -1,6 +1,6 @@
 import { layout } from '../algorithms/non-overlapping-tree-layout';
 import { LayoutBlockNode, LayoutNode } from '../interfaces/layout-node';
-import { AbstractNode, LayoutContext, LayoutOptions, LayoutType, MindmapLayoutType, OriginNode } from '../interfaces/mindmap';
+import { AbstractNode, LayoutContext, LayoutOptions, LayoutType, MindLayoutType, OriginNode } from '../interfaces/mind';
 import { extractLayoutType, isHorizontalLayout, isLeftLayout, isTopLayout } from '../utils/layout';
 import * as indent from './indent';
 import * as logic from './logic';
@@ -27,7 +27,7 @@ export class BaseLayout {
         isolatedNodes
             .filter(v => v.origin.children.length > 0)
             .forEach((isolatedNode: LayoutNode) => {
-                const _mindmapLayoutType = isolatedNode.layout as MindmapLayoutType;
+                const _mindmapLayoutType = isolatedNode.layout as MindLayoutType;
                 const toTop = context.toTop || (isHorizontalLayout(context.rootLayoutType) && isTopLayout(_mindmapLayoutType));
                 const toLeft = context.toLeft || (!isHorizontalLayout(context.rootLayoutType) && isLeftLayout(_mindmapLayoutType));
                 const _isHorizontal = isHorizontalLayout(_mindmapLayoutType);

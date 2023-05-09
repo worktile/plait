@@ -8,7 +8,7 @@ export const NODE_MIN_WIDTH = 18;
 
 export const COLORS = ['#A287E1', '#6F81DB', '#6EC4C4', '#DFB85D', '#B1C774', '#77C386', '#C28976', '#E48484', '#E482D4', '#69B1E4'];
 
-export enum MindmapNodeShape {
+export enum MindNodeShape {
     roundRectangle = 'round-rectangle',
     underline = 'underline'
 }

@@ -1,4 +1,4 @@
-import { MindmapLayoutType } from '@plait/layouts';
+import { MindLayoutType } from '@plait/layouts';
 
 export enum LayoutDirection {
     'top' = 'top',
@@ -8,14 +8,14 @@ export enum LayoutDirection {
 }
 
 export const LayoutDirectionsMap: LayoutDirectionMapType = {
-    [MindmapLayoutType.right]: [LayoutDirection.right],
-    [MindmapLayoutType.left]: [LayoutDirection.left],
-    [MindmapLayoutType.upward]: [LayoutDirection.top],
-    [MindmapLayoutType.downward]: [LayoutDirection.bottom],
-    [MindmapLayoutType.rightBottomIndented]: [LayoutDirection.right, LayoutDirection.bottom],
-    [MindmapLayoutType.rightTopIndented]: [LayoutDirection.right, LayoutDirection.top],
-    [MindmapLayoutType.leftBottomIndented]: [LayoutDirection.left, LayoutDirection.bottom],
-    [MindmapLayoutType.leftTopIndented]: [LayoutDirection.left, LayoutDirection.top]
+    [MindLayoutType.right]: [LayoutDirection.right],
+    [MindLayoutType.left]: [LayoutDirection.left],
+    [MindLayoutType.upward]: [LayoutDirection.top],
+    [MindLayoutType.downward]: [LayoutDirection.bottom],
+    [MindLayoutType.rightBottomIndented]: [LayoutDirection.right, LayoutDirection.bottom],
+    [MindLayoutType.rightTopIndented]: [LayoutDirection.right, LayoutDirection.top],
+    [MindLayoutType.leftBottomIndented]: [LayoutDirection.left, LayoutDirection.bottom],
+    [MindLayoutType.leftTopIndented]: [LayoutDirection.left, LayoutDirection.top]
 };
 
 export type LayoutDirectionMapType = { [key: string]: LayoutDirection[] };

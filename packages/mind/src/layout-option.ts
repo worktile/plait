@@ -2,7 +2,7 @@ import { ConnectingPosition, LayoutNode, LayoutOptions, OriginNode, isHorizontal
 import { MindElement } from "./interfaces/element";
 import { BASE, STROKE_WIDTH } from "./constants/default";
 import { getRootLayout } from "./utils/layout";
-import { MindmapNodeShape } from "./constants/node";
+import { MindNodeShape } from "./constants/node";
 import { NodeSpace } from "./utils/node-space";
 
 export const getLayoutOptions = () => {
@@ -58,7 +58,7 @@ export const getLayoutOptions = () => {
             }
         },
         getVerticalConnectingPosition(element: MindElement, parent?: LayoutNode) {
-            if (element.shape === MindmapNodeShape.underline && parent && isHorizontalLogicLayout(parent.layout)) {
+            if (element.shape === MindNodeShape.underline && parent && isHorizontalLogicLayout(parent.layout)) {
                 return ConnectingPosition.bottom;
             }
             return undefined;

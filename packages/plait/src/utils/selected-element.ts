@@ -63,6 +63,10 @@ export const removeSelectedElement = (board: PlaitBoard, element: PlaitElement) 
     cacheSelectedElements(board, newSelectedElements);
 };
 
+export const clearSelectedElement = (board: PlaitBoard) => {
+    cacheSelectedElements(board, []);
+};
+
 export const isSelectedElement = (board: PlaitBoard, element: PlaitElement) => {
     const selectedElements = getSelectedElements(board);
     return !!selectedElements.find(value => value === element);

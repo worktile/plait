@@ -1,6 +1,6 @@
 import { LayoutNode, toHorizontal } from '../interfaces/layout-node';
 import { LayoutTreeNode } from '../interfaces/layout-tree-node';
-import { AbstractNode } from '../interfaces/mindmap';
+import { AbstractNode } from '../interfaces/mind';
 import { getCorrectStartEnd } from '../utils/abstract';
 
 export function setLayoutTreeResult(tree: LayoutTreeNode, root: LayoutNode, isHorizontal: Boolean) {

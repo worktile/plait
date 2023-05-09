@@ -41,7 +41,7 @@ export const PlaitNode = {
     },
     last(board: PlaitBoard, path: Path) {
         let n = PlaitNode.get(board, path);
-        while (n && n.children) {
+        while (n && n.children && n.children.length > 0) {
             const i = n.children.length - 1;
             n = n.children[i];
         }

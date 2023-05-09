@@ -1,9 +1,9 @@
-import { MindmapNode } from '../interfaces/node';
+import { MindNode } from '../interfaces/node';
 import { PlaitBoard, Point, RectangleClient, distanceBetweenPointAndRectangle } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ELEMENT_TO_NODE } from './weak-maps';
 
-export function getRectangleByNode(node: MindmapNode): RectangleClient {
+export function getRectangleByNode(node: MindNode): RectangleClient {
     const x = node.x + node.hGap;
     let y = node.y + node.vGap;
     const width = node.width - node.hGap * 2;

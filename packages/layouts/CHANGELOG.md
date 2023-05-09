@@ -1,5 +1,11 @@
 # layouts
 
+## 0.2.0-next.2
+
+### Patch Changes
+
+-   [#345](https://github.com/worktile/plait/pull/345) [`77d7075`](https://github.com/worktile/plait/commit/77d7075c491e85216a29f8f4133f9de5a433a3dc) Thanks [@WBbug](https://github.com/WBbug)! - let abstract always behind
+
 ## 0.2.0-next.0
 
 ### Minor Changes

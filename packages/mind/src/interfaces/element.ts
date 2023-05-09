@@ -1,8 +1,8 @@
 import { Element } from 'slate';
-import { MindmapNodeShape } from '../constants/node';
-import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
+import { MindNodeShape } from '../constants/node';
+import { isIndentedLayout, MindLayoutType } from '@plait/layouts';
 import { NODE_TO_PARENT, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
-import { MindmapQueries } from '../queries';
+import { MindQueries } from '../queries';
 import { ELEMENT_TO_NODE } from '../utils';
 import { BaseData, EmojiData } from './element-data';
 
@@ -18,14 +18,14 @@ export interface MindElement<T = BaseData> extends PlaitElement {
     fill?: string;
     strokeColor?: string;
     strokeWidth?: number;
-    shape?: MindmapNodeShape;
+    shape?: MindNodeShape;
 
     // link style attributes
     linkLineColor?: string;
     linkLineWidth?: number;
 
     // layout
-    layout?: MindmapLayoutType;
+    layout?: MindLayoutType;
     isCollapsed?: boolean;
 
     start?: number;
@@ -44,12 +44,12 @@ export const PlaitMind = {
 };
 
 export const MindElement = {
-    hasLayout(value: MindElement, layout: MindmapLayoutType) {
-        const _layout = MindmapQueries.getLayoutByElement(value);
+    hasLayout(value: MindElement, layout: MindLayoutType) {
+        const _layout = MindQueries.getLayoutByElement(value);
         return _layout === layout;
     },
     isIndentedLayout(value: MindElement) {
-        const _layout = MindmapQueries.getLayoutByElement(value) as MindmapLayoutType;
+        const _layout = MindQueries.getLayoutByElement(value) as MindLayoutType;
         return isIndentedLayout(_layout);
     },
     isMindElement(board: PlaitBoard, element: PlaitElement): element is MindElement {

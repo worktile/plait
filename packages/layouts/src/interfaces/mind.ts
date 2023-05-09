@@ -14,7 +14,7 @@ export interface LayoutOptions {
 export interface LayoutContext {
     toLeft: boolean;
     toTop: boolean;
-    rootLayoutType: MindmapLayoutType;
+    rootLayoutType: MindLayoutType;
 }
 
 export interface OriginNode {
@@ -39,7 +39,7 @@ export const AbstractNode = {
     }
 };
 
-export enum MindmapLayoutType {
+export enum MindLayoutType {
     'right' = 'right',
     'left' = 'left',
     'standard' = 'standard',

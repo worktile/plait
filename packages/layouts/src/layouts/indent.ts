@@ -1,5 +1,5 @@
 import { LayoutNode } from '../interfaces/layout-node';
-import { AbstractNode, LayoutOptions } from '../interfaces/mindmap';
+import { AbstractNode, LayoutOptions } from '../interfaces/mind';
 import { findAbstractByEndNode, getNonAbstractChildren } from '../utils/abstract';
 import { isHorizontalLogicLayout } from '../utils/layout';
 
