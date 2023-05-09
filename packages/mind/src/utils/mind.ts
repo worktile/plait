@@ -171,7 +171,7 @@ export const changeRightNodeCount = (board: PlaitBoard, parentPath: Path, change
 export const shouldChangeRightNodeCount = (selectedElement: MindElement) => {
     const parentElement = findParentElement(selectedElement);
     if (parentElement) {
-        const nodeIndex: number = parentElement.children.findIndex(item => item.origin.id === selectedElement.id);
+        const nodeIndex: number = parentElement.children.findIndex(item => item.id === selectedElement.id);
         if (
             parentElement.isRoot &&
             getRootLayout(parentElement) === MindLayoutType.standard &&
