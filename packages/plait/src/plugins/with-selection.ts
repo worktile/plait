@@ -41,7 +41,7 @@ export function withSelection(board: PlaitBoard) {
 
             Transforms.setSelection(board, { ranges: ranges });
 
-            if (getHitElements(board).length || board.pointer === PlaitPointerType.hand) {
+            if (board.pointer === PlaitPointerType.hand || getHitElements(board).length) {
                 start = null;
             }
         }

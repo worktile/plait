@@ -8,12 +8,13 @@ export interface RectangleClient {
 }
 
 export const RectangleClient = {
-    isIntersect: (origin: RectangleClient, target: RectangleClient) => {
+    isHit: (origin: RectangleClient, target: RectangleClient) => {
         const minX = origin.x < target.x ? origin.x : target.x;
         const maxX = origin.x + origin.width > target.x + target.width ? origin.x + origin.width : target.x + target.width;
         const minY = origin.y < target.y ? origin.y : target.y;
         const maxY = origin.y + origin.height > target.y + target.height ? origin.y + origin.height : target.y + target.height;
-        if (maxX - minX - origin.width - target.width <= 0 && maxY - minY - origin.height - target.height <= 0) {
+        // float calculate error( eg: 1.4210854715202004e-14 > 0)
+        if (Math.floor(maxX - minX - origin.width - target.width) <= 0 && Math.floor(maxY - minY - origin.height - target.height) <= 0) {
             return true;
         } else {
             return false;

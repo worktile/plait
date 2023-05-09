@@ -81,7 +81,7 @@ export const withMind = (board: PlaitBoard) => {
     board.isHitSelection = (element, range: Range) => {
         if (MindElement.isMindElement(board, element) && board.selection) {
             const client = getRectangleByNode(MindElement.getNode(element));
-            return RectangleClient.isIntersect(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
+            return RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
         }
         return isHitSelection(element, range);
     };

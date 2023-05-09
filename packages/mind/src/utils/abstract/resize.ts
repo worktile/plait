@@ -131,8 +131,8 @@ export const getHitAbstractHandle = (board: PlaitBoard, element: MindElement, po
     const endHandleRec = getAbstractHandleRectangle(abstractRectangle, isHorizontal, AbstractHandlePosition.end);
 
     const pointRec = RectangleClient.toRectangleClient([point, point]);
-    if (RectangleClient.isIntersect(pointRec, startHandleRec)) return AbstractHandlePosition.start;
-    if (RectangleClient.isIntersect(pointRec, endHandleRec)) return AbstractHandlePosition.end;
+    if (RectangleClient.isHit(pointRec, startHandleRec)) return AbstractHandlePosition.start;
+    if (RectangleClient.isHit(pointRec, endHandleRec)) return AbstractHandlePosition.end;
     return null;
 };
 
