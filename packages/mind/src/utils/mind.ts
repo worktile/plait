@@ -1,4 +1,4 @@
-import { AbstractNode, MindmapLayoutType } from '@plait/layouts';
+import { AbstractNode, MindLayoutType } from '@plait/layouts';
 import {
     addSelectedElement,
     clearSelectedElement,
@@ -10,16 +10,16 @@ import {
     Transforms
 } from '@plait/core';
 import { Node } from 'slate';
-import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node';
-import { MindmapNode } from '../interfaces';
+import { MindNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node';
+import { MindNode } from '../interfaces';
 import { MindElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
+import { MIND_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node';
 
 export function findParentElement(element: MindElement): MindElement | undefined {
-    const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
+    const component = MIND_ELEMENT_TO_COMPONENT.get(element);
     if (component && component.parent) {
         return component.parent.origin;
     }
@@ -70,11 +70,11 @@ export const filterChildElement = (elements: MindElement[]) => {
     return result;
 };
 
-export const isChildRight = (node: MindmapNode, child: MindmapNode) => {
+export const isChildRight = (node: MindNode, child: MindNode) => {
     return node.x < child.x;
 };
 
-export const isChildUp = (node: MindmapNode, child: MindmapNode) => {
+export const isChildUp = (node: MindNode, child: MindNode) => {
     return node.y > child.y;
 };
 
@@ -101,7 +101,7 @@ export const transformRootToNode = (board: PlaitBoard, node: MindElement) => {
     newNode.width = Math.max(width, NODE_MIN_WIDTH);
     newNode.height = height;
 
-    if (newNode.layout === MindmapLayoutType.standard) {
+    if (newNode.layout === MindLayoutType.standard) {
         delete newNode.layout;
     }
 
@@ -133,7 +133,7 @@ export const transformNodeToRoot = (board: PlaitBoard, node: MindElement): MindE
 
     return {
         ...newElement,
-        layout: newElement.layout ?? MindmapLayoutType.right,
+        layout: newElement.layout ?? MindLayoutType.right,
         isCollapsed: false,
         isRoot: true,
         type: 'mindmap'
@@ -169,12 +169,12 @@ export const changeRightNodeCount = (board: PlaitBoard, parentPath: Path, change
 
 export const shouldChangeRightNodeCount = (selectedElement: MindElement) => {
     const parentElement = findParentElement(selectedElement);
-    const MindNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectedElement);
+    const MindNodeComponent = MIND_ELEMENT_TO_COMPONENT.get(selectedElement);
     if (parentElement && MindNodeComponent) {
         const nodeIndex: number = MindNodeComponent.parent.children.findIndex(item => item.origin.id === selectedElement.id);
         if (
             parentElement.isRoot &&
-            getRootLayout(parentElement) === MindmapLayoutType.standard &&
+            getRootLayout(parentElement) === MindLayoutType.standard &&
             parentElement.rightNodeCount &&
             nodeIndex <= parentElement.rightNodeCount - 1
         ) {
@@ -184,14 +184,14 @@ export const shouldChangeRightNodeCount = (selectedElement: MindElement) => {
     return false;
 };
 
-export const createDefaultMindMapElement = (point: Point, rightNodeCount: number, layout: MindmapLayoutType) => {
-    const root = createMindElement('思维导图', 72, ROOT_DEFAULT_HEIGHT, { shape: MindmapNodeShape.roundRectangle, layout });
+export const createDefaultMindMapElement = (point: Point, rightNodeCount: number, layout: MindLayoutType) => {
+    const root = createMindElement('思维导图', 72, ROOT_DEFAULT_HEIGHT, { shape: MindNodeShape.roundRectangle, layout });
     root.rightNodeCount = rightNodeCount;
     root.isRoot = true;
     root.type = 'mindmap';
     root.points = [point];
     const children = [1, 1, 1].map(() => {
-        return createMindElement('新建节点', 56, TEXT_DEFAULT_HEIGHT, { shape: MindmapNodeShape.roundRectangle });
+        return createMindElement('新建节点', 56, TEXT_DEFAULT_HEIGHT, { shape: MindNodeShape.roundRectangle });
     });
     root.children = children;
     return root;
@@ -205,8 +205,8 @@ export const createMindElement = (
         fill?: string;
         strokeColor?: string;
         strokeWidth?: number;
-        shape?: MindmapNodeShape;
-        layout?: MindmapLayoutType;
+        shape?: MindNodeShape;
+        layout?: MindLayoutType;
         linkLineColor?: string;
     }
 ) => {
@@ -249,14 +249,14 @@ export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, p
     let fill,
         strokeColor,
         strokeWidth,
-        shape = MindmapNodeShape.roundRectangle;
+        shape = MindNodeShape.roundRectangle;
     if (!inheritNode.isRoot) {
         fill = inheritNode.fill;
         strokeColor = inheritNode.strokeColor;
         strokeWidth = inheritNode.strokeWidth;
     }
 
-    shape = inheritNode.shape as MindmapNodeShape;
+    shape = inheritNode.shape as MindNodeShape;
 
     const newElement = createMindElement('', NODE_MIN_WIDTH, TEXT_DEFAULT_HEIGHT, { fill, strokeColor, strokeWidth, shape });
 
@@ -276,7 +276,7 @@ export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, p
     });
 };
 
-export const findLastChild = (child: MindmapNode) => {
+export const findLastChild = (child: MindNode) => {
     let result = child;
     while (result.children.length !== 0) {
         result = result.children[result.children.length - 1];
@@ -292,7 +292,7 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
     const accumulativeProperties = new WeakMap<AbstractNode, { start: number; end: number }>();
 
     deletableElements.forEach(node => {
-        const MindNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(node);
+        const MindNodeComponent = MIND_ELEMENT_TO_COMPONENT.get(node);
         if (MindNodeComponent && MindNodeComponent.parent) {
             const index = MindNodeComponent.parent.origin.children.indexOf(node);
             const abstracts = MindNodeComponent.parent.children.filter(value => AbstractNode.isAbstract(value.origin));

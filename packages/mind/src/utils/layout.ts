@@ -1,7 +1,7 @@
 import { LayoutDirection, LayoutDirectionsMap, MindElement } from '../interfaces';
-import { isIndentedLayout, MindmapLayoutType } from '@plait/layouts';
+import { isIndentedLayout, MindLayoutType } from '@plait/layouts';
 
-export const getBranchDirectionsByLayouts = (branchLayouts: MindmapLayoutType[]) => {
+export const getBranchDirectionsByLayouts = (branchLayouts: MindLayoutType[]) => {
     const branchDirections: LayoutDirection[] = [];
     branchLayouts.forEach(l => {
         const directions = LayoutDirectionsMap[l];
@@ -14,16 +14,16 @@ export const getBranchDirectionsByLayouts = (branchLayouts: MindmapLayoutType[])
     return branchDirections;
 };
 
-export const isCorrectLayout = (root: MindElement, layout: MindmapLayoutType) => {
+export const isCorrectLayout = (root: MindElement, layout: MindLayoutType) => {
     const rootLayout = root.layout || getDefaultMindmapLayout();
     return !getInCorrectLayoutDirection(rootLayout, layout);
 };
 
-export const isMixedLayout = (parentLayout: MindmapLayoutType, layout: MindmapLayoutType) => {
+export const isMixedLayout = (parentLayout: MindLayoutType, layout: MindLayoutType) => {
     return (!isIndentedLayout(parentLayout) && isIndentedLayout(layout)) || (isIndentedLayout(parentLayout) && !isIndentedLayout(layout));
 };
 
-export const getInCorrectLayoutDirection = (rootLayout: MindmapLayoutType, layout: MindmapLayoutType) => {
+export const getInCorrectLayoutDirection = (rootLayout: MindLayoutType, layout: MindLayoutType) => {
     const mindmapDirections = LayoutDirectionsMap[rootLayout];
     const subLayoutDirections = LayoutDirectionsMap[layout];
     if (!subLayoutDirections) {
@@ -32,33 +32,33 @@ export const getInCorrectLayoutDirection = (rootLayout: MindmapLayoutType, layou
     return subLayoutDirections.find(d => mindmapDirections.includes(getLayoutReverseDirection(d)));
 };
 
-export const correctLayoutByDirection = (layout: MindmapLayoutType, direction: LayoutDirection) => {
+export const correctLayoutByDirection = (layout: MindLayoutType, direction: LayoutDirection) => {
     const isHorizontal = direction === LayoutDirection.left || direction === LayoutDirection.right ? true : false;
-    let inverseDirectionLayout = MindmapLayoutType.standard;
+    let inverseDirectionLayout = MindLayoutType.standard;
     switch (layout) {
-        case MindmapLayoutType.left:
-            inverseDirectionLayout = MindmapLayoutType.right;
+        case MindLayoutType.left:
+            inverseDirectionLayout = MindLayoutType.right;
             break;
-        case MindmapLayoutType.right:
-            inverseDirectionLayout = MindmapLayoutType.left;
+        case MindLayoutType.right:
+            inverseDirectionLayout = MindLayoutType.left;
             break;
-        case MindmapLayoutType.downward:
-            inverseDirectionLayout = MindmapLayoutType.upward;
+        case MindLayoutType.downward:
+            inverseDirectionLayout = MindLayoutType.upward;
             break;
-        case MindmapLayoutType.upward:
-            inverseDirectionLayout = MindmapLayoutType.downward;
+        case MindLayoutType.upward:
+            inverseDirectionLayout = MindLayoutType.downward;
             break;
-        case MindmapLayoutType.rightBottomIndented:
-            inverseDirectionLayout = isHorizontal ? MindmapLayoutType.leftBottomIndented : MindmapLayoutType.rightTopIndented;
+        case MindLayoutType.rightBottomIndented:
+            inverseDirectionLayout = isHorizontal ? MindLayoutType.leftBottomIndented : MindLayoutType.rightTopIndented;
             break;
-        case MindmapLayoutType.leftBottomIndented:
-            inverseDirectionLayout = isHorizontal ? MindmapLayoutType.rightBottomIndented : MindmapLayoutType.leftTopIndented;
+        case MindLayoutType.leftBottomIndented:
+            inverseDirectionLayout = isHorizontal ? MindLayoutType.rightBottomIndented : MindLayoutType.leftTopIndented;
             break;
-        case MindmapLayoutType.rightTopIndented:
-            inverseDirectionLayout = isHorizontal ? MindmapLayoutType.leftTopIndented : MindmapLayoutType.rightBottomIndented;
+        case MindLayoutType.rightTopIndented:
+            inverseDirectionLayout = isHorizontal ? MindLayoutType.leftTopIndented : MindLayoutType.rightBottomIndented;
             break;
-        case MindmapLayoutType.leftTopIndented:
-            inverseDirectionLayout = isHorizontal ? MindmapLayoutType.rightTopIndented : MindmapLayoutType.leftBottomIndented;
+        case MindLayoutType.leftTopIndented:
+            inverseDirectionLayout = isHorizontal ? MindLayoutType.rightTopIndented : MindLayoutType.leftBottomIndented;
             break;
     }
     return inverseDirectionLayout;
@@ -70,14 +70,14 @@ export const getMindmapDirection = (root: MindElement) => {
 };
 
 export const getDefaultMindmapLayout = () => {
-    return MindmapLayoutType.standard;
+    return MindLayoutType.standard;
 };
 
-export const getAvailableSubLayoutsByLayoutDirections = (directions: LayoutDirection[]): MindmapLayoutType[] => {
-    const result: MindmapLayoutType[] = [];
+export const getAvailableSubLayoutsByLayoutDirections = (directions: LayoutDirection[]): MindLayoutType[] => {
+    const result: MindLayoutType[] = [];
     const reverseDirections = directions.map(getLayoutReverseDirection);
-    for (const key in MindmapLayoutType) {
-        const layout = MindmapLayoutType[key as keyof typeof MindmapLayoutType];
+    for (const key in MindLayoutType) {
+        const layout = MindLayoutType[key as keyof typeof MindLayoutType];
         const layoutDirections = LayoutDirectionsMap[layout];
         if (layoutDirections) {
             const hasSameDirection = layoutDirections.some(d => directions.includes(d));

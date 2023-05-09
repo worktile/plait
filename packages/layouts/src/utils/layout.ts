@@ -1,9 +1,9 @@
 import { LayoutNode } from '../interfaces/layout-node';
-import { LayoutType, MindmapLayoutType } from '../interfaces/mindmap';
+import { LayoutType, MindLayoutType } from '../interfaces/mind';
 
-export function findLayoutType(node: LayoutNode): MindmapLayoutType | null {
+export function findLayoutType(node: LayoutNode): MindLayoutType | null {
     if (node.origin.layout) {
-        return node.origin.layout as MindmapLayoutType;
+        return node.origin.layout as MindLayoutType;
     }
 
     if (node.parent) {
@@ -13,74 +13,74 @@ export function findLayoutType(node: LayoutNode): MindmapLayoutType | null {
     return null;
 }
 
-export const isIndentedLayout = (layout: MindmapLayoutType) => {
+export const isIndentedLayout = (layout: MindLayoutType) => {
     return (
-        layout === MindmapLayoutType.rightBottomIndented ||
-        layout === MindmapLayoutType.rightTopIndented ||
-        layout === MindmapLayoutType.leftBottomIndented ||
-        layout === MindmapLayoutType.leftTopIndented
+        layout === MindLayoutType.rightBottomIndented ||
+        layout === MindLayoutType.rightTopIndented ||
+        layout === MindLayoutType.leftBottomIndented ||
+        layout === MindLayoutType.leftTopIndented
     );
 };
 
-export const isLogicLayout = (layout: MindmapLayoutType) => {
+export const isLogicLayout = (layout: MindLayoutType) => {
     return (
-        layout === MindmapLayoutType.right ||
-        layout === MindmapLayoutType.left ||
-        layout === MindmapLayoutType.downward ||
-        layout === MindmapLayoutType.upward
+        layout === MindLayoutType.right ||
+        layout === MindLayoutType.left ||
+        layout === MindLayoutType.downward ||
+        layout === MindLayoutType.upward
     );
 };
 
-export const isStandardLayout = (layout: MindmapLayoutType) => {
-    return layout === MindmapLayoutType.standard;
+export const isStandardLayout = (layout: MindLayoutType) => {
+    return layout === MindLayoutType.standard;
 };
 
-export const isHorizontalLayout = (layout: MindmapLayoutType) => {
+export const isHorizontalLayout = (layout: MindLayoutType) => {
     return (
-        layout === MindmapLayoutType.right ||
-        layout === MindmapLayoutType.left ||
-        layout === MindmapLayoutType.standard ||
+        layout === MindLayoutType.right ||
+        layout === MindLayoutType.left ||
+        layout === MindLayoutType.standard ||
         isIndentedLayout(layout)
     );
 };
 
-export const isHorizontalLogicLayout = (layout: MindmapLayoutType) => {
-    return layout === MindmapLayoutType.right || layout === MindmapLayoutType.left || layout === MindmapLayoutType.standard;
+export const isHorizontalLogicLayout = (layout: MindLayoutType) => {
+    return layout === MindLayoutType.right || layout === MindLayoutType.left || layout === MindLayoutType.standard;
 };
 
-export const isVerticalLogicLayout = (layout: MindmapLayoutType) => {
-    return layout === MindmapLayoutType.upward || layout === MindmapLayoutType.downward;
+export const isVerticalLogicLayout = (layout: MindLayoutType) => {
+    return layout === MindLayoutType.upward || layout === MindLayoutType.downward;
 };
 
-export const isTopLayout = (layout: MindmapLayoutType) => {
+export const isTopLayout = (layout: MindLayoutType) => {
     return (
-        layout === MindmapLayoutType.leftTopIndented || layout === MindmapLayoutType.rightTopIndented || layout === MindmapLayoutType.upward
+        layout === MindLayoutType.leftTopIndented || layout === MindLayoutType.rightTopIndented || layout === MindLayoutType.upward
     );
 };
 
-export const isBottomLayout = (layout: MindmapLayoutType) => {
+export const isBottomLayout = (layout: MindLayoutType) => {
     return (
-        layout === MindmapLayoutType.leftBottomIndented ||
-        layout === MindmapLayoutType.rightBottomIndented ||
-        layout === MindmapLayoutType.downward
+        layout === MindLayoutType.leftBottomIndented ||
+        layout === MindLayoutType.rightBottomIndented ||
+        layout === MindLayoutType.downward
     );
 };
 
-export const isLeftLayout = (layout: MindmapLayoutType) => {
+export const isLeftLayout = (layout: MindLayoutType) => {
     return (
-        layout === MindmapLayoutType.left || layout === MindmapLayoutType.leftTopIndented || layout === MindmapLayoutType.leftBottomIndented
+        layout === MindLayoutType.left || layout === MindLayoutType.leftTopIndented || layout === MindLayoutType.leftBottomIndented
     );
 };
 
-export const isRightLayout = (layout: MindmapLayoutType) => {
+export const isRightLayout = (layout: MindLayoutType) => {
     return (
-        layout === MindmapLayoutType.right ||
-        layout === MindmapLayoutType.rightTopIndented ||
-        layout === MindmapLayoutType.rightBottomIndented
+        layout === MindLayoutType.right ||
+        layout === MindLayoutType.rightTopIndented ||
+        layout === MindLayoutType.rightBottomIndented
     );
 };
 
-export const extractLayoutType = (mindmapLayoutType: MindmapLayoutType): LayoutType => {
+export const extractLayoutType = (mindmapLayoutType: MindLayoutType): LayoutType => {
     if (isIndentedLayout(mindmapLayoutType)) {
         return LayoutType.indented;
     }
@@ -93,10 +93,10 @@ export const extractLayoutType = (mindmapLayoutType: MindmapLayoutType): LayoutT
     return LayoutType.logic;
 };
 
-export const getAbstractLayout = (mindmapLayoutType: MindmapLayoutType) => {
+export const getAbstractLayout = (mindmapLayoutType: MindLayoutType) => {
     if (isRightLayout(mindmapLayoutType)) {
-        return MindmapLayoutType.right;
+        return MindLayoutType.right;
     } else {
-        return MindmapLayoutType.left;
+        return MindLayoutType.left;
     }
 };

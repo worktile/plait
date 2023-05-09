@@ -1,12 +1,12 @@
 import { PlaitBoard, Path, PlaitNode, Transforms } from '@plait/core';
-import { isHorizontalLogicLayout, isVerticalLogicLayout, MindmapLayoutType } from '@plait/layouts';
+import { isHorizontalLogicLayout, isVerticalLogicLayout, MindLayoutType } from '@plait/layouts';
 
-export const setLayout = (board: PlaitBoard, layout: MindmapLayoutType, path: Path) => {
+export const setLayout = (board: PlaitBoard, layout: MindLayoutType, path: Path) => {
     correctLogicLayoutNode(board, layout, path);
     Transforms.setNode(board, { layout }, path);
 };
 
-const correctLogicLayoutNode = (board: PlaitBoard, layout: MindmapLayoutType, path: Path) => {
+const correctLogicLayoutNode = (board: PlaitBoard, layout: MindLayoutType, path: Path) => {
     const node = PlaitNode.get(board, path);
     if (node && layout) {
         node.children?.forEach((value: PlaitNode, index) => {

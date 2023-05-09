@@ -1,4 +1,4 @@
-import { AbstractNode, LayoutContext, LayoutOptions, MindmapLayoutType, OriginNode } from './mindmap';
+import { AbstractNode, LayoutContext, LayoutOptions, MindLayoutType, OriginNode } from './mind';
 import { findLayoutType, getAbstractLayout, isIndentedLayout } from '../utils/layout';
 import { isChildOfAbstract } from '../utils/abstract';
 
@@ -19,7 +19,7 @@ export class LayoutNode {
     parent?: LayoutNode;
     left = false;
     up = false;
-    layout: MindmapLayoutType;
+    layout: MindLayoutType;
     verticalConnectingPosition?: ConnectingPosition;
 
     constructor(origin: OriginNode, options: LayoutOptions, context: LayoutContext, parent?: LayoutNode) {
@@ -33,7 +33,7 @@ export class LayoutNode {
             this.parent = parent;
         }
         const layout = findLayoutType(this);
-        this.layout = layout && layout !== MindmapLayoutType.standard ? layout : context.rootLayoutType;
+        this.layout = layout && layout !== MindLayoutType.standard ? layout : context.rootLayoutType;
 
         if ((AbstractNode.isAbstract(origin) || isChildOfAbstract(this)) && isIndentedLayout(this.layout)) {
             this.layout = getAbstractLayout(this.layout);

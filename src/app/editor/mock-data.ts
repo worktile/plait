@@ -1,5 +1,5 @@
 import { PlaitMind } from '@plait/mind';
-import { MindmapLayoutType } from '@plait/layouts';
+import { MindLayoutType } from '@plait/layouts';
 
 export const mockData: PlaitMind[] = [
     {

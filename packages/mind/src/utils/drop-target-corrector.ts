@@ -1,8 +1,8 @@
-import { isStandardLayout, isIndentedLayout, isVerticalLogicLayout, isTopLayout, MindmapLayoutType } from '@plait/layouts';
+import { isStandardLayout, isIndentedLayout, isVerticalLogicLayout, isTopLayout, MindLayoutType } from '@plait/layouts';
 import { DetectResult, MindElement } from '../interfaces';
 import { MindNodeComponent } from '../node.component';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
-import { MindmapQueries } from '../queries';
+import { MIND_ELEMENT_TO_COMPONENT } from './weak-maps';
+import { MindQueries } from '../queries';
 import { isMixedLayout } from './layout';
 
 /* 根据布局调整 target 以及 direction */
@@ -12,16 +12,16 @@ export const readjustmentDropTarget = (dropTarget: {
 }): { target: MindElement; detectResult: DetectResult } => {
     const { target, detectResult } = dropTarget;
     const newDropTarget = { target, detectResult };
-    const targetComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(target) as MindNodeComponent;
+    const targetComponent = MIND_ELEMENT_TO_COMPONENT.get(target) as MindNodeComponent;
     if (targetComponent.node.children.length > 0 && dropTarget.detectResult) {
-        const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
-        const parentLayout = MindmapQueries.getCorrectLayoutByElement(
+        const layout = MindQueries.getCorrectLayoutByElement(targetComponent.node.origin);
+        const parentLayout = MindQueries.getCorrectLayoutByElement(
             targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
         );
         if (['right', 'left'].includes(dropTarget.detectResult)) {
             if (!isMixedLayout(parentLayout, layout)) {
                 if (targetComponent.node.origin.isRoot) {
-                    const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
+                    const layout = MindQueries.getCorrectLayoutByElement(targetComponent.node.origin);
                     // 标准布局，根节点
                     if (isStandardLayout(layout)) {
                         const rightNodeCount = targetComponent.node.origin.rightNodeCount as number;
@@ -59,8 +59,8 @@ export const readjustmentDropTarget = (dropTarget: {
                 newDropTarget.detectResult = 'bottom';
             } else {
                 // 处理左右布局下的混合布局
-                if ([MindmapLayoutType.left, MindmapLayoutType.right].includes(parentLayout)) {
-                    const layout = MindmapQueries.getCorrectLayoutByElement(targetComponent.node.origin);
+                if ([MindLayoutType.left, MindLayoutType.right].includes(parentLayout)) {
+                    const layout = MindQueries.getCorrectLayoutByElement(targetComponent.node.origin);
                     if (isIndentedLayout(layout)) {
                         newDropTarget.target = targetComponent.node.children[0].origin;
                         newDropTarget.detectResult = isTopLayout(layout) ? 'bottom' : 'top';
@@ -77,7 +77,7 @@ export const readjustmentDropTarget = (dropTarget: {
                 return newDropTarget;
             }
             // 上下布局，插到右边
-            const parentLayout = MindmapQueries.getCorrectLayoutByElement(
+            const parentLayout = MindQueries.getCorrectLayoutByElement(
                 targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
             );
             if (isVerticalLogicLayout(parentLayout)) {

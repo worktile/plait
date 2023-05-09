@@ -1,13 +1,13 @@
 import { MindElement } from '../interfaces';
 import { findParentElement, getDefaultMindmapLayout } from '../utils';
-import { MindmapLayoutType } from '@plait/layouts';
+import { MindLayoutType } from '@plait/layouts';
 
 /**
  * 获取父节点布局类型
  * @param element
- * @returns MindmapLayoutType
+ * @returns MindLayoutType
  */
-export const getLayoutParentByElement = (element: MindElement): MindmapLayoutType => {
+export const getLayoutParentByElement = (element: MindElement): MindLayoutType => {
     let parent = findParentElement(element);
     while (parent) {
         if (parent.layout) {

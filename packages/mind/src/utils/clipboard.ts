@@ -12,14 +12,14 @@ import {
 import { MindElement } from '../interfaces';
 import { copyNewNode, insertMindElement, extractNodesText, transformNodeToRoot, transformRootToNode, createMindElement } from '.';
 import { getRectangleByNode } from './graph';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from './weak-maps';
+import { MIND_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { MindNodeComponent } from '../node.component';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[]) => {
     let result: MindElement[] = [];
     const selectedMindmapNodes = Array.from(selectedElements, node => {
-        return (MINDMAP_ELEMENT_TO_COMPONENT.get(node) as MindNodeComponent)?.node;
+        return (MIND_ELEMENT_TO_COMPONENT.get(node) as MindNodeComponent)?.node;
     });
     const nodesRectangle = getRectangleByElements(board, selectedElements, true);
     selectedElements.forEach((node, index) => {

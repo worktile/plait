@@ -1,6 +1,6 @@
 export * from './graph';
 export * from './weak-maps';
-export * from './mindmap';
+export * from './mind';
 export * from './layout';
 export * from './shape';
 export * from './colors';

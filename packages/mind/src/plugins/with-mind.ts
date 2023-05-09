@@ -18,7 +18,7 @@ import {
 } from '@plait/core';
 import { getSizeByText } from '@plait/richtext';
 import { MindElement, PlaitMind } from '../interfaces';
-import { MindmapNode } from '../interfaces/node';
+import { MindNode } from '../interfaces/node';
 import { PlaitMindComponent } from '../mind.component';
 import { MindNodeComponent } from '../node.component';
 import {
@@ -31,7 +31,7 @@ import {
 } from '../utils';
 import { getRectangleByNode, hitMindmapElement } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { MINDMAP_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
+import { MIND_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { AbstractNode } from '@plait/layouts';
@@ -129,10 +129,10 @@ export const withMind = (board: PlaitBoard) => {
                 event.preventDefault();
                 deleteSelectedELements(board, selectedElements);
 
-                let lastNode: MindmapNode | any = null;
+                let lastNode: MindNode | any = null;
                 const elementGroup = filterChildElement(selectedElements);
                 const selectNode = elementGroup[0];
-                const MindNodeComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(selectNode);
+                const MindNodeComponent = MIND_ELEMENT_TO_COMPONENT.get(selectNode);
                 const nodeIndex = MindNodeComponent?.parent?.children.findIndex(item => item.origin.id === selectNode.id);
                 const isSameParent = elementGroup.every(element => {
                     return findParentElement(element) && findParentElement(elementGroup[0]) === findParentElement(element);

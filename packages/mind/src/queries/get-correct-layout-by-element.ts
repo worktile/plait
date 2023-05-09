@@ -5,9 +5,9 @@ import {
     findUpElement,
     getDefaultMindmapLayout,
     getInCorrectLayoutDirection,
-    MINDMAP_ELEMENT_TO_COMPONENT
+    MIND_ELEMENT_TO_COMPONENT
 } from '../utils';
-import { AbstractNode, MindmapLayoutType, getAbstractLayout, isIndentedLayout, LayoutNode, isChildOfAbstract } from '@plait/layouts';
+import { AbstractNode, MindLayoutType, getAbstractLayout, isIndentedLayout, LayoutNode, isChildOfAbstract } from '@plait/layouts';
 
 /**
  * get correctly layout：
@@ -24,14 +24,14 @@ export const getCorrectLayoutByElement = (element: MindElement) => {
         return correctRootLayout;
     }
 
-    const component = MINDMAP_ELEMENT_TO_COMPONENT.get(element);
+    const component = MIND_ELEMENT_TO_COMPONENT.get(element);
     let layout = component?.node.origin.layout;
 
     let parentComponent: undefined | MindNodeComponent;
     let parent: MindElement | undefined = component?.parent?.origin;
 
     while (!layout && parent) {
-        parentComponent = MINDMAP_ELEMENT_TO_COMPONENT.get(parent);
+        parentComponent = MIND_ELEMENT_TO_COMPONENT.get(parent);
         layout = parentComponent?.node.origin.layout;
         parent = parentComponent?.parent?.origin;
     }
@@ -43,8 +43,8 @@ export const getCorrectLayoutByElement = (element: MindElement) => {
     }
 
     // handle root standard
-    if (rootLayout === MindmapLayoutType.standard) {
-        correctRootLayout = component?.node.left ? MindmapLayoutType.left : MindmapLayoutType.right;
+    if (rootLayout === MindLayoutType.standard) {
+        correctRootLayout = component?.node.left ? MindLayoutType.left : MindLayoutType.right;
     }
 
     if (parentComponent?.node.origin.isRoot) {

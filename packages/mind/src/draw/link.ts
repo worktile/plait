@@ -1,17 +1,17 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { GRAY_COLOR, MindmapNodeShape, STROKE_WIDTH } from '../constants';
-import { MindmapNode } from '../interfaces/node';
-import { getLinkLineColorByMindmapElement } from '../utils/colors';
+import { GRAY_COLOR, MindNodeShape, STROKE_WIDTH } from '../constants';
+import { MindNode } from '../interfaces/node';
+import { getLinkLineColorByMindElement } from '../utils/colors';
 import { PlaitBoard, Point, createG, getRectangleByElements } from '@plait/core';
 import { getNodeShapeByElement, getRectangleByNode, isChildRight } from '../utils';
-import { MindmapLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
-import { MindmapQueries } from '../queries';
+import { MindLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
+import { MindQueries } from '../queries';
 
 export function drawLink(
     roughSVG: RoughSVG,
-    node: MindmapNode,
-    child: MindmapNode,
+    node: MindNode,
+    child: MindNode,
     defaultStroke: string | null = null,
     isHorizontal = true,
     needDrawUnderline = true
@@ -22,7 +22,7 @@ export function drawLink(
         endY,
         beginNode = node,
         endNode = child;
-    const layout = MindmapQueries.getCorrectLayoutByElement(node.origin) as MindmapLayoutType;
+    const layout = MindQueries.getCorrectLayoutByElement(node.origin) as MindLayoutType;
     if (isHorizontal) {
         if (!isChildRight(node, child)) {
             beginNode = child;
@@ -35,8 +35,8 @@ export function drawLink(
 
         if (
             node.parent &&
-            isIndentedLayout(MindmapQueries.getLayoutByElement(node.parent?.origin)) &&
-            (getNodeShapeByElement(node.origin) as MindmapNodeShape) === MindmapNodeShape.underline
+            isIndentedLayout(MindQueries.getLayoutByElement(node.parent?.origin)) &&
+            (getNodeShapeByElement(node.origin) as MindNodeShape) === MindNodeShape.underline
         ) {
             if (isChildRight(node, child)) {
                 beginY = node.y + node.height - node.vGap;
@@ -55,21 +55,21 @@ export function drawLink(
         endY = endNode.y + endNode.vGap;
     }
 
-    const stroke = defaultStroke || getLinkLineColorByMindmapElement(child.origin);
+    const stroke = defaultStroke || getLinkLineColorByMindElement(child.origin);
     const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
     if (endNode.origin.isRoot) {
-        if (layout === MindmapLayoutType.left || isStandardLayout(layout)) {
+        if (layout === MindLayoutType.left || isStandardLayout(layout)) {
             endX -= strokeWidth;
         }
-        if (layout === MindmapLayoutType.upward) {
+        if (layout === MindLayoutType.upward) {
             endY -= strokeWidth;
         }
     }
     if (beginNode.origin.isRoot) {
-        if (layout === MindmapLayoutType.right || isStandardLayout(layout)) {
+        if (layout === MindLayoutType.right || isStandardLayout(layout)) {
             beginX += strokeWidth;
         }
-        if (layout === MindmapLayoutType.downward) {
+        if (layout === MindLayoutType.downward) {
             beginY += strokeWidth;
         }
     }
@@ -80,7 +80,7 @@ export function drawLink(
             [endX - (beginNode.hGap + endNode.hGap) / 2, endY],
             [endX, endY]
         ];
-        const shape = getNodeShapeByElement(child.origin) as MindmapNodeShape;
+        const shape = getNodeShapeByElement(child.origin) as MindNodeShape;
 
         if (!node.origin.isRoot) {
             if (node.x > child.x) {
@@ -112,7 +112,7 @@ export function drawLink(
             }
         }
 
-        if (needDrawUnderline && shape === MindmapNodeShape.underline) {
+        if (needDrawUnderline && shape === MindNodeShape.underline) {
             if (child.left) {
                 const underline = [
                     [beginX - (beginNode.width - beginNode.hGap * 2), beginY],

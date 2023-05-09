@@ -1,6 +1,6 @@
 import { COLORS, ROOT_NODE_STROKE } from '../constants';
 import { MindElement } from '../interfaces';
-import { findUpElement } from './mindmap';
+import { findUpElement } from './mind';
 
 export const getStrokeByMindmapElement = (element: MindElement) => {
     let stroke = element.strokeColor;
@@ -18,7 +18,7 @@ export const getStrokeByMindmapElement = (element: MindElement) => {
     }
 };
 
-export const getLinkLineColorByMindmapElement = (element: MindElement) => {
+export const getLinkLineColorByMindElement = (element: MindElement) => {
     let color = element.linkLineColor;
     if (color) {
         return color;
@@ -34,7 +34,7 @@ export const getLinkLineColorByMindmapElement = (element: MindElement) => {
     }
 };
 
-export const getRootLinkLineColorByMindmapElement = (root: MindElement) => {
+export const getRootLinkLineColorByMindElement = (root: MindElement) => {
     const index = root.children.length;
     const length = COLORS.length;
     const remainder = index % length;

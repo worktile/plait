@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { PlaitMind } from './interfaces/element';
-import { MindmapNode } from './interfaces/node';
+import { MindNode } from './interfaces/node';
 import { BeforeContextChange, PlaitPluginElementContext, depthFirstRecursion } from '@plait/core';
 import { GlobalLayout, OriginNode } from '@plait/layouts';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
@@ -16,7 +16,7 @@ import { getDefaultMindmapLayout } from './utils/layout';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaitMindComponent extends MindNodeComponent<PlaitMind> implements OnInit, BeforeContextChange<PlaitMind> {
-    root!: MindmapNode;
+    root!: MindNode;
 
     rootG!: SVGGElement;
 
@@ -33,7 +33,7 @@ export class PlaitMindComponent extends MindNodeComponent<PlaitMind> implements 
 
     updateMindmap(element = this.element) {
         const mindLayoutType = element.layout || getDefaultMindmapLayout();
-        this.root = (GlobalLayout.layout((element as unknown) as OriginNode, getLayoutOptions(), mindLayoutType) as unknown) as MindmapNode;
+        this.root = (GlobalLayout.layout((element as unknown) as OriginNode, getLayoutOptions(), mindLayoutType) as unknown) as MindNode;
         this.updateMindmapLocation(element);
     }
 
@@ -41,7 +41,7 @@ export class PlaitMindComponent extends MindNodeComponent<PlaitMind> implements 
         const { x, y, hGap, vGap } = this.root;
         const offsetX = x + hGap;
         const offsetY = y + vGap;
-        depthFirstRecursion<MindmapNode>(this.root, node => {
+        depthFirstRecursion<MindNode>(this.root, node => {
             node.x = node.x - offsetX + element.points[0][0];
             node.y = node.y - offsetY + element.points[0][1];
             ELEMENT_TO_NODE.set(node.origin, node);

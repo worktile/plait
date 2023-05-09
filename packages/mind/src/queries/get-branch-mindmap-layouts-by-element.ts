@@ -1,10 +1,10 @@
 import { MindElement } from '../interfaces';
 import { findParentElement } from '../utils';
-import { MindmapLayoutType } from '@plait/layouts';
+import { MindLayoutType } from '@plait/layouts';
 import { getCorrectLayoutByElement } from './get-correct-layout-by-element';
 
 export const getBranchMindmapLayouts = (element: MindElement) => {
-    const layouts: MindmapLayoutType[] = [];
+    const layouts: MindLayoutType[] = [];
     if (element.layout) {
         //getCorrectLayoutByElement含有递归操作，getBranchMindmapLayouts本身也有递归操作，有待优化
         layouts.unshift(getCorrectLayoutByElement(element));

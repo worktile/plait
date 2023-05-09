@@ -35,7 +35,7 @@ import {
     isRightLayout,
     isStandardLayout,
     isTopLayout,
-    MindmapLayoutType,
+    MindLayoutType,
     OriginNode
 } from '@plait/layouts';
 import { hasEditableTarget, PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
@@ -46,7 +46,7 @@ import { Editor, Operation } from 'slate';
 import {
     EXTEND_OFFSET,
     EXTEND_RADIUS,
-    MindmapNodeShape,
+    MindNodeShape,
     NODE_MIN_WIDTH,
     PRIMARY_COLOR,
     QUICK_INSERT_CIRCLE_COLOR,
@@ -59,13 +59,13 @@ import { drawLogicLink } from './draw/link/logic-link';
 import { drawMindmapNodeRichtext, updateMindNodeTopicSize } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
 import { MindElement, PlaitMind } from './interfaces/element';
-import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindmapNode } from './interfaces/node';
-import { MindmapQueries } from './queries';
-import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from './utils/colors';
+import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindNode } from './interfaces/node';
+import { MindQueries } from './queries';
+import { getLinkLineColorByMindElement, getRootLinkLineColorByMindElement } from './utils/colors';
 import { getRectangleByNode, hitMindmapElement } from './utils/graph';
-import { insertMindElement, getChildrenCount } from './utils/mindmap';
+import { insertMindElement, getChildrenCount } from './utils/mind';
 import { getNodeShapeByElement } from './utils/shape';
-import { ELEMENT_TO_NODE, MINDMAP_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
+import { ELEMENT_TO_NODE, MIND_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
 import { EmojisDrawer } from './plugins/emoji/emoji.drawer';
@@ -95,9 +95,9 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
 
     roughSVG!: RoughSVG;
 
-    node!: MindmapNode;
+    node!: MindNode;
 
-    parent!: MindmapNode;
+    parent!: MindNode;
 
     index!: number;
 
@@ -138,9 +138,9 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
     ngOnInit(): void {
         this.emojisDrawer = new EmojisDrawer(this.board as PlaitMindEmojiBoard, this.viewContainerRef);
         this.quickInsertDrawer = new QuickInsertDrawer(this.board);
-        MINDMAP_ELEMENT_TO_COMPONENT.set(this.element, this);
+        MIND_ELEMENT_TO_COMPONENT.set(this.element, this);
         super.ngOnInit();
-        this.node = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
+        this.node = ELEMENT_TO_NODE.get(this.element) as MindNode;
         if (!PlaitMind.isMind(this.element)) {
             this.parent = MindElement.getNode(MindElement.getParent(this.element));
         }
@@ -159,12 +159,12 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
     }
 
     onContextChanged(value: PlaitPluginElementContext<T>, previous: PlaitPluginElementContext<T>) {
-        const newNode = ELEMENT_TO_NODE.get(this.element) as MindmapNode;
+        const newNode = ELEMENT_TO_NODE.get(this.element) as MindNode;
         if (!PlaitMind.isMind(this.element)) {
             this.parent = MindElement.getNode(MindElement.getParent(this.element));
         }
 
-        MINDMAP_ELEMENT_TO_COMPONENT.set(this.element, this);
+        MIND_ELEMENT_TO_COMPONENT.set(this.element, this);
 
         // resolve move node richtext lose issue
         if (this.node !== newNode) {
@@ -173,7 +173,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
             }
         }
 
-        const isEquals = MindmapNode.isEquals(this.node, newNode);
+        const isEquals = MindNode.isEquals(this.node, newNode);
         this.node = newNode;
         this.drawActiveG();
         this.updateActiveClass();
@@ -208,10 +208,10 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
 
     drawShape() {
         this.destroyShape();
-        const shape = getNodeShapeByElement(this.node.origin) as MindmapNodeShape;
+        const shape = getNodeShapeByElement(this.node.origin) as MindNodeShape;
         switch (shape) {
-            case MindmapNodeShape.roundRectangle:
-                this.shapeG = drawRectangleNode(this.board, this.node as MindmapNode);
+            case MindNodeShape.roundRectangle:
+                this.shapeG = drawRectangleNode(this.board, this.node as MindNode);
                 this.g.prepend(this.shapeG);
                 break;
             default:
@@ -235,7 +235,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
             this.linkG.remove();
         }
 
-        const layout = MindmapQueries.getLayoutByElement(this.parent.origin) as MindmapLayoutType;
+        const layout = MindQueries.getLayoutByElement(this.parent.origin) as MindLayoutType;
         if (AbstractNode.isAbstract(this.node.origin)) {
             this.linkG = drawAbstractLink(this.board, this.node, isHorizontalLayout(layout));
         } else if (MindElement.isIndentedLayout(this.parent.origin)) {
@@ -258,12 +258,12 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         this.destroyMaskG();
         const lineWidthOffset = 2;
         const extendOffset = 15;
-        const nodeLayout = MindmapQueries.getLayoutByElement(this.node.origin) as MindmapLayoutType;
+        const nodeLayout = MindQueries.getLayoutByElement(this.node.origin) as MindLayoutType;
         const isTop = isTopLayout(nodeLayout);
         const isRight = isRightLayout(nodeLayout);
         const isBottom = isBottomLayout(nodeLayout);
         const isLeft = isLeftLayout(nodeLayout);
-        const { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
+        const { x, y, width, height } = getRectangleByNode(this.node as MindNode);
 
         let drawX = x;
         let drawY = y;
@@ -361,7 +361,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
             if (AbstractNode.isAbstract(this.element)) {
                 this.updateAbstractIncludedOutline();
             }
-            let { x, y, width, height } = getRectangleByNode(this.node as MindmapNode);
+            let { x, y, width, height } = getRectangleByNode(this.node as MindNode);
             const selectedStrokeG = drawRoundRectangle(
                 this.roughSVG as RoughSVG,
                 x - 2,
@@ -411,7 +411,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
     }
 
     drawRichtext() {
-        const { richtextG, richtextComponentRef, foreignObject } = drawMindmapNodeRichtext(this.node as MindmapNode, this.viewContainerRef);
+        const { richtextG, richtextComponentRef, foreignObject } = drawMindmapNodeRichtext(this.node as MindNode, this.viewContainerRef);
         this.richtextComponentRef = richtextComponentRef;
         this.richtextG = richtextG;
         this.foreignObject = foreignObject;
@@ -445,10 +445,10 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
             });
 
         const { x, y, width, height } = getRectangleByNode(this.node);
-        const stroke = getLinkLineColorByMindmapElement(this.element);
+        const stroke = getLinkLineColorByMindElement(this.element);
         const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
         const extendY = y + height / 2;
-        const nodeLayout = MindmapQueries.getCorrectLayoutByElement(this.element) as MindmapLayoutType;
+        const nodeLayout = MindQueries.getCorrectLayoutByElement(this.element) as MindLayoutType;
 
         let extendLineXY = [
             [x + width, extendY],
@@ -465,7 +465,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
 
         if (isHorizontalLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
             extendLineYOffset =
-                (getNodeShapeByElement(this.node.origin) as MindmapNodeShape) === MindmapNodeShape.roundRectangle
+                (getNodeShapeByElement(this.node.origin) as MindNodeShape) === MindNodeShape.roundRectangle
                     ? [0, 0]
                     : [height / 2, height / 2];
             if (isLeftLayout(nodeLayout)) {
@@ -719,7 +719,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         };
     }
 
-    trackBy = (index: number, node: MindmapNode) => {
+    trackBy = (index: number, node: MindNode) => {
         return node.origin.id;
     };
 
@@ -732,8 +732,8 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {
             ELEMENT_TO_NODE.delete(this.element);
         }
-        if (MINDMAP_ELEMENT_TO_COMPONENT.get(this.element) === this) {
-            MINDMAP_ELEMENT_TO_COMPONENT.delete(this.element);
+        if (MIND_ELEMENT_TO_COMPONENT.get(this.element) === this) {
+            MIND_ELEMENT_TO_COMPONENT.delete(this.element);
         }
     }
 }

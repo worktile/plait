@@ -9,9 +9,9 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { AbstractNode, LayoutNode, MindmapLayoutType, isHorizontalLayout, isStandardLayout } from '@plait/layouts';
+import { AbstractNode, LayoutNode, MindLayoutType, isHorizontalLayout, isStandardLayout } from '@plait/layouts';
 import { AbstractHandlePosition, MindElement } from '../interfaces';
-import { MindNodeComponent, MindmapQueries } from '../public-api';
+import { MindNodeComponent, MindQueries } from '../public-api';
 import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope } from '../utils/abstract/resize';
 import { separateChildren } from '../utils/abstract/common';
 
@@ -48,13 +48,13 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         if (abstractHandlePosition && activeAbstractElement) {
             const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;
             const element = abstractComponent.element;
-            const nodeLayout = MindmapQueries.getCorrectLayoutByElement(activeAbstractElement as MindElement) as MindmapLayoutType;
+            const nodeLayout = MindQueries.getCorrectLayoutByElement(activeAbstractElement as MindElement) as MindLayoutType;
             const isHorizontal = isHorizontalLayout(nodeLayout);
             const parentElement = MindElement.getParent(element);
 
             let children = parentElement.children;
 
-            const parentLayout = MindmapQueries.getLayoutByElement(parentElement);
+            const parentLayout = MindQueries.getLayoutByElement(parentElement);
             if (isStandardLayout(parentLayout)) {
                 const rightNodeCount = parentElement.rightNodeCount!;
                 const { leftChildren, rightChildren } = separateChildren(parentElement);

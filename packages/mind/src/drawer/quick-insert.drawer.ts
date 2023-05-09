@@ -10,12 +10,12 @@ import {
     QUICK_INSERT_INNER_CROSS_COLOR,
     STROKE_WIDTH
 } from '../constants/default';
-import { MindmapNodeShape } from '../constants/node';
-import { AbstractNode, MindmapLayoutType, OriginNode, isStandardLayout } from '@plait/layouts';
-import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from '../utils/colors';
-import { MindmapQueries } from '../queries';
+import { MindNodeShape } from '../constants/node';
+import { AbstractNode, MindLayoutType, OriginNode, isStandardLayout } from '@plait/layouts';
+import { getLinkLineColorByMindElement, getRootLinkLineColorByMindElement } from '../utils/colors';
+import { MindQueries } from '../queries';
 import { fromEvent } from 'rxjs';
-import { insertMindElement } from '../utils/mindmap';
+import { insertMindElement } from '../utils/mind';
 import { take } from 'rxjs/operators';
 
 export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
@@ -44,7 +44,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
         // 形状是矩形要偏移边框的线宽
         const strokeWidth = element.linkLineWidth ? element.linkLineWidth : STROKE_WIDTH;
         let offsetBorderLineWidth = 0;
-        if (shape === MindmapNodeShape.roundRectangle && offset === 0) {
+        if (shape === MindNodeShape.roundRectangle && offset === 0) {
             offsetBorderLineWidth = strokeWidth;
         }
         let offsetRootBorderLineWidth = 0;
@@ -55,7 +55,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
         const extraOffset = 3;
         const underlineCoordinates: ExtendUnderlineCoordinateType = {
             // 画线方向：右向左 <--
-            [MindmapLayoutType.left]: {
+            [MindLayoutType.left]: {
                 // EXTEND_RADIUS * 0.5 是 左方向，折叠/收起的偏移量
                 startX: x - (offset > 0 ? offset + EXTEND_RADIUS * 0.5 : 0) - offsetRootBorderLineWidth,
                 startY: y + height,
@@ -68,7 +68,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                 endY: y + height
             },
             // 画线方向：左向右 -->
-            [MindmapLayoutType.right]: {
+            [MindLayoutType.right]: {
                 startX: x + width + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + offsetRootBorderLineWidth,
                 startY: y + height,
                 endX:
@@ -81,7 +81,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                 endY: y + height
             },
             // 画线方向：下向上 -->
-            [MindmapLayoutType.upward]: {
+            [MindLayoutType.upward]: {
                 startX: x + width * 0.5,
                 startY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - offsetRootBorderLineWidth,
                 endX: x + width * 0.5,
@@ -93,7 +93,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                     offsetRootBorderLineWidth
             },
             // 画线方向：上向下 -->
-            [MindmapLayoutType.downward]: {
+            [MindLayoutType.downward]: {
                 startX: x + width * 0.5,
                 startY:
                     y + height + offsetBorderLineWidth + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + offsetRootBorderLineWidth,
@@ -106,7 +106,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                     EXTEND_RADIUS +
                     offsetRootBorderLineWidth
             },
-            [MindmapLayoutType.leftBottomIndented]: {
+            [MindLayoutType.leftBottomIndented]: {
                 startX: x + width * 0.5,
                 startY:
                     y + height + offsetBorderLineWidth + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + offsetRootBorderLineWidth,
@@ -119,7 +119,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                     EXTEND_RADIUS +
                     offsetRootBorderLineWidth
             },
-            [MindmapLayoutType.leftTopIndented]: {
+            [MindLayoutType.leftTopIndented]: {
                 startX: x + width * 0.5,
                 startY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - offsetRootBorderLineWidth,
                 endX: x + width * 0.5,
@@ -130,7 +130,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                     EXTEND_RADIUS -
                     offsetRootBorderLineWidth
             },
-            [MindmapLayoutType.rightBottomIndented]: {
+            [MindLayoutType.rightBottomIndented]: {
                 startX: x + width * 0.5,
                 startY:
                     y + height + offsetBorderLineWidth + (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) + offsetRootBorderLineWidth,
@@ -143,7 +143,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                     EXTEND_RADIUS +
                     offsetRootBorderLineWidth
             },
-            [MindmapLayoutType.rightTopIndented]: {
+            [MindLayoutType.rightTopIndented]: {
                 startX: x + width * 0.5,
                 startY: y - offsetBorderLineWidth - (offset > 0 ? offset + QUICK_INSERT_CIRCLE_OFFSET : 0) - offsetRootBorderLineWidth,
                 endX: x + width * 0.5,
@@ -155,17 +155,17 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                     offsetRootBorderLineWidth
             }
         };
-        if (shape === MindmapNodeShape.roundRectangle || element.isRoot) {
-            underlineCoordinates[MindmapLayoutType.left].startY -= height * 0.5;
-            underlineCoordinates[MindmapLayoutType.left].endY -= height * 0.5;
-            underlineCoordinates[MindmapLayoutType.right].startY -= height * 0.5;
-            underlineCoordinates[MindmapLayoutType.right].endY -= height * 0.5;
+        if (shape === MindNodeShape.roundRectangle || element.isRoot) {
+            underlineCoordinates[MindLayoutType.left].startY -= height * 0.5;
+            underlineCoordinates[MindLayoutType.left].endY -= height * 0.5;
+            underlineCoordinates[MindLayoutType.right].startY -= height * 0.5;
+            underlineCoordinates[MindLayoutType.right].endY -= height * 0.5;
         }
-        const stroke = element.isRoot ? getRootLinkLineColorByMindmapElement(element) : getLinkLineColorByMindmapElement(element);
-        let nodeLayout = MindmapQueries.getCorrectLayoutByElement(element) as ExtendLayoutType;
+        const stroke = element.isRoot ? getRootLinkLineColorByMindElement(element) : getLinkLineColorByMindElement(element);
+        let nodeLayout = MindQueries.getCorrectLayoutByElement(element) as ExtendLayoutType;
         if (element.isRoot && isStandardLayout(nodeLayout)) {
             const root = element as OriginNode;
-            nodeLayout = root.children.length >= root.rightNodeCount ? MindmapLayoutType.left : MindmapLayoutType.right;
+            nodeLayout = root.children.length >= root.rightNodeCount ? MindLayoutType.left : MindLayoutType.right;
         }
         const underlineCoordinate = underlineCoordinates[nodeLayout];
         if (underlineCoordinate) {

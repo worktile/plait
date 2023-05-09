@@ -1,5 +1,5 @@
 import { Point, RectangleClient } from '@plait/core';
-import { MindmapNode } from '../interfaces/node';
+import { MindNode } from '../interfaces/node';
 import { LayoutDirection } from '../interfaces/layout';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
 
@@ -21,7 +21,7 @@ export const getPointByPlacement = (client: RectangleClient, placement: PointPla
     return [x, y];
 };
 
-export const getLayoutDirection = (node: MindmapNode, isHorizontal: boolean) => {
+export const getLayoutDirection = (node: MindNode, isHorizontal: boolean) => {
     if (isHorizontal) {
         if (node.left) {
             return LayoutDirection.left;

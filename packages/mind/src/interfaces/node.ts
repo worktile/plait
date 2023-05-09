@@ -1,8 +1,8 @@
-import { MindmapLayoutType } from '@plait/layouts';
+import { MindLayoutType } from '@plait/layouts';
 import { Path, PlaitElement, Point } from '@plait/core';
 import { MindElement } from './element';
 
-export interface MindmapNode {
+export interface MindNode {
     depth: number;
     x: number;
     y: number;
@@ -10,15 +10,15 @@ export interface MindmapNode {
     height: number;
     hGap: number;
     vGap: number;
-    children: MindmapNode[];
+    children: MindNode[];
     origin: MindElement;
-    parent: MindmapNode;
+    parent: MindNode;
     left: boolean;
     up: boolean;
 }
 
-export const MindmapNode = {
-    get(root: MindmapNode, path: Path) {
+export const MindNode = {
+    get(root: MindNode, path: Path) {
         let node = root;
         for (let i = 0; i < path.length; i++) {
             const p = path[i];
@@ -29,7 +29,7 @@ export const MindmapNode = {
         }
         return node;
     },
-    isEquals(node: MindmapNode, otherNode: MindmapNode) {
+    isEquals(node: MindNode, otherNode: MindNode) {
         const hasSameSize =
             node.x === otherNode.x && node.y === otherNode.y && node.width === otherNode.width && node.height === otherNode.height;
         const hasSameOrigin = node.origin === otherNode.origin;
@@ -42,7 +42,7 @@ export const MindmapNode = {
 };
 
 // mindmap node extend 支持的布局类型
-export type ExtendLayoutType = Exclude<MindmapLayoutType, MindmapLayoutType.standard>;
+export type ExtendLayoutType = Exclude<MindLayoutType, MindLayoutType.standard>;
 
 export type CoordinateType = {
     startX: number;

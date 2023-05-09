@@ -1,6 +1,6 @@
 import { LayoutTreeNode } from '../interfaces/layout-tree-node';
 import { findAbstractByEndNode, findAbstractByStartNode, getNonAbstractChildren, getCorrectStartEnd } from '../utils/abstract';
-import { AbstractNode } from '../interfaces/mindmap';
+import { AbstractNode } from '../interfaces/mind';
 
 function moveSubtree(treeNode: LayoutTreeNode, i: number, distance: number) {
     // Move subtree by changing modifier.

@@ -2,9 +2,9 @@ import { AbstractNode, isStandardLayout } from '@plait/layouts';
 import { MindElement } from '../../interfaces/element';
 import { Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { MindNodeComponent } from '../../node.component';
-import { createMindElement, divideElementByParent, filterChildElement } from '../mindmap';
+import { createMindElement, divideElementByParent, filterChildElement } from '../mind';
 import { GRAY_COLOR } from '../../constants';
-import { MindmapQueries } from '../../queries';
+import { MindQueries } from '../../queries';
 
 export const separateChildren = (parentElement: MindElement) => {
     const rightNodeCount = parentElement.rightNodeCount!;
@@ -67,7 +67,7 @@ export const setAbstractByElements = (board: PlaitBoard, groupParent: MindElemen
         end = indexArray[indexArray.length - 1];
 
     if (
-        isStandardLayout(MindmapQueries.getLayoutByElement(groupParent)) &&
+        isStandardLayout(MindQueries.getLayoutByElement(groupParent)) &&
         rightNodeCount &&
         start < rightNodeCount &&
         end >= rightNodeCount

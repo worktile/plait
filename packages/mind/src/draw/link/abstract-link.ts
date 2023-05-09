@@ -1,11 +1,11 @@
 import { PlaitBoard, getRectangleByElements } from '@plait/core';
-import { MindmapNode } from '../../interfaces/node';
+import { MindNode } from '../../interfaces/node';
 import { getRectangleByNode } from '../../utils/graph';
 import { GRAY_COLOR } from '../../constants/default';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../../utils/point-placement';
 
-export function drawAbstractLink(board: PlaitBoard, node: MindmapNode, isHorizontal: boolean) {
+export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal: boolean) {
     const linkPadding = 15;
     const parent = node.parent;
     const abstractRectangle = getRectangleByNode(node);
