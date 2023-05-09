@@ -1,13 +1,5 @@
 import { AbstractNode, MindmapLayoutType } from '@plait/layouts';
-import {
-    addSelectedElement,
-    idCreator,
-    isNullOrUndefined,
-    Path,
-    PlaitBoard,
-    Point,
-    Transforms
-} from '@plait/core';
+import { addSelectedElement, idCreator, isNullOrUndefined, Path, PlaitBoard, Point, Transforms } from '@plait/core';
 import { Node } from 'slate';
 import { MindmapNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node';
 import { MindmapNode } from '../interfaces';
@@ -248,16 +240,18 @@ export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, p
     let fill,
         strokeColor,
         strokeWidth,
+        linkLineColor,
         shape = MindmapNodeShape.roundRectangle;
     if (!inheritNode.isRoot) {
         fill = inheritNode.fill;
         strokeColor = inheritNode.strokeColor;
+        linkLineColor = inheritNode.linkLineColor;
         strokeWidth = inheritNode.strokeWidth;
     }
 
     shape = inheritNode.shape as MindmapNodeShape;
 
-    const newElement = createMindElement('', NODE_MIN_WIDTH, TEXT_DEFAULT_HEIGHT, { fill, strokeColor, strokeWidth, shape });
+    const newElement = createMindElement('', NODE_MIN_WIDTH, TEXT_DEFAULT_HEIGHT, { fill, strokeColor, strokeWidth, shape, linkLineColor });
 
     const index = path[path.length - 1];
     const abstractNode = inheritNode.children.find(
