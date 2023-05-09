@@ -129,7 +129,7 @@ export const withMind = (board: PlaitBoard) => {
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
                 deleteSelectedELements(board, selectedElements);
-                let lastNode: MindmapNode | any = null;
+                let lastNode: MindNode | any = null;
                 const firstLevelElements = filterChildElement(selectedElements);
                 const firstElement = firstLevelElements[0];
                 const firstComponent = PlaitElement.getComponent(firstElement) as MindNodeComponent;
@@ -148,8 +148,8 @@ export const withMind = (board: PlaitBoard) => {
                     }
                 }
 
-                if (elementGroup.length === 1 && AbstractNode.isAbstract(selectNode)) {
-                    lastNode = MindNodeComponent?.parent.children[selectNode.start];
+                if (firstLevelElements.length === 1 && AbstractNode.isAbstract(firstElement)) {
+                    lastNode = firstComponent.parent.children[firstElement.start];
                 }
 
                 if (lastNode) {
