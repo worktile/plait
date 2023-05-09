@@ -337,3 +337,20 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
     abstractHandles.forEach(action => action());
     deletableHandles.forEach(action => action());
 };
+
+export const divideElementByParent = (elements: MindElement[]) => {
+    const abstractIncludedGroups = [];
+    const parentElements: MindElement[] = [];
+
+    for (let i = 0; i < elements.length; i++) {
+        const parent = MindElement.getParent(elements[i]);
+        const parentIndex = parentElements.indexOf(parent);
+        if (parentIndex === -1) {
+            parentElements.push(parent);
+            abstractIncludedGroups.push([elements[i]]);
+        } else {
+            abstractIncludedGroups[parentIndex].push(elements[i]);
+        }
+    }
+    return { parentElements, abstractIncludedGroups };
+};
