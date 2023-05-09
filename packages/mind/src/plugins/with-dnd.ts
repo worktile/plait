@@ -77,12 +77,14 @@ export const withDnd = (board: PlaitBoard) => {
                     if (activeElement) {
                         return;
                     }
-                    if (
+
+                    const canDrag =
                         hitMindmapElement(board, point, node.origin) &&
                         !node.origin.isRoot &&
                         !AbstractNode.isAbstract(node.origin) &&
-                        selectedElements.length <= 1
-                    ) {
+                        selectedElements.length <= 1;
+
+                    if (canDrag) {
                         activeElement = node.origin;
                         startPoint = point;
                     }
