@@ -2,4 +2,4 @@
 '@plait/mind': patch
 ---
 
-add util function
+add abstract util function
