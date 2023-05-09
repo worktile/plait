@@ -147,6 +147,11 @@ export const withMind = (board: PlaitBoard) => {
                         lastNode = MindNodeComponent?.parent.children[nodeIndex! - 1];
                     }
                 }
+
+                if (elementGroup.length === 1 && AbstractNode.isAbstract(selectNode)) {
+                    lastNode = MindNodeComponent?.parent.children[selectNode.start];
+                }
+
                 if (lastNode) {
                     addSelectedElement(board, lastNode.origin);
                 }
