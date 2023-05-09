@@ -1,6 +1,7 @@
 import { AbstractNode, MindmapLayoutType } from '@plait/layouts';
 import {
     addSelectedElement,
+    clearSelectedElement,
     idCreator,
     isNullOrUndefined,
     Path,
@@ -268,6 +269,7 @@ export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, p
         Transforms.setNode(board, { end: (abstractNode as AbstractNode).end + 1 }, path);
     }
     Transforms.insertNode(board, newElement, path);
+    clearSelectedElement(board);
     addSelectedElement(board, newElement);
     setTimeout(() => {
         enterNodeEditing(newElement);
