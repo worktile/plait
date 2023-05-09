@@ -1,9 +1,9 @@
 import { isStandardLayout, isIndentedLayout, isVerticalLogicLayout, isTopLayout, MindLayoutType } from '@plait/layouts';
 import { DetectResult, MindElement } from '../interfaces';
 import { MindNodeComponent } from '../node.component';
-import { MIND_ELEMENT_TO_COMPONENT } from './weak-maps';
 import { MindQueries } from '../queries';
 import { isMixedLayout } from './layout';
+import { PlaitElement } from '@plait/core';
 
 /* 根据布局调整 target 以及 direction */
 export const readjustmentDropTarget = (dropTarget: {
@@ -12,7 +12,7 @@ export const readjustmentDropTarget = (dropTarget: {
 }): { target: MindElement; detectResult: DetectResult } => {
     const { target, detectResult } = dropTarget;
     const newDropTarget = { target, detectResult };
-    const targetComponent = MIND_ELEMENT_TO_COMPONENT.get(target) as MindNodeComponent;
+    const targetComponent = PlaitElement.getComponent(target) as MindNodeComponent;
     if (targetComponent.node.children.length > 0 && dropTarget.detectResult) {
         const layout = MindQueries.getCorrectLayoutByElement(targetComponent.node.origin);
         const parentLayout = MindQueries.getCorrectLayoutByElement(

@@ -42,7 +42,6 @@ import {
     readjustmentDropTarget
 } from '../utils';
 import { getRectangleByNode, hitMindElement } from '../utils/graph';
-import { MIND_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindQueries } from '../queries';
 import { PlaitMindComponent } from '../mind.component';
 
@@ -127,7 +126,7 @@ export const withDnd = (board: PlaitBoard) => {
             // fake dragging origin node
             const offsetX = endPoint[0] - startPoint[0];
             const offsetY = endPoint[1] - startPoint[1];
-            const activeComponent = MIND_ELEMENT_TO_COMPONENT.get(activeElement) as MindNodeComponent;
+            const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
             const roughSVG = PlaitBoard.getRoughSVG(board);
             const fakeDraggingNode: MindNode = {
                 ...activeComponent.node,
@@ -189,8 +188,8 @@ export const withDnd = (board: PlaitBoard) => {
     board.globalMouseup = (event: MouseEvent) => {
         if (!board.options.readonly && activeElement) {
             if (dropTarget?.target) {
-                const activeComponent = MIND_ELEMENT_TO_COMPONENT.get(activeElement) as MindNodeComponent;
-                const targetComponent = MIND_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindNodeComponent;
+                const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
+                const targetComponent = PlaitElement.getComponent(dropTarget.target) as MindNodeComponent;
                 let targetPath = PlaitBoard.findPath(board, targetComponent.element);
                 const mindmapElement = findUpElement(dropTarget.target).root;
                 const mindmapComponent = ELEMENT_TO_COMPONENT.get(mindmapElement as PlaitMind) as PlaitMindComponent;
@@ -243,7 +242,7 @@ export const isValidTarget = (origin: MindElement, target: MindElement) => {
 };
 
 export const addActiveOnDragOrigin = (activeElement: MindElement, isOrigin = true) => {
-    const activeComponent = MIND_ELEMENT_TO_COMPONENT.get(activeElement) as MindNodeComponent;
+    const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
     if (isOrigin) {
         activeComponent.g.classList.add('dragging-origin');
     } else {
@@ -256,7 +255,7 @@ export const addActiveOnDragOrigin = (activeElement: MindElement, isOrigin = tru
 };
 
 export const removeActiveOnDragOrigin = (activeElement: MindElement, isOrigin = true) => {
-    const activeComponent = MIND_ELEMENT_TO_COMPONENT.get(activeElement) as MindNodeComponent;
+    const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
     if (isOrigin) {
         activeComponent.g.classList.remove('dragging-origin');
     } else {

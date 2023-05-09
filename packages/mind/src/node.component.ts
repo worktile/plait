@@ -52,7 +52,7 @@ import { getLinkLineColorByMindElement } from './utils/colors';
 import { getRectangleByNode, hitMindElement } from './utils/graph';
 import { getChildrenCount } from './utils/mind';
 import { getNodeShapeByElement } from './utils/shape';
-import { ELEMENT_TO_NODE, MIND_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
+import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
 import { EmojisDrawer } from './plugins/emoji/emoji.drawer';
@@ -125,7 +125,6 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
     ngOnInit(): void {
         this.emojisDrawer = new EmojisDrawer(this.board as PlaitMindEmojiBoard, this.viewContainerRef);
         this.quickInsertDrawer = new QuickInsertDrawer(this.board);
-        MIND_ELEMENT_TO_COMPONENT.set(this.element, this);
         super.ngOnInit();
         this.node = ELEMENT_TO_NODE.get(this.element) as MindNode;
         if (!PlaitMind.isMind(this.element)) {
@@ -150,8 +149,6 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         if (!PlaitMind.isMind(this.element)) {
             this.parent = MindElement.getNode(MindElement.getParent(this.element));
         }
-
-        MIND_ELEMENT_TO_COMPONENT.set(this.element, this);
 
         // resolve move node richtext lose issue
         if (this.node !== newNode) {
@@ -718,9 +715,6 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         this.destroy$.complete();
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {
             ELEMENT_TO_NODE.delete(this.element);
-        }
-        if (MIND_ELEMENT_TO_COMPONENT.get(this.element) === this) {
-            MIND_ELEMENT_TO_COMPONENT.delete(this.element);
         }
     }
 }
