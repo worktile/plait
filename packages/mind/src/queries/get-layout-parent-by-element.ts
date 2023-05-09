@@ -1,5 +1,5 @@
 import { MindElement } from '../interfaces';
-import { findParentElement, getDefaultMindmapLayout } from '../utils';
+import { findParentElement, getDefaultLayout } from '../utils';
 import { MindLayoutType } from '@plait/layouts';
 
 /**
@@ -15,5 +15,5 @@ export const getLayoutParentByElement = (element: MindElement): MindLayoutType =
         }
         parent = findParentElement(parent);
     }
-    return getDefaultMindmapLayout();
+    return getDefaultLayout();
 };

@@ -15,7 +15,7 @@ export const getBranchDirectionsByLayouts = (branchLayouts: MindLayoutType[]) =>
 };
 
 export const isCorrectLayout = (root: MindElement, layout: MindLayoutType) => {
-    const rootLayout = root.layout || getDefaultMindmapLayout();
+    const rootLayout = root.layout || getDefaultLayout();
     return !getInCorrectLayoutDirection(rootLayout, layout);
 };
 
@@ -24,12 +24,12 @@ export const isMixedLayout = (parentLayout: MindLayoutType, layout: MindLayoutTy
 };
 
 export const getInCorrectLayoutDirection = (rootLayout: MindLayoutType, layout: MindLayoutType) => {
-    const mindmapDirections = LayoutDirectionsMap[rootLayout];
+    const directions = LayoutDirectionsMap[rootLayout];
     const subLayoutDirections = LayoutDirectionsMap[layout];
     if (!subLayoutDirections) {
-        throw new Error(`unexpection layout: ${layout} on correct layout`);
+        throw new Error(`unexpected layout: ${layout} on correct layout`);
     }
-    return subLayoutDirections.find(d => mindmapDirections.includes(getLayoutReverseDirection(d)));
+    return subLayoutDirections.find(d => directions.includes(getLayoutReverseDirection(d)));
 };
 
 export const correctLayoutByDirection = (layout: MindLayoutType, direction: LayoutDirection) => {
@@ -64,12 +64,12 @@ export const correctLayoutByDirection = (layout: MindLayoutType, direction: Layo
     return inverseDirectionLayout;
 };
 
-export const getMindmapDirection = (root: MindElement) => {
-    const layout = root.layout || getDefaultMindmapLayout();
+export const getLayoutDirection = (root: MindElement) => {
+    const layout = root.layout || getDefaultLayout();
     return LayoutDirectionsMap[layout];
 };
 
-export const getDefaultMindmapLayout = () => {
+export const getDefaultLayout = () => {
     return MindLayoutType.standard;
 };
 
@@ -110,5 +110,5 @@ export const getLayoutReverseDirection = (layoutDirection: LayoutDirection) => {
 };
 
 export const getRootLayout = (root: MindElement) => {
-    return root.layout || getDefaultMindmapLayout();
+    return root.layout || getDefaultLayout();
 };

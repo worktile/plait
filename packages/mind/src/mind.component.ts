@@ -6,7 +6,7 @@ import { GlobalLayout, OriginNode } from '@plait/layouts';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { MindNodeComponent } from './node.component';
 import { getLayoutOptions } from './layout-option';
-import { getDefaultMindmapLayout } from './utils/layout';
+import { getDefaultLayout } from './utils/layout';
 
 @Component({
     selector: 'plait-mind',
@@ -21,23 +21,23 @@ export class PlaitMindComponent extends MindNodeComponent<PlaitMind> implements 
     rootG!: SVGGElement;
 
     ngOnInit(): void {
-        this.updateMindmap();
+        this.updateMindLayout();
         super.ngOnInit();
     }
 
     beforeContextChange(value: PlaitPluginElementContext<PlaitMind>) {
         if (value.element !== this.element && this.initialized) {
-            this.updateMindmap(value.element);
+            this.updateMindLayout(value.element);
         }
     }
 
-    updateMindmap(element = this.element) {
-        const mindLayoutType = element.layout || getDefaultMindmapLayout();
+    updateMindLayout(element = this.element) {
+        const mindLayoutType = element.layout || getDefaultLayout();
         this.root = (GlobalLayout.layout((element as unknown) as OriginNode, getLayoutOptions(), mindLayoutType) as unknown) as MindNode;
-        this.updateMindmapLocation(element);
+        this.updateMindNodeLocation(element);
     }
 
-    updateMindmapLocation(element: PlaitMind) {
+    updateMindNodeLocation(element: PlaitMind) {
         const { x, y, hGap, vGap } = this.root;
         const offsetX = x + hGap;
         const offsetY = y + vGap;

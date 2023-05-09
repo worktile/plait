@@ -5,7 +5,7 @@ import { MindNode } from '../interfaces/node';
 import { getRectangleByNode } from '../utils/graph';
 import { NodeSpace } from '../utils/node-space';
 
-export function drawMindmapNodeRichtext(node: MindNode, viewContainerRef: ViewContainerRef) {
+export function drawMindNodeRichtext(node: MindNode, viewContainerRef: ViewContainerRef) {
     const { x, y } = getRichtextRectangleByNode(node);
     const classList = [];
     if (node.origin.isRoot) {

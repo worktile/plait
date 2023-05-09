@@ -3,10 +3,9 @@ import {
     findParentElement,
     getAvailableSubLayoutsByLayoutDirections,
     getBranchDirectionsByLayouts,
-    MIND_ELEMENT_TO_COMPONENT
 } from '../utils';
 import { MindLayoutType } from '@plait/layouts';
-import { getBranchMindmapLayouts } from './get-branch-mindmap-layouts-by-element';
+import { getBranchLayouts } from './get-branch-layouts';
 
 /**
  *  get available sub layouts by element
@@ -16,12 +15,10 @@ import { getBranchMindmapLayouts } from './get-branch-mindmap-layouts-by-element
 export const getAvailableSubLayoutsByElement = (element: MindElement) => {
     const parentElement = findParentElement(element);
     if (parentElement) {
-        const branchLayouts = getBranchMindmapLayouts(parentElement);
+        const branchLayouts = getBranchLayouts(parentElement);
         if (branchLayouts[0] === MindLayoutType.standard) {
-            const component = MIND_ELEMENT_TO_COMPONENT.get(element);
-            if (component) {
-                branchLayouts[0] = component.node.left ? MindLayoutType.left : MindLayoutType.right;
-            }
+            const node = MindElement.getNode(element);
+            branchLayouts[0] = node.left ? MindLayoutType.left : MindLayoutType.right;
         }
         const currentLayoutDirections = getBranchDirectionsByLayouts(branchLayouts);
         let availableSubLayouts = getAvailableSubLayoutsByLayoutDirections(currentLayoutDirections);

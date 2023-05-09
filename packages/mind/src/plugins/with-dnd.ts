@@ -41,7 +41,7 @@ import {
     isChildElement,
     readjustmentDropTarget
 } from '../utils';
-import { getRectangleByNode, hitMindmapElement } from '../utils/graph';
+import { getRectangleByNode, hitMindElement } from '../utils/graph';
 import { MIND_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { MindQueries } from '../queries';
 import { PlaitMindComponent } from '../mind.component';
@@ -79,7 +79,7 @@ export const withDnd = (board: PlaitBoard) => {
                     }
 
                     const canDrag =
-                        hitMindmapElement(board, point, node.origin) &&
+                        hitMindElement(board, point, node.origin) &&
                         !node.origin.isRoot &&
                         !AbstractNode.isAbstract(node.origin) &&
                         selectedElements.length <= 1;
