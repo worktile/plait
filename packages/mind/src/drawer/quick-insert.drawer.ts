@@ -14,8 +14,9 @@ import { MindmapNodeShape } from '../constants/node';
 import { AbstractNode, MindmapLayoutType, OriginNode, isStandardLayout } from '@plait/layouts';
 import { getLinkLineColorByMindmapElement, getRootLinkLineColorByMindmapElement } from '../utils/colors';
 import { MindmapQueries } from '../queries';
-import { fromEvent, take } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { insertMindElement } from '../utils/mindmap';
+import { take } from 'rxjs/operators';
 
 export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
     canDraw(element: MindElement<BaseData>): boolean {
