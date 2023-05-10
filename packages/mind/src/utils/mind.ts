@@ -295,9 +295,9 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
         if (!PlaitMind.isMind(node)) {
             const parentElement = MindElement.getParent(node);
             const index = parentElement.children.indexOf(node);
-            const abstracts = parentElement.children.filter(value => AbstractNode.isAbstract(value.origin));
+            const abstracts = parentElement.children.filter(value => AbstractNode.isAbstract(value));
             abstracts.forEach(abstract => {
-                const abstractNode = abstract.origin as AbstractNode;
+                const abstractNode = abstract as AbstractNode;
                 if (index >= abstractNode.start && index <= abstractNode.end) {
                     let newProperties = accumulativeProperties.get(abstractNode);
                     if (!newProperties) {
