@@ -1,9 +1,10 @@
-import { PlaitBoard, Point, RectangleClient, getRectangleByElements } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, RectangleClient, getRectangleByElements, getSelectedElements } from '@plait/core';
 import { AbstractHandlePosition, MindElement } from '../../interfaces';
 import { AbstractNode, LayoutNode, MindLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { ABSTRACT_HANDLE_MASK_WIDTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../../constants';
 import { MindQueries } from '../../queries';
 import { getCorrectStartEnd } from '@plait/layouts';
+import { MindNodeComponent } from '../../node.component';
 
 export const getRectangleByResizingLocation = (
     abstractRectangle: RectangleClient,
@@ -200,4 +201,25 @@ export function findLocationLeftIndex(board: PlaitBoard, parentChildren: MindEle
         }
     }
     return 0;
+}
+
+export function changeTouchedAbstract(board: PlaitBoard, touchedAbstract: PlaitElement | undefined, endPoint: Point) {
+    let touchHandle;
+    const abstract = getSelectedElements(board)
+        .filter(element => AbstractNode.isAbstract(element))
+        .find(element => {
+            touchHandle = getHitAbstractHandle(board, element as MindElement, endPoint);
+            return touchHandle;
+        });
+
+    if (touchHandle && !touchedAbstract) {
+        touchedAbstract = abstract;
+        const component = PlaitElement.getComponent(touchedAbstract!) as MindNodeComponent;
+        component.updateAbstractIncludedOutline(touchHandle);
+    } else if (!touchHandle && touchedAbstract) {
+        const component = PlaitElement.getComponent(touchedAbstract) as MindNodeComponent;
+        component.updateAbstractIncludedOutline();
+        touchedAbstract = undefined;
+    }
+    return touchedAbstract;
 }

@@ -20,7 +20,7 @@
     // https://stackoverflow.com/questions/51313873/svg-foreignobject-not-working-properly-on-safari
     .plait-richtext-container {
         // chrome show position is not correct, safari not working when don't assigned position property
-        // can not assign absolute, because safari can not show correctly position 
+        // can not assign absolute, because safari can not show correctly position
         position: initial;
         &[readonly='true'] {
             ::-moz-selection {
@@ -60,6 +60,12 @@
         .selection-outer {
             opacity: 0;
         }
+    }
+    &.abstract-resizing-horizon {
+        cursor: ns-resize;
+    }
+    &.abstract-resizing-vertical {
+        cursor: ew-resize;
     }
 }
 

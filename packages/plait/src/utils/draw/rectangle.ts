@@ -51,7 +51,7 @@ export function drawAbstractRoundRectangle(
     const width = Math.abs(x1 - x2);
     const height = Math.abs(y1 - y2);
 
-    const radius = 3;
+    const radius = 5;
     const handleGap = 4;
     const handleLength = 10;
 

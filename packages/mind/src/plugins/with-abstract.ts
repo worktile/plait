@@ -12,7 +12,7 @@ import {
 import { AbstractNode, LayoutNode, MindLayoutType, isHorizontalLayout, isStandardLayout } from '@plait/layouts';
 import { AbstractHandlePosition, AbstractResizeState, MindElement, PlaitAbstractBoard } from '../interfaces';
 import { MindNodeComponent, MindQueries } from '../public-api';
-import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope } from '../utils/abstract/resize';
+import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope, changeTouchedAbstract } from '../utils/abstract/resize';
 import { separateChildren } from '../utils/abstract/common';
 
 export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
@@ -21,6 +21,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, mouseup } = board;
     let activeAbstractElement: PlaitElement | undefined;
     let abstractHandlePosition: AbstractHandlePosition | null;
+    let touchedAbstract: PlaitElement | undefined;
     let startPoint: Point | undefined;
     let newProperty: { end: number } | { start: number } | undefined;
 
@@ -49,6 +50,8 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         getSelectedElements(board);
         const host = BOARD_TO_HOST.get(board);
         const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
+
+        touchedAbstract = changeTouchedAbstract(board, touchedAbstract, endPoint);
 
         if (abstractHandlePosition && activeAbstractElement) {
             const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;
@@ -102,7 +105,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                     abstractHandlePosition === AbstractHandlePosition.start ? { start: locationIndex + 1 } : { end: locationIndex };
             }
 
-            abstractComponent!.updateAbstractIncludedOutline(location, abstractHandlePosition);
+            abstractComponent!.updateAbstractIncludedOutline(abstractHandlePosition, location);
         }
         mousemove(event);
     };
@@ -122,6 +125,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                 const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;
                 abstractComponent!.updateAbstractIncludedOutline();
             }
+            activeAbstractElement = undefined;
         }
         mouseup(event);
     };

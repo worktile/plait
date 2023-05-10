@@ -12,7 +12,7 @@ export function drawAbstractIncludedOutline(
     board: PlaitBoard,
     roughSVG: RoughSVG,
     element: MindElement,
-    handlePosition: AbstractHandlePosition = AbstractHandlePosition.start,
+    handlePosition?: AbstractHandlePosition,
     resizingLocation?: number
 ) {
     const abstractIncludedG = createG();
@@ -26,7 +26,7 @@ export function drawAbstractIncludedOutline(
     abstractRectangle = RectangleClient.getOutlineRectangle(abstractRectangle, -ABSTRACT_INCLUDED_OUTLINE_OFFSET);
 
     if (resizingLocation) {
-        abstractRectangle = getRectangleByResizingLocation(abstractRectangle, resizingLocation, handlePosition, isHorizontal);
+        abstractRectangle = getRectangleByResizingLocation(abstractRectangle, resizingLocation, handlePosition!, isHorizontal);
     }
 
     const rectangle = drawAbstractRoundRectangle(
@@ -42,12 +42,6 @@ export function drawAbstractIncludedOutline(
             fillStyle: 'solid'
         }
     );
-
-    const handleOptions = {
-        stroke: ABSTRACT_HANDLE_COLOR,
-        strokeWidth: 3,
-        fillStyle: 'solid'
-    };
 
     const startPlacement = [HorizontalPlacement.center, VerticalPlacement.top] as PointPlacement;
     const endPlacement = [HorizontalPlacement.center, VerticalPlacement.bottom] as PointPlacement;
@@ -66,12 +60,57 @@ export function drawAbstractIncludedOutline(
     const endPoint1 = movePoint(endCenterPoint, -ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
     const endPoint2 = movePoint(endCenterPoint, ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
 
-    const startHandle = roughSVG.line(startPoint1[0], startPoint1[1], startPoint2[0], startPoint2[1], handleOptions);
-    const endHandle = roughSVG.line(endPoint1[0], endPoint1[1], endPoint2[0], endPoint2[1], handleOptions);
+    const startHandle = roughSVG.line(
+        startPoint1[0],
+        startPoint1[1],
+        startPoint2[0],
+        startPoint2[1],
+        getHandleOption(handlePosition === AbstractHandlePosition.start)
+    );
+
+    const endHandle = roughSVG.line(
+        endPoint1[0],
+        endPoint1[1],
+        endPoint2[0],
+        endPoint2[1],
+        getHandleOption(handlePosition === AbstractHandlePosition.end)
+    );
+
+    changeBoardClass(board, handlePosition, isHorizontal);
+
+    startHandle.setAttribute('stroke-linecap', 'round');
+    endHandle.setAttribute('stroke-linecap', 'round');
 
     abstractIncludedG.append(startHandle);
     abstractIncludedG.append(endHandle);
     abstractIncludedG.append(rectangle);
 
     return abstractIncludedG;
+}
+
+export function getHandleOption(isHover: boolean) {
+    return isHover
+        ? {
+              stroke: PRIMARY_COLOR,
+              strokeWidth: 4,
+              fillStyle: 'solid'
+          }
+        : {
+              stroke: ABSTRACT_HANDLE_COLOR,
+              strokeWidth: 3,
+              fillStyle: 'solid'
+          };
+}
+
+export function changeBoardClass(board: PlaitBoard, handlePosition: AbstractHandlePosition | undefined, isHorizontal: boolean) {
+    if (handlePosition) {
+        if (isHorizontal) {
+            PlaitBoard.getBoardNativeElement(board).classList.add('abstract-resizing-horizon');
+        } else {
+            PlaitBoard.getBoardNativeElement(board).classList.add('abstract-resizing-vertical');
+        }
+    } else {
+        PlaitBoard.getBoardNativeElement(board).classList.remove('abstract-resizing-horizon');
+        PlaitBoard.getBoardNativeElement(board).classList.remove('abstract-resizing-vertical');
+    }
 }

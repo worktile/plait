@@ -567,7 +567,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         }
     }
 
-    updateAbstractIncludedOutline(resizingLocation?: number, handlePosition?: AbstractHandlePosition) {
+    updateAbstractIncludedOutline(handlePosition?: AbstractHandlePosition, resizingLocation?: number) {
         this.abstractIncludedOutlineG?.remove();
         this.abstractIncludedOutlineG = drawAbstractIncludedOutline(
             this.board,

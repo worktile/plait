@@ -37,7 +37,7 @@ g[plait-mindmap='true'] {
         }
     }
 }
-.plait-board-container.focused:not(.selection-moving):not(.element-moving) {
+.plait-board-container.focused:not(.selection-moving):not(.element-moving):not(.abstract-resizing-horizon):not(.abstract-resizing-vertical) {
     .extend {
         cursor: pointer;
         &:hover {
