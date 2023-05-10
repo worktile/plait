@@ -20,7 +20,7 @@ import { take } from 'rxjs/operators';
 
 export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
     canDraw(element: MindElement<BaseData>): boolean {
-        if (PlaitBoard.isReadonly(this.board)) {
+        if (PlaitBoard.isReadonly(this.board) || element?.isCollapsed) {
             return false;
         }
         return true;
