@@ -12,7 +12,7 @@ export const withEmoji = (board: PlaitBoard) => {
 
     newBoard.drawEmoji = (emoji: EmojiItem, element: MindElement) => {
         throw new Error('Not implement drawEmoji method error.');
-    }
+    };
 
     return newBoard;
 };
