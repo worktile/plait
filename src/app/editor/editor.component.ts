@@ -4,6 +4,7 @@ import { MindLayoutType } from '@plait/layouts';
 import { mockData } from './mock-data';
 import { MindNodeShape, MindTransforms, withMind, setAbstract, canSetAbstract } from '@plait/mind';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
+import { AbstractResizeState, PlaitAbstractBoard } from '@plait/mind';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
 
@@ -72,5 +73,6 @@ export class BasicBoardEditorComponent implements OnInit {
 
     plaitBoardInitialized(value: PlaitBoard) {
         this.board = value;
+        (this.board as PlaitAbstractBoard).abstractResize = (state: AbstractResizeState) => {};
     }
 }

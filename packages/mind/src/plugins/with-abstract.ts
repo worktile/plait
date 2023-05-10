@@ -10,12 +10,14 @@ import {
     transformPoint
 } from '@plait/core';
 import { AbstractNode, LayoutNode, MindLayoutType, isHorizontalLayout, isStandardLayout } from '@plait/layouts';
-import { AbstractHandlePosition, MindElement } from '../interfaces';
+import { AbstractHandlePosition, AbstractResizeState, MindElement, PlaitAbstractBoard } from '../interfaces';
 import { MindNodeComponent, MindQueries } from '../public-api';
 import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope } from '../utils/abstract/resize';
 import { separateChildren } from '../utils/abstract/common';
 
 export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
+    const newBoard = board as PlaitBoard & PlaitAbstractBoard;
+
     const { mousedown, mousemove, mouseup } = board;
     let activeAbstractElement: PlaitElement | undefined;
     let abstractHandlePosition: AbstractHandlePosition | null;
@@ -29,6 +31,9 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
 
         activeAbstractElement = activeAbstractElements.find(element => {
             abstractHandlePosition = getHitAbstractHandle(board, element as MindElement, point);
+            if (newBoard?.abstractResize) {
+                newBoard.abstractResize(AbstractResizeState.start);
+            }
             return abstractHandlePosition;
         });
 
@@ -64,6 +69,10 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                 if ((activeAbstractElement as MindElement).start! >= rightNodeCount) {
                     children = leftChildren;
                 }
+            }
+
+            if (newBoard?.abstractResize) {
+                newBoard.abstractResize(AbstractResizeState.resizing);
             }
 
             const resizingLocation = isHorizontal ? endPoint[1] : endPoint[0];
@@ -102,6 +111,10 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         startPoint = undefined;
         abstractHandlePosition = null;
         if (activeAbstractElement) {
+            if (newBoard?.abstractResize) {
+                newBoard.abstractResize(AbstractResizeState.end);
+            }
+
             if (newProperty) {
                 const path = PlaitBoard.findPath(board, activeAbstractElement);
                 Transforms.setNode(board, newProperty, path);
