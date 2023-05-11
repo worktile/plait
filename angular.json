@@ -34,16 +34,10 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "./node_modules/@tethys/icons",
-                "output": "/assets/icons/"
-              }
+              "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "./node_modules/ngx-tethys/styles/index.scss"
+              "src/styles.scss"
             ],
             "scripts": []
           },

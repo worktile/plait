@@ -101,9 +101,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     drawEdge(element: FlowEdge = this.element, active = false) {
         this.destroyEdge();
         this.nodeG = drawEdge(this.board, this.roughSVG, element, active);
-        if (this.nodeG) {
-            this.g.prepend(this.nodeG);
-        }
+        this.g.prepend(this.nodeG);
     }
 
     drawHandles(element: FlowEdge = this.element, active = false) {
@@ -137,21 +135,18 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     updateRichtextPosition(element: FlowEdge<T> = this.element, active = false) {
         if (element.data?.text && this.richtextG) {
-            const edgeTextXYPosition = getEdgeTextXYPosition(this.board, this.element, this.textRect!.width, this.textRect!.height);
-            if (edgeTextXYPosition) {
-                const { x, y } = edgeTextXYPosition;
-                const { width, height } = this.textRect!;
-                updateForeignObject(this.richtextG!, width, height, x, y);
-                const textBackgroundRect = getEdgeTextBackgroundRect({
-                    x,
-                    y,
-                    width,
-                    height
-                });
-                this.destroyRichtextBackgroundG();
-                this.richtextBackgroundG = drawRichtextBackground(this.roughSVG, element, textBackgroundRect!, active);
-                this.richtextG?.prepend(this.richtextBackgroundG);
-            }
+            const { x, y } = getEdgeTextXYPosition(this.board, this.element, this.textRect!.width, this.textRect!.height);
+            const { width, height } = this.textRect!;
+            updateForeignObject(this.richtextG!, width, height, x, y);
+            const textBackgroundRect = getEdgeTextBackgroundRect({
+                x,
+                y,
+                width,
+                height
+            });
+            this.destroyRichtextBackgroundG();
+            this.richtextBackgroundG = drawRichtextBackground(this.roughSVG, element, textBackgroundRect!, active);
+            this.richtextG?.prepend(this.richtextBackgroundG);
         }
     }
 

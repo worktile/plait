@@ -2,7 +2,6 @@ import { PlaitPlugin, Transforms, addSelectedElement, getSelectedElements, hotke
 import { FlowEdge, FlowNode, createFlowEdge, getCreateEdgeInfo, getEdgesByNodeId, getFlowNodeById } from '@plait/flow';
 import { Element, Text } from 'slate';
 import { CustomBoard } from '../interfaces/board';
-import { ThyDialog } from 'ngx-tethys/dialog';
 
 export const withCommon: PlaitPlugin = (board: CustomBoard) => {
     const { mouseup, keydown } = board;
@@ -39,23 +38,19 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
                 if (FlowEdge.isFlowEdgeElement(deleteElement)) {
                     if (!deleteElement.undeletable) {
                         // 删除 edge
-                        removeNode(board, () => {
-                            Transforms.removeNode(board, [path]);
-                        });
+                        Transforms.removeNode(board, [path]);
                         return;
                     }
                 }
                 if (FlowNode.isFlowNodeElement(deleteElement)) {
                     const edges = getEdgesByNodeId(board, deleteElement.id);
                     if (!deleteElement.undeletable) {
-                        removeNode(board, () => {
-                            // 删除 node
-                            Transforms.removeNode(board, [path]);
-                            // 删除与 node 相关连的 edge
-                            edges.map(edge => {
-                                const edgePath = board.children.findIndex(item => item.id === edge.id);
-                                !edge.undeletable && Transforms.removeNode(board, [edgePath]);
-                            });
+                        // 删除 node
+                        Transforms.removeNode(board, [path]);
+                        // 删除与 node 相关连的 edge
+                        edges.map(edge => {
+                            const edgePath = board.children.findIndex(item => item.id === edge.id);
+                            !edge.undeletable && Transforms.removeNode(board, [edgePath]);
                         });
                         return;
                     }
@@ -67,18 +62,3 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
 
     return board;
 };
-
-export function removeNode(board: CustomBoard, callback: () => void) {
-    const dialog = board.injector!.get(ThyDialog);
-    dialog.confirm({
-        title: '确认删除',
-        content: '确认删除节点吗？',
-        footerAlign: 'right',
-        okType: 'danger',
-        okText: '确认',
-        cancelText: '取消',
-        onOk: () => {
-            callback();
-        }
-    });
-}

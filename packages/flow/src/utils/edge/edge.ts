@@ -70,44 +70,45 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
         targetNode = getFlowNodeById(board, edge.target?.id!);
     }
 
-    if (sourceNode && targetNode) {
-        let { x: sourceNodeX, y: sourceNodeY } = normalizePoint(sourceNode.points![0]);
-        let { x: targetNodeX, y: targetNodeY } = normalizePoint(targetNode.points![0]);
-        const { width: sourceNodeWidth, height: sourceNodeHeight } = sourceNode;
-        const { width: targetNodeWidth, height: targetNodeHeight } = targetNode;
-
-        const { position: sourcePosition } = edge.source!;
-        const { position: targetPosition } = edge.target;
-
-        const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
-            {
-                x: sourceNodeX,
-                y: sourceNodeY,
-                width: sourceNodeWidth,
-                height: sourceNodeHeight
-            },
-            edge.source!,
-            sourcePosition,
-            {
-                x: targetNodeX,
-                y: targetNodeY,
-                width: targetNodeWidth,
-                height: targetNodeHeight
-            },
-            edge.target,
-            targetPosition
-        );
-
-        return getPoints({
-            source: { x: sourceX, y: sourceY },
-            sourcePosition,
-            target: { x: targetX, y: targetY },
-            targetPosition,
-            center: { x: undefined, y: undefined },
-            offset: 30
-        });
+    if (!sourceNode || !targetNode) {
+        throw new Error(`unable to find sourceNode or targetNode by edge with id ${edge.id}`);
     }
-    return null;
+
+    let { x: sourceNodeX, y: sourceNodeY } = normalizePoint(sourceNode.points![0]);
+    let { x: targetNodeX, y: targetNodeY } = normalizePoint(targetNode.points![0]);
+    const { width: sourceNodeWidth, height: sourceNodeHeight } = sourceNode;
+    const { width: targetNodeWidth, height: targetNodeHeight } = targetNode;
+
+    const { position: sourcePosition } = edge.source!;
+    const { position: targetPosition } = edge.target;
+
+    const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
+        {
+            x: sourceNodeX,
+            y: sourceNodeY,
+            width: sourceNodeWidth,
+            height: sourceNodeHeight
+        },
+        edge.source!,
+        sourcePosition,
+        {
+            x: targetNodeX,
+            y: targetNodeY,
+            width: targetNodeWidth,
+            height: targetNodeHeight
+        },
+        edge.target,
+        targetPosition
+    );
+
+    return getPoints({
+        source: { x: sourceX, y: sourceY },
+        sourcePosition,
+        target: { x: targetX, y: targetY },
+        targetPosition,
+        center: { x: undefined, y: undefined },
+        offset: 30
+    });
 };
 
 export const getEdgeStyle = (edge: FlowEdge, active: boolean) => {
