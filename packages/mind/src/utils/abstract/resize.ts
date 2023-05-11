@@ -1,18 +1,19 @@
-import { PlaitBoard, Point, RectangleClient, getRectangleByElements } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, RectangleClient, getRectangleByElements, getSelectedElements } from '@plait/core';
 import { AbstractHandlePosition, MindElement } from '../../interfaces';
 import { AbstractNode, LayoutNode, MindLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { ABSTRACT_HANDLE_MASK_WIDTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../../constants';
 import { MindQueries } from '../../queries';
 import { getCorrectStartEnd } from '@plait/layouts';
+import { MindNodeComponent } from '../../node.component';
 
 export const getRectangleByResizingLocation = (
     abstractRectangle: RectangleClient,
     location: number,
-    handlePosition: AbstractHandlePosition,
+    activeHandlePosition: AbstractHandlePosition,
     isHorizontal: boolean
 ) => {
     if (isHorizontal) {
-        if (handlePosition === AbstractHandlePosition.start) {
+        if (activeHandlePosition === AbstractHandlePosition.start) {
             return {
                 ...abstractRectangle,
                 y: location,
@@ -25,7 +26,7 @@ export const getRectangleByResizingLocation = (
             };
         }
     } else {
-        if (handlePosition === AbstractHandlePosition.start) {
+        if (activeHandlePosition === AbstractHandlePosition.start) {
             return {
                 ...abstractRectangle,
                 x: location,
@@ -200,4 +201,32 @@ export function findLocationLeftIndex(board: PlaitBoard, parentChildren: MindEle
         }
     }
     return 0;
+}
+
+export function handleTouchedAbstract(board: PlaitBoard, touchedAbstract: PlaitElement | undefined, endPoint: Point) {
+    let touchedHandle;
+    const abstract = getSelectedElements(board)
+        .filter(element => AbstractNode.isAbstract(element))
+        .find(element => {
+            touchedHandle = getHitAbstractHandle(board, element as MindElement, endPoint);
+            return touchedHandle;
+        });
+
+    if (touchedAbstract === abstract) {
+        return touchedAbstract;
+    }
+
+    if (touchedAbstract) {
+        const component = PlaitElement.getComponent(touchedAbstract!) as MindNodeComponent;
+        component.updateAbstractIncludedOutline();
+        touchedAbstract = undefined;
+    }
+
+    if (abstract) {
+        touchedAbstract = abstract;
+        const component = PlaitElement.getComponent(touchedAbstract!) as MindNodeComponent;
+        component.updateAbstractIncludedOutline(touchedHandle);
+    }
+
+    return touchedAbstract;
 }
