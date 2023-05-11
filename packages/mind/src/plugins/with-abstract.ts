@@ -12,7 +12,7 @@ import {
 import { AbstractNode, LayoutNode, MindLayoutType, isHorizontalLayout, isStandardLayout } from '@plait/layouts';
 import { AbstractHandlePosition, AbstractResizeState, MindElement, PlaitAbstractBoard } from '../interfaces';
 import { MindNodeComponent, MindQueries } from '../public-api';
-import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope, changeTouchedAbstract } from '../utils/abstract/resize';
+import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope, handleTouchedAbstract } from '../utils/abstract/resize';
 import { separateChildren } from '../utils/abstract/common';
 
 export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
@@ -51,7 +51,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         const host = BOARD_TO_HOST.get(board);
         const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
 
-        touchedAbstract = changeTouchedAbstract(board, touchedAbstract, endPoint);
+        touchedAbstract = handleTouchedAbstract(board, touchedAbstract, endPoint);
 
         if (abstractHandlePosition && activeAbstractElement) {
             const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;

@@ -203,7 +203,7 @@ export function findLocationLeftIndex(board: PlaitBoard, parentChildren: MindEle
     return 0;
 }
 
-export function changeTouchedAbstract(board: PlaitBoard, touchedAbstract: PlaitElement | undefined, endPoint: Point) {
+export function handleTouchedAbstract(board: PlaitBoard, touchedAbstract: PlaitElement | undefined, endPoint: Point) {
     let touchedHandle;
     const abstract = getSelectedElements(board)
         .filter(element => AbstractNode.isAbstract(element))

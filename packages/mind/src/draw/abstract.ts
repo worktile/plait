@@ -102,15 +102,15 @@ export function getHandleOption(isHover: boolean) {
           };
 }
 
-export function changeBoardClass(board: PlaitBoard, activeHandlePosition: AbstractHandlePosition | undefined, horizontal: boolean) {
+export function changeBoardClass(board: PlaitBoard, activeHandlePosition: AbstractHandlePosition | undefined, isHorizontal: boolean) {
     if (activeHandlePosition) {
-        if (horizontal) {
-            PlaitBoard.getBoardNativeElement(board).classList.add('abstract-resizing-horizon');
+        if (isHorizontal) {
+            PlaitBoard.getBoardNativeElement(board).classList.add('abstract-resizing-horizontal');
         } else {
             PlaitBoard.getBoardNativeElement(board).classList.add('abstract-resizing-vertical');
         }
     } else {
-        PlaitBoard.getBoardNativeElement(board).classList.remove('abstract-resizing-horizon');
+        PlaitBoard.getBoardNativeElement(board).classList.remove('abstract-resizing-horizontal');
         PlaitBoard.getBoardNativeElement(board).classList.remove('abstract-resizing-vertical');
     }
 }
