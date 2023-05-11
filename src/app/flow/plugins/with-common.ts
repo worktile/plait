@@ -1,8 +1,9 @@
-import { PlaitBoard, PlaitPlugin, Transforms, addSelectedElement, getSelectedElements, hotkeys } from '@plait/core';
+import { PlaitPlugin, Transforms, addSelectedElement, getSelectedElements, hotkeys } from '@plait/core';
 import { FlowEdge, FlowNode, createFlowEdge, getCreateEdgeInfo, getEdgesByNodeId, getFlowNodeById } from '@plait/flow';
 import { Element, Text } from 'slate';
+import { CustomBoard } from '../interfaces/board';
 
-export const withCommon: PlaitPlugin = (board: PlaitBoard) => {
+export const withCommon: PlaitPlugin = (board: CustomBoard) => {
     const { mouseup, keydown } = board;
 
     board.mouseup = event => {
