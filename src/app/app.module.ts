@@ -9,10 +9,21 @@ import { AppComponent } from './app.component';
 import { BasicBoardEditorComponent } from './editor/editor.component';
 import { BasicRichtextComponent } from './richtext/richtext.component';
 import { BasicFlowComponent } from './flow/flow.component';
+import { ThyDialogModule } from 'ngx-tethys/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     declarations: [AppComponent, BasicRichtextComponent, BasicFlowComponent, BasicBoardEditorComponent],
-    imports: [BrowserModule, RichtextModule, AppRoutingModule, PlaitModule, FlowModule, MindModule],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        RichtextModule,
+        AppRoutingModule,
+        PlaitModule,
+        FlowModule,
+        MindModule,
+        ThyDialogModule
+    ],
     providers: [],
     bootstrap: [AppComponent]
 })
