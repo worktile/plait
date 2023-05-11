@@ -97,3 +97,15 @@ export const insetAbstractNode = (board: PlaitBoard, path: Path, start: number, 
 
     Transforms.insertNode(board, mindElement, path);
 };
+
+export const handleAbstractIncluded = (board: PlaitBoard, element: MindElement) => {
+    const rightNodeCount = element.rightNodeCount!;
+    const abstract = element.children.find(child => {
+        return AbstractNode.isAbstract(child) && child.end >= rightNodeCount && child.start < rightNodeCount;
+    });
+
+    if (abstract) {
+        const path = PlaitBoard.findPath(board, abstract);
+        Transforms.setNode(board, { end: rightNodeCount - 1 }, path);
+    }
+};
