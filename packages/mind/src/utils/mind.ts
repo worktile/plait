@@ -18,6 +18,7 @@ import { getRootLayout } from './layout';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node';
 import { MindNodeComponent } from '../node.component';
+import { getBehindAbstract, getCorrespondingAbstract } from './abstract/common';
 
 export function findParentElement(element: MindElement): MindElement | undefined {
     const component = PlaitElement.getComponent(element) as MindNodeComponent;
@@ -279,34 +280,35 @@ export const findLastChild = (child: MindNode) => {
 export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindElement[]) => {
     //翻转，从下到上修改，防止找不到 path
     const deletableElements = filterChildElement(selectedElements).reverse();
-
-    const relativeAbstracts: AbstractNode[] = [];
-    const accumulativeProperties = new WeakMap<AbstractNode, { start: number; end: number }>();
+    const relativeAbstracts: MindElement[] = [];
+    const accumulativeProperties = new WeakMap<MindElement, { start: number; end: number }>();
 
     deletableElements.forEach(node => {
         if (!PlaitMind.isMind(node)) {
-            const parentElement = MindElement.getParent(node);
-            const index = parentElement.children.indexOf(node);
-            const abstracts = parentElement.children.filter(value => AbstractNode.isAbstract(value));
-            abstracts.forEach(abstract => {
-                const abstractNode = abstract as AbstractNode;
-                const isDeletableAbstract = deletableElements.includes(abstract);
-                const abstractIncludeElement = index >= abstractNode.start && index <= abstractNode.end;
-
-                if ((abstractIncludeElement || index < abstractNode.start) && !isDeletableAbstract) {
-                    let newProperties = accumulativeProperties.get(abstractNode);
+            const behindAbstracts = getBehindAbstract(node).filter(abstract => !deletableElements.includes(abstract));
+            if (behindAbstracts.length) {
+                behindAbstracts.forEach(abstract => {
+                    let newProperties = accumulativeProperties.get(abstract);
                     if (!newProperties) {
-                        newProperties = { start: abstractNode.start, end: abstractNode.end };
-                        accumulativeProperties.set(abstractNode, newProperties);
-                        relativeAbstracts.push(abstractNode);
+                        newProperties = { start: abstract.start!, end: abstract.end! };
+                        accumulativeProperties.set(abstract, newProperties);
+                        relativeAbstracts.push(abstract);
                     }
-
-                    if (index < abstractNode.start) {
-                        newProperties.start = newProperties.start - 1;
-                    }
+                    newProperties.start = newProperties.start - 1;
                     newProperties.end = newProperties.end - 1;
+                });
+            }
+
+            const correspondingAbstract = getCorrespondingAbstract(node);
+            if (correspondingAbstract && !deletableElements.includes(correspondingAbstract)) {
+                let newProperties = accumulativeProperties.get(correspondingAbstract);
+                if (!newProperties) {
+                    newProperties = { start: correspondingAbstract.start!, end: correspondingAbstract.end! };
+                    accumulativeProperties.set(correspondingAbstract, newProperties);
+                    relativeAbstracts.push(correspondingAbstract);
                 }
-            });
+                newProperties.end = newProperties.end - 1;
+            }
         }
     });
 

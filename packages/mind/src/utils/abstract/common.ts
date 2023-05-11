@@ -34,7 +34,7 @@ export const separateChildren = (parentElement: MindElement) => {
 };
 
 export const isSetAbstract = (element: PlaitElement) => {
-    return !!getSetAbstract(element as MindElement);
+    return !!getCorrespondingAbstract(element as MindElement);
 };
 
 export const canSetAbstract = (element: PlaitElement) => {
@@ -101,7 +101,7 @@ export const handleAbstractIncluded = (board: PlaitBoard, element: MindElement) 
     }
 };
 
-export const getSetAbstract = (element: MindElement) => {
+export const getCorrespondingAbstract = (element: MindElement) => {
     const parent = MindElement.getParent(element);
     if (!parent) return undefined;
 
@@ -111,24 +111,27 @@ export const getSetAbstract = (element: MindElement) => {
     });
 };
 
-export const insertElementHandleAbstract = (board: PlaitBoard, selectedElement: MindElement) => {
-    const abstract = getSetAbstract(selectedElement);
+export const getBehindAbstract = (element: MindElement) => {
+    const parent = MindElement.getParent(element);
+    const selectedElementIndex = parent.children.indexOf(element);
+    return parent.children.filter(child => AbstractNode.isAbstract(child) && child.start! > selectedElementIndex);
+};
+
+export const insertSiblingElementHandleAbstract = (board: PlaitBoard, selectedElement: MindElement) => {
+    const abstract = getCorrespondingAbstract(selectedElement);
     if (abstract) {
         PlaitBoard.findPath(board, abstract);
         Transforms.setNode(board, { end: abstract.end! + 1 }, PlaitBoard.findPath(board, abstract));
     }
 
-    const parent = MindElement.getParent(selectedElement);
-    const selectedElementIndex = parent.children.indexOf(selectedElement);
-    const abstracts = parent.children.filter(child => AbstractNode.isAbstract(child) && child.start! > selectedElementIndex);
-    if (abstracts) {
-        moveAbstract(board, abstracts);
+    const abstracts = getBehindAbstract(selectedElement);
+    if (abstracts.length) {
+        moveAbstractPosition(board, abstracts, 1);
     }
 };
 
-export const moveAbstract = (board: PlaitBoard, abstracts: MindElement[]) => {
+export const moveAbstractPosition = (board: PlaitBoard, abstracts: MindElement[], step: number) => {
     abstracts.forEach(abstract => {
-        PlaitBoard.findPath(board, abstract);
-        Transforms.setNode(board, { start: abstract.start! + 1, end: abstract.end! + 1 }, PlaitBoard.findPath(board, abstract));
+        Transforms.setNode(board, { start: abstract.start! + step, end: abstract.end! + step }, PlaitBoard.findPath(board, abstract));
     });
 };
