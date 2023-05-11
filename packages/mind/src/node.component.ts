@@ -567,13 +567,13 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         }
     }
 
-    updateAbstractIncludedOutline(handlePosition?: AbstractHandlePosition, resizingLocation?: number) {
+    updateAbstractIncludedOutline(activeHandlePosition?: AbstractHandlePosition, resizingLocation?: number) {
         this.abstractIncludedOutlineG?.remove();
         this.abstractIncludedOutlineG = drawAbstractIncludedOutline(
             this.board,
             this.roughSVG,
             this.element,
-            handlePosition,
+            activeHandlePosition,
             resizingLocation
         );
         PlaitBoard.getHost(this.board).append(this.abstractIncludedOutlineG);

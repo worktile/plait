@@ -9,11 +9,11 @@ import { MindNodeComponent } from '../../node.component';
 export const getRectangleByResizingLocation = (
     abstractRectangle: RectangleClient,
     location: number,
-    handlePosition: AbstractHandlePosition,
+    activeHandlePosition: AbstractHandlePosition,
     isHorizontal: boolean
 ) => {
     if (isHorizontal) {
-        if (handlePosition === AbstractHandlePosition.start) {
+        if (activeHandlePosition === AbstractHandlePosition.start) {
             return {
                 ...abstractRectangle,
                 y: location,
@@ -26,7 +26,7 @@ export const getRectangleByResizingLocation = (
             };
         }
     } else {
-        if (handlePosition === AbstractHandlePosition.start) {
+        if (activeHandlePosition === AbstractHandlePosition.start) {
             return {
                 ...abstractRectangle,
                 x: location,
@@ -204,22 +204,29 @@ export function findLocationLeftIndex(board: PlaitBoard, parentChildren: MindEle
 }
 
 export function changeTouchedAbstract(board: PlaitBoard, touchedAbstract: PlaitElement | undefined, endPoint: Point) {
-    let touchHandle;
+    let touchedHandle;
     const abstract = getSelectedElements(board)
         .filter(element => AbstractNode.isAbstract(element))
         .find(element => {
-            touchHandle = getHitAbstractHandle(board, element as MindElement, endPoint);
-            return touchHandle;
+            touchedHandle = getHitAbstractHandle(board, element as MindElement, endPoint);
+            return touchedHandle;
         });
 
-    if (touchHandle && !touchedAbstract) {
-        touchedAbstract = abstract;
+    if (touchedAbstract === abstract) {
+        return touchedAbstract;
+    }
+
+    if (touchedAbstract) {
         const component = PlaitElement.getComponent(touchedAbstract!) as MindNodeComponent;
-        component.updateAbstractIncludedOutline(touchHandle);
-    } else if (!touchHandle && touchedAbstract) {
-        const component = PlaitElement.getComponent(touchedAbstract) as MindNodeComponent;
         component.updateAbstractIncludedOutline();
         touchedAbstract = undefined;
     }
+
+    if (abstract) {
+        touchedAbstract = abstract;
+        const component = PlaitElement.getComponent(touchedAbstract!) as MindNodeComponent;
+        component.updateAbstractIncludedOutline(touchedHandle);
+    }
+
     return touchedAbstract;
 }

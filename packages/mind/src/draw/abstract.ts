@@ -12,7 +12,7 @@ export function drawAbstractIncludedOutline(
     board: PlaitBoard,
     roughSVG: RoughSVG,
     element: MindElement,
-    handlePosition?: AbstractHandlePosition,
+    activeHandlePosition?: AbstractHandlePosition,
     resizingLocation?: number
 ) {
     const abstractIncludedG = createG();
@@ -26,7 +26,7 @@ export function drawAbstractIncludedOutline(
     abstractRectangle = RectangleClient.getOutlineRectangle(abstractRectangle, -ABSTRACT_INCLUDED_OUTLINE_OFFSET);
 
     if (resizingLocation) {
-        abstractRectangle = getRectangleByResizingLocation(abstractRectangle, resizingLocation, handlePosition!, isHorizontal);
+        abstractRectangle = getRectangleByResizingLocation(abstractRectangle, resizingLocation, activeHandlePosition!, isHorizontal);
     }
 
     const rectangle = drawAbstractRoundRectangle(
@@ -65,7 +65,7 @@ export function drawAbstractIncludedOutline(
         startPoint1[1],
         startPoint2[0],
         startPoint2[1],
-        getHandleOption(handlePosition === AbstractHandlePosition.start)
+        getHandleOption(activeHandlePosition === AbstractHandlePosition.start)
     );
 
     const endHandle = roughSVG.line(
@@ -73,10 +73,10 @@ export function drawAbstractIncludedOutline(
         endPoint1[1],
         endPoint2[0],
         endPoint2[1],
-        getHandleOption(handlePosition === AbstractHandlePosition.end)
+        getHandleOption(activeHandlePosition === AbstractHandlePosition.end)
     );
 
-    changeBoardClass(board, handlePosition, isHorizontal);
+    changeBoardClass(board, activeHandlePosition, isHorizontal);
 
     startHandle.setAttribute('stroke-linecap', 'round');
     endHandle.setAttribute('stroke-linecap', 'round');
@@ -102,9 +102,9 @@ export function getHandleOption(isHover: boolean) {
           };
 }
 
-export function changeBoardClass(board: PlaitBoard, handlePosition: AbstractHandlePosition | undefined, isHorizontal: boolean) {
-    if (handlePosition) {
-        if (isHorizontal) {
+export function changeBoardClass(board: PlaitBoard, activeHandlePosition: AbstractHandlePosition | undefined, horizontal: boolean) {
+    if (activeHandlePosition) {
+        if (horizontal) {
             PlaitBoard.getBoardNativeElement(board).classList.add('abstract-resizing-horizon');
         } else {
             PlaitBoard.getBoardNativeElement(board).classList.add('abstract-resizing-vertical');
