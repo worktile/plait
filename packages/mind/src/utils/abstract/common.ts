@@ -34,16 +34,7 @@ export const separateChildren = (parentElement: MindElement) => {
 };
 
 export const isSetAbstract = (element: PlaitElement) => {
-    const component = PlaitElement.getComponent(element) as MindNodeComponent;
-    const parent = component.parent;
-
-    if (!parent) return false;
-
-    const elementIndex = parent.children.indexOf(component.node);
-
-    return parent.children.some(child => {
-        return AbstractNode.isAbstract(child.origin) && elementIndex >= child.origin.start! && elementIndex <= child.origin.end!;
-    });
+    return !!getSetAbstract(element as MindElement);
 };
 
 export const canSetAbstract = (element: PlaitElement) => {
@@ -75,18 +66,18 @@ export const setAbstractByElements = (board: PlaitBoard, groupParent: MindElemen
         const childrenLength = groupParent.children.length;
         const path = [...PlaitBoard.findPath(board, groupParent), childrenLength];
         const leftChildren = indexArray.filter(index => index >= rightNodeCount);
-        const rightCHildren = indexArray.filter(index => index < rightNodeCount);
+        const rightChildren = indexArray.filter(index => index < rightNodeCount);
 
-        insetAbstractNode(board, path, rightCHildren[0], rightCHildren[rightCHildren.length - 1]);
-        insetAbstractNode(board, Path.next(path), leftChildren[0], leftChildren[leftChildren.length - 1]);
+        insertAbstractNode(board, path, rightChildren[0], rightChildren[rightChildren.length - 1]);
+        insertAbstractNode(board, Path.next(path), leftChildren[0], leftChildren[leftChildren.length - 1]);
     } else {
         const path = [...PlaitBoard.findPath(board, groupParent), groupParent.children.length];
 
-        insetAbstractNode(board, path, start, end);
+        insertAbstractNode(board, path, start, end);
     }
 };
 
-export const insetAbstractNode = (board: PlaitBoard, path: Path, start: number, end: number) => {
+export const insertAbstractNode = (board: PlaitBoard, path: Path, start: number, end: number) => {
     const mindElement = createMindElement('概要', 28, 20, {
         strokeColor: GRAY_COLOR,
         linkLineColor: GRAY_COLOR
@@ -108,4 +99,36 @@ export const handleAbstractIncluded = (board: PlaitBoard, element: MindElement) 
         const path = PlaitBoard.findPath(board, abstract);
         Transforms.setNode(board, { end: rightNodeCount - 1 }, path);
     }
+};
+
+export const getSetAbstract = (element: MindElement) => {
+    const parent = MindElement.getParent(element);
+    if (!parent) return undefined;
+
+    const elementIndex = parent.children.indexOf(element);
+    return parent.children.find(child => {
+        return AbstractNode.isAbstract(child) && elementIndex >= child.start! && elementIndex <= child.end!;
+    });
+};
+
+export const insertElementHandleAbstract = (board: PlaitBoard, selectedElement: MindElement) => {
+    const abstract = getSetAbstract(selectedElement);
+    if (abstract) {
+        PlaitBoard.findPath(board, abstract);
+        Transforms.setNode(board, { end: abstract.end! + 1 }, PlaitBoard.findPath(board, abstract));
+    }
+
+    const parent = MindElement.getParent(selectedElement);
+    const selectedElementIndex = parent.children.indexOf(selectedElement);
+    const abstracts = parent.children.filter(child => AbstractNode.isAbstract(child) && child.start! > selectedElementIndex);
+    if (abstracts) {
+        moveAbstract(board, abstracts);
+    }
+};
+
+export const moveAbstract = (board: PlaitBoard, abstracts: MindElement[]) => {
+    abstracts.forEach(abstract => {
+        PlaitBoard.findPath(board, abstract);
+        Transforms.setNode(board, { start: abstract.start! + 1, end: abstract.end! + 1 }, PlaitBoard.findPath(board, abstract));
+    });
 };

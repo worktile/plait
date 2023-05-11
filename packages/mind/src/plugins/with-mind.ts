@@ -28,7 +28,8 @@ import {
     deleteSelectedELements,
     filterChildElement,
     findParentElement,
-    shouldChangeRightNodeCount
+    shouldChangeRightNodeCount,
+    insertElementHandleAbstract
 } from '../utils';
 import { getRectangleByNode, hitMindElement } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
@@ -121,6 +122,9 @@ export const withMind = (board: PlaitBoard) => {
                     if (shouldChangeRightNodeCount(selectedElement)) {
                         changeRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
                     }
+
+                    insertElementHandleAbstract(board, selectedElement);
+
                     insertMindElement(board, selectedElement, findNewSiblingNodePath(board, selectedElement));
                 }
                 return;

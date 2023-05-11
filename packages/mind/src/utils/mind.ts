@@ -260,14 +260,6 @@ export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, p
 
     const newElement = createMindElement('', NODE_MIN_WIDTH, TEXT_DEFAULT_HEIGHT, { fill, strokeColor, strokeWidth, shape });
 
-    const index = path[path.length - 1];
-    const abstractNode = inheritNode.children.find(
-        child => AbstractNode.isAbstract(child) && index > child.start && index <= child.end + 1
-    );
-    if (abstractNode) {
-        const path = PlaitBoard.findPath(board, abstractNode as MindElement);
-        Transforms.setNode(board, { end: (abstractNode as AbstractNode).end + 1 }, path);
-    }
     Transforms.insertNode(board, newElement, path);
     clearSelectedElement(board);
     addSelectedElement(board, newElement);
@@ -298,12 +290,19 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
             const abstracts = parentElement.children.filter(value => AbstractNode.isAbstract(value));
             abstracts.forEach(abstract => {
                 const abstractNode = abstract as AbstractNode;
-                if (index >= abstractNode.start && index <= abstractNode.end) {
+                const isDeletableAbstract = deletableElements.includes(abstract);
+                const abstractIncludeElement = index >= abstractNode.start && index <= abstractNode.end;
+
+                if ((abstractIncludeElement || index < abstractNode.start) && !isDeletableAbstract) {
                     let newProperties = accumulativeProperties.get(abstractNode);
                     if (!newProperties) {
                         newProperties = { start: abstractNode.start, end: abstractNode.end };
                         accumulativeProperties.set(abstractNode, newProperties);
                         relativeAbstracts.push(abstractNode);
+                    }
+
+                    if (index < abstractNode.start) {
+                        newProperties.start = newProperties.start - 1;
                     }
                     newProperties.end = newProperties.end - 1;
                 }
