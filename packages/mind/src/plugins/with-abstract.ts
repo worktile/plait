@@ -20,7 +20,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
 
     const { mousedown, mousemove, mouseup } = board;
     let activeAbstractElement: PlaitElement | undefined;
-    let abstractHandlePosition: AbstractHandlePosition | null;
+    let abstractHandlePosition: AbstractHandlePosition | undefined;
     let touchedAbstract: PlaitElement | undefined;
     let startPoint: Point | undefined;
     let newProperty: { end: number } | { start: number } | undefined;
@@ -112,7 +112,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
 
     board.mouseup = (event: MouseEvent) => {
         startPoint = undefined;
-        abstractHandlePosition = null;
+        abstractHandlePosition = undefined;
         if (activeAbstractElement) {
             if (newBoard?.abstractResize) {
                 newBoard.abstractResize(AbstractResizeState.end);

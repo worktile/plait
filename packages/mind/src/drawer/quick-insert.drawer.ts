@@ -17,6 +17,7 @@ import { MindQueries } from '../queries';
 import { fromEvent } from 'rxjs';
 import { insertMindElement } from '../utils/mind';
 import { take } from 'rxjs/operators';
+import { findNewChildNodePath } from '../utils/path';
 
 export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
     canDraw(element: MindElement<BaseData>): boolean {
@@ -238,9 +239,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
         fromEvent(this.g, 'mouseup')
             .pipe(take(1))
             .subscribe(() => {
-                const path = PlaitBoard.findPath(this.board, element).concat(
-                    element.children.filter(child => !AbstractNode.isAbstract(child)).length
-                );
+                const path = findNewChildNodePath(this.board, element);
                 insertMindElement(this.board, element, path);
             });
     }
