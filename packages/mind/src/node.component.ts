@@ -61,7 +61,7 @@ import { drawAbstractIncludedOutline } from './draw/abstract';
 import { AbstractHandlePosition } from './interfaces';
 import { QuickInsertDrawer } from './drawer/quick-insert.drawer';
 import { hasAfterDraw } from './drawer/base/base';
-import { getBranchColorByMindElement } from './utils/node-style/branch-style';
+import { getBranchColorByMindElement } from './utils/node-style/branch';
 
 @Component({
     selector: 'plait-mind-node',

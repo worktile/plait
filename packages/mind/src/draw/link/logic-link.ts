@@ -5,7 +5,7 @@ import { PlaitBoard, Point } from '@plait/core';
 import { getRectangleByNode } from '../../utils';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
-import { getBranchColorByMindElement } from '../../utils/node-style/branch-style';
+import { getBranchColorByMindElement } from '../../utils/node-style/branch';
 
 export function drawLogicLink(board: PlaitBoard, node: MindNode, parent: MindNode, isHorizontal: boolean) {
     const branchColor = getBranchColorByMindElement(board, node.origin);

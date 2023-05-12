@@ -5,7 +5,7 @@ import { PlaitBoard, Point } from '@plait/core';
 import { getNodeShapeByElement, isChildRight } from '../utils';
 import { MindLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
 import { MindQueries } from '../queries';
-import { getBranchColorByMindElement } from '../utils/node-style/branch-style';
+import { getBranchColorByMindElement } from '../utils/node-style/branch';
 
 export function drawLink(
     board: PlaitBoard,

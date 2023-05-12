@@ -5,7 +5,7 @@ import { PlaitBoard, Point } from '@plait/core';
 import { getNodeShapeByElement, getRectangleByNode, isChildUp } from '../utils';
 import { MindLayoutType } from '@plait/layouts';
 import { MindQueries } from '../queries';
-import { getBranchColorByMindElement } from '../utils/node-style/branch-style';
+import { getBranchColorByMindElement } from '../utils/node-style/branch';
 
 export function drawIndentedLink(
     board: PlaitBoard,

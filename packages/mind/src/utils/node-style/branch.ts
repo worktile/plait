@@ -12,7 +12,7 @@ export const getBranchColorByMindElement = (board: PlaitBoard, element: MindElem
     if (ancestor && ancestor.branchColor) {
         return ancestor.branchColor;
     }
-    // default branch color
+
     const root = ancestors[ancestors.length - 1];
     const branch = ancestors[ancestors.length - 2];
     if (branch) {

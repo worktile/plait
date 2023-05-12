@@ -17,7 +17,7 @@ import { fromEvent } from 'rxjs';
 import { insertMindElement } from '../utils/mind';
 import { take } from 'rxjs/operators';
 import { findNewChildNodePath } from '../utils/path';
-import { getBranchColorByMindElement, getNextBranchColor } from '../utils/node-style/branch-style';
+import { getBranchColorByMindElement, getNextBranchColor } from '../utils/node-style/branch';
 
 export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
     canDraw(element: MindElement<BaseData>): boolean {
