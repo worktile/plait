@@ -7,7 +7,7 @@ export const getStrokeByMindElement = (board: PlaitBoard, element: MindElement) 
     ancestors.unshift(element);
     const ancestor = ancestors.find(value => value.strokeColor);
     if (ancestor && ancestor.strokeColor) {
-        return ancestor.branchColor;
+        return ancestor.strokeColor;
     }
 
     const root = ancestors[ancestors.length - 1];
