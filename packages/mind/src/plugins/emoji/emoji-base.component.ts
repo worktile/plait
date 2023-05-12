@@ -1,6 +1,8 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 import { EmojiItem } from '../../interfaces/element-data';
 import { PlaitBoard } from '@plait/core';
+import { MindElement } from '../../interfaces';
+import { EmojiData } from '@plait/mind';
 
 @Directive({
     host: {
@@ -16,6 +18,9 @@ export class MindEmojiBaseComponent implements OnInit {
 
     @Input()
     board!: PlaitBoard;
+
+    @Input()
+    element!: MindElement<EmojiData>;
 
     get nativeElement() {
         return this.elementRef.nativeElement;

@@ -13,13 +13,14 @@ export class EmojiDrawer {
 
     constructor(private board: PlaitMindEmojiBoard, private viewContainerRef: ViewContainerRef) {}
 
-    draw(emoji: EmojiItem, element: MindElement) {
+    draw(emoji: EmojiItem, element: MindElement<EmojiData>) {
         this.destroy();
         const componentType = this.board.drawEmoji(emoji, element);
         this.componentRef = this.viewContainerRef.createComponent(componentType);
         this.componentRef.instance.emojiItem = emoji;
         this.componentRef.instance.board = this.board;
-        this.componentRef.instance.fontSize = getEmojiFontSize(element as MindElement<EmojiData>);
+        this.componentRef.instance.element = element;
+        this.componentRef.instance.fontSize = getEmojiFontSize(element);
     }
 
     get nativeElement() {
@@ -48,14 +49,12 @@ export class EmojisDrawer {
     drawEmojis(element: MindElement) {
         this.destroy();
         if (MindElement.hasEmojis(element)) {
-            const node = MindElement.getNode(element);
             this.g = createG();
             this.g.classList.add('emojis');
             let { x, y } = getRectangleByNode(MindElement.getNode(element));
             x = x + NodeSpace.getEmojiHorizontalSpace(element);
             y = y + NodeSpace.getEmojiVerticalSpace(element);
             const { width, height } = getEmojisRectangle(element);
-            const fontSize = getEmojiFontSize(element);
             const foreignObject = createForeignObject(x, y, width, height);
             this.g.append(foreignObject);
             const container = document.createElement('div');
