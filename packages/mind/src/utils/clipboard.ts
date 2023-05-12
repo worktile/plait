@@ -9,12 +9,13 @@ import {
     Transforms
 } from '@plait/core';
 import { MindElement } from '../interfaces';
-import { copyNewNode, extractNodesText, transformNodeToRoot, transformRootToNode, createMindElement } from '.';
+import { copyNewNode, extractNodesText, transformNodeToRoot, transformRootToNode, createMindElement, transformAbstractToNode } from '.';
 import { getRectangleByNode } from './graph';
+import { AbstractNode } from '@plait/layouts';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[]) => {
     let result: MindElement[] = [];
-    const selectedMindNodes = selectedElements.map((value) => MindElement.getNode(value));
+    const selectedMindNodes = selectedElements.map(value => MindElement.getNode(value));
     const nodesRectangle = getRectangleByElements(board, selectedElements, true);
     selectedElements.forEach((node, index) => {
         const nodeRectangle = getRectangleByNode(selectedMindNodes[index]);
@@ -59,11 +60,19 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
             if (item.isRoot) {
                 newElement = transformRootToNode(board, newElement);
             }
+            if (AbstractNode.isAbstract(item)) {
+                newElement = transformAbstractToNode(newElement);
+            }
             const selectedElementPath = PlaitBoard.findPath(board, selectedElements[0]);
             path = selectedElementPath.concat((selectedElements[0].children || []).length + index);
         } else {
             const point: Point = [targetPoint[0] + item.points![0][0], targetPoint[1] + item.points![0][1]];
             newElement.points = [point];
+
+            if (AbstractNode.isAbstract(item)) {
+                newElement = transformAbstractToNode(newElement);
+            }
+
             if (!item.isRoot) {
                 newElement = transformNodeToRoot(board, newElement);
             }
