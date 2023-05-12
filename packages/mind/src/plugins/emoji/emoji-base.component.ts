@@ -1,9 +1,13 @@
-import { Directive, ElementRef, Input } from '@angular/core';
+import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 import { EmojiItem } from '../../interfaces/element-data';
 import { PlaitBoard } from '@plait/core';
 
-@Directive()
-export class MindEmojiBaseComponent {
+@Directive({
+    host: {
+        class: 'mind-node-emoji'
+    }
+})
+export class MindEmojiBaseComponent implements OnInit {
     @Input()
     fontSize: number = 14;
 
@@ -18,4 +22,8 @@ export class MindEmojiBaseComponent {
     }
 
     constructor(protected elementRef: ElementRef<HTMLElement>) {}
+
+    ngOnInit(): void {
+        this.elementRef.nativeElement.style.fontSize = `${this.fontSize}px`;
+    }
 }

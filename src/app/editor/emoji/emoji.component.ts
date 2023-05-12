@@ -13,7 +13,7 @@ export class MindEmojiComponent extends MindEmojiBaseComponent implements OnInit
     }
 
     ngOnInit(): void {
+        super.ngOnInit()
         this.nativeElement.innerHTML = this.emojiItem.name;
-        this.nativeElement.style.fontSize = `${this.fontSize}px`;
     }
 }

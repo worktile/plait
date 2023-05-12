@@ -28,6 +28,12 @@ g[plait-mindmap='true'] {
 
     .node-emojis-container {
         display: flex;
+        position: initial;
+        align-items: center;
+        height: 100%;
+        .mind-node-emoji:not(:last-child) {
+            margin-right: 4px;
+        }
         ::-moz-selection {
             /* Code for Firefox */
             background: none;

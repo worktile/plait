@@ -136,10 +136,10 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         this.drawShape();
         this.drawLink();
         this.drawRichtext();
-        this.drawEmojis();
         this.drawActiveG();
         this.updateActiveClass();
         this.drawMaskG();
+        this.drawEmojis();
         this.drawExtend();
         this.drawQuickInsert();
     }

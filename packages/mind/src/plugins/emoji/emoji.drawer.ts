@@ -1,5 +1,5 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { EmojiItem, MindElement, PlaitMind } from '../../interfaces';
+import { EmojiData, EmojiItem, MindElement } from '../../interfaces';
 import { MindEmojiBaseComponent } from './emoji-base.component';
 import { PlaitMindEmojiBoard } from './with-mind-emoji';
 import { createForeignObject } from '@plait/richtext';
@@ -19,8 +19,7 @@ export class EmojiDrawer {
         this.componentRef = this.viewContainerRef.createComponent(componentType);
         this.componentRef.instance.emojiItem = emoji;
         this.componentRef.instance.board = this.board;
-        const fontSize = PlaitMind.isMind(element) ? 18 : 14;
-        this.componentRef.instance.fontSize = fontSize;
+        this.componentRef.instance.fontSize = getEmojiFontSize(element as MindElement<EmojiData>);
     }
 
     get nativeElement() {
@@ -61,7 +60,6 @@ export class EmojisDrawer {
             this.g.append(foreignObject);
             const container = document.createElement('div');
             container.classList.add('node-emojis-container');
-            container.classList.add(`emoji-font-size-${fontSize}`);
             foreignObject.append(container);
             this.emojiDrawers = element.data.emojis.map(emojiItem => {
                 const drawer = new EmojiDrawer(this.board, this.viewContainerRef);
