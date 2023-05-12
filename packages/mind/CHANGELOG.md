@@ -1,5 +1,13 @@
 # mind
 
+## 0.2.0-next.6
+
+### Patch Changes
+
+-   [`881d901`](https://github.com/worktile/plait/commit/881d901d6e40533d8f44c0d275f7609489ed49ba) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - emoji size and position improve
+
+*   [#358](https://github.com/worktile/plait/pull/358) [`76a9410`](https://github.com/worktile/plait/commit/76a9410a2f489e2d8c7efab8b762aefbbe1949c7) Thanks [@WBbug](https://github.com/WBbug)! - fix move can select words, fix cant remove all node, fix drag draw wrong fakeNode
+
 ## 0.2.0-next.5
 
 ### Patch Changes
