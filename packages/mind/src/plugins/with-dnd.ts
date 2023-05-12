@@ -115,9 +115,10 @@ export const withDnd = (board: PlaitBoard) => {
                 PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
                 PlaitBoard.getHost(board).appendChild(fakeDragNodeG);
             } else {
-                fakeDragNodeG?.childNodes.forEach(node => {
-                    node.remove();
-                });
+                if (fakeDragNodeG) {
+                    fakeDragNodeG.innerHTML = '';
+                }
+
                 fakeDropNodeG?.childNodes.forEach(node => {
                     node.remove();
                 });

@@ -54,6 +54,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         touchedAbstract = handleTouchedAbstract(board, touchedAbstract, endPoint);
 
         if (abstractHandlePosition && activeAbstractElement) {
+            event.preventDefault();
             const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;
             const element = abstractComponent.element;
             const nodeLayout = MindQueries.getCorrectLayoutByElement(activeAbstractElement as MindElement) as MindLayoutType;
