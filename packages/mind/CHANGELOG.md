@@ -1,5 +1,11 @@
 # mind
 
+## 0.2.0-next.7
+
+### Patch Changes
+
+-   [`65b5944`](https://github.com/worktile/plait/commit/65b5944adf913290215e15fabc16afa5697e4358) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add element input on emoji base component
+
 ## 0.2.0-next.6
 
 ### Patch Changes
