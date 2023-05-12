@@ -1,10 +1,9 @@
-import { RoughSVG } from 'roughjs/bin/svg';
 import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../constants';
 import { drawLink } from '../draw/link';
 import { DetectResult, MindElement, MindNode } from '../interfaces';
 import { MindNodeComponent } from '../node.component';
 import { getRectangleByNode } from './graph';
-import { PlaitElement, Point, drawRoundRectangle } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, drawRoundRectangle } from '@plait/core';
 import { MindQueries } from '../queries';
 import {
     isBottomLayout,
@@ -21,25 +20,25 @@ import { isStandardLayout } from '@plait/layouts';
 import { isMixedLayout } from './layout';
 
 export const drawPlaceholderDropNodeG = (
+    board: PlaitBoard,
     dropTarget: { target: MindElement; detectResult: DetectResult },
-    roughSVG: RoughSVG,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
     const targetComponent = PlaitElement.getComponent(dropTarget.target) as MindNodeComponent;
     const targetRect = getRectangleByNode(targetComponent.node);
     if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
-        drawStraightDropNodeG(targetRect, dropTarget.detectResult, targetComponent, roughSVG, fakeDropNodeG);
+        drawStraightDropNodeG(board, targetRect, dropTarget.detectResult, targetComponent, fakeDropNodeG);
     }
 
     if (targetComponent.parent && dropTarget.detectResult && ['top', 'bottom'].includes(dropTarget.detectResult)) {
         const parentComponent = PlaitElement.getComponent(targetComponent.parent.origin) as MindNodeComponent;
         const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
         drawCurvePlaceholderDropNodeG(
+            board,
             targetRect,
             dropTarget.detectResult,
             targetIndex,
             targetComponent,
-            roughSVG,
             parentComponent,
             fakeDropNodeG
         );
@@ -47,6 +46,7 @@ export const drawPlaceholderDropNodeG = (
 };
 
 export const drawCurvePlaceholderDropNodeG = (
+    board: PlaitBoard,
     targetRect: {
         x: number;
         y: number;
@@ -56,13 +56,12 @@ export const drawCurvePlaceholderDropNodeG = (
     detectResult: DetectResult,
     targetIndex: number,
     targetComponent: MindNodeComponent,
-    roughSVG: RoughSVG,
     parentComponent: MindNodeComponent,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
     const parentNodeLayout = MindQueries.getCorrectLayoutByElement(parentComponent.node.origin);
     const layout = MindQueries.getCorrectLayoutByElement(targetComponent.node.parent.origin);
-    const strokeWidth = targetComponent.node.origin.linkLineWidth ? targetComponent.node.origin.linkLineWidth : STROKE_WIDTH;
+    const strokeWidth = targetComponent.node.origin.branchWidth ? targetComponent.node.origin.branchWidth : STROKE_WIDTH;
     let fakeX = targetComponent.node.x,
         fakeY = targetRect.y - 30,
         fakeRectangleStartX = targetRect.x,
@@ -164,19 +163,27 @@ export const drawCurvePlaceholderDropNodeG = (
     // 构造一条曲线
     const fakeNode: MindNode = { ...targetComponent.node, x: fakeX, y: fakeY, width, height: 12 };
     const linkSVGG = isIndentedLayout(layout)
-        ? drawIndentedLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, false)
-        : drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, isHorizontalLayout(layout), false);
+        ? drawIndentedLink(board, parentComponent.node, fakeNode, PRIMARY_COLOR, false)
+        : drawLink(board, parentComponent.node, fakeNode, PRIMARY_COLOR, isHorizontalLayout(layout), false);
     // 构造一个矩形框坐标
-    const fakeRectangleG = drawRoundRectangle(roughSVG, fakeRectangleStartX, fakeRectangleStartY, fakeRectangleEndX, fakeRectangleEndY, {
-        stroke: PRIMARY_COLOR,
-        strokeWidth: 2,
-        fill: PRIMARY_COLOR,
-        fillStyle: 'solid'
-    });
+    const fakeRectangleG = drawRoundRectangle(
+        PlaitBoard.getRoughSVG(board),
+        fakeRectangleStartX,
+        fakeRectangleStartY,
+        fakeRectangleEndX,
+        fakeRectangleEndY,
+        {
+            stroke: PRIMARY_COLOR,
+            strokeWidth: 2,
+            fill: PRIMARY_COLOR,
+            fillStyle: 'solid'
+        }
+    );
     fakeDropNodeG?.appendChild(linkSVGG);
     fakeDropNodeG?.appendChild(fakeRectangleG);
 };
 export const drawStraightDropNodeG = (
+    board: PlaitBoard,
     targetRect: {
         x: number;
         y: number;
@@ -185,7 +192,6 @@ export const drawStraightDropNodeG = (
     },
     detectResult: DetectResult,
     targetComponent: MindNodeComponent,
-    roughSVG: RoughSVG,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
     const { x, y, width, height } = targetRect;
@@ -205,7 +211,7 @@ export const drawStraightDropNodeG = (
     }
     let fakeY = targetComponent.node.y;
     let fakeX = targetRect.x;
-    const strokeWidth = targetComponent.node.origin.linkLineWidth ? targetComponent.node.origin.linkLineWidth : STROKE_WIDTH;
+    const strokeWidth = targetComponent.node.origin.branchWidth ? targetComponent.node.origin.branchWidth : STROKE_WIDTH;
     const pointOptions = {
         fakeX,
         fakeY,
@@ -227,7 +233,7 @@ export const drawStraightDropNodeG = (
         ] as Point[];
         if (isIndentedLayout(parentLayout)) {
             const fakePoint = getIndentedFakePoint(parentLayout, pointOptions);
-            drawIndentNodeG(fakeDropNodeG as SVGGElement, roughSVG, fakePoint, targetComponent.node);
+            drawIndentNodeG(board, fakeDropNodeG as SVGGElement, fakePoint, targetComponent.node);
             return;
         } else if (isVerticalLogicLayout(parentLayout)) {
             if (!targetComponent.node.origin.isRoot) {
@@ -285,16 +291,16 @@ export const drawStraightDropNodeG = (
                 endRectanglePointX = startRectanglePointX + 30;
                 endRectanglePointY = startRectanglePointY + 12;
                 const fakeNode: MindNode = { ...targetComponent.node, x: fakeX, y: fakeY, width: 30 };
-                const linkSVGG = drawLink(roughSVG, parentComponent.node, fakeNode, PRIMARY_COLOR, false, false);
+                const linkSVGG = drawLink(board, parentComponent.node, fakeNode, PRIMARY_COLOR, false, false);
                 fakeDropNodeG?.appendChild(linkSVGG);
             }
         } else {
-            let linkSVGG = roughSVG.linearPath(linePoints, { stroke: PRIMARY_COLOR, strokeWidth });
+            let linkSVGG = PlaitBoard.getRoughSVG(board).linearPath(linePoints, { stroke: PRIMARY_COLOR, strokeWidth });
             fakeDropNodeG?.appendChild(linkSVGG);
         }
         // 构造一个矩形框坐标
         let fakeRectangleG = drawRoundRectangle(
-            roughSVG,
+            PlaitBoard.getRoughSVG(board),
             startRectanglePointX,
             startRectanglePointY,
             endRectanglePointX,
@@ -313,7 +319,7 @@ export const drawStraightDropNodeG = (
         if (isHorizontalLogicLayout(parentLayout)) {
             if (isIndentedLayout(layout)) {
                 const fakePoint = getIndentedFakePoint(layout, pointOptions);
-                drawIndentNodeG(fakeDropNodeG as SVGGElement, roughSVG, fakePoint, targetComponent.node);
+                drawIndentNodeG(board, fakeDropNodeG as SVGGElement, fakePoint, targetComponent.node);
                 return;
             }
         }
@@ -392,21 +398,21 @@ export const getIndentedFakePoint = (
 };
 
 export const drawIndentNodeG = (
+    board: PlaitBoard,
     fakeDropNodeG: SVGGElement,
-    roughSVG: RoughSVG,
     fakePoint: { fakeX: number; fakeY: number },
     node: MindNode
 ) => {
     const { fakeX, fakeY } = fakePoint;
     const fakeNode: MindNode = { ...node, x: fakeX, y: fakeY, width: 30, height: 12 };
-    const linkSVGG = drawIndentedLink(roughSVG, node, fakeNode, PRIMARY_COLOR, false);
+    const linkSVGG = drawIndentedLink(board, node, fakeNode, PRIMARY_COLOR, false);
 
     const startRectanglePointX = fakeX,
         startRectanglePointY = fakeY,
         endRectanglePointX = fakeX + 30,
         endRectanglePointY = fakeY + 12;
     const fakeRectangleG = drawRoundRectangle(
-        roughSVG,
+        PlaitBoard.getRoughSVG(board),
         startRectanglePointX,
         startRectanglePointY,
         endRectanglePointX,

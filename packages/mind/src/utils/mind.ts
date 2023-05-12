@@ -216,7 +216,7 @@ export const createMindElement = (
         strokeWidth?: number;
         shape?: MindNodeShape;
         layout?: MindLayoutType;
-        linkLineColor?: string;
+        branchColor?: string;
     }
 ) => {
     const newElement: MindElement = {
@@ -247,8 +247,8 @@ export const createMindElement = (
     if (options.layout) {
         newElement.layout = options.layout;
     }
-    if (options.linkLineColor) {
-        newElement.linkLineColor = options.linkLineColor;
+    if (options.branchColor) {
+        newElement.branchColor = options.branchColor;
     }
     return newElement;
 };
