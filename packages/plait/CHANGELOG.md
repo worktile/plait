@@ -1,5 +1,11 @@
 # plait
 
+## 0.2.0-next.8
+
+### Patch Changes
+
+-   [`e4a8029`](https://github.com/worktile/plait/commit/e4a8029552c64f1d60fa4ae7c8e3f80c9a528eb7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support mind options
+
 ## 0.2.0-next.3
 
 ### Patch Changes
