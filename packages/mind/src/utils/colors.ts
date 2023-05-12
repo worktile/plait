@@ -23,6 +23,15 @@ export const getLinkLineColorByMindElement = (element: MindElement) => {
     if (color) {
         return color;
     }
+
+    let parent = MindElement.getParent(element);
+    while (parent && !parent.isRoot) {
+        if (parent.linkLineColor) {
+            return parent.linkLineColor;
+        }
+        parent = MindElement.getParent(parent);
+    }
+
     const { root, branch } = findUpElement(element);
     if (branch) {
         const index = root.children.indexOf(branch);
