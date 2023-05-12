@@ -2,4 +2,4 @@
 '@plait/mind': patch
 ---
 
-rename getRootLinkLineColorByMindElement to getNextBranchColor
+refactor mind node style util method
