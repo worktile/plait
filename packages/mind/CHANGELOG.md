@@ -1,5 +1,11 @@
 # mind
 
+## 0.2.0-next.5
+
+### Patch Changes
+
+-   [`7de0242`](https://github.com/worktile/plait/commit/7de0242ee4413e06fcdfccf12ad7a5ce9a485284) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix getStrokeByMindElement wrong
+
 ## 0.2.0-next.4
 
 ### Patch Changes
