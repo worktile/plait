@@ -28,11 +28,11 @@ import {
     deleteSelectedELements,
     filterChildElement,
     findParentElement,
-    shouldChangeRightNodeCount
+    shouldChangeRightNodeCount,
+    insertSiblingElementHandleAbstract
 } from '../utils';
-import { getRectangleByNode, hitMindmapElement } from '../utils/graph';
+import { getRectangleByNode, hitMindElement } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { MIND_ELEMENT_TO_COMPONENT } from '../utils/weak-maps';
 import { withDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { AbstractNode } from '@plait/layouts';
@@ -122,6 +122,9 @@ export const withMind = (board: PlaitBoard) => {
                     if (shouldChangeRightNodeCount(selectedElement)) {
                         changeRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
                     }
+
+                    insertSiblingElementHandleAbstract(board, selectedElement);
+
                     insertMindElement(board, selectedElement, findNewSiblingNodePath(board, selectedElement));
                 }
                 return;
@@ -185,7 +188,7 @@ export const withMind = (board: PlaitBoard) => {
             .filter(value => PlaitMind.isMind(value))
             .forEach(mindmap => {
                 depthFirstRecursion<MindElement>(mindmap as MindElement, node => {
-                    if (!PlaitBoard.hasBeenTextEditing(board) && hitMindmapElement(board, point, node)) {
+                    if (!PlaitBoard.hasBeenTextEditing(board) && hitMindElement(board, point, node)) {
                         enterNodeEditing(node);
                     }
                 });

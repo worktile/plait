@@ -37,57 +37,70 @@ g[plait-mindmap='true'] {
         }
     }
 }
-.plait-board-container.focused:not(.selection-moving):not(.element-moving) {
-    .extend {
-        cursor: pointer;
-        &:hover {
-            opacity: 1;
-        }
-    }
 
-    g[plait-mindmap='true'] {
-        .hovered {
-            .extend {
+.plait-board-container {
+    &.focused:not(.selection-moving):not(.element-moving):not(.abstract-resizing-horizontal):not(.abstract-resizing-vertical) {
+        .extend {
+            cursor: pointer;
+            &:hover {
                 opacity: 1;
             }
         }
-    }
-}
 
-.plait-board-container.hand {
-    svg {
-        cursor: grab;
-    }
-    .zoom-toolbar {
-        svg {
-            cursor: pointer;
+        g[plait-mindmap='true'] {
+            .hovered {
+                .extend {
+                    opacity: 1;
+                }
+            }
         }
     }
-    .collapsed {
-        .extend:hover {
+
+    &.hand {
+        svg {
             cursor: grab;
         }
-    }
-    :not(.collapsed) > .extend {
-        display: none;
-    }
-}
-.plait-board-container.readonly {
-    .collapsed {
-        .extend:hover {
-            cursor: pointer;
+        .zoom-toolbar {
+            svg {
+                cursor: pointer;
+            }
         }
-    }
-    :not(.collapsed) > .extend {
-        display: block;
-        .quick-insert {
+        .collapsed {
+            .extend:hover {
+                cursor: grab;
+            }
+        }
+        :not(.collapsed) > .extend {
             display: none;
         }
     }
-}
-.plait-board-container.viewport-moving {
-    svg {
-        cursor: grabbing;
+
+    &.readonly {
+        .collapsed {
+            .extend:hover {
+                cursor: pointer;
+            }
+        }
+        :not(.collapsed) > .extend {
+            display: block;
+            .quick-insert {
+                display: none;
+            }
+        }
+    }
+
+    &.viewport-moving {
+        svg {
+            cursor: grabbing;
+        }
+    }
+
+    &.abstract-resizing-horizontal {
+        cursor: ns-resize;
+    }
+
+    &.abstract-resizing-vertical {
+        cursor: ew-resize;
     }
 }
 

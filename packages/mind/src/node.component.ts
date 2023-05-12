@@ -23,8 +23,7 @@ import {
     PlaitElement,
     NODE_TO_INDEX,
     PlaitPluginElementContext,
-    OnContextChanged,
-    Point
+    OnContextChanged
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -33,39 +32,27 @@ import {
     isLeftLayout,
     AbstractNode,
     isRightLayout,
-    isStandardLayout,
     isTopLayout,
-    MindLayoutType,
-    OriginNode
+    MindLayoutType
 } from '@plait/layouts';
 import { hasEditableTarget, PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject, timer } from 'rxjs';
 import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
 import { Editor, Operation } from 'slate';
-import {
-    EXTEND_OFFSET,
-    EXTEND_RADIUS,
-    MindNodeShape,
-    NODE_MIN_WIDTH,
-    PRIMARY_COLOR,
-    QUICK_INSERT_CIRCLE_COLOR,
-    QUICK_INSERT_CIRCLE_OFFSET,
-    QUICK_INSERT_INNER_CROSS_COLOR,
-    STROKE_WIDTH
-} from './constants';
+import { EXTEND_OFFSET, EXTEND_RADIUS, MindNodeShape, NODE_MIN_WIDTH, PRIMARY_COLOR, STROKE_WIDTH } from './constants';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLogicLink } from './draw/link/logic-link';
-import { drawMindmapNodeRichtext, updateMindNodeTopicSize } from './draw/richtext';
+import { drawMindNodeRichtext, updateMindNodeTopicSize } from './draw/richtext';
 import { drawRectangleNode } from './draw/shape';
 import { MindElement, PlaitMind } from './interfaces/element';
-import { ExtendLayoutType, ExtendUnderlineCoordinateType, MindNode } from './interfaces/node';
+import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
-import { getLinkLineColorByMindElement, getRootLinkLineColorByMindElement } from './utils/colors';
-import { getRectangleByNode, hitMindmapElement } from './utils/graph';
-import { insertMindElement, getChildrenCount } from './utils/mind';
+import { getLinkLineColorByMindElement } from './utils/colors';
+import { getRectangleByNode, hitMindElement } from './utils/graph';
+import { getChildrenCount } from './utils/mind';
 import { getNodeShapeByElement } from './utils/shape';
-import { ELEMENT_TO_NODE, MIND_ELEMENT_TO_COMPONENT } from './utils/weak-maps';
+import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
 import { EmojisDrawer } from './plugins/emoji/emoji.drawer';
@@ -138,7 +125,6 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
     ngOnInit(): void {
         this.emojisDrawer = new EmojisDrawer(this.board as PlaitMindEmojiBoard, this.viewContainerRef);
         this.quickInsertDrawer = new QuickInsertDrawer(this.board);
-        MIND_ELEMENT_TO_COMPONENT.set(this.element, this);
         super.ngOnInit();
         this.node = ELEMENT_TO_NODE.get(this.element) as MindNode;
         if (!PlaitMind.isMind(this.element)) {
@@ -163,8 +149,6 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         if (!PlaitMind.isMind(this.element)) {
             this.parent = MindElement.getNode(MindElement.getParent(this.element));
         }
-
-        MIND_ELEMENT_TO_COMPONENT.set(this.element, this);
 
         // resolve move node richtext lose issue
         if (this.node !== newNode) {
@@ -411,7 +395,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
     }
 
     drawRichtext() {
-        const { richtextG, richtextComponentRef, foreignObject } = drawMindmapNodeRichtext(this.node as MindNode, this.viewContainerRef);
+        const { richtextG, richtextComponentRef, foreignObject } = drawMindNodeRichtext(this.node as MindNode, this.viewContainerRef);
         this.richtextComponentRef = richtextComponentRef;
         this.richtextG = richtextG;
         this.foreignObject = foreignObject;
@@ -583,13 +567,13 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         }
     }
 
-    updateAbstractIncludedOutline(resizingLocation?: number, handlePosition?: AbstractHandlePosition) {
+    updateAbstractIncludedOutline(activeHandlePosition?: AbstractHandlePosition, resizingLocation?: number) {
         this.abstractIncludedOutlineG?.remove();
         this.abstractIncludedOutlineG = drawAbstractIncludedOutline(
             this.board,
             this.roughSVG,
             this.element,
-            handlePosition,
+            activeHandlePosition,
             resizingLocation
         );
         PlaitBoard.getHost(this.board).append(this.abstractIncludedOutlineG);
@@ -662,7 +646,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         });
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
             const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
-            const clickInNode = hitMindmapElement(this.board, point, this.element);
+            const clickInNode = hitMindElement(this.board, point, this.element);
             if (clickInNode && !hasEditableTarget(richtextInstance.editor, event.target)) {
                 event.preventDefault();
             } else if (!clickInNode) {
@@ -731,9 +715,6 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         this.destroy$.complete();
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {
             ELEMENT_TO_NODE.delete(this.element);
-        }
-        if (MIND_ELEMENT_TO_COMPONENT.get(this.element) === this) {
-            MIND_ELEMENT_TO_COMPONENT.delete(this.element);
         }
     }
 }

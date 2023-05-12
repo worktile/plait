@@ -5,7 +5,7 @@ import { MindNode } from '../interfaces/node';
 import { getRectangleByNode } from '../utils/graph';
 import { NodeSpace } from '../utils/node-space';
 
-export function drawMindmapNodeRichtext(node: MindNode, viewContainerRef: ViewContainerRef) {
+export function drawMindNodeRichtext(node: MindNode, viewContainerRef: ViewContainerRef) {
     const { x, y } = getRichtextRectangleByNode(node);
     const classList = [];
     if (node.origin.isRoot) {
@@ -16,7 +16,16 @@ export function drawMindmapNodeRichtext(node: MindNode, viewContainerRef: ViewCo
     } else {
         classList.push('child-node');
     }
-    return drawRichtext(x, y, node.origin.width, node.origin.height, node.origin.data.topic, viewContainerRef, classList);
+    // COMPAT: last character can not show in safari browser
+    return drawRichtext(
+        x,
+        y,
+        Math.ceil(node.origin.width),
+        Math.ceil(node.origin.height),
+        node.origin.data.topic,
+        viewContainerRef,
+        classList
+    );
 }
 
 export function updateMindNodeTopicSize(node: MindNode, g: SVGGElement, isEditable: boolean) {
@@ -25,7 +34,8 @@ export function updateMindNodeTopicSize(node: MindNode, g: SVGGElement, isEditab
         // add 999， avoid changing lines when paste more text
         updateForeignObject(g, width + 999, height + 999, x, y);
     } else {
-        updateForeignObject(g, node.origin.width, node.origin.height, x, y);
+        // COMPAT: last character can not show in safari browser
+        updateForeignObject(g, Math.ceil(node.origin.width), Math.ceil(node.origin.height), x, y);
     }
 }
 

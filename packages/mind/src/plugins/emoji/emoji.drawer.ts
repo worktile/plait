@@ -18,6 +18,7 @@ export class EmojiDrawer {
         const componentType = this.board.drawEmoji(emoji, element);
         this.componentRef = this.viewContainerRef.createComponent(componentType);
         this.componentRef.instance.emojiItem = emoji;
+        this.componentRef.instance.board = this.board;
         const fontSize = PlaitMind.isMind(element) ? 18 : 14;
         this.componentRef.instance.fontSize = fontSize;
     }

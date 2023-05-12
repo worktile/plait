@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Viewport } from '@plait/core';
+import { Component, OnInit, Injector } from '@angular/core';
+import { PlaitBoardChangeEvent, PlaitElement, Viewport } from '@plait/core';
 import { withFlow } from '@plait/flow';
 import { mockFlowData } from './flow-data';
 import { withCommon } from './plugins/with-common';
 import { withDraw } from './plugins/with-draw';
+import { CustomBoard } from './interfaces/board';
 
 const LOCAL_DATA_KEY = 'plait-board-flow-change-data';
 
@@ -18,7 +19,9 @@ export class BasicFlowComponent implements OnInit {
 
     viewport!: Viewport;
 
-    board!: PlaitBoard;
+    board!: CustomBoard;
+
+    constructor(private injector: Injector) {}
 
     ngOnInit(): void {
         const data = this.getLocalData() as PlaitBoardChangeEvent;
@@ -41,7 +44,8 @@ export class BasicFlowComponent implements OnInit {
         return data ? JSON.parse(data) : null;
     }
 
-    plaitBoardInitialized(value: PlaitBoard) {
+    plaitBoardInitialized(value: CustomBoard) {
         this.board = value;
+        this.board.injector = this.injector;
     }
 }

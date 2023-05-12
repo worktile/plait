@@ -4,8 +4,7 @@ import { drawLink } from '../draw/link';
 import { DetectResult, MindElement, MindNode } from '../interfaces';
 import { MindNodeComponent } from '../node.component';
 import { getRectangleByNode } from './graph';
-import { MIND_ELEMENT_TO_COMPONENT } from './weak-maps';
-import { Point, drawRoundRectangle } from '@plait/core';
+import { PlaitElement, Point, drawRoundRectangle } from '@plait/core';
 import { MindQueries } from '../queries';
 import {
     isBottomLayout,
@@ -26,14 +25,14 @@ export const drawPlaceholderDropNodeG = (
     roughSVG: RoughSVG,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
-    const targetComponent = MIND_ELEMENT_TO_COMPONENT.get(dropTarget.target) as MindNodeComponent;
+    const targetComponent = PlaitElement.getComponent(dropTarget.target) as MindNodeComponent;
     const targetRect = getRectangleByNode(targetComponent.node);
     if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
         drawStraightDropNodeG(targetRect, dropTarget.detectResult, targetComponent, roughSVG, fakeDropNodeG);
     }
 
     if (targetComponent.parent && dropTarget.detectResult && ['top', 'bottom'].includes(dropTarget.detectResult)) {
-        const parentComponent = MIND_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindNodeComponent;
+        const parentComponent = PlaitElement.getComponent(targetComponent.parent.origin) as MindNodeComponent;
         const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
         drawCurvePlaceholderDropNodeG(
             targetRect,
@@ -105,7 +104,7 @@ export const drawCurvePlaceholderDropNodeG = (
 
     if (isVerticalLogicLayout(layout)) {
         parentComponent = targetComponent;
-        targetComponent = MIND_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindNodeComponent;
+        targetComponent = PlaitElement.getComponent(targetComponent.parent.origin) as MindNodeComponent;
         fakeX = parentComponent.node.x;
         width = parentComponent.node.width;
         const vGap = BASE * 6 + strokeWidth;
@@ -135,7 +134,7 @@ export const drawCurvePlaceholderDropNodeG = (
                 if (isLastNode) {
                     fakeY = targetRect.y - targetRect.height - BASE;
                 } else {
-                    const nextComponent = MIND_ELEMENT_TO_COMPONENT.get(
+                    const nextComponent = PlaitElement.getComponent(
                         parentComponent.node.origin.children[targetIndex + 1]
                     ) as MindNodeComponent;
                     const nextRect = getRectangleByNode(nextComponent.node);
@@ -148,8 +147,8 @@ export const drawCurvePlaceholderDropNodeG = (
                     const parentRect = getRectangleByNode(parentComponent.node);
                     fakeY = parentRect.y - parentRect.height / 2 - BASE;
                 } else {
-                    const previousComponent = MIND_ELEMENT_TO_COMPONENT.get(
-                        parentComponent.node.origin.children[targetIndex - 1]
+                    const previousComponent = PlaitElement.getComponent(
+                        parentComponent.node.origin.children[targetIndex + 1]
                     ) as MindNodeComponent;
                     const previousRect = getRectangleByNode(previousComponent.node);
                     fakeY = previousRect.y - Math.abs((targetRect.y + targetRect.height - previousRect.y) / 2);
@@ -242,7 +241,7 @@ export const drawStraightDropNodeG = (
                  *      b. 最后一个节点的右侧：固定值（来源于 getMainAxle，第二级节点：BASE * 8，其他 BASE * 3 + strokeWidth / 2）；
                  */
                 fakeY = targetComponent.node.y;
-                const parentComponent = MIND_ELEMENT_TO_COMPONENT.get(targetComponent.parent.origin) as MindNodeComponent;
+                const parentComponent = PlaitElement.getComponent(targetComponent.parent.origin) as MindNodeComponent;
                 const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
 
                 if (detectResult === 'left') {
@@ -251,7 +250,7 @@ export const drawStraightDropNodeG = (
                     if (isFirstNode) {
                         offsetX = parentComponent.node.origin.isRoot ? BASE * 8 : BASE * 3 + strokeWidth / 2;
                     } else {
-                        const previousComponent = MIND_ELEMENT_TO_COMPONENT.get(
+                        const previousComponent = PlaitElement.getComponent(
                             parentComponent.node.origin.children[targetIndex - 1]
                         ) as MindNodeComponent;
                         const previousRect = getRectangleByNode(previousComponent.node);
@@ -266,7 +265,7 @@ export const drawStraightDropNodeG = (
                     if (isLastNode) {
                         offsetX = parentComponent.node.origin.isRoot ? BASE * 8 : BASE * 3 + strokeWidth / 2;
                     } else {
-                        const nextComponent = MIND_ELEMENT_TO_COMPONENT.get(
+                        const nextComponent = PlaitElement.getComponent(
                             parentComponent.node.origin.children[targetIndex + 1]
                         ) as MindNodeComponent;
                         const nextRect = getRectangleByNode(nextComponent.node);
@@ -339,7 +338,7 @@ export const getHorizontalFakeY = (
             fakeY = targetRect.y + targetRect.height;
         }
         if (targetIndex > 0) {
-            const previousComponent = MIND_ELEMENT_TO_COMPONENT.get(parentNode.origin.children[targetIndex - 1]) as MindNodeComponent;
+            const previousComponent = PlaitElement.getComponent(parentNode.origin.children[targetIndex - 1]) as MindNodeComponent;
             const previousRect = getRectangleByNode(previousComponent.node);
             const topY = previousRect.y + previousRect.height;
             fakeY = topY + (targetRect.y - topY) / 5;
@@ -348,7 +347,7 @@ export const getHorizontalFakeY = (
     if (detectResult === 'bottom') {
         fakeY = targetRect.y + targetRect.height + 30;
         if (targetIndex < parentNode.origin.children.length - 1) {
-            const nextComponent = MIND_ELEMENT_TO_COMPONENT.get(parentNode.origin.children[targetIndex + 1]) as MindNodeComponent;
+            const nextComponent = PlaitElement.getComponent(parentNode.origin.children[targetIndex + 1]) as MindNodeComponent;
             const nextRect = getRectangleByNode(nextComponent.node);
             const topY = targetRect.y + targetRect.height;
             fakeY = topY + (nextRect.y - topY) / 5;

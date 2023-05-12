@@ -16,7 +16,7 @@ export function getRectangleByNode(node: MindNode): RectangleClient {
     };
 }
 
-export function hitMindmapElement(board: PlaitBoard, point: Point, element: MindElement) {
+export function hitMindElement(board: PlaitBoard, point: Point, element: MindElement) {
     const node = ELEMENT_TO_NODE.get(element);
     if (node && distanceBetweenPointAndRectangle(point[0], point[1], getRectangleByNode(node)) === 0) {
         return true;

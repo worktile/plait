@@ -70,6 +70,10 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
         targetNode = getFlowNodeById(board, edge.target?.id!);
     }
 
+    if (!sourceNode || !targetNode) {
+        throw new Error(`unable to find sourceNode or targetNode by edge with id ${edge.id}`);
+    }
+
     let { x: sourceNodeX, y: sourceNodeY } = normalizePoint(sourceNode.points![0]);
     let { x: targetNodeX, y: targetNodeY } = normalizePoint(targetNode.points![0]);
     const { width: sourceNodeWidth, height: sourceNodeHeight } = sourceNode;

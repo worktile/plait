@@ -1,5 +1,30 @@
 # mind
 
+## 0.2.0-next.3
+
+### Patch Changes
+
+-   [`af5e5ba`](https://github.com/worktile/plait/commit/af5e5baade7e06e524b506e39416d38f33823abe) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix shouldChangeRightNodeCount logic error
+
+*   [`ad69dba`](https://github.com/worktile/plait/commit/ad69dba3236fef08d1547b230f2a12b07e9196d5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - compatible processing for last character can not show in safari browser
+
+-   [`c4f220d`](https://github.com/worktile/plait/commit/c4f220ddf26364fb87e961f87603fbe68ef77fd3) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add replaceEmoji method and fix addEmoji error
+    rename mind map to mind
+
+*   [#347](https://github.com/worktile/plait/pull/347) [`4fb5ae9`](https://github.com/worktile/plait/commit/4fb5ae9636ac7a38031e0f5d0cec79ff3ac1500a) Thanks [@WBbug](https://github.com/WBbug)! - select abstract start when delete abstract
+
+-   [`6580ea0`](https://github.com/worktile/plait/commit/6580ea08c93f67ecca69594964abf6dd632da0ce) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename mindmap to mind
+
+*   [#352](https://github.com/worktile/plait/pull/352) [`b59ad23`](https://github.com/worktile/plait/commit/b59ad23076254137eeb5fccb99587a385a5d6bcb) Thanks [@WBbug](https://github.com/WBbug)! - update abstract outline when mouseMove
+
+-   [#350](https://github.com/worktile/plait/pull/350) [`c7dcac7`](https://github.com/worktile/plait/commit/c7dcac781dc0caa8420f95b3089da4baf4b45d7f) Thanks [@WBbug](https://github.com/WBbug)! - add newBoard and execute abstractResize in with-abstract
+
+*   [`2ae1307`](https://github.com/worktile/plait/commit/2ae1307d4cfd19659fa657fc42e9c483aee44956) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove use MIND_ELEMENT_TO_COMPONENT case
+
+-   [#349](https://github.com/worktile/plait/pull/349) [`874a97a`](https://github.com/worktile/plait/commit/874a97a79d172cd7a25c75320547caa253ead35e) Thanks [@WBbug](https://github.com/WBbug)! - fix delete error
+
+*   [#351](https://github.com/worktile/plait/pull/351) [`8cb2b47`](https://github.com/worktile/plait/commit/8cb2b47773a4f673013b34d4b8ddb56ec4e06855) Thanks [@WBbug](https://github.com/WBbug)! - fix canDraw logic
+
 ## 0.2.0-next.2
 
 ### Patch Changes
@@ -454,7 +479,7 @@
 
 ### Patch Changes
 
--   [`d9aff21`](https://github.com/worktile/plait/commit/d9aff21815af7e6ffabff14c0f122b8a476cec74) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getBranchMindmapLayouts: get layout array from element and it's parent element
+-   [`d9aff21`](https://github.com/worktile/plait/commit/d9aff21815af7e6ffabff14c0f122b8a476cec74) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getBranchLayouts: get layout array from element and it's parent element
 
 *   [`57da5cb`](https://github.com/worktile/plait/commit/57da5cbc89e8933e128a469cadb61efdf3b1f468) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getBranchDirectionsByLayouts: get all directions of current branch
 

@@ -1,5 +1,11 @@
 # layouts
 
+## 0.2.0-next.3
+
+### Patch Changes
+
+-   [`6580ea0`](https://github.com/worktile/plait/commit/6580ea08c93f67ecca69594964abf6dd632da0ce) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename mindmap to mind
+
 ## 0.2.0-next.2
 
 ### Patch Changes

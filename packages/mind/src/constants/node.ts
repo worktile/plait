@@ -15,7 +15,7 @@ export enum MindNodeShape {
 
 export const ABSTRACT_HANDLE_COLOR = '#6698FF80'; //PRIMARY_COLOR 50% 透明度
 export const ABSTRACT_INCLUDED_OUTLINE_OFFSET = 3.5;
-export const ABSTRACT_HANDLE_LENGTH = 12;
+export const ABSTRACT_HANDLE_LENGTH = 10;
 
 export const TOPIC_DEFAULT_MAX_WORD_COUNT = 34;
 export const ABSTRACT_HANDLE_MASK_WIDTH = 8;

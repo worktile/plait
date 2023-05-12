@@ -2,7 +2,7 @@ import { COLORS, ROOT_NODE_STROKE } from '../constants';
 import { MindElement } from '../interfaces';
 import { findUpElement } from './mind';
 
-export const getStrokeByMindmapElement = (element: MindElement) => {
+export const getStrokeByMindElement = (element: MindElement) => {
     let stroke = element.strokeColor;
     if (stroke) {
         return stroke;

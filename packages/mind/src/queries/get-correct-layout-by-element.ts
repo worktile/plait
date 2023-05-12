@@ -1,12 +1,7 @@
+import { PlaitElement } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { MindNodeComponent } from '../node.component';
-import {
-    correctLayoutByDirection,
-    findUpElement,
-    getDefaultMindmapLayout,
-    getInCorrectLayoutDirection,
-    MIND_ELEMENT_TO_COMPONENT
-} from '../utils';
+import { correctLayoutByDirection, findUpElement, getDefaultLayout, getInCorrectLayoutDirection } from '../utils';
 import { AbstractNode, MindLayoutType, getAbstractLayout, isIndentedLayout, LayoutNode, isChildOfAbstract } from '@plait/layouts';
 
 /**
@@ -17,23 +12,23 @@ import { AbstractNode, MindLayoutType, getAbstractLayout, isIndentedLayout, Layo
  */
 export const getCorrectLayoutByElement = (element: MindElement) => {
     const { root } = findUpElement(element);
-    const rootLayout = root.layout || getDefaultMindmapLayout();
+    const rootLayout = root.layout || getDefaultLayout();
     let correctRootLayout = rootLayout;
 
     if (element.isRoot) {
         return correctRootLayout;
     }
 
-    const component = MIND_ELEMENT_TO_COMPONENT.get(element);
-    let layout = component?.node.origin.layout;
+    const component = PlaitElement.getComponent(element) as MindNodeComponent;
+    let layout = element.layout;
 
-    let parentComponent: undefined | MindNodeComponent;
-    let parent: MindElement | undefined = component?.parent?.origin;
+    let parentComponent: MindNodeComponent | null = null;
+    let parent: MindElement | undefined = component.parent.origin;
 
     while (!layout && parent) {
-        parentComponent = MIND_ELEMENT_TO_COMPONENT.get(parent);
-        layout = parentComponent?.node.origin.layout;
-        parent = parentComponent?.parent?.origin;
+        parentComponent = PlaitElement.getComponent(parent) as MindNodeComponent;
+        layout = parentComponent.node.origin.layout;
+        parent = parentComponent.parent?.origin;
     }
     if (
         (AbstractNode.isAbstract(element) || isChildOfAbstract((MindElement.getNode(element) as unknown) as LayoutNode)) &&
@@ -47,7 +42,7 @@ export const getCorrectLayoutByElement = (element: MindElement) => {
         correctRootLayout = component?.node.left ? MindLayoutType.left : MindLayoutType.right;
     }
 
-    if (parentComponent?.node.origin.isRoot) {
+    if (parentComponent && parentComponent.node.origin.isRoot) {
         return correctRootLayout;
     }
 
