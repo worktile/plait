@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.2.0-next.2
+
+### Patch Changes
+
+-   [#354](https://github.com/worktile/plait/pull/354) [`92849f3`](https://github.com/worktile/plait/commit/92849f3fb1739b100000d31593c5f21fa9b4905a) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add injector for CustomBoard
+
 ## 0.2.0-next.1
 
 ### Patch Changes

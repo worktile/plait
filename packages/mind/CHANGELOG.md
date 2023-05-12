@@ -1,5 +1,21 @@
 # mind
 
+## 0.2.0-next.4
+
+### Patch Changes
+
+-   [#353](https://github.com/worktile/plait/pull/353) [`4d00bad`](https://github.com/worktile/plait/commit/4d00bad7e88e3187ec8546baf5c8a07fda33fe46) Thanks [@WBbug](https://github.com/WBbug)! - change abstract when abstract include cross left and right
+
+*   [#355](https://github.com/worktile/plait/pull/355) [`771b8ba`](https://github.com/worktile/plait/commit/771b8babb7d9170370be6fc0170c59c2b083af84) Thanks [@WBbug](https://github.com/WBbug)! - handle abstract when add and delete node
+
+-   [`67d10e1`](https://github.com/worktile/plait/commit/67d10e14c0d187da43c727b4877db1b76a916e4b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add input board on emoji-base component
+
+*   [#357](https://github.com/worktile/plait/pull/357) [`ced7468`](https://github.com/worktile/plait/commit/ced7468ad3c8553ce5d3371d9ae9fc4bfb5cb7fa) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor mind node style util method
+
+-   [#348](https://github.com/worktile/plait/pull/348) [`4d65ce8`](https://github.com/worktile/plait/commit/4d65ce8e7d600b6fe0f9b632c47dbd94c01ae4d8) Thanks [@WBbug](https://github.com/WBbug)! - inherit branchColor when add new element
+
+*   [#356](https://github.com/worktile/plait/pull/356) [`ea52a05`](https://github.com/worktile/plait/commit/ea52a0545bab90e25e76f061ec6811793e4f9b32) Thanks [@WBbug](https://github.com/WBbug)! - fix copy abstract wrong
+
 ## 0.2.0-next.3
 
 ### Patch Changes
