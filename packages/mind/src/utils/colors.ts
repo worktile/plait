@@ -18,31 +18,6 @@ export const getStrokeByMindElement = (element: MindElement) => {
     }
 };
 
-export const getLinkLineColorByMindElement = (element: MindElement) => {
-    let color = element.linkLineColor;
-    if (color) {
-        return color;
-    }
-
-    let parent = MindElement.getParent(element);
-    while (parent && !parent.isRoot) {
-        if (parent.linkLineColor) {
-            return parent.linkLineColor;
-        }
-        parent = MindElement.getParent(parent);
-    }
-
-    const { root, branch } = findUpElement(element);
-    if (branch) {
-        const index = root.children.indexOf(branch);
-        const length = COLORS.length;
-        const remainder = index % length;
-        return COLORS[remainder];
-    } else {
-        throw new Error('root element should not have link line');
-    }
-};
-
 export const getRootLinkLineColorByMindElement = (root: MindElement) => {
     const index = root.children.length;
     const length = COLORS.length;

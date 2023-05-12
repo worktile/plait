@@ -1,15 +1,14 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { RoughSVG } from 'roughjs/bin/svg';
 import { MindNodeShape, STROKE_WIDTH } from '../constants';
 import { MindNode } from '../interfaces/node';
-import { getLinkLineColorByMindElement } from '../utils/colors';
-import { Point } from '@plait/core';
+import { PlaitBoard, Point } from '@plait/core';
 import { getNodeShapeByElement, getRectangleByNode, isChildUp } from '../utils';
 import { MindLayoutType } from '@plait/layouts';
 import { MindQueries } from '../queries';
+import { getBranchColorByMindElement } from '../utils/node-style/branch-style';
 
 export function drawIndentedLink(
-    roughSVG: RoughSVG,
+    board: PlaitBoard,
     node: MindNode,
     child: MindNode,
     defaultStroke: string | null = null,
@@ -32,7 +31,7 @@ export function drawIndentedLink(
     //根据位置，设置正负参数
     let plusMinus = isChildUp(node, child) ? (node.left ? [-1, -1] : [1, -1]) : node.left ? [-1, 1] : [1, 1];
     const layout = MindQueries.getCorrectLayoutByElement(node.origin);
-    const strokeWidth = child.origin.linkLineWidth ? child.origin.linkLineWidth : STROKE_WIDTH;
+    const strokeWidth = child.origin.branchWidth ? child.origin.branchWidth : STROKE_WIDTH;
     if (beginNode.origin.isRoot) {
         if (layout === MindLayoutType.leftBottomIndented || layout === MindLayoutType.rightBottomIndented) {
             beginY += strokeWidth;
@@ -54,8 +53,8 @@ export function drawIndentedLink(
         isUnderlineShap && needDrawUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY]
     ];
 
-    const stroke = defaultStroke || getLinkLineColorByMindElement(child.origin);
+    const stroke = defaultStroke || getBranchColorByMindElement(board, child.origin);
 
     const points = pointsOnBezierCurves(curve);
-    return roughSVG.curve(points as any, { stroke, strokeWidth });
+    return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke, strokeWidth });
 }

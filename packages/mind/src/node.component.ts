@@ -48,7 +48,6 @@ import { drawRectangleNode } from './draw/shape';
 import { MindElement, PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
-import { getLinkLineColorByMindElement } from './utils/colors';
 import { getRectangleByNode, hitMindElement } from './utils/graph';
 import { getChildrenCount } from './utils/mind';
 import { getNodeShapeByElement } from './utils/shape';
@@ -62,6 +61,7 @@ import { drawAbstractIncludedOutline } from './draw/abstract';
 import { AbstractHandlePosition } from './interfaces';
 import { QuickInsertDrawer } from './drawer/quick-insert.drawer';
 import { hasAfterDraw } from './drawer/base/base';
+import { getBranchColorByMindElement } from './utils/node-style/branch-style';
 
 @Component({
     selector: 'plait-mind-node',
@@ -223,9 +223,9 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         if (AbstractNode.isAbstract(this.node.origin)) {
             this.linkG = drawAbstractLink(this.board, this.node, isHorizontalLayout(layout));
         } else if (MindElement.isIndentedLayout(this.parent.origin)) {
-            this.linkG = drawIndentedLink(this.roughSVG, this.parent, this.node);
+            this.linkG = drawIndentedLink(this.board, this.parent, this.node);
         } else {
-            this.linkG = drawLogicLink(this.roughSVG, this.node, this.parent, isHorizontalLayout(layout));
+            this.linkG = drawLogicLink(this.board, this.node, this.parent, isHorizontalLayout(layout));
         }
         this.g.append(this.linkG);
     }
@@ -429,8 +429,8 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
             });
 
         const { x, y, width, height } = getRectangleByNode(this.node);
-        const stroke = getLinkLineColorByMindElement(this.element);
-        const strokeWidth = this.node.origin.linkLineWidth ? this.node.origin.linkLineWidth : STROKE_WIDTH;
+        const stroke = getBranchColorByMindElement(this.board, this.element);
+        const strokeWidth = this.node.origin.branchWidth ? this.node.origin.branchWidth : STROKE_WIDTH;
         const extendY = y + height / 2;
         const nodeLayout = MindQueries.getCorrectLayoutByElement(this.element) as MindLayoutType;
 

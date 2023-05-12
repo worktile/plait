@@ -1,7 +1,6 @@
-import { Element } from 'slate';
 import { MindNodeShape } from '../constants/node';
 import { isIndentedLayout, MindLayoutType } from '@plait/layouts';
-import { NODE_TO_PARENT, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
+import { NODE_TO_PARENT, Path, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
 import { MindQueries } from '../queries';
 import { ELEMENT_TO_NODE } from '../utils';
 import { BaseData, EmojiData } from './element-data';
@@ -21,8 +20,8 @@ export interface MindElement<T = BaseData> extends PlaitElement {
     shape?: MindNodeShape;
 
     // link style attributes
-    linkLineColor?: string;
-    linkLineWidth?: number;
+    branchColor?: string;
+    branchWidth?: number;
 
     // layout
     layout?: MindLayoutType;
@@ -71,6 +70,17 @@ export const MindElement = {
     getRoot(board: PlaitBoard, element: MindElement) {
         const path = PlaitBoard.findPath(board, element);
         return PlaitNode.get(board, path.slice(0, 1)) as PlaitMind;
+    },
+    getAncestors(board: PlaitBoard, element: MindElement) {
+        const path = PlaitBoard.findPath(board, element);
+        const parents: PlaitElement[] = [];
+        for (const p of Path.ancestors(path, { reverse: true })) {
+            const n = PlaitNode.get(board, p);
+            if (n && !PlaitBoard.isBoard(n)) {
+                parents.push(n);
+            }
+        }
+        return parents;
     },
     getNode(element: MindElement) {
         const node = ELEMENT_TO_NODE.get(element);

@@ -2,4 +2,4 @@
 '@plait/mind': patch
 ---
 
-inherit linkLineColor when add new element
+inherit branchColor when add new element

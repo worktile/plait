@@ -11,13 +11,14 @@ import {
     STROKE_WIDTH
 } from '../constants/default';
 import { MindNodeShape } from '../constants/node';
-import { AbstractNode, MindLayoutType, OriginNode, isStandardLayout } from '@plait/layouts';
-import { getLinkLineColorByMindElement, getRootLinkLineColorByMindElement } from '../utils/colors';
+import { MindLayoutType, OriginNode, isStandardLayout } from '@plait/layouts';
+import { getRootLinkLineColorByMindElement } from '../utils/colors';
 import { MindQueries } from '../queries';
 import { fromEvent } from 'rxjs';
 import { insertMindElement } from '../utils/mind';
 import { take } from 'rxjs/operators';
 import { findNewChildNodePath } from '../utils/path';
+import { getBranchColorByMindElement } from '../utils/node-style/branch-style';
 
 export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
     canDraw(element: MindElement<BaseData>): boolean {
@@ -43,7 +44,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
          */
         const shape = getNodeShapeByElement(element);
         // 形状是矩形要偏移边框的线宽
-        const strokeWidth = element.linkLineWidth ? element.linkLineWidth : STROKE_WIDTH;
+        const strokeWidth = element.branchWidth ? element.branchWidth : STROKE_WIDTH;
         let offsetBorderLineWidth = 0;
         if (shape === MindNodeShape.roundRectangle && offset === 0) {
             offsetBorderLineWidth = strokeWidth;
@@ -162,7 +163,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
             underlineCoordinates[MindLayoutType.right].startY -= height * 0.5;
             underlineCoordinates[MindLayoutType.right].endY -= height * 0.5;
         }
-        const stroke = element.isRoot ? getRootLinkLineColorByMindElement(element) : getLinkLineColorByMindElement(element);
+        const stroke = element.isRoot ? getRootLinkLineColorByMindElement(element) : getBranchColorByMindElement(this.board, element);
         let nodeLayout = MindQueries.getCorrectLayoutByElement(element) as ExtendLayoutType;
         if (element.isRoot && isStandardLayout(nodeLayout)) {
             const root = element as OriginNode;

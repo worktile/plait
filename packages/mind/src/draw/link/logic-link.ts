@@ -1,16 +1,15 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { RoughSVG } from 'roughjs/bin/svg';
 import { MindNodeShape, STROKE_WIDTH } from '../../constants';
 import { MindNode } from '../../interfaces/node';
-import { getLinkLineColorByMindElement } from '../../utils/colors';
-import { Point } from '@plait/core';
+import { PlaitBoard, Point } from '@plait/core';
 import { getRectangleByNode } from '../../utils';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
+import { getBranchColorByMindElement } from '../../utils/node-style/branch-style';
 
-export function drawLogicLink(roughSVG: RoughSVG, node: MindNode, parent: MindNode, isHorizontal: boolean) {
-    const stroke = getLinkLineColorByMindElement(node.origin);
-    const strokeWidth = node.origin.linkLineWidth ? node.origin.linkLineWidth : STROKE_WIDTH;
+export function drawLogicLink(board: PlaitBoard, node: MindNode, parent: MindNode, isHorizontal: boolean) {
+    const branchColor = getBranchColorByMindElement(board, node.origin);
+    const strokeWidth = node.origin.branchWidth ? node.origin.branchWidth : STROKE_WIDTH;
     const hasStraightLine = !parent.origin.isRoot;
     const hasUnderlineShape = node.origin.shape === MindNodeShape.underline;
     const hasUnderlineShapeOfParent = parent.origin.shape === MindNodeShape.underline;
@@ -58,5 +57,5 @@ export function drawLogicLink(roughSVG: RoughSVG, node: MindNode, parent: MindNo
     const underline: Point[] = hasUnderlineShape && isHorizontal ? [underlineEnd, underlineEnd, underlineEnd] : [];
 
     const points = pointsOnBezierCurves([...straightLine, ...curve, ...underline]);
-    return roughSVG.curve(points as any, { stroke, strokeWidth });
+    return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke: branchColor, strokeWidth });
 }

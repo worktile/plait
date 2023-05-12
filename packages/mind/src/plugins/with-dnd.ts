@@ -178,7 +178,7 @@ export const withDnd = (board: PlaitBoard) => {
 
             if (dropTarget?.target) {
                 dropTarget = readjustmentDropTarget(dropTarget);
-                drawPlaceholderDropNodeG(dropTarget, roughSVG, fakeDropNodeG);
+                drawPlaceholderDropNodeG(board, dropTarget, fakeDropNodeG);
             }
         }
 
