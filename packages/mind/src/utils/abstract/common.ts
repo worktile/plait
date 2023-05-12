@@ -111,10 +111,10 @@ export const getCorrespondingAbstract = (element: MindElement) => {
     });
 };
 
-export const getBehindAbstract = (element: MindElement) => {
+export const getBehindAbstracts = (element: MindElement) => {
     const parent = MindElement.getParent(element);
-    const selectedElementIndex = parent.children.indexOf(element);
-    return parent.children.filter(child => AbstractNode.isAbstract(child) && child.start! > selectedElementIndex);
+    const index = parent.children.indexOf(element);
+    return parent.children.filter(child => AbstractNode.isAbstract(child) && child.start! > index);
 };
 
 export const insertSiblingElementHandleAbstract = (board: PlaitBoard, selectedElement: MindElement) => {
@@ -124,7 +124,7 @@ export const insertSiblingElementHandleAbstract = (board: PlaitBoard, selectedEl
         Transforms.setNode(board, { end: abstract.end! + 1 }, PlaitBoard.findPath(board, abstract));
     }
 
-    const abstracts = getBehindAbstract(selectedElement);
+    const abstracts = getBehindAbstracts(selectedElement);
     if (abstracts.length) {
         moveAbstractPosition(board, abstracts, 1);
     }

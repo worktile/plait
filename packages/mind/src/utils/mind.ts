@@ -18,7 +18,7 @@ import { getRootLayout } from './layout';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node';
 import { MindNodeComponent } from '../node.component';
-import { getBehindAbstract, getCorrespondingAbstract } from './abstract/common';
+import { getBehindAbstracts, getCorrespondingAbstract } from './abstract/common';
 
 export function findParentElement(element: MindElement): MindElement | undefined {
     const component = PlaitElement.getComponent(element) as MindNodeComponent;
@@ -285,7 +285,7 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
 
     deletableElements.forEach(node => {
         if (!PlaitMind.isMind(node)) {
-            const behindAbstracts = getBehindAbstract(node).filter(abstract => !deletableElements.includes(abstract));
+            const behindAbstracts = getBehindAbstracts(node).filter(abstract => !deletableElements.includes(abstract));
             if (behindAbstracts.length) {
                 behindAbstracts.forEach(abstract => {
                     let newProperties = accumulativeProperties.get(abstract);
