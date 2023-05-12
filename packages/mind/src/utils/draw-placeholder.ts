@@ -6,6 +6,7 @@ import { getRectangleByNode } from './graph';
 import { PlaitBoard, PlaitElement, Point, drawRoundRectangle } from '@plait/core';
 import { MindQueries } from '../queries';
 import {
+    getNonAbstractChildren,
     isBottomLayout,
     isHorizontalLayout,
     isHorizontalLogicLayout,
@@ -339,6 +340,8 @@ export const getHorizontalFakeY = (
     layout: MindLayoutType,
     fakeY: number
 ) => {
+    const childrenLength = getNonAbstractChildren(parentNode).length;
+
     if (detectResult === 'top') {
         if (targetIndex === 0 && isTopLayout(layout)) {
             fakeY = targetRect.y + targetRect.height;
@@ -352,13 +355,13 @@ export const getHorizontalFakeY = (
     }
     if (detectResult === 'bottom') {
         fakeY = targetRect.y + targetRect.height + 30;
-        if (targetIndex < parentNode.origin.children.length - 1) {
+        if (targetIndex < childrenLength - 1) {
             const nextComponent = PlaitElement.getComponent(parentNode.origin.children[targetIndex + 1]) as MindNodeComponent;
             const nextRect = getRectangleByNode(nextComponent.node);
             const topY = targetRect.y + targetRect.height;
             fakeY = topY + (nextRect.y - topY) / 5;
         }
-        if (targetIndex === parentNode.origin.children.length - 1) {
+        if (targetIndex === childrenLength - 1) {
             fakeY = targetRect.y + targetRect.height + 30;
         }
     }
