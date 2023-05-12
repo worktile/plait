@@ -24,3 +24,10 @@ export const getBranchColorByMindElement = (board: PlaitBoard, element: MindElem
         throw new Error('root element should not have branch color');
     }
 };
+
+export const getNextBranchColor = (root: MindElement) => {
+    const index = root.children.length;
+    const length = COLORS.length;
+    const remainder = index % length;
+    return COLORS[remainder];
+};

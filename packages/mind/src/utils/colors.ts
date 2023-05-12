@@ -17,10 +17,3 @@ export const getStrokeByMindElement = (element: MindElement) => {
         return ROOT_NODE_STROKE;
     }
 };
-
-export const getRootLinkLineColorByMindElement = (root: MindElement) => {
-    const index = root.children.length;
-    const length = COLORS.length;
-    const remainder = index % length;
-    return COLORS[remainder];
-};

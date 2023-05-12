@@ -1,5 +1,5 @@
 import { PlaitBoard, createG } from '@plait/core';
-import { MindElement, BaseData, ExtendUnderlineCoordinateType, ExtendLayoutType } from '../interfaces';
+import { MindElement, BaseData, ExtendUnderlineCoordinateType, ExtendLayoutType, PlaitMind } from '../interfaces';
 import { AfterDraw, BaseDrawer } from './base/base';
 import { getRectangleByNode } from '../utils/graph';
 import { getNodeShapeByElement } from '../utils/shape';
@@ -12,13 +12,12 @@ import {
 } from '../constants/default';
 import { MindNodeShape } from '../constants/node';
 import { MindLayoutType, OriginNode, isStandardLayout } from '@plait/layouts';
-import { getRootLinkLineColorByMindElement } from '../utils/colors';
 import { MindQueries } from '../queries';
 import { fromEvent } from 'rxjs';
 import { insertMindElement } from '../utils/mind';
 import { take } from 'rxjs/operators';
 import { findNewChildNodePath } from '../utils/path';
-import { getBranchColorByMindElement } from '../utils/node-style/branch-style';
+import { getBranchColorByMindElement, getNextBranchColor } from '../utils/node-style/branch-style';
 
 export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
     canDraw(element: MindElement<BaseData>): boolean {
@@ -163,7 +162,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
             underlineCoordinates[MindLayoutType.right].startY -= height * 0.5;
             underlineCoordinates[MindLayoutType.right].endY -= height * 0.5;
         }
-        const stroke = element.isRoot ? getRootLinkLineColorByMindElement(element) : getBranchColorByMindElement(this.board, element);
+        const branchColor = PlaitMind.isMind(element) ? getNextBranchColor(element) : getBranchColorByMindElement(this.board, element);
         let nodeLayout = MindQueries.getCorrectLayoutByElement(element) as ExtendLayoutType;
         if (element.isRoot && isStandardLayout(nodeLayout)) {
             const root = element as OriginNode;
@@ -176,7 +175,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                 underlineCoordinate.startY,
                 underlineCoordinate.endX,
                 underlineCoordinate.endY,
-                { stroke, strokeWidth }
+                { stroke: branchColor, strokeWidth }
             );
             const circleCoordinates = {
                 startX: underlineCoordinate.endX,
