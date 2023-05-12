@@ -110,6 +110,14 @@ export const transformRootToNode = (board: PlaitBoard, node: MindElement) => {
     return newNode;
 };
 
+export const transformAbstractToNode = (node: MindElement) => {
+    const newNode: MindElement = { ...node };
+    delete newNode.start;
+    delete newNode.end;
+
+    return newNode;
+};
+
 export const transformNodeToRoot = (board: PlaitBoard, node: MindElement): MindElement => {
     const newElement = { ...node };
     let text = Node.string(newElement.data.topic);
