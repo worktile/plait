@@ -5,7 +5,6 @@ import {
     IS_TEXT_EDITABLE,
     PlaitBoard,
     PlaitHistoryBoard,
-    PlaitPlugin,
     PlaitPluginElementContext,
     Point,
     RectangleClient,
@@ -38,9 +37,9 @@ import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertCl
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEditing } from '../utils/node';
-import { withEmoji } from './emoji/with-mind-emoji';
 import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants';
 import { withAbstract } from './with-abstract';
+import { withExtendMind } from './with-extend-mind';
 
 export const withMind = (board: PlaitBoard) => {
     const {
@@ -240,5 +239,5 @@ export const withMind = (board: PlaitBoard) => {
         deleteFragment(data);
     };
 
-    return withEmoji(withAbstract(withDnd(board)));
+    return withExtendMind(withAbstract(withDnd(board)));
 };

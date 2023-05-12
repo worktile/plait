@@ -26,7 +26,6 @@ import {
     MindLayoutType
 } from '@plait/layouts';
 import { updateForeignObject } from '@plait/richtext';
-import { RoughSVG } from 'roughjs/bin/svg';
 import { BASE } from '../constants';
 import { getRichtextRectangleByNode } from '../draw/richtext';
 import { drawRectangleNode } from '../draw/shape';
@@ -44,6 +43,7 @@ import {
 import { getRectangleByNode, hitMindElement } from '../utils/graph';
 import { MindQueries } from '../queries';
 import { PlaitMindComponent } from '../mind.component';
+import { PlaitMindBoard } from './with-extend-mind';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -135,7 +135,7 @@ export const withDnd = (board: PlaitBoard) => {
                 x: activeComponent.node.x + offsetX,
                 y: activeComponent.node.y + offsetY
             };
-            const textRectangle = getRichtextRectangleByNode(activeComponent.node);
+            const textRectangle = getRichtextRectangleByNode(board as PlaitMindBoard, activeComponent.node);
             const fakeNodeG = drawRectangleNode(board, fakeDraggingNode);
             const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
             updateForeignObject(

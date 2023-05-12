@@ -1,22 +1,23 @@
 import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
-import { PlaitElement, PlaitPluginElementContext } from '../../interfaces';
+import { PlaitBoard, PlaitElement, PlaitPluginElementContext } from '../../interfaces';
 import { removeSelectedElement } from '../../utils/selected-element';
 import { createG } from '../../utils/dom';
 import { hasBeforeContextChange, hasOnContextChanged } from './context-change';
 
 @Directive()
-export abstract class PlaitPluginElementComponent<T extends PlaitElement = PlaitElement> implements OnInit, OnDestroy {
+export abstract class PlaitPluginElementComponent<T extends PlaitElement = PlaitElement, K extends PlaitBoard = PlaitBoard>
+    implements OnInit, OnDestroy {
     g!: SVGGElement;
 
     rootG?: SVGGElement;
 
     initialized = false;
 
-    protected _context!: PlaitPluginElementContext<T>;
+    protected _context!: PlaitPluginElementContext<T, K>;
 
     @Input()
-    set context(value: PlaitPluginElementContext<T>) {
-        if (hasBeforeContextChange<T>(this)) {
+    set context(value: PlaitPluginElementContext<T, K>) {
+        if (hasBeforeContextChange<T, K>(this)) {
             this.beforeContextChange(value);
         }
         const previousContext = this._context;

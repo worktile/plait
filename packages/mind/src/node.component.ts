@@ -55,13 +55,13 @@ import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
 import { EmojisDrawer } from './plugins/emoji/emoji.drawer';
-import { PlaitMindEmojiBoard } from './plugins/emoji/with-mind-emoji';
 import { MindTransforms } from './transforms';
 import { drawAbstractIncludedOutline } from './draw/abstract';
 import { AbstractHandlePosition } from './interfaces';
 import { QuickInsertDrawer } from './drawer/quick-insert.drawer';
 import { hasAfterDraw } from './drawer/base/base';
 import { getBranchColorByMindElement } from './utils/node-style/branch';
+import { PlaitMindBoard } from './plugins/with-extend-mind';
 
 @Component({
     selector: 'plait-mind-node',
@@ -76,8 +76,8 @@ import { getBranchColorByMindElement } from './utils/node-style/branch';
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MindNodeComponent<T extends MindElement = MindElement> extends PlaitPluginElementComponent<T>
-    implements OnInit, OnDestroy, OnContextChanged<T> {
+export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, PlaitMindBoard>
+    implements OnInit, OnDestroy, OnContextChanged<MindElement, PlaitMindBoard> {
     isEditable = false;
 
     roughSVG!: RoughSVG;
@@ -123,7 +123,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
     }
 
     ngOnInit(): void {
-        this.emojisDrawer = new EmojisDrawer(this.board as PlaitMindEmojiBoard, this.viewContainerRef);
+        this.emojisDrawer = new EmojisDrawer(this.board, this.viewContainerRef);
         this.quickInsertDrawer = new QuickInsertDrawer(this.board);
         super.ngOnInit();
         this.node = ELEMENT_TO_NODE.get(this.element) as MindNode;
@@ -144,7 +144,10 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         this.drawQuickInsert();
     }
 
-    onContextChanged(value: PlaitPluginElementContext<T>, previous: PlaitPluginElementContext<T>) {
+    onContextChanged(
+        value: PlaitPluginElementContext<MindElement, PlaitMindBoard>,
+        previous: PlaitPluginElementContext<MindElement, PlaitMindBoard>
+    ) {
         const newNode = ELEMENT_TO_NODE.get(this.element) as MindNode;
         if (!PlaitMind.isMind(this.element)) {
             this.parent = MindElement.getNode(MindElement.getParent(this.element));
@@ -395,7 +398,11 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
     }
 
     drawRichtext() {
-        const { richtextG, richtextComponentRef, foreignObject } = drawMindNodeRichtext(this.node as MindNode, this.viewContainerRef);
+        const { richtextG, richtextComponentRef, foreignObject } = drawMindNodeRichtext(
+            this.board,
+            this.node as MindNode,
+            this.viewContainerRef
+        );
         this.richtextComponentRef = richtextComponentRef;
         this.richtextG = richtextG;
         this.foreignObject = foreignObject;
@@ -581,7 +588,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
 
     updateRichtext() {
         updateRichText(this.node.origin.data.topic, this.richtextComponentRef!);
-        updateMindNodeTopicSize(this.node, this.richtextG as SVGGElement, this.isEditable);
+        updateMindNodeTopicSize(this.board, this.node, this.richtextG as SVGGElement, this.isEditable);
     }
 
     startEditText(isEnd: boolean, isClear: boolean) {
@@ -593,7 +600,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
         this.isEditable = true;
         IS_TEXT_EDITABLE.set(this.board, true);
         this.disabledMaskG();
-        updateMindNodeTopicSize(this.node, this.richtextG as SVGGElement, this.isEditable);
+        updateMindNodeTopicSize(this.board, this.node, this.richtextG as SVGGElement, this.isEditable);
         if (richtextInstance.plaitReadonly) {
             richtextInstance.plaitReadonly = false;
             this.richtextComponentRef.changeDetectorRef.detectChanges();
@@ -698,7 +705,7 @@ export class MindNodeComponent<T extends MindElement = MindElement> extends Plai
             richtextInstance.plaitReadonly = true;
             this.richtextComponentRef?.changeDetectorRef.markForCheck();
             this.isEditable = false;
-            updateMindNodeTopicSize(this.node, this.richtextG as SVGGElement, this.isEditable);
+            updateMindNodeTopicSize(this.board, this.node, this.richtextG as SVGGElement, this.isEditable);
             IS_TEXT_EDITABLE.set(this.board, false);
         };
     }

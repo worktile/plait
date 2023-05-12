@@ -15,7 +15,7 @@ import { getDefaultLayout } from './utils/layout';
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaitMindComponent extends MindNodeComponent<PlaitMind> implements OnInit, BeforeContextChange<PlaitMind> {
+export class PlaitMindComponent extends MindNodeComponent implements OnInit, BeforeContextChange<PlaitMind> {
     root!: MindNode;
 
     rootG!: SVGGElement;
@@ -33,8 +33,12 @@ export class PlaitMindComponent extends MindNodeComponent<PlaitMind> implements 
 
     updateMindLayout(element = this.element) {
         const mindLayoutType = element.layout || getDefaultLayout();
-        this.root = (GlobalLayout.layout((element as unknown) as OriginNode, getLayoutOptions(), mindLayoutType) as unknown) as MindNode;
-        this.updateMindNodeLocation(element);
+        this.root = (GlobalLayout.layout(
+            (element as unknown) as OriginNode,
+            getLayoutOptions(this.board),
+            mindLayoutType
+        ) as unknown) as MindNode;
+        this.updateMindNodeLocation(element as PlaitMind);
     }
 
     updateMindNodeLocation(element: PlaitMind) {

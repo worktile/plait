@@ -2,6 +2,7 @@ import { BASE } from '../constants/default';
 import { PlaitMind } from '../interfaces/element';
 import { MindElement } from '../interfaces/element';
 import { getEmojisRectangle } from '../plugins/emoji/emoji';
+import { PlaitMindBoard } from '../plugins/with-extend-mind';
 
 const NodeDefaultSpace = {
     horizontal: {
@@ -42,10 +43,10 @@ const getVerticalSpaceBetweenNodeAndText = (element: MindElement) => {
 };
 
 export const NodeSpace = {
-    getNodeWidth(element: MindElement) {
+    getNodeWidth(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getHorizontalSpaceBetweenNodeAndText(element);
         if (MindElement.hasEmojis(element)) {
-            return nodeAndText + getEmojisRectangle(element).width + getHorizontalSpaceEmojiAndText(element) + element.width + nodeAndText;
+            return nodeAndText + getEmojisRectangle(board, element).width + getHorizontalSpaceEmojiAndText(element) + element.width + nodeAndText;
         }
         return nodeAndText + element.width + nodeAndText;
     },
@@ -53,10 +54,10 @@ export const NodeSpace = {
         const nodeAndText = getVerticalSpaceBetweenNodeAndText(element);
         return nodeAndText + element.height + nodeAndText;
     },
-    getTextHorizontalSpace(element: MindElement) {
+    getTextHorizontalSpace(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getHorizontalSpaceBetweenNodeAndText(element);
         if (MindElement.hasEmojis(element)) {
-            return nodeAndText + getEmojisRectangle(element).width + getHorizontalSpaceEmojiAndText(element);
+            return nodeAndText + getEmojisRectangle(board, element).width + getHorizontalSpaceEmojiAndText(element);
         } else {
             return nodeAndText;
         }

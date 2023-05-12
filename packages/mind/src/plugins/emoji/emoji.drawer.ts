@@ -1,17 +1,17 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
 import { EmojiData, EmojiItem, MindElement } from '../../interfaces';
 import { MindEmojiBaseComponent } from './emoji-base.component';
-import { PlaitMindEmojiBoard } from './with-mind-emoji';
 import { createForeignObject } from '@plait/richtext';
 import { createG } from '@plait/core';
 import { getRectangleByNode } from '../../utils/graph';
 import { getEmojiFontSize, getEmojisRectangle } from './emoji';
 import { NodeSpace } from '../../utils/node-space';
+import { PlaitMindBoard } from '../with-extend-mind';
 
 export class EmojiDrawer {
     componentRef: ComponentRef<MindEmojiBaseComponent> | null = null;
 
-    constructor(private board: PlaitMindEmojiBoard, private viewContainerRef: ViewContainerRef) {}
+    constructor(private board: PlaitMindBoard, private viewContainerRef: ViewContainerRef) {}
 
     draw(emoji: EmojiItem, element: MindElement<EmojiData>) {
         this.destroy();
@@ -44,7 +44,7 @@ export class EmojisDrawer {
 
     g?: SVGGElement;
 
-    constructor(private board: PlaitMindEmojiBoard, private viewContainerRef: ViewContainerRef) {}
+    constructor(private board: PlaitMindBoard, private viewContainerRef: ViewContainerRef) {}
 
     drawEmojis(element: MindElement) {
         this.destroy();
@@ -53,9 +53,8 @@ export class EmojisDrawer {
             this.g.classList.add('emojis');
             let { x, y } = getRectangleByNode(MindElement.getNode(element));
             x = x + NodeSpace.getEmojiHorizontalSpace(element);
-            y = y + NodeSpace.getEmojiVerticalSpace(element);
-            const { width, height } = getEmojisRectangle(element);
-            const foreignObject = createForeignObject(x, y, width, height);
+            const { width, height } = getEmojisRectangle(this.board, element);
+            const foreignObject = createForeignObject(x, y, width, height + NodeSpace.getEmojiVerticalSpace(element) * 2);
             this.g.append(foreignObject);
             const container = document.createElement('div');
             container.classList.add('node-emojis-container');

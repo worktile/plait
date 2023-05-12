@@ -4,9 +4,10 @@ import { BASE } from '../constants/default';
 import { MindNode } from '../interfaces/node';
 import { getRectangleByNode } from '../utils/graph';
 import { NodeSpace } from '../utils/node-space';
+import { PlaitMindBoard } from '../plugins/with-extend-mind';
 
-export function drawMindNodeRichtext(node: MindNode, viewContainerRef: ViewContainerRef) {
-    const { x, y } = getRichtextRectangleByNode(node);
+export function drawMindNodeRichtext(board: PlaitMindBoard, node: MindNode, viewContainerRef: ViewContainerRef) {
+    const { x, y } = getRichtextRectangleByNode(board, node);
     const classList = [];
     if (node.origin.isRoot) {
         classList.push('root-node');
@@ -28,8 +29,8 @@ export function drawMindNodeRichtext(node: MindNode, viewContainerRef: ViewConta
     );
 }
 
-export function updateMindNodeTopicSize(node: MindNode, g: SVGGElement, isEditable: boolean) {
-    const { x, y, width, height } = getRichtextRectangleByNode(node);
+export function updateMindNodeTopicSize(board: PlaitMindBoard, node: MindNode, g: SVGGElement, isEditable: boolean) {
+    const { x, y, width, height } = getRichtextRectangleByNode(board, node);
     if (isEditable) {
         // add 999， avoid changing lines when paste more text
         updateForeignObject(g, width + 999, height + 999, x, y);
@@ -39,9 +40,9 @@ export function updateMindNodeTopicSize(node: MindNode, g: SVGGElement, isEditab
     }
 }
 
-export function getRichtextRectangleByNode(node: MindNode) {
+export function getRichtextRectangleByNode(board: PlaitMindBoard, node: MindNode) {
     let { x, y, width, height } = getRectangleByNode(node);
-    x = x + NodeSpace.getTextHorizontalSpace(node.origin);
+    x = x + NodeSpace.getTextHorizontalSpace(board, node.origin);
     y = y + NodeSpace.getTextVerticalSpace(node.origin);
     return { width, height, x, y };
 }

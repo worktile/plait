@@ -1,9 +1,9 @@
 import { PlaitBoard, PlaitElement, Selection } from '../../interfaces';
 import { PlaitEffect } from '../children/effect';
 
-export interface PlaitPluginElementContext<T extends PlaitElement = PlaitElement> {
+export interface PlaitPluginElementContext<T extends PlaitElement = PlaitElement, K extends PlaitBoard = PlaitBoard> {
     element: T;
     selected: boolean;
-    board: PlaitBoard;
+    board: K;
     effect?: PlaitEffect;
 }

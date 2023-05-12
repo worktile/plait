@@ -1,4 +1,4 @@
-import { ComponentType, PlaitBoard, PlaitPlugin } from '@plait/core';
+import { ComponentType, PlaitBoard } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
 import { EmojiItem } from '../../interfaces/element-data';
 import { MindEmojiBaseComponent } from './emoji-base.component';

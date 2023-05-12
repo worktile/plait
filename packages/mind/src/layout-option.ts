@@ -4,8 +4,9 @@ import { BASE, STROKE_WIDTH } from "./constants/default";
 import { getRootLayout } from "./utils/layout";
 import { MindNodeShape } from "./constants/node";
 import { NodeSpace } from "./utils/node-space";
+import { PlaitMindBoard } from "./plugins/with-extend-mind";
 
-export const getLayoutOptions = () => {
+export const getLayoutOptions = (board: PlaitMindBoard) => {
     function getMainAxle(element: MindElement, parent?: LayoutNode) {
         const strokeWidth = element.strokeWidth || STROKE_WIDTH;
         if (element.isRoot) {
@@ -30,7 +31,7 @@ export const getLayoutOptions = () => {
             return NodeSpace.getNodeHeight(element);
         },
         getWidth(element: MindElement) {
-            return NodeSpace.getNodeWidth(element);
+            return NodeSpace.getNodeWidth(board, element);
         },
         getHorizontalGap(element: MindElement, parent?: LayoutNode) {
             const _layout = (parent && parent.layout) || getRootLayout(element);
