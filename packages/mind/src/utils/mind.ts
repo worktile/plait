@@ -250,18 +250,16 @@ export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, p
     let fill,
         strokeColor,
         strokeWidth,
-        linkLineColor,
         shape = MindNodeShape.roundRectangle;
     if (!inheritNode.isRoot) {
         fill = inheritNode.fill;
         strokeColor = inheritNode.strokeColor;
-        linkLineColor = inheritNode.linkLineColor;
         strokeWidth = inheritNode.strokeWidth;
     }
 
     shape = inheritNode.shape as MindNodeShape;
 
-    const newElement = createMindElement('', NODE_MIN_WIDTH, TEXT_DEFAULT_HEIGHT, { fill, strokeColor, strokeWidth, shape, linkLineColor });
+    const newElement = createMindElement('', NODE_MIN_WIDTH, TEXT_DEFAULT_HEIGHT, { fill, strokeColor, strokeWidth, shape });
 
     Transforms.insertNode(board, newElement, path);
     clearSelectedElement(board);
