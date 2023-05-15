@@ -2,8 +2,8 @@ import { AbstractNode, isStandardLayout } from '@plait/layouts';
 import { MindElement } from '../../interfaces/element';
 import { Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { createMindElement, divideElementByParent, filterChildElement } from '../mind';
-import { GRAY_COLOR } from '../../constants';
 import { MindQueries } from '../../queries';
+import { DefaultAbstractNodeStyle } from '../../constants/node-style';
 
 export const separateChildren = (parentElement: MindElement) => {
     const rightNodeCount = parentElement.rightNodeCount!;
@@ -78,8 +78,10 @@ export const setAbstractByElements = (board: PlaitBoard, groupParent: MindElemen
 
 export const insertAbstractNode = (board: PlaitBoard, path: Path, start: number, end: number) => {
     const mindElement = createMindElement('概要', 28, 20, {
-        strokeColor: GRAY_COLOR,
-        branchColor: GRAY_COLOR
+        strokeColor: DefaultAbstractNodeStyle.strokeColor,
+        strokeWidth: DefaultAbstractNodeStyle.branchWidth,
+        branchColor: DefaultAbstractNodeStyle.branchColor,
+        branchWidth: DefaultAbstractNodeStyle.branchWidth
     });
 
     mindElement.start = start;

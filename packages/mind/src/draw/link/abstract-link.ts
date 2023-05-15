@@ -1,12 +1,14 @@
 import { PlaitBoard, getRectangleByElements } from '@plait/core';
 import { MindNode } from '../../interfaces/node';
 import { getRectangleByNode } from '../../utils/graph';
-import { GRAY_COLOR, STROKE_WIDTH } from '../../constants/default';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../../utils/point-placement';
+import { getAbstractBranchColor, getAbstractBranchWidth } from '../../utils/node-style/branch';
 
 export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal: boolean) {
     const linkPadding = 15;
+    const branchWidth = getAbstractBranchWidth(board, node.origin);
+    const branchColor = getAbstractBranchColor(board, node.origin);
     const parent = node.parent;
     const abstractRectangle = getRectangleByNode(node);
     let includedElements = parent.children.slice(node.origin.start, node.origin.end! + 1).map(node => {
@@ -43,8 +45,8 @@ export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal
     const link = PlaitBoard.getRoughSVG(board).path(
         `M${bezierBeginPoint[0]},${bezierBeginPoint[1]} Q${c1[0]},${c1[1]} ${bezierConnectorPoint[0]},${bezierConnectorPoint[1]} Q${c2[0]},${c2[1]} ${bezierEndPoint[0]},${bezierEndPoint[1]} M${abstractConnectorPoint[0]},${abstractConnectorPoint[1]} L${bezierConnectorPoint[0]},${bezierConnectorPoint[1]}`,
         {
-            stroke: GRAY_COLOR,
-            strokeWidth: STROKE_WIDTH
+            stroke: branchColor,
+            strokeWidth: branchWidth
         }
     );
     return link;
