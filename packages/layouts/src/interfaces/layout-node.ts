@@ -35,10 +35,6 @@ export class LayoutNode {
         const layout = findLayoutType(this);
         this.layout = layout && layout !== MindLayoutType.standard ? layout : context.rootLayoutType;
 
-        if ((AbstractNode.isAbstract(origin) || isChildOfAbstract(this)) && isIndentedLayout(this.layout)) {
-            this.layout = getAbstractLayout(this.layout);
-        }
-
         const verticalConnectingPosition = options.getVerticalConnectingPosition(origin, parent);
         if (verticalConnectingPosition) {
             this.verticalConnectingPosition = verticalConnectingPosition;

@@ -1,6 +1,6 @@
 import { MindElement } from '../interfaces';
-import { AbstractNode, MindLayoutType, getAbstractLayout, isIndentedLayout, isChildOfAbstract, LayoutNode } from '@plait/layouts';
-import { getLayoutParentByElement } from './get-layout-parent-by-element';
+import { AbstractNode, MindLayoutType, getAbstractLayout } from '@plait/layouts';
+import { getDefaultLayout } from '../utils/layout';
 
 export const getLayoutByElement = (element: MindElement): MindLayoutType => {
     const layout = element.layout;
@@ -8,12 +8,15 @@ export const getLayoutByElement = (element: MindElement): MindLayoutType => {
         return layout;
     }
 
-    if (
-        AbstractNode.isAbstract(element) ||
-        (isChildOfAbstract((MindElement.getNode(element) as unknown) as LayoutNode) && isIndentedLayout(layout!))
-    ) {
-        const parentLayout = getLayoutParentByElement(element);
-        return getAbstractLayout(parentLayout);
+    const parent = MindElement.getParent(element);
+
+    if (AbstractNode.isAbstract(element)) {
+        return getAbstractLayout(getLayoutByElement(parent));
     }
-    return getLayoutParentByElement(element);
+
+    if (parent) {
+        return getLayoutByElement(parent);
+    }
+
+    return getDefaultLayout();
 };
