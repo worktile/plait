@@ -11,3 +11,4 @@ export * from './direction-corrector';
 export * from './drop-target-corrector';
 export * from './abstract/common';
 export * from './abstract/resize';
+export * from './drag';

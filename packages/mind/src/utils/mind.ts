@@ -277,14 +277,6 @@ export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, p
     });
 };
 
-export const findLastChild = (child: MindNode) => {
-    let result = child;
-    while (result.children.length !== 0) {
-        result = result.children[result.children.length - 1];
-    }
-    return result;
-};
-
 export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindElement[]) => {
     //翻转，从下到上修改，防止找不到 path
     const deletableElements = filterChildElement(selectedElements).reverse();
