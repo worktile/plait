@@ -40,7 +40,8 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject, timer } from 'rxjs';
 import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
 import { Editor, Operation } from 'slate';
-import { EXTEND_OFFSET, EXTEND_RADIUS, MindNodeShape, NODE_MIN_WIDTH, PRIMARY_COLOR, STROKE_WIDTH } from './constants';
+import { EXTEND_OFFSET, EXTEND_RADIUS, PRIMARY_COLOR, STROKE_WIDTH } from './constants';
+import { NODE_MIN_WIDTH } from './constants/node-rule';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLogicLink } from './draw/link/logic-link';
 import { drawMindNodeRichtext, updateMindNodeTopicSize } from './draw/richtext';
@@ -57,7 +58,7 @@ import { drawAbstractLink } from './draw/link/abstract-link';
 import { EmojisDrawer } from './plugins/emoji/emoji.drawer';
 import { MindTransforms } from './transforms';
 import { drawAbstractIncludedOutline } from './draw/abstract';
-import { AbstractHandlePosition } from './interfaces';
+import { AbstractHandlePosition, MindElementShape } from './interfaces';
 import { QuickInsertDrawer } from './drawer/quick-insert.drawer';
 import { hasAfterDraw } from './drawer/base/base';
 import { getBranchColorByMindElement } from './utils/node-style/branch';
@@ -195,9 +196,9 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     drawShape() {
         this.destroyShape();
-        const shape = getNodeShapeByElement(this.node.origin) as MindNodeShape;
+        const shape = getNodeShapeByElement(this.node.origin) as MindElementShape;
         switch (shape) {
-            case MindNodeShape.roundRectangle:
+            case MindElementShape.roundRectangle:
                 this.shapeG = drawRectangleNode(this.board, this.node as MindNode);
                 this.g.prepend(this.shapeG);
                 break;
@@ -456,7 +457,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
         if (isHorizontalLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
             extendLineYOffset =
-                (getNodeShapeByElement(this.node.origin) as MindNodeShape) === MindNodeShape.roundRectangle
+                (getNodeShapeByElement(this.node.origin) as MindElementShape) === MindElementShape.roundRectangle
                     ? [0, 0]
                     : [height / 2, height / 2];
             if (isLeftLayout(nodeLayout)) {

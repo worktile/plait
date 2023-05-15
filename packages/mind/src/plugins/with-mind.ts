@@ -37,9 +37,9 @@ import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertCl
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEditing } from '../utils/node';
-import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants';
 import { withAbstract } from './with-abstract';
 import { withExtendMind } from './with-extend-mind';
+import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 
 export const withMind = (board: PlaitBoard) => {
     const {

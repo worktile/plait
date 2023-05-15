@@ -1,6 +1,6 @@
 import { Element } from 'slate';
 import { MindElement } from '../interfaces/element';
-import { NODE_MIN_WIDTH } from '../constants/node';
+import { NODE_MIN_WIDTH } from '../constants/node-rule';
 import { PlaitBoard, Transforms } from '@plait/core';
 import { EmojiData, EmojiItem } from '../interfaces/element-data';
 

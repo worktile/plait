@@ -1,4 +1,3 @@
-import { MindNodeShape } from '../constants/node';
 import { isIndentedLayout, MindLayoutType } from '@plait/layouts';
 import { NODE_TO_PARENT, Path, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
 import { MindQueries } from '../queries';
@@ -17,7 +16,7 @@ export interface MindElement<T = BaseData> extends PlaitElement {
     fill?: string;
     strokeColor?: string;
     strokeWidth?: number;
-    shape?: MindNodeShape;
+    shape?: MindElementShape;
 
     // link style attributes
     branchColor?: string;
@@ -100,3 +99,8 @@ export const MindElement = {
         return element.data.emojis;
     }
 };
+
+export enum MindElementShape {
+    roundRectangle = 'round-rectangle',
+    underline = 'underline'
+}

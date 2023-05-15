@@ -1,6 +1,7 @@
 import { PlaitBoard } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
-import { COLORS, ROOT_NODE_STROKE } from '../../constants/node';
+import { BRANCH_COLORS } from '../../constants/node-style';
+import { DefaultRootStyle } from '../../constants/node-style';
 
 export const getStrokeByMindElement = (board: PlaitBoard, element: MindElement) => {
     const ancestors = MindElement.getAncestors(board, element) as MindElement[];
@@ -14,10 +15,10 @@ export const getStrokeByMindElement = (board: PlaitBoard, element: MindElement) 
     const branch = ancestors[ancestors.length - 2];
     if (branch) {
         const index = root.children.indexOf(branch);
-        const length = COLORS.length;
+        const length = BRANCH_COLORS.length;
         const remainder = index % length;
-        return COLORS[remainder];
+        return BRANCH_COLORS[remainder];
     } else {
-        return ROOT_NODE_STROKE;
+        return DefaultRootStyle.strokeColor;
     }
 };

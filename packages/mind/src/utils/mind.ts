@@ -11,14 +11,15 @@ import {
     Transforms
 } from '@plait/core';
 import { Node } from 'slate';
-import { MindNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node';
-import { MindNode, PlaitMind } from '../interfaces';
+import { NODE_MIN_WIDTH } from '../constants/node-rule';
+import { MindElementShape, MindNode, PlaitMind } from '../interfaces';
 import { MindElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node';
 import { MindNodeComponent } from '../node.component';
 import { getBehindAbstracts, getCorrespondingAbstract } from './abstract/common';
+import { ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 
 export function findParentElement(element: MindElement): MindElement | undefined {
     const component = PlaitElement.getComponent(element) as MindNodeComponent;
@@ -194,13 +195,13 @@ export const shouldChangeRightNodeCount = (selectedElement: MindElement) => {
 };
 
 export const createDefaultMindMapElement = (point: Point, rightNodeCount: number, layout: MindLayoutType) => {
-    const root = createMindElement('思维导图', 72, ROOT_DEFAULT_HEIGHT, { shape: MindNodeShape.roundRectangle, layout });
+    const root = createMindElement('思维导图', 72, ROOT_DEFAULT_HEIGHT, { shape: MindElementShape.roundRectangle, layout });
     root.rightNodeCount = rightNodeCount;
     root.isRoot = true;
     root.type = 'mindmap';
     root.points = [point];
     const children = [1, 1, 1].map(() => {
-        return createMindElement('新建节点', 56, TEXT_DEFAULT_HEIGHT, { shape: MindNodeShape.roundRectangle });
+        return createMindElement('新建节点', 56, TEXT_DEFAULT_HEIGHT, { shape: MindElementShape.roundRectangle });
     });
     root.children = children;
     return root;
@@ -214,9 +215,10 @@ export const createMindElement = (
         fill?: string;
         strokeColor?: string;
         strokeWidth?: number;
-        shape?: MindNodeShape;
+        shape?: MindElementShape;
         layout?: MindLayoutType;
         branchColor?: string;
+        branchWidth?: number;
     }
 ) => {
     const newElement: MindElement = {
@@ -250,6 +252,9 @@ export const createMindElement = (
     if (options.branchColor) {
         newElement.branchColor = options.branchColor;
     }
+    if (!isNullOrUndefined(options.branchWidth)) {
+        newElement.branchWidth = options.branchWidth;
+    }
     return newElement;
 };
 
@@ -258,14 +263,14 @@ export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, p
     let fill,
         strokeColor,
         strokeWidth,
-        shape = MindNodeShape.roundRectangle;
+        shape = MindElementShape.roundRectangle;
     if (!inheritNode.isRoot) {
         fill = inheritNode.fill;
         strokeColor = inheritNode.strokeColor;
         strokeWidth = inheritNode.strokeWidth;
     }
 
-    shape = inheritNode.shape as MindNodeShape;
+    shape = inheritNode.shape as MindElementShape;
 
     const newElement = createMindElement('', NODE_MIN_WIDTH, TEXT_DEFAULT_HEIGHT, { fill, strokeColor, strokeWidth, shape });
 

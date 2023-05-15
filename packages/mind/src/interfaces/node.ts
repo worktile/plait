@@ -1,5 +1,5 @@
 import { MindLayoutType } from '@plait/layouts';
-import { Path, PlaitElement, Point } from '@plait/core';
+import { Path } from '@plait/core';
 import { MindElement } from './element';
 
 export interface MindNode {
@@ -41,7 +41,7 @@ export const MindNode = {
     }
 };
 
-// mindmap node extend 支持的布局类型
+// mind node extend 支持的布局类型
 export type ExtendLayoutType = Exclude<MindLayoutType, MindLayoutType.standard>;
 
 export type CoordinateType = {

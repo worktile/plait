@@ -1,5 +1,5 @@
 import { PlaitBoard, createG } from '@plait/core';
-import { MindElement, BaseData, ExtendUnderlineCoordinateType, ExtendLayoutType, PlaitMind } from '../interfaces';
+import { MindElement, BaseData, ExtendUnderlineCoordinateType, ExtendLayoutType, PlaitMind, MindElementShape } from '../interfaces';
 import { AfterDraw, BaseDrawer } from './base/base';
 import { getRectangleByNode } from '../utils/graph';
 import { getNodeShapeByElement } from '../utils/shape';
@@ -10,7 +10,6 @@ import {
     QUICK_INSERT_INNER_CROSS_COLOR,
     STROKE_WIDTH
 } from '../constants/default';
-import { MindNodeShape } from '../constants/node';
 import { MindLayoutType, OriginNode, isStandardLayout } from '@plait/layouts';
 import { MindQueries } from '../queries';
 import { fromEvent } from 'rxjs';
@@ -45,7 +44,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
         // 形状是矩形要偏移边框的线宽
         const strokeWidth = element.branchWidth ? element.branchWidth : STROKE_WIDTH;
         let offsetBorderLineWidth = 0;
-        if (shape === MindNodeShape.roundRectangle && offset === 0) {
+        if (shape === MindElementShape.roundRectangle && offset === 0) {
             offsetBorderLineWidth = strokeWidth;
         }
         let offsetRootBorderLineWidth = 0;
@@ -156,7 +155,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                     offsetRootBorderLineWidth
             }
         };
-        if (shape === MindNodeShape.roundRectangle || element.isRoot) {
+        if (shape === MindElementShape.roundRectangle || element.isRoot) {
             underlineCoordinates[MindLayoutType.left].startY -= height * 0.5;
             underlineCoordinates[MindLayoutType.left].endY -= height * 0.5;
             underlineCoordinates[MindLayoutType.right].startY -= height * 0.5;

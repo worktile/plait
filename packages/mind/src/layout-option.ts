@@ -1,8 +1,7 @@
 import { ConnectingPosition, LayoutNode, LayoutOptions, OriginNode, isHorizontalLayout, isHorizontalLogicLayout, isIndentedLayout } from "@plait/layouts";
-import { MindElement } from "./interfaces/element";
+import { MindElement, MindElementShape } from "./interfaces/element";
 import { BASE, STROKE_WIDTH } from "./constants/default";
 import { getRootLayout } from "./utils/layout";
-import { MindNodeShape } from "./constants/node";
 import { NodeSpace } from "./utils/node-space";
 import { PlaitMindBoard } from "./plugins/with-extend-mind";
 
@@ -59,7 +58,7 @@ export const getLayoutOptions = (board: PlaitMindBoard) => {
             }
         },
         getVerticalConnectingPosition(element: MindElement, parent?: LayoutNode) {
-            if (element.shape === MindNodeShape.underline && parent && isHorizontalLogicLayout(parent.layout)) {
+            if (element.shape === MindElementShape.underline && parent && isHorizontalLogicLayout(parent.layout)) {
                 return ConnectingPosition.bottom;
             }
             return undefined;
