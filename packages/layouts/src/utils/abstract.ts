@@ -60,6 +60,10 @@ export const isChildOfAbstract = (node: LayoutNode) => {
     return false;
 };
 
+/**
+ * handle standard layout effect
+ * the abstract correct start and end should sub rightNodeCount when it is set on left area
+ */
 export const getCorrectStartEnd = (abstract: AbstractNode, parent: LayoutNode) => {
     let start = abstract.start;
     let end = abstract.end;

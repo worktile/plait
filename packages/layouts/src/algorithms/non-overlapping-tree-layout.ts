@@ -124,6 +124,7 @@ function firstWalk(treeNode: LayoutTreeNode) {
     }
     firstWalk(treeNode.children[0]);
     for (let i = 1; i < treeNode.childrenCount; i++) {
+        // Handle abstract effects on layout at the next node next of abstract end node
         const abstract = treeNode.children.find(abstract => {
             let correctEnd = null;
             if (AbstractNode.isAbstract(abstract.origin.origin)) {
@@ -165,7 +166,8 @@ function abstractHandle(treeNode: LayoutTreeNode, abstract: LayoutTreeNode, i: n
 
     let sumOfLeftModifier = endNode.modifier;
     let nodeParent = treeNode;
-    //概要和起始节点对齐
+
+    // Align the abstract node with the start node of abstract included
     treeNode.children[abstractIndex].modifier = startNode.modifier;
 
     while (endNode.childrenCount) {
@@ -187,12 +189,14 @@ function abstractHandle(treeNode: LayoutTreeNode, abstract: LayoutTreeNode, i: n
         : abstract.width;
     const abstractIncludeElementWidth = includeElementEndX - includeElementStartX;
 
-    //「判断概要」和「概括的内容宽度」
+    // move abstract of it included node to ensures that the abstract node and its included nodes are aligned based on the horizontal center
     if (abstractIncludeElementWidth > abstractBranchWidth) {
         const distance = (abstractIncludeElementWidth - abstractBranchWidth) / 2;
+        // move abstract node and it's children
         moveSubtree(treeNode, abstractIndex, distance);
     } else {
         const distance = (abstractBranchWidth - abstractIncludeElementWidth) / 2;
+        // move all of abstract included
         for (let i = start; i < end + 1; i++) {
             moveSubtree(treeNode, i, distance);
         }
