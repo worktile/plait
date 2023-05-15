@@ -1,7 +1,7 @@
 import { PlaitBoard, getRectangleByElements } from '@plait/core';
 import { MindNode } from '../../interfaces/node';
 import { getRectangleByNode } from '../../utils/graph';
-import { GRAY_COLOR } from '../../constants/default';
+import { GRAY_COLOR, STROKE_WIDTH } from '../../constants/default';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../../utils/point-placement';
 
@@ -44,7 +44,7 @@ export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal
         `M${bezierBeginPoint[0]},${bezierBeginPoint[1]} Q${c1[0]},${c1[1]} ${bezierConnectorPoint[0]},${bezierConnectorPoint[1]} Q${c2[0]},${c2[1]} ${bezierEndPoint[0]},${bezierEndPoint[1]} M${abstractConnectorPoint[0]},${abstractConnectorPoint[1]} L${bezierConnectorPoint[0]},${bezierConnectorPoint[1]}`,
         {
             stroke: GRAY_COLOR,
-            strokeWidth: 2
+            strokeWidth: STROKE_WIDTH
         }
     );
     return link;

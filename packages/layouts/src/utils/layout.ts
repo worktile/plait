@@ -80,23 +80,26 @@ export const isRightLayout = (layout: MindLayoutType) => {
     );
 };
 
-export const extractLayoutType = (mindmapLayoutType: MindLayoutType): LayoutType => {
-    if (isIndentedLayout(mindmapLayoutType)) {
+export const extractLayoutType = (mindLayoutType: MindLayoutType): LayoutType => {
+    if (isIndentedLayout(mindLayoutType)) {
         return LayoutType.indented;
     }
-    if (isStandardLayout(mindmapLayoutType)) {
+    if (isStandardLayout(mindLayoutType)) {
         return LayoutType.logic;
     }
-    if (isLogicLayout(mindmapLayoutType)) {
+    if (isLogicLayout(mindLayoutType)) {
         return LayoutType.logic;
     }
     return LayoutType.logic;
 };
 
-export const getAbstractLayout = (mindmapLayoutType: MindLayoutType) => {
-    if (isRightLayout(mindmapLayoutType)) {
-        return MindLayoutType.right;
-    } else {
-        return MindLayoutType.left;
+export const getAbstractLayout = (mindLayoutType: MindLayoutType) => {
+    if (isIndentedLayout(mindLayoutType)) {
+        if (isRightLayout(mindLayoutType)) {
+            return MindLayoutType.right;
+        } else {
+            return MindLayoutType.left;
+        }
     }
+    return mindLayoutType;
 };
