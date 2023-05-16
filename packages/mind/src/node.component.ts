@@ -440,7 +440,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         const stroke = getBranchColorByMindElement(this.board, this.element);
         const branchWidth = getBranchWidthByMindElement(this.board, this.element);
         const extendY = y + height / 2;
-        const nodeLayout = MindQueries.getCorrectLayoutByElement(this.element) as MindLayoutType;
+        const nodeLayout = MindQueries.getCorrectLayoutByElement(this.board, this.element) as MindLayoutType;
 
         let extendLineXY = [
             [x + width, extendY],

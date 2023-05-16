@@ -1,21 +1,13 @@
 import { MindElement } from '../interfaces';
-import {
-    findParentElement,
-    getAvailableSubLayoutsByLayoutDirections,
-    getBranchDirectionsByLayouts,
-} from '../utils';
+import { findParentElement, getAvailableSubLayoutsByLayoutDirections, getBranchDirectionsByLayouts } from '../utils';
 import { MindLayoutType } from '@plait/layouts';
 import { getBranchLayouts } from './get-branch-layouts';
+import { PlaitBoard } from '@plait/core';
 
-/**
- *  get available sub layouts by element
- * @param element
- * @returns MindLayoutType[]
- */
-export const getAvailableSubLayoutsByElement = (element: MindElement) => {
+export const getAvailableSubLayoutsByElement = (board: PlaitBoard, element: MindElement) => {
     const parentElement = findParentElement(element);
     if (parentElement) {
-        const branchLayouts = getBranchLayouts(parentElement);
+        const branchLayouts = getBranchLayouts(board, parentElement);
         if (branchLayouts[0] === MindLayoutType.standard) {
             const node = MindElement.getNode(element);
             branchLayouts[0] = node.left ? MindLayoutType.left : MindLayoutType.right;

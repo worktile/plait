@@ -84,13 +84,13 @@ export const extractLayoutType = (mindLayoutType: MindLayoutType): LayoutType =>
     return LayoutType.logic;
 };
 
-export const getAbstractLayout = (mindLayoutType: MindLayoutType) => {
-    if (isIndentedLayout(mindLayoutType)) {
-        if (isRightLayout(mindLayoutType)) {
+export const getAbstractLayout = (parentLayout: MindLayoutType) => {
+    if (isIndentedLayout(parentLayout)) {
+        if (isRightLayout(parentLayout)) {
             return MindLayoutType.right;
         } else {
             return MindLayoutType.left;
         }
     }
-    return mindLayoutType;
+    return parentLayout;
 };

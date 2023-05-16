@@ -22,7 +22,7 @@ export function drawLink(
         endY,
         beginNode = node,
         endNode = child;
-    const layout = MindQueries.getCorrectLayoutByElement(node.origin) as MindLayoutType;
+    const layout = MindQueries.getCorrectLayoutByElement(board, node.origin) as MindLayoutType;
     if (isHorizontal) {
         if (!isChildRight(node, child)) {
             beginNode = child;

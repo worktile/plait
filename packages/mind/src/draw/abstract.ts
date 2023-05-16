@@ -19,7 +19,7 @@ export function drawAbstractIncludedOutline(
     const abstractIncludedG = createG();
 
     const parentElement = MindElement.getParent(element);
-    const nodeLayout = MindQueries.getCorrectLayoutByElement(element) as MindLayoutType;
+    const nodeLayout = MindQueries.getCorrectLayoutByElement(board, element) as MindLayoutType;
     const isHorizontal = isHorizontalLayout(nodeLayout);
 
     const includedElements = parentElement.children.slice(element.start!, element.end! + 1);

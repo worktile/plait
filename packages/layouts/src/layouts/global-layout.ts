@@ -3,10 +3,10 @@ import { isHorizontalLayout, isIndentedLayout, isLeftLayout, isStandardLayout, i
 import { BaseLayout } from './base-layout';
 
 export class GlobalLayout {
-    static layout(root: OriginNode, options: LayoutOptions, mindmapLayoutType: MindLayoutType) {
+    static layout(root: OriginNode, options: LayoutOptions, mindLayoutType: MindLayoutType) {
         const baseLayout = new BaseLayout();
 
-        if (isStandardLayout(mindmapLayoutType)) {
+        if (isStandardLayout(mindLayoutType)) {
             const primaryNodeCount = root.children.length;
             const rightBranchNodes = [];
             const leftBranchNodes = [];
@@ -35,7 +35,7 @@ export class GlobalLayout {
                 fakeRootNode,
                 LayoutType.logic,
                 options,
-                { toLeft: false, toTop: false, rootLayoutType: mindmapLayoutType },
+                { toLeft: false, toTop: false, rootLayoutType: mindLayoutType },
                 true
             );
             fakeRootNode.children = leftBranchNodes;
@@ -43,7 +43,7 @@ export class GlobalLayout {
                 fakeRootNode,
                 LayoutType.logic,
                 options,
-                { toLeft: true, toTop: false, rootLayoutType: mindmapLayoutType },
+                { toLeft: true, toTop: false, rootLayoutType: mindLayoutType },
                 true
             );
             leftRoot.right2left();
@@ -63,13 +63,13 @@ export class GlobalLayout {
             return rightRoot;
         }
 
-        const isIndented = isIndentedLayout(mindmapLayoutType);
-        // const isLogic = isLogicLayout(mindmapLayoutType);
+        const isIndented = isIndentedLayout(mindLayoutType);
+        // const isLogic = isLogicLayout(mindLayoutType);
         const layoutType = isIndented ? LayoutType.indented : LayoutType.logic;
-        const isHorizontal = isIndented ? true : isHorizontalLayout(mindmapLayoutType);
-        const toTop = isTopLayout(mindmapLayoutType);
-        const toLeft = isLeftLayout(mindmapLayoutType);
-        const resultRoot = baseLayout.layout(root, layoutType, options, { toTop, toLeft, rootLayoutType: mindmapLayoutType }, isHorizontal);
+        const isHorizontal = isIndented ? true : isHorizontalLayout(mindLayoutType);
+        const toTop = isTopLayout(mindLayoutType);
+        const toLeft = isLeftLayout(mindLayoutType);
+        const resultRoot = baseLayout.layout(root, layoutType, options, { toTop, toLeft, rootLayoutType: mindLayoutType }, isHorizontal);
         if (toTop) {
             resultRoot.down2up();
         }
