@@ -1,9 +1,9 @@
 import { DetectResult, MindElement, MindNode } from '../interfaces';
-import { isBottomLayout, isRightLayout, isLeftLayout, MindLayoutType, isStandardLayout, isTopLayout } from '@plait/layouts';
+import { isBottomLayout, isRightLayout, isLeftLayout, MindLayoutType, isStandardLayout, isTopLayout, AbstractNode } from '@plait/layouts';
 import { MindQueries } from '../queries';
 
 export const directionCorrector = (node: MindNode, detectResults: DetectResult[]): DetectResult[] | null => {
-    if (!node.origin.isRoot) {
+    if (!node.origin.isRoot && !AbstractNode.isAbstract(node.origin)) {
         const parentlayout = MindQueries.getCorrectLayoutByElement(node?.parent.origin as MindElement);
         if (isStandardLayout(parentlayout)) {
             const idx = node.parent.children.findIndex(x => x === node);
