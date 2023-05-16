@@ -1,9 +1,13 @@
 import { LayoutNode } from '../interfaces/layout-node';
-import { LayoutType, MindLayoutType } from '../interfaces/mind';
+import { AbstractNode, LayoutType, MindLayoutType } from '../interfaces/mind';
 
 export function findLayoutType(node: LayoutNode): MindLayoutType | null {
     if (node.origin.layout) {
         return node.origin.layout as MindLayoutType;
+    }
+
+    if (AbstractNode.isAbstract(node.origin)) {
+        return getAbstractLayout(findLayoutType(node.parent!)!);
     }
 
     if (node.parent) {
@@ -37,10 +41,7 @@ export const isStandardLayout = (layout: MindLayoutType) => {
 
 export const isHorizontalLayout = (layout: MindLayoutType) => {
     return (
-        layout === MindLayoutType.right ||
-        layout === MindLayoutType.left ||
-        layout === MindLayoutType.standard ||
-        isIndentedLayout(layout)
+        layout === MindLayoutType.right || layout === MindLayoutType.left || layout === MindLayoutType.standard || isIndentedLayout(layout)
     );
 };
 
@@ -53,31 +54,21 @@ export const isVerticalLogicLayout = (layout: MindLayoutType) => {
 };
 
 export const isTopLayout = (layout: MindLayoutType) => {
-    return (
-        layout === MindLayoutType.leftTopIndented || layout === MindLayoutType.rightTopIndented || layout === MindLayoutType.upward
-    );
+    return layout === MindLayoutType.leftTopIndented || layout === MindLayoutType.rightTopIndented || layout === MindLayoutType.upward;
 };
 
 export const isBottomLayout = (layout: MindLayoutType) => {
     return (
-        layout === MindLayoutType.leftBottomIndented ||
-        layout === MindLayoutType.rightBottomIndented ||
-        layout === MindLayoutType.downward
+        layout === MindLayoutType.leftBottomIndented || layout === MindLayoutType.rightBottomIndented || layout === MindLayoutType.downward
     );
 };
 
 export const isLeftLayout = (layout: MindLayoutType) => {
-    return (
-        layout === MindLayoutType.left || layout === MindLayoutType.leftTopIndented || layout === MindLayoutType.leftBottomIndented
-    );
+    return layout === MindLayoutType.left || layout === MindLayoutType.leftTopIndented || layout === MindLayoutType.leftBottomIndented;
 };
 
 export const isRightLayout = (layout: MindLayoutType) => {
-    return (
-        layout === MindLayoutType.right ||
-        layout === MindLayoutType.rightTopIndented ||
-        layout === MindLayoutType.rightBottomIndented
-    );
+    return layout === MindLayoutType.right || layout === MindLayoutType.rightTopIndented || layout === MindLayoutType.rightBottomIndented;
 };
 
 export const extractLayoutType = (mindLayoutType: MindLayoutType): LayoutType => {

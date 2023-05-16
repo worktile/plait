@@ -2,7 +2,8 @@ import { PlaitElement } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { MindNodeComponent } from '../node.component';
 import { correctLayoutByDirection, findUpElement, getDefaultLayout, getInCorrectLayoutDirection } from '../utils';
-import { AbstractNode, MindLayoutType, getAbstractLayout, isIndentedLayout, LayoutNode, isChildOfAbstract } from '@plait/layouts';
+import { AbstractNode, LayoutNode, MindLayoutType, getAbstractLayout, isChildOfAbstract } from '@plait/layouts';
+import { getLayoutByElement } from './get-layout-by-element';
 
 /**
  * get correctly layout：
@@ -30,11 +31,12 @@ export const getCorrectLayoutByElement = (element: MindElement) => {
         layout = parentComponent.node.origin.layout;
         parent = parentComponent.parent?.origin;
     }
+
     if (
-        (AbstractNode.isAbstract(element) || isChildOfAbstract((MindElement.getNode(element) as unknown) as LayoutNode)) &&
-        isIndentedLayout(layout!)
+        AbstractNode.isAbstract(element) ||
+        (!element.layout && isChildOfAbstract((MindElement.getNode(element) as unknown) as LayoutNode))
     ) {
-        return getAbstractLayout(layout!);
+        return getLayoutByElement(element);
     }
 
     // handle root standard
