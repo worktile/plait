@@ -1,9 +1,10 @@
 import { PlaitBoard, PlaitElement } from '@plait/core';
-import { AbstractNode } from '@plait/layouts';
+import { getNonAbstractChildren } from '@plait/layouts';
 import { Path } from 'slate';
 
 export function findNewChildNodePath(board: PlaitBoard, element: PlaitElement) {
-    return PlaitBoard.findPath(board, element).concat((element.children || []).filter(child => !AbstractNode.isAbstract(child)).length);
+    const children = getNonAbstractChildren(element);
+    return PlaitBoard.findPath(board, element).concat(children.length);
 }
 
 export function findNewSiblingNodePath(board: PlaitBoard, element: PlaitElement) {

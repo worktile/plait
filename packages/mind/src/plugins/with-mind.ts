@@ -200,7 +200,6 @@ export const withMind = (board: PlaitBoard) => {
 
     board.setFragment = (data: DataTransfer | null) => {
         const selectedElements = filterChildElement(getSelectedElements(board) as MindElement[]);
-
         if (selectedElements.length) {
             const elements = buildClipboardData(board, selectedElements);
             setClipboardData(data, elements);

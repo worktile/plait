@@ -118,6 +118,24 @@ export const getBehindAbstracts = (element: MindElement) => {
     return parent.children.filter(child => AbstractNode.isAbstract(child) && child.start! > index);
 };
 
+export const getOverallAbstracts = (board: PlaitBoard, elements: MindElement[]) => {
+    const overallAbstracts: MindElement[] = [];
+    elements
+        .filter(value => !AbstractNode.isAbstract(value))
+        .forEach(value => {
+            const abstract = getCorrespondingAbstract(value);
+            if (abstract && overallAbstracts.indexOf(abstract) === -1) {
+                const { start, end } = abstract;
+                const parent = MindElement.getParent(value);
+                const isOverall = parent.children.slice(start!, end! + 1).every(includedElement => elements.indexOf(includedElement) > -1);
+                if (isOverall) {
+                    overallAbstracts.push(abstract);
+                }
+            }
+        });
+    return overallAbstracts as (MindElement & AbstractNode)[];
+};
+
 export const insertSiblingElementHandleAbstract = (board: PlaitBoard, selectedElement: MindElement) => {
     const abstract = getCorrespondingAbstract(selectedElement);
     if (abstract) {
