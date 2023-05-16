@@ -1,4 +1,11 @@
-import { isStandardLayout, isIndentedLayout, isVerticalLogicLayout, isTopLayout, MindLayoutType } from '@plait/layouts';
+import {
+    isStandardLayout,
+    isIndentedLayout,
+    isVerticalLogicLayout,
+    isTopLayout,
+    MindLayoutType,
+    getNonAbstractChildren
+} from '@plait/layouts';
 import { DetectResult, MindElement } from '../interfaces';
 import { MindNodeComponent } from '../node.component';
 import { MindQueries } from '../queries';
@@ -18,6 +25,7 @@ export const readjustmentDropTarget = (dropTarget: {
         const parentLayout = MindQueries.getCorrectLayoutByElement(
             targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
         );
+        const children = getNonAbstractChildren(targetComponent.node);
         if (['right', 'left'].includes(dropTarget.detectResult)) {
             if (!isMixedLayout(parentLayout, layout)) {
                 if (targetComponent.node.origin.isRoot) {
@@ -54,7 +62,7 @@ export const readjustmentDropTarget = (dropTarget: {
                     return newDropTarget;
                 }
                 // 剩下是水平布局的默认情况：插入最后一个子节点的下方
-                const lastChildNodeIndex = targetComponent.node.children.length - 1;
+                const lastChildNodeIndex = children.length - 1;
                 newDropTarget.target = targetComponent.node.children[lastChildNodeIndex].origin;
                 newDropTarget.detectResult = 'bottom';
             } else {
@@ -81,7 +89,7 @@ export const readjustmentDropTarget = (dropTarget: {
                 targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
             );
             if (isVerticalLogicLayout(parentLayout)) {
-                const lastChildNodeIndex = targetComponent.node.children.length - 1;
+                const lastChildNodeIndex = children.length - 1;
                 newDropTarget.target = targetComponent.node.children[lastChildNodeIndex].origin;
                 newDropTarget.detectResult = 'right';
                 return newDropTarget;
