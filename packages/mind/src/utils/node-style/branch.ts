@@ -31,7 +31,7 @@ export const getBranchWidthByMindElement = (board: PlaitBoard, element: MindElem
     const ancestors = MindElement.getAncestors(board, element) as MindElement[];
     ancestors.unshift(element);
     const ancestor = ancestors.find(value => value.branchColor);
-    if (ancestor && !isNullOrUndefined(ancestor.branchWidth)) {
+    if (ancestor && ancestor.branchWidth) {
         return ancestor.branchWidth;
     }
     return BRANCH_WIDTH;

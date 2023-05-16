@@ -61,7 +61,7 @@ import { drawAbstractIncludedOutline } from './draw/abstract';
 import { AbstractHandlePosition, MindElementShape } from './interfaces';
 import { QuickInsertDrawer } from './drawer/quick-insert.drawer';
 import { hasAfterDraw } from './drawer/base/base';
-import { getBranchColorByMindElement } from './utils/node-style/branch';
+import { getBranchColorByMindElement, getBranchWidthByMindElement } from './utils/node-style/branch';
 import { PlaitMindBoard } from './plugins/with-extend-mind';
 
 @Component({
@@ -438,7 +438,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
         const { x, y, width, height } = getRectangleByNode(this.node);
         const stroke = getBranchColorByMindElement(this.board, this.element);
-        const strokeWidth = this.node.origin.branchWidth ? this.node.origin.branchWidth : STROKE_WIDTH;
+        const branchWidth = getBranchWidthByMindElement(this.board, this.element);
         const extendY = y + height / 2;
         const nodeLayout = MindQueries.getCorrectLayoutByElement(this.element) as MindLayoutType;
 
@@ -489,7 +489,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         ];
 
         const extendLine = this.roughSVG.line(extendLineXY[0][0], extendLineXY[0][1], extendLineXY[1][0], extendLineXY[1][1], {
-            strokeWidth,
+            strokeWidth: branchWidth,
             stroke
         });
 
@@ -549,7 +549,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
                     {
                         fill: '#fff',
                         stroke,
-                        strokeWidth,
+                        strokeWidth: branchWidth,
                         fillStyle: 'solid'
                     }
                 );

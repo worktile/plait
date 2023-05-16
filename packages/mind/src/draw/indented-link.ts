@@ -5,7 +5,7 @@ import { PlaitBoard, Point } from '@plait/core';
 import { getNodeShapeByElement, getRectangleByNode, isChildUp } from '../utils';
 import { MindLayoutType } from '@plait/layouts';
 import { MindQueries } from '../queries';
-import { getBranchColorByMindElement } from '../utils/node-style/branch';
+import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../utils/node-style/branch';
 import { MindElementShape } from '../interfaces/element';
 
 export function drawIndentedLink(
@@ -15,6 +15,9 @@ export function drawIndentedLink(
     defaultStroke: string | null = null,
     needDrawUnderline = true
 ) {
+    const branchWidth = getBranchWidthByMindElement(board, child.origin);
+    const branchColor = defaultStroke || getBranchColorByMindElement(board, child.origin);
+
     const isUnderlineShape = (getNodeShapeByElement(child.origin) as MindElementShape) === MindElementShape.underline;
     let beginX,
         beginY,
@@ -32,13 +35,12 @@ export function drawIndentedLink(
     //根据位置，设置正负参数
     let plusMinus = isChildUp(node, child) ? (node.left ? [-1, -1] : [1, -1]) : node.left ? [-1, 1] : [1, 1];
     const layout = MindQueries.getCorrectLayoutByElement(node.origin);
-    const strokeWidth = child.origin.branchWidth ? child.origin.branchWidth : STROKE_WIDTH;
     if (beginNode.origin.isRoot) {
         if (layout === MindLayoutType.leftBottomIndented || layout === MindLayoutType.rightBottomIndented) {
-            beginY += strokeWidth;
+            beginY += branchWidth;
         }
         if (layout === MindLayoutType.leftTopIndented || layout === MindLayoutType.rightTopIndented) {
-            beginY -= strokeWidth;
+            beginY -= branchWidth;
         }
     }
     let curve: Point[] = [
@@ -54,8 +56,6 @@ export function drawIndentedLink(
         isUnderlineShape && needDrawUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY]
     ];
 
-    const stroke = defaultStroke || getBranchColorByMindElement(board, child.origin);
-
     const points = pointsOnBezierCurves(curve);
-    return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke, strokeWidth });
+    return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke: branchColor, strokeWidth: branchWidth });
 }
