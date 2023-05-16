@@ -140,14 +140,14 @@ export const insertElementHandleAbstract = (
     board: PlaitBoard,
     path: Path,
     //由此区分拖拽和新增到概要概括最后一个节点
-    isExtendCorrespond: boolean = true,
-    accumulativeProperties = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
+    isExtendPreviousNode: boolean = true,
+    abstractRefs = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
 ) => {
     const parent = PlaitNode.parent(board, path) as MindElement;
-    const isFirstElement = path[path.length - 1] === 0;
+    const hasPreviousNode = path[path.length - 1] !== 0;
     let behindAbstracts: MindElement[];
 
-    if (isFirstElement) {
+    if (!hasPreviousNode) {
         behindAbstracts = parent.children.filter(child => AbstractNode.isAbstract(child));
     } else {
         const selectedElement = PlaitNode.get(board, Path.previous(path)) as MindElement;
@@ -156,40 +156,40 @@ export const insertElementHandleAbstract = (
 
     if (behindAbstracts.length) {
         behindAbstracts.forEach(abstract => {
-            let newProperties = accumulativeProperties.get(abstract);
+            let newProperties = abstractRefs.get(abstract);
             if (!newProperties) {
                 newProperties = { start: 0, end: 0 };
-                accumulativeProperties.set(abstract, newProperties);
+                abstractRefs.set(abstract, newProperties);
             }
             newProperties.start = newProperties.start + 1;
             newProperties.end = newProperties.end + 1;
         });
     }
 
-    if (isFirstElement) {
-        return accumulativeProperties;
+    if (!hasPreviousNode) {
+        return abstractRefs;
     }
 
     const selectedElement = PlaitNode.get(board, Path.previous(path)) as MindElement;
     const correspondingAbstract = getCorrespondingAbstract(parent, selectedElement);
-    const isDragToLast = !isExtendCorrespond && correspondingAbstract && correspondingAbstract.end === path[path.length - 1] - 1;
+    const isDragToLast = !isExtendPreviousNode && correspondingAbstract && correspondingAbstract.end === path[path.length - 1] - 1;
 
     if (correspondingAbstract && !isDragToLast) {
-        let newProperties = accumulativeProperties.get(correspondingAbstract);
+        let newProperties = abstractRefs.get(correspondingAbstract);
         if (!newProperties) {
             newProperties = { start: 0, end: 0 };
-            accumulativeProperties.set(correspondingAbstract, newProperties);
+            abstractRefs.set(correspondingAbstract, newProperties);
         }
         newProperties.end = newProperties.end + 1;
     }
 
-    return accumulativeProperties;
+    return abstractRefs;
 };
 
 export const deleteElementHandleAbstract = (
     board: PlaitBoard,
     deletableElements: MindElement[],
-    accumulativeProperties = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
+    abstractRefs = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
 ) => {
     deletableElements.forEach(node => {
         if (!PlaitMind.isMind(node)) {
@@ -198,10 +198,10 @@ export const deleteElementHandleAbstract = (
             const behindAbstracts = getBehindAbstracts(parent, node).filter(abstract => !deletableElements.includes(abstract));
             if (behindAbstracts.length) {
                 behindAbstracts.forEach(abstract => {
-                    let newProperties = accumulativeProperties.get(abstract);
+                    let newProperties = abstractRefs.get(abstract);
                     if (!newProperties) {
                         newProperties = { start: 0, end: 0 };
-                        accumulativeProperties.set(abstract, newProperties);
+                        abstractRefs.set(abstract, newProperties);
                     }
                     newProperties.start = newProperties.start - 1;
                     newProperties.end = newProperties.end - 1;
@@ -210,17 +210,17 @@ export const deleteElementHandleAbstract = (
 
             const correspondingAbstract = getCorrespondingAbstract(parent, node);
             if (correspondingAbstract && !deletableElements.includes(correspondingAbstract)) {
-                let newProperties = accumulativeProperties.get(correspondingAbstract);
+                let newProperties = abstractRefs.get(correspondingAbstract);
                 if (!newProperties) {
                     newProperties = { start: 0, end: 0 };
 
-                    accumulativeProperties.set(correspondingAbstract, newProperties);
+                    abstractRefs.set(correspondingAbstract, newProperties);
                 }
                 newProperties.end = newProperties.end - 1;
             }
         }
     });
-    return accumulativeProperties;
+    return abstractRefs;
 };
 
 export const moveAbstractPosition = (board: PlaitBoard, abstracts: MindElement[], step: number) => {

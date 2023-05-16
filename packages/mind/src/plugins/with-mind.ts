@@ -124,8 +124,8 @@ export const withMind = (board: PlaitBoard) => {
                         changeRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
                     }
 
-                    const insertMap = insertElementHandleAbstract(board, Path.next(selectedElementPath));
-                    MindTransforms.setAttributeByMap(board, insertMap);
+                    const abstractRefs = insertElementHandleAbstract(board, Path.next(selectedElementPath));
+                    MindTransforms.setAbstractByRef(board, abstractRefs);
 
                     insertMindElement(board, selectedElement, findNewSiblingNodePath(board, selectedElement));
                 }

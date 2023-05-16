@@ -294,8 +294,8 @@ export const findLastChild = (child: MindNode) => {
 export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindElement[]) => {
     const deletableElements = filterChildElement(selectedElements).reverse();
 
-    const deleteMap = deleteElementHandleAbstract(board, deletableElements);
-    MindTransforms.setAttributeByMap(board, deleteMap);
+    const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
+    MindTransforms.setAbstractByRef(board, abstractRefs);
 
     //翻转，从下到上修改，防止找不到 path
     deletableElements

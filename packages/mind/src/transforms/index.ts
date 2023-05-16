@@ -1,4 +1,4 @@
-import { setAttributeByMap } from './abstract-node';
+import { setAbstractByRef } from './abstract-node';
 import { setLayout } from './layout';
 import { addEmoji, removeEmoji, setTopic, setTopicSize, replaceEmoji } from './node';
 
@@ -9,5 +9,5 @@ export const MindTransforms = {
     addEmoji,
     removeEmoji,
     replaceEmoji,
-    setAttributeByMap
+    setAbstractByRef
 };

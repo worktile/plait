@@ -144,9 +144,9 @@ export const setIsDragging = (board: PlaitBoard, state: boolean) => {
     IS_DRAGGING.set(board, state);
 };
 
-export const updateAbstractInDnd = (board: PlaitBoard, deletableElements: MindElement[], targetPath: Path) => {
-    const insertMap = insertElementHandleAbstract(board, targetPath, false);
+export const updateAbstractInDnd = (board: PlaitBoard, deletableElements: MindElement[], originPath: Path) => {
+    const insertMap = insertElementHandleAbstract(board, originPath, false);
     const deleteMap = deleteElementHandleAbstract(board, deletableElements, insertMap);
 
-    MindTransforms.setAttributeByMap(board, deleteMap);
+    MindTransforms.setAbstractByRef(board, deleteMap);
 };

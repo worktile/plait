@@ -17,4 +17,4 @@ export interface PlaitAbstractBoard extends PlaitBoard {
     abstractResize?: (state: AbstractResizeState) => void;
 }
 
-export type AbstractMap = Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>;
+export type AbstractRefs = Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>;
