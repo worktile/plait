@@ -1,14 +1,14 @@
 import { PlaitBoard, Path, PlaitNode, Transforms } from '@plait/core';
 import { isHorizontalLogicLayout, isStandardLayout, isVerticalLogicLayout, MindLayoutType } from '@plait/layouts';
 import { MindElement, PlaitMind } from '../interfaces/element';
-import { handleAbstractIncluded } from '../utils/abstract/common';
+import { MindTransforms } from '.';
 
 export const setLayout = (board: PlaitBoard, layout: MindLayoutType, path: Path) => {
     correctLogicLayoutNode(board, layout, path);
     const element = PlaitNode.get(board, path) as MindElement;
 
     if (PlaitMind.isMind(element) && isStandardLayout(layout)) {
-        handleAbstractIncluded(board, element);
+        MindTransforms.setAbstractByStandardLayout(board, element);
     }
 
     Transforms.setNode(board, { layout }, path);

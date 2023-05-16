@@ -1,9 +1,6 @@
-import { AbstractNode, isStandardLayout } from '@plait/layouts';
+import { AbstractNode } from '@plait/layouts';
 import { MindElement, PlaitMind } from '../../interfaces/element';
-import { Path, PlaitBoard, PlaitElement, PlaitNode, Transforms } from '@plait/core';
-import { createMindElement, divideElementByParent, filterChildElement } from '../mind';
-import { MindQueries } from '../../queries';
-import { DefaultAbstractNodeStyle } from '../../constants/node-style';
+import { Path, PlaitBoard, PlaitElement, PlaitNode } from '@plait/core';
 
 export const separateChildren = (parentElement: MindElement) => {
     const rightNodeCount = parentElement.rightNodeCount!;
@@ -39,68 +36,6 @@ export const isSetAbstract = (element: PlaitElement) => {
 
 export const canSetAbstract = (element: PlaitElement) => {
     return !PlaitElement.isRootElement(element) && !AbstractNode.isAbstract(element) && !isSetAbstract(element);
-};
-
-export const setAbstract = (board: PlaitBoard, elements: PlaitElement[]) => {
-    let elementGroup = filterChildElement(elements as MindElement[]);
-    const { parentElements, abstractIncludedGroups } = divideElementByParent(elementGroup);
-
-    abstractIncludedGroups.forEach((group, index) => {
-        const groupParent = parentElements[index];
-        setAbstractByElements(board, groupParent, group);
-    });
-};
-
-export const setAbstractByElements = (board: PlaitBoard, groupParent: MindElement, group: MindElement[]) => {
-    const indexArray = group.map(child => groupParent!.children.indexOf(child)).sort((a, b) => a - b);
-    const rightNodeCount = groupParent?.rightNodeCount;
-    const start = indexArray[0],
-        end = indexArray[indexArray.length - 1];
-
-    if (
-        isStandardLayout(MindQueries.getLayoutByElement(groupParent)) &&
-        rightNodeCount &&
-        start < rightNodeCount &&
-        end >= rightNodeCount
-    ) {
-        const childrenLength = groupParent.children.length;
-        const path = [...PlaitBoard.findPath(board, groupParent), childrenLength];
-        const leftChildren = indexArray.filter(index => index >= rightNodeCount);
-        const rightChildren = indexArray.filter(index => index < rightNodeCount);
-
-        insertAbstractNode(board, path, rightChildren[0], rightChildren[rightChildren.length - 1]);
-        insertAbstractNode(board, Path.next(path), leftChildren[0], leftChildren[leftChildren.length - 1]);
-    } else {
-        const path = [...PlaitBoard.findPath(board, groupParent), groupParent.children.length];
-
-        insertAbstractNode(board, path, start, end);
-    }
-};
-
-export const insertAbstractNode = (board: PlaitBoard, path: Path, start: number, end: number) => {
-    const mindElement = createMindElement('概要', 28, 20, {
-        strokeColor: DefaultAbstractNodeStyle.strokeColor,
-        strokeWidth: DefaultAbstractNodeStyle.branchWidth,
-        branchColor: DefaultAbstractNodeStyle.branchColor,
-        branchWidth: DefaultAbstractNodeStyle.branchWidth
-    });
-
-    mindElement.start = start;
-    mindElement.end = end;
-
-    Transforms.insertNode(board, mindElement, path);
-};
-
-export const handleAbstractIncluded = (board: PlaitBoard, element: MindElement) => {
-    const rightNodeCount = element.rightNodeCount!;
-    const abstract = element.children.find(child => {
-        return AbstractNode.isAbstract(child) && child.end >= rightNodeCount && child.start < rightNodeCount;
-    });
-
-    if (abstract) {
-        const path = PlaitBoard.findPath(board, abstract);
-        Transforms.setNode(board, { end: rightNodeCount - 1 }, path);
-    }
 };
 
 export const getCorrespondingAbstract = (parent: MindElement, element: MindElement) => {
@@ -221,10 +156,4 @@ export const deleteElementHandleAbstract = (
         }
     });
     return abstractRefs;
-};
-
-export const moveAbstractPosition = (board: PlaitBoard, abstracts: MindElement[], step: number) => {
-    abstracts.forEach(abstract => {
-        Transforms.setNode(board, { start: abstract.start! + step, end: abstract.end! + step }, PlaitBoard.findPath(board, abstract));
-    });
 };

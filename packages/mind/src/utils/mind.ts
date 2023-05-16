@@ -295,7 +295,7 @@ export const deleteSelectedELements = (board: PlaitBoard, selectedElements: Mind
     const deletableElements = filterChildElement(selectedElements).reverse();
 
     const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
-    MindTransforms.setAbstractByRef(board, abstractRefs);
+    MindTransforms.setAbstractsByRefs(board, abstractRefs);
 
     //翻转，从下到上修改，防止找不到 path
     deletableElements
