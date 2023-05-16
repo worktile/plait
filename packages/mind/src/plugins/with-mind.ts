@@ -125,7 +125,7 @@ export const withMind = (board: PlaitBoard) => {
                     }
 
                     const abstractRefs = insertElementHandleAbstract(board, Path.next(selectedElementPath));
-                    MindTransforms.setAbstractByRef(board, abstractRefs);
+                    MindTransforms.setAbstractsByRefs(board, abstractRefs);
 
                     insertMindElement(board, selectedElement, findNewSiblingNodePath(board, selectedElement));
                 }

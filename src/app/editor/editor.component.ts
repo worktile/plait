@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { getSelectedElements, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
 import { mockData } from './mock-data';
-import { MindTransforms, withMind, setAbstract, canSetAbstract, MindElementShape } from '@plait/mind';
+import { MindTransforms, withMind, canSetAbstract, MindElementShape } from '@plait/mind';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
 import { AbstractResizeState, PlaitAbstractBoard } from '@plait/mind';
 
@@ -67,7 +67,7 @@ export class BasicBoardEditorComponent implements OnInit {
         });
 
         if (ableSetAbstract) {
-            setAbstract(this.board, selectedElements);
+            MindTransforms.insertAbstract(this.board, selectedElements);
         }
     }
 
