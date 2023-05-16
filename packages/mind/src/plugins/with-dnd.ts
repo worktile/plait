@@ -33,10 +33,12 @@ import { MindElement, PlaitMind } from '../interfaces/element';
 import { DetectResult, MindNode } from '../interfaces/node';
 import { MindNodeComponent } from '../node.component';
 import {
+    deleteSiblingElementHandleAbstract,
     directionCorrector,
     directionDetector,
     drawPlaceholderDropNodeG,
     findUpElement,
+    insertSiblingElementHandleAbstract,
     isChildElement,
     readjustmentDropTarget
 } from '../utils';
@@ -44,6 +46,7 @@ import { getRectangleByNode, hitMindElement } from '../utils/graph';
 import { MindQueries } from '../queries';
 import { PlaitMindComponent } from '../mind.component';
 import { PlaitMindBoard } from './with-extend-mind';
+import { AbstractIncludeAttribute } from '../interfaces/abstract';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -192,13 +195,15 @@ export const withDnd = (board: PlaitBoard) => {
                 const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
                 const targetComponent = PlaitElement.getComponent(dropTarget.target) as MindNodeComponent;
                 let targetPath = PlaitBoard.findPath(board, targetComponent.element);
-                const mindmapElement = findUpElement(dropTarget.target).root;
-                const mindmapComponent = ELEMENT_TO_COMPONENT.get(mindmapElement as PlaitMind) as PlaitMindComponent;
-                const layout = MindQueries.getCorrectLayoutByElement(mindmapComponent?.root.origin as MindElement);
+                const mindElement = findUpElement(dropTarget.target).root;
+                const mindComponent = ELEMENT_TO_COMPONENT.get(mindElement as PlaitMind) as PlaitMindComponent;
+                const layout = MindQueries.getCorrectLayoutByElement(mindComponent?.root.origin as MindElement);
                 targetPath = updatePathByLayoutAndDropTarget(targetPath, layout, dropTarget);
                 const originPath = PlaitBoard.findPath(board, activeComponent.element);
                 let newElement: Partial<MindElement> = { isCollapsed: false },
                     rightTargetPath = PlaitBoard.findPath(board, targetComponent.element);
+
+                updateAbstractInDnd(board, [activeElement], targetPath);
 
                 if (isStandardLayout(layout)) {
                     updateRightNodeCount(board, activeComponent, targetComponent, dropTarget.detectResult);
@@ -324,16 +329,16 @@ export const updateRightNodeCount = (
     detectResult: DetectResult
 ) => {
     let rightNodeCount;
-    const mindmapElement = findUpElement(targetComponent.node.origin).root;
-    const mindmapComponent = ELEMENT_TO_COMPONENT.get(mindmapElement as PlaitMind) as PlaitMindComponent;
-    const activeIndex = mindmapComponent?.root.children.indexOf(activeComponent.node) as number;
-    const targetIndex = mindmapComponent?.root.children.indexOf(targetComponent.node) as number;
+    const mindElement = findUpElement(targetComponent.node.origin).root;
+    const mindComponent = ELEMENT_TO_COMPONENT.get(mindElement as PlaitMind) as PlaitMindComponent;
+    const activeIndex = mindComponent?.root.children.indexOf(activeComponent.node) as number;
+    const targetIndex = mindComponent?.root.children.indexOf(targetComponent.node) as number;
     const isActiveOnRight = activeIndex !== -1 && activeIndex <= (activeComponent.parent.origin.rightNodeCount as number) - 1;
     const isTargetOnRight =
         targetComponent.parent && targetIndex !== -1 && targetIndex <= (targetComponent.parent.origin.rightNodeCount as number) - 1;
     const isBothOnRight = isActiveOnRight && isTargetOnRight;
-    const rootChildCount = mindmapComponent.root.children?.length as number;
-    const rootRightNodeCount = mindmapComponent?.root.origin.rightNodeCount as number;
+    const rootChildCount = mindComponent.root.children?.length as number;
+    const rootRightNodeCount = mindComponent?.root.origin.rightNodeCount as number;
 
     if (!isBothOnRight) {
         if (isActiveOnRight) {
@@ -362,4 +367,25 @@ export const isDragging = (board: PlaitBoard) => {
 
 export const setIsDragging = (board: PlaitBoard, state: boolean) => {
     IS_DRAGGING.set(board, state);
+};
+
+export const updateAbstractInDnd = (board: PlaitBoard, deletableElements: MindElement[], targetPath: Path) => {
+    const insertMap = insertSiblingElementHandleAbstract(board, targetPath, true);
+    const deleteMap = deleteSiblingElementHandleAbstract(board, deletableElements, insertMap);
+
+    setAttributeByMap(board, deleteMap);
+};
+
+export const setAttributeByMap = (board: PlaitBoard, map: Map<MindElement, AbstractIncludeAttribute>) => {
+    map.forEach((newProperty, element) => {
+        const start = element.start! + newProperty.start;
+        const end = element.end! + newProperty.end;
+        const path = PlaitBoard.findPath(board, element as MindElement);
+
+        if (start > end) {
+            Transforms.removeNode(board, path);
+        } else {
+            Transforms.setNode(board, { start, end }, path);
+        }
+    });
 };

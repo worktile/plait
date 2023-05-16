@@ -14,7 +14,8 @@ import {
     Transforms,
     Range,
     depthFirstRecursion,
-    PlaitElement
+    PlaitElement,
+    Path
 } from '@plait/core';
 import { getSizeByText } from '@plait/richtext';
 import { MindElement, PlaitMind } from '../interfaces';
@@ -32,7 +33,7 @@ import {
 } from '../utils';
 import { getRectangleByNode, hitMindElement } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { withDnd } from './with-dnd';
+import { setAttributeByMap, withDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
@@ -122,7 +123,8 @@ export const withMind = (board: PlaitBoard) => {
                         changeRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
                     }
 
-                    insertSiblingElementHandleAbstract(board, selectedElement);
+                    const insertMap = insertSiblingElementHandleAbstract(board, Path.next(selectedElementPath));
+                    setAttributeByMap(board, insertMap);
 
                     insertMindElement(board, selectedElement, findNewSiblingNodePath(board, selectedElement));
                 }

@@ -14,3 +14,8 @@ export enum AbstractResizeState {
 export interface PlaitAbstractBoard extends PlaitBoard {
     abstractResize?: (state: AbstractResizeState) => void;
 }
+
+export interface AbstractIncludeAttribute {
+    start: number;
+    end: number;
+}
