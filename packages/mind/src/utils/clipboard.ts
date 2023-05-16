@@ -13,7 +13,6 @@ import { copyNewNode, extractNodesText, transformNodeToRoot, transformRootToNode
 import { getRectangleByNode } from './graph';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { getOverallAbstracts } from './abstract/common';
-import { findNewChildNodePath } from './path';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[]) => {
     let result: MindElement[] = [];

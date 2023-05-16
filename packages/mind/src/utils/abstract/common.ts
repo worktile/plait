@@ -120,7 +120,7 @@ export const getBehindAbstracts = (parent: MindElement, element: MindElement) =>
 export const getOverallAbstracts = (board: PlaitBoard, elements: MindElement[]) => {
     const overallAbstracts: MindElement[] = [];
     elements
-        .filter(value => !AbstractNode.isAbstract(value))
+        .filter(value => !AbstractNode.isAbstract(value) && !PlaitMind.isMind(value))
         .forEach(value => {
             const parent = MindElement.getParent(value);
             const abstract = getCorrespondingAbstract(parent, value);
