@@ -29,11 +29,11 @@ import {
     filterChildElement,
     findParentElement,
     shouldChangeRightNodeCount,
-    insertSiblingElementHandleAbstract
+    insertElementHandleAbstract
 } from '../utils';
 import { getRectangleByNode, hitMindElement } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { setAttributeByMap, withDnd } from './with-dnd';
+import { withDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
@@ -41,6 +41,7 @@ import { enterNodeEditing } from '../utils/node';
 import { withAbstract } from './with-abstract';
 import { withExtendMind } from './with-extend-mind';
 import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
+import { MindTransforms } from '../transforms';
 
 export const withMind = (board: PlaitBoard) => {
     const {
@@ -123,8 +124,8 @@ export const withMind = (board: PlaitBoard) => {
                         changeRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
                     }
 
-                    const insertMap = insertSiblingElementHandleAbstract(board, Path.next(selectedElementPath));
-                    setAttributeByMap(board, insertMap);
+                    const insertMap = insertElementHandleAbstract(board, Path.next(selectedElementPath));
+                    MindTransforms.setAttributeByMap(board, insertMap);
 
                     insertMindElement(board, selectedElement, findNewSiblingNodePath(board, selectedElement));
                 }

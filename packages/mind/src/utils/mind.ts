@@ -1,4 +1,4 @@
-import { AbstractNode, MindLayoutType } from '@plait/layouts';
+import { MindLayoutType } from '@plait/layouts';
 import {
     addSelectedElement,
     clearSelectedElement,
@@ -12,15 +12,15 @@ import {
 } from '@plait/core';
 import { Node } from 'slate';
 import { NODE_MIN_WIDTH } from '../constants/node-rule';
-import { MindElementShape, MindNode, PlaitMind } from '../interfaces';
+import { MindElementShape, MindNode } from '../interfaces';
 import { MindElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node';
 import { MindNodeComponent } from '../node.component';
-import { deleteSiblingElementHandleAbstract, getBehindAbstracts, getCorrespondingAbstract } from './abstract/common';
+import { deleteElementHandleAbstract } from './abstract/common';
 import { ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
-import { setAttributeByMap } from '../plugins/with-dnd';
+import { MindTransforms } from '../transforms';
 
 export function findParentElement(element: MindElement): MindElement | undefined {
     const component = PlaitElement.getComponent(element) as MindNodeComponent;
@@ -294,8 +294,8 @@ export const findLastChild = (child: MindNode) => {
 export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindElement[]) => {
     const deletableElements = filterChildElement(selectedElements).reverse();
 
-    const deleteMap = deleteSiblingElementHandleAbstract(board, deletableElements);
-    setAttributeByMap(board, deleteMap);
+    const deleteMap = deleteElementHandleAbstract(board, deletableElements);
+    MindTransforms.setAttributeByMap(board, deleteMap);
 
     //翻转，从下到上修改，防止找不到 path
     deletableElements

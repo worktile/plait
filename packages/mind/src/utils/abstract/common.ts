@@ -4,7 +4,6 @@ import { Path, PlaitBoard, PlaitElement, PlaitNode, Transforms } from '@plait/co
 import { createMindElement, divideElementByParent, filterChildElement } from '../mind';
 import { MindQueries } from '../../queries';
 import { DefaultAbstractNodeStyle } from '../../constants/node-style';
-import { AbstractIncludeAttribute } from '../../interfaces/abstract';
 
 export const separateChildren = (parentElement: MindElement) => {
     const rightNodeCount = parentElement.rightNodeCount!;
@@ -137,11 +136,12 @@ export const getOverallAbstracts = (board: PlaitBoard, elements: MindElement[]) 
     return overallAbstracts as (MindElement & AbstractNode)[];
 };
 
-export const insertSiblingElementHandleAbstract = (
+export const insertElementHandleAbstract = (
     board: PlaitBoard,
     path: Path,
-    isDrag: boolean = false,
-    accumulativeProperties = new Map<MindElement, AbstractIncludeAttribute>()
+    //由此区分拖拽和新增到概要概括最后一个节点
+    isExtendCorrespond: boolean = true,
+    accumulativeProperties = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
 ) => {
     const parent = PlaitNode.parent(board, path) as MindElement;
     const isFirstElement = path[path.length - 1] === 0;
@@ -172,7 +172,7 @@ export const insertSiblingElementHandleAbstract = (
 
     const selectedElement = PlaitNode.get(board, Path.previous(path)) as MindElement;
     const correspondingAbstract = getCorrespondingAbstract(parent, selectedElement);
-    const isDragToLast = isDrag && correspondingAbstract && correspondingAbstract.end === path[path.length - 1] - 1;
+    const isDragToLast = !isExtendCorrespond && correspondingAbstract && correspondingAbstract.end === path[path.length - 1] - 1;
 
     if (correspondingAbstract && !isDragToLast) {
         let newProperties = accumulativeProperties.get(correspondingAbstract);
@@ -186,10 +186,10 @@ export const insertSiblingElementHandleAbstract = (
     return accumulativeProperties;
 };
 
-export const deleteSiblingElementHandleAbstract = (
+export const deleteElementHandleAbstract = (
     board: PlaitBoard,
     deletableElements: MindElement[],
-    accumulativeProperties = new Map<MindElement, AbstractIncludeAttribute>()
+    accumulativeProperties = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
 ) => {
     deletableElements.forEach(node => {
         if (!PlaitMind.isMind(node)) {
