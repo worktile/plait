@@ -1,4 +1,4 @@
-import { AbstractNode, MindLayoutType } from '@plait/layouts';
+import { MindLayoutType } from '@plait/layouts';
 import {
     addSelectedElement,
     clearSelectedElement,
@@ -12,14 +12,15 @@ import {
 } from '@plait/core';
 import { Node } from 'slate';
 import { NODE_MIN_WIDTH } from '../constants/node-rule';
-import { MindElementShape, MindNode, PlaitMind } from '../interfaces';
+import { MindElementShape, MindNode } from '../interfaces';
 import { MindElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node';
 import { MindNodeComponent } from '../node.component';
-import { getBehindAbstracts, getCorrespondingAbstract } from './abstract/common';
+import { deleteElementHandleAbstract } from './abstract/common';
 import { ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
+import { MindTransforms } from '../transforms';
 
 export function findParentElement(element: MindElement): MindElement | undefined {
     const component = PlaitElement.getComponent(element) as MindNodeComponent;
@@ -291,67 +292,25 @@ export const findLastChild = (child: MindNode) => {
 };
 
 export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindElement[]) => {
-    //翻转，从下到上修改，防止找不到 path
     const deletableElements = filterChildElement(selectedElements).reverse();
-    const relativeAbstracts: MindElement[] = [];
-    const accumulativeProperties = new WeakMap<MindElement, { start: number; end: number }>();
 
-    deletableElements.forEach(node => {
-        if (!PlaitMind.isMind(node)) {
-            const behindAbstracts = getBehindAbstracts(node).filter(abstract => !deletableElements.includes(abstract));
-            if (behindAbstracts.length) {
-                behindAbstracts.forEach(abstract => {
-                    let newProperties = accumulativeProperties.get(abstract);
-                    if (!newProperties) {
-                        newProperties = { start: abstract.start!, end: abstract.end! };
-                        accumulativeProperties.set(abstract, newProperties);
-                        relativeAbstracts.push(abstract);
-                    }
-                    newProperties.start = newProperties.start - 1;
-                    newProperties.end = newProperties.end - 1;
-                });
-            }
+    const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
+    MindTransforms.setAbstractByRef(board, abstractRefs);
 
-            const correspondingAbstract = getCorrespondingAbstract(node);
-            if (correspondingAbstract && !deletableElements.includes(correspondingAbstract)) {
-                let newProperties = accumulativeProperties.get(correspondingAbstract);
-                if (!newProperties) {
-                    newProperties = { start: correspondingAbstract.start!, end: correspondingAbstract.end! };
-                    accumulativeProperties.set(correspondingAbstract, newProperties);
-                    relativeAbstracts.push(correspondingAbstract);
-                }
-                newProperties.end = newProperties.end - 1;
-            }
-        }
-    });
-
-    const abstractHandles = relativeAbstracts.map(value => {
-        const newProperties = accumulativeProperties.get(value);
-        if (newProperties) {
-            const path = PlaitBoard.findPath(board, value as MindElement);
+    //翻转，从下到上修改，防止找不到 path
+    deletableElements
+        .map(element => {
+            const path = PlaitBoard.findPath(board, element);
             return () => {
-                if (newProperties.start > newProperties.end) {
-                    Transforms.removeNode(board, path);
-                } else {
-                    Transforms.setNode(board, newProperties, path);
+                if (shouldChangeRightNodeCount(element)) {
+                    changeRightNodeCount(board, path.slice(0, 1), -1);
                 }
+                Transforms.removeNode(board, path);
             };
-        }
-        return () => {};
-    });
-
-    const deletableHandles = deletableElements.map(node => {
-        const path = PlaitBoard.findPath(board, node);
-        return () => {
-            if (shouldChangeRightNodeCount(node)) {
-                changeRightNodeCount(board, path.slice(0, path.length - 1), -1);
-            }
-            Transforms.removeNode(board, path);
-        };
-    });
-
-    abstractHandles.forEach(action => action());
-    deletableHandles.forEach(action => action());
+        })
+        .forEach(action => {
+            action();
+        });
 };
 
 export const divideElementByParent = (elements: MindElement[]) => {

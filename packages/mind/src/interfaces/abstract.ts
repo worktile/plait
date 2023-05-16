@@ -1,4 +1,6 @@
 import { PlaitBoard } from '@plait/core';
+import { MindElement } from './element';
+import { AbstractNode } from '@plait/layouts';
 
 export enum AbstractHandlePosition {
     start = 'start',
@@ -14,3 +16,5 @@ export enum AbstractResizeState {
 export interface PlaitAbstractBoard extends PlaitBoard {
     abstractResize?: (state: AbstractResizeState) => void;
 }
+
+export type AbstractRefs = Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>;
