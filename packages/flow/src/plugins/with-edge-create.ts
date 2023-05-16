@@ -11,7 +11,8 @@ import {
     idCreator,
     throttleRAF,
     removeSelectedElement,
-    getSelectedElements
+    getSelectedElements,
+    PlaitElement
 } from '@plait/core';
 import { FlowNode } from '../interfaces/node';
 import { FlowNodeComponent } from '../flow-node.component';
@@ -36,12 +37,20 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
 
     board.mousedown = event => {
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        sourceFlowNodeHandle = getHitNodeHandle(board, point);
-        if (sourceFlowNodeHandle) {
-            const selectedElements = getSelectedElements(board);
-            selectedElements.map(item => {
-                removeSelectedElement(board, item);
-            });
+        const flowNodeHandle = getHitNodeHandle(board, point);
+        if (flowNodeHandle) {
+            let isRenderNodeHandle = false;
+            const component = PlaitElement.getComponent(flowNodeHandle?.node) as FlowNodeComponent;
+            if (component.handlesG) {
+                isRenderNodeHandle = true;
+            }
+            if (isRenderNodeHandle) {
+                sourceFlowNodeHandle = flowNodeHandle;
+                const selectedElements = getSelectedElements(board);
+                selectedElements.map(item => {
+                    removeSelectedElement(board, item);
+                });
+            }
         }
         mousedown(event);
     };

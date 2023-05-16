@@ -11,7 +11,7 @@ import { withEdgeCreate } from './with-edge-create';
 import { isHitFlowNode } from '../utils/node/is-hit-node';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, isHitSelection, isMovable, onChange, getRectangle, mousemove } = board;
+    const { drawElement, isHitSelection, isMovable, onChange, getRectangle } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (FlowElement.isFlowElement(context.element)) {
