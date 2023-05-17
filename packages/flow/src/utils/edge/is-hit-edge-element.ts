@@ -1,10 +1,10 @@
-import { Point, distanceBetweenPointAndRectangle, distanceBetweenPointAndSegment, getSelectedElements } from '@plait/core';
+import { Point, distanceBetweenPointAndRectangle, distanceBetweenPointAndSegment, isSelectedElement } from '@plait/core';
 import { PlaitBoard } from '@plait/core';
 import { FlowEdge } from '../../interfaces/edge';
 import { HIT_THRESHOLD } from '../../constants/edge';
 import { getEdgePoints } from './edge';
 import { getEdgeTextBackgroundRect, getEdgeTextRect } from './text';
-import { getHitNodeHandle } from '../handle/get-hit-node-handle';
+import { isHitEdgeHandle } from '../handle/is-hit-edge-handle';
 
 export function isHitFlowEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
     const [pathPoints] = getEdgePoints(board, edge);
@@ -16,17 +16,19 @@ export function isHitFlowEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
                 if (!(nextPath.x === path.x && nextPath.y === path.y)) {
                     let distance = distanceBetweenPointAndSegment(point[0], point[1], path.x, path.y, nextPath.x, nextPath.y);
                     if (distance < minDistance) {
-                        const selectElements = getSelectedElements(board);
-                        const hitNodeHandle = getHitNodeHandle(board, point);
-                        if (!hitNodeHandle || (selectElements.length && selectElements[0].id === edge.id && hitNodeHandle)) {
-                            minDistance = distance;
-                        }
+                        minDistance = distance;
                     }
                 }
             }
         });
+
         const hitFlowEdgeText = isHitFlowEdgeText(board, edge, point);
-        const hitFlowEdge = minDistance < HIT_THRESHOLD;
+        const hitEdgeHandle = isHitEdgeHandle(board, edge, point);
+        const isActive = isSelectedElement(board, edge);
+        let hitFlowEdge = false;
+        if (isActive || !hitEdgeHandle) {
+            hitFlowEdge = minDistance < HIT_THRESHOLD;
+        }
         return hitFlowEdge || hitFlowEdgeText;
     }
     return false;

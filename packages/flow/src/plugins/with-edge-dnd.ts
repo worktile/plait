@@ -7,7 +7,6 @@ import {
     PlaitPlugin,
     Point,
     Transforms,
-    addSelectedElement,
     getSelectedElements,
     throttleRAF,
     toPoint,
@@ -15,7 +14,6 @@ import {
 } from '@plait/core';
 import { FlowEdgeComponent } from '../flow-edge.component';
 import { FlowEdge, FlowEdgeHandle, FlowEdgeHandleType } from '../interfaces/edge';
-import { isHitFlowEdge } from '../utils/edge/is-hit-edge-element';
 import { getHitHandleType } from '../utils/handle/get-hit-handle-type';
 import { FlowNode } from '../interfaces/node';
 import { getHitNodeHandle } from '../utils/handle/get-hit-node-handle';
@@ -44,19 +42,15 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
         const selectElements = getSelectedElements(board);
-        let isHitEdgeHandle = false;
         if (selectElements.length && FlowEdge.isFlowEdgeElement(selectElements[0])) {
-            isHitEdgeHandle = isHitFlowEdge(board, selectElements[0], point);
-            if (isHitEdgeHandle) {
-                activeElement = selectElements[0] as FlowEdge;
-                handleType = getHitHandleType(board, point, activeElement);
-                if (handleType) {
-                    const flowEdgeComponent = ELEMENT_TO_COMPONENT.get(activeElement) as FlowEdgeComponent;
-                    activeComponent = flowEdgeComponent;
-                    startPoint = point;
-                    path = [board.children.findIndex(item => item.id === activeElement?.id)];
-                    return;
-                }
+            activeElement = selectElements[0] as FlowEdge;
+            handleType = getHitHandleType(board, point, activeElement);
+            if (handleType) {
+                const flowEdgeComponent = ELEMENT_TO_COMPONENT.get(activeElement) as FlowEdgeComponent;
+                activeComponent = flowEdgeComponent;
+                startPoint = point;
+                path = [board.children.findIndex(item => item.id === activeElement?.id)];
+                return;
             }
         }
         mousedown(event);

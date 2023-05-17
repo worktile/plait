@@ -34,17 +34,15 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
     let placeholderEdge: SVGElement;
     let flowNodeElements: FlowNode[] = [];
     let drawNodeHandles = true;
+    let hoveredFlowNode: FlowNode | null;
 
     board.mousedown = event => {
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const flowNodeHandle = getHitNodeHandle(board, point);
+        const selectElements = getSelectedElements(board);
         if (flowNodeHandle) {
-            let isRenderNodeHandle = false;
-            const component = PlaitElement.getComponent(flowNodeHandle?.node) as FlowNodeComponent;
-            if (component.handlesG) {
-                isRenderNodeHandle = true;
-            }
-            if (isRenderNodeHandle) {
+            const selectElement = (selectElements && selectElements[0]) || hoveredFlowNode;
+            if (selectElement && selectElement.id === flowNodeHandle.node.id) {
                 sourceFlowNodeHandle = flowNodeHandle;
                 const selectedElements = getSelectedElements(board);
                 selectedElements.map(item => {
@@ -106,8 +104,10 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                     const hitFlowNode = isHitFlowNode(board, value, [point, point]);
                     if (hitFlowNode) {
                         flowNodeComponent.drawHandles(value);
+                        hoveredFlowNode = value;
                     } else if (!getHitNodeHandle(board, point)) {
                         flowNodeComponent.destroyHandles();
+                        hoveredFlowNode = null;
                     }
                 }
             });
@@ -125,6 +125,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
             drawNodeHandles = true;
             destroyAllNodesHandle(board, flowNodeElements);
             flowNodeElements = [];
+            hoveredFlowNode = null;
         }
     };
 

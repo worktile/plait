@@ -6,7 +6,6 @@ import { getHandleXYPosition } from '../utils/handle/get-handle-position';
 import { FlowEdge } from '../interfaces/edge';
 import { getEdgeHandles } from '../utils/handle/get-edge-handles';
 import { DEFAULT_HANDLE_STYLES, HANDLE_DIAMETER } from '../constants/handle';
-import { FlowBaseData } from '../interfaces/element';
 
 export function drawNodeHandles(roughSVG: RoughSVG, node: FlowNode) {
     const handles = node.handles || getDefaultHandles();
