@@ -51,7 +51,7 @@ import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
 import { getRectangleByNode, hitMindElement } from './utils/graph';
 import { getChildrenCount } from './utils/mind';
-import { getNodeShapeByElement } from './utils/shape';
+import { getShapeByElement } from './utils/node-style/shape';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
@@ -196,7 +196,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     drawShape() {
         this.destroyShape();
-        const shape = getNodeShapeByElement(this.node.origin) as MindElementShape;
+        const shape = getShapeByElement(this.board, this.node.origin) as MindElementShape;
         switch (shape) {
             case MindElementShape.roundRectangle:
                 this.shapeG = drawRectangleNode(this.board, this.node as MindNode);
@@ -457,7 +457,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
         if (isHorizontalLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
             extendLineYOffset =
-                (getNodeShapeByElement(this.node.origin) as MindElementShape) === MindElementShape.roundRectangle
+                (getShapeByElement(this.board, this.node.origin) as MindElementShape) === MindElementShape.roundRectangle
                     ? [0, 0]
                     : [height / 2, height / 2];
             if (isLeftLayout(nodeLayout)) {

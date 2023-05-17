@@ -1,8 +1,7 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { STROKE_WIDTH } from '../constants';
 import { MindNode } from '../interfaces/node';
 import { PlaitBoard, Point } from '@plait/core';
-import { getNodeShapeByElement, getRectangleByNode, isChildUp } from '../utils';
+import { getShapeByElement, getRectangleByNode, isChildUp } from '../utils';
 import { MindLayoutType } from '@plait/layouts';
 import { MindQueries } from '../queries';
 import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../utils/node-style/branch';
@@ -18,7 +17,7 @@ export function drawIndentedLink(
     const branchWidth = getBranchWidthByMindElement(board, child.origin);
     const branchColor = defaultStroke || getBranchColorByMindElement(board, child.origin);
 
-    const isUnderlineShape = (getNodeShapeByElement(child.origin) as MindElementShape) === MindElementShape.underline;
+    const isUnderlineShape = (getShapeByElement(board, child.origin) as MindElementShape) === MindElementShape.underline;
     let beginX,
         beginY,
         endX,

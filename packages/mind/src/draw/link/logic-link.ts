@@ -1,7 +1,7 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { MindNode } from '../../interfaces/node';
 import { PlaitBoard, Point } from '@plait/core';
-import { getRectangleByNode } from '../../utils';
+import { getRectangleByNode, getShapeByElement } from '../../utils';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
 import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../../utils/node-style/branch';
@@ -11,8 +11,10 @@ export function drawLogicLink(board: PlaitBoard, node: MindNode, parent: MindNod
     const branchColor = getBranchColorByMindElement(board, node.origin);
     const branchWidth = getBranchWidthByMindElement(board, node.origin);
     const hasStraightLine = !parent.origin.isRoot;
-    const hasUnderlineShape = node.origin.shape === MindElementShape.underline;
-    const hasUnderlineShapeOfParent = parent.origin.shape === MindElementShape.underline;
+    const parentShape = getShapeByElement(board, parent.origin);
+    const shape = node.origin.shape ? node.origin.shape : parentShape;
+    const hasUnderlineShape = shape === MindElementShape.underline;
+    const hasUnderlineShapeOfParent = parentShape === MindElementShape.underline;
     const nodeClient = getRectangleByNode(node);
     const parentClient = getRectangleByNode(parent);
     const linkDirection = getLayoutDirection(node, isHorizontal);

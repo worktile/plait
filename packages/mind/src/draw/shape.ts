@@ -1,7 +1,7 @@
 import { MindNode } from '../interfaces/node';
 import { getRectangleByNode } from '../utils/graph';
 import { PlaitBoard, drawRoundRectangle } from '@plait/core';
-import { getStrokeByMindElement } from '../utils/node-style/node';
+import { getStrokeByMindElement } from '../utils/node-style/shape';
 import { DefaultNodeStyle, DefaultRootStyle } from '../constants/node-style';
 
 export function drawRectangleNode(board: PlaitBoard, node: MindNode) {

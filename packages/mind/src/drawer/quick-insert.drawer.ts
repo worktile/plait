@@ -2,14 +2,8 @@ import { PlaitBoard, createG } from '@plait/core';
 import { MindElement, BaseData, ExtendUnderlineCoordinateType, ExtendLayoutType, PlaitMind, MindElementShape } from '../interfaces';
 import { AfterDraw, BaseDrawer } from './base/base';
 import { getRectangleByNode } from '../utils/graph';
-import { getNodeShapeByElement } from '../utils/shape';
-import {
-    EXTEND_RADIUS,
-    QUICK_INSERT_CIRCLE_COLOR,
-    QUICK_INSERT_CIRCLE_OFFSET,
-    QUICK_INSERT_INNER_CROSS_COLOR,
-    STROKE_WIDTH
-} from '../constants/default';
+import { getShapeByElement } from '../utils/node-style/shape';
+import { EXTEND_RADIUS, QUICK_INSERT_CIRCLE_COLOR, QUICK_INSERT_CIRCLE_OFFSET, QUICK_INSERT_INNER_CROSS_COLOR } from '../constants/default';
 import { MindLayoutType, OriginNode, isStandardLayout } from '@plait/layouts';
 import { MindQueries } from '../queries';
 import { fromEvent } from 'rxjs';
@@ -40,7 +34,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
          *    3. 上、上左、上右
          *    4. 下、下左、下右
          */
-        const shape = getNodeShapeByElement(element);
+        const shape = getShapeByElement(this.board, element);
         // 形状是矩形要偏移边框的线宽
         const branchWidth = getBranchWidthByMindElement(this.board, element);
         let offsetBorderLineWidth = 0;

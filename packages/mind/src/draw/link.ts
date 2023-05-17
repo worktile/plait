@@ -2,7 +2,7 @@ import { pointsOnBezierCurves } from 'points-on-curve';
 import { STROKE_WIDTH } from '../constants';
 import { MindNode } from '../interfaces/node';
 import { PlaitBoard, Point } from '@plait/core';
-import { getNodeShapeByElement, isChildRight } from '../utils';
+import { getShapeByElement, isChildRight } from '../utils';
 import { MindLayoutType, isTopLayout, isIndentedLayout, isStandardLayout } from '@plait/layouts';
 import { MindQueries } from '../queries';
 import { getBranchColorByMindElement } from '../utils/node-style/branch';
@@ -36,7 +36,7 @@ export function drawLink(
         if (
             node.parent &&
             isIndentedLayout(MindQueries.getLayoutByElement(node.parent?.origin)) &&
-            (getNodeShapeByElement(node.origin) as MindElementShape) === MindElementShape.underline
+            (getShapeByElement(board, node.origin) as MindElementShape) === MindElementShape.underline
         ) {
             if (isChildRight(node, child)) {
                 beginY = node.y + node.height - node.vGap;
@@ -80,7 +80,7 @@ export function drawLink(
             [endX - (beginNode.hGap + endNode.hGap) / 2, endY],
             [endX, endY]
         ];
-        const shape = getNodeShapeByElement(child.origin) as MindElementShape;
+        const shape = getShapeByElement(board, child.origin) as MindElementShape;
 
         if (!node.origin.isRoot) {
             if (node.x > child.x) {

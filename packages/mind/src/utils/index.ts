@@ -2,7 +2,6 @@ export * from './graph';
 export * from './weak-maps';
 export * from './mind';
 export * from './layout';
-export * from './shape';
 export * from './node-style';
 export * from './is-virtual-key';
 export * from './draw-placeholder';

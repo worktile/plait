@@ -1,7 +1,8 @@
 import { PlaitBoard } from '@plait/core';
-import { MindElement } from '../../interfaces/element';
+import { MindElement, MindElementShape } from '../../interfaces/element';
 import { BRANCH_COLORS } from '../../constants/node-style';
 import { DefaultRootStyle } from '../../constants/node-style';
+import { getAvailableProperty } from './common';
 
 export const getStrokeByMindElement = (board: PlaitBoard, element: MindElement) => {
     const ancestors = MindElement.getAncestors(board, element) as MindElement[];
@@ -21,4 +22,9 @@ export const getStrokeByMindElement = (board: PlaitBoard, element: MindElement) 
     } else {
         return DefaultRootStyle.strokeColor;
     }
+};
+
+export const getShapeByElement = (board: PlaitBoard, element: MindElement): MindElementShape => {
+    const shape = getAvailableProperty(board, element, 'shape');
+    return shape || MindElementShape.roundRectangle;
 };
