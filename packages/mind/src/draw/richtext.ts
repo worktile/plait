@@ -42,7 +42,7 @@ export function updateMindNodeTopicSize(board: PlaitMindBoard, node: MindNode, g
 
 export function getRichtextRectangleByNode(board: PlaitMindBoard, node: MindNode) {
     let { x, y, width, height } = getRectangleByNode(node);
-    x = x + NodeSpace.getTextHorizontalSpace(board, node.origin);
-    y = y + NodeSpace.getTextVerticalSpace(node.origin);
+    x = x + NodeSpace.getTextLeftSpace(board, node.origin);
+    y = y + NodeSpace.getTextTopSpace(node.origin);
     return { width, height, x, y };
 }

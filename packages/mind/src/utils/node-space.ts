@@ -1,8 +1,9 @@
 import { BASE } from '../constants/default';
 import { PlaitMind } from '../interfaces/element';
 import { MindElement } from '../interfaces/element';
-import { getEmojisRectangle } from '../plugins/emoji/emoji';
 import { PlaitMindBoard } from '../plugins/with-extend-mind';
+import { EmojiData } from '../interfaces/element-data';
+import { getEmojisWidthHeight } from '../plugins/emoji/emoji';
 
 const NodeDefaultSpace = {
     horizontal: {
@@ -24,16 +25,10 @@ const RootDefaultSpace = {
     }
 };
 
-const getHorizontalSpaceBetweenNodeAndText = (element: MindElement) => {
+const getHorizontalSpaceBetweenNodeAndText = (board: PlaitMindBoard, element: MindElement) => {
     const isMind = PlaitMind.isMind(element);
     const nodeAndText = isMind ? RootDefaultSpace.horizontal.nodeAndText : NodeDefaultSpace.horizontal.nodeAndText;
     return nodeAndText;
-};
-
-const getHorizontalSpaceEmojiAndText = (element: MindElement) => {
-    const isMind = PlaitMind.isMind(element);
-    const emojiAndText = isMind ? RootDefaultSpace.horizontal.emojiAndText : NodeDefaultSpace.horizontal.emojiAndText;
-    return emojiAndText;
 };
 
 const getVerticalSpaceBetweenNodeAndText = (element: MindElement) => {
@@ -42,11 +37,23 @@ const getVerticalSpaceBetweenNodeAndText = (element: MindElement) => {
     return nodeAndText;
 };
 
+const getSpaceEmojiAndText = (element: MindElement) => {
+    const isMind = PlaitMind.isMind(element);
+    const emojiAndText = isMind ? RootDefaultSpace.horizontal.emojiAndText : NodeDefaultSpace.horizontal.emojiAndText;
+    return emojiAndText;
+};
+
 export const NodeSpace = {
     getNodeWidth(board: PlaitMindBoard, element: MindElement) {
-        const nodeAndText = getHorizontalSpaceBetweenNodeAndText(element);
+        const nodeAndText = getHorizontalSpaceBetweenNodeAndText(board, element);
         if (MindElement.hasEmojis(element)) {
-            return nodeAndText + getEmojisRectangle(board, element).width + getHorizontalSpaceEmojiAndText(element) + element.width + nodeAndText;
+            return (
+                NodeSpace.getEmojiLeftSpace(board, element) +
+                getEmojisWidthHeight(board, element).width +
+                getSpaceEmojiAndText(element) +
+                element.width +
+                nodeAndText
+            );
         }
         return nodeAndText + element.width + nodeAndText;
     },
@@ -54,23 +61,24 @@ export const NodeSpace = {
         const nodeAndText = getVerticalSpaceBetweenNodeAndText(element);
         return nodeAndText + element.height + nodeAndText;
     },
-    getTextHorizontalSpace(board: PlaitMindBoard, element: MindElement) {
-        const nodeAndText = getHorizontalSpaceBetweenNodeAndText(element);
+    getTextLeftSpace(board: PlaitMindBoard, element: MindElement) {
+        const nodeAndText = getHorizontalSpaceBetweenNodeAndText(board, element);
         if (MindElement.hasEmojis(element)) {
-            return nodeAndText + getEmojisRectangle(board, element).width + getHorizontalSpaceEmojiAndText(element);
+            return NodeSpace.getEmojiLeftSpace(board, element) + getEmojisWidthHeight(board, element).width + getSpaceEmojiAndText(element);
         } else {
             return nodeAndText;
         }
     },
-    getTextVerticalSpace(element: MindElement) {
+    getTextTopSpace(element: MindElement) {
         const nodeAndText = getVerticalSpaceBetweenNodeAndText(element);
         return nodeAndText;
     },
-    getEmojiHorizontalSpace(element: MindElement) {
-        const nodeAndText = getHorizontalSpaceBetweenNodeAndText(element);
-        return nodeAndText;
+    getEmojiLeftSpace(board: PlaitMindBoard, element: MindElement<EmojiData>) {
+        const options = board.getMindOptions();
+        const nodeAndText = getHorizontalSpaceBetweenNodeAndText(board, element);
+        return nodeAndText - options.emojiPadding;
     },
-    getEmojiVerticalSpace(element: MindElement) {
+    getEmojiTopSpace(element: MindElement) {
         const nodeAndText = getVerticalSpaceBetweenNodeAndText(element);
         return nodeAndText;
     }

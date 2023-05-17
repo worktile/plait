@@ -1,4 +1,4 @@
-import { MindElement } from '../interfaces';
+import { MindElement, PlaitMind } from '../interfaces';
 import { AbstractNode, MindLayoutType, getAbstractLayout } from '@plait/layouts';
 import { getDefaultLayout } from '../utils/layout';
 
@@ -8,9 +8,9 @@ export const getLayoutByElement = (element: MindElement): MindLayoutType => {
         return layout;
     }
 
-    const parent = MindElement.getParent(element);
+    const parent = !PlaitMind.isMind(element) && MindElement.getParent(element);
 
-    if (AbstractNode.isAbstract(element)) {
+    if (AbstractNode.isAbstract(element) && parent) {
         return getAbstractLayout(getLayoutByElement(parent));
     }
 

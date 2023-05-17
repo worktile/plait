@@ -1,7 +1,10 @@
+import { RectangleClient } from '@plait/core';
 import { EmojiData, MindElement, PlaitMind } from '../../interfaces';
+import { getRectangleByNode } from '../../utils/graph';
+import { NodeSpace } from '../../utils/node-space';
 import { PlaitMindBoard } from '../with-extend-mind';
 
-export function getEmojisRectangle(board: PlaitMindBoard, element: MindElement<EmojiData>) {
+export function getEmojisWidthHeight(board: PlaitMindBoard, element: MindElement<EmojiData>) {
     const options = board.getMindOptions();
     const count = element.data.emojis.length;
     const fontSize = getEmojiFontSize(element);
@@ -17,4 +20,16 @@ export function getEmojiFontSize(element: MindElement<EmojiData>) {
     } else {
         return 14 + 2;
     }
+}
+
+export function getEmojiRectangle(board: PlaitMindBoard, element: MindElement<EmojiData>): RectangleClient {
+    let { x, y } = getRectangleByNode(MindElement.getNode(element));
+    x = x + NodeSpace.getEmojiLeftSpace(board, element);
+    const { width, height } = getEmojisWidthHeight(board, element);
+    return {
+        x,
+        y,
+        width,
+        height
+    };
 }
