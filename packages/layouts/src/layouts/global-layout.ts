@@ -64,7 +64,6 @@ export class GlobalLayout {
         }
 
         const isIndented = isIndentedLayout(mindLayoutType);
-        // const isLogic = isLogicLayout(mindLayoutType);
         const layoutType = isIndented ? LayoutType.indented : LayoutType.logic;
         const isHorizontal = isIndented ? true : isHorizontalLayout(mindLayoutType);
         const toTop = isTopLayout(mindLayoutType);
