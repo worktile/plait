@@ -1,5 +1,17 @@
 # layouts
 
+## 0.2.0-next.9
+
+### Patch Changes
+
+-   [#360](https://github.com/worktile/plait/pull/360) [`f074b85`](https://github.com/worktile/plait/commit/f074b85b37ef008f50c09ee09288bbc08f455008) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - get correct layout when node is abstract or child of abstract
+
+*   [#368](https://github.com/worktile/plait/pull/368) [`196c4bc`](https://github.com/worktile/plait/commit/196c4bc30a22308b0fb04b8f183e06762a3c5ae1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify getCorrectLayoutByElement logic to fit abstract layout
+
+-   [#362](https://github.com/worktile/plait/pull/362) [`a8623c8`](https://github.com/worktile/plait/commit/a8623c87e930b69b180d67b509eb643f2184f76d) Thanks [@WBbug](https://github.com/WBbug)! - fix get wrong layout
+
+*   [#364](https://github.com/worktile/plait/pull/364) [`64ab8fd`](https://github.com/worktile/plait/commit/64ab8fd5ae6b523f7b7a1358afb72fe113f48660) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle overall abstract when copy node and paste
+
 ## 0.2.0-next.3
 
 ### Patch Changes

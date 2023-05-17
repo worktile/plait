@@ -1,5 +1,29 @@
 # mind
 
+## 0.2.0-next.9
+
+### Patch Changes
+
+-   [#366](https://github.com/worktile/plait/pull/366) [`30e8a29`](https://github.com/worktile/plait/commit/30e8a295b472499cc2ac3cd1c72c830546cd54e7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract abstract node transforms function to transforms/abstract-node
+
+*   [`a60be13`](https://github.com/worktile/plait/commit/a60be13f6cc5e386b61c136d3f0bbcf4b8026af5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct node extend's style
+
+-   [`b30a7a3`](https://github.com/worktile/plait/commit/b30a7a3170e64cca2a597199eee2a3acd354bfc8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor constants construction
+
+*   [#360](https://github.com/worktile/plait/pull/360) [`f074b85`](https://github.com/worktile/plait/commit/f074b85b37ef008f50c09ee09288bbc08f455008) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - get correct layout when node is abstract or child of abstract
+
+-   [#365](https://github.com/worktile/plait/pull/365) [`4aa6168`](https://github.com/worktile/plait/commit/4aa61680ba61ba592017a06583060a83f869dd53) Thanks [@WBbug](https://github.com/WBbug)! - add updateAbstractInDnd function
+
+*   [#367](https://github.com/worktile/plait/pull/367) [`f7ee5af`](https://github.com/worktile/plait/commit/f7ee5af5c4f6b53a17fdedc652ed982dfff23733) Thanks [@WBbug](https://github.com/WBbug)! - skip abstract when get drag direction
+
+-   [`0149e57`](https://github.com/worktile/plait/commit/0149e57c9055c09cb64b2974f802a4e996b92f26) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - apply correctly abstract link and child link style
+
+*   [#368](https://github.com/worktile/plait/pull/368) [`196c4bc`](https://github.com/worktile/plait/commit/196c4bc30a22308b0fb04b8f183e06762a3c5ae1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify getCorrectLayoutByElement logic to fit abstract layout
+
+-   [#362](https://github.com/worktile/plait/pull/362) [`a8623c8`](https://github.com/worktile/plait/commit/a8623c87e930b69b180d67b509eb643f2184f76d) Thanks [@WBbug](https://github.com/WBbug)! - fix get wrong layout
+
+*   [#364](https://github.com/worktile/plait/pull/364) [`64ab8fd`](https://github.com/worktile/plait/commit/64ab8fd5ae6b523f7b7a1358afb72fe113f48660) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle overall abstract when copy node and paste
+
 ## 0.2.0-next.8
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # plait
 
+## 0.2.0-next.9
+
+### Patch Changes
+
+-   [#365](https://github.com/worktile/plait/pull/365) [`4aa6168`](https://github.com/worktile/plait/commit/4aa61680ba61ba592017a06583060a83f869dd53) Thanks [@WBbug](https://github.com/WBbug)! - add updateAbstractInDnd function
+
+*   [`1eda932`](https://github.com/worktile/plait/commit/1eda932df73dbc2ab266abc9c19fb01ac9e60295) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add throttle handle for with-selection move
+
 ## 0.2.0-next.8
 
 ### Patch Changes
