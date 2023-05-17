@@ -1,5 +1,16 @@
 # mind
 
+## 0.2.0-next.10
+
+### Patch Changes
+
+-   [`ebcd107`](https://github.com/worktile/plait/commit/ebcd10767790ed471aa9a49760bf2386aa09942b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor node-space
+    prevent hit node when click in emoji rectangle
+
+*   [`4e69fd8`](https://github.com/worktile/plait/commit/4e69fd8a1a79c1ec9c812d24337d6aa23458bbf8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct mind node stroke extend logic
+
+-   [`000f5c4`](https://github.com/worktile/plait/commit/000f5c476d87160cf647335e0af868795942c20c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor getShapeByElement function
+
 ## 0.2.0-next.9
 
 ### Patch Changes
