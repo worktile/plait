@@ -6,35 +6,16 @@ import { MindElement } from '../../interfaces/element';
 import { BRANCH_COLORS } from '../../constants/node-style';
 import { BRANCH_WIDTH } from '../../constants/default';
 import { DefaultAbstractNodeStyle } from '../../constants/node-style';
+import { getAvailableProperty } from './common';
 
 export const getBranchColorByMindElement = (board: PlaitBoard, element: MindElement) => {
-    const ancestors = MindElement.getAncestors(board, element) as MindElement[];
-    ancestors.unshift(element);
-    const ancestor = ancestors.find(value => value.branchColor);
-    if (ancestor && ancestor.branchColor) {
-        return ancestor.branchColor;
-    }
-
-    const root = ancestors[ancestors.length - 1];
-    const branch = ancestors[ancestors.length - 2];
-    if (branch) {
-        const index = root.children.indexOf(branch);
-        const length = BRANCH_COLORS.length;
-        const remainder = index % length;
-        return BRANCH_COLORS[remainder];
-    } else {
-        throw new Error('root element should not have branch color');
-    }
+    const branchColor = getAvailableProperty(board, element, 'branchColor');
+    return branchColor || getDefaultBranchColor(board, element);
 };
 
 export const getBranchWidthByMindElement = (board: PlaitBoard, element: MindElement) => {
-    const ancestors = MindElement.getAncestors(board, element) as MindElement[];
-    ancestors.unshift(element);
-    const ancestor = ancestors.find(value => value.branchColor);
-    if (ancestor && ancestor.branchWidth) {
-        return ancestor.branchWidth;
-    }
-    return BRANCH_WIDTH;
+    const branchWidth = getAvailableProperty(board, element, 'branchWidth');
+    return branchWidth || BRANCH_WIDTH;
 };
 
 export const getAbstractBranchWidth = (board: PlaitBoard, element: MindElement) => {
@@ -53,6 +34,15 @@ export const getAbstractBranchColor = (board: PlaitBoard, element: MindElement) 
 
 export const getNextBranchColor = (root: MindElement) => {
     const index = root.children.length;
+    return getDefaultBranchColorByIndex(index);
+};
+
+export const getDefaultBranchColor = (board: PlaitBoard, element: MindElement) => {
+    const path = PlaitBoard.findPath(board, element);
+    return getDefaultBranchColorByIndex(path[1]);
+};
+
+export const getDefaultBranchColorByIndex = (index: number) => {
     const length = BRANCH_COLORS.length;
     const remainder = index % length;
     return BRANCH_COLORS[remainder];
