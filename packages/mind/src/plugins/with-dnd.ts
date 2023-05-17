@@ -61,8 +61,8 @@ export const withDnd = (board: PlaitBoard) => {
                 return;
             }
             if (PlaitMind.isMind(value)) {
-                const mindmapComponent = ELEMENT_TO_COMPONENT.get(value) as PlaitMindComponent;
-                const root = mindmapComponent?.root;
+                const mindComponent = ELEMENT_TO_COMPONENT.get(value) as PlaitMindComponent;
+                const root = mindComponent.root;
                 (root as any).eachNode((node: MindNode) => {
                     if (activeElement) {
                         return;

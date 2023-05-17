@@ -200,8 +200,8 @@ export const withMind = (board: PlaitBoard) => {
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         board.children
             .filter(value => PlaitMind.isMind(value))
-            .forEach(mindmap => {
-                depthFirstRecursion<MindElement>(mindmap as MindElement, node => {
+            .forEach(mindMap => {
+                depthFirstRecursion<MindElement>(mindMap as MindElement, node => {
                     if (!PlaitBoard.hasBeenTextEditing(board) && hitMindElement(board, point, node)) {
                         enterNodeEditing(node);
                     }
