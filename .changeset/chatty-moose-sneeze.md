@@ -2,4 +2,4 @@
 '@plait/flow': patch
 ---
 
-reRender g node when focus
+set g node to top  when focus

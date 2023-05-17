@@ -70,7 +70,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         }
         if (this.initialized) {
             if (isActive) {
-                this.reRenderG();
+                this.setActiveNodeToTop();
                 this.drawElement(value.element, isActive);
                 this.drawHandles();
             }
@@ -82,7 +82,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         }
     }
 
-    reRenderG() {
+    setActiveNodeToTop() {
         const parentElement = this.g.parentElement;
         this.g.remove();
         parentElement?.append(this.g);
