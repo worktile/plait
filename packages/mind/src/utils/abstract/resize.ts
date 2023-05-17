@@ -120,7 +120,7 @@ export const getLocationScope = (
 };
 
 export const getHitAbstractHandle = (board: PlaitBoard, element: MindElement, point: Point) => {
-    const nodeLayout = MindQueries.getCorrectLayoutByElement(element) as MindLayoutType;
+    const nodeLayout = MindQueries.getCorrectLayoutByElement(board, element) as MindLayoutType;
     const isHorizontal = isHorizontalLayout(nodeLayout);
 
     const parentElement = MindElement.getParent(element);

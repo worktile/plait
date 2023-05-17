@@ -34,7 +34,7 @@ export function drawIndentedLink(
     endY = isUnderlineShape ? endNode.y + endNode.height - endNode.vGap : endNode.y + endNode.height / 2;
     //根据位置，设置正负参数
     let plusMinus = isChildUp(node, child) ? (node.left ? [-1, -1] : [1, -1]) : node.left ? [-1, 1] : [1, 1];
-    const layout = MindQueries.getCorrectLayoutByElement(node.origin);
+    const layout = MindQueries.getCorrectLayoutByElement(board, node.origin);
     if (beginNode.origin.isRoot) {
         if (layout === MindLayoutType.leftBottomIndented || layout === MindLayoutType.rightBottomIndented) {
             beginY += branchWidth;

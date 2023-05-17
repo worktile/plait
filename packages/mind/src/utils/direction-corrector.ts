@@ -1,33 +1,34 @@
 import { DetectResult, MindElement, MindNode } from '../interfaces';
 import { isBottomLayout, isRightLayout, isLeftLayout, MindLayoutType, isStandardLayout, isTopLayout, AbstractNode } from '@plait/layouts';
 import { MindQueries } from '../queries';
+import { PlaitBoard } from '@plait/core';
 
-export const directionCorrector = (node: MindNode, detectResults: DetectResult[]): DetectResult[] | null => {
+export const directionCorrector = (board: PlaitBoard, node: MindNode, detectResults: DetectResult[]): DetectResult[] | null => {
     if (!node.origin.isRoot && !AbstractNode.isAbstract(node.origin)) {
-        const parentlayout = MindQueries.getCorrectLayoutByElement(node?.parent.origin as MindElement);
-        if (isStandardLayout(parentlayout)) {
+        const parentLayout = MindQueries.getCorrectLayoutByElement(board, node?.parent.origin as MindElement);
+        if (isStandardLayout(parentLayout)) {
             const idx = node.parent.children.findIndex(x => x === node);
             const isLeft = idx >= (node.parent.origin.rightNodeCount || 0);
             return getAllowedDirection(detectResults, [isLeft ? 'right' : 'left']);
         }
 
-        if (isLeftLayout(parentlayout)) {
+        if (isLeftLayout(parentLayout)) {
             return getAllowedDirection(detectResults, ['right']);
         }
 
-        if (isRightLayout(parentlayout)) {
+        if (isRightLayout(parentLayout)) {
             return getAllowedDirection(detectResults, ['left']);
         }
 
-        if (parentlayout === MindLayoutType.upward) {
+        if (parentLayout === MindLayoutType.upward) {
             return getAllowedDirection(detectResults, ['bottom']);
         }
 
-        if (parentlayout === MindLayoutType.downward) {
+        if (parentLayout === MindLayoutType.downward) {
             return getAllowedDirection(detectResults, ['top']);
         }
     } else {
-        const layout = MindQueries.getCorrectLayoutByElement(node?.origin as MindElement);
+        const layout = MindQueries.getCorrectLayoutByElement(board, node?.origin as MindElement);
         if (isStandardLayout(layout)) {
             return getAllowedDirection(detectResults, ['top', 'bottom']);
         }

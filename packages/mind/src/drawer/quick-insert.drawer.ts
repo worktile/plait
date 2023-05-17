@@ -16,7 +16,7 @@ import { fromEvent } from 'rxjs';
 import { insertMindElement } from '../utils/mind';
 import { take } from 'rxjs/operators';
 import { findNewChildNodePath } from '../utils/path';
-import { getBranchColorByMindElement, getNextBranchColor } from '../utils/node-style/branch';
+import { getBranchColorByMindElement, getBranchWidthByMindElement, getNextBranchColor } from '../utils/node-style/branch';
 
 export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
     canDraw(element: MindElement<BaseData>): boolean {
@@ -42,14 +42,14 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
          */
         const shape = getNodeShapeByElement(element);
         // 形状是矩形要偏移边框的线宽
-        const strokeWidth = element.branchWidth ? element.branchWidth : STROKE_WIDTH;
+        const branchWidth = getBranchWidthByMindElement(this.board, element);
         let offsetBorderLineWidth = 0;
         if (shape === MindElementShape.roundRectangle && offset === 0) {
-            offsetBorderLineWidth = strokeWidth;
+            offsetBorderLineWidth = branchWidth;
         }
         let offsetRootBorderLineWidth = 0;
         if (element.isRoot) {
-            offsetRootBorderLineWidth = strokeWidth;
+            offsetRootBorderLineWidth = branchWidth;
         }
         // 当没有子节点时，需要缩小的偏移量
         const extraOffset = 3;
@@ -162,7 +162,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
             underlineCoordinates[MindLayoutType.right].endY -= height * 0.5;
         }
         const branchColor = PlaitMind.isMind(element) ? getNextBranchColor(element) : getBranchColorByMindElement(this.board, element);
-        let nodeLayout = MindQueries.getCorrectLayoutByElement(element) as ExtendLayoutType;
+        let nodeLayout = MindQueries.getCorrectLayoutByElement(this.board, element) as ExtendLayoutType;
         if (element.isRoot && isStandardLayout(nodeLayout)) {
             const root = element as OriginNode;
             nodeLayout = root.children.length >= root.rightNodeCount ? MindLayoutType.left : MindLayoutType.right;
@@ -174,7 +174,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                 underlineCoordinate.startY,
                 underlineCoordinate.endX,
                 underlineCoordinate.endY,
-                { stroke: branchColor, strokeWidth }
+                { stroke: branchColor, strokeWidth: branchWidth }
             );
             const circleCoordinates = {
                 startX: underlineCoordinate.endX,

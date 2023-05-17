@@ -158,7 +158,7 @@ export const withDnd = (board: PlaitBoard) => {
                         }
                         const directions = directionDetector(node, detectCenterPoint);
                         if (directions) {
-                            detectResult = directionCorrector(node, directions);
+                            detectResult = directionCorrector(board, node, directions);
                         }
                         dropTarget = null;
                         if (detectResult && isValidTarget(activeComponent.node.origin, node.origin)) {
@@ -169,7 +169,7 @@ export const withDnd = (board: PlaitBoard) => {
             });
 
             if (dropTarget?.target) {
-                dropTarget = readjustmentDropTarget(dropTarget);
+                dropTarget = readjustmentDropTarget(board, dropTarget);
                 drawPlaceholderDropNodeG(board, dropTarget, fakeDropNodeG);
             }
         }
@@ -185,7 +185,7 @@ export const withDnd = (board: PlaitBoard) => {
                 let targetPath = PlaitBoard.findPath(board, targetComponent.element);
                 const mindElement = findUpElement(dropTarget.target).root;
                 const mindComponent = ELEMENT_TO_COMPONENT.get(mindElement as PlaitMind) as PlaitMindComponent;
-                const layout = MindQueries.getCorrectLayoutByElement(mindComponent?.root.origin as MindElement);
+                const layout = MindQueries.getCorrectLayoutByElement(board, mindComponent?.root.origin as MindElement);
                 targetPath = updatePathByLayoutAndDropTarget(targetPath, layout, dropTarget);
                 const originPath = PlaitBoard.findPath(board, activeComponent.element);
                 let newElement: Partial<MindElement> = { isCollapsed: false },

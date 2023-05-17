@@ -27,13 +27,13 @@ export class BaseLayout {
         isolatedNodes
             .filter(v => v.origin.children.length > 0)
             .forEach((isolatedNode: LayoutNode) => {
-                const _mindmapLayoutType = isolatedNode.layout as MindLayoutType;
-                const toTop = context.toTop || (isHorizontalLayout(context.rootLayoutType) && isTopLayout(_mindmapLayoutType));
-                const toLeft = context.toLeft || (!isHorizontalLayout(context.rootLayoutType) && isLeftLayout(_mindmapLayoutType));
-                const _isHorizontal = isHorizontalLayout(_mindmapLayoutType);
+                const _mindLayoutType = isolatedNode.layout as MindLayoutType;
+                const toTop = context.toTop || (isHorizontalLayout(context.rootLayoutType) && isTopLayout(_mindLayoutType));
+                const toLeft = context.toLeft || (!isHorizontalLayout(context.rootLayoutType) && isLeftLayout(_mindLayoutType));
+                const _isHorizontal = isHorizontalLayout(_mindLayoutType);
                 const isolatedRoot = this.layout(
                     isolatedNode.origin,
-                    extractLayoutType(_mindmapLayoutType),
+                    extractLayoutType(_mindLayoutType),
                     options,
                     { toTop, toLeft, rootLayoutType: context.rootLayoutType },
                     _isHorizontal,

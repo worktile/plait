@@ -1,4 +1,4 @@
-import { LayoutDirection, LayoutDirectionsMap, MindElement } from '../interfaces';
+import { LayoutDirection, LayoutDirectionsMap, MindElement, PlaitMind } from '../interfaces';
 import { isIndentedLayout, MindLayoutType } from '@plait/layouts';
 
 export const getBranchDirectionsByLayouts = (branchLayouts: MindLayoutType[]) => {

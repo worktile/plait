@@ -60,8 +60,8 @@ export const drawCurvePlaceholderDropNodeG = (
     parentComponent: MindNodeComponent,
     fakeDropNodeG: SVGGElement | undefined
 ) => {
-    const parentNodeLayout = MindQueries.getCorrectLayoutByElement(parentComponent.node.origin);
-    const layout = MindQueries.getCorrectLayoutByElement(targetComponent.node.parent.origin);
+    const parentNodeLayout = MindQueries.getCorrectLayoutByElement(board, parentComponent.node.origin);
+    const layout = MindQueries.getCorrectLayoutByElement(board, targetComponent.node.parent.origin);
     const strokeWidth = targetComponent.node.origin.branchWidth ? targetComponent.node.origin.branchWidth : STROKE_WIDTH;
     let fakeX = targetComponent.node.x,
         fakeY = targetRect.y - 30,
@@ -222,10 +222,10 @@ export const drawStraightDropNodeG = (
         height,
         strokeWidth
     };
-    const parentLayout = MindQueries.getCorrectLayoutByElement(
+    const parentLayout = MindQueries.getCorrectLayoutByElement(board, 
         targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
     );
-    const layout = MindQueries.getCorrectLayoutByElement(targetComponent.node.origin);
+    const layout = MindQueries.getCorrectLayoutByElement(board, targetComponent.node.origin);
     if (!isMixedLayout(parentLayout, layout)) {
         // 构造一条直线
         let linePoints = [
