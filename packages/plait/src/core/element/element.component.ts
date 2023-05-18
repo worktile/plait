@@ -74,8 +74,8 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
             if (this.index > 0) {
                 const brotherElement = (this.parent.children as PlaitElement[])[this.index - 1];
                 const lastElement = PlaitNode.last(this.board, PlaitBoard.findPath(this.board, brotherElement));
-                const siblingElement = lastElement || brotherElement;
-                siblingG = PlaitElement.getComponent(siblingElement).g;
+                let component = PlaitElement.getComponent(lastElement) || PlaitElement.getComponent(brotherElement);
+                siblingG = component.g;
             }
             this.parentG.insertBefore(g, siblingG);
         }
