@@ -1,5 +1,17 @@
 # mind
 
+## 0.2.0-next.11
+
+### Patch Changes
+
+-   [`74fc83d`](https://github.com/worktile/plait/commit/74fc83df096f3e91a6cc6f91351fa0bf1ed6e74d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix fake node text max width
+
+*   [`ba40d29`](https://github.com/worktile/plait/commit/ba40d298c0abe636024795cf510ee92ca1c35d68) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - mind node dnd support draw emojis
+
+-   [`ff1b1f0`](https://github.com/worktile/plait/commit/ff1b1f0d7d59fc4bc62df0e853eaa61a7aca6f8f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor node equality judge logic
+    remove findParentElement function (replace by MindElement.findParent)
+    rename filterChildElement to getFirstLevelElement
+
 ## 0.2.0-next.10
 
 ### Patch Changes

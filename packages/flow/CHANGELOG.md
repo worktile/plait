@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.2.0-next.3
+
+### Patch Changes
+
+-   [#359](https://github.com/worktile/plait/pull/359) [`7b3f522`](https://github.com/worktile/plait/commit/7b3f5227ba13acb0a0fa6a7259a18286c7e139e3) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - set g node to top when focus
+
 ## 0.2.0-next.2
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # plait
 
+## 0.2.0-next.11
+
+### Patch Changes
+
+-   [`ba40d29`](https://github.com/worktile/plait/commit/ba40d298c0abe636024795cf510ee92ca1c35d68) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - mind node dnd support draw emojis
+
+*   [`ff1b1f0`](https://github.com/worktile/plait/commit/ff1b1f0d7d59fc4bc62df0e853eaa61a7aca6f8f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor node equality judge logic
+    remove findParentElement function (replace by MindElement.findParent)
+    rename filterChildElement to getFirstLevelElement
+
+-   [#369](https://github.com/worktile/plait/pull/369) [`09bbe7a`](https://github.com/worktile/plait/commit/09bbe7ad6f8b9de4bd042031698392a1192d4f76) Thanks [@WBbug](https://github.com/WBbug)! - fix insertG error
+
 ## 0.2.0-next.9
 
 ### Patch Changes
