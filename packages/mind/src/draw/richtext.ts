@@ -7,7 +7,7 @@ import { NodeSpace } from '../utils/node-space';
 import { PlaitMindBoard } from '../plugins/with-extend-mind';
 
 export function drawMindNodeRichtext(board: PlaitMindBoard, node: MindNode, viewContainerRef: ViewContainerRef) {
-    const { x, y } = getRichtextRectangleByNode(board, node);
+    const { x, y, width, height } = getRichtextRectangleByNode(board, node);
     const classList = [];
     if (node.origin.isRoot) {
         classList.push('root-node');
@@ -18,15 +18,7 @@ export function drawMindNodeRichtext(board: PlaitMindBoard, node: MindNode, view
         classList.push('child-node');
     }
     // COMPAT: last character can not show in safari browser
-    return drawRichtext(
-        x,
-        y,
-        Math.ceil(node.origin.width),
-        Math.ceil(node.origin.height),
-        node.origin.data.topic,
-        viewContainerRef,
-        classList
-    );
+    return drawRichtext(x, y, width, height, node.origin.data.topic, viewContainerRef, classList);
 }
 
 export function updateMindNodeTopicSize(board: PlaitMindBoard, node: MindNode, g: SVGGElement, isEditable: boolean) {
@@ -36,13 +28,15 @@ export function updateMindNodeTopicSize(board: PlaitMindBoard, node: MindNode, g
         updateForeignObject(g, width + 999, height + 999, x, y);
     } else {
         // COMPAT: last character can not show in safari browser
-        updateForeignObject(g, Math.ceil(node.origin.width), Math.ceil(node.origin.height), x, y);
+        updateForeignObject(g, width, height, x, y);
     }
 }
 
 export function getRichtextRectangleByNode(board: PlaitMindBoard, node: MindNode) {
-    let { x, y, width, height } = getRectangleByNode(node);
+    let { x, y } = getRectangleByNode(node);
     x = x + NodeSpace.getTextLeftSpace(board, node.origin);
     y = y + NodeSpace.getTextTopSpace(node.origin);
-    return { width, height, x, y };
+    const width = Math.ceil(node.origin.width);
+    const height = Math.ceil(node.origin.height);
+    return { height, width, x, y };
 }

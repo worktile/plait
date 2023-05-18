@@ -108,7 +108,7 @@ g[plait-mindmap='true'] {
 }
 
 .fake-node {
-    .dragging {
+    &.dragging {
         cursor: pointer;
         opacity: 0.6;
     }

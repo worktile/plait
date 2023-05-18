@@ -119,7 +119,6 @@ export const withDnd = (board: PlaitBoard) => {
             const offsetX = endPoint[0] - startPoint[0];
             const offsetY = endPoint[1] - startPoint[1];
             const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
-            const roughSVG = PlaitBoard.getRoughSVG(board);
             const fakeDraggingNode: MindNode = {
                 ...activeComponent.node,
                 children: [],
@@ -131,7 +130,7 @@ export const withDnd = (board: PlaitBoard) => {
             const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
             updateForeignObject(
                 richtextG,
-                textRectangle.width + BASE * 10,
+                textRectangle.width,
                 textRectangle.height,
                 textRectangle.x + offsetX,
                 textRectangle.y + offsetY
