@@ -1,5 +1,6 @@
 export * from './board';
-export * from './dom';
+export * from './dom/common';
+export * from './dom/foreign';
 export * from './environment';
 export * from './helper';
 export * from './history';

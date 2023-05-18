@@ -39,10 +39,10 @@ import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEditing } from '../utils/node';
 import { withAbstract } from './with-abstract';
-import { PlaitMindBoard, withExtendMind } from './with-extend-mind';
+import { withExtendMind } from './with-extend-mind';
 import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { MindTransforms } from '../transforms';
-import { getEmojiRectangle } from './emoji/emoji';
+import { isHitEmojis } from './emoji/emoji';
 
 export const withMind = (board: PlaitBoard) => {
     const {
@@ -85,14 +85,8 @@ export const withMind = (board: PlaitBoard) => {
         if (MindElement.isMindElement(board, element) && board.selection) {
             const client = getRectangleByNode(MindElement.getNode(element));
             const isHit = RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
-            if (isHit && MindElement.hasEmojis(element) && Selection.isCollapsed(range)) {
-                const isHitEmojis = RectangleClient.isHit(
-                    RectangleClient.toRectangleClient([range.anchor, range.focus]),
-                    getEmojiRectangle(board as PlaitMindBoard, element)
-                );
-                if (isHitEmojis) {
-                    return false;
-                }
+            if (isHit && MindElement.hasEmojis(element) && Selection.isCollapsed(range) && isHitEmojis(board, element, range.anchor)) {
+                return false;
             }
             return isHit;
         }

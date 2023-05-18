@@ -3,8 +3,7 @@ import { EmojiData, EmojiItem, MindElement } from '../../interfaces';
 import { MindEmojiBaseComponent } from './emoji-base.component';
 import { createForeignObject } from '@plait/richtext';
 import { createG } from '@plait/core';
-import { getEmojiFontSize, getEmojiRectangle } from './emoji';
-import { NodeSpace } from '../../utils/node-space';
+import { getEmojiFontSize, getEmojiForeignRectangle } from './emoji';
 import { PlaitMindBoard } from '../with-extend-mind';
 
 export class EmojiDrawer {
@@ -50,12 +49,12 @@ export class EmojisDrawer {
         if (MindElement.hasEmojis(element)) {
             this.g = createG();
             this.g.classList.add('emojis');
-            const emojisRectangle = getEmojiRectangle(this.board, element);
+            const foreignRectangle = getEmojiForeignRectangle(this.board, element);
             const foreignObject = createForeignObject(
-                emojisRectangle.x,
-                emojisRectangle.y,
-                emojisRectangle.width,
-                emojisRectangle.height + NodeSpace.getEmojiTopSpace(element) * 2
+                foreignRectangle.x,
+                foreignRectangle.y,
+                foreignRectangle.width,
+                foreignRectangle.height
             );
             this.g.append(foreignObject);
             const container = document.createElement('div');

@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { PlaitBoard, PlaitElement, PlaitPluginElementContext } from '../../interfaces';
 import { removeSelectedElement } from '../../utils/selected-element';
-import { createG } from '../../utils/dom';
+import { createG } from '../../utils/dom/common';
 import { hasBeforeContextChange, hasOnContextChanged } from './context-change';
 
 @Directive()

@@ -1,7 +1,7 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { PlaitBoard, Point, RectangleClient } from '../interfaces';
 import { Transforms } from '../transforms';
-import { toPoint } from './dom';
+import { toPoint } from './dom/common';
 import { getRectangleByElements } from './element';
 import { distanceBetweenPointAndRectangle } from './math';
 import { BOARD_TO_MOVING_POINT, BOARD_TO_VIEWPORT_ORIGINATION } from './weak-maps';

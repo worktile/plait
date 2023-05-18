@@ -10,11 +10,10 @@ import {
     transformPoint,
     Transforms,
     ELEMENT_TO_COMPONENT,
-    getSelectedElements
+    getSelectedElements,
+    updateForeignObject
 } from '@plait/core';
 import { AbstractNode, isStandardLayout } from '@plait/layouts';
-import { updateForeignObject } from '@plait/richtext';
-import { BASE } from '../constants';
 import { getRichtextRectangleByNode } from '../draw/richtext';
 import { drawRectangleNode } from '../draw/shape';
 import { MindElement, PlaitMind } from '../interfaces/element';
@@ -35,6 +34,7 @@ import {
     updatePathByLayoutAndDropTarget,
     updateRightNodeCount
 } from '../utils/dnd';
+import { getEmojiForeignRectangle } from './emoji/emoji';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -128,15 +128,25 @@ export const withDnd = (board: PlaitBoard) => {
             const textRectangle = getRichtextRectangleByNode(board as PlaitMindBoard, activeComponent.node);
             const fakeNodeG = drawRectangleNode(board, fakeDraggingNode);
             const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
-            updateForeignObject(
-                richtextG,
-                textRectangle.width,
-                textRectangle.height,
-                textRectangle.x + offsetX,
-                textRectangle.y + offsetY
-            );
+
+            updateForeignObject(richtextG, textRectangle.width, textRectangle.height, textRectangle.x + offsetX, textRectangle.y + offsetY);
+
             fakeDragNodeG?.append(fakeNodeG);
             fakeDragNodeG?.append(richtextG);
+
+            // draw emojis
+            if (MindElement.hasEmojis(activeElement)) {
+                const fakeEmojisG = (activeComponent.emojisDrawer.g as SVGGElement).cloneNode(true) as SVGGElement;
+                const foreignRectangle = getEmojiForeignRectangle(board as PlaitMindBoard, activeElement);
+                updateForeignObject(
+                    fakeEmojisG,
+                    foreignRectangle.width,
+                    foreignRectangle.height,
+                    foreignRectangle.x + offsetX,
+                    foreignRectangle.y + offsetY
+                );
+                fakeDragNodeG?.append(fakeEmojisG);
+            }
 
             // drop position detect
             const { x, y } = getRectangleByNode(fakeDraggingNode);

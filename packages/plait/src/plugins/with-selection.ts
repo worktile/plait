@@ -2,7 +2,7 @@ import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
-import { toPoint } from '../utils/dom';
+import { toPoint } from '../utils/dom/common';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import {
     cacheSelectedElements,
