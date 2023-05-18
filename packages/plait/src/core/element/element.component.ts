@@ -12,7 +12,7 @@ import {
 import { PlaitBoard } from '../../interfaces/board';
 import { PlaitElement } from '../../interfaces/element';
 import { PlaitPluginElementContext } from './context';
-import { ELEMENT_TO_COMPONENT, PlaitPluginElementComponent } from './plugin-element';
+import { PlaitPluginElementComponent } from './plugin-element';
 import { PlaitEffect } from '../children/effect';
 import { Ancestor, PlaitNode } from '../../interfaces/node';
 import { NODE_TO_INDEX, NODE_TO_PARENT } from '../../utils/weak-maps';

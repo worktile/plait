@@ -2,7 +2,7 @@ import { Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { AbstractRefs } from '../interfaces/abstract';
 import { MindElement } from '../interfaces/element';
 import { AbstractNode, isStandardLayout } from '@plait/layouts';
-import { createMindElement, divideElementByParent, filterChildElement } from '../utils/mind';
+import { createMindElement, divideElementByParent, getFirstLevelElement } from '../utils/mind';
 import { MindQueries } from '../queries';
 import { DefaultAbstractNodeStyle } from '../constants/node-style';
 
@@ -33,7 +33,7 @@ export const setAbstractByStandardLayout = (board: PlaitBoard, element: MindElem
 };
 
 export const insertAbstract = (board: PlaitBoard, elements: PlaitElement[]) => {
-    let elementGroup = filterChildElement(elements as MindElement[]);
+    let elementGroup = getFirstLevelElement(elements as MindElement[]);
     const { parentElements, abstractIncludedGroups } = divideElementByParent(elementGroup);
 
     abstractIncludedGroups.forEach((group, index) => {

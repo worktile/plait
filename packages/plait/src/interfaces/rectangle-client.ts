@@ -37,5 +37,13 @@ export const RectangleClient = {
             width: rectangle.width + Math.abs(offset) * 2,
             height: rectangle.height + Math.abs(offset) * 2
         };
+    },
+    isEqual: (rectangle: RectangleClient, otherRectangle: RectangleClient) => {
+        return (
+            rectangle.x === otherRectangle.x &&
+            rectangle.y === otherRectangle.y &&
+            rectangle.width === otherRectangle.width &&
+            rectangle.height === otherRectangle.height
+        );
     }
 };

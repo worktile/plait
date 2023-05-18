@@ -27,8 +27,7 @@ import {
     changeRightNodeCount,
     insertMindElement,
     deleteSelectedELements,
-    filterChildElement,
-    findParentElement,
+    getFirstLevelElement,
     shouldChangeRightNodeCount,
     insertElementHandleAbstract
 } from '../utils';
@@ -146,31 +145,34 @@ export const withMind = (board: PlaitBoard) => {
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
                 deleteSelectedELements(board, selectedElements);
-                let lastNode: MindNode | any = null;
-                const firstLevelElements = filterChildElement(selectedElements);
+
+                let activeElement: MindElement | undefined;
+                const firstLevelElements = getFirstLevelElement(selectedElements);
+
+                if (AbstractNode.isAbstract(firstLevelElements[0])) {
+                    const parent = MindElement.getParent(firstLevelElements[0]);
+                    activeElement = parent.children[firstLevelElements[0].start];
+                }
+
                 const firstElement = firstLevelElements[0];
-                const firstComponent = PlaitElement.getComponent(firstElement) as MindNodeComponent;
-                const nodeIndex = firstComponent?.parent?.children.findIndex(item => item.origin.id === firstElement.id);
-                const isSameParent = firstLevelElements.every(element => {
-                    return findParentElement(element) && findParentElement(firstLevelElements[0]) === findParentElement(element);
+                const firstElementParent = MindElement.findParent(firstElement);
+                const hasSameParent = firstLevelElements.every(element => {
+                    return MindElement.findParent(element) === firstElementParent;
                 });
-                if (isSameParent) {
-                    const childCount = firstComponent!.parent?.children.length - firstLevelElements.length;
-                    if (childCount === 0) {
-                        lastNode = firstComponent?.parent;
-                    } else if (nodeIndex === 0) {
-                        lastNode = firstComponent?.parent.children[firstLevelElements.length];
-                    } else if (nodeIndex! > 0) {
-                        lastNode = firstComponent?.parent.children[nodeIndex! - 1];
+                if (firstElementParent && hasSameParent && !activeElement) {
+                    const firstElementIndex = firstElementParent.children.indexOf(firstElement);
+                    const childrenCount = firstElementParent.children.length;
+                    // active parent element
+                    if (childrenCount === firstLevelElements.length) {
+                        activeElement = firstElementParent;
+                    } else {
+                        if (firstElementIndex > 0) {
+                            activeElement = firstElementParent.children[firstElementIndex - 1];
+                        }
                     }
                 }
-
-                if (firstLevelElements.length === 1 && AbstractNode.isAbstract(firstElement)) {
-                    lastNode = firstComponent.parent.children[firstElement.start];
-                }
-
-                if (lastNode) {
-                    addSelectedElement(board, lastNode.origin);
+                if (activeElement) {
+                    addSelectedElement(board, activeElement);
                 }
                 return;
             }
@@ -214,7 +216,7 @@ export const withMind = (board: PlaitBoard) => {
     };
 
     board.setFragment = (data: DataTransfer | null) => {
-        const selectedElements = filterChildElement(getSelectedElements(board) as MindElement[]);
+        const selectedElements = getFirstLevelElement(getSelectedElements(board) as MindElement[]);
         if (selectedElements.length) {
             const elements = buildClipboardData(board, selectedElements);
             setClipboardData(data, elements);

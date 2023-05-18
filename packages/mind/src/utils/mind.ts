@@ -17,27 +17,18 @@ import { MindElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node';
-import { MindNodeComponent } from '../node.component';
 import { deleteElementHandleAbstract } from './abstract/common';
 import { ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { MindTransforms } from '../transforms';
 
-export function findParentElement(element: MindElement): MindElement | undefined {
-    const component = PlaitElement.getComponent(element) as MindNodeComponent;
-    if (component && component.parent) {
-        return component.parent.origin;
-    }
-    return undefined;
-}
-
 export function findUpElement(element: MindElement): { root: MindElement; branch?: MindElement } {
     let branch;
     let root = element;
-    let parent = findParentElement(element);
+    let parent = MindElement.findParent(element);
     while (parent) {
         branch = root;
         root = parent;
-        parent = findParentElement(parent);
+        parent = MindElement.findParent(parent);
     }
     return { root, branch };
 }
@@ -50,17 +41,17 @@ export const getChildrenCount = (element: MindElement) => {
 };
 
 export const isChildElement = (origin: MindElement, child: MindElement) => {
-    let parent = findParentElement(child);
+    let parent = MindElement.findParent(child);
     while (parent) {
         if (parent === origin) {
             return true;
         }
-        parent = findParentElement(parent);
+        parent = MindElement.findParent(parent);
     }
     return false;
 };
 
-export const filterChildElement = (elements: MindElement[]) => {
+export const getFirstLevelElement = (elements: MindElement[]) => {
     let result: MindElement[] = [];
     elements.forEach(element => {
         const isChild = elements.some(node => {
@@ -180,7 +171,7 @@ export const changeRightNodeCount = (board: PlaitBoard, parentPath: Path, change
 };
 
 export const shouldChangeRightNodeCount = (selectedElement: MindElement) => {
-    const parentElement = findParentElement(selectedElement);
+    const parentElement = MindElement.findParent(selectedElement);
     if (parentElement) {
         const nodeIndex: number = parentElement.children.findIndex(item => item.id === selectedElement.id);
         if (
@@ -292,7 +283,7 @@ export const findLastChild = (child: MindNode) => {
 };
 
 export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindElement[]) => {
-    const deletableElements = filterChildElement(selectedElements).reverse();
+    const deletableElements = getFirstLevelElement(selectedElements).reverse();
 
     const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
     MindTransforms.setAbstractsByRefs(board, abstractRefs);

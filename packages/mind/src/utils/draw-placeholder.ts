@@ -30,9 +30,9 @@ export const drawPlaceholderDropNodeG = (
     if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
         drawStraightDropNodeG(board, targetRect, dropTarget.detectResult, targetComponent, fakeDropNodeG);
     }
-
-    if (targetComponent.parent && dropTarget.detectResult && ['top', 'bottom'].includes(dropTarget.detectResult)) {
-        const parentComponent = PlaitElement.getComponent(targetComponent.parent.origin) as MindNodeComponent;
+    const targetParent = MindElement.findParent(targetComponent.element);
+    if (targetParent && dropTarget.detectResult && ['top', 'bottom'].includes(dropTarget.detectResult)) {
+        const parentComponent = PlaitElement.getComponent(targetParent) as MindNodeComponent;
         const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
         drawCurvePlaceholderDropNodeG(
             board,
@@ -104,7 +104,7 @@ export const drawCurvePlaceholderDropNodeG = (
 
     if (isVerticalLogicLayout(layout)) {
         parentComponent = targetComponent;
-        targetComponent = PlaitElement.getComponent(targetComponent.parent.origin) as MindNodeComponent;
+        targetComponent = PlaitElement.getComponent(MindElement.getParent(targetComponent.element)) as MindNodeComponent;
         fakeX = parentComponent.node.x;
         width = parentComponent.node.width;
         const vGap = BASE * 6 + strokeWidth;
@@ -222,7 +222,8 @@ export const drawStraightDropNodeG = (
         height,
         strokeWidth
     };
-    const parentLayout = MindQueries.getCorrectLayoutByElement(board, 
+    const parentLayout = MindQueries.getCorrectLayoutByElement(
+        board,
         targetComponent.node.origin.isRoot ? targetComponent.node.origin : targetComponent.node.parent.origin
     );
     const layout = MindQueries.getCorrectLayoutByElement(board, targetComponent.node.origin);
@@ -248,7 +249,7 @@ export const drawStraightDropNodeG = (
                  *      b. 最后一个节点的右侧：固定值（来源于 getMainAxle，第二级节点：BASE * 8，其他 BASE * 3 + strokeWidth / 2）；
                  */
                 fakeY = targetComponent.node.y;
-                const parentComponent = PlaitElement.getComponent(targetComponent.parent.origin) as MindNodeComponent;
+                const parentComponent = PlaitElement.getComponent(MindElement.getParent(targetComponent.element)) as MindNodeComponent;
                 const targetIndex = parentComponent.node.origin.children.indexOf(targetComponent.node.origin);
 
                 if (detectResult === 'left') {

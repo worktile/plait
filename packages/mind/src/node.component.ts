@@ -23,7 +23,8 @@ import {
     PlaitElement,
     NODE_TO_INDEX,
     PlaitPluginElementContext,
-    OnContextChanged
+    OnContextChanged,
+    RectangleClient
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -39,7 +40,7 @@ import { hasEditableTarget, PlaitRichtextComponent, setFullSelectionAndFocus, up
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject, timer } from 'rxjs';
 import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
-import { Editor, Operation } from 'slate';
+import { Editor, Operation, Text } from 'slate';
 import { EXTEND_OFFSET, EXTEND_RADIUS, PRIMARY_COLOR, STROKE_WIDTH } from './constants';
 import { NODE_MIN_WIDTH } from './constants/node-rule';
 import { drawIndentedLink } from './draw/indented-link';
@@ -85,8 +86,6 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     node!: MindNode;
 
-    parent!: MindNode;
-
     index!: number;
 
     abstractIncludedOutlineG?: SVGGElement;
@@ -127,10 +126,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.emojisDrawer = new EmojisDrawer(this.board, this.viewContainerRef);
         this.quickInsertDrawer = new QuickInsertDrawer(this.board);
         super.ngOnInit();
-        this.node = ELEMENT_TO_NODE.get(this.element) as MindNode;
-        if (!PlaitMind.isMind(this.element)) {
-            this.parent = MindElement.getNode(MindElement.getParent(this.element));
-        }
+        this.node = MindElement.getNode(this.element);
         this.index = NODE_TO_INDEX.get(this.element) || 0;
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.parentG = PlaitElement.getComponent(MindElement.getRoot(this.board, this.element)).rootG as SVGGElement;
@@ -149,10 +145,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         value: PlaitPluginElementContext<MindElement, PlaitMindBoard>,
         previous: PlaitPluginElementContext<MindElement, PlaitMindBoard>
     ) {
-        const newNode = ELEMENT_TO_NODE.get(this.element) as MindNode;
-        if (!PlaitMind.isMind(this.element)) {
-            this.parent = MindElement.getNode(MindElement.getParent(this.element));
-        }
+        const newNode = MindElement.getNode(value.element);
 
         // resolve move node richtext lose issue
         if (this.node !== newNode) {
@@ -161,11 +154,12 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             }
         }
 
-        const isEquals = MindNode.isEquals(this.node, newNode);
+        const isEqualNode = RectangleClient.isEqual(this.node, newNode);
         this.node = newNode;
-        this.drawActiveG();
-        this.updateActiveClass();
-        if (!isEquals) {
+
+        if (!isEqualNode || value.element !== previous.element) {
+            this.drawActiveG();
+            this.updateActiveClass();
             this.drawShape();
             this.drawLink();
             this.updateRichtext();
@@ -173,6 +167,19 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.drawExtend();
             this.drawQuickInsert();
             this.drawEmojis();
+        } else {
+            if (value.selected !== previous.selected) {
+                this.drawActiveG();
+                this.updateActiveClass();
+            }
+            if (!PlaitMind.isMind(value.element)) {
+                const parent = MindElement.getParent(previous.element);
+                const newParent = MindElement.getParent(value.element);
+                const hasSameChildren = parent.children.length === newParent.children.length;
+                if (!hasSameChildren) {
+                    this.drawLink();
+                }
+            }
         }
     }
 
@@ -215,30 +222,31 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     }
 
     drawLink() {
-        if (!this.parent) {
+        if (PlaitMind.isMind(this.element)) {
             return;
         }
+
+        const parent = MindElement.getParent(this.element);
+        const parentNode = MindElement.getNode(parent);
 
         if (this.linkG) {
             this.linkG.remove();
         }
 
-        const layout = MindQueries.getLayoutByElement(this.parent.origin) as MindLayoutType;
+        const layout = MindQueries.getLayoutByElement(parent) as MindLayoutType;
         if (AbstractNode.isAbstract(this.node.origin)) {
             this.linkG = drawAbstractLink(this.board, this.node, isHorizontalLayout(layout));
-        } else if (MindElement.isIndentedLayout(this.parent.origin)) {
-            this.linkG = drawIndentedLink(this.board, this.parent, this.node);
+        } else if (MindElement.isIndentedLayout(parent)) {
+            this.linkG = drawIndentedLink(this.board, parentNode, this.node);
         } else {
-            this.linkG = drawLogicLink(this.board, this.node, this.parent, isHorizontalLayout(layout));
+            this.linkG = drawLogicLink(this.board, this.node, parentNode, isHorizontalLayout(layout));
         }
         this.g.append(this.linkG);
     }
 
     destroyLine() {
-        if (this.parent) {
-            if (this.linkG) {
-                this.linkG.remove();
-            }
+        if (this.linkG) {
+            this.linkG.remove();
         }
     }
 

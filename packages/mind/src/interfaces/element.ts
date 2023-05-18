@@ -66,6 +66,13 @@ export const MindElement = {
         const parent = NODE_TO_PARENT.get(node) as MindElement;
         return parent;
     },
+    findParent(node: MindElement) {
+        if (PlaitMind.isMind(node)) {
+            return undefined;
+        }
+        const parent = NODE_TO_PARENT.get(node) as MindElement;
+        return parent;
+    },
     getRoot(board: PlaitBoard, element: MindElement) {
         const path = PlaitBoard.findPath(board, element);
         return PlaitNode.get(board, path.slice(0, 1)) as PlaitMind;
@@ -87,6 +94,13 @@ export const MindElement = {
             throw new Error(`can not get node from ${JSON.stringify(element)}`);
         }
         return node;
+    },
+    findParentNode(element: MindElement) {
+        if (PlaitMind.isMind(element)) {
+            return undefined;
+        }
+        const parent = MindElement.getParent(element);
+        return MindElement.getNode(parent);
     },
     hasEmojis(element: MindElement): element is MindElement<EmojiData> {
         if (element.data.emojis) {

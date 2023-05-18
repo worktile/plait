@@ -13,7 +13,7 @@ import {
     isVerticalLogicLayout
 } from '@plait/layouts';
 import { PlaitMind } from '../interfaces/element';
-import { DetectResult } from '../interfaces/node';
+import { DetectResult, MindNode } from '../interfaces/node';
 import { deleteElementHandleAbstract, findUpElement, insertElementHandleAbstract } from '../utils';
 import { PlaitMindComponent } from '../mind.component';
 import { MindTransforms } from '../transforms';
@@ -108,9 +108,10 @@ export const updateRightNodeCount = (
     const mindComponent = ELEMENT_TO_COMPONENT.get(mindElement as PlaitMind) as PlaitMindComponent;
     const activeIndex = mindComponent?.root.children.indexOf(activeComponent.node) as number;
     const targetIndex = mindComponent?.root.children.indexOf(targetComponent.node) as number;
-    const isActiveOnRight = activeIndex !== -1 && activeIndex <= (activeComponent.parent.origin.rightNodeCount as number) - 1;
-    const isTargetOnRight =
-        targetComponent.parent && targetIndex !== -1 && targetIndex <= (targetComponent.parent.origin.rightNodeCount as number) - 1;
+    const activeParent = MindElement.getParent(activeComponent.element);
+    const targetParent = MindElement.findParent(targetComponent.element);
+    const isActiveOnRight = activeIndex !== -1 && activeIndex <= (activeParent.rightNodeCount as number) - 1;
+    const isTargetOnRight = targetParent && targetIndex !== -1 && targetIndex <= (targetParent.rightNodeCount as number) - 1;
     const isBothOnRight = isActiveOnRight && isTargetOnRight;
     const rootChildCount = mindComponent.root.children?.length as number;
     const rootRightNodeCount = mindComponent?.root.origin.rightNodeCount as number;
@@ -118,12 +119,13 @@ export const updateRightNodeCount = (
     if (!isBothOnRight) {
         if (isActiveOnRight) {
             rightNodeCount = rootChildCount < rootRightNodeCount ? rootChildCount - 1 : rootRightNodeCount - 1;
-            Transforms.setNode(board, { rightNodeCount }, PlaitBoard.findPath(board, activeComponent.parent.origin));
+            Transforms.setNode(board, { rightNodeCount }, PlaitBoard.findPath(board, activeParent));
         }
 
         if (isTargetOnRight && detectResult !== 'right') {
             rightNodeCount = rootChildCount < rootRightNodeCount ? rootRightNodeCount : rootRightNodeCount + 1;
-            Transforms.setNode(board, { rightNodeCount }, PlaitBoard.findPath(board, targetComponent.parent.origin));
+            const parent = MindElement.getParent(targetComponent.element);
+            Transforms.setNode(board, { rightNodeCount }, PlaitBoard.findPath(board, parent));
         }
 
         //二级子节点拖动到根节点左侧
