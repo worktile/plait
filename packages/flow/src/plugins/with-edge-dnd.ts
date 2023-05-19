@@ -1,9 +1,8 @@
 import {
     BOARD_TO_HOST,
-    ELEMENT_TO_COMPONENT,
     IS_TEXT_EDITABLE,
-    Path,
     PlaitBoard,
+    PlaitElement,
     PlaitPlugin,
     Point,
     Transforms,
@@ -14,23 +13,21 @@ import {
 } from '@plait/core';
 import { FlowEdgeComponent } from '../flow-edge.component';
 import { FlowEdge, FlowEdgeHandle, FlowEdgeHandleType } from '../interfaces/edge';
-import { getHitHandleType } from '../utils/handle/get-hit-handle-type';
 import { FlowNode } from '../interfaces/node';
-import { getHitNodeHandle } from '../utils/handle/get-hit-node-handle';
 import { deleteEdgeDraggingInfo, addEdgeDraggingInfo } from '../utils/edge/dragging-edge';
 import { destroyAllNodesHandle, drawAllNodesHandle } from '../utils/node/render-all-nodes-handle';
+import { getHitNodeHandle } from '../utils/handle/node';
+import { getHitHandleTypeByEdge } from '../utils/handle/edge';
 
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup } = board;
 
     let activeElement: FlowEdge | null;
-    let activeComponent: FlowEdgeComponent | null;
     let startPoint: Point | null;
     let handleType: FlowEdgeHandleType | null;
     let offsetX: number = 0;
     let offsetY: number = 0;
     let flowNodeElements: FlowNode[] = [];
-    let path: Path = [];
     let hitNodeHandle: FlowEdgeHandle | null = null;
     let drawNodeHandles = true;
 
@@ -44,12 +41,9 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
         const selectElements = getSelectedElements(board);
         if (selectElements.length && FlowEdge.isFlowEdgeElement(selectElements[0])) {
             activeElement = selectElements[0] as FlowEdge;
-            handleType = getHitHandleType(board, point, activeElement);
+            handleType = getHitHandleTypeByEdge(board, point, activeElement);
             if (handleType) {
-                const flowEdgeComponent = ELEMENT_TO_COMPONENT.get(activeElement) as FlowEdgeComponent;
-                activeComponent = flowEdgeComponent;
                 startPoint = point;
-                path = [board.children.findIndex(item => item.id === activeElement?.id)];
                 return;
             }
         }
@@ -69,6 +63,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     handleType
                 });
                 throttleRAF(() => {
+                    const activeComponent = activeElement && (PlaitElement.getComponent(activeElement) as FlowEdgeComponent);
                     activeComponent?.updateElement(activeElement!, true);
                     hitNodeHandle = getHitNodeHandle(board, endPoint);
                     if (drawNodeHandles) {
@@ -84,6 +79,8 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
     board.globalMouseup = (event: MouseEvent) => {
         if (!board.options.readonly && handleType && activeElement) {
+            const activeComponent = PlaitElement.getComponent(activeElement) as FlowEdgeComponent;
+            const activePath = PlaitBoard.findPath(board, activeElement);
             deleteEdgeDraggingInfo(activeElement);
             if (hitNodeHandle) {
                 const { position, offsetX: handleOffsetX, offsetY: handleOffsetY, node } = hitNodeHandle;
@@ -98,7 +95,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                             offsetY: handleOffsetY
                         }
                     },
-                    path
+                    activePath
                 );
             } else {
                 activeComponent?.drawElement(activeElement, true);
@@ -106,13 +103,11 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
             destroyAllNodesHandle(board, flowNodeElements);
         }
         activeElement = null;
-        activeComponent = null;
         startPoint = null;
         handleType = null;
         offsetX = 0;
         offsetY = 0;
         flowNodeElements = [];
-        path = [];
         drawNodeHandles = true;
         globalMouseup(event);
     };
