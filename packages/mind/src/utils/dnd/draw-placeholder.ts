@@ -1,10 +1,10 @@
-import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../constants';
-import { drawLink } from '../draw/link';
-import { DetectResult, MindElement, MindNode } from '../interfaces';
-import { MindNodeComponent } from '../node.component';
-import { getRectangleByNode } from './graph';
+import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../../constants';
+import { drawLink } from '../../draw/link';
+import { DetectResult, MindElement, MindNode } from '../../interfaces';
+import { MindNodeComponent } from '../../node.component';
+import { getRectangleByNode } from '../graph';
 import { PlaitBoard, PlaitElement, Point, drawRoundRectangle } from '@plait/core';
-import { MindQueries } from '../queries';
+import { MindQueries } from '../../queries';
 import {
     getNonAbstractChildren,
     isBottomLayout,
@@ -15,10 +15,10 @@ import {
     isVerticalLogicLayout,
     MindLayoutType
 } from '@plait/layouts';
-import { drawIndentedLink } from '../draw/indented-link';
+import { drawIndentedLink } from '../../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
 import { isStandardLayout } from '@plait/layouts';
-import { isMixedLayout } from './layout';
+import { isMixedLayout } from '../layout';
 
 export const drawPlaceholderDropNodeG = (
     board: PlaitBoard,
@@ -183,6 +183,7 @@ export const drawCurvePlaceholderDropNodeG = (
     fakeDropNodeG?.appendChild(linkSVGG);
     fakeDropNodeG?.appendChild(fakeRectangleG);
 };
+
 export const drawStraightDropNodeG = (
     board: PlaitBoard,
     targetRect: {

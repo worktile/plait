@@ -1,5 +1,5 @@
-import { directionDetector } from './direction-detector';
 import { Point } from '@plait/core';
+import { directionDetector } from './direction';
 
 const targetNode: any = {
     children: [],

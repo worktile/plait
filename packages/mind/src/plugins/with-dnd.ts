@@ -11,30 +11,29 @@ import {
     Transforms,
     ELEMENT_TO_COMPONENT,
     getSelectedElements,
-    updateForeignObject
+    depthFirstRecursion
 } from '@plait/core';
 import { AbstractNode, isStandardLayout } from '@plait/layouts';
-import { getRichtextRectangleByNode } from '../draw/richtext';
-import { drawRectangleNode } from '../draw/shape';
 import { MindElement, PlaitMind } from '../interfaces/element';
-import { DetectResult, MindNode } from '../interfaces/node';
+import { DetectResult } from '../interfaces/node';
 import { MindNodeComponent } from '../node.component';
-import { directionCorrector, directionDetector, drawPlaceholderDropNodeG, findUpElement, readjustmentDropTarget } from '../utils';
-import { getRectangleByNode, hitMindElement } from '../utils/graph';
+import { drawPlaceholderDropNodeG, findUpElement } from '../utils';
+import { hitMindElement } from '../utils/graph';
 import { MindQueries } from '../queries';
 import { PlaitMindComponent } from '../mind.component';
-import { PlaitMindBoard } from './with-extend-mind';
 import {
-    addActiveOnDragOrigin,
+    drawFakeDragNode,
+    getDropTarget,
     isDragging,
-    isValidTarget,
+    readjustmentDropTarget,
     removeActiveOnDragOrigin,
     setIsDragging,
     updateAbstractInDnd,
+    updateFakeDragNodeG,
+    updateFakeDropNodeG,
     updatePathByLayoutAndDropTarget,
     updateRightNodeCount
-} from '../utils/dnd';
-import { getEmojiForeignRectangle } from './emoji/emoji';
+} from '../utils/dnd/common';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -56,36 +55,20 @@ export const withDnd = (board: PlaitBoard) => {
         // 确认是否 hit 节点
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const selectedElements = getSelectedElements(board);
-        board.children.forEach((value: PlaitElement) => {
-            if (activeElement) {
-                return;
-            }
-            if (PlaitMind.isMind(value)) {
-                const mindComponent = ELEMENT_TO_COMPONENT.get(value) as PlaitMindComponent;
-                const root = mindComponent.root;
-                (root as any).eachNode((node: MindNode) => {
-                    if (activeElement) {
-                        return;
-                    }
+        board.children.forEach(mindMap => {
+            depthFirstRecursion(mindMap as MindElement, element => {
+                if (activeElement) {
+                    return;
+                }
 
-                    const canDrag =
-                        hitMindElement(board, point, node.origin) &&
-                        !node.origin.isRoot &&
-                        !AbstractNode.isAbstract(node.origin) &&
-                        selectedElements.length <= 1;
+                const canDrag = hitMindElement(board, point, element) && !element.isRoot && !AbstractNode.isAbstract(element);
 
-                    if (canDrag) {
-                        activeElement = node.origin;
-                        startPoint = point;
-                    }
-                });
-            }
+                if (canDrag || (canDrag && selectedElements.includes(element))) {
+                    activeElement = element;
+                    startPoint = point;
+                }
+            });
         });
-
-        if (activeElement) {
-            event.preventDefault();
-        }
-
         mousedown(event);
     };
 
@@ -97,90 +80,13 @@ export const withDnd = (board: PlaitBoard) => {
                 return;
             }
 
-            if (!isDragging(board)) {
-                setIsDragging(board, true);
-                fakeDragNodeG = createG();
-                fakeDragNodeG.classList.add('dragging', 'fake-node', 'plait-board-attached');
-                fakeDropNodeG = createG();
-                addActiveOnDragOrigin(activeElement);
-                PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
-                PlaitBoard.getHost(board).appendChild(fakeDragNodeG);
-            } else {
-                if (fakeDragNodeG) {
-                    fakeDragNodeG.innerHTML = '';
-                }
+            setIsDragging(board, true);
 
-                fakeDropNodeG?.childNodes.forEach(node => {
-                    node.remove();
-                });
-            }
+            updateFakeDropNodeG(board, fakeDropNodeG, event, dropTarget, activeElement);
 
-            // fake dragging origin node
             const offsetX = endPoint[0] - startPoint[0];
             const offsetY = endPoint[1] - startPoint[1];
-            const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
-            const fakeDraggingNode: MindNode = {
-                ...activeComponent.node,
-                children: [],
-                x: activeComponent.node.x + offsetX,
-                y: activeComponent.node.y + offsetY
-            };
-            const textRectangle = getRichtextRectangleByNode(board as PlaitMindBoard, activeComponent.node);
-            const fakeNodeG = drawRectangleNode(board, fakeDraggingNode);
-            const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
-
-            updateForeignObject(richtextG, textRectangle.width, textRectangle.height, textRectangle.x + offsetX, textRectangle.y + offsetY);
-
-            fakeDragNodeG?.append(fakeNodeG);
-            fakeDragNodeG?.append(richtextG);
-
-            // draw emojis
-            if (MindElement.hasEmojis(activeElement)) {
-                const fakeEmojisG = (activeComponent.emojisDrawer.g as SVGGElement).cloneNode(true) as SVGGElement;
-                const foreignRectangle = getEmojiForeignRectangle(board as PlaitMindBoard, activeElement);
-                updateForeignObject(
-                    fakeEmojisG,
-                    foreignRectangle.width,
-                    foreignRectangle.height,
-                    foreignRectangle.x + offsetX,
-                    foreignRectangle.y + offsetY
-                );
-                fakeDragNodeG?.append(fakeEmojisG);
-            }
-
-            // drop position detect
-            const { x, y } = getRectangleByNode(fakeDraggingNode);
-            const detectCenterPoint = [x + textRectangle.width / 2, y + textRectangle.height / 2] as Point;
-
-            let detectResult: DetectResult[] | null = null;
-            board.children.forEach((value: PlaitElement) => {
-                if (detectResult) {
-                    return;
-                }
-                if (PlaitMind.isMind(value)) {
-                    const mindmapComponent = ELEMENT_TO_COMPONENT.get(value) as PlaitMindComponent;
-                    const root = mindmapComponent?.root;
-
-                    (root as any).eachNode((node: MindNode) => {
-                        if (detectResult) {
-                            return;
-                        }
-                        const directions = directionDetector(node, detectCenterPoint);
-                        if (directions) {
-                            detectResult = directionCorrector(board, node, directions);
-                        }
-                        dropTarget = null;
-                        if (detectResult && isValidTarget(activeComponent.node.origin, node.origin)) {
-                            dropTarget = { target: node.origin, detectResult: detectResult[0] };
-                        }
-                    });
-                }
-            });
-
-            if (dropTarget?.target) {
-                dropTarget = readjustmentDropTarget(board, dropTarget);
-                drawPlaceholderDropNodeG(board, dropTarget, fakeDropNodeG);
-            }
+            updateFakeDragNodeG(board, fakeDragNodeG, activeElement, offsetX, offsetY);
         }
 
         mousemove(event);
