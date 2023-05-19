@@ -29,8 +29,6 @@ import {
     removeActiveOnDragOrigin,
     setIsDragging,
     updateAbstractInDnd,
-    updateFakeDragNodeG,
-    updateFakeDropNodeG,
     updatePathByLayoutAndDropTarget,
     updateRightNodeCount
 } from '../utils/dnd/common';
@@ -82,11 +80,22 @@ export const withDnd = (board: PlaitBoard) => {
 
             setIsDragging(board, true);
 
-            updateFakeDropNodeG(board, fakeDropNodeG, event, dropTarget, activeElement);
+            fakeDropNodeG?.remove();
+            fakeDropNodeG = createG();
+            const detectPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            dropTarget = getDropTarget(board, detectPoint, dropTarget, activeElement);
+            if (dropTarget?.target) {
+                dropTarget = readjustmentDropTarget(board, dropTarget);
+                drawPlaceholderDropNodeG(board, dropTarget, fakeDropNodeG);
+            }
+            PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
 
             const offsetX = endPoint[0] - startPoint[0];
             const offsetY = endPoint[1] - startPoint[1];
-            updateFakeDragNodeG(board, fakeDragNodeG, activeElement, offsetX, offsetY);
+            fakeDragNodeG?.remove();
+            const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
+            fakeDragNodeG = drawFakeDragNode(board, activeComponent, offsetX, offsetY);
+            PlaitBoard.getHost(board).appendChild(fakeDragNodeG);
         }
 
         mousemove(event);

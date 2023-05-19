@@ -317,34 +317,3 @@ export const readjustmentDropTarget = (
     }
     return dropTarget;
 };
-
-export const updateFakeDropNodeG = (
-    board: PlaitBoard,
-    fakeDropNodeG: SVGGElement | undefined,
-    event: MouseEvent,
-    dropTarget: { target: MindElement; detectResult: DetectResult } | null,
-    activeElement: MindElement
-) => {
-    fakeDropNodeG?.remove();
-    fakeDropNodeG = createG();
-    const detectPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-    dropTarget = getDropTarget(board, detectPoint, dropTarget, activeElement);
-    if (dropTarget?.target) {
-        dropTarget = readjustmentDropTarget(board, dropTarget);
-        drawPlaceholderDropNodeG(board, dropTarget, fakeDropNodeG);
-    }
-    PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
-};
-
-export const updateFakeDragNodeG = (
-    board: PlaitBoard,
-    fakeDragNodeG: SVGGElement | undefined,
-    activeElement: MindElement,
-    offsetX: number,
-    offsetY: number
-) => {
-    fakeDragNodeG?.remove();
-    const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
-    fakeDragNodeG = drawFakeDragNode(board, activeComponent, offsetX, offsetY);
-    PlaitBoard.getHost(board).appendChild(fakeDragNodeG);
-};
