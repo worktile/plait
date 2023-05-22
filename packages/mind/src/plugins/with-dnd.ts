@@ -17,13 +17,11 @@ import { AbstractNode, isStandardLayout } from '@plait/layouts';
 import { MindElement, PlaitMind } from '../interfaces/element';
 import { DetectResult } from '../interfaces/node';
 import { MindNodeComponent } from '../node.component';
-import { drawPlaceholderDropNodeG, findUpElement } from '../utils';
+import { findUpElement } from '../utils';
 import { hitMindElement } from '../utils/graph';
 import { MindQueries } from '../queries';
 import { PlaitMindComponent } from '../mind.component';
 import {
-    drawFakeDragNode,
-    getDropTarget,
     isDragging,
     readjustmentDropTarget,
     removeActiveOnDragOrigin,
@@ -32,6 +30,8 @@ import {
     updatePathByLayoutAndDropTarget,
     updateRightNodeCount
 } from '../utils/dnd/common';
+import { detectDropTarget } from '../utils/dnd/detector';
+import { drawFakeDragNode, drawFakeDropNode } from '../utils/dnd/draw';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -40,7 +40,7 @@ export const withDnd = (board: PlaitBoard) => {
 
     let activeElement: MindElement | null;
     let startPoint: Point;
-    let fakeDragNodeG: SVGGElement | undefined;
+    let dragFakeNodeG: SVGGElement | undefined;
     let fakeDropNodeG: SVGGElement | undefined;
     let dropTarget: { target: MindElement; detectResult: DetectResult } | null = null;
 
@@ -53,20 +53,25 @@ export const withDnd = (board: PlaitBoard) => {
         // 确认是否 hit 节点
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const selectedElements = getSelectedElements(board);
-        board.children.forEach(mindMap => {
-            depthFirstRecursion(mindMap as MindElement, element => {
-                if (activeElement) {
-                    return;
-                }
+        depthFirstRecursion((board as unknown) as MindElement, element => {
+            if (activeElement) {
+                return;
+            }
 
-                const canDrag = hitMindElement(board, point, element) && !element.isRoot && !AbstractNode.isAbstract(element);
+            const isHitElement =
+                hitMindElement(board, point, element) &&
+                MindElement.isMindElement(board, element) &&
+                !element.isRoot &&
+                !AbstractNode.isAbstract(element);
+            const isSelectMind = selectedElements.every(element => MindElement.isMindElement(board, element));
+            const canDrag = isHitElement || (isHitElement && isSelectMind && selectedElements.includes(element));
 
-                if (canDrag || (canDrag && selectedElements.includes(element))) {
-                    activeElement = element;
-                    startPoint = point;
-                }
-            });
+            if (canDrag) {
+                activeElement = element;
+                startPoint = point;
+            }
         });
+
         mousedown(event);
     };
 
@@ -83,19 +88,19 @@ export const withDnd = (board: PlaitBoard) => {
             fakeDropNodeG?.remove();
             fakeDropNodeG = createG();
             const detectPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-            dropTarget = getDropTarget(board, detectPoint, dropTarget, activeElement);
+            dropTarget = detectDropTarget(board, detectPoint, dropTarget, activeElement);
             if (dropTarget?.target) {
                 dropTarget = readjustmentDropTarget(board, dropTarget);
-                drawPlaceholderDropNodeG(board, dropTarget, fakeDropNodeG);
+                drawFakeDropNode(board, dropTarget, fakeDropNodeG);
             }
             PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
 
             const offsetX = endPoint[0] - startPoint[0];
             const offsetY = endPoint[1] - startPoint[1];
-            fakeDragNodeG?.remove();
+            dragFakeNodeG?.remove();
             const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
-            fakeDragNodeG = drawFakeDragNode(board, activeComponent, offsetX, offsetY);
-            PlaitBoard.getHost(board).appendChild(fakeDragNodeG);
+            dragFakeNodeG = drawFakeDragNode(board, activeComponent, offsetX, offsetY);
+            PlaitBoard.getHost(board).appendChild(dragFakeNodeG);
         }
 
         mousemove(event);
@@ -139,8 +144,8 @@ export const withDnd = (board: PlaitBoard) => {
             }
             setIsDragging(board, false);
             activeElement = null;
-            fakeDragNodeG?.remove();
-            fakeDragNodeG = undefined;
+            dragFakeNodeG?.remove();
+            dragFakeNodeG = undefined;
             fakeDropNodeG?.remove();
             fakeDropNodeG = undefined;
             dropTarget = null;

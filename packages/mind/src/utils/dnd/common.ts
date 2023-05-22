@@ -15,19 +15,12 @@ import {
     isStandardLayout
 } from '@plait/layouts';
 import { PlaitMind } from '../../interfaces/element';
-import { DetectResult, MindNode } from '../../interfaces/node';
+import { DetectResult } from '../../interfaces/node';
 import { PlaitMindComponent } from '../../mind.component';
 import { MindTransforms } from '../../transforms';
-import { getRichtextRectangleByNode } from '../../draw/richtext';
-import { drawRectangleNode } from '../../draw/shape';
-import { updateForeignObject } from '@plait/richtext';
-import { BASE } from '../../constants';
-import { PlaitMindBoard } from '../../public-api';
 import { MindQueries } from '../../queries';
 import { isMixedLayout } from '../layout';
 import { deleteElementHandleAbstract, insertElementHandleAbstract } from '../abstract/common';
-import { directionDetector, directionCorrector } from './direction';
-import { drawPlaceholderDropNodeG } from './draw-placeholder';
 
 export const IS_DRAGGING = new WeakMap<PlaitBoard, boolean>();
 
@@ -161,68 +154,6 @@ export const updateAbstractInDnd = (board: PlaitBoard, deletableElements: MindEl
     const refs = insertElementHandleAbstract(board, originPath, false);
     deleteElementHandleAbstract(board, deletableElements, refs);
     MindTransforms.setAbstractsByRefs(board, refs);
-};
-
-export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeComponent, offsetX: number, offsetY: number) => {
-    const fakeDragNodeG = createG();
-    fakeDragNodeG.classList.add('dragging', 'fake-node', 'plait-board-attached');
-
-    const fakeDraggingNode: MindNode = {
-        ...activeComponent.node,
-        children: [],
-        x: activeComponent.node.x + offsetX,
-        y: activeComponent.node.y + offsetY
-    };
-    const textRectangle = getRichtextRectangleByNode(board as PlaitMindBoard, activeComponent.node);
-    const fakeNodeG = drawRectangleNode(board, fakeDraggingNode);
-
-    const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
-    updateForeignObject(
-        richtextG,
-        textRectangle.width + BASE * 10,
-        textRectangle.height,
-        textRectangle.x + offsetX,
-        textRectangle.y + offsetY
-    );
-
-    fakeDragNodeG?.append(fakeNodeG);
-    fakeDragNodeG?.append(richtextG);
-    return fakeDragNodeG;
-};
-
-export const getDropTarget = (
-    board: PlaitBoard,
-    detectPoint: Point,
-    dropTarget: { target: MindElement; detectResult: DetectResult } | null,
-    activeElement: MindElement
-) => {
-    let detectResult: DetectResult[] | null = null;
-    board.children.forEach((value: PlaitElement) => {
-        if (detectResult) {
-            return;
-        }
-        if (PlaitMind.isMind(value)) {
-            const mindComponent = ELEMENT_TO_COMPONENT.get(value) as PlaitMindComponent;
-            const root = mindComponent?.root;
-
-            (root as any).eachNode((node: MindNode) => {
-                if (detectResult) {
-                    return;
-                }
-                const directions = directionDetector(node, detectPoint);
-
-                if (directions) {
-                    detectResult = directionCorrector(board, node, directions);
-                }
-                dropTarget = null;
-                if (detectResult && isValidTarget(activeElement, node.origin)) {
-                    dropTarget = { target: node.origin, detectResult: detectResult[0] };
-                }
-            });
-        }
-    });
-
-    return dropTarget;
 };
 
 /* 根据布局调整 target 以及 direction */
