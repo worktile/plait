@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { PlaitRichtextComponent } from './richtext/richtext.component';
 import { PlaitNodeComponent } from './node/node.component';
 
 @NgModule({
     declarations: [PlaitRichtextComponent, PlaitNodeComponent],
-    imports: [BrowserModule],
+    imports: [CommonModule],
     exports: [PlaitRichtextComponent, PlaitNodeComponent]
 })
 export class RichtextModule {}
