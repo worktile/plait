@@ -1,5 +1,47 @@
 # plait
 
+## 0.2.0
+
+### Minor Changes
+
+-   [#321](https://github.com/worktile/plait/pull/321) [`fe2bbb6`](https://github.com/worktile/plait/commit/fe2bbb60e0a452f98383a81eff0fb77a32f7ddc7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor plait core plugin element component structure
+
+*   [`304f2b9`](https://github.com/worktile/plait/commit/304f2b9a613266e5f73b4d3b3403f6ad7aa1b9a2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename package name to mind
+
+### Patch Changes
+
+-   [#337](https://github.com/worktile/plait/pull/337) [`844d3c4`](https://github.com/worktile/plait/commit/844d3c42023ef8b5c37225e57298eb43b062ae6c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support mind node emoji label
+
+*   [#365](https://github.com/worktile/plait/pull/365) [`4aa6168`](https://github.com/worktile/plait/commit/4aa61680ba61ba592017a06583060a83f869dd53) Thanks [@WBbug](https://github.com/WBbug)! - add updateAbstractInDnd function
+
+-   [`e4a8029`](https://github.com/worktile/plait/commit/e4a8029552c64f1d60fa4ae7c8e3f80c9a528eb7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support mind options
+
+*   [`da64e36`](https://github.com/worktile/plait/commit/da64e36cda13300ea6c30535dfdb4a6525f70482) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename isIntersect to isHit and fix isHit float calculate error
+
+-   [`773cbfa`](https://github.com/worktile/plait/commit/773cbfa17b13dda5365d493ef99ddd316bda033e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix last method can not get correctly node when children is empty array
+
+*   [`46719b3`](https://github.com/worktile/plait/commit/46719b3f20982a97cbca9b056ffcb8aeb4d95ec7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add base drawer and implement quick insert drawer
+
+-   [`6580ea0`](https://github.com/worktile/plait/commit/6580ea08c93f67ecca69594964abf6dd632da0ce) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename mindmap to mind
+
+*   [#335](https://github.com/worktile/plait/pull/335) [`3c02181`](https://github.com/worktile/plait/commit/3c021816eefeb53fb003d6f87b7effd515d994c3) Thanks [@WBbug](https://github.com/WBbug)! - add drawAbstractIncludedOutline
+
+-   [`ba40d29`](https://github.com/worktile/plait/commit/ba40d298c0abe636024795cf510ee92ca1c35d68) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - mind node dnd support draw emojis
+
+*   [#352](https://github.com/worktile/plait/pull/352) [`b59ad23`](https://github.com/worktile/plait/commit/b59ad23076254137eeb5fccb99587a385a5d6bcb) Thanks [@WBbug](https://github.com/WBbug)! - update abstract outline when mouseMove
+
+-   [`1eda932`](https://github.com/worktile/plait/commit/1eda932df73dbc2ab266abc9c19fb01ac9e60295) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add throttle handle for with-selection move
+
+*   [#331](https://github.com/worktile/plait/pull/331) [`b549696`](https://github.com/worktile/plait/commit/b549696e506d7b991bbe0cfe52c5ddc153323d8e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct insertG logic
+
+-   [`ff1b1f0`](https://github.com/worktile/plait/commit/ff1b1f0d7d59fc4bc62df0e853eaa61a7aca6f8f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor node equality judge logic
+    remove findParentElement function (replace by MindElement.findParent)
+    rename filterChildElement to getFirstLevelElement
+
+*   [#369](https://github.com/worktile/plait/pull/369) [`09bbe7a`](https://github.com/worktile/plait/commit/09bbe7ad6f8b9de4bd042031698392a1192d4f76) Thanks [@WBbug](https://github.com/WBbug)! - fix insertG error
+
+-   [#314](https://github.com/worktile/plait/pull/314) [`67fa76c`](https://github.com/worktile/plait/commit/67fa76c1070609adec4c5c06262f0828ddaa6867) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support create edge
+
 ## 0.2.0-next.11
 
 ### Patch Changes

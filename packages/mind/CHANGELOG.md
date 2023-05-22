@@ -1,5 +1,131 @@
 # mind
 
+## 0.2.0
+
+### Minor Changes
+
+-   [`fb968a4`](https://github.com/worktile/plait/commit/fb968a49fa95ab8c23c0512ba40aa931c6af0ab1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - mindmap rename to mind
+
+*   [#321](https://github.com/worktile/plait/pull/321) [`fe2bbb6`](https://github.com/worktile/plait/commit/fe2bbb60e0a452f98383a81eff0fb77a32f7ddc7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor plait core plugin element component structure
+
+-   [`304f2b9`](https://github.com/worktile/plait/commit/304f2b9a613266e5f73b4d3b3403f6ad7aa1b9a2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename package name to mind
+
+### Patch Changes
+
+-   [#366](https://github.com/worktile/plait/pull/366) [`30e8a29`](https://github.com/worktile/plait/commit/30e8a295b472499cc2ac3cd1c72c830546cd54e7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract abstract node transforms function to transforms/abstract-node
+
+*   [#353](https://github.com/worktile/plait/pull/353) [`4d00bad`](https://github.com/worktile/plait/commit/4d00bad7e88e3187ec8546baf5c8a07fda33fe46) Thanks [@WBbug](https://github.com/WBbug)! - change abstract when abstract include cross left and right
+
+-   [`deb3a01`](https://github.com/worktile/plait/commit/deb3a01864a7135bd268e1879dca802c861cbe56) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct createMindmapData logic and rename to createDefaultMindMapElement
+
+*   [`7de0242`](https://github.com/worktile/plait/commit/7de0242ee4413e06fcdfccf12ad7a5ce9a485284) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix getStrokeByMindElement wrong
+
+-   [#355](https://github.com/worktile/plait/pull/355) [`771b8ba`](https://github.com/worktile/plait/commit/771b8babb7d9170370be6fc0170c59c2b083af84) Thanks [@WBbug](https://github.com/WBbug)! - handle abstract when add and delete node
+
+*   [`a60be13`](https://github.com/worktile/plait/commit/a60be13f6cc5e386b61c136d3f0bbcf4b8026af5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct node extend's style
+
+-   [#341](https://github.com/worktile/plait/pull/341) [`c8a88a7`](https://github.com/worktile/plait/commit/c8a88a74d3c7b430841791c04a89cc70a570ea7a) Thanks [@WBbug](https://github.com/WBbug)! - change layout when node is abstract
+
+*   [#330](https://github.com/worktile/plait/pull/330) [`55a4d32`](https://github.com/worktile/plait/commit/55a4d322455416600da7eb26431052de4f58050f) Thanks [@WBbug](https://github.com/WBbug)! - abstract link adapter to logic layouts
+
+-   [`b30a7a3`](https://github.com/worktile/plait/commit/b30a7a3170e64cca2a597199eee2a3acd354bfc8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor constants construction
+
+*   [#340](https://github.com/worktile/plait/pull/340) [`9c73bf0`](https://github.com/worktile/plait/commit/9c73bf0fe611c4cab6ee272ffdf6d34b97476612) Thanks [@WBbug](https://github.com/WBbug)! - achieve drag change abstract included node
+
+-   [#337](https://github.com/worktile/plait/pull/337) [`844d3c4`](https://github.com/worktile/plait/commit/844d3c42023ef8b5c37225e57298eb43b062ae6c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support mind node emoji label
+
+*   [#360](https://github.com/worktile/plait/pull/360) [`f074b85`](https://github.com/worktile/plait/commit/f074b85b37ef008f50c09ee09288bbc08f455008) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - get correct layout when node is abstract or child of abstract
+
+-   [#344](https://github.com/worktile/plait/pull/344) [`47ac10f`](https://github.com/worktile/plait/commit/47ac10f3ebe5e142c2b7d250bc639409bff6198f) Thanks [@WBbug](https://github.com/WBbug)! - add abstract util function
+
+*   [`ebcd107`](https://github.com/worktile/plait/commit/ebcd10767790ed471aa9a49760bf2386aa09942b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor node-space
+    prevent hit node when click in emoji rectangle
+
+-   [#330](https://github.com/worktile/plait/pull/330) [`55a4d32`](https://github.com/worktile/plait/commit/55a4d322455416600da7eb26431052de4f58050f) Thanks [@WBbug](https://github.com/WBbug)! - add abstract
+
+*   [#365](https://github.com/worktile/plait/pull/365) [`4aa6168`](https://github.com/worktile/plait/commit/4aa61680ba61ba592017a06583060a83f869dd53) Thanks [@WBbug](https://github.com/WBbug)! - add updateAbstractInDnd function
+
+-   [`67d10e1`](https://github.com/worktile/plait/commit/67d10e14c0d187da43c727b4877db1b76a916e4b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add input board on emoji-base component
+
+*   [`e4a8029`](https://github.com/worktile/plait/commit/e4a8029552c64f1d60fa4ae7c8e3f80c9a528eb7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support mind options
+
+-   [`af5e5ba`](https://github.com/worktile/plait/commit/af5e5baade7e06e524b506e39416d38f33823abe) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix shouldChangeRightNodeCount logic error
+
+*   [`da64e36`](https://github.com/worktile/plait/commit/da64e36cda13300ea6c30535dfdb4a6525f70482) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename isIntersect to isHit and fix isHit float calculate error
+
+-   [#346](https://github.com/worktile/plait/pull/346) [`37e66e7`](https://github.com/worktile/plait/commit/37e66e73c110a6059d3265af30b26fc32ad0e37e) Thanks [@WBbug](https://github.com/WBbug)! - forbidden drag when node is abstract
+
+*   [#357](https://github.com/worktile/plait/pull/357) [`ced7468`](https://github.com/worktile/plait/commit/ced7468ad3c8553ce5d3371d9ae9fc4bfb5cb7fa) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor mind node style util method
+
+-   [`ad69dba`](https://github.com/worktile/plait/commit/ad69dba3236fef08d1547b230f2a12b07e9196d5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - compatible processing for last character can not show in safari browser
+
+*   [`ba12a1e`](https://github.com/worktile/plait/commit/ba12a1eaaf8f475a771a893e70bfc422cd02b087) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - can not invoke getNode before auto layout execution
+
+-   [`c4f220d`](https://github.com/worktile/plait/commit/c4f220ddf26364fb87e961f87603fbe68ef77fd3) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add replaceEmoji method and fix addEmoji error
+    rename mind map to mind
+
+*   [#342](https://github.com/worktile/plait/pull/342) [`005b600`](https://github.com/worktile/plait/commit/005b600391db12d114d4a9b85cf1538e8f2e0834) Thanks [@WBbug](https://github.com/WBbug)! - fix abstract layout in standard layout
+
+-   [#347](https://github.com/worktile/plait/pull/347) [`4fb5ae9`](https://github.com/worktile/plait/commit/4fb5ae9636ac7a38031e0f5d0cec79ff3ac1500a) Thanks [@WBbug](https://github.com/WBbug)! - select abstract start when delete abstract
+
+*   [`46719b3`](https://github.com/worktile/plait/commit/46719b3f20982a97cbca9b056ffcb8aeb4d95ec7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add base drawer and implement quick insert drawer
+
+-   [#348](https://github.com/worktile/plait/pull/348) [`4d65ce8`](https://github.com/worktile/plait/commit/4d65ce8e7d600b6fe0f9b632c47dbd94c01ae4d8) Thanks [@WBbug](https://github.com/WBbug)! - inherit branchColor when add new element
+
+*   [#367](https://github.com/worktile/plait/pull/367) [`f7ee5af`](https://github.com/worktile/plait/commit/f7ee5af5c4f6b53a17fdedc652ed982dfff23733) Thanks [@WBbug](https://github.com/WBbug)! - skip abstract when get drag direction
+
+-   [#339](https://github.com/worktile/plait/pull/339) [`da6c2d9`](https://github.com/worktile/plait/commit/da6c2d953cd64b5e9fd67bd7615e4524e82658b6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - limit mind node max word count
+
+*   [#334](https://github.com/worktile/plait/pull/334) [`256598c`](https://github.com/worktile/plait/commit/256598cc442a127e3828f2961cdd4a5319043bdc) Thanks [@WBbug](https://github.com/WBbug)! - let extend doesn't show when element is moving
+
+-   [`74fc83d`](https://github.com/worktile/plait/commit/74fc83df096f3e91a6cc6f91351fa0bf1ed6e74d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix fake node text max width
+
+*   [`4e69fd8`](https://github.com/worktile/plait/commit/4e69fd8a1a79c1ec9c812d24337d6aa23458bbf8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct mind node stroke extend logic
+
+-   [`6580ea0`](https://github.com/worktile/plait/commit/6580ea08c93f67ecca69594964abf6dd632da0ce) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename mindmap to mind
+
+*   [#356](https://github.com/worktile/plait/pull/356) [`ea52a05`](https://github.com/worktile/plait/commit/ea52a0545bab90e25e76f061ec6811793e4f9b32) Thanks [@WBbug](https://github.com/WBbug)! - fix copy abstract wrong
+
+-   [#335](https://github.com/worktile/plait/pull/335) [`3c02181`](https://github.com/worktile/plait/commit/3c021816eefeb53fb003d6f87b7effd515d994c3) Thanks [@WBbug](https://github.com/WBbug)! - add drawAbstractIncludedOutline
+
+*   [`0149e57`](https://github.com/worktile/plait/commit/0149e57c9055c09cb64b2974f802a4e996b92f26) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - apply correctly abstract link and child link style
+
+-   [`ba40d29`](https://github.com/worktile/plait/commit/ba40d298c0abe636024795cf510ee92ca1c35d68) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - mind node dnd support draw emojis
+
+*   [`076e435`](https://github.com/worktile/plait/commit/076e4356bcef2f5d142d6fcc4d1cf0a9903ae681) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - createMindElement support more options
+
+-   [#338](https://github.com/worktile/plait/pull/338) [`e7a157b`](https://github.com/worktile/plait/commit/e7a157bf19fb2c0cb3865912f78f21c557121532) Thanks [@WBbug](https://github.com/WBbug)! - update AbstractIncludedOutline when mouse move
+
+*   [`000f5c4`](https://github.com/worktile/plait/commit/000f5c476d87160cf647335e0af868795942c20c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor getShapeByElement function
+
+-   [`65b5944`](https://github.com/worktile/plait/commit/65b5944adf913290215e15fabc16afa5697e4358) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add element input on emoji base component
+
+*   [`881d901`](https://github.com/worktile/plait/commit/881d901d6e40533d8f44c0d275f7609489ed49ba) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - emoji size and position improve
+
+-   [#352](https://github.com/worktile/plait/pull/352) [`b59ad23`](https://github.com/worktile/plait/commit/b59ad23076254137eeb5fccb99587a385a5d6bcb) Thanks [@WBbug](https://github.com/WBbug)! - update abstract outline when mouseMove
+
+*   [#358](https://github.com/worktile/plait/pull/358) [`76a9410`](https://github.com/worktile/plait/commit/76a9410a2f489e2d8c7efab8b762aefbbe1949c7) Thanks [@WBbug](https://github.com/WBbug)! - fix move can select words, fix cant remove all node, fix drag draw wrong fakeNode
+
+-   [#350](https://github.com/worktile/plait/pull/350) [`c7dcac7`](https://github.com/worktile/plait/commit/c7dcac781dc0caa8420f95b3089da4baf4b45d7f) Thanks [@WBbug](https://github.com/WBbug)! - add newBoard and execute abstractResize in with-abstract
+
+*   [`ff1b1f0`](https://github.com/worktile/plait/commit/ff1b1f0d7d59fc4bc62df0e853eaa61a7aca6f8f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor node equality judge logic
+    remove findParentElement function (replace by MindElement.findParent)
+    rename filterChildElement to getFirstLevelElement
+
+-   [#368](https://github.com/worktile/plait/pull/368) [`196c4bc`](https://github.com/worktile/plait/commit/196c4bc30a22308b0fb04b8f183e06762a3c5ae1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify getCorrectLayoutByElement logic to fit abstract layout
+
+*   [`2ae1307`](https://github.com/worktile/plait/commit/2ae1307d4cfd19659fa657fc42e9c483aee44956) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove use MIND_ELEMENT_TO_COMPONENT case
+
+-   [#349](https://github.com/worktile/plait/pull/349) [`874a97a`](https://github.com/worktile/plait/commit/874a97a79d172cd7a25c75320547caa253ead35e) Thanks [@WBbug](https://github.com/WBbug)! - fix delete error
+
+*   [#351](https://github.com/worktile/plait/pull/351) [`8cb2b47`](https://github.com/worktile/plait/commit/8cb2b47773a4f673013b34d4b8ddb56ec4e06855) Thanks [@WBbug](https://github.com/WBbug)! - fix canDraw logic
+
+-   [`dddac29`](https://github.com/worktile/plait/commit/dddac293890e2904a550ae9e5fc6de54f757138f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix mind node topic data structure error when node is copied and pasted
+
+*   [#362](https://github.com/worktile/plait/pull/362) [`a8623c8`](https://github.com/worktile/plait/commit/a8623c87e930b69b180d67b509eb643f2184f76d) Thanks [@WBbug](https://github.com/WBbug)! - fix get wrong layout
+
+-   [#364](https://github.com/worktile/plait/pull/364) [`64ab8fd`](https://github.com/worktile/plait/commit/64ab8fd5ae6b523f7b7a1358afb72fe113f48660) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle overall abstract when copy node and paste
+
 ## 0.2.0-next.11
 
 ### Patch Changes
