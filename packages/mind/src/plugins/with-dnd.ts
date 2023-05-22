@@ -23,14 +23,13 @@ import { MindQueries } from '../queries';
 import { PlaitMindComponent } from '../mind.component';
 import {
     isDragging,
-    readjustmentDropTarget,
     removeActiveOnDragOrigin,
     setIsDragging,
     updateAbstractInDnd,
     updatePathByLayoutAndDropTarget,
     updateRightNodeCount
 } from '../utils/dnd/common';
-import { detectDropTarget } from '../utils/dnd/detector';
+import { detectDropTarget, readjustmentDropTarget } from '../utils/dnd/detector';
 import { drawFakeDragNode, drawFakeDropNode } from '../utils/dnd/draw';
 
 const DRAG_MOVE_BUFFER = 5;
@@ -53,24 +52,32 @@ export const withDnd = (board: PlaitBoard) => {
         // 确认是否 hit 节点
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const selectedElements = getSelectedElements(board);
-        depthFirstRecursion((board as unknown) as MindElement, element => {
-            if (activeElement) {
-                return;
-            }
+        depthFirstRecursion(
+            (board as unknown) as MindElement,
+            element => {
+                if (activeElement || !MindElement.isMindElement(board, element)) {
+                    return;
+                }
+                const isHitElement = hitMindElement(board, point, element);
+                const isAllMindElement = selectedElements.every(element => MindElement.isMindElement(board, element));
+                const isMultiple = isHitElement && selectedElements.includes(element) && isAllMindElement;
+                const isSingle = isHitElement && !element.isRoot && !AbstractNode.isAbstract(element) && !isMultiple;
 
-            const isHitElement =
-                hitMindElement(board, point, element) &&
-                MindElement.isMindElement(board, element) &&
-                !element.isRoot &&
-                !AbstractNode.isAbstract(element);
-            const isSelectMind = selectedElements.every(element => MindElement.isMindElement(board, element));
-            const canDrag = isHitElement || (isHitElement && isSelectMind && selectedElements.includes(element));
-
-            if (canDrag) {
-                activeElement = element;
-                startPoint = point;
+                if (isSingle) {
+                    activeElement = element;
+                    startPoint = point;
+                } else if (isMultiple) {
+                    //
+                }
+            },
+            node => {
+                if (PlaitBoard.isBoard(node) || board.isRecursion(node)) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
-        });
+        );
 
         mousedown(event);
     };
@@ -86,14 +93,13 @@ export const withDnd = (board: PlaitBoard) => {
             setIsDragging(board, true);
 
             fakeDropNodeG?.remove();
-            fakeDropNodeG = createG();
             const detectPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             dropTarget = detectDropTarget(board, detectPoint, dropTarget, activeElement);
             if (dropTarget?.target) {
                 dropTarget = readjustmentDropTarget(board, dropTarget);
-                drawFakeDropNode(board, dropTarget, fakeDropNodeG);
+                fakeDropNodeG = drawFakeDropNode(board, dropTarget);
+                PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
             }
-            PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
 
             const offsetX = endPoint[0] - startPoint[0];
             const offsetY = endPoint[1] - startPoint[1];

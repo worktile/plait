@@ -24,11 +24,8 @@ import { isStandardLayout } from '@plait/layouts';
 import { isMixedLayout } from '../layout';
 import { PlaitMindBoard } from '../../plugins/with-extend-mind';
 
-export const drawFakeDropNode = (
-    board: PlaitBoard,
-    dropTarget: { target: MindElement; detectResult: DetectResult },
-    fakeDropNodeG: SVGGElement | undefined
-) => {
+export const drawFakeDropNode = (board: PlaitBoard, dropTarget: { target: MindElement; detectResult: DetectResult }) => {
+    const fakeDropNodeG = createG();
     const targetComponent = PlaitElement.getComponent(dropTarget.target) as MindNodeComponent;
     const targetRect = getRectangleByNode(targetComponent.node);
     if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
@@ -48,6 +45,7 @@ export const drawFakeDropNode = (
             fakeDropNodeG
         );
     }
+    return fakeDropNodeG;
 };
 
 export const drawCurvePlaceholderDropNodeG = (
