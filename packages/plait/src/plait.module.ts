@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { PlaitBoardComponent } from './board/board.component';
 import { PlaitElementComponent } from './core/element/element.component';
 import { PlaitToolbarComponent } from './core/toolbar/toolbar.component';
@@ -9,7 +9,7 @@ const COMPONENTS = [PlaitBoardComponent, PlaitChildrenElement, PlaitElementCompo
 
 @NgModule({
     declarations: [...COMPONENTS],
-    imports: [BrowserModule],
+    imports: [CommonModule],
     exports: [...COMPONENTS]
 })
 export class PlaitModule {}
