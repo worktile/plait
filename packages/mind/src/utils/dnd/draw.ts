@@ -1,10 +1,13 @@
-import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../constants';
-import { drawLink } from '../draw/link';
-import { DetectResult, MindElement, MindNode } from '../interfaces';
-import { MindNodeComponent } from '../node.component';
-import { getRectangleByNode } from './graph';
-import { PlaitBoard, PlaitElement, Point, drawRoundRectangle } from '@plait/core';
-import { MindQueries } from '../queries';
+import { getRichtextRectangleByNode } from '../../draw/richtext';
+import { drawRectangleNode } from '../../draw/shape';
+import { updateForeignObject } from '@plait/richtext';
+import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../../constants';
+import { drawLink } from '../../draw/link';
+import { DetectResult, MindElement, MindNode } from '../../interfaces';
+import { MindNodeComponent } from '../../node.component';
+import { getRectangleByNode } from '../graph';
+import { PlaitBoard, PlaitElement, Point, drawRoundRectangle, createG } from '@plait/core';
+import { MindQueries } from '../../queries';
 import {
     getNonAbstractChildren,
     isBottomLayout,
@@ -15,16 +18,14 @@ import {
     isVerticalLogicLayout,
     MindLayoutType
 } from '@plait/layouts';
-import { drawIndentedLink } from '../draw/indented-link';
+import { drawIndentedLink } from '../../draw/indented-link';
 import { isLeftLayout, isTopLayout } from '@plait/layouts';
 import { isStandardLayout } from '@plait/layouts';
-import { isMixedLayout } from './layout';
+import { isMixedLayout } from '../layout';
+import { PlaitMindBoard } from '../../plugins/with-extend-mind';
 
-export const drawPlaceholderDropNodeG = (
-    board: PlaitBoard,
-    dropTarget: { target: MindElement; detectResult: DetectResult },
-    fakeDropNodeG: SVGGElement | undefined
-) => {
+export const drawFakeDropNode = (board: PlaitBoard, dropTarget: { target: MindElement; detectResult: DetectResult }) => {
+    const fakeDropNodeG = createG();
     const targetComponent = PlaitElement.getComponent(dropTarget.target) as MindNodeComponent;
     const targetRect = getRectangleByNode(targetComponent.node);
     if (dropTarget.detectResult && ['right', 'left'].includes(dropTarget.detectResult)) {
@@ -44,6 +45,7 @@ export const drawPlaceholderDropNodeG = (
             fakeDropNodeG
         );
     }
+    return fakeDropNodeG;
 };
 
 export const drawCurvePlaceholderDropNodeG = (
@@ -183,6 +185,7 @@ export const drawCurvePlaceholderDropNodeG = (
     fakeDropNodeG?.appendChild(linkSVGG);
     fakeDropNodeG?.appendChild(fakeRectangleG);
 };
+
 export const drawStraightDropNodeG = (
     board: PlaitBoard,
     targetRect: {
@@ -430,4 +433,31 @@ export const drawIndentNodeG = (
     );
     fakeDropNodeG?.appendChild(linkSVGG);
     fakeDropNodeG?.appendChild(fakeRectangleG);
+};
+
+export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeComponent, offsetX: number, offsetY: number) => {
+    const dragFakeNodeG = createG();
+    dragFakeNodeG.classList.add('dragging', 'fake-node', 'plait-board-attached');
+
+    const fakeDraggingNode: MindNode = {
+        ...activeComponent.node,
+        children: [],
+        x: activeComponent.node.x + offsetX,
+        y: activeComponent.node.y + offsetY
+    };
+    const textRectangle = getRichtextRectangleByNode(board as PlaitMindBoard, activeComponent.node);
+    const fakeNodeG = drawRectangleNode(board, fakeDraggingNode);
+
+    const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
+    updateForeignObject(
+        richtextG,
+        textRectangle.width + BASE * 10,
+        textRectangle.height,
+        textRectangle.x + offsetX,
+        textRectangle.y + offsetY
+    );
+
+    dragFakeNodeG?.append(fakeNodeG);
+    dragFakeNodeG?.append(richtextG);
+    return dragFakeNodeG;
 };

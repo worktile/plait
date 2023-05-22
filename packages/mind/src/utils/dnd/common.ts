@@ -1,6 +1,6 @@
-import { MindElement } from '../interfaces/element';
-import { MindNodeComponent } from '../node.component';
-import { isChildElement } from './mind';
+import { MindElement } from '../../interfaces/element';
+import { MindNodeComponent } from '../../node.component';
+import { findUpElement, isChildElement } from '../mind';
 import { Path, PlaitBoard, Transforms, ELEMENT_TO_COMPONENT, PlaitElement } from '@plait/core';
 import {
     isHorizontalLogicLayout,
@@ -12,15 +12,14 @@ import {
     isBottomLayout,
     isVerticalLogicLayout
 } from '@plait/layouts';
-import { PlaitMind } from '../interfaces/element';
-import { DetectResult, MindNode } from '../interfaces/node';
-import { deleteElementHandleAbstract, findUpElement, insertElementHandleAbstract } from '../utils';
-import { PlaitMindComponent } from '../mind.component';
-import { MindTransforms } from '../transforms';
+import { PlaitMind } from '../../interfaces/element';
+import { DetectResult } from '../../interfaces/node';
+import { PlaitMindComponent } from '../../mind.component';
+import { MindTransforms } from '../../transforms';
 
-export const isValidTarget = (origin: MindElement, target: MindElement) => {
-    return origin !== target && !isChildElement(origin, target);
-};
+import { deleteElementHandleAbstract, insertElementHandleAbstract } from '../abstract/common';
+
+export const IS_DRAGGING = new WeakMap<PlaitBoard, boolean>();
 
 export const addActiveOnDragOrigin = (activeElement: MindElement, isOrigin = true) => {
     const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
@@ -135,8 +134,6 @@ export const updateRightNodeCount = (
         }
     }
 };
-
-const IS_DRAGGING = new WeakMap<PlaitBoard, boolean>();
 
 export const isDragging = (board: PlaitBoard) => {
     return !!IS_DRAGGING.get(board);
