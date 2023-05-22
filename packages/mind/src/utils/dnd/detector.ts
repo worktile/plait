@@ -1,8 +1,6 @@
 import { MindElement } from '../../interfaces/element';
-import { PlaitBoard, ELEMENT_TO_COMPONENT, PlaitElement, Point } from '@plait/core';
-import { PlaitMind } from '../../interfaces/element';
+import { PlaitBoard, PlaitElement, Point, depthFirstRecursion } from '@plait/core';
 import { DetectResult, MindNode } from '../../interfaces/node';
-import { PlaitMindComponent } from '../../mind.component';
 import { getRectangleByNode } from '../graph';
 import { MindQueries } from '../../queries';
 import { isMixedLayout } from '../layout';
@@ -93,31 +91,31 @@ export const detectDropTarget = (
     activeElement: MindElement
 ) => {
     let detectResult: DetectResult[] | null = null;
-    board.children.forEach((value: PlaitElement) => {
-        if (detectResult) {
-            return;
+    depthFirstRecursion(
+        (board as unknown) as MindElement,
+        element => {
+            if (!MindElement.isMindElement(board, element) || detectResult) {
+                return;
+            }
+            const node = MindElement.getNode(element);
+            const directions = directionDetector(node, detectPoint);
+
+            if (directions) {
+                detectResult = directionCorrector(board, node, directions);
+            }
+            dropTarget = null;
+            if (detectResult && isValidTarget(activeElement, node.origin)) {
+                dropTarget = { target: node.origin, detectResult: detectResult[0] };
+            }
+        },
+        node => {
+            if (PlaitBoard.isBoard(node) || board.isRecursion(node)) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        if (PlaitMind.isMind(value)) {
-            const mindComponent = ELEMENT_TO_COMPONENT.get(value) as PlaitMindComponent;
-            const root = mindComponent?.root;
-
-            (root as any).eachNode((node: MindNode) => {
-                if (detectResult) {
-                    return;
-                }
-                const directions = directionDetector(node, detectPoint);
-
-                if (directions) {
-                    detectResult = directionCorrector(board, node, directions);
-                }
-                dropTarget = null;
-                if (detectResult && isValidTarget(activeElement, node.origin)) {
-                    dropTarget = { target: node.origin, detectResult: detectResult[0] };
-                }
-            });
-        }
-    });
-
+    );
     return dropTarget;
 };
 
