@@ -63,7 +63,8 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (this.initialized) {
             const isActive = isSelectedElement(this.board, value.element);
             if (this.perviousStatus === 'default' && isActive) {
-                this.drawActiveMask(value.element);
+                this.setActiveNodeToTop();
+                this.drawActiveMask();
                 this.drawHandles();
             }
             if (this.perviousStatus === 'active' && !isActive) {
@@ -72,6 +73,12 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             }
             this.perviousStatus = isActive ? 'active' : 'default';
         }
+    }
+
+    setActiveNodeToTop() {
+        const parentElement = this.g.parentElement;
+        this.g.remove();
+        parentElement?.append(this.g);
     }
 
     drawElement(element: FlowNode = this.element) {

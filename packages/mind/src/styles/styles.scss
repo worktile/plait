@@ -25,20 +25,6 @@ g[plait-mindmap='true'] {
     .dragging-child {
         opacity: 0.6;
     }
-
-    .node-emojis-container {
-        display: flex;
-        position: initial;
-        align-items: center;
-        height: 100%;
-        ::-moz-selection {
-            /* Code for Firefox */
-            background: none;
-        }
-        ::selection {
-            background: none;
-        }
-    }
 }
 
 .plait-board-container {
@@ -105,11 +91,25 @@ g[plait-mindmap='true'] {
     &.abstract-resizing-vertical {
         cursor: ew-resize;
     }
-}
 
-.fake-node {
-    .dragging {
-        cursor: pointer;
-        opacity: 0.6;
+    .node-emojis-container {
+        display: flex;
+        position: initial;
+        align-items: center;
+        height: 100%;
+        ::-moz-selection {
+            /* Code for Firefox */
+            background: none;
+        }
+        ::selection {
+            background: none;
+        }
+    }
+
+    .fake-node {
+        &.dragging {
+            cursor: pointer;
+            opacity: 0.6;
+        }
     }
 }

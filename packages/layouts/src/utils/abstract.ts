@@ -3,16 +3,20 @@ import { LayoutTreeNode } from '../interfaces/layout-tree-node';
 import { AbstractNode } from '../interfaces/mind';
 import { isStandardLayout } from './layout';
 
-export const getNonAbstractChildren = <T extends { children: T[] } = LayoutNode | LayoutTreeNode>(parentNode: T) => {
-    return parentNode.children.filter(child => {
-        if (child instanceof LayoutNode) {
-            return !AbstractNode.isAbstract(child.origin);
-        }
-        if (child instanceof LayoutTreeNode) {
-            return !AbstractNode.isAbstract(child.origin.origin);
-        }
-        return !AbstractNode.isAbstract(child);
-    });
+export const getNonAbstractChildren = <T extends { children?: T[] } = LayoutNode | LayoutTreeNode>(parentNode: T) => {
+    if (parentNode.children) {
+        return parentNode.children?.filter(child => {
+            if (child instanceof LayoutNode) {
+                return !AbstractNode.isAbstract(child.origin);
+            }
+            if (child instanceof LayoutTreeNode) {
+                return !AbstractNode.isAbstract(child.origin.origin);
+            }
+            return !AbstractNode.isAbstract(child);
+        });
+    } else {
+        return [];
+    }
 };
 
 export const findAbstractByEndNode = <T extends { children: T[] } = LayoutNode | LayoutTreeNode>(parentNode: T, endNode: T) => {

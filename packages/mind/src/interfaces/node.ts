@@ -1,5 +1,5 @@
 import { MindLayoutType } from '@plait/layouts';
-import { Path, PlaitElement, Point } from '@plait/core';
+import { Path } from '@plait/core';
 import { MindElement } from './element';
 
 export interface MindNode {
@@ -28,20 +28,10 @@ export const MindNode = {
             node = node.children[p];
         }
         return node;
-    },
-    isEquals(node: MindNode, otherNode: MindNode) {
-        const hasSameSize =
-            node.x === otherNode.x && node.y === otherNode.y && node.width === otherNode.width && node.height === otherNode.height;
-        const hasSameOrigin = node.origin === otherNode.origin;
-        let hasSameParentOriginChildren = false;
-        if (node.parent && otherNode.parent) {
-            hasSameParentOriginChildren = node.parent.origin.children == otherNode.parent.origin.children;
-        }
-        return hasSameSize && hasSameOrigin && hasSameParentOriginChildren;
     }
 };
 
-// mindmap node extend 支持的布局类型
+// mind node extend 支持的布局类型
 export type ExtendLayoutType = Exclude<MindLayoutType, MindLayoutType.standard>;
 
 export type CoordinateType = {

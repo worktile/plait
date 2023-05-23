@@ -1,5 +1,47 @@
 # layouts
 
+## 0.2.0
+
+### Minor Changes
+
+-   [`304f2b9`](https://github.com/worktile/plait/commit/304f2b9a613266e5f73b4d3b3403f6ad7aa1b9a2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename package name to mind
+
+### Patch Changes
+
+-   [#341](https://github.com/worktile/plait/pull/341) [`c8a88a7`](https://github.com/worktile/plait/commit/c8a88a74d3c7b430841791c04a89cc70a570ea7a) Thanks [@WBbug](https://github.com/WBbug)! - change layout when node is abstract
+
+*   [#360](https://github.com/worktile/plait/pull/360) [`f074b85`](https://github.com/worktile/plait/commit/f074b85b37ef008f50c09ee09288bbc08f455008) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - get correct layout when node is abstract or child of abstract
+
+-   [#330](https://github.com/worktile/plait/pull/330) [`55a4d32`](https://github.com/worktile/plait/commit/55a4d322455416600da7eb26431052de4f58050f) Thanks [@WBbug](https://github.com/WBbug)! - add abstract
+
+*   [#342](https://github.com/worktile/plait/pull/342) [`005b600`](https://github.com/worktile/plait/commit/005b600391db12d114d4a9b85cf1538e8f2e0834) Thanks [@WBbug](https://github.com/WBbug)! - fix abstract layout in standard layout
+
+-   [#345](https://github.com/worktile/plait/pull/345) [`77d7075`](https://github.com/worktile/plait/commit/77d7075c491e85216a29f8f4133f9de5a433a3dc) Thanks [@WBbug](https://github.com/WBbug)! - let abstract always behind
+
+*   [`6580ea0`](https://github.com/worktile/plait/commit/6580ea08c93f67ecca69594964abf6dd632da0ce) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename mindmap to mind
+
+-   [#343](https://github.com/worktile/plait/pull/343) [`a714c5a`](https://github.com/worktile/plait/commit/a714c5aacd454c35747fa599642ee8c866893c5d) Thanks [@WBbug](https://github.com/WBbug)! - fix get wrong length
+
+*   [#336](https://github.com/worktile/plait/pull/336) [`08379df`](https://github.com/worktile/plait/commit/08379dfa822039a1ca81c121e41aeb3c34efccbd) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor abstract util method
+
+-   [#368](https://github.com/worktile/plait/pull/368) [`196c4bc`](https://github.com/worktile/plait/commit/196c4bc30a22308b0fb04b8f183e06762a3c5ae1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify getCorrectLayoutByElement logic to fit abstract layout
+
+*   [#362](https://github.com/worktile/plait/pull/362) [`a8623c8`](https://github.com/worktile/plait/commit/a8623c87e930b69b180d67b509eb643f2184f76d) Thanks [@WBbug](https://github.com/WBbug)! - fix get wrong layout
+
+-   [#364](https://github.com/worktile/plait/pull/364) [`64ab8fd`](https://github.com/worktile/plait/commit/64ab8fd5ae6b523f7b7a1358afb72fe113f48660) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle overall abstract when copy node and paste
+
+## 0.2.0-next.9
+
+### Patch Changes
+
+-   [#360](https://github.com/worktile/plait/pull/360) [`f074b85`](https://github.com/worktile/plait/commit/f074b85b37ef008f50c09ee09288bbc08f455008) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - get correct layout when node is abstract or child of abstract
+
+*   [#368](https://github.com/worktile/plait/pull/368) [`196c4bc`](https://github.com/worktile/plait/commit/196c4bc30a22308b0fb04b8f183e06762a3c5ae1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify getCorrectLayoutByElement logic to fit abstract layout
+
+-   [#362](https://github.com/worktile/plait/pull/362) [`a8623c8`](https://github.com/worktile/plait/commit/a8623c87e930b69b180d67b509eb643f2184f76d) Thanks [@WBbug](https://github.com/WBbug)! - fix get wrong layout
+
+*   [#364](https://github.com/worktile/plait/pull/364) [`64ab8fd`](https://github.com/worktile/plait/commit/64ab8fd5ae6b523f7b7a1358afb72fe113f48660) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle overall abstract when copy node and paste
+
 ## 0.2.0-next.3
 
 ### Patch Changes

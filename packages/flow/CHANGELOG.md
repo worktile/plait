@@ -1,5 +1,31 @@
 # @plait/flow
 
+## 0.2.0
+
+### Minor Changes
+
+-   [#321](https://github.com/worktile/plait/pull/321) [`fe2bbb6`](https://github.com/worktile/plait/commit/fe2bbb60e0a452f98383a81eff0fb77a32f7ddc7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor plait core plugin element component structure
+
+*   [`304f2b9`](https://github.com/worktile/plait/commit/304f2b9a613266e5f73b4d3b3403f6ad7aa1b9a2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename package name to mind
+
+### Patch Changes
+
+-   [#359](https://github.com/worktile/plait/pull/359) [`7b3f522`](https://github.com/worktile/plait/commit/7b3f5227ba13acb0a0fa6a7259a18286c7e139e3) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - set g node to top when focus
+
+*   [`da64e36`](https://github.com/worktile/plait/commit/da64e36cda13300ea6c30535dfdb4a6525f70482) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename isIntersect to isHit and fix isHit float calculate error
+
+-   [#314](https://github.com/worktile/plait/pull/314) [`67fa76c`](https://github.com/worktile/plait/commit/67fa76c1070609adec4c5c06262f0828ddaa6867) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support delete element
+
+*   [#354](https://github.com/worktile/plait/pull/354) [`92849f3`](https://github.com/worktile/plait/commit/92849f3fb1739b100000d31593c5f21fa9b4905a) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add injector for CustomBoard
+
+-   [#314](https://github.com/worktile/plait/pull/314) [`67fa76c`](https://github.com/worktile/plait/commit/67fa76c1070609adec4c5c06262f0828ddaa6867) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support create edge
+
+## 0.2.0-next.3
+
+### Patch Changes
+
+-   [#359](https://github.com/worktile/plait/pull/359) [`7b3f522`](https://github.com/worktile/plait/commit/7b3f5227ba13acb0a0fa6a7259a18286c7e139e3) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - set g node to top when focus
+
 ## 0.2.0-next.2
 
 ### Patch Changes

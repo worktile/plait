@@ -1,7 +1,7 @@
 import { PlaitBoard, PlaitElement, Point, RectangleClient, getRectangleByElements, getSelectedElements } from '@plait/core';
 import { AbstractHandlePosition, MindElement } from '../../interfaces';
 import { AbstractNode, LayoutNode, MindLayoutType, isHorizontalLayout } from '@plait/layouts';
-import { ABSTRACT_HANDLE_MASK_WIDTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../../constants';
+import { ABSTRACT_HANDLE_MASK_WIDTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../../constants/abstract-node';
 import { MindQueries } from '../../queries';
 import { getCorrectStartEnd } from '@plait/layouts';
 import { MindNodeComponent } from '../../node.component';
@@ -120,7 +120,7 @@ export const getLocationScope = (
 };
 
 export const getHitAbstractHandle = (board: PlaitBoard, element: MindElement, point: Point) => {
-    const nodeLayout = MindQueries.getCorrectLayoutByElement(element) as MindLayoutType;
+    const nodeLayout = MindQueries.getCorrectLayoutByElement(board, element) as MindLayoutType;
     const isHorizontal = isHorizontalLayout(nodeLayout);
 
     const parentElement = MindElement.getParent(element);

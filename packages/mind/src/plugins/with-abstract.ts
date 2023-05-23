@@ -57,7 +57,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
             event.preventDefault();
             const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;
             const element = abstractComponent.element;
-            const nodeLayout = MindQueries.getCorrectLayoutByElement(activeAbstractElement as MindElement) as MindLayoutType;
+            const nodeLayout = MindQueries.getCorrectLayoutByElement(board, activeAbstractElement as MindElement) as MindLayoutType;
             const isHorizontal = isHorizontalLayout(nodeLayout);
             const parentElement = MindElement.getParent(element);
 

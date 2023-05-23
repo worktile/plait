@@ -1,23 +1,16 @@
 import { PlaitBoard, createG } from '@plait/core';
-import { MindElement, BaseData, ExtendUnderlineCoordinateType, ExtendLayoutType, PlaitMind } from '../interfaces';
+import { MindElement, BaseData, ExtendUnderlineCoordinateType, ExtendLayoutType, PlaitMind, MindElementShape } from '../interfaces';
 import { AfterDraw, BaseDrawer } from './base/base';
 import { getRectangleByNode } from '../utils/graph';
-import { getNodeShapeByElement } from '../utils/shape';
-import {
-    EXTEND_RADIUS,
-    QUICK_INSERT_CIRCLE_COLOR,
-    QUICK_INSERT_CIRCLE_OFFSET,
-    QUICK_INSERT_INNER_CROSS_COLOR,
-    STROKE_WIDTH
-} from '../constants/default';
-import { MindNodeShape } from '../constants/node';
+import { getShapeByElement } from '../utils/node-style/shape';
+import { EXTEND_RADIUS, QUICK_INSERT_CIRCLE_COLOR, QUICK_INSERT_CIRCLE_OFFSET, QUICK_INSERT_INNER_CROSS_COLOR } from '../constants/default';
 import { MindLayoutType, OriginNode, isStandardLayout } from '@plait/layouts';
 import { MindQueries } from '../queries';
 import { fromEvent } from 'rxjs';
 import { insertMindElement } from '../utils/mind';
 import { take } from 'rxjs/operators';
 import { findNewChildNodePath } from '../utils/path';
-import { getBranchColorByMindElement, getNextBranchColor } from '../utils/node-style/branch';
+import { getBranchColorByMindElement, getBranchWidthByMindElement, getNextBranchColor } from '../utils/node-style/branch';
 
 export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
     canDraw(element: MindElement<BaseData>): boolean {
@@ -41,16 +34,16 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
          *    3. 上、上左、上右
          *    4. 下、下左、下右
          */
-        const shape = getNodeShapeByElement(element);
+        const shape = getShapeByElement(this.board, element);
         // 形状是矩形要偏移边框的线宽
-        const strokeWidth = element.branchWidth ? element.branchWidth : STROKE_WIDTH;
+        const branchWidth = getBranchWidthByMindElement(this.board, element);
         let offsetBorderLineWidth = 0;
-        if (shape === MindNodeShape.roundRectangle && offset === 0) {
-            offsetBorderLineWidth = strokeWidth;
+        if (shape === MindElementShape.roundRectangle && offset === 0) {
+            offsetBorderLineWidth = branchWidth;
         }
         let offsetRootBorderLineWidth = 0;
         if (element.isRoot) {
-            offsetRootBorderLineWidth = strokeWidth;
+            offsetRootBorderLineWidth = branchWidth;
         }
         // 当没有子节点时，需要缩小的偏移量
         const extraOffset = 3;
@@ -156,14 +149,14 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                     offsetRootBorderLineWidth
             }
         };
-        if (shape === MindNodeShape.roundRectangle || element.isRoot) {
+        if (shape === MindElementShape.roundRectangle || element.isRoot) {
             underlineCoordinates[MindLayoutType.left].startY -= height * 0.5;
             underlineCoordinates[MindLayoutType.left].endY -= height * 0.5;
             underlineCoordinates[MindLayoutType.right].startY -= height * 0.5;
             underlineCoordinates[MindLayoutType.right].endY -= height * 0.5;
         }
         const branchColor = PlaitMind.isMind(element) ? getNextBranchColor(element) : getBranchColorByMindElement(this.board, element);
-        let nodeLayout = MindQueries.getCorrectLayoutByElement(element) as ExtendLayoutType;
+        let nodeLayout = MindQueries.getCorrectLayoutByElement(this.board, element) as ExtendLayoutType;
         if (element.isRoot && isStandardLayout(nodeLayout)) {
             const root = element as OriginNode;
             nodeLayout = root.children.length >= root.rightNodeCount ? MindLayoutType.left : MindLayoutType.right;
@@ -175,7 +168,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
                 underlineCoordinate.startY,
                 underlineCoordinate.endX,
                 underlineCoordinate.endY,
-                { stroke: branchColor, strokeWidth }
+                { stroke: branchColor, strokeWidth: branchWidth }
             );
             const circleCoordinates = {
                 startX: underlineCoordinate.endX,

@@ -1,18 +1,20 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { MindNodeShape, STROKE_WIDTH } from '../../constants';
 import { MindNode } from '../../interfaces/node';
 import { PlaitBoard, Point } from '@plait/core';
-import { getRectangleByNode } from '../../utils';
+import { getRectangleByNode, getShapeByElement } from '../../utils';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
-import { getBranchColorByMindElement } from '../../utils/node-style/branch';
+import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../../utils/node-style/branch';
+import { MindElementShape } from '../../interfaces/element';
 
 export function drawLogicLink(board: PlaitBoard, node: MindNode, parent: MindNode, isHorizontal: boolean) {
     const branchColor = getBranchColorByMindElement(board, node.origin);
-    const strokeWidth = node.origin.branchWidth ? node.origin.branchWidth : STROKE_WIDTH;
+    const branchWidth = getBranchWidthByMindElement(board, node.origin);
     const hasStraightLine = !parent.origin.isRoot;
-    const hasUnderlineShape = node.origin.shape === MindNodeShape.underline;
-    const hasUnderlineShapeOfParent = parent.origin.shape === MindNodeShape.underline;
+    const parentShape = getShapeByElement(board, parent.origin);
+    const shape = node.origin.shape ? node.origin.shape : parentShape;
+    const hasUnderlineShape = shape === MindElementShape.underline;
+    const hasUnderlineShapeOfParent = parentShape === MindElementShape.underline;
     const nodeClient = getRectangleByNode(node);
     const parentClient = getRectangleByNode(parent);
     const linkDirection = getLayoutDirection(node, isHorizontal);
@@ -57,5 +59,5 @@ export function drawLogicLink(board: PlaitBoard, node: MindNode, parent: MindNod
     const underline: Point[] = hasUnderlineShape && isHorizontal ? [underlineEnd, underlineEnd, underlineEnd] : [];
 
     const points = pointsOnBezierCurves([...straightLine, ...curve, ...underline]);
-    return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke: branchColor, strokeWidth });
+    return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke: branchColor, strokeWidth: branchWidth });
 }

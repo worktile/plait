@@ -12,7 +12,7 @@ import {
 import { PlaitBoard } from '../../interfaces/board';
 import { PlaitElement } from '../../interfaces/element';
 import { PlaitPluginElementContext } from './context';
-import { ELEMENT_TO_COMPONENT, PlaitPluginElementComponent } from './plugin-element';
+import { PlaitPluginElementComponent } from './plugin-element';
 import { PlaitEffect } from '../children/effect';
 import { Ancestor, PlaitNode } from '../../interfaces/node';
 import { NODE_TO_INDEX, NODE_TO_PARENT } from '../../utils/weak-maps';
@@ -74,8 +74,8 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
             if (this.index > 0) {
                 const brotherElement = (this.parent.children as PlaitElement[])[this.index - 1];
                 const lastElement = PlaitNode.last(this.board, PlaitBoard.findPath(this.board, brotherElement));
-                const siblingElement = lastElement || brotherElement;
-                siblingG = PlaitElement.getComponent(siblingElement).g;
+                let component = PlaitElement.getComponent(lastElement) || PlaitElement.getComponent(brotherElement);
+                siblingG = component.g;
             }
             this.parentG.insertBefore(g, siblingG);
         }

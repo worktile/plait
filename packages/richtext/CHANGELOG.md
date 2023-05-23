@@ -1,5 +1,15 @@
 # richtext
 
+## 0.2.0
+
+### Minor Changes
+
+-   [`304f2b9`](https://github.com/worktile/plait/commit/304f2b9a613266e5f73b4d3b3403f6ad7aa1b9a2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename package name to mind
+
+### Patch Changes
+
+-   [#339](https://github.com/worktile/plait/pull/339) [`da6c2d9`](https://github.com/worktile/plait/commit/da6c2d953cd64b5e9fd67bd7615e4524e82658b6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - limit mind node max word count
+
 ## 0.2.0-next.0
 
 ### Minor Changes

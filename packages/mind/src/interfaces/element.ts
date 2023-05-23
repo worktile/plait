@@ -1,4 +1,3 @@
-import { MindNodeShape } from '../constants/node';
 import { isIndentedLayout, MindLayoutType } from '@plait/layouts';
 import { NODE_TO_PARENT, Path, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
 import { MindQueries } from '../queries';
@@ -17,7 +16,7 @@ export interface MindElement<T = BaseData> extends PlaitElement {
     fill?: string;
     strokeColor?: string;
     strokeWidth?: number;
-    shape?: MindNodeShape;
+    shape?: MindElementShape;
 
     // link style attributes
     branchColor?: string;
@@ -67,6 +66,13 @@ export const MindElement = {
         const parent = NODE_TO_PARENT.get(node) as MindElement;
         return parent;
     },
+    findParent(node: MindElement) {
+        if (PlaitMind.isMind(node)) {
+            return undefined;
+        }
+        const parent = NODE_TO_PARENT.get(node) as MindElement;
+        return parent;
+    },
     getRoot(board: PlaitBoard, element: MindElement) {
         const path = PlaitBoard.findPath(board, element);
         return PlaitNode.get(board, path.slice(0, 1)) as PlaitMind;
@@ -89,6 +95,13 @@ export const MindElement = {
         }
         return node;
     },
+    findParentNode(element: MindElement) {
+        if (PlaitMind.isMind(element)) {
+            return undefined;
+        }
+        const parent = MindElement.getParent(element);
+        return MindElement.getNode(parent);
+    },
     hasEmojis(element: MindElement): element is MindElement<EmojiData> {
         if (element.data.emojis) {
             return true;
@@ -100,3 +113,8 @@ export const MindElement = {
         return element.data.emojis;
     }
 };
+
+export enum MindElementShape {
+    roundRectangle = 'round-rectangle',
+    underline = 'underline'
+}

@@ -14,7 +14,9 @@ import {
     Transforms,
     Range,
     depthFirstRecursion,
-    PlaitElement
+    PlaitElement,
+    Path,
+    Selection
 } from '@plait/core';
 import { getSizeByText } from '@plait/richtext';
 import { MindElement, PlaitMind } from '../interfaces';
@@ -25,10 +27,9 @@ import {
     changeRightNodeCount,
     insertMindElement,
     deleteSelectedELements,
-    filterChildElement,
-    findParentElement,
+    getFirstLevelElement,
     shouldChangeRightNodeCount,
-    insertSiblingElementHandleAbstract
+    insertElementHandleAbstract
 } from '../utils';
 import { getRectangleByNode, hitMindElement } from '../utils/graph';
 import { isVirtualKey } from '../utils/is-virtual-key';
@@ -37,9 +38,11 @@ import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertCl
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEditing } from '../utils/node';
-import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants';
 import { withAbstract } from './with-abstract';
 import { withExtendMind } from './with-extend-mind';
+import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
+import { MindTransforms } from '../transforms';
+import { isHitEmojis } from './emoji/emoji';
 
 export const withMind = (board: PlaitBoard) => {
     const {
@@ -81,7 +84,11 @@ export const withMind = (board: PlaitBoard) => {
     board.isHitSelection = (element, range: Range) => {
         if (MindElement.isMindElement(board, element) && board.selection) {
             const client = getRectangleByNode(MindElement.getNode(element));
-            return RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
+            const isHit = RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
+            if (isHit && MindElement.hasEmojis(element) && Selection.isCollapsed(range) && isHitEmojis(board, element, range.anchor)) {
+                return false;
+            }
+            return isHit;
         }
         return isHitSelection(element, range);
     };
@@ -122,7 +129,8 @@ export const withMind = (board: PlaitBoard) => {
                         changeRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
                     }
 
-                    insertSiblingElementHandleAbstract(board, selectedElement);
+                    const abstractRefs = insertElementHandleAbstract(board, Path.next(selectedElementPath));
+                    MindTransforms.setAbstractsByRefs(board, abstractRefs);
 
                     insertMindElement(board, selectedElement, findNewSiblingNodePath(board, selectedElement));
                 }
@@ -131,31 +139,34 @@ export const withMind = (board: PlaitBoard) => {
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
                 deleteSelectedELements(board, selectedElements);
-                let lastNode: MindNode | any = null;
-                const firstLevelElements = filterChildElement(selectedElements);
+
+                let activeElement: MindElement | undefined;
+                const firstLevelElements = getFirstLevelElement(selectedElements);
+
+                if (AbstractNode.isAbstract(firstLevelElements[0])) {
+                    const parent = MindElement.getParent(firstLevelElements[0]);
+                    activeElement = parent.children[firstLevelElements[0].start];
+                }
+
                 const firstElement = firstLevelElements[0];
-                const firstComponent = PlaitElement.getComponent(firstElement) as MindNodeComponent;
-                const nodeIndex = firstComponent?.parent?.children.findIndex(item => item.origin.id === firstElement.id);
-                const isSameParent = firstLevelElements.every(element => {
-                    return findParentElement(element) && findParentElement(firstLevelElements[0]) === findParentElement(element);
+                const firstElementParent = MindElement.findParent(firstElement);
+                const hasSameParent = firstLevelElements.every(element => {
+                    return MindElement.findParent(element) === firstElementParent;
                 });
-                if (isSameParent) {
-                    const childCount = firstComponent!.parent?.children.length - firstLevelElements.length;
-                    if (childCount === 0) {
-                        lastNode = firstComponent?.parent;
-                    } else if (nodeIndex === 0) {
-                        lastNode = firstComponent?.parent.children[firstLevelElements.length];
-                    } else if (nodeIndex! > 0) {
-                        lastNode = firstComponent?.parent.children[nodeIndex! - 1];
+                if (firstElementParent && hasSameParent && !activeElement) {
+                    const firstElementIndex = firstElementParent.children.indexOf(firstElement);
+                    const childrenCount = firstElementParent.children.length;
+                    // active parent element
+                    if (childrenCount === firstLevelElements.length) {
+                        activeElement = firstElementParent;
+                    } else {
+                        if (firstElementIndex > 0) {
+                            activeElement = firstElementParent.children[firstElementIndex - 1];
+                        }
                     }
                 }
-
-                if (firstLevelElements.length === 1 && AbstractNode.isAbstract(firstElement)) {
-                    lastNode = firstComponent.parent.children[firstElement.start];
-                }
-
-                if (lastNode) {
-                    addSelectedElement(board, lastNode.origin);
+                if (activeElement) {
+                    addSelectedElement(board, activeElement);
                 }
                 return;
             }
@@ -185,8 +196,8 @@ export const withMind = (board: PlaitBoard) => {
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         board.children
             .filter(value => PlaitMind.isMind(value))
-            .forEach(mindmap => {
-                depthFirstRecursion<MindElement>(mindmap as MindElement, node => {
+            .forEach(mindMap => {
+                depthFirstRecursion<MindElement>(mindMap as MindElement, node => {
                     if (!PlaitBoard.hasBeenTextEditing(board) && hitMindElement(board, point, node)) {
                         enterNodeEditing(node);
                     }
@@ -199,8 +210,7 @@ export const withMind = (board: PlaitBoard) => {
     };
 
     board.setFragment = (data: DataTransfer | null) => {
-        const selectedElements = filterChildElement(getSelectedElements(board) as MindElement[]);
-
+        const selectedElements = getFirstLevelElement(getSelectedElements(board) as MindElement[]);
         if (selectedElements.length) {
             const elements = buildClipboardData(board, selectedElements);
             setClipboardData(data, elements);

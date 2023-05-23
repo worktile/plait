@@ -1,7 +1,7 @@
 import { BOARD_TO_HOST } from '../utils/weak-maps';
 import { PlaitBoard } from '../interfaces/board';
 import { isInPlaitBoard, transformPoint } from '../utils/board';
-import { toPoint } from '../utils/dom';
+import { toPoint } from '../utils/dom/common';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';

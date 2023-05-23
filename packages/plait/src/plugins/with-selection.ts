@@ -2,7 +2,7 @@ import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
-import { toPoint } from '../utils/dom';
+import { toPoint } from '../utils/dom/common';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import {
     cacheSelectedElements,
@@ -14,6 +14,7 @@ import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
+import { throttleRAF } from '../utils';
 
 export function withSelection(board: PlaitBoard) {
     const { mousedown, globalMousemove, globalMouseup, onChange } = board;
@@ -56,7 +57,11 @@ export function withSelection(board: PlaitBoard) {
             selectionMovingG?.remove();
             if (Math.hypot(width, height) > 5) {
                 end = movedTarget;
-                Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
+                throttleRAF(() => {
+                    if (start && end) {
+                        Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
+                    }
+                });
                 setSelectionMoving(board);
                 const rough = PlaitBoard.getRoughSVG(board);
                 selectionMovingG = rough.rectangle(x, y, width, height, {

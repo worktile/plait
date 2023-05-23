@@ -1,4 +1,4 @@
-import { AbstractNode, MindLayoutType } from '@plait/layouts';
+import { MindLayoutType } from '@plait/layouts';
 import {
     addSelectedElement,
     clearSelectedElement,
@@ -11,31 +11,24 @@ import {
     Transforms
 } from '@plait/core';
 import { Node } from 'slate';
-import { MindNodeShape, NODE_MIN_WIDTH, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node';
-import { MindNode, PlaitMind } from '../interfaces';
+import { NODE_MIN_WIDTH } from '../constants/node-rule';
+import { MindElementShape, MindNode } from '../interfaces';
 import { MindElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node';
-import { MindNodeComponent } from '../node.component';
-import { getBehindAbstracts, getCorrespondingAbstract } from './abstract/common';
-
-export function findParentElement(element: MindElement): MindElement | undefined {
-    const component = PlaitElement.getComponent(element) as MindNodeComponent;
-    if (component && component.parent) {
-        return component.parent.origin;
-    }
-    return undefined;
-}
+import { deleteElementHandleAbstract } from './abstract/common';
+import { ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
+import { MindTransforms } from '../transforms';
 
 export function findUpElement(element: MindElement): { root: MindElement; branch?: MindElement } {
     let branch;
     let root = element;
-    let parent = findParentElement(element);
+    let parent = MindElement.findParent(element);
     while (parent) {
         branch = root;
         root = parent;
-        parent = findParentElement(parent);
+        parent = MindElement.findParent(parent);
     }
     return { root, branch };
 }
@@ -48,17 +41,17 @@ export const getChildrenCount = (element: MindElement) => {
 };
 
 export const isChildElement = (origin: MindElement, child: MindElement) => {
-    let parent = findParentElement(child);
+    let parent = MindElement.findParent(child);
     while (parent) {
         if (parent === origin) {
             return true;
         }
-        parent = findParentElement(parent);
+        parent = MindElement.findParent(parent);
     }
     return false;
 };
 
-export const filterChildElement = (elements: MindElement[]) => {
+export const getFirstLevelElement = (elements: MindElement[]) => {
     let result: MindElement[] = [];
     elements.forEach(element => {
         const isChild = elements.some(node => {
@@ -178,7 +171,7 @@ export const changeRightNodeCount = (board: PlaitBoard, parentPath: Path, change
 };
 
 export const shouldChangeRightNodeCount = (selectedElement: MindElement) => {
-    const parentElement = findParentElement(selectedElement);
+    const parentElement = MindElement.findParent(selectedElement);
     if (parentElement) {
         const nodeIndex: number = parentElement.children.findIndex(item => item.id === selectedElement.id);
         if (
@@ -194,13 +187,13 @@ export const shouldChangeRightNodeCount = (selectedElement: MindElement) => {
 };
 
 export const createDefaultMindMapElement = (point: Point, rightNodeCount: number, layout: MindLayoutType) => {
-    const root = createMindElement('思维导图', 72, ROOT_DEFAULT_HEIGHT, { shape: MindNodeShape.roundRectangle, layout });
+    const root = createMindElement('思维导图', 72, ROOT_DEFAULT_HEIGHT, { shape: MindElementShape.roundRectangle, layout });
     root.rightNodeCount = rightNodeCount;
     root.isRoot = true;
     root.type = 'mindmap';
     root.points = [point];
     const children = [1, 1, 1].map(() => {
-        return createMindElement('新建节点', 56, TEXT_DEFAULT_HEIGHT, { shape: MindNodeShape.roundRectangle });
+        return createMindElement('新建节点', 56, TEXT_DEFAULT_HEIGHT, { shape: MindElementShape.roundRectangle });
     });
     root.children = children;
     return root;
@@ -214,9 +207,10 @@ export const createMindElement = (
         fill?: string;
         strokeColor?: string;
         strokeWidth?: number;
-        shape?: MindNodeShape;
+        shape?: MindElementShape;
         layout?: MindLayoutType;
         branchColor?: string;
+        branchWidth?: number;
     }
 ) => {
     const newElement: MindElement = {
@@ -250,6 +244,9 @@ export const createMindElement = (
     if (options.branchColor) {
         newElement.branchColor = options.branchColor;
     }
+    if (!isNullOrUndefined(options.branchWidth)) {
+        newElement.branchWidth = options.branchWidth;
+    }
     return newElement;
 };
 
@@ -258,14 +255,14 @@ export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, p
     let fill,
         strokeColor,
         strokeWidth,
-        shape = MindNodeShape.roundRectangle;
+        shape = MindElementShape.roundRectangle;
     if (!inheritNode.isRoot) {
         fill = inheritNode.fill;
         strokeColor = inheritNode.strokeColor;
         strokeWidth = inheritNode.strokeWidth;
     }
 
-    shape = inheritNode.shape as MindNodeShape;
+    shape = inheritNode.shape as MindElementShape;
 
     const newElement = createMindElement('', NODE_MIN_WIDTH, TEXT_DEFAULT_HEIGHT, { fill, strokeColor, strokeWidth, shape });
 
@@ -286,67 +283,25 @@ export const findLastChild = (child: MindNode) => {
 };
 
 export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindElement[]) => {
+    const deletableElements = getFirstLevelElement(selectedElements).reverse();
+
+    const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
+    MindTransforms.setAbstractsByRefs(board, abstractRefs);
+
     //翻转，从下到上修改，防止找不到 path
-    const deletableElements = filterChildElement(selectedElements).reverse();
-    const relativeAbstracts: MindElement[] = [];
-    const accumulativeProperties = new WeakMap<MindElement, { start: number; end: number }>();
-
-    deletableElements.forEach(node => {
-        if (!PlaitMind.isMind(node)) {
-            const behindAbstracts = getBehindAbstracts(node).filter(abstract => !deletableElements.includes(abstract));
-            if (behindAbstracts.length) {
-                behindAbstracts.forEach(abstract => {
-                    let newProperties = accumulativeProperties.get(abstract);
-                    if (!newProperties) {
-                        newProperties = { start: abstract.start!, end: abstract.end! };
-                        accumulativeProperties.set(abstract, newProperties);
-                        relativeAbstracts.push(abstract);
-                    }
-                    newProperties.start = newProperties.start - 1;
-                    newProperties.end = newProperties.end - 1;
-                });
-            }
-
-            const correspondingAbstract = getCorrespondingAbstract(node);
-            if (correspondingAbstract && !deletableElements.includes(correspondingAbstract)) {
-                let newProperties = accumulativeProperties.get(correspondingAbstract);
-                if (!newProperties) {
-                    newProperties = { start: correspondingAbstract.start!, end: correspondingAbstract.end! };
-                    accumulativeProperties.set(correspondingAbstract, newProperties);
-                    relativeAbstracts.push(correspondingAbstract);
-                }
-                newProperties.end = newProperties.end - 1;
-            }
-        }
-    });
-
-    const abstractHandles = relativeAbstracts.map(value => {
-        const newProperties = accumulativeProperties.get(value);
-        if (newProperties) {
-            const path = PlaitBoard.findPath(board, value as MindElement);
+    deletableElements
+        .map(element => {
+            const path = PlaitBoard.findPath(board, element);
             return () => {
-                if (newProperties.start > newProperties.end) {
-                    Transforms.removeNode(board, path);
-                } else {
-                    Transforms.setNode(board, newProperties, path);
+                if (shouldChangeRightNodeCount(element)) {
+                    changeRightNodeCount(board, path.slice(0, 1), -1);
                 }
+                Transforms.removeNode(board, path);
             };
-        }
-        return () => {};
-    });
-
-    const deletableHandles = deletableElements.map(node => {
-        const path = PlaitBoard.findPath(board, node);
-        return () => {
-            if (shouldChangeRightNodeCount(node)) {
-                changeRightNodeCount(board, path.slice(0, path.length - 1), -1);
-            }
-            Transforms.removeNode(board, path);
-        };
-    });
-
-    abstractHandles.forEach(action => action());
-    deletableHandles.forEach(action => action());
+        })
+        .forEach(action => {
+            action();
+        });
 };
 
 export const divideElementByParent = (elements: MindElement[]) => {

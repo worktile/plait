@@ -1,5 +1,6 @@
 import { drawAbstractRoundRectangle, createG, getRectangleByElements, PlaitBoard, RectangleClient } from '@plait/core';
-import { ABSTRACT_HANDLE_COLOR, ABSTRACT_HANDLE_LENGTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET, PRIMARY_COLOR } from '../constants';
+import { PRIMARY_COLOR } from '../constants';
+import { ABSTRACT_HANDLE_COLOR, ABSTRACT_HANDLE_LENGTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../constants/abstract-node';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { AbstractHandlePosition, MindElement } from '../interfaces';
 import { MindLayoutType, isHorizontalLayout } from '@plait/layouts';
@@ -18,7 +19,7 @@ export function drawAbstractIncludedOutline(
     const abstractIncludedG = createG();
 
     const parentElement = MindElement.getParent(element);
-    const nodeLayout = MindQueries.getCorrectLayoutByElement(element) as MindLayoutType;
+    const nodeLayout = MindQueries.getCorrectLayoutByElement(board, element) as MindLayoutType;
     const isHorizontal = isHorizontalLayout(nodeLayout);
 
     const includedElements = parentElement.children.slice(element.start!, element.end! + 1);
