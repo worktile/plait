@@ -25,3 +25,26 @@ export function createText(x: number, y: number, fill: string, textContent: stri
     text.textContent = textContent;
     return text;
 }
+
+/**
+ * Check if a DOM node is an element node.
+ */
+export const isDOMElement = (value: any): value is Element => {
+    return isDOMNode(value) && value.nodeType === 1;
+};
+
+/**
+ * Check if a value is a DOM node.
+ */
+export const isDOMNode = (value: any): value is Node => {
+    return value instanceof window.Node;
+};
+
+export const hasInputOrTextareaTarget = (target: EventTarget | null) => {
+    if (isDOMElement(target)) {
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+            return true;
+        }
+    }
+    return false;
+};

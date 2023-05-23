@@ -13,7 +13,6 @@ import {
     OnDestroy,
     OnInit,
     Output,
-    Renderer2,
     SimpleChanges,
     TemplateRef,
     ViewChild
@@ -58,6 +57,7 @@ import { isHotkey } from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
 import { Point } from '../interfaces/point';
 import { withMoving } from '../plugins/with-moving';
+import { hasInputOrTextareaTarget } from '../utils/dom/common';
 
 const ElementHostClass = 'element-host';
 
@@ -253,7 +253,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<KeyboardEvent>(document, 'keydown')
             .pipe(
                 takeUntil(this.destroy$),
-                filter(() => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board))
+                filter(
+                    event =>
+                        this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board) && !hasInputOrTextareaTarget(event.target)
+                )
             )
             .subscribe((event: KeyboardEvent) => {
                 if (isHotkey(['mod+=', 'mod++'], { byKey: true })(event)) {
