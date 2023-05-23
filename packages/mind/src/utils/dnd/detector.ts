@@ -1,5 +1,5 @@
 import { MindElement } from '../../interfaces/element';
-import { PlaitBoard, PlaitElement, Point, depthFirstRecursion } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, depthFirstRecursion, Path, BoardTransforms, ELEMENT_TO_COMPONENT } from '@plait/core';
 import { DetectResult, MindNode } from '../../interfaces/node';
 import { getRectangleByNode } from '../graph';
 import { MindQueries } from '../../queries';
@@ -7,6 +7,7 @@ import { isMixedLayout } from '../layout';
 import {
     MindLayoutType,
     getNonAbstractChildren,
+    isHorizontalLogicLayout,
     isIndentedLayout,
     isStandardLayout,
     isTopLayout,
@@ -14,7 +15,8 @@ import {
 } from '@plait/layouts';
 import { MindNodeComponent } from '../../node.component';
 import { isBottomLayout, isRightLayout, isLeftLayout, AbstractNode } from '@plait/layouts';
-import { isChildElement } from '../mind';
+import { findUpElement, isChildElement } from '../mind';
+import { PlaitMindComponent } from '../../mind.component';
 
 /**
  *
@@ -265,4 +267,54 @@ export const readjustmentDropTarget = (
 
 export const isValidTarget = (origin: MindElement, target: MindElement) => {
     return origin !== target && !isChildElement(origin, target);
+};
+
+export const getPathByDropTarget = (board: PlaitBoard, dropTarget: { target: MindElement; detectResult: DetectResult }) => {
+    let targetPath = PlaitBoard.findPath(board, dropTarget?.target);
+    const mindElement = findUpElement(dropTarget.target).root;
+    const mindComponent = ELEMENT_TO_COMPONENT.get(mindElement) as PlaitMindComponent;
+    const layout = MindQueries.getCorrectLayoutByElement(board, mindComponent?.root.origin);
+
+    // 上下布局：左右是兄弟节点，上下是子节点
+    if (isVerticalLogicLayout(layout)) {
+        if (isTopLayout(layout) && dropTarget.detectResult === 'top') {
+            targetPath.push(dropTarget.target.children.length);
+        }
+        if (isBottomLayout(layout) && dropTarget.detectResult === 'bottom') {
+            targetPath.push(dropTarget.target.children.length);
+        }
+        // 如果是左，位置不变，右则插入到下一个兄弟节点
+        if (dropTarget.detectResult === 'right') {
+            targetPath = Path.next(targetPath);
+        }
+    }
+    // 水平布局/标准布局：上下是兄弟节点，左右是子节点
+    if (isHorizontalLogicLayout(layout)) {
+        if (dropTarget.detectResult === 'right') {
+            targetPath.push(dropTarget.target.children.length);
+        }
+        if (dropTarget.detectResult === 'left') {
+            targetPath.push(dropTarget.target.children.length);
+        }
+        // 如果是上，位置不变，下插入到下一个兄弟节点
+        if (dropTarget.detectResult === 'bottom') {
+            targetPath = Path.next(targetPath);
+        }
+    }
+    // 缩进布局：上下是兄弟节点，左右是子节点，但上（左上/右上），探测到上是子节点，下则位置不变，反之同理。
+    if (isIndentedLayout(layout)) {
+        if (isTopLayout(layout) && dropTarget.detectResult === 'top') {
+            targetPath = Path.next(targetPath);
+        }
+        if (isBottomLayout(layout) && dropTarget.detectResult === 'bottom') {
+            targetPath = Path.next(targetPath);
+        }
+        if (isLeftLayout(layout) && dropTarget.detectResult === 'left') {
+            targetPath.push(dropTarget.target.children.length);
+        }
+        if (isRightLayout(layout) && dropTarget.detectResult === 'right') {
+            targetPath.push(dropTarget.target.children.length);
+        }
+    }
+    return targetPath;
 };
