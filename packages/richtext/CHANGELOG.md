@@ -1,5 +1,11 @@
 # richtext
 
+## 0.2.2
+
+### Patch Changes
+
+-   [#371](https://github.com/worktile/plait/pull/371) [`3f81f9e`](https://github.com/worktile/plait/commit/3f81f9e3bc16e8465994011e7fd4c18493279298) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - use CommonModule instead of BrowserModule
+
 ## 0.2.0
 
 ### Minor Changes
