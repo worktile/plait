@@ -1,17 +1,7 @@
 import { MindElement } from '../../interfaces/element';
 import { MindNodeComponent } from '../../node.component';
-import { findUpElement, isChildElement } from '../mind';
+import { findUpElement } from '../mind';
 import { Path, PlaitBoard, Transforms, ELEMENT_TO_COMPONENT, PlaitElement } from '@plait/core';
-import {
-    isHorizontalLogicLayout,
-    isIndentedLayout,
-    isLeftLayout,
-    isRightLayout,
-    isTopLayout,
-    MindLayoutType,
-    isBottomLayout,
-    isVerticalLogicLayout
-} from '@plait/layouts';
 import { PlaitMind } from '../../interfaces/element';
 import { DetectResult } from '../../interfaces/node';
 import { PlaitMindComponent } from '../../mind.component';
@@ -45,55 +35,6 @@ export const removeActiveOnDragOrigin = (activeElement: MindElement, isOrigin = 
         activeElement.children.forEach(child => {
             removeActiveOnDragOrigin(child, false);
         });
-};
-
-export const updatePathByLayoutAndDropTarget = (
-    targetPath: Path,
-    layout: MindLayoutType,
-    dropTarget: { target: MindElement; detectResult: DetectResult }
-) => {
-    // 上下布局：左右是兄弟节点，上下是子节点
-    if (isVerticalLogicLayout(layout)) {
-        if (isTopLayout(layout) && dropTarget.detectResult === 'top') {
-            targetPath.push(dropTarget.target.children.length);
-        }
-        if (isBottomLayout(layout) && dropTarget.detectResult === 'bottom') {
-            targetPath.push(dropTarget.target.children.length);
-        }
-        // 如果是左，位置不变，右则插入到下一个兄弟节点
-        if (dropTarget.detectResult === 'right') {
-            targetPath = Path.next(targetPath);
-        }
-    }
-    // 水平布局/标准布局：上下是兄弟节点，左右是子节点
-    if (isHorizontalLogicLayout(layout)) {
-        if (dropTarget.detectResult === 'right') {
-            targetPath.push(dropTarget.target.children.length);
-        }
-        if (dropTarget.detectResult === 'left') {
-            targetPath.push(dropTarget.target.children.length);
-        }
-        // 如果是上，位置不变，下插入到下一个兄弟节点
-        if (dropTarget.detectResult === 'bottom') {
-            targetPath = Path.next(targetPath);
-        }
-    }
-    // 缩进布局：上下是兄弟节点，左右是子节点，但上（左上/右上），探测到上是子节点，下则位置不变，反之同理。
-    if (isIndentedLayout(layout)) {
-        if (isTopLayout(layout) && dropTarget.detectResult === 'top') {
-            targetPath = Path.next(targetPath);
-        }
-        if (isBottomLayout(layout) && dropTarget.detectResult === 'bottom') {
-            targetPath = Path.next(targetPath);
-        }
-        if (isLeftLayout(layout) && dropTarget.detectResult === 'left') {
-            targetPath.push(dropTarget.target.children.length);
-        }
-        if (isRightLayout(layout) && dropTarget.detectResult === 'right') {
-            targetPath.push(dropTarget.target.children.length);
-        }
-    }
-    return targetPath;
 };
 
 export const updateRightNodeCount = (

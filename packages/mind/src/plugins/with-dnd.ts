@@ -1,5 +1,4 @@
 import {
-    createG,
     distanceBetweenPointAndPoint,
     IS_TEXT_EDITABLE,
     Path,
@@ -9,27 +8,18 @@ import {
     toPoint,
     transformPoint,
     Transforms,
-    ELEMENT_TO_COMPONENT,
     getSelectedElements,
     depthFirstRecursion
 } from '@plait/core';
 import { AbstractNode, isStandardLayout } from '@plait/layouts';
-import { MindElement, PlaitMind } from '../interfaces/element';
+import { MindElement } from '../interfaces/element';
 import { DetectResult } from '../interfaces/node';
 import { MindNodeComponent } from '../node.component';
 import { findUpElement } from '../utils';
 import { hitMindElement } from '../utils/graph';
 import { MindQueries } from '../queries';
-import { PlaitMindComponent } from '../mind.component';
-import {
-    isDragging,
-    removeActiveOnDragOrigin,
-    setIsDragging,
-    updateAbstractInDnd,
-    updatePathByLayoutAndDropTarget,
-    updateRightNodeCount
-} from '../utils/dnd/common';
-import { detectDropTarget, readjustmentDropTarget } from '../utils/dnd/detector';
+import { isDragging, removeActiveOnDragOrigin, setIsDragging, updateAbstractInDnd, updateRightNodeCount } from '../utils/dnd/common';
+import { detectDropTarget, readjustmentDropTarget, getPathByDropTarget } from '../utils/dnd/detector';
 import { drawFakeDragNode, drawFakeDropNode } from '../utils/dnd/draw';
 
 const DRAG_MOVE_BUFFER = 5;
@@ -42,6 +32,7 @@ export const withDnd = (board: PlaitBoard) => {
     let dragFakeNodeG: SVGGElement | undefined;
     let fakeDropNodeG: SVGGElement | undefined;
     let dropTarget: { target: MindElement; detectResult: DetectResult } | null = null;
+    let targetPath: Path;
 
     board.mousedown = (event: MouseEvent) => {
         if (board.options.readonly || IS_TEXT_EDITABLE.get(board) || event.button === 2) {
@@ -99,6 +90,8 @@ export const withDnd = (board: PlaitBoard) => {
                 dropTarget = readjustmentDropTarget(board, dropTarget);
                 fakeDropNodeG = drawFakeDropNode(board, dropTarget);
                 PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
+
+                targetPath = getPathByDropTarget(board, dropTarget);
             }
 
             const offsetX = endPoint[0] - startPoint[0];
@@ -117,14 +110,11 @@ export const withDnd = (board: PlaitBoard) => {
             if (dropTarget?.target) {
                 const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
                 const targetComponent = PlaitElement.getComponent(dropTarget.target) as MindNodeComponent;
-                let targetPath = PlaitBoard.findPath(board, targetComponent.element);
                 const mindElement = findUpElement(dropTarget.target).root;
-                const mindComponent = ELEMENT_TO_COMPONENT.get(mindElement as PlaitMind) as PlaitMindComponent;
-                const layout = MindQueries.getCorrectLayoutByElement(board, mindComponent?.root.origin as MindElement);
-                targetPath = updatePathByLayoutAndDropTarget(targetPath, layout, dropTarget);
-                const originPath = PlaitBoard.findPath(board, activeComponent.element);
+                const layout = MindQueries.getCorrectLayoutByElement(board, mindElement);
+                const originPath = PlaitBoard.findPath(board, activeElement);
                 let newElement: Partial<MindElement> = { isCollapsed: false },
-                    rightTargetPath = PlaitBoard.findPath(board, targetComponent.element);
+                    rightTargetPath = PlaitBoard.findPath(board, dropTarget.target);
 
                 updateAbstractInDnd(board, [activeElement], targetPath);
 
@@ -136,10 +126,10 @@ export const withDnd = (board: PlaitBoard) => {
                     if (targetComponent.node.origin.isRoot) {
                         targetPath = PlaitBoard.findPath(board, targetComponent.element);
                         targetPath.push(0);
-                        const rightNodeCount = (targetComponent.node.origin.rightNodeCount as number) + 1;
+                        const rightNodeCount = targetComponent.node.origin.rightNodeCount! + 1;
                         newElement = { isCollapsed: false, rightNodeCount };
                     }
-                    Transforms.setNode(board, newElement, rightTargetPath as Path);
+                    Transforms.setNode(board, newElement, rightTargetPath);
                 }
 
                 Transforms.moveNode(board, originPath, targetPath);
