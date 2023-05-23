@@ -1,1 +1,1 @@
-export * from './context/board';
+export * from './core';
