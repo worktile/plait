@@ -1,5 +1,13 @@
 # plait
 
+## 0.2.1
+
+### Patch Changes
+
+-   [`2f6d340`](https://github.com/worktile/plait/commit/2f6d34091f53fcee298e77ace9c3996e9a326db2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent key down handle when target has input or textarea target
+
+*   [`c5f4abd`](https://github.com/worktile/plait/commit/c5f4abd3ad0c98706e4128a86d360d7b65a4939e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct the draw order of root elements
+
 ## 0.2.0
 
 ### Minor Changes
