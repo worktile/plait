@@ -28,7 +28,7 @@ export const PlaitNode = {
             yield n;
         }
     },
-    get(root: PlaitBoard, path: Path): PlaitNode {
+    get<T extends PlaitNode = PlaitNode>(root: PlaitBoard, path: Path): T {
         let node: Ancestor = root;
         for (let i = 0; i < path.length; i++) {
             const p = path[i];
@@ -37,7 +37,7 @@ export const PlaitNode = {
             }
             node = node.children[p];
         }
-        return node as PlaitNode;
+        return node as T;
     },
     last(board: PlaitBoard, path: Path) {
         let n = PlaitNode.get(board, path);

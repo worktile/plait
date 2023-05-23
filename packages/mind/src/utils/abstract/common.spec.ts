@@ -1,7 +1,22 @@
-import { PlaitElement, createTestingBoard } from '@plait/core';
+import { PlaitElement, PlaitNode, createTestingBoard } from '@plait/core';
 import { getCorrespondingAbstract } from './common';
+import { MindElement } from '../../interfaces';
 
-export const getTestingChildren = () => {
+describe('abstract common', () => {
+    it('get corresponding abstract', () => {
+        const children = getTestingChildren();
+        const board = createTestingBoard([], children);
+        const first = PlaitNode.get<MindElement>(board, [0, 0]);
+        const third = PlaitNode.get<MindElement>(board, [0, 2]);
+        const abstract = PlaitNode.get<MindElement>(board, [0, 3]);
+        const firstResult = getCorrespondingAbstract(first);
+        const thirdResult = getCorrespondingAbstract(third);
+        expect(firstResult).toEqual(abstract);
+        expect(thirdResult).toEqual(undefined);
+    });
+});
+
+export const getTestingChildren = (): PlaitElement[] => {
     return [
         {
             type: 'mindmap',
@@ -34,17 +49,3 @@ export const getTestingChildren = () => {
         }
     ];
 };
-
-describe('abstract common', () => {
-    it('get corresponding abstract', () => {
-        const children = getTestingChildren();
-        const first = children[0].children[0];
-        const third = children[0].children[2];
-        const abstract = children[0].children[3];
-        createTestingBoard([], (children as unknown) as PlaitElement[]);
-        const firstResult = getCorrespondingAbstract(first);
-        const thirdResult = getCorrespondingAbstract(third);
-        expect(firstResult).toEqual(abstract);
-        expect(thirdResult).toEqual(undefined);
-    });
-});
