@@ -68,7 +68,7 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
 
     insertG(g: SVGGElement) {
         if (PlaitBoard.isBoard(this.parent)) {
-            this.parentG.prepend(g);
+            this.parentG.append(g);
         } else {
             let siblingG = PlaitElement.getComponent(this.parent).g;
             if (this.index > 0) {
