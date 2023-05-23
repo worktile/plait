@@ -1,4 +1,4 @@
-export * from './graph';
+export * from './position';
 export * from './weak-maps';
 export * from './mind';
 export * from './layout';

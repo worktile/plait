@@ -1,7 +1,7 @@
 import { PlaitBoard, createG } from '@plait/core';
 import { MindElement, BaseData, ExtendUnderlineCoordinateType, ExtendLayoutType, PlaitMind, MindElementShape } from '../interfaces';
 import { AfterDraw, BaseDrawer } from './base/base';
-import { getRectangleByNode } from '../utils/graph';
+import { getRectangleByNode } from '../utils/position/node';
 import { getShapeByElement } from '../utils/node-style/shape';
 import { EXTEND_RADIUS, QUICK_INSERT_CIRCLE_COLOR, QUICK_INSERT_CIRCLE_OFFSET, QUICK_INSERT_INNER_CROSS_COLOR } from '../constants/default';
 import { MindLayoutType, OriginNode, isStandardLayout } from '@plait/layouts';

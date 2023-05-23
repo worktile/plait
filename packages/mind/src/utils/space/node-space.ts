@@ -1,9 +1,9 @@
-import { BASE } from '../constants/default';
-import { PlaitMind } from '../interfaces/element';
-import { MindElement } from '../interfaces/element';
-import { PlaitMindBoard } from '../plugins/with-extend-mind';
-import { EmojiData } from '../interfaces/element-data';
-import { getEmojisWidthHeight } from '../plugins/emoji/emoji';
+import { BASE } from '../../constants/default';
+import { PlaitMind } from '../../interfaces/element';
+import { MindElement } from '../../interfaces/element';
+import { PlaitMindBoard } from '../../plugins/with-extend-mind';
+import { EmojiData } from '../../interfaces/element-data';
+import { getEmojisWidthHeight } from '../../plugins/emoji/emoji';
 
 const NodeDefaultSpace = {
     horizontal: {

@@ -30,15 +30,15 @@ export const separateChildren = (parentElement: MindElement) => {
 };
 
 export const isSetAbstract = (element: PlaitElement) => {
-    const parent = MindElement.getParent(element as MindElement);
-    return !!getCorrespondingAbstract(parent, element as MindElement);
+    return !!getCorrespondingAbstract(element as MindElement);
 };
 
 export const canSetAbstract = (element: PlaitElement) => {
     return !PlaitElement.isRootElement(element) && !AbstractNode.isAbstract(element) && !isSetAbstract(element);
 };
 
-export const getCorrespondingAbstract = (parent: MindElement, element: MindElement) => {
+export const getCorrespondingAbstract = (element: MindElement) => {
+    const parent = MindElement.findParent(element as MindElement);
     if (!parent) return undefined;
 
     const elementIndex = parent.children.indexOf(element);
@@ -47,7 +47,9 @@ export const getCorrespondingAbstract = (parent: MindElement, element: MindEleme
     });
 };
 
-export const getBehindAbstracts = (parent: MindElement, element: MindElement) => {
+export const getBehindAbstracts = (element: MindElement) => {
+    const parent = MindElement.findParent(element as MindElement);
+    if (!parent) return [];
     const index = parent.children.indexOf(element);
     return parent.children.filter(child => AbstractNode.isAbstract(child) && child.start! > index);
 };
@@ -57,8 +59,7 @@ export const getOverallAbstracts = (board: PlaitBoard, elements: MindElement[]) 
     elements
         .filter(value => !AbstractNode.isAbstract(value) && !PlaitMind.isMind(value))
         .forEach(value => {
-            const parent = MindElement.getParent(value);
-            const abstract = getCorrespondingAbstract(parent, value);
+            const abstract = getCorrespondingAbstract(value);
             if (abstract && overallAbstracts.indexOf(abstract) === -1) {
                 const { start, end } = abstract;
                 const parent = MindElement.getParent(value);
@@ -86,7 +87,7 @@ export const insertElementHandleAbstract = (
         behindAbstracts = parent.children.filter(child => AbstractNode.isAbstract(child));
     } else {
         const selectedElement = PlaitNode.get(board, Path.previous(path)) as MindElement;
-        behindAbstracts = getBehindAbstracts(parent, selectedElement);
+        behindAbstracts = getBehindAbstracts(selectedElement);
     }
 
     if (behindAbstracts.length) {
@@ -106,7 +107,7 @@ export const insertElementHandleAbstract = (
     }
 
     const selectedElement = PlaitNode.get(board, Path.previous(path)) as MindElement;
-    const correspondingAbstract = getCorrespondingAbstract(parent, selectedElement);
+    const correspondingAbstract = getCorrespondingAbstract(selectedElement);
     const isDragToLast = !isExtendPreviousNode && correspondingAbstract && correspondingAbstract.end === path[path.length - 1] - 1;
 
     if (correspondingAbstract && !isDragToLast) {
@@ -128,9 +129,7 @@ export const deleteElementHandleAbstract = (
 ) => {
     deletableElements.forEach(node => {
         if (!PlaitMind.isMind(node)) {
-            const parent = PlaitNode.parent(board, PlaitBoard.findPath(board, node)) as MindElement;
-
-            const behindAbstracts = getBehindAbstracts(parent, node).filter(abstract => !deletableElements.includes(abstract));
+            const behindAbstracts = getBehindAbstracts(node).filter(abstract => !deletableElements.includes(abstract));
             if (behindAbstracts.length) {
                 behindAbstracts.forEach(abstract => {
                     let newProperties = abstractRefs.get(abstract);
@@ -143,7 +142,7 @@ export const deleteElementHandleAbstract = (
                 });
             }
 
-            const correspondingAbstract = getCorrespondingAbstract(parent, node);
+            const correspondingAbstract = getCorrespondingAbstract(node);
             if (correspondingAbstract && !deletableElements.includes(correspondingAbstract)) {
                 let newProperties = abstractRefs.get(correspondingAbstract);
                 if (!newProperties) {

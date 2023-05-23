@@ -1,11 +1,10 @@
-import { getRichtextRectangleByNode } from '../../draw/richtext';
 import { drawRectangleNode } from '../../draw/shape';
 import { updateForeignObject } from '@plait/richtext';
 import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../../constants';
 import { drawLink } from '../../draw/link';
 import { DetectResult, MindElement, MindNode } from '../../interfaces';
 import { MindNodeComponent } from '../../node.component';
-import { getRectangleByNode } from '../graph';
+import { getRectangleByNode } from '../position/node';
 import { PlaitBoard, PlaitElement, Point, drawRoundRectangle, createG } from '@plait/core';
 import { MindQueries } from '../../queries';
 import {
@@ -23,6 +22,7 @@ import { isLeftLayout, isTopLayout } from '@plait/layouts';
 import { isStandardLayout } from '@plait/layouts';
 import { isMixedLayout } from '../layout';
 import { PlaitMindBoard } from '../../plugins/with-extend-mind';
+import { getTopicRectangleByNode } from '../position/topic';
 
 export const drawFakeDropNode = (board: PlaitBoard, dropTarget: { target: MindElement; detectResult: DetectResult }) => {
     const fakeDropNodeG = createG();
@@ -445,7 +445,7 @@ export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeCom
         x: activeComponent.node.x + offsetX,
         y: activeComponent.node.y + offsetY
     };
-    const textRectangle = getRichtextRectangleByNode(board as PlaitMindBoard, activeComponent.node);
+    const textRectangle = getTopicRectangleByNode(board as PlaitMindBoard, activeComponent.node);
     const fakeNodeG = drawRectangleNode(board, fakeDraggingNode);
 
     const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;

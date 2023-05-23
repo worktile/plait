@@ -10,7 +10,7 @@ import {
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { copyNewNode, extractNodesText, transformNodeToRoot, transformRootToNode, createMindElement, transformAbstractToNode } from '.';
-import { getRectangleByNode } from './graph';
+import { getRectangleByNode } from './position/node';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { getOverallAbstracts } from './abstract/common';
 
