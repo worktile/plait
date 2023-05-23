@@ -2,4 +2,4 @@
 '@plait/mind': patch
 ---
 
-change updatePathByLayoutAndDropTarget function
+change updatePathByLayoutAndDropTarget function of dnd
