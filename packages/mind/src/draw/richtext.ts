@@ -2,10 +2,10 @@ import { ViewContainerRef } from '@angular/core';
 import { drawRichtext, updateForeignObject } from '@plait/richtext';
 import { MindNode } from '../interfaces/node';
 import { PlaitMindBoard } from '../plugins/with-extend-mind';
-import { getRichtextRectangleByNode } from '../utils/position/topic';
+import { getTopicRectangleByNode } from '../utils/position/topic';
 
 export function drawMindNodeRichtext(board: PlaitMindBoard, node: MindNode, viewContainerRef: ViewContainerRef) {
-    const { x, y, width, height } = getRichtextRectangleByNode(board, node);
+    const { x, y, width, height } = getTopicRectangleByNode(board, node);
     const classList = [];
     if (node.origin.isRoot) {
         classList.push('root-node');
@@ -20,7 +20,7 @@ export function drawMindNodeRichtext(board: PlaitMindBoard, node: MindNode, view
 }
 
 export function updateMindNodeTopicSize(board: PlaitMindBoard, node: MindNode, g: SVGGElement, isEditable: boolean) {
-    const { x, y, width, height } = getRichtextRectangleByNode(board, node);
+    const { x, y, width, height } = getTopicRectangleByNode(board, node);
     if (isEditable) {
         // add 999， avoid changing lines when paste more text
         updateForeignObject(g, width + 999, height + 999, x, y);

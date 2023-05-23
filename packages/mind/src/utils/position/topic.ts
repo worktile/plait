@@ -3,7 +3,7 @@ import { PlaitMindBoard } from '../../plugins/with-extend-mind';
 import { NodeSpace } from '../space/node-space';
 import { getRectangleByNode } from './node';
 
-export function getRichtextRectangleByNode(board: PlaitMindBoard, node: MindNode) {
+export function getTopicRectangleByNode(board: PlaitMindBoard, node: MindNode) {
     let { x, y } = getRectangleByNode(node);
     x = x + NodeSpace.getTextLeftSpace(board, node.origin);
     y = y + NodeSpace.getTextTopSpace(node.origin);

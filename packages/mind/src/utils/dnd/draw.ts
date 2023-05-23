@@ -22,7 +22,7 @@ import { isLeftLayout, isTopLayout } from '@plait/layouts';
 import { isStandardLayout } from '@plait/layouts';
 import { isMixedLayout } from '../layout';
 import { PlaitMindBoard } from '../../plugins/with-extend-mind';
-import { getRichtextRectangleByNode } from '../position/topic';
+import { getTopicRectangleByNode } from '../position/topic';
 
 export const drawFakeDropNode = (board: PlaitBoard, dropTarget: { target: MindElement; detectResult: DetectResult }) => {
     const fakeDropNodeG = createG();
@@ -445,7 +445,7 @@ export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeCom
         x: activeComponent.node.x + offsetX,
         y: activeComponent.node.y + offsetY
     };
-    const textRectangle = getRichtextRectangleByNode(board as PlaitMindBoard, activeComponent.node);
+    const textRectangle = getTopicRectangleByNode(board as PlaitMindBoard, activeComponent.node);
     const fakeNodeG = drawRectangleNode(board, fakeDraggingNode);
 
     const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;

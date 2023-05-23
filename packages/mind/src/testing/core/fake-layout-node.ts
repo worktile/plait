@@ -24,7 +24,7 @@ export const updateMindNodeLocation = (mind: PlaitMind, root: MindNode) => {
     });
 };
 
-export const clearWeakMap = (root: MindNode) => {
+export const clearLayoutNodeWeakMap = (root: MindNode) => {
     depthFirstRecursion<MindNode>(root, node => {
         ELEMENT_TO_NODE.delete(node.origin);
     });
