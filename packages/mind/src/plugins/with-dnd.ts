@@ -87,11 +87,11 @@ export const withDnd = (board: PlaitBoard) => {
             const detectPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             dropTarget = detectDropTarget(board, detectPoint, dropTarget, activeElement);
             if (dropTarget?.target) {
+                targetPath = getPathByDropTarget(board, dropTarget);
+
                 dropTarget = readjustmentDropTarget(board, dropTarget);
                 fakeDropNodeG = drawFakeDropNode(board, dropTarget);
                 PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
-
-                targetPath = getPathByDropTarget(board, dropTarget);
             }
 
             const offsetX = endPoint[0] - startPoint[0];
