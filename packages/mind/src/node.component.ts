@@ -50,7 +50,7 @@ import { drawRectangleNode } from './draw/shape';
 import { MindElement, PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
-import { getRectangleByNode, hitMindElement } from './utils/graph';
+import { getRectangleByNode, isHitMindElement } from './utils/position/node';
 import { getChildrenCount } from './utils/mind';
 import { getShapeByElement } from './utils/node-style/shape';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
@@ -662,7 +662,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         });
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
             const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
-            const clickInNode = hitMindElement(this.board, point, this.element);
+            const clickInNode = isHitMindElement(this.board, point, this.element);
             if (clickInNode && !hasEditableTarget(richtextInstance.editor, event.target)) {
                 event.preventDefault();
             } else if (!clickInNode) {

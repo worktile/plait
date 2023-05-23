@@ -1,6 +1,6 @@
 import { PlaitBoard, getRectangleByElements } from '@plait/core';
 import { MindNode } from '../../interfaces/node';
-import { getRectangleByNode } from '../../utils/graph';
+import { getRectangleByNode } from '../../utils/position/node';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
 import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../../utils/point-placement';
 import { getAbstractBranchColor, getAbstractBranchWidth } from '../../utils/node-style/branch';

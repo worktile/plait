@@ -1,9 +1,9 @@
 import { ConnectingPosition, LayoutNode, LayoutOptions, OriginNode, isHorizontalLayout, isHorizontalLogicLayout, isIndentedLayout } from "@plait/layouts";
-import { MindElement, MindElementShape } from "./interfaces/element";
-import { BASE, STROKE_WIDTH } from "./constants/default";
-import { getRootLayout } from "./utils/layout";
-import { NodeSpace } from "./utils/node-space";
-import { PlaitMindBoard } from "./plugins/with-extend-mind";
+import { MindElement, MindElementShape } from "../../interfaces/element";
+import { BASE, STROKE_WIDTH } from "../../constants/default";
+import { getRootLayout } from "../layout";
+import { NodeSpace } from "./node-space";
+import { PlaitMindBoard } from "../../plugins/with-extend-mind";
 
 export const getLayoutOptions = (board: PlaitMindBoard) => {
     function getMainAxle(element: MindElement, parent?: LayoutNode) {

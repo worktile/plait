@@ -3,8 +3,9 @@ import { EmojiData, EmojiItem, MindElement } from '../../interfaces';
 import { MindEmojiBaseComponent } from './emoji-base.component';
 import { createForeignObject } from '@plait/richtext';
 import { createG } from '@plait/core';
-import { getEmojiFontSize, getEmojiForeignRectangle } from './emoji';
+import { getEmojiFontSize } from './emoji';
 import { PlaitMindBoard } from '../with-extend-mind';
+import { getEmojiForeignRectangle } from '../../utils/position/emoji';
 
 export class EmojiDrawer {
     componentRef: ComponentRef<MindEmojiBaseComponent> | null = null;

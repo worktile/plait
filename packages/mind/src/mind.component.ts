@@ -5,7 +5,7 @@ import { BeforeContextChange, PlaitPluginElementContext, depthFirstRecursion } f
 import { GlobalLayout, OriginNode } from '@plait/layouts';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { MindNodeComponent } from './node.component';
-import { getLayoutOptions } from './layout-option';
+import { getLayoutOptions } from './utils/space/layout-options';
 import { getDefaultLayout } from './utils/layout';
 
 @Component({

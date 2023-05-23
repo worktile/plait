@@ -31,7 +31,7 @@ import {
     shouldChangeRightNodeCount,
     insertElementHandleAbstract
 } from '../utils';
-import { getRectangleByNode, hitMindElement } from '../utils/graph';
+import { getRectangleByNode, isHitMindElement } from '../utils/position/node';
 import { isVirtualKey } from '../utils/is-virtual-key';
 import { withDnd } from './with-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
@@ -42,7 +42,7 @@ import { withAbstract } from './with-abstract';
 import { withExtendMind } from './with-extend-mind';
 import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { MindTransforms } from '../transforms';
-import { isHitEmojis } from './emoji/emoji';
+import { isHitEmojis } from '../utils/position/emoji';
 
 export const withMind = (board: PlaitBoard) => {
     const {
@@ -198,7 +198,7 @@ export const withMind = (board: PlaitBoard) => {
             .filter(value => PlaitMind.isMind(value))
             .forEach(mindMap => {
                 depthFirstRecursion<MindElement>(mindMap as MindElement, node => {
-                    if (!PlaitBoard.hasBeenTextEditing(board) && hitMindElement(board, point, node)) {
+                    if (!PlaitBoard.hasBeenTextEditing(board) && isHitMindElement(board, point, node)) {
                         enterNodeEditing(node);
                     }
                 });

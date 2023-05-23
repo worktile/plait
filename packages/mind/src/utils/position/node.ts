@@ -1,7 +1,6 @@
-import { MindNode } from '../interfaces/node';
 import { PlaitBoard, Point, RectangleClient, distanceBetweenPointAndRectangle } from '@plait/core';
-import { MindElement } from '../interfaces';
-import { ELEMENT_TO_NODE } from './weak-maps';
+import { MindNode } from '../../interfaces/node';
+import { MindElement } from '../../interfaces/element';
 
 export function getRectangleByNode(node: MindNode): RectangleClient {
     const x = node.x + node.hGap;
@@ -16,8 +15,8 @@ export function getRectangleByNode(node: MindNode): RectangleClient {
     };
 }
 
-export function hitMindElement(board: PlaitBoard, point: Point, element: MindElement) {
-    const node = ELEMENT_TO_NODE.get(element);
+export function isHitMindElement(board: PlaitBoard, point: Point, element: MindElement) {
+    const node = MindElement.getNode(element);
     if (node && distanceBetweenPointAndRectangle(point[0], point[1], getRectangleByNode(node)) === 0) {
         return true;
     } else {

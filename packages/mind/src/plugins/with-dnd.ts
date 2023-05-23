@@ -18,7 +18,7 @@ import { MindElement, PlaitMind } from '../interfaces/element';
 import { DetectResult } from '../interfaces/node';
 import { MindNodeComponent } from '../node.component';
 import { findUpElement } from '../utils';
-import { hitMindElement } from '../utils/graph';
+import { isHitMindElement } from '../utils/position/node';
 import { MindQueries } from '../queries';
 import { PlaitMindComponent } from '../mind.component';
 import {
@@ -58,7 +58,7 @@ export const withDnd = (board: PlaitBoard) => {
                 if (activeElement || !MindElement.isMindElement(board, element)) {
                     return;
                 }
-                const isHitElement = hitMindElement(board, point, element);
+                const isHitElement = isHitMindElement(board, point, element);
                 const isAllMindElement = selectedElements.every(element => MindElement.isMindElement(board, element));
                 const isMultiple = isHitElement && selectedElements.includes(element) && isAllMindElement;
                 const isSingle = isHitElement && !element.isRoot && !AbstractNode.isAbstract(element) && !isMultiple;

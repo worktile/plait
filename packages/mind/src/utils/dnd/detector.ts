@@ -1,7 +1,7 @@
 import { MindElement } from '../../interfaces/element';
 import { PlaitBoard, PlaitElement, Point, depthFirstRecursion } from '@plait/core';
 import { DetectResult, MindNode } from '../../interfaces/node';
-import { getRectangleByNode } from '../graph';
+import { getRectangleByNode } from '../position/node';
 import { MindQueries } from '../../queries';
 import { isMixedLayout } from '../layout';
 import {
