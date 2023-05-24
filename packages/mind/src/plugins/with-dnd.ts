@@ -52,7 +52,11 @@ export const withDnd = (board: PlaitBoard) => {
                 const isHitElement = isHitMindElement(board, point, element);
                 const isAllMindElement = selectedElements.every(element => MindElement.isMindElement(board, element));
                 const isMultiple = isHitElement && selectedElements.includes(element) && isAllMindElement;
-                const isSingle = isHitElement && !element.isRoot && !AbstractNode.isAbstract(element) && !isMultiple;
+                const isSingle =
+                    isHitElement &&
+                    !element.isRoot &&
+                    !AbstractNode.isAbstract(element) &&
+                    !(selectedElements.length > 1 && selectedElements.includes(element));
 
                 if (isSingle) {
                     activeElement = element;
