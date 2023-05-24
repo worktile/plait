@@ -271,7 +271,7 @@ export const isValidTarget = (origin: MindElement, target: MindElement) => {
 
 export const getPathByDropTarget = (board: PlaitBoard, dropTarget: { target: MindElement; detectResult: DetectResult }) => {
     let targetPath = PlaitBoard.findPath(board, dropTarget?.target);
-    const layout = dropTarget?.target.isRoot
+    const layout = MindElement.isMindElement(board, dropTarget?.target)
         ? dropTarget?.target.layout!
         : MindQueries.getCorrectLayoutByElement(board, MindElement.getParent(dropTarget?.target));
 
