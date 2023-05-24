@@ -197,11 +197,21 @@ export const withMind = (board: PlaitBoard) => {
         board.children
             .filter(value => PlaitMind.isMind(value))
             .forEach(mindMap => {
-                depthFirstRecursion<MindElement>(mindMap as MindElement, node => {
-                    if (!PlaitBoard.hasBeenTextEditing(board) && isHitMindElement(board, point, node)) {
-                        enterNodeEditing(node);
+                depthFirstRecursion<MindElement>(
+                    mindMap as MindElement,
+                    node => {
+                        if (!PlaitBoard.hasBeenTextEditing(board) && isHitMindElement(board, point, node)) {
+                            enterNodeEditing(node);
+                        }
+                    },
+                    node => {
+                        if (PlaitBoard.isBoard(node) || board.isRecursion(node)) {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
-                });
+                );
             });
         if (PlaitBoard.hasBeenTextEditing(board)) {
             return;

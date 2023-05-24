@@ -271,8 +271,9 @@ export const isValidTarget = (origin: MindElement, target: MindElement) => {
 
 export const getPathByDropTarget = (board: PlaitBoard, dropTarget: { target: MindElement; detectResult: DetectResult }) => {
     let targetPath = PlaitBoard.findPath(board, dropTarget?.target);
-    const parent = MindElement.getParent(dropTarget?.target);
-    const layout = MindQueries.getCorrectLayoutByElement(board, parent);
+    const layout = dropTarget?.target.isRoot
+        ? dropTarget?.target.layout!
+        : MindQueries.getCorrectLayoutByElement(board, MindElement.getParent(dropTarget?.target));
 
     // 上下布局：左右是兄弟节点，上下是子节点
     if (isVerticalLogicLayout(layout)) {
