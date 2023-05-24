@@ -5,7 +5,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { AbstractHandlePosition, MindElement } from '../interfaces';
 import { MindLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { MindQueries } from '../queries';
-import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../utils/point-placement';
+import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
 import { getRectangleByResizingLocation } from '../utils/abstract/resize';
 
@@ -55,11 +55,11 @@ export function drawAbstractIncludedOutline(
     let startCenterPoint = getPointByPlacement(abstractRectangle, startPlacement);
     let endCenterPoint = getPointByPlacement(abstractRectangle, endPlacement);
 
-    const startPoint1 = movePoint(startCenterPoint, -ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
-    const startPoint2 = movePoint(startCenterPoint, ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
+    const startPoint1 = moveXOfPoint(startCenterPoint, -ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
+    const startPoint2 = moveXOfPoint(startCenterPoint, ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
 
-    const endPoint1 = movePoint(endCenterPoint, -ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
-    const endPoint2 = movePoint(endCenterPoint, ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
+    const endPoint1 = moveXOfPoint(endCenterPoint, -ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
+    const endPoint2 = moveXOfPoint(endCenterPoint, ABSTRACT_HANDLE_LENGTH / 2, linkDirection);
 
     const startHandle = roughSVG.line(
         startPoint1[0],

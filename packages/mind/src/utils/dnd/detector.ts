@@ -1,4 +1,4 @@
-import { MindElement } from '../../interfaces/element';
+import { MindElement, PlaitMind } from '../../interfaces/element';
 import { PlaitBoard, PlaitElement, Point, depthFirstRecursion, Path, BoardTransforms, ELEMENT_TO_COMPONENT } from '@plait/core';
 import { DetectResult, MindNode } from '../../interfaces/node';
 import { getRectangleByNode } from '../position/node';
@@ -270,7 +270,7 @@ export const isValidTarget = (origin: MindElement, target: MindElement) => {
 
 export const getPathByDropTarget = (board: PlaitBoard, dropTarget: { target: MindElement; detectResult: DetectResult }) => {
     let targetPath = PlaitBoard.findPath(board, dropTarget?.target);
-    const layout = MindElement.isMindElement(board, dropTarget?.target)
+    const layout = PlaitMind.isMind(dropTarget?.target)
         ? getRootLayout(dropTarget?.target)
         : MindQueries.getCorrectLayoutByElement(board, MindElement.getParent(dropTarget?.target));
 
