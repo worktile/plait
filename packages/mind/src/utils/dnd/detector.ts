@@ -3,7 +3,7 @@ import { PlaitBoard, PlaitElement, Point, depthFirstRecursion, Path, BoardTransf
 import { DetectResult, MindNode } from '../../interfaces/node';
 import { getRectangleByNode } from '../position/node';
 import { MindQueries } from '../../queries';
-import { isMixedLayout } from '../layout';
+import { getRootLayout, isMixedLayout } from '../layout';
 import {
     MindLayoutType,
     getNonAbstractChildren,
@@ -15,8 +15,7 @@ import {
 } from '@plait/layouts';
 import { MindNodeComponent } from '../../node.component';
 import { isBottomLayout, isRightLayout, isLeftLayout, AbstractNode } from '@plait/layouts';
-import { findUpElement, isChildElement } from '../mind';
-import { PlaitMindComponent } from '../../mind.component';
+import { isChildElement } from '../mind';
 
 /**
  *
@@ -272,7 +271,7 @@ export const isValidTarget = (origin: MindElement, target: MindElement) => {
 export const getPathByDropTarget = (board: PlaitBoard, dropTarget: { target: MindElement; detectResult: DetectResult }) => {
     let targetPath = PlaitBoard.findPath(board, dropTarget?.target);
     const layout = MindElement.isMindElement(board, dropTarget?.target)
-        ? dropTarget?.target.layout!
+        ? getRootLayout(dropTarget?.target)
         : MindQueries.getCorrectLayoutByElement(board, MindElement.getParent(dropTarget?.target));
 
     // 上下布局：左右是兄弟节点，上下是子节点
