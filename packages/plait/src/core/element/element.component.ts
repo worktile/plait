@@ -102,6 +102,7 @@ export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
         const isSelected = isSelectedElement(this.board, this.element);
         const context: PlaitPluginElementContext = {
             element: this.element,
+            parent: this.parent,
             board: this.board,
             selected: isSelected,
             effect: this.effect

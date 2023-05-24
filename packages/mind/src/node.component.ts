@@ -168,17 +168,14 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.drawQuickInsert();
             this.drawEmojis();
         } else {
-            if (value.selected !== previous.selected) {
+            const hasSameSelected = value.selected === previous.selected
+            const hasSameParent = value.parent === previous.parent
+            if (!hasSameSelected) {
                 this.drawActiveG();
                 this.updateActiveClass();
             }
-            if (!PlaitMind.isMind(value.element)) {
-                const parent = MindElement.getParent(previous.element);
-                const newParent = MindElement.getParent(value.element);
-                const hasSameChildren = parent.children.length === newParent.children.length;
-                if (!hasSameChildren) {
-                    this.drawLink();
-                }
+            if (!hasSameParent) {
+                this.drawLink();
             }
         }
     }
