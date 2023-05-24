@@ -2,7 +2,13 @@ import { PlaitBoard, getRectangleByElements } from '@plait/core';
 import { MindNode } from '../../interfaces/node';
 import { getRectangleByNode } from '../../utils/position/node';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
-import { getLayoutDirection, getPointByPlacement, movePoint, transformPlacement } from '../../utils/point-placement';
+import {
+    getLayoutDirection,
+    getPointByPlacement,
+    getXDistanceBetweenPoint,
+    movePoint,
+    transformPlacement
+} from '../../utils/point-placement';
 import { getAbstractBranchColor, getAbstractBranchWidth } from '../../utils/node-style/branch';
 
 export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal: boolean) {
@@ -28,14 +34,7 @@ export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal
     let bezierBeginPoint = getPointByPlacement(includedElementsRectangle, bezierBeginPlacement);
     let bezierEndPoint = getPointByPlacement(includedElementsRectangle, bezierEndPlacement);
     let abstractConnectorPoint = getPointByPlacement(abstractRectangle, abstractConnectorPlacement);
-
-    let curveDistance = 0;
-    if (isHorizontal) {
-        curveDistance = Math.abs(abstractConnectorPoint[0] - bezierBeginPoint[0]) - linkPadding * 2;
-    } else {
-        curveDistance = Math.abs(abstractConnectorPoint[1] - bezierBeginPoint[1]) - linkPadding * 2;
-    }
-
+    let curveDistance = getXDistanceBetweenPoint(abstractConnectorPoint, bezierBeginPoint, isHorizontal) - linkPadding * 2;
     bezierBeginPoint = movePoint(bezierBeginPoint, linkPadding, linkDirection);
     let c1 = movePoint(bezierBeginPoint, curveDistance, linkDirection);
     bezierEndPoint = movePoint(bezierEndPoint, linkPadding, linkDirection);
