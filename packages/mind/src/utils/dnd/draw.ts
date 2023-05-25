@@ -6,7 +6,7 @@ import { MindNodeComponent } from '../../node.component';
 import { getRectangleByNode } from '../position/node';
 import { PlaitBoard, Point, drawRoundRectangle, createG, Path, PlaitNode } from '@plait/core';
 import { MindQueries } from '../../queries';
-import { isHorizontalLayout, isLogicLayout, isTopLayout, MindLayoutType } from '@plait/layouts';
+import { getNonAbstractChildren, isHorizontalLayout, isLogicLayout, isTopLayout, MindLayoutType } from '@plait/layouts';
 import { drawIndentedLink } from '../../draw/indented-link';
 import { PlaitMindBoard } from '../../plugins/with-extend-mind';
 import { getTopicRectangleByNode } from '../position/topic';
@@ -44,10 +44,11 @@ export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeCom
 export const drawFakeDropNodeByPath = (board: PlaitBoard, path: Path) => {
     const fakeDropNodeG = createG();
     const parent = PlaitNode.get(board, Path.parent(path)) as MindElement;
+    const children = getNonAbstractChildren(parent);
     const layout = MindQueries.getLayoutByElement(parent) as MindLayoutType;
     const isHorizontal = isHorizontalLayout(layout);
     const hasPreviousNode = path[path.length - 1] !== 0;
-    const hasNextNode = path[path.length - 1] !== (parent.children?.length || 0);
+    const hasNextNode = path[path.length - 1] !== (children?.length || 0);
     const width = 30;
     const height = 12;
     let fakeNode: MindNode, centerPoint: Point, basicNode: MindNode, linkDirection: LayoutDirection;
