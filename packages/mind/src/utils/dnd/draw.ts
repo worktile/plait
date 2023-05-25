@@ -1,13 +1,12 @@
 import { drawRectangleNode } from '../../draw/shape';
 import { updateForeignObject } from '@plait/richtext';
-import { BASE, PRIMARY_COLOR } from '../../constants';
-
-import { MindElement, MindNode } from '../../interfaces';
+import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../../constants';
+import { LayoutDirection, MindElement, MindNode } from '../../interfaces';
 import { MindNodeComponent } from '../../node.component';
 import { getRectangleByNode } from '../position/node';
 import { PlaitBoard, Point, drawRoundRectangle, createG, Path, PlaitNode } from '@plait/core';
 import { MindQueries } from '../../queries';
-import { isHorizontalLayout, MindLayoutType } from '@plait/layouts';
+import { isHorizontalLayout, isLogicLayout, isTopLayout, MindLayoutType } from '@plait/layouts';
 import { drawIndentedLink } from '../../draw/indented-link';
 import { PlaitMindBoard } from '../../plugins/with-extend-mind';
 import { getTopicRectangleByNode } from '../position/topic';
@@ -51,15 +50,68 @@ export const drawFakeDropNodeByPath = (board: PlaitBoard, path: Path) => {
     const hasNextNode = path[path.length - 1] !== (parent.children?.length || 0);
     const width = 30;
     const height = 12;
-    let fakeNode: MindNode;
+    let fakeNode: MindNode, centerPoint: Point, basicNode: MindNode, linkDirection: LayoutDirection;
 
     if (!hasPreviousNode && !hasNextNode) {
+        const parentNode = MindElement.getNode(parent);
+        const parentRect = getRectangleByNode(parentNode);
+
+        linkDirection = getLayoutDirection(parentNode, isHorizontal);
+        basicNode = parentNode;
+
+        const placement: PointPlacement = [HorizontalPlacement.right, VerticalPlacement.middle];
+        transformPlacement(placement, linkDirection);
+        const parentCenterPoint = getPointByPlacement(parentRect, placement);
+
+        if (isLogicLayout(layout)) {
+            centerPoint = moveXOfPoint(parentCenterPoint, width, linkDirection);
+        } else {
+            const placement: PointPlacement = [
+                HorizontalPlacement.center,
+                isTopLayout(layout) ? VerticalPlacement.top : VerticalPlacement.bottom
+            ];
+            const parentCenterPoint = getPointByPlacement(parentRect, placement);
+
+            centerPoint = moveXOfPoint(parentCenterPoint, height, linkDirection);
+            centerPoint[1] = isTopLayout(layout) ? centerPoint[1] - height : centerPoint[1] + height;
+        }
     } else if (!hasPreviousNode && hasNextNode) {
+        const nextElement = PlaitNode.get(board, path) as MindElement;
+        basicNode = MindElement.getNode(nextElement);
+        const nextRect = getRectangleByNode(basicNode);
+        linkDirection = getLayoutDirection(basicNode, isHorizontal);
+
+        const placement: PointPlacement = [HorizontalPlacement.left, VerticalPlacement.top];
+
+        transformPlacement(placement, linkDirection);
+
+        let offset = -height;
+        if (MindElement.isIndentedLayout(parent)) {
+            offset = isTopLayout(layout) ? offset / 2 + basicNode.height - basicNode.vGap : 0;
+        }
+
+        centerPoint = getPointByPlacement(nextRect, placement);
+        centerPoint = moveYOfPoint(centerPoint, offset, linkDirection);
     } else if (hasPreviousNode && !hasNextNode) {
+        const previousElement = PlaitNode.get(board, Path.previous(path)) as MindElement;
+        basicNode = MindElement.getNode(previousElement);
+        const previousRect = getRectangleByNode(basicNode);
+        linkDirection = getLayoutDirection(basicNode, isHorizontal);
+
+        const placement: PointPlacement = [HorizontalPlacement.left, VerticalPlacement.bottom];
+
+        transformPlacement(placement, linkDirection);
+
+        let offset = height;
+        if (MindElement.isIndentedLayout(parent)) {
+            offset = isTopLayout(layout) ? -offset - (basicNode.height - basicNode.vGap) : offset;
+        }
+        centerPoint = getPointByPlacement(previousRect, placement);
+        centerPoint = moveYOfPoint(centerPoint, offset, linkDirection);
     } else {
         const previousElement = PlaitNode.get(board, Path.previous(path)) as MindElement;
-        const previousNode = MindElement.getNode(previousElement);
-        const previousRect = getRectangleByNode(previousNode);
+        basicNode = MindElement.getNode(previousElement);
+        const previousRect = getRectangleByNode(basicNode);
 
         const nextElement = PlaitNode.get(board, path) as MindElement;
         const nextNode = MindElement.getNode(nextElement);
@@ -67,7 +119,7 @@ export const drawFakeDropNodeByPath = (board: PlaitBoard, path: Path) => {
 
         const beginPlacement: PointPlacement = [HorizontalPlacement.left, VerticalPlacement.bottom];
         const endPlacement: PointPlacement = [HorizontalPlacement.left, VerticalPlacement.top];
-        const linkDirection = getLayoutDirection(previousNode, isHorizontal);
+        linkDirection = getLayoutDirection(basicNode, isHorizontal);
 
         transformPlacement(beginPlacement, linkDirection);
         transformPlacement(endPlacement, linkDirection);
@@ -75,32 +127,33 @@ export const drawFakeDropNodeByPath = (board: PlaitBoard, path: Path) => {
         const previousPoint = getPointByPlacement(previousRect, beginPlacement);
         const nextPoint = getPointByPlacement(nextRect, endPlacement);
 
-        const centerPoint: Point = [(previousPoint[0] + nextPoint[0]) / 2, (previousPoint[1] + nextPoint[1]) / 2];
-
-        let cornerPoint = centerPoint,
-            oppositePoint = centerPoint;
-
-        const offsetY = isHorizontal ? height : width;
-        const offsetX = isHorizontal ? width : height;
-
-        cornerPoint = moveYOfPoint(cornerPoint, -offsetY / 2, linkDirection);
-
-        oppositePoint = moveYOfPoint(oppositePoint, offsetY / 2, linkDirection);
-        oppositePoint = moveXOfPoint(oppositePoint, offsetX, linkDirection);
-
-        const x = Math.min(cornerPoint[0], oppositePoint[0]);
-        const y = Math.min(cornerPoint[1], oppositePoint[1]);
-
-        fakeNode = {
-            ...previousNode,
-            x,
-            y,
-            width,
-            height,
-            hGap: 0,
-            vGap: 0
-        };
+        centerPoint = [(previousPoint[0] + nextPoint[0]) / 2, (previousPoint[1] + nextPoint[1]) / 2];
     }
+
+    let cornerPoint = centerPoint,
+        oppositePoint = centerPoint;
+
+    const offsetY = isHorizontal ? height : width;
+    const offsetX = isHorizontal ? width : height;
+
+    cornerPoint = moveYOfPoint(cornerPoint, -offsetY / 2, linkDirection!);
+
+    oppositePoint = moveYOfPoint(oppositePoint, offsetY / 2, linkDirection!);
+    oppositePoint = moveXOfPoint(oppositePoint, offsetX, linkDirection!);
+
+    const x = Math.min(cornerPoint[0], oppositePoint[0]);
+    const y = Math.min(cornerPoint[1], oppositePoint[1]);
+
+    fakeNode = {
+        ...basicNode!,
+        x,
+        y,
+        width,
+        height,
+        hGap: MindElement.isIndentedLayout(parent) ? BASE * 4 + (basicNode.origin.strokeWidth || STROKE_WIDTH) : 0,
+        vGap: MindElement.isIndentedLayout(parent) ? BASE : 0
+    };
+
     const fakeRectangleG = drawRoundRectangle(
         PlaitBoard.getRoughSVG(board),
         fakeNode!.x,
@@ -115,8 +168,8 @@ export const drawFakeDropNodeByPath = (board: PlaitBoard, path: Path) => {
         }
     );
     const link = MindElement.isIndentedLayout(parent)
-        ? drawIndentedLink(board, MindElement.getNode(parent), fakeNode!)
-        : drawLogicLink(board, fakeNode!, MindElement.getNode(parent), isHorizontal);
+        ? drawIndentedLink(board, MindElement.getNode(parent), fakeNode!, PRIMARY_COLOR, false, STROKE_WIDTH)
+        : drawLogicLink(board, fakeNode!, MindElement.getNode(parent), isHorizontal, PRIMARY_COLOR, STROKE_WIDTH);
 
     fakeDropNodeG?.appendChild(link);
     fakeDropNodeG?.appendChild(fakeRectangleG);

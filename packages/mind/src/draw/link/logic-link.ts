@@ -7,9 +7,16 @@ import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../in
 import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../../utils/node-style/branch';
 import { MindElementShape } from '../../interfaces/element';
 
-export function drawLogicLink(board: PlaitBoard, node: MindNode, parent: MindNode, isHorizontal: boolean) {
-    const branchColor = getBranchColorByMindElement(board, node.origin);
-    const branchWidth = getBranchWidthByMindElement(board, node.origin);
+export function drawLogicLink(
+    board: PlaitBoard,
+    node: MindNode,
+    parent: MindNode,
+    isHorizontal: boolean,
+    defaultStroke: string | null = null,
+    defaultStrokeWidth?: number
+) {
+    const branchColor = defaultStroke || getBranchColorByMindElement(board, node.origin);
+    const branchWidth = defaultStrokeWidth || getBranchWidthByMindElement(board, node.origin);
     const hasStraightLine = !parent.origin.isRoot;
     const parentShape = getShapeByElement(board, parent.origin);
     const shape = node.origin.shape ? node.origin.shape : parentShape;

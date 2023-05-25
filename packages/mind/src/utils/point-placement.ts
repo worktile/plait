@@ -64,10 +64,10 @@ export const moveXOfPoint = (point: Point, distance: number, direction: LayoutDi
 
 export const moveYOfPoint = (point: Point, distance: number, direction: LayoutDirection = LayoutDirection.right): Point => {
     if (direction === LayoutDirection.bottom) {
-        return [point[0] - distance, point[1]];
+        return [point[0] + distance, point[1]];
     }
     if (direction === LayoutDirection.top) {
-        return [point[0] + distance, point[1] - distance];
+        return [point[0] + distance, point[1]];
     }
     return [point[0], point[1] + distance];
 };
