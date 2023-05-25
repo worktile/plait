@@ -146,16 +146,20 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         });
         this.roughSVG = roughSVG;
         this.initializePlugins();
-        this.initializeEvents();
-        this.viewportScrollListener();
-        this.elementResizeListener();
-        this.mouseLeaveListener();
+        this.ngZone.runOutsideAngular(() => {
+            this.initializeHookListener();
+            this.viewportScrollListener();
+            this.elementResizeListener();
+            this.mouseLeaveListener();
+        });
         BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ROUGH_SVG.set(this.board, roughSVG);
         BOARD_TO_HOST.set(this.board, this.host);
         BOARD_TO_ELEMENT_HOST.set(this.board, elementHost);
         BOARD_TO_ON_CHANGE.set(this.board, () => {
-            this.detect();
+            this.ngZone.run(() => {
+                this.detect();
+            });
             const changeEvent: PlaitBoardChangeEvent = {
                 children: this.board.children,
                 operations: this.board.operations,
@@ -170,14 +174,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     detect() {
         this.effect = {};
         this.cdr.detectChanges();
-    }
-
-    mouseLeaveListener() {
-        fromEvent<MouseEvent>(this.host, 'mouseleave')
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((event: MouseEvent) => {
-                BOARD_TO_MOVING_POINT.delete(this.board);
-            });
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -212,7 +208,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         }
     }
 
-    private initializeEvents() {
+    private initializeHookListener() {
         fromEvent<MouseEvent>(this.host, 'mousedown')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
@@ -349,6 +345,14 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             updateViewportOffset(this.board);
         });
         this.resizeObserver.observe(this.nativeElement);
+    }
+
+    private mouseLeaveListener() {
+        fromEvent<MouseEvent>(this.host, 'mouseleave')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: MouseEvent) => {
+                BOARD_TO_MOVING_POINT.delete(this.board);
+            });
     }
 
     trackBy = (index: number, element: PlaitElement) => {
