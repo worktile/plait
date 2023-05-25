@@ -110,6 +110,9 @@ g[plait-mindmap='true'] {
         &.dragging {
             cursor: pointer;
             opacity: 0.6;
+            .plait-richtext-container {
+                opacity: 0.6;
+            }
         }
     }
 }
