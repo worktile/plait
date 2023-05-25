@@ -54,19 +54,19 @@ export const directionCorrector = (board: PlaitBoard, node: MindNode, detectResu
             return getAllowedDirection(detectResults, ['top', 'bottom']);
         }
 
-        if (isTopLayout(layout)) {
+        if (layout === MindLayoutType.upward) {
             return getAllowedDirection(detectResults, ['left', 'right', 'bottom']);
         }
 
-        if (isBottomLayout(layout)) {
+        if (layout === MindLayoutType.downward) {
             return getAllowedDirection(detectResults, ['left', 'right', 'top']);
         }
 
-        if (layout === MindLayoutType.left) {
+        if (isLeftLayout(layout)) {
             return getAllowedDirection(detectResults, ['right', 'top', 'bottom']);
         }
 
-        if (layout === MindLayoutType.right) {
+        if (isRightLayout(layout)) {
             return getAllowedDirection(detectResults, ['left', 'top', 'bottom']);
         }
     }
