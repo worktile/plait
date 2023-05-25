@@ -1,7 +1,7 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
-import { EmojiData, EmojiItem } from '../../interfaces/element-data';
+import { EmojiData, EmojiItem } from '../interfaces/element-data';
 import { PlaitBoard } from '@plait/core';
-import { MindElement } from '../../interfaces';
+import { MindElement } from '../interfaces';
 
 @Directive({
     host: {

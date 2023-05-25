@@ -57,14 +57,15 @@ import { getShapeByElement } from './utils/node-style/shape';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
 import { drawAbstractLink } from './draw/link/abstract-link';
-import { EmojisDrawer } from './plugins/emoji/emoji.drawer';
+import { EmojisDrawer } from './drawer/emoji.drawer';
 import { MindTransforms } from './transforms';
 import { drawAbstractIncludedOutline } from './draw/abstract';
-import { AbstractHandlePosition, MindElementShape } from './interfaces';
+import { MindElementShape } from './interfaces';
 import { QuickInsertDrawer } from './drawer/quick-insert.drawer';
-import { hasAfterDraw } from './drawer/base/base';
+import { hasAfterDraw } from './base/base.drawer';
 import { getBranchColorByMindElement, getBranchWidthByMindElement } from './utils/node-style/branch';
-import { PlaitMindBoard } from './plugins/with-extend-mind';
+import { PlaitMindBoard } from './plugins/with-mind.board';
+import { AbstractHandlePosition } from './plugins/with-abstract-resize.board';
 
 @Component({
     selector: 'plait-mind-node',

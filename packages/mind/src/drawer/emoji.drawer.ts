@@ -1,11 +1,11 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { EmojiData, EmojiItem, MindElement } from '../../interfaces';
-import { MindEmojiBaseComponent } from './emoji-base.component';
+import { EmojiData, EmojiItem, MindElement } from '../interfaces';
+import { MindEmojiBaseComponent } from '../base/emoji-base.component';
 import { createForeignObject } from '@plait/richtext';
 import { createG } from '@plait/core';
-import { getEmojiFontSize } from './emoji';
-import { PlaitMindBoard } from '../with-extend-mind';
-import { getEmojiForeignRectangle } from '../../utils/position/emoji';
+import { getEmojiFontSize } from '../utils/space/emoji';
+import { getEmojiForeignRectangle } from '../utils/position/emoji';
+import { PlaitMindBoard } from '../plugins/with-mind.board';
 
 export class EmojiDrawer {
     componentRef: ComponentRef<MindEmojiBaseComponent> | null = null;

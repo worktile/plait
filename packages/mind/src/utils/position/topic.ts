@@ -1,5 +1,5 @@
 import { MindNode } from '../../interfaces/node';
-import { PlaitMindBoard } from '../../plugins/with-extend-mind';
+import { PlaitMindBoard } from '../../plugins/with-mind.board';
 import { NodeSpace } from '../space/node-space';
 import { getRectangleByNode } from './node';
 
