@@ -66,7 +66,7 @@ export const getLayoutDirection = (node: MindNode, isHorizontal: boolean) => {
 // 下 -> 上:
 // 1. 终点 -> 起点/终点 -> 起点
 // 2. 加 -> 减
-export const movePoint = (point: Point, distance: number, direction: LayoutDirection = LayoutDirection.right): Point => {
+export const moveXOfPoint = (point: Point, distance: number, direction: LayoutDirection = LayoutDirection.right): Point => {
     if (direction === LayoutDirection.left) {
         return [point[0] - distance, point[1]];
     }
@@ -77,6 +77,16 @@ export const movePoint = (point: Point, distance: number, direction: LayoutDirec
         return [point[0], point[1] - distance];
     }
     return [point[0] + distance, point[1]];
+};
+
+export const moveYOfPoint = (point: Point, distance: number, direction: LayoutDirection = LayoutDirection.right): Point => {
+    if (direction === LayoutDirection.bottom) {
+        return [point[0] + distance, point[1]];
+    }
+    if (direction === LayoutDirection.top) {
+        return [point[0] + distance, point[1]];
+    }
+    return [point[0], point[1] + distance];
 };
 
 export const transformPlacement = (placement: PointPlacement, direction: LayoutDirection) => {
