@@ -21,6 +21,23 @@ export const getPointByPlacement = (client: RectangleClient, placement: PointPla
     return [x, y];
 };
 
+export interface PlacementRef {
+    placement: PointPlacement;
+    client: RectangleClient;
+}
+
+export const getXDistanceBetweenPoint = (point1: Point, point2: Point, isHorizontalLayout: boolean) => {
+    if (isHorizontalLayout) {
+        return Math.abs(point1[0] - point2[0]);
+    } else {
+        return Math.abs(point1[1] - point2[1]);
+    }
+};
+
+export const getYDistanceBetweenPoint = (point1: Point, point2: Point, isHorizontalLayout: boolean) => {
+    getXDistanceBetweenPoint(point1, point2, !isHorizontalLayout);
+};
+
 export const getLayoutDirection = (node: MindNode, isHorizontal: boolean) => {
     if (isHorizontal) {
         if (node.left) {

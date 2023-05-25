@@ -1,5 +1,14 @@
 # mind
 
+## 0.2.2
+
+### Patch Changes
+
+-   [`e7fa326`](https://github.com/worktile/plait/commit/e7fa326c5503785770e6064ba0e8fd77774b4716) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add ngZone run when onChange
+
+*   [`2a627d6`](https://github.com/worktile/plait/commit/2a627d6ebbd5a1546b8850f4bfae006c12da93af) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add parent in plugin element context
+    fix re-draw link logic use correct parent
+
 ## 0.2.0
 
 ### Minor Changes

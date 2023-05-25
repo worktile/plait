@@ -3,6 +3,7 @@ import {
     ChangeDetectorRef,
     Component,
     ComponentRef,
+    NgZone,
     OnDestroy,
     OnInit,
     Renderer2,
@@ -118,7 +119,12 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         return this.board.pointer === PlaitPointerType.hand;
     }
 
-    constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef, private render2: Renderer2) {
+    constructor(
+        private viewContainerRef: ViewContainerRef,
+        protected cdr: ChangeDetectorRef,
+        private render2: Renderer2,
+        private ngZone: NgZone
+    ) {
         super(cdr);
     }
 
@@ -168,8 +174,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.drawQuickInsert();
             this.drawEmojis();
         } else {
-            const hasSameSelected = value.selected === previous.selected
-            const hasSameParent = value.parent === previous.parent
+            const hasSameSelected = value.selected === previous.selected;
+            const hasSameParent = value.parent === previous.parent;
             if (!hasSameSelected) {
                 this.drawActiveG();
                 this.updateActiveClass();
@@ -701,18 +707,20 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             }
         };
         const exitHandle = () => {
-            // unsubscribe
-            valueChange$.unsubscribe();
-            composition$.unsubscribe();
-            mousedown$.unsubscribe();
-            editor.keydown = keydown; // reset keydown
-            // editable status
-            MERGING.set(this.board, false);
-            richtextInstance.plaitReadonly = true;
-            this.richtextComponentRef?.changeDetectorRef.markForCheck();
-            this.isEditable = false;
-            updateMindNodeTopicSize(this.board, this.node, this.richtextG as SVGGElement, this.isEditable);
-            IS_TEXT_EDITABLE.set(this.board, false);
+            this.ngZone.run(() => {
+                // unsubscribe
+                valueChange$.unsubscribe();
+                composition$.unsubscribe();
+                mousedown$.unsubscribe();
+                editor.keydown = keydown; // reset keydown
+                // editable status
+                MERGING.set(this.board, false);
+                richtextInstance.plaitReadonly = true;
+                this.richtextComponentRef?.changeDetectorRef.markForCheck();
+                this.isEditable = false;
+                updateMindNodeTopicSize(this.board, this.node, this.richtextG as SVGGElement, this.isEditable);
+                IS_TEXT_EDITABLE.set(this.board, false);
+            });
         };
     }
 

@@ -1,5 +1,11 @@
 # plait
 
+## 0.2.3
+
+### Patch Changes
+
+-   [`0793898`](https://github.com/worktile/plait/commit/07938988d484ab42d56393292076e952870c240f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use CommonModule instead of BrowserModule
+
 ## 0.2.2
 
 ### Patch Changes
