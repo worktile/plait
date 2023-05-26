@@ -21,8 +21,9 @@ import { BoardComponentInterface } from '../board/board.component.interface';
 import { Point } from './point';
 import { RectangleClient } from './rectangle-client';
 import { getRectangleByElements } from '../utils/element';
-import { Path } from './path';
+import { PathRef, PathRefOptions } from './path-ref';
 import { Ancestor, PlaitNode } from './node';
+import { Path } from './path';
 
 export interface PlaitBoard {
     viewport: Viewport;
@@ -57,6 +58,8 @@ export interface PlaitBoard {
     isMovable: (element: PlaitElement) => boolean;
     getRectangle: (element: PlaitElement) => RectangleClient | null;
     isWithinSelection: (element: PlaitElement) => boolean;
+    pathRef: (path: Path, options?: PathRefOptions) => PathRef;
+    pathRefs: () => Set<PathRef>;
 }
 
 export interface PlaitBoardChangeEvent {
