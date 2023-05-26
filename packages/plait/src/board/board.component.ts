@@ -291,7 +291,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 filter(() => this.isFocused && !PlaitBoard.isReadonly(this.board) && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((clipboardEvent: ClipboardEvent) => {
-                const mousePoint = BOARD_TO_MOVING_POINT.get(this.board);
+                const mousePoint = PlaitBoard.getMovingPoint(this.board);
                 const rect = this.nativeElement.getBoundingClientRect();
                 if (mousePoint && distanceBetweenPointAndRectangle(mousePoint[0], mousePoint[1], rect) === 0) {
                     const targetPoint = transformPoint(this.board, toPoint(mousePoint[0], mousePoint[1], this.host));

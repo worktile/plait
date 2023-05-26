@@ -250,6 +250,13 @@ export const createMindElement = (
     return newElement;
 };
 
+export const createRootMindElement = (board: PlaitBoard, point: Point) => {
+    const element = createMindElement('', 0, 0, {});
+    const rootElement = transformNodeToRoot(board, element);
+    rootElement.points = [point];
+    return rootElement;
+};
+
 // layoutLevel 用来表示插入兄弟节点还是子节点
 export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, path: Path) => {
     let fill,

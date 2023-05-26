@@ -2,7 +2,7 @@ import { PlaitBoard } from '../interfaces/board';
 import { PlaitPointerType } from '../interfaces/pointer';
 import { BOARD_TO_COMPONENT } from '../utils';
 
-export const updatePointerType = (board: PlaitBoard, pointer: PlaitPointerType) => {
+export const updatePointerType = <T extends PlaitPointerType>(board: PlaitBoard, pointer: T) => {
     board.pointer = pointer;
     const boardComponent = BOARD_TO_COMPONENT.get(board);
     boardComponent?.markForCheck();
