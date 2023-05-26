@@ -4,7 +4,7 @@ import { PlaitElement } from '../interfaces/element';
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { Ancestor, PlaitNode } from '../interfaces/node';
-import { PathRef } from '../interfaces/path';
+import { PathRef } from '../interfaces/path-ref';
 
 // record richtext type status
 export const IS_BOARD_CACHE = new WeakMap<Object, boolean>();

@@ -21,8 +21,9 @@ import { BoardComponentInterface } from '../board/board.component.interface';
 import { Point } from './point';
 import { RectangleClient } from './rectangle-client';
 import { getRectangleByElements } from '../utils/element';
-import { Path, PathRef, PathRefOptions } from './path';
+import { PathRef, PathRefOptions } from './path-ref';
 import { Ancestor, PlaitNode } from './node';
+import { Path } from './path';
 
 export interface PlaitBoard {
     viewport: Viewport;

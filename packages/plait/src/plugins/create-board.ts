@@ -5,8 +5,8 @@ import { PlaitPluginElementContext } from '../core/element/context';
 import { PlaitOperation } from '../interfaces/operation';
 import { Transforms } from '../transforms';
 import { FLUSHING, PATH_REFS } from '../utils/weak-maps';
-import { PathRef, PathRefOptions } from '../interfaces/path';
-import { Path } from '@plait/core';
+import { PathRef, PathRefOptions } from '../interfaces/path-ref';
+import { Path } from '../interfaces/path';
 
 export function createBoard(children: PlaitElement[], options: PlaitBoardOptions): PlaitBoard {
     const board: PlaitBoard = {
