@@ -112,7 +112,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @HostBinding('class')
     get hostClass() {
-        return `plait-board-container ${this.board.pointer}`;
+        return `plait-board-container pointer-${this.board.pointer}`;
     }
 
     @HostBinding('class.readonly')

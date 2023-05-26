@@ -73,6 +73,8 @@ export const withCreateMind = (board: PlaitBoard) => {
                     }
                 }
             });
+        } else {
+            destroy();
         }
         mousemove(event);
     };
@@ -83,16 +85,20 @@ export const withCreateMind = (board: PlaitBoard) => {
             const targetPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
             const newRoot = createRootMindElement(board, targetPoint);
             Transforms.insertNode(board, newRoot, [board.children.length]);
+            BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
+        destroy();
+        mouseup(event);
+    };
+
+    function destroy() {
         if (fakeCreateNodeRef) {
             fakeCreateNodeRef.instanceRef.destroy();
             fakeCreateNodeRef.nodeG.remove();
             fakeCreateNodeRef.topicG.remove();
             fakeCreateNodeRef = null;
         }
-        BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
-        mouseup(event);
-    };
+    }
 
     return newBoard;
 };
