@@ -3,12 +3,12 @@ import { getDefaultHandles } from './get-default-handles';
 import { FlowNode } from '../../interfaces/node';
 import { getHandleXYPosition } from './get-handle-position';
 import { HANDLE_DIAMETER } from '../../constants/handle';
-import { FlowEdgeHandle } from '../../interfaces/edge';
+import { FlowEdgeHandleRef } from '../../interfaces/edge';
 import { getFlowElementsByType } from '../node/get-node';
 import { FlowElementType } from '../../public-api';
 import { getHitNode } from '../node/get-hit-node';
 
-export interface HitNodeHandle extends FlowEdgeHandle {
+export interface HitNodeHandle extends FlowEdgeHandleRef {
     handlePoint: Point;
 }
 

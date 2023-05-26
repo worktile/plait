@@ -17,7 +17,7 @@ import { FlowNode } from '../interfaces/node';
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowElementType } from '../interfaces/element';
 import { isEdgeDragging } from '../utils/edge/dragging-edge';
-import { FlowEdgeHandle } from '../interfaces/edge';
+import { FlowEdgeHandleRef } from '../interfaces/edge';
 import { destroyAllNodesHandle, drawAllNodesHandle } from '../utils/node/render-all-nodes-handle';
 import { addCreateEdgeInfo, deleteCreateEdgeInfo } from '../utils/edge/create-edge';
 import { DEFAULT_PLACEHOLDER_ACTIVE_STYLES } from '../constants/edge';
@@ -27,8 +27,8 @@ import { getHitNode } from '../utils/node/get-hit-node';
 export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, globalMousemove, globalMouseup } = board;
 
-    let sourceFlowNodeHandle: (FlowEdgeHandle & { handlePoint: Point }) | null = null;
-    let targetFlowNodeHandle: (FlowEdgeHandle & { handlePoint: Point }) | null = null;
+    let sourceFlowNodeHandle: (FlowEdgeHandleRef & { handlePoint: Point }) | null = null;
+    let targetFlowNodeHandle: (FlowEdgeHandleRef & { handlePoint: Point }) | null = null;
     let placeholderEdge: SVGElement;
     let flowNodeElements: FlowNode[] = [];
     let drawNodeHandles = true;
@@ -74,11 +74,11 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                         id: idCreator(),
                         type: FlowElementType.edge,
                         source: {
-                            id: sourceFlowNodeHandle.node.id,
+                            nodeId: sourceFlowNodeHandle.node.id,
                             position: sourceFlowNodeHandle.position
                         },
                         target: {
-                            id: targetFlowNodeHandle.node.id,
+                            nodeId: targetFlowNodeHandle.node.id,
                             position: targetFlowNodeHandle.position,
                             marker: 'arrow'
                         }
