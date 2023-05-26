@@ -37,45 +37,6 @@ export const removeActiveOnDragOrigin = (activeElement: MindElement, isOrigin = 
         });
 };
 
-export const updateRightNodeCount = (
-    board: PlaitBoard,
-    activeComponent: MindNodeComponent,
-    targetComponent: MindNodeComponent,
-    detectResult: DetectResult
-) => {
-    let rightNodeCount;
-    const mindElement = findUpElement(targetComponent.node.origin).root;
-    const mindComponent = ELEMENT_TO_COMPONENT.get(mindElement as PlaitMind) as PlaitMindComponent;
-    const activeIndex = mindComponent?.root.children.indexOf(activeComponent.node) as number;
-    const targetIndex = mindComponent?.root.children.indexOf(targetComponent.node) as number;
-    const activeParent = MindElement.getParent(activeComponent.element);
-    const targetParent = MindElement.findParent(targetComponent.element);
-    const isActiveOnRight = activeIndex !== -1 && activeIndex <= (activeParent.rightNodeCount as number) - 1;
-    const isTargetOnRight = targetParent && targetIndex !== -1 && targetIndex <= (targetParent.rightNodeCount as number) - 1;
-    const isBothOnRight = isActiveOnRight && isTargetOnRight;
-    const rootChildCount = mindComponent.root.children?.length as number;
-    const rootRightNodeCount = mindComponent?.root.origin.rightNodeCount as number;
-
-    if (!isBothOnRight) {
-        if (isActiveOnRight) {
-            rightNodeCount = rootChildCount < rootRightNodeCount ? rootChildCount - 1 : rootRightNodeCount - 1;
-            Transforms.setNode(board, { rightNodeCount }, PlaitBoard.findPath(board, activeParent));
-        }
-
-        if (isTargetOnRight && detectResult !== 'right') {
-            rightNodeCount = rootChildCount < rootRightNodeCount ? rootRightNodeCount : rootRightNodeCount + 1;
-            const parent = MindElement.getParent(targetComponent.element);
-            Transforms.setNode(board, { rightNodeCount }, PlaitBoard.findPath(board, parent));
-        }
-
-        //二级子节点拖动到根节点左侧
-        if (targetComponent.node.origin.isRoot && detectResult === 'left' && activeIndex === -1) {
-            rightNodeCount = rootChildCount;
-            Transforms.setNode(board, { rightNodeCount }, PlaitBoard.findPath(board, targetComponent.element));
-        }
-    }
-};
-
 export const isDragging = (board: PlaitBoard) => {
     return !!IS_DRAGGING.get(board);
 };

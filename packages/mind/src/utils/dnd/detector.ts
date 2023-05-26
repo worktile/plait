@@ -89,7 +89,7 @@ export const detectDropTarget = (
     board: PlaitBoard,
     detectPoint: Point,
     dropTarget: { target: MindElement; detectResult: DetectResult } | null,
-    activeElement: MindElement
+    activeElements: MindElement[]
 ) => {
     let detectResult: DetectResult[] | null = null;
     depthFirstRecursion(
@@ -105,7 +105,8 @@ export const detectDropTarget = (
                 detectResult = directionCorrector(board, node, directions);
             }
             dropTarget = null;
-            if (detectResult && isValidTarget(activeElement, node.origin)) {
+            const isValid = activeElements.every(element => isValidTarget(element, node.origin));
+            if (detectResult && isValid) {
                 dropTarget = { target: node.origin, detectResult: detectResult[0] };
             }
         },
