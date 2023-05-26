@@ -282,28 +282,6 @@ export const findLastChild = (child: MindNode) => {
     return result;
 };
 
-export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindElement[]) => {
-    const deletableElements = getFirstLevelElement(selectedElements).reverse();
-
-    const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
-    MindTransforms.setAbstractsByRefs(board, abstractRefs);
-
-    //翻转，从下到上修改，防止找不到 path
-    deletableElements
-        .map(element => {
-            const path = PlaitBoard.findPath(board, element);
-            return () => {
-                if (shouldChangeRightNodeCount(element)) {
-                    changeRightNodeCount(board, path.slice(0, 1), -1);
-                }
-                Transforms.removeNode(board, path);
-            };
-        })
-        .forEach(action => {
-            action();
-        });
-};
-
 export const divideElementByParent = (elements: MindElement[]) => {
     const abstractIncludedGroups = [];
     const parentElements: MindElement[] = [];

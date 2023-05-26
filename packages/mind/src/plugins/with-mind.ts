@@ -14,22 +14,20 @@ import {
     Transforms,
     Range,
     depthFirstRecursion,
-    PlaitElement,
     Path,
     Selection
 } from '@plait/core';
 import { getSizeByText } from '@plait/richtext';
 import { MindElement, PlaitMind } from '../interfaces';
-import { MindNode } from '../interfaces/node';
 import { PlaitMindComponent } from '../mind.component';
 import { MindNodeComponent } from '../node.component';
 import {
     changeRightNodeCount,
     insertMindElement,
-    deleteSelectedELements,
     getFirstLevelElement,
     shouldChangeRightNodeCount,
-    insertElementHandleAbstract
+    insertElementHandleAbstract,
+    deleteElementHandleAbstract
 } from '../utils';
 import { getRectangleByNode, isHitMindElement } from '../utils/position/node';
 import { isVirtualKey } from '../utils/is-virtual-key';
@@ -138,7 +136,11 @@ export const withMind = (board: PlaitBoard) => {
             }
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
-                deleteSelectedELements(board, selectedElements);
+                const deletableElements = getFirstLevelElement(selectedElements).reverse();
+                const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
+                MindTransforms.setAbstractsByRefs(board, abstractRefs);
+
+                MindTransforms.deleteSelectedELements(board, selectedElements);
 
                 let activeElement: MindElement | undefined;
                 const firstLevelElements = getFirstLevelElement(selectedElements);
@@ -255,7 +257,11 @@ export const withMind = (board: PlaitBoard) => {
 
     board.deleteFragment = (data: DataTransfer | null) => {
         const selectedElements = getSelectedElements(board) as MindElement[];
-        deleteSelectedELements(board, selectedElements);
+        const deletableElements = getFirstLevelElement(selectedElements).reverse();
+        const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
+        MindTransforms.setAbstractsByRefs(board, abstractRefs);
+
+        MindTransforms.deleteSelectedELements(board, selectedElements);
         deleteFragment(data);
     };
 

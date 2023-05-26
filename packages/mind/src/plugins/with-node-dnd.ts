@@ -16,12 +16,18 @@ import { AbstractNode } from '@plait/layouts';
 import { MindElement } from '../interfaces/element';
 import { DetectResult } from '../interfaces/node';
 import { MindNodeComponent } from '../node.component';
-import { changeRightNodeCount, getFirstLevelElement, shouldChangeRightNodeCount } from '../utils';
+import {
+    changeRightNodeCount,
+    deleteElementHandleAbstract,
+    getFirstLevelElement,
+    insertElementHandleAbstract,
+    shouldChangeRightNodeCount
+} from '../utils';
 import { isHitMindElement } from '../utils/position/node';
-import { isDragging, removeActiveOnDragOrigin, setIsDragging, updateAbstractInDnd } from '../utils/dnd/common';
+import { isDragging, removeActiveOnDragOrigin, setIsDragging } from '../utils/dnd/common';
 import { detectDropTarget, getPathByDropTarget } from '../utils/dnd/detector';
 import { drawFakeDragNode, drawFakeDropNodeByPath } from '../utils/dnd/draw';
-import { deleteSelectedELements } from '@plait/mind';
+import { MindTransforms } from '../transforms';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -112,28 +118,36 @@ export const withDnd = (board: PlaitBoard) => {
 
     board.globalMouseup = (event: MouseEvent) => {
         if (!board.options.readonly && activeElements?.length) {
-            if (dropTarget?.target) {
-                const ref = board.pathRef(targetPath);
-                const targetElementPath = PlaitBoard.findPath(board, dropTarget?.target);
+            if (dropTarget) {
+                const targetPathRef = board.pathRef(targetPath);
+                const targetElementPathRef = board.pathRef(PlaitBoard.findPath(board, dropTarget.target));
+                const deletableElements = getFirstLevelElement(activeElements).reverse();
 
-                deleteSelectedELements(board, activeElements);
+                const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
+                insertElementHandleAbstract(board, targetPath, activeElements.length, false, abstractRefs);
+                MindTransforms.setAbstractsByRefs(board, abstractRefs);
 
-                activeElements.forEach(activeElement => {
-                    updateAbstractInDnd(board, [activeElement], ref.current!);
-
-                    Transforms.insertNode(board, activeElement, ref.current!);
-                });
+                MindTransforms.deleteSelectedELements(board, activeElements);
+                MindTransforms.insertNodes(board, activeElements, targetPathRef.current!);
 
                 const shouldChangeRoot =
                     shouldChangeRightNodeCount(dropTarget?.target) &&
-                    (Path.isSibling(targetPath, targetElementPath) || Path.equals(targetPath, targetElementPath));
-                if (shouldChangeRoot) {
-                    changeRightNodeCount(board, targetElementPath.slice(0, 1), activeElements.length);
+                    targetElementPathRef.current &&
+                    (Path.isSibling(targetPath, targetElementPathRef.current) || Path.equals(targetPath, targetElementPathRef.current));
+                if (shouldChangeRoot && targetElementPathRef.current) {
+                    changeRightNodeCount(board, targetElementPathRef.current.slice(0, 1), activeElements.length);
                 }
 
-                if (Path.isAncestor(targetElementPath, targetPath)) {
-                    Transforms.setNode(board, { isCollapsed: false }, targetElementPath);
+                if (
+                    targetElementPathRef.current &&
+                    targetPathRef.current &&
+                    Path.isAncestor(targetElementPathRef.current, targetPathRef.current) &&
+                    dropTarget.target.isCollapsed
+                ) {
+                    Transforms.setNode(board, { isCollapsed: false }, targetElementPathRef.current);
                 }
+                targetElementPathRef.unref();
+                targetPathRef.unref();
             }
 
             if (isDragging(board)) {

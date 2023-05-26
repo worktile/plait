@@ -100,7 +100,6 @@ export const detectDropTarget = (
             }
             const node = MindElement.getNode(element);
             const directions = directionDetector(node, detectPoint);
-
             if (directions) {
                 detectResult = directionCorrector(board, node, directions);
             }
@@ -274,11 +273,11 @@ export const getPathByDropTarget = (board: PlaitBoard, dropTarget: { target: Min
     const layout = PlaitMind.isMind(dropTarget?.target)
         ? getRootLayout(dropTarget?.target)
         : MindQueries.getCorrectLayoutByElement(board, MindElement.getParent(dropTarget?.target));
-
+    const children = getNonAbstractChildren(dropTarget.target);
     // 上下布局：左右是兄弟节点，上下是子节点
     if (isVerticalLogicLayout(layout)) {
         if (dropTarget.detectResult === 'top' || dropTarget.detectResult === 'bottom') {
-            targetPath.push(dropTarget.target.children.length);
+            targetPath.push(children.length);
         }
         // 如果是左，位置不变，右则插入到下一个兄弟节点
         if (dropTarget.detectResult === 'right') {
@@ -288,7 +287,7 @@ export const getPathByDropTarget = (board: PlaitBoard, dropTarget: { target: Min
     // 水平布局/标准布局：上下是兄弟节点，左右是子节点
     if (isHorizontalLogicLayout(layout)) {
         if (dropTarget.detectResult === 'right' || dropTarget.detectResult === 'left') {
-            targetPath.push(dropTarget.target.children.length);
+            targetPath.push(children.length);
         }
         // 如果是上，位置不变，下插入到下一个兄弟节点
         if (dropTarget.detectResult === 'bottom') {
@@ -305,10 +304,10 @@ export const getPathByDropTarget = (board: PlaitBoard, dropTarget: { target: Min
             targetPath = Path.next(targetPath);
         }
         if (isLeftLayout(layout) && dropTarget.detectResult === 'left') {
-            targetPath.push(dropTarget.target.children.length);
+            targetPath.push(children.length);
         }
         if (isRightLayout(layout) && dropTarget.detectResult === 'right') {
-            targetPath.push(dropTarget.target.children.length);
+            targetPath.push(children.length);
         }
     }
     return targetPath;

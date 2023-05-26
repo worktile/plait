@@ -1,7 +1,7 @@
 import { drawRectangleNode } from '../../draw/shape';
 import { updateForeignObject } from '@plait/richtext';
 import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../../constants';
-import { LayoutDirection, MindElement, MindNode } from '../../interfaces';
+import { LayoutDirection, MindElement, MindNode, PlaitMind } from '../../interfaces';
 import { MindNodeComponent } from '../../node.component';
 import { getRectangleByNode } from '../position/node';
 import { PlaitBoard, Point, drawRoundRectangle, createG, Path, PlaitNode } from '@plait/core';
@@ -20,7 +20,7 @@ import { drawLogicLink } from '../../draw/link/logic-link';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
 import { getLayoutDirection, getPointByPlacement, moveXOfPoint, moveYOfPoint, transformPlacement } from '../point-placement';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
-import { PlaitMind } from '@plait/mind';
+import { getRootLayout } from '../layout';
 
 export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeComponent, offsetX: number, offsetY: number) => {
     const dragFakeNodeG = createG();
@@ -52,30 +52,14 @@ export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeCom
 export const drawFakeDropNodeByPath = (board: PlaitBoard, target: MindElement, path: Path) => {
     const fakeDropNodeG = createG();
     const parent = PlaitNode.get(board, Path.parent(path)) as MindElement;
-    const children = getNonAbstractChildren(parent);
     const layout = MindQueries.getLayoutByElement(parent) as MindLayoutType;
     const isHorizontal = isHorizontalLayout(layout);
-    let hasPreviousNode = path[path.length - 1] !== 0;
-    let hasNextNode = path[path.length - 1] !== (children?.length || 0);
+    const { hasNextNode, hasPreviousNode } = getPreviousAndNextByPath(parent, target, path);
     const width = 30;
     const height = 12;
     let fakeNode: MindNode, centerPoint: Point, basicNode: MindNode, linkDirection: LayoutDirection;
 
-    if (PlaitMind.isMind(parent) && isStandardLayout(parent.layout!)) {
-        const dropStandardRightBottom =
-            target === parent.children[parent.rightNodeCount! - 1] && path[path.length - 1] === parent.rightNodeCount;
-        const dropStandardLeftTop = target === parent.children[parent.rightNodeCount!] && path[path.length - 1] === parent.rightNodeCount;
-        if (dropStandardRightBottom) {
-            hasPreviousNode = true;
-            hasNextNode = false;
-        }
-        if (dropStandardLeftTop) {
-            hasPreviousNode = false;
-            hasNextNode = true;
-        }
-    }
-
-    if ((!hasPreviousNode && !hasNextNode) || parent.isCollapsed) {
+    if (!hasPreviousNode && !hasNextNode) {
         const parentNode = MindElement.getNode(parent);
         const parentRect = getRectangleByNode(parentNode);
 
@@ -198,4 +182,33 @@ export const drawFakeDropNodeByPath = (board: PlaitBoard, target: MindElement, p
     fakeDropNodeG?.appendChild(fakeRectangleG);
 
     return fakeDropNodeG;
+};
+
+export const getPreviousAndNextByPath = (parent: MindElement, target: MindElement, path: Path) => {
+    const children = getNonAbstractChildren(parent);
+    let hasPreviousNode = path[path.length - 1] !== 0;
+    let hasNextNode = path[path.length - 1] !== (children?.length || 0);
+    if (PlaitMind.isMind(parent) && isStandardLayout(getRootLayout(parent))) {
+        const dropStandardRightBottom =
+            target === parent.children[parent.rightNodeCount! - 1] && path[path.length - 1] === parent.rightNodeCount;
+        const dropStandardLeftTop = target === parent.children[parent.rightNodeCount!] && path[path.length - 1] === parent.rightNodeCount;
+        if (dropStandardRightBottom) {
+            hasPreviousNode = true;
+            hasNextNode = false;
+        }
+        if (dropStandardLeftTop) {
+            hasPreviousNode = false;
+            hasNextNode = true;
+        }
+    }
+
+    if (parent.isCollapsed) {
+        hasNextNode = false;
+        hasPreviousNode = false;
+    }
+
+    return {
+        hasPreviousNode,
+        hasNextNode
+    };
 };
