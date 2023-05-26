@@ -205,3 +205,32 @@ export const Path = {
         });
     }
 };
+
+export type TextDirection = 'forward' | 'backward';
+
+export interface PathRef {
+    current: Path | null;
+    affinity: TextDirection | null;
+    unref(): Path | null;
+}
+
+export interface PathRefOptions {
+    affinity?: TextDirection | null;
+}
+
+export const PathRef = {
+    transform(ref: PathRef, op: PlaitOperation): void {
+        const { current } = ref;
+
+        if (current == null) {
+            return;
+        }
+
+        const path = Path.transform(current, op);
+        ref.current = path;
+
+        if (path == null) {
+            ref.unref();
+        }
+    }
+};

@@ -4,7 +4,9 @@ import { PlaitElement } from '../interfaces/element';
 import { PlaitPluginElementContext } from '../core/element/context';
 import { PlaitOperation } from '../interfaces/operation';
 import { Transforms } from '../transforms';
-import { FLUSHING } from '../utils/weak-maps';
+import { FLUSHING, PATH_REFS } from '../utils/weak-maps';
+import { PathRef, PathRefOptions } from '../interfaces/path';
+import { Path } from '@plait/core';
 
 export function createBoard(children: PlaitElement[], options: PlaitBoardOptions): PlaitBoard {
     const board: PlaitBoard = {
@@ -27,6 +29,10 @@ export function createBoard(children: PlaitElement[], options: PlaitBoardOptions
         undo: () => {},
         redo: () => {},
         apply: (operation: PlaitOperation) => {
+            for (const ref of board.pathRefs()) {
+                PathRef.transform(ref, operation);
+            }
+
             board.operations.push(operation);
 
             Transforms.transform(board, operation);
@@ -40,6 +46,34 @@ export function createBoard(children: PlaitElement[], options: PlaitBoardOptions
                     board.operations = [];
                 });
             }
+        },
+        pathRef: (path: Path, options?: PathRefOptions) => {
+            const affinity = options?.affinity || 'forward';
+            const ref: PathRef = {
+                current: path,
+                affinity,
+                unref() {
+                    const { current } = ref;
+                    const pathRefs = board.pathRefs();
+                    pathRefs.delete(ref);
+                    ref.current = null;
+                    return current;
+                }
+            };
+
+            const refs = board.pathRefs();
+            refs.add(ref);
+            return ref;
+        },
+        pathRefs: () => {
+            let refs = PATH_REFS.get(board);
+
+            if (!refs) {
+                refs = new Set();
+                PATH_REFS.set(board, refs);
+            }
+
+            return refs;
         },
         onChange: () => {},
         mousedown: (event: MouseEvent) => {},
