@@ -37,14 +37,11 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
     board.mousedown = event => {
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const selectElements = getSelectedElements(board);
-        const flowNodeHandle = getHitNodeHandle(board, point);
-        if (flowNodeHandle) {
-            if (hoveredFlowNode && hoveredFlowNode.id === flowNodeHandle.node.id) {
-                sourceFlowNodeHandle = flowNodeHandle;
-                selectElements.map(item => {
-                    removeSelectedElement(board, item);
-                });
-            }
+        if (hoveredFlowNode) {
+            sourceFlowNodeHandle = getHitHandleByNode(hoveredFlowNode, point);
+            selectElements.map(item => {
+                removeSelectedElement(board, item);
+            });
         }
         mousedown(event);
     };
@@ -90,26 +87,29 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
             }
             return;
         } else {
+            if (isEdgeDragging(board)) {
+                return;
+            }
             // 鼠标移入 flowNode 展示 handles
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-            const hitNode = getHitNode(board, point);
-            if (hitNode) {
-                hoveredFlowNode = hitNode;
-            }
+            const newHitNode = getHitNode(board, point);
+
             if (hoveredFlowNode) {
-                const isSelected = isSelectedElement(board, hoveredFlowNode);
-                const flowNodeComponent = PlaitElement.getComponent(hoveredFlowNode) as FlowNodeComponent;
-                if (!isSelected && !isEdgeDragging(board)) {
-                    if (hitNode) {
-                        flowNodeComponent.drawHandles(hoveredFlowNode);
-                    } else {
-                        const hitNodeHandle = getHitHandleByNode(hoveredFlowNode, point);
-                        if (!hitNodeHandle) {
-                            flowNodeComponent.destroyHandles();
-                            hoveredFlowNode = null;
-                        }
-                    }
+                const isSelectedHoveredNode = isSelectedElement(board, hoveredFlowNode);
+                const isHitHoveredNodeHandle = !!getHitHandleByNode(hoveredFlowNode, point);
+                if (newHitNode === hoveredFlowNode || isSelectedHoveredNode || isHitHoveredNodeHandle) {
+                    return;
                 }
+                // destroy handles
+                const flowNodeComponent = PlaitElement.getComponent(hoveredFlowNode) as FlowNodeComponent;
+                flowNodeComponent.destroyHandles();
+            }
+
+            hoveredFlowNode = newHitNode;
+            if (hoveredFlowNode) {
+                // draw handles
+                const flowNodeComponent = PlaitElement.getComponent(hoveredFlowNode) as FlowNodeComponent;
+                flowNodeComponent.drawHandles(hoveredFlowNode);
             }
         }
         globalMousemove(event);
