@@ -6,7 +6,7 @@ import {
     getLayoutDirection,
     getPointByPlacement,
     getXDistanceBetweenPoint,
-    movePoint,
+    moveXOfPoint,
     transformPlacement
 } from '../../utils/point-placement';
 import { getAbstractBranchColor, getAbstractBranchWidth } from '../../utils/node-style/branch';
@@ -35,11 +35,11 @@ export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal
     let bezierEndPoint = getPointByPlacement(includedElementsRectangle, bezierEndPlacement);
     let abstractConnectorPoint = getPointByPlacement(abstractRectangle, abstractConnectorPlacement);
     let curveDistance = getXDistanceBetweenPoint(abstractConnectorPoint, bezierBeginPoint, isHorizontal) - linkPadding * 2;
-    bezierBeginPoint = movePoint(bezierBeginPoint, linkPadding, linkDirection);
-    let c1 = movePoint(bezierBeginPoint, curveDistance, linkDirection);
-    bezierEndPoint = movePoint(bezierEndPoint, linkPadding, linkDirection);
-    let c2 = movePoint(bezierEndPoint, curveDistance, linkDirection);
-    let bezierConnectorPoint = movePoint(abstractConnectorPoint, -linkPadding, linkDirection);
+    bezierBeginPoint = moveXOfPoint(bezierBeginPoint, linkPadding, linkDirection);
+    let c1 = moveXOfPoint(bezierBeginPoint, curveDistance, linkDirection);
+    bezierEndPoint = moveXOfPoint(bezierEndPoint, linkPadding, linkDirection);
+    let c2 = moveXOfPoint(bezierEndPoint, curveDistance, linkDirection);
+    let bezierConnectorPoint = moveXOfPoint(abstractConnectorPoint, -linkPadding, linkDirection);
 
     const link = PlaitBoard.getRoughSVG(board).path(
         `M${bezierBeginPoint[0]},${bezierBeginPoint[1]} Q${c1[0]},${c1[1]} ${bezierConnectorPoint[0]},${bezierConnectorPoint[1]} Q${c2[0]},${c2[1]} ${bezierEndPoint[0]},${bezierEndPoint[1]} M${abstractConnectorPoint[0]},${abstractConnectorPoint[1]} L${bezierConnectorPoint[0]},${bezierConnectorPoint[1]}`,
