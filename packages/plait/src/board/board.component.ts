@@ -15,7 +15,8 @@ import {
     Output,
     SimpleChanges,
     TemplateRef,
-    ViewChild
+    ViewChild,
+    ViewContainerRef
 } from '@angular/core';
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
@@ -99,7 +100,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @Input() plaitPlugins: PlaitPlugin[] = [];
 
-    @Input() plaitOptions!: PlaitBoardOptions;
+    @Input() plaitOptions?: PlaitBoardOptions;
 
     @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
 
@@ -137,7 +138,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @ViewChild('viewportContainer', { read: ElementRef, static: true })
     viewportContainer!: ElementRef;
 
-    constructor(public cdr: ChangeDetectorRef, private elementRef: ElementRef<HTMLElement>, private ngZone: NgZone) {}
+    constructor(public cdr: ChangeDetectorRef, public viewContainerRef: ViewContainerRef, private elementRef: ElementRef<HTMLElement>, private ngZone: NgZone) {}
 
     ngOnInit(): void {
         const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;

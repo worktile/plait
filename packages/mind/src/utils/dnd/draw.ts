@@ -1,4 +1,4 @@
-import { drawRectangleNode } from '../../draw/shape';
+import { drawRoundRectangleByNode } from '../../draw/node';
 import { updateForeignObject } from '@plait/richtext';
 import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../../constants';
 import { LayoutDirection, MindElement, MindNode } from '../../interfaces';
@@ -25,7 +25,7 @@ export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeCom
         y: activeComponent.node.y + offsetY
     };
     const textRectangle = getTopicRectangleByNode(board as PlaitMindBoard, activeComponent.node);
-    const fakeNodeG = drawRectangleNode(board, fakeDraggingNode);
+    const fakeNodeG = drawRoundRectangleByNode(board, fakeDraggingNode);
 
     const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
     updateForeignObject(

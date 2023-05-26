@@ -3,20 +3,30 @@ import { drawRichtext, updateForeignObject } from '@plait/richtext';
 import { MindNode } from '../interfaces/node';
 import { getTopicRectangleByNode } from '../utils/position/topic';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
+import { PlaitBoard, RectangleClient } from '@plait/core';
+import { MindElement } from '../interfaces';
 
-export function drawMindNodeRichtext(board: PlaitMindBoard, node: MindNode, viewContainerRef: ViewContainerRef) {
-    const { x, y, width, height } = getTopicRectangleByNode(board, node);
+export function drawTopicByNode(board: PlaitMindBoard, node: MindNode, viewContainerRef?: ViewContainerRef) {
+    const rectangle = getTopicRectangleByNode(board, node);
+    return drawTopicByElement(board, rectangle, node.origin, viewContainerRef);
+}
+
+export function drawTopicByElement(
+    board: PlaitMindBoard,
+    rectangle: RectangleClient,
+    element: MindElement,
+    viewContainerRef?: ViewContainerRef
+) {
+    const containerRef = viewContainerRef || PlaitBoard.getComponent(board).viewContainerRef;
     const classList = [];
-    if (node.origin.isRoot) {
+    if (element.isRoot) {
         classList.push('root-node');
         classList.push('font-size-18');
-    } else if (node.parent?.origin?.isRoot) {
-        classList.push('root-child-node');
     } else {
         classList.push('child-node');
     }
     // COMPAT: last character can not show in safari browser
-    return drawRichtext(x, y, width, height, node.origin.data.topic, viewContainerRef, classList);
+    return drawRichtext(rectangle.x, rectangle.y, rectangle.width, rectangle.height, element.data.topic, containerRef, classList);
 }
 
 export function updateMindNodeTopicSize(board: PlaitMindBoard, node: MindNode, g: SVGGElement, isEditable: boolean) {
@@ -29,4 +39,3 @@ export function updateMindNodeTopicSize(board: PlaitMindBoard, node: MindNode, g
         updateForeignObject(g, width, height, x, y);
     }
 }
-

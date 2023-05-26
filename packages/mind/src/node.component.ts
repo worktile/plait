@@ -46,8 +46,8 @@ import { EXTEND_OFFSET, EXTEND_RADIUS, PRIMARY_COLOR, STROKE_WIDTH } from './con
 import { NODE_MIN_WIDTH } from './constants/node-rule';
 import { drawIndentedLink } from './draw/indented-link';
 import { drawLogicLink } from './draw/link/logic-link';
-import { drawMindNodeRichtext, updateMindNodeTopicSize } from './draw/richtext';
-import { drawRectangleNode } from './draw/shape';
+import { drawTopicByNode, updateMindNodeTopicSize } from './draw/topic';
+import { drawRoundRectangleByNode } from './draw/node';
 import { MindElement, PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
@@ -210,7 +210,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         const shape = getShapeByElement(this.board, this.node.origin) as MindElementShape;
         switch (shape) {
             case MindElementShape.roundRectangle:
-                this.shapeG = drawRectangleNode(this.board, this.node as MindNode);
+                this.shapeG = drawRoundRectangleByNode(this.board, this.node as MindNode);
                 this.g.prepend(this.shapeG);
                 break;
             default:
@@ -411,11 +411,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     }
 
     drawRichtext() {
-        const { richtextG, richtextComponentRef, foreignObject } = drawMindNodeRichtext(
-            this.board,
-            this.node as MindNode,
-            this.viewContainerRef
-        );
+        const { richtextG, richtextComponentRef, foreignObject } = drawTopicByNode(this.board, this.node, this.viewContainerRef);
         this.richtextComponentRef = richtextComponentRef;
         this.richtextG = richtextG;
         this.foreignObject = foreignObject;
@@ -438,7 +434,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         // interactive
         fromEvent(collapseG, 'mouseup')
             .pipe(
-                filter(() => !this.handActive || this.board.options.readonly),
+                filter(() => !this.handActive || !PlaitBoard.isReadonly(this.board)),
                 take(1)
             )
             .subscribe(() => {
@@ -733,6 +729,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         super.ngOnDestroy();
         this.abstractIncludedOutlineG?.remove();
         this.destroyRichtext();
+        this.emojisDrawer.destroy();
         this.destroy$.next();
         this.destroy$.complete();
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {

@@ -1,10 +1,9 @@
-import { PlaitPointerType, PlaitBoard, PlaitBoardMove, Point } from '../interfaces';
+import { PlaitPointerType, PlaitBoard, PlaitBoardMove } from '../interfaces';
 import { updatePointerType } from '../transforms/board';
 import { updateViewportContainerScroll } from '../utils/viewport';
 
 export function withHandPointer<T extends PlaitBoard>(board: T) {
     const { mousedown, mousemove, globalMouseup, keydown, keyup } = board;
-
     let isMoving: boolean = false;
     const plaitBoardMove: PlaitBoardMove = {
         x: 0,
@@ -12,11 +11,6 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     };
 
     board.mousedown = (event: MouseEvent) => {
-        if (board.options.readonly) {
-            updatePointerType(board, PlaitPointerType.hand);
-        } else if (!board.selection) {
-            updatePointerType(board, PlaitPointerType.selection);
-        }
         if (board.pointer === PlaitPointerType.hand && board.selection) {
             isMoving = true;
             PlaitBoard.getBoardNativeElement(board).classList.add('viewport-moving');
