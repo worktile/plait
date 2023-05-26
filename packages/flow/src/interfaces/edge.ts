@@ -10,7 +10,7 @@ export type FlowEdgeMarkerType = 'arrow' | 'none';
 
 export type FlowEdgeHandleType = 'source' | 'target';
 
-export interface FlowEdgeHandle extends FlowHandle {
+export interface FlowEdgeHandleRef extends FlowHandle {
     node: FlowNode;
     type?: FlowEdgeHandleType;
 }
@@ -21,16 +21,16 @@ export interface FlowEdgeDragInfo {
     handleType: FlowEdgeHandleType;
 }
 
-export interface FlowEdgeInfo {
-    id: string;
+export interface FlowEdgeHandle {
+    nodeId: string;
     position: FlowPosition;
-    handleId?: string;
+    // handleId?: string;
     marker?: FlowEdgeMarkerType;
 }
 
 export interface FlowEdge<T extends FlowBaseData = FlowBaseData> extends FlowElement<T> {
-    source?: FlowEdgeInfo;
-    target: FlowEdgeInfo;
+    source?: FlowEdgeHandle;
+    target: FlowEdgeHandle;
 }
 
 export const FlowEdge = {

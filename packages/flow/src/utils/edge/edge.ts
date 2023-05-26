@@ -60,19 +60,19 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
     const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && getEdgeDraggingInfo(edge);
 
     if (dragEdgeInfo && dragEdgeInfo.handleType === 'source') {
-        sourceNode = getFakeFlowNodeById(board, edge.source?.id!, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);
+        sourceNode = getFakeFlowNodeById(board, edge.source?.nodeId!, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);
     } else {
-        sourceNode = getFlowNodeById(board, edge.source?.id!);
+        sourceNode = getFlowNodeById(board, edge.source?.nodeId!);
     }
 
     if (dragEdgeInfo && dragEdgeInfo.handleType === 'target') {
-        targetNode = getFakeFlowNodeById(board, edge.target?.id!, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);
+        targetNode = getFakeFlowNodeById(board, edge.target?.nodeId!, dragEdgeInfo.offsetX, dragEdgeInfo.offsetY);
     } else {
-        targetNode = getFlowNodeById(board, edge.target?.id!);
+        targetNode = getFlowNodeById(board, edge.target?.nodeId!);
     }
 
     if (!sourceNode || !targetNode) {
-        throw new Error(`unable to find sourceNode or targetNode by edge with id ${edge.id}`);
+        throw new Error(`unable to find sourceNode or targetNode by edge with id ${edge.nodeId}`);
     }
 
     let { x: sourceNodeX, y: sourceNodeY } = normalizePoint(sourceNode.points![0]);
