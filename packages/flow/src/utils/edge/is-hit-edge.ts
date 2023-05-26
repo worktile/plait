@@ -1,11 +1,12 @@
-import { Point, distanceBetweenPointAndRectangle, distanceBetweenPointAndSegment } from '@plait/core';
+import { Point, distanceBetweenPointAndRectangle, distanceBetweenPointAndSegment, isSelectedElement } from '@plait/core';
 import { PlaitBoard } from '@plait/core';
 import { FlowEdge } from '../../interfaces/edge';
 import { HIT_THRESHOLD } from '../../constants/edge';
 import { getEdgePoints } from './edge';
 import { getEdgeTextBackgroundRect, getEdgeTextRect } from './text';
+import { isHitEdgeHandle } from '../handle/edge';
 
-export function isHitFlowEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
+export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
     const [pathPoints] = getEdgePoints(board, edge);
     let minDistance = Number.MAX_VALUE;
     if (board.selection) {
@@ -20,14 +21,20 @@ export function isHitFlowEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
                 }
             }
         });
-        const hitFlowEdgeText = isHitFlowEdgeText(board, edge, point);
-        const hitFlowEdge = minDistance < HIT_THRESHOLD;
+
+        const hitFlowEdgeText = isHitEdgeText(board, edge, point);
+        const hitEdgeHandle = isHitEdgeHandle(board, edge, point);
+        const isActiveEdge = isSelectedElement(board, edge);
+        let hitFlowEdge = minDistance < HIT_THRESHOLD;
+        if (!isActiveEdge && hitEdgeHandle) {
+            hitFlowEdge = false;
+        }
         return hitFlowEdge || hitFlowEdgeText;
     }
     return false;
 }
 
-export function isHitFlowEdgeText(board: PlaitBoard, edge: FlowEdge, point: Point) {
+export function isHitEdgeText(board: PlaitBoard, edge: FlowEdge, point: Point) {
     const textRect = getEdgeTextRect(board, edge);
     const textBackgroundRect = getEdgeTextBackgroundRect(textRect);
     const distance = distanceBetweenPointAndRectangle(point[0], point[1], textBackgroundRect);

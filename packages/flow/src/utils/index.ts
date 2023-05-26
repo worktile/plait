@@ -3,14 +3,13 @@ export * from './edge/dragging-edge';
 export * from './edge/edge';
 export * from './edge/get-edges-by-node';
 export * from './edge/get-smooth-step-edge';
-export * from './edge/is-hit-edge-element';
+export * from './edge/is-hit-edge';
 export * from './edge/text';
 
 export * from './handle/get-default-handles';
-export * from './handle/get-edge-handles';
 export * from './handle/get-handle-position';
-export * from './handle/get-hit-handle-type';
-export * from './handle/get-hit-node-handle';
+export * from './handle/edge';
+export * from './handle/node';
 
 export * from './node/is-hit-node';
 export * from './node/get-node';
