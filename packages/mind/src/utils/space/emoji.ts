@@ -1,5 +1,5 @@
 import { EmojiData, MindElement, PlaitMind } from '../../interfaces';
-import { PlaitMindBoard } from '../with-extend-mind';
+import { PlaitMindBoard } from '../../plugins/with-mind.board';
 
 export function getEmojisWidthHeight(board: PlaitMindBoard, element: MindElement<EmojiData>) {
     const options = board.getMindOptions();

@@ -1,5 +1,5 @@
 import { PlaitBoard } from '@plait/core';
-import { MindElement } from '../../interfaces';
+import { MindElement } from '../interfaces';
 
 export abstract class BaseDrawer {
     g?: SVGGElement;

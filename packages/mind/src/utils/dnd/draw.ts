@@ -8,11 +8,11 @@ import { PlaitBoard, Point, drawRoundRectangle, createG, Path, PlaitNode } from 
 import { MindQueries } from '../../queries';
 import { getNonAbstractChildren, isHorizontalLayout, isLogicLayout, isTopLayout, MindLayoutType } from '@plait/layouts';
 import { drawIndentedLink } from '../../draw/indented-link';
-import { PlaitMindBoard } from '../../plugins/with-extend-mind';
 import { getTopicRectangleByNode } from '../position/topic';
 import { drawLogicLink } from '../../draw/link/logic-link';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
 import { getLayoutDirection, getPointByPlacement, moveXOfPoint, moveYOfPoint, transformPlacement } from '../point-placement';
+import { PlaitMindBoard } from '../../plugins/with-mind.board';
 
 export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeComponent, offsetX: number, offsetY: number) => {
     const dragFakeNodeG = createG();

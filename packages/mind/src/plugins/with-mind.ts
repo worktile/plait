@@ -33,12 +33,12 @@ import {
 } from '../utils';
 import { getRectangleByNode, isHitMindElement } from '../utils/position/node';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { withDnd } from './with-dnd';
+import { withDnd } from './with-node-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEditing } from '../utils/node';
-import { withAbstract } from './with-abstract';
+import { withAbstract } from './with-abstract-resize';
 import { withExtendMind } from './with-extend-mind';
 import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { MindTransforms } from '../transforms';

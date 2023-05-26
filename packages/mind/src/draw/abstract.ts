@@ -2,12 +2,13 @@ import { drawAbstractRoundRectangle, createG, getRectangleByElements, PlaitBoard
 import { PRIMARY_COLOR } from '../constants';
 import { ABSTRACT_HANDLE_COLOR, ABSTRACT_HANDLE_LENGTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../constants/abstract-node';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { AbstractHandlePosition, MindElement } from '../interfaces';
+import { MindElement } from '../interfaces';
 import { MindLayoutType, isHorizontalLayout } from '@plait/layouts';
 import { MindQueries } from '../queries';
 import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
 import { getRectangleByResizingLocation } from '../utils/abstract/resize';
+import { AbstractHandlePosition } from '../plugins/with-abstract-resize.board';
 
 export function drawAbstractIncludedOutline(
     board: PlaitBoard,

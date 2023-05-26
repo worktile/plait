@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { getSelectedElements, PlaitBoard, PlaitBoardChangeEvent, PlaitElement, Transforms, Viewport } from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
 import { mockData } from './mock-data';
-import { MindTransforms, withMind, canSetAbstract, MindElementShape } from '@plait/mind';
+import { MindTransforms, withMind, canSetAbstract, MindElementShape, PlaitMindBoard } from '@plait/mind';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
-import { AbstractResizeState, PlaitAbstractBoard } from '@plait/mind';
+import { AbstractResizeState } from '@plait/mind';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
 
@@ -73,6 +73,6 @@ export class BasicBoardEditorComponent implements OnInit {
 
     plaitBoardInitialized(value: PlaitBoard) {
         this.board = value;
-        (this.board as PlaitAbstractBoard).abstractResize = (state: AbstractResizeState) => {};
+        (this.board as PlaitMindBoard).onAbstractResize = (state: AbstractResizeState) => {};
     }
 }

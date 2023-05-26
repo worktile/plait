@@ -1,5 +1,5 @@
 import { Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
-import { AbstractRefs } from '../interfaces/abstract';
+import { AbstractRefs } from '../plugins/with-abstract-resize.board';
 import { MindElement } from '../interfaces/element';
 import { AbstractNode, isStandardLayout } from '@plait/layouts';
 import { createMindElement, divideElementByParent, getFirstLevelElement } from '../utils/mind';

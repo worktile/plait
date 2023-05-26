@@ -12,4 +12,6 @@ export * from './plugins/with-extend-mind';
 export * from './constants';
 export * from './queries/index';
 export * from './transforms/index';
-export * from './plugins/emoji';
+export * from './base';
+export * from './plugins/with-mind.board';
+export * from './plugins/with-abstract-resize.board';

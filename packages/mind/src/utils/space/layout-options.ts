@@ -3,7 +3,7 @@ import { MindElement, MindElementShape } from "../../interfaces/element";
 import { BASE, STROKE_WIDTH } from "../../constants/default";
 import { getRootLayout } from "../layout";
 import { NodeSpace } from "./node-space";
-import { PlaitMindBoard } from "../../plugins/with-extend-mind";
+import { PlaitMindBoard } from "../../plugins/with-mind.board";
 
 export const getLayoutOptions = (board: PlaitMindBoard) => {
     function getMainAxle(element: MindElement, parent?: LayoutNode) {

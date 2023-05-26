@@ -1,6 +1,6 @@
-import { BaseData, EmojiData, EmojiItem, MindElement, PlaitMindBoard } from '@plait/mind';
+import { BaseData, EmojiItem, MindElement, PlaitMindBoard } from '@plait/mind';
 import { MindEmojiComponent } from './emoji.component';
-import { PlaitBoard, PlaitPlugin } from '@plait/core';
+import { PlaitBoard } from '@plait/core';
 
 export const withEmojiExtend = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitMindBoard;
