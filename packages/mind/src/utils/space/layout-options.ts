@@ -27,7 +27,7 @@ export const getLayoutOptions = (board: PlaitMindBoard) => {
 
     return {
         getHeight(element: MindElement) {
-            return NodeSpace.getNodeHeight(element);
+            return NodeSpace.getNodeHeight(board, element);
         },
         getWidth(element: MindElement) {
             return NodeSpace.getNodeWidth(board, element);

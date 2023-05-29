@@ -8,7 +8,7 @@ import { FLUSHING, PATH_REFS } from '../utils/weak-maps';
 import { PathRef, PathRefOptions } from '../interfaces/path-ref';
 import { Path } from '../interfaces/path';
 
-export function createBoard(children: PlaitElement[], options: PlaitBoardOptions): PlaitBoard {
+export function createBoard(children: PlaitElement[], options?: PlaitBoardOptions): PlaitBoard {
     const board: PlaitBoard = {
         viewport: {
             zoom: 1,
@@ -21,11 +21,11 @@ export function createBoard(children: PlaitElement[], options: PlaitBoardOptions
             undos: []
         },
         selection: null,
-        pointer: PlaitPointerType.selection,
         options: options || {
             readonly: false,
             hideScrollbar: false
         },
+        pointer: options?.readonly ? PlaitPointerType.hand : PlaitPointerType.selection,
         undo: () => {},
         redo: () => {},
         apply: (operation: PlaitOperation) => {

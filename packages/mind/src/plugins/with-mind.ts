@@ -37,10 +37,11 @@ import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
 import { enterNodeEditing } from '../utils/node';
 import { withAbstract } from './with-abstract-resize';
-import { withExtendMind } from './with-extend-mind';
+import { withMindExtend } from './with-mind-extend';
 import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { MindTransforms } from '../transforms';
 import { isHitEmojis } from '../utils/position/emoji';
+import { withCreateMind } from './with-mind-create';
 
 export const withMind = (board: PlaitBoard) => {
     const {
@@ -265,5 +266,5 @@ export const withMind = (board: PlaitBoard) => {
         deleteFragment(data);
     };
 
-    return withExtendMind(withAbstract(withDnd(board)));
+    return withMindExtend(withCreateMind(withAbstract(withDnd(board))));
 };

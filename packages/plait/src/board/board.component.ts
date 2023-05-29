@@ -15,7 +15,8 @@ import {
     Output,
     SimpleChanges,
     TemplateRef,
-    ViewChild
+    ViewChild,
+    ViewContainerRef
 } from '@angular/core';
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
@@ -99,7 +100,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @Input() plaitPlugins: PlaitPlugin[] = [];
 
-    @Input() plaitOptions!: PlaitBoardOptions;
+    @Input() plaitOptions?: PlaitBoardOptions;
 
     @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
 
@@ -111,7 +112,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @HostBinding('class')
     get hostClass() {
-        return `plait-board-container ${this.board.pointer}`;
+        return `plait-board-container pointer-${this.board.pointer}`;
     }
 
     @HostBinding('class.readonly')
@@ -137,7 +138,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @ViewChild('viewportContainer', { read: ElementRef, static: true })
     viewportContainer!: ElementRef;
 
-    constructor(public cdr: ChangeDetectorRef, private elementRef: ElementRef<HTMLElement>, private ngZone: NgZone) {}
+    constructor(public cdr: ChangeDetectorRef, public viewContainerRef: ViewContainerRef, private elementRef: ElementRef<HTMLElement>, private ngZone: NgZone) {}
 
     ngOnInit(): void {
         const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;
@@ -291,7 +292,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 filter(() => this.isFocused && !PlaitBoard.isReadonly(this.board) && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((clipboardEvent: ClipboardEvent) => {
-                const mousePoint = BOARD_TO_MOVING_POINT.get(this.board);
+                const mousePoint = PlaitBoard.getMovingPoint(this.board);
                 const rect = this.nativeElement.getBoundingClientRect();
                 if (mousePoint && distanceBetweenPointAndRectangle(mousePoint[0], mousePoint[1], rect) === 0) {
                     const targetPoint = transformPoint(this.board, toPoint(mousePoint[0], mousePoint[1], this.host));

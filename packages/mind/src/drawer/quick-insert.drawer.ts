@@ -19,6 +19,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
         }
         return true;
     }
+
     draw(element: MindElement<BaseData>): SVGGElement {
         let offset = element.children.length > 0 && !element.isRoot ? EXTEND_RADIUS : 0;
         const quickInsertG = createG();
@@ -220,6 +221,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
         }
         return quickInsertG;
     }
+
     afterDraw(element: MindElement): void {
         if (!this.g) {
             throw new Error(`can not find quick insert g`);

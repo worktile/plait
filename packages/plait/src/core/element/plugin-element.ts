@@ -31,7 +31,7 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
                 this.onContextChanged(value, previousContext);
             }
         } else {
-            if (PlaitElement.isRootElement(this.element) && this.element.children && this.element.children.length > 0) {
+            if (PlaitElement.isRootElement(this.element) && this.element.children) {
                 this.g = createG();
                 this.rootG = createG();
                 this.rootG.append(this.g);

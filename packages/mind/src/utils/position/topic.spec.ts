@@ -1,7 +1,7 @@
 import { PlaitNode, clearNodeWeakMap, createTestingBoard, fakeNodeWeakMap } from '@plait/core';
 import { getTestingChildren } from '../../testing/data/basic';
 import { fakeMindLayout, clearLayoutNodeWeakMap } from '../../testing/core/fake-layout-node';
-import { PlaitMindBoard } from '../../plugins/with-extend-mind';
+import { PlaitMindBoard } from '../../plugins/with-mind-extend';
 import { MindElement, PlaitMind } from '../../interfaces/element';
 import { MindNode } from '../../interfaces/node';
 import { getTopicRectangleByNode } from './topic';

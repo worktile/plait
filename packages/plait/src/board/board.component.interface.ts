@@ -1,7 +1,8 @@
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 
 export interface BoardComponentInterface {
     markForCheck: () => void;
     cdr: ChangeDetectorRef;
     nativeElement: HTMLElement;
+    viewContainerRef: ViewContainerRef
 }

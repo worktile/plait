@@ -57,7 +57,7 @@ export const NodeSpace = {
         }
         return nodeAndText + element.width + nodeAndText;
     },
-    getNodeHeight(element: MindElement) {
+    getNodeHeight(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getVerticalSpaceBetweenNodeAndText(element);
         return nodeAndText + element.height + nodeAndText;
     },

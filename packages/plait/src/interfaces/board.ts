@@ -10,6 +10,7 @@ import {
     BOARD_TO_COMPONENT,
     BOARD_TO_ELEMENT_HOST,
     BOARD_TO_HOST,
+    BOARD_TO_MOVING_POINT,
     BOARD_TO_ROUGH_SVG,
     IS_BOARD_CACHE,
     IS_TEXT_EDITABLE,
@@ -32,7 +33,7 @@ export interface PlaitBoard {
     // record pointer selection or drag selection
     // it will be dirty when board viewport change
     selection: Selection | null;
-    pointer: PlaitPointerType;
+    pointer: PlaitPointerType | string;
     history: PlaitHistory;
     options: PlaitBoardOptions;
     undo: () => void;
@@ -139,5 +140,14 @@ export const PlaitBoard = {
     },
     hasBeenTextEditing(board: PlaitBoard) {
         return !!IS_TEXT_EDITABLE.get(board);
+    },
+    getPointer<T = PlaitPointerType>(board: PlaitBoard) {
+        return board.pointer as T;
+    },
+    isPointer<T = PlaitPointerType>(board: PlaitBoard, pointer: T) {
+        return board.pointer === pointer;
+    },
+    getMovingPoint(board: PlaitBoard) {
+        return BOARD_TO_MOVING_POINT.get(board);
     }
 };
