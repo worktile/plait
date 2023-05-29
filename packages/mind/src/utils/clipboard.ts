@@ -12,7 +12,7 @@ import { MindElement } from '../interfaces';
 import { copyNewNode, extractNodesText } from './mind';
 import { getRectangleByNode } from './position/node';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
-import { getOverallAbstracts } from './abstract/common';
+import { getRelativeStartEndByAbstractRef, getOverallAbstracts, getValidAbstractRefs } from './abstract/common';
 import { createMindElement } from './node/create-node';
 import { adjustAbstractToNode, adjustNodeToRoot, adjustRootToNode } from './node/adjust-node';
 
@@ -21,18 +21,12 @@ export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElem
 
     // get overall abstract
     const overallAbstracts = getOverallAbstracts(board, selectedElements) as MindElement[];
+    // get valid abstract refs
+    const validAbstractRefs = getValidAbstractRefs(board, [...selectedElements, ...overallAbstracts]);
 
     // keep correct order
-    const newSelectedElements = selectedElements.filter(value => !overallAbstracts.includes(value));
-    newSelectedElements.push(...overallAbstracts);
-
-    // get correct start and end in selected elements
-    function getCorrectStartEnd(abstract: MindElement & AbstractNode) {
-        const parent = MindElement.getParent(abstract);
-        const startElement = parent.children[abstract.start];
-        const index = selectedElements.indexOf(startElement);
-        return { start: index, end: index + (abstract.end - abstract.start) };
-    }
+    const newSelectedElements = selectedElements.filter(value => !validAbstractRefs.find(ref => ref.abstract === value));
+    newSelectedElements.push(...validAbstractRefs.map(value => value.abstract));
 
     const selectedMindNodes = newSelectedElements.map(value => MindElement.getNode(value));
     const nodesRectangle = getRectangleByElements(board, newSelectedElements, true);
@@ -42,8 +36,9 @@ export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElem
         const points = [[nodeRectangle.x - nodesRectangle.x, nodeRectangle.y - nodesRectangle.y]] as Point[];
 
         // handle invalid abstract
-        if (AbstractNode.isAbstract(element) && overallAbstracts.includes(element)) {
-            const { start, end } = getCorrectStartEnd(element);
+        const abstractRef = validAbstractRefs.find(ref => ref.abstract === element);
+        if (AbstractNode.isAbstract(element) && abstractRef) {
+            const { start, end } = getRelativeStartEndByAbstractRef(abstractRef, newSelectedElements);
             result.push({
                 ...element,
                 points,

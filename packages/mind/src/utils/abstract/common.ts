@@ -54,6 +54,9 @@ export const getBehindAbstracts = (element: MindElement) => {
     return parent.children.filter(child => AbstractNode.isAbstract(child) && child.start! > index);
 };
 
+/**
+ * return corresponding abstract that is not child of elements
+ */
 export const getOverallAbstracts = (board: PlaitBoard, elements: MindElement[]) => {
     const overallAbstracts: MindElement[] = [];
     elements
@@ -100,6 +103,12 @@ export const getValidAbstractRefs = (board: PlaitBoard, elements: MindElement[])
         });
     return validAbstractRefs;
 };
+
+export function getRelativeStartEndByAbstractRef(abstractRef: AbstractRef, elements: MindElement[]) {
+    const start = elements.indexOf(abstractRef.references[0]);
+    const end = elements.indexOf(abstractRef.references[abstractRef.references.length - 1]);
+    return { start, end };
+}
 
 export const insertElementHandleAbstract = (
     board: PlaitBoard,
