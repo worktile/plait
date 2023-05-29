@@ -24,7 +24,7 @@ import {
     shouldChangeRightNodeCount
 } from '../utils';
 import { isHitMindElement } from '../utils/position/node';
-import { isDragging, removeActiveOnDragOrigin, setIsDragging } from '../utils/dnd/common';
+import { addActiveOnDragOrigin, isDragging, removeActiveOnDragOrigin, setIsDragging } from '../utils/dnd/common';
 import { detectDropTarget, getPathByDropTarget } from '../utils/dnd/detector';
 import { drawFakeDragNode, drawFakeDropNodeByPath } from '../utils/dnd/draw';
 import { MindTransforms } from '../transforms';
@@ -32,7 +32,7 @@ import { MindTransforms } from '../transforms';
 const DRAG_MOVE_BUFFER = 5;
 
 export const withDnd = (board: PlaitBoard) => {
-    const { mousedown, mousemove, globalMouseup, keydown } = board;
+    const { mousedown, mousemove, globalMouseup } = board;
 
     let activeElements: MindElement[] = [];
     let startPoint: Point;
@@ -106,6 +106,7 @@ export const withDnd = (board: PlaitBoard) => {
             dragFakeNodeG?.remove();
             dragFakeNodeG = createG();
             activeElements.forEach(element => {
+                addActiveOnDragOrigin(element);
                 const activeComponent = PlaitElement.getComponent(element) as MindNodeComponent;
                 const nodeG = drawFakeDragNode(board, activeComponent, offsetX, offsetY);
                 dragFakeNodeG?.appendChild(nodeG);
@@ -151,7 +152,7 @@ export const withDnd = (board: PlaitBoard) => {
             }
 
             if (isDragging(board)) {
-                removeActiveOnDragOrigin(activeElements[0]);
+                activeElements.forEach(element => removeActiveOnDragOrigin(element));
             }
 
             setIsDragging(board, false);
@@ -163,10 +164,6 @@ export const withDnd = (board: PlaitBoard) => {
             dropTarget = null;
         }
         globalMouseup(event);
-    };
-
-    board.keydown = (event: KeyboardEvent) => {
-        keydown(event);
     };
 
     return board;
