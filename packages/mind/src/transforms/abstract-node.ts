@@ -2,9 +2,10 @@ import { Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { AbstractRefs } from '../plugins/with-abstract-resize.board';
 import { MindElement } from '../interfaces/element';
 import { AbstractNode, isStandardLayout } from '@plait/layouts';
-import { createMindElement, divideElementByParent, getFirstLevelElement } from '../utils/mind';
+import { divideElementByParent, getFirstLevelElement } from '../utils/mind';
 import { MindQueries } from '../queries';
 import { DefaultAbstractNodeStyle } from '../constants/node-style';
+import { createMindElement } from '../utils/node/node-create';
 
 export const setAbstractsByRefs = (board: PlaitBoard, abstractRefs: AbstractRefs) => {
     abstractRefs.forEach((newProperty, element) => {

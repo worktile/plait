@@ -9,10 +9,11 @@ import {
     Transforms
 } from '@plait/core';
 import { MindElement } from '../interfaces';
-import { copyNewNode, extractNodesText, transformNodeToRoot, transformRootToNode, createMindElement, transformAbstractToNode } from '.';
+import { copyNewNode, extractNodesText, transformNodeToRoot, transformRootToNode, transformAbstractToNode } from '.';
 import { getRectangleByNode } from './position/node';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { getOverallAbstracts } from './abstract/common';
+import { createMindElement } from './node/node-create';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[]) => {
     let result: MindElement[] = [];

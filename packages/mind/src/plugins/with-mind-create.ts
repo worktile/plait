@@ -10,12 +10,13 @@ import {
 } from '@plait/core';
 import { PlaitMindBoard } from './with-mind.board';
 import { MindPointerType } from '../interfaces/pointer';
-import { createRootMindElement, getTopicRectangleByElement } from '../utils';
+import { getTopicRectangleByElement } from '../utils';
 import { drawRoundRectangleByElement } from '../draw/node';
 import { NodeSpace } from '../utils/space/node-space';
 import { drawTopicByElement } from '../draw/topic';
 import { ComponentRef } from '@angular/core';
 import { PlaitRichtextComponent } from '@plait/richtext';
+import { createEmptyMind } from '../utils/node/node-create';
 
 export interface FakeCreateNodeRef {
     nodeG: SVGGElement;
@@ -39,17 +40,17 @@ export const withCreateMind = (board: PlaitBoard) => {
                 const movingPoint = PlaitBoard.getMovingPoint(board);
                 if (movingPoint) {
                     const targetPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
-                    const newRoot = createRootMindElement(board, targetPoint);
+                    const emptyMind = createEmptyMind(board, targetPoint);
                     const nodeRectangle = {
                         x: targetPoint[0],
                         y: targetPoint[1],
-                        width: NodeSpace.getNodeWidth(newBoard, newRoot),
-                        height: NodeSpace.getNodeHeight(newBoard, newRoot)
+                        width: NodeSpace.getNodeWidth(newBoard, emptyMind),
+                        height: NodeSpace.getNodeHeight(newBoard, emptyMind)
                     };
-                    const nodeG = drawRoundRectangleByElement(board, nodeRectangle, newRoot);
-                    const topicRectangle = getTopicRectangleByElement(newBoard, nodeRectangle, newRoot);
+                    const nodeG = drawRoundRectangleByElement(board, nodeRectangle, emptyMind);
+                    const topicRectangle = getTopicRectangleByElement(newBoard, nodeRectangle, emptyMind);
                     if (!fakeCreateNodeRef) {
-                        const { richtextComponentRef, richtextG, foreignObject } = drawTopicByElement(newBoard, topicRectangle, newRoot);
+                        const { richtextComponentRef, richtextG, foreignObject } = drawTopicByElement(newBoard, topicRectangle, emptyMind);
                         fakeCreateNodeRef = {
                             instanceRef: richtextComponentRef,
                             nodeG,
@@ -83,8 +84,8 @@ export const withCreateMind = (board: PlaitBoard) => {
         const movingPoint = PlaitBoard.getMovingPoint(board);
         if (movingPoint && fakeCreateNodeRef && PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind)) {
             const targetPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
-            const newRoot = createRootMindElement(board, targetPoint);
-            Transforms.insertNode(board, newRoot, [board.children.length]);
+            const emptyMind = createEmptyMind(board, targetPoint);
+            Transforms.insertNode(board, emptyMind, [board.children.length]);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
         destroy();
