@@ -1,7 +1,8 @@
-import { Element } from 'slate';
+import { Element, Path } from 'slate';
 import { MindElement } from '../interfaces/element';
 import { NODE_MIN_WIDTH } from '../constants/node-rule';
 import { PlaitBoard, Transforms } from '@plait/core';
+import { changeRightNodeCount, getFirstLevelElement, isInRightBranchOfStandardLayout } from '../utils/mind';
 
 export const setTopic = (board: PlaitBoard, element: MindElement, topic: Element, width: number, height: number) => {
     const newElement = {
@@ -25,3 +26,31 @@ export const setTopicSize = (board: PlaitBoard, element: MindElement, width: num
     Transforms.setNode(board, newElement, path);
 };
 
+export const removeElements = (board: PlaitBoard, elements: MindElement[]) => {
+    const deletableElements = getFirstLevelElement(elements).reverse();
+
+    //翻转，从下到上修改，防止找不到 path
+    deletableElements
+        .map(element => {
+            const path = PlaitBoard.findPath(board, element);
+            return () => {
+                if (isInRightBranchOfStandardLayout(element)) {
+                    changeRightNodeCount(board, path.slice(0, 1), -1);
+                }
+                Transforms.removeNode(board, path);
+            };
+        })
+        .forEach(action => {
+            action();
+        });
+};
+
+export const insertNodes = (board: PlaitBoard, elements: MindElement[], path: Path) => {
+    const pathRef = board.pathRef(path);
+    elements.forEach(element => {
+        if (pathRef.current) {
+            Transforms.insertNode(board, element, pathRef.current);
+        }
+    });
+    pathRef.unref();
+};

@@ -75,6 +75,7 @@ export const getOverallAbstracts = (board: PlaitBoard, elements: MindElement[]) 
 export const insertElementHandleAbstract = (
     board: PlaitBoard,
     path: Path,
+    step = 1,
     //由此区分拖拽和新增到概要概括最后一个节点
     isExtendPreviousNode: boolean = true,
     abstractRefs = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
@@ -97,8 +98,8 @@ export const insertElementHandleAbstract = (
                 newProperties = { start: 0, end: 0 };
                 abstractRefs.set(abstract, newProperties);
             }
-            newProperties.start = newProperties.start + 1;
-            newProperties.end = newProperties.end + 1;
+            newProperties.start = newProperties.start + step;
+            newProperties.end = newProperties.end + step;
         });
     }
 
@@ -116,7 +117,7 @@ export const insertElementHandleAbstract = (
             newProperties = { start: 0, end: 0 };
             abstractRefs.set(correspondingAbstract, newProperties);
         }
-        newProperties.end = newProperties.end + 1;
+        newProperties.end = newProperties.end + step;
     }
 
     return abstractRefs;

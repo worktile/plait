@@ -1,6 +1,6 @@
 import { insertAbstract, setAbstractsByRefs, setAbstractByStandardLayout } from './abstract-node';
 import { setLayout } from './layout';
-import { setTopic, setTopicSize } from './node';
+import { setTopic, setTopicSize, removeElements, insertNodes } from './node';
 import { addEmoji, removeEmoji, replaceEmoji } from './emoji';
 
 export const MindTransforms = {
@@ -12,5 +12,7 @@ export const MindTransforms = {
     replaceEmoji,
     insertAbstract,
     setAbstractsByRefs,
-    setAbstractByStandardLayout
+    setAbstractByStandardLayout,
+    removeElements,
+    insertNodes
 };

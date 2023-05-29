@@ -170,7 +170,7 @@ export const changeRightNodeCount = (board: PlaitBoard, parentPath: Path, change
     );
 };
 
-export const shouldChangeRightNodeCount = (selectedElement: MindElement) => {
+export const isInRightBranchOfStandardLayout = (selectedElement: MindElement) => {
     const parentElement = MindElement.findParent(selectedElement);
     if (parentElement) {
         const nodeIndex: number = parentElement.children.findIndex(item => item.id === selectedElement.id);
@@ -280,28 +280,6 @@ export const findLastChild = (child: MindNode) => {
         result = result.children[result.children.length - 1];
     }
     return result;
-};
-
-export const deleteSelectedELements = (board: PlaitBoard, selectedElements: MindElement[]) => {
-    const deletableElements = getFirstLevelElement(selectedElements).reverse();
-
-    const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
-    MindTransforms.setAbstractsByRefs(board, abstractRefs);
-
-    //翻转，从下到上修改，防止找不到 path
-    deletableElements
-        .map(element => {
-            const path = PlaitBoard.findPath(board, element);
-            return () => {
-                if (shouldChangeRightNodeCount(element)) {
-                    changeRightNodeCount(board, path.slice(0, 1), -1);
-                }
-                Transforms.removeNode(board, path);
-            };
-        })
-        .forEach(action => {
-            action();
-        });
 };
 
 export const divideElementByParent = (elements: MindElement[]) => {
