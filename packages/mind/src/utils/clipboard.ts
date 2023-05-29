@@ -9,11 +9,12 @@ import {
     Transforms
 } from '@plait/core';
 import { MindElement } from '../interfaces';
-import { copyNewNode, extractNodesText, transformNodeToRoot, transformRootToNode, transformAbstractToNode } from '.';
+import { copyNewNode, extractNodesText } from './mind';
 import { getRectangleByNode } from './position/node';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { getOverallAbstracts } from './abstract/common';
-import { createMindElement } from './node/node-create';
+import { createMindElement } from './node/create-node';
+import { adjustAbstractToNode, adjustNodeToRoot, adjustRootToNode } from './node/adjust-node';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[]) => {
     let result: MindElement[] = [];
@@ -22,7 +23,7 @@ export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElem
     const overallAbstracts = getOverallAbstracts(board, selectedElements) as MindElement[];
 
     // keep correct order
-    const newSelectedElements = selectedElements.filter((value) => !overallAbstracts.includes(value));
+    const newSelectedElements = selectedElements.filter(value => !overallAbstracts.includes(value));
     newSelectedElements.push(...overallAbstracts);
 
     // get correct start and end in selected elements
@@ -101,7 +102,7 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
 
         if (hasTargetParent) {
             if (item.isRoot) {
-                newElement = transformRootToNode(board, newElement);
+                newElement = adjustRootToNode(board, newElement);
             }
             // handle abstract start and end
             if (AbstractNode.isAbstract(newElement)) {
@@ -114,11 +115,11 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
             newElement.points = [point];
 
             if (AbstractNode.isAbstract(item)) {
-                newElement = transformAbstractToNode(newElement);
+                newElement = adjustAbstractToNode(newElement);
             }
 
             if (!item.isRoot) {
-                newElement = transformNodeToRoot(board, newElement);
+                newElement = adjustNodeToRoot(board, newElement);
             }
 
             path = [board.children.length];

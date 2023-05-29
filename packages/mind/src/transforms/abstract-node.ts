@@ -5,7 +5,7 @@ import { AbstractNode, isStandardLayout } from '@plait/layouts';
 import { divideElementByParent, getFirstLevelElement } from '../utils/mind';
 import { MindQueries } from '../queries';
 import { DefaultAbstractNodeStyle } from '../constants/node-style';
-import { createMindElement } from '../utils/node/node-create';
+import { createMindElement } from '../utils/node/create-node';
 
 export const setAbstractsByRefs = (board: PlaitBoard, abstractRefs: AbstractRefs) => {
     abstractRefs.forEach((newProperty, element) => {

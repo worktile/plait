@@ -1,12 +1,12 @@
 import { PlaitBoard, Point, idCreator, isNullOrUndefined } from '@plait/core';
-import { transformNodeToRoot } from '../mind';
 import { ROOT_DEFAULT_HEIGHT, TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { MindLayoutType } from '@plait/layouts';
 import { MindElement, MindElementShape } from '../../interfaces/element';
+import { adjustNodeToRoot } from './adjust-node';
 
 export const createEmptyMind = (board: PlaitBoard, point: Point) => {
     const element = createMindElement('', 0, 0, { layout: MindLayoutType.right });
-    const rootElement = transformNodeToRoot(board, element);
+    const rootElement = adjustNodeToRoot(board, element);
     rootElement.points = [point];
     return rootElement;
 };

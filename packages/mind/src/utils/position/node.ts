@@ -1,6 +1,8 @@
 import { PlaitBoard, Point, RectangleClient, distanceBetweenPointAndRectangle } from '@plait/core';
 import { MindNode } from '../../interfaces/node';
 import { MindElement } from '../../interfaces/element';
+import { NodeSpace } from '../space/node-space';
+import { PlaitMindBoard } from '../../plugins/with-mind.board';
 
 export function getRectangleByNode(node: MindNode): RectangleClient {
     const x = node.x + node.hGap;
@@ -13,6 +15,16 @@ export function getRectangleByNode(node: MindNode): RectangleClient {
         width,
         height
     };
+}
+
+export function getRectangleByElement(board: PlaitMindBoard, originPoint: Point, element: MindElement) {
+    const nodeRectangle = {
+        x: originPoint[0],
+        y: originPoint[1],
+        width: NodeSpace.getNodeWidth(board, element),
+        height: NodeSpace.getNodeHeight(board, element)
+    };
+    return nodeRectangle;
 }
 
 export function isHitMindElement(board: PlaitBoard, point: Point, element: MindElement) {

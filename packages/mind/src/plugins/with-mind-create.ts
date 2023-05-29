@@ -10,13 +10,13 @@ import {
 } from '@plait/core';
 import { PlaitMindBoard } from './with-mind.board';
 import { MindPointerType } from '../interfaces/pointer';
-import { getTopicRectangleByElement } from '../utils';
+import { getRectangleByElement, getTopicRectangleByElement } from '../utils';
 import { drawRoundRectangleByElement } from '../draw/node';
 import { NodeSpace } from '../utils/space/node-space';
 import { drawTopicByElement } from '../draw/topic';
 import { ComponentRef } from '@angular/core';
 import { PlaitRichtextComponent } from '@plait/richtext';
-import { createEmptyMind } from '../utils/node/node-create';
+import { createEmptyMind } from '../utils/node/create-node';
 
 export interface FakeCreateNodeRef {
     nodeG: SVGGElement;
@@ -41,12 +41,7 @@ export const withCreateMind = (board: PlaitBoard) => {
                 if (movingPoint) {
                     const targetPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
                     const emptyMind = createEmptyMind(board, targetPoint);
-                    const nodeRectangle = {
-                        x: targetPoint[0],
-                        y: targetPoint[1],
-                        width: NodeSpace.getNodeWidth(newBoard, emptyMind),
-                        height: NodeSpace.getNodeHeight(newBoard, emptyMind)
-                    };
+                    const nodeRectangle = getRectangleByElement(newBoard, targetPoint, emptyMind);
                     const nodeG = drawRoundRectangleByElement(board, nodeRectangle, emptyMind);
                     const topicRectangle = getTopicRectangleByElement(newBoard, nodeRectangle, emptyMind);
                     if (!fakeCreateNodeRef) {
