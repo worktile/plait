@@ -21,7 +21,7 @@ import {
     deleteElementHandleAbstract,
     getFirstLevelElement,
     insertElementHandleAbstract,
-    shouldChangeRightNodeCount
+    isInRightBranchOfStandardLayout
 } from '../utils';
 import { isHitMindElement } from '../utils/position/node';
 import { addActiveOnDragOrigin, isDragging, removeActiveOnDragOrigin, setIsDragging } from '../utils/dnd/common';
@@ -128,11 +128,11 @@ export const withDnd = (board: PlaitBoard) => {
                 insertElementHandleAbstract(board, targetPath, activeElements.length, false, abstractRefs);
                 MindTransforms.setAbstractsByRefs(board, abstractRefs);
 
-                MindTransforms.deleteSelectedELements(board, activeElements);
+                MindTransforms.removeElements(board, activeElements);
                 MindTransforms.insertNodes(board, activeElements, targetPathRef.current!);
 
                 const shouldChangeRoot =
-                    shouldChangeRightNodeCount(dropTarget?.target) &&
+                    isInRightBranchOfStandardLayout(dropTarget?.target) &&
                     targetElementPathRef.current &&
                     (Path.isSibling(targetPath, targetElementPathRef.current) || Path.equals(targetPath, targetElementPathRef.current));
                 if (shouldChangeRoot && targetElementPathRef.current) {
@@ -149,6 +149,8 @@ export const withDnd = (board: PlaitBoard) => {
                 }
                 targetElementPathRef.unref();
                 targetPathRef.unref();
+
+                Transforms.setSelectionWithTemporaryElements(board, activeElements);
             }
 
             if (isDragging(board)) {
@@ -162,6 +164,8 @@ export const withDnd = (board: PlaitBoard) => {
             fakeDropNodeG?.remove();
             fakeDropNodeG = undefined;
             dropTarget = null;
+
+            
         }
         globalMouseup(event);
     };

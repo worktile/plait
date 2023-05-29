@@ -25,7 +25,7 @@ import {
     changeRightNodeCount,
     insertMindElement,
     getFirstLevelElement,
-    shouldChangeRightNodeCount,
+    isInRightBranchOfStandardLayout,
     insertElementHandleAbstract,
     deleteElementHandleAbstract
 } from '../utils';
@@ -123,7 +123,7 @@ export const withMind = (board: PlaitBoard) => {
                     }
                     insertMindElement(board, selectedElement, findNewChildNodePath(board, selectedElement));
                 } else {
-                    if (shouldChangeRightNodeCount(selectedElement)) {
+                    if (isInRightBranchOfStandardLayout(selectedElement)) {
                         changeRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
                     }
 
@@ -140,7 +140,7 @@ export const withMind = (board: PlaitBoard) => {
                 const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
                 MindTransforms.setAbstractsByRefs(board, abstractRefs);
 
-                MindTransforms.deleteSelectedELements(board, selectedElements);
+                MindTransforms.removeElements(board, selectedElements);
 
                 let activeElement: MindElement | undefined;
                 const firstLevelElements = getFirstLevelElement(selectedElements);
@@ -261,7 +261,7 @@ export const withMind = (board: PlaitBoard) => {
         const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
         MindTransforms.setAbstractsByRefs(board, abstractRefs);
 
-        MindTransforms.deleteSelectedELements(board, selectedElements);
+        MindTransforms.removeElements(board, selectedElements);
         deleteFragment(data);
     };
 

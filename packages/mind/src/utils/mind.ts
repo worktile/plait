@@ -170,7 +170,7 @@ export const changeRightNodeCount = (board: PlaitBoard, parentPath: Path, change
     );
 };
 
-export const shouldChangeRightNodeCount = (selectedElement: MindElement) => {
+export const isInRightBranchOfStandardLayout = (selectedElement: MindElement) => {
     const parentElement = MindElement.findParent(selectedElement);
     if (parentElement) {
         const nodeIndex: number = parentElement.children.findIndex(item => item.id === selectedElement.id);
