@@ -18,6 +18,18 @@ import { deleteElementHandleAbstract } from './abstract/common';
 import { MindTransforms } from '../transforms';
 import { createMindElement } from './node/create-node';
 
+export function findUpElement(element: MindElement): { root: MindElement; branch?: MindElement } {
+    let branch;
+    let root = element;
+    let parent = MindElement.findParent(element);
+    while (parent) {
+        branch = root;
+        root = parent;
+        parent = MindElement.findParent(parent);
+    }
+    return { root, branch };
+}
+
 export const getChildrenCount = (element: MindElement) => {
     const count: number = element.children.reduce((p: number, c: MindElement) => {
         return p + getChildrenCount(c);
