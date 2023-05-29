@@ -3,11 +3,8 @@ import {
     addSelectedElement,
     clearSelectedElement,
     idCreator,
-    isNullOrUndefined,
     Path,
     PlaitBoard,
-    PlaitElement,
-    Point,
     Transforms
 } from '@plait/core';
 import { Node } from 'slate';
@@ -15,24 +12,11 @@ import { NODE_MIN_WIDTH } from '../constants/node-rule';
 import { MindElementShape, MindNode } from '../interfaces';
 import { MindElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
-import { TEXT_DEFAULT_HEIGHT, getSizeByText, ROOT_DEFAULT_HEIGHT } from '@plait/richtext';
+import { TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node';
 import { deleteElementHandleAbstract } from './abstract/common';
-import { ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { MindTransforms } from '../transforms';
 import { createMindElement } from './node/create-node';
-
-export function findUpElement(element: MindElement): { root: MindElement; branch?: MindElement } {
-    let branch;
-    let root = element;
-    let parent = MindElement.findParent(element);
-    while (parent) {
-        branch = root;
-        root = parent;
-        parent = MindElement.findParent(parent);
-    }
-    return { root, branch };
-}
 
 export const getChildrenCount = (element: MindElement) => {
     const count: number = element.children.reduce((p: number, c: MindElement) => {
