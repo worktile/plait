@@ -60,7 +60,7 @@ export const getOverallAbstracts = (board: PlaitBoard, elements: MindElement[]) 
         .filter(value => !AbstractNode.isAbstract(value) && !PlaitMind.isMind(value))
         .forEach(value => {
             const abstract = getCorrespondingAbstract(value);
-            if (abstract && overallAbstracts.indexOf(abstract) === -1) {
+            if (abstract && elements.indexOf(abstract) === -1 && overallAbstracts.indexOf(abstract) === -1) {
                 const { start, end } = abstract;
                 const parent = MindElement.getParent(value);
                 const isOverall = parent.children.slice(start!, end! + 1).every(includedElement => elements.indexOf(includedElement) > -1);
@@ -70,6 +70,35 @@ export const getOverallAbstracts = (board: PlaitBoard, elements: MindElement[]) 
             }
         });
     return overallAbstracts as (MindElement & AbstractNode)[];
+};
+
+export interface AbstractRef {
+    abstract: MindElement & AbstractNode;
+    references: MindElement[];
+}
+
+/**
+ * abstract node is valid when elements contains at least one element it is referenced with
+ */
+export const getValidAbstractRefs = (board: PlaitBoard, elements: MindElement[]) => {
+    const validAbstractRefs: AbstractRef[] = [];
+    elements
+        .filter(value => !AbstractNode.isAbstract(value) && !PlaitMind.isMind(value))
+        .forEach(value => {
+            const abstract = getCorrespondingAbstract(value);
+            if (abstract && elements.indexOf(abstract) > 0) {
+                const index = validAbstractRefs.findIndex(value => value.abstract === abstract);
+                if (index === -1) {
+                    validAbstractRefs.push({
+                        abstract: abstract as MindElement & AbstractNode,
+                        references: [value]
+                    });
+                } else {
+                    validAbstractRefs[index].references.push(value);
+                }
+            }
+        });
+    return validAbstractRefs;
 };
 
 export const insertElementHandleAbstract = (

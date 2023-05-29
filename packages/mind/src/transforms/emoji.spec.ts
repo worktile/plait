@@ -1,9 +1,9 @@
 import { PlaitNode, clearNodeWeakMap, createTestingBoard, fakeNodeWeakMap } from '@plait/core';
-import { PlaitMindBoard } from '../plugins/with-mind-extend';
 import { getTestingChildren } from '../testing/data/basic';
 import { MindElement } from '../interfaces/element';
 import { addEmoji, removeEmoji, replaceEmoji } from './emoji';
 import { EmojiData, EmojiItem } from '../interfaces';
+import { PlaitMindBoard } from '../plugins/with-mind.board';
 
 describe('transforms emoji', () => {
     let board: PlaitMindBoard;

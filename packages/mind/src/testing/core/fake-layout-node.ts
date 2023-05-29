@@ -2,9 +2,9 @@ import { GlobalLayout, OriginNode } from '@plait/layouts';
 import { MindNode, PlaitMind } from '../../interfaces';
 import { getDefaultLayout } from '../../utils/layout';
 import { getLayoutOptions } from '../../utils/space/layout-options';
-import { PlaitMindBoard } from '../../plugins/with-mind-extend';
 import { depthFirstRecursion } from '@plait/core';
 import { ELEMENT_TO_NODE } from '../../utils/weak-maps';
+import { PlaitMindBoard } from '../../plugins/with-mind.board';
 
 export const fakeMindLayout = (board: PlaitMindBoard, mind: PlaitMind) => {
     const mindLayoutType = mind.layout || getDefaultLayout();

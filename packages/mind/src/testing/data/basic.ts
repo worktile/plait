@@ -10,7 +10,7 @@ export const getTestingChildren = (): MindElement[] => {
             children: [
                 { id: 'HcJWT', data: { topic: { children: [{ text: 'Main Topic 1' }] } }, children: [], width: 25, height: 20 },
                 { id: 'xAWFi', data: { topic: { children: [{ text: 'Main Topic 2' }] } }, children: [], width: 25, height: 20 },
-                { id: 'yTTcb', data: { topic: { children: [{ text: 'Main Topic 2' }] } }, children: [], width: 25, height: 20 },
+                { id: 'yTTcb', data: { topic: { children: [{ text: 'Main Topic 3' }] } }, children: [], width: 25, height: 20 },
                 {
                     id: 'PYTyJ',
                     data: { topic: { children: [{ text: 'Abstract' }] } },

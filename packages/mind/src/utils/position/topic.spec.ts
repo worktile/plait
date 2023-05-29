@@ -1,12 +1,12 @@
 import { PlaitNode, clearNodeWeakMap, createTestingBoard, fakeNodeWeakMap } from '@plait/core';
 import { getTestingChildren } from '../../testing/data/basic';
 import { fakeMindLayout, clearLayoutNodeWeakMap } from '../../testing/core/fake-layout-node';
-import { PlaitMindBoard } from '../../plugins/with-mind-extend';
 import { MindElement, PlaitMind } from '../../interfaces/element';
 import { MindNode } from '../../interfaces/node';
 import { getTopicRectangleByNode } from './topic';
 import { getRectangleByNode } from './node';
 import { NodeSpace } from '../space/node-space';
+import { PlaitMindBoard } from '../../plugins/with-mind.board';
 
 describe('utils position topic', () => {
     let board: PlaitMindBoard;
