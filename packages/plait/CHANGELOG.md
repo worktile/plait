@@ -1,5 +1,11 @@
 # plait
 
+## 0.2.4
+
+### Patch Changes
+
+-   [`d163348`](https://github.com/worktile/plait/commit/d1633480993a7a0d7142071b13e1fbba5f90a750) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - emit change event in ngZone run
+
 ## 0.2.3
 
 ### Patch Changes
