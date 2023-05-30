@@ -13,7 +13,7 @@ import { MindElementShape, MindNode } from '../interfaces';
 import { MindElement } from '../interfaces/element';
 import { getRootLayout } from './layout';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
-import { enterNodeEditing } from './node';
+import { enterNodeEditing } from './node/common';
 import { createMindElement } from './node/create-node';
 
 export const getChildrenCount = (element: MindElement) => {

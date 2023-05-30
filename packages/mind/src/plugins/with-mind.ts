@@ -35,7 +35,7 @@ import { withDnd } from './with-node-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
-import { enterNodeEditing } from '../utils/node';
+import { enterNodeEditing } from '../utils/node/common';
 import { withAbstract } from './with-abstract-resize';
 import { withMindExtend } from './with-mind-extend';
 import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';

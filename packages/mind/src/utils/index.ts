@@ -2,6 +2,7 @@ export * from './position';
 export * from './weak-maps';
 export * from './mind';
 export * from './layout';
+export * from './node';
 export * from './node-style';
 export * from './is-virtual-key';
 export * from './dnd/common';
