@@ -1,5 +1,11 @@
 # richtext
 
+## 0.3.0
+
+### Patch Changes
+
+-   [#386](https://github.com/worktile/plait/pull/386) [`a6e9391`](https://github.com/worktile/plait/commit/a6e93914186337778ec954c62512cab263890b3b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - bump peerDependencies angular version to 15.x
+
 ## 0.2.2
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # plait
 
+## 0.3.0
+
+### Minor Changes
+
+-   [#381](https://github.com/worktile/plait/pull/381) [`281e252`](https://github.com/worktile/plait/commit/281e252622198587fd87218273c525fe18ef8979) Thanks [@WBbug](https://github.com/WBbug)! - add pathRef and pathRefs in PlaitBoard
+
+*   [#384](https://github.com/worktile/plait/pull/384) [`9a015be`](https://github.com/worktile/plait/commit/9a015beea5f00c20a9653fd3f6472410176d034b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support with mind create plugin
+
+### Patch Changes
+
+-   [#375](https://github.com/worktile/plait/pull/375) [`953ffd8`](https://github.com/worktile/plait/commit/953ffd8402ea5ef073891b0e11614a1983455a6e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move getXXXRectangle and isHitXXX to folder of position
+    move node-space and layout-options to folder of space
+    add testing in core
+    add testing in mind
+
+*   [#386](https://github.com/worktile/plait/pull/386) [`a6e9391`](https://github.com/worktile/plait/commit/a6e93914186337778ec954c62512cab263890b3b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - bump peerDependencies angular version to 15.x
+
 ## 0.2.4
 
 ### Patch Changes

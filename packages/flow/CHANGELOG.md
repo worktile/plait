@@ -1,5 +1,15 @@
 # @plait/flow
 
+## 0.2.2
+
+### Patch Changes
+
+-   [#383](https://github.com/worktile/plait/pull/383) [`145e16a`](https://github.com/worktile/plait/commit/145e16aaeea2c26f56508bbf6288b5cad71841e4) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - optmzie edge type
+
+*   [#363](https://github.com/worktile/plait/pull/363) [`b3780eb`](https://github.com/worktile/plait/commit/b3780ebeeffa3553516a420528c53e73a2e89504) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - adjust critical selection
+
+-   [#386](https://github.com/worktile/plait/pull/386) [`a6e9391`](https://github.com/worktile/plait/commit/a6e93914186337778ec954c62512cab263890b3b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - bump peerDependencies angular version to 15.x
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,5 +1,50 @@
 # mind
 
+## 0.3.0
+
+### Minor Changes
+
+-   [#387](https://github.com/worktile/plait/pull/387) [`25af7dd`](https://github.com/worktile/plait/commit/25af7dd4769d667244888f5a6b739996ab7c8362) Thanks [@WBbug](https://github.com/WBbug)! - deal select mind when dnd
+
+*   [#385](https://github.com/worktile/plait/pull/385) [`3965b9e`](https://github.com/worktile/plait/commit/3965b9ef54b1fe4c99e0b8de146a55cd873908f2) Thanks [@WBbug](https://github.com/WBbug)! - deal abstract when dnd
+
+-   [#384](https://github.com/worktile/plait/pull/384) [`9a015be`](https://github.com/worktile/plait/commit/9a015beea5f00c20a9653fd3f6472410176d034b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support with mind create plugin
+
+*   [#382](https://github.com/worktile/plait/pull/382) [`70dd054`](https://github.com/worktile/plait/commit/70dd054ec9d8124e94b7d2b47244808700e49bc7) Thanks [@WBbug](https://github.com/WBbug)! - support multiple dnd
+
+### Patch Changes
+
+-   [#380](https://github.com/worktile/plait/pull/380) [`6cd565b`](https://github.com/worktile/plait/commit/6cd565bd8e28f795601505496e980c474750f171) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor plugin folder structure
+    add with mind create entry
+
+*   [#374](https://github.com/worktile/plait/pull/374) [`6e557f9`](https://github.com/worktile/plait/commit/6e557f9e3d8a9639e16d3eaea73da2ad9ae7de2d) Thanks [@WBbug](https://github.com/WBbug)! - let getPathByDropTarget use first detect result
+
+-   [`a773e65`](https://github.com/worktile/plait/commit/a773e65096cbe7b4af6eec5bc16d950f92badb2b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - with mind create support hotkey
+
+*   [`0d54f28`](https://github.com/worktile/plait/commit/0d54f28bf0f398081ffa237169231a51dbbdd16b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getValidAbstractRefs function to get valid abstract and its references
+    fix test import error
+
+-   [#377](https://github.com/worktile/plait/pull/377) [`266ced0`](https://github.com/worktile/plait/commit/266ced0fd3303e8ac28ba24459e0f36e6b71eb7a) Thanks [@WBbug](https://github.com/WBbug)! - fix dnd bugs
+
+*   [#373](https://github.com/worktile/plait/pull/373) [`796e255`](https://github.com/worktile/plait/commit/796e255008156226f42b509c50ac6b37d4d83e8f) Thanks [@WBbug](https://github.com/WBbug)! - change updatePathByLayoutAndDropTarget function of dnd
+
+-   [#375](https://github.com/worktile/plait/pull/375) [`953ffd8`](https://github.com/worktile/plait/commit/953ffd8402ea5ef073891b0e11614a1983455a6e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move getXXXRectangle and isHitXXX to folder of position
+    move node-space and layout-options to folder of space
+    add testing in core
+    add testing in mind
+
+*   [`7aedb47`](https://github.com/worktile/plait/commit/7aedb47b8c3afe84ea041ed9a7dc7f3788db7fdb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - build clip board data by abstract ref
+
+-   [#386](https://github.com/worktile/plait/pull/386) [`a6e9391`](https://github.com/worktile/plait/commit/a6e93914186337778ec954c62512cab263890b3b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - bump peerDependencies angular version to 15.x
+
+*   [`75ddf4b`](https://github.com/worktile/plait/commit/75ddf4bc7a3d11a9f6d7b15941a6367f788eefd5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add get x distance between point
+
+-   [#378](https://github.com/worktile/plait/pull/378) [`de01d59`](https://github.com/worktile/plait/commit/de01d59955606679d8dc2615acd3122be7036225) Thanks [@WBbug](https://github.com/WBbug)! - refactor dnd
+
+*   [#372](https://github.com/worktile/plait/pull/372) [`0e8a7c0`](https://github.com/worktile/plait/commit/0e8a7c05d3fe754650ac25efe8ec9f61b4329461) Thanks [@WBbug](https://github.com/WBbug)! - change detectDropTarget logic
+
+-   [#370](https://github.com/worktile/plait/pull/370) [`abe0061`](https://github.com/worktile/plait/commit/abe0061f3483fe33f67d6946f87eade93eb597b7) Thanks [@WBbug](https://github.com/WBbug)! - optimize mousedown and utils
+
 ## 0.2.2
 
 ### Patch Changes
