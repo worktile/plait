@@ -14,7 +14,7 @@ import {
     PlaitNode
 } from '@plait/core';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
-import { MindElement } from '../interfaces/element';
+import { MindElement, PlaitMind } from '../interfaces/element';
 import { DetectResult } from '../interfaces/node';
 import { MindNodeComponent } from '../node.component';
 import {
@@ -32,7 +32,6 @@ import { detectDropTarget, getPathByDropTarget } from '../utils/dnd/detector';
 import { drawFakeDragNode, drawFakeDropNodeByPath } from '../utils/dnd/draw';
 import { MindTransforms } from '../transforms';
 import { adjustAbstractToNode, adjustRootToNode } from '../utils/node/adjust-node';
-import { PlaitMind } from '@plait/mind';
 
 const DRAG_MOVE_BUFFER = 5;
 
