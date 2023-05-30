@@ -1,12 +1,5 @@
 import { MindLayoutType } from '@plait/layouts';
-import {
-    addSelectedElement,
-    clearSelectedElement,
-    idCreator,
-    Path,
-    PlaitBoard,
-    Transforms
-} from '@plait/core';
+import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, PlaitNode, Transforms } from '@plait/core';
 import { Node } from 'slate';
 import { NODE_MIN_WIDTH } from '../constants/node-rule';
 import { MindElementShape, MindNode } from '../interfaces';
@@ -76,38 +69,6 @@ export const extractNodesText = (node: MindElement) => {
         }
     }
     return str;
-};
-
-export const changeRightNodeCount = (board: PlaitBoard, parentPath: Path, changeNumber: number) => {
-    const _rightNodeCount = board.children[parentPath[0]].rightNodeCount;
-    Transforms.setNode(
-        board,
-        {
-            rightNodeCount:
-                changeNumber >= 0
-                    ? _rightNodeCount! + changeNumber
-                    : _rightNodeCount! + changeNumber < 0
-                    ? 0
-                    : _rightNodeCount! + changeNumber
-        },
-        parentPath
-    );
-};
-
-export const isInRightBranchOfStandardLayout = (selectedElement: MindElement) => {
-    const parentElement = MindElement.findParent(selectedElement);
-    if (parentElement) {
-        const nodeIndex: number = parentElement.children.findIndex(item => item.id === selectedElement.id);
-        if (
-            parentElement.isRoot &&
-            getRootLayout(parentElement) === MindLayoutType.standard &&
-            parentElement.rightNodeCount &&
-            nodeIndex <= parentElement.rightNodeCount - 1
-        ) {
-            return true;
-        }
-    }
-    return false;
 };
 
 // layoutLevel 用来表示插入兄弟节点还是子节点

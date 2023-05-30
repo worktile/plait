@@ -2,8 +2,9 @@ import { Element, Path } from 'slate';
 import { MindElement } from '../interfaces/element';
 import { NODE_MIN_WIDTH } from '../constants/node-rule';
 import { PlaitBoard, PlaitNode, Transforms } from '@plait/core';
-import { changeRightNodeCount, getFirstLevelElement, isInRightBranchOfStandardLayout } from '../utils/mind';
+import { getFirstLevelElement } from '../utils/mind';
 import { AbstractRef, getRelativeStartEndByAbstractRef } from '../utils/abstract/common';
+import { RightNodeCountRef } from '../utils/node/right-node-count';
 
 export const setTopic = (board: PlaitBoard, element: MindElement, topic: Element, width: number, height: number) => {
     const newElement = {
@@ -28,17 +29,14 @@ export const setTopicSize = (board: PlaitBoard, element: MindElement, width: num
 };
 
 export const removeElements = (board: PlaitBoard, elements: MindElement[]) => {
-    const deletableElements = getFirstLevelElement(elements).reverse();
+    const deletableElements = getFirstLevelElement(elements);
 
-    //翻转，从下到上修改，防止找不到 path
     deletableElements
         .map(element => {
             const path = PlaitBoard.findPath(board, element);
+            const ref = board.pathRef(path);
             return () => {
-                if (isInRightBranchOfStandardLayout(element)) {
-                    changeRightNodeCount(board, path.slice(0, 1), -1);
-                }
-                Transforms.removeNode(board, path);
+                Transforms.removeNode(board, ref.current || path);
             };
         })
         .forEach(action => {
@@ -69,4 +67,10 @@ export const insertAbstractNodes = (board: PlaitBoard, validAbstractRefs: Abstra
     });
 
     insertNodes(board, abstracts, abstractPath);
+};
+
+export const setRightNodeCountByRefs = (board: PlaitBoard, refs: RightNodeCountRef[]) => {
+    refs.forEach(ref => {
+        Transforms.setNode(board, { rightNodeCount: ref.rightNodeCount }, ref.path);
+    });
 };

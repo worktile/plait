@@ -10,3 +10,4 @@ export * from './dnd/detector';
 export * from './dnd/draw';
 export * from './abstract/common';
 export * from './abstract/resize';
+export * from './node/right-node-count';
