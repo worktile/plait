@@ -11,7 +11,6 @@ import {
     getSelectedElements,
     depthFirstRecursion,
     createG,
-    isSelectedElement,
     PlaitNode
 } from '@plait/core';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
@@ -40,6 +39,7 @@ export const withDnd = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup } = board;
 
     let activeElements: MindElement[] = [];
+    let correspondingElements: MindElement[] = [];
     let startPoint: Point;
     let dragFakeNodeG: SVGGElement | undefined;
     let fakeDropNodeG: SVGGElement | undefined;
@@ -73,10 +73,6 @@ export const withDnd = (board: PlaitBoard) => {
                     activeElements = getFirstLevelElement(selectedElements as MindElement[]);
                     startPoint = point;
                 }
-                if (activeElements.length) {
-                    const abstracts = getOverallAbstracts(board, activeElements);
-                    activeElements.push(...abstracts);
-                }
             },
             node => {
                 if (PlaitBoard.isBoard(node) || board.isRecursion(node)) {
@@ -86,6 +82,10 @@ export const withDnd = (board: PlaitBoard) => {
                 }
             }
         );
+
+        if (activeElements.length) {
+            correspondingElements = getOverallAbstracts(board, activeElements);
+        }
 
         mousedown(event);
     };
@@ -114,14 +114,15 @@ export const withDnd = (board: PlaitBoard) => {
             const offsetY = endPoint[1] - startPoint[1];
             dragFakeNodeG?.remove();
             dragFakeNodeG = createG();
-            activeElements.forEach(element => {
+            [...activeElements, ...correspondingElements].forEach(element => {
                 addActiveOnDragOrigin(element);
-                if (isSelectedElement(board, element)) {
+                if (activeElements.includes(element)) {
                     const activeComponent = PlaitElement.getComponent(element) as MindNodeComponent;
                     const nodeG = drawFakeDragNode(board, activeComponent, offsetX, offsetY);
                     dragFakeNodeG?.appendChild(nodeG);
                 }
             });
+
             PlaitBoard.getHost(board).appendChild(dragFakeNodeG);
         }
 
@@ -130,14 +131,15 @@ export const withDnd = (board: PlaitBoard) => {
 
     board.globalMouseup = (event: MouseEvent) => {
         if (!board.options.readonly && activeElements?.length) {
+            const elements = [...activeElements, ...correspondingElements];
             if (isDragging(board)) {
-                activeElements.forEach(element => removeActiveOnDragOrigin(element));
+                elements.forEach(element => removeActiveOnDragOrigin(element));
             }
             if (dropTarget) {
                 const targetPathRef = board.pathRef(targetPath);
                 const targetElementPathRef = board.pathRef(PlaitBoard.findPath(board, dropTarget.target));
-                const abstractRefs = getValidAbstractRefs(board, activeElements);
-                const newActiveElements = [...activeElements]
+                const abstractRefs = getValidAbstractRefs(board, elements);
+                const normalElements = elements
                     .filter(element => !abstractRefs.some(refs => refs.abstract === element))
                     .map(element => {
                         if (AbstractNode.isAbstract(element)) {
@@ -146,13 +148,12 @@ export const withDnd = (board: PlaitBoard) => {
                         return element;
                     });
 
-                const abstractProperty = deleteElementHandleAbstract(board, activeElements);
-                insertElementHandleAbstract(board, targetPath, newActiveElements.length, false, abstractProperty);
-                MindTransforms.setAbstractsByRefs(board, abstractProperty);
+                const effectedAbstracts = deleteElementHandleAbstract(board, elements);
+                insertElementHandleAbstract(board, targetPath, normalElements.length, false, effectedAbstracts);
+                MindTransforms.setAbstractsByRefs(board, effectedAbstracts);
 
-                MindTransforms.removeElements(board, activeElements);
+                MindTransforms.removeElements(board, elements);
 
-                //处理 targetPathRef.current 没有的情况
                 let insertPath = targetPathRef.current;
                 const parentPath = Path.parent(targetPathRef.current || targetPath);
                 if (!insertPath) {
@@ -161,10 +162,10 @@ export const withDnd = (board: PlaitBoard) => {
                     insertPath = [...parentPath, children.length || 0];
                 }
 
-                MindTransforms.insertNodes(board, newActiveElements, insertPath);
+                MindTransforms.insertNodes(board, normalElements, insertPath);
 
                 if (abstractRefs.length) {
-                    MindTransforms.insertAbstractNodes(board, abstractRefs, newActiveElements, insertPath);
+                    MindTransforms.insertAbstractNodes(board, abstractRefs, normalElements, insertPath);
                 }
 
                 const shouldChangeRoot =
@@ -172,7 +173,7 @@ export const withDnd = (board: PlaitBoard) => {
                     targetElementPathRef.current &&
                     (Path.isSibling(targetPath, targetElementPathRef.current) || Path.equals(targetPath, targetElementPathRef.current));
                 if (shouldChangeRoot && targetElementPathRef.current) {
-                    changeRightNodeCount(board, targetElementPathRef.current.slice(0, 1), newActiveElements.length);
+                    changeRightNodeCount(board, targetElementPathRef.current.slice(0, 1), normalElements.length);
                 }
 
                 if (
@@ -186,7 +187,16 @@ export const withDnd = (board: PlaitBoard) => {
                 targetElementPathRef.unref();
                 targetPathRef.unref();
 
-                Transforms.setSelectionWithTemporaryElements(board, newActiveElements);
+                const selectedElements = getSelectedElements(board);
+                let setActiveElements: MindElement[] = [];
+                depthFirstRecursion((board as unknown) as MindElement, node => {
+                    const isSelected = selectedElements.some(element => element.id === node.id);
+                    if (isSelected) {
+                        setActiveElements.push(node);
+                    }
+                });
+
+                Transforms.setSelectionWithTemporaryElements(board, setActiveElements);
             }
 
             setIsDragging(board, false);

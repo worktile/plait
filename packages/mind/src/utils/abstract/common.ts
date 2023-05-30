@@ -116,7 +116,7 @@ export const insertElementHandleAbstract = (
     step = 1,
     //由此区分拖拽和新增到概要概括最后一个节点
     isExtendPreviousNode: boolean = true,
-    abstractProperty = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
+    effectedAbstracts = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
 ) => {
     const parent = PlaitNode.parent(board, path) as MindElement;
     const hasPreviousNode = path[path.length - 1] !== 0;
@@ -131,10 +131,10 @@ export const insertElementHandleAbstract = (
 
     if (behindAbstracts.length) {
         behindAbstracts.forEach(abstract => {
-            let newProperties = abstractProperty.get(abstract);
+            let newProperties = effectedAbstracts.get(abstract);
             if (!newProperties) {
                 newProperties = { start: 0, end: 0 };
-                abstractProperty.set(abstract, newProperties);
+                effectedAbstracts.set(abstract, newProperties);
             }
             newProperties.start = newProperties.start + step;
             newProperties.end = newProperties.end + step;
@@ -142,7 +142,7 @@ export const insertElementHandleAbstract = (
     }
 
     if (!hasPreviousNode) {
-        return abstractProperty;
+        return effectedAbstracts;
     }
 
     const selectedElement = PlaitNode.get(board, Path.previous(path)) as MindElement;
@@ -150,31 +150,31 @@ export const insertElementHandleAbstract = (
     const isDragToLast = !isExtendPreviousNode && correspondingAbstract && correspondingAbstract.end === path[path.length - 1] - 1;
 
     if (correspondingAbstract && !isDragToLast) {
-        let newProperties = abstractProperty.get(correspondingAbstract);
+        let newProperties = effectedAbstracts.get(correspondingAbstract);
         if (!newProperties) {
             newProperties = { start: 0, end: 0 };
-            abstractProperty.set(correspondingAbstract, newProperties);
+            effectedAbstracts.set(correspondingAbstract, newProperties);
         }
         newProperties.end = newProperties.end + step;
     }
 
-    return abstractProperty;
+    return effectedAbstracts;
 };
 
 export const deleteElementHandleAbstract = (
     board: PlaitBoard,
     deletableElements: MindElement[],
-    abstractProperty = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
+    effectedAbstracts = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
 ) => {
     deletableElements.forEach(node => {
         if (!PlaitMind.isMind(node)) {
             const behindAbstracts = getBehindAbstracts(node).filter(abstract => !deletableElements.includes(abstract));
             if (behindAbstracts.length) {
                 behindAbstracts.forEach(abstract => {
-                    let newProperties = abstractProperty.get(abstract);
+                    let newProperties = effectedAbstracts.get(abstract);
                     if (!newProperties) {
                         newProperties = { start: 0, end: 0 };
-                        abstractProperty.set(abstract, newProperties);
+                        effectedAbstracts.set(abstract, newProperties);
                     }
                     newProperties.start = newProperties.start - 1;
                     newProperties.end = newProperties.end - 1;
@@ -183,15 +183,15 @@ export const deleteElementHandleAbstract = (
 
             const correspondingAbstract = getCorrespondingAbstract(node);
             if (correspondingAbstract && !deletableElements.includes(correspondingAbstract)) {
-                let newProperties = abstractProperty.get(correspondingAbstract);
+                let newProperties = effectedAbstracts.get(correspondingAbstract);
                 if (!newProperties) {
                     newProperties = { start: 0, end: 0 };
 
-                    abstractProperty.set(correspondingAbstract, newProperties);
+                    effectedAbstracts.set(correspondingAbstract, newProperties);
                 }
                 newProperties.end = newProperties.end - 1;
             }
         }
     });
-    return abstractProperty;
+    return effectedAbstracts;
 };
