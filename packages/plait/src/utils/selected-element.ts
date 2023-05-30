@@ -2,17 +2,19 @@ import { PlaitBoard } from '../interfaces/board';
 import { Ancestor } from '../interfaces/node';
 import { depthFirstRecursion } from './tree';
 import { BOARD_TO_SELECTED_ELEMENT } from './weak-maps';
-import { Range } from '../interfaces/selection';
+import { Selection, Range } from '../interfaces/selection';
 import { PlaitElement } from '../interfaces/element';
 
-export const getHitElements = (board: PlaitBoard) => {
+export const getHitElements = (board: PlaitBoard, selection?: Selection) => {
+    const realSelection = selection || board.selection;
     const selectedElements: PlaitElement[] = [];
     depthFirstRecursion<Ancestor>(
         board,
         node => {
             if (
                 !PlaitBoard.isBoard(node) &&
-                board.selection?.ranges.some(range => {
+                realSelection &&
+                realSelection.ranges.some(range => {
                     return board.isHitSelection(node, range);
                 })
             ) {

@@ -11,7 +11,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     };
 
     board.mousedown = (event: MouseEvent) => {
-        if (board.pointer === PlaitPointerType.hand && board.selection) {
+        if (board.pointer === PlaitPointerType.hand) {
             isMoving = true;
             PlaitBoard.getBoardNativeElement(board).classList.add('viewport-moving');
             plaitBoardMove.x = event.x;
@@ -43,8 +43,8 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     };
 
     board.keydown = (event: KeyboardEvent) => {
-        if (board.selection && event.code === 'Space') {
-            if (board.pointer !== PlaitPointerType.hand) {
+        if (event.code === 'Space') {
+            if (!PlaitBoard.isPointer(board, PlaitPointerType.hand)) {
                 updatePointerType(board, PlaitPointerType.hand);
             }
             event.preventDefault();
@@ -53,7 +53,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     };
 
     board.keyup = (event: KeyboardEvent) => {
-        if (board.selection && !board.options.readonly && event.code === 'Space') {
+        if (!board.options.readonly && event.code === 'Space') {
             updatePointerType(board, PlaitPointerType.selection);
         }
         keyup(event);

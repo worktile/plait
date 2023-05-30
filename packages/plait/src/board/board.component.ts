@@ -138,7 +138,12 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @ViewChild('viewportContainer', { read: ElementRef, static: true })
     viewportContainer!: ElementRef;
 
-    constructor(public cdr: ChangeDetectorRef, public viewContainerRef: ViewContainerRef, private elementRef: ElementRef<HTMLElement>, private ngZone: NgZone) {}
+    constructor(
+        public cdr: ChangeDetectorRef,
+        public viewContainerRef: ViewContainerRef,
+        private elementRef: ElementRef<HTMLElement>,
+        private ngZone: NgZone
+    ) {}
 
     ngOnInit(): void {
         const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;
@@ -242,7 +247,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             });
 
         fromEvent<MouseEvent>(this.host, 'dblclick')
-            .pipe(takeUntil(this.destroy$))
+            .pipe(
+                takeUntil(this.destroy$),
+                filter(() => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board))
+            )
             .subscribe((event: MouseEvent) => {
                 this.board.dblclick(event);
             });
@@ -250,10 +258,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<KeyboardEvent>(document, 'keydown')
             .pipe(
                 takeUntil(this.destroy$),
-                filter(
-                    event =>
-                        this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board) && !hasInputOrTextareaTarget(event.target)
-                )
+                filter(event => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board) && !hasInputOrTextareaTarget(event.target))
             )
             .subscribe((event: KeyboardEvent) => {
                 if (isHotkey(['mod+=', 'mod++'], { byKey: true })(event)) {

@@ -100,7 +100,7 @@ export const withMind = (board: PlaitBoard) => {
     };
 
     board.keydown = (event: KeyboardEvent) => {
-        if (board.options.readonly || IS_TEXT_EDITABLE.get(board)) {
+        if (PlaitBoard.isReadonly(board)) {
             keydown(event);
             return;
         }
@@ -192,7 +192,7 @@ export const withMind = (board: PlaitBoard) => {
     };
 
     board.dblclick = (event: MouseEvent) => {
-        if (board.options.readonly || IS_TEXT_EDITABLE.get(board)) {
+        if (PlaitBoard.isReadonly(board)) {
             dblclick(event);
             return;
         }

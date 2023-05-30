@@ -4,12 +4,7 @@ import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
 import { toPoint } from '../utils/dom/common';
 import { RectangleClient } from '../interfaces/rectangle-client';
-import {
-    cacheSelectedElements,
-    getHitElements,
-    getSelectedElements,
-    isIntersectionElements
-} from '../utils/selected-element';
+import { cacheSelectedElements, getHitElements, getSelectedElements, isIntersectionElements } from '../utils/selected-element';
 import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR, Selection } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
@@ -26,26 +21,29 @@ export function withSelection(board: PlaitBoard) {
     let previousSelectedElements: PlaitElement[];
 
     board.mousedown = (event: MouseEvent) => {
-        if (event.button === 0) {
-            start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        if (event.button === 2) {
+            mousedown(event);
+            return;
         }
 
-        if (start) {
-            const ranges = [{ anchor: start, focus: start }];
-            const selectedElements = getSelectedElements(board);
-
-            if (isIntersectionElements(board, selectedElements, ranges)) {
-                start = null;
-                mousedown(event);
-                return;
-            }
-
-            Transforms.setSelection(board, { ranges: ranges });
-
-            if (board.pointer === PlaitPointerType.hand || getHitElements(board).length) {
-                start = null;
-            }
+        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const ranges = [{ anchor: point, focus: point }];
+        const selectedElements = getSelectedElements(board);
+        if (isIntersectionElements(board, selectedElements, ranges)) {
+            mousedown(event);
+            return;
         }
+
+        const range = { anchor: point, focus: point };
+        if (
+            PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
+            PlaitBoard.isFocus(board) &&
+            getHitElements(board, { ranges: [range] }).length === 0
+        ) {
+            start = point;
+        }
+
+        Transforms.setSelection(board, { ranges: ranges });
 
         mousedown(event);
     };
