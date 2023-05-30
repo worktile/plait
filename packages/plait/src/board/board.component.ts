@@ -165,14 +165,14 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.ngZone.run(() => {
                 this.detect();
+                const changeEvent: PlaitBoardChangeEvent = {
+                    children: this.board.children,
+                    operations: this.board.operations,
+                    viewport: this.board.viewport,
+                    selection: this.board.selection
+                };
+                this.plaitChange.emit(changeEvent);
             });
-            const changeEvent: PlaitBoardChangeEvent = {
-                children: this.board.children,
-                operations: this.board.operations,
-                viewport: this.board.viewport,
-                selection: this.board.selection
-            };
-            this.plaitChange.emit(changeEvent);
         });
         this.hasInitialized = true;
     }
