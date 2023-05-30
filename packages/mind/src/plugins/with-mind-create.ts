@@ -3,6 +3,7 @@ import {
     PlaitBoard,
     PlaitPointerType,
     Transforms,
+    getSelectedElements,
     throttleRAF,
     toPoint,
     transformPoint,
@@ -12,11 +13,12 @@ import { PlaitMindBoard } from './with-mind.board';
 import { MindPointerType } from '../interfaces/pointer';
 import { getRectangleByElement, getTopicRectangleByElement } from '../utils';
 import { drawRoundRectangleByElement } from '../draw/node';
-import { NodeSpace } from '../utils/space/node-space';
 import { drawTopicByElement } from '../draw/topic';
 import { ComponentRef } from '@angular/core';
 import { PlaitRichtextComponent } from '@plait/richtext';
 import { createEmptyMind } from '../utils/node/create-node';
+
+const DefaultHotkey = 'm';
 
 export interface FakeCreateNodeRef {
     nodeG: SVGGElement;
@@ -27,7 +29,7 @@ export interface FakeCreateNodeRef {
 
 export const withCreateMind = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitMindBoard;
-    const { mousemove, mouseup } = board;
+    const { keydown, mousemove, mouseup } = board;
     let fakeCreateNodeRef: FakeCreateNodeRef | null = null;
 
     newBoard.mousemove = (event: MouseEvent) => {
@@ -85,6 +87,19 @@ export const withCreateMind = (board: PlaitBoard) => {
         }
         destroy();
         mouseup(event);
+    };
+
+    board.keydown = (event: KeyboardEvent) => {
+        if (PlaitBoard.isReadonly(board) || getSelectedElements(board).length > 0) {
+            keydown(event);
+            return;
+        }
+        if (event.key === DefaultHotkey && !PlaitBoard.isPointer(board, MindPointerType.mind)) {
+            BoardTransforms.updatePointerType(board, MindPointerType.mind);
+            event.preventDefault();
+            return;
+        }
+        keydown(event);
     };
 
     function destroy() {
