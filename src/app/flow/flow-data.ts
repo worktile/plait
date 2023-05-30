@@ -67,11 +67,11 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         },
         type: FlowElementType.edge,
         source: {
-            id: '1001',
+            nodeId: '1001',
             position: FlowPosition.top
         },
         target: {
-            id: '1002',
+            nodeId: '1002',
             position: FlowPosition.top,
             marker: true
         },
@@ -84,11 +84,11 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         },
         type: FlowElementType.edge,
         source: {
-            id: '1',
+            nodeId: '1',
             position: FlowPosition.bottom
         },
         target: {
-            id: '1001',
+            nodeId: '1001',
             position: FlowPosition.left,
             marker: true
         },
@@ -102,11 +102,11 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         },
         type: FlowElementType.edge,
         source: {
-            id: '1002',
+            nodeId: '1002',
             position: FlowPosition.right
         },
         target: {
-            id: '1003',
+            nodeId: '1003',
             position: FlowPosition.left,
             marker: true
         },

@@ -2,8 +2,8 @@
   "name": "@plait/layouts",
   "version": "0.2.0",
   "peerDependencies": {
-    "@angular/common": "^13.3.0",
-    "@angular/core": "^13.3.0"
+    "@angular/common": "^15.2.2",
+    "@angular/core": "^15.2.2"
   },
   "dependencies": {
     "tslib": "^2.3.0"
