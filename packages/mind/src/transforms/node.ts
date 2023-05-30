@@ -36,7 +36,8 @@ export const removeElements = (board: PlaitBoard, elements: MindElement[]) => {
             const path = PlaitBoard.findPath(board, element);
             const ref = board.pathRef(path);
             return () => {
-                Transforms.removeNode(board, ref.current || path);
+                Transforms.removeNode(board, ref.current!);
+                ref.unref();
             };
         })
         .forEach(action => {

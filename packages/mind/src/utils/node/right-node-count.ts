@@ -27,15 +27,15 @@ export interface RightNodeCountRef {
 export const insertElementHandleRightNodeCount = (
     board: PlaitBoard,
     path: Path,
-    number: number,
+    insertCount: number,
     effectedRightNodeCount: RightNodeCountRef[] = []
 ) => {
     let index = effectedRightNodeCount.findIndex(ref => Path.equals(ref.path, path));
     const mind = PlaitNode.get(board, path) as MindElement;
     if (index === -1) {
-        effectedRightNodeCount.push({ path, rightNodeCount: mind.rightNodeCount! + number });
+        effectedRightNodeCount.push({ path, rightNodeCount: mind.rightNodeCount! + insertCount });
     } else {
-        effectedRightNodeCount[index].rightNodeCount += number;
+        effectedRightNodeCount[index].rightNodeCount += insertCount;
     }
     return effectedRightNodeCount;
 };
