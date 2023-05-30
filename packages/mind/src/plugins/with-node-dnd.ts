@@ -29,7 +29,7 @@ import {
 import { isHitMindElement } from '../utils/position/node';
 import { addActiveOnDragOrigin, isDragging, removeActiveOnDragOrigin, setIsDragging } from '../utils/dnd/common';
 import { detectDropTarget, getPathByDropTarget } from '../utils/dnd/detector';
-import { drawFakeDragNode, drawFakeDropNodeByPath } from '../utils/dnd/draw';
+import { drawFakeDragNode, drawFakeDropNode } from '../utils/draw/node-dnd';
 import { MindTransforms } from '../transforms';
 import { adjustAbstractToNode, adjustRootToNode } from '../utils/node/adjust-node';
 
@@ -106,7 +106,7 @@ export const withDnd = (board: PlaitBoard) => {
             if (dropTarget?.target) {
                 targetPath = getPathByDropTarget(board, dropTarget);
 
-                fakeDropNodeG = drawFakeDropNodeByPath(board, dropTarget.target, targetPath);
+                fakeDropNodeG = drawFakeDropNode(board, dropTarget.target, targetPath);
                 PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
             }
 

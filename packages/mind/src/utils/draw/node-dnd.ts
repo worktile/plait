@@ -1,26 +1,19 @@
-import { drawRoundRectangleByNode } from '../../draw/node';
+import { drawRoundRectangleByNode } from './node-shape';
 import { updateForeignObject } from '@plait/richtext';
 import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../../constants';
-import { LayoutDirection, MindElement, MindNode, PlaitMind } from '../../interfaces';
+import { LayoutDirection, MindElement, MindNode } from '../../interfaces';
 import { MindNodeComponent } from '../../node.component';
 import { getRectangleByNode } from '../position/node';
 import { PlaitBoard, Point, drawRoundRectangle, createG, Path, PlaitNode } from '@plait/core';
 import { MindQueries } from '../../queries';
-import {
-    getNonAbstractChildren,
-    isHorizontalLayout,
-    isIndentedLayout,
-    isStandardLayout,
-    isTopLayout,
-    MindLayoutType
-} from '@plait/layouts';
-import { drawIndentedLink } from '../../draw/indented-link';
+import { isHorizontalLayout, isIndentedLayout, isTopLayout, MindLayoutType } from '@plait/layouts';
 import { getTopicRectangleByNode } from '../position/topic';
-import { drawLogicLink } from '../../draw/link/logic-link';
+import { drawLogicLink } from './node-link/curve/logic-link';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
 import { getLayoutDirection, getPointByPlacement, moveXOfPoint, moveYOfPoint, transformPlacement } from '../point-placement';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
-import { getRootLayout } from '../layout';
+import { hasPreviousOrNextOfDropPath } from '../dnd/common';
+import { drawIndentedLink } from './node-link/curve/indented-link';
 
 export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeComponent, offsetX: number, offsetY: number) => {
     const dragFakeNodeG = createG();
@@ -49,12 +42,12 @@ export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeCom
     return dragFakeNodeG;
 };
 
-export const drawFakeDropNodeByPath = (board: PlaitBoard, target: MindElement, path: Path) => {
+export const drawFakeDropNode = (board: PlaitBoard, target: MindElement, path: Path) => {
     const fakeDropNodeG = createG();
     const parent = PlaitNode.get(board, Path.parent(path)) as MindElement;
     const layout = MindQueries.getLayoutByElement(parent) as MindLayoutType;
     const isHorizontal = isHorizontalLayout(layout);
-    const { hasNextNode, hasPreviousNode } = getPreviousAndNextByPath(parent, target, path);
+    const { hasNextNode, hasPreviousNode } = hasPreviousOrNextOfDropPath(parent, target, path);
     const width = 30;
     const height = 12;
     let fakeNode: MindNode, centerPoint: Point, basicNode: MindNode, linkDirection: LayoutDirection;
@@ -182,33 +175,4 @@ export const drawFakeDropNodeByPath = (board: PlaitBoard, target: MindElement, p
     fakeDropNodeG?.appendChild(fakeRectangleG);
 
     return fakeDropNodeG;
-};
-
-export const getPreviousAndNextByPath = (parent: MindElement, target: MindElement, path: Path) => {
-    const children = getNonAbstractChildren(parent);
-    let hasPreviousNode = path[path.length - 1] !== 0;
-    let hasNextNode = path[path.length - 1] !== (children?.length || 0);
-    if (PlaitMind.isMind(parent) && isStandardLayout(getRootLayout(parent))) {
-        const dropStandardRightBottom =
-            target === parent.children[parent.rightNodeCount! - 1] && path[path.length - 1] === parent.rightNodeCount;
-        const dropStandardLeftTop = target === parent.children[parent.rightNodeCount!] && path[path.length - 1] === parent.rightNodeCount;
-        if (dropStandardRightBottom) {
-            hasPreviousNode = true;
-            hasNextNode = false;
-        }
-        if (dropStandardLeftTop) {
-            hasPreviousNode = false;
-            hasNextNode = true;
-        }
-    }
-
-    if (parent.isCollapsed) {
-        hasNextNode = false;
-        hasPreviousNode = false;
-    }
-
-    return {
-        hasPreviousNode,
-        hasNextNode
-    };
 };

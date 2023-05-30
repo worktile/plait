@@ -17,13 +17,6 @@ import { MindNodeComponent } from '../../node.component';
 import { isBottomLayout, isRightLayout, isLeftLayout, AbstractNode } from '@plait/layouts';
 import { isChildElement } from '../mind';
 
-/**
- *
- * @param targetNode
- * @param centerPoint
- * @returns DetectResult[] | null
- */
-
 export const directionCorrector = (board: PlaitBoard, node: MindNode, detectResults: DetectResult[]): DetectResult[] | null => {
     if (!node.origin.isRoot && !AbstractNode.isAbstract(node.origin)) {
         const parentLayout = MindQueries.getCorrectLayoutByElement(board, node?.parent.origin as MindElement);

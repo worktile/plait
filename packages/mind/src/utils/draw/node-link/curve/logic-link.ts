@@ -1,11 +1,11 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { MindNode } from '../../interfaces/node';
+import { MindNode } from '../../../../interfaces/node';
 import { PlaitBoard, Point } from '@plait/core';
-import { getRectangleByNode, getShapeByElement } from '../../utils';
-import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../../utils/point-placement';
-import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
-import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../../utils/node-style/branch';
-import { MindElementShape } from '../../interfaces/element';
+import { getRectangleByNode, getShapeByElement } from '../../..';
+import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../../../point-placement';
+import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../../interfaces/types';
+import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../../../node-style/branch';
+import { MindElementShape } from '../../../../interfaces/element';
 
 export function drawLogicLink(
     board: PlaitBoard,
