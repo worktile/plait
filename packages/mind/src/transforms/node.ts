@@ -1,8 +1,9 @@
 import { Element, Path } from 'slate';
 import { MindElement } from '../interfaces/element';
 import { NODE_MIN_WIDTH } from '../constants/node-rule';
-import { PlaitBoard, Transforms } from '@plait/core';
+import { PlaitBoard, PlaitNode, Transforms } from '@plait/core';
 import { changeRightNodeCount, getFirstLevelElement, isInRightBranchOfStandardLayout } from '../utils/mind';
+import { AbstractRef, getRelativeStartEndByAbstractRef } from '../utils/abstract/common';
 
 export const setTopic = (board: PlaitBoard, element: MindElement, topic: Element, width: number, height: number) => {
     const newElement = {
@@ -53,4 +54,19 @@ export const insertNodes = (board: PlaitBoard, elements: MindElement[], path: Pa
         }
     });
     pathRef.unref();
+};
+
+export const insertAbstractNodes = (board: PlaitBoard, validAbstractRefs: AbstractRef[], elements: MindElement[], path: Path) => {
+    const parent = PlaitNode.get(board, Path.parent(path));
+    const abstractPath = [...Path.parent(path), parent.children?.length!];
+    const abstracts = validAbstractRefs.map(refs => {
+        const { start, end } = getRelativeStartEndByAbstractRef(refs, elements);
+        return {
+            ...refs.abstract,
+            start: start + path[path.length - 1],
+            end: end + path[path.length - 1]
+        };
+    });
+
+    insertNodes(board, abstracts, abstractPath);
 };
