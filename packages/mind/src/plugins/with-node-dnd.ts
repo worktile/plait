@@ -23,6 +23,7 @@ import {
     deleteElementHandleAbstract,
     getFirstLevelElement,
     getOverallAbstracts,
+    getValidAbstractRefs,
     insertElementHandleAbstract,
     isInRightBranchOfStandardLayout
 } from '../utils';
@@ -31,6 +32,7 @@ import { addActiveOnDragOrigin, isDragging, removeActiveOnDragOrigin, setIsDragg
 import { detectDropTarget, getPathByDropTarget } from '../utils/dnd/detector';
 import { drawFakeDragNode, drawFakeDropNodeByPath } from '../utils/dnd/draw';
 import { MindTransforms } from '../transforms';
+import { adjustAbstractToNode } from '../utils/node/adjust-node';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -134,12 +136,19 @@ export const withDnd = (board: PlaitBoard) => {
             if (dropTarget) {
                 const targetPathRef = board.pathRef(targetPath);
                 const targetElementPathRef = board.pathRef(PlaitBoard.findPath(board, dropTarget.target));
-                const deletableElements = getFirstLevelElement(activeElements).reverse();
-                const nonAbstractLength = deletableElements.filter(element => !AbstractNode.isAbstract(element)).length;
+                const abstractRefs = getValidAbstractRefs(board, activeElements);
+                const newActiveElements = [...activeElements]
+                    .filter(element => !abstractRefs.some(refs => refs.abstract === element))
+                    .map(element => {
+                        if (AbstractNode.isAbstract(element)) {
+                            return adjustAbstractToNode(element);
+                        }
+                        return element;
+                    });
 
-                const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
-                insertElementHandleAbstract(board, targetPath, nonAbstractLength, false, abstractRefs);
-                MindTransforms.setAbstractsByRefs(board, abstractRefs);
+                const abstractProperty = deleteElementHandleAbstract(board, activeElements);
+                insertElementHandleAbstract(board, targetPath, newActiveElements.length, false, abstractProperty);
+                MindTransforms.setAbstractsByRefs(board, abstractProperty);
 
                 MindTransforms.removeElements(board, activeElements);
 
@@ -152,14 +161,18 @@ export const withDnd = (board: PlaitBoard) => {
                     insertPath = [...parentPath, children.length || 0];
                 }
 
-                MindTransforms.insertNodes(board, activeElements, insertPath);
+                MindTransforms.insertNodes(board, newActiveElements, insertPath);
+
+                if (abstractRefs.length) {
+                    MindTransforms.insertAbstractNodes(board, abstractRefs, newActiveElements, insertPath);
+                }
 
                 const shouldChangeRoot =
                     isInRightBranchOfStandardLayout(dropTarget?.target) &&
                     targetElementPathRef.current &&
                     (Path.isSibling(targetPath, targetElementPathRef.current) || Path.equals(targetPath, targetElementPathRef.current));
                 if (shouldChangeRoot && targetElementPathRef.current) {
-                    changeRightNodeCount(board, targetElementPathRef.current.slice(0, 1), activeElements.length);
+                    changeRightNodeCount(board, targetElementPathRef.current.slice(0, 1), newActiveElements.length);
                 }
 
                 if (
@@ -172,6 +185,8 @@ export const withDnd = (board: PlaitBoard) => {
                 }
                 targetElementPathRef.unref();
                 targetPathRef.unref();
+
+                Transforms.setSelectionWithTemporaryElements(board, newActiveElements);
             }
 
             setIsDragging(board, false);

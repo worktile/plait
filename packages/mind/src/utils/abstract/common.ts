@@ -116,7 +116,7 @@ export const insertElementHandleAbstract = (
     step = 1,
     //由此区分拖拽和新增到概要概括最后一个节点
     isExtendPreviousNode: boolean = true,
-    abstractRefs = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
+    abstractProperty = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
 ) => {
     const parent = PlaitNode.parent(board, path) as MindElement;
     const hasPreviousNode = path[path.length - 1] !== 0;
@@ -131,10 +131,10 @@ export const insertElementHandleAbstract = (
 
     if (behindAbstracts.length) {
         behindAbstracts.forEach(abstract => {
-            let newProperties = abstractRefs.get(abstract);
+            let newProperties = abstractProperty.get(abstract);
             if (!newProperties) {
                 newProperties = { start: 0, end: 0 };
-                abstractRefs.set(abstract, newProperties);
+                abstractProperty.set(abstract, newProperties);
             }
             newProperties.start = newProperties.start + step;
             newProperties.end = newProperties.end + step;
@@ -142,7 +142,7 @@ export const insertElementHandleAbstract = (
     }
 
     if (!hasPreviousNode) {
-        return abstractRefs;
+        return abstractProperty;
     }
 
     const selectedElement = PlaitNode.get(board, Path.previous(path)) as MindElement;
@@ -150,31 +150,31 @@ export const insertElementHandleAbstract = (
     const isDragToLast = !isExtendPreviousNode && correspondingAbstract && correspondingAbstract.end === path[path.length - 1] - 1;
 
     if (correspondingAbstract && !isDragToLast) {
-        let newProperties = abstractRefs.get(correspondingAbstract);
+        let newProperties = abstractProperty.get(correspondingAbstract);
         if (!newProperties) {
             newProperties = { start: 0, end: 0 };
-            abstractRefs.set(correspondingAbstract, newProperties);
+            abstractProperty.set(correspondingAbstract, newProperties);
         }
         newProperties.end = newProperties.end + step;
     }
 
-    return abstractRefs;
+    return abstractProperty;
 };
 
 export const deleteElementHandleAbstract = (
     board: PlaitBoard,
     deletableElements: MindElement[],
-    abstractRefs = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
+    abstractProperty = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
 ) => {
     deletableElements.forEach(node => {
         if (!PlaitMind.isMind(node)) {
             const behindAbstracts = getBehindAbstracts(node).filter(abstract => !deletableElements.includes(abstract));
             if (behindAbstracts.length) {
                 behindAbstracts.forEach(abstract => {
-                    let newProperties = abstractRefs.get(abstract);
+                    let newProperties = abstractProperty.get(abstract);
                     if (!newProperties) {
                         newProperties = { start: 0, end: 0 };
-                        abstractRefs.set(abstract, newProperties);
+                        abstractProperty.set(abstract, newProperties);
                     }
                     newProperties.start = newProperties.start - 1;
                     newProperties.end = newProperties.end - 1;
@@ -183,15 +183,15 @@ export const deleteElementHandleAbstract = (
 
             const correspondingAbstract = getCorrespondingAbstract(node);
             if (correspondingAbstract && !deletableElements.includes(correspondingAbstract)) {
-                let newProperties = abstractRefs.get(correspondingAbstract);
+                let newProperties = abstractProperty.get(correspondingAbstract);
                 if (!newProperties) {
                     newProperties = { start: 0, end: 0 };
 
-                    abstractRefs.set(correspondingAbstract, newProperties);
+                    abstractProperty.set(correspondingAbstract, newProperties);
                 }
                 newProperties.end = newProperties.end - 1;
             }
         }
     });
-    return abstractRefs;
+    return abstractProperty;
 };
