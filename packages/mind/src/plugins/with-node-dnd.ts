@@ -31,7 +31,8 @@ import { addActiveOnDragOrigin, isDragging, removeActiveOnDragOrigin, setIsDragg
 import { detectDropTarget, getPathByDropTarget } from '../utils/dnd/detector';
 import { drawFakeDragNode, drawFakeDropNodeByPath } from '../utils/dnd/draw';
 import { MindTransforms } from '../transforms';
-import { adjustAbstractToNode } from '../utils/node/adjust-node';
+import { adjustAbstractToNode, adjustRootToNode } from '../utils/node/adjust-node';
+import { PlaitMind } from '@plait/mind';
 
 const DRAG_MOVE_BUFFER = 5;
 
@@ -102,7 +103,7 @@ export const withDnd = (board: PlaitBoard) => {
 
             fakeDropNodeG?.remove();
             const detectPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-            dropTarget = detectDropTarget(board, detectPoint, dropTarget, activeElements);
+            dropTarget = detectDropTarget(board, detectPoint, dropTarget, [...activeElements, ...correspondingElements]);
             if (dropTarget?.target) {
                 targetPath = getPathByDropTarget(board, dropTarget);
 
@@ -144,6 +145,9 @@ export const withDnd = (board: PlaitBoard) => {
                     .map(element => {
                         if (AbstractNode.isAbstract(element)) {
                             return adjustAbstractToNode(element);
+                        }
+                        if (PlaitMind.isMind(element)) {
+                            return adjustRootToNode(board, element);
                         }
                         return element;
                     });
