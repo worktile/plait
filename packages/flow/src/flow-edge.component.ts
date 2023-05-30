@@ -3,6 +3,7 @@ import {
     ChangeDetectorRef,
     Component,
     ComponentRef,
+    NgZone,
     OnDestroy,
     OnInit,
     Renderer2,
@@ -51,7 +52,12 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     perviousStatus: 'active' | 'default' = 'default';
 
-    constructor(public cdr: ChangeDetectorRef, public viewContainerRef: ViewContainerRef, public render2: Renderer2) {
+    constructor(
+        public cdr: ChangeDetectorRef,
+        public viewContainerRef: ViewContainerRef,
+        public render2: Renderer2,
+        public ngZone: NgZone
+    ) {
         super(cdr);
     }
 
@@ -92,7 +98,9 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         this.drawEdge(element, active);
         if (element.data?.text) {
             this.textRect = getEdgeTextRect(this.board, element);
-            this.drawRichtext(element, this.textRect!, active);
+            this.ngZone.run(() => {
+                this.drawRichtext(element, this.textRect!, active);
+            });
         }
         this.drawMarkers(element, active);
         this.drawHandles(element, active);
