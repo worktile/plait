@@ -22,12 +22,13 @@ import { MindElement, PlaitMind } from '../interfaces';
 import { PlaitMindComponent } from '../mind.component';
 import { MindNodeComponent } from '../node.component';
 import {
-    changeRightNodeCount,
     insertMindElement,
     getFirstLevelElement,
     isInRightBranchOfStandardLayout,
     insertElementHandleAbstract,
-    deleteElementHandleAbstract
+    deleteElementHandleAbstract,
+    insertElementHandleRightNodeCount,
+    deleteElementsHandleRightNodeCount
 } from '../utils';
 import { getRectangleByNode, isHitMindElement } from '../utils/position/node';
 import { isVirtualKey } from '../utils/is-virtual-key';
@@ -125,7 +126,8 @@ export const withMind = (board: PlaitBoard) => {
                     insertMindElement(board, selectedElement, findNewChildNodePath(board, selectedElement));
                 } else {
                     if (isInRightBranchOfStandardLayout(selectedElement)) {
-                        changeRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
+                        const refs = insertElementHandleRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
+                        MindTransforms.setRightNodeCountByRefs(board, refs);
                     }
 
                     const abstractRefs = insertElementHandleAbstract(board, Path.next(selectedElementPath));
@@ -140,6 +142,9 @@ export const withMind = (board: PlaitBoard) => {
                 const deletableElements = getFirstLevelElement(selectedElements).reverse();
                 const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
                 MindTransforms.setAbstractsByRefs(board, abstractRefs);
+
+                const refs = deleteElementsHandleRightNodeCount(board, selectedElements);
+                MindTransforms.setRightNodeCountByRefs(board, refs);
 
                 MindTransforms.removeElements(board, selectedElements);
 
@@ -261,6 +266,9 @@ export const withMind = (board: PlaitBoard) => {
         const deletableElements = getFirstLevelElement(selectedElements).reverse();
         const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
         MindTransforms.setAbstractsByRefs(board, abstractRefs);
+
+        const refs = deleteElementsHandleRightNodeCount(board, selectedElements);
+        MindTransforms.setRightNodeCountByRefs(board, refs);
 
         MindTransforms.removeElements(board, selectedElements);
         deleteFragment(data);
