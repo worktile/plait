@@ -80,6 +80,17 @@ export class BasicBoardEditorComponent implements OnInit {
         }
     }
 
+    edgeShapeChange(event: Event) {
+        const value = (event.target as HTMLSelectElement).value as MindElementShape;
+        const selectedElements = getSelectedElements(this.board);
+        if (selectedElements.length) {
+            selectedElements.forEach(element => {
+                const path = PlaitBoard.findPath(this.board, element);
+                Transforms.setNode(this.board, { branchShape: value }, path);
+            });
+        }
+    }
+
     newMind(event: Event) {
         BoardTransforms.updatePointerType<MindPointerType>(this.board, MindPointerType.mind);
     }

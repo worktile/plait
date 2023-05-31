@@ -11,6 +11,12 @@
     <div class="plait-toolbar island plait-board-attached new-mind">
         <button (click)="newMind($event)">New Mind</button>
     </div>
+    <div class="plait-toolbar island plait-board-attached edge-shape-setting-toolbar">
+        <select (change)="edgeShapeChange($event)">
+            <option value="bight">bight</option>
+            <option value="polyline">polyline</option>
+        </select>
+    </div>
     <div class="plait-toolbar island plait-board-attached layout-setting-toolbar">
         <select (change)="layoutChange($event)">
             <option value="right">right</option>

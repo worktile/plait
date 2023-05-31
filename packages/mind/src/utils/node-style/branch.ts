@@ -2,7 +2,7 @@
  * Processing of branch color, width, style, etc. of the mind node
  */
 import { PlaitBoard, isNullOrUndefined } from '@plait/core';
-import { MindElement } from '../../interfaces/element';
+import { BranchShape, MindElement } from '../../interfaces/element';
 import { BRANCH_COLORS } from '../../constants/node-style';
 import { BRANCH_WIDTH } from '../../constants/default';
 import { DefaultAbstractNodeStyle } from '../../constants/node-style';
@@ -11,6 +11,11 @@ import { getAvailableProperty } from './common';
 export const getBranchColorByMindElement = (board: PlaitBoard, element: MindElement) => {
     const branchColor = getAvailableProperty(board, element, 'branchColor');
     return branchColor || getDefaultBranchColor(board, element);
+};
+
+export const getBranchShapeByMindElement = (board: PlaitBoard, element: MindElement) => {
+    const branchShape = getAvailableProperty(board, element, 'branchShape');
+    return branchShape || BranchShape.bight;
 };
 
 export const getBranchWidthByMindElement = (board: PlaitBoard, element: MindElement) => {
