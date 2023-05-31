@@ -31,7 +31,7 @@ export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeCom
     const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
     updateForeignObject(
         richtextG,
-        textRectangle.width + BASE * 10,
+        textRectangle.width,
         textRectangle.height,
         textRectangle.x + offsetX,
         textRectangle.y + offsetY
