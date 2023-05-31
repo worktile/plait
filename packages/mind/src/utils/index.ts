@@ -7,7 +7,7 @@ export * from './node-style';
 export * from './is-virtual-key';
 export * from './dnd/common';
 export * from './dnd/detector';
-export * from './dnd/draw';
+export * from './draw/node-dnd';
 export * from './abstract/common';
 export * from './abstract/resize';
 export * from './node/right-node-count';

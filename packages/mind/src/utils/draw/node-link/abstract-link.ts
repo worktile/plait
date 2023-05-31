@@ -1,15 +1,15 @@
 import { PlaitBoard, getRectangleByElements } from '@plait/core';
-import { MindNode } from '../../interfaces/node';
-import { getRectangleByNode } from '../../utils/position/node';
-import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
+import { MindNode } from '../../../interfaces/node';
+import { getRectangleByNode } from '../../position/node';
+import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../interfaces/types';
 import {
     getLayoutDirection,
     getPointByPlacement,
     getXDistanceBetweenPoint,
     moveXOfPoint,
     transformPlacement
-} from '../../utils/point-placement';
-import { getAbstractBranchColor, getAbstractBranchWidth } from '../../utils/node-style/branch';
+} from '../../point-placement';
+import { getAbstractBranchColor, getAbstractBranchWidth } from '../../node-style/branch';
 
 export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal: boolean) {
     const linkPadding = 15;
