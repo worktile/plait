@@ -2,4 +2,4 @@
 '@plait/mind': patch
 ---
 
-modify util draw function folder
+refactor draw function directory structure
