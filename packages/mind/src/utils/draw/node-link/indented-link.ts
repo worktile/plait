@@ -64,7 +64,7 @@ export function drawIndentedLink(
             [endX, endY]
         ];
 
-        return drawLinearPath(polylinePoints as Point[], '', { stroke: branchColor, strokeWidth: branchWidth });
+        return drawLinearPath(polylinePoints as Point[], { stroke: branchColor, strokeWidth: branchWidth });
     }
 
     const points = pointsOnBezierCurves(curve);

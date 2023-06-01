@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, createLinePath, drawLinearPath, getRectangleByElements } from '@plait/core';
+import { PlaitBoard, Point, createG, drawLinearPath, getRectangleByElements } from '@plait/core';
 import { MindNode } from '../../../interfaces/node';
 import { getRectangleByNode } from '../../position/node';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../interfaces/types';
@@ -38,9 +38,20 @@ export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal
     let bezierConnectorPoint = moveXOfPoint(abstractConnectorPoint, -linkPadding, linkDirection);
 
     if (branchShape === BranchShape.polyline) {
-        const polylinePoints = [bezierBeginPoint, c1, bezierConnectorPoint, c2, bezierEndPoint];
-        const straightPath = createLinePath([abstractConnectorPoint, bezierConnectorPoint]);
-        return drawLinearPath(polylinePoints as Point[], straightPath, { stroke: branchColor, strokeWidth: branchWidth });
+        const g = createG();
+        const polyline = drawLinearPath([bezierBeginPoint, c1, bezierConnectorPoint, c2, bezierEndPoint], {
+            stroke: branchColor,
+            strokeWidth: branchWidth
+        });
+        const straightLine = drawLinearPath([abstractConnectorPoint, bezierConnectorPoint], {
+            stroke: branchColor,
+            strokeWidth: branchWidth
+        });
+
+        g.appendChild(polyline);
+        g.appendChild(straightLine);
+
+        return g;
     }
 
     const link = PlaitBoard.getRoughSVG(board).path(
