@@ -15,14 +15,14 @@ import {
     PlaitPluginElementContext,
     PlaitBoard,
     normalizePoint,
-    createG
+    createG,
+    isSelectedElement
 } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawNodeHandles } from './draw/handle';
 import { drawActiveMask, drawNode } from './draw/node';
 import { FlowNode } from './interfaces/node';
 import { FlowBaseData } from './interfaces/element';
-import { isActiveElement } from './utils/common';
 
 @Component({
     selector: 'plait-flow-node',
@@ -61,7 +61,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             this.updateElement(value.element);
         }
         if (this.initialized) {
-            const isActive = isActiveElement(this.board, value.element);
+            const isActive = isSelectedElement(this.board, value.element);
             if (this.perviousStatus === 'default' && isActive) {
                 this.setActiveNodeToTop();
                 this.drawActiveMask();

@@ -25,7 +25,6 @@ import { PlaitRichtextComponent, drawRichtext, updateForeignObject } from '@plai
 import { getEdgeTextBackgroundRect, getEdgeTextRect, getEdgeTextXYPosition } from './utils/edge/text';
 import { FlowEdge } from './interfaces/edge';
 import { FlowBaseData } from './interfaces/element';
-import { isActiveElement } from './utils/common';
 
 @Component({
     selector: 'plait-flow-edge',
@@ -70,7 +69,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     }
 
     beforeContextChange(value: PlaitPluginElementContext<FlowEdge<T>>) {
-        const isActive = isActiveElement(this.board, value.element);
+        const isActive = isSelectedElement(this.board, value.element);
         if (value.element !== this.element && this.initialized) {
             this.drawElement(value.element, isActive);
         }
