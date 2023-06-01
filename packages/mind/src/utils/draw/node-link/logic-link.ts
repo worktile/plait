@@ -78,7 +78,7 @@ export function drawLogicLink(
             endPoint,
             ...underline
         ];
-        return drawLinearPath(polylinePoints as Point[], { stroke: branchColor, strokeWidth: branchWidth });
+        return drawLinearPath(polylinePoints as Point[], '', { stroke: branchColor, strokeWidth: branchWidth });
     }
     return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke: branchColor, strokeWidth: branchWidth });
 }
