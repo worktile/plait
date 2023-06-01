@@ -193,10 +193,9 @@ export const withDnd = (board: PlaitBoard) => {
                 targetElementPathRef.unref();
                 targetPathRef.unref();
 
-                const selectedElements = getSelectedElements(board);
                 let setActiveElements: MindElement[] = [];
                 depthFirstRecursion((board as unknown) as MindElement, node => {
-                    const isSelected = selectedElements.some(element => element.id === node.id);
+                    const isSelected = activeElements.some(element => element.id === node.id);
                     if (isSelected) {
                         setActiveElements.push(node);
                     }
