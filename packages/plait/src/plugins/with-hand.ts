@@ -1,5 +1,6 @@
 import { PlaitPointerType, PlaitBoard, PlaitBoardMove } from '../interfaces';
 import { updatePointerType } from '../transforms/board';
+import { isMainPointer } from '../utils/dom/common';
 import { updateViewportContainerScroll } from '../utils/viewport';
 
 export function withHandPointer<T extends PlaitBoard>(board: T) {
@@ -11,7 +12,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     };
 
     board.mousedown = (event: MouseEvent) => {
-        if (board.pointer === PlaitPointerType.hand) {
+        if (PlaitBoard.isPointer(board, PlaitPointerType.hand) && isMainPointer(event)) {
             isMoving = true;
             PlaitBoard.getBoardNativeElement(board).classList.add('viewport-moving');
             plaitBoardMove.x = event.x;
@@ -21,7 +22,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     };
 
     board.mousemove = (event: MouseEvent) => {
-        if (board.pointer === PlaitPointerType.hand && board.selection && isMoving) {
+        if (PlaitBoard.isPointer(board, PlaitPointerType.hand) && board.selection && isMoving) {
             const viewportContainer = PlaitBoard.getViewportContainer(board);
             const left = viewportContainer.scrollLeft - (event.x - plaitBoardMove.x);
             const top = viewportContainer.scrollTop - (event.y - plaitBoardMove.y);

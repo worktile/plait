@@ -2,7 +2,7 @@ import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
-import { toPoint } from '../utils/dom/common';
+import { isMainPointer, toPoint } from '../utils/dom/common';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import { cacheSelectedElements, getHitElements, getSelectedElements, isIntersectionElements } from '../utils/selected-element';
 import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR, Selection } from '../interfaces';
@@ -27,7 +27,7 @@ export function withSelection(board: PlaitBoard) {
     let previousSelectedElements: PlaitElement[];
 
     board.mousedown = (event: MouseEvent) => {
-        if (event.button === 2) {
+        if (!isMainPointer(event)) {
             mousedown(event);
             return;
         }

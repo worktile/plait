@@ -1,3 +1,4 @@
+import { POINTER_BUTTON } from '../../constants';
 import { Point } from '../../interfaces/point';
 
 export const NS = 'http://www.w3.org/2000/svg';
@@ -53,3 +54,11 @@ export const hasInputOrTextareaTarget = (target: EventTarget | null) => {
     }
     return false;
 };
+
+export const isSecondaryPointer = (event: MouseEvent) => {
+    return event.button === POINTER_BUTTON.SECONDARY;
+}
+
+export const isMainPointer = (event: MouseEvent) => {
+    return event.button === POINTER_BUTTON.MAIN;
+}

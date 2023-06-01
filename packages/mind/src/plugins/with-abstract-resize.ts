@@ -6,6 +6,7 @@ import {
     Point,
     Transforms,
     getSelectedElements,
+    isMainPointer,
     toPoint,
     transformPoint
 } from '@plait/core';
@@ -27,6 +28,11 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     let newProperty: { end: number } | { start: number } | undefined;
 
     board.mousedown = (event: MouseEvent) => {
+        if (!isMainPointer(event)) {
+            mousedown(event);
+            return;
+        }
+        
         const activeAbstractElements = getSelectedElements(board).filter(element => AbstractNode.isAbstract(element));
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
