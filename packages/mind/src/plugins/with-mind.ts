@@ -22,12 +22,13 @@ import { MindElement, PlaitMind } from '../interfaces';
 import { PlaitMindComponent } from '../mind.component';
 import { MindNodeComponent } from '../node.component';
 import {
-    changeRightNodeCount,
     insertMindElement,
     getFirstLevelElement,
     isInRightBranchOfStandardLayout,
     insertElementHandleAbstract,
-    deleteElementHandleAbstract
+    deleteElementHandleAbstract,
+    insertElementHandleRightNodeCount,
+    deleteElementsHandleRightNodeCount
 } from '../utils';
 import { getRectangleByNode, isHitMindElement } from '../utils/position/node';
 import { isVirtualKey } from '../utils/is-virtual-key';
@@ -35,7 +36,7 @@ import { withDnd } from './with-node-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
-import { enterNodeEditing } from '../utils/node';
+import { enterNodeEditing } from '../utils/node/common';
 import { withAbstract } from './with-abstract-resize';
 import { withMindExtend } from './with-mind-extend';
 import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
@@ -125,7 +126,8 @@ export const withMind = (board: PlaitBoard) => {
                     insertMindElement(board, selectedElement, findNewChildNodePath(board, selectedElement));
                 } else {
                     if (isInRightBranchOfStandardLayout(selectedElement)) {
-                        changeRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
+                        const refs = insertElementHandleRightNodeCount(board, selectedElementPath.slice(0, 1), 1);
+                        MindTransforms.setRightNodeCountByRefs(board, refs);
                     }
 
                     const abstractRefs = insertElementHandleAbstract(board, Path.next(selectedElementPath));
@@ -140,6 +142,9 @@ export const withMind = (board: PlaitBoard) => {
                 const deletableElements = getFirstLevelElement(selectedElements).reverse();
                 const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
                 MindTransforms.setAbstractsByRefs(board, abstractRefs);
+
+                const refs = deleteElementsHandleRightNodeCount(board, selectedElements);
+                MindTransforms.setRightNodeCountByRefs(board, refs);
 
                 MindTransforms.removeElements(board, selectedElements);
 
@@ -261,6 +266,9 @@ export const withMind = (board: PlaitBoard) => {
         const deletableElements = getFirstLevelElement(selectedElements).reverse();
         const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
         MindTransforms.setAbstractsByRefs(board, abstractRefs);
+
+        const refs = deleteElementsHandleRightNodeCount(board, selectedElements);
+        MindTransforms.setRightNodeCountByRefs(board, refs);
 
         MindTransforms.removeElements(board, selectedElements);
         deleteFragment(data);

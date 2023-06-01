@@ -41,13 +41,11 @@ import { hasEditableTarget, PlaitRichtextComponent, setFullSelectionAndFocus, up
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject, timer } from 'rxjs';
 import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
-import { Editor, Operation, Text } from 'slate';
-import { EXTEND_OFFSET, EXTEND_RADIUS, PRIMARY_COLOR, STROKE_WIDTH } from './constants';
+import { Editor, Operation } from 'slate';
+import { EXTEND_OFFSET, EXTEND_RADIUS, PRIMARY_COLOR } from './constants';
 import { NODE_MIN_WIDTH } from './constants/node-rule';
-import { drawIndentedLink } from './draw/indented-link';
-import { drawLogicLink } from './draw/link/logic-link';
-import { drawTopicByNode, updateMindNodeTopicSize } from './draw/topic';
-import { drawRoundRectangleByNode } from './draw/node';
+import { drawTopicByNode, updateMindNodeTopicSize } from './utils/draw/node-topic';
+import { drawRoundRectangleByNode } from './utils/draw/node-shape';
 import { MindElement, PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
@@ -56,16 +54,17 @@ import { getChildrenCount } from './utils/mind';
 import { getShapeByElement } from './utils/node-style/shape';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
-import { drawAbstractLink } from './draw/link/abstract-link';
-import { EmojisDrawer } from './drawer/emoji.drawer';
+import { drawAbstractLink } from './utils/draw/node-link/abstract-link';
+import { EmojisDrawer } from './drawer/emojis.drawer';
 import { MindTransforms } from './transforms';
-import { drawAbstractIncludedOutline } from './draw/abstract';
+import { drawAbstractIncludedOutline } from './utils/draw/abstract-outline';
 import { MindElementShape } from './interfaces';
 import { QuickInsertDrawer } from './drawer/quick-insert.drawer';
 import { hasAfterDraw } from './base/base.drawer';
 import { getBranchColorByMindElement, getBranchWidthByMindElement } from './utils/node-style/branch';
 import { PlaitMindBoard } from './plugins/with-mind.board';
 import { AbstractHandlePosition } from './plugins/with-abstract-resize.board';
+import { drawLink } from './utils/draw/node-link/draw-link';
 
 @Component({
     selector: 'plait-mind-node',
@@ -240,10 +239,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         const layout = MindQueries.getLayoutByElement(parent) as MindLayoutType;
         if (AbstractNode.isAbstract(this.node.origin)) {
             this.linkG = drawAbstractLink(this.board, this.node, isHorizontalLayout(layout));
-        } else if (MindElement.isIndentedLayout(parent)) {
-            this.linkG = drawIndentedLink(this.board, parentNode, this.node);
         } else {
-            this.linkG = drawLogicLink(this.board, this.node, parentNode, isHorizontalLayout(layout));
+            this.linkG = drawLink(this.board, parentNode, this.node, isHorizontalLayout(layout));
         }
         this.g.append(this.linkG);
     }

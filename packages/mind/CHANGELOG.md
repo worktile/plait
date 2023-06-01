@@ -1,5 +1,11 @@
 # mind
 
+## 0.3.1
+
+### Patch Changes
+
+-   [`38d7582`](https://github.com/worktile/plait/commit/38d7582c2398f1535aa6e824987bc626fc2d353f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - export utils node
+
 ## 0.3.0
 
 ### Minor Changes

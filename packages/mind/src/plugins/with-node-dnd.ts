@@ -18,18 +18,19 @@ import { MindElement, PlaitMind } from '../interfaces/element';
 import { DetectResult } from '../interfaces/node';
 import { MindNodeComponent } from '../node.component';
 import {
-    changeRightNodeCount,
     deleteElementHandleAbstract,
+    deleteElementsHandleRightNodeCount,
     getFirstLevelElement,
     getOverallAbstracts,
     getValidAbstractRefs,
     insertElementHandleAbstract,
+    insertElementHandleRightNodeCount,
     isInRightBranchOfStandardLayout
 } from '../utils';
 import { isHitMindElement } from '../utils/position/node';
 import { addActiveOnDragOrigin, isDragging, removeActiveOnDragOrigin, setIsDragging } from '../utils/dnd/common';
 import { detectDropTarget, getPathByDropTarget } from '../utils/dnd/detector';
-import { drawFakeDragNode, drawFakeDropNodeByPath } from '../utils/dnd/draw';
+import { drawFakeDragNode, drawFakeDropNode } from '../utils/draw/node-dnd';
 import { MindTransforms } from '../transforms';
 import { adjustAbstractToNode, adjustRootToNode } from '../utils/node/adjust-node';
 
@@ -106,7 +107,7 @@ export const withDnd = (board: PlaitBoard) => {
             if (dropTarget?.target) {
                 targetPath = getPathByDropTarget(board, dropTarget);
 
-                fakeDropNodeG = drawFakeDropNodeByPath(board, dropTarget.target, targetPath);
+                fakeDropNodeG = drawFakeDropNode(board, dropTarget.target, targetPath);
                 PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
             }
 
@@ -155,6 +156,16 @@ export const withDnd = (board: PlaitBoard) => {
                 insertElementHandleAbstract(board, targetPath, normalElements.length, false, effectedAbstracts);
                 MindTransforms.setAbstractsByRefs(board, effectedAbstracts);
 
+                let refs = deleteElementsHandleRightNodeCount(board, elements);
+                const shouldChangeRoot =
+                    isInRightBranchOfStandardLayout(dropTarget?.target) &&
+                    targetElementPathRef.current &&
+                    (Path.isSibling(targetPath, targetElementPathRef.current) || Path.equals(targetPath, targetElementPathRef.current));
+                if (shouldChangeRoot && targetElementPathRef.current) {
+                    refs = insertElementHandleRightNodeCount(board, targetElementPathRef.current.slice(0, 1), normalElements.length, refs);
+                }
+                MindTransforms.setRightNodeCountByRefs(board, refs);
+
                 MindTransforms.removeElements(board, elements);
 
                 let insertPath = targetPathRef.current;
@@ -169,14 +180,6 @@ export const withDnd = (board: PlaitBoard) => {
 
                 if (abstractRefs.length) {
                     MindTransforms.insertAbstractNodes(board, abstractRefs, normalElements, insertPath);
-                }
-
-                const shouldChangeRoot =
-                    isInRightBranchOfStandardLayout(dropTarget?.target) &&
-                    targetElementPathRef.current &&
-                    (Path.isSibling(targetPath, targetElementPathRef.current) || Path.equals(targetPath, targetElementPathRef.current));
-                if (shouldChangeRoot && targetElementPathRef.current) {
-                    changeRightNodeCount(board, targetElementPathRef.current.slice(0, 1), normalElements.length);
                 }
 
                 if (

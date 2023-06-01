@@ -59,6 +59,7 @@ import { withViewport } from '../plugins/with-viewport';
 import { Point } from '../interfaces/point';
 import { withMoving } from '../plugins/with-moving';
 import { hasInputOrTextareaTarget } from '../utils/dom/common';
+import { withOptions } from '../plugins/with-options';
 
 const ElementHostClass = 'element-host';
 
@@ -202,7 +203,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     private initializePlugins() {
         let board = withHandPointer(
-            withHistory(withSelection(withMoving(withBoard(withViewport(createBoard(this.plaitValue, this.plaitOptions))))))
+            withHistory(withSelection(withMoving(withBoard(withViewport(withOptions(createBoard(this.plaitValue, this.plaitOptions)))))))
         );
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);

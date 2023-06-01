@@ -7,7 +7,7 @@ import { getEmojiFontSize } from '../utils/space/emoji';
 import { getEmojiForeignRectangle } from '../utils/position/emoji';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
 
-export class EmojiDrawer {
+class EmojiDrawer {
     componentRef: ComponentRef<MindEmojiBaseComponent> | null = null;
 
     constructor(private board: PlaitMindBoard, private viewContainerRef: ViewContainerRef) {}

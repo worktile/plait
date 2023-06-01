@@ -1,9 +1,9 @@
-import { MindNode } from '../interfaces/node';
-import { getRectangleByNode } from '../utils/position/node';
+import { MindNode } from '../../interfaces/node';
+import { getRectangleByNode } from '../position/node';
 import { PlaitBoard, RectangleClient, drawRoundRectangle } from '@plait/core';
-import { getStrokeByMindElement } from '../utils/node-style/shape';
-import { DefaultNodeStyle, DefaultRootStyle } from '../constants/node-style';
-import { MindElement } from '../interfaces';
+import { getStrokeByMindElement } from '../node-style/shape';
+import { DefaultNodeStyle, DefaultRootStyle } from '../../constants/node-style';
+import { MindElement } from '../../interfaces';
 
 export function drawRoundRectangleByNode(board: PlaitBoard, node: MindNode) {
     const rectangle = getRectangleByNode(node);

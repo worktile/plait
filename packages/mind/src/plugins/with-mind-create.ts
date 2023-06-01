@@ -3,6 +3,7 @@ import {
     PlaitBoard,
     PlaitPointerType,
     Transforms,
+    addSelectedElement,
     getSelectedElements,
     throttleRAF,
     toPoint,
@@ -12,8 +13,8 @@ import {
 import { PlaitMindBoard } from './with-mind.board';
 import { MindPointerType } from '../interfaces/pointer';
 import { getRectangleByElement, getTopicRectangleByElement } from '../utils';
-import { drawRoundRectangleByElement } from '../draw/node';
-import { drawTopicByElement } from '../draw/topic';
+import { drawRoundRectangleByElement } from '../utils/draw/node-shape';
+import { drawTopicByElement } from '../utils/draw/node-topic';
 import { ComponentRef } from '@angular/core';
 import { PlaitRichtextComponent } from '@plait/richtext';
 import { createEmptyMind } from '../utils/node/create-node';
@@ -83,6 +84,7 @@ export const withCreateMind = (board: PlaitBoard) => {
             const targetPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
             const emptyMind = createEmptyMind(board, targetPoint);
             Transforms.insertNode(board, emptyMind, [board.children.length]);
+            addSelectedElement(board, emptyMind);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
         destroy();
