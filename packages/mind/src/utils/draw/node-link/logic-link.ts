@@ -5,8 +5,7 @@ import { getRectangleByNode, getShapeByElement } from '../..';
 import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../../point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../interfaces/types';
 import { getBranchColorByMindElement, getBranchShapeByMindElement, getBranchWidthByMindElement } from '../../node-style/branch';
-import { BranchShape, MindElement, MindElementShape } from '../../../interfaces/element';
-import { drawIndentedLink } from './indented-link';
+import { BranchShape, MindElementShape } from '../../../interfaces/element';
 
 export function drawLogicLink(
     board: PlaitBoard,
@@ -82,18 +81,4 @@ export function drawLogicLink(
         return drawLinearPath(polylinePoints as Point[], { stroke: branchColor, strokeWidth: branchWidth });
     }
     return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke: branchColor, strokeWidth: branchWidth });
-}
-
-export function drawLink(
-    board: PlaitBoard,
-    parentNode: MindNode,
-    node: MindNode,
-    isHorizontal: boolean,
-    needDrawUnderline?: boolean,
-    defaultStroke?: string,
-    defaultStrokeWidth?: number
-) {
-    return MindElement.isIndentedLayout(parentNode.origin)
-        ? drawIndentedLink(board, parentNode, node, defaultStroke, needDrawUnderline, defaultStrokeWidth)
-        : drawLogicLink(board, parentNode, node, isHorizontal, defaultStroke, defaultStrokeWidth);
 }

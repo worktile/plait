@@ -2,13 +2,7 @@ import { PlaitBoard, getRectangleByElements } from '@plait/core';
 import { MindNode } from '../../../interfaces/node';
 import { getRectangleByNode } from '../../position/node';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../interfaces/types';
-import {
-    getLayoutDirection,
-    getPointByPlacement,
-    getXDistanceBetweenPoint,
-    moveXOfPoint,
-    transformPlacement
-} from '../../point-placement';
+import { getLayoutDirection, getPointByPlacement, getXDistanceBetweenPoint, moveXOfPoint, transformPlacement } from '../../point-placement';
 import { getAbstractBranchColor, getAbstractBranchWidth } from '../../node-style/branch';
 
 export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal: boolean) {
