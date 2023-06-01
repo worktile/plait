@@ -1,4 +1,13 @@
-import { PlaitBoard, PlaitPlugin, PlaitPluginElementContext, getMovingElements, PlaitElement } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitPlugin,
+    PlaitPluginElementContext,
+    getMovingElements,
+    PlaitElement,
+    PlaitOptionsBoard,
+    WithPluginOptions,
+    PlaitPluginKey
+} from '@plait/core';
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowEdgeComponent } from '../flow-edge.component';
 import { isHitEdge } from '../utils/edge/is-hit-edge';
@@ -70,6 +79,8 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
             }
         }
     };
+
+    (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: false });
 
     return withFlowEdgeDnd(withEdgeCreate(board));
 };

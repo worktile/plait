@@ -10,6 +10,12 @@ import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
 import { throttleRAF } from '../utils';
+import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
+import { PlaitPluginKey } from '../interfaces/plugin-key';
+
+export interface WithPluginOptions extends PlaitPluginOptions {
+    isMultiple: boolean;
+}
 
 export function withSelection(board: PlaitBoard) {
     const { mousedown, globalMousemove, globalMouseup, onChange } = board;
@@ -26,6 +32,8 @@ export function withSelection(board: PlaitBoard) {
             return;
         }
 
+        const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
+
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const ranges = [{ anchor: point, focus: point }];
         const selectedElements = getSelectedElements(board);
@@ -38,7 +46,8 @@ export function withSelection(board: PlaitBoard) {
         if (
             PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
             PlaitBoard.isFocus(board) &&
-            getHitElements(board, { ranges: [range] }).length === 0
+            getHitElements(board, { ranges: [range] }).length === 0 &&
+            options.isMultiple
         ) {
             start = point;
         }
@@ -104,7 +113,13 @@ export function withSelection(board: PlaitBoard) {
                 if (board.operations.find(value => value.type === 'set_selection')) {
                     selectionOuterG?.remove();
                     const temporaryElements = getTemporaryElements(board);
-                    const elements = temporaryElements ? temporaryElements : getHitElements(board);
+                    let elements = temporaryElements ? temporaryElements : getHitElements(board);
+
+                    const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
+
+                    if (!options.isMultiple && elements.length > 1) {
+                        elements = [elements[0]];
+                    }
                     cacheSelectedElements(board, elements);
                     previousSelectedElements = elements;
                     const { width, height } = getRectangleByElements(board, elements, false);
@@ -137,6 +152,8 @@ export function withSelection(board: PlaitBoard) {
         }
         onChange();
     };
+
+    (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: true });
 
     return board;
 }
