@@ -44,7 +44,6 @@ import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
 import { Editor, Operation } from 'slate';
 import { EXTEND_OFFSET, EXTEND_RADIUS, PRIMARY_COLOR } from './constants';
 import { NODE_MIN_WIDTH } from './constants/node-rule';
-import { drawLink } from './utils/draw/node-link/logic-link';
 import { drawTopicByNode, updateMindNodeTopicSize } from './utils/draw/node-topic';
 import { drawRoundRectangleByNode } from './utils/draw/node-shape';
 import { MindElement, PlaitMind } from './interfaces/element';
@@ -65,6 +64,7 @@ import { hasAfterDraw } from './base/base.drawer';
 import { getBranchColorByMindElement, getBranchWidthByMindElement } from './utils/node-style/branch';
 import { PlaitMindBoard } from './plugins/with-mind.board';
 import { AbstractHandlePosition } from './plugins/with-abstract-resize.board';
+import { drawLink } from './utils/draw/node-link/draw-link';
 
 @Component({
     selector: 'plait-mind-node',
