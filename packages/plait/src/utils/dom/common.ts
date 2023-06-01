@@ -12,6 +12,11 @@ export function createG() {
     return newG;
 }
 
+export function createPath() {
+    const newG = document.createElementNS(NS, 'path');
+    return newG;
+}
+
 export function createSVG() {
     const svg = document.createElementNS(NS, 'svg');
     return svg;

@@ -1,20 +1,21 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { MindNode } from '../../../../interfaces/node';
-import { PlaitBoard, Point } from '@plait/core';
-import { getRectangleByNode, getShapeByElement } from '../../..';
-import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../../../point-placement';
-import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../../interfaces/types';
-import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../../../node-style/branch';
-import { MindElementShape } from '../../../../interfaces/element';
+import { MindNode } from '../../../interfaces/node';
+import { PlaitBoard, Point, drawLinearPath } from '@plait/core';
+import { getRectangleByNode, getShapeByElement } from '../..';
+import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../../point-placement';
+import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../interfaces/types';
+import { getBranchColorByMindElement, getBranchShapeByMindElement, getBranchWidthByMindElement } from '../../node-style/branch';
+import { BranchShape, MindElementShape } from '../../../interfaces/element';
 
 export function drawLogicLink(
     board: PlaitBoard,
-    node: MindNode,
     parent: MindNode,
+    node: MindNode,
     isHorizontal: boolean,
     defaultStroke: string | null = null,
     defaultStrokeWidth?: number
 ) {
+    const branchShape = getBranchShapeByMindElement(board, parent.origin);
     const branchColor = defaultStroke || getBranchColorByMindElement(board, node.origin);
     const branchWidth = defaultStrokeWidth || getBranchWidthByMindElement(board, node.origin);
     const hasStraightLine = !parent.origin.isRoot;
@@ -66,5 +67,18 @@ export function drawLogicLink(
     const underline: Point[] = hasUnderlineShape && isHorizontal ? [underlineEnd, underlineEnd, underlineEnd] : [];
 
     const points = pointsOnBezierCurves([...straightLine, ...curve, ...underline]);
+
+    if (branchShape === BranchShape.polyline) {
+        const buffer = 8;
+        const movePoint = moveXOfPoint(beginPoint2, buffer, linkDirection);
+        const polylinePoints = [
+            ...straightLine,
+            movePoint,
+            isHorizontal ? [movePoint[0], endPoint[1]] : [endPoint[0], movePoint[1]],
+            endPoint,
+            ...underline
+        ];
+        return drawLinearPath(polylinePoints as Point[], { stroke: branchColor, strokeWidth: branchWidth });
+    }
     return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke: branchColor, strokeWidth: branchWidth });
 }

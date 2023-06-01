@@ -21,6 +21,7 @@ export interface MindElement<T = BaseData> extends PlaitElement {
     // link style attributes
     branchColor?: string;
     branchWidth?: number;
+    branchShape?: BranchShape;
 
     // layout
     layout?: MindLayoutType;
@@ -117,4 +118,9 @@ export const MindElement = {
 export enum MindElementShape {
     roundRectangle = 'round-rectangle',
     underline = 'underline'
+}
+
+export enum BranchShape {
+    bight = 'bight',
+    polyline = 'polyline'
 }

@@ -8,12 +8,11 @@ import { PlaitBoard, Point, drawRoundRectangle, createG, Path, PlaitNode } from 
 import { MindQueries } from '../../queries';
 import { isHorizontalLayout, isIndentedLayout, isTopLayout, MindLayoutType } from '@plait/layouts';
 import { getTopicRectangleByNode } from '../position/topic';
-import { drawLogicLink } from './node-link/curve/logic-link';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../interfaces/types';
 import { getLayoutDirection, getPointByPlacement, moveXOfPoint, moveYOfPoint, transformPlacement } from '../point-placement';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
 import { hasPreviousOrNextOfDropPath } from '../dnd/common';
-import { drawIndentedLink } from './node-link/curve/indented-link';
+import { drawLink } from './node-link/draw-link';
 
 export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeComponent, offsetX: number, offsetY: number) => {
     const dragFakeNodeG = createG();
@@ -29,13 +28,7 @@ export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeCom
     const fakeNodeG = drawRoundRectangleByNode(board, fakeDraggingNode);
 
     const richtextG = activeComponent.richtextG?.cloneNode(true) as SVGGElement;
-    updateForeignObject(
-        richtextG,
-        textRectangle.width,
-        textRectangle.height,
-        textRectangle.x + offsetX,
-        textRectangle.y + offsetY
-    );
+    updateForeignObject(richtextG, textRectangle.width, textRectangle.height, textRectangle.x + offsetX, textRectangle.y + offsetY);
 
     dragFakeNodeG?.append(fakeNodeG);
     dragFakeNodeG?.append(richtextG);
@@ -167,10 +160,8 @@ export const drawFakeDropNode = (board: PlaitBoard, target: MindElement, path: P
             fillStyle: 'solid'
         }
     );
-    const link = MindElement.isIndentedLayout(parent)
-        ? drawIndentedLink(board, MindElement.getNode(parent), fakeNode!, PRIMARY_COLOR, false, STROKE_WIDTH)
-        : drawLogicLink(board, fakeNode!, MindElement.getNode(parent), isHorizontal, PRIMARY_COLOR, STROKE_WIDTH);
 
+    const link = drawLink(board, MindElement.getNode(parent), fakeNode, isHorizontal, false, PRIMARY_COLOR, STROKE_WIDTH);
     fakeDropNodeG?.appendChild(link);
     fakeDropNodeG?.appendChild(fakeRectangleG);
 

@@ -1,11 +1,11 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { MindNode } from '../../../../interfaces/node';
+import { MindNode } from '../../../interfaces/node';
 import { PlaitBoard, Point } from '@plait/core';
-import { getShapeByElement, getRectangleByNode, isChildUp } from '../../..';
+import { getShapeByElement, getRectangleByNode, isChildUp } from '../..';
 import { MindLayoutType } from '@plait/layouts';
-import { MindQueries } from '../../../../queries';
-import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../../../node-style/branch';
-import { MindElementShape } from '../../../../interfaces/element';
+import { MindQueries } from '../../../queries';
+import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../../node-style/branch';
+import { MindElementShape } from '../../../interfaces/element';
 
 export function drawIndentedLink(
     board: PlaitBoard,
