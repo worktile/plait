@@ -1,11 +1,11 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { MindNode } from '../../../interfaces/node';
-import { PlaitBoard, Point } from '@plait/core';
+import { PlaitBoard, Point, drawLinearPath } from '@plait/core';
 import { getShapeByElement, getRectangleByNode, isChildUp } from '../..';
 import { MindLayoutType } from '@plait/layouts';
 import { MindQueries } from '../../../queries';
-import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../../node-style/branch';
-import { MindElementShape } from '../../../interfaces/element';
+import { getBranchColorByMindElement, getBranchShapeByMindElement, getBranchWidthByMindElement } from '../../node-style/branch';
+import { BranchShape, MindElementShape } from '../../../interfaces/element';
 
 export function drawIndentedLink(
     board: PlaitBoard,
@@ -15,6 +15,7 @@ export function drawIndentedLink(
     needDrawUnderline = true,
     defaultStrokeWidth?: number
 ) {
+    const branchShape = getBranchShapeByMindElement(board, node.origin);
     const branchWidth = defaultStrokeWidth || getBranchWidthByMindElement(board, child.origin);
     const branchColor = defaultStroke || getBranchColorByMindElement(board, child.origin);
 
@@ -55,6 +56,16 @@ export function drawIndentedLink(
         isUnderlineShape && needDrawUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY],
         isUnderlineShape && needDrawUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY]
     ];
+
+    if (branchShape === BranchShape.polyline) {
+        const polylinePoints = [
+            [beginX, beginY],
+            [beginX, endY],
+            [endX, endY]
+        ];
+
+        return drawLinearPath(polylinePoints as Point[], { stroke: branchColor, strokeWidth: branchWidth });
+    }
 
     const points = pointsOnBezierCurves(curve);
     return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke: branchColor, strokeWidth: branchWidth });
