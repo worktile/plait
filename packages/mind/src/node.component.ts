@@ -44,8 +44,7 @@ import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
 import { Editor, Operation } from 'slate';
 import { EXTEND_OFFSET, EXTEND_RADIUS, PRIMARY_COLOR } from './constants';
 import { NODE_MIN_WIDTH } from './constants/node-rule';
-import { drawIndentedLink } from './utils/draw/node-link/curve/indented-link';
-import { drawLogicLink } from './utils/draw/node-link/curve/logic-link';
+import { drawLink } from './utils/draw/node-link/logic-link';
 import { drawTopicByNode, updateMindNodeTopicSize } from './utils/draw/node-topic';
 import { drawRoundRectangleByNode } from './utils/draw/node-shape';
 import { MindElement, PlaitMind } from './interfaces/element';
@@ -240,10 +239,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         const layout = MindQueries.getLayoutByElement(parent) as MindLayoutType;
         if (AbstractNode.isAbstract(this.node.origin)) {
             this.linkG = drawAbstractLink(this.board, this.node, isHorizontalLayout(layout));
-        } else if (MindElement.isIndentedLayout(parent)) {
-            this.linkG = drawIndentedLink(this.board, parentNode, this.node);
         } else {
-            this.linkG = drawLogicLink(this.board, this.node, parentNode, isHorizontalLayout(layout));
+            this.linkG = drawLink(this.board, parentNode, this.node, isHorizontalLayout(layout));
         }
         this.g.append(this.linkG);
     }

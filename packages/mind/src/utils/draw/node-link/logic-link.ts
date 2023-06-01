@@ -1,18 +1,17 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { MindNode } from '../../../../interfaces/node';
-import { PlaitBoard, Point } from '@plait/core';
-import { getRectangleByNode, getShapeByElement } from '../../..';
-import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../../../point-placement';
-import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../../interfaces/types';
-import { getBranchColorByMindElement, getBranchShapeByMindElement, getBranchWidthByMindElement } from '../../../node-style/branch';
-import { BranchShape, MindElementShape } from '../../../../interfaces/element';
-import { drawLinearPath } from '../../node-shape';
-
+import { MindNode } from '../../../interfaces/node';
+import { PlaitBoard, Point, drawLinearPath } from '@plait/core';
+import { getRectangleByNode, getShapeByElement } from '../..';
+import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../../point-placement';
+import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../../../interfaces/types';
+import { getBranchColorByMindElement, getBranchShapeByMindElement, getBranchWidthByMindElement } from '../../node-style/branch';
+import { BranchShape, MindElement, MindElementShape } from '../../../interfaces/element';
+import { drawIndentedLink } from './indented-link';
 
 export function drawLogicLink(
     board: PlaitBoard,
-    node: MindNode,
     parent: MindNode,
+    node: MindNode,
     isHorizontal: boolean,
     defaultStroke: string | null = null,
     defaultStrokeWidth?: number
@@ -83,4 +82,18 @@ export function drawLogicLink(
         return drawLinearPath(polylinePoints as Point[], { stroke: branchColor, strokeWidth: branchWidth });
     }
     return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke: branchColor, strokeWidth: branchWidth });
+}
+
+export function drawLink(
+    board: PlaitBoard,
+    parentNode: MindNode,
+    node: MindNode,
+    isHorizontal: boolean,
+    needDrawUnderline?: boolean,
+    defaultStroke?: string,
+    defaultStrokeWidth?: number
+) {
+    return MindElement.isIndentedLayout(parentNode.origin)
+        ? drawIndentedLink(board, parentNode, node, defaultStroke, needDrawUnderline, defaultStrokeWidth)
+        : drawLogicLink(board, parentNode, node, isHorizontal, defaultStroke, defaultStrokeWidth);
 }
