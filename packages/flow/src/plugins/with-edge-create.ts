@@ -102,14 +102,14 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                 }
                 // destroy handles
                 const flowNodeComponent = PlaitElement.getComponent(hoveredFlowNode) as FlowNodeComponent;
-                flowNodeComponent.destroyHandles();
+                flowNodeComponent?.destroyHandles();
             }
 
             hoveredFlowNode = newHitNode;
             if (hoveredFlowNode) {
                 // draw handles
                 const flowNodeComponent = PlaitElement.getComponent(hoveredFlowNode) as FlowNodeComponent;
-                flowNodeComponent.drawHandles(hoveredFlowNode);
+                flowNodeComponent?.drawHandles(hoveredFlowNode);
             }
         }
         globalMousemove(event);

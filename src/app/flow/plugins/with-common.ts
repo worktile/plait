@@ -34,7 +34,7 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
                 const deleteElement = selectedElements[0];
-                const path = board.children.findIndex(item => item.nodeId === deleteElement.nodeId);
+                const path = board.children.findIndex(item => item.id === deleteElement.id);
                 if (FlowEdge.isFlowEdgeElement(deleteElement)) {
                     if (!deleteElement.undeletable) {
                         // 删除 edge
@@ -43,13 +43,13 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
                     }
                 }
                 if (FlowNode.isFlowNodeElement(deleteElement)) {
-                    const edges = getEdgesByNodeId(board, deleteElement.nodeId);
+                    const edges = getEdgesByNodeId(board, deleteElement.id);
                     if (!deleteElement.undeletable) {
                         // 删除 node
                         Transforms.removeNode(board, [path]);
                         // 删除与 node 相关连的 edge
                         edges.map(edge => {
-                            const edgePath = board.children.findIndex(item => item.nodeId === edge.nodeId);
+                            const edgePath = board.children.findIndex(item => item.id === edge.id);
                             !edge.undeletable && Transforms.removeNode(board, [edgePath]);
                         });
                         return;

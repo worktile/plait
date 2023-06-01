@@ -15,3 +15,6 @@ export * from './constants/edge';
 export * from './constants/handle';
 export * from './constants/node';
 export * from './utils/index';
+export * from './draw/edge';
+export * from './draw/handle';
+export * from './draw/node';

@@ -22,7 +22,6 @@ import { drawEdge, drawEdgeMarkers, drawRichtextBackground } from './draw/edge';
 import { PlaitBoard } from '@plait/core';
 import { drawEdgeHandles } from './draw/handle';
 import { PlaitRichtextComponent, drawRichtext, updateForeignObject } from '@plait/richtext';
-import { Element } from 'slate';
 import { getEdgeTextBackgroundRect, getEdgeTextRect, getEdgeTextXYPosition } from './utils/edge/text';
 import { FlowEdge } from './interfaces/edge';
 import { FlowBaseData } from './interfaces/element';

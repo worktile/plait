@@ -14,3 +14,4 @@ export * from './handle/node';
 export * from './node/is-hit-node';
 export * from './node/get-node';
 export * from './node/render-all-nodes-handle';
+export * from './node/get-hit-node';
