@@ -1,5 +1,25 @@
 # mind
 
+## 0.4.0
+
+### Minor Changes
+
+-   [#394](https://github.com/worktile/plait/pull/394) [`fffc901`](https://github.com/worktile/plait/commit/fffc901674f3841461dff8c9e28dd20efe9a5754) Thanks [@WBbug](https://github.com/WBbug)! - support draw polyline
+
+*   [#391](https://github.com/worktile/plait/pull/391) [`3d89e58`](https://github.com/worktile/plait/commit/3d89e58c39ffac99780be6b24dcf1c9b8f60872c) Thanks [@WBbug](https://github.com/WBbug)! - add setRightNodeCountByRefs
+
+-   [#398](https://github.com/worktile/plait/pull/398) [`75e4b7b`](https://github.com/worktile/plait/commit/75e4b7b5de11b3e059d858eaecc226102570e239) Thanks [@WBbug](https://github.com/WBbug)! - change select when dnd over
+
+*   [#397](https://github.com/worktile/plait/pull/397) [`b172f35`](https://github.com/worktile/plait/commit/b172f3530603c8710adfed6a7fa5fc6fe48498e1) Thanks [@WBbug](https://github.com/WBbug)! - support draw abstract and indent polyline
+
+### Patch Changes
+
+-   [`49f50fc`](https://github.com/worktile/plait/commit/49f50fcff2e9695938e4b3d8661b94376d8df47f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add pointer button in constants
+
+*   [`130b015`](https://github.com/worktile/plait/commit/130b015ecff75b9827e2c7ac136d6c9f6dc66c8b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - selected mind when create and insert success
+
+-   [#392](https://github.com/worktile/plait/pull/392) [`e948d94`](https://github.com/worktile/plait/commit/e948d948e1314b34a142713734d9116abc937947) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor draw function directory structure
+
 ## 0.3.1
 
 ### Patch Changes

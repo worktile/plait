@@ -1,5 +1,22 @@
 # plait
 
+## 0.4.0
+
+### Minor Changes
+
+-   [#394](https://github.com/worktile/plait/pull/394) [`fffc901`](https://github.com/worktile/plait/commit/fffc901674f3841461dff8c9e28dd20efe9a5754) Thanks [@WBbug](https://github.com/WBbug)! - support draw polyline
+
+*   [`990061a`](https://github.com/worktile/plait/commit/990061ae5d59668482faff37129c6b91e476b88a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support base island to implement toolbar or others property modify
+    remove toolbar from core
+
+-   [#397](https://github.com/worktile/plait/pull/397) [`b172f35`](https://github.com/worktile/plait/commit/b172f3530603c8710adfed6a7fa5fc6fe48498e1) Thanks [@WBbug](https://github.com/WBbug)! - support draw abstract and indent polyline
+
+*   [#395](https://github.com/worktile/plait/pull/395) [`3e67224`](https://github.com/worktile/plait/commit/3e67224dc8501903a06229f61acfacb35d4e1810) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add with options plugin
+
+### Patch Changes
+
+-   [`49f50fc`](https://github.com/worktile/plait/commit/49f50fcff2e9695938e4b3d8661b94376d8df47f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add pointer button in constants
+
 ## 0.3.0
 
 ### Minor Changes

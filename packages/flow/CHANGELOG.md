@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.2.3
+
+### Patch Changes
+
+-   [#393](https://github.com/worktile/plait/pull/393) [`47791b9`](https://github.com/worktile/plait/commit/47791b96a6d13e09a77bd73f90183b8e620656f3) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - export draw files
+
 ## 0.2.2
 
 ### Patch Changes
