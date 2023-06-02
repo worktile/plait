@@ -30,8 +30,15 @@ export interface FakeCreateNodeRef {
 
 export const withCreateMind = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitMindBoard;
-    const { keydown, mousemove, mouseup } = board;
+    const { keydown, mousedown, mousemove, mouseup } = board;
     let fakeCreateNodeRef: FakeCreateNodeRef | null = null;
+
+    newBoard.mousedown = (event: MouseEvent) => {
+        if (fakeCreateNodeRef && PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind)) {
+            return;
+        }
+        mousedown(event);
+    }
 
     newBoard.mousemove = (event: MouseEvent) => {
         if (PlaitBoard.isReadonly(board)) {
