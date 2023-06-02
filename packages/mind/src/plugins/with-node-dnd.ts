@@ -20,6 +20,7 @@ import { MindNodeComponent } from '../node.component';
 import {
     deleteElementHandleAbstract,
     deleteElementsHandleRightNodeCount,
+    getCorrespondingAbstract,
     getFirstLevelElement,
     getOverallAbstracts,
     getValidAbstractRefs,
@@ -139,7 +140,7 @@ export const withDnd = (board: PlaitBoard) => {
             if (dropTarget) {
                 const targetPathRef = board.pathRef(targetPath);
                 const targetElementPathRef = board.pathRef(PlaitBoard.findPath(board, dropTarget.target));
-                const abstractRefs = getValidAbstractRefs(board, elements);
+                let abstractRefs = getValidAbstractRefs(board, elements);
                 const normalElements = elements
                     .filter(element => !abstractRefs.some(refs => refs.abstract === element))
                     .map(element => {
@@ -151,6 +152,17 @@ export const withDnd = (board: PlaitBoard) => {
                         }
                         return element;
                     });
+
+                const hasPreviousNode = targetPath[targetPath.length - 1] !== 0;
+                if (hasPreviousNode) {
+                    const previousElement = PlaitNode.get(board, Path.previous(targetPath)) as MindElement;
+                    const correspondingAbstract = getCorrespondingAbstract(previousElement);
+                    const targetHasCorrespondAbstract =
+                        correspondingAbstract && correspondingAbstract.end !== targetPath[targetPath.length - 1] - 1;
+                    if (targetHasCorrespondAbstract) {
+                        abstractRefs = [];
+                    }
+                }
 
                 const effectedAbstracts = deleteElementHandleAbstract(board, elements);
                 insertElementHandleAbstract(board, targetPath, normalElements.length, false, effectedAbstracts);
