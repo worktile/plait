@@ -4,5 +4,5 @@ export interface BoardComponentInterface {
     markForCheck: () => void;
     cdr: ChangeDetectorRef;
     nativeElement: HTMLElement;
-    viewContainerRef: ViewContainerRef
+    viewContainerRef: ViewContainerRef;
 }

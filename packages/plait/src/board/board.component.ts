@@ -1,9 +1,10 @@
 import {
+    AfterContentInit,
     AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    ContentChild,
+    ContentChildren,
     ElementRef,
     EventEmitter,
     HostBinding,
@@ -13,15 +14,15 @@ import {
     OnDestroy,
     OnInit,
     Output,
+    QueryList,
     SimpleChanges,
-    TemplateRef,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, tap } from 'rxjs/operators';
 import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitPlugin } from '../interfaces/plugin';
@@ -42,12 +43,9 @@ import {
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import {
-    fitViewport,
     getViewBox,
     initializeViewportOffset,
     initializeViewBox,
-    setViewport,
-    changeZoom,
     isFromViewportChange,
     setIsFromViewportChange,
     initializeViewportContainer,
@@ -60,6 +58,8 @@ import { Point } from '../interfaces/point';
 import { withMoving } from '../plugins/with-moving';
 import { hasInputOrTextareaTarget } from '../utils/dom/common';
 import { withOptions } from '../plugins/with-options';
+import { PlaitIslandBaseComponent, hasOnBoardChange } from '../core/island/island-base.component';
+import { BoardTransforms } from '../transforms/board';
 
 const ElementHostClass = 'element-host';
 
@@ -70,19 +70,11 @@ const ElementHostClass = 'element-host';
             <svg #svg width="100%" height="100%" style="position: relative;"><g class="element-host"></g></svg>
             <plait-children [board]="board" [effect]="effect"></plait-children>
         </div>
-        <plait-toolbar
-            *ngIf="isFocused && !toolbarTemplateRef"
-            [board]="board"
-            (adaptHandle)="adaptHandle()"
-            (zoomInHandle)="zoomInHandle()"
-            (zoomOutHandle)="zoomOutHandle()"
-            (resetZoomHandel)="resetZoomHandel()"
-        ></plait-toolbar>
         <ng-content></ng-content>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnChanges, AfterViewInit, OnDestroy {
+export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnChanges, AfterViewInit, AfterContentInit, OnDestroy {
     hasInitialized = false;
 
     effect = {};
@@ -133,11 +125,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @ViewChild('svg', { static: true })
     svg!: ElementRef;
 
-    @ContentChild('plaitToolbar')
-    public toolbarTemplateRef!: TemplateRef<any>;
-
     @ViewChild('viewportContainer', { read: ElementRef, static: true })
     viewportContainer!: ElementRef;
+
+    @ContentChildren(PlaitIslandBaseComponent, { descendants: true }) islands?: QueryList<PlaitIslandBaseComponent>;
 
     constructor(
         public cdr: ChangeDetectorRef,
@@ -172,10 +163,15 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                     viewport: this.board.viewport,
                     selection: this.board.selection
                 };
+                this.updateIslands();
                 this.plaitChange.emit(changeEvent);
             });
         });
         this.hasInitialized = true;
+    }
+
+    ngAfterContentInit(): void {
+        this.initializeIslands();
     }
 
     detect() {
@@ -259,17 +255,21 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<KeyboardEvent>(document, 'keydown')
             .pipe(
                 takeUntil(this.destroy$),
+                tap((event: KeyboardEvent) => {
+                    if (PlaitBoard.getMovingPoint(this.board)) {
+                        if (isHotkey(['mod+=', 'mod++'], { byKey: true })(event)) {
+                            event.preventDefault();
+                            BoardTransforms.updateZoom(this.board, this.board.viewport.zoom + 0.1, false);
+                        }
+                        if (isHotkey('mod+-', { byKey: true })(event)) {
+                            event.preventDefault();
+                            BoardTransforms.updateZoom(this.board, this.board.viewport.zoom - 0.1);
+                        }
+                    }
+                }),
                 filter(event => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board) && !hasInputOrTextareaTarget(event.target))
             )
             .subscribe((event: KeyboardEvent) => {
-                if (isHotkey(['mod+=', 'mod++'], { byKey: true })(event)) {
-                    event.preventDefault();
-                    this.zoomInHandle(false);
-                }
-                if (isHotkey('mod+-', { byKey: true })(event)) {
-                    this.zoomOutHandle();
-                    event.preventDefault();
-                }
                 this.board?.keydown(event);
             });
 
@@ -339,7 +339,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                     if (Point.isEquals(origination, this.board.viewport.origination)) {
                         return;
                     }
-                    setViewport(this.board, origination);
+                    BoardTransforms.updateViewport(this.board, origination);
                     setIsFromScrolling(this.board, true);
                 });
         });
@@ -362,25 +362,24 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             });
     }
 
+    private initializeIslands() {
+        this.islands?.forEach(island => {
+            island.initialize(this.board);
+        });
+    }
+
+    private updateIslands() {
+        this.islands?.forEach(island => {
+            if (hasOnBoardChange(island)) {
+                island.onBoardChange();
+            }
+            island.markForCheck();
+        });
+    }
+
     trackBy = (index: number, element: PlaitElement) => {
         return element.id;
     };
-
-    adaptHandle() {
-        fitViewport(this.board);
-    }
-
-    zoomInHandle(isCenter = true) {
-        changeZoom(this.board, this.board.viewport.zoom + 0.1, isCenter);
-    }
-
-    zoomOutHandle() {
-        changeZoom(this.board, this.board.viewport.zoom - 0.1);
-    }
-
-    resetZoomHandel() {
-        changeZoom(this.board, 1);
-    }
 
     ngOnDestroy(): void {
         this.destroy$.next();
@@ -396,5 +395,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     markForCheck() {
         this.cdr.markForCheck();
+        this.ngZone.run(() => {
+            this.updateIslands();
+        });
     }
 }

@@ -1,5 +1,5 @@
 import { PlaitPointerType, PlaitBoard, PlaitBoardMove } from '../interfaces';
-import { updatePointerType } from '../transforms/board';
+import { BoardTransforms } from '../transforms';
 import { isMainPointer } from '../utils/dom/common';
 import { updateViewportContainerScroll } from '../utils/viewport';
 
@@ -46,7 +46,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     board.keydown = (event: KeyboardEvent) => {
         if (event.code === 'Space') {
             if (!PlaitBoard.isPointer(board, PlaitPointerType.hand)) {
-                updatePointerType(board, PlaitPointerType.hand);
+                BoardTransforms.updatePointerType(board, PlaitPointerType.hand);
             }
             event.preventDefault();
         }
@@ -55,7 +55,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
 
     board.keyup = (event: KeyboardEvent) => {
         if (!board.options.readonly && event.code === 'Space') {
-            updatePointerType(board, PlaitPointerType.selection);
+            BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
         keyup(event);
     };
