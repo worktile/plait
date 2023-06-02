@@ -221,13 +221,13 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<MouseEvent>(this.host, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
+                BOARD_TO_MOVING_POINT.set(this.board, [event.x, event.y]);
                 this.board.mousemove(event);
             });
 
         fromEvent<MouseEvent>(document, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
-                BOARD_TO_MOVING_POINT.set(this.board, [event.x, event.y]);
                 this.board.globalMousemove(event);
             });
 
@@ -299,8 +299,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             )
             .subscribe((clipboardEvent: ClipboardEvent) => {
                 const mousePoint = PlaitBoard.getMovingPoint(this.board);
-                const rect = this.nativeElement.getBoundingClientRect();
-                if (mousePoint && distanceBetweenPointAndRectangle(mousePoint[0], mousePoint[1], rect) === 0) {
+                if (mousePoint) {
                     const targetPoint = transformPoint(this.board, toPoint(mousePoint[0], mousePoint[1], this.host));
                     this.board.insertFragment(clipboardEvent.clipboardData, targetPoint);
                 }
