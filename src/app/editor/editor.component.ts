@@ -4,8 +4,8 @@ import {
     getSelectedElements,
     PlaitBoard,
     PlaitBoardChangeEvent,
+    PlaitBoardOptions,
     PlaitElement,
-    PlaitPointerType,
     Transforms,
     Viewport
 } from '@plait/core';
@@ -25,6 +25,11 @@ export class BasicBoardEditorComponent implements OnInit {
     plugins = [withMind, withEmojiExtend];
 
     value: PlaitElement[] = [...mockData];
+
+    options: PlaitBoardOptions = {
+        readonly: false,
+        hideScrollbar: false
+    }
 
     viewport!: Viewport;
 
