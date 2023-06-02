@@ -10,7 +10,8 @@ import { getAvailableProperty } from './common';
 
 export const getBranchColorByMindElement = (board: PlaitBoard, element: MindElement) => {
     const branchColor = getAvailableProperty(board, element, 'branchColor');
-    return branchColor || getDefaultBranchColor(board, element);
+    const parentBranchColor = MindElement.getParent(element)?.branchColor;
+    return parentBranchColor || branchColor || getDefaultBranchColor(board, element);
 };
 
 export const getBranchShapeByMindElement = (board: PlaitBoard, element: MindElement) => {
