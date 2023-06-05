@@ -114,25 +114,13 @@ export const withDnd = (board: PlaitBoard) => {
             const offsetY = endPoint[1] - startPoint[1];
             dragFakeNodeG?.remove();
             dragFakeNodeG = createG();
-            [...activeElements, ...correspondingElements].forEach(element => {
+            const selectedElement = getSelectedElements(board) as MindElement[];
+            [...selectedElement, ...correspondingElements].forEach(element => {
                 addActiveOnDragOrigin(element);
+            });
+            selectedElement.forEach(element => {
                 const nodeG = drawFakeDragNode(board, element, offsetX, offsetY);
                 dragFakeNodeG?.appendChild(nodeG);
-
-                depthFirstRecursion(
-                    element,
-                    node => {
-                        const nodeG = drawFakeDragNode(board, node, offsetX, offsetY);
-                        dragFakeNodeG?.appendChild(nodeG);
-                    },
-                    node => {
-                        if (PlaitBoard.isBoard(node) || board.isRecursion(node)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                );
             });
 
             PlaitBoard.getHost(board).appendChild(dragFakeNodeG);
