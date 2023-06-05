@@ -3,46 +3,13 @@
 @import '../../packages/plait/src/styles/styles.scss';
 @import './richtext/richtext.component.scss';
 @import '../../packages/flow/src/styles/styles.scss';
-
-.layout-setting-toolbar {
-    bottom: 30px;
-    right: 40px;
-    width: 120px;
-    select {
-        width: 100%;
-    }
-}
-
-.shape-setting-toolbar {
-    bottom: 30px;
-    right: 200px;
-    width: 120px;
-    select {
-        width: 100%;
-    }
-}
+@import './theme.scss';
+@import './components//styles/panel.scss';
+@import './components/styles/toolbar.scss';
 
 .flow-custom-node {
     color: #fff;
     .plait-richtext-container{
         font-size: 10px;
     }
-}
-
-.abstract-setting-toolbar{
-    bottom: 30px;
-    right: 360px;
-    select {
-        width: 100%;
-    }
-}
-
-.new-mind{
-    right: 460px;
-    bottom: 30px;
-}
-
-.edge-shape-setting-toolbar{
-    right: 560px;
-    bottom: 30px;
 }

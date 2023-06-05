@@ -1,0 +1,34 @@
+<div class="property-item abstract-setting-toolbar">
+    <button (click)="setAbstract($event)">设置概要</button>
+</div>
+
+<div class="property-item shape-setting-toolbar">
+    <label>布局类型：</label>
+    <select (change)="shapeChange($event)">
+        <option value="round-rectangle">round-rectangle</option>
+        <option value="underline">underline</option>
+    </select>
+</div>
+
+<div class="property-item layout-setting-toolbar">
+    <label>布局类型：</label>
+    <select (change)="layoutChange($event)">
+        <option value="right">right</option>
+        <option value="left">left</option>
+        <option value="standard" selected>standard</option>
+        <option value="upward">upward</option>
+        <option value="downward">downward</option>
+        <option value="right-bottom-indented">right-bottom-indented</option>
+        <option value="right-top-indented">right-top-indented</option>
+        <option value="left-bottom-indented">left-bottom-indented</option>
+        <option value="left-top-indented">left-top-indented</option>
+    </select>
+</div>
+
+<div class="property-item edge-shape-setting-toolbar">
+    <label>分支形状：</label>
+    <select (change)="edgeShapeChange($event)">
+        <option value="bight">bight</option>
+        <option value="polyline">polyline</option>
+    </select>
+</div>

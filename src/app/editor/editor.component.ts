@@ -56,50 +56,6 @@ export class BasicBoardEditorComponent implements OnInit {
         return data ? JSON.parse(data) : null;
     }
 
-    layoutChange(event: Event) {
-        const value = (event.target as HTMLSelectElement).value as MindLayoutType;
-        const selectedElement = getSelectedElements(this.board)?.[0];
-        if (selectedElement) {
-            const path = PlaitBoard.findPath(this.board, selectedElement);
-            MindTransforms.setLayout(this.board, value, path);
-        }
-    }
-
-    shapeChange(event: Event) {
-        const value = (event.target as HTMLSelectElement).value as MindElementShape;
-        const selectedElement = getSelectedElements(this.board)?.[0];
-        if (selectedElement) {
-            const path = PlaitBoard.findPath(this.board, selectedElement);
-            Transforms.setNode(this.board, { shape: value }, path);
-        }
-    }
-
-    setAbstract(event: Event) {
-        const selectedElements = getSelectedElements(this.board);
-        const ableSetAbstract = selectedElements.every(element => {
-            return canSetAbstract(element);
-        });
-
-        if (ableSetAbstract) {
-            MindTransforms.insertAbstract(this.board, selectedElements);
-        }
-    }
-
-    edgeShapeChange(event: Event) {
-        const value = (event.target as HTMLSelectElement).value as MindElementShape;
-        const selectedElements = getSelectedElements(this.board);
-        if (selectedElements.length) {
-            selectedElements.forEach(element => {
-                const path = PlaitBoard.findPath(this.board, element);
-                Transforms.setNode(this.board, { branchShape: value }, path);
-            });
-        }
-    }
-
-    newMind(event: Event) {
-        BoardTransforms.updatePointerType<MindPointerType>(this.board, MindPointerType.mind);
-    }
-
     plaitBoardInitialized(value: PlaitBoard) {
         this.board = value;
         (this.board as PlaitMindBoard).onAbstractResize = (state: AbstractResizeState) => {};
