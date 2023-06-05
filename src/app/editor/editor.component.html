@@ -6,36 +6,7 @@
     (plaitBoardInitialized)="plaitBoardInitialized($event)"
     (plaitChange)="change($event)"
 >
-    <app-toolbar></app-toolbar>
-    <div class="plait-toolbar island plait-board-attached abstract-setting-toolbar">
-        <button (click)="setAbstract($event)">设置概要</button>
-    </div>
-    <div class="plait-toolbar island plait-board-attached new-mind">
-        <button (click)="newMind($event)">New Mind</button>
-    </div>
-    <div class="plait-toolbar island plait-board-attached edge-shape-setting-toolbar">
-        <select (change)="edgeShapeChange($event)">
-            <option value="bight">bight</option>
-            <option value="polyline">polyline</option>
-        </select>
-    </div>
-    <div class="plait-toolbar island plait-board-attached layout-setting-toolbar">
-        <select (change)="layoutChange($event)">
-            <option value="right">right</option>
-            <option value="left">left</option>
-            <option value="standard" selected>standard</option>
-            <option value="upward">upward</option>
-            <option value="downward">downward</option>
-            <option value="right-bottom-indented">right-bottom-indented</option>
-            <option value="right-top-indented">right-top-indented</option>
-            <option value="left-bottom-indented">left-bottom-indented</option>
-            <option value="left-top-indented">left-top-indented</option>
-        </select>
-    </div>
-    <div class="plait-toolbar island plait-board-attached shape-setting-toolbar">
-        <select (change)="shapeChange($event)">
-            <option value="round-rectangle">round-rectangle</option>
-            <option value="underline">underline</option>
-        </select>
-    </div>
+    <app-zoom-toolbar></app-zoom-toolbar>
+    <app-main-toolbar></app-main-toolbar>
+    <app-setting-panel></app-setting-panel>
 </plait-board>

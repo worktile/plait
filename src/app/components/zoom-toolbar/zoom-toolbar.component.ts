@@ -2,15 +2,15 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, forwardRe
 import { BoardTransforms, OnBoardChange, PlaitBoard, PlaitPointerType, PlaitIslandBaseComponent } from '@plait/core';
 
 @Component({
-    selector: 'app-toolbar',
-    templateUrl: './toolbar.component.html',
-    host: {
-        class: 'plait-toolbar-container'
-    },
+    selector: 'app-zoom-toolbar',
+    templateUrl: './zoom-toolbar.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [{ provide: PlaitIslandBaseComponent, useExisting: forwardRef(() => AppToolbarBaseComponent) }]
+    providers: [{ provide: PlaitIslandBaseComponent, useExisting: forwardRef(() => AppZoomToolbarComponent) }],
+    host: {
+        class: 'app-zoom-toolbar'
+    }
 })
-export class AppToolbarBaseComponent extends PlaitIslandBaseComponent implements OnBoardChange {
+export class AppZoomToolbarComponent extends PlaitIslandBaseComponent implements OnBoardChange {
     constructor(protected cdr: ChangeDetectorRef) {
         super(cdr);
     }
@@ -21,14 +21,6 @@ export class AppToolbarBaseComponent extends PlaitIslandBaseComponent implements
             zoom = this.board.viewport.zoom;
         }
         return Number((zoom * 100).toFixed(0));
-    }
-
-    get isHand() {
-        return this.board?.pointer === PlaitPointerType.hand;
-    }
-
-    activeHand() {
-        BoardTransforms.updatePointerType(this.board, this.isHand ? PlaitPointerType.selection : PlaitPointerType.hand);
     }
 
     adapt() {

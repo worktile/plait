@@ -1,0 +1,23 @@
+.plait-island-container {
+    &.app-setting-panel {
+        right: 24px;
+        top: 100px;
+        max-height: calc(100vh - 200px);
+        flex-direction: column;
+        align-items:start;
+        padding: 16px;
+        display: none;
+        &.visible {
+            display: flex;
+        }
+        .property-item {
+            margin: 8px 0px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            select {
+                height: 24px;
+            }
+        }
+    }
+}

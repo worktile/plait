@@ -1,0 +1,76 @@
+.plait-island-container {
+    position: absolute;
+    display: flex;
+    align-items: center;
+
+    --padding: 1;
+    background-color: var(--iscard-bg-color);
+    box-shadow: var(--shadow-iscard);
+    border-radius: var(--border-radius-sm);
+    padding: calc(var(--padding) * var(--space-factor));
+    transition: box-shadow 0.5s ease-in-out;
+    box-shadow: 0 0 16px #00000014;
+    border: 1px solid #eee;
+
+    .divider {
+        height: 16px;
+        border-left: 1px solid #ddd;
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+
+    .action-item {
+        color: #999;
+        padding: 8px;
+        background-repeat: no-repeat;
+        fill: currentColor;
+        font-size: 16px;
+        line-height: 0;
+        display: inline-block;
+        border-radius: 4px;
+        cursor: pointer;
+        svg {
+            background-repeat: no-repeat;
+            /* 通过设置 font-size 来改变图标大小 */
+            width: 1em;
+            height: 1em;
+            /* 通过设置 color 来改变 SVG 的颜色/fill */
+            fill: currentColor;
+            /* path 和 stroke 溢出 viewBox 部分在 IE 下会显示 normalize.css 中也包含这行 */
+            overflow: hidden;
+            transition: transform 200ms;
+        }
+        margin-right: 8px;
+        &:last-child {
+            margin-right: 0;
+        }
+        &.non-margin {
+            margin-right: 0;
+        }
+        &:hover,
+        &.active {
+            color: rgb(102, 152, 255);
+            background: rgba(102, 152, 255, 0.1);
+        }
+    }
+
+    .action-item:hover,
+    &.app-zoom-toolbar {
+        top: 24px;
+        right: 24px;
+        .zoom-value {
+            width: 54px;
+            font-size: 14px;
+            color: #666;
+            font-weight: 400;
+            text-align: center;
+            cursor: pointer;
+        }
+    }
+
+    &.app-main-toolbar {
+        top: 24px;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+}
