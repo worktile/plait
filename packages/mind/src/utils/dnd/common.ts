@@ -6,29 +6,22 @@ import { getRootLayout } from '../layout';
 
 export const IS_DRAGGING = new WeakMap<PlaitBoard, boolean>();
 
-export const addActiveOnDragOrigin = (activeElement: MindElement, isOrigin = true) => {
+export const addActiveOnDragOrigin = (activeElement: MindElement) => {
     const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
-    if (isOrigin) {
-        activeComponent.g.classList.add('dragging-origin');
-    } else {
-        activeComponent.g.classList.add('dragging-child');
-    }
+    activeComponent.g.classList.add('dragging-node');
+
     !activeElement.isCollapsed &&
         activeElement.children.forEach(child => {
-            addActiveOnDragOrigin(child, false);
+            addActiveOnDragOrigin(child);
         });
 };
 
-export const removeActiveOnDragOrigin = (activeElement: MindElement, isOrigin = true) => {
+export const removeActiveOnDragOrigin = (activeElement: MindElement) => {
     const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
-    if (isOrigin) {
-        activeComponent.g.classList.remove('dragging-origin');
-    } else {
-        activeComponent.g.classList.remove('dragging-child');
-    }
+    activeComponent.g.classList.remove('dragging-node');
     !activeElement.isCollapsed &&
         activeElement.children.forEach(child => {
-            removeActiveOnDragOrigin(child, false);
+            removeActiveOnDragOrigin(child);
         });
 };
 
@@ -47,7 +40,8 @@ export const hasPreviousOrNextOfDropPath = (parent: MindElement, target: MindEle
     if (PlaitMind.isMind(parent) && isStandardLayout(getRootLayout(parent))) {
         const dropStandardRightBottom =
             target === parent.children[parent.rightNodeCount! - 1] && dropPath[dropPath.length - 1] === parent.rightNodeCount;
-        const dropStandardLeftTop = target === parent.children[parent.rightNodeCount!] && dropPath[dropPath.length - 1] === parent.rightNodeCount;
+        const dropStandardLeftTop =
+            target === parent.children[parent.rightNodeCount!] && dropPath[dropPath.length - 1] === parent.rightNodeCount;
         if (dropStandardRightBottom) {
             hasPreviousNode = true;
             hasNextNode = false;
