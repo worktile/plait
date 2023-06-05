@@ -4,7 +4,7 @@ import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../../constants';
 import { LayoutDirection, MindElement, MindNode } from '../../interfaces';
 import { MindNodeComponent } from '../../node.component';
 import { getRectangleByNode } from '../position/node';
-import { PlaitBoard, Point, drawRoundRectangle, createG, Path, PlaitNode } from '@plait/core';
+import { PlaitBoard, Point, drawRoundRectangle, createG, Path, PlaitNode, PlaitElement } from '@plait/core';
 import { MindQueries } from '../../queries';
 import { isHorizontalLayout, isIndentedLayout, isTopLayout, MindLayoutType } from '@plait/layouts';
 import { getTopicRectangleByNode } from '../position/topic';
@@ -14,7 +14,8 @@ import { PlaitMindBoard } from '../../plugins/with-mind.board';
 import { hasPreviousOrNextOfDropPath } from '../dnd/common';
 import { drawLink } from './node-link/draw-link';
 
-export const drawFakeDragNode = (board: PlaitBoard, activeComponent: MindNodeComponent, offsetX: number, offsetY: number) => {
+export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offsetX: number, offsetY: number) => {
+    const activeComponent = PlaitElement.getComponent(element) as MindNodeComponent;
     const dragFakeNodeG = createG();
     dragFakeNodeG.classList.add('dragging', 'fake-node', 'plait-board-attached');
 

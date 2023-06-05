@@ -3,7 +3,6 @@ import {
     IS_TEXT_EDITABLE,
     Path,
     PlaitBoard,
-    PlaitElement,
     Point,
     toPoint,
     transformPoint,
@@ -16,7 +15,7 @@ import {
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { MindElement, PlaitMind } from '../interfaces/element';
 import { DetectResult } from '../interfaces/node';
-import { MindNodeComponent } from '../node.component';
+
 import {
     deleteElementHandleAbstract,
     deleteElementsHandleRightNodeCount,
@@ -115,13 +114,13 @@ export const withDnd = (board: PlaitBoard) => {
             const offsetY = endPoint[1] - startPoint[1];
             dragFakeNodeG?.remove();
             dragFakeNodeG = createG();
-            [...activeElements, ...correspondingElements].forEach(element => {
+            const selectedElement = getSelectedElements(board) as MindElement[];
+            [...selectedElement, ...correspondingElements].forEach(element => {
                 addActiveOnDragOrigin(element);
-                if (activeElements.includes(element)) {
-                    const activeComponent = PlaitElement.getComponent(element) as MindNodeComponent;
-                    const nodeG = drawFakeDragNode(board, activeComponent, offsetX, offsetY);
-                    dragFakeNodeG?.appendChild(nodeG);
-                }
+            });
+            selectedElement.forEach(element => {
+                const nodeG = drawFakeDragNode(board, element, offsetX, offsetY);
+                dragFakeNodeG?.appendChild(nodeG);
             });
 
             PlaitBoard.getHost(board).appendChild(dragFakeNodeG);
@@ -134,7 +133,9 @@ export const withDnd = (board: PlaitBoard) => {
         if (!board.options.readonly && activeElements?.length) {
             const elements = [...activeElements, ...correspondingElements];
             if (isDragging(board)) {
-                elements.forEach(element => removeActiveOnDragOrigin(element));
+                [...activeElements, ...correspondingElements].forEach(element => {
+                    removeActiveOnDragOrigin(element);
+                });
             }
             if (dropTarget) {
                 const targetPathRef = board.pathRef(targetPath);
