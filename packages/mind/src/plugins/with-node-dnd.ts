@@ -160,6 +160,10 @@ export const withDnd = (board: PlaitBoard) => {
                     const targetHasCorrespondAbstract =
                         correspondingAbstract && correspondingAbstract.end !== targetPath[targetPath.length - 1] - 1;
                     if (targetHasCorrespondAbstract) {
+                        const adjustedNode = abstractRefs.map(ref => {
+                            return adjustAbstractToNode(ref.abstract);
+                        });
+                        normalElements.push(...adjustedNode);
                         abstractRefs = [];
                     }
                 }
@@ -207,7 +211,7 @@ export const withDnd = (board: PlaitBoard) => {
 
                 let setActiveElements: MindElement[] = [];
                 depthFirstRecursion((board as unknown) as MindElement, node => {
-                    const isSelected = activeElements.some(element => element.id === node.id);
+                    const isSelected = elements.some(element => element.id === node.id);
                     if (isSelected) {
                         setActiveElements.push(node);
                     }

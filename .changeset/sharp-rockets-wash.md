@@ -2,4 +2,4 @@
 '@plait/mind': minor
 ---
 
-delete abstract when drop in correspond abstract
+adjust abstract to node when drop in correspond abstract
