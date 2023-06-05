@@ -25,6 +25,7 @@ import { PlaitRichtextComponent, drawRichtext, updateForeignObject } from '@plai
 import { getEdgeTextBackgroundRect, getEdgeTextRect, getEdgeTextXYPosition } from './utils/edge/text';
 import { FlowEdge } from './interfaces/edge';
 import { FlowBaseData } from './interfaces/element';
+import { Element, Text } from 'slate';
 
 @Component({
     selector: 'plait-flow-edge',
@@ -95,11 +96,14 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     drawElement(element: FlowEdge = this.element, active = false) {
         this.drawEdge(element, active);
-        if (element.data?.text) {
-            this.textRect = getEdgeTextRect(this.board, element);
-            this.ngZone.run(() => {
-                this.drawRichtext(element, this.textRect!, active);
-            });
+        if (element.data?.text && Element.isElement(element.data.text)) {
+            const text = (element.data.text.children[0] as Text).text;
+            if (text) {
+                this.textRect = getEdgeTextRect(this.board, element);
+                this.ngZone.run(() => {
+                    this.drawRichtext(element, this.textRect!, active);
+                });
+            }
         }
         this.drawMarkers(element, active);
         this.drawHandles(element, active);
