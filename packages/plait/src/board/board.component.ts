@@ -118,6 +118,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         return PlaitBoard.isFocus(this.board);
     }
 
+    @HostBinding('class.disabled-scroll')
+    get disabledScrollOnNonFocus() {
+        return this.board.options.disabledScrollOnNonFocus && !PlaitBoard.isFocus(this.board);
+    }
+
     get nativeElement(): HTMLElement {
         return this.elementRef.nativeElement;
     }
@@ -327,7 +332,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                             setIsFromViewportChange(this.board, false);
                             return false;
                         }
-                        return this.isFocused;
+                        return true;
                     })
                 )
                 .subscribe((event: Event) => {

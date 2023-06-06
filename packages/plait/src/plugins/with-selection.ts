@@ -45,7 +45,6 @@ export function withSelection(board: PlaitBoard) {
         const range = { anchor: point, focus: point };
         if (
             PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
-            PlaitBoard.isFocus(board) &&
             getHitElements(board, { ranges: [range] }).length === 0 &&
             options.isMultiple
         ) {

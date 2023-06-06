@@ -28,7 +28,8 @@ export class BasicBoardEditorComponent implements OnInit {
 
     options: PlaitBoardOptions = {
         readonly: false,
-        hideScrollbar: false
+        hideScrollbar: false,
+        disabledScrollOnNonFocus: false
     }
 
     viewport!: Viewport;

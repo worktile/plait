@@ -23,7 +23,8 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         selection: null,
         options: options || {
             readonly: false,
-            hideScrollbar: false
+            hideScrollbar: false,
+            disabledScrollOnNonFocus: false
         },
         pointer: options?.readonly ? PlaitPointerType.hand : PlaitPointerType.selection,
         undo: () => {},

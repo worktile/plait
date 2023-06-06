@@ -82,7 +82,7 @@ export const withMind = (board: PlaitBoard) => {
     };
 
     board.isHitSelection = (element, range: Range) => {
-        if (MindElement.isMindElement(board, element) && board.selection) {
+        if (MindElement.isMindElement(board, element)) {
             const client = getRectangleByNode(MindElement.getNode(element));
             const isHit = RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
             if (isHit && MindElement.hasEmojis(element) && Selection.isCollapsed(range) && isHitEmojis(board, element, range.anchor)) {

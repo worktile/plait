@@ -8,7 +8,7 @@ import { createBoard } from '../../plugins/create-board';
 export const createTestingBoard = (
     plugins: PlaitPlugin[],
     children: PlaitElement[],
-    options: PlaitBoardOptions = { readonly: false, hideScrollbar: true }
+    options: PlaitBoardOptions = { readonly: false, hideScrollbar: true, disabledScrollOnNonFocus: false }
 ) => {
     let board = createBoard(children, options);
     plugins.forEach(plugin => {

@@ -73,6 +73,7 @@ export interface PlaitBoardChangeEvent {
 export interface PlaitBoardOptions {
     readonly: boolean;
     hideScrollbar: boolean;
+    disabledScrollOnNonFocus: boolean;
 }
 
 export interface PlaitBoardMove {
