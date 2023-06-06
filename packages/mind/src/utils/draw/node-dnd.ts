@@ -13,6 +13,7 @@ import { getLayoutDirection, getPointByPlacement, moveXOfPoint, moveYOfPoint, tr
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
 import { hasPreviousOrNextOfDropPath } from '../dnd/common';
 import { drawLink } from './node-link/draw-link';
+import { getEmojiForeignRectangle } from '../position/emoji';
 
 export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offsetX: number, offsetY: number) => {
     const activeComponent = PlaitElement.getComponent(element) as MindNodeComponent;
@@ -33,6 +34,20 @@ export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offset
 
     dragFakeNodeG?.append(fakeNodeG);
     dragFakeNodeG?.append(richtextG);
+
+    // draw emojis
+    if (MindElement.hasEmojis(element)) {
+        const fakeEmojisG = (activeComponent.emojisDrawer.g as SVGGElement).cloneNode(true) as SVGGElement;
+        const foreignRectangle = getEmojiForeignRectangle(board as PlaitMindBoard, element);
+        updateForeignObject(
+            fakeEmojisG,
+            foreignRectangle.width,
+            foreignRectangle.height,
+            foreignRectangle.x + offsetX,
+            foreignRectangle.y + offsetY
+        );
+        dragFakeNodeG?.append(fakeEmojisG);
+    }
     return dragFakeNodeG;
 };
 
