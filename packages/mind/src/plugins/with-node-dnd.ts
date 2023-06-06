@@ -24,11 +24,10 @@ import {
     getOverallAbstracts,
     getValidAbstractRefs,
     insertElementHandleAbstract,
-    insertElementHandleRightNodeCount,
-    isInRightBranchOfStandardLayout
+    insertElementHandleRightNodeCount
 } from '../utils';
 import { isHitMindElement } from '../utils/position/node';
-import { addActiveOnDragOrigin, isDragging, removeActiveOnDragOrigin, setIsDragging } from '../utils/dnd/common';
+import { addActiveOnDragOrigin, isDragging, isDropStandardRight, removeActiveOnDragOrigin, setIsDragging } from '../utils/dnd/common';
 import { detectDropTarget, getPathByDropTarget } from '../utils/dnd/detector';
 import { drawFakeDragNode, drawFakeDropNode } from '../utils/draw/node-dnd';
 import { MindTransforms } from '../transforms';
@@ -107,7 +106,7 @@ export const withDnd = (board: PlaitBoard) => {
             if (dropTarget?.target) {
                 targetPath = getPathByDropTarget(board, dropTarget);
 
-                fakeDropNodeG = drawFakeDropNode(board, dropTarget.target, targetPath);
+                fakeDropNodeG = drawFakeDropNode(board, dropTarget, targetPath);
                 PlaitBoard.getHost(board).appendChild(fakeDropNodeG);
             }
 
@@ -174,15 +173,13 @@ export const withDnd = (board: PlaitBoard) => {
                 MindTransforms.setAbstractsByRefs(board, effectedAbstracts);
 
                 let refs = deleteElementsHandleRightNodeCount(board, firstLevelElements);
-                const shouldChangeRoot =
-                    isInRightBranchOfStandardLayout(dropTarget?.target) &&
-                    targetElementPathRef.current &&
-                    (Path.isSibling(targetPath, targetElementPathRef.current) || Path.equals(targetPath, targetElementPathRef.current));
+                const parent = PlaitNode.get(board, Path.parent(targetPath)) as MindElement;
+                const shouldChangeRoot = isDropStandardRight(parent, dropTarget);
                 if (shouldChangeRoot && targetElementPathRef.current) {
                     refs = insertElementHandleRightNodeCount(board, targetElementPathRef.current.slice(0, 1), normalElements.length, refs);
                 }
-                MindTransforms.setRightNodeCountByRefs(board, refs);
 
+                MindTransforms.setRightNodeCountByRefs(board, refs);
                 MindTransforms.removeElements(board, firstLevelElements);
 
                 let insertPath = targetPathRef.current;

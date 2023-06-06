@@ -3,6 +3,7 @@ import { MindElement, PlaitMind } from '../../interfaces/element';
 import { MindNodeComponent } from '../../node.component';
 import { Path, PlaitBoard, PlaitElement } from '@plait/core';
 import { getRootLayout } from '../layout';
+import { DetectResult } from '../../interfaces/node';
 
 export const IS_DRAGGING = new WeakMap<PlaitBoard, boolean>();
 
@@ -33,24 +34,30 @@ export const setIsDragging = (board: PlaitBoard, state: boolean) => {
     IS_DRAGGING.set(board, state);
 };
 
-export const hasPreviousOrNextOfDropPath = (parent: MindElement, target: MindElement, dropPath: Path) => {
-    const children = getNonAbstractChildren(parent);
-    let hasPreviousNode = dropPath[dropPath.length - 1] !== 0;
-    let hasNextNode = dropPath[dropPath.length - 1] !== (children?.length || 0);
+export const hasPreviousOrNextOfDropPath = (
+    parent: MindElement,
+    dropTarget: {
+        target: MindElement;
+        detectResult: DetectResult;
+    },
+    dropPath: Path
+) => {
+    let children = getNonAbstractChildren(parent);
+
     if (PlaitMind.isMind(parent) && isStandardLayout(getRootLayout(parent))) {
-        const dropStandardRightBottom =
-            target === parent.children[parent.rightNodeCount! - 1] && dropPath[dropPath.length - 1] === parent.rightNodeCount;
-        const dropStandardLeftTop =
-            target === parent.children[parent.rightNodeCount!] && dropPath[dropPath.length - 1] === parent.rightNodeCount;
-        if (dropStandardRightBottom) {
-            hasPreviousNode = true;
-            hasNextNode = false;
+        const isDropRight = isDropStandardRight(parent, dropTarget);
+
+        if (isDropRight) {
+            children = children.slice(0, parent.rightNodeCount!);
         }
-        if (dropStandardLeftTop) {
-            hasPreviousNode = false;
-            hasNextNode = true;
+        if (!isDropRight) {
+            children = children.slice(parent.rightNodeCount!, children.length);
+            dropPath = [...dropPath, dropPath[dropPath.length - 1] - parent.rightNodeCount!];
         }
     }
+
+    let hasPreviousNode = dropPath[dropPath.length - 1] !== 0;
+    let hasNextNode = dropPath[dropPath.length - 1] !== (children?.length || 0);
 
     if (parent.isCollapsed) {
         hasNextNode = false;
@@ -61,4 +68,22 @@ export const hasPreviousOrNextOfDropPath = (parent: MindElement, target: MindEle
         hasPreviousNode,
         hasNextNode
     };
+};
+
+export const isDropStandardRight = (
+    parent: MindElement,
+    dropTarget: {
+        target: MindElement;
+        detectResult: DetectResult;
+    }
+) => {
+    const target = dropTarget.target;
+
+    return (
+        (PlaitMind.isMind(parent) &&
+            isStandardLayout(getRootLayout(parent)) &&
+            parent.children.indexOf(target) !== -1 &&
+            parent.children.indexOf(target) < parent.rightNodeCount!) ||
+        (PlaitMind.isMind(target) && isStandardLayout(getRootLayout(target)) && dropTarget.detectResult === 'right')
+    );
 };
