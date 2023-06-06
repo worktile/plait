@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, idCreator, isNullOrUndefined } from '@plait/core';
 import { ROOT_DEFAULT_HEIGHT, TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { MindLayoutType } from '@plait/layouts';
-import { MindElement, MindElementShape } from '../../interfaces/element';
+import { BranchShape, MindElement, MindElementShape } from '../../interfaces/element';
 import { adjustNodeToRoot } from './adjust-node';
 
 export const createEmptyMind = (board: PlaitBoard, point: Point) => {
@@ -24,20 +24,7 @@ export const createDefaultMind = (point: Point, rightNodeCount: number, layout: 
     return root;
 };
 
-export const createMindElement = (
-    text: string,
-    width: number,
-    height: number,
-    options: {
-        fill?: string;
-        strokeColor?: string;
-        strokeWidth?: number;
-        shape?: MindElementShape;
-        layout?: MindLayoutType;
-        branchColor?: string;
-        branchWidth?: number;
-    }
-) => {
+export const createMindElement = (text: string, width: number, height: number, options: InheritAttribute) => {
     const newElement: MindElement = {
         id: idCreator(),
         data: {
@@ -51,26 +38,24 @@ export const createMindElement = (
         strokeWidth: options.strokeWidth,
         shape: options.shape
     };
-    if (options.fill) {
-        newElement.fill = options.fill;
+
+    let key: keyof typeof options;
+    for (key in options) {
+        if (!isNullOrUndefined(options[key])) {
+            (newElement as any)[key] = options[key];
+        }
     }
-    if (options.strokeColor) {
-        newElement.strokeColor = options.strokeColor;
-    }
-    if (!isNullOrUndefined(options.strokeWidth)) {
-        newElement.strokeWidth = options.strokeWidth;
-    }
-    if (options.shape) {
-        newElement.shape = options.shape;
-    }
-    if (options.layout) {
-        newElement.layout = options.layout;
-    }
-    if (options.branchColor) {
-        newElement.branchColor = options.branchColor;
-    }
-    if (!isNullOrUndefined(options.branchWidth)) {
-        newElement.branchWidth = options.branchWidth;
-    }
+
     return newElement;
 };
+
+export interface InheritAttribute {
+    fill?: string;
+    strokeColor?: string;
+    strokeWidth?: number;
+    shape?: MindElementShape;
+    layout?: MindLayoutType;
+    branchColor?: string;
+    branchWidth?: number;
+    branchShape?: BranchShape;
+}

@@ -1,13 +1,10 @@
-import { MindLayoutType } from '@plait/layouts';
-import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, PlaitNode, Transforms } from '@plait/core';
+import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, Transforms } from '@plait/core';
 import { Node } from 'slate';
 import { NODE_MIN_WIDTH } from '../constants/node-rule';
-import { MindElementShape, MindNode } from '../interfaces';
 import { MindElement } from '../interfaces/element';
-import { getRootLayout } from './layout';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node/common';
-import { createMindElement } from './node/create-node';
+import { createMindElement, InheritAttribute } from './node/create-node';
 
 export const getChildrenCount = (element: MindElement) => {
     const count: number = element.children.reduce((p: number, c: MindElement) => {
@@ -73,19 +70,17 @@ export const extractNodesText = (node: MindElement) => {
 
 // layoutLevel 用来表示插入兄弟节点还是子节点
 export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, path: Path) => {
-    let fill,
-        strokeColor,
-        strokeWidth,
-        shape = MindElementShape.roundRectangle;
+    const inheritAttributeKeys: (keyof InheritAttribute)[] = Object.keys({}) as (keyof InheritAttribute)[];
+    const newNode: InheritAttribute = {};
     if (!inheritNode.isRoot) {
-        fill = inheritNode.fill;
-        strokeColor = inheritNode.strokeColor;
-        strokeWidth = inheritNode.strokeWidth;
+        inheritAttributeKeys.forEach(attr => {
+            (newNode as any)[attr] = inheritNode[attr];
+        });
+
+        delete newNode.layout;
     }
 
-    shape = inheritNode.shape as MindElementShape;
-
-    const newElement = createMindElement('', NODE_MIN_WIDTH, TEXT_DEFAULT_HEIGHT, { fill, strokeColor, strokeWidth, shape });
+    const newElement = createMindElement('', NODE_MIN_WIDTH, TEXT_DEFAULT_HEIGHT, newNode);
 
     Transforms.insertNode(board, newElement, path);
     clearSelectedElement(board);
