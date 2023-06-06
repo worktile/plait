@@ -431,7 +431,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         // interactive
         fromEvent(collapseG, 'mouseup')
             .pipe(
-                filter(() => !this.handActive || PlaitBoard.isReadonly(this.board)),
+                filter(() => !this.handActive || !!PlaitBoard.isReadonly(this.board)),
                 take(1)
             )
             .subscribe(() => {

@@ -1,3 +1,4 @@
+import { ThemeColorMode } from '../interfaces/theme';
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { PlaitPointerType } from '../interfaces/pointer';
@@ -7,6 +8,7 @@ import { distanceBetweenPointAndRectangle } from '../utils/math';
 import { clampZoomLevel, clearViewportOrigination, getViewBox, getViewportContainerRect, getViewportOrigination } from '../utils/viewport';
 import { BOARD_TO_COMPONENT } from '../utils/weak-maps';
 import { setViewport } from './viewport';
+import { depthFirstRecursion } from '../utils';
 
 function updateViewport(board: PlaitBoard, origination: Point, zoom?: number) {
     zoom = zoom ?? board.viewport.zoom;
@@ -45,8 +47,6 @@ function updateZoom(board: PlaitBoard, newZoom: number, isCenter = true) {
     updateViewport(board, newOrigination, newZoom);
 }
 
-
-
 function fitViewport(board: PlaitBoard) {
     const nativeElementRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
     const viewportContainerRect = getViewportContainerRect(board);
@@ -71,6 +71,23 @@ function fitViewport(board: PlaitBoard) {
         centerY - viewportContainerRect.height / 2 / newZoom
     ] as Point;
     updateViewport(board, newOrigination, newZoom);
+}
+
+/**
+ * apply theme to every element (remove element custom properties)
+ * invoke applyThemeColor
+ */
+function updateThemeColor<T = ThemeColorMode>(board: PlaitBoard, mode: T) {
+    // depthFirstRecursion() applyTheme
+    // applyThemeColor
+}
+
+/**
+ * update plaitTheme property and update board display
+ * just invoke this method on collaboration case
+ */
+function applyThemeColor<T = ThemeColorMode>(board: PlaitBoard, mode: T) {
+    
 }
 
 export const BoardTransforms = {

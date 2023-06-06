@@ -4,7 +4,6 @@ import { Point } from './point';
 
 export interface BaseViewport {
     [key: string]: any;
-    viewBackgroundColor: string;
     zoom: number;
     origination?: Point;
 }

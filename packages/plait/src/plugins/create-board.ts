@@ -7,14 +7,15 @@ import { Transforms } from '../transforms';
 import { FLUSHING, PATH_REFS } from '../utils/weak-maps';
 import { PathRef, PathRefOptions } from '../interfaces/path-ref';
 import { Path } from '../interfaces/path';
+import { ThemeColorMode } from '../interfaces/theme';
 
 export function createBoard(children: PlaitElement[], options?: PlaitBoardOptions): PlaitBoard {
     const board: PlaitBoard = {
         viewport: {
-            zoom: 1,
-            viewBackgroundColor: '#000'
+            zoom: 1
         },
         children,
+        theme: { themeColorMode: ThemeColorMode.default },
         operations: [],
         history: {
             redos: [],

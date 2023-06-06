@@ -60,6 +60,7 @@ import { hasInputOrTextareaTarget } from '../utils/dom/common';
 import { withOptions } from '../plugins/with-options';
 import { PlaitIslandBaseComponent, hasOnBoardChange } from '../core/island/island-base.component';
 import { BoardTransforms } from '../transforms/board';
+import { PlaitTheme } from '../interfaces/theme';
 
 const ElementHostClass = 'element-host';
 
@@ -94,6 +95,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @Input() plaitPlugins: PlaitPlugin[] = [];
 
     @Input() plaitOptions?: PlaitBoardOptions;
+
+    @Input() plaitTheme?: PlaitTheme;
 
     @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
 
@@ -213,6 +216,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
         if (this.plaitViewport) {
             this.board.viewport = this.plaitViewport;
+        }
+
+        if (this.plaitTheme) {
+            this.board.theme = this.plaitTheme;
         }
     }
 

@@ -25,10 +25,12 @@ import { getRectangleByElements } from '../utils/element';
 import { PathRef, PathRefOptions } from './path-ref';
 import { Ancestor, PlaitNode } from './node';
 import { Path } from './path';
+import { PlaitTheme, ThemeColor } from './theme';
 
 export interface PlaitBoard {
     viewport: Viewport;
     children: PlaitElement[];
+    theme: PlaitTheme;
     operations: PlaitOperation[];
     // record pointer selection or drag selection
     // it will be dirty when board viewport change
@@ -71,9 +73,10 @@ export interface PlaitBoardChangeEvent {
 }
 
 export interface PlaitBoardOptions {
-    readonly: boolean;
-    hideScrollbar: boolean;
-    disabledScrollOnNonFocus: boolean;
+    readonly?: boolean;
+    hideScrollbar?: boolean;
+    disabledScrollOnNonFocus?: boolean;
+    themeColors?: ThemeColor[]
 }
 
 export interface PlaitBoardMove {

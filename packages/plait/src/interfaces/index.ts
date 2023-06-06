@@ -13,3 +13,4 @@ export * from './selection';
 export * from './viewport';
 export * from './history';
 export * from './plugin-key';
+export * from './theme';
