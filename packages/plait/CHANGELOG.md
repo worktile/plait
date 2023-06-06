@@ -1,5 +1,16 @@
 # plait
 
+## 0.5.0
+
+### Patch Changes
+
+-   [`e240a98`](https://github.com/worktile/plait/commit/e240a98accd4d3eddd82318c9f067a342044993f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - just set moving point when mouse move on host
+
+*   [`811e36f`](https://github.com/worktile/plait/commit/811e36f9d46f1e01d972453e0ad17b9da027fa89) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Add the `disabledScrollOnNonFocus` option to control whether scrolling is allowed when the board is not focused.
+
+-   [`d40e5b0`](https://github.com/worktile/plait/commit/d40e5b08624b5d289763eb24bf7bbc4c7fb58058) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support isDisabledSelect option within withSelection
+    set isDisabledSelect on mouse down emoji and create mind
+
 ## 0.4.0
 
 ### Minor Changes

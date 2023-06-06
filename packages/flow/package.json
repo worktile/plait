@@ -1,6 +1,6 @@
 {
   "name": "@plait/flow",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "peerDependencies": {
     "@angular/common": "^15.2.2",
     "@angular/core": "^15.2.2"

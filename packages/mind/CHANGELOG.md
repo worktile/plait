@@ -1,5 +1,30 @@
 # mind
 
+## 0.5.0
+
+### Minor Changes
+
+-   [#404](https://github.com/worktile/plait/pull/404) [`b465ed2`](https://github.com/worktile/plait/commit/b465ed2e2db585472913c46c878120176fff5bee) Thanks [@WBbug](https://github.com/WBbug)! - fit standard dnd
+
+*   [#399](https://github.com/worktile/plait/pull/399) [`30431d0`](https://github.com/worktile/plait/commit/30431d0a97cf112b6447755a616595fadf4e8567) Thanks [@WBbug](https://github.com/WBbug)! - change get branch color logic when draw link
+
+-   [#405](https://github.com/worktile/plait/pull/405) [`6895755`](https://github.com/worktile/plait/commit/6895755df95aacb46488a7f34124150e5baa67d1) Thanks [@WBbug](https://github.com/WBbug)! - fix emoji doesn't show when drag node
+
+*   [#401](https://github.com/worktile/plait/pull/401) [`fb4a2d3`](https://github.com/worktile/plait/commit/fb4a2d35166b9d21e6d90cfdc519bb804bc262a9) Thanks [@WBbug](https://github.com/WBbug)! - only draw select node when dragging
+
+-   [#400](https://github.com/worktile/plait/pull/400) [`447c97e`](https://github.com/worktile/plait/commit/447c97e61355602dd4cecb39acb8a1e2460adbf7) Thanks [@WBbug](https://github.com/WBbug)! - adjust abstract to node when drop in correspond abstract
+
+### Patch Changes
+
+-   [`5948756`](https://github.com/worktile/plait/commit/59487560f9ca5124078bfda115fca52b517559f2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent mouse down action when pointer is mind
+
+*   [`811e36f`](https://github.com/worktile/plait/commit/811e36f9d46f1e01d972453e0ad17b9da027fa89) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Add the `disabledScrollOnNonFocus` option to control whether scrolling is allowed when the board is not focused.
+
+-   [`fcf3fee`](https://github.com/worktile/plait/commit/fcf3feee6f981c815db6eeca733f45bd5670621d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - solve readonly can not collapse node issue
+
+*   [`d40e5b0`](https://github.com/worktile/plait/commit/d40e5b08624b5d289763eb24bf7bbc4c7fb58058) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support isDisabledSelect option within withSelection
+    set isDisabledSelect on mouse down emoji and create mind
+
 ## 0.4.0
 
 ### Minor Changes

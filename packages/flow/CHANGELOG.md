@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.2.4
+
+### Patch Changes
+
+-   [#403](https://github.com/worktile/plait/pull/403) [`5c14d03`](https://github.com/worktile/plait/commit/5c14d030b6a99143a07746b68d4d096c7a3721a9) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - prevent draw richtext when text is null
+
 ## 0.2.3
 
 ### Patch Changes
