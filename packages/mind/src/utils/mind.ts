@@ -5,6 +5,7 @@ import { MindElement } from '../interfaces/element';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node/common';
 import { createMindElement, InheritAttribute } from './node/create-node';
+import { MindNode } from '../interfaces/node';
 
 export const getChildrenCount = (element: MindElement) => {
     const count: number = element.children.reduce((p: number, c: MindElement) => {
