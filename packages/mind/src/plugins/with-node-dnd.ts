@@ -71,7 +71,7 @@ export const withDnd = (board: PlaitBoard) => {
                     activeElements = [element];
                     startPoint = point;
                 } else if (isMultiple) {
-                    activeElements = getFirstLevelElement(selectedElements as MindElement[]);
+                    activeElements = selectedElements as MindElement[];
                     startPoint = point;
                 }
             },
@@ -115,11 +115,10 @@ export const withDnd = (board: PlaitBoard) => {
             const offsetY = endPoint[1] - startPoint[1];
             dragFakeNodeG?.remove();
             dragFakeNodeG = createG();
-            const selectedElement = getSelectedElements(board) as MindElement[];
-            [...selectedElement, ...correspondingElements].forEach(element => {
+            [...activeElements, ...correspondingElements].forEach(element => {
                 addActiveOnDragOrigin(element);
             });
-            selectedElement.forEach(element => {
+            activeElements.forEach(element => {
                 const nodeG = drawFakeDragNode(board, element, offsetX, offsetY);
                 dragFakeNodeG?.appendChild(nodeG);
             });
@@ -131,18 +130,19 @@ export const withDnd = (board: PlaitBoard) => {
     };
 
     board.globalMouseup = (event: MouseEvent) => {
-        if (!board.options.readonly && activeElements?.length) {
-            const elements = [...activeElements, ...correspondingElements];
+        const firstLevelElements = getFirstLevelElement(activeElements);
+        if (!board.options.readonly && firstLevelElements.length) {
+            firstLevelElements.push(...correspondingElements);
             if (isDragging(board)) {
-                [...activeElements, ...correspondingElements].forEach(element => {
+                firstLevelElements.forEach(element => {
                     removeActiveOnDragOrigin(element);
                 });
             }
             if (dropTarget) {
                 const targetPathRef = board.pathRef(targetPath);
                 const targetElementPathRef = board.pathRef(PlaitBoard.findPath(board, dropTarget.target));
-                let abstractRefs = getValidAbstractRefs(board, elements);
-                const normalElements = elements
+                let abstractRefs = getValidAbstractRefs(board, firstLevelElements);
+                const normalElements = firstLevelElements
                     .filter(element => !abstractRefs.some(refs => refs.abstract === element))
                     .map(element => {
                         if (AbstractNode.isAbstract(element)) {
@@ -169,11 +169,11 @@ export const withDnd = (board: PlaitBoard) => {
                     }
                 }
 
-                const effectedAbstracts = deleteElementHandleAbstract(board, elements);
+                const effectedAbstracts = deleteElementHandleAbstract(board, firstLevelElements);
                 insertElementHandleAbstract(board, targetPath, normalElements.length, false, effectedAbstracts);
                 MindTransforms.setAbstractsByRefs(board, effectedAbstracts);
 
-                let refs = deleteElementsHandleRightNodeCount(board, elements);
+                let refs = deleteElementsHandleRightNodeCount(board, firstLevelElements);
                 const shouldChangeRoot =
                     isInRightBranchOfStandardLayout(dropTarget?.target) &&
                     targetElementPathRef.current &&
@@ -183,7 +183,7 @@ export const withDnd = (board: PlaitBoard) => {
                 }
                 MindTransforms.setRightNodeCountByRefs(board, refs);
 
-                MindTransforms.removeElements(board, elements);
+                MindTransforms.removeElements(board, firstLevelElements);
 
                 let insertPath = targetPathRef.current;
                 const parentPath = Path.parent(targetPathRef.current || targetPath);
@@ -212,7 +212,7 @@ export const withDnd = (board: PlaitBoard) => {
 
                 let setActiveElements: MindElement[] = [];
                 depthFirstRecursion((board as unknown) as MindElement, node => {
-                    const isSelected = elements.some(element => element.id === node.id);
+                    const isSelected = activeElements.some(element => element.id === node.id);
                     if (isSelected) {
                         setActiveElements.push(node);
                     }

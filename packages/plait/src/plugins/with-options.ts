@@ -6,7 +6,7 @@ export interface PlaitPluginOptions {
 
 export interface PlaitOptionsBoard extends PlaitBoard {
     getPluginOptions: <K = PlaitPluginOptions>(key: string) => K;
-    setPluginOptions: <K = PlaitPluginOptions>(key: string, value: K) => void;
+    setPluginOptions: <K = PlaitPluginOptions>(key: string, value: Partial<K>) => void;
 }
 
 export const withOptions = (board: PlaitBoard) => {

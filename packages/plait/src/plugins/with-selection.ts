@@ -15,6 +15,7 @@ import { PlaitPluginKey } from '../interfaces/plugin-key';
 
 export interface WithPluginOptions extends PlaitPluginOptions {
     isMultiple: boolean;
+    isDisabledSelect: boolean;
 }
 
 export function withSelection(board: PlaitBoard) {
@@ -46,7 +47,8 @@ export function withSelection(board: PlaitBoard) {
         if (
             PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
             getHitElements(board, { ranges: [range] }).length === 0 &&
-            options.isMultiple
+            options.isMultiple &&
+            !options.isDisabledSelect
         ) {
             start = point;
         }
@@ -106,15 +108,14 @@ export function withSelection(board: PlaitBoard) {
     };
 
     board.onChange = () => {
+        const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
         // calc selected elements entry
-        if (board.pointer !== PlaitPointerType.hand) {
+        if (board.pointer !== PlaitPointerType.hand && !options.isDisabledSelect) {
             try {
                 if (board.operations.find(value => value.type === 'set_selection')) {
                     selectionOuterG?.remove();
                     const temporaryElements = getTemporaryElements(board);
                     let elements = temporaryElements ? temporaryElements : getHitElements(board);
-
-                    const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
 
                     if (!options.isMultiple && elements.length > 1) {
                         elements = [elements[0]];
@@ -152,7 +153,10 @@ export function withSelection(board: PlaitBoard) {
         onChange();
     };
 
-    (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: true });
+    (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, {
+        isMultiple: true,
+        isDisabledSelect: false
+    });
 
     return board;
 }

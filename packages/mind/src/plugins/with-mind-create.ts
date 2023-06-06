@@ -1,8 +1,11 @@
 import {
     BoardTransforms,
     PlaitBoard,
+    PlaitOptionsBoard,
+    PlaitPluginKey,
     PlaitPointerType,
     Transforms,
+    WithPluginOptions,
     addSelectedElement,
     getSelectedElements,
     throttleRAF,
@@ -35,10 +38,16 @@ export const withCreateMind = (board: PlaitBoard) => {
 
     newBoard.mousedown = (event: MouseEvent) => {
         if (fakeCreateNodeRef && PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind)) {
-            return;
+            const currentOptions = (board as PlaitOptionsBoard).getPluginOptions(PlaitPluginKey.withSelection);
+            (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, {
+                isDisabledSelect: true
+            });
+            setTimeout(() => {
+                (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { ...currentOptions });
+            }, 0);
         }
         mousedown(event);
-    }
+    };
 
     newBoard.mousemove = (event: MouseEvent) => {
         if (PlaitBoard.isReadonly(board)) {

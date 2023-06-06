@@ -2,7 +2,6 @@ import {
     addSelectedElement,
     getSelectedElements,
     hotkeys,
-    IS_TEXT_EDITABLE,
     PlaitBoard,
     PlaitHistoryBoard,
     PlaitPluginElementContext,
@@ -14,8 +13,7 @@ import {
     Transforms,
     Range,
     depthFirstRecursion,
-    Path,
-    Selection
+    Path
 } from '@plait/core';
 import { getSizeByText } from '@plait/richtext';
 import { MindElement, PlaitMind } from '../interfaces';
@@ -41,7 +39,6 @@ import { withAbstract } from './with-abstract-resize';
 import { withMindExtend } from './with-mind-extend';
 import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { MindTransforms } from '../transforms';
-import { isHitEmojis } from '../utils/position/emoji';
 import { withCreateMind } from './with-mind-create';
 
 export const withMind = (board: PlaitBoard) => {
@@ -85,9 +82,6 @@ export const withMind = (board: PlaitBoard) => {
         if (MindElement.isMindElement(board, element)) {
             const client = getRectangleByNode(MindElement.getNode(element));
             const isHit = RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
-            if (isHit && MindElement.hasEmojis(element) && Selection.isCollapsed(range) && isHitEmojis(board, element, range.anchor)) {
-                return false;
-            }
             return isHit;
         }
         return isHitSelection(element, range);

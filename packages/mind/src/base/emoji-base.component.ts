@@ -1,6 +1,6 @@
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { EmojiData, EmojiItem } from '../interfaces/element-data';
-import { PlaitBoard } from '@plait/core';
+import { PlaitBoard, PlaitOptionsBoard, PlaitPluginKey, WithPluginOptions } from '@plait/core';
 import { MindElement } from '../interfaces';
 
 @Directive({
@@ -23,6 +23,17 @@ export class MindEmojiBaseComponent implements OnInit {
 
     get nativeElement() {
         return this.elementRef.nativeElement;
+    }
+
+    @HostListener('mousedown')
+    handleClick() {
+        const currentOptions = (this.board as PlaitOptionsBoard).getPluginOptions(PlaitPluginKey.withSelection);
+        (this.board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, {
+            isDisabledSelect: true
+        });
+        setTimeout(() => {
+            (this.board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { ...currentOptions });
+        }, 0);
     }
 
     constructor(protected elementRef: ElementRef<HTMLElement>) {}
