@@ -25,7 +25,7 @@ import { getRectangleByElements } from '../utils/element';
 import { PathRef, PathRefOptions } from './path-ref';
 import { Ancestor, PlaitNode } from './node';
 import { Path } from './path';
-import { PlaitTheme, ThemeColor } from './theme';
+import { PlaitTheme, ThemeColor, ThemeColors } from './theme';
 
 export interface PlaitBoard {
     viewport: Viewport;
@@ -76,7 +76,7 @@ export interface PlaitBoardOptions {
     readonly?: boolean;
     hideScrollbar?: boolean;
     disabledScrollOnNonFocus?: boolean;
-    themeColors?: ThemeColor[]
+    themeColors?: ThemeColor[];
 }
 
 export interface PlaitBoardMove {
@@ -153,5 +153,8 @@ export const PlaitBoard = {
     },
     getMovingPoint(board: PlaitBoard) {
         return BOARD_TO_MOVING_POINT.get(board);
+    },
+    getThemeColors<T extends ThemeColor = ThemeColor>(board: PlaitBoard) {
+        return (board.options.themeColors || ThemeColors) as T[];
     }
 };

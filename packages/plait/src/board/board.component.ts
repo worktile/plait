@@ -68,7 +68,7 @@ const ElementHostClass = 'element-host';
     selector: 'plait-board',
     template: `
         <div class="viewport-container" #viewportContainer>
-            <svg #svg width="100%" height="100%" style="position: relative;"><g class="element-host"></g></svg>
+            <svg #svg width="100%" height="100%" style="position: relative;" class="board-host-svg"><g class="element-host"></g></svg>
             <plait-children [board]="board" [effect]="effect"></plait-children>
         </div>
         <ng-content></ng-content>
@@ -108,7 +108,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @HostBinding('class')
     get hostClass() {
-        return `plait-board-container pointer-${this.board.pointer}`;
+        return `plait-board-container pointer-${this.board.pointer} theme-${this.board.theme.themeColorMode}`;
     }
 
     @HostBinding('class.readonly')

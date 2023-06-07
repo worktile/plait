@@ -3,10 +3,10 @@
  */
 import { PlaitBoard, isNullOrUndefined } from '@plait/core';
 import { BranchShape, MindElement } from '../../interfaces/element';
-import { BRANCH_COLORS } from '../../constants/node-style';
 import { BRANCH_WIDTH } from '../../constants/default';
 import { DefaultAbstractNodeStyle } from '../../constants/node-style';
 import { getAvailableProperty } from './common';
+import { MindDefaultThemeColor, MindThemeColor } from '../../interfaces/theme-color';
 
 export const getBranchColorByMindElement = (board: PlaitBoard, element: MindElement) => {
     const branchColor = getAvailableProperty(board, element, 'branchColor');
@@ -38,18 +38,24 @@ export const getAbstractBranchColor = (board: PlaitBoard, element: MindElement) 
     return DefaultAbstractNodeStyle.branchColor;
 };
 
-export const getNextBranchColor = (root: MindElement) => {
+export const getNextBranchColor = (board: PlaitBoard, root: MindElement) => {
     const index = root.children.length;
-    return getDefaultBranchColorByIndex(index);
+    return getDefaultBranchColorByIndex(board, index);
 };
 
 export const getDefaultBranchColor = (board: PlaitBoard, element: MindElement) => {
     const path = PlaitBoard.findPath(board, element);
-    return getDefaultBranchColorByIndex(path[1]);
+    return getDefaultBranchColorByIndex(board, path[1]);
 };
 
-export const getDefaultBranchColorByIndex = (index: number) => {
-    const length = BRANCH_COLORS.length;
+export const getDefaultBranchColorByIndex = (board: PlaitBoard, index: number) => {
+    const themeColor = getMindThemeColor(board);
+    const length = themeColor.branchColors.length;
     const remainder = index % length;
-    return BRANCH_COLORS[remainder];
+    return themeColor.branchColors[remainder];
+};
+
+export const getMindThemeColor = (board: PlaitBoard) => {
+    const themeColors = PlaitBoard.getThemeColors<MindThemeColor>(board);
+    return themeColors.find(val => val.mode === board.theme.themeColorMode) || MindDefaultThemeColor;
 };

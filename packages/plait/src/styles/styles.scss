@@ -1,3 +1,5 @@
+@use './mixins.scss' as mixins;
+
 .plait-board-container {
     display: block;
     width: 100%;
@@ -49,4 +51,9 @@
             opacity: 0;
         }
     }
+
+    @include mixins.board-background-color();
+
+    @include mixins.node-color();
+
 }
