@@ -31,6 +31,15 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
         }
     });
 
+    if (boundaryBox.left === Number.MAX_VALUE) {
+        return {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0
+        };
+    }
+
     return {
         x: boundaryBox.left,
         y: boundaryBox.top,
