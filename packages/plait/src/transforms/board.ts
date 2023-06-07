@@ -86,8 +86,8 @@ function updateThemeColor<T = ThemeColorMode>(board: PlaitBoard, mode: T) {
  * update plaitTheme property and update board display
  * just invoke this method on collaboration case
  */
-function applyThemeColor<T = ThemeColorMode>(board: PlaitBoard, mode: T) {
-    
+function applyThemeColor<T extends string = ThemeColorMode>(board: PlaitBoard, mode: T) {
+    // setTheme
 }
 
 export const BoardTransforms = {
