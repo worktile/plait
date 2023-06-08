@@ -96,7 +96,8 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         isHitSelection: element => false,
         isRecursion: element => true,
         isMovable: element => false,
-        getRectangle: element => null
+        getRectangle: element => null,
+        applyTheme: (element: PlaitElement) => {}
     };
     return board;
 }

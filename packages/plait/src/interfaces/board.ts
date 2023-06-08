@@ -63,6 +63,7 @@ export interface PlaitBoard {
     isWithinSelection: (element: PlaitElement) => boolean;
     pathRef: (path: Path, options?: PathRefOptions) => PathRef;
     pathRefs: () => Set<PathRef>;
+    applyTheme: (element: PlaitElement) => void;
 }
 
 export interface PlaitBoardChangeEvent {

@@ -6,6 +6,16 @@
     (plaitBoardInitialized)="plaitBoardInitialized($event)"
     (plaitChange)="change($event)"
 >
+    <div class="plait-toolbar island plait-board-attached theme-setting-toolbar">
+        <select (change)="themeChange($event)">
+            <option value="default">默认</option>
+            <option value="colorful">缤纷</option>
+            <option value="soft">柔和</option>
+            <option value="retro">复古</option>
+            <option value="dark">暗夜</option>
+            <option value="starry">星空</option>
+        </select>
+    </div>
     <app-zoom-toolbar></app-zoom-toolbar>
     <app-main-toolbar></app-main-toolbar>
     <app-setting-panel></app-setting-panel>

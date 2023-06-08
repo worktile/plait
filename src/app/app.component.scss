@@ -9,7 +9,16 @@
 
 .flow-custom-node {
     color: #fff;
-    .plait-richtext-container{
+    .plait-richtext-container {
         font-size: 10px;
+    }
+}
+
+.theme-setting-toolbar {
+    bottom: 30px;
+    right: 40px;
+    width: 120px;
+    select {
+        width: 100%;
     }
 }

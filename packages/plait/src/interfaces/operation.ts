@@ -1,6 +1,7 @@
 import { PlaitNode } from '../interfaces/node';
 import { Path } from './path';
 import { Selection } from './selection';
+import { PlaitTheme } from './theme';
 import { Viewport } from './viewport';
 
 export type InsertNodeOperation = {
@@ -19,6 +20,12 @@ export type MoveNodeOperation = {
     type: 'move_node';
     path: Path;
     newPath: Path;
+};
+
+export type SetThemeOperation = {
+    type: 'set_theme';
+    properties: Partial<PlaitTheme>;
+    newProperties: Partial<PlaitTheme>;
 };
 
 export type SetViewportOperation = {
@@ -46,7 +53,8 @@ export type PlaitOperation =
     | SetSelectionOperation
     | SetNodeOperation
     | RemoveNodeOperation
-    | MoveNodeOperation;
+    | MoveNodeOperation
+    | SetThemeOperation;
 
 export interface PlaitOperationInterface {
     inverse: (op: PlaitOperation) => PlaitOperation;
@@ -134,6 +142,11 @@ export const inverse = (op: PlaitOperation): PlaitOperation => {
             } else {
                 return { ...op, properties: newProperties, newProperties: properties };
             }
+        }
+
+        case 'set_theme': {
+            const { properties, newProperties } = op;
+            return { ...op, properties: newProperties, newProperties: properties };
         }
     }
 };
