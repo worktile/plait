@@ -2,8 +2,9 @@ import { MindNode } from '../../interfaces/node';
 import { getRectangleByNode } from '../position/node';
 import { PlaitBoard, RectangleClient, drawRoundRectangle } from '@plait/core';
 import { getStrokeByMindElement } from '../node-style/shape';
-import { DefaultNodeStyle, DefaultRootStyle } from '../../constants/node-style';
+import { DefaultNodeStyle } from '../../constants/node-style';
 import { MindElement } from '../../interfaces';
+import { getMindThemeColor } from '../node-style/branch';
 
 export function drawRoundRectangleByNode(board: PlaitBoard, node: MindNode) {
     const rectangle = getRectangleByNode(node);
@@ -11,7 +12,8 @@ export function drawRoundRectangleByNode(board: PlaitBoard, node: MindNode) {
 }
 
 export function drawRoundRectangleByElement(board: PlaitBoard, nodeRectangle: RectangleClient, element: MindElement) {
-    const fill = element.fill ? element.fill : element.isRoot ? DefaultRootStyle.fill : DefaultNodeStyle.fill;
+    const defaultRootFill = getMindThemeColor(board).rootFill;
+    const fill = element.fill ? element.fill : element.isRoot ? defaultRootFill : DefaultNodeStyle.fill;
     const stroke = getStrokeByMindElement(board, element);
     const strokeWidth = element.strokeWidth ? element.strokeWidth : DefaultNodeStyle.strokeWidth;
 

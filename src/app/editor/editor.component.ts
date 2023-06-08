@@ -1,19 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {
-    BoardTransforms,
-    getSelectedElements,
-    PlaitBoard,
-    PlaitBoardChangeEvent,
-    PlaitBoardOptions,
-    PlaitElement,
-    Transforms,
-    Viewport
-} from '@plait/core';
-import { MindLayoutType } from '@plait/layouts';
+import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions, PlaitElement, Viewport } from '@plait/core';
 import { mockData } from './mock-data';
-import { MindTransforms, withMind, canSetAbstract, MindElementShape, PlaitMindBoard, MindPointerType } from '@plait/mind';
+import { withMind, PlaitMindBoard } from '@plait/mind';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
 import { AbstractResizeState } from '@plait/mind';
+import { MindThemeColor } from '@plait/mind/src/interfaces/theme-color';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
 
@@ -29,8 +20,9 @@ export class BasicBoardEditorComponent implements OnInit {
     options: PlaitBoardOptions = {
         readonly: false,
         hideScrollbar: false,
-        disabledScrollOnNonFocus: false
-    }
+        disabledScrollOnNonFocus: false,
+        themeColors: MindThemeColor
+    };
 
     viewport!: Viewport;
 

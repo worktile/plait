@@ -156,7 +156,9 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
             underlineCoordinates[MindLayoutType.right].startY -= height * 0.5;
             underlineCoordinates[MindLayoutType.right].endY -= height * 0.5;
         }
-        const branchColor = PlaitMind.isMind(element) ? getNextBranchColor(element) : getBranchColorByMindElement(this.board, element);
+        const branchColor = PlaitMind.isMind(element)
+            ? getNextBranchColor(this.board, element)
+            : getBranchColorByMindElement(this.board, element);
         let nodeLayout = MindQueries.getCorrectLayoutByElement(this.board, element) as ExtendLayoutType;
         if (element.isRoot && isStandardLayout(nodeLayout)) {
             const root = element as OriginNode;
