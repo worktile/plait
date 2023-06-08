@@ -30,7 +30,8 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         styles: {
             stroke: '#5dcfff',
             fill: '#5dcfff'
-        }
+        },
+        undeletable: true
     },
     {
         id: '1002',

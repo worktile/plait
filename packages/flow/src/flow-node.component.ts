@@ -9,15 +9,7 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import { PlaitRichtextComponent, drawRichtext } from '@plait/richtext';
-import {
-    PlaitPluginElementComponent,
-    BeforeContextChange,
-    PlaitPluginElementContext,
-    PlaitBoard,
-    normalizePoint,
-    createG,
-    isSelectedElement
-} from '@plait/core';
+import { PlaitPluginElementComponent, PlaitPluginElementContext, PlaitBoard, normalizePoint, createG, OnContextChanged } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawNodeHandles } from './draw/handle';
 import { drawActiveMask, drawNode } from './draw/node';
@@ -30,7 +22,7 @@ import { FlowBaseData } from './interfaces/element';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends PlaitPluginElementComponent<FlowNode<T>>
-    implements OnInit, BeforeContextChange<FlowNode<T>>, OnDestroy {
+    implements OnInit, OnContextChanged<FlowNode, PlaitBoard>, OnDestroy {
     nodeG: SVGGElement | null = null;
 
     activeMaskG: SVGGElement | null = null;
@@ -43,8 +35,6 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     handlesG: SVGGElement | null = null;
 
-    perviousStatus: 'active' | 'default' = 'default';
-
     constructor(public cdr: ChangeDetectorRef, public viewContainerRef: ViewContainerRef, public render2: Renderer2) {
         super(cdr);
     }
@@ -56,22 +46,19 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         this.drawRichtext();
     }
 
-    beforeContextChange(value: PlaitPluginElementContext<FlowNode<T>>) {
-        const isActive = isSelectedElement(this.board, value.element);
-        if (value.element !== this.element && this.initialized) {
-            this.updateElement(value.element, isActive);
+    onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
+        if (value.element !== previous.element && this.initialized) {
+            this.updateElement(value.element, value.selected);
         }
         if (this.initialized) {
-            if (this.perviousStatus === 'default' && isActive) {
+            if (value.selected) {
                 this.setActiveNodeToTop();
                 this.drawActiveMask();
                 this.drawHandles();
-            }
-            if (this.perviousStatus === 'active' && !isActive) {
+            } else {
                 this.destroyActiveMask();
                 this.destroyHandles();
             }
-            this.perviousStatus = isActive ? 'active' : 'default';
         }
     }
 

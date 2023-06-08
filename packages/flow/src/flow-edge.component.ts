@@ -9,17 +9,10 @@ import {
     Renderer2,
     ViewContainerRef
 } from '@angular/core';
-import {
-    PlaitPluginElementComponent,
-    BeforeContextChange,
-    PlaitPluginElementContext,
-    createG,
-    isSelectedElement,
-    RectangleClient
-} from '@plait/core';
+import { PlaitPluginElementComponent, PlaitPluginElementContext, createG, isSelectedElement, RectangleClient } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawEdge, drawEdgeMarkers, drawRichtextBackground } from './draw/edge';
-import { PlaitBoard } from '@plait/core';
+import { PlaitBoard, OnContextChanged } from '@plait/core';
 import { drawEdgeHandles } from './draw/handle';
 import { PlaitRichtextComponent, drawRichtext, updateForeignObject } from '@plait/richtext';
 import { getEdgeTextBackgroundRect, getEdgeTextRect, getEdgeTextXYPosition } from './utils/edge/text';
@@ -33,7 +26,7 @@ import { Element, Text } from 'slate';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends PlaitPluginElementComponent<FlowEdge<T>>
-    implements OnInit, BeforeContextChange<FlowEdge<T>>, OnDestroy {
+    implements OnInit, OnContextChanged<FlowEdge, PlaitBoard>, OnDestroy {
     nodeG: SVGGElement | null = null;
 
     roughSVG!: RoughSVG;
@@ -50,8 +43,6 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     textRect: RectangleClient | null = null;
 
-    perviousStatus: 'active' | 'default' = 'default';
-
     constructor(
         public cdr: ChangeDetectorRef,
         public viewContainerRef: ViewContainerRef,
@@ -66,25 +57,21 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         const isActive = isSelectedElement(this.board, this.element);
         this.drawElement(this.element, isActive);
-        this.perviousStatus = isActive ? 'active' : 'default';
     }
 
-    beforeContextChange(value: PlaitPluginElementContext<FlowEdge<T>>) {
-        const isActive = isSelectedElement(this.board, value.element);
-        if (value.element !== this.element && this.initialized) {
-            this.drawElement(value.element, isActive);
+    onContextChanged(value: PlaitPluginElementContext<FlowEdge, PlaitBoard>, previous: PlaitPluginElementContext<FlowEdge, PlaitBoard>) {
+        if (value.element !== previous.element && this.initialized) {
+            this.drawElement(value.element, value.selected);
         }
         if (this.initialized) {
-            if (isActive) {
+            if (value.selected) {
                 this.setActiveNodeToTop();
-                this.drawElement(value.element, isActive);
+                this.drawElement(value.element, value.selected);
                 this.drawHandles();
-            }
-            if (this.perviousStatus === 'active' && !isActive) {
+            } else {
                 this.drawElement(value.element);
                 this.destroyHandles();
             }
-            this.perviousStatus = isActive ? 'active' : 'default';
         }
     }
 
