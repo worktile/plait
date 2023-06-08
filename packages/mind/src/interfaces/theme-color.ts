@@ -66,7 +66,7 @@ export const MindStarryThemeColor: MindThemeColor = {
     rootTextColor: '#333333'
 };
 
-export const MindThemeColor: MindThemeColor[] = [
+export const MindThemeColors: MindThemeColor[] = [
     MindDefaultThemeColor,
     MindColorfulThemeColor,
     MindSoftThemeColor,
