@@ -89,7 +89,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     {
                         [handleType]: {
                             ...activeElement[handleType],
-                            id: node.id,
+                            nodeId: node.id,
                             position,
                             offsetX: handleOffsetX,
                             offsetY: handleOffsetY

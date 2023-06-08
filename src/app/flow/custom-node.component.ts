@@ -1,16 +1,15 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { PlaitPluginElementContext, Point, drawCircle } from '@plait/core';
-import { FlowBaseData, FlowNode, FlowNodeComponent } from '@plait/flow';
-import { WorkflowType } from './flow-data';
+import { PlaitPluginElementContext, Point, drawCircle, PlaitBoard } from '@plait/core';
+import { FlowNode, FlowNodeComponent } from '@plait/flow';
 
 @Component({
     selector: 'custom-flow-node',
     template: '',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CustomFlowNodeComponent<T extends FlowBaseData = WorkflowType> extends FlowNodeComponent {
-    beforeContextChange(value: PlaitPluginElementContext<FlowNode<T>>) {
-        if (value.element !== this.element && this.initialized) {
+export class CustomFlowNodeComponent extends FlowNodeComponent {
+    onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
+        if (value.element !== previous.element && this.initialized) {
             this.updateElement(value.element);
         }
     }
