@@ -2,13 +2,13 @@ import { PlaitBoard, ThemeColorMode, clearNodeWeakMap, createTestingBoard, fakeN
 import { getTestingChildren } from '../../testing/data/basic';
 import { getDefaultBranchColorByIndex } from './branch';
 import { COLORFUL_BRANCH_COLORS, DEFAULT_BRANCH_COLORS } from '../../constants/theme';
-import { MindThemeColor } from '../../interfaces/theme-color';
+import { MindThemeColors } from '../../interfaces/theme-color';
 
 describe('utils node-style branch', () => {
     let board: PlaitBoard;
     beforeEach(() => {
         const children = getTestingChildren();
-        board = createTestingBoard([], children, { themeColors: MindThemeColor });
+        board = createTestingBoard([], children, { themeColors: MindThemeColors });
         fakeNodeWeakMap(board);
     });
 

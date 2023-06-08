@@ -3,8 +3,7 @@ import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions, PlaitElement, Vie
 import { mockData } from './mock-data';
 import { withMind, PlaitMindBoard } from '@plait/mind';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
-import { AbstractResizeState } from '@plait/mind';
-import { MindThemeColor } from '@plait/mind/src/interfaces/theme-color';
+import { AbstractResizeState, MindThemeColors } from '@plait/mind';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
 
@@ -21,7 +20,7 @@ export class BasicBoardEditorComponent implements OnInit {
         readonly: false,
         hideScrollbar: false,
         disabledScrollOnNonFocus: false,
-        themeColors: MindThemeColor
+        themeColors: MindThemeColors
     };
 
     viewport!: Viewport;
