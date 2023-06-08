@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.2.5
+
+### Patch Changes
+
+-   [#409](https://github.com/worktile/plait/pull/409) [`4a9e0f7`](https://github.com/worktile/plait/commit/4a9e0f760492e80d409f6cecc9541ec01b183811) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support borderRadius and prevent draw handle and mask when isActive is false
+
 ## 0.2.4
 
 ### Patch Changes
