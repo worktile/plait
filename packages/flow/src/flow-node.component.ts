@@ -57,11 +57,11 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     }
 
     beforeContextChange(value: PlaitPluginElementContext<FlowNode<T>>) {
+        const isActive = isSelectedElement(this.board, value.element);
         if (value.element !== this.element && this.initialized) {
-            this.updateElement(value.element);
+            this.updateElement(value.element, isActive);
         }
         if (this.initialized) {
-            const isActive = isSelectedElement(this.board, value.element);
             if (this.perviousStatus === 'default' && isActive) {
                 this.setActiveNodeToTop();
                 this.drawActiveMask();
@@ -123,11 +123,13 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         this.g.append(this.handlesG);
     }
 
-    updateElement(element: FlowNode = this.element) {
+    updateElement(element: FlowNode = this.element, isActive = false) {
         this.drawElement(element);
         this.drawRichtext(element);
-        this.drawActiveMask(element);
-        this.drawHandles(element);
+        if (isActive) {
+            this.drawActiveMask(element);
+            this.drawHandles(element);
+        }
     }
 
     destroyHandles() {
