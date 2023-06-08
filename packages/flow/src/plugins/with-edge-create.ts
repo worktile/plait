@@ -93,16 +93,17 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
             // 鼠标移入 flowNode 展示 handles
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const newHitNode = getHitNode(board, point);
-
             if (hoveredFlowNode) {
-                const isSelectedHoveredNode = isSelectedElement(board, hoveredFlowNode);
                 const isHitHoveredNodeHandle = !!getHitHandleByNode(hoveredFlowNode, point);
-                if (newHitNode === hoveredFlowNode || isSelectedHoveredNode || isHitHoveredNodeHandle) {
+                if (newHitNode == hoveredFlowNode || isHitHoveredNodeHandle) {
                     return;
                 }
-                // destroy handles
-                const flowNodeComponent = PlaitElement.getComponent(hoveredFlowNode) as FlowNodeComponent;
-                flowNodeComponent?.destroyHandles();
+                const isSelectedHoveredNode = isSelectedElement(board, hoveredFlowNode);
+                if (!isSelectedHoveredNode) {
+                    // destroy handles
+                    const flowNodeComponent = PlaitElement.getComponent(hoveredFlowNode) as FlowNodeComponent;
+                    flowNodeComponent?.destroyHandles();
+                }
             }
 
             hoveredFlowNode = newHitNode;

@@ -30,6 +30,7 @@ export interface FlowElementStyles {
     fillStyle?: string;
     activeStroke?: string;
     activeFill?: string;
+    borderRadius?: number;
 }
 
 export interface FlowBaseData {

@@ -15,7 +15,7 @@ export function drawNode(roughSVG: RoughSVG, node: FlowNode, outline = false) {
     y = y + OUTLINE_BUFFER;
     width = width - OUTLINE_BUFFER * 2;
     height = height - OUTLINE_BUFFER * 2;
-    const nodeG = drawRoundRectangle(roughSVG, x, y, x + width, y + height, nodeStyles, outline);
+    const nodeG = drawRoundRectangle(roughSVG, x, y, x + width, y + height, nodeStyles, outline, nodeStyles.borderRadius);
     return nodeG;
 }
 
@@ -30,6 +30,6 @@ export function drawActiveMask(roughSVG: RoughSVG, node: FlowNode) {
         ...nodeStyles,
         stroke: node.styles?.activeStroke || DEFAULT_NODE_ACTIVE_STYLES.stroke
     };
-    const nodeG = drawRoundRectangle(roughSVG, x, y, x + width, y + height, nodeStyles, true);
+    const nodeG = drawRoundRectangle(roughSVG, x, y, x + width, y + height, nodeStyles, true, nodeStyles.borderRadius);
     return nodeG;
 }
