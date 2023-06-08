@@ -1,5 +1,5 @@
 export interface PlaitTheme {
-    themeColorMode: string;
+    themeColorMode: ThemeColorMode;
 }
 
 export interface ThemeColor {

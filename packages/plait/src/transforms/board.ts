@@ -9,6 +9,8 @@ import { clampZoomLevel, clearViewportOrigination, getViewBox, getViewportContai
 import { BOARD_TO_COMPONENT } from '../utils/weak-maps';
 import { setViewport } from './viewport';
 import { depthFirstRecursion } from '../utils';
+import { PlaitElement } from '../interfaces/element';
+import { setTheme } from './theme';
 
 function updateViewport(board: PlaitBoard, origination: Point, zoom?: number) {
     zoom = zoom ?? board.viewport.zoom;
@@ -77,22 +79,19 @@ function fitViewport(board: PlaitBoard) {
  * apply theme to every element (remove element custom properties)
  * invoke applyThemeColor
  */
-function updateThemeColor<T = ThemeColorMode>(board: PlaitBoard, mode: T) {
-    // depthFirstRecursion() applyTheme
-    // applyThemeColor
-}
+function updateThemeColor(board: PlaitBoard, mode: ThemeColorMode) {
+    mode = mode ?? board.theme.themeColorMode;
+    setTheme(board, { themeColorMode: mode });
 
-/**
- * update plaitTheme property and update board display
- * just invoke this method on collaboration case
- */
-function applyThemeColor<T extends string = ThemeColorMode>(board: PlaitBoard, mode: T) {
-    // setTheme
+    depthFirstRecursion((board as unknown) as PlaitElement, element => {
+        board.applyTheme(element);
+    });
 }
 
 export const BoardTransforms = {
     updatePointerType,
     updateViewport,
     fitViewport,
-    updateZoom
+    updateZoom,
+    updateThemeColor
 };

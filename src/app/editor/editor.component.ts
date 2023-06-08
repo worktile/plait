@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions, PlaitElement, Viewport } from '@plait/core';
+import { BoardTransforms, PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions, PlaitElement, ThemeColorMode, Viewport } from '@plait/core';
 import { mockData } from './mock-data';
 import { withMind, PlaitMindBoard } from '@plait/mind';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
@@ -51,5 +51,10 @@ export class BasicBoardEditorComponent implements OnInit {
     plaitBoardInitialized(value: PlaitBoard) {
         this.board = value;
         (this.board as PlaitMindBoard).onAbstractResize = (state: AbstractResizeState) => {};
+    }
+
+    themeChange(event: Event) {
+        const value = (event.target as HTMLSelectElement).value;
+        BoardTransforms.updateThemeColor(this.board, value as ThemeColorMode);
     }
 }

@@ -163,7 +163,9 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         const isEqualNode = RectangleClient.isEqual(this.node, newNode);
         this.node = newNode;
 
-        if (!isEqualNode || value.element !== previous.element) {
+        const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
+
+        if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
             this.drawActiveG();
             this.updateActiveClass();
             this.drawShape();

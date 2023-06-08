@@ -13,7 +13,8 @@ import {
     Transforms,
     Range,
     depthFirstRecursion,
-    Path
+    Path,
+    PlaitElement
 } from '@plait/core';
 import { getSizeByText } from '@plait/richtext';
 import { MindElement, PlaitMind } from '../interfaces';
@@ -40,6 +41,7 @@ import { withMindExtend } from './with-mind-extend';
 import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { MindTransforms } from '../transforms';
 import { withCreateMind } from './with-mind-create';
+import { DefaultAbstractNodeStyle } from '../constants/node-style';
 
 export const withMind = (board: PlaitBoard) => {
     const {
@@ -62,6 +64,26 @@ export const withMind = (board: PlaitBoard) => {
             return MindNodeComponent;
         }
         return drawElement(context);
+    };
+
+    board.applyTheme = (element: PlaitElement) => {
+        const mindElement = element as MindElement;
+        const shouldClearProperty =
+            !PlaitBoard.isBoard(element) && (mindElement?.branchColor || mindElement?.fill || mindElement?.strokeColor);
+        const isAbstract = AbstractNode.isAbstract(element);
+        if (shouldClearProperty) {
+            const path = PlaitBoard.findPath(board, element);
+
+            if (isAbstract) {
+                Transforms.setNode(
+                    board,
+                    { fill: null, strokeColor: DefaultAbstractNodeStyle.strokeColor, branchColor: DefaultAbstractNodeStyle.branchColor },
+                    path
+                );
+            } else {
+                Transforms.setNode(board, { fill: null, strokeColor: null, branchColor: null }, path);
+            }
+        }
     };
 
     board.getRectangle = element => {

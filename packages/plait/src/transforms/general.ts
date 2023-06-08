@@ -5,12 +5,13 @@ import { Viewport } from '../interfaces/viewport';
 import { Selection } from '../interfaces/selection';
 import { Ancestor, PlaitNode } from '../interfaces/node';
 import { Path } from '../interfaces/path';
+import { PlaitTheme } from '../interfaces/theme';
 
 export interface GeneralTransforms {
     transform: (board: PlaitBoard, op: PlaitOperation) => void;
 }
 
-const applyToDraft = (board: PlaitBoard, selection: Selection | null, viewport: Viewport, op: PlaitOperation) => {
+const applyToDraft = (board: PlaitBoard, selection: Selection | null, viewport: Viewport, theme: PlaitTheme, op: PlaitOperation) => {
     switch (op.type) {
         case 'insert_node': {
             const { path, node } = op;
@@ -133,8 +134,13 @@ const applyToDraft = (board: PlaitBoard, selection: Selection | null, viewport: 
             }
             break;
         }
+        case 'set_theme': {
+            const { newProperties } = op;
+            theme = newProperties as PlaitTheme;
+            break;
+        }
     }
-    return { selection, viewport };
+    return { selection, viewport, theme };
 };
 
 export const GeneralTransforms: GeneralTransforms = {
@@ -145,11 +151,13 @@ export const GeneralTransforms: GeneralTransforms = {
         board.children = createDraft(board.children);
         let viewport = board.viewport && createDraft(board.viewport);
         let selection = board.selection && createDraft(board.selection);
+        let theme = board.theme && createDraft(board.theme);
 
         try {
-            const state = applyToDraft(board, selection, viewport, op);
+            const state = applyToDraft(board, selection, viewport, theme, op);
             viewport = state.viewport;
             selection = state.selection;
+            theme = state.theme;
         } finally {
             board.children = finishDraft(board.children);
 
@@ -160,6 +168,7 @@ export const GeneralTransforms: GeneralTransforms = {
             }
 
             board.viewport = isDraft(viewport) ? (finishDraft(viewport) as Viewport) : viewport;
+            board.theme = isDraft(theme) ? finishDraft(theme) : theme;
         }
     }
 };
