@@ -1,3 +1,5 @@
+@use './mixins.scss' as mixins;
+
 $primary: #4e8afa;
 
 g[plait-mindmap='true'] {
@@ -114,4 +116,6 @@ g[plait-mindmap='true'] {
             }
         }
     }
+
+    @include mixins.node-color();
 }

@@ -1,0 +1,31 @@
+@mixin node-color{
+    &.theme-default,
+    &.theme-soft {
+        .root-node {
+            color: #333333;
+        }
+        .child-node {
+            color: #333333;
+        }
+    }
+
+    &.theme-colorful,
+    &.theme-retro {
+        .root-node {
+            color: #ffffff;
+        }
+        .child-node {
+            color: #333333;
+        }
+    }
+
+    &.theme-dark,
+    &.theme-starry {
+        .root-node {
+            color: #333333;
+        }
+        .child-node {
+            color: #ffffff;
+        }
+    }
+}

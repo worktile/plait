@@ -5,8 +5,8 @@ import { getDefaultBranchColor, getMindThemeColor } from './branch';
 
 export const getStrokeByMindElement = (board: PlaitBoard, element: MindElement) => {
     if (PlaitMind.isMind(element)) {
-        const defaultRootFill = getMindThemeColor(board).rootFill;
-        return element.strokeColor || defaultRootFill;
+        const defaultRootStroke = getMindThemeColor(board).rootFill;
+        return element.strokeColor || defaultRootStroke;
     }
 
     const ancestors = MindElement.getAncestors(board, element) as MindElement[];
