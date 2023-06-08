@@ -165,7 +165,6 @@ export const getSizeByText = (text: string, container: HTMLElement, maxWordCount
     container?.appendChild(richtext);
     const { width, height } = fakeNode.getBoundingClientRect();
     container?.removeChild(richtext);
-
     return { width, height };
 };
 

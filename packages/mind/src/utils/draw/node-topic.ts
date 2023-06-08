@@ -1,9 +1,9 @@
 import { ViewContainerRef } from '@angular/core';
-import { drawRichtext, updateForeignObject } from '@plait/richtext';
+import { drawRichtext } from '@plait/richtext';
 import { MindNode } from '../../interfaces/node';
 import { getTopicRectangleByNode } from '../position/topic';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
-import { PlaitBoard, RectangleClient } from '@plait/core';
+import { PlaitBoard, RectangleClient, updateForeignObject } from '@plait/core';
 import { MindElement } from '../../interfaces';
 
 export function drawTopicByNode(board: PlaitMindBoard, node: MindNode, viewContainerRef?: ViewContainerRef) {
