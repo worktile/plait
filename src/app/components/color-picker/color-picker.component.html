@@ -1,0 +1,9 @@
+<button
+    *ngFor="let color of defaultColor"
+    class="color-picker-button"
+    [ngClass]="{ active: color === currentColor }"
+    [ngStyle]="{ 'background-color': color ? color : 'transparent', 'background-image': color ? '' : transparent }"
+    (mousedown)="colorChange(color)"
+>
+    <div class="active-button-outline"></div>
+</button>

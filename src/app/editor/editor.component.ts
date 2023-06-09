@@ -1,7 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { BoardTransforms, PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions, PlaitElement, ThemeColorMode, Viewport } from '@plait/core';
+import {
+    BoardTransforms,
+    PlaitBoard,
+    PlaitBoardChangeEvent,
+    PlaitBoardOptions,
+    PlaitElement,
+    ThemeColorMode,
+    Viewport,
+    getSelectedElements
+} from '@plait/core';
 import { mockData } from './mock-data';
-import { withMind, PlaitMindBoard } from '@plait/mind';
+import { withMind, PlaitMindBoard, MindElement } from '@plait/mind';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
 import { AbstractResizeState, MindThemeColors } from '@plait/mind';
 
