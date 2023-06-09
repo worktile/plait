@@ -1,6 +1,6 @@
 .plait-island-container {
     &.app-setting-panel {
-        overflow: scroll;
+        overflow: auto;
         right: 24px;
         top: 100px;
         max-height: calc(100vh - 200px);
