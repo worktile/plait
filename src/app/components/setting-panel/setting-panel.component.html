@@ -32,3 +32,18 @@
         <option value="polyline">polyline</option>
     </select>
 </div>
+
+<div class="property-item color-setting-toolbar">
+    <div>填充颜色：</div>
+    <app-color-picker [defaultColor] ="fillColor" [currentColor]="currentFillColor" (colorChangeEvent)="colorChange($event,'fill')"></app-color-picker>
+</div>
+
+<div class="property-item color-setting-toolbar">
+    <label>边框颜色：</label>
+    <app-color-picker [defaultColor] ="strokeColor" [currentColor]="currentStrokeColor" (colorChangeEvent)="colorChange($event,'strokeColor')"></app-color-picker>
+</div>
+
+<div class="property-item color-setting-toolbar">
+    <label>分支颜色：</label>
+    <app-color-picker [defaultColor] ="branchColor" [currentColor]="currentBranchColor" (colorChangeEvent)="colorChange($event,'branchColor')"></app-color-picker>
+</div>

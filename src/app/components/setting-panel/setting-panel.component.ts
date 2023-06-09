@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, forwardRef } from '@angular/core';
-import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, forwardRef } from '@angular/core';
+import { PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
-import { MindElementShape, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
+import { MindElement, MindElementShape, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
 
 @Component({
     selector: 'app-setting-panel',
@@ -13,14 +13,39 @@ import { MindElementShape, MindPointerType, MindTransforms, canSetAbstract } fro
     }
 })
 export class AppSettingPanelComponent extends PlaitIslandBaseComponent {
+    currentFillColor: string | undefined = '';
+
+    currentStrokeColor: string | undefined = '';
+
+    currentBranchColor: string | undefined = '';
+
+    _selectedElements: MindElement[] = [];
+
+    @Input()
+    set selectedElements(selectedElements: MindElement[]) {
+        this._selectedElements = selectedElements;
+        if (selectedElements.length) {
+            this.currentFillColor = selectedElements[0]?.fill || '';
+            this.currentStrokeColor = selectedElements[0]?.strokeColor || '';
+            this.currentBranchColor = selectedElements[0]?.branchColor || '';
+        }
+    }
+
     PlaitPointerType = PlaitPointerType;
+
     MindPointerType = MindPointerType;
+
+    fillColor = ['#3333', '#e48483', '#69b1e4', '#e681d4', ''];
+
+    strokeColor = ['#1e1e1e', '#e03130', '#2f9e44', '#1871c2', '#f08c02'];
+
+    branchColor = ['#A287E0', '#6E80DB', '#E0B75E', '#B1C675', '#77C386'];
 
     @HostBinding('class.visible')
     get isVisible() {
         const selectedCount = getSelectedElements(this.board).length;
         if (selectedCount > 0) {
-            return true
+            return true;
         } else {
             return false;
         }
@@ -45,6 +70,15 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent {
         if (selectedElement) {
             const path = PlaitBoard.findPath(this.board, selectedElement);
             Transforms.setNode(this.board, { shape: value }, path);
+        }
+    }
+
+    colorChange(color: string | null, attribute: string) {
+        if (this._selectedElements.length) {
+            this._selectedElements.forEach(element => {
+                const path = PlaitBoard.findPath(this.board, element);
+                Transforms.setNode(this.board, { [attribute]: color }, path);
+            });
         }
     }
 

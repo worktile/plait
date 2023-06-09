@@ -12,6 +12,7 @@ import { BasicFlowComponent } from './flow/flow.component';
 import { AppZoomToolbarComponent } from './components/zoom-toolbar/zoom-toolbar.component';
 import { AppMainToolbarComponent } from './components/main-toolbar/main-toolbar.component';
 import { AppSettingPanelComponent } from './components/setting-panel/setting-panel.component';
+import { AppColorPickerComponent } from './components/color-picker/color-picker.component';
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import { AppSettingPanelComponent } from './components/setting-panel/setting-pan
         AppComponent,
         BasicRichtextComponent,
         BasicFlowComponent,
-        BasicBoardEditorComponent
+        BasicBoardEditorComponent,
+        AppColorPickerComponent
     ],
     imports: [BrowserModule, RichtextModule, AppRoutingModule, PlaitModule, FlowModule, MindModule],
     providers: [],

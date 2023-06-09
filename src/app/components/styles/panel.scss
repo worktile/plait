@@ -4,7 +4,7 @@
         top: 100px;
         max-height: calc(100vh - 200px);
         flex-direction: column;
-        align-items:start;
+        align-items: start;
         padding: 16px;
         display: none;
         &.visible {
@@ -17,6 +17,44 @@
             font-size: 14px;
             select {
                 height: 24px;
+            }
+        }
+
+        .color-setting-toolbar{
+            display: block;
+        }
+
+        .app-color-picker {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .divider{
+            border-left: 1px solid #ddd;
+            margin-right: 10px;
+        }
+
+        .set-fill-color {
+            padding: 0;
+            margin-right: 10px;
+            width: 1.35rem;
+            height: 1.35rem;
+            border: 1px solid #d6d6d6;
+            border-radius: 4px;
+            background-position: left center;
+            position: relative;
+            font-family: inherit;
+            box-sizing: border-box;
+
+            &.active .active-button-outline {
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                box-shadow: 0 0 0 1px #4a47b1;
+                z-index: 1;
+                border-radius: 5px;
             }
         }
     }
