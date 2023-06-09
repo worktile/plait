@@ -3,15 +3,15 @@
 </div>
 
 <div class="property-item shape-setting-toolbar">
-    <label>布局类型：</label>
-    <select (change)="shapeChange($event)">
+    <div class="setting-panel-title">节点形状：</div>
+    <select (change)="propertyChange($event, 'shape')">
         <option value="round-rectangle">round-rectangle</option>
         <option value="underline">underline</option>
     </select>
 </div>
 
 <div class="property-item layout-setting-toolbar">
-    <label>布局类型：</label>
+    <div class="setting-panel-title">布局类型：</div>
     <select (change)="layoutChange($event)">
         <option value="right">right</option>
         <option value="left">left</option>
@@ -26,24 +26,54 @@
 </div>
 
 <div class="property-item edge-shape-setting-toolbar">
-    <label>分支形状：</label>
-    <select (change)="edgeShapeChange($event)">
+    <div class="setting-panel-title">分支形状：</div>
+    <select (change)="propertyChange($event, 'branchShape')">
         <option value="bight">bight</option>
         <option value="polyline">polyline</option>
     </select>
 </div>
 
-<div class="property-item color-setting-toolbar">
-    <div>填充颜色：</div>
-    <app-color-picker [defaultColor] ="fillColor" [currentColor]="currentFillColor" (colorChangeEvent)="colorChange($event,'fill')"></app-color-picker>
+<div class="property-item width-setting-toolbar">
+    <div class="setting-panel-title">分支宽度：</div>
+    <select (change)="propertyChange($event, 'branchWidth')">
+        <option value="1">1</option>
+        <option value="3">3</option>
+        <option value="5">5</option>
+    </select>
+</div>
+
+<div class="property-item width-setting-toolbar">
+    <div class="setting-panel-title">边框宽度：</div>
+    <select (change)="propertyChange($event, 'strokeWidth')">
+        <option value="1">1</option>
+        <option value="3">3</option>
+        <option value="5">5</option>
+    </select>
 </div>
 
 <div class="property-item color-setting-toolbar">
-    <label>边框颜色：</label>
-    <app-color-picker [defaultColor] ="strokeColor" [currentColor]="currentStrokeColor" (colorChangeEvent)="colorChange($event,'strokeColor')"></app-color-picker>
+    <div class="setting-panel-title">填充颜色：</div>
+    <app-color-picker
+        [defaultColor]="fillColor"
+        [currentColor]="currentFillColor"
+        (colorChangeEvent)="colorChange($event, 'fill')"
+    ></app-color-picker>
 </div>
 
 <div class="property-item color-setting-toolbar">
-    <label>分支颜色：</label>
-    <app-color-picker [defaultColor] ="branchColor" [currentColor]="currentBranchColor" (colorChangeEvent)="colorChange($event,'branchColor')"></app-color-picker>
+    <div class="setting-panel-title">边框颜色：</div>
+    <app-color-picker
+        [defaultColor]="strokeColor"
+        [currentColor]="currentStrokeColor"
+        (colorChangeEvent)="colorChange($event, 'strokeColor')"
+    ></app-color-picker>
+</div>
+
+<div class="property-item color-setting-toolbar">
+    <div class="setting-panel-title">分支颜色：</div>
+    <app-color-picker
+        [defaultColor]="branchColor"
+        [currentColor]="currentBranchColor"
+        (colorChangeEvent)="colorChange($event, 'branchColor')"
+    ></app-color-picker>
 </div>

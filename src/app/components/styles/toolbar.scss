@@ -12,6 +12,13 @@
     box-shadow: 0 0 16px #00000014;
     border: 1px solid #eee;
 
+    .divider {
+        height: 16px;
+        border-left: 1px solid #ddd;
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+
     .action-item {
         color: #999;
         padding: 8px;

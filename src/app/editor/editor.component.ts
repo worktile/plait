@@ -36,8 +36,6 @@ export class BasicBoardEditorComponent implements OnInit {
 
     board!: PlaitBoard;
 
-    selectedElements: MindElement[] = [];
-
     ngOnInit(): void {
         const data = this.getLocalData() as PlaitBoardChangeEvent;
         if (data) {
@@ -48,7 +46,6 @@ export class BasicBoardEditorComponent implements OnInit {
 
     change(event: PlaitBoardChangeEvent) {
         this.setLocalData(JSON.stringify(event));
-        this.selectedElements = getSelectedElements(this.board) as MindElement[];
     }
 
     setLocalData(data: string) {

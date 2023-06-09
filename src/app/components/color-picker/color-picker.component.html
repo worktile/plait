@@ -1,16 +1,6 @@
 <button
-    class="set-fill-color current-color"
-    [ngStyle]="{
-        'background-color': currentColor ? currentColor : 'transparent',
-        'background-image': currentColor ? '' : transparent
-    }"
-></button>
-
-<div class="divider"></div>
-
-<button
     *ngFor="let color of defaultColor"
-    class="set-fill-color"
+    class="color-picker-button"
     [ngClass]="{ active: color === currentColor }"
     [ngStyle]="{ 'background-color': color ? color : 'transparent', 'background-image': color ? '' : transparent }"
     (mousedown)="colorChange(color)"

@@ -1,5 +1,6 @@
 .plait-island-container {
     &.app-setting-panel {
+        overflow: scroll;
         right: 24px;
         top: 100px;
         max-height: calc(100vh - 200px);
@@ -7,44 +8,40 @@
         align-items: start;
         padding: 16px;
         display: none;
+
         &.visible {
             display: flex;
         }
+
         .property-item {
-            margin: 8px 0px;
-            display: flex;
-            align-items: center;
             font-size: 14px;
             select {
                 height: 24px;
             }
         }
 
+        .setting-panel-title{
+            margin: 8px 0px;
+        }
+
         .color-setting-toolbar{
             display: block;
+            width: 100%;
         }
 
         .app-color-picker {
             display: flex;
-            margin-top: 10px;
+            justify-content: space-between;
         }
 
-        .divider{
-            border-left: 1px solid #ddd;
-            margin-right: 10px;
-        }
-
-        .set-fill-color {
-            padding: 0;
-            margin-right: 10px;
-            width: 1.35rem;
-            height: 1.35rem;
+        .color-picker-button {
+            cursor: pointer;
+            margin-right: 4px;
+            width: 24px;
+            height: 24px;
             border: 1px solid #d6d6d6;
             border-radius: 4px;
-            background-position: left center;
             position: relative;
-            font-family: inherit;
-            box-sizing: border-box;
 
             &.active .active-button-outline {
                 position: absolute;
@@ -54,6 +51,16 @@
                 bottom: -2px;
                 box-shadow: 0 0 0 1px #4a47b1;
                 z-index: 1;
+                border-radius: 5px;
+            }
+            &:hover::after{
+                content: "";
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                box-shadow: 0 0 0 1px #d6d6d6;
                 border-radius: 5px;
             }
         }
