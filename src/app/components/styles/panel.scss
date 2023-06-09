@@ -1,7 +1,7 @@
 .plait-island-container {
     &.app-setting-panel {
         overflow: auto;
-        right: 24px;
+        left: 24px;
         top: 100px;
         max-height: calc(100vh - 200px);
         flex-direction: column;
@@ -16,6 +16,8 @@
         .property-item {
             font-size: 14px;
             select {
+                padding-left: 4px;
+                padding-right: 4px;
                 height: 24px;
             }
         }
