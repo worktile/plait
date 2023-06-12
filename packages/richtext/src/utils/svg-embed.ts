@@ -61,7 +61,3 @@ export function updateEditStatus(richtextComponentRef: ComponentRef<PlaitRichtex
     richtextComponentRef.changeDetectorRef.markForCheck();
 }
 
-export function updateRichText(element: SlateElement, richtextComponentRef: ComponentRef<PlaitRichtextComponent>) {
-    richtextComponentRef.instance.value = element;
-    return richtextComponentRef;
-}

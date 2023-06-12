@@ -1,5 +1,5 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { Descendant, Editor, Element, Operation, Transforms } from 'slate';
+import { Descendant, Element, Operation, Transforms } from 'slate';
 import { PlaitRichtextComponent } from './richtext/richtext.component';
 import {
     IS_TEXT_EDITABLE,
@@ -27,6 +27,7 @@ export interface TextChangeRef {
 export class TextDrawer {
     componentRef!: ComponentRef<PlaitRichtextComponent>;
     g!: SVGGElement;
+    foreignObject!: SVGForeignObjectElement;
     isEditing = false;
 
     constructor(
@@ -43,10 +44,21 @@ export class TextDrawer {
         this.componentRef.instance.readonly = true;
         const rectangle = this.getRectangle();
         this.g = createG();
-        const foreignObject = createForeignObject(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-        this.g.append(foreignObject);
-        foreignObject.append(this.componentRef.instance.elementRef.nativeElement);
+        this.foreignObject = createForeignObject(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        this.g.append(this.foreignObject);
+        this.foreignObject.append(this.componentRef.instance.elementRef.nativeElement);
         this.g.classList.add('text');
+    }
+
+    redraw() {
+        const { x, y, width, height } = this.getRectangle();
+        if (!this.isEditing) {
+            updateForeignObject(this.g, width, height, x, y);
+            // solve text lose on move node
+            if (this.foreignObject.children.length === 0) {
+                this.foreignObject.append(this.componentRef.instance.elementRef.nativeElement);
+            }
+        }
     }
 
     update() {}
