@@ -31,7 +31,7 @@ import {
 } from '../utils';
 import { getRectangleByNode, isHitMindElement } from '../utils/position/node';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { withDnd } from './with-node-dnd';
+import { withNodeDnd } from './with-node-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
@@ -43,6 +43,7 @@ import { MindTransforms } from '../transforms';
 import { withCreateMind } from './with-mind-create';
 import { DefaultAbstractNodeStyle } from '../constants/node-style';
 import { withMindHotkey } from './with-mind-hotkey';
+import { withNodeHover } from './with-node-hover';
 
 export const withMind = (board: PlaitBoard) => {
     const {
@@ -291,5 +292,5 @@ export const withMind = (board: PlaitBoard) => {
         deleteFragment(data);
     };
 
-    return withMindHotkey(withMindExtend(withCreateMind(withAbstract(withDnd(board)))));
+    return withNodeHover(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board))))));
 };

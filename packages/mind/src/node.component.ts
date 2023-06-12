@@ -256,91 +256,91 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     }
 
     drawMaskG() {
-        this.destroyMaskG();
-        const lineWidthOffset = 2;
-        const extendOffset = 15;
-        const nodeLayout = MindQueries.getLayoutByElement(this.node.origin) as MindLayoutType;
-        const isTop = isTopLayout(nodeLayout);
-        const isRight = isRightLayout(nodeLayout);
-        const isBottom = isBottomLayout(nodeLayout);
-        const isLeft = isLeftLayout(nodeLayout);
-        const { x, y, width, height } = getRectangleByNode(this.node as MindNode);
+        // this.destroyMaskG();
+        // const lineWidthOffset = 2;
+        // const extendOffset = 15;
+        // const nodeLayout = MindQueries.getLayoutByElement(this.node.origin) as MindLayoutType;
+        // const isTop = isTopLayout(nodeLayout);
+        // const isRight = isRightLayout(nodeLayout);
+        // const isBottom = isBottomLayout(nodeLayout);
+        // const isLeft = isLeftLayout(nodeLayout);
+        // const { x, y, width, height } = getRectangleByNode(this.node as MindNode);
 
-        let drawX = x;
-        let drawY = y;
-        let drawWidth = x + width;
-        let drawHeight = y + height;
+        // let drawX = x;
+        // let drawY = y;
+        // let drawWidth = x + width;
+        // let drawHeight = y + height;
 
-        switch (true) {
-            case isTop:
-                drawX = x - lineWidthOffset;
-                drawY = y - extendOffset;
-                drawWidth = x + width + lineWidthOffset;
-                drawHeight = y + height + lineWidthOffset;
-                break;
-            case isBottom:
-                drawX = x - lineWidthOffset;
-                drawY = y - lineWidthOffset;
-                drawWidth = x + width + lineWidthOffset;
-                drawHeight = y + height + extendOffset;
-                break;
-            case isLeft:
-                drawX = x - extendOffset;
-                drawY = y - lineWidthOffset;
-                drawWidth = x + width + lineWidthOffset;
-                drawHeight = y + height + lineWidthOffset;
-                break;
-            case isRight:
-                drawX = x - lineWidthOffset;
-                drawY = y - lineWidthOffset;
-                drawWidth = x + width + extendOffset;
-                drawHeight = y + height + lineWidthOffset;
-                break;
-        }
-        this.maskG = drawRoundRectangle(
-            this.roughSVG as RoughSVG,
-            drawX,
-            drawY,
-            drawWidth,
-            drawHeight,
-            { stroke: 'none', fill: 'rgba(255,255,255,0)', fillStyle: 'solid' },
-            true
-        );
-        this.maskG.classList.add('mask');
-        this.maskG.setAttribute('visibility', 'visible');
-        this.g.append(this.maskG);
+        // switch (true) {
+        //     case isTop:
+        //         drawX = x - lineWidthOffset;
+        //         drawY = y - extendOffset;
+        //         drawWidth = x + width + lineWidthOffset;
+        //         drawHeight = y + height + lineWidthOffset;
+        //         break;
+        //     case isBottom:
+        //         drawX = x - lineWidthOffset;
+        //         drawY = y - lineWidthOffset;
+        //         drawWidth = x + width + lineWidthOffset;
+        //         drawHeight = y + height + extendOffset;
+        //         break;
+        //     case isLeft:
+        //         drawX = x - extendOffset;
+        //         drawY = y - lineWidthOffset;
+        //         drawWidth = x + width + lineWidthOffset;
+        //         drawHeight = y + height + lineWidthOffset;
+        //         break;
+        //     case isRight:
+        //         drawX = x - lineWidthOffset;
+        //         drawY = y - lineWidthOffset;
+        //         drawWidth = x + width + extendOffset;
+        //         drawHeight = y + height + lineWidthOffset;
+        //         break;
+        // }
+        // this.maskG = drawRoundRectangle(
+        //     this.roughSVG as RoughSVG,
+        //     drawX,
+        //     drawY,
+        //     drawWidth,
+        //     drawHeight,
+        //     { stroke: 'none', fill: 'rgba(255,255,255,0)', fillStyle: 'solid' },
+        //     true
+        // );
+        // this.maskG.classList.add('mask');
+        // this.maskG.setAttribute('visibility', 'visible');
+        // this.g.append(this.maskG);
 
         // if (this.isEditable) {
         //     this.disabledMaskG();
         // }
 
-        fromEvent<MouseEvent>(this.maskG, 'mouseenter')
-            .pipe(
-                takeUntil(this.destroy$),
-                filter(() => {
-                    return PlaitBoard.isFocus(this.board) && !this.element.isCollapsed && !this.handActive;
-                })
-            )
-            .subscribe(() => {
-                this.g.classList.add('hovered');
-            });
-        fromEvent<MouseEvent>(this.maskG, 'mouseleave')
-            .pipe(
-                takeUntil(this.destroy$),
-                filter(() => {
-                    return PlaitBoard.isFocus(this.board) && !this.element.isCollapsed;
-                })
-            )
-            .subscribe(() => {
-                this.g.classList.remove('hovered');
-            });
+        // fromEvent<MouseEvent>(this.maskG, 'mouseenter')
+        //     .pipe(
+        //         takeUntil(this.destroy$),
+        //         filter(() => {
+        //             return PlaitBoard.isFocus(this.board) && !this.element.isCollapsed && !this.handActive;
+        //         })
+        //     )
+        //     .subscribe(() => {
+        //         this.g.classList.add('hovered');
+        //     });
+        // fromEvent<MouseEvent>(this.maskG, 'mouseleave')
+        //     .pipe(
+        //         takeUntil(this.destroy$),
+        //         filter(() => {
+        //             return PlaitBoard.isFocus(this.board) && !this.element.isCollapsed;
+        //         })
+        //     )
+        //     .subscribe(() => {
+        //         this.g.classList.remove('hovered');
+        //     });
     }
 
     destroyMaskG() {
-        if (this.maskG) {
-            this.maskG.remove();
-            this.g.classList.remove('hovered');
-        }
+        // if (this.maskG) {
+        //     this.maskG.remove();
+        //     this.g.classList.remove('hovered');
+        // }
     }
 
     enableMaskG() {
@@ -373,7 +373,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
                 true
             );
             // 影响 mask 移入移出事件
-            selectedStrokeG.style.pointerEvents = 'none';
+            // selectedStrokeG.style.pointerEvents = 'none';
             this.g.appendChild(selectedStrokeG);
             this.activeG.push(selectedStrokeG);
 
