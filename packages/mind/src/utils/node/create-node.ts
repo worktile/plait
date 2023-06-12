@@ -12,13 +12,13 @@ export const createEmptyMind = (board: PlaitBoard, point: Point) => {
 };
 
 export const createDefaultMind = (point: Point, rightNodeCount: number, layout: MindLayoutType) => {
-    const root = createMindElement('思维导图', 72, ROOT_DEFAULT_HEIGHT, { shape: MindElementShape.roundRectangle, layout });
+    const root = createMindElement('思维导图', 72, ROOT_DEFAULT_HEIGHT, { layout });
     root.rightNodeCount = rightNodeCount;
     root.isRoot = true;
     root.type = 'mindmap';
     root.points = [point];
     const children = [1, 1, 1].map(() => {
-        return createMindElement('新建节点', 56, TEXT_DEFAULT_HEIGHT, { shape: MindElementShape.roundRectangle });
+        return createMindElement('新建节点', 56, TEXT_DEFAULT_HEIGHT, {});
     });
     root.children = children;
     return root;
@@ -32,11 +32,7 @@ export const createMindElement = (text: string, width: number, height: number, o
         },
         children: [],
         width,
-        height,
-        fill: options.fill,
-        strokeColor: options.strokeColor,
-        strokeWidth: options.strokeWidth,
-        shape: options.shape
+        height
     };
 
     let key: keyof typeof options;
