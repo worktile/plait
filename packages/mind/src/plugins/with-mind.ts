@@ -42,6 +42,7 @@ import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { MindTransforms } from '../transforms';
 import { withCreateMind } from './with-mind-create';
 import { DefaultAbstractNodeStyle } from '../constants/node-style';
+import { withMindHotkey } from './with-mind-hotkey';
 
 export const withMind = (board: PlaitBoard) => {
     const {
@@ -290,5 +291,5 @@ export const withMind = (board: PlaitBoard) => {
         deleteFragment(data);
     };
 
-    return withMindExtend(withCreateMind(withAbstract(withDnd(board))));
+    return withMindHotkey(withMindExtend(withCreateMind(withAbstract(withDnd(board)))));
 };
