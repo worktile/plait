@@ -1,51 +1,8 @@
 @use './mixins.scss' as mixins;
 
 .plait-richtext-container {
-    display: block;
-    position: relative;
-    outline: none;
-    white-space: pre-wrap;
-    white-space: break-spaces;
-    word-break: break-all;
     @include mixins.font-size-14();
-
-    &.font-size-18 {
-        @include mixins.font-size-18();
-    }
-
-    .plait-node {
-        display: inline-block;
-        min-width: 5px; // safari can not not show  cursor when text is empty
-    }
-
-    [slate-underlined][slate-strike] {
-        text-decoration: underline line-through;
-    }
-
-    [slate-strike] {
-        text-decoration: line-through;
-    }
-
-    [slate-underlined] {
-        text-decoration: underline;
-    }
-
-    [slate-italic] {
-        font-style: italic;
-    }
-
-    [slate-bold] {
-        font-weight: bold;
-    }
-    
-    [node-type="link"] {
-        a {
-            color: #6698ff;
-        }
-    }
-
-    [break-node="left"], [break-node="right"] {
-        font-size: 0;
-        line-height: 0;
+    .slate-editable-container {
+        outline: none;
     }
 }

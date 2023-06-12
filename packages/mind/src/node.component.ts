@@ -25,7 +25,8 @@ import {
     NODE_TO_INDEX,
     PlaitPluginElementContext,
     OnContextChanged,
-    RectangleClient
+    RectangleClient,
+    Point
 } from '@plait/core';
 import {
     isBottomLayout,
@@ -37,7 +38,7 @@ import {
     isTopLayout,
     MindLayoutType
 } from '@plait/layouts';
-import { hasEditableTarget, PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
+import { PlaitRichtextComponent, TextChangeRef, TextDrawer, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject, timer } from 'rxjs';
 import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
@@ -65,6 +66,7 @@ import { getBranchColorByMindElement, getBranchWidthByMindElement } from './util
 import { PlaitMindBoard } from './plugins/with-mind.board';
 import { AbstractHandlePosition } from './plugins/with-abstract-resize.board';
 import { drawLink } from './utils/draw/node-link/draw-link';
+import { getTopicRectangleByNode } from './utils/position/topic';
 
 @Component({
     selector: 'plait-mind-node',
@@ -81,8 +83,6 @@ import { drawLink } from './utils/draw/node-link/draw-link';
 })
 export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, PlaitMindBoard>
     implements OnInit, OnDestroy, OnContextChanged<MindElement, PlaitMindBoard> {
-    isEditable = false;
-
     roughSVG!: RoughSVG;
 
     node!: MindNode;
@@ -99,8 +99,6 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     linkG?: SVGGElement;
 
-    richtextG?: SVGGElement;
-
     foreignObject?: SVGForeignObjectElement;
 
     extendG?: SVGGElement;
@@ -115,6 +113,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     quickInsertDrawer!: QuickInsertDrawer;
 
+    textDrawer!: TextDrawer;
+
     public get handActive(): boolean {
         return this.board.pointer === PlaitPointerType.hand;
     }
@@ -122,8 +122,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     constructor(
         private viewContainerRef: ViewContainerRef,
         protected cdr: ChangeDetectorRef,
-        private render2: Renderer2,
-        private ngZone: NgZone
+        private render2: Renderer2
     ) {
         super(cdr);
     }
@@ -131,6 +130,25 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     ngOnInit(): void {
         this.emojisDrawer = new EmojisDrawer(this.board, this.viewContainerRef);
         this.quickInsertDrawer = new QuickInsertDrawer(this.board);
+        this.textDrawer = new TextDrawer(
+            this.board,
+            this.viewContainerRef,
+            () => {
+                return getTopicRectangleByNode(this.board, this.node);
+            },
+            (point: Point) => {
+                return isHitMindElement(this.board, point, this.element);
+            },
+            (textChangeRef: TextChangeRef) => {
+                const width = textChangeRef.width / this.board.viewport.zoom;
+                const height = textChangeRef.height / this.board.viewport.zoom;
+                if (textChangeRef.newValue) {
+                    MindTransforms.setTopic(this.board, this.element, textChangeRef.newValue as MindElement, width, height);
+                } else {
+                    MindTransforms.setTopicSize(this.board, this.element, width, height);
+                }
+            }
+        );
         super.ngOnInit();
         this.node = MindElement.getNode(this.element);
         this.index = NODE_TO_INDEX.get(this.element) || 0;
@@ -141,7 +159,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.drawRichtext();
         this.drawActiveG();
         this.updateActiveClass();
-        this.drawMaskG();
+        // this.drawMaskG();
         this.drawEmojis();
         this.drawExtend();
         this.drawQuickInsert();
@@ -155,9 +173,9 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
         // resolve move node richtext lose issue
         if (this.node !== newNode) {
-            if (this.foreignObject && this.foreignObject.children.length <= 0) {
-                this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
-            }
+            // if (this.foreignObject && this.foreignObject.children.length <= 0) {
+            //     this.foreignObject?.appendChild(this.richtextComponentRef?.instance.editable as HTMLElement);
+            // }
         }
 
         const isEqualNode = RectangleClient.isEqual(this.node, newNode);
@@ -170,11 +188,11 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.updateActiveClass();
             this.drawShape();
             this.drawLink();
-            this.updateRichtext();
             this.drawMaskG();
             this.drawExtend();
             this.drawQuickInsert();
             this.drawEmojis();
+            updateMindNodeTopicSize(this.board, this.node, this.textDrawer.g, this.textDrawer.isEditing);
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameParent = value.parent === previous.parent;
@@ -308,9 +326,9 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.maskG.setAttribute('visibility', 'visible');
         this.g.append(this.maskG);
 
-        if (this.isEditable) {
-            this.disabledMaskG();
-        }
+        // if (this.isEditable) {
+        //     this.disabledMaskG();
+        // }
 
         fromEvent<MouseEvent>(this.maskG, 'mouseenter')
             .pipe(
@@ -374,22 +392,21 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             selectedStrokeG.style.pointerEvents = 'none';
             this.g.appendChild(selectedStrokeG);
             this.activeG.push(selectedStrokeG);
-            if (this.richtextComponentRef?.instance.plaitReadonly === true) {
-                const selectedBackgroundG = drawRoundRectangle(
-                    this.roughSVG as RoughSVG,
-                    x - 2,
-                    y - 2,
-                    x + width + 2,
-                    y + height + 2,
-                    { stroke: PRIMARY_COLOR, fill: PRIMARY_COLOR, fillStyle: 'solid' },
-                    true
-                );
-                selectedBackgroundG.style.opacity = '0.15';
-                // 影响双击事件
-                selectedBackgroundG.style.pointerEvents = 'none';
-                this.g.appendChild(selectedBackgroundG);
-                this.activeG.push(selectedBackgroundG, selectedStrokeG);
-            }
+
+            const selectedBackgroundG = drawRoundRectangle(
+                this.roughSVG as RoughSVG,
+                x - 2,
+                y - 2,
+                x + width + 2,
+                y + height + 2,
+                { stroke: PRIMARY_COLOR, fill: PRIMARY_COLOR, fillStyle: 'solid' },
+                true
+            );
+            selectedBackgroundG.style.opacity = '0.15';
+            // 影响双击事件
+            selectedBackgroundG.style.pointerEvents = 'none';
+            this.g.appendChild(selectedBackgroundG);
+            this.activeG.push(selectedBackgroundG, selectedStrokeG);
         }
     }
 
@@ -407,15 +424,6 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         } else {
             this.render2.removeClass(this.g, 'active');
         }
-    }
-
-    drawRichtext() {
-        const { richtextG, richtextComponentRef, foreignObject } = drawTopicByNode(this.board, this.node, this.viewContainerRef);
-        this.richtextComponentRef = richtextComponentRef;
-        this.richtextG = richtextG;
-        this.foreignObject = foreignObject;
-        this.render2.addClass(richtextG, 'richtext');
-        this.g.append(richtextG);
     }
 
     drawExtend() {
@@ -573,13 +581,13 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         }
     }
 
+    drawRichtext() {
+        this.textDrawer.draw(this.element.data.topic);
+        this.g.append(this.textDrawer.g);
+    }
+
     destroyRichtext() {
-        if (this.richtextG) {
-            this.richtextG.remove();
-        }
-        if (this.richtextComponentRef) {
-            this.richtextComponentRef.destroy();
-        }
+        this.textDrawer.destroy();
     }
 
     updateAbstractIncludedOutline(activeHandlePosition?: AbstractHandlePosition, resizingLocation?: number) {
@@ -594,130 +602,124 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         PlaitBoard.getHost(this.board).append(this.abstractIncludedOutlineG);
     }
 
-    updateRichtext() {
-        updateRichText(this.node.origin.data.topic, this.richtextComponentRef!);
-        updateMindNodeTopicSize(this.board, this.node, this.richtextG as SVGGElement, this.isEditable);
-    }
-
     startEditText(isEnd: boolean, isClear: boolean) {
-        if (!this.richtextComponentRef) {
-            throw new Error('undefined richtextComponentRef');
-        }
-        const richtextInstance = this.richtextComponentRef.instance;
-
-        this.isEditable = true;
-        IS_TEXT_EDITABLE.set(this.board, true);
-        this.disabledMaskG();
-        updateMindNodeTopicSize(this.board, this.node, this.richtextG as SVGGElement, this.isEditable);
-        if (richtextInstance.plaitReadonly) {
-            richtextInstance.plaitReadonly = false;
-            this.richtextComponentRef.changeDetectorRef.detectChanges();
-            this.drawActiveG();
-            const location = isEnd ? Editor.end(richtextInstance.editor, [0]) : [0];
-            setFullSelectionAndFocus(richtextInstance.editor, location);
-            if (isClear) {
-                Editor.deleteBackward(richtextInstance.editor);
-            }
-            // handle invalid width and height (old data)
-            let { width, height } = getRichtextContentSize(richtextInstance.editable);
-            if (width !== this.element.width || height !== this.element.height) {
-                MindTransforms.setTopicSize(this.board, this.element, width, height);
-            }
-        }
-        let richtext = richtextInstance.plaitValue;
-        // use debounceTime to wait DOM render complete
-        const valueChange$ = richtextInstance.plaitChange
-            .pipe(
-                debounceTime(0),
-                filter(event => {
-                    // 过滤掉 operations 中全是 set_selection 的操作
-                    return !event.operations.every(op => Operation.isSelectionOperation(op));
-                })
-            )
-            .subscribe(event => {
-                if (richtext === event.value) {
-                    return;
-                }
-                this.updateRichtext();
-                // 更新富文本、更新宽高
-                let { width, height } = getRichtextContentSize(richtextInstance.editable);
-                MindTransforms.setTopic(this.board, this.element, event.value, width, height);
-                MERGING.set(this.board, true);
-            });
-        const composition$ = richtextInstance.plaitComposition.pipe(debounceTime(0)).subscribe(event => {
-            let { width, height } = getRichtextContentSize(richtextInstance.editable);
-            if (width < NODE_MIN_WIDTH) {
-                width = NODE_MIN_WIDTH;
-            }
-            if (event.isComposing && (width !== this.node.origin.width || height !== this.node.origin.height)) {
-                const newElement: Partial<MindElement> = {
-                    width: width / this.board.viewport.zoom,
-                    height: height / this.board.viewport.zoom
-                };
-                const path = PlaitBoard.findPath(this.board, this.element);
-                Transforms.setNode(this.board, newElement, path);
-                MERGING.set(this.board, true);
-            }
-        });
-        const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
-            const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
-            const clickInNode = isHitMindElement(this.board, point, this.element);
-            if (clickInNode && !hasEditableTarget(richtextInstance.editor, event.target)) {
-                event.preventDefault();
-            } else if (!clickInNode) {
-                // handle composition input state, like: Chinese IME Composition Input
-                timer(0).subscribe(() => {
-                    exitHandle();
-                    this.enableMaskG();
-                });
-            }
-        });
-        const editor = richtextInstance.editor;
-        const { keydown } = editor;
-        editor.keydown = (event: KeyboardEvent) => {
-            if (event.isComposing) {
-                return;
-            }
-            if (event.key === 'Escape') {
-                event.preventDefault();
-                event.stopPropagation();
-                exitHandle();
-                this.drawActiveG();
-                this.enableMaskG();
-                return;
-            }
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                event.stopPropagation();
-                exitHandle();
-                this.drawActiveG();
-                this.enableMaskG();
-                return;
-            }
-            if (event.key === 'Tab') {
-                event.preventDefault();
-                event.stopPropagation();
-                exitHandle();
-                this.drawActiveG();
-                this.drawMaskG();
-            }
-        };
-        const exitHandle = () => {
-            this.ngZone.run(() => {
-                // unsubscribe
-                valueChange$.unsubscribe();
-                composition$.unsubscribe();
-                mousedown$.unsubscribe();
-                editor.keydown = keydown; // reset keydown
-                // editable status
-                MERGING.set(this.board, false);
-                richtextInstance.plaitReadonly = true;
-                this.richtextComponentRef?.changeDetectorRef.markForCheck();
-                this.isEditable = false;
-                updateMindNodeTopicSize(this.board, this.node, this.richtextG as SVGGElement, this.isEditable);
-                IS_TEXT_EDITABLE.set(this.board, false);
-            });
-        };
+        // if (!this.richtextComponentRef) {
+        //     throw new Error('undefined richtextComponentRef');
+        // }
+        // const richtextInstance = this.richtextComponentRef.instance;
+        // this.isEditable = true;
+        // IS_TEXT_EDITABLE.set(this.board, true);
+        // this.disabledMaskG();
+        // updateMindNodeTopicSize(this.board, this.node, this.richtextG as SVGGElement, this.isEditable);
+        // if (richtextInstance.readonly) {
+        // richtextInstance.readonly = false;
+        // this.richtextComponentRef.changeDetectorRef.detectChanges();
+        // this.drawActiveG();
+        // const location = isEnd ? Editor.end(richtextInstance.editor, [0]) : [0];
+        // setFullSelectionAndFocus(richtextInstance.editor, location);
+        // if (isClear) {
+        //     Editor.deleteBackward(richtextInstance.editor);
+        // }
+        // handle invalid width and height (old data)
+        // let { width, height } = getRichtextContentSize(richtextInstance.editable);
+        // if (width !== this.element.width || height !== this.element.height) {
+        //     MindTransforms.setTopicSize(this.board, this.element, width, height);
+        // }
+        // }
+        // let richtext = richtextInstance.plaitValue;
+        // // use debounceTime to wait DOM render complete
+        // const valueChange$ = richtextInstance.plaitChange
+        //     .pipe(
+        //         debounceTime(0),
+        //         filter(event => {
+        //             // 过滤掉 operations 中全是 set_selection 的操作
+        //             return !event.operations.every(op => Operation.isSelectionOperation(op));
+        //         })
+        //     )
+        //     .subscribe(event => {
+        //         if (richtext === event.value) {
+        //             return;
+        //         }
+        //         this.updateRichtext();
+        //         // 更新富文本、更新宽高
+        //         let { width, height } = getRichtextContentSize(richtextInstance.editable);
+        //         MindTransforms.setTopic(this.board, this.element, event.value, width, height);
+        //         MERGING.set(this.board, true);
+        //     });
+        // const composition$ = richtextInstance.plaitComposition.pipe(debounceTime(0)).subscribe(event => {
+        //     let { width, height } = getRichtextContentSize(richtextInstance.editable);
+        //     if (width < NODE_MIN_WIDTH) {
+        //         width = NODE_MIN_WIDTH;
+        //     }
+        //     if (event.isComposing && (width !== this.node.origin.width || height !== this.node.origin.height)) {
+        //         const newElement: Partial<MindElement> = {
+        //             width: width / this.board.viewport.zoom,
+        //             height: height / this.board.viewport.zoom
+        //         };
+        //         const path = PlaitBoard.findPath(this.board, this.element);
+        //         Transforms.setNode(this.board, newElement, path);
+        //         MERGING.set(this.board, true);
+        //     }
+        // });
+        // const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
+        //     const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
+        //     const clickInNode = isHitMindElement(this.board, point, this.element);
+        //     if (clickInNode && !hasEditableTarget(richtextInstance.editor, event.target)) {
+        //         event.preventDefault();
+        //     } else if (!clickInNode) {
+        //         // handle composition input state, like: Chinese IME Composition Input
+        //         timer(0).subscribe(() => {
+        //             // exitHandle();
+        //             this.enableMaskG();
+        //         });
+        //     }
+        // });
+        // const editor = richtextInstance.editor;
+        // const { keydown } = editor;
+        // editor.keydown = (event: KeyboardEvent) => {
+        //     if (event.isComposing) {
+        //         return;
+        //     }
+        //     if (event.key === 'Escape') {
+        //         event.preventDefault();
+        //         event.stopPropagation();
+        //         exitHandle();
+        //         this.drawActiveG();
+        //         this.enableMaskG();
+        //         return;
+        //     }
+        //     if (event.key === 'Enter' && !event.shiftKey) {
+        //         event.preventDefault();
+        //         event.stopPropagation();
+        //         exitHandle();
+        //         this.drawActiveG();
+        //         this.enableMaskG();
+        //         return;
+        //     }
+        //     if (event.key === 'Tab') {
+        //         event.preventDefault();
+        //         event.stopPropagation();
+        //         exitHandle();
+        //         this.drawActiveG();
+        //         this.drawMaskG();
+        //     }
+        // };
+        // const exitHandle = () => {
+        //     this.ngZone.run(() => {
+        //         // unsubscribe
+        //         valueChange$.unsubscribe();
+        //         composition$.unsubscribe();
+        //         mousedown$.unsubscribe();
+        //         editor.keydown = keydown; // reset keydown
+        //         // editable status
+        //         MERGING.set(this.board, false);
+        //         richtextInstance.plaitReadonly = true;
+        //         this.richtextComponentRef?.changeDetectorRef.markForCheck();
+        //         this.isEditable = false;
+        //         updateMindNodeTopicSize(this.board, this.node, this.richtextG as SVGGElement, this.isEditable);
+        //         IS_TEXT_EDITABLE.set(this.board, false);
+        //     });
+        // };
     }
 
     trackBy = (index: number, node: MindNode) => {

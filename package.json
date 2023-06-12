@@ -44,7 +44,8 @@
     "slate-history": "^0.66.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4",
-    "immer": "^9.0.6"
+    "immer": "^9.0.6",
+    "slate-angular": "15.1.0-next.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.2.3",

@@ -30,8 +30,8 @@ export function updateForeignObject(g: SVGGElement, width: number, height: numbe
 
 export function createRichtext(element: SlateElement, viewContainerRef: ViewContainerRef, edit: boolean) {
     const componentRef = viewContainerRef.createComponent(PlaitRichtextComponent);
-    componentRef.instance.plaitValue = element;
-    componentRef.instance.plaitReadonly = edit ? false : true;
+    componentRef.instance.value = element;
+    componentRef.instance.readonly = edit ? false : true;
     return componentRef;
 }
 
@@ -49,19 +49,19 @@ export function drawRichtext(
     const foreignObject = createForeignObject(x, y, width, height);
     richtextG.append(foreignObject);
     const richtextComponentRef = createRichtext(value, viewContainerRef, edit);
-    foreignObject.append(richtextComponentRef.instance.editable);
-    classList.forEach(name => {
-        richtextComponentRef.instance.editable.classList.add(name);
-    });
+    // foreignObject.append(richtextComponentRef.instance.editable);
+    // classList.forEach(name => {
+    //     richtextComponentRef.instance.editable.classList.add(name);
+    // });
     return { richtextComponentRef, richtextG, foreignObject };
 }
 
 export function updateEditStatus(richtextComponentRef: ComponentRef<PlaitRichtextComponent>, edit: boolean) {
-    richtextComponentRef.instance.plaitReadonly = edit ? false : true;
+    richtextComponentRef.instance.readonly = edit ? false : true;
     richtextComponentRef.changeDetectorRef.markForCheck();
 }
 
 export function updateRichText(element: SlateElement, richtextComponentRef: ComponentRef<PlaitRichtextComponent>) {
-    richtextComponentRef.instance.plaitValue = element;
+    richtextComponentRef.instance.value = element;
     return richtextComponentRef;
 }
