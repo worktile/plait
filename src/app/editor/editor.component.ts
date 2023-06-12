@@ -5,12 +5,12 @@ import {
     PlaitBoardChangeEvent,
     PlaitBoardOptions,
     PlaitElement,
+    PlaitTheme,
     ThemeColorMode,
-    Viewport,
-    getSelectedElements
+    Viewport
 } from '@plait/core';
 import { mockData } from './mock-data';
-import { withMind, PlaitMindBoard, MindElement } from '@plait/mind';
+import { withMind, PlaitMindBoard } from '@plait/mind';
 import { withEmojiExtend } from './emoji/with-emoji-extend';
 import { AbstractResizeState, MindThemeColors } from '@plait/mind';
 
@@ -34,6 +34,8 @@ export class BasicBoardEditorComponent implements OnInit {
 
     viewport!: Viewport;
 
+    theme!: PlaitTheme;
+
     board!: PlaitBoard;
 
     ngOnInit(): void {
@@ -41,6 +43,7 @@ export class BasicBoardEditorComponent implements OnInit {
         if (data) {
             this.value = data.children;
             this.viewport = data.viewport;
+            this.theme = data.theme;
         }
     }
 

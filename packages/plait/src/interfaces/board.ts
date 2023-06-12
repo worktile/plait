@@ -71,6 +71,7 @@ export interface PlaitBoardChangeEvent {
     operations: PlaitOperation[];
     viewport: Viewport;
     selection: Selection | null;
+    theme: PlaitTheme;
 }
 
 export interface PlaitBoardOptions {
