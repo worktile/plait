@@ -1,5 +1,23 @@
 # mind
 
+## 0.6.0
+
+### Minor Changes
+
+-   [#415](https://github.com/worktile/plait/pull/415) [`3c978fa`](https://github.com/worktile/plait/commit/3c978fa0370d50b459c2cd9d965bd37d6278e97d) Thanks [@WBbug](https://github.com/WBbug)! - get parent branch width when draw link
+
+*   [#408](https://github.com/worktile/plait/pull/408) [`3512152`](https://github.com/worktile/plait/commit/3512152c9ab4db9a904f394539ccd2f073f6c4b7) Thanks [@WBbug](https://github.com/WBbug)! - add ThemeColor and MindThemeColor
+
+-   [`d3d5d40`](https://github.com/worktile/plait/commit/d3d5d4080f91ce1b2cfd0bcee87f53a7dd4978c6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support board hotkey and mind hotkey
+
+*   [#413](https://github.com/worktile/plait/pull/413) [`675a29e`](https://github.com/worktile/plait/commit/675a29ed9a1e267bcc8a9dcec8742b3b14fcd802) Thanks [@WBbug](https://github.com/WBbug)! - let core and mind support change themeColor
+
+-   [#406](https://github.com/worktile/plait/pull/406) [`50bcc1e`](https://github.com/worktile/plait/commit/50bcc1e6c93315965f8c24bc282a9a2f4d78a7dd) Thanks [@WBbug](https://github.com/WBbug)! - adjust insertMindElement logic
+
+### Patch Changes
+
+-   [`f5c8410`](https://github.com/worktile/plait/commit/f5c8410b161110a911ae879da6efc61f396fb515) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - initialize theme color
+
 ## 0.5.0
 
 ### Minor Changes
