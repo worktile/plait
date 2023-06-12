@@ -169,7 +169,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                     children: this.board.children,
                     operations: this.board.operations,
                     viewport: this.board.viewport,
-                    selection: this.board.selection
+                    selection: this.board.selection,
+                    theme: this.board.theme
                 };
                 this.updateIslands();
                 this.plaitChange.emit(changeEvent);
