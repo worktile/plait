@@ -278,6 +278,16 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                             event.preventDefault();
                             BoardTransforms.updateZoom(this.board, this.board.viewport.zoom - 0.1);
                         }
+                        if (isHotkey('mod+0', { byKey: true })(event)) {
+                            event.preventDefault();
+                            BoardTransforms.updateZoom(this.board, 1);
+                            return;
+                        }
+                        if (isHotkey('mod+shift+=', { byKey: true })(event)) {
+                            event.preventDefault();
+                            BoardTransforms.fitViewport(this.board);
+                            return;
+                        }
                     }
                 }),
                 filter(event => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board) && !hasInputOrTextareaTarget(event.target))
