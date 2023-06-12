@@ -74,3 +74,13 @@ export const MindThemeColors: MindThemeColor[] = [
     MindDarkThemeColor,
     MindStarryThemeColor
 ];
+
+export const MindThemeColor = {
+    isMindThemeColor(value: any): value is MindThemeColor {
+        if (value.branchColors && value.rootFill && value.rootTextColor) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
