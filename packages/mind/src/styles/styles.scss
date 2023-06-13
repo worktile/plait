@@ -29,7 +29,7 @@ g[plait-mindmap='true'] {
 }
 
 .plait-board-container {
-    &.focused:not(.selection-moving):not(.element-moving):not(.abstract-resizing-horizontal):not(.abstract-resizing-vertical):not(.pointer-mind) {
+    &.focused:not(.selection-moving):not(.element-moving):not(.abstract-resizing-horizontal):not(.abstract-resizing-vertical):not(.pointer-mind):not(.mind-node-dragging) {
         .extend {
             cursor: pointer;
             &:hover {
