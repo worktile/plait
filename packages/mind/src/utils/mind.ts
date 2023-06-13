@@ -3,7 +3,7 @@ import { Node } from 'slate';
 import { NODE_MIN_WIDTH } from '../constants/node-rule';
 import { MindElement } from '../interfaces/element';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
-import { enterNodeEditing } from './node/common';
+import { startTopicEdit } from './node/common';
 import { createMindElement, InheritAttribute } from './node/create-node';
 import { MindNode } from '../interfaces/node';
 
@@ -87,7 +87,7 @@ export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, p
     clearSelectedElement(board);
     addSelectedElement(board, newElement);
     setTimeout(() => {
-        enterNodeEditing(newElement);
+        startTopicEdit(newElement);
     });
 };
 

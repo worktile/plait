@@ -1,12 +1,4 @@
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    OnDestroy,
-    OnInit,
-    Renderer2,
-    ViewContainerRef
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
 import {
     PlaitPointerType,
     createG,
@@ -22,7 +14,7 @@ import {
     Point
 } from '@plait/core';
 import { isHorizontalLayout, isIndentedLayout, isLeftLayout, AbstractNode, isTopLayout, MindLayoutType } from '@plait/layouts';
-import { TextChangeRef, TextDrawer } from '@plait/richtext';
+import { TextChangeRef, TextManage } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
@@ -81,7 +73,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     nodeInsertDrawer!: NodeInsertDrawer;
 
-    textDrawer!: TextDrawer;
+    textManage!: TextManage;
 
     activeDrawer!: NodeActiveDrawer;
 
@@ -93,7 +85,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.nodeEmojisDrawer = new NodeEmojisDrawer(this.board, this.viewContainerRef);
         this.nodeInsertDrawer = new NodeInsertDrawer(this.board);
         this.activeDrawer = new NodeActiveDrawer(this.board);
-        this.textDrawer = new TextDrawer(
+        this.textManage = new TextManage(
             this.board,
             this.viewContainerRef,
             () => {
@@ -124,10 +116,17 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.drawShape();
         this.drawLink();
         this.drawRichtext();
-        this.activeDrawer.draw(this.element, this.g, { selected: this.selected });
+        this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
         this.drawEmojis();
         this.drawExtend();
         this.nodeInsertDrawer.draw(this.element, this.extendG!);
+    }
+
+    startEdit() {
+        this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: true });
+        this.textManage.edit(() => {
+            this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: false });
+        });
     }
 
     onContextChanged(
@@ -141,18 +140,18 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
 
         if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
-            this.activeDrawer.draw(this.element, this.g, { selected: this.selected });
+            this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
             this.drawShape();
             this.drawLink();
             this.drawEmojis();
             this.drawExtend();
             this.nodeInsertDrawer.draw(this.element, this.extendG!);
-            this.textDrawer.redraw();
+            this.textManage.redraw();
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameParent = value.parent === previous.parent;
             if (!hasSameSelected) {
-                this.activeDrawer.draw(this.element, this.g, { selected: this.selected });
+                this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
             }
             if (!hasSameParent) {
                 this.drawLink();
@@ -370,8 +369,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     }
 
     drawRichtext() {
-        this.textDrawer.draw(this.element.data.topic);
-        this.g.append(this.textDrawer.g);
+        this.textManage.draw(this.element.data.topic);
+        this.g.append(this.textManage.g);
     }
 
     trackBy = (index: number, node: MindNode) => {
@@ -380,7 +379,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        this.textDrawer.destroy();
+        this.textManage.destroy();
         this.nodeEmojisDrawer.destroy();
         this.destroy$.next();
         this.destroy$.complete();

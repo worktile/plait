@@ -24,7 +24,7 @@ export interface TextChangeRef {
     height: number;
 }
 
-export class TextDrawer {
+export class TextManage {
     componentRef!: ComponentRef<PlaitRichtextComponent>;
     g!: SVGGElement;
     foreignObject!: SVGForeignObjectElement;
@@ -63,7 +63,7 @@ export class TextDrawer {
 
     update() {}
 
-    edit() {
+    edit(onExit?: () => void) {
         IS_TEXT_EDITABLE.set(this.board, true);
         this.isEditing = true;
         this.componentRef.instance.readonly = false;
@@ -157,6 +157,10 @@ export class TextDrawer {
                 const rectangle = this.getRectangle();
                 updateForeignObject(this.g, rectangle.width, rectangle.height, rectangle.x, rectangle.y);
             }, 0);
+
+            if (onExit) {
+                onExit();
+            }
         };
     }
 
