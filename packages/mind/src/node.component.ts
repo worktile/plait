@@ -2,7 +2,6 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    ComponentRef,
     OnDestroy,
     OnInit,
     Renderer2,
@@ -14,7 +13,6 @@ import {
     createText,
     PlaitBoard,
     Transforms,
-    drawRoundRectangle,
     PlaitPluginElementComponent,
     PlaitElement,
     NODE_TO_INDEX,
@@ -24,11 +22,11 @@ import {
     Point
 } from '@plait/core';
 import { isHorizontalLayout, isIndentedLayout, isLeftLayout, AbstractNode, isTopLayout, MindLayoutType } from '@plait/layouts';
-import { PlaitRichtextComponent, TextChangeRef, TextDrawer } from '@plait/richtext';
+import { TextChangeRef, TextDrawer } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
-import { EXTEND_OFFSET, EXTEND_RADIUS, PRIMARY_COLOR } from './constants';
+import { EXTEND_OFFSET, EXTEND_RADIUS } from './constants';
 import { drawRoundRectangleByNode } from './utils/draw/node-shape';
 import { MindElement, PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
@@ -38,17 +36,15 @@ import { getChildrenCount } from './utils/mind';
 import { getShapeByElement } from './utils/node-style/shape';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { drawAbstractLink } from './utils/draw/node-link/abstract-link';
-import { EmojisDrawer } from './drawer/emojis.drawer';
+import { NodeEmojisDrawer } from './drawer/node-emojis.drawer';
 import { MindTransforms } from './transforms';
-import { drawAbstractIncludedOutline } from './utils/draw/abstract-outline';
 import { MindElementShape } from './interfaces';
-import { QuickInsertDrawer } from './drawer/quick-insert.drawer';
-import { hasAfterDraw } from './base/base.drawer';
+import { NodeInsertDrawer } from './drawer/node-insert.drawer';
 import { getBranchColorByMindElement, getBranchWidthByMindElement } from './utils/node-style/branch';
 import { PlaitMindBoard } from './plugins/with-mind.board';
-import { AbstractHandlePosition } from './plugins/with-abstract-resize.board';
 import { drawLink } from './utils/draw/node-link/draw-link';
 import { getTopicRectangleByNode } from './utils/position/topic';
+import { NodeActiveDrawer } from './drawer/node-active.drawer';
 
 @Component({
     selector: 'plait-mind-node',
@@ -71,41 +67,32 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     index!: number;
 
-    abstractIncludedOutlineG?: SVGGElement;
-
     parentG!: SVGGElement;
-
-    activeG: SVGGElement[] = [];
 
     shapeG: SVGGElement | null = null;
 
     linkG?: SVGGElement;
 
-    foreignObject?: SVGForeignObjectElement;
-
     extendG?: SVGGElement;
-
-    richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
 
     destroy$ = new Subject<void>();
 
-    emojisDrawer!: EmojisDrawer;
+    nodeEmojisDrawer!: NodeEmojisDrawer;
 
-    quickInsertDrawer!: QuickInsertDrawer;
+    nodeInsertDrawer!: NodeInsertDrawer;
 
     textDrawer!: TextDrawer;
 
-    public get handActive(): boolean {
-        return this.board.pointer === PlaitPointerType.hand;
-    }
+    activeDrawer!: NodeActiveDrawer;
 
     constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef, private render2: Renderer2) {
         super(cdr);
     }
 
-    ngOnInit(): void {
-        this.emojisDrawer = new EmojisDrawer(this.board, this.viewContainerRef);
-        this.quickInsertDrawer = new QuickInsertDrawer(this.board);
+    initializeDrawer() {
+        this.nodeEmojisDrawer = new NodeEmojisDrawer(this.board, this.viewContainerRef);
+        this.nodeInsertDrawer = new NodeInsertDrawer(this.board);
+        this.activeDrawer = new NodeActiveDrawer(this.board);
         this.textDrawer = new TextDrawer(
             this.board,
             this.viewContainerRef,
@@ -125,7 +112,11 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
                 }
             }
         );
+    }
+
+    ngOnInit(): void {
         super.ngOnInit();
+        this.initializeDrawer();
         this.node = MindElement.getNode(this.element);
         this.index = NODE_TO_INDEX.get(this.element) || 0;
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
@@ -133,11 +124,10 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.drawShape();
         this.drawLink();
         this.drawRichtext();
-        this.drawActiveG();
-        this.updateActiveClass();
+        this.activeDrawer.draw(this.element, this.g, { selected: this.selected });
         this.drawEmojis();
         this.drawExtend();
-        this.drawQuickInsert();
+        this.nodeInsertDrawer.draw(this.element, this.extendG!);
     }
 
     onContextChanged(
@@ -151,20 +141,18 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
 
         if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
-            this.drawActiveG();
-            this.updateActiveClass();
+            this.activeDrawer.draw(this.element, this.g, { selected: this.selected });
             this.drawShape();
             this.drawLink();
-            this.drawExtend();
-            this.drawQuickInsert();
             this.drawEmojis();
+            this.drawExtend();
+            this.nodeInsertDrawer.draw(this.element, this.extendG!);
             this.textDrawer.redraw();
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameParent = value.parent === previous.parent;
             if (!hasSameSelected) {
-                this.drawActiveG();
-                this.updateActiveClass();
+                this.activeDrawer.draw(this.element, this.g, { selected: this.selected });
             }
             if (!hasSameParent) {
                 this.drawLink();
@@ -173,20 +161,9 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     }
 
     drawEmojis() {
-        const g = this.emojisDrawer.drawEmojis(this.element);
+        const g = this.nodeEmojisDrawer.drawEmojis(this.element);
         if (g) {
             this.g.append(g);
-        }
-    }
-
-    drawQuickInsert() {
-        this.quickInsertDrawer.destroy();
-        if (this.quickInsertDrawer.canDraw(this.element)) {
-            const g = this.quickInsertDrawer.draw(this.element);
-            if (hasAfterDraw(this.quickInsertDrawer)) {
-                this.quickInsertDrawer.afterDraw(this.element);
-            }
-            this.extendG?.appendChild(g);
         }
     }
 
@@ -237,59 +214,6 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         }
     }
 
-    drawActiveG() {
-        this.destroyActiveG();
-        this.abstractIncludedOutlineG?.remove();
-        if (this.selected) {
-            if (AbstractNode.isAbstract(this.element)) {
-                this.updateAbstractIncludedOutline();
-            }
-            let { x, y, width, height } = getRectangleByNode(this.node as MindNode);
-            const selectedStrokeG = drawRoundRectangle(
-                this.roughSVG as RoughSVG,
-                x - 2,
-                y - 2,
-                x + width + 2,
-                y + height + 2,
-                { stroke: PRIMARY_COLOR, strokeWidth: 2, fill: '' },
-                true
-            );
-            this.g.appendChild(selectedStrokeG);
-            this.activeG.push(selectedStrokeG);
-
-            const selectedBackgroundG = drawRoundRectangle(
-                this.roughSVG as RoughSVG,
-                x - 2,
-                y - 2,
-                x + width + 2,
-                y + height + 2,
-                { stroke: PRIMARY_COLOR, fill: PRIMARY_COLOR, fillStyle: 'solid' },
-                true
-            );
-            selectedBackgroundG.style.opacity = '0.15';
-            // 影响双击事件
-            selectedBackgroundG.style.pointerEvents = 'none';
-            this.g.appendChild(selectedBackgroundG);
-            this.activeG.push(selectedBackgroundG, selectedStrokeG);
-        }
-    }
-
-    destroyActiveG() {
-        this.activeG.forEach(g => g.remove());
-        this.activeG = [];
-    }
-
-    updateActiveClass() {
-        if (!this.g) {
-            return;
-        }
-        if (this.selected) {
-            this.render2.addClass(this.g, 'active');
-        } else {
-            this.render2.removeClass(this.g, 'active');
-        }
-    }
-
     drawExtend() {
         this.destroyExtend();
         // create extend
@@ -305,7 +229,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         // interactive
         fromEvent(collapseG, 'mouseup')
             .pipe(
-                filter(() => !this.handActive || !!PlaitBoard.isReadonly(this.board)),
+                filter(() => !PlaitBoard.isPointer(this.board, PlaitPointerType.hand) || !!PlaitBoard.isReadonly(this.board)),
                 take(1)
             )
             .subscribe(() => {
@@ -450,27 +374,14 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.g.append(this.textDrawer.g);
     }
 
-    updateAbstractIncludedOutline(activeHandlePosition?: AbstractHandlePosition, resizingLocation?: number) {
-        this.abstractIncludedOutlineG?.remove();
-        this.abstractIncludedOutlineG = drawAbstractIncludedOutline(
-            this.board,
-            this.roughSVG,
-            this.element,
-            activeHandlePosition,
-            resizingLocation
-        );
-        PlaitBoard.getHost(this.board).append(this.abstractIncludedOutlineG);
-    }
-
     trackBy = (index: number, node: MindNode) => {
         return node.origin.id;
     };
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        this.abstractIncludedOutlineG?.remove();
         this.textDrawer.destroy();
-        this.emojisDrawer.destroy();
+        this.nodeEmojisDrawer.destroy();
         this.destroy$.next();
         this.destroy$.complete();
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {
