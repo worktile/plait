@@ -9,7 +9,7 @@ export abstract class BaseDrawer<T = undefined> {
     draw(element: MindElement, parentG: SVGGElement, data?: T) {
         this.destroy();
         if (this.canDraw && this.canDraw(element, data)) {
-            const g = this.baseDraw(element, parentG, data);
+            const g = this.baseDraw(element, data);
             if (g) {
                 parentG.append(g);
             }
@@ -21,7 +21,7 @@ export abstract class BaseDrawer<T = undefined> {
 
     abstract canDraw(element: MindElement, data?: T): boolean;
 
-    abstract baseDraw(element: MindElement, parentG: SVGGElement, data?: T): SVGGElement | undefined;
+    abstract baseDraw(element: MindElement, data?: T): SVGGElement | undefined;
 
     destroy() {
         if (this.g) {

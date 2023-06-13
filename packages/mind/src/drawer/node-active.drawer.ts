@@ -7,10 +7,15 @@ import { AbstractNode } from '@plait/layouts';
 import { drawAbstractIncludedOutline } from '../utils/draw/abstract-outline';
 import { AbstractHandlePosition } from '../plugins/with-abstract-resize.board';
 
-export class NodeActiveDrawer extends BaseDrawer<{ selected: boolean }> {
+export interface ActiveData {
+    selected: boolean;
+    isEditing: boolean;
+}
+
+export class NodeActiveDrawer extends BaseDrawer<ActiveData> {
     abstractOutlineG?: SVGGElement;
 
-    canDraw(element: MindElement<BaseData>, data: { selected: boolean }): boolean {
+    canDraw(element: MindElement<BaseData>, data: ActiveData): boolean {
         if (data.selected) {
             return true;
         } else {
@@ -18,7 +23,7 @@ export class NodeActiveDrawer extends BaseDrawer<{ selected: boolean }> {
         }
     }
 
-    baseDraw(element: MindElement<BaseData>): SVGGElement {
+    baseDraw(element: MindElement<BaseData>, data: ActiveData): SVGGElement {
         const activeG = createG();
         this.g = activeG;
 
@@ -39,17 +44,20 @@ export class NodeActiveDrawer extends BaseDrawer<{ selected: boolean }> {
         );
         this.g.appendChild(strokeG);
 
-        const fillG = drawRoundRectangle(
-            PlaitBoard.getRoughSVG(this.board),
-            x - 2,
-            y - 2,
-            x + width + 2,
-            y + height + 2,
-            { stroke: PRIMARY_COLOR, fill: PRIMARY_COLOR, fillStyle: 'solid' },
-            true
-        );
-        fillG.style.opacity = '0.15';
-        this.g.appendChild(fillG);
+        if (!data.isEditing) {
+            const fillG = drawRoundRectangle(
+                PlaitBoard.getRoughSVG(this.board),
+                x - 2,
+                y - 2,
+                x + width + 2,
+                y + height + 2,
+                { stroke: PRIMARY_COLOR, fill: PRIMARY_COLOR, fillStyle: 'solid' },
+                true
+            );
+            fillG.style.opacity = '0.15';
+            this.g.appendChild(fillG);
+        }
+
         return activeG;
     }
 
