@@ -70,5 +70,7 @@ export const addHovered = (element: MindElement) => {
 
 export const removeHovered = (element: MindElement) => {
     const component = PlaitElement.getComponent(element);
-    component.g.classList.remove('hovered');
+    if (component && component.g) {
+        component.g.classList.remove('hovered');
+    }
 }

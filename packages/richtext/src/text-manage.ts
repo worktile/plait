@@ -1,4 +1,4 @@
-import { ComponentRef, ViewContainerRef } from '@angular/core';
+import { ComponentRef, NgZone, ViewContainerRef } from '@angular/core';
 import { Descendant, Element, Operation, Transforms } from 'slate';
 import { PlaitRichtextComponent } from './richtext/richtext.component';
 import {
@@ -18,7 +18,7 @@ import { debounceTime, filter } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
 import { getRichtextContentSize } from './utils/dom';
 
-export interface TextChangeRef {
+export interface TextManageRef {
     newValue?: Element;
     width: number;
     height: number;
@@ -35,7 +35,7 @@ export class TextManage {
         private viewContainerRef: ViewContainerRef,
         private getRectangle: () => RectangleClient,
         private isHitElement: (point: Point) => boolean,
-        private onChange: (textChangeRef: TextChangeRef) => void
+        private onChange: (textChangeRef: TextManageRef) => void
     ) {}
 
     draw(value: Element) {
@@ -82,6 +82,7 @@ export class TextManage {
         updateForeignObject(this.g, 999, 999, rectangle.x, rectangle.y);
 
         let previousValue: Descendant[] = this.componentRef.instance.children;
+        
         // use debounceTime to wait DOM render complete
         const valueChange$ = this.componentRef.instance.onChange
             .pipe(
@@ -97,8 +98,9 @@ export class TextManage {
                 previousValue = editor.children;
                 const paragraph = AngularEditor.toDOMNode(editor, value.children[0]);
                 let result = getRichtextContentSize(paragraph);
-                const width = result.width / this.board.viewport.zoom;
-                const height = result.height / this.board.viewport.zoom;
+                const width = result.width;
+                const height = result.height;
+                console.log(this.board.viewport.zoom, 'zoom');
                 this.onChange({ width, height, newValue: editor.children[0] as Element });
                 MERGING.set(this.board, true);
             });
@@ -106,8 +108,8 @@ export class TextManage {
         const composition$ = this.componentRef.instance.onComposition.pipe(debounceTime(0)).subscribe(event => {
             const paragraph = AngularEditor.toDOMNode(editor, previousValue[0]);
             let result = getRichtextContentSize(paragraph);
-            const width = result.width / this.board.viewport.zoom;
-            const height = result.height / this.board.viewport.zoom;
+            const width = result.width;
+            const height = result.height;
             this.onChange({ width, height });
             MERGING.set(this.board, true);
         });
@@ -140,23 +142,18 @@ export class TextManage {
 
         const exitHandle = () => {
             this.isEditing = false;
+            const rectangle = this.getRectangle();
+            updateForeignObject(this.g, rectangle.width, rectangle.height, rectangle.x, rectangle.y);
 
-            // unsubscribe
             valueChange$.unsubscribe();
             mousedown$.unsubscribe();
             composition$.unsubscribe();
-            editor.onKeydown = onKeydown; // reset keydown
+            editor.onKeydown = onKeydown;
 
-            // editable status
             this.componentRef.instance.readonly = true;
             this.componentRef.changeDetectorRef.detectChanges();
             IS_TEXT_EDITABLE.set(this.board, false);
             MERGING.set(this.board, false);
-
-            setTimeout(() => {
-                const rectangle = this.getRectangle();
-                updateForeignObject(this.g, rectangle.width, rectangle.height, rectangle.x, rectangle.y);
-            }, 0);
 
             if (onExit) {
                 onExit();

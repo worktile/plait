@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    NgZone,
+    OnDestroy,
+    OnInit,
+    Renderer2,
+    ViewContainerRef
+} from '@angular/core';
 import {
     PlaitPointerType,
     createG,
@@ -14,7 +23,7 @@ import {
     Point
 } from '@plait/core';
 import { isHorizontalLayout, isIndentedLayout, isLeftLayout, AbstractNode, isTopLayout, MindLayoutType } from '@plait/layouts';
-import { TextChangeRef, TextManage } from '@plait/richtext';
+import { TextManageRef, TextManage } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
@@ -77,7 +86,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     activeDrawer!: NodeActiveDrawer;
 
-    constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef, private render2: Renderer2) {
+    constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
         super(cdr);
     }
 
@@ -94,11 +103,11 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             (point: Point) => {
                 return isHitMindElement(this.board, point, this.element);
             },
-            (textChangeRef: TextChangeRef) => {
-                const width = textChangeRef.width / this.board.viewport.zoom;
-                const height = textChangeRef.height / this.board.viewport.zoom;
-                if (textChangeRef.newValue) {
-                    MindTransforms.setTopic(this.board, this.element, textChangeRef.newValue as MindElement, width, height);
+            (textManageRef: TextManageRef) => {
+                const width = textManageRef.width;
+                const height = textManageRef.height;
+                if (textManageRef.newValue) {
+                    MindTransforms.setTopic(this.board, this.element, textManageRef.newValue as MindElement, width, height);
                 } else {
                     MindTransforms.setTopicSize(this.board, this.element, width, height);
                 }
