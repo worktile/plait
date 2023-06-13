@@ -55,3 +55,14 @@ export interface InheritAttribute {
     branchWidth?: number;
     branchShape?: BranchShape;
 }
+
+export const INHERIT_ATTRIBUTE_KEYS = [
+    'fill',
+    'strokeColor',
+    'strokeWidth',
+    'shape',
+    'layout',
+    'branchColor',
+    'branchWidth',
+    'branchShape'
+];

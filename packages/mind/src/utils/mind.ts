@@ -4,7 +4,7 @@ import { NODE_MIN_WIDTH } from '../constants/node-rule';
 import { MindElement } from '../interfaces/element';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
 import { enterNodeEditing } from './node/common';
-import { createMindElement, InheritAttribute } from './node/create-node';
+import { createMindElement, INHERIT_ATTRIBUTE_KEYS, InheritAttribute } from './node/create-node';
 import { MindNode } from '../interfaces/node';
 
 export const getChildrenCount = (element: MindElement) => {
@@ -71,10 +71,9 @@ export const extractNodesText = (node: MindElement) => {
 
 // layoutLevel 用来表示插入兄弟节点还是子节点
 export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, path: Path) => {
-    const inheritAttributeKeys: (keyof InheritAttribute)[] = Object.keys({}) as (keyof InheritAttribute)[];
     const newNode: InheritAttribute = {};
     if (!inheritNode.isRoot) {
-        inheritAttributeKeys.forEach(attr => {
+        INHERIT_ATTRIBUTE_KEYS.forEach(attr => {
             (newNode as any)[attr] = inheritNode[attr];
         });
 
