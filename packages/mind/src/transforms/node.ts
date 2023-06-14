@@ -8,7 +8,7 @@ import { RightNodeCountRef } from '../utils/node/right-node-count';
 
 const normalizeWidthAndHeight = (board: PlaitBoard, width: number, height: number) => {
     const newWidth = width < NODE_MIN_WIDTH * board.viewport.zoom ? NODE_MIN_WIDTH : width / board.viewport.zoom;
-    const newHeight = board.viewport.zoom;
+    const newHeight = height / board.viewport.zoom;
     return { width: newWidth, height: newHeight };
 };
 

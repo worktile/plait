@@ -79,7 +79,7 @@ export const withCreateMind = (board: PlaitBoard) => {
                         PlaitBoard.getHost(board).append(fakeCreateNodeRef.g);
                         fakeCreateNodeRef.g.append(...[fakeCreateNodeRef.nodeG, textManage.g]);
                     } else {
-                        fakeCreateNodeRef.textManage.redraw(topicRectangle);
+                        fakeCreateNodeRef.textManage.update(topicRectangle);
                         fakeCreateNodeRef.nodeG.remove();
                         fakeCreateNodeRef.nodeG = nodeG;
                         fakeCreateNodeRef.g.append(nodeG);

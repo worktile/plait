@@ -1,5 +1,4 @@
 import {
-    ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
     ElementRef,
@@ -14,6 +13,7 @@ import {
 import { createEditor, Editor, Element } from 'slate';
 import { withHistory } from 'slate-history';
 import { SlateEditableComponent, withAngular } from 'slate-angular';
+import { withSingle } from '../plugins/with-single';
 
 @Component({
     selector: 'plait-richtext',
@@ -40,7 +40,7 @@ export class PlaitRichtextComponent implements OnInit {
     @Output()
     onComposition: EventEmitter<CompositionEvent> = new EventEmitter();
 
-    editor = withHistory(withAngular(createEditor()));
+    editor = withSingle(withHistory(withAngular(createEditor())));
 
     constructor(public renderer2: Renderer2, private cdr: ChangeDetectorRef, public elementRef: ElementRef<HTMLElement>) {}
 

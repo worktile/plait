@@ -50,7 +50,7 @@ export class TextManage {
         this.g.classList.add('text');
     }
 
-    redraw(rectangle?: RectangleClient) {
+    update(rectangle?: RectangleClient) {
         const { x, y, width, height } = rectangle || this.getRectangle();
         if (!this.isEditing) {
             updateForeignObject(this.g, width, height, x, y);
@@ -98,7 +98,6 @@ export class TextManage {
                 let result = getRichtextContentSize(paragraph);
                 const width = result.width;
                 const height = result.height;
-                console.log(this.board.viewport.zoom, 'zoom');
                 this.onChange && this.onChange({ width, height, newValue: editor.children[0] as Element })
                 MERGING.set(this.board, true);
             });
@@ -130,7 +129,7 @@ export class TextManage {
             if (event.isComposing) {
                 return;
             }
-            if (event.key === 'Escape' || event.key === 'Enter' || event.key === 'Tab') {
+            if (event.key === 'Escape' || (event.key === 'Enter' && !event.shiftKey) || event.key === 'Tab') {
                 event.preventDefault();
                 event.stopPropagation();
                 exitHandle();

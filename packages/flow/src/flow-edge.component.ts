@@ -147,7 +147,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (element.data?.text) {
             const { x, y } = getEdgeTextXYPosition(this.board, this.element, this.textRect!.width, this.textRect!.height);
             const { width, height } = this.textRect!;
-            this.textManage.redraw({ x, y, width, height });
+            this.textManage.update({ x, y, width, height });
             const textBackgroundRect = getEdgeTextBackgroundRect({
                 x,
                 y,
