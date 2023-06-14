@@ -10,8 +10,7 @@ import { MindDefaultThemeColor, MindThemeColor } from '../../interfaces/theme-co
 
 export const getBranchColorByMindElement = (board: PlaitBoard, element: MindElement) => {
     const branchColor = getAvailableProperty(board, element, 'branchColor');
-    const parentBranchColor = MindElement.getParent(element)?.branchColor;
-    return parentBranchColor || branchColor || getDefaultBranchColor(board, element);
+    return branchColor || getDefaultBranchColor(board, element);
 };
 
 export const getBranchShapeByMindElement = (board: PlaitBoard, element: MindElement) => {

@@ -16,7 +16,7 @@ export function drawLogicLink(
     defaultStrokeWidth?: number
 ) {
     const branchShape = getBranchShapeByMindElement(board, parent.origin);
-    const branchColor = defaultStroke || getBranchColorByMindElement(board, node.origin);
+    const branchColor = defaultStroke || parent.origin?.branchColor || getBranchColorByMindElement(board, node.origin);
     const branchWidth = defaultStrokeWidth || getBranchWidthByMindElement(board, parent.origin);
     const hasStraightLine = !parent.origin.isRoot;
     const parentShape = getShapeByElement(board, parent.origin);
