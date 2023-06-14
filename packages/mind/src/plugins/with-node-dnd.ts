@@ -85,6 +85,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
 
         if (activeElements.length) {
             correspondingElements = getOverallAbstracts(board, activeElements);
+            event.preventDefault();
         }
 
         mousedown(event);
