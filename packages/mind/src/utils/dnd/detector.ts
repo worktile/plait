@@ -185,11 +185,12 @@ export const getPathByDropTarget = (board: PlaitBoard, dropTarget: { target: Min
     }
     // 水平布局/标准布局：上下是兄弟节点，左右是子节点
     if (isHorizontalLogicLayout(layout)) {
-        if (dropTarget.detectResult === 'right' && !PlaitMind.isMind(dropTarget?.target)) {
-            targetPath.push(children.length);
-        }
-        if (dropTarget.detectResult === 'right' && PlaitMind.isMind(dropTarget?.target) && isStandardLayout(layout)) {
-            targetPath.push(dropTarget?.target.rightNodeCount!);
+        if (dropTarget.detectResult === 'right') {
+            if (PlaitMind.isMind(dropTarget?.target) && isStandardLayout(layout)) {
+                targetPath.push(dropTarget?.target.rightNodeCount!);
+            } else {
+                targetPath.push(children.length);
+            }
         }
         if (dropTarget.detectResult === 'left') {
             targetPath.push(children.length);
