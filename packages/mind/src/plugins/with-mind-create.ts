@@ -11,16 +11,14 @@ import {
     getSelectedElements,
     throttleRAF,
     toPoint,
-    transformPoint,
-    updateForeignObject
+    transformPoint
 } from '@plait/core';
 import { PlaitMindBoard } from './with-mind.board';
 import { MindPointerType } from '../interfaces/pointer';
 import { getRectangleByElement, getTopicRectangleByElement } from '../utils';
 import { drawRoundRectangleByElement } from '../utils/draw/node-shape';
-import { drawTopicByElement } from '../utils/draw/node-topic';
-import { ComponentRef, NgZone } from '@angular/core';
-import { PlaitRichtextComponent, TextManage } from '@plait/richtext';
+import { NgZone } from '@angular/core';
+import { TextManage } from '@plait/richtext';
 import { createEmptyMind } from '../utils/node/create-node';
 
 const DefaultHotkey = 'm';

@@ -160,7 +160,7 @@ export class TextManage {
     }
 
     destroy() {
-        this.g.remove();
-        this.componentRef.destroy();
+        this.g?.remove();
+        this.componentRef?.destroy();
     }
 }
