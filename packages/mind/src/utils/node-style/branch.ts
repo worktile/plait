@@ -10,8 +10,7 @@ import { MindDefaultThemeColor, MindThemeColor } from '../../interfaces/theme-co
 
 export const getBranchColorByMindElement = (board: PlaitBoard, element: MindElement) => {
     const branchColor = getAvailableProperty(board, element, 'branchColor');
-    const parentBranchColor = MindElement.getParent(element)?.branchColor;
-    return parentBranchColor || branchColor || getDefaultBranchColor(board, element);
+    return branchColor || getDefaultBranchColor(board, element);
 };
 
 export const getBranchShapeByMindElement = (board: PlaitBoard, element: MindElement) => {
@@ -56,6 +55,11 @@ export const getDefaultBranchColorByIndex = (board: PlaitBoard, index: number) =
 };
 
 export const getMindThemeColor = (board: PlaitBoard) => {
-    const themeColors = PlaitBoard.getThemeColors<MindThemeColor>(board);
-    return themeColors.find(val => val.mode === board.theme.themeColorMode) || MindDefaultThemeColor;
+    const themeColors = PlaitBoard.getThemeColors(board);
+    const themeColor = themeColors.find(val => val.mode === board.theme.themeColorMode);
+    if (themeColor && MindThemeColor.isMindThemeColor(themeColor)) {
+        return themeColor;
+    } else {
+        return MindDefaultThemeColor
+    }
 };

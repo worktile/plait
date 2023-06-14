@@ -9,13 +9,7 @@ export const getStrokeByMindElement = (board: PlaitBoard, element: MindElement) 
         return element.strokeColor || defaultRootStroke;
     }
 
-    const ancestors = MindElement.getAncestors(board, element) as MindElement[];
-    ancestors.unshift(element);
-    const ancestor = ancestors.find(value => value.strokeColor);
-    if (ancestor && ancestor.strokeColor && !PlaitMind.isMind(ancestor)) {
-        return ancestor.strokeColor;
-    }
-    return getDefaultBranchColor(board, element);
+    return getAvailableProperty(board, element, 'strokeColor') || getDefaultBranchColor(board, element);
 };
 
 export const getShapeByElement = (board: PlaitBoard, element: MindElement): MindElementShape => {

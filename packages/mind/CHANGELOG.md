@@ -1,5 +1,13 @@
 # mind
 
+## 0.7.0
+
+### Minor Changes
+
+-   [#417](https://github.com/worktile/plait/pull/417) [`4f2d0d7`](https://github.com/worktile/plait/commit/4f2d0d7f1eac88c73a96abe1eb21870bd349c893) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove mind node property inheritance logic and remove default properties
+
+*   [#418](https://github.com/worktile/plait/pull/418) [`2577747`](https://github.com/worktile/plait/commit/2577747bb0a0ba9ba4e569cbba26da4cac8f2886) Thanks [@WBbug](https://github.com/WBbug)! - add INHERIT_ATTRIBUTE_KEYS
+
 ## 0.6.0
 
 ### Minor Changes

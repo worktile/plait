@@ -51,6 +51,8 @@ export function withSelection(board: PlaitBoard) {
             !options.isDisabledSelect
         ) {
             start = point;
+            // prevent text from being selected
+            event.preventDefault();
         }
 
         Transforms.setSelection(board, { ranges: ranges });
