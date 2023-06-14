@@ -185,7 +185,10 @@ export const getRichtextContentSize = (editable: HTMLElement) => {
             boundaryBox.bottom = Math.max(boundaryBox.bottom, nodeRectangle.y + nodeRectangle.height);
         }
     }
-    return { width: boundaryBox.right - boundaryBox.left, height: boundaryBox.bottom - boundaryBox.top };
+    const width = boundaryBox.right - boundaryBox.left;
+    // FIREFOX the height of inline span is less than the height of paragraph
+    const height = editable.getBoundingClientRect().height;
+    return { width, height };
 };
 
 export const ZERO_WIDTH_CHAR = '\uFEFF';
