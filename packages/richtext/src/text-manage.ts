@@ -50,9 +50,11 @@ export class TextManage {
         this.g.classList.add('text');
     }
 
-    update(rectangle?: RectangleClient) {
+    updateRectangle(rectangle?: RectangleClient) {
         const { x, y, width, height } = rectangle || this.getRectangle();
-        if (!this.isEditing) {
+        if (this.isEditing) {
+            updateForeignObject(this.g, 999, 999, x, y);
+        } else {
             updateForeignObject(this.g, width, height, x, y);
             // solve text lose on move node
             if (this.foreignObject.children.length === 0) {
@@ -75,9 +77,7 @@ export class TextManage {
         }
         Transforms.select(editor, [0]);
 
-        // add 999， avoid changing lines when paste more text
-        const rectangle = this.getRectangle();
-        updateForeignObject(this.g, 999, 999, rectangle.x, rectangle.y);
+        this.updateRectangle();
 
         let previousValue: Descendant[] = this.componentRef.instance.children;
         

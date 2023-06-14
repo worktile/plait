@@ -1,8 +1,11 @@
-@use './mixins.scss' as mixins;
-
 .plait-richtext-container {
-    @include mixins.font-size-14();
+    font-size: 14px;
+    min-height: 20px;
+    line-height: 20px;
     .slate-editable-container {
         outline: none;
+        white-space: pre-wrap;
+        white-space: break-spaces;
+        word-break: break-all;
     }
 }
