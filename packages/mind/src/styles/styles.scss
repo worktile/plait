@@ -98,13 +98,6 @@ g[plait-mindmap='true'] {
         position: initial;
         align-items: center;
         height: 100%;
-        ::-moz-selection {
-            /* Code for Firefox */
-            background: none;
-        }
-        ::selection {
-            background: none;
-        }
     }
 
     .fake-node {
