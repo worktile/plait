@@ -17,7 +17,7 @@ export function drawIndentedLink(
 ) {
     const branchShape = getBranchShapeByMindElement(board, node.origin);
     const branchWidth = defaultStrokeWidth || getBranchWidthByMindElement(board, node.origin);
-    const branchColor = defaultStroke || getBranchColorByMindElement(board, child.origin);
+    const branchColor = defaultStroke || node.origin?.branchColor || getBranchColorByMindElement(board, child.origin);
 
     const isUnderlineShape = (getShapeByElement(board, child.origin) as MindElementShape) === MindElementShape.underline;
     let beginX,
