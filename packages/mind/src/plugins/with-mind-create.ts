@@ -7,6 +7,7 @@ import {
     Transforms,
     WithPluginOptions,
     addSelectedElement,
+    createG,
     getSelectedElements,
     throttleRAF,
     toPoint,
@@ -18,17 +19,16 @@ import { MindPointerType } from '../interfaces/pointer';
 import { getRectangleByElement, getTopicRectangleByElement } from '../utils';
 import { drawRoundRectangleByElement } from '../utils/draw/node-shape';
 import { drawTopicByElement } from '../utils/draw/node-topic';
-import { ComponentRef } from '@angular/core';
-import { PlaitRichtextComponent } from '@plait/richtext';
+import { ComponentRef, NgZone } from '@angular/core';
+import { PlaitRichtextComponent, TextManage } from '@plait/richtext';
 import { createEmptyMind } from '../utils/node/create-node';
 
 const DefaultHotkey = 'm';
 
 export interface FakeCreateNodeRef {
+    g: SVGGElement;
     nodeG: SVGGElement;
-    instanceRef: ComponentRef<PlaitRichtextComponent>;
-    foreignObject: SVGForeignObjectElement;
-    topicG: SVGGElement;
+    textManage: TextManage;
 }
 
 export const withCreateMind = (board: PlaitBoard) => {
@@ -64,27 +64,28 @@ export const withCreateMind = (board: PlaitBoard) => {
                     const nodeG = drawRoundRectangleByElement(board, nodeRectangle, emptyMind);
                     const topicRectangle = getTopicRectangleByElement(newBoard, nodeRectangle, emptyMind);
                     if (!fakeCreateNodeRef) {
-                        const { richtextComponentRef, richtextG, foreignObject } = drawTopicByElement(newBoard, topicRectangle, emptyMind);
+                        const textManage = new TextManage(board, PlaitBoard.getComponent(board).viewContainerRef, () => {
+                            return topicRectangle;
+                        });
+                        PlaitBoard.getComponent(board)
+                            .viewContainerRef.injector.get(NgZone)
+                            .run(() => {
+                                textManage.draw(emptyMind.data.topic);
+                            });
                         fakeCreateNodeRef = {
-                            instanceRef: richtextComponentRef,
+                            g: createG(),
                             nodeG,
-                            foreignObject,
-                            topicG: richtextG
+                            textManage
                         };
-                        richtextComponentRef.changeDetectorRef.detectChanges();
-                        PlaitBoard.getHost(board).append(...[fakeCreateNodeRef.nodeG, fakeCreateNodeRef.topicG]);
+                        fakeCreateNodeRef.g.classList.add('root');
+                        PlaitBoard.getHost(board).append(fakeCreateNodeRef.g);
+                        fakeCreateNodeRef.g.append(...[fakeCreateNodeRef.nodeG, textManage.g]);
                     } else {
+                        fakeCreateNodeRef.textManage.redraw(topicRectangle);
                         fakeCreateNodeRef.nodeG.remove();
                         fakeCreateNodeRef.nodeG = nodeG;
-                        PlaitBoard.getHost(board).append(nodeG);
-                        PlaitBoard.getHost(board).append(fakeCreateNodeRef.topicG);
-                        updateForeignObject(
-                            fakeCreateNodeRef.topicG,
-                            topicRectangle.width,
-                            topicRectangle.height,
-                            topicRectangle.x,
-                            topicRectangle.y
-                        );
+                        fakeCreateNodeRef.g.append(nodeG);
+                        fakeCreateNodeRef.g.append(fakeCreateNodeRef.textManage.g);
                     }
                 }
             });
@@ -122,9 +123,8 @@ export const withCreateMind = (board: PlaitBoard) => {
 
     function destroy() {
         if (fakeCreateNodeRef) {
-            fakeCreateNodeRef.instanceRef.destroy();
-            fakeCreateNodeRef.nodeG.remove();
-            fakeCreateNodeRef.topicG.remove();
+            fakeCreateNodeRef.textManage.destroy();
+            fakeCreateNodeRef.g.remove();
             fakeCreateNodeRef = null;
         }
     }

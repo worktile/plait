@@ -34,8 +34,8 @@ export class TextManage {
         private board: PlaitBoard,
         private viewContainerRef: ViewContainerRef,
         private getRectangle: () => RectangleClient,
-        private isHitElement: (point: Point) => boolean,
-        private onChange: (textChangeRef: TextManageRef) => void
+        private isHitElement?: (point: Point) => boolean,
+        private onChange?: (textChangeRef: TextManageRef) => void
     ) {}
 
     draw(value: Element) {
@@ -50,8 +50,8 @@ export class TextManage {
         this.g.classList.add('text');
     }
 
-    redraw() {
-        const { x, y, width, height } = this.getRectangle();
+    redraw(rectangle?: RectangleClient) {
+        const { x, y, width, height } = rectangle || this.getRectangle();
         if (!this.isEditing) {
             updateForeignObject(this.g, width, height, x, y);
             // solve text lose on move node
@@ -60,8 +60,6 @@ export class TextManage {
             }
         }
     }
-
-    update() {}
 
     edit(onExit?: () => void) {
         IS_TEXT_EDITABLE.set(this.board, true);
@@ -101,7 +99,7 @@ export class TextManage {
                 const width = result.width;
                 const height = result.height;
                 console.log(this.board.viewport.zoom, 'zoom');
-                this.onChange({ width, height, newValue: editor.children[0] as Element });
+                this.onChange && this.onChange({ width, height, newValue: editor.children[0] as Element })
                 MERGING.set(this.board, true);
             });
 
@@ -110,13 +108,13 @@ export class TextManage {
             let result = getRichtextContentSize(paragraph);
             const width = result.width;
             const height = result.height;
-            this.onChange({ width, height });
+            this.onChange && this.onChange({ width, height });
             MERGING.set(this.board, true);
         });
 
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
             const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
-            const clickInNode = this.isHitElement(point);
+            const clickInNode = this.isHitElement && this.isHitElement(point);
             if (clickInNode && !hasEditableTarget(editor, event.target)) {
                 event.preventDefault();
             } else if (!clickInNode) {
