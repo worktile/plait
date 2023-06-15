@@ -1,5 +1,27 @@
 # mind
 
+## 0.8.0
+
+### Minor Changes
+
+-   [#419](https://github.com/worktile/plait/pull/419) [`5244a4a`](https://github.com/worktile/plait/commit/5244a4ade82bc8afa80e13cc8a15dce859db6dc8) Thanks [@WBbug](https://github.com/WBbug)! - change getBranchColorByMindElement logic
+
+*   [#421](https://github.com/worktile/plait/pull/421) [`ebab352`](https://github.com/worktile/plait/commit/ebab35228a803ee32576503d1cd5a5832b916f41) Thanks [@WBbug](https://github.com/WBbug)! - let polyline always have straight line
+
+-   [#420](https://github.com/worktile/plait/pull/420) [`715f4ce`](https://github.com/worktile/plait/commit/715f4ceeaf8bee450c252c0c513aa5043ad92bbb) Thanks [@WBbug](https://github.com/WBbug)! - fix getPathByDropTarget logic
+
+### Patch Changes
+
+-   [`bb4cb2c`](https://github.com/worktile/plait/commit/bb4cb2cca4d067f024b44c9db4ee966e00b6032b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct node extend circle stroke width
+
+*   [#425](https://github.com/worktile/plait/pull/425) [`f92759b`](https://github.com/worktile/plait/commit/f92759b63ef9d2b6e7b4579a408467ad72af51de) Thanks [@WBbug](https://github.com/WBbug)! - change abstract link shape logic
+
+-   [`36bf536`](https://github.com/worktile/plait/commit/36bf5369d31dda65a47b857d31e6f3f732147270) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - do not set node when width and height have not changed
+
+*   [`1c0ef14`](https://github.com/worktile/plait/commit/1c0ef14dc313d2bbd9b1b5633cc2470d4ca8d093) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent text from being selected when drag mind node
+
+-   [#424](https://github.com/worktile/plait/pull/424) [`fa15771`](https://github.com/worktile/plait/commit/fa15771e37bea8006c50b32170a9f3e78ec7383c) Thanks [@WBbug](https://github.com/WBbug)! - add underline
+
 ## 0.7.0
 
 ### Minor Changes

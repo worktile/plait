@@ -1,5 +1,13 @@
 # plait
 
+## 0.8.0
+
+### Patch Changes
+
+-   [`740b1cd`](https://github.com/worktile/plait/commit/740b1cdc7ce1691266a77e304da6915795eb8db8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent text from being selected
+
+*   [`146f3d9`](https://github.com/worktile/plait/commit/146f3d999308b193e40a80a19303c3e4f148502e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify the condition of prevent text from being selected
+
 ## 0.6.0
 
 ### Minor Changes
