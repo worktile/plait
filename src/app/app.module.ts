@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { MindModule } from '@plait/mind';
 import { FlowModule } from '@plait/flow';
 import { PlaitModule } from '@plait/core';
-import { RichtextModule } from '@plait/text';
+import { TextModule } from '@plait/text';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BasicBoardEditorComponent } from './editor/editor.component';
@@ -25,7 +25,7 @@ import { AppColorPickerComponent } from './components/color-picker/color-picker.
         BasicBoardEditorComponent,
         AppColorPickerComponent
     ],
-    imports: [BrowserModule, RichtextModule, AppRoutingModule, PlaitModule, FlowModule, MindModule],
+    imports: [BrowserModule, TextModule, AppRoutingModule, PlaitModule, FlowModule, MindModule],
     providers: [],
     bootstrap: [AppComponent]
 })
