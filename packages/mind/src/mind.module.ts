@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlaitModule } from '@plait/core';
-import { RichtextModule } from '@plait/text';
+import { TextModule } from '@plait/text';
 import { MindNodeComponent } from './node.component';
 import { PlaitMindComponent } from './mind.component';
 
 @NgModule({
     declarations: [PlaitMindComponent, MindNodeComponent],
-    imports: [CommonModule, RichtextModule, PlaitModule],
+    imports: [CommonModule, TextModule, PlaitModule],
     exports: [PlaitMindComponent, MindNodeComponent]
 })
 export class MindModule {}

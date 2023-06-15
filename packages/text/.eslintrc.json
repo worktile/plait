@@ -10,8 +10,8 @@
       ],
       "parserOptions": {
         "project": [
-          "packages/richtext/tsconfig.lib.json",
-          "packages/richtext/tsconfig.spec.json"
+          "packages/text/tsconfig.lib.json",
+          "packages/text/tsconfig.spec.json"
         ],
         "createDefaultProgram": true
       },
