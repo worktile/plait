@@ -11,7 +11,7 @@ export function drawAbstractLink(board: PlaitBoard, node: MindNode, isHorizontal
     const branchWidth = getAbstractBranchWidth(board, node.origin);
     const branchColor = getAbstractBranchColor(board, node.origin);
     const parent = node.parent;
-    const branchShape = getBranchShapeByMindElement(board, parent.origin);
+    const branchShape = getBranchShapeByMindElement(board, node.origin);
     const abstractRectangle = getRectangleByNode(node);
     let includedElements = parent.children.slice(node.origin.start, node.origin.end! + 1).map(node => {
         return node.origin;
