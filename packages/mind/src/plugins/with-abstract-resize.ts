@@ -21,9 +21,9 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitAbstractBoard;
 
     const { mousedown, mousemove, mouseup } = board;
-    let activeAbstractElement: PlaitElement | undefined;
+    let activeAbstractElement: MindElement | undefined;
     let abstractHandlePosition: AbstractHandlePosition | undefined;
-    let touchedAbstract: PlaitElement | undefined;
+    let touchedAbstract: MindElement | undefined;
     let startPoint: Point | undefined;
     let newProperty: { end: number } | { start: number } | undefined;
 
@@ -33,7 +33,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
         
-        const activeAbstractElements = getSelectedElements(board).filter(element => AbstractNode.isAbstract(element));
+        const activeAbstractElements = getSelectedElements(board).filter(element => AbstractNode.isAbstract(element)) as MindElement[];
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
 
@@ -113,7 +113,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                     abstractHandlePosition === AbstractHandlePosition.start ? { start: locationIndex + 1 } : { end: locationIndex };
             }
 
-            abstractComponent!.updateAbstractIncludedOutline(abstractHandlePosition, location);
+            abstractComponent!.activeDrawer.updateAbstractOutline(activeAbstractElement, abstractHandlePosition, location);
         }
         mousemove(event);
     };
@@ -131,7 +131,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                 Transforms.setNode(board, newProperty, path);
             } else {
                 const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;
-                abstractComponent!.updateAbstractIncludedOutline();
+                abstractComponent!.activeDrawer.updateAbstractOutline(activeAbstractElement);
             }
             activeAbstractElement = undefined;
         }

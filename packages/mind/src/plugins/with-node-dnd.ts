@@ -36,7 +36,7 @@ import { adjustAbstractToNode, adjustRootToNode } from '../utils/node/adjust-nod
 
 const DRAG_MOVE_BUFFER = 5;
 
-export const withDnd = (board: PlaitBoard) => {
+export const withNodeDnd = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup } = board;
 
     let activeElements: MindElement[] = [];

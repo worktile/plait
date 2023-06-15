@@ -80,6 +80,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         onChange: () => {},
         mousedown: (event: MouseEvent) => {},
         mousemove: (event: MouseEvent) => {},
+        mouseleave: (event: MouseEvent) => {},
         globalMousemove: (event: MouseEvent) => {},
         mouseup: (event: MouseEvent) => {},
         globalMouseup: (event: MouseEvent) => {},
