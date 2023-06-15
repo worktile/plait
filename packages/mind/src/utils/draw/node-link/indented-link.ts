@@ -61,7 +61,8 @@ export function drawIndentedLink(
         const polylinePoints = [
             [beginX, beginY],
             [beginX, endY],
-            [endX, endY]
+            [endX, endY],
+            isUnderlineShape && needDrawUnderline ? [endX + (endNode.width - endNode.hGap * 2) * plusMinus[0], endY] : [endX, endY]
         ];
 
         return drawLinearPath(polylinePoints as Point[], { stroke: branchColor, strokeWidth: branchWidth });
