@@ -25,7 +25,9 @@ export const setTopicSize = (board: PlaitBoard, element: MindElement, width: num
         height: height / board.viewport.zoom
     };
     const path = PlaitBoard.findPath(board, element);
-    Transforms.setNode(board, newElement, path);
+    if (newElement.width !== element.width || newElement.height !== element.height) {
+        Transforms.setNode(board, newElement, path);
+    }
 };
 
 export const removeElements = (board: PlaitBoard, elements: MindElement[]) => {
