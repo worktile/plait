@@ -360,7 +360,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
                     {
                         fill: '#fff',
                         stroke,
-                        strokeWidth: branchWidth,
+                        strokeWidth: branchWidth > 3 ? 3 : branchWidth,
                         fillStyle: 'solid'
                     }
                 );
