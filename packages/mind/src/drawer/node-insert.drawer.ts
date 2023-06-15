@@ -14,7 +14,7 @@ import { getBranchColorByMindElement, getBranchWidthByMindElement, getNextBranch
 import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
 
-export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
+export class NodeInsertDrawer extends BaseDrawer implements AfterDraw {
     canDraw(element: MindElement<BaseData>): boolean {
         if (PlaitBoard.isReadonly(this.board) || element?.isCollapsed) {
             return false;
@@ -22,7 +22,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
         return true;
     }
 
-    draw(element: MindElement<BaseData>): SVGGElement {
+    baseDraw(element: MindElement<BaseData>): SVGGElement {
         const quickInsertG = createG();
         this.g = quickInsertG;
         quickInsertG.classList.add('quick-insert');

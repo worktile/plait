@@ -37,7 +37,7 @@ class EmojiDrawer {
     }
 }
 
-export class EmojisDrawer {
+export class NodeEmojisDrawer {
     emojiDrawers: EmojiDrawer[] = [];
 
     g?: SVGGElement;

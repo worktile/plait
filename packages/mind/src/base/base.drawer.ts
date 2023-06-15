@@ -1,14 +1,27 @@
 import { PlaitBoard } from '@plait/core';
 import { MindElement } from '../interfaces';
 
-export abstract class BaseDrawer {
+export abstract class BaseDrawer<T = undefined> {
     g?: SVGGElement;
 
     constructor(protected board: PlaitBoard) {}
 
-    abstract canDraw(element: MindElement): boolean;
+    draw(element: MindElement, parentG: SVGGElement, data?: T) {
+        this.destroy();
+        if (this.canDraw && this.canDraw(element, data)) {
+            const g = this.baseDraw(element, data);
+            if (g) {
+                parentG.append(g);
+            }
+            if (hasAfterDraw(this)) {
+                this.afterDraw(element);
+            }
+        }
+    }
 
-    abstract draw(element: MindElement): SVGGElement | undefined;
+    abstract canDraw(element: MindElement, data?: T): boolean;
+
+    abstract baseDraw(element: MindElement, data?: T): SVGGElement | undefined;
 
     destroy() {
         if (this.g) {

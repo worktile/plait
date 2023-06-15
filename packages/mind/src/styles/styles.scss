@@ -3,10 +3,10 @@
 $primary: #4e8afa;
 
 g[plait-mindmap='true'] {
-    .plait-richtext-container {
+    .slate-editable-container {
         cursor: default;
         min-width: 5px;
-        &[readonly='false'] {
+        &[contenteditable='true'] {
             cursor: text;
             max-width: 34em;
         }
@@ -29,7 +29,7 @@ g[plait-mindmap='true'] {
 }
 
 .plait-board-container {
-    &.focused:not(.selection-moving):not(.element-moving):not(.abstract-resizing-horizontal):not(.abstract-resizing-vertical):not(.pointer-mind) {
+    &.focused:not(.selection-moving):not(.element-moving):not(.abstract-resizing-horizontal):not(.abstract-resizing-vertical):not(.pointer-mind):not(.mind-node-dragging) {
         .extend {
             cursor: pointer;
             &:hover {
@@ -93,13 +93,6 @@ g[plait-mindmap='true'] {
         position: initial;
         align-items: center;
         height: 100%;
-        ::-moz-selection {
-            /* Code for Firefox */
-            background: none;
-        }
-        ::selection {
-            background: none;
-        }
     }
 
     .fake-node {
@@ -109,6 +102,14 @@ g[plait-mindmap='true'] {
             .plait-richtext-container {
                 opacity: 0.6;
             }
+        }
+    }
+
+    .root {
+        .plait-richtext-container {
+            font-size: 18px;
+            min-height: 25px;
+            line-height: 25px;
         }
     }
 

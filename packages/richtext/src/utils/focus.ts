@@ -1,8 +1,8 @@
 import { EDITOR_TO_ELEMENT, IS_FOCUSED } from './weak-maps';
-import { RichtextEditor } from '../plugins/richtext-editor';
 import { Location, Transforms } from 'slate';
+import { AngularEditor } from 'slate-angular';
 
-export function setFullSelectionAndFocus(editor: RichtextEditor, location: Location) {
+export function setFullSelectionAndFocus(editor: AngularEditor, location: Location) {
     Transforms.select(editor, location);
     const isFocused = IS_FOCUSED.get(editor);
     const editable = EDITOR_TO_ELEMENT.get(editor);

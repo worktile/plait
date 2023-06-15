@@ -31,11 +31,11 @@ import {
 } from '../utils';
 import { getRectangleByNode, isHitMindElement } from '../utils/position/node';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { withDnd } from './with-node-dnd';
+import { withNodeDnd } from './with-node-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
-import { enterNodeEditing } from '../utils/node/common';
+import { editTopic } from '../utils/node/common';
 import { withAbstract } from './with-abstract-resize';
 import { withMindExtend } from './with-mind-extend';
 import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
@@ -43,6 +43,7 @@ import { MindTransforms } from '../transforms';
 import { withCreateMind } from './with-mind-create';
 import { DefaultAbstractNodeStyle } from '../constants/node-style';
 import { withMindHotkey } from './with-mind-hotkey';
+import { withNodeHover } from './with-node-hover';
 
 export const withMind = (board: PlaitBoard) => {
     const {
@@ -199,7 +200,7 @@ export const withMind = (board: PlaitBoard) => {
             if (!isVirtualKey(event)) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
-                enterNodeEditing(selectedElement);
+                editTopic(selectedElement);
                 return;
             }
         }
@@ -226,7 +227,7 @@ export const withMind = (board: PlaitBoard) => {
                     mindMap as MindElement,
                     node => {
                         if (!PlaitBoard.hasBeenTextEditing(board) && isHitMindElement(board, point, node)) {
-                            enterNodeEditing(node);
+                            editTopic(node);
                         }
                     },
                     node => {
@@ -291,5 +292,5 @@ export const withMind = (board: PlaitBoard) => {
         deleteFragment(data);
     };
 
-    return withMindHotkey(withMindExtend(withCreateMind(withAbstract(withDnd(board)))));
+    return withNodeHover(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board))))));
 };
