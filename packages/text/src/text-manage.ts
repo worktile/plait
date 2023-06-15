@@ -141,6 +141,7 @@ export class TextManage {
                 exitHandle();
                 return;
             }
+            onKeydown(event);
         };
 
         const exitHandle = () => {

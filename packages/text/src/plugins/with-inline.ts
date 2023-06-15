@@ -1,10 +1,10 @@
 import { hotkeys } from '@plait/core';
 import { Editor, Element, Range, Transforms, Path } from 'slate';
-import { RichtextEditor } from './richtext-editor';
+import { AngularEditor } from 'slate-angular';
 
-export const withInline = <T extends RichtextEditor>(editor: T) => {
+export const withInline = <T extends AngularEditor>(editor: T) => {
     const e = editor as T;
-    const { isInline, keydown } = e;
+    const { isInline, onKeydown } = e;
 
     e.isInline = (element: any) => {
         if (element.type === 'link') {
@@ -13,10 +13,10 @@ export const withInline = <T extends RichtextEditor>(editor: T) => {
         return isInline(element);
     };
 
-    e.keydown = (event: KeyboardEvent) => {
+    e.onKeydown = (event: KeyboardEvent) => {
         const { selection } = editor;
         if (!selection || !selection.anchor || !selection.focus) {
-            keydown(event);
+            onKeydown(event);
             return;
         }
         const isMoveBackward = hotkeys.isMoveBackward(event);
@@ -51,7 +51,7 @@ export const withInline = <T extends RichtextEditor>(editor: T) => {
                 return;
             }
         }
-        keydown(event);
+        onKeydown(event);
     };
 
     return e;
