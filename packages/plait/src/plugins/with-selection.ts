@@ -44,13 +44,17 @@ export function withSelection(board: PlaitBoard) {
         }
 
         const range = { anchor: point, focus: point };
+        const hitElements = getHitElements(board, { ranges: [range] });
         if (
             PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
-            getHitElements(board, { ranges: [range] }).length === 0 &&
+            hitElements.length === 0 &&
             options.isMultiple &&
             !options.isDisabledSelect
         ) {
             start = point;
+        }
+
+        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && hitElements.length === 0 && !PlaitBoard.hasBeenTextEditing(board)) {
             // prevent text from being selected
             event.preventDefault();
         }

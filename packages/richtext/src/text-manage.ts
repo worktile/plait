@@ -1,4 +1,4 @@
-import { ComponentRef, NgZone, ViewContainerRef } from '@angular/core';
+import { ComponentRef, ViewContainerRef } from '@angular/core';
 import { Descendant, Element, Operation, Transforms } from 'slate';
 import { PlaitRichtextComponent } from './richtext/richtext.component';
 import {
@@ -79,8 +79,14 @@ export class TextManage {
 
         this.updateRectangle();
 
+        const paragraph = AngularEditor.toDOMNode(editor, editor.children[0]);
+        let result = getRichtextContentSize(paragraph);
+        const width = result.width;
+        const height = result.height;
+        this.onChange && this.onChange({ width, height });
+
         let previousValue: Descendant[] = this.componentRef.instance.children;
-        
+
         // use debounceTime to wait DOM render complete
         const valueChange$ = this.componentRef.instance.onChange
             .pipe(
@@ -98,7 +104,7 @@ export class TextManage {
                 let result = getRichtextContentSize(paragraph);
                 const width = result.width;
                 const height = result.height;
-                this.onChange && this.onChange({ width, height, newValue: editor.children[0] as Element })
+                this.onChange && this.onChange({ width, height, newValue: editor.children[0] as Element });
                 MERGING.set(this.board, true);
             });
 
