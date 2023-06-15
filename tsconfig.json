@@ -16,8 +16,8 @@
       "@plait/core": [
         "dist/core"
       ],
-      "@plait/richtext": [
-        "dist/richtext"
+      "@plait/text": [
+        "dist/text"
       ]
     },
     "outDir": "./dist/out-tsc",

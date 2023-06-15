@@ -17,7 +17,7 @@
       "@plait/core": [
         "packages/plait/src/public-api",
       ],
-      "@plait/richtext": [
+      "@plait/text": [
         "packages/richtext/src/public-api",
       ]
     },

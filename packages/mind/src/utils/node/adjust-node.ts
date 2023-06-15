@@ -1,6 +1,6 @@
 import { PlaitBoard } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
-import { getSizeByText } from '@plait/richtext';
+import { getSizeByText } from '@plait/text';
 import { Node } from 'slate';
 import { ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../../constants/node-topic-style';
 import { NODE_MIN_WIDTH } from '../../constants/node-rule';

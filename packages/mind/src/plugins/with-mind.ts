@@ -16,7 +16,7 @@ import {
     Path,
     PlaitElement
 } from '@plait/core';
-import { getSizeByText } from '@plait/richtext';
+import { getSizeByText } from '@plait/text';
 import { MindElement, PlaitMind } from '../interfaces';
 import { PlaitMindComponent } from '../mind.component';
 import { MindNodeComponent } from '../node.component';

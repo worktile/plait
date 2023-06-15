@@ -19,7 +19,7 @@ import { MindPointerType } from '../interfaces/pointer';
 import { getRectangleByElement, getTopicRectangleByElement } from '../utils';
 import { drawRoundRectangleByElement } from '../utils/draw/node-shape';
 import { NgZone } from '@angular/core';
-import { TextManage } from '@plait/richtext';
+import { TextManage } from '@plait/text';
 import { createEmptyMind } from '../utils/node/create-node';
 
 const DefaultHotkey = 'm';
