@@ -3,11 +3,32 @@
     min-height: 20px;
     line-height: 20px;
     display: block;
+
     .slate-editable-container {
         outline: none;
         white-space: pre-wrap;
         white-space: break-spaces;
         word-break: break-all;
         padding: 0;
+    }
+
+    [the-underlined][the-strike] {
+        text-decoration: underline line-through;
+    }
+
+    [the-strike] {
+        text-decoration: line-through;
+    }
+
+    [the-underlined] {
+        text-decoration: underline;
+    }
+
+    [the-italic] {
+        font-style: italic;
+    }
+
+    [the-bold] {
+        font-weight: bold;
     }
 }

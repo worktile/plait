@@ -1,4 +1,4 @@
-import { Editor, Transforms } from 'slate';
+import { Transforms } from 'slate';
 import { AngularEditor } from 'slate-angular';
 
 export const withSingleLine = <T extends AngularEditor>(editor: T) => {

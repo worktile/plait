@@ -10,10 +10,13 @@ import {
     Renderer2,
     ViewChild
 } from '@angular/core';
-import { createEditor, Editor, Element } from 'slate';
+import { createEditor, Editor, Element, Text } from 'slate';
 import { withHistory } from 'slate-history';
 import { SlateEditableComponent, withAngular } from 'slate-angular';
 import { withSingleLine } from '../plugins/with-single';
+import { withMark } from '../plugins/with-marks';
+import { MarkTypes } from '../constant/mark';
+import { PlaitTextNodeComponent } from '../text-node/text.component';
 
 @Component({
     selector: 'plait-richtext',
@@ -40,7 +43,7 @@ export class PlaitRichtextComponent implements OnInit {
     @Output()
     onComposition: EventEmitter<CompositionEvent> = new EventEmitter();
 
-    editor = withSingleLine(withHistory(withAngular(createEditor())));
+    editor = withMark(withSingleLine(withHistory(withAngular(createEditor()))));
 
     constructor(public renderer2: Renderer2, private cdr: ChangeDetectorRef, public elementRef: ElementRef<HTMLElement>) {}
 
@@ -50,6 +53,15 @@ export class PlaitRichtextComponent implements OnInit {
 
     ngOnInit(): void {
     }
+
+    renderText: any = (text: Text): PlaitTextNodeComponent | null => {
+        for (const key in MarkTypes) {
+            if ((text as any)[(MarkTypes as any)[key]]) {
+                return PlaitTextNodeComponent as any;
+            }
+        }
+        return null;
+    };
 
     compositionStart = (event: CompositionEvent) => {
         this.onComposition.emit(event);
@@ -65,5 +77,6 @@ export class PlaitRichtextComponent implements OnInit {
 
     onKeydown = (event: KeyboardEvent) => {
         this.editor.onKeydown(event);
+        console.log(`ccc`);
     }
 }
