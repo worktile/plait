@@ -8,7 +8,7 @@ import {
     Renderer2,
     ViewContainerRef
 } from '@angular/core';
-import { TextManage } from '@plait/richtext';
+import { TextManage } from '@plait/text';
 import { PlaitPluginElementComponent, PlaitPluginElementContext, PlaitBoard, normalizePoint, createG, OnContextChanged } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawNodeHandles } from './draw/handle';

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlaitModule } from '@plait/core';
-import { RichtextModule } from '@plait/richtext';
+import { RichtextModule } from '@plait/text';
 import { MindNodeComponent } from './node.component';
 import { PlaitMindComponent } from './mind.component';
 

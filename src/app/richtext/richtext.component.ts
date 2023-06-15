@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PlaitChangeEvent } from '@plait/richtext';
+import { PlaitChangeEvent } from '@plait/text';
 import { Editor } from 'slate';
 
 @Component({

@@ -1,6 +1,6 @@
 import { FlowEdge } from '../../interfaces/edge';
 import { BOARD_TO_HOST, PlaitBoard, RectangleClient, XYPosition } from '@plait/core';
-import { TEXT_DEFAULT_HEIGHT, getSizeByText } from '@plait/richtext';
+import { TEXT_DEFAULT_HEIGHT, getSizeByText } from '@plait/text';
 import { BaseText, Element } from 'slate';
 import { getEdgePoints } from './edge';
 
