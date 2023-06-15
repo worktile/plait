@@ -156,7 +156,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             this.initializeHookListener();
             this.viewportScrollListener();
             this.elementResizeListener();
-            this.mouseLeaveListener();
         });
         BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ROUGH_SVG.set(this.board, roughSVG);
@@ -236,6 +235,13 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             .subscribe((event: MouseEvent) => {
                 BOARD_TO_MOVING_POINT.set(this.board, [event.x, event.y]);
                 this.board.mousemove(event);
+            });
+
+        fromEvent<MouseEvent>(this.host, 'mouseleave')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: MouseEvent) => {
+                BOARD_TO_MOVING_POINT.delete(this.board);
+                this.board.mouseleave(event);
             });
 
         fromEvent<MouseEvent>(document, 'mousemove')
@@ -374,14 +380,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             updateViewportOffset(this.board);
         });
         this.resizeObserver.observe(this.nativeElement);
-    }
-
-    private mouseLeaveListener() {
-        fromEvent<MouseEvent>(this.host, 'mouseleave')
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((event: MouseEvent) => {
-                BOARD_TO_MOVING_POINT.delete(this.board);
-            });
     }
 
     private initializeIslands() {

@@ -6,11 +6,16 @@ import { getFirstLevelElement } from '../utils/mind';
 import { AbstractRef, getRelativeStartEndByAbstractRef } from '../utils/abstract/common';
 import { RightNodeCountRef } from '../utils/node/right-node-count';
 
+const normalizeWidthAndHeight = (board: PlaitBoard, width: number, height: number) => {
+    const newWidth = width < NODE_MIN_WIDTH * board.viewport.zoom ? NODE_MIN_WIDTH : width / board.viewport.zoom;
+    const newHeight = height / board.viewport.zoom;
+    return { width: newWidth, height: newHeight };
+};
+
 export const setTopic = (board: PlaitBoard, element: MindElement, topic: Element, width: number, height: number) => {
     const newElement = {
         data: { topic },
-        width: width < NODE_MIN_WIDTH * board.viewport.zoom ? NODE_MIN_WIDTH : width / board.viewport.zoom,
-        height: height / board.viewport.zoom
+        ...normalizeWidthAndHeight(board, width, height)
     } as MindElement;
     if (MindElement.hasEmojis(element)) {
         newElement.data.emojis = element.data.emojis;
@@ -21,11 +26,10 @@ export const setTopic = (board: PlaitBoard, element: MindElement, topic: Element
 
 export const setTopicSize = (board: PlaitBoard, element: MindElement, width: number, height: number) => {
     const newElement = {
-        width: width < NODE_MIN_WIDTH * board.viewport.zoom ? NODE_MIN_WIDTH : width / board.viewport.zoom,
-        height: height / board.viewport.zoom
+        ...normalizeWidthAndHeight(board, width, height)
     };
-    const path = PlaitBoard.findPath(board, element);
-    if (newElement.width !== element.width || newElement.height !== element.height) {
+    if (element.width !== newElement.width || element.height !== newElement.height) {
+        const path = PlaitBoard.findPath(board, element);
         Transforms.setNode(board, newElement, path);
     }
 };

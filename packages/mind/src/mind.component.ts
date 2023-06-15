@@ -23,6 +23,7 @@ export class PlaitMindComponent extends MindNodeComponent implements OnInit, Bef
     ngOnInit(): void {
         this.updateMindLayout();
         super.ngOnInit();
+        this.g.classList.add('root');
     }
 
     beforeContextChange(value: PlaitPluginElementContext<PlaitMind>) {

@@ -12,7 +12,7 @@ import { take } from 'rxjs/operators';
 import { findNewChildNodePath } from '../utils/path';
 import { getBranchColorByMindElement, getBranchWidthByMindElement, getNextBranchColor } from '../utils/node-style/branch';
 
-export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
+export class NodeInsertDrawer extends BaseDrawer implements AfterDraw {
     canDraw(element: MindElement<BaseData>): boolean {
         if (PlaitBoard.isReadonly(this.board) || element?.isCollapsed) {
             return false;
@@ -20,7 +20,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
         return true;
     }
 
-    draw(element: MindElement<BaseData>): SVGGElement {
+    baseDraw(element: MindElement<BaseData>): SVGGElement {
         let offset = element.children.length > 0 && !element.isRoot ? EXTEND_RADIUS : 0;
         const quickInsertG = createG();
         this.g = quickInsertG;

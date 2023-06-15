@@ -32,6 +32,11 @@ export const isDragging = (board: PlaitBoard) => {
 
 export const setIsDragging = (board: PlaitBoard, state: boolean) => {
     IS_DRAGGING.set(board, state);
+    if (state) {
+        PlaitBoard.getBoardNativeElement(board).classList.add('mind-node-dragging');
+    } else {
+        PlaitBoard.getBoardNativeElement(board).classList.remove('mind-node-dragging');
+    }
 };
 
 export const hasPreviousOrNextOfDropPath = (

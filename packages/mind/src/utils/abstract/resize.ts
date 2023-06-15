@@ -204,14 +204,12 @@ export function findLocationLeftIndex(board: PlaitBoard, parentChildren: MindEle
     return 0;
 }
 
-export function handleTouchedAbstract(board: PlaitBoard, touchedAbstract: PlaitElement | undefined, endPoint: Point) {
+export function handleTouchedAbstract(board: PlaitBoard, touchedAbstract: MindElement | undefined, endPoint: Point) {
     let touchedHandle;
-    const abstract = getSelectedElements(board)
-        .filter(element => AbstractNode.isAbstract(element))
-        .find(element => {
-            touchedHandle = getHitAbstractHandle(board, element as MindElement, endPoint);
-            return touchedHandle;
-        });
+    const abstract = (getSelectedElements(board).filter(element => AbstractNode.isAbstract(element)) as MindElement[]).find(element => {
+        touchedHandle = getHitAbstractHandle(board, element as MindElement, endPoint);
+        return touchedHandle;
+    });
 
     if (touchedAbstract === abstract) {
         return touchedAbstract;
@@ -219,14 +217,14 @@ export function handleTouchedAbstract(board: PlaitBoard, touchedAbstract: PlaitE
 
     if (touchedAbstract) {
         const component = PlaitElement.getComponent(touchedAbstract!) as MindNodeComponent;
-        component.updateAbstractIncludedOutline();
+        component.activeDrawer.updateAbstractOutline(touchedAbstract);
         touchedAbstract = undefined;
     }
 
     if (abstract) {
         touchedAbstract = abstract;
         const component = PlaitElement.getComponent(touchedAbstract!) as MindNodeComponent;
-        component.updateAbstractIncludedOutline(touchedHandle);
+        component.activeDrawer.updateAbstractOutline(touchedAbstract, touchedHandle);
     }
 
     return touchedAbstract;

@@ -1,1 +1,11 @@
-<plait-node *ngFor="let item of bindValue?.children;let index = index;trackBy: trackBy" [node]="item" [parent]="bindValue" [index]="index" [editor]="editor"></plait-node>
+<slate-editable
+    #slateEditable
+    [editor]="editor"
+    [readonly]="readonly"
+    [(ngModel)]="children"
+    (ngModelChange)="valueChange()"
+    [keydown]="onKeydown"
+    [compositionStart]="compositionStart"
+    [compositionUpdate]="compositionUpdate"
+    [compositionEnd]="compositionEnd"
+></slate-editable>

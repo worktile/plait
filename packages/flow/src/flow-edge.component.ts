@@ -14,7 +14,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { drawEdge, drawEdgeMarkers, drawRichtextBackground } from './draw/edge';
 import { PlaitBoard, OnContextChanged } from '@plait/core';
 import { drawEdgeHandles } from './draw/handle';
-import { PlaitRichtextComponent, drawRichtext, updateForeignObject } from '@plait/richtext';
+import { TextManage } from '@plait/richtext';
 import { getEdgeTextBackgroundRect, getEdgeTextRect, getEdgeTextXYPosition } from './utils/edge/text';
 import { FlowEdge } from './interfaces/edge';
 import { FlowBaseData } from './interfaces/element';
@@ -33,15 +33,13 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     handlesG: SVGGElement | null = null;
 
-    richtextG?: SVGGElement | null = null;
-
     richtextBackgroundG?: SVGGElement | null = null;
-
-    richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
 
     sourceMarkerG?: SVGGElement[] | null = null;
 
     textRect: RectangleClient | null = null;
+
+    textManage!: TextManage;
 
     constructor(
         public cdr: ChangeDetectorRef,
@@ -54,6 +52,9 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     ngOnInit(): void {
         super.ngOnInit();
+        this.textManage = new TextManage(this.board, this.viewContainerRef, () => {
+            return getEdgeTextRect(this.board, this.element);
+        });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         const isActive = isSelectedElement(this.board, this.element);
         this.drawElement(this.element, isActive);
@@ -128,21 +129,17 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             const { x, y, width, height } = textRect!;
             const textBackgroundRect = getEdgeTextBackgroundRect(textRect);
             this.richtextBackgroundG = drawRichtextBackground(this.roughSVG, element, textBackgroundRect!, active);
-            const { richtextG, richtextComponentRef } = drawRichtext(x, y, width, height, element.data.text, this.viewContainerRef);
-            this.richtextComponentRef = richtextComponentRef;
-            this.richtextG = createG();
-            this.richtextG.append(this.richtextBackgroundG);
-            this.richtextG.append(richtextG);
-            this.render2.addClass(this.richtextG, 'flow-edge-richtext');
-            this.g.append(this.richtextG);
+            this.textManage.draw(element.data.text);
+            this.textManage.g.append(this.richtextBackgroundG);
+            this.textManage.g.classList.add('flow-edge-richtext');
         }
     }
 
     updateRichtextPosition(element: FlowEdge<T> = this.element, active = false) {
-        if (element.data?.text && this.richtextG) {
+        if (element.data?.text) {
             const { x, y } = getEdgeTextXYPosition(this.board, this.element, this.textRect!.width, this.textRect!.height);
             const { width, height } = this.textRect!;
-            updateForeignObject(this.richtextG!, width, height, x, y);
+            this.textManage.updateRectangle({ x, y, width, height });
             const textBackgroundRect = getEdgeTextBackgroundRect({
                 x,
                 y,
@@ -151,7 +148,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             });
             this.destroyRichtextBackgroundG();
             this.richtextBackgroundG = drawRichtextBackground(this.roughSVG, element, textBackgroundRect!, active);
-            this.richtextG?.prepend(this.richtextBackgroundG);
+            this.textManage.g.prepend(this.richtextBackgroundG);
         }
     }
 
@@ -180,13 +177,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     }
 
     destroyRichtext() {
-        if (this.richtextG) {
-            this.richtextG.remove();
-            this.richtextG = null;
-        }
-        if (this.richtextComponentRef) {
-            this.richtextComponentRef.destroy();
-        }
+        this.textManage.destroy();
         this.destroyRichtextBackgroundG();
     }
 

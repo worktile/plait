@@ -8,7 +8,7 @@ import {
     Renderer2,
     ViewContainerRef
 } from '@angular/core';
-import { PlaitRichtextComponent, drawRichtext } from '@plait/richtext';
+import { TextManage } from '@plait/richtext';
 import { PlaitPluginElementComponent, PlaitPluginElementContext, PlaitBoard, normalizePoint, createG, OnContextChanged } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawNodeHandles } from './draw/handle';
@@ -29,9 +29,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     roughSVG!: RoughSVG;
 
-    richtextG?: SVGGElement;
-
-    richtextComponentRef?: ComponentRef<PlaitRichtextComponent>;
+    textManage!: TextManage;
 
     handlesG: SVGGElement | null = null;
 
@@ -41,6 +39,12 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     ngOnInit(): void {
         super.ngOnInit();
+        this.textManage = new TextManage(this.board, this.viewContainerRef, () => {
+            const { x, y } = normalizePoint(this.element.points![0]);
+            const width = this.element.width;
+            const height = this.element.height;
+            return { x, y, width, height };
+        });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.drawElement();
         this.drawRichtext();
@@ -83,19 +87,9 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     drawRichtext(element: FlowNode = this.element) {
         this.destroyRichtext();
         if (element.data?.text) {
-            const { x, y } = normalizePoint(element.points![0]);
-            const { richtextG, richtextComponentRef } = drawRichtext(
-                x,
-                y,
-                element.width,
-                element.height,
-                element.data.text,
-                this.viewContainerRef
-            );
-            this.richtextComponentRef = richtextComponentRef;
-            this.richtextG = richtextG;
-            this.render2.addClass(this.richtextG, 'flow-node-richtext');
-            this.g.append(this.richtextG);
+            this.textManage.draw(element.data.text);
+            this.textManage.g.classList.add('flow-node-richtext');
+            this.g.append(this.textManage.g);
         }
     }
 
@@ -141,11 +135,6 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     }
 
     destroyRichtext() {
-        if (this.richtextG) {
-            this.richtextG.remove();
-        }
-        if (this.richtextComponentRef) {
-            this.richtextComponentRef.destroy();
-        }
+        this.textManage.destroy();
     }
 }
