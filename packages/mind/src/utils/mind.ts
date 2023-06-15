@@ -2,7 +2,7 @@ import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, 
 import { Node } from 'slate';
 import { NODE_MIN_WIDTH } from '../constants/node-rule';
 import { MindElement } from '../interfaces/element';
-import { TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
+import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
 import { editTopic } from './node/common';
 import { createMindElement, INHERIT_ATTRIBUTE_KEYS, InheritAttribute } from './node/create-node';
 import { MindNode } from '../interfaces/node';

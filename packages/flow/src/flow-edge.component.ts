@@ -14,7 +14,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { drawEdge, drawEdgeMarkers, drawRichtextBackground } from './draw/edge';
 import { PlaitBoard, OnContextChanged } from '@plait/core';
 import { drawEdgeHandles } from './draw/handle';
-import { TextManage } from '@plait/richtext';
+import { TextManage } from '@plait/text';
 import { getEdgeTextBackgroundRect, getEdgeTextRect, getEdgeTextXYPosition } from './utils/edge/text';
 import { FlowEdge } from './interfaces/edge';
 import { FlowBaseData } from './interfaces/element';

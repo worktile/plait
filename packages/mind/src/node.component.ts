@@ -23,7 +23,7 @@ import {
     Point
 } from '@plait/core';
 import { isHorizontalLayout, isIndentedLayout, isLeftLayout, AbstractNode, isTopLayout, MindLayoutType } from '@plait/layouts';
-import { TextManageRef, TextManage } from '@plait/richtext';
+import { TextManageRef, TextManage } from '@plait/text';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';

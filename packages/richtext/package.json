@@ -1,5 +1,5 @@
 {
-  "name": "@plait/richtext",
+  "name": "@plait/text",
   "version": "0.3.0",
   "peerDependencies": {
     "@angular/common": "^15.2.2",

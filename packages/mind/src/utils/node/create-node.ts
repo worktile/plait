@@ -1,5 +1,5 @@
 import { PlaitBoard, Point, idCreator, isNullOrUndefined } from '@plait/core';
-import { ROOT_DEFAULT_HEIGHT, TEXT_DEFAULT_HEIGHT } from '@plait/richtext';
+import { ROOT_DEFAULT_HEIGHT, TEXT_DEFAULT_HEIGHT } from '@plait/text';
 import { MindLayoutType } from '@plait/layouts';
 import { BranchShape, MindElement, MindElementShape } from '../../interfaces/element';
 import { adjustNodeToRoot } from './adjust-node';
