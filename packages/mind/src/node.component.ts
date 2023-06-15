@@ -124,14 +124,14 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.parentG = PlaitElement.getComponent(MindElement.getRoot(this.board, this.element)).rootG as SVGGElement;
         this.drawShape();
         this.drawLink();
-        this.drawRichtext();
+        this.drawText();
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
         this.drawEmojis();
         this.drawExtend();
         this.nodeInsertDrawer.draw(this.element, this.extendG!);
     }
 
-    startEdit() {
+    editTopic() {
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: true });
         this.textManage.edit(() => {
             this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: false });
@@ -377,7 +377,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         }
     }
 
-    drawRichtext() {
+    drawText() {
         this.textManage.draw(this.element.data.topic);
         this.g.append(this.textManage.g);
     }

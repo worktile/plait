@@ -35,7 +35,7 @@ import { withNodeDnd } from './with-node-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
 import { AbstractNode } from '@plait/layouts';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
-import { startTopicEdit } from '../utils/node/common';
+import { editTopic } from '../utils/node/common';
 import { withAbstract } from './with-abstract-resize';
 import { withMindExtend } from './with-mind-extend';
 import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
@@ -200,7 +200,7 @@ export const withMind = (board: PlaitBoard) => {
             if (!isVirtualKey(event)) {
                 event.preventDefault();
                 const selectedElement = selectedElements[0];
-                startTopicEdit(selectedElement);
+                editTopic(selectedElement);
                 return;
             }
         }
@@ -227,7 +227,7 @@ export const withMind = (board: PlaitBoard) => {
                     mindMap as MindElement,
                     node => {
                         if (!PlaitBoard.hasBeenTextEditing(board) && isHitMindElement(board, point, node)) {
-                            startTopicEdit(node);
+                            editTopic(node);
                         }
                     },
                     node => {

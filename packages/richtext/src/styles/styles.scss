@@ -2,10 +2,12 @@
     font-size: 14px;
     min-height: 20px;
     line-height: 20px;
+    display: block;
     .slate-editable-container {
         outline: none;
         white-space: pre-wrap;
         white-space: break-spaces;
         word-break: break-all;
+        padding: 0;
     }
 }

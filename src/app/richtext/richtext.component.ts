@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PlaitChangeEvent } from '@plait/richtext';
+import { Editor } from 'slate';
 
 @Component({
     selector: 'basic-richtext',
@@ -8,14 +9,12 @@ import { PlaitChangeEvent } from '@plait/richtext';
 export class BasicRichtextComponent implements OnInit {
     value = {
         children: [
-            { text: '富文本' },
-            { type: 'link', url: 'https://github.com/plait-org/plait', children: [{ text: 'https://github.com/plait-org/plait' }] },
-            { text: '' }
+            { text: '富文本' }
         ]
     };
     ngOnInit(): void {}
 
-    onChange(event: PlaitChangeEvent) {
+    onChange(event: Editor) {
         console.log(event);
     }
 }
