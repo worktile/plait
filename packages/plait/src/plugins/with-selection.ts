@@ -59,6 +59,7 @@ export function withSelection(board: PlaitBoard) {
             event.preventDefault();
         }
 
+
         Transforms.setSelection(board, { ranges: ranges });
 
         mousedown(event);
