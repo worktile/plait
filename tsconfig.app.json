@@ -18,7 +18,7 @@
         "packages/plait/src/public-api",
       ],
       "@plait/text": [
-        "packages/richtext/src/public-api",
+        "packages/text/src/public-api",
       ]
     },
     "forceConsistentCasingInFileNames": true,

@@ -9,4 +9,4 @@ import { SlateModule } from 'slate-angular';
     imports: [CommonModule, FormsModule, SlateModule],
     exports: [PlaitRichtextComponent]
 })
-export class RichtextModule {}
+export class TextModule {}

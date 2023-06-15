@@ -5,4 +5,4 @@
 '@plait/text': minor
 ---
 
-replace richtext component by slate-angular
+rename richtext to text
