@@ -47,13 +47,8 @@ g[plait-mindmap='true'] {
     }
 
     &.pointer-hand {
-        svg {
+        .board-host-svg {
             cursor: grab;
-        }
-        .zoom-toolbar {
-            svg {
-                cursor: pointer;
-            }
         }
         .collapsed {
             .extend:hover {

@@ -10,7 +10,8 @@ import {
     getSelectedElements,
     depthFirstRecursion,
     createG,
-    PlaitNode
+    PlaitNode,
+    PlaitPointerType
 } from '@plait/core';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { MindElement, PlaitMind } from '../interfaces/element';
@@ -47,7 +48,12 @@ export const withDnd = (board: PlaitBoard) => {
     let targetPath: Path;
 
     board.mousedown = (event: MouseEvent) => {
-        if (board.options.readonly || IS_TEXT_EDITABLE.get(board) || event.button === 2) {
+        if (
+            PlaitBoard.isReadonly(board) ||
+            PlaitBoard.hasBeenTextEditing(board) ||
+            !PlaitBoard.isPointer(board, PlaitPointerType.selection) ||
+            event.button === 2
+        ) {
             mousedown(event);
             return;
         }
