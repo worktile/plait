@@ -7,6 +7,7 @@ import {
     Transforms,
     WithPluginOptions,
     addSelectedElement,
+    clearSelectedElement,
     getSelectedElements,
     throttleRAF,
     toPoint,
@@ -100,6 +101,7 @@ export const withCreateMind = (board: PlaitBoard) => {
             const targetPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
             const emptyMind = createEmptyMind(board, targetPoint);
             Transforms.insertNode(board, emptyMind, [board.children.length]);
+            clearSelectedElement(board);
             addSelectedElement(board, emptyMind);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
