@@ -5,7 +5,7 @@ import { PlaitPointerType } from '../interfaces/pointer';
 import { toPoint } from '../utils/dom/common';
 import { getRectangleByElements } from '../utils/element';
 import { distanceBetweenPointAndRectangle } from '../utils/math';
-import { clampZoomLevel, clearViewportOrigination, getViewBox, getViewportContainerRect, getViewportOrigination } from '../utils/viewport';
+import { clampZoomLevel, clearViewportOrigination, getViewBox, getViewportOrigination } from '../utils/viewport';
 import { BOARD_TO_COMPONENT } from '../utils/weak-maps';
 import { setViewport } from './viewport';
 import { depthFirstRecursion } from '../utils';
@@ -34,8 +34,8 @@ function updateZoom(board: PlaitBoard, newZoom: number, isCenter = true) {
     const mousePoint = PlaitBoard.getMovingPoint(board);
     const nativeElement = PlaitBoard.getBoardNativeElement(board);
     const nativeElementRect = nativeElement.getBoundingClientRect();
-    const viewportContainerRect = getViewportContainerRect(board);
-    let focusPoint = [viewportContainerRect.width / 2, viewportContainerRect.height / 2];
+    const boardContainerRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
+    let focusPoint = [boardContainerRect.width / 2, boardContainerRect.height / 2];
 
     if (!isCenter && mousePoint && distanceBetweenPointAndRectangle(mousePoint[0], mousePoint[1], nativeElementRect) === 0) {
         focusPoint = toPoint(mousePoint[0], mousePoint[1], (nativeElement as unknown) as SVGElement);
@@ -50,13 +50,19 @@ function updateZoom(board: PlaitBoard, newZoom: number, isCenter = true) {
 }
 
 function fitViewport(board: PlaitBoard) {
-    const nativeElementRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
-    const viewportContainerRect = getViewportContainerRect(board);
+    const { hideScrollbar } = board.options;
+    let scrollBarWidth = 0;
+    if (!hideScrollbar) {
+        const viewportContainer = PlaitBoard.getViewportContainer(board);
+        scrollBarWidth = viewportContainer.offsetWidth - viewportContainer.clientWidth;
+    }
+
+    const boardContainerRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
     const elementHostBox = getRectangleByElements(board, board.children, true);
     const zoom = board.viewport.zoom;
     const autoFitPadding = 16;
-    const viewportWidth = nativeElementRect.width - 2 * autoFitPadding;
-    const viewportHeight = nativeElementRect.height - 2 * autoFitPadding;
+    const viewportWidth = boardContainerRect.width - 2 * autoFitPadding;
+    const viewportHeight = boardContainerRect.height - 2 * autoFitPadding;
 
     let newZoom = zoom;
     if (viewportWidth < elementHostBox.width || viewportHeight < elementHostBox.height) {
@@ -69,8 +75,8 @@ function fitViewport(board: PlaitBoard) {
     const centerX = viewBox[0] + viewBox[2] / 2;
     const centerY = viewBox[1] + viewBox[3] / 2;
     const newOrigination = [
-        centerX - viewportContainerRect.width / 2 / newZoom,
-        centerY - viewportContainerRect.height / 2 / newZoom
+        centerX - boardContainerRect.width / 2 / newZoom + scrollBarWidth / 2 / zoom,
+        centerY - boardContainerRect.height / 2 / newZoom + scrollBarWidth / 2 / zoom
     ] as Point;
     updateViewport(board, newOrigination, newZoom);
 }

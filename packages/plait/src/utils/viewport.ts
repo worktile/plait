@@ -66,19 +66,16 @@ export function clampZoomLevel(zoom: number, minZoom = 0.2, maxZoom = 4) {
 }
 
 export function getViewBox(board: PlaitBoard, zoom: number) {
-    const { hideScrollbar } = board.options;
-    const scrollBarWidth = hideScrollbar ? 0 : SCROLL_BAR_WIDTH;
-
-    const viewportContainerRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
+    const boardContainerRectangle = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
     const elementHostBBox = getElementHostBBox(board, zoom);
 
-    const horizontalPadding = viewportContainerRect.width / 2;
-    const verticalPadding = viewportContainerRect.height / 2;
+    const horizontalPadding = boardContainerRectangle.width / 2;
+    const verticalPadding = boardContainerRectangle.height / 2;
     const viewBox = [
         elementHostBBox.left - horizontalPadding / zoom,
         elementHostBBox.top - verticalPadding / zoom,
-        elementHostBBox.right - elementHostBBox.left + (horizontalPadding * 2 - scrollBarWidth) / zoom,
-        elementHostBBox.bottom - elementHostBBox.top + (verticalPadding * 2 - scrollBarWidth) / zoom
+        elementHostBBox.right - elementHostBBox.left + (horizontalPadding * 2) / zoom,
+        elementHostBBox.bottom - elementHostBBox.top + (verticalPadding * 2) / zoom
     ];
     return viewBox;
 }
