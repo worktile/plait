@@ -52,23 +52,26 @@ export function withMoving(board: PlaitBoard) {
             const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
             offsetX = endPoint[0] - startPoint[0];
             offsetY = endPoint[1] - startPoint[1];
-            throttleRAF(() => {
-                const currentElements = activeElements!.map(activeElement => {
-                    const [x, y] = activeElement?.points![0];
-                    const index = board.children.findIndex(item => item.id === activeElement.id);
-                    Transforms.setNode(
-                        board,
-                        {
-                            points: [[x + offsetX, y + offsetY]]
-                        },
-                        [index]
-                    );
-                    MERGING.set(board, true);
-                    return PlaitNode.get(board, [index]);
+            const offsetBuffer = 5;
+            if (Math.abs(offsetX) > offsetBuffer || Math.abs(offsetY) > offsetBuffer) {
+                throttleRAF(() => {
+                    const currentElements = activeElements!.map(activeElement => {
+                        const [x, y] = activeElement?.points![0];
+                        const index = board.children.findIndex(item => item.id === activeElement.id);
+                        Transforms.setNode(
+                            board,
+                            {
+                                points: [[x + offsetX, y + offsetY]]
+                            },
+                            [index]
+                        );
+                        MERGING.set(board, true);
+                        return PlaitNode.get(board, [index]);
+                    });
+                    PlaitBoard.getBoardNativeElement(board).classList.add('element-moving');
+                    addMovingElements(board, currentElements as PlaitElement[]);
                 });
-                PlaitBoard.getBoardNativeElement(board).classList.add('element-moving');
-                addMovingElements(board, currentElements as PlaitElement[]);
-            });
+            }
         }
         if (isPreventDefault) {
             // 阻止 move 过程中触发画布滚动行为
