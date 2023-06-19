@@ -5,8 +5,9 @@
   ],
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "npm run start:docs",
     "build": "npm run build:core && npm run build:richtext && ng build layouts && npm run build:mind && npm run build:flow",
+    "build:docs": "docgeni build",
     "build:core": "ng build plait && cpx \"./packages/plait/src/styles/*.scss\" ./dist/core/styles/",
     "build:mind": " ng build mind && cpx \"./packages/mind/src/styles/*.scss\" ./dist/mind/styles/",
     "build:richtext": "ng build richtext && cpx \"./packages/richtext/src/styles/*.scss\" ./dist/richtext/styles/",
@@ -19,6 +20,7 @@
     "pub:flow": "cd dist/flow && npm publish --access public",
     "watch": "ng build --watch --configuration development",
     "test": "ng test mind",
+    "start:docs": "docgeni serve --port 7100",
     "lint": "ng lint --fix",
     "pretty": "pretty-quick --staged"
   },
@@ -36,15 +38,15 @@
     "@angular/platform-browser": "^15.2.2",
     "@angular/platform-browser-dynamic": "^15.2.2",
     "@angular/router": "^15.2.2",
+    "immer": "^9.0.6",
     "is-hotkey": "^0.2.0",
     "points-on-curve": "^1.0.0",
     "roughjs": "^4.5.2",
-    "rxjs": "~7.8.0",
+    "rxjs": "~7.8.1",
     "slate": "^0.73.1",
     "slate-history": "^0.66.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4",
-    "immer": "^9.0.6"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.2.3",
@@ -57,6 +59,8 @@
     "@angular/compiler-cli": "^15.2.2",
     "@changesets/changelog-github": "^0.3.0",
     "@changesets/cli": "^2.19.0",
+    "@docgeni/cli": "^2.2.0",
+    "@docgeni/template": "2.2.0",
     "@types/is-hotkey": "^0.1.6",
     "@types/jasmine": "~3.8.0",
     "@types/node": "^12.11.1",

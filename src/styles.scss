@@ -1,5 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
 
+@use "@docgeni/template/styles/index.scss";
+@use './app/richtext/richtext.component.scss';
+@use './app/theme.scss';
+@use './app/components/styles/panel.scss';
+@use './app/components/styles/toolbar.scss';
+
+@import '../packages/richtext/src/styles/styles.scss';
+@import '../packages/mind/src/styles/styles.scss';
+@import '../packages/plait/src/styles/styles.scss';
+@import '../packages/flow/src/styles/styles.scss';
+
 html,
 body {
     width: 100%;
@@ -8,4 +19,22 @@ body {
     padding: 0px;
 }
 
-@import './app/app.component.scss';
+
+.flow-custom-node {
+    color: #fff;
+    .plait-richtext-container {
+        font-size: 10px;
+    }
+}
+
+.theme-setting-toolbar {
+    bottom: 30px;
+    right: 34px;
+    width: 120px;
+    select {
+        width: 100%;
+        padding-left: 4px;
+        padding-right: 4px;
+        height: 24px;
+    }
+}
