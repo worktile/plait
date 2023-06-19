@@ -1,5 +1,17 @@
 # mind
 
+## 0.9.0
+
+### Minor Changes
+
+-   [#427](https://github.com/worktile/plait/pull/427) [`913409e`](https://github.com/worktile/plait/commit/913409eaa64ca86033ed18e15741eb778cc7bf77) Thanks [@WBbug](https://github.com/WBbug)! - change draw quick insert logic
+
+### Patch Changes
+
+-   [`e8c227a`](https://github.com/worktile/plait/commit/e8c227ad255fe30d2e3612e492d4d2a8b5242e32) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - just set board-host-svg style
+
+*   [`e0deea0`](https://github.com/worktile/plait/commit/e0deea0dff37c08cf945260e789c25dff230e571) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - clear selectedElements when create mind
+
 ## 0.8.0
 
 ### Minor Changes

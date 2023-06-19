@@ -1,5 +1,13 @@
 # plait
 
+## 0.9.0
+
+### Patch Changes
+
+-   [#428](https://github.com/worktile/plait/pull/428) [`413bd18`](https://github.com/worktile/plait/commit/413bd18b33992a19df4337538323cccce4db93b9) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add offsetBuffer
+
+*   [`ba049cc`](https://github.com/worktile/plait/commit/ba049cca9980ba2f763700a85b037c0699c4fa75) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - simplify viewBox calculate logic and use real scrollbar when fit viewport
+
 ## 0.8.0
 
 ### Patch Changes
