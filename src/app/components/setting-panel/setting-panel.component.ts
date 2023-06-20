@@ -1,7 +1,16 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, forwardRef } from '@angular/core';
-import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
+import {
+    OnBoardChange,
+    PlaitBoard,
+    PlaitElement,
+    PlaitIslandBaseComponent,
+    PlaitPointerType,
+    Transforms,
+    getSelectedElements
+} from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
-import { MindElement, MindElementShape, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
+import { MindElement, MindNodeComponent, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
+import { MarkEditor, MarkTypes } from '@plait/text';
 
 @Component({
     selector: 'app-setting-panel',
@@ -9,7 +18,7 @@ import { MindElement, MindElementShape, MindPointerType, MindTransforms, canSetA
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [{ provide: PlaitIslandBaseComponent, useExisting: forwardRef(() => AppSettingPanelComponent) }],
     host: {
-        class: 'app-setting-panel'
+        class: 'app-setting-panel plait-board-attached'
     }
 })
 export class AppSettingPanelComponent extends PlaitIslandBaseComponent implements OnBoardChange {
@@ -92,6 +101,17 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
         if (ableSetAbstract) {
             MindTransforms.insertAbstract(this.board, this.selectedElements);
+        }
+    }
+
+    setTextMark(event: MouseEvent, attribute: string) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (this.selectedElements.length) {
+            this.selectedElements.forEach(element => {
+                const editor = (PlaitElement.getComponent(element) as MindNodeComponent).textManage.componentRef.instance.editor;
+                MarkEditor.toggleMark(editor, attribute as MarkTypes);
+            });
         }
     }
 }

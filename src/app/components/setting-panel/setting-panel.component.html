@@ -2,6 +2,20 @@
     <button (click)="setAbstract($event)">设置概要</button>
 </div>
 
+<div class="property-item abstract-setting-toolbar">
+    <button (click)="setTextMark($event, 'bold')">加粗</button>
+</div>
+
+<div class="property-item abstract-setting-toolbar">
+    <button (click)="setTextMark($event, 'italic')">斜体</button>
+</div>
+<div class="property-item abstract-setting-toolbar">
+    <button (click)="setTextMark($event, 'underlined')">下划线</button>
+</div>
+<div class="property-item abstract-setting-toolbar">
+    <button (click)="setTextMark($event, 'strike')">删除线</button>
+</div>
+
 <div class="property-item shape-setting-toolbar">
     <div class="setting-panel-title">节点形状：</div>
     <select (change)="propertyChange($event, 'shape')">

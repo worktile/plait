@@ -1,4 +1,4 @@
-import { Editor, Text, Node } from 'slate';
+import { Editor, Text, Node, Transforms } from 'slate';
 import { MarkTypes } from '../constant/mark';
 
 export interface MarkEditor extends Editor {
@@ -18,6 +18,10 @@ export const MarkEditor = {
         return marks && marks[format] ? true : false;
     },
     toggleMark(editor: Editor, format: MarkTypes) {
+        if (!editor.selection) {
+            Transforms.select(editor, [0]);
+        }
+
         const isActive = MarkEditor.isMarkActive(editor, format);
         if (isActive) {
             Editor.removeMark(editor, format);
