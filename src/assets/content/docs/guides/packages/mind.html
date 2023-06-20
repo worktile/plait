@@ -1,0 +1,79 @@
+<p>@plait/mind 库包含思维导图的核心逻辑的实现，基于 Plait 框架，是最早也是目前唯一一个落地的业务插件。</p>
+<div class="dg-paragraph"><strong>基础功能</strong></div>
+<ol>
+<li>支持逻辑布局、标准布局、缩进布局</li>
+<li>节点快捷新建（Tab、Enter）、删除（Delete、Backspace）</li>
+<li>节点主题文本编辑</li>
+<li>节点展开收起</li>
+<li>节点复制、粘贴</li>
+</ol>
+<div class="dg-paragraph"><strong>高阶功能</strong></div>
+<ol>
+<li>节点支持拖拽调整位置</li>
+<li>节点支持概要/调整概要范围</li>
+<li>节点支持扩展设置 Emoji 表情</li>
+<li>交互式创建思维导图插件</li>
+</ol>
+<div class="dg-paragraph"><strong>功能演示</strong></div>
+<p>@plait/mind 核心仅仅包含数据渲染及核心交互实现，不包含工具栏、属性设置等基于界面的交互实现，因为这部分功能依赖于特定的界面风格（插件层不希望引入组件库），我们在设计上倾向于把这部分功能交由使用方自定义实现，插件层只提供事件支持及个性化配置支持。</p>
+<div class="dg-paragraph"><strong>自定义扩展</strong></div>
+<ol>
+<li>支持 MindOptions 配置</li>
+</ol>
+<p>提供 Mind 插件特有的可重写函数，用于使用方自定义 Mind 插件配置（控制渲染样式、交互风格等）：</p>
+<pre><code><div>export interface MindOptions {
+    emojiPadding<span class="token punctuation">:</span> number<span class="token comment" spellcheck="true">;</span>
+    spaceBetweenEmojis<span class="token punctuation">:</span> number<span class="token comment" spellcheck="true">;</span>
+}</div></code></pre><p>目前仅支持 emoji 扩展相关的自定义配置，后续会把节点之间的间隙、文本与节点之间的间隙等等做成自定义配置，目前这些配置是按照我们自己的需求固定在代码中的。</p>
+<ol start="2">
+<li>支持扩展 Emoji</li>
+</ol>
+<p>Mind 插件支持 Emoji 功能的时候仅仅提供了一个调用入口，需要使用方提供具体的一个 Emoji 渲染组件，用于具体的实现 Emoji 的渲染及交互，插件层不关注 Emoji 的交互细节、也不管理 Emoji 资源，仅仅控制 emoji 的渲染位置及空间占位。</p>
+<p>提供可重写函数签名：</p>
+<pre><code><div>drawEmoji<span class="token punctuation">:</span> <span class="token punctuation">(</span>emoji<span class="token punctuation">:</span> EmojiItem<span class="token punctuation">,</span> element<span class="token punctuation">:</span> MindElement<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> ComponentType<span class="token operator">&lt;</span>MindEmojiBaseComponent<span class="token operator">></span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>提供 Emoji 渲染组件基类：</p>
+<pre><code><div>@<span class="token function">Directive</span><span class="token punctuation">(</span>{
+    host<span class="token punctuation">:</span> {
+        class<span class="token punctuation">:</span> <span class="token string">'mind-node-emoji'</span>
+    }
+}<span class="token punctuation">)</span>
+export class MindEmojiBaseComponent implements OnInit {
+    @<span class="token function">Input</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    fontSize<span class="token punctuation">:</span> number <span class="token operator">=</span> <span class="token number">14</span><span class="token comment" spellcheck="true">;</span>
+
+    @<span class="token function">Input</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    emojiItem!<span class="token punctuation">:</span> EmojiItem<span class="token comment" spellcheck="true">;</span>
+
+    @<span class="token function">Input</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    board!<span class="token punctuation">:</span> PlaitBoard<span class="token comment" spellcheck="true">;</span>
+
+    @<span class="token function">Input</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    element!<span class="token punctuation">:</span> MindElement<span class="token operator">&lt;</span>EmojiData<span class="token operator">></span><span class="token comment" spellcheck="true">;</span>
+
+    get <span class="token function">nativeElement</span><span class="token punctuation">(</span><span class="token punctuation">)</span> {
+        return this<span class="token punctuation">.</span>elementRef<span class="token punctuation">.</span>nativeElement<span class="token comment" spellcheck="true">;</span>
+    }
+
+    <span class="token function">constructor</span><span class="token punctuation">(</span>protected elementRef<span class="token punctuation">:</span> ElementRef<span class="token operator">&lt;</span>HTMLElement<span class="token operator">></span><span class="token punctuation">)</span> {}
+
+    <span class="token function">ngOnInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> void {
+        this<span class="token punctuation">.</span>elementRef<span class="token punctuation">.</span>nativeElement<span class="token punctuation">.</span>style<span class="token punctuation">.</span>fontSize <span class="token operator">=</span> `${this<span class="token punctuation">.</span>fontSize}px`<span class="token comment" spellcheck="true">;</span>
+    }
+}</div></code></pre><p>不同提供默认实现</p>
+<pre><code><div>newBoard<span class="token punctuation">.</span>drawEmoji <span class="token operator">=</span> <span class="token punctuation">(</span>emoji<span class="token punctuation">:</span> EmojiItem<span class="token punctuation">,</span> element<span class="token punctuation">:</span> MindElement<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+  throw new <span class="token function">Error</span><span class="token punctuation">(</span><span class="token string">'Not implement drawEmoji method error.'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token comment" spellcheck="true">;</span></div></code></pre><ol start="3">
+<li>概要调整</li>
+</ol>
+<p>因为业务方需要在概要拖拽调整范围时做一定的业务处理，所以插件层增加了一个可重写方法用于抛出概要调整时的状态</p>
+<p>提供可选的可重写函数签名 onAbstractResize： </p>
+<pre><code><div>export interface PlaitAbstractBoard extends PlaitBoard {
+    onAbstractResize<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token punctuation">(</span>state<span class="token punctuation">:</span> AbstractResizeState<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> void<span class="token comment" spellcheck="true">;</span>
+}</div></code></pre><p>AbstractResizeState 状态定义：</p>
+<pre><code><div>export <span class="token keyword">enum</span> AbstractResizeState {
+    start <span class="token operator">=</span> <span class="token string">'start'</span><span class="token punctuation">,</span>
+    resizing <span class="token operator">=</span> <span class="token string">'resizing'</span><span class="token punctuation">,</span>
+    end <span class="token operator">=</span> <span class="token string">'end'</span>
+}</div></code></pre><div class="dg-paragraph"><strong>依赖</strong></div>
+<p>@plait/core</p>
+<p>@plait/layouts</p>
+<p>@plait/richtext</p>

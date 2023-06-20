@@ -1,0 +1,127 @@
+<p>Plait 被定位为一个绘图框架，提供插件机制，允许开发者通过插件的方式扩展功能。它底层只提供一个基础的绘图白板，仅仅包含放大、缩小、移动端画布等基础功能，而不包含任何业务功能，所有业务功能均需要通过插件的方式扩展，实现自由组合，可以方便的实现独立的或者一体化的绘图工具。Plait 也会提供一些基础的功能插件，目前已经实现了思维导图插件和状态流转两大功能插件，后续要回逐步实现流程图插件。Plait 架构以富文本编辑器框架 Slate 为灵感，适用于交互式绘图场景，当前还在 beta 状态。</p>
+
+        <h4 id="framework-features" class="docs-header-link">
+          <span header-link="framework-features"></span>
+          Framework Features
+        </h4>
+      <ul>
+<li>提供基础画板能力，比如放大、缩小、移动</li>
+<li>插件机制，提供插件机制用于扩展绘图功能</li>
+<li>数据模型，提供基础数据模型及数据变换函数（支持协同）</li>
+<li>前端组件化，基于组件组织业务逻辑（目前仅支持 Angular 框架）</li>
+</ul>
+
+        <h4 id="packages" class="docs-header-link">
+          <span header-link="packages"></span>
+          Packages
+        </h4>
+      <table>
+<thead>
+<tr>
+<th>Package Name</th>
+<th>Description</th>
+<th>Currently Version</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@plait/core</td>
+<td>框架核心：1.插件机制设计 2.提供数据模型、数据变换函数 3.提供基础的 board 组件，包含放大、缩小、滚动方案实现</td>
+<td></td>
+</tr>
+<tr>
+<td>@plait/richtext</td>
+<td>一个轻量的富文本编辑器，用于在画板中接入文本数据显示和编辑</td>
+<td></td>
+</tr>
+<tr>
+<td>@plait/mind</td>
+<td>思维导图插件实现，基于独立的自动布局算法，目前支持：逻辑布局、标准布局、缩进布局</td>
+<td></td>
+</tr>
+<tr>
+<td>@plait/layouts</td>
+<td>思维导图支持库，包含自动布局算法</td>
+<td></td>
+</tr>
+<tr>
+<td>@plait/flow</td>
+<td>状态流转插件，可以用于实现可视化的状态流转配置、工作流转配置等功能</td>
+<td></td>
+</tr>
+</tbody></table>
+
+        <h4 id="%E5%BC%80%E5%8F%91" class="docs-header-link">
+          <span header-link="%E5%BC%80%E5%8F%91"></span>
+          开发
+        </h4>
+      <pre><code><div>npm i
+
+npm run build
+
+npm run start</div></code></pre>
+        <h4 id="%E4%BD%BF%E7%94%A8" class="docs-header-link">
+          <span header-link="%E4%BD%BF%E7%94%A8"></span>
+          使用
+        </h4>
+      <p>基本使用（集成 @plait/mind 插件）</p>
+<p>HTML 模版：</p>
+<pre><code><div><span class="token operator">&lt;</span>plait<span class="token operator">-</span>board <span class="token punctuation">[</span>plaitPlugins<span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">"plugins"</span> <span class="token punctuation">[</span>plaitValue<span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">"value"</span>
+    <span class="token punctuation">(</span>plaitBoardInitialized<span class="token punctuation">)</span><span class="token operator">=</span><span class="token string">"plaitBoardInitialized($event)"</span> <span class="token punctuation">(</span>plaitChange<span class="token punctuation">)</span><span class="token operator">=</span><span class="token string">"change($event)"</span><span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>plait<span class="token operator">-</span>board<span class="token operator">></span></div></code></pre><p>TS 文件：</p>
+<pre><code><div><span class="token operator">/</span><span class="token operator">/</span> <span class="token punctuation">.</span>ts
+@<span class="token function">Component</span><span class="token punctuation">(</span>{
+  selector<span class="token punctuation">:</span> <span class="token string">'board-basic'</span><span class="token punctuation">,</span>
+  templateUrl<span class="token punctuation">:</span> <span class="token string">'./board-basic.component.html'</span><span class="token punctuation">,</span>
+  host<span class="token punctuation">:</span> {
+    class<span class="token punctuation">:</span> <span class="token string">'board-basic-container'</span><span class="token punctuation">,</span>
+  }<span class="token punctuation">,</span>
+}<span class="token punctuation">)</span>
+export class BasicBoardComponent {
+  plugins <span class="token operator">=</span> <span class="token punctuation">[</span>withMind<span class="token punctuation">]</span><span class="token comment" spellcheck="true">;</span>
+
+  value<span class="token punctuation">:</span> PlaitElement<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> demoData<span class="token comment" spellcheck="true">;</span>
+
+  board!<span class="token punctuation">:</span> PlaitBoard<span class="token comment" spellcheck="true">;</span>
+
+  <span class="token function">change</span><span class="token punctuation">(</span>event<span class="token punctuation">:</span> PlaitBoardChangeEvent<span class="token punctuation">)</span> {
+    <span class="token operator">/</span><span class="token operator">/</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>event<span class="token punctuation">.</span>children<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }
+
+  <span class="token function">plaitBoardInitialized</span><span class="token punctuation">(</span>value<span class="token punctuation">:</span> PlaitBoard<span class="token punctuation">)</span> {
+    this<span class="token punctuation">.</span>board <span class="token operator">=</span> value<span class="token comment" spellcheck="true">;</span>
+  }
+}
+
+<span class="token keyword">const</span> demoData <span class="token operator">=</span> <span class="token punctuation">[</span>
+  {
+    type<span class="token punctuation">:</span> <span class="token string">'mindmap'</span><span class="token punctuation">,</span>
+    id<span class="token punctuation">:</span> <span class="token string">'2'</span><span class="token punctuation">,</span>
+    rightNodeCount<span class="token punctuation">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+    data<span class="token punctuation">:</span> { topic<span class="token punctuation">:</span> { children<span class="token punctuation">:</span> <span class="token punctuation">[</span>{ text<span class="token punctuation">:</span> <span class="token string">'思维导图'</span> }<span class="token punctuation">]</span> } }<span class="token punctuation">,</span>
+    children<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    width<span class="token punctuation">:</span> <span class="token number">72</span><span class="token punctuation">,</span>
+    height<span class="token punctuation">:</span> <span class="token number">25</span><span class="token punctuation">,</span>
+    isRoot<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    points<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">560</span><span class="token punctuation">,</span> <span class="token number">700</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  }<span class="token punctuation">,</span>
+<span class="token punctuation">]</span> as PlaitElement<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>效果图：</p>
+<div class="dg-paragraph"><img src="https://atlas-rc.pingcode.com/files/public/6458bf9b5200ed5a459e25ff/origin-url" alt="Screen Shot 2023-05-08 at 17.23.05.png"></div>
+<p>更详细的示例说明参考：  <a target="_blank" href="https://github.com/pubuzhixing8/plait-basic">https://github.com/pubuzhixing8/plait-basic</a>  </p>
+
+        <h4 id="%E4%BE%9D%E8%B5%96" class="docs-header-link">
+          <span header-link="%E4%BE%9D%E8%B5%96"></span>
+          依赖
+        </h4>
+      <p>roughjs</p>
+
+        <h4 id="%E8%B4%A1%E7%8C%AE" class="docs-header-link">
+          <span header-link="%E8%B4%A1%E7%8C%AE"></span>
+          贡献
+        </h4>
+      <p>当前 plait/core 框架还有 plait/mind 等插件都在高速的迭代中，大家有任何意见或者想法欢迎给我们反馈，也欢迎社区内对画图工具感性趣的同学给我们 PR。</p>
+
+        <h4 id="%E5%BC%80%E6%BA%90%E5%8D%8F%E8%AE%AE" class="docs-header-link">
+          <span header-link="%E5%BC%80%E6%BA%90%E5%8D%8F%E8%AE%AE"></span>
+          开源协议
+        </h4>
+      <p>  <a target="_blank" href="https://github.com/worktile/slate-angular/blob/master/LICENSE">MIT License</a>  </p>

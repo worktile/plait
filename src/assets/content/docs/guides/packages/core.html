@@ -1,0 +1,49 @@
+<p>Plait 框架核心库，包含核心的数据模型定义、数据变换函数、插件机制等，除此之外还包含插件元素渲染基类定义以及包含基础交互的 board 组件。</p>
+<blockquote>
+<p>当前 @plait/core 承担了过多的职责，既包含核心数据模型、插件机制，又包含了前端框架层的桥接层，还有一些绘图相关的基础功能插件，因为当前只要是一些基础的画板需求（比如框选、拖拽移动元素位置）都会在 core 中，未来可能会考虑更细的包划分。</p>
+</blockquote>
+
+        <h4 id="%3Cstrong%3E%E5%9F%BA%E7%A1%80%E7%94%BB%E6%9D%BF%E5%8A%9F%E8%83%BD%3C/strong%3E" class="docs-header-link">
+          <span header-link="%3Cstrong%3E%E5%9F%BA%E7%A1%80%E7%94%BB%E6%9D%BF%E5%8A%9F%E8%83%BD%3C/strong%3E"></span>
+          <strong>基础画板功能</strong>
+        </h4>
+      <ol>
+<li>提供一个画板组件（基于 Angular）</li>
+<li>放大、缩小、拖动画布</li>
+<li>集成画布滚动方案</li>
+<li>撤销、重做</li>
+<li>点选/框选元素</li>
+<li>拖拽调整元素位置</li>
+<li>主题方案（进行中）</li>
+</ol>
+
+        <h4 id="%3Cstrong%3E%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF%3C/strong%3E" class="docs-header-link">
+          <span header-link="%3Cstrong%3E%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF%3C/strong%3E"></span>
+          <strong>设计思路</strong>
+        </h4>
+      <p>Plait 是为构建一体化画板工具而设计的框架，它的核心是插件机制和数据模型，插件机制是外在表现，它允许开发者以插件化的扩展方式画板功能，而不必将功能全部集成一个库中，框架会提供必要的扩展桥梁和通讯机制为插件开发服务，数据模型是内核，它提供数据的定义及数据的操作变换函数，是插件的内在表示。</p>
+<div class="dg-paragraph"><strong>插件机制</strong></div>
+<p>插件机制基于可重写方法构建扩展桥梁，目前支持自定义交互、自定义渲染，在自定义交互方面 plait/core 目前以最原始的方式直接将基础的 DOM 事件定义为可重写方法，比如：mousedown、mouseup、mousemove、keydown、keyup 等等，没有过多业务层面的封装，自定义渲染目前支持以 Angular 组件的方式扩展插件的渲染。</p>
+<div class="dg-paragraph"><strong>数据模型</strong></div>
+<p>主要提供以下能力：</p>
+<ol>
+<li>提供基础数据模型</li>
+<li>提供基于原子的数据变化方法（Transfroms）</li>
+<li>基于不可变数据模型（基于 Immer）</li>
+<li>提供 Change 机制，与框架配合完成数据驱动渲染</li>
+<li>与插件机制融合，数据修改的过程可以被拦截处理</li>
+</ol>
+<div class="dg-paragraph"><strong>标准数据流</strong></div>
+<div class="dg-paragraph"><img src="https://atlas-rc.pingcode.com/files/public/64772907e468e3b3652fa3ff/origin-url" alt="image.png"></div>
+
+        <h4 id="%3Cstrong%3E%E6%9E%B6%E6%9E%84%E5%9B%BE%3C/strong%3E" class="docs-header-link">
+          <span header-link="%3Cstrong%3E%E6%9E%B6%E6%9E%84%E5%9B%BE%3C/strong%3E"></span>
+          <strong>架构图</strong>
+        </h4>
+      <div class="dg-paragraph"><img src="https://atlas-rc.pingcode.com/files/public/647726b0e468e3b3652fa3fe/origin-url" alt="image.png"></div>
+
+        <h4 id="%E4%BE%9D%E8%B5%96" class="docs-header-link">
+          <span header-link="%E4%BE%9D%E8%B5%96"></span>
+          依赖
+        </h4>
+      <p>roughjs</p>

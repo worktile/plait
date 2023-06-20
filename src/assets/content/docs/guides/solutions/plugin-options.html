@@ -1,0 +1,61 @@
+<p>实现一个自定义插件有时候免不了要支持一些自定义配置。</p>
+<p>比如 @plait/core 中的 with-selection 插件支持支持了点选/框选的功能，但是有些场景下业务方可能只需要点选，不希望有框选的功能（不允许多个节点同时选中），这时候插件就需要自定义的一些配置。</p>
+<p>在 @plait/mind 中支持 emoji 表情时也遇到了类似的需求，在确定 emoji 组件渲染大小和位置时希望可以动态配置间距，以解决不同场景下间距不一致的问题。</p>
+<p>为此，@plait/core 中支持了一个 with-options 的插件，用于为每一个插件动态配置自定义选项，它内部使用 Map 存储每个插件的自定义配置，所有如果插件需要自定义配置，则需要额外给插件定义个唯一 Key。</p>
+
+        <h4 id="%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8" class="docs-header-link">
+          <span header-link="%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8"></span>
+          如何使用
+        </h4>
+      <div class="dg-paragraph"><strong>1.插件默认配置（withSelection）：</strong></div>
+<pre><code><div>export interface WithPluginOptions extends PlaitPluginOptions {
+    isMultiple<span class="token punctuation">:</span> boolean<span class="token comment" spellcheck="true">;</span>
+}
+export function <span class="token function">withSelection</span><span class="token punctuation">(</span>board<span class="token punctuation">:</span> PlaitBoard<span class="token punctuation">)</span> {
+      <span class="token operator">/</span><span class="token operator">/</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">(</span>board as PlaitOptionsBoard<span class="token punctuation">)</span><span class="token punctuation">.</span>setPluginOptions<span class="token operator">&lt;</span>WithPluginOptions<span class="token operator">></span><span class="token punctuation">(</span>PlaitPluginKey<span class="token punctuation">.</span>withSelection<span class="token punctuation">,</span> { isMultiple<span class="token punctuation">:</span> <span class="token boolean">true</span> }<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}</div></code></pre><div class="dg-paragraph"><strong>2.上层重写配置（withFlow）：</strong></div>
+<pre><code><div>export <span class="token keyword">const</span> withFlow<span class="token punctuation">:</span> PlaitPlugin <span class="token operator">=</span> <span class="token punctuation">(</span>board<span class="token punctuation">:</span> PlaitBoard<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+    <span class="token operator">/</span><span class="token operator">/</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">(</span>board as PlaitOptionsBoard<span class="token punctuation">)</span><span class="token punctuation">.</span>setPluginOptions<span class="token operator">&lt;</span>WithPluginOptions<span class="token operator">></span><span class="token punctuation">(</span>PlaitPluginKey<span class="token punctuation">.</span>withSelection<span class="token punctuation">,</span> { isMultiple<span class="token punctuation">:</span> <span class="token boolean">false</span> }<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token comment" spellcheck="true">;</span></div></code></pre>
+        <h4 id="%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0" class="docs-header-link">
+          <span header-link="%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"></span>
+          代码实现
+        </h4>
+      <p>该方案逻辑非常简单，就是在 board 对象上挂载了两个函数：</p>
+<p>getPluginOptions - 获取插件配置</p>
+<p>setPluginOptions - 重写插件配置</p>
+<pre><code><div>export <span class="token keyword">const</span> withOptions <span class="token operator">=</span> <span class="token punctuation">(</span>board<span class="token punctuation">:</span> PlaitBoard<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+    <span class="token keyword">const</span> pluginOptions <span class="token operator">=</span> new Map<span class="token operator">&lt;</span>string<span class="token punctuation">,</span> any<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    <span class="token keyword">const</span> newBoard <span class="token operator">=</span> board as PlaitOptionsBoard<span class="token comment" spellcheck="true">;</span>
+
+    newBoard<span class="token punctuation">.</span>getPluginOptions <span class="token operator">=</span> key <span class="token operator">=</span><span class="token operator">></span> {
+        return pluginOptions<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    }<span class="token comment" spellcheck="true">;</span>
+
+    newBoard<span class="token punctuation">.</span>setPluginOptions <span class="token operator">=</span> <span class="token punctuation">(</span>key<span class="token punctuation">,</span> options<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+        <span class="token keyword">const</span> oldOptions <span class="token operator">=</span> newBoard<span class="token punctuation">.</span><span class="token function">getPluginOptions</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span> || {}<span class="token comment" spellcheck="true">;</span>
+        pluginOptions<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> { <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>oldOptions<span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>options }<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    }<span class="token comment" spellcheck="true">;</span>
+    
+    return newBoard<span class="token comment" spellcheck="true">;</span>
+}<span class="token comment" spellcheck="true">;</span></div></code></pre><p>定义基础定义：</p>
+<pre><code><div>export interface PlaitPluginOptions {
+    disabled<span class="token operator">?</span><span class="token punctuation">:</span> boolean<span class="token comment" spellcheck="true">;</span>
+}
+
+export interface PlaitOptionsBoard extends PlaitBoard {
+    getPluginOptions<span class="token punctuation">:</span> <span class="token operator">&lt;</span>K <span class="token operator">=</span> PlaitPluginOptions<span class="token operator">></span><span class="token punctuation">(</span>key<span class="token punctuation">:</span> string<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> K<span class="token comment" spellcheck="true">;</span>
+    setPluginOptions<span class="token punctuation">:</span> <span class="token operator">&lt;</span>K <span class="token operator">=</span> PlaitPluginOptions<span class="token operator">></span><span class="token punctuation">(</span>key<span class="token punctuation">:</span> string<span class="token punctuation">,</span> value<span class="token punctuation">:</span> K<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> void<span class="token comment" spellcheck="true">;</span>
+}</div></code></pre><blockquote>
+<p>理论上 getPluginOptions 和 setPluginOptions 都是可重写方法，但是这只是理论，应该没有场景需要重写这两个方法的基础实现，实现一个插件的自定义设置只需要插件中或者全局调用 setPluginOptions 即可。  setPluginOptions 中实现了基础的属性合并</p>
+</blockquote>
+
+        <h4 id="%E6%96%B9%E6%A1%88%E8%AF%B4%E6%98%8E" class="docs-header-link">
+          <span header-link="%E6%96%B9%E6%A1%88%E8%AF%B4%E6%98%8E"></span>
+          方案说明
+        </h4>
+      <p>该方案非常简洁，又非常灵活。</p>
+<p>这种方案也可以很容易实现特定时机下的属性的自定义，就是当程序执行进入特定周期后给它设置特定的 Option 然后当程序执行退出该周期时还原 Option 配置。</p>
+<p>需要注意一点的的是，应该避免缓存配置，而应该随时使用随时获取（毕竟读取数据不会有任何性能问题），以便获取的自定配置是最新的。</p>

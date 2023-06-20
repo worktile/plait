@@ -1,0 +1,60 @@
+
+        <h1 id="%E6%95%B4%E4%BD%93%E8%AE%BE%E8%AE%A1%E4%B8%8E%E6%9C%BA%E5%88%B6%EF%BC%9A" class="docs-header-link">
+          <span header-link="%E6%95%B4%E4%BD%93%E8%AE%BE%E8%AE%A1%E4%B8%8E%E6%9C%BA%E5%88%B6%EF%BC%9A"></span>
+          整体设计与机制：
+        </h1>
+      <p>board 新增属性</p>
+<pre><code><div>export interface PlaitBoard {
+      <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    theme<span class="token punctuation">:</span> PlaitTheme<span class="token comment" spellcheck="true">;//board 主题</span>
+}
+
+export interface PlaitTheme {
+    themeColorMode<span class="token punctuation">:</span> ThemeColorMode<span class="token comment" spellcheck="true">;</span>
+}
+</div></code></pre><p>新增主题类型：</p>
+<pre><code><div>export <span class="token keyword">enum</span> ThemeColorMode {
+    <span class="token string">'default'</span> <span class="token operator">=</span> <span class="token string">'default'</span><span class="token punctuation">,</span>
+    <span class="token string">'colorful'</span> <span class="token operator">=</span> <span class="token string">'colorful'</span><span class="token punctuation">,</span>
+    <span class="token string">'soft'</span> <span class="token operator">=</span> <span class="token string">'soft'</span><span class="token punctuation">,</span>
+    <span class="token string">'retro'</span> <span class="token operator">=</span> <span class="token string">'retro'</span><span class="token punctuation">,</span>
+    <span class="token string">'dark'</span> <span class="token operator">=</span> <span class="token string">'dark'</span><span class="token punctuation">,</span>
+    <span class="token string">'starry'</span> <span class="token operator">=</span> <span class="token string">'starry'</span>
+}</div></code></pre><p>修改主题的两个方式：</p>
+<ul>
+<li>通过参数<ul>
+<li>PlaitBoardComponent 接收 plaitTheme 参数，将参数赋值给 board</li>
+<li>组件根据主题给 svg 添加不同的类，显示不同的背景色</li>
+<li>节点根据自身属性和主题来展示默认颜色</li>
+</ul>
+</li>
+<li>主动调用设置主题函数</li>
+</ul>
+<pre><code><div>function <span class="token function">updateThemeColor</span><span class="token punctuation">(</span>board<span class="token punctuation">:</span> PlaitBoard<span class="token punctuation">,</span> mode<span class="token punctuation">:</span> ThemeColorMode<span class="token punctuation">)</span> {
+    mode <span class="token operator">=</span> mode <span class="token operator">?</span><span class="token operator">?</span> board<span class="token punctuation">.</span>theme<span class="token punctuation">.</span>themeColorMode<span class="token comment" spellcheck="true">;</span>
+    <span class="token function">setTheme</span><span class="token punctuation">(</span>board<span class="token punctuation">,</span> { themeColorMode<span class="token punctuation">:</span> mode }<span class="token punctuation">)</span><span class="token comment" spellcheck="true">; //board 内部处理，添加 set_theme 的操作</span>
+
+    <span class="token function">depthFirstRecursion</span><span class="token punctuation">(</span><span class="token punctuation">(</span>board as unknown<span class="token punctuation">)</span> as PlaitElement<span class="token punctuation">,</span> element <span class="token operator">=</span><span class="token operator">></span> {
+        board<span class="token punctuation">.</span><span class="token function">applyTheme</span><span class="token punctuation">(</span>element<span class="token punctuation">)</span><span class="token comment" spellcheck="true">; //遍历处理节点，抹除与颜色相关的属性</span>
+    }<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}</div></code></pre>
+        <h1 id="%E4%BD%BF%E7%94%A8%EF%BC%9A" class="docs-header-link">
+          <span header-link="%E4%BD%BF%E7%94%A8%EF%BC%9A"></span>
+          使用：
+        </h1>
+      <ul>
+<li>增加主题配置参数：</li>
+</ul>
+<pre><code><div>    options<span class="token punctuation">:</span> PlaitBoardOptions <span class="token operator">=</span> {
+         themeColors<span class="token operator">?</span><span class="token punctuation">:</span> ThemeColor<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token comment" spellcheck="true">;</span>
+    }<span class="token comment" spellcheck="true">;</span></div></code></pre><ul>
+<li>被动传入：</li>
+</ul>
+<p>通过传入的主题，和主题配置</p>
+<pre><code><div>   <span class="token operator">&lt;</span>plait<span class="token operator">-</span>board
+    <span class="token punctuation">[</span>plaitTheme<span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">"theme"</span>
+    <span class="token punctuation">[</span>plaitOptions<span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">"options"</span>
+    <span class="token operator">></span></div></code></pre><ul>
+<li>主动修改：  <code>BoardTransforms.updateThemeColor(board: PlaitBoard, mode: ThemeColorMode)</code>  </li>
+<li>获取主题配置相关工具函数：  <code>PlaitBoard.getThemeColors&lt;MindThemeColor&gt;(board)</code></li>
+</ul>
