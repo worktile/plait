@@ -1,0 +1,68 @@
+<p>Plait 前期为了赶进度单元测试一直是缺失的，这就导致一个问题，当我们决定要给某一个功能或者函数添加单元测试时，会感到无从下手，一方面是陌生感不知道哪些该测那些不该测，一方面由于架构设计的原因函数会依赖一些有副作用的代码（WeakMap），这些副作用依赖组件运行后动态构建的上下文，还有一个原因就是单元测试也应该有一些规范，这也是导致无从下手的一个原因。因此，这两天专门花了一些时间考虑了下单元测试到底该怎么写，并封装了一些测试用的工具函数（主要用于模拟组件运行时的副作用上下文、构建 board 实例）。</p>
+<p>在 plait/mind 中单元测试应该有一个分类：</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>依赖上下文</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>纯函数</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>依赖元素父子关系</td>
+<td>代码中调用：1. PlaitBoard.findPath 2. MindElement.getParent 3. ...</td>
+<td>mind/src/utils/abstract/common.spec.ts</td>
+</tr>
+<tr>
+<td>依赖布局节点（MindNode）</td>
+<td>代码中依赖 MindNode</td>
+<td>mind/src/utils/position/topic.spec.ts</td>
+</tr>
+<tr>
+<td>依赖数据变换/插件</td>
+<td>代码中调用 Transforms.xxxx 对 board 数据进行修改</td>
+<td>mind/src/transforms/emoji.spec.ts</td>
+</tr>
+<tr>
+<td>组件实例</td>
+<td>对组件进行测试，上下文则直接包含</td>
+<td>暂无</td>
+</tr>
+</tbody></table>
+<p>分类 1 - 纯函数：单元测试比较好写，无须模拟上下文依赖；</p>
+<p>分类 2 - 依赖元素父子关系：需要模拟构建上下文依赖，这部分代码已经被封装在 plait/core 的 testing 目录中；</p>
+<p>分类 3 - 依赖布局节点：需要在测试中调用布局算法，然后模拟构建 ELEMENT 和 LayoutNode （mindz中的 MindNode 类型）的对应关系，这部分代码被封装在了 plait/mind 的 testing 目录中；</p>
+<p>分类 4 - 依赖数据变换/插件：这里需要构建一个 board 实例，构建数据修改及插件运行环境，并且需要支持传入自定义插件，这也属于框架逻辑，所以被封装在 plait/core 的 testing 目录中；</p>
+<p>分类 5 - 组件实例：对于组件的测试目前还未封装，后续完善；</p>
+<p>在实际写测试中分类 2 和分类 3 他们构建依赖上下文的测试可以合并在一起，创建 board 实例、构建元素父子关系：</p>
+<pre><code><div>let board<span class="token punctuation">:</span> PlaitBoard<span class="token comment" spellcheck="true">;</span>
+<span class="token function">beforeEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+    <span class="token keyword">const</span> children <span class="token operator">=</span> <span class="token function">getTestingChildren</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    board <span class="token operator">=</span> <span class="token function">createTestingBoard</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> children<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    <span class="token function">fakeNodeWeakMap</span><span class="token punctuation">(</span>board<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token function">afterEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+      <span class="token function">clearNodeWeakMap</span><span class="token punctuation">(</span>board<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>另外分类 3 在写测试的时候需要注意，如果一个测试用例里面包含超过一次的数据修改，那么在每一次的数据修改后都需要重新调用 fakeNodeWeakmap 构建基于最新数据引用的父子关系依赖：</p>
+<pre><code><div><span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'should replace emoji success'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+    <span class="token keyword">const</span> first <span class="token operator">=</span> PlaitNode<span class="token punctuation">.</span>get<span class="token operator">&lt;</span>MindElement<span class="token operator">></span><span class="token punctuation">(</span>board<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    <span class="token keyword">const</span> emojiItem<span class="token punctuation">:</span> EmojiItem <span class="token operator">=</span> { name<span class="token punctuation">:</span> <span class="token string">'😊'</span> }<span class="token comment" spellcheck="true">;</span>
+    <span class="token function">addEmoji</span><span class="token punctuation">(</span>board<span class="token punctuation">,</span> first<span class="token punctuation">,</span> emojiItem<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    <span class="token operator">/</span><span class="token operator">/</span> need <span class="token keyword">to</span> clear <span class="token operator">and</span> re<span class="token operator">-</span>fake weak map because element ref was modified
+    <span class="token function">clearNodeWeakMap</span><span class="token punctuation">(</span>board<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    <span class="token function">fakeNodeWeakMap</span><span class="token punctuation">(</span>board<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    <span class="token keyword">const</span> addFirst <span class="token operator">=</span> PlaitNode<span class="token punctuation">.</span>get<span class="token operator">&lt;</span>MindElement<span class="token operator">&lt;</span>EmojiData<span class="token operator">></span><span class="token operator">></span><span class="token punctuation">(</span>board<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    <span class="token keyword">const</span> replaceItem<span class="token punctuation">:</span> EmojiItem <span class="token operator">=</span> { name<span class="token punctuation">:</span> <span class="token string">'😭'</span> }<span class="token comment" spellcheck="true">;</span>
+    <span class="token function">replaceEmoji</span><span class="token punctuation">(</span>board<span class="token punctuation">,</span> addFirst<span class="token punctuation">,</span> emojiItem<span class="token punctuation">,</span> replaceItem<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    <span class="token keyword">const</span> replaceFirst <span class="token operator">=</span> PlaitNode<span class="token punctuation">.</span>get<span class="token operator">&lt;</span>MindElement<span class="token operator">&lt;</span>EmojiData<span class="token operator">></span><span class="token operator">></span><span class="token punctuation">(</span>board<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+    <span class="token function">expect</span><span class="token punctuation">(</span>replaceFirst<span class="token punctuation">.</span>data<span class="token punctuation">.</span>emojis<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toEqual</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    <span class="token function">expect</span><span class="token punctuation">(</span>replaceFirst<span class="token punctuation">.</span>data<span class="token punctuation">.</span>emojis<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toEqual</span><span class="token punctuation">(</span>replaceItem<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>补充单元测试，也是一次很好的梳理代码结构的机会</p>
+<p>不得不说写单元测试是一件非常难的事情，而把单元测试写的有条理则更难，因为它首先需要你的代码是有条理的（模块划分是否清楚、调用关系/目录关系是否统一、函数职责是否唯一/或者存在重复），如果代码结构、调用关系、职责划分等等不清晰，你的单元测试则会很混乱（无法按照一个统一的思路把所有的分支逻辑全部覆盖），或者出现重复功能的单元测试，必然会造成时间的浪费，也会消磨维护单元测试的信心。</p>
