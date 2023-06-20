@@ -3,7 +3,7 @@ import { MindElement, BaseData, PlaitMind, MindElementShape, LayoutDirection } f
 import { AfterDraw, BaseDrawer } from '../base/base.drawer';
 import { getRectangleByNode } from '../utils/position/node';
 import { getShapeByElement } from '../utils/node-style/shape';
-import { EXTEND_RADIUS, QUICK_INSERT_CIRCLE_COLOR, QUICK_INSERT_INNER_CROSS_COLOR } from '../constants/default';
+import { EXTEND_DIAMETER, QUICK_INSERT_CIRCLE_COLOR, QUICK_INSERT_INNER_CROSS_COLOR } from '../constants/default';
 import { MindLayoutType, isHorizontalLayout, isIndentedLayout, isTopLayout } from '@plait/layouts';
 import { MindQueries } from '../queries';
 import { fromEvent } from 'rxjs';
@@ -54,7 +54,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
         let beginPoint = getPointByPlacement(nodeClient, placement);
 
         if (element.children.length > 0 && !element.isRoot) {
-            beginPoint = moveXOfPoint(beginPoint, EXTEND_RADIUS + 8, linkDirection);
+            beginPoint = moveXOfPoint(beginPoint, EXTEND_DIAMETER + 8, linkDirection);
             distance = 5;
         }
 
@@ -66,7 +66,7 @@ export class QuickInsertDrawer extends BaseDrawer implements AfterDraw {
             strokeWidth: branchWidth
         });
 
-        const circle = PlaitBoard.getRoughSVG(this.board).circle(circleCenter[0], circleCenter[1], EXTEND_RADIUS, {
+        const circle = PlaitBoard.getRoughSVG(this.board).circle(circleCenter[0], circleCenter[1], EXTEND_DIAMETER, {
             fill: QUICK_INSERT_CIRCLE_COLOR,
             stroke: QUICK_INSERT_CIRCLE_COLOR,
             fillStyle: 'solid'

@@ -12,7 +12,6 @@ import {
 import {
     PlaitPointerType,
     createG,
-    createText,
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
@@ -27,22 +26,13 @@ import {
     OnContextChanged,
     RectangleClient
 } from '@plait/core';
-import {
-    isBottomLayout,
-    isHorizontalLayout,
-    isIndentedLayout,
-    isLeftLayout,
-    AbstractNode,
-    isRightLayout,
-    isTopLayout,
-    MindLayoutType
-} from '@plait/layouts';
+import { isBottomLayout, isHorizontalLayout, isLeftLayout, AbstractNode, isRightLayout, isTopLayout, MindLayoutType } from '@plait/layouts';
 import { hasEditableTarget, PlaitRichtextComponent, setFullSelectionAndFocus, updateRichText } from '@plait/richtext';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject, timer } from 'rxjs';
 import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
 import { Editor, Operation } from 'slate';
-import { EXTEND_OFFSET, EXTEND_RADIUS, PRIMARY_COLOR } from './constants';
+import { PRIMARY_COLOR } from './constants';
 import { NODE_MIN_WIDTH } from './constants/node-rule';
 import { drawTopicByNode, updateMindNodeTopicSize } from './utils/draw/node-topic';
 import { drawRoundRectangleByNode } from './utils/draw/node-shape';
@@ -50,7 +40,6 @@ import { MindElement, PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
 import { getRectangleByNode, isHitMindElement } from './utils/position/node';
-import { getChildrenCount } from './utils/mind';
 import { getShapeByElement } from './utils/node-style/shape';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { getRichtextContentSize } from '@plait/richtext';
@@ -61,10 +50,10 @@ import { drawAbstractIncludedOutline } from './utils/draw/abstract-outline';
 import { MindElementShape } from './interfaces';
 import { QuickInsertDrawer } from './drawer/quick-insert.drawer';
 import { hasAfterDraw } from './base/base.drawer';
-import { getBranchColorByMindElement, getBranchWidthByMindElement } from './utils/node-style/branch';
 import { PlaitMindBoard } from './plugins/with-mind.board';
 import { AbstractHandlePosition } from './plugins/with-abstract-resize.board';
 import { drawLink } from './utils/draw/node-link/draw-link';
+import { CollapseDrawer } from './drawer/extend.drawer';
 
 @Component({
     selector: 'plait-mind-node',
@@ -115,6 +104,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     quickInsertDrawer!: QuickInsertDrawer;
 
+    collapseDrawer!: CollapseDrawer;
+
     public get handActive(): boolean {
         return this.board.pointer === PlaitPointerType.hand;
     }
@@ -131,6 +122,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     ngOnInit(): void {
         this.emojisDrawer = new EmojisDrawer(this.board, this.viewContainerRef);
         this.quickInsertDrawer = new QuickInsertDrawer(this.board);
+        this.collapseDrawer = new CollapseDrawer(this.board);
+
         super.ngOnInit();
         this.node = MindElement.getNode(this.element);
         this.index = NODE_TO_INDEX.get(this.element) || 0;
@@ -144,7 +137,6 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.drawMaskG();
         this.drawEmojis();
         this.drawExtend();
-        this.drawQuickInsert();
     }
 
     onContextChanged(
@@ -173,7 +165,6 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.updateRichtext();
             this.drawMaskG();
             this.drawExtend();
-            this.drawQuickInsert();
             this.drawEmojis();
         } else {
             const hasSameSelected = value.selected === previous.selected;
@@ -196,14 +187,11 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     }
 
     drawQuickInsert() {
-        this.quickInsertDrawer.destroy();
-        if (this.quickInsertDrawer.canDraw(this.element)) {
-            const g = this.quickInsertDrawer.draw(this.element);
-            if (hasAfterDraw(this.quickInsertDrawer)) {
-                this.quickInsertDrawer.afterDraw(this.element);
-            }
-            this.extendG?.appendChild(g);
+        const g = this.quickInsertDrawer.draw(this.element);
+        if (hasAfterDraw(this.quickInsertDrawer)) {
+            this.quickInsertDrawer.afterDraw(this.element);
         }
+        this.extendG?.appendChild(g);
     }
 
     drawShape() {
@@ -420,151 +408,32 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     drawExtend() {
         this.destroyExtend();
-        // create extend
+
         this.extendG = createG();
-        const collapseG = createG();
         this.extendG.classList.add('extend');
-        collapseG.classList.add('collapse-container');
         this.g.append(this.extendG);
-        this.extendG.append(collapseG);
-        if (this.node.origin.isRoot) {
-            return;
-        }
-        // interactive
-        fromEvent(collapseG, 'mouseup')
-            .pipe(
-                filter(() => !this.handActive || !!PlaitBoard.isReadonly(this.board)),
-                take(1)
-            )
-            .subscribe(() => {
-                const isCollapsed = !this.node.origin.isCollapsed;
-                const newElement: Partial<MindElement> = { isCollapsed };
-                const path = PlaitBoard.findPath(this.board, this.element);
-                Transforms.setNode(this.board, newElement, path);
-            });
 
-        const { x, y, width, height } = getRectangleByNode(this.node);
-        const stroke = getBranchColorByMindElement(this.board, this.element);
-        const branchWidth = getBranchWidthByMindElement(this.board, this.element);
-        const extendY = y + height / 2;
-        const nodeLayout = MindQueries.getCorrectLayoutByElement(this.board, this.element) as MindLayoutType;
-
-        let extendLineXY = [
-            [x + width, extendY],
-            [x + width + EXTEND_OFFSET, extendY]
-        ];
-
-        let arrowYOffset = [-4, 1, -0.6, 4];
-        let arrowXOffset = [10, 5.5, 5.5, 10];
-
-        let extendLineXOffset = [0, 0];
-        let extendLineYOffset = [0, 0];
-
-        let circleOffset = [EXTEND_RADIUS / 2, 0];
-
-        if (isHorizontalLayout(nodeLayout) && !isIndentedLayout(nodeLayout)) {
-            extendLineYOffset =
-                (getShapeByElement(this.board, this.node.origin) as MindElementShape) === MindElementShape.roundRectangle
-                    ? [0, 0]
-                    : [height / 2, height / 2];
-            if (isLeftLayout(nodeLayout)) {
-                //左
-                extendLineXOffset = [-width, -width - EXTEND_OFFSET * 2];
-                circleOffset = [-EXTEND_RADIUS / 2, 0];
-                arrowXOffset = [-10, -5.5, -5.5, -10];
-            }
-        } else {
-            arrowXOffset = [-4, 0.6, -1, 4];
-            if (isTopLayout(nodeLayout)) {
-                //上
-                extendLineXOffset = [-width / 2, -width / 2 - EXTEND_OFFSET];
-                extendLineYOffset = [-height / 2, -height / 2 - EXTEND_OFFSET];
-                arrowYOffset = [-10, -5.5, -5.5, -10];
-                circleOffset = [0, -EXTEND_RADIUS / 2];
-            } else {
-                //下
-                extendLineXOffset = [-width / 2, -width / 2 - EXTEND_OFFSET];
-                extendLineYOffset = [height / 2, height / 2 + EXTEND_OFFSET];
-                arrowYOffset = [10, 5.5, 5.5, 10];
-                circleOffset = [0, EXTEND_RADIUS / 2];
-            }
-        }
-
-        extendLineXY = [
-            [extendLineXY[0][0] + extendLineXOffset[0], extendLineXY[0][1] + extendLineYOffset[0]],
-            [extendLineXY[1][0] + extendLineXOffset[1], extendLineXY[1][1] + extendLineYOffset[1]]
-        ];
-
-        const extendLine = this.roughSVG.line(extendLineXY[0][0], extendLineXY[0][1], extendLineXY[1][0], extendLineXY[1][1], {
-            strokeWidth: branchWidth,
-            stroke
-        });
-
-        //绘制箭头
-        const hideArrowTopLine = this.roughSVG.line(
-            extendLineXY[1][0] + arrowXOffset[0],
-            extendLineXY[1][1] + arrowYOffset[0],
-            extendLineXY[1][0] + arrowXOffset[1],
-            extendLineXY[1][1] + arrowYOffset[1],
-            {
-                stroke,
-                strokeWidth: 2
-            }
-        );
-        const hideArrowBottomLine = this.roughSVG.line(
-            extendLineXY[1][0] + arrowXOffset[2],
-            extendLineXY[1][1] + arrowYOffset[2],
-            extendLineXY[1][0] + arrowXOffset[3],
-            extendLineXY[1][1] + arrowYOffset[3],
-            {
-                stroke,
-                strokeWidth: 2
-            }
-        );
-
-        if (this.node.origin.isCollapsed) {
-            const badge = this.roughSVG.circle(extendLineXY[1][0] + circleOffset[0], extendLineXY[1][1] + circleOffset[1], EXTEND_RADIUS, {
-                fill: stroke,
-                stroke,
-                fillStyle: 'solid'
-            });
-
-            let numberOffset = 0;
-            if (getChildrenCount(this.node.origin) >= 10) numberOffset = -2;
-            if (getChildrenCount(this.node.origin) === 1) numberOffset = 1;
-
-            const badgeText = createText(
-                extendLineXY[1][0] + circleOffset[0] - 4 + numberOffset,
-                extendLineXY[1][1] + circleOffset[1] + 4,
-                stroke,
-                `${getChildrenCount(this.node.origin)}`
-            );
-
+        if (this.element.isCollapsed) {
             this.g.classList.add('collapsed');
-            badge.setAttribute('style', 'opacity: 0.15');
-            badgeText.setAttribute('style', 'font-size: 12px');
-            collapseG.appendChild(badge);
-            collapseG.appendChild(badgeText);
-            collapseG.appendChild(extendLine);
         } else {
             this.g.classList.remove('collapsed');
-            if (this.node.origin.children.length > 0) {
-                const hideCircleG = this.roughSVG.circle(
-                    extendLineXY[1][0] + circleOffset[0],
-                    extendLineXY[1][1] + circleOffset[1],
-                    EXTEND_RADIUS - 1,
-                    {
-                        fill: '#fff',
-                        stroke,
-                        strokeWidth: branchWidth > 3 ? 3 : branchWidth,
-                        fillStyle: 'solid'
-                    }
-                );
-                collapseG.appendChild(hideCircleG);
-                collapseG.appendChild(hideArrowTopLine);
-                collapseG.appendChild(hideArrowBottomLine);
-            }
         }
+
+        if (this.quickInsertDrawer.canDraw(this.element)) {
+            this.drawQuickInsert();
+        }
+        if (this.collapseDrawer.canDraw(this.element)) {
+            this.drawCollapse();
+        }
+    }
+
+    drawCollapse() {
+        const g = this.collapseDrawer.draw(this.element);
+
+        if (hasAfterDraw(this.collapseDrawer)) {
+            this.collapseDrawer.afterDraw(this.element);
+        }
+        this.extendG?.appendChild(g);
     }
 
     destroyExtend() {
