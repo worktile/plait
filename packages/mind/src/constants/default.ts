@@ -7,7 +7,7 @@ export const STROKE_WIDTH = 3;
 export const BRANCH_WIDTH = 3;
 
 export const EXTEND_OFFSET = 8;
-export const EXTEND_RADIUS = 16;
+export const EXTEND_DIAMETER = 16;
 
 export const QUICK_INSERT_CIRCLE_OFFSET = 9;
 export const QUICK_INSERT_CIRCLE_COLOR = '#6698FF';
