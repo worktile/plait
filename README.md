@@ -1,5 +1,5 @@
 <p align="center">
-  <picture style="width: 300px">
+  <picture style="width: 240px">
     <img src="https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/plait-horizontal-logo.png?raw=true" width="500" alt="Plait logo and name" />
   </picture>
 </p>
@@ -7,15 +7,16 @@
 <div align="center">
   <h2>
     一款现代化的绘图框架用于构建一体化的白板工具 </br>
-    比如思维导图、流程图、自由画笔等等</br>
-  <br />
+    比如思维导图、流程图、自由画笔等等
   </h3>
 </div>
 
 
----
+Plait 被定位为一个绘图框架，提供插件机制，允许开发者通过插件的方式扩展功能。它底层只提供一个基础的绘图白板，仅仅包含放大、缩小、移动端画布等基础功能，而不包含任何业务功能，所有业务功能均需要通过插件的方式扩展，实现自由组合，可以方便的实现独立的或者一体化的绘图工具。
 
-Plait 被定位为一个绘图框架，提供插件机制，允许开发者通过插件的方式扩展功能。它底层只提供一个基础的绘图白板，仅仅包含放大、缩小、移动端画布等基础功能，而不包含任何业务功能，所有业务功能均需要通过插件的方式扩展，实现自由组合，可以方便的实现独立的或者一体化的绘图工具。Plait 也会提供一些基础的功能插件，目前已经实现了思维导图插件和状态流转两大功能插件，后续要回逐步实现流程图插件。Plait 架构以富文本编辑器框架 Slate 为灵感，适用于交互式绘图场景，当前还在 beta 状态。
+Plait 也会提供一些基础的功能插件，目前已经实现了思维导图和状态流转两大功能插件，后续会实现流程图插件。
+
+Plait 架构以富文本编辑器框架 Slate 为灵感，适用于交互式绘图场景，当前还在 beta 状态。
 
 ![online demo screen](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/screen-online-demo.png?raw=true)
 
