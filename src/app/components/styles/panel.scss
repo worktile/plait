@@ -72,13 +72,13 @@
             .text-setting-items {
                 display: flex;
                 width: 100%;
-                justify-content: space-around;
                 label {
                     width: 16px;
                     height: 16px;
                     padding: 4px;
                     cursor: pointer;
                     border-radius: 4px;
+                    margin-right: 8px;
                     
                     &:hover,
                     &.active {
