@@ -1,7 +1,16 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, forwardRef } from '@angular/core';
-import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
+import {
+    OnBoardChange,
+    PlaitBoard,
+    PlaitElement,
+    PlaitIslandBaseComponent,
+    PlaitPointerType,
+    Transforms,
+    getSelectedElements
+} from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
-import { MindElement, MindElementShape, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
+import { MindElement, MindNodeComponent, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
+import { MarkEditor, MarkTypes } from '@plait/text';
 
 @Component({
     selector: 'app-setting-panel',
@@ -9,7 +18,7 @@ import { MindElement, MindElementShape, MindPointerType, MindTransforms, canSetA
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [{ provide: PlaitIslandBaseComponent, useExisting: forwardRef(() => AppSettingPanelComponent) }],
     host: {
-        class: 'app-setting-panel'
+        class: 'app-setting-panel plait-board-attached'
     }
 })
 export class AppSettingPanelComponent extends PlaitIslandBaseComponent implements OnBoardChange {
@@ -24,6 +33,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     PlaitPointerType = PlaitPointerType;
 
     MindPointerType = MindPointerType;
+
+    textMark: MarkTypes[] = [];
+
+    markTypes = MarkTypes;
 
     fillColor = ['#3333', '#e48483', '#69b1e4', '#e681d4', '#a287e1', ''];
 
@@ -51,6 +64,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.currentFillColor = this.selectedElements[0]?.fill || '';
             this.currentStrokeColor = this.selectedElements[0]?.strokeColor || '';
             this.currentBranchColor = this.selectedElements[0]?.branchColor || '';
+            this.getTextMarks();
         }
     }
 
@@ -93,5 +107,29 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (ableSetAbstract) {
             MindTransforms.insertAbstract(this.board, this.selectedElements);
         }
+    }
+
+    setTextMark(event: MouseEvent, attribute: string) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (this.selectedElements.length) {
+            this.selectedElements.forEach(element => {
+                const editor = MindElement.getEditor(element);
+                MarkEditor.toggleMark(editor, attribute as MarkTypes);
+            });
+        }
+    }
+
+    getTextMarks() {
+        const marks = [MarkTypes.bold, MarkTypes.italic, MarkTypes.strike, MarkTypes.underline];
+        const topicData = this.selectedElements[0].data.topic.children;
+        this.textMark = [];
+        topicData.forEach(data => {
+            for (let key in data) {
+                if (marks.includes(key as MarkTypes) && !this.textMark.includes(key as MarkTypes)) {
+                    this.textMark.push(key as MarkTypes);
+                }
+            }
+        });
     }
 }

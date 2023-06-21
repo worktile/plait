@@ -3,6 +3,7 @@ import { NODE_TO_PARENT, Path, PlaitBoard, PlaitElement, PlaitNode, Point } from
 import { MindQueries } from '../queries';
 import { ELEMENT_TO_NODE } from '../utils';
 import { BaseData, EmojiData } from './element-data';
+import { MindNodeComponent } from '../node.component';
 
 export interface MindElement<T = BaseData> extends PlaitElement {
     data: T;
@@ -112,6 +113,9 @@ export const MindElement = {
     },
     getEmojis(element: MindElement<EmojiData>) {
         return element.data.emojis;
+    },
+    getEditor(element: MindElement) {
+        return (PlaitElement.getComponent(element) as MindNodeComponent).textManage.componentRef.instance.editor;
     }
 };
 

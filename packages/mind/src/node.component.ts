@@ -31,6 +31,7 @@ import { drawLink } from './utils/draw/node-link/draw-link';
 import { getTopicRectangleByNode } from './utils/position/topic';
 import { NodeActiveDrawer } from './drawer/node-active.drawer';
 import { CollapseDrawer } from './drawer/node-collapse.drawer';
+import { BaseElement } from 'slate';
 
 @Component({
     selector: 'plait-mind-node',
@@ -142,6 +143,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.drawLink();
             this.drawEmojis();
             this.drawExtend();
+            this.textManage.updateText(this.element.data.topic);
             this.textManage.updateRectangle();
         } else {
             const hasSameSelected = value.selected === previous.selected;

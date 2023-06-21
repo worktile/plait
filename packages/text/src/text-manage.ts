@@ -1,5 +1,5 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { Descendant, Element, Operation, Transforms } from 'slate';
+import { BaseElement, Descendant, Element, Operation, Transforms } from 'slate';
 import { PlaitRichtextComponent } from './richtext/richtext.component';
 import {
     IS_TEXT_EDITABLE,
@@ -48,6 +48,30 @@ export class TextManage {
         this.g.append(this.foreignObject);
         this.foreignObject.append(this.componentRef.instance.elementRef.nativeElement);
         this.g.classList.add('text');
+
+        const editor = this.componentRef.instance.editor;
+
+        let previousValue: Descendant[] = this.componentRef.instance.children;
+        // use debounceTime to wait DOM render complete
+        this.componentRef.instance.onChange
+            .pipe(
+                filter(value => {
+                    return !editor.operations.every(op => Operation.isSelectionOperation(op));
+                }),
+                debounceTime(0)
+            )
+            .subscribe(value => {
+                if (previousValue === editor.children) {
+                    return;
+                }
+                previousValue = editor.children;
+                const paragraph = AngularEditor.toDOMNode(editor, value.children[0]);
+                let result = getRichtextContentSize(paragraph);
+                const width = result.width;
+                const height = result.height;
+                this.onChange && this.onChange({ width, height, newValue: editor.children[0] as Element });
+                MERGING.set(this.board, true);
+            });
     }
 
     updateRectangle(rectangle?: RectangleClient) {
@@ -61,6 +85,10 @@ export class TextManage {
                 this.foreignObject.append(this.componentRef.instance.elementRef.nativeElement);
             }
         }
+    }
+
+    updateText(newText: BaseElement) {
+        if (newText !== this.componentRef.instance.children[0]) this.componentRef.instance.children = [newText];
     }
 
     edit(onExit?: () => void) {
@@ -85,31 +113,8 @@ export class TextManage {
         const height = result.height;
         this.onChange && this.onChange({ width, height });
 
-        let previousValue: Descendant[] = this.componentRef.instance.children;
-
-        // use debounceTime to wait DOM render complete
-        const valueChange$ = this.componentRef.instance.onChange
-            .pipe(
-                filter(value => {
-                    return !editor.operations.every(op => Operation.isSelectionOperation(op));
-                }),
-                debounceTime(0)
-            )
-            .subscribe(value => {
-                if (previousValue === editor.children) {
-                    return;
-                }
-                previousValue = editor.children;
-                const paragraph = AngularEditor.toDOMNode(editor, value.children[0]);
-                let result = getRichtextContentSize(paragraph);
-                const width = result.width;
-                const height = result.height;
-                this.onChange && this.onChange({ width, height, newValue: editor.children[0] as Element });
-                MERGING.set(this.board, true);
-            });
-
         const composition$ = this.componentRef.instance.onComposition.pipe(debounceTime(0)).subscribe(event => {
-            const paragraph = AngularEditor.toDOMNode(editor, previousValue[0]);
+            const paragraph = AngularEditor.toDOMNode(editor, editor.children[0]);
             let result = getRichtextContentSize(paragraph);
             const width = result.width;
             const height = result.height;
@@ -120,7 +125,9 @@ export class TextManage {
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
             const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
             const clickInNode = this.isHitElement && this.isHitElement(point);
-            if (clickInNode && !hasEditableTarget(editor, event.target)) {
+            const isAttached = (event.target as HTMLElement).closest('.plait-board-attached');
+
+            if ((clickInNode && !hasEditableTarget(editor, event.target)) || isAttached) {
                 event.preventDefault();
             } else if (!clickInNode) {
                 // handle composition input state, like: Chinese IME Composition Input
@@ -149,7 +156,6 @@ export class TextManage {
             const rectangle = this.getRectangle();
             updateForeignObject(this.g, rectangle.width, rectangle.height, rectangle.x, rectangle.y);
 
-            valueChange$.unsubscribe();
             mousedown$.unsubscribe();
             composition$.unsubscribe();
             editor.onKeydown = onKeydown;
