@@ -34,6 +34,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     MindPointerType = MindPointerType;
 
+    textMark: MarkTypes[] = [];
+
+    markTypes = MarkTypes;
+
     fillColor = ['#3333', '#e48483', '#69b1e4', '#e681d4', '#a287e1', ''];
 
     strokeColor = ['#1e1e1e', '#e03130', '#2f9e44', '#1871c2', '#f08c02', '#c18976'];
@@ -60,6 +64,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.currentFillColor = this.selectedElements[0]?.fill || '';
             this.currentStrokeColor = this.selectedElements[0]?.strokeColor || '';
             this.currentBranchColor = this.selectedElements[0]?.branchColor || '';
+            this.getTextMarks();
         }
     }
 
@@ -109,9 +114,22 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         event.stopPropagation();
         if (this.selectedElements.length) {
             this.selectedElements.forEach(element => {
-                const editor = (PlaitElement.getComponent(element) as MindNodeComponent).textManage.componentRef.instance.editor;
+                const editor = MindElement.getEditor(element);
                 MarkEditor.toggleMark(editor, attribute as MarkTypes);
             });
         }
+    }
+
+    getTextMarks() {
+        const marks = [MarkTypes.bold, MarkTypes.italic, MarkTypes.strike, MarkTypes.underline];
+        const topicData = this.selectedElements[0].data.topic.children;
+        this.textMark = [];
+        topicData.forEach(data => {
+            for (let key in data) {
+                if (marks.includes(key as MarkTypes) && !this.textMark.includes(key as MarkTypes)) {
+                    this.textMark.push(key as MarkTypes);
+                }
+            }
+        });
     }
 }

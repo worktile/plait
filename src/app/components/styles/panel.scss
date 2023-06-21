@@ -22,11 +22,11 @@
             }
         }
 
-        .setting-panel-title{
+        .setting-panel-title {
             margin: 8px 0px;
         }
 
-        .color-setting-toolbar{
+        .color-setting-toolbar {
             display: block;
             width: 100%;
         }
@@ -55,8 +55,8 @@
                 z-index: 1;
                 border-radius: 5px;
             }
-            &:hover::after{
-                content: "";
+            &:hover::after {
+                content: '';
                 position: absolute;
                 top: -2px;
                 left: -2px;
@@ -64,6 +64,31 @@
                 bottom: -2px;
                 box-shadow: 0 0 0 1px #d6d6d6;
                 border-radius: 5px;
+            }
+        }
+
+        .text-setting-toolbar {
+            width: 100%;
+            .text-setting-items {
+                display: flex;
+                width: 100%;
+                justify-content: space-around;
+                label {
+                    width: 16px;
+                    height: 16px;
+                    padding: 4px;
+                    cursor: pointer;
+                    border-radius: 4px;
+                    
+                    &:hover,
+                    &.active {
+                        background-color: rgba(102, 152, 255, 0.1);
+                        color: #6698ff;
+                    }
+                    svg {
+                        fill: currentColor;
+                    }
+                }
             }
         }
     }

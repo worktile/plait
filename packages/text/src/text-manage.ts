@@ -1,5 +1,5 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { Descendant, Element, Operation, Transforms } from 'slate';
+import { BaseElement, Descendant, Element, Operation, Transforms } from 'slate';
 import { PlaitRichtextComponent } from './richtext/richtext.component';
 import {
     IS_TEXT_EDITABLE,
@@ -87,8 +87,8 @@ export class TextManage {
         }
     }
 
-    updateText(newText: Element[]) {
-        if (newText !== this.componentRef.instance.children) this.componentRef.instance.children = newText;
+    updateText(newText: BaseElement) {
+        if (newText !== this.componentRef.instance.children[0]) this.componentRef.instance.children = [newText];
     }
 
     edit(onExit?: () => void) {

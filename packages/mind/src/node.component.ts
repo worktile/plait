@@ -143,7 +143,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.drawLink();
             this.drawEmojis();
             this.drawExtend();
-            this.textManage.updateText([this.element.data.topic] as BaseElement[]);
+            this.textManage.updateText(this.element.data.topic);
             this.textManage.updateRectangle();
         } else {
             const hasSameSelected = value.selected === previous.selected;
