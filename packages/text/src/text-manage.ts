@@ -96,7 +96,9 @@ export class TextManage {
     }
 
     updateText(newText: BaseElement) {
-        if (newText !== this.componentRef.instance.children[0]) this.componentRef.instance.children = [newText];
+        if (newText !== this.componentRef.instance.children[0] && !this.isEditing) {
+            this.componentRef.instance.children = [newText];
+        }
     }
 
     edit(onExit?: () => void) {
