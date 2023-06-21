@@ -1,6 +1,6 @@
 <p align="center">
-  <picture style="width: 240px">
-    <img src="https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/plait-horizontal-logo.png?raw=true" width="500" alt="Plait logo and name" />
+  <picture>
+    <img src="https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/plait-horizontal-logo.png?raw=true" width="360" alt="Plait logo and name" />
   </picture>
 </p>
 
