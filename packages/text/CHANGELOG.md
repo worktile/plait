@@ -1,4 +1,4 @@
-# richtext
+# text
 
 ## 0.3.0
 
