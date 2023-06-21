@@ -1,31 +1,29 @@
-@mixin node-color{
+@mixin node-color {
     &.theme-default,
     &.theme-soft {
-        .root-node {
-            color: #333333;
-        }
-        .child-node {
+        .plait-richtext-container {
             color: #333333;
         }
     }
 
     &.theme-colorful,
     &.theme-retro {
-        .root-node {
-            color: #ffffff;
-        }
-        .child-node {
-            color: #333333;
+        .root {
+            .plait-richtext-container {
+                color: #ffffff;
+            }
         }
     }
 
     &.theme-dark,
     &.theme-starry {
-        .root-node {
-            color: #333333;
-        }
-        .child-node {
+        .plait-richtext-container {
             color: #ffffff;
+        }
+        .root {
+            .plait-richtext-container {
+                color: #333333;
+            }
         }
     }
 }

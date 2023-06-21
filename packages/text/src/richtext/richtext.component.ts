@@ -77,6 +77,5 @@ export class PlaitRichtextComponent implements OnInit {
 
     onKeydown = (event: KeyboardEvent) => {
         this.editor.onKeydown(event);
-        console.log(`ccc`);
     }
 }
