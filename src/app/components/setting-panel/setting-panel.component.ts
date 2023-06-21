@@ -2,15 +2,14 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inp
 import {
     OnBoardChange,
     PlaitBoard,
-    PlaitElement,
     PlaitIslandBaseComponent,
     PlaitPointerType,
     Transforms,
     getSelectedElements
 } from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
-import { MindElement, MindNodeComponent, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
-import { MarkEditor, MarkTypes } from '@plait/text';
+import { MindElement, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
+import { FontSizes, MarkEditor, MarkTypes } from '@plait/text';
 
 @Component({
     selector: 'app-setting-panel',
@@ -28,6 +27,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     currentBranchColor: string | undefined = '';
 
+    currentTextColor: string | undefined = '';
+
     selectedElements!: MindElement[];
 
     PlaitPointerType = PlaitPointerType;
@@ -38,7 +39,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     markTypes = MarkTypes;
 
-    fillColor = ['#3333', '#e48483', '#69b1e4', '#e681d4', '#a287e1', ''];
+    fillColor = ['#333333', '#e48483', '#69b1e4', '#e681d4', '#a287e1', ''];
+
+    textColorOptions = ['#333333', '#e03130', '#2f9e44', '#1871c2', '#f08c02', '#c18976'];
 
     strokeColor = ['#1e1e1e', '#e03130', '#2f9e44', '#1871c2', '#f08c02', '#c18976'];
 
@@ -99,6 +102,15 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         }
     }
 
+    textColorChange(value: string) {
+        if (this.selectedElements.length) {
+            this.selectedElements.forEach(element => {
+                const editor = MindElement.getEditor(element);
+                MarkEditor.setColorMark(editor, value);
+            });
+        }
+    }
+
     setAbstract(event: Event) {
         const ableSetAbstract = this.selectedElements.every(element => {
             return canSetAbstract(element);
@@ -116,6 +128,15 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.selectedElements.forEach(element => {
                 const editor = MindElement.getEditor(element);
                 MarkEditor.toggleMark(editor, attribute as MarkTypes);
+            });
+        }
+    }
+
+    setFontSize(event: Event) {
+        if (this.selectedElements.length) {
+            this.selectedElements.forEach(element => {
+                const editor = MindElement.getEditor(element);
+                MarkEditor.setFontSizeMark(editor, (event.target as HTMLSelectElement).value as FontSizes);
             });
         }
     }
