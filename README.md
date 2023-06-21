@@ -1,18 +1,27 @@
+<p align="center">
+  <picture style="width: 300px">
+    <img src="https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/plait-horizontal-logo.png?raw=true" width="500" alt="Plait logo and name" />
+  </picture>
+</p>
+
 <div align="center">
   <h2>
-    Plait 框架</br>
     一款现代化的绘图框架用于构建一体化的白板工具 </br>
     比如思维导图、流程图、自由画笔等等</br>
   <br />
   </h3>
 </div>
 
+---
 
 Plait 被定位为一个绘图框架，提供插件机制，允许开发者通过插件的方式扩展功能。它底层只提供一个基础的绘图白板，仅仅包含放大、缩小、移动端画布等基础功能，而不包含任何业务功能，所有业务功能均需要通过插件的方式扩展，实现自由组合，可以方便的实现独立的或者一体化的绘图工具。Plait 也会提供一些基础的功能插件，目前已经实现了思维导图插件和状态流转两大功能插件，后续要回逐步实现流程图插件。Plait 架构以富文本编辑器框架 Slate 为灵感，适用于交互式绘图场景，当前还在 beta 状态。
 
 
+- 👉 [在线示例 (白板)](https://plait.pingcode.com)
+- 👉 [在线示例 (流程控制)](https://plait.pingcode.com/flow)
 
-#### Framework Features
+
+#### 框架特性
 
 - 提供基础画板能力，比如放大、缩小、移动
 - 插件机制，提供插件机制用于扩展绘图功能
@@ -22,12 +31,12 @@ Plait 被定位为一个绘图框架，提供插件机制，允许开发者通�
 
 
 
-#### Packages
+#### 模块
 
 |Package Name|Description|Currently Version|
 |---|---|---|
 |@plait/core|框架核心：1.插件机制设计 2.提供数据模型、数据变换函数 3.提供基础的 board 组件，包含放大、缩小、滚动方案实现||
-|@plait/richtext|一个轻量的富文本编辑器，用于在画板中接入文本数据显示和编辑||
+|@plait/text|画板中接入文本数据显示和编辑，依赖 Slate 及 slate-angular||
 |@plait/mind|思维导图插件实现，基于独立的自动布局算法，目前支持：逻辑布局、标准布局、缩进布局||
 |@plait/layouts|思维导图支持库，包含自动布局算法||
 |@plait/flow|状态流转插件，可以用于实现可视化的状态流转配置、工作流转配置等功能||
@@ -35,7 +44,7 @@ Plait 被定位为一个绘图框架，提供插件机制，允许开发者通�
 
 
 
-#### 开发
+### 开发
 
 ```
 npm i
@@ -47,7 +56,7 @@ npm run start
 
 
 
-#### 使用
+### 使用
 
 基本使用（集成 @plait/mind 插件）
 
@@ -109,19 +118,19 @@ const demoData = [
 
 
 
-#### 依赖
+### 依赖
 
 roughjs
 
 
 
-#### 贡献
+### 贡献
 
 当前 plait/core 框架还有 plait/mind 等插件都在高速的迭代中，大家有任何意见或者想法欢迎给我们反馈，也欢迎社区内对画图工具感性趣的同学给我们 PR。
 
 
 
-#### 开源协议
+### 开源协议
 
   [MIT License](https://github.com/worktile/slate-angular/blob/master/LICENSE)  
 
