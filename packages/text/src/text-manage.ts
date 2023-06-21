@@ -69,9 +69,7 @@ export class TextManage {
                     const { x, y } = rectangle || this.getRectangle();
                     updateForeignObject(this.g, 999, 999, x, y);
 
-                    setTimeout(() => {
-                        this.updateRectangle;
-                    });
+                    // do not need to revert because foreign will be updated when node changed
                 }
 
                 previousValue = editor.children;
