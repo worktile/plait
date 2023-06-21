@@ -12,7 +12,7 @@
     "build:mind": " ng build mind && cpx \"./packages/mind/src/styles/*.scss\" ./dist/mind/styles/",
     "build:text": "ng build text && cpx \"./packages/text/src/styles/*.scss\" ./dist/text/styles/",
     "build:flow": "ng build flow && cpx \"./packages/flow/src/styles/*.scss\" ./dist/flow/styles/",
-    "build:demo": "ng build demo --base-href=/plait/ --configuration production",
+    "build:demo": "ng build demo --configuration production",
     "pub:core": "cd dist/core && npm publish --access public",
     "pub:text": "cd dist/text && npm publish --access public",
     "pub:mind": "cd dist/mind && npm publish --access public",
