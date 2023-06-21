@@ -31,4 +31,12 @@
     [the-bold] {
         font-weight: bold;
     }
+    @each $size, $liMl,
+        $liMultiDigitMl in (12, 13, 14, 15, 16, 18, 20, (24 null 35px), (28 null 42px), (32 33px 50px), (40 40px 62px), (48 50px 78px))
+    {
+        [plait-font-size='#{$size}'] {
+            font-size: #{$size}px;
+            line-height: 1.5;
+        }
+    }
 }

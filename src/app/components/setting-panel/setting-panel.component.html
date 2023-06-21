@@ -1,15 +1,36 @@
-<div class="property-item abstract-setting-toolbar">
-    <button (click)="setAbstract($event)">设置概要</button>
-</div>
-
 <div class="property-item text-setting-toolbar">
-    <div class="setting-panel-title">文本格式</div>
-   <div class="text-setting-items">
-    <label [ngClass]="{ active: textMark.includes(markTypes.bold)}" (click)="setTextMark($event, 'bold')"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fit="" height="1em" width="1em" preserveAspectRatio="xMidYMid meet" focusable="false"><g id="aepeditor/bold" stroke-width="1" fill-rule="evenodd"><path d="M10.788 6.717c1.796.246 3.143 1.936 3.143 4.05 0 2.285-1.7 4.214-3.713 4.214H3.116V7.823H2.8v-5.47h.325V1h5.479c1.666 0 3.02 1.53 3.02 3.412a3.63 3.63 0 0 1-.836 2.305zm-.57 7.065c1.34 0 2.514-1.41 2.514-3.015 0-1.616-1.054-2.881-2.399-2.881h-6.78v5.896h6.665zM8.604 6.623c.936 0 1.82-1.075 1.82-2.21 0-1.2-.833-2.213-1.82-2.213H3.553v4.423h5.05z" id="aep形状结合"></path><path d="M3.1 14.981c-.33 0-.6-.322-.6-.717V1.717c0-.395.27-.717.6-.717.33 0 .6.322.6.717v12.547c0 .395-.27.717-.6.717" id="aepFill-1"></path></g></svg></label>
-    <label [ngClass]="{ active: textMark.includes(markTypes.italic)}" (click)="setTextMark($event, 'italic')"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fit="" height="1em" width="1em" preserveAspectRatio="xMidYMid meet" focusable="false"><g id="amyeditor/italic" stroke-width="1" fill-rule="evenodd"><g id="amy文本编辑_倾斜-1.5px-16*16" transform="translate(2 1)"><path d="M3.646 12.8L6.754 1.2H3.5V0H11v1.2H7.996L4.888 12.8H8V14H.5v-1.2h3.146z" id="amy形状结合"></path></g></g></svg></label>
-    <label [ngClass]="{ active: textMark.includes(markTypes.underline)}" (click)="setTextMark($event, 'underlined')"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fit="" height="1em" width="1em" preserveAspectRatio="xMidYMid meet" focusable="false"><g id="ayaeditor/underline" stroke-width="1" fill-rule="evenodd"><path d="M13 1v7A5 5 0 0 1 3 8V1h1.2v7a3.8 3.8 0 0 0 7.6 0V1H13zM3 13.8h10V15H3v-1.2z" id="aya形状结合"></path></g></svg></label>
-    <label [ngClass]="{ active: textMark.includes(markTypes.strike)}" (click)="setTextMark($event, 'strike')"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fit="" height="1em" width="1em" preserveAspectRatio="xMidYMid meet" focusable="false"><g id="avceditor/strike" stroke-width="1" fill-rule="evenodd"><path d="M6 8.6H.894V7.4H3.5c-.62-.67-1-1.565-1-2.55v-.1A3.75 3.75 0 0 1 6.25 1h3.5a3.75 3.75 0 0 1 3.742 3.5h-1.204A2.55 2.55 0 0 0 9.75 2.2h-3.5A2.55 2.55 0 0 0 3.7 4.75v.1A2.55 2.55 0 0 0 6.25 7.4h8.85v1.2h-2.6a3.75 3.75 0 0 1-2.75 6.3h-3.5A3.75 3.75 0 0 1 2.503 11h1.201a2.55 2.55 0 0 0 2.546 2.7h3.5a2.55 2.55 0 0 0 0-5.1h-3.5a2.58 2.58 0 0 0-.25.012V8.6z" id="avc形状结合"></path></g></svg></label>
-   </div>
+    <div class="setting-panel-title">文本格式：</div>
+    <div class="text-setting-items">
+        <label class="label-icon" [ngClass]="{ active: textMark.includes(markTypes.bold)}" (click)="setTextMark($event, 'bold')"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fit="" height="1em" width="1em" preserveAspectRatio="xMidYMid meet" focusable="false"><g id="aepeditor/bold" stroke-width="1" fill-rule="evenodd"><path d="M10.788 6.717c1.796.246 3.143 1.936 3.143 4.05 0 2.285-1.7 4.214-3.713 4.214H3.116V7.823H2.8v-5.47h.325V1h5.479c1.666 0 3.02 1.53 3.02 3.412a3.63 3.63 0 0 1-.836 2.305zm-.57 7.065c1.34 0 2.514-1.41 2.514-3.015 0-1.616-1.054-2.881-2.399-2.881h-6.78v5.896h6.665zM8.604 6.623c.936 0 1.82-1.075 1.82-2.21 0-1.2-.833-2.213-1.82-2.213H3.553v4.423h5.05z" id="aep形状结合"></path><path d="M3.1 14.981c-.33 0-.6-.322-.6-.717V1.717c0-.395.27-.717.6-.717.33 0 .6.322.6.717v12.547c0 .395-.27.717-.6.717" id="aepFill-1"></path></g></svg></label>
+        <label class="label-icon" [ngClass]="{ active: textMark.includes(markTypes.italic)}" (click)="setTextMark($event, 'italic')"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fit="" height="1em" width="1em" preserveAspectRatio="xMidYMid meet" focusable="false"><g id="amyeditor/italic" stroke-width="1" fill-rule="evenodd"><g id="amy文本编辑_倾斜-1.5px-16*16" transform="translate(2 1)"><path d="M3.646 12.8L6.754 1.2H3.5V0H11v1.2H7.996L4.888 12.8H8V14H.5v-1.2h3.146z" id="amy形状结合"></path></g></g></svg></label>
+        <label class="label-icon" [ngClass]="{ active: textMark.includes(markTypes.underline)}" (click)="setTextMark($event, 'underlined')"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fit="" height="1em" width="1em" preserveAspectRatio="xMidYMid meet" focusable="false"><g id="ayaeditor/underline" stroke-width="1" fill-rule="evenodd"><path d="M13 1v7A5 5 0 0 1 3 8V1h1.2v7a3.8 3.8 0 0 0 7.6 0V1H13zM3 13.8h10V15H3v-1.2z" id="aya形状结合"></path></g></svg></label>
+        <label class="label-icon" [ngClass]="{ active: textMark.includes(markTypes.strike)}" (click)="setTextMark($event, 'strike')"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fit="" height="1em" width="1em" preserveAspectRatio="xMidYMid meet" focusable="false"><g id="avceditor/strike" stroke-width="1" fill-rule="evenodd"><path d="M6 8.6H.894V7.4H3.5c-.62-.67-1-1.565-1-2.55v-.1A3.75 3.75 0 0 1 6.25 1h3.5a3.75 3.75 0 0 1 3.742 3.5h-1.204A2.55 2.55 0 0 0 9.75 2.2h-3.5A2.55 2.55 0 0 0 3.7 4.75v.1A2.55 2.55 0 0 0 6.25 7.4h8.85v1.2h-2.6a3.75 3.75 0 0 1-2.75 6.3h-3.5A3.75 3.75 0 0 1 2.503 11h1.201a2.55 2.55 0 0 0 2.546 2.7h3.5a2.55 2.55 0 0 0 0-5.1h-3.5a2.58 2.58 0 0 0-.25.012V8.6z" id="avc形状结合"></path></g></svg></label>
+    </div>
+</div>
+<div class="property-item text-setting-toolbar">
+    <div class="setting-panel-title">文本大小：</div>
+    <select (change)="setFontSize($event)">
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+        <option value="18">18</option>
+        <option value="20">20</option>
+        <option value="24">24</option>
+        <option value="28">28</option>
+        <option value="32">32</option>
+        <option value="40">40</option>
+        <option value="48">48</option>
+    </select>
+</div>
+<div class="property-item text-setting-toolbar">
+    <div class="setting-panel-title">文本颜色：</div>
+    <app-color-picker
+        [defaultColor]="textColorOptions"
+        [currentColor]="currentTextColor"
+        (colorChangeEvent)="textColorChange($event)"
+    ></app-color-picker>
 </div>
 
 <div class="property-item shape-setting-toolbar">
@@ -86,4 +107,11 @@
         [currentColor]="currentBranchColor"
         (colorChangeEvent)="colorChange($event, 'branchColor')"
     ></app-color-picker>
+</div>
+
+<div class="property-item">
+    <div class="setting-panel-title">设置概要：</div>
+    <div class="abstract-container">
+        <label class="label-icon" [ngClass]="{ active: false}" (click)="setAbstract($event)"><svg viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" fit="" height="1em" width="1em" preserveAspectRatio="xMidYMid meet" focusable="false"><g id="aa1.Base基础/1.icon图标/11.editor/-概括" stroke-width="1" fill-rule="evenodd"><path d="M2.6009839,1.4 C3.76672464,1.4 4.72876168,2.12152778 4.72876168,3.52777778 L4.72876168,6.27777778 C4.72876168,6.43319518 4.90393822,6.66092469 5.23672797,6.89387751 C5.47900719,7.06347297 5.72750625,7.1877225 5.87937386,7.24846954 C6.0766753,7.32739012 6.19656805,7.48492304 6.23905212,7.65938322 L6.23807296,7 C6.23807296,6.17157288 6.90964584,5.5 7.73807296,5.5 L12.4899649,5.5 C13.318392,5.5 13.9899649,6.17157288 13.9899649,7 L13.9899649,9 C13.9899649,9.82842712 13.318392,10.5 12.4899649,10.5 L7.73807296,10.5 C6.90964584,10.5 6.23807296,9.82842712 6.23807296,9 L6.23908039,7.95161172 C6.19662127,8.12611814 6.07671909,8.28370348 5.87937386,8.36264157 C5.72750625,8.42338861 5.47900719,8.54763814 5.23672797,8.7172336 C4.90393822,8.95018643 4.72876168,9.17791593 4.72876168,9.33333333 L4.72876168,12.6944444 C4.72876168,14.1006944 3.76672464,14.8222222 2.6009839,14.8222222 C2.26961305,14.8222222 2.0009839,14.5535931 2.0009839,14.2222222 C2.0009839,13.8908514 2.26961305,13.6222222 2.6009839,13.6222222 C3.16672464,13.6222222 3.52876168,13.3506944 3.52876168,12.6944444 L3.52876168,9.33333333 C3.52876168,8.74055623 3.86297387,8.25668229 4.39782924,7.84474581 L4.4509839,7.805 L4.39782924,7.7663653 C3.91159708,7.39187759 3.59118574,6.95793743 3.53694758,6.43677195 L3.52876168,6.27777778 L3.52876168,3.52777778 C3.52876168,2.87152778 3.16672464,2.6 2.6009839,2.6 C2.26961305,2.6 2.0009839,2.33137085 2.0009839,2 C2.0009839,1.66862915 2.26961305,1.4 2.6009839,1.4 Z M12.4899649,6.7 L7.73807296,6.7 C7.59605688,6.7 7.47708877,6.7986801 7.44599617,6.93121275 L7.43807296,7 L7.43807296,9 C7.43807296,9.14201608 7.53675306,9.26098419 7.66928571,9.29207679 L7.73807296,9.3 L12.4899649,9.3 C12.631981,9.3 12.7509491,9.2013199 12.7820417,9.06878725 L12.7899649,9 L12.7899649,7 C12.7899649,6.85798392 12.6912848,6.73901581 12.5587521,6.70792321 L12.4899649,6.7 Z" id="aa形状结合"></path></g></svg></label>
+    </div>
 </div>

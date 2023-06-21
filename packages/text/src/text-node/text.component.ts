@@ -35,9 +35,9 @@ export class PlaitTextNodeComponent extends BaseTextComponent<CustomText> {
 
         const fontSize = this.text[MarkTypes.fontSize];
         if (fontSize) {
-            this.renderer2.setAttribute(this.elementRef.nativeElement, `the-${MarkTypes.fontSize}`, fontSize);
+            this.renderer2.setAttribute(this.elementRef.nativeElement, `plait-${MarkTypes.fontSize}`, fontSize);
         } else {
-            this.renderer2.removeAttribute(this.elementRef.nativeElement, `the-${MarkTypes.fontSize}`);
+            this.renderer2.removeAttribute(this.elementRef.nativeElement, `plait-${MarkTypes.fontSize}`);
         }
 
         if (this.text[MarkTypes.color]) {

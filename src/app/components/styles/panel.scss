@@ -20,6 +20,24 @@
                 padding-right: 4px;
                 height: 24px;
             }
+            .label-icon {
+                padding: 4px;
+                cursor: pointer;
+                border-radius: 4px;
+                margin-right: 8px;
+                text-align: center;
+                font-size: 16px;
+                display: inline-flex;
+                
+                &:hover,
+                &.active {
+                    background-color: rgba(102, 152, 255, 0.1);
+                    color: #6698ff;
+                }
+                svg {
+                    fill: currentColor;
+                }
+            }
         }
 
         .setting-panel-title {
@@ -71,25 +89,11 @@
             width: 100%;
             .text-setting-items {
                 display: flex;
-                width: 100%;
-                label {
-                    width: 16px;
-                    height: 16px;
-                    padding: 4px;
-                    cursor: pointer;
-                    border-radius: 4px;
-                    margin-right: 8px;
-                    
-                    &:hover,
-                    &.active {
-                        background-color: rgba(102, 152, 255, 0.1);
-                        color: #6698ff;
-                    }
-                    svg {
-                        fill: currentColor;
-                    }
-                }
             }
+        }
+
+        .abstract-container {
+            display: flex;
         }
     }
 }

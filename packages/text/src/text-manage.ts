@@ -64,6 +64,16 @@ export class TextManage {
                 if (previousValue === editor.children) {
                     return;
                 }
+
+                if (!this.isEditing) {
+                    const { x, y } = rectangle || this.getRectangle();
+                    updateForeignObject(this.g, 999, 999, x, y);
+
+                    setTimeout(() => {
+                        this.updateRectangle;
+                    });
+                }
+
                 previousValue = editor.children;
                 const paragraph = AngularEditor.toDOMNode(editor, value.children[0]);
                 let result = getRichtextContentSize(paragraph);
@@ -127,9 +137,12 @@ export class TextManage {
             const clickInNode = this.isHitElement && this.isHitElement(point);
             const isAttached = (event.target as HTMLElement).closest('.plait-board-attached');
 
-            if ((clickInNode && !hasEditableTarget(editor, event.target)) || isAttached) {
+            // keep focus when click in node
+            if (clickInNode && !hasEditableTarget(editor, event.target)) {
                 event.preventDefault();
-            } else if (!clickInNode) {
+            }
+
+            if (!clickInNode && !isAttached) {
                 // handle composition input state, like: Chinese IME Composition Input
                 timer(0).subscribe(() => {
                     exitHandle();

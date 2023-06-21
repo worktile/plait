@@ -1,12 +1,28 @@
 import { Editor, Text, Node, Transforms } from 'slate';
-import { MarkTypes } from '../constant/mark';
+import { DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, MarkTypes } from '../constant/mark';
+import { AngularEditor } from 'slate-angular';
+
+export enum FontSizes {
+    'fontSize12' = '12',
+    'fontSize13' = '13',
+    'fontSize14' = '14',
+    'fontSize15' = '15',
+    'fontSize16' = '16',
+    'fontSize18' = '18',
+    'fontSize20' = '20',
+    'fontSize24' = '24',
+    'fontSize28' = '28',
+    'fontSize32' = '32',
+    'fontSize40' = '40',
+    'fontSize48' = '48'
+}
 
 export interface MarkEditor extends Editor {
     removeMark: (key: string, shouldChange?: boolean) => void;
 }
 
 export const MarkEditor = {
-    isMarkActive(editor: Editor, format: MarkTypes) {
+    isMarkActive(editor: AngularEditor, format: MarkTypes) {
         if (!editor?.selection) {
             return;
         }
@@ -17,16 +33,39 @@ export const MarkEditor = {
         const marks = Editor.marks(editor) as any;
         return marks && marks[format] ? true : false;
     },
-    toggleMark(editor: Editor, format: MarkTypes) {
-        if (!editor.selection) {
-            Transforms.select(editor, [0]);
-        }
-
+    toggleMark(editor: AngularEditor, format: MarkTypes) {
+        setSelection(editor);
         const isActive = MarkEditor.isMarkActive(editor, format);
         if (isActive) {
             Editor.removeMark(editor, format);
         } else {
             Editor.addMark(editor, format, true);
         }
+    },
+    setFontSizeMark(editor: AngularEditor, size: FontSizes) {
+        setSelection(editor);
+
+        // set paragraph text fontSize
+        if (Number(size) === DEFAULT_FONT_SIZE) {
+            Editor.removeMark(editor, MarkTypes.fontSize);
+        } else {
+            // set paragraph text fontSize
+            Editor.addMark(editor, MarkTypes.fontSize, Number(size));
+        }
+    },
+    setColorMark(editor: AngularEditor, color: string) {
+        setSelection(editor);
+
+        if (color === DEFAULT_TEXT_COLOR) {
+            Editor.removeMark(editor, 'color');
+        } else {
+            Editor.addMark(editor, 'color', color);
+        }
     }
 };
+
+export function setSelection(editor: AngularEditor) {
+    if (AngularEditor.isReadonly(editor)) {
+        Transforms.select(editor, [0]);
+    }
+}

@@ -63,7 +63,6 @@ export const withMark = <T extends AngularEditor & MarkEditor>(editor: T): T => 
     };
 
     e.onKeydown = (event: KeyboardEvent) => {
-        console.log('execute shortcuts');
         markShortcuts(editor, event);
         onKeydown(event);
     };
@@ -78,7 +77,7 @@ const HOTKEYS = {
     'mod+shift+x': MarkTypes.strike
 };
 
-export const markShortcuts = (editor: Editor, event: KeyboardEvent) => {
+export const markShortcuts = (editor: AngularEditor, event: KeyboardEvent) => {
     for (const hotkey in HOTKEYS) {
         if (isKeyHotkey(hotkey, event)) {
             event.preventDefault();
