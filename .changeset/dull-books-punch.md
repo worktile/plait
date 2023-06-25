@@ -5,3 +5,4 @@
 ---
 
 improve text size utils method
+fix text paste error
