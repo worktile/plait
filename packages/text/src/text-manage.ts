@@ -129,7 +129,7 @@ export class TextManage {
             const isAttached = (event.target as HTMLElement).closest('.plait-board-attached');
 
             // keep focus when click in node
-            if (clickInNode && !hasEditableTarget(editor, event.target)) {
+            if ((clickInNode && !hasEditableTarget(editor, event.target)) || isAttached) {
                 event.preventDefault();
             }
 
