@@ -8,9 +8,13 @@ import { PlaitElement } from '../interfaces/element';
 export const getHitElements = (board: PlaitBoard, selection?: Selection) => {
     const realSelection = selection || board.selection;
     const selectedElements: PlaitElement[] = [];
+    const isCollapsed = realSelection && realSelection.ranges.length === 1 && Selection.isCollapsed(realSelection.ranges[0]);
     depthFirstRecursion<Ancestor>(
         board,
         node => {
+            if (selectedElements.length > 0 && isCollapsed) {
+                return;
+            }
             if (
                 !PlaitBoard.isBoard(node) &&
                 realSelection &&
@@ -27,12 +31,20 @@ export const getHitElements = (board: PlaitBoard, selection?: Selection) => {
             } else {
                 return false;
             }
-        }
+        },
+        true
     );
     return selectedElements;
 };
 
-export const isIntersectionElements = (board: PlaitBoard, elements: PlaitElement[], ranges: Range[]) => {
+export const getHitElementOfRoot = (board: PlaitBoard, rootElements: PlaitElement[], range: Range) => {
+    const newRootElements = [...rootElements].reverse();
+    return newRootElements.find(item => {
+        return board.isHitSelection(item, range);
+    });
+};
+
+export const isHitElements = (board: PlaitBoard, elements: PlaitElement[], ranges: Range[]) => {
     let isIntersectionElements = false;
     if (elements.length) {
         elements.map(item => {

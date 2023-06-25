@@ -4,8 +4,8 @@ import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
 import { isMainPointer, toPoint } from '../utils/dom/common';
 import { RectangleClient } from '../interfaces/rectangle-client';
-import { cacheSelectedElements, getHitElements, getSelectedElements, isIntersectionElements } from '../utils/selected-element';
-import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR, Selection } from '../interfaces';
+import { cacheSelectedElements, getHitElements, getSelectedElements } from '../utils/selected-element';
+import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
@@ -36,15 +36,13 @@ export function withSelection(board: PlaitBoard) {
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
 
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const ranges = [{ anchor: point, focus: point }];
+        const range = { anchor: point, focus: point };
+        const hitElements = getHitElements(board, { ranges: [range] });
         const selectedElements = getSelectedElements(board);
-        if (isIntersectionElements(board, selectedElements, ranges)) {
+        if (hitElements.length === 1 && selectedElements.includes(hitElements[0])) {
             mousedown(event);
             return;
         }
-
-        const range = { anchor: point, focus: point };
-        const hitElements = getHitElements(board, { ranges: [range] });
         if (
             PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
             hitElements.length === 0 &&
@@ -59,8 +57,7 @@ export function withSelection(board: PlaitBoard) {
             event.preventDefault();
         }
 
-
-        Transforms.setSelection(board, { ranges: ranges });
+        Transforms.setSelection(board, { ranges: [range] });
 
         mousedown(event);
     };

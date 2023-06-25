@@ -5,11 +5,12 @@ import { toPoint } from '../utils/dom/common';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
-import { getSelectedElements, isIntersectionElements } from '../utils/selected-element';
+import { getHitElementOfRoot, getSelectedElements, isHitElements } from '../utils/selected-element';
 import { PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
 import { addMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
+import { Range } from '../interfaces';
 
 export function withMoving(board: PlaitBoard) {
     const { mousedown, mousemove, globalMouseup, globalMousemove } = board;
@@ -23,20 +24,16 @@ export function withMoving(board: PlaitBoard) {
     board.mousedown = event => {
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
-        const ranges = [{ anchor: point, focus: point }];
+        const range = { anchor: point, focus: point } as Range;
         let movableElements = board.children.filter(item => board.isMovable(item));
         if (movableElements.length) {
             startPoint = point;
             const selectedRootElements = getSelectedElements(board).filter(item => movableElements.includes(item));
-            const intersectionSelectedElement = isIntersectionElements(board, selectedRootElements, ranges);
-            if (intersectionSelectedElement) {
+            const hitElement = getHitElementOfRoot(board, movableElements, range);
+            if (hitElement && selectedRootElements.includes(hitElement)) {
                 activeElements = selectedRootElements;
-            } else {
-                activeElements = movableElements.filter(item =>
-                    ranges.some(range => {
-                        return board.isHitSelection(item, range);
-                    })
-                );
+            } else if (hitElement) {
+                activeElements = [hitElement];
             }
         }
 

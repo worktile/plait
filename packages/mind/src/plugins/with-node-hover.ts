@@ -30,7 +30,8 @@ export const withNodeHover = (board: PlaitBoard) => {
                     } else {
                         return false;
                     }
-                }
+                },
+                true
             );
             
             if (hoveredMindElement && target && hoveredMindElement === target) {
