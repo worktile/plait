@@ -1,5 +1,30 @@
 # text
 
+## 0.4.0
+
+### Minor Changes
+
+-   [#430](https://github.com/worktile/plait/pull/430) [`372ecab`](https://github.com/worktile/plait/commit/372ecabf88382c58382d992f3041e45b9aac7584) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - replace richtext component by slate-angular
+
+*   [#430](https://github.com/worktile/plait/pull/430) [`275f9ce`](https://github.com/worktile/plait/commit/275f9ce077b652f7cd01fb6c994034243aea7742) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add format text
+
+-   [#430](https://github.com/worktile/plait/pull/430) [`7adcf10`](https://github.com/worktile/plait/commit/7adcf1003d699d61bab5512f5e72817697270a19) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename richtext to text
+
+*   [#430](https://github.com/worktile/plait/pull/430) [`81d3d9d`](https://github.com/worktile/plait/commit/81d3d9d2e628ad1d41488516b2ffec2aad4dc69c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename richtext to text
+
+-   [#436](https://github.com/worktile/plait/pull/436) [`71f5e27`](https://github.com/worktile/plait/commit/71f5e276a974626d0abdfafba90ed7dce67870e2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve text font size and text color
+
+*   [#434](https://github.com/worktile/plait/pull/434) [`3d758a8`](https://github.com/worktile/plait/commit/3d758a8caef7e6c6d1fa41a11fe59decf784ae31) Thanks [@WBbug](https://github.com/WBbug)! - support change text mark
+
+### Patch Changes
+
+-   [#437](https://github.com/worktile/plait/pull/437) [`e1fa8d5`](https://github.com/worktile/plait/commit/e1fa8d5670187684af2165d9396daa76691f6dd0) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve text size utils method
+    fix text paste error
+
+*   [#438](https://github.com/worktile/plait/pull/438) [`ce09d2c`](https://github.com/worktile/plait/commit/ce09d2c07db06177d513e37eb25d6d1fa9eb3d3f) Thanks [@WBbug](https://github.com/WBbug)! - fix can't set mark when click setting-panel
+
+-   [#436](https://github.com/worktile/plait/pull/436) [`b5a3dfd`](https://github.com/worktile/plait/commit/b5a3dfdcfc10306b322cec372601f4ce7326e484) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent update text when topic is typing
+
 ## 0.3.0
 
 ### Patch Changes
