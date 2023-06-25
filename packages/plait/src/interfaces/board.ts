@@ -130,7 +130,7 @@ export const PlaitBoard = {
     getComponent(board: PlaitBoard) {
         return BOARD_TO_COMPONENT.get(board) as BoardComponentInterface;
     },
-    getBoardNativeElement(board: PlaitBoard) {
+    getBoardContainer(board: PlaitBoard) {
         return PlaitBoard.getComponent(board).nativeElement;
     },
     getRectangle(board: PlaitBoard) {

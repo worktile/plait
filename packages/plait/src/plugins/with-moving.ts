@@ -65,7 +65,7 @@ export function withMoving(board: PlaitBoard) {
                         MERGING.set(board, true);
                         return PlaitNode.get(board, [index]);
                     });
-                    PlaitBoard.getBoardNativeElement(board).classList.add('element-moving');
+                    PlaitBoard.getBoardContainer(board).classList.add('element-moving');
                     addMovingElements(board, currentElements as PlaitElement[]);
                 });
             }
@@ -102,7 +102,7 @@ export function withMoving(board: PlaitBoard) {
         activeElements = [];
         removeMovingElements(board);
         MERGING.set(board, false);
-        PlaitBoard.getBoardNativeElement(board).classList.remove('element-moving');
+        PlaitBoard.getBoardContainer(board).classList.remove('element-moving');
     }
 
     return board;

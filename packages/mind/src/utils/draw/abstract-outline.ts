@@ -78,7 +78,7 @@ export function drawAbstractIncludedOutline(
         getHandleOption(activeHandlePosition === AbstractHandlePosition.end)
     );
 
-    changeBoardClass(board, activeHandlePosition, isHorizontal);
+    handleBoardClass(board, activeHandlePosition, isHorizontal);
 
     startHandle.setAttribute('stroke-linecap', 'round');
     endHandle.setAttribute('stroke-linecap', 'round');
@@ -104,15 +104,15 @@ export function getHandleOption(isHover: boolean) {
           };
 }
 
-export function changeBoardClass(board: PlaitBoard, activeHandlePosition: AbstractHandlePosition | undefined, isHorizontal: boolean) {
+function handleBoardClass(board: PlaitBoard, activeHandlePosition: AbstractHandlePosition | undefined, isHorizontal: boolean) {
     if (activeHandlePosition) {
         if (isHorizontal) {
-            PlaitBoard.getBoardNativeElement(board).classList.add('abstract-resizing-horizontal');
+            PlaitBoard.getBoardContainer(board).classList.add('abstract-resizing-horizontal');
         } else {
-            PlaitBoard.getBoardNativeElement(board).classList.add('abstract-resizing-vertical');
+            PlaitBoard.getBoardContainer(board).classList.add('abstract-resizing-vertical');
         }
     } else {
-        PlaitBoard.getBoardNativeElement(board).classList.remove('abstract-resizing-horizontal');
-        PlaitBoard.getBoardNativeElement(board).classList.remove('abstract-resizing-vertical');
+        PlaitBoard.getBoardContainer(board).classList.remove('abstract-resizing-horizontal');
+        PlaitBoard.getBoardContainer(board).classList.remove('abstract-resizing-vertical');
     }
 }

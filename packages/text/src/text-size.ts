@@ -38,7 +38,7 @@ export const getTextSize = (board: PlaitBoard, text: string, maxWordCount?: numb
     span.innerHTML = text;
     div.append(span);
     richtext.append(div);
-    PlaitBoard.getBoardNativeElement(board).append(richtext);
+    PlaitBoard.getBoardContainer(board).append(richtext);
     const { width, height } = measureDivSize(div);
     richtext.remove();
     return { width, height };

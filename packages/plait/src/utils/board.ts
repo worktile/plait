@@ -29,8 +29,18 @@ export function transformPoint(board: PlaitBoard, point: Point) {
 }
 
 export function isInPlaitBoard(board: PlaitBoard, x: number, y: number) {
-    const plaitBoardElement = PlaitBoard.getBoardNativeElement(board);
+    const plaitBoardElement = PlaitBoard.getBoardContainer(board);
     const plaitBoardRect = plaitBoardElement.getBoundingClientRect();
     const distances = distanceBetweenPointAndRectangle(x, y, plaitBoardRect);
     return distances === 0;
+}
+
+export function getRealScrollBarWidth(board: PlaitBoard) {
+    const { hideScrollbar } = board.options;
+    let scrollBarWidth = 0;
+    if (!hideScrollbar) {
+        const viewportContainer = PlaitBoard.getViewportContainer(board);
+        scrollBarWidth = viewportContainer.offsetWidth - viewportContainer.clientWidth;
+    }
+    return scrollBarWidth;
 }

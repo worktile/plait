@@ -96,7 +96,7 @@ export function withSelection(board: PlaitBoard) {
         }
 
         if (PlaitBoard.isFocus(board)) {
-            const isInBoard = event.target instanceof Node && PlaitBoard.getBoardNativeElement(board).contains(event.target);
+            const isInBoard = event.target instanceof Node && PlaitBoard.getBoardContainer(board).contains(event.target);
             const isInDocument = event.target instanceof Node && document.contains(event.target);
             const isAttachedElement = event.target instanceof Element && event.target.closest(`.${ATTACHED_ELEMENT_CLASS_NAME}`);
             // Clear selection when mouse board outside area
@@ -178,12 +178,12 @@ export function isSelectionMoving(board: PlaitBoard) {
 }
 
 export function setSelectionMoving(board: PlaitBoard) {
-    PlaitBoard.getBoardNativeElement(board).classList.add('selection-moving');
+    PlaitBoard.getBoardContainer(board).classList.add('selection-moving');
     BOARD_TO_IS_SELECTION_MOVING.set(board, true);
 }
 
 export function clearSelectionMoving(board: PlaitBoard) {
-    PlaitBoard.getBoardNativeElement(board).classList.remove('selection-moving');
+    PlaitBoard.getBoardContainer(board).classList.remove('selection-moving');
     BOARD_TO_IS_SELECTION_MOVING.delete(board);
 }
 

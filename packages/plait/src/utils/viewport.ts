@@ -10,7 +10,7 @@ const IS_FROM_VIEWPORT_CHANGE = new WeakMap<PlaitBoard, boolean>();
 export function getViewportContainerRect(board: PlaitBoard) {
     const { hideScrollbar } = board.options;
     const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
-    const viewportRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
+    const viewportRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
 
     return {
         width: viewportRect.width + scrollBarWidth,
@@ -20,7 +20,7 @@ export function getViewportContainerRect(board: PlaitBoard) {
 
 export function getElementHostBBox(board: PlaitBoard, zoom: number) {
     const childrenRect = getRectangleByElements(board, board.children, true);
-    const viewportContainerRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
+    const viewportContainerRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
     const containerWidth = viewportContainerRect.width / zoom;
     const containerHeight = viewportContainerRect.height / zoom;
     let left: number;
@@ -66,7 +66,7 @@ export function clampZoomLevel(zoom: number, minZoom = 0.2, maxZoom = 4) {
 }
 
 export function getViewBox(board: PlaitBoard, zoom: number) {
-    const boardContainerRectangle = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
+    const boardContainerRectangle = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
     const elementHostBBox = getElementHostBBox(board, zoom);
 
     const horizontalPadding = boardContainerRectangle.width / 2;
@@ -78,6 +78,11 @@ export function getViewBox(board: PlaitBoard, zoom: number) {
         elementHostBBox.bottom - elementHostBBox.top + (verticalPadding * 2) / zoom
     ];
     return viewBox;
+}
+
+export function getViewBoxCenterPoint(board: PlaitBoard) {
+    const childrenRectangle = getRectangleByElements(board, board.children, true);
+    return [childrenRectangle.x + childrenRectangle.width / 2, childrenRectangle.y + childrenRectangle.height / 2] as Point;
 }
 
 export function setSVGViewBox(board: PlaitBoard, viewBox: number[]) {
@@ -128,7 +133,7 @@ export function initializeViewBox(board: PlaitBoard) {
 export function initializeViewportOffset(board: PlaitBoard) {
     if (!board.viewport?.origination) {
         const zoom = board.viewport.zoom;
-        const viewportContainerRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
+        const viewportContainerRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
         const viewBox = getViewBox(board, zoom);
         const centerX = viewBox[0] + viewBox[2] / 2;
         const centerY = viewBox[1] + viewBox[3] / 2;

@@ -19,3 +19,10 @@ export const Viewport: ViewportInterface = {
         return !isNullOrUndefined(value.zoom) && !isNullOrUndefined(value.viewBackgroundColor);
     },
 };
+
+export interface FitViewportOptions {
+    maxWidth?: number;
+    limitHeight: number;
+    autoFitPadding: number;
+    containerClass: string;
+}

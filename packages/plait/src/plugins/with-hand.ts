@@ -14,7 +14,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     board.mousedown = (event: MouseEvent) => {
         if (PlaitBoard.isPointer(board, PlaitPointerType.hand) && isMainPointer(event)) {
             isMoving = true;
-            PlaitBoard.getBoardNativeElement(board).classList.add('viewport-moving');
+            PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
         }
@@ -36,7 +36,7 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
     board.globalMouseup = (event: MouseEvent) => {
         if (board.selection) {
             isMoving = false;
-            PlaitBoard.getBoardNativeElement(board).classList.remove('viewport-moving');
+            PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
             plaitBoardMove.x = 0;
             plaitBoardMove.y = 0;
         }

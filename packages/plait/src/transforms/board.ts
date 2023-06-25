@@ -5,12 +5,19 @@ import { PlaitPointerType } from '../interfaces/pointer';
 import { toPoint } from '../utils/dom/common';
 import { getRectangleByElements } from '../utils/element';
 import { distanceBetweenPointAndRectangle } from '../utils/math';
-import { clampZoomLevel, clearViewportOrigination, getViewBox, getViewportOrigination } from '../utils/viewport';
+import {
+    clampZoomLevel,
+    clearViewportOrigination,
+    getViewBoxCenterPoint,
+    getViewportOrigination,
+    initializeViewportContainer
+} from '../utils/viewport';
 import { BOARD_TO_COMPONENT } from '../utils/weak-maps';
 import { setViewport } from './viewport';
-import { depthFirstRecursion } from '../utils';
+import { depthFirstRecursion, getRealScrollBarWidth } from '../utils';
 import { PlaitElement } from '../interfaces/element';
 import { setTheme } from './theme';
+import { FitViewportOptions } from '../interfaces/viewport';
 
 function updateViewport(board: PlaitBoard, origination: Point, zoom?: number) {
     zoom = zoom ?? board.viewport.zoom;
@@ -32,9 +39,9 @@ function updateZoom(board: PlaitBoard, newZoom: number, isCenter = true) {
     newZoom = clampZoomLevel(newZoom);
 
     const mousePoint = PlaitBoard.getMovingPoint(board);
-    const nativeElement = PlaitBoard.getBoardNativeElement(board);
+    const nativeElement = PlaitBoard.getBoardContainer(board);
     const nativeElementRect = nativeElement.getBoundingClientRect();
-    const boardContainerRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
+    const boardContainerRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
     let focusPoint = [boardContainerRect.width / 2, boardContainerRect.height / 2];
 
     if (!isCenter && mousePoint && distanceBetweenPointAndRectangle(mousePoint[0], mousePoint[1], nativeElementRect) === 0) {
@@ -50,14 +57,9 @@ function updateZoom(board: PlaitBoard, newZoom: number, isCenter = true) {
 }
 
 function fitViewport(board: PlaitBoard) {
-    const { hideScrollbar } = board.options;
-    let scrollBarWidth = 0;
-    if (!hideScrollbar) {
-        const viewportContainer = PlaitBoard.getViewportContainer(board);
-        scrollBarWidth = viewportContainer.offsetWidth - viewportContainer.clientWidth;
-    }
+    let scrollBarWidth = getRealScrollBarWidth(board);
 
-    const boardContainerRect = PlaitBoard.getBoardNativeElement(board).getBoundingClientRect();
+    const boardContainerRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
     const elementHostBox = getRectangleByElements(board, board.children, true);
     const zoom = board.viewport.zoom;
     const autoFitPadding = 16;
@@ -71,12 +73,50 @@ function fitViewport(board: PlaitBoard) {
         newZoom = 1;
     }
 
-    const viewBox = getViewBox(board, newZoom);
-    const centerX = viewBox[0] + viewBox[2] / 2;
-    const centerY = viewBox[1] + viewBox[3] / 2;
+    const centerPoint = getViewBoxCenterPoint(board);
     const newOrigination = [
-        centerX - boardContainerRect.width / 2 / newZoom + scrollBarWidth / 2 / zoom,
-        centerY - boardContainerRect.height / 2 / newZoom + scrollBarWidth / 2 / zoom
+        centerPoint[0] - boardContainerRect.width / 2 / newZoom + scrollBarWidth / 2 / zoom,
+        centerPoint[1] - boardContainerRect.height / 2 / newZoom + scrollBarWidth / 2 / zoom
+    ] as Point;
+    updateViewport(board, newOrigination, newZoom);
+}
+
+function fitViewportWidth(board: PlaitBoard, options: FitViewportOptions) {
+    let scrollBarWidth = getRealScrollBarWidth(board);
+
+    const boardContainer = PlaitBoard.getBoardContainer(board);
+    const boardContainerRectangle = boardContainer.getBoundingClientRect();
+
+    let finalWidth = 0;
+    if (options.maxWidth) {
+        finalWidth = options.maxWidth;
+    } else {
+        finalWidth = boardContainerRectangle.width;
+    }
+
+    const elementHostBox = getRectangleByElements(board, board.children, true);
+    const contentWidth = finalWidth - 2 * options.autoFitPadding;
+    let newZoom = 0;
+    if (contentWidth < elementHostBox.width) {
+        newZoom = Math.min(contentWidth / elementHostBox.width);
+    } else {
+        newZoom = 1;
+    }
+
+    let finalHeight = elementHostBox.height * newZoom + 2 * options.autoFitPadding;
+    if (finalHeight > options.limitHeight) {
+        const containerEl = boardContainer.closest(`.${options.containerClass}`) as HTMLElement;
+        containerEl.style.height = `${finalHeight}px`;
+        initializeViewportContainer(board);
+    } else {
+        finalHeight = options.limitHeight;
+    }
+
+    const centerX = elementHostBox.x + elementHostBox.width / 2;
+    const centerY = elementHostBox.y + elementHostBox.height / 2;
+    const newOrigination = [
+        centerX - finalWidth / 2 / newZoom + scrollBarWidth / 2 / newZoom,
+        centerY - finalHeight / 2 / newZoom + scrollBarWidth / 2 / newZoom
     ] as Point;
     updateViewport(board, newOrigination, newZoom);
 }
@@ -99,5 +139,6 @@ export const BoardTransforms = {
     updateViewport,
     fitViewport,
     updateZoom,
-    updateThemeColor
+    updateThemeColor,
+    fitViewportWidth
 };
