@@ -16,7 +16,7 @@ import {
 import { AngularEditor, EDITOR_TO_ELEMENT, IS_FOCUSED, hasEditableTarget } from 'slate-angular';
 import { debounceTime, filter } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
-import { getRichtextContentSize } from './utils/dom';
+import { measureDivSize } from './text-size';
 
 export interface TextManageRef {
     newValue?: Element;
@@ -73,10 +73,7 @@ export class TextManage {
                 }
 
                 previousValue = editor.children;
-                const paragraph = AngularEditor.toDOMNode(editor, value.children[0]);
-                let result = getRichtextContentSize(paragraph);
-                const width = result.width;
-                const height = result.height;
+                const { width, height } = this.getSize();
                 this.onChange && this.onChange({ width, height, newValue: editor.children[0] as Element });
                 MERGING.set(this.board, true);
             });
@@ -117,17 +114,11 @@ export class TextManage {
 
         this.updateRectangle();
 
-        const paragraph = AngularEditor.toDOMNode(editor, editor.children[0]);
-        let result = getRichtextContentSize(paragraph);
-        const width = result.width;
-        const height = result.height;
+        const { width, height } = this.getSize();
         this.onChange && this.onChange({ width, height });
 
         const composition$ = this.componentRef.instance.onComposition.pipe(debounceTime(0)).subscribe(event => {
-            const paragraph = AngularEditor.toDOMNode(editor, editor.children[0]);
-            let result = getRichtextContentSize(paragraph);
-            const width = result.width;
-            const height = result.height;
+            const { width, height } = this.getSize();
             this.onChange && this.onChange({ width, height });
             MERGING.set(this.board, true);
         });
@@ -182,6 +173,12 @@ export class TextManage {
                 onExit();
             }
         };
+    }
+
+    private getSize() {
+        const editor = this.componentRef.instance.editor;
+        const paragraph = AngularEditor.toDOMNode(editor, editor.children[0]);
+        return measureDivSize(paragraph);
     }
 
     destroy() {

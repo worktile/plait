@@ -1,5 +1,6 @@
 import { Transforms } from 'slate';
 import { AngularEditor } from 'slate-angular';
+import { CLIPBOARD_FORMAT_KEY } from '../constant';
 
 export const withSingleLine = <T extends AngularEditor>(editor: T) => {
     const e = editor as T;
@@ -10,19 +11,13 @@ export const withSingleLine = <T extends AngularEditor>(editor: T) => {
     };
 
     e.insertData = (data: DataTransfer) => {
-        const text = data.getData('text/plain');
-        if (text) {
-            const lines = text.split(/\r\n|\r|\n/);
-            let split = false;
-
-            for (const line of lines) {
-                if (split) {
-                    Transforms.splitNodes(e, { always: true });
-                }
-
-                e.insertText(line);
-                split = true;
+        let text = data.getData('text/plain');
+        let plaitData = data.getData(`application/${CLIPBOARD_FORMAT_KEY}`);
+        if (!plaitData && text) {
+            if (text.endsWith('\n')) {
+                text = text.substring(0, text.length - 1);
             }
+            e.insertText(text);
             return;
         }
         insertData(data);

@@ -17,6 +17,7 @@ import { withSingleLine } from '../plugins/with-single';
 import { withMark } from '../plugins/with-marks';
 import { MarkTypes } from '../constant/mark';
 import { PlaitTextNodeComponent } from '../text-node/text.component';
+import { CLIPBOARD_FORMAT_KEY } from '../constant';
 
 @Component({
     selector: 'plait-richtext',
@@ -43,7 +44,7 @@ export class PlaitRichtextComponent implements OnInit {
     @Output()
     onComposition: EventEmitter<CompositionEvent> = new EventEmitter();
 
-    editor = withMark(withSingleLine(withHistory(withAngular(createEditor()))));
+    editor = withMark(withSingleLine(withHistory(withAngular(createEditor(), CLIPBOARD_FORMAT_KEY))));
 
     constructor(public renderer2: Renderer2, private cdr: ChangeDetectorRef, public elementRef: ElementRef<HTMLElement>) {}
 
