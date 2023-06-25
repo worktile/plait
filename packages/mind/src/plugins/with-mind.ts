@@ -16,7 +16,6 @@ import {
     Path,
     PlaitElement
 } from '@plait/core';
-import { getSizeByText } from '@plait/text';
 import { MindElement, PlaitMind } from '../interfaces';
 import { PlaitMindComponent } from '../mind.component';
 import { MindNodeComponent } from '../node.component';
@@ -44,6 +43,7 @@ import { withCreateMind } from './with-mind-create';
 import { DefaultAbstractNodeStyle } from '../constants/node-style';
 import { withMindHotkey } from './with-mind-hotkey';
 import { withNodeHover } from './with-node-hover';
+import { calculateTextSize } from '@plait/text';
 
 export const withMind = (board: PlaitBoard) => {
     const {
@@ -266,11 +266,7 @@ export const withMind = (board: PlaitBoard) => {
             insertClipboardData(board, elements, targetPoint || [0, 0]);
         } else {
             const text = data?.getData(`text/plain`) as string;
-            const { width, height } = getSizeByText(
-                text,
-                PlaitBoard.getHost(board).parentElement as HTMLElement,
-                TOPIC_DEFAULT_MAX_WORD_COUNT
-            );
+            const { width, height } = calculateTextSize(board, text, TOPIC_DEFAULT_MAX_WORD_COUNT);
             const selectedElements = getSelectedElements(board);
             if (text && selectedElements.length === 1) {
                 insertClipboardText(board, selectedElements[0], text, width, height);
