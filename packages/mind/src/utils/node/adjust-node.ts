@@ -1,6 +1,6 @@
 import { PlaitBoard } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
-import { calculateTextSize } from '@plait/text';
+import { getTextSize } from '@plait/text';
 import { Node } from 'slate';
 import { ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../../constants/node-topic-style';
 import { NODE_MIN_WIDTH } from '../../constants/node-rule';
@@ -13,7 +13,7 @@ export const adjustRootToNode = (board: PlaitBoard, node: MindElement) => {
     delete newNode.type;
 
     const text = Node.string(node.data.topic.children[0]) || ' ';
-    const { width, height } = calculateTextSize(board, text, TOPIC_DEFAULT_MAX_WORD_COUNT);
+    const { width, height } = getTextSize(board, text, TOPIC_DEFAULT_MAX_WORD_COUNT);
 
     newNode.width = Math.max(width, NODE_MIN_WIDTH);
     newNode.height = height;
@@ -47,7 +47,7 @@ export const adjustNodeToRoot = (board: PlaitBoard, node: MindElement): MindElem
     delete newElement?.shape;
     delete newElement?.strokeWidth;
 
-    const { width, height } = calculateTextSize(board, text, TOPIC_DEFAULT_MAX_WORD_COUNT, ROOT_TOPIC_FONT_SIZE);
+    const { width, height } = getTextSize(board, text, TOPIC_DEFAULT_MAX_WORD_COUNT, ROOT_TOPIC_FONT_SIZE);
     newElement.width = Math.max(width, NODE_MIN_WIDTH);
     newElement.height = height;
 

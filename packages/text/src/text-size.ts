@@ -1,14 +1,14 @@
 import { PlaitBoard } from '@plait/core';
 
-export const getTextSize = (paragraph: HTMLElement) => {
+export function measureDivSize(div: HTMLElement) {
     const boundaryBox = {
         left: Number.MAX_VALUE,
         top: Number.MAX_VALUE,
         right: Number.NEGATIVE_INFINITY,
         bottom: Number.NEGATIVE_INFINITY
     };
-    for (let index = 0; index < paragraph.childElementCount; index++) {
-        const element = paragraph.children.item(index);
+    for (let index = 0; index < div.childElementCount; index++) {
+        const element = div.children.item(index);
         const nodeRectangle = element?.getBoundingClientRect();
         if (nodeRectangle) {
             boundaryBox.left = Math.min(boundaryBox.left, nodeRectangle.x);
@@ -19,11 +19,11 @@ export const getTextSize = (paragraph: HTMLElement) => {
     }
     const width = boundaryBox.right - boundaryBox.left;
     // FIREFOX the height of inline span is less than the height of paragraph
-    const height = paragraph.getBoundingClientRect().height;
+    const height = div.getBoundingClientRect().height;
     return { width, height };
-};
+}
 
-export const calculateTextSize = (board: PlaitBoard, text: string, maxWordCount?: number, fontSize?: number) => {
+export const getTextSize = (board: PlaitBoard, text: string, maxWordCount?: number, fontSize?: number) => {
     const richtext = document.createElement('plait-richtext');
     richtext.className = 'plait-richtext-container';
     richtext.style.lineHeight = 'normal';
@@ -39,7 +39,7 @@ export const calculateTextSize = (board: PlaitBoard, text: string, maxWordCount?
     div.append(span);
     richtext.append(div);
     PlaitBoard.getBoardNativeElement(board).append(richtext);
-    const { width, height } = getTextSize(div);
+    const { width, height } = measureDivSize(div);
     richtext.remove();
     return { width, height };
 };
