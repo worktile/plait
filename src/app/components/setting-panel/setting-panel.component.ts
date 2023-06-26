@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inp
 import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
 import { MindElement, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
-import { FontSizes, PlaitMarkEditor, MarkTypes } from '@plait/text';
+import { FontSizes, PlaitMarkEditor, MarkTypes, CustomMarks } from '@plait/text';
 
 @Component({
     selector: 'app-setting-panel',
@@ -20,15 +20,13 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     currentBranchColor: string | undefined = '';
 
-    currentTextColor: string | undefined = '';
+    currentMarks: CustomMarks = {};
 
     selectedElements!: MindElement[];
 
     PlaitPointerType = PlaitPointerType;
 
     MindPointerType = MindPointerType;
-
-    textMark: MarkTypes[] = [];
 
     markTypes = MarkTypes;
 
@@ -60,7 +58,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.currentFillColor = this.selectedElements[0]?.fill || '';
             this.currentStrokeColor = this.selectedElements[0]?.strokeColor || '';
             this.currentBranchColor = this.selectedElements[0]?.branchColor || '';
-            this.getTextMarks();
+
+            const editor = MindElement.getEditor(this.selectedElements[0]);
+            this.currentMarks = PlaitMarkEditor.getMarks(editor);
         }
     }
 
@@ -132,18 +132,5 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
                 PlaitMarkEditor.setFontSizeMark(editor, (event.target as HTMLSelectElement).value as FontSizes);
             });
         }
-    }
-
-    getTextMarks() {
-        const marks = [MarkTypes.bold, MarkTypes.italic, MarkTypes.strike, MarkTypes.underline];
-        const topicData = this.selectedElements[0].data.topic.children;
-        this.textMark = [];
-        topicData.forEach(data => {
-            for (let key in data) {
-                if (marks.includes(key as MarkTypes) && !this.textMark.includes(key as MarkTypes)) {
-                    this.textMark.push(key as MarkTypes);
-                }
-            }
-        });
     }
 }

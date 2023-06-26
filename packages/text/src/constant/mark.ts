@@ -19,3 +19,12 @@ export const MarkProps: MarkTypes[] = [
     MarkTypes.underline,
     MarkTypes.fontSize
 ];
+
+export type CustomMarks = {
+    bold?: boolean;
+    italic?: boolean;
+    underlined?: boolean;
+    strike?: boolean;
+    color?: string;
+    [`font-size`]?: string;
+};
