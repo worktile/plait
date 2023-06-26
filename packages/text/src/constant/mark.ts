@@ -10,3 +10,12 @@ export enum MarkTypes {
 export const DEFAULT_FONT_SIZE = 14;
 
 export const DEFAULT_TEXT_COLOR = '#333333';
+
+export const MarkProps: MarkTypes[] = [
+    MarkTypes.bold,
+    MarkTypes.color,
+    MarkTypes.italic,
+    MarkTypes.strike,
+    MarkTypes.underline,
+    MarkTypes.fontSize
+];

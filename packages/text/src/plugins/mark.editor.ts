@@ -1,5 +1,5 @@
-import { Editor, Text, Node, Transforms } from 'slate';
-import { DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, MarkTypes } from '../constant/mark';
+import { Editor, Text, Node, Transforms, NodeEntry } from 'slate';
+import { DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, MarkProps, MarkTypes } from '../constant/mark';
 import { AngularEditor } from 'slate-angular';
 
 export enum FontSizes {
@@ -22,6 +22,23 @@ export interface MarkEditor extends Editor {
 }
 
 export const MarkEditor = {
+    getMarks(editor: AngularEditor) {
+        const matchs = editor.selection
+            ? Editor.nodes(editor, { match: Text.isText })
+            : Editor.nodes(editor, { match: Text.isText, at: { anchor: Editor.start(editor, [0]), focus: Editor.end(editor, [0]) } });
+        const marks: any = {};
+        for (const match of matchs) {
+            const [node] = match as NodeEntry<Text>;
+            const { text, ...rest } = node;
+            Object.assign(marks, rest);
+        }
+        for (const key in marks) {
+            if (!MarkProps.includes(key as MarkTypes)) {
+                delete marks[key];
+            }
+        }
+        return marks;
+    },
     isMarkActive(editor: AngularEditor, format: MarkTypes) {
         if (!editor?.selection) {
             return;
@@ -30,7 +47,7 @@ export const MarkEditor = {
         if (!Text.isText(node)) {
             return false;
         }
-        const marks = Editor.marks(editor) as any;
+        const marks = MarkEditor.getMarks(editor);
         return marks && marks[format] ? true : false;
     },
     toggleMark(editor: AngularEditor, format: MarkTypes) {
