@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inp
 import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
 import { MindElement, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
-import { FontSizes, PlaitMarkEditor, MarkTypes, CustomMarks } from '@plait/text';
+import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText } from '@plait/text';
 
 @Component({
     selector: 'app-setting-panel',
@@ -20,7 +20,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     currentBranchColor: string | undefined = '';
 
-    currentMarks: CustomMarks = {};
+    currentMarks: Omit<CustomText, 'text'> = {};
 
     selectedElements!: MindElement[];
 
