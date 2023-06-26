@@ -21,7 +21,7 @@ export interface MarkEditor extends Editor {
     removeMark: (key: string, shouldChange?: boolean) => void;
 }
 
-export const MarkEditor = {
+export const PlaitMarkEditor = {
     getMarks(editor: AngularEditor) {
         const matchs = editor.selection
             ? Editor.nodes(editor, { match: Text.isText })
@@ -47,12 +47,12 @@ export const MarkEditor = {
         if (!Text.isText(node)) {
             return false;
         }
-        const marks = MarkEditor.getMarks(editor);
+        const marks = PlaitMarkEditor.getMarks(editor);
         return marks && marks[format] ? true : false;
     },
     toggleMark(editor: AngularEditor, format: MarkTypes) {
         setSelection(editor);
-        const isActive = MarkEditor.isMarkActive(editor, format);
+        const isActive = PlaitMarkEditor.isMarkActive(editor, format);
         if (isActive) {
             Editor.removeMark(editor, format);
         } else {

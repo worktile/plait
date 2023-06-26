@@ -1,15 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, forwardRef } from '@angular/core';
-import {
-    OnBoardChange,
-    PlaitBoard,
-    PlaitIslandBaseComponent,
-    PlaitPointerType,
-    Transforms,
-    getSelectedElements
-} from '@plait/core';
+import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
 import { MindElement, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
-import { FontSizes, MarkEditor, MarkTypes } from '@plait/text';
+import { FontSizes, PlaitMarkEditor, MarkTypes } from '@plait/text';
 
 @Component({
     selector: 'app-setting-panel',
@@ -106,7 +99,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (this.selectedElements.length) {
             this.selectedElements.forEach(element => {
                 const editor = MindElement.getEditor(element);
-                MarkEditor.setColorMark(editor, value);
+                PlaitMarkEditor.setColorMark(editor, value);
             });
         }
     }
@@ -127,7 +120,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (this.selectedElements.length) {
             this.selectedElements.forEach(element => {
                 const editor = MindElement.getEditor(element);
-                MarkEditor.toggleMark(editor, attribute as MarkTypes);
+                PlaitMarkEditor.toggleMark(editor, attribute as MarkTypes);
             });
         }
     }
@@ -136,7 +129,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (this.selectedElements.length) {
             this.selectedElements.forEach(element => {
                 const editor = MindElement.getEditor(element);
-                MarkEditor.setFontSizeMark(editor, (event.target as HTMLSelectElement).value as FontSizes);
+                PlaitMarkEditor.setFontSizeMark(editor, (event.target as HTMLSelectElement).value as FontSizes);
             });
         }
     }
