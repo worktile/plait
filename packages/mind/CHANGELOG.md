@@ -1,5 +1,15 @@
 # mind
 
+## 0.11.0
+
+### Minor Changes
+
+-   [`bab1d19`](https://github.com/worktile/plait/commit/bab1d19de20311ed7eafd7f55088fa288d6d931b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support fit viewport width
+
+### Patch Changes
+
+-   [`fcaf818`](https://github.com/worktile/plait/commit/fcaf818d50e2789c67607214dc10ab27161bc3cc) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle correctly order when hit element
+
 ## 0.10.0
 
 ### Minor Changes

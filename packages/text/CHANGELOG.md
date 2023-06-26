@@ -1,5 +1,13 @@
 # text
 
+## 0.5.0
+
+### Minor Changes
+
+-   [#439](https://github.com/worktile/plait/pull/439) [`f4790d2`](https://github.com/worktile/plait/commit/f4790d24d0882eb8f8b7c8c8da5c646d5eaccaf1) Thanks [@WBbug](https://github.com/WBbug)! - add getMarks in markEditor
+
+*   [`bab1d19`](https://github.com/worktile/plait/commit/bab1d19de20311ed7eafd7f55088fa288d6d931b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support fit viewport width
+
 ## 0.4.0
 
 ### Minor Changes
