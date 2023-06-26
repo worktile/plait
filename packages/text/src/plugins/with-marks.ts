@@ -1,6 +1,6 @@
 import { isKeyHotkey } from 'is-hotkey';
 import { MarkTypes } from '../constant/mark';
-import { MarkEditor } from './mark.editor';
+import { MarkEditor, PlaitMarkEditor } from './mark.editor';
 import { Editor, Range, Text, Transforms } from 'slate';
 import { AngularEditor } from 'slate-angular';
 
@@ -82,7 +82,7 @@ export const markShortcuts = (editor: AngularEditor, event: KeyboardEvent) => {
         if (isKeyHotkey(hotkey, event)) {
             event.preventDefault();
             const mark = (HOTKEYS as any)[hotkey];
-            MarkEditor.toggleMark(editor, mark);
+            PlaitMarkEditor.toggleMark(editor, mark);
         }
     }
 };

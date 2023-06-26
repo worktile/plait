@@ -1,15 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, forwardRef } from '@angular/core';
-import {
-    OnBoardChange,
-    PlaitBoard,
-    PlaitIslandBaseComponent,
-    PlaitPointerType,
-    Transforms,
-    getSelectedElements
-} from '@plait/core';
+import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
 import { MindElement, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
-import { FontSizes, MarkEditor, MarkTypes } from '@plait/text';
+import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText } from '@plait/text';
 
 @Component({
     selector: 'app-setting-panel',
@@ -27,15 +20,13 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     currentBranchColor: string | undefined = '';
 
-    currentTextColor: string | undefined = '';
+    currentMarks: Omit<CustomText, 'text'> = {};
 
     selectedElements!: MindElement[];
 
     PlaitPointerType = PlaitPointerType;
 
     MindPointerType = MindPointerType;
-
-    textMark: MarkTypes[] = [];
 
     markTypes = MarkTypes;
 
@@ -67,7 +58,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.currentFillColor = this.selectedElements[0]?.fill || '';
             this.currentStrokeColor = this.selectedElements[0]?.strokeColor || '';
             this.currentBranchColor = this.selectedElements[0]?.branchColor || '';
-            this.getTextMarks();
+
+            const editor = MindElement.getEditor(this.selectedElements[0]);
+            this.currentMarks = PlaitMarkEditor.getMarks(editor);
         }
     }
 
@@ -106,7 +99,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (this.selectedElements.length) {
             this.selectedElements.forEach(element => {
                 const editor = MindElement.getEditor(element);
-                MarkEditor.setColorMark(editor, value);
+                PlaitMarkEditor.setColorMark(editor, value);
             });
         }
     }
@@ -127,7 +120,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (this.selectedElements.length) {
             this.selectedElements.forEach(element => {
                 const editor = MindElement.getEditor(element);
-                MarkEditor.toggleMark(editor, attribute as MarkTypes);
+                PlaitMarkEditor.toggleMark(editor, attribute as MarkTypes);
             });
         }
     }
@@ -136,21 +129,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (this.selectedElements.length) {
             this.selectedElements.forEach(element => {
                 const editor = MindElement.getEditor(element);
-                MarkEditor.setFontSizeMark(editor, (event.target as HTMLSelectElement).value as FontSizes);
+                PlaitMarkEditor.setFontSizeMark(editor, (event.target as HTMLSelectElement).value as FontSizes);
             });
         }
-    }
-
-    getTextMarks() {
-        const marks = [MarkTypes.bold, MarkTypes.italic, MarkTypes.strike, MarkTypes.underline];
-        const topicData = this.selectedElements[0].data.topic.children;
-        this.textMark = [];
-        topicData.forEach(data => {
-            for (let key in data) {
-                if (marks.includes(key as MarkTypes) && !this.textMark.includes(key as MarkTypes)) {
-                    this.textMark.push(key as MarkTypes);
-                }
-            }
-        });
     }
 }
