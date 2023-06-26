@@ -12,12 +12,12 @@ module.exports = {
         null,
         {
             title: 'Board Online',
-            path: '',
+            path: 'https://plait-gamma.vercel.app',
             isExternal: true
         },
         {
             title: 'Flow Online',
-            path: '',
+            path: 'https://plait-gamma.vercel.app/flow',
             isExternal: true
         }
     ],
