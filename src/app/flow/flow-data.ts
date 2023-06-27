@@ -73,15 +73,15 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
     {
         id: '1001',
         data: {
-            text: { children: [{ text: '要做' }] }
+            text: { children: [{ text: '打开' }] }
         },
         type: FlowElementType.node,
         points: [[400, 268.5]],
         width: 120,
         height: 38,
         styles: {
-            stroke: '#5dcfff',
-            fill: '#5dcfff'
+            stroke: 'rgb(86, 171, 251)',
+            fill: 'rgb(86, 171, 251)'
         },
         undeletable: true
     },
@@ -95,11 +95,9 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         width: 120,
         height: 38,
         styles: {
-            stroke: 'rgb(179, 212, 255)',
-            fill: 'rgb(222, 235, 255)',
-            activeFill: '#fff',
-            borderRadius: 16,
-            activeBorderRadius: 18
+            stroke: 'rgb(246, 198, 89)',
+            fill: 'rgb(246, 198, 89)',
+            activeFill: '#fff'
         }
     },
     {
@@ -112,8 +110,8 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         width: 120,
         height: 38,
         styles: {
-            stroke: 'rgb(171, 245, 209)',
-            fill: 'rgb(227, 252, 239)'
+            stroke: 'rgb(115, 216, 151)',
+            fill: 'rgb(115, 216, 151)'
         }
     }
 ];

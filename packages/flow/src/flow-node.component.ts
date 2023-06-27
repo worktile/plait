@@ -9,22 +9,12 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import { TextManage } from '@plait/text';
-import {
-    PlaitPluginElementComponent,
-    PlaitPluginElementContext,
-    PlaitBoard,
-    normalizePoint,
-    createG,
-    OnContextChanged,
-    drawCircle,
-    Point
-} from '@plait/core';
+import { PlaitPluginElementComponent, PlaitPluginElementContext, PlaitBoard, normalizePoint, createG, OnContextChanged } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawNodeHandles } from './draw/handle';
 import { drawActiveMask, drawNode } from './draw/node';
 import { FlowNode } from './interfaces/node';
-import { FlowBaseData, FlowPosition } from './interfaces/element';
-import { DEFAULT_HANDLE_STYLES, HANDLE_BUFFER, HANDLE_DIAMETER } from './constants/handle';
+import { FlowBaseData } from './interfaces/element';
 
 @Component({
     selector: 'plait-flow-node',
@@ -112,26 +102,6 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             this.render2.addClass(item, 'flow-handle');
         });
         this.g.append(this.handlesG);
-    }
-
-    drawActiveHandle(point: Point, position: FlowPosition) {
-        const hoveredHandleClass = `flow-hover-handle-${position}`;
-        if (!this.g.querySelector(`.${hoveredHandleClass}`)) {
-            const hoverHandle = drawCircle(this.roughSVG, point, HANDLE_DIAMETER + HANDLE_BUFFER, {
-                ...DEFAULT_HANDLE_STYLES,
-                stroke: 'rgba(102, 152, 255, 0.3)',
-                strokeWidth: HANDLE_BUFFER
-            });
-            this.render2.addClass(hoverHandle, hoveredHandleClass);
-            this.render2.addClass(hoverHandle, 'flow-hover-handle');
-            this.g.append(hoverHandle);
-        }
-    }
-
-    removeActiveHandle(position: FlowPosition) {
-        const hoveredHandleClass = `flow-hover-handle-${position}`;
-        const hoveredHandle = this.g.querySelector(`.${hoveredHandleClass}`);
-        hoveredHandle?.remove();
     }
 
     updateElement(element: FlowNode = this.element, isActive = false) {

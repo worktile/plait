@@ -1,8 +1,6 @@
 import {
-    BOARD_TO_HOST,
     PlaitBoard,
     PlaitPlugin,
-    Point,
     isSelectedElement,
     toPoint,
     transformPoint,
@@ -21,9 +19,10 @@ import { isEdgeDragging } from '../utils/edge/dragging-edge';
 import { destroyAllNodesHandle, drawAllNodesHandle } from '../utils/node/render-all-nodes-handle';
 import { addCreateEdgeInfo, deleteCreateEdgeInfo } from '../utils/edge/create-edge';
 import { DEFAULT_PLACEHOLDER_EDGE_STYLES } from '../constants/edge';
-import { getHitNodeHandle, getHitHandleByNode, HitNodeHandle } from '../utils/handle/node';
+import { getHitHandleByNode, HitNodeHandle } from '../utils/handle/node';
 import { getHitNode } from '../utils/node/get-hit-node';
 import { DEFAULT_HANDLE_STYLES, HANDLE_DIAMETER } from '../constants/handle';
+import { getHoverHandleInfo } from '../utils/handle/hover-handle';
 
 export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, globalMousemove, globalMouseup } = board;
@@ -49,6 +48,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
 
     board.globalMousemove = (event: MouseEvent) => {
         if (sourceFlowNodeHandle) {
+            event.preventDefault();
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             placeholderEdge?.remove();
             throttleRAF(() => {
@@ -63,32 +63,34 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
 
                     placeholderEdge.append(circleElement);
                 }
-                BOARD_TO_HOST.get(board)?.append(placeholderEdge);
+                PlaitBoard.getHost(board).append(placeholderEdge);
                 if (drawNodeHandles) {
                     drawNodeHandles = false;
                     flowNodeElements = drawAllNodesHandle(board);
                 }
-            });
-
-            if (placeholderEdge) {
-                targetFlowNodeHandle = null;
-                targetFlowNodeHandle = getHitNodeHandle(board, point);
-                if (targetFlowNodeHandle && targetFlowNodeHandle.handlePoint.toString() !== sourceFlowNodeHandle.handlePoint.toString()) {
-                    addCreateEdgeInfo(board, {
-                        id: idCreator(),
-                        type: FlowElementType.edge,
-                        source: {
-                            nodeId: sourceFlowNodeHandle.node.id,
-                            position: sourceFlowNodeHandle.position
-                        },
-                        target: {
-                            nodeId: targetFlowNodeHandle.node.id,
-                            position: targetFlowNodeHandle.position,
-                            marker: 'arrow'
-                        }
-                    });
+                if (placeholderEdge) {
+                    targetFlowNodeHandle = null;
+                    targetFlowNodeHandle = getHoverHandleInfo(board) as HitNodeHandle;
+                    if (
+                        targetFlowNodeHandle &&
+                        targetFlowNodeHandle.handlePoint.toString() !== sourceFlowNodeHandle!.handlePoint.toString()
+                    ) {
+                        addCreateEdgeInfo(board, {
+                            id: idCreator(),
+                            type: FlowElementType.edge,
+                            source: {
+                                nodeId: sourceFlowNodeHandle!.node.id,
+                                position: sourceFlowNodeHandle!.position
+                            },
+                            target: {
+                                nodeId: targetFlowNodeHandle.node.id,
+                                position: targetFlowNodeHandle.position,
+                                marker: 'arrow'
+                            }
+                        });
+                    }
                 }
-            }
+            });
             return;
         } else {
             if (isEdgeDragging(board)) {

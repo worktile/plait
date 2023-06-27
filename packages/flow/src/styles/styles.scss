@@ -12,9 +12,13 @@
     .flow-handle {
         cursor: crosshair;
     }
-}
-.flow-dragging {
-    .plait-richtext-container {
-        user-select: none;
+    
+    .flow-edge-richtext span{
+        font-size: 10px;
+        color: #666;
+    }
+    .flow-node-richtext span{
+        color: #fff;
     }
 }
+

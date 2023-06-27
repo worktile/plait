@@ -12,12 +12,13 @@ import {
     transformPoint
 } from '@plait/core';
 import { FlowEdgeComponent } from '../flow-edge.component';
-import { FlowEdge, FlowEdgeHandleRef, FlowEdgeHandleType } from '../interfaces/edge';
+import { FlowEdge, FlowEdgeHandleType } from '../interfaces/edge';
 import { FlowNode } from '../interfaces/node';
 import { deleteEdgeDraggingInfo, addEdgeDraggingInfo } from '../utils/edge/dragging-edge';
 import { destroyAllNodesHandle, drawAllNodesHandle } from '../utils/node/render-all-nodes-handle';
-import { getHitNodeHandle } from '../utils/handle/node';
+import { HitNodeHandle } from '../utils/handle/node';
 import { getHitHandleTypeByEdge } from '../utils/handle/edge';
+import { getHoverHandleInfo } from '../utils/handle/hover-handle';
 
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup } = board;
@@ -28,7 +29,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     let offsetX: number = 0;
     let offsetY: number = 0;
     let flowNodeElements: FlowNode[] = [];
-    let hitNodeHandle: FlowEdgeHandleRef | null = null;
+    let hitNodeHandle: HitNodeHandle | null = null;
     let drawNodeHandles = true;
 
     board.mousedown = (event: MouseEvent) => {
@@ -56,16 +57,17 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
             const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
             offsetX = endPoint[0] - startPoint[0];
             offsetY = endPoint[1] - startPoint[1];
+            event.preventDefault();
             if (activeElement) {
-                addEdgeDraggingInfo(activeElement, {
-                    offsetX,
-                    offsetY,
-                    handleType
-                });
                 throttleRAF(() => {
+                    addEdgeDraggingInfo(activeElement!, {
+                        offsetX,
+                        offsetY,
+                        handleType: handleType!
+                    });
                     const activeComponent = activeElement && (PlaitElement.getComponent(activeElement) as FlowEdgeComponent);
                     activeComponent?.updateElement(activeElement!, true);
-                    hitNodeHandle = getHitNodeHandle(board, endPoint);
+                    hitNodeHandle = getHoverHandleInfo(board) as HitNodeHandle;
                     if (drawNodeHandles) {
                         drawNodeHandles = false;
                         // 所有的 node 节点显示 handle

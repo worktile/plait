@@ -9,9 +9,9 @@
 @import './components/styles/toolbar.scss';
 
 .flow-custom-node {
-    .slate-editable-container{
-        color: #fff;
+    .flow-node-richtext{
         span {
+            color: #666;
             font-size: 10px;
         }
     }
