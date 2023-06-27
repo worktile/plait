@@ -28,7 +28,9 @@ export function drawActiveMask(roughSVG: RoughSVG, node: FlowNode) {
     let { width, height } = node;
     nodeStyles = {
         ...nodeStyles,
-        stroke: node.styles?.activeStroke || DEFAULT_NODE_ACTIVE_STYLES.stroke
+        stroke: node.styles?.activeStroke || DEFAULT_NODE_ACTIVE_STYLES.stroke,
+        fill: node.styles?.activeFill || DEFAULT_NODE_ACTIVE_STYLES.fill,
+        borderRadius: node.styles?.activeBorderRadius || nodeStyles.borderRadius
     };
     const nodeG = drawRoundRectangle(roughSVG, x, y, x + width, y + height, nodeStyles, true, nodeStyles.borderRadius);
     return nodeG;

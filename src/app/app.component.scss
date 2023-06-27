@@ -9,10 +9,13 @@
 @import './components/styles/toolbar.scss';
 
 .flow-custom-node {
-    color: #fff;
-    .plait-richtext-container {
-        font-size: 10px;
+    .slate-editable-container{
+        color: #fff;
+        span {
+            font-size: 10px;
+        }
     }
+   
 }
 
 .theme-setting-toolbar {

@@ -11,34 +11,35 @@ import {
     throttleRAF,
     removeSelectedElement,
     getSelectedElements,
-    PlaitElement
+    PlaitElement,
+    drawCircle
 } from '@plait/core';
 import { FlowNode } from '../interfaces/node';
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowElementType } from '../interfaces/element';
 import { isEdgeDragging } from '../utils/edge/dragging-edge';
-import { FlowEdgeHandleRef } from '../interfaces/edge';
 import { destroyAllNodesHandle, drawAllNodesHandle } from '../utils/node/render-all-nodes-handle';
 import { addCreateEdgeInfo, deleteCreateEdgeInfo } from '../utils/edge/create-edge';
-import { DEFAULT_PLACEHOLDER_ACTIVE_STYLES } from '../constants/edge';
-import { getHitNodeHandle, getHitHandleByNode } from '../utils/handle/node';
+import { DEFAULT_PLACEHOLDER_EDGE_STYLES } from '../constants/edge';
+import { getHitNodeHandle, getHitHandleByNode, HitNodeHandle } from '../utils/handle/node';
 import { getHitNode } from '../utils/node/get-hit-node';
+import { DEFAULT_HANDLE_STYLES, HANDLE_DIAMETER } from '../constants/handle';
 
 export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, globalMousemove, globalMouseup } = board;
 
-    let sourceFlowNodeHandle: (FlowEdgeHandleRef & { handlePoint: Point }) | null = null;
-    let targetFlowNodeHandle: (FlowEdgeHandleRef & { handlePoint: Point }) | null = null;
+    let sourceFlowNodeHandle: HitNodeHandle | null = null;
+    let targetFlowNodeHandle: HitNodeHandle | null = null;
     let placeholderEdge: SVGElement;
     let flowNodeElements: FlowNode[] = [];
     let drawNodeHandles = true;
-    let hoveredFlowNode: FlowNode | null;
+    let hoveredNode: FlowNode | null;
 
     board.mousedown = event => {
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const selectElements = getSelectedElements(board);
-        if (hoveredFlowNode) {
-            sourceFlowNodeHandle = getHitHandleByNode(hoveredFlowNode, point);
+        if (hoveredNode) {
+            sourceFlowNodeHandle = getHitHandleByNode(hoveredNode, point);
             selectElements.map(item => {
                 removeSelectedElement(board, item);
             });
@@ -56,8 +57,11 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                         PlaitBoard.getRoughSVG(board),
                         sourceFlowNodeHandle.handlePoint,
                         point,
-                        DEFAULT_PLACEHOLDER_ACTIVE_STYLES
+                        DEFAULT_PLACEHOLDER_EDGE_STYLES
                     );
+                    const circleElement = drawCircle(PlaitBoard.getRoughSVG(board), point, HANDLE_DIAMETER, DEFAULT_HANDLE_STYLES);
+
+                    placeholderEdge.append(circleElement);
                 }
                 BOARD_TO_HOST.get(board)?.append(placeholderEdge);
                 if (drawNodeHandles) {
@@ -93,24 +97,24 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
             // 鼠标移入 flowNode 展示 handles
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const newHitNode = getHitNode(board, point);
-            if (hoveredFlowNode) {
-                const isHitHoveredNodeHandle = !!getHitHandleByNode(hoveredFlowNode, point);
-                if (newHitNode == hoveredFlowNode || isHitHoveredNodeHandle) {
+            if (hoveredNode) {
+                const isHitHoveredNodeHandle = !!getHitHandleByNode(hoveredNode, point);
+                if (newHitNode == hoveredNode || isHitHoveredNodeHandle) {
                     return;
                 }
-                const isSelectedHoveredNode = isSelectedElement(board, hoveredFlowNode);
+                const isSelectedHoveredNode = isSelectedElement(board, hoveredNode);
                 if (!isSelectedHoveredNode) {
                     // destroy handles
-                    const flowNodeComponent = PlaitElement.getComponent(hoveredFlowNode) as FlowNodeComponent;
+                    const flowNodeComponent = PlaitElement.getComponent(hoveredNode) as FlowNodeComponent;
                     flowNodeComponent?.destroyHandles();
                 }
             }
 
-            hoveredFlowNode = newHitNode;
-            if (hoveredFlowNode) {
+            hoveredNode = newHitNode;
+            if (hoveredNode) {
                 // draw handles
-                const flowNodeComponent = PlaitElement.getComponent(hoveredFlowNode) as FlowNodeComponent;
-                flowNodeComponent?.drawHandles(hoveredFlowNode);
+                const flowNodeComponent = PlaitElement.getComponent(hoveredNode) as FlowNodeComponent;
+                flowNodeComponent?.drawHandles(hoveredNode);
             }
         }
         globalMousemove(event);
@@ -126,7 +130,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
             drawNodeHandles = true;
             destroyAllNodesHandle(board, flowNodeElements);
             flowNodeElements = [];
-            hoveredFlowNode = null;
+            hoveredNode = null;
         }
     };
 

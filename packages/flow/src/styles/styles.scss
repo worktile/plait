@@ -13,3 +13,8 @@
         cursor: crosshair;
     }
 }
+.flow-dragging {
+    .plait-richtext-container {
+        user-select: none;
+    }
+}

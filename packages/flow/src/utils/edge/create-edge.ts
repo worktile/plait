@@ -10,7 +10,7 @@ export function createFlowEdge<T extends FlowBaseData = FlowBaseData>(board: Pla
             ...edge,
             point: []
         },
-        path || [board.children.length]
+        path || [0]
     );
 }
 

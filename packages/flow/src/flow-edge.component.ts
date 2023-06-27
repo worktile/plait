@@ -126,12 +126,12 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     drawRichtext(element: FlowEdge = this.element, textRect: RectangleClient, active = false) {
         this.destroyRichtext();
         if (element.data?.text && textRect) {
-            const { x, y, width, height } = textRect!;
             const textBackgroundRect = getEdgeTextBackgroundRect(textRect);
             this.richtextBackgroundG = drawRichtextBackground(this.roughSVG, element, textBackgroundRect!, active);
             this.textManage.draw(element.data.text);
-            this.textManage.g.append(this.richtextBackgroundG);
-            this.textManage.g.classList.add('flow-edge-richtext');
+            this.textManage.g.prepend(this.richtextBackgroundG);
+            this.textManage.g.classList.add('flow-node-richtext');
+            this.g.append(this.textManage.g);
         }
     }
 
