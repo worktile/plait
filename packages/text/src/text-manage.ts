@@ -18,6 +18,10 @@ import { debounceTime, filter } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
 import { measureDivSize } from './text-size';
 
+// 1. When the text at the end has an italic attribute, the text is partially covered
+// 2. There will be some differences in the width measured by different browsers
+export const WIDTH_BUFFER = 4;
+
 export interface TextManageRef {
     newValue?: Element;
     width: number;
@@ -44,7 +48,7 @@ export class TextManage {
         this.componentRef.instance.readonly = true;
         const rectangle = this.getRectangle();
         this.g = createG();
-        this.foreignObject = createForeignObject(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        this.foreignObject = createForeignObject(rectangle.x, rectangle.y, rectangle.width + WIDTH_BUFFER, rectangle.height);
         this.g.append(this.foreignObject);
         this.foreignObject.append(this.componentRef.instance.elementRef.nativeElement);
         this.g.classList.add('text');
@@ -68,7 +72,6 @@ export class TextManage {
                 if (!this.isEditing) {
                     const { x, y } = rectangle || this.getRectangle();
                     updateForeignObject(this.g, 999, 999, x, y);
-
                     // do not need to revert because foreign will be updated when node changed
                 }
 
@@ -84,7 +87,7 @@ export class TextManage {
         if (this.isEditing) {
             updateForeignObject(this.g, 999, 999, x, y);
         } else {
-            updateForeignObject(this.g, width, height, x, y);
+            updateForeignObject(this.g, width + WIDTH_BUFFER, height, x, y);
             // solve text lose on move node
             if (this.foreignObject.children.length === 0) {
                 this.foreignObject.append(this.componentRef.instance.elementRef.nativeElement);
@@ -157,8 +160,7 @@ export class TextManage {
 
         const exitHandle = () => {
             this.isEditing = false;
-            const rectangle = this.getRectangle();
-            updateForeignObject(this.g, rectangle.width, rectangle.height, rectangle.x, rectangle.y);
+            this.updateRectangle();
 
             mousedown$.unsubscribe();
             composition$.unsubscribe();
