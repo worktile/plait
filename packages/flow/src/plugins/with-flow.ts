@@ -18,6 +18,7 @@ import { withFlowEdgeDnd } from './with-edge-dnd';
 import { getEdgesByNodeId } from '../utils/edge/get-edges-by-node';
 import { withEdgeCreate } from './with-edge-create';
 import { isHitNode } from '../utils/node/is-hit-node';
+import { withHandleHover } from './with-handle-hover';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, isHitSelection, isMovable, onChange, getRectangle } = board;
@@ -82,5 +83,5 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
 
     (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: false });
 
-    return withFlowEdgeDnd(withEdgeCreate(board));
+    return withHandleHover(withFlowEdgeDnd(withEdgeCreate(board)));
 };

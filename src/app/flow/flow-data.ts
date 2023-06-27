@@ -6,62 +6,6 @@ export interface WorkflowType extends FlowBaseData {
 
 export const mockFlowData: FlowElement<WorkflowType>[] = [
     {
-        id: '1',
-        data: {
-            text: { children: [{ text: '开始' }] },
-            initialState: true
-        },
-        type: FlowElementType.node,
-        width: 120,
-        height: 38,
-        handles: [],
-        undeletable: true,
-        points: [[248, 153]]
-    },
-    {
-        id: '1001',
-        data: {
-            text: { children: [{ text: '要做' }] }
-        },
-        type: FlowElementType.node,
-        points: [[400, 268.5]],
-        width: 120,
-        height: 38,
-        styles: {
-            stroke: '#5dcfff',
-            fill: '#5dcfff'
-        },
-        undeletable: true
-    },
-    {
-        id: '1002',
-        data: {
-            text: { children: [{ text: '进行中' }] }
-        },
-        type: FlowElementType.node,
-        points: [[600, 268.5]],
-        width: 120,
-        height: 38,
-        styles: {
-            stroke: 'rgb(179, 212, 255)',
-            fill: 'rgb(222, 235, 255)'
-        }
-    },
-    {
-        id: '1003',
-        data: {
-            text: { children: [{ text: '已完成' }] }
-        },
-        type: FlowElementType.node,
-        points: [[900, 268.5]],
-        width: 120,
-        height: 38,
-        styles: {
-            stroke: 'rgb(171, 245, 209)',
-            fill: 'rgb(227, 252, 239)'
-        }
-    },
-    {
         id: '001',
         data: {
             text: { children: [{ text: '连线连线连线' }] }
@@ -112,5 +56,62 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
             marker: true
         },
         points: []
+    },
+    {
+        id: '1',
+        data: {
+            text: { children: [{ text: '开始' }] },
+            initialState: true
+        },
+        type: FlowElementType.node,
+        width: 120,
+        height: 38,
+        handles: [],
+        undeletable: true,
+        points: [[248, 153]]
+    },
+    {
+        id: '1001',
+        data: {
+            text: { children: [{ text: '打开' }] }
+        },
+        type: FlowElementType.node,
+        points: [[400, 268.5]],
+        width: 120,
+        height: 38,
+        styles: {
+            stroke: 'rgb(86, 171, 251)',
+            fill: 'rgb(86, 171, 251)'
+        },
+        undeletable: true
+    },
+    {
+        id: '1002',
+        data: {
+            text: { children: [{ text: '进行中' }] }
+        },
+        type: FlowElementType.node,
+        points: [[600, 268.5]],
+        width: 120,
+        height: 38,
+        styles: {
+            stroke: 'rgb(246, 198, 89)',
+            fill: 'rgb(246, 198, 89)',
+            activeFill: '#fff'
+        }
+    },
+    {
+        id: '1003',
+        data: {
+            text: { children: [{ text: '已完成' }] }
+        },
+        type: FlowElementType.node,
+        points: [[900, 268.5]],
+        width: 120,
+        height: 38,
+        styles: {
+            stroke: 'rgb(115, 216, 151)',
+            fill: 'rgb(115, 216, 151)'
+        }
     }
 ];

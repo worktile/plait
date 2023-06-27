@@ -1,7 +1,7 @@
 import { Options } from 'roughjs/bin/core';
 import { DEFAULT_STYLES } from './default';
 
-export const OUTLINE_BUFFER = 3;
+export const OUTLINE_BUFFER = 4;
 
 export const DEFAULT_NODE_STYLES: Options = {
     ...DEFAULT_STYLES,

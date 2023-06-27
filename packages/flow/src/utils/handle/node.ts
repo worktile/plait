@@ -2,7 +2,7 @@ import { PlaitBoard, Point, distanceBetweenPointAndPoint, normalizePoint } from 
 import { getDefaultHandles } from './get-default-handles';
 import { FlowNode } from '../../interfaces/node';
 import { getHandleXYPosition } from './get-handle-position';
-import { HANDLE_DIAMETER } from '../../constants/handle';
+import { HANDLE_BUFFER, HANDLE_DIAMETER } from '../../constants/handle';
 import { FlowEdgeHandleRef } from '../../interfaces/edge';
 import { getFlowElementsByType } from '../node/get-node';
 import { FlowElementType } from '../../public-api';
@@ -35,7 +35,7 @@ export function getHitNodeHandle(board: PlaitBoard, point: Point): HitNodeHandle
                     handle
                 );
                 const distance = distanceBetweenPointAndPoint(handleX, handleY, point[0], point[1]);
-                if (distance < HANDLE_DIAMETER / 2) {
+                if (distance < HANDLE_DIAMETER / 2 + HANDLE_BUFFER) {
                     nodeHandle = {
                         ...handle,
                         handlePoint: [handleX, handleY],

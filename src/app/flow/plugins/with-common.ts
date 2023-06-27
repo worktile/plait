@@ -22,7 +22,7 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
                 },
                 newEdge
             );
-            const node = board.children[board.children.length - 1];
+            const node = board.children[0];
             addSelectedElement(board, node);
         }
         mouseup(event);
