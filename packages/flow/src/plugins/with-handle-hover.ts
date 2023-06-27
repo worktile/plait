@@ -9,7 +9,7 @@ import { getCreateEdgeInfo } from '../utils/edge/create-edge';
 export const withHandleHover: PlaitPlugin = (board: PlaitBoard) => {
     const { globalMousemove, globalMouseup } = board;
 
-    let currentHandle: HitNodeHandle | null = null;
+    let previousHoverdHandle: HitNodeHandle | null = null;
     let hoveredHandle: HitNodeHandle | null;
     let activeHandleElement: SVGGElement;
 
@@ -18,8 +18,8 @@ export const withHandleHover: PlaitPlugin = (board: PlaitBoard) => {
         hoveredHandle = getHitNodeHandle(board, point);
         addHoverHandleInfo(board, hoveredHandle);
         if (isEdgeDragging(board) || getCreateEdgeInfo(board)) {
-            if (hoveredHandle && currentHandle?.handlePoint.toString() !== hoveredHandle.handlePoint.toString()) {
-                currentHandle = hoveredHandle;
+            if (hoveredHandle && previousHoverdHandle?.handlePoint.toString() !== hoveredHandle.handlePoint.toString()) {
+                previousHoverdHandle = hoveredHandle;
                 const flowNodeComponent = PlaitElement.getComponent(hoveredHandle.node) as FlowNodeComponent;
                 activeHandleElement?.remove();
                 activeHandleElement = drawCircle(
@@ -34,9 +34,9 @@ export const withHandleHover: PlaitPlugin = (board: PlaitBoard) => {
                 );
                 flowNodeComponent.g.append(activeHandleElement);
             }
-            if (currentHandle && !hoveredHandle) {
+            if (previousHoverdHandle && !hoveredHandle) {
                 activeHandleElement?.remove();
-                currentHandle = null;
+                previousHoverdHandle = null;
             }
         }
 
@@ -47,7 +47,7 @@ export const withHandleHover: PlaitPlugin = (board: PlaitBoard) => {
         globalMouseup(event);
         deleteHoverHandleInfo(board);
         if (hoveredHandle) {
-            currentHandle = null;
+            previousHoverdHandle = null;
             hoveredHandle = null;
             activeHandleElement?.remove();
         }
