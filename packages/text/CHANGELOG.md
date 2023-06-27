@@ -1,5 +1,11 @@
 # text
 
+## 0.5.1
+
+### Patch Changes
+
+-   [`5154662`](https://github.com/worktile/plait/commit/5154662f37a92720bb4470ae05b78835f6c26127) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add text width buffer to solve the text is partially covered
+
 ## 0.5.0
 
 ### Minor Changes

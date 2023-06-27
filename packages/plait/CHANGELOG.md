@@ -1,5 +1,11 @@
 # plait
 
+## 0.12.0
+
+### Minor Changes
+
+-   [#441](https://github.com/worktile/plait/pull/441) [`d4ab01b`](https://github.com/worktile/plait/commit/d4ab01bada6f4a27fb38a1029ec1ea2feded4ccb) Thanks [@Maple13](https://github.com/Maple13)! - add to image util
+
 ## 0.11.0
 
 ### Minor Changes
