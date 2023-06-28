@@ -19,6 +19,8 @@ import { getEdgeTextBackgroundRect, getEdgeTextRect, getEdgeTextXYPosition } fro
 import { FlowEdge } from './interfaces/edge';
 import { FlowBaseData } from './interfaces/element';
 import { Element, Text } from 'slate';
+import { FlowIconDrawer } from './draw/icon';
+import { PlaitFlowBoard } from './interfaces';
 
 @Component({
     selector: 'plait-flow-edge',
@@ -41,6 +43,8 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     textManage!: TextManage;
 
+    iconDrawer!: FlowIconDrawer;
+
     constructor(
         public cdr: ChangeDetectorRef,
         public viewContainerRef: ViewContainerRef,
@@ -57,6 +61,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         const isActive = isSelectedElement(this.board, this.element);
+        this.iconDrawer = new FlowIconDrawer(this.board as PlaitFlowBoard, this.viewContainerRef);
         this.drawElement(this.element, isActive);
     }
 
@@ -126,11 +131,13 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     drawRichtext(element: FlowEdge = this.element, textRect: RectangleClient, active = false) {
         this.destroyRichtext();
         if (element.data?.text && textRect) {
-            const textBackgroundRect = getEdgeTextBackgroundRect(textRect);
+            const textBackgroundRect = getEdgeTextBackgroundRect(textRect, element);
             this.richtextBackgroundG = drawRichtextBackground(this.roughSVG, element, textBackgroundRect!, active);
             this.textManage.draw(element.data.text);
             this.textManage.g.prepend(this.richtextBackgroundG);
             this.textManage.g.classList.add('flow-edge-richtext');
+            const iconG = this.iconDrawer.drawIcon(this.element);
+            iconG && this.textManage.g.append(iconG);
             this.g.append(this.textManage.g);
         }
     }
@@ -140,12 +147,15 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             const { x, y } = getEdgeTextXYPosition(this.board, this.element, this.textRect!.width, this.textRect!.height);
             const { width, height } = this.textRect!;
             this.textManage.updateRectangle({ x, y, width, height });
-            const textBackgroundRect = getEdgeTextBackgroundRect({
-                x,
-                y,
-                width,
-                height
-            });
+            const textBackgroundRect = getEdgeTextBackgroundRect(
+                {
+                    x,
+                    y,
+                    width,
+                    height
+                },
+                element
+            );
             this.destroyRichtextBackgroundG();
             this.richtextBackgroundG = drawRichtextBackground(this.roughSVG, element, textBackgroundRect!, active);
             this.textManage.g.prepend(this.richtextBackgroundG);

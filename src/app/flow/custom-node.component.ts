@@ -22,7 +22,7 @@ export class CustomFlowNodeComponent extends FlowNodeComponent {
     drawElement(element: FlowNode = this.element) {
         this.destroyElement();
         const drawCirclePoint = [element.points![0][0] + element.width / 2, element.points![0][1] + element.height / 2] as Point;
-        this.nodeG = drawCircle(this.roughSVG, drawCirclePoint, element.height, {
+        this.nodeG = drawCircle(this.roughSVG, drawCirclePoint, 40, {
             fillStyle: 'solid',
             fill: 'rgb(238, 238, 238)',
             stroke: 'rgb(238, 238, 238)'
