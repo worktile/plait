@@ -1,0 +1,17 @@
+
+.plait-link-node {
+    margin: 0 1px;
+    cursor: pointer;
+    color: #6698ff;
+    text-decoration: none;
+    background-color: transparent;
+
+    &:hover {
+        text-decoration: underline;
+    }
+    .link-break-char{
+        font-size: 0;
+        line-height: 0;
+    }
+}
+

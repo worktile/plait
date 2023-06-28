@@ -10,7 +10,10 @@ export const mockData: PlaitMind[] = [
         children: [
             {
                 id: '1-1',
-                data: { topic: { children: [{ text: '富文本' }] }, emojis: [{ name: '🤩' }, { name: '🤘' }] },
+                data: {
+                    topic: { children: [{ text: '富文本' }] },
+                    emojis: [{ name: '🤩' }, { name: '🤘' }]
+                },
                 children: [
                     {
                         id: 'abc',

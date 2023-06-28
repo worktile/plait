@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inp
 import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
 import { MindElement, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
-import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText } from '@plait/text';
+import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText, LinkEditor } from '@plait/text';
+import { Node, Transforms as SlateTransforms } from 'slate';
 
 @Component({
     selector: 'app-setting-panel',
@@ -122,6 +123,30 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
                 const editor = MindElement.getEditor(element);
                 PlaitMarkEditor.toggleMark(editor, attribute as MarkTypes);
             });
+        }
+    }
+
+    setLink(event: MouseEvent) {
+        if (this.selectedElements.length) {
+            const editor = MindElement.getEditor(this.selectedElements[0]);
+
+            if (!editor.selection) {
+                SlateTransforms.select(editor, [0]);
+            }
+
+            if (LinkEditor.isLinkActive(editor)) {
+                LinkEditor.unwrapLink(editor);
+                return;
+            }
+
+            const fragment = Node.fragment(editor, editor.selection!)[0];
+            const selectNode = Node.get(fragment, []);
+            const selectText = Node.string(selectNode);
+
+            const name = window.prompt('输入链接文本名称', selectText);
+            const link = window.prompt('输入链接');
+
+            LinkEditor.wrapLink(editor, name!, link!);
         }
     }
 

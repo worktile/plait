@@ -14,10 +14,14 @@ import { createEditor, Editor, Element, Text } from 'slate';
 import { withHistory } from 'slate-history';
 import { SlateEditableComponent, withAngular } from 'slate-angular';
 import { withSingleLine } from '../plugins/with-single';
-import { withMark } from '../plugins/with-marks';
+import { withMark } from '../plugins/mark/with-marks';
 import { MarkTypes } from '../constant/mark';
 import { PlaitTextNodeComponent } from '../text-node/text.component';
 import { CLIPBOARD_FORMAT_KEY } from '../constant';
+import { PlaitLinkNodeComponent } from '../plugins/link/link.component';
+import { LinkElement } from '../custom-types';
+import { withLink } from '../plugins/link/with-link';
+import { withSelection } from '../plugins/with-selection';
 
 @Component({
     selector: 'plait-richtext',
@@ -44,7 +48,7 @@ export class PlaitRichtextComponent implements OnInit {
     @Output()
     onComposition: EventEmitter<CompositionEvent> = new EventEmitter();
 
-    editor = withMark(withSingleLine(withHistory(withAngular(createEditor(), CLIPBOARD_FORMAT_KEY))));
+    editor = withSelection(withLink(withMark(withSingleLine(withHistory(withAngular(createEditor(), CLIPBOARD_FORMAT_KEY))))));
 
     constructor(public renderer2: Renderer2, private cdr: ChangeDetectorRef, public elementRef: ElementRef<HTMLElement>) {}
 
@@ -52,8 +56,14 @@ export class PlaitRichtextComponent implements OnInit {
         this.onChange.emit(this.editor);
     }
 
-    ngOnInit(): void {
-    }
+    ngOnInit(): void {}
+
+    renderElement = (element: Element) => {
+        if ((element as LinkElement).type === 'link') {
+            return PlaitLinkNodeComponent;
+        }
+        return null;
+    };
 
     renderText: any = (text: Text): PlaitTextNodeComponent | null => {
         for (const key in MarkTypes) {
@@ -78,5 +88,5 @@ export class PlaitRichtextComponent implements OnInit {
 
     onKeydown = (event: KeyboardEvent) => {
         this.editor.onKeydown(event);
-    }
+    };
 }

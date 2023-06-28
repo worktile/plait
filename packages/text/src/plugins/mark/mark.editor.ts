@@ -1,5 +1,5 @@
 import { Editor, Text, Node, Transforms, NodeEntry } from 'slate';
-import { DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, MarkProps, MarkTypes } from '../constant/mark';
+import { DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, MarkProps, MarkTypes } from '../../constant/mark';
 import { AngularEditor } from 'slate-angular';
 
 export enum FontSizes {

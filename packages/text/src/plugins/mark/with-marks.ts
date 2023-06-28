@@ -1,5 +1,5 @@
 import { isKeyHotkey } from 'is-hotkey';
-import { MarkTypes } from '../constant/mark';
+import { MarkTypes } from '../../constant/mark';
 import { MarkEditor, PlaitMarkEditor } from './mark.editor';
 import { Editor, Range, Text, Transforms } from 'slate';
 import { AngularEditor } from 'slate-angular';
