@@ -143,10 +143,15 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             const selectNode = Node.get(fragment, []);
             const selectText = Node.string(selectNode);
 
-            const name = window.prompt('输入链接文本名称', selectText);
-            const link = window.prompt('输入链接');
+            let name = selectText;
+            if (!name) {
+                name = window.prompt('输入链接文本名称') || '链接';
+            }
 
-            LinkEditor.wrapLink(editor, name!, link!);
+            const link = window.prompt('输入链接');
+            if (link) {
+                LinkEditor.wrapLink(editor, name!, link!);
+            }
         }
     }
 

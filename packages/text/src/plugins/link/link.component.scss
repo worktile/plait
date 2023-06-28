@@ -1,17 +1,17 @@
+@use '../../styles/variables.scss'as variables;
 
 .plait-link-node {
     margin: 0 1px;
     cursor: pointer;
-    color: #6698ff;
+    color: variables.$primary-color;
     text-decoration: none;
     background-color: transparent;
 
     &:hover {
         text-decoration: underline;
     }
-    .link-break-char{
+    .link-break-char {
         font-size: 0;
         line-height: 0;
     }
 }
-
