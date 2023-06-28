@@ -19,7 +19,7 @@ import { getEdgeTextBackgroundRect, getEdgeTextRect, getEdgeTextXYPosition } fro
 import { FlowEdge } from './interfaces/edge';
 import { FlowBaseData } from './interfaces/element';
 import { Element, Text } from 'slate';
-import { FlowIconDrawer } from './draw/icon';
+import { FlowEdgeLabelIconDrawer } from './draw/icon';
 import { PlaitFlowBoard } from './interfaces';
 
 @Component({
@@ -43,7 +43,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     textManage!: TextManage;
 
-    iconDrawer!: FlowIconDrawer;
+    iconDrawer!: FlowEdgeLabelIconDrawer;
 
     constructor(
         public cdr: ChangeDetectorRef,
@@ -61,7 +61,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         const isActive = isSelectedElement(this.board, this.element);
-        this.iconDrawer = new FlowIconDrawer(this.board as PlaitFlowBoard, this.viewContainerRef);
+        this.iconDrawer = new FlowEdgeLabelIconDrawer(this.board as PlaitFlowBoard, this.viewContainerRef);
         this.drawElement(this.element, isActive);
     }
 

@@ -6,10 +6,10 @@ import { EDGE_LABEL_FONTSIZE } from '../constants/edge';
 
 @Directive({
     host: {
-        class: 'flow-edge-icon'
+        class: 'flow-edge-label-icon'
     }
 })
-export class FlowIconBaseComponent implements OnInit {
+export class FlowEdgeLabelIconBaseComponent implements OnInit {
     @Input()
     fontSize: number = EDGE_LABEL_FONTSIZE;
 

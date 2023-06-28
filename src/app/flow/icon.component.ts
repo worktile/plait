@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnInit } from '@angular/core';
-import { FlowIconBaseComponent } from '@plait/flow';
+import { FlowEdgeLabelIconBaseComponent } from '@plait/flow';
 
 @Component({
-    selector: 'flow-edge-icon',
+    selector: 'flow-edge-label-icon',
     template: `
         {{ iconItem.name }}
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IconComponent extends FlowIconBaseComponent implements OnInit {
+export class IconComponent extends FlowEdgeLabelIconBaseComponent implements OnInit {
     constructor(protected elementRef: ElementRef<HTMLElement>) {
         super(elementRef);
     }

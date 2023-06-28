@@ -20,4 +20,4 @@ export * from './utils/index';
 export * from './draw/edge';
 export * from './draw/handle';
 export * from './draw/node';
-export * from './base/icon-base.component';
+export * from './base/edge-label-icon-base.component';

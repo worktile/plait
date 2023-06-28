@@ -1,13 +1,13 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
 import { createForeignObject, createG } from '@plait/core';
-import { FlowIconBaseComponent } from '../base/icon-base.component';
+import { FlowEdgeLabelIconBaseComponent } from '../base/edge-label-icon-base.component';
 import { IconItem } from '../interfaces/icon';
 import { PlaitFlowBoard } from '../interfaces';
 import { getIconFontSize, getIconForeignRectangle } from '../utils/icon/icon';
 import { FlowEdge } from '../interfaces/edge';
 
 class IconDrawer {
-    componentRef: ComponentRef<FlowIconBaseComponent> | null = null;
+    componentRef: ComponentRef<FlowEdgeLabelIconBaseComponent> | null = null;
 
     constructor(private board: PlaitFlowBoard, private viewContainerRef: ViewContainerRef) {}
 
@@ -37,7 +37,7 @@ class IconDrawer {
     }
 }
 
-export class FlowIconDrawer {
+export class FlowEdgeLabelIconDrawer {
     iconDrawer!: IconDrawer | null;
 
     g?: SVGGElement;
