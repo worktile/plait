@@ -5,6 +5,7 @@
     [(ngModel)]="children"
     (ngModelChange)="valueChange()"
     [keydown]="onKeydown"
+    [renderElement]="renderElement"
     [compositionStart]="compositionStart"
     [compositionUpdate]="compositionUpdate"
     [compositionEnd]="compositionEnd"

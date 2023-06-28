@@ -4,9 +4,10 @@ import { PlaitRichtextComponent } from './richtext/richtext.component';
 import { FormsModule } from '@angular/forms';
 import { SlateModule } from 'slate-angular';
 import { PlaitTextNodeComponent } from './text-node/text.component';
+import { PlaitLinkNodeComponent } from './plugins/link/link.component';
 
 @NgModule({
-    declarations: [PlaitRichtextComponent, PlaitTextNodeComponent],
+    declarations: [PlaitRichtextComponent, PlaitTextNodeComponent, PlaitLinkNodeComponent],
     imports: [CommonModule, FormsModule, SlateModule],
     exports: [PlaitRichtextComponent]
 })
