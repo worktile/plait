@@ -6,9 +6,15 @@ import { getFirstLevelElement } from '../utils/mind';
 import { AbstractRef, getRelativeStartEndByAbstractRef } from '../utils/abstract/common';
 import { RightNodeCountRef } from '../utils/node/right-node-count';
 
+// 1. When the text at the end has an italic attribute, the text is partially covered
+// 2. There will be some differences in the width measured by different browsers
+const WIDTH_BUFFER = 4;
+
 const normalizeWidthAndHeight = (board: PlaitBoard, width: number, height: number) => {
-    const newWidth = width < NODE_MIN_WIDTH * board.viewport.zoom ? NODE_MIN_WIDTH : width / board.viewport.zoom;
+    const normalizeWidth = width + WIDTH_BUFFER * board.viewport.zoom;
+    const newWidth = normalizeWidth < NODE_MIN_WIDTH * board.viewport.zoom ? NODE_MIN_WIDTH : normalizeWidth / board.viewport.zoom;
     const newHeight = height / board.viewport.zoom;
+
     return { width: newWidth, height: newHeight };
 };
 
