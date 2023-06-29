@@ -1,5 +1,5 @@
 import { Editor, Text, Node, Transforms, NodeEntry } from 'slate';
-import { DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, MarkProps, MarkTypes, WHITE_COLOR } from '../../constant/mark';
+import { DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, MarkProps, MarkTypes } from '../../constant/mark';
 import { AngularEditor } from 'slate-angular';
 
 export enum FontSizes {
@@ -69,7 +69,7 @@ export const PlaitMarkEditor = {
             Editor.addMark(editor, MarkTypes.fontSize, Number(size));
         }
     },
-    setColorMark(editor: AngularEditor, color: string, defaultTextColor: string = DEFAULT_TEXT_COLOR ) {
+    setColorMark(editor: AngularEditor, color: string, defaultTextColor: string = DEFAULT_TEXT_COLOR) {
         setSelection(editor);
 
         if (color === defaultTextColor) {
