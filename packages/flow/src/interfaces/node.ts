@@ -1,9 +1,4 @@
-import { FlowBaseData, FlowElement, FlowElementType, FlowHandle, FlowPosition } from './element';
-import { PlaitElement } from '@plait/core';
-
-export const isFlowNodeElement = <T extends FlowBaseData>(value: PlaitElement): value is FlowNode<T> => {
-    return FlowElementType.node === value.type;
-};
+import { FlowBaseData, FlowElement, FlowElementType, FlowHandle } from './element';
 
 export interface FlowNodeHandle extends FlowHandle {}
 
@@ -12,6 +7,10 @@ export interface FlowNode<T extends FlowBaseData = FlowBaseData> extends FlowEle
     height: number;
     handles?: FlowNodeHandle[];
 }
+
+export const isFlowNodeElement = <T extends FlowBaseData>(value: FlowElement): value is FlowNode<T> => {
+    return FlowElementType.node === value.type;
+};
 
 export const FlowNode = {
     isFlowNodeElement

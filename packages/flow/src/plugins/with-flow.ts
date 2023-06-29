@@ -47,14 +47,14 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.isMovable = element => {
-        if (FlowNode.isFlowNodeElement(element)) {
+        if (FlowNode.isFlowNodeElement(element as FlowElement)) {
             return true;
         }
         return isMovable(element);
     };
 
     board.getRectangle = element => {
-        if (FlowNode.isFlowNodeElement(element)) {
+        if (FlowNode.isFlowNodeElement(element as FlowElement)) {
             const { width, height, points } = element;
             return {
                 x: points![0][0],
@@ -71,7 +71,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
         const movingNodes = getMovingElements(board);
         if (movingNodes?.length) {
             const moveElement = movingNodes[0];
-            if (FlowNode.isFlowNodeElement(moveElement)) {
+            if (FlowNode.isFlowNodeElement(moveElement as FlowElement)) {
                 const relationEdges = getEdgesByNodeId(board, moveElement.id);
                 relationEdges.map(item => {
                     const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;

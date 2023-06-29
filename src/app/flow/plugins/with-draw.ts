@@ -18,7 +18,7 @@ export const withDraw: PlaitPlugin = (board: PlaitBoard) => {
         return drawElement(context);
     };
 
-    newBoard.drawIcon = () => {
+    newBoard.drawLabelIcon = () => {
         return IconComponent;
     };
 

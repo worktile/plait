@@ -1,6 +1,6 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 import { PlaitBoard } from '@plait/core';
-import { IconItem } from '../interfaces/icon';
+import { LabelIconItem } from '../interfaces/icon';
 import { FlowElement } from '../interfaces/element';
 import { EDGE_LABEL_FONTSIZE } from '../constants/edge';
 
@@ -14,7 +14,7 @@ export class FlowEdgeLabelIconBaseComponent implements OnInit {
     fontSize: number = EDGE_LABEL_FONTSIZE;
 
     @Input()
-    iconItem!: IconItem;
+    iconItem!: LabelIconItem;
 
     @Input()
     board!: PlaitBoard;

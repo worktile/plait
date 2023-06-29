@@ -1,3 +1,3 @@
-export interface IconItem {
+export interface LabelIconItem {
     name: string;
 }
