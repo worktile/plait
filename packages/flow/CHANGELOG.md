@@ -1,5 +1,13 @@
 # @plait/flow
 
+## 0.4.0
+
+### Minor Changes
+
+-   [#444](https://github.com/worktile/plait/pull/444) [`bfed049`](https://github.com/worktile/plait/commit/bfed049358c192730dd09553f91e3a046f80213a) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support edge label icon
+
+*   [#442](https://github.com/worktile/plait/pull/442) [`cecf8ff`](https://github.com/worktile/plait/commit/cecf8fff663969f970c7d28ae5a74c4994c8a99d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support handle hover style and optimize css style
+
 ## 0.3.0
 
 ### Minor Changes
