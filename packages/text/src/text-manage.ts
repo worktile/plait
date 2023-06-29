@@ -55,13 +55,12 @@ export class TextManage {
         const editor = this.componentRef.instance.editor;
 
         let previousValue: Descendant[] = this.componentRef.instance.children;
-        // use debounceTime to wait DOM render complete
+
         this.componentRef.instance.onChange
             .pipe(
                 filter(value => {
                     return !editor.operations.every(op => Operation.isSelectionOperation(op));
-                }),
-                debounceTime(0)
+                })
             )
             .subscribe(value => {
                 if (previousValue === editor.children) {
