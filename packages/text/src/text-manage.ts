@@ -17,6 +17,7 @@ import { AngularEditor, EDITOR_TO_ELEMENT, IS_FOCUSED, hasEditableTarget } from 
 import { debounceTime, filter } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
 import { measureDivSize } from './text-size';
+import { TextPlugin } from './custom-types';
 
 export interface TextManageRef {
     newValue?: Element;
@@ -35,13 +36,16 @@ export class TextManage {
         private viewContainerRef: ViewContainerRef,
         private getRectangle: () => RectangleClient,
         private isHitElement?: (point: Point) => boolean,
-        private onChange?: (textChangeRef: TextManageRef) => void
+        private onChange?: (textChangeRef: TextManageRef) => void,
+        private textPlugin?: TextPlugin[]
     ) {}
 
     draw(value: Element) {
         this.componentRef = this.viewContainerRef.createComponent(PlaitRichtextComponent);
         this.componentRef.instance.value = value;
         this.componentRef.instance.readonly = true;
+        this.componentRef.instance.textPlugin = this.textPlugin || [];
+
         const rectangle = this.getRectangle();
         this.g = createG();
         this.foreignObject = createForeignObject(rectangle.x, rectangle.y, rectangle.width, rectangle.height);

@@ -1,4 +1,4 @@
-import { Editor, Element, NodeEntry, Transforms, Node } from 'slate';
+import { Element, NodeEntry, Transforms, Node } from 'slate';
 import { LinkElement } from '../../custom-types';
 import { AngularEditor } from 'slate-angular';
 

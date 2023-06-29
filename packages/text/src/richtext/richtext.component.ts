@@ -19,9 +19,10 @@ import { MarkTypes } from '../constant/mark';
 import { PlaitTextNodeComponent } from '../text-node/text.component';
 import { CLIPBOARD_FORMAT_KEY } from '../constant';
 import { PlaitLinkNodeComponent } from '../plugins/link/link.component';
-import { LinkElement } from '../custom-types';
+import { LinkElement, TextPlugin } from '../custom-types';
 import { withLink } from '../plugins/link/with-link';
 import { withSelection } from '../plugins/with-selection';
+import { PlaitTextEditor, withText } from '../plugins/with-text';
 
 @Component({
     selector: 'plait-richtext',
@@ -31,6 +32,8 @@ export class PlaitRichtextComponent implements OnInit {
     @HostBinding('class') hostClass = 'plait-richtext-container';
 
     children: Element[] = [];
+
+    textPlugin!: TextPlugin[];
 
     @Input() set value(value: Element) {
         this.children = [value];
@@ -48,7 +51,7 @@ export class PlaitRichtextComponent implements OnInit {
     @Output()
     onComposition: EventEmitter<CompositionEvent> = new EventEmitter();
 
-    editor = withSelection(withLink(withMark(withSingleLine(withHistory(withAngular(createEditor(), CLIPBOARD_FORMAT_KEY))))));
+    editor = withSelection(withText(withLink(withMark(withSingleLine(withHistory(withAngular(createEditor(), CLIPBOARD_FORMAT_KEY)))))));
 
     constructor(public renderer2: Renderer2, private cdr: ChangeDetectorRef, public elementRef: ElementRef<HTMLElement>) {}
 
@@ -56,9 +59,18 @@ export class PlaitRichtextComponent implements OnInit {
         this.onChange.emit(this.editor);
     }
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        this.textPlugin.forEach(plugin => {
+            plugin(this.editor);
+        });
+    }
 
     renderElement = (element: Element) => {
+        const render = ((this.editor as unknown) as PlaitTextEditor)?.renderElement;
+        if (render && render(element)) {
+            return render(element);
+        }
+
         if ((element as LinkElement).type === 'link') {
             return PlaitLinkNodeComponent;
         }
