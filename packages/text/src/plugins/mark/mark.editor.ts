@@ -59,21 +59,20 @@ export const PlaitMarkEditor = {
             Editor.addMark(editor, format, true);
         }
     },
-    setFontSizeMark(editor: AngularEditor, size: FontSizes) {
+    setFontSizeMark(editor: AngularEditor, size: FontSizes, defaultSize: number = DEFAULT_FONT_SIZE) {
         setSelection(editor);
-
         // set paragraph text fontSize
-        if (Number(size) === DEFAULT_FONT_SIZE) {
+        if (Number(size) === defaultSize) {
             Editor.removeMark(editor, MarkTypes.fontSize);
         } else {
             // set paragraph text fontSize
             Editor.addMark(editor, MarkTypes.fontSize, Number(size));
         }
     },
-    setColorMark(editor: AngularEditor, color: string) {
+    setColorMark(editor: AngularEditor, color: string, defaultTextColor: string = DEFAULT_TEXT_COLOR) {
         setSelection(editor);
 
-        if (color === DEFAULT_TEXT_COLOR) {
+        if (color === defaultTextColor) {
             Editor.removeMark(editor, 'color');
         } else {
             Editor.addMark(editor, 'color', color);
