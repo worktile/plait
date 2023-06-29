@@ -1,5 +1,18 @@
 # mind
 
+## 0.12.0
+
+### Minor Changes
+
+-   [#445](https://github.com/worktile/plait/pull/445) [`c2de796`](https://github.com/worktile/plait/commit/c2de796c03de8c8223ce71f22ee08f7e71103f51) Thanks [@WBbug](https://github.com/WBbug)! - add withText, add textPlugins in mindOptions
+
+### Patch Changes
+
+-   [`9625725`](https://github.com/worktile/plait/commit/962572576e5d86098de0c006997a2460e344f0e3) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct buffer width location
+
+*   [`25ec6f6`](https://github.com/worktile/plait/commit/25ec6f6f1e44cd042bbdf98f36e20b866ac88ba1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move width buffer from text to mind
+    solve the problem that the flow text cannot be displayed in the center
+
 ## 0.11.0
 
 ### Minor Changes

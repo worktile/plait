@@ -1,5 +1,24 @@
 # text
 
+## 0.6.0
+
+### Minor Changes
+
+-   [#443](https://github.com/worktile/plait/pull/443) [`fd493d9`](https://github.com/worktile/plait/commit/fd493d9c55cf1e4ead419bb59fc05de4bad53d41) Thanks [@WBbug](https://github.com/WBbug)! - add link plugin
+
+*   [#445](https://github.com/worktile/plait/pull/445) [`c2de796`](https://github.com/worktile/plait/commit/c2de796c03de8c8223ce71f22ee08f7e71103f51) Thanks [@WBbug](https://github.com/WBbug)! - add withText, add textPlugins in mindOptions
+
+### Patch Changes
+
+-   [#446](https://github.com/worktile/plait/pull/446) [`cf33751`](https://github.com/worktile/plait/commit/cf337510ccfd611d0345bbbc84ec48d20b3ce4c4) Thanks [@WBbug](https://github.com/WBbug)! - determine default values based on parameters
+
+*   [#448](https://github.com/worktile/plait/pull/448) [`68ea0e0`](https://github.com/worktile/plait/commit/68ea0e0879f464074a652f8b2edbfce8d822df91) Thanks [@WBbug](https://github.com/WBbug)! - fix can't set parent mark
+
+-   [`25ec6f6`](https://github.com/worktile/plait/commit/25ec6f6f1e44cd042bbdf98f36e20b866ac88ba1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move width buffer from text to mind
+    solve the problem that the flow text cannot be displayed in the center
+
+*   [`c87ea7b`](https://github.com/worktile/plait/commit/c87ea7bce7f9503ead0a92f987fc3c3c24ca34d5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - valid editor whether exist value before get selection
+
 ## 0.5.1
 
 ### Patch Changes
