@@ -19,6 +19,7 @@ import { destroyAllNodesHandle, drawAllNodesHandle } from '../utils/node/render-
 import { HitNodeHandle } from '../utils/handle/node';
 import { getHitHandleTypeByEdge } from '../utils/handle/edge';
 import { getHoverHandleInfo } from '../utils/handle/hover-handle';
+import { FlowElement } from '../interfaces/element';
 
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup } = board;
@@ -40,7 +41,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
         const selectElements = getSelectedElements(board);
-        if (selectElements.length && FlowEdge.isFlowEdgeElement(selectElements[0])) {
+        if (selectElements.length && FlowEdge.isFlowEdgeElement(selectElements[0] as FlowElement)) {
             activeElement = selectElements[0] as FlowEdge;
             handleType = getHitHandleTypeByEdge(board, point, activeElement);
             if (handleType) {

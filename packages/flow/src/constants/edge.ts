@@ -3,6 +3,12 @@ import { DEFAULT_STYLES, PRIMARY_COLOR } from './default';
 
 export const HIT_THRESHOLD = 10;
 
+export const EDGE_LABEL_PADDING = 10;
+
+export const EDGE_LABEL_FONTSIZE = 10;
+
+export const EDGE_LABEL_ICON_PADDING = 2;
+
 export const DEFAULT_EDGE_STYLES: Options = {
     ...DEFAULT_STYLES,
     stroke: '#ccc',

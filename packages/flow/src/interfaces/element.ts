@@ -1,10 +1,6 @@
 import { PlaitElement } from '@plait/core';
 import { Element } from 'slate';
 
-export const isFlowElement = <T extends FlowBaseData>(value: PlaitElement): value is FlowElement<T> => {
-    return [FlowElementType.node, FlowElementType.edge].includes(value.type as FlowElementType);
-};
-
 export enum FlowElementType {
     node = 'node',
     edge = 'edge'
@@ -45,6 +41,10 @@ export interface FlowElement<T extends FlowBaseData = FlowBaseData> extends Plai
     undeletable?: boolean;
     styles?: FlowElementStyles;
 }
+
+export const isFlowElement = <T extends FlowBaseData>(value: PlaitElement): value is FlowElement<T> => {
+    return [FlowElementType.node, FlowElementType.edge].includes(value.type as FlowElementType);
+};
 
 export const FlowElement = {
     isFlowElement

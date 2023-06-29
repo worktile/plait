@@ -1,5 +1,5 @@
 import { PlaitPlugin, Transforms, addSelectedElement, getSelectedElements, hotkeys } from '@plait/core';
-import { FlowEdge, FlowNode, createFlowEdge, getCreateEdgeInfo, getEdgesByNodeId, getFlowNodeById } from '@plait/flow';
+import { FlowEdge, FlowElement, FlowNode, createFlowEdge, getCreateEdgeInfo, getEdgesByNodeId, getFlowNodeById } from '@plait/flow';
 import { Element, Text } from 'slate';
 import { CustomBoard } from '../interfaces/board';
 
@@ -33,7 +33,7 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
         if (selectedElements.length) {
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
                 event.preventDefault();
-                const deleteElement = selectedElements[0];
+                const deleteElement = selectedElements[0] as FlowElement;
                 const path = board.children.findIndex(item => item.id === deleteElement.id);
                 if (FlowEdge.isFlowEdgeElement(deleteElement)) {
                     if (!deleteElement.undeletable) {

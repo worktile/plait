@@ -5,6 +5,7 @@ export * from './edge/get-edges-by-node';
 export * from './edge/get-smooth-step-edge';
 export * from './edge/is-hit-edge';
 export * from './edge/text';
+export * from './edge/label-space';
 
 export * from './handle/get-default-handles';
 export * from './handle/get-handle-position';

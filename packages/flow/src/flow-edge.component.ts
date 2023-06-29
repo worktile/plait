@@ -2,7 +2,6 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    ComponentRef,
     NgZone,
     OnDestroy,
     OnInit,
@@ -11,14 +10,17 @@ import {
 } from '@angular/core';
 import { PlaitPluginElementComponent, PlaitPluginElementContext, createG, isSelectedElement, RectangleClient } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { drawEdge, drawEdgeMarkers, drawRichtextBackground } from './draw/edge';
+import { drawEdge, drawEdgeLabel, drawEdgeMarkers } from './draw/edge';
 import { PlaitBoard, OnContextChanged } from '@plait/core';
 import { drawEdgeHandles } from './draw/handle';
 import { TextManage } from '@plait/text';
-import { getEdgeTextBackgroundRect, getEdgeTextRect, getEdgeTextXYPosition } from './utils/edge/text';
+import { getEdgeTextXYPosition } from './utils/edge/text';
 import { FlowEdge } from './interfaces/edge';
 import { FlowBaseData } from './interfaces/element';
 import { Element, Text } from 'slate';
+import { FlowEdgeLabelIconDrawer } from './draw/label-icon';
+import { PlaitFlowBoard } from './interfaces';
+import { EdgeLabelSpace } from './utils';
 
 @Component({
     selector: 'plait-flow-edge',
@@ -33,13 +35,15 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     handlesG: SVGGElement | null = null;
 
-    richtextBackgroundG?: SVGGElement | null = null;
+    labelG?: SVGGElement | null = null;
 
     sourceMarkerG?: SVGGElement[] | null = null;
 
     textRect: RectangleClient | null = null;
 
     textManage!: TextManage;
+
+    labelIconDrawer!: FlowEdgeLabelIconDrawer;
 
     constructor(
         public cdr: ChangeDetectorRef,
@@ -53,10 +57,11 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     ngOnInit(): void {
         super.ngOnInit();
         this.textManage = new TextManage(this.board, this.viewContainerRef, () => {
-            return getEdgeTextRect(this.board, this.element);
+            return EdgeLabelSpace.getLabelTextRect(this.board, this.element);
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         const isActive = isSelectedElement(this.board, this.element);
+        this.labelIconDrawer = new FlowEdgeLabelIconDrawer(this.board as PlaitFlowBoard, this.viewContainerRef);
         this.drawElement(this.element, isActive);
     }
 
@@ -87,7 +92,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (element.data?.text && Element.isElement(element.data.text)) {
             const text = (element.data.text.children[0] as Text).text;
             if (text) {
-                this.textRect = getEdgeTextRect(this.board, element);
+                this.textRect = EdgeLabelSpace.getLabelTextRect(this.board, element);
                 this.ngZone.run(() => {
                     this.drawRichtext(element, this.textRect!, active);
                 });
@@ -126,11 +131,13 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     drawRichtext(element: FlowEdge = this.element, textRect: RectangleClient, active = false) {
         this.destroyRichtext();
         if (element.data?.text && textRect) {
-            const textBackgroundRect = getEdgeTextBackgroundRect(textRect);
-            this.richtextBackgroundG = drawRichtextBackground(this.roughSVG, element, textBackgroundRect!, active);
+            const labelRect = EdgeLabelSpace.getLabelRect(textRect, element);
+            this.labelG = drawEdgeLabel(this.roughSVG, element, labelRect!, active);
             this.textManage.draw(element.data.text);
-            this.textManage.g.prepend(this.richtextBackgroundG);
+            this.textManage.g.prepend(this.labelG);
             this.textManage.g.classList.add('flow-edge-richtext');
+            const iconG = this.labelIconDrawer.drawLabelIcon(this.element);
+            iconG && this.textManage.g.append(iconG);
             this.g.append(this.textManage.g);
         }
     }
@@ -140,15 +147,18 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             const { x, y } = getEdgeTextXYPosition(this.board, this.element, this.textRect!.width, this.textRect!.height);
             const { width, height } = this.textRect!;
             this.textManage.updateRectangle({ x, y, width, height });
-            const textBackgroundRect = getEdgeTextBackgroundRect({
-                x,
-                y,
-                width,
-                height
-            });
-            this.destroyRichtextBackgroundG();
-            this.richtextBackgroundG = drawRichtextBackground(this.roughSVG, element, textBackgroundRect!, active);
-            this.textManage.g.prepend(this.richtextBackgroundG);
+            const labelRect = EdgeLabelSpace.getLabelRect(
+                {
+                    x,
+                    y,
+                    width,
+                    height
+                },
+                element
+            );
+            this.destroyLabelG();
+            this.labelG = drawEdgeLabel(this.roughSVG, element, labelRect!, active);
+            this.textManage.g.prepend(this.labelG);
         }
     }
 
@@ -178,13 +188,13 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     destroyRichtext() {
         this.textManage.destroy();
-        this.destroyRichtextBackgroundG();
+        this.destroyLabelG();
     }
 
-    destroyRichtextBackgroundG() {
-        if (this.richtextBackgroundG) {
-            this.richtextBackgroundG.remove();
-            this.richtextBackgroundG = null;
+    destroyLabelG() {
+        if (this.labelG) {
+            this.labelG.remove();
+            this.labelG = null;
         }
     }
 

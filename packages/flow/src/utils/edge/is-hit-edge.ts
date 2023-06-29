@@ -3,8 +3,8 @@ import { PlaitBoard } from '@plait/core';
 import { FlowEdge } from '../../interfaces/edge';
 import { HIT_THRESHOLD } from '../../constants/edge';
 import { getEdgePoints } from './edge';
-import { getEdgeTextBackgroundRect, getEdgeTextRect } from './text';
 import { isHitEdgeHandle } from '../handle/edge';
+import { EdgeLabelSpace } from './label-space';
 
 export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
     const [pathPoints] = getEdgePoints(board, edge);
@@ -35,8 +35,8 @@ export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
 }
 
 export function isHitEdgeText(board: PlaitBoard, edge: FlowEdge, point: Point) {
-    const textRect = getEdgeTextRect(board, edge);
-    const textBackgroundRect = getEdgeTextBackgroundRect(textRect);
-    const distance = distanceBetweenPointAndRectangle(point[0], point[1], textBackgroundRect);
+    const textRect = EdgeLabelSpace.getLabelTextRect(board, edge);
+    const labelRect = EdgeLabelSpace.getLabelRect(textRect, edge);
+    const distance = distanceBetweenPointAndRectangle(point[0], point[1], labelRect);
     return distance === 0;
 }

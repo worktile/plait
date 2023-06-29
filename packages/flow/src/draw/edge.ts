@@ -12,7 +12,7 @@ export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, 
     );
 };
 
-export const drawRichtextBackground = (roughSVG: RoughSVG, edge: FlowEdge, textBackgroundRect: RectangleClient, active = false) => {
+export const drawEdgeLabel = (roughSVG: RoughSVG, edge: FlowEdge, textBackgroundRect: RectangleClient, active = false) => {
     const edgeStyles = getEdgeStyle(edge, active);
     const { x, y, width, height } = textBackgroundRect;
     return drawRoundRectangle(roughSVG, x, y, x + width, y + height, edgeStyles, false, height / 2);

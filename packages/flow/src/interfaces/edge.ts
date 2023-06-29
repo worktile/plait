@@ -1,10 +1,5 @@
 import { FlowBaseData, FlowElement, FlowElementType, FlowHandle, FlowPosition } from './element';
-import { PlaitElement } from '@plait/core';
 import { FlowNode } from './node';
-
-export function isFlowEdgeElement(value: PlaitElement): value is FlowEdge {
-    return value.type === FlowElementType.edge;
-}
 
 export type FlowEdgeMarkerType = 'arrow' | 'none';
 
@@ -33,6 +28,15 @@ export interface FlowEdge<T extends FlowBaseData = FlowBaseData> extends FlowEle
     target: FlowEdgeHandle;
 }
 
+export function isFlowEdgeElement(value: FlowElement): value is FlowEdge {
+    return value.type === FlowElementType.edge;
+}
+
+export const hasIcon = (value: FlowEdge) => {
+    return value.data?.icon;
+};
+
 export const FlowEdge = {
-    isFlowEdgeElement
+    isFlowEdgeElement,
+    hasIcon
 };
