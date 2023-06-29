@@ -1,7 +1,6 @@
 import { Editor, Text, Node, Transforms, NodeEntry } from 'slate';
-import { DEFAULT_FONT_SIZE, DEFAULT_ROOT_SIZE, DEFAULT_TEXT_COLOR, MarkProps, MarkTypes, WHITE_COLOR } from '../../constant/mark';
+import { DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, MarkProps, MarkTypes, WHITE_COLOR } from '../../constant/mark';
 import { AngularEditor } from 'slate-angular';
-import { ThemeColorMode } from '@plait/core';
 
 export enum FontSizes {
     'fontSize12' = '12',
@@ -60,9 +59,8 @@ export const PlaitMarkEditor = {
             Editor.addMark(editor, format, true);
         }
     },
-    setFontSizeMark(editor: AngularEditor, size: FontSizes, isMind: boolean = false) {
+    setFontSizeMark(editor: AngularEditor, size: FontSizes, defaultSize: number = DEFAULT_FONT_SIZE) {
         setSelection(editor);
-        const defaultSize = isMind ? DEFAULT_ROOT_SIZE : DEFAULT_FONT_SIZE;
         // set paragraph text fontSize
         if (Number(size) === defaultSize) {
             Editor.removeMark(editor, MarkTypes.fontSize);
@@ -71,16 +69,8 @@ export const PlaitMarkEditor = {
             Editor.addMark(editor, MarkTypes.fontSize, Number(size));
         }
     },
-    setColorMark(editor: AngularEditor, color: string, isMind: boolean = false, boardTheme: ThemeColorMode = ThemeColorMode.default) {
+    setColorMark(editor: AngularEditor, color: string, defaultTextColor: string = DEFAULT_TEXT_COLOR ) {
         setSelection(editor);
-        let defaultTextColor = DEFAULT_TEXT_COLOR;
-        if (isMind && (boardTheme === ThemeColorMode.colorful || boardTheme === ThemeColorMode.retro)) {
-            defaultTextColor = WHITE_COLOR;
-        }
-
-        if (!isMind && (boardTheme === ThemeColorMode.dark || boardTheme === ThemeColorMode.starry)) {
-            defaultTextColor = WHITE_COLOR;
-        }
 
         if (color === defaultTextColor) {
             Editor.removeMark(editor, 'color');

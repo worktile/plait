@@ -2,4 +2,4 @@
 '@plait/text': patch
 ---
 
-dynamic judge default color and default size
+determine default values based on parameters
