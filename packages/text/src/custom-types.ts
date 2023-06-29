@@ -1,4 +1,5 @@
 import { BaseElement } from 'slate';
+import { AngularEditor } from 'slate-angular';
 
 export type CustomText = {
     bold?: boolean;
@@ -17,3 +18,5 @@ export interface LinkElement extends BaseElement {
 }
 
 export type CustomElement = LinkElement | BaseElement;
+
+export type TextPlugin = (editor: AngularEditor) => AngularEditor;

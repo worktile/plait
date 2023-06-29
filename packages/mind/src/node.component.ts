@@ -83,6 +83,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.nodeInsertDrawer = new NodeInsertDrawer(this.board);
         this.activeDrawer = new NodeActiveDrawer(this.board);
         this.collapseDrawer = new CollapseDrawer(this.board);
+        const plugins = this.board.getMindOptions().textPlugins;
 
         this.textManage = new TextManage(
             this.board,
@@ -101,7 +102,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
                 } else {
                     MindTransforms.setTopicSize(this.board, this.element, width, height);
                 }
-            }
+            },
+            plugins
         );
     }
 
