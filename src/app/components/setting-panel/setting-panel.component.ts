@@ -23,8 +23,6 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     currentMarks: Omit<CustomText, 'text'> = {};
 
-    selectedElements!: MindElement[];
-
     PlaitPointerType = PlaitPointerType;
 
     MindPointerType = MindPointerType;
@@ -54,20 +52,23 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     onBoardChange() {
-        this.selectedElements = getSelectedElements(this.board) as MindElement[];
-        if (this.selectedElements.length) {
-            this.currentFillColor = this.selectedElements[0]?.fill || '';
-            this.currentStrokeColor = this.selectedElements[0]?.strokeColor || '';
-            this.currentBranchColor = this.selectedElements[0]?.branchColor || '';
+        const selectedElements = getSelectedElements(this.board) as MindElement[];
+        if (selectedElements.length) {
+            this.currentFillColor = selectedElements[0]?.fill || '';
+            this.currentStrokeColor = selectedElements[0]?.strokeColor || '';
+            this.currentBranchColor = selectedElements[0]?.branchColor || '';
 
-            const editor = MindElement.getEditor(this.selectedElements[0]);
-            this.currentMarks = PlaitMarkEditor.getMarks(editor);
+            const editor = MindElement.getEditor(selectedElements[0]);
+            if (editor) {
+                this.currentMarks = PlaitMarkEditor.getMarks(editor);
+            }
         }
     }
 
     layoutChange(event: Event) {
+        const selectedElements = getSelectedElements(this.board) as MindElement[];
         const value = (event.target as HTMLSelectElement).value as MindLayoutType;
-        const selectedElement = this.selectedElements?.[0];
+        const selectedElement = selectedElements?.[0];
         if (selectedElement) {
             const path = PlaitBoard.findPath(this.board, selectedElement);
             MindTransforms.setLayout(this.board, value, path);
@@ -79,8 +80,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (key === 'branchWidth' || key === 'strokeWidth') {
             value = parseInt(value, 10);
         }
-
-        const selectedElement = this.selectedElements?.[0];
+        const selectedElement = getSelectedElements(this.board)[0];
         if (selectedElement) {
             const path = PlaitBoard.findPath(this.board, selectedElement);
             Transforms.setNode(this.board, { [key]: value }, path);
@@ -88,8 +88,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     colorChange(property: string | number | null, attribute: string) {
-        if (this.selectedElements.length) {
-            this.selectedElements.forEach(element => {
+        const selectedElements = getSelectedElements(this.board);
+
+        if (selectedElements.length) {
+            selectedElements.forEach(element => {
                 const path = PlaitBoard.findPath(this.board, element);
                 Transforms.setNode(this.board, { [attribute]: property }, path);
             });
@@ -97,8 +99,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     textColorChange(value: string) {
-        if (this.selectedElements.length) {
-            this.selectedElements.forEach(element => {
+        const selectedElements = getSelectedElements(this.board) as MindElement[];
+        if (selectedElements.length) {
+            selectedElements.forEach(element => {
                 const editor = MindElement.getEditor(element);
                 PlaitMarkEditor.setColorMark(editor, value);
             });
@@ -106,20 +109,23 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     setAbstract(event: Event) {
-        const ableSetAbstract = this.selectedElements.every(element => {
+        const selectedElements = getSelectedElements(this.board) as MindElement[];
+
+        const ableSetAbstract = selectedElements.every(element => {
             return canSetAbstract(element);
         });
 
         if (ableSetAbstract) {
-            MindTransforms.insertAbstract(this.board, this.selectedElements);
+            MindTransforms.insertAbstract(this.board, selectedElements);
         }
     }
 
     setTextMark(event: MouseEvent, attribute: string) {
         event.preventDefault();
         event.stopPropagation();
-        if (this.selectedElements.length) {
-            this.selectedElements.forEach(element => {
+        const selectedElements = getSelectedElements(this.board) as MindElement[];
+        if (selectedElements.length) {
+            selectedElements.forEach(element => {
                 const editor = MindElement.getEditor(element);
                 PlaitMarkEditor.toggleMark(editor, attribute as MarkTypes);
             });
@@ -127,8 +133,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     setLink(event: MouseEvent) {
-        if (this.selectedElements.length) {
-            const editor = MindElement.getEditor(this.selectedElements[0]);
+        const selectedElements = getSelectedElements(this.board) as MindElement[];
+
+        if (selectedElements.length) {
+            const editor = MindElement.getEditor(selectedElements[0]);
 
             if (!editor.selection) {
                 SlateTransforms.select(editor, [0]);
@@ -156,8 +164,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     setFontSize(event: Event) {
-        if (this.selectedElements.length) {
-            this.selectedElements.forEach(element => {
+        const selectedElements = getSelectedElements(this.board) as MindElement[];
+
+        if (selectedElements.length) {
+            selectedElements.forEach(element => {
                 const editor = MindElement.getEditor(element);
                 PlaitMarkEditor.setFontSizeMark(editor, (event.target as HTMLSelectElement).value as FontSizes);
             });
