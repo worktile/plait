@@ -112,6 +112,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     drawEdge(element: FlowEdge = this.element, active = false) {
         this.destroyEdge();
         this.nodeG = drawEdge(this.board, this.roughSVG, element, active);
+        this.nodeG.setAttribute('stroke-linecap', 'round');
         this.g.prepend(this.nodeG);
     }
 
