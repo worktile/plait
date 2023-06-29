@@ -31,7 +31,10 @@ import { drawLink } from './utils/draw/node-link/draw-link';
 import { getTopicRectangleByNode } from './utils/position/topic';
 import { NodeActiveDrawer } from './drawer/node-active.drawer';
 import { CollapseDrawer } from './drawer/node-collapse.drawer';
-import { BaseElement } from 'slate';
+
+// 1. When the text at the end has an italic attribute, the text is partially covered
+// 2. There will be some differences in the width measured by different browsers
+const WIDTH_BUFFER = 4;
 
 @Component({
     selector: 'plait-mind-node',
@@ -89,7 +92,10 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.board,
             this.viewContainerRef,
             () => {
-                return getTopicRectangleByNode(this.board, this.node);
+                const rect = getTopicRectangleByNode(this.board, this.node);
+
+                rect.width = rect.width + WIDTH_BUFFER;
+                return rect;
             },
             (point: Point) => {
                 return isHitMindElement(this.board, point, this.element);
