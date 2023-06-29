@@ -37,15 +37,14 @@ export class TextManage {
         private getRectangle: () => RectangleClient,
         private isHitElement?: (point: Point) => boolean,
         private onChange?: (textChangeRef: TextManageRef) => void,
-        private textPlugin?: TextPlugin[]
+        private textPlugins?: TextPlugin[]
     ) {}
 
     draw(value: Element) {
         this.componentRef = this.viewContainerRef.createComponent(PlaitRichtextComponent);
         this.componentRef.instance.value = value;
         this.componentRef.instance.readonly = true;
-        this.componentRef.instance.textPlugin = this.textPlugin || [];
-
+        this.textPlugins && (this.componentRef.instance.textPlugins = this.textPlugins);
         const rectangle = this.getRectangle();
         this.g = createG();
         this.foreignObject = createForeignObject(rectangle.x, rectangle.y, rectangle.width, rectangle.height);

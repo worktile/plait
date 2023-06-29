@@ -33,7 +33,7 @@ export class PlaitRichtextComponent implements OnInit {
 
     children: Element[] = [];
 
-    textPlugin!: TextPlugin[];
+    textPlugins: TextPlugin[] = [];
 
     @Input() set value(value: Element) {
         this.children = [value];
@@ -60,7 +60,7 @@ export class PlaitRichtextComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.textPlugin.forEach(plugin => {
+        this.textPlugins.forEach(plugin => {
             plugin(this.editor);
         });
     }
