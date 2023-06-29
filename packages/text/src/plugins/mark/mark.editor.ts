@@ -1,4 +1,4 @@
-import { Editor, Text, Node, Transforms, NodeEntry } from 'slate';
+import { Editor, Text, Node, Transforms, NodeEntry, Location } from 'slate';
 import { DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, MarkProps, MarkTypes } from '../../constant/mark';
 import { AngularEditor } from 'slate-angular';
 
@@ -23,11 +23,15 @@ export interface MarkEditor extends Editor {
 
 export const PlaitMarkEditor = {
     getMarks(editor: AngularEditor) {
-        const matchs = editor.selection
-            ? Editor.nodes(editor, { match: Text.isText })
-            : Editor.nodes(editor, { match: Text.isText, at: { anchor: Editor.start(editor, [0]), focus: Editor.end(editor, [0]) } });
         const marks: any = {};
-        for (const match of matchs) {
+        let at: Location = [];
+        if (editor.selection) {
+            at = editor.selection;
+        } else if (editor.children && editor.children.length > 0) {
+            at = { anchor: Editor.start(editor, [0]), focus: Editor.end(editor, [0]) };
+        }
+        const matchResult = Editor.nodes(editor, { match: Text.isText, at });
+        for (const match of matchResult) {
             const [node] = match as NodeEntry<Text>;
             const { text, ...rest } = node;
             Object.assign(marks, rest);
