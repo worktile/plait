@@ -31,6 +31,18 @@ export class TextManage {
     foreignObject!: SVGForeignObjectElement;
     isEditing = false;
 
+    setEditing(value: boolean) {
+        const editor = this.componentRef.instance.editor;
+        const editable = AngularEditor.toDOMNode(editor, editor);
+        if (value) {
+            this.isEditing = true;
+            editable.classList.add('editing');
+        } else {
+            this.isEditing = false;
+            editable.classList.remove('editing');
+        }
+    }
+
     constructor(
         private board: PlaitBoard,
         private viewContainerRef: ViewContainerRef,
@@ -63,7 +75,7 @@ export class TextManage {
                 }),
                 tap(() => {
                     if (AngularEditor.isReadonly(editor) && !this.isEditing) {
-                        this.isEditing = true;
+                        this.setEditing(true);
                     }
                 }),
                 debounceTime(0)
@@ -85,7 +97,7 @@ export class TextManage {
                 MERGING.set(this.board, true);
 
                 if (AngularEditor.isReadonly(editor) && this.isEditing) {
-                    this.isEditing = false;
+                    this.setEditing(false);
                 }
             });
     }
@@ -93,6 +105,7 @@ export class TextManage {
     updateRectangle(rectangle?: RectangleClient) {
         const { x, y, width, height } = rectangle || this.getRectangle();
         if (this.isEditing) {
+            console.log('updateForeignObject', 999);
             updateForeignObject(this.g, 999, 999, x, y);
         } else {
             updateForeignObject(this.g, width, height, x, y);
@@ -100,6 +113,7 @@ export class TextManage {
             if (this.foreignObject.children.length === 0) {
                 this.foreignObject.append(this.componentRef.instance.elementRef.nativeElement);
             }
+            console.log('updateForeignObject');
         }
     }
 
@@ -111,7 +125,7 @@ export class TextManage {
 
     edit(onExit?: () => void) {
         IS_TEXT_EDITABLE.set(this.board, true);
-        this.isEditing = true;
+        this.setEditing(true);
         this.componentRef.instance.readonly = false;
         this.componentRef.changeDetectorRef.detectChanges();
 
@@ -167,7 +181,7 @@ export class TextManage {
         };
 
         const exitHandle = () => {
-            this.isEditing = false;
+            this.setEditing(false);
             this.updateRectangle();
 
             mousedown$.unsubscribe();
