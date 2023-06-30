@@ -1,5 +1,5 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { BaseElement, Descendant, Element, Operation, Transforms } from 'slate';
+import { BaseElement, Descendant, Editor, Element, Operation, Transforms } from 'slate';
 import { PlaitRichtextComponent } from './richtext/richtext.component';
 import {
     IS_TEXT_EDITABLE,
@@ -14,7 +14,7 @@ import {
     updateForeignObject
 } from '@plait/core';
 import { AngularEditor, EDITOR_TO_ELEMENT, IS_FOCUSED, hasEditableTarget } from 'slate-angular';
-import { debounceTime, filter } from 'rxjs/operators';
+import { debounceTime, filter, tap } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
 import { measureDivSize } from './text-size';
 import { TextPlugin } from './custom-types';
@@ -60,14 +60,20 @@ export class TextManage {
             .pipe(
                 filter(value => {
                     return !editor.operations.every(op => Operation.isSelectionOperation(op));
-                })
+                }),
+                tap(() => {
+                    if (AngularEditor.isReadonly(editor) && !this.isEditing) {
+                        this.isEditing = true;
+                    }
+                }),
+                debounceTime(0)
             )
             .subscribe(value => {
                 if (previousValue === editor.children) {
                     return;
                 }
 
-                if (!this.isEditing) {
+                if (AngularEditor.isReadonly(editor)) {
                     const { x, y } = rectangle || this.getRectangle();
                     updateForeignObject(this.g, 999, 999, x, y);
                     // do not need to revert because foreign will be updated when node changed
@@ -77,6 +83,10 @@ export class TextManage {
                 const { width, height } = this.getSize();
                 this.onChange && this.onChange({ width, height, newValue: editor.children[0] as Element });
                 MERGING.set(this.board, true);
+
+                if (AngularEditor.isReadonly(editor) && this.isEditing) {
+                    this.isEditing = false;
+                }
             });
     }
 
