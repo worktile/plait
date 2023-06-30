@@ -101,6 +101,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             this.handlesG?.append(item);
             this.render2.addClass(item, 'flow-handle');
         });
+        this.handlesG?.setAttribute('stroke-linecap', 'round');
         this.g.append(this.handlesG);
     }
 
