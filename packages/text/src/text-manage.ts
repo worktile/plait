@@ -105,7 +105,6 @@ export class TextManage {
     updateRectangle(rectangle?: RectangleClient) {
         const { x, y, width, height } = rectangle || this.getRectangle();
         if (this.isEditing) {
-            console.log('updateForeignObject', 999);
             updateForeignObject(this.g, 999, 999, x, y);
         } else {
             updateForeignObject(this.g, width, height, x, y);
@@ -113,7 +112,6 @@ export class TextManage {
             if (this.foreignObject.children.length === 0) {
                 this.foreignObject.append(this.componentRef.instance.elementRef.nativeElement);
             }
-            console.log('updateForeignObject');
         }
     }
 
