@@ -17,7 +17,7 @@ g[plait-mindmap='true'] {
     .slate-editable-container {
         cursor: default;
         min-width: 5px;
-        &[contenteditable='true'] {
+        &.editing {
             cursor: text;
             max-width: 34em;
         }
