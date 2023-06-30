@@ -126,6 +126,9 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
         this.drawEmojis();
         this.drawExtend();
+        if (PlaitMind.isMind(this.context.parent)) {
+            this.g.classList.add('branch');
+        }
     }
 
     editTopic() {

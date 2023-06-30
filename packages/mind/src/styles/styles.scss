@@ -3,6 +3,17 @@
 $primary: #4e8afa;
 
 g[plait-mindmap='true'] {
+    .root { 
+        .text {
+            font-family: PingFangSC-Medium, 'PingFang SC';
+            font-weight: 400;
+        }
+    }
+    .branch {
+        .text {
+            font-family: PingFangSC-Medium, 'PingFang SC';
+        }
+    }
     .slate-editable-container {
         cursor: default;
         min-width: 5px;
