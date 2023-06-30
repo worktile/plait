@@ -76,7 +76,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
             const targetElements = selectedElements.filter(
                 element => MindElement.isMindElement(board, element) && !element.isRoot && !AbstractNode.isAbstract(element)
             ) as MindElement[];
-            const isMultiple = selectedElements.length > 1 && selectedElements.includes(targetElement);
+            const isMultiple = selectedElements.length > 0 && selectedElements.includes(targetElement);
             const isSingle = !isMultiple && selectedElements.length === 0;
             if (isMultiple) {
                 activeElements = targetElements;
