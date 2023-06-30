@@ -60,8 +60,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                         DEFAULT_PLACEHOLDER_EDGE_STYLES
                     );
                     const circleElement = drawCircle(PlaitBoard.getRoughSVG(board), point, HANDLE_DIAMETER, DEFAULT_HANDLE_STYLES);
-
-                    placeholderEdge?.setAttribute('stroke-linecap', 'round');
+                    circleElement?.setAttribute('stroke-linecap', 'round');
                     placeholderEdge.append(circleElement);
                 }
                 PlaitBoard.getHost(board).append(placeholderEdge);
