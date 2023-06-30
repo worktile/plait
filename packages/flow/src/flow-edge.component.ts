@@ -112,6 +112,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     drawEdge(element: FlowEdge = this.element, active = false) {
         this.destroyEdge();
         this.nodeG = drawEdge(this.board, this.roughSVG, element, active);
+        this.nodeG.setAttribute('stroke-linecap', 'round');
         this.g.prepend(this.nodeG);
     }
 
@@ -124,6 +125,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
                 this.handlesG?.append(item);
                 this.render2.addClass(item, 'flow-handle');
             });
+            this.handlesG?.setAttribute('stroke-linecap', 'round');
             this.g.append(this.handlesG);
         }
     }

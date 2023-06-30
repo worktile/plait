@@ -32,6 +32,7 @@ export const withHandleHover: PlaitPlugin = (board: PlaitBoard) => {
                         strokeWidth: HANDLE_BUFFER
                     }
                 );
+                activeHandleElement?.setAttribute('stroke-linecap', 'round');
                 flowNodeComponent.g.append(activeHandleElement);
             }
             if (previousHoverdHandle && !hoveredHandle) {
