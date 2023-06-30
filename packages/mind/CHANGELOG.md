@@ -1,5 +1,12 @@
 # mind
 
+## 0.12.1
+
+### Patch Changes
+
+-   [`c5e183b`](https://github.com/worktile/plait/commit/c5e183be59de6e6f66b640713ab2b6d7975a5c8b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve mind node text style
+    add branch class to branch node
+
 ## 0.12.0
 
 ### Minor Changes

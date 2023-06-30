@@ -11,7 +11,9 @@ import {
     depthFirstRecursion,
     createG,
     PlaitNode,
-    PlaitPointerType
+    PlaitPointerType,
+    getHitElements,
+    PlaitElement
 } from '@plait/core';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { MindElement, PlaitMind } from '../interfaces/element';
@@ -58,36 +60,33 @@ export const withNodeDnd = (board: PlaitBoard) => {
             return;
         }
 
-        // 确认是否 hit 节点
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const selectedElements = getSelectedElements(board);
-        depthFirstRecursion(
-            (board as unknown) as MindElement,
-            element => {
-                if (activeElements.length || !MindElement.isMindElement(board, element)) {
-                    return;
-                }
-                const isHitElement = isHitMindElement(board, point, element) && !element.isRoot && !AbstractNode.isAbstract(element);
-                const isAllMindElement = selectedElements.every(element => MindElement.isMindElement(board, element));
-                const isMultiple = isHitElement && selectedElements.length > 1 && selectedElements.includes(element) && isAllMindElement;
-                const isSingle = isHitElement && !(selectedElements.length > 1 && selectedElements.includes(element));
+        const hitTarget = getHitElements(board, { ranges: [{ anchor: point, focus: point }] }, (element: PlaitElement) => {
+            return MindElement.isMindElement(board, element);
+        });
 
-                if (isSingle) {
-                    activeElements = [element];
-                    startPoint = point;
-                } else if (isMultiple) {
-                    activeElements = selectedElements as MindElement[];
-                    startPoint = point;
-                }
-            },
-            node => {
-                if (PlaitBoard.isBoard(node) || board.isRecursion(node)) {
-                    return true;
-                } else {
-                    return false;
-                }
+        const targetElement = hitTarget && hitTarget.length === 1 ? hitTarget[0] : null;
+        if (
+            targetElement &&
+            MindElement.isMindElement(board, targetElement) &&
+            !targetElement.isRoot &&
+            !AbstractNode.isAbstract(targetElement)
+        ) {
+            const targetElements = selectedElements.filter(
+                element => MindElement.isMindElement(board, element) && !element.isRoot && !AbstractNode.isAbstract(element)
+            ) as MindElement[];
+            const isMultiple = selectedElements.length > 0 && selectedElements.includes(targetElement);
+            const isSingle = !isMultiple && selectedElements.length === 0;
+            if (isMultiple) {
+                activeElements = targetElements;
+                startPoint = point;
+            } else if (isSingle) {
+                activeElements = [targetElement];
+                startPoint = point;
             }
-        );
+            event.preventDefault();
+        }
 
         if (activeElements.length) {
             correspondingElements = getOverallAbstracts(board, activeElements);

@@ -32,20 +32,20 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
             mousedown(event);
             return;
         }
-        
+
         const activeAbstractElements = getSelectedElements(board).filter(element => AbstractNode.isAbstract(element)) as MindElement[];
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
 
         activeAbstractElement = activeAbstractElements.find(element => {
             abstractHandlePosition = getHitAbstractHandle(board, element as MindElement, point);
-            if (newBoard?.onAbstractResize) {
-                newBoard.onAbstractResize(AbstractResizeState.start);
-            }
             return abstractHandlePosition;
         });
 
         if (activeAbstractElement) {
+            if (newBoard?.onAbstractResize) {
+                newBoard.onAbstractResize(AbstractResizeState.start);
+            }
             startPoint = point;
             return;
         }

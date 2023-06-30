@@ -1,5 +1,5 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { BaseElement, Descendant, Element, Operation, Transforms } from 'slate';
+import { BaseElement, Descendant, Editor, Element, Operation, Transforms } from 'slate';
 import { PlaitRichtextComponent } from './richtext/richtext.component';
 import {
     IS_TEXT_EDITABLE,
@@ -14,7 +14,7 @@ import {
     updateForeignObject
 } from '@plait/core';
 import { AngularEditor, EDITOR_TO_ELEMENT, IS_FOCUSED, hasEditableTarget } from 'slate-angular';
-import { debounceTime, filter } from 'rxjs/operators';
+import { debounceTime, filter, tap } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
 import { measureDivSize } from './text-size';
 import { TextPlugin } from './custom-types';
@@ -30,6 +30,18 @@ export class TextManage {
     g!: SVGGElement;
     foreignObject!: SVGForeignObjectElement;
     isEditing = false;
+
+    setEditing(value: boolean) {
+        const editor = this.componentRef.instance.editor;
+        const editable = AngularEditor.toDOMNode(editor, editor);
+        if (value) {
+            this.isEditing = true;
+            editable.classList.add('editing');
+        } else {
+            this.isEditing = false;
+            editable.classList.remove('editing');
+        }
+    }
 
     constructor(
         private board: PlaitBoard,
@@ -60,14 +72,20 @@ export class TextManage {
             .pipe(
                 filter(value => {
                     return !editor.operations.every(op => Operation.isSelectionOperation(op));
-                })
+                }),
+                tap(() => {
+                    if (AngularEditor.isReadonly(editor) && !this.isEditing) {
+                        this.setEditing(true);
+                    }
+                }),
+                debounceTime(0)
             )
             .subscribe(value => {
                 if (previousValue === editor.children) {
                     return;
                 }
 
-                if (!this.isEditing) {
+                if (AngularEditor.isReadonly(editor)) {
                     const { x, y } = rectangle || this.getRectangle();
                     updateForeignObject(this.g, 999, 999, x, y);
                     // do not need to revert because foreign will be updated when node changed
@@ -77,6 +95,10 @@ export class TextManage {
                 const { width, height } = this.getSize();
                 this.onChange && this.onChange({ width, height, newValue: editor.children[0] as Element });
                 MERGING.set(this.board, true);
+
+                if (AngularEditor.isReadonly(editor) && this.isEditing) {
+                    this.setEditing(false);
+                }
             });
     }
 
@@ -101,7 +123,7 @@ export class TextManage {
 
     edit(onExit?: () => void) {
         IS_TEXT_EDITABLE.set(this.board, true);
-        this.isEditing = true;
+        this.setEditing(true);
         this.componentRef.instance.readonly = false;
         this.componentRef.changeDetectorRef.detectChanges();
 
@@ -157,7 +179,7 @@ export class TextManage {
         };
 
         const exitHandle = () => {
-            this.isEditing = false;
+            this.setEditing(false);
             this.updateRectangle();
 
             mousedown$.unsubscribe();

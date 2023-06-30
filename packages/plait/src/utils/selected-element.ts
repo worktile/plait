@@ -5,7 +5,7 @@ import { BOARD_TO_SELECTED_ELEMENT } from './weak-maps';
 import { Selection, Range } from '../interfaces/selection';
 import { PlaitElement } from '../interfaces/element';
 
-export const getHitElements = (board: PlaitBoard, selection?: Selection) => {
+export const getHitElements = (board: PlaitBoard, selection?: Selection, match: (element: PlaitElement) => boolean = () => true) => {
     const realSelection = selection || board.selection;
     const selectedElements: PlaitElement[] = [];
     const isCollapsed = realSelection && realSelection.ranges.length === 1 && Selection.isCollapsed(realSelection.ranges[0]);
@@ -17,6 +17,7 @@ export const getHitElements = (board: PlaitBoard, selection?: Selection) => {
             }
             if (
                 !PlaitBoard.isBoard(node) &&
+                match(node) &&
                 realSelection &&
                 realSelection.ranges.some(range => {
                     return board.isHitSelection(node, range);
