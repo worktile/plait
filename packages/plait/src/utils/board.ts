@@ -24,7 +24,6 @@ export function transformPoint(board: PlaitBoard, point: Point) {
     const x = (point[0] / width) * viewBox.width + viewBox.x;
     const y = (point[1] / height) * viewBox.height + viewBox.y;
     const newPoint = [x, y] as Point;
-
     return newPoint;
 }
 
