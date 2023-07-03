@@ -2,44 +2,46 @@
 
 $primary: #4e8afa;
 
-g[plait-mindmap='true'] {
-    .root { 
-        .text {
-            font-family: PingFangSC-Medium, 'PingFang SC';
-            font-weight: 400;
-        }
-    }
-    .branch {
-        .text {
-            font-family: PingFangSC-Medium, 'PingFang SC';
-        }
-    }
-    .slate-editable-container {
-        cursor: default;
-        min-width: 5px;
-        &.editing {
-            cursor: text;
-            max-width: 34em;
-        }
-    }
-
-    .extend {
-        opacity: 0;
-        cursor: default;
-    }
-
-    .collapsed {
-        .extend {
-            opacity: 1;
-        }
-    }
-
-    .dragging-node {
-        opacity: 0.6;
-    }
-}
-
 .plait-board-container {
+    // The font family under SAFARI affects the measurement of the text size, 
+    // so specify the default font family to avoid unexpected text breaks in different scene
+    font-family: PingFangSC-Regular, 'PingFang SC';
+    g[plait-mindmap='true'] {
+        .root {
+            .text {
+                font-family: PingFangSC-Medium, 'PingFang SC';
+                font-weight: 400;
+            }
+        }
+        .branch {
+            .text {
+                font-family: PingFangSC-Medium, 'PingFang SC';
+            }
+        }
+        .slate-editable-container {
+            cursor: default;
+            min-width: 5px;
+            &.editing {
+                cursor: text;
+                max-width: 34em;
+            }
+        }
+
+        .extend {
+            opacity: 0;
+            cursor: default;
+        }
+
+        .collapsed {
+            .extend {
+                opacity: 1;
+            }
+        }
+
+        .dragging-node {
+            opacity: 0.6;
+        }
+    }
     &.focused:not(.selection-moving):not(.element-moving):not(.abstract-resizing-horizontal):not(.abstract-resizing-vertical):not(.pointer-mind):not(.mind-node-dragging) {
         .extend {
             cursor: pointer;

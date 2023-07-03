@@ -93,8 +93,6 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.viewContainerRef,
             () => {
                 const rect = getTopicRectangleByNode(this.board, this.node);
-
-                rect.width = rect.width + WIDTH_BUFFER;
                 return rect;
             },
             (point: Point) => {
