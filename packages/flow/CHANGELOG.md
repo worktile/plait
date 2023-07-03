@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.4.1
+
+### Patch Changes
+
+-   [#451](https://github.com/worktile/plait/pull/451) [`04c2045`](https://github.com/worktile/plait/commit/04c20452c3ad2d77c95589edcc2fe84eefa7cd26) Thanks [@xinglu01](https://github.com/xinglu01)! - handle line connection is missing
+
 ## 0.4.0
 
 ### Minor Changes

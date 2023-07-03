@@ -1,5 +1,17 @@
 # text
 
+## 0.7.0
+
+### Minor Changes
+
+-   [`c6437c4`](https://github.com/worktile/plait/commit/c6437c41ab8a1691e3130e79d1de3ec510b7e243) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle ctrl + a
+
+### Patch Changes
+
+-   [#453](https://github.com/worktile/plait/pull/453) [`e82eda9`](https://github.com/worktile/plait/commit/e82eda96ef46df679e258b33274c599296017fd6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add isEditing mark when format text from outside
+
+*   [#453](https://github.com/worktile/plait/pull/453) [`9204183`](https://github.com/worktile/plait/commit/9204183c2823a3496bb7b892d9a46d489a3735c9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add editing class when text enter edit
+
 ## 0.6.0
 
 ### Minor Changes

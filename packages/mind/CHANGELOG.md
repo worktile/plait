@@ -1,5 +1,21 @@
 # mind
 
+## 0.12.2
+
+### Patch Changes
+
+-   [`bfd3317`](https://github.com/worktile/plait/commit/bfd3317cb459cf98e7de2f5533597cb037345c88) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove opacity property to solve text position waring when dragging node in safari
+    this commit will drop text opacity feature when mind-nodes are dragging
+
+*   [#452](https://github.com/worktile/plait/pull/452) [`6c6df10`](https://github.com/worktile/plait/commit/6c6df10f0a5f49696bfbb1d0f528405d2058e18d) Thanks [@WBbug](https://github.com/WBbug)! - change timing of set resizeState
+
+-   [`615cd9d`](https://github.com/worktile/plait/commit/615cd9d26beb8ce8b96f1858ad2c0580167c8a2c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct with node dnd condition
+
+*   [#453](https://github.com/worktile/plait/pull/453) [`9204183`](https://github.com/worktile/plait/commit/9204183c2823a3496bb7b892d9a46d489a3735c9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add editing class when text enter edit
+
+-   [`d3c392c`](https://github.com/worktile/plait/commit/d3c392ce9bd48e65d6f0d7f49c2e8a4bb7597e08) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - getHitElements add match options
+    add layer concept in with node dnd and filter invalid selected elements
+
 ## 0.12.1
 
 ### Patch Changes

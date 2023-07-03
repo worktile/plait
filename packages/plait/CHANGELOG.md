@@ -1,5 +1,12 @@
 # plait
 
+## 0.12.1
+
+### Patch Changes
+
+-   [`d3c392c`](https://github.com/worktile/plait/commit/d3c392ce9bd48e65d6f0d7f49c2e8a4bb7597e08) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - getHitElements add match options
+    add layer concept in with node dnd and filter invalid selected elements
+
 ## 0.12.0
 
 ### Minor Changes
