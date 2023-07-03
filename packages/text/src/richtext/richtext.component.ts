@@ -10,7 +10,7 @@ import {
     Renderer2,
     ViewChild
 } from '@angular/core';
-import { createEditor, Editor, Element, Text } from 'slate';
+import { createEditor, Editor, Element, Text, Transforms } from 'slate';
 import { withHistory } from 'slate-history';
 import { SlateEditableComponent, withAngular } from 'slate-angular';
 import { withSingleLine } from '../plugins/with-single';
@@ -23,6 +23,7 @@ import { LinkElement, TextPlugin } from '../custom-types';
 import { withLink } from '../plugins/link/with-link';
 import { withSelection } from '../plugins/with-selection';
 import { PlaitTextEditor, withText } from '../plugins/with-text';
+import { isKeyHotkey } from 'is-hotkey';
 
 @Component({
     selector: 'plait-richtext',
@@ -99,6 +100,10 @@ export class PlaitRichtextComponent implements OnInit {
     };
 
     onKeydown = (event: KeyboardEvent) => {
+        if (isKeyHotkey('mod+a', event)) {
+            Transforms.select(this.editor, [0]);
+            event.preventDefault();
+        }
         this.editor.onKeydown(event);
     };
 }
