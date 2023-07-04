@@ -1,5 +1,5 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { BaseElement, Descendant, Editor, Element, Operation, Transforms } from 'slate';
+import { BaseElement, Descendant, Element, Operation, Transforms } from 'slate';
 import { PlaitRichtextComponent } from './richtext/richtext.component';
 import {
     IS_TEXT_EDITABLE,
@@ -27,9 +27,14 @@ export interface TextManageRef {
 
 export class TextManage {
     componentRef!: ComponentRef<PlaitRichtextComponent>;
+
     g!: SVGGElement;
+
     foreignObject!: SVGForeignObjectElement;
+
     isEditing = false;
+
+    onChangeHandles: ((textChangeRef: TextManageRef) => void)[] = [];
 
     setEditing(value: boolean) {
         const editor = this.componentRef.instance.editor;
@@ -50,7 +55,11 @@ export class TextManage {
         private isHitElement?: (point: Point) => boolean,
         private onChange?: (textChangeRef: TextManageRef) => void,
         private textPlugins?: TextPlugin[]
-    ) {}
+    ) {
+        if (onChange) {
+            this.onChangeHandles.push(onChange);
+        }
+    }
 
     draw(value: Element) {
         this.componentRef = this.viewContainerRef.createComponent(PlaitRichtextComponent);
@@ -93,7 +102,9 @@ export class TextManage {
 
                 previousValue = editor.children;
                 const { width, height } = this.getSize();
-                this.onChange && this.onChange({ width, height, newValue: editor.children[0] as Element });
+                this.onChangeHandles.forEach(handle => {
+                    handle({ width, height, newValue: editor.children[0] as Element });
+                });
                 MERGING.set(this.board, true);
 
                 if (AngularEditor.isReadonly(editor) && this.isEditing) {
@@ -152,7 +163,7 @@ export class TextManage {
             const isAttached = (event.target as HTMLElement).closest('.plait-board-attached');
 
             // keep focus when click in node
-            if ((clickInNode && !hasEditableTarget(editor, event.target)) || isAttached) {
+            if (clickInNode && !hasEditableTarget(editor, event.target)) {
                 event.preventDefault();
             }
 
@@ -201,6 +212,13 @@ export class TextManage {
         const editor = this.componentRef.instance.editor;
         const paragraph = AngularEditor.toDOMNode(editor, editor.children[0]);
         return measureDivSize(paragraph);
+    }
+
+    addOnChangeHandle(onChange: (textChangeRef: TextManageRef) => void) {
+        this.onChangeHandles.push(onChange);
+        return () => {
+            this.onChangeHandles = this.onChangeHandles.filter(value => value !== onChange);
+        };
     }
 
     destroy() {
