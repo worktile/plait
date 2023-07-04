@@ -1,3 +1,5 @@
+export * from './keycodes';
+
 export const CLIP_BOARD_FORMAT_KEY = 'x-plait-fragment';
 
 export const SCROLL_BAR_WIDTH = 20;

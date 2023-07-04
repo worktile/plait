@@ -27,28 +27,24 @@ export const withMindHotkey = (board: PlaitBoard) => {
     const { keydown } = board;
 
     board.keydown = (event: KeyboardEvent) => {
-        if (isExpandHotkey(event)) {
-            const selectedMindElements = getSelectedElements(board).filter(element =>
-                MindElement.isMindElement(board, element)
-            ) as MindElement[];
-            if (
-                selectedMindElements.length === 1 &&
-                !PlaitMind.isMind(selectedMindElements[0]) &&
-                selectedMindElements[0].children &&
-                selectedMindElements[0].children.length > 0
-            ) {
-                const element = selectedMindElements[0];
-                Transforms.setNode(board, { isCollapsed: element.isCollapsed ? false : true }, PlaitBoard.findPath(board, element));
+        const selectedElements = getSelectedElements(board);
+        const isSingleSelection = selectedElements.length === 1;
+        const isSingleMindElement = selectedElements.length === 1 && MindElement.isMindElement(board, selectedElements[0]);
+        const targetElement = selectedElements[0] as MindElement;
+
+        if (isExpandHotkey(event) && isSingleMindElement && !PlaitMind.isMind(targetElement)) {
+            if (targetElement.children && targetElement.children.length > 0) {
+                Transforms.setNode(
+                    board,
+                    { isCollapsed: targetElement.isCollapsed ? false : true },
+                    PlaitBoard.findPath(board, targetElement)
+                );
                 return;
             }
         }
 
         if (!PlaitBoard.isReadonly(board)) {
-            const selectedElements = getSelectedElements(board) as MindElement[];
-            const isSingleSelection = selectedElements.length === 1;
-            const targetElement = selectedElements[0];
-
-            if (isTabHotkey(event) && isSingleSelection) {
+            if (isTabHotkey(event) && isSingleMindElement) {
                 event.preventDefault();
                 removeSelectedElement(board, targetElement);
                 const targetElementPath = PlaitBoard.findPath(board, targetElement);
@@ -62,7 +58,12 @@ export const withMindHotkey = (board: PlaitBoard) => {
                 return;
             }
 
-            if (isEnterHotkey(event) && isSingleSelection && !targetElement.isRoot && !AbstractNode.isAbstract(targetElement)) {
+            if (
+                isEnterHotkey(event) &&
+                isSingleMindElement &&
+                !PlaitMind.isMind(targetElement) &&
+                !AbstractNode.isAbstract(targetElement)
+            ) {
                 const targetElementPath = PlaitBoard.findPath(board, targetElement);
                 if (isInRightBranchOfStandardLayout(targetElement)) {
                     const refs = insertElementHandleRightNodeCount(board, targetElementPath.slice(0, 1), 1);
@@ -76,18 +77,18 @@ export const withMindHotkey = (board: PlaitBoard) => {
 
             if (selectedElements.length > 0 && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
                 event.preventDefault();
-                const deletableElements = getFirstLevelElement(selectedElements).reverse();
+                const targetMindElements = selectedElements.filter(el => MindElement.isMindElement(board, el)) as MindElement[];
+                const firstLevelElements = getFirstLevelElement(targetMindElements);
+                const deletableElements = firstLevelElements.reverse();
                 const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
                 MindTransforms.setAbstractsByRefs(board, abstractRefs);
 
-                const refs = deleteElementsHandleRightNodeCount(board, selectedElements);
+                const refs = deleteElementsHandleRightNodeCount(board, targetMindElements);
                 MindTransforms.setRightNodeCountByRefs(board, refs);
 
-                MindTransforms.removeElements(board, selectedElements);
+                MindTransforms.removeElements(board, targetMindElements);
 
                 let activeElement: MindElement | undefined;
-                const firstLevelElements = getFirstLevelElement(selectedElements);
-
                 if (AbstractNode.isAbstract(firstLevelElements[0])) {
                     const parent = MindElement.getParent(firstLevelElements[0]);
                     activeElement = parent.children[firstLevelElements[0].start];
@@ -118,8 +119,7 @@ export const withMindHotkey = (board: PlaitBoard) => {
 
             if (!isVirtualKey(event) && !isSpaceHotkey(event) && isSingleSelection) {
                 event.preventDefault();
-                const selectedElement = selectedElements[0];
-                editTopic(selectedElement);
+                editTopic(targetElement);
                 return;
             }
         }

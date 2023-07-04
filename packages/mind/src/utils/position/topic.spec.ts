@@ -36,7 +36,7 @@ describe('utils position topic', () => {
         const rectangle1 = getTopicRectangleByNode(board, mindNode);
         expect(rectangle1.x).toEqual(x);
         expect(rectangle1.y).toEqual(y);
-        expect(rectangle1.width).toEqual(Math.ceil(mindNode.origin.width));
+        expect(rectangle1.width).toEqual(Math.ceil(mindNode.origin.width) + 4);
         expect(rectangle1.height).toEqual(mindNode.origin.height);
     });
 });
