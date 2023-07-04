@@ -6,10 +6,6 @@ export const withMindHotkey = (board: PlaitBoard) => {
     const { keydown } = board;
 
     board.keydown = (keyboardEvent: KeyboardEvent) => {
-        if (!PlaitBoard.getMovingPoint(board)) {
-            return;
-        }
-
         if (isExpandHotkey(keyboardEvent)) {
             const selectedMindElements = getSelectedElements(board).filter(element =>
                 MindElement.isMindElement(board, element)
