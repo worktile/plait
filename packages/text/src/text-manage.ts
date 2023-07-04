@@ -34,7 +34,7 @@ export class TextManage {
 
     isEditing = false;
 
-    onChangeHandles: ((textChangeRef: TextManageRef) => void)[] = [];
+    onSelectionChangeHandle: ((textChangeRef: TextManageRef) => void)[] = [];
 
     setEditing(value: boolean) {
         const editor = this.componentRef.instance.editor;
@@ -53,13 +53,9 @@ export class TextManage {
         private viewContainerRef: ViewContainerRef,
         private getRectangle: () => RectangleClient,
         private isHitElement?: (point: Point) => boolean,
-        private onChange?: (textChangeRef: TextManageRef) => void,
+        private onValueChangeHandle?: (textChangeRef: TextManageRef) => void,
         private textPlugins?: TextPlugin[]
-    ) {
-        if (onChange) {
-            this.onChangeHandles.push(onChange);
-        }
-    }
+    ) {}
 
     draw(value: Element) {
         this.componentRef = this.viewContainerRef.createComponent(PlaitRichtextComponent);
@@ -79,9 +75,6 @@ export class TextManage {
 
         this.componentRef.instance.onChange
             .pipe(
-                filter(value => {
-                    return !editor.operations.every(op => Operation.isSelectionOperation(op));
-                }),
                 tap(() => {
                     if (AngularEditor.isReadonly(editor) && !this.isEditing) {
                         this.setEditing(true);
@@ -90,6 +83,13 @@ export class TextManage {
                 debounceTime(0)
             )
             .subscribe(value => {
+                if (editor.operations.every(op => Operation.isSelectionOperation(op))) {
+                    this.onSelectionChangeHandle.forEach(handle => {
+                        handle({ width, height, newValue: editor.children[0] as Element });
+                    });
+                    return;
+                }
+
                 if (previousValue === editor.children) {
                     return;
                 }
@@ -102,9 +102,7 @@ export class TextManage {
 
                 previousValue = editor.children;
                 const { width, height } = this.getSize();
-                this.onChangeHandles.forEach(handle => {
-                    handle({ width, height, newValue: editor.children[0] as Element });
-                });
+                this.onValueChangeHandle && this.onValueChangeHandle({ width, height, newValue: editor.children[0] as Element });
                 MERGING.set(this.board, true);
 
                 if (AngularEditor.isReadonly(editor) && this.isEditing) {
@@ -149,11 +147,11 @@ export class TextManage {
         this.updateRectangle();
 
         const { width, height } = this.getSize();
-        this.onChange && this.onChange({ width, height });
+        this.onValueChangeHandle && this.onValueChangeHandle({ width, height });
 
         const composition$ = this.componentRef.instance.onComposition.pipe(debounceTime(0)).subscribe(event => {
             const { width, height } = this.getSize();
-            this.onChange && this.onChange({ width, height });
+            this.onValueChangeHandle && this.onValueChangeHandle({ width, height });
             MERGING.set(this.board, true);
         });
 
@@ -214,11 +212,12 @@ export class TextManage {
         return measureDivSize(paragraph);
     }
 
-    addOnChangeHandle(onChange: (textChangeRef: TextManageRef) => void) {
-        this.onChangeHandles.push(onChange);
-        return () => {
-            this.onChangeHandles = this.onChangeHandles.filter(value => value !== onChange);
-        };
+    addOnSelectionChangeHandle(onChange: (textChangeRef: TextManageRef) => void) {
+        this.onSelectionChangeHandle.push(onChange);
+    }
+
+    clearOnSelectionChangeHandle() {
+        this.onSelectionChangeHandle = [];
     }
 
     destroy() {
