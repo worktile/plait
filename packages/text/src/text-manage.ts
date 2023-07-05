@@ -77,9 +77,6 @@ export class TextManage {
         this.componentRef.instance.onChange
             .pipe(
                 tap(() => {
-                    if (AngularEditor.isReadonly(editor) && !this.isEditing) {
-                        this.setEditing(true);
-                    }
                     if (editor.operations.every(op => Operation.isSelectionOperation(op))) {
                         this.onSelectionChangeHandle && this.onSelectionChangeHandle(editor);
                     }
@@ -87,6 +84,14 @@ export class TextManage {
                 filter(value => {
                     return !editor.operations.every(op => Operation.isSelectionOperation(op));
                 }),
+                tap(() => {
+                    // 1.add editing class to set max width
+                    // 2.set isEditing state to avoid reset text during updating 
+                    if (AngularEditor.isReadonly(editor) && !this.isEditing) {
+                        this.setEditing(true);
+                    }
+                }),
+                
                 debounceTime(0)
             )
             .subscribe(value => {
