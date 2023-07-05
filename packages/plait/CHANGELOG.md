@@ -1,5 +1,13 @@
 # plait
 
+## 0.13.0
+
+### Minor Changes
+
+-   [#454](https://github.com/worktile/plait/pull/454) [`da41655`](https://github.com/worktile/plait/commit/da416559d5f517f43e69a75b7b3db6afdadab437) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor with-mind-hotkey logic
+    Add util methods about testing
+    Add unit tests about with-mind-hotkey
+
 ## 0.12.1
 
 ### Patch Changes

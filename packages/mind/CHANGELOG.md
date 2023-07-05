@@ -1,5 +1,22 @@
 # mind
 
+## 0.13.0
+
+### Minor Changes
+
+-   [#454](https://github.com/worktile/plait/pull/454) [`da41655`](https://github.com/worktile/plait/commit/da416559d5f517f43e69a75b7b3db6afdadab437) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor with-mind-hotkey logic
+    Add util methods about testing
+    Add unit tests about with-mind-hotkey
+
+*   [`ef7cdbe`](https://github.com/worktile/plait/commit/ef7cdbe39cc219493f36d64d5b3eb45d4932834a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move shortcut logic to with mind hotkey plugin from with mind plugin
+
+### Patch Changes
+
+-   [`c4acb4f`](https://github.com/worktile/plait/commit/c4acb4fbaea083bd8bfa9c8041eab6006ca1f0d6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - specify the default font family to avoid unexpected text breaks in different scene
+    move buffer width to global
+
+*   [`7002f72`](https://github.com/worktile/plait/commit/7002f7236e4ab432aff344097651ba60d19c9862) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove getMovingPoint condition
+
 ## 0.12.2
 
 ### Patch Changes

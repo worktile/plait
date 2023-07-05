@@ -1,5 +1,17 @@
 # text
 
+## 0.8.0
+
+### Minor Changes
+
+-   [#455](https://github.com/worktile/plait/pull/455) [`94e34de`](https://github.com/worktile/plait/commit/94e34de82f936ce1fb4acae2fd92b0ce28c0f147) Thanks [@WBbug](https://github.com/WBbug)! - add addOnChangeHandle in text-manage
+
+*   [#456](https://github.com/worktile/plait/pull/456) [`510ddd7`](https://github.com/worktile/plait/commit/510ddd7472f62a0a9b7c0f5a9e938e3e8a864286) Thanks [@WBbug](https://github.com/WBbug)! - delete filter of selection
+
+### Patch Changes
+
+-   [`21393a7`](https://github.com/worktile/plait/commit/21393a78223e5c06d1c0462f7246abbbc907b0d0) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct the value of CLIPBOARD_FORMAT_KEY in plait text
+
 ## 0.7.0
 
 ### Minor Changes
