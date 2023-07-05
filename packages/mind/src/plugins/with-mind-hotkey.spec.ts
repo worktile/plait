@@ -53,5 +53,3 @@ describe('with mind hotkey plugin', () => {
         expect(target.isCollapsed).toEqual(false);
     });
 });
-
-export const fakeKeyboardEvent = () => {};
