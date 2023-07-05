@@ -17,6 +17,9 @@ export interface LinkElement extends BaseElement {
     url: string;
 }
 
-export type CustomElement = LinkElement | BaseElement;
+export interface ParagraphElement extends BaseElement {
+}
+
+export type CustomElement = ParagraphElement | LinkElement;
 
 export type TextPlugin = (editor: AngularEditor) => AngularEditor;

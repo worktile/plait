@@ -1,4 +1,7 @@
 import { PlaitBoard } from '@plait/core';
+import { PlaitRichtextComponent } from './richtext/richtext.component';
+import { Element } from 'slate';
+import { AngularEditor } from 'slate-angular';
 
 export function measureDivSize(div: HTMLElement) {
     const boundaryBox = {
@@ -23,23 +26,27 @@ export function measureDivSize(div: HTMLElement) {
     return { width, height };
 }
 
-export const getTextSize = (board: PlaitBoard, text: string, maxWordCount?: number, fontSize?: number) => {
-    const richtext = document.createElement('plait-richtext');
-    richtext.className = 'plait-richtext-container';
-    richtext.style.lineHeight = 'normal';
+export const getValueSize = (board: PlaitBoard, text: string, maxWordCount?: number, fontSize?: number) => {
+    const viewContainerRef = PlaitBoard.getComponent(board).viewContainerRef;
+    const ref = viewContainerRef.createComponent(PlaitRichtextComponent);
+    const value = { children: [{ text }] } as Element;
+    ref.instance.value = value;
+    ref.instance.readonly = true;
+    ref.changeDetectorRef.detectChanges();
+    ref.instance.slateEditable.writeValue(ref.instance.children);
+    ref.instance.slateEditable.cdr.detectChanges();
+    const richtextContainer = ref.instance.elementRef.nativeElement as HTMLElement;
+    richtextContainer.style.lineHeight = 'normal';
     if (maxWordCount) {
-        richtext.style.maxWidth = `${maxWordCount}em`;
+        richtextContainer.style.maxWidth = `${maxWordCount}em`;
     }
     if (fontSize) {
-        richtext.style.fontSize = `${fontSize}px`;
+        richtextContainer.style.fontSize = `${fontSize}px`;
     }
-    const div = document.createElement('div');
-    const span = document.createElement('span');
-    span.innerHTML = text;
-    div.append(span);
-    richtext.append(div);
-    PlaitBoard.getBoardContainer(board).append(richtext);
-    const { width, height } = measureDivSize(div);
-    richtext.remove();
-    return { width, height };
+    PlaitBoard.getBoardContainer(board).append(richtextContainer);
+    const paragraph = AngularEditor.toDOMNode(ref.instance.editor, ref.instance.children[0]);
+    const { width, height } = measureDivSize(paragraph);
+    ref.destroy();
+    richtextContainer.remove();
+    return { width, height }
 };

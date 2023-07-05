@@ -22,7 +22,7 @@ import { PlaitLinkNodeComponent } from '../plugins/link/link.component';
 import { LinkElement, TextPlugin } from '../custom-types';
 import { withLink } from '../plugins/link/with-link';
 import { withSelection } from '../plugins/with-selection';
-import { PlaitTextEditor, withText } from '../plugins/with-text';
+import { PlaitTextEditor } from '../plugins/text.editor';
 import { isKeyHotkey } from 'is-hotkey';
 
 @Component({
@@ -34,7 +34,7 @@ export class PlaitRichtextComponent implements OnInit {
 
     children: Element[] = [];
 
-    textPlugins: TextPlugin[] = [];
+    @Input() textPlugins: TextPlugin[] = [];
 
     @Input() set value(value: Element) {
         this.children = [value];
@@ -52,7 +52,7 @@ export class PlaitRichtextComponent implements OnInit {
     @Output()
     onComposition: EventEmitter<CompositionEvent> = new EventEmitter();
 
-    editor = withSelection(withText(withLink(withMark(withSingleLine(withHistory(withAngular(createEditor(), CLIPBOARD_FORMAT_KEY)))))));
+    editor = withSelection(withLink(withMark(withSingleLine(withHistory(withAngular(createEditor(), CLIPBOARD_FORMAT_KEY))))));
 
     constructor(public renderer2: Renderer2, private cdr: ChangeDetectorRef, public elementRef: ElementRef<HTMLElement>) {}
 

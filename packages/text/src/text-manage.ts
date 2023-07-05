@@ -18,7 +18,7 @@ import { debounceTime, filter, tap } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
 import { measureDivSize } from './text-size';
 import { TextPlugin } from './custom-types';
-import { PlaitTextEditor } from './plugins/with-text';
+import { PlaitTextEditor } from './plugins/text.editor';
 
 export interface TextManageRef {
     newValue?: Element;
