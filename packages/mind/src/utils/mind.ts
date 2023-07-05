@@ -69,7 +69,6 @@ export const extractNodesText = (node: MindElement) => {
     return str;
 };
 
-// layoutLevel 用来表示插入兄弟节点还是子节点
 export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, path: Path) => {
     const newNode: InheritAttribute = {};
     if (!inheritNode.isRoot) {
