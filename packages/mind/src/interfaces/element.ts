@@ -114,8 +114,16 @@ export const MindElement = {
     getEmojis(element: MindElement<EmojiData>) {
         return element.data.emojis;
     },
-    getEditor(element: MindElement) {
-        return (PlaitElement.getComponent(element) as MindNodeComponent).textManage.componentRef.instance.editor;
+    hasMounted(element: MindElement) {
+        const component = PlaitElement.getComponent(element) as MindNodeComponent;
+        return !!component;
+    }, 
+    getTextEditor(element: MindElement) {
+        const component = PlaitElement.getComponent(element) as MindNodeComponent;
+        if (component) {
+            return component.textManage.componentRef.instance.editor;
+        }
+        throw new Error('can not get correctly component in get text editor');
     }
 };
 

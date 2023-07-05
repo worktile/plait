@@ -34,7 +34,7 @@ import { addActiveOnDragOrigin, isDragging, isDropStandardRight, removeActiveOnD
 import { detectDropTarget, getPathByDropTarget } from '../utils/dnd/detector';
 import { drawFakeDragNode, drawFakeDropNode } from '../utils/draw/node-dnd';
 import { MindTransforms } from '../transforms';
-import { adjustAbstractToNode, adjustRootToNode } from '../utils/node/adjust-node';
+import { adjustAbstractToNode } from '../utils/node/adjust-node';
 
 const DRAG_MOVE_BUFFER = 5;
 

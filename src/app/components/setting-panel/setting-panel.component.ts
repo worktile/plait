@@ -58,9 +58,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.currentStrokeColor = selectedElements[0]?.strokeColor || '';
             this.currentBranchColor = selectedElements[0]?.branchColor || '';
 
-            const editor = MindElement.getEditor(selectedElements[0]);
-            if (editor) {
-                this.currentMarks = PlaitMarkEditor.getMarks(editor);
+            if (MindElement.hasMounted(selectedElements[0])) {
+                this.currentMarks = PlaitMarkEditor.getMarks(MindElement.getTextEditor(selectedElements[0]));
             }
         }
     }
@@ -102,7 +101,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedElements = getSelectedElements(this.board) as MindElement[];
         if (selectedElements.length) {
             selectedElements.forEach(element => {
-                const editor = MindElement.getEditor(element);
+                const editor = MindElement.getTextEditor(element);
                 PlaitMarkEditor.setColorMark(editor, value);
             });
         }
@@ -126,8 +125,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedElements = getSelectedElements(this.board) as MindElement[];
         if (selectedElements.length) {
             selectedElements.forEach(element => {
-                const editor = MindElement.getEditor(element);
-                PlaitMarkEditor.toggleMark(editor, attribute as MarkTypes);
+                const editor = MindElement.getTextEditor(element);
+                if (editor) {
+                    PlaitMarkEditor.toggleMark(editor, attribute as MarkTypes);
+                }
             });
         }
     }
@@ -136,7 +137,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedElements = getSelectedElements(this.board) as MindElement[];
 
         if (selectedElements.length) {
-            const editor = MindElement.getEditor(selectedElements[0]);
+            const editor = MindElement.getTextEditor(selectedElements[0]);
 
             if (!editor.selection) {
                 SlateTransforms.select(editor, [0]);
@@ -168,7 +169,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
         if (selectedElements.length) {
             selectedElements.forEach(element => {
-                const editor = MindElement.getEditor(element);
+                const editor = MindElement.getTextEditor(element);
                 PlaitMarkEditor.setFontSizeMark(editor, (event.target as HTMLSelectElement).value as FontSizes);
             });
         }
