@@ -2,13 +2,14 @@ import {
     PlaitBoard,
     PlaitNode,
     SLASH,
+    TAB,
     addSelectedElement,
     clearNodeWeakMap,
+    clearSelectedElement,
     createKeyboardEvent,
     createModModifierKeys,
     createTestingBoard,
-    fakeNodeWeakMap,
-    removeSelectedElement
+    fakeNodeWeakMap
 } from '@plait/core';
 import { getTestingChildren } from '../testing/data/basic';
 import { withMindHotkey } from './with-mind-hotkey';
@@ -30,26 +31,55 @@ describe('with mind hotkey plugin', () => {
     });
 
     afterEach(() => {
-        removeSelectedElement(board, PlaitNode.get(board, targetPath));
+        clearSelectedElement(board);
         clearNodeWeakMap(board);
     });
 
-    it('collapse node', () => {
+    it('collapse/expand node', () => {
         let target = PlaitNode.get<MindElement>(board, targetPath);
         expect(target.isCollapsed).toEqual(undefined);
         const event = createKeyboardEvent('keydown', SLASH, '/', createModModifierKeys());
         board.keydown(event);
         target = PlaitNode.get<MindElement>(board, targetPath);
         expect(target.isCollapsed).toEqual(true);
-    });
 
-    it('expand node', () => {
-        let target = PlaitNode.get<MindElement>(board, targetPath);
-        expect(target.isCollapsed).toEqual(undefined);
-        target.isCollapsed = true;
-        const event = createKeyboardEvent('keydown', SLASH, '/', createModModifierKeys());
+        clearSelectedElement(board);
+        addSelectedElement(board, target);
+
+        clearNodeWeakMap(board);
+        fakeNodeWeakMap(board);
+
         board.keydown(event);
         target = PlaitNode.get<MindElement>(board, targetPath);
+        expect(target.isCollapsed).toEqual(false);
+    });
+
+    it('tab create node', () => {
+        let target = PlaitNode.get<MindElement>(board, targetPath);
+        expect(target.isCollapsed).toEqual(undefined);
+        const event = createKeyboardEvent('keydown', TAB, 'Tab', {});
+        board.keydown(event);
+        target = PlaitNode.get<MindElement>(board, targetPath);
+        expect(target.children.length).toEqual(2);
+    });
+
+    it('do nothing when selected multiple elements', () => {
+        let target = PlaitNode.get<MindElement>(board, targetPath);
+        const secondTargetPath = [0, 1];
+        const secondTarget = PlaitNode.get<MindElement>(board, secondTargetPath);
+        addSelectedElement(board, secondTarget);
+        const event = createKeyboardEvent('keydown', TAB, 'Tab', {});
+        board.keydown(event);
+        expect(target.children.length).toEqual(1);
+    });
+
+    it('expand node when tab create node', () => {
+        let target = PlaitNode.get<MindElement>(board, targetPath);
+        target.isCollapsed = true;
+        const event = createKeyboardEvent('keydown', TAB, 'Tab', {});
+        board.keydown(event);
+        target = PlaitNode.get<MindElement>(board, targetPath);
+        expect(target.children.length).toEqual(2);
         expect(target.isCollapsed).toEqual(false);
     });
 });
