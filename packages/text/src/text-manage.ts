@@ -77,7 +77,7 @@ export class TextManage {
         this.componentRef.instance.onChange
             .pipe(
                 tap(() => {
-                    if (AngularEditor.isReadonly(editor) && !this.isEditing) {
+                    if (!AngularEditor.isReadonly(editor) && !this.isEditing) {
                         this.setEditing(true);
                     }
                     if (editor.operations.every(op => Operation.isSelectionOperation(op))) {
