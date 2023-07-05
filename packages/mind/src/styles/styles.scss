@@ -3,11 +3,11 @@
 $primary: #4e8afa;
 
 .plait-board-container {
-    // The font family under SAFARI affects the measurement of the text size, 
-    // so specify the default font family to avoid unexpected text breaks in different scene
-    font-family: PingFangSC-Regular, 'PingFang SC';
-    g[plait-mindmap='true'] {
-        .root {
+    g[plait-mindmap='true'], g[plait-mind-temporary='true'] {
+        // The font family under SAFARI affects the measurement of the text size,
+        // so specify the default font family to avoid unexpected text breaks in different scene
+        font-family: PingFangSC-Regular, 'PingFang SC';
+        .root, &.root {
             .text {
                 font-family: PingFangSC-Medium, 'PingFang SC';
                 font-weight: 400;

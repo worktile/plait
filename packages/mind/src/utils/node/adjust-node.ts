@@ -35,26 +35,26 @@ export const adjustAbstractToNode = (node: MindElement) => {
 
 export const adjustNodeToRoot = (board: PlaitBoard, node: MindElement): MindElement => {
     const newElement = { ...node };
-    let text = Node.string(newElement.data.topic);
-
-    if (!text) {
-        text = '思维导图';
-        newElement.data.topic = { children: [{ text }] };
+    if (!Node.string(newElement.data.topic)) {
+        newElement.data.topic = { children: [{ text: '思维导图' }] };
     }
 
     delete newElement?.strokeColor;
     delete newElement?.fill;
     delete newElement?.shape;
     delete newElement?.strokeWidth;
+    delete newElement?.isCollapsed;
 
-    const { width, height } = getTextSize(board, text, TOPIC_DEFAULT_MAX_WORD_COUNT, ROOT_TOPIC_FONT_SIZE);
+    const { width, height } = getTextSize(board, newElement.data.topic, TOPIC_DEFAULT_MAX_WORD_COUNT, {
+        fontSize: ROOT_TOPIC_FONT_SIZE,
+        fontFamily: 'PingFangSC-Medium, "PingFang SC"'
+    });
     newElement.width = Math.max(width, NODE_MIN_WIDTH);
     newElement.height = height;
 
     return {
         ...newElement,
         layout: newElement.layout ?? MindLayoutType.right,
-        isCollapsed: false,
         isRoot: true,
         type: 'mindmap'
     };

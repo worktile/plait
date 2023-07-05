@@ -58,7 +58,7 @@ export const withCreateMind = (board: PlaitBoard) => {
                 const movingPoint = PlaitBoard.getMovingPoint(board);
                 if (movingPoint) {
                     const targetPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
-                    const emptyMind = createEmptyMind(board, targetPoint);
+                    const emptyMind = createEmptyMind(targetPoint);
                     const nodeRectangle = getRectangleByElement(newBoard, targetPoint, emptyMind);
                     const nodeG = drawRoundRectangleByElement(board, nodeRectangle, emptyMind);
                     const topicRectangle = getTopicRectangleByElement(newBoard, nodeRectangle, emptyMind);
@@ -77,6 +77,7 @@ export const withCreateMind = (board: PlaitBoard) => {
                             textManage
                         };
                         fakeCreateNodeRef.g.classList.add('root');
+                        fakeCreateNodeRef.g.setAttribute('plait-mind-temporary', 'true');
                         PlaitBoard.getHost(board).append(fakeCreateNodeRef.g);
                         fakeCreateNodeRef.g.append(...[fakeCreateNodeRef.nodeG, textManage.g]);
                     } else {
@@ -98,7 +99,7 @@ export const withCreateMind = (board: PlaitBoard) => {
         const movingPoint = PlaitBoard.getMovingPoint(board);
         if (movingPoint && fakeCreateNodeRef && PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind)) {
             const targetPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
-            const emptyMind = createEmptyMind(board, targetPoint);
+            const emptyMind = createEmptyMind(targetPoint);
             Transforms.insertNode(board, emptyMind, [board.children.length]);
             clearSelectedElement(board);
             addSelectedElement(board, emptyMind);
