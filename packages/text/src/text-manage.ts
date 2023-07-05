@@ -34,7 +34,7 @@ export class TextManage {
 
     isEditing = false;
 
-    onSelectionChangeHandle: ((textChangeRef: TextManageRef) => void)[] = [];
+    onSelectionChangeHandles: ((textChangeRef: TextManageRef) => void)[] = [];
 
     setEditing(value: boolean) {
         const editor = this.componentRef.instance.editor;
@@ -79,17 +79,19 @@ export class TextManage {
                     if (AngularEditor.isReadonly(editor) && !this.isEditing) {
                         this.setEditing(true);
                     }
+                    if (editor.operations.every(op => Operation.isSelectionOperation(op))) {
+                        this.onSelectionChangeHandles.forEach(handle => {
+                            const { width, height } = this.getSize();
+                            handle({ width, height, newValue: editor.children[0] as Element });
+                        });
+                    }
+                }),
+                filter(value => {
+                    return !editor.operations.every(op => Operation.isSelectionOperation(op));
                 }),
                 debounceTime(0)
             )
             .subscribe(value => {
-                if (editor.operations.every(op => Operation.isSelectionOperation(op))) {
-                    this.onSelectionChangeHandle.forEach(handle => {
-                        handle({ width, height, newValue: editor.children[0] as Element });
-                    });
-                    return;
-                }
-
                 if (previousValue === editor.children) {
                     return;
                 }
@@ -212,12 +214,12 @@ export class TextManage {
         return measureDivSize(paragraph);
     }
 
-    addOnSelectionChangeHandle(onChange: (textChangeRef: TextManageRef) => void) {
-        this.onSelectionChangeHandle.push(onChange);
+    setOnChangeHandle(onChange: (textChangeRef: TextManageRef) => void) {
+        this.onSelectionChangeHandles.push(onChange);
     }
 
     clearOnSelectionChangeHandle() {
-        this.onSelectionChangeHandle = [];
+        this.onSelectionChangeHandles = [];
     }
 
     destroy() {
