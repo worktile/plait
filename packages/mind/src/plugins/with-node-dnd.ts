@@ -29,7 +29,6 @@ import {
     insertElementHandleAbstract,
     insertElementHandleRightNodeCount
 } from '../utils';
-import { isHitMindElement } from '../utils/position/node';
 import { addActiveOnDragOrigin, isDragging, isDropStandardRight, removeActiveOnDragOrigin, setIsDragging } from '../utils/dnd/common';
 import { detectDropTarget, getPathByDropTarget } from '../utils/dnd/detector';
 import { drawFakeDragNode, drawFakeDropNode } from '../utils/draw/node-dnd';
@@ -152,9 +151,6 @@ export const withNodeDnd = (board: PlaitBoard) => {
                     .map(element => {
                         if (AbstractNode.isAbstract(element)) {
                             return adjustAbstractToNode(element);
-                        }
-                        if (PlaitMind.isMind(element)) {
-                            return adjustRootToNode(board, element);
                         }
                         return element;
                     });
