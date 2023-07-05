@@ -18,6 +18,7 @@ import { debounceTime, filter, tap } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
 import { measureDivSize } from './text-size';
 import { TextPlugin } from './custom-types';
+import { PlaitTextEditor } from './plugins/with-text';
 
 export interface TextManageRef {
     newValue?: Element;
@@ -34,7 +35,7 @@ export class TextManage {
 
     isEditing = false;
 
-    onSelectionChangeHandles: ((textChangeRef: TextManageRef) => void)[] = [];
+    onSelectionChangeHandle: ((editor: PlaitTextEditor) => void) | null = null;
 
     setEditing(value: boolean) {
         const editor = this.componentRef.instance.editor;
@@ -80,10 +81,7 @@ export class TextManage {
                         this.setEditing(true);
                     }
                     if (editor.operations.every(op => Operation.isSelectionOperation(op))) {
-                        this.onSelectionChangeHandles.forEach(handle => {
-                            const { width, height } = this.getSize();
-                            handle({ width, height, newValue: editor.children[0] as Element });
-                        });
+                        this.onSelectionChangeHandle && this.onSelectionChangeHandle(editor);
                     }
                 }),
                 filter(value => {
@@ -214,12 +212,8 @@ export class TextManage {
         return measureDivSize(paragraph);
     }
 
-    setOnChangeHandle(onChange: (textChangeRef: TextManageRef) => void) {
-        this.onSelectionChangeHandles.push(onChange);
-    }
-
-    clearOnSelectionChangeHandle() {
-        this.onSelectionChangeHandles = [];
+    setOnChangeHandle(onChange: ((editor: PlaitTextEditor) => void) | null) {
+        this.onSelectionChangeHandle = onChange;
     }
 
     destroy() {
