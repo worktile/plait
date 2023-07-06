@@ -1,5 +1,16 @@
 # mind
 
+## 0.14.0
+
+### Minor Changes
+
+-   [`38f7ebc8`](https://github.com/worktile/plait/commit/38f7ebc8d15fef7a22854a427d029b8461dec529) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename getEditor to getTextEditor and add hasMounted method
+
+*   [`70decd64`](https://github.com/worktile/plait/commit/70decd6490505aa90a4e0d06832a1383e822e726) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getTextFromClipboard and buildText
+    support font family and plait text when build node from clipboard
+
+-   [`f6c69574`](https://github.com/worktile/plait/commit/f6c69574caf8cdbbf7850695388757a90ed9cc25) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor get text size
+
 ## 0.13.0
 
 ### Minor Changes

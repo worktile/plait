@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.5.0
+
+### Minor Changes
+
+-   [`f6c69574`](https://github.com/worktile/plait/commit/f6c69574caf8cdbbf7850695388757a90ed9cc25) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor get text size
+
 ## 0.4.1
 
 ### Patch Changes

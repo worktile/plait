@@ -1,5 +1,18 @@
 # text
 
+## 0.9.0
+
+### Minor Changes
+
+-   [`70decd64`](https://github.com/worktile/plait/commit/70decd6490505aa90a4e0d06832a1383e822e726) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getTextFromClipboard and buildText
+    support font family and plait text when build node from clipboard
+
+*   [`f6c69574`](https://github.com/worktile/plait/commit/f6c69574caf8cdbbf7850695388757a90ed9cc25) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor get text size
+
+### Patch Changes
+
+-   [#458](https://github.com/worktile/plait/pull/458) [`bf1dc172`](https://github.com/worktile/plait/commit/bf1dc172047d8be6acc3886dfdfcc8d2cb704a53) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct pipe sequence in text onChange event and add note
+
 ## 0.8.0
 
 ### Minor Changes
