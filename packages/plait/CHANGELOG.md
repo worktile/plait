@@ -1,5 +1,11 @@
 # plait
 
+## 0.14.0
+
+### Minor Changes
+
+-   [`e731e703`](https://github.com/worktile/plait/commit/e731e703c29910734c4f80ee138eb9c9a3f960c4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add PlaitIslandPopoverBaseComponent to support popover case
+
 ## 0.13.0
 
 ### Minor Changes
