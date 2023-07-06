@@ -1,6 +1,6 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
 import { BaseElement, Descendant, Element, Operation, Transforms } from 'slate';
-import { PlaitRichtextComponent } from './richtext/richtext.component';
+import { PlaitRichtextComponent } from '../richtext/richtext.component';
 import {
     IS_TEXT_EDITABLE,
     MERGING,
@@ -17,8 +17,8 @@ import { AngularEditor, EDITOR_TO_ELEMENT, IS_FOCUSED, hasEditableTarget } from 
 import { debounceTime, filter, tap } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
 import { measureDivSize } from './text-size';
-import { TextPlugin } from './custom-types';
-import { PlaitTextEditor } from './plugins/text.editor';
+import { TextPlugin } from '../custom-types';
+import { PlaitTextEditor } from '../plugins/text.editor';
 
 export interface TextManageRef {
     newValue?: Element;

@@ -15,6 +15,7 @@ import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { getRelativeStartEndByAbstractRef, getOverallAbstracts, getValidAbstractRefs } from './abstract/common';
 import { createMindElement } from './node/create-node';
 import { adjustAbstractToNode, adjustNodeToRoot, adjustRootToNode } from './node/adjust-node';
+import { Element } from 'slate';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[]) => {
     let result: MindElement[] = [];
@@ -126,7 +127,7 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
     Transforms.setSelectionWithTemporaryElements(board, newELements);
 };
 
-export const insertClipboardText = (board: PlaitBoard, parentElement: PlaitElement, text: string, width: number, height: number) => {
+export const insertClipboardText = (board: PlaitBoard, parentElement: PlaitElement, text: string | Element, width: number, height: number) => {
     const newElement = createMindElement(text, width, height, {});
     const path = PlaitBoard.findPath(board, parentElement).concat((parentElement.children || []).length);
     Transforms.insertNode(board, newElement, path);

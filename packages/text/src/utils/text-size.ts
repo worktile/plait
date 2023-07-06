@@ -1,5 +1,5 @@
 import { PlaitBoard } from '@plait/core';
-import { PlaitRichtextComponent } from './richtext/richtext.component';
+import { PlaitRichtextComponent } from '../richtext/richtext.component';
 import { Element } from 'slate';
 import { AngularEditor } from 'slate-angular';
 

@@ -1,8 +1,9 @@
 import { Point, idCreator, isNullOrUndefined } from '@plait/core';
-import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
+import { TEXT_DEFAULT_HEIGHT, buildText } from '@plait/text';
 import { MindLayoutType } from '@plait/layouts';
 import { BranchShape, MindElement, MindElementShape } from '../../interfaces/element';
 import { ROOT_TOPIC_HEIGHT } from '../../constants/node-topic-style';
+import { Element } from 'slate';
 
 export const createEmptyMind = (point: Point) => {
     const element = createMindElement('思维导图', 72, ROOT_TOPIC_HEIGHT, { layout: MindLayoutType.right });
@@ -25,11 +26,11 @@ export const createDefaultMind = (point: Point, rightNodeCount: number, layout: 
     return root;
 };
 
-export const createMindElement = (text: string, width: number, height: number, options: InheritAttribute) => {
+export const createMindElement = (text: string | Element, width: number, height: number, options: InheritAttribute) => {
     const newElement: MindElement = {
         id: idCreator(),
         data: {
-            topic: { children: [{ text }] }
+            topic: buildText(text)
         },
         children: [],
         width,
