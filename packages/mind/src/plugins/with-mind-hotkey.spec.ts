@@ -1,4 +1,6 @@
 import {
+    ENTER,
+    Path,
     PlaitBoard,
     PlaitNode,
     SLASH,
@@ -73,7 +75,7 @@ describe('with mind hotkey plugin', () => {
         expect(target.children.length).toEqual(1);
     });
 
-    it('expand node when tab create node', () => {
+    it('should expand node when create node through press tab', () => {
         let target = PlaitNode.get<MindElement>(board, targetPath);
         target.isCollapsed = true;
         const event = createKeyboardEvent('keydown', TAB, 'Tab', {});
@@ -81,5 +83,52 @@ describe('with mind hotkey plugin', () => {
         target = PlaitNode.get<MindElement>(board, targetPath);
         expect(target.children.length).toEqual(2);
         expect(target.isCollapsed).toEqual(false);
+    });
+
+    it('press enter to create sibling node', () => {
+        const parentPath = Path.parent(targetPath);
+        let parent = PlaitNode.get<MindElement>(board, parentPath);
+        const childrenCount = parent.children.length;
+        const event = createKeyboardEvent('keydown', ENTER, 'Enter', {});
+        board.keydown(event);
+        parent = PlaitNode.get<MindElement>(board, parentPath);
+        expect(parent.children.length).toEqual(childrenCount + 1);
+    });
+
+    describe('should not create sibling node when press enter', () => {
+        it('selected multiple elements', () => {
+            const secondTargetPath = [0, 1];
+            const secondTarget = PlaitNode.get<MindElement>(board, secondTargetPath);
+            addSelectedElement(board, secondTarget);
+            const parentPath = Path.parent(targetPath);
+            let parent = PlaitNode.get<MindElement>(board, parentPath);
+            const childrenCount = parent.children.length;
+            const event = createKeyboardEvent('keydown', ENTER, 'Enter', {});
+            board.keydown(event);
+            parent = PlaitNode.get<MindElement>(board, parentPath);
+            expect(parent.children.length).toEqual(childrenCount);
+        });
+        it('selected element is root node', () => {
+            clearSelectedElement(board);
+            const childrenCount = board.children.length;
+            const parentPath = Path.parent(targetPath);
+            let parent = PlaitNode.get<MindElement>(board, parentPath);
+            addSelectedElement(board, parent);
+            const event = createKeyboardEvent('keydown', ENTER, 'Enter', {});
+            board.keydown(event);
+            parent = PlaitNode.get<MindElement>(board, parentPath);
+            expect(board.children.length).toEqual(childrenCount);
+        });
+        it('selected element is abstract node', () => {
+            clearSelectedElement(board);
+            const targetPath = [0, 3];
+            const parentPath = Path.parent(targetPath);
+            let parent = PlaitNode.get<MindElement>(board, parentPath);
+            const childrenCount = parent.children.length;
+            const event = createKeyboardEvent('keydown', ENTER, 'Enter', {});
+            board.keydown(event);
+            parent = PlaitNode.get<MindElement>(board, parentPath);
+            expect(parent.children.length).toEqual(childrenCount);
+        });
     });
 });
