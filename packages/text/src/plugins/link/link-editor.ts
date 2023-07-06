@@ -1,4 +1,4 @@
-import { Editor, Transforms, Range, Element, BaseRange } from 'slate';
+import { Editor, Transforms, Range, Element, BaseRange, Location } from 'slate';
 import { AngularEditor } from 'slate-angular';
 import { CustomElement, LinkElement } from '../../custom-types';
 import { setSelection } from '../mark/mark.editor';
@@ -23,9 +23,9 @@ export const LinkEditor = {
             Transforms.collapse(editor, { edge: 'end' });
         }
     },
-    unwrapLink(editor: AngularEditor) {
-        setSelection(editor);
-        Transforms.unwrapNodes<CustomElement>(editor, { match: n => Element.isElement(n) && (n as LinkElement).type === 'link' });
+    unwrapLink(editor: AngularEditor, at?: Location) {
+        !at && setSelection(editor);
+        Transforms.unwrapNodes<CustomElement>(editor, { at, match: n => Element.isElement(n) && (n as LinkElement).type === 'link' });
     },
     isLinkActive(editor: AngularEditor) {
         let at = editor.selection as BaseRange;
