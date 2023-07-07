@@ -28,3 +28,27 @@ export function drawLinearPath(points: Point[], options?: Options) {
 
     return g;
 }
+
+export function drawBezierPath(points: Point[], options?: Options) {
+    const g = createG();
+    const path = createPath();
+
+    let polylinePath = '';
+    for (let i = 0; i < points.length - 3; i += 3) {
+        if (i === 0) {
+            polylinePath += `M ${points[0][0]} ${points[0][1]} `;
+        } else {
+            polylinePath += `C ${points[i + 1][0]} ${points[i + 1][1]}, ${points[i + 2][0]} ${points[i + 2][1]}, ${points[i + 3][0]} ${
+                points[i + 3][1]
+            }`;
+        }
+    }
+
+    path.setAttribute('d', polylinePath);
+    path.setAttribute('stroke', `${options?.stroke}`);
+    path.setAttribute('stroke-width', `${options?.strokeWidth}`);
+    path.setAttribute('fill', `none`);
+    g.appendChild(path);
+
+    return g;
+}

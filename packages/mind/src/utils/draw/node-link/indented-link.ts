@@ -1,6 +1,6 @@
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { MindNode } from '../../../interfaces/node';
-import { PlaitBoard, Point, drawLinearPath } from '@plait/core';
+import { PlaitBoard, Point, drawBezierPath, drawLinearPath } from '@plait/core';
 import { getShapeByElement, getRectangleByNode, isChildUp } from '../..';
 import { getBranchColorByMindElement, getBranchShapeByMindElement, getBranchWidthByMindElement } from '../../node-style/branch';
 import { BranchShape, MindElementShape } from '../../../interfaces/element';
@@ -37,7 +37,7 @@ export function drawIndentedLink(
     let curve: Point[] = [
         [beginX, beginY],
         [beginX, beginY],
-        [beginX, beginY + 1 * plusMinus[1]],
+        [beginX, beginY],
         [beginX, endY - (endNode.hGap * 3 * plusMinus[1]) / 5],
         [beginX, endY - (endNode.hGap * plusMinus[1]) / 5],
         [beginX + (endNode.hGap * plusMinus[0]) / 4, endY],
@@ -58,6 +58,6 @@ export function drawIndentedLink(
         return drawLinearPath(polylinePoints as Point[], { stroke: branchColor, strokeWidth: branchWidth });
     }
 
-    const points = pointsOnBezierCurves(curve);
-    return PlaitBoard.getRoughSVG(board).curve(points as any, { stroke: branchColor, strokeWidth: branchWidth });
+    const points = pointsOnBezierCurves(curve, 0.001);
+    return drawBezierPath(points as Point[], { stroke: branchColor, strokeWidth: branchWidth });
 }
