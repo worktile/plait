@@ -1,5 +1,17 @@
 # text
 
+## 0.10.0
+
+### Minor Changes
+
+-   [#463](https://github.com/worktile/plait/pull/463) [`d67b3d76`](https://github.com/worktile/plait/commit/d67b3d7608fc4df819deb246c21673e1ea9516ad) Thanks [@WBbug](https://github.com/WBbug)! - change style when link is not editing or board is readonly
+
+*   [#460](https://github.com/worktile/plait/pull/460) [`a0f8b0d5`](https://github.com/worktile/plait/commit/a0f8b0d5ad086df8df33ea67268b1479cd55324f) Thanks [@WBbug](https://github.com/WBbug)! - add at attribute in unwrapLink
+
+### Patch Changes
+
+-   [#459](https://github.com/worktile/plait/pull/459) [`a5d3b246`](https://github.com/worktile/plait/commit/a5d3b246aee2c10842479c170de663343ec99e11) Thanks [@WBbug](https://github.com/WBbug)! - delete at
+
 ## 0.9.0
 
 ### Minor Changes

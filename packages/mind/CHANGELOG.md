@@ -1,5 +1,19 @@
 # mind
 
+## 0.15.0
+
+### Minor Changes
+
+-   [`38376389`](https://github.com/worktile/plait/commit/38376389ea98cbcf92dfea227a3295fb7c1addd2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve moving point:
+    BOARD_TO_MOVING_POINT_IN_BOARD sa point in board and will clear when mouse leave board
+    BOARD_TO_MOVING_POINT as point in document and will clear when mouse leave document
+
+### Patch Changes
+
+-   [`9459fbf7`](https://github.com/worktile/plait/commit/9459fbf7995d7a665ef3834040d7e54acbee028c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify insertClipboardData to get correctly text size
+
+*   [#461](https://github.com/worktile/plait/pull/461) [`2760bbaa`](https://github.com/worktile/plait/commit/2760bbaaf113a9e72e305887e7e21f6350c39913) Thanks [@WBbug](https://github.com/WBbug)! - add drawBezierPath to fix draw indent-link
+
 ## 0.14.0
 
 ### Minor Changes
