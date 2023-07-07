@@ -1,13 +1,17 @@
 import isHotkey from 'is-hotkey';
-import { Ancestor, PlaitBoard, PlaitElement } from '../interfaces';
+import { Ancestor, PlaitBoard, PlaitElement, PlaitPluginKey } from '../interfaces';
 import { BoardTransforms, Transforms } from '../transforms';
 import { depthFirstRecursion } from '../utils';
+import { PlaitOptionsBoard } from './with-options';
+import { WithPluginOptions } from './with-selection';
 
 export const withHotkey = (board: PlaitBoard) => {
     const { keydown } = board;
 
     board.keydown = (event: KeyboardEvent) => {
-        if (!PlaitBoard.isReadonly(board) && isHotkey('mod+a', event)) {
+        const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
+
+        if (!PlaitBoard.isReadonly(board) && options.isMultiple && isHotkey('mod+a', event)) {
             event.preventDefault();
             let elements: PlaitElement[] = [];
             depthFirstRecursion<Ancestor>(
@@ -26,6 +30,7 @@ export const withHotkey = (board: PlaitBoard) => {
             );
 
             Transforms.setSelectionWithTemporaryElements(board, elements);
+            return;
         }
 
         if (PlaitBoard.getMovingPoint(board)) {
