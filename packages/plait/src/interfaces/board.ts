@@ -11,6 +11,7 @@ import {
     BOARD_TO_ELEMENT_HOST,
     BOARD_TO_HOST,
     BOARD_TO_MOVING_POINT,
+    BOARD_TO_MOVING_POINT_IN_BOARD,
     BOARD_TO_ROUGH_SVG,
     IS_BOARD_CACHE,
     IS_TEXT_EDITABLE,
@@ -26,6 +27,7 @@ import { PathRef, PathRefOptions } from './path-ref';
 import { Ancestor, PlaitNode } from './node';
 import { Path } from './path';
 import { PlaitTheme, ThemeColor, ThemeColors } from './theme';
+import { distanceBetweenPointAndRectangle } from '../utils/math';
 
 export interface PlaitBoard {
     viewport: Viewport;
@@ -49,6 +51,7 @@ export interface PlaitBoard {
     mouseup: (event: MouseEvent) => void;
     globalMouseup: (event: MouseEvent) => void;
     keydown: (event: KeyboardEvent) => void;
+    globalKeydown: (event: KeyboardEvent) => void;
     keyup: (event: KeyboardEvent) => void;
     setFragment: (data: DataTransfer | null) => void;
     insertFragment: (data: DataTransfer | null, targetPoint?: Point) => void;
@@ -154,8 +157,16 @@ export const PlaitBoard = {
     isPointer<T = PlaitPointerType>(board: PlaitBoard, pointer: T) {
         return board.pointer === pointer;
     },
-    getMovingPoint(board: PlaitBoard) {
-        return BOARD_TO_MOVING_POINT.get(board);
+    getMovingPointInBoard(board: PlaitBoard) {
+        return BOARD_TO_MOVING_POINT_IN_BOARD.get(board);
+    },
+    isMovingPointInBoard(board: PlaitBoard) {
+        const point = BOARD_TO_MOVING_POINT.get(board);
+        const rect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
+        if (point && distanceBetweenPointAndRectangle(point[0], point[1], rect) === 0) {
+            return true;
+        }
+        return false;
     },
     getThemeColors<T extends ThemeColor = ThemeColor>(board: PlaitBoard) {
         return (board.options.themeColors || ThemeColors) as T[];

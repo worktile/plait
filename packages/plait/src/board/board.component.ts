@@ -39,6 +39,7 @@ import {
     BOARD_TO_ELEMENT_HOST,
     BOARD_TO_HOST,
     BOARD_TO_ROUGH_SVG,
+    BOARD_TO_MOVING_POINT_IN_BOARD,
     BOARD_TO_MOVING_POINT
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
@@ -62,6 +63,7 @@ import { PlaitIslandBaseComponent, hasOnBoardChange } from '../core/island/islan
 import { BoardTransforms } from '../transforms/board';
 import { PlaitTheme } from '../interfaces/theme';
 import { withHotkey } from '../plugins/with-hotkey';
+import { HOST_CLASS_NAME } from '../constants';
 
 const ElementHostClass = 'element-host';
 
@@ -109,7 +111,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @HostBinding('class')
     get hostClass() {
-        return `plait-board-container pointer-${this.board.pointer} theme-${this.board.theme.themeColorMode}`;
+        return `${HOST_CLASS_NAME} pointer-${this.board.pointer} theme-${this.board.theme.themeColorMode}`;
     }
 
     @HostBinding('class.readonly')
@@ -157,6 +159,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             this.initializeHookListener();
             this.viewportScrollListener();
             this.elementResizeListener();
+            fromEvent<MouseEvent>(document, 'mouseleave')
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((event: MouseEvent) => {
+                    BOARD_TO_MOVING_POINT.delete(this.board);
+                });
         });
         BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ROUGH_SVG.set(this.board, roughSVG);
@@ -238,20 +245,21 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<MouseEvent>(this.host, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
-                BOARD_TO_MOVING_POINT.set(this.board, [event.x, event.y]);
+                BOARD_TO_MOVING_POINT_IN_BOARD.set(this.board, [event.x, event.y]);
                 this.board.mousemove(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'mouseleave')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
-                BOARD_TO_MOVING_POINT.delete(this.board);
+                BOARD_TO_MOVING_POINT_IN_BOARD.delete(this.board);
                 this.board.mouseleave(event);
             });
 
         fromEvent<MouseEvent>(document, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
+                BOARD_TO_MOVING_POINT.set(this.board, [event.x, event.y]);
                 this.board.globalMousemove(event);
             });
 
@@ -279,6 +287,9 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<KeyboardEvent>(document, 'keydown')
             .pipe(
                 takeUntil(this.destroy$),
+                tap(event => {
+                    this.board.globalKeydown(event);
+                }),
                 filter(event => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board) && !hasInputOrTextareaTarget(event.target))
             )
             .subscribe((event: KeyboardEvent) => {
@@ -310,7 +321,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 filter(() => this.isFocused && !PlaitBoard.isReadonly(this.board) && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((clipboardEvent: ClipboardEvent) => {
-                const mousePoint = PlaitBoard.getMovingPoint(this.board);
+                const mousePoint = PlaitBoard.getMovingPointInBoard(this.board);
                 if (mousePoint) {
                     const targetPoint = transformPoint(this.board, toPoint(mousePoint[0], mousePoint[1], this.host));
                     this.board.insertFragment(clipboardEvent.clipboardData, targetPoint);

@@ -85,6 +85,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         mouseup: (event: MouseEvent) => {},
         globalMouseup: (event: MouseEvent) => {},
         keydown: (event: KeyboardEvent) => {},
+        globalKeydown: (event: KeyboardEvent) => {},
         keyup: (event: KeyboardEvent) => {},
         dblclick: (event: MouseEvent) => {},
         setFragment: (data: DataTransfer | null) => {},

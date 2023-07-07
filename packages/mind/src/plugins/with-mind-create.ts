@@ -55,7 +55,7 @@ export const withCreateMind = (board: PlaitBoard) => {
         }
         if (PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind)) {
             throttleRAF(() => {
-                const movingPoint = PlaitBoard.getMovingPoint(board);
+                const movingPoint = PlaitBoard.getMovingPointInBoard(board);
                 if (movingPoint) {
                     const targetPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
                     const emptyMind = createEmptyMind(targetPoint);
@@ -96,7 +96,7 @@ export const withCreateMind = (board: PlaitBoard) => {
     };
 
     newBoard.mouseup = (event: MouseEvent) => {
-        const movingPoint = PlaitBoard.getMovingPoint(board);
+        const movingPoint = PlaitBoard.getMovingPointInBoard(board);
         if (movingPoint && fakeCreateNodeRef && PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind)) {
             const targetPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
             const emptyMind = createEmptyMind(targetPoint);

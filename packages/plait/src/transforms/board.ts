@@ -38,7 +38,7 @@ const updatePointerType = <T extends string = PlaitPointerType>(board: PlaitBoar
 function updateZoom(board: PlaitBoard, newZoom: number, isCenter = true) {
     newZoom = clampZoomLevel(newZoom);
 
-    const mousePoint = PlaitBoard.getMovingPoint(board);
+    const mousePoint = PlaitBoard.getMovingPointInBoard(board);
     const nativeElement = PlaitBoard.getBoardContainer(board);
     const nativeElementRect = nativeElement.getBoundingClientRect();
     const boardContainerRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();

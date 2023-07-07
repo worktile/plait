@@ -6,7 +6,7 @@ import { PlaitOptionsBoard } from './with-options';
 import { WithPluginOptions } from './with-selection';
 
 export const withHotkey = (board: PlaitBoard) => {
-    const { keydown } = board;
+    const { keydown, globalKeydown } = board;
 
     board.keydown = (event: KeyboardEvent) => {
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
@@ -32,29 +32,33 @@ export const withHotkey = (board: PlaitBoard) => {
             Transforms.setSelectionWithTemporaryElements(board, elements);
             return;
         }
+        keydown(event);
+    };
 
-        if (PlaitBoard.getMovingPoint(board)) {
+    board.globalKeydown = (event: KeyboardEvent) => {
+        if (PlaitBoard.getMovingPointInBoard(board) || PlaitBoard.isMovingPointInBoard(board)) {
             if (isHotkey(['mod+=', 'mod++'], { byKey: true })(event)) {
                 event.preventDefault();
                 BoardTransforms.updateZoom(board, board.viewport.zoom + 0.1, false);
-            }
-            if (isHotkey('mod+-', { byKey: true })(event)) {
-                event.preventDefault();
-                BoardTransforms.updateZoom(board, board.viewport.zoom - 0.1);
-            }
-            if (isHotkey('mod+0', { byKey: true })(event)) {
-                event.preventDefault();
-                BoardTransforms.updateZoom(board, 1);
                 return;
             }
-            if (isHotkey('mod+shift+=', { byKey: true })(event)) {
+            if (isHotkey(['mod+shift+=', 'mod+shift++'], { byKey: true })(event)) {
                 event.preventDefault();
                 BoardTransforms.fitViewport(board);
                 return;
             }
+            if (isHotkey(['mod+-', 'mod+shift+-'])(event)) {
+                event.preventDefault();
+                BoardTransforms.updateZoom(board, board.viewport.zoom - 0.1);
+                return;
+            }
+            if (isHotkey(['mod+0', 'mod+shift+0'], { byKey: true })(event)) {
+                event.preventDefault();
+                BoardTransforms.updateZoom(board, 1);
+                return;
+            }
         }
-
-        keydown(event);
+        globalKeydown(event);
     };
 
     return board;
