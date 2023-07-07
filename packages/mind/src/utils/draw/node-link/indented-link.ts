@@ -2,8 +2,6 @@ import { pointsOnBezierCurves } from 'points-on-curve';
 import { MindNode } from '../../../interfaces/node';
 import { PlaitBoard, Point, drawLinearPath } from '@plait/core';
 import { getShapeByElement, getRectangleByNode, isChildUp } from '../..';
-import { MindLayoutType } from '@plait/layouts';
-import { MindQueries } from '../../../queries';
 import { getBranchColorByMindElement, getBranchShapeByMindElement, getBranchWidthByMindElement } from '../../node-style/branch';
 import { BranchShape, MindElementShape } from '../../../interfaces/element';
 
@@ -35,19 +33,11 @@ export function drawIndentedLink(
     endY = isUnderlineShape ? endNode.y + endNode.height - endNode.vGap : endNode.y + endNode.height / 2;
     //根据位置，设置正负参数
     let plusMinus = isChildUp(node, child) ? (node.left ? [-1, -1] : [1, -1]) : node.left ? [-1, 1] : [1, 1];
-    const layout = MindQueries.getCorrectLayoutByElement(board, node.origin);
-    if (beginNode.origin.isRoot) {
-        if (layout === MindLayoutType.leftBottomIndented || layout === MindLayoutType.rightBottomIndented) {
-            beginY += branchWidth;
-        }
-        if (layout === MindLayoutType.leftTopIndented || layout === MindLayoutType.rightTopIndented) {
-            beginY -= branchWidth;
-        }
-    }
+
     let curve: Point[] = [
         [beginX, beginY],
         [beginX, beginY],
-        [beginX, beginY],
+        [beginX, beginY + 1 * plusMinus[1]],
         [beginX, endY - (endNode.hGap * 3 * plusMinus[1]) / 5],
         [beginX, endY - (endNode.hGap * plusMinus[1]) / 5],
         [beginX + (endNode.hGap * plusMinus[0]) / 4, endY],
