@@ -61,6 +61,7 @@ import { withOptions } from '../plugins/with-options';
 import { PlaitIslandBaseComponent, hasOnBoardChange } from '../core/island/island-base.component';
 import { BoardTransforms } from '../transforms/board';
 import { PlaitTheme } from '../interfaces/theme';
+import { withHotkey } from '../plugins/with-hotkey';
 
 const ElementHostClass = 'element-host';
 
@@ -206,8 +207,12 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     private initializePlugins() {
-        let board = withHandPointer(
-            withHistory(withSelection(withMoving(withBoard(withViewport(withOptions(createBoard(this.plaitValue, this.plaitOptions)))))))
+        let board = withHotkey(
+            withHandPointer(
+                withHistory(
+                    withSelection(withMoving(withBoard(withViewport(withOptions(createBoard(this.plaitValue, this.plaitOptions))))))
+                )
+            )
         );
         this.plaitPlugins.forEach(plugin => {
             board = plugin(board);
@@ -274,28 +279,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         fromEvent<KeyboardEvent>(document, 'keydown')
             .pipe(
                 takeUntil(this.destroy$),
-                tap((event: KeyboardEvent) => {
-                    if (PlaitBoard.getMovingPoint(this.board)) {
-                        if (isHotkey(['mod+=', 'mod++'], { byKey: true })(event)) {
-                            event.preventDefault();
-                            BoardTransforms.updateZoom(this.board, this.board.viewport.zoom + 0.1, false);
-                        }
-                        if (isHotkey('mod+-', { byKey: true })(event)) {
-                            event.preventDefault();
-                            BoardTransforms.updateZoom(this.board, this.board.viewport.zoom - 0.1);
-                        }
-                        if (isHotkey('mod+0', { byKey: true })(event)) {
-                            event.preventDefault();
-                            BoardTransforms.updateZoom(this.board, 1);
-                            return;
-                        }
-                        if (isHotkey('mod+shift+=', { byKey: true })(event)) {
-                            event.preventDefault();
-                            BoardTransforms.fitViewport(this.board);
-                            return;
-                        }
-                    }
-                }),
                 filter(event => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board) && !hasInputOrTextareaTarget(event.target))
             )
             .subscribe((event: KeyboardEvent) => {

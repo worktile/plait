@@ -7,7 +7,8 @@ import {
     PlaitElement,
     PlaitTheme,
     ThemeColorMode,
-    Viewport
+    Viewport,
+    getSelectedElements
 } from '@plait/core';
 import { mockData } from './mock-data';
 import { withMind, PlaitMindBoard } from '@plait/mind';
@@ -49,6 +50,8 @@ export class BasicBoardEditorComponent implements OnInit {
 
     change(event: PlaitBoardChangeEvent) {
         this.setLocalData(JSON.stringify(event));
+        // const selectedElements = getSelectedElements(this.board)
+        // console.log('==============', selectedElements);
     }
 
     setLocalData(data: string) {
