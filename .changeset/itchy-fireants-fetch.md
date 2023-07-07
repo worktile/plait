@@ -1,5 +1,5 @@
 ---
-'@plait/core': patch
+'@plait/core': minor
 ---
 
 add withHotKey plugin
