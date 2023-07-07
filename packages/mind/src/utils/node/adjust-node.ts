@@ -2,7 +2,7 @@ import { PlaitBoard } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
 import { getTextSize } from '@plait/text';
 import { Node } from 'slate';
-import { ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../../constants/node-topic-style';
+import { BRANCH_FONT_FAMILY, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../../constants/node-topic-style';
 import { NODE_MIN_WIDTH } from '../../constants/node-rule';
 import { MindLayoutType } from '@plait/layouts';
 
@@ -11,17 +11,9 @@ export const adjustRootToNode = (board: PlaitBoard, node: MindElement) => {
     delete newNode.isRoot;
     delete newNode.rightNodeCount;
     delete newNode.type;
-
-    const text = Node.string(node.data.topic.children[0]) || ' ';
-    const { width, height } = getTextSize(board, text, TOPIC_DEFAULT_MAX_WORD_COUNT);
-
-    newNode.width = Math.max(width, NODE_MIN_WIDTH);
-    newNode.height = height;
-
     if (newNode.layout === MindLayoutType.standard) {
         delete newNode.layout;
     }
-
     return newNode;
 };
 
@@ -47,7 +39,7 @@ export const adjustNodeToRoot = (board: PlaitBoard, node: MindElement): MindElem
 
     const { width, height } = getTextSize(board, newElement.data.topic, TOPIC_DEFAULT_MAX_WORD_COUNT, {
         fontSize: ROOT_TOPIC_FONT_SIZE,
-        fontFamily: 'PingFangSC-Medium, "PingFang SC"'
+        fontFamily: BRANCH_FONT_FAMILY
     });
     newElement.width = Math.max(width, NODE_MIN_WIDTH);
     newElement.height = height;

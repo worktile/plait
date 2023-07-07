@@ -149,18 +149,16 @@ export const withMind = (board: PlaitBoard) => {
             insertFragment(data, targetPoint);
             return;
         }
-
         const elements = getDataFromClipboard(data);
         if (elements.length) {
             insertClipboardData(board, elements, targetPoint || [0, 0]);
         } else {
-            const text = getTextFromClipboard(data);
-            const { width, height } = getTextSize(board, text, TOPIC_DEFAULT_MAX_WORD_COUNT, {
-                fontFamily: 'PingFangSC-Regular, "PingFang SC"'
-            });
             const selectedElements = getSelectedElements(board);
-            if (text && selectedElements.length === 1) {
-                insertClipboardText(board, selectedElements[0], buildText(text), width, height);
+            if (selectedElements.length === 1) {
+                const text = getTextFromClipboard(data);
+                if (text) {
+                    insertClipboardText(board, selectedElements[0], buildText(text));
+                }
             }
         }
         insertFragment(data, targetPoint);
