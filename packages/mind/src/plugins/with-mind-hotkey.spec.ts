@@ -1,4 +1,6 @@
 import {
+    BACKSPACE,
+    DELETE,
     ENTER,
     Path,
     PlaitBoard,
@@ -130,5 +132,46 @@ describe('with mind hotkey plugin', () => {
             parent = PlaitNode.get<MindElement>(board, parentPath);
             expect(parent.children.length).toEqual(childrenCount);
         });
+    });
+
+    describe('should delete selected elements when press backspace or delete', () => {
+        it('press backspace', () => {
+            const parentPath = Path.parent(targetPath);
+            let parent = PlaitNode.get<MindElement>(board, parentPath);
+            const childrenCount = parent.children.length;
+            const event = createKeyboardEvent('keydown', BACKSPACE, 'Backspace', {});
+            board.keydown(event);
+            parent = PlaitNode.get<MindElement>(board, parentPath);
+            expect(parent.children.length).toEqual(childrenCount - 1);
+
+            const abstractPath = [0, 2];
+            const abstract = PlaitNode.get<MindElement>(board, abstractPath);
+            expect(abstract.start).toEqual(0);
+            expect(abstract.end).toEqual(0);
+        });
+    
+        it('press delete', () => {
+            const parentPath = Path.parent(targetPath);
+            let parent = PlaitNode.get<MindElement>(board, parentPath);
+            const childrenCount = parent.children.length;
+            const event = createKeyboardEvent('keydown', DELETE, 'Delete', {});
+            board.keydown(event);
+            parent = PlaitNode.get<MindElement>(board, parentPath);
+            expect(parent.children.length).toEqual(childrenCount - 1);
+        });
+
+        it('should delete abstract when all of the nodes which abstract includes were deleted', () => {
+            const secondTargetPath = [0, 1];
+            const secondTarget = PlaitNode.get(board, secondTargetPath);
+            addSelectedElement(board, secondTarget);
+
+            const parentPath = Path.parent(targetPath);
+            let parent = PlaitNode.get<MindElement>(board, parentPath);
+            const childrenCount = parent.children.length;
+            const event = createKeyboardEvent('keydown', DELETE, 'Delete', {});
+            board.keydown(event);
+            parent = PlaitNode.get<MindElement>(board, parentPath);
+            expect(parent.children.length).toEqual(childrenCount - 3);
+        })
     });
 });
