@@ -53,7 +53,6 @@ import {
     updateViewportOffset,
     setIsFromScrolling
 } from '../utils/viewport';
-import { isHotkey } from 'is-hotkey';
 import { withViewport } from '../plugins/with-viewport';
 import { Point } from '../interfaces/point';
 import { withMoving } from '../plugins/with-moving';
