@@ -3,6 +3,7 @@ import { LinkElement } from '../../custom-types';
 import { AngularEditor } from 'slate-angular';
 import { CLIPBOARD_FORMAT_KEY } from '../../constant';
 import { LinkEditor } from './link-editor';
+import { getTextFromClipboard, isUrl } from '../../public-api';
 
 export const withLink = <T extends AngularEditor>(editor: T): T => {
     const { isInline, normalizeNode, insertData } = editor;
@@ -23,10 +24,9 @@ export const withLink = <T extends AngularEditor>(editor: T): T => {
     };
 
     editor.insertData = data => {
-        const text = data.getData('text/plain');
-        const fragment = data.getData(`application/${CLIPBOARD_FORMAT_KEY}`);
+        const text = getTextFromClipboard(data);
 
-        if (text && isUrl(text) && !fragment) {
+        if (typeof text === 'string' && text && isUrl(text)) {
             LinkEditor.wrapLink(editor, text, text);
             Transforms.move(editor, { distance: 1, unit: 'offset' });
         } else {
@@ -36,29 +36,3 @@ export const withLink = <T extends AngularEditor>(editor: T): T => {
 
     return editor;
 };
-
-function isUrl(string: string) {
-    const protocolAndDomainRE = /^(?:\w+:)?\/\/(\S+)$/;
-    const localhostDomainRE = /^localhost[\:?\d]*(?:[^\:?\d]\S*)?$/;
-    const nonLocalhostDomainRE = /^[^\s\.]+\.\S{2,}$/;
-
-    if (typeof string !== 'string') {
-        return false;
-    }
-
-    var match = string.match(protocolAndDomainRE);
-    if (!match) {
-        return false;
-    }
-
-    var everythingAfterProtocol = match[1];
-    if (!everythingAfterProtocol) {
-        return false;
-    }
-
-    if (localhostDomainRE.test(everythingAfterProtocol) || nonLocalhostDomainRE.test(everythingAfterProtocol)) {
-        return true;
-    }
-
-    return false;
-}
