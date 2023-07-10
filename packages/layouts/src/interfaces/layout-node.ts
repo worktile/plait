@@ -1,6 +1,5 @@
-import { AbstractNode, LayoutContext, LayoutOptions, MindLayoutType, OriginNode } from './mind';
-import { findLayoutType, getAbstractLayout, isIndentedLayout } from '../utils/layout';
-import { isChildOfAbstract } from '../utils/abstract';
+import { LayoutContext, LayoutOptions, MindLayoutType, OriginNode } from './mind';
+import { findLayoutType } from '../utils/layout';
 
 /**
  * abstract layout node

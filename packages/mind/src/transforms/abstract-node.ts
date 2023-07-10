@@ -69,9 +69,7 @@ const setAbstractByElements = (board: PlaitBoard, groupParent: MindElement, grou
 
 const insertAbstractNode = (board: PlaitBoard, path: Path, start: number, end: number) => {
     const mindElement = createMindElement('概要', 28, 20, {
-        strokeColor: DefaultAbstractNodeStyle.strokeColor,
         strokeWidth: DefaultAbstractNodeStyle.branchWidth,
-        branchColor: DefaultAbstractNodeStyle.branchColor,
         branchWidth: DefaultAbstractNodeStyle.branchWidth
     });
 

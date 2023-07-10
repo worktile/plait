@@ -53,17 +53,6 @@ export const findAbstractByStartNode = <T extends { children: T[] } = LayoutNode
     });
 };
 
-export const isChildOfAbstract = (node: LayoutNode) => {
-    let parent: LayoutNode | undefined = node.parent;
-    while (parent) {
-        if (AbstractNode.isAbstract(parent.origin)) {
-            return true;
-        }
-        parent = parent?.parent;
-    }
-    return false;
-};
-
 /**
  * handle standard layout effect
  * the abstract correct start and end should sub rightNodeCount when it is set on left area

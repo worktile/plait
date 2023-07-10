@@ -195,3 +195,8 @@ export const deleteElementHandleAbstract = (
     });
     return effectedAbstracts;
 };
+
+export const isChildOfAbstract = (board: PlaitBoard, element: MindElement) => {
+    const ancestors = MindElement.getAncestors(board, element) as MindElement[];
+    return !!ancestors.find((value) => AbstractNode.isAbstract(value));
+}

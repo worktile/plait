@@ -7,8 +7,14 @@ import { BRANCH_WIDTH } from '../../constants/default';
 import { DefaultAbstractNodeStyle } from '../../constants/node-style';
 import { getAvailableProperty } from './common';
 import { MindDefaultThemeColor, MindThemeColor } from '../../interfaces/theme-color';
+import { AbstractNode } from '@plait/layouts';
+import { isChildOfAbstract } from '../abstract/common';
 
 export const getBranchColorByMindElement = (board: PlaitBoard, element: MindElement) => {
+    if (AbstractNode.isAbstract(element) || isChildOfAbstract(board, element)) {
+        return getAbstractBranchColor(board, element);
+    }
+
     const branchColor = getAvailableProperty(board, element, 'branchColor');
     return branchColor || getDefaultBranchColor(board, element);
 };
