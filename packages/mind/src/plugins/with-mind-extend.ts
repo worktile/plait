@@ -1,8 +1,9 @@
-import { PlaitBoard } from '@plait/core';
+import { PlaitBoard, PlaitOptionsBoard } from '@plait/core';
 import { MindElement } from '../interfaces/element';
 import { EmojiItem } from '../interfaces/element-data';
 import { PlaitMindBoard } from './with-mind.board';
-import { MindOptions } from '../interfaces/options';
+import { WithMindOptions } from '../interfaces/options';
+import { WithMindPluginKey } from '../constants/default';
 
 export const withMindExtend = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitMindBoard;
@@ -11,9 +12,7 @@ export const withMindExtend = (board: PlaitBoard) => {
         throw new Error('Not implement drawEmoji method error.');
     };
 
-    newBoard.getMindOptions = (): MindOptions => {
-        return { spaceBetweenEmojis: 4, emojiPadding: 0 };
-    };
+    (board as PlaitOptionsBoard).setPluginOptions<WithMindOptions>(WithMindPluginKey, { spaceBetweenEmojis: 4, emojiPadding: 0 });
 
     return newBoard;
 };

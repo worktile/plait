@@ -2,7 +2,9 @@ import { BASE } from '../../constants/default';
 import { PlaitMind } from '../../interfaces/element';
 import { MindElement } from '../../interfaces/element';
 import { EmojiData } from '../../interfaces/element-data';
+import { WithMindOptions } from '../../interfaces/options';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
+import { WithMindPluginKey } from '../../public-api';
 import { getEmojisWidthHeight } from './emoji';
 
 const NodeDefaultSpace = {
@@ -74,7 +76,7 @@ export const NodeSpace = {
         return nodeAndText;
     },
     getEmojiLeftSpace(board: PlaitMindBoard, element: MindElement<EmojiData>) {
-        const options = board.getMindOptions();
+        const options = board.getPluginOptions<WithMindOptions>(WithMindPluginKey);
         const nodeAndText = getHorizontalSpaceBetweenNodeAndText(board, element);
         return nodeAndText - options.emojiPadding;
     },

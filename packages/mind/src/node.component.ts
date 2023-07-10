@@ -8,7 +8,8 @@ import {
     PlaitPluginElementContext,
     OnContextChanged,
     RectangleClient,
-    Point
+    Point,
+    PlaitOptionsBoard
 } from '@plait/core';
 import { isHorizontalLayout, AbstractNode, MindLayoutType } from '@plait/layouts';
 import { TextManageRef, TextManage } from '@plait/text';
@@ -31,6 +32,8 @@ import { drawLink } from './utils/draw/node-link/draw-link';
 import { getTopicRectangleByNode } from './utils/position/topic';
 import { NodeActiveDrawer } from './drawer/node-active.drawer';
 import { CollapseDrawer } from './drawer/node-collapse.drawer';
+import { WithMindOptions } from './interfaces/options';
+import { WithMindPluginKey } from './constants/default';
 
 // 1. When the text at the end has an italic attribute, the text is partially covered
 // 2. There will be some differences in the width measured by different browsers
@@ -86,7 +89,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.nodeInsertDrawer = new NodeInsertDrawer(this.board);
         this.activeDrawer = new NodeActiveDrawer(this.board);
         this.collapseDrawer = new CollapseDrawer(this.board);
-        const plugins = this.board.getMindOptions().textPlugins;
+        const plugins = this.board.getPluginOptions<WithMindOptions>(WithMindPluginKey).textPlugins;
 
         this.textManage = new TextManage(
             this.board,

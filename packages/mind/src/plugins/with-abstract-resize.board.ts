@@ -1,4 +1,4 @@
-import { PlaitBoard } from '@plait/core';
+import { PlaitOptionsBoard } from '@plait/core';
 import { MindElement } from '../interfaces/element';
 import { AbstractNode } from '@plait/layouts';
 
@@ -13,7 +13,7 @@ export enum AbstractResizeState {
     end = 'end'
 }
 
-export interface PlaitAbstractBoard extends PlaitBoard {
+export interface PlaitAbstractBoard extends PlaitOptionsBoard {
     onAbstractResize?: (state: AbstractResizeState) => void;
 }
 
