@@ -2,6 +2,7 @@ import {
     Path,
     PlaitBoard,
     PlaitHistoryBoard,
+    PlaitNode,
     Transforms,
     addSelectedElement,
     getSelectedElements,
@@ -79,40 +80,21 @@ export const withMindHotkey = (board: PlaitBoard) => {
                 event.preventDefault();
                 const targetMindElements = selectedElements.filter(el => MindElement.isMindElement(board, el)) as MindElement[];
                 const firstLevelElements = getFirstLevelElement(targetMindElements);
-                const deletableElements = firstLevelElements.reverse();
-                const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
-                MindTransforms.setAbstractsByRefs(board, abstractRefs);
 
-                const refs = deleteElementsHandleRightNodeCount(board, targetMindElements);
-                MindTransforms.setRightNodeCountByRefs(board, refs);
+                if (firstLevelElements.length > 0) {
+                    const deletableElements = [...firstLevelElements].reverse();
+                    const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
+                    MindTransforms.setAbstractsByRefs(board, abstractRefs);
 
-                MindTransforms.removeElements(board, targetMindElements);
+                    const refs = deleteElementsHandleRightNodeCount(board, targetMindElements);
+                    MindTransforms.setRightNodeCountByRefs(board, refs);
 
-                let activeElement: MindElement | undefined;
-                if (AbstractNode.isAbstract(firstLevelElements[0])) {
-                    const parent = MindElement.getParent(firstLevelElements[0]);
-                    activeElement = parent.children[firstLevelElements[0].start];
-                }
+                    MindTransforms.removeElements(board, targetMindElements);
 
-                const firstElement = firstLevelElements[0];
-                const firstElementParent = MindElement.findParent(firstElement);
-                const hasSameParent = firstLevelElements.every(element => {
-                    return MindElement.findParent(element) === firstElementParent;
-                });
-                if (firstElementParent && hasSameParent && !activeElement) {
-                    const firstElementIndex = firstElementParent.children.indexOf(firstElement);
-                    const childrenCount = firstElementParent.children.length;
-                    // active parent element
-                    if (childrenCount === firstLevelElements.length) {
-                        activeElement = firstElementParent;
-                    } else {
-                        if (firstElementIndex > 0) {
-                            activeElement = firstElementParent.children[firstElementIndex - 1];
-                        }
+                    const nextSelected = getNextSelectedElement(board, firstLevelElements);
+                    if (nextSelected) {
+                        addSelectedElement(board, nextSelected);
                     }
-                }
-                if (activeElement) {
-                    addSelectedElement(board, activeElement);
                 }
                 return;
             }
@@ -128,6 +110,40 @@ export const withMindHotkey = (board: PlaitBoard) => {
     };
 
     return board;
+};
+
+export const getNextSelectedElement = (board: PlaitBoard, firstLevelElements: MindElement[]) => {
+    let activeElement: MindElement | undefined;
+    const firstLevelElement = firstLevelElements[0];
+    const firstLevelElementPath = PlaitBoard.findPath(board, firstLevelElement);
+
+    let nextSelectedPath = firstLevelElementPath;
+    if (Path.hasPrevious(firstLevelElementPath)) {
+        nextSelectedPath = Path.previous(firstLevelElementPath);
+    }
+
+    if (AbstractNode.isAbstract(firstLevelElement)) {
+        const parent = MindElement.getParent(firstLevelElement);
+        if (!firstLevelElements.includes(parent.children[firstLevelElement.start])) {
+            activeElement = parent.children[firstLevelElement.start];
+        }
+    }
+
+    try {
+        if (!activeElement) {
+            activeElement = PlaitNode.get<MindElement>(board, nextSelectedPath);
+        }
+    } catch (error) {}
+
+    const firstElement = firstLevelElements[0];
+    const firstElementParent = MindElement.findParent(firstElement);
+    const hasSameParent = firstLevelElements.every(element => {
+        return MindElement.findParent(element) === firstElementParent;
+    });
+    if (firstElementParent && hasSameParent && !activeElement) {
+        activeElement = firstElementParent;
+    }
+    return activeElement;
 };
 
 export const isExpandHotkey = (event: KeyboardEvent) => {
