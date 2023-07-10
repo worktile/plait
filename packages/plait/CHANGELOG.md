@@ -1,5 +1,11 @@
 # plait
 
+## 0.15.1
+
+### Patch Changes
+
+-   [`884a06f9`](https://github.com/worktile/plait/commit/884a06f9c1b8f8ab88b16b4e3ce2b427a36d8ffc) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix hotkey import error
+
 ## 0.15.0
 
 ### Minor Changes
