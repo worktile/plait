@@ -20,6 +20,11 @@ import { measureDivSize } from './text-size';
 import { TextPlugin } from '../custom-types';
 import { PlaitTextEditor } from '../plugins/text.editor';
 
+export enum ExitOrigin {
+    'destroy' = 'destroy',
+    'default' = 'default'
+}
+
 export interface TextManageRef {
     newValue?: Element;
     width: number;
@@ -36,6 +41,8 @@ export class TextManage {
     isEditing = false;
 
     onSelectionChangeHandle: ((editor: PlaitTextEditor) => void) | null = null;
+
+    private exitHandle: (origin: ExitOrigin) => void = () => {};
 
     setEditing(value: boolean) {
         const editor = this.componentRef.instance.editor;
@@ -86,12 +93,11 @@ export class TextManage {
                 }),
                 tap(() => {
                     // 1.add editing class to set max width
-                    // 2.set isEditing state to avoid reset text during updating 
+                    // 2.set isEditing state to avoid reset text during updating
                     if (AngularEditor.isReadonly(editor) && !this.isEditing) {
                         this.setEditing(true);
                     }
                 }),
-                
                 debounceTime(0)
             )
             .subscribe(value => {
@@ -135,7 +141,7 @@ export class TextManage {
         }
     }
 
-    edit(onExit?: () => void) {
+    edit(onExitCallback?: (origin: ExitOrigin) => void) {
         IS_TEXT_EDITABLE.set(this.board, true);
         this.setEditing(true);
         this.componentRef.instance.readonly = false;
@@ -173,7 +179,7 @@ export class TextManage {
             if (!clickInNode && !isAttached) {
                 // handle composition input state, like: Chinese IME Composition Input
                 timer(0).subscribe(() => {
-                    exitHandle();
+                    this.exitHandle(ExitOrigin.default);
                 });
             }
         });
@@ -186,27 +192,33 @@ export class TextManage {
             if (event.key === 'Escape' || (event.key === 'Enter' && !event.shiftKey) || event.key === 'Tab') {
                 event.preventDefault();
                 event.stopPropagation();
-                exitHandle();
+                this.exitHandle(ExitOrigin.default);
                 return;
             }
             onKeydown(event);
         };
 
-        const exitHandle = () => {
+        this.exitHandle = (origin: ExitOrigin) => {
             this.setEditing(false);
-            this.updateRectangle();
+
+            if (origin === ExitOrigin.default) {
+                this.updateRectangle();
+            }
 
             mousedown$.unsubscribe();
             composition$.unsubscribe();
             editor.onKeydown = onKeydown;
 
-            this.componentRef.instance.readonly = true;
-            this.componentRef.changeDetectorRef.detectChanges();
+            if (origin === ExitOrigin.default) {
+                this.componentRef.instance.readonly = true;
+                this.componentRef.changeDetectorRef.detectChanges();
+            }
+
             IS_TEXT_EDITABLE.set(this.board, false);
             MERGING.set(this.board, false);
 
-            if (onExit) {
-                onExit();
+            if (onExitCallback) {
+                onExitCallback(origin);
             }
         };
     }
@@ -224,5 +236,6 @@ export class TextManage {
     destroy() {
         this.g?.remove();
         this.componentRef?.destroy();
+        this.exitHandle(ExitOrigin.destroy);
     }
 }

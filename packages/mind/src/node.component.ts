@@ -12,7 +12,7 @@ import {
     PlaitOptionsBoard
 } from '@plait/core';
 import { isHorizontalLayout, AbstractNode, MindLayoutType } from '@plait/layouts';
-import { TextManageRef, TextManage } from '@plait/text';
+import { TextManageRef, TextManage, ExitOrigin } from '@plait/text';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { Subject } from 'rxjs';
 import { drawRoundRectangleByNode } from './utils/draw/node-shape';
@@ -134,8 +134,10 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     editTopic() {
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: true });
-        this.textManage.edit(() => {
-            this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: false });
+        this.textManage.edit((origin: ExitOrigin) => {
+            if (origin === ExitOrigin.default) {
+                this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: false });
+            }
         });
     }
 
