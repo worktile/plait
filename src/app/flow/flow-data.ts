@@ -21,6 +21,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
             position: FlowPosition.top,
             marker: true
         },
+        height: 24,
         points: []
     },
     {
@@ -38,6 +39,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
             position: FlowPosition.left,
             marker: true
         },
+        height: 24,
         undeletable: true,
         points: []
     },
@@ -56,6 +58,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
             position: FlowPosition.left,
             marker: true
         },
+        height: 24,
         points: []
     },
     {
@@ -66,7 +69,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         },
         type: FlowElementType.node,
         width: 120,
-        height: 38,
+        height: 36,
         handles: [],
         undeletable: true,
         points: [[248, 153]]
@@ -79,7 +82,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         type: FlowElementType.node,
         points: [[400, 268.5]],
         width: 120,
-        height: 38,
+        height: 36,
         styles: {
             stroke: 'rgb(86, 171, 251)',
             fill: 'rgb(86, 171, 251)'
@@ -94,7 +97,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         type: FlowElementType.node,
         points: [[600, 268.5]],
         width: 120,
-        height: 38,
+        height: 36,
         styles: {
             stroke: 'rgb(246, 198, 89)',
             fill: 'rgb(246, 198, 89)',
@@ -109,7 +112,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         type: FlowElementType.node,
         points: [[900, 268.5]],
         width: 120,
-        height: 38,
+        height: 36,
         styles: {
             stroke: 'rgb(115, 216, 151)',
             fill: 'rgb(115, 216, 151)'

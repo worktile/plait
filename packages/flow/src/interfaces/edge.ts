@@ -26,6 +26,7 @@ export interface FlowEdgeHandle {
 export interface FlowEdge<T extends FlowBaseData = FlowBaseData> extends FlowElement<T> {
     source?: FlowEdgeHandle;
     target: FlowEdgeHandle;
+    height?: number;
 }
 
 export function isFlowEdgeElement(value: FlowElement): value is FlowEdge {
