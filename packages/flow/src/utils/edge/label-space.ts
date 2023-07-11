@@ -10,7 +10,7 @@ import { getEdgeTextXYPosition } from './text';
 function getLabelTextRect(board: PlaitBoard, edge: FlowEdge): RectangleClient {
     const text = ((edge.data?.text as Element).children[0] as BaseText).text;
     const { width } = getTextSize(board, text, undefined, { fontSize: EDGE_LABEL_FONTSIZE });
-    const height = TEXT_DEFAULT_HEIGHT;
+    const height = edge.labelOptions?.height || TEXT_DEFAULT_HEIGHT;
     const { x, y } = getEdgeTextXYPosition(board, edge, width, height);
     return {
         x,
