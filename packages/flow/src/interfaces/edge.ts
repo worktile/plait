@@ -23,10 +23,14 @@ export interface FlowEdgeHandle {
     marker?: FlowEdgeMarkerType;
 }
 
+export interface FlowEdgeLabelOptions {
+    height?: number;
+}
+
 export interface FlowEdge<T extends FlowBaseData = FlowBaseData> extends FlowElement<T> {
     source?: FlowEdgeHandle;
     target: FlowEdgeHandle;
-    height?: number;
+    labelOptions?: FlowEdgeLabelOptions;
 }
 
 export function isFlowEdgeElement(value: FlowElement): value is FlowEdge {

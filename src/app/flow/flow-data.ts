@@ -21,7 +21,9 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
             position: FlowPosition.top,
             marker: true
         },
-        height: 24,
+        labelOptions: {
+            height: 24
+        },
         points: []
     },
     {
@@ -39,7 +41,9 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
             position: FlowPosition.left,
             marker: true
         },
-        height: 24,
+        labelOptions: {
+            height: 24
+        },
         undeletable: true,
         points: []
     },
@@ -58,7 +62,9 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
             position: FlowPosition.left,
             marker: true
         },
-        height: 24,
+        labelOptions: {
+            height: 24
+        },
         points: []
     },
     {
