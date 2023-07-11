@@ -76,11 +76,10 @@ export const withNodeDnd = (board: PlaitBoard) => {
                 element => MindElement.isMindElement(board, element) && !element.isRoot && !AbstractNode.isAbstract(element)
             ) as MindElement[];
             const isMultiple = selectedElements.length > 0 && selectedElements.includes(targetElement);
-            const isSingle = !isMultiple && selectedElements.length === 0;
             if (isMultiple) {
                 activeElements = targetElements;
                 startPoint = point;
-            } else if (isSingle) {
+            } else {
                 activeElements = [targetElement];
                 startPoint = point;
             }
