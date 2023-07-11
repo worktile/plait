@@ -143,6 +143,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
             }
             if (dropTarget) {
                 const targetPathRef = board.pathRef(targetPath);
+                const targetPreviousPathRef = Path.hasPrevious(targetPath) && board.pathRef(Path.previous(targetPath));
                 const targetElementPathRef = board.pathRef(PlaitBoard.findPath(board, dropTarget.target));
                 let abstractRefs = getValidAbstractRefs(board, firstLevelElements);
                 const normalElements = firstLevelElements
@@ -186,9 +187,15 @@ export const withNodeDnd = (board: PlaitBoard) => {
                 let insertPath = targetPathRef.current;
                 const parentPath = Path.parent(targetPathRef.current || targetPath);
                 if (!insertPath) {
-                    const parent = PlaitNode.get(board, parentPath);
-                    const children = getNonAbstractChildren(parent);
-                    insertPath = [...parentPath, children.length || 0];
+                    //当插入位置和选中节点位置相同时，使用记录的 previousPath
+                    const previousPath = targetPreviousPathRef && targetPreviousPathRef.unref();
+                    if (previousPath) {
+                        insertPath = Path.next(previousPath);
+                    } else {
+                        const parent = PlaitNode.get(board, parentPath);
+                        const children = getNonAbstractChildren(parent);
+                        insertPath = [...parentPath, children.length || 0];
+                    }
                 }
 
                 MindTransforms.insertNodes(board, normalElements, insertPath);
