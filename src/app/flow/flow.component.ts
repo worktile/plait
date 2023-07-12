@@ -22,8 +22,8 @@ export class BasicFlowComponent implements OnInit {
     board!: CustomBoard;
 
     options: PlaitBoardOptions = {
-        readonly: true,
-        hideScrollbar: true,
+        readonly: false,
+        hideScrollbar: false,
         disabledScrollOnNonFocus: false
     };
 
