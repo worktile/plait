@@ -15,12 +15,9 @@ const normalizeWidthAndHeight = (board: PlaitBoard, width: number, height: numbe
 
 export const setTopic = (board: PlaitBoard, element: MindElement, topic: Element, width: number, height: number) => {
     const newElement = {
-        data: { topic },
+        data: { ...element.data },
         ...normalizeWidthAndHeight(board, width, height)
     } as MindElement;
-    if (MindElement.hasEmojis(element)) {
-        newElement.data.emojis = element.data.emojis;
-    }
     const path = PlaitBoard.findPath(board, element);
     Transforms.setNode(board, newElement, path);
 };

@@ -27,7 +27,7 @@ export const removeEmoji = (board: PlaitBoard, element: MindElement<EmojiData>, 
 
 export const replaceEmoji = (board: PlaitBoard, element: MindElement<EmojiData>, oldEmoji: EmojiItem, newEmoji: EmojiItem) => {
     const newElement = {
-        data: { topic: element.data.topic }
+        data: { ...element.data }
     } as MindElement;
     const newEmojis = element.data.emojis.map(value => {
         if (value === oldEmoji) {
