@@ -4,7 +4,7 @@ import { HitNodeHandle, getHitNodeHandle } from '../utils/handle/node';
 import { addHoverHandleInfo, deleteHoverHandleInfo } from '../utils/handle/hover-handle';
 import { DEFAULT_HANDLE_STYLES, HANDLE_BUFFER, HANDLE_DIAMETER } from '../constants/handle';
 import { isEdgeDragging } from '../utils/edge/dragging-edge';
-import { getCreateEdgeInfo } from '../utils/edge/create-edge';
+import { deleteCreateEdgeInfo, getCreateEdgeInfo } from '../utils/edge/create-edge';
 
 export const withHandleHover: PlaitPlugin = (board: PlaitBoard) => {
     const { globalMousemove, globalMouseup } = board;
@@ -39,6 +39,7 @@ export const withHandleHover: PlaitPlugin = (board: PlaitBoard) => {
                 if (previousHoverdHandle && !hoveredHandle) {
                     activeHandleElement?.remove();
                     previousHoverdHandle = null;
+                    deleteCreateEdgeInfo(board);
                 }
             }
         }
