@@ -11,9 +11,8 @@ import {
 } from '@plait/core';
 import { mockData } from './mock-data';
 import { withMind, PlaitMindBoard } from '@plait/mind';
-import { withEmojiExtend } from './emoji/with-emoji-extend';
 import { AbstractResizeState, MindThemeColors } from '@plait/mind';
-import { withImageExtend } from './image/with-image-extend';
+import { withMindExtend } from '../plugins/with-mind-extend';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
 
@@ -22,7 +21,7 @@ const LOCAL_DATA_KEY = 'plait-board-change-data';
     templateUrl: './editor.component.html'
 })
 export class BasicBoardEditorComponent implements OnInit {
-    plugins = [withMind, withEmojiExtend, withImageExtend];
+    plugins = [withMind, withMindExtend];
 
     value: PlaitElement[] = [...mockData];
 
