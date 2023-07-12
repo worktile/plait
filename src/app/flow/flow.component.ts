@@ -1,5 +1,5 @@
 import { Component, OnInit, Injector } from '@angular/core';
-import { PlaitBoardChangeEvent, PlaitElement, Viewport } from '@plait/core';
+import { PlaitBoardChangeEvent, PlaitBoardOptions, PlaitElement, Viewport } from '@plait/core';
 import { withFlow } from '@plait/flow';
 import { mockFlowData } from './flow-data';
 import { withCommon } from './plugins/with-common';
@@ -20,6 +20,12 @@ export class BasicFlowComponent implements OnInit {
     viewport!: Viewport;
 
     board!: CustomBoard;
+
+    options: PlaitBoardOptions = {
+        readonly: false,
+        hideScrollbar: false,
+        disabledScrollOnNonFocus: false
+    };
 
     constructor(private injector: Injector) {}
 
