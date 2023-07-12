@@ -34,13 +34,15 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.isHitSelection = (element, range) => {
-        const elementComponent = PlaitElement.getComponent(element) as FlowNodeComponent | FlowEdgeComponent;
-        if (FlowElement.isFlowElement(element) && elementComponent && board.selection) {
-            if (FlowNode.isFlowNodeElement(element)) {
-                return isHitNode(board, element, [range.anchor, range.focus]);
-            }
-            if (FlowEdge.isFlowEdgeElement(element)) {
-                return isHitEdge(board, element, range.focus);
+        if (!board.options.readonly) {
+            const elementComponent = PlaitElement.getComponent(element) as FlowNodeComponent | FlowEdgeComponent;
+            if (FlowElement.isFlowElement(element) && elementComponent && board.selection) {
+                if (FlowNode.isFlowNodeElement(element)) {
+                    return isHitNode(board, element, [range.anchor, range.focus]);
+                }
+                if (FlowEdge.isFlowEdgeElement(element)) {
+                    return isHitEdge(board, element, range.focus);
+                }
             }
         }
         return isHitSelection(element, range);
