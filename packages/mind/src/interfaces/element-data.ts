@@ -18,6 +18,7 @@ export interface BaseData {
 export interface EmojiData extends BaseData {
     emojis: EmojiItem[];
 }
+
 export interface ImageData extends BaseData {
     image: ImageItem;
 }
