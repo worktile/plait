@@ -1,5 +1,24 @@
 # mind
 
+## 0.16.0
+
+### Minor Changes
+
+-   [`682ec260`](https://github.com/worktile/plait/commit/682ec2602e66811669d18b77f0f2ef7e38eab5f2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle text exit when the node that was editing was deleted
+
+*   [`5c2db482`](https://github.com/worktile/plait/commit/5c2db4827d21cd9a2a5a4de278b40f263adfda05) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove special option entry in mind and use plait option
+
+-   [`d69471eb`](https://github.com/worktile/plait/commit/d69471eb187d15bdda129d338ef9a760ccdbfc8d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor get next selected element logic
+
+*   [`fadc6ad4`](https://github.com/worktile/plait/commit/fadc6ad42dc5d994f1d64701a9c9e9788a91967f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add isChildOfAbstract function
+    add default branch color and stroke for the abstract node and the children of abstract node
+
+### Patch Changes
+
+-   [#465](https://github.com/worktile/plait/pull/465) [`6631fc5c`](https://github.com/worktile/plait/commit/6631fc5c90e6bdf75c888c47273099d9a9260282) Thanks [@WBbug](https://github.com/WBbug)! - fix insert wrong path
+
+*   [`a3582ba4`](https://github.com/worktile/plait/commit/a3582ba4516385c9500110a124064df259cd954c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - should always fire dnd when exist valid targetElement
+
 ## 0.15.0
 
 ### Minor Changes

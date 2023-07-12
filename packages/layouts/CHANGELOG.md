@@ -1,5 +1,12 @@
 # layouts
 
+## 0.4.0
+
+### Minor Changes
+
+-   [`fadc6ad4`](https://github.com/worktile/plait/commit/fadc6ad42dc5d994f1d64701a9c9e9788a91967f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add isChildOfAbstract function
+    add default branch color and stroke for the abstract node and the children of abstract node
+
 ## 0.3.0
 
 ### Patch Changes

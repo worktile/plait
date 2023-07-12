@@ -1,5 +1,11 @@
 # plait
 
+## 0.16.0
+
+### Minor Changes
+
+-   [`d69471eb`](https://github.com/worktile/plait/commit/d69471eb187d15bdda129d338ef9a760ccdbfc8d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor get next selected element logic
+
 ## 0.15.1
 
 ### Patch Changes

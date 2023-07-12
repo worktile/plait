@@ -1,5 +1,13 @@
 # text
 
+## 0.11.0
+
+### Minor Changes
+
+-   [`682ec260`](https://github.com/worktile/plait/commit/682ec2602e66811669d18b77f0f2ef7e38eab5f2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle text exit when the node that was editing was deleted
+
+*   [#464](https://github.com/worktile/plait/pull/464) [`b6ddce4e`](https://github.com/worktile/plait/commit/b6ddce4e84cb7735d1c4f18aeceb2213e8fb5244) Thanks [@WBbug](https://github.com/WBbug)! - handle paste link
+
 ## 0.10.0
 
 ### Minor Changes

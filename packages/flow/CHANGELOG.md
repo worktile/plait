@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.5.1
+
+### Patch Changes
+
+-   [#466](https://github.com/worktile/plait/pull/466) [`68a3fb3d`](https://github.com/worktile/plait/commit/68a3fb3df52de1d28c9b257c781927dcd813c975) Thanks [@xinglu01](https://github.com/xinglu01)! - handle support edge height setting
+
 ## 0.5.0
 
 ### Minor Changes
