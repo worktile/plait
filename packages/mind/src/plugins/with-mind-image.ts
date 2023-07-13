@@ -22,7 +22,7 @@ export const withMindImage = (board: PlaitBoard) => {
     const { keydown, mousedown } = board;
 
     board.mousedown = (event: MouseEvent) => {
-        if (PlaitBoard.isReadonly(board) && !isMainPointer(event) && PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
+        if (PlaitBoard.isReadonly(board) || !isMainPointer(event) || PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
             mousedown(event);
             return;
         }
