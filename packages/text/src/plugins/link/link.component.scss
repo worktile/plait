@@ -2,23 +2,17 @@
 
 .plait-link-node {
     margin: 0 1px;
-    cursor: default;
     color: variables.$primary-color;
     text-decoration: none;
     background-color: transparent;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
 
     .link-break-char {
         font-size: 0;
         line-height: 0;
-    }
-}
-
-.plait-board-container.readonly,
-.plait-richtext-container .slate-editable-container.editing {
-    .plait-link-node {
-        cursor: pointer;
-        &:hover {
-            text-decoration: underline;
-        }
     }
 }
