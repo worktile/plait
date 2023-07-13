@@ -124,7 +124,7 @@ export const MindElement = {
     hasMounted(element: MindElement) {
         const component = PlaitElement.getComponent(element) as MindNodeComponent;
         return !!component;
-    }, 
+    },
     getTextEditor(element: MindElement) {
         const component = PlaitElement.getComponent(element) as MindNodeComponent;
         if (component) {
