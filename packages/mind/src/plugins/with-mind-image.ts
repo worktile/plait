@@ -9,10 +9,11 @@ import {
     PlaitPluginKey,
     PlaitElement,
     hotkeys,
-    clearSelectedElement
+    clearSelectedElement,
+    PlaitPointerType
 } from '@plait/core';
 import { MindElement } from '../interfaces';
-import { MindNodeComponent, MindTransforms, PlaitMindBoard, getImageForeignRectangle, isHitImage } from '../public-api';
+import { MindNodeComponent, MindTransforms, isHitImage } from '../public-api';
 import { ImageData } from '../interfaces/element-data';
 
 export const withMindImage = (board: PlaitBoard) => {
@@ -21,7 +22,7 @@ export const withMindImage = (board: PlaitBoard) => {
     const { keydown, mousedown } = board;
 
     board.mousedown = (event: MouseEvent) => {
-        if (!isMainPointer(event)) {
+        if (PlaitBoard.isReadonly(board) && !isMainPointer(event) && PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
             mousedown(event);
             return;
         }
@@ -56,7 +57,7 @@ export const withMindImage = (board: PlaitBoard) => {
     };
 
     board.keydown = (event: KeyboardEvent) => {
-        if (selectedImageElement && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
+        if (!PlaitBoard.isReadonly(board) && selectedImageElement && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
             MindTransforms.removeImage(board, selectedImageElement);
             selectedImageElement = null;
             return;
