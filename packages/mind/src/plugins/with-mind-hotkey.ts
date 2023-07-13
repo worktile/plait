@@ -76,7 +76,11 @@ export const withMindHotkey = (board: PlaitBoard) => {
                 return;
             }
 
-            if (selectedElements.length > 0 && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
+            if (
+                selectedElements.length > 0 &&
+                !event.defaultPrevented &&
+                (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))
+            ) {
                 event.preventDefault();
                 const targetMindElements = selectedElements.filter(el => MindElement.isMindElement(board, el)) as MindElement[];
                 const firstLevelElements = getFirstLevelElement(targetMindElements);
