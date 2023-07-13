@@ -61,7 +61,7 @@ export const copyNewNode = (node: MindElement) => {
 export const extractNodesText = (node: MindElement) => {
     let str = '';
     if (node) {
-        str += Node.string(node.data.topic.children[0]) + ' ';
+        str += Node.string(node.data.topic) + ' ';
         for (const childNode of node.children) {
             str += extractNodesText(childNode);
         }
