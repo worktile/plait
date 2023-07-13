@@ -11,8 +11,14 @@ export const withMindExtend = (board: PlaitBoard) => {
         return MindEmojiComponent;
     };
 
-    newBoard.getPluginOptions = () => {
-        return { ...getPluginOptions(WithMindPluginKey), emojiPadding: 4, spaceBetweenEmojis: 0, imageComponentType: MindImageComponent };
+    newBoard.getPluginOptions = (key: string) => {
+        return {
+            ...getPluginOptions(key),
+            isMultiple: true,
+            emojiPadding: 0,
+            spaceBetweenEmojis: 4,
+            imageComponentType: MindImageComponent
+        };
     };
 
     return newBoard;

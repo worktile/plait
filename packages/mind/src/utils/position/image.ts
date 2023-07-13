@@ -1,4 +1,4 @@
-import { RectangleClient } from '@plait/core';
+import { PlaitBoard, Range, RectangleClient } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
 import { ImageData } from '../../interfaces/element-data';
 import { getRectangleByNode } from './node';
@@ -18,3 +18,8 @@ export function getImageForeignRectangle(board: PlaitMindBoard, element: MindEle
         height
     };
 }
+
+export const isHitImage = (board: PlaitBoard, element: MindElement<ImageData>, range: Range) => {
+    const client = getImageForeignRectangle(board as PlaitMindBoard, element);
+    return RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
+};

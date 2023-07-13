@@ -1,16 +1,18 @@
-import { createForeignObject, createG } from '@plait/core';
-import { MindElement } from '../interfaces';
+import { PlaitBoard, RectangleClient, createForeignObject, createG } from '@plait/core';
+import { ImageData, MindElement } from '../interfaces';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
 import { getImageForeignRectangle } from '../utils';
 import { ComponentRef, ViewContainerRef } from '@angular/core';
 import { MindImageBaseComponent } from '../base/image-base.component';
 import { WithMindOptions } from '../interfaces/options';
-import { WithMindPluginKey } from '../constants';
+import { PRIMARY_COLOR, WithMindPluginKey } from '../constants';
 
 export class NodeImageDrawer {
     componentRef: ComponentRef<MindImageBaseComponent> | null = null;
 
     g?: SVGGElement;
+
+    activeG?: SVGGElement;
 
     constructor(private board: PlaitMindBoard, private viewContainerRef: ViewContainerRef) {}
 
@@ -46,6 +48,24 @@ export class NodeImageDrawer {
             return this.g;
         }
         return undefined;
+    }
+
+    drawActive(element: MindElement<ImageData>) {
+        this.destroyActive();
+
+        const imageRectangle = getImageForeignRectangle(this.board, element);
+        const rectangle = RectangleClient.getOutlineRectangle(imageRectangle, -1);
+        const roughSVG = PlaitBoard.getRoughSVG(this.board);
+        this.activeG = roughSVG.rectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height, {
+            stroke: PRIMARY_COLOR,
+            fill: '',
+            fillStyle: 'solid'
+        });
+        this.g?.append(this.activeG);
+    }
+
+    destroyActive() {
+        this.activeG?.remove();
     }
 
     destroy() {

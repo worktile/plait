@@ -15,7 +15,7 @@ const normalizeWidthAndHeight = (board: PlaitBoard, width: number, height: numbe
 
 export const setTopic = (board: PlaitBoard, element: MindElement, topic: Element, width: number, height: number) => {
     const newElement = {
-        data: { ...element.data },
+        data: { ...element.data, topic },
         ...normalizeWidthAndHeight(board, width, height)
     } as MindElement;
     const path = PlaitBoard.findPath(board, element);
