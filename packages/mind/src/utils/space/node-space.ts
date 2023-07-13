@@ -13,7 +13,9 @@ const NodeDefaultSpace = {
         emojiAndText: BASE * 1.5
     },
     vertical: {
-        nodeAndText: BASE * 1.5
+        nodeAndText: BASE * 1.5,
+        nodeAndImage: BASE,
+        imageAndText: BASE * 1.5
     }
 };
 
@@ -48,19 +50,29 @@ const getSpaceEmojiAndText = (element: MindElement) => {
 export const NodeSpace = {
     getNodeWidth(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getHorizontalSpaceBetweenNodeAndText(board, element);
+        const imageWidth = MindElement.hasImage(element) ? element.data.image?.width : 0;
         if (MindElement.hasEmojis(element)) {
             return (
                 NodeSpace.getEmojiLeftSpace(board, element) +
                 getEmojisWidthHeight(board, element).width +
                 getSpaceEmojiAndText(element) +
-                element.width +
+                Math.max(element.width, imageWidth) +
                 nodeAndText
             );
         }
-        return nodeAndText + element.width + nodeAndText;
+        return nodeAndText + Math.max(element.width, imageWidth) + nodeAndText;
     },
     getNodeHeight(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getVerticalSpaceBetweenNodeAndText(element);
+        if (MindElement.hasImage(element)) {
+            return (
+                NodeDefaultSpace.vertical.nodeAndImage +
+                element.data.image.height +
+                NodeDefaultSpace.vertical.imageAndText +
+                element.height +
+                nodeAndText
+            );
+        }
         return nodeAndText + element.height + nodeAndText;
     },
     getTextLeftSpace(board: PlaitMindBoard, element: MindElement) {
@@ -73,7 +85,14 @@ export const NodeSpace = {
     },
     getTextTopSpace(element: MindElement) {
         const nodeAndText = getVerticalSpaceBetweenNodeAndText(element);
-        return nodeAndText;
+        if (MindElement.hasImage(element)) {
+            return element.data.image.height + NodeDefaultSpace.vertical.nodeAndImage + NodeDefaultSpace.vertical.imageAndText;
+        } else {
+            return nodeAndText;
+        }
+    },
+    getImageTopSpace(element: MindElement) {
+        return NodeDefaultSpace.vertical.nodeAndImage;
     },
     getEmojiLeftSpace(board: PlaitMindBoard, element: MindElement<EmojiData>) {
         const options = board.getPluginOptions<WithMindOptions>(WithMindPluginKey);

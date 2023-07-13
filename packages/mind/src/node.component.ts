@@ -34,6 +34,7 @@ import { NodeActiveDrawer } from './drawer/node-active.drawer';
 import { CollapseDrawer } from './drawer/node-collapse.drawer';
 import { WithMindOptions } from './interfaces/options';
 import { WithMindPluginKey } from './constants/default';
+import { NodeImageDrawer } from './drawer/node-image.drawer';
 
 // 1. When the text at the end has an italic attribute, the text is partially covered
 // 2. There will be some differences in the width measured by different browsers
@@ -74,6 +75,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     nodeInsertDrawer!: NodeInsertDrawer;
 
+    imageDrawer!: NodeImageDrawer;
+
     textManage!: TextManage;
 
     activeDrawer!: NodeActiveDrawer;
@@ -89,6 +92,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.nodeInsertDrawer = new NodeInsertDrawer(this.board);
         this.activeDrawer = new NodeActiveDrawer(this.board);
         this.collapseDrawer = new CollapseDrawer(this.board);
+        this.imageDrawer = new NodeImageDrawer(this.board, this.viewContainerRef);
         const plugins = this.board.getPluginOptions<WithMindOptions>(WithMindPluginKey).textPlugins;
 
         this.textManage = new TextManage(
@@ -127,6 +131,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
         this.drawEmojis();
         this.drawExtend();
+        this.drawImage();
         if (PlaitMind.isMind(this.context.parent)) {
             this.g.classList.add('branch');
         }
@@ -156,6 +161,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.drawShape();
             this.drawLink();
             this.drawEmojis();
+            this.drawImage();
             this.drawExtend();
             this.textManage.updateText(this.element.data.topic);
             this.textManage.updateRectangle();
@@ -175,6 +181,13 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         const g = this.nodeEmojisDrawer.drawEmojis(this.element);
         if (g) {
             this.g.append(g);
+        }
+    }
+
+    drawImage() {
+        const image = this.imageDrawer.drawImage(this.element);
+        if (image) {
+            this.g.append(image);
         }
     }
 
@@ -261,6 +274,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         super.ngOnDestroy();
         this.textManage.destroy();
         this.nodeEmojisDrawer.destroy();
+        this.imageDrawer.destroy();
         this.destroy$.next();
         this.destroy$.complete();
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {

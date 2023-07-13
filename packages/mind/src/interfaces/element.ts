@@ -2,7 +2,7 @@ import { isIndentedLayout, MindLayoutType } from '@plait/layouts';
 import { NODE_TO_PARENT, Path, PlaitBoard, PlaitElement, PlaitNode, Point } from '@plait/core';
 import { MindQueries } from '../queries';
 import { ELEMENT_TO_NODE } from '../utils';
-import { BaseData, EmojiData } from './element-data';
+import { BaseData, EmojiData, ImageData } from './element-data';
 import { MindNodeComponent } from '../node.component';
 
 export interface MindElement<T = BaseData> extends PlaitElement {
@@ -106,6 +106,13 @@ export const MindElement = {
     },
     hasEmojis(element: MindElement): element is MindElement<EmojiData> {
         if (element.data.emojis) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    hasImage(element: MindElement): element is MindElement<ImageData> {
+        if (element.data.image) {
             return true;
         } else {
             return false;
