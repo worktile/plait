@@ -13,6 +13,7 @@ import { PlaitMindBoard } from '../../plugins/with-mind.board';
 import { hasPreviousOrNextOfDropPath } from '../dnd/common';
 import { drawLink } from './node-link/draw-link';
 import { getEmojiForeignRectangle } from '../position/emoji';
+import { getImageForeignRectangle } from '../position';
 
 export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offsetX: number, offsetY: number) => {
     const activeComponent = PlaitElement.getComponent(element) as MindNodeComponent;
@@ -46,6 +47,19 @@ export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offset
             foreignRectangle.y + offsetY
         );
         dragFakeNodeG?.append(fakeEmojisG);
+    }
+
+    if (MindElement.hasImage(element)) {
+        const fakeImageG = (activeComponent.imageDrawer.g as SVGGElement).cloneNode(true) as SVGGElement;
+        const foreignRectangle = getImageForeignRectangle(board as PlaitMindBoard, element);
+        updateForeignObject(
+            fakeImageG,
+            foreignRectangle.width,
+            foreignRectangle.height,
+            foreignRectangle.x + offsetX,
+            foreignRectangle.y + offsetY
+        );
+        dragFakeNodeG?.append(fakeImageG);
     }
     return dragFakeNodeG;
 };
