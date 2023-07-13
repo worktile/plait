@@ -79,6 +79,8 @@ export class TextManage {
 
         const editor = this.componentRef.instance.editor;
 
+        (editor as PlaitTextEditor).board = this.board;
+
         let previousValue: Descendant[] = this.componentRef.instance.children;
 
         this.componentRef.instance.onChange
