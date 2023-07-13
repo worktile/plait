@@ -12,7 +12,12 @@ export const mockData: PlaitMind[] = [
                 id: '1-1',
                 data: {
                     topic: { children: [{ text: '富文本' }] },
-                    emojis: [{ name: '🤩' }, { name: '🤘' }]
+                    emojis: [{ name: '🤩' }, { name: '🤘' }],
+                    image: {
+                        url: 'https://atlas-rc.pingcode.com/files/public/5ffa68d453ffebf847cf49b9/origin-url',
+                        width: 364,
+                        height: 160
+                    }
                 },
                 children: [
                     {
