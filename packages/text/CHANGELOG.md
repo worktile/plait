@@ -1,5 +1,15 @@
 # text
 
+## 0.12.0
+
+### Minor Changes
+
+-   [`b344175f`](https://github.com/worktile/plait/commit/b344175fc49f7a4fcbf34e468242be7dc4c005bc) Thanks [@WBbug](https://github.com/WBbug)! - add board on editor
+
+### Patch Changes
+
+-   [`4bd573d2`](https://github.com/worktile/plait/commit/4bd573d2a026dff52b9069901956151a865fcd4f) Thanks [@WBbug](https://github.com/WBbug)! - change link style, draw image when dnd
+
 ## 0.11.0
 
 ### Minor Changes

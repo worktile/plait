@@ -1,5 +1,19 @@
 # mind
 
+## 0.17.0
+
+### Minor Changes
+
+-   [`ffd11bdd`](https://github.com/worktile/plait/commit/ffd11bdd8728201a9d397cd26de558c631c665f1) Thanks [@WBbug](https://github.com/WBbug)! - support select image and delete
+
+*   [`73bad8f3`](https://github.com/worktile/plait/commit/73bad8f33f65308396986f3bea6b061f562204c2) Thanks [@WBbug](https://github.com/WBbug)! - support add image
+
+### Patch Changes
+
+-   [`ce6596f8`](https://github.com/worktile/plait/commit/ce6596f876491ab10c989104e7e73dbb42e38177) Thanks [@WBbug](https://github.com/WBbug)! - get topic string
+
+*   [`4bd573d2`](https://github.com/worktile/plait/commit/4bd573d2a026dff52b9069901956151a865fcd4f) Thanks [@WBbug](https://github.com/WBbug)! - change link style, draw image when dnd
+
 ## 0.16.0
 
 ### Minor Changes
