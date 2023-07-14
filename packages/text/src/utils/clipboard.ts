@@ -11,5 +11,5 @@ export const getTextFromClipboard = (data: DataTransfer | null) => {
             return res[0];
         }
     }
-    return text || '';
+    return text.trim() || '';
 };
