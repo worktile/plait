@@ -17,6 +17,9 @@ export const withHotkey = (board: PlaitBoard) => {
             depthFirstRecursion<Ancestor>(
                 board,
                 node => {
+                    if (PlaitBoard.isBoard(node)) {
+                        return;
+                    }
                     elements.push(node as PlaitElement);
                 },
                 node => {
