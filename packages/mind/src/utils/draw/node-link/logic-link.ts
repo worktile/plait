@@ -20,7 +20,7 @@ export function drawLogicLink(
     const branchWidth = defaultStrokeWidth || getBranchWidthByMindElement(board, parent.origin);
     const hasStraightLine = branchShape === BranchShape.polyline ? true : !parent.origin.isRoot;
     const parentShape = getShapeByElement(board, parent.origin);
-    const shape = node.origin.shape ? node.origin.shape : parentShape;
+    const shape = getShapeByElement(board, node.origin);
     const hasUnderlineShape = shape === MindElementShape.underline;
     const hasUnderlineShapeOfParent = parentShape === MindElementShape.underline;
     const nodeClient = getRectangleByNode(node);
