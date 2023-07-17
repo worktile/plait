@@ -80,52 +80,23 @@ export function getPoints({
         // sourceTarget means we take x from source and y from target, targetSource is the opposite
         const sourceTarget: XYPosition[] = [{ x: sourceGapped.x, y: targetGapped.y }];
         const targetSource: XYPosition[] = [{ x: targetGapped.x, y: sourceGapped.y }];
+        const centerPoints: XYPosition = {
+            x:
+                targetGapped.x > sourceGapped.x
+                    ? targetGapped.x - Math.abs(targetGapped.x - sourceGapped.x) / 2
+                    : sourceGapped.x - Math.abs(targetGapped.x - sourceGapped.x) / 2,
+            y:
+                targetGapped.y > sourceGapped.y
+                    ? targetGapped.y - Math.abs(targetGapped.y - sourceGapped.y) / 2
+                    : sourceGapped.y - Math.abs(targetGapped.y - sourceGapped.y) / 2
+        };
         // this handles edges with same handle positions
         if (dirAccessor === 'x') {
             points = sourceDir.x === currDir ? targetSource : sourceTarget;
-            labelPoints = sourceDir.x === currDir ? targetSource : sourceTarget;
-            labelPoints =
-                sourceDir.x === currDir
-                    ? [
-                          {
-                              x:
-                                  targetGapped.x > sourceGapped.x
-                                      ? targetGapped.x - Math.abs(Math.abs(targetGapped.x) - Math.abs(sourceGapped.x)) / 2
-                                      : sourceGapped.x - Math.abs(Math.abs(targetGapped.x) - Math.abs(sourceGapped.x)) / 2,
-                              y: sourceGapped.y
-                          }
-                      ]
-                    : [
-                          {
-                              x: sourceGapped.x,
-                              y:
-                                  targetGapped.y > sourceGapped.y
-                                      ? targetGapped.y - Math.abs(Math.abs(targetGapped.y) - Math.abs(sourceGapped.y)) / 2
-                                      : sourceGapped.y - Math.abs(Math.abs(targetGapped.y) - Math.abs(sourceGapped.y)) / 2
-                          }
-                      ];
+            labelPoints = sourceDir.x === currDir ? [{ x: centerPoints.x, y: sourceGapped.y }] : [{ x: sourceGapped.x, y: centerPoints.y }];
         } else {
             points = sourceDir.y === currDir ? sourceTarget : targetSource;
-            labelPoints =
-                sourceDir.y === currDir
-                    ? [
-                          {
-                              x: sourceGapped.x,
-                              y:
-                                  targetGapped.y > sourceGapped.y
-                                      ? targetGapped.y - Math.abs(Math.abs(targetGapped.y) - Math.abs(sourceGapped.y)) / 2
-                                      : sourceGapped.y - Math.abs(Math.abs(targetGapped.y) - Math.abs(sourceGapped.y)) / 2
-                          }
-                      ]
-                    : [
-                          {
-                              x:
-                                  targetGapped.x > sourceGapped.x
-                                      ? targetGapped.x - Math.abs(Math.abs(targetGapped.x) - Math.abs(sourceGapped.x)) / 2
-                                      : sourceGapped.x - Math.abs(Math.abs(targetGapped.x) - Math.abs(sourceGapped.x)) / 2,
-                              y: sourceGapped.y
-                          }
-                      ];
+            labelPoints = sourceDir.y === currDir ? [{ x: sourceGapped.x, y: centerPoints.y }] : [{ x: centerPoints.x, y: sourceGapped.y }];
         }
 
         // these are conditions for handling mixed handle positions like right -> bottom for example
@@ -140,26 +111,7 @@ export function getPoints({
 
             if (flipSourceTarget) {
                 points = dirAccessor === 'x' ? sourceTarget : targetSource;
-                labelPoints =
-                    dirAccessor === 'x'
-                        ? [
-                              {
-                                  x: sourceGapped.x,
-                                  y:
-                                      targetGapped.y > sourceGapped.y
-                                          ? targetGapped.y - Math.abs(Math.abs(targetGapped.y) - Math.abs(sourceGapped.y)) / 2
-                                          : sourceGapped.y - Math.abs(Math.abs(targetGapped.y) - Math.abs(sourceGapped.y)) / 2
-                              }
-                          ]
-                        : [
-                              {
-                                  x:
-                                      targetGapped.x > sourceGapped.x
-                                          ? targetGapped.x - Math.abs(Math.abs(targetGapped.x) - Math.abs(sourceGapped.x)) / 2
-                                          : sourceGapped.x - Math.abs(Math.abs(targetGapped.x) - Math.abs(sourceGapped.x)) / 2,
-                                  y: sourceGapped.y
-                              }
-                          ];
+                labelPoints = dirAccessor === 'x' ? [{ x: sourceGapped.x, y: centerPoints.y }] : [{ x: centerPoints.x, y: sourceGapped.y }];
             }
         }
 
