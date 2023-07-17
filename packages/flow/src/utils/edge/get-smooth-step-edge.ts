@@ -25,7 +25,7 @@ export function getPoints({
     targetPosition: FlowPosition;
     center: Partial<XYPosition>;
     offset: number;
-}): [XYPosition[], number, number, number, number] {
+}): [XYPosition[], number, number, number, number, number, number] {
     const sourceDir = handleDirections[sourcePosition];
     const targetDir = handleDirections[targetPosition];
     const sourceGapped: XYPosition = { x: source.x + sourceDir.x * offset, y: source.y + sourceDir.y * offset };
@@ -40,13 +40,14 @@ export function getPoints({
 
     let points: XYPosition[] = [];
     let centerX, centerY;
+    let labelPoints: XYPosition[] = [];
+    let labelX, labelY;
     const [defaultCenterX, defaultCenterY, defaultOffsetX, defaultOffsetY] = getEdgeCenter({
         sourceX: source.x,
         sourceY: source.y,
         targetX: target.x,
         targetY: target.y
     });
-
     // opposite handle positions, default case
     if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
         centerX = center.x || defaultCenterX;
@@ -65,12 +66,16 @@ export function getPoints({
             { x: sourceGapped.x, y: centerY },
             { x: targetGapped.x, y: centerY }
         ];
-
         if (sourceDir[dirAccessor] === currDir) {
+            // TODO: 截止状态在右侧
             points = dirAccessor === 'x' ? verticalSplit : horizontalSplit;
         } else {
+            // TODO: 重合或截止状态在左侧
             points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
         }
+        labelPoints = [{ x: center.x || defaultCenterX, y: center.y || defaultCenterY }];
+        labelX = labelPoints[0].x;
+        labelY = labelPoints[0].y;
     } else {
         // sourceTarget means we take x from source and y from target, targetSource is the opposite
         const sourceTarget: XYPosition[] = [{ x: sourceGapped.x, y: targetGapped.y }];
@@ -78,8 +83,49 @@ export function getPoints({
         // this handles edges with same handle positions
         if (dirAccessor === 'x') {
             points = sourceDir.x === currDir ? targetSource : sourceTarget;
+            labelPoints = sourceDir.x === currDir ? targetSource : sourceTarget;
+            labelPoints =
+                sourceDir.x === currDir
+                    ? [
+                          {
+                              x:
+                                  targetGapped.x > sourceGapped.x
+                                      ? targetGapped.x - Math.abs(Math.abs(targetGapped.x) - Math.abs(sourceGapped.x)) / 2
+                                      : sourceGapped.x - Math.abs(Math.abs(targetGapped.x) - Math.abs(sourceGapped.x)) / 2,
+                              y: sourceGapped.y
+                          }
+                      ]
+                    : [
+                          {
+                              x: sourceGapped.x,
+                              y:
+                                  targetGapped.y > sourceGapped.y
+                                      ? targetGapped.y - Math.abs(Math.abs(targetGapped.y) - Math.abs(sourceGapped.y)) / 2
+                                      : sourceGapped.y - Math.abs(Math.abs(targetGapped.y) - Math.abs(sourceGapped.y)) / 2
+                          }
+                      ];
         } else {
             points = sourceDir.y === currDir ? sourceTarget : targetSource;
+            labelPoints =
+                sourceDir.y === currDir
+                    ? [
+                          {
+                              x: sourceGapped.x,
+                              y:
+                                  targetGapped.y > sourceGapped.y
+                                      ? targetGapped.y - Math.abs(Math.abs(targetGapped.y) - Math.abs(sourceGapped.y)) / 2
+                                      : sourceGapped.y - Math.abs(Math.abs(targetGapped.y) - Math.abs(sourceGapped.y)) / 2
+                          }
+                      ]
+                    : [
+                          {
+                              x:
+                                  targetGapped.x > sourceGapped.x
+                                      ? targetGapped.x - Math.abs(Math.abs(targetGapped.x) - Math.abs(sourceGapped.x)) / 2
+                                      : sourceGapped.x - Math.abs(Math.abs(targetGapped.x) - Math.abs(sourceGapped.x)) / 2,
+                              y: sourceGapped.y
+                          }
+                      ];
         }
 
         // these are conditions for handling mixed handle positions like right -> bottom for example
@@ -94,16 +140,37 @@ export function getPoints({
 
             if (flipSourceTarget) {
                 points = dirAccessor === 'x' ? sourceTarget : targetSource;
+                labelPoints =
+                    dirAccessor === 'x'
+                        ? [
+                              {
+                                  x: sourceGapped.x,
+                                  y:
+                                      targetGapped.y > sourceGapped.y
+                                          ? targetGapped.y - Math.abs(Math.abs(targetGapped.y) - Math.abs(sourceGapped.y)) / 2
+                                          : sourceGapped.y - Math.abs(Math.abs(targetGapped.y) - Math.abs(sourceGapped.y)) / 2
+                              }
+                          ]
+                        : [
+                              {
+                                  x:
+                                      targetGapped.x > sourceGapped.x
+                                          ? targetGapped.x - Math.abs(Math.abs(targetGapped.x) - Math.abs(sourceGapped.x)) / 2
+                                          : sourceGapped.x - Math.abs(Math.abs(targetGapped.x) - Math.abs(sourceGapped.x)) / 2,
+                                  y: sourceGapped.y
+                              }
+                          ];
             }
         }
 
         centerX = points[0].x;
         centerY = points[0].y;
+        labelX = labelPoints[0].x;
+        labelY = labelPoints[0].y;
     }
 
     const pathPoints = [source, sourceGapped, ...points, targetGapped, target];
-
-    return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
+    return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY, labelX, labelY];
 }
 
 const getDirection = ({
