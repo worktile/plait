@@ -8,7 +8,10 @@ export const DefaultAbstractNodeStyle = {
 };
 
 export const DefaultNodeStyle = {
-    strokeWidth: 3,
     branchWidth: 3,
-    fill: 'none'
+    shape: {
+        rectangleRadius: 4,
+        strokeWidth: 3,
+        fill: 'none'
+    }
 };

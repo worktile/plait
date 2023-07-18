@@ -13,9 +13,9 @@ export function drawRoundRectangleByNode(board: PlaitBoard, node: MindNode) {
 
 export function drawRoundRectangleByElement(board: PlaitBoard, nodeRectangle: RectangleClient, element: MindElement) {
     const defaultRootFill = getMindThemeColor(board).rootFill;
-    const fill = element.fill ? element.fill : element.isRoot ? defaultRootFill : DefaultNodeStyle.fill;
+    const fill = element.fill ? element.fill : element.isRoot ? defaultRootFill : DefaultNodeStyle.shape.fill;
     const stroke = getStrokeByMindElement(board, element);
-    const strokeWidth = element.strokeWidth ? element.strokeWidth : DefaultNodeStyle.strokeWidth;
+    const strokeWidth = element.strokeWidth ? element.strokeWidth : DefaultNodeStyle.shape.strokeWidth;
 
     const nodeG = drawRoundRectangle(
         PlaitBoard.getRoughSVG(board),
@@ -28,7 +28,9 @@ export function drawRoundRectangleByElement(board: PlaitBoard, nodeRectangle: Re
             strokeWidth,
             fill,
             fillStyle: 'solid'
-        }
+        },
+        false,
+        DefaultNodeStyle.shape.rectangleRadius
     );
 
     return nodeG;

@@ -18,11 +18,15 @@ export function drawRoundRectangle(
     const width = Math.abs(x1 - x2);
     const height = Math.abs(y1 - y2);
 
-    const defaultRadius = Math.min(width, height) / 8;
-    let radius = borderRadius || defaultRadius;
-    if (defaultRadius > MAX_RADIUS) {
-        radius = outline ? MAX_RADIUS + 2 : MAX_RADIUS;
+    let radius = borderRadius || 0;
+    if (radius === 0) {
+        const defaultRadius = Math.min(width, height) / 8;
+        let radius = defaultRadius;
+        if (defaultRadius > MAX_RADIUS) {
+            radius = outline ? MAX_RADIUS + 2 : MAX_RADIUS;
+        }
     }
+    
 
     const point1 = [x1 + radius, y1];
     const point2 = [x2 - radius, y1];

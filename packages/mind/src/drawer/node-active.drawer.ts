@@ -6,6 +6,7 @@ import { PRIMARY_COLOR } from '../constants/default';
 import { AbstractNode } from '@plait/layouts';
 import { drawAbstractIncludedOutline } from '../utils/draw/abstract-outline';
 import { AbstractHandlePosition } from '../plugins/with-abstract-resize.board';
+import { DefaultNodeStyle } from '../constants/node-style';
 
 export interface ActiveData {
     selected: boolean;
@@ -40,7 +41,8 @@ export class NodeActiveDrawer extends BaseDrawer<ActiveData> {
             x + width + 2,
             y + height + 2,
             { stroke: PRIMARY_COLOR, strokeWidth: 2, fill: '' },
-            true
+            true,
+            DefaultNodeStyle.shape.rectangleRadius + 1
         );
         this.g.appendChild(strokeG);
 
