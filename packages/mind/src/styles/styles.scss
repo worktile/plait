@@ -19,10 +19,7 @@ $primary: #4e8afa;
             }
         }
         .slate-editable-container {
-            cursor: default;
-            min-width: 5px;
             &.editing {
-                cursor: text;
                 max-width: 34em;
             }
         }

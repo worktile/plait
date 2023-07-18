@@ -57,7 +57,9 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     ngOnInit(): void {
         super.ngOnInit();
         this.textManage = new TextManage(this.board, this.viewContainerRef, () => {
-            return EdgeLabelSpace.getLabelTextRect(this.board, this.element);
+            const rect = EdgeLabelSpace.getLabelTextRect(this.board, this.element);
+            rect.width = rect.width + 4;
+            return rect;
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         const isActive = isSelectedElement(this.board, this.element);

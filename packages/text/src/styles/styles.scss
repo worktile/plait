@@ -12,6 +12,12 @@
     .slate-editable-container {
         outline: none;
         padding: 0;
+        cursor: default;
+        min-width: 5px;
+        display: inline-block;
+        &.editing {
+            cursor: text;
+        }
     }
 
     [the-underlined][the-strike] {

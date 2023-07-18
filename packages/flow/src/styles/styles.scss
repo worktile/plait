@@ -9,6 +9,11 @@
             width: 100%;
         }
     }
+    .flow-edge-richtext {
+        .plait-richtext-container {
+            justify-content: left;
+        }
+    }
     .flow-handle {
         cursor: crosshair;
     }
