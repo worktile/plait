@@ -94,7 +94,10 @@ export function getPoints({
             labelPoints = sourceDir.x === currDir ? [{ x: centerPoints.x, y: sourceGapped.y }] : [{ x: sourceGapped.x, y: centerPoints.y }];
         } else {
             points = sourceDir.y === currDir ? sourceTarget : targetSource;
-            labelPoints = sourceDir.y === currDir ? [{ x: sourceGapped.x, y: centerPoints.y }] : [{ x: centerPoints.x, y: sourceGapped.y }];
+            labelPoints =
+                sourceDir.y === currDir
+                    ? [{ x: sourceGapped.y === targetGapped.y ? centerPoints.x : sourceGapped.x, y: centerPoints.y }]
+                    : [{ x: centerPoints.x, y: sourceGapped.y }];
         }
 
         // these are conditions for handling mixed handle positions like right -> bottom for example
