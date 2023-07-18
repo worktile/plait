@@ -67,10 +67,8 @@ export function getPoints({
             { x: targetGapped.x, y: centerY }
         ];
         if (sourceDir[dirAccessor] === currDir) {
-            // TODO: 截止状态在右侧
             points = dirAccessor === 'x' ? verticalSplit : horizontalSplit;
         } else {
-            // TODO: 重合或截止状态在左侧
             points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
         }
         labelPoints = [{ x: center.x || defaultCenterX, y: center.y || defaultCenterY }];
