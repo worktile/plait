@@ -69,6 +69,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.onChange = () => {
+        onChange();
         const movingNodes = getMovingElements(board);
         if (movingNodes?.length) {
             const moveElement = movingNodes[0];
