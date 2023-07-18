@@ -36,7 +36,8 @@ export class NodeActiveDrawer extends BaseDrawer<ActiveData> {
         const node = MindElement.getNode(element);
         const rectangle = getRectangleByNode(node);
         const activeStrokeWidth = 2;
-        const offset = (getStrokeWidthByElement(this.board, element) + activeStrokeWidth) / 2;
+        // add 0.1 to avoid white gap
+        const offset = (getStrokeWidthByElement(this.board, element) + activeStrokeWidth) / 2 - 0.1;
         const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
         const strokeG = drawRoundRectangle(
             PlaitBoard.getRoughSVG(this.board),
