@@ -1,10 +1,19 @@
-import { PlaitPlugin, Transforms, addSelectedElement, getSelectedElements, hotkeys } from '@plait/core';
-import { FlowEdge, FlowElement, FlowNode, createFlowEdge, getCreateEdgeInfo, getEdgesByNodeId, getFlowNodeById } from '@plait/flow';
+import { PlaitElement, PlaitPlugin, Transforms, addSelectedElement, getMovingElements, getSelectedElements, hotkeys } from '@plait/core';
+import {
+    FlowEdge,
+    FlowEdgeComponent,
+    FlowElement,
+    FlowNode,
+    createFlowEdge,
+    getCreateEdgeInfo,
+    getEdgesByNodeId,
+    getFlowNodeById
+} from '@plait/flow';
 import { Element, Text } from 'slate';
 import { CustomBoard } from '../interfaces/board';
 
 export const withCommon: PlaitPlugin = (board: CustomBoard) => {
-    const { mouseup, keydown } = board;
+    const { mouseup, keydown, onChange } = board;
 
     board.mouseup = event => {
         const newEdge = getCreateEdgeInfo(board);
@@ -58,6 +67,22 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
             }
         }
         keydown(event);
+    };
+
+    board.onChange = () => {
+        onChange();
+        const movingNodes = getMovingElements(board);
+        if (movingNodes?.length) {
+            // 拖拽移动时 不展示 label 处理
+            const moveElement = movingNodes[0];
+            if (FlowNode.isFlowNodeElement(moveElement as FlowElement)) {
+                const relationEdges = getEdgesByNodeId(board, moveElement.id);
+                relationEdges.map(item => {
+                    const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;
+                    flowEdgeComponent.destroyRichtext();
+                });
+            }
+        }
     };
 
     return board;
