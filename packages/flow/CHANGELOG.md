@@ -1,5 +1,13 @@
 # @plait/flow
 
+## 0.5.2
+
+### Patch Changes
+
+-   [`f00a5e29`](https://github.com/worktile/plait/commit/f00a5e290af9da1603e9f07d6a8b45ceb88405b1) Thanks [@xinglu01](https://github.com/xinglu01)! - delete create edge info when not active handle element
+
+*   [`30d3eca9`](https://github.com/worktile/plait/commit/30d3eca9016779afe60946e594744ea4eb5e8e81) Thanks [@xinglu01](https://github.com/xinglu01)! - read only mode disable selection and dragging
+
 ## 0.5.1
 
 ### Patch Changes

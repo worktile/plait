@@ -1,5 +1,11 @@
 # plait
 
+## 0.16.1
+
+### Patch Changes
+
+-   [`4b9b3f83`](https://github.com/worktile/plait/commit/4b9b3f8319d483172c40bf961f920a0acdb2051d) Thanks [@WBbug](https://github.com/WBbug)! - return when select board
+
 ## 0.16.0
 
 ### Minor Changes
