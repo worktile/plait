@@ -4,7 +4,7 @@ import { getAvailableProperty } from './common';
 import { getDefaultBranchColor, getMindThemeColor } from './branch';
 import { AbstractNode } from '@plait/layouts';
 import { isChildOfAbstract } from '../abstract/common';
-import { DefaultAbstractNodeStyle } from '../../constants/node-style';
+import { DefaultAbstractNodeStyle, DefaultNodeStyle } from '../../constants/node-style';
 
 export const getStrokeByMindElement = (board: PlaitBoard, element: MindElement) => {
     if (PlaitMind.isMind(element)) {
@@ -13,10 +13,17 @@ export const getStrokeByMindElement = (board: PlaitBoard, element: MindElement) 
     }
 
     if (AbstractNode.isAbstract(element) || isChildOfAbstract(board, element)) {
-        return element.strokeColor || DefaultAbstractNodeStyle.strokeColor;;
+        return element.strokeColor || DefaultAbstractNodeStyle.shape.strokeColor;
     }
 
     return getAvailableProperty(board, element, 'strokeColor') || getDefaultBranchColor(board, element);
+};
+
+export const getStrokeWidthByElement = (board: PlaitBoard, element: MindElement) => {
+    const strokeWidth =
+        element.strokeWidth ||
+        (AbstractNode.isAbstract(element) ? DefaultAbstractNodeStyle.shape.strokeWidth : DefaultNodeStyle.shape.strokeWidth);
+    return strokeWidth;
 };
 
 export const getShapeByElement = (board: PlaitBoard, element: MindElement): MindElementShape => {

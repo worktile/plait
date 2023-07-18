@@ -58,19 +58,9 @@ export const withMind = (board: PlaitBoard) => {
         const mindElement = element as MindElement;
         const shouldClearProperty =
             !PlaitBoard.isBoard(element) && (mindElement?.branchColor || mindElement?.fill || mindElement?.strokeColor);
-        const isAbstract = AbstractNode.isAbstract(element);
         if (shouldClearProperty) {
             const path = PlaitBoard.findPath(board, element);
-
-            if (isAbstract) {
-                Transforms.setNode(
-                    board,
-                    { fill: null, strokeColor: DefaultAbstractNodeStyle.strokeColor, branchColor: DefaultAbstractNodeStyle.branchColor },
-                    path
-                );
-            } else {
-                Transforms.setNode(board, { fill: null, strokeColor: null, branchColor: null }, path);
-            }
+            Transforms.setNode(board, { fill: null, strokeColor: null, branchColor: null }, path);
         }
     };
 

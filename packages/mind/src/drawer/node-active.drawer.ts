@@ -1,4 +1,4 @@
-import { PlaitBoard, createG, drawRoundRectangle } from '@plait/core';
+import { PlaitBoard, RectangleClient, createG, drawRoundRectangle } from '@plait/core';
 import { MindElement, BaseData } from '../interfaces';
 import { BaseDrawer } from '../base/base.drawer';
 import { getRectangleByNode } from '../utils/position/node';
@@ -7,6 +7,7 @@ import { AbstractNode } from '@plait/layouts';
 import { drawAbstractIncludedOutline } from '../utils/draw/abstract-outline';
 import { AbstractHandlePosition } from '../plugins/with-abstract-resize.board';
 import { DefaultNodeStyle } from '../constants/node-style';
+import { getStrokeWidthByElement } from '../utils/node-style/shape';
 
 export interface ActiveData {
     selected: boolean;
@@ -33,19 +34,21 @@ export class NodeActiveDrawer extends BaseDrawer<ActiveData> {
             activeG.append(this.abstractOutlineG);
         }
         const node = MindElement.getNode(element);
-        let { x, y, width, height } = getRectangleByNode(node);
+        const rectangle = getRectangleByNode(node);
+        const activeStrokeWidth = 2;
+        const offset = (getStrokeWidthByElement(this.board, element) + activeStrokeWidth) / 2;
+        const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
         const strokeG = drawRoundRectangle(
             PlaitBoard.getRoughSVG(this.board),
-            x - 2,
-            y - 2,
-            x + width + 2,
-            y + height + 2,
-            { stroke: PRIMARY_COLOR, strokeWidth: 2, fill: '' },
+            activeRectangle.x,
+            activeRectangle.y,
+            activeRectangle.x + activeRectangle.width,
+            activeRectangle.y + activeRectangle.height,
+            { stroke: PRIMARY_COLOR, strokeWidth: activeStrokeWidth, fill: '' },
             true,
-            DefaultNodeStyle.shape.rectangleRadius + 1
+            DefaultNodeStyle.shape.rectangleRadius + offset
         );
         this.g.appendChild(strokeG);
-
         return activeG;
     }
 
