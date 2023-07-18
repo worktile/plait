@@ -44,20 +44,6 @@ export class NodeActiveDrawer extends BaseDrawer<ActiveData> {
         );
         this.g.appendChild(strokeG);
 
-        if (!data.isEditing) {
-            const fillG = drawRoundRectangle(
-                PlaitBoard.getRoughSVG(this.board),
-                x - 2,
-                y - 2,
-                x + width + 2,
-                y + height + 2,
-                { stroke: PRIMARY_COLOR, fill: PRIMARY_COLOR, fillStyle: 'solid' },
-                true
-            );
-            fillG.style.opacity = '0.15';
-            this.g.appendChild(fillG);
-        }
-
         return activeG;
     }
 
