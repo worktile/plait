@@ -26,6 +26,14 @@ export const getStrokeWidthByElement = (board: PlaitBoard, element: MindElement)
     return strokeWidth;
 };
 
+export const getFillByElement = (board: PlaitBoard, element: MindElement) => {
+    if (element.fill) {
+        return element.fill;
+    }
+    const defaultRootFill = getMindThemeColor(board).rootFill;
+    return element.isRoot ? defaultRootFill : DefaultNodeStyle.shape.fill;
+};
+
 export const getShapeByElement = (board: PlaitBoard, element: MindElement): MindElementShape => {
     const shape = getAvailableProperty(board, element, 'shape');
     return shape || MindElementShape.roundRectangle;

@@ -33,14 +33,14 @@ export const getAbstractBranchWidth = (board: PlaitBoard, element: MindElement) 
     if (!isNullOrUndefined(element.branchWidth)) {
         return element.branchWidth;
     }
-    return DefaultAbstractNodeStyle.branchWidth;
+    return DefaultAbstractNodeStyle.branch.width;
 };
 
 export const getAbstractBranchColor = (board: PlaitBoard, element: MindElement) => {
     if (element.branchColor) {
         return element.branchColor;
     }
-    return DefaultAbstractNodeStyle.branchColor;
+    return DefaultAbstractNodeStyle.branch.color;
 };
 
 export const getNextBranchColor = (board: PlaitBoard, root: MindElement) => {
@@ -66,6 +66,6 @@ export const getMindThemeColor = (board: PlaitBoard) => {
     if (themeColor && MindThemeColor.isMindThemeColor(themeColor)) {
         return themeColor;
     } else {
-        return MindDefaultThemeColor
+        return MindDefaultThemeColor;
     }
 };
