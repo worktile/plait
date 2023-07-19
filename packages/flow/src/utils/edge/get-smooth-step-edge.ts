@@ -40,8 +40,6 @@ export function getPoints({
 
     let points: XYPosition[] = [];
     let centerX, centerY;
-    let centerPoints: XYPosition[] = [];
-    // let labelX, labelY;
     const [defaultCenterX, defaultCenterY, defaultOffsetX, defaultOffsetY] = getEdgeCenter({
         sourceX: source.x,
         sourceY: source.y,
