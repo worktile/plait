@@ -1,5 +1,11 @@
 # mind
 
+## 0.19.0
+
+### Minor Changes
+
+-   [`f9816b72`](https://github.com/worktile/plait/commit/f9816b72cf31950e2a9c9a8e1624f51d002ecde6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract getFillByElement to get node fill color
+
 ## 0.18.0
 
 ### Minor Changes
