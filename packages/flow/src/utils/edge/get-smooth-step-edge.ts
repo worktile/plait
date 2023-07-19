@@ -69,8 +69,6 @@ export function getPoints({
         } else {
             points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
         }
-        centerX = center.x || defaultCenterX;
-        centerY = center.y || defaultCenterY;
     } else {
         // sourceTarget means we take x from source and y from target, targetSource is the opposite
         const sourceTarget: XYPosition[] = [{ x: sourceGapped.x, y: targetGapped.y }];
@@ -98,7 +96,7 @@ export function getPoints({
             }
         }
 
-        const { x, y } = getCenter(sourceGapped, targetGapped, dirAccessor, sourceDir, currDir, flipSourceTarget)[0];
+        const { x, y } = getCenter(sourceGapped, targetGapped, dirAccessor, sourceDir, currDir, flipSourceTarget);
         centerX = x;
         centerY = y;
     }
@@ -114,14 +112,14 @@ const getCenter = (
     sourceDir: XYPosition,
     currDir: number,
     flipSourceTarget = false
-): XYPosition[] => {
+): XYPosition => {
     const center: XYPosition = {
         x: Math.max(targetGapped.x, sourceGapped.x) - Math.abs(targetGapped.x - sourceGapped.x) / 2,
         y: Math.max(targetGapped.y, sourceGapped.y) - Math.abs(targetGapped.y - sourceGapped.y) / 2
     };
-    const compare = Math.abs(targetGapped.x - sourceGapped.x) > Math.abs(targetGapped.y - sourceGapped.y);
-    const targetSource = compare ? [{ x: center.x, y: sourceGapped.y }] : [{ x: targetGapped.x, y: center.y }];
-    const sourceTarget = compare ? [{ x: center.x, y: targetGapped.y }] : [{ x: sourceGapped.x, y: center.y }];
+    const isOffsetXGreater = Math.abs(targetGapped.x - sourceGapped.x) > Math.abs(targetGapped.y - sourceGapped.y);
+    const targetSource = isOffsetXGreater ? { x: center.x, y: sourceGapped.y } : { x: targetGapped.x, y: center.y };
+    const sourceTarget = isOffsetXGreater ? { x: center.x, y: targetGapped.y } : { x: sourceGapped.x, y: center.y };
 
     let centerPoints;
     if (dirAccessor === 'x') {
