@@ -46,7 +46,6 @@ export function getPoints({
         targetX: target.x,
         targetY: target.y
     });
-
     // opposite handle positions, default case
     if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
         centerX = center.x || defaultCenterX;
@@ -65,7 +64,6 @@ export function getPoints({
             { x: sourceGapped.x, y: centerY },
             { x: targetGapped.x, y: centerY }
         ];
-
         if (sourceDir[dirAccessor] === currDir) {
             points = dirAccessor === 'x' ? verticalSplit : horizontalSplit;
         } else {
@@ -83,12 +81,13 @@ export function getPoints({
         }
 
         // these are conditions for handling mixed handle positions like right -> bottom for example
+        let flipSourceTarget;
         if (sourcePosition !== targetPosition) {
             const dirAccessorOpposite = dirAccessor === 'x' ? 'y' : 'x';
             const isSameDir = sourceDir[dirAccessor] === targetDir[dirAccessorOpposite];
             const sourceGtTargetOppo = sourceGapped[dirAccessorOpposite] > targetGapped[dirAccessorOpposite];
             const sourceLtTargetOppo = sourceGapped[dirAccessorOpposite] < targetGapped[dirAccessorOpposite];
-            const flipSourceTarget =
+            flipSourceTarget =
                 (sourceDir[dirAccessor] === 1 && ((!isSameDir && sourceGtTargetOppo) || (isSameDir && sourceLtTargetOppo))) ||
                 (sourceDir[dirAccessor] !== 1 && ((!isSameDir && sourceLtTargetOppo) || (isSameDir && sourceGtTargetOppo)));
 
@@ -97,14 +96,42 @@ export function getPoints({
             }
         }
 
-        centerX = points[0].x;
-        centerY = points[0].y;
+        const { x, y } = getCenter(sourceGapped, targetGapped, dirAccessor, sourceDir, currDir, flipSourceTarget);
+        centerX = x;
+        centerY = y;
     }
 
     const pathPoints = [source, sourceGapped, ...points, targetGapped, target];
-
     return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
 }
+
+const getCenter = (
+    sourceGapped: XYPosition,
+    targetGapped: XYPosition,
+    dirAccessor: 'x' | 'y',
+    sourceDir: XYPosition,
+    currDir: number,
+    flipSourceTarget = false
+): XYPosition => {
+    const center: XYPosition = {
+        x: Math.max(targetGapped.x, sourceGapped.x) - Math.abs(targetGapped.x - sourceGapped.x) / 2,
+        y: Math.max(targetGapped.y, sourceGapped.y) - Math.abs(targetGapped.y - sourceGapped.y) / 2
+    };
+    const isOffsetXGreater = Math.abs(targetGapped.x - sourceGapped.x) > Math.abs(targetGapped.y - sourceGapped.y);
+    const targetSource = isOffsetXGreater ? { x: center.x, y: sourceGapped.y } : { x: targetGapped.x, y: center.y };
+    const sourceTarget = isOffsetXGreater ? { x: center.x, y: targetGapped.y } : { x: sourceGapped.x, y: center.y };
+
+    let centerPoints;
+    if (dirAccessor === 'x') {
+        centerPoints = sourceDir.x === currDir ? targetSource : sourceTarget;
+    } else {
+        centerPoints = sourceDir.y === currDir ? sourceTarget : targetSource;
+    }
+    if (flipSourceTarget) {
+        centerPoints = dirAccessor === 'x' ? sourceTarget : targetSource;
+    }
+    return centerPoints;
+};
 
 const getDirection = ({
     source,
