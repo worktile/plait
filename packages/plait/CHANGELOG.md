@@ -1,5 +1,16 @@
 # plait
 
+## 0.17.0
+
+### Minor Changes
+
+-   [`164997a1`](https://github.com/worktile/plait/commit/164997a1ad4c1ff3dee7fb2413864cb49c00f529) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - draw active mind-node by stroke width
+    remove abstract handle in applyTheme
+
+### Patch Changes
+
+-   [`2e18752c`](https://github.com/worktile/plait/commit/2e18752cc8ddd3b0d7168a3560302dfd561cc4a6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify mind node rectangle-shape radius
+
 ## 0.16.1
 
 ### Patch Changes

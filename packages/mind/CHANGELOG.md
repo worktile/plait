@@ -1,5 +1,20 @@
 # mind
 
+## 0.18.0
+
+### Minor Changes
+
+-   [#477](https://github.com/worktile/plait/pull/477) [`55a852c8`](https://github.com/worktile/plait/commit/55a852c87e2b87cf0331570e8c7bdcd66df57f37) Thanks [@WBbug](https://github.com/WBbug)! - delete active fill
+
+*   [`164997a1`](https://github.com/worktile/plait/commit/164997a1ad4c1ff3dee7fb2413864cb49c00f529) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - draw active mind-node by stroke width
+    remove abstract handle in applyTheme
+
+### Patch Changes
+
+-   [`2e18752c`](https://github.com/worktile/plait/commit/2e18752cc8ddd3b0d7168a3560302dfd561cc4a6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify mind node rectangle-shape radius
+
+*   [`0a5df364`](https://github.com/worktile/plait/commit/0a5df364cae210122ecd00c3f7e0b0e99f795c64) Thanks [@WBbug](https://github.com/WBbug)! - fix get wrong shape
+
 ## 0.17.0
 
 ### Minor Changes
