@@ -8,8 +8,7 @@ import {
     PlaitPluginElementContext,
     OnContextChanged,
     RectangleClient,
-    Point,
-    PlaitOptionsBoard
+    Point
 } from '@plait/core';
 import { isHorizontalLayout, AbstractNode, MindLayoutType } from '@plait/layouts';
 import { TextManageRef, TextManage, ExitOrigin } from '@plait/text';
