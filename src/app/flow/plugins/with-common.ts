@@ -1,10 +1,21 @@
-import { PlaitPlugin, Transforms, addSelectedElement, getSelectedElements, hotkeys } from '@plait/core';
-import { FlowEdge, FlowElement, FlowNode, createFlowEdge, getCreateEdgeInfo, getEdgesByNodeId, getFlowNodeById } from '@plait/flow';
+import { PlaitElement, PlaitPlugin, Transforms, addSelectedElement, getMovingElements, getSelectedElements, hotkeys } from '@plait/core';
+import {
+    FlowEdge,
+    FlowEdgeComponent,
+    FlowElement,
+    FlowNode,
+    createFlowEdge,
+    getCreateEdgeInfo,
+    getEdgesByNodeId,
+    getFlowNodeById
+} from '@plait/flow';
 import { Element, Text } from 'slate';
 import { CustomBoard } from '../interfaces/board';
 
 export const withCommon: PlaitPlugin = (board: CustomBoard) => {
-    const { mouseup, keydown } = board;
+    const { mouseup, keydown, mousemove, globalMouseup } = board;
+
+    let relationEdges: FlowEdge[];
 
     board.mouseup = event => {
         const newEdge = getCreateEdgeInfo(board);
@@ -58,6 +69,38 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
             }
         }
         keydown(event);
+    };
+
+    board.mousemove = event => {
+        mousemove(event);
+        if (!board.options.readonly) {
+            const movingNodes = getMovingElements(board);
+            if (movingNodes?.length) {
+                const moveElement = movingNodes[0];
+                if (FlowNode.isFlowNodeElement(moveElement as FlowElement)) {
+                    relationEdges = getEdgesByNodeId(board, moveElement.id);
+                    relationEdges.map(item => {
+                        const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;
+                        flowEdgeComponent.destroyRichtext();
+                    });
+                }
+            }
+        }
+        return mousemove(event);
+    };
+
+    board.globalMouseup = event => {
+        const movingNodes = getMovingElements(board);
+        if (movingNodes?.length) {
+            const moveElement = movingNodes[0];
+            if (FlowNode.isFlowNodeElement(moveElement as FlowElement)) {
+                (relationEdges || []).map(item => {
+                    const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;
+                    flowEdgeComponent.drawElement();
+                });
+            }
+        }
+        return globalMouseup(event);
     };
 
     return board;

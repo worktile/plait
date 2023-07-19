@@ -21,7 +21,7 @@ import { isHitNode } from '../utils/node/is-hit-node';
 import { withHandleHover } from './with-handle-hover';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, isHitSelection, isMovable, onChange, getRectangle } = board;
+    const { drawElement, isHitSelection, isMovable, getRectangle, mousemove } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (FlowElement.isFlowElement(context.element)) {
@@ -68,8 +68,8 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
         return getRectangle(element);
     };
 
-    board.onChange = () => {
-        onChange();
+    board.mousemove = event => {
+        mousemove(event);
         const movingNodes = getMovingElements(board);
         if (movingNodes?.length) {
             const moveElement = movingNodes[0];
@@ -81,6 +81,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                 });
             }
         }
+        return mousemove(event);
     };
 
     (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: false });
