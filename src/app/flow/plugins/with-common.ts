@@ -97,6 +97,7 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
                 flowEdgeComponent.drawElement();
             });
         }
+        relationEdges = [];
         return globalMouseup(event);
     };
 
