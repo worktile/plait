@@ -81,7 +81,6 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                 });
             }
         }
-        return onChange();
     };
 
     (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: false });

@@ -25,7 +25,7 @@ export function getPoints({
     targetPosition: FlowPosition;
     center: Partial<XYPosition>;
     offset: number;
-}): [XYPosition[], number, number, number, number, number, number] {
+}): [XYPosition[], number, number, number, number] {
     const sourceDir = handleDirections[sourcePosition];
     const targetDir = handleDirections[targetPosition];
     const sourceGapped: XYPosition = { x: source.x + sourceDir.x * offset, y: source.y + sourceDir.y * offset };
@@ -40,8 +40,8 @@ export function getPoints({
 
     let points: XYPosition[] = [];
     let centerX, centerY;
-    let labelPoints: XYPosition[] = [];
-    let labelX, labelY;
+    let centerPoints: XYPosition[] = [];
+    // let labelX, labelY;
     const [defaultCenterX, defaultCenterY, defaultOffsetX, defaultOffsetY] = getEdgeCenter({
         sourceX: source.x,
         sourceY: source.y,
@@ -71,60 +71,71 @@ export function getPoints({
         } else {
             points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
         }
-        labelPoints = [{ x: center.x || defaultCenterX, y: center.y || defaultCenterY }];
-        labelX = labelPoints[0].x;
-        labelY = labelPoints[0].y;
+        centerX = center.x || defaultCenterX;
+        centerY = center.y || defaultCenterY;
     } else {
         // sourceTarget means we take x from source and y from target, targetSource is the opposite
         const sourceTarget: XYPosition[] = [{ x: sourceGapped.x, y: targetGapped.y }];
         const targetSource: XYPosition[] = [{ x: targetGapped.x, y: sourceGapped.y }];
-        const centerPoints: XYPosition = {
-            x:
-                targetGapped.x > sourceGapped.x
-                    ? targetGapped.x - Math.abs(targetGapped.x - sourceGapped.x) / 2
-                    : sourceGapped.x - Math.abs(targetGapped.x - sourceGapped.x) / 2,
-            y:
-                targetGapped.y > sourceGapped.y
-                    ? targetGapped.y - Math.abs(targetGapped.y - sourceGapped.y) / 2
-                    : sourceGapped.y - Math.abs(targetGapped.y - sourceGapped.y) / 2
-        };
         // this handles edges with same handle positions
         if (dirAccessor === 'x') {
             points = sourceDir.x === currDir ? targetSource : sourceTarget;
-            labelPoints = sourceDir.x === currDir ? [{ x: centerPoints.x, y: sourceGapped.y }] : [{ x: sourceGapped.x, y: centerPoints.y }];
         } else {
             points = sourceDir.y === currDir ? sourceTarget : targetSource;
-            labelPoints =
-                sourceDir.y === currDir
-                    ? [{ x: sourceGapped.y === targetGapped.y ? centerPoints.x : sourceGapped.x, y: centerPoints.y }]
-                    : [{ x: centerPoints.x, y: sourceGapped.y }];
         }
 
         // these are conditions for handling mixed handle positions like right -> bottom for example
+        let flipSourceTarget;
         if (sourcePosition !== targetPosition) {
             const dirAccessorOpposite = dirAccessor === 'x' ? 'y' : 'x';
             const isSameDir = sourceDir[dirAccessor] === targetDir[dirAccessorOpposite];
             const sourceGtTargetOppo = sourceGapped[dirAccessorOpposite] > targetGapped[dirAccessorOpposite];
             const sourceLtTargetOppo = sourceGapped[dirAccessorOpposite] < targetGapped[dirAccessorOpposite];
-            const flipSourceTarget =
+            flipSourceTarget =
                 (sourceDir[dirAccessor] === 1 && ((!isSameDir && sourceGtTargetOppo) || (isSameDir && sourceLtTargetOppo))) ||
                 (sourceDir[dirAccessor] !== 1 && ((!isSameDir && sourceLtTargetOppo) || (isSameDir && sourceGtTargetOppo)));
 
             if (flipSourceTarget) {
                 points = dirAccessor === 'x' ? sourceTarget : targetSource;
-                labelPoints = dirAccessor === 'x' ? [{ x: sourceGapped.x, y: centerPoints.y }] : [{ x: centerPoints.x, y: sourceGapped.y }];
             }
         }
 
-        centerX = points[0].x;
-        centerY = points[0].y;
-        labelX = labelPoints[0].x;
-        labelY = labelPoints[0].y;
+        const { x, y } = getCenter(sourceGapped, targetGapped, dirAccessor, sourceDir, currDir, flipSourceTarget)[0];
+        centerX = x;
+        centerY = y;
     }
 
     const pathPoints = [source, sourceGapped, ...points, targetGapped, target];
-    return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY, labelX, labelY];
+    return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
 }
+
+const getCenter = (
+    sourceGapped: XYPosition,
+    targetGapped: XYPosition,
+    dirAccessor: 'x' | 'y',
+    sourceDir: XYPosition,
+    currDir: number,
+    flipSourceTarget = false
+): XYPosition[] => {
+    const center: XYPosition = {
+        x: Math.max(targetGapped.x, sourceGapped.x) - Math.abs(targetGapped.x - sourceGapped.x) / 2,
+        y: Math.max(targetGapped.y, sourceGapped.y) - Math.abs(targetGapped.y - sourceGapped.y) / 2
+    };
+    const compare = Math.abs(targetGapped.x - sourceGapped.x) > Math.abs(targetGapped.y - sourceGapped.y);
+    const targetSource = compare ? [{ x: center.x, y: sourceGapped.y }] : [{ x: targetGapped.x, y: center.y }];
+    const sourceTarget = compare ? [{ x: center.x, y: targetGapped.y }] : [{ x: sourceGapped.x, y: center.y }];
+
+    let centerPoints;
+    if (dirAccessor === 'x') {
+        centerPoints = sourceDir.x === currDir ? targetSource : sourceTarget;
+    } else {
+        centerPoints = sourceDir.y === currDir ? sourceTarget : targetSource;
+    }
+    if (flipSourceTarget) {
+        centerPoints = dirAccessor === 'x' ? sourceTarget : targetSource;
+    }
+    return centerPoints;
+};
 
 const getDirection = ({
     source,
