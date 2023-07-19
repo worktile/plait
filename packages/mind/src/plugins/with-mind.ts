@@ -9,7 +9,8 @@ import {
     Transforms,
     Range,
     depthFirstRecursion,
-    PlaitElement
+    PlaitElement,
+    getIsRecursionFunc
 } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces';
 import { PlaitMindComponent } from '../mind.component';
@@ -18,24 +19,20 @@ import { getFirstLevelElement, deleteElementHandleAbstract, deleteElementsHandle
 import { getRectangleByNode, isHitMindElement } from '../utils/position/node';
 import { withNodeDnd } from './with-node-dnd';
 import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
-import { AbstractNode } from '@plait/layouts';
 import { editTopic } from '../utils/node/common';
 import { withAbstract } from './with-abstract-resize';
 import { withMindExtend } from './with-mind-extend';
-import { TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { MindTransforms } from '../transforms';
 import { withCreateMind } from './with-mind-create';
-import { DefaultAbstractNodeStyle } from '../constants/node-style';
 import { withMindHotkey } from './with-mind-hotkey';
 import { withNodeHover } from './with-node-hover';
-import { buildText, getTextFromClipboard, getTextSize } from '@plait/text';
+import { buildText, getTextFromClipboard } from '@plait/text';
 import { withMindImage } from './with-mind-image';
 
 export const withMind = (board: PlaitBoard) => {
     const {
         drawElement,
         dblclick,
-        keydown,
         insertFragment,
         setFragment,
         deleteFragment,
@@ -110,13 +107,7 @@ export const withMind = (board: PlaitBoard) => {
                             editTopic(node);
                         }
                     },
-                    node => {
-                        if (PlaitBoard.isBoard(node) || board.isRecursion(node)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
+                    getIsRecursionFunc(board)
                 );
             });
         if (PlaitBoard.hasBeenTextEditing(board)) {

@@ -1,6 +1,6 @@
 import { PlaitBoard } from '../interfaces/board';
 import { Ancestor } from '../interfaces/node';
-import { depthFirstRecursion } from './tree';
+import { depthFirstRecursion, getIsRecursionFunc } from './tree';
 import { BOARD_TO_SELECTED_ELEMENT } from './weak-maps';
 import { Selection, Range } from '../interfaces/selection';
 import { PlaitElement } from '../interfaces/element';
@@ -26,13 +26,7 @@ export const getHitElements = (board: PlaitBoard, selection?: Selection, match: 
                 selectedElements.push(node);
             }
         },
-        node => {
-            if (PlaitBoard.isBoard(node) || board.isRecursion(node)) {
-                return true;
-            } else {
-                return false;
-            }
-        },
+        getIsRecursionFunc(board),
         true
     );
     return selectedElements;

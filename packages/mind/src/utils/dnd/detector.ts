@@ -1,5 +1,5 @@
 import { MindElement, PlaitMind } from '../../interfaces/element';
-import { PlaitBoard, Point, depthFirstRecursion, Path } from '@plait/core';
+import { PlaitBoard, Point, depthFirstRecursion, Path, getIsRecursionFunc } from '@plait/core';
 import { DetectResult, MindNode } from '../../interfaces/node';
 import { getRectangleByNode } from '../position/node';
 import { MindQueries } from '../../queries';
@@ -101,13 +101,7 @@ export const detectDropTarget = (
                 dropTarget = { target: node.origin, detectResult: detectResult[0] };
             }
         },
-        node => {
-            if (PlaitBoard.isBoard(node) || board.isRecursion(node)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        getIsRecursionFunc(board)
     );
     return dropTarget;
 };

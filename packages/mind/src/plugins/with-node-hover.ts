@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, depthFirstRecursion, throttleRAF, toPoint, transformPoint } from '@plait/core';
+import { PlaitBoard, PlaitElement, depthFirstRecursion, getIsRecursionFunc, throttleRAF, toPoint, transformPoint } from '@plait/core';
 import { MindElement } from '../interfaces/element';
 import { isHitMindElement } from '../utils/position/node';
 
@@ -24,16 +24,10 @@ export const withNodeHover = (board: PlaitBoard) => {
                         target = element;
                     }
                 },
-                node => {
-                    if (PlaitBoard.isBoard(node) || board.isRecursion(node)) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                },
+                getIsRecursionFunc(board),
                 true
             );
-            
+
             if (hoveredMindElement && target && hoveredMindElement === target) {
                 return;
             }
@@ -59,7 +53,7 @@ export const withNodeHover = (board: PlaitBoard) => {
             hoveredMindElement = null;
         }
         mouseleave(event);
-    }
+    };
 
     return board;
 };
@@ -67,11 +61,11 @@ export const withNodeHover = (board: PlaitBoard) => {
 export const addHovered = (element: MindElement) => {
     const component = PlaitElement.getComponent(element);
     component.g.classList.add('hovered');
-}
+};
 
 export const removeHovered = (element: MindElement) => {
     const component = PlaitElement.getComponent(element);
     if (component && component.g) {
         component.g.classList.remove('hovered');
     }
-}
+};

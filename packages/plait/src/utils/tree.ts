@@ -1,3 +1,6 @@
+import { PlaitBoard } from "../interfaces/board";
+import { PlaitElement } from "../interfaces/element";
+
 export function depthFirstRecursion<T extends TreeNode = TreeNode>(
     node: T,
     callback: (node: T) => void,
@@ -16,6 +19,16 @@ export function depthFirstRecursion<T extends TreeNode = TreeNode>(
     }
     callback(node);
 }
+
+export const getIsRecursionFunc = (board: PlaitBoard) => {
+    return (element: PlaitElement | PlaitBoard) => {
+        if (PlaitBoard.isBoard(element) || board.isRecursion(element)) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+};
 
 export interface TreeNode {
     children?: TreeNode[];
