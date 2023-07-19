@@ -59,7 +59,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
                 this.setActiveNodeToTop();
                 this.drawActiveMask();
                 this.drawHandles();
-            } else {
+            } else if (previous.selected) {
                 this.destroyActiveMask();
                 this.destroyHandles();
             }

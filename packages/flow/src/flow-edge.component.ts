@@ -74,7 +74,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
                 this.setActiveNodeToTop();
                 this.drawElement(value.element, value.selected);
                 this.drawHandles();
-            } else {
+            } else if (previous.selected) {
                 this.drawElement(value.element);
                 this.destroyHandles();
             }
