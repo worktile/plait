@@ -89,15 +89,14 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
     };
 
     board.globalMouseup = event => {
-        const movingNodes = getMovingElements(board);
-        if (movingNodes?.length && FlowNode.isFlowNodeElement(movingNodes[0] as FlowElement)) {
-            (relationEdges || []).map(item => {
+        if (relationEdges?.length) {
+            relationEdges.map(item => {
                 const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;
                 flowEdgeComponent.g.classList.remove('element-moving-edge');
             });
         }
         relationEdges = [];
-        return globalMouseup(event);
+        globalMouseup(event);
     };
 
     return board;
