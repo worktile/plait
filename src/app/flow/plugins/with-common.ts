@@ -81,12 +81,11 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
                     relationEdges = getEdgesByNodeId(board, moveElement.id);
                     relationEdges.map(item => {
                         const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;
-                        flowEdgeComponent.destroyRichtext();
+                        flowEdgeComponent.g.classList.add('element-moving-edge');
                     });
                 }
             }
         }
-        return mousemove(event);
     };
 
     board.globalMouseup = event => {
@@ -94,7 +93,7 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
         if (movingNodes?.length && FlowNode.isFlowNodeElement(movingNodes[0] as FlowElement)) {
             (relationEdges || []).map(item => {
                 const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;
-                flowEdgeComponent.drawElement();
+                flowEdgeComponent.g.classList.remove('element-moving-edge');
             });
         }
         relationEdges = [];
