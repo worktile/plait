@@ -23,8 +23,9 @@ import { MindTransforms } from '../transforms';
 import { deleteElementHandleAbstract, insertElementHandleAbstract } from '../utils/abstract/common';
 import { isVirtualKey } from '../utils/is-virtual-key';
 import { editTopic } from '../utils/node/common';
+import { PlaitMindBoard } from './with-mind.board';
 
-export const withMindHotkey = (board: PlaitBoard) => {
+export const withMindHotkey = (board: PlaitMindBoard) => {
     const { keydown } = board;
 
     board.keydown = (event: KeyboardEvent) => {

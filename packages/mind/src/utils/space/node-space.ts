@@ -1,3 +1,4 @@
+import { DEFAULT_FONT_SIZE, MarkTypes, PlaitMarkEditor } from '@plait/text';
 import { BASE } from '../../constants/default';
 import { PlaitMind } from '../../interfaces/element';
 import { MindElement } from '../../interfaces/element';
@@ -6,6 +7,8 @@ import { WithMindOptions } from '../../interfaces/options';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
 import { WithMindPluginKey } from '../../public-api';
 import { getEmojisWidthHeight } from './emoji';
+import { Element } from 'slate';
+import { ROOT_TOPIC_FONT_SIZE } from '../../constants/node-topic-style';
 
 const NodeDefaultSpace = {
     horizontal: {
@@ -50,17 +53,16 @@ const getSpaceEmojiAndText = (element: MindElement) => {
 export const NodeSpace = {
     getNodeWidth(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getHorizontalSpaceBetweenNodeAndText(board, element);
-        const imageWidth = MindElement.hasImage(element) ? element.data.image?.width : 0;
         if (MindElement.hasEmojis(element)) {
             return (
                 NodeSpace.getEmojiLeftSpace(board, element) +
                 getEmojisWidthHeight(board, element).width +
                 getSpaceEmojiAndText(element) +
-                Math.max(element.width, imageWidth) +
+                NodeSpace.getNodeResizableWidth(board, element) +
                 nodeAndText
             );
         }
-        return nodeAndText + Math.max(element.width, imageWidth) + nodeAndText;
+        return nodeAndText + NodeSpace.getNodeResizableWidth(board, element) + nodeAndText;
     },
     getNodeHeight(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getVerticalSpaceBetweenNodeAndText(element);
@@ -74,6 +76,25 @@ export const NodeSpace = {
             );
         }
         return nodeAndText + element.height + nodeAndText;
+    },
+    getNodeResizableWidth(board: PlaitMindBoard, element: MindElement) {
+        const imageWidth = MindElement.hasImage(element) ? element.data.image?.width : 0;
+        return Math.max(element.width, imageWidth);
+    },
+    getNodeResizableMinWidth(board: PlaitMindBoard, element: MindElement) {
+        const minTopicWidth = NodeSpace.getNodeTopicMinWidth(board, element);
+        if (MindElement.hasImage(element) && element.data.image.width > minTopicWidth) {
+            return element.data.image.width;
+        } else {
+            return minTopicWidth;
+        }
+    },
+    getNodeTopicMinWidth(board: PlaitMindBoard, element: MindElement, isRoot: boolean = false) {
+        const defaultFontSize = getNodeDefaultFontSize(isRoot);
+        const editor = MindElement.getTextEditor(element);
+        const marks = PlaitMarkEditor.getMarks(editor);
+        const fontSize = (marks[MarkTypes.fontSize] as number) || defaultFontSize;
+        return fontSize;
     },
     getTextLeftSpace(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getHorizontalSpaceBetweenNodeAndText(board, element);
@@ -103,4 +124,19 @@ export const NodeSpace = {
         const nodeAndText = getVerticalSpaceBetweenNodeAndText(element);
         return nodeAndText;
     }
+};
+
+export const getFontSizeBySlateElement = (text: string | Element) => {
+    const defaultFontSize = DEFAULT_FONT_SIZE;
+    if (typeof text === 'string') {
+        return defaultFontSize;
+    }
+    const marks = PlaitMarkEditor.getMarksByElement(text);
+    const fontSize = (marks[MarkTypes.fontSize] as number) || defaultFontSize;
+    return fontSize;
+};
+
+export const getNodeDefaultFontSize = (isRoot = false) => {
+    const defaultFontSize = isRoot ? ROOT_TOPIC_FONT_SIZE : DEFAULT_FONT_SIZE;
+    return defaultFontSize;
 };

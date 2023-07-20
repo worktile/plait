@@ -1,4 +1,4 @@
-import { Editor, Text, Node, Transforms, NodeEntry, Location } from 'slate';
+import { Editor, Text, Node, Element, Transforms, NodeEntry, Location } from 'slate';
 import { DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, MarkProps, MarkTypes } from '../../constant/mark';
 import { AngularEditor } from 'slate-angular';
 
@@ -32,6 +32,21 @@ export const PlaitMarkEditor = {
         }
         const matchResult = Editor.nodes(editor, { match: Text.isText, at });
         for (const match of matchResult) {
+            const [node] = match as NodeEntry<Text>;
+            const { text, ...rest } = node;
+            Object.assign(marks, rest);
+        }
+        for (const key in marks) {
+            if (!MarkProps.includes(key as MarkTypes)) {
+                delete marks[key];
+            }
+        }
+        return marks;
+    },
+    getMarksByElement(element: Element) {
+        const marks: any = {};
+        const texts = Node.texts(element);
+        for (const match of texts) {
             const [node] = match as NodeEntry<Text>;
             const { text, ...rest } = node;
             Object.assign(marks, rest);
