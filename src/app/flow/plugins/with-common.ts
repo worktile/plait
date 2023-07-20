@@ -79,7 +79,7 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
                 const moveElement = movingNodes[0];
                 if (FlowNode.isFlowNodeElement(moveElement as FlowElement)) {
                     relationEdges = getEdgesByNodeId(board, moveElement.id);
-                    relationEdges.map(item => {
+                    relationEdges.forEach(item => {
                         const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;
                         flowEdgeComponent.g.classList.add('hide-flow-edge-label');
                     });
@@ -90,7 +90,7 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
 
     board.globalMouseup = event => {
         if (relationEdges?.length) {
-            relationEdges.map(item => {
+            relationEdges.forEach(item => {
                 const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;
                 flowEdgeComponent.g.classList.remove('hide-flow-edge-label');
             });
