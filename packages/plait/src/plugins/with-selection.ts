@@ -27,7 +27,14 @@ export function withSelection(board: PlaitBoard) {
     let selectionOuterG: SVGGElement;
     let previousSelectedElements: PlaitElement[];
 
+    // prevent text from being selected when user pressed main pointer and is moving
+    let needPreventNativeSelectionWhenMoving = false;
+
     board.mousedown = (event: MouseEvent) => {
+        if (event.target instanceof Element && !event.target.closest('.plait-richtext-container')) {
+            needPreventNativeSelectionWhenMoving = true;
+        }
+
         if (!isMainPointer(event)) {
             mousedown(event);
             return;
@@ -39,10 +46,12 @@ export function withSelection(board: PlaitBoard) {
         const range = { anchor: point, focus: point };
         const hitElements = getHitElements(board, { ranges: [range] });
         const selectedElements = getSelectedElements(board);
+
         if (hitElements.length === 1 && selectedElements.includes(hitElements[0])) {
             mousedown(event);
             return;
         }
+
         if (
             PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
             hitElements.length === 0 &&
@@ -52,17 +61,16 @@ export function withSelection(board: PlaitBoard) {
             start = point;
         }
 
-        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && hitElements.length === 0 && !PlaitBoard.hasBeenTextEditing(board)) {
-            // prevent text from being selected
-            event.preventDefault();
-        }
-
         Transforms.setSelection(board, { ranges: [range] });
 
         mousedown(event);
     };
 
     board.globalMousemove = (event: MouseEvent) => {
+        if (needPreventNativeSelectionWhenMoving) {
+            preventNativeSelection(board, event);
+        }
+        
         if (start) {
             const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
@@ -108,6 +116,7 @@ export function withSelection(board: PlaitBoard) {
 
         start = null;
         end = null;
+        needPreventNativeSelectionWhenMoving = false;
         globalMouseup(event);
     };
 
@@ -196,3 +205,10 @@ export function createSelectionOuterG(board: PlaitBoard, selectElements: PlaitEl
         fillStyle: 'solid'
     });
 }
+
+/**
+ * prevent text from being selected
+ */
+export const preventNativeSelection = (board: PlaitBoard, event: MouseEvent) => {
+    event.preventDefault();
+};

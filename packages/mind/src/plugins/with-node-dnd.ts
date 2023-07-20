@@ -83,12 +83,12 @@ export const withNodeDnd = (board: PlaitBoard) => {
                 activeElements = [targetElement];
                 startPoint = point;
             }
-            event.preventDefault();
         }
 
         if (activeElements.length) {
-            correspondingElements = getOverallAbstracts(board, activeElements);
+            // prevent text from being selected
             event.preventDefault();
+            correspondingElements = getOverallAbstracts(board, activeElements);
         }
 
         mousedown(event);
