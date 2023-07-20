@@ -69,7 +69,6 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.mousemove = event => {
-        mousemove(event);
         const movingNodes = getMovingElements(board);
         if (movingNodes?.length) {
             const moveElement = movingNodes[0];
