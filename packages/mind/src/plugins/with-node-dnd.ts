@@ -1,6 +1,5 @@
 import {
     distanceBetweenPointAndPoint,
-    IS_TEXT_EDITABLE,
     Path,
     PlaitBoard,
     Point,
@@ -13,10 +12,11 @@ import {
     PlaitNode,
     PlaitPointerType,
     getHitElements,
-    PlaitElement
+    PlaitElement,
+    isMainPointer
 } from '@plait/core';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
-import { MindElement, PlaitMind } from '../interfaces/element';
+import { MindElement } from '../interfaces/element';
 import { DetectResult } from '../interfaces/node';
 
 import {
@@ -53,7 +53,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
             PlaitBoard.isReadonly(board) ||
             PlaitBoard.hasBeenTextEditing(board) ||
             !PlaitBoard.isPointer(board, PlaitPointerType.selection) ||
-            event.button === 2
+            !isMainPointer(event)
         ) {
             mousedown(event);
             return;

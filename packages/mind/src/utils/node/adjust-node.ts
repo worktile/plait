@@ -3,8 +3,9 @@ import { MindElement } from '../../interfaces/element';
 import { getTextSize } from '@plait/text';
 import { Node } from 'slate';
 import { BRANCH_FONT_FAMILY, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../../constants/node-topic-style';
-import { NODE_MIN_WIDTH } from '../../constants/node-rule';
 import { MindLayoutType } from '@plait/layouts';
+import { getNodeDefaultFontSize } from '../space/node-space';
+import { PlaitMindBoard } from '../../plugins/with-mind.board';
 
 export const adjustRootToNode = (board: PlaitBoard, node: MindElement) => {
     const newNode: MindElement = { ...node };
@@ -25,7 +26,7 @@ export const adjustAbstractToNode = (node: MindElement) => {
     return newNode;
 };
 
-export const adjustNodeToRoot = (board: PlaitBoard, node: MindElement): MindElement => {
+export const adjustNodeToRoot = (board: PlaitMindBoard, node: MindElement): MindElement => {
     const newElement = { ...node };
     if (!Node.string(newElement.data.topic)) {
         newElement.data.topic = { children: [{ text: '思维导图' }] };
@@ -41,7 +42,7 @@ export const adjustNodeToRoot = (board: PlaitBoard, node: MindElement): MindElem
         fontSize: ROOT_TOPIC_FONT_SIZE,
         fontFamily: BRANCH_FONT_FAMILY
     });
-    newElement.width = Math.max(width, NODE_MIN_WIDTH);
+    newElement.width = Math.max(width, getNodeDefaultFontSize(true));
     newElement.height = height;
 
     return {

@@ -28,8 +28,10 @@ import { withMindHotkey } from './with-mind-hotkey';
 import { withNodeHover } from './with-node-hover';
 import { buildText, getTextFromClipboard } from '@plait/text';
 import { withMindImage } from './with-mind-image';
+import { PlaitMindBoard } from './with-mind.board';
 
-export const withMind = (board: PlaitBoard) => {
+export const withMind = (baseBoard: PlaitBoard) => {
+    const board = baseBoard as PlaitBoard & PlaitMindBoard;
     const {
         drawElement,
         dblclick,

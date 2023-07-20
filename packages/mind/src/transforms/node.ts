@@ -1,32 +1,33 @@
 import { Element, Path } from 'slate';
 import { MindElement } from '../interfaces/element';
-import { NODE_MIN_WIDTH } from '../constants/node-rule';
 import { PlaitBoard, PlaitNode, Transforms } from '@plait/core';
 import { getFirstLevelElement } from '../utils/mind';
 import { AbstractRef, getRelativeStartEndByAbstractRef } from '../utils/abstract/common';
 import { RightNodeCountRef } from '../utils/node/right-node-count';
+import { NodeSpace } from '../utils/space/node-space';
+import { PlaitMindBoard } from '../plugins/with-mind.board';
 
-const normalizeWidthAndHeight = (board: PlaitBoard, width: number, height: number) => {
-    const newWidth = width < NODE_MIN_WIDTH * board.viewport.zoom ? NODE_MIN_WIDTH : width / board.viewport.zoom;
+const normalizeWidthAndHeight = (board: PlaitMindBoard, element: MindElement, width: number, height: number) => {
+    const minWidth = NodeSpace.getNodeTopicMinWidth(board, element, element.isRoot);
+    const newWidth = width < minWidth * board.viewport.zoom ? minWidth : width / board.viewport.zoom;
     const newHeight = height / board.viewport.zoom;
-
     return { width: newWidth, height: newHeight };
 };
 
-export const setTopic = (board: PlaitBoard, element: MindElement, topic: Element, width: number, height: number) => {
+export const setTopic = (board: PlaitMindBoard, element: MindElement, topic: Element, width: number, height: number) => {
     const newElement = {
         data: { ...element.data, topic },
-        ...normalizeWidthAndHeight(board, width, height)
+        ...normalizeWidthAndHeight(board, element, width, height)
     } as MindElement;
     const path = PlaitBoard.findPath(board, element);
     Transforms.setNode(board, newElement, path);
 };
 
-export const setTopicSize = (board: PlaitBoard, element: MindElement, width: number, height: number) => {
+export const setTopicSize = (board: PlaitMindBoard, element: MindElement, width: number, height: number) => {
     const newElement = {
-        ...normalizeWidthAndHeight(board, width, height)
+        ...normalizeWidthAndHeight(board, element, width, height)
     };
-    if (element.width !== newElement.width || element.height !== newElement.height) {
+    if (Math.floor(element.width) !== Math.floor(newElement.width) || Math.floor(element.height) !== Math.floor(newElement.height)) {
         const path = PlaitBoard.findPath(board, element);
         Transforms.setNode(board, newElement, path);
     }

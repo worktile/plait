@@ -1,10 +1,10 @@
-import { PlaitBoard } from '@plait/core';
 import { MindElement } from '../interfaces';
+import { PlaitMindBoard } from '../plugins/with-mind.board';
 
 export abstract class BaseDrawer<T = undefined> {
     g?: SVGGElement;
 
-    constructor(protected board: PlaitBoard) {}
+    constructor(protected board: PlaitMindBoard) {}
 
     draw(element: MindElement, parentG: SVGGElement, data?: T) {
         this.destroy();

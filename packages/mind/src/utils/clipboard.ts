@@ -15,11 +15,12 @@ import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { getRelativeStartEndByAbstractRef, getOverallAbstracts, getValidAbstractRefs } from './abstract/common';
 import { createMindElement } from './node/create-node';
 import { adjustAbstractToNode, adjustNodeToRoot, adjustRootToNode } from './node/adjust-node';
-import { Element } from 'slate';
-import { getTextSize } from '@plait/text';
+import { Element, Node } from 'slate';
+import { getTextSize, PlaitMarkEditor } from '@plait/text';
 import { BRANCH_FONT_FAMILY, DEFAULT_FONT_FAMILY, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
-import { NODE_MIN_WIDTH } from '../constants/node-rule';
 import { findNewChildNodePath } from './path';
+import { PlaitMindBoard } from '../plugins/with-mind.board';
+import { getFontSizeBySlateElement, getNodeDefaultFontSize, NodeSpace } from './space/node-space';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[]) => {
     let result: MindElement[] = [];
@@ -87,7 +88,7 @@ export const getDataFromClipboard = (data: DataTransfer | null) => {
     return nodesData;
 };
 
-export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[], targetPoint: Point) => {
+export const insertClipboardData = (board: PlaitMindBoard, elements: PlaitElement[], targetPoint: Point) => {
     let newElement: MindElement, path: Path;
     const selectedElements = getSelectedElements(board);
     let newELements: PlaitElement[] = [];
@@ -105,7 +106,7 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
                 newElement = adjustRootToNode(board, newElement);
                 const styles = PlaitMind.isMind(targetParent) ? { fontFamily: BRANCH_FONT_FAMILY } : { fontFamily: DEFAULT_FONT_FAMILY };
                 const { width, height } = getTextSize(board, newElement.data.topic, TOPIC_DEFAULT_MAX_WORD_COUNT, styles);
-                newElement.width = Math.max(width, NODE_MIN_WIDTH);
+                newElement.width = Math.max(width, getNodeDefaultFontSize());
                 newElement.height = height;
             }
             // handle abstract start and end
@@ -135,10 +136,10 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitElement[],
     Transforms.setSelectionWithTemporaryElements(board, newELements);
 };
 
-export const insertClipboardText = (board: PlaitBoard, targetParent: PlaitElement, text: string | Element) => {
+export const insertClipboardText = (board: PlaitMindBoard, targetParent: PlaitElement, text: string | Element) => {
     const styles = PlaitMind.isMind(targetParent) ? { fontFamily: BRANCH_FONT_FAMILY } : { fontFamily: DEFAULT_FONT_FAMILY };
     const { width, height } = getTextSize(board, text, TOPIC_DEFAULT_MAX_WORD_COUNT, styles);
-    const newElement = createMindElement(text, width, height, {});
+    const newElement = createMindElement(text, Math.max(width, getFontSizeBySlateElement(text)), height, {});
     Transforms.insertNode(board, newElement, findNewChildNodePath(board, targetParent));
     return;
 };

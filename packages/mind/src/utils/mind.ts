@@ -1,11 +1,12 @@
 import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, Transforms } from '@plait/core';
 import { Node } from 'slate';
-import { NODE_MIN_WIDTH } from '../constants/node-rule';
 import { MindElement } from '../interfaces/element';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
 import { editTopic } from './node/common';
 import { createMindElement, INHERIT_ATTRIBUTE_KEYS, InheritAttribute } from './node/create-node';
 import { MindNode } from '../interfaces/node';
+import { getNodeDefaultFontSize } from './space/node-space';
+import { PlaitMindBoard } from '../plugins/with-mind.board';
 
 export const getChildrenCount = (element: MindElement) => {
     const count: number = element.children.reduce((p: number, c: MindElement) => {
@@ -69,17 +70,16 @@ export const extractNodesText = (node: MindElement) => {
     return str;
 };
 
-export const insertMindElement = (board: PlaitBoard, inheritNode: MindElement, path: Path) => {
+export const insertMindElement = (board: PlaitMindBoard, inheritNode: MindElement, path: Path) => {
     const newNode: InheritAttribute = {};
     if (!inheritNode.isRoot) {
         INHERIT_ATTRIBUTE_KEYS.forEach(attr => {
             (newNode as any)[attr] = inheritNode[attr];
         });
-
         delete newNode.layout;
     }
 
-    const newElement = createMindElement('', NODE_MIN_WIDTH, TEXT_DEFAULT_HEIGHT, newNode);
+    const newElement = createMindElement('', getNodeDefaultFontSize(), TEXT_DEFAULT_HEIGHT, newNode);
 
     Transforms.insertNode(board, newElement, path);
     clearSelectedElement(board);
