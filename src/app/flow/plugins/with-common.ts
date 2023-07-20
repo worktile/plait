@@ -94,8 +94,8 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
                 const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;
                 flowEdgeComponent.g.classList.remove('element-moving-edge');
             });
+            relationEdges = [];
         }
-        relationEdges = [];
         globalMouseup(event);
     };
 
