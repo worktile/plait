@@ -1,5 +1,14 @@
 # mind
 
+## 0.20.0
+
+### Minor Changes
+
+-   [`c5a99a28`](https://github.com/worktile/plait/commit/c5a99a2853df65697672e54d9f29e461e3669f33) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify mind-node min width, use based-font-size min width
+    add getNodeResizableWidth, getNodeResizableMinWidth, getNodeTopicMinWidth in node-space
+
+*   [`f0806da1`](https://github.com/worktile/plait/commit/f0806da12559a5e7757d5c4696d91c58c4df7dc4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getIsRecursionFunc
+
 ## 0.19.0
 
 ### Minor Changes

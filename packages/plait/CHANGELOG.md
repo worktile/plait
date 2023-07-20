@@ -1,5 +1,11 @@
 # plait
 
+## 0.18.0
+
+### Minor Changes
+
+-   [`f0806da1`](https://github.com/worktile/plait/commit/f0806da12559a5e7757d5c4696d91c58c4df7dc4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getIsRecursionFunc
+
 ## 0.17.0
 
 ### Minor Changes

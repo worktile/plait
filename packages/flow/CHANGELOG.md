@@ -1,5 +1,13 @@
 # @plait/flow
 
+## 0.5.3
+
+### Patch Changes
+
+-   [#478](https://github.com/worktile/plait/pull/478) [`aed9862f`](https://github.com/worktile/plait/commit/aed9862fe37b3237b18e8a79cafb4790d4d52f19) Thanks [@xinglu01](https://github.com/xinglu01)! - handle edge label position
+
+*   [#479](https://github.com/worktile/plait/pull/479) [`be78b211`](https://github.com/worktile/plait/commit/be78b2118f5982b5b8e264a236e283ebd4806d94) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix: exec redraw when previous.selected is true
+
 ## 0.5.2
 
 ### Patch Changes

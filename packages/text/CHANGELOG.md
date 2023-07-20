@@ -1,5 +1,12 @@
 # text
 
+## 0.13.0
+
+### Minor Changes
+
+-   [`c5a99a28`](https://github.com/worktile/plait/commit/c5a99a2853df65697672e54d9f29e461e3669f33) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify mind-node min width, use based-font-size min width
+    add getNodeResizableWidth, getNodeResizableMinWidth, getNodeTopicMinWidth in node-space
+
 ## 0.12.0
 
 ### Minor Changes
