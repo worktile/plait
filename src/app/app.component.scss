@@ -20,7 +20,7 @@
 
 .plait-board-container {
   &.element-moving {
-      .element-moving-edge {
+      .hide-flow-edge-label {
           .flow-edge-richtext {
              visibility: hidden;
           }
