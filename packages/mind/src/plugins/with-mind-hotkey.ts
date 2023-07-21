@@ -25,7 +25,8 @@ import { isVirtualKey } from '../utils/is-virtual-key';
 import { editTopic } from '../utils/node/common';
 import { PlaitMindBoard } from './with-mind.board';
 
-export const withMindHotkey = (board: PlaitMindBoard) => {
+export const withMindHotkey = (baseBoard: PlaitBoard) => {
+    const board = baseBoard as PlaitBoard & PlaitMindBoard;
     const { keydown } = board;
 
     board.keydown = (event: KeyboardEvent) => {
