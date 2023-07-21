@@ -113,15 +113,36 @@ const getCenter = (
     currDir: number,
     flipSourceTarget = false
 ): XYPosition => {
-    const center: XYPosition = {
-        x: Math.max(targetGapped.x, sourceGapped.x) - Math.abs(targetGapped.x - sourceGapped.x) / 2,
-        y: Math.max(targetGapped.y, sourceGapped.y) - Math.abs(targetGapped.y - sourceGapped.y) / 2
-    };
-    const isOffsetXGreater = Math.abs(targetGapped.x - sourceGapped.x) > Math.abs(targetGapped.y - sourceGapped.y);
-    const targetSource = isOffsetXGreater ? { x: center.x, y: sourceGapped.y } : { x: targetGapped.x, y: center.y };
-    const sourceTarget = isOffsetXGreater ? { x: center.x, y: targetGapped.y } : { x: sourceGapped.x, y: center.y };
+    let targetSourceX: number, targetSourceY: number, sourceTargetX: number, sourceTargetY: number;
+    const halfOffsetX = Math.abs(targetGapped.x - sourceGapped.x) / 2;
+    const halfOffsetY = Math.abs(targetGapped.y - sourceGapped.y) / 2;
+    const halfOffsetXCenter = Math.min(targetGapped.x, sourceGapped.x) + halfOffsetX;
+    const halfOffsetYCenter = Math.min(targetGapped.y, sourceGapped.y) + halfOffsetY;
 
-    let centerPoints;
+    // 判断中心位置是否超过最大坐标
+    const xCenterLtMaxGapped = halfOffsetXCenter + halfOffsetY < Math.max(targetGapped.x, sourceGapped.x);
+    const yCenterLtMaxGapped = halfOffsetYCenter + halfOffsetX < Math.max(targetGapped.y, sourceGapped.y);
+
+    const sourceXLtTargetX = sourceGapped.x < targetGapped.x;
+    const sourceYLtTargetY = sourceGapped.y < targetGapped.y;
+
+    if (xCenterLtMaxGapped) {
+        targetSourceX = halfOffsetXCenter + halfOffsetY * (sourceXLtTargetX ? 1 : -1);
+    } else {
+        targetSourceY = halfOffsetYCenter + halfOffsetX * (sourceYLtTargetY ? -1 : 1);
+    }
+
+    if (yCenterLtMaxGapped) {
+        sourceTargetY = halfOffsetYCenter + halfOffsetX * (sourceYLtTargetY ? 1 : -1);
+    } else {
+        sourceTargetX = halfOffsetXCenter + halfOffsetY * (sourceXLtTargetX ? -1 : 1);
+    }
+
+    const isOffsetXGreater = halfOffsetX > halfOffsetY;
+    const sourceTarget = isOffsetXGreater ? { x: sourceTargetX!, y: targetGapped.y } : { x: sourceGapped.x, y: sourceTargetY! };
+    const targetSource = isOffsetXGreater ? { x: targetSourceX!, y: sourceGapped.y } : { x: targetGapped.x, y: targetSourceY! };
+
+    let centerPoints: XYPosition;
     if (dirAccessor === 'x') {
         centerPoints = sourceDir.x === currDir ? targetSource : sourceTarget;
     } else {
