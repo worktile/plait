@@ -120,12 +120,13 @@ const getCenter = (
     const halfOffsetYCenter = Math.min(targetGapped.y, sourceGapped.y) + halfOffsetY;
 
     // 判断中心位置是否小于最大坐标, 如果超过最大坐标，换轴显示
-    const xCenterLtMaxGapped = halfOffsetXCenter + halfOffsetY < Math.max(targetGapped.x, sourceGapped.x);
+    const centerLtMaxGapped = halfOffsetXCenter + halfOffsetY < Math.max(targetGapped.x, sourceGapped.x);
+    // 判断 sourceGapped 和 targetGapped 的相对位置
     const sourceXLtTargetX = sourceGapped.x < targetGapped.x;
     const sourceYLtTargetY = sourceGapped.y < targetGapped.y;
 
     let sourceTarget: XYPosition, targetSource: XYPosition;
-    if (xCenterLtMaxGapped) {
+    if (centerLtMaxGapped) {
         sourceTargetX = halfOffsetXCenter + halfOffsetY * (sourceXLtTargetX ? -1 : 1);
         targetSourceX = halfOffsetXCenter + halfOffsetY * (sourceXLtTargetX ? 1 : -1);
         sourceTarget = { x: sourceTargetX!, y: targetGapped.y };
