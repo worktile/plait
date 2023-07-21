@@ -119,28 +119,23 @@ const getCenter = (
     const halfOffsetXCenter = Math.min(targetGapped.x, sourceGapped.x) + halfOffsetX;
     const halfOffsetYCenter = Math.min(targetGapped.y, sourceGapped.y) + halfOffsetY;
 
-    // 判断中心位置是否超过最大坐标
+    // 判断中心位置是否小于最大坐标, 如果超过最大坐标，换轴显示
     const xCenterLtMaxGapped = halfOffsetXCenter + halfOffsetY < Math.max(targetGapped.x, sourceGapped.x);
-    const yCenterLtMaxGapped = halfOffsetYCenter + halfOffsetX < Math.max(targetGapped.y, sourceGapped.y);
-
     const sourceXLtTargetX = sourceGapped.x < targetGapped.x;
     const sourceYLtTargetY = sourceGapped.y < targetGapped.y;
 
+    let sourceTarget: XYPosition, targetSource: XYPosition;
     if (xCenterLtMaxGapped) {
+        sourceTargetX = halfOffsetXCenter + halfOffsetY * (sourceXLtTargetX ? -1 : 1);
         targetSourceX = halfOffsetXCenter + halfOffsetY * (sourceXLtTargetX ? 1 : -1);
+        sourceTarget = { x: sourceTargetX!, y: targetGapped.y };
+        targetSource = { x: targetSourceX!, y: sourceGapped.y };
     } else {
         targetSourceY = halfOffsetYCenter + halfOffsetX * (sourceYLtTargetY ? -1 : 1);
-    }
-
-    if (yCenterLtMaxGapped) {
         sourceTargetY = halfOffsetYCenter + halfOffsetX * (sourceYLtTargetY ? 1 : -1);
-    } else {
-        sourceTargetX = halfOffsetXCenter + halfOffsetY * (sourceXLtTargetX ? -1 : 1);
+        sourceTarget = { x: sourceGapped.x, y: sourceTargetY! };
+        targetSource = { x: targetGapped.x, y: targetSourceY! };
     }
-
-    const isOffsetXGreater = halfOffsetX > halfOffsetY;
-    const sourceTarget = isOffsetXGreater ? { x: sourceTargetX!, y: targetGapped.y } : { x: sourceGapped.x, y: sourceTargetY! };
-    const targetSource = isOffsetXGreater ? { x: targetSourceX!, y: sourceGapped.y } : { x: targetGapped.x, y: targetSourceY! };
 
     let centerPoints: XYPosition;
     if (dirAccessor === 'x') {

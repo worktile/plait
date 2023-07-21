@@ -2,4 +2,4 @@
 '@plait/flow': patch
 ---
 
-optimize get center caculate
+optimize get center calculate
