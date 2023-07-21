@@ -3,5 +3,5 @@
 '@plait/core': minor
 ---
 
-prevent text from being selected when user pressed main pointer and is moving
-it is decided by plugin layer to whether allow select text when user pressed main pointer on text element
+prevent text from being selected when the user presses main pointer and is moving
+it is decided by plugin layer whether to allow the user to select text when they press the main pointer on text element
