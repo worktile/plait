@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, ElementRef, Input, OnInit } from '@angular/core';
 import { ImageItem, ImageData } from '../interfaces/element-data';
 import { PlaitBoard } from '@plait/core';
 import { MindElement } from '../interfaces';
@@ -18,11 +18,14 @@ export class MindImageBaseComponent implements OnInit {
     @Input()
     element!: MindElement<ImageData>;
 
+    @Input()
+    isFocus: boolean = false;
+
     get nativeElement() {
         return this.elementRef.nativeElement;
     }
 
-    constructor(protected elementRef: ElementRef<HTMLElement>) {}
+    constructor(protected elementRef: ElementRef<HTMLElement>, public cdr: ChangeDetectorRef) {}
 
     ngOnInit(): void {}
 }

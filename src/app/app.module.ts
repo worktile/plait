@@ -13,6 +13,7 @@ import { AppZoomToolbarComponent } from './components/zoom-toolbar/zoom-toolbar.
 import { AppMainToolbarComponent } from './components/main-toolbar/main-toolbar.component';
 import { AppSettingPanelComponent } from './components/setting-panel/setting-panel.component';
 import { AppColorPickerComponent } from './components/color-picker/color-picker.component';
+import { MindImageComponent } from './editor/image/image.component';
 
 @NgModule({
     declarations: [
@@ -23,7 +24,8 @@ import { AppColorPickerComponent } from './components/color-picker/color-picker.
         BasicRichtextComponent,
         BasicFlowComponent,
         BasicBoardEditorComponent,
-        AppColorPickerComponent
+        AppColorPickerComponent,
+        MindImageComponent
     ],
     imports: [BrowserModule, TextModule, AppRoutingModule, PlaitModule, FlowModule, MindModule],
     providers: [],
