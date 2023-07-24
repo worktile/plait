@@ -4,14 +4,11 @@ import { MindImageBaseComponent } from '@plait/mind';
 @Component({
     selector: 'mind-node-image',
     template: `
-        <img class="node-image" [src]="imageItem.url" [width]="imageItem.width" [height]="imageItem.height" />
+        <img [src]="imageItem.url" [width]="imageItem.width" [height]="imageItem.height" />
         <div *ngIf="isFocus" class="outline"></div>
     `,
     styles: [
         `
-            .node-image {
-                margin: 6px;
-            }
             .outline {
                 position: absolute;
                 top: 5px;
