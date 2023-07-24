@@ -19,7 +19,7 @@ export function getPoints({
     targetPosition = FlowPosition.top,
     center,
     offset,
-    samePositionEdge,
+    samePositionEdges,
     currentEdgeIndex
 }: {
     source: XYPosition;
@@ -28,7 +28,7 @@ export function getPoints({
     targetPosition: FlowPosition;
     center: Partial<XYPosition>;
     offset: number;
-    samePositionEdge: FlowEdge[];
+    samePositionEdges: FlowEdge[];
     currentEdgeIndex: number;
 }): [XYPosition[], number, number, number, number] {
     const sourceDir = handleDirections[sourcePosition];
@@ -74,7 +74,7 @@ export function getPoints({
         } else {
             points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
         }
-        if (samePositionEdge.length > 1) {
+        if (samePositionEdges.length > 1) {
             const { x, y } = getCenter(
                 sourceGapped,
                 targetGapped,
@@ -83,7 +83,7 @@ export function getPoints({
                 targetDir,
                 currDir,
                 false,
-                samePositionEdge,
+                samePositionEdges,
                 currentEdgeIndex
             );
             centerX = x;
@@ -124,7 +124,7 @@ export function getPoints({
             targetDir,
             currDir,
             flipSourceTarget,
-            samePositionEdge,
+            samePositionEdges,
             currentEdgeIndex
         );
         centerX = x;
@@ -143,7 +143,7 @@ const getCenter = (
     targetDir: XYPosition,
     currDir: number,
     flipSourceTarget = false,
-    samePositionEdge: FlowEdge[],
+    samePositionEdges: FlowEdge[],
     currentEdgeIndex: number
 ): XYPosition => {
     let point, center;
@@ -151,16 +151,16 @@ const getCenter = (
         x: Math.max(targetGapped.x, sourceGapped.x) - Math.abs(targetGapped.x - sourceGapped.x) / 2,
         y: Math.max(targetGapped.y, sourceGapped.y) - Math.abs(targetGapped.y - sourceGapped.y) / 2
     };
-    if (samePositionEdge.length > 1) {
+    if (samePositionEdges.length > 1) {
         point = {
             x:
                 Math.max(targetGapped.x, sourceGapped.x) -
                 (Math.abs(targetGapped.x - sourceGapped.x) -
-                    currentEdgeIndex * (Math.abs(targetGapped.x - sourceGapped.x) / samePositionEdge.length)),
+                    currentEdgeIndex * (Math.abs(targetGapped.x - sourceGapped.x) / samePositionEdges.length)),
             y:
                 Math.max(targetGapped.y, sourceGapped.y) -
                 (Math.abs(targetGapped.y - sourceGapped.y) -
-                    currentEdgeIndex * (Math.abs(targetGapped.x - sourceGapped.x) / samePositionEdge.length))
+                    currentEdgeIndex * (Math.abs(targetGapped.x - sourceGapped.x) / samePositionEdges.length))
         };
     } else {
         point = { x: center.x, y: center.y };

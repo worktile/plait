@@ -103,8 +103,8 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
         targetPosition
     );
 
-    const samePositionEdge = getSamePositionByEdges(board, edge.source!.nodeId, edge.target!.nodeId) as FlowEdge[];
-    const currentEdgeIndex = samePositionEdge.findIndex(item => item.id === edge.id) + 1;
+    const samePositionEdges = getSamePositionByEdges(board, edge.source!.nodeId, edge.target!.nodeId) as FlowEdge[];
+    const currentEdgeIndex = samePositionEdges.findIndex(item => item.id === edge.id) + 1;
 
     return getPoints({
         source: { x: sourceX, y: sourceY },
@@ -113,7 +113,7 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
         targetPosition,
         center: { x: undefined, y: undefined },
         offset: 30,
-        samePositionEdge,
+        samePositionEdges,
         currentEdgeIndex
     });
 };
