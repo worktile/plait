@@ -1,3 +1,4 @@
+import { FlowEdge } from '@plait/flow';
 import { FlowPosition } from '../../interfaces/element';
 import { getEdgeCenter } from './edge';
 import { XYPosition } from '@plait/core';
@@ -17,7 +18,9 @@ export function getPoints({
     target,
     targetPosition = FlowPosition.top,
     center,
-    offset
+    offset,
+    samePositionEdge,
+    currentEdgeIndex
 }: {
     source: XYPosition;
     sourcePosition: FlowPosition;
@@ -25,6 +28,8 @@ export function getPoints({
     targetPosition: FlowPosition;
     center: Partial<XYPosition>;
     offset: number;
+    samePositionEdge: FlowEdge[];
+    currentEdgeIndex: number;
 }): [XYPosition[], number, number, number, number] {
     const sourceDir = handleDirections[sourcePosition];
     const targetDir = handleDirections[targetPosition];
@@ -69,6 +74,21 @@ export function getPoints({
         } else {
             points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
         }
+        if (samePositionEdge.length > 1) {
+            const { x, y } = getCenter(
+                sourceGapped,
+                targetGapped,
+                dirAccessor,
+                sourceDir,
+                targetDir,
+                currDir,
+                false,
+                samePositionEdge,
+                currentEdgeIndex
+            );
+            centerX = x;
+            centerY = y;
+        }
     } else {
         // sourceTarget means we take x from source and y from target, targetSource is the opposite
         const sourceTarget: XYPosition[] = [{ x: sourceGapped.x, y: targetGapped.y }];
@@ -96,7 +116,17 @@ export function getPoints({
             }
         }
 
-        const { x, y } = getCenter(sourceGapped, targetGapped, dirAccessor, sourceDir, currDir, flipSourceTarget);
+        const { x, y } = getCenter(
+            sourceGapped,
+            targetGapped,
+            dirAccessor,
+            sourceDir,
+            targetDir,
+            currDir,
+            flipSourceTarget,
+            samePositionEdge,
+            currentEdgeIndex
+        );
         centerX = x;
         centerY = y;
     }
@@ -110,25 +140,51 @@ const getCenter = (
     targetGapped: XYPosition,
     dirAccessor: 'x' | 'y',
     sourceDir: XYPosition,
+    targetDir: XYPosition,
     currDir: number,
-    flipSourceTarget = false
+    flipSourceTarget = false,
+    samePositionEdge: FlowEdge[],
+    currentEdgeIndex: number
 ): XYPosition => {
-    const center: XYPosition = {
+    let point, center;
+    center = {
         x: Math.max(targetGapped.x, sourceGapped.x) - Math.abs(targetGapped.x - sourceGapped.x) / 2,
         y: Math.max(targetGapped.y, sourceGapped.y) - Math.abs(targetGapped.y - sourceGapped.y) / 2
     };
+    if (samePositionEdge.length > 1) {
+        point = {
+            x:
+                Math.max(targetGapped.x, sourceGapped.x) -
+                (Math.abs(targetGapped.x - sourceGapped.x) -
+                    currentEdgeIndex * (Math.abs(targetGapped.x - sourceGapped.x) / samePositionEdge.length)),
+            y:
+                Math.max(targetGapped.y, sourceGapped.y) -
+                (Math.abs(targetGapped.y - sourceGapped.y) -
+                    currentEdgeIndex * (Math.abs(targetGapped.x - sourceGapped.x) / samePositionEdge.length))
+        };
+    } else {
+        point = { x: center.x, y: center.y };
+    }
     const isOffsetXGreater = Math.abs(targetGapped.x - sourceGapped.x) > Math.abs(targetGapped.y - sourceGapped.y);
-    const targetSource = isOffsetXGreater ? { x: center.x, y: sourceGapped.y } : { x: targetGapped.x, y: center.y };
-    const sourceTarget = isOffsetXGreater ? { x: center.x, y: targetGapped.y } : { x: sourceGapped.x, y: center.y };
+    const targetSource = isOffsetXGreater ? { x: point.x, y: sourceGapped.y } : { x: targetGapped.x, y: point.y };
+    const sourceTarget = isOffsetXGreater ? { x: point.x, y: targetGapped.y } : { x: sourceGapped.x, y: point.y };
 
     let centerPoints;
-    if (dirAccessor === 'x') {
-        centerPoints = sourceDir.x === currDir ? targetSource : sourceTarget;
+    if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
+        if (sourceDir[dirAccessor] === currDir) {
+            centerPoints = dirAccessor === 'x' ? { x: center.x, y: sourceGapped.y } : { x: center.x, y: targetGapped.y };
+        } else {
+            centerPoints = dirAccessor === 'x' ? { x: point.x, y: center.y } : { x: center.x, y: point.y };
+        }
     } else {
-        centerPoints = sourceDir.y === currDir ? sourceTarget : targetSource;
-    }
-    if (flipSourceTarget) {
-        centerPoints = dirAccessor === 'x' ? sourceTarget : targetSource;
+        if (dirAccessor === 'x') {
+            centerPoints = sourceDir.x === currDir ? targetSource : sourceTarget;
+        } else {
+            centerPoints = sourceDir.y === currDir ? sourceTarget : targetSource;
+        }
+        if (flipSourceTarget) {
+            centerPoints = dirAccessor === 'x' ? sourceTarget : targetSource;
+        }
     }
     return centerPoints;
 };

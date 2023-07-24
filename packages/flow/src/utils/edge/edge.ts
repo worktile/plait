@@ -7,6 +7,7 @@ import { DEFAULT_EDGE_ACTIVE_STYLES, DEFAULT_EDGE_STYLES } from '../../constants
 import { FlowNode } from '../../interfaces/node';
 import { getEdgeDraggingInfo } from './dragging-edge';
 import { getEdgePosition } from './get-edge-position';
+import { getSamePositionByEdges } from './get-edges-by-node';
 
 interface EdgePositions {
     sourceX: number;
@@ -102,13 +103,18 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
         targetPosition
     );
 
+    const samePositionEdge = getSamePositionByEdges(board, edge.source!.nodeId, edge.target!.nodeId) as FlowEdge[];
+    const currentEdgeIndex = samePositionEdge.findIndex(item => item.id === edge.id) + 1;
+
     return getPoints({
         source: { x: sourceX, y: sourceY },
         sourcePosition,
         target: { x: targetX, y: targetY },
         targetPosition,
         center: { x: undefined, y: undefined },
-        offset: 30
+        offset: 30,
+        samePositionEdge,
+        currentEdgeIndex
     });
 };
 
