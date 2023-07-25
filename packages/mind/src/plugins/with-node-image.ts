@@ -5,16 +5,14 @@ import {
     toPoint,
     transformPoint,
     PlaitOptionsBoard,
-    WithPluginOptions,
-    PlaitPluginKey,
-    PlaitElement,
     hotkeys,
     clearSelectedElement,
     PlaitPointerType
 } from '@plait/core';
 import { MindElement } from '../interfaces';
-import { MindNodeComponent, MindTransforms, isHitImage } from '../public-api';
+import { MindTransforms, isHitImage, temporaryDisableSelection } from '../public-api';
 import { ImageData } from '../interfaces/element-data';
+import { setImageFocus } from '../utils/node/image';
 
 export const withNodeImage = (board: PlaitBoard) => {
     let selectedImageElement: MindElement<ImageData> | null = null;
@@ -33,25 +31,18 @@ export const withNodeImage = (board: PlaitBoard) => {
         const hitImage = hasImage && isHitImage(board, hitElements[0] as MindElement<ImageData>, range);
 
         if (hitImage) {
-            const currentOptions = (board as PlaitOptionsBoard).getPluginOptions(PlaitPluginKey.withSelection);
-            (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, {
-                isDisabledSelect: true
-            });
-            setTimeout(() => {
-                (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { ...currentOptions });
-            }, 0);
+            temporaryDisableSelection(board as PlaitOptionsBoard);
+
+            if (selectedImageElement) {
+                setImageFocus(selectedImageElement, false);
+            }
 
             selectedImageElement = hitElements[0] as MindElement<ImageData>;
-            const component = PlaitElement.getComponent(selectedImageElement) as MindNodeComponent;
-            component.imageDrawer.componentRef!.instance.isFocus = true;
-            component.imageDrawer.componentRef!.instance.cdr.markForCheck();
+            setImageFocus(selectedImageElement, true);
+
             clearSelectedElement(board);
-        } else {
-            if (selectedImageElement) {
-                const component = PlaitElement.getComponent(selectedImageElement) as MindNodeComponent;
-                component.imageDrawer.componentRef!.instance.isFocus = false;
-                component.imageDrawer.componentRef!.instance.cdr.markForCheck();
-            }
+        } else if (selectedImageElement && !hitImage) {
+            setImageFocus(selectedImageElement, false);
             selectedImageElement = null;
         }
 
