@@ -16,7 +16,7 @@ import { MindElement } from '../interfaces';
 import { MindNodeComponent, MindTransforms, isHitImage } from '../public-api';
 import { ImageData } from '../interfaces/element-data';
 
-export const withMindImage = (board: PlaitBoard) => {
+export const withNodeImage = (board: PlaitBoard) => {
     let selectedImageElement: MindElement<ImageData> | null = null;
 
     const { keydown, mousedown } = board;

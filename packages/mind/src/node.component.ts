@@ -160,8 +160,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.drawShape();
             this.drawLink();
             this.drawEmojis();
-            this.drawImage();
             this.drawExtend();
+            MindElement.hasImage(previous.element) ? this.imageDrawer.updateImage(previous.element, value.element) : this.drawImage();
             this.textManage.updateText(this.element.data.topic);
             this.textManage.updateRectangle();
         } else {

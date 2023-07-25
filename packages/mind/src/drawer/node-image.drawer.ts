@@ -1,11 +1,11 @@
-import { PlaitBoard, RectangleClient, createForeignObject, createG } from '@plait/core';
+import { createForeignObject, createG, updateForeignObject } from '@plait/core';
 import { ImageData, MindElement } from '../interfaces';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
 import { getImageForeignRectangle } from '../utils';
 import { ComponentRef, ViewContainerRef } from '@angular/core';
 import { MindImageBaseComponent } from '../base/image-base.component';
 import { WithMindOptions } from '../interfaces/options';
-import { PRIMARY_COLOR, WithMindPluginKey } from '../constants';
+import { WithMindPluginKey } from '../constants';
 
 export class NodeImageDrawer {
     componentRef: ComponentRef<MindImageBaseComponent> | null = null;
@@ -15,11 +15,9 @@ export class NodeImageDrawer {
     constructor(private board: PlaitMindBoard, private viewContainerRef: ViewContainerRef) {}
 
     drawImage(element: MindElement) {
-        this.destroy();
         if (MindElement.hasImage(element)) {
             this.g = createG();
-            let foreignRectangle = getImageForeignRectangle(this.board, element);
-            foreignRectangle = RectangleClient.getOutlineRectangle(foreignRectangle, -6);
+            const foreignRectangle = getImageForeignRectangle(this.board, element);
             const foreignObject = createForeignObject(
                 foreignRectangle.x,
                 foreignRectangle.y,
@@ -29,10 +27,6 @@ export class NodeImageDrawer {
 
             this.g.append(foreignObject);
 
-            if (this.componentRef) {
-                this.componentRef.destroy();
-                this.componentRef = null;
-            }
             const componentType =
                 this.board.getPluginOptions<WithMindOptions>(WithMindPluginKey).imageComponentType || MindImageBaseComponent;
             if (!componentType) {
@@ -42,11 +36,38 @@ export class NodeImageDrawer {
             this.componentRef.instance.board = this.board;
             this.componentRef.instance.element = element;
             this.componentRef.instance.imageItem = element.data.image;
+            this.componentRef.instance.cdr.markForCheck();
 
             foreignObject.append(this.componentRef.instance.nativeElement);
             return this.g;
         }
         return undefined;
+    }
+
+    updateImage(previous: MindElement, current: MindElement) {
+        if (!MindElement.hasImage(current)) {
+            this.destroy();
+            return;
+        }
+
+        if (previous !== current && this.componentRef) {
+            this.componentRef.instance.element = current;
+            this.componentRef.instance.imageItem = current.data.image;
+        }
+
+        const previousForeignObject = getImageForeignRectangle(this.board, previous as MindElement<ImageData>);
+        const currentForeignObject = getImageForeignRectangle(this.board, current);
+        if (currentForeignObject !== previousForeignObject) {
+            updateForeignObject(
+                this.g!,
+                currentForeignObject.width,
+                currentForeignObject.height,
+                currentForeignObject.x,
+                currentForeignObject.y
+            );
+        }
+
+        this.componentRef?.instance.cdr.markForCheck();
     }
 
     destroy() {
