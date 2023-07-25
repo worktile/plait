@@ -5,16 +5,14 @@ import {
     toPoint,
     transformPoint,
     PlaitOptionsBoard,
-    WithPluginOptions,
-    PlaitPluginKey,
-    PlaitElement,
     hotkeys,
     clearSelectedElement,
     PlaitPointerType
 } from '@plait/core';
 import { MindElement } from '../interfaces';
-import { MindNodeComponent, MindTransforms, isHitImage } from '../public-api';
+import { MindTransforms, isHitImage, temporaryDisableSelection } from '../public-api';
 import { ImageData } from '../interfaces/element-data';
+import { setImageFocus } from '../utils/node/image';
 
 export const withNodeImage = (board: PlaitBoard) => {
     let selectedImageElement: MindElement<ImageData> | null = null;
@@ -22,37 +20,34 @@ export const withNodeImage = (board: PlaitBoard) => {
     const { keydown, mousedown } = board;
 
     board.mousedown = (event: MouseEvent) => {
-        if (PlaitBoard.isReadonly(board) || !isMainPointer(event) || !PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
-            mousedown(event);
-            return;
-        }
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const range = { anchor: point, focus: point };
         const hitElements = getHitElements(board, { ranges: [range] });
         const hasImage = hitElements.length && MindElement.hasImage(hitElements[0] as MindElement);
         const hitImage = hasImage && isHitImage(board, hitElements[0] as MindElement<ImageData>, range);
 
+        if (
+            PlaitBoard.isReadonly(board) ||
+            !isMainPointer(event) ||
+            !PlaitBoard.isPointer(board, PlaitPointerType.selection) ||
+            selectedImageElement === hitElements[0]
+        ) {
+            mousedown(event);
+            return;
+        }
+
+        if (selectedImageElement) {
+            setImageFocus(selectedImageElement, false);
+            selectedImageElement = null;
+        }
+
         if (hitImage) {
-            const currentOptions = (board as PlaitOptionsBoard).getPluginOptions(PlaitPluginKey.withSelection);
-            (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, {
-                isDisabledSelect: true
-            });
-            setTimeout(() => {
-                (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { ...currentOptions });
-            }, 0);
+            temporaryDisableSelection(board as PlaitOptionsBoard);
 
             selectedImageElement = hitElements[0] as MindElement<ImageData>;
-            const component = PlaitElement.getComponent(selectedImageElement) as MindNodeComponent;
-            component.imageDrawer.componentRef!.instance.isFocus = true;
-            component.imageDrawer.componentRef!.instance.cdr.markForCheck();
+            setImageFocus(selectedImageElement, true);
+
             clearSelectedElement(board);
-        } else {
-            if (selectedImageElement) {
-                const component = PlaitElement.getComponent(selectedImageElement) as MindNodeComponent;
-                component.imageDrawer.componentRef!.instance.isFocus = false;
-                component.imageDrawer.componentRef!.instance.cdr.markForCheck();
-            }
-            selectedImageElement = null;
         }
 
         mousedown(event);
