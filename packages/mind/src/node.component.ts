@@ -130,7 +130,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
         this.drawEmojis();
         this.drawExtend();
-        this.drawImage();
+        this.imageDrawer.drawImage(this.g, this.element);
         if (PlaitMind.isMind(this.context.parent)) {
             this.g.classList.add('branch');
         }
@@ -160,8 +160,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.drawShape();
             this.drawLink();
             this.drawEmojis();
-            this.drawImage();
             this.drawExtend();
+            this.imageDrawer.updateImage(this.g, previous.element, value.element);
             this.textManage.updateText(this.element.data.topic);
             this.textManage.updateRectangle();
         } else {
@@ -180,13 +180,6 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         const g = this.nodeEmojisDrawer.drawEmojis(this.element);
         if (g) {
             this.g.append(g);
-        }
-    }
-
-    drawImage() {
-        const image = this.imageDrawer.drawImage(this.element);
-        if (image) {
-            this.g.append(image);
         }
     }
 

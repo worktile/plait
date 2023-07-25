@@ -27,7 +27,7 @@ import { withCreateMind } from './with-mind-create';
 import { withMindHotkey } from './with-mind-hotkey';
 import { withNodeHover } from './with-node-hover';
 import { buildText, getTextFromClipboard } from '@plait/text';
-import { withMindImage } from './with-mind-image';
+import { withNodeImage } from './with-node-image';
 import { PlaitMindBoard } from './with-mind.board';
 
 export const withMind = (baseBoard: PlaitBoard) => {
@@ -161,5 +161,5 @@ export const withMind = (baseBoard: PlaitBoard) => {
         deleteFragment(data);
     };
 
-    return withMindImage(withNodeHover(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board)))))));
+    return withNodeImage(withNodeHover(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board)))))));
 };
