@@ -12,15 +12,14 @@ export class NodeImageDrawer {
 
     g?: SVGGElement;
 
-    activeG?: SVGGElement;
-
     constructor(private board: PlaitMindBoard, private viewContainerRef: ViewContainerRef) {}
 
     drawImage(element: MindElement) {
         this.destroy();
         if (MindElement.hasImage(element)) {
             this.g = createG();
-            const foreignRectangle = getImageForeignRectangle(this.board, element);
+            let foreignRectangle = getImageForeignRectangle(this.board, element);
+            foreignRectangle = RectangleClient.getOutlineRectangle(foreignRectangle, -6);
             const foreignObject = createForeignObject(
                 foreignRectangle.x,
                 foreignRectangle.y,
@@ -48,24 +47,6 @@ export class NodeImageDrawer {
             return this.g;
         }
         return undefined;
-    }
-
-    drawActive(element: MindElement<ImageData>) {
-        this.destroyActive();
-
-        const imageRectangle = getImageForeignRectangle(this.board, element);
-        const rectangle = RectangleClient.getOutlineRectangle(imageRectangle, -1);
-        const roughSVG = PlaitBoard.getRoughSVG(this.board);
-        this.activeG = roughSVG.rectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height, {
-            stroke: PRIMARY_COLOR,
-            fill: '',
-            fillStyle: 'solid'
-        });
-        this.g?.append(this.activeG);
-    }
-
-    destroyActive() {
-        this.activeG?.remove();
     }
 
     destroy() {

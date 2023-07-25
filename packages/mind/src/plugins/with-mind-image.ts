@@ -43,12 +43,14 @@ export const withMindImage = (board: PlaitBoard) => {
 
             selectedImageElement = hitElements[0] as MindElement<ImageData>;
             const component = PlaitElement.getComponent(selectedImageElement) as MindNodeComponent;
-            component.imageDrawer.drawActive(selectedImageElement);
+            component.imageDrawer.componentRef!.instance.isFocus = true;
+            component.imageDrawer.componentRef!.instance.cdr.markForCheck();
             clearSelectedElement(board);
         } else {
             if (selectedImageElement) {
                 const component = PlaitElement.getComponent(selectedImageElement) as MindNodeComponent;
-                component && component.imageDrawer.destroyActive();
+                component.imageDrawer.componentRef!.instance.isFocus = false;
+                component.imageDrawer.componentRef!.instance.cdr.markForCheck();
             }
             selectedImageElement = null;
         }

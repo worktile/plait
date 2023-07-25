@@ -3,11 +3,13 @@
 $primary: #4e8afa;
 
 .plait-board-container {
-    g[plait-mindmap='true'], g[plait-mind-temporary='true'] {
+    g[plait-mindmap='true'],
+    g[plait-mind-temporary='true'] {
         // The font family under SAFARI affects the measurement of the text size,
         // so specify the default font family to avoid unexpected text breaks in different scene
         font-family: PingFangSC-Regular, 'PingFang SC';
-        .root, &.root {
+        .root,
+        &.root {
             .text {
                 font-family: PingFangSC-Medium, 'PingFang SC';
                 font-weight: 400;
@@ -126,6 +128,10 @@ $primary: #4e8afa;
             min-height: 25px;
             line-height: 25px;
         }
+    }
+
+    .mind-node-image {
+        margin: 6px;
     }
 
     @include mixins.node-color();
