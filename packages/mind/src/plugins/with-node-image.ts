@@ -20,15 +20,21 @@ export const withNodeImage = (board: PlaitBoard) => {
     const { keydown, mousedown } = board;
 
     board.mousedown = (event: MouseEvent) => {
-        if (PlaitBoard.isReadonly(board) || !isMainPointer(event) || !PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
-            mousedown(event);
-            return;
-        }
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const range = { anchor: point, focus: point };
         const hitElements = getHitElements(board, { ranges: [range] });
         const hasImage = hitElements.length && MindElement.hasImage(hitElements[0] as MindElement);
         const hitImage = hasImage && isHitImage(board, hitElements[0] as MindElement<ImageData>, range);
+
+        if (
+            PlaitBoard.isReadonly(board) ||
+            !isMainPointer(event) ||
+            !PlaitBoard.isPointer(board, PlaitPointerType.selection) ||
+            selectedImageElement === hitElements[0]
+        ) {
+            mousedown(event);
+            return;
+        }
 
         if (selectedImageElement) {
             setImageFocus(selectedImageElement, false);
