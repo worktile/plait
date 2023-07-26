@@ -57,6 +57,7 @@ export const withNodeImage = (board: PlaitBoard) => {
 
     board.keydown = (event: KeyboardEvent) => {
         if (!PlaitBoard.isReadonly(board) && selectedImageElement && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
+            event.stopPropagation();
             MindTransforms.removeImage(board, selectedImageElement);
             selectedImageElement = null;
             return;
