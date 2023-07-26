@@ -34,6 +34,7 @@ import { CollapseDrawer } from './drawer/node-collapse.drawer';
 import { WithMindOptions } from './interfaces/options';
 import { WithMindPluginKey } from './constants/default';
 import { NodeImageDrawer } from './drawer/node-image.drawer';
+import { NodeSpace } from './utils/space/node-space';
 
 // 1. When the text at the end has an italic attribute, the text is partially covered
 // 2. There will be some differences in the width measured by different browsers
@@ -139,7 +140,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     editTopic() {
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: true });
         if (this.element.manualWidth) {
-            this.textManage.updateWidth(this.element.manualWidth);
+            const width = NodeSpace.getNodeResizableWidth(this.board, this.element);
+            this.textManage.updateWidth(width);
         }
         this.textManage.edit((origin: ExitOrigin) => {
             if (origin === ExitOrigin.default) {
