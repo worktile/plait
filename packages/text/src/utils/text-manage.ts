@@ -124,6 +124,12 @@ export class TextManage {
             });
     }
 
+    updateWidth(width: number) {
+        const editable = AngularEditor.toDOMNode(this.componentRef.instance.editor, this.componentRef.instance.editor);
+        editable.style.width = `${width}px`;
+        editable.style.maxWidth = `${width}px`;
+    }
+
     updateRectangle(rectangle?: RectangleClient) {
         const { x, y, width, height } = rectangle || this.getRectangle();
         if (this.isEditing) {
@@ -225,7 +231,7 @@ export class TextManage {
         };
     }
 
-    private getSize() {
+    getSize() {
         const editor = this.componentRef.instance.editor;
         const paragraph = AngularEditor.toDOMNode(editor, editor.children[0]);
         return measureDivSize(paragraph);

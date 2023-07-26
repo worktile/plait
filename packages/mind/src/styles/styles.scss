@@ -132,6 +132,7 @@ $primary: #4e8afa;
 
     .mind-node-image {
         margin: 6px;
+        display: block
     }
 
     @include mixins.node-color();

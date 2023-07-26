@@ -1,4 +1,5 @@
 export * from './keycodes';
+export * from './resize';
 
 export const CLIP_BOARD_FORMAT_KEY = 'x-plait-fragment';
 
@@ -14,3 +15,5 @@ export const POINTER_BUTTON = {
     SECONDARY: 2,
     TOUCH: -1,
   } as const;
+
+export const PRESS_AND_MOVE_BUFFER = 5;

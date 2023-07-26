@@ -138,6 +138,9 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     editTopic() {
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: true });
+        if (this.element.manualWidth) {
+            this.textManage.updateWidth(this.element.manualWidth);
+        }
         this.textManage.edit((origin: ExitOrigin) => {
             if (origin === ExitOrigin.default) {
                 this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: false });
