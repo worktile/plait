@@ -12,6 +12,7 @@ export * from './interfaces/edge';
 export * from './interfaces/node';
 export * from './interfaces/icon';
 export * from './interfaces/index';
+export * from './interfaces/flow';
 export * from './constants/default';
 export * from './constants/edge';
 export * from './constants/handle';
