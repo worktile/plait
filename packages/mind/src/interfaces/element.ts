@@ -10,6 +10,7 @@ export interface MindElement<T = BaseData> extends PlaitElement {
     children: MindElement[];
     rightNodeCount?: number;
     width: number;
+    manualWidth?: number;
     height: number;
     isRoot?: boolean;
 

@@ -75,7 +75,7 @@ export const NodeSpace = {
     },
     getNodeResizableWidth(board: PlaitMindBoard, element: MindElement) {
         const imageWidth = MindElement.hasImage(element) ? element.data.image?.width : 0;
-        return Math.max(element.width, imageWidth);
+        return element.manualWidth || Math.max(element.width, imageWidth);
     },
     getNodeResizableMinWidth(board: PlaitMindBoard, element: MindElement) {
         const minTopicWidth = NodeSpace.getNodeTopicMinWidth(board, element);
