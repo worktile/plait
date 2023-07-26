@@ -9,7 +9,9 @@ import { getEdgeTextXYPosition } from './text';
 // 使用 getSizeByText，渲染 dom 获取文本宽度，频繁调用会有性能问题
 function getLabelTextRect(board: PlaitBoard, edge: FlowEdge): RectangleClient {
     const text = ((edge.data?.text as Element).children[0] as BaseText).text;
-    const width = edge.labelOptions?.width || getTextSize(board, text, undefined, { fontSize: EDGE_LABEL_FONTSIZE })?.width;
+    const labelTextWidth = getTextSize(board, text, undefined, { fontSize: EDGE_LABEL_FONTSIZE })?.width;
+    const labelMaxWidth = edge.labelOptions?.maxWidth;
+    const width = labelMaxWidth ? (labelTextWidth > labelMaxWidth ? labelMaxWidth : labelTextWidth) : labelTextWidth;
     const height = edge.labelOptions?.height || TEXT_DEFAULT_HEIGHT;
     const { x, y } = getEdgeTextXYPosition(board, edge, width, height);
     return {
