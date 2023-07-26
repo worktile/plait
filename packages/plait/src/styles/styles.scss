@@ -43,5 +43,9 @@
         }
     }
 
+    &.ew-resize {
+        cursor: ew-resize;;
+    }
+
     @include mixins.board-background-color();
 }

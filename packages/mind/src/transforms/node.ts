@@ -23,11 +23,23 @@ export const setTopic = (board: PlaitMindBoard, element: MindElement, topic: Ele
     Transforms.setNode(board, newElement, path);
 };
 
+export const setNodeManualWidth = (board: PlaitMindBoard, element: MindElement, width: number, height: number) => {
+    const path = PlaitBoard.findPath(board, element);
+    const { width: normalizedWidth, height: normalizedHeight } = normalizeWidthAndHeight(board, element, width, height);
+    const newElement = { manualWidth: normalizedWidth, height: normalizedHeight } as MindElement;
+    Transforms.setNode(board, newElement, path);
+};
+
 export const setTopicSize = (board: PlaitMindBoard, element: MindElement, width: number, height: number) => {
     const newElement = {
         ...normalizeWidthAndHeight(board, element, width, height)
     };
-    if (Math.floor(element.width) !== Math.floor(newElement.width) || Math.floor(element.height) !== Math.floor(newElement.height)) {
+    let isEqualWidth = Math.ceil(element.width) === Math.ceil(newElement.width);
+    let isEqualHeight = Math.ceil(element.height) === Math.ceil(newElement.height);
+    if (element.manualWidth) {
+        isEqualWidth = true;
+    }
+    if (!isEqualWidth || !isEqualHeight) {
         const path = PlaitBoard.findPath(board, element);
         Transforms.setNode(board, newElement, path);
     }
