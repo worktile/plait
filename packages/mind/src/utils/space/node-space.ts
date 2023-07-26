@@ -1,14 +1,14 @@
 import { DEFAULT_FONT_SIZE, MarkTypes, PlaitMarkEditor } from '@plait/text';
-import { BASE, WithMindPluginKey } from '../../constants/default';
+import { BASE } from '../../constants/default';
 import { PlaitMind } from '../../interfaces/element';
 import { MindElement } from '../../interfaces/element';
 import { EmojiData } from '../../interfaces/element-data';
 import { WithMindOptions } from '../../interfaces/options';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
+import { WithMindPluginKey, getStrokeWidthByElement } from '../../public-api';
 import { getEmojisWidthHeight } from './emoji';
 import { Element } from 'slate';
 import { ROOT_TOPIC_FONT_SIZE } from '../../constants/node-topic-style';
-import { getStrokeWidthByElement } from '../node-style';
 
 const NodeDefaultSpace = {
     horizontal: {
@@ -35,13 +35,15 @@ const RootDefaultSpace = {
 const getHorizontalSpaceBetweenNodeAndText = (board: PlaitMindBoard, element: MindElement) => {
     const isMind = PlaitMind.isMind(element);
     const nodeAndText = isMind ? RootDefaultSpace.horizontal.nodeAndText : NodeDefaultSpace.horizontal.nodeAndText;
-    return nodeAndText;
+    const strokeWidth = getStrokeWidthByElement(board, element);
+    return nodeAndText + strokeWidth / 2;
 };
 
-const getVerticalSpaceBetweenNodeAndText = (element: MindElement) => {
+const getVerticalSpaceBetweenNodeAndText = (board: PlaitMindBoard, element: MindElement) => {
     const isMind = PlaitMind.isMind(element);
+    const strokeWidth = getStrokeWidthByElement(board, element);
     const nodeAndText = isMind ? RootDefaultSpace.vertical.nodeAndText : NodeDefaultSpace.vertical.nodeAndText;
-    return nodeAndText;
+    return nodeAndText + strokeWidth / 2;
 };
 
 const getSpaceEmojiAndText = (element: MindElement) => {
@@ -53,41 +55,23 @@ const getSpaceEmojiAndText = (element: MindElement) => {
 export const NodeSpace = {
     getNodeWidth(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getHorizontalSpaceBetweenNodeAndText(board, element);
-        let rightSpace = nodeAndText;
-        if (MindElement.hasImage(element) && element.data.image.width > element.width) {
-            rightSpace = BASE;
-        }
-
-        const strokeWidth = getStrokeWidthByElement(board, element);
-
         if (MindElement.hasEmojis(element)) {
             return (
                 NodeSpace.getEmojiLeftSpace(board, element) +
                 getEmojisWidthHeight(board, element).width +
                 getSpaceEmojiAndText(element) +
                 NodeSpace.getNodeResizableWidth(board, element) +
-                rightSpace +
-                strokeWidth / 2
+                nodeAndText
             );
         }
-        return strokeWidth / 2 + nodeAndText + NodeSpace.getNodeResizableWidth(board, element) + rightSpace + strokeWidth / 2;
+        return nodeAndText + NodeSpace.getNodeResizableWidth(board, element) + nodeAndText;
     },
     getNodeHeight(board: PlaitMindBoard, element: MindElement) {
-        const nodeAndText = getVerticalSpaceBetweenNodeAndText(element);
-        const strokeWidth = getStrokeWidthByElement(board, element);
-
+        const nodeAndText = getVerticalSpaceBetweenNodeAndText(board, element);
         if (MindElement.hasImage(element)) {
-            return (
-                strokeWidth / 2 +
-                NodeDefaultSpace.vertical.nodeAndImage +
-                element.data.image.height +
-                NodeDefaultSpace.vertical.imageAndText +
-                element.height +
-                nodeAndText +
-                strokeWidth / 2
-            );
+            return NodeSpace.getTextTopSpace(board, element) + element.height + nodeAndText;
         }
-        return strokeWidth / 2 + nodeAndText + element.height + nodeAndText + strokeWidth / 2;
+        return nodeAndText + element.height + nodeAndText;
     },
     getNodeResizableWidth(board: PlaitMindBoard, element: MindElement) {
         const imageWidth = MindElement.hasImage(element) ? element.data.image?.width : 0;
@@ -110,25 +94,18 @@ export const NodeSpace = {
     },
     getTextLeftSpace(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getHorizontalSpaceBetweenNodeAndText(board, element);
-        const strokeWidth = getStrokeWidthByElement(board, element);
         if (MindElement.hasEmojis(element)) {
             return NodeSpace.getEmojiLeftSpace(board, element) + getEmojisWidthHeight(board, element).width + getSpaceEmojiAndText(element);
         } else {
-            return strokeWidth / 2 + nodeAndText;
+            return nodeAndText;
         }
     },
     getTextTopSpace(board: PlaitMindBoard, element: MindElement) {
-        const nodeAndText = getVerticalSpaceBetweenNodeAndText(element);
-        const strokeWidth = getStrokeWidthByElement(board, element);
+        const nodeAndText = getVerticalSpaceBetweenNodeAndText(board, element);
         if (MindElement.hasImage(element)) {
-            return (
-                strokeWidth / 2 +
-                element.data.image.height +
-                NodeDefaultSpace.vertical.nodeAndImage +
-                NodeDefaultSpace.vertical.imageAndText
-            );
+            return NodeSpace.getImageTopSpace(board, element) + element.data.image.height + NodeDefaultSpace.vertical.imageAndText;
         } else {
-            return strokeWidth / 2 + nodeAndText;
+            return nodeAndText;
         }
     },
     getImageTopSpace(board: PlaitMindBoard, element: MindElement) {
@@ -140,10 +117,11 @@ export const NodeSpace = {
         const options = board.getPluginOptions<WithMindOptions>(WithMindPluginKey);
         const nodeAndText = getHorizontalSpaceBetweenNodeAndText(board, element);
         const strokeWidth = getStrokeWidthByElement(board, element);
+
         return strokeWidth / 2 + nodeAndText - options.emojiPadding;
     },
-    getEmojiTopSpace(element: MindElement) {
-        const nodeAndText = getVerticalSpaceBetweenNodeAndText(element);
+    getEmojiTopSpace(board: PlaitMindBoard, element: MindElement) {
+        const nodeAndText = getVerticalSpaceBetweenNodeAndText(board, element);
         return nodeAndText;
     }
 };
