@@ -51,17 +51,14 @@ export class NodeImageDrawer {
             this.componentRef.instance.imageItem = current.data.image;
         }
 
-        const previousForeignObject = getImageForeignRectangle(this.board, previous as MindElement<ImageData>);
         const currentForeignObject = getImageForeignRectangle(this.board, current);
-        if (RectangleClient.isEqual(previousForeignObject, currentForeignObject)) {
-            updateForeignObject(
-                this.g!,
-                currentForeignObject.width,
-                currentForeignObject.height,
-                currentForeignObject.x,
-                currentForeignObject.y
-            );
-        }
+        updateForeignObject(
+            this.g!,
+            currentForeignObject.width,
+            currentForeignObject.height,
+            currentForeignObject.x,
+            currentForeignObject.y
+        );
 
         this.componentRef?.instance.cdr.markForCheck();
     }
