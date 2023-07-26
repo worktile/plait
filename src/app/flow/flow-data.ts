@@ -22,7 +22,8 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
             marker: true
         },
         labelOptions: {
-            height: 24
+            height: 24,
+            width: 50
         },
         points: []
     },
@@ -42,7 +43,8 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
             marker: true
         },
         labelOptions: {
-            height: 24
+            height: 24,
+            width: 50
         },
         undeletable: true,
         points: []
@@ -63,7 +65,8 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
             marker: true
         },
         labelOptions: {
-            height: 24
+            height: 24,
+            width: 50
         },
         points: []
     },

@@ -25,6 +25,7 @@ export interface FlowEdgeHandle {
 
 export interface FlowEdgeLabelOptions {
     height?: number;
+    width?: number;
 }
 
 export interface FlowEdge<T extends FlowBaseData = FlowBaseData> extends FlowElement<T> {
