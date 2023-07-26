@@ -1,6 +1,6 @@
 import { PlaitElement } from '@plait/core';
 import { MindNodeComponent } from '../../node.component';
-import { MindElement } from '@plait/mind';
+import { MindElement } from '../../interfaces';
 
 export const setImageFocus = (element: MindElement, isFocus: boolean) => {
     const elementComponent = PlaitElement.getComponent(element) as MindNodeComponent;

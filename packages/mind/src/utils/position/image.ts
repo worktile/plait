@@ -8,7 +8,7 @@ import { PlaitMindBoard } from '../../plugins/with-mind.board';
 export function getImageForeignRectangle(board: PlaitMindBoard, element: MindElement<ImageData>): RectangleClient {
     let { x, y } = getRectangleByNode(MindElement.getNode(element));
     x = x + NodeSpace.getTextLeftSpace(board, element);
-    y = NodeSpace.getImageTopSpace(element) + y;
+    y = NodeSpace.getImageTopSpace(board, element) + y;
     const { width, height } = element.data.image!;
     const rectangle = {
         x,
