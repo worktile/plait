@@ -1,5 +1,11 @@
 # text
 
+## 0.14.0
+
+### Minor Changes
+
+-   [`f7f0267c`](https://github.com/worktile/plait/commit/f7f0267cf216bd30898a217ee3fc75b44dfbc28e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add mind node resize plugin
+
 ## 0.13.0
 
 ### Minor Changes

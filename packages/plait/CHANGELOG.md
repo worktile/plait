@@ -1,5 +1,14 @@
 # plait
 
+## 0.19.0
+
+### Minor Changes
+
+-   [`f7f0267c`](https://github.com/worktile/plait/commit/f7f0267cf216bd30898a217ee3fc75b44dfbc28e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add mind node resize plugin
+
+*   [`e88eb2cc`](https://github.com/worktile/plait/commit/e88eb2cca2ec537e9f8fc9eed9571f6fce1f9613) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent text from being selected when the user presses main pointer and is moving
+    it is decided by plugin layer whether to allow the user to select text when they press the main pointer on text element
+
 ## 0.18.0
 
 ### Minor Changes

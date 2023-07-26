@@ -1,5 +1,30 @@
 # mind
 
+## 0.21.0
+
+### Minor Changes
+
+-   [#486](https://github.com/worktile/plait/pull/486) [`a94a9fd6`](https://github.com/worktile/plait/commit/a94a9fd6f50b2334de08004f10ef1a08c27f918d) Thanks [@WBbug](https://github.com/WBbug)! - add strokeWidth when calculate node shape
+
+*   [#489](https://github.com/worktile/plait/pull/489) [`6f0e1190`](https://github.com/worktile/plait/commit/6f0e1190836c9c2f263f19b86cbb734025a34fbf) Thanks [@WBbug](https://github.com/WBbug)! - set image middle when element wider
+
+-   [#484](https://github.com/worktile/plait/pull/484) [`3e4b45d3`](https://github.com/worktile/plait/commit/3e4b45d31649bfbaaad38d56121e02a81189499b) Thanks [@WBbug](https://github.com/WBbug)! - don't destroy component when updateImage
+
+*   [`f7f0267c`](https://github.com/worktile/plait/commit/f7f0267cf216bd30898a217ee3fc75b44dfbc28e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add mind node resize plugin
+
+-   [#483](https://github.com/worktile/plait/pull/483) [`f5718341`](https://github.com/worktile/plait/commit/f57183414f257d43c8238d6e991f6574e9830579) Thanks [@WBbug](https://github.com/WBbug)! - add isFocus in MindImageBaseComponent
+
+*   [#485](https://github.com/worktile/plait/pull/485) [`c76eb32f`](https://github.com/worktile/plait/commit/c76eb32f1c4d7270d99848b6fc9494f90bf7de31) Thanks [@WBbug](https://github.com/WBbug)! - set focus false when has selectedImageElement
+
+-   [`e88eb2cc`](https://github.com/worktile/plait/commit/e88eb2cca2ec537e9f8fc9eed9571f6fce1f9613) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent text from being selected when the user presses main pointer and is moving
+    it is decided by plugin layer whether to allow the user to select text when they press the main pointer on text element
+
+*   [#488](https://github.com/worktile/plait/pull/488) [`b9e10fba`](https://github.com/worktile/plait/commit/b9e10fba8862438a5fa32b64ce841189b0e4c984) Thanks [@WBbug](https://github.com/WBbug)! - change update image foreignObject logic, add BOARD_TO_SELECTED_IMAGE_ELEMENT
+
+### Patch Changes
+
+-   [`49c99536`](https://github.com/worktile/plait/commit/49c9953672e10fdbd6a277a85d0cbb4e404399eb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct mind node topic width logic
+
 ## 0.20.0
 
 ### Minor Changes
