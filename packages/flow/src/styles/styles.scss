@@ -7,6 +7,11 @@
             justify-content: center;
             height: inherit;
             width: 100%;
+
+            .slate-editable-container {
+                width: auto;
+                overflow: hidden;
+            }
         }
     }
     .flow-handle {
