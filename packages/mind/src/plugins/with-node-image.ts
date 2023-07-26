@@ -39,7 +39,7 @@ export const withNodeImage = (board: PlaitBoard) => {
         }
 
         if (selectedImageElement) {
-            setImageFocus(selectedImageElement, false);
+            setImageFocus(board, selectedImageElement, false);
             selectedImageElement = null;
         }
 
@@ -47,7 +47,7 @@ export const withNodeImage = (board: PlaitBoard) => {
             temporaryDisableSelection(board as PlaitOptionsBoard);
 
             selectedImageElement = hitElements[0] as MindElement<ImageData>;
-            setImageFocus(selectedImageElement, true);
+            setImageFocus(board, selectedImageElement, true);
 
             clearSelectedElement(board);
         }
@@ -57,7 +57,6 @@ export const withNodeImage = (board: PlaitBoard) => {
 
     board.keydown = (event: KeyboardEvent) => {
         if (!PlaitBoard.isReadonly(board) && selectedImageElement && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
-            event.stopPropagation();
             MindTransforms.removeImage(board, selectedImageElement);
             selectedImageElement = null;
             return;
