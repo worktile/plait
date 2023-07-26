@@ -15,7 +15,7 @@ export function getTopicRectangleByNode(board: PlaitMindBoard, node: MindNode) {
 
 export function getTopicRectangleByElement(board: PlaitMindBoard, nodeRectangle: RectangleClient, element: MindElement) {
     const x = nodeRectangle.x + NodeSpace.getTextLeftSpace(board, element);
-    const y = nodeRectangle.y + NodeSpace.getTextTopSpace(element);
+    const y = nodeRectangle.y + NodeSpace.getTextTopSpace(board, element);
     const width = Math.ceil(element.width);
     const height = Math.ceil(element.height);
     return { height, width, x, y };

@@ -10,9 +10,10 @@ import {
     PlaitPointerType
 } from '@plait/core';
 import { MindElement } from '../interfaces';
-import { MindTransforms, isHitImage, temporaryDisableSelection } from '../public-api';
 import { ImageData } from '../interfaces/element-data';
 import { setImageFocus } from '../utils/node/image';
+import { isHitImage, temporaryDisableSelection } from '../utils';
+import { MindTransforms } from '../transforms';
 
 export const withNodeImage = (board: PlaitBoard) => {
     let selectedImageElement: MindElement<ImageData> | null = null;
@@ -20,18 +21,19 @@ export const withNodeImage = (board: PlaitBoard) => {
     const { keydown, mousedown } = board;
 
     board.mousedown = (event: MouseEvent) => {
+        if (PlaitBoard.isReadonly(board) || !isMainPointer(event) || !PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
+            mousedown(event);
+            return;
+        }
+
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const range = { anchor: point, focus: point };
         const hitElements = getHitElements(board, { ranges: [range] });
         const hasImage = hitElements.length && MindElement.hasImage(hitElements[0] as MindElement);
         const hitImage = hasImage && isHitImage(board, hitElements[0] as MindElement<ImageData>, range);
 
-        if (
-            PlaitBoard.isReadonly(board) ||
-            !isMainPointer(event) ||
-            !PlaitBoard.isPointer(board, PlaitPointerType.selection) ||
-            selectedImageElement === hitElements[0]
-        ) {
+        if (selectedImageElement && hitImage && hitElements[0] === selectedImageElement) {
+            temporaryDisableSelection(board as PlaitOptionsBoard);
             mousedown(event);
             return;
         }
