@@ -44,7 +44,7 @@ $primary: #4e8afa;
             opacity: 0.6;
         }
     }
-    &.focused:not(.selection-moving):not(.element-moving):not(.abstract-resizing-horizontal):not(.abstract-resizing-vertical):not(.pointer-mind):not(.mind-node-dragging) {
+    &.focused:not(.selection-moving):not(.element-moving):not(.abstract-resizing-horizontal):not(.abstract-resizing-vertical):not(.pointer-mind):not(.mind-node-dragging):not(.mind-node-resizing) {
         .extend {
             cursor: pointer;
             &:hover {
@@ -132,7 +132,7 @@ $primary: #4e8afa;
 
     .mind-node-image {
         margin: 6px;
-        display: block
+        display: block;
     }
 
     @include mixins.node-color();
