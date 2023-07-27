@@ -43,6 +43,8 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         });
 
         if (activeAbstractElement) {
+            // prevent text from being selected
+            event.preventDefault();
             if (newBoard?.onAbstractResize) {
                 newBoard.onAbstractResize(AbstractResizeState.start);
             }

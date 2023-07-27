@@ -1,4 +1,4 @@
-import { Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
+import { Path, PlaitBoard, PlaitElement, Transforms, addSelectedElement, clearSelectedElement } from '@plait/core';
 import { AbstractRefs } from '../plugins/with-abstract-resize.board';
 import { MindElement } from '../interfaces/element';
 import { AbstractNode, isStandardLayout } from '@plait/layouts';
@@ -77,4 +77,7 @@ const insertAbstractNode = (board: PlaitBoard, path: Path, start: number, end: n
     mindElement.end = end;
 
     Transforms.insertNode(board, mindElement, path);
+
+    clearSelectedElement(board);
+    addSelectedElement(board, mindElement);
 };
