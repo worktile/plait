@@ -62,6 +62,7 @@ export const withNodeImage = (board: PlaitBoard) => {
 
         if (!PlaitBoard.isReadonly(board) && selectedImageElement && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
             addSelectedElement(board, selectedImageElement);
+            setImageFocus(board, selectedImageElement, false);
             MindTransforms.removeImage(board, selectedImageElement as MindElement<ImageData>);
             return;
         }
