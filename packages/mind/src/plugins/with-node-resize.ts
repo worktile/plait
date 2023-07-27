@@ -40,7 +40,7 @@ export const withNodeResize = (board: PlaitBoard) => {
 
     board.mousedown = (event: MouseEvent) => {
         if (targetElement) {
-            startPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            startPoint = [event.x, event.y];
             // prevent text from being selected
             event.preventDefault();
             return;
@@ -59,7 +59,6 @@ export const withNodeResize = (board: PlaitBoard) => {
             const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance > PRESS_AND_MOVE_BUFFER) {
-                startPoint = endPoint;
                 addResizing(board, targetElement);
                 targetElementRef = {
                     minWidth: NodeSpace.getNodeResizableMinWidth(board as PlaitMindBoard, targetElement),
@@ -73,9 +72,14 @@ export const withNodeResize = (board: PlaitBoard) => {
 
         if (isMindNodeResizing(board) && startPoint && targetElementRef) {
             throttleRAF(() => {
-                const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+                if (!startPoint) {
+                    return;
+                }
+
+                const endPoint = [event.x, event.y];
                 const offsetX = endPoint[0] - startPoint![0];
-                let resizedWidth = targetElementRef!.currentWidth + offsetX;
+                const zoom = board.viewport.zoom;
+                let resizedWidth = targetElementRef!.currentWidth + offsetX / zoom;
                 if (resizedWidth < targetElementRef!.minWidth) {
                     resizedWidth = targetElementRef!.minWidth;
                 }
@@ -83,8 +87,8 @@ export const withNodeResize = (board: PlaitBoard) => {
                 const newTarget = PlaitNode.get<MindElement>(board, targetElementRef!.path);
                 if (newTarget && NodeSpace.getNodeTopicMinWidth(board as PlaitMindBoard, newTarget) !== resizedWidth) {
                     targetElementRef!.textManage.updateWidth(resizedWidth);
-                    const { width, height } = targetElementRef!.textManage.getSize();
-                    MindTransforms.setNodeManualWidth(board as PlaitMindBoard, newTarget, resizedWidth, height);
+                    const { height } = targetElementRef!.textManage.getSize();
+                    MindTransforms.setNodeManualWidth(board as PlaitMindBoard, newTarget, resizedWidth * zoom, height);
                 }
             });
             return;
