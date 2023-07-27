@@ -7,7 +7,8 @@ import {
     PlaitOptionsBoard,
     hotkeys,
     clearSelectedElement,
-    PlaitPointerType
+    PlaitPointerType,
+    addSelectedElement
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
@@ -57,6 +58,7 @@ export const withNodeImage = (board: PlaitBoard) => {
 
     board.keydown = (event: KeyboardEvent) => {
         if (!PlaitBoard.isReadonly(board) && selectedImageElement && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
+            addSelectedElement(board, selectedImageElement);
             MindTransforms.removeImage(board, selectedImageElement);
             selectedImageElement = null;
             return;
