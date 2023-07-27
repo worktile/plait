@@ -11,6 +11,7 @@ import {
     distanceBetweenPointAndPoint,
     distanceBetweenPointAndRectangle,
     getSelectedElements,
+    throttleRAF,
     toPoint,
     transformPoint
 } from '@plait/core';
@@ -70,19 +71,22 @@ export const withNodeResize = (board: PlaitBoard) => {
         }
 
         if (isMindNodeResizing(board) && startPoint && targetElementRef) {
-            const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-            const offsetX = endPoint[0] - startPoint[0];
-            let resizedWidth = targetElementRef.currentWidth + offsetX;
-            if (resizedWidth < targetElementRef.minWidth) {
-                resizedWidth = targetElementRef.minWidth;
-            }
+            throttleRAF(() => {
+                const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+                const offsetX = endPoint[0] - startPoint![0];
+                let resizedWidth = targetElementRef!.currentWidth + offsetX;
+                if (resizedWidth < targetElementRef!.minWidth) {
+                    resizedWidth = targetElementRef!.minWidth;
+                }
 
-            const newTarget = PlaitNode.get<MindElement>(board, targetElementRef.path);
-            if (newTarget && NodeSpace.getNodeTopicMinWidth(board as PlaitMindBoard, newTarget) !== resizedWidth) {
-                targetElementRef.textManage.updateWidth(resizedWidth);
-                const { width, height } = targetElementRef.textManage.getSize();
-                MindTransforms.setNodeManualWidth(board as PlaitMindBoard, newTarget, resizedWidth, height);
-            }
+                const newTarget = PlaitNode.get<MindElement>(board, targetElementRef!.path);
+                if (newTarget && NodeSpace.getNodeTopicMinWidth(board as PlaitMindBoard, newTarget) !== resizedWidth) {
+                    targetElementRef!.textManage.updateWidth(resizedWidth);
+                    const { width, height } = targetElementRef!.textManage.getSize();
+                    MindTransforms.setNodeManualWidth(board as PlaitMindBoard, newTarget, resizedWidth, height);
+                }
+            });
+            return;
         } else {
             // press and start drag when node is non selected
             if (!isDragging(board)) {
@@ -103,8 +107,8 @@ export const withNodeResize = (board: PlaitBoard) => {
     board.globalMouseup = (event: MouseEvent) => {
         globalMouseup(event);
 
-        if (isMindNodeResizing(board) && targetElement) {
-            removeResizing(board, targetElement);
+        if (isMindNodeResizing(board) || targetElement) {
+            targetElement && removeResizing(board, targetElement);
             targetElementRef = null;
             targetElement = null;
             startPoint = null;
