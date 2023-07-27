@@ -54,6 +54,8 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     board.mousemove = (event: MouseEvent) => {
+        event.preventDefault();
+
         getSelectedElements(board);
         const host = BOARD_TO_HOST.get(board);
         const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
