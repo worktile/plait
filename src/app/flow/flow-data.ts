@@ -8,7 +8,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
     {
         id: '001',
         data: {
-            text: { children: [{ text: '连线1连线1连线1连线1连线1' }] },
+            text: { children: [{ text: '连线1' }] },
             icon: '⚡️'
         },
         type: FlowElementType.edge,

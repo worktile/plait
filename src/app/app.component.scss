@@ -8,21 +8,11 @@
 @import './components//styles/panel.scss';
 @import './components/styles/toolbar.scss';
 
-.basic-flow-container {
-    .flow-custom-node {
-        .flow-node-richtext {
-            span {
-                color: #666;
-                font-size: 10px;
-            }
-        }
-    }
-    .flow-edge-richtext {
+.flow-custom-node {
+    .flow-node-richtext {
         span {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            display: block;
+            color: #666;
+            font-size: 10px;
         }
     }
 }

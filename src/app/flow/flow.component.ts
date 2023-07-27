@@ -10,10 +10,7 @@ const LOCAL_DATA_KEY = 'plait-board-flow-change-data';
 
 @Component({
     selector: 'basic-flow',
-    templateUrl: './flow.component.html',
-    host: {
-        class: 'basic-flow-container'
-    }
+    templateUrl: './flow.component.html'
 })
 export class BasicFlowComponent implements OnInit {
     plugins = [withCommon, withFlow, withDraw];
