@@ -23,6 +23,7 @@ import { MindNodeComponent } from '../node.component';
 import { MindTransforms } from '../transforms';
 import { TextManage } from '@plait/text';
 import { isDragging } from '../utils/dnd/common';
+import { EXTEND_OFFSET } from '../constants/default';
 
 interface TargetElementRef {
     minWidth: number;
@@ -156,8 +157,7 @@ export const getTargetElement = (board: PlaitMindBoard, point: Point) => {
 };
 
 export const getResizeActiveRectangle = (board: PlaitBoard, element: MindElement): RectangleClient => {
-    const activeWidth = 20;
     const node = MindElement.getNode(element);
     const rectangle = getRectangleByNode(node);
-    return { x: rectangle.x + rectangle.width - activeWidth / 2, y: rectangle.y, width: activeWidth, height: rectangle.height };
+    return { x: rectangle.x + rectangle.width - EXTEND_OFFSET, y: rectangle.y, width: EXTEND_OFFSET * 2, height: rectangle.height };
 };
