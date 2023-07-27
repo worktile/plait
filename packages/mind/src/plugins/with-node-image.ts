@@ -13,17 +13,19 @@ import {
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
-import { setImageFocus } from '../utils/node/image';
+import { getSelectedImageElement, setImageFocus } from '../utils/node/image';
 import { isHitImage, temporaryDisableSelection } from '../utils';
 import { MindTransforms } from '../transforms';
 
 export const withNodeImage = (board: PlaitBoard) => {
-    let selectedImageElement: MindElement<ImageData> | null = null;
-
     const { keydown, mousedown, globalMouseup } = board;
 
     board.mousedown = (event: MouseEvent) => {
+        const selectedImageElement = getSelectedImageElement(board);
         if (PlaitBoard.isReadonly(board) || !isMainPointer(event) || !PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
+            if (selectedImageElement) {
+                setImageFocus(board, selectedImageElement, false);
+            }
             mousedown(event);
             return;
         }
@@ -42,14 +44,12 @@ export const withNodeImage = (board: PlaitBoard) => {
 
         if (selectedImageElement) {
             setImageFocus(board, selectedImageElement, false);
-            selectedImageElement = null;
         }
 
         if (hitImage) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
 
-            selectedImageElement = hitElements[0] as MindElement<ImageData>;
-            setImageFocus(board, selectedImageElement, true);
+            setImageFocus(board, hitElements[0] as MindElement, true);
 
             clearSelectedElement(board);
         }
@@ -58,10 +58,11 @@ export const withNodeImage = (board: PlaitBoard) => {
     };
 
     board.keydown = (event: KeyboardEvent) => {
+        const selectedImageElement = getSelectedImageElement(board);
+
         if (!PlaitBoard.isReadonly(board) && selectedImageElement && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
             addSelectedElement(board, selectedImageElement);
-            MindTransforms.removeImage(board, selectedImageElement);
-            selectedImageElement = null;
+            MindTransforms.removeImage(board, selectedImageElement as MindElement<ImageData>);
             return;
         }
 
@@ -71,12 +72,11 @@ export const withNodeImage = (board: PlaitBoard) => {
     board.globalMouseup = (event: MouseEvent) => {
         if (PlaitBoard.isFocus(board)) {
             const isInBoard = event.target instanceof Node && PlaitBoard.getBoardContainer(board).contains(event.target);
-            const isInDocument = event.target instanceof Node && document.contains(event.target);
-            const isAttachedElement = event.target instanceof Element && event.target.closest(`.${ATTACHED_ELEMENT_CLASS_NAME}`);
+            const selectedImageElement = getSelectedImageElement(board);
+
             // Clear image selection when mouse board outside area
-            if (selectedImageElement && !isInBoard && !isAttachedElement && isInDocument) {
+            if (selectedImageElement && !isInBoard) {
                 setImageFocus(board, selectedImageElement, false);
-                selectedImageElement = null;
             }
         }
         globalMouseup(event);
