@@ -8,7 +8,8 @@ import {
     hotkeys,
     clearSelectedElement,
     PlaitPointerType,
-    addSelectedElement
+    addSelectedElement,
+    ATTACHED_ELEMENT_CLASS_NAME
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
@@ -19,7 +20,7 @@ import { MindTransforms } from '../transforms';
 export const withNodeImage = (board: PlaitBoard) => {
     let selectedImageElement: MindElement<ImageData> | null = null;
 
-    const { keydown, mousedown } = board;
+    const { keydown, mousedown, globalMouseup } = board;
 
     board.mousedown = (event: MouseEvent) => {
         if (PlaitBoard.isReadonly(board) || !isMainPointer(event) || !PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
@@ -65,6 +66,20 @@ export const withNodeImage = (board: PlaitBoard) => {
         }
 
         keydown(event);
+    };
+
+    board.globalMouseup = (event: MouseEvent) => {
+        if (PlaitBoard.isFocus(board)) {
+            const isInBoard = event.target instanceof Node && PlaitBoard.getBoardContainer(board).contains(event.target);
+            const isInDocument = event.target instanceof Node && document.contains(event.target);
+            const isAttachedElement = event.target instanceof Element && event.target.closest(`.${ATTACHED_ELEMENT_CLASS_NAME}`);
+            // Clear image selection when mouse board outside area
+            if (selectedImageElement && !isInBoard && !isAttachedElement && isInDocument) {
+                setImageFocus(board, selectedImageElement, false);
+                selectedImageElement = null;
+            }
+        }
+        globalMouseup(event);
     };
 
     return board;
