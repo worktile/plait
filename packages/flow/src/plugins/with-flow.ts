@@ -20,6 +20,7 @@ import { withEdgeCreate } from './with-edge-create';
 import { isHitNode } from '../utils/node/is-hit-node';
 import { withHandleHover } from './with-handle-hover';
 import { FlowPluginOptions, FlowPluginKey } from '../interfaces/flow';
+import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, isHitSelection, isMovable, onChange, getRectangle } = board;
@@ -86,7 +87,9 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
 
     (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: false });
 
-    (board as PlaitOptionsBoard).setPluginOptions<FlowPluginOptions>(FlowPluginKey.flowOptions, { edgeLabelOptions: { height: 20 } });
+    (board as PlaitOptionsBoard).setPluginOptions<FlowPluginOptions>(FlowPluginKey.flowOptions, {
+        edgeLabelOptions: { height: TEXT_DEFAULT_HEIGHT }
+    });
 
     return withHandleHover(withFlowEdgeDnd(withEdgeCreate(board)));
 };
