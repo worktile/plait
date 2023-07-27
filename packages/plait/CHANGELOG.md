@@ -1,5 +1,11 @@
 # plait
 
+## 0.20.0
+
+### Minor Changes
+
+-   [#491](https://github.com/worktile/plait/pull/491) [`540995b3`](https://github.com/worktile/plait/commit/540995b3bdd5677a674e96d2f529afb11d2b4924) Thanks [@WBbug](https://github.com/WBbug)! - clear imageFocus when click outside
+
 ## 0.19.0
 
 ### Minor Changes

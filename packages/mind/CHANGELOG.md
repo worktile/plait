@@ -1,5 +1,17 @@
 # mind
 
+## 0.22.0
+
+### Minor Changes
+
+-   [#491](https://github.com/worktile/plait/pull/491) [`540995b3`](https://github.com/worktile/plait/commit/540995b3bdd5677a674e96d2f529afb11d2b4924) Thanks [@WBbug](https://github.com/WBbug)! - clear imageFocus when click outside
+
+*   [#490](https://github.com/worktile/plait/pull/490) [`4898f7c7`](https://github.com/worktile/plait/commit/4898f7c7d891c182e3b1494fac4b3b833cec6dc9) Thanks [@WBbug](https://github.com/WBbug)! - set selected when delete image
+
+### Patch Changes
+
+-   [`b69b171a`](https://github.com/worktile/plait/commit/b69b171a6eb3805d66377f6c033e3006714385ae) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add throttleRAF at handle resizing
+
 ## 0.21.0
 
 ### Minor Changes

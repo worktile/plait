@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.5.4
+
+### Patch Changes
+
+-   [#487](https://github.com/worktile/plait/pull/487) [`4a471b0f`](https://github.com/worktile/plait/commit/4a471b0f322197052530f5ee6b4088e591693b14) Thanks [@xinglu01](https://github.com/xinglu01)! - support edge label set width
+
 ## 0.5.3
 
 ### Patch Changes
