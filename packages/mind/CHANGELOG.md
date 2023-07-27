@@ -1,5 +1,17 @@
 # mind
 
+## 0.23.0
+
+### Minor Changes
+
+-   [#493](https://github.com/worktile/plait/pull/493) [`a31c6172`](https://github.com/worktile/plait/commit/a31c6172446eee6bc8115faa2b466b39e514804d) Thanks [@WBbug](https://github.com/WBbug)! - let cursor zoom-in when readonly
+
+### Patch Changes
+
+-   [`bc0c2108`](https://github.com/worktile/plait/commit/bc0c2108eae03a2c3d25090ce99896be91dd51b1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle zoom issue in node resize
+
+*   [#492](https://github.com/worktile/plait/pull/492) [`e066e28e`](https://github.com/worktile/plait/commit/e066e28e28466f745f8d3ce1da24d7c690965af5) Thanks [@WBbug](https://github.com/WBbug)! - set abstract select after create
+
 ## 0.22.0
 
 ### Minor Changes
