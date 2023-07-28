@@ -1,4 +1,4 @@
-import { Point, distanceBetweenPointAndRectangle, distanceBetweenPointAndSegment, isSelectedElement } from '@plait/core';
+import { Point, XYPosition, distanceBetweenPointAndRectangle, distanceBetweenPointAndSegment, isSelectedElement } from '@plait/core';
 import { PlaitBoard } from '@plait/core';
 import { FlowEdge } from '../../interfaces/edge';
 import { HIT_THRESHOLD } from '../../constants/edge';
@@ -7,7 +7,7 @@ import { isHitEdgeHandle } from '../handle/edge';
 import { EdgeLabelSpace } from './label-space';
 
 export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
-    const [pathPoints] = getEdgePoints(board, edge);
+    const [pathPoints, centerX, centerY] = getEdgePoints(board, edge);
     let minDistance = Number.MAX_VALUE;
     if (board.selection) {
         pathPoints.map((path, index) => {
@@ -22,7 +22,7 @@ export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
             }
         });
 
-        const hitFlowEdgeText = isHitEdgeText(board, edge, point);
+        const hitFlowEdgeText = isHitEdgeText(board, edge, point, { x: centerX, y: centerY });
         const hitEdgeHandle = isHitEdgeHandle(board, edge, point);
         const isActiveEdge = isSelectedElement(board, edge);
         let hitFlowEdge = minDistance < HIT_THRESHOLD;
@@ -34,8 +34,8 @@ export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
     return false;
 }
 
-export function isHitEdgeText(board: PlaitBoard, edge: FlowEdge, point: Point) {
-    const textRect = EdgeLabelSpace.getLabelTextRect(board, edge);
+export function isHitEdgeText(board: PlaitBoard, edge: FlowEdge, point: Point, center: XYPosition) {
+    const textRect = EdgeLabelSpace.getLabelTextRect(board, edge, center);
     const labelRect = EdgeLabelSpace.getLabelRect(textRect, edge);
     const distance = distanceBetweenPointAndRectangle(point[0], point[1], labelRect);
     return distance === 0;

@@ -1,5 +1,5 @@
 import { FlowEdge } from '../../interfaces/edge';
-import { ELEMENT_TO_COMPONENT, PlaitBoard, PlaitOptionsBoard, RectangleClient } from '@plait/core';
+import { ELEMENT_TO_COMPONENT, PlaitBoard, PlaitOptionsBoard, RectangleClient, XYPosition } from '@plait/core';
 import { FlowEdgeComponent } from '../../flow-edge.component';
 import { EDGE_LABEL_FONTSIZE, EDGE_LABEL_ICON_PADDING, EDGE_LABEL_PADDING } from '../../constants/edge';
 import { BaseText, Element } from 'slate';
@@ -8,7 +8,7 @@ import { getEdgeTextXYPosition } from './text';
 import { FlowPluginOptions, FlowPluginKey } from '../../interfaces/flow';
 
 // 使用 getSizeByText，渲染 dom 获取文本宽度，频繁调用会有性能问题
-function getLabelTextRect(board: PlaitBoard, edge: FlowEdge): RectangleClient {
+function getLabelTextRect(board: PlaitBoard, edge: FlowEdge, center: XYPosition): RectangleClient {
     const text = ((edge.data?.text as Element).children[0] as BaseText).text;
     const labelTextWidth = getTextSize(board, text, undefined, { fontSize: EDGE_LABEL_FONTSIZE })?.width;
     const { edgeLabelOptions } = (board as PlaitOptionsBoard).getPluginOptions<FlowPluginOptions>(FlowPluginKey.flowOptions);
@@ -20,7 +20,7 @@ function getLabelTextRect(board: PlaitBoard, edge: FlowEdge): RectangleClient {
         : labelTextWidth;
     const height = edgeLabelOptions.height || TEXT_DEFAULT_HEIGHT;
 
-    const { x, y } = getEdgeTextXYPosition(board, edge, width, height);
+    const { x, y } = getEdgeTextXYPosition(width, height, center);
     return {
         x,
         y,

@@ -8,7 +8,14 @@ import {
     Renderer2,
     ViewContainerRef
 } from '@angular/core';
-import { PlaitPluginElementComponent, PlaitPluginElementContext, createG, isSelectedElement, RectangleClient } from '@plait/core';
+import {
+    PlaitPluginElementComponent,
+    PlaitPluginElementContext,
+    createG,
+    isSelectedElement,
+    RectangleClient,
+    XYPosition
+} from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawEdge, drawEdgeLabel, drawEdgeMarkers } from './draw/edge';
 import { PlaitBoard, OnContextChanged } from '@plait/core';
@@ -20,7 +27,7 @@ import { FlowBaseData } from './interfaces/element';
 import { Element, Text } from 'slate';
 import { FlowEdgeLabelIconDrawer } from './draw/label-icon';
 import { PlaitFlowBoard } from './interfaces';
-import { EdgeLabelSpace } from './utils';
+import { EdgeLabelSpace, getEdgePoints } from './utils';
 
 @Component({
     selector: 'plait-flow-edge',
@@ -45,6 +52,8 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     labelIconDrawer!: FlowEdgeLabelIconDrawer;
 
+    edgePoints!: [XYPosition[], number, number, number, number];
+
     constructor(
         public cdr: ChangeDetectorRef,
         public viewContainerRef: ViewContainerRef,
@@ -57,7 +66,8 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     ngOnInit(): void {
         super.ngOnInit();
         this.textManage = new TextManage(this.board, this.viewContainerRef, () => {
-            return EdgeLabelSpace.getLabelTextRect(this.board, this.element);
+            const [pathPoints, centerX, centerY] = this.edgePoints;
+            return EdgeLabelSpace.getLabelTextRect(this.board, this.element, { x: centerX, y: centerY });
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         const isActive = isSelectedElement(this.board, this.element);
@@ -92,7 +102,8 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (element.data?.text && Element.isElement(element.data.text)) {
             const text = (element.data.text.children[0] as Text).text;
             if (text) {
-                this.textRect = EdgeLabelSpace.getLabelTextRect(this.board, element);
+                const [pathPoints, centerX, centerY] = this.edgePoints;
+                this.textRect = EdgeLabelSpace.getLabelTextRect(this.board, element, { x: centerX, y: centerY });
                 this.ngZone.run(() => {
                     this.drawRichtext(element, this.textRect!, active);
                 });
@@ -111,7 +122,9 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     drawEdge(element: FlowEdge = this.element, active = false) {
         this.destroyEdge();
-        this.nodeG = drawEdge(this.board, this.roughSVG, element, active);
+        this.edgePoints = getEdgePoints(this.board, this.element);
+        const [pathPoints] = this.edgePoints;
+        this.nodeG = drawEdge(this.roughSVG, element, active, pathPoints);
         this.nodeG.setAttribute('stroke-linecap', 'round');
         this.g.prepend(this.nodeG);
     }
@@ -146,7 +159,11 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     updateRichtextPosition(element: FlowEdge<T> = this.element, active = false) {
         if (element.data?.text) {
-            const { x, y } = getEdgeTextXYPosition(this.board, this.element, this.textRect!.width, this.textRect!.height);
+            const [pathPoints, centerX, centerY] = this.edgePoints;
+            const { x, y } = getEdgeTextXYPosition(this.textRect!.width, this.textRect!.height, {
+                x: centerX,
+                y: centerY
+            });
             const { width, height } = this.textRect!;
             this.textManage.updateRectangle({ x, y, width, height });
             const labelRect = EdgeLabelSpace.getLabelRect(
@@ -167,7 +184,8 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     drawMarkers(element: FlowEdge = this.element, active = false) {
         if (element.target.marker || element.source?.marker) {
             this.destroyMarkers();
-            this.sourceMarkerG = drawEdgeMarkers(this.board, this.roughSVG, element, active);
+            const [pathPoints] = this.edgePoints;
+            this.sourceMarkerG = drawEdgeMarkers(this.roughSVG, element, active, pathPoints);
             this.sourceMarkerG!.map(arrowline => {
                 this.g.append(arrowline);
             });
