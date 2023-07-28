@@ -30,7 +30,7 @@ export const getTextSize = (
     board: PlaitBoard,
     text: Element | string,
     maxWordCount?: number,
-    styles?: { fontSize?: number; fontFamily?: string }
+    styles?: { fontSize?: number; fontFamily?: string, width?: number }
 ) => {
     const viewContainerRef = PlaitBoard.getComponent(board).viewContainerRef;
     const ref = viewContainerRef.createComponent(PlaitRichtextComponent);
@@ -51,6 +51,9 @@ export const getTextSize = (
         }
         if (styles.fontFamily) {
             richtextContainer.style.fontFamily = styles.fontFamily;
+        }
+        if (styles.width) {
+            richtextContainer.style.width = `${styles.width}px`;
         }
     }
     PlaitBoard.getBoardContainer(board).append(richtextContainer);

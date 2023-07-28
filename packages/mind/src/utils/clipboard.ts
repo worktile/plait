@@ -105,7 +105,10 @@ export const insertClipboardData = (board: PlaitMindBoard, elements: PlaitElemen
             if (item.isRoot) {
                 newElement = adjustRootToNode(board, newElement);
                 const styles = PlaitMind.isMind(targetParent) ? { fontFamily: BRANCH_FONT_FAMILY } : { fontFamily: DEFAULT_FONT_FAMILY };
-                const { width, height } = getTextSize(board, newElement.data.topic, TOPIC_DEFAULT_MAX_WORD_COUNT, styles);
+                const { width, height } = getTextSize(board, newElement.data.topic, TOPIC_DEFAULT_MAX_WORD_COUNT, {
+                    ...styles,
+                    width: newElement.manualWidth ? newElement.manualWidth : undefined
+                });
                 newElement.width = Math.max(width, getNodeDefaultFontSize());
                 newElement.height = height;
             }

@@ -40,7 +40,8 @@ export const adjustNodeToRoot = (board: PlaitMindBoard, node: MindElement): Mind
 
     const { width, height } = getTextSize(board, newElement.data.topic, TOPIC_DEFAULT_MAX_WORD_COUNT, {
         fontSize: ROOT_TOPIC_FONT_SIZE,
-        fontFamily: BRANCH_FONT_FAMILY
+        fontFamily: BRANCH_FONT_FAMILY,
+        width: node.manualWidth ? node.manualWidth : undefined
     });
     newElement.width = Math.max(width, getNodeDefaultFontSize(true));
     newElement.height = height;
