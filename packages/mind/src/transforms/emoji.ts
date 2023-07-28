@@ -7,7 +7,7 @@ export const addEmoji = (board: PlaitBoard, element: MindElement, emojiItem: Emo
     const newEmojis = [...emojis];
     newEmojis.push(emojiItem);
     const newElement = {
-        data: { topic: element.data.topic, emojis: newEmojis }
+        data: { ...element.data, emojis: newEmojis }
     } as MindElement;
     const path = PlaitBoard.findPath(board, element);
     Transforms.setNode(board, newElement, path);
@@ -16,7 +16,7 @@ export const addEmoji = (board: PlaitBoard, element: MindElement, emojiItem: Emo
 export const removeEmoji = (board: PlaitBoard, element: MindElement<EmojiData>, emojiItem: EmojiItem) => {
     const emojis = element.data.emojis.filter(value => value !== emojiItem);
     const newElement = {
-        data: { topic: element.data.topic }
+        data: { ...element.data }
     } as MindElement;
     if (emojis.length > 0) {
         newElement.data.emojis = emojis;
