@@ -178,9 +178,10 @@ export class TextManage {
             const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
             const clickInNode = this.isHitElement && this.isHitElement(point);
             const isAttached = (event.target as HTMLElement).closest('.plait-board-attached');
+            const isNode = (event.target as HTMLElement).closest('.element-host');
 
             // keep focus when click in node
-            if (clickInNode && !hasEditableTarget(editor, event.target)) {
+            if (clickInNode && isNode && !hasEditableTarget(editor, event.target)) {
                 event.preventDefault();
             }
 
