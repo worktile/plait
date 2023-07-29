@@ -125,9 +125,14 @@ export class TextManage {
     }
 
     updateWidth(width: number) {
-        const editable = AngularEditor.toDOMNode(this.componentRef.instance.editor, this.componentRef.instance.editor);
-        editable.style.width = `${width}px`;
-        editable.style.maxWidth = `${width}px`;
+        if (this.componentRef.instance.slateEditable) {
+            const editable = AngularEditor.toDOMNode(this.componentRef.instance.editor, this.componentRef.instance.editor);
+            editable.style.width = `${width}px`;
+            editable.style.maxWidth = `${width}px`;
+        } else {
+            // init width
+            this.componentRef.instance.width = width;
+        }
     }
 
     updateRectangle(rectangle?: RectangleClient) {

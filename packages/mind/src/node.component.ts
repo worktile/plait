@@ -127,7 +127,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.parentG = PlaitElement.getComponent(MindElement.getRoot(this.board, this.element)).rootG as SVGGElement;
         this.drawShape();
         this.drawLink();
-        this.drawText();
+        this.drawTopic();
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
         this.drawEmojis();
         this.drawExtend();
@@ -135,19 +135,6 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         if (PlaitMind.isMind(this.context.parent)) {
             this.g.classList.add('branch');
         }
-    }
-
-    editTopic() {
-        this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: true });
-        if (this.element.manualWidth) {
-            const width = NodeSpace.getNodeResizableWidth(this.board, this.element);
-            this.textManage.updateWidth(width);
-        }
-        this.textManage.edit((origin: ExitOrigin) => {
-            if (origin === ExitOrigin.default) {
-                this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: false });
-            }
-        });
     }
 
     onContextChanged(
@@ -167,8 +154,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             this.drawEmojis();
             this.drawExtend();
             this.imageDrawer.updateImage(this.g, previous.element, value.element);
-            this.textManage.updateText(this.element.data.topic);
-            this.textManage.updateRectangle();
+            this.updateTopic();
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameParent = value.parent === previous.parent;
@@ -258,9 +244,27 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         }
     }
 
-    drawText() {
+    drawTopic() {
         this.textManage.draw(this.element.data.topic);
         this.g.append(this.textManage.g);
+        if (this.element.manualWidth) {
+            const width = NodeSpace.getNodeResizableWidth(this.board, this.element);
+            this.textManage.updateWidth(width);
+        }
+    }
+
+    updateTopic() {
+        this.textManage.updateText(this.element.data.topic);
+        this.textManage.updateRectangle();
+    }
+
+    editTopic() {
+        this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: true });
+        this.textManage.edit((origin: ExitOrigin) => {
+            if (origin === ExitOrigin.default) {
+                this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: false });
+            }
+        });
     }
 
     trackBy = (index: number, node: MindNode) => {

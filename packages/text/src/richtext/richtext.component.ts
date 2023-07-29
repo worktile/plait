@@ -1,4 +1,5 @@
 import {
+    AfterViewInit,
     ChangeDetectorRef,
     Component,
     ElementRef,
@@ -29,7 +30,7 @@ import { isKeyHotkey } from 'is-hotkey';
     selector: 'plait-richtext',
     templateUrl: './richtext.component.html'
 })
-export class PlaitRichtextComponent implements OnInit {
+export class PlaitRichtextComponent implements OnInit, AfterViewInit {
     @HostBinding('class') hostClass = 'plait-richtext-container';
 
     children: Element[] = [];
@@ -42,6 +43,8 @@ export class PlaitRichtextComponent implements OnInit {
     }
 
     @Input() readonly = false;
+
+    @Input() width?: number;
 
     @ViewChild('slateEditable')
     slateEditable!: SlateEditableComponent;
@@ -64,6 +67,13 @@ export class PlaitRichtextComponent implements OnInit {
         this.textPlugins.forEach(plugin => {
             plugin(this.editor);
         });
+    }
+
+    ngAfterViewInit(): void {
+        if (this.width) {
+            (this.slateEditable.elementRef.nativeElement as HTMLElement).style.width = `${this.width}px`;
+            (this.slateEditable.elementRef.nativeElement as HTMLElement).style.width = `${this.width}px`;
+        }
     }
 
     renderElement = (element: Element) => {
