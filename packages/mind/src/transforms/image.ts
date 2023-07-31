@@ -1,7 +1,9 @@
 import { PlaitBoard, Transforms } from '@plait/core';
 import { ImageData, MindElement } from '../interfaces';
+import { setImageFocus } from '../utils/node/image';
 
 export const removeImage = (board: PlaitBoard, element: MindElement<ImageData>) => {
+    setImageFocus(board, element, false);
     const newElement = {
         data: { ...element.data }
     } as MindElement;
