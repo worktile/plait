@@ -1,5 +1,15 @@
 # text
 
+## 0.14.1
+
+### Patch Changes
+
+-   [`7882dd54`](https://github.com/worktile/plait/commit/7882dd543bfaf3ae3972b66f88677027a1bd2d86) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support width style when getTextSize
+
+*   [`75ba9a04`](https://github.com/worktile/plait/commit/75ba9a043ea9bd4891acc57fda2cf833063d3b55) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - initialize max width when first draw topic
+
+-   [#496](https://github.com/worktile/plait/pull/496) [`a00c0454`](https://github.com/worktile/plait/commit/a00c045488e1dcf647a95a307aab0c62d85c73af) Thanks [@WBbug](https://github.com/WBbug)! - add isNode judge
+
 ## 0.14.0
 
 ### Minor Changes

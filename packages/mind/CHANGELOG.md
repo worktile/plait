@@ -1,5 +1,17 @@
 # mind
 
+## 0.23.1
+
+### Patch Changes
+
+-   [`7882dd54`](https://github.com/worktile/plait/commit/7882dd543bfaf3ae3972b66f88677027a1bd2d86) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support width style when getTextSize
+
+*   [#497](https://github.com/worktile/plait/pull/497) [`8fe4af7d`](https://github.com/worktile/plait/commit/8fe4af7d5885afc976260d587f106d87aceba0c8) Thanks [@WBbug](https://github.com/WBbug)! - set unFocus when remove Image
+
+-   [`75ba9a04`](https://github.com/worktile/plait/commit/75ba9a043ea9bd4891acc57fda2cf833063d3b55) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - initialize max width when first draw topic
+
+*   [#494](https://github.com/worktile/plait/pull/494) [`936056b3`](https://github.com/worktile/plait/commit/936056b37f1d6871a563afeafc3f779c0b68cdaa) Thanks [@WBbug](https://github.com/WBbug)! - fix delete image when set emoji
+
 ## 0.23.0
 
 ### Minor Changes
