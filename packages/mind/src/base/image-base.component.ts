@@ -8,9 +8,17 @@ import { MindElement } from '../interfaces';
         class: 'mind-node-image'
     }
 })
-export class MindImageBaseComponent implements OnInit {
-    @Input()
-    imageItem!: ImageItem;
+export abstract class MindImageBaseComponent {
+    _imageItem!: ImageItem;
+
+    @Input() set imageItem(value: ImageItem) {
+        this.afterImageItemChange(this._imageItem, value);
+        this._imageItem = value;
+    }
+
+    get imageItem() {
+        return this._imageItem;
+    }
 
     @Input()
     board!: PlaitBoard;
@@ -25,7 +33,7 @@ export class MindImageBaseComponent implements OnInit {
         return this.elementRef.nativeElement;
     }
 
-    constructor(protected elementRef: ElementRef<HTMLElement>, public cdr: ChangeDetectorRef) {}
+    abstract afterImageItemChange(previous: ImageItem, current: ImageItem): void;
 
-    ngOnInit(): void {}
+    constructor(protected elementRef: ElementRef<HTMLElement>, public cdr: ChangeDetectorRef) {}
 }

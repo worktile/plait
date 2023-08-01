@@ -26,7 +26,7 @@ export class NodeImageDrawer {
 
         this.g.append(foreignObject);
 
-        const componentType = this.board.getPluginOptions<WithMindOptions>(WithMindPluginKey).imageComponentType || MindImageBaseComponent;
+        const componentType = this.board.getPluginOptions<WithMindOptions>(WithMindPluginKey).imageComponentType;
         if (!componentType) {
             throw new Error('Not implement drawEmoji method error.');
         }

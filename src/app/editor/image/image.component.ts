@@ -21,12 +21,10 @@ import { MindImageBaseComponent } from '@plait/mind';
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MindImageComponent extends MindImageBaseComponent implements OnInit {
+export class MindImageComponent extends MindImageBaseComponent {
     constructor(protected elementRef: ElementRef<HTMLElement>, cdr: ChangeDetectorRef) {
         super(elementRef, cdr);
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
-    }
+    afterImageItemChange() {}
 }
