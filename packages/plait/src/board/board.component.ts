@@ -65,12 +65,18 @@ import { withHotkey } from '../plugins/with-hotkey';
 import { HOST_CLASS_NAME } from '../constants';
 
 const ElementHostClass = 'element-host';
+const ElementHostUpClass = 'element-host-up';
+const ElementHostActiveClass = 'element-host-active';
 
 @Component({
     selector: 'plait-board',
     template: `
         <div class="viewport-container" #viewportContainer>
-            <svg #svg width="100%" height="100%" style="position: relative;" class="board-host-svg"><g class="element-host"></g></svg>
+            <svg #svg width="100%" height="100%" style="position: relative;" class="board-host-svg">
+                <g class="element-host"></g>
+                <g class="element-host-up"></g>
+                <g class="element-host-active"></g>
+            </svg>
             <plait-children [board]="board" [effect]="effect"></plait-children>
         </div>
         <ng-content></ng-content>
@@ -149,6 +155,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     ngOnInit(): void {
         const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;
+        const elementHostUp = this.host.querySelector(`.${ElementHostUpClass}`) as SVGGElement;
+        const elementHostActive = this.host.querySelector(`.${ElementHostActiveClass}`) as SVGGElement;
         const roughSVG = rough.svg(this.host as SVGSVGElement, {
             options: { roughness: 0, strokeWidth: 1 }
         });
@@ -167,7 +175,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ROUGH_SVG.set(this.board, roughSVG);
         BOARD_TO_HOST.set(this.board, this.host);
-        BOARD_TO_ELEMENT_HOST.set(this.board, elementHost);
+        BOARD_TO_ELEMENT_HOST.set(this.board, {
+            host: elementHost,
+            hostUp: elementHostUp,
+            hostActive: elementHostActive
+        });
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.ngZone.run(() => {
                 this.detect();
