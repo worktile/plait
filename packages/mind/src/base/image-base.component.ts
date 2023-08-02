@@ -11,7 +11,8 @@ import { MindElement } from '../interfaces';
 export abstract class MindImageBaseComponent {
     _imageItem!: ImageItem;
 
-    @Input() set imageItem(value: ImageItem) {
+    @Input()
+    set imageItem(value: ImageItem) {
         this.afterImageItemChange(this._imageItem, value);
         this._imageItem = value;
     }

@@ -12,6 +12,8 @@ export class NodeImageDrawer {
 
     g?: SVGGElement;
 
+    foreignObject!: SVGForeignObjectElement;
+
     constructor(private board: PlaitMindBoard, private viewContainerRef: ViewContainerRef) {}
 
     drawImage(nodeG: SVGGElement, element: MindElement) {
@@ -22,9 +24,9 @@ export class NodeImageDrawer {
 
         this.g = createG();
         const foreignRectangle = getImageForeignRectangle(this.board, element);
-        const foreignObject = createForeignObject(foreignRectangle.x, foreignRectangle.y, foreignRectangle.width, foreignRectangle.height);
+        this.foreignObject = createForeignObject(foreignRectangle.x, foreignRectangle.y, foreignRectangle.width, foreignRectangle.height);
 
-        this.g.append(foreignObject);
+        this.g.append(this.foreignObject);
 
         const componentType = this.board.getPluginOptions<WithMindOptions>(WithMindPluginKey).imageComponentType;
         if (!componentType) {
@@ -36,7 +38,7 @@ export class NodeImageDrawer {
         this.componentRef.instance.imageItem = element.data.image;
         this.componentRef.instance.cdr.markForCheck();
 
-        foreignObject.append(this.componentRef.instance.nativeElement);
+        this.foreignObject.append(this.componentRef.instance.nativeElement);
         nodeG.appendChild(this.g);
     }
 
@@ -59,6 +61,10 @@ export class NodeImageDrawer {
             currentForeignObject.x,
             currentForeignObject.y
         );
+        // solve image lose on move node
+        if (this.foreignObject.children.length === 0) {
+            this.foreignObject.append(this.componentRef!.instance.nativeElement);
+        }
 
         this.componentRef?.instance.cdr.markForCheck();
     }
