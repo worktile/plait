@@ -6,3 +6,9 @@ export interface BoardComponentInterface {
     nativeElement: HTMLElement;
     viewContainerRef: ViewContainerRef;
 }
+
+export interface BoardElementHostInterface {
+    host: SVGGElement;
+    hostUp: SVGGElement;
+    hostActive: SVGGElement;
+}
