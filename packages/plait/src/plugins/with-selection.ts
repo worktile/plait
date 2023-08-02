@@ -4,7 +4,7 @@ import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
 import { isMainPointer, toPoint } from '../utils/dom/common';
 import { RectangleClient } from '../interfaces/rectangle-client';
-import { cacheSelectedElements, getHitElements, getSelectedElements } from '../utils/selected-element';
+import { cacheSelectedElements, clearSelectedElement, getHitElements, getSelectedElements } from '../utils/selected-element';
 import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
@@ -47,7 +47,7 @@ export function withSelection(board: PlaitBoard) {
         const hitElements = getHitElements(board, { ranges: [range] });
         const selectedElements = getSelectedElements(board);
 
-        if (hitElements.length === 1 && selectedElements.includes(hitElements[0])) {
+        if (hitElements.length === 1 && selectedElements.includes(hitElements[0]) && !options.isDisabledSelect) {
             mousedown(event);
             return;
         }
@@ -70,7 +70,7 @@ export function withSelection(board: PlaitBoard) {
         if (needPreventNativeSelectionWhenMoving) {
             preventNativeSelection(board, event);
         }
-        
+
         if (start) {
             const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
@@ -122,6 +122,11 @@ export function withSelection(board: PlaitBoard) {
 
     board.onChange = () => {
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
+        if (options.isDisabledSelect) {
+            selectionOuterG?.remove();
+            clearSelectedElement(board);
+        }
+
         // calc selected elements entry
         if (board.pointer !== PlaitPointerType.hand && !options.isDisabledSelect) {
             try {
