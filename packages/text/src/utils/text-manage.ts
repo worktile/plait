@@ -127,8 +127,14 @@ export class TextManage {
     updateWidth(width: number) {
         if (this.componentRef.instance.slateEditable) {
             const editable = AngularEditor.toDOMNode(this.componentRef.instance.editor, this.componentRef.instance.editor);
-            editable.style.width = `${width}px`;
-            editable.style.maxWidth = `${width}px`;
+            // remove width and max-width
+            if (width === 0) {
+                editable.style.removeProperty('width');
+                editable.style.removeProperty('max-width');
+            } else {
+                editable.style.width = `${width}px`;
+                editable.style.maxWidth = `${width}px`;
+            }
         } else {
             // init width
             this.componentRef.instance.width = width;

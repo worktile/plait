@@ -60,11 +60,11 @@ export const NodeSpace = {
                 NodeSpace.getEmojiLeftSpace(board, element) +
                 getEmojisWidthHeight(board, element).width +
                 getSpaceEmojiAndText(element) +
-                NodeSpace.getNodeResizableWidth(board, element) +
+                NodeSpace.getNodeDynamicWidth(board, element) +
                 nodeAndText
             );
         }
-        return nodeAndText + NodeSpace.getNodeResizableWidth(board, element) + nodeAndText;
+        return nodeAndText + NodeSpace.getNodeDynamicWidth(board, element) + nodeAndText;
     },
     getNodeHeight(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getVerticalSpaceBetweenNodeAndText(board, element);
@@ -73,9 +73,20 @@ export const NodeSpace = {
         }
         return nodeAndText + element.height + nodeAndText;
     },
-    getNodeResizableWidth(board: PlaitMindBoard, element: MindElement) {
+    getNodeDynamicWidth(board: PlaitMindBoard, element: MindElement) {
         const width = element.manualWidth || element.width;
         const imageWidth = MindElement.hasImage(element) ? element.data.image?.width : 0;
+        return Math.max(width, imageWidth);
+    },
+    /**
+     * use this when upload image first or resize image
+     * @param board 
+     * @param element 
+     * @param imageWidth 
+     * @returns 
+     */
+    getNodeNewDynamicWidth(board: PlaitMindBoard, element: MindElement, imageWidth: number) {
+        const width = element.manualWidth || element.width;
         return Math.max(width, imageWidth);
     },
     getNodeResizableMinWidth(board: PlaitMindBoard, element: MindElement) {

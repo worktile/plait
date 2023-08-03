@@ -248,7 +248,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.textManage.draw(this.element.data.topic);
         this.g.append(this.textManage.g);
         if (this.element.manualWidth) {
-            const width = NodeSpace.getNodeResizableWidth(this.board, this.element);
+            const width = NodeSpace.getNodeDynamicWidth(this.board, this.element);
             this.textManage.updateWidth(width);
         }
     }
@@ -256,6 +256,10 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     updateTopic() {
         this.textManage.updateText(this.element.data.topic);
         this.textManage.updateRectangle();
+        if (this.element.manualWidth) {
+            const width = NodeSpace.getNodeDynamicWidth(this.board, this.element);
+            this.textManage.updateWidth(width);
+        }
     }
 
     editTopic() {

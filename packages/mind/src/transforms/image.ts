@@ -1,6 +1,9 @@
 import { PlaitBoard, Transforms } from '@plait/core';
 import { ImageData, MindElement } from '../interfaces';
 import { setImageFocus } from '../utils/node/image';
+import { NodeSpace } from '../utils/space/node-space';
+import { PlaitMindBoard } from '../plugins/with-mind.board';
+import { getNewNodeHeight } from '../utils/node/dynamic-width';
 
 export const removeImage = (board: PlaitBoard, element: MindElement<ImageData>) => {
     setImageFocus(board, element, false);
@@ -9,5 +12,12 @@ export const removeImage = (board: PlaitBoard, element: MindElement<ImageData>) 
     } as MindElement;
     delete newElement.data.image;
     const path = PlaitBoard.findPath(board, element);
+
+    const newDynamicWidth = NodeSpace.getNodeNewDynamicWidth(board as PlaitMindBoard, element, 0);
+    const newHeight = getNewNodeHeight(board as PlaitMindBoard, element, newDynamicWidth)
+    if (newHeight) {
+        newElement.height = newHeight / board.viewport.zoom;
+    }
+
     Transforms.setNode(board, newElement, path);
 };

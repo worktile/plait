@@ -11,3 +11,5 @@ export * from './draw/node-dnd';
 export * from './abstract/common';
 export * from './abstract/resize';
 export * from './node/right-node-count';
+export * from './space/node-space';
+export * from './space';

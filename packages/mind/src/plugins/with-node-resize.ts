@@ -62,7 +62,7 @@ export const withNodeResize = (board: PlaitBoard) => {
                 addResizing(board, targetElement);
                 targetElementRef = {
                     minWidth: NodeSpace.getNodeResizableMinWidth(board as PlaitMindBoard, targetElement),
-                    currentWidth: NodeSpace.getNodeResizableWidth(board as PlaitMindBoard, targetElement),
+                    currentWidth: NodeSpace.getNodeDynamicWidth(board as PlaitMindBoard, targetElement),
                     path: PlaitBoard.findPath(board, targetElement),
                     textManage: (PlaitElement.getComponent(targetElement) as MindNodeComponent).textManage
                 };
@@ -80,7 +80,7 @@ export const withNodeResize = (board: PlaitBoard) => {
                 const offsetX = endPoint[0] - startPoint![0];
                 const zoom = board.viewport.zoom;
                 let resizedWidth = targetElementRef!.currentWidth + offsetX / zoom;
-                if (resizedWidth < targetElementRef!.minWidth) {
+                if (resizedWidth <= targetElementRef!.minWidth) {
                     resizedWidth = targetElementRef!.minWidth;
                 }
 
