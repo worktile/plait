@@ -93,5 +93,5 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
         edgeLabelOptions: { height: TEXT_DEFAULT_HEIGHT }
     });
 
-    return withEdgeHover(withNodeHover(withHandleHover(withFlowEdgeDnd(withEdgeCreate(board)))));
+    return withNodeHover(withHandleHover(withEdgeHover(withFlowEdgeDnd(withEdgeCreate(board)))));
 };

@@ -6,18 +6,16 @@ export const withEdgeHover: PlaitPlugin = (board: PlaitBoard) => {
 
     let activeElement: PlaitElement | null;
     let hoveredElement: FlowEdge | null;
+    let relationEdges: FlowEdge[] | null;
 
     board.mouseup = (event: MouseEvent) => {
         mouseup(event);
-        if (
-            activeElement &&
-            getSelectedElements(board)[0] !== activeElement &&
-            FlowEdge.isFlowEdgeElement(getSelectedElements(board)[0] as FlowElement)
-        ) {
-            removeEdgeHovered(activeElement as FlowEdge);
+        const selectedElement = getSelectedElements(board) && getSelectedElements(board)[0];
+        if (activeElement && selectedElement !== activeElement && FlowEdge.isFlowEdgeElement(selectedElement as FlowElement)) {
+            [...(relationEdges || []), activeElement]?.forEach(item => removeEdgeHovered(item as FlowEdge));
             activeElement = null;
         }
-        activeElement = getSelectedElements(board) && getSelectedElements(board)[0];
+        activeElement = selectedElement;
         if (activeElement && FlowEdge.isFlowEdgeElement(activeElement as FlowElement)) {
             addEdgeHovered(activeElement as FlowEdge, true, false);
         }
@@ -34,7 +32,7 @@ export const withEdgeHover: PlaitPlugin = (board: PlaitBoard) => {
                 return;
             }
             if (activeElement && FlowNode.isFlowNodeElement(activeElement as FlowElement)) {
-                const relationEdges = getEdgesByNodeId(board, activeElement.id);
+                relationEdges = getEdgesByNodeId(board, activeElement.id);
                 const isIncludeHoverEdge = relationEdges.find(item => item.id === hoveredElement!.id);
                 if (!isIncludeHoverEdge) {
                     removeEdgeHovered(hoveredElement);

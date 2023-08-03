@@ -49,6 +49,8 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     hostActiveG!: SVGGElement;
 
+    elementG!: SVGGElement;
+
     constructor(
         public cdr: ChangeDetectorRef,
         public viewContainerRef: ViewContainerRef,
@@ -66,6 +68,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.hostUpG = PlaitBoard.getElementHostUp(this.board);
         this.hostActiveG = PlaitBoard.getElementHostActive(this.board);
+        this.elementG = createG();
         const isActive = isSelectedElement(this.board, this.element);
         this.labelIconDrawer = new FlowEdgeLabelIconDrawer(this.board as PlaitFlowBoard, this.viewContainerRef);
         this.drawElementHost(this.element, isActive);
@@ -88,14 +91,8 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     drawElementHost(element: FlowEdge = this.element, active = false, hover = false) {
         this.getEdgeElement(element, active, hover);
-        this.g.prepend(this.nodeG!);
+        this.g.prepend(this.elementG!);
         this.drawElementUpHost(element);
-        this.sourceMarkerG!.forEach(arrowline => {
-            this.g.append(arrowline);
-        });
-        if (active) {
-            this.g.append(this.handlesG!);
-        }
     }
 
     drawElementUpHost(element: FlowEdge = this.element) {
@@ -106,13 +103,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     drawElementHostActive(element: FlowEdge = this.element, active = false, hover = true) {
         this.getEdgeElement(element, active, hover);
-        this.hostActiveG.prepend(this.nodeG!);
-        this.sourceMarkerG!.forEach(arrowline => {
-            this.hostActiveG.append(arrowline);
-        });
-        if (active) {
-            this.hostActiveG.append(this.handlesG!);
-        }
+        this.hostActiveG.prepend(this.elementG!);
         if (element.data?.text) {
             this.hostActiveG.append(this.textManage.g);
         }
@@ -144,6 +135,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         this.destroyEdge();
         this.nodeG = drawEdge(this.board, this.roughSVG, element, active, hover);
         this.nodeG.setAttribute('stroke-linecap', 'round');
+        this.elementG.prepend(this.nodeG);
     }
 
     drawHandles(element: FlowEdge = this.element, active = false) {
@@ -156,6 +148,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
                 this.render2.addClass(item, 'flow-handle');
             });
             this.handlesG?.setAttribute('stroke-linecap', 'round');
+            this.elementG.append(this.handlesG);
         }
     }
 
@@ -196,6 +189,9 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (element.target.marker || element.source?.marker) {
             this.destroyMarkers();
             this.sourceMarkerG = drawEdgeMarkers(this.board, this.roughSVG, element, active, hover);
+            this.sourceMarkerG!.map(arrowline => {
+                this.elementG.append(arrowline);
+            });
         }
     }
 

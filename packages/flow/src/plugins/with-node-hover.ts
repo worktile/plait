@@ -14,11 +14,8 @@ export const withNodeHover: PlaitPlugin = (board: PlaitBoard) => {
     board.mouseup = (event: MouseEvent) => {
         mouseup(event);
         // 选中 flowNode 相关 edge 高亮
-        if (
-            activeElement &&
-            getSelectedElements(board)[0] !== activeElement &&
-            FlowNode.isFlowNodeElement(getSelectedElements(board)[0] as FlowElement)
-        ) {
+        const selectedElement = getSelectedElements(board) && getSelectedElements(board)[0];
+        if (activeElement && selectedElement !== activeElement && FlowNode.isFlowNodeElement(selectedElement as FlowElement)) {
             (selectedNodeRelationEdges || []).forEach(item => {
                 removeEdgeHovered(item);
                 activeElement = null;
@@ -26,7 +23,7 @@ export const withNodeHover: PlaitPlugin = (board: PlaitBoard) => {
             });
             removeNodeActive(activeElement as FlowNode, false);
         }
-        activeElement = getSelectedElements(board) && getSelectedElements(board)[0];
+        activeElement = selectedElement;
         if (activeElement && FlowNode.isFlowNodeElement(activeElement as FlowElement)) {
             selectedNodeRelationEdges = getEdgesByNodeId(board, activeElement.id);
             if (selectedNodeRelationEdges?.length) {
@@ -68,7 +65,7 @@ export const withNodeHover: PlaitPlugin = (board: PlaitBoard) => {
                     addEdgeHovered(item);
                 }
             });
-            if (hoveredElement !== activeElement) {
+            if (activeElement && hoveredElement !== activeElement) {
                 addNodeActive(hoveredElement, false);
             }
         }
