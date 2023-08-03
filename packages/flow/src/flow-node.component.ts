@@ -15,6 +15,7 @@ import { drawNodeHandles } from './draw/handle';
 import { drawActiveMask, drawNode } from './draw/node';
 import { FlowNode } from './interfaces/node';
 import { FlowBaseData } from './interfaces/element';
+import { addNodeActive, removeNodeActive } from './public-api';
 
 @Component({
     selector: 'plait-flow-node',
@@ -33,6 +34,8 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     handlesG: SVGGElement | null = null;
 
+    hostActiveG!: SVGGElement;
+
     constructor(public cdr: ChangeDetectorRef, public viewContainerRef: ViewContainerRef, public render2: Renderer2) {
         super(cdr);
     }
@@ -46,19 +49,17 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             return { x, y, width, height };
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
-        this.drawElement();
-        this.drawRichtext();
+        this.hostActiveG = PlaitBoard.getElementHostActive(this.board);
+        this.drawElementHost();
     }
 
     onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
         if (value.element !== previous.element && this.initialized) {
-            this.updateElement(value.element, value.selected);
+            this.drawElementHost(value.element, value.selected);
         }
         if (this.initialized) {
             if (value.selected) {
-                this.setActiveNodeToTop();
-                this.drawActiveMask();
-                this.drawHandles();
+                addNodeActive(this.element, value.selected);
             } else if (previous.selected) {
                 this.destroyActiveMask();
                 this.destroyHandles();
@@ -66,22 +67,34 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         }
     }
 
-    setActiveNodeToTop() {
-        const parentElement = this.g.parentElement;
-        this.g.remove();
-        parentElement?.append(this.g);
+    drawElementHost(element: FlowNode = this.element, active = false) {
+        this.updateElement(element, active);
+        this.g.append(this.nodeG!);
+        this.g.append(this.textManage!.g);
+        if (active) {
+            this.g.prepend(this.activeMaskG!);
+            this.g.append(this.handlesG!);
+        }
     }
 
-    drawElement(element: FlowNode = this.element) {
+    drawElementHostActive(element: FlowNode = this.element, active = true) {
+        this.updateElement(element, active);
+        this.hostActiveG.append(this.nodeG!);
+        this.hostActiveG.append(this.textManage!.g);
+        if (active) {
+            this.hostActiveG.prepend(this.activeMaskG!);
+            this.hostActiveG.append(this.handlesG!);
+        }
+    }
+
+    getNodeElement(element: FlowNode = this.element) {
         this.destroyElement();
         this.nodeG = drawNode(this.roughSVG, element);
-        this.g.append(this.nodeG);
     }
 
     drawActiveMask(element: FlowNode = this.element) {
         this.destroyActiveMask();
         this.activeMaskG = drawActiveMask(this.roughSVG, element);
-        this.g.prepend(this.activeMaskG);
     }
 
     drawRichtext(element: FlowNode = this.element) {
@@ -89,7 +102,6 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (element.data?.text) {
             this.textManage.draw(element.data.text);
             this.textManage.g.classList.add('flow-node-richtext');
-            this.g.append(this.textManage.g);
         }
     }
 
@@ -102,15 +114,18 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             this.render2.addClass(item, 'flow-handle');
         });
         this.handlesG?.setAttribute('stroke-linecap', 'round');
-        this.g.append(this.handlesG);
+        this.hostActiveG.append(this.handlesG);
     }
 
     updateElement(element: FlowNode = this.element, isActive = false) {
-        this.drawElement(element);
+        this.getNodeElement(element);
         this.drawRichtext(element);
         if (isActive) {
             this.drawActiveMask(element);
             this.drawHandles(element);
+        } else {
+            this.destroyActiveMask();
+            this.destroyHandles();
         }
     }
 

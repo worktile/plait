@@ -1,5 +1,5 @@
 import { Options } from 'roughjs/bin/core';
-import { DEFAULT_STYLES, PRIMARY_COLOR } from './default';
+import { DEFAULT_STYLES, HOVER_COLOR, PRIMARY_COLOR } from './default';
 
 export const HIT_THRESHOLD = 10;
 
@@ -23,4 +23,8 @@ export const DEFAULT_PLACEHOLDER_EDGE_STYLES: Options = {
     stroke: PRIMARY_COLOR,
     strokeWidth: 1,
     strokeLineDash: [5]
+};
+
+export const DEFAULT_EDGE_HOVER_STYLES: Options = {
+    stroke: HOVER_COLOR
 };

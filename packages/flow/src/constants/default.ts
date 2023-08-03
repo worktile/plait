@@ -6,3 +6,5 @@ export const DEFAULT_STYLES: Options = {
 };
 
 export const PRIMARY_COLOR = '#6698FF';
+
+export const HOVER_COLOR = '#aaaaaa';

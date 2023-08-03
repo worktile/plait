@@ -1,7 +1,8 @@
 .plait-board-container {
     .flow-node-richtext,
     .flow-edge-richtext {
-        .plait-richtext-container, .flow-edge-label-icon {
+        .plait-richtext-container,
+        .flow-edge-label-icon {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -19,5 +20,13 @@
     }
     .flow-node-richtext span {
         color: #fff;
+    }
+
+    .element-host,
+    .element-host-up {
+        .hovered-edge,
+        .active-node {
+            display: node;
+        }
     }
 }
