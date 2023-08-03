@@ -101,7 +101,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     activePath
                 );
             } else {
-                activeComponent?.drawElementHost(activeElement, true);
+                activeComponent?.drawElementHostActive(activeElement);
             }
             destroyAllNodesHandle(board, flowNodeElements);
         }

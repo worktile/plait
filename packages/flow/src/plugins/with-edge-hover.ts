@@ -11,7 +11,12 @@ export const withEdgeHover: PlaitPlugin = (board: PlaitBoard) => {
     board.mouseup = (event: MouseEvent) => {
         mouseup(event);
         const selectedElement = getSelectedElements(board) && getSelectedElements(board)[0];
-        if (activeElement && selectedElement !== activeElement && FlowEdge.isFlowEdgeElement(selectedElement as FlowElement)) {
+        if (
+            activeElement &&
+            selectedElement &&
+            selectedElement !== activeElement &&
+            FlowEdge.isFlowEdgeElement(selectedElement as FlowElement)
+        ) {
             [...(relationEdges || []), activeElement]?.forEach(item => removeEdgeHovered(item as FlowEdge));
             activeElement = null;
         }
