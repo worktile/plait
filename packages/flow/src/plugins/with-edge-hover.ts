@@ -2,7 +2,7 @@ import { PlaitBoard, PlaitElement, PlaitPlugin, getSelectedElements, toPoint, tr
 import { FlowEdge, FlowElement, FlowNode, addEdgeHovered, getEdgesByNodeId, getHitEdge, removeEdgeHovered } from '../public-api';
 
 export const withEdgeHover: PlaitPlugin = (board: PlaitBoard) => {
-    const { mousemove, mouseup, mouseleave } = board;
+    const { mousemove, mouseup, mouseleave, globalMouseup } = board;
 
     let activeElement: PlaitElement | null;
     let hoveredElement: FlowEdge | null;
@@ -58,6 +58,18 @@ export const withEdgeHover: PlaitPlugin = (board: PlaitBoard) => {
         if (hoveredElement) {
             removeEdgeHovered(hoveredElement);
             hoveredElement = null;
+        }
+    };
+
+    board.globalMouseup = (event: MouseEvent) => {
+        globalMouseup(event);
+        if (!activeElement && relationEdges?.length) {
+            relationEdges.forEach(item => {
+                removeEdgeHovered(item);
+            });
+            activeElement = null;
+            hoveredElement = null;
+            relationEdges = null;
         }
     };
 
