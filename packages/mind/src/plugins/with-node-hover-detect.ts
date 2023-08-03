@@ -1,7 +1,7 @@
 import { PlaitBoard } from '@plait/core';
 import { NodeHoveredExtendRef, mouseLeaveHandle, mouseMoveHandle } from '../utils/node-hover/extend';
 
-export const withNodeHover = (board: PlaitBoard) => {
+export const withNodeHoverDetect = (board: PlaitBoard) => {
     const { mousemove, mouseleave } = board;
     let nodeHoveredExtendRef: NodeHoveredExtendRef | null = null;
 

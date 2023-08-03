@@ -92,13 +92,6 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     drawElementHost(element: FlowEdge = this.element, active = false, hover = false) {
         this.getEdgeElement(element, active, hover);
         this.g.prepend(this.elementG!);
-        this.drawElementUpHost(element);
-    }
-
-    drawElementUpHost(element: FlowEdge = this.element) {
-        if (element.data?.text) {
-            this.hostUpG.append(this.textManage.g);
-        }
     }
 
     drawElementHostActive(element: FlowEdge = this.element, active = false, hover = true) {
@@ -162,6 +155,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             this.textManage.g.classList.add('flow-edge-richtext');
             const iconG = this.labelIconDrawer.drawLabelIcon(this.element);
             iconG && this.textManage.g.append(iconG);
+            this.hostUpG.append(this.textManage.g);
         }
     }
 

@@ -25,7 +25,7 @@ import { withMindExtend } from './with-mind-extend';
 import { MindTransforms } from '../transforms';
 import { withCreateMind } from './with-mind-create';
 import { withMindHotkey } from './with-mind-hotkey';
-import { withNodeHover } from './with-node-hover-detect';
+import { withNodeHoverDetect } from './with-node-hover-detect';
 import { buildText, getTextFromClipboard } from '@plait/text';
 import { withNodeImage } from './with-node-image';
 import { PlaitMindBoard } from './with-mind.board';
@@ -162,5 +162,7 @@ export const withMind = (baseBoard: PlaitBoard) => {
         deleteFragment(data);
     };
 
-    return withNodeResize(withNodeImage(withNodeHover(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board))))))));
+    return withNodeResize(
+        withNodeImage(withNodeHoverDetect(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board)))))))
+    );
 };
