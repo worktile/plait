@@ -1,4 +1,5 @@
 ---
+'@plait/mind': patch
 '@plait/text': patch
 ---
 

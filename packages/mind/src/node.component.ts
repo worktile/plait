@@ -102,9 +102,6 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
                 const rect = getTopicRectangleByNode(this.board, this.node);
                 return rect;
             },
-            (point: Point) => {
-                return isHitMindElement(this.board, point, this.element);
-            },
             (textManageRef: TextManageRef) => {
                 const width = textManageRef.width;
                 const height = textManageRef.height;

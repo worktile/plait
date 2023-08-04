@@ -60,7 +60,6 @@ export class TextManage {
         private board: PlaitBoard,
         private viewContainerRef: ViewContainerRef,
         private getRectangle: () => RectangleClient,
-        private isHitElement?: (point: Point) => boolean,
         private onValueChangeHandle?: (textChangeRef: TextManageRef) => void,
         private textPlugins?: TextPlugin[]
     ) {}
