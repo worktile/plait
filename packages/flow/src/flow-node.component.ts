@@ -49,15 +49,15 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.elementG = createG();
-        this.drawElementHost();
+        this.drawElement();
     }
 
     onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
         if (value.element !== previous.element && this.initialized) {
-            this.drawElementHost(value.element, value.selected);
+            this.drawElement(value.element, value.selected);
         }
         if (value.selected) {
-            this.drawElementHostActive(this.element);
+            this.drawActiveElement(this.element);
         } else if (this.initialized) {
             if (previous.selected) {
                 this.destroyActiveMask();
@@ -66,17 +66,17 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         }
     }
 
-    drawElementHost(element: FlowNode = this.element, active = false) {
+    drawElement(element: FlowNode = this.element, active = false) {
         this.updateElement(element, active);
         this.g.append(this.elementG!);
     }
 
-    drawElementHostActive(element: FlowNode = this.element, active = true) {
+    drawActiveElement(element: FlowNode = this.element, active = true) {
         this.updateElement(element, active);
         PlaitBoard.getElementHostActive(this.board).append(this.elementG!);
     }
 
-    getNodeElement(element: FlowNode = this.element) {
+    drawElementG(element: FlowNode = this.element) {
         this.destroyElement();
         this.nodeG = drawNode(this.roughSVG, element);
         this.elementG.append(this.nodeG);
@@ -110,7 +110,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     }
 
     updateElement(element: FlowNode = this.element, isActive = false) {
-        this.getNodeElement(element);
+        this.drawElementG(element);
         this.drawRichtext(element);
         if (isActive) {
             this.drawActiveMask(element);

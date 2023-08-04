@@ -5,7 +5,7 @@ export const addNodeActive = (element: FlowNode, active = true) => {
     const component = PlaitElement.getComponent(element) as FlowNodeComponent;
     if (component) {
         component.g.classList.add('active-node');
-        component.drawElementHostActive(element, active);
+        component.drawActiveElement(element, active);
     }
 };
 
@@ -13,6 +13,6 @@ export const removeNodeActive = (element: FlowNode, active = false) => {
     const component = PlaitElement.getComponent(element) as FlowNodeComponent;
     if (component) {
         component.g.classList.remove('active-node');
-        component.drawElementHost(element, active);
+        component.drawElement(element, active);
     }
 };
