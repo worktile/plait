@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ImageEntry } from '../../../mind/src/interfaces';
+import { ImageEntry } from '../interfaces';
 
 @Injectable()
 export class PlaitContextService {
