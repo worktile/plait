@@ -1,5 +1,26 @@
 # mind
 
+## 0.24.0
+
+### Minor Changes
+
+-   [#505](https://github.com/worktile/plait/pull/505) [`70035fcb`](https://github.com/worktile/plait/commit/70035fcbf6ef60b68248b6acc8a7b3b19db93772) Thanks [@WBbug](https://github.com/WBbug)! - add PlaitContextService in core, add image functions in mind
+
+*   [`0f59ab0c`](https://github.com/worktile/plait/commit/0f59ab0c47f73d04fc0e6a58e19776cff7b66adf) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getNewNodeHeight to calculate the new height of topic when user upload node image or resize image
+    set node new height when remove node image
+
+### Patch Changes
+
+-   [#500](https://github.com/worktile/plait/pull/500) [`6ea3fce0`](https://github.com/worktile/plait/commit/6ea3fce0129ff4a8cffbacaa4b0bea66b40f3e80) Thanks [@WBbug](https://github.com/WBbug)! - clear selection when select emoji and image
+
+*   [#506](https://github.com/worktile/plait/pull/506) [`113854cb`](https://github.com/worktile/plait/commit/113854cb859c21612dc179fbd6f0445f204f825e) Thanks [@WBbug](https://github.com/WBbug)! - fix can't remove emoji when is one emoji
+
+-   [#502](https://github.com/worktile/plait/pull/502) [`4eea2149`](https://github.com/worktile/plait/commit/4eea21491cde9799fdaeeae4540253ebf39aae11) Thanks [@WBbug](https://github.com/WBbug)! - fix lose image when dnd
+
+*   [#507](https://github.com/worktile/plait/pull/507) [`dbfb2af2`](https://github.com/worktile/plait/commit/dbfb2af268554e25b83456f8bdbb94130f2b4beb) Thanks [@WBbug](https://github.com/WBbug)! - move ImageEntry to core
+
+-   [#499](https://github.com/worktile/plait/pull/499) [`d25486fc`](https://github.com/worktile/plait/commit/d25486fcbf34866fdf7a2f3051d5883e93749c93) Thanks [@WBbug](https://github.com/WBbug)! - add afterImageItemChange in MindImageBaseComponent
+
 ## 0.23.1
 
 ### Patch Changes
