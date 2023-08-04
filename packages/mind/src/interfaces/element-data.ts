@@ -3,6 +3,7 @@ import { Element } from 'slate';
 export interface EmojiItem {
     name: string;
 }
+
 export interface ImageItem {
     url: string;
     width: number;

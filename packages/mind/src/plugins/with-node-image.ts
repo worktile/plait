@@ -6,19 +6,20 @@ import {
     transformPoint,
     PlaitOptionsBoard,
     hotkeys,
-    clearSelectedElement,
     PlaitPointerType,
     addSelectedElement,
-    ATTACHED_ELEMENT_CLASS_NAME
+    Point,
+    getSelectedElements
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
-import { getSelectedImageElement, setImageFocus } from '../utils/node/image';
+import { buildImage, getSelectedImageElement, setImageFocus } from '../utils/node/image';
 import { isHitImage, temporaryDisableSelection } from '../utils';
 import { MindTransforms } from '../transforms';
+import { acceptImageTypes } from '../constants/image';
 
 export const withNodeImage = (board: PlaitBoard) => {
-    const { keydown, mousedown, globalMouseup } = board;
+    const { keydown, mousedown, globalMouseup, insertFragment } = board;
 
     board.mousedown = (event: MouseEvent) => {
         const selectedImageElement = getSelectedImageElement(board);
@@ -78,6 +79,23 @@ export const withNodeImage = (board: PlaitBoard) => {
             }
         }
         globalMouseup(event);
+    };
+
+    board.insertFragment = (data: DataTransfer | null, targetPoint?: Point) => {
+        const selectedElements = getSelectedElements(board);
+        const isSelectedImage = !!getSelectedImageElement(board);
+        const isSingleSelection = selectedElements.length === 1 && MindElement.isMindElement(board, selectedElements[0]);
+
+        if (data?.files.length && (isSingleSelection || isSelectedImage)) {
+            const selectedElement = (selectedElements[0] || getSelectedImageElement(board)) as MindElement;
+            const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
+            if (acceptImageArray.includes(data?.files[0].type)) {
+                const imageFile = data.files[0];
+                buildImage(board, selectedElement as MindElement, imageFile);
+                return;
+            }
+        }
+        insertFragment(data, targetPoint);
     };
 
     return board;

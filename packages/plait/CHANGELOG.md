@@ -1,5 +1,19 @@
 # plait
 
+## 0.21.0
+
+### Minor Changes
+
+-   [#505](https://github.com/worktile/plait/pull/505) [`70035fcb`](https://github.com/worktile/plait/commit/70035fcbf6ef60b68248b6acc8a7b3b19db93772) Thanks [@WBbug](https://github.com/WBbug)! - add PlaitContextService in core, add image functions in mind
+
+### Patch Changes
+
+-   [#500](https://github.com/worktile/plait/pull/500) [`6ea3fce0`](https://github.com/worktile/plait/commit/6ea3fce0129ff4a8cffbacaa4b0bea66b40f3e80) Thanks [@WBbug](https://github.com/WBbug)! - clear selection when select emoji and image
+
+*   [#507](https://github.com/worktile/plait/pull/507) [`dbfb2af2`](https://github.com/worktile/plait/commit/dbfb2af268554e25b83456f8bdbb94130f2b4beb) Thanks [@WBbug](https://github.com/WBbug)! - move ImageEntry to core
+
+-   [#501](https://github.com/worktile/plait/pull/501) [`d001e696`](https://github.com/worktile/plait/commit/d001e69660b5db75d862378e39873a6b73ecb40a) Thanks [@xinglu01](https://github.com/xinglu01)! - support dom layered rendering
+
 ## 0.20.0
 
 ### Minor Changes

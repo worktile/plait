@@ -1,8 +1,16 @@
 import { insertAbstract, setAbstractsByRefs, setAbstractByStandardLayout } from './abstract-node';
 import { setLayout } from './layout';
-import { setTopic, setTopicSize, removeElements, insertNodes, insertAbstractNodes, setRightNodeCountByRefs, setNodeManualWidth } from './node';
+import {
+    setTopic,
+    setTopicSize,
+    removeElements,
+    insertNodes,
+    insertAbstractNodes,
+    setRightNodeCountByRefs,
+    setNodeManualWidth
+} from './node';
 import { addEmoji, removeEmoji, replaceEmoji } from './emoji';
-import { removeImage } from './image';
+import { removeImage, setImage } from './image';
 
 export const MindTransforms = {
     setLayout,
@@ -19,5 +27,6 @@ export const MindTransforms = {
     insertNodes,
     insertAbstractNodes,
     setRightNodeCountByRefs,
-    removeImage
+    removeImage,
+    setImage
 };

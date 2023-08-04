@@ -1,5 +1,16 @@
 # text
 
+## 0.15.0
+
+### Minor Changes
+
+-   [`0f59ab0c`](https://github.com/worktile/plait/commit/0f59ab0c47f73d04fc0e6a58e19776cff7b66adf) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getNewNodeHeight to calculate the new height of topic when user upload node image or resize image
+    set node new height when remove node image
+
+### Patch Changes
+
+-   [#503](https://github.com/worktile/plait/pull/503) [`efaae4ad`](https://github.com/worktile/plait/commit/efaae4adc07d66c064c9f9040a72c210d95045fa) Thanks [@WBbug](https://github.com/WBbug)! - add readonly judge and getLinkElement function, delete setSelection
+
 ## 0.14.1
 
 ### Patch Changes
