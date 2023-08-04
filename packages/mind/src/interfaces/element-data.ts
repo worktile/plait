@@ -23,8 +23,3 @@ export interface EmojiData extends BaseData {
 export interface ImageData extends BaseData {
     image: ImageItem;
 }
-
-export interface ImageEntry {
-    url: string;
-    file: File;
-}

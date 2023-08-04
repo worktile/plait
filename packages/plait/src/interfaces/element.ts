@@ -23,8 +23,13 @@ export const PlaitElement = {
     getComponent(value: PlaitElement) {
         return ELEMENT_TO_COMPONENT.get(value) as PlaitPluginElementComponent;
     }
-}
+};
 
 export interface ComponentType<T> {
     new (...args: any[]): T;
+}
+
+export interface ImageEntry {
+    url: string;
+    file: File;
 }
