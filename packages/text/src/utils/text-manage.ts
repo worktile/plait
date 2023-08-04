@@ -60,7 +60,6 @@ export class TextManage {
         private board: PlaitBoard,
         private viewContainerRef: ViewContainerRef,
         private getRectangle: () => RectangleClient,
-        private isHitElement?: (point: Point) => boolean,
         private onValueChangeHandle?: (textChangeRef: TextManageRef) => void,
         private textPlugins?: TextPlugin[]
     ) {}
@@ -187,16 +186,11 @@ export class TextManage {
 
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
             const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
-            const clickInNode = this.isHitElement && this.isHitElement(point);
+            const textRec = this.getRectangle();
+            const clickInText = RectangleClient.isHit(RectangleClient.toRectangleClient([point, point]), textRec);
             const isAttached = (event.target as HTMLElement).closest('.plait-board-attached');
-            const isNode = (event.target as HTMLElement).closest('.element-host');
 
-            // keep focus when click in node
-            if (clickInNode && isNode && !hasEditableTarget(editor, event.target)) {
-                event.preventDefault();
-            }
-
-            if (!clickInNode && !isAttached) {
+            if (!clickInText && !isAttached) {
                 // handle composition input state, like: Chinese IME Composition Input
                 timer(0).subscribe(() => {
                     this.exitHandle(ExitOrigin.default);
