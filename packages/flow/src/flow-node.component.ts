@@ -33,8 +33,6 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     handlesG: SVGGElement | null = null;
 
-    hostActiveG!: SVGGElement;
-
     elementG!: SVGGElement;
 
     constructor(public cdr: ChangeDetectorRef, public viewContainerRef: ViewContainerRef, public render2: Renderer2) {
@@ -50,7 +48,6 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             return { x, y, width, height };
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
-        this.hostActiveG = PlaitBoard.getElementHostActive(this.board);
         this.elementG = createG();
         this.drawElementHost();
     }
@@ -74,7 +71,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     drawElementHostActive(element: FlowNode = this.element, active = true) {
         this.updateElement(element, active);
-        this.hostActiveG.append(this.elementG!);
+        PlaitBoard.getElementHostActive(this.board).append(this.elementG!);
     }
 
     getNodeElement(element: FlowNode = this.element) {

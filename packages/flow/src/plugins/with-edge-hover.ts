@@ -1,8 +1,17 @@
 import { PlaitBoard, PlaitElement, PlaitPlugin, getSelectedElements, toPoint, transformPoint } from '@plait/core';
-import { FlowEdge, FlowElement, FlowNode, addEdgeHovered, getEdgesByNodeId, getHitEdge, removeEdgeHovered } from '../public-api';
+import {
+    FlowEdge,
+    FlowEdgeType,
+    FlowElement,
+    FlowNode,
+    addEdgeHovered,
+    getEdgesByNodeId,
+    getHitEdge,
+    removeEdgeHovered
+} from '../public-api';
 
 export const withEdgeHover: PlaitPlugin = (board: PlaitBoard) => {
-    const { mousemove, mouseup, mouseleave, globalMouseup } = board;
+    const { mousemove, mouseup } = board;
 
     let activeElement: PlaitElement | null;
     let hoveredElement: FlowEdge | null;
@@ -22,7 +31,7 @@ export const withEdgeHover: PlaitPlugin = (board: PlaitBoard) => {
         }
         activeElement = selectedElement;
         if (activeElement && FlowEdge.isFlowEdgeElement(activeElement as FlowElement)) {
-            addEdgeHovered(activeElement as FlowEdge, true, false);
+            addEdgeHovered(activeElement as FlowEdge, FlowEdgeType.active);
         }
     };
 
@@ -51,26 +60,6 @@ export const withEdgeHover: PlaitPlugin = (board: PlaitBoard) => {
             addEdgeHovered(hoveredElement);
         }
         mousemove(event);
-    };
-
-    board.mouseleave = (event: MouseEvent) => {
-        mouseleave(event);
-        if (hoveredElement) {
-            removeEdgeHovered(hoveredElement);
-            hoveredElement = null;
-        }
-    };
-
-    board.globalMouseup = (event: MouseEvent) => {
-        globalMouseup(event);
-        if (!activeElement && relationEdges?.length) {
-            relationEdges.forEach(item => {
-                removeEdgeHovered(item);
-            });
-            activeElement = null;
-            hoveredElement = null;
-            relationEdges = null;
-        }
     };
 
     return board;

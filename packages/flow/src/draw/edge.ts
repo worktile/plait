@@ -1,26 +1,26 @@
 import { PlaitBoard, drawRoundRectangle, RectangleClient, drawArrow } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { getEdgePoints, getEdgeStyle } from '../utils/edge/edge';
-import { FlowEdge } from '../interfaces/edge';
+import { FlowEdge, FlowEdgeTypeMode } from '../interfaces/edge';
 
-export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, active = false, hover = false) => {
+export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, edgeType: FlowEdgeTypeMode) => {
     const [pathPoints] = getEdgePoints(board, edge);
-    const edgeStyles = getEdgeStyle(edge, active, hover);
+    const edgeStyles = getEdgeStyle(edge, edgeType);
     return roughSVG.linearPath(
         pathPoints.map(item => [item.x, item.y]),
         edgeStyles
     );
 };
 
-export const drawEdgeLabel = (roughSVG: RoughSVG, edge: FlowEdge, textBackgroundRect: RectangleClient, active = false, hover = false) => {
-    const edgeStyles = getEdgeStyle(edge, active, hover);
+export const drawEdgeLabel = (roughSVG: RoughSVG, edge: FlowEdge, textBackgroundRect: RectangleClient, edgeType: FlowEdgeTypeMode) => {
+    const edgeStyles = getEdgeStyle(edge, edgeType);
     const { x, y, width, height } = textBackgroundRect;
     return drawRoundRectangle(roughSVG, x, y, x + width, y + height, edgeStyles, false, Math.min(width, height) / 2);
 };
 
-export const drawEdgeMarkers = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, active = false, hover = false) => {
+export const drawEdgeMarkers = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, edgeType: FlowEdgeTypeMode) => {
     const [pathPoints] = getEdgePoints(board, edge);
-    const edgeStyles = getEdgeStyle(edge, active, hover);
+    const edgeStyles = getEdgeStyle(edge, edgeType);
     const edgeMarkers: SVGGElement[] = [];
     if (edge.target.marker) {
         const [start, end] = pathPoints.splice(-2);

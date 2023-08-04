@@ -5,6 +5,13 @@ export type FlowEdgeMarkerType = 'arrow' | 'none';
 
 export type FlowEdgeHandleType = 'source' | 'target';
 
+export type FlowEdgeTypeMode = 'default' | 'active' | 'hover';
+
+export enum FlowEdgeType {
+    default = 'default',
+    active = 'active',
+    hover = 'hover'
+}
 export interface FlowEdgeHandleRef extends FlowHandle {
     node: FlowNode;
     type?: FlowEdgeHandleType;
@@ -35,6 +42,14 @@ export function isFlowEdgeElement(value: FlowElement): value is FlowEdge {
 export const hasIcon = (value: FlowEdge) => {
     return value.data?.icon;
 };
+
+export function isActiveEdge(value: FlowEdgeTypeMode) {
+    return value === FlowEdgeType.active;
+}
+
+export function isHoverEdge(value: FlowEdgeTypeMode) {
+    return value === FlowEdgeType.hover;
+}
 
 export const FlowEdge = {
     isFlowEdgeElement,

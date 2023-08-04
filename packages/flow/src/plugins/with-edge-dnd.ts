@@ -12,7 +12,7 @@ import {
     transformPoint
 } from '@plait/core';
 import { FlowEdgeComponent } from '../flow-edge.component';
-import { FlowEdge, FlowEdgeHandleType } from '../interfaces/edge';
+import { FlowEdge, FlowEdgeHandleType, FlowEdgeType } from '../interfaces/edge';
 import { FlowNode } from '../interfaces/node';
 import { deleteEdgeDraggingInfo, addEdgeDraggingInfo } from '../utils/edge/dragging-edge';
 import { destroyAllNodesHandle, drawAllNodesHandle } from '../utils/node/render-all-nodes-handle';
@@ -67,7 +67,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                         handleType: handleType!
                     });
                     const activeComponent = activeElement && (PlaitElement.getComponent(activeElement) as FlowEdgeComponent);
-                    activeComponent?.updateElement(activeElement!, true);
+                    activeComponent?.updateElement(activeElement!, FlowEdgeType.active);
                     hitNodeHandle = getHoverHandleInfo(board) as HitNodeHandle;
                     if (drawNodeHandles) {
                         drawNodeHandles = false;
@@ -101,7 +101,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     activePath
                 );
             } else {
-                activeComponent?.drawElementHostActive(activeElement);
+                activeComponent?.drawActiveElement(activeElement);
             }
             destroyAllNodesHandle(board, flowNodeElements);
         }

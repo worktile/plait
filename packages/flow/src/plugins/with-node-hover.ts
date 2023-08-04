@@ -4,7 +4,7 @@ import { addEdgeHovered, removeEdgeHovered } from '../utils/edge/hover-edge';
 import { addNodeActive, removeNodeActive } from '../utils/node/hover-node';
 
 export const withNodeHover: PlaitPlugin = (board: PlaitBoard) => {
-    const { mousemove, mouseup, mouseleave, globalMouseup } = board;
+    const { mousemove, mouseup } = board;
 
     let activeElement: PlaitElement | null;
     let hoveredElement: FlowNode | null;
@@ -70,35 +70,11 @@ export const withNodeHover: PlaitPlugin = (board: PlaitBoard) => {
                     addEdgeHovered(item);
                 }
             });
-            if (activeElement && hoveredElement !== activeElement) {
+            if (hoveredElement !== activeElement) {
                 addNodeActive(hoveredElement, false);
             }
         }
         mousemove(event);
-    };
-
-    board.mouseleave = (event: MouseEvent) => {
-        if (hoverNodeRelationEdges?.length && !getSelectedElements(board)[0]) {
-            hoverNodeRelationEdges.forEach(item => {
-                removeEdgeHovered(item);
-            });
-            hoveredElement = null;
-            hoverNodeRelationEdges = null;
-        }
-        mouseleave(event);
-    };
-
-    board.globalMouseup = (event: MouseEvent) => {
-        globalMouseup(event);
-        if (!activeElement && selectedNodeRelationEdges?.length) {
-            selectedNodeRelationEdges.forEach(item => {
-                removeEdgeHovered(item);
-            });
-            activeElement = null;
-            hoveredElement = null;
-            selectedNodeRelationEdges = null;
-            hoverNodeRelationEdges = null;
-        }
     };
 
     return board;
