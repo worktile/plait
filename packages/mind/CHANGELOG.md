@@ -1,5 +1,14 @@
 # mind
 
+## 0.24.1
+
+### Patch Changes
+
+-   [#508](https://github.com/worktile/plait/pull/508) [`efef613a`](https://github.com/worktile/plait/commit/efef613a457ffa45abde2af34bc742f648d1c469) Thanks [@WBbug](https://github.com/WBbug)! - exit editing when not click in text
+
+*   [`0c1475c7`](https://github.com/worktile/plait/commit/0c1475c7c3f785ed42150326be377831157329a0) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - solve height equals newHeight, but newHeight can not match element-height
+    update text max-width when image width greater than topic default max width to cover node topic default max width style
+
 ## 0.24.0
 
 ### Minor Changes
