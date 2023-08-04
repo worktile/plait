@@ -1,9 +1,8 @@
-import { PlaitBoard, PlaitElement } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitContextService } from '@plait/core';
 import { MindNodeComponent } from '../../node.component';
 import { ImageItem, MindElement } from '../../interfaces';
 import { MindTransforms } from '../../transforms';
 import { DEFAULT_IMAGE_WIDTH } from '../../constants/image';
-import { PlaitContextService } from '@plait/core/src/public-api';
 
 const BOARD_TO_SELECTED_IMAGE_ELEMENT = new WeakMap<PlaitBoard, MindElement>();
 

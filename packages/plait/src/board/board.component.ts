@@ -63,6 +63,7 @@ import { BoardTransforms } from '../transforms/board';
 import { PlaitTheme } from '../interfaces/theme';
 import { withHotkey } from '../plugins/with-hotkey';
 import { HOST_CLASS_NAME } from '../constants';
+import { PlaitContextService } from '../services/image-context.service';
 
 const ElementHostClass = 'element-host';
 const ElementHostUpClass = 'element-host-up';
@@ -81,7 +82,8 @@ const ElementHostActiveClass = 'element-host-active';
         </div>
         <ng-content></ng-content>
     `,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [PlaitContextService]
 })
 export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnChanges, AfterViewInit, AfterContentInit, OnDestroy {
     hasInitialized = false;
