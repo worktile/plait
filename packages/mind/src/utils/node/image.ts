@@ -1,6 +1,8 @@
-import { PlaitBoard, PlaitElement } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitContextService } from '@plait/core';
 import { MindNodeComponent } from '../../node.component';
-import { MindElement } from '../../interfaces';
+import { ImageItem, MindElement } from '../../interfaces';
+import { MindTransforms } from '../../transforms';
+import { DEFAULT_IMAGE_WIDTH } from '../../constants/image';
 
 const BOARD_TO_SELECTED_IMAGE_ELEMENT = new WeakMap<PlaitBoard, MindElement>();
 
@@ -27,3 +29,51 @@ export const setImageFocus = (board: PlaitBoard, element: MindElement, isFocus: 
     elementComponent.imageDrawer.componentRef!.instance.isFocus = isFocus;
     elementComponent.imageDrawer.componentRef!.instance.cdr.markForCheck();
 };
+
+export const selectImage = (board: PlaitBoard, element: MindElement, acceptImageTypes: string[] = ['png', 'jpeg', 'gif', 'bmp']) => {
+    const inputFile = document.createElement('input');
+    inputFile.setAttribute('type', 'file');
+    const acceptImageTypesString = '.' + acceptImageTypes.join(',.');
+    inputFile.setAttribute('accept', acceptImageTypesString);
+    inputFile.onchange = (event: Event) => {
+        buildImage(board, element, (event.target as any).files[0]);
+    };
+    inputFile.click();
+};
+
+export const buildImage = async (board: PlaitBoard, element: MindElement, imageFile: File) => {
+    let width = 0,
+        height = 0;
+    await getImageSize(imageFile).then((value: { width: number; height: number }) => {
+        width = value.width;
+        height = value.height;
+    });
+
+    let imageItem: ImageItem | null = null;
+    const url = URL.createObjectURL(imageFile);
+    const context = PlaitBoard.getComponent(board).viewContainerRef.injector.get(PlaitContextService);
+    context.setUploadingFile({ url, file: imageFile });
+
+    imageItem = {
+        url,
+        width,
+        height
+    };
+
+    MindTransforms.setImage(board, element, imageItem);
+};
+
+function getImageSize(file: File, defaultImageWidth: number = DEFAULT_IMAGE_WIDTH): Promise<{ width: number; height: number }> {
+    return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.src = URL.createObjectURL(file);
+
+        image.onload = function() {
+            const width = defaultImageWidth;
+            const height = (defaultImageWidth * image.naturalHeight) / image.naturalWidth;
+            resolve(
+                image.naturalWidth > defaultImageWidth ? { width, height } : { width: image.naturalWidth, height: image.naturalHeight }
+            );
+        };
+    });
+}
