@@ -1,7 +1,7 @@
 import { PlaitBoard, PlaitPlugin, getSelectedElements, toPoint, transformPoint } from '@plait/core';
 import { FlowEdge, FlowNode, getEdgesByNodeId, getHitEdge, getHitNode } from '../public-api';
 import { addEdgeHovered, removeEdgeHovered } from '../utils/edge/hover-edge';
-import { addNodeActive, removeNodeActive } from '../utils/node/hover-node';
+import { addNodeActive, removeNodeActive } from '../utils/node/active-node';
 
 export const withHoverDetect: PlaitPlugin = (board: PlaitBoard) => {
     const { mousemove, mouseleave } = board;
