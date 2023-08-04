@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ImageEntry } from '../interfaces';
+import { ImageEntry } from '../../../mind/src/interfaces';
 
 @Injectable()
-export class ImageContextService {
+export class PlaitContextService {
     private uploadingFiles: ImageEntry[] = [];
 
     getUploadingFile(url: string) {

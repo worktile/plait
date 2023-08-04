@@ -15,4 +15,3 @@ export * from './transforms/index';
 export * from './base';
 export * from './plugins/with-mind.board';
 export * from './plugins/with-abstract-resize.board';
-export * from './services/image-context.service';

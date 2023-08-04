@@ -3,7 +3,7 @@ import { MindNodeComponent } from '../../node.component';
 import { ImageItem, MindElement } from '../../interfaces';
 import { MindTransforms } from '../../transforms';
 import { DEFAULT_IMAGE_WIDTH } from '../../constants/image';
-import { ImageContextService } from '../../services/image-context.service';
+import { PlaitContextService } from '@plait/core/src/public-api';
 
 const BOARD_TO_SELECTED_IMAGE_ELEMENT = new WeakMap<PlaitBoard, MindElement>();
 
@@ -52,7 +52,7 @@ export const buildImage = async (board: PlaitBoard, element: MindElement, imageF
 
     let imageItem: ImageItem | null = null;
     const url = URL.createObjectURL(imageFile);
-    const context = PlaitBoard.getComponent(board).viewContainerRef.injector.get(ImageContextService);
+    const context = PlaitBoard.getComponent(board).viewContainerRef.injector.get(PlaitContextService);
     context.setUploadingFile({ url, file: imageFile });
 
     imageItem = {
