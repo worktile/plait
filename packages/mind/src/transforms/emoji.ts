@@ -16,8 +16,13 @@ export const addEmoji = (board: PlaitBoard, element: MindElement, emojiItem: Emo
 export const removeEmoji = (board: PlaitBoard, element: MindElement<EmojiData>, emojiItem: EmojiItem) => {
     const emojis = element.data.emojis.filter(value => value !== emojiItem);
     const newElement = {
-        data: { ...element.data }
+        data: { topic: element.data.topic }
     } as MindElement;
+
+    if (MindElement.hasImage(element)) {
+        newElement.data.image = element.data.image;
+    }
+
     if (emojis.length > 0) {
         newElement.data.emojis = emojis;
     }
