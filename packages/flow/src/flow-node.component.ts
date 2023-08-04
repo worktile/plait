@@ -56,7 +56,9 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (value.element !== previous.element && this.initialized) {
             this.drawElementHost(value.element, value.selected);
         }
-        if (this.initialized) {
+        if (value.selected) {
+            this.drawElementHostActive(this.element);
+        } else if (this.initialized) {
             if (previous.selected) {
                 this.destroyActiveMask();
                 this.destroyHandles();
