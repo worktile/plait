@@ -18,6 +18,9 @@
       ],
       "@plait/text": [
         "dist/text"
+      ],
+      "@plait/draw": [
+        "dist/draw"
       ]
     },
     "outDir": "./dist/out-tsc",

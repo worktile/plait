@@ -19,6 +19,9 @@
       ],
       "@plait/text": [
         "packages/text/src/public-api",
+      ],
+      "@plait/draw": [
+        "packages/draw/src/public-api",
       ]
     },
     "forceConsistentCasingInFileNames": true,
