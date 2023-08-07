@@ -1,5 +1,6 @@
 import {
     CLIP_BOARD_FORMAT_KEY,
+    CLIP_BOARD_IMAGE_FORMAT_KEY,
     getRectangleByElements,
     getSelectedElements,
     Path,
@@ -8,7 +9,7 @@ import {
     Point,
     Transforms
 } from '@plait/core';
-import { MindElement, PlaitMind } from '../interfaces';
+import { ImageItem, MindElement, PlaitMind } from '../interfaces';
 import { copyNewNode, extractNodesText } from './mind';
 import { getRectangleByNode } from './position/node';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
@@ -76,6 +77,22 @@ export const setClipboardData = (data: DataTransfer | null, elements: MindElemen
     }, '');
     data?.setData(`application/${CLIP_BOARD_FORMAT_KEY}`, encoded);
     data?.setData(`text/plain`, text);
+};
+
+export const setClipboardDataByImage = (data: DataTransfer | null, image: ImageItem) => {
+    const stringObj = JSON.stringify(image);
+    const encoded = window.btoa(encodeURIComponent(stringObj));
+    data?.setData(`application/${CLIP_BOARD_IMAGE_FORMAT_KEY}`, encoded);
+};
+
+export const getImageItemFromClipboard = (data: DataTransfer | null) => {
+    const encoded = data?.getData(`application/${CLIP_BOARD_IMAGE_FORMAT_KEY}`);
+    let imageItem = null;
+    if (encoded) {
+        const decoded = decodeURIComponent(window.atob(encoded));
+        imageItem = JSON.parse(decoded);
+    }
+    return imageItem;
 };
 
 export const getDataFromClipboard = (data: DataTransfer | null) => {

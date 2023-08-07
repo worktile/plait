@@ -17,9 +17,10 @@ import { buildImage, getSelectedImageElement, setImageFocus } from '../utils/nod
 import { isHitImage, temporaryDisableSelection } from '../utils';
 import { MindTransforms } from '../transforms';
 import { acceptImageTypes } from '../constants/image';
+import { getImageItemFromClipboard, setClipboardDataByImage } from '../utils/clipboard';
 
 export const withNodeImage = (board: PlaitBoard) => {
-    const { keydown, mousedown, globalMouseup, insertFragment } = board;
+    const { keydown, mousedown, globalMouseup, setFragment, insertFragment, deleteFragment } = board;
 
     board.mousedown = (event: MouseEvent) => {
         const selectedImageElement = getSelectedImageElement(board);
@@ -81,6 +82,26 @@ export const withNodeImage = (board: PlaitBoard) => {
         globalMouseup(event);
     };
 
+    board.setFragment = (data: DataTransfer | null) => {
+        const selectedImageElement = getSelectedImageElement(board);
+        if (selectedImageElement) {
+            setClipboardDataByImage(data, selectedImageElement.data.image!);
+            return;
+        }
+
+        setFragment(data);
+    };
+
+    board.deleteFragment = (data: DataTransfer | null) => {
+        const selectedImageElement = getSelectedImageElement(board);
+
+        if (selectedImageElement) {
+            MindTransforms.removeImage(board, selectedImageElement as MindElement<ImageData>);
+        }
+
+        deleteFragment(data);
+    };
+
     board.insertFragment = (data: DataTransfer | null, targetPoint?: Point) => {
         const selectedElements = getSelectedElements(board);
         const isSelectedImage = !!getSelectedImageElement(board);
@@ -95,6 +116,13 @@ export const withNodeImage = (board: PlaitBoard) => {
                 return;
             }
         }
+
+        const imageItem = getImageItemFromClipboard(data);
+        if (imageItem && (isSingleSelection || isSelectedImage)) {
+            const selectedElement = (selectedElements[0] || getSelectedImageElement(board)) as MindElement;
+            MindTransforms.setImage(board, selectedElement, imageItem);
+        }
+
         insertFragment(data, targetPoint);
     };
 

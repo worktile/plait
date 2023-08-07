@@ -4,6 +4,8 @@ export * from './selection';
 
 export const CLIP_BOARD_FORMAT_KEY = 'x-plait-fragment';
 
+export const CLIP_BOARD_IMAGE_FORMAT_KEY = 'x-plait-image-fragment';
+
 export const HOST_CLASS_NAME = 'plait-board-container';
 
 export const SCROLL_BAR_WIDTH = 20;
