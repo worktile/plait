@@ -32,7 +32,7 @@ import { withBoard } from '../plugins/with-board';
 import { withHistory } from '../plugins/with-history';
 import { withHandPointer } from '../plugins/with-hand';
 import { withSelection } from '../plugins/with-selection';
-import { toPoint, transformPoint } from '../utils';
+import { IS_CHROME, IS_FIREFOX, IS_SAFARI, toPoint, transformPoint } from '../utils';
 import {
     BOARD_TO_ON_CHANGE,
     BOARD_TO_COMPONENT,
@@ -118,7 +118,20 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @HostBinding('class')
     get hostClass() {
-        return `${HOST_CLASS_NAME} pointer-${this.board.pointer} theme-${this.board.theme.themeColorMode}`;
+        return `${HOST_CLASS_NAME} pointer-${this.board.pointer} theme-${this.board.theme.themeColorMode} ${this.getBrowserClassName()}`;
+    }
+
+    getBrowserClassName() {
+        if (IS_SAFARI) {
+            return 'safari';
+        }
+        if (IS_CHROME) {
+            return 'chrome';
+        }
+        if (IS_FIREFOX) {
+            return 'firefox'
+        }
+        return '';
     }
 
     @HostBinding('class.readonly')
