@@ -1,5 +1,16 @@
 # mind
 
+## 0.25.0
+
+### Minor Changes
+
+-   [#509](https://github.com/worktile/plait/pull/509) [`1231d720`](https://github.com/worktile/plait/commit/1231d720caa5ee2f1f4d3e798f2e413952104bff) Thanks [@WBbug](https://github.com/WBbug)! - support deleteFragment and setFragment in image
+
+### Patch Changes
+
+-   [`af0f37f4`](https://github.com/worktile/plait/commit/af0f37f4990b4bc88da0cf36c822c61aff7218d1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix mind node image style in safari
+    add browser class on board native element
+
 ## 0.24.1
 
 ### Patch Changes
