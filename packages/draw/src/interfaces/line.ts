@@ -15,7 +15,7 @@ export interface LineText {
 export interface LineHandle {
     id: string;
     mark: Element;
-    connection: number[];
+    connection: Point;
 }
 
 export interface PlaitBaseLine extends PlaitElement {
@@ -39,4 +39,8 @@ export interface PlaitStraightLine extends PlaitBaseLine {
 
 export interface PlaitCurveLine extends PlaitBaseLine {
     type: 'curve';
+}
+
+export interface PlaitOrthogonalLine extends PlaitBaseLine {
+    type: 'orthogonal';
 }
