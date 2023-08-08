@@ -1,6 +1,16 @@
 import { PlaitElement } from '@plait/core';
+import { Element } from 'slate';
+
+export enum GeoType {
+    rectangle = 'rectangle',
+    ellipse = 'ellipse',
+    diamond = 'diamond'
+}
 
 export interface PlaitBaseShape extends PlaitElement {
+    type: 'geometry';
+    shape: string;
+
     topic: Element;
 
     // node style attributes
@@ -13,13 +23,13 @@ export interface PlaitBaseShape extends PlaitElement {
 }
 
 export interface PlaitRectangle extends PlaitBaseShape {
-    type: 'rectangle';
+    shape: GeoType.rectangle;
 }
 
 export interface PlaitEllipse extends PlaitBaseShape {
-    type: 'ellipse';
+    shape: GeoType.ellipse;
 }
 
 export interface PlaitDiamond extends PlaitBaseShape {
-    type: 'diamond';
+    shape: GeoType.diamond;
 }
