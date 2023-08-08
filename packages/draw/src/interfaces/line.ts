@@ -41,6 +41,6 @@ export interface PlaitCurveLine extends PlaitBaseLine {
     type: 'curve';
 }
 
-export interface PlaitOrthogonalLine extends PlaitBaseLine {
-    type: 'orthogonal';
+export interface PlaitElbowLine extends PlaitBaseLine {
+    type: 'elbow';
 }
