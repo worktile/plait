@@ -164,23 +164,23 @@
         }
       }
     },
-    "plait": {
+    "core": {
       "projectType": "library",
-      "root": "packages/plait",
-      "sourceRoot": "packages/plait/src",
+      "root": "packages/core",
+      "sourceRoot": "packages/core/src",
       "prefix": "pla",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "packages/plait/ng-package.json"
+            "project": "packages/core/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "packages/plait/tsconfig.lib.prod.json"
+              "tsConfig": "packages/core/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "packages/plait/tsconfig.lib.json"
+              "tsConfig": "packages/core/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -188,17 +188,17 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "packages/plait/src/test.ts",
-            "tsConfig": "packages/plait/tsconfig.spec.json",
-            "karmaConfig": "packages/plait/karma.conf.js"
+            "main": "packages/core/src/test.ts",
+            "tsConfig": "packages/core/tsconfig.spec.json",
+            "karmaConfig": "packages/core/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "packages/plait/**/*.ts",
-              "packages/plait/**/*.html"
+              "packages/core/**/*.ts",
+              "packages/core/**/*.html"
             ]
           }
         }

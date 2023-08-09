@@ -15,7 +15,7 @@
         "packages/mind/src/public-api",
       ],
       "@plait/core": [
-        "packages/plait/src/public-api",
+        "packages/core/src/public-api",
       ],
       "@plait/text": [
         "packages/text/src/public-api",
