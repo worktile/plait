@@ -1,8 +1,4 @@
-import { PlaitBaseGeometry } from '../interfaces/geometry';
-import { PlaitBaseLine } from '../interfaces/line';
 import { Point } from '@plait/core';
-
-
 
 export const getRectangleByPoints = (points: Point[]) => {
     return {
