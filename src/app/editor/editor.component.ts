@@ -13,7 +13,7 @@ import { mockData } from './mock-data';
 import { withMind, PlaitMindBoard } from '@plait/mind';
 import { AbstractResizeState, MindThemeColors } from '@plait/mind';
 import { withMindExtend } from '../plugins/with-mind-extend';
-import { PlaitBaseShape, withDraw } from '@plait/draw';
+import { PlaitBaseGeometry, withDraw } from '@plait/draw';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
 
@@ -24,7 +24,7 @@ const LOCAL_DATA_KEY = 'plait-board-change-data';
 export class BasicBoardEditorComponent implements OnInit {
     plugins = [withMind, withMindExtend, withDraw];
 
-    value: (PlaitElement | PlaitBaseShape)[] = [...mockData];
+    value: (PlaitElement | PlaitBaseGeometry)[] = [...mockData];
 
     options: PlaitBoardOptions = {
         readonly: false,

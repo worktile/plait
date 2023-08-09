@@ -1,9 +1,9 @@
-import { PlaitBaseShape } from '../interfaces/shape';
+import { PlaitBaseGeometry } from '../interfaces/shape';
 import { PlaitBaseLine } from '../interfaces/line';
 import { Point } from '@plait/core';
 
 export const PlaitDraw = {
-    isGeo: (value: any): value is PlaitBaseShape => {
+    isGeometry: (value: any): value is PlaitBaseGeometry => {
         return value.type === 'geometry';
     },
     isLine: (value: any): value is PlaitBaseLine => {

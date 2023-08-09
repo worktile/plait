@@ -1,8 +1,8 @@
 import { PlaitMind } from '@plait/mind';
 import { MindLayoutType } from '@plait/layouts';
-import { PlaitBaseShape } from '@plait/draw';
+import { PlaitBaseGeometry, GeometryShape } from '@plait/draw';
 
-export const mockData: (PlaitMind | PlaitBaseShape)[] = [
+export const mockData: (PlaitMind | PlaitBaseGeometry)[] = [
     {
         type: 'mindmap',
         id: '1',
@@ -186,7 +186,7 @@ export const mockData: (PlaitMind | PlaitBaseShape)[] = [
     {
         id: '666',
         type: 'geometry',
-        shape: 'rectangle',
+        shape: GeometryShape.rectangle,
         angle: 0,
         opacity: 1,
         topic: { children: [{ text: '' }] },

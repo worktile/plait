@@ -1,15 +1,15 @@
 import { PlaitBoard } from '@plait/core';
 import { getRectangleByPoints } from './base';
-import { PlaitBaseShape } from '../interfaces/shape';
+import { PlaitBaseGeometry } from '../interfaces/shape';
 
-export const drawRectangle = (board: PlaitBoard, element: PlaitBaseShape) => {
+export const drawRectangle = (board: PlaitBoard, element: PlaitBaseGeometry) => {
     const rectangle = getRectangleByPoints(element.points!);
     const roughSVG = PlaitBoard.getRoughSVG(board);
-    const recG = roughSVG.rectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height, {
+    const rectangleG = roughSVG.rectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height, {
         stroke: element.strokeColor,
         strokeWidth: element.strokeWidth
     });
 
-    recG.querySelector('path')!.setAttribute('stroke-linecap', 'square');
-    return recG;
+    rectangleG.querySelector('path')!.setAttribute('stroke-linecap', 'square');
+    return rectangleG;
 };

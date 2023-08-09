@@ -1,26 +1,22 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { PlaitBoard, PlaitPluginElementComponent, NODE_TO_INDEX, PlaitPluginElementContext, OnContextChanged } from '@plait/core';
+import { PlaitBoard, PlaitPluginElementComponent, PlaitPluginElementContext, OnContextChanged } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { Subject } from 'rxjs';
-import { PlaitBaseShape, GeoType } from './interfaces/shape';
-import { drawRectangle } from './utils/shape';
+import { drawLine } from './utils/line';
+import { PlaitBaseLine } from './interfaces';
 
 @Component({
-    selector: 'plait-draw-element',
+    selector: 'plait-draw-line',
     template: `
         <plait-children [board]="board" [parent]="element" [effect]="effect"></plait-children>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GeoComponent extends PlaitPluginElementComponent<PlaitBaseShape, PlaitBoard>
-    implements OnInit, OnDestroy, OnContextChanged<PlaitBaseShape, PlaitBoard> {
+export class LineComponent extends PlaitPluginElementComponent<PlaitBaseLine, PlaitBoard>
+    implements OnInit, OnDestroy, OnContextChanged<PlaitBaseLine, PlaitBoard> {
     roughSVG!: RoughSVG;
 
-    index!: number;
-
     shapeG: SVGGElement | null = null;
-
-    linkG?: SVGGElement;
 
     destroy$ = new Subject<void>();
 
@@ -36,22 +32,14 @@ export class GeoComponent extends PlaitPluginElementComponent<PlaitBaseShape, Pl
     }
 
     onContextChanged(
-        value: PlaitPluginElementContext<PlaitBaseShape, PlaitBoard>,
-        previous: PlaitPluginElementContext<PlaitBaseShape, PlaitBoard>
+        value: PlaitPluginElementContext<PlaitBaseLine, PlaitBoard>,
+        previous: PlaitPluginElementContext<PlaitBaseLine, PlaitBoard>
     ) {}
 
     drawShape() {
         this.destroyShape();
-
-        const shape = this.element.shape;
-        switch (shape) {
-            case GeoType.rectangle:
-                this.shapeG = drawRectangle(this.board, this.element);
-                this.g.prepend(this.shapeG);
-                break;
-            default:
-                break;
-        }
+        this.shapeG = drawLine(this.board, this.element);
+        this.g.prepend(this.shapeG);
     }
 
     destroyShape() {

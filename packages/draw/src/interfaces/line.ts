@@ -20,13 +20,13 @@ export interface LineText {
 
 export interface LineHandle {
     id: string;
-    mark: Element;
+    mark: LineMarkType;
     connection: Point;
 }
 
 export interface PlaitBaseLine extends PlaitElement {
     type: 'line';
-    shape: string;
+    shape: LineShape;
 
     source: LineHandle;
     target: LineHandle;
