@@ -2,14 +2,7 @@ import { PlaitBaseGeometry } from '../interfaces/geometry';
 import { PlaitBaseLine } from '../interfaces/line';
 import { Point } from '@plait/core';
 
-export const PlaitDraw = {
-    isGeometry: (value: any): value is PlaitBaseGeometry => {
-        return value.type === 'geometry';
-    },
-    isLine: (value: any): value is PlaitBaseLine => {
-        return value.type === 'line';
-    }
-};
+
 
 export const getRectangleByPoints = (points: Point[]) => {
     return {

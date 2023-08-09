@@ -7,17 +7,11 @@ import { drawRectangle } from './utils/shape';
 
 @Component({
     selector: 'plait-draw-geometry',
-    template: `
-        <plait-children [board]="board" [parent]="element" [effect]="effect"></plait-children>
-    `,
+    template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GeometryComponent extends PlaitPluginElementComponent<PlaitBaseGeometry, PlaitBoard>
     implements OnInit, OnDestroy, OnContextChanged<PlaitBaseGeometry, PlaitBoard> {
-    roughSVG!: RoughSVG;
-
-    shapeG: SVGGElement | null = null;
-
     destroy$ = new Subject<void>();
 
     constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
@@ -26,9 +20,7 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitBaseGeom
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.roughSVG = PlaitBoard.getRoughSVG(this.board);
-
-        this.drawShape();
+        this.drawGeometry();
     }
 
     onContextChanged(
@@ -36,24 +28,14 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitBaseGeom
         previous: PlaitPluginElementContext<PlaitBaseGeometry, PlaitBoard>
     ) {}
 
-    drawShape() {
-        this.destroyShape();
-
+    drawGeometry() {
         const shape = this.element.shape;
         switch (shape) {
             case GeometryShape.rectangle:
-                this.shapeG = drawRectangle(this.board, this.element);
-                this.g.prepend(this.shapeG);
+                this.g.prepend(drawRectangle(this.board, this.element));
                 break;
             default:
                 break;
-        }
-    }
-
-    destroyShape() {
-        if (this.shapeG) {
-            this.shapeG.remove();
-            this.shapeG = null;
         }
     }
 

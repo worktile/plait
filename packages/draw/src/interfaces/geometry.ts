@@ -4,7 +4,8 @@ import { Element } from 'slate';
 export enum GeometryShape {
     rectangle = 'rectangle',
     ellipse = 'ellipse',
-    diamond = 'diamond'
+    diamond = 'diamond',
+    text = 'text'
 }
 
 export interface PlaitBaseGeometry extends PlaitElement {
