@@ -1,6 +1,6 @@
 import { PlaitBoard } from '@plait/core';
 import { getRectangleByPoints } from './base';
-import { PlaitBaseGeometry } from '../interfaces/shape';
+import { PlaitBaseGeometry } from '../interfaces/geometry';
 
 export const drawRectangle = (board: PlaitBoard, element: PlaitBaseGeometry) => {
     const rectangle = getRectangleByPoints(element.points!);

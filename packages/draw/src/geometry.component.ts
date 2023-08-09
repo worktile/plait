@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { PlaitBoard, PlaitPluginElementComponent, NODE_TO_INDEX, PlaitPluginElementContext, OnContextChanged } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { Subject } from 'rxjs';
-import { PlaitBaseGeometry, GeometryShape } from './interfaces/shape';
+import { PlaitBaseGeometry, GeometryShape } from './interfaces/geometry';
 import { drawRectangle } from './utils/shape';
 
 @Component({
