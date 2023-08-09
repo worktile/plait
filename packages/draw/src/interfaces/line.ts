@@ -6,6 +6,12 @@ export enum LineMarkType {
     none = 'none'
 }
 
+export enum LineShape {
+    straight = 'straight',
+    curve = 'curve',
+    elbow = 'elbow'
+}
+
 export interface LineText {
     text: Element;
     //基于线长度，定位的百分比
@@ -14,11 +20,14 @@ export interface LineText {
 
 export interface LineHandle {
     id: string;
-    mark: Element;
+    mark: LineMarkType;
     connection: Point;
 }
 
 export interface PlaitBaseLine extends PlaitElement {
+    type: 'line';
+    shape: LineShape;
+
     source: LineHandle;
     target: LineHandle;
 
@@ -34,13 +43,13 @@ export interface PlaitBaseLine extends PlaitElement {
 }
 
 export interface PlaitStraightLine extends PlaitBaseLine {
-    type: 'straight';
+    shape: LineShape.straight;
 }
 
 export interface PlaitCurveLine extends PlaitBaseLine {
-    type: 'curve';
+    shape: LineShape.curve;
 }
 
 export interface PlaitElbowLine extends PlaitBaseLine {
-    type: 'elbow';
+    shape: LineShape.elbow;
 }
