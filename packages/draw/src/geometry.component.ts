@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { PlaitBoard, PlaitPluginElementComponent, NODE_TO_INDEX, PlaitPluginElementContext, OnContextChanged } from '@plait/core';
-import { RoughSVG } from 'roughjs/bin/svg';
+import { PlaitBoard, PlaitPluginElementComponent, PlaitPluginElementContext, OnContextChanged } from '@plait/core';
 import { Subject } from 'rxjs';
 import { PlaitBaseGeometry, GeometryShape } from './interfaces/geometry';
-import { drawRectangle } from './utils/shape';
+import { drawRectangle } from './utils/geometry';
 
 @Component({
     selector: 'plait-draw-geometry',
