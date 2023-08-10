@@ -1,6 +1,7 @@
 export const DefaultGeometryStyle = {
     strokeWidth: 2,
-    defaultRadius: 4
+    defaultRadius: 4,
+    strokeColor: '#000'
 }
 
 export const DefaultGeometryActiveStyle = {

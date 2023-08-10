@@ -9,7 +9,7 @@ export interface ActiveData {
     selected: boolean;
 }
 
-export class GeometryActiveDrawer extends Generator<PlaitGeometry, ActiveData> {
+export class GeometryActiveGenerator extends Generator<PlaitGeometry, ActiveData> {
     canDraw(element: PlaitGeometry, data: ActiveData): boolean {
         if (data.selected) {
             return true;

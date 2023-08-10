@@ -6,3 +6,8 @@ export const getStrokeWidthByElement = (board: PlaitBoard, element: PlaitGeometr
     const strokeWidth = element.strokeWidth || DefaultGeometryStyle.strokeWidth;
     return strokeWidth;
 };
+
+export const getStrokeColorByElement = (board: PlaitBoard, element: PlaitGeometry) => {
+    const strokeColor = element.strokeColor || DefaultGeometryStyle.strokeColor;
+    return strokeColor;
+};
