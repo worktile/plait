@@ -189,7 +189,7 @@ export const mockData: (PlaitMind | PlaitBaseGeometry)[] = [
         shape: GeometryShape.rectangle,
         angle: 0,
         opacity: 1,
-        topic: { children: [{ text: '' }] },
+        text: { children: [{ text: '' }] },
         strokeColor: '#333333',
         strokeWidth: 3,
         points: [

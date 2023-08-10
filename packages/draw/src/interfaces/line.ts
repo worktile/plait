@@ -1,7 +1,7 @@
 import { PlaitElement, Point } from '@plait/core';
 import { Element } from 'slate';
 
-export enum LineMarkType {
+export enum LineMarkerType {
     arrow = 'arrow',
     none = 'none'
 }
@@ -19,9 +19,10 @@ export interface LineText {
 }
 
 export interface LineHandle {
-    id: string;
-    mark: LineMarkType;
-    connection: Point;
+    // 关联元素的 id
+    boundId?: string;
+    connection?: Point;
+    marker: LineMarkerType;
 }
 
 export interface PlaitBaseLine extends PlaitElement {

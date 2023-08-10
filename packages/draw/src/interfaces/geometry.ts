@@ -12,7 +12,7 @@ export interface PlaitBaseGeometry extends PlaitElement {
     type: 'geometry';
     shape: GeometryShape;
 
-    topic: Element;
+    text: Element;
 
     // node style attributes
     fill?: string;
