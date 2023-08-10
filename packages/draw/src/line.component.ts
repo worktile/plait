@@ -1,17 +1,16 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { PlaitBoard, PlaitPluginElementComponent, PlaitPluginElementContext, OnContextChanged } from '@plait/core';
-import { RoughSVG } from 'roughjs/bin/svg';
 import { Subject } from 'rxjs';
 import { drawLine } from './utils/line';
-import { PlaitBaseLine } from './interfaces';
+import { PlaitLine } from './interfaces';
 
 @Component({
     selector: 'plait-draw-line',
     template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LineComponent extends PlaitPluginElementComponent<PlaitBaseLine, PlaitBoard>
-    implements OnInit, OnDestroy, OnContextChanged<PlaitBaseLine, PlaitBoard> {
+export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitBoard>
+    implements OnInit, OnDestroy, OnContextChanged<PlaitLine, PlaitBoard> {
 
     destroy$ = new Subject<void>();
 
@@ -25,8 +24,8 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitBaseLine, Pl
     }
 
     onContextChanged(
-        value: PlaitPluginElementContext<PlaitBaseLine, PlaitBoard>,
-        previous: PlaitPluginElementContext<PlaitBaseLine, PlaitBoard>
+        value: PlaitPluginElementContext<PlaitLine, PlaitBoard>,
+        previous: PlaitPluginElementContext<PlaitLine, PlaitBoard>
     ) {}
 
     drawLine() {

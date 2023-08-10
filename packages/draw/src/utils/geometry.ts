@@ -1,5 +1,5 @@
 import { PlaitBoard } from '@plait/core';
-import { PlaitBaseGeometry } from '../interfaces/geometry';
+import { PlaitGeometry } from '../interfaces/geometry';
 import { Point } from '@plait/core';
 
 export const getRectangleByPoints = (points: Point[]) => {
@@ -11,7 +11,7 @@ export const getRectangleByPoints = (points: Point[]) => {
     };
 };
 
-export const drawRectangle = (board: PlaitBoard, element: PlaitBaseGeometry) => {
+export const drawRectangle = (board: PlaitBoard, element: PlaitGeometry) => {
     const rectangle = getRectangleByPoints(element.points!);
     const roughSVG = PlaitBoard.getRoughSVG(board);
     const rectangleG = roughSVG.rectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height, {

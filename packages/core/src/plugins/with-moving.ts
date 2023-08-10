@@ -19,7 +19,7 @@ export function withMoving(board: PlaitBoard) {
     let offsetY = 0;
     let isPreventDefault = false;
     let startPoint: Point | null;
-    let activeElements: PlaitElement[] | null = [];
+    let activeElements: PlaitElement[] = [];
 
     board.mousedown = event => {
         const host = BOARD_TO_HOST.get(board);
@@ -41,7 +41,7 @@ export function withMoving(board: PlaitBoard) {
     };
 
     board.mousemove = event => {
-        if (startPoint && activeElements?.length && !PlaitBoard.hasBeenTextEditing(board)) {
+        if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
             if (!isPreventDefault) {
                 isPreventDefault = true;
             }
@@ -52,13 +52,15 @@ export function withMoving(board: PlaitBoard) {
             const offsetBuffer = 5;
             if (Math.abs(offsetX) > offsetBuffer || Math.abs(offsetY) > offsetBuffer) {
                 throttleRAF(() => {
-                    const currentElements = activeElements!.map(activeElement => {
-                        const [x, y] = activeElement?.points![0];
+                    const currentElements = activeElements.map(activeElement => {
+                        const points = activeElement.points || [];
+                        const [x, y] = activeElement.points![0];
+                        const newPoints = points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];
                         const index = board.children.findIndex(item => item.id === activeElement.id);
                         Transforms.setNode(
                             board,
                             {
-                                points: [[x + offsetX, y + offsetY]]
+                                points: newPoints
                             },
                             [index]
                         );

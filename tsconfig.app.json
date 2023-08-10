@@ -23,8 +23,8 @@
       "@plait/draw": [
         "packages/draw/src/public-api",
       ],
-      "@plait/utils": [
-        "packages/utils/src/public-api",
+      "@plait/common": [
+        "packages/common/src/public-api",
       ]
     },
     "forceConsistentCasingInFileNames": true,

@@ -364,23 +364,23 @@
         }
       }
     },
-    "utils": {
+    "common": {
       "projectType": "library",
-      "root": "packages/utils",
-      "sourceRoot": "packages/utils/src",
+      "root": "packages/common",
+      "sourceRoot": "packages/common/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "packages/utils/ng-package.json"
+            "project": "packages/common/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "packages/utils/tsconfig.lib.prod.json"
+              "tsConfig": "packages/common/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "packages/utils/tsconfig.lib.json"
+              "tsConfig": "packages/common/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -399,8 +399,8 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "packages/utils/**/*.ts",
-              "packages/utils/**/*.html"
+              "packages/common/**/*.ts",
+              "packages/common/**/*.html"
             ]
           }
         }

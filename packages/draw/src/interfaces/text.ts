@@ -1,5 +1,5 @@
-import { PlaitBaseGeometry, GeometryShape } from './geometry';
+import { PlaitGeometry, GeometryShape } from './geometry';
 
-export interface PlaitText extends PlaitBaseGeometry {
+export interface PlaitText extends PlaitGeometry {
     shape: GeometryShape.text;
 }

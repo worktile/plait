@@ -1,4 +1,4 @@
-import { PlaitElement } from '@plait/core';
+import { PlaitElement, Point } from '@plait/core';
 import { Element } from 'slate';
 
 export enum GeometryShape {
@@ -8,7 +8,8 @@ export enum GeometryShape {
     text = 'text'
 }
 
-export interface PlaitBaseGeometry extends PlaitElement {
+export interface PlaitGeometry extends PlaitElement {
+    points: [Point, Point];
     type: 'geometry';
     shape: GeometryShape;
 
@@ -23,14 +24,14 @@ export interface PlaitBaseGeometry extends PlaitElement {
     opacity: number;
 }
 
-export interface PlaitRectangle extends PlaitBaseGeometry {
+export interface PlaitRectangle extends PlaitGeometry {
     shape: GeometryShape.rectangle;
 }
 
-export interface PlaitEllipse extends PlaitBaseGeometry {
+export interface PlaitEllipse extends PlaitGeometry {
     shape: GeometryShape.ellipse;
 }
 
-export interface PlaitDiamond extends PlaitBaseGeometry {
+export interface PlaitDiamond extends PlaitGeometry {
     shape: GeometryShape.diamond;
 }

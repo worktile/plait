@@ -22,8 +22,8 @@
       "@plait/draw": [
         "dist/draw"
       ],
-      "utils": [
-        "dist/utils"
+      "@plait/common": [
+        "dist/common"
       ]
     },
     "outDir": "./dist/out-tsc",

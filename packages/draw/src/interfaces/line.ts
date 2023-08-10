@@ -25,7 +25,7 @@ export interface LineHandle {
     marker: LineMarkerType;
 }
 
-export interface PlaitBaseLine extends PlaitElement {
+export interface PlaitLine extends PlaitElement {
     type: 'line';
     shape: LineShape;
 
@@ -43,14 +43,14 @@ export interface PlaitBaseLine extends PlaitElement {
     opacity: number;
 }
 
-export interface PlaitStraightLine extends PlaitBaseLine {
+export interface PlaitStraightLine extends PlaitLine {
     shape: LineShape.straight;
 }
 
-export interface PlaitCurveLine extends PlaitBaseLine {
+export interface PlaitCurveLine extends PlaitLine {
     shape: LineShape.curve;
 }
 
-export interface PlaitElbowLine extends PlaitBaseLine {
+export interface PlaitElbowLine extends PlaitLine {
     shape: LineShape.elbow;
 }

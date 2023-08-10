@@ -1,4 +1,4 @@
-import { PlaitElement, PlaitOptionsBoard, PlaitPluginKey, WithPluginOptions } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitOptionsBoard, PlaitPluginKey, WithPluginOptions, getSelectedElements } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
 import { MindNodeComponent } from '../../node.component';
 
@@ -15,4 +15,9 @@ export const temporaryDisableSelection = (board: PlaitOptionsBoard) => {
     setTimeout(() => {
         board.setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { ...currentOptions });
     }, 0);
+};
+
+export const getSelectedMindElements = (board: PlaitBoard) => {
+    const selectedElements = getSelectedElements(board).filter(value => MindElement.isMindElement(board, value)) as MindElement[];
+    return selectedElements;
 };

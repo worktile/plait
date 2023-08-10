@@ -9,7 +9,8 @@ import {
     PlaitPointerType,
     addSelectedElement,
     Point,
-    getSelectedElements
+    getSelectedElements,
+    PlaitElement
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
@@ -34,11 +35,11 @@ export const withNodeImage = (board: PlaitBoard) => {
 
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const range = { anchor: point, focus: point };
-        const hitElements = getHitElements(board, { ranges: [range] });
-        const hasImage = hitElements.length && MindElement.hasImage(hitElements[0] as MindElement);
-        const hitImage = hasImage && isHitImage(board, hitElements[0] as MindElement<ImageData>, range);
+        const hitImageElements = getHitElements(board, { ranges: [range] }, (value: PlaitElement) => MindElement.isMindElement(board, value) && MindElement.hasImage(value));
+        const hasImage = hitImageElements.length;
+        const hitImage = hasImage && isHitImage(board, hitImageElements[0] as MindElement<ImageData>, range);
 
-        if (selectedImageElement && hitImage && hitElements[0] === selectedImageElement) {
+        if (selectedImageElement && hitImage && hitImageElements[0] === selectedImageElement) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
             mousedown(event);
             return;
@@ -50,8 +51,7 @@ export const withNodeImage = (board: PlaitBoard) => {
 
         if (hitImage) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
-
-            setImageFocus(board, hitElements[0] as MindElement, true);
+            setImageFocus(board, hitImageElements[0] as MindElement, true);
         }
 
         mousedown(event);
