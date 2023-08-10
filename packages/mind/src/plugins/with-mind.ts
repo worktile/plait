@@ -149,22 +149,6 @@ export const withMind = (baseBoard: PlaitBoard) => {
         insertFragment(data, targetPoint);
     };
 
-    board.deleteFragment = (data: DataTransfer | null) => {
-        const selectedElements = getSelectedElements(board) as MindElement[];
-        if (selectedElements.length) {
-            const deletableElements = getFirstLevelElement(selectedElements).reverse();
-            const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
-            MindTransforms.setAbstractsByRefs(board, abstractRefs);
-
-            const refs = deleteElementsHandleRightNodeCount(board, selectedElements);
-            MindTransforms.setRightNodeCountByRefs(board, refs);
-
-            MindTransforms.removeElements(board, selectedElements);
-        }
-
-        deleteFragment(data);
-    };
-
     return withNodeResize(
         withNodeImage(withNodeHoverDetect(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board)))))))
     );

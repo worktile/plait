@@ -32,7 +32,7 @@ import { withBoard } from '../plugins/with-board';
 import { withHistory } from '../plugins/with-history';
 import { withHandPointer } from '../plugins/with-hand';
 import { withSelection } from '../plugins/with-selection';
-import { IS_CHROME, IS_FIREFOX, IS_SAFARI, toPoint, transformPoint } from '../utils';
+import { IS_CHROME, IS_FIREFOX, IS_SAFARI, getSelectedElements, hotkeys, toPoint, transformPoint } from '../utils';
 import {
     BOARD_TO_ON_CHANGE,
     BOARD_TO_COMPONENT,
@@ -129,7 +129,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             return 'chrome';
         }
         if (IS_FIREFOX) {
-            return 'firefox'
+            return 'firefox';
         }
         return '';
     }
@@ -319,7 +319,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 filter(event => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board) && !hasInputOrTextareaTarget(event.target))
             )
             .subscribe((event: KeyboardEvent) => {
-                this.board?.keydown(event);
+                const selectedElements = getSelectedElements(this.board);
+                if (selectedElements.length > 0 && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
+                    this.board.deleteFragment(null);
+                }
+                this.board.keydown(event);
             });
 
         fromEvent<KeyboardEvent>(document, 'keyup')
@@ -361,8 +365,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             )
             .subscribe((event: ClipboardEvent) => {
                 event.preventDefault();
-                this.board?.setFragment(event.clipboardData);
-                this.board?.deleteFragment(event.clipboardData);
+                this.board.setFragment(event.clipboardData);
+                this.board.deleteFragment(event.clipboardData);
             });
     }
 

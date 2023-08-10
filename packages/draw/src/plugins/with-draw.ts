@@ -3,6 +3,7 @@ import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
 import { getRectangleByPoints } from '@plait/common';
+import { withDrawHotkey } from './with-draw-hotkey';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isHitSelection, isMovable } = board;
@@ -38,5 +39,5 @@ export const withDraw = (board: PlaitBoard) => {
         return isMovable(element);
     }
 
-    return board;
+    return withDrawHotkey(board);
 };
