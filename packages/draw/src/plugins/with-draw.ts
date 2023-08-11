@@ -1,10 +1,11 @@
-import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, Range, RectangleClient } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Range, RectangleClient } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
 import { getRectangleByPoints } from '@plait/common';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withCreateGeometry } from './with-create-geometry';
+import { withDrawFragment } from './with-draw-fragment';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isHitSelection, isMovable } = board;
@@ -40,5 +41,5 @@ export const withDraw = (board: PlaitBoard) => {
         return isMovable(element);
     };
 
-    return withDrawHotkey(withCreateGeometry(board));
+    return withDrawFragment(withDrawFragment(withDrawHotkey(board)));
 };

@@ -54,9 +54,7 @@ export const MindElement = {
         return isIndentedLayout(_layout);
     },
     isMindElement(board: PlaitBoard, element: PlaitElement): element is MindElement {
-        const path = PlaitBoard.findPath(board, element);
-        const rootElement = PlaitNode.get(board, path.slice(0, 1));
-        if (PlaitMind.isMind(rootElement)) {
+        if (element.data && element.data.topic && element.width && element.height) {
             return true;
         } else {
             return false;

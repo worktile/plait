@@ -1,9 +1,7 @@
 import { PlaitBoard, getSelectedElements } from '@plait/core';
-import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
+import { PlaitDrawElement } from '../interfaces';
 
 export const getSelectedDrawElements = (board: PlaitBoard) => {
-    const selectedElements = getSelectedElements(board).filter(
-        value => PlaitDrawElement.isGeometry(value) || PlaitDrawElement.isLine(value)
-    ) as (PlaitGeometry | PlaitLine)[];
+    const selectedElements = getSelectedElements(board).filter(value => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
     return selectedElements;
 };

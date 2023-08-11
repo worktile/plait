@@ -1,12 +1,13 @@
 import {
     CLIP_BOARD_FORMAT_KEY,
-    CLIP_BOARD_IMAGE_FORMAT_KEY,
     getRectangleByElements,
     getSelectedElements,
     Path,
     PlaitBoard,
     PlaitElement,
     Point,
+    setClipboardData,
+    setClipboardDataByText,
     Transforms
 } from '@plait/core';
 import { ImageItem, MindElement, PlaitMind } from '../interfaces';
@@ -16,14 +17,14 @@ import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { getRelativeStartEndByAbstractRef, getOverallAbstracts, getValidAbstractRefs } from './abstract/common';
 import { createMindElement } from './node/create-node';
 import { adjustAbstractToNode, adjustNodeToRoot, adjustRootToNode } from './node/adjust-node';
-import { Element, Node } from 'slate';
-import { getTextSize, PlaitMarkEditor } from '@plait/text';
+import { Element } from 'slate';
+import { getTextSize } from '@plait/text';
 import { BRANCH_FONT_FAMILY, DEFAULT_FONT_FAMILY, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { findNewChildNodePath } from './path';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
-import { getFontSizeBySlateElement, getNodeDefaultFontSize, NodeSpace } from './space/node-space';
+import { getFontSizeBySlateElement, getNodeDefaultFontSize } from './space/node-space';
 
-export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[]) => {
+export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[], startPoint: Point) => {
     let result: MindElement[] = [];
 
     // get overall abstract
@@ -36,11 +37,10 @@ export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElem
     newSelectedElements.push(...validAbstractRefs.map(value => value.abstract));
 
     const selectedMindNodes = newSelectedElements.map(value => MindElement.getNode(value));
-    const nodesRectangle = getRectangleByElements(board, newSelectedElements, true);
     newSelectedElements.forEach((element, index) => {
         // handle relative location
         const nodeRectangle = getRectangleByNode(selectedMindNodes[index]);
-        const points = [[nodeRectangle.x - nodesRectangle.x, nodeRectangle.y - nodesRectangle.y]] as Point[];
+        const points = [[nodeRectangle.x - startPoint[0], nodeRectangle.y - startPoint[1]]] as Point[];
 
         // handle invalid abstract
         const abstractRef = validAbstractRefs.find(ref => ref.abstract === element);
@@ -69,40 +69,12 @@ export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElem
     return result;
 };
 
-export const setClipboardData = (data: DataTransfer | null, elements: MindElement[]) => {
-    const stringObj = JSON.stringify(elements);
-    const encoded = window.btoa(encodeURIComponent(stringObj));
+export const setMindClipboardData = (data: DataTransfer | null, elements: MindElement[]) => {
     const text = elements.reduce((string, currentNode) => {
         return string + extractNodesText(currentNode);
     }, '');
-    data?.setData(`application/${CLIP_BOARD_FORMAT_KEY}`, encoded);
-    data?.setData(`text/plain`, text);
-};
-
-export const setClipboardDataByImage = (data: DataTransfer | null, image: ImageItem) => {
-    const stringObj = JSON.stringify(image);
-    const encoded = window.btoa(encodeURIComponent(stringObj));
-    data?.setData(`application/${CLIP_BOARD_IMAGE_FORMAT_KEY}`, encoded);
-};
-
-export const getImageItemFromClipboard = (data: DataTransfer | null) => {
-    const encoded = data?.getData(`application/${CLIP_BOARD_IMAGE_FORMAT_KEY}`);
-    let imageItem = null;
-    if (encoded) {
-        const decoded = decodeURIComponent(window.atob(encoded));
-        imageItem = JSON.parse(decoded);
-    }
-    return imageItem;
-};
-
-export const getDataFromClipboard = (data: DataTransfer | null) => {
-    const encoded = data?.getData(`application/${CLIP_BOARD_FORMAT_KEY}`);
-    let nodesData: PlaitElement[] = [];
-    if (encoded) {
-        const decoded = decodeURIComponent(window.atob(encoded));
-        nodesData = JSON.parse(decoded);
-    }
-    return nodesData;
+    setClipboardData(data, elements);
+    setClipboardDataByText(data, text);
 };
 
 export const insertClipboardData = (board: PlaitMindBoard, elements: PlaitElement[], targetPoint: Point) => {

@@ -3,7 +3,7 @@ import { Element, Node } from 'slate';
 
 export const getTextFromClipboard = (data: DataTransfer | null) => {
     let plaitTextData = data?.getData(`application/${CLIPBOARD_FORMAT_KEY}`);
-    const text = data?.getData(`text/plain`) as string;
+    const text = (data ? data.getData(`text/plain`) : '') as string;
     if (plaitTextData) {
         const decoded = decodeURIComponent(window.atob(plaitTextData));
         const res = JSON.parse(decoded) as Element[];

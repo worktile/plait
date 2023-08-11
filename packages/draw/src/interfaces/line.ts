@@ -28,6 +28,7 @@ export interface LineHandle {
 export interface PlaitLine extends PlaitElement {
     type: 'line';
     shape: LineShape;
+    points: Point[];
 
     source: LineHandle;
     target: LineHandle;

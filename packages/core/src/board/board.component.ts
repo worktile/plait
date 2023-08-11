@@ -32,7 +32,7 @@ import { withBoard } from '../plugins/with-board';
 import { withHistory } from '../plugins/with-history';
 import { withHandPointer } from '../plugins/with-hand';
 import { withSelection } from '../plugins/with-selection';
-import { IS_CHROME, IS_FIREFOX, IS_SAFARI, getSelectedElements, hotkeys, toPoint, transformPoint } from '../utils';
+import { IS_CHROME, IS_FIREFOX, IS_SAFARI, getRectangleByElements, getSelectedElements, hotkeys, toPoint, transformPoint } from '../utils';
 import {
     BOARD_TO_ON_CHANGE,
     BOARD_TO_COMPONENT,
@@ -341,8 +341,12 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 filter(() => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: ClipboardEvent) => {
-                event.preventDefault();
-                this.board?.setFragment(event.clipboardData);
+                const selectedElements = getSelectedElements(this.board);
+                if (selectedElements.length > 0) {
+                    event.preventDefault();
+                    const rectangle = getRectangleByElements(this.board, selectedElements, false);
+                    this.board.setFragment(event.clipboardData, rectangle);
+                }
             });
 
         fromEvent<ClipboardEvent>(document, 'paste')
@@ -364,9 +368,13 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 filter(() => this.isFocused && !PlaitBoard.isReadonly(this.board) && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: ClipboardEvent) => {
-                event.preventDefault();
-                this.board.setFragment(event.clipboardData);
-                this.board.deleteFragment(event.clipboardData);
+                const selectedElements = getSelectedElements(this.board);
+                if (selectedElements.length > 0) {
+                    event.preventDefault();
+                    const rectangle = getRectangleByElements(this.board, selectedElements, false);
+                    this.board.setFragment(event.clipboardData, rectangle);
+                    this.board.deleteFragment(event.clipboardData);
+                }
             });
     }
 

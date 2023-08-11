@@ -53,8 +53,8 @@ export interface PlaitBoard {
     keydown: (event: KeyboardEvent) => void;
     globalKeydown: (event: KeyboardEvent) => void;
     keyup: (event: KeyboardEvent) => void;
-    setFragment: (data: DataTransfer | null) => void;
-    insertFragment: (data: DataTransfer | null, targetPoint?: Point) => void;
+    setFragment: (data: DataTransfer | null, rectangle: RectangleClient | null) => void;
+    insertFragment: (data: DataTransfer | null, targetPoint: Point) => void;
     deleteFragment: (data: DataTransfer | null) => void;
     dblclick: (event: MouseEvent) => void;
     drawElement: (context: PlaitPluginElementContext) => SVGGElement[] | ComponentType<PlaitPluginElementComponent>;

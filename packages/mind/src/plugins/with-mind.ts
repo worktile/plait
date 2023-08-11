@@ -10,19 +10,19 @@ import {
     Range,
     depthFirstRecursion,
     PlaitElement,
-    getIsRecursionFunc
+    getIsRecursionFunc,
+    getDataFromClipboard
 } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces';
 import { PlaitMindComponent } from '../mind.component';
 import { MindNodeComponent } from '../node.component';
-import { getFirstLevelElement, deleteElementHandleAbstract, deleteElementsHandleRightNodeCount } from '../utils';
+import { getFirstLevelElement } from '../utils';
 import { getRectangleByNode, isHitMindElement } from '../utils/position/node';
 import { withNodeDnd } from './with-node-dnd';
-import { buildClipboardData, getDataFromClipboard, insertClipboardData, insertClipboardText, setClipboardData } from '../utils/clipboard';
-import { editTopic } from '../utils/node/common';
+import { buildClipboardData, insertClipboardData, insertClipboardText, setMindClipboardData } from '../utils/clipboard';
+import { editTopic, getSelectedMindElements } from '../utils/node/common';
 import { withAbstract } from './with-abstract-resize';
 import { withMindExtend } from './with-mind-extend';
-import { MindTransforms } from '../transforms';
 import { withCreateMind } from './with-mind-create';
 import { withMindHotkey } from './with-mind-hotkey';
 import { withNodeHoverDetect } from './with-node-hover-detect';
@@ -33,17 +33,7 @@ import { withNodeResize } from './with-node-resize';
 
 export const withMind = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
-    const {
-        drawElement,
-        dblclick,
-        insertFragment,
-        setFragment,
-        deleteFragment,
-        isHitSelection,
-        getRectangle,
-        isMovable,
-        isRecursion
-    } = board;
+    const { drawElement, dblclick, insertFragment, setFragment, isHitSelection, getRectangle, isMovable, isRecursion } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMind.isMind(context.element)) {
@@ -119,30 +109,28 @@ export const withMind = (baseBoard: PlaitBoard) => {
         dblclick(event);
     };
 
-    board.setFragment = (data: DataTransfer | null) => {
-        const selectedElements = getFirstLevelElement(getSelectedElements(board) as MindElement[]);
-        if (selectedElements.length) {
-            const elements = buildClipboardData(board, selectedElements);
-            setClipboardData(data, elements);
-            return;
+    board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null) => {
+        const targetMindElements = getSelectedMindElements(board);
+        const firstLevelElements = getFirstLevelElement(targetMindElements);
+        if (firstLevelElements.length) {
+            const elements = buildClipboardData(board, firstLevelElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
+            setMindClipboardData(data, elements);
         }
-        setFragment(data);
+        setFragment(data, rectangle);
     };
 
-    board.insertFragment = (data: DataTransfer | null, targetPoint?: Point) => {
-        if (board.options.readonly) {
-            insertFragment(data, targetPoint);
-            return;
-        }
+    board.insertFragment = (data: DataTransfer | null, targetPoint: Point) => {
         const elements = getDataFromClipboard(data);
-        if (elements.length) {
-            insertClipboardData(board, elements, targetPoint || [0, 0]);
-        } else {
-            const selectedElements = getSelectedElements(board);
-            if (selectedElements.length === 1) {
+        const mindElements = elements.filter(value => MindElement.isMindElement(board, value));
+        if (elements.length > 0 && mindElements.length > 0) {
+            insertClipboardData(board, mindElements, targetPoint);
+        } else if (elements.length === 0) {
+            const mindElements = getSelectedMindElements(board);
+            if (mindElements.length === 1) {
                 const text = getTextFromClipboard(data);
                 if (text) {
-                    insertClipboardText(board, selectedElements[0], buildText(text));
+                    insertClipboardText(board, mindElements[0], buildText(text));
+                    return;
                 }
             }
         }

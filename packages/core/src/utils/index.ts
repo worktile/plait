@@ -18,3 +18,4 @@ export * from './viewport';
 export * from './common';
 export * from './moving-element';
 export * from './to-image';
+export * from './clipboard';

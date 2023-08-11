@@ -1,10 +1,12 @@
 import { Point, idCreator } from '@plait/core';
 import { GeometryShape, PlaitGeometry } from '../interfaces/geometry';
+import { buildText } from '@plait/text';
+import { Element } from 'slate';
 
 export const createGeometryElement = (
     shape: GeometryShape,
     points: [Point, Point],
-    text?: string,
+    text: string | Element,
     options?: Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>
 ) => {
     return {
@@ -13,7 +15,7 @@ export const createGeometryElement = (
         shape,
         angle: 0,
         opacity: 1,
-        text: { children: [{ text }] },
+        text: buildText(text),
         points,
         ...options
     };
