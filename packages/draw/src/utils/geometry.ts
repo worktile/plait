@@ -1,6 +1,5 @@
-import { PlaitBoard, Point, idCreator } from '@plait/core';
+import { Point, idCreator } from '@plait/core';
 import { GeometryShape, PlaitGeometry } from '../interfaces/geometry';
-import { DrawPointerType } from '../constants';
 
 export const createGeometryElement = (
     shape: GeometryShape,
