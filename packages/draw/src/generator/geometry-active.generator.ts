@@ -4,7 +4,6 @@ import { getStrokeWidthByElement } from '../utils/geometry-style/stroke';
 import { PRIMARY_COLOR, drawRectangle, getRectangleByPoints, Generator } from '@plait/common';
 import { DefaultGeometryActiveStyle } from '../constants/geometry';
 
-
 export interface ActiveData {
     selected: boolean;
 }

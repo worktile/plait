@@ -12,6 +12,24 @@
     <ng-template [ngTemplateOutlet]="mind"></ng-template>
 </a>
 
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(drawPointerType.geometry) }"
+    (mousedown)="setPointer($event, drawPointerType.geometry, drawCreateMode.drag)"
+    (mouseup)="setPointer($event, drawPointerType.geometry, drawCreateMode.draw)"
+>
+    <ng-template [ngTemplateOutlet]="geometry"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(drawPointerType.text) }"
+    (mousedown)="setPointer($event, drawPointerType.text, drawCreateMode.drag)"
+    (mouseup)="setPointer($event, drawPointerType.text, drawCreateMode.draw)"
+>
+    <ng-template [ngTemplateOutlet]="text"></ng-template>
+</a>
+
 <ng-template #selection>
     <svg
         width="16px"
@@ -68,4 +86,28 @@
             ></path>
         </g>
     </svg>
+</ng-template>
+
+<ng-template #geometry>
+    <svg
+        viewBox="0 0 24 24"
+        class="icon-3CqDw icon_large-2wsCL"
+        aria-hidden="true"
+        role="presentation"
+        focusable="false"
+        data-testid="svg-icon"
+    >
+        <path
+            xmlns="http://www.w3.org/2000/svg"
+            d="M3 3h18v18H3z"
+            stroke-width="2"
+            stroke="currentColor"
+            fill-rule="evenodd"
+            fill="none"
+        ></path>
+    </svg>
+</ng-template>
+
+<ng-template #text>
+    <svg viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" fit="" height="1em" width="1em" preserveAspectRatio="xMidYMid meet" focusable="false"><g id="bj1.Base基础/1.icon图标/11.editor/-font" stroke-width="1" fill-rule="evenodd"><path d="M4.75,14.5069828 C4.41862915,14.5069828 4.15,14.2383536 4.15,13.9069828 C4.15,13.5756119 4.41862915,13.3069828 4.75,13.3069828 L7.3993606,13.306 L7.3993606,2.7 L2.7113606,2.7 L2.7113606,4.10415313 C2.7113606,4.40238689 2.49377099,4.64979988 2.20868371,4.69630014 L2.1113606,4.70415313 C1.77998975,4.70415313 1.5113606,4.43552397 1.5113606,4.10415313 L1.5113606,2.1 C1.5113606,1.76862915 1.77998975,1.5 2.1113606,1.5 L13.8810378,1.5 C14.2124087,1.5 14.4810378,1.76862915 14.4810378,2.1 L14.4810378,4.10415313 C14.4810378,4.43552397 14.2124087,4.70415313 13.8810378,4.70415313 C13.549667,4.70415313 13.2810378,4.43552397 13.2810378,4.10415313 L13.2810378,2.7 L8.5993606,2.7 L8.5993606,13.306 L11.25,13.3069828 C11.5813708,13.3069828 11.85,13.5756119 11.85,13.9069828 C11.85,14.2383536 11.5813708,14.5069828 11.25,14.5069828 L4.75,14.5069828 Z" id="bj形状结合"></path></g></svg>
 </ng-template>
