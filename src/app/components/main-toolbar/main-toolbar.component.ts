@@ -33,6 +33,7 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
     setPointer(event: Event, pointer: PointerType) {
         event.preventDefault();
         BoardTransforms.updatePointerType<PointerType>(this.board, pointer);
+        setCreateMode(this.board, DrawCreateMode.drag);
         fromEvent(event.target as HTMLElement, 'mouseup')
             .pipe(take(1))
             .subscribe(() => {

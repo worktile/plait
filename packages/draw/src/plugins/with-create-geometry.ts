@@ -13,7 +13,7 @@ import {
 import { GeometryShape, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generator/geometry-shape.generator';
 import { DrawCreateMode, createGeometryElement, getCreateMode, getPointsByCenterPoint } from '../utils';
-import { DefaultGeometryProperty, GeometryPointer } from '../constants';
+import { DefaultGeometryProperty, DrawPointerType, GeometryPointer } from '../constants';
 import { normalizeShapePoints } from '@plait/common';
 import { DrawTransform } from '../transforms';
 
@@ -61,12 +61,17 @@ export const withCreateGeometry = (board: PlaitBoard) => {
         }
 
         if (dragMode) {
+            const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
             const points = getPointsByCenterPoint(movingPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
-            const temporaryElement = createGeometryElement(GeometryShape.rectangle, points, '', {
-                fill: SELECTION_FILL_COLOR,
+            let temporaryElement = createGeometryElement(GeometryShape.rectangle, points, '', {
                 strokeColor: '#333',
                 strokeWidth: 2
             }) as PlaitGeometry;
+
+            if (pointer === DrawPointerType.text) {
+                temporaryElement = createGeometryElement(GeometryShape.rectangle, points, 'text') as PlaitGeometry;
+            }
+
             geometryGenerator.draw(temporaryElement, geometryShapeG);
             PlaitBoard.getElementHostActive(board).append(geometryShapeG);
         }
@@ -93,7 +98,15 @@ export const withCreateGeometry = (board: PlaitBoard) => {
         }
 
         if (isGeometryPointer && points) {
-            DrawTransform.insertGeometry(board, points, GeometryShape.rectangle);
+            const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
+            if (pointer === DrawPointerType.rectangle) {
+                DrawTransform.insertGeometry(board, points, GeometryShape.rectangle);
+            }
+
+            if (pointer === DrawPointerType.text) {
+                DrawTransform.insertText(board, points);
+            }
+
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
 
