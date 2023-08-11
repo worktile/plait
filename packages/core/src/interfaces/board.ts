@@ -163,6 +163,10 @@ export const PlaitBoard = {
     isPointer<T = PlaitPointerType>(board: PlaitBoard, pointer: T) {
         return board.pointer === pointer;
     },
+    isInPointer<T = PlaitPointerType>(board: PlaitBoard, pointers: T[]) {
+        const point = board.pointer as T;
+        return pointers.includes(point);
+    },
     getMovingPointInBoard(board: PlaitBoard) {
         return BOARD_TO_MOVING_POINT_IN_BOARD.get(board);
     },
