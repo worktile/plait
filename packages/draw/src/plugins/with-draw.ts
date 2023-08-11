@@ -41,5 +41,5 @@ export const withDraw = (board: PlaitBoard) => {
         return isMovable(element);
     };
 
-    return withDrawFragment(withDrawFragment(withDrawHotkey(board)));
+    return withCreateGeometry(withDrawFragment(withDrawHotkey(board)));
 };
