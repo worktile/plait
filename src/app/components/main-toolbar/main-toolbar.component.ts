@@ -19,8 +19,8 @@ type PointerType = MindPointerType | PlaitPointerType | DrawPointerType;
 export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
     PlaitPointerType = PlaitPointerType;
     MindPointerType = MindPointerType;
-    drawPointerType = DrawPointerType;
-    drawCreateMode = DrawCreateMode;
+    DrawPointerType = DrawPointerType;
+    DrawCreateMode = DrawCreateMode;
 
     constructor(protected cdr: ChangeDetectorRef) {
         super(cdr);

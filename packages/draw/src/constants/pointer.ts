@@ -4,4 +4,4 @@ export enum DrawPointerType {
     'line' = 'line'
 }
 
-export const geometryPointer = [DrawPointerType.rectangle, DrawPointerType.text];
+export const GeometryPointer = [DrawPointerType.rectangle, DrawPointerType.text];

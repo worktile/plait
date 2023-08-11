@@ -14,16 +14,16 @@
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(drawPointerType.rectangle) }"
-    (mousedown)="setPointer($event, drawPointerType.rectangle)"
+    [ngClass]="{ active: isPointer(DrawPointerType.rectangle) }"
+    (mousedown)="setPointer($event, DrawPointerType.rectangle)"
 >
     <ng-template [ngTemplateOutlet]="geometry"></ng-template>
 </a>
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(drawPointerType.text) }"
-    (mousedown)="setPointer($event, drawPointerType.text)"
+    [ngClass]="{ active: isPointer(DrawPointerType.text) }"
+    (mousedown)="setPointer($event, DrawPointerType.text)"
 >
     <ng-template [ngTemplateOutlet]="text"></ng-template>
 </a>

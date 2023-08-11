@@ -26,9 +26,3 @@ export const getPointsByCenterPoint = (point: Point, width: number, height: numb
 
     return [leftTopPoint, rightBottomPoint];
 };
-
-// export const getIsGeometryPointer = (board: PlaitBoard) => {
-//     const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
-//     const geometryPointer = [DrawPointerType.rectangle, DrawPointerType.text];
-//     return geometryPointer.includes(pointer);
-// };
