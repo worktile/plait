@@ -27,14 +27,8 @@ export const getPointsByCenterPoint = (point: Point, width: number, height: numb
     return [leftTopPoint, rightBottomPoint];
 };
 
-export const transformPointsToGeoPoints = (points: [Point, Point]): [Point, Point] => {
-    const leftTopPoint: Point = [Math.min(points[0][0], points[1][0]), Math.min(points[0][1], points[1][1])];
-    const rightBottomPoint: Point = [Math.max(points[0][0], points[1][0]), Math.max(points[0][1], points[1][1])];
-    return [leftTopPoint, rightBottomPoint];
-};
-
-export const getIsGeometryPointer = (board: PlaitBoard) => {
-    const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
-    const geometryPointer = [DrawPointerType.rectangle, DrawPointerType.text];
-    return geometryPointer.includes(pointer);
-};
+// export const getIsGeometryPointer = (board: PlaitBoard) => {
+//     const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
+//     const geometryPointer = [DrawPointerType.rectangle, DrawPointerType.text];
+//     return geometryPointer.includes(pointer);
+// };

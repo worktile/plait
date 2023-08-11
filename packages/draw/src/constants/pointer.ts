@@ -3,3 +3,5 @@ export enum DrawPointerType {
     'rectangle' = 'rectangle',
     'line' = 'line'
 }
+
+export const geometryPointer = [DrawPointerType.rectangle, DrawPointerType.text];

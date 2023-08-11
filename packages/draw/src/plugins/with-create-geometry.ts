@@ -13,16 +13,10 @@ import {
 } from '@plait/core';
 import { GeometryShape, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generator/geometry-shape.generator';
-import {
-    DrawCreateMode,
-    createGeometryElement,
-    getCreateMode,
-    getIsGeometryPointer,
-    getPointsByCenterPoint,
-    transformPointsToGeoPoints
-} from '../utils';
-import { DrawPointerType } from '../constants/pointer';
-import { DEFAULT_RECTANGLE_HEIGHT, DEFAULT_RECTANGLE_WIDTH } from '../constants';
+import { DrawCreateMode, createGeometryElement, getCreateMode, getPointsByCenterPoint } from '../utils';
+import { DefaultGeometryProperty, geometryPointer } from '../constants';
+import { normalizeShapePoints } from '@plait/common';
+import { DrawTransform } from '../transforms';
 
 export const withCreateGeometry = (board: PlaitBoard) => {
     const { mousedown, mousemove, mouseup } = board;
@@ -30,14 +24,14 @@ export const withCreateGeometry = (board: PlaitBoard) => {
     let end: Point | null = null;
     let createMode: DrawCreateMode | undefined = undefined;
 
-    let rectangleG: SVGGElement;
+    let geometryShapeG: SVGGElement | null = null;
 
-    let geometryGenerator: GeometryShapeGenerator = new GeometryShapeGenerator(board);
+    const geometryGenerator: GeometryShapeGenerator = new GeometryShapeGenerator(board);
 
     board.mousedown = (event: MouseEvent) => {
         createMode = getCreateMode(board);
 
-        const isGeometryPointer = getIsGeometryPointer(board);
+        const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointer);
         if (isGeometryPointer && createMode === DrawCreateMode.draw) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
@@ -46,9 +40,9 @@ export const withCreateGeometry = (board: PlaitBoard) => {
     };
 
     board.mousemove = (event: MouseEvent) => {
-        rectangleG?.remove();
+        geometryShapeG?.remove();
 
-        const isGeometryPointer = getIsGeometryPointer(board);
+        const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointer);
 
         createMode = getCreateMode(board);
         const dragMode = isGeometryPointer && createMode === DrawCreateMode.drag;
@@ -56,37 +50,33 @@ export const withCreateGeometry = (board: PlaitBoard) => {
 
         if (canDraw) {
             const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-            let points = null,
-                temporaryElement = null;
-
-            rectangleG = createG();
+            geometryShapeG = createG();
 
             if (start) {
                 const { width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
                 if (Math.hypot(width, height) > 5) {
                     end = movedTarget;
-                    points = transformPointsToGeoPoints([start, movedTarget]);
-                    temporaryElement = createGeometryElement(GeometryShape.rectangle, points, '', {
+                    const points = normalizeShapePoints([start, movedTarget]);
+                    const temporaryElement = createGeometryElement(GeometryShape.rectangle, points, '', {
                         fill: SELECTION_FILL_COLOR,
                         strokeColor: SELECTION_BORDER_COLOR,
                         strokeWidth: 1
                     }) as PlaitGeometry;
+                    geometryGenerator.draw(temporaryElement, geometryShapeG);
+                    PlaitBoard.getElementHostActive(board).append(geometryShapeG);
                 }
             }
 
             if (dragMode) {
                 const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-                points = getPointsByCenterPoint(movingPoint, DEFAULT_RECTANGLE_WIDTH, DEFAULT_RECTANGLE_HEIGHT);
-                temporaryElement = createGeometryElement(GeometryShape.rectangle, points, '', {
+                const points = getPointsByCenterPoint(movingPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
+                const temporaryElement = createGeometryElement(GeometryShape.rectangle, points, '', {
                     fill: SELECTION_FILL_COLOR,
                     strokeColor: '#333',
                     strokeWidth: 2
                 }) as PlaitGeometry;
-            }
-
-            if (points && temporaryElement) {
-                geometryGenerator.draw(temporaryElement, rectangleG);
-                PlaitBoard.getElementHostActive(board).append(rectangleG);
+                geometryGenerator.draw(temporaryElement, geometryShapeG);
+                PlaitBoard.getElementHostActive(board).append(geometryShapeG);
             }
         }
 
@@ -95,31 +85,28 @@ export const withCreateGeometry = (board: PlaitBoard) => {
 
     board.mouseup = (event: MouseEvent) => {
         let points = null;
-        const isGeometryPointer = getIsGeometryPointer(board);
+        const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointer);
 
         if (start && end) {
             const { width, height } = RectangleClient.toRectangleClient([start, end]);
             if (Math.hypot(width, height) > 5) {
-                points = transformPointsToGeoPoints([start, end]);
+                points = normalizeShapePoints([start, end]);
             }
         }
 
         if (isGeometryPointer && createMode === DrawCreateMode.drag) {
             const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-            points = getPointsByCenterPoint(movingPoint, DEFAULT_RECTANGLE_WIDTH, DEFAULT_RECTANGLE_HEIGHT);
+            points = getPointsByCenterPoint(movingPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
         }
 
         if (isGeometryPointer && points) {
-            let newElement = createGeometryElement(GeometryShape.rectangle, points, '', {
-                strokeColor: '#333',
-                strokeWidth: 2
-            }) as PlaitGeometry;
-
-            Transforms.insertNode(board, newElement, [board.children.length]);
+            DrawTransform.insertGeometry(board, points, GeometryShape.rectangle);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
 
-        rectangleG?.remove();
+        geometryShapeG?.remove();
+
+        geometryShapeG = null;
         start = null;
         end = null;
 

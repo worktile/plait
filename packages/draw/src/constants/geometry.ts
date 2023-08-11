@@ -8,5 +8,9 @@ export const DefaultGeometryActiveStyle = {
     strokeWidth: 2
 };
 
-export const DEFAULT_RECTANGLE_WIDTH = 100;
-export const DEFAULT_RECTANGLE_HEIGHT = 100;
+export const DefaultGeometryProperty = {
+    width: 100,
+    height: 100,
+    strokeColor: '#333',
+    stokeWidth: 2
+};

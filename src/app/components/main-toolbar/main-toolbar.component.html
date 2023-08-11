@@ -15,8 +15,7 @@
 <a
     class="action-item"
     [ngClass]="{ active: isPointer(drawPointerType.rectangle) }"
-    (mousedown)="setPointer($event, drawPointerType.rectangle, drawCreateMode.drag)"
-    (mouseup)="setPointer($event, drawPointerType.rectangle, drawCreateMode.draw)"
+    (mousedown)="setPointer($event, drawPointerType.rectangle)"
 >
     <ng-template [ngTemplateOutlet]="geometry"></ng-template>
 </a>
@@ -24,8 +23,7 @@
 <a
     class="action-item"
     [ngClass]="{ active: isPointer(drawPointerType.text) }"
-    (mousedown)="setPointer($event, drawPointerType.text, drawCreateMode.drag)"
-    (mouseup)="setPointer($event, drawPointerType.text, drawCreateMode.draw)"
+    (mousedown)="setPointer($event, drawPointerType.text)"
 >
     <ng-template [ngTemplateOutlet]="text"></ng-template>
 </a>

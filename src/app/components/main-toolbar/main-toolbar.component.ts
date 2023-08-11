@@ -3,6 +3,7 @@ import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType
 import { MindPointerType } from '@plait/mind';
 import { DrawPointerType, DrawCreateMode } from '@plait/draw';
 import { setCreateMode } from 'packages/draw/src/utils/create-mode';
+import { fromEvent, take } from 'rxjs';
 
 type PointerType = MindPointerType | PlaitPointerType | DrawPointerType;
 
@@ -29,11 +30,13 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
         return PlaitBoard.isPointer<PointerType>(this.board, pointer);
     }
 
-    setPointer(event: Event, pointer: PointerType, createMode?: DrawCreateMode) {
+    setPointer(event: Event, pointer: PointerType) {
         event.preventDefault();
         BoardTransforms.updatePointerType<PointerType>(this.board, pointer);
-        if (createMode) {
-            setCreateMode(this.board, createMode);
-        }
+        fromEvent(event.target as HTMLElement, 'mouseup')
+            .pipe(take(1))
+            .subscribe(() => {
+                setCreateMode(this.board, DrawCreateMode.draw);
+            });
     }
 }
