@@ -33,12 +33,12 @@ interface TargetElementRef {
 }
 
 export const withNodeResize = (board: PlaitBoard) => {
-    const { mousedown, mousemove, globalMouseup } = board;
+    const { pointerDown, pointerMove, globalPointerUp } = board;
     let targetElement: MindElement | null = null;
     let targetElementRef: TargetElementRef | null = null;
     let startPoint: Point | null = null;
 
-    board.mousedown = (event: MouseEvent) => {
+    board.pointerDown = (event: PointerEvent) => {
         if (targetElement) {
             startPoint = [event.x, event.y];
             // prevent text from being selected
@@ -46,12 +46,12 @@ export const withNodeResize = (board: PlaitBoard) => {
             return;
         }
 
-        mousedown(event);
+        pointerDown(event);
     };
 
-    board.mousemove = (event: MouseEvent) => {
+    board.pointerMove = (event: PointerEvent) => {
         if (PlaitBoard.isReadonly(board) || PlaitBoard.hasBeenTextEditing(board)) {
-            mousemove(event);
+            pointerMove(event);
             return;
         }
 
@@ -106,11 +106,11 @@ export const withNodeResize = (board: PlaitBoard) => {
             }
         }
 
-        mousemove(event);
+        pointerMove(event);
     };
 
-    board.globalMouseup = (event: MouseEvent) => {
-        globalMouseup(event);
+    board.globalPointerUp = (event: PointerEvent) => {
+        globalPointerUp(event);
 
         if (isMindNodeResizing(board) || targetElement) {
             targetElement && removeResizing(board, targetElement);
