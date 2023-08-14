@@ -23,6 +23,7 @@ import { getHitHandleByNode, HitNodeHandle } from '../utils/handle/node';
 import { getHitNode } from '../utils/node/get-hit-node';
 import { DEFAULT_HANDLE_STYLES, HANDLE_DIAMETER } from '../constants/handle';
 import { getHoverHandleInfo } from '../utils/handle/hover-handle';
+import { FlowRenderMode, addPlaceholderEdgeInfo, deletePlaceholderEdgeInfo } from '../public-api';
 
 export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, globalMousemove, globalMouseup } = board;
@@ -63,6 +64,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                         const circleElement = drawCircle(PlaitBoard.getRoughSVG(board), point, HANDLE_DIAMETER, DEFAULT_HANDLE_STYLES);
                         circleElement?.setAttribute('stroke-linecap', 'round');
                         placeholderEdge.append(circleElement);
+                        addPlaceholderEdgeInfo(board, placeholderEdge);
                     }
                     PlaitBoard.getHost(board).append(placeholderEdge);
                     if (drawNodeHandles) {
@@ -117,7 +119,9 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                 if (hoveredNode) {
                     // draw handles
                     const flowNodeComponent = PlaitElement.getComponent(hoveredNode) as FlowNodeComponent;
-                    flowNodeComponent?.drawHandles(hoveredNode);
+                    flowNodeComponent?.drawHandles(hoveredNode, FlowRenderMode.active);
+                    flowNodeComponent?.activeG?.append(flowNodeComponent.handlesG!);
+                    PlaitBoard.getElementHostActive(board).append(flowNodeComponent.activeG!);
                 }
             }
         }
@@ -130,6 +134,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
             sourceFlowNodeHandle = null;
             targetFlowNodeHandle = null;
             placeholderEdge?.remove();
+            deletePlaceholderEdgeInfo(board);
             deleteCreateEdgeInfo(board);
             drawNodeHandles = true;
             destroyAllNodesHandle(board, flowNodeElements);
