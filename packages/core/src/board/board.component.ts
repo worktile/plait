@@ -268,11 +268,24 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 this.board.mousedown(event);
             });
 
+        fromEvent<PointerEvent>(this.host, 'pointerdown')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: PointerEvent) => {
+                this.board.pointerDown(event);
+            });
+
         fromEvent<MouseEvent>(this.host, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 BOARD_TO_MOVING_POINT_IN_BOARD.set(this.board, [event.x, event.y]);
                 this.board.mousemove(event);
+            });
+
+        fromEvent<PointerEvent>(this.host, 'pointermove')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: PointerEvent) => {
+                BOARD_TO_MOVING_POINT_IN_BOARD.set(this.board, [event.x, event.y]);
+                this.board.pointerMove(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'mouseleave')
@@ -282,11 +295,25 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 this.board.mouseleave(event);
             });
 
+        fromEvent<PointerEvent>(this.host, 'pointerleave')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: PointerEvent) => {
+                BOARD_TO_MOVING_POINT_IN_BOARD.delete(this.board);
+                this.board.pointerLeave(event);
+            });
+
         fromEvent<MouseEvent>(document, 'mousemove')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 BOARD_TO_MOVING_POINT.set(this.board, [event.x, event.y]);
                 this.board.globalMousemove(event);
+            });
+
+        fromEvent<PointerEvent>(document, 'pointermove')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: PointerEvent) => {
+                BOARD_TO_MOVING_POINT.set(this.board, [event.x, event.y]);
+                this.board.globalPointerMove(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'mouseup')
@@ -295,10 +322,22 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 this.board.mouseup(event);
             });
 
+        fromEvent<PointerEvent>(this.host, 'pointerup')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: PointerEvent) => {
+                this.board.pointerUp(event);
+            });
+
         fromEvent<MouseEvent>(document, 'mouseup')
             .pipe(takeUntil(this.destroy$))
             .subscribe((event: MouseEvent) => {
                 this.board.globalMouseup(event);
+            });
+
+        fromEvent<PointerEvent>(document, 'mouseup')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: PointerEvent) => {
+                this.board.globalPointerUp(event);
             });
 
         fromEvent<MouseEvent>(this.host, 'dblclick')
