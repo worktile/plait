@@ -43,8 +43,6 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         });
 
         if (activeAbstractElement) {
-            // prevent text from being selected
-            event.preventDefault();
             if (newBoard?.onAbstractResize) {
                 newBoard.onAbstractResize(AbstractResizeState.start);
             }
@@ -63,6 +61,8 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         touchedAbstract = handleTouchedAbstract(board, touchedAbstract, endPoint);
 
         if (abstractHandlePosition && activeAbstractElement) {
+            // prevent text from being selected
+            event.preventDefault();
             const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;
             const element = abstractComponent.element;
             const nodeLayout = MindQueries.getCorrectLayoutByElement(board, activeAbstractElement as MindElement) as MindLayoutType;

@@ -68,7 +68,8 @@ export function withSelection(board: PlaitBoard) {
 
     board.globalMousemove = (event: MouseEvent) => {
         if (needPreventNativeSelectionWhenMoving) {
-            preventNativeSelection(board, event);
+            // prevent text from being selected
+            event.preventDefault();
         }
 
         if (start) {
@@ -210,10 +211,3 @@ export function createSelectionOuterG(board: PlaitBoard, selectElements: PlaitEl
         fillStyle: 'solid'
     });
 }
-
-/**
- * prevent text from being selected
- */
-export const preventNativeSelection = (board: PlaitBoard, event: MouseEvent) => {
-    event.preventDefault();
-};
