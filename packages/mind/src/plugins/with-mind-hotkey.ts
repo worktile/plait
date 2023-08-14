@@ -22,12 +22,12 @@ import {
 import { MindTransforms } from '../transforms';
 import { deleteElementHandleAbstract, insertElementHandleAbstract } from '../utils/abstract/common';
 import { isVirtualKey } from '../utils/is-virtual-key';
-import { editTopic } from '../utils/node/common';
+import { editTopic, getSelectedMindElements } from '../utils/node/common';
 import { PlaitMindBoard } from './with-mind.board';
 
 export const withMindHotkey = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
-    const { keydown } = board;
+    const { keydown, deleteFragment } = board;
 
     board.keydown = (event: KeyboardEvent) => {
         const selectedElements = getSelectedElements(board);
@@ -78,29 +78,6 @@ export const withMindHotkey = (baseBoard: PlaitBoard) => {
                 return;
             }
 
-            if (selectedElements.length > 0 && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
-                event.preventDefault();
-                const targetMindElements = selectedElements.filter(el => MindElement.isMindElement(board, el)) as MindElement[];
-                const firstLevelElements = getFirstLevelElement(targetMindElements);
-
-                if (firstLevelElements.length > 0) {
-                    const deletableElements = [...firstLevelElements].reverse();
-                    const abstractRefs = deleteElementHandleAbstract(board, deletableElements);
-                    MindTransforms.setAbstractsByRefs(board, abstractRefs);
-
-                    const refs = deleteElementsHandleRightNodeCount(board, targetMindElements);
-                    MindTransforms.setRightNodeCountByRefs(board, refs);
-
-                    MindTransforms.removeElements(board, targetMindElements);
-
-                    const nextSelected = getNextSelectedElement(board, firstLevelElements);
-                    if (nextSelected) {
-                        addSelectedElement(board, nextSelected);
-                    }
-                }
-                return;
-            }
-
             if (!isVirtualKey(event) && !isSpaceHotkey(event) && isSingleSelection) {
                 event.preventDefault();
                 editTopic(targetElement);
@@ -109,6 +86,26 @@ export const withMindHotkey = (baseBoard: PlaitBoard) => {
         }
 
         keydown(event);
+    };
+
+    board.deleteFragment = (data: DataTransfer | null) => {
+        const targetMindElements = getSelectedMindElements(board);
+        if (targetMindElements.length) {
+            const firstLevelElements = getFirstLevelElement(targetMindElements).reverse();
+            const abstractRefs = deleteElementHandleAbstract(board, firstLevelElements);
+            MindTransforms.setAbstractsByRefs(board, abstractRefs);
+
+            const refs = deleteElementsHandleRightNodeCount(board, targetMindElements);
+            MindTransforms.setRightNodeCountByRefs(board, refs);
+
+            MindTransforms.removeElements(board, targetMindElements);
+
+            const nextSelected = getNextSelectedElement(board, firstLevelElements);
+            if (nextSelected) {
+                addSelectedElement(board, nextSelected);
+            }
+        }
+        deleteFragment(data);
     };
 
     return board;

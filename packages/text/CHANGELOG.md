@@ -1,5 +1,11 @@
 # text
 
+## 0.15.1
+
+### Patch Changes
+
+-   [#508](https://github.com/worktile/plait/pull/508) [`efef613a`](https://github.com/worktile/plait/commit/efef613a457ffa45abde2af34bc742f648d1c469) Thanks [@WBbug](https://github.com/WBbug)! - exit editing when not click in text
+
 ## 0.15.0
 
 ### Minor Changes

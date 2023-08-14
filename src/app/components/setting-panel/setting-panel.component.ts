@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, forwardRef } from '@angular/core';
 import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
-import { MindElement, MindPointerType, MindTransforms, canSetAbstract } from '@plait/mind';
+import { MindElement, MindPointerType, MindTransforms, canSetAbstract, getSelectedMindElements } from '@plait/mind';
 import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText, LinkEditor } from '@plait/text';
 import { Node, Transforms as SlateTransforms } from 'slate';
 
@@ -52,7 +52,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     onBoardChange() {
-        const selectedElements = getSelectedElements(this.board) as MindElement[];
+        const selectedElements = getSelectedMindElements(this.board);
         if (selectedElements.length) {
             this.currentFillColor = selectedElements[0]?.fill || '';
             this.currentStrokeColor = selectedElements[0]?.strokeColor || '';

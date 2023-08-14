@@ -1,6 +1,6 @@
-import { PlaitBoard, PlaitElement } from "@plait/core";
-import { MindElement } from "../../interfaces/element";
-import { MindNodeComponent } from "../../node.component";
+import { PlaitBoard, PlaitElement } from '@plait/core';
+import { MindElement } from '../../interfaces/element';
+import { MindNodeComponent } from '../../node.component';
 
 /**
  * 1. return new node height if height changed
@@ -14,8 +14,14 @@ export const getNewNodeHeight = (board: PlaitBoard, element: MindElement, newNod
     if (!element.manualWidth) {
         textManage.updateWidth(0);
     }
+
     if (height !== newHeight) {
         return newHeight;
     }
+
+    if (Math.abs(newHeight / board.viewport.zoom - element.height) > 2) {
+        return newHeight;
+    }
+
     return undefined;
-}
+};

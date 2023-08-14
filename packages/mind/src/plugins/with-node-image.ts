@@ -9,7 +9,11 @@ import {
     PlaitPointerType,
     addSelectedElement,
     Point,
-    getSelectedElements
+    getSelectedElements,
+    PlaitElement,
+    setClipboardDataByMedia,
+    getClipboardDataByMedia,
+    RectangleClient
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
@@ -17,9 +21,10 @@ import { buildImage, getSelectedImageElement, setImageFocus } from '../utils/nod
 import { isHitImage, temporaryDisableSelection } from '../utils';
 import { MindTransforms } from '../transforms';
 import { acceptImageTypes } from '../constants/image';
+import { MediaKeys } from '@plait/common';
 
 export const withNodeImage = (board: PlaitBoard) => {
-    const { keydown, mousedown, globalMouseup, insertFragment } = board;
+    const { keydown, mousedown, globalMouseup, setFragment, insertFragment, deleteFragment } = board;
 
     board.mousedown = (event: MouseEvent) => {
         const selectedImageElement = getSelectedImageElement(board);
@@ -33,11 +38,15 @@ export const withNodeImage = (board: PlaitBoard) => {
 
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const range = { anchor: point, focus: point };
-        const hitElements = getHitElements(board, { ranges: [range] });
-        const hasImage = hitElements.length && MindElement.hasImage(hitElements[0] as MindElement);
-        const hitImage = hasImage && isHitImage(board, hitElements[0] as MindElement<ImageData>, range);
+        const hitImageElements = getHitElements(
+            board,
+            { ranges: [range] },
+            (value: PlaitElement) => MindElement.isMindElement(board, value) && MindElement.hasImage(value)
+        );
+        const hasImage = hitImageElements.length;
+        const hitImage = hasImage && isHitImage(board, hitImageElements[0] as MindElement<ImageData>, range);
 
-        if (selectedImageElement && hitImage && hitElements[0] === selectedImageElement) {
+        if (selectedImageElement && hitImage && hitImageElements[0] === selectedImageElement) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
             mousedown(event);
             return;
@@ -49,8 +58,7 @@ export const withNodeImage = (board: PlaitBoard) => {
 
         if (hitImage) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
-
-            setImageFocus(board, hitElements[0] as MindElement, true);
+            setImageFocus(board, hitImageElements[0] as MindElement, true);
         }
 
         mousedown(event);
@@ -81,7 +89,27 @@ export const withNodeImage = (board: PlaitBoard) => {
         globalMouseup(event);
     };
 
-    board.insertFragment = (data: DataTransfer | null, targetPoint?: Point) => {
+    board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null) => {
+        const selectedImageElement = getSelectedImageElement(board);
+        if (selectedImageElement) {
+            setClipboardDataByMedia(data, selectedImageElement.data.image!, MediaKeys.image);
+            return;
+        }
+
+        setFragment(data, rectangle);
+    };
+
+    board.deleteFragment = (data: DataTransfer | null) => {
+        const selectedImageElement = getSelectedImageElement(board);
+
+        if (selectedImageElement) {
+            MindTransforms.removeImage(board, selectedImageElement as MindElement<ImageData>);
+        }
+
+        deleteFragment(data);
+    };
+
+    board.insertFragment = (data: DataTransfer | null, targetPoint: Point) => {
         const selectedElements = getSelectedElements(board);
         const isSelectedImage = !!getSelectedImageElement(board);
         const isSingleSelection = selectedElements.length === 1 && MindElement.isMindElement(board, selectedElements[0]);
@@ -95,6 +123,14 @@ export const withNodeImage = (board: PlaitBoard) => {
                 return;
             }
         }
+
+        const imageItem = getClipboardDataByMedia(data, MediaKeys.image);
+        if (imageItem && (isSingleSelection || isSelectedImage)) {
+            const selectedElement = (selectedElements[0] || getSelectedImageElement(board)) as MindElement;
+            MindTransforms.setImage(board, selectedElement, imageItem);
+            return;
+        }
+
         insertFragment(data, targetPoint);
     };
 

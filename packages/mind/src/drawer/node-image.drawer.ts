@@ -26,6 +26,8 @@ export class NodeImageDrawer {
         const foreignRectangle = getImageForeignRectangle(this.board, element);
         this.foreignObject = createForeignObject(foreignRectangle.x, foreignRectangle.y, foreignRectangle.width, foreignRectangle.height);
 
+        this.foreignObject.style.padding = `6px`;
+
         this.g.append(this.foreignObject);
 
         const componentType = this.board.getPluginOptions<WithMindOptions>(WithMindPluginKey).imageComponentType;

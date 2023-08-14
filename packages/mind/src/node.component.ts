@@ -35,6 +35,7 @@ import { WithMindOptions } from './interfaces/options';
 import { WithMindPluginKey } from './constants/default';
 import { NodeImageDrawer } from './drawer/node-image.drawer';
 import { NodeSpace } from './utils/space/node-space';
+import { ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT, TOPIC_FONT_SIZE } from './constants/node-topic-style';
 
 // 1. When the text at the end has an italic attribute, the text is partially covered
 // 2. There will be some differences in the width measured by different browsers
@@ -101,9 +102,6 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             () => {
                 const rect = getTopicRectangleByNode(this.board, this.node);
                 return rect;
-            },
-            (point: Point) => {
-                return isHitMindElement(this.board, point, this.element);
             },
             (textManageRef: TextManageRef) => {
                 const width = textManageRef.width;
@@ -264,9 +262,20 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     editTopic() {
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: true });
+        // update text max-width when image width greater than topic default max width to cover node topic default max width style
+        const defaultMaxWidth = TOPIC_DEFAULT_MAX_WORD_COUNT * (PlaitMind.isMind(this.element) ? ROOT_TOPIC_FONT_SIZE : TOPIC_FONT_SIZE);
+        let hasMaxWidth = false;
+        if (!this.element.manualWidth && MindElement.hasImage(this.element) && this.element.data.image.width > defaultMaxWidth) {
+            const width = NodeSpace.getNodeDynamicWidth(this.board, this.element);
+            this.textManage.updateWidth(width);
+            hasMaxWidth = true;
+        }
         this.textManage.edit((origin: ExitOrigin) => {
             if (origin === ExitOrigin.default) {
                 this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: false });
+            }
+            if (hasMaxWidth) {
+                this.textManage.updateWidth(0);
             }
         });
     }

@@ -1,5 +1,25 @@
 # mind
 
+## 0.25.0
+
+### Minor Changes
+
+-   [#509](https://github.com/worktile/plait/pull/509) [`1231d720`](https://github.com/worktile/plait/commit/1231d720caa5ee2f1f4d3e798f2e413952104bff) Thanks [@WBbug](https://github.com/WBbug)! - support deleteFragment and setFragment in image
+
+### Patch Changes
+
+-   [`af0f37f4`](https://github.com/worktile/plait/commit/af0f37f4990b4bc88da0cf36c822c61aff7218d1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix mind node image style in safari
+    add browser class on board native element
+
+## 0.24.1
+
+### Patch Changes
+
+-   [#508](https://github.com/worktile/plait/pull/508) [`efef613a`](https://github.com/worktile/plait/commit/efef613a457ffa45abde2af34bc742f648d1c469) Thanks [@WBbug](https://github.com/WBbug)! - exit editing when not click in text
+
+*   [`0c1475c7`](https://github.com/worktile/plait/commit/0c1475c7c3f785ed42150326be377831157329a0) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - solve height equals newHeight, but newHeight can not match element-height
+    update text max-width when image width greater than topic default max width to cover node topic default max width style
+
 ## 0.24.0
 
 ### Minor Changes

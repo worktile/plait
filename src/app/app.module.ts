@@ -14,6 +14,7 @@ import { AppMainToolbarComponent } from './components/main-toolbar/main-toolbar.
 import { AppSettingPanelComponent } from './components/setting-panel/setting-panel.component';
 import { AppColorPickerComponent } from './components/color-picker/color-picker.component';
 import { MindImageComponent } from './editor/image/image.component';
+import { DrawModule } from 'packages/draw/src/draw.module';
 
 @NgModule({
     declarations: [
@@ -27,7 +28,7 @@ import { MindImageComponent } from './editor/image/image.component';
         AppColorPickerComponent,
         MindImageComponent
     ],
-    imports: [BrowserModule, TextModule, AppRoutingModule, PlaitModule, FlowModule, MindModule],
+    imports: [BrowserModule, TextModule, AppRoutingModule, PlaitModule, FlowModule, MindModule, DrawModule],
     providers: [],
     bootstrap: [AppComponent]
 })

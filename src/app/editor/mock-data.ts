@@ -1,7 +1,8 @@
 import { PlaitMind } from '@plait/mind';
 import { MindLayoutType } from '@plait/layouts';
+import { PlaitGeometry, GeometryShape } from '@plait/draw';
 
-export const mockData: PlaitMind[] = [
+export const mockData: (PlaitMind | PlaitGeometry)[] = [
     {
         type: 'mindmap',
         id: '1',
@@ -181,5 +182,31 @@ export const mockData: PlaitMind[] = [
         height: 25,
         isRoot: true,
         points: [[560, 700]]
+    },
+    {
+        id: '666',
+        type: 'geometry',
+        shape: GeometryShape.rectangle,
+        angle: 0,
+        opacity: 1,
+        text: { children: [{ text: '几何图形' }] },
+        strokeColor: '#333333',
+        strokeWidth: 2,
+        points: [
+            [880, 450],
+            [940, 510]
+        ]
+    },
+    {
+        id: '222',
+        type: 'geometry',
+        shape: GeometryShape.text,
+        angle: 0,
+        opacity: 1,
+        text: { children: [{ text: '几何图形' }] },
+        points: [
+            [980, 450],
+            [1040, 510]
+        ]
     }
 ];
