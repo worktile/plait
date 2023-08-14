@@ -314,6 +314,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             .subscribe((event: PointerEvent) => {
                 BOARD_TO_MOVING_POINT.set(this.board, [event.x, event.y]);
                 this.board.globalPointerMove(event);
+                event.preventDefault();
             });
 
         fromEvent<MouseEvent>(this.host, 'mouseup')
