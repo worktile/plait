@@ -7,6 +7,7 @@ import {
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
     createG,
+    preventTouchMove,
     toPoint,
     transformPoint
 } from '@plait/core';
@@ -17,7 +18,7 @@ import { DefaultGeometryProperty, DrawPointerType, GeometryPointer } from '../co
 import { normalizeShapePoints } from '@plait/common';
 import { DrawTransform } from '../transforms';
 
-export const withCreateGeometry = (board: PlaitBoard) => {
+export const withGeometryCreate = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, pointerUp } = board;
     let start: Point | null = null;
     let createMode: DrawCreateMode | undefined = undefined;
@@ -33,6 +34,7 @@ export const withCreateGeometry = (board: PlaitBoard) => {
         if (isGeometryPointer && createMode === DrawCreateMode.draw) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
+            preventTouchMove(board, true);
         }
         pointerDown(event);
     };
@@ -114,6 +116,7 @@ export const withCreateGeometry = (board: PlaitBoard) => {
 
         geometryShapeG = null;
         start = null;
+        preventTouchMove(board, false);
 
         pointerUp(event);
     };

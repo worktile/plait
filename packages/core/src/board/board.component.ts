@@ -64,6 +64,7 @@ import { PlaitTheme } from '../interfaces/theme';
 import { withHotkey } from '../plugins/with-hotkey';
 import { HOST_CLASS_NAME } from '../constants';
 import { PlaitContextService } from '../services/image-context.service';
+import { isPreventTouchMove } from '../utils/touch';
 
 const ElementHostClass = 'element-host';
 const ElementHostUpClass = 'element-host-up';
@@ -314,7 +315,6 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             .subscribe((event: PointerEvent) => {
                 BOARD_TO_MOVING_POINT.set(this.board, [event.x, event.y]);
                 this.board.globalPointerMove(event);
-                event.preventDefault();
             });
 
         fromEvent<MouseEvent>(this.host, 'mouseup')
@@ -442,6 +442,13 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                     BoardTransforms.updateViewport(this.board, origination);
                     setIsFromScrolling(this.board, true);
                 });
+        });
+        this.ngZone.runOutsideAngular(() => {
+            fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'touchmove', { passive: false }).subscribe((event: Event) => {
+                if (isPreventTouchMove(this.board)) {
+                    event.preventDefault();
+                }
+            });
         });
     }
 
