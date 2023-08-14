@@ -11,6 +11,7 @@ import {
     distanceBetweenPointAndPoint,
     distanceBetweenPointAndRectangle,
     getSelectedElements,
+    preventTouchMove,
     throttleRAF,
     toPoint,
     transformPoint
@@ -22,8 +23,8 @@ import { PlaitMindBoard } from './with-mind.board';
 import { MindNodeComponent } from '../node.component';
 import { MindTransforms } from '../transforms';
 import { TextManage } from '@plait/text';
-import { isDragging } from '../utils/dnd/common';
 import { EXTEND_OFFSET } from '../constants/default';
+import { isDragging } from '../utils/dnd/common';
 
 interface TargetElementRef {
     minWidth: number;
@@ -39,10 +40,13 @@ export const withNodeResize = (board: PlaitBoard) => {
     let startPoint: Point | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
-        if (targetElement) {
+        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        
+        const newTargetElement = getSelectedTarget(board as PlaitMindBoard, point);
+        if (newTargetElement) {
+            PlaitBoard.getBoardContainer(board).classList.add(ResizeCursorClass['ew-resize']);
+            targetElement = newTargetElement;
             startPoint = [event.x, event.y];
-            // prevent text from being selected
-            event.preventDefault();
             return;
         }
 
@@ -56,6 +60,9 @@ export const withNodeResize = (board: PlaitBoard) => {
         }
 
         if (startPoint && targetElement && !isMindNodeResizing(board)) {
+            // prevent text from being selected
+            event.preventDefault();
+            preventTouchMove(board, true);
             const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance > PRESS_AND_MOVE_BUFFER) {
@@ -71,6 +78,9 @@ export const withNodeResize = (board: PlaitBoard) => {
         }
 
         if (isMindNodeResizing(board) && startPoint && targetElementRef) {
+            // prevent text from being selected
+            event.preventDefault();
+            preventTouchMove(board, true);
             throttleRAF(() => {
                 if (!startPoint) {
                     return;
@@ -96,13 +106,12 @@ export const withNodeResize = (board: PlaitBoard) => {
             // press and start drag when node is non selected
             if (!isDragging(board)) {
                 const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-                const newTargetElement = getTargetElement(board as PlaitMindBoard, point);
+                const newTargetElement = getSelectedTarget(board as PlaitMindBoard, point);
                 if (newTargetElement) {
                     PlaitBoard.getBoardContainer(board).classList.add(ResizeCursorClass['ew-resize']);
                 } else {
                     PlaitBoard.getBoardContainer(board).classList.remove(ResizeCursorClass['ew-resize']);
                 }
-                targetElement = newTargetElement;
             }
         }
 
@@ -118,6 +127,7 @@ export const withNodeResize = (board: PlaitBoard) => {
             targetElement = null;
             startPoint = null;
             MERGING.set(board, false);
+            preventTouchMove(board, false);
         }
     };
 
@@ -147,7 +157,7 @@ export const removeResizing = (board: PlaitBoard, element: MindElement) => {
     IS_MIND_NODE_RESIZING.set(board, false);
 };
 
-export const getTargetElement = (board: PlaitMindBoard, point: Point) => {
+export const getSelectedTarget = (board: PlaitMindBoard, point: Point) => {
     const selectedElements = getSelectedElements(board).filter(value => MindElement.isMindElement(board, value)) as MindElement[];
     if (selectedElements.length > 0) {
         const target = selectedElements.find(value => {

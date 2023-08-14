@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
-import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, preventTouchMove } from '@plait/core';
+import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType } from '@plait/core';
 import { MindPointerType } from '@plait/mind';
 import { DrawPointerType, DrawCreateMode, setCreateMode } from '@plait/draw';
 import { fromEvent, take } from 'rxjs';
