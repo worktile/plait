@@ -113,14 +113,14 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
     });
 };
 
-export const getEdgeStyle = (edge: FlowEdge, edgeRenderMode: FlowRenderMode = FlowRenderMode.default) => {
+export const getEdgeStyle = (edge: FlowEdge, mode: FlowRenderMode = FlowRenderMode.default) => {
     const edgeStyles: FlowElementStyles = {
         ...DEFAULT_EDGE_STYLES,
         ...(edge.styles || {}),
         stroke:
-            edgeRenderMode === FlowRenderMode.active
+            mode === FlowRenderMode.active
                 ? edge.styles?.activeStroke || DEFAULT_EDGE_ACTIVE_STYLES.stroke
-                : edgeRenderMode === FlowRenderMode.hover
+                : mode === FlowRenderMode.hover
                 ? edge.styles?.hoverStroke || DEFAULT_EDGE_HOVER_STYLES.stroke
                 : DEFAULT_EDGE_STYLES.stroke
     };

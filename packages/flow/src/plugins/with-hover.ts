@@ -25,44 +25,47 @@ export const withHover: PlaitPlugin = (board: PlaitBoard) => {
         const activeElement = getSelectedElements(board) && getSelectedElements(board)[0];
         const movingNodes = getMovingElements(board);
 
-        if (hoveredElement && !movingNodes?.length && !isEdgeDragging(board) && !isPlaceholderEdgeInfo(board)) {
-            if (newHitNode?.id === hoveredElement.id) {
-                return;
-            }
-            const hoveredComponent = PlaitElement.getComponent(hoveredElement);
-            if (FlowNode.isFlowNodeElement(hoveredElement)) {
-                if (hoveredElement.id !== activeElement?.id) {
-                    (hoveredComponent as FlowNodeComponent)?.drawElement(hoveredElement, FlowRenderMode.default);
+        // 当移动节点、更改箭头方位、拖拽连线时不执行
+        if (!movingNodes?.length && !isEdgeDragging(board) && !isPlaceholderEdgeInfo(board)) {
+            if (hoveredElement) {
+                if (newHitNode?.id === hoveredElement.id) {
+                    return;
                 }
-                (relationEdges || []).forEach(item => {
-                    if (item.id !== activeElement?.id) {
-                        const component = PlaitElement.getComponent(item) as FlowEdgeComponent;
-                        component && component.drawElement(item, FlowRenderMode.default);
+                const hoveredComponent = PlaitElement.getComponent(hoveredElement);
+                if (FlowNode.isFlowNodeElement(hoveredElement)) {
+                    if (hoveredElement.id !== activeElement?.id) {
+                        (hoveredComponent as FlowNodeComponent)?.drawElement(hoveredElement, FlowRenderMode.default);
                     }
-                });
-            } else {
-                if (hoveredElement.id !== activeElement?.id) {
-                    (hoveredComponent as FlowEdgeComponent)?.drawElement(hoveredElement, FlowRenderMode.default);
+                    (relationEdges || []).forEach(item => {
+                        if (item.id !== activeElement?.id) {
+                            const component = PlaitElement.getComponent(item) as FlowEdgeComponent;
+                            component && component.drawElement(item, FlowRenderMode.default);
+                        }
+                    });
+                } else {
+                    if (hoveredElement.id !== activeElement?.id) {
+                        (hoveredComponent as FlowEdgeComponent)?.drawElement(hoveredElement, FlowRenderMode.default);
+                    }
                 }
             }
-        }
-        hoveredElement = newHitNode;
-        if (hoveredElement && !movingNodes?.length && !isEdgeDragging(board) && !isPlaceholderEdgeInfo(board)) {
-            const hoveredComponent = PlaitElement.getComponent(hoveredElement);
-            if (FlowNode.isFlowNodeElement(hoveredElement)) {
-                if (hoveredElement.id !== activeElement?.id) {
-                    (hoveredComponent as FlowNodeComponent)?.drawElement(hoveredElement, FlowRenderMode.hover);
-                }
-                relationEdges = getEdgesByNodeId(board, hoveredElement.id);
-                (relationEdges || []).forEach(item => {
-                    if (item.id !== activeElement?.id) {
-                        const component = PlaitElement.getComponent(item) as FlowEdgeComponent;
-                        component && component.drawElement(item, FlowRenderMode.hover);
+            hoveredElement = newHitNode;
+            if (hoveredElement) {
+                const hoveredComponent = PlaitElement.getComponent(hoveredElement);
+                if (FlowNode.isFlowNodeElement(hoveredElement)) {
+                    if (hoveredElement.id !== activeElement?.id) {
+                        (hoveredComponent as FlowNodeComponent)?.drawElement(hoveredElement, FlowRenderMode.hover);
                     }
-                });
-            } else {
-                if (hoveredElement.id !== activeElement?.id) {
-                    (hoveredComponent as FlowEdgeComponent)?.drawElement(hoveredElement, FlowRenderMode.hover);
+                    relationEdges = getEdgesByNodeId(board, hoveredElement.id);
+                    (relationEdges || []).forEach(item => {
+                        if (item.id !== activeElement?.id) {
+                            const component = PlaitElement.getComponent(item) as FlowEdgeComponent;
+                            component && component.drawElement(item, FlowRenderMode.hover);
+                        }
+                    });
+                } else {
+                    if (hoveredElement.id !== activeElement?.id) {
+                        (hoveredComponent as FlowEdgeComponent)?.drawElement(hoveredElement, FlowRenderMode.hover);
+                    }
                 }
             }
         }

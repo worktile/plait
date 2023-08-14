@@ -40,7 +40,6 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             return { x, y, width, height };
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
-        this.activeG = createG();
         this.drawElement();
     }
 
@@ -65,6 +64,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             this.g.append(this.textManage.g);
             this.activeG?.remove();
         } else {
+            this.activeG = this.activeG || createG();
             this.activeG?.append(this.nodeG!);
             this.activeG?.append(this.textManage.g);
             if (mode === FlowRenderMode.active) {
