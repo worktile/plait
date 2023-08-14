@@ -19,7 +19,7 @@ export interface WithPluginOptions extends PlaitPluginOptions {
 }
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, pointerMove, globalPointerUp, onChange } = board;
+    const { pointerDown, globalPointerMove, globalPointerUp, onChange } = board;
 
     let start: Point | null = null;
     let end: Point | null = null;
@@ -67,7 +67,7 @@ export function withSelection(board: PlaitBoard) {
         pointerDown(event);
     };
 
-    board.pointerMove = (event: PointerEvent) => {
+    board.globalPointerMove = (event: PointerEvent) => {
         if (needPreventNativeSelectionWhenMoving) {
             preventNativeSelection(board, event);
         }
@@ -94,7 +94,7 @@ export function withSelection(board: PlaitBoard) {
                 PlaitBoard.getHost(board).append(selectionMovingG);
             }
         }
-        pointerMove(event);
+        globalPointerMove(event);
     };
 
     board.globalPointerUp = (event: PointerEvent) => {
