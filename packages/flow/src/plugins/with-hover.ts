@@ -19,7 +19,6 @@ export const withHover: PlaitPlugin = (board: PlaitBoard) => {
     let relationEdges: FlowEdge[] | null;
 
     board.mousemove = (event: MouseEvent) => {
-        event.preventDefault();
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const newHitNode = getHitNode(board, point) || getHitEdge(board, point);
         const activeElement = getSelectedElements(board) && getSelectedElements(board)[0];

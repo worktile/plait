@@ -38,7 +38,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     labelG?: SVGGElement | null = null;
 
-    sourceMarkerG?: SVGGElement[] | null = null;
+    markersG?: SVGGElement[] | null = null;
 
     textRect: RectangleClient | null = null;
 
@@ -65,7 +65,6 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             return EdgeLabelSpace.getLabelTextRect(this.board, this.element);
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
-        this.activeG = this.activeG || createG();
         this.labelIconDrawer = new FlowEdgeLabelIconDrawer(this.board as PlaitFlowBoard, this.viewContainerRef, this.cdr);
         this.drawLabelText();
         this.redrawElement(this.element, isSelectedElement(this.board, this.element) ? FlowRenderMode.active : FlowRenderMode.default);
@@ -84,16 +83,17 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
         if (mode === FlowRenderMode.default) {
             this.g.prepend(this.nodeG!);
-            this.sourceMarkerG!.map(arrowline => {
-                this.g.append(arrowline);
+            this.markersG!.map(arrowLine => {
+                this.g.append(arrowLine);
             });
             PlaitBoard.getElementHostUp(this.board).append(this.textManage.g);
-            this.activeG?.remove();
+            this.activeG && this.activeG.remove();
         } else {
+            this.activeG = this.activeG || createG();
             this.activeG?.prepend(this.nodeG!);
             this.activeG?.append(this.textManage.g);
-            this.sourceMarkerG!.map(arrowline => {
-                this.activeG?.append(arrowline);
+            this.markersG!.map(arrowLine => {
+                this.activeG?.append(arrowLine);
             });
             this.activeG?.append(this.handlesG!);
             PlaitBoard.getElementHostActive(this.board).append(this.activeG!);
@@ -158,6 +158,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
                 this.destroyLabelG();
                 this.labelG = drawEdgeLabel(this.roughSVG, element, labelRect!, mode);
                 this.textManage.g.prepend(this.labelG!);
+
                 this.destroyLabelIconG();
                 this.iconG = this.labelIconDrawer.drawLabelIcon(
                     {
@@ -176,7 +177,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     drawMarkers(element: FlowEdge = this.element, mode: FlowRenderMode) {
         if (element.target.marker || element.source?.marker) {
             this.destroyMarkers();
-            this.sourceMarkerG = drawEdgeMarkers(this.board, this.roughSVG, element, mode);
+            this.markersG = drawEdgeMarkers(this.board, this.roughSVG, element, mode);
         }
     }
 
@@ -214,11 +215,11 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     }
 
     destroyMarkers() {
-        if (this.sourceMarkerG) {
-            this.sourceMarkerG.forEach(item => {
+        if (this.markersG) {
+            this.markersG.forEach(item => {
                 item.remove();
             });
-            this.sourceMarkerG = null;
+            this.markersG = null;
         }
     }
 
