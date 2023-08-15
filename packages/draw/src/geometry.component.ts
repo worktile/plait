@@ -94,6 +94,7 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
+        this.textManage.destroy();
         this.destroy$.next();
         this.destroy$.complete();
     }
