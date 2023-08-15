@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    NgZone,
+    OnDestroy,
+    OnInit,
+    Renderer2,
+    ViewContainerRef
+} from '@angular/core';
 import { TextManage } from '@plait/text';
 import { PlaitPluginElementComponent, PlaitPluginElementContext, PlaitBoard, normalizePoint, createG, OnContextChanged } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
@@ -27,7 +36,12 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     activeG: SVGGElement | null = null;
 
-    constructor(public cdr: ChangeDetectorRef, public viewContainerRef: ViewContainerRef, public render2: Renderer2) {
+    constructor(
+        public cdr: ChangeDetectorRef,
+        public viewContainerRef: ViewContainerRef,
+        public render2: Renderer2,
+        public ngZone: NgZone
+    ) {
         super(cdr);
     }
 
@@ -90,8 +104,10 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     drawRichtext(element: FlowNode = this.element) {
         this.destroyRichtext();
         if (element.data?.text) {
-            this.textManage.draw(element.data.text);
-            this.textManage.g.classList.add('flow-node-richtext');
+            this.ngZone.run(() => {
+                this.textManage.draw(element.data?.text!);
+                this.textManage.g.classList.add('flow-node-richtext');
+            });
         }
     }
 
