@@ -15,7 +15,11 @@ export class CustomFlowNodeComponent extends FlowNodeComponent {
     }
 
     drawElement(element: FlowNode = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
-        this.getElement(element, mode);
+        this.drawNode(element);
+        this.drawRichtext(element);
+        this.drawActiveMask(element, mode);
+        this.drawHandles(element, mode);
+
         if (mode === FlowRenderMode.default) {
             this.g.append(this.nodeG!);
             this.g.append(this.textManage.g);

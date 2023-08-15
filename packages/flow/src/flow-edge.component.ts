@@ -48,6 +48,8 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     activeG: SVGGElement | null = null;
 
+    iconG?: SVGGElement | null = null;
+
     constructor(
         public cdr: ChangeDetectorRef,
         public viewContainerRef: ViewContainerRef,
@@ -64,27 +66,22 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.activeG = this.activeG || createG();
-        const isActive = isSelectedElement(this.board, this.element);
-        this.labelIconDrawer = new FlowEdgeLabelIconDrawer(this.board as PlaitFlowBoard, this.viewContainerRef);
-        this.drawElement(this.element, isActive ? FlowRenderMode.active : FlowRenderMode.default);
+        this.labelIconDrawer = new FlowEdgeLabelIconDrawer(this.board as PlaitFlowBoard, this.viewContainerRef, this.cdr);
+        this.drawLabelText();
+        this.redrawElement(this.element, isSelectedElement(this.board, this.element) ? FlowRenderMode.active : FlowRenderMode.default);
     }
 
     onContextChanged(value: PlaitPluginElementContext<FlowEdge, PlaitBoard>, previous: PlaitPluginElementContext<FlowEdge, PlaitBoard>) {
-        if (value.element !== previous.element && this.initialized) {
-            this.drawElement(value.element, value.selected ? FlowRenderMode.active : FlowRenderMode.default);
-        }
         if (this.initialized) {
-            if (value.selected) {
-                this.drawElement(value.element, value.selected ? FlowRenderMode.active : FlowRenderMode.default);
-            } else if (previous.selected) {
-                this.drawElement(value.element);
-                this.destroyHandles();
-            }
+            this.redrawElement(value.element, value.selected ? FlowRenderMode.active : FlowRenderMode.default);
         }
     }
 
     drawElement(element: FlowEdge = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
-        this.getElement(element, mode);
+        this.drawEdge(element, mode);
+        this.drawMarkers(element, mode);
+        this.drawHandles(element, mode);
+
         if (mode === FlowRenderMode.default) {
             this.g.prepend(this.nodeG!);
             this.sourceMarkerG!.map(arrowline => {
@@ -103,30 +100,20 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         }
     }
 
-    getElement(element: FlowEdge = this.element, mode: FlowRenderMode) {
-        this.drawEdge(element, mode);
-        if (element.data?.text && Element.isElement(element.data.text)) {
-            const text = (element.data.text.children[0] as Text).text;
-            if (text) {
-                this.textRect = EdgeLabelSpace.getLabelTextRect(this.board, element);
-                this.ngZone.run(() => {
-                    this.drawRichtext(element, this.textRect!, mode);
-                });
-            }
-        }
-        this.drawMarkers(element, mode);
-        this.drawHandles(element, mode);
-    }
-
     drawEdge(element: FlowEdge = this.element, mode: FlowRenderMode) {
         this.destroyEdge();
         this.nodeG = drawEdge(this.board, this.roughSVG, element, mode);
         this.nodeG.setAttribute('stroke-linecap', 'round');
     }
 
+    redrawElement(element: FlowEdge = this.element, mode: FlowRenderMode) {
+        this.drawElement(element, mode);
+        this.updatePosition(element, mode);
+    }
+
     drawHandles(element: FlowEdge = this.element, mode: FlowRenderMode) {
+        this.destroyHandles();
         if (mode === FlowRenderMode.active) {
-            this.destroyHandles();
             const handles = drawEdgeHandles(this.board, this.roughSVG, element);
             this.handlesG = createG();
             handles.forEach(item => {
@@ -137,36 +124,52 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         }
     }
 
-    drawRichtext(element: FlowEdge = this.element, textRect: RectangleClient, mode: FlowRenderMode) {
-        this.destroyRichtext();
-        if (element.data?.text && textRect) {
-            const labelRect = EdgeLabelSpace.getLabelRect(textRect, element);
-            this.labelG = drawEdgeLabel(this.roughSVG, element, labelRect!, mode);
-            this.textManage.draw(element.data.text);
-            this.textManage.g.prepend(this.labelG);
-            this.textManage.g.classList.add('flow-edge-richtext');
-            const iconG = this.labelIconDrawer.drawLabelIcon(this.element);
-            iconG && this.textManage.g.append(iconG);
+    drawLabelText(element: FlowEdge = this.element) {
+        if (element.data?.text && Element.isElement(element.data.text)) {
+            const text = (element.data.text.children[0] as Text).text;
+            if (text) {
+                this.textRect = EdgeLabelSpace.getLabelTextRect(this.board, element);
+                this.ngZone.run(() => {
+                    this.destroyLabelText();
+                    if (element.data?.text && this.textRect) {
+                        this.textManage.draw(element.data.text);
+                        this.textManage.g.classList.add('flow-edge-richtext');
+                    }
+                });
+            }
         }
     }
 
-    updateRichtextPosition(element: FlowEdge<T> = this.element, mode: FlowRenderMode) {
+    updatePosition(element: FlowEdge = this.element, mode: FlowRenderMode) {
         if (element.data?.text) {
-            const { x, y } = getEdgeTextXYPosition(this.board, this.element, this.textRect!.width, this.textRect!.height);
-            const { width, height } = this.textRect!;
-            this.textManage.updateRectangle({ x, y, width, height });
-            const labelRect = EdgeLabelSpace.getLabelRect(
-                {
-                    x,
-                    y,
-                    width,
-                    height
-                },
-                element
-            );
-            this.destroyLabelG();
-            this.labelG = drawEdgeLabel(this.roughSVG, element, labelRect!, mode);
-            this.textManage.g.prepend(this.labelG);
+            this.ngZone.run(() => {
+                const { x, y } = getEdgeTextXYPosition(this.board, this.element, this.textRect!.width, this.textRect!.height);
+                const { width, height } = this.textRect!;
+                this.textManage.updateRectangle({ x, y, width, height });
+                const labelRect = EdgeLabelSpace.getLabelRect(
+                    {
+                        x,
+                        y,
+                        width,
+                        height
+                    },
+                    element
+                );
+                this.destroyLabelG();
+                this.labelG = drawEdgeLabel(this.roughSVG, element, labelRect!, mode);
+                this.textManage.g.prepend(this.labelG!);
+                this.destroyLabelIconG();
+                this.iconG = this.labelIconDrawer.drawLabelIcon(
+                    {
+                        x,
+                        y,
+                        width,
+                        height
+                    },
+                    element
+                );
+                this.iconG && this.textManage.g.append(this.iconG!);
+            });
         }
     }
 
@@ -191,7 +194,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         }
     }
 
-    destroyRichtext() {
+    destroyLabelText() {
         this.textManage.destroy();
         this.destroyLabelG();
     }
@@ -200,6 +203,13 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (this.labelG) {
             this.labelG.remove();
             this.labelG = null;
+        }
+    }
+
+    destroyLabelIconG() {
+        if (this.iconG) {
+            this.iconG.remove();
+            this.iconG = null;
         }
     }
 

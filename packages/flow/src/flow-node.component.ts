@@ -73,7 +73,11 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     }
 
     drawElement(element: FlowNode = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
-        this.getElement(element, mode);
+        this.drawNode(element);
+        this.drawRichtext(element);
+        this.drawActiveMask(element, mode);
+        this.drawHandles(element, mode);
+
         if (mode === FlowRenderMode.default) {
             this.g.append(this.nodeG!);
             this.g.append(this.textManage.g);
@@ -122,13 +126,6 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             });
             this.handlesG?.setAttribute('stroke-linecap', 'round');
         }
-    }
-
-    getElement(element: FlowNode = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
-        this.drawNode(element);
-        this.drawRichtext(element);
-        this.drawActiveMask(element, mode);
-        this.drawHandles(element, mode);
     }
 
     destroyHandles() {

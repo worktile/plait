@@ -37,9 +37,8 @@ function getLabelIconWidth() {
     return EDGE_LABEL_FONTSIZE + EDGE_LABEL_ICON_PADDING;
 }
 
-function getLabelIconRect(element: FlowEdge): RectangleClient {
-    const component = ELEMENT_TO_COMPONENT.get(element) as FlowEdgeComponent;
-    const { x, y, height } = component.textRect!;
+function getLabelIconRect(textRect: RectangleClient): RectangleClient {
+    const { x, y, height } = textRect!;
     return {
         x: x - getLabelIconWidth() - EDGE_LABEL_ICON_PADDING,
         y,

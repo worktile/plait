@@ -68,7 +68,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                         handleType: handleType!
                     });
                     const activeComponent = activeElement && (PlaitElement.getComponent(activeElement) as FlowEdgeComponent);
-                    activeComponent?.drawElement(activeElement!, FlowRenderMode.active);
+                    activeComponent?.redrawElement(activeElement!, FlowRenderMode.active);
                     hitNodeHandle = getHoverHandleInfo(board) as HitNodeHandle;
                     if (drawNodeHandles) {
                         drawNodeHandles = false;
@@ -102,7 +102,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     activePath
                 );
             } else {
-                activeComponent?.drawElement(activeElement, FlowRenderMode.active);
+                activeComponent?.redrawElement(activeElement, FlowRenderMode.active);
             }
             destroyAllNodesHandle(board, flowNodeElements);
         }
