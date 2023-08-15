@@ -63,6 +63,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             return EdgeLabelSpace.getLabelTextRect(this.board, this.element);
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
+        this.activeG = this.activeG || createG();
         const isActive = isSelectedElement(this.board, this.element);
         this.labelIconDrawer = new FlowEdgeLabelIconDrawer(this.board as PlaitFlowBoard, this.viewContainerRef);
         this.drawElement(this.element, isActive ? FlowRenderMode.active : FlowRenderMode.default);
@@ -92,7 +93,6 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             PlaitBoard.getElementHostUp(this.board).append(this.textManage.g);
             this.activeG?.remove();
         } else {
-            this.activeG = this.activeG || createG();
             this.activeG?.prepend(this.nodeG!);
             this.activeG?.append(this.textManage.g);
             this.sourceMarkerG!.map(arrowline => {
