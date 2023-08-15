@@ -86,8 +86,6 @@ export const withNodeDnd = (board: PlaitBoard) => {
         }
 
         if (activeElements.length) {
-            // prevent text from being selected
-            event.preventDefault();
             correspondingElements = getOverallAbstracts(board, activeElements);
         }
 
@@ -96,6 +94,8 @@ export const withNodeDnd = (board: PlaitBoard) => {
 
     board.mousemove = (event: MouseEvent) => {
         if (!board.options.readonly && activeElements?.length && startPoint) {
+            // prevent text from being selected
+            event.preventDefault();
             const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance < DRAG_MOVE_BUFFER) {
