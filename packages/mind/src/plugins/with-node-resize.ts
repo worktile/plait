@@ -41,8 +41,6 @@ export const withNodeResize = (board: PlaitBoard) => {
     board.mousedown = (event: MouseEvent) => {
         if (targetElement) {
             startPoint = [event.x, event.y];
-            // prevent text from being selected
-            event.preventDefault();
             return;
         }
 
@@ -56,6 +54,8 @@ export const withNodeResize = (board: PlaitBoard) => {
         }
 
         if (startPoint && targetElement && !isMindNodeResizing(board)) {
+            // prevent text from being selected
+            event.preventDefault();
             const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance > PRESS_AND_MOVE_BUFFER) {
@@ -71,6 +71,8 @@ export const withNodeResize = (board: PlaitBoard) => {
         }
 
         if (isMindNodeResizing(board) && startPoint && targetElementRef) {
+            // prevent text from being selected
+            event.preventDefault();
             throttleRAF(() => {
                 if (!startPoint) {
                     return;
