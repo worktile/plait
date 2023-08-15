@@ -7,6 +7,7 @@ import {
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
     createG,
+    preventTouchMove,
     toPoint,
     transformPoint
 } from '@plait/core';
@@ -17,8 +18,8 @@ import { DefaultGeometryProperty, DrawPointerType, GeometryPointer } from '../co
 import { normalizeShapePoints } from '@plait/common';
 import { DrawTransform } from '../transforms';
 
-export const withCreateGeometry = (board: PlaitBoard) => {
-    const { mousedown, mousemove, mouseup } = board;
+export const withGeometryCreate = (board: PlaitBoard) => {
+    const { pointerDown, pointerMove, pointerUp } = board;
     let start: Point | null = null;
     let createMode: DrawCreateMode | undefined = undefined;
 
@@ -26,18 +27,19 @@ export const withCreateGeometry = (board: PlaitBoard) => {
 
     const geometryGenerator: GeometryShapeGenerator = new GeometryShapeGenerator(board);
 
-    board.mousedown = (event: MouseEvent) => {
+    board.pointerDown = (event: PointerEvent) => {
         createMode = getCreateMode(board);
 
         const isGeometryPointer = PlaitBoard.isInPointer(board, GeometryPointer);
         if (isGeometryPointer && createMode === DrawCreateMode.draw) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
+            preventTouchMove(board, true);
         }
-        mousedown(event);
+        pointerDown(event);
     };
 
-    board.mousemove = (event: MouseEvent) => {
+    board.pointerMove = (event: PointerEvent) => {
         geometryShapeG?.remove();
         geometryShapeG = createG();
 
@@ -76,10 +78,10 @@ export const withCreateGeometry = (board: PlaitBoard) => {
             PlaitBoard.getElementHostActive(board).append(geometryShapeG);
         }
 
-        mousemove(event);
+        pointerMove(event);
     };
 
-    board.mouseup = (event: MouseEvent) => {
+    board.pointerUp = (event: PointerEvent) => {
         let points = null;
         const isGeometryPointer = PlaitBoard.isInPointer(board, GeometryPointer);
 
@@ -114,8 +116,9 @@ export const withCreateGeometry = (board: PlaitBoard) => {
 
         geometryShapeG = null;
         start = null;
+        preventTouchMove(board, false);
 
-        mouseup(event);
+        pointerUp(event);
     };
 
     return board;

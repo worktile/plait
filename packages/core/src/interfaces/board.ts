@@ -47,8 +47,8 @@ export interface PlaitBoard {
     mousedown: (event: MouseEvent) => void;
     mousemove: (event: MouseEvent) => void;
     mouseleave: (event: MouseEvent) => void;
-    globalMousemove: (event: MouseEvent) => void;
     mouseup: (event: MouseEvent) => void;
+    globalMousemove: (event: MouseEvent) => void;
     globalMouseup: (event: MouseEvent) => void;
     keydown: (event: KeyboardEvent) => void;
     globalKeydown: (event: KeyboardEvent) => void;
@@ -68,6 +68,16 @@ export interface PlaitBoard {
     pathRef: (path: Path, options?: PathRefOptions) => PathRef;
     pathRefs: () => Set<PathRef>;
     applyTheme: (element: PlaitElement) => void;
+
+    // pointer hook
+    pointerDown: (pointer: PointerEvent) => void;
+    pointerMove: (pointer: PointerEvent) => void;
+    pointerUp: (pointer: PointerEvent) => void;
+    pointerCancel: (pointer: PointerEvent) => void;
+    pointerOut: (pointer: PointerEvent) => void;
+    pointerLeave: (pointer: PointerEvent) => void;
+    globalPointerMove: (pointer: PointerEvent) => void;
+    globalPointerUp: (pointer: PointerEvent) => void;
 }
 
 export interface PlaitBoardChangeEvent {

@@ -9,7 +9,7 @@ import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
-import { throttleRAF } from '../utils';
+import { preventTouchMove, throttleRAF } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
 
@@ -19,7 +19,7 @@ export interface WithPluginOptions extends PlaitPluginOptions {
 }
 
 export function withSelection(board: PlaitBoard) {
-    const { mousedown, globalMousemove, globalMouseup, onChange } = board;
+    const { pointerDown, globalPointerMove, globalPointerUp, onChange } = board;
 
     let start: Point | null = null;
     let end: Point | null = null;
@@ -30,13 +30,13 @@ export function withSelection(board: PlaitBoard) {
     // prevent text from being selected when user pressed main pointer and is moving
     let needPreventNativeSelectionWhenMoving = false;
 
-    board.mousedown = (event: MouseEvent) => {
+    board.pointerDown = (event: PointerEvent) => {
         if (event.target instanceof Element && !event.target.closest('.plait-richtext-container')) {
             needPreventNativeSelectionWhenMoving = true;
         }
 
         if (!isMainPointer(event)) {
-            mousedown(event);
+            pointerDown(event);
             return;
         }
 
@@ -48,7 +48,7 @@ export function withSelection(board: PlaitBoard) {
         const selectedElements = getSelectedElements(board);
 
         if (hitElements.length === 1 && selectedElements.includes(hitElements[0]) && !options.isDisabledSelect) {
-            mousedown(event);
+            pointerDown(event);
             return;
         }
 
@@ -59,14 +59,15 @@ export function withSelection(board: PlaitBoard) {
             !options.isDisabledSelect
         ) {
             start = point;
+            preventTouchMove(board, true);
         }
 
         Transforms.setSelection(board, { ranges: [range] });
 
-        mousedown(event);
+        pointerDown(event);
     };
 
-    board.globalMousemove = (event: MouseEvent) => {
+    board.globalPointerMove = (event: PointerEvent) => {
         if (needPreventNativeSelectionWhenMoving) {
             // prevent text from being selected
             event.preventDefault();
@@ -94,10 +95,10 @@ export function withSelection(board: PlaitBoard) {
                 PlaitBoard.getHost(board).append(selectionMovingG);
             }
         }
-        globalMousemove(event);
+        globalPointerMove(event);
     };
 
-    board.globalMouseup = (event: MouseEvent) => {
+    board.globalPointerUp = (event: PointerEvent) => {
         if (start && end) {
             selectionMovingG?.remove();
             clearSelectionMoving(board);
@@ -118,7 +119,8 @@ export function withSelection(board: PlaitBoard) {
         start = null;
         end = null;
         needPreventNativeSelectionWhenMoving = false;
-        globalMouseup(event);
+        preventTouchMove(board, false);
+        globalPointerUp(event);
     };
 
     board.onChange = () => {

@@ -1,4 +1,4 @@
-import { PlaitBoard } from '@plait/core';
+import { PlaitBoard, preventTouchMove } from '@plait/core';
 
 export enum DrawCreateMode {
     'drag' = 'drag',

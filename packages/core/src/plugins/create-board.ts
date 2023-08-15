@@ -99,7 +99,15 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         isRecursion: element => true,
         isMovable: element => false,
         getRectangle: element => null,
-        applyTheme: (element: PlaitElement) => {}
+        applyTheme: (element: PlaitElement) => {},
+        pointerDown: (pointer) => {},
+        pointerMove: (pointer) => {},
+        pointerUp: (pointer) => {},
+        pointerCancel: (pointer) => {},
+        pointerOut: (pointer) => {},
+        pointerLeave: (pointer) => {},
+        globalPointerMove: (pointer) => {},
+        globalPointerUp: (pointer) => {},
     };
     return board;
 }
