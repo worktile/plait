@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType } from '@plait/core';
 import { MindPointerType } from '@plait/mind';
-import { DrawPointerType, DrawCreateMode } from '@plait/draw';
-import { setCreateMode } from 'packages/draw/src/utils/create-mode';
+import { DrawPointerType, DrawCreateMode, setCreateMode } from '@plait/draw';
 import { fromEvent, take } from 'rxjs';
 
 type PointerType = MindPointerType | PlaitPointerType | DrawPointerType;
