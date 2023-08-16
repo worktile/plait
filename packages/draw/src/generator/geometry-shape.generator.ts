@@ -10,6 +10,8 @@ export class GeometryShapeGenerator extends Generator<PlaitGeometry, ShapeData> 
     }
 
     baseDraw(element: PlaitGeometry, data: ShapeData) {
+        this.g = undefined;
+
         const rectangle = getRectangleByPoints(element.points);
         const shape = element.shape;
         const strokeWidth = getStrokeWidthByElement(this.board, element);

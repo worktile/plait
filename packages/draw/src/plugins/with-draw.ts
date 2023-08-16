@@ -6,6 +6,7 @@ import { getRectangleByPoints } from '@plait/common';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreate } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
+import { getTextRectangle } from '../utils';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isHitSelection, isMovable, dblclick } = board;
@@ -29,6 +30,15 @@ export const withDraw = (board: PlaitBoard) => {
     board.isHitSelection = (element: PlaitElement, range: Range) => {
         if (PlaitDrawElement.isGeometry(element)) {
             const client = getRectangleByPoints(element.points);
+
+            if (element.textHeight > client.height) {
+                const textClient = getTextRectangle(element);
+                return (
+                    RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), client) ||
+                    RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), textClient)
+                );
+            }
+
             return RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
         }
         return isHitSelection(element, range);
@@ -52,5 +62,4 @@ export const withDraw = (board: PlaitBoard) => {
     };
 
     return withGeometryCreate(withDrawFragment(withDrawHotkey(board)));
-
 };

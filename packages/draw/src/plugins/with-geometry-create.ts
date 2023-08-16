@@ -97,8 +97,12 @@ export const withGeometryCreate = (board: PlaitBoard) => {
         }
 
         if (isGeometryPointer && createMode === DrawCreateMode.drag) {
+            const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
             const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             points = getPointsByCenterPoint(movingPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
+            if (pointer === DrawPointerType.text) {
+                points = getPointsByCenterPoint(movingPoint, DefaultTextProperty.width, DefaultTextProperty.height);
+            }
         }
 
         if (isGeometryPointer && points) {
