@@ -29,7 +29,7 @@ export const withRelationEdgeHighlight: PlaitPlugin = (board: PlaitBoard) => {
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const newHitNode = getHitNode(board, point) || getHitEdge(board, point);
         clearSelectedElement(board);
-        addSelectedElement(board, newHitNode as PlaitElement);
+        newHitNode && addSelectedElement(board, newHitNode as PlaitElement);
     };
 
     board.mouseup = event => {
