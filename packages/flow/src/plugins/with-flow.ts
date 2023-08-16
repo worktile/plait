@@ -22,7 +22,7 @@ import { withHandleBlink } from './with-handle-blink';
 import { FlowPluginOptions, FlowPluginKey, FlowRenderMode } from '../interfaces/flow';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
 import { withHoverHighlight } from './with-hover-highlight';
-import { withEdgeHighlight } from './with-edge-highlight';
+import { withRelationEdgeHighlight } from './with-relation-edge-highlight';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, isHitSelection, isMovable, onChange, getRectangle } = board;
@@ -93,5 +93,5 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
         edgeLabelOptions: { height: TEXT_DEFAULT_HEIGHT }
     });
 
-    return withHandleBlink(withFlowEdgeDnd(withEdgeCreate(withEdgeHighlight(withHoverHighlight(board)))));
+    return withHandleBlink(withFlowEdgeDnd(withEdgeCreate(withRelationEdgeHighlight(withHoverHighlight(board)))));
 };

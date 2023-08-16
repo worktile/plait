@@ -18,7 +18,7 @@ import { getHitNode } from '../utils/node/get-hit-node';
 import { getHitEdge } from '../utils/edge/get-hit-edge';
 import { addRelationEdgeInfo, deleteRelationEdgeInfo } from '../utils/edge/relation-edge';
 
-export const withEdgeHighlight: PlaitPlugin = (board: PlaitBoard) => {
+export const withRelationEdgeHighlight: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mouseup } = board;
 
     let activeElement: PlaitElement | null;
