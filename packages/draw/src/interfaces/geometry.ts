@@ -14,6 +14,7 @@ export interface PlaitGeometry extends PlaitElement {
     shape: GeometryShape;
 
     text: Element;
+    textHeight: number;
 
     // node style attributes
     fill?: string;

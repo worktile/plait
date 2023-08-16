@@ -190,6 +190,7 @@ export const mockData: (PlaitMind | PlaitGeometry)[] = [
         angle: 0,
         opacity: 1,
         text: { children: [{ text: '几何图形' }] },
+        textHeight: 20,
         strokeColor: '#333333',
         strokeWidth: 2,
         points: [
@@ -202,8 +203,10 @@ export const mockData: (PlaitMind | PlaitGeometry)[] = [
         type: 'geometry',
         shape: GeometryShape.text,
         angle: 0,
+        autoSize: false,
         opacity: 1,
         text: { children: [{ text: '几何图形' }] },
+        textHeight: 20,
         points: [
             [980, 450],
             [1040, 510]

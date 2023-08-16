@@ -14,7 +14,7 @@ import {
 import { GeometryShape, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generator/geometry-shape.generator';
 import { DrawCreateMode, createGeometryElement, getCreateMode, getPointsByCenterPoint } from '../utils';
-import { DefaultGeometryProperty, DrawPointerType, GeometryPointer } from '../constants';
+import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, GeometryPointer } from '../constants';
 import { normalizeShapePoints } from '@plait/common';
 import { DrawTransform } from '../transforms';
 
@@ -71,6 +71,7 @@ export const withGeometryCreate = (board: PlaitBoard) => {
             }) as PlaitGeometry;
 
             if (pointer === DrawPointerType.text) {
+                const points = getPointsByCenterPoint(movingPoint, DefaultTextProperty.width, DefaultTextProperty.height);
                 temporaryElement = createGeometryElement(GeometryShape.rectangle, points, 'text') as PlaitGeometry;
             }
 
