@@ -5,7 +5,7 @@ import { getHandleXYPosition } from './get-handle-position';
 import { HANDLE_BUFFER, HANDLE_DIAMETER } from '../../constants/handle';
 import { FlowEdgeHandleRef } from '../../interfaces/edge';
 import { getFlowElementsByType } from '../node/get-node';
-import { FlowElementType } from '../../public-api';
+import { FlowElementType } from '../../interfaces/element';
 import { getHitNode } from '../node/get-hit-node';
 
 export interface HitNodeHandle extends FlowEdgeHandleRef {

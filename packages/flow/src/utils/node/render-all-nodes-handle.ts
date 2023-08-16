@@ -3,15 +3,14 @@ import { FlowNode } from '../../interfaces/node';
 import { PlaitBoard, PlaitElement, isSelectedElement } from '@plait/core';
 import { getFlowElementsByType } from './get-node';
 import { FlowNodeComponent } from '../../flow-node.component';
-import { FlowRenderMode } from '../../public-api';
+import { FlowRenderMode } from '../../interfaces/flow';
 
 export function drawAllNodesHandle(board: PlaitBoard) {
     const flowNodeElements = getFlowElementsByType(board, FlowElementType.node) as FlowNode[];
     flowNodeElements.map(item => {
         const flowNodeComponent = PlaitElement.getComponent(item) as FlowNodeComponent;
         flowNodeComponent.drawHandles(item, FlowRenderMode.active);
-        flowNodeComponent?.activeG?.append(flowNodeComponent.handlesG!);
-        PlaitBoard.getElementHostActive(board).append(flowNodeComponent.activeG!);
+        PlaitBoard.getElementHostActive(board).append(flowNodeComponent.handlesG!);
     });
     return flowNodeElements;
 }

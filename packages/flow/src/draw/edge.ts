@@ -2,7 +2,7 @@ import { PlaitBoard, drawRoundRectangle, RectangleClient, drawArrow } from '@pla
 import { RoughSVG } from 'roughjs/bin/svg';
 import { getEdgePoints, getEdgeStyle } from '../utils/edge/edge';
 import { FlowEdge } from '../interfaces/edge';
-import { FlowRenderMode } from '../public-api';
+import { FlowRenderMode } from '../interfaces/flow';
 
 export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, mode: FlowRenderMode) => {
     const [pathPoints] = getEdgePoints(board, edge);

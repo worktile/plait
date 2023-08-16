@@ -15,7 +15,7 @@ import { drawNodeHandles } from './draw/handle';
 import { drawActiveMask, drawNode } from './draw/node';
 import { FlowNode } from './interfaces/node';
 import { FlowBaseData } from './interfaces/element';
-import { FlowRenderMode } from './public-api';
+import { FlowRenderMode } from './interfaces/flow';
 
 @Component({
     selector: 'plait-flow-node',
@@ -58,20 +58,16 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     }
 
     onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
-        if (value.element !== previous.element && this.initialized) {
+        if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected)) {
             this.drawElement(value.element, value.selected ? FlowRenderMode.active : FlowRenderMode.default);
-        }
-        if (value.selected) {
-            this.drawElement(this.element, value.selected ? FlowRenderMode.active : FlowRenderMode.default);
-        } else if (this.initialized) {
-            if (previous.selected) {
-                this.destroyActiveMask();
-                this.destroyHandles();
-            }
         }
     }
 
     drawElement(element: FlowNode = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
+        // 处理节点高亮当前为 selected 不绘制
+        if (this.selected && mode !== FlowRenderMode.active) {
+            return;
+        }
         this.drawNode(element);
         this.drawRichtext(element);
         this.drawActiveMask(element, mode);
@@ -116,10 +112,10 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     }
 
     drawHandles(element: FlowNode = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
+        this.destroyHandles();
         if (mode !== FlowRenderMode.default) {
-            this.destroyHandles();
-            const handles = drawNodeHandles(this.roughSVG, element);
             this.handlesG = createG();
+            const handles = drawNodeHandles(this.roughSVG, element);
             handles.map(item => {
                 this.handlesG?.append(item);
                 this.render2.addClass(item, 'flow-handle');
@@ -155,6 +151,10 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
+        this.destroyElement();
+        this.destroyHandles();
+        this.destroyActiveMask();
+        this.destroyRichtext();
         this.activeG?.remove();
         this.activeG = null;
     }

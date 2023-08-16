@@ -7,7 +7,7 @@ import { DEFAULT_EDGE_ACTIVE_STYLES, DEFAULT_EDGE_HOVER_STYLES, DEFAULT_EDGE_STY
 import { FlowNode } from '../../interfaces/node';
 import { getEdgeDraggingInfo } from './dragging-edge';
 import { getEdgePosition } from './get-edge-position';
-import { FlowRenderMode } from '../../public-api';
+import { FlowRenderMode } from '../../interfaces/flow';
 
 interface EdgePositions {
     sourceX: number;

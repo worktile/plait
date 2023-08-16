@@ -20,7 +20,7 @@ import { HitNodeHandle } from '../utils/handle/node';
 import { getHitHandleTypeByEdge } from '../utils/handle/edge';
 import { getHoverHandleInfo } from '../utils/handle/hover-handle';
 import { FlowElement } from '../interfaces/element';
-import { FlowRenderMode } from '../public-api';
+import { FlowRenderMode } from '../interfaces/flow';
 
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup } = board;

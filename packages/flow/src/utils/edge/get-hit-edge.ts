@@ -1,7 +1,8 @@
 import { PlaitBoard, Point } from '@plait/core';
 import { FlowElementType } from '../../interfaces/element';
 import { getFlowElementsByType } from '../node/get-node';
-import { FlowEdge, isHitEdge } from '../../public-api';
+import { isHitEdge } from './is-hit-edge';
+import { FlowEdge } from '../../interfaces/edge';
 
 export function getHitEdge(board: PlaitBoard, point: Point): FlowEdge | null {
     let flowEdge: FlowEdge | null = null;

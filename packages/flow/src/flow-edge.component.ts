@@ -20,7 +20,7 @@ import { Element, Text } from 'slate';
 import { FlowEdgeLabelIconDrawer } from './draw/label-icon';
 import { PlaitFlowBoard } from './interfaces';
 import { EdgeLabelSpace } from './utils';
-import { FlowRenderMode } from './public-api';
+import { FlowRenderMode } from './interfaces/flow';
 
 @Component({
     selector: 'plait-flow-edge',
@@ -67,12 +67,16 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     }
 
     onContextChanged(value: PlaitPluginElementContext<FlowEdge, PlaitBoard>, previous: PlaitPluginElementContext<FlowEdge, PlaitBoard>) {
-        if (this.initialized) {
+        if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected)) {
             this.drawElement(value.element, value.selected ? FlowRenderMode.active : FlowRenderMode.default);
         }
     }
 
     drawElement(element: FlowEdge = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
+        // 处理节点高亮当前为 selected 不绘制
+        if (this.selected && mode !== FlowRenderMode.active) {
+            return;
+        }
         this.drawEdge(element, mode);
         this.drawLabel(element, mode);
         this.drawMarkers(element, mode);
@@ -163,6 +167,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (this.labelG) {
             this.labelG.remove();
             this.textManage?.destroy();
+            this.labelIconDrawer.destroy();
             this.labelG = null;
         }
     }
@@ -178,6 +183,10 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
+        this.destroyLabelG();
+        this.destroyMarkers();
+        this.destroyEdge();
+        this.destroyHandles();
         this.activeG?.remove();
         this.activeG = null;
     }

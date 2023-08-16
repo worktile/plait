@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { PlaitPluginElementContext, Point, drawCircle, PlaitBoard } from '@plait/core';
+import { PlaitPluginElementContext, Point, drawCircle, PlaitBoard, createG } from '@plait/core';
 import { FlowNode, FlowNodeComponent, FlowRenderMode } from '@plait/flow';
 
 @Component({
@@ -26,6 +26,7 @@ export class CustomFlowNodeComponent extends FlowNodeComponent {
             this.render2.addClass(this.g, 'flow-custom-node');
             this.activeG?.remove();
         } else {
+            this.activeG = this.activeG || createG();
             this.activeG?.append(this.nodeG!);
             this.activeG?.append(this.textManage.g);
             if (mode === FlowRenderMode.active) {
