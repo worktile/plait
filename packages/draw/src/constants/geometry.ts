@@ -1,4 +1,6 @@
-export const TEXT_MARGIN = 4;
+export const ShapeDefaultSpace = {
+    rectangleAndText: 4
+};
 
 export const DefaultGeometryStyle = {
     strokeWidth: 2,

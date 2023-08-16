@@ -2,7 +2,7 @@ import { Point, idCreator } from '@plait/core';
 import { GeometryShape, PlaitGeometry } from '../interfaces/geometry';
 import { buildText } from '@plait/text';
 import { Element } from 'slate';
-import { DefaultTextProperty, TEXT_MARGIN } from '../constants';
+import { DefaultTextProperty, ShapeDefaultSpace } from '../constants';
 import { getRectangleByPoints } from '@plait/common';
 
 export const createGeometryElement = (
@@ -10,7 +10,7 @@ export const createGeometryElement = (
     points: [Point, Point],
     text: string | Element,
     options?: Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>
-) => {
+): PlaitGeometry => {
     let textOptions = {};
     if (shape === GeometryShape.text) {
         textOptions = { autoResize: true };
@@ -36,8 +36,15 @@ export const getPointsByCenterPoint = (point: Point, width: number, height: numb
     return [leftTopPoint, rightBottomPoint];
 };
 
-export const getTextWidth = (points: [Point, Point]) => {
-    const elementRectangle = getRectangleByPoints(points);
+export const getTextRectangle = (element: PlaitGeometry) => {
+    const elementRectangle = getRectangleByPoints(element.points!);
+    const height = element.textHeight;
+    const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2;
 
-    return elementRectangle.width - TEXT_MARGIN * 2;
+    return {
+        height,
+        width,
+        x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText,
+        y: elementRectangle.y + (elementRectangle.height - height) / 2
+    };
 };

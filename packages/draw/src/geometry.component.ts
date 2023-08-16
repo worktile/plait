@@ -4,11 +4,9 @@ import { Subject } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
 import { GeometryActiveGenerator } from './generator/geometry-active.generator';
 import { GeometryShapeGenerator } from './generator/geometry-shape.generator';
-import { TextManage, TextManageRef, getTextSize } from '@plait/text';
-import { getRectangleByPoints } from '@plait/common';
+import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransform } from './transforms';
-import { getTextWidth } from './utils';
-import { TEXT_MARGIN } from './constants';
+import { getTextRectangle } from './utils/geometry';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -37,16 +35,7 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
             this.board,
             this.viewContainerRef,
             () => {
-                const elementRectangle = getRectangleByPoints(this.element.points!);
-                const height = this.element.textHeight;
-                const width = getTextWidth(this.element.points!);
-
-                return {
-                    height,
-                    width,
-                    x: elementRectangle.x + TEXT_MARGIN,
-                    y: elementRectangle.y + (elementRectangle.height - height) / 2
-                };
+                return getTextRectangle(this.element);
             },
             (textManageRef: TextManageRef) => {
                 const height = textManageRef.height;
@@ -92,8 +81,8 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
     updateText() {
         this.textManage.updateText(this.element.text);
         this.textManage.updateRectangle();
-        const width = getTextWidth(this.element.points!);
-        this.textManage.updateWidth(width);
+        const textWidth = getTextRectangle(this.element).width;
+        this.textManage.updateWidth(textWidth);
     }
 
     ngOnDestroy(): void {
