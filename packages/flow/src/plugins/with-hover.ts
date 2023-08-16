@@ -38,12 +38,12 @@ export const withHover: PlaitPlugin = (board: PlaitBoard) => {
                     (relationEdges || []).forEach(item => {
                         if (item.id !== activeElement?.id) {
                             const component = PlaitElement.getComponent(item) as FlowEdgeComponent;
-                            component && component.redrawElement(item, FlowRenderMode.default);
+                            component && component.drawElement(item, FlowRenderMode.default);
                         }
                     });
                 } else {
                     if (hoveredElement.id !== activeElement?.id) {
-                        (hoveredComponent as FlowEdgeComponent)?.redrawElement(hoveredElement, FlowRenderMode.default);
+                        (hoveredComponent as FlowEdgeComponent)?.drawElement(hoveredElement, FlowRenderMode.default);
                     }
                 }
             }
@@ -58,12 +58,12 @@ export const withHover: PlaitPlugin = (board: PlaitBoard) => {
                     (relationEdges || []).forEach(item => {
                         if (item.id !== activeElement?.id) {
                             const component = PlaitElement.getComponent(item) as FlowEdgeComponent;
-                            component && component.redrawElement(item, FlowRenderMode.hover);
+                            component && component.drawElement(item, FlowRenderMode.hover);
                         }
                     });
                 } else {
                     if (hoveredElement.id !== activeElement?.id) {
-                        (hoveredComponent as FlowEdgeComponent)?.redrawElement(hoveredElement, FlowRenderMode.hover);
+                        (hoveredComponent as FlowEdgeComponent)?.drawElement(hoveredElement, FlowRenderMode.hover);
                     }
                 }
             }

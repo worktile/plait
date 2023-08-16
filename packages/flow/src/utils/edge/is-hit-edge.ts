@@ -5,6 +5,7 @@ import { HIT_THRESHOLD } from '../../constants/edge';
 import { getEdgePoints } from './edge';
 import { isHitEdgeHandle } from '../handle/edge';
 import { EdgeLabelSpace } from './label-space';
+import { FlowBaseData } from '../../interfaces/element';
 
 export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
     const [pathPoints] = getEdgePoints(board, edge);
@@ -22,14 +23,14 @@ export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
             }
         });
 
-        const hitFlowEdgeText = isHitEdgeText(board, edge, point);
+        const hitFlowEdgeText = (edge.data?.text?.children[0] as FlowBaseData)?.text && isHitEdgeText(board, edge, point);
         const hitEdgeHandle = isHitEdgeHandle(board, edge, point);
         const isActiveEdge = isSelectedElement(board, edge);
         let hitFlowEdge = minDistance < HIT_THRESHOLD;
         if (!isActiveEdge && hitEdgeHandle) {
             hitFlowEdge = false;
         }
-        return hitFlowEdge || hitFlowEdgeText;
+        return hitFlowEdge || !!hitFlowEdgeText;
     }
     return false;
 }

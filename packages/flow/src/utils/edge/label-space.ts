@@ -1,6 +1,5 @@
 import { FlowEdge } from '../../interfaces/edge';
-import { ELEMENT_TO_COMPONENT, PlaitBoard, PlaitOptionsBoard, RectangleClient } from '@plait/core';
-import { FlowEdgeComponent } from '../../flow-edge.component';
+import { PlaitBoard, PlaitOptionsBoard, RectangleClient } from '@plait/core';
 import { EDGE_LABEL_FONTSIZE, EDGE_LABEL_ICON_PADDING, EDGE_LABEL_PADDING } from '../../constants/edge';
 import { BaseText, Element } from 'slate';
 import { TEXT_DEFAULT_HEIGHT, getTextSize } from '@plait/text';
