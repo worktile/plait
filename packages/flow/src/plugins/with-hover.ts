@@ -20,6 +20,7 @@ export const withHover: PlaitPlugin = (board: PlaitBoard) => {
 
         // 当移动节点、更改箭头方位、拖拽连线不执行
         if (movingNodes?.length || isEdgeDragging(board) || isPlaceholderEdgeInfo(board) || newHitNode?.id === hoveredElement?.id) {
+            hoveredElement = newHitNode;
             return;
         }
         if (hoveredElement) {
