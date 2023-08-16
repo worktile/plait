@@ -4,6 +4,7 @@ import { ImageData } from '../../interfaces/element-data';
 import { getRectangleByNode } from './node';
 import { NodeSpace } from '../space/node-space';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
+import { RESIZE_HANDLE_DIAMETER } from '@plait/common';
 
 export function getImageForeignRectangle(board: PlaitMindBoard, element: MindElement<ImageData>): RectangleClient {
     let { x, y } = getRectangleByNode(MindElement.getNode(element));
@@ -25,6 +26,7 @@ export function getImageForeignRectangle(board: PlaitMindBoard, element: MindEle
 }
 
 export const isHitImage = (board: PlaitBoard, element: MindElement<ImageData>, range: Range) => {
-    const client = getImageForeignRectangle(board as PlaitMindBoard, element);
-    return RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
+    const imageRectangle = getImageForeignRectangle(board as PlaitMindBoard, element);
+    const imageOutlineRectangle = RectangleClient.getOutlineRectangle(imageRectangle, -RESIZE_HANDLE_DIAMETER / 2);
+    return RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), imageOutlineRectangle);
 };

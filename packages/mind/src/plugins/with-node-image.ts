@@ -45,7 +45,6 @@ export const withNodeImage = (board: PlaitBoard) => {
         );
         const hasImage = hitImageElements.length;
         const hitImage = hasImage && isHitImage(board, hitImageElements[0] as MindElement<ImageData>, range);
-
         if (selectedImageElement && hitImage && hitImageElements[0] === selectedImageElement) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
             pointerDown(event);
@@ -57,7 +56,6 @@ export const withNodeImage = (board: PlaitBoard) => {
         }
 
         if (hitImage) {
-            console.log('hit image');
             temporaryDisableSelection(board as PlaitOptionsBoard);
             setImageFocus(board, hitImageElements[0] as MindElement, true);
         }
