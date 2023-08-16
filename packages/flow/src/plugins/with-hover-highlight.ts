@@ -5,6 +5,7 @@ import { getEdgesByNodeId, getHitEdge, getHitNode, isEdgeDragging, isPlaceholder
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowRenderMode } from '../interfaces/flow';
 import { FlowEdgeComponent } from '../flow-edge.component';
+import { isRelationEdgeInfo } from '../utils/edge/relation-edge';
 
 export const withHoverHighlight: PlaitPlugin = (board: PlaitBoard) => {
     const { mousemove, mouseleave } = board;
@@ -30,10 +31,11 @@ export const withHoverHighlight: PlaitPlugin = (board: PlaitBoard) => {
                 !isHitHoveredNodeHandle && (hoveredComponent as FlowNodeComponent)?.drawElement(hoveredElement, FlowRenderMode.default);
                 (relationEdges || []).forEach(item => {
                     const component = PlaitElement.getComponent(item) as FlowEdgeComponent;
-                    component && component.drawElement(item, FlowRenderMode.default);
+                    !isRelationEdgeInfo(item) && component && component.drawElement(item, FlowRenderMode.default);
                 });
             } else {
-                (hoveredComponent as FlowEdgeComponent)?.drawElement(hoveredElement, FlowRenderMode.default);
+                !isRelationEdgeInfo(hoveredElement) &&
+                    (hoveredComponent as FlowEdgeComponent)?.drawElement(hoveredElement, FlowRenderMode.default);
             }
         }
         hoveredElement = newHitNode;
