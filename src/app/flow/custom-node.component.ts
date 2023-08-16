@@ -34,7 +34,7 @@ export class CustomFlowNodeComponent extends FlowNodeComponent {
             }
             this.activeG?.append(this.handlesG!);
             this.render2.addClass(this.activeG, 'flow-custom-node');
-            PlaitBoard.getElementHostActive(this.board).append(this.activeG!);
+            PlaitBoard.getElementActiveHost(this.board).append(this.activeG!);
         }
     }
 

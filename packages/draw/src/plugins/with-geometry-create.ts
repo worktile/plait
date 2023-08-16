@@ -59,7 +59,7 @@ export const withGeometryCreate = (board: PlaitBoard) => {
                 strokeWidth: 1
             }) as PlaitGeometry;
             geometryGenerator.draw(temporaryElement, geometryShapeG);
-            PlaitBoard.getElementHostActive(board).append(geometryShapeG);
+            PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
         }
 
         if (dragMode) {
@@ -77,7 +77,7 @@ export const withGeometryCreate = (board: PlaitBoard) => {
                       });
 
             geometryGenerator.draw(temporaryElement, geometryShapeG);
-            PlaitBoard.getElementHostActive(board).append(geometryShapeG);
+            PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
         }
 
         pointerMove(event);

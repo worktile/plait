@@ -10,7 +10,7 @@ export function drawAllNodesHandle(board: PlaitBoard) {
     flowNodeElements.map(item => {
         const flowNodeComponent = PlaitElement.getComponent(item) as FlowNodeComponent;
         flowNodeComponent.drawHandles(item, FlowRenderMode.active);
-        PlaitBoard.getElementHostActive(board).append(flowNodeComponent.handlesG!);
+        PlaitBoard.getElementActiveHost(board).append(flowNodeComponent.handlesG!);
     });
     return flowNodeElements;
 }

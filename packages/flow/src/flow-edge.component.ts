@@ -87,7 +87,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             this.markersG!.map(arrowLine => {
                 this.g.append(arrowLine);
             });
-            this.labelG && PlaitBoard.getElementHostUp(this.board).append(this.labelG);
+            this.labelG && PlaitBoard.getElementUpperHost(this.board).append(this.labelG);
             this.activeG && this.activeG.remove();
         } else {
             this.activeG = this.activeG || createG();
@@ -97,7 +97,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
                 this.activeG?.append(arrowLine);
             });
             this.activeG?.append(this.handlesG!);
-            PlaitBoard.getElementHostActive(this.board).append(this.activeG!);
+            PlaitBoard.getElementActiveHost(this.board).append(this.activeG!);
         }
     }
 

@@ -6,7 +6,7 @@ import { FlowNodeComponent } from '../flow-node.component';
 import { FlowRenderMode } from '../interfaces/flow';
 import { FlowEdgeComponent } from '../flow-edge.component';
 
-export const withHover: PlaitPlugin = (board: PlaitBoard) => {
+export const withHoverHighlight: PlaitPlugin = (board: PlaitBoard) => {
     const { mousemove, mouseleave } = board;
 
     let hoveredElement: FlowNode | FlowEdge | null;

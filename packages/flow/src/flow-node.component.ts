@@ -85,7 +85,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
                 this.activeG?.prepend(this.activeMaskG!);
             }
             this.activeG?.append(this.handlesG!);
-            PlaitBoard.getElementHostActive(this.board).append(this.activeG!);
+            PlaitBoard.getElementActiveHost(this.board).append(this.activeG!);
         }
     }
 

@@ -6,7 +6,7 @@ import { DEFAULT_HANDLE_STYLES, HANDLE_BUFFER, HANDLE_DIAMETER } from '../consta
 import { isEdgeDragging } from '../utils/edge/dragging-edge';
 import { deleteCreateEdgeInfo, getCreateEdgeInfo } from '../utils/edge/create-edge';
 
-export const withHandleHover: PlaitPlugin = (board: PlaitBoard) => {
+export const withHandleBlink: PlaitPlugin = (board: PlaitBoard) => {
     const { globalMousemove, globalMouseup } = board;
 
     let previousHoverdHandle: HitNodeHandle | null = null;
