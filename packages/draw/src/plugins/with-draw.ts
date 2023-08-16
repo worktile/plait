@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Range, RectangleClient } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Range, RectangleClient, getSelectedElements } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
@@ -8,7 +8,7 @@ import { withGeometryCreate } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
 
 export const withDraw = (board: PlaitBoard) => {
-    const { drawElement, getRectangle, isHitSelection, isMovable } = board;
+    const { drawElement, getRectangle, isHitSelection, isMovable, dblclick } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isGeometry(context.element)) {
@@ -41,5 +41,16 @@ export const withDraw = (board: PlaitBoard) => {
         return isMovable(element);
     };
 
+    board.dblclick = (event: MouseEvent) => {
+        const element = getSelectedElements(board)[0];
+        if (element && PlaitDrawElement.isGeometry(element)) {
+            const component = PlaitElement.getComponent(element) as GeometryComponent;
+            component.editText();
+        }
+
+        dblclick(event);
+    };
+
     return withGeometryCreate(withDrawFragment(withDrawHotkey(board)));
+
 };

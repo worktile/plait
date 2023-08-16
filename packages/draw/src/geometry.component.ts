@@ -4,9 +4,9 @@ import { Subject } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
 import { GeometryActiveGenerator } from './generator/geometry-active.generator';
 import { GeometryShapeGenerator } from './generator/geometry-shape.generator';
-import { TextManage, TextManageRef, getTextSize } from '@plait/text';
-import { getRectangleByPoints } from '@plait/common';
+import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransform } from './transforms';
+import { getTextRectangle } from './utils/geometry';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -35,21 +35,12 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
             this.board,
             this.viewContainerRef,
             () => {
-                const elementRectangle = getRectangleByPoints(this.element.points!);
-                const { height } = getTextSize(this.board, this.element.text);
-
-                return {
-                    height,
-                    width: elementRectangle.width,
-                    x: elementRectangle.x,
-                    y: elementRectangle.y + (elementRectangle.height - height) / 2
-                };
+                return getTextRectangle(this.element);
             },
             (textManageRef: TextManageRef) => {
-                const width = textManageRef.width;
                 const height = textManageRef.height;
                 if (textManageRef.newValue) {
-                    DrawTransform.setText(this.board, this.element, textManageRef.newValue, width, height);
+                    DrawTransform.setText(this.board, this.element, textManageRef.newValue, height);
                 }
             }
         );
@@ -90,10 +81,13 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
     updateText() {
         this.textManage.updateText(this.element.text);
         this.textManage.updateRectangle();
+        const textWidth = getTextRectangle(this.element).width;
+        this.textManage.updateWidth(textWidth);
     }
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
+        this.textManage.destroy();
         this.destroy$.next();
         this.destroy$.complete();
     }

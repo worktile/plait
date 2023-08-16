@@ -14,7 +14,7 @@ import {
 import { GeometryShape, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generator/geometry-shape.generator';
 import { DrawCreateMode, createGeometryElement, getCreateMode, getPointsByCenterPoint } from '../utils';
-import { DefaultGeometryProperty, DrawPointerType, GeometryPointer } from '../constants';
+import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, GeometryPointer } from '../constants';
 import { normalizeShapePoints } from '@plait/common';
 import { DrawTransform } from '../transforms';
 
@@ -64,15 +64,17 @@ export const withGeometryCreate = (board: PlaitBoard) => {
 
         if (dragMode) {
             const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
-            const points = getPointsByCenterPoint(movingPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
-            let temporaryElement = createGeometryElement(GeometryShape.rectangle, points, '', {
-                strokeColor: '#333',
-                strokeWidth: 2
-            }) as PlaitGeometry;
-
-            if (pointer === DrawPointerType.text) {
-                temporaryElement = createGeometryElement(GeometryShape.rectangle, points, 'text') as PlaitGeometry;
-            }
+            const points =
+                pointer === DrawPointerType.text
+                    ? getPointsByCenterPoint(movingPoint, DefaultTextProperty.width, DefaultTextProperty.height)
+                    : getPointsByCenterPoint(movingPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
+            let temporaryElement =
+                pointer === DrawPointerType.text
+                    ? createGeometryElement(GeometryShape.text, points, 'text')
+                    : createGeometryElement(GeometryShape.rectangle, points, '', {
+                          strokeColor: '#333',
+                          strokeWidth: 2
+                      });
 
             geometryGenerator.draw(temporaryElement, geometryShapeG);
             PlaitBoard.getElementHostActive(board).append(geometryShapeG);
