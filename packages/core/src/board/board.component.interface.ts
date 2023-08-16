@@ -9,6 +9,6 @@ export interface BoardComponentInterface {
 
 export interface BoardElementHostInterface {
     host: SVGGElement;
-    hostUp: SVGGElement;
-    hostActive: SVGGElement;
+    upperHost: SVGGElement;
+    activeHost: SVGGElement;
 }

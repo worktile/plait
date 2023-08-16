@@ -67,8 +67,8 @@ import { PlaitContextService } from '../services/image-context.service';
 import { isPreventTouchMove } from '../utils/touch';
 
 const ElementHostClass = 'element-host';
-const ElementHostUpClass = 'element-host-up';
-const ElementHostActiveClass = 'element-host-active';
+const ElementUpperHostClass = 'element-upper-host';
+const ElementActiveHostClass = 'element-active-host';
 
 @Component({
     selector: 'plait-board',
@@ -76,8 +76,8 @@ const ElementHostActiveClass = 'element-host-active';
         <div class="viewport-container" #viewportContainer>
             <svg #svg width="100%" height="100%" style="position: relative;" class="board-host-svg">
                 <g class="element-host"></g>
-                <g class="element-host-up"></g>
-                <g class="element-host-active"></g>
+                <g class="element-upper-host"></g>
+                <g class="element-active-host"></g>
             </svg>
             <plait-children [board]="board" [effect]="effect"></plait-children>
         </div>
@@ -171,8 +171,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     ngOnInit(): void {
         const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;
-        const elementHostUp = this.host.querySelector(`.${ElementHostUpClass}`) as SVGGElement;
-        const elementHostActive = this.host.querySelector(`.${ElementHostActiveClass}`) as SVGGElement;
+        const elementUpperHost = this.host.querySelector(`.${ElementUpperHostClass}`) as SVGGElement;
+        const elementActiveHost = this.host.querySelector(`.${ElementActiveHostClass}`) as SVGGElement;
         const roughSVG = rough.svg(this.host as SVGSVGElement, {
             options: { roughness: 0, strokeWidth: 1 }
         });
@@ -193,8 +193,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         BOARD_TO_HOST.set(this.board, this.host);
         BOARD_TO_ELEMENT_HOST.set(this.board, {
             host: elementHost,
-            hostUp: elementHostUp,
-            hostActive: elementHostActive
+            upperHost: elementUpperHost,
+            activeHost: elementActiveHost
         });
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.ngZone.run(() => {

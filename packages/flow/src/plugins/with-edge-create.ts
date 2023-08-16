@@ -1,7 +1,6 @@
 import {
     PlaitBoard,
     PlaitPlugin,
-    isSelectedElement,
     toPoint,
     transformPoint,
     drawLine,
@@ -9,11 +8,9 @@ import {
     throttleRAF,
     removeSelectedElement,
     getSelectedElements,
-    PlaitElement,
     drawCircle
 } from '@plait/core';
 import { FlowNode } from '../interfaces/node';
-import { FlowNodeComponent } from '../flow-node.component';
 import { FlowElementType } from '../interfaces/element';
 import { isEdgeDragging } from '../utils/edge/dragging-edge';
 import { destroyAllNodesHandle, drawAllNodesHandle } from '../utils/node/render-all-nodes-handle';
@@ -23,6 +20,7 @@ import { getHitHandleByNode, HitNodeHandle } from '../utils/handle/node';
 import { getHitNode } from '../utils/node/get-hit-node';
 import { DEFAULT_HANDLE_STYLES, HANDLE_DIAMETER } from '../constants/handle';
 import { getHoverHandleInfo } from '../utils/handle/hover-handle';
+import { addPlaceholderEdgeInfo, deletePlaceholderEdgeInfo } from '../utils/edge/placeholder-edge';
 
 export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, globalMousemove, globalMouseup } = board;
@@ -63,6 +61,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                         const circleElement = drawCircle(PlaitBoard.getRoughSVG(board), point, HANDLE_DIAMETER, DEFAULT_HANDLE_STYLES);
                         circleElement?.setAttribute('stroke-linecap', 'round');
                         placeholderEdge.append(circleElement);
+                        addPlaceholderEdgeInfo(board, placeholderEdge);
                     }
                     PlaitBoard.getHost(board).append(placeholderEdge);
                     if (drawNodeHandles) {
@@ -105,20 +104,8 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                     if (newHitNode == hoveredNode || isHitHoveredNodeHandle) {
                         return;
                     }
-                    const isSelectedHoveredNode = isSelectedElement(board, hoveredNode);
-                    if (!isSelectedHoveredNode) {
-                        // destroy handles
-                        const flowNodeComponent = PlaitElement.getComponent(hoveredNode) as FlowNodeComponent;
-                        flowNodeComponent?.destroyHandles();
-                    }
                 }
-
                 hoveredNode = newHitNode;
-                if (hoveredNode) {
-                    // draw handles
-                    const flowNodeComponent = PlaitElement.getComponent(hoveredNode) as FlowNodeComponent;
-                    flowNodeComponent?.drawHandles(hoveredNode);
-                }
             }
         }
         globalMousemove(event);
@@ -130,6 +117,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
             sourceFlowNodeHandle = null;
             targetFlowNodeHandle = null;
             placeholderEdge?.remove();
+            deletePlaceholderEdgeInfo(board);
             deleteCreateEdgeInfo(board);
             drawNodeHandles = true;
             destroyAllNodesHandle(board, flowNodeElements);

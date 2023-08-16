@@ -23,7 +23,7 @@ export const withDraw: PlaitPlugin = (board: PlaitBoard) => {
     };
 
     (board as PlaitOptionsBoard).setPluginOptions<FlowPluginOptions>(FlowPluginKey.flowOptions, {
-        edgeLabelOptions: { height: 24, maxWidth: 70 }
+        edgeLabelOptions: { height: 24, maxWidth: 100 }
     });
 
     return board;

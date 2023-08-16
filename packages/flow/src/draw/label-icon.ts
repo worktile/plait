@@ -1,5 +1,5 @@
-import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { createForeignObject, createG } from '@plait/core';
+import { ChangeDetectorRef, ComponentRef, NgZone, ViewContainerRef } from '@angular/core';
+import { RectangleClient, createForeignObject, createG } from '@plait/core';
 import { FlowEdgeLabelIconBaseComponent } from '../base/edge-label-icon-base.component';
 import { LabelIconItem } from '../interfaces/icon';
 import { PlaitFlowBoard } from '../interfaces';
@@ -11,7 +11,7 @@ export class FlowEdgeLabelIconDrawer {
 
     componentRef: ComponentRef<FlowEdgeLabelIconBaseComponent> | null = null;
 
-    constructor(private board: PlaitFlowBoard, private viewContainerRef: ViewContainerRef) {}
+    constructor(private board: PlaitFlowBoard, private viewContainerRef: ViewContainerRef, private cdr: ChangeDetectorRef) {}
 
     get nativeElement() {
         if (this.componentRef) {
@@ -29,13 +29,14 @@ export class FlowEdgeLabelIconDrawer {
         this.componentRef.instance.board = this.board;
         this.componentRef.instance.element = element;
         this.componentRef.instance.fontSize = EdgeLabelSpace.getLabelIconFontSize();
+        this.cdr.markForCheck();
     }
 
-    drawLabelIcon(element: FlowEdge) {
+    drawLabelIcon(textRect: RectangleClient, element: FlowEdge) {
         this.destroy();
         if (FlowEdge.hasIcon(element)) {
             this.g = createG();
-            const foreignRectangle = EdgeLabelSpace.getLabelIconRect(element);
+            const foreignRectangle = EdgeLabelSpace.getLabelIconRect(textRect);
             const foreignObject = createForeignObject(
                 foreignRectangle.x,
                 foreignRectangle.y,
