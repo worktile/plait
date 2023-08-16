@@ -21,7 +21,7 @@ export function getImageForeignRectangle(board: PlaitMindBoard, element: MindEle
         width,
         height
     };
-    return RectangleClient.getOutlineRectangle(rectangle, -6);
+    return rectangle;
 }
 
 export const isHitImage = (board: PlaitBoard, element: MindElement<ImageData>, range: Range) => {

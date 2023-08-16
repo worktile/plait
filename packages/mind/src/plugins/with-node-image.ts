@@ -24,15 +24,15 @@ import { acceptImageTypes } from '../constants/image';
 import { MediaKeys } from '@plait/common';
 
 export const withNodeImage = (board: PlaitBoard) => {
-    const { keydown, mousedown, globalMouseup, setFragment, insertFragment, deleteFragment } = board;
+    const { keydown, pointerDown, globalPointerUp, setFragment, insertFragment, deleteFragment } = board;
 
-    board.mousedown = (event: MouseEvent) => {
+    board.pointerDown = (event: PointerEvent) => {
         const selectedImageElement = getSelectedImageElement(board);
         if (PlaitBoard.isReadonly(board) || !isMainPointer(event) || !PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
             if (selectedImageElement) {
                 setImageFocus(board, selectedImageElement, false);
             }
-            mousedown(event);
+            pointerDown(event);
             return;
         }
 
@@ -48,7 +48,7 @@ export const withNodeImage = (board: PlaitBoard) => {
 
         if (selectedImageElement && hitImage && hitImageElements[0] === selectedImageElement) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
-            mousedown(event);
+            pointerDown(event);
             return;
         }
 
@@ -57,11 +57,12 @@ export const withNodeImage = (board: PlaitBoard) => {
         }
 
         if (hitImage) {
+            console.log('hit image');
             temporaryDisableSelection(board as PlaitOptionsBoard);
             setImageFocus(board, hitImageElements[0] as MindElement, true);
         }
 
-        mousedown(event);
+        pointerDown(event);
     };
 
     board.keydown = (event: KeyboardEvent) => {
@@ -76,7 +77,7 @@ export const withNodeImage = (board: PlaitBoard) => {
         keydown(event);
     };
 
-    board.globalMouseup = (event: MouseEvent) => {
+    board.globalPointerUp = (event: PointerEvent) => {
         if (PlaitBoard.isFocus(board)) {
             const isInBoard = event.target instanceof Node && PlaitBoard.getBoardContainer(board).contains(event.target);
             const selectedImageElement = getSelectedImageElement(board);
@@ -86,7 +87,7 @@ export const withNodeImage = (board: PlaitBoard) => {
                 setImageFocus(board, selectedImageElement, false);
             }
         }
-        globalMouseup(event);
+        globalPointerUp(event);
     };
 
     board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null) => {
