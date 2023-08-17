@@ -88,6 +88,8 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
 
                 if (textManageRef.newValue) {
                     DrawTransform.setText(this.board, this.element, textManageRef.newValue, width, height);
+                } else {
+                    DrawTransform.setTextSize(this.board, this.element, width, height);
                 }
             },
             maxWidth: (this.element as PlaitText)?.autoSize ? DefaultTextProperty.maxWidth : width
