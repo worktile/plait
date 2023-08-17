@@ -1,5 +1,11 @@
 # mind
 
+## 0.26.0
+
+### Minor Changes
+
+-   [`eed884fb`](https://github.com/worktile/plait/commit/eed884fbde6aaa48b103d23a1bfc13a89b310e53) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move preventDefault from mouse down to mouse move
+
 ## 0.25.0
 
 ### Minor Changes
