@@ -6,6 +6,7 @@ import {
     RectangleClient,
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
+    createForeignObject,
     createG,
     preventTouchMove,
     toPoint,
@@ -14,9 +15,10 @@ import {
 import { GeometryShape, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generator/geometry-shape.generator';
 import { DrawCreateMode, createGeometryElement, getCreateMode, getPointsByCenterPoint } from '../utils';
-import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, GeometryPointer } from '../constants';
+import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, GeometryPointer, ShapeDefaultSpace } from '../constants';
 import { normalizeShapePoints } from '@plait/common';
 import { DrawTransform } from '../transforms';
+import { DEFAULT_FONT_SIZE } from '@plait/text';
 
 export const withGeometryCreate = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, pointerUp } = board;
@@ -49,10 +51,10 @@ export const withGeometryCreate = (board: PlaitBoard) => {
         const isGeometryPointer = PlaitBoard.isInPointer(board, GeometryPointer);
         const dragMode = isGeometryPointer && createMode === DrawCreateMode.drag;
         const drawMode = !!start;
-
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
 
-        if (drawMode) {
+        if (drawMode && pointer !== DrawPointerType.text) {
             const points = normalizeShapePoints([start!, movingPoint]);
             const temporaryElement = createGeometryElement(GeometryShape.rectangle, points, '', {
                 fill: SELECTION_FILL_COLOR,
@@ -64,21 +66,21 @@ export const withGeometryCreate = (board: PlaitBoard) => {
         }
 
         if (dragMode) {
-            const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
-            const points =
-                pointer === DrawPointerType.text
-                    ? getPointsByCenterPoint(movingPoint, DefaultTextProperty.width, DefaultTextProperty.height)
-                    : getPointsByCenterPoint(movingPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
-            let temporaryElement =
-                pointer === DrawPointerType.text
-                    ? createGeometryElement(GeometryShape.text, points, 'text')
-                    : createGeometryElement(GeometryShape.rectangle, points, '', {
-                          strokeColor: '#333',
-                          strokeWidth: 2
-                      });
+            const points = getDefaultGeometryPoints(pointer, movingPoint);
 
-            geometryGenerator.draw(temporaryElement, geometryShapeG);
-            PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
+            if (pointer === DrawPointerType.text) {
+                const textG = getTemporaryTextG(movingPoint);
+                geometryShapeG.appendChild(textG);
+                PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
+            } else {
+                const temporaryElement = createGeometryElement(GeometryShape.rectangle, points, '', {
+                    strokeColor: '#333',
+                    strokeWidth: 2
+                });
+
+                geometryGenerator.draw(temporaryElement, geometryShapeG);
+                PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
+            }
         }
 
         pointerMove(event);
@@ -87,28 +89,27 @@ export const withGeometryCreate = (board: PlaitBoard) => {
     board.pointerUp = (event: PointerEvent) => {
         let points = null;
         const isGeometryPointer = PlaitBoard.isInPointer(board, GeometryPointer);
+        const isDrawMode = !!start;
+        const isDragMode = isGeometryPointer && createMode === DrawCreateMode.drag;
+        const targetPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
 
-        if (start) {
-            const targetPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        if (isDrawMode) {
+            const { width, height } = RectangleClient.toRectangleClient([start!, targetPoint]);
+            if (Math.hypot(width, height) > 5 && pointer !== DrawPointerType.text) {
+                points = normalizeShapePoints([start!, targetPoint]);
+            }
 
-            const { width, height } = RectangleClient.toRectangleClient([start, targetPoint]);
-            if (Math.hypot(width, height) > 5) {
-                points = normalizeShapePoints([start, targetPoint]);
+            if (Math.hypot(width, height) === 0) {
+                points = getDefaultGeometryPoints(pointer, targetPoint);
             }
         }
 
-        if (isGeometryPointer && createMode === DrawCreateMode.drag) {
-            const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
-            const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-
-            points = points =
-                pointer === DrawPointerType.text
-                    ? getPointsByCenterPoint(movingPoint, DefaultTextProperty.width, DefaultTextProperty.height)
-                    : getPointsByCenterPoint(movingPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
+        if (isDragMode) {
+            points = getDefaultGeometryPoints(pointer, targetPoint);
         }
 
         if (isGeometryPointer && points) {
-            const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
             if (pointer === DrawPointerType.rectangle) {
                 DrawTransform.insertGeometry(board, points, GeometryShape.rectangle);
             }
@@ -130,4 +131,29 @@ export const withGeometryCreate = (board: PlaitBoard) => {
     };
 
     return board;
+};
+
+const getDefaultGeometryPoints = (pointer: DrawPointerType, targetPoint: Point) => {
+    return pointer === DrawPointerType.text
+        ? getPointsByCenterPoint(targetPoint, DefaultTextProperty.width, DefaultTextProperty.height)
+        : getPointsByCenterPoint(targetPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
+};
+
+const getTemporaryTextG = (movingPoint: Point) => {
+    const textG = createG();
+    const width = DefaultTextProperty.width - ShapeDefaultSpace.rectangleAndText * 2;
+    const foreignObject = createForeignObject(
+        movingPoint[0] - width / 2,
+        movingPoint[1] - DefaultTextProperty.height / 2,
+        width,
+        DefaultTextProperty.height
+    );
+
+    const richtext = document.createElement('div');
+    richtext.textContent = DefaultTextProperty.text;
+    richtext.style.fontSize = `${DEFAULT_FONT_SIZE}px`;
+    foreignObject.appendChild(richtext);
+    textG.appendChild(foreignObject);
+
+    return textG;
 };
