@@ -5,9 +5,10 @@ import { FlowEdgeComponent } from '../../flow-edge.component';
 
 export const setRelationEdgeSelected = (board: PlaitBoard, nodeId: string, selected: boolean = false) => {
     const currentRelationEdges = getEdgesByNodeId(board, nodeId);
+    const selectedElement = getSelectedElements(board);
     let selectedRelationEdgeIds: string[] = [];
-    if (!selected) {
-        ((getSelectedElements(board) && getEdgesByNodeId(board, getSelectedElements(board)[0]?.id)) || []).forEach(edge => {
+    if (!selected && selectedElement) {
+        (getEdgesByNodeId(board, selectedElement[0]?.id) || []).forEach(edge => {
             selectedRelationEdgeIds.push(edge.id);
         });
     }
