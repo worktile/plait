@@ -31,11 +31,11 @@ export const setText = (board: PlaitBoard, element: PlaitGeometry, text: Element
     Transforms.setNode(board, newElement, [path]);
 };
 
-export const setTextSize = (board: PlaitBoard, element: PlaitGeometry, width: number, textHeight: number) => {
+export const setTextSize = (board: PlaitBoard, element: PlaitGeometry, textWidth: number, textHeight: number) => {
     if ((element as PlaitText).autoSize) {
         const newElement = {
             textHeight,
-            ...normalizePoints(board, element, width, textHeight)
+            ...normalizePoints(board, element, textWidth, textHeight)
         };
         const isPointsEqual =
             Point.isEquals(element.points[0], newElement.points[0]) && Point.isEquals(element.points[1], newElement.points[1]);
