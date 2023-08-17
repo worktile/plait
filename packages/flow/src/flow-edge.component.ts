@@ -123,6 +123,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
                     this.textManage?.draw(element.data?.text!);
                     this.textManage?.g.classList.add('flow-edge-richtext');
                     this.labelG?.append(this.textManage?.g!);
+                    this.labelG.classList.add('flow-edge-label');
 
                     const labelIcon = this.labelIconDrawer.drawLabelIcon(textRect, this.element);
                     labelIcon && this.labelG?.append(labelIcon);
