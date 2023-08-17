@@ -1,4 +1,4 @@
-import { PlaitPlugin, Transforms, addSelectedElement, getSelectedElements, hotkeys } from '@plait/core';
+import { PlaitPlugin, Transforms, addSelectedElement, clearSelectedElement, getSelectedElements, hotkeys } from '@plait/core';
 import { FlowEdge, FlowElement, FlowNode, createFlowEdge, getCreateEdgeInfo, getEdgesByNodeId, getFlowNodeById } from '@plait/flow';
 import { Element, Text } from 'slate';
 import { CustomBoard } from '../interfaces/board';
@@ -13,6 +13,7 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
             const targetNode = getFlowNodeById(board, newEdge?.target?.nodeId!);
             const sourceNodeText = ((sourceNode.data?.text as Element).children[0] as Text).text;
             const targetNodeText = ((targetNode.data?.text as Element).children[0] as Text).text;
+            clearSelectedElement(board);
             createFlowEdge(
                 board,
                 {

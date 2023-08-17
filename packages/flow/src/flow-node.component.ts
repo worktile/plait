@@ -66,7 +66,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         }
         if (previous.selected !== value.selected) {
             if (value.selected) {
-                // 解决当多个节点关联 edge 有交集时，先执行清空操作在执行选中操作
+                // setTimeout 解决当多个节点关联 edge 有交集时，先执行清空在执行选中操作
                 setTimeout(() => {
                     setRelationEdgeSelected(this.board, this.element.id, value.selected);
                 }, 0);
