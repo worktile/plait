@@ -1,4 +1,4 @@
-import { PlaitBoard, Transforms } from '@plait/core';
+import { PlaitBoard, Point, Transforms } from '@plait/core';
 import { Element } from 'slate';
 import { PlaitGeometry, PlaitText } from '../interfaces';
 import { DefaultTextProperty, ShapeDefaultSpace } from '../constants';
@@ -29,4 +29,20 @@ export const setText = (board: PlaitBoard, element: PlaitGeometry, text: Element
     const path = board.children.findIndex(child => child === element);
 
     Transforms.setNode(board, newElement, [path]);
+};
+
+export const setTextSize = (board: PlaitBoard, element: PlaitGeometry, width: number, textHeight: number) => {
+    const newElement = {
+        textHeight,
+        ...normalizePoints(board, element, width, textHeight)
+    };
+
+    const isPointsEqual =
+        Point.isEquals(element.points[0], newElement.points[0]) && Point.isEquals(element.points[1], newElement.points[1]);
+    const isTextHeightEqual = Math.round(textHeight) === Math.round(element.textHeight);
+
+    if (!isPointsEqual || !isTextHeightEqual) {
+        const path = board.children.findIndex(child => child === element);
+        Transforms.setNode(board, newElement, [path]);
+    }
 };
