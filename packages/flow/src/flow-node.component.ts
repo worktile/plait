@@ -16,6 +16,7 @@ import { drawActiveMask, drawNode } from './draw/node';
 import { FlowNode } from './interfaces/node';
 import { FlowBaseData } from './interfaces/element';
 import { FlowRenderMode } from './interfaces/flow';
+import { setRelationEdgeSelected } from './utils/edge/relation-edge-selected';
 
 @Component({
     selector: 'plait-flow-node',
@@ -62,6 +63,9 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
         if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected)) {
             this.drawElement(value.element, value.selected ? FlowRenderMode.active : FlowRenderMode.default);
+        }
+        if (previous.selected !== value.selected) {
+            setRelationEdgeSelected(this.board, this.element.id, value.selected);
         }
     }
 

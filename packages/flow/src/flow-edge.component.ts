@@ -8,7 +8,7 @@ import {
     Renderer2,
     ViewContainerRef
 } from '@angular/core';
-import { PlaitPluginElementComponent, PlaitPluginElementContext, createG, isSelectedElement, RectangleClient } from '@plait/core';
+import { PlaitPluginElementComponent, PlaitPluginElementContext, createG, isSelectedElement } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawEdge, drawEdgeLabel, drawEdgeMarkers } from './draw/edge';
 import { PlaitBoard, OnContextChanged } from '@plait/core';
@@ -45,6 +45,8 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     activeG: SVGGElement | null = null;
 
+    relatedNodeSelected = false;
+
     constructor(
         public cdr: ChangeDetectorRef,
         public viewContainerRef: ViewContainerRef,
@@ -77,8 +79,10 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     }
 
     drawElement(element: FlowEdge = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
-        // 处理节点高亮当前为 selected 不绘制
-        if (this.selected && mode !== FlowRenderMode.active) {
+        if (
+            (this.selected && mode !== FlowRenderMode.active) ||
+            (this.relatedNodeSelected && mode !== FlowRenderMode.hover && !this.selected)
+        ) {
             return;
         }
         this.drawEdge(element, mode);

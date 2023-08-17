@@ -1,8 +1,9 @@
-import { Path, PlaitBoard, Transforms } from '@plait/core';
+import { Path, PlaitBoard, Transforms, clearSelectedElement } from '@plait/core';
 import { FlowEdge } from '../../interfaces/edge';
 import { FlowBaseData } from '../../interfaces/element';
 
 export function createFlowEdge<T extends FlowBaseData = FlowBaseData>(board: PlaitBoard, data: T, edge: FlowEdge, path?: Path) {
+    clearSelectedElement(board);
     Transforms.insertNode(
         board,
         {
