@@ -32,21 +32,7 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
     initializeGenerator() {
         this.activeGenerator = new GeometryActiveGenerator(this.board);
         this.shapeGenerator = new GeometryShapeGenerator(this.board);
-
-        this.textManage = new TextManage(this.board, this.viewContainerRef, {
-            getRectangle: () => {
-                return getTextRectangle(this.element);
-            },
-            onValueChangeHandle: (textManageRef: TextManageRef) => {
-                const height = textManageRef.height / this.board.viewport.zoom;
-                const width = textManageRef.width / this.board.viewport.zoom;
-
-                if (textManageRef.newValue) {
-                    DrawTransform.setText(this.board, this.element, textManageRef.newValue, width, height);
-                }
-            },
-            maxWidth: (this.element as PlaitText)?.autoSize ? DefaultTextProperty.maxWidth : 999
-        });
+        this.initializeTextManage();
     }
 
     ngOnInit(): void {
@@ -79,10 +65,6 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
     drawText() {
         this.textManage.draw(this.element.text);
         this.g.append(this.textManage.g);
-        if (!(this.element as PlaitText)?.autoSize) {
-            const textWidth = getTextRectangle(this.element).width;
-            this.textManage.updateWidth(textWidth);
-        }
     }
 
     updateText() {
@@ -92,6 +74,24 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
             const textWidth = getTextRectangle(this.element).width;
             this.textManage.updateWidth(textWidth);
         }
+    }
+
+    initializeTextManage() {
+        const width = getTextRectangle(this.element).width;
+        this.textManage = new TextManage(this.board, this.viewContainerRef, {
+            getRectangle: () => {
+                return getTextRectangle(this.element);
+            },
+            onValueChangeHandle: (textManageRef: TextManageRef) => {
+                const height = textManageRef.height / this.board.viewport.zoom;
+                const width = textManageRef.width / this.board.viewport.zoom;
+
+                if (textManageRef.newValue) {
+                    DrawTransform.setText(this.board, this.element, textManageRef.newValue, width, height);
+                }
+            },
+            maxWidth: (this.element as PlaitText)?.autoSize ? DefaultTextProperty.maxWidth : width
+        });
     }
 
     ngOnDestroy(): void {

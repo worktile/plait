@@ -6,8 +6,6 @@ import { DefaultTextProperty, ShapeDefaultSpace } from '../constants';
 const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: number, textHeight: number) => {
     let points = element.points;
     let autoSize = (element as PlaitText).autoSize;
-    width = width;
-    textHeight = textHeight;
     const defaultSpace = ShapeDefaultSpace.rectangleAndText;
 
     if (autoSize) {
