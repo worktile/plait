@@ -47,11 +47,13 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.textManage = new TextManage(this.board, this.viewContainerRef, () => {
-            const { x, y } = normalizePoint(this.element.points![0]);
-            const width = this.element.width;
-            const height = this.element.height;
-            return { x, y, width, height };
+        this.textManage = new TextManage(this.board, this.viewContainerRef, {
+            getRectangle: () => {
+                const { x, y } = normalizePoint(this.element.points![0]);
+                const width = this.element.width;
+                const height = this.element.height;
+                return { x, y, width, height };
+            }
         });
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.drawElement();

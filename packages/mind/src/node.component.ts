@@ -96,14 +96,12 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.imageDrawer = new NodeImageDrawer(this.board, this.viewContainerRef);
         const plugins = this.board.getPluginOptions<WithMindOptions>(WithMindPluginKey).textPlugins;
 
-        this.textManage = new TextManage(
-            this.board,
-            this.viewContainerRef,
-            () => {
+        this.textManage = new TextManage(this.board, this.viewContainerRef, {
+            getRectangle: () => {
                 const rect = getTopicRectangleByNode(this.board, this.node);
                 return rect;
             },
-            (textManageRef: TextManageRef) => {
+            onValueChangeHandle: (textManageRef: TextManageRef) => {
                 const width = textManageRef.width;
                 const height = textManageRef.height;
                 if (textManageRef.newValue) {
@@ -112,8 +110,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
                     MindTransforms.setTopicSize(this.board, this.element, width, height);
                 }
             },
-            plugins
-        );
+            textPlugins: plugins
+        });
     }
 
     ngOnInit(): void {

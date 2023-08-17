@@ -25,7 +25,7 @@ export const withGeometryCreate = (board: PlaitBoard) => {
 
     let geometryShapeG: SVGGElement | null = null;
 
-    const geometryGenerator: GeometryShapeGenerator = new GeometryShapeGenerator(board);
+    let geometryGenerator: GeometryShapeGenerator = new GeometryShapeGenerator(board);
 
     board.pointerDown = (event: PointerEvent) => {
         createMode = getCreateMode(board);
@@ -42,6 +42,7 @@ export const withGeometryCreate = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         geometryShapeG?.remove();
         geometryShapeG = createG();
+        geometryGenerator = new GeometryShapeGenerator(board);
 
         createMode = getCreateMode(board);
 
@@ -97,8 +98,13 @@ export const withGeometryCreate = (board: PlaitBoard) => {
         }
 
         if (isGeometryPointer && createMode === DrawCreateMode.drag) {
+            const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
             const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-            points = getPointsByCenterPoint(movingPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
+
+            points = points =
+                pointer === DrawPointerType.text
+                    ? getPointsByCenterPoint(movingPoint, DefaultTextProperty.width, DefaultTextProperty.height)
+                    : getPointsByCenterPoint(movingPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
         }
 
         if (isGeometryPointer && points) {

@@ -56,11 +56,15 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     ngOnInit(): void {
         super.ngOnInit();
+
         this.textManage =
             this.element.data?.text &&
-            new TextManage(this.board, this.viewContainerRef, () => {
-                return EdgeLabelSpace.getLabelTextRect(this.board, this.element);
+            new TextManage(this.board, this.viewContainerRef, {
+                getRectangle: () => {
+                    return EdgeLabelSpace.getLabelTextRect(this.board, this.element);
+                }
             });
+
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.labelIconDrawer = new FlowEdgeLabelIconDrawer(this.board as PlaitFlowBoard, this.viewContainerRef, this.cdr);
         this.drawElement(this.element, isSelectedElement(this.board, this.element) ? FlowRenderMode.active : FlowRenderMode.default);
