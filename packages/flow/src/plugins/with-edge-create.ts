@@ -1,15 +1,4 @@
-import {
-    PlaitBoard,
-    PlaitPlugin,
-    toPoint,
-    transformPoint,
-    drawLine,
-    idCreator,
-    throttleRAF,
-    removeSelectedElement,
-    getSelectedElements,
-    drawCircle
-} from '@plait/core';
+import { PlaitBoard, PlaitPlugin, toPoint, transformPoint, drawLine, idCreator, throttleRAF, drawCircle } from '@plait/core';
 import { FlowNode } from '../interfaces/node';
 import { FlowElementType } from '../interfaces/element';
 import { isEdgeDragging } from '../utils/edge/dragging-edge';
@@ -34,12 +23,8 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
 
     board.mousedown = event => {
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const selectElements = getSelectedElements(board);
         if (hoveredNode) {
             sourceFlowNodeHandle = getHitHandleByNode(hoveredNode, point);
-            selectElements.map(item => {
-                removeSelectedElement(board, item);
-            });
         }
         mousedown(event);
     };

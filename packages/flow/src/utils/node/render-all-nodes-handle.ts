@@ -18,9 +18,9 @@ export function drawAllNodesHandle(board: PlaitBoard) {
 export function destroyAllNodesHandle(board: PlaitBoard, flowNodeElements: FlowNode[]) {
     flowNodeElements.map(item => {
         const flowNodeComponent = PlaitElement.getComponent(item) as FlowNodeComponent;
-        flowNodeComponent.destroyHandles();
+        !flowNodeComponent.selected && flowNodeComponent.destroyHandles();
         if (isSelectedElement(board, item)) {
-            flowNodeComponent.destroyActiveMask();
+            !flowNodeComponent.selected && flowNodeComponent.destroyActiveMask();
         }
     });
 }

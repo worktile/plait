@@ -26,8 +26,7 @@ export const withHoverHighlight: PlaitPlugin = (board: PlaitBoard) => {
         if (hoveredElement) {
             const hoveredComponent = PlaitElement.getComponent(hoveredElement);
             if (FlowNode.isFlowNodeElement(hoveredElement)) {
-                const isHitHoveredNodeHandle = hoveredElement && !!getHitHandleByNode(hoveredElement, point);
-                !isHitHoveredNodeHandle && (hoveredComponent as FlowNodeComponent)?.drawElement(hoveredElement, FlowRenderMode.default);
+                (hoveredComponent as FlowNodeComponent)?.drawElement(hoveredElement, FlowRenderMode.default);
                 (relationEdges || []).forEach(item => {
                     const component = PlaitElement.getComponent(item) as FlowEdgeComponent;
                     component && component.drawElement(item, FlowRenderMode.default);

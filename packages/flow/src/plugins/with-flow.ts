@@ -78,7 +78,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
             const moveElement = movingNodes[0];
             if (FlowNode.isFlowNodeElement(moveElement as FlowElement)) {
                 const relationEdges = getEdgesByNodeId(board, moveElement.id);
-                relationEdges.map(item => {
+                (relationEdges || []).map(item => {
                     const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;
                     flowEdgeComponent.drawElement(item, FlowRenderMode.hover);
                 });
