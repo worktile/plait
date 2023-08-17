@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, RectangleClient, createG, drawCircle } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, RectangleClient, createG, drawCircle } from '@plait/core';
 import { Generator } from './generator';
 import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '../constants/default';
 import { drawRectangle } from '../rectangle';

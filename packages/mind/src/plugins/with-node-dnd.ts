@@ -38,7 +38,7 @@ import { adjustAbstractToNode } from '../utils/node/adjust-node';
 const DRAG_MOVE_BUFFER = 5;
 
 export const withNodeDnd = (board: PlaitBoard) => {
-    const { mousedown, mousemove, globalMouseup } = board;
+    const { pointerDown, pointerMove, globalPointerUp } = board;
 
     let activeElements: MindElement[] = [];
     let correspondingElements: MindElement[] = [];
@@ -48,14 +48,14 @@ export const withNodeDnd = (board: PlaitBoard) => {
     let dropTarget: { target: MindElement; detectResult: DetectResult } | null = null;
     let targetPath: Path;
 
-    board.mousedown = (event: MouseEvent) => {
+    board.pointerDown = (event: PointerEvent) => {
         if (
             PlaitBoard.isReadonly(board) ||
             PlaitBoard.hasBeenTextEditing(board) ||
             !PlaitBoard.isPointer(board, PlaitPointerType.selection) ||
             !isMainPointer(event)
         ) {
-            mousedown(event);
+            pointerDown(event);
             return;
         }
 
@@ -89,10 +89,10 @@ export const withNodeDnd = (board: PlaitBoard) => {
             correspondingElements = getOverallAbstracts(board, activeElements);
         }
 
-        mousedown(event);
+        pointerDown(event);
     };
 
-    board.mousemove = (event: MouseEvent) => {
+    board.pointerMove = (event: PointerEvent) => {
         if (!board.options.readonly && activeElements?.length && startPoint) {
             // prevent text from being selected
             event.preventDefault();
@@ -129,10 +129,10 @@ export const withNodeDnd = (board: PlaitBoard) => {
             PlaitBoard.getHost(board).appendChild(dragFakeNodeG);
         }
 
-        mousemove(event);
+        pointerMove(event);
     };
 
-    board.globalMouseup = (event: MouseEvent) => {
+    board.globalPointerUp = (event: PointerEvent) => {
         const firstLevelElements = getFirstLevelElement(activeElements);
         if (!board.options.readonly && firstLevelElements.length) {
             firstLevelElements.push(...correspondingElements);
@@ -234,7 +234,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
             fakeDropNodeG = undefined;
             dropTarget = null;
         }
-        globalMouseup(event);
+        globalPointerUp(event);
     };
 
     return board;

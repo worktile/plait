@@ -14,6 +14,7 @@ import { PlaitMindBoard } from '../plugins/with-mind.board';
 export abstract class MindImageBaseComponent implements OnInit {
     _imageItem!: ImageItem;
     _isFocus!: boolean;
+    initialized = false;
 
     activeGenerator!: ActiveGenerator<MindElement>;
 
@@ -21,6 +22,7 @@ export abstract class MindImageBaseComponent implements OnInit {
     set imageItem(value: ImageItem) {
         this.afterImageItemChange(this._imageItem, value);
         this._imageItem = value;
+        this.drawFocus();
     }
 
     get imageItem() {
@@ -36,8 +38,7 @@ export abstract class MindImageBaseComponent implements OnInit {
     @Input()
     set isFocus(value: boolean) {
         this._isFocus = value;
-        const com = PlaitElement.getComponent(this.element);
-        this.activeGenerator.draw(this.element, com.g, { selected: this._isFocus });
+        this.drawFocus();
     }
 
     get isFocus() {
@@ -62,5 +63,13 @@ export abstract class MindImageBaseComponent implements OnInit {
                 return 0;
             }
         });
+        this.initialized = true;
+    }
+
+    drawFocus() {
+        if (this.initialized) {
+            const com = PlaitElement.getComponent(this.element);
+            this.activeGenerator.draw(this.element, com.g, { selected: this._isFocus });
+        }
     }
 }
