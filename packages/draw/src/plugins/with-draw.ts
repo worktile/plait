@@ -4,7 +4,7 @@ import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
 import { getRectangleByPoints } from '@plait/common';
 import { withDrawHotkey } from './with-draw-hotkey';
-import { withGeometryCreate } from './with-geometry-create';
+import { withGeometryCreateByDraw, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
 import { getTextRectangle } from '../utils';
 
@@ -61,5 +61,5 @@ export const withDraw = (board: PlaitBoard) => {
         dblclick(event);
     };
 
-    return withGeometryCreate(withDrawFragment(withDrawHotkey(board)));
+    return withGeometryCreateByDrag(withGeometryCreateByDraw(withDrawFragment(withDrawHotkey(board))));
 };
