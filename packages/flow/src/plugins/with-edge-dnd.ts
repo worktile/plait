@@ -20,6 +20,7 @@ import { HitNodeHandle } from '../utils/handle/node';
 import { getHitHandleTypeByEdge } from '../utils/handle/edge';
 import { getHoverHandleInfo } from '../utils/handle/hover-handle';
 import { FlowElement } from '../interfaces/element';
+import { FlowRenderMode } from '../interfaces/flow';
 
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { mousedown, mousemove, globalMouseup } = board;
@@ -67,7 +68,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                         handleType: handleType!
                     });
                     const activeComponent = activeElement && (PlaitElement.getComponent(activeElement) as FlowEdgeComponent);
-                    activeComponent?.updateElement(activeElement!, true);
+                    activeComponent?.drawElement(activeElement!, FlowRenderMode.active);
                     hitNodeHandle = getHoverHandleInfo(board) as HitNodeHandle;
                     if (drawNodeHandles) {
                         drawNodeHandles = false;
@@ -101,7 +102,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     activePath
                 );
             } else {
-                activeComponent?.drawElement(activeElement, true);
+                activeComponent?.drawElement(activeElement, FlowRenderMode.active);
             }
             destroyAllNodesHandle(board, flowNodeElements);
         }

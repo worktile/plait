@@ -59,17 +59,22 @@ export class TextManage {
     constructor(
         private board: PlaitBoard,
         private viewContainerRef: ViewContainerRef,
-        private getRectangle: () => RectangleClient,
-        private onValueChangeHandle?: (textChangeRef: TextManageRef) => void,
-        private textPlugins?: TextPlugin[]
-    ) {}
+        private options: {
+            getRectangle: () => RectangleClient;
+            onValueChangeHandle?: (textChangeRef: TextManageRef) => void;
+            textPlugins?: TextPlugin[];
+            maxWidth?: number;
+        }
+    ) {
+        this.options.maxWidth = options.maxWidth ? options.maxWidth : 999;
+    }
 
     draw(value: Element) {
         this.componentRef = this.viewContainerRef.createComponent(PlaitRichtextComponent);
         this.componentRef.instance.value = value;
         this.componentRef.instance.readonly = true;
-        this.textPlugins && (this.componentRef.instance.textPlugins = this.textPlugins);
-        const rectangle = this.getRectangle();
+        this.options.textPlugins && (this.componentRef.instance.textPlugins = this.options.textPlugins);
+        const rectangle = this.options.getRectangle();
         this.g = createG();
         this.foreignObject = createForeignObject(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
         this.g.append(this.foreignObject);
@@ -107,14 +112,15 @@ export class TextManage {
                 }
 
                 if (AngularEditor.isReadonly(editor)) {
-                    const { x, y } = rectangle || this.getRectangle();
-                    updateForeignObject(this.g, 999, 999, x, y);
+                    const { x, y } = rectangle || this.options.getRectangle();
+                    updateForeignObject(this.g, this.options.maxWidth!, 999, x, y);
                     // do not need to revert because foreign will be updated when node changed
                 }
 
                 previousValue = editor.children;
                 const { width, height } = this.getSize();
-                this.onValueChangeHandle && this.onValueChangeHandle({ width, height, newValue: editor.children[0] as Element });
+                this.options.onValueChangeHandle &&
+                    this.options.onValueChangeHandle({ width, height, newValue: editor.children[0] as Element });
                 MERGING.set(this.board, true);
 
                 if (AngularEditor.isReadonly(editor) && this.isEditing) {
@@ -141,9 +147,9 @@ export class TextManage {
     }
 
     updateRectangle(rectangle?: RectangleClient) {
-        const { x, y, width, height } = rectangle || this.getRectangle();
+        const { x, y, width, height } = rectangle || this.options.getRectangle();
         if (this.isEditing) {
-            updateForeignObject(this.g, 999, 999, x, y);
+            updateForeignObject(this.g, this.options.maxWidth!, 999, x, y);
         } else {
             updateForeignObject(this.g, width, height, x, y);
             // solve text lose on move node
@@ -176,17 +182,17 @@ export class TextManage {
         this.updateRectangle();
 
         const { width, height } = this.getSize();
-        this.onValueChangeHandle && this.onValueChangeHandle({ width, height });
+        this.options.onValueChangeHandle && this.options.onValueChangeHandle({ width, height });
 
         const composition$ = this.componentRef.instance.onComposition.pipe(debounceTime(0)).subscribe(event => {
             const { width, height } = this.getSize();
-            this.onValueChangeHandle && this.onValueChangeHandle({ width, height });
+            this.options.onValueChangeHandle && this.options.onValueChangeHandle({ width, height });
             MERGING.set(this.board, true);
         });
 
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
             const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
-            const textRec = this.getRectangle();
+            const textRec = this.options.getRectangle();
             const clickInText = RectangleClient.isHit(RectangleClient.toRectangleClient([point, point]), textRec);
             const isAttached = (event.target as HTMLElement).closest('.plait-board-attached');
 

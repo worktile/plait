@@ -3,10 +3,11 @@ import { PlaitBoard, RectangleClient, normalizePoint } from '@plait/core';
 import { getPoints } from './get-smooth-step-edge';
 import { getFakeFlowNodeById, getFlowNodeById } from '../node/get-node';
 import { FlowEdge } from '../../interfaces/edge';
-import { DEFAULT_EDGE_ACTIVE_STYLES, DEFAULT_EDGE_STYLES } from '../../constants/edge';
+import { DEFAULT_EDGE_ACTIVE_STYLES, DEFAULT_EDGE_HOVER_STYLES, DEFAULT_EDGE_STYLES } from '../../constants/edge';
 import { FlowNode } from '../../interfaces/node';
 import { getEdgeDraggingInfo } from './dragging-edge';
 import { getEdgePosition } from './get-edge-position';
+import { FlowRenderMode } from '../../interfaces/flow';
 
 interface EdgePositions {
     sourceX: number;
@@ -112,16 +113,16 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
     });
 };
 
-export const getEdgeStyle = (edge: FlowEdge, active: boolean) => {
-    let edgeStyles: FlowElementStyles = {
+export const getEdgeStyle = (edge: FlowEdge, mode: FlowRenderMode = FlowRenderMode.default) => {
+    const edgeStyles: FlowElementStyles = {
         ...DEFAULT_EDGE_STYLES,
-        ...(edge.styles || {})
+        ...(edge.styles || {}),
+        stroke:
+            mode === FlowRenderMode.active
+                ? edge.styles?.activeStroke || DEFAULT_EDGE_ACTIVE_STYLES.stroke
+                : mode === FlowRenderMode.hover
+                ? edge.styles?.hoverStroke || DEFAULT_EDGE_HOVER_STYLES.stroke
+                : DEFAULT_EDGE_STYLES.stroke
     };
-    if (active) {
-        edgeStyles = {
-            ...edgeStyles,
-            stroke: edge.styles?.activeStroke || DEFAULT_EDGE_ACTIVE_STYLES.stroke
-        };
-    }
     return edgeStyles;
 };

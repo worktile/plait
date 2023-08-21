@@ -20,6 +20,8 @@ export const DefaultGeometryProperty = {
 };
 
 export const DefaultTextProperty = {
-    width: 28,
-    height: 20
+    width: 36,
+    height: 20,
+    maxWidth: 34 * 14,
+    text: '文本'
 };

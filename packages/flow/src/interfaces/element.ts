@@ -27,6 +27,7 @@ export interface FlowElementStyles {
     activeStroke?: string;
     activeFill?: string;
     borderRadius?: number;
+    hoverStroke?: string;
 }
 
 export interface FlowBaseData {

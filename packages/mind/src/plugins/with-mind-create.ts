@@ -63,8 +63,10 @@ export const withCreateMind = (board: PlaitBoard) => {
                     const nodeG = drawRoundRectangleByElement(board, nodeRectangle, emptyMind);
                     const topicRectangle = getTopicRectangleByElement(newBoard, nodeRectangle, emptyMind);
                     if (!fakeCreateNodeRef) {
-                        const textManage = new TextManage(board, PlaitBoard.getComponent(board).viewContainerRef, () => {
-                            return topicRectangle;
+                        const textManage = new TextManage(board, PlaitBoard.getComponent(board).viewContainerRef, {
+                            getRectangle: () => {
+                                return topicRectangle;
+                            }
                         });
                         PlaitBoard.getComponent(board)
                             .viewContainerRef.injector.get(NgZone)

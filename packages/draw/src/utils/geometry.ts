@@ -13,8 +13,9 @@ export const createGeometryElement = (
 ): PlaitGeometry => {
     let textOptions = {};
     if (shape === GeometryShape.text) {
-        textOptions = { autoResize: true };
+        textOptions = { autoSize: true };
     }
+
     return {
         id: idCreator(),
         type: 'geometry',

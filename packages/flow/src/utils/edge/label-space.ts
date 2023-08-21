@@ -1,6 +1,5 @@
 import { FlowEdge } from '../../interfaces/edge';
-import { ELEMENT_TO_COMPONENT, PlaitBoard, PlaitOptionsBoard, RectangleClient } from '@plait/core';
-import { FlowEdgeComponent } from '../../flow-edge.component';
+import { PlaitBoard, PlaitOptionsBoard, RectangleClient } from '@plait/core';
 import { EDGE_LABEL_FONTSIZE, EDGE_LABEL_ICON_PADDING, EDGE_LABEL_PADDING } from '../../constants/edge';
 import { BaseText, Element } from 'slate';
 import { TEXT_DEFAULT_HEIGHT, getTextSize } from '@plait/text';
@@ -37,9 +36,8 @@ function getLabelIconWidth() {
     return EDGE_LABEL_FONTSIZE + EDGE_LABEL_ICON_PADDING;
 }
 
-function getLabelIconRect(element: FlowEdge): RectangleClient {
-    const component = ELEMENT_TO_COMPONENT.get(element) as FlowEdgeComponent;
-    const { x, y, height } = component.textRect!;
+function getLabelIconRect(textRect: RectangleClient): RectangleClient {
+    const { x, y, height } = textRect!;
     return {
         x: x - getLabelIconWidth() - EDGE_LABEL_ICON_PADDING,
         y,

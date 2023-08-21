@@ -1,5 +1,13 @@
 # @plait/flow
 
+## 0.5.5
+
+### Patch Changes
+
+-   [`e98303aa`](https://github.com/worktile/plait/commit/e98303aae5b5ae17ab7d5cf5953daae5d897483c) Thanks [@xinglu01](https://github.com/xinglu01)! - support node and edge highlight when hover
+
+*   [`191c901a`](https://github.com/worktile/plait/commit/191c901a6d642c67d280da32321b9e8de18a8844) Thanks [@xinglu01](https://github.com/xinglu01)! - support selected node relation edge highlight
+
 ## 0.5.4
 
 ### Patch Changes
