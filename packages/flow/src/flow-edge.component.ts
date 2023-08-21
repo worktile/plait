@@ -90,15 +90,15 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         this.drawMarkers(element, mode);
         this.drawHandles(element, mode);
 
+        this.activeG && this.activeG.remove();
         if (mode === FlowRenderMode.default) {
             this.g.prepend(this.nodeG!);
             this.markersG!.map(arrowLine => {
                 this.g.append(arrowLine);
             });
             this.labelG && PlaitBoard.getElementUpperHost(this.board).append(this.labelG);
-            this.activeG && this.activeG.remove();
         } else {
-            this.activeG = this.activeG || createG();
+            this.activeG = createG();
             this.activeG?.prepend(this.nodeG!);
             this.labelG && this.activeG?.append(this.labelG);
             this.markersG!.map(arrowLine => {

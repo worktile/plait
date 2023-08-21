@@ -86,12 +86,12 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         this.drawActiveMask(element, mode);
         this.drawHandles(element, mode);
 
+        this.activeG && this.activeG.remove();
         if (mode === FlowRenderMode.default) {
             this.g.append(this.nodeG!);
             this.g.append(this.textManage.g);
-            this.activeG && this.activeG.remove();
         } else {
-            this.activeG = this.activeG || createG();
+            this.activeG = createG();
             this.activeG?.append(this.nodeG!);
             this.activeG?.append(this.textManage.g);
             if (mode === FlowRenderMode.active) {
