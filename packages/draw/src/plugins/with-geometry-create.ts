@@ -6,6 +6,7 @@ import {
     RectangleClient,
     Transforms,
     addSelectedElement,
+    clearSelectedElement,
     createForeignObject,
     createG,
     preventTouchMove,
@@ -145,6 +146,7 @@ export const withGeometryCreateByDraw = (board: PlaitBoard) => {
         }
         if (temporaryElement) {
             Transforms.insertNode(board, temporaryElement, [board.children.length]);
+            clearSelectedElement(board);
             addSelectedElement(board, temporaryElement);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
@@ -180,6 +182,7 @@ const getTemporaryTextG = (movingPoint: Point) => {
     const richtext = document.createElement('div');
     richtext.textContent = DefaultTextProperty.text;
     richtext.style.fontSize = `${DEFAULT_FONT_SIZE}px`;
+    richtext.style.cursor = 'default';
     foreignObject.appendChild(richtext);
     textG.appendChild(foreignObject);
 
