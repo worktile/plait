@@ -1,0 +1,12 @@
+.plait-board-container {
+    &.pointer-text {
+        .board-host-svg {
+            cursor: default;
+        }
+    }
+    &.pointer-rectangle {
+        .board-host-svg {
+            cursor: crosshair;
+        }
+    }
+}
