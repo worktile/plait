@@ -1,20 +1,28 @@
 import { ChangeDetectorRef, Directive, ElementRef, Input, OnInit } from '@angular/core';
 import { ImageItem, ImageData } from '../interfaces/element-data';
-import { PlaitBoard } from '@plait/core';
+import { PlaitBoard, PlaitElement } from '@plait/core';
 import { MindElement } from '../interfaces';
+import { ActiveGenerator } from '@plait/common';
+import { getImageForeignRectangle } from '../utils/position/image';
+import { PlaitMindBoard } from '../plugins/with-mind.board';
 
 @Directive({
     host: {
         class: 'mind-node-image'
     }
 })
-export abstract class MindImageBaseComponent {
+export abstract class MindImageBaseComponent implements OnInit {
     _imageItem!: ImageItem;
+    _isFocus!: boolean;
+    initialized = false;
+
+    activeGenerator!: ActiveGenerator<MindElement>;
 
     @Input()
     set imageItem(value: ImageItem) {
         this.afterImageItemChange(this._imageItem, value);
         this._imageItem = value;
+        this.drawFocus();
     }
 
     get imageItem() {
@@ -28,7 +36,14 @@ export abstract class MindImageBaseComponent {
     element!: MindElement<ImageData>;
 
     @Input()
-    isFocus: boolean = false;
+    set isFocus(value: boolean) {
+        this._isFocus = value;
+        this.drawFocus();
+    }
+
+    get isFocus() {
+        return this._isFocus;
+    }
 
     get nativeElement() {
         return this.elementRef.nativeElement;
@@ -37,4 +52,24 @@ export abstract class MindImageBaseComponent {
     abstract afterImageItemChange(previous: ImageItem, current: ImageItem): void;
 
     constructor(protected elementRef: ElementRef<HTMLElement>, public cdr: ChangeDetectorRef) {}
+
+    ngOnInit(): void {
+        this.activeGenerator = new ActiveGenerator<MindElement>(this.board, {
+            activeStrokeWidth: 1,
+            getRectangle: (element: MindElement) => {
+                return getImageForeignRectangle(this.board as PlaitMindBoard, this.element);
+            },
+            getStrokeWidthByElement: () => {
+                return 0;
+            }
+        });
+        this.initialized = true;
+    }
+
+    drawFocus() {
+        if (this.initialized) {
+            const com = PlaitElement.getComponent(this.element);
+            this.activeGenerator.draw(this.element, com.g, { selected: this._isFocus });
+        }
+    }
 }

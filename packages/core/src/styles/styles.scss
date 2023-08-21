@@ -44,7 +44,13 @@
     }
 
     &.ew-resize {
-        cursor: ew-resize;;
+        cursor: ew-resize;
+    }
+    &.nwse-resize {
+        cursor: nwse-resize;
+    }
+    &.nesw-resize {
+        cursor: nesw-resize;
     }
 
     @include mixins.board-background-color();

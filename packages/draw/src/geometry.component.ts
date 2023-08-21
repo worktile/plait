@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { PlaitBoard, PlaitPluginElementComponent, PlaitPluginElementContext, OnContextChanged, updateForeignObject } from '@plait/core';
 import { Subject } from 'rxjs';
-import { PlaitGeometry } from './interfaces/geometry';
-import { GeometryActiveGenerator } from './generator/geometry-active.generator';
+import { GeometryShape, PlaitGeometry } from './interfaces/geometry';
 import { GeometryShapeGenerator } from './generator/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransform } from './transforms';
 import { getTextRectangle } from './utils/geometry';
+import { ActiveGenerator, getRectangleByPoints } from '@plait/common';
+import { DefaultGeometryActiveStyle } from './constants/geometry';
+import { getStrokeWidthByElement } from './utils/geometry-style/stroke';
 import { PlaitText } from './interfaces';
 import { DefaultTextProperty } from './constants';
 
@@ -19,7 +21,7 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
     implements OnInit, OnDestroy, OnContextChanged<PlaitGeometry, PlaitBoard> {
     destroy$ = new Subject<void>();
 
-    activeGenerator!: GeometryActiveGenerator;
+    activeGenerator!: ActiveGenerator<PlaitGeometry>;
 
     shapeGenerator!: GeometryShapeGenerator;
 
@@ -30,7 +32,15 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
     }
 
     initializeGenerator() {
-        this.activeGenerator = new GeometryActiveGenerator(this.board);
+        this.activeGenerator = new ActiveGenerator<PlaitGeometry>(this.board, {
+            activeStrokeWidth: DefaultGeometryActiveStyle.strokeWidth,
+            getRectangle: (element: PlaitGeometry) => {
+                return getRectangleByPoints(element.points);
+            },
+            getStrokeWidthByElement: (element: PlaitGeometry) => {
+                return getStrokeWidthByElement(this.board, element);
+            }
+        });
         this.shapeGenerator = new GeometryShapeGenerator(this.board);
         this.initializeTextManage();
     }

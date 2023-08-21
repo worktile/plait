@@ -1,9 +1,17 @@
 import { PlaitBoard, PlaitElement } from '@plait/core';
 
-export abstract class Generator<T extends PlaitElement = PlaitElement, K = undefined> {
+export interface GeneratorExtraData {}
+
+export interface GeneratorOptions {}
+
+export abstract class Generator<
+    T extends PlaitElement = PlaitElement,
+    K extends GeneratorExtraData = GeneratorExtraData,
+    V extends GeneratorOptions = GeneratorOptions
+> {
     g?: SVGGElement;
 
-    constructor(protected board: PlaitBoard) {}
+    constructor(protected board: PlaitBoard, options?: V) {}
 
     draw(element: T, parentG: SVGGElement, data?: K) {
         this.destroy();

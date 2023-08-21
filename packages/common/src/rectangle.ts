@@ -1,6 +1,5 @@
-import { PlaitBoard, Point } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { Options } from 'roughjs/bin/core';
-import { RectangleClient } from './interfaces';
 
 export const drawRectangle = (board: PlaitBoard, rectangle: RectangleClient, options: Options) => {
     const roughSVG = PlaitBoard.getRoughSVG(board);
@@ -15,5 +14,5 @@ export const getRectangleByPoints = (points: [Point, Point]) => {
         y: points[0][1],
         width: points[1][0] - points[0][0],
         height: points[1][1] - points[0][1]
-    };
+    } as RectangleClient;
 };

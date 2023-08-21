@@ -30,6 +30,7 @@ import { buildText, getTextFromClipboard } from '@plait/text';
 import { withNodeImage } from './with-node-image';
 import { PlaitMindBoard } from './with-mind.board';
 import { withNodeResize } from './with-node-resize';
+import { withNodeImageResize } from './with-node-image-resize';
 
 export const withMind = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
@@ -138,6 +139,8 @@ export const withMind = (baseBoard: PlaitBoard) => {
     };
 
     return withNodeResize(
-        withNodeImage(withNodeHoverDetect(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board)))))))
+        withNodeImageResize(
+            withNodeImage(withNodeHoverDetect(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board)))))))
+        )
     );
 };

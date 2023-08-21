@@ -5,20 +5,7 @@ import { MindImageBaseComponent } from '@plait/mind';
     selector: 'mind-node-image',
     template: `
         <img [src]="imageItem.url" [width]="imageItem.width" [height]="imageItem.height" />
-        <div *ngIf="isFocus" class="outline"></div>
     `,
-    styles: [
-        `
-            .outline {
-                position: absolute;
-                top: 5px;
-                right: 5px;
-                bottom: 5px;
-                left: 5px;
-                border: 1px dashed #6698ff;
-            }
-        `
-    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MindImageComponent extends MindImageBaseComponent {
