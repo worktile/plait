@@ -3,7 +3,7 @@ import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
 import { addSelectedImageElement, getSelectedImageElement } from '../utils/node/image';
 import { getHitImageResizeHandleDirection } from '../utils';
-import { ResizeCursorDirection, ResizeDirection, ResizeRef, ResizeState, WithResizeOptions, withResize } from '@plait/common';
+import { ResizeCursorClass, ResizeDirection, ResizeRef, ResizeState, WithResizeOptions, withResize } from '@plait/common';
 import { MindTransforms } from '../transforms';
 
 export const withNodeImageResize = (board: PlaitBoard) => {
@@ -20,7 +20,7 @@ export const withNodeImageResize = (board: PlaitBoard) => {
                     return {
                         element: selectedMindElement,
                         direction: result.direction as ResizeDirection,
-                        cursorDirection: result.cursorDirection as ResizeCursorDirection
+                        cursorClass: result.cursorClass
                     };
                 }
             }

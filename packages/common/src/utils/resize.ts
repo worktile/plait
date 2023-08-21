@@ -1,5 +1,5 @@
-import { Point, RectangleClient } from '@plait/core';
-import { ResizeCursorDirection, ResizeDirection } from '../constants/resize';
+import { PlaitBoard, Point, RectangleClient } from '@plait/core';
+import { ResizeCursorClass, ResizeDirection } from '../constants/resize';
 
 /**
  * @returns [left-top,right-top,right-bottom,left-bottom]: [Point, Point, Point, Point]
@@ -13,7 +13,7 @@ export const getHandleCenters = (rectangle: RectangleClient) => {
     ] as [Point, Point, Point, Point];
 };
 
-const getDirectionByIndex = (index: number) => {
+const getResizeDirectionByIndex = (index: number) => {
     switch (index) {
         case 0:
             return ResizeDirection.nw;
@@ -28,16 +28,16 @@ const getDirectionByIndex = (index: number) => {
     }
 };
 
-const getCursorDirectionByIndex = (index: number) => {
+const getResizeCursorClassByIndex = (index: number) => {
     switch (index) {
         case 0:
-            return ResizeCursorDirection.nwse;
+            return ResizeCursorClass.nwse;
         case 1:
-            return ResizeCursorDirection.nesw;
+            return ResizeCursorClass.nesw;
         case 2:
-            return ResizeCursorDirection.nwse;
+            return ResizeCursorClass.nwse;
         case 3:
-            return ResizeCursorDirection.nesw;
+            return ResizeCursorClass.nesw;
         default:
             return null;
     }
@@ -53,8 +53,25 @@ export const getRectangleResizeTargets = (rectangle: RectangleClient, diameter: 
                 width: diameter,
                 height: diameter
             },
-            direction: getDirectionByIndex(index) as ResizeDirection,
-            cursorDirection: getCursorDirectionByIndex(index) as ResizeCursorDirection
+            direction: getResizeDirectionByIndex(index) as ResizeDirection,
+            cursorClass: getResizeCursorClassByIndex(index) as ResizeCursorClass
         };
     });
+};
+
+
+export const IS_RESIZING = new WeakMap<PlaitBoard, boolean>();
+
+export const isResizing = (board: PlaitBoard) => {
+    return !!IS_RESIZING.get(board);
+};
+
+export const addResizing = (board: PlaitBoard, key: string) => {
+    PlaitBoard.getBoardContainer(board).classList.add(`${key}-resizing`);
+    IS_RESIZING.set(board, true);
+};
+
+export const removeResizing = (board: PlaitBoard, key: string) => {
+    PlaitBoard.getBoardContainer(board).classList.remove(`${key}-resizing`);
+    IS_RESIZING.set(board, false);
 };

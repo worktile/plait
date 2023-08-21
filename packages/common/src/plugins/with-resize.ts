@@ -13,7 +13,8 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { ResizeDirection, ResizeCursorDirection } from '../constants/resize';
+import { ResizeDirection, ResizeCursorClass } from '../constants/resize';
+import { addResizing, isResizing, removeResizing } from '../utils/resize';
 
 export interface WithResizeOptions<T extends PlaitElement = PlaitElement> {
     key: string;
@@ -25,10 +26,10 @@ export interface WithResizeOptions<T extends PlaitElement = PlaitElement> {
 export interface ResizeDetectResult<T extends PlaitElement = PlaitElement> {
     element: T;
     direction: ResizeDirection;
-    cursorDirection: ResizeCursorDirection;
+    cursorClass: ResizeCursorClass;
 }
 
-export interface ResizeRef<T extends  PlaitElement = PlaitElement> {
+export interface ResizeRef<T extends PlaitElement = PlaitElement> {
     element: T;
     path: Path;
     direction: ResizeDirection;
@@ -63,7 +64,7 @@ export const withResize = <T extends PlaitElement = PlaitElement>(board: PlaitBo
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         resizeDetectResult = options.detect(point);
         if (resizeDetectResult) {
-            PlaitBoard.getBoardContainer(board).classList.add(`${resizeDetectResult.cursorDirection}-resize`);
+            PlaitBoard.getBoardContainer(board).classList.add(`${resizeDetectResult.cursorClass}-resize`);
             startPoint = [event.x, event.y];
             resizeRef = {
                 path: PlaitBoard.findPath(board, resizeDetectResult.element),
@@ -112,10 +113,10 @@ export const withResize = <T extends PlaitElement = PlaitElement>(board: PlaitBo
             const resizeDetectResult = options.detect(point);
             if (resizeDetectResult) {
                 hoveDetectResult = resizeDetectResult;
-                PlaitBoard.getBoardContainer(board).classList.add(`${hoveDetectResult.cursorDirection}-resize`);
+                PlaitBoard.getBoardContainer(board).classList.add(`${hoveDetectResult.cursorClass}-resize`);
             } else {
                 if (hoveDetectResult) {
-                    PlaitBoard.getBoardContainer(board).classList.remove(`${hoveDetectResult.cursorDirection}-resize`);
+                    PlaitBoard.getBoardContainer(board).classList.remove(`${hoveDetectResult.cursorClass}-resize`);
                     hoveDetectResult = null;
                 }
             }
@@ -136,20 +137,4 @@ export const withResize = <T extends PlaitElement = PlaitElement>(board: PlaitBo
     };
 
     return board;
-};
-
-export const IS_RESIZING = new WeakMap<PlaitBoard, boolean>();
-
-export const isResizing = (board: PlaitBoard) => {
-    return !!IS_RESIZING.get(board);
-};
-
-export const addResizing = (board: PlaitBoard, key: string) => {
-    PlaitBoard.getBoardContainer(board).classList.add(`${key}-resizing`);
-    IS_RESIZING.set(board, true);
-};
-
-export const removeResizing = (board: PlaitBoard, key: string) => {
-    PlaitBoard.getBoardContainer(board).classList.remove(`${key}-resizing`);
-    IS_RESIZING.set(board, false);
 };

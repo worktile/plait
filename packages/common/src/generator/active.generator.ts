@@ -4,22 +4,22 @@ import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '../constants/default';
 import { drawRectangle } from '../rectangle';
 import { Options } from 'roughjs/bin/core';
 
-export interface ActiveExtraData {
+export interface ActiveGeneratorExtraData {
     selected: boolean;
 }
 
-export interface ActiveOptions<T> {
+export interface ActiveGeneratorOptions<T> {
     getRectangle: (element: T) => RectangleClient;
     activeStrokeWidth: number;
     getStrokeWidthByElement: (element: T) => number;
 }
 
-export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Generator<T, ActiveExtraData, ActiveOptions<T>> {
-    constructor(public board: PlaitBoard, public options: ActiveOptions<T>) {
+export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Generator<T, ActiveGeneratorExtraData, ActiveGeneratorOptions<T>> {
+    constructor(public board: PlaitBoard, public options: ActiveGeneratorOptions<T>) {
         super(board, options);
     }
 
-    canDraw(element: T, data: ActiveExtraData): boolean {
+    canDraw(element: T, data: ActiveGeneratorExtraData): boolean {
         if (data.selected) {
             return true;
         } else {
@@ -27,7 +27,7 @@ export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Gene
         }
     }
 
-    baseDraw(element: T, data: ActiveExtraData): SVGGElement {
+    baseDraw(element: T, data: ActiveGeneratorExtraData): SVGGElement {
         const activeG = createG();
         this.g = activeG;
         const rectangle = this.options.getRectangle(element);
