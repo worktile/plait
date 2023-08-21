@@ -64,7 +64,7 @@ export const withResize = <T extends PlaitElement = PlaitElement>(board: PlaitBo
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         resizeDetectResult = options.detect(point);
         if (resizeDetectResult) {
-            PlaitBoard.getBoardContainer(board).classList.add(`${resizeDetectResult.cursorClass}-resize`);
+            PlaitBoard.getBoardContainer(board).classList.add(`${resizeDetectResult.cursorClass}`);
             startPoint = [event.x, event.y];
             resizeRef = {
                 path: PlaitBoard.findPath(board, resizeDetectResult.element),
@@ -113,10 +113,10 @@ export const withResize = <T extends PlaitElement = PlaitElement>(board: PlaitBo
             const resizeDetectResult = options.detect(point);
             if (resizeDetectResult) {
                 hoveDetectResult = resizeDetectResult;
-                PlaitBoard.getBoardContainer(board).classList.add(`${hoveDetectResult.cursorClass}-resize`);
+                PlaitBoard.getBoardContainer(board).classList.add(`${hoveDetectResult.cursorClass}`);
             } else {
                 if (hoveDetectResult) {
-                    PlaitBoard.getBoardContainer(board).classList.remove(`${hoveDetectResult.cursorClass}-resize`);
+                    PlaitBoard.getBoardContainer(board).classList.remove(`${hoveDetectResult.cursorClass}`);
                     hoveDetectResult = null;
                 }
             }
