@@ -5,6 +5,7 @@ import {
     Point,
     RectangleClient,
     Transforms,
+    addSelectedElement,
     createForeignObject,
     createG,
     preventTouchMove,
@@ -144,6 +145,7 @@ export const withGeometryCreateByDraw = (board: PlaitBoard) => {
         }
         if (temporaryElement) {
             Transforms.insertNode(board, temporaryElement, [board.children.length]);
+            addSelectedElement(board, temporaryElement);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
 

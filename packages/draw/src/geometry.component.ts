@@ -39,6 +39,7 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
         super.ngOnInit();
         this.initializeGenerator();
         this.shapeGenerator.draw(this.element, this.g);
+        this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
         this.drawText();
     }
 
