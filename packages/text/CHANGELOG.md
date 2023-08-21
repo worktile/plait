@@ -1,5 +1,15 @@
 # text
 
+## 0.16.0-next.0
+
+### Minor Changes
+
+-   [#521](https://github.com/worktile/plait/pull/521) [`ddb416f4`](https://github.com/worktile/plait/commit/ddb416f4ad33b53cbed7d6257b834c3b2108b688) Thanks [@WBbug](https://github.com/WBbug)! - support wrap line when has autoSize
+
+*   [`42cdd3bd`](https://github.com/worktile/plait/commit/42cdd3bd692712c6a117b780a135fff863e4abed) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support draw-element copy and paste
+
+-   [#524](https://github.com/worktile/plait/pull/524) [`70c430c0`](https://github.com/worktile/plait/commit/70c430c0f2fe43a27fb60b8c1e3063d97095e8b3) Thanks [@WBbug](https://github.com/WBbug)! - set cursor style
+
 ## 0.15.1
 
 ### Patch Changes

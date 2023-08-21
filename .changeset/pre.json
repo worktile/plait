@@ -1,0 +1,34 @@
+{
+  "mode": "pre",
+  "tag": "next",
+  "initialVersions": {
+    "@plait/common": "0.0.1",
+    "@plait/core": "0.23.0",
+    "@plait/draw": "0.0.1",
+    "@plait/flow": "0.5.5",
+    "@plait/layouts": "0.4.0",
+    "@plait/mind": "0.26.0",
+    "@plait/text": "0.15.1"
+  },
+  "changesets": [
+    "blue-toys-watch",
+    "breezy-months-burn",
+    "clean-cycles-sparkle",
+    "cold-otters-hammer",
+    "empty-knives-add",
+    "hip-kangaroos-cheat",
+    "large-kids-cross",
+    "light-mangos-mate",
+    "long-parrots-thank",
+    "many-forks-love",
+    "mighty-avocados-ring",
+    "popular-adults-drive",
+    "rich-dolphins-heal",
+    "rotten-forks-dress",
+    "silver-jars-doubt",
+    "stupid-moles-joke",
+    "violet-ladybugs-battle",
+    "wild-tigers-compete",
+    "wise-dodos-brush"
+  ]
+}

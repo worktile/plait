@@ -1,5 +1,15 @@
 # @plait/flow
 
+## 0.6.0-next.0
+
+### Minor Changes
+
+-   [#521](https://github.com/worktile/plait/pull/521) [`ddb416f4`](https://github.com/worktile/plait/commit/ddb416f4ad33b53cbed7d6257b834c3b2108b688) Thanks [@WBbug](https://github.com/WBbug)! - support wrap line when has autoSize
+
+### Patch Changes
+
+-   [#522](https://github.com/worktile/plait/pull/522) [`fa7760ba`](https://github.com/worktile/plait/commit/fa7760bae7564f03763d10753f37a4f4a87fbe53) Thanks [@xinglu01](https://github.com/xinglu01)! - support selected node relation edge highlight
+
 ## 0.5.5
 
 ### Patch Changes

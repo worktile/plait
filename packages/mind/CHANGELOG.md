@@ -1,5 +1,24 @@
 # mind
 
+## 0.27.0-next.0
+
+### Minor Changes
+
+-   [#521](https://github.com/worktile/plait/pull/521) [`ddb416f4`](https://github.com/worktile/plait/commit/ddb416f4ad33b53cbed7d6257b834c3b2108b688) Thanks [@WBbug](https://github.com/WBbug)! - support wrap line when has autoSize
+
+*   [`35bd204d`](https://github.com/worktile/plait/commit/35bd204d14045988163b9de7f3ad6ff0dabeed4a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename utils to common
+    rename drawer to generator
+    geometry support moving and active state
+
+-   [`42cdd3bd`](https://github.com/worktile/plait/commit/42cdd3bd692712c6a117b780a135fff863e4abed) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support draw-element copy and paste
+
+*   [#524](https://github.com/worktile/plait/pull/524) [`70c430c0`](https://github.com/worktile/plait/commit/70c430c0f2fe43a27fb60b8c1e3063d97095e8b3) Thanks [@WBbug](https://github.com/WBbug)! - set cursor style
+
+-   [#526](https://github.com/worktile/plait/pull/526) [`9b2cc192`](https://github.com/worktile/plait/commit/9b2cc192c0dca93aedb51b489f6d11e98e1ba6d5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add common with resize and common active generator
+
+*   [`06a3a57d`](https://github.com/worktile/plait/commit/06a3a57deac23520b9a0b535e27ca7aaf1f0ef8b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - `draw`: support draw elements delete
+    `core`: invoke deleteFragment when use press delete or backspace
+
 ## 0.26.0
 
 ### Minor Changes
