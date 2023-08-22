@@ -15,6 +15,7 @@ import { LineMarkerType, LineShape, PlaitLine } from '../interfaces';
 import { DrawCreateMode, createLineElement, getCreateMode } from '../utils';
 import { DrawPointerType } from '../constants';
 import { DefaultLineStyle } from '../constants/line';
+import { LineShapeGenerator } from '../generator/line.generator';
 
 export const withLineCreateByDraw = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, pointerUp } = board;
@@ -41,6 +42,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         lineShapeG = createG();
 
         if (start) {
+            const lineGenerator = new LineShapeGenerator(board);
             const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             temporaryElement = createLineElement(
                 LineShape.elbow,
@@ -52,6 +54,8 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
                     strokeWidth: DefaultLineStyle.strokeWidth
                 }
             );
+            lineGenerator.draw(temporaryElement, lineShapeG);
+            PlaitBoard.getElementActiveHost(board).append(lineShapeG);
         }
 
         pointerMove(event);
