@@ -129,7 +129,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (mode !== FlowRenderMode.default) {
             this.handlesG = createG();
             const handles = drawNodeHandles(this.roughSVG, element);
-            handles.map(item => {
+            handles.forEach(item => {
                 this.handlesG?.append(item);
                 this.render2.addClass(item, 'flow-handle');
             });

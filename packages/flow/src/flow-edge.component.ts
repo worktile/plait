@@ -93,7 +93,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         this.activeG && this.activeG.remove();
         if (mode === FlowRenderMode.default) {
             this.g.prepend(this.nodeG!);
-            this.markersG!.map(arrowLine => {
+            this.markersG!.forEach(arrowLine => {
                 this.g.append(arrowLine);
             });
             this.labelG && PlaitBoard.getElementUpperHost(this.board).append(this.labelG);
@@ -101,7 +101,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             this.activeG = createG();
             this.activeG?.prepend(this.nodeG!);
             this.labelG && this.activeG?.append(this.labelG);
-            this.markersG!.map(arrowLine => {
+            this.markersG!.forEach(arrowLine => {
                 this.activeG?.append(arrowLine);
             });
             this.activeG?.append(this.handlesG!);
