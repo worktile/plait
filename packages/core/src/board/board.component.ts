@@ -382,11 +382,9 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             )
             .subscribe((event: ClipboardEvent) => {
                 const selectedElements = getSelectedElements(this.board);
-                if (selectedElements.length > 0) {
-                    event.preventDefault();
-                    const rectangle = getRectangleByElements(this.board, selectedElements, false);
-                    this.board.setFragment(event.clipboardData, rectangle);
-                }
+                event.preventDefault();
+                const rectangle = getRectangleByElements(this.board, selectedElements, false);
+                this.board.setFragment(event.clipboardData, rectangle);
             });
 
         fromEvent<ClipboardEvent>(document, 'paste')
@@ -409,12 +407,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             )
             .subscribe((event: ClipboardEvent) => {
                 const selectedElements = getSelectedElements(this.board);
-                if (selectedElements.length > 0) {
-                    event.preventDefault();
-                    const rectangle = getRectangleByElements(this.board, selectedElements, false);
-                    this.board.setFragment(event.clipboardData, rectangle);
-                    this.board.deleteFragment(event.clipboardData);
-                }
+                event.preventDefault();
+                const rectangle = getRectangleByElements(this.board, selectedElements, false);
+                this.board.setFragment(event.clipboardData, rectangle);
+                this.board.deleteFragment(event.clipboardData);
             });
     }
 

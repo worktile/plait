@@ -20,6 +20,7 @@
     "pub:mind": "cd dist/mind && npm publish --access public",
     "pub:layouts": "cd dist/layouts && npm publish --access public",
     "pub:flow": "cd dist/flow && npm publish --access public",
+    "pub:common": "cd dist/common && npm publish --access public",
     "watch": "ng build --watch --configuration development",
     "test": "ng test mind",
     "start:docs": "docgeni serve --port 4600",
