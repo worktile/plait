@@ -86,12 +86,13 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         this.drawActiveMask(element, mode);
         this.drawHandles(element, mode);
 
+        this.activeG && this.activeG.remove();
         if (mode === FlowRenderMode.default) {
-            this.g.append(this.nodeG!);
-            this.g.append(this.textManage.g);
-            this.activeG && this.activeG.remove();
+            const upperHost = PlaitBoard.getElementUpperHost(this.board);
+            upperHost.append(this.nodeG!);
+            upperHost.append(this.textManage.g);
         } else {
-            this.activeG = this.activeG || createG();
+            this.activeG = createG();
             this.activeG?.append(this.nodeG!);
             this.activeG?.append(this.textManage.g);
             if (mode === FlowRenderMode.active) {
@@ -129,7 +130,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
         if (mode !== FlowRenderMode.default) {
             this.handlesG = createG();
             const handles = drawNodeHandles(this.roughSVG, element);
-            handles.map(item => {
+            handles.forEach(item => {
                 this.handlesG?.append(item);
                 this.render2.addClass(item, 'flow-handle');
             });

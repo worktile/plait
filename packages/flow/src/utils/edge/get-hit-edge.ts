@@ -7,7 +7,7 @@ import { FlowEdge } from '../../interfaces/edge';
 export function getHitEdge(board: PlaitBoard, point: Point): FlowEdge | null {
     let flowEdge: FlowEdge | null = null;
     const flowEdges = getFlowElementsByType(board, FlowElementType.edge) as FlowEdge[];
-    flowEdges.map((value, index) => {
+    flowEdges.reverse().map((value, index) => {
         if (!flowEdge && isHitEdge(board, value, point)) {
             flowEdge = value;
         }

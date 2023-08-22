@@ -7,7 +7,9 @@ export const setRelationEdgeSelected = (board: PlaitBoard, nodeId: string, selec
     const relationEdges = getEdgesByNodeId(board, nodeId);
     (relationEdges || []).forEach(edge => {
         const component = PlaitElement.getComponent(edge) as FlowEdgeComponent;
-        component.relatedNodeSelected = selected;
-        component && component.drawElement(edge, selected ? FlowRenderMode.hover : FlowRenderMode.default);
+        if (component) {
+            component.relatedNodeSelected = selected;
+            component.drawElement(edge, selected ? FlowRenderMode.hover : FlowRenderMode.default);
+        }
     });
 };

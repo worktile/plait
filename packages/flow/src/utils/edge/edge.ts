@@ -122,7 +122,7 @@ export const getEdgeStyle = (edge: FlowEdge, mode: FlowRenderMode = FlowRenderMo
                 ? edge.styles?.activeStroke || DEFAULT_EDGE_ACTIVE_STYLES.stroke
                 : mode === FlowRenderMode.hover
                 ? edge.styles?.hoverStroke || DEFAULT_EDGE_HOVER_STYLES.stroke
-                : DEFAULT_EDGE_STYLES.stroke
+                : edge.styles?.stroke || DEFAULT_EDGE_STYLES.stroke
     };
     return edgeStyles;
 };
