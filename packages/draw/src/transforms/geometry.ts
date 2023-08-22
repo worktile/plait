@@ -7,7 +7,7 @@ import { Element } from 'slate';
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShape) => {
     let newElement = createGeometryElement(shape, points, '', {
         strokeColor: DefaultGeometryProperty.strokeColor,
-        strokeWidth: DefaultGeometryProperty.stokeWidth
+        strokeWidth: DefaultGeometryProperty.strokeWidth
     }) as PlaitGeometry;
 
     Transforms.insertNode(board, newElement, [board.children.length]);

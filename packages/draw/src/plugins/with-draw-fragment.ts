@@ -13,7 +13,9 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
     board.deleteFragment = (data: DataTransfer | null) => {
         const drawElements = getSelectedDrawElements(board);
         if (drawElements.length) {
-            const geometryElements = drawElements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
+            const geometryElements = drawElements.filter(
+                value => PlaitDrawElement.isGeometry(value) || PlaitDrawElement.isLine(value)
+            ) as PlaitGeometry[];
 
             // query bound lines
             const boundLineElements: PlaitLine[] = [];

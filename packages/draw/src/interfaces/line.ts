@@ -33,9 +33,7 @@ export interface PlaitLine extends PlaitElement {
     source: LineHandle;
     target: LineHandle;
 
-    texts: LineText[];
-
-    controlPoints?: Point[];
+    texts?: LineText[];
 
     // node style attributes
     strokeColor?: string;

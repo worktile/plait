@@ -1,8 +1,8 @@
 import { PlaitMind } from '@plait/mind';
 import { MindLayoutType } from '@plait/layouts';
-import { PlaitGeometry, GeometryShape } from '@plait/draw';
+import { PlaitGeometry, GeometryShape, PlaitLine, LineShape, LineMarkerType } from '@plait/draw';
 
-export const mockData: (PlaitMind | PlaitGeometry)[] = [
+export const mockData: (PlaitMind | PlaitGeometry | PlaitLine)[] = [
     {
         type: 'mindmap',
         id: '1',
@@ -207,6 +207,25 @@ export const mockData: (PlaitMind | PlaitGeometry)[] = [
         opacity: 1,
         text: { children: [{ text: '几何图形' }] },
         textHeight: 20,
+        points: [
+            [980, 450],
+            [1040, 510]
+        ]
+    },
+    {
+        id: '233',
+        type: 'line',
+        shape: LineShape.elbow,
+        autoSize: false,
+        source: {
+            marker: LineMarkerType.none
+        },
+        target: {
+            marker: LineMarkerType.arrow
+        },
+        opacity: 1,
+        strokeColor: '#333333',
+        strokeWidth: 2,
         points: [
             [980, 450],
             [1040, 510]
