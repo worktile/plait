@@ -88,8 +88,9 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
         this.activeG && this.activeG.remove();
         if (mode === FlowRenderMode.default) {
-            this.g.append(this.nodeG!);
-            this.g.append(this.textManage.g);
+            const upperHost = PlaitBoard.getElementUpperHost(this.board);
+            upperHost.append(this.nodeG!);
+            upperHost.append(this.textManage.g);
         } else {
             this.activeG = createG();
             this.activeG?.append(this.nodeG!);
