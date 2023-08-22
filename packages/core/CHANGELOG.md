@@ -1,5 +1,11 @@
 # plait
 
+## 0.24.0-next.1
+
+### Patch Changes
+
+-   [`54d91509`](https://github.com/worktile/plait/commit/54d9150934ddd67fabd705e4a2bc1c43caf06fe0) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - solve can not copy and cut mind node image
+
 ## 0.24.0-next.0
 
 ### Minor Changes

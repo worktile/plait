@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.6.0-next.1
+
+### Patch Changes
+
+-   [#530](https://github.com/worktile/plait/pull/530) [`cbebbb0b`](https://github.com/worktile/plait/commit/cbebbb0b1abd910e9441ccbea8c22de54255f77f) Thanks [@xinglu01](https://github.com/xinglu01)! - handle fix bugs after layered rendering
+
 ## 0.6.0-next.0
 
 ### Minor Changes

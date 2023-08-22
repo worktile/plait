@@ -11,10 +11,12 @@
     "@plait/text": "0.15.1"
   },
   "changesets": [
+    "angry-glasses-retire",
     "blue-toys-watch",
     "breezy-months-burn",
     "clean-cycles-sparkle",
     "cold-otters-hammer",
+    "cold-taxis-appear",
     "empty-knives-add",
     "hip-kangaroos-cheat",
     "large-kids-cross",
@@ -25,6 +27,7 @@
     "popular-adults-drive",
     "rich-dolphins-heal",
     "rotten-forks-dress",
+    "silent-badgers-cover",
     "silver-jars-doubt",
     "stupid-moles-joke",
     "violet-ladybugs-battle",

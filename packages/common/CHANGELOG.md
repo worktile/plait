@@ -1,5 +1,11 @@
 # @plait/common
 
+## 0.1.0-next.1
+
+### Patch Changes
+
+-   [`59e75dbe`](https://github.com/worktile/plait/commit/59e75dbe03ce59592914fd9ad0e2b80c3d2645c5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify resize handle diameter from 10 to 8
+
 ## 0.1.0-next.0
 
 ### Minor Changes
