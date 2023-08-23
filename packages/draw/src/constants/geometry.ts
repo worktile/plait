@@ -16,7 +16,7 @@ export const DefaultGeometryProperty = {
     width: 120,
     height: 60,
     strokeColor: '#333',
-    stokeWidth: 2
+    strokeWidth: 2
 };
 
 export const DefaultTextProperty = {

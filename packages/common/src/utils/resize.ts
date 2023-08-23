@@ -1,18 +1,6 @@
 import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { ResizeCursorClass, ResizeDirection } from '../constants/resize';
 
-/**
- * @returns [left-top,right-top,right-bottom,left-bottom]: [Point, Point, Point, Point]
- */
-export const getHandleCenters = (rectangle: RectangleClient) => {
-    return [
-        [rectangle.x, rectangle.y],
-        [rectangle.x + rectangle.width, rectangle.y],
-        [rectangle.x + rectangle.width, rectangle.y + rectangle.height],
-        [rectangle.x, rectangle.y + rectangle.height]
-    ] as [Point, Point, Point, Point];
-};
-
 const getResizeDirectionByIndex = (index: number) => {
     switch (index) {
         case 0:
@@ -44,7 +32,7 @@ const getResizeCursorClassByIndex = (index: number) => {
 };
 
 export const getRectangleResizeTargets = (rectangle: RectangleClient, diameter: number) => {
-    const centers = getHandleCenters(rectangle);
+    const centers = RectangleClient.getCornerPoints(rectangle);
     return centers.map((center, index: number) => {
         return {
             rectangle: {
@@ -58,7 +46,6 @@ export const getRectangleResizeTargets = (rectangle: RectangleClient, diameter: 
         };
     });
 };
-
 
 export const IS_RESIZING = new WeakMap<PlaitBoard, boolean>();
 
