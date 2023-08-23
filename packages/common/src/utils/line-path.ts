@@ -67,12 +67,12 @@ export const getPoints = (source: Point, sourcePosition: Direction, target: Poin
             }
         }
     }
-    return [source, sourceGapped, ...points, targetGapped, target];
+    return [source, ...points, target];
 };
 
 const getDirection = (source: Point, sourcePosition = Direction.bottom, target: Point) => {
     if (sourcePosition === Direction.left || sourcePosition === Direction.right) {
-        return source[0] < target[1] ? { x: 1, y: 0 } : { x: -1, y: 0 };
+        return source[0] < target[0] ? { x: 1, y: 0 } : { x: -1, y: 0 };
     }
     return source[1] < target[1] ? { x: 0, y: 1 } : { x: 0, y: -1 };
 };
