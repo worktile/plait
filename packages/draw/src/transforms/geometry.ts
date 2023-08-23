@@ -1,6 +1,6 @@
-import { PlaitBoard, Transforms, Point, addSelectedElement, clearSelectedElement, Path } from '@plait/core';
+import { PlaitBoard, Transforms, Point, addSelectedElement, clearSelectedElement, Path, PlaitNode } from '@plait/core';
 import { DefaultGeometryProperty } from '../constants';
-import { GeometryShape, PlaitGeometry } from '../interfaces';
+import { GeometryShape, PlaitDrawElement, PlaitGeometry, PlaitText } from '../interfaces';
 import { createGeometryElement } from '../utils';
 import { Element } from 'slate';
 import { normalizeShapePoints } from '@plait/common';
@@ -25,5 +25,10 @@ export const insertText = (board: PlaitBoard, points: [Point, Point], text: stri
 
 export const resizeGeometry = (board: PlaitBoard, points: [Point, Point], path: Path) => {
     const normalizePoints = normalizeShapePoints(points);
-    Transforms.setNode(board, { points: normalizePoints }, path);
+    const element = PlaitNode.get(board, path);
+    const newProperties = { points: normalizePoints };
+    if (PlaitDrawElement.isText(element) && element.autoSize) {
+        (newProperties as Partial<PlaitText>).autoSize = false;
+    }
+    Transforms.setNode(board, newProperties, path);
 };
