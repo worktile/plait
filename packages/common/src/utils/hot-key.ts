@@ -11,3 +11,19 @@ export function isVirtualKey(e: KeyboardEvent) {
     const isArrow = e.key.includes('Arrow') ? true : false;
     return isCapsLock || isMod || isAlt || isArrow || isShift || isTab || isEsc || isF;
 }
+
+export const isExpandHotkey = (event: KeyboardEvent) => {
+    return isKeyHotkey('mod+/', event);
+};
+
+export const isTabHotkey = (event: KeyboardEvent) => {
+    return event.key === 'Tab';
+};
+
+export const isEnterHotkey = (event: KeyboardEvent) => {
+    return event.key === 'Enter';
+};
+
+export const isSpaceHotkey = (event: KeyboardEvent) => {
+    return event.code === 'Space';
+};
