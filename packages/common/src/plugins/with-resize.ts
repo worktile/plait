@@ -38,6 +38,7 @@ export interface ResizeRef<T extends PlaitElement = PlaitElement> {
 export interface ResizeState {
     offsetX: number;
     offsetY: number;
+    endTransformPoint: Point;
 }
 
 const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
@@ -98,13 +99,13 @@ export const withResize = <T extends PlaitElement = PlaitElement>(board: PlaitBo
             // prevent text from being selected
             event.preventDefault();
             preventTouchMove(board, true);
-
+            const endTransformPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             throttleRAF(() => {
                 const endPoint = [event.x, event.y];
                 if (startPoint && resizeRef) {
                     const offsetX = endPoint[0] - startPoint[0];
                     const offsetY = endPoint[1] - startPoint[1];
-                    options.onResize(resizeRef, { offsetX, offsetY });
+                    options.onResize(resizeRef, { offsetX, offsetY, endTransformPoint });
                 }
             });
             return;

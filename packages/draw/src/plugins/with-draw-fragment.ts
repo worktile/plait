@@ -4,7 +4,7 @@ import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { CommonTransforms } from '@plait/common';
 import { getTextFromClipboard, getTextSize } from '@plait/text';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
-import { DrawTransform } from '../transforms';
+import { DrawTransforms } from '../transforms';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard;
@@ -45,7 +45,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             const insertAsFreeText = !insertAsChildren;
             if (text && insertAsFreeText) {
                 const { width, height } = getTextSize(board, text);
-                DrawTransform.insertText(board, [targetPoint, [targetPoint[0] + width, targetPoint[1] + height]], text);
+                DrawTransforms.insertText(board, [targetPoint, [targetPoint[0] + width, targetPoint[1] + height]], text);
                 return;
             }
         }

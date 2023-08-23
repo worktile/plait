@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { PlaitBoard, PlaitPluginElementComponent, PlaitPluginElementContext, OnContextChanged, updateForeignObject } from '@plait/core';
 import { Subject } from 'rxjs';
-import { GeometryShape, PlaitGeometry } from './interfaces/geometry';
+import { PlaitGeometry } from './interfaces/geometry';
 import { GeometryShapeGenerator } from './generator/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
-import { DrawTransform } from './transforms';
+import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
 import { ActiveGenerator, getRectangleByPoints } from '@plait/common';
 import { DefaultGeometryActiveStyle } from './constants/geometry';
@@ -98,9 +98,9 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
                 const width = textManageRef.width / this.board.viewport.zoom;
 
                 if (textManageRef.newValue) {
-                    DrawTransform.setText(this.board, this.element, textManageRef.newValue, width, height);
+                    DrawTransforms.setText(this.board, this.element, textManageRef.newValue, width, height);
                 } else {
-                    DrawTransform.setTextSize(this.board, this.element, width, height);
+                    DrawTransforms.setTextSize(this.board, this.element, width, height);
                 }
             },
             maxWidth: (this.element as PlaitText)?.autoSize ? DefaultTextProperty.maxWidth : width

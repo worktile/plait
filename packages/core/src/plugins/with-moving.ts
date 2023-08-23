@@ -5,7 +5,7 @@ import { toPoint } from '../utils/dom/common';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
-import { getHitElementOfRoot, getSelectedElements, isHitElements } from '../utils/selected-element';
+import { getHitElementOfRoot, getSelectedElements } from '../utils/selected-element';
 import { PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
 import { addMovingElements, removeMovingElements } from '../utils/moving-element';
@@ -13,7 +13,7 @@ import { MERGING } from '../interfaces/history';
 import { Range } from '../interfaces';
 
 export function withMoving(board: PlaitBoard) {
-    const { mousedown, mousemove, globalMouseup, globalMousemove } = board;
+    const { pointerDown, pointerMove, globalPointerUp, globalPointerMove } = board;
 
     let offsetX = 0;
     let offsetY = 0;
@@ -21,7 +21,7 @@ export function withMoving(board: PlaitBoard) {
     let startPoint: Point | null;
     let activeElements: PlaitElement[] = [];
 
-    board.mousedown = event => {
+    board.pointerDown = (event: PointerEvent) => {
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
         const range = { anchor: point, focus: point } as Range;
@@ -37,10 +37,10 @@ export function withMoving(board: PlaitBoard) {
             }
         }
 
-        mousedown(event);
+        pointerDown(event);
     };
 
-    board.mousemove = event => {
+    board.pointerMove = (event: PointerEvent) => {
         if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
             if (!isPreventDefault) {
                 isPreventDefault = true;
@@ -76,25 +76,25 @@ export function withMoving(board: PlaitBoard) {
             // 阻止 move 过程中触发画布滚动行为
             event.preventDefault();
         }
-        mousemove(event);
+        pointerMove(event);
     };
 
-    board.globalMousemove = event => {
+    board.globalPointerMove = (event: PointerEvent) => {
         if (startPoint) {
             const inPlaitBoardElement = isInPlaitBoard(board, event.x, event.y);
             if (!inPlaitBoardElement) {
                 cancelMove(board);
             }
         }
-        globalMousemove(event);
+        globalPointerMove(event);
     };
 
-    board.globalMouseup = event => {
+    board.globalPointerUp = event => {
         isPreventDefault = false;
         if (startPoint) {
             cancelMove(board);
         }
-        globalMouseup(event);
+        globalPointerUp(event);
     };
 
     function cancelMove(board: PlaitBoard) {

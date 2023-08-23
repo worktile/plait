@@ -18,7 +18,7 @@ import { GeometryShapeGenerator } from '../generator/geometry-shape.generator';
 import { DrawCreateMode, createGeometryElement, getCreateMode, getPointsByCenterPoint } from '../utils';
 import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, GeometryPointer, ShapeDefaultSpace } from '../constants';
 import { normalizeShapePoints } from '@plait/common';
-import { DrawTransform } from '../transforms';
+import { DrawTransforms } from '../transforms';
 import { DEFAULT_FONT_SIZE } from '@plait/text';
 
 export const withGeometryCreateByDrag = (board: PlaitBoard) => {
@@ -67,10 +67,10 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
             const targetPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const points = getDefaultGeometryPoints(pointer, targetPoint);
             if (pointer === DrawPointerType.rectangle) {
-                DrawTransform.insertGeometry(board, points, GeometryShape.rectangle);
+                DrawTransforms.insertGeometry(board, points, GeometryShape.rectangle);
             }
             if (pointer === DrawPointerType.text) {
-                DrawTransform.insertText(board, points);
+                DrawTransforms.insertText(board, points);
             }
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }

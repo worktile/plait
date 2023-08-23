@@ -1,9 +1,10 @@
-import { insertText, insertGeometry } from './geometry';
+import { insertText, insertGeometry, resizeGeometry } from './geometry';
 import { setText, setTextSize } from './geometry-text';
 
-export const DrawTransform = {
+export const DrawTransforms = {
     setText,
     insertGeometry,
+    resizeGeometry,
     insertText,
     setTextSize
 };
