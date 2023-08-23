@@ -76,7 +76,7 @@ export const withMindHotkey = (baseBoard: PlaitBoard) => {
                 return;
             }
 
-            if (!isVirtualKey(event) && !isSpaceHotkey(event) && isSingleSelection) {
+            if (!isVirtualKey(event) && !isSpaceHotkey(event) && isSingleSelection && PlaitMind.isMind(targetElement)) {
                 event.preventDefault();
                 editTopic(targetElement);
                 return;
