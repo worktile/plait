@@ -6,11 +6,9 @@ import {
     Transforms,
     addSelectedElement,
     getSelectedElements,
-    hotkeys,
     removeSelectedElement
 } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces';
-import { isKeyHotkey } from 'is-hotkey';
 import { AbstractNode } from '@plait/layouts';
 import { getFirstLevelElement, insertMindElement } from '../utils/mind';
 import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
@@ -21,9 +19,9 @@ import {
 } from '../utils/node/right-node-count';
 import { MindTransforms } from '../transforms';
 import { deleteElementHandleAbstract, insertElementHandleAbstract } from '../utils/abstract/common';
-import { isVirtualKey } from '../utils/is-virtual-key';
 import { editTopic, getSelectedMindElements } from '../utils/node/common';
 import { PlaitMindBoard } from './with-mind.board';
+import { isSpaceHotkey, isExpandHotkey, isTabHotkey, isEnterHotkey, isVirtualKey } from '@plait/common';
 
 export const withMindHotkey = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
@@ -78,7 +76,7 @@ export const withMindHotkey = (baseBoard: PlaitBoard) => {
                 return;
             }
 
-            if (!isVirtualKey(event) && !isSpaceHotkey(event) && isSingleSelection) {
+            if (!isVirtualKey(event) && !isSpaceHotkey(event) && isSingleSelection && PlaitMind.isMind(targetElement)) {
                 event.preventDefault();
                 editTopic(targetElement);
                 return;
@@ -143,20 +141,4 @@ export const getNextSelectedElement = (board: PlaitBoard, firstLevelElements: Mi
         activeElement = firstElementParent;
     }
     return activeElement;
-};
-
-export const isExpandHotkey = (event: KeyboardEvent) => {
-    return isKeyHotkey('mod+/', event);
-};
-
-export const isTabHotkey = (event: KeyboardEvent) => {
-    return event.key === 'Tab';
-};
-
-export const isEnterHotkey = (event: KeyboardEvent) => {
-    return event.key === 'Enter';
-};
-
-export const isSpaceHotkey = (event: KeyboardEvent) => {
-    return event.code === 'Space';
 };

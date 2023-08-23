@@ -4,7 +4,6 @@ export * from './mind';
 export * from './layout';
 export * from './node';
 export * from './node-style';
-export * from './is-virtual-key';
 export * from './dnd/common';
 export * from './dnd/detector';
 export * from './draw/node-dnd';
