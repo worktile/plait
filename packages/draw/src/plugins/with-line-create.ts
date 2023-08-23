@@ -48,7 +48,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
                 LineShape.elbow,
                 [start, movingPoint],
                 { marker: LineMarkerType.none },
-                { marker: LineMarkerType.none },
+                { marker: LineMarkerType.arrow },
                 {
                     strokeColor: DefaultLineStyle.strokeColor,
                     strokeWidth: DefaultLineStyle.strokeWidth
