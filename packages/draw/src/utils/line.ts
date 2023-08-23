@@ -1,6 +1,5 @@
-import { Point, RectangleClient, XYPosition, idCreator } from '@plait/core';
+import { Point, XYPosition, idCreator, polyLineNearestDistance } from '@plait/core';
 import { LineHandle, LineShape, PlaitLine } from '../interfaces';
-import { FlowPosition, getPoints } from '@plait/flow';
 
 export const createLineElement = (
     shape: LineShape,
@@ -23,104 +22,126 @@ export const createLineElement = (
 
 export const getElbowPoints = (element: PlaitLine) => {
     if (element.points.length === 2) {
-        const points: Point[] = [];
-        const XYPoints = getPoints({
-            source: {
-                x: element.points[0][0],
-                y: element.points[0][1]
-            },
-            sourcePosition: FlowPosition.right,
-            target: {
-                x: element.points[1][0],
-                y: element.points[1][1]
-            },
-            targetPosition: FlowPosition.left,
-            center: {
-                x: element.points[1][0],
-                y: element.points[1][1]
-            },
-            offset: 0
-        });
-        XYPoints[0].forEach((position: XYPosition) => {
-            points.push([position.x, position.y]);
-        });
+        const source = element.points[0];
+        const target = element.points[1];
+        const points: Point[] = getPoints(source, Direction.left, target, Direction.right, 0);
         return points;
     }
     return element.points;
 };
 
 export const isHitPolyLine = (pathPoints: Point[], point: Point, strokeWidth: number, expand: number = 0) => {
-    const nearestPoint = polyLineNearestPoint(pathPoints, point);
-    const distance = Math.hypot(nearestPoint[0] - point[0], nearestPoint[1] - point[1]);
+    const distance = polyLineNearestDistance(pathPoints, point);
     return distance <= strokeWidth + expand;
 };
 
-export function polyLineNearestPoint(points: Point[], point: Point) {
-    const len = points.length;
-    let result: Point = points[0];
-    let distance = Infinity;
-    for (let i = 0; i < len - 1; i++) {
-        const p = points[i];
-        const p2 = points[i + 1];
-        const temp = getNearestPointOnLine([p, p2], point);
-        const currentDistance = Math.hypot(temp[1] - point[1], temp[0] - point[0]);
-        if (currentDistance < distance) {
-            distance = currentDistance;
-            result = temp;
-        }
-    }
-    return result;
+export enum Direction {
+    left = 'left',
+    top = 'top',
+    right = 'right',
+    bottom = 'bottom'
 }
 
-export const getNearestPointOnLine = (linePoints: [Point, Point], point: Point): Point => {
-    const A = { x: linePoints[0][0], y: linePoints[0][1] };
-    const B = { x: linePoints[1][0], y: linePoints[1][1] };
-    const P = { x: point[0], y: point[1] };
-    const AB = { x: B.x - A.x, y: B.y - A.y };
-    const AP = { x: P.x - A.x, y: P.y - A.y };
-    const dotProduct = AB.x * AP.x + AB.y * AP.y;
-    const squaredLengthAB = AB.x * AB.x + AB.y * AB.y;
+const handleDirections = {
+    [Direction.left]: { x: -1, y: 0 },
+    [Direction.right]: { x: 1, y: 0 },
+    [Direction.top]: { x: 0, y: -1 },
+    [Direction.bottom]: { x: 0, y: 1 }
+};
 
-    const t = dotProduct / squaredLengthAB;
+const getDirection = (source: Point, sourcePosition = Direction.bottom, target: Point): XYPosition => {
+    if (sourcePosition === Direction.left || sourcePosition === Direction.right) {
+        return source[0] < target[1] ? { x: 1, y: 0 } : { x: -1, y: 0 };
+    }
+    return source[1] < target[1] ? { x: 0, y: 1 } : { x: 0, y: -1 };
+};
 
-    if (t < 0) {
-        return [A.x, A.y];
-    } else if (t > 1) {
-        return [B.x, B.y];
+export function getEdgeCenter({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY
+}: {
+    sourceX: number;
+    sourceY: number;
+    targetX: number;
+    targetY: number;
+}): [number, number, number, number] {
+    const xOffset = Math.abs(targetX - sourceX) / 2;
+    const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
+
+    const yOffset = Math.abs(targetY - sourceY) / 2;
+    const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+
+    return [centerX, centerY, xOffset, yOffset];
+}
+
+export const getPoints = (source: Point, sourcePosition: Direction, target: Point, targetPosition: Direction, offset: number) => {
+    const sourceDir = handleDirections[sourcePosition];
+    const targetDir = handleDirections[targetPosition];
+    const sourceGapped: Point = [source[0] + sourceDir.x * offset, source[1] + sourceDir.y * offset];
+    const targetGapped: Point = [target[0] + targetDir.x * offset, target[1] + targetDir.y * offset];
+    const dir = getDirection(sourceGapped, sourcePosition, targetGapped);
+    const dirAccessor = dir.x !== 0 ? 'x' : 'y';
+    const currDir = dir[dirAccessor];
+
+    let points: Point[] = [];
+    let centerX, centerY;
+    const [defaultCenterX, defaultCenterY] = getEdgeCenter({
+        sourceX: source[0],
+        sourceY: source[1],
+        targetX: target[0],
+        targetY: target[1]
+    });
+    // opposite handle positions, default case
+    if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
+        centerX = defaultCenterX;
+        centerY = defaultCenterY;
+        //    --->
+        //    |
+        // >---
+        const verticalSplit: Point[] = [
+            [centerX, sourceGapped[1]],
+            [centerX, targetGapped[1]]
+        ];
+        //    |
+        //  ---
+        //  |
+        const horizontalSplit: Point[] = [
+            [sourceGapped[0], centerY],
+            [targetGapped[0], centerY]
+        ];
+        if (sourceDir[dirAccessor] === currDir) {
+            points = dirAccessor === 'x' ? verticalSplit : horizontalSplit;
+        } else {
+            points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
+        }
     } else {
-        const Q = { x: A.x + t * AB.x, y: A.y + t * AB.y };
-        return [Q.x, Q.y];
+        // sourceTarget means we take x from source and y from target, targetSource is the opposite
+        const sourceTarget: Point[] = [[sourceGapped[0], targetGapped[1]]];
+        const targetSource: Point[] = [[targetGapped[0], sourceGapped[1]]];
+        // this handles edges with same handle positions
+        if (dirAccessor === 'x') {
+            points = sourceDir.x === currDir ? targetSource : sourceTarget;
+        } else {
+            points = sourceDir.y === currDir ? sourceTarget : targetSource;
+        }
+
+        // these are conditions for handling mixed handle positions like right -> bottom for example
+        let flipSourceTarget;
+        if (sourcePosition !== targetPosition) {
+            const dirAccessorOpposite = dirAccessor === 'x' ? 1 : 0;
+            const isSameDir = sourceDir[dirAccessor] === targetDir[dirAccessor === 'x' ? 'y' : 'x'];
+            const sourceGtTargetOppo = sourceGapped[dirAccessorOpposite] > targetGapped[dirAccessorOpposite];
+            const sourceLtTargetOppo = sourceGapped[dirAccessorOpposite] < targetGapped[dirAccessorOpposite];
+            flipSourceTarget =
+                (sourceDir[dirAccessor] === 1 && ((!isSameDir && sourceGtTargetOppo) || (isSameDir && sourceLtTargetOppo))) ||
+                (sourceDir[dirAccessor] !== 1 && ((!isSameDir && sourceLtTargetOppo) || (isSameDir && sourceGtTargetOppo)));
+
+            if (flipSourceTarget) {
+                points = dirAccessor === 'x' ? sourceTarget : targetSource;
+            }
+        }
     }
-};
-
-export const isLinesIntersect = (a: Point, b: Point, c: Point, d: Point): boolean => {
-    const crossProduct = (v1: Point, v2: Point) => v1[0] * v2[1] - v1[1] * v2[0];
-
-    const ab: Point = [b[0] - a[0], b[1] - a[1]];
-    const ac: Point = [c[0] - a[0], c[1] - a[1]];
-    const ad: Point = [d[0] - a[0], d[1] - a[1]];
-
-    const ca: Point = [a[0] - c[0], a[1] - c[1]];
-    const cb: Point = [b[0] - c[0], b[1] - c[1]];
-    const cd: Point = [d[0] - c[0], d[1] - c[1]];
-
-    return crossProduct(ab, ac) * crossProduct(ab, ad) <= 0 && crossProduct(cd, ca) * crossProduct(cd, cb) <= 0;
-};
-
-export const isPolyLineIntersectWithRectangle = (points: Point[], rectangle: RectangleClient) => {
-    const leftTopPoint: Point = [rectangle.x, rectangle.y];
-    const rightTopPoint: Point = [rectangle.x + rectangle.width, rectangle.y];
-    const leftBottomPoint: Point = [rectangle.x, rectangle.y + rectangle.height];
-    const rightBottomPoint: Point = [rectangle.x + rectangle.width, rectangle.y + rectangle.height];
-
-    for (let i = 1; i < points.length; i++) {
-        const isIntersect =
-            isLinesIntersect(points[i], points[i - 1], leftTopPoint, rightTopPoint) ||
-            isLinesIntersect(points[i], points[i - 1], rightTopPoint, leftBottomPoint) ||
-            isLinesIntersect(points[i], points[i - 1], leftBottomPoint, rightBottomPoint) ||
-            isLinesIntersect(points[i], points[i - 1], rightBottomPoint, leftTopPoint);
-        if (isIntersect) return true;
-    }
-
-    return false;
+    return [source, sourceGapped, ...points, targetGapped, target];
 };

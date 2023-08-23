@@ -24,6 +24,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
     constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
         super(cdr);
     }
+
     initializeGenerator() {
         this.shapeGenerator = new LineShapeGenerator(this.board);
         this.activeGenerator = new LineActiveGenerator(this.board);

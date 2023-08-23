@@ -1,4 +1,12 @@
-import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Range, RectangleClient, getSelectedElements } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitElement,
+    PlaitPluginElementContext,
+    Range,
+    RectangleClient,
+    getSelectedElements,
+    isPolyLineIntersectWithRectangle
+} from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
@@ -6,7 +14,7 @@ import { getRectangleByPoints } from '@plait/common';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDraw, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
-import { getElbowPoints, getTextRectangle, isHitPolyLine, isPolyLineIntersectWithRectangle } from '../utils';
+import { getElbowPoints, getTextRectangle, isHitPolyLine } from '../utils';
 import { getStrokeWidthByElement } from '../utils/geometry-style/stroke';
 import { withLineCreateByDraw } from './with-line-create';
 
