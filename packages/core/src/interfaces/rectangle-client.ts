@@ -45,5 +45,13 @@ export const RectangleClient = {
             rectangle.width === otherRectangle.width &&
             rectangle.height === otherRectangle.height
         );
+    },
+    getCornerPoints: (rectangle: RectangleClient) => {
+        return [
+            [rectangle.x, rectangle.y],
+            [rectangle.x + rectangle.width, rectangle.y],
+            [rectangle.x + rectangle.width, rectangle.y + rectangle.height],
+            [rectangle.x, rectangle.y + rectangle.height]
+        ] as [Point, Point, Point, Point];
     }
 };

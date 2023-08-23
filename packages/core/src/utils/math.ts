@@ -1,4 +1,3 @@
-import { getHandleCenters } from '@plait/common';
 import { Point } from '../interfaces';
 import { RectangleClient } from '../interfaces/rectangle-client';
 
@@ -34,7 +33,7 @@ export function distanceBetweenPointAndSegment(x: number, y: number, x1: number,
     return Math.hypot(dx, dy);
 }
 
-export function polyLineNearestDistance(points: Point[], point: Point) {
+export function distanceBetweenPointAndSegments(points: Point[], point: Point) {
     const len = points.length;
     let distance = Infinity;
     for (let i = 0; i < len - 1; i++) {
@@ -68,7 +67,7 @@ export function distanceBetweenPointAndRectangle(x: number, y: number, rect: Rec
     return Math.sqrt(dx * dx + dy * dy);
 }
 
-export const isLinesIntersect = (a: Point, b: Point, c: Point, d: Point): boolean => {
+export const isLineHitLine = (a: Point, b: Point, c: Point, d: Point): boolean => {
     const crossProduct = (v1: Point, v2: Point) => v1[0] * v2[1] - v1[1] * v2[0];
 
     const ab: Point = [b[0] - a[0], b[1] - a[1]];
@@ -82,15 +81,18 @@ export const isLinesIntersect = (a: Point, b: Point, c: Point, d: Point): boolea
     return crossProduct(ab, ac) * crossProduct(ab, ad) <= 0 && crossProduct(cd, ca) * crossProduct(cd, cb) <= 0;
 };
 
-export const isPolyLineIntersectWithRectangle = (points: Point[], rectangle: RectangleClient) => {
-    const rectanglePoints = getHandleCenters(rectangle);
+export const isPolylineHitRectangle = (points: Point[], rectangle: RectangleClient) => {
+    const rectanglePoints = RectangleClient.getCornerPoints(rectangle);
+
     for (let i = 1; i < points.length; i++) {
         const isIntersect =
-            isLinesIntersect(points[i], points[i - 1], rectanglePoints[0], rectanglePoints[1]) ||
-            isLinesIntersect(points[i], points[i - 1], rectanglePoints[1], rectanglePoints[2]) ||
-            isLinesIntersect(points[i], points[i - 1], rectanglePoints[2], rectanglePoints[3]) ||
-            isLinesIntersect(points[i], points[i - 1], rectanglePoints[3], rectanglePoints[0]);
-        if (isIntersect) return true;
+            isLineHitLine(points[i], points[i - 1], rectanglePoints[0], rectanglePoints[1]) ||
+            isLineHitLine(points[i], points[i - 1], rectanglePoints[1], rectanglePoints[2]) ||
+            isLineHitLine(points[i], points[i - 1], rectanglePoints[2], rectanglePoints[3]) ||
+            isLineHitLine(points[i], points[i - 1], rectanglePoints[3], rectanglePoints[0]);
+        if (isIntersect) {
+            return true;
+        }
     }
 
     return false;

@@ -5,7 +5,7 @@ import {
     Range,
     RectangleClient,
     getSelectedElements,
-    isPolyLineIntersectWithRectangle
+    isPolylineHitRectangle
 } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
@@ -55,7 +55,7 @@ export const withDraw = (board: PlaitBoard) => {
             const isContainPolyLinePoint = points.some(point => {
                 return RectangleClient.isHit(rangeRectangle, RectangleClient.toRectangleClient([point, point]));
             });
-            const isIntersect = range.anchor === range.focus ? isHit : isPolyLineIntersectWithRectangle(points, rangeRectangle);
+            const isIntersect = range.anchor === range.focus ? isHit : isPolylineHitRectangle(points, rangeRectangle);
             return isContainPolyLinePoint || isIntersect;
         }
 
