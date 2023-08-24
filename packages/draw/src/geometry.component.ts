@@ -7,10 +7,9 @@ import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
 import { ActiveGenerator, getRectangleByPoints } from '@plait/common';
-import { DefaultGeometryActiveStyle } from './constants/geometry';
+import { DefaultGeometryActiveStyle, GeometryThreshold } from './constants/geometry';
 import { getStrokeWidthByElement } from './utils/geometry-style/stroke';
 import { PlaitText } from './interfaces';
-import { DefaultTextProperty } from './constants';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -103,7 +102,7 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
                     DrawTransforms.setTextSize(this.board, this.element, width, height);
                 }
             },
-            maxWidth: (this.element as PlaitText)?.autoSize ? DefaultTextProperty.maxWidth : width
+            maxWidth: (this.element as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width
         });
     }
 

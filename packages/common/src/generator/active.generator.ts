@@ -1,7 +1,7 @@
 import { PlaitBoard, PlaitElement, Point, RectangleClient, createG, drawCircle } from '@plait/core';
 import { Generator } from './generator';
 import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '../constants/default';
-import { drawRectangle } from '../rectangle';
+import { drawRectangle } from '../utils/rectangle';
 import { Options } from 'roughjs/bin/core';
 
 export interface ActiveGeneratorExtraData {

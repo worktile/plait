@@ -44,7 +44,7 @@ export const getTextRectangle = (element: PlaitGeometry) => {
 
     return {
         height,
-        width,
+        width: width > 0 ? width : 0,
         x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText,
         y: elementRectangle.y + (elementRectangle.height - height) / 2
     };

@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, Transforms } from '@plait/core';
 import { Element } from 'slate';
 import { PlaitGeometry, PlaitText } from '../interfaces';
-import { DefaultTextProperty, ShapeDefaultSpace } from '../constants';
+import { DefaultTextProperty, GeometryThreshold, ShapeDefaultSpace } from '../constants';
 
 const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: number, textHeight: number) => {
     let points = element.points;
@@ -11,7 +11,7 @@ const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: numbe
     if (autoSize) {
         points = [points[0], [points[0][0] + width + defaultSpace * 2, points[0][1] + textHeight]];
 
-        if (width >= DefaultTextProperty.maxWidth) {
+        if (width >= GeometryThreshold.defaultTextMaxWidth) {
             points = [points[0], [points[0][0] + width + defaultSpace * 2, points[0][1] + textHeight]];
         }
     }

@@ -3,7 +3,6 @@
  */
 
 export * from './constants';
-export * from './rectangle';
 export * from './generator';
 export * from './transforms';
 export * from './shape';

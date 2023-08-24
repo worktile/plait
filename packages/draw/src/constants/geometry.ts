@@ -22,6 +22,9 @@ export const DefaultGeometryProperty = {
 export const DefaultTextProperty = {
     width: 36,
     height: 20,
-    maxWidth: 34 * 14,
     text: '文本'
 };
+
+export const GeometryThreshold = {
+    defaultTextMaxWidth: 34 * 14,
+}

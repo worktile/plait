@@ -1,9 +1,9 @@
 import { PlaitBoard, Transforms, Point, addSelectedElement, clearSelectedElement, Path, PlaitNode } from '@plait/core';
-import { DefaultGeometryProperty } from '../constants';
+import { DefaultGeometryProperty, GeometryThreshold } from '../constants';
 import { GeometryShape, PlaitDrawElement, PlaitGeometry, PlaitText } from '../interfaces';
 import { createGeometryElement } from '../utils';
 import { Element } from 'slate';
-import { normalizeShapePoints } from '@plait/common';
+import { getRectangleByPoints, normalizeShapePoints } from '@plait/common';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShape) => {
     let newElement = createGeometryElement(shape, points, '', {
