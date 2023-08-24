@@ -1,5 +1,19 @@
 # mind
 
+## 0.27.0-next.1
+
+### Minor Changes
+
+-   [#532](https://github.com/worktile/plait/pull/532) [`a7dfd850`](https://github.com/worktile/plait/commit/a7dfd850732c43f99aaff4e336bcda16768b93c0) Thanks [@WBbug](https://github.com/WBbug)! - support keyDown edit text
+
+*   [`d8a77123`](https://github.com/worktile/plait/commit/d8a771232a4fc8539abc2408646b55834af2b00c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - draw line support resize
+
+### Patch Changes
+
+-   [#533](https://github.com/worktile/plait/pull/533) [`d369c911`](https://github.com/worktile/plait/commit/d369c911ab4a12db8df43a5202d25973598b13bd) Thanks [@WBbug](https://github.com/WBbug)! - change hotkey judge condition
+
+*   [`f0a54854`](https://github.com/worktile/plait/commit/f0a54854876424f5dc2881a4125a6e2aea423f48) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - destroy active as mind node image delete
+
 ## 0.27.0-next.0
 
 ### Minor Changes
