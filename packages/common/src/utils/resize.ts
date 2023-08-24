@@ -1,16 +1,16 @@
 import { PlaitBoard, Point, RectangleClient } from '@plait/core';
-import { ResizeCursorClass, ResizeDirection } from '../constants/resize';
+import { ResizeCursorClass, ResizeHandle } from '../constants/resize';
 
-const getResizeDirectionByIndex = (index: number) => {
+const getResizeHandleByIndex = (index: number) => {
     switch (index) {
         case 0:
-            return ResizeDirection.nw;
+            return ResizeHandle.nw;
         case 1:
-            return ResizeDirection.ne;
+            return ResizeHandle.ne;
         case 2:
-            return ResizeDirection.se;
+            return ResizeHandle.se;
         case 3:
-            return ResizeDirection.sw;
+            return ResizeHandle.sw;
         default:
             return null;
     }
@@ -31,7 +31,7 @@ const getResizeCursorClassByIndex = (index: number) => {
     }
 };
 
-export const getRectangleResizeTargets = (rectangle: RectangleClient, diameter: number) => {
+export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diameter: number) => {
     const centers = RectangleClient.getCornerPoints(rectangle);
     return centers.map((center, index: number) => {
         return {
@@ -41,7 +41,7 @@ export const getRectangleResizeTargets = (rectangle: RectangleClient, diameter: 
                 width: diameter,
                 height: diameter
             },
-            direction: getResizeDirectionByIndex(index) as ResizeDirection,
+            handle: getResizeHandleByIndex(index) as ResizeHandle,
             cursorClass: getResizeCursorClassByIndex(index) as ResizeCursorClass
         };
     });

@@ -3,7 +3,7 @@ import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
 import { addSelectedImageElement, getSelectedImageElement } from '../utils/node/image';
 import { getHitImageResizeHandleDirection } from '../utils';
-import { ResizeCursorClass, ResizeDirection, ResizeRef, ResizeState, WithResizeOptions, withResize } from '@plait/common';
+import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, withResize } from '@plait/common';
 import { MindTransforms } from '../transforms';
 
 export const withNodeImageResize = (board: PlaitBoard) => {
@@ -19,7 +19,7 @@ export const withNodeImageResize = (board: PlaitBoard) => {
                 if (result) {
                     return {
                         element: selectedMindElement,
-                        direction: result.direction as ResizeDirection,
+                        handle: result.handle as ResizeHandle,
                         cursorClass: result.cursorClass
                     };
                 }
@@ -29,7 +29,7 @@ export const withNodeImageResize = (board: PlaitBoard) => {
         onResize: (resizeRef: ResizeRef<MindElement<ImageData>>, resizeState: ResizeState) => {
             let offsetX = resizeState.offsetX;
             let offsetY = resizeState.offsetY;
-            if (resizeRef.direction === ResizeDirection.nw || resizeRef.direction === ResizeDirection.sw) {
+            if (resizeRef.handle === ResizeHandle.nw || resizeRef.handle === ResizeHandle.sw) {
                 offsetX = -offsetX;
             }
             const originWidth = resizeRef.element.data.image.width;

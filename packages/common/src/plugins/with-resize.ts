@@ -13,26 +13,26 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { ResizeDirection, ResizeCursorClass } from '../constants/resize';
+import { ResizeHandle, ResizeCursorClass } from '../constants/resize';
 import { addResizing, isResizing, removeResizing } from '../utils/resize';
 
-export interface WithResizeOptions<T extends PlaitElement = PlaitElement> {
+export interface WithResizeOptions<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
     key: string;
     canResize: () => boolean;
-    detect: (point: Point) => ResizeDetectResult<T> | null;
-    onResize: (resizeRef: ResizeRef<T>, resizeState: ResizeState) => void;
+    detect: (point: Point) => ResizeDetectResult<T, K> | null;
+    onResize: (resizeRef: ResizeRef<T, K>, resizeState: ResizeState) => void;
 }
 
-export interface ResizeDetectResult<T extends PlaitElement = PlaitElement> {
+export interface ResizeDetectResult<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
     element: T;
-    direction: ResizeDirection;
-    cursorClass: ResizeCursorClass;
+    handle: K;
+    cursorClass?: ResizeCursorClass;
 }
 
-export interface ResizeRef<T extends PlaitElement = PlaitElement> {
+export interface ResizeRef<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
     element: T;
     path: Path;
-    direction: ResizeDirection;
+    handle: K;
 }
 
 export interface ResizeState {
@@ -50,12 +50,12 @@ const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
     );
 };
 
-export const withResize = <T extends PlaitElement = PlaitElement>(board: PlaitBoard, options: WithResizeOptions<T>) => {
+export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHandle>(board: PlaitBoard, options: WithResizeOptions<T, K>) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;
-    let resizeDetectResult: ResizeDetectResult<T> | null = null;
-    let resizeRef: ResizeRef<T> | null = null;
+    let resizeDetectResult: ResizeDetectResult<T, K> | null = null;
+    let resizeRef: ResizeRef<T, K> | null = null;
     let startPoint: Point | null = null;
-    let hoveDetectResult: ResizeDetectResult<T> | null = null;
+    let hoveDetectResult: ResizeDetectResult<T, K> | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
         if (!options.canResize() || !generalCanResize(board, event)) {
@@ -65,12 +65,14 @@ export const withResize = <T extends PlaitElement = PlaitElement>(board: PlaitBo
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         resizeDetectResult = options.detect(point);
         if (resizeDetectResult) {
-            PlaitBoard.getBoardContainer(board).classList.add(`${resizeDetectResult.cursorClass}`);
+            if (resizeDetectResult.cursorClass) {
+                PlaitBoard.getBoardContainer(board).classList.add(`${resizeDetectResult.cursorClass}`);
+            }
             startPoint = [event.x, event.y];
             resizeRef = {
                 path: PlaitBoard.findPath(board, resizeDetectResult.element),
                 element: resizeDetectResult.element,
-                direction: resizeDetectResult.direction
+                handle: resizeDetectResult.handle
             };
             return;
         }
@@ -114,10 +116,14 @@ export const withResize = <T extends PlaitElement = PlaitElement>(board: PlaitBo
             const resizeDetectResult = options.detect(point);
             if (resizeDetectResult) {
                 hoveDetectResult = resizeDetectResult;
-                PlaitBoard.getBoardContainer(board).classList.add(`${hoveDetectResult.cursorClass}`);
+                if (hoveDetectResult.cursorClass) {
+                    PlaitBoard.getBoardContainer(board).classList.add(`${hoveDetectResult.cursorClass}`);
+                }
             } else {
                 if (hoveDetectResult) {
-                    PlaitBoard.getBoardContainer(board).classList.remove(`${hoveDetectResult.cursorClass}`);
+                    if (hoveDetectResult.cursorClass) {
+                        PlaitBoard.getBoardContainer(board).classList.remove(`${hoveDetectResult.cursorClass}`);
+                    }
                     hoveDetectResult = null;
                 }
             }

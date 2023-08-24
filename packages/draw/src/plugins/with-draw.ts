@@ -18,6 +18,7 @@ import { getElbowPoints, getTextRectangle, isHitPolyLine } from '../utils';
 import { getStrokeWidthByElement } from '../utils/geometry-style/stroke';
 import { withLineCreateByDraw } from './with-line-create';
 import { withGeometryResize } from './with-geometry-resize';
+import { withLineResize } from './with-line-resize';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isHitSelection, isMovable, dblclick } = board;
@@ -83,7 +84,9 @@ export const withDraw = (board: PlaitBoard) => {
         dblclick(event);
     };
 
-    return withGeometryResize(
-        withLineCreateByDraw(withGeometryCreateByDrag(withGeometryCreateByDraw(withDrawFragment(withDrawHotkey(board)))))
+    return withLineResize(
+        withGeometryResize(
+            withLineCreateByDraw(withGeometryCreateByDrag(withGeometryCreateByDraw(withDrawFragment(withDrawHotkey(board)))))
+        )
     );
 };

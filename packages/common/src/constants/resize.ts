@@ -5,7 +5,7 @@ export enum ResizeCursorClass {
     nwse = 'nwse-resize'
 }
 
-export enum ResizeDirection {
+export enum ResizeHandle {
     ne = 'ne',
     n = 'n',
     nw = 'nw',
