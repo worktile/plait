@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { ImageItem, ImageData } from '../interfaces/element-data';
 import { PlaitBoard, PlaitElement } from '@plait/core';
 import { MindElement } from '../interfaces';
@@ -11,7 +11,7 @@ import { PlaitMindBoard } from '../plugins/with-mind.board';
         class: 'mind-node-image'
     }
 })
-export abstract class MindImageBaseComponent implements OnInit {
+export abstract class MindImageBaseComponent implements OnInit, OnDestroy {
     _imageItem!: ImageItem;
     _isFocus!: boolean;
     initialized = false;
@@ -70,6 +70,12 @@ export abstract class MindImageBaseComponent implements OnInit {
         if (this.initialized) {
             const com = PlaitElement.getComponent(this.element);
             this.activeGenerator.draw(this.element, com.g, { selected: this._isFocus });
+        }
+    }
+    
+    ngOnDestroy(): void {
+        if (this.activeGenerator) {
+            this.activeGenerator.destroy();
         }
     }
 }
