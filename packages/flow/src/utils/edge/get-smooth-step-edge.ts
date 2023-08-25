@@ -81,13 +81,12 @@ export function getPoints({
         }
 
         // these are conditions for handling mixed handle positions like right -> bottom for example
-        let flipSourceTarget;
         if (sourcePosition !== targetPosition) {
             const dirAccessorOpposite = dirAccessor === 'x' ? 'y' : 'x';
             const isSameDir = sourceDir[dirAccessor] === targetDir[dirAccessorOpposite];
             const sourceGtTargetOppo = sourceGapped[dirAccessorOpposite] > targetGapped[dirAccessorOpposite];
             const sourceLtTargetOppo = sourceGapped[dirAccessorOpposite] < targetGapped[dirAccessorOpposite];
-            flipSourceTarget =
+            const flipSourceTarget =
                 (sourceDir[dirAccessor] === 1 && ((!isSameDir && sourceGtTargetOppo) || (isSameDir && sourceLtTargetOppo))) ||
                 (sourceDir[dirAccessor] !== 1 && ((!isSameDir && sourceLtTargetOppo) || (isSameDir && sourceGtTargetOppo)));
 
@@ -96,41 +95,66 @@ export function getPoints({
             }
         }
 
-        const { x, y } = getCenter(sourceGapped, targetGapped, dirAccessor, sourceDir, currDir, flipSourceTarget);
-        centerX = x;
-        centerY = y;
+        centerX = points[0].x;
+        centerY = points[0].y;
     }
 
     const pathPoints = [source, sourceGapped, ...points, targetGapped, target];
     return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
 }
 
-const getCenter = (
-    sourceGapped: XYPosition,
-    targetGapped: XYPosition,
-    dirAccessor: 'x' | 'y',
-    sourceDir: XYPosition,
-    currDir: number,
-    flipSourceTarget = false
-): XYPosition => {
-    const center: XYPosition = {
-        x: Math.max(targetGapped.x, sourceGapped.x) - Math.abs(targetGapped.x - sourceGapped.x) / 2,
-        y: Math.max(targetGapped.y, sourceGapped.y) - Math.abs(targetGapped.y - sourceGapped.y) / 2
-    };
-    const isOffsetXGreater = Math.abs(targetGapped.x - sourceGapped.x) > Math.abs(targetGapped.y - sourceGapped.y);
-    const targetSource = isOffsetXGreater ? { x: center.x, y: sourceGapped.y } : { x: targetGapped.x, y: center.y };
-    const sourceTarget = isOffsetXGreater ? { x: center.x, y: targetGapped.y } : { x: sourceGapped.x, y: center.y };
+export const getLabelPoints = (pathPoints: XYPosition[], numSegments: number = 2): XYPosition[] => {
+    const points = [...pathPoints];
+    const distanceLengths = [];
+    let totalLength = 0;
+    let usedLength = 0;
+    // 计算相邻两个点之间的距离，并将其加入到长度数组中
+    for (let i = 1; i < points.length; i++) {
+        const dx = points[i].x - points[i - 1].x;
+        const dy = points[i].y - points[i - 1].y;
+        const length = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+        totalLength += length;
+        distanceLengths.push(length);
+    }
+    const segmentLength = totalLength / numSegments;
+    const equidistantPoints: XYPosition[] = [];
+    let currentPoint = points[0];
+    let currentSegment = 1;
+    let remainingLength = segmentLength;
+    let i = 0;
 
-    let centerPoints;
-    if (dirAccessor === 'x') {
-        centerPoints = sourceDir.x === currDir ? targetSource : sourceTarget;
-    } else {
-        centerPoints = sourceDir.y === currDir ? sourceTarget : targetSource;
+    while (i < points.length - 1) {
+        const dx = points[i + 1].x - currentPoint.x;
+        const dy = points[i + 1].y - currentPoint.y;
+        // 相邻点间距离
+        const distance = distanceLengths[i];
+        // 两点间距离包含剩余长度
+        if (distance - usedLength > remainingLength) {
+            // 剩余长度占当前距离的比例
+            const ratio = remainingLength / distance;
+            const x = currentPoint.x + dx * ratio;
+            const y = currentPoint.y + dy * ratio;
+            equidistantPoints.push({ x: x, y: y });
+            currentSegment++;
+            if (currentSegment > numSegments) {
+                break;
+            }
+            // 当前这两点间找到等分点后已使用距离
+            usedLength += Math.sqrt(Math.pow(x - currentPoint.x, 2) + Math.pow(y - currentPoint.y, 2));
+            if (distance - usedLength > 0) {
+                // 将当前坐标点设置为上个等分点
+                currentPoint = { x: x, y: y };
+            }
+            // 重置剩余长度找下一个等分点
+            remainingLength = segmentLength;
+        } else {
+            currentPoint = points[i + 1];
+            remainingLength = remainingLength - (distance - usedLength);
+            usedLength = 0;
+            i++;
+        }
     }
-    if (flipSourceTarget) {
-        centerPoints = dirAccessor === 'x' ? sourceTarget : targetSource;
-    }
-    return centerPoints;
+    return equidistantPoints;
 };
 
 const getDirection = ({
