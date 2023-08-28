@@ -43,7 +43,6 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         }
         if (element.target.connection) {
             targetDirection = getDirectionByPoint(element.target.connection, targetDirection);
-            targetDirection = getOppositeDirection(targetDirection);
         }
         const points: Point[] = getPoints(source, sourceDirection, target, targetDirection, 30);
         return points;
