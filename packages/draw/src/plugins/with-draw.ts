@@ -19,6 +19,7 @@ import { getStrokeWidthByElement } from '../utils/geometry-style/stroke';
 import { withLineCreateByDraw } from './with-line-create';
 import { withGeometryResize } from './with-geometry-resize';
 import { withLineResize } from './with-line-resize';
+import { withLineBoundReaction } from './with-line-bound-reaction';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isHitSelection, isMovable, dblclick } = board;
@@ -50,7 +51,7 @@ export const withDraw = (board: PlaitBoard) => {
             return RectangleClient.isHit(rangeRectangle, client);
         }
         if (PlaitDrawElement.isLine(element)) {
-            const points = getElbowPoints(element);
+            const points = getElbowPoints(board, element);
             const strokeWidth = getStrokeWidthByElement(board, element);
             const isHit = isHitPolyLine(points, range.focus, strokeWidth, 3);
             const rangeRectangle = RectangleClient.toRectangleClient([range.anchor, range.focus]);
@@ -69,7 +70,7 @@ export const withDraw = (board: PlaitBoard) => {
             return true;
         }
         if (PlaitDrawElement.isLine(element)) {
-            return true;
+            return !element.source.boundId && !element.source.boundId;
         }
         return isMovable(element);
     };
@@ -84,9 +85,11 @@ export const withDraw = (board: PlaitBoard) => {
         dblclick(event);
     };
 
-    return withLineResize(
-        withGeometryResize(
-            withLineCreateByDraw(withGeometryCreateByDrag(withGeometryCreateByDraw(withDrawFragment(withDrawHotkey(board)))))
+    return withLineBoundReaction(
+        withLineResize(
+            withGeometryResize(
+                withLineCreateByDraw(withGeometryCreateByDrag(withGeometryCreateByDraw(withDrawFragment(withDrawHotkey(board)))))
+            )
         )
     );
 };

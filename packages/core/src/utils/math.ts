@@ -33,6 +33,41 @@ export function distanceBetweenPointAndSegment(x: number, y: number, x1: number,
     return Math.hypot(dx, dy);
 }
 
+export function getNearestPointBetweenPointAndSegment(point: Point, linePoints: [Point, Point]) {
+    const x = point[0],
+        y = point[1],
+        x1 = linePoints[0][0],
+        y1 = linePoints[0][1],
+        x2 = linePoints[1][0],
+        y2 = linePoints[1][1];
+    const A = x - x1;
+    const B = y - y1;
+    const C = x2 - x1;
+    const D = y2 - y1;
+
+    const dot = A * C + B * D;
+    const lenSquare = C * C + D * D;
+    let param = -1;
+    if (lenSquare !== 0) {
+        // in case of 0 length line
+        param = dot / lenSquare;
+    }
+
+    let xx, yy;
+    if (param < 0) {
+        xx = x1;
+        yy = y1;
+    } else if (param > 1) {
+        xx = x2;
+        yy = y2;
+    } else {
+        xx = x1 + param * C;
+        yy = y1 + param * D;
+    }
+
+    return [xx, yy] as Point;
+}
+
 export function distanceBetweenPointAndSegments(points: Point[], point: Point) {
     const len = points.length;
     let distance = Infinity;
@@ -45,6 +80,23 @@ export function distanceBetweenPointAndSegments(points: Point[], point: Point) {
         }
     }
     return distance;
+}
+
+export function getNearestPointBetweenPointAndSegments(point: Point, points: Point[]) {
+    const len = points.length;
+    let distance = Infinity;
+    let result: Point = point;
+
+    for (let i = 0; i < len; i++) {
+        const p = points[i];
+        const p2 = i === len - 1 ? points[0] : points[i + 1];
+        const currentDistance = distanceBetweenPointAndSegment(point[0], point[1], p[0], p[1], p2[0], p2[1]);
+        if (currentDistance < distance) {
+            distance = currentDistance;
+            result = getNearestPointBetweenPointAndSegment(point, [p, p2]);
+        }
+    }
+    return result;
 }
 
 export function rotate(x1: number, y1: number, x2: number, y2: number, angle: number) {

@@ -1,6 +1,7 @@
 import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitLine } from '../../interfaces';
 import { RESIZE_HANDLE_DIAMETER } from '@plait/common';
+import { getSourcePoint, getTargetPoint } from '../line';
 
 export enum LineResizeHandle {
     'source' = 'source',
@@ -8,8 +9,8 @@ export enum LineResizeHandle {
 }
 
 export const getHitLineResizeHandleRef = (board: PlaitBoard, element: PlaitLine, point: Point) => {
-    const sourcePoint = element.points[0];
-    const targetPoint = element.points[element.points.length - 1];
+    const sourcePoint = getSourcePoint(board, element);
+    const targetPoint = getTargetPoint(board, element);
     const sourceRectangle: RectangleClient = {
         x: sourcePoint[0] - RESIZE_HANDLE_DIAMETER / 2,
         y: sourcePoint[1] - RESIZE_HANDLE_DIAMETER / 2,

@@ -67,7 +67,7 @@ export const getPoints = (source: Point, sourcePosition: Direction, target: Poin
             }
         }
     }
-    return [source, ...points, target];
+    return [source, sourceGapped, ...points, targetGapped, target];
 };
 
 const getDirection = (source: Point, sourcePosition = Direction.bottom, target: Point) => {
@@ -109,4 +109,33 @@ export function getEdgeCenter({
     const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
 
     return [centerX, centerY, xOffset, yOffset];
+}
+
+export function getDirectionByPoint(point: Point, defaultDirection: Direction) {
+    if (point[0] === 0) {
+        return Direction.left;
+    }
+    if (point[0] === 1) {
+        return Direction.right;
+    }
+    if (point[1] === 0) {
+        return Direction.top;
+    }
+    if (point[1] === 1) {
+        return Direction.bottom;
+    }
+    return defaultDirection;
+}
+
+export function getOppositeDirection(direction: Direction) {
+    switch (direction) {
+        case Direction.left:
+            return Direction.right;
+        case Direction.right:
+            return Direction.left;
+        case Direction.top:
+            return Direction.bottom;
+        case Direction.bottom:
+            return Direction.top;
+    }
 }
