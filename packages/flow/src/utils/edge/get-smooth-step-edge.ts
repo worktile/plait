@@ -37,8 +37,7 @@ export function getPoints({
     const currDir = dir[dirAccessor];
 
     let points: XYPosition[] = [];
-    let centerX, centerY;
-    const [defaultCenterX, defaultCenterY, defaultOffsetX, defaultOffsetY] = getEdgeCenter({
+    const [defaultCenterX, defaultCenterY] = getEdgeCenter({
         sourceX: source.x,
         sourceY: source.y,
         targetX: target.x,
@@ -46,21 +45,19 @@ export function getPoints({
     });
     // opposite handle positions, default case
     if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
-        centerX = defaultCenterX;
-        centerY = defaultCenterY;
         //    --->
         //    |
         // >---
         const verticalSplit: XYPosition[] = [
-            { x: centerX, y: sourceGapped.y },
-            { x: centerX, y: targetGapped.y }
+            { x: defaultCenterX, y: sourceGapped.y },
+            { x: defaultCenterX, y: targetGapped.y }
         ];
         //    |
         //  ---
         //  |
         const horizontalSplit: XYPosition[] = [
-            { x: sourceGapped.x, y: centerY },
-            { x: targetGapped.x, y: centerY }
+            { x: sourceGapped.x, y: defaultCenterY },
+            { x: targetGapped.x, y: defaultCenterY }
         ];
         if (sourceDir[dirAccessor] === currDir) {
             points = dirAccessor === 'x' ? verticalSplit : horizontalSplit;
@@ -92,9 +89,6 @@ export function getPoints({
                 points = dirAccessor === 'x' ? sourceTarget : targetSource;
             }
         }
-
-        centerX = points[0].x;
-        centerY = points[0].y;
     }
 
     const pathPoints = [source, sourceGapped, ...points, targetGapped, target];
