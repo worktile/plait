@@ -3,23 +3,32 @@ import {
     PlaitBoard,
     PlaitPointerType,
     Point,
+    RectangleClient,
     Transforms,
     addSelectedElement,
     clearSelectedElement,
     createG,
+    getNearestPointBetweenPointAndSegments,
     preventTouchMove,
     toPoint,
     transformPoint
 } from '@plait/core';
-import { LineMarkerType, LineShape, PlaitLine } from '../interfaces';
-import { DrawCreateMode, createLineElement, getCreateMode } from '../utils';
+import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
+import { DrawCreateMode, createLineElement, getCreateMode, transformPointToConnection } from '../utils';
 import { DrawPointerType } from '../constants';
 import { DefaultLineStyle } from '../constants/line';
 import { LineShapeGenerator } from '../generator/line.generator';
+import { getRectangleByPoints } from '@plait/common';
+import { getHitOutlineGeometry } from '../utils/position/geometry';
 
 export const withLineCreateByDraw = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, pointerUp } = board;
+
     let start: Point | null = null;
+
+    let sourceRef: Partial<LineHandle> = {};
+
+    let targetRef: Partial<LineHandle> = {};
 
     let lineShapeG: SVGGElement | null = null;
 
@@ -27,11 +36,19 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
 
     board.pointerDown = (event: PointerEvent) => {
         const createMode = getCreateMode(board);
-
         const isLinePointer = PlaitBoard.isPointer(board, DrawPointerType.line);
         if (isLinePointer && createMode === DrawCreateMode.draw) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
+            const hitElement = getHitOutlineGeometry(board, point, -4);
+            if (hitElement) {
+                const rectangle = getRectangleByPoints((hitElement as PlaitGeometry).points);
+                const activeRectangleCornerPoints = RectangleClient.getCornerPoints(rectangle);
+                const nearestPoint = getNearestPointBetweenPointAndSegments(point, activeRectangleCornerPoints);
+                sourceRef.connection = transformPointToConnection(nearestPoint, rectangle);
+                sourceRef.boundId = hitElement.id;
+            }
+
             preventTouchMove(board, true);
         }
         pointerDown(event);
@@ -40,15 +57,27 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         lineShapeG?.remove();
         lineShapeG = createG();
+        const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
 
         if (start) {
+            const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
+            if (hitElement) {
+                const rectangle = getRectangleByPoints((hitElement as PlaitGeometry).points);
+                const activeRectangleCornerPoints = RectangleClient.getCornerPoints(rectangle);
+                const nearestPoint = getNearestPointBetweenPointAndSegments(movingPoint, activeRectangleCornerPoints);
+                targetRef.connection = transformPointToConnection(nearestPoint, rectangle);
+                targetRef.boundId = hitElement.id;
+            } else {
+                targetRef.connection = undefined;
+                targetRef.boundId = undefined;
+            }
+
             const lineGenerator = new LineShapeGenerator(board);
-            const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             temporaryElement = createLineElement(
                 LineShape.elbow,
                 [start, movingPoint],
-                { marker: LineMarkerType.none },
-                { marker: LineMarkerType.arrow },
+                { marker: LineMarkerType.none, connection: sourceRef.connection, boundId: sourceRef?.boundId },
+                { marker: LineMarkerType.arrow, connection: targetRef.connection, boundId: targetRef?.boundId },
                 {
                     strokeColor: DefaultLineStyle.strokeColor,
                     strokeWidth: DefaultLineStyle.strokeWidth

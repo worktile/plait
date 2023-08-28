@@ -11,6 +11,7 @@ import { throttleRAF } from '../utils/common';
 import { addMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
 import { Range } from '../interfaces';
+import { isPreventTouchMove } from '../utils';
 
 export function withMoving(board: PlaitBoard) {
     const { pointerDown, pointerMove, globalPointerUp, globalPointerMove } = board;
@@ -26,7 +27,7 @@ export function withMoving(board: PlaitBoard) {
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
         const range = { anchor: point, focus: point } as Range;
         let movableElements = board.children.filter(item => board.isMovable(item));
-        if (movableElements.length) {
+        if (movableElements.length && !isPreventTouchMove(board)) {
             startPoint = point;
             const selectedRootElements = getSelectedElements(board).filter(item => movableElements.includes(item));
             const hitElement = getHitElementOfRoot(board, movableElements, range);

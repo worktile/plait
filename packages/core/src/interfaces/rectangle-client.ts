@@ -34,8 +34,8 @@ export const RectangleClient = {
         return {
             x: rectangle.x + offset,
             y: rectangle.y + offset,
-            width: rectangle.width + Math.abs(offset) * 2,
-            height: rectangle.height + Math.abs(offset) * 2
+            width: rectangle.width - offset * 2,
+            height: rectangle.height - offset * 2
         };
     },
     isEqual: (rectangle: RectangleClient, otherRectangle: RectangleClient) => {
@@ -52,6 +52,14 @@ export const RectangleClient = {
             [rectangle.x + rectangle.width, rectangle.y],
             [rectangle.x + rectangle.width, rectangle.y + rectangle.height],
             [rectangle.x, rectangle.y + rectangle.height]
+        ] as [Point, Point, Point, Point];
+    },
+    getEdgeCenterPoints: (rectangle: RectangleClient) => {
+        return [
+            [rectangle.x + rectangle.width / 2, rectangle.y],
+            [rectangle.x + rectangle.width, rectangle.y + rectangle.height / 2],
+            [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height],
+            [rectangle.x, rectangle.y + rectangle.height / 2]
         ] as [Point, Point, Point, Point];
     }
 };

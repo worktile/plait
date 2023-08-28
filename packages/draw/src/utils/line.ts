@@ -1,6 +1,16 @@
-import { Point, idCreator, distanceBetweenPointAndSegments, PlaitBoard, createG, arrowPoints, drawLinearPath } from '@plait/core';
-import { getPoints, Direction } from '@plait/common';
-import { LineHandle, LineMarkerType, LineShape, PlaitLine } from '../interfaces';
+import {
+    Point,
+    idCreator,
+    distanceBetweenPointAndSegments,
+    PlaitBoard,
+    createG,
+    arrowPoints,
+    drawLinearPath,
+    getElementById,
+    RectangleClient
+} from '@plait/core';
+import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getOppositeDirection } from '@plait/common';
+import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
 
 export const createLineElement = (
@@ -22,11 +32,20 @@ export const createLineElement = (
     };
 };
 
-export const getElbowPoints = (element: PlaitLine) => {
+export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     if (element.points.length === 2) {
-        const source = element.points[0];
-        const target = element.points[1];
-        const points: Point[] = getPoints(source, Direction.right, target, Direction.left, 0);
+        const source = getSourcePoint(board, element);
+        const target = getTargetPoint(board, element);
+        let sourceDirection = Direction.right;
+        let targetDirection = Direction.left;
+        if (element.source.connection) {
+            sourceDirection = getDirectionByPoint(element.source.connection, sourceDirection);
+        }
+        if (element.target.connection) {
+            targetDirection = getDirectionByPoint(element.target.connection, targetDirection);
+            targetDirection = getOppositeDirection(targetDirection);
+        }
+        const points: Point[] = getPoints(source, sourceDirection, target, targetDirection, 30);
         return points;
     }
     return element.points;
@@ -40,7 +59,7 @@ export const isHitPolyLine = (pathPoints: Point[], point: Point, strokeWidth: nu
 export const drawElbowLine = (board: PlaitBoard, element: PlaitLine) => {
     const options = { stroke: element.strokeColor, strokeWidth: element.strokeWidth };
     const lineG = createG();
-    const points = getElbowPoints(element);
+    const points = getElbowPoints(board, element);
     const elbowLine = PlaitBoard.getRoughSVG(board).linearPath(points, options);
     lineG.appendChild(elbowLine);
     const arrow = drawLineArrow(element, points, options);
@@ -54,9 +73,9 @@ export const drawLineArrow = (element: PlaitLine, points: Point[], options: Opti
     const arrowG = createG();
     if (sourceMarker === LineMarkerType.none && targetMarker === LineMarkerType.none) return null;
     if (sourceMarker === LineMarkerType.arrow) {
-        const endPoint = points[0];
-        const { pointLeft, pointRight } = arrowPoints(points[1], endPoint, 10, 20);
-        const sourceArrow = drawLinearPath([pointLeft, endPoint, pointRight], options);
+        const sourcePoint = points[0];
+        const { pointLeft, pointRight } = arrowPoints(points[1], sourcePoint, 10, 20);
+        const sourceArrow = drawLinearPath([pointLeft, sourcePoint, pointRight], options);
         arrowG.appendChild(sourceArrow);
     }
     if (targetMarker === LineMarkerType.arrow) {
@@ -66,4 +85,29 @@ export const drawLineArrow = (element: PlaitLine, points: Point[], options: Opti
         arrowG.appendChild(targetArrow);
     }
     return arrowG;
+};
+
+export const getSourcePoint = (board: PlaitBoard, element: PlaitLine) => {
+    if (element.source.boundId) {
+        const boundElement = getElementById(board, element.source.boundId);
+        return boundElement ? normalizeConnection(boundElement, element.source.connection!) : element.points[0];
+    }
+    return element.points[0];
+};
+
+export const getTargetPoint = (board: PlaitBoard, element: PlaitLine) => {
+    if (element.target.boundId) {
+        const boundElement = getElementById(board, element.target.boundId);
+        return boundElement ? normalizeConnection(boundElement, element.target.connection!) : element.points[element.points.length - 1];
+    }
+    return element.points[element.points.length - 1];
+};
+
+export const normalizeConnection = (geometry: PlaitGeometry, connection: Point): Point => {
+    const rectangle = getRectangleByPoints(geometry.points);
+    return [rectangle.x + rectangle.width * connection[0], rectangle.y + rectangle.height * connection[1]];
+};
+
+export const transformPointToConnection = (point: Point, boundRectangle: RectangleClient): Point => {
+    return [(point[0] - boundRectangle.x) / boundRectangle.width, (point[1] - boundRectangle.y) / boundRectangle.height];
 };
