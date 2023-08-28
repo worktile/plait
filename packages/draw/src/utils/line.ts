@@ -88,7 +88,7 @@ export const drawLineArrow = (element: PlaitLine, points: Point[], options: Opti
 
 export const getSourcePoint = (board: PlaitBoard, element: PlaitLine) => {
     if (element.source.boundId) {
-        const boundElement = getElementById(board, element.source.boundId);
+        const boundElement = getElementById<PlaitGeometry>(board, element.source.boundId);
         return boundElement ? normalizeConnection(boundElement, element.source.connection!) : element.points[0];
     }
     return element.points[0];
@@ -96,7 +96,7 @@ export const getSourcePoint = (board: PlaitBoard, element: PlaitLine) => {
 
 export const getTargetPoint = (board: PlaitBoard, element: PlaitLine) => {
     if (element.target.boundId) {
-        const boundElement = getElementById(board, element.target.boundId);
+        const boundElement = getElementById<PlaitGeometry>(board, element.target.boundId);
         return boundElement ? normalizeConnection(boundElement, element.target.connection!) : element.points[element.points.length - 1];
     }
     return element.points[element.points.length - 1];

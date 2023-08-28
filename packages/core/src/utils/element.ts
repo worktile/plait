@@ -52,8 +52,8 @@ export function getBoardRectangle(board: PlaitBoard): RectangleClient {
     return getRectangleByElements(board, board.children, true);
 }
 
-export function getElementById(board: PlaitBoard, id: string) {
-    let element: PlaitElement | null = null;
+export function getElementById<T extends PlaitElement = PlaitElement>(board: PlaitBoard, id: string): T | null {
+    let element = null;
     depthFirstRecursion<Ancestor>(
         board,
         node => {
