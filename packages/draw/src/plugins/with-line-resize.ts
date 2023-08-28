@@ -20,7 +20,7 @@ export const withLineResize = (board: PlaitBoard) => {
                     if (handleRef) {
                         result = {
                             element: value,
-                            handle: handleRef.handle,
+                            handle: handleRef.handle
                         };
                     }
                 });

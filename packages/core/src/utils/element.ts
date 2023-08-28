@@ -1,5 +1,5 @@
-import { PlaitBoard, PlaitElement, RectangleClient } from '../interfaces';
-import { depthFirstRecursion } from './tree';
+import { Ancestor, PlaitBoard, PlaitElement, RectangleClient } from '../interfaces';
+import { depthFirstRecursion, getIsRecursionFunc } from './tree';
 
 export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement[], recursion: boolean): RectangleClient {
     const boundaryBox = {
@@ -50,4 +50,19 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
 
 export function getBoardRectangle(board: PlaitBoard): RectangleClient {
     return getRectangleByElements(board, board.children, true);
+}
+
+export function getElementById(board: PlaitBoard, id: string) {
+    let element: PlaitElement | null = null;
+    depthFirstRecursion<Ancestor>(
+        board,
+        node => {
+            if (id === (node as PlaitElement).id) {
+                element = node as PlaitElement;
+            }
+        },
+        getIsRecursionFunc(board),
+        true
+    );
+    return element;
 }
