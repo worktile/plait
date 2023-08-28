@@ -103,58 +103,52 @@ export function getPoints({
     return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
 }
 
-export const getLabelPoints = (pathPoints: XYPosition[], numSegments: number = 2): XYPosition[] => {
+export const getLabelPoints = (pathPoints: XYPosition[], segmentNumber: number = 4): XYPosition[] => {
     const points = [...pathPoints];
-    const distanceLengths = [];
+    const segmentDistances = [];
     let totalLength = 0;
-    let usedLength = 0;
-    // 计算相邻两个点之间的距离，并将其加入到长度数组中
     for (let i = 1; i < points.length; i++) {
         const dx = points[i].x - points[i - 1].x;
         const dy = points[i].y - points[i - 1].y;
         const length = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
         totalLength += length;
-        distanceLengths.push(length);
+        segmentDistances.push(length);
     }
-    const segmentLength = totalLength / numSegments;
-    const equidistantPoints: XYPosition[] = [];
-    let currentPoint = points[0];
-    let currentSegment = 1;
-    let remainingLength = segmentLength;
+    const segmentLength = totalLength / segmentNumber;
+    const segmentPoints: XYPosition[] = [];
+    let _currentPoint = points[0];
+    let _currentSegmentNumber = 2;
+    let _remainingLength = segmentLength;
+    let _usedLength = 0;
     let i = 0;
 
     while (i < points.length - 1) {
-        const dx = points[i + 1].x - currentPoint.x;
-        const dy = points[i + 1].y - currentPoint.y;
-        // 相邻点间距离
-        const distance = distanceLengths[i];
+        const dx = points[i + 1].x - _currentPoint.x;
+        const dy = points[i + 1].y - _currentPoint.y;
+        const segmentDistance = segmentDistances[i];
         // 两点间距离包含剩余长度
-        if (distance - usedLength > remainingLength) {
+        if (segmentDistance - _usedLength >= _remainingLength) {
             // 剩余长度占当前距离的比例
-            const ratio = remainingLength / distance;
-            const x = currentPoint.x + dx * ratio;
-            const y = currentPoint.y + dy * ratio;
-            equidistantPoints.push({ x: x, y: y });
-            currentSegment++;
-            if (currentSegment > numSegments) {
+            const ratio = _remainingLength / (segmentDistance - _usedLength);
+            const x = Number((_currentPoint.x + dx * ratio).toFixed(2));
+            const y = Number((_currentPoint.y + dy * ratio).toFixed(2));
+            const segment = { x: x, y: y };
+            segmentPoints.push(segment);
+            _currentSegmentNumber++;
+            if (_currentSegmentNumber > segmentNumber) {
                 break;
             }
-            // 当前这两点间找到等分点后已使用距离
-            usedLength += Math.sqrt(Math.pow(x - currentPoint.x, 2) + Math.pow(y - currentPoint.y, 2));
-            if (distance - usedLength > 0) {
-                // 将当前坐标点设置为上个等分点
-                currentPoint = { x: x, y: y };
-            }
-            // 重置剩余长度找下一个等分点
-            remainingLength = segmentLength;
+            _usedLength += Math.sqrt(Math.pow(x - _currentPoint.x, 2) + Math.pow(y - _currentPoint.y, 2));
+            _currentPoint = segment;
+            _remainingLength = segmentLength;
         } else {
-            currentPoint = points[i + 1];
-            remainingLength = remainingLength - (distance - usedLength);
-            usedLength = 0;
+            _currentPoint = points[i + 1];
+            _remainingLength = _remainingLength - (segmentDistance - _usedLength);
+            _usedLength = 0;
             i++;
         }
     }
-    return equidistantPoints;
+    return segmentPoints;
 };
 
 const getDirection = ({
@@ -172,10 +166,10 @@ const getDirection = ({
     return source.y < target.y ? { x: 0, y: 1 } : { x: 0, y: -1 };
 };
 
-const distance = (a: XYPosition, b: XYPosition) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+const segmentLength = (a: XYPosition, b: XYPosition) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 
 export function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): string {
-    const bendSize = Math.min(distance(a, b) / 2, distance(b, c) / 2, size);
+    const bendSize = Math.min(segmentLength(a, b) / 2, segmentLength(b, c) / 2, size);
     const { x, y } = b;
 
     // no bend
