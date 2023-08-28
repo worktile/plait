@@ -16,16 +16,14 @@ export function getPoints({
     sourcePosition = FlowPosition.bottom,
     target,
     targetPosition = FlowPosition.top,
-    center,
     offset
 }: {
     source: XYPosition;
     sourcePosition: FlowPosition;
     target: XYPosition;
     targetPosition: FlowPosition;
-    center: Partial<XYPosition>;
     offset: number;
-}): [XYPosition[], number, number, number, number] {
+}): XYPosition[] {
     const sourceDir = handleDirections[sourcePosition];
     const targetDir = handleDirections[targetPosition];
     const sourceGapped: XYPosition = { x: source.x + sourceDir.x * offset, y: source.y + sourceDir.y * offset };
@@ -39,8 +37,7 @@ export function getPoints({
     const currDir = dir[dirAccessor];
 
     let points: XYPosition[] = [];
-    let centerX, centerY;
-    const [defaultCenterX, defaultCenterY, defaultOffsetX, defaultOffsetY] = getEdgeCenter({
+    const [defaultCenterX, defaultCenterY] = getEdgeCenter({
         sourceX: source.x,
         sourceY: source.y,
         targetX: target.x,
@@ -48,21 +45,19 @@ export function getPoints({
     });
     // opposite handle positions, default case
     if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
-        centerX = center.x || defaultCenterX;
-        centerY = center.y || defaultCenterY;
         //    --->
         //    |
         // >---
         const verticalSplit: XYPosition[] = [
-            { x: centerX, y: sourceGapped.y },
-            { x: centerX, y: targetGapped.y }
+            { x: defaultCenterX, y: sourceGapped.y },
+            { x: defaultCenterX, y: targetGapped.y }
         ];
         //    |
         //  ---
         //  |
         const horizontalSplit: XYPosition[] = [
-            { x: sourceGapped.x, y: centerY },
-            { x: targetGapped.x, y: centerY }
+            { x: sourceGapped.x, y: defaultCenterY },
+            { x: targetGapped.x, y: defaultCenterY }
         ];
         if (sourceDir[dirAccessor] === currDir) {
             points = dirAccessor === 'x' ? verticalSplit : horizontalSplit;
@@ -81,13 +76,12 @@ export function getPoints({
         }
 
         // these are conditions for handling mixed handle positions like right -> bottom for example
-        let flipSourceTarget;
         if (sourcePosition !== targetPosition) {
             const dirAccessorOpposite = dirAccessor === 'x' ? 'y' : 'x';
             const isSameDir = sourceDir[dirAccessor] === targetDir[dirAccessorOpposite];
             const sourceGtTargetOppo = sourceGapped[dirAccessorOpposite] > targetGapped[dirAccessorOpposite];
             const sourceLtTargetOppo = sourceGapped[dirAccessorOpposite] < targetGapped[dirAccessorOpposite];
-            flipSourceTarget =
+            const flipSourceTarget =
                 (sourceDir[dirAccessor] === 1 && ((!isSameDir && sourceGtTargetOppo) || (isSameDir && sourceLtTargetOppo))) ||
                 (sourceDir[dirAccessor] !== 1 && ((!isSameDir && sourceLtTargetOppo) || (isSameDir && sourceGtTargetOppo)));
 
@@ -95,42 +89,56 @@ export function getPoints({
                 points = dirAccessor === 'x' ? sourceTarget : targetSource;
             }
         }
-
-        const { x, y } = getCenter(sourceGapped, targetGapped, dirAccessor, sourceDir, currDir, flipSourceTarget);
-        centerX = x;
-        centerY = y;
     }
 
     const pathPoints = [source, sourceGapped, ...points, targetGapped, target];
-    return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
+    return pathPoints;
 }
 
-const getCenter = (
-    sourceGapped: XYPosition,
-    targetGapped: XYPosition,
-    dirAccessor: 'x' | 'y',
-    sourceDir: XYPosition,
-    currDir: number,
-    flipSourceTarget = false
-): XYPosition => {
-    const center: XYPosition = {
-        x: Math.max(targetGapped.x, sourceGapped.x) - Math.abs(targetGapped.x - sourceGapped.x) / 2,
-        y: Math.max(targetGapped.y, sourceGapped.y) - Math.abs(targetGapped.y - sourceGapped.y) / 2
-    };
-    const isOffsetXGreater = Math.abs(targetGapped.x - sourceGapped.x) > Math.abs(targetGapped.y - sourceGapped.y);
-    const targetSource = isOffsetXGreater ? { x: center.x, y: sourceGapped.y } : { x: targetGapped.x, y: center.y };
-    const sourceTarget = isOffsetXGreater ? { x: center.x, y: targetGapped.y } : { x: sourceGapped.x, y: center.y };
+export const getLabelPoints = (pathPoints: XYPosition[], segmentNumber: number = 2): XYPosition[] => {
+    const points = [...pathPoints];
+    const segmentDistances = [];
+    let totalLength = 0;
+    for (let i = 1; i < points.length; i++) {
+        const dx = points[i].x - points[i - 1].x;
+        const dy = points[i].y - points[i - 1].y;
+        const length = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+        totalLength += length;
+        segmentDistances.push(length);
+    }
+    const segmentLength = totalLength / segmentNumber;
+    const segmentPoints: XYPosition[] = [];
+    let _currentPoint = points[0];
+    let _currentSegmentNumber = 2;
+    let _remainingLength = segmentLength;
+    let _usedLength = 0;
+    let i = 0;
 
-    let centerPoints;
-    if (dirAccessor === 'x') {
-        centerPoints = sourceDir.x === currDir ? targetSource : sourceTarget;
-    } else {
-        centerPoints = sourceDir.y === currDir ? sourceTarget : targetSource;
+    while (i < points.length - 1) {
+        const segmentDistance = segmentDistances[i];
+        // 两点间距离包含剩余长度
+        if (segmentDistance - _usedLength >= _remainingLength) {
+            const directionX = points[i + 1].x - _currentPoint.x === 0 ? 0 : points[i + 1].x - _currentPoint.x > 0 ? 1 : -1;
+            const directionY = points[i + 1].y - _currentPoint.y === 0 ? 0 : points[i + 1].y - _currentPoint.y > 0 ? 1 : -1;
+            const x = Number((_currentPoint.x + _remainingLength * directionX).toFixed(2));
+            const y = Number((_currentPoint.y + _remainingLength * directionY).toFixed(2));
+            const segment = { x: x, y: y };
+            segmentPoints.push(segment);
+            _currentSegmentNumber++;
+            if (_currentSegmentNumber > segmentNumber) {
+                break;
+            }
+            _usedLength += Math.sqrt(Math.pow(x - _currentPoint.x, 2) + Math.pow(y - _currentPoint.y, 2));
+            _currentPoint = segment;
+            _remainingLength = segmentLength;
+        } else {
+            _currentPoint = points[i + 1];
+            _remainingLength = _remainingLength - (segmentDistance - _usedLength);
+            _usedLength = 0;
+            i++;
+        }
     }
-    if (flipSourceTarget) {
-        centerPoints = dirAccessor === 'x' ? sourceTarget : targetSource;
-    }
-    return centerPoints;
+    return segmentPoints;
 };
 
 const getDirection = ({
