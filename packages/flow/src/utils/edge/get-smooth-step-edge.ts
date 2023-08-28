@@ -164,10 +164,10 @@ const getDirection = ({
     return source.y < target.y ? { x: 0, y: 1 } : { x: 0, y: -1 };
 };
 
-const segmentLength = (a: XYPosition, b: XYPosition) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+const distance = (a: XYPosition, b: XYPosition) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 
 export function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): string {
-    const bendSize = Math.min(segmentLength(a, b) / 2, segmentLength(b, c) / 2, size);
+    const bendSize = Math.min(distance(a, b) / 2, distance(b, c) / 2, size);
     const { x, y } = b;
 
     // no bend
