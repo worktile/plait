@@ -13,7 +13,7 @@ describe('utils edge get smooth step', () => {
          *          |
          *        (0,0)
          */
-        let points = [
+        const points = [
             { x: 0, y: 0 },
             { x: 0, y: 4 },
             { x: 0, y: 12 },

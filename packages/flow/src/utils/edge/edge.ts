@@ -108,7 +108,6 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
         sourcePosition,
         target: { x: targetX, y: targetY },
         targetPosition,
-        center: { x: undefined, y: undefined },
         offset: 30
     });
 };

@@ -5,7 +5,7 @@ import { FlowEdge } from '../interfaces/edge';
 import { FlowRenderMode } from '../interfaces/flow';
 
 export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, mode: FlowRenderMode) => {
-    const [pathPoints] = getEdgePoints(board, edge);
+    const pathPoints = getEdgePoints(board, edge);
     const edgeStyles = getEdgeStyle(edge, mode);
     return roughSVG.linearPath(
         pathPoints.map(item => [item.x, item.y]),
@@ -20,7 +20,7 @@ export const drawEdgeLabel = (roughSVG: RoughSVG, edge: FlowEdge, textBackground
 };
 
 export const drawEdgeMarkers = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, mode: FlowRenderMode) => {
-    const [pathPoints] = getEdgePoints(board, edge);
+    const pathPoints = getEdgePoints(board, edge);
     const edgeStyles = getEdgeStyle(edge, mode);
     const edgeMarkers: SVGGElement[] = [];
     if (edge.target.marker) {

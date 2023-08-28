@@ -16,16 +16,14 @@ export function getPoints({
     sourcePosition = FlowPosition.bottom,
     target,
     targetPosition = FlowPosition.top,
-    center,
     offset
 }: {
     source: XYPosition;
     sourcePosition: FlowPosition;
     target: XYPosition;
     targetPosition: FlowPosition;
-    center: Partial<XYPosition>;
     offset: number;
-}): [XYPosition[], number, number, number, number] {
+}): XYPosition[] {
     const sourceDir = handleDirections[sourcePosition];
     const targetDir = handleDirections[targetPosition];
     const sourceGapped: XYPosition = { x: source.x + sourceDir.x * offset, y: source.y + sourceDir.y * offset };
@@ -48,8 +46,8 @@ export function getPoints({
     });
     // opposite handle positions, default case
     if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
-        centerX = center.x || defaultCenterX;
-        centerY = center.y || defaultCenterY;
+        centerX = defaultCenterX;
+        centerY = defaultCenterY;
         //    --->
         //    |
         // >---
@@ -100,10 +98,10 @@ export function getPoints({
     }
 
     const pathPoints = [source, sourceGapped, ...points, targetGapped, target];
-    return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
+    return pathPoints;
 }
 
-export const getLabelPoints = (pathPoints: XYPosition[], segmentNumber: number = 4): XYPosition[] => {
+export const getLabelPoints = (pathPoints: XYPosition[], segmentNumber: number = 2): XYPosition[] => {
     const points = [...pathPoints];
     const segmentDistances = [];
     let totalLength = 0;

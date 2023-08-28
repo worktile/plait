@@ -8,7 +8,7 @@ import { EdgeLabelSpace } from './label-space';
 import { FlowBaseData } from '../../interfaces/element';
 
 export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
-    const [pathPoints] = getEdgePoints(board, edge);
+    const pathPoints = getEdgePoints(board, edge);
     let minDistance = Number.MAX_VALUE;
     if (board.selection) {
         pathPoints.map((path, index) => {
