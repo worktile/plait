@@ -2,4 +2,4 @@
 '@plait/flow': patch
 ---
 
-support getSameLineEdges function by staggered display of label
+support getOverlapEdges function by staggered display of label

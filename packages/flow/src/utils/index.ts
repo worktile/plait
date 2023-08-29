@@ -9,7 +9,7 @@ export * from './edge/label-space';
 export * from './edge/get-hit-edge';
 export * from './edge/placeholder-edge';
 export * from './edge/relation-edge-selected';
-export * from './edge/get-same-line-edges';
+export * from './edge/get-overlap-edges';
 
 export * from './handle/get-default-handles';
 export * from './handle/get-handle-position';

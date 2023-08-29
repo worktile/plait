@@ -3,10 +3,10 @@ import { FlowElementType } from '../../interfaces/element';
 import { FlowEdge } from '../../interfaces/edge';
 import { getFlowElementsByType } from '../node/get-node';
 
-export const getSameLineEdges = (board: PlaitBoard, edge: FlowEdge): { edges: FlowEdge[]; count: number } => {
+export const getOverlapEdges = (board: PlaitBoard, edge: FlowEdge): FlowEdge[] => {
     const edges = getFlowElementsByType(board, FlowElementType.edge) as FlowEdge[];
-    const sameLineEdges: FlowEdge[] = [];
-    const overlapLineEdges: FlowEdge[] = [];
+    const sameEdges: FlowEdge[] = [];
+    const overlapEdges: FlowEdge[] = [];
     edges.forEach(item => {
         if (
             item.source?.nodeId === edge.target?.nodeId &&
@@ -14,18 +14,15 @@ export const getSameLineEdges = (board: PlaitBoard, edge: FlowEdge): { edges: Fl
             item.source?.position === edge.target?.position &&
             item.target?.position === edge.source?.position
         ) {
-            overlapLineEdges.push(item);
+            overlapEdges.push(item);
         } else if (
             item.target?.nodeId === edge.target?.nodeId &&
             item.source?.nodeId === edge.source?.nodeId &&
             item.target?.position === edge.target?.position &&
             item.source?.position === edge.source?.position
         ) {
-            sameLineEdges.push(item);
+            sameEdges.push(item);
         }
     });
-    return {
-        edges: [...sameLineEdges, ...overlapLineEdges],
-        count: sameLineEdges.length + overlapLineEdges.length
-    };
+    return [...sameEdges, ...overlapEdges];
 };
