@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, RectangleClient } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, RectangleClient } from '@plait/core';
 import { ResizeCursorClass, ResizeHandle } from '../constants/resize';
 
 const getResizeHandleByIndex = (index: number) => {
@@ -47,18 +47,22 @@ export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diamete
     });
 };
 
-export const IS_RESIZING = new WeakMap<PlaitBoard, boolean>();
+export const IS_RESIZING = new WeakMap<PlaitBoard, PlaitElement>();
 
 export const isResizing = (board: PlaitBoard) => {
     return !!IS_RESIZING.get(board);
 };
 
-export const addResizing = (board: PlaitBoard, key: string) => {
+export const isResizingByCondition = (board: PlaitBoard, match: (element: PlaitElement) => boolean) => {
+    return isResizing(board) && match(IS_RESIZING.get(board) as PlaitElement);
+};
+
+export const addResizing = (board: PlaitBoard, element: PlaitElement, key: string) => {
     PlaitBoard.getBoardContainer(board).classList.add(`${key}-resizing`);
-    IS_RESIZING.set(board, true);
+    IS_RESIZING.set(board, element);
 };
 
 export const removeResizing = (board: PlaitBoard, key: string) => {
     PlaitBoard.getBoardContainer(board).classList.remove(`${key}-resizing`);
-    IS_RESIZING.set(board, false);
+    IS_RESIZING.delete(board);
 };

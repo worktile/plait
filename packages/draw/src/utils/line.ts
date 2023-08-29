@@ -13,6 +13,7 @@ import {
 import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getOppositeDirection } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
+import { getPointsByCenterPoint } from './geometry';
 
 export const createLineElement = (
     shape: LineShape,
@@ -111,6 +112,19 @@ export const normalizeConnection = (geometry: PlaitGeometry, connection: Point):
 export const transformPointToConnection = (point: Point, hitElement: PlaitGeometry): Point => {
     const rectangle = getRectangleByPoints(hitElement.points);
     const activeRectangleCornerPoints = RectangleClient.getCornerPoints(rectangle);
-    const nearestPoint = getNearestPointBetweenPointAndSegments(point, activeRectangleCornerPoints);
+    let nearestPoint = getNearestPointBetweenPointAndSegments(point, activeRectangleCornerPoints);
+    const activePoint = getHitEdgeCenterPoint(nearestPoint, rectangle);
+
+    nearestPoint = activePoint ? activePoint : nearestPoint;
+
     return [(nearestPoint[0] - rectangle.x) / rectangle.width, (nearestPoint[1] - rectangle.y) / rectangle.height];
+};
+
+export const getHitEdgeCenterPoint = (movingPoint: Point, geometry: RectangleClient) => {
+    const points = getPointsByCenterPoint(movingPoint, 5, 5);
+    const nearestPointRectangle = getRectangleByPoints(points);
+    const edgeCenterPoints = RectangleClient.getEdgeCenterPoints(geometry);
+    return edgeCenterPoints.find(point => {
+        return RectangleClient.isHit(nearestPointRectangle, RectangleClient.toRectangleClient([point, point]));
+    });
 };

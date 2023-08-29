@@ -1,6 +1,5 @@
-import { PlaitBoard, Point, RectangleClient, Transforms, getNearestPointBetweenPointAndSegments } from '@plait/core';
-import { PlaitGeometry } from '../interfaces/geometry';
-import { ResizeRef, ResizeState, WithResizeOptions, getRectangleByPoints, withResize } from '@plait/common';
+import { PlaitBoard, Point } from '@plait/core';
+import { ResizeRef, ResizeState, WithResizeOptions, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
