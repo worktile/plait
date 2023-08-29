@@ -1,6 +1,12 @@
 import { BaseElement } from 'slate';
 import { AngularEditor } from 'slate-angular';
 
+export enum Alignment {
+    left = 'left',
+    center = 'center',
+    right = 'right'
+}
+
 export type CustomText = {
     bold?: boolean;
     italic?: boolean;
@@ -18,6 +24,7 @@ export interface LinkElement extends BaseElement {
 }
 
 export interface ParagraphElement extends BaseElement {
+    align?: Alignment;
 }
 
 export type CustomElement = ParagraphElement | LinkElement;

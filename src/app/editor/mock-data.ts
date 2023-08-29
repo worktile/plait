@@ -1,6 +1,7 @@
 import { PlaitMind } from '@plait/mind';
-import { MindLayoutType } from '@plait/layouts';
 import { PlaitGeometry, GeometryShape, PlaitLine, LineShape, LineMarkerType } from '@plait/draw';
+import { Alignment } from '@plait/text';
+import { Element } from 'slate';
 
 export const mockData: (PlaitMind | PlaitGeometry | PlaitLine)[] = [
     {
@@ -138,7 +139,7 @@ export const mockData: (PlaitMind | PlaitGeometry | PlaitLine)[] = [
     {
         type: 'mindmap',
         id: '2',
-        rightNodeCount: 3,
+        rightNodeCount: 4,
         data: { topic: { children: [{ text: '脑图调研' }] } },
         children: [
             {
@@ -176,42 +177,23 @@ export const mockData: (PlaitMind | PlaitGeometry | PlaitLine)[] = [
                 ],
                 width: 48,
                 height: 20
+            },
+            {
+                id: '2-4',
+                data: { topic: { children: [{ text: '宽度可调整哦' }], align: Alignment.center } as Element },
+                children: [
+                ],
+                manualWidth: 200,
+                width: 48,
+                height: 20
             }
         ],
         width: 72,
         height: 25,
         isRoot: true,
-        points: [[560, 700]]
+        points: [[560, 800]]
     },
-    {
-        id: '666',
-        type: 'geometry',
-        shape: GeometryShape.rectangle,
-        angle: 0,
-        opacity: 1,
-        text: { children: [{ text: '几何图形' }] },
-        textHeight: 20,
-        strokeColor: '#333333',
-        strokeWidth: 2,
-        points: [
-            [880, 450],
-            [940, 510]
-        ]
-    },
-    {
-        id: '222',
-        type: 'geometry',
-        shape: GeometryShape.text,
-        angle: 0,
-        autoSize: false,
-        opacity: 1,
-        text: { children: [{ text: '几何图形' }] },
-        textHeight: 20,
-        points: [
-            [980, 450],
-            [1040, 510]
-        ]
-    },
+
     {
         id: '233',
         type: 'line',
@@ -227,8 +209,37 @@ export const mockData: (PlaitMind | PlaitGeometry | PlaitLine)[] = [
         strokeColor: '#333333',
         strokeWidth: 2,
         points: [
-            [980, 450],
-            [1040, 510]
+            [980, 850],
+            [1240, 900]
+        ]
+    },
+    {
+        id: '666',
+        type: 'geometry',
+        shape: GeometryShape.rectangle,
+        angle: 0,
+        opacity: 1,
+        text: { children: [{ text: '几何图形' }], align: Alignment.center } as Element,
+        textHeight: 20,
+        strokeColor: '#333333',
+        strokeWidth: 2,
+        points: [
+            [1300, 850],
+            [1400, 900]
+        ]
+    },
+    {
+        id: '222',
+        type: 'geometry',
+        shape: GeometryShape.text,
+        angle: 0,
+        autoSize: false,
+        opacity: 1,
+        text: { children: [{ text: '几何图形' }] },
+        textHeight: 20,
+        points: [
+            [1500, 850],
+            [1600, 900]
         ]
     }
 ];

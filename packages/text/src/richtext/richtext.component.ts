@@ -25,6 +25,7 @@ import { withLink } from '../plugins/link/with-link';
 import { withSelection } from '../plugins/with-selection';
 import { PlaitTextEditor } from '../plugins/text.editor';
 import { isKeyHotkey } from 'is-hotkey';
+import { ParagraphElementComponent } from '../plugins/paragraph/paragraph.component';
 
 @Component({
     selector: 'plait-richtext',
@@ -85,7 +86,8 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit {
         if ((element as LinkElement).type === 'link') {
             return PlaitLinkNodeComponent;
         }
-        return null;
+
+        return ParagraphElementComponent;
     };
 
     renderText: any = (text: Text): PlaitTextNodeComponent | null => {
