@@ -118,10 +118,10 @@ export const getLabelPoints = (pathPoints: XYPosition[], segmentNumber: number =
         const segmentDistance = segmentDistances[i];
         // 两点间距离包含剩余长度
         if (segmentDistance - _usedLength >= _remainingLength) {
-            const directionX = points[i + 1].x - _currentPoint.x === 0 ? 0 : points[i + 1].x - _currentPoint.x > 0 ? 1 : -1;
-            const directionY = points[i + 1].y - _currentPoint.y === 0 ? 0 : points[i + 1].y - _currentPoint.y > 0 ? 1 : -1;
-            const x = Number((_currentPoint.x + _remainingLength * directionX).toFixed(2));
-            const y = Number((_currentPoint.y + _remainingLength * directionY).toFixed(2));
+            const directionX = points[i + 1].x === _currentPoint.x ? 0 : points[i + 1].x > _currentPoint.x ? 1 : -1;
+            const directionY = points[i + 1].y === _currentPoint.y ? 0 : points[i + 1].y > _currentPoint.y ? 1 : -1;
+            const x = _currentPoint.x + _remainingLength * directionX;
+            const y = _currentPoint.y + _remainingLength * directionY;
             const segment = { x: x, y: y };
             segmentPoints.push(segment);
             _currentSegmentNumber++;

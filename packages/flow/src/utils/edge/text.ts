@@ -2,13 +2,16 @@ import { FlowEdge } from '../../interfaces/edge';
 import { PlaitBoard, XYPosition } from '@plait/core';
 import { getEdgePoints } from './edge';
 import { getLabelPoints } from './get-smooth-step-edge';
+import { getSameLineEdges } from './get-same-line-edges';
 
 export function getEdgeTextXYPosition(board: PlaitBoard, edge: FlowEdge, width: number, height: number): XYPosition {
     const pathPoints = getEdgePoints(board, edge);
-    const labelPoints = getLabelPoints([...pathPoints]);
-    // TODO： 暂时取第一个点，接下来改判断多少重叠连线时在处理选择哪个等分点
-    const x = labelPoints[0]?.x - width / 2;
-    const y = labelPoints[0]?.y - height / 2;
+    // 拆分获取 sameLineEdges 是因为当同一条线不同指向， 开始-->进行中 / 进行中-->开始，避免选值重叠
+    const { sameDirectionEdges, sameLineEdges, count } = getSameLineEdges(board, edge);
+    const labelPoints = getLabelPoints([...pathPoints].reverse(), count + 1);
+    const index = [...sameLineEdges, ...sameDirectionEdges].findIndex(value => value.id === edge.id);
+    const x = labelPoints[index]?.x - width / 2;
+    const y = labelPoints[index]?.y - height / 2;
     return {
         x,
         y

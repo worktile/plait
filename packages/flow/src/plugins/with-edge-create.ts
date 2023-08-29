@@ -58,7 +58,8 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                         targetFlowNodeHandle = getHoverHandleInfo(board) as HitNodeHandle;
                         if (
                             targetFlowNodeHandle &&
-                            targetFlowNodeHandle.handlePoint.toString() !== sourceFlowNodeHandle!.handlePoint.toString()
+                            sourceFlowNodeHandle &&
+                            targetFlowNodeHandle.handlePoint?.toString() !== sourceFlowNodeHandle.handlePoint.toString()
                         ) {
                             addCreateEdgeInfo(board, {
                                 id: idCreator(),
