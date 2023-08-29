@@ -50,13 +50,13 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         if (this.element.source.boundId) {
             const boundElement = getElementById<PlaitGeometry>(this.board, this.element.source.boundId);
             if (boundElement) {
-                this.boundedElements.source = boundElement;
+                boundedElements.source = boundElement;
             }
         }
         if (this.element.target.boundId) {
             const boundElement = getElementById<PlaitGeometry>(this.board, this.element.target.boundId);
             if (boundElement) {
-                this.boundedElements.target = boundElement;
+                boundedElements.target = boundElement;
             }
         }
         return boundedElements;
@@ -66,6 +66,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         const boundedElements = this.getBoundedElements();
         const isBoundedElementsChanged =
             boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;
+        this.boundedElements = boundedElements;
 
         if (value.element !== previous.element) {
             this.shapeGenerator.draw(this.element, this.g);

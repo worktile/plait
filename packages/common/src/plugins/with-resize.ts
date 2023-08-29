@@ -21,6 +21,7 @@ export interface WithResizeOptions<T extends PlaitElement = PlaitElement, K = Re
     canResize: () => boolean;
     detect: (point: Point) => ResizeDetectResult<T, K> | null;
     onResize: (resizeRef: ResizeRef<T, K>, resizeState: ResizeState) => void;
+    endResize?: (resizeRef: ResizeRef<T, K>) => void;
 }
 
 export interface ResizeDetectResult<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
@@ -50,7 +51,10 @@ const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
     );
 };
 
-export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHandle>(board: PlaitBoard, options: WithResizeOptions<T, K>) => {
+export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHandle>(
+    board: PlaitBoard,
+    options: WithResizeOptions<T, K>
+) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;
     let resizeDetectResult: ResizeDetectResult<T, K> | null = null;
     let resizeRef: ResizeRef<T, K> | null = null;
@@ -92,7 +96,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance > PRESS_AND_MOVE_BUFFER) {
-                addResizing(board, options.key);
+                addResizing(board, resizeDetectResult.element, options.key);
                 MERGING.set(board, true);
             }
         }
@@ -134,6 +138,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
     board.globalPointerUp = (event: PointerEvent) => {
         globalPointerUp(event);
         if (isResizing(board) || resizeDetectResult) {
+            options.endResize && options.endResize(resizeRef!);
             removeResizing(board, options.key);
             startPoint = null;
             resizeDetectResult = null;

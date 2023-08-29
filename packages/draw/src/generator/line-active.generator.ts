@@ -18,10 +18,10 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
 
     baseDraw(element: PlaitLine, data: ActiveData): SVGGElement {
         const activeG = createG();
+        activeG.classList.add('active');
         this.g = activeG;
         const sourcePoint = getSourcePoint(this.board, element);
         const targetPoint = getTargetPoint(this.board, element);
-
         const sourceCircle = drawCircle(PlaitBoard.getRoughSVG(this.board), sourcePoint, RESIZE_HANDLE_DIAMETER, {
             stroke: '#999999',
             strokeWidth: 1,

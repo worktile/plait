@@ -10,4 +10,12 @@
             cursor: crosshair;
         }
     }
+    &.draw-line-resizing {
+        [plait-line="true"] {
+            .active {
+                display: none;
+            }
+        }
+    }
+    
 }
