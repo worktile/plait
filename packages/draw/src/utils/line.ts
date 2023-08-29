@@ -7,7 +7,8 @@ import {
     arrowPoints,
     drawLinearPath,
     getElementById,
-    RectangleClient
+    RectangleClient,
+    getNearestPointBetweenPointAndSegments
 } from '@plait/core';
 import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getOppositeDirection } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
@@ -107,6 +108,9 @@ export const normalizeConnection = (geometry: PlaitGeometry, connection: Point):
     return [rectangle.x + rectangle.width * connection[0], rectangle.y + rectangle.height * connection[1]];
 };
 
-export const transformPointToConnection = (point: Point, boundRectangle: RectangleClient): Point => {
-    return [(point[0] - boundRectangle.x) / boundRectangle.width, (point[1] - boundRectangle.y) / boundRectangle.height];
+export const transformPointToConnection = (point: Point, hitElement: PlaitGeometry): Point => {
+    const rectangle = getRectangleByPoints(hitElement.points);
+    const activeRectangleCornerPoints = RectangleClient.getCornerPoints(rectangle);
+    const nearestPoint = getNearestPointBetweenPointAndSegments(point, activeRectangleCornerPoints);
+    return [(nearestPoint[0] - rectangle.x) / rectangle.width, (nearestPoint[1] - rectangle.y) / rectangle.height];
 };

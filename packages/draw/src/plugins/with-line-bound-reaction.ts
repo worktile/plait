@@ -23,8 +23,9 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
         boundShapeG?.remove();
         const isLinePointer = PlaitBoard.isPointer(board, DrawPointerType.line);
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const isResizing = PlaitBoard.getBoardContainer(board).classList.contains('draw-line-resizing');
 
-        if (isLinePointer) {
+        if (isLinePointer || isResizing) {
             const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
             if (hitElement) {
                 boundShapeG = drawBoundMask(board, hitElement);

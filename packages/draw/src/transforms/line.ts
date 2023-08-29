@@ -1,6 +1,6 @@
-import { Path, PlaitBoard, Point, Transforms } from "@plait/core";
+import { Path, PlaitBoard, Transforms } from '@plait/core';
+import { PlaitLine } from '../interfaces';
 
-export const resizeLine = (board: PlaitBoard, points: [Point, Point], path: Path) => {
-    const newProperties = { points };
-    Transforms.setNode(board, newProperties, path);
+export const resizeLine = (board: PlaitBoard, options: Partial<PlaitLine>, path: Path) => {
+    Transforms.setNode(board, options, path);
 };
