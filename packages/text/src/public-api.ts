@@ -9,6 +9,7 @@ export * from './utils/text-manage';
 export * from './utils/text-size';
 export * from './plugins/mark/mark.editor';
 export * from './plugins/link/link-editor';
+export * from './plugins/align/align-editor';
 export * from './plugins/text.editor';
 export * from './custom-types';
 export * from './utils/clipboard';

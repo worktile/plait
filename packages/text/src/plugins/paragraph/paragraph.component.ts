@@ -15,9 +15,18 @@ export class ParagraphElementComponent extends BaseElementComponent<ParagraphEle
         this.applyAlign();
     }
 
+    onContextChange(): void {
+        super.onContextChange();
+        if (this.initialized) {
+            this.applyAlign();
+        }
+    }
+
     applyAlign() {
         if (this.element.align) {
-            this.nativeElement.style.textAlign = this.element.align;
+            if (this.nativeElement.style.textAlign !== this.element.align) {
+                this.nativeElement.style.textAlign = this.element.align;
+            }
         } else if (this.nativeElement.style.textAlign) {
             this.nativeElement.style.removeProperty('text-align');
         }

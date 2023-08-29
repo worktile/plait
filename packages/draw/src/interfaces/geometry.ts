@@ -1,5 +1,6 @@
 import { PlaitElement, Point } from '@plait/core';
 import { Element } from 'slate';
+import { GeometryComponent } from '../geometry.component';
 
 export enum GeometryShape {
     rectangle = 'rectangle',
@@ -36,3 +37,13 @@ export interface PlaitEllipse extends PlaitGeometry {
 export interface PlaitDiamond extends PlaitGeometry {
     shape: GeometryShape.diamond;
 }
+
+export const PlaitGeometry = {
+    getTextEditor(element: PlaitGeometry) {
+        const component = PlaitElement.getComponent(element) as GeometryComponent;
+        if (component) {
+            return component.textManage.componentRef.instance.editor;
+        }
+        throw new Error('can not get correctly component in get text editor');
+    }
+};

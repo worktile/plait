@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, forwardRef } from '@angular/core';
 import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
+import { PlaitGeometry, getSelectedGeometryElements } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 import { MindElement, MindPointerType, MindTransforms, canSetAbstract, getSelectedMindElements } from '@plait/mind';
-import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText, LinkEditor } from '@plait/text';
+import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText, LinkEditor, AlignEditor, Alignment } from '@plait/text';
 import { Node, Transforms as SlateTransforms } from 'slate';
 
 @Component({
@@ -171,6 +172,23 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             selectedElements.forEach(element => {
                 const editor = MindElement.getTextEditor(element);
                 PlaitMarkEditor.setFontSizeMark(editor, (event.target as HTMLSelectElement).value as FontSizes);
+            });
+        }
+    }
+
+    setAlign(event: Event) {
+        const selectedMindElements = getSelectedMindElements(this.board);
+        if (selectedMindElements.length) {
+            selectedMindElements.forEach(element => {
+                const editor = MindElement.getTextEditor(element);
+                AlignEditor.setAlign(editor, (event.target as HTMLSelectElement).value as Alignment);
+            });
+        }
+        const selectedGeometryElements = getSelectedGeometryElements(this.board);
+        if (selectedGeometryElements.length) {
+            selectedGeometryElements.forEach(element => {
+                const editor = PlaitGeometry.getTextEditor(element);
+                AlignEditor.setAlign(editor, (event.target as HTMLSelectElement).value as Alignment);
             });
         }
     }

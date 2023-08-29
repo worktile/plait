@@ -33,7 +33,14 @@
         (colorChangeEvent)="textColorChange($event)"
     ></app-color-picker>
 </div>
-
+<div class="property-item text-setting-toolbar">
+    <div class="setting-panel-title">文本对齐：</div>
+    <select (change)="setAlign($event)">
+        <option value="left">居左对齐</option>
+        <option value="center">居中对齐</option>
+        <option value="right">居右对齐</option>
+    </select>
+</div>
 <div class="property-item shape-setting-toolbar">
     <div class="setting-panel-title">节点形状：</div>
     <select (change)="propertyChange($event, 'shape')">
