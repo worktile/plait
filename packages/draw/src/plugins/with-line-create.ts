@@ -42,10 +42,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
             start = point;
             const hitElement = getHitOutlineGeometry(board, point, -4);
             if (hitElement) {
-                const rectangle = getRectangleByPoints((hitElement as PlaitGeometry).points);
-                const activeRectangleCornerPoints = RectangleClient.getCornerPoints(rectangle);
-                const nearestPoint = getNearestPointBetweenPointAndSegments(point, activeRectangleCornerPoints);
-                sourceRef.connection = transformPointToConnection(nearestPoint, rectangle);
+                sourceRef.connection = transformPointToConnection(point, hitElement);
                 sourceRef.boundId = hitElement.id;
             }
 
@@ -61,17 +58,8 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
 
         if (start) {
             const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
-            if (hitElement) {
-                const rectangle = getRectangleByPoints((hitElement as PlaitGeometry).points);
-                const activeRectangleCornerPoints = RectangleClient.getCornerPoints(rectangle);
-                const nearestPoint = getNearestPointBetweenPointAndSegments(movingPoint, activeRectangleCornerPoints);
-                targetRef.connection = transformPointToConnection(nearestPoint, rectangle);
-                targetRef.boundId = hitElement.id;
-            } else {
-                targetRef.connection = undefined;
-                targetRef.boundId = undefined;
-            }
-
+            targetRef.connection = hitElement ? transformPointToConnection(movingPoint, hitElement) : undefined;
+            targetRef.boundId = hitElement ? hitElement.id : undefined;
             const lineGenerator = new LineShapeGenerator(board);
             temporaryElement = createLineElement(
                 LineShape.elbow,
