@@ -6,10 +6,10 @@ import { getFlowElementsByType } from '../node/get-node';
 export const getSameLineEdges = (
     board: PlaitBoard,
     edge: FlowEdge
-): { sameDirectionEdges: FlowEdge[]; sameLineEdges: FlowEdge[]; count: number } => {
+): { overlapLineEdges: FlowEdge[]; sameLineEdges: FlowEdge[]; count: number } => {
     const edges = getFlowElementsByType(board, FlowElementType.edge) as FlowEdge[];
     const sameLineEdges: FlowEdge[] = [];
-    const sameDirectionEdges: FlowEdge[] = [];
+    const overlapLineEdges: FlowEdge[] = [];
     edges.forEach(item => {
         if (
             item.source?.nodeId === edge.target?.nodeId &&
@@ -17,7 +17,7 @@ export const getSameLineEdges = (
             item.source?.position === edge.target?.position &&
             item.target?.position === edge.source?.position
         ) {
-            sameDirectionEdges.push(item);
+            overlapLineEdges.push(item);
         } else if (
             item.target?.nodeId === edge.target?.nodeId &&
             item.source?.nodeId === edge.source?.nodeId &&
@@ -28,8 +28,8 @@ export const getSameLineEdges = (
         }
     });
     return {
-        sameDirectionEdges: sameDirectionEdges,
+        overlapLineEdges: overlapLineEdges,
         sameLineEdges: sameLineEdges,
-        count: sameLineEdges.length + sameDirectionEdges.length
+        count: sameLineEdges.length + overlapLineEdges.length
     };
 };
