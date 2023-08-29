@@ -3,10 +3,7 @@ import { FlowElementType } from '../../interfaces/element';
 import { FlowEdge } from '../../interfaces/edge';
 import { getFlowElementsByType } from '../node/get-node';
 
-export const getSameLineEdges = (
-    board: PlaitBoard,
-    edge: FlowEdge
-): { overlapLineEdges: FlowEdge[]; sameLineEdges: FlowEdge[]; count: number } => {
+export const getSameLineEdges = (board: PlaitBoard, edge: FlowEdge): { edges: FlowEdge[]; count: number } => {
     const edges = getFlowElementsByType(board, FlowElementType.edge) as FlowEdge[];
     const sameLineEdges: FlowEdge[] = [];
     const overlapLineEdges: FlowEdge[] = [];
@@ -28,8 +25,7 @@ export const getSameLineEdges = (
         }
     });
     return {
-        overlapLineEdges: overlapLineEdges,
-        sameLineEdges: sameLineEdges,
+        edges: [...sameLineEdges, ...overlapLineEdges],
         count: sameLineEdges.length + overlapLineEdges.length
     };
 };

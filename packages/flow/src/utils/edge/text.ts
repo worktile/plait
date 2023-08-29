@@ -6,10 +6,9 @@ import { getSameLineEdges } from './get-same-line-edges';
 
 export function getEdgeTextXYPosition(board: PlaitBoard, edge: FlowEdge, width: number, height: number): XYPosition {
     const pathPoints = getEdgePoints(board, edge);
-    // 获取两个 Edges 是因为当两条重叠线不同指向， 开始-->进行中 / 进行中-->开始，避免选值重复
-    const { overlapLineEdges, sameLineEdges, count } = getSameLineEdges(board, edge);
+    const { edges, count } = getSameLineEdges(board, edge);
     const labelPoints = getLabelPoints([...pathPoints].reverse(), count + 1);
-    const index = [...sameLineEdges, ...overlapLineEdges].findIndex(value => value.id === edge.id);
+    const index = edges.findIndex(value => value.id === edge.id);
     const x = labelPoints[index]?.x - width / 2;
     const y = labelPoints[index]?.y - height / 2;
     return {
