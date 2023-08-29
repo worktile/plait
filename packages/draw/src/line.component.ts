@@ -66,16 +66,16 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         const boundedElements = this.getBoundedElements();
         const isBoundedElementsChanged =
             boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;
-        const isResizing = PlaitBoard.getBoardContainer(this.board).classList.contains('draw-line-resizing');
+        this.boundedElements = boundedElements;
 
         if (value.element !== previous.element) {
             this.shapeGenerator.draw(this.element, this.g);
-            this.activeGenerator.draw(this.element, this.g, { selected: this.selected && !isResizing });
+            this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
         }
 
         if (isBoundedElementsChanged) {
             this.shapeGenerator.draw(this.element, this.g);
-            this.boundedElements = boundedElements;
+            this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
             return;
         }
 
@@ -83,10 +83,6 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         if (!hasSameSelected) {
             this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
         }
-    }
-
-    drawActive() {
-        this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
     }
 
     ngOnDestroy(): void {

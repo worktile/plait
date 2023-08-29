@@ -7,10 +7,10 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { PlaitGeometry } from '../interfaces';
+import { PlaitDrawElement, PlaitGeometry } from '../interfaces';
 import { drawBoundMask } from '../utils';
 import { DrawPointerType } from '../constants';
-import { getRectangleByPoints } from '@plait/common';
+import { getRectangleByPoints, isResizingByCondition } from '@plait/common';
 import { getStrokeWidthByElement } from '../utils/geometry-style/stroke';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 
@@ -23,9 +23,9 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
         boundShapeG?.remove();
         const isLinePointer = PlaitBoard.isPointer(board, DrawPointerType.line);
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const isResizing = PlaitBoard.getBoardContainer(board).classList.contains('draw-line-resizing');
+        const isLineResizing = isResizingByCondition(board, element => PlaitDrawElement.isLine(element));
 
-        if (isLinePointer || isResizing) {
+        if (isLinePointer || isLineResizing) {
             const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
             if (hitElement) {
                 boundShapeG = drawBoundMask(board, hitElement);
