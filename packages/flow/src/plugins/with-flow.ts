@@ -44,7 +44,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                     return isHitNode(board, element, [range.anchor, range.focus]);
                 }
                 if (FlowEdge.isFlowEdgeElement(element)) {
-                    return isHitEdge(board, element, range.focus);
+                    return isHitEdge(board, element, range.focus, (elementComponent as FlowEdgeComponent)?.pathPoints);
                 }
             }
         }

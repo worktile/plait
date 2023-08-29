@@ -1,11 +1,10 @@
-import { PlaitBoard, drawRoundRectangle, RectangleClient, drawArrow } from '@plait/core';
+import { drawRoundRectangle, RectangleClient, drawArrow, XYPosition } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { getEdgePoints, getEdgeStyle } from '../utils/edge/edge';
+import { getEdgeStyle } from '../utils/edge/edge';
 import { FlowEdge } from '../interfaces/edge';
 import { FlowRenderMode } from '../interfaces/flow';
 
-export const drawEdge = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, mode: FlowRenderMode) => {
-    const pathPoints = getEdgePoints(board, edge);
+export const drawEdge = (pathPoints: XYPosition[], roughSVG: RoughSVG, edge: FlowEdge, mode: FlowRenderMode) => {
     const edgeStyles = getEdgeStyle(edge, mode);
     return roughSVG.linearPath(
         pathPoints.map(item => [item.x, item.y]),
@@ -19,8 +18,7 @@ export const drawEdgeLabel = (roughSVG: RoughSVG, edge: FlowEdge, textBackground
     return drawRoundRectangle(roughSVG, x, y, x + width, y + height, edgeStyles, false, Math.min(width, height) / 2);
 };
 
-export const drawEdgeMarkers = (board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge, mode: FlowRenderMode) => {
-    const pathPoints = getEdgePoints(board, edge);
+export const drawEdgeMarkers = (pathPoints: XYPosition[], roughSVG: RoughSVG, edge: FlowEdge, mode: FlowRenderMode) => {
     const edgeStyles = getEdgeStyle(edge, mode);
     const edgeMarkers: SVGGElement[] = [];
     if (edge.target.marker) {

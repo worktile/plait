@@ -1,14 +1,12 @@
-import { Point, distanceBetweenPointAndRectangle, distanceBetweenPointAndSegment, isSelectedElement } from '@plait/core';
+import { Point, XYPosition, distanceBetweenPointAndRectangle, distanceBetweenPointAndSegment, isSelectedElement } from '@plait/core';
 import { PlaitBoard } from '@plait/core';
 import { FlowEdge } from '../../interfaces/edge';
 import { HIT_THRESHOLD } from '../../constants/edge';
-import { getEdgePoints } from './edge';
 import { isHitEdgeHandle } from '../handle/edge';
 import { EdgeLabelSpace } from './label-space';
 import { FlowBaseData } from '../../interfaces/element';
 
-export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
-    const pathPoints = getEdgePoints(board, edge);
+export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point, pathPoints: XYPosition[]) {
     let minDistance = Number.MAX_VALUE;
     if (board.selection) {
         pathPoints.map((path, index) => {
@@ -23,7 +21,7 @@ export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
             }
         });
 
-        const hitFlowEdgeText = (edge.data?.text?.children[0] as FlowBaseData)?.text && isHitEdgeText(board, edge, point);
+        const hitFlowEdgeText = (edge.data?.text?.children[0] as FlowBaseData)?.text && isHitEdgeText(board, edge, point, pathPoints);
         const hitEdgeHandle = isHitEdgeHandle(board, edge, point);
         const isActiveEdge = isSelectedElement(board, edge);
         let hitFlowEdge = minDistance < HIT_THRESHOLD;
@@ -35,8 +33,8 @@ export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
     return false;
 }
 
-export function isHitEdgeText(board: PlaitBoard, edge: FlowEdge, point: Point) {
-    const textRect = EdgeLabelSpace.getLabelTextRect(board, edge);
+export function isHitEdgeText(board: PlaitBoard, edge: FlowEdge, point: Point, pathPoints: XYPosition[]) {
+    const textRect = EdgeLabelSpace.getLabelTextRect(board, edge, pathPoints);
     const labelRect = EdgeLabelSpace.getLabelRect(textRect, edge);
     const distance = distanceBetweenPointAndRectangle(point[0], point[1], labelRect);
     return distance === 0;
