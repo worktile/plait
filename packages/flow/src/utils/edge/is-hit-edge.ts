@@ -34,7 +34,7 @@ export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point, pathP
 }
 
 export function isHitEdgeText(board: PlaitBoard, edge: FlowEdge, point: Point, pathPoints: XYPosition[]) {
-    const textRect = EdgeLabelSpace.getLabelTextRect(board, edge, pathPoints);
+    const textRect = EdgeLabelSpace.getLabelTextRect(board, edge, [...pathPoints]);
     const labelRect = EdgeLabelSpace.getLabelRect(textRect, edge);
     const distance = distanceBetweenPointAndRectangle(point[0], point[1], labelRect);
     return distance === 0;

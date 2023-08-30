@@ -14,6 +14,7 @@ interface EdgePositions {
     targetX: number;
     targetY: number;
 }
+
 export const getEdgePositions = (
     sourceNodeRect: RectangleClient,
     sourceHandle: FlowHandle,
@@ -100,6 +101,7 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
         edge.target,
         targetPosition
     );
+
     return getPoints({
         source: { x: sourceX, y: sourceY },
         sourcePosition,
