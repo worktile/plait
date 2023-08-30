@@ -1,6 +1,14 @@
 # @plait/flow
 
-## 0.6.0-next.1
+## 0.5.7
+
+### Patch Changes
+
+-   [`bb11ae99`](https://github.com/worktile/plait/commit/bb11ae993e801f58eaf2edd5a80d0b1330c013e1) Thanks [@xinglu01](https://github.com/xinglu01)! - optimize the calculation of label position and add the function of obtaining equal coordinates
+
+*   [`6eb5dc76`](https://github.com/worktile/plait/commit/6eb5dc76739a457e46c8b06a2cfc05743bb20902) Thanks [@xinglu01](https://github.com/xinglu01)! - support getOverlapEdges function by staggered display of label
+
+## 0.5.6
 
 ### Patch Changes
 
