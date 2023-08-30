@@ -8,7 +8,6 @@ import { FlowNode } from '../../interfaces/node';
 import { getEdgeDraggingInfo } from './dragging-edge';
 import { getEdgePosition } from './get-edge-position';
 import { FlowRenderMode } from '../../interfaces/flow';
-let index = 0;
 interface EdgePositions {
     sourceX: number;
     sourceY: number;
@@ -102,8 +101,6 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
         edge.target,
         targetPosition
     );
-    console.log('===111===', index++);
-
     return getPoints({
         source: { x: sourceX, y: sourceY },
         sourcePosition,
