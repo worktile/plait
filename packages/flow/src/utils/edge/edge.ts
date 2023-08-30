@@ -14,7 +14,6 @@ interface EdgePositions {
     targetX: number;
     targetY: number;
 }
-
 export const getEdgePositions = (
     sourceNodeRect: RectangleClient,
     sourceHandle: FlowHandle,

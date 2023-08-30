@@ -64,7 +64,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             this.element.data?.text &&
             new TextManage(this.board, this.viewContainerRef, {
                 getRectangle: () => {
-                    return EdgeLabelSpace.getLabelTextRect(this.board, this.element, this.pathPoints);
+                    return EdgeLabelSpace.getLabelTextRect(this.board, this.element, [...this.pathPoints]);
                 }
             });
 
@@ -117,7 +117,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             if ((element.data.text.children[0] as Text)?.text) {
                 this.ngZone.run(() => {
                     this.labelG = createG();
-                    const textRect = EdgeLabelSpace.getLabelTextRect(this.board, element, this.pathPoints);
+                    const textRect = EdgeLabelSpace.getLabelTextRect(this.board, element, [...this.pathPoints]);
                     const labelRect = EdgeLabelSpace.getLabelRect(textRect, element);
                     const labelRectangle = drawEdgeLabel(this.roughSVG, element, labelRect!, mode);
                     this.labelG?.prepend(labelRectangle);
@@ -136,7 +136,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     drawEdge(element: FlowEdge = this.element, mode: FlowRenderMode) {
         this.destroyEdge();
-        this.nodeG = drawEdge(this.pathPoints, this.roughSVG, element, mode);
+        this.nodeG = drawEdge([...this.pathPoints], this.roughSVG, element, mode);
         this.nodeG.setAttribute('stroke-linecap', 'round');
     }
 
@@ -156,7 +156,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
     drawMarkers(element: FlowEdge = this.element, mode: FlowRenderMode) {
         if (element.target.marker || element.source?.marker) {
             this.destroyMarkers();
-            this.markersG = drawEdgeMarkers(this.pathPoints, this.roughSVG, element, mode);
+            this.markersG = drawEdgeMarkers([...this.pathPoints], this.roughSVG, element, mode);
         }
     }
 

@@ -5,10 +5,8 @@ import { HIT_THRESHOLD } from '../../constants/edge';
 import { isHitEdgeHandle } from '../handle/edge';
 import { EdgeLabelSpace } from './label-space';
 import { FlowBaseData } from '../../interfaces/element';
-import { getEdgePoints } from './edge';
 
-export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
-    const pathPoints = getEdgePoints(board, edge);
+export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point, pathPoints: XYPosition[]) {
     let minDistance = Number.MAX_VALUE;
     if (board.selection) {
         pathPoints.map((path, index) => {

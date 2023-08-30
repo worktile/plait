@@ -1,7 +1,7 @@
 import { PlaitBoard, PlaitElement, PlaitPlugin, getMovingElements, toPoint, transformPoint } from '@plait/core';
 import { FlowNode } from '../interfaces/node';
 import { FlowEdge } from '../interfaces/edge';
-import { getEdgesByNodeId, getHitEdge, getHitNode, isEdgeDragging, isPlaceholderEdgeInfo, getHitHandleByNode } from '../utils';
+import { getEdgesByNodeId, getHitEdge, getHitNode, isEdgeDragging, isPlaceholderEdgeInfo } from '../utils';
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowRenderMode } from '../interfaces/flow';
 import { FlowEdgeComponent } from '../flow-edge.component';
