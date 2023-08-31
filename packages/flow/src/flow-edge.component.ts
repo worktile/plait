@@ -28,7 +28,12 @@ import { FlowEdgeLabelIconDrawer } from './draw/label-icon';
 import { PlaitFlowBoard } from './interfaces';
 import { EdgeLabelSpace, buildEdgePathPoints } from './utils';
 import { FlowRenderMode } from './interfaces/flow';
-import { isRelationEdgeByMoving } from './utils/edge/relation-edge-by-moving';
+import { FlowNode } from './interfaces/node';
+
+interface BoundedElements {
+    source?: FlowNode;
+    target?: FlowNode;
+}
 
 @Component({
     selector: 'plait-flow-edge',
@@ -57,6 +62,8 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     pathPoints!: XYPosition[];
 
+    boundedElements!: BoundedElements;
+
     constructor(
         public cdr: ChangeDetectorRef,
         public viewContainerRef: ViewContainerRef,
@@ -79,16 +86,43 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.labelIconDrawer = new FlowEdgeLabelIconDrawer(this.board as PlaitFlowBoard, this.viewContainerRef, this.cdr);
+        this.boundedElements = this.getBoundedElements();
         this.drawElement(this.element, isSelectedElement(this.board, this.element) ? FlowRenderMode.active : FlowRenderMode.default);
     }
 
     onContextChanged(value: PlaitPluginElementContext<FlowEdge, PlaitBoard>, previous: PlaitPluginElementContext<FlowEdge, PlaitBoard>) {
-        if (value.element !== previous.element || isRelationEdgeByMoving(this.board, value.element)) {
+        const boundedElements = this.getBoundedElements();
+        const isBoundedElementsChanged =
+            boundedElements?.source !== this.boundedElements?.source || boundedElements?.target !== this.boundedElements?.target;
+        this.boundedElements = boundedElements;
+
+        if (value.element !== previous.element) {
             this.updatePathPoints();
+        }
+        if (isBoundedElementsChanged) {
+            this.updatePathPoints();
+            this.drawElement(value.element, value.selected ? FlowRenderMode.active : FlowRenderMode.hover);
         }
         if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected)) {
             this.drawElement(value.element, value.selected ? FlowRenderMode.active : FlowRenderMode.default);
         }
+    }
+
+    getBoundedElements() {
+        let boundedElements: BoundedElements = {};
+        if (this.element.source?.nodeId) {
+            const boundElement = getElementById<FlowNode>(this.board, this.element.source.nodeId);
+            if (boundElement) {
+                boundedElements.source = boundElement;
+            }
+        }
+        if (this.element.target?.nodeId) {
+            const boundElement = getElementById<FlowNode>(this.board, this.element.target.nodeId);
+            if (boundElement) {
+                boundedElements.target = boundElement;
+            }
+        }
+        return boundedElements;
     }
 
     updatePathPoints() {

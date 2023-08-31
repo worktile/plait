@@ -2,12 +2,10 @@ import {
     PlaitBoard,
     PlaitPlugin,
     PlaitPluginElementContext,
-    getMovingElements,
     PlaitElement,
     PlaitOptionsBoard,
     WithPluginOptions,
-    PlaitPluginKey,
-    throttleRAF
+    PlaitPluginKey
 } from '@plait/core';
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowEdgeComponent } from '../flow-edge.component';
@@ -19,13 +17,12 @@ import { withFlowEdgeDnd } from './with-edge-dnd';
 import { withEdgeCreate } from './with-edge-create';
 import { isHitNode } from '../utils/node/is-hit-node';
 import { withHandleBlink } from './with-handle-blink';
-import { FlowPluginOptions, FlowPluginKey, FlowRenderMode } from '../interfaces/flow';
+import { FlowPluginOptions, FlowPluginKey } from '../interfaces/flow';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
 import { withHoverHighlight } from './with-hover-highlight';
-import { getEdgesByNodeId } from '../utils/edge/get-edges-by-node';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, isHitSelection, isMovable, getRectangle, onChange } = board;
+    const { drawElement, isHitSelection, isMovable, getRectangle } = board;
 
     let relationEdges: FlowEdge[];
 
@@ -72,22 +69,6 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
             };
         }
         return getRectangle(element);
-    };
-
-    board.onChange = () => {
-        onChange();
-        const movingNodes = getMovingElements(board);
-        if (movingNodes?.length) {
-            const moveElement = movingNodes[0];
-            if (FlowNode.isFlowNodeElement(moveElement as FlowElement)) {
-                const relationEdges = getEdgesByNodeId(board, moveElement.id);
-                (relationEdges || []).map(item => {
-                    const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;
-                    flowEdgeComponent.updatePathPoints();
-                    flowEdgeComponent.drawElement(item, FlowRenderMode.hover);
-                });
-            }
-        }
     };
 
     (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { isMultiple: false });
