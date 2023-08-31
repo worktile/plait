@@ -50,6 +50,7 @@ export class BasicBoardEditorComponent implements OnInit {
 
     change(event: PlaitBoardChangeEvent) {
         this.setLocalData(JSON.stringify(event));
+        console.log(event.children);
     }
 
     setLocalData(data: string) {

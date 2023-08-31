@@ -8,9 +8,10 @@ import {
     drawLinearPath,
     getElementById,
     RectangleClient,
-    getNearestPointBetweenPointAndSegments
+    getNearestPointBetweenPointAndSegments,
+    PlaitElement
 } from '@plait/core';
-import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getOppositeDirection } from '@plait/common';
+import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getOppositeDirection, getPath } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPointsByCenterPoint } from './geometry';
@@ -40,6 +41,19 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         const target = getTargetPoint(board, element);
         let sourceDirection = Direction.right;
         let targetDirection = Direction.left;
+
+        if (element.source.boundId && element.target.boundId) {
+            const sourceBoundElement = getElementById<PlaitGeometry>(board, element.source.boundId) as PlaitGeometry;
+            const sourceRect = getRectangleByPoints(sourceBoundElement.points);
+            const targetBoundElement = getElementById<PlaitGeometry>(board, element.target.boundId) as PlaitGeometry;
+            const targetRect = getRectangleByPoints(targetBoundElement.points) as any
+
+            return getPath(board,
+                { left: sourceRect.x, top: sourceRect.y, width: sourceRect.width, height: sourceRect.height},
+                { left: targetRect.x, top: targetRect.y, width: targetRect.width, height: targetRect.height}
+            ).map(value => [value.x, value.y] as Point);
+        }
+
         if (element.source.connection) {
             sourceDirection = getDirectionByPoint(element.source.connection, sourceDirection);
         }
@@ -61,10 +75,10 @@ export const drawElbowLine = (board: PlaitBoard, element: PlaitLine) => {
     const options = { stroke: element.strokeColor, strokeWidth: element.strokeWidth };
     const lineG = createG();
     const points = getElbowPoints(board, element);
-    const elbowLine = PlaitBoard.getRoughSVG(board).linearPath(points, options);
-    lineG.appendChild(elbowLine);
-    const arrow = drawLineArrow(element, points, options);
-    arrow && lineG.appendChild(arrow);
+    // const elbowLine = PlaitBoard.getRoughSVG(board).linearPath(points, {...options, strokeWidth: 8, stroke: `rgba(0,0,0, 0.5)`});
+    // lineG.appendChild(elbowLine);
+    // const arrow = drawLineArrow(element, points, options);
+    // arrow && lineG.appendChild(arrow);
     return lineG;
 };
 

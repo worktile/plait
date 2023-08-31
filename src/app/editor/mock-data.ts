@@ -5,205 +5,19 @@ import { Element } from 'slate';
 
 export const mockData: (PlaitMind | PlaitGeometry | PlaitLine)[] = [
     {
-        type: 'mindmap',
-        id: '1',
-        rightNodeCount: 3,
-        data: { topic: { children: [{ text: '脑图调研' }] }, emojis: [{ name: '🏀' }, { name: '🌈' }] },
-        children: [
-            {
-                id: '1-1',
-                data: {
-                    topic: { children: [{ text: '富文本' }] },
-                    emojis: [{ name: '🤩' }, { name: '🤘' }],
-                    image: {
-                        url: 'https://atlas-rc.pingcode.com/files/public/5ffa68d453ffebf847cf49b9/origin-url',
-                        width: 364,
-                        height: 160
-                    }
-                },
-                children: [
-                    {
-                        id: 'abc',
-                        data: { topic: { children: [{ text: '布局算法' }] } },
-                        children: [],
-                        width: 56,
-                        height: 20
-                    },
-                    {
-                        id: '1-1-1',
-                        data: { topic: { children: [{ text: '布局算法' }] } },
-                        children: [],
-                        width: 56,
-                        height: 20
-                    },
-                    {
-                        id: '1-1-2',
-                        data: { topic: { children: [{ text: '知名脑图产品' }] } },
-                        children: [],
-                        width: 84,
-                        height: 20
-                    },
-                    {
-                        id: '1-1-4',
-                        data: { topic: { children: [{ text: '知名脑图产品' }] } },
-                        children: [],
-                        width: 84,
-                        height: 20
-                    },
-                    {
-                        id: '1-1-3',
-                        isAbstract: true,
-                        data: { topic: { children: [{ text: '概要' }] } },
-                        children: [],
-                        start: 0,
-                        end: 0,
-                        width: 28,
-                        height: 20
-                    }
-                ],
-                width: 42,
-                height: 20
-            },
-            {
-                id: '1-4',
-                data: { topic: { children: [{ text: '知名脑图产品' }] } },
-                children: [
-                    {
-                        id: '1-4-1',
-                        data: { topic: { children: [{ text: '布局算法' }] } },
-                        children: [],
-                        width: 56,
-                        height: 20
-                    },
-                    {
-                        id: '1-4-2',
-                        data: { topic: { children: [{ text: 'non-layerd-tidy-trees' }] } },
-                        children: [
-                            {
-                                id: '1-4-2-1',
-                                data: { topic: { children: [{ text: '鱼骨图哦' }] } },
-                                children: [],
-                                width: 56,
-                                height: 20
-                            },
-                            {
-                                id: '1-4-2-2',
-                                data: { topic: { children: [{ text: '缩进布局' }] } },
-                                children: [],
-                                width: 56,
-                                height: 20
-                            }
-                        ],
-                        width: 144.8046875,
-                        height: 20
-                    },
-                    {
-                        id: '1-4-3',
-                        data: { topic: { children: [{ text: '知名脑图产品' }] } },
-                        children: [],
-                        width: 84,
-                        height: 20
-                    }
-                ],
-                width: 84,
-                height: 20
-            },
-            {
-                id: '1-5',
-                data: { topic: { children: [{ text: 'xxxxxxx' }] } },
-                children: [
-                    {
-                        id: '1-5-1',
-                        data: { topic: { children: [{ text: '鱼骨图哦' }] } },
-                        children: [],
-                        width: 56,
-                        height: 20
-                    },
-                    {
-                        id: '1-5-2',
-                        data: { topic: { children: [{ text: '缩进布局' }] } },
-                        children: [],
-                        width: 56,
-                        height: 20
-                    }
-                ],
-                width: 48,
-                height: 20
-            }
-        ],
-        width: 72,
-        height: 25,
-        isRoot: true,
-        points: [[560, 360]]
-    },
-    {
-        type: 'mindmap',
-        id: '2',
-        rightNodeCount: 4,
-        data: { topic: { children: [{ text: '脑图调研' }] } },
-        children: [
-            {
-                id: '2-1',
-                data: { topic: { children: [{ text: '富文本' }] } },
-                children: [],
-                width: 42,
-                height: 20
-            },
-            {
-                id: '2-2',
-                data: { topic: { children: [{ text: '知名脑图产品' }] } },
-                children: [],
-                width: 84,
-                height: 20
-            },
-            {
-                id: '2-3',
-                data: { topic: { children: [{ text: 'xxxxxxx' }] } },
-                children: [
-                    {
-                        id: '2-3-1',
-                        data: { topic: { children: [{ text: '鱼骨图哦' }] } },
-                        children: [],
-                        width: 56,
-                        height: 20
-                    },
-                    {
-                        id: '2-3-2',
-                        data: { topic: { children: [{ text: '缩进布局' }] } },
-                        children: [],
-                        width: 56,
-                        height: 20
-                    }
-                ],
-                width: 48,
-                height: 20
-            },
-            {
-                id: '2-4',
-                data: { topic: { children: [{ text: '宽度可调整哦' }], align: Alignment.center } as Element },
-                children: [
-                ],
-                manualWidth: 200,
-                width: 48,
-                height: 20
-            }
-        ],
-        width: 72,
-        height: 25,
-        isRoot: true,
-        points: [[560, 800]]
-    },
-
-    {
         id: '233',
         type: 'line',
         shape: LineShape.elbow,
         autoSize: false,
         source: {
-            marker: LineMarkerType.none
+            marker: LineMarkerType.none,
+            boundId: '666',
+            connection: [1, 0.5]
         },
         target: {
-            marker: LineMarkerType.arrow
+            marker: LineMarkerType.arrow,
+            boundId: '777',
+            connection: [0, 0.5]
         },
         opacity: 1,
         strokeColor: '#333333',
@@ -224,22 +38,22 @@ export const mockData: (PlaitMind | PlaitGeometry | PlaitLine)[] = [
         strokeColor: '#333333',
         strokeWidth: 2,
         points: [
-            [1300, 850],
-            [1400, 900]
+            [50, 50],
+            [150, 159]
         ]
     },
     {
-        id: '222',
+        id: '777',
         type: 'geometry',
-        shape: GeometryShape.text,
+        shape: GeometryShape.rectangle,
         angle: 0,
         autoSize: false,
         opacity: 1,
         text: { children: [{ text: '几何图形' }] },
         textHeight: 20,
         points: [
-            [1500, 850],
-            [1600, 900]
+            [200, 200],
+            [250, 250]
         ]
     }
 ];
