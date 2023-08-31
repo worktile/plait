@@ -74,9 +74,9 @@ export class TextManage {
         this.componentRef.instance.value = value;
         this.componentRef.instance.readonly = true;
         this.options.textPlugins && (this.componentRef.instance.textPlugins = this.options.textPlugins);
-        const rectangle = this.options.getRectangle();
+        const _rectangle = this.options.getRectangle();
         this.g = createG();
-        this.foreignObject = createForeignObject(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        this.foreignObject = createForeignObject(_rectangle.x, _rectangle.y, _rectangle.width, _rectangle.height);
         this.g.append(this.foreignObject);
         this.foreignObject.append(this.componentRef.instance.elementRef.nativeElement);
         this.g.classList.add('text');
@@ -112,8 +112,8 @@ export class TextManage {
                 }
 
                 if (AngularEditor.isReadonly(editor)) {
-                    const { x, y } = rectangle || this.options.getRectangle();
-                    updateForeignObject(this.g, this.options.maxWidth!, 999, x, y);
+                    const { x, y, height } = this.options.getRectangle();
+                    updateForeignObject(this.g, this.options.maxWidth!, height, x, y);
                     // do not need to revert because foreign will be updated when node changed
                 }
 
@@ -149,7 +149,7 @@ export class TextManage {
     updateRectangle(rectangle?: RectangleClient) {
         const { x, y, width, height } = rectangle || this.options.getRectangle();
         if (this.isEditing) {
-            updateForeignObject(this.g, this.options.maxWidth!, 999, x, y);
+            updateForeignObject(this.g, this.options.maxWidth!, height, x, y);
         } else {
             updateForeignObject(this.g, width, height, x, y);
             // solve text lose on move node
