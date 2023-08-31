@@ -6,7 +6,8 @@ import {
     PlaitElement,
     PlaitOptionsBoard,
     WithPluginOptions,
-    PlaitPluginKey
+    PlaitPluginKey,
+    throttleRAF
 } from '@plait/core';
 import { FlowNodeComponent } from '../flow-node.component';
 import { FlowEdgeComponent } from '../flow-edge.component';
@@ -15,16 +16,18 @@ import { FlowElement } from '../interfaces/element';
 import { FlowEdge } from '../interfaces/edge';
 import { FlowNode } from '../interfaces/node';
 import { withFlowEdgeDnd } from './with-edge-dnd';
-import { getEdgesByNodeId } from '../utils/edge/get-edges-by-node';
 import { withEdgeCreate } from './with-edge-create';
 import { isHitNode } from '../utils/node/is-hit-node';
 import { withHandleBlink } from './with-handle-blink';
 import { FlowPluginOptions, FlowPluginKey, FlowRenderMode } from '../interfaces/flow';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
 import { withHoverHighlight } from './with-hover-highlight';
+import { getEdgesByNodeId } from '../utils/edge/get-edges-by-node';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, isHitSelection, isMovable, onChange, getRectangle } = board;
+    const { drawElement, isHitSelection, isMovable, getRectangle, onChange } = board;
+
+    let relationEdges: FlowEdge[];
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (FlowElement.isFlowElement(context.element)) {
@@ -80,6 +83,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                 const relationEdges = getEdgesByNodeId(board, moveElement.id);
                 (relationEdges || []).map(item => {
                     const flowEdgeComponent = PlaitElement.getComponent(item) as FlowEdgeComponent;
+                    flowEdgeComponent.updatePathPoints();
                     flowEdgeComponent.drawElement(item, FlowRenderMode.hover);
                 });
             }

@@ -1,5 +1,5 @@
 import { FlowElementStyles, FlowHandle, FlowPosition } from '../../interfaces/element';
-import { PlaitBoard, RectangleClient, normalizePoint } from '@plait/core';
+import { PlaitBoard, PlaitElement, RectangleClient, normalizePoint } from '@plait/core';
 import { getPoints } from './get-smooth-step-edge';
 import { getFakeFlowNodeById, getFlowNodeById } from '../node/get-node';
 import { FlowEdge } from '../../interfaces/edge';
@@ -8,6 +8,7 @@ import { FlowNode } from '../../interfaces/node';
 import { getEdgeDraggingInfo } from './dragging-edge';
 import { getEdgePosition } from './get-edge-position';
 import { FlowRenderMode } from '../../interfaces/flow';
+import { FlowEdgeComponent } from '../../flow-edge.component';
 
 interface EdgePositions {
     sourceX: number;
@@ -56,7 +57,7 @@ export function getEdgeCenter({
     return [centerX, centerY, xOffset, yOffset];
 }
 
-export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
+export const buildEdgePathPoints = (board: PlaitBoard, edge: FlowEdge) => {
     let sourceNode: FlowNode, targetNode: FlowNode;
     const dragEdgeInfo = FlowEdge.isFlowEdgeElement(edge) && getEdgeDraggingInfo(edge);
 
@@ -110,6 +111,11 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
         targetPosition,
         offset: 30
     });
+};
+
+export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
+    const component = PlaitElement.getComponent(edge) as FlowEdgeComponent;
+    return component?.pathPoints ? [...component?.pathPoints] : buildEdgePathPoints(board, edge);
 };
 
 export const getEdgeStyle = (edge: FlowEdge, mode: FlowRenderMode = FlowRenderMode.default) => {
