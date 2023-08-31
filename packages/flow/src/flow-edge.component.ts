@@ -8,19 +8,32 @@ import {
     Renderer2,
     ViewContainerRef
 } from '@angular/core';
-import { PlaitPluginElementComponent, PlaitPluginElementContext, createG, isSelectedElement } from '@plait/core';
+import {
+    PlaitPluginElementComponent,
+    PlaitPluginElementContext,
+    XYPosition,
+    createG,
+    getElementById,
+    isSelectedElement
+} from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawEdge, drawEdgeLabel, drawEdgeMarkers } from './draw/edge';
 import { PlaitBoard, OnContextChanged } from '@plait/core';
 import { drawEdgeHandles } from './draw/handle';
 import { TextManage } from '@plait/text';
 import { FlowEdge } from './interfaces/edge';
-import { FlowBaseData } from './interfaces/element';
+import { FlowBaseData, FlowElement } from './interfaces/element';
 import { Element, Text } from 'slate';
 import { FlowEdgeLabelIconDrawer } from './draw/label-icon';
 import { PlaitFlowBoard } from './interfaces';
-import { EdgeLabelSpace } from './utils';
+import { EdgeLabelSpace, buildEdgePathPoints } from './utils';
 import { FlowRenderMode } from './interfaces/flow';
+import { FlowNode } from './interfaces/node';
+
+interface BoundedElements {
+    source?: FlowNode;
+    target?: FlowNode;
+}
 
 @Component({
     selector: 'plait-flow-edge',
@@ -47,6 +60,10 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     relatedNodeSelected = false;
 
+    pathPoints!: XYPosition[];
+
+    boundedElements!: BoundedElements;
+
     constructor(
         public cdr: ChangeDetectorRef,
         public viewContainerRef: ViewContainerRef,
@@ -58,7 +75,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
     ngOnInit(): void {
         super.ngOnInit();
-
+        this.updatePathPoints();
         this.textManage =
             this.element.data?.text &&
             new TextManage(this.board, this.viewContainerRef, {
@@ -69,13 +86,47 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
 
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.labelIconDrawer = new FlowEdgeLabelIconDrawer(this.board as PlaitFlowBoard, this.viewContainerRef, this.cdr);
+        this.boundedElements = this.getBoundedElements();
         this.drawElement(this.element, isSelectedElement(this.board, this.element) ? FlowRenderMode.active : FlowRenderMode.default);
     }
 
     onContextChanged(value: PlaitPluginElementContext<FlowEdge, PlaitBoard>, previous: PlaitPluginElementContext<FlowEdge, PlaitBoard>) {
+        const boundedElements = this.getBoundedElements();
+        const isBoundedElementsChanged =
+            boundedElements?.source !== this.boundedElements?.source || boundedElements?.target !== this.boundedElements?.target;
+        this.boundedElements = boundedElements;
+
+        if (value.element !== previous.element) {
+            this.updatePathPoints();
+        }
+        if (isBoundedElementsChanged) {
+            this.updatePathPoints();
+            this.drawElement(value.element, value.selected ? FlowRenderMode.active : FlowRenderMode.hover);
+        }
         if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected)) {
             this.drawElement(value.element, value.selected ? FlowRenderMode.active : FlowRenderMode.default);
         }
+    }
+
+    getBoundedElements() {
+        let boundedElements: BoundedElements = {};
+        if (this.element.source?.nodeId) {
+            const boundElement = getElementById<FlowNode>(this.board, this.element.source.nodeId);
+            if (boundElement) {
+                boundedElements.source = boundElement;
+            }
+        }
+        if (this.element.target?.nodeId) {
+            const boundElement = getElementById<FlowNode>(this.board, this.element.target.nodeId);
+            if (boundElement) {
+                boundedElements.target = boundElement;
+            }
+        }
+        return boundedElements;
+    }
+
+    updatePathPoints() {
+        this.pathPoints = buildEdgePathPoints(this.board, this.element);
     }
 
     drawElement(element: FlowEdge = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
