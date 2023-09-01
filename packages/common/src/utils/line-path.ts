@@ -139,3 +139,69 @@ export function getOppositeDirection(direction: Direction) {
             return Direction.top;
     }
 }
+
+export function getPointOnPolyline(points: Point[], ratio: number) {
+    const totalLength = calculatePolylineLength(points);
+    const targetDistance = totalLength * ratio;
+
+    let accumulatedDistance = 0;
+    for (let i = 0; i < points.length - 1; i++) {
+        const [x1, y1] = points[i];
+        const [x2, y2] = points[i + 1];
+        const segmentLength = distanceBetweenPoints(x1, y1, x2, y2);
+
+        if (accumulatedDistance + segmentLength >= targetDistance) {
+            const remainingDistance = targetDistance - accumulatedDistance;
+            const ratioInSegment = remainingDistance / segmentLength;
+
+            const targetX = x1 + (x2 - x1) * ratioInSegment;
+            const targetY = y1 + (y2 - y1) * ratioInSegment;
+            return [targetX, targetY];
+        }
+
+        accumulatedDistance += segmentLength;
+    }
+
+    return points[points.length - 1];
+}
+
+function distanceBetweenPoints(x1: number, y1: number, x2: number, y2: number) {
+    return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+}
+
+function calculatePolylineLength(points: Point[]) {
+    let length = 0;
+    for (let i = 0; i < points.length - 1; i++) {
+        const [x1, y1] = points[i];
+        const [x2, y2] = points[i + 1];
+        length += distanceBetweenPoints(x1, y1, x2, y2);
+    }
+    return length;
+}
+
+export function getRatioByPoint(points: Point[], point: Point) {
+    const totalLength = calculatePolylineLength(points);
+
+    let distance = 0;
+
+    for (let i = 0; i < points.length - 1; i++) {
+        const isOverlap = isPointOnLineSegment(point, points[i], points[i + 1]);
+
+        if (isOverlap) {
+            distance += distanceBetweenPoints(point[0], point[1], points[i][0], points[i][1]);
+            return distance / totalLength;
+        } else {
+            distance += distanceBetweenPoints(points[i][0], points[i][1], points[i + 1][0], points[i + 1][1]);
+        }
+    }
+    return 0;
+}
+
+export function isPointOnLineSegment(point: Point, startPoint: Point, endPoint: Point) {
+    const distanceToStart = distanceBetweenPoints(point[0], point[1], startPoint[0], startPoint[1]);
+    const distanceToEnd = distanceBetweenPoints(point[0], point[1], endPoint[0], endPoint[1]);
+
+    const segmentLength = distanceBetweenPoints(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
+
+    return Math.abs(distanceToStart + distanceToEnd - segmentLength) < 0.1;
+}

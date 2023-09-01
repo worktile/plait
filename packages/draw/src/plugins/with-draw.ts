@@ -20,6 +20,7 @@ import { withLineCreateByDraw } from './with-line-create';
 import { withGeometryResize } from './with-geometry-resize';
 import { withLineResize } from './with-line-resize';
 import { withLineBoundReaction } from './with-line-bound-reaction';
+import { withLineText } from './with-line-text';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isHitSelection, isMovable, dblclick } = board;
@@ -85,10 +86,12 @@ export const withDraw = (board: PlaitBoard) => {
         dblclick(event);
     };
 
-    return withLineBoundReaction(
-        withLineResize(
-            withGeometryResize(
-                withLineCreateByDraw(withGeometryCreateByDrag(withGeometryCreateByDraw(withDrawFragment(withDrawHotkey(board)))))
+    return withLineText(
+        withLineBoundReaction(
+            withLineResize(
+                withGeometryResize(
+                    withLineCreateByDraw(withGeometryCreateByDrag(withGeometryCreateByDraw(withDrawFragment(withDrawHotkey(board)))))
+                )
             )
         )
     );

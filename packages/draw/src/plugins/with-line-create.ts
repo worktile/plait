@@ -3,12 +3,10 @@ import {
     PlaitBoard,
     PlaitPointerType,
     Point,
-    RectangleClient,
     Transforms,
     addSelectedElement,
     clearSelectedElement,
     createG,
-    getNearestPointBetweenPointAndSegments,
     preventTouchMove,
     toPoint,
     transformPoint
@@ -18,7 +16,6 @@ import { DrawCreateMode, createLineElement, getCreateMode, transformPointToConne
 import { DrawPointerType } from '../constants';
 import { DefaultLineStyle } from '../constants/line';
 import { LineShapeGenerator } from '../generator/line.generator';
-import { getRectangleByPoints } from '@plait/common';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 
 export const withLineCreateByDraw = (board: PlaitBoard) => {

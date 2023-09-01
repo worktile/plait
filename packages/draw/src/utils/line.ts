@@ -27,6 +27,7 @@ export const createLineElement = (
         type: 'line',
         shape,
         source,
+        texts: [],
         target,
         opacity: 1,
         points,
