@@ -83,6 +83,8 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         if (isBoundedElementsChanged) {
             this.shapeGenerator.draw(this.element, this.g);
             this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+            this.updateText(previous.element.texts, value.element.texts);
+            this.updateTextRectangle();
             return;
         }
 
