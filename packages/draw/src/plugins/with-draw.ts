@@ -5,7 +5,8 @@ import {
     Range,
     RectangleClient,
     getSelectedElements,
-    isPolylineHitRectangle
+    isPolylineHitRectangle,
+    preventTouchMove
 } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
@@ -14,7 +15,7 @@ import { getRectangleByPoints } from '@plait/common';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDraw, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
-import { getElbowPoints, getTextRectangle, isHitPolyLine } from '../utils';
+import { getElbowPoints, getTextRectangle, hitLineTextIndex, isHitPolyLine } from '../utils';
 import { getStrokeWidthByElement } from '../utils/geometry-style/stroke';
 import { withLineCreateByDraw } from './with-line-create';
 import { withGeometryResize } from './with-geometry-resize';
@@ -54,12 +55,14 @@ export const withDraw = (board: PlaitBoard) => {
         if (PlaitDrawElement.isLine(element)) {
             const points = getElbowPoints(board, element);
             const strokeWidth = getStrokeWidthByElement(board, element);
-            const isHit = isHitPolyLine(points, range.focus, strokeWidth, 3);
+            const isHitLineText = hitLineTextIndex(board, element, range.focus) !== -1;
+            const isHit = isHitPolyLine(points, range.focus, strokeWidth, 3) || isHitLineText;
             const rangeRectangle = RectangleClient.toRectangleClient([range.anchor, range.focus]);
             const isContainPolyLinePoint = points.some(point => {
                 return RectangleClient.isHit(rangeRectangle, RectangleClient.toRectangleClient([point, point]));
             });
             const isIntersect = range.anchor === range.focus ? isHit : isPolylineHitRectangle(points, rangeRectangle);
+            isHitLineText && preventTouchMove(board, true);
             return isContainPolyLinePoint || isIntersect;
         }
 

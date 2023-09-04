@@ -8,6 +8,7 @@ import { LineActiveGenerator } from './generator/line-active.generator';
 import { getElbowPoints } from './utils';
 import { getPointOnPolyline } from '@plait/common';
 import { DrawTransforms } from './transforms';
+import { BaseText } from 'slate';
 
 interface BoundedElements {
     source?: PlaitGeometry;
@@ -128,18 +129,12 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
                 const height = textManageRef.height / this.board.viewport.zoom;
                 const width = textManageRef.width / this.board.viewport.zoom;
                 if (textManageRef.newValue && this.element.texts) {
-                    const texts: LineText[] = [];
-                    this.element.texts.forEach((text, i) => {
-                        if (i === index) {
-                            texts.push({
-                                text: textManageRef.newValue || buildText(''),
-                                position: this.element.texts[index].position,
-                                width,
-                                height
-                            });
-                        } else {
-                            texts.push(this.element.texts[i]);
-                        }
+                    const texts = JSON.parse(JSON.stringify(this.element.texts)) as LineText[];
+                    texts.splice(index, 1, {
+                        text: textManageRef.newValue,
+                        position: this.element.texts[index].position,
+                        width,
+                        height
                     });
                     DrawTransforms.setLineTexts(this.board, this.element, texts);
                 }

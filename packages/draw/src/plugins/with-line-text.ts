@@ -8,7 +8,7 @@ import {
     transformPoint
 } from '@plait/core';
 import { PlaitDrawElement, PlaitLine } from '../interfaces';
-import { getElbowPoints } from '../utils';
+import { getElbowPoints, hitLineTextIndex } from '../utils';
 import { getRatioByPoint } from '@plait/common';
 import { buildText } from '@plait/text';
 import { LineComponent } from '../line.component';
@@ -26,18 +26,25 @@ export const withLineText = (board: PlaitBoard) => {
             const points = getElbowPoints(board, hitTarget);
             const point = getNearestPointBetweenPointAndSegments(clickPoint, points);
             const texts = hitTarget.texts?.length ? [...hitTarget.texts] : [];
-            const ratio = getRatioByPoint(points, point);
-            texts.push({
-                text: buildText(''),
-                position: ratio,
-                width: 10,
-                height: 16
-            });
-            DrawTransforms.setLineTexts(board, hitTarget, texts);
-            setTimeout(() => {
+            const textIndex = hitLineTextIndex(board, hitTarget, clickPoint);
+            const isHitText = textIndex !== -1;
+            if (isHitText) {
                 const hitComponent = PlaitElement.getComponent(hitTarget) as LineComponent;
-                hitComponent.textManages[hitComponent.textManages.length - 1].edit();
-            });
+                hitComponent.textManages[textIndex].edit();
+            } else {
+                const ratio = getRatioByPoint(points, point);
+                texts.push({
+                    text: buildText('文本'),
+                    position: ratio,
+                    width: 28,
+                    height: 20
+                });
+                DrawTransforms.setLineTexts(board, hitTarget, texts);
+                setTimeout(() => {
+                    const hitComponent = PlaitElement.getComponent(hitTarget) as LineComponent;
+                    hitComponent.textManages[hitComponent.textManages.length - 1].edit();
+                });
+            }
         }
 
         dblclick(event);

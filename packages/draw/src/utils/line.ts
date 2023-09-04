@@ -10,7 +10,7 @@ import {
     RectangleClient,
     getNearestPointBetweenPointAndSegments
 } from '@plait/core';
-import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getOppositeDirection } from '@plait/common';
+import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getOppositeDirection, getPointOnPolyline } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPointsByCenterPoint } from './geometry';
@@ -56,6 +56,23 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
 export const isHitPolyLine = (pathPoints: Point[], point: Point, strokeWidth: number, expand: number = 0) => {
     const distance = distanceBetweenPointAndSegments(pathPoints, point);
     return distance <= strokeWidth + expand;
+};
+
+export const hitLineTextIndex = (board: PlaitBoard, element: PlaitLine, point: Point) => {
+    const texts = element.texts;
+    if (!texts.length) return -1;
+
+    const points = getElbowPoints(board, element);
+    return texts.findIndex(text => {
+        const center = getPointOnPolyline(points, text.position);
+        const rectangle = {
+            x: center[0] - text.width! / 2,
+            y: center[1] - text.height! / 2,
+            width: text.width!,
+            height: text.height!
+        };
+        return RectangleClient.isHit(rectangle, RectangleClient.toRectangleClient([point, point]));
+    });
 };
 
 export const drawElbowLine = (board: PlaitBoard, element: PlaitLine) => {
