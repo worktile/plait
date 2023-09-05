@@ -5,7 +5,8 @@ import {
     Range,
     RectangleClient,
     getSelectedElements,
-    isPolylineHitRectangle
+    isPolylineHitRectangle,
+    preventTouchMove
 } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
@@ -14,12 +15,13 @@ import { getRectangleByPoints } from '@plait/common';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDraw, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
-import { getElbowPoints, getTextRectangle, isHitPolyLine } from '../utils';
+import { getElbowPoints, getTextRectangle, getHitLineTextIndex, isHitPolyLine, isHitLineText } from '../utils';
 import { getStrokeWidthByElement } from '../utils/geometry-style/stroke';
 import { withLineCreateByDraw } from './with-line-create';
 import { withGeometryResize } from './with-geometry-resize';
 import { withLineResize } from './with-line-resize';
 import { withLineBoundReaction } from './with-line-bound-reaction';
+import { withLineText } from './with-line-text';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isHitSelection, isMovable, dblclick } = board;
@@ -53,7 +55,8 @@ export const withDraw = (board: PlaitBoard) => {
         if (PlaitDrawElement.isLine(element)) {
             const points = getElbowPoints(board, element);
             const strokeWidth = getStrokeWidthByElement(board, element);
-            const isHit = isHitPolyLine(points, range.focus, strokeWidth, 3);
+            const isHitText = isHitLineText(board,element,range.focus);
+            const isHit = isHitPolyLine(points, range.focus, strokeWidth, 3) || isHitText;
             const rangeRectangle = RectangleClient.toRectangleClient([range.anchor, range.focus]);
             const isContainPolyLinePoint = points.some(point => {
                 return RectangleClient.isHit(rangeRectangle, RectangleClient.toRectangleClient([point, point]));
@@ -85,10 +88,12 @@ export const withDraw = (board: PlaitBoard) => {
         dblclick(event);
     };
 
-    return withLineBoundReaction(
-        withLineResize(
-            withGeometryResize(
-                withLineCreateByDraw(withGeometryCreateByDrag(withGeometryCreateByDraw(withDrawFragment(withDrawHotkey(board)))))
+    return withLineText(
+        withLineBoundReaction(
+            withLineResize(
+                withGeometryResize(
+                    withLineCreateByDraw(withGeometryCreateByDrag(withGeometryCreateByDraw(withDrawFragment(withDrawHotkey(board)))))
+                )
             )
         )
     );

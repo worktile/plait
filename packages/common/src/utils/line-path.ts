@@ -1,4 +1,4 @@
-import { Point } from '@plait/core';
+import { Point, distanceBetweenPointAndPoint } from '@plait/core';
 
 export const getPoints = (source: Point, sourcePosition: Direction, target: Point, targetPosition: Direction, offset: number) => {
     const sourceDir = handleDirections[sourcePosition];
@@ -138,4 +138,66 @@ export function getOppositeDirection(direction: Direction) {
         case Direction.bottom:
             return Direction.top;
     }
+}
+
+export function getPointOnPolyline(points: Point[], ratio: number) {
+    const totalLength = calculatePolylineLength(points);
+    const targetDistance = totalLength * ratio;
+
+    let accumulatedDistance = 0;
+    for (let i = 0; i < points.length - 1; i++) {
+        const [x1, y1] = points[i];
+        const [x2, y2] = points[i + 1];
+        const segmentLength = distanceBetweenPointAndPoint(x1, y1, x2, y2);
+
+        if (accumulatedDistance + segmentLength >= targetDistance) {
+            const remainingDistance = targetDistance - accumulatedDistance;
+            const ratioInSegment = remainingDistance / segmentLength;
+
+            const targetX = x1 + (x2 - x1) * ratioInSegment;
+            const targetY = y1 + (y2 - y1) * ratioInSegment;
+            return [targetX, targetY];
+        }
+
+        accumulatedDistance += segmentLength;
+    }
+
+    return points[points.length - 1];
+}
+
+function calculatePolylineLength(points: Point[]) {
+    let length = 0;
+    for (let i = 0; i < points.length - 1; i++) {
+        const [x1, y1] = points[i];
+        const [x2, y2] = points[i + 1];
+        length += distanceBetweenPointAndPoint(x1, y1, x2, y2);
+    }
+    return length;
+}
+
+export function getRatioByPoint(points: Point[], point: Point) {
+    const totalLength = calculatePolylineLength(points);
+
+    let distance = 0;
+
+    for (let i = 0; i < points.length - 1; i++) {
+        const isOverlap = isPointOnLineSegment(point, points[i], points[i + 1]);
+
+        if (isOverlap) {
+            distance += distanceBetweenPointAndPoint(point[0], point[1], points[i][0], points[i][1]);
+            return distance / totalLength;
+        } else {
+            distance += distanceBetweenPointAndPoint(points[i][0], points[i][1], points[i + 1][0], points[i + 1][1]);
+        }
+    }
+    throw new Error('Cannot get ratio by point')
+}
+
+export function isPointOnLineSegment(point: Point, startPoint: Point, endPoint: Point) {
+    const distanceToStart = distanceBetweenPointAndPoint(point[0], point[1], startPoint[0], startPoint[1]);
+    const distanceToEnd = distanceBetweenPointAndPoint(point[0], point[1], endPoint[0], endPoint[1]);
+
+    const segmentLength = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
+
+    return Math.abs(distanceToStart + distanceToEnd - segmentLength) < 0.1;
 }

@@ -205,6 +205,7 @@ export const mockData: (PlaitMind | PlaitGeometry | PlaitLine)[] = [
         target: {
             marker: LineMarkerType.arrow
         },
+        texts: [],
         opacity: 1,
         strokeColor: '#333333',
         strokeWidth: 2,

@@ -1,10 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { PlaitBoard, PlaitPluginElementComponent, PlaitPluginElementContext, OnContextChanged, getElementById } from '@plait/core';
 import { Subject } from 'rxjs';
-import { PlaitGeometry, PlaitLine } from './interfaces';
-import { TextManage } from '@plait/text';
+import { LineText, PlaitGeometry, PlaitLine } from './interfaces';
+import { TextManage, TextManageRef, buildText } from '@plait/text';
 import { LineShapeGenerator } from './generator/line.generator';
 import { LineActiveGenerator } from './generator/line-active.generator';
+import { getElbowPoints } from './utils';
+import { getPointOnPolyline } from '@plait/common';
+import { DrawTransforms } from './transforms';
 
 interface BoundedElements {
     source?: PlaitGeometry;
@@ -24,7 +27,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
 
     activeGenerator!: LineActiveGenerator;
 
-    textManage!: TextManage;
+    textManages: TextManage[] = [];
 
     boundedElements: BoundedElements = {};
 
@@ -35,6 +38,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
     initializeGenerator() {
         this.shapeGenerator = new LineShapeGenerator(this.board);
         this.activeGenerator = new LineActiveGenerator(this.board);
+        this.initializeTextManages();
     }
 
     ngOnInit(): void {
@@ -43,6 +47,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
         super.ngOnInit();
         this.boundedElements = this.getBoundedElements();
+        this.drawText();
     }
 
     getBoundedElements() {
@@ -71,11 +76,14 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         if (value.element !== previous.element) {
             this.shapeGenerator.draw(this.element, this.g);
             this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+            this.updateText(previous.element.texts, value.element.texts);
+            this.updateTextRectangle();
         }
 
         if (isBoundedElementsChanged) {
             this.shapeGenerator.draw(this.element, this.g);
             this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+            this.updateTextRectangle();
             return;
         }
 
@@ -83,6 +91,83 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         if (!hasSameSelected) {
             this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
         }
+    }
+
+    initializeTextManages() {
+        if (this.element.texts?.length) {
+            this.element.texts.forEach((text, index) => {
+                const manage = this.createTextManage(text, index);
+                this.textManages.push(manage);
+            });
+        }
+    }
+
+    destroyTextManages() {
+        this.textManages.forEach(manage => {
+            manage.destroy();
+        });
+    }
+
+    drawText() {
+        if (this.element.texts?.length) {
+            this.textManages.forEach((manage, index) => {
+                manage.draw(this.element.texts![index].text);
+                this.g.append(manage.g);
+            });
+        }
+    }
+
+    createTextManage(text: LineText, index: number) {
+        return new TextManage(this.board, this.viewContainerRef, {
+            getRectangle: () => {
+                const points = getElbowPoints(this.board, this.element);
+                const point = getPointOnPolyline(points, text.position);
+                return {
+                    x: point[0] - this.element.texts![index].width! / 2,
+                    y: point[1] - this.element.texts![index].height! / 2,
+                    width: this.element.texts![index].width!,
+                    height: this.element.texts![index].height!
+                };
+            },
+            onValueChangeHandle: (textManageRef: TextManageRef) => {
+                const height = textManageRef.height / this.board.viewport.zoom;
+                const width = textManageRef.width / this.board.viewport.zoom;
+                if (textManageRef.newValue && this.element.texts) {
+                    const texts = JSON.parse(JSON.stringify(this.element.texts)) as LineText[];
+                    texts.splice(index, 1, {
+                        text: textManageRef.newValue,
+                        position: this.element.texts[index].position,
+                        width,
+                        height
+                    });
+                    DrawTransforms.setLineTexts(this.board, this.element, texts);
+                }
+            }
+        });
+    }
+
+    updateText(previousTexts: LineText[], currentTexts: LineText[]) {
+        if (previousTexts === currentTexts) return;
+        const previousTextsLength = previousTexts.length;
+        const currentTextsLength = currentTexts.length;
+        if (currentTextsLength === previousTextsLength) {
+            for (let i = 0; i < previousTextsLength; i++) {
+                if (previousTexts[i].text !== currentTexts[i].text) {
+                    this.textManages[i].updateText(currentTexts[i].text);
+                }
+            }
+        } else {
+            this.destroyTextManages();
+            this.textManages = [];
+            this.initializeTextManages();
+            this.drawText();
+        }
+    }
+
+    updateTextRectangle() {
+        this.textManages.forEach(manage => {
+            manage.updateRectangle();
+        });
     }
 
     ngOnDestroy(): void {
