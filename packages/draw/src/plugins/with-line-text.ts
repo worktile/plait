@@ -8,7 +8,7 @@ import {
     transformPoint
 } from '@plait/core';
 import { PlaitDrawElement, PlaitLine } from '../interfaces';
-import { getElbowPoints, hitLineTextIndex } from '../utils';
+import { getElbowPoints, getHitLineTextIndex, isHitLineText } from '../utils';
 import { getRatioByPoint } from '@plait/common';
 import { buildText } from '@plait/text';
 import { LineComponent } from '../line.component';
@@ -26,8 +26,8 @@ export const withLineText = (board: PlaitBoard) => {
             const points = getElbowPoints(board, hitTarget);
             const point = getNearestPointBetweenPointAndSegments(clickPoint, points);
             const texts = hitTarget.texts?.length ? [...hitTarget.texts] : [];
-            const textIndex = hitLineTextIndex(board, hitTarget, clickPoint);
-            const isHitText = textIndex !== -1;
+            const textIndex = getHitLineTextIndex(board, hitTarget, clickPoint);
+            const isHitText = isHitLineText(board, hitTarget, clickPoint);
             if (isHitText) {
                 const hitComponent = PlaitElement.getComponent(hitTarget) as LineComponent;
                 hitComponent.textManages[textIndex].edit();

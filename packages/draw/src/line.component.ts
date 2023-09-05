@@ -8,7 +8,6 @@ import { LineActiveGenerator } from './generator/line-active.generator';
 import { getElbowPoints } from './utils';
 import { getPointOnPolyline } from '@plait/common';
 import { DrawTransforms } from './transforms';
-import { BaseText } from 'slate';
 
 interface BoundedElements {
     source?: PlaitGeometry;
@@ -39,7 +38,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
     initializeGenerator() {
         this.shapeGenerator = new LineShapeGenerator(this.board);
         this.activeGenerator = new LineActiveGenerator(this.board);
-        this.initializeTextManage();
+        this.initializeTextManages();
     }
 
     ngOnInit(): void {
@@ -84,7 +83,6 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         if (isBoundedElementsChanged) {
             this.shapeGenerator.draw(this.element, this.g);
             this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
-            this.updateText(previous.element.texts, value.element.texts);
             this.updateTextRectangle();
             return;
         }
@@ -95,13 +93,19 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         }
     }
 
-    initializeTextManage() {
+    initializeTextManages() {
         if (this.element.texts?.length) {
             this.element.texts.forEach((text, index) => {
                 const manage = this.createTextManage(text, index);
                 this.textManages.push(manage);
             });
         }
+    }
+
+    destroyTextManages(){
+            this.textManages.forEach(manage=>{
+                manage.destroy()
+            })
     }
 
     drawText() {
@@ -146,15 +150,17 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         if (previousTexts === currentTexts) return;
         const previousTextsLength = previousTexts.length;
         const currentTextsLength = currentTexts.length;
-        for (let i = 0; i < Math.max(previousTextsLength, currentTextsLength); i++) {
-            if (previousTexts[i] && currentTexts[i] && previousTexts[i].text !== currentTexts[i].text) {
-                this.textManages[i].updateText(currentTexts[i].text);
+        if(currentTextsLength === previousTextsLength){
+            for (let i = 0; i < previousTextsLength; i++) {
+                if (previousTexts[i].text !== currentTexts[i].text) {
+                    this.textManages[i].updateText(currentTexts[i].text);
+                }
             }
-            if (!previousTexts[i] && currentTexts[i]) {
-                this.textManages.push(this.createTextManage(currentTexts[i], i));
-                this.textManages[i].draw(currentTexts[i].text);
-                this.g.append(this.textManages[i].g);
-            }
+        }else{
+            this.destroyTextManages()
+            this.textManages = []
+            this.initializeTextManages()
+            this.drawText();
         }
     }
 

@@ -58,7 +58,7 @@ export const isHitPolyLine = (pathPoints: Point[], point: Point, strokeWidth: nu
     return distance <= strokeWidth + expand;
 };
 
-export const hitLineTextIndex = (board: PlaitBoard, element: PlaitLine, point: Point) => {
+export const getHitLineTextIndex = (board: PlaitBoard, element: PlaitLine, point: Point) => {
     const texts = element.texts;
     if (!texts.length) return -1;
 
@@ -74,6 +74,10 @@ export const hitLineTextIndex = (board: PlaitBoard, element: PlaitLine, point: P
         return RectangleClient.isHit(rectangle, RectangleClient.toRectangleClient([point, point]));
     });
 };
+
+export const isHitLineText =  (board: PlaitBoard, element: PlaitLine, point: Point)=>{
+  return  getHitLineTextIndex(board,element,point) !== -1
+}
 
 export const drawElbowLine = (board: PlaitBoard, element: PlaitLine) => {
     const options = { stroke: element.strokeColor, strokeWidth: element.strokeWidth };
