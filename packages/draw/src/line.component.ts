@@ -102,10 +102,10 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         }
     }
 
-    destroyTextManages(){
-            this.textManages.forEach(manage=>{
-                manage.destroy()
-            })
+    destroyTextManages() {
+        this.textManages.forEach(manage => {
+            manage.destroy();
+        });
     }
 
     drawText() {
@@ -150,16 +150,16 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         if (previousTexts === currentTexts) return;
         const previousTextsLength = previousTexts.length;
         const currentTextsLength = currentTexts.length;
-        if(currentTextsLength === previousTextsLength){
+        if (currentTextsLength === previousTextsLength) {
             for (let i = 0; i < previousTextsLength; i++) {
                 if (previousTexts[i].text !== currentTexts[i].text) {
                     this.textManages[i].updateText(currentTexts[i].text);
                 }
             }
-        }else{
-            this.destroyTextManages()
-            this.textManages = []
-            this.initializeTextManages()
+        } else {
+            this.destroyTextManages();
+            this.textManages = [];
+            this.initializeTextManages();
             this.drawText();
         }
     }
