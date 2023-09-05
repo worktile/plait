@@ -9,3 +9,11 @@ export const setLineTexts = (board: PlaitBoard, element: PlaitLine, texts: LineT
     const path = PlaitBoard.findPath(board, element);
     Transforms.setNode(board, { texts }, path);
 };
+
+export const removeLineText = (board: PlaitBoard, element: PlaitLine, index: number) => {
+    const path = PlaitBoard.findPath(board, element);
+    const texts = element.texts?.length ? [...element.texts] : [];
+    const newTexts = [...texts];
+    newTexts.splice(index, 1);
+    Transforms.setNode(board, { texts: newTexts }, path);
+};
