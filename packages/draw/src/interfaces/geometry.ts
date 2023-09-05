@@ -6,6 +6,8 @@ export enum GeometryShape {
     rectangle = 'rectangle',
     ellipse = 'ellipse',
     diamond = 'diamond',
+    roundRectangle = 'roundRectangle',
+    parallelogram = 'parallelogram',
     text = 'text'
 }
 

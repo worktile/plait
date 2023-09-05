@@ -14,6 +14,7 @@ import { Element } from 'slate';
 import { DefaultTextProperty, ShapeDefaultSpace } from '../constants';
 import { drawRectangle, getRectangleByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './geometry-style/stroke';
+import { Options } from 'roughjs/bin/core';
 
 export const createGeometryElement = (
     shape: GeometryShape,
@@ -85,4 +86,16 @@ export const drawBoundMask = (board: PlaitBoard, element: PlaitGeometry) => {
     });
 
     return G;
+};
+
+export const drawDiamond = (board: PlaitBoard, rectangle: RectangleClient, options: Options) => {
+    const points = RectangleClient.getEdgeCenterPoints(rectangle);
+    const rs = PlaitBoard.getRoughSVG(board);
+    return rs.polygon(points, { ...options, fillStyle: 'solid' });
+};
+
+export const drawEllipse = (board: PlaitBoard, rectangle: RectangleClient, options: Options) => {
+    const centerPoint = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
+    const rs = PlaitBoard.getRoughSVG(board);
+    return rs.ellipse(centerPoint[0], centerPoint[1], rectangle.width, rectangle.height, { ...options, fillStyle: 'solid' });
 };

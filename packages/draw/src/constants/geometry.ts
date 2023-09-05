@@ -13,8 +13,8 @@ export const DefaultGeometryActiveStyle = {
 };
 
 export const DefaultGeometryProperty = {
-    width: 120,
-    height: 60,
+    width: 100,
+    height: 100,
     strokeColor: '#333',
     strokeWidth: 2
 };

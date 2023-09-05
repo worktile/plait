@@ -20,6 +20,7 @@ import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, Geometry
 import { normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { DEFAULT_FONT_SIZE } from '@plait/text';
+import { isKeyHotkey } from 'is-hotkey';
 
 export const withGeometryCreateByDrag = (board: PlaitBoard) => {
     const { pointerMove, pointerUp } = board;
@@ -46,7 +47,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
                 geometryShapeG.appendChild(textG);
                 PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
             } else {
-                const temporaryElement = createGeometryElement(GeometryShape.rectangle, points, '', {
+                const temporaryElement = createGeometryElement((pointer as unknown) as GeometryShape, points, '', {
                     strokeColor: DefaultGeometryProperty.strokeColor,
                     strokeWidth: DefaultGeometryProperty.strokeWidth
                 });
@@ -66,11 +67,10 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
         if (dragMode) {
             const targetPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const points = getDefaultGeometryPoints(pointer, targetPoint);
-            if (pointer === DrawPointerType.rectangle) {
-                DrawTransforms.insertGeometry(board, points, GeometryShape.rectangle);
-            }
             if (pointer === DrawPointerType.text) {
                 DrawTransforms.insertText(board, points);
+            } else {
+                DrawTransforms.insertGeometry(board, points, (pointer as unknown) as GeometryShape);
             }
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
@@ -86,12 +86,24 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
 };
 
 export const withGeometryCreateByDraw = (board: PlaitBoard) => {
-    const { pointerDown, pointerMove, pointerUp } = board;
+    const { pointerDown, pointerMove, pointerUp, keydown, keyup } = board;
     let start: Point | null = null;
 
     let geometryShapeG: SVGGElement | null = null;
 
     let temporaryElement: PlaitGeometry | null = null;
+
+    let isShift = false;
+
+    board.keydown = (event: KeyboardEvent) => {
+        isShift = isKeyHotkey('shift', event);
+        keydown(event);
+    };
+
+    board.keyup = (event: KeyboardEvent) => {
+        isShift = false;
+        keyup(event);
+    };
 
     board.pointerDown = (event: PointerEvent) => {
         const createMode = getCreateMode(board);
@@ -114,8 +126,8 @@ export const withGeometryCreateByDraw = (board: PlaitBoard) => {
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
 
         if (drawMode && pointer !== DrawPointerType.text) {
-            const points = normalizeShapePoints([start!, movingPoint]);
-            temporaryElement = createGeometryElement(GeometryShape.rectangle, points, '', {
+            const points = normalizeShapePoints([start!, movingPoint], isShift);
+            temporaryElement = createGeometryElement((pointer as unknown) as GeometryShape, points, '', {
                 strokeColor: DefaultGeometryProperty.strokeColor,
                 strokeWidth: DefaultGeometryProperty.strokeWidth
             });
@@ -137,7 +149,7 @@ export const withGeometryCreateByDraw = (board: PlaitBoard) => {
                 if (pointer === DrawPointerType.text) {
                     temporaryElement = createGeometryElement(GeometryShape.text, points, DefaultTextProperty.text);
                 } else {
-                    temporaryElement = createGeometryElement(GeometryShape.rectangle, points, '', {
+                    temporaryElement = createGeometryElement((pointer as unknown) as GeometryShape, points, '', {
                         strokeColor: DefaultGeometryProperty.strokeColor,
                         strokeWidth: DefaultGeometryProperty.strokeWidth
                     });
