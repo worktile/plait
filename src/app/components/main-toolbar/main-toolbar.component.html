@@ -17,7 +17,31 @@
     [ngClass]="{ active: isPointer(DrawPointerType.rectangle) }"
     (mousedown)="setPointer($event, DrawPointerType.rectangle)"
 >
-    <ng-template [ngTemplateOutlet]="geometry"></ng-template>
+    <ng-template [ngTemplateOutlet]="rectangle"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(DrawPointerType.ellipse) }"
+    (mousedown)="setPointer($event, DrawPointerType.ellipse)"
+>
+    <ng-template [ngTemplateOutlet]="ellipse"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(DrawPointerType.diamond) }"
+    (mousedown)="setPointer($event, DrawPointerType.diamond)"
+>
+    <ng-template [ngTemplateOutlet]="diamond"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(DrawPointerType.roundRectangle) }"
+    (mousedown)="setPointer($event, DrawPointerType.roundRectangle)"
+>
+    <ng-template [ngTemplateOutlet]="roundRectangle"></ng-template>
 </a>
 
 <a
@@ -94,7 +118,7 @@
     </svg>
 </ng-template>
 
-<ng-template #geometry>
+<ng-template #rectangle>
     <svg
         viewBox="0 0 24 24"
         class="icon-3CqDw icon_large-2wsCL"
@@ -111,6 +135,33 @@
             fill-rule="evenodd"
             fill="none"
         ></path>
+    </svg>
+</ng-template>
+
+<ng-template #ellipse>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/连接器</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/连接器" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M8,1 C11.8659932,1 15,4.13400675 15,8 C15,11.8659932 11.8659932,15 8,15 C4.13400675,15 1,11.8659932 1,8 C1,4.13400675 4.13400675,1 8,1 Z M8,2.2 C4.79674845,2.2 2.2,4.79674845 2.2,8 C2.2,11.2032515 4.79674845,13.8 8,13.8 C11.2032515,13.8 13.8,11.2032515 13.8,8 C13.8,4.79674845 11.2032515,2.2 8,2.2 Z" id="椭圆形" fill="#999999"/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #roundRectangle>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/ 起止符</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-起止符" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M11,3 C13.7614237,3 16,5.23857625 16,8 C16,10.7614237 13.7614237,13 11,13 L5,13 C2.23857625,13 0,10.7614237 0,8 C0,5.23857625 2.23857625,3 5,3 L11,3 Z M11,4.2 L5,4.2 C2.90131795,4.2 1.2,5.90131795 1.2,8 C1.2,10.0330982 2.79664702,11.6932796 4.8044525,11.7950555 L5,11.8 L11,11.8 C13.098682,11.8 14.8,10.098682 14.8,8 C14.8,5.96690176 13.203353,4.30672042 11.1955475,4.20494454 L11,4.2 Z" id="矩形" fill="#999999"/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #diamond> 
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/决策</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/决策" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M13.7636471,2.6449804 C13.7716713,2.69552516 13.7718878,2.74700226 13.7642892,2.79761274 L12.3875778,11.9671885 C12.3550099,12.1841069 12.184864,12.3544698 11.9679874,12.3873141 L2.78433018,13.7781116 C2.511301,13.8194599 2.25644773,13.6316454 2.21509947,13.3586162 C2.20737253,13.307594 2.20759072,13.2556831 2.21574631,13.2047277 L3.67471119,4.08923146 C3.70888725,3.87570215 3.87646006,3.70834166 4.09003253,3.67443635 L13.1914362,2.22955927 C13.4641633,2.18626298 13.7203508,2.37225335 13.7636471,2.6449804 Z M12.4355704,3.5645263 L4.77957044,4.7795263 L3.55157044,12.4485263 L11.2775704,11.2775263 L12.4355704,3.5645263 Z" id="矩形" fill="#999999" transform="translate(7.989647, 8.003560) rotate(-315.000000) translate(-7.989647, -8.003560) "/>
+        </g>
     </svg>
 </ng-template>
 
