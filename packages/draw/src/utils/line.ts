@@ -84,6 +84,8 @@ export const drawElbowLine = (board: PlaitBoard, element: PlaitLine) => {
     const lineG = createG();
     const points = getElbowPoints(board, element);
     const elbowLine = PlaitBoard.getRoughSVG(board).linearPath(points, options);
+    const path = elbowLine.querySelector('path')
+    path?.setAttribute('mask',`url(#${element.id})`)
     lineG.appendChild(elbowLine);
     const arrow = drawLineArrow(element, points, options);
     arrow && lineG.appendChild(arrow);
@@ -150,3 +152,16 @@ export const getHitEdgeCenterPoint = (movingPoint: Point, geometry: RectangleCli
         return RectangleClient.isHit(nearestPointRectangle, RectangleClient.toRectangleClient([point, point]));
     });
 };
+
+export const getLineTextRectangle = (board:PlaitBoard,element:PlaitLine, index:number):RectangleClient=>{
+    const text = element.texts[index]
+    const elbowPoints = getElbowPoints(board, element);
+    const point = getPointOnPolyline(elbowPoints, text.position);
+    return {
+        x: point[0] - text.width! / 2,
+        y: point[1] - text.height! / 2,
+        width: text.width!,
+        height: text.height!
+    };
+     
+}

@@ -5,8 +5,7 @@ import { LineText, PlaitGeometry, PlaitLine } from './interfaces';
 import { TextManage, TextManageRef, buildText } from '@plait/text';
 import { LineShapeGenerator } from './generator/line.generator';
 import { LineActiveGenerator } from './generator/line-active.generator';
-import { getElbowPoints } from './utils';
-import { getPointOnPolyline } from '@plait/common';
+import { getLineTextRectangle } from './utils';
 import { DrawTransforms } from './transforms';
 
 interface BoundedElements {
@@ -120,14 +119,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
     createTextManage(text: LineText, index: number) {
         return new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
-                const points = getElbowPoints(this.board, this.element);
-                const point = getPointOnPolyline(points, text.position);
-                return {
-                    x: point[0] - this.element.texts![index].width! / 2,
-                    y: point[1] - this.element.texts![index].height! / 2,
-                    width: this.element.texts![index].width!,
-                    height: this.element.texts![index].height!
-                };
+                return getLineTextRectangle(this.board, this.element, index);
             },
             onValueChangeHandle: (textManageRef: TextManageRef) => {
                 const height = textManageRef.height / this.board.viewport.zoom;

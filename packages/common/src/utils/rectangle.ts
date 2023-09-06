@@ -8,11 +8,22 @@ export const drawRectangle = (board: PlaitBoard, rectangle: RectangleClient, opt
     return rectangleG;
 };
 
-export const getRectangleByPoints = (points: [Point, Point]) => {
+export const getRectangleByPoints = (points: Point[]) => {
+    let minX = Infinity,
+        maxX = -Infinity,
+        minY = Infinity,
+        maxY = -Infinity;
+    points.forEach(point => {
+        minX = Math.min(point[0], minX);
+        maxX = Math.max(point[0], maxX);
+        minY = Math.min(point[1], minY);
+        maxY = Math.max(point[1], maxY);
+    });
+
     return {
-        x: points[0][0],
-        y: points[0][1],
-        width: Math.abs(points[1][0] - points[0][0]),
-        height: Math.abs(points[1][1] - points[0][1])
-    } as RectangleClient;
+        x: minX,
+        y: minY,
+        width: maxX - minX,
+        height: maxY - minY
+    };
 };
