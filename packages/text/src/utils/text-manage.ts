@@ -17,7 +17,7 @@ import { AngularEditor, EDITOR_TO_ELEMENT, IS_FOCUSED, hasEditableTarget } from 
 import { debounceTime, filter, tap } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
 import { measureDivSize } from './text-size';
-import { TextPlugin } from '../custom-types';
+import { CustomElement, TextPlugin } from '../custom-types';
 import { PlaitTextEditor } from '../plugins/text.editor';
 
 export enum ExitOrigin {
@@ -165,7 +165,7 @@ export class TextManage {
         }
     }
 
-    edit(onExitCallback?: (origin: ExitOrigin) => void) {
+    edit(onExitCallback?: (origin: ExitOrigin, text: CustomElement[]) => void) {
         IS_TEXT_EDITABLE.set(this.board, true);
         this.setEditing(true);
         this.componentRef.instance.readonly = false;
@@ -238,7 +238,7 @@ export class TextManage {
             MERGING.set(this.board, false);
 
             if (onExitCallback) {
-                onExitCallback(origin);
+                onExitCallback(origin, this.componentRef.instance.children);
             }
         };
     }
