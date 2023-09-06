@@ -8,7 +8,7 @@ import {
     transformPoint
 } from '@plait/core';
 import { PlaitDrawElement, PlaitLine } from '../interfaces';
-import { Text } from 'slate';
+import { Node, Text } from 'slate';
 import { getElbowPoints, getHitLineTextIndex, isHitLineText } from '../utils';
 import { getRatioByPoint } from '@plait/common';
 import { buildText } from '@plait/text';
@@ -30,13 +30,7 @@ export const withLineText = (board: PlaitBoard) => {
             const textIndex = getHitLineTextIndex(board, hitTarget, clickPoint);
             const isHitText = isHitLineText(board, hitTarget, clickPoint);
             if (isHitText) {
-                const hitComponent = PlaitElement.getComponent(hitTarget) as LineComponent;
-                hitComponent.textManages[textIndex].edit((origin, descendant) => {
-                    const text = (descendant[0].children[0] as Text).text;
-                    if (!text) {
-                        DrawTransforms.removeLineText(board, hitTarget, textIndex);
-                    }
-                });
+                editHandle(board, hitTarget, textIndex);
             } else {
                 const ratio = getRatioByPoint(points, point);
                 texts.push({
@@ -48,13 +42,7 @@ export const withLineText = (board: PlaitBoard) => {
                 DrawTransforms.setLineTexts(board, hitTarget, texts);
                 setTimeout(() => {
                     const hitComponent = PlaitElement.getComponent(hitTarget) as LineComponent;
-                    const textManage = hitComponent.textManages[hitComponent.textManages.length - 1];
-                    const originText = textManage.componentRef.instance.children;
-                    textManage.edit((origin, text) => {
-                        if (originText === text) {
-                            DrawTransforms.removeLineText(board, hitTarget, texts.length - 1);
-                        }
-                    });
+                    editHandle(board, hitTarget, hitComponent.textManages.length - 1, true);
                 });
             }
         }
@@ -64,3 +52,17 @@ export const withLineText = (board: PlaitBoard) => {
 
     return board;
 };
+
+function editHandle(board: PlaitBoard, element: PlaitLine, manageIndex: number, isFirstEdit: boolean = false) {
+    const hitComponent = PlaitElement.getComponent(element) as LineComponent;
+    const textManage = hitComponent.textManages[manageIndex];
+    const originText = textManage.componentRef.instance.children;
+
+    textManage.edit((origin, descendant) => {
+        const text = Node.string(descendant[0]);
+        const shouldRemove = (isFirstEdit && originText === descendant) || !text;
+        if (shouldRemove) {
+            DrawTransforms.removeLineText(board, element, manageIndex);
+        }
+    });
+}
