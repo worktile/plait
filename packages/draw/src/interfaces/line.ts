@@ -16,8 +16,8 @@ export interface LineText {
     text: Element;
     //基于线长度，定位的百分比
     position: number;
-    width?: number;
-    height?: number;
+    width: number;
+    height: number;
 }
 
 export interface LineHandle {

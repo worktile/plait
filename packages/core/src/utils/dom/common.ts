@@ -1,4 +1,6 @@
+import { Options } from 'roughjs/bin/core';
 import { POINTER_BUTTON } from '../../constants';
+import { RectangleClient } from '../../interfaces';
 import { Point } from '../../interfaces/point';
 
 export const NS = 'http://www.w3.org/2000/svg';
@@ -16,6 +18,23 @@ export function createG() {
 export function createPath() {
     const newG = document.createElementNS(NS, 'path');
     return newG;
+}
+
+export function createRect(rectangle: RectangleClient, options?: Options) {
+    const rect = document.createElementNS(NS, 'rect');
+    rect.setAttribute('x', `${rectangle.x}`);
+    rect.setAttribute('y', `${rectangle.y}`);
+    rect.setAttribute('width', `${rectangle.width}`);
+    rect.setAttribute('height', `${rectangle.height}`);
+    for (let key in options) {
+        const optionKey = key as keyof Options;
+        rect.setAttribute(key, `${options[optionKey]}`);
+    }
+    return rect;
+}
+
+export function createMask(){
+    return document.createElementNS(NS, 'mask');
 }
 
 export function createSVG() {
@@ -57,8 +76,8 @@ export const hasInputOrTextareaTarget = (target: EventTarget | null) => {
 
 export const isSecondaryPointer = (event: MouseEvent) => {
     return event.button === POINTER_BUTTON.SECONDARY;
-}
+};
 
 export const isMainPointer = (event: MouseEvent) => {
     return event.button === POINTER_BUTTON.MAIN;
-}
+};
