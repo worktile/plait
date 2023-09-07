@@ -174,7 +174,6 @@ export const normalizeHoverPoint = (element: PlaitGeometry, point: Point, offset
             );
             const ellipseActivePoint = getHitEdgeCenterPoint(ellipseNearestPoint, activeRectangle);
             return ellipseActivePoint ? ellipseActivePoint : ellipseNearestPoint;
-
         case GeometryShape.roundRectangle:
             let roundRectangleNearestPoint = getNearestPointBetweenPointAndRoundRectangle(
                 point,
