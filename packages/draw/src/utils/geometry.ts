@@ -14,10 +14,10 @@ import { GeometryShape, PlaitGeometry } from '../interfaces/geometry';
 import { buildText } from '@plait/text';
 import { Element } from 'slate';
 import { DefaultTextProperty, ShapeDefaultSpace } from '../constants';
-import { drawRectangle, getRectangleByPoints } from '@plait/common';
+import { getRectangleByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './geometry-style/stroke';
 import { Options } from 'roughjs/bin/core';
-import { getHitEdgeCenterPoint } from './line';
+import { ShapeMethodsMap } from './shapes';
 
 export const createGeometryElement = (
     shape: GeometryShape,
@@ -77,8 +77,8 @@ export const drawBoundMask = (board: PlaitBoard, element: PlaitGeometry) => {
     });
     G.appendChild(maskG);
 
-    const lineCenterPoints = RectangleClient.getEdgeCenterPoints(activeRectangle);
-    lineCenterPoints.forEach(point => {
+    const connectorPoints = ShapeMethodsMap[element.shape].getConnectorPoints(activeRectangle);
+    connectorPoints.forEach(point => {
         const circleG = drawCircle(PlaitBoard.getRoughSVG(board), point, 6, {
             stroke: '#999999',
             strokeWidth: 1,
@@ -110,29 +110,7 @@ export const drawEllipse = (board: PlaitBoard, rectangle: RectangleClient, optio
 };
 
 export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient, shape: GeometryShape, options: Options) => {
-    switch (shape) {
-        case GeometryShape.rectangle:
-            return drawRectangle(board, outerRectangle, options);
-        case GeometryShape.roundRectangle:
-            return drawRoundRectangle(
-                PlaitBoard.getRoughSVG(board),
-                outerRectangle.x,
-                outerRectangle.y,
-                outerRectangle.x + outerRectangle.width,
-                outerRectangle.y + outerRectangle.height,
-                options,
-                false,
-                getRoundRectangleRadius(outerRectangle)
-            );
-        case GeometryShape.diamond:
-            return drawDiamond(board, outerRectangle, options);
-        case GeometryShape.ellipse:
-            return drawEllipse(board, outerRectangle, options);
-        case GeometryShape.parallelogram:
-            return drawParallelogram(board, outerRectangle, options);
-        default:
-            throw new Error(`Cannot draw ${shape}`);
-    }
+    return ShapeMethodsMap[shape].draw(board, outerRectangle, options);
 };
 
 export const getRoundRectangleRadius = (rectangle: RectangleClient) => {
@@ -148,44 +126,13 @@ export const getParallelogramPoints = (rectangle: RectangleClient): Point[] => {
     ];
 };
 
-export const normalizeHoverPoint = (element: PlaitGeometry, point: Point, offset = 0) => {
-    const shape = element.shape;
+export const getNearestPoint = (element: PlaitGeometry, point: Point, offset = 0) => {
     const rectangle = getRectangleByPoints(element.points);
     const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
-
-    switch (shape) {
-        case GeometryShape.rectangle:
-        default:
-            const activeRectangleCornerPoints = RectangleClient.getCornerPoints(activeRectangle);
-            let nearestPoint = getNearestPointBetweenPointAndSegments(point, activeRectangleCornerPoints);
-            const activePoint = getHitEdgeCenterPoint(nearestPoint, activeRectangle);
-            return activePoint ? activePoint : nearestPoint;
-        case GeometryShape.diamond:
-            const diamondControlPoints = RectangleClient.getEdgeCenterPoints(activeRectangle);
-            const diamondNearestPoint = getNearestPointBetweenPointAndSegments(point, diamondControlPoints);
-            const diamondActivePoint = getHitEdgeCenterPoint(diamondNearestPoint, activeRectangle);
-            return diamondActivePoint ? diamondActivePoint : diamondNearestPoint;
-        case GeometryShape.ellipse:
-            const ellipseNearestPoint = getNearestPointBetweenPointAndEllipse(
-                point,
-                [activeRectangle.x + activeRectangle.width / 2, activeRectangle.y + activeRectangle.height / 2],
-                activeRectangle.width / 2,
-                activeRectangle.height / 2
-            );
-            const ellipseActivePoint = getHitEdgeCenterPoint(ellipseNearestPoint, activeRectangle);
-            return ellipseActivePoint ? ellipseActivePoint : ellipseNearestPoint;
-        case GeometryShape.roundRectangle:
-            let roundRectangleNearestPoint = getNearestPointBetweenPointAndRoundRectangle(
-                point,
-                activeRectangle,
-                getRoundRectangleRadius(activeRectangle)
-            );
-            const roundRectangleActivePoint = getHitEdgeCenterPoint(roundRectangleNearestPoint, activeRectangle);
-            return roundRectangleActivePoint ? roundRectangleActivePoint : roundRectangleNearestPoint;
-    }
+    return ShapeMethodsMap[element.shape].getNearestPoint(activeRectangle, point);
 };
 
-function getNearestPointBetweenPointAndEllipse(point: Point, center: Point, rx: number, ry: number, rotation: number = 0): Point {
+export function getNearestPointBetweenPointAndEllipse(point: Point, center: Point, rx: number, ry: number, rotation: number = 0): Point {
     const rectangleClient = {
         x: center[0] - rx,
         y: center[1] - ry,
@@ -230,7 +177,7 @@ function getNearestPointBetweenPointAndEllipse(point: Point, center: Point, rx: 
     return [center[0] + a * tx * signX, center[1] + b * ty * signY];
 }
 
-function getNearestPointBetweenPointAndRoundRectangle(point: Point, rectangle: RectangleClient, radius: number) {
+export function getNearestPointBetweenPointAndRoundRectangle(point: Point, rectangle: RectangleClient, radius: number) {
     const { x: rectX, y: rectY, width, height } = rectangle;
     const cornerPoints = RectangleClient.getCornerPoints(rectangle);
     let result = getNearestPointBetweenPointAndSegments(point, cornerPoints);
@@ -262,3 +209,12 @@ function getNearestPointBetweenPointAndRoundRectangle(point: Point, rectangle: R
     }
     return result;
 }
+
+export const getCenterPointsOnPolygon = (points: Point[]) => {
+    const centerPoint: Point[] = [];
+    for (let i = 0; i < points.length; i++) {
+        let j = i == points.length - 1 ? 0 : i + 1;
+        centerPoint.push([(points[i][0] + points[j][0]) / 2, (points[i][1] + points[j][1]) / 2]);
+    }
+    return centerPoint;
+};

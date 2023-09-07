@@ -1,8 +1,8 @@
-import { PlaitBoard, SELECTION_BORDER_COLOR, drawCircle, toPoint, transformPoint } from '@plait/core';
+import { PlaitBoard, RectangleClient, SELECTION_BORDER_COLOR, drawCircle, toPoint, transformPoint } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
-import { drawBoundMask, normalizeHoverPoint } from '../utils';
+import { drawBoundMask, getHitConnectorPoint, getNearestPoint } from '../utils';
 import { DrawPointerType } from '../constants';
-import { isResizingByCondition } from '@plait/common';
+import { getRectangleByPoints, isResizingByCondition } from '@plait/common';
 import { getStrokeWidthByElement } from '../utils/geometry-style/stroke';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 
@@ -22,7 +22,11 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
             if (hitElement) {
                 boundShapeG = drawBoundMask(board, hitElement);
                 const offset = (getStrokeWidthByElement(board, hitElement) + 1) / 2;
-                const nearestPoint = normalizeHoverPoint(hitElement, movingPoint, offset);
+                let nearestPoint = getNearestPoint(hitElement, movingPoint, offset);
+                const rectangle = getRectangleByPoints(hitElement.points);
+                const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
+                const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, activeRectangle);
+                nearestPoint = hitConnector ? hitConnector : nearestPoint;
                 const circleG = drawCircle(PlaitBoard.getRoughSVG(board), nearestPoint, 6, {
                     stroke: SELECTION_BORDER_COLOR,
                     strokeWidth: 1,

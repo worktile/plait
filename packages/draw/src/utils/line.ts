@@ -13,8 +13,9 @@ import {
 import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getOppositeDirection, getPointOnPolyline } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getPointsByCenterPoint, normalizeHoverPoint } from './geometry';
+import { getPointsByCenterPoint, getNearestPoint } from './geometry';
 import { getStrokeWidthByElement } from './geometry-style/stroke';
+import { ShapeMethodsMap } from './shapes';
 
 export const createLineElement = (
     shape: LineShape,
@@ -138,17 +139,18 @@ export const transformPointToConnection = (board: PlaitBoard, point: Point, hitE
     const offset = (getStrokeWidthByElement(board, hitElement) + 1) / 2;
     let rectangle = getRectangleByPoints(hitElement.points);
     rectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
-    let nearestPoint = normalizeHoverPoint(hitElement, point, offset);
-
+    let nearestPoint = getNearestPoint(hitElement, point, offset);
+    const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, rectangle);
+    nearestPoint = hitConnector ? hitConnector : nearestPoint;
     return [(nearestPoint[0] - rectangle.x) / rectangle.width, (nearestPoint[1] - rectangle.y) / rectangle.height];
 };
 
-export const getHitEdgeCenterPoint = (movingPoint: Point, geometry: RectangleClient) => {
+export const getHitConnectorPoint = (movingPoint: Point, hitElement: PlaitGeometry, rectangle: RectangleClient) => {
+    const connector = ShapeMethodsMap[hitElement.shape].getConnectorPoints(rectangle);
     const points = getPointsByCenterPoint(movingPoint, 5, 5);
-    const nearestPointRectangle = getRectangleByPoints(points);
-    const edgeCenterPoints = RectangleClient.getEdgeCenterPoints(geometry);
-    return edgeCenterPoints.find(point => {
-        return RectangleClient.isHit(nearestPointRectangle, RectangleClient.toRectangleClient([point, point]));
+    const pointRectangle = getRectangleByPoints(points);
+    return connector.find(point => {
+        return RectangleClient.isHit(pointRectangle, RectangleClient.toRectangleClient([point, point]));
     });
 };
 
