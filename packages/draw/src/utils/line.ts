@@ -13,7 +13,8 @@ import {
 import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getOppositeDirection, getPointOnPolyline } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getPointsByCenterPoint } from './geometry';
+import { getPointsByCenterPoint, normalizeHoverPoint } from './geometry';
+import { getStrokeWidthByElement } from './geometry-style/stroke';
 
 export const createLineElement = (
     shape: LineShape,
@@ -39,8 +40,8 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     if (element.points.length === 2) {
         const source = getSourcePoint(board, element);
         const target = getTargetPoint(board, element);
-        let sourceDirection = Direction.right;
-        let targetDirection = Direction.left;
+        let sourceDirection = source[0] < target[0] ? Direction.right : Direction.left;
+        let targetDirection = source[0] < target[0] ? Direction.left : Direction.right;
         if (element.source.connection) {
             sourceDirection = getDirectionByPoint(element.source.connection, sourceDirection);
         }
@@ -75,9 +76,9 @@ export const getHitLineTextIndex = (board: PlaitBoard, element: PlaitLine, point
     });
 };
 
-export const isHitLineText =  (board: PlaitBoard, element: PlaitLine, point: Point)=>{
-  return  getHitLineTextIndex(board,element,point) !== -1
-}
+export const isHitLineText = (board: PlaitBoard, element: PlaitLine, point: Point) => {
+    return getHitLineTextIndex(board, element, point) !== -1;
+};
 
 export const drawElbowLine = (board: PlaitBoard, element: PlaitLine) => {
     const options = { stroke: element.strokeColor, strokeWidth: element.strokeWidth };
@@ -133,13 +134,11 @@ export const normalizeConnection = (geometry: PlaitGeometry, connection: Point):
     return [rectangle.x + rectangle.width * connection[0], rectangle.y + rectangle.height * connection[1]];
 };
 
-export const transformPointToConnection = (point: Point, hitElement: PlaitGeometry): Point => {
-    const rectangle = getRectangleByPoints(hitElement.points);
-    const activeRectangleCornerPoints = RectangleClient.getCornerPoints(rectangle);
-    let nearestPoint = getNearestPointBetweenPointAndSegments(point, activeRectangleCornerPoints);
-    const activePoint = getHitEdgeCenterPoint(nearestPoint, rectangle);
-
-    nearestPoint = activePoint ? activePoint : nearestPoint;
+export const transformPointToConnection = (board: PlaitBoard, point: Point, hitElement: PlaitGeometry): Point => {
+    const offset = (getStrokeWidthByElement(board, hitElement) + 1) / 2;
+    let rectangle = getRectangleByPoints(hitElement.points);
+    rectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
+    let nearestPoint = normalizeHoverPoint(hitElement, point, offset);
 
     return [(nearestPoint[0] - rectangle.x) / rectangle.width, (nearestPoint[1] - rectangle.y) / rectangle.height];
 };

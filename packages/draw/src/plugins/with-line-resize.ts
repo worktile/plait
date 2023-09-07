@@ -38,13 +38,13 @@ export const withLineResize = (board: PlaitBoard) => {
                 points[0] = resizeState.endTransformPoint;
                 const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, -4);
 
-                source.connection = hitElement ? transformPointToConnection(resizeState.endTransformPoint, hitElement) : undefined;
+                source.connection = hitElement ? transformPointToConnection(board, resizeState.endTransformPoint, hitElement) : undefined;
                 source.boundId = hitElement ? hitElement.id : undefined;
             }
             if (resizeRef.handle === LineResizeHandle.target) {
                 points[1] = resizeState.endTransformPoint;
                 const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, -4);
-                target.connection = hitElement ? transformPointToConnection(resizeState.endTransformPoint, hitElement) : undefined;
+                target.connection = hitElement ? transformPointToConnection(board, resizeState.endTransformPoint, hitElement) : undefined;
                 target.boundId = hitElement ? hitElement.id : undefined;
             }
             DrawTransforms.resizeLine(board, { points, source, target }, resizeRef.path);

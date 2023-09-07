@@ -39,7 +39,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
             start = point;
             const hitElement = getHitOutlineGeometry(board, point, -4);
             if (hitElement) {
-                sourceRef.connection = transformPointToConnection(point, hitElement);
+                sourceRef.connection = transformPointToConnection(board, point, hitElement);
                 sourceRef.boundId = hitElement.id;
             }
 
@@ -55,7 +55,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
 
         if (start) {
             const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
-            targetRef.connection = hitElement ? transformPointToConnection(movingPoint, hitElement) : undefined;
+            targetRef.connection = hitElement ? transformPointToConnection(board, movingPoint, hitElement) : undefined;
             targetRef.boundId = hitElement ? hitElement.id : undefined;
             const lineGenerator = new LineShapeGenerator(board);
             temporaryElement = createLineElement(

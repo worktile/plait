@@ -10,8 +10,8 @@
       ],
       "parserOptions": {
         "project": [
-          "packages/plait/tsconfig.lib.json",
-          "packages/plait/tsconfig.spec.json"
+          "packages/core/tsconfig.lib.json",
+          "packages/core/tsconfig.spec.json"
         ],
         "createDefaultProgram": true
       },

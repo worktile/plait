@@ -1,16 +1,8 @@
-import {
-    PlaitBoard,
-    RectangleClient,
-    SELECTION_BORDER_COLOR,
-    drawCircle,
-    getNearestPointBetweenPointAndSegments,
-    toPoint,
-    transformPoint
-} from '@plait/core';
-import { PlaitDrawElement, PlaitGeometry } from '../interfaces';
-import { drawBoundMask, getHitEdgeCenterPoint } from '../utils';
+import { PlaitBoard, SELECTION_BORDER_COLOR, drawCircle, toPoint, transformPoint } from '@plait/core';
+import { PlaitDrawElement } from '../interfaces';
+import { drawBoundMask, normalizeHoverPoint } from '../utils';
 import { DrawPointerType } from '../constants';
-import { getRectangleByPoints, isResizingByCondition } from '@plait/common';
+import { isResizingByCondition } from '@plait/common';
 import { getStrokeWidthByElement } from '../utils/geometry-style/stroke';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 
@@ -29,13 +21,8 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
             const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
             if (hitElement) {
                 boundShapeG = drawBoundMask(board, hitElement);
-                const rectangle = getRectangleByPoints((hitElement as PlaitGeometry).points);
                 const offset = (getStrokeWidthByElement(board, hitElement) + 1) / 2;
-                const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
-                const activeRectangleCornerPoints = RectangleClient.getCornerPoints(activeRectangle);
-                let nearestPoint = getNearestPointBetweenPointAndSegments(movingPoint, activeRectangleCornerPoints);
-                const activePoint = getHitEdgeCenterPoint(nearestPoint, activeRectangle);
-                nearestPoint = activePoint ? activePoint : nearestPoint;
+                const nearestPoint = normalizeHoverPoint(hitElement, movingPoint, offset);
                 const circleG = drawCircle(PlaitBoard.getRoughSVG(board), nearestPoint, 6, {
                     stroke: SELECTION_BORDER_COLOR,
                     strokeWidth: 1,
