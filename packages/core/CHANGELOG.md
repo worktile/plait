@@ -1,5 +1,19 @@
 # plait
 
+## 0.24.0-next.3
+
+### Minor Changes
+
+-   [#548](https://github.com/worktile/plait/pull/548) [`b52dadc3`](https://github.com/worktile/plait/commit/b52dadc3ca405b343bd8f48d8cb2d95776df9f2e) Thanks [@WBbug](https://github.com/WBbug)! - add text mask
+
+*   [#536](https://github.com/worktile/plait/pull/536) [`abf36572`](https://github.com/worktile/plait/commit/abf365723493220ae3c06461a93a38935272e1c7) Thanks [@WBbug](https://github.com/WBbug)! - support line bound geometry
+
+-   [`6584bc3f`](https://github.com/worktile/plait/commit/6584bc3ffd5370c6409267ec2a2ab610809e9227) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - redraw line when bounded elements changed
+
+### Patch Changes
+
+-   [#549](https://github.com/worktile/plait/pull/549) [`89a02986`](https://github.com/worktile/plait/commit/89a02986166c9499e18c51f1f58c231a02c874ba) Thanks [@xinglu01](https://github.com/xinglu01)! - export styles by core
+
 ## 0.24.0-next.2
 
 ### Minor Changes

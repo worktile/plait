@@ -1,5 +1,21 @@
 # text
 
+## 0.16.0-next.1
+
+### Minor Changes
+
+-   [#547](https://github.com/worktile/plait/pull/547) [`369dcdf7`](https://github.com/worktile/plait/commit/369dcdf789f8f60cac144e483c761a5dc0006707) Thanks [@WBbug](https://github.com/WBbug)! - delete text when don't have text
+
+*   [`62712bef`](https://github.com/worktile/plait/commit/62712bef809fdcae2bc6c72680e8232078e0ab4b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - paragraph support text horizontal align
+
+### Patch Changes
+
+-   [`686d6973`](https://github.com/worktile/plait/commit/686d697307738441a6040fb7fe25eefd4da0f062) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add align function entry
+
+*   [#549](https://github.com/worktile/plait/pull/549) [`89a02986`](https://github.com/worktile/plait/commit/89a02986166c9499e18c51f1f58c231a02c874ba) Thanks [@xinglu01](https://github.com/xinglu01)! - export styles by text
+
+-   [#543](https://github.com/worktile/plait/pull/543) [`4a567b0e`](https://github.com/worktile/plait/commit/4a567b0e82ac999f0c98cbca3903def0c97530da) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct text foreign object height to avoid the default scroll action as typing content
+
 ## 0.16.0-next.0
 
 ### Minor Changes

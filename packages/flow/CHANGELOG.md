@@ -1,5 +1,13 @@
 # @plait/flow
 
+## 0.6.0-next.2
+
+### Patch Changes
+
+-   [#542](https://github.com/worktile/plait/pull/542) [`cab3d1d8`](https://github.com/worktile/plait/commit/cab3d1d8879a0b868b78b945f3cfae178a655cde) Thanks [@xinglu01](https://github.com/xinglu01)! - optimize the number of getEdgePoints function calls
+
+*   [#549](https://github.com/worktile/plait/pull/549) [`89a02986`](https://github.com/worktile/plait/commit/89a02986166c9499e18c51f1f58c231a02c874ba) Thanks [@xinglu01](https://github.com/xinglu01)! - export styles by flow
+
 ## 0.5.7
 
 ### Patch Changes

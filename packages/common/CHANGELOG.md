@@ -1,5 +1,22 @@
 # @plait/common
 
+## 0.1.0-next.3
+
+### Minor Changes
+
+-   [`96b9a236`](https://github.com/worktile/plait/commit/96b9a236b52207766627bbca357b64957e9e4c37) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add GeometryThreshold constant
+    fix text foreign object width less 0 error
+
+*   [#538](https://github.com/worktile/plait/pull/538) [`4103169e`](https://github.com/worktile/plait/commit/4103169e769bb833166d131386cd4fd0116490de) Thanks [@WBbug](https://github.com/WBbug)! - cancel active when resizing line and add active when end resizing
+
+-   [#546](https://github.com/worktile/plait/pull/546) [`ce969afa`](https://github.com/worktile/plait/commit/ce969afabb146f3d0be01083e59c28f868d16a3c) Thanks [@WBbug](https://github.com/WBbug)! - add other geometry shape
+
+*   [#548](https://github.com/worktile/plait/pull/548) [`b52dadc3`](https://github.com/worktile/plait/commit/b52dadc3ca405b343bd8f48d8cb2d95776df9f2e) Thanks [@WBbug](https://github.com/WBbug)! - add text mask
+
+-   [#544](https://github.com/worktile/plait/pull/544) [`425d323b`](https://github.com/worktile/plait/commit/425d323ba02873f709cf5a41698bec197342485a) Thanks [@WBbug](https://github.com/WBbug)! - support add text on line
+
+*   [#536](https://github.com/worktile/plait/pull/536) [`abf36572`](https://github.com/worktile/plait/commit/abf365723493220ae3c06461a93a38935272e1c7) Thanks [@WBbug](https://github.com/WBbug)! - support line bound geometry
+
 ## 0.1.0-next.2
 
 ### Minor Changes
