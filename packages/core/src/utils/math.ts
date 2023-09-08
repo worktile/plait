@@ -149,3 +149,65 @@ export const isPolylineHitRectangle = (points: Point[], rectangle: RectangleClie
 
     return false;
 };
+
+//https://stackoverflow.com/questions/22521982/check-if-point-is-inside-a-polygon
+export const isPointInPolygon = (point: Point, points: Point[]) => {
+    // ray-casting algorithm based on
+    // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
+
+    const x = point[0],
+        y = point[1];
+
+    let inside = false;
+    for (var i = 0, j = points.length - 1; i < points.length; j = i++) {
+        let xi = points[i][0],
+            yi = points[i][1];
+        let xj = points[j][0],
+            yj = points[j][1];
+
+        let intersect = yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+        if (intersect) inside = !inside;
+    }
+    return inside;
+};
+
+export const isPointInEllipse = (point: Point, center: Point, rx: number, ry: number, rotation = 0) => {
+    const cosAngle = Math.cos(rotation);
+    const sinAngle = Math.sin(rotation);
+    const x1 = (point[0] - center[0]) * cosAngle + (point[1] - center[1]) * sinAngle;
+    const y1 = (point[1] - center[1]) * cosAngle - (point[0] - center[0]) * sinAngle;
+
+    return (x1 * x1) / (rx * rx) + (y1 * y1) / (ry * ry) <= 1;
+};
+
+export const isPointInRoundRectangle = (point: Point, rectangle: RectangleClient, radius: number) => {
+    const { x: rectX, y: rectY, width, height } = rectangle;
+    const isInRectangle = point[0] >= rectX && point[0] <= rectX + width && point[1] >= rectY && point[1] <= rectY + height;
+    const handleLeftTop =
+        point[0] >= rectX &&
+        point[0] <= rectX + radius &&
+        point[1] >= rectY &&
+        point[1] <= rectY + radius &&
+        Math.hypot(point[0] - (rectX + radius), point[1] - (rectY + radius)) > radius;
+    const handleLeftBottom =
+        point[0] >= rectX &&
+        point[0] <= rectX + radius &&
+        point[1] >= rectY + height &&
+        point[1] <= rectY + height - radius &&
+        Math.hypot(point[0] - (rectX + radius), point[1] - (rectY + height - radius)) > radius;
+    const handleRightTop =
+        point[0] >= rectX + width - radius &&
+        point[0] <= rectX + width &&
+        point[1] >= rectY &&
+        point[1] <= rectY + radius &&
+        Math.hypot(point[0] - (rectX + width - radius), point[1] - (rectY + radius)) > radius;
+    const handleRightBottom =
+        point[0] >= rectX + width - radius &&
+        point[0] <= rectX + width &&
+        point[1] >= rectY + height - radius &&
+        point[1] <= rectY + height &&
+        Math.hypot(point[0] - (rectX + width - radius), point[1] - (rectY + height - radius)) > radius;
+    const isInCorner = handleLeftTop || handleLeftBottom || handleRightTop || handleRightBottom;
+
+    return isInRectangle && !isInCorner;
+};

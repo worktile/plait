@@ -13,7 +13,9 @@ import {
 import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getOppositeDirection, getPointOnPolyline } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getPointsByCenterPoint } from './geometry';
+import { getPointsByCenterPoint, getNearestPoint } from './geometry';
+import { getStrokeWidthByElement } from './geometry-style/stroke';
+import { ShapeMethodsMap } from './shapes';
 
 export const createLineElement = (
     shape: LineShape,
@@ -39,8 +41,8 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     if (element.points.length === 2) {
         const source = getSourcePoint(board, element);
         const target = getTargetPoint(board, element);
-        let sourceDirection = Direction.right;
-        let targetDirection = Direction.left;
+        let sourceDirection = source[0] < target[0] ? Direction.right : Direction.left;
+        let targetDirection = source[0] < target[0] ? Direction.left : Direction.right;
         if (element.source.connection) {
             sourceDirection = getDirectionByPoint(element.source.connection, sourceDirection);
         }
@@ -75,17 +77,17 @@ export const getHitLineTextIndex = (board: PlaitBoard, element: PlaitLine, point
     });
 };
 
-export const isHitLineText =  (board: PlaitBoard, element: PlaitLine, point: Point)=>{
-  return  getHitLineTextIndex(board,element,point) !== -1
-}
+export const isHitLineText = (board: PlaitBoard, element: PlaitLine, point: Point) => {
+    return getHitLineTextIndex(board, element, point) !== -1;
+};
 
 export const drawElbowLine = (board: PlaitBoard, element: PlaitLine) => {
     const options = { stroke: element.strokeColor, strokeWidth: element.strokeWidth };
     const lineG = createG();
     const points = getElbowPoints(board, element);
     const elbowLine = PlaitBoard.getRoughSVG(board).linearPath(points, options);
-    const path = elbowLine.querySelector('path')
-    path?.setAttribute('mask',`url(#${element.id})`)
+    const path = elbowLine.querySelector('path');
+    path?.setAttribute('mask', `url(#${element.id})`);
     lineG.appendChild(elbowLine);
     const arrow = drawLineArrow(element, points, options);
     arrow && lineG.appendChild(arrow);
@@ -133,28 +135,27 @@ export const normalizeConnection = (geometry: PlaitGeometry, connection: Point):
     return [rectangle.x + rectangle.width * connection[0], rectangle.y + rectangle.height * connection[1]];
 };
 
-export const transformPointToConnection = (point: Point, hitElement: PlaitGeometry): Point => {
-    const rectangle = getRectangleByPoints(hitElement.points);
-    const activeRectangleCornerPoints = RectangleClient.getCornerPoints(rectangle);
-    let nearestPoint = getNearestPointBetweenPointAndSegments(point, activeRectangleCornerPoints);
-    const activePoint = getHitEdgeCenterPoint(nearestPoint, rectangle);
-
-    nearestPoint = activePoint ? activePoint : nearestPoint;
-
+export const transformPointToConnection = (board: PlaitBoard, point: Point, hitElement: PlaitGeometry): Point => {
+    const offset = (getStrokeWidthByElement(board, hitElement) + 1) / 2;
+    let rectangle = getRectangleByPoints(hitElement.points);
+    rectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
+    let nearestPoint = getNearestPoint(hitElement, point, offset);
+    const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, rectangle);
+    nearestPoint = hitConnector ? hitConnector : nearestPoint;
     return [(nearestPoint[0] - rectangle.x) / rectangle.width, (nearestPoint[1] - rectangle.y) / rectangle.height];
 };
 
-export const getHitEdgeCenterPoint = (movingPoint: Point, geometry: RectangleClient) => {
+export const getHitConnectorPoint = (movingPoint: Point, hitElement: PlaitGeometry, rectangle: RectangleClient) => {
+    const connector = ShapeMethodsMap[hitElement.shape].getConnectorPoints(rectangle);
     const points = getPointsByCenterPoint(movingPoint, 5, 5);
-    const nearestPointRectangle = getRectangleByPoints(points);
-    const edgeCenterPoints = RectangleClient.getEdgeCenterPoints(geometry);
-    return edgeCenterPoints.find(point => {
-        return RectangleClient.isHit(nearestPointRectangle, RectangleClient.toRectangleClient([point, point]));
+    const pointRectangle = getRectangleByPoints(points);
+    return connector.find(point => {
+        return RectangleClient.isHit(pointRectangle, RectangleClient.toRectangleClient([point, point]));
     });
 };
 
-export const getLineTextRectangle = (board:PlaitBoard,element:PlaitLine, index:number):RectangleClient=>{
-    const text = element.texts[index]
+export const getLineTextRectangle = (board: PlaitBoard, element: PlaitLine, index: number): RectangleClient => {
+    const text = element.texts[index];
     const elbowPoints = getElbowPoints(board, element);
     const point = getPointOnPolyline(elbowPoints, text.position);
     return {
@@ -163,5 +164,4 @@ export const getLineTextRectangle = (board:PlaitBoard,element:PlaitLine, index:n
         width: text.width!,
         height: text.height!
     };
-     
-}
+};

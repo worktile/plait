@@ -1,6 +1,7 @@
-import { PlaitElement, Point } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, RectangleClient } from '@plait/core';
 import { Element } from 'slate';
 import { GeometryComponent } from '../geometry.component';
+import { Options } from 'roughjs/bin/core';
 
 export enum GeometryShape {
     rectangle = 'rectangle',
@@ -49,3 +50,10 @@ export const PlaitGeometry = {
         throw new Error('can not get correctly component in get text editor');
     }
 };
+
+export interface ShapeMethods {
+    isHit: (rectangle: RectangleClient, point: Point) => boolean;
+    getNearestPoint: (rectangle: RectangleClient, point: Point) => Point;
+    getConnectorPoints: (rectangle: RectangleClient) => Point[];
+    draw: (board: PlaitBoard, rectangle: RectangleClient, options: Options) => SVGGElement;
+}
