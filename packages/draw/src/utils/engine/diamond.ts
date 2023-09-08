@@ -1,11 +1,12 @@
 import { PlaitBoard, Point, RectangleClient, getNearestPointBetweenPointAndSegments, isPointInPolygon } from '@plait/core';
-import { ShapeMethods } from '../../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { drawDiamond } from '../geometry';
 
-export const DiamondMethods: ShapeMethods = {
+export const DiamondEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
-        return drawDiamond(board, rectangle, options);
+        const points = RectangleClient.getEdgeCenterPoints(rectangle);
+        const rs = PlaitBoard.getRoughSVG(board);
+        return rs.polygon(points, { ...options, fillStyle: 'solid' });
     },
     isHit(rectangle: RectangleClient, point: Point) {
         const controlPoints = RectangleClient.getEdgeCenterPoints(rectangle);

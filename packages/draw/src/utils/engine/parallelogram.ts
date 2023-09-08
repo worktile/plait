@@ -1,11 +1,13 @@
 import { PlaitBoard, Point, RectangleClient, getNearestPointBetweenPointAndSegments, isPointInPolygon } from '@plait/core';
-import { ShapeMethods } from '../../interfaces';
-import { drawParallelogram, getCenterPointsOnPolygon, getParallelogramPoints } from '../geometry';
+import { ShapeEngine } from '../../interfaces';
+import { getCenterPointsOnPolygon } from '../geometry';
 import { Options } from 'roughjs/bin/core';
 
-export const ParallelogramMethods: ShapeMethods = {
+export const ParallelogramEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
-        return drawParallelogram(board, rectangle, options);
+        const points = getParallelogramPoints(rectangle);
+        const rs = PlaitBoard.getRoughSVG(board);
+        return rs.polygon(points, { ...options, fillStyle: 'solid' });
     },
     isHit(rectangle: RectangleClient, point: Point) {
         const parallelogramPoints = getParallelogramPoints(rectangle);
@@ -19,4 +21,13 @@ export const ParallelogramMethods: ShapeMethods = {
         const cornerPoints = getParallelogramPoints(rectangle);
         return getCenterPointsOnPolygon(cornerPoints);
     }
+};
+
+export const getParallelogramPoints = (rectangle: RectangleClient): Point[] => {
+    return [
+        [rectangle.x + rectangle.width / 4, rectangle.y],
+        [rectangle.x + rectangle.width, rectangle.y],
+        [rectangle.x + (rectangle.width * 3) / 4, rectangle.y + rectangle.height],
+        [rectangle.x, rectangle.y + rectangle.height]
+    ];
 };

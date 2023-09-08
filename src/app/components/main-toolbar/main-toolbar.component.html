@@ -38,6 +38,14 @@
 
 <a
     class="action-item"
+    [ngClass]="{ active: isPointer(DrawPointerType.parallelogram) }"
+    (mousedown)="setPointer($event, DrawPointerType.parallelogram)"
+>
+    <ng-template [ngTemplateOutlet]="parallelogram"></ng-template>
+</a>
+
+<a
+    class="action-item"
     [ngClass]="{ active: isPointer(DrawPointerType.roundRectangle) }"
     (mousedown)="setPointer($event, DrawPointerType.roundRectangle)"
 >
@@ -114,6 +122,15 @@
                 id="形状结合"
                 fill-rule="nonzero"
             ></path>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #parallelogram>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/ 数据</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-数据" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M15.3062871,3.5 C15.5824294,3.5 15.8062871,3.72385763 15.8062871,4 C15.8062871,4.05374105 15.7976231,4.10713065 15.7806287,4.15811388 L13.113962,12.1581139 C13.045905,12.362285 12.8548356,12.5 12.6396204,12.5 L0.693712943,12.5 C0.417570568,12.5 0.193712943,12.2761424 0.193712943,12 C0.193712943,11.946259 0.202376883,11.8928694 0.219371294,11.8418861 L2.88603796,3.84188612 C2.95409498,3.63771505 3.14516441,3.5 3.36037961,3.5 L15.3062871,3.5 Z M14.335,4.7 L3.864,4.7 L1.664,11.3 L12.134,11.3 L14.335,4.7 Z" id="矩形" fill="#999999"/>
         </g>
     </svg>
 </ng-template>

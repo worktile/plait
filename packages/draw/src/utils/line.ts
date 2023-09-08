@@ -7,15 +7,14 @@ import {
     arrowPoints,
     drawLinearPath,
     getElementById,
-    RectangleClient,
-    getNearestPointBetweenPointAndSegments
+    RectangleClient
 } from '@plait/core';
-import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getOppositeDirection, getPointOnPolyline } from '@plait/common';
+import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getPointOnPolyline } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPointsByCenterPoint, getNearestPoint } from './geometry';
 import { getStrokeWidthByElement } from './geometry-style/stroke';
-import { ShapeMethodsMap } from './shapes';
+import { getEngine } from './engine';
 
 export const createLineElement = (
     shape: LineShape,
@@ -146,7 +145,7 @@ export const transformPointToConnection = (board: PlaitBoard, point: Point, hitE
 };
 
 export const getHitConnectorPoint = (movingPoint: Point, hitElement: PlaitGeometry, rectangle: RectangleClient) => {
-    const connector = ShapeMethodsMap[hitElement.shape].getConnectorPoints(rectangle);
+    const connector = getEngine(hitElement.shape).getConnectorPoints(rectangle);
     const points = getPointsByCenterPoint(movingPoint, 5, 5);
     const pointRectangle = getRectangleByPoints(points);
     return connector.find(point => {

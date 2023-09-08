@@ -1,7 +1,7 @@
 import { Ancestor, PlaitBoard, Point, RectangleClient, depthFirstRecursion, getIsRecursionFunc } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry } from '../../interfaces';
 import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints, getRectangleResizeHandleRefs } from '@plait/common';
-import { ShapeMethodsMap } from '../shapes';
+import { getEngine } from '../engine';
 
 export const getHitGeometryResizeHandleRef = (board: PlaitBoard, element: PlaitGeometry, point: Point) => {
     const rectangle = getRectangleByPoints(element.points);
@@ -21,7 +21,7 @@ export const getHitOutlineGeometry = (board: PlaitBoard, point: Point, offset: n
                 const shape = node.shape;
                 let client = getRectangleByPoints(node.points);
                 client = RectangleClient.getOutlineRectangle(client, offset);
-                const isHit = ShapeMethodsMap[shape].isHit(client, point);
+                const isHit = getEngine(shape).isHit(client, point);
                 if (isHit) {
                     geometry = node;
                 }

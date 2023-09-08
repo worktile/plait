@@ -51,7 +51,7 @@ export const PlaitGeometry = {
     }
 };
 
-export interface ShapeMethods {
+export interface ShapeEngine {
     isHit: (rectangle: RectangleClient, point: Point) => boolean;
     getNearestPoint: (rectangle: RectangleClient, point: Point) => Point;
     getConnectorPoints: (rectangle: RectangleClient) => Point[];
