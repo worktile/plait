@@ -7,6 +7,7 @@ import { LineShapeGenerator } from './generator/line.generator';
 import { LineActiveGenerator } from './generator/line-active.generator';
 import { getLineTextRectangle } from './utils';
 import { DrawTransforms } from './transforms';
+import { GeometryThreshold } from './constants';
 
 interface BoundedElements {
     source?: PlaitGeometry;
@@ -134,7 +135,8 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
                     });
                     DrawTransforms.setLineTexts(this.board, this.element, texts);
                 }
-            }
+            },
+            maxWidth: GeometryThreshold.defaultTextMaxWidth
         });
     }
 
