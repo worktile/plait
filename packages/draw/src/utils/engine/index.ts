@@ -11,7 +11,7 @@ export const ShapeEngineMap: Record<GeometryShape, ShapeEngine> = {
     [GeometryShape.ellipse]: EllipseEngine,
     [GeometryShape.parallelogram]: ParallelogramEngine,
     [GeometryShape.roundRectangle]: RoundRectangleEngine,
-    [GeometryShape.text]: RoundRectangleEngine
+    [GeometryShape.text]: RectangleEngine
 };
 
 export const getEngine = (shape: GeometryShape) => {
