@@ -35,7 +35,7 @@ export const RoundRectangleEngine: ShapeEngine = {
 };
 
 export const getRoundRectangleRadius = (rectangle: RectangleClient) => {
-    return Math.min(rectangle.width * 0.1, rectangle.height * 0.1);
+    return Math.min(rectangle.width * 0.5, rectangle.height * 0.5);
 };
 
 export function getNearestPointBetweenPointAndRoundRectangle(point: Point, rectangle: RectangleClient, radius: number) {
