@@ -86,6 +86,8 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         lineShapeG?.remove();
         lineShapeG = null;
         start = null;
+        sourceRef = {};
+        targetRef = {};
         temporaryElement = null;
         preventTouchMove(board, false);
 
