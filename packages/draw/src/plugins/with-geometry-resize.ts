@@ -1,11 +1,26 @@
 import { PlaitBoard, Point } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
-import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, withResize } from '@plait/common';
+import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, normalizeShapePoints, withResize } from '@plait/common';
 import { getSelectedGeometryElements } from '../utils/selected';
 import { getHitGeometryResizeHandleRef } from '../utils/position/geometry';
 import { DrawTransforms } from '../transforms';
+import { isKeyHotkey } from 'is-hotkey';
 
 export const withGeometryResize = (board: PlaitBoard) => {
+    const { keydown, keyup } = board;
+
+    let isShift = false;
+
+    board.keydown = (event: KeyboardEvent) => {
+        isShift = isKeyHotkey('shift', event);
+        keydown(event);
+    };
+
+    board.keyup = (event: KeyboardEvent) => {
+        isShift = false;
+        keyup(event);
+    };
+
     const options: WithResizeOptions<PlaitGeometry> = {
         key: 'draw-geometry',
         canResize: () => {
@@ -49,6 +64,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
                     [resizeRef.element.points[1][0], resizeState.endTransformPoint[1]]
                 ];
             }
+            points = normalizeShapePoints(points, isShift);
             DrawTransforms.resizeGeometry(board, points, resizeRef.path);
         }
     };
