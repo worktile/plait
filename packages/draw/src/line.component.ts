@@ -125,16 +125,14 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
             onValueChangeHandle: (textManageRef: TextManageRef) => {
                 const height = textManageRef.height / this.board.viewport.zoom;
                 const width = textManageRef.width / this.board.viewport.zoom;
-                if (textManageRef.newValue && this.element.texts) {
-                    const texts = JSON.parse(JSON.stringify(this.element.texts)) as LineText[];
-                    texts.splice(index, 1, {
-                        text: textManageRef.newValue,
-                        position: this.element.texts[index].position,
-                        width,
-                        height
-                    });
-                    DrawTransforms.setLineTexts(this.board, this.element, texts);
-                }
+                const texts = JSON.parse(JSON.stringify(this.element.texts)) as LineText[];
+                texts.splice(index, 1, {
+                    text: textManageRef.newValue ? textManageRef.newValue : this.element.texts[index].text,
+                    position: this.element.texts[index].position,
+                    width,
+                    height
+                });
+                DrawTransforms.setLineTexts(this.board, this.element, texts);
             },
             maxWidth: GeometryThreshold.defaultTextMaxWidth
         });
