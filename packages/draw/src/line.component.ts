@@ -125,7 +125,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
             onValueChangeHandle: (textManageRef: TextManageRef) => {
                 const height = textManageRef.height / this.board.viewport.zoom;
                 const width = textManageRef.width / this.board.viewport.zoom;
-                const texts = JSON.parse(JSON.stringify(this.element.texts)) as LineText[];
+                const texts = [...this.element.texts];
                 texts.splice(index, 1, {
                     text: textManageRef.newValue ? textManageRef.newValue : this.element.texts[index].text,
                     position: this.element.texts[index].position,
