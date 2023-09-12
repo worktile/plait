@@ -4,18 +4,13 @@
             cursor: default;
         }
     }
-    &.pointer-rectangle, 
+    &.pointer-rectangle,
     &.pointer-line {
         .board-host-svg {
             cursor: crosshair;
         }
     }
-    &.draw-line-resizing {
-        [plait-line="true"] {
-            .active {
-                display: none;
-            }
-        }
+    &.draw-line-resizing .element-active-host .line-handle {
+        display: none;
     }
-    
 }
