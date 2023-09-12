@@ -97,7 +97,6 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance > PRESS_AND_MOVE_BUFFER) {
                 addResizing(board, resizeDetectResult.element, options.key);
-                MERGING.set(board, true);
             }
         }
 
@@ -112,6 +111,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
                     const offsetX = endPoint[0] - startPoint[0];
                     const offsetY = endPoint[1] - startPoint[1];
                     options.onResize(resizeRef, { offsetX, offsetY, endTransformPoint });
+                    MERGING.set(board, true);
                 }
             });
             return;
