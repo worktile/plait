@@ -44,7 +44,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
     ngOnInit(): void {
         this.initializeGenerator();
         this.shapeGenerator.draw(this.element, this.g);
-        this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+        this.activeGenerator.draw(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
         super.ngOnInit();
         this.boundedElements = this.getBoundedElements();
         this.drawText();
@@ -75,21 +75,21 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
 
         if (value.element !== previous.element) {
             this.shapeGenerator.draw(this.element, this.g);
-            this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+            this.activeGenerator.draw(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
             this.updateText(previous.element.texts, value.element.texts);
             this.updateTextRectangle();
         }
 
         if (isBoundedElementsChanged) {
             this.shapeGenerator.draw(this.element, this.g);
-            this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+            this.activeGenerator.draw(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
             this.updateTextRectangle();
             return;
         }
 
         const hasSameSelected = value.selected === previous.selected;
         if (!hasSameSelected) {
-            this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+            this.activeGenerator.draw(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
         }
     }
 
@@ -164,6 +164,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
+        this.activeGenerator.destroy();
         this.destroy$.next();
         this.destroy$.complete();
     }

@@ -19,6 +19,7 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
     baseDraw(element: PlaitLine, data: ActiveData): SVGGElement {
         const activeG = createG();
         activeG.classList.add('active');
+        activeG.classList.add('line-handle');
         this.g = activeG;
         const sourcePoint = getSourcePoint(this.board, element);
         const targetPoint = getTargetPoint(this.board, element);
