@@ -113,6 +113,18 @@ export const withGeometryCreateByDraw = (board: PlaitBoard) => {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
             preventTouchMove(board, true);
+
+            const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
+            if (pointer === DrawPointerType.text) {
+                const points = getDefaultGeometryPoints(pointer, point);
+                const textElement = createGeometryElement(GeometryShape.text, points, DefaultTextProperty.text);
+                Transforms.insertNode(board, textElement, [board.children.length]);
+                clearSelectedElement(board);
+                addSelectedElement(board, textElement);
+                BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
+                start = null;
+                preventTouchMove(board, false);
+            }
         }
         pointerDown(event);
     };
@@ -146,9 +158,7 @@ export const withGeometryCreateByDraw = (board: PlaitBoard) => {
             if (Math.hypot(width, height) === 0) {
                 const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
                 const points = getDefaultGeometryPoints(pointer, targetPoint);
-                if (pointer === DrawPointerType.text) {
-                    temporaryElement = createGeometryElement(GeometryShape.text, points, DefaultTextProperty.text);
-                } else {
+                if (pointer !== DrawPointerType.text) {
                     temporaryElement = createGeometryElement((pointer as unknown) as GeometryShape, points, '', {
                         strokeColor: DefaultGeometryProperty.strokeColor,
                         strokeWidth: DefaultGeometryProperty.strokeWidth
