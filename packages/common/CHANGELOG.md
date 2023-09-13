@@ -1,5 +1,18 @@
 # @plait/common
 
+## 0.1.0-next.4
+
+### Minor Changes
+
+-   [`b8c9d871`](https://github.com/worktile/plait/commit/b8c9d8718f02af6a15161b044ba7cc6c6a6990a9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - do not show resize handle for geometry when isSelectionMoving is true
+    do not show resize handle for geometry text when text is editing
+
+### Patch Changes
+
+-   [#559](https://github.com/worktile/plait/pull/559) [`7b4a41f6`](https://github.com/worktile/plait/commit/7b4a41f65cac8b42b11557c1d1266f3f559582d7) Thanks [@WBbug](https://github.com/WBbug)! - add merging when resizing
+
+*   [`abaec9c7`](https://github.com/worktile/plait/commit/abaec9c7333c6675ab6b12277f868cfef3bb6746) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use [replaceWith] replace appendChild to avoid g position update when edit text
+
 ## 0.1.0-next.3
 
 ### Minor Changes

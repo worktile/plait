@@ -1,5 +1,13 @@
 # text
 
+## 0.16.0-next.2
+
+### Patch Changes
+
+-   [`ad7e641c`](https://github.com/worktile/plait/commit/ad7e641c625e595f715350ac8b44e80e14f2d826) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update textHeight when resize geometry
+
+*   [`ec9c4216`](https://github.com/worktile/plait/commit/ec9c4216a40ff531a96b453a3a9f386170e0a97d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix alignment property display in editing
+
 ## 0.16.0-next.1
 
 ### Minor Changes

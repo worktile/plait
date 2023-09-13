@@ -1,5 +1,18 @@
 # mind
 
+## 0.27.0-next.2
+
+### Minor Changes
+
+-   [`b8c9d871`](https://github.com/worktile/plait/commit/b8c9d8718f02af6a15161b044ba7cc6c6a6990a9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - do not show resize handle for geometry when isSelectionMoving is true
+    do not show resize handle for geometry text when text is editing
+
+### Patch Changes
+
+-   [`ad7e641c`](https://github.com/worktile/plait/commit/ad7e641c625e595f715350ac8b44e80e14f2d826) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update textHeight when resize geometry
+
+*   [`ec9c4216`](https://github.com/worktile/plait/commit/ec9c4216a40ff531a96b453a3a9f386170e0a97d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix alignment property display in editing
+
 ## 0.27.0-next.1
 
 ### Minor Changes

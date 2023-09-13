@@ -1,5 +1,42 @@
 # @plait/draw
 
+## 0.1.0-next.3
+
+### Minor Changes
+
+-   [`b8c9d871`](https://github.com/worktile/plait/commit/b8c9d8718f02af6a15161b044ba7cc6c6a6990a9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - do not show resize handle for geometry when isSelectionMoving is true
+    do not show resize handle for geometry text when text is editing
+
+*   [#550](https://github.com/worktile/plait/pull/550) [`d0a1452a`](https://github.com/worktile/plait/commit/d0a1452a2c1bb0025442e5a9a0f6bc84257cf97d) Thanks [@WBbug](https://github.com/WBbug)! - support reaction on geometry
+
+-   [#551](https://github.com/worktile/plait/pull/551) [`5889c29f`](https://github.com/worktile/plait/commit/5889c29f58d528ccc5faf8433aa3b3a0d3f68717) Thanks [@WBbug](https://github.com/WBbug)! - change name
+
+*   [#563](https://github.com/worktile/plait/pull/563) [`c03256ab`](https://github.com/worktile/plait/commit/c03256abc4f929dc1ac4c66b8083a9fe46c05743) Thanks [@WBbug](https://github.com/WBbug)! - support line strokeLineDash
+
+-   [#561](https://github.com/worktile/plait/pull/561) [`5cceee93`](https://github.com/worktile/plait/commit/5cceee9339383327662494d043f031398629dc40) Thanks [@WBbug](https://github.com/WBbug)! - support stroke style
+
+### Patch Changes
+
+-   [`ad7e641c`](https://github.com/worktile/plait/commit/ad7e641c625e595f715350ac8b44e80e14f2d826) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update textHeight when resize geometry
+
+*   [#558](https://github.com/worktile/plait/pull/558) [`022d49fe`](https://github.com/worktile/plait/commit/022d49fe11ec3e41156bcb034d1920866e7ff007) Thanks [@WBbug](https://github.com/WBbug)! - pointer down set text
+
+-   [#553](https://github.com/worktile/plait/pull/553) [`e4f5dc4a`](https://github.com/worktile/plait/commit/e4f5dc4a957376e4e78c5b73762ee0796db4fa93) Thanks [@WBbug](https://github.com/WBbug)! - normalize points when pressing shift
+
+*   [`abaec9c7`](https://github.com/worktile/plait/commit/abaec9c7333c6675ab6b12277f868cfef3bb6746) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use [replaceWith] replace appendChild to avoid g position update when edit text
+
+-   [#556](https://github.com/worktile/plait/pull/556) [`2fd88fb1`](https://github.com/worktile/plait/commit/2fd88fb1fb937e9c117f91042313edc72218a66c) Thanks [@WBbug](https://github.com/WBbug)! - cancel draw when is text
+
+*   [#555](https://github.com/worktile/plait/pull/555) [`3d5e78b7`](https://github.com/worktile/plait/commit/3d5e78b7abed9f55397947cfb586b36a4aeae5ef) Thanks [@WBbug](https://github.com/WBbug)! - add line text maxWidth
+
+-   [#560](https://github.com/worktile/plait/pull/560) [`d3afb57c`](https://github.com/worktile/plait/commit/d3afb57ca84c1a54cb615eade0f95db9674becb9) Thanks [@WBbug](https://github.com/WBbug)! - set line active in active host
+
+*   [#554](https://github.com/worktile/plait/pull/554) [`355454bb`](https://github.com/worktile/plait/commit/355454bb94985dc321d53f46d5b17ea7dfdea90a) Thanks [@WBbug](https://github.com/WBbug)! - clear ref after create
+
+-   [#557](https://github.com/worktile/plait/pull/557) [`b6739b8a`](https://github.com/worktile/plait/commit/b6739b8ab0befed8983f1bd3b8736e1714187997) Thanks [@WBbug](https://github.com/WBbug)! - set line text when value change
+
+*   [`ec9c4216`](https://github.com/worktile/plait/commit/ec9c4216a40ff531a96b453a3a9f386170e0a97d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix alignment property display in editing
+
 ## 0.1.0-next.2
 
 ### Minor Changes
