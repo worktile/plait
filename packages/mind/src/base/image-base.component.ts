@@ -55,13 +55,16 @@ export abstract class MindImageBaseComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.activeGenerator = new ActiveGenerator<MindElement>(this.board, {
-            activeStrokeWidth: 1,
+            getStrokeWidth: () => {
+                return 1;
+            },
             getRectangle: (element: MindElement) => {
                 return getImageForeignRectangle(this.board as PlaitMindBoard, this.element);
             },
             getStrokeWidthByElement: () => {
                 return 0;
-            }
+            },
+            hasResizeHandle: () => true
         });
         this.initialized = true;
     }
@@ -72,7 +75,7 @@ export abstract class MindImageBaseComponent implements OnInit, OnDestroy {
             this.activeGenerator.draw(this.element, com.g, { selected: this._isFocus });
         }
     }
-    
+
     ngOnDestroy(): void {
         if (this.activeGenerator) {
             this.activeGenerator.destroy();

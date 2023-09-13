@@ -9,7 +9,7 @@ import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
-import { preventTouchMove, throttleRAF } from '../utils';
+import { drawRectangle, preventTouchMove, throttleRAF } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
 
@@ -75,9 +75,9 @@ export function withSelection(board: PlaitBoard) {
 
         if (start) {
             const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-            const { x, y, width, height } = RectangleClient.toRectangleClient([start, movedTarget]);
+            const rectangle = RectangleClient.toRectangleClient([start, movedTarget]);
             selectionMovingG?.remove();
-            if (Math.hypot(width, height) > 5) {
+            if (Math.hypot(rectangle.width, rectangle.height) > 5) {
                 end = movedTarget;
                 throttleRAF(() => {
                     if (start && end) {
@@ -85,8 +85,7 @@ export function withSelection(board: PlaitBoard) {
                     }
                 });
                 setSelectionMoving(board);
-                const rough = PlaitBoard.getRoughSVG(board);
-                selectionMovingG = rough.rectangle(x, y, width, height, {
+                selectionMovingG = drawRectangle(board, rectangle, {
                     stroke: SELECTION_BORDER_COLOR,
                     strokeWidth: 1,
                     fill: SELECTION_FILL_COLOR,
@@ -205,9 +204,8 @@ export function clearSelectionMoving(board: PlaitBoard) {
 }
 
 export function createSelectionOuterG(board: PlaitBoard, selectElements: PlaitElement[]) {
-    const { x, y, width, height } = getRectangleByElements(board, selectElements, false);
-    const rough = PlaitBoard.getRoughSVG(board);
-    return rough.rectangle(x - 2.5, y - 2.5, width + 5, height + 5, {
+    const rectangle = getRectangleByElements(board, selectElements, false);
+    return drawRectangle(board, RectangleClient.getOutlineRectangle(rectangle, -2.5), {
         stroke: SELECTION_BORDER_COLOR,
         strokeWidth: 1,
         fillStyle: 'solid'

@@ -1,7 +1,6 @@
-import { PlaitBoard, PlaitElement, Point, RectangleClient, createG, drawCircle } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, RectangleClient, createG, drawCircle, drawRectangle } from '@plait/core';
 import { Generator } from './generator';
 import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '../constants/default';
-import { drawRectangle } from '../utils/rectangle';
 import { Options } from 'roughjs/bin/core';
 
 export interface ActiveGeneratorExtraData {
@@ -10,11 +9,18 @@ export interface ActiveGeneratorExtraData {
 
 export interface ActiveGeneratorOptions<T> {
     getRectangle: (element: T) => RectangleClient;
-    activeStrokeWidth: number;
+    getStrokeWidth: () => number;
     getStrokeWidthByElement: (element: T) => number;
+    hasResizeHandle: () => boolean;
 }
 
-export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Generator<T, ActiveGeneratorExtraData, ActiveGeneratorOptions<T>> {
+export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Generator<
+    T,
+    ActiveGeneratorExtraData,
+    ActiveGeneratorOptions<T>
+> {
+    hasResizeHandle = false;
+
     constructor(public board: PlaitBoard, public options: ActiveGeneratorOptions<T>) {
         super(board, options);
     }
@@ -32,41 +38,47 @@ export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Gene
         const rectangle = this.options.getRectangle(element);
 
         // add 0.1 to avoid white gap
-        const offset = (this.options.getStrokeWidthByElement(element) + this.options.activeStrokeWidth) / 2 - 0.1;
+        const offset = (this.options.getStrokeWidthByElement(element) + this.options.getStrokeWidth()) / 2 - 0.1;
         const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
 
         const strokeG = drawRectangle(this.board, activeRectangle, {
             stroke: PRIMARY_COLOR,
-            strokeWidth: this.options.activeStrokeWidth
+            strokeWidth: this.options.getStrokeWidth()
         });
 
-        // resize handle
-        const options: Options = { stroke: '#999999', strokeWidth: 1, fill: '#FFF', fillStyle: 'solid' };
-        const leftTopHandleG = drawCircle(
-            PlaitBoard.getRoughSVG(this.board),
-            [activeRectangle.x, activeRectangle.y],
-            RESIZE_HANDLE_DIAMETER,
-            options
-        );
-        const rightTopHandleG = drawCircle(
-            PlaitBoard.getRoughSVG(this.board),
-            [activeRectangle.x + activeRectangle.width, activeRectangle.y],
-            RESIZE_HANDLE_DIAMETER,
-            options
-        );
-        const rightBottomHandleG = drawCircle(
-            PlaitBoard.getRoughSVG(this.board),
-            [activeRectangle.x + activeRectangle.width, activeRectangle.y + activeRectangle.height],
-            RESIZE_HANDLE_DIAMETER,
-            options
-        );
-        const leftBottomHandleG = drawCircle(
-            PlaitBoard.getRoughSVG(this.board),
-            [activeRectangle.x, activeRectangle.y + activeRectangle.height],
-            RESIZE_HANDLE_DIAMETER,
-            options
-        );
-        activeG.append(...[strokeG, leftTopHandleG, rightTopHandleG, rightBottomHandleG, leftBottomHandleG]);
+        activeG.append(strokeG);
+        if (this.options.hasResizeHandle()) {
+            this.hasResizeHandle = true;
+            // resize handle
+            const options: Options = { stroke: '#999999', strokeWidth: 1, fill: '#FFF', fillStyle: 'solid' };
+            const leftTopHandleG = drawCircle(
+                PlaitBoard.getRoughSVG(this.board),
+                [activeRectangle.x, activeRectangle.y],
+                RESIZE_HANDLE_DIAMETER,
+                options
+            );
+            const rightTopHandleG = drawCircle(
+                PlaitBoard.getRoughSVG(this.board),
+                [activeRectangle.x + activeRectangle.width, activeRectangle.y],
+                RESIZE_HANDLE_DIAMETER,
+                options
+            );
+            const rightBottomHandleG = drawCircle(
+                PlaitBoard.getRoughSVG(this.board),
+                [activeRectangle.x + activeRectangle.width, activeRectangle.y + activeRectangle.height],
+                RESIZE_HANDLE_DIAMETER,
+                options
+            );
+            const leftBottomHandleG = drawCircle(
+                PlaitBoard.getRoughSVG(this.board),
+                [activeRectangle.x, activeRectangle.y + activeRectangle.height],
+                RESIZE_HANDLE_DIAMETER,
+                options
+            );
+            activeG.append(...[leftTopHandleG, rightTopHandleG, rightBottomHandleG, leftBottomHandleG]);
+        } else {
+            this.hasResizeHandle = false;
+        }
         return activeG;
     }
 }

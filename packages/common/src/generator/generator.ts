@@ -41,6 +41,7 @@ export abstract class Generator<
     destroy() {
         if (this.g) {
             this.g.remove();
+            this.g = undefined;
         }
     }
 }

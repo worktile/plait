@@ -1,7 +1,6 @@
-import { PlaitBoard, Point, RectangleClient, getNearestPointBetweenPointAndSegments } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, drawRectangle, getNearestPointBetweenPointAndSegments } from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { drawRectangle } from '@plait/common';
 
 export const RectangleEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {

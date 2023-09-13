@@ -29,19 +29,20 @@ export const withGeometryResize = (board: PlaitBoard) => {
         },
         detect: (point: Point) => {
             const selectedGeometryElements = getSelectedGeometryElements(board);
-            if (selectedGeometryElements.length > 0) {
-                let result = null;
-                selectedGeometryElements.forEach(value => {
-                    const handleRef = getHitGeometryResizeHandleRef(board, value, point);
-                    if (handleRef) {
-                        result = {
-                            element: value,
-                            handle: handleRef.handle,
-                            cursorClass: handleRef.cursorClass
-                        };
-                    }
-                });
-                return result;
+            if (selectedGeometryElements.length !== 1) {
+                return null;
+            }
+            const target = selectedGeometryElements[0];
+            const targetComponent = PlaitElement.getComponent(selectedGeometryElements[0]) as GeometryComponent;
+            if (targetComponent.activeGenerator.hasResizeHandle) {
+                const handleRef = getHitGeometryResizeHandleRef(board, target, point);
+                if (handleRef) {
+                    return {
+                        element: target,
+                        handle: handleRef.handle,
+                        cursorClass: handleRef.cursorClass
+                    };
+                }
             }
             return null;
         },

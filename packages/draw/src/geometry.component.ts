@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { PlaitBoard, PlaitPluginElementComponent, PlaitPluginElementContext, OnContextChanged, updateForeignObject } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitPluginElementComponent,
+    PlaitPluginElementContext,
+    OnContextChanged,
+    isSelectionMoving,
+    getSelectedElements
+} from '@plait/core';
 import { Subject } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
 import { GeometryShapeGenerator } from './generator/geometry-shape.generator';
@@ -32,12 +39,26 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
 
     initializeGenerator() {
         this.activeGenerator = new ActiveGenerator<PlaitGeometry>(this.board, {
-            activeStrokeWidth: DefaultGeometryActiveStyle.strokeWidth,
+            getStrokeWidth: () => {
+                const selectedElements = getSelectedElements(this.board);
+                if (selectedElements.length === 1 && !isSelectionMoving(this.board)) {
+                    return DefaultGeometryActiveStyle.strokeWidth;
+                } else {
+                    return DefaultGeometryActiveStyle.selectionStrokeWidth;
+                }
+            },
             getRectangle: (element: PlaitGeometry) => {
                 return getRectangleByPoints(element.points);
             },
             getStrokeWidthByElement: (element: PlaitGeometry) => {
                 return getStrokeWidthByElement(element);
+            },
+            hasResizeHandle: () => {
+                const selectedElements = getSelectedElements(this.board);
+                if (PlaitBoard.hasBeenTextEditing(this.board)) {
+                    return false;
+                }
+                return selectedElements.length === 1 && !isSelectionMoving(this.board);
             }
         });
         this.shapeGenerator = new GeometryShapeGenerator(this.board);
@@ -62,7 +83,8 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
             this.updateText();
         } else {
             const hasSameSelected = value.selected === previous.selected;
-            if (!hasSameSelected) {
+            const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
+            if (!hasSameSelected || !hasSameHandleState) {
                 this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
             }
         }
@@ -70,6 +92,7 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
 
     editText() {
         this.textManage.edit();
+        this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
     }
 
     drawText() {
