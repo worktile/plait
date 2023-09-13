@@ -20,7 +20,6 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
         const activeG = createG();
         activeG.classList.add('active');
         activeG.classList.add('line-handle');
-        this.g = activeG;
         const sourcePoint = getSourcePoint(this.board, element);
         const targetPoint = getTargetPoint(this.board, element);
         const sourceCircle = drawCircle(PlaitBoard.getRoughSVG(this.board), sourcePoint, RESIZE_HANDLE_DIAMETER, {
@@ -35,8 +34,8 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
             fill: '#FFF',
             fillStyle: 'solid'
         });
-        this.g.appendChild(targetCircle);
-        this.g.appendChild(sourceCircle);
+        activeG.appendChild(targetCircle);
+        activeG.appendChild(sourceCircle);
         return activeG;
     }
 }

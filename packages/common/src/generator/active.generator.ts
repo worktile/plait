@@ -29,7 +29,6 @@ export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Gene
 
     baseDraw(element: T, data: ActiveGeneratorExtraData): SVGGElement {
         const activeG = createG();
-        this.g = activeG;
         const rectangle = this.options.getRectangle(element);
 
         // add 0.1 to avoid white gap
@@ -67,7 +66,7 @@ export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Gene
             RESIZE_HANDLE_DIAMETER,
             options
         );
-        this.g.append(...[strokeG, leftTopHandleG, rightTopHandleG, rightBottomHandleG, leftBottomHandleG]);
+        activeG.append(...[strokeG, leftTopHandleG, rightTopHandleG, rightBottomHandleG, leftBottomHandleG]);
         return activeG;
     }
 }

@@ -20,7 +20,6 @@ export class GeometryShapeGenerator extends Generator<PlaitGeometry, ShapeData> 
         const strokeColor = getStrokeColorByElement(element);
         const fill = getFillByElement(element);
         const strokeLineDash = getLineDashByElement(element);
-        this.g = drawGeometry(this.board, outerRectangle, shape, { stroke: strokeColor, strokeWidth, fill, strokeLineDash });
-        return this.g;
+        return drawGeometry(this.board, outerRectangle, shape, { stroke: strokeColor, strokeWidth, fill, strokeLineDash });
     }
 }

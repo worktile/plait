@@ -19,8 +19,6 @@ export class GeometryActiveGenerator extends Generator<PlaitGeometry, ActiveData
 
     baseDraw(element: PlaitGeometry, data: ActiveData): SVGGElement {
         const activeG = createG();
-        this.g = activeG;
-
         const rectangle = getRectangleByPoints(element.points);
         // add 0.1 to avoid white gap
         const offset = (getStrokeWidthByElement(element) + DefaultGeometryActiveStyle.strokeWidth) / 2 - 0.1;
@@ -30,7 +28,7 @@ export class GeometryActiveGenerator extends Generator<PlaitGeometry, ActiveData
             stroke: PRIMARY_COLOR,
             strokeWidth: DefaultGeometryActiveStyle.strokeWidth
         });
-        this.g.appendChild(strokeG);
+        activeG.appendChild(strokeG);
         return activeG;
     }
 }
