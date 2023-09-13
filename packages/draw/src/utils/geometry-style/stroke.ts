@@ -18,5 +18,5 @@ export const getFillByElement = (element: PlaitGeometry | PlaitLine) => {
 };
 
 export const getLineDashByElement = (element: PlaitGeometry | PlaitLine) => {
-    return [8, 8 + getStrokeWidthByElement(element)];
+    return element.strokeStyle === 'dashed' ? [8, 8 + getStrokeWidthByElement(element)] : undefined;
 };
