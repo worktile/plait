@@ -111,7 +111,9 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
                 }
             },
             textPlugins: plugins,
-            maxWidth: NodeTopicThreshold.defaultTextMaxWidth
+            getMaxWidth: () => {
+                return NodeTopicThreshold.defaultTextMaxWidth;
+            }
         });
     }
 

@@ -1,10 +1,11 @@
-import { PlaitBoard, Point } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, normalizeShapePoints, withResize } from '@plait/common';
 import { getSelectedGeometryElements } from '../utils/selected';
 import { getHitGeometryResizeHandleRef } from '../utils/position/geometry';
 import { DrawTransforms } from '../transforms';
 import { isKeyHotkey } from 'is-hotkey';
+import { GeometryComponent } from '../geometry.component';
 
 export const withGeometryResize = (board: PlaitBoard) => {
     const { keydown, keyup } = board;
@@ -65,7 +66,9 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 ];
             }
             points = normalizeShapePoints(points, isShift);
-            DrawTransforms.resizeGeometry(board, points, resizeRef.path);
+            const component = PlaitElement.getComponent(resizeRef.element) as GeometryComponent;
+            const { height: textHeight } = component.textManage.getSize();
+            DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path);
         }
     };
 

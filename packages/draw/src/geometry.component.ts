@@ -80,14 +80,9 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
     updateText() {
         this.textManage.updateText(this.element.text);
         this.textManage.updateRectangle();
-        if (!(this.element as PlaitText)?.autoSize) {
-            const textWidth = getTextRectangle(this.element).width;
-            this.textManage.updateWidth(textWidth);
-        }
     }
 
     initializeTextManage() {
-        const width = getTextRectangle(this.element).width;
         this.textManage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
                 return getTextRectangle(this.element);
@@ -95,14 +90,16 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
             onValueChangeHandle: (textManageRef: TextManageRef) => {
                 const height = textManageRef.height / this.board.viewport.zoom;
                 const width = textManageRef.width / this.board.viewport.zoom;
-
                 if (textManageRef.newValue) {
                     DrawTransforms.setText(this.board, this.element, textManageRef.newValue, width, height);
                 } else {
                     DrawTransforms.setTextSize(this.board, this.element, width, height);
                 }
             },
-            maxWidth: (this.element as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width
+            getMaxWidth: () => {
+                const width = getTextRectangle(this.element).width;
+                return (this.element as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
+            }
         });
     }
 

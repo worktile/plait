@@ -134,7 +134,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
                 });
                 DrawTransforms.setLineTexts(this.board, this.element, texts);
             },
-            maxWidth: GeometryThreshold.defaultTextMaxWidth
+            getMaxWidth: () => GeometryThreshold.defaultTextMaxWidth
         });
     }
 

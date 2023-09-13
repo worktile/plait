@@ -5,7 +5,6 @@ import {
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
-    Point,
     RectangleClient,
     createForeignObject,
     createG,
@@ -13,13 +12,13 @@ import {
     transformPoint,
     updateForeignObject
 } from '@plait/core';
-import { AngularEditor, EDITOR_TO_ELEMENT, IS_FOCUSED, hasEditableTarget } from 'slate-angular';
+import { AngularEditor, EDITOR_TO_ELEMENT, IS_FOCUSED } from 'slate-angular';
 import { debounceTime, filter, tap } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
 import { measureDivSize } from './text-size';
-import { CustomElement, TextPlugin } from '../custom-types';
+import { Alignment, CustomElement, TextPlugin } from '../custom-types';
 import { PlaitTextEditor } from '../plugins/text.editor';
-import { AlignEditor, Alignment } from '@plait/text';
+import { AlignEditor } from '../plugins/align/align-editor';
 
 export enum ExitOrigin {
     'destroy' = 'destroy',
@@ -64,10 +63,12 @@ export class TextManage {
             getRectangle: () => RectangleClient;
             onValueChangeHandle?: (textChangeRef: TextManageRef) => void;
             textPlugins?: TextPlugin[];
-            maxWidth?: number;
+            getMaxWidth?: () => number;
         }
     ) {
-        this.options.maxWidth = options.maxWidth ? options.maxWidth : 999;
+        if (!this.options.getMaxWidth) {
+            this.options.getMaxWidth = () => 999;
+        }
     }
 
     draw(value: Element) {
@@ -114,7 +115,7 @@ export class TextManage {
 
                 if (AngularEditor.isReadonly(editor)) {
                     const { x, y, height } = this.options.getRectangle();
-                    updateForeignObject(this.g, this.options.maxWidth!, height, x, y);
+                    updateForeignObject(this.g, this.options.getMaxWidth!(), height, x, y);
                     // do not need to revert because foreign will be updated when node changed
                 }
 
@@ -153,15 +154,15 @@ export class TextManage {
             const editor = this.componentRef.instance.editor;
             if (AlignEditor.isActive(editor, Alignment.right) || AlignEditor.isActive(editor, Alignment.center)) {
                 if (AlignEditor.isActive(editor, Alignment.right)) {
-                    const newX = x - (this.options.maxWidth! - width);
-                    updateForeignObject(this.g, this.options.maxWidth!, height, newX, y);
+                    const newX = x - (this.options.getMaxWidth!() - width);
+                    updateForeignObject(this.g, this.options.getMaxWidth!(), height, newX, y);
                 }
                 if (AlignEditor.isActive(editor, Alignment.center)) {
-                    const newX = x - (this.options.maxWidth! - width) / 2;
-                    updateForeignObject(this.g, this.options.maxWidth!, height, newX, y);
+                    const newX = x - (this.options.getMaxWidth!() - width) / 2;
+                    updateForeignObject(this.g, this.options.getMaxWidth!(), height, newX, y);
                 }
             } else {
-                updateForeignObject(this.g, this.options.maxWidth!, height, x, y);
+                updateForeignObject(this.g, this.options.getMaxWidth!(), height, x, y);
             }
         } else {
             updateForeignObject(this.g, width, height, x, y);
