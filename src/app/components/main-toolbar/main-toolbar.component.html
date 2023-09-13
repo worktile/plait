@@ -8,7 +8,7 @@
 >
     <ng-template [ngTemplateOutlet]="selection"></ng-template>
 </a>
-<a class="action-item" [ngClass]="{ active: isPointer(MindPointerType.mind) }" (click)="setPointer($event, MindPointerType.mind)">
+<a class="action-item" [ngClass]="{ active: isPointer(MindPointerType.mind) }" (mousedown)="setPointer($event, MindPointerType.mind)">
     <ng-template [ngTemplateOutlet]="mind"></ng-template>
 </a>
 

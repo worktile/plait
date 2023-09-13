@@ -1,4 +1,5 @@
 import {
+    BoardCreateMode,
     BoardTransforms,
     PlaitBoard,
     PlaitPointerType,
@@ -7,12 +8,13 @@ import {
     addSelectedElement,
     clearSelectedElement,
     createG,
+    getCreateMode,
     preventTouchMove,
     toPoint,
     transformPoint
 } from '@plait/core';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
-import { DrawCreateMode, createLineElement, getCreateMode, transformPointToConnection } from '../utils';
+import { createLineElement, transformPointToConnection } from '../utils';
 import { DrawPointerType } from '../constants';
 import { DefaultLineStyle } from '../constants/line';
 import { LineShapeGenerator } from '../generator/line.generator';
@@ -34,7 +36,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
     board.pointerDown = (event: PointerEvent) => {
         const createMode = getCreateMode(board);
         const isLinePointer = PlaitBoard.isPointer(board, DrawPointerType.line);
-        if (isLinePointer && createMode === DrawCreateMode.draw) {
+        if (isLinePointer && createMode === BoardCreateMode.draw) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
             const hitElement = getHitOutlineGeometry(board, point, -4);
