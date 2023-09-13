@@ -30,6 +30,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     markTypes = MarkTypes;
 
+    isSelectedMind = false;
+
     fillColor = ['#333333', '#e48483', '#69b1e4', '#e681d4', '#a287e1', ''];
 
     textColorOptions = ['#333333', '#e03130', '#2f9e44', '#1871c2', '#f08c02', '#c18976'];
@@ -53,14 +55,15 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     onBoardChange() {
-        const selectedElements = getSelectedMindElements(this.board);
-        if (selectedElements.length) {
-            this.currentFillColor = selectedElements[0]?.fill || '';
-            this.currentStrokeColor = selectedElements[0]?.strokeColor || '';
-            this.currentBranchColor = selectedElements[0]?.branchColor || '';
+        const selectedMindElements = getSelectedMindElements(this.board);
+        this.isSelectedMind = !!selectedMindElements.length;
+        if (selectedMindElements.length) {
+            this.currentFillColor = selectedMindElements[0]?.fill || '';
+            this.currentStrokeColor = selectedMindElements[0]?.strokeColor || '';
+            this.currentBranchColor = selectedMindElements[0]?.branchColor || '';
 
-            if (MindElement.hasMounted(selectedElements[0])) {
-                this.currentMarks = PlaitMarkEditor.getMarks(MindElement.getTextEditor(selectedElements[0]));
+            if (MindElement.hasMounted(selectedMindElements[0])) {
+                this.currentMarks = PlaitMarkEditor.getMarks(MindElement.getTextEditor(selectedMindElements[0]));
             }
         }
     }

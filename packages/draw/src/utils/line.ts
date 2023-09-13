@@ -13,7 +13,7 @@ import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getPoi
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPointsByCenterPoint, getNearestPoint } from './geometry';
-import { getStrokeWidthByElement } from './geometry-style/stroke';
+import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './geometry-style/stroke';
 import { getEngine } from './engine';
 
 export const createLineElement = (
@@ -81,7 +81,10 @@ export const isHitLineText = (board: PlaitBoard, element: PlaitLine, point: Poin
 };
 
 export const drawElbowLine = (board: PlaitBoard, element: PlaitLine) => {
-    const options = { stroke: element.strokeColor, strokeWidth: element.strokeWidth };
+    const strokeWidth = getStrokeWidthByElement(element);
+    const strokeColor = getStrokeColorByElement(element);
+    const strokeLineDash = getLineDashByElement(element);
+    const options = { stroke: strokeColor, strokeWidth, strokeLineDash };
     const lineG = createG();
     const points = getElbowPoints(board, element);
     const elbowLine = PlaitBoard.getRoughSVG(board).linearPath(points, options);
