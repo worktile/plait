@@ -1,4 +1,4 @@
-import { Element } from 'slate';
+import { ParagraphElement } from '@plait/text';
 
 export interface EmojiItem {
     name: string;
@@ -11,7 +11,7 @@ export interface ImageItem {
 }
 
 export interface BaseData {
-    topic: Element;
+    topic: ParagraphElement;
     emojis?: EmojiItem[];
     image?: ImageItem;
 }

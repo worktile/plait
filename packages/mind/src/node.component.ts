@@ -35,7 +35,7 @@ import { WithMindOptions } from './interfaces/options';
 import { WithMindPluginKey } from './constants/default';
 import { NodeImageDrawer } from './drawer/node-image.drawer';
 import { NodeSpace } from './utils/space/node-space';
-import { ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT, TOPIC_FONT_SIZE } from './constants/node-topic-style';
+import { NodeTopicThreshold, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT, TOPIC_FONT_SIZE } from './constants/node-topic-style';
 
 // 1. When the text at the end has an italic attribute, the text is partially covered
 // 2. There will be some differences in the width measured by different browsers
@@ -110,7 +110,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
                     MindTransforms.setTopicSize(this.board, this.element, width, height);
                 }
             },
-            textPlugins: plugins
+            textPlugins: plugins,
+            maxWidth: NodeTopicThreshold.defaultTextMaxWidth
         });
     }
 

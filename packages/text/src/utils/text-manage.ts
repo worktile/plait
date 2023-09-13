@@ -19,6 +19,7 @@ import { fromEvent, timer } from 'rxjs';
 import { measureDivSize } from './text-size';
 import { CustomElement, TextPlugin } from '../custom-types';
 import { PlaitTextEditor } from '../plugins/text.editor';
+import { AlignEditor, Alignment } from '@plait/text';
 
 export enum ExitOrigin {
     'destroy' = 'destroy',
@@ -149,7 +150,19 @@ export class TextManage {
     updateRectangle(rectangle?: RectangleClient) {
         const { x, y, width, height } = rectangle || this.options.getRectangle();
         if (this.isEditing) {
-            updateForeignObject(this.g, this.options.maxWidth!, height, x, y);
+            const editor = this.componentRef.instance.editor;
+            if (AlignEditor.isActive(editor, Alignment.right) || AlignEditor.isActive(editor, Alignment.center)) {
+                if (AlignEditor.isActive(editor, Alignment.right)) {
+                    const newX = x - (this.options.maxWidth! - width);
+                    updateForeignObject(this.g, this.options.maxWidth!, height, newX, y);
+                }
+                if (AlignEditor.isActive(editor, Alignment.center)) {
+                    const newX = x - (this.options.maxWidth! - width) / 2;
+                    updateForeignObject(this.g, this.options.maxWidth!, height, newX, y);
+                }
+            } else {
+                updateForeignObject(this.g, this.options.maxWidth!, height, x, y);
+            }
         } else {
             updateForeignObject(this.g, width, height, x, y);
             // solve text lose on move node

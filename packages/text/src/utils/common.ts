@@ -1,7 +1,12 @@
 import { Element } from 'slate';
+import { Alignment, ParagraphElement } from '../custom-types';
 
-export const buildText = (text: string | Element) => {
-    return typeof text === 'string' ? { children: [{ text }] } : text;
+export const buildText = (text: string | Element, align?: Alignment) => {
+    const plaitText = typeof text === 'string' ? { children: [{ text }],  } : text;
+    if (align) {
+        (plaitText as ParagraphElement).align = align;
+    }
+    return plaitText;
 };
 
 export const isUrl = (string: string) => {

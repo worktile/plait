@@ -1,8 +1,8 @@
 import { PlaitBoard, PlaitElement, Point, RectangleClient } from '@plait/core';
-import { Element } from 'slate';
 import { GeometryComponent } from '../geometry.component';
 import { Options } from 'roughjs/bin/core';
 import { StrokeStyle } from './line';
+import { ParagraphElement } from '@plait/text';
 
 export enum GeometryShape {
     rectangle = 'rectangle',
@@ -18,7 +18,7 @@ export interface PlaitGeometry extends PlaitElement {
     type: 'geometry';
     shape: GeometryShape;
 
-    text: Element;
+    text: ParagraphElement;
     textHeight: number;
 
     // node style attributes
