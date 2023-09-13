@@ -15,6 +15,7 @@ import { AppSettingPanelComponent } from './components/setting-panel/setting-pan
 import { AppColorPickerComponent } from './components/color-picker/color-picker.component';
 import { MindImageComponent } from './editor/image/image.component';
 import { DrawModule } from 'packages/draw/src/draw.module';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [
@@ -28,7 +29,7 @@ import { DrawModule } from 'packages/draw/src/draw.module';
         AppColorPickerComponent,
         MindImageComponent
     ],
-    imports: [BrowserModule, TextModule, AppRoutingModule, PlaitModule, FlowModule, MindModule, DrawModule],
+    imports: [BrowserModule, FormsModule, TextModule, AppRoutingModule, PlaitModule, FlowModule, MindModule, DrawModule],
     providers: [],
     bootstrap: [AppComponent]
 })

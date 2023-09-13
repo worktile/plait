@@ -38,6 +38,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     branchColor = ['#A287E0', '#6E80DB', '#E0B75E', '#B1C675', '#77C386', '#E48484'];
 
+    align = Alignment.center;
+
     @HostBinding('class.visible')
     get isVisible() {
         const selectedCount = getSelectedElements(this.board).length;
@@ -53,15 +55,23 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     onBoardChange() {
-        const selectedElements = getSelectedMindElements(this.board);
-        if (selectedElements.length) {
-            this.currentFillColor = selectedElements[0]?.fill || '';
-            this.currentStrokeColor = selectedElements[0]?.strokeColor || '';
-            this.currentBranchColor = selectedElements[0]?.branchColor || '';
+        const selectedMindElements = getSelectedMindElements(this.board);
+        if (selectedMindElements.length) {
+            const firstMindElement = selectedMindElements[0];
+            this.currentFillColor = firstMindElement.fill || '';
+            this.currentStrokeColor = firstMindElement.strokeColor || '';
+            this.currentBranchColor = firstMindElement.branchColor || '';
 
-            if (MindElement.hasMounted(selectedElements[0])) {
-                this.currentMarks = PlaitMarkEditor.getMarks(MindElement.getTextEditor(selectedElements[0]));
+            if (MindElement.hasMounted(firstMindElement)) {
+                this.currentMarks = PlaitMarkEditor.getMarks(MindElement.getTextEditor(firstMindElement));
+                this.align = firstMindElement.data.topic.align || Alignment.left;
             }
+        }
+
+        const selectedGeometryElements = getSelectedGeometryElements(this.board);
+        if (selectedGeometryElements.length) {
+            const firstGeometry = selectedGeometryElements[0];
+            this.align = firstGeometry.text.align || Alignment.center ;
         }
     }
 
@@ -176,19 +186,19 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         }
     }
 
-    setAlign(event: Event) {
+    setAlign(event: Alignment) {
         const selectedMindElements = getSelectedMindElements(this.board);
         if (selectedMindElements.length) {
             selectedMindElements.forEach(element => {
                 const editor = MindElement.getTextEditor(element);
-                AlignEditor.setAlign(editor, (event.target as HTMLSelectElement).value as Alignment);
+                AlignEditor.setAlign(editor, event as Alignment);
             });
         }
         const selectedGeometryElements = getSelectedGeometryElements(this.board);
         if (selectedGeometryElements.length) {
             selectedGeometryElements.forEach(element => {
                 const editor = PlaitGeometry.getTextEditor(element);
-                AlignEditor.setAlign(editor, (event.target as HTMLSelectElement).value as Alignment);
+                AlignEditor.setAlign(editor, event);
             });
         }
     }

@@ -95,7 +95,6 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
             onValueChangeHandle: (textManageRef: TextManageRef) => {
                 const height = textManageRef.height / this.board.viewport.zoom;
                 const width = textManageRef.width / this.board.viewport.zoom;
-
                 if (textManageRef.newValue) {
                     DrawTransforms.setText(this.board, this.element, textManageRef.newValue, width, height);
                 } else {

@@ -9,7 +9,7 @@ import {
     idCreator
 } from '@plait/core';
 import { GeometryShape, PlaitGeometry } from '../interfaces/geometry';
-import { buildText } from '@plait/text';
+import { Alignment, buildText } from '@plait/text';
 import { Element } from 'slate';
 import { DefaultTextProperty, ShapeDefaultSpace } from '../constants';
 import { getRectangleByPoints } from '@plait/common';
@@ -24,8 +24,10 @@ export const createGeometryElement = (
     options?: Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>
 ): PlaitGeometry => {
     let textOptions = {};
+    let alignment: undefined | Alignment = Alignment.center;
     if (shape === GeometryShape.text) {
         textOptions = { autoSize: true };
+        alignment = undefined;
     }
 
     return {
@@ -35,7 +37,7 @@ export const createGeometryElement = (
         angle: 0,
         opacity: 1,
         textHeight: DefaultTextProperty.height,
-        text: buildText(text),
+        text: buildText(text, alignment),
         points,
         ...textOptions,
         ...options

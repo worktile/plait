@@ -7,8 +7,7 @@ import {
     NODE_TO_INDEX,
     PlaitPluginElementContext,
     OnContextChanged,
-    RectangleClient,
-    Point
+    RectangleClient
 } from '@plait/core';
 import { isHorizontalLayout, AbstractNode, MindLayoutType } from '@plait/layouts';
 import { TextManageRef, TextManage, ExitOrigin } from '@plait/text';
@@ -18,7 +17,6 @@ import { drawRoundRectangleByNode } from './utils/draw/node-shape';
 import { MindElement, PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
-import { isHitMindElement } from './utils/position/node';
 import { getShapeByElement } from './utils/node-style/shape';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { drawAbstractLink } from './utils/draw/node-link/abstract-link';
@@ -110,7 +108,8 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
                     MindTransforms.setTopicSize(this.board, this.element, width, height);
                 }
             },
-            textPlugins: plugins
+            textPlugins: plugins,
+            maxWidth: 476
         });
     }
 

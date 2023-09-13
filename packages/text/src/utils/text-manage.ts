@@ -5,20 +5,21 @@ import {
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
-    Point,
     RectangleClient,
     createForeignObject,
     createG,
     toPoint,
     transformPoint,
-    updateForeignObject
+    updateForeignObject,
+    updateForeignObjectWidth
 } from '@plait/core';
-import { AngularEditor, EDITOR_TO_ELEMENT, IS_FOCUSED, hasEditableTarget } from 'slate-angular';
+import { AngularEditor, EDITOR_TO_ELEMENT, IS_FOCUSED } from 'slate-angular';
 import { debounceTime, filter, tap } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
 import { measureDivSize } from './text-size';
-import { CustomElement, TextPlugin } from '../custom-types';
+import { Alignment, CustomElement, TextPlugin } from '../custom-types';
 import { PlaitTextEditor } from '../plugins/text.editor';
+import { AlignEditor } from '../plugins/align/align-editor';
 
 export enum ExitOrigin {
     'destroy' = 'destroy',
@@ -37,6 +38,8 @@ export class TextManage {
     g!: SVGGElement;
 
     foreignObject!: SVGForeignObjectElement;
+
+    calculationForeignObject: SVGForeignObjectElement | null = null;
 
     isEditing = false;
 
@@ -111,10 +114,9 @@ export class TextManage {
                     return;
                 }
 
+                let removeCalculationForeignObject;
                 if (AngularEditor.isReadonly(editor)) {
-                    const { x, y, height } = this.options.getRectangle();
-                    updateForeignObject(this.g, this.options.maxWidth!, height, x, y);
-                    // do not need to revert because foreign will be updated when node changed
+                    removeCalculationForeignObject = this.createCalculationForeignObject();
                 }
 
                 previousValue = editor.children;
@@ -125,6 +127,10 @@ export class TextManage {
 
                 if (AngularEditor.isReadonly(editor) && this.isEditing) {
                     this.setEditing(false);
+                }
+
+                if (removeCalculationForeignObject) {
+                    removeCalculationForeignObject();
                 }
             });
     }
@@ -148,14 +154,10 @@ export class TextManage {
 
     updateRectangle(rectangle?: RectangleClient) {
         const { x, y, width, height } = rectangle || this.options.getRectangle();
-        if (this.isEditing) {
-            updateForeignObject(this.g, this.options.maxWidth!, height, x, y);
-        } else {
-            updateForeignObject(this.g, width, height, x, y);
-            // solve text lose on move node
-            if (this.foreignObject.children.length === 0) {
-                this.foreignObject.append(this.componentRef.instance.elementRef.nativeElement);
-            }
+        updateForeignObject(this.foreignObject, width, height, x, y);
+        // solve text lose on move node
+        if (this.foreignObject.children.length === 0) {
+            this.foreignObject.append(this.componentRef.instance.elementRef.nativeElement);
         }
     }
 
@@ -179,16 +181,24 @@ export class TextManage {
         }
         Transforms.select(editor, [0]);
 
-        this.updateRectangle();
+        const removeCalculationForeignObject = this.createCalculationForeignObject();
 
         const { width, height } = this.getSize();
+        // normalize size
         this.options.onValueChangeHandle && this.options.onValueChangeHandle({ width, height });
 
-        const composition$ = this.componentRef.instance.onComposition.pipe(debounceTime(0)).subscribe(event => {
-            const { width, height } = this.getSize();
-            this.options.onValueChangeHandle && this.options.onValueChangeHandle({ width, height });
-            MERGING.set(this.board, true);
-        });
+        const composition$ = this.componentRef.instance.onComposition
+            .pipe(
+                tap(() => {
+                    this.getCalculationSize();
+                }),
+                debounceTime(0)
+            )
+            .subscribe(event => {
+                const { width, height } = this.getSize();
+                this.options.onValueChangeHandle && this.options.onValueChangeHandle({ width, height });
+                MERGING.set(this.board, true);
+            });
 
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
             const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
@@ -240,6 +250,8 @@ export class TextManage {
             if (onExitCallback) {
                 onExitCallback(origin, this.componentRef.instance.children);
             }
+
+            removeCalculationForeignObject();
         };
     }
 
@@ -247,6 +259,35 @@ export class TextManage {
         const editor = this.componentRef.instance.editor;
         const paragraph = AngularEditor.toDOMNode(editor, editor.children[0]);
         return measureDivSize(paragraph);
+    }
+
+    getCalculationSize() {
+        const editor = this.componentRef.instance.editor;
+        if (!this.calculationForeignObject) {
+            throw new Error('calculationForeignObject undefined');
+        }
+        const calculationEditable = this.calculationForeignObject.querySelector('slate-editable') as HTMLElement;
+        const editable = AngularEditor.toDOMNode(editor, editor);
+        calculationEditable.innerHTML = editable.innerHTML;
+        console.log(editable.innerHTML);
+        const paragraph = this.calculationForeignObject.querySelector('[data-slate-node="element"]') as HTMLElement;
+        const result = measureDivSize(paragraph);
+        console.log(result);
+        setTimeout(() => {
+            updateForeignObjectWidth(this.foreignObject, result.width + 40);
+        }, 0);
+        // return result;
+    }
+
+    createCalculationForeignObject() {
+        this.calculationForeignObject = this.foreignObject.cloneNode(true) as SVGForeignObjectElement;
+        updateForeignObjectWidth(this.calculationForeignObject, this.options.maxWidth!);
+        this.g.append(this.calculationForeignObject);
+        this.calculationForeignObject.style.visibility = 'hidden';
+        return () => {
+            this.calculationForeignObject?.remove();
+            this.calculationForeignObject = null;
+        };
     }
 
     setOnChangeHandle(onChange: ((editor: PlaitTextEditor) => void) | null) {
