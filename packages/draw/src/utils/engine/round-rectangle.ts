@@ -18,7 +18,7 @@ export const RoundRectangleEngine: ShapeEngine = {
             rectangle.y,
             rectangle.x + rectangle.width,
             rectangle.y + rectangle.height,
-            options,
+            { ...options, fillStyle: 'solid' },
             false,
             getRoundRectangleRadius(rectangle)
         );

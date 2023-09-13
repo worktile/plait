@@ -1,6 +1,6 @@
 import { GeometryShape, PlaitGeometry } from '../interfaces';
 import { getRectangleByPoints, Generator } from '@plait/common';
-import { getStrokeColorByElement, getStrokeWidthByElement } from '../utils/geometry-style/stroke';
+import { getFillByElement, getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../utils/geometry-style/stroke';
 import { drawGeometry } from '../utils';
 
 export interface ShapeData {}
@@ -16,9 +16,11 @@ export class GeometryShapeGenerator extends Generator<PlaitGeometry, ShapeData> 
         if (shape === GeometryShape.text) {
             return;
         }
-        const strokeWidth = getStrokeWidthByElement(this.board, element);
-        const strokeColor = getStrokeColorByElement(this.board, element);
-        this.g = drawGeometry(this.board, outerRectangle, shape, { stroke: strokeColor, strokeWidth });
+        const strokeWidth = getStrokeWidthByElement(element);
+        const strokeColor = getStrokeColorByElement(element);
+        const fill = getFillByElement(element);
+        const strokeLineDash = element.strokeStyle === 'dashed' ? getLineDashByElement(element) : undefined;
+        this.g = drawGeometry(this.board, outerRectangle, shape, { stroke: strokeColor, strokeWidth, fill, strokeLineDash });
         return this.g;
     }
 }

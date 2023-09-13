@@ -131,11 +131,15 @@ export const getTargetPoint = (board: PlaitBoard, element: PlaitLine) => {
 
 export const normalizeConnection = (geometry: PlaitGeometry, connection: Point): Point => {
     const rectangle = getRectangleByPoints(geometry.points);
-    return [rectangle.x + rectangle.width * connection[0], rectangle.y + rectangle.height * connection[1]];
+    const strokeWidth = getStrokeWidthByElement(geometry);
+    return [
+        rectangle.x - strokeWidth / 2 + (rectangle.width + strokeWidth) * connection[0],
+        rectangle.y - strokeWidth / 2 + (rectangle.height + strokeWidth) * connection[1]
+    ];
 };
 
 export const transformPointToConnection = (board: PlaitBoard, point: Point, hitElement: PlaitGeometry): Point => {
-    const offset = (getStrokeWidthByElement(board, hitElement) + 1) / 2;
+    const offset = (getStrokeWidthByElement(hitElement) + 1) / 2;
     let rectangle = getRectangleByPoints(hitElement.points);
     rectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
     let nearestPoint = getNearestPoint(hitElement, point, offset);

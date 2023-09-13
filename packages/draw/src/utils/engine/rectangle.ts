@@ -5,7 +5,7 @@ import { drawRectangle } from '@plait/common';
 
 export const RectangleEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
-        return drawRectangle(board, rectangle, options);
+        return drawRectangle(board, rectangle, { ...options, fillStyle: 'solid' });
     },
     isHit(rectangle: RectangleClient, point: Point) {
         const rangeRectangle = RectangleClient.toRectangleClient([point, point]);

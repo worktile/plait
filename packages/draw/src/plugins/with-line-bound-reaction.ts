@@ -21,7 +21,7 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
             const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
             if (hitElement) {
                 boundShapeG = drawBoundMask(board, hitElement);
-                const offset = (getStrokeWidthByElement(board, hitElement) + 1) / 2;
+                const offset = (getStrokeWidthByElement(hitElement) + 1) / 2;
                 let nearestPoint = getNearestPoint(hitElement, movingPoint, offset);
                 const rectangle = getRectangleByPoints(hitElement.points);
                 const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);

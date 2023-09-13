@@ -54,8 +54,8 @@ export const withDraw = (board: PlaitBoard) => {
         }
         if (PlaitDrawElement.isLine(element)) {
             const points = getElbowPoints(board, element);
-            const strokeWidth = getStrokeWidthByElement(board, element);
-            const isHitText = isHitLineText(board,element,range.focus);
+            const strokeWidth = getStrokeWidthByElement(element);
+            const isHitText = isHitLineText(board, element, range.focus);
             const isHit = isHitPolyLine(points, range.focus, strokeWidth, 3) || isHitText;
             const rangeRectangle = RectangleClient.toRectangleClient([range.anchor, range.focus]);
             const isContainPolyLinePoint = points.some(point => {
