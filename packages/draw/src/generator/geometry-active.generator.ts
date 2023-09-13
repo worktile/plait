@@ -23,7 +23,7 @@ export class GeometryActiveGenerator extends Generator<PlaitGeometry, ActiveData
 
         const rectangle = getRectangleByPoints(element.points);
         // add 0.1 to avoid white gap
-        const offset = (getStrokeWidthByElement(this.board, element) + DefaultGeometryActiveStyle.strokeWidth) / 2 - 0.1;
+        const offset = (getStrokeWidthByElement(element) + DefaultGeometryActiveStyle.strokeWidth) / 2 - 0.1;
         const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
 
         const strokeG = drawRectangle(this.board, activeRectangle, {

@@ -92,6 +92,14 @@
     </select>
 </div>
 
+<div class="property-item width-setting-toolbar">
+    <div class="setting-panel-title">边框样式</div>
+    <select (change)="propertyChange($event, 'strokeStyle')">
+        <option value="solid">实线</option>
+        <option value="dashed">虚线</option>
+    </select>
+</div>
+
 <div class="property-item color-setting-toolbar">
     <div class="setting-panel-title">填充颜色：</div>
     <app-color-picker

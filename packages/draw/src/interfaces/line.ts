@@ -40,9 +40,12 @@ export interface PlaitLine extends PlaitElement {
     // node style attributes
     strokeColor?: string;
     strokeWidth?: number;
+    strokeStyle?: StrokeStyle;
 
     opacity: number;
 }
+
+export type StrokeStyle = 'solid' | 'dashed';
 
 export interface PlaitStraightLine extends PlaitLine {
     shape: LineShape.straight;

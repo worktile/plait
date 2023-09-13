@@ -5,7 +5,8 @@ export const ShapeDefaultSpace = {
 export const DefaultGeometryStyle = {
     strokeWidth: 2,
     defaultRadius: 4,
-    strokeColor: '#000'
+    strokeColor: '#000',
+    fill: 'none'
 };
 
 export const DefaultGeometryActiveStyle = {

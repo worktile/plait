@@ -65,7 +65,7 @@ export const getTextRectangle = (element: PlaitGeometry) => {
 export const drawBoundMask = (board: PlaitBoard, element: PlaitGeometry) => {
     const G = createG();
     const rectangle = getRectangleByPoints(element.points);
-    const offset = (getStrokeWidthByElement(board, element) + 1) / 2 - 0.1;
+    const offset = (getStrokeWidthByElement(element) + 1) / 2 - 0.1;
     const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
     const maskG = drawGeometry(board, activeRectangle, element.shape, {
         stroke: SELECTION_BORDER_COLOR,

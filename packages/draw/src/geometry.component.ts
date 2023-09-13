@@ -37,7 +37,7 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
                 return getRectangleByPoints(element.points);
             },
             getStrokeWidthByElement: (element: PlaitGeometry) => {
-                return getStrokeWidthByElement(this.board, element);
+                return getStrokeWidthByElement(element);
             }
         });
         this.shapeGenerator = new GeometryShapeGenerator(this.board);

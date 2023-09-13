@@ -2,6 +2,7 @@ import { PlaitBoard, PlaitElement, Point, RectangleClient } from '@plait/core';
 import { Element } from 'slate';
 import { GeometryComponent } from '../geometry.component';
 import { Options } from 'roughjs/bin/core';
+import { StrokeStyle } from './line';
 
 export enum GeometryShape {
     rectangle = 'rectangle',
@@ -24,6 +25,7 @@ export interface PlaitGeometry extends PlaitElement {
     fill?: string;
     strokeColor?: string;
     strokeWidth?: number;
+    strokeStyle?: StrokeStyle;
 
     angle: number;
     opacity: number;
