@@ -34,10 +34,16 @@ export function createRect(rectangle: RectangleClient, options?: Options) {
 }
 
 export const setStrokeLinecap = (g: SVGGElement, value: 'round' | 'square') => {
-    g.setAttribute('stroke-linecap', 'round');
-}
+    g.setAttribute('stroke-linecap', value);
+};
 
-export function createMask(){
+export const setPathStrokeLinecap = (g: SVGGElement, value: 'round' | 'square') => {
+    g.querySelectorAll('path').forEach(path => {
+        path.setAttribute('stroke-linecap', value);
+    });
+};
+
+export function createMask() {
     return document.createElementNS(NS, 'mask');
 }
 

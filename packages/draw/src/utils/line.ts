@@ -8,14 +8,24 @@ import {
     drawLinearPath,
     getElementById,
     RectangleClient,
-    setStrokeLinecap
+    setPathStrokeLinecap
 } from '@plait/core';
-import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getPointOnPolyline } from '@plait/common';
+import {
+    getPoints,
+    Direction,
+    getRectangleByPoints,
+    getDirectionByPoint,
+    getPointOnPolyline,
+    getDirectionFactor,
+    getDirectionBetweenPointAndPoint
+} from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPointsByCenterPoint, getNearestPoint } from './geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './geometry-style/stroke';
 import { getEngine } from './engine';
+
+const BOUNDED_HANDLE_OFFSET = 0.5;
 
 export const createLineElement = (
     shape: LineShape,
@@ -91,7 +101,7 @@ export const drawElbowLine = (board: PlaitBoard, element: PlaitLine) => {
     const elbowLine = PlaitBoard.getRoughSVG(board).linearPath(points, options);
     const path = elbowLine.querySelector('path');
     path?.setAttribute('mask', `url(#${element.id})`);
-    setStrokeLinecap(elbowLine, 'round');
+    setPathStrokeLinecap(elbowLine, 'square');
     lineG.appendChild(elbowLine);
     const arrow = drawLineArrow(element, points, options);
     arrow && lineG.appendChild(arrow);
@@ -99,19 +109,25 @@ export const drawElbowLine = (board: PlaitBoard, element: PlaitLine) => {
 };
 
 export const drawLineArrow = (element: PlaitLine, points: Point[], options: Options) => {
-    const sourceMarker = element.source.marker;
-    const targetMarker = element.target.marker;
     const arrowG = createG();
-    if (sourceMarker === LineMarkerType.none && targetMarker === LineMarkerType.none) return null;
-    if (sourceMarker === LineMarkerType.arrow) {
+    if (PlaitLine.isSourceMark(element, LineMarkerType.none) && PlaitLine.isTargetMark(element, LineMarkerType.none)) {
+        return null;
+    }
+    if (PlaitLine.isSourceMark(element, LineMarkerType.arrow)) {
         const sourcePoint = points[0];
-        const { pointLeft, pointRight } = arrowPoints(points[1], sourcePoint, 10, 20);
+        const { pointLeft, pointRight } = arrowPoints(points[1], sourcePoint, 12, 40);
         const sourceArrow = drawLinearPath([pointLeft, sourcePoint, pointRight], options);
         arrowG.appendChild(sourceArrow);
     }
-    if (targetMarker === LineMarkerType.arrow) {
-        const endPoint = points[points.length - 1];
-        const { pointLeft, pointRight } = arrowPoints(points[points.length - 2], endPoint, 10, 20);
+    if (PlaitLine.isTargetMark(element, LineMarkerType.arrow)) {
+        const _endPoint = points[points.length - 1];
+        const arrowDirection = getDirectionBetweenPointAndPoint(points[points.length - 2], _endPoint);
+        const directionFactor = getDirectionFactor(arrowDirection);
+        const endPoint: Point = [
+            _endPoint[0] + BOUNDED_HANDLE_OFFSET * directionFactor.x,
+            _endPoint[1] + BOUNDED_HANDLE_OFFSET * directionFactor.y
+        ];
+        const { pointLeft, pointRight } = arrowPoints(points[points.length - 2], endPoint, 12, 40);
         const targetArrow = drawLinearPath([pointLeft, endPoint, pointRight], options);
         arrowG.appendChild(targetArrow);
     }
@@ -120,26 +136,31 @@ export const drawLineArrow = (element: PlaitLine, points: Point[], options: Opti
 
 export const getSourcePoint = (board: PlaitBoard, element: PlaitLine) => {
     if (element.source.boundId) {
+        const connectionOffset = PlaitLine.isSourceMark(element, LineMarkerType.arrow) ? BOUNDED_HANDLE_OFFSET : 0;
         const boundElement = getElementById<PlaitGeometry>(board, element.source.boundId);
-        return boundElement ? normalizeConnection(boundElement, element.source.connection!) : element.points[0];
+        return boundElement ? getConnectionPoint(boundElement, element.source.connection!, connectionOffset) : element.points[0];
     }
     return element.points[0];
 };
 
 export const getTargetPoint = (board: PlaitBoard, element: PlaitLine) => {
     if (element.target.boundId) {
+        const connectionOffset = PlaitLine.isTargetMark(element, LineMarkerType.arrow) ? BOUNDED_HANDLE_OFFSET : 0;
         const boundElement = getElementById<PlaitGeometry>(board, element.target.boundId);
-        return boundElement ? normalizeConnection(boundElement, element.target.connection!) : element.points[element.points.length - 1];
+        return boundElement
+            ? getConnectionPoint(boundElement, element.target.connection!, connectionOffset)
+            : element.points[element.points.length - 1];
     }
     return element.points[element.points.length - 1];
 };
 
-export const normalizeConnection = (geometry: PlaitGeometry, connection: Point): Point => {
+export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, offset: number): Point => {
     const rectangle = getRectangleByPoints(geometry.points);
     const strokeWidth = getStrokeWidthByElement(geometry);
+    const directionFactor = getDirectionFactor(getDirectionByPoint(connection, Direction.bottom));
     return [
-        rectangle.x - strokeWidth / 2 + (rectangle.width + strokeWidth) * connection[0],
-        rectangle.y - strokeWidth / 2 + (rectangle.height + strokeWidth) * connection[1]
+        rectangle.x + rectangle.width * connection[0] + strokeWidth * directionFactor.x + offset * directionFactor.x,
+        rectangle.y + rectangle.height * connection[1] + strokeWidth * directionFactor.y + offset * directionFactor.y
     ];
 };
 

@@ -1,8 +1,22 @@
 import { Point, distanceBetweenPointAndPoint } from '@plait/core';
+import { Direction, getDirectionFactor } from './direction';
+
+export function getOppositeDirection(direction: Direction) {
+    switch (direction) {
+        case Direction.left:
+            return Direction.right;
+        case Direction.right:
+            return Direction.left;
+        case Direction.top:
+            return Direction.bottom;
+        case Direction.bottom:
+            return Direction.top;
+    }
+}
 
 export const getPoints = (source: Point, sourcePosition: Direction, target: Point, targetPosition: Direction, offset: number) => {
-    const sourceDir = handleDirections[sourcePosition];
-    const targetDir = handleDirections[targetPosition];
+    const sourceDir = getDirectionFactor(sourcePosition);
+    const targetDir = getDirectionFactor(targetPosition);
     const sourceGapped: Point = [source[0] + sourceDir.x * offset, source[1] + sourceDir.y * offset];
     const targetGapped: Point = [target[0] + targetDir.x * offset, target[1] + targetDir.y * offset];
     const dir = getDirection(sourceGapped, sourcePosition, targetGapped);
@@ -70,25 +84,11 @@ export const getPoints = (source: Point, sourcePosition: Direction, target: Poin
     return [source, sourceGapped, ...points, targetGapped, target];
 };
 
-const getDirection = (source: Point, sourcePosition = Direction.bottom, target: Point) => {
+export const getDirection = (source: Point, sourcePosition = Direction.bottom, target: Point) => {
     if (sourcePosition === Direction.left || sourcePosition === Direction.right) {
         return source[0] < target[0] ? { x: 1, y: 0 } : { x: -1, y: 0 };
     }
     return source[1] < target[1] ? { x: 0, y: 1 } : { x: 0, y: -1 };
-};
-
-export enum Direction {
-    left = 'left',
-    top = 'top',
-    right = 'right',
-    bottom = 'bottom'
-}
-
-const handleDirections = {
-    [Direction.left]: { x: -1, y: 0 },
-    [Direction.right]: { x: 1, y: 0 },
-    [Direction.top]: { x: 0, y: -1 },
-    [Direction.bottom]: { x: 0, y: 1 }
 };
 
 export function getEdgeCenter({
@@ -109,35 +109,6 @@ export function getEdgeCenter({
     const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
 
     return [centerX, centerY, xOffset, yOffset];
-}
-
-export function getDirectionByPoint(point: Point, defaultDirection: Direction) {
-    if (point[0] === 0) {
-        return Direction.left;
-    }
-    if (point[0] === 1) {
-        return Direction.right;
-    }
-    if (point[1] === 0) {
-        return Direction.top;
-    }
-    if (point[1] === 1) {
-        return Direction.bottom;
-    }
-    return defaultDirection;
-}
-
-export function getOppositeDirection(direction: Direction) {
-    switch (direction) {
-        case Direction.left:
-            return Direction.right;
-        case Direction.right:
-            return Direction.left;
-        case Direction.top:
-            return Direction.bottom;
-        case Direction.bottom:
-            return Direction.top;
-    }
 }
 
 export function getPointOnPolyline(points: Point[], ratio: number) {
@@ -165,7 +136,7 @@ export function getPointOnPolyline(points: Point[], ratio: number) {
     return points[points.length - 1];
 }
 
-function calculatePolylineLength(points: Point[]) {
+export function calculatePolylineLength(points: Point[]) {
     let length = 0;
     for (let i = 0; i < points.length - 1; i++) {
         const [x1, y1] = points[i];
@@ -190,7 +161,7 @@ export function getRatioByPoint(points: Point[], point: Point) {
             distance += distanceBetweenPointAndPoint(points[i][0], points[i][1], points[i + 1][0], points[i + 1][1]);
         }
     }
-    throw new Error('Cannot get ratio by point')
+    throw new Error('Cannot get ratio by point');
 }
 
 export function isPointOnLineSegment(point: Point, startPoint: Point, endPoint: Point) {

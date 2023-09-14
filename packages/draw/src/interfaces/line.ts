@@ -72,5 +72,11 @@ export const PlaitLine = {
             }
         }
         throw new Error('can not get correctly component in get text editor');
+    },
+    isSourceMark(line: PlaitLine, markType: LineMarkerType) {
+        return line.source.marker === markType;
+    },
+    isTargetMark(line: PlaitLine, markType: LineMarkerType) {
+        return line.target.marker === markType;
     }
 };
