@@ -78,16 +78,6 @@ export const withDraw = (board: PlaitBoard) => {
         return isMovable(element);
     };
 
-    board.dblclick = (event: MouseEvent) => {
-        const element = getSelectedElements(board)[0];
-        if (element && PlaitDrawElement.isGeometry(element)) {
-            const component = PlaitElement.getComponent(element) as GeometryComponent;
-            component.editText();
-        }
-
-        dblclick(event);
-    };
-
     return withLineText(
         withLineBoundReaction(
             withLineResize(

@@ -1,5 +1,5 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { BaseElement, Descendant, Element, Operation, Transforms } from 'slate';
+import { BaseElement, Descendant, Element, Node, Operation, Transforms } from 'slate';
 import { PlaitRichtextComponent } from '../richtext/richtext.component';
 import {
     IS_TEXT_EDITABLE,
@@ -186,12 +186,12 @@ export class TextManage {
         this.componentRef.changeDetectorRef.detectChanges();
 
         const editor = this.componentRef.instance.editor;
-        const isFocused = IS_FOCUSED.get(editor);
         const editable = EDITOR_TO_ELEMENT.get(editor);
-        if (!isFocused && editable) {
+        if (editable) {
+            window.getSelection()?.removeAllRanges();
             editable.focus({ preventScroll: true });
+            Transforms.select(editor, [0]);
         }
-        Transforms.select(editor, [0]);
 
         this.updateRectangle();
 

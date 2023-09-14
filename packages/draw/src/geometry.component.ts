@@ -16,7 +16,7 @@ import { getTextRectangle } from './utils/geometry';
 import { ActiveGenerator, getRectangleByPoints } from '@plait/common';
 import { DefaultGeometryActiveStyle, GeometryThreshold } from './constants/geometry';
 import { getStrokeWidthByElement } from './utils/geometry-style/stroke';
-import { PlaitText } from './interfaces';
+import { PlaitDrawElement, PlaitText } from './interfaces';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -55,7 +55,7 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
             },
             hasResizeHandle: () => {
                 const selectedElements = getSelectedElements(this.board);
-                if (PlaitBoard.hasBeenTextEditing(this.board)) {
+                if (PlaitBoard.hasBeenTextEditing(this.board) && PlaitDrawElement.isText(this.element)) {
                     return false;
                 }
                 return selectedElements.length === 1 && !isSelectionMoving(this.board);
