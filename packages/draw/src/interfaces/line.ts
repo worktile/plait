@@ -58,3 +58,12 @@ export interface PlaitCurveLine extends PlaitLine {
 export interface PlaitElbowLine extends PlaitLine {
     shape: LineShape.elbow;
 }
+
+export const PlaitLine = {
+    isSourceMark(line: PlaitLine, markType: LineMarkerType) {
+        return line.source.marker === markType;
+    },
+    isTargetMark(line: PlaitLine, markType: LineMarkerType) {
+        return line.target.marker === markType;
+    }
+};
