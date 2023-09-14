@@ -15,9 +15,9 @@ import {
 } from '@plait/core';
 import { GeometryShape, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generator/geometry-shape.generator';
-import { DrawCreateMode, createGeometryElement, getCreateMode, getPointsByCenterPoint } from '../utils';
+import { createGeometryElement, getPointsByCenterPoint } from '../utils';
 import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, GeometryPointer, ShapeDefaultSpace } from '../constants';
-import { normalizeShapePoints } from '@plait/common';
+import { normalizeShapePoints, BoardCreationMode, isDndMode, isDrawingMode } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { DEFAULT_FONT_SIZE } from '@plait/text';
 import { isKeyHotkey } from 'is-hotkey';
@@ -25,18 +25,15 @@ import { isKeyHotkey } from 'is-hotkey';
 export const withGeometryCreateByDrag = (board: PlaitBoard) => {
     const { pointerMove, pointerUp } = board;
 
-    let createMode: DrawCreateMode | undefined = undefined;
-
     let geometryShapeG: SVGGElement | null = null;
 
     board.pointerMove = (event: PointerEvent) => {
         geometryShapeG?.remove();
         geometryShapeG = createG();
-        createMode = getCreateMode(board);
 
         const geometryGenerator = new GeometryShapeGenerator(board);
         const isGeometryPointer = PlaitBoard.isInPointer(board, GeometryPointer);
-        const dragMode = isGeometryPointer && createMode === DrawCreateMode.drag;
+        const dragMode = isGeometryPointer && isDndMode(board);
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
 
@@ -62,7 +59,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
     board.pointerUp = (event: PointerEvent) => {
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
         const isGeometryPointer = PlaitBoard.isInPointer(board, GeometryPointer);
-        const dragMode = isGeometryPointer && createMode === DrawCreateMode.drag;
+        const dragMode = isGeometryPointer && isDndMode(board);
 
         if (dragMode) {
             const targetPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
@@ -106,10 +103,8 @@ export const withGeometryCreateByDraw = (board: PlaitBoard) => {
     };
 
     board.pointerDown = (event: PointerEvent) => {
-        const createMode = getCreateMode(board);
-
         const isGeometryPointer = PlaitBoard.isInPointer(board, GeometryPointer);
-        if (isGeometryPointer && createMode === DrawCreateMode.draw) {
+        if (isGeometryPointer && isDrawingMode(board)) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
             preventTouchMove(board, true);

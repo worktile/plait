@@ -1,11 +1,8 @@
 import {
     BoardTransforms,
     PlaitBoard,
-    PlaitOptionsBoard,
-    PlaitPluginKey,
     PlaitPointerType,
     Transforms,
-    WithPluginOptions,
     addSelectedElement,
     clearSelectedElement,
     createG,
@@ -21,6 +18,8 @@ import { drawRoundRectangleByElement } from '../utils/draw/node-shape';
 import { NgZone } from '@angular/core';
 import { TextManage } from '@plait/text';
 import { createEmptyMind } from '../utils/node/create-node';
+import { MindElement } from '../interfaces';
+import { BoardCreationMode, isDndMode, isDrawingMode, setCreationMode } from '@plait/common';
 
 const DefaultHotkey = 'm';
 
@@ -34,16 +33,18 @@ export const withCreateMind = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitMindBoard;
     const { keydown, mousedown, mousemove, mouseup } = board;
     let fakeCreateNodeRef: FakeCreateNodeRef | null = null;
+    let emptyMind: MindElement | null = null;
 
     newBoard.mousedown = (event: MouseEvent) => {
-        if (fakeCreateNodeRef && PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind)) {
-            const currentOptions = (board as PlaitOptionsBoard).getPluginOptions(PlaitPluginKey.withSelection);
-            (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, {
-                isDisabledSelect: true
-            });
-            setTimeout(() => {
-                (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { ...currentOptions });
-            }, 0);
+        const isMindPointer = PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind);
+        let movingPoint = PlaitBoard.getMovingPointInBoard(board);
+        if (movingPoint && isDrawingMode(board) && isMindPointer) {
+            movingPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
+            const emptyMind = createEmptyMind(newBoard, movingPoint);
+            Transforms.insertNode(board, emptyMind, [board.children.length]);
+            clearSelectedElement(board);
+            addSelectedElement(board, emptyMind);
+            BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
         mousedown(event);
     };
@@ -53,13 +54,15 @@ export const withCreateMind = (board: PlaitBoard) => {
             mousemove(event);
             return;
         }
-        if (PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind)) {
+        const isMindPointer = PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind);
+        if (isDndMode(board) && isMindPointer) {
             throttleRAF(() => {
-                const movingPoint = PlaitBoard.getMovingPointInBoard(board);
+                let movingPoint = PlaitBoard.getMovingPointInBoard(board);
+
                 if (movingPoint) {
-                    const targetPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
-                    const emptyMind = createEmptyMind(targetPoint);
-                    const nodeRectangle = getRectangleByElement(newBoard, targetPoint, emptyMind);
+                    movingPoint = transformPoint(newBoard, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
+                    emptyMind = createEmptyMind(newBoard, movingPoint);
+                    const nodeRectangle = getRectangleByElement(newBoard, emptyMind);
                     const nodeG = drawRoundRectangleByElement(board, nodeRectangle, emptyMind);
                     const topicRectangle = getTopicRectangleByElement(newBoard, nodeRectangle, emptyMind);
                     if (!fakeCreateNodeRef) {
@@ -71,7 +74,7 @@ export const withCreateMind = (board: PlaitBoard) => {
                         PlaitBoard.getComponent(board)
                             .viewContainerRef.injector.get(NgZone)
                             .run(() => {
-                                textManage.draw(emptyMind.data.topic);
+                                textManage.draw(emptyMind!.data.topic);
                             });
                         fakeCreateNodeRef = {
                             g: createG(),
@@ -98,14 +101,12 @@ export const withCreateMind = (board: PlaitBoard) => {
     };
 
     newBoard.mouseup = (event: MouseEvent) => {
-        const movingPoint = PlaitBoard.getMovingPointInBoard(board);
-        if (movingPoint && fakeCreateNodeRef && PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind)) {
-            const targetPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
-            const emptyMind = createEmptyMind(targetPoint);
+        if (emptyMind) {
             Transforms.insertNode(board, emptyMind, [board.children.length]);
             clearSelectedElement(board);
             addSelectedElement(board, emptyMind);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
+            emptyMind = null;
         }
         destroy();
         mouseup(event);
@@ -118,6 +119,7 @@ export const withCreateMind = (board: PlaitBoard) => {
         }
         if (event.key === DefaultHotkey && !PlaitBoard.isPointer(board, MindPointerType.mind)) {
             BoardTransforms.updatePointerType(board, MindPointerType.mind);
+            setCreationMode(board, BoardCreationMode.drawing);
             event.preventDefault();
             return;
         }

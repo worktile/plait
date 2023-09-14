@@ -1,20 +1,24 @@
-import { Point, idCreator, isNullOrUndefined } from '@plait/core';
+import { PlaitBoard, Point, idCreator, isNullOrUndefined } from '@plait/core';
 import { TEXT_DEFAULT_HEIGHT, buildText } from '@plait/text';
 import { MindLayoutType } from '@plait/layouts';
 import { BranchShape, MindElement, MindElementShape } from '../../interfaces/element';
-import { ROOT_TOPIC_HEIGHT } from '../../constants/node-topic-style';
+import { ROOT_TOPIC_HEIGHT, ROOT_TOPIC_WIDTH } from '../../constants/node-topic-style';
 import { Element } from 'slate';
+import { NodeSpace } from '../space';
+import { PlaitMindBoard } from '../../public-api';
 
-export const createEmptyMind = (point: Point) => {
-    const element = createMindElement('思维导图', 72, ROOT_TOPIC_HEIGHT, { layout: MindLayoutType.right });
+export const createEmptyMind = (board: PlaitBoard, point: Point) => {
+    const element = createMindElement('思维导图', ROOT_TOPIC_WIDTH, ROOT_TOPIC_HEIGHT, { layout: MindLayoutType.right });
     element.isRoot = true;
-    element.points = [point];
     element.type = 'mindmap';
+    const width = NodeSpace.getNodeWidth(board as PlaitMindBoard, element);
+    const height = NodeSpace.getNodeHeight(board as PlaitMindBoard, element);
+    element.points = [[point[0] - width / 2, point[1] - height / 2]];
     return element;
 };
 
 export const createDefaultMind = (point: Point, rightNodeCount: number, layout: MindLayoutType) => {
-    const root = createMindElement('思维导图', 72, ROOT_TOPIC_HEIGHT, { layout });
+    const root = createMindElement('思维导图', ROOT_TOPIC_WIDTH, ROOT_TOPIC_HEIGHT, { layout });
     root.rightNodeCount = rightNodeCount;
     root.isRoot = true;
     root.type = 'mindmap';
