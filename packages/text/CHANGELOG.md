@@ -1,5 +1,15 @@
 # text
 
+## 0.16.0-next.3
+
+### Minor Changes
+
+-   [`5e4c5d25`](https://github.com/worktile/plait/commit/5e4c5d25a3797e9f77d9efad2b6ad7016fa59b11) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve geometry drawing style
+
+### Patch Changes
+
+-   [`66e56446`](https://github.com/worktile/plait/commit/66e564463cf25f793752751b977609cf7429f177) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove default selection and reset selection when enter edit
+
 ## 0.16.0-next.2
 
 ### Patch Changes

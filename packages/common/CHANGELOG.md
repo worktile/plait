@@ -1,5 +1,11 @@
 # @plait/common
 
+## 0.1.0-next.5
+
+### Minor Changes
+
+-   [`df94abc0`](https://github.com/worktile/plait/commit/df94abc0a5957e868844fa541a60045b404a84d6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve line arrow drawing
+
 ## 0.1.0-next.4
 
 ### Minor Changes

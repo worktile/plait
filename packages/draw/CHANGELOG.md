@@ -1,5 +1,23 @@
 # @plait/draw
 
+## 0.1.0-next.4
+
+### Minor Changes
+
+-   [#566](https://github.com/worktile/plait/pull/566) [`88cb1aaf`](https://github.com/worktile/plait/commit/88cb1aafd8e0f4a437d61961822280a7d9c07b8f) Thanks [@WBbug](https://github.com/WBbug)! - add get line TextEditors
+
+*   [`5e4c5d25`](https://github.com/worktile/plait/commit/5e4c5d25a3797e9f77d9efad2b6ad7016fa59b11) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve geometry drawing style
+
+-   [#565](https://github.com/worktile/plait/pull/565) [`4591b267`](https://github.com/worktile/plait/commit/4591b267647a9b9d959c384b2e45cf796d75687a) Thanks [@WBbug](https://github.com/WBbug)! - change mind creation
+
+*   [`df94abc0`](https://github.com/worktile/plait/commit/df94abc0a5957e868844fa541a60045b404a84d6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve line arrow drawing
+
+### Patch Changes
+
+-   [`66e56446`](https://github.com/worktile/plait/commit/66e564463cf25f793752751b977609cf7429f177) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove default selection and reset selection when enter edit
+
+*   [#567](https://github.com/worktile/plait/pull/567) [`1e852767`](https://github.com/worktile/plait/commit/1e852767888f7ca1b1b42554d488a42ed3aa08a0) Thanks [@WBbug](https://github.com/WBbug)! - export draw component
+
 ## 0.1.0-next.3
 
 ### Minor Changes
