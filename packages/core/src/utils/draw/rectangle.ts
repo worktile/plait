@@ -3,6 +3,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { MAX_RADIUS } from '../../constants';
 import { PlaitBoard } from '../../interfaces/board';
 import { RectangleClient } from '../../interfaces/rectangle-client';
+import { setStrokeLinecap } from '../dom/common';
 
 /**
  * drawRoundRectangle
@@ -48,9 +49,6 @@ export function drawRoundRectangle(
 export const drawRectangle = (board: PlaitBoard, rectangle: RectangleClient, options: Options) => {
     const roughSVG = PlaitBoard.getRoughSVG(board);
     const rectangleG = roughSVG.rectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height, options);
-    const paths = rectangleG.querySelectorAll('path');
-    paths.forEach(path => {
-        path.setAttribute('stroke-linecap', 'square');
-    });
+    setStrokeLinecap(rectangleG, 'round');
     return rectangleG;
 };

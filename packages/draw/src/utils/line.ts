@@ -7,7 +7,8 @@ import {
     arrowPoints,
     drawLinearPath,
     getElementById,
-    RectangleClient
+    RectangleClient,
+    setStrokeLinecap
 } from '@plait/core';
 import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getPointOnPolyline } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
@@ -90,6 +91,7 @@ export const drawElbowLine = (board: PlaitBoard, element: PlaitLine) => {
     const elbowLine = PlaitBoard.getRoughSVG(board).linearPath(points, options);
     const path = elbowLine.querySelector('path');
     path?.setAttribute('mask', `url(#${element.id})`);
+    setStrokeLinecap(elbowLine, 'round');
     lineG.appendChild(elbowLine);
     const arrow = drawLineArrow(element, points, options);
     arrow && lineG.appendChild(arrow);

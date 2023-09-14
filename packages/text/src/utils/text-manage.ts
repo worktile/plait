@@ -188,9 +188,11 @@ export class TextManage {
         const editor = this.componentRef.instance.editor;
         const editable = EDITOR_TO_ELEMENT.get(editor);
         if (editable) {
-            window.getSelection()?.removeAllRanges();
-            editable.focus({ preventScroll: true });
+            if (Node.string(editor).length === 0) {
+                window.getSelection()?.removeAllRanges();
+            }
             Transforms.select(editor, [0]);
+            editable.focus({ preventScroll: true });
         }
 
         this.updateRectangle();

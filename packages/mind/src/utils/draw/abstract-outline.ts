@@ -1,4 +1,4 @@
-import { createG, getRectangleByElements, PlaitBoard, RectangleClient } from '@plait/core';
+import { createG, getRectangleByElements, PlaitBoard, RectangleClient, setStrokeLinecap } from '@plait/core';
 import { PRIMARY_COLOR } from '../../constants';
 import { ABSTRACT_HANDLE_COLOR, ABSTRACT_HANDLE_LENGTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../../constants/abstract-node';
 import { RoughSVG } from 'roughjs/bin/svg';
@@ -80,9 +80,9 @@ export function drawAbstractIncludedOutline(
     );
 
     handleBoardClass(board, activeHandlePosition, isHorizontal);
-
-    startHandle.setAttribute('stroke-linecap', 'round');
-    endHandle.setAttribute('stroke-linecap', 'round');
+    
+    setStrokeLinecap(startHandle, 'round');
+    setStrokeLinecap(endHandle, 'round');
 
     abstractIncludedG.append(startHandle);
     abstractIncludedG.append(endHandle);
