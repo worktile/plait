@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, forwardRef } from '@angular/core';
 import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
-import { PlaitGeometry, getSelectedGeometryElements } from '@plait/draw';
+import { PlaitDrawElement, PlaitGeometry, PlaitLine, getSelectedGeometryElements, getSelectedLineElements } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 import { MindElement, MindPointerType, MindTransforms, canSetAbstract, getSelectedMindElements } from '@plait/mind';
 import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText, LinkEditor, AlignEditor, Alignment } from '@plait/text';
@@ -32,6 +32,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     isSelectedMind = false;
 
+    isSelectedLine = false;
+
     fillColor = ['#333333', '#e48483', '#69b1e4', '#e681d4', '#a287e1', ''];
 
     textColorOptions = ['#333333', '#e03130', '#2f9e44', '#1871c2', '#f08c02', '#c18976'];
@@ -58,9 +60,11 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     onBoardChange() {
         const selectedMindElements = getSelectedMindElements(this.board);
+        const selectedLineElements = getSelectedLineElements(this.board);
         this.isSelectedMind = !!selectedMindElements.length;
+        this.isSelectedLine = !!selectedLineElements.length;
         if (selectedMindElements.length) {
-            const firstMindElement = selectedMindElements[0]; 
+            const firstMindElement = selectedMindElements[0];
             this.currentFillColor = firstMindElement.fill || '';
             this.currentStrokeColor = firstMindElement.strokeColor || '';
             this.currentBranchColor = firstMindElement.branchColor || '';
@@ -74,7 +78,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedGeometryElements = getSelectedGeometryElements(this.board);
         if (selectedGeometryElements.length) {
             const firstGeometry = selectedGeometryElements[0];
-            this.align = firstGeometry.text.align || Alignment.center ;
+            this.align = firstGeometry.text.align || Alignment.center;
         }
     }
 
@@ -112,11 +116,16 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     textColorChange(value: string) {
-        const selectedElements = getSelectedElements(this.board) as MindElement[];
+        const selectedElements = getSelectedElements(this.board);
         if (selectedElements.length) {
             selectedElements.forEach(element => {
-                const editor = MindElement.getTextEditor(element);
-                PlaitMarkEditor.setColorMark(editor, value);
+                if (PlaitDrawElement.isLine(element)) {
+                    const editors = PlaitLine.getTextEditors(element);
+                    editors.forEach(editor => PlaitMarkEditor.setColorMark(editor, value));
+                } else {
+                    const editor = MindElement.getTextEditor(element as MindElement);
+                    PlaitMarkEditor.setColorMark(editor, value);
+                }
             });
         }
     }
@@ -139,8 +148,11 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedElements = getSelectedElements(this.board) as MindElement[];
         if (selectedElements.length) {
             selectedElements.forEach(element => {
-                const editor = MindElement.getTextEditor(element);
-                if (editor) {
+                if (PlaitDrawElement.isLine(element)) {
+                    const editors = PlaitLine.getTextEditors(element);
+                    editors.forEach(editor => PlaitMarkEditor.toggleMark(editor, attribute as MarkTypes));
+                } else {
+                    const editor = MindElement.getTextEditor(element as MindElement);
                     PlaitMarkEditor.toggleMark(editor, attribute as MarkTypes);
                 }
             });
@@ -180,11 +192,16 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     setFontSize(event: Event) {
         const selectedElements = getSelectedElements(this.board) as MindElement[];
-
+        const fontSize = (event.target as HTMLSelectElement).value as FontSizes;
         if (selectedElements.length) {
             selectedElements.forEach(element => {
-                const editor = MindElement.getTextEditor(element);
-                PlaitMarkEditor.setFontSizeMark(editor, (event.target as HTMLSelectElement).value as FontSizes);
+                if (PlaitDrawElement.isLine(element)) {
+                    const editors = PlaitLine.getTextEditors(element);
+                    editors.forEach(editor => PlaitMarkEditor.setFontSizeMark(editor, fontSize));
+                } else {
+                    const editor = MindElement.getTextEditor(element as MindElement);
+                    PlaitMarkEditor.setFontSizeMark(editor, fontSize);
+                }
             });
         }
     }
@@ -202,6 +219,13 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             selectedGeometryElements.forEach(element => {
                 const editor = PlaitGeometry.getTextEditor(element);
                 AlignEditor.setAlign(editor, event);
+            });
+        }
+        const selectedLineElements = getSelectedLineElements(this.board);
+        if (selectedLineElements.length) {
+            selectedLineElements.forEach(element => {
+                const editors = PlaitLine.getTextEditors(element);
+                editors.forEach(editor => AlignEditor.setAlign(editor, event));
             });
         }
     }
