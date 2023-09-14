@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
-import { BoardCreationMode, setCreateMode } from '@plait/common';
+import { BoardCreationMode, setCreationMode } from '@plait/common';
 import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType } from '@plait/core';
 import { DrawPointerType } from '@plait/draw';
 import { MindPointerType } from '@plait/mind';
@@ -33,11 +33,11 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
     setPointer(event: Event, pointer: PointerType) {
         event.preventDefault();
         BoardTransforms.updatePointerType<PointerType>(this.board, pointer);
-        setCreateMode(this.board, BoardCreationMode.dnd);
+        setCreationMode(this.board, BoardCreationMode.dnd);
         fromEvent(event.target as HTMLElement, 'mouseup')
             .pipe(take(1))
             .subscribe(() => {
-                setCreateMode(this.board, BoardCreationMode.drawing);
+                setCreationMode(this.board, BoardCreationMode.drawing);
             });
     }
 }

@@ -9,18 +9,17 @@ import {
     getSelectedElements,
     throttleRAF,
     toPoint,
-    transformPoint,
-    Point
+    transformPoint
 } from '@plait/core';
 import { PlaitMindBoard } from './with-mind.board';
 import { MindPointerType } from '../interfaces/pointer';
-import { NodeSpace, getRectangleByElement, getTopicRectangleByElement, temporaryDisableSelection } from '../utils';
+import { getRectangleByElement, getTopicRectangleByElement } from '../utils';
 import { drawRoundRectangleByElement } from '../utils/draw/node-shape';
 import { NgZone } from '@angular/core';
 import { TextManage } from '@plait/text';
 import { createEmptyMind } from '../utils/node/create-node';
 import { MindElement } from '../interfaces';
-import { BoardCreationMode, isDndMode, isDrawingMode, setCreateMode } from '@plait/common';
+import { BoardCreationMode, isDndMode, isDrawingMode, setCreationMode } from '@plait/common';
 
 const DefaultHotkey = 'm';
 
@@ -63,7 +62,7 @@ export const withCreateMind = (board: PlaitBoard) => {
                 if (movingPoint) {
                     movingPoint = transformPoint(newBoard, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
                     emptyMind = createEmptyMind(newBoard, movingPoint);
-                    const nodeRectangle = getRectangleByElement(newBoard, movingPoint, emptyMind);
+                    const nodeRectangle = getRectangleByElement(newBoard, emptyMind);
                     const nodeG = drawRoundRectangleByElement(board, nodeRectangle, emptyMind);
                     const topicRectangle = getTopicRectangleByElement(newBoard, nodeRectangle, emptyMind);
                     if (!fakeCreateNodeRef) {
@@ -120,7 +119,7 @@ export const withCreateMind = (board: PlaitBoard) => {
         }
         if (event.key === DefaultHotkey && !PlaitBoard.isPointer(board, MindPointerType.mind)) {
             BoardTransforms.updatePointerType(board, MindPointerType.mind);
-            setCreateMode(board, BoardCreationMode.drawing);
+            setCreationMode(board, BoardCreationMode.drawing);
             event.preventDefault();
             return;
         }
