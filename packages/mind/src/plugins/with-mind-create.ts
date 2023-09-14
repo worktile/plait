@@ -1,18 +1,15 @@
 import {
     BoardTransforms,
-    BoardCreateMode,
     PlaitBoard,
     PlaitPointerType,
     Transforms,
     addSelectedElement,
     clearSelectedElement,
     createG,
-    getCreateMode,
     getSelectedElements,
     throttleRAF,
     toPoint,
     transformPoint,
-    setCreateMode,
     Point
 } from '@plait/core';
 import { PlaitMindBoard } from './with-mind.board';
@@ -23,6 +20,7 @@ import { NgZone } from '@angular/core';
 import { TextManage } from '@plait/text';
 import { createEmptyMind } from '../utils/node/create-node';
 import { MindElement } from '../interfaces';
+import { BoardCreationMode, isDndMode, isDrawingMode, setCreateMode } from '@plait/common';
 
 const DefaultHotkey = 'm';
 
@@ -39,12 +37,11 @@ export const withCreateMind = (board: PlaitBoard) => {
     let emptyMind: MindElement | null = null;
 
     newBoard.mousedown = (event: MouseEvent) => {
-        const drawMode = getCreateMode(board) === BoardCreateMode.draw;
-        const movingPoint = PlaitBoard.getMovingPointInBoard(board);
         const isMindPointer = PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind);
-        if (drawMode && isMindPointer && movingPoint) {
-            const targetPoint = getDefaultMindPoint(newBoard, movingPoint);
-            const emptyMind = createEmptyMind(targetPoint);
+        let movingPoint = PlaitBoard.getMovingPointInBoard(board);
+        if (movingPoint && isDrawingMode(board) && isMindPointer) {
+            movingPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
+            const emptyMind = createEmptyMind(newBoard, movingPoint);
             Transforms.insertNode(board, emptyMind, [board.children.length]);
             clearSelectedElement(board);
             addSelectedElement(board, emptyMind);
@@ -58,15 +55,15 @@ export const withCreateMind = (board: PlaitBoard) => {
             mousemove(event);
             return;
         }
-        const dragMode = getCreateMode(board) === BoardCreateMode.drag;
         const isMindPointer = PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind);
-        if (dragMode && isMindPointer) {
+        if (isDndMode(board) && isMindPointer) {
             throttleRAF(() => {
-                const movingPoint = PlaitBoard.getMovingPointInBoard(board);
+                let movingPoint = PlaitBoard.getMovingPointInBoard(board);
+
                 if (movingPoint) {
-                    const targetPoint = getDefaultMindPoint(newBoard, movingPoint);
-                    emptyMind = createEmptyMind(targetPoint);
-                    const nodeRectangle = getRectangleByElement(newBoard, targetPoint, emptyMind);
+                    movingPoint = transformPoint(newBoard, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
+                    emptyMind = createEmptyMind(newBoard, movingPoint);
+                    const nodeRectangle = getRectangleByElement(newBoard, movingPoint, emptyMind);
                     const nodeG = drawRoundRectangleByElement(board, nodeRectangle, emptyMind);
                     const topicRectangle = getTopicRectangleByElement(newBoard, nodeRectangle, emptyMind);
                     if (!fakeCreateNodeRef) {
@@ -123,7 +120,7 @@ export const withCreateMind = (board: PlaitBoard) => {
         }
         if (event.key === DefaultHotkey && !PlaitBoard.isPointer(board, MindPointerType.mind)) {
             BoardTransforms.updatePointerType(board, MindPointerType.mind);
-            setCreateMode(board, BoardCreateMode.draw);
+            setCreateMode(board, BoardCreationMode.drawing);
             event.preventDefault();
             return;
         }
@@ -140,9 +137,3 @@ export const withCreateMind = (board: PlaitBoard) => {
 
     return newBoard;
 };
-
-function getDefaultMindPoint(board: PlaitMindBoard, point: Point) {
-    const width = NodeSpace.getNodeWidth(board, createEmptyMind([0, 0]));
-    const height = NodeSpace.getNodeHeight(board, createEmptyMind([0, 0]));
-    return transformPoint(board, toPoint(point[0] - width / 2, point[1] - height / 2, PlaitBoard.getHost(board)));
-}

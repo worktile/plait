@@ -20,4 +20,3 @@ export * from './moving-element';
 export * from './to-image';
 export * from './clipboard';
 export * from './touch';
-export * from './create-mode';

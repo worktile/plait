@@ -18,11 +18,13 @@ export function getRectangleByNode(node: MindNode): RectangleClient {
 }
 
 export function getRectangleByElement(board: PlaitMindBoard, originPoint: Point, element: MindElement) {
+    const width = NodeSpace.getNodeWidth(board, element);
+    const height = NodeSpace.getNodeHeight(board, element);
     const nodeRectangle = {
-        x: originPoint[0],
-        y: originPoint[1],
-        width: NodeSpace.getNodeWidth(board, element),
-        height: NodeSpace.getNodeHeight(board, element)
+        x: originPoint[0] - width / 2,
+        y: originPoint[1] - height / 2,
+        width,
+        height
     };
     return nodeRectangle;
 }
