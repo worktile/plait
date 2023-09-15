@@ -5,6 +5,7 @@ import { CommonTransforms } from '@plait/common';
 import { getTextFromClipboard, getTextSize } from '@plait/text';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
+import { getBoardLines } from '../utils/line';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard;
@@ -13,12 +14,21 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
     board.deleteFragment = (data: DataTransfer | null) => {
         const drawElements = getSelectedDrawElements(board);
         if (drawElements.length) {
-            const geometryElements = drawElements.filter(value => PlaitDrawElement.isDrawElement(value)) as PlaitGeometry[];
+            const lines = getBoardLines(board);
+            const geometryElements = drawElements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
+            const lineElements = drawElements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
 
-            // query bound lines
-            const boundLineElements: PlaitLine[] = [];
+            const boundLineElements = lines.filter(line =>
+                geometryElements.find(
+                    geometry => PlaitLine.isBoundElementOfSource(line, geometry) || PlaitLine.isBoundElementOfTarget(line, geometry)
+                )
+            );
 
-            CommonTransforms.removeElements(board, [...geometryElements, ...boundLineElements]);
+            CommonTransforms.removeElements(board, [
+                ...geometryElements,
+                ...lineElements,
+                ...boundLineElements.filter(line => !lineElements.includes(line))
+            ]);
         }
         deleteFragment(data);
     };

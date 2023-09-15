@@ -12,7 +12,7 @@ export const withDrawHotkey = (board: PlaitBoard) => {
         const isSingleSelection = selectedElements.length === 1;
         const targetElement = selectedElements[0];
 
-        if (!isVirtualKey(event) && !isSpaceHotkey(event) && isSingleSelection && PlaitDrawElement.isDrawElement(targetElement)) {
+        if (!isVirtualKey(event) && !isSpaceHotkey(event) && isSingleSelection && PlaitDrawElement.isGeometry(targetElement)) {
             event.preventDefault();
 
             (PlaitElement.getComponent(targetElement) as GeometryComponent).editText();

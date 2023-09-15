@@ -8,7 +8,9 @@ import {
     drawLinearPath,
     getElementById,
     RectangleClient,
-    setPathStrokeLinecap
+    setPathStrokeLinecap,
+    findElements,
+    PlaitElement
 } from '@plait/core';
 import {
     getPoints,
@@ -19,7 +21,7 @@ import {
     getDirectionFactor,
     getDirectionBetweenPointAndPoint
 } from '@plait/common';
-import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
+import { LineHandle, LineMarkerType, LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPointsByCenterPoint, getNearestPoint } from './geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './geometry-style/stroke';
@@ -193,4 +195,11 @@ export const getLineTextRectangle = (board: PlaitBoard, element: PlaitLine, inde
         width: text.width!,
         height: text.height!
     };
+};
+
+export const getBoardLines = (board: PlaitBoard) => {
+    return findElements(board, {
+        match: (element: PlaitElement) => PlaitDrawElement.isLine(element),
+        recursion: (element: PlaitElement) => PlaitDrawElement.isDrawElement(element)
+    }) as PlaitLine[];
 };

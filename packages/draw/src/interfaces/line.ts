@@ -1,6 +1,7 @@
 import { PlaitElement, Point } from '@plait/core';
 import { Element } from 'slate';
 import { LineComponent } from '../line.component';
+import { PlaitGeometry } from './geometry';
 
 export enum LineMarkerType {
     arrow = 'arrow',
@@ -78,5 +79,11 @@ export const PlaitLine = {
     },
     isTargetMark(line: PlaitLine, markType: LineMarkerType) {
         return line.target.marker === markType;
+    },
+    isBoundElementOfSource(line: PlaitLine, element: PlaitGeometry) {
+        return line.source.boundId === element.id;
+    },
+    isBoundElementOfTarget(line: PlaitLine, element: PlaitGeometry) {
+        return line.target.boundId === element.id;
     }
 };

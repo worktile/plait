@@ -16,6 +16,8 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
             boundaryBox.top = Math.min(boundaryBox.top, nodeRectangle.y);
             boundaryBox.right = Math.max(boundaryBox.right, nodeRectangle.x + nodeRectangle.width);
             boundaryBox.bottom = Math.max(boundaryBox.bottom, nodeRectangle.y + nodeRectangle.height);
+        } else {
+            console.error(`can not get rectangle of element:`, node);
         }
     };
 
@@ -52,17 +54,37 @@ export function getBoardRectangle(board: PlaitBoard): RectangleClient {
     return getRectangleByElements(board, board.children, true);
 }
 
-export function getElementById<T extends PlaitElement = PlaitElement>(board: PlaitBoard, id: string): T | null {
-    let element = null;
+export function getElementById<T extends PlaitElement = PlaitElement>(board: PlaitBoard, id: string, dataSource?: PlaitElement[]): T | undefined {
+    if (!dataSource) {
+        dataSource = findElements(board, { match: (element) => true, recursion: (element) => true });
+    }
+    let element = dataSource.find((element) => element.id === id) as T;
+    return element;
+}
+
+export function findElements<T extends PlaitElement = PlaitElement>(
+    board: PlaitBoard,
+    options: {
+        match: (element: PlaitElement) => boolean;
+        recursion: (element: PlaitElement) => boolean;
+    }
+): T[] {
+    let elements: T[] = [];
     depthFirstRecursion<Ancestor>(
         board,
         node => {
-            if (id === (node as PlaitElement).id) {
-                element = node as PlaitElement;
+            if (!PlaitBoard.isBoard(node) && options.match(node)) {
+                elements.push(node as T);
             }
         },
-        getIsRecursionFunc(board),
+        (value: Ancestor) => {
+            if (PlaitBoard.isBoard(value)) {
+                return true;
+            } else {
+                return getIsRecursionFunc(board)(value) && options.recursion(value);
+            }
+        },
         true
     );
-    return element;
+    return elements;
 }
