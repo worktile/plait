@@ -4,7 +4,7 @@ import { AbstractNode, LayoutNode, MindLayoutType, isHorizontalLayout } from '@p
 import { ABSTRACT_HANDLE_MASK_WIDTH, ABSTRACT_INCLUDED_OUTLINE_OFFSET } from '../../constants/abstract-node';
 import { MindQueries } from '../../queries';
 import { getCorrectStartEnd } from '@plait/layouts';
-import { MindNodeComponent } from '../../node.component';
+import { MindNodeComponent } from '../../mind-node.component';
 import { AbstractHandlePosition } from '../../plugins/with-abstract-resize.board';
 
 export const getRectangleByResizingLocation = (

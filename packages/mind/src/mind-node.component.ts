@@ -7,8 +7,7 @@ import {
     NODE_TO_INDEX,
     PlaitPluginElementContext,
     OnContextChanged,
-    RectangleClient,
-    Point
+    RectangleClient
 } from '@plait/core';
 import { isHorizontalLayout, AbstractNode, MindLayoutType } from '@plait/layouts';
 import { TextManageRef, TextManage, ExitOrigin } from '@plait/text';
@@ -18,7 +17,6 @@ import { drawRoundRectangleByNode } from './utils/draw/node-shape';
 import { MindElement, PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
-import { isHitMindElement } from './utils/position/node';
 import { getShapeByElement } from './utils/node-style/shape';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { drawAbstractLink } from './utils/draw/node-link/abstract-link';
@@ -36,10 +34,6 @@ import { WithMindPluginKey } from './constants/default';
 import { NodeImageDrawer } from './drawer/node-image.drawer';
 import { NodeSpace } from './utils/space/node-space';
 import { NodeTopicThreshold, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT, TOPIC_FONT_SIZE } from './constants/node-topic-style';
-
-// 1. When the text at the end has an italic attribute, the text is partially covered
-// 2. There will be some differences in the width measured by different browsers
-const WIDTH_BUFFER = 4;
 
 @Component({
     selector: 'plait-mind-node',

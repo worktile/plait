@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlaitModule } from '@plait/core';
 import { TextModule } from '@plait/text';
-import { MindNodeComponent } from './node.component';
+import { MindNodeComponent } from './mind-node.component';
 import { PlaitMindComponent } from './mind.component';
 
 @NgModule({

@@ -20,7 +20,7 @@ import { MindElement } from '../interfaces/element';
 import { getRectangleByNode } from '../utils/position/node';
 import { NodeSpace } from '../utils/space/node-space';
 import { PlaitMindBoard } from './with-mind.board';
-import { MindNodeComponent } from '../node.component';
+import { MindNodeComponent } from '../mind-node.component';
 import { MindTransforms } from '../transforms';
 import { TextManage } from '@plait/text';
 import { EXTEND_OFFSET } from '../constants/default';

@@ -3,7 +3,7 @@
  */
 
 export * from './mind.component';
-export * from './node.component';
+export * from './mind-node.component';
 export * from './mind.module';
 export * from './utils';
 export * from './interfaces';

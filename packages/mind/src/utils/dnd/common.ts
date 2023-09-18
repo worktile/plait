@@ -1,6 +1,6 @@
 import { getNonAbstractChildren, isStandardLayout } from '@plait/layouts';
 import { MindElement, PlaitMind } from '../../interfaces/element';
-import { MindNodeComponent } from '../../node.component';
+import { MindNodeComponent } from '../../mind-node.component';
 import { Path, PlaitBoard, PlaitElement } from '@plait/core';
 import { getRootLayout } from '../layout';
 import { DetectResult } from '../../interfaces/node';

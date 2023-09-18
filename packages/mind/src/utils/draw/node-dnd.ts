@@ -1,7 +1,7 @@
 import { drawRoundRectangleByNode } from './node-shape';
 import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../../constants';
 import { DetectResult, LayoutDirection, MindElement, MindNode, PlaitMind } from '../../interfaces';
-import { MindNodeComponent } from '../../node.component';
+import { MindNodeComponent } from '../../mind-node.component';
 import { getRectangleByNode } from '../position/node';
 import { PlaitBoard, Point, drawRoundRectangle, createG, Path, PlaitNode, PlaitElement, updateForeignObject } from '@plait/core';
 import { MindQueries } from '../../queries';

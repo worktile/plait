@@ -12,7 +12,7 @@ import {
     transformPoint,
     updateForeignObject
 } from '@plait/core';
-import { AngularEditor, EDITOR_TO_ELEMENT, IS_FOCUSED } from 'slate-angular';
+import { AngularEditor, EDITOR_TO_ELEMENT } from 'slate-angular';
 import { debounceTime, filter, tap } from 'rxjs/operators';
 import { fromEvent, timer } from 'rxjs';
 import { measureDivSize } from './text-size';

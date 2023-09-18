@@ -15,7 +15,7 @@ import {
 } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces';
 import { PlaitMindComponent } from '../mind.component';
-import { MindNodeComponent } from '../node.component';
+import { MindNodeComponent } from '../mind-node.component';
 import { getFirstLevelElement } from '../utils';
 import { getRectangleByNode, isHitMindElement } from '../utils/position/node';
 import { withNodeDnd } from './with-node-dnd';

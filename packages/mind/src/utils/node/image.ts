@@ -1,5 +1,5 @@
 import { PlaitBoard, PlaitElement, PlaitContextService } from '@plait/core';
-import { MindNodeComponent } from '../../node.component';
+import { MindNodeComponent } from '../../mind-node.component';
 import { MindElement } from '../../interfaces/element';
 import { ImageData, ImageItem } from '../../interfaces/element-data';
 import { MindTransforms } from '../../transforms';

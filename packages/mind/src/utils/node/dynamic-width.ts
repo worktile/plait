@@ -1,6 +1,6 @@
 import { PlaitBoard, PlaitElement } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
-import { MindNodeComponent } from '../../node.component';
+import { MindNodeComponent } from '../../mind-node.component';
 
 /**
  * 1. return new node height if height changed

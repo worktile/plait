@@ -4,7 +4,7 @@ import { MindNode } from './interfaces/node';
 import { BeforeContextChange, PlaitPluginElementContext, depthFirstRecursion } from '@plait/core';
 import { GlobalLayout, OriginNode } from '@plait/layouts';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
-import { MindNodeComponent } from './node.component';
+import { MindNodeComponent } from './mind-node.component';
 import { getLayoutOptions } from './utils/space/layout-options';
 import { getDefaultLayout } from './utils/layout';
 
