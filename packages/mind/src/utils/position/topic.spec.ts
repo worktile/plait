@@ -31,7 +31,7 @@ describe('utils position topic', () => {
         // logic
         let { x, y } = getRectangleByNode(mindNode);
         x = x + NodeSpace.getTextLeftSpace(board, mindNode.origin);
-        y = y + NodeSpace.getTextTopSpace(mindNode.origin);
+        y = y + NodeSpace.getTextTopSpace(board, mindNode.origin);
 
         const rectangle1 = getTopicRectangleByNode(board, mindNode);
         expect(rectangle1.x).toEqual(x);

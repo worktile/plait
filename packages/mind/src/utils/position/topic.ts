@@ -8,8 +8,7 @@ import { RectangleClient } from '@plait/core';
 export function getTopicRectangleByNode(board: PlaitMindBoard, node: MindNode) {
     let nodeRectangle = getRectangleByNode(node);
     const result = getTopicRectangleByElement(board, nodeRectangle, node.origin);
-    // add buffer width to avoid unexpected text breaks in different scene
-    result.width = result.width + 4;
+    result.width = result.width;
     return result;
 }
 

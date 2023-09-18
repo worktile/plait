@@ -11,7 +11,7 @@ const normalizeWidthAndHeight = (board: PlaitMindBoard, element: MindElement, wi
     const minWidth = NodeSpace.getNodeTopicMinWidth(board, element, element.isRoot);
     const newWidth = width < minWidth * board.viewport.zoom ? minWidth : width / board.viewport.zoom;
     const newHeight = height / board.viewport.zoom;
-    return { width: newWidth, height: newHeight };
+    return { width: Math.ceil(newWidth), height: newHeight };
 };
 
 export const setTopic = (board: PlaitMindBoard, element: MindElement, topic: Element, width: number, height: number) => {
