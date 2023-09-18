@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.1.0-next.5
+
+### Minor Changes
+
+-   [`ab975ceb`](https://github.com/worktile/plait/commit/ab975ceba46293d77c46c453d3b0da7607b0ac3b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support copy and paste line and handle boundId
+
 ## 0.1.0-next.4
 
 ### Minor Changes

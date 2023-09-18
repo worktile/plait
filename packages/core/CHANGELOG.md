@@ -1,5 +1,15 @@
 # plait
 
+## 0.24.0-next.6
+
+### Minor Changes
+
+-   [`ab975ceb`](https://github.com/worktile/plait/commit/ab975ceba46293d77c46c453d3b0da7607b0ac3b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support copy and paste line and handle boundId
+
+### Patch Changes
+
+-   [`0809ac7a`](https://github.com/worktile/plait/commit/0809ac7aace91baf643737bb798b6171cb3217c8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent default action when invoke deleteFragment in keyDown
+
 ## 0.24.0-next.5
 
 ### Minor Changes
