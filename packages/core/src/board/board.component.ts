@@ -361,6 +361,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             .subscribe((event: KeyboardEvent) => {
                 const selectedElements = getSelectedElements(this.board);
                 if (selectedElements.length > 0 && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
+                    event.preventDefault();
                     this.board.deleteFragment(null);
                 }
                 this.board.keydown(event);
