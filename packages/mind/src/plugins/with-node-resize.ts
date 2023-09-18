@@ -96,7 +96,7 @@ export const withNodeResize = (board: PlaitBoard) => {
 
                 const newTarget = PlaitNode.get<MindElement>(board, targetElementRef!.path);
                 if (newTarget && NodeSpace.getNodeTopicMinWidth(board as PlaitMindBoard, newTarget) !== resizedWidth) {
-                    targetElementRef!.textManage.updateWidth(resizedWidth);
+                    targetElementRef!.textManage.updateRectangleWidth(resizedWidth);
                     const { height } = targetElementRef!.textManage.getSize();
                     MindTransforms.setNodeManualWidth(board as PlaitMindBoard, newTarget, resizedWidth * zoom, height);
                 }

@@ -10,7 +10,8 @@ import {
     createG,
     toPoint,
     transformPoint,
-    updateForeignObject
+    updateForeignObject,
+    updateForeignObjectWidth
 } from '@plait/core';
 import { AngularEditor, EDITOR_TO_ELEMENT } from 'slate-angular';
 import { debounceTime, filter, tap } from 'rxjs/operators';
@@ -131,21 +132,8 @@ export class TextManage {
             });
     }
 
-    updateWidth(width: number) {
-        if (this.componentRef.instance.slateEditable) {
-            const editable = AngularEditor.toDOMNode(this.componentRef.instance.editor, this.componentRef.instance.editor);
-            // remove width and max-width
-            if (width === 0) {
-                editable.style.removeProperty('width');
-                editable.style.removeProperty('max-width');
-            } else {
-                editable.style.width = `${width}px`;
-                editable.style.maxWidth = `${width}px`;
-            }
-        } else {
-            // init width
-            this.componentRef.instance.width = width;
-        }
+    updateRectangleWidth(width: number) {
+        updateForeignObjectWidth(this.g, width);
     }
 
     updateRectangle(rectangle?: RectangleClient) {

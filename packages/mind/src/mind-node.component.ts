@@ -106,7 +106,11 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             },
             textPlugins: plugins,
             getMaxWidth: () => {
-                return NodeTopicThreshold.defaultTextMaxWidth;
+                if (this.element.manualWidth) {
+                    return NodeSpace.getNodeDynamicWidth(this.board, this.element);
+                } else {
+                    return Math.max(NodeSpace.getNodeDynamicWidth(this.board, this.element), NodeTopicThreshold.defaultTextMaxWidth);
+                }
             }
         });
     }
@@ -240,37 +244,18 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     drawTopic() {
         this.textManage.draw(this.element.data.topic);
         this.g.append(this.textManage.g);
-        if (this.element.manualWidth) {
-            const width = NodeSpace.getNodeDynamicWidth(this.board, this.element);
-            this.textManage.updateWidth(width);
-        }
     }
 
     updateTopic() {
         this.textManage.updateText(this.element.data.topic);
         this.textManage.updateRectangle();
-        if (this.element.manualWidth) {
-            const width = NodeSpace.getNodeDynamicWidth(this.board, this.element);
-            this.textManage.updateWidth(width);
-        }
     }
 
     editTopic() {
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: true });
-        // update text max-width when image width greater than topic default max width to cover node topic default max width style
-        const defaultMaxWidth = TOPIC_DEFAULT_MAX_WORD_COUNT * (PlaitMind.isMind(this.element) ? ROOT_TOPIC_FONT_SIZE : TOPIC_FONT_SIZE);
-        let hasMaxWidth = false;
-        if (!this.element.manualWidth && MindElement.hasImage(this.element) && this.element.data.image.width > defaultMaxWidth) {
-            const width = NodeSpace.getNodeDynamicWidth(this.board, this.element);
-            this.textManage.updateWidth(width);
-            hasMaxWidth = true;
-        }
         this.textManage.edit((origin: ExitOrigin) => {
             if (origin === ExitOrigin.default) {
                 this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: false });
-            }
-            if (hasMaxWidth) {
-                this.textManage.updateWidth(0);
             }
         });
     }

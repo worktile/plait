@@ -45,8 +45,6 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit {
 
     @Input() readonly = false;
 
-    @Input() width?: number;
-
     @ViewChild('slateEditable')
     slateEditable!: SlateEditableComponent;
 
@@ -70,12 +68,7 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit {
         });
     }
 
-    ngAfterViewInit(): void {
-        if (this.width) {
-            (this.slateEditable.elementRef.nativeElement as HTMLElement).style.width = `${this.width}px`;
-            (this.slateEditable.elementRef.nativeElement as HTMLElement).style.width = `${this.width}px`;
-        }
-    }
+    ngAfterViewInit(): void {}
 
     renderElement = (element: Element) => {
         const render = ((this.editor as unknown) as PlaitTextEditor)?.renderElement;

@@ -9,11 +9,8 @@ import { MindNodeComponent } from '../../mind-node.component';
 export const getNewNodeHeight = (board: PlaitBoard, element: MindElement, newNodeDynamicWidth: number) => {
     const textManage = (PlaitElement.getComponent(element) as MindNodeComponent).textManage;
     const { height } = textManage.getSize();
-    textManage.updateWidth(newNodeDynamicWidth);
+    textManage.updateRectangleWidth(newNodeDynamicWidth);
     const { height: newHeight } = textManage.getSize();
-    if (!element.manualWidth) {
-        textManage.updateWidth(0);
-    }
 
     if (height !== newHeight) {
         return newHeight;

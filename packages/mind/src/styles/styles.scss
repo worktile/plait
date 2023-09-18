@@ -22,9 +22,6 @@ $primary: #4e8afa;
         }
         .slate-editable-container {
             min-width: 5px;
-            &.editing {
-                max-width: 34em;
-            }
         }
 
         .extend {
