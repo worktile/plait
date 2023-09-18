@@ -1,5 +1,11 @@
 # text
 
+## 0.16.0-next.4
+
+### Minor Changes
+
+-   [`28df0eeb`](https://github.com/worktile/plait/commit/28df0eeb4ee60ba4b66609a16b6dea2ab82e0242) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove max-with property in css, use single rectangle to limit text's width
+
 ## 0.16.0-next.3
 
 ### Minor Changes

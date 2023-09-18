@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.1.0-next.6
+
+### Minor Changes
+
+-   [`288d0483`](https://github.com/worktile/plait/commit/288d0483cade9ef3525c35e59ca6d71361bae1e2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove useless code and export draw style utils
+
 ## 0.1.0-next.5
 
 ### Minor Changes

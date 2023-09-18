@@ -1,5 +1,17 @@
 # mind
 
+## 0.27.0-next.4
+
+### Minor Changes
+
+-   [`28df0eeb`](https://github.com/worktile/plait/commit/28df0eeb4ee60ba4b66609a16b6dea2ab82e0242) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove max-with property in css, use single rectangle to limit text's width
+
+*   [`85cc74b4`](https://github.com/worktile/plait/commit/85cc74b4998c5fef49fe9b06dd332f97e0742049) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove topic width buffer (4) to avoid mind node align issue
+
+### Patch Changes
+
+-   [`b603a38b`](https://github.com/worktile/plait/commit/b603a38b1e7810544d486153f472dcaac9dbec21) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent select mind node when select emoji
+
 ## 0.27.0-next.3
 
 ### Minor Changes
