@@ -61,5 +61,52 @@ export const RectangleClient = {
             [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height],
             [rectangle.x, rectangle.y + rectangle.height / 2]
         ] as [Point, Point, Point, Point];
+    },
+    expand(rectangle: RectangleClient, left: number, top: number = left, right: number = left, bottom: number = top) {
+        return {
+            x: rectangle.x - left,
+            y: rectangle.y - top,
+            width: rectangle.width + left + right,
+            height: rectangle.height + top + bottom
+        };
+    },
+    getUpperLine: (rectangle: RectangleClient) => {
+        return [
+            [rectangle.x, rectangle.y],
+            [rectangle.x + rectangle.width, rectangle.y]
+        ] as [Point, Point];
+    },
+    getLowerLine: (rectangle: RectangleClient) => {
+        return [
+            [rectangle.x, rectangle.y + rectangle.height],
+            [rectangle.x + rectangle.width, rectangle.y + rectangle.height]
+        ] as [Point, Point];
+    },
+    getLeftLine: (rectangle: RectangleClient) => {
+        return [
+            [rectangle.x, rectangle.y],
+            [rectangle.x, rectangle.y + rectangle.height]
+        ] as [Point, Point];
+    },
+    getRightLine: (rectangle: RectangleClient) => {
+        return [
+            [rectangle.x + rectangle.width, rectangle.y],
+            [rectangle.x + rectangle.width, rectangle.y + rectangle.height]
+        ] as [Point, Point];
+    },
+    getVerticalLine: (rectangle: RectangleClient) => {
+        return [
+            [rectangle.x + rectangle.width / 2, rectangle.y],
+            [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height]
+        ] as [Point, Point];
+    },
+    getHorizontalLine: (rectangle: RectangleClient) => {
+        return [
+            [rectangle.x, rectangle.y + rectangle.height / 2],
+            [rectangle.x + rectangle.width, rectangle.y + rectangle.height / 2]
+        ] as [Point, Point];
+    },
+    getCenterPoint: (rectangle: RectangleClient) => {
+        return [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
     }
 };

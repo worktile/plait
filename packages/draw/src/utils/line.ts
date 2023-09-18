@@ -26,6 +26,7 @@ import { Options } from 'roughjs/bin/core';
 import { getPointsByCenterPoint, getNearestPoint } from './geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './geometry-style/stroke';
 import { getEngine } from './engine';
+import { getPointsByAStar } from './a-star/a-star';
 
 const BOUNDED_HANDLE_OFFSET = 0.5;
 
@@ -61,8 +62,12 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         if (element.target.connection) {
             targetDirection = getDirectionByPoint(element.target.connection, targetDirection);
         }
-        const points: Point[] = getPoints(source, sourceDirection, target, targetDirection, 30);
-        return points;
+        if (element.source.connection && element.target.connection) {
+            return getPointsByAStar(board, element, source, sourceDirection, target, targetDirection);
+            return getPoints(source, sourceDirection, target, targetDirection, 30);
+        } else {
+            return getPoints(source, sourceDirection, target, targetDirection, 30);
+        }
     }
     return element.points;
 };
