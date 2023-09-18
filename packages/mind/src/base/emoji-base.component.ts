@@ -25,8 +25,8 @@ export class MindEmojiBaseComponent implements OnInit {
         return this.elementRef.nativeElement;
     }
 
-    @HostListener('mousedown')
-    handleClick() {
+    @HostListener('pointerdown')
+    handlePointerDown() {
         const currentOptions = (this.board as PlaitOptionsBoard).getPluginOptions(PlaitPluginKey.withSelection);
         (this.board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, {
             isDisabledSelect: true
