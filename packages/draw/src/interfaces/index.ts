@@ -5,6 +5,7 @@ import { PlaitText } from './text';
 export * from './line';
 export * from './geometry';
 export * from './text';
+export * from './element';
 
 export type PlaitDrawElement = PlaitGeometry | PlaitLine;
 

@@ -1,6 +1,6 @@
 import { GeometryShape, PlaitGeometry } from '../interfaces';
 import { getRectangleByPoints, Generator } from '@plait/common';
-import { getFillByElement, getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../utils/geometry-style/stroke';
+import { getFillByElement, getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../utils/style/stroke';
 import { drawGeometry } from '../utils';
 
 export interface ShapeData {}

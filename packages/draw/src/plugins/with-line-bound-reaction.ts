@@ -3,7 +3,7 @@ import { PlaitDrawElement } from '../interfaces';
 import { drawBoundMask, getHitConnectorPoint, getNearestPoint } from '../utils';
 import { DrawPointerType } from '../constants';
 import { getRectangleByPoints, isResizingByCondition } from '@plait/common';
-import { getStrokeWidthByElement } from '../utils/geometry-style/stroke';
+import { getStrokeWidthByElement } from '../utils/style/stroke';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 
 export const withLineBoundReaction = (board: PlaitBoard) => {

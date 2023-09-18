@@ -1,5 +1,4 @@
-import { PlaitBoard } from '@plait/core';
-import { PlaitGeometry, PlaitLine } from '../../interfaces';
+import { PlaitGeometry, PlaitLine, StrokeStyle } from '../../interfaces';
 import { DefaultGeometryStyle } from '../../constants';
 
 export const getStrokeWidthByElement = (element: PlaitGeometry | PlaitLine) => {
@@ -19,4 +18,8 @@ export const getFillByElement = (element: PlaitGeometry | PlaitLine) => {
 
 export const getLineDashByElement = (element: PlaitGeometry | PlaitLine) => {
     return element.strokeStyle === 'dashed' ? [8, 8 + getStrokeWidthByElement(element)] : undefined;
+};
+
+export const getStrokeStyleByElement = (element: PlaitGeometry | PlaitLine) => {
+    return element.strokeStyle || StrokeStyle.solid;
 };

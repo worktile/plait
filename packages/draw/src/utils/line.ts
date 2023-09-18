@@ -24,7 +24,7 @@ import {
 import { LineHandle, LineMarkerType, LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPointsByCenterPoint, getNearestPoint } from './geometry';
-import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './geometry-style/stroke';
+import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './style/stroke';
 import { getEngine } from './engine';
 
 const BOUNDED_HANDLE_OFFSET = 0.5;

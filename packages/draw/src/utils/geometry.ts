@@ -13,7 +13,7 @@ import { Alignment, buildText } from '@plait/text';
 import { Element } from 'slate';
 import { DefaultTextProperty, ShapeDefaultSpace } from '../constants';
 import { getRectangleByPoints } from '@plait/common';
-import { getStrokeWidthByElement } from './geometry-style/stroke';
+import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from './engine';
 

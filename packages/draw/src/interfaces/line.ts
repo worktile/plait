@@ -2,6 +2,7 @@ import { PlaitElement, Point } from '@plait/core';
 import { Element } from 'slate';
 import { LineComponent } from '../line.component';
 import { PlaitGeometry } from './geometry';
+import { StrokeStyle } from './element';
 
 export enum LineMarkerType {
     arrow = 'arrow',
@@ -46,8 +47,6 @@ export interface PlaitLine extends PlaitElement {
 
     opacity: number;
 }
-
-export type StrokeStyle = 'solid' | 'dashed';
 
 export interface PlaitStraightLine extends PlaitLine {
     shape: LineShape.straight;

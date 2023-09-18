@@ -7,7 +7,7 @@ import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDraw, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
 import { getElbowPoints, getTextRectangle, isHitPolyLine, isHitLineText, getTargetPoint, getSourcePoint } from '../utils';
-import { getStrokeWidthByElement } from '../utils/geometry-style/stroke';
+import { getStrokeWidthByElement } from '../utils/style/stroke';
 import { withLineCreateByDraw } from './with-line-create';
 import { withGeometryResize } from './with-geometry-resize';
 import { withLineResize } from './with-line-resize';
