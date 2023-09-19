@@ -1,5 +1,11 @@
 # plait
 
+## 0.24.0-next.7
+
+### Minor Changes
+
+-   [`2300b4f7`](https://github.com/worktile/plait/commit/2300b4f7853b033df85a7e01b837a810bb5453ec) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add override function getDeletedFragment and handle deleted element by the return result of getDeletedFragment
+
 ## 0.24.0-next.6
 
 ### Minor Changes

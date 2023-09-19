@@ -1,5 +1,15 @@
 # mind
 
+## 0.27.0-next.5
+
+### Minor Changes
+
+-   [`2300b4f7`](https://github.com/worktile/plait/commit/2300b4f7853b033df85a7e01b837a810bb5453ec) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add override function getDeletedFragment and handle deleted element by the return result of getDeletedFragment
+
+### Patch Changes
+
+-   [#568](https://github.com/worktile/plait/pull/568) [`5303802b`](https://github.com/worktile/plait/commit/5303802b50396165663db5b72d82fd720ac89b00) Thanks [@WBbug](https://github.com/WBbug)! - add WithTextPluginKey in common
+
 ## 0.27.0-next.4
 
 ### Minor Changes
