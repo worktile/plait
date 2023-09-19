@@ -100,6 +100,14 @@
     </select>
 </div>
 
+<div *ngIf="isSelectedLine" class="property-item color-setting-toolbar">
+    <div class="setting-panel-title">线条形状：</div>
+    <select [(ngModel)]="lineShape" (change)="propertyChange($event, 'shape')">
+        <option value="straight">直线</option>
+        <option value="elbow">正交线</option>
+    </select>
+</div>
+
 <div *ngIf="!isSelectedLine" class="property-item color-setting-toolbar">
     <div class="setting-panel-title">填充颜色：</div>
     <app-color-picker

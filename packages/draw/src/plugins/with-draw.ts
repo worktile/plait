@@ -6,7 +6,7 @@ import { getRectangleByPoints } from '@plait/common';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDraw, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
-import { getElbowPoints, getTextRectangle, isHitPolyLine, isHitLineText, getTargetPoint, getSourcePoint } from '../utils';
+import { getTextRectangle, isHitPolyLine, isHitLineText, getTargetPoint, getSourcePoint, getLinePoints } from '../utils';
 import { getStrokeWidthByElement } from '../utils/style/stroke';
 import { withLineCreateByDraw } from './with-line-create';
 import { withGeometryResize } from './with-geometry-resize';
@@ -49,7 +49,7 @@ export const withDraw = (board: PlaitBoard) => {
             return RectangleClient.isHit(rangeRectangle, client);
         }
         if (PlaitDrawElement.isLine(element)) {
-            const points = getElbowPoints(board, element);
+            const points = getLinePoints(board, element);
             const strokeWidth = getStrokeWidthByElement(element);
             const isHitText = isHitLineText(board, element, range.focus);
             const isHit = isHitPolyLine(points, range.focus, strokeWidth, 3) || isHitText;

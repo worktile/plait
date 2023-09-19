@@ -1,4 +1,4 @@
-import { Point } from '@plait/core';
+import { Point, distanceBetweenPointAndPoint } from '@plait/core';
 
 export enum Direction {
     left = 'left',
@@ -50,4 +50,12 @@ export function getDirectionBetweenPointAndPoint(source: Point, target: Point) {
 
 export function getDirectionFactor(direction: Direction) {
     return handleDirectionFactors[direction];
+}
+
+export function getFactorByPoints(source: Point, target: Point) {
+    const distance = distanceBetweenPointAndPoint(...source, ...target);
+    return {
+        x: (target[0] - source[0]) / distance,
+        y: (target[1] - source[1]) / distance
+    };
 }

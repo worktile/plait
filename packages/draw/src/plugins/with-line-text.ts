@@ -1,15 +1,7 @@
-import {
-    PlaitBoard,
-    PlaitElement,
-    Transforms,
-    getHitElements,
-    getNearestPointBetweenPointAndSegments,
-    toPoint,
-    transformPoint
-} from '@plait/core';
+import { PlaitBoard, PlaitElement, getHitElements, getNearestPointBetweenPointAndSegments, toPoint, transformPoint } from '@plait/core';
 import { PlaitDrawElement, PlaitLine } from '../interfaces';
-import { Node, Text } from 'slate';
-import { getElbowPoints, getHitLineTextIndex, isHitLineText } from '../utils';
+import { Node } from 'slate';
+import { getHitLineTextIndex, getLinePoints, isHitLineText } from '../utils';
 import { getRatioByPoint } from '@plait/common';
 import { buildText } from '@plait/text';
 import { LineComponent } from '../line.component';
@@ -24,7 +16,7 @@ export const withLineText = (board: PlaitBoard) => {
             return PlaitDrawElement.isLine(element);
         })[0] as PlaitLine;
         if (hitTarget) {
-            const points = getElbowPoints(board, hitTarget);
+            const points = getLinePoints(board, hitTarget);
             const point = getNearestPointBetweenPointAndSegments(clickPoint, points);
             const texts = hitTarget.texts?.length ? [...hitTarget.texts] : [];
             const textIndex = getHitLineTextIndex(board, hitTarget, clickPoint);

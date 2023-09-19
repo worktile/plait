@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, forwardRef } from '@angular/core';
 import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
-import { PlaitDrawElement, PlaitGeometry, PlaitLine, getSelectedGeometryElements, getSelectedLineElements } from '@plait/draw';
+import { LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine, getSelectedGeometryElements, getSelectedLineElements } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 import { MindElement, MindPointerType, MindTransforms, canSetAbstract, getSelectedMindElements } from '@plait/mind';
 import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText, LinkEditor, AlignEditor, Alignment } from '@plait/text';
@@ -44,6 +44,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     align = Alignment.center;
 
+    lineShape = LineShape.straight;
+
     @HostBinding('class.visible')
     get isVisible() {
         const selectedCount = getSelectedElements(this.board).length;
@@ -79,6 +81,11 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (selectedGeometryElements.length) {
             const firstGeometry = selectedGeometryElements[0];
             this.align = firstGeometry.text.align || Alignment.center;
+        }
+
+        if (selectedLineElements.length) {
+            const firstLine = selectedLineElements[0];
+            this.lineShape = firstLine.shape;
         }
     }
 
