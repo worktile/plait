@@ -5,6 +5,5 @@ import { MindImageBaseComponent } from '../base';
 export interface WithMindOptions extends WithPluginOptions {
     emojiPadding: number;
     spaceBetweenEmojis: number;
-    textPlugins?: TextPlugin[];
     imageComponentType?: ComponentType<MindImageBaseComponent>;
 }
