@@ -29,11 +29,10 @@ import { drawLink } from './utils/draw/node-link/draw-link';
 import { getTopicRectangleByNode } from './utils/position/topic';
 import { NodeActiveDrawer } from './drawer/node-active.drawer';
 import { CollapseDrawer } from './drawer/node-collapse.drawer';
-import { WithMindOptions } from './interfaces/options';
-import { WithMindPluginKey } from './constants/default';
 import { NodeImageDrawer } from './drawer/node-image.drawer';
 import { NodeSpace } from './utils/space/node-space';
-import { NodeTopicThreshold, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT, TOPIC_FONT_SIZE } from './constants/node-topic-style';
+import { NodeTopicThreshold } from './constants/node-topic-style';
+import { WithTextOptions, WithTextPluginKey } from '@plait/common';
 
 @Component({
     selector: 'plait-mind-node',
@@ -88,7 +87,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.activeDrawer = new NodeActiveDrawer(this.board);
         this.collapseDrawer = new CollapseDrawer(this.board);
         this.imageDrawer = new NodeImageDrawer(this.board, this.viewContainerRef);
-        const plugins = this.board.getPluginOptions<WithMindOptions>(WithMindPluginKey).textPlugins;
+        const plugins = this.board.getPluginOptions<WithTextOptions>(WithTextPluginKey).textPlugins;
 
         this.textManage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {

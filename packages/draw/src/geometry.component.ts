@@ -5,7 +5,8 @@ import {
     PlaitPluginElementContext,
     OnContextChanged,
     isSelectionMoving,
-    getSelectedElements
+    getSelectedElements,
+    PlaitOptionsBoard
 } from '@plait/core';
 import { Subject } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
@@ -13,7 +14,7 @@ import { GeometryShapeGenerator } from './generator/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
-import { ActiveGenerator, getRectangleByPoints } from '@plait/common';
+import { ActiveGenerator, WithTextPluginKey, WithTextOptions, getRectangleByPoints } from '@plait/common';
 import { DefaultGeometryActiveStyle, GeometryThreshold } from './constants/geometry';
 import { getStrokeWidthByElement } from './utils/style/stroke';
 import { PlaitDrawElement, PlaitText } from './interfaces';
@@ -106,6 +107,8 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
     }
 
     initializeTextManage() {
+        const plugins = (this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey).textPlugins;
+
         this.textManage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
                 return getTextRectangle(this.element);
@@ -122,7 +125,8 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
             getMaxWidth: () => {
                 const width = getTextRectangle(this.element).width;
                 return (this.element as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
-            }
+            },
+            textPlugins: plugins
         });
     }
 
