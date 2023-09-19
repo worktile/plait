@@ -1,6 +1,6 @@
 import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, getRectangleByPoints } from '@plait/common';
-import { drawElbowLine, getElbowPoints, getLineTextRectangle } from '../utils';
+import { drawLine, getLinePoints, getLineTextRectangle } from '../utils';
 import { PlaitBoard, RectangleClient, createMask, createRect } from '@plait/core';
 
 export interface ShapeData {}
@@ -15,7 +15,8 @@ export class LineShapeGenerator extends Generator<PlaitLine, ShapeData> {
         let lineG: SVGGElement | undefined;
         switch (shape) {
             case LineShape.elbow:
-                lineG = drawElbowLine(this.board, element);
+            case LineShape.straight:
+                lineG = drawLine(this.board, element);
                 drawMask(this.board, lineG, element);
                 break;
             default:
@@ -28,7 +29,8 @@ export class LineShapeGenerator extends Generator<PlaitLine, ShapeData> {
 function drawMask(board: PlaitBoard, g: SVGElement, element: PlaitLine) {
     const mask = createMask();
     mask.setAttribute('id', element.id);
-    const points = getElbowPoints(board, element);
+    mask.setAttribute('maskUnits', 'userSpaceOnUse');
+    const points = getLinePoints(board, element);
     let rectangle = getRectangleByPoints(points);
     rectangle = RectangleClient.getOutlineRectangle(rectangle, -3);
     const maskRect = createRect(rectangle, {

@@ -10,7 +10,8 @@ import {
     RectangleClient,
     setPathStrokeLinecap,
     findElements,
-    PlaitElement
+    PlaitElement,
+    distanceBetweenPointAndPoint
 } from '@plait/core';
 import {
     getPoints,
@@ -19,7 +20,8 @@ import {
     getDirectionByPoint,
     getPointOnPolyline,
     getDirectionFactor,
-    getDirectionBetweenPointAndPoint
+    getDirectionBetweenPointAndPoint,
+    getFactorByPoints
 } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
@@ -47,6 +49,14 @@ export const createLineElement = (
         points,
         ...options
     };
+};
+
+export const getLinePoints = (board: PlaitBoard, element: PlaitLine) => {
+    return element.shape === LineShape.elbow ? getElbowPoints(board, element) : getStraightPoints(board, element);
+};
+
+export const getStraightPoints = (board: PlaitBoard, element: PlaitLine) => {
+    return [getSourcePoint(board, element), getTargetPoint(board, element)];
 };
 
 export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
@@ -93,18 +103,18 @@ export const isHitLineText = (board: PlaitBoard, element: PlaitLine, point: Poin
     return getHitLineTextIndex(board, element, point) !== -1;
 };
 
-export const drawElbowLine = (board: PlaitBoard, element: PlaitLine) => {
+export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     const strokeWidth = getStrokeWidthByElement(element);
     const strokeColor = getStrokeColorByElement(element);
     const strokeLineDash = getLineDashByElement(element);
     const options = { stroke: strokeColor, strokeWidth, strokeLineDash };
     const lineG = createG();
-    const points = getElbowPoints(board, element);
-    const elbowLine = PlaitBoard.getRoughSVG(board).linearPath(points, options);
-    const path = elbowLine.querySelector('path');
+    const points = getLinePoints(board, element);
+    const line = PlaitBoard.getRoughSVG(board).linearPath(points, options);
+    const path = line.querySelector('path');
     path?.setAttribute('mask', `url(#${element.id})`);
-    setPathStrokeLinecap(elbowLine, 'square');
-    lineG.appendChild(elbowLine);
+    setPathStrokeLinecap(line, 'square');
+    lineG.appendChild(line);
     const arrow = drawLineArrow(element, points, options);
     arrow && lineG.appendChild(arrow);
     return lineG;
@@ -123,8 +133,7 @@ export const drawLineArrow = (element: PlaitLine, points: Point[], options: Opti
     }
     if (PlaitLine.isTargetMark(element, LineMarkerType.arrow)) {
         const _endPoint = points[points.length - 1];
-        const arrowDirection = getDirectionBetweenPointAndPoint(points[points.length - 2], _endPoint);
-        const directionFactor = getDirectionFactor(arrowDirection);
+        const directionFactor = getFactorByPoints(points[points.length - 2], _endPoint);
         const endPoint: Point = [
             _endPoint[0] + BOUNDED_HANDLE_OFFSET * directionFactor.x,
             _endPoint[1] + BOUNDED_HANDLE_OFFSET * directionFactor.y
@@ -187,7 +196,7 @@ export const getHitConnectorPoint = (movingPoint: Point, hitElement: PlaitGeomet
 
 export const getLineTextRectangle = (board: PlaitBoard, element: PlaitLine, index: number): RectangleClient => {
     const text = element.texts[index];
-    const elbowPoints = getElbowPoints(board, element);
+    const elbowPoints = getLinePoints(board, element);
     const point = getPointOnPolyline(elbowPoints, text.position);
     return {
         x: point[0] - text.width! / 2,
