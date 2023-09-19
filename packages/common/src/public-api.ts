@@ -3,8 +3,8 @@
  */
 
 export * from './constants';
-export * from './generator';
+export * from './generators';
 export * from './transforms';
-export * from './shape';
+export * from './shapes';
 export * from './plugins';
 export * from './utils';

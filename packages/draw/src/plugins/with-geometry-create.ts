@@ -14,7 +14,7 @@ import {
     transformPoint
 } from '@plait/core';
 import { GeometryShape, PlaitGeometry } from '../interfaces';
-import { GeometryShapeGenerator } from '../generator/geometry-shape.generator';
+import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
 import { createGeometryElement, getPointsByCenterPoint } from '../utils';
 import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, GeometryPointer, ShapeDefaultSpace } from '../constants';
 import { normalizeShapePoints, BoardCreationMode, isDndMode, isDrawingMode } from '@plait/common';

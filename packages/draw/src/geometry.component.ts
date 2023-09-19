@@ -10,7 +10,7 @@ import {
 } from '@plait/core';
 import { Subject } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
-import { GeometryShapeGenerator } from './generator/geometry-shape.generator';
+import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';

@@ -15,7 +15,7 @@ import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from 
 import { createLineElement, transformPointToConnection } from '../utils';
 import { DrawPointerType } from '../constants';
 import { DefaultLineStyle } from '../constants/line';
-import { LineShapeGenerator } from '../generator/line.generator';
+import { LineShapeGenerator } from '../generators/line.generator';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { isDrawingMode } from '@plait/common';
 

@@ -3,8 +3,8 @@ import { PlaitBoard, PlaitPluginElementComponent, PlaitPluginElementContext, OnC
 import { Subject } from 'rxjs';
 import { LineText, PlaitGeometry, PlaitLine } from './interfaces';
 import { TextManage, TextManageRef, buildText } from '@plait/text';
-import { LineShapeGenerator } from './generator/line.generator';
-import { LineActiveGenerator } from './generator/line-active.generator';
+import { LineShapeGenerator } from './generators/line.generator';
+import { LineActiveGenerator } from './generators/line-active.generator';
 import { getLineTextRectangle } from './utils';
 import { DrawTransforms } from './transforms';
 import { GeometryThreshold } from './constants';
