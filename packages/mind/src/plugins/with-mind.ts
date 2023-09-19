@@ -1,5 +1,4 @@
 import {
-    getSelectedElements,
     PlaitBoard,
     PlaitPluginElementContext,
     Point,
@@ -31,6 +30,7 @@ import { withNodeImage } from './with-node-image';
 import { PlaitMindBoard } from './with-mind.board';
 import { withNodeResize } from './with-node-resize';
 import { withNodeImageResize } from './with-node-image-resize';
+import { withMindFragment } from './with-mind-fragment';
 
 export const withMind = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
@@ -140,7 +140,9 @@ export const withMind = (baseBoard: PlaitBoard) => {
 
     return withNodeResize(
         withNodeImageResize(
-            withNodeImage(withNodeHoverDetect(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board)))))))
+            withNodeImage(
+                withNodeHoverDetect(withMindFragment(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board)))))))
+            )
         )
     );
 };
