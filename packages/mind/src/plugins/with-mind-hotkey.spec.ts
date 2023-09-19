@@ -139,8 +139,7 @@ describe('with mind hotkey plugin', () => {
             const parentPath = Path.parent(targetPath);
             let parent = PlaitNode.get<MindElement>(board, parentPath);
             const childrenCount = parent.children.length;
-            const event = createKeyboardEvent('keydown', BACKSPACE, 'Backspace', {});
-            board.keydown(event);
+            board.deleteFragment(null);
             parent = PlaitNode.get<MindElement>(board, parentPath);
             expect(parent.children.length).toEqual(childrenCount - 1);
 
@@ -154,8 +153,7 @@ describe('with mind hotkey plugin', () => {
             const parentPath = Path.parent(targetPath);
             let parent = PlaitNode.get<MindElement>(board, parentPath);
             const childrenCount = parent.children.length;
-            const event = createKeyboardEvent('keydown', DELETE, 'Delete', {});
-            board.keydown(event);
+            board.deleteFragment(null);
             parent = PlaitNode.get<MindElement>(board, parentPath);
             expect(parent.children.length).toEqual(childrenCount - 1);
         });
@@ -168,8 +166,7 @@ describe('with mind hotkey plugin', () => {
             const parentPath = Path.parent(targetPath);
             let parent = PlaitNode.get<MindElement>(board, parentPath);
             const childrenCount = parent.children.length;
-            const event = createKeyboardEvent('keydown', DELETE, 'Delete', {});
-            board.keydown(event);
+            board.deleteFragment(null);
             parent = PlaitNode.get<MindElement>(board, parentPath);
             expect(parent.children.length).toEqual(childrenCount - 3);
         })
