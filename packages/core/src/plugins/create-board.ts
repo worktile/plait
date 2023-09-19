@@ -8,6 +8,7 @@ import { FLUSHING, PATH_REFS } from '../utils/weak-maps';
 import { PathRef, PathRefOptions } from '../interfaces/path-ref';
 import { Path } from '../interfaces/path';
 import { ThemeColorMode } from '../interfaces/theme';
+import { CoreTransforms } from '../transforms/element';
 
 export function createBoard(children: PlaitElement[], options?: PlaitBoardOptions): PlaitBoard {
     const board: PlaitBoard = {
@@ -90,7 +91,11 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         dblclick: (event: MouseEvent) => {},
         setFragment: (data: DataTransfer | null) => {},
         insertFragment: (data: DataTransfer | null) => {},
-        deleteFragment: (data: DataTransfer | null) => {},
+        deleteFragment: (data: DataTransfer | null) => {
+            const elements = board.getDeletedFragment([]);
+            CoreTransforms.removeElements(board, elements);
+        },
+        getDeletedFragment: (data: PlaitElement[]) => data,
         drawElement: (context: PlaitPluginElementContext) => [],
         redrawElement: (context: PlaitPluginElementContext, previousContext) => {},
         destroyElement: (context: PlaitPluginElementContext) => {},

@@ -1,7 +1,6 @@
-import { PlaitBoard, Point, RectangleClient, getDataFromClipboard, getSelectedElements, setClipboardData } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, RectangleClient, getDataFromClipboard, getSelectedElements, setClipboardData } from '@plait/core';
 import { getSelectedDrawElements } from '../utils/selected';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
-import { CommonTransforms } from '@plait/common';
 import { getTextFromClipboard, getTextSize } from '@plait/text';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
@@ -9,28 +8,22 @@ import { getBoardLines } from '../utils/line';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard;
-    const { deleteFragment, setFragment, insertFragment } = board;
+    const { getDeletedFragment, setFragment, insertFragment } = board;
 
-    board.deleteFragment = (data: DataTransfer | null) => {
+    board.getDeletedFragment = (data: PlaitElement[]) => {
         const drawElements = getSelectedDrawElements(board);
         if (drawElements.length) {
             const lines = getBoardLines(board);
             const geometryElements = drawElements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
             const lineElements = drawElements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
-
             const boundLineElements = lines.filter(line =>
                 geometryElements.find(
                     geometry => PlaitLine.isBoundElementOfSource(line, geometry) || PlaitLine.isBoundElementOfTarget(line, geometry)
                 )
             );
-
-            CommonTransforms.removeElements(board, [
-                ...geometryElements,
-                ...lineElements,
-                ...boundLineElements.filter(line => !lineElements.includes(line))
-            ]);
+            data.push(...[...geometryElements, ...lineElements, ...boundLineElements.filter(line => !lineElements.includes(line))]);
         }
-        deleteFragment(data);
+        return getDeletedFragment(data);
     };
 
     board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null) => {

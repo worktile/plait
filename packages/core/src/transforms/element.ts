@@ -1,4 +1,7 @@
-import { PlaitBoard, PlaitElement, Transforms, removeSelectedElement } from '@plait/core';
+import { PlaitBoard } from "../interfaces/board";
+import { PlaitElement } from "../interfaces/element";
+import { removeSelectedElement } from "../utils/selected-element";
+import { removeNode } from "./node";
 
 export const removeElements = (board: PlaitBoard, elements: PlaitElement[]) => {
     elements
@@ -6,7 +9,7 @@ export const removeElements = (board: PlaitBoard, elements: PlaitElement[]) => {
             const path = PlaitBoard.findPath(board, element);
             const ref = board.pathRef(path);
             return () => {
-                Transforms.removeNode(board, ref.current!);
+                removeNode(board, ref.current!);
                 ref.unref();
                 removeSelectedElement(board, element);
             };
@@ -14,4 +17,8 @@ export const removeElements = (board: PlaitBoard, elements: PlaitElement[]) => {
         .forEach(action => {
             action();
         });
+};
+
+export const CoreTransforms = {
+    removeElements
 };

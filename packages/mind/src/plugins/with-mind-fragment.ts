@@ -1,4 +1,4 @@
-import { Path, PlaitBoard, PlaitNode, Point, RectangleClient, addSelectedElement, getDataFromClipboard } from '@plait/core';
+import { Path, PlaitBoard, PlaitElement, PlaitNode, Point, RectangleClient, addSelectedElement, getDataFromClipboard } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { AbstractNode } from '@plait/layouts';
 import { getFirstLevelElement } from '../utils/mind';
@@ -12,26 +12,25 @@ import { buildText, getTextFromClipboard } from '@plait/text';
 
 export const withMindFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
-    const { deleteFragment, insertFragment, setFragment } = board;
+    const { getDeletedFragment, insertFragment, setFragment } = board;
 
-    board.deleteFragment = (data: DataTransfer | null) => {
+    board.getDeletedFragment = (data: PlaitElement[]) => {
         const targetMindElements = getSelectedMindElements(board);
         if (targetMindElements.length) {
             const firstLevelElements = getFirstLevelElement(targetMindElements).reverse();
             const abstractRefs = deleteElementHandleAbstract(board, firstLevelElements);
             MindTransforms.setAbstractsByRefs(board, abstractRefs);
-
             const refs = deleteElementsHandleRightNodeCount(board, targetMindElements);
             MindTransforms.setRightNodeCountByRefs(board, refs);
-
-            MindTransforms.removeElements(board, targetMindElements);
-
+            const deletableElements = getFirstLevelElement(targetMindElements);
+            data.push(...deletableElements);
+            
             const nextSelected = getNextSelectedElement(board, firstLevelElements);
             if (nextSelected) {
                 addSelectedElement(board, nextSelected);
             }
         }
-        deleteFragment(data);
+        return getDeletedFragment(data);
     };
 
     board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null) => {

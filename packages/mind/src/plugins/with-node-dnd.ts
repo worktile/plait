@@ -13,7 +13,8 @@ import {
     PlaitPointerType,
     getHitElements,
     PlaitElement,
-    isMainPointer
+    isMainPointer,
+    CoreTransforms
 } from '@plait/core';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { MindElement } from '../interfaces/element';
@@ -182,7 +183,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
                 }
 
                 MindTransforms.setRightNodeCountByRefs(board, refs);
-                MindTransforms.removeElements(board, firstLevelElements);
+                CoreTransforms.removeElements(board, firstLevelElements);
 
                 let insertPath = targetPathRef.current;
                 const parentPath = Path.parent(targetPathRef.current || targetPath);

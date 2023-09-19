@@ -3,7 +3,6 @@ import { setLayout } from './layout';
 import {
     setTopic,
     setTopicSize,
-    removeElements,
     insertNodes,
     insertAbstractNodes,
     setRightNodeCountByRefs,
@@ -23,7 +22,6 @@ export const MindTransforms = {
     insertAbstract,
     setAbstractsByRefs,
     setAbstractByStandardLayout,
-    removeElements,
     insertNodes,
     insertAbstractNodes,
     setRightNodeCountByRefs,

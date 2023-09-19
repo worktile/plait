@@ -1,3 +1,4 @@
+import { hotkeys } from '@plait/core';
 import { isKeyHotkey } from 'is-hotkey';
 
 export function isVirtualKey(e: KeyboardEvent) {
@@ -26,4 +27,8 @@ export const isEnterHotkey = (event: KeyboardEvent) => {
 
 export const isSpaceHotkey = (event: KeyboardEvent) => {
     return event.code === 'Space';
+};
+
+export const isDelete = (event: KeyboardEvent) => {
+    return hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)
 };

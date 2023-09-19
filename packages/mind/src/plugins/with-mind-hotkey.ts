@@ -8,7 +8,7 @@ import { MindTransforms } from '../transforms';
 import { insertElementHandleAbstract } from '../utils/abstract/common';
 import { editTopic } from '../utils/node/common';
 import { PlaitMindBoard } from './with-mind.board';
-import { isSpaceHotkey, isExpandHotkey, isTabHotkey, isEnterHotkey, isVirtualKey } from '@plait/common';
+import { isSpaceHotkey, isExpandHotkey, isTabHotkey, isEnterHotkey, isVirtualKey, isDelete } from '@plait/common';
 
 export const withMindHotkey = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
@@ -63,7 +63,13 @@ export const withMindHotkey = (baseBoard: PlaitBoard) => {
                 return;
             }
 
-            if (!isVirtualKey(event) && !isSpaceHotkey(event) && isSingleSelection && MindElement.isMindElement(board, targetElement)) {
+            if (
+                !isVirtualKey(event) &&
+                !isDelete(event) &&
+                !isSpaceHotkey(event) &&
+                isSingleSelection &&
+                MindElement.isMindElement(board, targetElement)
+            ) {
                 event.preventDefault();
                 editTopic(targetElement);
                 return;

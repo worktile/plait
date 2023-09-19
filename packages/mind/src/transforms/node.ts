@@ -1,7 +1,6 @@
 import { Element, Path } from 'slate';
 import { MindElement } from '../interfaces/element';
 import { PlaitBoard, PlaitNode, Transforms } from '@plait/core';
-import { getFirstLevelElement } from '../utils/mind';
 import { AbstractRef, getRelativeStartEndByAbstractRef } from '../utils/abstract/common';
 import { RightNodeCountRef } from '../utils/node/right-node-count';
 import { NodeSpace } from '../utils/space/node-space';
@@ -43,23 +42,6 @@ export const setTopicSize = (board: PlaitMindBoard, element: MindElement, width:
         const path = PlaitBoard.findPath(board, element);
         Transforms.setNode(board, newElement, path);
     }
-};
-
-export const removeElements = (board: PlaitBoard, elements: MindElement[]) => {
-    const deletableElements = getFirstLevelElement(elements);
-
-    deletableElements
-        .map(element => {
-            const path = PlaitBoard.findPath(board, element);
-            const ref = board.pathRef(path);
-            return () => {
-                Transforms.removeNode(board, ref.current!);
-                ref.unref();
-            };
-        })
-        .forEach(action => {
-            action();
-        });
 };
 
 export const insertNodes = (board: PlaitBoard, elements: MindElement[], path: Path) => {
