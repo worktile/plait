@@ -36,11 +36,15 @@ const getArrow = (marker: LineMarkerType, source: Point, target: Point, options:
             targetArrow = drawArrow(source, target, options);
             break;
         }
+        case LineMarkerType.sharpArrow: {
+            targetArrow = drawSharpArrow(source, target, options);
+            break;
+        }
     }
     return targetArrow;
 };
 
-const drawArrow = (source: Point, target: Point, options: Options) => {
+const drawSharpArrow = (source: Point, target: Point, options: Options) => {
     const directionFactor = getFactorByPoints(source, target);
     const startPoint: Point = [
         target[0] + BOUNDED_HANDLE_OFFSET * directionFactor.x,
@@ -60,6 +64,22 @@ const drawArrow = (source: Point, target: Point, options: Options) => {
     g.appendChild(path);
 
     return g;
+};
+
+const drawArrow = (source: Point, target: Point, options: Options) => {
+    const directionFactor = getFactorByPoints(source, target);
+    const startPoint: Point = [
+        target[0] + BOUNDED_HANDLE_OFFSET * directionFactor.x,
+        target[1] + BOUNDED_HANDLE_OFFSET * directionFactor.y
+    ];
+
+    const middlePoint: Point = [target[0] - 8 * directionFactor.x, target[1] - 8 * directionFactor.y];
+    const { pointLeft, pointRight } = arrowPoints(source, target, 12, 30);
+
+    const pathG = drawLinearPath([pointLeft, startPoint, pointRight, middlePoint], { ...options, fill: options.stroke }, true);
+    const path = pathG.querySelector('path');
+    path!.setAttribute('stroke-linejoin', 'round');
+    return pathG;
 };
 
 const drawSolidTriangle = (source: Point, target: Point, options: Options) => {
