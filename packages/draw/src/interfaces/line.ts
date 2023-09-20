@@ -18,6 +18,11 @@ export enum LineShape {
     elbow = 'elbow'
 }
 
+export enum LineHandleKey {
+    source = 'source',
+    target = 'target'
+}
+
 export interface LineText {
     text: Element;
     //基于线长度，定位的百分比

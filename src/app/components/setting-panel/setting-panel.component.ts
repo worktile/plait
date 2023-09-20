@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, for
 import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
 import {
     DrawTransforms,
+    LineHandleKey,
     LineMarkerType,
     LineShape,
     PlaitDrawElement,
@@ -143,7 +144,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
         const selectedElement = getSelectedLineElements(this.board)[0];
         if (selectedElement) {
-            DrawTransforms.setLineMark(this.board, selectedElement, key, value as LineMarkerType);
+            DrawTransforms.setLineMark(this.board, selectedElement, key as LineHandleKey, value as LineMarkerType);
         }
     }
 
