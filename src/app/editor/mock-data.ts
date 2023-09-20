@@ -203,7 +203,7 @@ export const mockData: (PlaitMind | PlaitGeometry | PlaitLine)[] = [
             marker: LineMarkerType.none
         },
         target: {
-            marker: LineMarkerType.arrow
+            marker: LineMarkerType.openTriangle
         },
         texts: [],
         opacity: 1,

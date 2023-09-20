@@ -1,6 +1,6 @@
 import { insertText, insertGeometry, resizeGeometry } from './geometry';
 import { setText, setTextSize } from './geometry-text';
-import { removeLineText, resizeLine, setLineTexts } from './line';
+import { removeLineText, resizeLine, setLineMark, setLineTexts } from './line';
 
 export const DrawTransforms = {
     setText,
@@ -10,5 +10,6 @@ export const DrawTransforms = {
     setTextSize,
     resizeLine,
     setLineTexts,
-    removeLineText
+    removeLineText,
+    setLineMark
 };

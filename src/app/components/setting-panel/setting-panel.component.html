@@ -83,7 +83,7 @@
 
 <div class="property-item width-setting-toolbar">
     <div class="setting-panel-title">边框宽度：</div>
-    <select (change)="propertyChange($event, 'strokeWidth')">
+    <select [(ngModel)]="strokeWidth" (change)="propertyChange($event, 'strokeWidth')">
         <option value="1">1</option>
         <option value="3">3</option>
         <option value="5">5</option>
@@ -105,6 +105,15 @@
     <select [(ngModel)]="lineShape" (change)="propertyChange($event, 'shape')">
         <option value="straight">直线</option>
         <option value="elbow">正交线</option>
+    </select>
+</div>
+
+<div *ngIf="isSelectedLine" class="property-item color-setting-toolbar">
+    <div class="setting-panel-title">终点形状：</div>
+    <select [(ngModel)]="lineTargetMarker" (change)="changeLineMarker($event, 'target')">
+        <option value="arrow">arrow</option>
+        <option value="open-triangle">open-triangle</option>
+        <option value="solid-triangle">solid-triangle</option>
     </select>
 </div>
 
