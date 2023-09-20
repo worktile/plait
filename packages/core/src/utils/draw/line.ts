@@ -7,7 +7,7 @@ export function drawLine(rs: RoughSVG, start: Point, end: Point, options: Option
     return rs.linearPath([start, end], options);
 }
 
-export function drawLinearPath(points: Point[], options?: Options) {
+export function drawLinearPath(points: Point[], options?: Options, closePath?: boolean) {
     const g = createG();
     const path = createPath();
 
@@ -20,10 +20,14 @@ export function drawLinearPath(points: Point[], options?: Options) {
         }
     });
 
+    if (closePath) {
+        polylinePath += 'Z';
+    }
+
     path.setAttribute('d', polylinePath);
     path.setAttribute('stroke', `${options?.stroke}`);
     path.setAttribute('stroke-width', `${options?.strokeWidth}`);
-    path.setAttribute('fill', `none`);
+    path.setAttribute('fill', `${options?.fill || 'none'}`);
     g.appendChild(path);
 
     return g;

@@ -6,7 +6,10 @@ import { StrokeStyle } from './element';
 
 export enum LineMarkerType {
     arrow = 'arrow',
-    none = 'none'
+    none = 'none',
+    openTriangle = 'open-triangle',
+    solidTriangle = 'solid-triangle',
+    sharpArrow = 'sharp-arrow'
 }
 
 export enum LineShape {

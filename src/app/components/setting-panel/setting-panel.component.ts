@@ -1,6 +1,15 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, forwardRef } from '@angular/core';
 import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
-import { LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine, getSelectedGeometryElements, getSelectedLineElements } from '@plait/draw';
+import {
+    DrawTransforms,
+    LineMarkerType,
+    LineShape,
+    PlaitDrawElement,
+    PlaitGeometry,
+    PlaitLine,
+    getSelectedGeometryElements,
+    getSelectedLineElements
+} from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 import { MindElement, MindPointerType, MindTransforms, canSetAbstract, getSelectedMindElements } from '@plait/mind';
 import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText, LinkEditor, AlignEditor, Alignment } from '@plait/text';
@@ -46,6 +55,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     lineShape = LineShape.straight;
 
+    lineTargetMarker = LineMarkerType.openTriangle;
+
+    strokeWidth = 3;
+
     @HostBinding('class.visible')
     get isVisible() {
         const selectedCount = getSelectedElements(this.board).length;
@@ -70,7 +83,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.currentFillColor = firstMindElement.fill || '';
             this.currentStrokeColor = firstMindElement.strokeColor || '';
             this.currentBranchColor = firstMindElement.branchColor || '';
-
+            this.strokeWidth = firstMindElement.strokeWidth || 3;
             if (MindElement.hasMounted(firstMindElement)) {
                 this.currentMarks = PlaitMarkEditor.getMarks(MindElement.getTextEditor(firstMindElement));
                 this.align = firstMindElement.data.topic.align || Alignment.left;
@@ -81,11 +94,14 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (selectedGeometryElements.length) {
             const firstGeometry = selectedGeometryElements[0];
             this.align = firstGeometry.text.align || Alignment.center;
+            this.strokeWidth = firstGeometry.strokeWidth || 3;
         }
 
         if (selectedLineElements.length) {
             const firstLine = selectedLineElements[0];
             this.lineShape = firstLine.shape;
+            this.lineTargetMarker = firstLine.target.marker;
+            this.strokeWidth = firstLine.strokeWidth || 3;
         }
     }
 
@@ -119,6 +135,15 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
                 const path = PlaitBoard.findPath(this.board, element);
                 Transforms.setNode(this.board, { [attribute]: property }, path);
             });
+        }
+    }
+
+    changeLineMarker(event: Event, key: string) {
+        let value = (event.target as HTMLSelectElement).value as any;
+
+        const selectedElement = getSelectedLineElements(this.board)[0];
+        if (selectedElement) {
+            DrawTransforms.setLineMark(this.board, selectedElement, key, value as LineMarkerType);
         }
     }
 

@@ -1,5 +1,5 @@
 import { Path, PlaitBoard, Transforms } from '@plait/core';
-import { LineText, PlaitLine } from '../interfaces';
+import { LineMarkerType, LineText, PlaitLine } from '../interfaces';
 
 export const resizeLine = (board: PlaitBoard, options: Partial<PlaitLine>, path: Path) => {
     Transforms.setNode(board, options, path);
@@ -16,4 +16,11 @@ export const removeLineText = (board: PlaitBoard, element: PlaitLine, index: num
     const newTexts = [...texts];
     newTexts.splice(index, 1);
     Transforms.setNode(board, { texts: newTexts }, path);
+};
+
+export const setLineMark = (board: PlaitBoard, element: PlaitLine, handleKey: 'source' | 'target', marker: LineMarkerType) => {
+    const path = PlaitBoard.findPath(board, element);
+    let handle = handleKey === 'source' ? element.source : element.target;
+    handle = { ...handle, marker };
+    Transforms.setNode(board, { [handleKey]: handle }, path);
 };
