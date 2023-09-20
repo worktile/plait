@@ -18,9 +18,9 @@ export const removeLineText = (board: PlaitBoard, element: PlaitLine, index: num
     Transforms.setNode(board, { texts: newTexts }, path);
 };
 
-export const setLineMark = (board: PlaitBoard, element: PlaitLine, direction: string, marker: LineMarkerType) => {
+export const setLineMark = (board: PlaitBoard, element: PlaitLine, handleKey: 'source' | 'target', marker: LineMarkerType) => {
     const path = PlaitBoard.findPath(board, element);
-    let handle = direction === 'source' ? element.source : element.target;
+    let handle = handleKey === 'source' ? element.source : element.target;
     handle = { ...handle, marker };
-    Transforms.setNode(board, { [direction]: handle }, path);
+    Transforms.setNode(board, { [handleKey]: handle }, path);
 };
