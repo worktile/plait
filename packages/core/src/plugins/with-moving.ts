@@ -11,7 +11,7 @@ import { throttleRAF } from '../utils/common';
 import { addMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
 import { Range } from '../interfaces';
-import { isPreventTouchMove } from '../utils';
+import { isPreventTouchMove, preventTouchMove } from '../utils';
 
 export function withMoving(board: PlaitBoard) {
     const { pointerDown, pointerMove, globalPointerUp, globalPointerMove } = board;
@@ -43,6 +43,7 @@ export function withMoving(board: PlaitBoard) {
 
     board.pointerMove = (event: PointerEvent) => {
         if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
+            preventTouchMove(board, true);
             if (!isPreventDefault) {
                 isPreventDefault = true;
             }
@@ -95,6 +96,7 @@ export function withMoving(board: PlaitBoard) {
         if (startPoint) {
             cancelMove(board);
         }
+        preventTouchMove(board, false);
         globalPointerUp(event);
     };
 
