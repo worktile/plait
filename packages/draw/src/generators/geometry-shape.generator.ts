@@ -2,6 +2,7 @@ import { GeometryShape, PlaitGeometry } from '../interfaces';
 import { getRectangleByPoints, Generator } from '@plait/common';
 import { getFillByElement, getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../utils/style/stroke';
 import { drawGeometry } from '../utils';
+import { RectangleClient } from '@plait/core';
 
 export interface ShapeData {}
 
@@ -11,7 +12,7 @@ export class GeometryShapeGenerator extends Generator<PlaitGeometry, ShapeData> 
     }
 
     baseDraw(element: PlaitGeometry, data: ShapeData) {
-        const outerRectangle = getRectangleByPoints(element.points);
+        const rectangle = getRectangleByPoints(element.points);
         const shape = element.shape;
         if (shape === GeometryShape.text) {
             return;
@@ -20,6 +21,6 @@ export class GeometryShapeGenerator extends Generator<PlaitGeometry, ShapeData> 
         const strokeColor = getStrokeColorByElement(element);
         const fill = getFillByElement(element);
         const strokeLineDash = getLineDashByElement(element);
-        return drawGeometry(this.board, outerRectangle, shape, { stroke: strokeColor, strokeWidth, fill, strokeLineDash });
+        return drawGeometry(this.board, RectangleClient.inflate(rectangle, -strokeWidth), shape, { stroke: strokeColor, strokeWidth, fill, strokeLineDash });
     }
 }

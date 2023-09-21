@@ -61,9 +61,9 @@ export abstract class MindImageBaseComponent implements OnInit, OnDestroy {
             getRectangle: (element: MindElement) => {
                 return getImageForeignRectangle(this.board as PlaitMindBoard, this.element);
             },
-            getStrokeWidthByElement: () => {
-                return 0;
-            },
+            // getStrokeWidthByElement: () => {
+            //     return 0;
+            // },
             hasResizeHandle: () => true
         });
         this.initialized = true;

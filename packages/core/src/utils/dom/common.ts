@@ -43,6 +43,12 @@ export const setPathStrokeLinecap = (g: SVGGElement, value: 'round' | 'square') 
     });
 };
 
+export const setPathStrokecap = (g: SVGGElement, value: 'round' | 'square') => {
+    g.querySelectorAll('path').forEach(path => {
+        path.setAttribute('stroke-linecap', value);
+    });
+};
+
 export function createMask() {
     return document.createElementNS(NS, 'mask');
 }

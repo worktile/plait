@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, Point } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, getSelectedElements } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, normalizeShapePoints, withResize } from '@plait/common';
 import { getSelectedGeometryElements } from '../utils/selected';
@@ -29,7 +29,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
         },
         detect: (point: Point) => {
             const selectedGeometryElements = getSelectedGeometryElements(board);
-            if (selectedGeometryElements.length !== 1) {
+            if (selectedGeometryElements.length !== 1 || getSelectedElements(board).length !== 1) {
                 return null;
             }
             const target = selectedGeometryElements[0];

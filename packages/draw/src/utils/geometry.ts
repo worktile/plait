@@ -1,4 +1,5 @@
 import {
+    ACTIVE_STROKE_WIDTH,
     PlaitBoard,
     Point,
     RectangleClient,
@@ -67,11 +68,10 @@ export const getTextRectangle = (element: PlaitGeometry) => {
 export const drawBoundMask = (board: PlaitBoard, element: PlaitGeometry) => {
     const G = createG();
     const rectangle = getRectangleByPoints(element.points);
-    const offset = (getStrokeWidthByElement(element) + 1) / 2 - 0.1;
-    const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
+    const activeRectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
     const maskG = drawGeometry(board, activeRectangle, element.shape, {
         stroke: SELECTION_BORDER_COLOR,
-        strokeWidth: 1,
+        strokeWidth: ACTIVE_STROKE_WIDTH,
         fill: SELECTION_FILL_COLOR,
         fillStyle: 'solid'
     });
@@ -81,7 +81,7 @@ export const drawBoundMask = (board: PlaitBoard, element: PlaitGeometry) => {
     connectorPoints.forEach(point => {
         const circleG = drawCircle(PlaitBoard.getRoughSVG(board), point, 6, {
             stroke: '#999999',
-            strokeWidth: 1,
+            strokeWidth: ACTIVE_STROKE_WIDTH,
             fill: '#FFF',
             fillStyle: 'solid'
         });
@@ -97,7 +97,7 @@ export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient,
 
 export const getNearestPoint = (element: PlaitGeometry, point: Point, offset = 0) => {
     const rectangle = getRectangleByPoints(element.points);
-    const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
+    const activeRectangle = RectangleClient.inflate(rectangle, offset);
     return getEngine(element.shape).getNearestPoint(activeRectangle, point);
 };
 

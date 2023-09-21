@@ -141,7 +141,6 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     changeLineMarker(event: Event, key: string) {
         let value = (event.target as HTMLSelectElement).value as any;
-
         const selectedElement = getSelectedLineElements(this.board)[0];
         if (selectedElement) {
             DrawTransforms.setLineMark(this.board, selectedElement, key as LineHandleKey, value as LineMarkerType);

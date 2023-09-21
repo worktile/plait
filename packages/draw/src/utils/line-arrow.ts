@@ -2,8 +2,7 @@ import { Point, arrowPoints, createG, createPath, drawLinearPath } from '@plait/
 import { LineMarkerType, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getFactorByPoints } from '@plait/common';
-
-export const BOUNDED_HANDLE_OFFSET = 0.5;
+import { getStrokeWidthByElement } from './style';
 
 export const drawLineArrow = (element: PlaitLine, points: Point[], options: Options) => {
     const arrowG = createG();
@@ -11,21 +10,21 @@ export const drawLineArrow = (element: PlaitLine, points: Point[], options: Opti
         return null;
     }
     if (!PlaitLine.isSourceMark(element, LineMarkerType.none)) {
-        const sourceArrow = getArrow(element.target.marker, points[1], points[0], options);
+        const sourceArrow = getArrow(element, element.target.marker, points[1], points[0], options);
         sourceArrow && arrowG.appendChild(sourceArrow);
     }
     if (!PlaitLine.isTargetMark(element, LineMarkerType.none)) {
-        const arrow = getArrow(element.target.marker, points[points.length - 2], points[points.length - 1], options);
+        const arrow = getArrow(element, element.target.marker, points[points.length - 2], points[points.length - 1], options);
         arrow && arrowG.appendChild(arrow);
     }
     return arrowG;
 };
 
-const getArrow = (marker: LineMarkerType, source: Point, target: Point, options: Options) => {
+const getArrow = (element: PlaitLine, marker: LineMarkerType, source: Point, target: Point, options: Options) => {
     let targetArrow;
     switch (marker) {
         case LineMarkerType.openTriangle: {
-            targetArrow = drawOpenTriangle(source, target, options);
+            targetArrow = drawOpenTriangle(element, source, target, options);
             break;
         }
         case LineMarkerType.solidTriangle: {
@@ -33,7 +32,7 @@ const getArrow = (marker: LineMarkerType, source: Point, target: Point, options:
             break;
         }
         case LineMarkerType.arrow: {
-            targetArrow = drawArrow(source, target, options);
+            targetArrow = drawArrow(element, source, target, options);
             break;
         }
         case LineMarkerType.sharpArrow: {
@@ -46,10 +45,11 @@ const getArrow = (marker: LineMarkerType, source: Point, target: Point, options:
 
 const drawSharpArrow = (source: Point, target: Point, options: Options) => {
     const directionFactor = getFactorByPoints(source, target);
-    const startPoint: Point = [
-        target[0] + BOUNDED_HANDLE_OFFSET * directionFactor.x,
-        target[1] + BOUNDED_HANDLE_OFFSET * directionFactor.y
-    ];
+    const startPoint: Point = target;
+    // const startPoint: Point = [
+    //     target[0],
+    //     target[1]
+    // ];
     const { pointLeft, pointRight } = arrowPoints(source, target, 12, 20);
 
     const g = createG();
@@ -66,38 +66,34 @@ const drawSharpArrow = (source: Point, target: Point, options: Options) => {
     return g;
 };
 
-const drawArrow = (source: Point, target: Point, options: Options) => {
+const drawArrow = (element: PlaitLine, source: Point, target: Point, options: Options) => {
     const directionFactor = getFactorByPoints(source, target);
-    const startPoint: Point = [
-        target[0] + BOUNDED_HANDLE_OFFSET * directionFactor.x,
-        target[1] + BOUNDED_HANDLE_OFFSET * directionFactor.y
+    const strokeWidth = getStrokeWidthByElement(element);
+    const endPoint: Point = [
+        target[0] + strokeWidth * directionFactor.x / 2,
+        target[1] + strokeWidth * directionFactor.y / 2
     ];
-
-    const middlePoint: Point = [target[0] - 8 * directionFactor.x, target[1] - 8 * directionFactor.y];
-    const { pointLeft, pointRight } = arrowPoints(source, target, 12, 30);
-
-    const pathG = drawLinearPath([pointLeft, startPoint, pointRight, middlePoint], { ...options, fill: options.stroke }, true);
-    const path = pathG.querySelector('path');
+    const middlePoint: Point = [endPoint[0] - 8 * directionFactor.x, endPoint[1] - 8 * directionFactor.y];
+    const { pointLeft, pointRight } = arrowPoints(source, endPoint, 12, 30);
+    const arrowG = drawLinearPath([pointLeft, endPoint, pointRight, middlePoint], { ...options, fill: options.stroke }, true);
+    const path = arrowG.querySelector('path');
     path!.setAttribute('stroke-linejoin', 'round');
-    return pathG;
+    return arrowG;
 };
 
 const drawSolidTriangle = (source: Point, target: Point, options: Options) => {
-    const directionFactor = getFactorByPoints(source, target);
-    const startPoint: Point = [
-        target[0] + BOUNDED_HANDLE_OFFSET * directionFactor.x,
-        target[1] + BOUNDED_HANDLE_OFFSET * directionFactor.y
-    ];
-    const { pointLeft, pointRight } = arrowPoints(source, target, 12, 20);
-    return drawLinearPath([pointLeft, startPoint, pointRight], { ...options, fill: options.stroke }, true);
+    const endPoint: Point = target;
+    const { pointLeft, pointRight } = arrowPoints(source, endPoint, 12, 30);
+    return drawLinearPath([pointLeft, endPoint, pointRight], { ...options, fill: options.stroke }, true);
 };
 
-const drawOpenTriangle = (source: Point, target: Point, options: Options) => {
+const drawOpenTriangle = (element: PlaitLine, source: Point, target: Point, options: Options) => {
     const directionFactor = getFactorByPoints(source, target);
-    const startPoint: Point = [
-        target[0] + BOUNDED_HANDLE_OFFSET * directionFactor.x,
-        target[1] + BOUNDED_HANDLE_OFFSET * directionFactor.y
+    const strokeWidth = getStrokeWidthByElement(element);
+    const endPoint: Point = [
+        target[0] + strokeWidth * directionFactor.x / 2,
+        target[1] + strokeWidth * directionFactor.y / 2
     ];
-    const { pointLeft, pointRight } = arrowPoints(source, target, 12, 40);
-    return drawLinearPath([pointLeft, startPoint, pointRight], options);
+    const { pointLeft, pointRight } = arrowPoints(source, endPoint, 12, 40);
+    return drawLinearPath([pointLeft, endPoint, pointRight], options);
 };

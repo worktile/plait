@@ -48,7 +48,7 @@ export function getDirectionBetweenPointAndPoint(source: Point, target: Point) {
     throw new Error('can not match direction');
 }
 
-export function getDirectionFactor(direction: Direction) {
+export function getFactorByDirection(direction: Direction) {
     return handleDirectionFactors[direction];
 }
 

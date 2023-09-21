@@ -6,18 +6,18 @@ import {
     createG,
     getElementById,
     RectangleClient,
-    setPathStrokeLinecap,
     findElements,
     PlaitElement,
-    createRect,
-    createMask
+    drawLinearPath,
+    createMask,
+    createRect
 } from '@plait/core';
-import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getPointOnPolyline, getDirectionFactor } from '@plait/common';
+import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getPointOnPolyline, getFactorByDirection } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { getPointsByCenterPoint, getNearestPoint } from './geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './style/stroke';
 import { getEngine } from './engine';
-import { BOUNDED_HANDLE_OFFSET, drawLineArrow } from './line-arrow';
+import { drawLineArrow } from './line-arrow';
 
 export const createLineElement = (
     shape: LineShape,
@@ -98,9 +98,9 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     const options = { stroke: strokeColor, strokeWidth, strokeLineDash };
     const lineG = createG();
     const points = getLinePoints(board, element);
-    const line = PlaitBoard.getRoughSVG(board).linearPath(points, options);
-    line.setAttribute('mask', `url(#${element.id})`);
-    setPathStrokeLinecap(line, 'square');
+    const line = drawLinearPath(points, options);
+    const path = line.querySelector('path');
+    path?.setAttribute('mask', `url(#${element.id})`);
     lineG.appendChild(line);
     const { mask, maskTargetFillRect } = drawMask(board, element);
     lineG.appendChild(mask);
@@ -137,7 +137,8 @@ function drawMask(board: PlaitBoard, element: PlaitLine) {
 
 export const getSourcePoint = (board: PlaitBoard, element: PlaitLine) => {
     if (element.source.boundId) {
-        const connectionOffset = PlaitLine.isSourceMark(element, LineMarkerType.none) ? 0 : BOUNDED_HANDLE_OFFSET;
+        const strokeWidth = getStrokeWidthByElement(element);
+        const connectionOffset = PlaitLine.isSourceMark(element, LineMarkerType.none) ? 0 : strokeWidth;
         const boundElement = getElementById<PlaitGeometry>(board, element.source.boundId);
         return boundElement ? getConnectionPoint(boundElement, element.source.connection!, connectionOffset) : element.points[0];
     }
@@ -146,7 +147,8 @@ export const getSourcePoint = (board: PlaitBoard, element: PlaitLine) => {
 
 export const getTargetPoint = (board: PlaitBoard, element: PlaitLine) => {
     if (element.target.boundId) {
-        const connectionOffset = PlaitLine.isTargetMark(element, LineMarkerType.none) ? 0 : BOUNDED_HANDLE_OFFSET;
+        const strokeWidth = getStrokeWidthByElement(element);
+        const connectionOffset = PlaitLine.isTargetMark(element, LineMarkerType.none) ? 0 : strokeWidth;
         const boundElement = getElementById<PlaitGeometry>(board, element.target.boundId);
         return boundElement
             ? getConnectionPoint(boundElement, element.target.connection!, connectionOffset)
@@ -157,11 +159,10 @@ export const getTargetPoint = (board: PlaitBoard, element: PlaitLine) => {
 
 export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, offset: number): Point => {
     const rectangle = getRectangleByPoints(geometry.points);
-    const strokeWidth = getStrokeWidthByElement(geometry);
-    const directionFactor = getDirectionFactor(getDirectionByPoint(connection, Direction.bottom));
+    const directionFactor = getFactorByDirection(getDirectionByPoint(connection, Direction.bottom));
     return [
-        rectangle.x + rectangle.width * connection[0] + strokeWidth * directionFactor.x + offset * directionFactor.x,
-        rectangle.y + rectangle.height * connection[1] + strokeWidth * directionFactor.y + offset * directionFactor.y
+        rectangle.x + rectangle.width * connection[0] + directionFactor.x * offset,
+        rectangle.y + rectangle.height * connection[1] + directionFactor.y * offset
     ];
 };
 

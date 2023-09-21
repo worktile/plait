@@ -30,6 +30,15 @@ export const RectangleClient = {
         const rect = { x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin };
         return rect;
     },
+    inflate: (rectangle: RectangleClient, delta: number) => {
+        const half = delta / 2;
+        return {
+            x: rectangle.x - half,
+            y: rectangle.y - half,
+            width: rectangle.width + half * 2,
+            height: rectangle.height + half * 2
+        };
+    },
     getOutlineRectangle: (rectangle: RectangleClient, offset: number) => {
         return {
             x: rectangle.x + offset,

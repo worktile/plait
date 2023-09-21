@@ -1,5 +1,5 @@
 import { Point, distanceBetweenPointAndPoint } from '@plait/core';
-import { Direction, getDirectionFactor } from './direction';
+import { Direction, getFactorByDirection } from './direction';
 
 export function getOppositeDirection(direction: Direction) {
     switch (direction) {
@@ -15,8 +15,8 @@ export function getOppositeDirection(direction: Direction) {
 }
 
 export const getPoints = (source: Point, sourcePosition: Direction, target: Point, targetPosition: Direction, offset: number) => {
-    const sourceDir = getDirectionFactor(sourcePosition);
-    const targetDir = getDirectionFactor(targetPosition);
+    const sourceDir = getFactorByDirection(sourcePosition);
+    const targetDir = getFactorByDirection(targetPosition);
     const sourceGapped: Point = [source[0] + sourceDir.x * offset, source[1] + sourceDir.y * offset];
     const targetGapped: Point = [target[0] + targetDir.x * offset, target[1] + targetDir.y * offset];
     const dir = getDirection(sourceGapped, sourcePosition, targetGapped);

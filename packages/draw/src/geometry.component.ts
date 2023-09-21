@@ -53,9 +53,6 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
             getRectangle: (element: PlaitGeometry) => {
                 return getRectangleByPoints(element.points);
             },
-            getStrokeWidthByElement: (element: PlaitGeometry) => {
-                return getStrokeWidthByElement(element);
-            },
             hasResizeHandle: () => {
                 const selectedElements = getSelectedElements(this.board);
                 if (PlaitBoard.hasBeenTextEditing(this.board) && PlaitDrawElement.isText(this.element)) {
