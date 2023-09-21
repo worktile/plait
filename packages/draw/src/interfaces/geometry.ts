@@ -50,7 +50,7 @@ export const PlaitGeometry = {
     getTextManage(element: PlaitGeometry) {
         const component = PlaitElement.getComponent(element) as GeometryComponent;
         if (component) {
-            return component.textManages[0];
+            return component.textManage;
         }
         throw new Error('can not get correctly component in get text editor');
     }

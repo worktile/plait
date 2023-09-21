@@ -32,6 +32,10 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
 
     shapeGenerator!: GeometryShapeGenerator;
 
+    get textManage() {
+        return this.getTextManages()[0];
+    }
+
     constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
         super(cdr);
     }
@@ -90,18 +94,18 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     }
 
     editText() {
-        this.textManages[0].edit();
+        this.textManage.edit();
         this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
     }
 
     drawText() {
-        this.textManages[0].draw(this.element.text);
-        this.g.append(this.textManages[0].g);
+        this.textManage.draw(this.element.text);
+        this.g.append(this.textManage.g);
     }
 
     updateText() {
-        this.textManages[0].updateText(this.element.text);
-        this.textManages[0].updateRectangle();
+        this.textManage.updateText(this.element.text);
+        this.textManage.updateRectangle();
     }
 
     initializeTextManage() {
@@ -126,12 +130,12 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
             },
             textPlugins: plugins
         });
-        this.textManages = [manage];
+        this.initializeTextManages([manage]);
     }
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        this.textManages[0].destroy();
+        this.textManage.destroy();
         this.destroy$.next();
         this.destroy$.complete();
     }

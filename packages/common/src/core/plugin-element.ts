@@ -5,7 +5,13 @@ export abstract class CommonPluginElement<
     T extends PlaitElement = PlaitElement,
     K extends PlaitBoard = PlaitBoard
 > extends PlaitPluginElementComponent<T, K> {
-    textManages: TextManage[] = [];
+    private textManages: TextManage[] = [];
 
-    initializeTextManages() {}
+    initializeTextManages(textManages: TextManage[]) {
+        this.textManages = textManages;
+    }
+
+    getTextManages() {
+        return this.textManages;
+    }
 }

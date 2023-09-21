@@ -3,7 +3,7 @@ import { CommonPluginElement } from '../public-api';
 
 export const getTextManages = (element: PlaitElement) => {
     const component = PlaitElement.getComponent(element) as CommonPluginElement;
-    return component.textManages;
+    return component.getTextManages();
 };
 
 export const getTextEditors = (element: PlaitElement) => {

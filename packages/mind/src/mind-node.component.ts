@@ -75,6 +75,10 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
 
     collapseDrawer!: CollapseDrawer;
 
+    get textManage() {
+        return this.getTextManages()[0];
+    }
+
     constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
         super(cdr);
     }
@@ -110,7 +114,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
                 }
             }
         });
-        this.textManages = [textManage];
+        this.initializeTextManages([textManage]);
     }
 
     ngOnInit(): void {
@@ -123,7 +127,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.drawShape();
         this.drawLink();
         this.drawTopic();
-        this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManages[0].isEditing });
+        this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
         this.drawEmojis();
         this.drawExtend();
         this.imageDrawer.drawImage(this.g, this.element);
@@ -143,7 +147,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
 
         if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
-            this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManages[0].isEditing });
+            this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
             this.drawShape();
             this.drawLink();
             this.drawEmojis();
@@ -154,7 +158,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             const hasSameSelected = value.selected === previous.selected;
             const hasSameParent = value.parent === previous.parent;
             if (!hasSameSelected) {
-                this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManages[0].isEditing });
+                this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
             }
             if (!hasSameParent) {
                 this.drawLink();
@@ -240,18 +244,18 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     }
 
     drawTopic() {
-        this.textManages[0].draw(this.element.data.topic);
-        this.g.append(this.textManages[0].g);
+        this.textManage.draw(this.element.data.topic);
+        this.g.append(this.textManage.g);
     }
 
     updateTopic() {
-        this.textManages[0].updateText(this.element.data.topic);
-        this.textManages[0].updateRectangle();
+        this.textManage.updateText(this.element.data.topic);
+        this.textManage.updateRectangle();
     }
 
     editTopic() {
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: true });
-        this.textManages[0].edit((origin: ExitOrigin) => {
+        this.textManage.edit((origin: ExitOrigin) => {
             if (origin === ExitOrigin.default) {
                 this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: false });
             }
@@ -264,7 +268,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        this.textManages[0].destroy();
+        this.textManage.destroy();
         this.nodeEmojisDrawer.destroy();
         this.imageDrawer.destroy();
         this.destroy$.next();

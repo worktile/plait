@@ -4,3 +4,4 @@ export * from './hot-key';
 export * from './rectangle';
 export * from './creation-mode';
 export * from './direction';
+export * from './text';
