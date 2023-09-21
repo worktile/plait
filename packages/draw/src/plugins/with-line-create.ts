@@ -43,7 +43,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
                 sourceRef.boundId = hitElement.id;
             }
 
-            preventTouchMove(board, true);
+            preventTouchMove(board, event, true);
         }
         pointerDown(event);
     };
@@ -89,7 +89,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         sourceRef = {};
         targetRef = {};
         temporaryElement = null;
-        preventTouchMove(board, false);
+        preventTouchMove(board, event, false);
 
         pointerUp(event);
     };

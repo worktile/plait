@@ -74,7 +74,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
 
         geometryShapeG?.remove();
         geometryShapeG = null;
-        preventTouchMove(board, false);
+        preventTouchMove(board, event, false);
 
         pointerUp(event);
     };
@@ -107,7 +107,7 @@ export const withGeometryCreateByDraw = (board: PlaitBoard) => {
         if (isGeometryPointer && isDrawingMode(board)) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
-            preventTouchMove(board, true);
+            
 
             const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
             if (pointer === DrawPointerType.text) {
@@ -118,7 +118,8 @@ export const withGeometryCreateByDraw = (board: PlaitBoard) => {
                 addSelectedElement(board, textElement);
                 BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
                 start = null;
-                preventTouchMove(board, false);
+            } else {
+                preventTouchMove(board, event, true);
             }
         }
         pointerDown(event);
@@ -172,7 +173,7 @@ export const withGeometryCreateByDraw = (board: PlaitBoard) => {
         geometryShapeG = null;
         start = null;
         temporaryElement = null;
-        preventTouchMove(board, false);
+        preventTouchMove(board, event, false);
 
         pointerUp(event);
     };

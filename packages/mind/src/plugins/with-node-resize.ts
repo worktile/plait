@@ -47,6 +47,7 @@ export const withNodeResize = (board: PlaitBoard) => {
             PlaitBoard.getBoardContainer(board).classList.add(ResizeCursorClass['ew-resize']);
             targetElement = newTargetElement;
             startPoint = [event.x, event.y];
+            preventTouchMove(board, event, true);
             return;
         }
 
@@ -62,7 +63,6 @@ export const withNodeResize = (board: PlaitBoard) => {
         if (startPoint && targetElement && !isMindNodeResizing(board)) {
             // prevent text from being selected
             event.preventDefault();
-            preventTouchMove(board, true);
             const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance > PRESS_AND_MOVE_BUFFER) {
@@ -80,7 +80,6 @@ export const withNodeResize = (board: PlaitBoard) => {
         if (isMindNodeResizing(board) && startPoint && targetElementRef) {
             // prevent text from being selected
             event.preventDefault();
-            preventTouchMove(board, true);
             throttleRAF(() => {
                 if (!startPoint) {
                     return;
@@ -127,7 +126,7 @@ export const withNodeResize = (board: PlaitBoard) => {
             targetElement = null;
             startPoint = null;
             MERGING.set(board, false);
-            preventTouchMove(board, false);
+            preventTouchMove(board, event, false);
         }
     };
 

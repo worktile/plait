@@ -59,6 +59,7 @@ export function withSelection(board: PlaitBoard) {
             !options.isDisabledSelect
         ) {
             start = point;
+            preventTouchMove(board, event, true);
         }
 
         Transforms.setSelection(board, { ranges: [range] });
@@ -73,7 +74,6 @@ export function withSelection(board: PlaitBoard) {
         }
 
         if (start) {
-            preventTouchMove(board, true);
             const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const rectangle = RectangleClient.toRectangleClient([start, movedTarget]);
             selectionMovingG?.remove();
@@ -118,7 +118,7 @@ export function withSelection(board: PlaitBoard) {
         start = null;
         end = null;
         needPreventNativeSelectionWhenMoving = false;
-        preventTouchMove(board, false);
+        preventTouchMove(board, event, false);
         globalPointerUp(event);
     };
 

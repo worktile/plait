@@ -48,7 +48,7 @@ export function drawRoundRectangle(
 
 export const drawRectangle = (board: PlaitBoard, rectangle: RectangleClient, options: Options) => {
     const roughSVG = PlaitBoard.getRoughSVG(board);
-    const rectangleG = roughSVG.rectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height, options);
+    const rectangleG = roughSVG.rectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height, {...options, fillWeight: options.strokeWidth});
     setStrokeLinecap(rectangleG, 'round');
     return rectangleG;
 };

@@ -78,12 +78,14 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
                 element: resizeDetectResult.element,
                 handle: resizeDetectResult.handle
             };
+            preventTouchMove(board, event, true);
             return;
         }
         pointerDown(event);
     };
 
     board.pointerMove = (event: PointerEvent) => {
+        console.log(event.target);
         if (!options.canResize() || !generalCanResize(board, event)) {
             pointerMove(event);
             return;
@@ -91,8 +93,6 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
         if (startPoint && resizeDetectResult && !isResizing(board)) {
             // prevent text from being selected
             event.preventDefault();
-            preventTouchMove(board, true);
-
             const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance > PRESS_AND_MOVE_BUFFER) {
@@ -103,7 +103,6 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
         if (isResizing(board) && startPoint) {
             // prevent text from being selected
             event.preventDefault();
-            preventTouchMove(board, true);
             const endTransformPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             throttleRAF(() => {
                 const endPoint = [event.x, event.y];
@@ -144,7 +143,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             resizeDetectResult = null;
             resizeRef = null;
             MERGING.set(board, false);
-            preventTouchMove(board, false);
+            preventTouchMove(board, event, false);
         }
     };
 

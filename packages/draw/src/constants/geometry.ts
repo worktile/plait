@@ -10,7 +10,7 @@ export const DefaultGeometryStyle = {
 };
 
 export const DefaultGeometryActiveStyle = {
-    strokeWidth: 2,
+    strokeWidth: 1,
     selectionStrokeWidth: 1
 };
 

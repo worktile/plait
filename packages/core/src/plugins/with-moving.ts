@@ -37,13 +37,12 @@ export function withMoving(board: PlaitBoard) {
                 activeElements = [hitElement];
             }
         }
-
         pointerDown(event);
     };
 
     board.pointerMove = (event: PointerEvent) => {
         if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
-            preventTouchMove(board, true);
+            preventTouchMove(board, event, true);
             if (!isPreventDefault) {
                 isPreventDefault = true;
             }
@@ -96,7 +95,7 @@ export function withMoving(board: PlaitBoard) {
         if (startPoint) {
             cancelMove(board);
         }
-        preventTouchMove(board, false);
+        preventTouchMove(board, event, false);
         globalPointerUp(event);
     };
 

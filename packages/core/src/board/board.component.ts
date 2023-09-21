@@ -436,9 +436,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 });
         });
         this.ngZone.runOutsideAngular(() => {
-            fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'touchmove', { passive: false })
+            fromEvent<MouseEvent>(window, 'touchmove', { passive: false, capture: true })
                 .pipe(takeUntil(this.destroy$))
                 .subscribe((event: Event) => {
+                    console.log(`isPreventTouchMove: ${isPreventTouchMove(this.board)}`);
                     if (isPreventTouchMove(this.board)) {
                         event.preventDefault();
                     }
