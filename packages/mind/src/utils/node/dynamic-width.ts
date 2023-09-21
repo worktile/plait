@@ -7,7 +7,7 @@ import { MindNodeComponent } from '../../mind-node.component';
  * 2. new height is effected by zoom
  */
 export const getNewNodeHeight = (board: PlaitBoard, element: MindElement, newNodeDynamicWidth: number) => {
-    const textManage = (PlaitElement.getComponent(element) as MindNodeComponent).textManage;
+    const textManage = MindElement.getTextManage(element);
     const { height } = textManage.getSize();
     textManage.updateRectangleWidth(newNodeDynamicWidth);
     const { height: newHeight } = textManage.getSize();

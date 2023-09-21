@@ -127,7 +127,14 @@ export const MindElement = {
     getTextEditor(element: MindElement) {
         const component = PlaitElement.getComponent(element) as MindNodeComponent;
         if (component) {
-            return component.textManage.componentRef.instance.editor;
+            return MindElement.getTextManage(element).componentRef.instance.editor;
+        }
+        throw new Error('can not get correctly component in get text editor');
+    },
+    getTextManage(element: MindElement) {
+        const component = PlaitElement.getComponent(element) as MindNodeComponent;
+        if (component) {
+            return component.textManages[0];
         }
         throw new Error('can not get correctly component in get text editor');
     }

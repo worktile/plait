@@ -45,9 +45,12 @@ export interface PlaitDiamond extends PlaitGeometry {
 
 export const PlaitGeometry = {
     getTextEditor(element: PlaitGeometry) {
+        return PlaitGeometry.getTextManage(element).componentRef.instance.editor;
+    },
+    getTextManage(element: PlaitGeometry) {
         const component = PlaitElement.getComponent(element) as GeometryComponent;
         if (component) {
-            return component.textManage.componentRef.instance.editor;
+            return component.textManages[0];
         }
         throw new Error('can not get correctly component in get text editor');
     }

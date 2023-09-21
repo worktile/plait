@@ -67,8 +67,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 ];
             }
             points = normalizeShapePoints(points, isShift);
-            const component = PlaitElement.getComponent(resizeRef.element) as GeometryComponent;
-            const { height: textHeight } = component.textManage.getSize();
+            const { height: textHeight } = PlaitGeometry.getTextManage(resizeRef.element).getSize();
             DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path);
         }
     };

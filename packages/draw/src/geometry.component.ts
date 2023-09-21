@@ -14,7 +14,7 @@ import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
-import { ActiveGenerator, WithTextPluginKey, WithTextOptions, getRectangleByPoints } from '@plait/common';
+import { ActiveGenerator, WithTextPluginKey, WithTextOptions, getRectangleByPoints, CommonPluginElement } from '@plait/common';
 import { DefaultGeometryActiveStyle, GeometryThreshold } from './constants/geometry';
 import { getStrokeWidthByElement } from './utils/style/stroke';
 import { PlaitDrawElement, PlaitText } from './interfaces';
@@ -24,15 +24,13 @@ import { PlaitDrawElement, PlaitText } from './interfaces';
     template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry, PlaitBoard>
+export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitBoard>
     implements OnInit, OnDestroy, OnContextChanged<PlaitGeometry, PlaitBoard> {
     destroy$ = new Subject<void>();
 
     activeGenerator!: ActiveGenerator<PlaitGeometry>;
 
     shapeGenerator!: GeometryShapeGenerator;
-
-    textManage!: TextManage;
 
     constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
         super(cdr);
@@ -92,24 +90,24 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
     }
 
     editText() {
-        this.textManage.edit();
+        this.textManages[0].edit();
         this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
     }
 
     drawText() {
-        this.textManage.draw(this.element.text);
-        this.g.append(this.textManage.g);
+        this.textManages[0].draw(this.element.text);
+        this.g.append(this.textManages[0].g);
     }
 
     updateText() {
-        this.textManage.updateText(this.element.text);
-        this.textManage.updateRectangle();
+        this.textManages[0].updateText(this.element.text);
+        this.textManages[0].updateRectangle();
     }
 
     initializeTextManage() {
         const plugins = (this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey).textPlugins;
 
-        this.textManage = new TextManage(this.board, this.viewContainerRef, {
+        const manage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
                 return getTextRectangle(this.element);
             },
@@ -128,11 +126,12 @@ export class GeometryComponent extends PlaitPluginElementComponent<PlaitGeometry
             },
             textPlugins: plugins
         });
+        this.textManages = [manage];
     }
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        this.textManage.destroy();
+        this.textManages[0].destroy();
         this.destroy$.next();
         this.destroy$.complete();
     }

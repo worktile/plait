@@ -32,7 +32,7 @@ import { CollapseDrawer } from './drawer/node-collapse.drawer';
 import { NodeImageDrawer } from './drawer/node-image.drawer';
 import { NodeSpace } from './utils/space/node-space';
 import { NodeTopicThreshold } from './constants/node-topic-style';
-import { WithTextOptions, WithTextPluginKey } from '@plait/common';
+import { CommonPluginElement, WithTextOptions, WithTextPluginKey } from '@plait/common';
 
 @Component({
     selector: 'plait-mind-node',
@@ -47,7 +47,7 @@ import { WithTextOptions, WithTextPluginKey } from '@plait/common';
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, PlaitMindBoard>
+export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMindBoard>
     implements OnInit, OnDestroy, OnContextChanged<MindElement, PlaitMindBoard> {
     roughSVG!: RoughSVG;
 
@@ -71,8 +71,6 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     imageDrawer!: NodeImageDrawer;
 
-    textManage!: TextManage;
-
     activeDrawer!: NodeActiveDrawer;
 
     collapseDrawer!: CollapseDrawer;
@@ -89,7 +87,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.imageDrawer = new NodeImageDrawer(this.board, this.viewContainerRef);
         const plugins = this.board.getPluginOptions<WithTextOptions>(WithTextPluginKey).textPlugins;
 
-        this.textManage = new TextManage(this.board, this.viewContainerRef, {
+        const textManage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
                 const rect = getTopicRectangleByNode(this.board, this.node);
                 return rect;
@@ -112,6 +110,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
                 }
             }
         });
+        this.textManages = [textManage];
     }
 
     ngOnInit(): void {
@@ -124,7 +123,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.drawShape();
         this.drawLink();
         this.drawTopic();
-        this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
+        this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManages[0].isEditing });
         this.drawEmojis();
         this.drawExtend();
         this.imageDrawer.drawImage(this.g, this.element);
@@ -144,7 +143,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
 
         if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
-            this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
+            this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManages[0].isEditing });
             this.drawShape();
             this.drawLink();
             this.drawEmojis();
@@ -155,7 +154,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
             const hasSameSelected = value.selected === previous.selected;
             const hasSameParent = value.parent === previous.parent;
             if (!hasSameSelected) {
-                this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
+                this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManages[0].isEditing });
             }
             if (!hasSameParent) {
                 this.drawLink();
@@ -241,18 +240,18 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
     }
 
     drawTopic() {
-        this.textManage.draw(this.element.data.topic);
-        this.g.append(this.textManage.g);
+        this.textManages[0].draw(this.element.data.topic);
+        this.g.append(this.textManages[0].g);
     }
 
     updateTopic() {
-        this.textManage.updateText(this.element.data.topic);
-        this.textManage.updateRectangle();
+        this.textManages[0].updateText(this.element.data.topic);
+        this.textManages[0].updateRectangle();
     }
 
     editTopic() {
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: true });
-        this.textManage.edit((origin: ExitOrigin) => {
+        this.textManages[0].edit((origin: ExitOrigin) => {
             if (origin === ExitOrigin.default) {
                 this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: false });
             }
@@ -265,7 +264,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        this.textManage.destroy();
+        this.textManages[0].destroy();
         this.nodeEmojisDrawer.destroy();
         this.imageDrawer.destroy();
         this.destroy$.next();
