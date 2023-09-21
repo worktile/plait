@@ -1,2 +1,1 @@
-export const CommonTransforms = {
-};
+export * from './common';
