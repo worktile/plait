@@ -17,7 +17,6 @@ export class LineShapeGenerator extends Generator<PlaitLine, ShapeData> {
             case LineShape.elbow:
             case LineShape.straight:
                 lineG = drawLine(this.board, element);
-                drawMask(this.board, lineG, element);
                 break;
             default:
                 break;
@@ -26,24 +25,4 @@ export class LineShapeGenerator extends Generator<PlaitLine, ShapeData> {
     }
 }
 
-function drawMask(board: PlaitBoard, g: SVGElement, element: PlaitLine) {
-    const mask = createMask();
-    mask.setAttribute('id', element.id);
-    const points = getLinePoints(board, element);
-    let rectangle = getRectangleByPoints(points);
-    rectangle = RectangleClient.getOutlineRectangle(rectangle, -30);
-    const maskRect = createRect(rectangle, {
-        fill: 'white'
-    });
-    mask.appendChild(maskRect);
 
-    const texts = element.texts;
-    texts.forEach((text, index) => {
-        const textRectangle = getLineTextRectangle(board, element, index);
-        const rect = createRect(textRectangle, {
-            fill: 'black'
-        });
-        mask.appendChild(rect);
-    });
-    g.appendChild(mask);
-}

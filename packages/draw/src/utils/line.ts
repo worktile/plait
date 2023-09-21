@@ -9,7 +9,8 @@ import {
     setPathStrokeLinecap,
     findElements,
     PlaitElement,
-    createRect
+    createRect,
+    createMask
 } from '@plait/core';
 import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getPointOnPolyline, getDirectionFactor } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
@@ -99,22 +100,40 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     const points = getLinePoints(board, element);
     const line = PlaitBoard.getRoughSVG(board).linearPath(points, options);
     line.setAttribute('mask', `url(#${element.id})`);
-    addRectangle(board, line, element);
     setPathStrokeLinecap(line, 'square');
     lineG.appendChild(line);
+    const { mask, maskTargetFillRect } = drawMask(board, element);
+    lineG.appendChild(mask);
+    line.appendChild(maskTargetFillRect);
     const arrow = drawLineArrow(element, points, options);
     arrow && lineG.appendChild(arrow);
     return lineG;
 };
 
-const addRectangle = (board: PlaitBoard, g: SVGGElement, element: PlaitLine) => {
+function drawMask(board: PlaitBoard, element: PlaitLine) {
+    const mask = createMask();
+    mask.setAttribute('id', element.id);
     const points = getLinePoints(board, element);
     let rectangle = getRectangleByPoints(points);
     rectangle = RectangleClient.getOutlineRectangle(rectangle, -30);
-    const maskRect = createRect(rectangle);
-    maskRect.setAttribute('opacity', '0');
-    g.appendChild(maskRect);
-};
+    const maskFillRect = createRect(rectangle, {
+        fill: 'white'
+    });
+    mask.appendChild(maskFillRect);
+
+    const texts = element.texts;
+    texts.forEach((text, index) => {
+        const textRectangle = getLineTextRectangle(board, element, index);
+        const rect = createRect(textRectangle, {
+            fill: 'black'
+        });
+        mask.appendChild(rect);
+    });
+    //撑开 line
+    const maskTargetFillRect = createRect(rectangle);
+    maskTargetFillRect.setAttribute('opacity', '0');
+    return { mask, maskTargetFillRect };
+}
 
 export const getSourcePoint = (board: PlaitBoard, element: PlaitLine) => {
     if (element.source.boundId) {
