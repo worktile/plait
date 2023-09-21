@@ -98,7 +98,8 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     const lineG = createG();
     const points = getLinePoints(board, element);
     const line = PlaitBoard.getRoughSVG(board).linearPath(points, options);
-    addMask(board, line, element);
+    line.setAttribute('mask', `url(#${element.id})`);
+    addRectangle(board, line, element);
     setPathStrokeLinecap(line, 'square');
     lineG.appendChild(line);
     const arrow = drawLineArrow(element, points, options);
@@ -106,7 +107,7 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     return lineG;
 };
 
-const addMask = (board: PlaitBoard, g: SVGGElement, element: PlaitLine) => {
+const addRectangle = (board: PlaitBoard, g: SVGGElement, element: PlaitLine) => {
     const points = getLinePoints(board, element);
     let rectangle = getRectangleByPoints(points);
     rectangle = RectangleClient.getOutlineRectangle(rectangle, -30);

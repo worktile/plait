@@ -29,7 +29,6 @@ export class LineShapeGenerator extends Generator<PlaitLine, ShapeData> {
 function drawMask(board: PlaitBoard, g: SVGElement, element: PlaitLine) {
     const mask = createMask();
     mask.setAttribute('id', element.id);
-    g.setAttribute('mask', `url(#${element.id})`);
     const points = getLinePoints(board, element);
     let rectangle = getRectangleByPoints(points);
     rectangle = RectangleClient.getOutlineRectangle(rectangle, -30);
