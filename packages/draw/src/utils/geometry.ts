@@ -54,13 +54,13 @@ export const getPointsByCenterPoint = (point: Point, width: number, height: numb
 
 export const getTextRectangle = (element: PlaitGeometry) => {
     const elementRectangle = getRectangleByPoints(element.points!);
+    const strokeWidth = getStrokeWidthByElement(element);
     const height = element.textHeight;
-    const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2;
-
+    const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
     return {
         height,
         width: width > 0 ? width : 0,
-        x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText,
+        x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
         y: elementRectangle.y + (elementRectangle.height - height) / 2
     };
 };

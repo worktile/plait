@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import {
     PlaitBoard,
-    PlaitPluginElementComponent,
     PlaitPluginElementContext,
     OnContextChanged,
     isSelectionMoving,
@@ -16,7 +15,6 @@ import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
 import { ActiveGenerator, WithTextPluginKey, WithTextOptions, getRectangleByPoints, CommonPluginElement } from '@plait/common';
 import { DefaultGeometryActiveStyle, GeometryThreshold } from './constants/geometry';
-import { getStrokeWidthByElement } from './utils/style/stroke';
 import { PlaitDrawElement, PlaitText } from './interfaces';
 
 @Component({
