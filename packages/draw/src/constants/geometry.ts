@@ -1,3 +1,5 @@
+import { ACTIVE_STROKE_WIDTH } from "@plait/core";
+
 export const ShapeDefaultSpace = {
     rectangleAndText: 4
 };
@@ -10,8 +12,8 @@ export const DefaultGeometryStyle = {
 };
 
 export const DefaultGeometryActiveStyle = {
-    strokeWidth: 2,
-    selectionStrokeWidth: 1
+    strokeWidth: ACTIVE_STROKE_WIDTH,
+    selectionStrokeWidth: ACTIVE_STROKE_WIDTH
 };
 
 export const DefaultGeometryProperty = {

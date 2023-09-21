@@ -8,7 +8,7 @@ import { cacheSelectedElements, clearSelectedElement, getHitElements, getSelecte
 import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
-import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
+import { ACTIVE_STROKE_WIDTH, ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
 import { drawRectangle, preventTouchMove, throttleRAF } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
@@ -205,9 +205,9 @@ export function clearSelectionMoving(board: PlaitBoard) {
 
 export function createSelectionOuterG(board: PlaitBoard, selectElements: PlaitElement[]) {
     const rectangle = getRectangleByElements(board, selectElements, false);
-    return drawRectangle(board, RectangleClient.getOutlineRectangle(rectangle, -2.5), {
+    return drawRectangle(board, RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH), {
         stroke: SELECTION_BORDER_COLOR,
-        strokeWidth: 1,
+        strokeWidth: ACTIVE_STROKE_WIDTH,
         fillStyle: 'solid'
     });
 }

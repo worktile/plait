@@ -1,9 +1,8 @@
-import { PlaitBoard, RectangleClient, SELECTION_BORDER_COLOR, drawCircle, toPoint, transformPoint } from '@plait/core';
+import { ACTIVE_STROKE_WIDTH, PlaitBoard, RectangleClient, SELECTION_BORDER_COLOR, drawCircle, toPoint, transformPoint } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { drawBoundMask, getHitConnectorPoint, getNearestPoint } from '../utils';
 import { DrawPointerType } from '../constants';
 import { getRectangleByPoints, isResizingByCondition } from '@plait/common';
-import { getStrokeWidthByElement } from '../utils/style/stroke';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 
 export const withLineBoundReaction = (board: PlaitBoard) => {
@@ -21,15 +20,14 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
             const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
             if (hitElement) {
                 boundShapeG = drawBoundMask(board, hitElement);
-                const offset = (getStrokeWidthByElement(hitElement) + 1) / 2;
-                let nearestPoint = getNearestPoint(hitElement, movingPoint, offset);
+                let nearestPoint = getNearestPoint(hitElement, movingPoint, ACTIVE_STROKE_WIDTH);
                 const rectangle = getRectangleByPoints(hitElement.points);
-                const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
+                const activeRectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
                 const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, activeRectangle);
                 nearestPoint = hitConnector ? hitConnector : nearestPoint;
                 const circleG = drawCircle(PlaitBoard.getRoughSVG(board), nearestPoint, 6, {
                     stroke: SELECTION_BORDER_COLOR,
-                    strokeWidth: 1,
+                    strokeWidth: ACTIVE_STROKE_WIDTH,
                     fill: SELECTION_BORDER_COLOR,
                     fillStyle: 'solid'
                 });

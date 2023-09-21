@@ -8,7 +8,7 @@ import { PlaitElement } from '../interfaces/element';
 import { getHitElementOfRoot, getSelectedElements } from '../utils/selected-element';
 import { PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
-import { addMovingElements, removeMovingElements } from '../utils/moving-element';
+import { addMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
 import { Range } from '../interfaces';
 import { isPreventTouchMove, preventTouchMove } from '../utils';
@@ -52,7 +52,7 @@ export function withMoving(board: PlaitBoard) {
             offsetX = endPoint[0] - startPoint[0];
             offsetY = endPoint[1] - startPoint[1];
             const offsetBuffer = 5;
-            if (Math.abs(offsetX) > offsetBuffer || Math.abs(offsetY) > offsetBuffer) {
+            if (Math.abs(offsetX) > offsetBuffer || Math.abs(offsetY) > offsetBuffer || getMovingElements(board).length > 0) {
                 throttleRAF(() => {
                     const currentElements = activeElements.map(activeElement => {
                         const points = activeElement.points || [];
