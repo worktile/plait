@@ -71,7 +71,7 @@ export const withNodeResize = (board: PlaitBoard) => {
                     minWidth: NodeSpace.getNodeResizableMinWidth(board as PlaitMindBoard, targetElement),
                     currentWidth: NodeSpace.getNodeDynamicWidth(board as PlaitMindBoard, targetElement),
                     path: PlaitBoard.findPath(board, targetElement),
-                    textManage: (PlaitElement.getComponent(targetElement) as MindNodeComponent).textManage
+                    textManage: MindElement.getTextManage(targetElement)
                 };
                 MERGING.set(board, true);
             }

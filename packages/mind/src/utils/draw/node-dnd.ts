@@ -29,7 +29,7 @@ export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offset
     const textRectangle = getTopicRectangleByNode(board as PlaitMindBoard, activeComponent.node);
     const fakeNodeG = drawRoundRectangleByNode(board, fakeDraggingNode);
 
-    const richtextG = activeComponent.textManage.g.cloneNode(true) as SVGGElement;
+    const richtextG = MindElement.getTextManage(element).g.cloneNode(true) as SVGGElement;
     updateForeignObject(richtextG, textRectangle.width, textRectangle.height, textRectangle.x + offsetX, textRectangle.y + offsetY);
 
     dragFakeNodeG?.append(fakeNodeG);

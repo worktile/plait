@@ -32,7 +32,7 @@ import { CollapseDrawer } from './drawer/node-collapse.drawer';
 import { NodeImageDrawer } from './drawer/node-image.drawer';
 import { NodeSpace } from './utils/space/node-space';
 import { NodeTopicThreshold } from './constants/node-topic-style';
-import { WithTextOptions, WithTextPluginKey } from '@plait/common';
+import { CommonPluginElement, WithTextOptions, WithTextPluginKey } from '@plait/common';
 
 @Component({
     selector: 'plait-mind-node',
@@ -47,7 +47,7 @@ import { WithTextOptions, WithTextPluginKey } from '@plait/common';
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, PlaitMindBoard>
+export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMindBoard>
     implements OnInit, OnDestroy, OnContextChanged<MindElement, PlaitMindBoard> {
     roughSVG!: RoughSVG;
 
@@ -71,11 +71,13 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
 
     imageDrawer!: NodeImageDrawer;
 
-    textManage!: TextManage;
-
     activeDrawer!: NodeActiveDrawer;
 
     collapseDrawer!: CollapseDrawer;
+
+    get textManage() {
+        return this.getTextManages()[0];
+    }
 
     constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
         super(cdr);
@@ -89,7 +91,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
         this.imageDrawer = new NodeImageDrawer(this.board, this.viewContainerRef);
         const plugins = this.board.getPluginOptions<WithTextOptions>(WithTextPluginKey).textPlugins;
 
-        this.textManage = new TextManage(this.board, this.viewContainerRef, {
+        const textManage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
                 const rect = getTopicRectangleByNode(this.board, this.node);
                 return rect;
@@ -112,6 +114,7 @@ export class MindNodeComponent extends PlaitPluginElementComponent<MindElement, 
                 }
             }
         });
+        this.initializeTextManages([textManage]);
     }
 
     ngOnInit(): void {
