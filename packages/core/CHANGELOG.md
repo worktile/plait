@@ -1,5 +1,21 @@
 # plait
 
+## 0.24.0-next.8
+
+### Minor Changes
+
+-   [`653109b8`](https://github.com/worktile/plait/commit/653109b836c5707ec03714a801e3a167ad4e6263) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle touch target to avoid touch move event not fire
+
+*   [`c49f5ec1`](https://github.com/worktile/plait/commit/c49f5ec1d46a06770692a2b52c6bbc43c1c10786) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use plaitChange replace onChange to handle island base
+
+-   [`aedbae54`](https://github.com/worktile/plait/commit/aedbae5464735592f7682335c14cf1e733b9e46d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update geometry stroke width generate logic
+
+*   [#570](https://github.com/worktile/plait/pull/570) [`603767ce`](https://github.com/worktile/plait/commit/603767ce4824b4683bfb61a277487ab9e74d8157) Thanks [@WBbug](https://github.com/WBbug)! - support some arrows
+
+### Patch Changes
+
+-   [`4c03af2b`](https://github.com/worktile/plait/commit/4c03af2b7f53672b4cb2c4a88434efa7762e0afe) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - invoke preventTouchMove as moving elements
+
 ## 0.24.0-next.7
 
 ### Minor Changes

@@ -1,5 +1,25 @@
 # @plait/draw
 
+## 0.1.0-next.8
+
+### Minor Changes
+
+-   [`653109b8`](https://github.com/worktile/plait/commit/653109b836c5707ec03714a801e3a167ad4e6263) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle touch target to avoid touch move event not fire
+
+*   [#576](https://github.com/worktile/plait/pull/576) [`72ab4080`](https://github.com/worktile/plait/commit/72ab4080bf418bc2e432cd26ffcfa9e9d6826d9f) Thanks [@WBbug](https://github.com/WBbug)! - support set line source marker
+
+-   [`aedbae54`](https://github.com/worktile/plait/commit/aedbae5464735592f7682335c14cf1e733b9e46d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update geometry stroke width generate logic
+
+*   [#570](https://github.com/worktile/plait/pull/570) [`603767ce`](https://github.com/worktile/plait/commit/603767ce4824b4683bfb61a277487ab9e74d8157) Thanks [@WBbug](https://github.com/WBbug)! - support some arrows
+
+### Patch Changes
+
+-   [`3831ae7b`](https://github.com/worktile/plait/commit/3831ae7ba5ac1378be5d1c86f737b1fb6b7a029f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update text rectangle
+
+*   [#573](https://github.com/worktile/plait/pull/573) [`0ddc94fd`](https://github.com/worktile/plait/commit/0ddc94fd7fb4462fcb21689084dca03eaaa27930) Thanks [@WBbug](https://github.com/WBbug)! - change mask
+
+-   [#571](https://github.com/worktile/plait/pull/571) [`73dbe42f`](https://github.com/worktile/plait/commit/73dbe42f484eb6c7536024822322b62a5c3fd44c) Thanks [@WBbug](https://github.com/WBbug)! - add LineHandleKey
+
 ## 0.1.0-next.7
 
 ### Minor Changes

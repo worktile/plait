@@ -1,5 +1,15 @@
 # @plait/common
 
+## 0.1.0-next.7
+
+### Minor Changes
+
+-   [`653109b8`](https://github.com/worktile/plait/commit/653109b836c5707ec03714a801e3a167ad4e6263) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle touch target to avoid touch move event not fire
+
+*   [#572](https://github.com/worktile/plait/pull/572) [`3ea149bf`](https://github.com/worktile/plait/commit/3ea149bff968ac1d02b86fe2526ff6db094fec23) Thanks [@WBbug](https://github.com/WBbug)! - add common Transform
+
+-   [`aedbae54`](https://github.com/worktile/plait/commit/aedbae5464735592f7682335c14cf1e733b9e46d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update geometry stroke width generate logic
+
 ## 0.1.0-next.6
 
 ### Minor Changes
