@@ -42,6 +42,4 @@ export const BOARD_TO_TEMPORARY_ELEMENTS = new WeakMap<PlaitBoard, PlaitElement[
 
 export const BOARD_TO_MOVING_ELEMENT = new WeakMap<PlaitBoard, PlaitElement[]>();
 
-export const IS_PREVENT_TOUCH_MOVE = new WeakMap<PlaitBoard, Boolean>();
-
 export const PATH_REFS: WeakMap<PlaitBoard, Set<PathRef>> = new WeakMap();

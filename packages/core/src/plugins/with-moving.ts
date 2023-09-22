@@ -11,7 +11,7 @@ import { throttleRAF } from '../utils/common';
 import { addMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
 import { Range } from '../interfaces';
-import { isPreventTouchMove, preventTouchMove } from '../utils';
+import { isPreventTouchMove, preventTouchMove, handleTouchTarget } from '../utils';
 
 export function withMoving(board: PlaitBoard) {
     const { pointerDown, pointerMove, globalPointerUp, globalPointerMove } = board;
@@ -36,6 +36,9 @@ export function withMoving(board: PlaitBoard) {
             } else if (hitElement) {
                 activeElements = [hitElement];
             }
+            if (activeElements.length > 0) {
+                preventTouchMove(board, event, true);
+            }
         }
 
         pointerDown(event);
@@ -43,7 +46,6 @@ export function withMoving(board: PlaitBoard) {
 
     board.pointerMove = (event: PointerEvent) => {
         if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
-            preventTouchMove(board, true);
             if (!isPreventDefault) {
                 isPreventDefault = true;
             }
@@ -54,6 +56,7 @@ export function withMoving(board: PlaitBoard) {
             const offsetBuffer = 5;
             if (Math.abs(offsetX) > offsetBuffer || Math.abs(offsetY) > offsetBuffer || getMovingElements(board).length > 0) {
                 throttleRAF(() => {
+                    handleTouchTarget(board);
                     const currentElements = activeElements.map(activeElement => {
                         const points = activeElement.points || [];
                         const [x, y] = activeElement.points![0];
@@ -96,7 +99,7 @@ export function withMoving(board: PlaitBoard) {
         if (startPoint) {
             cancelMove(board);
         }
-        preventTouchMove(board, false);
+        preventTouchMove(board, event, false);
         globalPointerUp(event);
     };
 
