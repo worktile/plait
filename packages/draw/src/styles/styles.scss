@@ -5,7 +5,9 @@
         }
     }
     &.pointer-rectangle,
-    &.pointer-line {
+    &.pointer-line,
+    &.pointer-mind
+     {
         .board-host-svg {
             cursor: crosshair;
         }
