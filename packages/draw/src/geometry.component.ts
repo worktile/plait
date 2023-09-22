@@ -48,6 +48,14 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                     return DefaultGeometryActiveStyle.selectionStrokeWidth;
                 }
             },
+            getStrokeOpacity: () => {
+                const selectedElements = getSelectedElements(this.board);
+                if (selectedElements.length === 1 && !isSelectionMoving(this.board)) {
+                    return 1;
+                } else {
+                    return 0.5;
+                }
+            },
             getRectangle: (element: PlaitGeometry) => {
                 return getRectangleByPoints(element.points);
             },

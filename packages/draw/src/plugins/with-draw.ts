@@ -69,7 +69,7 @@ export const withDraw = (board: PlaitBoard) => {
             return true;
         }
         if (PlaitDrawElement.isLine(element)) {
-            return !element.source.boundId && !element.source.boundId;
+            return !element.source.boundId && !element.target.boundId;
         }
         return isMovable(element);
     };

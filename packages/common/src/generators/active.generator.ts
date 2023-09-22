@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, Point, RectangleClient, createG, drawCircle, drawRectangle } from '@plait/core';
+import { PlaitBoard, PlaitElement, RectangleClient, createG, drawCircle, drawRectangle } from '@plait/core';
 import { Generator } from './generator';
 import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '../constants/default';
 import { Options } from 'roughjs/bin/core';
@@ -10,6 +10,7 @@ export interface ActiveGeneratorExtraData {
 export interface ActiveGeneratorOptions<T> {
     getRectangle: (element: T) => RectangleClient;
     getStrokeWidth: () => number;
+    getStrokeOpacity: () => number;
     hasResizeHandle: () => boolean;
 }
 
@@ -45,6 +46,7 @@ export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Gene
         });
 
         activeG.append(strokeG);
+        strokeG.style.opacity = `${this.options.getStrokeOpacity()}`;
         if (this.options.hasResizeHandle()) {
             this.hasResizeHandle = true;
             // resize handle
