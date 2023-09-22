@@ -1,7 +1,10 @@
-import { PlaitGeometry, PlaitLine, StrokeStyle } from '../../interfaces';
+import { PlaitDrawElement, PlaitGeometry, PlaitLine, StrokeStyle } from '../../interfaces';
 import { DefaultGeometryStyle } from '../../constants';
 
 export const getStrokeWidthByElement = (element: PlaitGeometry | PlaitLine) => {
+    if (PlaitDrawElement.isText(element)) {
+        return 0;
+    }
     const strokeWidth = element.strokeWidth || DefaultGeometryStyle.strokeWidth;
     return strokeWidth;
 };
