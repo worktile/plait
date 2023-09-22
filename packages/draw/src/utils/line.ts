@@ -13,7 +13,7 @@ import {
     createRect,
     ACTIVE_STROKE_WIDTH
 } from '@plait/core';
-import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getPointOnPolyline, getDirectionFactor,  } from '@plait/common';
+import { getPoints, Direction, getRectangleByPoints, getDirectionByPoint, getPointOnPolyline, getDirectionFactor } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { getPointsByCenterPoint, getNearestPoint } from './geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './style/stroke';
@@ -105,7 +105,7 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     const { mask, maskTargetFillRect } = drawMask(board, element);
     lineG.appendChild(mask);
     line.appendChild(maskTargetFillRect);
-    const arrow = drawLineArrow(element, points, options);
+    const arrow = drawLineArrow(element, points, { stroke: strokeColor, strokeWidth });
     arrow && lineG.appendChild(arrow);
     return lineG;
 };
