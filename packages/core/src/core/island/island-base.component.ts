@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { PlaitBoard } from '../../interfaces';
+import { Subscription } from 'rxjs';
 
 @Directive({
     host: {
@@ -29,18 +30,19 @@ export abstract class PlaitIslandBaseComponent {
 export abstract class PlaitIslandPopoverBaseComponent implements OnInit, OnDestroy {
     @Input() board!: PlaitBoard;
 
-    private onChange!: () => void;
+    private subscription?: Subscription;
+
+    constructor(public cdr: ChangeDetectorRef) {}
 
     initialize(board: PlaitBoard) {
         this.board = board;
-        const onChange = board.onChange;
-        board.onChange = () => {
-            onChange();
+        const boardComponent = PlaitBoard.getComponent(board);
+        this.subscription = boardComponent.plaitChange.subscribe(() => {
             if (hasOnBoardChange(this)) {
                 this.onBoardChange();
             }
-        };
-        this.onChange = onChange;
+            this.cdr.markForCheck();
+        });
     }
 
     ngOnInit(): void {
@@ -52,7 +54,7 @@ export abstract class PlaitIslandPopoverBaseComponent implements OnInit, OnDestr
     }
 
     ngOnDestroy(): void {
-        this.board.onChange = this.onChange;
+        this.subscription?.unsubscribe();
         this.islandOnDestroy();
     }
 
