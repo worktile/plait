@@ -100,8 +100,7 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     const lineG = createG();
     const points = getLinePoints(board, element);
     const line = drawLinearPath(points, options);
-    const path = line.querySelector('path');
-    path?.setAttribute('mask', `url(#${element.id})`);
+    line.setAttribute('mask', `url(#${element.id})`);
     lineG.appendChild(line);
     const { mask, maskTargetFillRect } = drawMask(board, element);
     lineG.appendChild(mask);

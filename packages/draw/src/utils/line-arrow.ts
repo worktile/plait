@@ -10,7 +10,7 @@ export const drawLineArrow = (element: PlaitLine, points: Point[], options: Opti
         return null;
     }
     if (!PlaitLine.isSourceMark(element, LineMarkerType.none)) {
-        const sourceArrow = getArrow(element, element.target.marker, points[1], points[0], options);
+        const sourceArrow = getArrow(element, element.source.marker, points[1], points[0], options);
         sourceArrow && arrowG.appendChild(sourceArrow);
     }
     if (!PlaitLine.isTargetMark(element, LineMarkerType.none)) {

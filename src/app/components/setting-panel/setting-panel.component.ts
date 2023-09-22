@@ -58,6 +58,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     lineTargetMarker = LineMarkerType.openTriangle;
 
+    lineSourceMarker = LineMarkerType.openTriangle;
+
     strokeWidth = 3;
 
     @HostBinding('class.visible')
@@ -102,6 +104,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             const firstLine = selectedLineElements[0];
             this.lineShape = firstLine.shape;
             this.lineTargetMarker = firstLine.target.marker;
+            this.lineSourceMarker = firstLine.source.marker;
             this.strokeWidth = firstLine.strokeWidth || 3;
         }
     }
