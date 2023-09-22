@@ -33,7 +33,7 @@
         (colorChangeEvent)="textColorChange($event)"
     ></app-color-picker>
 </div>
-<div class="property-item text-setting-toolbar">
+<div *ngIf="!isSelectedLine" class="property-item text-setting-toolbar">
     <div class="setting-panel-title">文本对齐：</div>
     <select [(ngModel)]="align" (ngModelChange)="setAlign($event)">
         <option value="left">居左对齐</option>
@@ -109,8 +109,20 @@
 </div>
 
 <div *ngIf="isSelectedLine" class="property-item color-setting-toolbar">
+    <div class="setting-panel-title">起点形状：</div>
+    <select [(ngModel)]="lineSourceMarker" (change)="changeLineMarker($event, 'source')">
+        <option value="none">none</option>
+        <option value="arrow">arrow</option>
+        <option value="open-triangle">open-triangle</option>
+        <option value="solid-triangle">solid-triangle</option>
+        <option value="sharp-arrow">sharp-arrow</option>
+    </select>
+</div>
+
+<div *ngIf="isSelectedLine" class="property-item color-setting-toolbar">
     <div class="setting-panel-title">终点形状：</div>
     <select [(ngModel)]="lineTargetMarker" (change)="changeLineMarker($event, 'target')">
+        <option value="none">none</option>
         <option value="arrow">arrow</option>
         <option value="open-triangle">open-triangle</option>
         <option value="solid-triangle">solid-triangle</option>
