@@ -1,5 +1,16 @@
 # @plait/draw
 
+## 0.1.0-next.9
+
+### Patch Changes
+
+-   [#578](https://github.com/worktile/plait/pull/578) [`85a99741`](https://github.com/worktile/plait/commit/85a9974106769b777ca805c372c795765937f463) Thanks [@WBbug](https://github.com/WBbug)! - add stroke line dash
+
+*   [`06521543`](https://github.com/worktile/plait/commit/065215431516fce35a47919fff1f9caeece38491) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - assign multiple active stroke opacity 0.5
+    correct isMoving condition for line
+
+-   [`931dfc59`](https://github.com/worktile/plait/commit/931dfc5975f380b4e81378416349df4fb2ee927b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - return zero when geometry is text
+
 ## 0.1.0-next.8
 
 ### Minor Changes

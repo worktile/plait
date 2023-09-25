@@ -1,5 +1,12 @@
 # mind
 
+## 0.27.0-next.7
+
+### Patch Changes
+
+-   [`06521543`](https://github.com/worktile/plait/commit/065215431516fce35a47919fff1f9caeece38491) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - assign multiple active stroke opacity 0.5
+    correct isMoving condition for line
+
 ## 0.27.0-next.6
 
 ### Minor Changes

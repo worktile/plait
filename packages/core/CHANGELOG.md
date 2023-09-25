@@ -1,5 +1,13 @@
 # plait
 
+## 0.24.0-next.9
+
+### Patch Changes
+
+-   [#578](https://github.com/worktile/plait/pull/578) [`85a99741`](https://github.com/worktile/plait/commit/85a9974106769b777ca805c372c795765937f463) Thanks [@WBbug](https://github.com/WBbug)! - add stroke line dash
+
+*   [`8e257d5b`](https://github.com/worktile/plait/commit/8e257d5b0e184b9d0b2dddd033b82dd384834d25) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle text touch moving action
+
 ## 0.24.0-next.8
 
 ### Minor Changes

@@ -1,5 +1,12 @@
 # @plait/common
 
+## 0.1.0-next.8
+
+### Patch Changes
+
+-   [`06521543`](https://github.com/worktile/plait/commit/065215431516fce35a47919fff1f9caeece38491) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - assign multiple active stroke opacity 0.5
+    correct isMoving condition for line
+
 ## 0.1.0-next.7
 
 ### Minor Changes
