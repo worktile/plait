@@ -100,9 +100,10 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     const lineG = createG();
     const points = getLinePoints(board, element);
     const line = drawLinearPath(points, options);
-    line.setAttribute('mask', `url(#${element.id})`);
+    const id = idCreator();
+    line.setAttribute('mask', `url(#${id})`);
     lineG.appendChild(line);
-    const { mask, maskTargetFillRect } = drawMask(board, element);
+    const { mask, maskTargetFillRect } = drawMask(board, element, id);
     lineG.appendChild(mask);
     line.appendChild(maskTargetFillRect);
     const arrow = drawLineArrow(element, points, { stroke: strokeColor, strokeWidth });
@@ -110,9 +111,9 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     return lineG;
 };
 
-function drawMask(board: PlaitBoard, element: PlaitLine) {
+function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
     const mask = createMask();
-    mask.setAttribute('id', element.id);
+    mask.setAttribute('id', id);
     const points = getLinePoints(board, element);
     let rectangle = getRectangleByPoints(points);
     rectangle = RectangleClient.getOutlineRectangle(rectangle, -30);
