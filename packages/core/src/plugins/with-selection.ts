@@ -31,8 +31,6 @@ export function withSelection(board: PlaitBoard) {
     let needPreventNativeSelectionWhenMoving = false;
 
     board.pointerDown = (event: PointerEvent) => {
-        selectionOuterG?.remove();
-
         if (event.target instanceof Element && !event.target.closest('.plait-richtext-container')) {
             needPreventNativeSelectionWhenMoving = true;
         }
@@ -60,6 +58,7 @@ export function withSelection(board: PlaitBoard) {
             options.isMultiple &&
             !options.isDisabledSelect
         ) {
+            selectionOuterG?.remove();
             start = point;
             preventTouchMove(board, event, true);
         }
