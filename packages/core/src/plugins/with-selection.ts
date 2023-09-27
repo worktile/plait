@@ -107,7 +107,7 @@ export function withSelection(board: PlaitBoard) {
             const elements = getSelectedElements(board);
             const { width, height } = getRectangleByElements(board, elements, false);
             if (width > 0 && height > 0 && elements.length > 1) {
-                selectionRectangleG = createSelectionOuterG(board, elements);
+                selectionRectangleG = createSelectionRectangleG(board, elements);
                 selectionRectangleG.classList.add(SELECTION_RECTANGLE_CLASS_NAME);
                 PlaitBoard.getHost(board).append(selectionRectangleG);
             }
@@ -157,7 +157,7 @@ export function withSelection(board: PlaitBoard) {
                             const selectedElementChange = currentSelectedElements.some(item => !previousSelectedElements.includes(item));
                             if (selectedElementChange) {
                                 selectionRectangleG?.remove();
-                                selectionRectangleG = createSelectionOuterG(board, currentSelectedElements);
+                                selectionRectangleG = createSelectionRectangleG(board, currentSelectedElements);
                                 selectionRectangleG.classList.add(SELECTION_RECTANGLE_CLASS_NAME);
                                 PlaitBoard.getHost(board).append(selectionRectangleG);
                             }
@@ -203,7 +203,7 @@ export function clearSelectionMoving(board: PlaitBoard) {
     BOARD_TO_IS_SELECTION_MOVING.delete(board);
 }
 
-export function createSelectionOuterG(board: PlaitBoard, selectElements: PlaitElement[]) {
+export function createSelectionRectangleG(board: PlaitBoard, selectElements: PlaitElement[]) {
     const rectangle = getRectangleByElements(board, selectElements, false);
     return drawRectangle(board, RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH), {
         stroke: SELECTION_BORDER_COLOR,
