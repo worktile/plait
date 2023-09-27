@@ -31,9 +31,8 @@ export const withDraw = (board: PlaitBoard) => {
             return getRectangleByPoints(element.points);
         }
         if (PlaitDrawElement.isLine(element)) {
-            const source = getSourcePoint(board, element);
-            const target = getTargetPoint(board, element);
-            return getRectangleByPoints([source, target]);
+            const points = getLinePoints(board, element);
+            return getRectangleByPoints(points);
         }
         return getRectangle(element);
     };

@@ -8,7 +8,7 @@ import { cacheSelectedElements, clearSelectedElement, getHitElements, getSelecte
 import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
-import { ACTIVE_STROKE_WIDTH, ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
+import { ACTIVE_STROKE_WIDTH, ATTACHED_ELEMENT_CLASS_NAME, SELECTION_RECTANGLE_CLASS_NAME } from '../constants/selection';
 import { drawRectangle, preventTouchMove, throttleRAF } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
@@ -24,7 +24,7 @@ export function withSelection(board: PlaitBoard) {
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
-    let selectionOuterG: SVGGElement;
+    let selectionRectangleG: SVGGElement;
     let previousSelectedElements: PlaitElement[];
 
     // prevent text from being selected when user pressed main pointer and is moving
@@ -58,6 +58,7 @@ export function withSelection(board: PlaitBoard) {
             options.isMultiple &&
             !options.isDisabledSelect
         ) {
+            selectionRectangleG?.remove();
             start = point;
             preventTouchMove(board, event, true);
         }
@@ -102,6 +103,14 @@ export function withSelection(board: PlaitBoard) {
             selectionMovingG?.remove();
             clearSelectionMoving(board);
             Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
+
+            const elements = getSelectedElements(board);
+            const { width, height } = getRectangleByElements(board, elements, false);
+            if (width > 0 && height > 0 && elements.length > 1) {
+                selectionRectangleG = createSelectionRectangleG(board, elements);
+                selectionRectangleG.classList.add(SELECTION_RECTANGLE_CLASS_NAME);
+                PlaitBoard.getHost(board).append(selectionRectangleG);
+            }
         }
 
         if (PlaitBoard.isFocus(board)) {
@@ -125,7 +134,6 @@ export function withSelection(board: PlaitBoard) {
     board.onChange = () => {
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
         if (options.isDisabledSelect) {
-            selectionOuterG?.remove();
             clearSelectedElement(board);
         }
 
@@ -133,21 +141,13 @@ export function withSelection(board: PlaitBoard) {
         if (board.pointer !== PlaitPointerType.hand && !options.isDisabledSelect) {
             try {
                 if (board.operations.find(value => value.type === 'set_selection')) {
-                    selectionOuterG?.remove();
                     const temporaryElements = getTemporaryElements(board);
                     let elements = temporaryElements ? temporaryElements : getHitElements(board);
-
                     if (!options.isMultiple && elements.length > 1) {
                         elements = [elements[0]];
                     }
                     cacheSelectedElements(board, elements);
                     previousSelectedElements = elements;
-                    const { width, height } = getRectangleByElements(board, elements, false);
-                    if (width > 0 && height > 0 && elements.length > 1) {
-                        selectionOuterG = createSelectionOuterG(board, elements);
-                        selectionOuterG.classList.add('selection-outer');
-                        PlaitBoard.getHost(board).append(selectionOuterG);
-                    }
                     deleteTemporaryElements(board);
                 } else {
                     // wait node destroy and remove selected element state
@@ -156,13 +156,13 @@ export function withSelection(board: PlaitBoard) {
                         if (currentSelectedElements.length && currentSelectedElements.length > 1) {
                             const selectedElementChange = currentSelectedElements.some(item => !previousSelectedElements.includes(item));
                             if (selectedElementChange) {
-                                selectionOuterG?.remove();
-                                selectionOuterG = createSelectionOuterG(board, currentSelectedElements);
-                                selectionOuterG.classList.add('selection-outer');
-                                PlaitBoard.getHost(board).append(selectionOuterG);
+                                selectionRectangleG?.remove();
+                                selectionRectangleG = createSelectionRectangleG(board, currentSelectedElements);
+                                selectionRectangleG.classList.add(SELECTION_RECTANGLE_CLASS_NAME);
+                                PlaitBoard.getHost(board).append(selectionRectangleG);
                             }
                         } else {
-                            selectionOuterG?.remove();
+                            selectionRectangleG?.remove();
                         }
                     });
                 }
@@ -203,7 +203,7 @@ export function clearSelectionMoving(board: PlaitBoard) {
     BOARD_TO_IS_SELECTION_MOVING.delete(board);
 }
 
-export function createSelectionOuterG(board: PlaitBoard, selectElements: PlaitElement[]) {
+export function createSelectionRectangleG(board: PlaitBoard, selectElements: PlaitElement[]) {
     const rectangle = getRectangleByElements(board, selectElements, false);
     return drawRectangle(board, RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH), {
         stroke: SELECTION_BORDER_COLOR,
