@@ -31,6 +31,8 @@ export function withSelection(board: PlaitBoard) {
     let needPreventNativeSelectionWhenMoving = false;
 
     board.pointerDown = (event: PointerEvent) => {
+        selectionOuterG?.remove();
+
         if (event.target instanceof Element && !event.target.closest('.plait-richtext-container')) {
             needPreventNativeSelectionWhenMoving = true;
         }
@@ -102,6 +104,14 @@ export function withSelection(board: PlaitBoard) {
             selectionMovingG?.remove();
             clearSelectionMoving(board);
             Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
+
+            const elements = getSelectedElements(board);
+            const { width, height } = getRectangleByElements(board, elements, false);
+            if (width > 0 && height > 0 && elements.length > 1) {
+                selectionOuterG = createSelectionOuterG(board, elements);
+                selectionOuterG.classList.add('selection-outer');
+                PlaitBoard.getHost(board).append(selectionOuterG);
+            }
         }
 
         if (PlaitBoard.isFocus(board)) {
@@ -125,7 +135,6 @@ export function withSelection(board: PlaitBoard) {
     board.onChange = () => {
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
         if (options.isDisabledSelect) {
-            selectionOuterG?.remove();
             clearSelectedElement(board);
         }
 
@@ -133,21 +142,13 @@ export function withSelection(board: PlaitBoard) {
         if (board.pointer !== PlaitPointerType.hand && !options.isDisabledSelect) {
             try {
                 if (board.operations.find(value => value.type === 'set_selection')) {
-                    selectionOuterG?.remove();
                     const temporaryElements = getTemporaryElements(board);
                     let elements = temporaryElements ? temporaryElements : getHitElements(board);
-
                     if (!options.isMultiple && elements.length > 1) {
                         elements = [elements[0]];
                     }
                     cacheSelectedElements(board, elements);
                     previousSelectedElements = elements;
-                    const { width, height } = getRectangleByElements(board, elements, false);
-                    if (width > 0 && height > 0 && elements.length > 1) {
-                        selectionOuterG = createSelectionOuterG(board, elements);
-                        selectionOuterG.classList.add('selection-outer');
-                        PlaitBoard.getHost(board).append(selectionOuterG);
-                    }
                     deleteTemporaryElements(board);
                 } else {
                     // wait node destroy and remove selected element state

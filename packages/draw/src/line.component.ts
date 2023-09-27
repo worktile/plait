@@ -1,8 +1,16 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { PlaitBoard, PlaitPluginElementComponent, PlaitPluginElementContext, OnContextChanged, getElementById } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitPluginElementComponent,
+    PlaitPluginElementContext,
+    OnContextChanged,
+    getElementById,
+    getSelectedElements,
+    isSelectionMoving
+} from '@plait/core';
 import { Subject } from 'rxjs';
-import { LineText, PlaitGeometry, PlaitLine } from './interfaces';
-import { TextManage, TextManageRef, buildText } from '@plait/text';
+import { LineText, PlaitDrawElement, PlaitGeometry, PlaitLine } from './interfaces';
+import { TextManage, TextManageRef } from '@plait/text';
 import { LineShapeGenerator } from './generators/line.generator';
 import { LineActiveGenerator } from './generators/line-active.generator';
 import { getLineTextRectangle } from './utils';
@@ -87,10 +95,18 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
             return;
         }
 
-        const hasSameSelected = value.selected === previous.selected;
-        if (!hasSameSelected) {
+        if (!isSelectionMoving(this.board)) {
+            this.activeGenerator.hasResizeHandle = this.hasResizeHandle();
             this.activeGenerator.draw(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
         }
+    }
+
+    hasResizeHandle() {
+        const selectedElements = getSelectedElements(this.board);
+        if (PlaitBoard.hasBeenTextEditing(this.board) && PlaitDrawElement.isText(this.element)) {
+            return false;
+        }
+        return selectedElements.length === 1 && !isSelectionMoving(this.board);
     }
 
     initializeTextManages() {
