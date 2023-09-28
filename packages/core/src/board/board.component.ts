@@ -380,7 +380,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 const selectedElements = getSelectedElements(this.board);
                 event.preventDefault();
                 const rectangle = getRectangleByElements(this.board, selectedElements, false);
-                this.board.setFragment(event.clipboardData, rectangle);
+                this.board.setFragment(event.clipboardData, rectangle, 'copy');
             });
 
         fromEvent<ClipboardEvent>(document, 'paste')
@@ -405,7 +405,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 const selectedElements = getSelectedElements(this.board);
                 event.preventDefault();
                 const rectangle = getRectangleByElements(this.board, selectedElements, false);
-                this.board.setFragment(event.clipboardData, rectangle);
+                this.board.setFragment(event.clipboardData, rectangle, 'cut');
                 this.board.deleteFragment(event.clipboardData);
             });
     }

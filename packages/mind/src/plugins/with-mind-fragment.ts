@@ -33,14 +33,14 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
         return getDeletedFragment(data);
     };
 
-    board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null) => {
+    board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null, type: 'copy' | 'cut') => {
         const targetMindElements = getSelectedMindElements(board);
         const firstLevelElements = getFirstLevelElement(targetMindElements);
         if (firstLevelElements.length) {
             const elements = buildClipboardData(board, firstLevelElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
             setMindClipboardData(data, elements);
         }
-        setFragment(data, rectangle);
+        setFragment(data, rectangle, type);
     };
 
     board.insertFragment = (data: DataTransfer | null, targetPoint: Point) => {

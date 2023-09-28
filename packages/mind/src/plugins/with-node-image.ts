@@ -88,14 +88,14 @@ export const withNodeImage = (board: PlaitBoard) => {
         globalPointerUp(event);
     };
 
-    board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null) => {
+    board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null, type: 'copy' | 'cut') => {
         const selectedImageElement = getSelectedImageElement(board);
         if (selectedImageElement) {
             setClipboardDataByMedia(data, selectedImageElement.data.image!, MediaKeys.image);
             return;
         }
 
-        setFragment(data, rectangle);
+        setFragment(data, rectangle, type);
     };
 
     board.deleteFragment = (data: DataTransfer | null) => {

@@ -13,26 +13,31 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
     board.getDeletedFragment = (data: PlaitElement[]) => {
         const drawElements = getSelectedDrawElements(board);
         if (drawElements.length) {
-            const lines = getBoardLines(board);
             const geometryElements = drawElements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
             const lineElements = drawElements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
-            const boundLineElements = lines.filter(line =>
-                geometryElements.find(
-                    geometry => PlaitLine.isBoundElementOfSource(line, geometry) || PlaitLine.isBoundElementOfTarget(line, geometry)
-                )
-            );
+            const boundLineElements = getBoundedLineElements(board, geometryElements).filter(line => !lineElements.includes(line));
             data.push(...[...geometryElements, ...lineElements, ...boundLineElements.filter(line => !lineElements.includes(line))]);
         }
         return getDeletedFragment(data);
     };
 
-    board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null) => {
+    board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null, type: 'copy' | 'cut') => {
         const targetDrawElements = getSelectedDrawElements(board);
+        let boundLineElements: PlaitLine[] = [];
         if (targetDrawElements.length) {
-            const elements = buildClipboardData(board, targetDrawElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
+            if (type === 'cut') {
+                const geometryElements = targetDrawElements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
+                const lineElements = targetDrawElements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
+                boundLineElements = getBoundedLineElements(board, geometryElements).filter(line => !lineElements.includes(line));
+            }
+            const elements = buildClipboardData(
+                board,
+                [...targetDrawElements, ...boundLineElements],
+                rectangle ? [rectangle.x, rectangle.y] : [0, 0]
+            );
             setClipboardData(data, elements);
         }
-        setFragment(data, rectangle);
+        setFragment(data, rectangle, type);
     };
 
     board.insertFragment = (data: DataTransfer | null, targetPoint: Point) => {
@@ -56,4 +61,11 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
     };
 
     return board;
+};
+
+export const getBoundedLineElements = (board: PlaitBoard, geometries: PlaitGeometry[]) => {
+    const lines = getBoardLines(board);
+    return lines.filter(line =>
+        geometries.find(geometry => PlaitLine.isBoundElementOfSource(line, geometry) || PlaitLine.isBoundElementOfTarget(line, geometry))
+    );
 };

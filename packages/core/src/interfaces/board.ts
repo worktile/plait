@@ -53,7 +53,7 @@ export interface PlaitBoard {
     keydown: (event: KeyboardEvent) => void;
     globalKeydown: (event: KeyboardEvent) => void;
     keyup: (event: KeyboardEvent) => void;
-    setFragment: (data: DataTransfer | null, rectangle: RectangleClient | null) => void;
+    setFragment: (data: DataTransfer | null, rectangle: RectangleClient | null, type: 'copy' | 'cut') => void;
     insertFragment: (data: DataTransfer | null, targetPoint: Point) => void;
     deleteFragment: (data: DataTransfer | null) => void;
     getDeletedFragment: (data: PlaitElement[]) => PlaitElement[];
