@@ -1,6 +1,13 @@
-import { PlaitBoard, RectangleClient, createG, drawRoundRectangle } from '@plait/core';
+import {
+    ACTIVE_STROKE_WIDTH,
+    PlaitBoard,
+    RectangleClient,
+    createG,
+    drawRoundRectangle,
+    getSelectedElements,
+    isSelectionMoving
+} from '@plait/core';
 import { MindElement, BaseData } from '../interfaces';
-import { BaseDrawer } from '../base/base.drawer';
 import { getRectangleByNode } from '../utils/position/node';
 import { PRIMARY_COLOR } from '../constants/default';
 import { AbstractNode } from '@plait/layouts';
@@ -8,13 +15,14 @@ import { drawAbstractIncludedOutline } from '../utils/draw/abstract-outline';
 import { AbstractHandlePosition } from '../plugins/with-abstract-resize.board';
 import { DefaultNodeStyle } from '../constants/node-style';
 import { getStrokeWidthByElement } from '../utils/node-style/shape';
+import { Generator } from '@plait/common';
 
 export interface ActiveData {
     selected: boolean;
     isEditing: boolean;
 }
 
-export class NodeActiveDrawer extends BaseDrawer<ActiveData> {
+export class NodeActiveGenerator extends Generator<MindElement, ActiveData> {
     abstractOutlineG?: SVGGElement;
 
     canDraw(element: MindElement<BaseData>, data: ActiveData): boolean {
@@ -27,18 +35,15 @@ export class NodeActiveDrawer extends BaseDrawer<ActiveData> {
 
     baseDraw(element: MindElement<BaseData>, data: ActiveData): SVGGElement {
         const activeG = createG();
-        this.g = activeG;
-
         if (AbstractNode.isAbstract(element)) {
             this.abstractOutlineG = drawAbstractIncludedOutline(this.board, PlaitBoard.getRoughSVG(this.board), element);
             activeG.append(this.abstractOutlineG);
         }
         const node = MindElement.getNode(element);
         const rectangle = getRectangleByNode(node);
-        const activeStrokeWidth = 2;
-        // add 0.1 to avoid white gap
-        const offset = (getStrokeWidthByElement(this.board, element) + activeStrokeWidth) / 2 - 0.1;
-        const activeRectangle = RectangleClient.getOutlineRectangle(rectangle, -offset);
+        const strokeWidth = getStrokeWidthByElement(this.board, element);
+        const activeStrokeWidth = ACTIVE_STROKE_WIDTH;
+        const activeRectangle = RectangleClient.inflate(rectangle, activeStrokeWidth);
         const strokeG = drawRoundRectangle(
             PlaitBoard.getRoughSVG(this.board),
             activeRectangle.x,
@@ -47,9 +52,9 @@ export class NodeActiveDrawer extends BaseDrawer<ActiveData> {
             activeRectangle.y + activeRectangle.height,
             { stroke: PRIMARY_COLOR, strokeWidth: activeStrokeWidth, fill: '' },
             true,
-            DefaultNodeStyle.shape.rectangleRadius + offset
+            DefaultNodeStyle.shape.rectangleRadius + (activeStrokeWidth + strokeWidth) / 2
         );
-        this.g.appendChild(strokeG);
+        activeG.appendChild(strokeG);
         return activeG;
     }
 

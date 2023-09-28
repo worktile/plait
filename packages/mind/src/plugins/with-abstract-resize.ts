@@ -114,7 +114,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                     abstractHandlePosition === AbstractHandlePosition.start ? { start: locationIndex + 1 } : { end: locationIndex };
             }
 
-            abstractComponent!.activeDrawer.updateAbstractOutline(activeAbstractElement, abstractHandlePosition, location);
+            abstractComponent!.activeGenerator.updateAbstractOutline(activeAbstractElement, abstractHandlePosition, location);
         }
         mousemove(event);
     };
@@ -132,7 +132,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                 Transforms.setNode(board, newProperty, path);
             } else {
                 const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;
-                abstractComponent!.activeDrawer.updateAbstractOutline(activeAbstractElement);
+                abstractComponent!.activeGenerator.updateAbstractOutline(activeAbstractElement);
             }
             activeAbstractElement = undefined;
         }

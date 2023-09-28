@@ -23,7 +23,7 @@ import { NodeInsertDrawer } from './drawer/node-insert.drawer';
 import { PlaitMindBoard } from './plugins/with-mind.board';
 import { drawLink } from './utils/draw/node-link/draw-link';
 import { getTopicRectangleByNode } from './utils/position/topic';
-import { NodeActiveDrawer } from './drawer/node-active.drawer';
+import { NodeActiveGenerator } from './drawer/node-active.generator';
 import { CollapseDrawer } from './drawer/node-collapse.drawer';
 import { NodeImageDrawer } from './drawer/node-image.drawer';
 import { NodeSpace } from './utils/space/node-space';
@@ -70,7 +70,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
 
     imageDrawer!: NodeImageDrawer;
 
-    activeDrawer!: NodeActiveDrawer;
+    activeGenerator!: NodeActiveGenerator;
 
     collapseDrawer!: CollapseDrawer;
 
@@ -86,7 +86,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.nodeShapeGenerator = new NodeShapeGenerator(this.board);
         this.nodeEmojisDrawer = new NodeEmojisDrawer(this.board, this.viewContainerRef);
         this.nodeInsertDrawer = new NodeInsertDrawer(this.board);
-        this.activeDrawer = new NodeActiveDrawer(this.board);
+        this.activeGenerator = new NodeActiveGenerator(this.board);
         this.collapseDrawer = new CollapseDrawer(this.board);
         this.imageDrawer = new NodeImageDrawer(this.board, this.viewContainerRef);
         const plugins = this.board.getPluginOptions<WithTextOptions>(WithTextPluginKey).textPlugins;
@@ -126,7 +126,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.nodeShapeGenerator.draw(this.element, this.g, { node: this.node });
         this.drawLink();
         this.drawTopic();
-        this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
+        this.activeGenerator.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
         this.drawEmojis();
         this.drawExtend();
         this.imageDrawer.drawImage(this.g, this.element);
@@ -144,7 +144,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.node = newNode;
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
-            this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
+            this.activeGenerator.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
             this.nodeShapeGenerator.draw(this.element, this.g, { node: this.node });
             this.drawLink();
             this.drawEmojis();
@@ -155,7 +155,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             const hasSameSelected = value.selected === previous.selected;
             const hasSameParent = value.parent === previous.parent;
             if (!hasSameSelected) {
-                this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
+                this.activeGenerator.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
             }
             if (!hasSameParent) {
                 this.drawLink();
@@ -231,10 +231,10 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     }
 
     editTopic() {
-        this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: true });
+        this.activeGenerator.draw(this.element, this.g, { selected: this.selected, isEditing: true });
         this.textManage.edit((origin: ExitOrigin) => {
             if (origin === ExitOrigin.default) {
-                this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: false });
+                this.activeGenerator.draw(this.element, this.g, { selected: this.selected, isEditing: false });
             }
         });
     }

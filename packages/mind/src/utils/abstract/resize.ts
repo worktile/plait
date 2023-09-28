@@ -217,14 +217,14 @@ export function handleTouchedAbstract(board: PlaitBoard, touchedAbstract: MindEl
 
     if (touchedAbstract) {
         const component = PlaitElement.getComponent(touchedAbstract!) as MindNodeComponent;
-        component.activeDrawer.updateAbstractOutline(touchedAbstract);
+        component.activeGenerator.updateAbstractOutline(touchedAbstract);
         touchedAbstract = undefined;
     }
 
     if (abstract) {
         touchedAbstract = abstract;
         const component = PlaitElement.getComponent(touchedAbstract!) as MindNodeComponent;
-        component.activeDrawer.updateAbstractOutline(touchedAbstract, touchedHandle);
+        component.activeGenerator.updateAbstractOutline(touchedAbstract, touchedHandle);
     }
 
     return touchedAbstract;
