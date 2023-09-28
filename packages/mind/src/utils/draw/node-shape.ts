@@ -14,13 +14,13 @@ export function drawRoundRectangleByElement(board: PlaitBoard, nodeRectangle: Re
     const fill = getFillByElement(board, element);
     const stroke = getStrokeByMindElement(board, element);
     const strokeWidth = getStrokeWidthByElement(board, element);
-
+    const newNodeRectangle = RectangleClient.inflate(nodeRectangle, -strokeWidth);
     const nodeG = drawRoundRectangle(
         PlaitBoard.getRoughSVG(board),
-        nodeRectangle.x,
-        nodeRectangle.y,
-        nodeRectangle.x + nodeRectangle.width,
-        nodeRectangle.y + nodeRectangle.height,
+        newNodeRectangle.x,
+        newNodeRectangle.y,
+        newNodeRectangle.x + newNodeRectangle.width,
+        newNodeRectangle.y + newNodeRectangle.height,
         {
             stroke,
             strokeWidth,
