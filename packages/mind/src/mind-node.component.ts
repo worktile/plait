@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import {
     createG,
     PlaitBoard,
-    PlaitPluginElementComponent,
     PlaitElement,
     NODE_TO_INDEX,
     PlaitPluginElementContext,
@@ -13,16 +12,13 @@ import { isHorizontalLayout, AbstractNode, MindLayoutType } from '@plait/layouts
 import { TextManageRef, TextManage, ExitOrigin } from '@plait/text';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { Subject } from 'rxjs';
-import { drawRoundRectangleByNode } from './utils/draw/node-shape';
 import { MindElement, PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
-import { getShapeByElement } from './utils/node-style/shape';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { drawAbstractLink } from './utils/draw/node-link/abstract-link';
 import { NodeEmojisDrawer } from './drawer/node-emojis.drawer';
 import { MindTransforms } from './transforms';
-import { MindElementShape } from './interfaces';
 import { NodeInsertDrawer } from './drawer/node-insert.drawer';
 import { PlaitMindBoard } from './plugins/with-mind.board';
 import { drawLink } from './utils/draw/node-link/draw-link';
@@ -33,6 +29,7 @@ import { NodeImageDrawer } from './drawer/node-image.drawer';
 import { NodeSpace } from './utils/space/node-space';
 import { NodeTopicThreshold } from './constants/node-topic-style';
 import { CommonPluginElement, WithTextOptions, WithTextPluginKey } from '@plait/common';
+import { NodeShapeGenerator } from './drawer/node-shape.generator';
 
 @Component({
     selector: 'plait-mind-node',
@@ -67,6 +64,8 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
 
     nodeEmojisDrawer!: NodeEmojisDrawer;
 
+    nodeShapeGenerator!: NodeShapeGenerator;
+
     nodeInsertDrawer!: NodeInsertDrawer;
 
     imageDrawer!: NodeImageDrawer;
@@ -84,13 +83,13 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     }
 
     initializeDrawer() {
+        this.nodeShapeGenerator = new NodeShapeGenerator(this.board);
         this.nodeEmojisDrawer = new NodeEmojisDrawer(this.board, this.viewContainerRef);
         this.nodeInsertDrawer = new NodeInsertDrawer(this.board);
         this.activeDrawer = new NodeActiveDrawer(this.board);
         this.collapseDrawer = new CollapseDrawer(this.board);
         this.imageDrawer = new NodeImageDrawer(this.board, this.viewContainerRef);
         const plugins = this.board.getPluginOptions<WithTextOptions>(WithTextPluginKey).textPlugins;
-
         const textManage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
                 const rect = getTopicRectangleByNode(this.board, this.node);
@@ -124,7 +123,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.index = NODE_TO_INDEX.get(this.element) || 0;
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.parentG = PlaitElement.getComponent(MindElement.getRoot(this.board, this.element)).rootG as SVGGElement;
-        this.drawShape();
+        this.nodeShapeGenerator.draw(this.element, this.g, { node: this.node });
         this.drawLink();
         this.drawTopic();
         this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
@@ -143,12 +142,10 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         const newNode = MindElement.getNode(value.element);
         const isEqualNode = RectangleClient.isEqual(this.node, newNode);
         this.node = newNode;
-
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
-
         if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
             this.activeDrawer.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
-            this.drawShape();
+            this.nodeShapeGenerator.draw(this.element, this.g, { node: this.node });
             this.drawLink();
             this.drawEmojis();
             this.drawExtend();
@@ -170,26 +167,6 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         const g = this.nodeEmojisDrawer.drawEmojis(this.element);
         if (g) {
             this.g.append(g);
-        }
-    }
-
-    drawShape() {
-        this.destroyShape();
-        const shape = getShapeByElement(this.board, this.node.origin) as MindElementShape;
-        switch (shape) {
-            case MindElementShape.roundRectangle:
-                this.shapeG = drawRoundRectangleByNode(this.board, this.node as MindNode);
-                this.g.prepend(this.shapeG);
-                break;
-            default:
-                break;
-        }
-    }
-
-    destroyShape() {
-        if (this.shapeG) {
-            this.shapeG.remove();
-            this.shapeG = null;
         }
     }
 

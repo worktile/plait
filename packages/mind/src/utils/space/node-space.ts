@@ -1,14 +1,14 @@
 import { DEFAULT_FONT_SIZE, MarkTypes, PlaitMarkEditor } from '@plait/text';
-import { BASE } from '../../constants/default';
+import { BASE, WithMindPluginKey } from '../../constants/default';
 import { PlaitMind } from '../../interfaces/element';
 import { MindElement } from '../../interfaces/element';
 import { EmojiData } from '../../interfaces/element-data';
 import { WithMindOptions } from '../../interfaces/options';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
-import { WithMindPluginKey, getStrokeWidthByElement } from '../../public-api';
 import { getEmojisWidthHeight } from './emoji';
 import { Element } from 'slate';
 import { ROOT_TOPIC_FONT_SIZE } from '../../constants/node-topic-style';
+import { getStrokeWidthByElement } from '../node-style/shape';
 
 const NodeDefaultSpace = {
     horizontal: {
@@ -36,14 +36,14 @@ const getHorizontalSpaceBetweenNodeAndText = (board: PlaitMindBoard, element: Mi
     const isMind = PlaitMind.isMind(element);
     const nodeAndText = isMind ? RootDefaultSpace.horizontal.nodeAndText : NodeDefaultSpace.horizontal.nodeAndText;
     const strokeWidth = getStrokeWidthByElement(board, element);
-    return nodeAndText + strokeWidth / 2;
+    return nodeAndText + strokeWidth;
 };
 
 const getVerticalSpaceBetweenNodeAndText = (board: PlaitMindBoard, element: MindElement) => {
     const isMind = PlaitMind.isMind(element);
     const strokeWidth = getStrokeWidthByElement(board, element);
     const nodeAndText = isMind ? RootDefaultSpace.vertical.nodeAndText : NodeDefaultSpace.vertical.nodeAndText;
-    return nodeAndText + strokeWidth / 2;
+    return nodeAndText + strokeWidth;
 };
 
 const getSpaceEmojiAndText = (element: MindElement) => {
@@ -79,11 +79,7 @@ export const NodeSpace = {
         return Math.max(width, imageWidth);
     },
     /**
-     * use this when upload image first or resize image
-     * @param board 
-     * @param element 
-     * @param imageWidth 
-     * @returns 
+     * use it when upload image first or resize image
      */
     getNodeNewDynamicWidth(board: PlaitMindBoard, element: MindElement, imageWidth: number) {
         const width = element.manualWidth || element.width;
@@ -122,15 +118,12 @@ export const NodeSpace = {
     },
     getImageTopSpace(board: PlaitMindBoard, element: MindElement) {
         const strokeWidth = getStrokeWidthByElement(board, element);
-
-        return strokeWidth / 2 + NodeDefaultSpace.vertical.nodeAndImage;
+        return strokeWidth + NodeDefaultSpace.vertical.nodeAndImage;
     },
     getEmojiLeftSpace(board: PlaitMindBoard, element: MindElement<EmojiData>) {
         const options = board.getPluginOptions<WithMindOptions>(WithMindPluginKey);
         const nodeAndText = getHorizontalSpaceBetweenNodeAndText(board, element);
-        const strokeWidth = getStrokeWidthByElement(board, element);
-
-        return strokeWidth / 2 + nodeAndText - options.emojiPadding;
+        return nodeAndText - options.emojiPadding;
     },
     getEmojiTopSpace(board: PlaitMindBoard, element: MindElement) {
         const nodeAndText = getVerticalSpaceBetweenNodeAndText(board, element);
