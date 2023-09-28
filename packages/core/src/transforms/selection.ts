@@ -3,6 +3,7 @@ import { PlaitBoard } from '../interfaces/board';
 import { Selection } from '../interfaces/selection';
 import { BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { PlaitElement } from '../interfaces/element';
+import { getTemporaryRef } from '../plugins/with-selection';
 
 export function setSelection(board: PlaitBoard, selection: Selection | null) {
     const operation: SetSelectionOperation = { type: 'set_selection', properties: board.selection, newProperties: selection };
@@ -11,18 +12,25 @@ export function setSelection(board: PlaitBoard, selection: Selection | null) {
 
 export interface SelectionTransforms {
     setSelection: (board: PlaitBoard, selection: Selection | null) => void;
-    setSelectionWithTemporaryElements: (board: PlaitBoard, elements: PlaitElement[]) => void;
+    addSelectionWithTemporaryElements: (board: PlaitBoard, elements: PlaitElement[]) => void;
 }
 
 export const SelectionTransforms: SelectionTransforms = {
     setSelection,
-    setSelectionWithTemporaryElements
+    addSelectionWithTemporaryElements
 };
 
-
-export function setSelectionWithTemporaryElements(board: PlaitBoard, elements: PlaitElement[]) {
-    setTimeout(() => {
-        BOARD_TO_TEMPORARY_ELEMENTS.set(board, elements);
+export function addSelectionWithTemporaryElements(board: PlaitBoard, elements: PlaitElement[]) {
+    const timeoutId = setTimeout(() => {
         setSelection(board, { ranges: [] });
-    });
+    }, 0);
+    let ref = getTemporaryRef(board);
+    if (ref) {
+        clearTimeout(ref.timeoutId);
+        const currentElements = ref.elements;
+        ref.elements.push(...elements.filter(element => !currentElements.includes(element)));
+        ref.timeoutId = timeoutId;
+    } else {
+        BOARD_TO_TEMPORARY_ELEMENTS.set(board, { timeoutId, elements });
+    }
 }

@@ -224,7 +224,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
                     }
                 });
 
-                Transforms.setSelectionWithTemporaryElements(board, setActiveElements);
+                Transforms.addSelectionWithTemporaryElements(board, setActiveElements);
             }
 
             setIsDragging(board, false);

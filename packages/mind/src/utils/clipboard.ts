@@ -89,7 +89,6 @@ export const insertClipboardData = (board: PlaitMindBoard, elements: PlaitElemen
 
     elements.forEach((item: PlaitElement, index: number) => {
         newElement = copyNewNode(item as MindElement);
-
         if (hasTargetParent) {
             if (item.isRoot) {
                 newElement = adjustRootToNode(board, newElement);
@@ -125,7 +124,7 @@ export const insertClipboardData = (board: PlaitMindBoard, elements: PlaitElemen
         Transforms.insertNode(board, newElement, path);
         return;
     });
-    Transforms.setSelectionWithTemporaryElements(board, newELements);
+    Transforms.addSelectionWithTemporaryElements(board, newELements);
 };
 
 export const insertClipboardText = (board: PlaitMindBoard, targetParent: PlaitElement, text: string | Element) => {
@@ -133,5 +132,5 @@ export const insertClipboardText = (board: PlaitMindBoard, targetParent: PlaitEl
     const { width, height } = getTextSize(board, text, TOPIC_DEFAULT_MAX_WORD_COUNT, styles);
     const newElement = createMindElement(text, Math.max(width, getFontSizeBySlateElement(text)), height, {});
     Transforms.insertNode(board, newElement, findNewChildNodePath(board, targetParent));
-    return;
+    Transforms.addSelectionWithTemporaryElements(board, [newElement]);
 };

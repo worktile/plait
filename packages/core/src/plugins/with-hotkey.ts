@@ -31,8 +31,7 @@ export const withHotkey = (board: PlaitBoard) => {
                 },
                 true
             );
-
-            Transforms.setSelectionWithTemporaryElements(board, elements);
+            Transforms.addSelectionWithTemporaryElements(board, elements);
             return;
         }
 

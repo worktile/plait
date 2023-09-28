@@ -53,4 +53,5 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElemen
         element.points = element.points.map(point => [startPoint[0] + point[0], startPoint[1] + point[1]]) as [Point, Point];
         Transforms.insertNode(board, element, [board.children.length]);
     });
+    Transforms.addSelectionWithTemporaryElements(board, elements);
 };
