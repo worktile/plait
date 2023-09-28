@@ -7,22 +7,20 @@ import { PlaitMindBoard } from "../../plugins/with-mind.board";
 
 export const getLayoutOptions = (board: PlaitMindBoard) => {
     function getMainAxle(element: MindElement, parent?: LayoutNode) {
-        const strokeWidth = element.strokeWidth || STROKE_WIDTH;
         if (element.isRoot) {
             return BASE * 12;
         }
         if (parent && parent.isRoot()) {
-            return BASE * 3 + strokeWidth / 2;
+            return BASE * 3;
         }
-        return BASE * 3 + strokeWidth / 2;
+        return BASE * 3;
     }
 
     function getSecondAxle(element: MindElement, parent?: LayoutNode) {
-        const strokeWidth = element.strokeWidth || STROKE_WIDTH;
         if (element.isRoot) {
-            return BASE * 10 + strokeWidth / 2;
+            return BASE * 10;
         }
-        return BASE * 6 + strokeWidth / 2;
+        return BASE * 6;
     }
 
     return {
@@ -35,9 +33,8 @@ export const getLayoutOptions = (board: PlaitMindBoard) => {
         getHorizontalGap(element: MindElement, parent?: LayoutNode) {
             const _layout = (parent && parent.layout) || getRootLayout(element);
             const isHorizontal = isHorizontalLayout(_layout);
-            const strokeWidth = element.strokeWidth || STROKE_WIDTH;
             if (isIndentedLayout(_layout)) {
-                return BASE * 4 + strokeWidth;
+                return BASE * 4;
             }
             if (!isHorizontal) {
                 return getMainAxle(element, parent);
