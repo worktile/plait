@@ -4,6 +4,11 @@ import { PlaitElement } from '../interfaces/element';
 import { Ancestor } from '../interfaces/node';
 import { RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { depthFirstRecursion } from '../utils';
+export interface AlignRef {
+    deltaX: number;
+    deltaY: number;
+    g: SVGGElement;
+}
 
 export class ReactionManager {
     alignRectangles: RectangleClient[];
@@ -35,9 +40,9 @@ export class ReactionManager {
         return result;
     }
 
-    handleAlign() {
+    handleAlign(): AlignRef {
         const alignRectangles = this.getAlignRectangle();
-        const G = createG();
+        const g = createG();
         const alignLines = [];
         const offset = 12;
         const options = {
@@ -45,7 +50,8 @@ export class ReactionManager {
             strokeWidth: 1,
             strokeLineDash: [4, 4]
         };
-        const result = { x: 0, y: 0 };
+        let deltaX = 0;
+        let deltaY = 0;
         let isCorrectX = false;
         let isCorrectY = false;
 
@@ -53,8 +59,8 @@ export class ReactionManager {
             const closestDistances = this.calculateClosestDistances(this.activeRectangle, alignRectangle);
             let canDrawHorizontal = false;
             if (!isCorrectX && closestDistances.absXDistance < 5) {
-                result.x = closestDistances.xDistance;
-                this.activeRectangle.x -= result.x;
+                deltaX = closestDistances.xDistance;
+                this.activeRectangle.x -= deltaX;
                 isCorrectX = true;
                 canDrawHorizontal = true;
             }
@@ -112,8 +118,8 @@ export class ReactionManager {
 
             let canDrawVertical = false;
             if (!isCorrectY && closestDistances.absYDistance < 5) {
-                result.y = closestDistances.yDistance;
-                this.activeRectangle.y -= result.y;
+                deltaY = closestDistances.yDistance;
+                this.activeRectangle.y -= deltaY;
                 isCorrectY = true;
                 canDrawVertical = true;
             }
@@ -170,11 +176,11 @@ export class ReactionManager {
             alignLines.forEach(points => {
                 if (!points.length) return;
                 const xAlign = PlaitBoard.getRoughSVG(this.board).line(points[0], points[1], points[2], points[3], options);
-                G.appendChild(xAlign);
+                g.appendChild(xAlign);
             });
         }
 
-        return { G, result };
+        return { deltaX, deltaY, g };
     }
 
     calculateClosestDistances(activeRectangle: RectangleClient, alignRectangle: RectangleClient) {

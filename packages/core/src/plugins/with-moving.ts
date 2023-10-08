@@ -63,9 +63,9 @@ export function withMoving(board: PlaitBoard) {
             const reactionManager = new ReactionManager(board, activeElements, activeElementsRectangle);
             const ref = reactionManager.handleAlign();
 
-            offsetX -= ref.result.x;
-            offsetY -= ref.result.y;
-            alignG = ref.G;
+            offsetX -= ref.deltaX;
+            offsetY -= ref.deltaY;
+            alignG = ref.g;
             PlaitBoard.getElementActiveHost(board).append(alignG);
             const offsetBuffer = 5;
             if (
