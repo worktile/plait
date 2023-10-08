@@ -6,12 +6,14 @@ import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
 import { getHitElementOfRoot, getSelectedElements } from '../utils/selected-element';
-import { PlaitNode } from '../interfaces/node';
+import { Ancestor, PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
 import { addMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
-import { Range } from '../interfaces';
-import { isPreventTouchMove, preventTouchMove, handleTouchTarget } from '../utils';
+import { Range, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
+import { isPreventTouchMove, preventTouchMove, handleTouchTarget, getRectangleByElements, depthFirstRecursion } from '../utils';
+import { createG } from '@plait/core';
+import { ReactionManager } from '../utils/reaction-manage';
 
 export function withMoving(board: PlaitBoard) {
     const { pointerDown, pointerMove, globalPointerUp, globalPointerMove } = board;
@@ -21,6 +23,7 @@ export function withMoving(board: PlaitBoard) {
     let isPreventDefault = false;
     let startPoint: Point | null;
     let activeElements: PlaitElement[] = [];
+    let alignG: SVGGElement | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
         const host = BOARD_TO_HOST.get(board);
@@ -49,12 +52,28 @@ export function withMoving(board: PlaitBoard) {
             if (!isPreventDefault) {
                 isPreventDefault = true;
             }
+            alignG?.remove();
             const host = BOARD_TO_HOST.get(board);
             const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
             offsetX = endPoint[0] - startPoint[0];
             offsetY = endPoint[1] - startPoint[1];
+            const activeElementsRectangle = getRectangleByElements(board, activeElements, true);
+            activeElementsRectangle.x += offsetX;
+            activeElementsRectangle.y += offsetY;
+            const reactionManager = new ReactionManager(board, activeElements, activeElementsRectangle);
+            const ref = reactionManager.handleAlign();
+
+            offsetX -= ref.result.x;
+            offsetY -= ref.result.y;
+            alignG = ref.G;
+            PlaitBoard.getElementActiveHost(board).append(alignG);
             const offsetBuffer = 5;
-            if (Math.abs(offsetX) > offsetBuffer || Math.abs(offsetY) > offsetBuffer || getMovingElements(board).length > 0) {
+            if (
+                Math.abs(offsetX) > offsetBuffer ||
+                Math.abs(offsetY) > offsetBuffer ||
+                getMovingElements(board).length > 0 ||
+                ref.result.x
+            ) {
                 throttleRAF(() => {
                     handleTouchTarget(board);
                     const currentElements = activeElements.map(activeElement => {
@@ -104,6 +123,7 @@ export function withMoving(board: PlaitBoard) {
     };
 
     function cancelMove(board: PlaitBoard) {
+        alignG?.remove();
         startPoint = null;
         offsetX = 0;
         offsetY = 0;
