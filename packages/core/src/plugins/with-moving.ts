@@ -6,14 +6,13 @@ import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
 import { getHitElementOfRoot, getSelectedElements } from '../utils/selected-element';
-import { Ancestor, PlaitNode } from '../interfaces/node';
+import { PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
 import { addMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
-import { Range, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
-import { isPreventTouchMove, preventTouchMove, handleTouchTarget, getRectangleByElements, depthFirstRecursion } from '../utils';
-import { createG } from '@plait/core';
-import { ReactionManager } from '../utils/reaction-manage';
+import { Range } from '../interfaces';
+import { isPreventTouchMove, preventTouchMove, handleTouchTarget, getRectangleByElements } from '../utils';
+import { ReactionManager } from '../utils/reaction-manager';
 
 export function withMoving(board: PlaitBoard) {
     const { pointerDown, pointerMove, globalPointerUp, globalPointerMove } = board;
@@ -68,12 +67,7 @@ export function withMoving(board: PlaitBoard) {
             alignG = ref.g;
             PlaitBoard.getElementActiveHost(board).append(alignG);
             const offsetBuffer = 5;
-            if (
-                Math.abs(offsetX) > offsetBuffer ||
-                Math.abs(offsetY) > offsetBuffer ||
-                getMovingElements(board).length > 0 ||
-                ref.result.x
-            ) {
+            if (Math.abs(offsetX) > offsetBuffer || Math.abs(offsetY) > offsetBuffer || getMovingElements(board).length > 0 || ref.deltaX) {
                 throttleRAF(() => {
                     handleTouchTarget(board);
                     const currentElements = activeElements.map(activeElement => {

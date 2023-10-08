@@ -1,9 +1,10 @@
 import { PlaitBoard } from '../interfaces/board';
-import { createG } from '../utils/dom/common';
+import { createG } from './dom/common';
 import { PlaitElement } from '../interfaces/element';
 import { Ancestor } from '../interfaces/node';
 import { RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
-import { depthFirstRecursion } from '../utils';
+import { depthFirstRecursion } from './tree';
+
 export interface AlignRef {
     deltaX: number;
     deltaY: number;
