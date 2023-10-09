@@ -11,21 +11,21 @@ import {
     Renderer2,
     ViewChild
 } from '@angular/core';
-import { createEditor, Editor, Element, Text, Transforms } from 'slate';
-import { withHistory } from 'slate-history';
-import { SlateEditableComponent, withAngular } from 'slate-angular';
-import { withSingleLine } from '../plugins/with-single';
-import { withMark } from '../plugins/mark/with-marks';
-import { MarkTypes } from '../constant/mark';
-import { PlaitTextNodeComponent } from '../text-node/text.component';
-import { CLIPBOARD_FORMAT_KEY } from '../constant';
-import { PlaitLinkNodeComponent } from '../plugins/link/link.component';
-import { LinkElement, TextPlugin } from '../custom-types';
-import { withLink } from '../plugins/link/with-link';
-import { withSelection } from '../plugins/with-selection';
-import { PlaitTextEditor } from '../plugins/text.editor';
 import { isKeyHotkey } from 'is-hotkey';
+import { Editor, Element, Text, Transforms, createEditor } from 'slate';
+import { SlateEditable, withAngular } from 'slate-angular';
+import { withHistory } from 'slate-history';
+import { CLIPBOARD_FORMAT_KEY } from '../constant';
+import { MarkTypes } from '../constant/mark';
+import { LinkElement, TextPlugin } from '../custom-types';
+import { PlaitLinkNodeComponent } from '../plugins/link/link.component';
+import { withLink } from '../plugins/link/with-link';
+import { withMark } from '../plugins/mark/with-marks';
 import { ParagraphElementComponent } from '../plugins/paragraph/paragraph.component';
+import { PlaitTextEditor } from '../plugins/text.editor';
+import { withSelection } from '../plugins/with-selection';
+import { withSingleLine } from '../plugins/with-single';
+import { PlaitTextNodeComponent } from '../text-node/text.component';
 
 @Component({
     selector: 'plait-richtext',
@@ -46,7 +46,7 @@ export class PlaitRichtextComponent implements OnInit, AfterViewInit {
     @Input() readonly = false;
 
     @ViewChild('slateEditable')
-    slateEditable!: SlateEditableComponent;
+    slateEditable!: SlateEditable;
 
     @Output()
     onChange: EventEmitter<Editor> = new EventEmitter();
