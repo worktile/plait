@@ -6,7 +6,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
-        "build": "npm run build:core && npm run build:common && npm run build:text && ng build layouts && npm run build:mind && npm run build:flow && npm run build:draw",
+        "build": "npm run build:core && npm run build:text && npm run build:common && ng build layouts && npm run build:mind && npm run build:flow && npm run build:draw",
         "build:docs": "docgeni build",
         "build:core": "ng build core && cpx \"./packages/core/src/**/*.scss\" ./dist/core/",
         "build:mind": " ng build mind && cpx \"./packages/mind/src/**/*.scss\" ./dist/mind/",
