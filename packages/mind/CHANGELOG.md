@@ -1,5 +1,20 @@
 # mind
 
+## 0.27.0-next.8
+
+### Minor Changes
+
+-   [`3f8d541a`](https://github.com/worktile/plait/commit/3f8d541a6b7fa2257e42ce9048f9e4eff8f255e4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - select elements which were inserted from clipboard
+
+*   [#582](https://github.com/worktile/plait/pull/582) [`32a40c6c`](https://github.com/worktile/plait/commit/32a40c6c1d7d9821bbd2616194794e8e7572f6af) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve mind node shape logic
+
+-   [`f2b506ee`](https://github.com/worktile/plait/commit/f2b506ee18e614b9a5087ae64dd0188b5f80439c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - setFragment support type property
+    handle bound geometry element for line element
+
+*   [#582](https://github.com/worktile/plait/pull/582) [`8f98117d`](https://github.com/worktile/plait/commit/8f98117db94761789bd9c4a97b4b560aa242a69e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove the effect about stroke width in layout options
+
+-   [#582](https://github.com/worktile/plait/pull/582) [`1202b198`](https://github.com/worktile/plait/commit/1202b19843dd3e6a3ae807457154f8382c7c7c7d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve mind node active generator
+
 ## 0.27.0-next.7
 
 ### Patch Changes

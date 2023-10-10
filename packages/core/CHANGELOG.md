@@ -1,5 +1,18 @@
 # plait
 
+## 0.24.0-next.10
+
+### Minor Changes
+
+-   [#583](https://github.com/worktile/plait/pull/583) [`ddff5ac9`](https://github.com/worktile/plait/commit/ddff5ac9f0982a3378066a24869e4f30f38e160e) Thanks [@WBbug](https://github.com/WBbug)! - support move reaction draw align lines
+
+*   [`3f8d541a`](https://github.com/worktile/plait/commit/3f8d541a6b7fa2257e42ce9048f9e4eff8f255e4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - select elements which were inserted from clipboard
+
+-   [#581](https://github.com/worktile/plait/pull/581) [`ae4c3174`](https://github.com/worktile/plait/commit/ae4c31740c21350501b6ba4c117525a1c27cbec6) Thanks [@WBbug](https://github.com/WBbug)! - change draw outer selection and draw line-active
+
+*   [`f2b506ee`](https://github.com/worktile/plait/commit/f2b506ee18e614b9a5087ae64dd0188b5f80439c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - setFragment support type property
+    handle bound geometry element for line element
+
 ## 0.24.0-next.9
 
 ### Patch Changes

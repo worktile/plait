@@ -1,5 +1,24 @@
 # @plait/draw
 
+## 0.1.0-next.10
+
+### Minor Changes
+
+-   [#580](https://github.com/worktile/plait/pull/580) [`c864a112`](https://github.com/worktile/plait/commit/c864a112ff7407803ccb81fc8232107a4fc6bb2a) Thanks [@WBbug](https://github.com/WBbug)! - support fix ratio when resize
+
+*   [`3f8d541a`](https://github.com/worktile/plait/commit/3f8d541a6b7fa2257e42ce9048f9e4eff8f255e4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - select elements which were inserted from clipboard
+
+-   [#581](https://github.com/worktile/plait/pull/581) [`ae4c3174`](https://github.com/worktile/plait/commit/ae4c31740c21350501b6ba4c117525a1c27cbec6) Thanks [@WBbug](https://github.com/WBbug)! - change draw outer selection and draw line-active
+
+*   [`f2b506ee`](https://github.com/worktile/plait/commit/f2b506ee18e614b9a5087ae64dd0188b5f80439c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - setFragment support type property
+    handle bound geometry element for line element
+
+### Patch Changes
+
+-   [#579](https://github.com/worktile/plait/pull/579) [`277272bf`](https://github.com/worktile/plait/commit/277272bfa49fa836059d5a97cb724d663b8cb6f2) Thanks [@WBbug](https://github.com/WBbug)! - use new id when draw mask
+
+*   [#577](https://github.com/worktile/plait/pull/577) [`5e0e0f84`](https://github.com/worktile/plait/commit/5e0e0f84b176b229a4105e7d4dca0b8df30b8635) Thanks [@WBbug](https://github.com/WBbug)! - change mind pointer
+
 ## 0.1.0-next.9
 
 ### Patch Changes
