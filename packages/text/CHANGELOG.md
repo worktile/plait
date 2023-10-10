@@ -1,5 +1,11 @@
 # text
 
+## 0.16.0-next.5
+
+### Minor Changes
+
+-   [`e0454b2c`](https://github.com/worktile/plait/commit/e0454b2ca840f60684f17b7741460eb1250f8601) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump slate-angular
+
 ## 0.16.0-next.4
 
 ### Minor Changes
