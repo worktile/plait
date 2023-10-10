@@ -1,6 +1,17 @@
-import { PlaitBoard, Point, RectangleClient, getNearestPointBetweenPointAndSegments, isPointInPolygon, setStrokeLinecap } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    PointOfRectangle,
+    RectangleClient,
+    distanceBetweenPointAndSegment,
+    getNearestPointBetweenPointAndSegments,
+    isPointInPolygon,
+    setStrokeLinecap
+} from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
+import { getEdgeOnPolygonByPoint } from '../geometry';
+import { getRectangleByPoints } from '@plait/common';
 
 export const DiamondEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
@@ -14,9 +25,16 @@ export const DiamondEngine: ShapeEngine = {
         const controlPoints = RectangleClient.getEdgeCenterPoints(rectangle);
         return isPointInPolygon(point, controlPoints);
     },
+    getCornerPoints(rectangle: RectangleClient) {
+        return RectangleClient.getEdgeCenterPoints(rectangle);
+    },
     getNearestPoint(rectangle: RectangleClient, point: Point) {
-        const connectorPoints = RectangleClient.getEdgeCenterPoints(rectangle);
-        return getNearestPointBetweenPointAndSegments(point, connectorPoints);
+        return getNearestPointBetweenPointAndSegments(point, DiamondEngine.getCornerPoints(rectangle));
+    },
+    getEdgeByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle): [Point, Point] | null {
+        const corners = DiamondEngine.getCornerPoints(rectangle);
+        const point = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
+        return getEdgeOnPolygonByPoint(corners, point);
     },
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);

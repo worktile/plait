@@ -1,4 +1,4 @@
-import { PlaitElement, Point } from '@plait/core';
+import { PlaitElement, Point, PointOfRectangle } from '@plait/core';
 import { Element } from 'slate';
 import { LineComponent } from '../line.component';
 import { PlaitGeometry } from './geometry';
@@ -34,7 +34,14 @@ export interface LineText {
 export interface LineHandle {
     // 关联元素的 id
     boundId?: string;
-    connection?: Point;
+    connection?: PointOfRectangle;
+    marker: LineMarkerType;
+}
+
+export interface LineHandleRef {
+    key: LineHandleKey;
+    boundElement: PlaitGeometry;
+    connection: PointOfRectangle;
     marker: LineMarkerType;
 }
 
@@ -81,11 +88,18 @@ export const PlaitLine = {
         }
         throw new Error('can not get correctly component in get text editor');
     },
+    isMarkByHandleKey(line: PlaitLine, handleKey: LineHandleKey, markType: LineMarkerType) {
+        if (handleKey === LineHandleKey.source) {
+            return line.source.marker === markType;
+        } else {
+            return line.target.marker === markType;
+        }
+    },
     isSourceMark(line: PlaitLine, markType: LineMarkerType) {
-        return line.source.marker === markType;
+        return PlaitLine.isMarkByHandleKey(line, LineHandleKey.source, markType);
     },
     isTargetMark(line: PlaitLine, markType: LineMarkerType) {
-        return line.target.marker === markType;
+        return PlaitLine.isMarkByHandleKey(line, LineHandleKey.target, markType);
     },
     isBoundElementOfSource(line: PlaitLine, element: PlaitGeometry) {
         return line.source.boundId === element.id;

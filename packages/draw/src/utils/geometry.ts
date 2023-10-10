@@ -6,6 +6,7 @@ import {
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
     createG,
+    distanceBetweenPointAndSegment,
     drawCircle,
     idCreator
 } from '@plait/core';
@@ -108,4 +109,16 @@ export const getCenterPointsOnPolygon = (points: Point[]) => {
         centerPoint.push([(points[i][0] + points[j][0]) / 2, (points[i][1] + points[j][1]) / 2]);
     }
     return centerPoint;
+};
+
+export const getEdgeOnPolygonByPoint = (corners: Point[], point: Point) => {
+    for (let index = 1; index <= corners.length; index++) {
+        let start = corners[index - 1];
+        let end = index === corners.length ? corners[0] : corners[index];
+        const distance = distanceBetweenPointAndSegment(point[0], point[1], start[0], start[1], end[0], end[1]);
+        if (distance < 1) {
+            return [start, end] as [Point, Point];
+        }
+    }
+    return null;
 };
