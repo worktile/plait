@@ -5,7 +5,11 @@ export enum DrawPointerType {
     diamond = 'diamond',
     roundRectangle = 'roundRectangle',
     parallelogram = 'parallelogram',
-    ellipse = 'ellipse'
+    ellipse = 'ellipse',
+    triangle = 'triangle',
+    leftArrow = 'leftArrow',
+    trapezoid = 'trapezoid',
+    rightArrow = 'rightArrow'
 }
 
 export const GeometryPointer = [
@@ -14,5 +18,9 @@ export const GeometryPointer = [
     DrawPointerType.diamond,
     DrawPointerType.ellipse,
     DrawPointerType.parallelogram,
-    DrawPointerType.roundRectangle
+    DrawPointerType.roundRectangle,
+    DrawPointerType.triangle,
+    DrawPointerType.leftArrow,
+    DrawPointerType.trapezoid,
+    DrawPointerType.rightArrow
 ];

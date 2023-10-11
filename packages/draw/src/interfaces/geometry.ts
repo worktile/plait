@@ -10,7 +10,11 @@ export enum GeometryShape {
     diamond = 'diamond',
     roundRectangle = 'roundRectangle',
     parallelogram = 'parallelogram',
-    text = 'text'
+    text = 'text',
+    triangle = 'triangle',
+    leftArrow = 'leftArrow',
+    trapezoid = 'trapezoid',
+    rightArrow = 'rightArrow'
 }
 
 export interface PlaitGeometry extends PlaitElement {
