@@ -3,6 +3,7 @@ import { Element } from 'slate';
 import { LineComponent } from '../line.component';
 import { PlaitGeometry } from './geometry';
 import { StrokeStyle } from './element';
+import { Direction } from '@plait/common';
 
 export enum LineMarkerType {
     arrow = 'arrow',
@@ -40,9 +41,9 @@ export interface LineHandle {
 
 export interface LineHandleRef {
     key: LineHandleKey;
-    boundElement: PlaitGeometry;
-    connection: PointOfRectangle;
-    marker: LineMarkerType;
+    direction: Direction;
+    point: PointOfRectangle;
+    boundElement?: PlaitGeometry;
 }
 
 export interface PlaitLine extends PlaitElement {
@@ -88,7 +89,7 @@ export const PlaitLine = {
         }
         throw new Error('can not get correctly component in get text editor');
     },
-    isMarkByHandleKey(line: PlaitLine, handleKey: LineHandleKey, markType: LineMarkerType) {
+    isSourceMarkOrTargetMark(line: PlaitLine, markType: LineMarkerType, handleKey: LineHandleKey) {
         if (handleKey === LineHandleKey.source) {
             return line.source.marker === markType;
         } else {
@@ -96,10 +97,10 @@ export const PlaitLine = {
         }
     },
     isSourceMark(line: PlaitLine, markType: LineMarkerType) {
-        return PlaitLine.isMarkByHandleKey(line, LineHandleKey.source, markType);
+        return PlaitLine.isSourceMarkOrTargetMark(line, markType, LineHandleKey.source);
     },
     isTargetMark(line: PlaitLine, markType: LineMarkerType) {
-        return PlaitLine.isMarkByHandleKey(line, LineHandleKey.target, markType);
+        return PlaitLine.isSourceMarkOrTargetMark(line, markType, LineHandleKey.target);
     },
     isBoundElementOfSource(line: PlaitLine, element: PlaitGeometry) {
         return line.source.boundId === element.id;

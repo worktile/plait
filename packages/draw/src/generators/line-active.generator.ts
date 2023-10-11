@@ -1,7 +1,7 @@
 import { PlaitBoard, createG, drawCircle, drawRectangle, getSelectedElements } from '@plait/core';
 import { PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
-import { getLinePoints, getSourcePoint, getTargetPoint } from '../utils';
+import { getLineHandlePoints, getLinePoints } from '../utils';
 import { DefaultGeometryActiveStyle } from '../constants';
 
 export interface ActiveData {
@@ -24,8 +24,7 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
         if (this.hasResizeHandle) {
             activeG.classList.add('active');
             activeG.classList.add('line-handle');
-            const sourcePoint = getSourcePoint(this.board, element);
-            const targetPoint = getTargetPoint(this.board, element);
+            const [sourcePoint, targetPoint] = getLineHandlePoints(this.board, element);
             const sourceCircle = drawCircle(PlaitBoard.getRoughSVG(this.board), sourcePoint, RESIZE_HANDLE_DIAMETER, {
                 stroke: '#999999',
                 strokeWidth: 1,
