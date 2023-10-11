@@ -7,6 +7,12 @@ export interface RectangleClient {
     height: number;
 }
 
+/**
+ * [x, y] x,y between 0 and 1
+ * represents a point in the rectangle
+ */
+export type PointOfRectangle = [number, number];
+
 export const RectangleClient = {
     isHit: (origin: RectangleClient, target: RectangleClient) => {
         const minX = origin.x < target.x ? origin.x : target.x;
@@ -70,5 +76,8 @@ export const RectangleClient = {
             [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height],
             [rectangle.x, rectangle.y + rectangle.height / 2]
         ] as [Point, Point, Point, Point];
+    },
+    getConnectionPoint: (rectangle: RectangleClient, point: PointOfRectangle) => {
+        return [rectangle.x + rectangle.width * point[0], rectangle.y + rectangle.height * point[1]] as Point;
     }
 };

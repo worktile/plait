@@ -1,6 +1,7 @@
 import {
     PlaitBoard,
     Point,
+    PointOfRectangle,
     RectangleClient,
     drawRoundRectangle,
     getNearestPointBetweenPointAndSegments,
@@ -9,6 +10,8 @@ import {
 import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getNearestPointBetweenPointAndEllipse } from './ellipse';
+import { RectangleEngine } from './rectangle';
+import { getEdgeOnPolygonByPoint } from '../geometry';
 
 export const RoundRectangleEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
@@ -26,8 +29,16 @@ export const RoundRectangleEngine: ShapeEngine = {
     isHit(rectangle: RectangleClient, point: Point) {
         return isPointInRoundRectangle(point, rectangle, getRoundRectangleRadius(rectangle));
     },
+    getCornerPoints(rectangle: RectangleClient) {
+        return RectangleClient.getCornerPoints(rectangle);
+    },
     getNearestPoint(rectangle: RectangleClient, point: Point) {
         return getNearestPointBetweenPointAndRoundRectangle(point, rectangle, getRoundRectangleRadius(rectangle));
+    },
+    getEdgeByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle): [Point, Point] | null {
+        const corners = RectangleEngine.getCornerPoints(rectangle);
+        const point = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
+        return getEdgeOnPolygonByPoint(corners, point);
     },
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);

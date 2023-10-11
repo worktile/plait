@@ -1,31 +1,38 @@
-import { PlaitBoard, Point, RectangleClient, getNearestPointBetweenPointAndSegments, isPointInPolygon, setStrokeLinecap } from '@plait/core';
+import { PlaitBoard, Point, PointOfRectangle, RectangleClient, getNearestPointBetweenPointAndSegments, isPointInPolygon, setStrokeLinecap } from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
-import { getCenterPointsOnPolygon } from '../geometry';
+import { getCenterPointsOnPolygon, getEdgeOnPolygonByPoint } from '../geometry';
 import { Options } from 'roughjs/bin/core';
 
 export const ParallelogramEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
-        const points = getParallelogramPoints(rectangle);
+        const points = getParallelogramCornerPoints(rectangle);
         const rs = PlaitBoard.getRoughSVG(board);
         const polygon = rs.polygon(points, { ...options, fillStyle: 'solid' });
         setStrokeLinecap(polygon, 'round');
         return polygon;
     },
     isHit(rectangle: RectangleClient, point: Point) {
-        const parallelogramPoints = getParallelogramPoints(rectangle);
+        const parallelogramPoints = getParallelogramCornerPoints(rectangle);
         return isPointInPolygon(point, parallelogramPoints);
     },
+    getCornerPoints(rectangle: RectangleClient) {
+        return getParallelogramCornerPoints(rectangle);
+    },
     getNearestPoint(rectangle: RectangleClient, point: Point) {
-        const cornerPoints = getParallelogramPoints(rectangle);
-        return getNearestPointBetweenPointAndSegments(point, cornerPoints);
+        return getNearestPointBetweenPointAndSegments(point, ParallelogramEngine.getCornerPoints(rectangle));
+    },
+    getEdgeByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle): [Point, Point] | null {
+        const corners = getParallelogramCornerPoints(rectangle);
+        const point = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
+        return getEdgeOnPolygonByPoint(corners, point);
     },
     getConnectorPoints(rectangle: RectangleClient) {
-        const cornerPoints = getParallelogramPoints(rectangle);
+        const cornerPoints = getParallelogramCornerPoints(rectangle);
         return getCenterPointsOnPolygon(cornerPoints);
     }
 };
 
-export const getParallelogramPoints = (rectangle: RectangleClient): Point[] => {
+export const getParallelogramCornerPoints = (rectangle: RectangleClient): Point[] => {
     return [
         [rectangle.x + rectangle.width / 4, rectangle.y],
         [rectangle.x + rectangle.width, rectangle.y],

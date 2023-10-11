@@ -12,6 +12,9 @@ export const EllipseEngine: ShapeEngine = {
         const centerPoint: Point = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
         return isPointInEllipse(point, centerPoint, rectangle.width / 2, rectangle.height / 2);
     },
+    getCornerPoints(rectangle: RectangleClient) {
+        return RectangleClient.getEdgeCenterPoints(rectangle);
+    },
     getNearestPoint(rectangle: RectangleClient, point: Point) {
         const centerPoint: Point = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
         return getNearestPointBetweenPointAndEllipse(point, centerPoint, rectangle.width / 2, rectangle.height / 2);

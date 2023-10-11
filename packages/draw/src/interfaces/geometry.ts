@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, Point, RectangleClient } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, PointOfRectangle, RectangleClient } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { Options } from 'roughjs/bin/core';
 import { ParagraphElement } from '@plait/text';
@@ -60,5 +60,7 @@ export interface ShapeEngine {
     isHit: (rectangle: RectangleClient, point: Point) => boolean;
     getNearestPoint: (rectangle: RectangleClient, point: Point) => Point;
     getConnectorPoints: (rectangle: RectangleClient) => Point[];
+    getCornerPoints: (rectangle: RectangleClient) => Point[];
+    getEdgeByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => [Point, Point] | null;
     draw: (board: PlaitBoard, rectangle: RectangleClient, options: Options) => SVGGElement;
 }
