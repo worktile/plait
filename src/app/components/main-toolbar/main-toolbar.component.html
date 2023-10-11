@@ -46,6 +46,40 @@
 
 <a
     class="action-item"
+    [ngClass]="{ active: isPointer(DrawPointerType.triangle) }"
+    (mousedown)="setPointer($event, DrawPointerType.triangle)"
+>
+    <ng-template [ngTemplateOutlet]="triangle"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(DrawPointerType.leftArrow) }"
+    (mousedown)="setPointer($event, DrawPointerType.leftArrow)"
+>
+    <ng-template [ngTemplateOutlet]="leftArrow"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(DrawPointerType.rightArrow) }"
+    (mousedown)="setPointer($event, DrawPointerType.rightArrow)"
+>
+    <ng-template [ngTemplateOutlet]="rightArrow"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(DrawPointerType.trapezoid) }"
+    (mousedown)="setPointer($event, DrawPointerType.trapezoid)"
+>
+    <ng-template [ngTemplateOutlet]="trapezoid"></ng-template>
+</a>
+
+
+
+<a
+    class="action-item"
     [ngClass]="{ active: isPointer(DrawPointerType.roundRectangle) }"
     (mousedown)="setPointer($event, DrawPointerType.roundRectangle)"
 >
@@ -191,6 +225,43 @@
         <title>1.Base基础/1.icon图标/11.editor/ arrow symbol</title>
         <g id="1.Base基础/1.icon图标/11.editor/-arrow-symbol" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
             <path d="M8.55595221,-1.5261864 C8.88741773,-1.5261864 9.15621426,-1.25765205 9.15653772,-0.926186684 L9.16739175,10.3828136 L10.9946787,10.3836977 C11.2708211,10.3836977 11.4946787,10.6075553 11.4946787,10.8836977 C11.4946787,10.9607525 11.4768694,11.0367648 11.4426413,11.1058002 L8.8378495,16.3594519 C8.7642512,16.5078936 8.58425218,16.5685662 8.43581043,16.4949679 C8.37895485,16.4667786 8.33250284,16.4212859 8.30313336,16.3650308 L5.56226325,11.1150985 C5.43446412,10.8703088 5.52930372,10.5682659 5.77409341,10.4404667 C5.84552557,10.4031736 5.92491301,10.3836977 6.0054942,10.3836977 L7.96739175,10.3828136 L7.95653772,-0.926186684 C7.95621467,-1.25723416 8.22431979,-1.52586306 8.55536727,-1.52618611 Z" id="形状结合" fill="#999999" transform="translate(8.500035, 7.500035) rotate(-135.000000) translate(-8.500035, -7.500035) "/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #triangle>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/三角形</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/三角形" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M8.23125547,1.21366135 C8.3114266,1.25857939 8.37766784,1.32472334 8.42270367,1.40482837 L15.6471754,14.2549655 C15.7825042,14.4956743 15.6970768,14.800513 15.456368,14.9358418 C15.3815505,14.977905 15.2971646,15 15.2113335,15 L0.787227066,15 C0.511084691,15 0.287227066,14.7761424 0.287227066,14.5 C0.287227066,14.414418 0.309194147,14.3302684 0.351025556,14.2556064 L7.55066033,1.40546924 C7.6856352,1.1645618 7.99034802,1.07868648 8.23125547,1.21366135 Z M7.98695902,3.07926294 L1.98095902,13.7992629 L14.014959,13.7992629 L7.98695902,3.07926294 Z" id="矩形" fill="#999999"/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #leftArrow>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/左箭头</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/左箭头" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M7.70710678,1.29289322 C7.89464316,1.4804296 8,1.73478351 8,2 L7.99993219,4.499 L15,4.5 C15.5522847,4.5 16,4.94771525 16,5.5 L16,10.5 C16,11.0522847 15.5522847,11.5 15,11.5 L7.99993219,11.499 L8,14.1421356 C8,14.6944204 7.55228475,15.1421356 7,15.1421356 C6.73478351,15.1421356 6.4804296,15.0367788 6.29289322,14.8492424 L0.221825407,8.77817459 C-0.168698885,8.3876503 -0.168698885,7.75448532 0.221825407,7.36396103 L6.29289322,1.29289322 C6.68341751,0.902368927 7.31658249,0.902368927 7.70710678,1.29289322 Z M6.79993219,2.482 L1.21193219,8.071 L6.79993219,13.659 L6.7999014,10.2988286 L14.7999322,10.299 L14.7999322,5.699 L6.79989963,5.69882858 L6.79993219,2.482 Z" id="形状结合" fill="#999999"/>
+        </g>
+    </svg>
+</ng-template>
+
+
+<ng-template #trapezoid>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/梯形</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/梯形" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M12.7132076,2.04924266 C12.9440979,2.04924266 13.1449625,2.20733917 13.1992109,2.43176613 L15.8507438,13.4012248 C15.9156243,13.669637 15.7506292,13.9398242 15.482217,14.0047047 C15.4437501,14.0140029 15.4043152,14.0187013 15.3647405,14.0187013 L0.639965496,14.0187013 C0.363823121,14.0187013 0.139965496,13.7948437 0.139965496,13.5187013 C0.139965496,13.4779276 0.144952918,13.4373069 0.154816657,13.3977443 L2.8897159,2.42828562 C2.94524806,2.20555064 3.14531149,2.04924266 3.37486474,2.04924266 L12.7132076,2.04924266 Z M12.162,3.24924266 L3.922,3.24924266 L1.536,12.8182427 L14.475,12.8182427 L12.162,3.24924266 Z" id="矩形" fill="#999999"/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #rightArrow>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/右箭头</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/右箭头" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M7.70710678,1.29289322 C7.89464316,1.4804296 8,1.73478351 8,2 L7.99993219,4.499 L15,4.5 C15.5522847,4.5 16,4.94771525 16,5.5 L16,10.5 C16,11.0522847 15.5522847,11.5 15,11.5 L7.99993219,11.499 L8,14.1421356 C8,14.6944204 7.55228475,15.1421356 7,15.1421356 C6.73478351,15.1421356 6.4804296,15.0367788 6.29289322,14.8492424 L0.221825407,8.77817459 C-0.168698885,8.3876503 -0.168698885,7.75448532 0.221825407,7.36396103 L6.29289322,1.29289322 C6.68341751,0.902368927 7.31658249,0.902368927 7.70710678,1.29289322 Z M6.79993219,2.482 L1.21193219,8.071 L6.79993219,13.659 L6.7999014,10.2988286 L14.7999322,10.299 L14.7999322,5.699 L6.79989963,5.69882858 L6.79993219,2.482 Z" id="形状结合" fill="#999999" transform="translate(7.964466, 8.071068) rotate(-180.000000) translate(-7.964466, -8.071068) "/>
         </g>
     </svg>
 </ng-template>
