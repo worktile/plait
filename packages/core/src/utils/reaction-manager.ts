@@ -44,13 +44,9 @@ export class ReactionManager {
     handleAlign(): AlignRef {
         const alignRectangles = this.getAlignRectangle();
         const g = createG();
-        const alignLines = [];
+        let alignLines = [];
+
         const offset = 12;
-        const options = {
-            stroke: SELECTION_BORDER_COLOR,
-            strokeWidth: 1,
-            strokeLineDash: [4, 4]
-        };
         let deltaX = 0;
         let deltaY = 0;
         let isCorrectX = false;
@@ -173,12 +169,25 @@ export class ReactionManager {
             }
         }
 
+        const alignDeltaX = deltaX;
+        this.activeRectangle.x += deltaX;
+        const distributeHorizontalResult = this.alignDistributeHorizontal(alignRectangles);
+        const distributeLines: number[][] = distributeHorizontalResult.distributeLines;
+        if (distributeHorizontalResult.deltaX) {
+            deltaX = distributeHorizontalResult.deltaX;
+            if (alignDeltaX !== deltaX) {
+                alignLines[0] = [];
+                alignLines[1] = [];
+                alignLines[2] = [];
+            }
+        }
+
         if (alignLines.length) {
-            alignLines.forEach(points => {
-                if (!points.length) return;
-                const xAlign = PlaitBoard.getRoughSVG(this.board).line(points[0], points[1], points[2], points[3], options);
-                g.appendChild(xAlign);
-            });
+            this.drawAlignLines(alignLines, g);
+        }
+
+        if (distributeLines.length) {
+            this.drawDistributeLines(distributeLines, g);
         }
 
         return { deltaX, deltaY, g };
@@ -219,4 +228,195 @@ export class ReactionManager {
             indexY
         };
     }
+
+    alignDistributeHorizontal(alignRectangles: RectangleClient[]) {
+        let distributeLines: any[] = [];
+        let deltaX = 0;
+        let dif = Infinity;
+        const activeRectangleCenterX = this.activeRectangle.x + this.activeRectangle.width / 2;
+        let rectangles: RectangleClient[] = [];
+        alignRectangles.forEach(rec => {
+            if (isHorizontalCross(rec, this.activeRectangle) && !RectangleClient.isHit(rec, this.activeRectangle)) {
+                rectangles.push(rec);
+            }
+        });
+        rectangles = rectangles.sort((a, b) => a.x - b.x);
+
+        const getLinePoints = (leftRectangle: RectangleClient, middleRectangle: RectangleClient, rightRectangle: RectangleClient) => {
+            const leftVerticalY = [
+                leftRectangle.y,
+                leftRectangle.y + leftRectangle.height,
+                middleRectangle.y,
+                middleRectangle.y + middleRectangle.height
+            ];
+            const rightVerticalY = [
+                middleRectangle.y,
+                middleRectangle.y + middleRectangle.height,
+                rightRectangle.y,
+                rightRectangle.y + rightRectangle.height
+            ];
+            const leftSortArr = leftVerticalY.sort((a, b) => a - b);
+            const rightSortArr = rightVerticalY.sort((a, b) => a - b);
+            const leftY = (leftSortArr[1] + leftSortArr[2]) / 2;
+            const rightY = (rightSortArr[1] + rightSortArr[2]) / 2;
+            const leftLine = [leftRectangle.x + leftRectangle.width + 2, leftY, middleRectangle.x - 2, leftY];
+            const rightLine = [middleRectangle.x + middleRectangle.width + 2, rightY, rightRectangle.x - 2, rightY];
+            return [leftLine, rightLine];
+        };
+
+        for (let i = 0; i < rectangles.length; i++) {
+            for (let j = i + 1; j < rectangles.length; j++) {
+                let leftRectangle = rectangles[i],
+                    rightRectangle = rectangles[j];
+                if (!isHorizontalCross(leftRectangle, rightRectangle)) continue;
+                if (RectangleClient.isHit(leftRectangle, rightRectangle)) continue;
+
+                //middle
+                let _centerX = (leftRectangle.x + leftRectangle.width + rightRectangle.x) / 2;
+                dif = Math.abs(activeRectangleCenterX - _centerX);
+                if (dif <= 5) {
+                    deltaX = activeRectangleCenterX - _centerX;
+                    const distance = (rightRectangle.x - (leftRectangle.x + leftRectangle.width) - this.activeRectangle.width) / 2;
+                    const verticalY = [
+                        leftRectangle.y,
+                        leftRectangle.y + leftRectangle.height,
+                        rightRectangle.y,
+                        rightRectangle.y + rightRectangle.height
+                    ];
+                    const activeX = this.activeRectangle.x - deltaX;
+                    const sortArr = verticalY.sort((a, b) => a - b);
+                    const y = (sortArr[2] + sortArr[1]) / 2;
+                    distributeLines = [];
+                    distributeLines.push([leftRectangle.x + leftRectangle.width + 2, y, activeX - 2, y]);
+                    distributeLines.push([activeX + this.activeRectangle.width + 2, y, rightRectangle.x - 2, y]);
+
+                    this.findBefore(distance, rectangles, leftRectangle, distributeLines, true);
+                    this.findRight(distance, rectangles, rightRectangle, distributeLines);
+                    return { deltaX, distributeLines };
+                }
+
+                //right
+                const distanceRight = rightRectangle.x - (leftRectangle.x + leftRectangle.width);
+                _centerX = rightRectangle.x + rightRectangle.width + distanceRight + this.activeRectangle.width / 2;
+                dif = Math.abs(activeRectangleCenterX - _centerX);
+                if (dif <= 5) {
+                    deltaX = activeRectangleCenterX - _centerX;
+                    const lines = getLinePoints(leftRectangle, rightRectangle, {
+                        ...this.activeRectangle,
+                        x: this.activeRectangle.x - deltaX
+                    });
+                    distributeLines = [];
+                    distributeLines.push(...lines);
+                    this.findBefore(distanceRight, rectangles, leftRectangle, distributeLines, true);
+                }
+
+                //left
+                const distanceLeft = rightRectangle.x - (leftRectangle.x + leftRectangle.width);
+                _centerX = leftRectangle.x - distanceLeft - this.activeRectangle.width / 2;
+                dif = Math.abs(activeRectangleCenterX - _centerX);
+
+                if (dif <= 5) {
+                    deltaX = activeRectangleCenterX - _centerX;
+                    const lines = getLinePoints(
+                        { ...this.activeRectangle, x: this.activeRectangle.x - deltaX },
+                        leftRectangle,
+                        rightRectangle
+                    );
+                    distributeLines = [];
+                    distributeLines.push(...lines);
+                    this.findRight(distanceLeft, rectangles, leftRectangle, distributeLines);
+                }
+            }
+        }
+        return { deltaX, distributeLines };
+    }
+
+    drawAlignLines(lines: number[][], g: SVGGElement) {
+        lines.forEach(points => {
+            if (!points.length) return;
+            const xAlign = PlaitBoard.getRoughSVG(this.board).line(points[0], points[1], points[2], points[3], {
+                stroke: SELECTION_BORDER_COLOR,
+                strokeWidth: 1,
+                strokeLineDash: [4, 4]
+            });
+            g.appendChild(xAlign);
+        });
+    }
+
+    drawDistributeLines(lines: number[][], g: SVGGElement) {
+        lines.forEach(points => {
+            if (!points.length) return;
+            if (points[1] === points[3]) {
+                const yAlign = PlaitBoard.getRoughSVG(this.board).line(points[0], points[1], points[2], points[3], {
+                    stroke: SELECTION_BORDER_COLOR,
+                    strokeWidth: 1
+                });
+                const bar1 = PlaitBoard.getRoughSVG(this.board).line(points[0], points[1] - 4, points[0], points[3] + 4, {
+                    stroke: SELECTION_BORDER_COLOR,
+                    strokeWidth: 1
+                });
+                const bar2 = PlaitBoard.getRoughSVG(this.board).line(points[2], points[1] - 4, points[2], points[3] + 4, {
+                    stroke: SELECTION_BORDER_COLOR,
+                    strokeWidth: 1
+                });
+
+                g.appendChild(yAlign);
+                g.appendChild(bar1);
+                g.appendChild(bar2);
+            }
+        });
+    }
+
+    findBefore(
+        distance: number,
+        rectangles: RectangleClient[],
+        leftRectangle: RectangleClient,
+        distributeLines: number[][],
+        isHorizon: boolean
+    ) {
+        const axis = isHorizon ? 'x' : 'y';
+        const oppositeAxis = isHorizon ? 'y' : 'x';
+        const attribute = isHorizon ? 'width' : 'height';
+        const oppositeAttribute = isHorizon ? 'height' : 'width';
+
+        const leftIndex = rectangles.indexOf(leftRectangle);
+        for (let i = 0; i < leftIndex; i++) {
+            const leftDistance = leftRectangle[axis] - (rectangles[i][axis] + rectangles[i][attribute]);
+            if (Math.abs(leftDistance - distance) < 0.1 && isHorizontalCross(leftRectangle, rectangles[i])) {
+                const verticalY = [
+                    leftRectangle[oppositeAxis],
+                    leftRectangle[oppositeAxis] + leftRectangle[oppositeAttribute],
+                    rectangles[i][oppositeAxis],
+                    rectangles[i][oppositeAxis] + rectangles[i][oppositeAttribute]
+                ];
+                const sortArr = verticalY.sort((a, b) => a - b);
+                const y = (sortArr[2] + sortArr[1]) / 2;
+                distributeLines.push([rectangles[i][axis] + rectangles[i][attribute] + 2, y, leftRectangle[axis] - 2, y]);
+                this.findBefore(distance, rectangles, rectangles[i], distributeLines, isHorizon);
+            }
+        }
+    }
+
+    findRight(distance: number, rectangles: RectangleClient[], rightRectangle: RectangleClient, distributeLines: number[][]) {
+        const rightIndex = rectangles.indexOf(rightRectangle);
+        for (let i = rightIndex + 1; i < rectangles.length; i++) {
+            const rightDistance = rectangles[i].x - (rightRectangle.x + rightRectangle.width);
+            if (Math.abs(rightDistance - distance) < 0.1) {
+                const verticalY = [
+                    rightRectangle.y,
+                    rightRectangle.y + rightRectangle.height,
+                    rectangles[i].y,
+                    rectangles[i].y + rectangles[i].height
+                ];
+                const sortArr = verticalY.sort((a, b) => a - b);
+                const y = (sortArr[1] + sortArr[2]) / 2;
+                distributeLines.push([rightRectangle.x + rightRectangle.width + 2, y, rectangles[i].x - 2, y]);
+                this.findRight(distance, rectangles, rectangles[i], distributeLines);
+            }
+        }
+    }
+}
+
+function isHorizontalCross(rectangle: RectangleClient, other: RectangleClient) {
+    return !(rectangle.y + rectangle.height < other.y || rectangle.y > other.y + other.height);
 }
