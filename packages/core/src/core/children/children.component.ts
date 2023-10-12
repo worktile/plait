@@ -25,7 +25,7 @@ import { NgFor } from '@angular/common';
 export class PlaitChildrenElementComponent implements OnInit {
     @Input() board!: PlaitBoard;
 
-    @Input() parent!: any;
+    @Input() parent!: Ancestor;
 
     @Input() effect?: PlaitEffect;
 
