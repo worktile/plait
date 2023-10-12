@@ -39,7 +39,6 @@ import { getPointsByCenterPoint, getNearestPoint } from './geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './style/stroke';
 import { getEngine } from './engine';
 import { drawLineArrow } from './line-arrow';
-// import { getTangentVector } from './engine/ellipse';
 
 export const createLineElement = (
     shape: LineShape,
