@@ -22,7 +22,8 @@ import {
     getDirectionFactor,
     rotateVector90,
     Vector,
-    getDirectionByVector
+    getDirectionByVector,
+    getDirectionByPointOfRectangle
 } from '@plait/common';
 import {
     LineHandle,
@@ -70,7 +71,7 @@ export const getStraightPoints = (board: PlaitBoard, element: PlaitLine) => {
 export const getLineHandlePoints = (board: PlaitBoard, element: PlaitLine) => {
     const handleRefPair = getLineHandleRefPair(board, element);
     return [handleRefPair.source.point, handleRefPair.target.point];
-}
+};
 
 export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
     const strokeWidth = getStrokeWidthByElement(element);
@@ -193,6 +194,10 @@ function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
 export const getDirectionByBoundElementAndConnection = (board: PlaitBoard, boundElement: PlaitGeometry, connection: PointOfRectangle) => {
     const rectangle = getRectangleByPoints(boundElement.points);
     const engine = getEngine(boundElement.shape);
+    const direction = getDirectionByPointOfRectangle(connection);
+    if (direction) {
+        return direction;
+    }
     if (engine.getEdgeByConnectionPoint) {
         const edge = engine.getEdgeByConnectionPoint(rectangle, connection);
         if (edge) {
@@ -201,8 +206,14 @@ export const getDirectionByBoundElementAndConnection = (board: PlaitBoard, bound
             const direction = getDirectionByVector(vector90);
             return direction;
         }
-    } else {
-        return null;
+    }
+    if (engine.getTangentVectorByConnectionPoint) {
+        const vector = engine.getTangentVectorByConnectionPoint(rectangle, connection);
+        if (vector) {
+            const vector90 = rotateVector90(vector);
+            const direction = getDirectionByVector(vector90);
+            return direction;
+        }
     }
     return null;
 };

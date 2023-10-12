@@ -3,6 +3,7 @@ import { GeometryComponent } from '../geometry.component';
 import { Options } from 'roughjs/bin/core';
 import { ParagraphElement } from '@plait/text';
 import { StrokeStyle } from './element';
+import { Vector } from '@plait/common';
 
 export enum GeometryShape {
     rectangle = 'rectangle',
@@ -66,5 +67,6 @@ export interface ShapeEngine {
     getConnectorPoints: (rectangle: RectangleClient) => Point[];
     getCornerPoints: (rectangle: RectangleClient) => Point[];
     getEdgeByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => [Point, Point] | null;
+    getTangentVectorByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => Vector | null;
     draw: (board: PlaitBoard, rectangle: RectangleClient, options: Options) => SVGGElement;
 }

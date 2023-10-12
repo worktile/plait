@@ -1,4 +1,4 @@
-import { Point, distanceBetweenPointAndPoint } from '@plait/core';
+import { Point, PointOfRectangle, distanceBetweenPointAndPoint } from '@plait/core';
 
 export enum Direction {
     left = 'left',
@@ -16,7 +16,7 @@ const handleDirectionFactors = {
     [Direction.bottom]: { x: 0, y: 1 }
 };
 
-export function getDirectionByPoint(point: Point, defaultDirection: Direction) {
+export function getDirectionByPointOfRectangle(point: PointOfRectangle): Direction | undefined {
     if (point[0] === 0) {
         return Direction.left;
     }
@@ -29,13 +29,14 @@ export function getDirectionByPoint(point: Point, defaultDirection: Direction) {
     if (point[1] === 1) {
         return Direction.bottom;
     }
-    return defaultDirection;
+    return undefined;
 }
 
 /**
- * 这个函数接受两个参数，分别是向量的 x 分量和 y 分量。
- * 如果向量只有一个方向，函数会返回该方向的字符串，例如 'right'、'top'、'bottom' 或者 'left'。
- * 如果向量有两个方向，函数会返回更靠近哪个方向的字符串。
+ * this function accepts vector parameter, the vector parameter vector is based on the screen coordinate system
+ * vector[0] and vector[1] are the x and y components of the vector respectively.
+ * if the vector has only one direction, the function returns a string in that direction, such as 'right', 'top', 'bottom' or 'left'.
+ * if the vector has two directions, the function will return the string in which direction it is closer.
  */
 export function getDirectionByVector(vector: Vector): Direction | null {
     const x = vector[0];

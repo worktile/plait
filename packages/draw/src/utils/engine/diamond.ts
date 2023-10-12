@@ -3,7 +3,6 @@ import {
     Point,
     PointOfRectangle,
     RectangleClient,
-    distanceBetweenPointAndSegment,
     getNearestPointBetweenPointAndSegments,
     isPointInPolygon,
     setStrokeLinecap
@@ -11,7 +10,6 @@ import {
 import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getEdgeOnPolygonByPoint } from '../geometry';
-import { getRectangleByPoints } from '@plait/common';
 
 export const DiamondEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
