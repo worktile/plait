@@ -11,6 +11,8 @@ export interface AlignRef {
     g: SVGGElement;
 }
 
+const ALIGN_TOLERANCE = 3;
+
 export class ReactionManager {
     alignRectangles: RectangleClient[];
 
@@ -55,7 +57,7 @@ export class ReactionManager {
         for (let alignRectangle of alignRectangles) {
             const closestDistances = this.calculateClosestDistances(this.activeRectangle, alignRectangle);
             let canDrawHorizontal = false;
-            if (!isCorrectX && closestDistances.absXDistance < 5) {
+            if (!isCorrectX && closestDistances.absXDistance < ALIGN_TOLERANCE) {
                 deltaX = closestDistances.xDistance;
                 this.activeRectangle.x -= deltaX;
                 isCorrectX = true;
@@ -114,7 +116,7 @@ export class ReactionManager {
             }
 
             let canDrawVertical = false;
-            if (!isCorrectY && closestDistances.absYDistance < 5) {
+            if (!isCorrectY && closestDistances.absYDistance < ALIGN_TOLERANCE) {
                 deltaY = closestDistances.yDistance;
                 this.activeRectangle.y -= deltaY;
                 isCorrectY = true;
@@ -274,7 +276,7 @@ export class ReactionManager {
                 //middle
                 let _centerX = (leftRectangle.x + leftRectangle.width + rightRectangle.x) / 2;
                 dif = Math.abs(activeRectangleCenterX - _centerX);
-                if (dif <= 5) {
+                if (dif < ALIGN_TOLERANCE) {
                     deltaX = activeRectangleCenterX - _centerX;
                     const distance = (rightRectangle.x - (leftRectangle.x + leftRectangle.width) - this.activeRectangle.width) / 2;
                     const verticalY = [
@@ -299,7 +301,7 @@ export class ReactionManager {
                 const distanceRight = rightRectangle.x - (leftRectangle.x + leftRectangle.width);
                 _centerX = rightRectangle.x + rightRectangle.width + distanceRight + this.activeRectangle.width / 2;
                 dif = Math.abs(activeRectangleCenterX - _centerX);
-                if (dif <= 5) {
+                if (dif < ALIGN_TOLERANCE) {
                     deltaX = activeRectangleCenterX - _centerX;
                     const lines = getLinePoints(leftRectangle, rightRectangle, {
                         ...this.activeRectangle,
@@ -315,7 +317,7 @@ export class ReactionManager {
                 _centerX = leftRectangle.x - distanceLeft - this.activeRectangle.width / 2;
                 dif = Math.abs(activeRectangleCenterX - _centerX);
 
-                if (dif <= 5) {
+                if (dif < ALIGN_TOLERANCE) {
                     deltaX = activeRectangleCenterX - _centerX;
                     const lines = getLinePoints(
                         { ...this.activeRectangle, x: this.activeRectangle.x - deltaX },
