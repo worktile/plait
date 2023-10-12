@@ -206,15 +206,14 @@ export const getDirectionByBoundElementAndConnection = (board: PlaitBoard, bound
             const direction = getDirectionByVector(vector90);
             return direction;
         }
-    } else if (engine.getTangentVectorByConnectionPoint) {
+    }
+    if (engine.getTangentVectorByConnectionPoint) {
         const vector = engine.getTangentVectorByConnectionPoint(rectangle, connection);
         if (vector) {
             const vector90 = rotateVector90(vector);
             const direction = getDirectionByVector(vector90);
             return direction;
         }
-    } else {
-        return null;
     }
     return null;
 };
