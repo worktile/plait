@@ -4,4 +4,5 @@
 ---
 
 add getTangentSlope and getVectorBySlope for ellipse
-improve ellipse handle direction
+improve ellipse connection handle direction
+improve triangle、trapezoid、right-arrow、left-arrow connection handle direction
