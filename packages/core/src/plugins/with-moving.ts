@@ -56,19 +56,19 @@ export function withMoving(board: PlaitBoard) {
             const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
             offsetX = endPoint[0] - startPoint[0];
             offsetY = endPoint[1] - startPoint[1];
-            const activeElementsRectangle = getRectangleByElements(board, activeElements, true);
-            activeElementsRectangle.x += offsetX;
-            activeElementsRectangle.y += offsetY;
-            const reactionManager = new ReactionManager(board, activeElements, activeElementsRectangle);
-            const ref = reactionManager.handleAlign();
-
-            offsetX -= ref.deltaX;
-            offsetY -= ref.deltaY;
-            alignG = ref.g;
-            PlaitBoard.getElementActiveHost(board).append(alignG);
             const offsetBuffer = 5;
-            if (Math.abs(offsetX) > offsetBuffer || Math.abs(offsetY) > offsetBuffer || getMovingElements(board).length > 0 || ref.deltaX) {
+            if (Math.abs(offsetX) > offsetBuffer || Math.abs(offsetY) > offsetBuffer || getMovingElements(board).length > 0) {
                 throttleRAF(() => {
+                    const activeElementsRectangle = getRectangleByElements(board, activeElements, true);
+                    activeElementsRectangle.x += offsetX;
+                    activeElementsRectangle.y += offsetY;
+                    const reactionManager = new ReactionManager(board, activeElements, activeElementsRectangle);
+                    const ref = reactionManager.handleAlign();
+                    offsetX -= ref.deltaX;
+                    offsetY -= ref.deltaY;
+                    alignG = ref.g;
+                    PlaitBoard.getElementActiveHost(board).append(alignG);
+
                     handleTouchTarget(board);
                     const currentElements = activeElements.map(activeElement => {
                         const points = activeElement.points || [];
