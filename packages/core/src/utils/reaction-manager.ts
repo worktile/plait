@@ -4,11 +4,17 @@ import { PlaitElement } from '../interfaces/element';
 import { Ancestor } from '../interfaces/node';
 import { RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { depthFirstRecursion } from './tree';
+import { Direction } from '@plait/common';
 
 export interface AlignRef {
     deltaX: number;
     deltaY: number;
     g: SVGGElement;
+}
+
+export interface DistributeRef {
+    left: { distance: number; index: number }[];
+    right: { distance: number; index: number }[];
 }
 
 const ALIGN_TOLERANCE = 2;
@@ -242,93 +248,108 @@ export class ReactionManager {
                 rectangles.push(rec);
             }
         });
-        rectangles = rectangles.sort((a, b) => a.x - b.x);
+        rectangles = [...rectangles, this.activeRectangle].sort((a, b) => a.x - b.x);
 
-        const getLinePoints = (leftRectangle: RectangleClient, middleRectangle: RectangleClient, rightRectangle: RectangleClient) => {
-            const leftVerticalY = [
-                leftRectangle.y,
-                leftRectangle.y + leftRectangle.height,
-                middleRectangle.y,
-                middleRectangle.y + middleRectangle.height
-            ];
-            const rightVerticalY = [
-                middleRectangle.y,
-                middleRectangle.y + middleRectangle.height,
-                rightRectangle.y,
-                rightRectangle.y + rightRectangle.height
-            ];
-            const leftSortArr = leftVerticalY.sort((a, b) => a - b);
-            const rightSortArr = rightVerticalY.sort((a, b) => a - b);
-            const leftY = (leftSortArr[1] + leftSortArr[2]) / 2;
-            const rightY = (rightSortArr[1] + rightSortArr[2]) / 2;
-            const leftLine = [leftRectangle.x + leftRectangle.width + 2, leftY, middleRectangle.x - 2, leftY];
-            const rightLine = [middleRectangle.x + middleRectangle.width + 2, rightY, rightRectangle.x - 2, rightY];
-            return [leftLine, rightLine];
-        };
+        const refArray: DistributeRef[] = [];
+        let distributeDistance = 0;
+        let leftIndex = undefined;
+        let rightIndex = undefined;
 
         for (let i = 0; i < rectangles.length; i++) {
             for (let j = i + 1; j < rectangles.length; j++) {
-                let leftRectangle = rectangles[i],
-                    rightRectangle = rectangles[j];
-                if (!isHorizontalCross(leftRectangle, rightRectangle)) continue;
-                if (RectangleClient.isHit(leftRectangle, rightRectangle)) continue;
+                const left = rectangles[i];
+                const right = rectangles[j];
+                const distance = right.x - (left.x + left.width);
+                if (refArray[i]?.right) {
+                    refArray[i].right.push({ distance, index: j });
+                } else {
+                    refArray[i] = { ...refArray[i], right: [{ distance, index: j }] };
+                }
+
+                if (refArray[j]?.left) {
+                    refArray[j].left.push({ distance, index: i });
+                } else {
+                    refArray[j] = { ...refArray[j], left: [{ distance, index: i }] };
+                }
 
                 //middle
-                let _centerX = (leftRectangle.x + leftRectangle.width + rightRectangle.x) / 2;
+                let _centerX = (left.x + left.width + right.x) / 2;
                 dif = Math.abs(activeRectangleCenterX - _centerX);
                 if (dif < ALIGN_TOLERANCE) {
                     deltaX = activeRectangleCenterX - _centerX;
-                    const distance = (rightRectangle.x - (leftRectangle.x + leftRectangle.width) - this.activeRectangle.width) / 2;
-                    const verticalY = [
-                        leftRectangle.y,
-                        leftRectangle.y + leftRectangle.height,
-                        rightRectangle.y,
-                        rightRectangle.y + rightRectangle.height
-                    ];
-                    const activeX = this.activeRectangle.x - deltaX;
-                    const sortArr = verticalY.sort((a, b) => a - b);
-                    const y = (sortArr[2] + sortArr[1]) / 2;
-                    distributeLines = [];
-                    distributeLines.push([leftRectangle.x + leftRectangle.width + 2, y, activeX - 2, y]);
-                    distributeLines.push([activeX + this.activeRectangle.width + 2, y, rightRectangle.x - 2, y]);
-
-                    this.findBefore(distance, rectangles, leftRectangle, distributeLines, true);
-                    this.findRight(distance, rectangles, rightRectangle, distributeLines);
-                    return { deltaX, distributeLines };
+                    distributeDistance = (right.x - (left.x + left.width) - this.activeRectangle.width) / 2;
+                    leftIndex = i;
+                    rightIndex = j;
                 }
 
                 //right
-                const distanceRight = rightRectangle.x - (leftRectangle.x + leftRectangle.width);
-                _centerX = rightRectangle.x + rightRectangle.width + distanceRight + this.activeRectangle.width / 2;
+                const distanceRight = right.x - (left.x + left.width);
+                _centerX = right.x + right.width + distanceRight + this.activeRectangle.width / 2;
                 dif = Math.abs(activeRectangleCenterX - _centerX);
-                if (dif < ALIGN_TOLERANCE) {
+                if (leftIndex === undefined && dif < ALIGN_TOLERANCE) {
+                    leftIndex = j;
                     deltaX = activeRectangleCenterX - _centerX;
-                    const lines = getLinePoints(leftRectangle, rightRectangle, {
-                        ...this.activeRectangle,
-                        x: this.activeRectangle.x - deltaX
-                    });
-                    distributeLines = [];
-                    distributeLines.push(...lines);
-                    this.findBefore(distanceRight, rectangles, leftRectangle, distributeLines, true);
+                    distributeDistance = distanceRight;
                 }
 
                 //left
-                const distanceLeft = rightRectangle.x - (leftRectangle.x + leftRectangle.width);
-                _centerX = leftRectangle.x - distanceLeft - this.activeRectangle.width / 2;
+                const distanceLeft = right.x - (left.x + left.width);
+                _centerX = left.x - distanceLeft - this.activeRectangle.width / 2;
                 dif = Math.abs(activeRectangleCenterX - _centerX);
 
-                if (dif < ALIGN_TOLERANCE) {
+                if (rightIndex === undefined && dif < ALIGN_TOLERANCE) {
+                    distributeDistance = distanceLeft;
+                    rightIndex = i;
                     deltaX = activeRectangleCenterX - _centerX;
-                    const lines = getLinePoints(
-                        { ...this.activeRectangle, x: this.activeRectangle.x - deltaX },
-                        leftRectangle,
-                        rightRectangle
-                    );
-                    distributeLines = [];
-                    distributeLines.push(...lines);
-                    this.findRight(distanceLeft, rectangles, leftRectangle, distributeLines);
                 }
             }
+        }
+
+        const activeIndex = rectangles.indexOf(this.activeRectangle);
+        let leftIndexes: number[] = [];
+        let rightIndexes: number[] = [];
+        if (leftIndex !== undefined) {
+            leftIndexes.push(leftIndex);
+            findRectangle(distributeDistance, refArray[leftIndex], Direction.left, leftIndexes);
+        }
+
+        if (rightIndex !== undefined) {
+            rightIndexes.push(rightIndex);
+            findRectangle(distributeDistance, refArray[rightIndex], Direction.right, rightIndexes);
+        }
+
+        if (leftIndexes.length || rightIndexes.length) {
+            const indexArr = [...leftIndexes.reverse(), activeIndex, ...rightIndexes];
+            this.activeRectangle.x -= deltaX;
+            for (let i = 1; i < indexArr.length; i++) {
+                distributeLines.push(getLinePoints(rectangles[indexArr[i - 1]], rectangles[indexArr[i]]));
+            }
+        }
+
+        function findRectangle(distance: number, ref: DistributeRef, direction: Direction, rectangleIndexes: number[]) {
+            const arr = ref[direction as keyof DistributeRef];
+            const index = refArray.indexOf(ref);
+            if ((index === 0 && direction === Direction.left) || (index === refArray.length - 1 && direction === Direction.right)) return;
+            for (let i = 0; i < arr.length; i++) {
+                if (Math.abs(arr[i].distance - distance) < 0.1) {
+                    rectangleIndexes.push(arr[i].index);
+                    findRectangle(distance, refArray[arr[i].index], direction, rectangleIndexes);
+                    return;
+                }
+            }
+        }
+
+        function getLinePoints(leftRectangle: RectangleClient, rightRectangle: RectangleClient) {
+            const verticalY = [
+                leftRectangle.y,
+                leftRectangle.y + leftRectangle.height,
+                rightRectangle.y,
+                rightRectangle.y + rightRectangle.height
+            ];
+            const sortArr = verticalY.sort((a, b) => a - b);
+            const y = (sortArr[1] + sortArr[2]) / 2;
+            const line = [leftRectangle.x + leftRectangle.width + 2, y, rightRectangle.x - 2, y];
+            return line;
         }
         return { deltaX, distributeLines };
     }
