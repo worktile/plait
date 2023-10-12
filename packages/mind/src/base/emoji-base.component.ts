@@ -5,7 +5,7 @@ import { MindElement } from '../interfaces';
 
 @Directive({
     host: {
-        class: 'app-mind-node-emoji'
+        class: 'mind-node-emoji'
     }
 })
 export class MindEmojiBaseComponent implements OnInit {
