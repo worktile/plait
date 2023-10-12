@@ -11,7 +11,7 @@ export interface AlignRef {
     g: SVGGElement;
 }
 
-const ALIGN_TOLERANCE = 3;
+const ALIGN_TOLERANCE = 2;
 
 export class ReactionManager {
     alignRectangles: RectangleClient[];
