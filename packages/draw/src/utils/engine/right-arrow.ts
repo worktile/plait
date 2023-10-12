@@ -1,6 +1,7 @@
 import {
     PlaitBoard,
     Point,
+    PointOfRectangle,
     RectangleClient,
     getNearestPointBetweenPointAndSegments,
     isPointInPolygon,
@@ -8,6 +9,7 @@ import {
 } from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
+import { getEdgeOnPolygonByPoint } from '../geometry';
 
 export const RightArrowEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
@@ -27,6 +29,11 @@ export const RightArrowEngine: ShapeEngine = {
     getNearestPoint(rectangle: RectangleClient, point: Point) {
         const cornerPoints = getRightArrowPoints(rectangle);
         return getNearestPointBetweenPointAndSegments(point, cornerPoints);
+    },
+    getEdgeByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle): [Point, Point] | null {
+        const corners = getRightArrowPoints(rectangle);
+        const point = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
+        return getEdgeOnPolygonByPoint(corners, point);
     },
     getConnectorPoints(rectangle: RectangleClient) {
         return [
