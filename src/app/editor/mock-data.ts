@@ -181,8 +181,7 @@ export const mockData: (PlaitMind | PlaitGeometry | PlaitLine)[] = [
             {
                 id: '2-4',
                 data: { topic: { children: [{ text: '宽度可调整哦' }], align: Alignment.center } as Element },
-                children: [
-                ],
+                children: [],
                 manualWidth: 200,
                 width: 48,
                 height: 20

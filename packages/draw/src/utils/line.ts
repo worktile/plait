@@ -70,7 +70,7 @@ export const getStraightPoints = (board: PlaitBoard, element: PlaitLine) => {
 export const getLineHandlePoints = (board: PlaitBoard, element: PlaitLine) => {
     const handleRefPair = getLineHandleRefPair(board, element);
     return [handleRefPair.source.point, handleRefPair.target.point];
-}
+};
 
 export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
     const strokeWidth = getStrokeWidthByElement(element);

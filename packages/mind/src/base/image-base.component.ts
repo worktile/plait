@@ -59,7 +59,7 @@ export abstract class MindImageBaseComponent implements OnInit, OnDestroy {
                 return 1;
             },
             getStrokeOpacity: () => {
-               return 1;
+                return 1;
             },
             getRectangle: (element: MindElement) => {
                 return getImageForeignRectangle(this.board as PlaitMindBoard, this.element);

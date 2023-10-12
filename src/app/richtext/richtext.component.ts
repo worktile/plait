@@ -1,18 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Editor } from 'slate';
+import { PlaitRichtextComponent } from '../../../packages/text/src/richtext/richtext.component';
 
 @Component({
-    selector: 'basic-richtext',
-    templateUrl: './richtext.component.html'
+    selector: 'app-basic-richtext',
+    templateUrl: './richtext.component.html',
+    standalone: true,
+    imports: [PlaitRichtextComponent]
 })
-export class BasicRichtextComponent implements OnInit {
+export class BasicRichtextComponent {
     value = {
-        children: [
-            { text: '富文本' }
-        ]
+        children: [{ text: '富文本' }]
     };
-    ngOnInit(): void {}
-
     onChange(event: Editor) {
         console.log(event);
     }

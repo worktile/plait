@@ -24,7 +24,7 @@ export abstract class Generator<
                 }
                 this.g = g;
             } else {
-                this.destroy();    
+                this.destroy();
             }
             if (hasAfterDraw(this)) {
                 this.afterDraw(element);

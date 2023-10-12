@@ -69,10 +69,7 @@ const drawSharpArrow = (source: Point, target: Point, options: Options) => {
 const drawArrow = (element: PlaitLine, source: Point, target: Point, options: Options) => {
     const directionFactor = getFactorByPoints(source, target);
     const strokeWidth = getStrokeWidthByElement(element);
-    const endPoint: Point = [
-        target[0] + strokeWidth * directionFactor.x / 2,
-        target[1] + strokeWidth * directionFactor.y / 2
-    ];
+    const endPoint: Point = [target[0] + (strokeWidth * directionFactor.x) / 2, target[1] + (strokeWidth * directionFactor.y) / 2];
     const middlePoint: Point = [endPoint[0] - 8 * directionFactor.x, endPoint[1] - 8 * directionFactor.y];
     const { pointLeft, pointRight } = arrowPoints(source, endPoint, 12, 30);
     const arrowG = drawLinearPath([pointLeft, endPoint, pointRight, middlePoint], { ...options, fill: options.stroke }, true);
@@ -90,10 +87,7 @@ const drawSolidTriangle = (source: Point, target: Point, options: Options) => {
 const drawOpenTriangle = (element: PlaitLine, source: Point, target: Point, options: Options) => {
     const directionFactor = getFactorByPoints(source, target);
     const strokeWidth = getStrokeWidthByElement(element);
-    const endPoint: Point = [
-        target[0] + strokeWidth * directionFactor.x / 2,
-        target[1] + strokeWidth * directionFactor.y / 2
-    ];
+    const endPoint: Point = [target[0] + (strokeWidth * directionFactor.x) / 2, target[1] + (strokeWidth * directionFactor.y) / 2];
     const { pointLeft, pointRight } = arrowPoints(source, endPoint, 12, 40);
     return drawLinearPath([pointLeft, endPoint, pointRight], options);
 };

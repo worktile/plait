@@ -2,7 +2,7 @@
  * Public API Surface of richtext
  */
 export * from './custom-types';
-export * from './text.module';
+
 export * from './richtext/richtext.component';
 export * from './constant';
 export * from './utils/text-manage';

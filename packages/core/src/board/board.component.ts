@@ -65,6 +65,7 @@ import { withHotkey } from '../plugins/with-hotkey';
 import { HOST_CLASS_NAME } from '../constants';
 import { PlaitContextService } from '../services/image-context.service';
 import { isPreventTouchMove } from '../utils/touch';
+import { PlaitChildrenElementComponent } from '../core/children/children.component';
 
 const ElementHostClass = 'element-host';
 const ElementUpperHostClass = 'element-upper-host';
@@ -84,7 +85,9 @@ const ElementActiveHostClass = 'element-active-host';
         <ng-content></ng-content>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [PlaitContextService]
+    providers: [PlaitContextService],
+    standalone: true,
+    imports: [PlaitChildrenElementComponent]
 })
 export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnChanges, AfterViewInit, AfterContentInit, OnDestroy {
     hasInitialized = false;

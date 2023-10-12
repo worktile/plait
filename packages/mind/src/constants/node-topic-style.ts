@@ -13,5 +13,5 @@ export const DEFAULT_FONT_FAMILY = 'PingFangSC-Regular, "PingFang SC"';
 export const BRANCH_FONT_FAMILY = 'PingFangSC-Medium, "PingFang SC"';
 
 export const NodeTopicThreshold = {
-    defaultTextMaxWidth: 34 * 14,
-}
+    defaultTextMaxWidth: 34 * 14
+};

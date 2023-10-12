@@ -1,5 +1,5 @@
-import { PlaitBoard } from "../interfaces/board";
-import { PlaitElement } from "../interfaces/element";
+import { PlaitBoard } from '../interfaces/board';
+import { PlaitElement } from '../interfaces/element';
 
 export function depthFirstRecursion<T extends TreeNode = TreeNode>(
     node: T,

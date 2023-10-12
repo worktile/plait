@@ -38,7 +38,8 @@ interface BoundedElements {
 @Component({
     selector: 'plait-flow-edge',
     template: '',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true
 })
 export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends PlaitPluginElementComponent<FlowEdge<T>>
     implements OnInit, OnContextChanged<FlowEdge, PlaitBoard>, OnDestroy {

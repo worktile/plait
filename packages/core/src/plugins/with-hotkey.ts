@@ -36,7 +36,11 @@ export const withHotkey = (board: PlaitBoard) => {
         }
 
         const selectedElements = getSelectedElements(board);
-        if (!PlaitBoard.isReadonly(board) && selectedElements.length > 0 && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
+        if (
+            !PlaitBoard.isReadonly(board) &&
+            selectedElements.length > 0 &&
+            (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))
+        ) {
             event.preventDefault();
             board.deleteFragment(null);
         }

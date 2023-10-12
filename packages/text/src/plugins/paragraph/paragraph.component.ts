@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { BaseElementComponent } from 'slate-angular';
+import { BaseElementComponent, SlateChildren } from 'slate-angular';
 import { ParagraphElement } from '../../custom-types';
 
 @Component({
@@ -7,7 +7,9 @@ import { ParagraphElement } from '../../custom-types';
     template: `
         <slate-children [children]="children" [context]="childrenContext" [viewContext]="viewContext"></slate-children>
     `,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [SlateChildren]
 })
 export class ParagraphElementComponent extends BaseElementComponent<ParagraphElement> implements OnInit {
     ngOnInit(): void {

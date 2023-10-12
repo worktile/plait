@@ -6,7 +6,8 @@ import {
     NODE_TO_INDEX,
     PlaitPluginElementContext,
     OnContextChanged,
-    RectangleClient
+    RectangleClient,
+    PlaitChildrenElementComponent
 } from '@plait/core';
 import { isHorizontalLayout, AbstractNode, MindLayoutType } from '@plait/layouts';
 import { TextManageRef, TextManage, ExitOrigin } from '@plait/text';
@@ -30,6 +31,7 @@ import { NodeSpace } from './utils/space/node-space';
 import { NodeTopicThreshold } from './constants/node-topic-style';
 import { CommonPluginElement, WithTextOptions, WithTextPluginKey } from '@plait/common';
 import { NodeShapeGenerator } from './drawer/node-shape.generator';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'plait-mind-node',
@@ -42,7 +44,9 @@ import { NodeShapeGenerator } from './drawer/node-shape.generator';
             [parentG]="parentG"
         ></plait-children>
     `,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgIf, PlaitChildrenElementComponent]
 })
 export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMindBoard>
     implements OnInit, OnDestroy, OnContextChanged<MindElement, PlaitMindBoard> {

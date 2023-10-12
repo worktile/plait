@@ -4,6 +4,7 @@ import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType
 import { DrawPointerType } from '@plait/draw';
 import { MindPointerType } from '@plait/mind';
 import { fromEvent, take } from 'rxjs';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 
 type PointerType = MindPointerType | PlaitPointerType | DrawPointerType;
 
@@ -14,7 +15,9 @@ type PointerType = MindPointerType | PlaitPointerType | DrawPointerType;
     providers: [{ provide: PlaitIslandBaseComponent, useExisting: forwardRef(() => AppMainToolbarComponent) }],
     host: {
         class: 'app-main-toolbar'
-    }
+    },
+    standalone: true,
+    imports: [NgClass, NgTemplateOutlet]
 })
 export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
     PlaitPointerType = PlaitPointerType;

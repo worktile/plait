@@ -1,4 +1,4 @@
-import { MindElement } from "../../interfaces";
+import { MindElement } from '../../interfaces';
 
 export const getTestingChildren = (): MindElement[] => {
     return [

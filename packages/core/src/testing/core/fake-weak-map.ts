@@ -1,6 +1,6 @@
-import { PlaitBoard } from "../../interfaces/board";
-import { PlaitNode } from "../../interfaces/node";
-import { NODE_TO_INDEX, NODE_TO_PARENT } from "../../utils/weak-maps";
+import { PlaitBoard } from '../../interfaces/board';
+import { PlaitNode } from '../../interfaces/node';
+import { NODE_TO_INDEX, NODE_TO_PARENT } from '../../utils/weak-maps';
 
 export const fakeNodeWeakMap = (object: PlaitNode | PlaitBoard) => {
     const children = object.children || [];

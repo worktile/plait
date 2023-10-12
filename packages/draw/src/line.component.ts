@@ -25,7 +25,8 @@ interface BoundedElements {
 @Component({
     selector: 'plait-draw-line',
     template: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true
 })
 export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitBoard>
     implements OnInit, OnDestroy, OnContextChanged<PlaitLine, PlaitBoard> {

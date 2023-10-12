@@ -14,12 +14,19 @@ import { withMind, PlaitMindBoard } from '@plait/mind';
 import { AbstractResizeState, MindThemeColors } from '@plait/mind';
 import { withMindExtend } from '../plugins/with-mind-extend';
 import { PlaitGeometry, withDraw } from '@plait/draw';
+import { AppSettingPanelComponent } from '../components/setting-panel/setting-panel.component';
+import { AppMainToolbarComponent } from '../components/main-toolbar/main-toolbar.component';
+import { AppZoomToolbarComponent } from '../components/zoom-toolbar/zoom-toolbar.component';
+import { FormsModule } from '@angular/forms';
+import { PlaitBoardComponent } from '../../../packages/core/src/board/board.component';
 
 const LOCAL_DATA_KEY = 'plait-board-change-data';
 
 @Component({
-    selector: 'basic-board-editor',
-    templateUrl: './editor.component.html'
+    selector: 'app-basic-board-editor',
+    templateUrl: './editor.component.html',
+    standalone: true,
+    imports: [PlaitBoardComponent, FormsModule, AppZoomToolbarComponent, AppMainToolbarComponent, AppSettingPanelComponent]
 })
 export class BasicBoardEditorComponent implements OnInit {
     plugins = [withMind, withMindExtend, withDraw];

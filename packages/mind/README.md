@@ -69,7 +69,7 @@ drawEmoji: (emoji: EmojiItem, element: MindElement) => ComponentType<MindEmojiBa
 ```
 @Directive({
     host: {
-        class: 'mind-node-emoji'
+        class: 'app-mind-node-emoji'
     }
 })
 export class MindEmojiBaseComponent implements OnInit {

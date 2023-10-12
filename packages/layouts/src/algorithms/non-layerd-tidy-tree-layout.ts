@@ -137,7 +137,13 @@ function seperate(tree: LayoutTreeNode, i: number, ih: IYL) {
 function positionRoot(tree: LayoutTreeNode) {
     // Position root between children, taking into account their mod.
     tree.preliminary =
-        (tree.children[0].preliminary + tree.children[0].modifier + tree.children[tree.childrenCount - 1].modifier + tree.children[tree.childrenCount - 1].preliminary + tree.children[tree.childrenCount - 1].width) / 2 - tree.width / 2;
+        (tree.children[0].preliminary +
+            tree.children[0].modifier +
+            tree.children[tree.childrenCount - 1].modifier +
+            tree.children[tree.childrenCount - 1].preliminary +
+            tree.children[tree.childrenCount - 1].width) /
+            2 -
+        tree.width / 2;
 }
 
 function firstWalk(tree: LayoutTreeNode) {

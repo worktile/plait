@@ -1,4 +1,12 @@
-import { PlaitBoard, Point, PointOfRectangle, RectangleClient, getNearestPointBetweenPointAndSegments, isPointInPolygon, setStrokeLinecap } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    PointOfRectangle,
+    RectangleClient,
+    getNearestPointBetweenPointAndSegments,
+    isPointInPolygon,
+    setStrokeLinecap
+} from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
 import { getCenterPointsOnPolygon, getEdgeOnPolygonByPoint } from '../geometry';
 import { Options } from 'roughjs/bin/core';

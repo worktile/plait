@@ -24,5 +24,3 @@ export class LineShapeGenerator extends Generator<PlaitLine, ShapeData> {
         return lineG;
     }
 }
-
-

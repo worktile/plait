@@ -80,7 +80,7 @@ export function drawAbstractIncludedOutline(
     );
 
     handleBoardClass(board, activeHandlePosition, isHorizontal);
-    
+
     setStrokeLinecap(startHandle, 'round');
     setStrokeLinecap(endHandle, 'round');
 
