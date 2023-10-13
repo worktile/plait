@@ -254,6 +254,7 @@ export class ReactionManager {
         let distributeDistance = 0;
         let leftIndex = undefined;
         let rightIndex = undefined;
+        let find = false;
 
         for (let i = 0; i < rectangles.length; i++) {
             for (let j = i + 1; j < rectangles.length; j++) {
@@ -276,20 +277,22 @@ export class ReactionManager {
                 let _centerX = (left.x + left.width + right.x) / 2;
                 dif = Math.abs(activeRectangleCenterX - _centerX);
                 if (dif < ALIGN_TOLERANCE) {
-                    deltaX = activeRectangleCenterX - _centerX;
                     distributeDistance = (right.x - (left.x + left.width) - this.activeRectangle.width) / 2;
+                    deltaX = activeRectangleCenterX - _centerX;
                     leftIndex = i;
                     rightIndex = j;
+                    find = true;
                 }
 
                 //right
                 const distanceRight = right.x - (left.x + left.width);
                 _centerX = right.x + right.width + distanceRight + this.activeRectangle.width / 2;
                 dif = Math.abs(activeRectangleCenterX - _centerX);
-                if (leftIndex === undefined && dif < ALIGN_TOLERANCE) {
-                    leftIndex = j;
-                    deltaX = activeRectangleCenterX - _centerX;
+                if (!find && dif < ALIGN_TOLERANCE) {
                     distributeDistance = distanceRight;
+                    leftIndex = j;
+                    find = true;
+                    deltaX = activeRectangleCenterX - _centerX;
                 }
 
                 //left
@@ -297,9 +300,10 @@ export class ReactionManager {
                 _centerX = left.x - distanceLeft - this.activeRectangle.width / 2;
                 dif = Math.abs(activeRectangleCenterX - _centerX);
 
-                if (rightIndex === undefined && dif < ALIGN_TOLERANCE) {
+                if (!find && dif < ALIGN_TOLERANCE) {
                     distributeDistance = distanceLeft;
                     rightIndex = i;
+                    find = true;
                     deltaX = activeRectangleCenterX - _centerX;
                 }
             }
