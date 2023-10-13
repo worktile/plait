@@ -1,7 +1,6 @@
-import { PlaitBoard, Point, PointOfRectangle, RectangleClient, isPointInEllipse } from '@plait/core';
+import { PlaitBoard, Point, PointOfRectangle, RectangleClient, Vector, isPointInEllipse } from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { Vector } from '@plait/common';
 
 export const EllipseEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
