@@ -1,19 +1,20 @@
 {
-  "name": "@plait/text",
-  "version": "0.16.0-next.5",
-  "peerDependencies": {
-    "@angular/common": "^16.0.0",
-    "@angular/core": "^16.0.0"
-  },
-  "dependencies": {
-    "tslib": "^2.3.0"
-  },
-  "exports": {
-    "./styles/styles": {
-      "sass": "./styles/styles.scss"
+    "name": "@plait/text",
+    "version": "0.16.0-next.5",
+    "peerDependencies": {
+        "@angular/common": "^16.0.0",
+        "@angular/core": "^16.0.0",
+        "is-hotkey": "^0.2.0"
     },
-    "./styles/*": {
-      "sass": "./styles/*"
+    "dependencies": {
+        "tslib": "^2.3.0"
+    },
+    "exports": {
+        "./styles/styles": {
+            "sass": "./styles/styles.scss"
+        },
+        "./styles/*": {
+            "sass": "./styles/*"
+        }
     }
-  }
 }
