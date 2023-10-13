@@ -1,9 +1,8 @@
-import { PlaitElement, Point, PointOfRectangle } from '@plait/core';
+import { Direction, PlaitElement, Point, PointOfRectangle } from '@plait/core';
 import { Element } from 'slate';
 import { LineComponent } from '../line.component';
 import { PlaitGeometry } from './geometry';
 import { StrokeStyle } from './element';
-import { Direction } from '@plait/common';
 
 export enum LineMarkerType {
     arrow = 'arrow',

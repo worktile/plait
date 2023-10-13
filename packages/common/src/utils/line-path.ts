@@ -1,5 +1,5 @@
-import { Point, distanceBetweenPointAndPoint } from '@plait/core';
-import { Direction, getDirectionFactor } from './direction';
+import { Direction, Point, distanceBetweenPointAndPoint } from '@plait/core';
+import { getDirectionFactor } from './direction';
 
 export function getOppositeDirection(direction: Direction) {
     switch (direction) {

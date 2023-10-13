@@ -12,16 +12,16 @@ import {
     createMask,
     createRect,
     ACTIVE_STROKE_WIDTH,
-    PointOfRectangle
+    PointOfRectangle,
+    Direction,
+    Vector
 } from '@plait/core';
 import {
     getPoints,
-    Direction,
     getRectangleByPoints,
     getPointOnPolyline,
     getDirectionFactor,
     rotateVector90,
-    Vector,
     getDirectionByVector,
     getDirectionByPointOfRectangle
 } from '@plait/common';

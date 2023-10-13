@@ -1,5 +1,23 @@
 # @plait/draw
 
+## 0.1.0-next.12
+
+### Minor Changes
+
+-   [#590](https://github.com/worktile/plait/pull/590) [`3280fac4`](https://github.com/worktile/plait/commit/3280fac4d2b7425e8881539c70c1cdb731afab81) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getTangentSlope and getVectorBySlope for ellipse
+    improve ellipse connection handle direction
+    improve triangle、trapezoid、right-arrow、left-arrow connection handle direction
+
+*   [#585](https://github.com/worktile/plait/pull/585) [`ba6d2eeb`](https://github.com/worktile/plait/commit/ba6d2eebcb0928a2637e57effe70447b36f5cd80) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve line handle direction logic
+
+### Patch Changes
+
+-   [#592](https://github.com/worktile/plait/pull/592) [`832689e4`](https://github.com/worktile/plait/commit/832689e4b0d41c78136b33bc79244e01c670c24f) Thanks [@Maple13](https://github.com/Maple13)! - build: update peerDependencies
+
+*   [#591](https://github.com/worktile/plait/pull/591) [`60c8f847`](https://github.com/worktile/plait/commit/60c8f847600edf90cc0a510b17a8f39dd765be4c) Thanks [@WBbug](https://github.com/WBbug)! - fix mind point
+
+-   [#587](https://github.com/worktile/plait/pull/587) [`89116358`](https://github.com/worktile/plait/commit/89116358655c292917b8b7a0bbd228296012028e) Thanks [@WBbug](https://github.com/WBbug)! - add some geometry
+
 ## 0.1.0-next.11
 
 ### Minor Changes
