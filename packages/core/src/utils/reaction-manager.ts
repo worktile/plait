@@ -5,6 +5,7 @@ import { Ancestor } from '../interfaces/node';
 import { RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { depthFirstRecursion } from './tree';
 import { Direction } from '@plait/common';
+import { Point } from '@plait/core';
 
 export interface AlignRef {
     deltaX: number;
@@ -180,7 +181,7 @@ export class ReactionManager {
         const alignDeltaX = deltaX;
         this.activeRectangle.x += deltaX;
         const distributeHorizontalResult = this.alignDistributeHorizontal(alignRectangles);
-        const distributeLines: number[][] = distributeHorizontalResult.distributeLines;
+        const distributeLines: Point[][] = distributeHorizontalResult.distributeLines;
         if (distributeHorizontalResult.deltaX) {
             deltaX = distributeHorizontalResult.deltaX;
             if (alignDeltaX !== deltaX) {
@@ -240,7 +241,6 @@ export class ReactionManager {
     alignDistributeHorizontal(alignRectangles: RectangleClient[]) {
         let distributeLines: any[] = [];
         let deltaX = 0;
-        let dif = Infinity;
         const activeRectangleCenterX = this.activeRectangle.x + this.activeRectangle.width / 2;
         let rectangles: RectangleClient[] = [];
         alignRectangles.forEach(rec => {
@@ -254,13 +254,13 @@ export class ReactionManager {
         let distributeDistance = 0;
         let leftIndex = undefined;
         let rightIndex = undefined;
-        let find = false;
 
         for (let i = 0; i < rectangles.length; i++) {
             for (let j = i + 1; j < rectangles.length; j++) {
                 const left = rectangles[i];
                 const right = rectangles[j];
                 const distance = right.x - (left.x + left.width);
+                let dif = Infinity;
                 if (refArray[i]?.right) {
                     refArray[i].right.push({ distance, index: j });
                 } else {
@@ -281,17 +281,15 @@ export class ReactionManager {
                     deltaX = activeRectangleCenterX - _centerX;
                     leftIndex = i;
                     rightIndex = j;
-                    find = true;
                 }
 
                 //right
                 const distanceRight = right.x - (left.x + left.width);
                 _centerX = right.x + right.width + distanceRight + this.activeRectangle.width / 2;
                 dif = Math.abs(activeRectangleCenterX - _centerX);
-                if (!find && dif < ALIGN_TOLERANCE) {
+                if (!distributeDistance && dif < ALIGN_TOLERANCE) {
                     distributeDistance = distanceRight;
                     leftIndex = j;
-                    find = true;
                     deltaX = activeRectangleCenterX - _centerX;
                 }
 
@@ -300,10 +298,9 @@ export class ReactionManager {
                 _centerX = left.x - distanceLeft - this.activeRectangle.width / 2;
                 dif = Math.abs(activeRectangleCenterX - _centerX);
 
-                if (!find && dif < ALIGN_TOLERANCE) {
+                if (!distributeDistance && dif < ALIGN_TOLERANCE) {
                     distributeDistance = distanceLeft;
                     rightIndex = i;
-                    find = true;
                     deltaX = activeRectangleCenterX - _centerX;
                 }
             }
@@ -352,7 +349,10 @@ export class ReactionManager {
             ];
             const sortArr = verticalY.sort((a, b) => a - b);
             const y = (sortArr[1] + sortArr[2]) / 2;
-            const line = [leftRectangle.x + leftRectangle.width + 2, y, rightRectangle.x - 2, y];
+            const line = [
+                [leftRectangle.x + leftRectangle.width + 2, y],
+                [rightRectangle.x - 2, y]
+            ];
             return line;
         }
         return { deltaX, distributeLines };
@@ -370,19 +370,19 @@ export class ReactionManager {
         });
     }
 
-    drawDistributeLines(lines: number[][], g: SVGGElement) {
+    drawDistributeLines(lines: Point[][], g: SVGGElement) {
         lines.forEach(points => {
             if (!points.length) return;
-            if (points[1] === points[3]) {
-                const yAlign = PlaitBoard.getRoughSVG(this.board).line(points[0], points[1], points[2], points[3], {
+            if (points[0][1] === points[1][1]) {
+                const yAlign = PlaitBoard.getRoughSVG(this.board).line(points[0][0], points[0][1], points[1][0], points[1][1], {
                     stroke: SELECTION_BORDER_COLOR,
                     strokeWidth: 1
                 });
-                const bar1 = PlaitBoard.getRoughSVG(this.board).line(points[0], points[1] - 4, points[0], points[3] + 4, {
+                const bar1 = PlaitBoard.getRoughSVG(this.board).line(points[0][0], points[0][1] - 4, points[0][0], points[1][1] + 4, {
                     stroke: SELECTION_BORDER_COLOR,
                     strokeWidth: 1
                 });
-                const bar2 = PlaitBoard.getRoughSVG(this.board).line(points[2], points[1] - 4, points[2], points[3] + 4, {
+                const bar2 = PlaitBoard.getRoughSVG(this.board).line(points[1][0], points[0][1] - 4, points[1][0], points[1][1] + 4, {
                     stroke: SELECTION_BORDER_COLOR,
                     strokeWidth: 1
                 });
@@ -392,55 +392,6 @@ export class ReactionManager {
                 g.appendChild(bar2);
             }
         });
-    }
-
-    findBefore(
-        distance: number,
-        rectangles: RectangleClient[],
-        leftRectangle: RectangleClient,
-        distributeLines: number[][],
-        isHorizon: boolean
-    ) {
-        const axis = isHorizon ? 'x' : 'y';
-        const oppositeAxis = isHorizon ? 'y' : 'x';
-        const attribute = isHorizon ? 'width' : 'height';
-        const oppositeAttribute = isHorizon ? 'height' : 'width';
-
-        const leftIndex = rectangles.indexOf(leftRectangle);
-        for (let i = 0; i < leftIndex; i++) {
-            const leftDistance = leftRectangle[axis] - (rectangles[i][axis] + rectangles[i][attribute]);
-            if (Math.abs(leftDistance - distance) < 0.1 && isHorizontalCross(leftRectangle, rectangles[i])) {
-                const verticalY = [
-                    leftRectangle[oppositeAxis],
-                    leftRectangle[oppositeAxis] + leftRectangle[oppositeAttribute],
-                    rectangles[i][oppositeAxis],
-                    rectangles[i][oppositeAxis] + rectangles[i][oppositeAttribute]
-                ];
-                const sortArr = verticalY.sort((a, b) => a - b);
-                const y = (sortArr[2] + sortArr[1]) / 2;
-                distributeLines.push([rectangles[i][axis] + rectangles[i][attribute] + 2, y, leftRectangle[axis] - 2, y]);
-                this.findBefore(distance, rectangles, rectangles[i], distributeLines, isHorizon);
-            }
-        }
-    }
-
-    findRight(distance: number, rectangles: RectangleClient[], rightRectangle: RectangleClient, distributeLines: number[][]) {
-        const rightIndex = rectangles.indexOf(rightRectangle);
-        for (let i = rightIndex + 1; i < rectangles.length; i++) {
-            const rightDistance = rectangles[i].x - (rightRectangle.x + rightRectangle.width);
-            if (Math.abs(rightDistance - distance) < 0.1) {
-                const verticalY = [
-                    rightRectangle.y,
-                    rightRectangle.y + rightRectangle.height,
-                    rectangles[i].y,
-                    rectangles[i].y + rectangles[i].height
-                ];
-                const sortArr = verticalY.sort((a, b) => a - b);
-                const y = (sortArr[1] + sortArr[2]) / 2;
-                distributeLines.push([rightRectangle.x + rightRectangle.width + 2, y, rectangles[i].x - 2, y]);
-                this.findRight(distance, rectangles, rectangles[i], distributeLines);
-            }
-        }
     }
 }
 
