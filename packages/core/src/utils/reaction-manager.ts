@@ -4,12 +4,21 @@ import { PlaitElement } from '../interfaces/element';
 import { Ancestor } from '../interfaces/node';
 import { RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { depthFirstRecursion } from './tree';
+import { Direction } from '@plait/common';
+import { Point } from '@plait/core';
 
 export interface AlignRef {
     deltaX: number;
     deltaY: number;
     g: SVGGElement;
 }
+
+export interface DistributeRef {
+    left: { distance: number; index: number }[];
+    right: { distance: number; index: number }[];
+}
+
+const ALIGN_TOLERANCE = 2;
 
 export class ReactionManager {
     alignRectangles: RectangleClient[];
@@ -44,13 +53,9 @@ export class ReactionManager {
     handleAlign(): AlignRef {
         const alignRectangles = this.getAlignRectangle();
         const g = createG();
-        const alignLines = [];
+        let alignLines = [];
+
         const offset = 12;
-        const options = {
-            stroke: SELECTION_BORDER_COLOR,
-            strokeWidth: 1,
-            strokeLineDash: [4, 4]
-        };
         let deltaX = 0;
         let deltaY = 0;
         let isCorrectX = false;
@@ -59,7 +64,7 @@ export class ReactionManager {
         for (let alignRectangle of alignRectangles) {
             const closestDistances = this.calculateClosestDistances(this.activeRectangle, alignRectangle);
             let canDrawHorizontal = false;
-            if (!isCorrectX && closestDistances.absXDistance < 5) {
+            if (!isCorrectX && closestDistances.absXDistance < ALIGN_TOLERANCE) {
                 deltaX = closestDistances.xDistance;
                 this.activeRectangle.x -= deltaX;
                 isCorrectX = true;
@@ -118,7 +123,7 @@ export class ReactionManager {
             }
 
             let canDrawVertical = false;
-            if (!isCorrectY && closestDistances.absYDistance < 5) {
+            if (!isCorrectY && closestDistances.absYDistance < ALIGN_TOLERANCE) {
                 deltaY = closestDistances.yDistance;
                 this.activeRectangle.y -= deltaY;
                 isCorrectY = true;
@@ -173,12 +178,25 @@ export class ReactionManager {
             }
         }
 
+        const alignDeltaX = deltaX;
+        this.activeRectangle.x += deltaX;
+        const distributeHorizontalResult = this.alignDistributeHorizontal(alignRectangles);
+        const distributeLines: Point[][] = distributeHorizontalResult.distributeLines;
+        if (distributeHorizontalResult.deltaX) {
+            deltaX = distributeHorizontalResult.deltaX;
+            if (alignDeltaX !== deltaX) {
+                alignLines[0] = [];
+                alignLines[1] = [];
+                alignLines[2] = [];
+            }
+        }
+
         if (alignLines.length) {
-            alignLines.forEach(points => {
-                if (!points.length) return;
-                const xAlign = PlaitBoard.getRoughSVG(this.board).line(points[0], points[1], points[2], points[3], options);
-                g.appendChild(xAlign);
-            });
+            this.drawAlignLines(alignLines, g);
+        }
+
+        if (distributeLines.length) {
+            this.drawDistributeLines(distributeLines, g);
         }
 
         return { deltaX, deltaY, g };
@@ -219,4 +237,164 @@ export class ReactionManager {
             indexY
         };
     }
+
+    alignDistributeHorizontal(alignRectangles: RectangleClient[]) {
+        let distributeLines: any[] = [];
+        let deltaX = 0;
+        const activeRectangleCenterX = this.activeRectangle.x + this.activeRectangle.width / 2;
+        let rectangles: RectangleClient[] = [];
+        alignRectangles.forEach(rec => {
+            if (isHorizontalCross(rec, this.activeRectangle) && !RectangleClient.isHit(rec, this.activeRectangle)) {
+                rectangles.push(rec);
+            }
+        });
+        rectangles = [...rectangles, this.activeRectangle].sort((a, b) => a.x - b.x);
+
+        const refArray: DistributeRef[] = [];
+        let distributeDistance = 0;
+        let leftIndex = undefined;
+        let rightIndex = undefined;
+
+        for (let i = 0; i < rectangles.length; i++) {
+            for (let j = i + 1; j < rectangles.length; j++) {
+                const left = rectangles[i];
+                const right = rectangles[j];
+                const distance = right.x - (left.x + left.width);
+                let dif = Infinity;
+                if (refArray[i]?.right) {
+                    refArray[i].right.push({ distance, index: j });
+                } else {
+                    refArray[i] = { ...refArray[i], right: [{ distance, index: j }] };
+                }
+
+                if (refArray[j]?.left) {
+                    refArray[j].left.push({ distance, index: i });
+                } else {
+                    refArray[j] = { ...refArray[j], left: [{ distance, index: i }] };
+                }
+
+                //middle
+                let _centerX = (left.x + left.width + right.x) / 2;
+                dif = Math.abs(activeRectangleCenterX - _centerX);
+                if (dif < ALIGN_TOLERANCE) {
+                    distributeDistance = (right.x - (left.x + left.width) - this.activeRectangle.width) / 2;
+                    deltaX = activeRectangleCenterX - _centerX;
+                    leftIndex = i;
+                    rightIndex = j;
+                }
+
+                //right
+                const distanceRight = right.x - (left.x + left.width);
+                _centerX = right.x + right.width + distanceRight + this.activeRectangle.width / 2;
+                dif = Math.abs(activeRectangleCenterX - _centerX);
+                if (!distributeDistance && dif < ALIGN_TOLERANCE) {
+                    distributeDistance = distanceRight;
+                    leftIndex = j;
+                    deltaX = activeRectangleCenterX - _centerX;
+                }
+
+                //left
+                const distanceLeft = right.x - (left.x + left.width);
+                _centerX = left.x - distanceLeft - this.activeRectangle.width / 2;
+                dif = Math.abs(activeRectangleCenterX - _centerX);
+
+                if (!distributeDistance && dif < ALIGN_TOLERANCE) {
+                    distributeDistance = distanceLeft;
+                    rightIndex = i;
+                    deltaX = activeRectangleCenterX - _centerX;
+                }
+            }
+        }
+
+        const activeIndex = rectangles.indexOf(this.activeRectangle);
+        let leftIndexes: number[] = [];
+        let rightIndexes: number[] = [];
+        if (leftIndex !== undefined) {
+            leftIndexes.push(leftIndex);
+            findRectangle(distributeDistance, refArray[leftIndex], Direction.left, leftIndexes);
+        }
+
+        if (rightIndex !== undefined) {
+            rightIndexes.push(rightIndex);
+            findRectangle(distributeDistance, refArray[rightIndex], Direction.right, rightIndexes);
+        }
+
+        if (leftIndexes.length || rightIndexes.length) {
+            const indexArr = [...leftIndexes.reverse(), activeIndex, ...rightIndexes];
+            this.activeRectangle.x -= deltaX;
+            for (let i = 1; i < indexArr.length; i++) {
+                distributeLines.push(getLinePoints(rectangles[indexArr[i - 1]], rectangles[indexArr[i]]));
+            }
+        }
+
+        function findRectangle(distance: number, ref: DistributeRef, direction: Direction, rectangleIndexes: number[]) {
+            const arr = ref[direction as keyof DistributeRef];
+            const index = refArray.indexOf(ref);
+            if ((index === 0 && direction === Direction.left) || (index === refArray.length - 1 && direction === Direction.right)) return;
+            for (let i = 0; i < arr.length; i++) {
+                if (Math.abs(arr[i].distance - distance) < 0.1) {
+                    rectangleIndexes.push(arr[i].index);
+                    findRectangle(distance, refArray[arr[i].index], direction, rectangleIndexes);
+                    return;
+                }
+            }
+        }
+
+        function getLinePoints(leftRectangle: RectangleClient, rightRectangle: RectangleClient) {
+            const verticalY = [
+                leftRectangle.y,
+                leftRectangle.y + leftRectangle.height,
+                rightRectangle.y,
+                rightRectangle.y + rightRectangle.height
+            ];
+            const sortArr = verticalY.sort((a, b) => a - b);
+            const y = (sortArr[1] + sortArr[2]) / 2;
+            const line = [
+                [leftRectangle.x + leftRectangle.width + 2, y],
+                [rightRectangle.x - 2, y]
+            ];
+            return line;
+        }
+        return { deltaX, distributeLines };
+    }
+
+    drawAlignLines(lines: number[][], g: SVGGElement) {
+        lines.forEach(points => {
+            if (!points.length) return;
+            const xAlign = PlaitBoard.getRoughSVG(this.board).line(points[0], points[1], points[2], points[3], {
+                stroke: SELECTION_BORDER_COLOR,
+                strokeWidth: 1,
+                strokeLineDash: [4, 4]
+            });
+            g.appendChild(xAlign);
+        });
+    }
+
+    drawDistributeLines(lines: Point[][], g: SVGGElement) {
+        lines.forEach(points => {
+            if (!points.length) return;
+            if (points[0][1] === points[1][1]) {
+                const yAlign = PlaitBoard.getRoughSVG(this.board).line(points[0][0], points[0][1], points[1][0], points[1][1], {
+                    stroke: SELECTION_BORDER_COLOR,
+                    strokeWidth: 1
+                });
+                const bar1 = PlaitBoard.getRoughSVG(this.board).line(points[0][0], points[0][1] - 4, points[0][0], points[1][1] + 4, {
+                    stroke: SELECTION_BORDER_COLOR,
+                    strokeWidth: 1
+                });
+                const bar2 = PlaitBoard.getRoughSVG(this.board).line(points[1][0], points[0][1] - 4, points[1][0], points[1][1] + 4, {
+                    stroke: SELECTION_BORDER_COLOR,
+                    strokeWidth: 1
+                });
+
+                g.appendChild(yAlign);
+                g.appendChild(bar1);
+                g.appendChild(bar2);
+            }
+        });
+    }
+}
+
+function isHorizontalCross(rectangle: RectangleClient, other: RectangleClient) {
+    return !(rectangle.y + rectangle.height < other.y || rectangle.y > other.y + other.height);
 }
