@@ -70,6 +70,13 @@ $primary: #4e8afa;
         }
     }
 
+    &.pointer-mind  
+     {
+        .board-host-svg {
+            cursor: default !important;
+        }
+    }
+
     &.readonly {
         .collapsed {
             .extend:hover {
