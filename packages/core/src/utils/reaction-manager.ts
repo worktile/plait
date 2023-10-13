@@ -4,7 +4,6 @@ import { PlaitElement } from '../interfaces/element';
 import { Ancestor } from '../interfaces/node';
 import { Point, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { depthFirstRecursion } from './tree';
-import { Direction } from '../interfaces/direction';
 
 export interface AlignRef {
     deltaX: number;
@@ -13,8 +12,8 @@ export interface AlignRef {
 }
 
 export interface DistributeRef {
-    left: { distance: number; index: number }[];
-    right: { distance: number; index: number }[];
+    before: { distance: number; index: number }[];
+    after: { distance: number; index: number }[];
 }
 
 const ALIGN_TOLERANCE = 2;
@@ -178,15 +177,27 @@ export class ReactionManager {
         }
 
         const alignDeltaX = deltaX;
+        const alignDeltaY = deltaY;
+
         this.activeRectangle.x += deltaX;
-        const distributeHorizontalResult = this.alignDistributeHorizontal(alignRectangles);
-        const distributeLines: Point[][] = distributeHorizontalResult.distributeLines;
-        if (distributeHorizontalResult.deltaX) {
-            deltaX = distributeHorizontalResult.deltaX;
+        const distributeHorizontalResult = this.alignDistribute(alignRectangles, true);
+        const distributeVerticalResult = this.alignDistribute(alignRectangles, false);
+        const distributeLines: Point[][] = [...distributeHorizontalResult.distributeLines, ...distributeVerticalResult.distributeLines];
+        if (distributeHorizontalResult.delta) {
+            deltaX = distributeHorizontalResult.delta;
             if (alignDeltaX !== deltaX) {
                 alignLines[0] = [];
                 alignLines[1] = [];
                 alignLines[2] = [];
+            }
+        }
+
+        if (distributeVerticalResult.delta) {
+            deltaY = distributeVerticalResult.delta;
+            if (alignDeltaY !== deltaY) {
+                alignLines[3] = [];
+                alignLines[4] = [];
+                alignLines[5] = [];
             }
         }
 
@@ -237,99 +248,103 @@ export class ReactionManager {
         };
     }
 
-    alignDistributeHorizontal(alignRectangles: RectangleClient[]) {
+    alignDistribute(alignRectangles: RectangleClient[], isHorizontal: boolean) {
         let distributeLines: any[] = [];
-        let deltaX = 0;
-        const activeRectangleCenterX = this.activeRectangle.x + this.activeRectangle.width / 2;
+        let delta = 0;
         let rectangles: RectangleClient[] = [];
+        const axis = isHorizontal ? 'x' : 'y';
+        const side = isHorizontal ? 'width' : 'height';
+
+        const activeRectangleCenter = this.activeRectangle[axis] + this.activeRectangle[side] / 2;
         alignRectangles.forEach(rec => {
-            if (isHorizontalCross(rec, this.activeRectangle) && !RectangleClient.isHit(rec, this.activeRectangle)) {
+            const isCross = isHorizontal ? isHorizontalCross(rec, this.activeRectangle) : isVerticalCross(rec, this.activeRectangle);
+            if (isCross && !RectangleClient.isHit(rec, this.activeRectangle)) {
                 rectangles.push(rec);
             }
         });
-        rectangles = [...rectangles, this.activeRectangle].sort((a, b) => a.x - b.x);
+        rectangles = [...rectangles, this.activeRectangle].sort((a, b) => a[axis] - b[axis]);
 
         const refArray: DistributeRef[] = [];
         let distributeDistance = 0;
-        let leftIndex = undefined;
-        let rightIndex = undefined;
+        let beforeIndex = undefined;
+        let afterIndex = undefined;
 
         for (let i = 0; i < rectangles.length; i++) {
             for (let j = i + 1; j < rectangles.length; j++) {
-                const left = rectangles[i];
-                const right = rectangles[j];
-                const distance = right.x - (left.x + left.width);
+                const before = rectangles[i];
+                const after = rectangles[j];
+                const distance = after[axis] - (before[axis] + before[side]);
                 let dif = Infinity;
-                if (refArray[i]?.right) {
-                    refArray[i].right.push({ distance, index: j });
+                if (refArray[i]?.after) {
+                    refArray[i].after.push({ distance, index: j });
                 } else {
-                    refArray[i] = { ...refArray[i], right: [{ distance, index: j }] };
+                    refArray[i] = { ...refArray[i], after: [{ distance, index: j }] };
                 }
 
-                if (refArray[j]?.left) {
-                    refArray[j].left.push({ distance, index: i });
+                if (refArray[j]?.before) {
+                    refArray[j].before.push({ distance, index: i });
                 } else {
-                    refArray[j] = { ...refArray[j], left: [{ distance, index: i }] };
+                    refArray[j] = { ...refArray[j], before: [{ distance, index: i }] };
                 }
 
                 //middle
-                let _centerX = (left.x + left.width + right.x) / 2;
-                dif = Math.abs(activeRectangleCenterX - _centerX);
+                let _center = (before[axis] + before[side] + after[axis]) / 2;
+                dif = Math.abs(activeRectangleCenter - _center);
                 if (dif < ALIGN_TOLERANCE) {
-                    distributeDistance = (right.x - (left.x + left.width) - this.activeRectangle.width) / 2;
-                    deltaX = activeRectangleCenterX - _centerX;
-                    leftIndex = i;
-                    rightIndex = j;
+                    distributeDistance = (after[axis] - (before[axis] + before[side]) - this.activeRectangle[side]) / 2;
+                    delta = activeRectangleCenter - _center;
+                    beforeIndex = i;
+                    afterIndex = j;
                 }
 
-                //right
-                const distanceRight = right.x - (left.x + left.width);
-                _centerX = right.x + right.width + distanceRight + this.activeRectangle.width / 2;
-                dif = Math.abs(activeRectangleCenterX - _centerX);
+                //after
+                const distanceRight = after[axis] - (before[axis] + before[side]);
+                _center = after[axis] + after[side] + distanceRight + this.activeRectangle[side] / 2;
+                dif = Math.abs(activeRectangleCenter - _center);
                 if (!distributeDistance && dif < ALIGN_TOLERANCE) {
                     distributeDistance = distanceRight;
-                    leftIndex = j;
-                    deltaX = activeRectangleCenterX - _centerX;
+                    beforeIndex = j;
+                    delta = activeRectangleCenter - _center;
                 }
 
-                //left
-                const distanceLeft = right.x - (left.x + left.width);
-                _centerX = left.x - distanceLeft - this.activeRectangle.width / 2;
-                dif = Math.abs(activeRectangleCenterX - _centerX);
+                //before
+                const distanceBefore = after[axis] - (before[axis] + before[side]);
+                _center = before[axis] - distanceBefore - this.activeRectangle[side] / 2;
+                dif = Math.abs(activeRectangleCenter - _center);
 
                 if (!distributeDistance && dif < ALIGN_TOLERANCE) {
-                    distributeDistance = distanceLeft;
-                    rightIndex = i;
-                    deltaX = activeRectangleCenterX - _centerX;
+                    distributeDistance = distanceBefore;
+                    afterIndex = i;
+                    delta = activeRectangleCenter - _center;
                 }
             }
         }
 
         const activeIndex = rectangles.indexOf(this.activeRectangle);
-        let leftIndexes: number[] = [];
-        let rightIndexes: number[] = [];
-        if (leftIndex !== undefined) {
-            leftIndexes.push(leftIndex);
-            findRectangle(distributeDistance, refArray[leftIndex], Direction.left, leftIndexes);
+        let beforeIndexes: number[] = [];
+        let afterIndexes: number[] = [];
+        if (beforeIndex !== undefined) {
+            beforeIndexes.push(beforeIndex);
+            findRectangle(distributeDistance, refArray[beforeIndex], 'before', beforeIndexes);
         }
 
-        if (rightIndex !== undefined) {
-            rightIndexes.push(rightIndex);
-            findRectangle(distributeDistance, refArray[rightIndex], Direction.right, rightIndexes);
+        if (afterIndex !== undefined) {
+            afterIndexes.push(afterIndex);
+            findRectangle(distributeDistance, refArray[afterIndex], 'after', afterIndexes);
         }
 
-        if (leftIndexes.length || rightIndexes.length) {
-            const indexArr = [...leftIndexes.reverse(), activeIndex, ...rightIndexes];
-            this.activeRectangle.x -= deltaX;
+        if (beforeIndexes.length || afterIndexes.length) {
+            const indexArr = [...beforeIndexes.reverse(), activeIndex, ...afterIndexes];
+            this.activeRectangle[axis] -= delta;
             for (let i = 1; i < indexArr.length; i++) {
                 distributeLines.push(getLinePoints(rectangles[indexArr[i - 1]], rectangles[indexArr[i]]));
             }
         }
 
-        function findRectangle(distance: number, ref: DistributeRef, direction: Direction, rectangleIndexes: number[]) {
+        function findRectangle(distance: number, ref: DistributeRef, direction: string, rectangleIndexes: number[]) {
             const arr = ref[direction as keyof DistributeRef];
             const index = refArray.indexOf(ref);
-            if ((index === 0 && direction === Direction.left) || (index === refArray.length - 1 && direction === Direction.right)) return;
+            if ((index === 0 && direction === 'before') || (index === refArray.length - 1 && direction === 'after')) return;
             for (let i = 0; i < arr.length; i++) {
                 if (Math.abs(arr[i].distance - distance) < 0.1) {
                     rectangleIndexes.push(arr[i].index);
@@ -339,22 +354,28 @@ export class ReactionManager {
             }
         }
 
-        function getLinePoints(leftRectangle: RectangleClient, rightRectangle: RectangleClient) {
-            const verticalY = [
-                leftRectangle.y,
-                leftRectangle.y + leftRectangle.height,
-                rightRectangle.y,
-                rightRectangle.y + rightRectangle.height
+        function getLinePoints(beforeRectangle: RectangleClient, afterRectangle: RectangleClient) {
+            const oppositeAxis = axis === 'x' ? 'y' : 'x';
+            const oppositeSide = side === 'width' ? 'height' : 'width';
+            const align = [
+                beforeRectangle[oppositeAxis],
+                beforeRectangle[oppositeAxis] + beforeRectangle[oppositeSide],
+                afterRectangle[oppositeAxis],
+                afterRectangle[oppositeAxis] + afterRectangle[oppositeSide]
             ];
-            const sortArr = verticalY.sort((a, b) => a - b);
-            const y = (sortArr[1] + sortArr[2]) / 2;
-            const line = [
-                [leftRectangle.x + leftRectangle.width + 2, y],
-                [rightRectangle.x - 2, y]
-            ];
-            return line;
+            const sortArr = align.sort((a, b) => a - b);
+            const average = (sortArr[1] + sortArr[2]) / 2;
+            return isHorizontal
+                ? [
+                      [beforeRectangle.x + beforeRectangle.width + 2, average],
+                      [afterRectangle.x - 2, average]
+                  ]
+                : [
+                      [average, beforeRectangle.y + beforeRectangle.height + 2],
+                      [average, afterRectangle.y - 2]
+                  ];
         }
-        return { deltaX, distributeLines };
+        return { delta, distributeLines };
     }
 
     drawAlignLines(lines: number[][], g: SVGGElement) {
@@ -370,30 +391,42 @@ export class ReactionManager {
     }
 
     drawDistributeLines(lines: Point[][], g: SVGGElement) {
-        lines.forEach(points => {
-            if (!points.length) return;
-            if (points[0][1] === points[1][1]) {
-                const yAlign = PlaitBoard.getRoughSVG(this.board).line(points[0][0], points[0][1], points[1][0], points[1][1], {
-                    stroke: SELECTION_BORDER_COLOR,
-                    strokeWidth: 1
-                });
-                const bar1 = PlaitBoard.getRoughSVG(this.board).line(points[0][0], points[0][1] - 4, points[0][0], points[1][1] + 4, {
-                    stroke: SELECTION_BORDER_COLOR,
-                    strokeWidth: 1
-                });
-                const bar2 = PlaitBoard.getRoughSVG(this.board).line(points[1][0], points[0][1] - 4, points[1][0], points[1][1] + 4, {
-                    stroke: SELECTION_BORDER_COLOR,
-                    strokeWidth: 1
-                });
+        lines.forEach(line => {
+            if (!line.length) return;
+            let isHorizontal = line[0][1] === line[1][1];
+            const yAlign = PlaitBoard.getRoughSVG(this.board).line(line[0][0], line[0][1], line[1][0], line[1][1], {
+                stroke: SELECTION_BORDER_COLOR,
+                strokeWidth: 1
+            });
+            g.appendChild(yAlign);
 
-                g.appendChild(yAlign);
-                g.appendChild(bar1);
-                g.appendChild(bar2);
-            }
+            line.forEach(point => {
+                const barPoint = getBarPoint(point, isHorizontal);
+                const bar = PlaitBoard.getRoughSVG(this.board).line(barPoint[0][0], barPoint[0][1], barPoint[1][0], barPoint[1][1], {
+                    stroke: SELECTION_BORDER_COLOR,
+                    strokeWidth: 1
+                });
+                g.appendChild(bar);
+            });
         });
     }
 }
 
 function isHorizontalCross(rectangle: RectangleClient, other: RectangleClient) {
     return !(rectangle.y + rectangle.height < other.y || rectangle.y > other.y + other.height);
+}
+
+function isVerticalCross(rectangle: RectangleClient, other: RectangleClient) {
+    return !(rectangle.x + rectangle.width < other.x || rectangle.x > other.x + other.width);
+}
+function getBarPoint(point: Point, isHorizontal: boolean) {
+    return isHorizontal
+        ? [
+              [point[0], point[1] - 4],
+              [point[0], point[1] + 4]
+          ]
+        : [
+              [point[0] - 4, point[1]],
+              [point[0] + 4, point[1]]
+          ];
 }
