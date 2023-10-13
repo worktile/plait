@@ -1,5 +1,11 @@
 # mind
 
+## 0.27.0-next.9
+
+### Patch Changes
+
+-   [#591](https://github.com/worktile/plait/pull/591) [`60c8f847`](https://github.com/worktile/plait/commit/60c8f847600edf90cc0a510b17a8f39dd765be4c) Thanks [@WBbug](https://github.com/WBbug)! - fix mind point
+
 ## 0.27.0-next.8
 
 ### Minor Changes

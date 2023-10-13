@@ -1,5 +1,19 @@
 # plait
 
+## 0.24.0-next.11
+
+### Minor Changes
+
+-   [#585](https://github.com/worktile/plait/pull/585) [`ba6d2eeb`](https://github.com/worktile/plait/commit/ba6d2eebcb0928a2637e57effe70447b36f5cd80) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve line handle direction logic
+
+*   [#586](https://github.com/worktile/plait/pull/586) [`3b8a65f7`](https://github.com/worktile/plait/commit/3b8a65f7bb346c9211c9a280bd95748111bda610) Thanks [@WBbug](https://github.com/WBbug)! - add distribute lines
+
+### Patch Changes
+
+-   [#592](https://github.com/worktile/plait/pull/592) [`832689e4`](https://github.com/worktile/plait/commit/832689e4b0d41c78136b33bc79244e01c670c24f) Thanks [@Maple13](https://github.com/Maple13)! - build: update peerDependencies
+
+*   [#588](https://github.com/worktile/plait/pull/588) [`6f43b941`](https://github.com/worktile/plait/commit/6f43b941a8ec94eec8e59e971ae24790182ac137) Thanks [@WBbug](https://github.com/WBbug)! - change handleAlign position
+
 ## 0.24.0-next.10
 
 ### Minor Changes

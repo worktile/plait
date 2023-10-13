@@ -1,5 +1,11 @@
 # text
 
+## 0.16.0-next.6
+
+### Patch Changes
+
+-   [#592](https://github.com/worktile/plait/pull/592) [`832689e4`](https://github.com/worktile/plait/commit/832689e4b0d41c78136b33bc79244e01c670c24f) Thanks [@Maple13](https://github.com/Maple13)! - build: update peerDependencies
+
 ## 0.16.0-next.5
 
 ### Minor Changes
