@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement } from '@plait/core';
+import { PlaitElement } from '@plait/core';
 import { CommonPluginElement } from '../public-api';
 
 export const getTextManages = (element: PlaitElement) => {

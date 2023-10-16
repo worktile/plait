@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseElementComponent } from 'slate-angular';
+import { BaseElementComponent, SlateChildren } from 'slate-angular';
 import { LinkElement } from '../../custom-types';
 
 @Component({
@@ -13,7 +13,9 @@ import { LinkElement } from '../../custom-types';
         '[attr.href]': 'element.url',
         target: '_blank',
         class: 'plait-link-node'
-    }
+    },
+    standalone: true,
+    imports: [SlateChildren]
 })
 export class PlaitLinkNodeComponent extends BaseElementComponent<LinkElement> implements OnInit {
     // Put this at the start and end of an inline component to work around this Chromium bug:

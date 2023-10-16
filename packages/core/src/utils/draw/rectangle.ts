@@ -29,7 +29,6 @@ export function drawRoundRectangle(
             radius = outline ? MAX_RADIUS + 2 : MAX_RADIUS;
         }
     }
-    
 
     const point1 = [x1 + radius, y1];
     const point2 = [x2 - radius, y1];

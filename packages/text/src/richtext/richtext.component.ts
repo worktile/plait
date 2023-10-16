@@ -26,10 +26,13 @@ import { PlaitTextEditor } from '../plugins/text.editor';
 import { withSelection } from '../plugins/with-selection';
 import { withSingleLine } from '../plugins/with-single';
 import { PlaitTextNodeComponent } from '../text-node/text.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'plait-richtext',
-    templateUrl: './richtext.component.html'
+    templateUrl: './richtext.component.html',
+    standalone: true,
+    imports: [SlateEditable, FormsModule]
 })
 export class PlaitRichtextComponent implements OnInit, AfterViewInit {
     @HostBinding('class') hostClass = 'plait-richtext-container';

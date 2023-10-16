@@ -17,7 +17,7 @@ export interface ViewportInterface {
 export const Viewport: ViewportInterface = {
     isViewport: (value: any): value is Viewport => {
         return !isNullOrUndefined(value.zoom) && !isNullOrUndefined(value.viewBackgroundColor);
-    },
+    }
 };
 
 export interface FitViewportOptions {

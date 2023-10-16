@@ -5,12 +5,15 @@ import { mockFlowData } from './flow-data';
 import { withCommon } from './plugins/with-common';
 import { withDraw } from './plugins/with-draw';
 import { CustomBoard } from './interfaces/board';
+import { PlaitBoardComponent } from '../../../packages/core/src/board/board.component';
 
 const LOCAL_DATA_KEY = 'plait-board-flow-change-data';
 
 @Component({
-    selector: 'basic-flow',
-    templateUrl: './flow.component.html'
+    selector: 'app-basic-flow',
+    templateUrl: './flow.component.html',
+    standalone: true,
+    imports: [PlaitBoardComponent]
 })
 export class BasicFlowComponent implements OnInit {
     plugins = [withCommon, withFlow, withDraw];

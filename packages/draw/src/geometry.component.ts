@@ -20,7 +20,8 @@ import { PlaitDrawElement, PlaitText } from './interfaces';
 @Component({
     selector: 'plait-draw-geometry',
     template: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true
 })
 export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitBoard>
     implements OnInit, OnDestroy, OnContextChanged<PlaitGeometry, PlaitBoard> {

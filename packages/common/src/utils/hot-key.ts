@@ -30,5 +30,5 @@ export const isSpaceHotkey = (event: KeyboardEvent) => {
 };
 
 export const isDelete = (event: KeyboardEvent) => {
-    return hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)
+    return hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event);
 };

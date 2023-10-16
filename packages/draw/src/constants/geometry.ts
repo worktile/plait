@@ -1,4 +1,4 @@
-import { ACTIVE_STROKE_WIDTH } from "@plait/core";
+import { ACTIVE_STROKE_WIDTH } from '@plait/core';
 
 export const ShapeDefaultSpace = {
     rectangleAndText: 4
@@ -30,5 +30,5 @@ export const DefaultTextProperty = {
 };
 
 export const GeometryThreshold = {
-    defaultTextMaxWidth: 34 * 14,
-}
+    defaultTextMaxWidth: 34 * 14
+};

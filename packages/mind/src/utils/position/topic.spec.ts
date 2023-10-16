@@ -16,7 +16,7 @@ describe('utils position topic', () => {
         board = createTestingBoard([], children) as PlaitMindBoard;
         const mind = PlaitNode.get<PlaitMind>(board, [0]);
         fakeNodeWeakMap(board);
-        root = fakeMindLayout(board, mind)
+        root = fakeMindLayout(board, mind);
     });
 
     afterEach(() => {

@@ -24,7 +24,7 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
             MindTransforms.setRightNodeCountByRefs(board, refs);
             const deletableElements = getFirstLevelElement(targetMindElements);
             data.push(...deletableElements);
-            
+
             const nextSelected = getNextSelectedElement(board, firstLevelElements);
             if (nextSelected) {
                 addSelectedElement(board, nextSelected);

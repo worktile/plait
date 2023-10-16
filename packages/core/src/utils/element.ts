@@ -54,11 +54,15 @@ export function getBoardRectangle(board: PlaitBoard): RectangleClient {
     return getRectangleByElements(board, board.children, true);
 }
 
-export function getElementById<T extends PlaitElement = PlaitElement>(board: PlaitBoard, id: string, dataSource?: PlaitElement[]): T | undefined {
+export function getElementById<T extends PlaitElement = PlaitElement>(
+    board: PlaitBoard,
+    id: string,
+    dataSource?: PlaitElement[]
+): T | undefined {
     if (!dataSource) {
-        dataSource = findElements(board, { match: (element) => true, recursion: (element) => true });
+        dataSource = findElements(board, { match: element => true, recursion: element => true });
     }
-    let element = dataSource.find((element) => element.id === id) as T;
+    let element = dataSource.find(element => element.id === id) as T;
     return element;
 }
 

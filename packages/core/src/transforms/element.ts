@@ -1,7 +1,7 @@
-import { PlaitBoard } from "../interfaces/board";
-import { PlaitElement } from "../interfaces/element";
-import { removeSelectedElement } from "../utils/selected-element";
-import { removeNode } from "./node";
+import { PlaitBoard } from '../interfaces/board';
+import { PlaitElement } from '../interfaces/element';
+import { removeSelectedElement } from '../utils/selected-element';
+import { removeNode } from './node';
 
 export const removeElements = (board: PlaitBoard, elements: PlaitElement[]) => {
     elements

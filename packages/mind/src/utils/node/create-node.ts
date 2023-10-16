@@ -5,7 +5,7 @@ import { BranchShape, MindElement, MindElementShape } from '../../interfaces/ele
 import { ROOT_TOPIC_HEIGHT, ROOT_TOPIC_WIDTH } from '../../constants/node-topic-style';
 import { Element } from 'slate';
 import { NodeSpace } from '../space';
-import { PlaitMindBoard } from '../../public-api';
+import { PlaitMindBoard } from '../../plugins/with-mind.board';
 
 export const createEmptyMind = (board: PlaitBoard, point: Point) => {
     const element = createMindElement('思维导图', ROOT_TOPIC_WIDTH, ROOT_TOPIC_HEIGHT, { layout: MindLayoutType.right });

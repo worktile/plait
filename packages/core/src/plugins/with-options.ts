@@ -21,6 +21,6 @@ export const withOptions = (board: PlaitBoard) => {
         const oldOptions = newBoard.getPluginOptions(key) || {};
         pluginOptions.set(key, { ...oldOptions, ...options });
     };
-    
+
     return newBoard;
 };

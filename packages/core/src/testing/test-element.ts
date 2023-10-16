@@ -8,8 +8,8 @@
 
 /** Modifier keys that may be held while typing. */
 export interface ModifierKeys {
-  control?: boolean;
-  alt?: boolean;
-  shift?: boolean;
-  meta?: boolean;
+    control?: boolean;
+    alt?: boolean;
+    shift?: boolean;
+    meta?: boolean;
 }

@@ -15,6 +15,9 @@ import { MindLayoutType } from '@plait/layouts';
 import { MindElement, MindPointerType, MindTransforms, canSetAbstract, getSelectedMindElements } from '@plait/mind';
 import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText, LinkEditor, AlignEditor, Alignment } from '@plait/text';
 import { Node, Transforms as SlateTransforms } from 'slate';
+import { AppColorPickerComponent } from '../color-picker/color-picker.component';
+import { FormsModule } from '@angular/forms';
+import { NgClass, NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-setting-panel',
@@ -23,7 +26,9 @@ import { Node, Transforms as SlateTransforms } from 'slate';
     providers: [{ provide: PlaitIslandBaseComponent, useExisting: forwardRef(() => AppSettingPanelComponent) }],
     host: {
         class: 'app-setting-panel plait-board-attached'
-    }
+    },
+    standalone: true,
+    imports: [NgClass, NgIf, FormsModule, AppColorPickerComponent]
 })
 export class AppSettingPanelComponent extends PlaitIslandBaseComponent implements OnBoardChange {
     currentFillColor: string | undefined = '';

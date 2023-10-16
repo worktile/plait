@@ -3,6 +3,8 @@ import { PlaitBoard } from '../../interfaces/board';
 import { PlaitElement } from '../../interfaces/element';
 import { PlaitEffect } from './effect';
 import { Ancestor } from '../../interfaces/node';
+import { PlaitElementComponent } from '../element/element.component';
+import { NgFor } from '@angular/common';
 
 @Component({
     selector: 'plait-children',
@@ -16,9 +18,11 @@ import { Ancestor } from '../../interfaces/node';
             [effect]="effect"
             [parentG]="parentG"
         ></plait-element>
-    `
+    `,
+    standalone: true,
+    imports: [NgFor, PlaitElementComponent]
 })
-export class PlaitChildrenElement implements OnInit {
+export class PlaitChildrenElementComponent implements OnInit {
     @Input() board!: PlaitBoard;
 
     @Input() parent!: Ancestor;

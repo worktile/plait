@@ -21,7 +21,8 @@ import { setRelationEdgeSelected } from './utils/edge/relation-edge-selected';
 @Component({
     selector: 'plait-flow-node',
     template: '',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true
 })
 export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends PlaitPluginElementComponent<FlowNode<T>>
     implements OnInit, OnContextChanged<FlowNode, PlaitBoard>, OnDestroy {

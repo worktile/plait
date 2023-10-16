@@ -83,4 +83,4 @@ export const MindThemeColor = {
             return false;
         }
     }
-}
+};

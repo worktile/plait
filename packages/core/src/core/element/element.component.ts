@@ -21,7 +21,8 @@ import { addSelectedElement, isSelectedElement, removeSelectedElement } from '..
 @Component({
     selector: 'plait-element',
     template: '',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true
 })
 export class PlaitElementComponent implements OnInit, OnChanges, OnDestroy {
     initialized = false;
