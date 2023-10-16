@@ -42,7 +42,6 @@ export function withMoving(board: PlaitBoard) {
                 preventTouchMove(board, event, true);
             }
         }
-
         pointerDown(event);
     };
 
@@ -56,8 +55,8 @@ export function withMoving(board: PlaitBoard) {
             const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
             offsetX = endPoint[0] - startPoint[0];
             offsetY = endPoint[1] - startPoint[1];
-            const offsetBuffer = 5;
-            if (Math.abs(offsetX) > offsetBuffer || Math.abs(offsetY) > offsetBuffer || getMovingElements(board).length > 0) {
+            const tolerance = 5;
+            if (Math.abs(offsetX) > tolerance || Math.abs(offsetY) > tolerance || getMovingElements(board).length > 0) {
                 throttleRAF(() => {
                     const activeElementsRectangle = getRectangleByElements(board, activeElements, true);
                     activeElementsRectangle.x += offsetX;

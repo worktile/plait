@@ -365,14 +365,15 @@ export class ReactionManager {
             ];
             const sortArr = align.sort((a, b) => a - b);
             const average = (sortArr[1] + sortArr[2]) / 2;
+            const offset = 3;
             return isHorizontal
                 ? [
-                      [beforeRectangle.x + beforeRectangle.width + 2, average],
-                      [afterRectangle.x - 2, average]
+                      [beforeRectangle.x + beforeRectangle.width + offset, average],
+                      [afterRectangle.x - offset, average]
                   ]
                 : [
-                      [average, beforeRectangle.y + beforeRectangle.height + 2],
-                      [average, afterRectangle.y - 2]
+                      [average, beforeRectangle.y + beforeRectangle.height + offset],
+                      [average, afterRectangle.y - offset]
                   ];
         }
         return { delta, distributeLines };
