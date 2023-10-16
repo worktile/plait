@@ -1,5 +1,11 @@
 # plait
 
+## 0.24.0-next.12
+
+### Minor Changes
+
+-   [#593](https://github.com/worktile/plait/pull/593) [`3af9ce2a`](https://github.com/worktile/plait/commit/3af9ce2ad2a034152a90847007a99d6b8009e64b) Thanks [@WBbug](https://github.com/WBbug)! - support vertical distribute
+
 ## 0.24.0-next.11
 
 ### Minor Changes
