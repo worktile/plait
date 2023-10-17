@@ -47,25 +47,16 @@ const getArrow = (element: PlaitLine, marker: LineMarkerType, source: Point, tar
 };
 
 const drawSharpArrow = (source: Point, target: Point, options: Options) => {
-    const directionFactor = getFactorByPoints(source, target);
     const startPoint: Point = target;
-    // const startPoint: Point = [
-    //     target[0],
-    //     target[1]
-    // ];
     const { pointLeft, pointRight } = arrowPoints(source, target, 12, 20);
-
     const g = createG();
     const path = createPath();
-
     let polylinePath = `M${pointRight[0]},${pointRight[1]}A8,8,20,0,1,${pointLeft[0]},${pointLeft[1]}L${startPoint[0]},${startPoint[1]}Z`;
-
     path.setAttribute('d', polylinePath);
     path.setAttribute('stroke', `${options?.stroke}`);
     path.setAttribute('stroke-width', `${options?.strokeWidth}`);
     path.setAttribute('fill', `${options?.stroke}`);
     g.appendChild(path);
-
     return g;
 };
 
