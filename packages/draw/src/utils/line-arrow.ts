@@ -3,6 +3,7 @@ import { LineMarkerType, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getFactorByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './style';
+import { getExtendPoint } from './line';
 
 export const drawLineArrow = (element: PlaitLine, points: Point[], options: Options) => {
     const arrowG = createG();
@@ -10,11 +11,13 @@ export const drawLineArrow = (element: PlaitLine, points: Point[], options: Opti
         return null;
     }
     if (!PlaitLine.isSourceMark(element, LineMarkerType.none)) {
-        const sourceArrow = getArrow(element, element.source.marker, points[1], points[0], options);
+        const source = getExtendPoint(points[0], points[1], 50);
+        const sourceArrow = getArrow(element, element.source.marker, source, points[0], options);
         sourceArrow && arrowG.appendChild(sourceArrow);
     }
     if (!PlaitLine.isTargetMark(element, LineMarkerType.none)) {
-        const arrow = getArrow(element, element.target.marker, points[points.length - 2], points[points.length - 1], options);
+        const source = getExtendPoint(points[points.length - 1], points[points.length - 2], 50);
+        const arrow = getArrow(element, element.target.marker, source, points[points.length - 1], options);
         arrow && arrowG.appendChild(arrow);
     }
     return arrowG;

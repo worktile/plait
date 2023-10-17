@@ -14,7 +14,8 @@ import {
     ACTIVE_STROKE_WIDTH,
     PointOfRectangle,
     Direction,
-    Vector
+    Vector,
+    distanceBetweenPointAndPoint
 } from '@plait/core';
 import {
     getPoints,
@@ -23,6 +24,7 @@ import {
     getDirectionFactor,
     rotateVector90,
     getDirectionByVector,
+    getOppositeDirection,
     getDirectionByPointOfRectangle
 } from '@plait/common';
 import {
@@ -81,8 +83,8 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
     let targetPoint = targetBoundElement
         ? getConnectionPoint(targetBoundElement, element.target.connection!)
         : element.points[element.points.length - 1];
-    let sourceDirection = sourcePoint[0] < targetPoint[0] ? Direction.right : Direction.left;
-    let targetDirection = sourcePoint[0] < targetPoint[0] ? Direction.left : Direction.right;
+    let sourceDirection = getRelativeDirection(sourcePoint, targetPoint);
+    let targetDirection = getOppositeDirection(sourceDirection);
     const sourceHandleRef: LineHandleRef = { key: LineHandleKey.source, point: sourcePoint, direction: sourceDirection };
     const targetHandleRef: LineHandleRef = { key: LineHandleKey.target, point: targetPoint, direction: targetDirection };
     if (sourceBoundElement) {
@@ -109,13 +111,15 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
 export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     if (element.points.length === 2) {
         const handleRefPair = getLineHandleRefPair(board, element);
-        const points: Point[] = getPoints(
+        const offset = element.source.boundId || element.target.boundId ? 30 : 0;
+        let points: Point[] = getPoints(
             handleRefPair.source.point,
             handleRefPair.source.direction,
             handleRefPair.target.point,
             handleRefPair.target.direction,
-            30
+            offset
         );
+        points = deduplicatePoints(points);
         return points;
     }
     return element.points;
@@ -264,4 +268,35 @@ export const getBoardLines = (board: PlaitBoard) => {
         match: (element: PlaitElement) => PlaitDrawElement.isLine(element),
         recursion: (element: PlaitElement) => PlaitDrawElement.isDrawElement(element)
     }) as PlaitLine[];
+};
+
+export const deduplicatePoints = (points: Point[]) => {
+    const newArr: Point[] = [];
+    points.forEach(point => {
+        const index = newArr.findIndex(otherPoint => {
+            return point[0] === otherPoint[0] && point[1] === otherPoint[1];
+        });
+        if (index === -1) newArr.push(point);
+    });
+    return newArr;
+};
+
+export const getRelativeDirection = (sourcePoint: Point, targetPoint: Point) => {
+    const tan = (targetPoint[1] - sourcePoint[1]) / (targetPoint[0] - sourcePoint[0]);
+    if (tan > -1 && tan < 1 && targetPoint[0] > sourcePoint[0]) {
+        return Direction.right;
+    } else if ((tan < -1 || tan > 1) && targetPoint[1] < sourcePoint[1]) {
+        return Direction.top;
+    } else if (tan > -1 && tan < 1 && targetPoint[0] < sourcePoint[0]) {
+        return Direction.left;
+    } else {
+        return Direction.bottom;
+    }
+};
+
+export const getExtendPoint = (source: Point, target: Point, extendDistance: number): Point => {
+    const distance = distanceBetweenPointAndPoint(...source, ...target);
+    const sin = (target[1] - source[1]) / distance;
+    const cos = (target[0] - source[0]) / distance;
+    return [source[0] + extendDistance * cos, source[1] + extendDistance * sin];
 };
