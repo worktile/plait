@@ -17,7 +17,7 @@ import { DefaultTextProperty, ShapeDefaultSpace } from '../constants';
 import { getRectangleByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
-import { getEngine } from './engine';
+import { getEngine } from '../engines';
 
 export const createGeometryElement = (
     shape: GeometryShape,

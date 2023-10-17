@@ -1,4 +1,4 @@
-import { GeometryShape, ShapeEngine } from '../../interfaces';
+import { GeometryShape, ShapeEngine } from '../interfaces';
 import { DiamondEngine } from './diamond';
 import { EllipseEngine } from './ellipse';
 import { LeftArrowEngine } from './left-arrow';

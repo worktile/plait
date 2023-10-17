@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, Transforms } from '@plait/core';
 import { Element } from 'slate';
 import { PlaitGeometry, PlaitText } from '../interfaces';
-import { DefaultTextProperty, GeometryThreshold, ShapeDefaultSpace } from '../constants';
+import { ShapeDefaultSpace } from '../constants';
 import { AlignEditor, Alignment } from '@plait/text';
 
 const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: number, textHeight: number) => {

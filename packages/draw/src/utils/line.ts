@@ -39,7 +39,7 @@ import {
 } from '../interfaces';
 import { getPointsByCenterPoint, getNearestPoint } from './geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './style/stroke';
-import { getEngine } from './engine';
+import { getEngine } from '../engines';
 import { drawLineArrow } from './line-arrow';
 
 export const createLineElement = (

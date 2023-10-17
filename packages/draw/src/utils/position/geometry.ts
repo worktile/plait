@@ -1,7 +1,7 @@
 import { Ancestor, PlaitBoard, Point, RectangleClient, depthFirstRecursion, getIsRecursionFunc } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry } from '../../interfaces';
 import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints, getRectangleResizeHandleRefs } from '@plait/common';
-import { getEngine } from '../engine';
+import { getEngine } from '../../engines';
 
 export const getHitGeometryResizeHandleRef = (board: PlaitBoard, element: PlaitGeometry, point: Point) => {
     const rectangle = getRectangleByPoints(element.points);
