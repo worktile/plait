@@ -83,7 +83,7 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
     let targetPoint = targetBoundElement
         ? getConnectionPoint(targetBoundElement, element.target.connection!)
         : element.points[element.points.length - 1];
-    let sourceDirection = getRelativeDirection(sourcePoint, targetPoint);
+    let sourceDirection = getDirectionByVector([targetPoint[0] - sourcePoint[0], targetPoint[1] - sourcePoint[1]])!;
     let targetDirection = getOppositeDirection(sourceDirection);
     const sourceHandleRef: LineHandleRef = { key: LineHandleKey.source, point: sourcePoint, direction: sourceDirection };
     const targetHandleRef: LineHandleRef = { key: LineHandleKey.target, point: targetPoint, direction: targetDirection };
@@ -119,7 +119,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             handleRefPair.target.direction,
             offset
         );
-        points = deduplicatePoints(points);
+        points = removeDuplicatePoints(points);
         return points;
     }
     return element.points;
@@ -270,28 +270,15 @@ export const getBoardLines = (board: PlaitBoard) => {
     }) as PlaitLine[];
 };
 
-export const deduplicatePoints = (points: Point[]) => {
-    const newArr: Point[] = [];
+export const removeDuplicatePoints = (points: Point[]) => {
+    const newArray: Point[] = [];
     points.forEach(point => {
-        const index = newArr.findIndex(otherPoint => {
+        const index = newArray.findIndex(otherPoint => {
             return point[0] === otherPoint[0] && point[1] === otherPoint[1];
         });
-        if (index === -1) newArr.push(point);
+        if (index === -1) newArray.push(point);
     });
-    return newArr;
-};
-
-export const getRelativeDirection = (sourcePoint: Point, targetPoint: Point) => {
-    const tan = (targetPoint[1] - sourcePoint[1]) / (targetPoint[0] - sourcePoint[0]);
-    if (tan > -1 && tan < 1 && targetPoint[0] > sourcePoint[0]) {
-        return Direction.right;
-    } else if ((tan < -1 || tan > 1) && targetPoint[1] < sourcePoint[1]) {
-        return Direction.top;
-    } else if (tan > -1 && tan < 1 && targetPoint[0] < sourcePoint[0]) {
-        return Direction.left;
-    } else {
-        return Direction.bottom;
-    }
+    return newArray;
 };
 
 export const getExtendPoint = (source: Point, target: Point, extendDistance: number): Point => {
