@@ -1,9 +1,16 @@
-import { Point, arrowPoints, createG, createPath, drawLinearPath } from '@plait/core';
+import { Point, arrowPoints, createG, createPath, drawLinearPath, rotate } from '@plait/core';
 import { LineMarkerType, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getFactorByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './style';
 import { getExtendPoint } from './line';
+
+interface ArrowOptions {
+    marker: LineMarkerType;
+    source: Point;
+    target: Point;
+    isSource: boolean;
+}
 
 export const drawLineArrow = (element: PlaitLine, points: Point[], options: Options) => {
     const arrowG = createG();
@@ -11,19 +18,25 @@ export const drawLineArrow = (element: PlaitLine, points: Point[], options: Opti
         return null;
     }
     if (!PlaitLine.isSourceMark(element, LineMarkerType.none)) {
-        const source = getExtendPoint(points[0], points[1], 50);
-        const sourceArrow = getArrow(element, element.source.marker, source, points[0], options);
+        const source = getExtendPoint(points[0], points[1], 24);
+        const sourceArrow = getArrow(element, { marker: element.source.marker, source, target: points[0], isSource: true }, options);
         sourceArrow && arrowG.appendChild(sourceArrow);
     }
     if (!PlaitLine.isTargetMark(element, LineMarkerType.none)) {
-        const source = getExtendPoint(points[points.length - 1], points[points.length - 2], 50);
-        const arrow = getArrow(element, element.target.marker, source, points[points.length - 1], options);
+        const source = getExtendPoint(points[points.length - 1], points[points.length - 2], 24);
+        const arrow = getArrow(
+            element,
+            { marker: element.target.marker, source, target: points[points.length - 1], isSource: false },
+            options
+        );
+
         arrow && arrowG.appendChild(arrow);
     }
     return arrowG;
 };
 
-const getArrow = (element: PlaitLine, marker: LineMarkerType, source: Point, target: Point, options: Options) => {
+const getArrow = (element: PlaitLine, arrowOptions: ArrowOptions, options: Options) => {
+    const { marker, source, target, isSource } = arrowOptions;
     let targetArrow;
     switch (marker) {
         case LineMarkerType.openTriangle: {
@@ -40,6 +53,22 @@ const getArrow = (element: PlaitLine, marker: LineMarkerType, source: Point, tar
         }
         case LineMarkerType.sharpArrow: {
             targetArrow = drawSharpArrow(source, target, options);
+            break;
+        }
+        case LineMarkerType.oneSideUp: {
+            targetArrow = drawOneSideArrow(source, target, 'up', options);
+            break;
+        }
+        case LineMarkerType.oneSideDown: {
+            targetArrow = drawOneSideArrow(source, target, 'down', options);
+            break;
+        }
+        case LineMarkerType.hollowTriangle: {
+            targetArrow = drawHollowTriangleArrow(source, target, options);
+            break;
+        }
+        case LineMarkerType.singleSlash: {
+            targetArrow = drawSingleSlash(source, target, isSource, options);
             break;
         }
     }
@@ -84,4 +113,23 @@ const drawOpenTriangle = (element: PlaitLine, source: Point, target: Point, opti
     const endPoint: Point = [target[0] + (strokeWidth * directionFactor.x) / 2, target[1] + (strokeWidth * directionFactor.y) / 2];
     const { pointLeft, pointRight } = arrowPoints(source, endPoint, 12, 40);
     return drawLinearPath([pointLeft, endPoint, pointRight], options);
+};
+
+const drawOneSideArrow = (source: Point, target: Point, side: string, options: Options) => {
+    const { pointLeft, pointRight } = arrowPoints(source, target, 12, 40);
+    return drawLinearPath([side === 'up' ? pointRight : pointLeft, target], options);
+};
+
+const drawSingleSlash = (source: Point, target: Point, isSource: boolean, options: Options) => {
+    source = getExtendPoint(target, source, 12);
+    const middlePoint = getExtendPoint(target, source, 6);
+    const angle = isSource ? 120 : 60;
+    const start = rotate(...source, ...middlePoint, (angle * Math.PI) / 180) as Point;
+    const end = rotate(...target, ...middlePoint, (angle * Math.PI) / 180) as Point;
+    return drawLinearPath([start, end], options);
+};
+
+const drawHollowTriangleArrow = (source: Point, target: Point, options: Options) => {
+    const { pointLeft, pointRight } = arrowPoints(source, target, 12, 30);
+    return drawLinearPath([pointLeft, pointRight, target], { ...options, fill: 'white' }, true);
 };
