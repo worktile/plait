@@ -9,7 +9,11 @@ export enum LineMarkerType {
     none = 'none',
     openTriangle = 'open-triangle',
     solidTriangle = 'solid-triangle',
-    sharpArrow = 'sharp-arrow'
+    sharpArrow = 'sharp-arrow',
+    oneSideUp = 'one-side-up',
+    oneSideDown = 'one-side-down',
+    hollowTriangle = 'hollow-triangle',
+    singleSlash = 'single-slash'
 }
 
 export enum LineShape {
