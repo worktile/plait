@@ -73,18 +73,9 @@ export const getLinePoints = (board: PlaitBoard, element: PlaitLine) => {
             return getCurvePoints(board, element);
         }
         default: {
-            return getStraightPoints(board, element);
+            return PlaitLine.getPoints(board, element);
         }
     }
-};
-
-export const getStraightPoints = (board: PlaitBoard, element: PlaitLine) => {
-    return getLineHandlePoints(board, element);
-};
-
-export const getLineHandlePoints = (board: PlaitBoard, element: PlaitLine) => {
-    const handleRefPair = getLineHandleRefPair(board, element);
-    return [handleRefPair.source.point, handleRefPair.target.point];
 };
 
 export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
