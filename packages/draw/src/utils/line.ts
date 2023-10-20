@@ -113,8 +113,8 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
     };
     if (sourceBoundElement) {
         const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element, LineMarkerType.none, LineHandleKey.source) ? 0 : strokeWidth;
-        const direction = getDirectionByBoundElementAndConnection(sourceBoundElement, element.source.connection!);
         const sourceVector = getVectorByConnection(sourceBoundElement, element.source.connection!);
+        const direction = getDirectionByVector(sourceVector);
         sourceDirection = direction ? direction : sourceDirection;
         sourcePoint = getConnectionPoint(sourceBoundElement, element.source.connection!, sourceDirection, connectionOffset);
         sourceHandleRef.boundElement = sourceBoundElement;
@@ -124,8 +124,8 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
     }
     if (targetBoundElement) {
         const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element, LineMarkerType.none, LineHandleKey.target) ? 0 : strokeWidth;
-        const direction = getDirectionByBoundElementAndConnection(targetBoundElement, element.target.connection!);
         const targetVector = getVectorByConnection(targetBoundElement, element.target.connection!);
+        const direction = getDirectionByVector(targetVector);
         targetDirection = direction ? direction : targetDirection;
         targetPoint = getConnectionPoint(targetBoundElement, element.target.connection!, targetDirection, connectionOffset);
         targetHandleRef.boundElement = targetBoundElement;
@@ -258,11 +258,6 @@ function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
     maskTargetFillRect.setAttribute('opacity', '0');
     return { mask, maskTargetFillRect };
 }
-
-export const getDirectionByBoundElementAndConnection = (boundElement: PlaitGeometry, connection: PointOfRectangle) => {
-    const vector = getVectorByConnection(boundElement, connection);
-    return getDirectionByVector(vector);
-};
 
 export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, direction?: Direction, delta?: number): Point => {
     const rectangle = getRectangleByPoints(geometry.points);
