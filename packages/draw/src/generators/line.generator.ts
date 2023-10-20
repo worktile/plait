@@ -11,16 +11,9 @@ export class LineShapeGenerator extends Generator<PlaitLine, ShapeData> {
     }
 
     baseDraw(element: PlaitLine, data: ShapeData) {
-        const shape = element.shape;
         let lineG: SVGGElement | undefined;
-        switch (shape) {
-            case LineShape.elbow:
-            case LineShape.straight:
-                lineG = drawLine(this.board, element);
-                break;
-            default:
-                break;
-        }
+        lineG = drawLine(this.board, element);
+
         return lineG;
     }
 }

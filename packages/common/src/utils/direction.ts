@@ -53,7 +53,12 @@ export function getDirectionByVector(vector: Vector): Direction | null {
     }
 }
 
-export function rotateVector90(vector: Vector): Vector {
+export function getPointByVector(point: Point, vector: Vector, offset: number): Point {
+    const distance = Math.hypot(vector[0], vector[1]);
+    return [point[0] + (vector[0] / distance) * offset, point[1] + (vector[1] / distance) * offset];
+}
+
+export function rotateVectorAnti90(vector: Vector): Vector {
     const x = vector[0];
     const y = vector[1];
     const rotatedX = y;
