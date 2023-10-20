@@ -1,34 +1,46 @@
 import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitLine } from '../../interfaces';
 import { RESIZE_HANDLE_DIAMETER } from '@plait/common';
-import { getLineHandlePoints } from '../line';
+import { getMiddlePoints } from '../../generators/line-active.generator';
 
 export enum LineResizeHandle {
     'source' = 'source',
-    'target' = 'target'
+    'target' = 'target',
+    'addHandle' = 'addHandle'
 }
 
 export const getHitLineResizeHandleRef = (board: PlaitBoard, element: PlaitLine, point: Point) => {
-    const [sourcePoint, targetPoint] = getLineHandlePoints(board, element);
-    const sourceRectangle: RectangleClient = {
-        x: sourcePoint[0] - RESIZE_HANDLE_DIAMETER / 2,
-        y: sourcePoint[1] - RESIZE_HANDLE_DIAMETER / 2,
-        width: RESIZE_HANDLE_DIAMETER,
-        height: RESIZE_HANDLE_DIAMETER
-    };
-    const targetRectangle: RectangleClient = {
-        x: targetPoint[0] - RESIZE_HANDLE_DIAMETER / 2,
-        y: targetPoint[1] - RESIZE_HANDLE_DIAMETER / 2,
-        width: RESIZE_HANDLE_DIAMETER,
-        height: RESIZE_HANDLE_DIAMETER
-    };
-    const isHitSourceRectangle = RectangleClient.isHit(RectangleClient.toRectangleClient([point, point]), sourceRectangle);
-    const isHitTargetRectangle = RectangleClient.isHit(RectangleClient.toRectangleClient([point, point]), targetRectangle);
-    if (isHitSourceRectangle) {
-        return { rectangle: sourceRectangle, handle: LineResizeHandle.source };
+    const points = PlaitLine.getPoints(board, element);
+    const index = getHitPointIndex(points, point);
+    if (index !== -1) {
+        if (index === 0) {
+            return { handle: LineResizeHandle.source, index };
+        }
+        if (index === points.length - 1) {
+            return { handle: LineResizeHandle.target, index };
+        }
+        return { index };
     }
-    if (isHitTargetRectangle) {
-        return { rectangle: targetRectangle, handle: LineResizeHandle.target };
+
+    const middlePoints = getMiddlePoints(element.shape, points);
+    const middleIndex = getHitPointIndex(middlePoints, point);
+    if (middleIndex !== -1) {
+        return { handle: LineResizeHandle.addHandle, index: middleIndex };
     }
     return undefined;
 };
+
+function getHitPointIndex(points: Point[], movingPoint: Point) {
+    const rectangles = points.map(point => {
+        return {
+            x: point[0] - RESIZE_HANDLE_DIAMETER / 2,
+            y: point[1] - RESIZE_HANDLE_DIAMETER / 2,
+            width: RESIZE_HANDLE_DIAMETER,
+            height: RESIZE_HANDLE_DIAMETER
+        };
+    });
+    const rectangle = rectangles.find(rectangle => {
+        return RectangleClient.isHit(RectangleClient.toRectangleClient([movingPoint, movingPoint]), rectangle);
+    });
+    return rectangle ? rectangles.indexOf(rectangle) : -1;
+}

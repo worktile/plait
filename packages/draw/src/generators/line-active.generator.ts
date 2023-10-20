@@ -1,7 +1,7 @@
-import { PlaitBoard, createG, drawCircle, drawRectangle, getSelectedElements } from '@plait/core';
-import { PlaitLine } from '../interfaces';
+import { PlaitBoard, Point, createG, drawCircle, drawRectangle } from '@plait/core';
+import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
-import { getLineHandlePoints, getLinePoints } from '../utils';
+import { getLinePoints } from '../utils';
 import { DefaultGeometryActiveStyle } from '../constants';
 
 export interface ActiveData {
@@ -24,21 +24,25 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
         if (this.hasResizeHandle) {
             activeG.classList.add('active');
             activeG.classList.add('line-handle');
-            const [sourcePoint, targetPoint] = getLineHandlePoints(this.board, element);
-            const sourceCircle = drawCircle(PlaitBoard.getRoughSVG(this.board), sourcePoint, RESIZE_HANDLE_DIAMETER, {
-                stroke: '#999999',
-                strokeWidth: 1,
-                fill: '#FFF',
-                fillStyle: 'solid'
+            const points = PlaitLine.getPoints(this.board, element);
+            points.forEach(point => {
+                const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, RESIZE_HANDLE_DIAMETER, {
+                    stroke: '#999999',
+                    strokeWidth: 1,
+                    fill: '#FFF',
+                    fillStyle: 'solid'
+                });
+                activeG.appendChild(circle);
             });
-            const targetCircle = drawCircle(PlaitBoard.getRoughSVG(this.board), targetPoint, RESIZE_HANDLE_DIAMETER, {
-                stroke: '#999999',
-                strokeWidth: 1,
-                fill: '#FFF',
-                fillStyle: 'solid'
+            getMiddlePoints(element.shape, points).forEach(point => {
+                const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, RESIZE_HANDLE_DIAMETER, {
+                    stroke: '#FFFFFF80',
+                    strokeWidth: 1,
+                    fill: `${PRIMARY_COLOR}80`,
+                    fillStyle: 'solid'
+                });
+                activeG.appendChild(circle);
             });
-            activeG.appendChild(targetCircle);
-            activeG.appendChild(sourceCircle);
         } else {
             const points = getLinePoints(this.board, element);
             const activeRectangle = getRectangleByPoints(points);
@@ -51,4 +55,17 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
 
         return activeG;
     }
+}
+
+export function getMiddlePoints(shape: LineShape, points: Point[]) {
+    const result: Point[] = [];
+    if (shape === LineShape.straight) {
+        for (let i = 0; i < points.length - 1; i++) {
+            result.push([(points[i][0] + points[i + 1][0]) / 2, (points[i][1] + points[i + 1][1]) / 2]);
+        }
+    }
+    if (shape === LineShape.curve) {
+
+    }
+    return result;
 }

@@ -8,6 +8,7 @@ import { transformPointToConnection } from '../utils';
 import { DrawTransforms } from '../transforms';
 
 export const withLineResize = (board: PlaitBoard) => {
+    let pointIndex = 0;
     const options: WithResizeOptions<PlaitLine, LineResizeHandle> = {
         key: 'draw-line',
         canResize: () => {
@@ -24,6 +25,7 @@ export const withLineResize = (board: PlaitBoard) => {
                             element: value,
                             handle: handleRef.handle
                         };
+                        pointIndex = handleRef.index;
                     }
                 });
                 return result;
@@ -35,18 +37,21 @@ export const withLineResize = (board: PlaitBoard) => {
             let source: LineHandle = { ...resizeRef.element.source };
             let target: LineHandle = { ...resizeRef.element.target };
             if (resizeRef.handle === LineResizeHandle.source) {
-                points[0] = resizeState.endTransformPoint;
+                points[pointIndex] = resizeState.endTransformPoint;
                 const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, -4);
-
                 source.connection = hitElement ? transformPointToConnection(board, resizeState.endTransformPoint, hitElement) : undefined;
                 source.boundId = hitElement ? hitElement.id : undefined;
-            }
-            if (resizeRef.handle === LineResizeHandle.target) {
-                points[1] = resizeState.endTransformPoint;
+            } else if (resizeRef.handle === LineResizeHandle.target) {
+                points[pointIndex] = resizeState.endTransformPoint;
                 const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, -4);
                 target.connection = hitElement ? transformPointToConnection(board, resizeState.endTransformPoint, hitElement) : undefined;
                 target.boundId = hitElement ? hitElement.id : undefined;
+            } else if (resizeRef.handle === LineResizeHandle.addHandle) {
+                points.splice(pointIndex + 1, 0, resizeState.endTransformPoint);
+            } else {
+                points[pointIndex] = resizeState.endTransformPoint;
             }
+
             DrawTransforms.resizeLine(board, { points, source, target }, resizeRef.path);
         }
     };

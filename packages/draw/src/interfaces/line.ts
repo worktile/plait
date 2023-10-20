@@ -1,8 +1,9 @@
-import { Direction, PlaitElement, Point, PointOfRectangle, Vector } from '@plait/core';
+import { Direction, PlaitBoard, PlaitElement, Point, PointOfRectangle, Vector, getElementById } from '@plait/core';
 import { Element } from 'slate';
 import { LineComponent } from '../line.component';
 import { PlaitGeometry } from './geometry';
 import { StrokeStyle } from './element';
+import { getConnectionPoint } from '../utils';
 
 export enum LineMarkerType {
     arrow = 'arrow',
@@ -111,5 +112,15 @@ export const PlaitLine = {
     },
     isBoundElementOfTarget(line: PlaitLine, element: PlaitGeometry) {
         return line.target.boundId === element.id;
+    },
+    getPoints(board: PlaitBoard, line: PlaitLine) {
+        let sourcePoint = line.source.boundId
+            ? getConnectionPoint(getElementById<PlaitGeometry>(board, line.source.boundId)!, line.source.connection!)
+            : line.points[0];
+        let targetPoint = line.target.boundId
+            ? getConnectionPoint(getElementById<PlaitGeometry>(board, line.target.boundId)!, line.target.connection!)
+            : line.points[line.points.length - 1];
+        const restPoints = line.points.length > 2 ? line.points.slice(1, line.points.length - 1) : [];
+        return [sourcePoint, ...restPoints, targetPoint];
     }
 };
