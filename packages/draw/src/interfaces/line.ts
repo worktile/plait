@@ -1,4 +1,4 @@
-import { Direction, PlaitElement, Point, PointOfRectangle } from '@plait/core';
+import { Direction, PlaitElement, Point, PointOfRectangle, Vector } from '@plait/core';
 import { Element } from 'slate';
 import { LineComponent } from '../line.component';
 import { PlaitGeometry } from './geometry';
@@ -46,6 +46,7 @@ export interface LineHandleRef {
     key: LineHandleKey;
     direction: Direction;
     point: PointOfRectangle;
+    vector: Vector;
     boundElement?: PlaitGeometry;
 }
 
