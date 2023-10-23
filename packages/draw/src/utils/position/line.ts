@@ -22,7 +22,7 @@ export const getHitLineResizeHandleRef = (board: PlaitBoard, element: PlaitLine,
         return { index };
     }
 
-    const middlePoints = getMiddlePoints(element.shape, points);
+    const middlePoints = getMiddlePoints(board, element);
     const middleIndex = getHitPointIndex(middlePoints, point);
     if (middleIndex !== -1) {
         return { handle: LineResizeHandle.addHandle, index: middleIndex };

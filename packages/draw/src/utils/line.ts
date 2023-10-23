@@ -43,6 +43,7 @@ import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement 
 import { getEngine } from '../engines';
 import { drawLineArrow } from './line-arrow';
 import { pointsOnBezierCurves } from 'points-on-curve';
+import { Op } from 'roughjs/bin/core';
 
 export const createLineElement = (
     shape: LineShape,
@@ -171,8 +172,27 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
         }
         curvePoints.push(target.point);
         return pointsOnBezierCurves(curvePoints) as Point[];
+    } else {
+        const points = PlaitLine.getPoints(board, element);
+        const draw = PlaitBoard.getRoughSVG(board).generator.curve(points);
+        let bezierPoints = transformOpsToPoints(draw.sets[0].ops) as Point[];
+        bezierPoints = removeDuplicatePoints(bezierPoints);
+        return pointsOnBezierCurves(bezierPoints) as Point[];
     }
-    return element.points;
+};
+
+export const transformOpsToPoints = (ops: Op[]) => {
+    const result = [];
+    for (let item of ops) {
+        if (item.op === 'move') {
+            result.push([item.data[0], item.data[1]]);
+        } else {
+            result.push([item.data[0], item.data[1]]);
+            result.push([item.data[2], item.data[3]]);
+            result.push([item.data[4], item.data[5]]);
+        }
+    }
+    return result;
 };
 
 export const isHitPolyLine = (pathPoints: Point[], point: Point, strokeWidth: number, expand: number = 0) => {
