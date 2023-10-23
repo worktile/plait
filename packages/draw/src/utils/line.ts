@@ -43,6 +43,7 @@ import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement 
 import { getEngine } from '../engines';
 import { drawLineArrow } from './line-arrow';
 import { pointsOnBezierCurves } from 'points-on-curve';
+import { Op } from 'roughjs/bin/core';
 
 export const createLineElement = (
     shape: LineShape,
@@ -171,8 +172,28 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
         }
         curvePoints.push(target.point);
         return pointsOnBezierCurves(curvePoints) as Point[];
+    } else {
+        //TODO 直接获取贝塞尔曲线上高密度点
+        const points = PlaitLine.getPoints(board, element);
+        const draw = PlaitBoard.getRoughSVG(board).generator.curve(points);
+        let bezierPoints = transformOpsToPoints(draw.sets[0].ops) as Point[];
+        bezierPoints = removeDuplicatePoints(bezierPoints);
+        return pointsOnBezierCurves(bezierPoints) as Point[];
     }
-    return element.points;
+};
+
+export const transformOpsToPoints = (ops: Op[]) => {
+    const result = [];
+    for (let item of ops) {
+        if (item.op === 'move') {
+            result.push([item.data[0], item.data[1]]);
+        } else {
+            result.push([item.data[0], item.data[1]]);
+            result.push([item.data[2], item.data[3]]);
+            result.push([item.data[4], item.data[5]]);
+        }
+    }
+    return result;
 };
 
 export const isHitPolyLine = (pathPoints: Point[], point: Point, strokeWidth: number, expand: number = 0) => {
@@ -210,6 +231,7 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     let points = getLinePoints(board, element);
     let line;
     if (element.shape === LineShape.curve) {
+        //TODO element.points 应为曲线拐点
         line = PlaitBoard.getRoughSVG(board).curve(points, options);
     } else {
         line = drawLinearPath(points, options);
