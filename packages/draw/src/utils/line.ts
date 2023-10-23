@@ -173,6 +173,7 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
         curvePoints.push(target.point);
         return pointsOnBezierCurves(curvePoints) as Point[];
     } else {
+        //TODO 直接获取贝塞尔曲线上高密度点
         const points = PlaitLine.getPoints(board, element);
         const draw = PlaitBoard.getRoughSVG(board).generator.curve(points);
         let bezierPoints = transformOpsToPoints(draw.sets[0].ops) as Point[];
@@ -230,6 +231,7 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     let points = getLinePoints(board, element);
     let line;
     if (element.shape === LineShape.curve) {
+        //TODO element.points 应为曲线拐点
         line = PlaitBoard.getRoughSVG(board).curve(points, options);
     } else {
         line = drawLinearPath(points, options);
