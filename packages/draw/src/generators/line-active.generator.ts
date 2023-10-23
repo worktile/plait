@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, createG, drawCircle, drawRectangle } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
-import { getLinePoints, removeDuplicatePoints, transformOpsToPoints } from '../utils';
+import { getCurvePoints, getLinePoints, removeDuplicatePoints, transformOpsToPoints } from '../utils';
 import { DefaultGeometryActiveStyle } from '../constants';
 import { pointsOnBezierCurves } from 'points-on-curve';
 
@@ -69,13 +69,13 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
     }
     if (shape === LineShape.curve) {
         const points = PlaitLine.getPoints(board, element);
+        const pointsOnBezier = getCurvePoints(board, element);
         if (points.length === 2) {
-            result.push([(points[0][0] + points[1][0]) / 2, (points[0][1] + points[1][1]) / 2]);
+            const start = 0;
+            const endIndex = pointsOnBezier.length - 1;
+            const middleIndex = Math.round((start + endIndex) / 2);
+            result.push(pointsOnBezier[middleIndex]);
         } else {
-            const draw = PlaitBoard.getRoughSVG(board).generator.curve(points);
-            let bezierPoints = transformOpsToPoints(draw.sets[0].ops) as Point[];
-            bezierPoints = removeDuplicatePoints(bezierPoints);
-            const pointsOnBezier = pointsOnBezierCurves(bezierPoints) as Point[];
             for (let i = 0; i < points.length - 1; i++) {
                 const startIndex = pointsOnBezier.findIndex(point => point[0] === points[i][0] && point[1] === points[i][1]);
                 const endIndex = pointsOnBezier.findIndex(point => point[0] === points[i + 1][0] && point[1] === points[i + 1][1]);
