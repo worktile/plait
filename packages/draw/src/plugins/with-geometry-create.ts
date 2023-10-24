@@ -16,7 +16,7 @@ import {
 import { GeometryShape, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
 import { createGeometryElement, getPointsByCenterPoint } from '../utils';
-import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, getGeometryPointer, ShapeDefaultSpace } from '../constants';
+import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, getGeometryPointers, ShapeDefaultSpace } from '../constants';
 import { normalizeShapePoints, isDndMode, isDrawingMode } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { DEFAULT_FONT_SIZE } from '@plait/text';
@@ -32,8 +32,8 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
         geometryShapeG = createG();
 
         const geometryGenerator = new GeometryShapeGenerator(board);
-        const GeometryPointer = getGeometryPointer();
-        const isGeometryPointer = PlaitBoard.isInPointer(board, GeometryPointer);
+        const geometryPointers = getGeometryPointers();
+        const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
         const dragMode = isGeometryPointer && isDndMode(board);
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
@@ -59,9 +59,8 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
 
     board.pointerUp = (event: PointerEvent) => {
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
-        const GeometryPointer = getGeometryPointer();
-
-        const isGeometryPointer = PlaitBoard.isInPointer(board, GeometryPointer);
+        const geometryPointers = getGeometryPointers();
+        const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
         const dragMode = isGeometryPointer && isDndMode(board);
 
         if (dragMode) {
@@ -106,8 +105,8 @@ export const withGeometryCreateByDraw = (board: PlaitBoard) => {
     };
 
     board.pointerDown = (event: PointerEvent) => {
-        const GeometryPointer = getGeometryPointer();
-        const isGeometryPointer = PlaitBoard.isInPointer(board, GeometryPointer);
+        const geometryPointers = getGeometryPointers();
+        const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
         if (isGeometryPointer && isDrawingMode(board)) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
