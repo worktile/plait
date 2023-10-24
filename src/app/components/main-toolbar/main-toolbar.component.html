@@ -14,64 +14,64 @@
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(DrawPointerType.rectangle) }"
-    (mousedown)="setPointer($event, DrawPointerType.rectangle)"
+    [ngClass]="{ active: isPointer(GeometryShapeType.rectangle) }"
+    (mousedown)="setPointer($event, GeometryShapeType.rectangle)"
 >
     <ng-template [ngTemplateOutlet]="rectangle"></ng-template>
 </a>
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(DrawPointerType.ellipse) }"
-    (mousedown)="setPointer($event, DrawPointerType.ellipse)"
+    [ngClass]="{ active: isPointer(GeometryShapeType.ellipse) }"
+    (mousedown)="setPointer($event, GeometryShapeType.ellipse)"
 >
     <ng-template [ngTemplateOutlet]="ellipse"></ng-template>
 </a>
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(DrawPointerType.diamond) }"
-    (mousedown)="setPointer($event, DrawPointerType.diamond)"
+    [ngClass]="{ active: isPointer(GeometryShapeType.diamond) }"
+    (mousedown)="setPointer($event, GeometryShapeType.diamond)"
 >
     <ng-template [ngTemplateOutlet]="diamond"></ng-template>
 </a>
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(DrawPointerType.parallelogram) }"
-    (mousedown)="setPointer($event, DrawPointerType.parallelogram)"
+    [ngClass]="{ active: isPointer(GeometryShapeType.parallelogram) }"
+    (mousedown)="setPointer($event, GeometryShapeType.parallelogram)"
 >
     <ng-template [ngTemplateOutlet]="parallelogram"></ng-template>
 </a>
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(DrawPointerType.triangle) }"
-    (mousedown)="setPointer($event, DrawPointerType.triangle)"
+    [ngClass]="{ active: isPointer(GeometryShapeType.triangle) }"
+    (mousedown)="setPointer($event, GeometryShapeType.triangle)"
 >
     <ng-template [ngTemplateOutlet]="triangle"></ng-template>
 </a>
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(DrawPointerType.leftArrow) }"
-    (mousedown)="setPointer($event, DrawPointerType.leftArrow)"
+    [ngClass]="{ active: isPointer(GeometryShapeType.leftArrow) }"
+    (mousedown)="setPointer($event, GeometryShapeType.leftArrow)"
 >
     <ng-template [ngTemplateOutlet]="leftArrow"></ng-template>
 </a>
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(DrawPointerType.rightArrow) }"
-    (mousedown)="setPointer($event, DrawPointerType.rightArrow)"
+    [ngClass]="{ active: isPointer(GeometryShapeType.rightArrow) }"
+    (mousedown)="setPointer($event, GeometryShapeType.rightArrow)"
 >
     <ng-template [ngTemplateOutlet]="rightArrow"></ng-template>
 </a>
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(DrawPointerType.trapezoid) }"
-    (mousedown)="setPointer($event, DrawPointerType.trapezoid)"
+    [ngClass]="{ active: isPointer(GeometryShapeType.trapezoid) }"
+    (mousedown)="setPointer($event, GeometryShapeType.trapezoid)"
 >
     <ng-template [ngTemplateOutlet]="trapezoid"></ng-template>
 </a>
@@ -80,24 +80,24 @@
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(DrawPointerType.roundRectangle) }"
-    (mousedown)="setPointer($event, DrawPointerType.roundRectangle)"
+    [ngClass]="{ active: isPointer(GeometryShapeType.roundRectangle) }"
+    (mousedown)="setPointer($event, GeometryShapeType.roundRectangle)"
 >
     <ng-template [ngTemplateOutlet]="roundRectangle"></ng-template>
 </a>
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(DrawPointerType.text) }"
-    (mousedown)="setPointer($event, DrawPointerType.text)"
+    [ngClass]="{ active: isPointer(GeometryShapeType.text) }"
+    (mousedown)="setPointer($event, GeometryShapeType.text)"
 >
     <ng-template [ngTemplateOutlet]="text"></ng-template>
 </a>
 
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(DrawPointerType.line) }"
-    (mousedown)="setPointer($event, DrawPointerType.line)"
+    [ngClass]="{ active: isPointer(LineShapeType.elbow) }"
+    (mousedown)="setPointer($event, LineShapeType.elbow)"
 >
     <ng-template [ngTemplateOutlet]="line"></ng-template>
 </a>

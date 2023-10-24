@@ -1,5 +1,5 @@
 import { ACTIVE_STROKE_WIDTH, PlaitBoard, RectangleClient, SELECTION_BORDER_COLOR, drawCircle, toPoint, transformPoint } from '@plait/core';
-import { PlaitDrawElement } from '../interfaces';
+import { LineShape, PlaitDrawElement } from '../interfaces';
 import { drawBoundMask, getHitConnectorPoint, getNearestPoint } from '../utils';
 import { DrawPointerType } from '../constants';
 import { getRectangleByPoints, isResizingByCondition } from '@plait/common';
@@ -12,7 +12,7 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
 
     board.pointerMove = (event: PointerEvent) => {
         boundShapeG?.remove();
-        const isLinePointer = PlaitBoard.isPointer(board, DrawPointerType.line);
+        const isLinePointer = PlaitBoard.isPointer(board, LineShape.straight);
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const isLineResizing = isResizingByCondition(board, element => PlaitDrawElement.isLine(element));
 

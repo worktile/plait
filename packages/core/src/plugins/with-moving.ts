@@ -12,7 +12,7 @@ import { addMovingElements, getMovingElements, removeMovingElements } from '../u
 import { MERGING } from '../interfaces/history';
 import { Range } from '../interfaces';
 import { isPreventTouchMove, preventTouchMove, handleTouchTarget, getRectangleByElements } from '../utils';
-import { ReactionManager } from '../utils/reaction-manager';
+import { AlignReaction } from '../utils/reaction-manager';
 
 export function withMoving(board: PlaitBoard) {
     const { pointerDown, pointerMove, globalPointerUp, globalPointerMove } = board;
@@ -61,7 +61,7 @@ export function withMoving(board: PlaitBoard) {
                     const activeElementsRectangle = getRectangleByElements(board, activeElements, true);
                     activeElementsRectangle.x += offsetX;
                     activeElementsRectangle.y += offsetY;
-                    const reactionManager = new ReactionManager(board, activeElements, activeElementsRectangle);
+                    const reactionManager = new AlignReaction(board, activeElements, activeElementsRectangle);
                     const ref = reactionManager.handleAlign();
                     offsetX -= ref.deltaX;
                     offsetY -= ref.deltaY;

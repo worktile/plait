@@ -33,7 +33,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
     let temporaryElement: PlaitLine | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
-        const isLinePointer = PlaitBoard.isPointer(board, DrawPointerType.line);
+        const isLinePointer = PlaitBoard.isPointer(board, LineShape.straight);
         if (isLinePointer && isDrawingMode(board)) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;

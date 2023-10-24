@@ -18,7 +18,7 @@ export interface DistributeRef {
 
 const ALIGN_TOLERANCE = 2;
 
-export class ReactionManager {
+export class AlignReaction {
     alignRectangles: RectangleClient[];
 
     constructor(private board: PlaitBoard, private activeElements: PlaitElement[], private activeRectangle: RectangleClient) {
