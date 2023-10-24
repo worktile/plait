@@ -1,5 +1,5 @@
 import { PlaitElement } from '@plait/core';
-import { CommonPluginElement } from '../public-api';
+import { CommonPluginElement } from '../core/plugin-element';
 
 export const getTextManages = (element: PlaitElement) => {
     const component = PlaitElement.getComponent(element) as CommonPluginElement;

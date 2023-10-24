@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { BoardCreationMode, setCreationMode } from '@plait/common';
 import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType } from '@plait/core';
-import { DrawPointerType } from '@plait/draw';
+import { DrawPointerType, GeometryShape, LineShape } from '@plait/draw';
 import { MindPointerType } from '@plait/mind';
 import { fromEvent, take } from 'rxjs';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 
-type PointerType = MindPointerType | PlaitPointerType | DrawPointerType;
+type PointerType = MindPointerType | PlaitPointerType | DrawPointerType | GeometryShape | LineShape;
 
 @Component({
     selector: 'app-main-toolbar',
@@ -22,7 +22,9 @@ type PointerType = MindPointerType | PlaitPointerType | DrawPointerType;
 export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
     PlaitPointerType = PlaitPointerType;
     MindPointerType = MindPointerType;
-    DrawPointerType = DrawPointerType;
+    GeometryShapeType = GeometryShape;
+    LineShapeType = LineShape;
+
     BoardCreationMode = BoardCreationMode;
 
     constructor(protected cdr: ChangeDetectorRef) {

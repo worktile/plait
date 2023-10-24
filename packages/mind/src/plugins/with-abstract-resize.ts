@@ -12,10 +12,11 @@ import {
 } from '@plait/core';
 import { AbstractNode, LayoutNode, MindLayoutType, isHorizontalLayout, isStandardLayout } from '@plait/layouts';
 import { MindElement } from '../interfaces';
-import { MindNodeComponent, MindQueries } from '../public-api';
 import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope, handleTouchedAbstract } from '../utils/abstract/resize';
 import { separateChildren } from '../utils/abstract/common';
 import { AbstractHandlePosition, AbstractResizeState, PlaitAbstractBoard } from './with-abstract-resize.board';
+import { MindQueries } from '../queries';
+import { MindNodeComponent } from '../mind-node.component';
 
 export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitAbstractBoard;

@@ -33,7 +33,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
     let temporaryElement: PlaitLine | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
-        const isLinePointer = PlaitBoard.isPointer(board, DrawPointerType.line);
+        const isLinePointer = PlaitBoard.isPointer(board, LineShape.elbow);
         if (isLinePointer && isDrawingMode(board)) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
@@ -51,7 +51,6 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         lineShapeG?.remove();
         lineShapeG = createG();
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-
         if (start) {
             const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
             targetRef.connection = hitElement ? transformPointToConnection(board, movingPoint, hitElement) : undefined;

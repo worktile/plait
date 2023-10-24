@@ -1,7 +1,9 @@
 import { Path, PlaitBoard, PlaitPluginElementComponent, Transforms } from '@plait/core';
 import { MindLayoutType } from '@plait/layouts';
-import { BranchShape, MindElementShape, MindTransforms, PlaitMindComponent } from '../public-api';
 import { PropertyTransforms } from '@plait/common';
+import { MindTransforms } from '.';
+import { PlaitMindComponent } from '../mind.component';
+import { BranchShape, MindElementShape } from '../interfaces';
 
 const setLayout = (board: PlaitBoard, type: MindLayoutType) => {
     const setAllLayout = (component: PlaitPluginElementComponent, path: Path) => {

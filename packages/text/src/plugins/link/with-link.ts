@@ -1,9 +1,9 @@
 import { Element, NodeEntry, Transforms, Node } from 'slate';
 import { LinkElement } from '../../custom-types';
 import { AngularEditor } from 'slate-angular';
-import { CLIPBOARD_FORMAT_KEY } from '../../constant';
 import { LinkEditor } from './link-editor';
-import { getTextFromClipboard, isUrl } from '../../public-api';
+import { getTextFromClipboard } from '../../utils/clipboard';
+import { isUrl } from '../../utils/common';
 
 export const withLink = <T extends AngularEditor>(editor: T): T => {
     const { isInline, normalizeNode, insertData } = editor;
