@@ -22,7 +22,7 @@ export enum DrawPointerType {
 //创建方式
 export enum BoardCreationMode {
     'dnd' = 'dnd',
-    'draw' = 'draw'
+    'drawing' = 'drawing'
 }
 ```
 
@@ -32,14 +32,14 @@ export enum BoardCreationMode {
 
 - 图标 mousedown 执行 setCreationMode 设置 dnd 创建模式 （对应第二种创建模式）
 
-- 监听 mouseup 执行 setCreationMode 设置 draw 创建模式（对应第一种和第三种创建模式）	
+- 监听 mouseup 执行 setCreationMode 设置 drawing 创建模式（对应第一种和第三种创建模式）	
 
 底层插件：
 
 - dnd 插件
   - pointermove：实时绘制图形
   - pointerup：根据坐标插入对应图形
-- draw 插件：
+- drawing 插件：
   - pointerdown：记录起始点
   - pointermove：根据起始点，实时绘制图形
   - pointerup：根据坐标插入对应图形;计算抬起鼠标时与起始点的距离，根据距离判断是否是第二种创建方式

@@ -119,7 +119,7 @@ export const withCreateMind = (board: PlaitBoard) => {
         }
         if (event.key === DefaultHotkey && !PlaitBoard.isPointer(board, MindPointerType.mind)) {
             BoardTransforms.updatePointerType(board, MindPointerType.mind);
-            setCreationMode(board, BoardCreationMode.draw);
+            setCreationMode(board, BoardCreationMode.drawing);
             event.preventDefault();
             return;
         }

@@ -4,7 +4,7 @@ import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
 import { getRectangleByPoints } from '@plait/common';
 import { withDrawHotkey } from './with-draw-hotkey';
-import { withGeometryCreateByDraw, withGeometryCreateByDrag } from './with-geometry-create';
+import { withGeometryCreateByDrawing, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
 import { getTextRectangle, isHitPolyLine, isHitLineText, getLinePoints } from '../utils';
 import { getStrokeWidthByElement } from '../utils/style/stroke';
@@ -77,7 +77,7 @@ export const withDraw = (board: PlaitBoard) => {
         withLineBoundReaction(
             withLineResize(
                 withGeometryResize(
-                    withLineCreateByDraw(withGeometryCreateByDrag(withGeometryCreateByDraw(withDrawFragment(withDrawHotkey(board)))))
+                    withLineCreateByDraw(withGeometryCreateByDrag(withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board)))))
                 )
             )
         )

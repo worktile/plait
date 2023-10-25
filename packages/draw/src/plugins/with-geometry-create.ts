@@ -84,7 +84,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
     return board;
 };
 
-export const withGeometryCreateByDraw = (board: PlaitBoard) => {
+export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, pointerUp, keydown, keyup } = board;
     let start: Point | null = null;
 
