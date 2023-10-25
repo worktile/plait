@@ -1,9 +1,9 @@
 ---
-title: generator
+title: common-plugin-element
 order: 6
 ---
 
-思维导图，图形都有 Textmange，都支持设置富文本格式
+思维导图，图形都有 Textmanage，都支持设置富文本格式
 
 在common中抽取 CommonPluginElement
 
