@@ -2,7 +2,7 @@ import { PlaitBoard } from '@plait/core';
 
 export enum BoardCreationMode {
     'dnd' = 'dnd',
-    'drawing' = 'drawing'
+    'draw' = 'draw'
 }
 
 const BOARD_TO_CREATION_MODE: WeakMap<PlaitBoard, BoardCreationMode> = new WeakMap();
@@ -20,5 +20,5 @@ export const isDndMode = (board: PlaitBoard) => {
 };
 
 export const isDrawingMode = (board: PlaitBoard) => {
-    return getCreationMode(board) === BoardCreationMode.drawing;
+    return getCreationMode(board) === BoardCreationMode.draw;
 };

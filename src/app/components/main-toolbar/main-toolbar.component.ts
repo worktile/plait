@@ -42,7 +42,7 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
         fromEvent(event.target as HTMLElement, 'mouseup')
             .pipe(take(1))
             .subscribe(() => {
-                setCreationMode(this.board, BoardCreationMode.drawing);
+                setCreationMode(this.board, BoardCreationMode.draw);
             });
     }
 }
