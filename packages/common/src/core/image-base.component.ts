@@ -68,21 +68,18 @@ export abstract class ImageBaseComponent implements OnInit, OnDestroy {
             },
             getStrokeOpacity: () => {
                 const selectedElements = getSelectedElements(this.board);
-                if (!(selectedElements.length === 1 && !isSelectionMoving(this.board))) {
-                    return 0.5;
-                } else {
+                if ((selectedElements.length === 1 && !isSelectionMoving(this.board)) || !selectedElements.length) {
                     return 1;
+                } else {
+                    return 0.5;
                 }
             },
             getRectangle: () => {
                 return this.getRectangle();
             },
             hasResizeHandle: () => {
-                if (this.hasResizeHandle) {
-                    return this.hasResizeHandle();
-                }
                 const selectedElements = getSelectedElements(this.board);
-                return selectedElements.length === 1 && !isSelectionMoving(this.board);
+                return (selectedElements.length === 1 && !isSelectionMoving(this.board)) || !selectedElements.length;
             }
         });
         this.initialized = true;

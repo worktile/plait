@@ -161,7 +161,13 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             this.drawLink();
             this.drawEmojis();
             this.drawExtend();
-            this.imageGenerator.updateImage(this.g, previous.element as MindElement<ImageData>, value.element as MindElement<ImageData>);
+            if (MindElement.hasImage(this.element)) {
+                this.imageGenerator.updateImage(
+                    this.g,
+                    previous.element as MindElement<ImageData>,
+                    value.element as MindElement<ImageData>
+                );
+            }
             this.updateTopic();
         } else {
             const hasSameSelected = value.selected === previous.selected;
