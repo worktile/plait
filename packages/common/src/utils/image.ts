@@ -1,5 +1,5 @@
 import { ComponentType, PlaitBoard, PlaitContextService, getSelectedElements } from '@plait/core';
-import { ImageBaseComponent } from '../image-base.component';
+import { ImageBaseComponent } from '../core/image-base.component';
 
 export interface CommonImageItem {
     url: string;

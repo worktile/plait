@@ -93,16 +93,14 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.nodeInsertDrawer = new NodeInsertDrawer(this.board);
         this.activeGenerator = new NodeActiveGenerator(this.board);
         this.collapseDrawer = new CollapseDrawer(this.board);
-        if (MindElement.hasImage(this.element)) {
-            this.imageGenerator = new ImageGenerator<MindElement<ImageData>>(this.board, {
-                getRectangle: (element: MindElement<ImageData>) => {
-                    return getImageForeignRectangle(this.board as PlaitMindBoard, element);
-                },
-                getImageItem: (element: MindElement<ImageData>) => {
-                    return element.data.image;
-                }
-            });
-        }
+        this.imageGenerator = new ImageGenerator<MindElement<ImageData>>(this.board, {
+            getRectangle: (element: MindElement<ImageData>) => {
+                return getImageForeignRectangle(this.board as PlaitMindBoard, element);
+            },
+            getImageItem: (element: MindElement<ImageData>) => {
+                return element.data.image;
+            }
+        });
         const plugins = this.board.getPluginOptions<WithTextOptions>(WithTextPluginKey).textPlugins;
         const textManage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
@@ -143,7 +141,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.activeGenerator.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
         this.drawEmojis();
         this.drawExtend();
-        this.imageGenerator && this.imageGenerator.draw(this.element as MindElement<ImageData>, this.g, this.viewContainerRef);
+        this.imageGenerator.draw(this.element as MindElement<ImageData>, this.g, this.viewContainerRef);
         if (PlaitMind.isMind(this.context.parent)) {
             this.g.classList.add('branch');
         }
@@ -163,12 +161,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             this.drawLink();
             this.drawEmojis();
             this.drawExtend();
-            this.imageGenerator &&
-                this.imageGenerator.updateImage(
-                    this.g,
-                    previous.element as MindElement<ImageData>,
-                    value.element as MindElement<ImageData>
-                );
+            this.imageGenerator.updateImage(this.g, previous.element as MindElement<ImageData>, value.element as MindElement<ImageData>);
             this.updateTopic();
         } else {
             const hasSameSelected = value.selected === previous.selected;
@@ -266,7 +259,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         super.ngOnDestroy();
         this.textManage.destroy();
         this.nodeEmojisDrawer.destroy();
-        this.imageGenerator && this.imageGenerator.destroy();
+        this.imageGenerator.destroy();
         this.destroy$.next();
         this.destroy$.complete();
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {

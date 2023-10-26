@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { CommonImageItem } from './utils';
-import { ActiveGenerator } from './generators';
+import { CommonImageItem } from '../utils';
+import { ActiveGenerator } from '../generators';
 import { ACTIVE_STROKE_WIDTH, PlaitBoard, PlaitElement, RectangleClient, getSelectedElements, isSelectionMoving } from '@plait/core';
 
 @Directive({

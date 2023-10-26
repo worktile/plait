@@ -113,13 +113,14 @@ export const withNodeImage = (board: PlaitBoard) => {
         const isSelectedImage = !!getSelectedImageElement(board);
         const isSingleSelection = selectedElements.length === 1 && MindElement.isMindElement(board, selectedElements[0]);
 
-        if (data?.files.length) {
+        if (data?.files.length && (isSingleSelection || isSelectedImage)) {
             const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
+            const selectedElement = (selectedElements[0] || getSelectedImageElement(board)) as MindElement;
             if (acceptImageArray.includes(data?.files[0].type)) {
                 const imageFile = data.files[0];
 
                 buildImage(board, imageFile, DEFAULT_MIND_IMAGE_WIDTH, imageItem => {
-                    MindTransforms.setImage(board, selectedElements[0] as MindElement, imageItem);
+                    MindTransforms.setImage(board, selectedElement, imageItem);
                 });
                 return;
             }
