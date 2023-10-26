@@ -14,3 +14,5 @@ export const EXTEND_DIAMETER = 16;
 export const QUICK_INSERT_CIRCLE_OFFSET = 9;
 export const QUICK_INSERT_CIRCLE_COLOR = '#6698FF';
 export const QUICK_INSERT_INNER_CROSS_COLOR = 'white';
+
+export const DEFAULT_MIND_IMAGE_WIDTH = 240;

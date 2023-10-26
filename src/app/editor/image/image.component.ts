@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit } from '@angular/core';
-import { MindImageBaseComponent } from '@plait/mind';
+import { ImageBaseComponent } from '@plait/common';
 
 @Component({
     selector: 'app-mind-node-image',
@@ -9,7 +9,7 @@ import { MindImageBaseComponent } from '@plait/mind';
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true
 })
-export class MindImageComponent extends MindImageBaseComponent {
+export class MindImageComponent extends ImageBaseComponent {
     constructor(protected elementRef: ElementRef<HTMLElement>, cdr: ChangeDetectorRef) {
         super(elementRef, cdr);
     }

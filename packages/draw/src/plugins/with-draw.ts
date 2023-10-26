@@ -13,6 +13,7 @@ import { withGeometryResize } from './with-geometry-resize';
 import { withLineResize } from './with-line-resize';
 import { withLineBoundReaction } from './with-line-bound-reaction';
 import { withLineText } from './with-line-text';
+import { ImageComponent } from '../image.component';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isHitSelection, isMovable, dblclick } = board;
@@ -22,6 +23,8 @@ export const withDraw = (board: PlaitBoard) => {
             return GeometryComponent;
         } else if (PlaitDrawElement.isLine(context.element)) {
             return LineComponent;
+        } else if (PlaitDrawElement.isImage(context.element)) {
+            return ImageComponent;
         }
         return drawElement(context);
     };
@@ -34,6 +37,9 @@ export const withDraw = (board: PlaitBoard) => {
             const points = getLinePoints(board, element);
             return getRectangleByPoints(points);
         }
+        if (PlaitDrawElement.isImage(element)) {
+            return getRectangleByPoints(element.points);
+        }
         return getRectangle(element);
     };
 
@@ -45,6 +51,11 @@ export const withDraw = (board: PlaitBoard) => {
                 const textClient = getTextRectangle(element);
                 return RectangleClient.isHit(rangeRectangle, client) || RectangleClient.isHit(rangeRectangle, textClient);
             }
+            return RectangleClient.isHit(rangeRectangle, client);
+        }
+        if (PlaitDrawElement.isImage(element)) {
+            const client = getRectangleByPoints(element.points);
+            const rangeRectangle = RectangleClient.toRectangleClient([range.anchor, range.focus]);
             return RectangleClient.isHit(rangeRectangle, client);
         }
         if (PlaitDrawElement.isLine(element)) {
@@ -65,6 +76,9 @@ export const withDraw = (board: PlaitBoard) => {
 
     board.isMovable = (element: PlaitElement) => {
         if (PlaitDrawElement.isGeometry(element)) {
+            return true;
+        }
+        if (PlaitDrawElement.isImage(element)) {
             return true;
         }
         if (PlaitDrawElement.isLine(element)) {

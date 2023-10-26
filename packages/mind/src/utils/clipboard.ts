@@ -10,7 +10,7 @@ import {
     setClipboardDataByText,
     Transforms
 } from '@plait/core';
-import { ImageItem, MindElement, PlaitMind } from '../interfaces';
+import { MindElement, PlaitMind } from '../interfaces';
 import { copyNewNode, extractNodesText } from './mind';
 import { getRectangleByNode } from './position/node';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';

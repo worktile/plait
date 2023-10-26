@@ -2,8 +2,9 @@ import { Ancestor, PlaitBoard, Point, RectangleClient, depthFirstRecursion, getI
 import { PlaitDrawElement, PlaitGeometry } from '../../interfaces';
 import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints, getRectangleResizeHandleRefs } from '@plait/common';
 import { getEngine } from '../../engines';
+import { PlaitImage } from '../../interfaces/image';
 
-export const getHitGeometryResizeHandleRef = (board: PlaitBoard, element: PlaitGeometry, point: Point) => {
+export const getHitGeometryResizeHandleRef = (board: PlaitBoard, element: PlaitGeometry | PlaitImage, point: Point) => {
     const rectangle = getRectangleByPoints(element.points);
     const resizeHandleRefs = getRectangleResizeHandleRefs(rectangle, RESIZE_HANDLE_DIAMETER);
     const result = resizeHandleRefs.find(resizeHandleRef => {

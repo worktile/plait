@@ -9,3 +9,4 @@ export * from './shapes';
 export * from './plugins';
 export * from './utils';
 export * from './core/plugin-element';
+export * from './core/image-base.component';

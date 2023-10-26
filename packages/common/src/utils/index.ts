@@ -5,3 +5,4 @@ export * from './rectangle';
 export * from './creation-mode';
 export * from './direction';
 export * from './text';
+export * from './image';

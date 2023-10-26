@@ -5,7 +5,8 @@ import {
     OnContextChanged,
     isSelectionMoving,
     getSelectedElements,
-    PlaitOptionsBoard
+    PlaitOptionsBoard,
+    ACTIVE_STROKE_WIDTH
 } from '@plait/core';
 import { Subject } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
@@ -44,9 +45,9 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
             getStrokeWidth: () => {
                 const selectedElements = getSelectedElements(this.board);
                 if (selectedElements.length === 1 && !isSelectionMoving(this.board)) {
-                    return DefaultGeometryActiveStyle.strokeWidth;
+                    return ACTIVE_STROKE_WIDTH;
                 } else {
-                    return DefaultGeometryActiveStyle.selectionStrokeWidth;
+                    return ACTIVE_STROKE_WIDTH;
                 }
             },
             getStrokeOpacity: () => {

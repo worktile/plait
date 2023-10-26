@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, Point, getSelectedElements } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, Transforms, getSelectedElements } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeHandle,
@@ -9,11 +9,13 @@ import {
     normalizeShapePoints,
     withResize
 } from '@plait/common';
-import { getSelectedGeometryElements } from '../utils/selected';
+import { getSelectedGeometryElements, getSelectedImageElements } from '../utils/selected';
 import { getHitGeometryResizeHandleRef } from '../utils/position/geometry';
 import { DrawTransforms } from '../transforms';
 import { isKeyHotkey } from 'is-hotkey';
 import { GeometryComponent } from '../geometry.component';
+import { PlaitImage } from '../interfaces/image';
+import { PlaitDrawElement } from '../interfaces';
 
 export const withGeometryResize = (board: PlaitBoard) => {
     const { keydown, keyup } = board;
@@ -30,18 +32,18 @@ export const withGeometryResize = (board: PlaitBoard) => {
         keyup(event);
     };
 
-    const options: WithResizeOptions<PlaitGeometry> = {
+    const options: WithResizeOptions<PlaitGeometry | PlaitImage> = {
         key: 'draw-geometry',
         canResize: () => {
             return true;
         },
         detect: (point: Point) => {
-            const selectedGeometryElements = getSelectedGeometryElements(board);
-            if (selectedGeometryElements.length !== 1 || getSelectedElements(board).length !== 1) {
+            const selectedElements = [...getSelectedGeometryElements(board), ...getSelectedImageElements(board)];
+            if (selectedElements.length !== 1 || getSelectedElements(board).length !== 1) {
                 return null;
             }
-            const target = selectedGeometryElements[0];
-            const targetComponent = PlaitElement.getComponent(selectedGeometryElements[0]) as GeometryComponent;
+            const target = selectedElements[0];
+            const targetComponent = PlaitElement.getComponent(selectedElements[0]) as GeometryComponent;
             if (targetComponent.activeGenerator.hasResizeHandle) {
                 const handleRef = getHitGeometryResizeHandleRef(board, target, point);
                 if (handleRef) {
@@ -54,7 +56,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
             }
             return null;
         },
-        onResize: (resizeRef: ResizeRef<PlaitGeometry>, resizeState: ResizeState) => {
+        onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
             let points: [Point, Point] = [...resizeRef.element.points];
             const rectangle = getRectangleByPoints(resizeRef.element.points);
             const ratio = rectangle.height / rectangle.width;
@@ -70,19 +72,23 @@ export const withGeometryResize = (board: PlaitBoard) => {
             if (resizeRef.handle === ResizeHandle.sw) {
                 points = [resizeState.endTransformPoint, [resizeRef.element.points[1][0], resizeRef.element.points[0][1]]];
             }
-            if (isShift) {
+            if (isShift || PlaitDrawElement.isImage(resizeRef.element)) {
                 const rectangle = getRectangleByPoints(points);
                 const factor = points[0][1] > points[1][1] ? 1 : -1;
                 const height = rectangle.width * ratio * factor;
                 points = [[resizeState.endTransformPoint[0], points[1][1] + height], points[1]];
             }
-            points = normalizeShapePoints(points);
-            const { height: textHeight } = PlaitGeometry.getTextManage(resizeRef.element).getSize();
-            DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path);
+            if (PlaitDrawElement.isGeometry(resizeRef.element)) {
+                const { height: textHeight } = PlaitGeometry.getTextManage(resizeRef.element).getSize();
+                DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path);
+            } else {
+                points = normalizeShapePoints(points);
+                Transforms.setNode(board, { points }, resizeRef.path);
+            }
         }
     };
 
-    withResize<PlaitGeometry>(board, options);
+    withResize<PlaitGeometry | PlaitImage>(board, options);
 
     return board;
 };

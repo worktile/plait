@@ -26,12 +26,13 @@ import { drawLink } from './utils/draw/node-link/draw-link';
 import { getTopicRectangleByNode } from './utils/position/topic';
 import { NodeActiveGenerator } from './drawer/node-active.generator';
 import { CollapseDrawer } from './drawer/node-collapse.drawer';
-import { NodeImageDrawer } from './drawer/node-image.drawer';
 import { NodeSpace } from './utils/space/node-space';
 import { NodeTopicThreshold } from './constants/node-topic-style';
-import { CommonPluginElement, WithTextOptions, WithTextPluginKey } from '@plait/common';
+import { CommonPluginElement, ImageGenerator, WithTextOptions, WithTextPluginKey } from '@plait/common';
 import { NodeShapeGenerator } from './drawer/node-shape.generator';
 import { NgIf } from '@angular/common';
+import { getImageForeignRectangle } from './utils';
+import { ImageData } from './interfaces';
 
 @Component({
     selector: 'plait-mind-node',
@@ -72,7 +73,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
 
     nodeInsertDrawer!: NodeInsertDrawer;
 
-    imageDrawer!: NodeImageDrawer;
+    imageGenerator!: ImageGenerator<MindElement<ImageData>>;
 
     activeGenerator!: NodeActiveGenerator;
 
@@ -92,7 +93,14 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.nodeInsertDrawer = new NodeInsertDrawer(this.board);
         this.activeGenerator = new NodeActiveGenerator(this.board);
         this.collapseDrawer = new CollapseDrawer(this.board);
-        this.imageDrawer = new NodeImageDrawer(this.board, this.viewContainerRef);
+        this.imageGenerator = new ImageGenerator<MindElement<ImageData>>(this.board, {
+            getRectangle: (element: MindElement<ImageData>) => {
+                return getImageForeignRectangle(this.board as PlaitMindBoard, element);
+            },
+            getImageItem: (element: MindElement<ImageData>) => {
+                return element.data.image;
+            }
+        });
         const plugins = this.board.getPluginOptions<WithTextOptions>(WithTextPluginKey).textPlugins;
         const textManage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
@@ -133,7 +141,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.activeGenerator.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
         this.drawEmojis();
         this.drawExtend();
-        this.imageDrawer.drawImage(this.g, this.element);
+        this.imageGenerator.draw(this.element as MindElement<ImageData>, this.g, this.viewContainerRef);
         if (PlaitMind.isMind(this.context.parent)) {
             this.g.classList.add('branch');
         }
@@ -153,7 +161,13 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             this.drawLink();
             this.drawEmojis();
             this.drawExtend();
-            this.imageDrawer.updateImage(this.g, previous.element, value.element);
+            if (MindElement.hasImage(this.element)) {
+                this.imageGenerator.updateImage(
+                    this.g,
+                    previous.element as MindElement<ImageData>,
+                    value.element as MindElement<ImageData>
+                );
+            }
             this.updateTopic();
         } else {
             const hasSameSelected = value.selected === previous.selected;
@@ -251,7 +265,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         super.ngOnDestroy();
         this.textManage.destroy();
         this.nodeEmojisDrawer.destroy();
-        this.imageDrawer.destroy();
+        this.imageGenerator.destroy();
         this.destroy$.next();
         this.destroy$.complete();
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {
