@@ -1,8 +1,7 @@
 import { ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonImageItem } from './utils';
 import { ActiveGenerator } from './generators';
-import { PlaitBoard, PlaitElement, RectangleClient, getSelectedElements, isSelectionMoving } from '@plait/core';
-import { DefaultGeometryActiveStyle } from '@plait/draw';
+import { ACTIVE_STROKE_WIDTH, PlaitBoard, PlaitElement, RectangleClient, getSelectedElements, isSelectionMoving } from '@plait/core';
 
 @Directive({
     host: {
@@ -62,9 +61,9 @@ export abstract class ImageBaseComponent implements OnInit, OnDestroy {
             getStrokeWidth: () => {
                 const selectedElements = getSelectedElements(this.board);
                 if (!(selectedElements.length === 1 && !isSelectionMoving(this.board))) {
-                    return DefaultGeometryActiveStyle.selectionStrokeWidth;
+                    return ACTIVE_STROKE_WIDTH;
                 } else {
-                    return DefaultGeometryActiveStyle.strokeWidth;
+                    return ACTIVE_STROKE_WIDTH;
                 }
             },
             getStrokeOpacity: () => {
