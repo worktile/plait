@@ -17,11 +17,11 @@ import {
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
-import { buildImage, getSelectedImageElement, setImageFocus } from '../utils/node/image';
+import { getSelectedImageElement, setImageFocus } from '../utils/node/image';
 import { isHitImage, temporaryDisableSelection } from '../utils';
 import { MindTransforms } from '../transforms';
-import { acceptImageTypes } from '../constants/image';
-import { MediaKeys } from '@plait/common';
+import { MediaKeys, acceptImageTypes, buildImage } from '@plait/common';
+import { DEFAULT_MIND_IMAGE_WIDTH } from '../constants';
 
 export const withNodeImage = (board: PlaitBoard) => {
     const { keydown, pointerDown, globalPointerUp, setFragment, insertFragment, deleteFragment } = board;
@@ -113,12 +113,14 @@ export const withNodeImage = (board: PlaitBoard) => {
         const isSelectedImage = !!getSelectedImageElement(board);
         const isSingleSelection = selectedElements.length === 1 && MindElement.isMindElement(board, selectedElements[0]);
 
-        if (data?.files.length && (isSingleSelection || isSelectedImage)) {
-            const selectedElement = (selectedElements[0] || getSelectedImageElement(board)) as MindElement;
+        if (data?.files.length) {
             const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
             if (acceptImageArray.includes(data?.files[0].type)) {
                 const imageFile = data.files[0];
-                buildImage(board, selectedElement as MindElement, imageFile);
+
+                buildImage(board, imageFile, DEFAULT_MIND_IMAGE_WIDTH, imageItem => {
+                    MindTransforms.setImage(board, selectedElements[0] as MindElement, imageItem);
+                });
                 return;
             }
         }

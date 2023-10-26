@@ -1,0 +1,1 @@
+export const DEFAULT_IMAGE_WIDTH = 1000;

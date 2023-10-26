@@ -50,7 +50,7 @@ export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offset
     }
 
     if (MindElement.hasImage(element)) {
-        const fakeImageG = (activeComponent.imageDrawer.g as SVGGElement).cloneNode(true) as SVGGElement;
+        const fakeImageG = (activeComponent.imageGenerator.g as SVGGElement).cloneNode(true) as SVGGElement;
         const foreignRectangle = getImageForeignRectangle(board as PlaitMindBoard, element);
         updateForeignObject(
             fakeImageG,

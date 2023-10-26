@@ -11,7 +11,11 @@ export abstract class Generator<
 > {
     g?: SVGGElement;
 
-    constructor(protected board: PlaitBoard, options?: V) {}
+    options?: V;
+
+    constructor(protected board: PlaitBoard, options?: V) {
+        this.options = options;
+    }
 
     draw(element: T, parentG: SVGGElement, data?: K) {
         if (this.canDraw && this.canDraw(element, data)) {

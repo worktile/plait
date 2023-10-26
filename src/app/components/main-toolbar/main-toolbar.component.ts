@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
-import { BoardCreationMode, setCreationMode } from '@plait/common';
-import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType } from '@plait/core';
-import { DrawPointerType, GeometryShape, LineShape } from '@plait/draw';
-import { MindPointerType } from '@plait/mind';
+import { BoardCreationMode, CommonImageItem, selectImage, setCreationMode } from '@plait/common';
+import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, getSelectedElements } from '@plait/core';
+import { DrawPointerType, DrawTransforms, GeometryShape, LineShape } from '@plait/draw';
+import { MindElement, MindPointerType, MindTransforms, getSelectedImageElement } from '@plait/mind';
 import { fromEvent, take } from 'rxjs';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 
@@ -44,5 +44,18 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
             .subscribe(() => {
                 setCreationMode(this.board, BoardCreationMode.drawing);
             });
+    }
+
+    addImage(event: Event) {
+        const element = getSelectedElements(this.board)[0] || getSelectedImageElement(this.board);
+        const defaultImageWidth = element ? 240 : 1000;
+        const handle = (imageItem: CommonImageItem) => {
+            if (element) {
+                MindTransforms.setImage(this.board, element as MindElement, imageItem);
+            } else {
+                DrawTransforms.insertImage(this.board, imageItem.width, imageItem.height, imageItem.url);
+            }
+        };
+        selectImage(this.board, defaultImageWidth, handle);
     }
 }
