@@ -5,14 +5,13 @@ import { createForeignObject, createG, updateForeignObject } from '@plait/core';
 import { ComponentRef, ViewContainerRef } from '@angular/core';
 import { WithCommonPluginOptions } from 'packages/common/src/utils';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
-import { WithMindPluginKey } from '../constants';
 import { ImageBaseComponent } from 'packages/common/src/image-base.component';
 
 export interface ShapeData {
     viewContainerRef: ViewContainerRef;
 }
 
-export class MindImageGenerator extends Generator<MindElement, ShapeData, ShapeData> {
+export class NodeImageGenerator extends Generator<MindElement, ShapeData, ShapeData> {
     componentRef: ComponentRef<ImageBaseComponent> | null = null;
 
     foreignObject!: SVGForeignObjectElement;
@@ -26,33 +25,33 @@ export class MindImageGenerator extends Generator<MindElement, ShapeData, ShapeD
             this.destroy();
             return;
         }
-
         const g = createG();
         const foreignRectangle = getImageForeignRectangle(this.board as PlaitMindBoard, element);
         this.foreignObject = createForeignObject(foreignRectangle.x, foreignRectangle.y, foreignRectangle.width, foreignRectangle.height);
-
         g.append(this.foreignObject);
-
         const componentType = (this.board as PlaitMindBoard).getPluginOptions<WithCommonPluginOptions>(WithCommonPluginKey)
             .imageComponentType;
         if (!componentType) {
-            throw new Error('Not implement drawEmoji method error.');
+            throw new Error('Not implement ImageBaseComponent error.');
         }
         this.componentRef = this.options!.viewContainerRef.createComponent(componentType);
         this.componentRef!.instance.board = this.board;
         this.componentRef!.instance.imageItem = element.data.image;
-        this.componentRef!.instance.cdr.markForCheck();
+        this.componentRef!.instance.element = element;
         this.componentRef!.instance.getRectangle = () => {
             return getImageForeignRectangle(this.board as PlaitMindBoard, element);
         };
-
+        this.componentRef!.instance.hasResizeHandle = () => {
+            return true;
+        };
+        this.componentRef!.instance.cdr.markForCheck();
         this.foreignObject.append(this.componentRef!.instance.nativeElement);
         return g;
     }
 
     updateImage(nodeG: SVGGElement, previous: MindElement, current: MindElement) {
         if (!MindElement.hasImage(previous) || !MindElement.hasImage(current)) {
-            this.baseDraw(current);
+            this.draw(current, nodeG);
             return;
         }
 

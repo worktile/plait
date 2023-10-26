@@ -31,7 +31,7 @@ import { NodeTopicThreshold } from './constants/node-topic-style';
 import { CommonPluginElement, WithTextOptions, WithTextPluginKey } from '@plait/common';
 import { NodeShapeGenerator } from './drawer/node-shape.generator';
 import { NgIf } from '@angular/common';
-import { MindImageGenerator } from './drawer/node-image.generator';
+import { NodeImageGenerator } from './drawer/node-image.generator';
 
 @Component({
     selector: 'plait-mind-node',
@@ -72,7 +72,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
 
     nodeInsertDrawer!: NodeInsertDrawer;
 
-    imageGenerator!: MindImageGenerator;
+    imageGenerator!: NodeImageGenerator;
 
     activeGenerator!: NodeActiveGenerator;
 
@@ -92,7 +92,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.nodeInsertDrawer = new NodeInsertDrawer(this.board);
         this.activeGenerator = new NodeActiveGenerator(this.board);
         this.collapseDrawer = new CollapseDrawer(this.board);
-        this.imageGenerator = new MindImageGenerator(this.board, { viewContainerRef: this.viewContainerRef });
+        this.imageGenerator = new NodeImageGenerator(this.board, { viewContainerRef: this.viewContainerRef });
         const plugins = this.board.getPluginOptions<WithTextOptions>(WithTextPluginKey).textPlugins;
         const textManage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {

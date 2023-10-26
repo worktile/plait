@@ -2,8 +2,8 @@ import { BOARD_TO_HOST, PlaitBoard, Point, Transforms, idCreator, toPoint, trans
 
 export const insertImage = (board: PlaitBoard, width: number, height: number, url: string) => {
     const host = BOARD_TO_HOST.get(board);
-    const viewportWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    const viewportWidth = PlaitBoard.getComponent(board).nativeElement.clientWidth;
+    const viewportHeight = PlaitBoard.getComponent(board).nativeElement.clientHeight;
     const point = transformPoint(board, toPoint(viewportWidth / 2, viewportHeight / 2, host!));
     Transforms.insertNode(
         board,

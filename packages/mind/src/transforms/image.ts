@@ -1,9 +1,10 @@
 import { PlaitBoard, Transforms } from '@plait/core';
-import { ImageData, ImageItem, MindElement } from '../interfaces';
+import { ImageData, MindElement } from '../interfaces';
 import { setImageFocus } from '../utils/node/image';
 import { NodeSpace } from '../utils/space/node-space';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
 import { getNewNodeHeight } from '../utils/node/dynamic-width';
+import { CommonImageItem } from '@plait/common';
 
 export const removeImage = (board: PlaitBoard, element: MindElement<ImageData>) => {
     setImageFocus(board, element, false);
@@ -22,7 +23,7 @@ export const removeImage = (board: PlaitBoard, element: MindElement<ImageData>) 
     Transforms.setNode(board, newElement, path);
 };
 
-export const setImage = (board: PlaitBoard, element: MindElement, imageItem: ImageItem) => {
+export const setImage = (board: PlaitBoard, element: MindElement, imageItem: CommonImageItem) => {
     const newElement = {
         data: { ...element.data, image: imageItem }
     };

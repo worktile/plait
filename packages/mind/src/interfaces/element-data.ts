@@ -1,19 +1,14 @@
+import { CommonImageItem } from '@plait/common';
 import { ParagraphElement } from '@plait/text';
 
 export interface EmojiItem {
     name: string;
 }
 
-export interface ImageItem {
-    url: string;
-    width: number;
-    height: number;
-}
-
 export interface BaseData {
     topic: ParagraphElement;
     emojis?: EmojiItem[];
-    image?: ImageItem;
+    image?: CommonImageItem;
 }
 
 export interface EmojiData extends BaseData {
@@ -21,5 +16,5 @@ export interface EmojiData extends BaseData {
 }
 
 export interface ImageData extends BaseData {
-    image: ImageItem;
+    image: CommonImageItem;
 }

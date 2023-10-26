@@ -20,7 +20,7 @@ export const PlaitDrawElement = {
     isText: (value: any): value is PlaitText => {
         return value.type === 'geometry' && value.shape === GeometryShape.text;
     },
-    isImage: (value: any): value is PlaitLine => {
+    isImage: (value: any): value is PlaitImage => {
         return value.type === 'image';
     },
     isDrawElement: (value: any): value is PlaitDrawElement => {

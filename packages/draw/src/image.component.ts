@@ -15,7 +15,9 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
     implements OnInit, OnDestroy, OnContextChanged<PlaitImage, PlaitBoard> {
     destroy$ = new Subject<void>();
 
-    activeGenerator!: ActiveGenerator<PlaitImage>;
+    get activeGenerator() {
+        return this.imageGenerator.componentRef.instance.activeGenerator;
+    }
 
     imageGenerator!: ImageGenerator;
 
@@ -24,21 +26,6 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
     }
 
     initializeGenerator() {
-        this.activeGenerator = new ActiveGenerator<PlaitImage>(this.board, {
-            getStrokeWidth: () => {
-                return 1;
-            },
-            getStrokeOpacity: () => {
-                return 1;
-            },
-            getRectangle: (element: PlaitImage) => {
-                return getRectangleByPoints(element.points);
-            },
-            hasResizeHandle: () => {
-                const selectedElements = getSelectedElements(this.board);
-                return selectedElements.length === 1 && !isSelectionMoving(this.board);
-            }
-        });
         this.imageGenerator = new ImageGenerator(this.board);
     }
 
@@ -46,7 +33,6 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
         super.ngOnInit();
         this.initializeGenerator();
         this.imageGenerator.draw(this.element, this.g, this.viewContainerRef);
-        this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
     }
 
     onContextChanged(
@@ -54,7 +40,7 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
         previous: PlaitPluginElementContext<PlaitImage, PlaitBoard>
     ) {
         if (value.element !== previous.element) {
-            this.imageGenerator.draw(this.element, this.g, this.viewContainerRef);
+            this.imageGenerator.updateImage(this.g, previous.element, value.element);
             this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
         } else {
             const hasSameSelected = value.selected === previous.selected;
@@ -69,5 +55,6 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
         super.ngOnDestroy();
         this.destroy$.next();
         this.destroy$.complete();
+        this.imageGenerator.destroy();
     }
 }

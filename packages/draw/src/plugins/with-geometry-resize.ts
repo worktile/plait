@@ -83,11 +83,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path);
             } else {
                 points = normalizeShapePoints(points);
-                Transforms.setNode(
-                    board,
-                    { points, width: points[1][0] - points[0][0], height: points[1][1] - points[0][1] },
-                    resizeRef.path
-                );
+                Transforms.setNode(board, { points }, resizeRef.path);
             }
         }
     };

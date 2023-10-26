@@ -1,19 +1,25 @@
 import { ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonImageItem } from './utils';
 import { ActiveGenerator } from './generators';
-import { PlaitBoard, PlaitElement, RectangleClient } from '@plait/core';
+import { PlaitBoard, PlaitElement, RectangleClient, getSelectedElements, isSelectionMoving } from '@plait/core';
+import { DefaultGeometryActiveStyle } from '@plait/draw';
 
 @Directive({
     host: {
-        class: 'mind-node-image'
+        class: 'base-image'
     }
 })
 export abstract class ImageBaseComponent implements OnInit, OnDestroy {
     _imageItem!: CommonImageItem;
+
     _isFocus!: boolean;
+
     initialized = false;
 
     activeGenerator!: ActiveGenerator;
+
+    @Input()
+    element!: PlaitElement;
 
     @Input()
     set imageItem(value: CommonImageItem) {
@@ -47,20 +53,38 @@ export abstract class ImageBaseComponent implements OnInit, OnDestroy {
 
     @Input() getRectangle!: () => RectangleClient;
 
+    @Input() hasResizeHandle!: () => boolean;
+
     constructor(protected elementRef: ElementRef<HTMLElement>, public cdr: ChangeDetectorRef) {}
 
     ngOnInit(): void {
         this.activeGenerator = new ActiveGenerator(this.board, {
             getStrokeWidth: () => {
-                return 1;
+                const selectedElements = getSelectedElements(this.board);
+                if (!(selectedElements.length === 1 && !isSelectionMoving(this.board))) {
+                    return DefaultGeometryActiveStyle.selectionStrokeWidth;
+                } else {
+                    return DefaultGeometryActiveStyle.strokeWidth;
+                }
             },
             getStrokeOpacity: () => {
-                return 1;
+                const selectedElements = getSelectedElements(this.board);
+                if (!(selectedElements.length === 1 && !isSelectionMoving(this.board))) {
+                    return 0.5;
+                } else {
+                    return 1;
+                }
             },
             getRectangle: () => {
                 return this.getRectangle();
             },
-            hasResizeHandle: () => true
+            hasResizeHandle: () => {
+                if (this.hasResizeHandle) {
+                    return this.hasResizeHandle();
+                }
+                const selectedElements = getSelectedElements(this.board);
+                return selectedElements.length === 1 && !isSelectionMoving(this.board);
+            }
         });
         this.initialized = true;
     }

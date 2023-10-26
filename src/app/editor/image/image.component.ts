@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit } from '@angular/core';
 import { ImageBaseComponent } from '@plait/common';
-import { MindImageBaseComponent } from '@plait/mind';
 
 @Component({
     selector: 'app-mind-node-image',
