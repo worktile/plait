@@ -5,16 +5,17 @@ import {
     RectangleClient,
     getNearestPointBetweenPointAndSegments,
     isPointInPolygon,
-    isPointInRoundRectangle,
-    setStrokeLinecap
+    isPointInRoundRectangle
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../interfaces';
-import { getCenterPointsOnPolygon, getEdgeOnPolygonByPoint } from '../utils/geometry';
+import { getEdgeOnPolygonByPoint } from '../utils/geometry';
 import { Options } from 'roughjs/bin/core';
 import { getRectangleByPoints } from '@plait/common';
 import { ShapeDefaultSpace } from '../constants';
 import { getStrokeWidthByElement } from '../utils';
 import { getRoundRectangleRadius } from './round-rectangle';
+
+const heightRatio = 3 / 4;
 
 export const RoundCommentEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
@@ -22,7 +23,7 @@ export const RoundCommentEngine: ShapeEngine = {
         const x1 = rectangle.x;
         const y1 = rectangle.y;
         const x2 = rectangle.x + rectangle.width;
-        const y2 = rectangle.y + (rectangle.height * 3) / 4;
+        const y2 = rectangle.y + rectangle.height * heightRatio;
         const radius = getRoundRectangleRadius(rectangle);
 
         const point1 = [x1 + radius, y1];
@@ -67,7 +68,7 @@ export const RoundCommentEngine: ShapeEngine = {
         return [
             [rectangle.x + rectangle.width / 2, rectangle.y],
             [rectangle.x + rectangle.width, rectangle.y + rectangle.height / 2],
-            [rectangle.x + rectangle.width / 2, rectangle.y + (rectangle.height * 3) / 4],
+            [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height * heightRatio],
             [rectangle.x, rectangle.y + rectangle.height / 2]
         ];
     },
@@ -80,7 +81,7 @@ export const RoundCommentEngine: ShapeEngine = {
             height,
             width: width > 0 ? width : 0,
             x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-            y: elementRectangle.y + ((elementRectangle.height * 3) / 4 - height) / 2
+            y: elementRectangle.y + (elementRectangle.height * heightRatio - height) / 2
         };
     }
 };
@@ -89,10 +90,10 @@ export const getRoundCommentPoints = (rectangle: RectangleClient): Point[] => {
     return [
         [rectangle.x, rectangle.y],
         [rectangle.x + rectangle.width, rectangle.y],
-        [rectangle.x + rectangle.width, rectangle.y + (rectangle.height * 3) / 4],
-        [rectangle.x + rectangle.width / 2, rectangle.y + (rectangle.height * 3) / 4],
+        [rectangle.x + rectangle.width, rectangle.y + rectangle.height * heightRatio],
+        [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height * heightRatio],
         [rectangle.x + rectangle.width / 4, rectangle.y + rectangle.height],
-        [rectangle.x + rectangle.width / 4, rectangle.y + (rectangle.height * 3) / 4],
-        [rectangle.x, rectangle.y + (rectangle.height * 3) / 4]
+        [rectangle.x + rectangle.width / 4, rectangle.y + rectangle.height * heightRatio],
+        [rectangle.x, rectangle.y + rectangle.height * heightRatio]
     ];
 };

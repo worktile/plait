@@ -14,6 +14,8 @@ import { getRectangleByPoints } from '@plait/common';
 import { ShapeDefaultSpace } from '../constants';
 import { getStrokeWidthByElement } from '../utils';
 
+const heightRatio = 3 / 4;
+
 export const CommentEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const points = getCommentPoints(rectangle);
@@ -49,7 +51,7 @@ export const CommentEngine: ShapeEngine = {
             height,
             width: width > 0 ? width : 0,
             x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-            y: elementRectangle.y + ((elementRectangle.height * 3) / 4 - height) / 2
+            y: elementRectangle.y + (elementRectangle.height * heightRatio - height) / 2
         };
     }
 };
@@ -58,10 +60,10 @@ export const getCommentPoints = (rectangle: RectangleClient): Point[] => {
     return [
         [rectangle.x, rectangle.y],
         [rectangle.x + rectangle.width, rectangle.y],
-        [rectangle.x + rectangle.width, rectangle.y + (rectangle.height * 3) / 4],
-        [rectangle.x + (rectangle.width * 3) / 5, rectangle.y + (rectangle.height * 3) / 4],
+        [rectangle.x + rectangle.width, rectangle.y + rectangle.height * heightRatio],
+        [rectangle.x + (rectangle.width * 3) / 5, rectangle.y + rectangle.height * heightRatio],
         [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height],
-        [rectangle.x + (rectangle.width * 2) / 5, rectangle.y + (rectangle.height * 3) / 4],
-        [rectangle.x, rectangle.y + (rectangle.height * 3) / 4]
+        [rectangle.x + (rectangle.width * 2) / 5, rectangle.y + rectangle.height * heightRatio],
+        [rectangle.x, rectangle.y + rectangle.height * heightRatio]
     ];
 };

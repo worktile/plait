@@ -12,7 +12,8 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
 
     board.pointerMove = (event: PointerEvent) => {
         boundShapeG?.remove();
-        const isLinePointer = PlaitBoard.isPointer(board, LineShape.elbow);
+        const linePointers = Object.keys(LineShape);
+        const isLinePointer = PlaitBoard.isInPointer(board, linePointers);
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const isLineResizing = isResizingByCondition(board, element => PlaitDrawElement.isLine(element));
 
