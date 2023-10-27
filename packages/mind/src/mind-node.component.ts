@@ -161,12 +161,18 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             this.drawLink();
             this.drawEmojis();
             this.drawExtend();
-            if (MindElement.hasImage(this.element)) {
+            if (!MindElement.hasImage(previous.element) && MindElement.hasImage(this.element)) {
+                this.imageGenerator.draw(this.element, this.g, this.viewContainerRef);
+            }
+            if (MindElement.hasImage(previous.element) && MindElement.hasImage(this.element)) {
                 this.imageGenerator.updateImage(
                     this.g,
                     previous.element as MindElement<ImageData>,
                     value.element as MindElement<ImageData>
                 );
+            }
+            if (MindElement.hasImage(previous.element) && !MindElement.hasImage(this.element)) {
+                this.imageGenerator.destroy();
             }
             this.updateTopic();
         } else {
