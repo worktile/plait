@@ -49,7 +49,6 @@ export class AlignReaction {
             },
             true
         );
-        console.log('=======result=======', result);
         return result;
     }
 
