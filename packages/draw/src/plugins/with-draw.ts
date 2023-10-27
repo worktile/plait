@@ -14,7 +14,6 @@ import { withLineResize } from './with-line-resize';
 import { withLineBoundReaction } from './with-line-bound-reaction';
 import { withLineText } from './with-line-text';
 import { ImageComponent } from '../image.component';
-import { getEngine } from '../engines';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isHitSelection, isMovable, dblclick } = board;
