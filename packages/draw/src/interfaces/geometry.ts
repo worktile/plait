@@ -14,7 +14,17 @@ export enum GeometryShape {
     triangle = 'triangle',
     leftArrow = 'leftArrow',
     trapezoid = 'trapezoid',
-    rightArrow = 'rightArrow'
+    rightArrow = 'rightArrow',
+    cross = 'cross',
+    star = 'star',
+    pentagon = 'pentagon',
+    hexagon = 'hexagon',
+    octagon = 'octagon',
+    pentagonArrow = 'pentagonArrow',
+    processArrow = 'processArrow',
+    twoWayArrow = 'twoWayArrow',
+    comment = 'comment',
+    roundComment = 'roundComment'
 }
 
 export interface PlaitGeometry extends PlaitElement {
@@ -68,4 +78,5 @@ export interface ShapeEngine {
     getEdgeByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => [Point, Point] | null;
     getTangentVectorByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => Vector | null;
     draw: (board: PlaitBoard, rectangle: RectangleClient, options: Options) => SVGGElement;
+    getTextRectangle?: (element: PlaitGeometry) => RectangleClient;
 }
