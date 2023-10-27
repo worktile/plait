@@ -1,6 +1,8 @@
 import { PlaitBoard } from '../interfaces';
 import { getRectangleByElements } from './element';
 
+const IMAGE_CONTAINER = 'plait-image-container';
+
 export interface ToImageOptions {
     name?: string;
     ratio?: number;
@@ -116,8 +118,9 @@ async function cloneSvg(board: PlaitBoard, options: ToImageOptions) {
     cloneSvgElement.setAttribute('viewBox', [x - padding, y - padding, width + 2 * padding, height + 2 * padding].join(','));
 
     if (inlineStyleClassNames) {
-        const sourceNodes = Array.from(sourceSvg.querySelectorAll(inlineStyleClassNames));
-        const cloneNodes = Array.from(cloneSvgElement.querySelectorAll(inlineStyleClassNames));
+        const classNames = inlineStyleClassNames + `,.${IMAGE_CONTAINER}`;
+        const sourceNodes = Array.from(sourceSvg.querySelectorAll(classNames));
+        const cloneNodes = Array.from(cloneSvgElement.querySelectorAll(classNames));
 
         sourceNodes.forEach((node, index) => {
             const cloneNode = cloneNodes[index];
@@ -126,17 +129,18 @@ async function cloneSvg(board: PlaitBoard, options: ToImageOptions) {
             sourceNodes.push(...childElements);
             cloneNodes.push(...cloneChildElements);
         });
-        sourceNodes.forEach((node, index) => {
-            const cloneNode = cloneNodes[index];
-            cloneCSSStyle(node as HTMLElement, cloneNode as HTMLElement);
-        });
 
         // 使用 Promise.all 等待所有异步操作完成
         await Promise.all(
-            sourceNodes.map((_, index) => {
+            sourceNodes.map((node, index) => {
                 return new Promise(resolve => {
                     const cloneNode = cloneNodes[index];
-                    if (cloneNode?.nodeName !== 'MIND-NODE-IMAGE') {
+
+                    // processing styles
+                    cloneCSSStyle(node as HTMLElement, cloneNode as HTMLElement);
+
+                    // processing image
+                    if (!cloneNode?.classList.contains(IMAGE_CONTAINER)) {
                         return resolve(true);
                     }
                     const image = (cloneNode as HTMLElement).querySelector('img');
@@ -177,13 +181,10 @@ export async function toImage(board: PlaitBoard, options: ToImageOptions) {
 
     const svgStr = new XMLSerializer().serializeToString(cloneSvgElement);
     const imgSrc = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgStr)}`;
-    console.log(imgSrc);
 
     try {
         const img = await loadImage(imgSrc);
         ctx.drawImage(img, 0, 0, ratioWidth, ratioHeight);
-        document.body.appendChild(cloneSvgElement);
-        document.body.appendChild(canvas);
         return canvas.toDataURL('image/png');
     } catch (error) {
         console.error('Error converting SVG to image:', error);
