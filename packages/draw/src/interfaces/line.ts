@@ -4,7 +4,7 @@ import { LineComponent } from '../line.component';
 import { PlaitGeometry } from './geometry';
 import { StrokeStyle } from './element';
 import { getConnectionPoint } from '../utils';
-import { PlaitImage } from '..//interfaces/image';
+import { PlaitImage } from '../interfaces/image';
 
 export enum LineMarkerType {
     arrow = 'arrow',
