@@ -53,7 +53,7 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
             if (element) {
                 MindTransforms.setImage(this.board, element as MindElement, imageItem);
             } else {
-                DrawTransforms.insertImage(this.board, imageItem.width, imageItem.height, imageItem.url);
+                DrawTransforms.insertImage(this.board, imageItem);
             }
         };
         selectImage(this.board, defaultImageWidth, handle);

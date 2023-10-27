@@ -6,6 +6,8 @@ import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
 import { getBoardLines } from '../utils/line';
 import { PlaitImage } from '../interfaces/image';
+import { acceptImageTypes, buildImage } from '@plait/common';
+import { DEFAULT_IMAGE_WIDTH } from '../constants';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard;
@@ -67,6 +69,18 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                 return;
             }
         }
+
+        if (data?.files.length) {
+            const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
+            if (acceptImageArray.includes(data?.files[0].type)) {
+                const imageFile = data.files[0];
+                buildImage(board, imageFile, DEFAULT_IMAGE_WIDTH, imageItem => {
+                    DrawTransforms.insertImage(board, imageItem, targetPoint);
+                });
+                return;
+            }
+        }
+
         insertFragment(data, targetPoint);
     };
 
