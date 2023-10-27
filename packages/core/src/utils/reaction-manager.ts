@@ -30,7 +30,11 @@ export class AlignReaction {
         depthFirstRecursion<Ancestor>(
             this.board,
             node => {
-                if (PlaitBoard.isBoard(node) || this.activeElements.some(element => node.id === element.id) || node.type !== 'geometry') {
+                if (
+                    PlaitBoard.isBoard(node) ||
+                    this.activeElements.some(element => node.id === element.id) ||
+                    (node.type !== 'geometry' && node.type !== 'image')
+                ) {
                     return;
                 }
                 const rectangle = this.board.getRectangle(node);
@@ -45,6 +49,7 @@ export class AlignReaction {
             },
             true
         );
+        console.log('=======result=======', result);
         return result;
     }
 
