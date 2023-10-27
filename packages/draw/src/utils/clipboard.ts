@@ -1,9 +1,10 @@
 import { PlaitBoard, Point, Transforms, getElementById, idCreator } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
+import { PlaitImage } from '../interfaces/image';
 
 export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement[], startPoint: Point) => {
     return elements.map(element => {
-        if (PlaitDrawElement.isGeometry(element)) {
+        if (PlaitDrawElement.isGeometry(element) || PlaitDrawElement.isImage(element)) {
             const points = element.points.map(point => [point[0] - startPoint[0], point[1] - startPoint[1]]);
             return { ...element, points } as PlaitGeometry;
         }
@@ -27,7 +28,11 @@ export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement
 
 export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElement[], startPoint: Point) => {
     const lines = elements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
-    const geometries = elements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
+    const geometries = elements.filter(value => PlaitDrawElement.isGeometry(value) || PlaitDrawElement.isImage(value)) as (
+        | PlaitImage
+        | PlaitGeometry
+    )[];
+
     geometries.forEach(element => {
         const sourceLines: PlaitLine[] = [];
         const targetLines: PlaitLine[] = [];
