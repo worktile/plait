@@ -16,7 +16,7 @@ import { withLineText } from './with-line-text';
 import { ImageComponent } from '../image.component';
 
 export const withDraw = (board: PlaitBoard) => {
-    const { drawElement, getRectangle, isHitSelection, isMovable, dblclick } = board;
+    const { drawElement, getRectangle, isHitSelection, isMovable, isAlign } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isGeometry(context.element)) {
@@ -85,6 +85,13 @@ export const withDraw = (board: PlaitBoard) => {
             return !element.source.boundId && !element.target.boundId;
         }
         return isMovable(element);
+    };
+
+    board.isAlign = (element: PlaitElement) => {
+        if (PlaitDrawElement.isGeometry(element) || PlaitDrawElement.isImage(element)) {
+            return true;
+        }
+        return isAlign(element);
     };
 
     return withLineText(

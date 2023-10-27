@@ -105,6 +105,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         isMovable: element => false,
         getRectangle: element => null,
         applyTheme: (element: PlaitElement) => {},
+        isAlign: element => false,
         pointerDown: pointer => {},
         pointerMove: pointer => {},
         pointerUp: pointer => {},
