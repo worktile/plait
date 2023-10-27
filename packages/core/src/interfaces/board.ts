@@ -69,6 +69,7 @@ export interface PlaitBoard {
     pathRef: (path: Path, options?: PathRefOptions) => PathRef;
     pathRefs: () => Set<PathRef>;
     applyTheme: (element: PlaitElement) => void;
+    isAlign: (element: PlaitElement) => boolean;
 
     // pointer hook
     pointerDown: (pointer: PointerEvent) => void;
