@@ -76,14 +76,92 @@
     <ng-template [ngTemplateOutlet]="trapezoid"></ng-template>
 </a>
 
-
-
 <a
     class="action-item"
     [ngClass]="{ active: isPointer(GeometryShapeType.roundRectangle) }"
     (mousedown)="setPointer($event, GeometryShapeType.roundRectangle)"
 >
     <ng-template [ngTemplateOutlet]="roundRectangle"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(GeometryShapeType.cross) }"
+    (mousedown)="setPointer($event, GeometryShapeType.cross)"
+>
+    <ng-template [ngTemplateOutlet]="cross"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(GeometryShapeType.star) }"
+    (mousedown)="setPointer($event, GeometryShapeType.star)"
+>
+    <ng-template [ngTemplateOutlet]="star"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(GeometryShapeType.pentagon) }"
+    (mousedown)="setPointer($event, GeometryShapeType.pentagon)"
+>
+    <ng-template [ngTemplateOutlet]="pentagon"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(GeometryShapeType.hexagon) }"
+    (mousedown)="setPointer($event, GeometryShapeType.hexagon)"
+>
+    <ng-template [ngTemplateOutlet]="hexagon"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(GeometryShapeType.octagon) }"
+    (mousedown)="setPointer($event, GeometryShapeType.octagon)"
+>
+    <ng-template [ngTemplateOutlet]="octagon"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(GeometryShapeType.pentagonArrow) }"
+    (mousedown)="setPointer($event, GeometryShapeType.pentagonArrow)"
+>
+    <ng-template [ngTemplateOutlet]="pentagonArrow"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(GeometryShapeType.processArrow) }"
+    (mousedown)="setPointer($event, GeometryShapeType.processArrow)"
+>
+    <ng-template [ngTemplateOutlet]="processArrow"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(GeometryShapeType.twoWayArrow) }"
+    (mousedown)="setPointer($event, GeometryShapeType.twoWayArrow)"
+>
+    <ng-template [ngTemplateOutlet]="twoWayArrow"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(GeometryShapeType.comment) }"
+    (mousedown)="setPointer($event, GeometryShapeType.comment)"
+>
+    <ng-template [ngTemplateOutlet]="comment"></ng-template>
+</a>
+
+<a
+    class="action-item"
+    [ngClass]="{ active: isPointer(GeometryShapeType.roundComment) }"
+    (mousedown)="setPointer($event, GeometryShapeType.roundComment)"
+>
+    <ng-template [ngTemplateOutlet]="roundComment"></ng-template>
 </a>
 
 <a
@@ -275,4 +353,94 @@
 
 <ng-template #image>
     <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fit="" height="1em" width="1em" preserveAspectRatio="xMidYMid meet" focusable="false"><g id="amgeditor/image" stroke-width="1" fill-rule="evenodd"><path d="M10.496 7c-.824 0-1.572-.675-1.498-1.5 0-.825.674-1.5 1.498-1.5.823 0 1.497.675 1.497 1.5S11.319 7 10.496 7zM13.8 9.476V2.2H2.2v5.432l.1-.078C3.132 6.904 4.029 6.5 5 6.5c.823 0 1.552.27 2.342.778.226.145.449.304.735.518.06.045.546.413.69.52 1.634 1.21 2.833 1.6 4.798 1.207l.235-.047zm0 1.523V10.7c-5 1-6.3-3-8.8-3-1.5 0-2.8 1.6-2.8 1.6v4.6h11.6V11zM14 1c.6 0 1 .536 1 1.071v11.784c0 .642-.4 1.071-1 1.071H2c-.6 0-1-.429-1-1.07V2.07c0-.535.4-1.07 1-1.07h12z" id="amg合并形状"></path></g></svg>
+</ng-template>
+
+<ng-template #cross>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/十字</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/十字" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M11,4.54747351e-13 C11.5522847,4.54747351e-13 12,0.44771525 12,1 L12,3.999 L15,4 C15.5522847,4 16,4.44771525 16,5 L16,11 C16,11.5522847 15.5522847,12 15,12 L11.999,11.999 L12,15 C12,15.5522847 11.5522847,16 11,16 L5,16 C4.44771525,16 4,15.5522847 4,15 L3.999,11.999 L1,12 C0.44771525,12 0,11.5522847 0,11 L0,5 C0,4.44771525 0.44771525,4 1,4 L4,3.999 L4,1 C4,0.44771525 4.44771525,4.54747351e-13 5,4.54747351e-13 L11,4.54747351e-13 Z M10.8,1.2 L5.2,1.199 L5.2,5.19860007 L1.2,5.199 L1.2,10.8 L5.19860007,10.7985999 L5.199,14.799 L10.8,14.8 L10.7985999,10.7985999 L14.8,10.799 L14.8,5.199 L10.8,5.19860007 L10.8,1.2 Z" id="形状结合" fill="#999999"/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #star> 
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/五角星</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/五角星" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M6.92391671,0.968921146 L5.145,4.571 L1.17004641,5.14935262 L1.05012997,5.17267086 C0.154949791,5.39227718 -0.177554215,6.53086815 0.504990357,7.19618468 L3.381,10 L2.70277325,13.9602649 L2.68825708,14.0767197 C2.61671662,14.9984199 3.59877384,15.6695924 4.44391259,15.2252767 L8,13.356 L11.5560874,15.2252767 L11.6623568,15.2750689 C12.5168385,15.6279289 13.4586339,14.9013407 13.2972268,13.9602649 L12.618,10 L15.4950096,7.19618468 L15.578318,7.10683471 C16.1734526,6.40299576 15.773207,5.28641536 14.8299536,5.14935262 L10.854,4.571 L9.07608329,0.968921146 C8.63590686,0.0770262845 7.36409314,0.0770262845 6.92391671,0.968921146 Z M8,1.5 L10.0572484,5.66844052 L14.6573956,6.33688104 L11.3286978,9.58155948 L12.1144968,14.163119 L8,12 L3.88550323,14.163119 L4.67130219,9.58155948 L1.34260439,6.33688104 L5.94275162,5.66844052 L8,1.5 Z" id="星形" fill="#999999"/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #pentagon>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/五边形</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/五边形" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M7.2946577,0.529179607 L0.637262083,5.36606065 C0.216677193,5.67163346 0.0406874337,6.21327424 0.201336566,6.70770143 L2.74423541,14.5339394 C2.90488455,15.0283665 3.36563172,15.363119 3.88550323,15.363119 L12.1144968,15.363119 C12.6343683,15.363119 13.0951155,15.0283665 13.2557646,14.5339394 L15.7986634,6.70770143 C15.9593126,6.21327424 15.7833228,5.67163346 15.3627379,5.36606065 L8.7053423,0.529179607 C8.28475741,0.223606798 7.71524259,0.223606798 7.2946577,0.529179607 Z M8,1.5 L14.6573956,6.33688104 L12.1144968,14.163119 L3.88550323,14.163119 L1.34260439,6.33688104 L8,1.5 Z" id="多边形" fill="#999999"/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #pentagonArrow>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/五边箭头</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/五边箭头" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M9.80475723,2.5 C9.93030302,2.5 10.0512544,2.54722978 10.1435795,2.6323052 L15.5988734,7.65923271 C15.8019456,7.84635909 15.8148723,8.16267756 15.6277459,8.36574979 L15.5969465,8.39638857 L10.1431573,13.3694611 C10.0510553,13.4534449 9.93090575,13.5 9.80626192,13.5 L0.5,13.5 C0.223857625,13.5 0,13.2761424 0,13 L0,3 C0,2.72385763 0.223857625,2.5 0.5,2.5 L9.80475723,2.5 Z M9.532,3.7 L1.2,3.7 L1.2,12.3 L9.534,12.3 L14.224,8.024 L9.532,3.7 Z" id="矩形" fill="#999999"/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #hexagon>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/六边形</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/六边形" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M8.5,0.288675135 L14.4282032,3.71132487 C14.7376043,3.88995766 14.9282032,4.22008468 14.9282032,4.57735027 L14.9282032,11.4226497 C14.9282032,11.7799153 14.7376043,12.1100423 14.4282032,12.2886751 L8.5,15.7113249 C8.19059892,15.8899577 7.80940108,15.8899577 7.5,15.7113249 L1.57179677,12.2886751 C1.26239569,12.1100423 1.07179677,11.7799153 1.07179677,11.4226497 L1.07179677,4.57735027 C1.07179677,4.22008468 1.26239569,3.88995766 1.57179677,3.71132487 L7.5,0.288675135 C7.80940108,0.11004234 8.19059892,0.11004234 8.5,0.288675135 Z M7.99979677,1.385 L2.27179677,4.692 L2.27179677,11.307 L7.99979677,14.614 L13.7277968,11.307 L13.7277968,4.692 L7.99979677,1.385 Z" id="多边形" fill="#999999" transform="translate(8.000000, 8.000000) rotate(-90.000000) translate(-8.000000, -8.000000) "/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #octagon>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/八边形</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/八边形" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M8.39980342,0.167594712 L13.2912908,2.19371513 C13.5363189,2.29520908 13.730993,2.48988314 13.8324869,2.73491123 L15.8586073,7.62639861 C15.9601013,7.8714267 15.9601013,8.14673739 15.8586073,8.39176548 L13.8324869,13.2832529 C13.730993,13.5282809 13.5363189,13.722955 13.2912908,13.824449 L8.39980342,15.8505694 C8.15477534,15.9520633 7.87946465,15.9520633 7.63443656,15.8505694 L2.74294917,13.824449 C2.49792109,13.722955 2.30324703,13.5282809 2.20175307,13.2832529 L0.175632659,8.39176548 C0.0741387024,8.14673739 0.0741387024,7.8714267 0.175632659,7.62639861 L2.20175307,2.73491123 C2.30324703,2.48988314 2.49792109,2.29520908 2.74294917,2.19371513 L7.63443656,0.167594712 C7.87946465,0.0661007551 8.15477534,0.0661007551 8.39980342,0.167594712 Z M8.01711999,1.30808204 L3.27811999,3.27008204 L1.31611999,8.00908204 L3.27811999,12.747082 L8.01711999,14.709082 L12.75512,12.747082 L14.71712,8.00908204 L12.75512,3.27008204 L8.01711999,1.30808204 Z" id="多边形" fill="#999999" transform="translate(8.017120, 8.009082) rotate(-22.000000) translate(-8.017120, -8.009082) "/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #processArrow>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/流程箭头</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/流程箭头" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M10.8707306,2.5 C11.0137279,2.5 11.1498821,2.56122594 11.2447749,2.66820051 L15.7041251,7.69531592 C15.8727261,7.88538324 15.8719798,8.17167462 15.7023902,8.36086039 L11.2446051,13.333745 C11.1497624,13.4395468 11.0143843,13.5 10.8722957,13.5 L0.851880598,13.5 C0.575738223,13.5 0.351880598,13.2761424 0.351880598,13 C0.351880598,12.9146586 0.3737244,12.8307374 0.41533242,12.7562262 L3.05515062,8.02886166 L0.409920133,3.24182651 C0.276363041,3.00013018 0.364027213,2.69592718 0.60572354,2.56237009 C0.679758998,2.52145941 0.762963212,2.5 0.847550046,2.5 L10.8707306,2.5 Z M10.556,3.7 L2.034,3.7 L4.10546241,7.44847805 C4.283688,7.77101031 4.30271527,8.15500734 4.16278905,8.49056853 L4.10286624,8.6139189 L2.044,12.3 L10.559,12.3 L14.392,8.024 L10.556,3.7 Z" id="矩形" fill="#999999"/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #twoWayArrow>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/双向箭头</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/双向箭头" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M10.4949356,0.691808269 C10.6593459,0.691808269 10.8132493,0.772633884 10.9065748,0.90798924 L15.9979317,7.78724878 C16.1157462,7.95812197 16.1157462,8.18401365 15.9979317,8.35488684 L10.9065748,15.2341464 C10.7498258,15.4614884 10.4384586,15.5187154 10.2111166,15.3619665 C10.0757613,15.268641 9.99493564,15.1147376 9.99493564,14.9503274 L9.99493564,11.6421356 L6.01190525,11.6418019 L6.01201745,14.9416195 C6.01201745,15.2177618 5.78815982,15.4416195 5.51201745,15.4416195 C5.34706564,15.4416195 5.19272762,15.3602638 5.09951104,15.2241765 L0.0381844572,8.35362482 C-0.0784736678,8.18331504 -0.0784736678,7.95882059 0.0381844572,7.7885108 L5.09951104,0.917959141 C5.25556297,0.690138144 5.56675346,0.631957818 5.79457446,0.788009747 C5.93066181,0.881226324 6.01201745,1.03556435 6.01201745,1.20051615 L6.01201745,4.5 L9.99453195,4.49980186 L9.99493564,1.19180827 C9.99493564,0.915665894 10.2187933,0.691808269 10.4949356,0.691808269 Z M14.7357421,8.07080186 L11.1935319,3.43880186 L11.1941968,5.19975116 C11.1944663,5.47589346 10.9706932,5.69983558 10.6945508,5.69993983 C10.6944957,5.69993985 10.6944406,5.69993986 10.6943855,5.6997746 L5.31201744,5.70002727 C5.03587568,5.70003867 4.8120078,5.4761925 4.81199241,5.20005074 L4.81190525,3.45980186 L4.81190525,3.45980186 L1.29874206,8.07080186 L4.81190525,12.6818019 L4.81187356,10.9417164 C4.81181989,10.665574 5.03567344,10.4417123 5.31181581,10.4417073 C5.31183203,10.4417073 5.31184824,10.4417073 5.31186445,10.4417559 L10.6949356,10.4421816 C10.971078,10.4421536 11.1949179,10.6660289 11.1948961,10.9421713 C11.1948961,10.9421879 11.1948961,10.9422045 11.1948463,10.9422211 L11.1945319,12.7018019 L11.1945319,12.7018019 L14.7357421,8.07080186 Z" id="形状结合" fill="#999999"/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #comment>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/标注</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/标注" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M14,2 C14.5522847,2 15,2.44771525 15,3 L15,12 C15,12.5522847 14.5522847,13 14,13 L10.0201984,13 L8,15.0948056 L6.08016861,13 L2,13 C1.44771525,13 1,12.5522847 1,12 L1,3 C1,2.44771525 1.44771525,2 2,2 L14,2 Z M13.8,3.2 L2.2,3.2 L2.2,11.8 L6.6081263,11.8 L8.021,13.343 L9.51035041,11.8 L13.8,11.8 L13.8,3.2 Z" id="矩形" fill="#999999"/>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #roundComment>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+        <title>1.Base基础/1.icon图标/11.editor/图形/标注2</title>
+        <g id="1.Base基础/1.icon图标/11.editor/图形/标注2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M12,2 C13.6568542,2 15,3.34314575 15,5 L15,10 C15,11.6568542 13.6568542,13 12,13 L8.7144152,13 L4.13893282,15.3300209 L4.13893282,13 L4,13 C2.34314575,13 1,11.6568542 1,10 L1,5 C1,3.34314575 2.34314575,2 4,2 L12,2 Z M12,3.2 L4,3.2 C3.00588745,3.2 2.2,4.00588745 2.2,5 L2.2,10 C2.2,10.9941125 3.00588745,11.8 4,11.8 L5.33893282,11.8 L5.338,13.372 L8.42646426,11.8 L12,11.8 C12.9941125,11.8 13.8,10.9941125 13.8,10 L13.8,5 C13.8,4.00588745 12.9941125,3.2 12,3.2 Z" id="矩形" fill="#999999"/>
+        </g>
+    </svg>
 </ng-template>

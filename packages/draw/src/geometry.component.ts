@@ -17,6 +17,7 @@ import { getTextRectangle } from './utils/geometry';
 import { ActiveGenerator, WithTextPluginKey, WithTextOptions, getRectangleByPoints, CommonPluginElement } from '@plait/common';
 import { DefaultGeometryActiveStyle, GeometryThreshold } from './constants/geometry';
 import { PlaitDrawElement, PlaitText } from './interfaces';
+import { getEngine } from './engines';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -118,6 +119,10 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
 
         const manage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
+                const getRectangle = getEngine(this.element.shape).getTextRectangle;
+                if (getRectangle) {
+                    return getRectangle(this.element);
+                }
                 return getTextRectangle(this.element);
             },
             onValueChangeHandle: (textManageRef: TextManageRef) => {

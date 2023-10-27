@@ -14,6 +14,7 @@ import { withLineResize } from './with-line-resize';
 import { withLineBoundReaction } from './with-line-bound-reaction';
 import { withLineText } from './with-line-text';
 import { ImageComponent } from '../image.component';
+import { getEngine } from '../engines';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isHitSelection, isMovable, dblclick } = board;
@@ -51,7 +52,8 @@ export const withDraw = (board: PlaitBoard) => {
                 const textClient = getTextRectangle(element);
                 return RectangleClient.isHit(rangeRectangle, client) || RectangleClient.isHit(rangeRectangle, textClient);
             }
-            return RectangleClient.isHit(rangeRectangle, client);
+            const isHit = getEngine(element.shape).isHit;
+            return isHit(client, range.anchor);
         }
         if (PlaitDrawElement.isImage(element)) {
             const client = getRectangleByPoints(element.points);
