@@ -52,8 +52,7 @@ export const withDraw = (board: PlaitBoard) => {
                 const textClient = getTextRectangle(element);
                 return RectangleClient.isHit(rangeRectangle, client) || RectangleClient.isHit(rangeRectangle, textClient);
             }
-            const isHit = getEngine(element.shape).isHit;
-            return isHit(client, range.anchor);
+            return RectangleClient.isHit(rangeRectangle, client);
         }
         if (PlaitDrawElement.isImage(element)) {
             const client = getRectangleByPoints(element.points);
