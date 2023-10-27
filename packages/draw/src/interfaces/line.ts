@@ -4,6 +4,7 @@ import { LineComponent } from '../line.component';
 import { PlaitGeometry } from './geometry';
 import { StrokeStyle } from './element';
 import { getConnectionPoint } from '../utils';
+import { PlaitImage } from '../interfaces/image';
 
 export enum LineMarkerType {
     arrow = 'arrow',
@@ -107,10 +108,10 @@ export const PlaitLine = {
     isTargetMark(line: PlaitLine, markType: LineMarkerType) {
         return PlaitLine.isSourceMarkOrTargetMark(line, markType, LineHandleKey.target);
     },
-    isBoundElementOfSource(line: PlaitLine, element: PlaitGeometry) {
+    isBoundElementOfSource(line: PlaitLine, element: PlaitGeometry | PlaitImage) {
         return line.source.boundId === element.id;
     },
-    isBoundElementOfTarget(line: PlaitLine, element: PlaitGeometry) {
+    isBoundElementOfTarget(line: PlaitLine, element: PlaitGeometry | PlaitImage) {
         return line.target.boundId === element.id;
     },
     getPoints(board: PlaitBoard, line: PlaitLine) {

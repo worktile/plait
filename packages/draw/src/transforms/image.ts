@@ -14,8 +14,6 @@ export const insertImage = (board: PlaitBoard, width: number, height: number, ur
                 [point[0] - width / 2, point[1] - height / 2],
                 [point[0] + width / 2, point[1] + height / 2]
             ],
-            width,
-            height,
             url
         },
         [board.children.length]
