@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, Point } from '@plait/core';
+import { PlaitBoard, Point } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
@@ -6,7 +6,6 @@ import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineHandle, PlaitLine } from '../interfaces';
 import { transformPointToConnection } from '../utils';
 import { DrawTransforms } from '../transforms';
-import { LineComponent } from '../line.component';
 
 export const withLineResize = (board: PlaitBoard) => {
     let pointIndex = 0;
