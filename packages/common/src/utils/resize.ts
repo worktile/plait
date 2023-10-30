@@ -1,5 +1,11 @@
-import { PlaitBoard, PlaitElement, Point, RectangleClient } from '@plait/core';
+import { Path, PlaitBoard, PlaitElement, Point, RectangleClient } from '@plait/core';
 import { ResizeCursorClass, ResizeHandle } from '../constants/resize';
+
+export interface ResizeRef<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
+    element: T;
+    path: Path;
+    handle: K;
+}
 
 const getResizeHandleByIndex = (index: number) => {
     switch (index) {
@@ -47,19 +53,19 @@ export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diamete
     });
 };
 
-export const IS_RESIZING = new WeakMap<PlaitBoard, PlaitElement>();
+export const IS_RESIZING = new WeakMap<PlaitBoard, ResizeRef<any, any>>();
 
 export const isResizing = (board: PlaitBoard) => {
     return !!IS_RESIZING.get(board);
 };
 
-export const isResizingByCondition = (board: PlaitBoard, match: (element: PlaitElement) => boolean) => {
-    return isResizing(board) && match(IS_RESIZING.get(board) as PlaitElement);
+export const isResizingByCondition = <T extends PlaitElement, K>(board: PlaitBoard, match: (resizeRef: ResizeRef<T, K>) => boolean) => {
+    return isResizing(board) && match(IS_RESIZING.get(board)!);
 };
 
-export const addResizing = (board: PlaitBoard, element: PlaitElement, key: string) => {
+export const addResizing = <T extends PlaitElement, K>(board: PlaitBoard, resizeRef: ResizeRef<T, K>, key: string) => {
     PlaitBoard.getBoardContainer(board).classList.add(`${key}-resizing`);
-    IS_RESIZING.set(board, element);
+    IS_RESIZING.set(board, resizeRef);
 };
 
 export const removeResizing = (board: PlaitBoard, key: string) => {

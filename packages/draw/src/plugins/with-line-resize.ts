@@ -51,7 +51,6 @@ export const withLineResize = (board: PlaitBoard) => {
             } else {
                 points[pointIndex] = resizeState.endTransformPoint;
             }
-
             DrawTransforms.resizeLine(board, { points, source, target }, resizeRef.path);
         }
     };
