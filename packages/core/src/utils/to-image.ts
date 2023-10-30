@@ -130,32 +130,33 @@ async function cloneSvg(board: PlaitBoard, options: ToImageOptions) {
             cloneNodes.push(...cloneChildElements);
         });
 
-        // 使用 Promise.all 等待所有异步操作完成
-        await Promise.all(
-            sourceNodes.map((node, index) => {
-                return new Promise(resolve => {
-                    const cloneNode = cloneNodes[index];
-
-                    // processing styles
-                    cloneCSSStyle(node as HTMLElement, cloneNode as HTMLElement);
-
-                    // processing image
-                    if (!cloneNode?.classList.contains(IMAGE_CONTAINER)) {
-                        return resolve(true);
-                    }
-                    const image = (cloneNode as HTMLElement).querySelector('img');
-                    const url = image?.getAttribute('src');
-                    if (!url) {
-                        return resolve(true);
-                    }
-                    convertImageToBase64(url).then(base64Image => {
-                        image?.setAttribute('src', base64Image);
-                        resolve(true);
-                    });
-                });
-            })
-        );
+        // processing styles
+        sourceNodes.map((node, index) => {
+            const cloneNode = cloneNodes[index];
+            cloneCSSStyle(node as HTMLElement, cloneNode as HTMLElement);
+        });
     }
+
+    // 使用 Promise.all 等待所有异步操作完成
+    const sourceImageNodes = Array.from(sourceSvg.querySelectorAll(`.${IMAGE_CONTAINER}`));
+    const cloneImageNodes = Array.from(cloneSvgElement.querySelectorAll(`.${IMAGE_CONTAINER}`));
+    await Promise.all(
+        sourceImageNodes.map((_, index) => {
+            return new Promise(resolve => {
+                const cloneNode = cloneImageNodes[index];
+                // processing image
+                const image = (cloneNode as HTMLElement).querySelector('img');
+                const url = image?.getAttribute('src');
+                if (!url) {
+                    return resolve(true);
+                }
+                convertImageToBase64(url).then(base64Image => {
+                    image?.setAttribute('src', base64Image);
+                    resolve(true);
+                });
+            });
+        })
+    );
     return cloneSvgElement;
 }
 
