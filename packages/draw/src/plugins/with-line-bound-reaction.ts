@@ -1,9 +1,20 @@
-import { ACTIVE_STROKE_WIDTH, PlaitBoard, RectangleClient, SELECTION_BORDER_COLOR, drawCircle, toPoint, transformPoint } from '@plait/core';
+import {
+    ACTIVE_STROKE_WIDTH,
+    PlaitBoard,
+    PlaitElement,
+    RectangleClient,
+    SELECTION_BORDER_COLOR,
+    drawCircle,
+    toPoint,
+    transformPoint
+} from '@plait/core';
 import { LineShape, PlaitDrawElement } from '../interfaces';
 import { drawBoundMask, getHitConnectorPoint, getNearestPoint } from '../utils';
 import { DrawPointerType } from '../constants';
 import { getRectangleByPoints, isResizingByCondition } from '@plait/common';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
+import { LineComponent } from '../line.component';
+import { LineResizeHandle } from '../utils/position/line';
 
 export const withLineBoundReaction = (board: PlaitBoard) => {
     const { pointerMove, pointerUp } = board;
@@ -15,8 +26,11 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
         const linePointers = Object.keys(LineShape);
         const isLinePointer = PlaitBoard.isInPointer(board, linePointers);
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const isLineResizing = isResizingByCondition(board, element => PlaitDrawElement.isLine(element));
-
+        const isLineResizing = isResizingByCondition(board, element => {
+            const handle = (PlaitElement.getComponent(element) as LineComponent).resizeActiveHandle;
+            const isSourceOrTarget = handle === LineResizeHandle.target || handle === LineResizeHandle.source;
+            return PlaitDrawElement.isLine(element) && isSourceOrTarget;
+        });
         if (isLinePointer || isLineResizing) {
             const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
             if (hitElement) {

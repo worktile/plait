@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import {
     PlaitBoard,
     PlaitPluginElementComponent,
@@ -16,6 +16,7 @@ import { LineActiveGenerator } from './generators/line-active.generator';
 import { getLineTextRectangle } from './utils';
 import { DrawTransforms } from './transforms';
 import { GeometryThreshold } from './constants';
+import { LineResizeHandle } from './utils/position/line';
 
 interface BoundedElements {
     source?: PlaitGeometry;
@@ -39,6 +40,9 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
     textManages: TextManage[] = [];
 
     boundedElements: BoundedElements = {};
+
+    @Input()
+    resizeActiveHandle: LineResizeHandle | undefined;
 
     constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
         super(cdr);
