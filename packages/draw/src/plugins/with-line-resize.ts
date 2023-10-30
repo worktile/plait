@@ -52,11 +52,7 @@ export const withLineResize = (board: PlaitBoard) => {
             } else {
                 points[pointIndex] = resizeState.endTransformPoint;
             }
-            (PlaitElement.getComponent(resizeRef.element) as LineComponent).resizeActiveHandle = resizeRef.handle;
             DrawTransforms.resizeLine(board, { points, source, target }, resizeRef.path);
-        },
-        endResize: (resizeRef: ResizeRef<PlaitLine, LineResizeHandle>) => {
-            (PlaitElement.getComponent(resizeRef.element) as LineComponent).resizeActiveHandle = undefined;
         }
     };
 

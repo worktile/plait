@@ -16,7 +16,6 @@ import { LineActiveGenerator } from './generators/line-active.generator';
 import { getLineTextRectangle } from './utils';
 import { DrawTransforms } from './transforms';
 import { GeometryThreshold } from './constants';
-import { LineResizeHandle } from './utils/position/line';
 
 interface BoundedElements {
     source?: PlaitGeometry;
@@ -40,9 +39,6 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
     textManages: TextManage[] = [];
 
     boundedElements: BoundedElements = {};
-
-    @Input()
-    resizeActiveHandle: LineResizeHandle | undefined;
 
     constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
         super(cdr);

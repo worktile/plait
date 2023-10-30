@@ -15,7 +15,7 @@ import {
     transformPoint
 } from '@plait/core';
 import { ResizeHandle, ResizeCursorClass } from '../constants/resize';
-import { addResizing, isResizing, removeResizing } from '../utils/resize';
+import { ResizeRef, addResizing, isResizing, removeResizing } from '../utils/resize';
 
 export interface WithResizeOptions<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
     key: string;
@@ -29,12 +29,6 @@ export interface ResizeDetectResult<T extends PlaitElement = PlaitElement, K = R
     element: T;
     handle: K;
     cursorClass?: ResizeCursorClass;
-}
-
-export interface ResizeRef<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
-    element: T;
-    path: Path;
-    handle: K;
 }
 
 export interface ResizeState {
@@ -97,7 +91,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance > PRESS_AND_MOVE_BUFFER) {
-                addResizing(board, resizeDetectResult.element, options.key);
+                addResizing(board, resizeRef!, options.key);
             }
         }
 
