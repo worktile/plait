@@ -1,5 +1,19 @@
 # mind
 
+## 0.27.0-next.10
+
+### Minor Changes
+
+-   [#601](https://github.com/worktile/plait/pull/601) [`ddd009c8`](https://github.com/worktile/plait/commit/ddd009c857c319b9680bf0395c7a490ac1f10ab2) Thanks [@WBbug](https://github.com/WBbug)! - support image
+
+*   [#589](https://github.com/worktile/plait/pull/589) [`1af013ed`](https://github.com/worktile/plait/commit/1af013edf83f5499314ead60424eaab23fb1764e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support standalone component
+
+### Patch Changes
+
+-   [#605](https://github.com/worktile/plait/pull/605) [`ebb02083`](https://github.com/worktile/plait/commit/ebb02083e75124e74485d399d7258125cdb818bb) Thanks [@WBbug](https://github.com/WBbug)! - add isAlign
+
+*   [#604](https://github.com/worktile/plait/pull/604) [`fae69f43`](https://github.com/worktile/plait/commit/fae69f43fef59b723d89e39d89fcdb0f0b756011) Thanks [@WBbug](https://github.com/WBbug)! - fix mind image
+
 ## 0.27.0-next.9
 
 ### Patch Changes

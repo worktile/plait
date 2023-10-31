@@ -1,6 +1,6 @@
 {
   "name": "@plait/layouts",
-  "version": "0.4.0",
+  "version": "0.5.0-next.0",
   "peerDependencies": {
     "@angular/common": "^16.0.0",
     "@angular/core": "^16.0.0"

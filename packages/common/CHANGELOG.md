@@ -1,5 +1,19 @@
 # @plait/common
 
+## 0.1.0-next.10
+
+### Minor Changes
+
+-   [#601](https://github.com/worktile/plait/pull/601) [`ddd009c8`](https://github.com/worktile/plait/commit/ddd009c857c319b9680bf0395c7a490ac1f10ab2) Thanks [@WBbug](https://github.com/WBbug)! - support image
+
+*   [#596](https://github.com/worktile/plait/pull/596) [`9312e350`](https://github.com/worktile/plait/commit/9312e35038237c9b7b25330bab55d9371601a296) Thanks [@WBbug](https://github.com/WBbug)! - support curve
+
+-   [#589](https://github.com/worktile/plait/pull/589) [`1af013ed`](https://github.com/worktile/plait/commit/1af013edf83f5499314ead60424eaab23fb1764e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support standalone component
+
+### Patch Changes
+
+-   [#608](https://github.com/worktile/plait/pull/608) [`6805a1ad`](https://github.com/worktile/plait/commit/6805a1adb7470f49c0f25311b721107cc9c9769e) Thanks [@WBbug](https://github.com/WBbug)! - add handle judge
+
 ## 0.1.0-next.9
 
 ### Minor Changes

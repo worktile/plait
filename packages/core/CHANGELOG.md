@@ -1,5 +1,19 @@
 # plait
 
+## 0.24.0-next.13
+
+### Minor Changes
+
+-   [#599](https://github.com/worktile/plait/pull/599) [`bcdbf6ee`](https://github.com/worktile/plait/commit/bcdbf6eecc14140ae6bf8ca9d43580e4a4a8b22e) Thanks [@WBbug](https://github.com/WBbug)! - change name
+
+*   [#589](https://github.com/worktile/plait/pull/589) [`1af013ed`](https://github.com/worktile/plait/commit/1af013edf83f5499314ead60424eaab23fb1764e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support standalone component
+
+### Patch Changes
+
+-   [#605](https://github.com/worktile/plait/pull/605) [`ebb02083`](https://github.com/worktile/plait/commit/ebb02083e75124e74485d399d7258125cdb818bb) Thanks [@WBbug](https://github.com/WBbug)! - add isAlign
+
+*   [#607](https://github.com/worktile/plait/pull/607) [`fecb35b0`](https://github.com/worktile/plait/commit/fecb35b031c3cd13316870f610a2a13c60def4e2) Thanks [@Maple13](https://github.com/Maple13)! - optimized rendering of image elements in content when converted to images
+
 ## 0.24.0-next.12
 
 ### Minor Changes

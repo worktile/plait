@@ -1,5 +1,43 @@
 # @plait/draw
 
+## 0.1.0-next.13
+
+### Minor Changes
+
+-   [#602](https://github.com/worktile/plait/pull/602) [`2921da67`](https://github.com/worktile/plait/commit/2921da670b8726846222260acaa2f64cf6b60e2e) Thanks [@WBbug](https://github.com/WBbug)! - add some geometry
+
+*   [#595](https://github.com/worktile/plait/pull/595) [`5ce123df`](https://github.com/worktile/plait/commit/5ce123dfcd05e55b2e374ace3d3969c5f6882d8b) Thanks [@WBbug](https://github.com/WBbug)! - add arrows
+
+-   [#610](https://github.com/worktile/plait/pull/610) [`36f9027b`](https://github.com/worktile/plait/commit/36f9027b24670f66b774352d07bec7b6687f0ce2) Thanks [@WBbug](https://github.com/WBbug)! - support line able to connect image
+
+*   [#594](https://github.com/worktile/plait/pull/594) [`9f4d1431`](https://github.com/worktile/plait/commit/9f4d1431f8639f752bb8ab865907070b4fed430f) Thanks [@WBbug](https://github.com/WBbug)! - adjust line and arrow direction
+
+-   [#603](https://github.com/worktile/plait/pull/603) [`e84c3f04`](https://github.com/worktile/plait/commit/e84c3f0406082b388215e3316e38a9ef75cd8b19) Thanks [@WBbug](https://github.com/WBbug)! - support image copy paste
+
+*   [#601](https://github.com/worktile/plait/pull/601) [`ddd009c8`](https://github.com/worktile/plait/commit/ddd009c857c319b9680bf0395c7a490ac1f10ab2) Thanks [@WBbug](https://github.com/WBbug)! - support image
+
+-   [#596](https://github.com/worktile/plait/pull/596) [`9312e350`](https://github.com/worktile/plait/commit/9312e35038237c9b7b25330bab55d9371601a296) Thanks [@WBbug](https://github.com/WBbug)! - support curve
+
+*   [#609](https://github.com/worktile/plait/pull/609) [`46193f78`](https://github.com/worktile/plait/commit/46193f784b646fdd57817b855bd723b2d938f18e) Thanks [@WBbug](https://github.com/WBbug)! - support other lines
+
+-   [#600](https://github.com/worktile/plait/pull/600) [`f248843b`](https://github.com/worktile/plait/commit/f248843be3562c4104aaaf5e1eb35d11eb4cbb4e) Thanks [@WBbug](https://github.com/WBbug)! - add docs
+
+*   [#599](https://github.com/worktile/plait/pull/599) [`bcdbf6ee`](https://github.com/worktile/plait/commit/bcdbf6eecc14140ae6bf8ca9d43580e4a4a8b22e) Thanks [@WBbug](https://github.com/WBbug)! - change name
+
+-   [#597](https://github.com/worktile/plait/pull/597) [`3359fff9`](https://github.com/worktile/plait/commit/3359fff9c53b82cad6048e9b008264603497cd26) Thanks [@WBbug](https://github.com/WBbug)! - support add middle points in straight line
+
+*   [#598](https://github.com/worktile/plait/pull/598) [`b4cac7ac`](https://github.com/worktile/plait/commit/b4cac7ac06b4b4f671646310c19d4fe4869a1e53) Thanks [@WBbug](https://github.com/WBbug)! - support curve with custom points
+
+-   [#589](https://github.com/worktile/plait/pull/589) [`1af013ed`](https://github.com/worktile/plait/commit/1af013edf83f5499314ead60424eaab23fb1764e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support standalone component
+
+*   [#606](https://github.com/worktile/plait/pull/606) [`982f3f73`](https://github.com/worktile/plait/commit/982f3f73c9a271de414e22d31267cfca682948cb) Thanks [@WBbug](https://github.com/WBbug)! - handle image copy
+
+### Patch Changes
+
+-   [#608](https://github.com/worktile/plait/pull/608) [`6805a1ad`](https://github.com/worktile/plait/commit/6805a1adb7470f49c0f25311b721107cc9c9769e) Thanks [@WBbug](https://github.com/WBbug)! - add handle judge
+
+*   [#605](https://github.com/worktile/plait/pull/605) [`ebb02083`](https://github.com/worktile/plait/commit/ebb02083e75124e74485d399d7258125cdb818bb) Thanks [@WBbug](https://github.com/WBbug)! - add isAlign
+
 ## 0.1.0-next.12
 
 ### Minor Changes
