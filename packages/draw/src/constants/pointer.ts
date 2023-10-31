@@ -5,3 +5,7 @@ export type DrawPointerType = GeometryShape | LineShape;
 export const getGeometryPointers = () => {
     return Object.keys(GeometryShape);
 };
+
+export const getLinePointers = () => {
+    return Object.keys(LineShape);
+};

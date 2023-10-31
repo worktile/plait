@@ -5,6 +5,7 @@ import { DrawPointerType, DrawTransforms, GeometryShape, LineShape } from '@plai
 import { MindElement, MindPointerType, MindTransforms, getSelectedImageElement } from '@plait/mind';
 import { fromEvent, take } from 'rxjs';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { getLinePointers } from 'packages/draw/src/constants';
 
 type PointerType = MindPointerType | PlaitPointerType | DrawPointerType | GeometryShape | LineShape;
 
@@ -37,12 +38,16 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
 
     setPointer(event: Event, pointer: PointerType) {
         event.preventDefault();
-        BoardTransforms.updatePointerType<PointerType>(this.board, pointer);
-        setCreationMode(this.board, BoardCreationMode.dnd);
+        const isLinePointer = getLinePointers().includes(pointer);
+        if (!isLinePointer) {
+            BoardTransforms.updatePointerType<PointerType>(this.board, pointer);
+            setCreationMode(this.board, BoardCreationMode.dnd);
+        }
         fromEvent(event.target as HTMLElement, 'mouseup')
             .pipe(take(1))
             .subscribe(() => {
                 setCreationMode(this.board, BoardCreationMode.drawing);
+                !PlaitBoard.isPointer(this.board, pointer) && BoardTransforms.updatePointerType<PointerType>(this.board, pointer);
             });
     }
 
