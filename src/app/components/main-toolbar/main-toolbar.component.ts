@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { BoardCreationMode, CommonImageItem, selectImage, setCreationMode } from '@plait/common';
 import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, getSelectedElements } from '@plait/core';
-import { DrawPointerType, DrawTransforms, GeometryShape, LineShape } from '@plait/draw';
+import { DrawPointerType, DrawTransforms, GeometryShape, LineShape, getLinePointers } from '@plait/draw';
 import { MindElement, MindPointerType, MindTransforms, getSelectedImageElement } from '@plait/mind';
 import { fromEvent, take } from 'rxjs';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import { getLinePointers } from 'packages/draw/src/constants';
 
 type PointerType = MindPointerType | PlaitPointerType | DrawPointerType | GeometryShape | LineShape;
 
