@@ -3,6 +3,7 @@ import { PlaitDrawElement, PlaitGeometry } from '../../interfaces';
 import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints, getRectangleResizeHandleRefs } from '@plait/common';
 import { getEngine } from '../../engines';
 import { PlaitImage } from '../../interfaces/image';
+import { getShape } from '../shape';
 
 export const getHitGeometryResizeHandleRef = (board: PlaitBoard, element: PlaitGeometry | PlaitImage, point: Point) => {
     const rectangle = getRectangleByPoints(element.points);
@@ -19,9 +20,9 @@ export const getHitOutlineGeometry = (board: PlaitBoard, point: Point, offset: n
         board,
         node => {
             if (PlaitDrawElement.isGeometry(node) || PlaitDrawElement.isImage(node)) {
-                const shape = node.shape;
                 let client = getRectangleByPoints(node.points);
                 client = RectangleClient.getOutlineRectangle(client, offset);
+                const shape = getShape(node);
                 const isHit = getEngine(shape).isHit(client, point);
                 if (isHit) {
                     geometry = node;

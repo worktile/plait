@@ -1,6 +1,5 @@
 import { CommonImageItem } from '@plait/common';
 import { BOARD_TO_HOST, PlaitBoard, Point, Transforms, idCreator, toPoint, transformPoint } from '@plait/core';
-import { GeometryShape } from '../interfaces';
 
 export const insertImage = (board: PlaitBoard, imageItem: CommonImageItem, startPoint?: Point) => {
     const { width, height, url } = imageItem;
@@ -17,7 +16,6 @@ export const insertImage = (board: PlaitBoard, imageItem: CommonImageItem, start
     const imageElement = {
         id: idCreator(),
         type: 'image',
-        shape: GeometryShape.rectangle,
         points,
         url
     };
