@@ -18,6 +18,7 @@ import { getRectangleByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
+import { getShape } from './shape';
 
 export const createGeometryElement = (
     shape: GeometryShape,
@@ -70,15 +71,15 @@ export const drawBoundMask = (board: PlaitBoard, element: PlaitGeometry) => {
     const G = createG();
     const rectangle = getRectangleByPoints(element.points);
     const activeRectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
-    const maskG = drawGeometry(board, activeRectangle, element.shape, {
+    const shape = getShape(element);
+    const maskG = drawGeometry(board, activeRectangle, shape, {
         stroke: SELECTION_BORDER_COLOR,
         strokeWidth: 1,
         fill: SELECTION_FILL_COLOR,
         fillStyle: 'solid'
     });
     G.appendChild(maskG);
-
-    const connectorPoints = getEngine(element.shape).getConnectorPoints(activeRectangle);
+    const connectorPoints = getEngine(shape).getConnectorPoints(activeRectangle);
     connectorPoints.forEach(point => {
         const circleG = drawCircle(PlaitBoard.getRoughSVG(board), point, 6, {
             stroke: '#999999',
@@ -99,7 +100,8 @@ export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient,
 export const getNearestPoint = (element: PlaitGeometry, point: Point, inflateDelta = 0) => {
     const rectangle = getRectangleByPoints(element.points);
     const activeRectangle = RectangleClient.inflate(rectangle, inflateDelta);
-    return getEngine(element.shape).getNearestPoint(activeRectangle, point);
+    const shape = getShape(element);
+    return getEngine(shape).getNearestPoint(activeRectangle, point);
 };
 
 export const getCenterPointsOnPolygon = (points: Point[]) => {

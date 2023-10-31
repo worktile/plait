@@ -44,6 +44,7 @@ import { getEngine } from '../engines';
 import { drawLineArrow } from './line-arrow';
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { Op } from 'roughjs/bin/core';
+import { getShape } from './shape';
 
 export const createLineElement = (
     shape: LineShape,
@@ -293,7 +294,8 @@ export const transformPointToConnection = (board: PlaitBoard, point: Point, hitE
 };
 
 export const getHitConnectorPoint = (movingPoint: Point, hitElement: PlaitGeometry, rectangle: RectangleClient) => {
-    const connector = getEngine(hitElement.shape).getConnectorPoints(rectangle);
+    const shape = getShape(hitElement);
+    const connector = getEngine(shape).getConnectorPoints(rectangle);
     const points = getPointsByCenterPoint(movingPoint, 5, 5);
     const pointRectangle = getRectangleByPoints(points);
     return connector.find(point => {
@@ -357,7 +359,8 @@ export const Q2C = (points: Point[]) => {
 
 export const getVectorByConnection = (boundElement: PlaitGeometry, connection: PointOfRectangle): Vector => {
     const rectangle = getRectangleByPoints(boundElement.points);
-    const engine = getEngine(boundElement.shape);
+    const shape = getShape(boundElement);
+    const engine = getEngine(shape);
     let vector: Vector = [0, 0];
     const direction = getDirectionByPointOfRectangle(connection);
     if (direction) {
