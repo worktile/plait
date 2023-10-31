@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { BoardCreationMode, CommonImageItem, selectImage, setCreationMode } from '@plait/common';
 import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, getSelectedElements } from '@plait/core';
-import { DrawPointerType, DrawTransforms, GeometryShape, LineShape } from '@plait/draw';
+import { DrawPointerType, DrawTransforms, GeometryShape, LineShape, getLinePointers } from '@plait/draw';
 import { MindElement, MindPointerType, MindTransforms, getSelectedImageElement } from '@plait/mind';
 import { fromEvent, take } from 'rxjs';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
@@ -37,12 +37,16 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
 
     setPointer(event: Event, pointer: PointerType) {
         event.preventDefault();
-        BoardTransforms.updatePointerType<PointerType>(this.board, pointer);
-        setCreationMode(this.board, BoardCreationMode.dnd);
+        const isLinePointer = getLinePointers().includes(pointer);
+        if (!isLinePointer) {
+            BoardTransforms.updatePointerType<PointerType>(this.board, pointer);
+            setCreationMode(this.board, BoardCreationMode.dnd);
+        }
         fromEvent(event.target as HTMLElement, 'mouseup')
             .pipe(take(1))
             .subscribe(() => {
                 setCreationMode(this.board, BoardCreationMode.drawing);
+                !PlaitBoard.isPointer(this.board, pointer) && BoardTransforms.updatePointerType<PointerType>(this.board, pointer);
             });
     }
 
