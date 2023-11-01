@@ -20,7 +20,10 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             const lineElements = drawElements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
             const imageElements = drawElements.filter(value => PlaitDrawElement.isImage(value)) as PlaitImage[];
 
-            const boundLineElements = getBoundedLineElements(board, geometryElements).filter(line => !lineElements.includes(line));
+            const boundLineElements = [
+                ...getBoundedLineElements(board, geometryElements),
+                ...getBoundedLineElements(board, imageElements)
+            ].filter(line => !lineElements.includes(line));
             data.push(
                 ...[
                     ...geometryElements,
@@ -87,7 +90,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
     return board;
 };
 
-export const getBoundedLineElements = (board: PlaitBoard, geometries: PlaitGeometry[]) => {
+export const getBoundedLineElements = (board: PlaitBoard, geometries: (PlaitGeometry | PlaitImage)[]) => {
     const lines = getBoardLines(board);
     return lines.filter(line =>
         geometries.find(geometry => PlaitLine.isBoundElementOfSource(line, geometry) || PlaitLine.isBoundElementOfTarget(line, geometry))
