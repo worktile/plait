@@ -1,6 +1,6 @@
 import { PlaitBoard, PlaitElement, Point, RectangleClient, getDataFromClipboard, getSelectedElements, setClipboardData } from '@plait/core';
 import { getSelectedDrawElements } from '../utils/selected';
-import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
+import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShape } from '../interfaces';
 import { getTextFromClipboard, getTextSize } from '@plait/text';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
@@ -90,9 +90,9 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
     return board;
 };
 
-export const getBoundedLineElements = (board: PlaitBoard, geometries: (PlaitGeometry | PlaitImage)[]) => {
+export const getBoundedLineElements = (board: PlaitBoard, plaitShapes: PlaitShape[]) => {
     const lines = getBoardLines(board);
     return lines.filter(line =>
-        geometries.find(geometry => PlaitLine.isBoundElementOfSource(line, geometry) || PlaitLine.isBoundElementOfTarget(line, geometry))
+        plaitShapes.find(shape => PlaitLine.isBoundElementOfSource(line, shape) || PlaitLine.isBoundElementOfTarget(line, shape))
     );
 };
