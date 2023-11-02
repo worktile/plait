@@ -1,5 +1,23 @@
 # @plait/flow
 
+## 0.6.0
+
+### Minor Changes
+
+-   [#521](https://github.com/worktile/plait/pull/521) [`ddb416f4`](https://github.com/worktile/plait/commit/ddb416f4ad33b53cbed7d6257b834c3b2108b688) Thanks [@WBbug](https://github.com/WBbug)! - support wrap line when has autoSize
+
+*   [#589](https://github.com/worktile/plait/pull/589) [`1af013ed`](https://github.com/worktile/plait/commit/1af013edf83f5499314ead60424eaab23fb1764e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support standalone component
+
+### Patch Changes
+
+-   [#530](https://github.com/worktile/plait/pull/530) [`cbebbb0b`](https://github.com/worktile/plait/commit/cbebbb0b1abd910e9441ccbea8c22de54255f77f) Thanks [@xinglu01](https://github.com/xinglu01)! - handle fix bugs after layered rendering
+
+*   [#542](https://github.com/worktile/plait/pull/542) [`cab3d1d8`](https://github.com/worktile/plait/commit/cab3d1d8879a0b868b78b945f3cfae178a655cde) Thanks [@xinglu01](https://github.com/xinglu01)! - optimize the number of getEdgePoints function calls
+
+-   [#522](https://github.com/worktile/plait/pull/522) [`fa7760ba`](https://github.com/worktile/plait/commit/fa7760bae7564f03763d10753f37a4f4a87fbe53) Thanks [@xinglu01](https://github.com/xinglu01)! - support selected node relation edge highlight
+
+*   [#549](https://github.com/worktile/plait/pull/549) [`89a02986`](https://github.com/worktile/plait/commit/89a02986166c9499e18c51f1f58c231a02c874ba) Thanks [@xinglu01](https://github.com/xinglu01)! - export styles by flow
+
 ## 0.6.0-next.3
 
 ### Minor Changes

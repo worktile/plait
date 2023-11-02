@@ -1,5 +1,83 @@
 # mind
 
+## 0.27.0
+
+### Minor Changes
+
+-   [`28df0eeb`](https://github.com/worktile/plait/commit/28df0eeb4ee60ba4b66609a16b6dea2ab82e0242) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove max-with property in css, use single rectangle to limit text's width
+
+*   [`653109b8`](https://github.com/worktile/plait/commit/653109b836c5707ec03714a801e3a167ad4e6263) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle touch target to avoid touch move event not fire
+
+-   [#532](https://github.com/worktile/plait/pull/532) [`a7dfd850`](https://github.com/worktile/plait/commit/a7dfd850732c43f99aaff4e336bcda16768b93c0) Thanks [@WBbug](https://github.com/WBbug)! - support keyDown edit text
+
+*   [`b8c9d871`](https://github.com/worktile/plait/commit/b8c9d8718f02af6a15161b044ba7cc6c6a6990a9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - do not show resize handle for geometry when isSelectionMoving is true
+    do not show resize handle for geometry text when text is editing
+
+-   [`5e4c5d25`](https://github.com/worktile/plait/commit/5e4c5d25a3797e9f77d9efad2b6ad7016fa59b11) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve geometry drawing style
+
+*   [`3f8d541a`](https://github.com/worktile/plait/commit/3f8d541a6b7fa2257e42ce9048f9e4eff8f255e4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - select elements which were inserted from clipboard
+
+-   [#521](https://github.com/worktile/plait/pull/521) [`ddb416f4`](https://github.com/worktile/plait/commit/ddb416f4ad33b53cbed7d6257b834c3b2108b688) Thanks [@WBbug](https://github.com/WBbug)! - support wrap line when has autoSize
+
+*   [#582](https://github.com/worktile/plait/pull/582) [`32a40c6c`](https://github.com/worktile/plait/commit/32a40c6c1d7d9821bbd2616194794e8e7572f6af) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve mind node shape logic
+
+-   [`85cc74b4`](https://github.com/worktile/plait/commit/85cc74b4998c5fef49fe9b06dd332f97e0742049) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove topic width buffer (4) to avoid mind node align issue
+
+*   [`35bd204d`](https://github.com/worktile/plait/commit/35bd204d14045988163b9de7f3ad6ff0dabeed4a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename utils to common
+    rename drawer to generator
+    geometry support moving and active state
+
+-   [#601](https://github.com/worktile/plait/pull/601) [`ddd009c8`](https://github.com/worktile/plait/commit/ddd009c857c319b9680bf0395c7a490ac1f10ab2) Thanks [@WBbug](https://github.com/WBbug)! - support image
+
+*   [`d8a77123`](https://github.com/worktile/plait/commit/d8a771232a4fc8539abc2408646b55834af2b00c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - draw line support resize
+
+-   [#565](https://github.com/worktile/plait/pull/565) [`4591b267`](https://github.com/worktile/plait/commit/4591b267647a9b9d959c384b2e45cf796d75687a) Thanks [@WBbug](https://github.com/WBbug)! - change mind creation
+
+*   [`2300b4f7`](https://github.com/worktile/plait/commit/2300b4f7853b033df85a7e01b837a810bb5453ec) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add override function getDeletedFragment and handle deleted element by the return result of getDeletedFragment
+
+-   [`42cdd3bd`](https://github.com/worktile/plait/commit/42cdd3bd692712c6a117b780a135fff863e4abed) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support draw-element copy and paste
+
+*   [`f2b506ee`](https://github.com/worktile/plait/commit/f2b506ee18e614b9a5087ae64dd0188b5f80439c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - setFragment support type property
+    handle bound geometry element for line element
+
+-   [`aedbae54`](https://github.com/worktile/plait/commit/aedbae5464735592f7682335c14cf1e733b9e46d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update geometry stroke width generate logic
+
+*   [#582](https://github.com/worktile/plait/pull/582) [`8f98117d`](https://github.com/worktile/plait/commit/8f98117db94761789bd9c4a97b4b560aa242a69e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove the effect about stroke width in layout options
+
+-   [#524](https://github.com/worktile/plait/pull/524) [`70c430c0`](https://github.com/worktile/plait/commit/70c430c0f2fe43a27fb60b8c1e3063d97095e8b3) Thanks [@WBbug](https://github.com/WBbug)! - set cursor style
+
+*   [#589](https://github.com/worktile/plait/pull/589) [`1af013ed`](https://github.com/worktile/plait/commit/1af013edf83f5499314ead60424eaab23fb1764e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support standalone component
+
+-   [#526](https://github.com/worktile/plait/pull/526) [`9b2cc192`](https://github.com/worktile/plait/commit/9b2cc192c0dca93aedb51b489f6d11e98e1ba6d5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add common with resize and common active generator
+
+*   [#582](https://github.com/worktile/plait/pull/582) [`1202b198`](https://github.com/worktile/plait/commit/1202b19843dd3e6a3ae807457154f8382c7c7c7d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve mind node active generator
+
+-   [`06a3a57d`](https://github.com/worktile/plait/commit/06a3a57deac23520b9a0b535e27ca7aaf1f0ef8b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - `draw`: support draw elements delete
+    `core`: invoke deleteFragment when use press delete or backspace
+
+### Patch Changes
+
+-   [`ad7e641c`](https://github.com/worktile/plait/commit/ad7e641c625e595f715350ac8b44e80e14f2d826) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update textHeight when resize geometry
+
+*   [#533](https://github.com/worktile/plait/pull/533) [`d369c911`](https://github.com/worktile/plait/commit/d369c911ab4a12db8df43a5202d25973598b13bd) Thanks [@WBbug](https://github.com/WBbug)! - change hotkey judge condition
+
+-   [`06521543`](https://github.com/worktile/plait/commit/065215431516fce35a47919fff1f9caeece38491) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - assign multiple active stroke opacity 0.5
+    correct isMoving condition for line
+
+*   [#605](https://github.com/worktile/plait/pull/605) [`ebb02083`](https://github.com/worktile/plait/commit/ebb02083e75124e74485d399d7258125cdb818bb) Thanks [@WBbug](https://github.com/WBbug)! - add isAlign
+
+-   [`f0a54854`](https://github.com/worktile/plait/commit/f0a54854876424f5dc2881a4125a6e2aea423f48) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - destroy active as mind node image delete
+
+*   [#591](https://github.com/worktile/plait/pull/591) [`60c8f847`](https://github.com/worktile/plait/commit/60c8f847600edf90cc0a510b17a8f39dd765be4c) Thanks [@WBbug](https://github.com/WBbug)! - fix mind point
+
+-   [#568](https://github.com/worktile/plait/pull/568) [`5303802b`](https://github.com/worktile/plait/commit/5303802b50396165663db5b72d82fd720ac89b00) Thanks [@WBbug](https://github.com/WBbug)! - add WithTextPluginKey in common
+
+*   [#604](https://github.com/worktile/plait/pull/604) [`fae69f43`](https://github.com/worktile/plait/commit/fae69f43fef59b723d89e39d89fcdb0f0b756011) Thanks [@WBbug](https://github.com/WBbug)! - fix mind image
+
+-   [`ec9c4216`](https://github.com/worktile/plait/commit/ec9c4216a40ff531a96b453a3a9f386170e0a97d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix alignment property display in editing
+
+*   [`b603a38b`](https://github.com/worktile/plait/commit/b603a38b1e7810544d486153f472dcaac9dbec21) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent select mind node when select emoji
+
 ## 0.27.0-next.10
 
 ### Minor Changes

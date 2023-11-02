@@ -1,5 +1,43 @@
 # text
 
+## 0.16.0
+
+### Minor Changes
+
+-   [`28df0eeb`](https://github.com/worktile/plait/commit/28df0eeb4ee60ba4b66609a16b6dea2ab82e0242) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove max-with property in css, use single rectangle to limit text's width
+
+*   [#547](https://github.com/worktile/plait/pull/547) [`369dcdf7`](https://github.com/worktile/plait/commit/369dcdf789f8f60cac144e483c761a5dc0006707) Thanks [@WBbug](https://github.com/WBbug)! - delete text when don't have text
+
+-   [`5e4c5d25`](https://github.com/worktile/plait/commit/5e4c5d25a3797e9f77d9efad2b6ad7016fa59b11) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve geometry drawing style
+
+*   [#521](https://github.com/worktile/plait/pull/521) [`ddb416f4`](https://github.com/worktile/plait/commit/ddb416f4ad33b53cbed7d6257b834c3b2108b688) Thanks [@WBbug](https://github.com/WBbug)! - support wrap line when has autoSize
+
+-   [`e0454b2c`](https://github.com/worktile/plait/commit/e0454b2ca840f60684f17b7741460eb1250f8601) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump slate-angular
+
+*   [`62712bef`](https://github.com/worktile/plait/commit/62712bef809fdcae2bc6c72680e8232078e0ab4b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - paragraph support text horizontal align
+
+-   [`42cdd3bd`](https://github.com/worktile/plait/commit/42cdd3bd692712c6a117b780a135fff863e4abed) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support draw-element copy and paste
+
+*   [#524](https://github.com/worktile/plait/pull/524) [`70c430c0`](https://github.com/worktile/plait/commit/70c430c0f2fe43a27fb60b8c1e3063d97095e8b3) Thanks [@WBbug](https://github.com/WBbug)! - set cursor style
+
+-   [#589](https://github.com/worktile/plait/pull/589) [`1af013ed`](https://github.com/worktile/plait/commit/1af013edf83f5499314ead60424eaab23fb1764e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support standalone component
+
+### Patch Changes
+
+-   [#592](https://github.com/worktile/plait/pull/592) [`832689e4`](https://github.com/worktile/plait/commit/832689e4b0d41c78136b33bc79244e01c670c24f) Thanks [@Maple13](https://github.com/Maple13)! - build: update peerDependencies
+
+*   [`ad7e641c`](https://github.com/worktile/plait/commit/ad7e641c625e595f715350ac8b44e80e14f2d826) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update textHeight when resize geometry
+
+-   [`686d6973`](https://github.com/worktile/plait/commit/686d697307738441a6040fb7fe25eefd4da0f062) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add align function entry
+
+*   [#549](https://github.com/worktile/plait/pull/549) [`89a02986`](https://github.com/worktile/plait/commit/89a02986166c9499e18c51f1f58c231a02c874ba) Thanks [@xinglu01](https://github.com/xinglu01)! - export styles by text
+
+-   [`66e56446`](https://github.com/worktile/plait/commit/66e564463cf25f793752751b977609cf7429f177) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove default selection and reset selection when enter edit
+
+*   [#543](https://github.com/worktile/plait/pull/543) [`4a567b0e`](https://github.com/worktile/plait/commit/4a567b0e82ac999f0c98cbca3903def0c97530da) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct text foreign object height to avoid the default scroll action as typing content
+
+-   [`ec9c4216`](https://github.com/worktile/plait/commit/ec9c4216a40ff531a96b453a3a9f386170e0a97d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix alignment property display in editing
+
 ## 0.16.0-next.7
 
 ### Minor Changes

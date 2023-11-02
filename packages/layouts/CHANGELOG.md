@@ -1,5 +1,11 @@
 # layouts
 
+## 0.5.0
+
+### Minor Changes
+
+-   [#589](https://github.com/worktile/plait/pull/589) [`1af013ed`](https://github.com/worktile/plait/commit/1af013edf83f5499314ead60424eaab23fb1764e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support standalone component
+
 ## 0.5.0-next.0
 
 ### Minor Changes

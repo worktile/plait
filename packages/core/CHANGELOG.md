@@ -1,5 +1,100 @@
 # plait
 
+## 0.24.0
+
+### Minor Changes
+
+-   [`653109b8`](https://github.com/worktile/plait/commit/653109b836c5707ec03714a801e3a167ad4e6263) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle touch target to avoid touch move event not fire
+
+*   [`b8c9d871`](https://github.com/worktile/plait/commit/b8c9d8718f02af6a15161b044ba7cc6c6a6990a9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - do not show resize handle for geometry when isSelectionMoving is true
+    do not show resize handle for geometry text when text is editing
+
+-   [#550](https://github.com/worktile/plait/pull/550) [`d0a1452a`](https://github.com/worktile/plait/commit/d0a1452a2c1bb0025442e5a9a0f6bc84257cf97d) Thanks [@WBbug](https://github.com/WBbug)! - support reaction on geometry
+
+*   [#583](https://github.com/worktile/plait/pull/583) [`ddff5ac9`](https://github.com/worktile/plait/commit/ddff5ac9f0982a3378066a24869e4f30f38e160e) Thanks [@WBbug](https://github.com/WBbug)! - support move reaction draw align lines
+
+-   [#593](https://github.com/worktile/plait/pull/593) [`3af9ce2a`](https://github.com/worktile/plait/commit/3af9ce2ad2a034152a90847007a99d6b8009e64b) Thanks [@WBbug](https://github.com/WBbug)! - support vertical distribute
+
+*   [#548](https://github.com/worktile/plait/pull/548) [`b52dadc3`](https://github.com/worktile/plait/commit/b52dadc3ca405b343bd8f48d8cb2d95776df9f2e) Thanks [@WBbug](https://github.com/WBbug)! - add text mask
+
+-   [`5e4c5d25`](https://github.com/worktile/plait/commit/5e4c5d25a3797e9f77d9efad2b6ad7016fa59b11) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve geometry drawing style
+
+*   [`3f8d541a`](https://github.com/worktile/plait/commit/3f8d541a6b7fa2257e42ce9048f9e4eff8f255e4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - select elements which were inserted from clipboard
+
+-   [`c49f5ec1`](https://github.com/worktile/plait/commit/c49f5ec1d46a06770692a2b52c6bbc43c1c10786) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use plaitChange replace onChange to handle island base
+
+*   [`bc9efa35`](https://github.com/worktile/plait/commit/bc9efa3570703860be0ef8824c20a8cb4c56d904) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename folder name from plait to core
+
+-   [`35bd204d`](https://github.com/worktile/plait/commit/35bd204d14045988163b9de7f3ad6ff0dabeed4a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename utils to common
+    rename drawer to generator
+    geometry support moving and active state
+
+*   [`ab975ceb`](https://github.com/worktile/plait/commit/ab975ceba46293d77c46c453d3b0da7607b0ac3b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support copy and paste line and handle boundId
+
+-   [#585](https://github.com/worktile/plait/pull/585) [`ba6d2eeb`](https://github.com/worktile/plait/commit/ba6d2eebcb0928a2637e57effe70447b36f5cd80) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve line handle direction logic
+
+*   [#531](https://github.com/worktile/plait/pull/531) [`6f41359c`](https://github.com/worktile/plait/commit/6f41359c5e20162e0ce92eb34f9e0b396905d0df) Thanks [@WBbug](https://github.com/WBbug)! - support create and select line
+
+-   [#586](https://github.com/worktile/plait/pull/586) [`3b8a65f7`](https://github.com/worktile/plait/commit/3b8a65f7bb346c9211c9a280bd95748111bda610) Thanks [@WBbug](https://github.com/WBbug)! - add distribute lines
+
+*   [#599](https://github.com/worktile/plait/pull/599) [`bcdbf6ee`](https://github.com/worktile/plait/commit/bcdbf6eecc14140ae6bf8ca9d43580e4a4a8b22e) Thanks [@WBbug](https://github.com/WBbug)! - change name
+
+-   [#516](https://github.com/worktile/plait/pull/516) [`d878a467`](https://github.com/worktile/plait/commit/d878a467233b9f894a2fed562800eb6007cfbc3e) Thanks [@WBbug](https://github.com/WBbug)! - support create rectangle
+
+*   [#581](https://github.com/worktile/plait/pull/581) [`ae4c3174`](https://github.com/worktile/plait/commit/ae4c31740c21350501b6ba4c117525a1c27cbec6) Thanks [@WBbug](https://github.com/WBbug)! - change draw outer selection and draw line-active
+
+-   [#565](https://github.com/worktile/plait/pull/565) [`4591b267`](https://github.com/worktile/plait/commit/4591b267647a9b9d959c384b2e45cf796d75687a) Thanks [@WBbug](https://github.com/WBbug)! - change mind creation
+
+*   [`2300b4f7`](https://github.com/worktile/plait/commit/2300b4f7853b033df85a7e01b837a810bb5453ec) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add override function getDeletedFragment and handle deleted element by the return result of getDeletedFragment
+
+-   [`ba8e59c4`](https://github.com/worktile/plait/commit/ba8e59c4c6c7180ea3b9b7ec31a58075dd57f1ff) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - draw geometry support resize
+
+*   [`42cdd3bd`](https://github.com/worktile/plait/commit/42cdd3bd692712c6a117b780a135fff863e4abed) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support draw-element copy and paste
+
+-   [`f2b506ee`](https://github.com/worktile/plait/commit/f2b506ee18e614b9a5087ae64dd0188b5f80439c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - setFragment support type property
+    handle bound geometry element for line element
+
+*   [`aedbae54`](https://github.com/worktile/plait/commit/aedbae5464735592f7682335c14cf1e733b9e46d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update geometry stroke width generate logic
+
+-   [#536](https://github.com/worktile/plait/pull/536) [`abf36572`](https://github.com/worktile/plait/commit/abf365723493220ae3c06461a93a38935272e1c7) Thanks [@WBbug](https://github.com/WBbug)! - support line bound geometry
+
+*   [#589](https://github.com/worktile/plait/pull/589) [`1af013ed`](https://github.com/worktile/plait/commit/1af013edf83f5499314ead60424eaab23fb1764e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support standalone component
+
+-   [#570](https://github.com/worktile/plait/pull/570) [`603767ce`](https://github.com/worktile/plait/commit/603767ce4824b4683bfb61a277487ab9e74d8157) Thanks [@WBbug](https://github.com/WBbug)! - support some arrows
+
+*   [#526](https://github.com/worktile/plait/pull/526) [`9b2cc192`](https://github.com/worktile/plait/commit/9b2cc192c0dca93aedb51b489f6d11e98e1ba6d5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add common with resize and common active generator
+
+-   [`df94abc0`](https://github.com/worktile/plait/commit/df94abc0a5957e868844fa541a60045b404a84d6) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve line arrow drawing
+
+*   [`06a3a57d`](https://github.com/worktile/plait/commit/06a3a57deac23520b9a0b535e27ca7aaf1f0ef8b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - `draw`: support draw elements delete
+    `core`: invoke deleteFragment when use press delete or backspace
+
+-   [`6584bc3f`](https://github.com/worktile/plait/commit/6584bc3ffd5370c6409267ec2a2ab610809e9227) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - redraw line when bounded elements changed
+
+### Patch Changes
+
+-   [`54d91509`](https://github.com/worktile/plait/commit/54d9150934ddd67fabd705e4a2bc1c43caf06fe0) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - solve can not copy and cut mind node image
+
+*   [#592](https://github.com/worktile/plait/pull/592) [`832689e4`](https://github.com/worktile/plait/commit/832689e4b0d41c78136b33bc79244e01c670c24f) Thanks [@Maple13](https://github.com/Maple13)! - build: update peerDependencies
+
+-   [`0809ac7a`](https://github.com/worktile/plait/commit/0809ac7aace91baf643737bb798b6171cb3217c8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent default action when invoke deleteFragment in keyDown
+
+*   [#578](https://github.com/worktile/plait/pull/578) [`85a99741`](https://github.com/worktile/plait/commit/85a9974106769b777ca805c372c795765937f463) Thanks [@WBbug](https://github.com/WBbug)! - add stroke line dash
+
+-   [#605](https://github.com/worktile/plait/pull/605) [`ebb02083`](https://github.com/worktile/plait/commit/ebb02083e75124e74485d399d7258125cdb818bb) Thanks [@WBbug](https://github.com/WBbug)! - add isAlign
+
+*   [`8e257d5b`](https://github.com/worktile/plait/commit/8e257d5b0e184b9d0b2dddd033b82dd384834d25) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle text touch moving action
+
+-   [#549](https://github.com/worktile/plait/pull/549) [`89a02986`](https://github.com/worktile/plait/commit/89a02986166c9499e18c51f1f58c231a02c874ba) Thanks [@xinglu01](https://github.com/xinglu01)! - export styles by core
+
+*   [#588](https://github.com/worktile/plait/pull/588) [`6f43b941`](https://github.com/worktile/plait/commit/6f43b941a8ec94eec8e59e971ae24790182ac137) Thanks [@WBbug](https://github.com/WBbug)! - change handleAlign position
+
+-   [#607](https://github.com/worktile/plait/pull/607) [`fecb35b0`](https://github.com/worktile/plait/commit/fecb35b031c3cd13316870f610a2a13c60def4e2) Thanks [@Maple13](https://github.com/Maple13)! - optimized rendering of image elements in content when converted to images
+
+*   [`4c03af2b`](https://github.com/worktile/plait/commit/4c03af2b7f53672b4cb2c4a88434efa7762e0afe) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - invoke preventTouchMove as moving elements
+
+-   [`ec9c4216`](https://github.com/worktile/plait/commit/ec9c4216a40ff531a96b453a3a9f386170e0a97d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix alignment property display in editing
+
 ## 0.24.0-next.13
 
 ### Minor Changes
