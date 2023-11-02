@@ -22,6 +22,7 @@
         "pub:flow": "cd dist/flow && npm publish --access public",
         "pub:common": "cd dist/common && npm publish --access public",
         "pub:draw": "cd dist/draw && npm publish --access public",
+        "pub": "npm run pub:core && npm run pub:text && npm run pub:mind && npm run pub:layouts && npm run pub:flow && npm run pub:common && npm run pub:draw",
         "watch": "ng build --watch --configuration development",
         "test": "ng test mind",
         "start:docs": "docgeni serve --port 4600",
