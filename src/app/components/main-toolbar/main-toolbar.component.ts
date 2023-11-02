@@ -70,15 +70,12 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
 
     openPopover() {
         this.showToolbar = true;
-        setTimeout(() => {
-            const clickEvent = fromEvent(document, 'click').subscribe(event => {
-                const isInside = (event.target as HTMLElement).closest('.popover');
-                if (!isInside) {
-                    this.showToolbar = false;
-                    clickEvent.unsubscribe();
-                    this.cdr.markForCheck();
-                }
+        const upEvent = fromEvent(document, 'mouseup')
+            .pipe(take(1))
+            .subscribe(event => {
+                this.showToolbar = false;
+                upEvent.unsubscribe();
+                this.cdr.markForCheck();
             });
-        });
     }
 }
