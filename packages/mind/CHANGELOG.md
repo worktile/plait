@@ -1,5 +1,11 @@
 # mind
 
+## 0.28.0
+
+### Minor Changes
+
+-   release 0.28.0
+
 ## 0.27.0
 
 ### Minor Changes

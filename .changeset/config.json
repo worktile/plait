@@ -7,7 +7,7 @@
     }
 ],
   "commit": false,
-  "fixed": [],
+  "fixed": [["@plait/*"]],
   "baseBranch": "develop",
   "access": "restricted",
   "updateInternalDependencies": "patch",
