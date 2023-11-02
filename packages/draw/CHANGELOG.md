@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.1.0-next.14
+
+### Patch Changes
+
+-   [#611](https://github.com/worktile/plait/pull/611) [`9e2780c6`](https://github.com/worktile/plait/commit/9e2780c67d92945f7efde65f2a75f2e9f1847a83) Thanks [@WBbug](https://github.com/WBbug)! - add line element which bound line ,when delete
+
 ## 0.1.0-next.13
 
 ### Minor Changes
