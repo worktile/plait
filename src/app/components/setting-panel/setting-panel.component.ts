@@ -129,10 +129,15 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (key === 'branchWidth' || key === 'strokeWidth') {
             value = parseInt(value, 10);
         }
+        let extraAttribute = {};
         const selectedElement = getSelectedElements(this.board)[0];
+        if (key === 'shape' && PlaitDrawElement.isLine(selectedElement) && selectedElement.points.length > 2) {
+            extraAttribute = { points: [selectedElement.points[0], selectedElement.points[selectedElement.points.length - 1]] };
+        }
+
         if (selectedElement) {
             const path = PlaitBoard.findPath(this.board, selectedElement);
-            Transforms.setNode(this.board, { [key]: value }, path);
+            Transforms.setNode(this.board, { [key]: value, ...extraAttribute }, path);
         }
     }
 
