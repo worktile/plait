@@ -74,3 +74,11 @@
         transform: translate(-50%, 0);
     }
 }
+
+.popover{
+    top: 42px;
+    left: 48px;
+    display: flex;
+    width: 200px;
+    flex-wrap: wrap;
+}

@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef } from '@angular/core';
 import { BoardCreationMode, CommonImageItem, selectImage, setCreationMode } from '@plait/common';
 import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, getSelectedElements } from '@plait/core';
 import { DrawPointerType, DrawTransforms, GeometryShape, LineShape, getLinePointers } from '@plait/draw';
 import { MindElement, MindPointerType, MindTransforms, getSelectedImageElement } from '@plait/mind';
 import { fromEvent, take } from 'rxjs';
-import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
 
 type PointerType = MindPointerType | PlaitPointerType | DrawPointerType | GeometryShape | LineShape;
 
@@ -17,17 +17,22 @@ type PointerType = MindPointerType | PlaitPointerType | DrawPointerType | Geomet
         class: 'app-main-toolbar'
     },
     standalone: true,
-    imports: [NgClass, NgTemplateOutlet]
+    imports: [NgClass, NgTemplateOutlet, NgIf]
 })
 export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
     PlaitPointerType = PlaitPointerType;
+
     MindPointerType = MindPointerType;
+
     GeometryShapeType = GeometryShape;
+
     LineShapeType = LineShape;
 
     BoardCreationMode = BoardCreationMode;
 
-    constructor(protected cdr: ChangeDetectorRef) {
+    showToolbar = false;
+
+    constructor(protected cdr: ChangeDetectorRef, private elementRef: ElementRef<HTMLElement>) {
         super(cdr);
     }
 
@@ -61,5 +66,19 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
             }
         };
         selectImage(this.board, defaultImageWidth, handle);
+    }
+
+    openPopover() {
+        this.showToolbar = true;
+        setTimeout(() => {
+            const clickEvent = fromEvent(document, 'click').subscribe(event => {
+                const isInside = (event.target as HTMLElement).closest('.popover');
+                if (!isInside) {
+                    this.showToolbar = false;
+                    clickEvent.unsubscribe();
+                    this.cdr.markForCheck();
+                }
+            });
+        });
     }
 }
