@@ -12,7 +12,6 @@ import {
     PlaitNode,
     PlaitPointerType,
     getHitElements,
-    PlaitElement,
     isMainPointer,
     CoreTransforms
 } from '@plait/core';
@@ -59,14 +58,10 @@ export const withNodeDnd = (board: PlaitBoard) => {
             pointerDown(event);
             return;
         }
-
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const selectedElements = getSelectedElements(board);
-        const hitTarget = getHitElements(board, { ranges: [{ anchor: point, focus: point }] }, (element: PlaitElement) => {
-            return MindElement.isMindElement(board, element);
-        });
-
-        const targetElement = hitTarget && hitTarget.length === 1 ? hitTarget[0] : null;
+        const hitTarget = getHitElements(board, { ranges: [{ anchor: point, focus: point }] });
+        const targetElement = hitTarget && hitTarget.length === 1 && MindElement.isMindElement(board, hitTarget[0]) ? hitTarget[0] : null;
         if (
             targetElement &&
             MindElement.isMindElement(board, targetElement) &&
@@ -94,7 +89,8 @@ export const withNodeDnd = (board: PlaitBoard) => {
     };
 
     board.pointerMove = (event: PointerEvent) => {
-        if (!board.options.readonly && activeElements?.length && startPoint) {
+        // const xx = activeElements.
+        if (!board.options.readonly && activeElements.length && startPoint) {
             // prevent text from being selected
             event.preventDefault();
             const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
