@@ -1,5 +1,5 @@
 import { PlaitBoard, Point, PointOfRectangle, RectangleClient, Vector, isPointInEllipse } from '@plait/core';
-import { ShapeEngine } from '../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 
 export const EllipseEngine: ShapeEngine = {

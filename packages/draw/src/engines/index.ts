@@ -1,47 +1,48 @@
-import { GeometryShape, ShapeEngine } from '../interfaces';
-import { CommentEngine } from './comment';
-import { CrossEngine } from './cross';
-import { DiamondEngine } from './diamond';
-import { EllipseEngine } from './ellipse';
-import { HexagonEngine } from './hexagon';
-import { LeftArrowEngine } from './left-arrow';
-import { OctagonEngine } from './octagon';
-import { ParallelogramEngine } from './parallelogram';
-import { PentagonEngine } from './pentagon';
-import { PentagonArrowEngine } from './pentagon-arrow';
-import { ProcessArrowEngine } from './process-arrow';
-import { RectangleEngine } from './rectangle';
-import { RightArrowEngine } from './right-arrow';
-import { RoundCommentEngine } from './round-comment';
-import { RoundRectangleEngine } from './round-rectangle';
-import { StarEngine } from './star';
-import { TrapezoidEngine } from './trapezoid';
-import { TriangleEngine } from './triangle';
-import { TwoWayArrowEngine } from './two-way-arrow';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, ShapeEngine } from '../interfaces';
+import { CommentEngine } from './basic-shapes/comment';
+import { CrossEngine } from './basic-shapes/cross';
+import { DiamondEngine } from './basic-shapes/diamond';
+import { EllipseEngine } from './basic-shapes/ellipse';
+import { HexagonEngine } from './basic-shapes/hexagon';
+import { LeftArrowEngine } from './basic-shapes/left-arrow';
+import { OctagonEngine } from './basic-shapes/octagon';
+import { ParallelogramEngine } from './basic-shapes/parallelogram';
+import { PentagonEngine } from './basic-shapes/pentagon';
+import { PentagonArrowEngine } from './basic-shapes/pentagon-arrow';
+import { ProcessArrowEngine } from './basic-shapes/process-arrow';
+import { RectangleEngine } from './basic-shapes/rectangle';
+import { RightArrowEngine } from './basic-shapes/right-arrow';
+import { RoundCommentEngine } from './basic-shapes/round-comment';
+import { RoundRectangleEngine } from './basic-shapes/round-rectangle';
+import { TrapezoidEngine } from './basic-shapes/trapezoid';
+import { TriangleEngine } from './basic-shapes/triangle';
+import { TwoWayArrowEngine } from './basic-shapes/two-way-arrow';
+import { StarEngine } from './basic-shapes/star';
 
-export const ShapeEngineMap: Record<GeometryShape, ShapeEngine> = {
-    [GeometryShape.rectangle]: RectangleEngine,
-    [GeometryShape.diamond]: DiamondEngine,
-    [GeometryShape.ellipse]: EllipseEngine,
-    [GeometryShape.parallelogram]: ParallelogramEngine,
-    [GeometryShape.roundRectangle]: RoundRectangleEngine,
-    [GeometryShape.text]: RectangleEngine,
-    [GeometryShape.triangle]: TriangleEngine,
-    [GeometryShape.leftArrow]: LeftArrowEngine,
-    [GeometryShape.trapezoid]: TrapezoidEngine,
-    [GeometryShape.rightArrow]: RightArrowEngine,
-    [GeometryShape.cross]: CrossEngine,
-    [GeometryShape.star]: StarEngine,
-    [GeometryShape.pentagon]: PentagonEngine,
-    [GeometryShape.hexagon]: HexagonEngine,
-    [GeometryShape.octagon]: OctagonEngine,
-    [GeometryShape.pentagonArrow]: PentagonArrowEngine,
-    [GeometryShape.processArrow]: ProcessArrowEngine,
-    [GeometryShape.twoWayArrow]: TwoWayArrowEngine,
-    [GeometryShape.comment]: CommentEngine,
-    [GeometryShape.roundComment]: RoundCommentEngine
+export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
+    [BasicShapes.rectangle]: RectangleEngine,
+    [BasicShapes.diamond]: DiamondEngine,
+    [BasicShapes.ellipse]: EllipseEngine,
+    [BasicShapes.parallelogram]: ParallelogramEngine,
+    [BasicShapes.roundRectangle]: RoundRectangleEngine,
+    [BasicShapes.text]: RectangleEngine,
+    [BasicShapes.triangle]: TriangleEngine,
+    [BasicShapes.leftArrow]: LeftArrowEngine,
+    [BasicShapes.trapezoid]: TrapezoidEngine,
+    [BasicShapes.rightArrow]: RightArrowEngine,
+    [BasicShapes.cross]: CrossEngine,
+    [BasicShapes.star]: StarEngine,
+    [BasicShapes.pentagon]: PentagonEngine,
+    [BasicShapes.hexagon]: HexagonEngine,
+    [BasicShapes.octagon]: OctagonEngine,
+    [BasicShapes.pentagonArrow]: PentagonArrowEngine,
+    [BasicShapes.processArrow]: ProcessArrowEngine,
+    [BasicShapes.twoWayArrow]: TwoWayArrowEngine,
+    [BasicShapes.comment]: CommentEngine,
+    [BasicShapes.roundComment]: RoundCommentEngine,
+    [FlowchartSymbols.process]: RectangleEngine
 };
 
-export const getEngine = (shape: GeometryShape) => {
+export const getEngine = (shape: GeometryShapes) => {
     return ShapeEngineMap[shape];
 };

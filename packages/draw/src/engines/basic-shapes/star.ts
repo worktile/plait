@@ -7,8 +7,8 @@ import {
     isPointInPolygon,
     setStrokeLinecap
 } from '@plait/core';
-import { ShapeEngine } from '../interfaces';
-import { getCenterPointsOnPolygon, getEdgeOnPolygonByPoint } from '../utils/geometry';
+import { ShapeEngine } from '../../interfaces';
+import { getCenterPointsOnPolygon, getEdgeOnPolygonByPoint } from '../../utils/geometry';
 import { Options } from 'roughjs/bin/core';
 
 export const StarEngine: ShapeEngine = {

@@ -1,5 +1,5 @@
 import { PlaitMind } from '@plait/mind';
-import { PlaitGeometry, GeometryShape, PlaitLine, LineShape, LineMarkerType } from '@plait/draw';
+import { PlaitGeometry, BasicShapes, PlaitLine, LineShape, LineMarkerType } from '@plait/draw';
 import { Alignment } from '@plait/text';
 import { Element } from 'slate';
 
@@ -216,7 +216,7 @@ export const mockData: (PlaitMind | PlaitGeometry | PlaitLine)[] = [
     {
         id: '666',
         type: 'geometry',
-        shape: GeometryShape.rectangle,
+        shape: BasicShapes.rectangle,
         angle: 0,
         opacity: 1,
         text: { children: [{ text: '几何图形' }], align: Alignment.center } as Element,
@@ -231,7 +231,7 @@ export const mockData: (PlaitMind | PlaitGeometry | PlaitLine)[] = [
     {
         id: '222',
         type: 'geometry',
-        shape: GeometryShape.text,
+        shape: BasicShapes.text,
         angle: 0,
         autoSize: false,
         opacity: 1,

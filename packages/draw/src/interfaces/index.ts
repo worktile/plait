@@ -1,4 +1,4 @@
-import { GeometryShape, PlaitGeometry } from './geometry';
+import { BasicShapes, PlaitGeometry } from './geometry';
 import { PlaitImage } from './image';
 import { PlaitLine } from './line';
 import { PlaitText } from './text';
@@ -20,7 +20,7 @@ export const PlaitDrawElement = {
         return value.type === 'line';
     },
     isText: (value: any): value is PlaitText => {
-        return value.type === 'geometry' && value.shape === GeometryShape.text;
+        return value.type === 'geometry' && value.shape === BasicShapes.text;
     },
     isImage: (value: any): value is PlaitImage => {
         return value.type === 'image';

@@ -1,9 +1,9 @@
-import { GeometryShape, LineShape } from '../interfaces';
+import { BasicShapes, FlowchartSymbols, LineShape } from '../interfaces';
 
-export type DrawPointerType = GeometryShape | LineShape;
+export type DrawPointerType = BasicShapes | LineShape | FlowchartSymbols;
 
 export const getGeometryPointers = () => {
-    return Object.keys(GeometryShape);
+    return Object.keys(BasicShapes);
 };
 
 export const getLinePointers = () => {

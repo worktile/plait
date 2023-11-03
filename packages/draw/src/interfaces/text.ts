@@ -1,6 +1,6 @@
-import { PlaitGeometry, GeometryShape } from './geometry';
+import { PlaitGeometry, BasicShapes } from './geometry';
 
 export interface PlaitText extends PlaitGeometry {
-    shape: GeometryShape.text;
+    shape: BasicShapes.text;
     autoSize: boolean;
 }

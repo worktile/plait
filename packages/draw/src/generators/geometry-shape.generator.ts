@@ -1,4 +1,4 @@
-import { GeometryShape, PlaitGeometry } from '../interfaces';
+import { BasicShapes, PlaitGeometry } from '../interfaces';
 import { getRectangleByPoints, Generator } from '@plait/common';
 import { getFillByElement, getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../utils/style/stroke';
 import { drawGeometry } from '../utils';
@@ -14,7 +14,7 @@ export class GeometryShapeGenerator extends Generator<PlaitGeometry, ShapeData> 
     baseDraw(element: PlaitGeometry, data: ShapeData) {
         const rectangle = getRectangleByPoints(element.points);
         const shape = element.shape;
-        if (shape === GeometryShape.text) {
+        if (shape === BasicShapes.text) {
             return;
         }
         const strokeWidth = getStrokeWidthByElement(element);
