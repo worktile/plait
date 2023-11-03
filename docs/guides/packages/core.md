@@ -1,5 +1,5 @@
 ---
-title: core
+title: 🛤️ @plait/core
 order: 1
 ---
 

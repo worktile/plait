@@ -1,6 +1,6 @@
 ---
-title: layouts
-order: 3
+title: 🕸️ @plait/layouts
+order: 5
 ---
 
 

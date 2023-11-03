@@ -1,6 +1,6 @@
 ---
-title: mind
-order: 2
+title: 🕸️ @plait/mind
+order: 4
 ---
 
 
