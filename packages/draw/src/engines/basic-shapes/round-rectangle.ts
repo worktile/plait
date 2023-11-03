@@ -7,11 +7,11 @@ import {
     getNearestPointBetweenPointAndSegments,
     isPointInRoundRectangle
 } from '@plait/core';
-import { ShapeEngine } from '../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getNearestPointBetweenPointAndEllipse } from './ellipse';
 import { RectangleEngine } from './rectangle';
-import { getEdgeOnPolygonByPoint } from '../utils/geometry';
+import { getEdgeOnPolygonByPoint } from '../../utils/geometry';
 
 export const RoundRectangleEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {

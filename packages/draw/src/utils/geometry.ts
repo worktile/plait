@@ -10,7 +10,7 @@ import {
     drawCircle,
     idCreator
 } from '@plait/core';
-import { GeometryShape, PlaitGeometry } from '../interfaces/geometry';
+import { GeometryShapes, BasicShapes, PlaitGeometry } from '../interfaces/geometry';
 import { Alignment, buildText } from '@plait/text';
 import { Element } from 'slate';
 import { DefaultTextProperty, ShapeDefaultSpace } from '../constants';
@@ -21,14 +21,14 @@ import { getEngine } from '../engines';
 import { getShape } from './shape';
 
 export const createGeometryElement = (
-    shape: GeometryShape,
+    shape: GeometryShapes,
     points: [Point, Point],
     text: string | Element,
     options?: Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>
 ): PlaitGeometry => {
     let textOptions = {};
     let alignment: undefined | Alignment = Alignment.center;
-    if (shape === GeometryShape.text) {
+    if (shape === BasicShapes.text) {
         textOptions = { autoSize: true };
         alignment = undefined;
     }
@@ -93,7 +93,7 @@ export const drawBoundMask = (board: PlaitBoard, element: PlaitGeometry) => {
     return G;
 };
 
-export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient, shape: GeometryShape, options: Options) => {
+export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient, shape: GeometryShapes, options: Options) => {
     return getEngine(shape).draw(board, outerRectangle, options);
 };
 

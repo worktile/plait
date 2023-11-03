@@ -13,7 +13,7 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { GeometryShape, PlaitGeometry } from '../interfaces';
+import { BasicShapes, GeometryShapes, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
 import { createGeometryElement, getPointsByCenterPoint } from '../utils';
 import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, getGeometryPointers, ShapeDefaultSpace } from '../constants';
@@ -40,12 +40,12 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
 
         if (dragMode) {
             const points = getDefaultGeometryPoints(pointer, movingPoint);
-            if (pointer === GeometryShape.text) {
+            if (pointer === BasicShapes.text) {
                 const textG = getTemporaryTextG(movingPoint);
                 geometryShapeG.appendChild(textG);
                 PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
             } else {
-                const temporaryElement = createGeometryElement((pointer as unknown) as GeometryShape, points, '', {
+                const temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
                     strokeColor: DefaultGeometryProperty.strokeColor,
                     strokeWidth: DefaultGeometryProperty.strokeWidth
                 });
@@ -66,10 +66,10 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
         if (dragMode) {
             const targetPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const points = getDefaultGeometryPoints(pointer, targetPoint);
-            if (pointer === GeometryShape.text) {
+            if (pointer === BasicShapes.text) {
                 DrawTransforms.insertText(board, points);
             } else {
-                DrawTransforms.insertGeometry(board, points, (pointer as unknown) as GeometryShape);
+                DrawTransforms.insertGeometry(board, points, (pointer as unknown) as GeometryShapes);
             }
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
@@ -112,9 +112,9 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             start = point;
             const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
             preventTouchMove(board, event, true);
-            if (pointer === GeometryShape.text) {
+            if (pointer === BasicShapes.text) {
                 const points = getDefaultGeometryPoints(pointer, point);
-                const textElement = createGeometryElement(GeometryShape.text, points, DefaultTextProperty.text);
+                const textElement = createGeometryElement(BasicShapes.text, points, DefaultTextProperty.text);
                 Transforms.insertNode(board, textElement, [board.children.length]);
                 clearSelectedElement(board);
                 addSelectedElement(board, textElement);
@@ -132,9 +132,9 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         const drawMode = !!start;
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
-        if (drawMode && pointer !== GeometryShape.text) {
+        if (drawMode && pointer !== BasicShapes.text) {
             const points = normalizeShapePoints([start!, movingPoint], isShift);
-            temporaryElement = createGeometryElement((pointer as unknown) as GeometryShape, points, '', {
+            temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
                 strokeColor: DefaultGeometryProperty.strokeColor,
                 strokeWidth: DefaultGeometryProperty.strokeWidth
             });
@@ -153,8 +153,8 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             if (Math.hypot(width, height) === 0) {
                 const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
                 const points = getDefaultGeometryPoints(pointer, targetPoint);
-                if (pointer !== GeometryShape.text) {
-                    temporaryElement = createGeometryElement((pointer as unknown) as GeometryShape, points, '', {
+                if (pointer !== BasicShapes.text) {
+                    temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
                         strokeColor: DefaultGeometryProperty.strokeColor,
                         strokeWidth: DefaultGeometryProperty.strokeWidth
                     });
@@ -181,7 +181,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
 };
 
 const getDefaultGeometryPoints = (pointer: DrawPointerType, targetPoint: Point) => {
-    return pointer === GeometryShape.text
+    return pointer === BasicShapes.text
         ? getPointsByCenterPoint(targetPoint, DefaultTextProperty.width, DefaultTextProperty.height)
         : getPointsByCenterPoint(targetPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
 };

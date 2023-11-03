@@ -80,5 +80,11 @@
     left: 48px;
     display: flex;
     width: 200px;
+    height: 160px;
+    overflow: scroll;
     flex-wrap: wrap;
+    .title{
+        font-size: 14px;
+        padding-left: 8px;
+    }
 }

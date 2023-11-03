@@ -4,7 +4,7 @@ import { Options } from 'roughjs/bin/core';
 import { ParagraphElement } from '@plait/text';
 import { StrokeStyle } from './element';
 
-export enum GeometryShape {
+export enum BasicShapes {
     rectangle = 'rectangle',
     ellipse = 'ellipse',
     diamond = 'diamond',
@@ -27,10 +27,16 @@ export enum GeometryShape {
     roundComment = 'roundComment'
 }
 
+export enum FlowchartSymbols {
+    process = 'process'
+}
+
+export type GeometryShapes = BasicShapes | FlowchartSymbols;
+
 export interface PlaitGeometry extends PlaitElement {
     points: [Point, Point];
     type: 'geometry';
-    shape: GeometryShape;
+    shape: GeometryShapes;
 
     text: ParagraphElement;
     textHeight: number;
@@ -46,15 +52,15 @@ export interface PlaitGeometry extends PlaitElement {
 }
 
 export interface PlaitRectangle extends PlaitGeometry {
-    shape: GeometryShape.rectangle;
+    shape: BasicShapes.rectangle;
 }
 
 export interface PlaitEllipse extends PlaitGeometry {
-    shape: GeometryShape.ellipse;
+    shape: BasicShapes.ellipse;
 }
 
 export interface PlaitDiamond extends PlaitGeometry {
-    shape: GeometryShape.diamond;
+    shape: BasicShapes.diamond;
 }
 
 export const PlaitGeometry = {
