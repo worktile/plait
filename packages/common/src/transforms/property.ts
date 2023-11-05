@@ -1,4 +1,4 @@
-import { Path, PlaitBoard, PlaitElement, PlaitPluginElementComponent, Transforms, getSelectedElements } from '@plait/core';
+import { PlaitBoard } from '@plait/core';
 import { setProperty } from './common';
 
 const setStrokeStyle = (board: PlaitBoard, strokeStyle: string) => {

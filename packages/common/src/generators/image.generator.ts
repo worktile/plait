@@ -5,13 +5,9 @@ import {
     RectangleClient,
     createForeignObject,
     createG,
-    drawCircle,
-    drawRectangle,
     updateForeignObject
 } from '@plait/core';
 import { Generator } from './generator';
-import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '../constants/default';
-import { Options } from 'roughjs/bin/core';
 import { ComponentRef, ViewContainerRef } from '@angular/core';
 import { ImageBaseComponent } from '../core/image-base.component';
 import { CommonImageItem, WithCommonPluginOptions } from '../utils';
