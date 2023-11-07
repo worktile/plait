@@ -32,7 +32,7 @@ export enum FlowchartSymbols {
     decision = 'decision',
     data = 'data',
     connector = 'connector',
-    startEnd = 'startEnd',
+    terminal = 'terminal',
     manualInput = 'manualInput',
     preparation = 'preparation',
     manualLoop = 'manualLoop',

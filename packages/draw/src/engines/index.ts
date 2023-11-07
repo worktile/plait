@@ -18,7 +18,7 @@ import { TrapezoidEngine } from './basic-shapes/trapezoid';
 import { TriangleEngine } from './basic-shapes/triangle';
 import { TwoWayArrowEngine } from './basic-shapes/two-way-arrow';
 import { StarEngine } from './basic-shapes/star';
-import { StartEndEngine } from './flowchart/start-end';
+import { TerminalEngine } from './flowchart/terminal';
 import { ManualInputEngine } from './flowchart/manual-input';
 import { PreparationEngine } from './flowchart/preparation';
 import { ManualLoopEngine } from './flowchart/manual-loop';
@@ -51,7 +51,7 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [FlowchartSymbols.decision]: DiamondEngine,
     [FlowchartSymbols.connector]: EllipseEngine,
     [FlowchartSymbols.data]: ParallelogramEngine,
-    [FlowchartSymbols.startEnd]: StartEndEngine,
+    [FlowchartSymbols.terminal]: TerminalEngine,
     [FlowchartSymbols.manualInput]: ManualInputEngine,
     [FlowchartSymbols.preparation]: PreparationEngine,
     [FlowchartSymbols.manualLoop]: ManualLoopEngine,

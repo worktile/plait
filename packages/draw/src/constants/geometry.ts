@@ -69,7 +69,7 @@ export const DefaultFlowChartPropertyMap = {
     [FlowchartSymbols.process]: DefaultFlowchartProperty,
     [FlowchartSymbols.decision]: DefaultDecisionProperty,
     [FlowchartSymbols.data]: DefaultDataProperty,
-    [FlowchartSymbols.startEnd]: DefaultFlowchartProperty,
+    [FlowchartSymbols.terminal]: DefaultFlowchartProperty,
     [FlowchartSymbols.manualInput]: DefaultManualInputProperty,
     [FlowchartSymbols.preparation]: DefaultFlowchartProperty,
     [FlowchartSymbols.manualLoop]: DefaultFlowchartProperty,

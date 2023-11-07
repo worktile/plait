@@ -13,7 +13,7 @@ import { getEdgeOnPolygonByPoint } from '../../utils/geometry';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getNearestPointBetweenPointAndEllipse } from '../basic-shapes/ellipse';
 
-export const StartEndEngine: ShapeEngine = {
+export const TerminalEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         return drawRoundRectangle(
             PlaitBoard.getRoughSVG(board),
