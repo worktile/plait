@@ -18,6 +18,13 @@ import { TrapezoidEngine } from './basic-shapes/trapezoid';
 import { TriangleEngine } from './basic-shapes/triangle';
 import { TwoWayArrowEngine } from './basic-shapes/two-way-arrow';
 import { StarEngine } from './basic-shapes/star';
+import { StartEndEngine } from './flowchart/start-end';
+import { ManualInputEngine } from './flowchart/manual-input';
+import { PreparationEngine } from './flowchart/preparation';
+import { ManualLoopEngine } from './flowchart/manual-loop';
+import { MergeEngine } from './flowchart/merge';
+import { DelayEngine } from './flowchart/delay';
+import { StoredDataEngine } from './flowchart/stored-data';
 
 export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [BasicShapes.rectangle]: RectangleEngine,
@@ -40,7 +47,17 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [BasicShapes.twoWayArrow]: TwoWayArrowEngine,
     [BasicShapes.comment]: CommentEngine,
     [BasicShapes.roundComment]: RoundCommentEngine,
-    [FlowchartSymbols.process]: RectangleEngine
+    [FlowchartSymbols.process]: RectangleEngine,
+    [FlowchartSymbols.decision]: DiamondEngine,
+    [FlowchartSymbols.connector]: EllipseEngine,
+    [FlowchartSymbols.data]: ParallelogramEngine,
+    [FlowchartSymbols.startEnd]: StartEndEngine,
+    [FlowchartSymbols.manualInput]: ManualInputEngine,
+    [FlowchartSymbols.preparation]: PreparationEngine,
+    [FlowchartSymbols.manualLoop]: ManualLoopEngine,
+    [FlowchartSymbols.merge]: MergeEngine,
+    [FlowchartSymbols.delay]: DelayEngine,
+    [FlowchartSymbols.storedData]: StoredDataEngine
 };
 
 export const getEngine = (shape: GeometryShapes) => {

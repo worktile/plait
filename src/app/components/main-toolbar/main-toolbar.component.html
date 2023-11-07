@@ -172,6 +172,95 @@
         </a>
     </div>
     <div class="title">流程图</div>
+    <div class="shapes-container">
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.process) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.process)"
+        >
+            <ng-template [ngTemplateOutlet]="process"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.decision) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.decision)"
+        >
+            <ng-template [ngTemplateOutlet]="decision"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.startEnd) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.startEnd)"
+        >
+            <ng-template [ngTemplateOutlet]="startEnd"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.manualInput) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.manualInput)"
+        >
+            <ng-template [ngTemplateOutlet]="manualInput"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.preparation) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.preparation)"
+        >
+            <ng-template [ngTemplateOutlet]="preparation"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.data) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.data)"
+        >
+            <ng-template [ngTemplateOutlet]="data"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.manualLoop) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.manualLoop)"
+        >
+            <ng-template [ngTemplateOutlet]="manualLoop"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.delay) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.delay)"
+        >
+            <ng-template [ngTemplateOutlet]="delay"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.storedData) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.storedData)"
+        >
+            <ng-template [ngTemplateOutlet]="storedData"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.merge) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.merge)"
+        >
+            <ng-template [ngTemplateOutlet]="merge"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.connector) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.connector)"
+        >
+            <ng-template [ngTemplateOutlet]="connector"></ng-template>
+        </a>
+    </div>
 </div>
 
 <a class="action-item" [ngClass]="{ active: isPointer(GeometryShapeType.text) }" (mousedown)="setPointer($event, GeometryShapeType.text)">
@@ -752,6 +841,247 @@
                 d="M9.3,6.7 L1.7,6.7 L1.7,14.3 L9.3,14.3 L9.3,6.7 Z M10.5,9.8 C12.8748244,9.8 14.8,7.87482442 14.8,5.5 C14.8,3.12517558 12.8748244,1.2 10.5,1.2 C8.12517558,1.2 6.2,3.12517558 6.2,5.5 L9.5,5.5 C10.0522847,5.5 10.5,5.94771525 10.5,6.5 L10.5,9.8 Z M10.5,14.5 C10.5,15.0522847 10.0522847,15.5 9.5,15.5 L1.5,15.5 C0.94771525,15.5 0.5,15.0522847 0.5,14.5 L0.5,6.5 C0.5,5.94771525 0.94771525,5.5 1.5,5.5 L5,5.5 C5,2.46243388 7.46243388,0 10.5,0 C13.5375661,0 16,2.46243388 16,5.5 C16,8.53756612 13.5375661,11 10.5,11 L10.5,14.5 Z"
                 id="cb形状结合"
             ></path>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #process>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 过程</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-过程" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M15.5,3 C15.7761424,3 16,3.22385763 16,3.5 L16,12.5 C16,12.7761424 15.7761424,13 15.5,13 L0.5,13 C0.223857625,13 0,12.7761424 0,12.5 L0,3.5 C0,3.22385763 0.223857625,3 0.5,3 L15.5,3 Z M14.8,4.2 L1.2,4.2 L1.2,11.8 L14.8,11.8 L14.8,4.2 Z"
+                id="矩形"
+                fill="#999999"
+            />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #manualInput>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/手动输入</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/手动输入" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M15.9949747,3.55156395 L16,3.62227463 L16,12.453565 C16,12.7297074 15.7761424,12.953565 15.5,12.953565 L0.5,12.953565 C0.223857625,12.953565 0,12.7297074 0,12.453565 L0,5.47941748 C0,5.23059229 0.182964953,5.01963193 0.429289322,4.98444274 L15.4292893,3.12729988 C15.7026563,3.08824745 15.9559223,3.27819694 15.9949747,3.55156395 Z M14.8,4.42876978 L1.2,6.08576978 L1.2,11.753565 L14.8,11.753565 L14.8,4.42876978 Z"
+                id="矩形"
+                fill="#999999"
+            />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #manualLoop>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 手动循环</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-手动循环" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M15.376692,3.53 C15.6528343,3.53 15.876692,3.75385763 15.876692,4.03 C15.876692,4.06648117 15.8726994,4.10285278 15.8647855,4.13846523 L14.0870077,13.1384652 C14.0361702,13.367234 13.8332635,13.53 13.5989142,13.53 L2.4010858,13.53 C2.16673648,13.53 1.96382978,13.367234 1.91299227,13.1384652 L0.135214495,4.13846523 C0.0753108035,3.86889862 0.245276183,3.60181016 0.514842796,3.54190647 C0.550455245,3.53399259 0.586826852,3.53 0.623308025,3.53 L15.376692,3.53 Z M14.504,4.73 L1.495,4.73 L2.962,12.33 L13.037,12.33 L14.504,4.73 Z"
+                id="矩形"
+                fill="#999999"
+            />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #preparation>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/准备</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/准备" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M13.2235698,3.5 C13.4216466,3.5 13.6010494,3.62992088 13.6810142,3.83127451 L16,8.53605799 L13.6818306,13.1714431 C13.6012935,13.371334 13.4225795,13.5 13.2254733,13.5 L2.77542928,13.5 C2.57812231,13.5 2.39926567,13.3710749 2.318846,13.1708814 L0,8.52128117 L2.31932783,3.83072245 C2.39940969,3.62966567 2.5786729,3.5 2.77655267,3.5 L13.2235698,3.5 Z M12.7674532,4.83333333 L3.23105614,4.83333333 L1.312,8.51888889 L3.22905614,12.1666667 L12.7714532,12.1666667 L14.687,8.53111111 L12.7674532,4.83333333 Z"
+                id="矩形"
+                fill="#999999"
+            />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #connector>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/连接器</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/连接器" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M8,1 C11.8659932,1 15,4.13400675 15,8 C15,11.8659932 11.8659932,15 8,15 C4.13400675,15 1,11.8659932 1,8 C1,4.13400675 4.13400675,1 8,1 Z M8,2.2 C4.79674845,2.2 2.2,4.79674845 2.2,8 C2.2,11.2032515 4.79674845,13.8 8,13.8 C11.2032515,13.8 13.8,11.2032515 13.8,8 C13.8,4.79674845 11.2032515,2.2 8,2.2 Z"
+                id="椭圆形"
+                fill="#999999"
+            />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #subroutine>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/预定义流程</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/预定义流程" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M15.5,3 C15.7761424,3 16,3.22385763 16,3.5 L16,12.5 C16,12.7761424 15.7761424,13 15.5,13 L0.5,13 C0.223857625,13 0,12.7761424 0,12.5 L0,3.5 C0,3.22385763 0.223857625,3 0.5,3 L15.5,3 Z M3,4.199 L1.2,4.2 L1.2,11.8 L3,11.799 L3,4.199 Z M11.799,4.199 L4.199,4.199 L4.199,11.799 L11.799,11.799 L11.799,4.199 Z M14.8,4.2 L12.999,4.199 L12.999,11.799 L14.8,11.8 L14.8,4.2 Z"
+                id="形状结合"
+                fill="#999999"
+            />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #startEnd>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 起止符</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-起止符" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M11,3 C13.7614237,3 16,5.23857625 16,8 C16,10.7614237 13.7614237,13 11,13 L5,13 C2.23857625,13 0,10.7614237 0,8 C0,5.23857625 2.23857625,3 5,3 L11,3 Z M11,4.2 L5,4.2 C2.90131795,4.2 1.2,5.90131795 1.2,8 C1.2,10.0330982 2.79664702,11.6932796 4.8044525,11.7950555 L5,11.8 L11,11.8 C13.098682,11.8 14.8,10.098682 14.8,8 C14.8,5.96690176 13.203353,4.30672042 11.1955475,4.20494454 L11,4.2 Z"
+                id="矩形"
+                fill="#999999"
+            />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #data>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 数据</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-数据" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M15.3062871,3.5 C15.5824294,3.5 15.8062871,3.72385763 15.8062871,4 C15.8062871,4.05374105 15.7976231,4.10713065 15.7806287,4.15811388 L13.113962,12.1581139 C13.045905,12.362285 12.8548356,12.5 12.6396204,12.5 L0.693712943,12.5 C0.417570568,12.5 0.193712943,12.2761424 0.193712943,12 C0.193712943,11.946259 0.202376883,11.8928694 0.219371294,11.8418861 L2.88603796,3.84188612 C2.95409498,3.63771505 3.14516441,3.5 3.36037961,3.5 L15.3062871,3.5 Z M14.335,4.7 L3.864,4.7 L1.664,11.3 L12.134,11.3 L14.335,4.7 Z"
+                id="矩形"
+                fill="#999999"
+            />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #decision>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/决策</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/决策" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M13.7636471,2.6449804 C13.7716713,2.69552516 13.7718878,2.74700226 13.7642892,2.79761274 L12.3875778,11.9671885 C12.3550099,12.1841069 12.184864,12.3544698 11.9679874,12.3873141 L2.78433018,13.7781116 C2.511301,13.8194599 2.25644773,13.6316454 2.21509947,13.3586162 C2.20737253,13.307594 2.20759072,13.2556831 2.21574631,13.2047277 L3.67471119,4.08923146 C3.70888725,3.87570215 3.87646006,3.70834166 4.09003253,3.67443635 L13.1914362,2.22955927 C13.4641633,2.18626298 13.7203508,2.37225335 13.7636471,2.6449804 Z M12.4355704,3.5645263 L4.77957044,4.7795263 L3.55157044,12.4485263 L11.2775704,11.2775263 L12.4355704,3.5645263 Z"
+                id="矩形"
+                fill="#999999"
+                transform="translate(7.989647, 8.003560) rotate(-315.000000) translate(-7.989647, -8.003560) "
+            />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #merge>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/合并</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/合并" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M15.4187292,2 C15.6948715,2 15.9187292,2.22385763 15.9187292,2.5 C15.9187292,2.59903313 15.8893202,2.69583575 15.8342315,2.77813274 L8.41433739,13.8627078 C8.26072892,14.0921834 7.95017793,14.1536858 7.72070233,14.0000773 C7.66657881,13.9638477 7.62005498,13.9173927 7.58374516,13.8633229 L0.140052984,2.77874786 C-0.0138952052,2.54950003 0.047147212,2.23885828 0.276395039,2.08491009 C0.358819815,2.02955888 0.455857445,2 0.555142894,2 L15.4187292,2 Z M14.1060957,3.2 L1.86909569,3.2 L7.99709569,12.328 L14.1060957,3.2 Z"
+                id="矩形"
+                fill="#999999"
+            />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #delay>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/流程图/ 延迟</title>
+        <g id="1.Base基础/1.icon图标/11.editor/流程图/-延迟" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M11.5,3 C13.9852814,3 16,5.23857625 16,8 C16,10.7614237 13.9852814,13 11.5,13 L0.5,13 C0.223857625,13 0,12.7512693 0,12.4444444 L0,3.55555556 C0,3.24873069 0.223857625,3 0.5,3 L11.5,3 Z M1.2,11.6666667 L11.5,11.6666667 C13.3225397,11.6666667 14.8,10.0250441 14.8,8 C14.8,5.97495592 13.3225397,4.33333333 11.5,4.33333333 L1.2,4.33333333 L1.2,11.6666667 Z"
+                id="形状结合"
+                fill="#999999"
+            />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #storedData>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/存储数据</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/存储数据" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M16,3 C15.0703976,3 13.2884871,5.23857625 13.2884871,8 C13.2884871,10.6802054 15.3254853,13 15.7970074,12.9942342 L16,13 L4.18965517,13 L3.9866626,12.9942342 C1.76705559,12.8678668 -2.84217094e-14,10.6802054 -2.84217094e-14,8 C-2.84217094e-14,5.23857625 1.87577251,3 4.18965517,3 L16,3 Z M13.0314425,4.41995208 L13.0831422,4.33333333 L4.18965517,4.33333333 C2.61468226,4.33333333 1.29400941,5.84463127 1.20480126,7.78996015 L1.2,8 C1.2,9.97963214 2.47666115,11.5731838 4.0173289,11.6613363 L4.18965517,11.6666667 L13.0841422,11.6666667 L12.9924727,11.5120616 C12.458345,10.5705842 12.1337837,9.45380677 12.0928828,8.25752751 L12.0884871,8 C12.0884871,6.7856851 12.3803153,5.64714435 12.8877599,4.67953583 L13.0314425,4.41995208 Z"
+                id="形状结合"
+                fill="#999999"
+            />
         </g>
     </svg>
 </ng-template>

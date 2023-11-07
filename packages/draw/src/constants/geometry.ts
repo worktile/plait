@@ -1,4 +1,5 @@
 import { ACTIVE_STROKE_WIDTH } from '@plait/core';
+import { FlowchartSymbols } from '../interfaces';
 
 export const ShapeDefaultSpace = {
     rectangleAndText: 4
@@ -31,4 +32,48 @@ export const DefaultTextProperty = {
 
 export const GeometryThreshold = {
     defaultTextMaxWidth: 34 * 14
+};
+
+export const DefaultConnectorProperty = {
+    width: 44,
+    height: 44
+};
+
+export const DefaultFlowchartProperty = {
+    width: 120,
+    height: 60
+};
+
+export const DefaultDecisionProperty = {
+    width: 140,
+    height: 70
+};
+
+export const DefaultDataProperty = {
+    width: 124,
+    height: 60
+};
+
+export const DefaultManualInputProperty = {
+    width: 117,
+    height: 59
+};
+
+export const DefaultMergeProperty = {
+    width: 47,
+    height: 33
+};
+
+export const DefaultFLowChartProperty = {
+    [FlowchartSymbols.connector]: DefaultConnectorProperty,
+    [FlowchartSymbols.process]: DefaultFlowchartProperty,
+    [FlowchartSymbols.decision]: DefaultDecisionProperty,
+    [FlowchartSymbols.data]: DefaultDataProperty,
+    [FlowchartSymbols.startEnd]: DefaultFlowchartProperty,
+    [FlowchartSymbols.manualInput]: DefaultManualInputProperty,
+    [FlowchartSymbols.preparation]: DefaultFlowchartProperty,
+    [FlowchartSymbols.manualLoop]: DefaultFlowchartProperty,
+    [FlowchartSymbols.merge]: DefaultMergeProperty,
+    [FlowchartSymbols.delay]: DefaultFlowchartProperty,
+    [FlowchartSymbols.storedData]: DefaultFlowchartProperty
 };

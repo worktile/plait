@@ -13,10 +13,18 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { BasicShapes, GeometryShapes, PlaitGeometry } from '../interfaces';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
 import { createGeometryElement, getPointsByCenterPoint } from '../utils';
-import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, getGeometryPointers, ShapeDefaultSpace } from '../constants';
+import {
+    DefaultFLowChartProperty,
+    DefaultGeometryProperty,
+    DefaultTextProperty,
+    DrawPointerType,
+    getFlowchartPointers,
+    getGeometryPointers,
+    ShapeDefaultSpace
+} from '../constants';
 import { normalizeShapePoints, isDndMode, isDrawingMode } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { DEFAULT_FONT_SIZE } from '@plait/text';
@@ -181,9 +189,20 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
 };
 
 const getDefaultGeometryPoints = (pointer: DrawPointerType, targetPoint: Point) => {
-    return pointer === BasicShapes.text
-        ? getPointsByCenterPoint(targetPoint, DefaultTextProperty.width, DefaultTextProperty.height)
-        : getPointsByCenterPoint(targetPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
+    const isText = pointer === BasicShapes.text;
+    const isFlowChart = getFlowchartPointers().includes(pointer);
+    switch (true) {
+        case isText: {
+            return getPointsByCenterPoint(targetPoint, DefaultTextProperty.width, DefaultTextProperty.height);
+        }
+        case isFlowChart: {
+            const flowchartProperty = DefaultFLowChartProperty[pointer as FlowchartSymbols];
+            return getPointsByCenterPoint(targetPoint, flowchartProperty.width, flowchartProperty.height);
+        }
+        default: {
+            return getPointsByCenterPoint(targetPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
+        }
+    }
 };
 
 const getTemporaryTextG = (movingPoint: Point) => {
