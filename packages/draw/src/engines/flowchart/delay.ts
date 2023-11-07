@@ -9,9 +9,8 @@ import {
 } from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getEdgeOnPolygonByPoint } from '../../utils/geometry';
 import { RectangleEngine } from '../basic-shapes/rectangle';
-import { getNearestPointBetweenPointAndEllipse } from '../basic-shapes/ellipse';
+import { getNearestPointBetweenPointAndEllipse, getTangentSlope, getVectorBySlope } from '../basic-shapes/ellipse';
 
 export const DelayEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
@@ -60,10 +59,14 @@ export const DelayEngine: ShapeEngine = {
         }
         return nearestPoint;
     },
-    getEdgeByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle): [Point, Point] | null {
-        const corners = RectangleEngine.getCornerPoints(rectangle);
-        const point = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
-        return getEdgeOnPolygonByPoint(corners, point);
+    getTangentVectorByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle) {
+        const connectionPoint = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
+        const centerPoint: Point = [rectangle.x + (rectangle.width * 3) / 4, rectangle.y + rectangle.height / 2];
+        const point = [connectionPoint[0] - centerPoint[0], -(connectionPoint[1] - centerPoint[1])];
+        const a = rectangle.width / 4;
+        const b = rectangle.height / 2;
+        const slope = getTangentSlope(point[0], point[1], a, b) as any;
+        return getVectorBySlope(point[0], point[1], slope);
     },
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);

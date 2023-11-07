@@ -82,7 +82,7 @@ export function getNearestPointBetweenPointAndEllipse(point: Point, center: Poin
  * the result of slope is based on Cartesian coordinate system
  * x, y are based on the position in the Cartesian coordinate system
  */
-function getTangentSlope(x: number, y: number, a: number, b: number) {
+export function getTangentSlope(x: number, y: number, a: number, b: number) {
     const k = (-b * b * x) / (a * a * y);
     return k;
 }
@@ -90,7 +90,7 @@ function getTangentSlope(x: number, y: number, a: number, b: number) {
 /**
  * x, y are based on the position in the Cartesian coordinate system
  */
-function getVectorBySlope(x: number, y: number, slope: number) {
+export function getVectorBySlope(x: number, y: number, slope: number) {
     const deltaX = 30;
     const deltaY = -slope * deltaX;
     let start = [0 - deltaX, 0 - deltaY] as Point;
