@@ -8,17 +8,18 @@ import {
     setStrokeLinecap
 } from '@plait/core';
 import { getEdgeOnPolygonByPoint } from '../../utils';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 
 export interface CreateOptions {
     getPolygonPoints: (rectangle: RectangleClient) => Point[];
     getConnectorPoints?: (rectangle: RectangleClient) => Point[];
+    getTextRectangle?: (element: PlaitGeometry) => RectangleClient;
 }
 
 export function createPolygonEngine(options: CreateOptions): ShapeEngine {
     const getPoints = options.getPolygonPoints;
-    return {
+    const engine: ShapeEngine = {
         draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
             const points = getPoints(rectangle);
             const rs = PlaitBoard.getRoughSVG(board);
@@ -48,4 +49,8 @@ export function createPolygonEngine(options: CreateOptions): ShapeEngine {
             return getPoints(rectangle);
         }
     };
+    if (options.getTextRectangle) {
+        engine.getTextRectangle = options.getTextRectangle;
+    }
+    return engine;
 }
