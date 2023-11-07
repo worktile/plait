@@ -64,7 +64,7 @@ export const DefaultMergeProperty = {
     height: 33
 };
 
-export const DefaultFlowChartPropertyMap = {
+export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.connector]: DefaultConnectorProperty,
     [FlowchartSymbols.process]: DefaultFlowchartProperty,
     [FlowchartSymbols.decision]: DefaultDecisionProperty,
@@ -78,6 +78,3 @@ export const DefaultFlowChartPropertyMap = {
     [FlowchartSymbols.storedData]: DefaultFlowchartProperty
 };
 
-export const getDefaultFlowChartProperty = (symbol: FlowchartSymbols) => {
-    return DefaultFlowChartPropertyMap[symbol];
-};

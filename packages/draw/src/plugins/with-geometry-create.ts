@@ -15,12 +15,11 @@ import {
 } from '@plait/core';
 import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
-import { createGeometryElement, getPointsByCenterPoint } from '../utils';
+import { createGeometryElement, getDefaultFlowchartProperty, getPointsByCenterPoint } from '../utils';
 import {
     DefaultBasicShapeProperty,
     DefaultTextProperty,
     DrawPointerType,
-    getDefaultFlowChartProperty,
     getFlowchartPointers,
     getGeometryPointers,
     ShapeDefaultSpace
@@ -199,7 +198,7 @@ export const getGeometryDefaultProperty = (pointer: DrawPointerType) => {
     if (isText) {
         return DefaultTextProperty;
     } else if (isFlowChart) {
-        return getDefaultFlowChartProperty(pointer as FlowchartSymbols);
+        return getDefaultFlowchartProperty(pointer as FlowchartSymbols);
     } else {
         return DefaultBasicShapeProperty;
     }

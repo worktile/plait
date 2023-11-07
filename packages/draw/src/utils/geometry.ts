@@ -10,10 +10,10 @@ import {
     drawCircle,
     idCreator
 } from '@plait/core';
-import { GeometryShapes, BasicShapes, PlaitGeometry } from '../interfaces/geometry';
+import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols } from '../interfaces/geometry';
 import { Alignment, buildText } from '@plait/text';
 import { Element } from 'slate';
-import { DefaultTextProperty, ShapeDefaultSpace, getFlowchartPointers } from '../constants';
+import { DefaultFlowchartPropertyMap, DefaultTextProperty, ShapeDefaultSpace, getFlowchartPointers } from '../constants';
 import { getRectangleByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
@@ -129,4 +129,8 @@ export const getEdgeOnPolygonByPoint = (corners: Point[], point: Point) => {
         }
     }
     return null;
+};
+
+export const getDefaultFlowchartProperty = (symbol: FlowchartSymbols) => {
+    return DefaultFlowchartPropertyMap[symbol];
 };
