@@ -191,10 +191,10 @@
 
         <a
             class="action-item"
-            [ngClass]="{ active: isPointer(FlowchartSymbols.startEnd) }"
-            (mousedown)="setPointer($event, FlowchartSymbols.startEnd)"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.terminal) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.terminal)"
         >
-            <ng-template [ngTemplateOutlet]="startEnd"></ng-template>
+            <ng-template [ngTemplateOutlet]="terminal"></ng-template>
         </a>
 
         <a
@@ -965,7 +965,7 @@
     </svg>
 </ng-template>
 
-<ng-template #startEnd>
+<ng-template #terminal>
     <svg
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
