@@ -17,7 +17,7 @@ export const DefaultGeometryActiveStyle = {
     selectionStrokeWidth: ACTIVE_STROKE_WIDTH
 };
 
-export const DefaultGeometryProperty = {
+export const DefaultBasicShapeProperty = {
     width: 100,
     height: 100,
     strokeColor: '#333',
@@ -64,7 +64,7 @@ export const DefaultMergeProperty = {
     height: 33
 };
 
-export const DefaultFLowChartProperty = {
+export const DefaultFlowChartPropertyMap = {
     [FlowchartSymbols.connector]: DefaultConnectorProperty,
     [FlowchartSymbols.process]: DefaultFlowchartProperty,
     [FlowchartSymbols.decision]: DefaultDecisionProperty,
@@ -76,4 +76,8 @@ export const DefaultFLowChartProperty = {
     [FlowchartSymbols.merge]: DefaultMergeProperty,
     [FlowchartSymbols.delay]: DefaultFlowchartProperty,
     [FlowchartSymbols.storedData]: DefaultFlowchartProperty
+};
+
+export const getDefaultFlowChartProperty = (symbol: FlowchartSymbols) => {
+    return DefaultFlowChartPropertyMap[symbol];
 };

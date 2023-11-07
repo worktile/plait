@@ -1,44 +1,6 @@
-import {
-    PlaitBoard,
-    Point,
-    PointOfRectangle,
-    RectangleClient,
-    getNearestPointBetweenPointAndSegments,
-    isPointInPolygon,
-    setStrokeLinecap
-} from '@plait/core';
+import { Point, RectangleClient } from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
-import { getCenterPointsOnPolygon, getEdgeOnPolygonByPoint } from '../../utils/geometry';
-import { Options } from 'roughjs/bin/core';
-
-export const StarEngine: ShapeEngine = {
-    draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
-        const points = getStarPoints(rectangle);
-        const rs = PlaitBoard.getRoughSVG(board);
-        const polygon = rs.polygon(points, { ...options, fillStyle: 'solid' });
-        setStrokeLinecap(polygon, 'round');
-        return polygon;
-    },
-    isHit(rectangle: RectangleClient, point: Point) {
-        const parallelogramPoints = getStarPoints(rectangle);
-        return isPointInPolygon(point, parallelogramPoints);
-    },
-    getCornerPoints(rectangle: RectangleClient) {
-        return getStarPoints(rectangle);
-    },
-    getNearestPoint(rectangle: RectangleClient, point: Point) {
-        return getNearestPointBetweenPointAndSegments(point, getStarPoints(rectangle));
-    },
-    getEdgeByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle): [Point, Point] | null {
-        const corners = getStarPoints(rectangle);
-        const point = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
-        return getEdgeOnPolygonByPoint(corners, point);
-    },
-    getConnectorPoints(rectangle: RectangleClient) {
-        const points = getStarPoints(rectangle);
-        return [points[1], points[3], points[5], points[7], points[9]];
-    }
-};
+import { createPolygonEngine } from './polygon';
 
 export const getStarPoints = (rectangle: RectangleClient): Point[] => {
     return [
@@ -54,3 +16,11 @@ export const getStarPoints = (rectangle: RectangleClient): Point[] => {
         [rectangle.x + (rectangle.width * 77.3892626) / 96, rectangle.y + rectangle.height]
     ];
 };
+
+export const StarEngine: ShapeEngine = createPolygonEngine({
+    getPolygonPoints: getStarPoints,
+    getConnectorPoints: (rectangle: RectangleClient) => {
+        const points = getStarPoints(rectangle);
+        return [points[1], points[3], points[5], points[7], points[9]];
+    }
+});
