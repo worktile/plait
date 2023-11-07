@@ -28,7 +28,17 @@ export enum BasicShapes {
 }
 
 export enum FlowchartSymbols {
-    process = 'process'
+    process = 'process',
+    decision = 'decision',
+    data = 'data',
+    connector = 'connector',
+    terminal = 'terminal',
+    manualInput = 'manualInput',
+    preparation = 'preparation',
+    manualLoop = 'manualLoop',
+    merge = 'merge',
+    delay = 'delay',
+    storedData = 'storedData'
 }
 
 export type GeometryShapes = BasicShapes | FlowchartSymbols;

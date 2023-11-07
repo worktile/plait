@@ -1,4 +1,4 @@
-import { BasicShapes, PlaitGeometry } from './geometry';
+import { BasicShapes, FlowchartSymbols, PlaitGeometry } from './geometry';
 import { PlaitImage } from './image';
 import { PlaitLine } from './line';
 import { PlaitText } from './text';
@@ -34,5 +34,11 @@ export const PlaitDrawElement = {
     },
     isShape: (value: any) => {
         return PlaitDrawElement.isImage(value) || PlaitDrawElement.isGeometry(value);
+    },
+    isBaseShape: (value: any) => {
+        return Object.keys(BasicShapes).includes(value.type);
+    },
+    isFlowchart: (value: any) => {
+        return Object.keys(FlowchartSymbols).includes(value.type);
     }
 };

@@ -82,9 +82,9 @@
     width: 200px;
     height: 160px;
     overflow: scroll;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
     .title{
         font-size: 14px;
-        padding-left: 8px;
     }
 }

@@ -1,5 +1,5 @@
 import { PlaitBoard, Transforms, Point, addSelectedElement, clearSelectedElement, Path, PlaitNode } from '@plait/core';
-import { DefaultGeometryProperty } from '../constants';
+import { DefaultBasicShapeProperty } from '../constants';
 import { BasicShapes, PlaitDrawElement, PlaitGeometry, GeometryShapes, PlaitText } from '../interfaces';
 import { createGeometryElement } from '../utils';
 import { Element } from 'slate';
@@ -7,8 +7,8 @@ import { normalizeShapePoints } from '@plait/common';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
     let newElement = createGeometryElement(shape, points, '', {
-        strokeColor: DefaultGeometryProperty.strokeColor,
-        strokeWidth: DefaultGeometryProperty.strokeWidth
+        strokeColor: DefaultBasicShapeProperty.strokeColor,
+        strokeWidth: DefaultBasicShapeProperty.strokeWidth
     }) as PlaitGeometry;
 
     Transforms.insertNode(board, newElement, [board.children.length]);

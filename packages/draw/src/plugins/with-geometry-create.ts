@@ -13,10 +13,17 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { BasicShapes, GeometryShapes, PlaitGeometry } from '../interfaces';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
-import { createGeometryElement, getPointsByCenterPoint } from '../utils';
-import { DefaultGeometryProperty, DefaultTextProperty, DrawPointerType, getGeometryPointers, ShapeDefaultSpace } from '../constants';
+import { createGeometryElement, getDefaultFlowchartProperty, getPointsByCenterPoint } from '../utils';
+import {
+    DefaultBasicShapeProperty,
+    DefaultTextProperty,
+    DrawPointerType,
+    getFlowchartPointers,
+    getGeometryPointers,
+    ShapeDefaultSpace
+} from '../constants';
 import { normalizeShapePoints, isDndMode, isDrawingMode } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { DEFAULT_FONT_SIZE } from '@plait/text';
@@ -46,8 +53,8 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
                 PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
             } else {
                 const temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
-                    strokeColor: DefaultGeometryProperty.strokeColor,
-                    strokeWidth: DefaultGeometryProperty.strokeWidth
+                    strokeColor: DefaultBasicShapeProperty.strokeColor,
+                    strokeWidth: DefaultBasicShapeProperty.strokeWidth
                 });
                 geometryGenerator.draw(temporaryElement, geometryShapeG);
                 PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
@@ -135,8 +142,8 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         if (drawMode && pointer !== BasicShapes.text) {
             const points = normalizeShapePoints([start!, movingPoint], isShift);
             temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
-                strokeColor: DefaultGeometryProperty.strokeColor,
-                strokeWidth: DefaultGeometryProperty.strokeWidth
+                strokeColor: DefaultBasicShapeProperty.strokeColor,
+                strokeWidth: DefaultBasicShapeProperty.strokeWidth
             });
             geometryGenerator.draw(temporaryElement, geometryShapeG);
             PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
@@ -155,8 +162,8 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
                 const points = getDefaultGeometryPoints(pointer, targetPoint);
                 if (pointer !== BasicShapes.text) {
                     temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
-                        strokeColor: DefaultGeometryProperty.strokeColor,
-                        strokeWidth: DefaultGeometryProperty.strokeWidth
+                        strokeColor: DefaultBasicShapeProperty.strokeColor,
+                        strokeWidth: DefaultBasicShapeProperty.strokeWidth
                     });
                 }
             }
@@ -181,9 +188,20 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
 };
 
 const getDefaultGeometryPoints = (pointer: DrawPointerType, targetPoint: Point) => {
-    return pointer === BasicShapes.text
-        ? getPointsByCenterPoint(targetPoint, DefaultTextProperty.width, DefaultTextProperty.height)
-        : getPointsByCenterPoint(targetPoint, DefaultGeometryProperty.width, DefaultGeometryProperty.height);
+    const defaultProperty = getGeometryDefaultProperty(pointer);
+    return getPointsByCenterPoint(targetPoint, defaultProperty.width, defaultProperty.height);
+};
+
+export const getGeometryDefaultProperty = (pointer: DrawPointerType) => {
+    const isText = pointer === BasicShapes.text;
+    const isFlowChart = getFlowchartPointers().includes(pointer);
+    if (isText) {
+        return DefaultTextProperty;
+    } else if (isFlowChart) {
+        return getDefaultFlowchartProperty(pointer as FlowchartSymbols);
+    } else {
+        return DefaultBasicShapeProperty;
+    }
 };
 
 const getTemporaryTextG = (movingPoint: Point) => {
