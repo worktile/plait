@@ -135,7 +135,11 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                 }
             },
             getMaxWidth: () => {
-                const width = getTextRectangle(this.element).width;
+                let width = getTextRectangle(this.element).width;
+                const getRectangle = getEngine(this.element.shape).getTextRectangle;
+                if (getRectangle) {
+                    width = getRectangle(this.element).width;
+                }
                 return (this.element as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
             },
             textPlugins: plugins
