@@ -7,9 +7,9 @@ import {
     isPointInPolygon,
     setStrokeLinecap
 } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getCenterPointsOnPolygon, getEdgeOnPolygonByPoint } from '../../utils/geometry';
+import { getCenterPointsOnPolygon, getEdgeOnPolygonByPoint, getTextRectangle } from '../../utils/geometry';
 import { createPolygonEngine } from './polygon';
 
 export const getTrapezoidPoints = (rectangle: RectangleClient): Point[] => {
@@ -26,5 +26,12 @@ export const TrapezoidEngine: ShapeEngine = createPolygonEngine({
     getConnectorPoints(rectangle: RectangleClient) {
         const points = getTrapezoidPoints(rectangle);
         return getCenterPointsOnPolygon(points);
+    },
+    getTextRectangle(element: PlaitGeometry) {
+        const rectangle = getTextRectangle(element);
+        const width = rectangle.width;
+        rectangle.width = (rectangle.width * 3) / 4;
+        rectangle.x += width / 8;
+        return rectangle;
     }
 });

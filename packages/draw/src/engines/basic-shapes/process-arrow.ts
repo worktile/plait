@@ -1,6 +1,8 @@
 import { Point, RectangleClient } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
+import { getTextRectangle } from '../../utils';
+import { getRectangleByPoints } from '@plait/common';
 
 export const getProcessArrowPoints = (rectangle: RectangleClient): Point[] => {
     const wider = rectangle.width > rectangle.height / 2;
@@ -15,5 +17,13 @@ export const getProcessArrowPoints = (rectangle: RectangleClient): Point[] => {
 };
 
 export const ProcessArrowEngine: ShapeEngine = createPolygonEngine({
-    getPolygonPoints: getProcessArrowPoints
+    getPolygonPoints: getProcessArrowPoints,
+    getTextRectangle(element: PlaitGeometry) {
+        const rectangle = getTextRectangle(element);
+        const elementRectangle = getRectangleByPoints(element.points!);
+        const width = rectangle.width;
+        rectangle.width = elementRectangle.height / 2;
+        rectangle.x += elementRectangle.height / 2;
+        return rectangle;
+    }
 });
