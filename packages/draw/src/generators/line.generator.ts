@@ -1,7 +1,6 @@
-import { LineShape, PlaitLine } from '../interfaces';
-import { Generator, getRectangleByPoints } from '@plait/common';
-import { drawLine, getLinePoints, getLineTextRectangle } from '../utils';
-import { PlaitBoard, RectangleClient, createMask, createRect } from '@plait/core';
+import { PlaitLine } from '../interfaces';
+import { Generator } from '@plait/common';
+import { drawLine } from '../utils';
 
 export interface ShapeData {}
 

@@ -56,11 +56,11 @@ const getArrow = (element: PlaitLine, arrowOptions: ArrowOptions, options: Optio
             break;
         }
         case LineMarkerType.oneSideUp: {
-            targetArrow = drawOneSideArrow(source, target, 'up', options);
+            targetArrow = drawOneSideArrow(source, target, isSource ? 'down' : 'up', options);
             break;
         }
         case LineMarkerType.oneSideDown: {
-            targetArrow = drawOneSideArrow(source, target, 'down', options);
+            targetArrow = drawOneSideArrow(source, target, isSource ? 'up' : 'down', options);
             break;
         }
         case LineMarkerType.hollowTriangle: {
