@@ -1,7 +1,9 @@
 import { Point, RectangleClient } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
-import { getCenterPointsOnPolygon } from '../../utils';
+import { getCenterPointsOnPolygon, getStrokeWidthByElement } from '../../utils';
+import { getRectangleByPoints } from '@plait/common';
+import { ShapeDefaultSpace } from '../../constants';
 
 export const getTrianglePoints = (rectangle: RectangleClient): Point[] => {
     return [
@@ -17,5 +19,18 @@ export const TriangleEngine: ShapeEngine = createPolygonEngine({
         const cornerPoints = getTrianglePoints(rectangle);
         const lineCenterPoints = getCenterPointsOnPolygon(cornerPoints);
         return [...lineCenterPoints, ...cornerPoints];
+    },
+    getTextRectangle(element: PlaitGeometry) {
+        const elementRectangle = getRectangleByPoints(element.points!);
+        const strokeWidth = getStrokeWidthByElement(element);
+        const height = element.textHeight;
+        const originWidth = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+        const width = (originWidth * 2) / 3;
+        return {
+            height,
+            width: width > 0 ? width : 0,
+            x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth + originWidth / 6,
+            y: elementRectangle.y + (elementRectangle.height * 3) / 5 + ((elementRectangle.height * 2) / 5 - height) / 2
+        };
     }
 });

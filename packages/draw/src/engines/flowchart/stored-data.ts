@@ -8,10 +8,11 @@ import {
     isPointInEllipse,
     setStrokeLinecap
 } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getNearestPointBetweenPointAndEllipse, getTangentSlope, getVectorBySlope } from '../basic-shapes/ellipse';
+import { getTextRectangle } from '../../utils';
 
 export const StoredDataEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
@@ -102,5 +103,12 @@ export const StoredDataEngine: ShapeEngine = {
             [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height],
             [rectangle.x, rectangle.y + rectangle.height / 2]
         ];
+    },
+    getTextRectangle(element: PlaitGeometry) {
+        const rectangle = getTextRectangle(element);
+        const width = rectangle.width;
+        rectangle.width = (rectangle.width * 3) / 4;
+        rectangle.x += width / 8;
+        return rectangle;
     }
 };

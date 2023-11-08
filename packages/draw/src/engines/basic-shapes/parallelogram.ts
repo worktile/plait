@@ -1,6 +1,6 @@
 import { Point, RectangleClient } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
-import { getCenterPointsOnPolygon } from '../../utils/geometry';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { getCenterPointsOnPolygon, getTextRectangle } from '../../utils/geometry';
 import { createPolygonEngine } from './polygon';
 
 export const getParallelogramPoints = (rectangle: RectangleClient): Point[] => {
@@ -16,5 +16,12 @@ export const ParallelogramEngine: ShapeEngine = createPolygonEngine({
     getConnectorPoints: (rectangle: RectangleClient) => {
         const cornerPoints = getParallelogramPoints(rectangle);
         return getCenterPointsOnPolygon(cornerPoints);
+    },
+    getTextRectangle(element: PlaitGeometry) {
+        const rectangle = getTextRectangle(element);
+        const width = rectangle.width;
+        rectangle.width = rectangle.width / 2;
+        rectangle.x += width / 4;
+        return rectangle;
     }
 });

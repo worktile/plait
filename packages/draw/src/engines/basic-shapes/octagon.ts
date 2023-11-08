@@ -1,6 +1,7 @@
 import { Point, RectangleClient } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
+import { getTextRectangle } from '../../utils';
 
 export const getOctagonPoints = (rectangle: RectangleClient): Point[] => {
     return [
@@ -19,5 +20,12 @@ export const OctagonEngine: ShapeEngine = createPolygonEngine({
     getPolygonPoints: getOctagonPoints,
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
+    },
+    getTextRectangle(element: PlaitGeometry) {
+        const rectangle = getTextRectangle(element);
+        const width = rectangle.width;
+        rectangle.width = (rectangle.width * 3) / 4;
+        rectangle.x += width / 8;
+        return rectangle;
     }
 });

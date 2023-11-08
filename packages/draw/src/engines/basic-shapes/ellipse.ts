@@ -1,6 +1,7 @@
 import { PlaitBoard, Point, PointOfRectangle, RectangleClient, Vector, isPointInEllipse } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
+import { getTextRectangle } from '../../utils';
 
 export const EllipseEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
@@ -30,6 +31,13 @@ export const EllipseEngine: ShapeEngine = {
     },
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
+    },
+    getTextRectangle(element: PlaitGeometry) {
+        const rectangle = getTextRectangle(element);
+        const width = rectangle.width;
+        rectangle.width = (rectangle.width * 3) / 4;
+        rectangle.x += width / 8;
+        return rectangle;
     }
 };
 

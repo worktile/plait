@@ -1,6 +1,7 @@
 import { Point, RectangleClient } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
+import { getTextRectangle } from '../../utils';
 
 export const getPentagonArrowPoints = (rectangle: RectangleClient): Point[] => {
     return [
@@ -16,5 +17,10 @@ export const PentagonArrowEngine: ShapeEngine = createPolygonEngine({
     getPolygonPoints: getPentagonArrowPoints,
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
+    },
+    getTextRectangle(element: PlaitGeometry) {
+        const rectangle = getTextRectangle(element);
+        rectangle.width = (rectangle.width * 3) / 5;
+        return rectangle;
     }
 });
