@@ -1,5 +1,21 @@
 # @plait/draw
 
+## 0.29.0
+
+### Minor Changes
+
+-   [#614](https://github.com/worktile/plait/pull/614) [`953f02c3`](https://github.com/worktile/plait/commit/953f02c34f5f375e8a9ec2dc412e290c1a50708f) Thanks [@WBbug](https://github.com/WBbug)! - add flowchart
+
+*   [#616](https://github.com/worktile/plait/pull/616) [`65b8e0cc`](https://github.com/worktile/plait/commit/65b8e0cc2bf26eea007806ce1d15c5d1fe7cbb0d) Thanks [@WBbug](https://github.com/WBbug)! - change text position
+
+-   [#613](https://github.com/worktile/plait/pull/613) [`3f627f05`](https://github.com/worktile/plait/commit/3f627f052a0e3f15f1cb0a13234f021d5e0ed750) Thanks [@WBbug](https://github.com/WBbug)! - add flowchart type
+
+*   [#615](https://github.com/worktile/plait/pull/615) [`a0acf6ee`](https://github.com/worktile/plait/commit/a0acf6eee19c7b23fcae5d6ad5b19bf62d091afc) Thanks [@WBbug](https://github.com/WBbug)! - change text position
+
+### Patch Changes
+
+-   [#617](https://github.com/worktile/plait/pull/617) [`18cbb02c`](https://github.com/worktile/plait/commit/18cbb02c62cb6e0529fd38cdf2f852becdebe36e) Thanks [@WBbug](https://github.com/WBbug)! - add source judge when draw oneSideArrow
+
 ## 0.28.0
 
 ### Minor Changes

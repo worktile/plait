@@ -1,5 +1,11 @@
 # mind
 
+## 0.29.0
+
+### Minor Changes
+
+-   [`47584f1c`](https://github.com/worktile/plait/commit/47584f1c8979422273b4cd9878e1f61c2223e94e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent mind node dnd when press up element
+
 ## 0.28.0
 
 ### Minor Changes
