@@ -151,15 +151,15 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                 board
             });
 
-            // points.forEach(point => {
-            //     const circle = drawCircle(PlaitBoard.getRoughSVG(board), point, 3, {
-            //         stroke: 'red',
-            //         strokeWidth: 1,
-            //         fill: 'red',
-            //         fillStyle: 'solid'
-            //     });
-            //     PlaitBoard.getElementActiveHost(board).appendChild(circle);
-            // });
+            points.forEach(point => {
+                const circle = drawCircle(PlaitBoard.getRoughSVG(board), point, 3, {
+                    stroke: 'red',
+                    strokeWidth: 1,
+                    fill: 'red',
+                    fillStyle: 'solid'
+                });
+                PlaitBoard.getElementActiveHost(board).appendChild(circle);
+            });
         }
 
         let points: Point[] = getPoints(
