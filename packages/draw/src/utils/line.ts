@@ -15,7 +15,9 @@ import {
     PointOfRectangle,
     Direction,
     Vector,
-    distanceBetweenPointAndPoint
+    distanceBetweenPointAndPoint,
+    drawCircle,
+    isLineHitLine
 } from '@plait/core';
 import {
     getPoints,
@@ -45,6 +47,7 @@ import { drawLineArrow } from './line-arrow';
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { Op } from 'roughjs/bin/core';
 import { getShape } from './shape';
+import { generatorElbowPoints } from './a-star';
 
 export const createLineElement = (
     shape: LineShape,
@@ -133,6 +136,32 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     if (element.points.length === 2) {
         const handleRefPair = getLineHandleRefPair(board, element);
         const offset = element.source.boundId || element.target.boundId ? 30 : 0;
+        const sourceElement = element.source.boundId && getElementById<PlaitGeometry>(board, element.source.boundId);
+        const targetElement = element.target.boundId && getElementById<PlaitGeometry>(board, element.target.boundId);
+        const isBound = sourceElement && targetElement;
+        if (isBound) {
+            const points = generatorElbowPoints({
+                sourcePoint: getConnectionPoint(sourceElement, element.source.connection!),
+                sourceDirection: handleRefPair.source.direction,
+                sourceRectangle: getRectangleByPoints(sourceElement.points),
+                targetPoint: getConnectionPoint(targetElement, element.target.connection!),
+                targetDirection: handleRefPair.target.direction,
+                targetRectangle: getRectangleByPoints(targetElement.points),
+                offset,
+                board
+            });
+
+            // points.forEach(point => {
+            //     const circle = drawCircle(PlaitBoard.getRoughSVG(board), point, 3, {
+            //         stroke: 'red',
+            //         strokeWidth: 1,
+            //         fill: 'red',
+            //         fillStyle: 'solid'
+            //     });
+            //     PlaitBoard.getElementActiveHost(board).appendChild(circle);
+            // });
+        }
+
         let points: Point[] = getPoints(
             handleRefPair.source.point,
             handleRefPair.source.direction,

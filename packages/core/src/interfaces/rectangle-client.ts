@@ -26,7 +26,7 @@ export const RectangleClient = {
             return false;
         }
     },
-    toRectangleClient: (points: [Point, Point]) => {
+    toRectangleClient: (points: Point[]) => {
         const xArray = points.map(ele => ele[0]);
         const yArray = points.map(ele => ele[1]);
         const xMin = Math.min(...xArray);
