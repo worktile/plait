@@ -1,36 +1,47 @@
-import { PlaitBoard, Point, RectangleClient, distanceBetweenPointAndPoint, drawCircle, drawLinearPath, isLineHitLine } from '@plait/core';
+import {
+    Direction,
+    PlaitBoard,
+    Point,
+    RectangleClient,
+    distanceBetweenPointAndPoint,
+    drawCircle,
+    drawLinearPath,
+    isLineHitLine
+} from '@plait/core';
 import { removeDuplicatePoints } from './line';
-import { PointGraph, PointNode } from './Graph';
+import { PointGraph, PointNode } from './graph';
 
 export const generatorElbowPoints = (infos: any) => {
-    const points = getGraphPoints(infos);
+    const nextSource = getNextPoint(infos.sourcePoint, infos.sourceOuterRectangle, infos.sourceDirection).map(num =>
+        Number(num.toFixed(2))
+    ) as Point;
+    const nextTarget = getNextPoint(infos.targetPoint, infos.targetOuterRectangle, infos.targetDirection).map(num =>
+        Number(num.toFixed(2))
+    ) as Point;
+
+    const points = getGraphPoints({ ...infos, nextSource, nextTarget });
     const graph = createGraph(infos.board, points);
-    const sourceOuterRectangle = RectangleClient.inflate(infos.sourceRectangle, 60);
-    const targetOuterRectangle = RectangleClient.inflate(infos.targetRectangle, 60);
+    points.forEach(point => {
+        const circle = drawCircle(PlaitBoard.getRoughSVG(infos.board), point, 3, {
+            stroke: 'red',
+            strokeWidth: 1,
+            fill: 'red',
+            fillStyle: 'solid'
+        });
+        PlaitBoard.getElementActiveHost(infos.board).appendChild(circle);
+    });
+
     const aStar = new AStar(graph);
-    const source = getNextPoint(infos.sourceRectangle, infos.sourcePoint, sourceOuterRectangle);
-    const target = getNextPoint(infos.targetRectangle, infos.targetPoint, targetOuterRectangle);
-
-    // [source, target].forEach(point => {
-    //     const circle = drawCircle(PlaitBoard.getRoughSVG(infos.board), point, 3, {
-    //         stroke: 'green',
-    //         strokeWidth: 3,
-    //         fill: 'green',
-    //         fillStyle: 'solid'
-    //     });
-    //     PlaitBoard.getElementActiveHost(infos.board).appendChild(circle);
-    // });
-
-    const a = aStar.search(source, target);
-    let temp = target;
+    const a = aStar.search(nextSource, nextTarget);
+    let temp = nextTarget;
     const path = [];
-    while (temp[0] !== source[0] || temp[1] !== source[1]) {
+    while (temp[0] !== nextSource[0] || temp[1] !== nextSource[1]) {
         const node = graph.get(temp);
         const preNode = a.get(node!);
         path.push(preNode!.data);
         temp = preNode!.data;
     }
-    const line = drawLinearPath([target, ...path, source], {
+    const line = drawLinearPath([nextTarget, ...path, nextSource], {
         stroke: 'red',
         strokeWidth: 3
     });
@@ -38,10 +49,52 @@ export const generatorElbowPoints = (infos: any) => {
     return points;
 };
 
-export const getGraphPoints = (infos: any) => {
-    const { sourcePoint, sourceDirection, sourceRectangle, targetPoint, targetDirection, targetRectangle, offset, board } = infos;
+export const computeOuterRectangle = (rectangle: RectangleClient, offset: number[]) => {
+    const leftTopPoint: Point = [rectangle.x - offset[3], rectangle.y - offset[0]];
+    const rightBottomPoint: Point = [rectangle.x + rectangle.width + offset[1], rectangle.y + rectangle.height + offset[2]];
+    return RectangleClient.toRectangleClient([leftTopPoint, rightBottomPoint]);
+};
+
+export const computeRectangleOffset = (sourceRectangle: RectangleClient, targetRectangle: RectangleClient) => {
+    const defaultOffset = 30;
+    let sourceOffset = new Array(4).fill(defaultOffset);
+    let targetOffset = new Array(4).fill(defaultOffset);
     const sourceOuterRectangle = RectangleClient.inflate(sourceRectangle, 60);
     const targetOuterRectangle = RectangleClient.inflate(targetRectangle, 60);
+    const isHit = RectangleClient.isHit(sourceOuterRectangle, targetOuterRectangle);
+    if (isHit) {
+        const leftToRight = sourceRectangle.x - (targetRectangle.x + targetRectangle.width);
+        const rightToLeft = targetRectangle.x - (sourceRectangle.x + sourceRectangle.width);
+        if (leftToRight > 0 && leftToRight < defaultOffset * 2) {
+            const offset = leftToRight / 2;
+            sourceOffset[3] = offset;
+            targetOffset[1] = offset;
+        }
+
+        if (rightToLeft > 0 && rightToLeft < defaultOffset * 2) {
+            const offset = rightToLeft / 2;
+            targetOffset[3] = offset;
+            sourceOffset[1] = offset;
+        }
+
+        const topToBottom = sourceRectangle.y - (targetRectangle.y + targetRectangle.height);
+        const bottomToTop = targetRectangle.y - (sourceRectangle.y + sourceRectangle.height);
+        if (topToBottom > 0 && topToBottom < defaultOffset * 2) {
+            const offset = topToBottom / 2;
+            sourceOffset[0] = offset;
+            targetOffset[2] = offset;
+        }
+        if (bottomToTop > 0 && bottomToTop < defaultOffset * 2) {
+            const offset = bottomToTop / 2;
+            sourceOffset[2] = offset;
+            targetOffset[0] = offset;
+        }
+    }
+    return { sourceOffset, targetOffset };
+};
+
+export const getGraphPoints = (infos: any) => {
+    const { nextSource, nextTarget, sourceOuterRectangle, sourceRectangle, targetOuterRectangle, targetRectangle, offset, board } = infos;
     const x: number[] = [];
     const y: number[] = [];
     let result: Point[] = [];
@@ -56,7 +109,7 @@ export const getGraphPoints = (infos: any) => {
         targetOuterRectangle.x,
         targetOuterRectangle.x + targetOuterRectangle.width
     ].sort((a, b) => a - b);
-    x.push((rectanglesX[1] + rectanglesX[2]) / 2);
+    x.push((rectanglesX[1] + rectanglesX[2]) / 2, nextSource[0], nextTarget[0]);
 
     const rectanglesY = [
         sourceOuterRectangle.y,
@@ -64,7 +117,7 @@ export const getGraphPoints = (infos: any) => {
         targetOuterRectangle.y,
         targetOuterRectangle.y + targetOuterRectangle.height
     ].sort((a, b) => a - b);
-    y.push((rectanglesY[1] + rectanglesY[2]) / 2);
+    y.push((rectanglesY[1] + rectanglesY[2]) / 2, nextSource[1], nextTarget[1]);
 
     for (let i = 0; i < x.length; i++) {
         for (let j = 0; j < y.length; j++) {
@@ -94,6 +147,9 @@ export const createGraph = (board: PlaitBoard, points: Point[]) => {
     const hotXs: number[] = [];
     const hotYs: number[] = [];
     const connections: Point[][] = [];
+    points = points.map(point => {
+        return point.map(num => Number(num.toFixed(2))) as Point;
+    });
 
     points.forEach(p => {
         const x = p[0],
@@ -163,18 +219,20 @@ export const isLineIntersectRectangle = (a: Point, b: Point, points: Point[]) =>
     return false;
 };
 
-export const getNextPoint = (rectangle: RectangleClient, point: Point, outerRectangle: RectangleClient): Point => {
-    function almostEqual(number1: number, number2: number) {
-        return Math.abs(number1 - number2) < 0.1;
-    }
-    if (almostEqual(point[0], rectangle.x)) {
-        return [outerRectangle.x, point[1]];
-    } else if (almostEqual(point[0], rectangle.x + rectangle.width)) {
-        return [outerRectangle.x + outerRectangle.width, point[1]];
-    } else if (almostEqual(point[1], rectangle.y)) {
-        return [point[0], outerRectangle.y];
-    } else {
-        return [point[0], outerRectangle.y + outerRectangle.height];
+export const getNextPoint = (point: Point, outerRectangle: RectangleClient, direction: Direction): Point => {
+    switch (direction) {
+        case Direction.top: {
+            return [point[0], outerRectangle.y];
+        }
+        case Direction.bottom: {
+            return [point[0], outerRectangle.y + outerRectangle.width];
+        }
+        case Direction.right: {
+            return [outerRectangle.x + outerRectangle.width, point[1]];
+        }
+        default: {
+            return [outerRectangle.x, point[1]];
+        }
     }
 };
 

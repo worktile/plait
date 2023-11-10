@@ -47,7 +47,7 @@ import { drawLineArrow } from './line-arrow';
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { Op } from 'roughjs/bin/core';
 import { getShape } from './shape';
-import { generatorElbowPoints } from './a-star';
+import { computeOuterRectangle, computeRectangleOffset, generatorElbowPoints } from './a-star';
 
 export const createLineElement = (
     shape: LineShape,
@@ -140,26 +140,32 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         const targetElement = element.target.boundId && getElementById<PlaitGeometry>(board, element.target.boundId);
         const isBound = sourceElement && targetElement;
         if (isBound) {
-            const points = generatorElbowPoints({
-                sourcePoint: getConnectionPoint(sourceElement, element.source.connection!),
-                sourceDirection: handleRefPair.source.direction,
-                sourceRectangle: getRectangleByPoints(sourceElement.points),
-                targetPoint: getConnectionPoint(targetElement, element.target.connection!),
-                targetDirection: handleRefPair.target.direction,
-                targetRectangle: getRectangleByPoints(targetElement.points),
-                offset,
-                board
-            });
-
-            points.forEach(point => {
-                const circle = drawCircle(PlaitBoard.getRoughSVG(board), point, 3, {
-                    stroke: 'red',
-                    strokeWidth: 1,
-                    fill: 'red',
-                    fillStyle: 'solid'
+            const targetRectangle = getRectangleByPoints(targetElement.points);
+            const sourceRectangle = getRectangleByPoints(sourceElement.points);
+            const sourcePoint = getConnectionPoint(sourceElement, element.source.connection!);
+            const targetPoint = getConnectionPoint(targetElement, element.target.connection!);
+            const { sourceOffset, targetOffset } = computeRectangleOffset(sourceRectangle, targetRectangle);
+            const sourceOuterRectangle = computeOuterRectangle(sourceRectangle, sourceOffset);
+            const targetOuterRectangle = computeOuterRectangle(targetRectangle, targetOffset);
+            const isIntersect =
+                RectangleClient.isHit(targetRectangle, RectangleClient.toRectangleClient([sourcePoint])) ||
+                RectangleClient.isHit(targetOuterRectangle, RectangleClient.toRectangleClient([sourcePoint])) ||
+                RectangleClient.isHit(sourceOuterRectangle, RectangleClient.toRectangleClient([targetPoint])) ||
+                RectangleClient.isHit(sourceRectangle, RectangleClient.toRectangleClient([targetPoint]));
+            if (!isIntersect) {
+                const points = generatorElbowPoints({
+                    sourcePoint,
+                    sourceDirection: handleRefPair.source.direction,
+                    sourceRectangle,
+                    sourceOuterRectangle,
+                    targetPoint,
+                    targetDirection: handleRefPair.target.direction,
+                    targetRectangle,
+                    targetOuterRectangle,
+                    offset,
+                    board
                 });
-                PlaitBoard.getElementActiveHost(board).appendChild(circle);
-            });
+            }
         }
 
         let points: Point[] = getPoints(
