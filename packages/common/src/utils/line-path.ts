@@ -84,6 +84,10 @@ export const getPoints = (source: Point, sourcePosition: Direction, target: Poin
     return [source, sourceGapped, ...points, targetGapped, target];
 };
 
+export const getNewPoints = (source: Point, sourcePosition: Direction, target: Point, targetPosition: Direction, offset: number) => {
+    return [];
+};
+
 export const getDirection = (source: Point, sourcePosition = Direction.bottom, target: Point) => {
     if (sourcePosition === Direction.left || sourcePosition === Direction.right) {
         return source[0] < target[0] ? { x: 1, y: 0 } : { x: -1, y: 0 };
