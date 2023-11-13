@@ -225,7 +225,7 @@ export const getNextPoint = (point: Point, outerRectangle: RectangleClient, dire
             return [point[0], outerRectangle.y];
         }
         case Direction.bottom: {
-            return [point[0], outerRectangle.y + outerRectangle.width];
+            return [point[0], outerRectangle.y + outerRectangle.height];
         }
         case Direction.right: {
             return [outerRectangle.x + outerRectangle.width, point[1]];
@@ -261,6 +261,7 @@ class AStar {
         const startNode = this.graph.get(start);
         const cameFrom = new Map<PointNode, PointNode>();
         const costSoFar = new Map<PointNode, number>();
+        costSoFar.set(startNode!, 0);
         frontier.enqueue({ node: startNode!, priority: 0 });
         while (frontier.list.length > 0) {
             var current = frontier.dequeue();
