@@ -252,8 +252,8 @@ class PriorityQueue {
 
 class AStar {
     constructor(private graph: PointGraph) {}
-    heuristic(a: PointNode, b: PointNode) {
-        return distanceBetweenPointAndPoint(...a.data, ...b.data);
+    heuristic(a: Point, b: Point) {
+        return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
     }
 
     search(start: Point, end: Point) {
@@ -274,10 +274,18 @@ class AStar {
                 break;
             }
             current.node.adjacentNodes.forEach((number, next) => {
-                const newCost = costSoFar.get(current!.node)! + distanceBetweenPointAndPoint(...current!.node.data, ...next.data);
+                let newCost = costSoFar.get(current!.node)! + number;
                 if (!costSoFar.has(next) || (costSoFar.get(next) && newCost < costSoFar.get(next)!)) {
+                    const previousNode = cameFrom.get(current!.node);
+                    if (previousNode) {
+                        const x = previousNode.data[0] === current?.node.data[0] && previousNode.data[0] === next.data[0];
+                        const y = previousNode.data[1] === current?.node.data[1] && previousNode.data[1] === next.data[1];
+                        if (!x && !y) {
+                            newCost = newCost + 10;
+                        }
+                    }
                     costSoFar.set(next, newCost);
-                    const priority = newCost + distanceBetweenPointAndPoint(...next.data, ...end);
+                    const priority = newCost + this.heuristic(next.data, end);
                     frontier.enqueue({ node: next, priority });
                     cameFrom.set(next, current!.node);
                 }
