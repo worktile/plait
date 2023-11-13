@@ -11,7 +11,65 @@ import {
 import { removeDuplicatePoints } from './line';
 import { PointGraph, PointNode } from './graph';
 
-export const generatorElbowPoints = (infos: any) => {
+export type options = {
+    sourcePoint: any;
+    sourceDirection: Direction;
+    sourceRectangle: RectangleClient;
+    sourceOuterRectangle: any;
+    targetPoint: any;
+    targetDirection: Direction;
+    targetOuterRectangle: any;
+    targetRectangle: RectangleClient;
+    offset: any;
+    board: any;
+};
+
+export type NodeInfo = {
+    direction: Direction;
+    rectangle: RectangleClient;
+    outerRectangle: RectangleClient;
+};
+
+export const generatorElbowPoints = (infos: options) => {
+    let needThroughMiddleX = false;
+    let middleX = 0;
+    let needThroughMiddleY = false;
+    if (!RectangleClient.isHitX(infos.sourceRectangle, infos.targetRectangle)) {
+        let leftNode: NodeInfo = {
+            direction: infos.sourceDirection,
+            rectangle: infos.sourceRectangle,
+            outerRectangle: infos.sourceOuterRectangle
+        };
+        let rightNode: NodeInfo = {
+            direction: infos.targetDirection,
+            rectangle: infos.targetRectangle,
+            outerRectangle: infos.targetOuterRectangle
+        };
+        if (infos.sourceRectangle.x > infos.targetRectangle.x) {
+            const xx = leftNode;
+            leftNode = rightNode;
+            rightNode = xx;
+        }
+        middleX = (leftNode.rectangle.x + leftNode.rectangle.width + rightNode.rectangle.x) / 2;
+        if (leftNode.direction === Direction.left || rightNode.direction === Direction.right) {
+            if (rightNode.direction === Direction.left) {
+                const rightMiddleY = rightNode.rectangle.y + rightNode.rectangle.height / 2;
+                if (leftNode.outerRectangle.y < rightMiddleY && leftNode.outerRectangle.y + leftNode.outerRectangle.height > rightMiddleY) {
+                    needThroughMiddleX = true;
+                }
+            }
+            if (leftNode.direction === Direction.right) {
+            }
+        } else {
+            if (leftNode.direction === rightNode.direction) {
+                // 方位相同
+            } else {
+                // 方位不同
+                needThroughMiddleX = true;
+            }
+        }
+    }
+
     const nextSource = getNextPoint(infos.sourcePoint, infos.sourceOuterRectangle, infos.sourceDirection).map(num =>
         Number(num.toFixed(2))
     ) as Point;
@@ -32,7 +90,8 @@ export const generatorElbowPoints = (infos: any) => {
     });
 
     const aStar = new AStar(graph);
-    const a = aStar.search(nextSource, nextTarget);
+
+    const a = aStar.search(nextSource, nextTarget, needThroughMiddleX ? middleX : undefined);
     let temp = nextTarget;
     const path = [];
     while (temp[0] !== nextSource[0] || temp[1] !== nextSource[1]) {
@@ -256,7 +315,8 @@ class AStar {
         return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
     }
 
-    search(start: Point, end: Point) {
+    search(start: Point, end: Point, middleX: number | undefined) {
+        console.log(middleX);
         const frontier = new PriorityQueue();
         const startNode = this.graph.get(start);
         const cameFrom = new Map<PointNode, PointNode>();
@@ -277,11 +337,25 @@ class AStar {
                 let newCost = costSoFar.get(current!.node)! + number;
                 if (!costSoFar.has(next) || (costSoFar.get(next) && newCost < costSoFar.get(next)!)) {
                     const previousNode = cameFrom.get(current!.node);
+                    // 拐点权重
                     if (previousNode) {
                         const x = previousNode.data[0] === current?.node.data[0] && previousNode.data[0] === next.data[0];
                         const y = previousNode.data[1] === current?.node.data[1] && previousNode.data[1] === next.data[1];
                         if (!x && !y) {
-                            newCost = newCost + 10;
+                            newCost = newCost + 1;
+                        }
+                        
+                    } else {
+                        //
+                    }
+                    if (middleX !== undefined) {
+                        if (
+                            Math.floor((current as any).node.data[0]) === Math.floor(middleX) &&
+                            Math.floor(next.data[0]) === Math.floor(middleX)
+                        ) {
+                            newCost = newCost - 1;
+                            console.log('xxx');
+                            // a = true;
                         }
                     }
                     costSoFar.set(next, newCost);

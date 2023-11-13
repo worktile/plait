@@ -15,12 +15,23 @@ export type PointOfRectangle = [number, number];
 
 export const RectangleClient = {
     isHit: (origin: RectangleClient, target: RectangleClient) => {
+        return RectangleClient.isHitX(origin, target) && RectangleClient.isHitY(origin, target);
+    },
+    isHitX: (origin: RectangleClient, target: RectangleClient) => {
         const minX = origin.x < target.x ? origin.x : target.x;
         const maxX = origin.x + origin.width > target.x + target.width ? origin.x + origin.width : target.x + target.width;
+        // float calculate error( eg: 1.4210854715202004e-14 > 0)
+        if (Math.floor(maxX - minX - origin.width - target.width) <= 0) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    isHitY: (origin: RectangleClient, target: RectangleClient) => {
         const minY = origin.y < target.y ? origin.y : target.y;
         const maxY = origin.y + origin.height > target.y + target.height ? origin.y + origin.height : target.y + target.height;
         // float calculate error( eg: 1.4210854715202004e-14 > 0)
-        if (Math.floor(maxX - minX - origin.width - target.width) <= 0 && Math.floor(maxY - minY - origin.height - target.height) <= 0) {
+        if (Math.floor(maxY - minY - origin.height - target.height) <= 0) {
             return true;
         } else {
             return false;
