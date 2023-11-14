@@ -123,11 +123,12 @@ export const generatorElbowPoints = (infos: options) => {
 
     path = [infos.targetPoint, nextTarget, ...path, infos.sourcePoint];
 
-    // 基于 middleX 中线纠正 path
-    // 1. 找垂直的线段
-    // 1. 找到和中线相交的点
-    // 1. 基于垂直的线段分别和中线构建矩形
+    // 基于 middleX/middleY 中线纠正 path
+    // 1. 找垂直/水平的线段
+    // 1. 找到和middleX/middleY相交的点
+    // 1. 基于垂直/水平的线段分别和相交点构建矩形
     // 1. 判断矩形相交
+    // 1. 处理 path
 
     const parallelPaths: [Point, Point][] = [];
     const parallelYPaths: [Point, Point][] = [];
@@ -193,11 +194,11 @@ export const generatorElbowPoints = (infos: options) => {
     const adjust = (parallelPaths: [Point, Point][], pointOfInterSection: Point) => {
         let result = null;
         parallelPaths.forEach(parallelPath => {
-            const parallelPathG = drawLinearPath(parallelPath, {
-                stroke: 'green',
-                strokeWidth: 8
-            });
-            PlaitBoard.getElementActiveHost(infos.board).appendChild(parallelPathG);
+            // const parallelPathG = drawLinearPath(parallelPath, {
+            //     stroke: 'green',
+            //     strokeWidth: 8
+            // });
+            // PlaitBoard.getElementActiveHost(infos.board).appendChild(parallelPathG);
 
             // 构建矩形
             const tempRect = RectangleClient.toRectangleClient([pointOfInterSection, parallelPath[0], parallelPath[1]]);
@@ -236,7 +237,6 @@ export const generatorElbowPoints = (infos: options) => {
                     );
                     if (cornerResult !== -1) {
                         indexRangeInPath.push(index);
-                        targetCorner.slice();
                         indexRangeInCorner.push(cornerResult);
                     }
                 });
@@ -250,7 +250,7 @@ export const generatorElbowPoints = (infos: options) => {
                 if (newCornerCount <= cornerCount) {
                     const tempG = drawRectangle(infos.board, tempRect, {
                         stroke: 'green',
-                        strokeWidth: 8
+                        strokeWidth: 3
                     });
     
                     PlaitBoard.getElementActiveHost(infos.board).appendChild(tempG);
