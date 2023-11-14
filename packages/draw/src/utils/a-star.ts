@@ -6,6 +6,7 @@ import {
     distanceBetweenPointAndPoint,
     drawCircle,
     drawLinearPath,
+    drawRectangle,
     isLineHitLine
 } from '@plait/core';
 import { removeDuplicatePoints } from './line';
@@ -33,7 +34,26 @@ export type NodeInfo = {
 export const generatorElbowPoints = (infos: options) => {
     let needThroughMiddleX = false;
     let middleX = 0;
+    let middleY = 0;
     let needThroughMiddleY = false;
+    if (!RectangleClient.isHitY(infos.sourceRectangle, infos.targetRectangle)) {
+        let topNode: NodeInfo = {
+            direction: infos.sourceDirection,
+            rectangle: infos.sourceRectangle,
+            outerRectangle: infos.sourceOuterRectangle
+        };
+        let bottomNode: NodeInfo = {
+            direction: infos.targetDirection,
+            rectangle: infos.targetRectangle,
+            outerRectangle: infos.targetOuterRectangle
+        };
+        if (infos.sourceRectangle.y > infos.targetRectangle.y) {
+            const xx = topNode;
+            topNode = bottomNode;
+            bottomNode = xx;
+        }
+        middleY = (topNode.rectangle.y + topNode.rectangle.height + bottomNode.rectangle.y) / 2;
+    }
     if (!RectangleClient.isHitX(infos.sourceRectangle, infos.targetRectangle)) {
         let leftNode: NodeInfo = {
             direction: infos.sourceDirection,
@@ -92,14 +112,171 @@ export const generatorElbowPoints = (infos: options) => {
     const aStar = new AStar(graph);
     const a = aStar.search(nextSource, nextTarget, needThroughMiddleX ? middleX : undefined, infos.sourcePoint);
     let temp = nextTarget;
-    const path = [];
+    let path: Point[] = [];
     while (temp[0] !== nextSource[0] || temp[1] !== nextSource[1]) {
         const node = graph.get(temp);
         const preNode = a.get(node!);
         path.push(preNode!.data);
         temp = preNode!.data;
     }
-    const line = drawLinearPath([nextTarget, ...path], {
+    // const line = drawLinearPath([nextTarget, ...path], {
+
+    path = [infos.targetPoint, nextTarget, ...path, infos.sourcePoint];
+
+    // 基于 middleX 中线纠正 path
+    // 1. 找垂直的线段
+    // 1. 找到和中线相交的点
+    // 1. 基于垂直的线段分别和中线构建矩形
+    // 1. 判断矩形相交
+
+    const parallelPaths: [Point, Point][] = [];
+    const parallelYPaths: [Point, Point][] = [];
+
+    // path.reduce((previous: null | Point, current) => {
+    //     if (previous && previous[0] === current[0]) {
+    //         return previous;
+    //     }
+    //     return current;
+    // }, null)
+    let startX: null | Point = null;
+    let startY: null | Point = null;
+    let pointOfInterSectionX: null | Point = null;
+    let pointOfInterSectionY: null | Point = null;
+
+    for (let index = 0; index < path.length; index++) {
+        const previous = path[index - 1];
+        const current = path[index];
+        if (startX === null && previous && previous[0] === current[0]) {
+            startX = previous;
+        }
+        if (startY === null && previous && previous[1] === current[1]) {
+            startY = previous;
+        }
+        if (startX !== null) {
+            if (previous[0] !== current[0]) {
+                parallelPaths.push([startX, previous]);
+                startX = null;
+            }
+        }
+        if (startY !== null) {
+            if (previous[1] !== current[1]) {
+                parallelYPaths.push([startY, previous]);
+                startY = null;
+            }
+        }
+
+        if (Math.floor(current[0]) === Math.floor(middleX)) {
+            pointOfInterSectionX = current;
+        }
+        if (Math.floor(current[1]) === Math.floor(middleY)) {
+            pointOfInterSectionY = current;
+        }
+    }
+    if (startX) {
+        parallelPaths.push([startX, path[path.length - 1]]);
+    }
+    if (startY) {
+        parallelYPaths.push([startY, path[path.length - 1]]);
+    }
+    console.log(parallelPaths);
+    // console.log(parallelPaths);
+
+    if (pointOfInterSectionX) {
+        const circle = drawCircle(PlaitBoard.getRoughSVG(infos.board), pointOfInterSectionX, 3, {
+            stroke: 'green',
+            strokeWidth: 8,
+            fill: 'green',
+            fillStyle: 'solid'
+        });
+        PlaitBoard.getElementActiveHost(infos.board).appendChild(circle);
+    }
+    const adjust = (parallelPaths: [Point, Point][], pointOfInterSection: Point) => {
+        let result = null;
+        parallelPaths.forEach(parallelPath => {
+            const parallelPathG = drawLinearPath(parallelPath, {
+                stroke: 'green',
+                strokeWidth: 8
+            });
+            PlaitBoard.getElementActiveHost(infos.board).appendChild(parallelPathG);
+
+            // 构建矩形
+            const tempRect = RectangleClient.toRectangleClient([pointOfInterSection, parallelPath[0], parallelPath[1]]);
+
+            if (!RectangleClient.isHit(tempRect, infos.sourceRectangle) && !RectangleClient.isHit(tempRect, infos.targetRectangle)) {
+                const getCornerCount = (path: Point[]) => {
+                    let cornerCount = 0;
+                    for (let index = 1; index < path.length - 1; index++) {
+                        const pre = path[index - 1];
+                        const current = path[index];
+                        const next = path[index + 1];
+                        if (
+                            pre &&
+                            current &&
+                            next &&
+                            !(
+                                (Math.floor(current[0]) === Math.floor(pre[0]) && Math.floor(current[0]) === Math.floor(next[0])) ||
+                                (Math.floor(current[1]) === Math.floor(pre[1]) && Math.floor(current[1]) === Math.floor(next[1]))
+                            )
+                        ) {
+                            cornerCount++;
+                        }
+                    }
+                    return cornerCount;
+                };
+
+                const tempCorners = RectangleClient.getCornerPoints(tempRect);
+
+                const targetCorner = [...tempCorners];
+
+                const indexRangeInPath: number[] = [];
+                const indexRangeInCorner: number[] = [];
+                path.forEach((point, index) => {
+                    const cornerResult = tempCorners.findIndex(
+                        corner => Math.floor(corner[0]) === Math.floor(point[0]) && Math.floor(corner[1]) === Math.floor(point[1])
+                    );
+                    if (cornerResult !== -1) {
+                        indexRangeInPath.push(index);
+                        targetCorner.slice();
+                        indexRangeInCorner.push(cornerResult);
+                    }
+                });
+                const newPath = [...path];
+                const missCorner = tempCorners.find((c, index) => !indexRangeInCorner.includes(index)) as Point;
+                const removeLength = Math.abs(indexRangeInPath[0] - indexRangeInPath[indexRangeInPath.length - 1]) + 1;
+                newPath.splice(indexRangeInPath[0] + 1, removeLength - 2, missCorner);
+
+                const cornerCount = getCornerCount([...path]);
+                const newCornerCount = getCornerCount([...newPath]);
+                if (newCornerCount <= cornerCount) {
+                    const tempG = drawRectangle(infos.board, tempRect, {
+                        stroke: 'green',
+                        strokeWidth: 8
+                    });
+    
+                    PlaitBoard.getElementActiveHost(infos.board).appendChild(tempG);
+                    result = newPath
+                    return newPath;
+                }
+            }
+            return null;
+        });
+        return result;
+    };
+    const res1 = pointOfInterSectionX && adjust(parallelPaths, pointOfInterSectionX);
+    const res2 = pointOfInterSectionY && adjust(parallelYPaths, pointOfInterSectionY);
+    if (res1) {
+        path = res1;
+    }
+    if (res2) {
+        path = res2;
+    }
+    if (pointOfInterSectionX) {
+        
+    }
+
+    // 1. 构建最终的连线，确认拐点梳理是否发生变化
+
+    const line = drawLinearPath([nextTarget, ...path, nextSource], {
         stroke: 'red',
         strokeWidth: 3
     });
@@ -354,6 +531,14 @@ class AStar {
                     //         // a = true;
                     //     }
                     // }
+                    const previousNode = cameFrom.get(current!.node);
+                    // 拐点权重
+                    const previousPoint = previousNode ? previousNode.data : source;
+                    const x = previousPoint[0] === current?.node.data[0] && previousPoint[0] === next.data[0];
+                    const y = previousPoint[1] === current?.node.data[1] && previousPoint[1] === next.data[1];
+                    if (!x && !y) {
+                        newCost = newCost + 1;
+                    }
                     costSoFar.set(next, newCost);
                     const priority = newCost + this.heuristic(next.data, end);
                     frontier.enqueue({ node: next, priority });
