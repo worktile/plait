@@ -90,8 +90,7 @@ export const generatorElbowPoints = (infos: options) => {
     });
 
     const aStar = new AStar(graph);
-
-    const a = aStar.search(nextSource, nextTarget, needThroughMiddleX ? middleX : undefined);
+    const a = aStar.search(nextSource, nextTarget, needThroughMiddleX ? middleX : undefined, infos.sourcePoint);
     let temp = nextTarget;
     const path = [];
     while (temp[0] !== nextSource[0] || temp[1] !== nextSource[1]) {
@@ -315,7 +314,7 @@ class AStar {
         return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
     }
 
-    search(start: Point, end: Point, middleX: number | undefined) {
+    search(start: Point, end: Point, middleX: number | undefined, source: Point) {
         console.log(middleX);
         const frontier = new PriorityQueue();
         const startNode = this.graph.get(start);
@@ -338,15 +337,11 @@ class AStar {
                 if (!costSoFar.has(next) || (costSoFar.get(next) && newCost < costSoFar.get(next)!)) {
                     const previousNode = cameFrom.get(current!.node);
                     // 拐点权重
-                    if (previousNode) {
-                        const x = previousNode.data[0] === current?.node.data[0] && previousNode.data[0] === next.data[0];
-                        const y = previousNode.data[1] === current?.node.data[1] && previousNode.data[1] === next.data[1];
-                        if (!x && !y) {
-                            newCost = newCost + 1;
-                        }
-                        
-                    } else {
-                        //
+                    const previousPoint = previousNode ? previousNode.data : source;
+                    const x = previousPoint[0] === current?.node.data[0] && previousPoint[0] === next.data[0];
+                    const y = previousPoint[1] === current?.node.data[1] && previousPoint[1] === next.data[1];
+                    if (!x && !y) {
+                        newCost = newCost + 1;
                     }
                     if (middleX !== undefined) {
                         if (
