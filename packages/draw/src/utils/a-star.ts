@@ -36,7 +36,7 @@ export const generatorElbowPoints = (infos: options) => {
     let middleX = 0;
     let middleY = 0;
     let needThroughMiddleY = false;
-    if (!RectangleClient.isHitY(infos.sourceRectangle, infos.targetRectangle)) {
+    if (!RectangleClient.isHitY(infos.sourceOuterRectangle, infos.targetOuterRectangle)) {
         let topNode: NodeInfo = {
             direction: infos.sourceDirection,
             rectangle: infos.sourceRectangle,
@@ -52,9 +52,9 @@ export const generatorElbowPoints = (infos: options) => {
             topNode = bottomNode;
             bottomNode = xx;
         }
-        middleY = (topNode.rectangle.y + topNode.rectangle.height + bottomNode.rectangle.y) / 2;
+        middleY = (topNode.outerRectangle.y + topNode.outerRectangle.height + bottomNode.outerRectangle.y) / 2;
     }
-    if (!RectangleClient.isHitX(infos.sourceRectangle, infos.targetRectangle)) {
+    if (!RectangleClient.isHitX(infos.sourceOuterRectangle, infos.targetOuterRectangle)) {
         let leftNode: NodeInfo = {
             direction: infos.sourceDirection,
             rectangle: infos.sourceRectangle,
@@ -70,7 +70,7 @@ export const generatorElbowPoints = (infos: options) => {
             leftNode = rightNode;
             rightNode = xx;
         }
-        middleX = (leftNode.rectangle.x + leftNode.rectangle.width + rightNode.rectangle.x) / 2;
+        middleX = (leftNode.outerRectangle.x + leftNode.outerRectangle.width + rightNode.outerRectangle.x) / 2;
         if (leftNode.direction === Direction.left || rightNode.direction === Direction.right) {
             if (rightNode.direction === Direction.left) {
                 const rightMiddleY = rightNode.rectangle.y + rightNode.rectangle.height / 2;
@@ -266,15 +266,10 @@ export const generatorElbowPoints = (infos: options) => {
     const res2 = pointOfInterSectionY && adjust(parallelYPaths, pointOfInterSectionY);
     if (res1) {
         path = res1;
-    }
+    } 
     if (res2) {
         path = res2;
     }
-    if (pointOfInterSectionX) {
-        
-    }
-
-    // 1. 构建最终的连线，确认拐点梳理是否发生变化
 
     const line = drawLinearPath([nextTarget, ...path, nextSource], {
         stroke: 'red',
