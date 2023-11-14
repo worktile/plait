@@ -99,7 +99,7 @@ export const generatorElbowPoints = (infos: options) => {
         path.push(preNode!.data);
         temp = preNode!.data;
     }
-    const line = drawLinearPath([nextTarget, ...path, nextSource], {
+    const line = drawLinearPath([nextTarget, ...path], {
         stroke: 'red',
         strokeWidth: 3
     });
@@ -334,25 +334,26 @@ class AStar {
             }
             current.node.adjacentNodes.forEach((number, next) => {
                 let newCost = costSoFar.get(current!.node)! + number;
+                const previousNode = cameFrom.get(current!.node);
+                // 拐点权重
+                const previousPoint = previousNode ? previousNode.data : downscalePrecision(source);
+                const x = previousPoint[0] === current?.node.data[0] && previousPoint[0] === next.data[0];
+                const y = previousPoint[1] === current?.node.data[1] && previousPoint[1] === next.data[1];
+                if (!x && !y) {
+                    newCost = newCost + 1;
+                }
                 if (!costSoFar.has(next) || (costSoFar.get(next) && newCost < costSoFar.get(next)!)) {
-                    const previousNode = cameFrom.get(current!.node);
-                    // 拐点权重
-                    const previousPoint = previousNode ? previousNode.data : source;
-                    const x = previousPoint[0] === current?.node.data[0] && previousPoint[0] === next.data[0];
-                    const y = previousPoint[1] === current?.node.data[1] && previousPoint[1] === next.data[1];
-                    if (!x && !y) {
-                        newCost = newCost + 1;
-                    }
-                    if (middleX !== undefined) {
-                        if (
-                            Math.floor((current as any).node.data[0]) === Math.floor(middleX) &&
-                            Math.floor(next.data[0]) === Math.floor(middleX)
-                        ) {
-                            newCost = newCost - 1;
-                            console.log('xxx');
-                            // a = true;
-                        }
-                    }
+                    // 中间点
+                    // if (middleX !== undefined) {
+                    //     if (
+                    //         Math.floor((current as any).node.data[0]) === Math.floor(middleX) &&
+                    //         Math.floor(next.data[0]) === Math.floor(middleX)
+                    //     ) {
+                    //         newCost = newCost - 1;
+                    //         console.log('xxx');
+                    //         // a = true;
+                    //     }
+                    // }
                     costSoFar.set(next, newCost);
                     const priority = newCost + this.heuristic(next.data, end);
                     frontier.enqueue({ node: next, priority });
@@ -363,4 +364,8 @@ class AStar {
 
         return cameFrom;
     }
+}
+
+function downscalePrecision(point: Point): Point {
+    return [Number(point[0].toFixed(2)), Number(point[1].toFixed(2))];
 }
