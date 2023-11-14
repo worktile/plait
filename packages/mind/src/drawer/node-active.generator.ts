@@ -35,10 +35,6 @@ export class NodeActiveGenerator extends Generator<MindElement, ActiveData> {
 
     baseDraw(element: MindElement<BaseData>, data: ActiveData): SVGGElement {
         const activeG = createG();
-        if (AbstractNode.isAbstract(element)) {
-            this.abstractOutlineG = drawAbstractIncludedOutline(this.board, PlaitBoard.getRoughSVG(this.board), element);
-            activeG.append(this.abstractOutlineG);
-        }
         const node = MindElement.getNode(element);
         const rectangle = getRectangleByNode(node);
         const strokeWidth = getStrokeWidthByElement(this.board, element);
@@ -54,6 +50,11 @@ export class NodeActiveGenerator extends Generator<MindElement, ActiveData> {
             true,
             DefaultNodeStyle.shape.rectangleRadius + (activeStrokeWidth + strokeWidth) / 2
         );
+        if (AbstractNode.isAbstract(element)) {
+            this.abstractOutlineG = drawAbstractIncludedOutline(this.board, PlaitBoard.getRoughSVG(this.board), element);
+            activeG.append(this.abstractOutlineG);
+            strokeG.classList.add('abstract-element');
+        }
         activeG.appendChild(strokeG);
         return activeG;
     }
