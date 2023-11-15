@@ -70,6 +70,7 @@ export interface PlaitBoard {
     pathRefs: () => Set<PathRef>;
     applyTheme: (element: PlaitElement) => void;
     isAlign: (element: PlaitElement) => boolean;
+    isImageBindingAllowed: (element: PlaitElement) => boolean;
 
     // pointer hook
     pointerDown: (pointer: PointerEvent) => void;

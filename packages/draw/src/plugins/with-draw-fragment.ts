@@ -1,12 +1,12 @@
 import { PlaitBoard, PlaitElement, Point, RectangleClient, getDataFromClipboard, getSelectedElements, setClipboardData } from '@plait/core';
-import { getSelectedDrawElements } from '../utils/selected';
+import { getSelectedDrawElements, getSelectedImageElements } from '../utils/selected';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShape } from '../interfaces';
 import { getTextFromClipboard, getTextSize } from '@plait/text';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
 import { getBoardLines } from '../utils/line';
 import { PlaitImage } from '../interfaces/image';
-import { acceptImageTypes, buildImage } from '@plait/common';
+import { acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/common';
 import { DEFAULT_IMAGE_WIDTH } from '../constants';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
@@ -57,12 +57,12 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
 
     board.insertFragment = (data: DataTransfer | null, targetPoint: Point) => {
         const elements = getDataFromClipboard(data);
+        const selectedElements = getSelectedElements(board);
         const drawElements = elements.filter(value => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
         if (elements.length > 0 && drawElements.length > 0) {
             insertClipboardData(board, drawElements, targetPoint);
         } else if (elements.length === 0) {
             const text = getTextFromClipboard(data);
-            const selectedElements = getSelectedElements(board);
             // (*￣︶￣)
             const insertAsChildren = selectedElements.length === 1 && selectedElements[0].children;
             const insertAsFreeText = !insertAsChildren;
@@ -75,7 +75,9 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
 
         if (data?.files.length) {
             const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
-            if (acceptImageArray.includes(data?.files[0].type)) {
+            const canInsertionImage =
+                !getElementOfFocusedImage(board) && !(selectedElements.length === 1 && board.isImageBindingAllowed(selectedElements[0]));
+            if (acceptImageArray.includes(data?.files[0].type) && canInsertionImage) {
                 const imageFile = data.files[0];
                 buildImage(board, imageFile, DEFAULT_IMAGE_WIDTH, imageItem => {
                     DrawTransforms.insertImage(board, imageItem, targetPoint);

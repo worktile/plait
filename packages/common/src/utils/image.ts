@@ -1,4 +1,4 @@
-import { ComponentType, PlaitBoard, PlaitContextService, getSelectedElements } from '@plait/core';
+import { ComponentType, PlaitBoard, PlaitContextService, PlaitElement } from '@plait/core';
 import { ImageBaseComponent } from '../core/image-base.component';
 
 export interface CommonImageItem {
@@ -67,3 +67,17 @@ function getImageSize(file: File, defaultImageWidth: number): Promise<{ width: n
         };
     });
 }
+
+const BOARD_TO_ELEMENT_OF_FOCUSED_IMAGE = new WeakMap<PlaitBoard, PlaitElement>();
+
+export const getElementOfFocusedImage = (board: PlaitBoard) => {
+    return BOARD_TO_ELEMENT_OF_FOCUSED_IMAGE.get(board);
+};
+
+export const addElementOfFocusedImage = (board: PlaitBoard, element: PlaitElement) => {
+    BOARD_TO_ELEMENT_OF_FOCUSED_IMAGE.set(board, element);
+};
+
+export const removeElementOfFocusedImage = (board: PlaitBoard) => {
+    BOARD_TO_ELEMENT_OF_FOCUSED_IMAGE.delete(board);
+};

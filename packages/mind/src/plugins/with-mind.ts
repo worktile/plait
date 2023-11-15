@@ -29,7 +29,16 @@ import { withMindFragment } from './with-mind-fragment';
 
 export const withMind = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
-    const { drawElement, dblclick, isHitSelection, getRectangle, isMovable, isRecursion, isAlign } = board;
+    const {
+        drawElement,
+        dblclick,
+        isHitSelection,
+        getRectangle,
+        isMovable,
+        isRecursion,
+        isAlign,
+        isImageBindingAllowed,
+    } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMind.isMind(context.element)) {
@@ -78,6 +87,13 @@ export const withMind = (baseBoard: PlaitBoard) => {
             return true;
         }
         return isMovable(element);
+    };
+
+    board.isImageBindingAllowed = element => {
+        if (MindElement.isMindElement(board, element)) {
+            return true;
+        }
+        return isImageBindingAllowed(element);
     };
 
     board.isAlign = (element: PlaitElement) => {

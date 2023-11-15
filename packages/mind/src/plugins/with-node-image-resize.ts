@@ -1,9 +1,16 @@
-import { PlaitBoard, Point, PlaitNode, Transforms } from '@plait/core';
+import { PlaitBoard, Point, PlaitNode } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
-import { addSelectedImageElement, getSelectedImageElement } from '../utils/node/image';
 import { getHitImageResizeHandleDirection } from '../utils';
-import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, withResize } from '@plait/common';
+import {
+    ResizeHandle,
+    ResizeRef,
+    ResizeState,
+    WithResizeOptions,
+    addElementOfFocusedImage,
+    getElementOfFocusedImage,
+    withResize
+} from '@plait/common';
 import { MindTransforms } from '../transforms';
 
 export const withNodeImageResize = (board: PlaitBoard) => {
@@ -13,12 +20,14 @@ export const withNodeImageResize = (board: PlaitBoard) => {
             return true;
         },
         detect: (point: Point) => {
-            const selectedMindElement = getSelectedImageElement(board);
+            const elementOfFocusedImage = getElementOfFocusedImage(board);
+            const selectedMindElement =
+                elementOfFocusedImage && MindElement.isMindElement(board, elementOfFocusedImage) ? elementOfFocusedImage : undefined;
             if (selectedMindElement) {
-                const result = getHitImageResizeHandleDirection(board, selectedMindElement, point);
+                const result = getHitImageResizeHandleDirection(board, selectedMindElement as MindElement<ImageData>, point);
                 if (result) {
                     return {
-                        element: selectedMindElement,
+                        element: selectedMindElement as MindElement<ImageData>,
                         handle: result.handle as ResizeHandle,
                         cursorClass: result.cursorClass
                     };
@@ -42,7 +51,7 @@ export const withNodeImageResize = (board: PlaitBoard) => {
             const height = originHeight / ratio;
             const imageItem = { ...resizeRef.element.data.image, width, height };
             MindTransforms.setImage(board, PlaitNode.get(board, resizeRef.path), imageItem);
-            addSelectedImageElement(board, PlaitNode.get(board, resizeRef.path));
+            addElementOfFocusedImage(board, PlaitNode.get(board, resizeRef.path));
         }
     };
 
