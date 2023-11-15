@@ -48,6 +48,7 @@ import { pointsOnBezierCurves } from 'points-on-curve';
 import { Op } from 'roughjs/bin/core';
 import { getShape } from './shape';
 import { computeOuterRectangle, computeRectangleOffset, generatorElbowPoints } from './a-star';
+import { ELBOW_LINE_OFFSET } from '../constants/line';
 
 export const createLineElement = (
     shape: LineShape,
@@ -135,10 +136,18 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
 export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     if (element.points.length === 2) {
         const handleRefPair = getLineHandleRefPair(board, element);
-        const offset = element.source.boundId || element.target.boundId ? 30 : 0;
+        const offset = element.source.boundId || element.target.boundId ? ELBOW_LINE_OFFSET : 0;
         const sourceElement = element.source.boundId && getElementById<PlaitGeometry>(board, element.source.boundId);
         const targetElement = element.target.boundId && getElementById<PlaitGeometry>(board, element.target.boundId);
         const isBound = sourceElement && targetElement;
+
+        let points: Point[] = getPoints(
+            handleRefPair.source.point,
+            handleRefPair.source.direction,
+            handleRefPair.target.point,
+            handleRefPair.target.direction,
+            offset
+        );
         if (isBound) {
             const targetRectangle = getRectangleByPoints(targetElement.points);
             const sourceRectangle = getRectangleByPoints(sourceElement.points);
@@ -153,7 +162,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                 RectangleClient.isHit(sourceOuterRectangle, RectangleClient.toRectangleClient([targetPoint])) ||
                 RectangleClient.isHit(sourceRectangle, RectangleClient.toRectangleClient([targetPoint]));
             if (!isIntersect) {
-                const points = generatorElbowPoints({
+                points = generatorElbowPoints({
                     sourcePoint,
                     sourceDirection: handleRefPair.source.direction,
                     sourceRectangle,
@@ -168,13 +177,6 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             }
         }
 
-        let points: Point[] = getPoints(
-            handleRefPair.source.point,
-            handleRefPair.source.direction,
-            handleRefPair.target.point,
-            handleRefPair.target.direction,
-            offset
-        );
         points = removeDuplicatePoints(points);
         return points;
     }
