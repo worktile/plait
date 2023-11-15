@@ -62,6 +62,8 @@ export interface PlaitBoard {
     redrawElement: (context: PlaitPluginElementContext, previousContext?: PlaitPluginElementContext) => SVGGElement[] | void;
     destroyElement: (context: PlaitPluginElementContext) => void;
     isRectangleHit: (element: PlaitElement, range: Range) => boolean;
+    // When the element has no fill color, it is considered a hit only if it hits the border.
+    isHit: (element: PlaitElement, point: Point) => boolean;
     isRecursion: (element: PlaitElement) => boolean;
     isMovable: (element: PlaitElement) => boolean;
     getRectangle: (element: PlaitElement) => RectangleClient | null;

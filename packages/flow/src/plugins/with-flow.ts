@@ -22,7 +22,7 @@ import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
 import { withHoverHighlight } from './with-hover-highlight';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
-    const { drawElement, isRectangleHit, isMovable, getRectangle } = board;
+    const { drawElement, isRectangleHit, isHit, isMovable, getRectangle } = board;
 
     let relationEdges: FlowEdge[];
 
@@ -49,6 +49,21 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
             }
         }
         return isRectangleHit(element, range);
+    };
+
+    board.isHit = (element, point) => {
+        if (!board.options.readonly) {
+            const elementComponent = PlaitElement.getComponent(element) as FlowNodeComponent | FlowEdgeComponent;
+            if (FlowElement.isFlowElement(element) && elementComponent && board.selection) {
+                if (FlowNode.isFlowNodeElement(element)) {
+                    return isHitNode(board, element, [point, point]);
+                }
+                if (FlowEdge.isFlowEdgeElement(element)) {
+                    return isHitEdge(board, element, point);
+                }
+            }
+        }
+        return isHit(element, point);
     };
 
     board.isMovable = element => {

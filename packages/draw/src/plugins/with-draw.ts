@@ -1,12 +1,4 @@
-import {
-    PlaitBoard,
-    PlaitElement,
-    PlaitPluginElementContext,
-    Range,
-    RectangleClient,
-    getSelectedElements,
-    isPolylineHitRectangle
-} from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Range, getSelectedElements } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
@@ -14,8 +6,7 @@ import { getRectangleByPoints } from '@plait/common';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDrawing, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
-import { getTextRectangle, isHitPolyLine, isHitLineText, getLinePoints } from '../utils';
-import { getStrokeWidthByElement } from '../utils/style/stroke';
+import { getLinePoints, isRectangleHitDrawElement, isHitDrawElement } from '../utils';
 import { withLineCreateByDraw } from './with-line-create';
 import { withGeometryResize } from './with-geometry-resize';
 import { withLineResize } from './with-line-resize';
@@ -24,7 +15,7 @@ import { withLineText } from './with-line-text';
 import { ImageComponent } from '../image.component';
 
 export const withDraw = (board: PlaitBoard) => {
-    const { drawElement, getRectangle, isRectangleHit, isMovable, isAlign } = board;
+    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, isAlign } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isGeometry(context.element)) {
@@ -52,34 +43,19 @@ export const withDraw = (board: PlaitBoard) => {
     };
 
     board.isRectangleHit = (element: PlaitElement, range: Range) => {
-        if (PlaitDrawElement.isGeometry(element)) {
-            const client = getRectangleByPoints(element.points);
-            const rangeRectangle = RectangleClient.toRectangleClient([range.anchor, range.focus]);
-            if (element.textHeight > client.height) {
-                const textClient = getTextRectangle(element);
-                return RectangleClient.isHit(rangeRectangle, client) || RectangleClient.isHit(rangeRectangle, textClient);
-            }
-            return RectangleClient.isHit(rangeRectangle, client);
+        const result = isRectangleHitDrawElement(board, element, range);
+        if (result !== null) {
+            return result;
         }
-        if (PlaitDrawElement.isImage(element)) {
-            const client = getRectangleByPoints(element.points);
-            const rangeRectangle = RectangleClient.toRectangleClient([range.anchor, range.focus]);
-            return RectangleClient.isHit(rangeRectangle, client);
-        }
-        if (PlaitDrawElement.isLine(element)) {
-            const points = getLinePoints(board, element);
-            const strokeWidth = getStrokeWidthByElement(element);
-            const isHitText = isHitLineText(board, element, range.focus);
-            const isHit = isHitPolyLine(points, range.focus, strokeWidth, 3) || isHitText;
-            const rangeRectangle = RectangleClient.toRectangleClient([range.anchor, range.focus]);
-            const isContainPolyLinePoint = points.some(point => {
-                return RectangleClient.isHit(rangeRectangle, RectangleClient.toRectangleClient([point, point]));
-            });
-            const isIntersect = range.anchor === range.focus ? isHit : isPolylineHitRectangle(points, rangeRectangle);
-            return isContainPolyLinePoint || isIntersect;
-        }
-
         return isRectangleHit(element, range);
+    };
+
+    board.isHit = (element, point) => {
+        const result = isHitDrawElement(board, element, point);
+        if (result !== null) {
+            return result;
+        }
+        return isHit(element, point);
     };
 
     board.isMovable = (element: PlaitElement) => {

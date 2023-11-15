@@ -8,7 +8,8 @@ import {
     Range,
     depthFirstRecursion,
     PlaitElement,
-    getIsRecursionFunc
+    getIsRecursionFunc,
+    Point
 } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces';
 import { PlaitMindComponent } from '../mind.component';
@@ -33,6 +34,7 @@ export const withMind = (baseBoard: PlaitBoard) => {
         drawElement,
         dblclick,
         isRectangleHit,
+        isHit,
         getRectangle,
         isMovable,
         isRecursion,
@@ -80,6 +82,15 @@ export const withMind = (baseBoard: PlaitBoard) => {
             return isHit;
         }
         return isRectangleHit(element, range);
+    };
+
+    board.isHit = (element, point: Point) => {
+        if (MindElement.isMindElement(board, element)) {
+            const client = getRectangleByNode(MindElement.getNode(element));
+            const isHit = RectangleClient.isHit(RectangleClient.toRectangleClient([point, point]), client);
+            return isHit;
+        }
+        return isHit(element, point);
     };
 
     board.isMovable = element => {
