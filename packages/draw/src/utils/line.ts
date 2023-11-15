@@ -47,7 +47,7 @@ import { drawLineArrow } from './line-arrow';
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { Op } from 'roughjs/bin/core';
 import { getShape } from './shape';
-import { computeOuterRectangle, computeRectangleOffset, generatorElbowPoints } from './a-star';
+import { computeOuterRectangle, computeRectangleOffset, generatorElbowPoints, getNextPoint, isPointInRectangle } from './a-star';
 import { ELBOW_LINE_OFFSET } from '../constants/line';
 
 export const createLineElement = (
@@ -149,34 +149,39 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             offset
         );
         if (isBound) {
-            const targetRectangle = getRectangleByPoints(targetElement.points);
-            const sourceRectangle = getRectangleByPoints(sourceElement.points);
-            const sourcePoint = getConnectionPoint(sourceElement, element.source.connection!);
-            const targetPoint = getConnectionPoint(targetElement, element.target.connection!);
+            const targetRectangle = RectangleClient.inflate(
+                getRectangleByPoints(targetElement.points),
+                getStrokeWidthByElement(targetElement) * 2
+            );
+            const sourceRectangle = RectangleClient.inflate(
+                getRectangleByPoints(sourceElement.points),
+                getStrokeWidthByElement(sourceElement) * 2
+            );
+            const sourcePoint = handleRefPair.source.point;
+            const targetPoint = handleRefPair.target.point;
             const { sourceOffset, targetOffset } = computeRectangleOffset(sourceRectangle, targetRectangle);
             const sourceOuterRectangle = computeOuterRectangle(sourceRectangle, sourceOffset);
             const targetOuterRectangle = computeOuterRectangle(targetRectangle, targetOffset);
+            const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, handleRefPair.source.direction);
+            const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, handleRefPair.target.direction);
             const isIntersect =
-                RectangleClient.isHit(targetRectangle, RectangleClient.toRectangleClient([sourcePoint])) ||
-                RectangleClient.isHit(targetOuterRectangle, RectangleClient.toRectangleClient([sourcePoint])) ||
-                RectangleClient.isHit(sourceOuterRectangle, RectangleClient.toRectangleClient([targetPoint])) ||
-                RectangleClient.isHit(sourceRectangle, RectangleClient.toRectangleClient([targetPoint]));
+                isPointInRectangle(targetRectangle, sourcePoint) ||
+                isPointInRectangle(targetOuterRectangle, nextSourcePoint) ||
+                isPointInRectangle(sourceOuterRectangle, nextTargetPoint) ||
+                isPointInRectangle(sourceRectangle, targetPoint);
             if (!isIntersect) {
                 points = generatorElbowPoints({
                     sourcePoint,
-                    sourceDirection: handleRefPair.source.direction,
+                    nextSourcePoint,
                     sourceRectangle,
                     sourceOuterRectangle,
                     targetPoint,
-                    targetDirection: handleRefPair.target.direction,
+                    nextTargetPoint,
                     targetRectangle,
-                    targetOuterRectangle,
-                    offset,
-                    board
+                    targetOuterRectangle
                 });
             }
         }
-
         points = removeDuplicatePoints(points);
         return points;
     }

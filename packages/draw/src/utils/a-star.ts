@@ -1,38 +1,28 @@
-import { Direction, PlaitBoard, Point, RectangleClient, isLineHitLine } from '@plait/core';
+import { Direction, Point, RectangleClient, isLineHitLine } from '@plait/core';
 import { removeDuplicatePoints } from './line';
 import { PointGraph, PointNode } from './graph';
 import { ELBOW_LINE_OFFSET } from '../constants/line';
 
 export type Options = {
     sourcePoint: Point;
-    sourceDirection: Direction;
+    nextSourcePoint: Point;
     sourceRectangle: RectangleClient;
     sourceOuterRectangle: RectangleClient;
     targetPoint: Point;
-    targetDirection: Direction;
+    nextTargetPoint: Point;
     targetOuterRectangle: RectangleClient;
     targetRectangle: RectangleClient;
-    offset: number;
-    board: PlaitBoard;
-};
-
-export type NodeInfo = {
-    direction: Direction;
-    rectangle: RectangleClient;
-    outerRectangle: RectangleClient;
 };
 
 export const generatorElbowPoints = (infos: Options) => {
-    const nextSource = getNextPoint(infos.sourcePoint, infos.sourceOuterRectangle, infos.sourceDirection);
-    const nextTarget = getNextPoint(infos.targetPoint, infos.targetOuterRectangle, infos.targetDirection);
-    const points = getGraphPoints({ ...infos, nextSource, nextTarget });
+    const { nextSourcePoint, nextTargetPoint } = infos;
+    const points = getGraphPoints(infos);
     const graph = createGraph(points);
-
     const aStar = new AStar(graph);
-    const a = aStar.search(nextSource, nextTarget, infos.sourcePoint);
-    let temp = nextTarget;
-    let path: Point[] = [nextTarget, infos.targetPoint];
-    while (temp[0] !== nextSource[0] || temp[1] !== nextSource[1]) {
+    const a = aStar.search(nextSourcePoint, nextTargetPoint, infos.sourcePoint);
+    let temp = nextTargetPoint;
+    let path: Point[] = [nextTargetPoint, infos.targetPoint];
+    while (temp[0] !== nextSourcePoint[0] || temp[1] !== nextSourcePoint[1]) {
         const node = graph.get(temp);
         const preNode = a.get(node!);
         path.unshift(preNode!.data);
@@ -44,103 +34,42 @@ export const generatorElbowPoints = (infos: Options) => {
 };
 
 const handleMiddlePoint = (path: Point[], infos: Options) => {
-    let middleX = 0;
-    let middleY = 0;
-    if (!RectangleClient.isHitY(infos.sourceOuterRectangle, infos.targetOuterRectangle)) {
-        let topNode: NodeInfo = {
-            direction: infos.sourceDirection,
-            rectangle: infos.sourceRectangle,
-            outerRectangle: infos.sourceOuterRectangle
-        };
-        let bottomNode: NodeInfo = {
-            direction: infos.targetDirection,
-            rectangle: infos.targetRectangle,
-            outerRectangle: infos.targetOuterRectangle
-        };
-        if (infos.sourceRectangle.y > infos.targetRectangle.y) {
-            const temp = topNode;
-            topNode = bottomNode;
-            bottomNode = temp;
-        }
-        middleY = (topNode.outerRectangle.y + topNode.outerRectangle.height + bottomNode.outerRectangle.y) / 2;
-    }
-    if (!RectangleClient.isHitX(infos.sourceOuterRectangle, infos.targetOuterRectangle)) {
-        let leftNode: NodeInfo = {
-            direction: infos.sourceDirection,
-            rectangle: infos.sourceRectangle,
-            outerRectangle: infos.sourceOuterRectangle
-        };
-        let rightNode: NodeInfo = {
-            direction: infos.targetDirection,
-            rectangle: infos.targetRectangle,
-            outerRectangle: infos.targetOuterRectangle
-        };
-        if (infos.sourceRectangle.x > infos.targetRectangle.x) {
-            const temp = leftNode;
-            leftNode = rightNode;
-            rightNode = temp;
-        }
-        middleX = (leftNode.outerRectangle.x + leftNode.outerRectangle.width + rightNode.outerRectangle.x) / 2;
-    }
     // 基于 middleX/middleY 中线纠正 path
     // 1. 找垂直/水平的线段
     // 2. 找到和middleX/middleY相交的点
     // 3. 基于垂直/水平的线段分别和相交点构建矩形
     // 4. 判断矩形相交
     // 5. 处理 path
+    const { sourceRectangle, sourceOuterRectangle, targetRectangle, targetOuterRectangle } = infos;
 
-    const parallelPaths: [Point, Point][] = [];
-    const parallelYPaths: [Point, Point][] = [];
+    function getMiddleResult(isHit: boolean, isHorizontal: boolean) {
+        const middle = isHit ? 0 : getMiddleLine(sourceOuterRectangle, targetOuterRectangle, !isHorizontal);
+        const options = getAdjustOptions(path, middle, isHorizontal);
+        return (
+            options.pointOfInterSection &&
+            adjust(options.parallelPaths, options.pointOfInterSection, path, sourceRectangle, targetRectangle)
+        );
+    }
 
-    let startX: null | Point = null;
-    let startY: null | Point = null;
-    let pointOfInterSectionX: null | Point = null;
-    let pointOfInterSectionY: null | Point = null;
-
-    for (let index = 0; index < path.length; index++) {
-        const previous = path[index - 1];
-        const current = path[index];
-        if (startX === null && previous && previous[0] === current[0]) {
-            startX = previous;
-        }
-        if (startY === null && previous && previous[1] === current[1]) {
-            startY = previous;
-        }
-        if (startX !== null) {
-            if (previous[0] !== current[0]) {
-                parallelPaths.push([startX, previous]);
-                startX = null;
-            }
-        }
-        if (startY !== null) {
-            if (previous[1] !== current[1]) {
-                parallelYPaths.push([startY, previous]);
-                startY = null;
-            }
-        }
-
-        if (Math.floor(current[0]) === Math.floor(middleX)) {
-            pointOfInterSectionX = current;
-        }
-        if (Math.floor(current[1]) === Math.floor(middleY)) {
-            pointOfInterSectionY = current;
-        }
+    const isHitX = RectangleClient.isHitX(sourceOuterRectangle, targetOuterRectangle);
+    const isHitY = RectangleClient.isHitY(sourceOuterRectangle, targetOuterRectangle);
+    const resultX = getMiddleResult(isHitX, true);
+    const resultY = getMiddleResult(isHitY, false);
+    if (resultX) {
+        path = resultX;
     }
-    if (startX) {
-        parallelPaths.push([startX, path[path.length - 1]]);
-    }
-    if (startY) {
-        parallelYPaths.push([startY, path[path.length - 1]]);
-    }
-    const res1 = pointOfInterSectionX && adjust(parallelPaths, pointOfInterSectionX, path, infos.sourceRectangle, infos.targetRectangle);
-    const res2 = pointOfInterSectionY && adjust(parallelYPaths, pointOfInterSectionY, path, infos.sourceRectangle, infos.targetRectangle);
-    if (res1) {
-        path = res1;
-    }
-    if (res2) {
-        path = res2;
+    if (resultY) {
+        path = resultY;
     }
     return path;
+};
+
+const getMiddleLine = (rectangle1: RectangleClient, rectangle2: RectangleClient, isHorizontal: boolean) => {
+    const axis = isHorizontal ? 'y' : 'x';
+    const side = isHorizontal ? 'height' : 'width';
+    const align = [rectangle1[axis], rectangle1[axis] + rectangle1[side], rectangle2[axis], rectangle2[axis] + rectangle2[side]];
+    const sortArr = align.sort((a, b) => a - b);
+    return (sortArr[1] + sortArr[2]) / 2;
 };
 
 const adjust = (
@@ -172,7 +101,6 @@ const adjust = (
                 }
                 return cornerCount;
             };
-
             const tempCorners = RectangleClient.getCornerPoints(tempRect);
             const indexRangeInPath: number[] = [];
             const indexRangeInCorner: number[] = [];
@@ -245,8 +173,8 @@ export const computeRectangleOffset = (sourceRectangle: RectangleClient, targetR
     return { sourceOffset, targetOffset };
 };
 
-export const getGraphPoints = (infos: any) => {
-    const { nextSource, nextTarget, sourceOuterRectangle, sourceRectangle, targetOuterRectangle, targetRectangle, offset, board } = infos;
+export const getGraphPoints = (infos: Options) => {
+    const { nextSourcePoint, nextTargetPoint, sourceOuterRectangle, targetOuterRectangle } = infos;
     const x: number[] = [];
     const y: number[] = [];
     let result: Point[] = [];
@@ -261,36 +189,29 @@ export const getGraphPoints = (infos: any) => {
         targetOuterRectangle.x,
         targetOuterRectangle.x + targetOuterRectangle.width
     ].sort((a, b) => a - b);
-    x.push((rectanglesX[1] + rectanglesX[2]) / 2, nextSource[0], nextTarget[0]);
-
+    x.push((rectanglesX[1] + rectanglesX[2]) / 2, nextSourcePoint[0], nextTargetPoint[0]);
     const rectanglesY = [
         sourceOuterRectangle.y,
         sourceOuterRectangle.y + sourceOuterRectangle.height,
         targetOuterRectangle.y,
         targetOuterRectangle.y + targetOuterRectangle.height
     ].sort((a, b) => a - b);
-    y.push((rectanglesY[1] + rectanglesY[2]) / 2, nextSource[1], nextTarget[1]);
-
+    y.push((rectanglesY[1] + rectanglesY[2]) / 2, nextSourcePoint[1], nextTargetPoint[1]);
     for (let i = 0; i < x.length; i++) {
         for (let j = 0; j < y.length; j++) {
             const point: Point = [x[i], y[j]];
-
             const isInSource = isPointInRectangle(sourceOuterRectangle, point);
             const isInTarget = isPointInRectangle(targetOuterRectangle, point);
-
             if (!isInSource && !isInTarget) {
                 result.push(point);
             }
         }
     }
-
-    result = removeDuplicatePoints(result);
-    result = result.filter(point => {
+    result = removeDuplicatePoints(result).filter(point => {
         const isInSource = isPointInRectangle(sourceOuterRectangle, point);
         const isInTarget = isPointInRectangle(targetOuterRectangle, point);
         return !isInSource && !isInTarget;
     });
-
     return result;
 };
 
@@ -313,7 +234,6 @@ export const createGraph = (points: Point[]) => {
         for (let j = 0; j < Ys.length; j++) {
             const point: Point = [Xs[i], Ys[j]];
             if (!inHotIndex(point)) continue;
-
             if (i > 0) {
                 const otherPoint: Point = [Xs[i - 1], Ys[j]];
                 if (inHotIndex(otherPoint)) {
@@ -322,7 +242,6 @@ export const createGraph = (points: Point[]) => {
                     connections.push([point, otherPoint]);
                 }
             }
-
             if (j > 0) {
                 const otherPoint: Point = [Xs[i], Ys[j - 1]];
                 if (inHotIndex(otherPoint)) {
@@ -373,13 +292,16 @@ export const getNextPoint = (point: Point, outerRectangle: RectangleClient, dire
 
 class PriorityQueue {
     list: { node: PointNode; priority: number }[];
+
     constructor() {
         this.list = [];
     }
+
     enqueue(item: { node: PointNode; priority: number }) {
         this.list.push(item);
         this.list = this.list.sort((item1, item2) => item1.priority - item2.priority);
     }
+
     dequeue() {
         return this.list.shift();
     }
@@ -387,6 +309,7 @@ class PriorityQueue {
 
 class AStar {
     constructor(private graph: PointGraph) {}
+
     heuristic(a: Point, b: Point) {
         return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
     }
@@ -426,7 +349,34 @@ class AStar {
                 }
             });
         }
-
         return cameFrom;
     }
+}
+
+function getAdjustOptions(path: Point[], middle: number, isHorizon: boolean) {
+    const parallelPaths: [Point, Point][] = [];
+    let start: null | Point = null;
+    let pointOfInterSection: null | Point = null;
+    const axis = isHorizon ? 0 : 1;
+
+    for (let index = 0; index < path.length; index++) {
+        const previous = path[index - 1];
+        const current = path[index];
+        if (start === null && previous && previous[axis] === current[axis]) {
+            start = previous;
+        }
+        if (start !== null) {
+            if (previous[axis] !== current[axis]) {
+                parallelPaths.push([start, previous]);
+                start = null;
+            }
+        }
+        if (current[axis] === middle) {
+            pointOfInterSection = current;
+        }
+    }
+    if (start) {
+        parallelPaths.push([start, path[path.length - 1]]);
+    }
+    return { pointOfInterSection, parallelPaths };
 }
