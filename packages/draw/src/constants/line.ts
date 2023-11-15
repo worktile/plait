@@ -3,4 +3,3 @@ export const DefaultLineStyle = {
     strokeColor: '#000'
 };
 
-export const ELBOW_LINE_OFFSET = 30;

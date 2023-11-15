@@ -90,5 +90,25 @@ export const RectangleClient = {
     },
     getConnectionPoint: (rectangle: RectangleClient, point: PointOfRectangle) => {
         return [rectangle.x + rectangle.width * point[0], rectangle.y + rectangle.height * point[1]] as Point;
+    },
+    expand(rectangle: RectangleClient, left: number, top: number = left, right: number = left, bottom: number = top) {
+        return {
+            x: rectangle.x - left,
+            y: rectangle.y - top,
+            width: rectangle.width + left + right,
+            height: rectangle.height + top + bottom
+        };
+    },
+    getGapCenter(rectangle1: RectangleClient, rectangle2: RectangleClient, isHorizontal: boolean) {
+        const axis = isHorizontal ? 'y' : 'x';
+        const side = isHorizontal ? 'height' : 'width';
+        const align = [rectangle1[axis], rectangle1[axis] + rectangle1[side], rectangle2[axis], rectangle2[axis] + rectangle2[side]];
+        const sortArr = align.sort((a, b) => a - b);
+        return (sortArr[1] + sortArr[2]) / 2;
+    },
+    isPointInRectangle(rectangle: RectangleClient, point: Point) {
+        const x = point[0],
+            y = point[1];
+        return x > rectangle.x && x < rectangle.x + rectangle.width && y > rectangle.y && y < rectangle.y + rectangle.height;
     }
 };

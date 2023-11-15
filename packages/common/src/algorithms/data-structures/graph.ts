@@ -1,8 +1,7 @@
-import { Point } from '@plait/core';
+import { Point, distanceBetweenPointAndPoint } from '@plait/core';
 
 export class PointNode {
     public distance = Number.MAX_SAFE_INTEGER;
-    public shortestPath: PointNode[] = [];
     public adjacentNodes: Map<PointNode, number> = new Map();
     constructor(public data: Point) {}
 }
@@ -31,7 +30,7 @@ export class PointGraph {
             throw new Error(`A point was not found`);
         }
 
-        nodeA.adjacentNodes.set(nodeB, distance(a, b));
+        nodeA.adjacentNodes.set(nodeB, distanceBetweenPointAndPoint(...a, ...b));
     }
 
     has(p: Point): boolean {
@@ -54,8 +53,4 @@ export class PointGraph {
 
         return null;
     }
-}
-
-function distance(a: Point, b: Point): number {
-    return Math.sqrt(Math.pow(b[0] - a[0], 2) + Math.pow(b[1] - a[1], 2));
 }
