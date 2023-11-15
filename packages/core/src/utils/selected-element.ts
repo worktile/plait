@@ -20,7 +20,7 @@ export const getHitElements = (board: PlaitBoard, selection?: Selection, match: 
                 match(node) &&
                 realSelection &&
                 realSelection.ranges.some(range => {
-                    return board.isHitSelection(node, range);
+                    return board.isRectangleHit(node, range);
                 })
             ) {
                 selectedElements.push(node);
@@ -35,7 +35,7 @@ export const getHitElements = (board: PlaitBoard, selection?: Selection, match: 
 export const getHitElementOfRoot = (board: PlaitBoard, rootElements: PlaitElement[], range: Range) => {
     const newRootElements = [...rootElements].reverse();
     return newRootElements.find(item => {
-        return board.isHitSelection(item, range);
+        return board.isRectangleHit(item, range);
     });
 };
 
@@ -45,7 +45,7 @@ export const isHitElements = (board: PlaitBoard, elements: PlaitElement[], range
         elements.map(item => {
             if (!isIntersectionElements) {
                 isIntersectionElements = ranges.some(range => {
-                    return board.isHitSelection(item, range);
+                    return board.isRectangleHit(item, range);
                 });
             }
         });

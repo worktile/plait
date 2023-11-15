@@ -32,7 +32,7 @@ export const withMind = (baseBoard: PlaitBoard) => {
     const {
         drawElement,
         dblclick,
-        isHitSelection,
+        isRectangleHit,
         getRectangle,
         isMovable,
         isRecursion,
@@ -73,13 +73,13 @@ export const withMind = (baseBoard: PlaitBoard) => {
         return isRecursion(element);
     };
 
-    board.isHitSelection = (element, range: Range) => {
+    board.isRectangleHit = (element, range: Range) => {
         if (MindElement.isMindElement(board, element)) {
             const client = getRectangleByNode(MindElement.getNode(element));
             const isHit = RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
             return isHit;
         }
-        return isHitSelection(element, range);
+        return isRectangleHit(element, range);
     };
 
     board.isMovable = element => {

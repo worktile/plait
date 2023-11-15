@@ -24,7 +24,7 @@ import { withLineText } from './with-line-text';
 import { ImageComponent } from '../image.component';
 
 export const withDraw = (board: PlaitBoard) => {
-    const { drawElement, getRectangle, isHitSelection, isMovable, isAlign } = board;
+    const { drawElement, getRectangle, isRectangleHit, isMovable, isAlign } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isGeometry(context.element)) {
@@ -51,7 +51,7 @@ export const withDraw = (board: PlaitBoard) => {
         return getRectangle(element);
     };
 
-    board.isHitSelection = (element: PlaitElement, range: Range) => {
+    board.isRectangleHit = (element: PlaitElement, range: Range) => {
         if (PlaitDrawElement.isGeometry(element)) {
             const client = getRectangleByPoints(element.points);
             const rangeRectangle = RectangleClient.toRectangleClient([range.anchor, range.focus]);
@@ -79,7 +79,7 @@ export const withDraw = (board: PlaitBoard) => {
             return isContainPolyLinePoint || isIntersect;
         }
 
-        return isHitSelection(element, range);
+        return isRectangleHit(element, range);
     };
 
     board.isMovable = (element: PlaitElement) => {
