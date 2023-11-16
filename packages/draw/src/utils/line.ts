@@ -144,13 +144,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         const targetElement = element.target.boundId && getElementById<PlaitGeometry>(board, element.target.boundId);
         const isBound = sourceElement && targetElement;
 
-        let points: Point[] = getPoints(
-            handleRefPair.source.point,
-            handleRefPair.source.direction,
-            handleRefPair.target.point,
-            handleRefPair.target.direction,
-            offset
-        );
+        let points: Point[] = [];
         if (isBound) {
             const targetRectangle = RectangleClient.inflate(
                 getRectangleByPoints(targetElement.points),
@@ -196,6 +190,16 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                     targetOuterRectangle
                 });
             }
+        }
+
+        if (!points.length) {
+            points = getPoints(
+                handleRefPair.source.point,
+                handleRefPair.source.direction,
+                handleRefPair.target.point,
+                handleRefPair.target.direction,
+                offset
+            );
         }
         points = removeDuplicatePoints(points);
         return points;

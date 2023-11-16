@@ -1,6 +1,7 @@
 ---
+'@plait/common': minor
 '@plait/core': minor
 '@plait/draw': minor
 ---
 
-add a-star algorithm
+add a-star algorithms
