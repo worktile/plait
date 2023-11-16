@@ -45,6 +45,7 @@ export function withSelection(board: PlaitBoard) {
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const range = { anchor: point, focus: point };
         const hitElements = getHitElements(board, { ranges: [range] });
+        // if (hitElements.length === 1 && )
         const selectedElements = getSelectedElements(board);
 
         if (hitElements.length === 1 && selectedElements.includes(hitElements[0]) && !options.isDisabledSelect) {

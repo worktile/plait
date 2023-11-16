@@ -4,6 +4,7 @@ import { depthFirstRecursion, getIsRecursionFunc } from './tree';
 import { BOARD_TO_SELECTED_ELEMENT } from './weak-maps';
 import { Selection, Range } from '../interfaces/selection';
 import { PlaitElement } from '../interfaces/element';
+import { Point } from '../interfaces/point';
 
 export const getHitElements = (board: PlaitBoard, selection?: Selection, match: (element: PlaitElement) => boolean = () => true) => {
     const realSelection = selection || board.selection;
@@ -30,6 +31,31 @@ export const getHitElements = (board: PlaitBoard, selection?: Selection, match: 
         true
     );
     return selectedElements;
+};
+
+export const getHitElementsByPoint = (board: PlaitBoard, point: Point, match: (element: PlaitElement) => boolean = () => true) => {
+    let rectangleHitElement: PlaitElement | undefined = undefined;
+    let hitElement: PlaitElement | undefined = undefined;
+    depthFirstRecursion<Ancestor>(
+        board,
+        node => {
+            if (rectangleHitElement && hitElement) {
+                return;
+            }
+            if (PlaitBoard.isBoard(node) || !match(node)) {
+                return;
+            }
+            if (!hitElement && board.isHit(node, point)) {
+                hitElement = node;
+            }
+            if (!rectangleHitElement && board.isRectangleHit(node, { anchor: point, focus: point })) {
+                rectangleHitElement = node;
+            }
+        },
+        getIsRecursionFunc(board),
+        true
+    );
+    return { rectangleHitElement, hitElement };
 };
 
 export const getHitElementOfRoot = (board: PlaitBoard, rootElements: PlaitElement[], range: Range) => {
