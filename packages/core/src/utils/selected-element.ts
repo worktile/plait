@@ -2,51 +2,59 @@ import { PlaitBoard } from '../interfaces/board';
 import { Ancestor } from '../interfaces/node';
 import { depthFirstRecursion, getIsRecursionFunc } from './tree';
 import { BOARD_TO_SELECTED_ELEMENT } from './weak-maps';
-import { Selection, Range } from '../interfaces/selection';
+import { Selection } from '../interfaces/selection';
 import { PlaitElement } from '../interfaces/element';
 import { Point } from '../interfaces/point';
 
-export const getHitElements = (board: PlaitBoard, selection?: Selection, match: (element: PlaitElement) => boolean = () => true) => {
+export const getHitElementsBySelection = (
+    board: PlaitBoard,
+    selection?: Selection,
+    match: (element: PlaitElement) => boolean = () => true
+) => {
     const realSelection = selection || board.selection;
-    const selectedElements: PlaitElement[] = [];
+    const rectangleHitElements: PlaitElement[] = [];
     const isCollapsed = realSelection && realSelection.ranges.length === 1 && Selection.isCollapsed(realSelection.ranges[0]);
+    if (isCollapsed) {
+        const hitElement = getHitElementByPoint(board, realSelection.ranges[0].anchor, match);
+        if (hitElement) {
+            return [hitElement];
+        } else {
+            return [];
+        }
+    }
+    const range = realSelection!.ranges[0];
     depthFirstRecursion<Ancestor>(
         board,
         node => {
-            if (selectedElements.length > 0 && isCollapsed) {
-                return;
-            }
-            if (
-                !PlaitBoard.isBoard(node) &&
-                match(node) &&
-                realSelection &&
-                realSelection.ranges.some(range => {
-                    return board.isRectangleHit(node, range);
-                })
-            ) {
-                selectedElements.push(node);
+            if (!PlaitBoard.isBoard(node) && match(node) && board.isRectangleHit(node, range)) {
+                rectangleHitElements.push(node);
             }
         },
         getIsRecursionFunc(board),
         true
     );
-    return selectedElements;
+    return rectangleHitElements;
 };
 
-export const getHitElementsByPoint = (board: PlaitBoard, point: Point, match: (element: PlaitElement) => boolean = () => true) => {
+export const getHitElementByPoint = (
+    board: PlaitBoard,
+    point: Point,
+    match: (element: PlaitElement) => boolean = () => true
+): undefined | PlaitElement => {
     let rectangleHitElement: PlaitElement | undefined = undefined;
     let hitElement: PlaitElement | undefined = undefined;
     depthFirstRecursion<Ancestor>(
         board,
         node => {
-            if (rectangleHitElement && hitElement) {
+            if (hitElement) {
                 return;
             }
             if (PlaitBoard.isBoard(node) || !match(node)) {
                 return;
             }
-            if (!hitElement && board.isHit(node, point)) {
+            if (board.isHit(node, point)) {
                 hitElement = node;
+                return;
             }
             if (!rectangleHitElement && board.isRectangleHit(node, { anchor: point, focus: point })) {
                 rectangleHitElement = node;
@@ -55,28 +63,22 @@ export const getHitElementsByPoint = (board: PlaitBoard, point: Point, match: (e
         getIsRecursionFunc(board),
         true
     );
-    return { rectangleHitElement, hitElement };
+    return hitElement || rectangleHitElement;
 };
 
-export const getHitElementOfRoot = (board: PlaitBoard, rootElements: PlaitElement[], range: Range) => {
+export const getHitElement = (board: PlaitBoard, rootElements: PlaitElement[], point: Point) => {
     const newRootElements = [...rootElements].reverse();
-    return newRootElements.find(item => {
-        return board.isRectangleHit(item, range);
-    });
-};
-
-export const isHitElements = (board: PlaitBoard, elements: PlaitElement[], ranges: Range[]) => {
-    let isIntersectionElements = false;
-    if (elements.length) {
-        elements.map(item => {
-            if (!isIntersectionElements) {
-                isIntersectionElements = ranges.some(range => {
-                    return board.isRectangleHit(item, range);
-                });
-            }
-        });
+    let rectangleHitElement;
+    for (let index = 0; index < newRootElements.length; index++) {
+        const element = newRootElements[index];
+        if (board.isHit(element, point)) {
+            return element;
+        }
+        if (!rectangleHitElement && board.isRectangleHit(element, { anchor: point, focus: point })) {
+            rectangleHitElement;
+        }
     }
-    return isIntersectionElements;
+    return rectangleHitElement;
 };
 
 export const cacheSelectedElements = (board: PlaitBoard, selectedElements: PlaitElement[]) => {

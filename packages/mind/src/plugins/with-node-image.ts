@@ -1,6 +1,5 @@
 import {
     PlaitBoard,
-    getHitElements,
     isMainPointer,
     toPoint,
     transformPoint,
@@ -13,7 +12,8 @@ import {
     PlaitElement,
     setClipboardDataByMedia,
     getClipboardDataByMedia,
-    RectangleClient
+    RectangleClient,
+    getHitElementByPoint
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
@@ -38,28 +38,24 @@ export const withNodeImage = (board: PlaitBoard) => {
 
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const range = { anchor: point, focus: point };
-        const hitImageElements = getHitElements(
+        const hitImageElement = getHitElementByPoint(
             board,
-            { ranges: [range] },
+            point,
             (value: PlaitElement) => MindElement.isMindElement(board, value) && MindElement.hasImage(value)
         );
-        const hasImage = hitImageElements.length;
-        const hitImage = hasImage > 0 && isHitImage(board, hitImageElements[0] as MindElement<ImageData>, range);
-        if (selectedImageElement && hitImage && hitImageElements[0] === selectedImageElement) {
+        const hitImage = hitImageElement && isHitImage(board, hitImageElement as MindElement<ImageData>, range);
+        if (selectedImageElement && hitImage && hitImageElement === selectedImageElement) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
             pointerDown(event);
             return;
         }
-
         if (selectedImageElement && MindElement.isMindElement(board, selectedImageElement)) {
             setImageFocus(board, selectedImageElement as MindElement<ImageData>, false);
         }
-
         if (hitImage) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
-            setImageFocus(board, hitImageElements[0] as MindElement<ImageData>, true);
+            setImageFocus(board, hitImageElement as MindElement<ImageData>, true);
         }
-
         pointerDown(event);
     };
 

@@ -11,12 +11,12 @@ import {
     createG,
     PlaitNode,
     PlaitPointerType,
-    getHitElements,
     isMainPointer,
-    CoreTransforms
+    CoreTransforms,
+    getHitElementByPoint
 } from '@plait/core';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
-import { MindElement } from '../interfaces/element';
+import { MindElement, PlaitMind } from '../interfaces/element';
 import { DetectResult } from '../interfaces/node';
 
 import {
@@ -60,23 +60,21 @@ export const withNodeDnd = (board: PlaitBoard) => {
         }
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const selectedElements = getSelectedElements(board);
-        const hitTarget = getHitElements(board, { ranges: [{ anchor: point, focus: point }] });
-        const targetElement = hitTarget && hitTarget.length === 1 && MindElement.isMindElement(board, hitTarget[0]) ? hitTarget[0] : null;
-        if (
-            targetElement &&
-            MindElement.isMindElement(board, targetElement) &&
-            !targetElement.isRoot &&
-            !AbstractNode.isAbstract(targetElement)
-        ) {
+        const hitElement = getHitElementByPoint(
+            board,
+            point,
+            element => MindElement.isMindElement(board, element) && !PlaitMind.isMind(element) && AbstractNode.isAbstract(element)
+        ) as undefined | MindElement;
+        if (hitElement) {
             const targetElements = selectedElements.filter(
                 element => MindElement.isMindElement(board, element) && !element.isRoot && !AbstractNode.isAbstract(element)
             ) as MindElement[];
-            const isMultiple = selectedElements.length > 0 && selectedElements.includes(targetElement);
+            const isMultiple = selectedElements.length > 0 && selectedElements.includes(hitElement);
             if (isMultiple) {
                 activeElements = targetElements;
                 startPoint = point;
             } else {
-                activeElements = [targetElement];
+                activeElements = [hitElement];
                 startPoint = point;
             }
         }
