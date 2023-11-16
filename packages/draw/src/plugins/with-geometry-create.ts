@@ -187,7 +187,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
     return board;
 };
 
-const getDefaultGeometryPoints = (pointer: DrawPointerType, targetPoint: Point) => {
+export const getDefaultGeometryPoints = (pointer: DrawPointerType, targetPoint: Point) => {
     const defaultProperty = getGeometryDefaultProperty(pointer);
     return getPointsByCenterPoint(targetPoint, defaultProperty.width, defaultProperty.height);
 };

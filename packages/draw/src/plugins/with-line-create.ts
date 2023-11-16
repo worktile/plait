@@ -63,6 +63,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
                 [start, movingPoint],
                 { marker: LineMarkerType.none, connection: sourceRef.connection, boundId: sourceRef?.boundId },
                 { marker: LineMarkerType.arrow, connection: targetRef.connection, boundId: targetRef?.boundId },
+                [],
                 {
                     strokeColor: DefaultLineStyle.strokeColor,
                     strokeWidth: DefaultLineStyle.strokeWidth
