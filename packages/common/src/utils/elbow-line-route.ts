@@ -1,7 +1,9 @@
 import { Direction, Point, RectangleClient } from '@plait/core';
 import { removeDuplicatePoints } from '../utils';
 import { DEFAULT_ROUTE_MARGIN } from '../constants';
-import { AStar, PointGraph } from '../algorithms';
+// import { AStar, PointGraph } from '../algorithms';
+import { AStar, Graph, GraphVertex } from '../algorithms';
+import GraphEdge from '../algorithms/data-structures/graph';
 
 export interface ElbowLineRouteOptions {
     sourcePoint: Point;
@@ -33,15 +35,16 @@ export const generateElbowLineRoute = (options: ElbowLineRouteOptions) => {
     const points = getGraphPoints(options);
     const graph = createGraph(points);
     const aStar = new AStar(graph);
-    aStar.search(nextSourcePoint, nextTargetPoint, options.sourcePoint);
-    let route = aStar.getRoute(nextSourcePoint, nextTargetPoint);
-    route = [options.sourcePoint, ...route, nextTargetPoint, options.targetPoint];
-    const isHitX = RectangleClient.isHitX(options.sourceOuterRectangle, options.targetOuterRectangle);
-    const isHitY = RectangleClient.isHitY(options.sourceOuterRectangle, options.targetOuterRectangle);
-    const xAxis = isHitX ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, false);
-    const yAxis = isHitY ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
-    route = routeAdjust(route, { xAxis, yAxis, sourceRectangle: options.sourceRectangle, targetRectangle: options.targetRectangle });
-    return route;
+    // console.log('==============', graph);
+    // aStar.search(nextSourcePoint, nextTargetPoint, options.sourcePoint);
+    // let route = aStar.getRoute(nextSourcePoint, nextTargetPoint);
+    // route = [options.sourcePoint, ...route, nextTargetPoint, options.targetPoint];
+    // const isHitX = RectangleClient.isHitX(options.sourceOuterRectangle, options.targetOuterRectangle);
+    // const isHitY = RectangleClient.isHitY(options.sourceOuterRectangle, options.targetOuterRectangle);
+    // const xAxis = isHitX ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, false);
+    // const yAxis = isHitY ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
+    // route = routeAdjust(route, { xAxis, yAxis, sourceRectangle: options.sourceRectangle, targetRectangle: options.targetRectangle });
+    return points;
 };
 
 const routeAdjust = (path: Point[], options: RouteAdjustOptions) => {
@@ -195,41 +198,58 @@ export const getGraphPoints = (options: ElbowLineRouteOptions) => {
 };
 
 export const createGraph = (points: Point[]) => {
-    const graph = new PointGraph();
+    // const graph = new PointGraph();
+    const graph = new Graph();
+
     const Xs: number[] = [];
     const Ys: number[] = [];
-    const connections: Point[][] = [];
     points.forEach(p => {
         const x = p[0],
             y = p[1];
         if (Xs.indexOf(x) < 0) Xs.push(x);
         if (Ys.indexOf(y) < 0) Ys.push(y);
-        graph.add(p);
+        // graph.add(p);
     });
     Xs.sort((a, b) => a - b);
     Ys.sort((a, b) => a - b);
-    const inHotIndex = (p: Point): boolean => graph.has(p);
+    // const inHotIndex = (p: Point): boolean => graph.has(p);
+    let count = 0;
     for (let i = 0; i < Xs.length; i++) {
         for (let j = 0; j < Ys.length; j++) {
             const point: Point = [Xs[i], Ys[j]];
-            if (!inHotIndex(point)) continue;
+            count++;
+            // if (!inHotIndex(point)) continue;
+            // if (i > 0) {
+            //     const otherPoint: Point = [Xs[i - 1], Ys[j]];
+            //     if (inHotIndex(otherPoint)) {
+            //         graph.connect(otherPoint, point);
+            //         graph.connect(point, otherPoint);
+            //     }
+            // }
+            // if (j > 0) {
+            //     const otherPoint: Point = [Xs[i], Ys[j - 1]];
+            //     if (inHotIndex(otherPoint)) {
+            //         graph.connect(otherPoint, point);
+            //         graph.connect(point, otherPoint);
+            //     }
+            // }
             if (i > 0) {
                 const otherPoint: Point = [Xs[i - 1], Ys[j]];
-                if (inHotIndex(otherPoint)) {
-                    graph.connect(otherPoint, point);
-                    graph.connect(point, otherPoint);
-                    connections.push([point, otherPoint]);
-                }
+                const vertex1 = new GraphVertex(otherPoint);
+                const vertex2 = new GraphVertex(point);
+                const edge = new GraphEdge(vertex1, vertex2);
+                graph.addEdge(edge);
             }
+
             if (j > 0) {
                 const otherPoint: Point = [Xs[i], Ys[j - 1]];
-                if (inHotIndex(otherPoint)) {
-                    graph.connect(otherPoint, point);
-                    graph.connect(point, otherPoint);
-                    connections.push([point, otherPoint]);
-                }
+                const vertex1 = new GraphVertex(otherPoint);
+                const vertex2 = new GraphVertex(point);
+                const edge = new GraphEdge(vertex1, vertex2);
+                graph.addEdge(edge);
             }
         }
+        // console.log(`count: ${count}`);
     }
     return graph;
 };

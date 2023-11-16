@@ -290,6 +290,7 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     const strokeLineDash = getLineDashByElement(element);
     const options = { stroke: strokeColor, strokeWidth, strokeLineDash };
     const lineG = createG();
+
     let points = getLinePoints(board, element);
     let line;
     if (element.shape === LineShape.curve) {
