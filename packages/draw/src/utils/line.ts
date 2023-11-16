@@ -15,9 +15,7 @@ import {
     PointOfRectangle,
     Direction,
     Vector,
-    distanceBetweenPointAndPoint,
-    drawCircle,
-    isLineHitLine
+    distanceBetweenPointAndPoint
 } from '@plait/core';
 import {
     getPoints,
@@ -41,6 +39,7 @@ import {
     LineHandleRef,
     LineMarkerType,
     LineShape,
+    LineText,
     PlaitDrawElement,
     PlaitGeometry,
     PlaitLine
@@ -58,6 +57,7 @@ export const createLineElement = (
     points: [Point, Point],
     source: LineHandle,
     target: LineHandle,
+    texts?: LineText[],
     options?: Pick<PlaitLine, 'strokeColor' | 'strokeWidth'>
 ): PlaitLine => {
     return {
@@ -65,7 +65,7 @@ export const createLineElement = (
         type: 'line',
         shape,
         source,
-        texts: [],
+        texts: texts ? texts : [],
         target,
         opacity: 1,
         points,
