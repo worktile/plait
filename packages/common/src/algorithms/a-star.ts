@@ -30,8 +30,8 @@ export class AStar {
             if (currentPoint[0] === end[0] && currentPoint[1] === end[1]) {
                 break;
             }
-            current.node.adjacentNodes.forEach((number, next) => {
-                let newCost = costSoFar.get(current!.node)! + number;
+            current.node.adjacentNodes.forEach(next => {
+                let newCost = costSoFar.get(current!.node)! + this.heuristic(next.data, current!.node.data);
                 const previousNode = this.cameFrom.get(current!.node);
                 // 拐点权重
                 const previousPoint = previousNode ? previousNode.data : previousStart;
