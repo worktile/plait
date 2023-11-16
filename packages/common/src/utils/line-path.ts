@@ -172,3 +172,14 @@ export function isPointOnLineSegment(point: Point, startPoint: Point, endPoint: 
 
     return Math.abs(distanceToStart + distanceToEnd - segmentLength) < 0.1;
 }
+
+export const removeDuplicatePoints = (points: Point[]) => {
+    const newArray: Point[] = [];
+    points.forEach(point => {
+        const index = newArray.findIndex(otherPoint => {
+            return Point.isEquals(point, otherPoint);
+        });
+        if (index === -1) newArray.push(point);
+    });
+    return newArray;
+};

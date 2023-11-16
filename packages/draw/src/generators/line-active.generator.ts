@@ -1,9 +1,8 @@
 import { PlaitBoard, Point, createG, drawCircle, drawRectangle } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
-import { getCurvePoints, getLinePoints, removeDuplicatePoints, transformOpsToPoints } from '../utils';
+import { getCurvePoints, getLinePoints } from '../utils';
 import { DefaultGeometryActiveStyle } from '../constants';
-import { pointsOnBezierCurves } from 'points-on-curve';
 
 export interface ActiveData {
     selected: boolean;
