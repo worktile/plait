@@ -66,11 +66,11 @@ export const getHitElementByPoint = (
     return hitElement || rectangleHitElement;
 };
 
-export const getHitElement = (board: PlaitBoard, rootElements: PlaitElement[], point: Point) => {
-    const newRootElements = [...rootElements].reverse();
+export const getHitElementInElements = (board: PlaitBoard, point: Point, elements: PlaitElement[], isReverse = true) => {
+    const newElements = [...elements].reverse();
     let rectangleHitElement;
-    for (let index = 0; index < newRootElements.length; index++) {
-        const element = newRootElements[index];
+    for (let index = 0; index < newElements.length; index++) {
+        const element = newElements[index];
         if (board.isHit(element, point)) {
             return element;
         }

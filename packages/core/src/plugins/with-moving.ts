@@ -5,12 +5,11 @@ import { toPoint } from '../utils/dom/common';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
-import { getHitElement, getSelectedElements } from '../utils/selected-element';
+import { getHitElementInElements, getSelectedElements } from '../utils/selected-element';
 import { PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
 import { addMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
-import { Range } from '../interfaces';
 import { isPreventTouchMove, preventTouchMove, handleTouchTarget, getRectangleByElements } from '../utils';
 import { AlignReaction } from '../utils/reaction-manager';
 
@@ -31,7 +30,7 @@ export function withMoving(board: PlaitBoard) {
         if (movableElements.length && !isPreventTouchMove(board)) {
             startPoint = point;
             const selectedRootElements = getSelectedElements(board).filter(item => movableElements.includes(item));
-            const hitElement = getHitElement(board, movableElements, point);
+            const hitElement = getHitElementInElements(board, point, movableElements);
             if (hitElement && selectedRootElements.includes(hitElement)) {
                 activeElements = selectedRootElements;
             } else if (hitElement) {

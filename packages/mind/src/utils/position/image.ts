@@ -25,10 +25,10 @@ export function getImageForeignRectangle(board: PlaitMindBoard, element: MindEle
     return rectangle;
 }
 
-export const isHitImage = (board: PlaitBoard, element: MindElement<ImageData>, range: Range) => {
+export const isHitImage = (board: PlaitBoard, element: MindElement<ImageData>, point: Point) => {
     const imageRectangle = getImageForeignRectangle(board as PlaitMindBoard, element);
     const imageOutlineRectangle = RectangleClient.getOutlineRectangle(imageRectangle, -RESIZE_HANDLE_DIAMETER / 2);
-    return RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), imageOutlineRectangle);
+    return RectangleClient.isPointInRectangle(imageOutlineRectangle, point);
 };
 
 export const getHitImageResizeHandleDirection = (board: PlaitBoard, element: MindElement<ImageData>, point: Point) => {
