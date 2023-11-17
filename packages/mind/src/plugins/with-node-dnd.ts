@@ -60,12 +60,13 @@ export const withNodeDnd = (board: PlaitBoard) => {
         }
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const selectedElements = getSelectedElements(board);
-        const hitElement = getHitElementByPoint(
-            board,
-            point,
-            element => MindElement.isMindElement(board, element) && !PlaitMind.isMind(element) && AbstractNode.isAbstract(element)
-        ) as undefined | MindElement;
-        if (hitElement) {
+        const hitElement = getHitElementByPoint(board, point);
+        if (
+            hitElement &&
+            MindElement.isMindElement(board, hitElement) &&
+            !PlaitMind.isMind(hitElement) &&
+            !AbstractNode.isAbstract(hitElement)
+        ) {
             const targetElements = selectedElements.filter(
                 element => MindElement.isMindElement(board, element) && !element.isRoot && !AbstractNode.isAbstract(element)
             ) as MindElement[];

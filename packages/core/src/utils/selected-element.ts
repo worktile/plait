@@ -65,21 +65,6 @@ export const getHitElementByPoint = (
     return hitElement || rectangleHitElement;
 };
 
-export const getHitElementInElements = (board: PlaitBoard, point: Point, elements: PlaitElement[], isReverse = true) => {
-    const newElements = [...elements].reverse();
-    let rectangleHitElement;
-    for (let index = 0; index < newElements.length; index++) {
-        const element = newElements[index];
-        if (board.isHit(element, point)) {
-            return element;
-        }
-        if (!rectangleHitElement && board.isRectangleHit(element, { anchor: point, focus: point })) {
-            rectangleHitElement;
-        }
-    }
-    return rectangleHitElement;
-};
-
 export const cacheSelectedElements = (board: PlaitBoard, selectedElements: PlaitElement[]) => {
     BOARD_TO_SELECTED_ELEMENT.set(board, selectedElements);
 };

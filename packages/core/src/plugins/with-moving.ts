@@ -5,7 +5,7 @@ import { toPoint } from '../utils/dom/common';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
-import { getHitElementInElements, getSelectedElements } from '../utils/selected-element';
+import { getHitElementByPoint, getSelectedElements } from '../utils/selected-element';
 import { PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
 import { addMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
@@ -29,12 +29,14 @@ export function withMoving(board: PlaitBoard) {
         let movableElements = board.children.filter(item => board.isMovable(item));
         if (movableElements.length && !isPreventTouchMove(board)) {
             startPoint = point;
-            const selectedRootElements = getSelectedElements(board).filter(item => movableElements.includes(item));
-            const hitElement = getHitElementInElements(board, point, movableElements);
-            if (hitElement && selectedRootElements.includes(hitElement)) {
-                activeElements = selectedRootElements;
-            } else if (hitElement) {
-                activeElements = [hitElement];
+            const selectedMovableElements = getSelectedElements(board).filter(item => movableElements.includes(item));
+            const hitElement = getHitElementByPoint(board, point);
+            if (hitElement && movableElements.includes(hitElement)) {
+                if (selectedMovableElements.includes(hitElement)) {
+                    activeElements = selectedMovableElements;
+                } else {
+                    activeElements = [hitElement];
+                }
             }
             if (activeElements.length > 0) {
                 preventTouchMove(board, event, true);
