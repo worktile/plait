@@ -1,5 +1,26 @@
 # @plait/draw
 
+## 0.30.0
+
+### Minor Changes
+
+-   [`8eae35a8`](https://github.com/worktile/plait/commit/8eae35a8440b00f29d9349a8ad6ea87ae4cb01ce) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename isHitSelection to isRectangleHit
+
+*   [#625](https://github.com/worktile/plait/pull/625) [`1bd7f3fd`](https://github.com/worktile/plait/commit/1bd7f3fdc63cf0a036af378f7d1b60adf3bf4673) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - optimize performance
+
+-   [`882c5e1e`](https://github.com/worktile/plait/commit/882c5e1e247d5411c9f8f7527acad910301a479b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move cached element of focused image to common
+    add override function isImageBindingAllowed
+
+*   [#620](https://github.com/worktile/plait/pull/620) [`c02e846c`](https://github.com/worktile/plait/commit/c02e846c615afe44d474da5eaf97da93646c045a) Thanks [@WBbug](https://github.com/WBbug)! - add a-star algorithms
+
+-   [#624](https://github.com/worktile/plait/pull/624) [`51591399`](https://github.com/worktile/plait/commit/515913995e35f9567c1125c18fcb427b9d8817db) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove range interface and remove ranges from selection
+
+*   [#623](https://github.com/worktile/plait/pull/623) [`0c643203`](https://github.com/worktile/plait/commit/0c643203a183e4bbe73e38225c5c2804545e2b56) Thanks [@WBbug](https://github.com/WBbug)! - add createDefaultFlowchart function
+
+-   [`09c7083a`](https://github.com/worktile/plait/commit/09c7083af9f52ee6b6bef70dad99c68da4ad1e3e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add overridable function isHit
+
+*   [#624](https://github.com/worktile/plait/pull/624) [`51591399`](https://github.com/worktile/plait/commit/515913995e35f9567c1125c18fcb427b9d8817db) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use isHit and isRectangle to distinguish hit solid element or hit rectangle area of element
+
 ## 0.29.0
 
 ### Minor Changes

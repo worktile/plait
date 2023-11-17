@@ -1,5 +1,16 @@
 # @plait/common
 
+## 0.30.0
+
+### Minor Changes
+
+-   [#625](https://github.com/worktile/plait/pull/625) [`1bd7f3fd`](https://github.com/worktile/plait/commit/1bd7f3fdc63cf0a036af378f7d1b60adf3bf4673) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - optimize performance
+
+*   [`882c5e1e`](https://github.com/worktile/plait/commit/882c5e1e247d5411c9f8f7527acad910301a479b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move cached element of focused image to common
+    add override function isImageBindingAllowed
+
+-   [#620](https://github.com/worktile/plait/pull/620) [`c02e846c`](https://github.com/worktile/plait/commit/c02e846c615afe44d474da5eaf97da93646c045a) Thanks [@WBbug](https://github.com/WBbug)! - add a-star algorithms
+
 ## 0.29.0
 
 ## 0.28.0
