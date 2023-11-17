@@ -90,7 +90,10 @@ const adjust = (route: Point[], options: AdjustOptions) => {
                         pre &&
                         current &&
                         next &&
-                        !((current[0] === pre[0] && current[0] === next[0]) || (current[1] === pre[1] && current[1] === next[1]))
+                        !(
+                            (Math.floor(current[0]) === Math.floor(pre[0]) && Math.floor(current[0]) === Math.floor(next[0])) ||
+                            (Math.floor(current[1]) === Math.floor(pre[1]) && Math.floor(current[1]) === Math.floor(next[1]))
+                        )
                     ) {
                         cornerCount++;
                     }
@@ -198,7 +201,6 @@ export const createGraph = (points: Point[]) => {
     const graph = new PointGraph();
     const Xs: number[] = [];
     const Ys: number[] = [];
-    const connections: Point[][] = [];
     points.forEach(p => {
         const x = p[0],
             y = p[1];
@@ -218,7 +220,6 @@ export const createGraph = (points: Point[]) => {
                 if (inHotIndex(otherPoint)) {
                     graph.connect(otherPoint, point);
                     graph.connect(point, otherPoint);
-                    connections.push([point, otherPoint]);
                 }
             }
             if (j > 0) {
@@ -226,7 +227,6 @@ export const createGraph = (points: Point[]) => {
                 if (inHotIndex(otherPoint)) {
                     graph.connect(otherPoint, point);
                     graph.connect(point, otherPoint);
-                    connections.push([point, otherPoint]);
                 }
             }
         }
