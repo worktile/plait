@@ -40,10 +40,17 @@ export const withLineResize = (board: PlaitBoard) => {
                 const object = resizeRef.handle === LineResizeHandle.source ? source : target;
                 points[pointIndex] = resizeState.endTransformPoint;
                 const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, -4);
-                object.connection = hitElement ? transformPointToConnection(board, resizeState.endTransformPoint, hitElement) : undefined;
-                object.boundId = hitElement ? hitElement.id : undefined;
-                if (points.length === 2 && !hitElement) {
-                    adjust(points, pointIndex);
+                if (hitElement) {
+                    object.connection = transformPointToConnection(board, resizeState.endTransformPoint, hitElement);
+                    object.boundId = hitElement.id;
+                } else {
+                    object.connection = undefined;
+                    object.boundId = undefined;
+                    if (points.length === 2) {
+                        let movingPoint = points[pointIndex];
+                        const otherPoint = points[Number(!pointIndex)];
+                        points[pointIndex] = alignPoints(otherPoint, movingPoint);
+                    }
                 }
             } else if (resizeRef.handle === LineResizeHandle.addHandle) {
                 points.splice(pointIndex + 1, 0, resizeState.endTransformPoint);
@@ -59,14 +66,14 @@ export const withLineResize = (board: PlaitBoard) => {
     return board;
 };
 
-const adjust = (points: Point[], pointIndex: number) => {
+const alignPoints = (basePoint: Point, movingPoint: Point) => {
     const offset = 3;
-    const movingPoint = points[pointIndex];
-    const otherPoint = points[Number(!pointIndex)];
-    if (Math.abs(movingPoint[0] - otherPoint[0]) <= offset) {
-        points[pointIndex][0] = otherPoint[0];
+    const newPoint: Point = [...movingPoint];
+    if (Point.isVerticalAlign(newPoint, basePoint, offset)) {
+        newPoint[0] = basePoint[0];
     }
-    if (Math.abs(movingPoint[1] - otherPoint[1]) <= offset) {
-        points[pointIndex][1] = otherPoint[1];
+    if (Point.isHorizontalAlign(newPoint, basePoint, offset)) {
+        newPoint[1] = basePoint[1];
     }
+    return newPoint;
 };

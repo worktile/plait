@@ -1,4 +1,5 @@
 ---
+'@plait/core': minor
 '@plait/draw': minor
 ---
 
