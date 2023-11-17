@@ -36,16 +36,15 @@ export const withLineResize = (board: PlaitBoard) => {
             let points: Point[] = [...resizeRef.element.points];
             let source: LineHandle = { ...resizeRef.element.source };
             let target: LineHandle = { ...resizeRef.element.target };
-            if (resizeRef.handle === LineResizeHandle.source) {
+            if (resizeRef.handle === LineResizeHandle.source || resizeRef.handle === LineResizeHandle.target) {
+                const object = resizeRef.handle === LineResizeHandle.source ? source : target;
                 points[pointIndex] = resizeState.endTransformPoint;
                 const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, -4);
-                source.connection = hitElement ? transformPointToConnection(board, resizeState.endTransformPoint, hitElement) : undefined;
-                source.boundId = hitElement ? hitElement.id : undefined;
-            } else if (resizeRef.handle === LineResizeHandle.target) {
-                points[pointIndex] = resizeState.endTransformPoint;
-                const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, -4);
-                target.connection = hitElement ? transformPointToConnection(board, resizeState.endTransformPoint, hitElement) : undefined;
-                target.boundId = hitElement ? hitElement.id : undefined;
+                object.connection = hitElement ? transformPointToConnection(board, resizeState.endTransformPoint, hitElement) : undefined;
+                object.boundId = hitElement ? hitElement.id : undefined;
+                if (points.length === 2 && !hitElement) {
+                    adjust(points, pointIndex);
+                }
             } else if (resizeRef.handle === LineResizeHandle.addHandle) {
                 points.splice(pointIndex + 1, 0, resizeState.endTransformPoint);
             } else {
@@ -58,4 +57,16 @@ export const withLineResize = (board: PlaitBoard) => {
     withResize<PlaitLine, LineResizeHandle>(board, options);
 
     return board;
+};
+
+const adjust = (points: Point[], pointIndex: number) => {
+    const offset = 3;
+    const movingPoint = points[pointIndex];
+    const otherPoint = points[Number(!pointIndex)];
+    if (Math.abs(movingPoint[0] - otherPoint[0]) <= offset) {
+        points[pointIndex][0] = otherPoint[0];
+    }
+    if (Math.abs(movingPoint[1] - otherPoint[1]) <= offset) {
+        points[pointIndex][1] = otherPoint[1];
+    }
 };
