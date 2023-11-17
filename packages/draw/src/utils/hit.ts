@@ -1,6 +1,6 @@
 import { PlaitElement, RectangleClient, Selection, PlaitBoard, isPolylineHitRectangle, Point } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
-import { getRectangleByPoints } from '@plait/common';
+import { TRANSPARENT, getRectangleByPoints } from '@plait/common';
 import { getTextRectangle } from './geometry';
 import { getLinePoints, isHitLineText, isHitPolyLine } from './line';
 import { getFillByElement, getStrokeWidthByElement } from './style/stroke';
@@ -41,7 +41,7 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
 export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point) => {
     if (PlaitDrawElement.isGeometry(element)) {
         const fill = getFillByElement(element);
-        if (fill !== DefaultGeometryStyle.fill) {
+        if (fill !== DefaultGeometryStyle.fill && fill !== TRANSPARENT) {
             return isRectangleHitDrawElement(board, element, { anchor: point, focus: point });
         } else {
             const strokeWidth = getStrokeWidthByElement(element);

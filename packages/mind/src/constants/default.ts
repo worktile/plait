@@ -2,8 +2,6 @@ export const WithMindPluginKey = 'plait-mind-plugin-key';
 
 export const BASE = 4;
 export const PRIMARY_COLOR = '#6698FF';
-
-export const TRANSPARENT = 'transparent';
 export const GRAY_COLOR = '#AAAAAA';
 export const STROKE_WIDTH = 3;
 export const BRANCH_WIDTH = 3;

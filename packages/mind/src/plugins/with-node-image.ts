@@ -36,13 +36,13 @@ export const withNodeImage = (board: PlaitBoard) => {
             return;
         }
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const hitImageElement = getHitElementByPoint(
-            board,
-            point,
-            (value: PlaitElement) => MindElement.isMindElement(board, value) && MindElement.hasImage(value)
-        );
-        const hitImage = hitImageElement && isHitImage(board, hitImageElement as MindElement<ImageData>, point);
-        if (elementOfFocusedImage && hitImage && hitImageElement === elementOfFocusedImage) {
+        const hitElement = getHitElementByPoint(board, point);
+        const isHitImageResult =
+            hitElement &&
+            MindElement.isMindElement(board, hitElement) &&
+            MindElement.hasImage(hitElement) &&
+            isHitImage(board, hitElement as MindElement<ImageData>, point);
+        if (isHitImageResult && elementOfFocusedImage && hitElement === elementOfFocusedImage) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
             pointerDown(event);
             return;
@@ -50,9 +50,9 @@ export const withNodeImage = (board: PlaitBoard) => {
         if (elementOfFocusedImage && MindElement.isMindElement(board, elementOfFocusedImage)) {
             removeImageFocus(board, elementOfFocusedImage as MindElement<ImageData>);
         }
-        if (hitImage) {
+        if (isHitImageResult && hitElement) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
-            addImageFocus(board, hitImageElement as MindElement<ImageData>);
+            addImageFocus(board, hitElement as MindElement<ImageData>);
         }
         pointerDown(event);
     };
