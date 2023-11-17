@@ -36,16 +36,22 @@ export const withLineResize = (board: PlaitBoard) => {
             let points: Point[] = [...resizeRef.element.points];
             let source: LineHandle = { ...resizeRef.element.source };
             let target: LineHandle = { ...resizeRef.element.target };
-            if (resizeRef.handle === LineResizeHandle.source) {
+            if (resizeRef.handle === LineResizeHandle.source || resizeRef.handle === LineResizeHandle.target) {
+                const object = resizeRef.handle === LineResizeHandle.source ? source : target;
                 points[pointIndex] = resizeState.endTransformPoint;
                 const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, -4);
-                source.connection = hitElement ? transformPointToConnection(board, resizeState.endTransformPoint, hitElement) : undefined;
-                source.boundId = hitElement ? hitElement.id : undefined;
-            } else if (resizeRef.handle === LineResizeHandle.target) {
-                points[pointIndex] = resizeState.endTransformPoint;
-                const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, -4);
-                target.connection = hitElement ? transformPointToConnection(board, resizeState.endTransformPoint, hitElement) : undefined;
-                target.boundId = hitElement ? hitElement.id : undefined;
+                if (hitElement) {
+                    object.connection = transformPointToConnection(board, resizeState.endTransformPoint, hitElement);
+                    object.boundId = hitElement.id;
+                } else {
+                    object.connection = undefined;
+                    object.boundId = undefined;
+                    if (points.length === 2) {
+                        let movingPoint = points[pointIndex];
+                        const otherPoint = points[Number(!pointIndex)];
+                        points[pointIndex] = alignPoints(otherPoint, movingPoint);
+                    }
+                }
             } else if (resizeRef.handle === LineResizeHandle.addHandle) {
                 points.splice(pointIndex + 1, 0, resizeState.endTransformPoint);
             } else {
@@ -58,4 +64,16 @@ export const withLineResize = (board: PlaitBoard) => {
     withResize<PlaitLine, LineResizeHandle>(board, options);
 
     return board;
+};
+
+const alignPoints = (basePoint: Point, movingPoint: Point) => {
+    const offset = 3;
+    const newPoint: Point = [...movingPoint];
+    if (Point.isVerticalAlign(newPoint, basePoint, offset)) {
+        newPoint[0] = basePoint[0];
+    }
+    if (Point.isHorizontalAlign(newPoint, basePoint, offset)) {
+        newPoint[1] = basePoint[1];
+    }
+    return newPoint;
 };
