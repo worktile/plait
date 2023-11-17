@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, Range, RectangleClient } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
 import { ImageData } from '../../interfaces/element-data';
 import { getRectangleByNode } from './node';

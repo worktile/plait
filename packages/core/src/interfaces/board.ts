@@ -3,7 +3,7 @@ import { ComponentType, PlaitElement } from './element';
 import { PlaitPluginElementContext } from '../core/element/context';
 import { PlaitHistory } from './history';
 import { PlaitOperation } from './operation';
-import { Selection, Range } from './selection';
+import { Selection } from './selection';
 import { Viewport } from './viewport';
 import { PlaitPluginElementComponent } from '../core/element/plugin-element';
 import {
@@ -61,7 +61,7 @@ export interface PlaitBoard {
     drawElement: (context: PlaitPluginElementContext) => SVGGElement[] | ComponentType<PlaitPluginElementComponent>;
     redrawElement: (context: PlaitPluginElementContext, previousContext?: PlaitPluginElementContext) => SVGGElement[] | void;
     destroyElement: (context: PlaitPluginElementContext) => void;
-    isRectangleHit: (element: PlaitElement, range: Range) => boolean;
+    isRectangleHit: (element: PlaitElement, range: Selection) => boolean;
     // When the element has no fill color, it is considered a hit only if it hits the border.
     isHit: (element: PlaitElement, point: Point) => boolean;
     isRecursion: (element: PlaitElement) => boolean;

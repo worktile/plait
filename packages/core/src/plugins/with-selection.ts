@@ -49,7 +49,7 @@ export function withSelection(board: PlaitBoard) {
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
 
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const range = { anchor: point, focus: point };
+        const selection = { anchor: point, focus: point };
         const hitElement = getHitElementByPoint(board, point);
         const selectedElements = getSelectedElements(board);
 
@@ -69,7 +69,7 @@ export function withSelection(board: PlaitBoard) {
             preventTouchMove(board, event, true);
         }
 
-        Transforms.setSelection(board, { ranges: [range] });
+        Transforms.setSelection(board, selection);
 
         pointerDown(event);
     };
@@ -88,7 +88,7 @@ export function withSelection(board: PlaitBoard) {
                 end = movedTarget;
                 throttleRAF(() => {
                     if (start && end) {
-                        Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
+                        Transforms.setSelection(board, { anchor: start, focus: end });
                     }
                 });
                 setSelectionMoving(board);
@@ -108,7 +108,7 @@ export function withSelection(board: PlaitBoard) {
         if (start && end) {
             selectionMovingG?.remove();
             clearSelectionMoving(board);
-            Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
+            Transforms.setSelection(board, { anchor: start, focus: end });
         }
 
         if (PlaitBoard.isFocus(board)) {

@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Range, getSelectedElements } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Selection, getSelectedElements } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
@@ -42,12 +42,12 @@ export const withDraw = (board: PlaitBoard) => {
         return getRectangle(element);
     };
 
-    board.isRectangleHit = (element: PlaitElement, range: Range) => {
-        const result = isRectangleHitDrawElement(board, element, range);
+    board.isRectangleHit = (element: PlaitElement, selection: Selection) => {
+        const result = isRectangleHitDrawElement(board, element, selection);
         if (result !== null) {
             return result;
         }
-        return isRectangleHit(element, range);
+        return isRectangleHit(element, selection);
     };
 
     board.isHit = (element, point) => {

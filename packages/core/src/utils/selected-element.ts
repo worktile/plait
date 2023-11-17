@@ -11,22 +11,21 @@ export const getHitElementsBySelection = (
     selection?: Selection,
     match: (element: PlaitElement) => boolean = () => true
 ) => {
-    const realSelection = selection || board.selection;
+    const newSelection = selection || board.selection as Selection;
     const rectangleHitElements: PlaitElement[] = [];
-    const isCollapsed = realSelection && realSelection.ranges.length === 1 && Selection.isCollapsed(realSelection.ranges[0]);
+    const isCollapsed = newSelection && Selection.isCollapsed(newSelection);
     if (isCollapsed) {
-        const hitElement = getHitElementByPoint(board, realSelection.ranges[0].anchor, match);
+        const hitElement = getHitElementByPoint(board, newSelection.anchor, match);
         if (hitElement) {
             return [hitElement];
         } else {
             return [];
         }
     }
-    const range = realSelection!.ranges[0];
     depthFirstRecursion<Ancestor>(
         board,
         node => {
-            if (!PlaitBoard.isBoard(node) && match(node) && board.isRectangleHit(node, range)) {
+            if (!PlaitBoard.isBoard(node) && match(node) && board.isRectangleHit(node, newSelection)) {
                 rectangleHitElements.push(node);
             }
         },
