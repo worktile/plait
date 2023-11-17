@@ -13,7 +13,7 @@ import { LineText, PlaitDrawElement, PlaitGeometry, PlaitLine } from './interfac
 import { TextManage, TextManageRef } from '@plait/text';
 import { LineShapeGenerator } from './generators/line.generator';
 import { LineActiveGenerator } from './generators/line-active.generator';
-import { getLinePoints, getLineTextRectangle } from './utils';
+import { getLineTextRectangle } from './utils';
 import { DrawTransforms } from './transforms';
 import { GeometryThreshold } from './constants';
 
@@ -57,12 +57,6 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         super.ngOnInit();
         this.boundedElements = this.getBoundedElements();
         this.drawText();
-
-        console.time('123');
-        for (let index = 0; index < 10000; index++) {
-            getLinePoints(this.board, this.element);
-        }
-        console.timeEnd('123');
     }
 
     getBoundedElements() {
