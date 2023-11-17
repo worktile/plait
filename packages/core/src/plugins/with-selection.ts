@@ -4,7 +4,13 @@ import { Transforms } from '../transforms';
 import { transformPoint } from '../utils/board';
 import { isMainPointer, toPoint } from '../utils/dom/common';
 import { RectangleClient } from '../interfaces/rectangle-client';
-import { cacheSelectedElements, clearSelectedElement, getHitElements, getSelectedElements } from '../utils/selected-element';
+import {
+    cacheSelectedElements,
+    clearSelectedElement,
+    getHitElementByPoint,
+    getHitElementsBySelection,
+    getSelectedElements
+} from '../utils/selected-element';
 import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
@@ -43,18 +49,18 @@ export function withSelection(board: PlaitBoard) {
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
 
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const range = { anchor: point, focus: point };
-        const hitElements = getHitElements(board, { ranges: [range] });
+        const selection = { anchor: point, focus: point };
+        const hitElement = getHitElementByPoint(board, point);
         const selectedElements = getSelectedElements(board);
 
-        if (hitElements.length === 1 && selectedElements.includes(hitElements[0]) && !options.isDisabledSelect) {
+        if (hitElement && selectedElements.includes(hitElement) && !options.isDisabledSelect) {
             pointerDown(event);
             return;
         }
 
         if (
             PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
-            hitElements.length === 0 &&
+            !hitElement &&
             options.isMultiple &&
             !options.isDisabledSelect
         ) {
@@ -63,7 +69,7 @@ export function withSelection(board: PlaitBoard) {
             preventTouchMove(board, event, true);
         }
 
-        Transforms.setSelection(board, { ranges: [range] });
+        Transforms.setSelection(board, selection);
 
         pointerDown(event);
     };
@@ -82,7 +88,7 @@ export function withSelection(board: PlaitBoard) {
                 end = movedTarget;
                 throttleRAF(() => {
                     if (start && end) {
-                        Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
+                        Transforms.setSelection(board, { anchor: start, focus: end });
                     }
                 });
                 setSelectionMoving(board);
@@ -102,7 +108,7 @@ export function withSelection(board: PlaitBoard) {
         if (start && end) {
             selectionMovingG?.remove();
             clearSelectionMoving(board);
-            Transforms.setSelection(board, { ranges: [{ anchor: start, focus: end }] });
+            Transforms.setSelection(board, { anchor: start, focus: end });
         }
 
         if (PlaitBoard.isFocus(board)) {
@@ -135,7 +141,7 @@ export function withSelection(board: PlaitBoard) {
                 if (board.operations.find(value => value.type === 'set_selection')) {
                     selectionRectangleG?.remove();
                     const temporaryElements = getTemporaryElements(board);
-                    let elements = temporaryElements ? temporaryElements : getHitElements(board);
+                    let elements = temporaryElements ? temporaryElements : getHitElementsBySelection(board);
                     if (!options.isMultiple && elements.length > 1) {
                         elements = [elements[0]];
                     }

@@ -5,7 +5,7 @@ import {
     toPoint,
     transformPoint,
     Transforms,
-    Range,
+    Selection,
     depthFirstRecursion,
     PlaitElement,
     getIsRecursionFunc,
@@ -75,13 +75,13 @@ export const withMind = (baseBoard: PlaitBoard) => {
         return isRecursion(element);
     };
 
-    board.isRectangleHit = (element, range: Range) => {
+    board.isRectangleHit = (element, selection: Selection) => {
         if (MindElement.isMindElement(board, element)) {
             const client = getRectangleByNode(MindElement.getNode(element));
-            const isHit = RectangleClient.isHit(RectangleClient.toRectangleClient([range.anchor, range.focus]), client);
+            const isHit = RectangleClient.isHit(RectangleClient.toRectangleClient([selection.anchor, selection.focus]), client);
             return isHit;
         }
-        return isRectangleHit(element, range);
+        return isRectangleHit(element, selection);
     };
 
     board.isHit = (element, point: Point) => {

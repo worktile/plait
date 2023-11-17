@@ -1,6 +1,5 @@
 import {
     PlaitBoard,
-    getHitElements,
     isMainPointer,
     toPoint,
     transformPoint,
@@ -13,11 +12,12 @@ import {
     PlaitElement,
     setClipboardDataByMedia,
     getClipboardDataByMedia,
-    RectangleClient
+    RectangleClient,
+    getHitElementByPoint
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
-import { setImageFocus } from '../utils/node/image';
+import { addImageFocus, removeImageFocus } from '../utils/node/image';
 import { isHitImage, temporaryDisableSelection } from '../utils';
 import { MindTransforms } from '../transforms';
 import { MediaKeys, acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/common';
@@ -27,39 +27,33 @@ export const withNodeImage = (board: PlaitBoard) => {
     const { keydown, pointerDown, globalPointerUp, setFragment, insertFragment, deleteFragment } = board;
 
     board.pointerDown = (event: PointerEvent) => {
-        const selectedImageElement = getElementOfFocusedImage(board);
+        const elementOfFocusedImage = getElementOfFocusedImage(board);
         if (PlaitBoard.isReadonly(board) || !isMainPointer(event) || !PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
-            if (selectedImageElement && MindElement.isMindElement(board, selectedImageElement)) {
-                setImageFocus(board, selectedImageElement as MindElement<ImageData>, false);
+            if (elementOfFocusedImage && MindElement.isMindElement(board, elementOfFocusedImage)) {
+                removeImageFocus(board, elementOfFocusedImage as MindElement<ImageData>);
             }
             pointerDown(event);
             return;
         }
-
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const range = { anchor: point, focus: point };
-        const hitImageElements = getHitElements(
+        const hitImageElement = getHitElementByPoint(
             board,
-            { ranges: [range] },
+            point,
             (value: PlaitElement) => MindElement.isMindElement(board, value) && MindElement.hasImage(value)
         );
-        const hasImage = hitImageElements.length;
-        const hitImage = hasImage > 0 && isHitImage(board, hitImageElements[0] as MindElement<ImageData>, range);
-        if (selectedImageElement && hitImage && hitImageElements[0] === selectedImageElement) {
+        const hitImage = hitImageElement && isHitImage(board, hitImageElement as MindElement<ImageData>, point);
+        if (elementOfFocusedImage && hitImage && hitImageElement === elementOfFocusedImage) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
             pointerDown(event);
             return;
         }
-
-        if (selectedImageElement && MindElement.isMindElement(board, selectedImageElement)) {
-            setImageFocus(board, selectedImageElement as MindElement<ImageData>, false);
+        if (elementOfFocusedImage && MindElement.isMindElement(board, elementOfFocusedImage)) {
+            removeImageFocus(board, elementOfFocusedImage as MindElement<ImageData>);
         }
-
         if (hitImage) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
-            setImageFocus(board, hitImageElements[0] as MindElement<ImageData>, true);
+            addImageFocus(board, hitImageElement as MindElement<ImageData>);
         }
-
         pointerDown(event);
     };
 
@@ -79,7 +73,7 @@ export const withNodeImage = (board: PlaitBoard) => {
             const selectedImageElement = getElementOfFocusedImage(board);
             // Clear image selection when mouse board outside area
             if (selectedImageElement && MindElement.isMindElement(board, selectedImageElement) && !isInBoard) {
-                setImageFocus(board, selectedImageElement as MindElement<ImageData>, false);
+                removeImageFocus(board, selectedImageElement as MindElement<ImageData>);
             }
         }
         globalPointerUp(event);
