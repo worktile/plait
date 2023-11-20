@@ -56,6 +56,18 @@ $primary: #4e8afa;
         }
     }
 
+    &[class*='-resizing'] {
+        :not(.collapsed) > .extend {
+            display: none;
+        }
+    }
+
+    &[class*='pointer-']:not(.pointer-selection) {
+        :not(.collapsed) > .extend {
+            display: none;
+        }
+    }
+
     &.pointer-hand {
         .board-host-svg {
             cursor: grab;
