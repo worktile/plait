@@ -87,7 +87,7 @@ const drawSharpArrow = (source: Point, target: Point, options: Options) => {
     const { pointLeft, pointRight } = arrowPoints(source, target, 100, 20);
     const g = createG();
     const path = createPath();
-    let polylinePath = `M${pointRight[0]},${pointRight[1]}A16,16,20,0,1,${pointLeft[0]},${pointLeft[1]}L${startPoint[0]},${startPoint[1]}Z`;
+    let polylinePath = `M${pointRight[0]},${pointRight[1]}A25,25,20,0,1,${pointLeft[0]},${pointLeft[1]}L${startPoint[0]},${startPoint[1]}Z`;
     path.setAttribute('d', polylinePath);
     path.setAttribute('stroke', `${options?.stroke}`);
     path.setAttribute('stroke-width', `${options?.strokeWidth}`);
@@ -100,7 +100,10 @@ const drawArrow = (element: PlaitLine, source: Point, target: Point, options: Op
     const directionFactor = getFactorByPoints(source, target);
     const strokeWidth = getStrokeWidthByElement(element);
     const endPoint: Point = [target[0] + (strokeWidth * directionFactor.x) / 2, target[1] + (strokeWidth * directionFactor.y) / 2];
-    const middlePoint: Point = [endPoint[0] - 8 * directionFactor.x, endPoint[1] - 8 * directionFactor.y];
+    const middlePoint: Point = [
+        endPoint[0] - (8 + strokeWidth / 2) * directionFactor.x,
+        endPoint[1] - (8 + strokeWidth / 2) * directionFactor.y
+    ];
     const { pointLeft, pointRight } = arrowPoints(source, endPoint, 100, 30);
     const arrowG = drawLinearPath([pointLeft, endPoint, pointRight, middlePoint], { ...options, fill: options.stroke }, true);
     const path = arrowG.querySelector('path');
