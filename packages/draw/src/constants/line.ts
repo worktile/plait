@@ -3,3 +3,4 @@ export const DefaultLineStyle = {
     strokeColor: '#000'
 };
 
+export const LINE_TEXT_SPACE = 4;

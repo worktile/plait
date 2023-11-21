@@ -31,7 +31,8 @@ import {
     reduceRouteMargin,
     generateElbowLineRoute,
     getNextPoint,
-    DEFAULT_ROUTE_MARGIN
+    DEFAULT_ROUTE_MARGIN,
+    getExtendPoint
 } from '@plait/common';
 import {
     LineHandle,
@@ -51,6 +52,7 @@ import { drawLineArrow } from './line-arrow';
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { Op } from 'roughjs/bin/core';
 import { getShape } from './shape';
+import { LINE_TEXT_SPACE } from '../constants/line';
 
 export const createLineElement = (
     shape: LineShape,
@@ -322,7 +324,8 @@ function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
 
     const texts = element.texts;
     texts.forEach((text, index) => {
-        const textRectangle = getLineTextRectangle(board, element, index);
+        let textRectangle = getLineTextRectangle(board, element, index);
+        textRectangle = RectangleClient.inflate(textRectangle, LINE_TEXT_SPACE * 2);
         const rect = createRect(textRectangle, {
             fill: 'black'
         });
@@ -381,13 +384,6 @@ export const getBoardLines = (board: PlaitBoard) => {
         match: (element: PlaitElement) => PlaitDrawElement.isLine(element),
         recursion: (element: PlaitElement) => PlaitDrawElement.isDrawElement(element)
     }) as PlaitLine[];
-};
-
-export const getExtendPoint = (source: Point, target: Point, extendDistance: number): Point => {
-    const distance = distanceBetweenPointAndPoint(...source, ...target);
-    const sin = (target[1] - source[1]) / distance;
-    const cos = (target[0] - source[0]) / distance;
-    return [source[0] + extendDistance * cos, source[1] + extendDistance * sin];
 };
 
 // quadratic Bezier to cubic Bezier
