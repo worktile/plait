@@ -1,9 +1,8 @@
 import { Point, arrowPoints, createG, createPath, distanceBetweenPointAndPoint, drawLinearPath, rotate } from '@plait/core';
 import { LineMarkerType, PlaitLine } from '../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getFactorByPoints } from '@plait/common';
+import { getFactorByPoints, getExtendPoint } from '@plait/common';
 import { getStrokeWidthByElement } from './style';
-import { getExtendPoint } from './line';
 
 interface ArrowOptions {
     marker: LineMarkerType;
