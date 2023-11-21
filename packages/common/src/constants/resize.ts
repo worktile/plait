@@ -9,7 +9,7 @@ export enum ResizeHandle {
     ne = 'ne',
     n = 'n',
     nw = 'nw',
-    e = 'w',
+    e = 'e',
     se = 'se',
     s = 's',
     sw = 'sw',

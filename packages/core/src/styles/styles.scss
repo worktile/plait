@@ -43,6 +43,9 @@
         }
     }
 
+    &.ns-resize {
+        cursor: ns-resize;
+    }
     &.ew-resize {
         cursor: ew-resize;
     }
