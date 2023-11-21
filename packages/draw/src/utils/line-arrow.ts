@@ -12,6 +12,8 @@ interface ArrowOptions {
     isSource: boolean;
 }
 
+const MAX_LENGTH = 100;
+
 export const drawLineArrow = (element: PlaitLine, points: Point[], options: Options) => {
     const arrowG = createG();
     if (PlaitLine.isSourceMark(element, LineMarkerType.none) && PlaitLine.isTargetMark(element, LineMarkerType.none)) {
@@ -84,7 +86,7 @@ const getArrow = (element: PlaitLine, arrowOptions: ArrowOptions, options: Optio
 
 const drawSharpArrow = (source: Point, target: Point, options: Options) => {
     const startPoint: Point = target;
-    const { pointLeft, pointRight } = arrowPoints(source, target, 100, 20);
+    const { pointLeft, pointRight } = arrowPoints(source, target, MAX_LENGTH, 20);
     const g = createG();
     const path = createPath();
     let polylinePath = `M${pointRight[0]},${pointRight[1]}A25,25,20,0,1,${pointLeft[0]},${pointLeft[1]}L${startPoint[0]},${startPoint[1]}Z`;
@@ -104,7 +106,7 @@ const drawArrow = (element: PlaitLine, source: Point, target: Point, options: Op
         endPoint[0] - (8 + strokeWidth / 2) * directionFactor.x,
         endPoint[1] - (8 + strokeWidth / 2) * directionFactor.y
     ];
-    const { pointLeft, pointRight } = arrowPoints(source, endPoint, 100, 30);
+    const { pointLeft, pointRight } = arrowPoints(source, endPoint, MAX_LENGTH, 30);
     const arrowG = drawLinearPath([pointLeft, endPoint, pointRight, middlePoint], { ...options, fill: options.stroke }, true);
     const path = arrowG.querySelector('path');
     path!.setAttribute('stroke-linejoin', 'round');
@@ -113,7 +115,7 @@ const drawArrow = (element: PlaitLine, source: Point, target: Point, options: Op
 
 const drawSolidTriangle = (source: Point, target: Point, options: Options) => {
     const endPoint: Point = target;
-    const { pointLeft, pointRight } = arrowPoints(source, endPoint, 100, 30);
+    const { pointLeft, pointRight } = arrowPoints(source, endPoint, MAX_LENGTH, 30);
     return drawLinearPath([pointLeft, endPoint, pointRight], { ...options, fill: options.stroke }, true);
 };
 
@@ -121,12 +123,12 @@ const drawOpenTriangle = (element: PlaitLine, source: Point, target: Point, opti
     const directionFactor = getFactorByPoints(source, target);
     const strokeWidth = getStrokeWidthByElement(element);
     const endPoint: Point = [target[0] + (strokeWidth * directionFactor.x) / 2, target[1] + (strokeWidth * directionFactor.y) / 2];
-    const { pointLeft, pointRight } = arrowPoints(source, endPoint, 100, 40);
+    const { pointLeft, pointRight } = arrowPoints(source, endPoint, MAX_LENGTH, 40);
     return drawLinearPath([pointLeft, endPoint, pointRight], options);
 };
 
 const drawOneSideArrow = (source: Point, target: Point, side: string, options: Options) => {
-    const { pointLeft, pointRight } = arrowPoints(source, target, 100, 40);
+    const { pointLeft, pointRight } = arrowPoints(source, target, MAX_LENGTH, 40);
     return drawLinearPath([side === 'up' ? pointRight : pointLeft, target], options);
 };
 
@@ -140,6 +142,6 @@ const drawSingleSlash = (source: Point, target: Point, isSource: boolean, option
 };
 
 const drawHollowTriangleArrow = (source: Point, target: Point, options: Options) => {
-    const { pointLeft, pointRight } = arrowPoints(source, target, 100, 30);
+    const { pointLeft, pointRight } = arrowPoints(source, target, MAX_LENGTH, 30);
     return drawLinearPath([pointLeft, pointRight, target], { ...options, fill: 'white' }, true);
 };
