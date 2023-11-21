@@ -17,6 +17,14 @@ const getResizeHandleByIndex = (index: number) => {
             return ResizeHandle.se;
         case 3:
             return ResizeHandle.sw;
+        case 4:
+            return ResizeHandle.n;
+        case 5:
+            return ResizeHandle.e;
+        case 6:
+            return ResizeHandle.s;
+        case 7:
+            return ResizeHandle.w;
         default:
             return null;
     }
@@ -25,13 +33,17 @@ const getResizeHandleByIndex = (index: number) => {
 const getResizeCursorClassByIndex = (index: number) => {
     switch (index) {
         case 0:
-            return ResizeCursorClass.nwse;
-        case 1:
-            return ResizeCursorClass.nesw;
         case 2:
             return ResizeCursorClass.nwse;
+        case 1:
         case 3:
             return ResizeCursorClass.nesw;
+        case 4:
+        case 6:
+            return ResizeCursorClass.ns;
+        case 5:
+        case 7:
+            return ResizeCursorClass.ew;
         default:
             return null;
     }
@@ -39,7 +51,7 @@ const getResizeCursorClassByIndex = (index: number) => {
 
 export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diameter: number) => {
     const centers = RectangleClient.getCornerPoints(rectangle);
-    return centers.map((center, index: number) => {
+    const refs = centers.map((center, index: number) => {
         return {
             rectangle: {
                 x: center[0] - diameter / 2,
@@ -51,6 +63,46 @@ export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diamete
             cursorClass: getResizeCursorClassByIndex(index) as ResizeCursorClass
         };
     });
+    const rectangles = getResizeSideRectangles(centers);
+    refs.push(
+        ...rectangles.map((rectangle, index) => {
+            return {
+                rectangle,
+                handle: getResizeHandleByIndex(index + 4) as ResizeHandle,
+                cursorClass: getResizeCursorClassByIndex(index + 4) as ResizeCursorClass
+            };
+        })
+    );
+    return refs;
+};
+
+const getResizeSideRectangles = (cornerPoints: Point[]): RectangleClient[] => {
+    return [
+        {
+            x: cornerPoints[0][0],
+            y: cornerPoints[0][1] - 3,
+            width: cornerPoints[1][0] - cornerPoints[0][0],
+            height: 3
+        },
+        {
+            x: cornerPoints[1][0],
+            y: cornerPoints[1][1],
+            width: 3,
+            height: cornerPoints[2][1] - cornerPoints[1][1]
+        },
+        {
+            x: cornerPoints[3][0],
+            y: cornerPoints[3][1],
+            width: cornerPoints[2][0] - cornerPoints[3][0],
+            height: 3
+        },
+        {
+            x: cornerPoints[0][0] - 3,
+            y: cornerPoints[0][1],
+            width: 3,
+            height: cornerPoints[3][1] - cornerPoints[0][1]
+        }
+    ];
 };
 
 export const IS_RESIZING = new WeakMap<PlaitBoard, ResizeRef<any, any>>();

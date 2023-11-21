@@ -1,6 +1,6 @@
 import { Ancestor, PlaitBoard, Point, RectangleClient, depthFirstRecursion, getIsRecursionFunc } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry } from '../../interfaces';
-import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints, getRectangleResizeHandleRefs } from '@plait/common';
+import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints, getRectangleResizeHandleRefs, ResizeHandle } from '@plait/common';
 import { getEngine } from '../../engines';
 import { PlaitImage } from '../../interfaces/image';
 import { getShape } from '../shape';
@@ -11,6 +11,10 @@ export const getHitGeometryResizeHandleRef = (board: PlaitBoard, element: PlaitG
     const result = resizeHandleRefs.find(resizeHandleRef => {
         return RectangleClient.isHit(RectangleClient.toRectangleClient([point, point]), resizeHandleRef.rectangle);
     });
+    const isSideHandle = result && [ResizeHandle.s, ResizeHandle.n, ResizeHandle.e, ResizeHandle.w].includes(result.handle);
+    if (isSideHandle && PlaitDrawElement.isImage(element)) {
+        return undefined;
+    }
     return result;
 };
 

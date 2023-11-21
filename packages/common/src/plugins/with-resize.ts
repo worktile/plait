@@ -114,6 +114,9 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const resizeDetectResult = options.detect(point);
             if (resizeDetectResult) {
+                if (hoveDetectResult && resizeDetectResult.cursorClass !== hoveDetectResult.cursorClass) {
+                    PlaitBoard.getBoardContainer(board).classList.remove(`${hoveDetectResult.cursorClass}`);
+                }
                 hoveDetectResult = resizeDetectResult;
                 if (hoveDetectResult.cursorClass) {
                     PlaitBoard.getBoardContainer(board).classList.add(`${hoveDetectResult.cursorClass}`);
