@@ -68,7 +68,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 const height = rectangle.width * ratio * factor;
                 points = [[resizeState.endTransformPoint[0], points[1][1] + height], points[1]];
             }
-            if (isShift && !isCornerHandle) {
+            if ((isShift || PlaitDrawElement.isImage(resizeRef.element)) && !isCornerHandle) {
                 const rectangle = getRectangleByPoints(points);
                 if (resizeRef.handle === ResizeHandle.n || resizeRef.handle === ResizeHandle.s) {
                     const newWidth = rectangle.height / ratio;

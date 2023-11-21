@@ -11,10 +11,6 @@ export const getHitGeometryResizeHandleRef = (board: PlaitBoard, element: PlaitG
     const result = resizeHandleRefs.find(resizeHandleRef => {
         return RectangleClient.isHit(RectangleClient.toRectangleClient([point, point]), resizeHandleRef.rectangle);
     });
-    const isSideHandle = result && [ResizeHandle.s, ResizeHandle.n, ResizeHandle.e, ResizeHandle.w].includes(result.handle);
-    if (isSideHandle && PlaitDrawElement.isImage(element)) {
-        return undefined;
-    }
     return result;
 };
 

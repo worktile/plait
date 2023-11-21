@@ -50,12 +50,12 @@ const getResizeCursorClassByIndex = (index: number) => {
 };
 
 export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diameter: number) => {
-    const centers = RectangleClient.getCornerPoints(rectangle);
-    const refs = centers.map((center, index: number) => {
+    const corners = RectangleClient.getCornerPoints(rectangle);
+    const refs = corners.map((corner, index: number) => {
         return {
             rectangle: {
-                x: center[0] - diameter / 2,
-                y: center[1] - diameter / 2,
+                x: corner[0] - diameter / 2,
+                y: corner[1] - diameter / 2,
                 width: diameter,
                 height: diameter
             },
@@ -63,7 +63,7 @@ export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diamete
             cursorClass: getResizeCursorClassByIndex(index) as ResizeCursorClass
         };
     });
-    const rectangles = getResizeSideRectangles(centers);
+    const rectangles = getResizeSideRectangles(corners, diameter / 2);
     refs.push(
         ...rectangles.map((rectangle, index) => {
             return {
@@ -76,33 +76,16 @@ export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diamete
     return refs;
 };
 
-const getResizeSideRectangles = (cornerPoints: Point[]): RectangleClient[] => {
-    return [
-        {
-            x: cornerPoints[0][0],
-            y: cornerPoints[0][1] - 3,
-            width: cornerPoints[1][0] - cornerPoints[0][0],
-            height: 3
-        },
-        {
-            x: cornerPoints[1][0],
-            y: cornerPoints[1][1],
-            width: 3,
-            height: cornerPoints[2][1] - cornerPoints[1][1]
-        },
-        {
-            x: cornerPoints[3][0],
-            y: cornerPoints[3][1],
-            width: cornerPoints[2][0] - cornerPoints[3][0],
-            height: 3
-        },
-        {
-            x: cornerPoints[0][0] - 3,
-            y: cornerPoints[0][1],
-            width: 3,
-            height: cornerPoints[3][1] - cornerPoints[0][1]
-        }
-    ];
+const getResizeSideRectangles = (cornerPoints: Point[], offset: number): RectangleClient[] => {
+    const result = [];
+    for (let i = 0; i < cornerPoints.length; i++) {
+        let rectangle = RectangleClient.toRectangleClient([cornerPoints[i], cornerPoints[(i + 1) % 4]]);
+        const arr = new Array(2).fill(0);
+        arr[(i + 1) % 2] = offset / 2;
+        rectangle = RectangleClient.expand(rectangle, arr[0], arr[1]);
+        result.push(rectangle);
+    }
+    return result;
 };
 
 export const IS_RESIZING = new WeakMap<PlaitBoard, ResizeRef<any, any>>();
