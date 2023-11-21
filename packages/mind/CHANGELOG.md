@@ -1,5 +1,17 @@
 # mind
 
+## 0.31.0
+
+### Minor Changes
+
+-   [#627](https://github.com/worktile/plait/pull/627) [`dfb55270`](https://github.com/worktile/plait/commit/dfb552706df93ba6797004c4746fb1aff3e45924) Thanks [@WBbug](https://github.com/WBbug)! - support resize by moving border
+
+*   [`a929b1e5`](https://github.com/worktile/plait/commit/a929b1e577c25811e33e77587c583c1773e18916) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct image hit logic and handle fill equals transparent issue
+
+### Patch Changes
+
+-   [`01f88efa`](https://github.com/worktile/plait/commit/01f88efa024ba3fd5b0d3e0ef229b16ed519614e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - hide mind node expand when resizing or creation mode
+
 ## 0.30.0
 
 ### Minor Changes

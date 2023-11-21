@@ -1,5 +1,13 @@
 # plait
 
+## 0.31.0
+
+### Minor Changes
+
+-   [#627](https://github.com/worktile/plait/pull/627) [`dfb55270`](https://github.com/worktile/plait/commit/dfb552706df93ba6797004c4746fb1aff3e45924) Thanks [@WBbug](https://github.com/WBbug)! - support resize by moving border
+
+*   [#626](https://github.com/worktile/plait/pull/626) [`25d16ed9`](https://github.com/worktile/plait/commit/25d16ed9f2e39f0748cb7d7fe4c4d43736ed459a) Thanks [@WBbug](https://github.com/WBbug)! - adjust when resize line
+
 ## 0.30.0
 
 ### Minor Changes
