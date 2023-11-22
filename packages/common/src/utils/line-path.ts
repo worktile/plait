@@ -186,7 +186,8 @@ export const removeDuplicatePoints = (points: Point[]) => {
 
 export const getExtendPoint = (source: Point, target: Point, extendDistance: number): Point => {
     const distance = distanceBetweenPointAndPoint(...source, ...target);
-    const sin = (target[1] - source[1]) / distance;
-    const cos = (target[0] - source[0]) / distance;
+    const isEqual = Point.isEquals(source, target);
+    const sin = isEqual ? 1 : (target[1] - source[1]) / distance;
+    const cos = isEqual ? 1 : (target[0] - source[0]) / distance;
     return [source[0] + extendDistance * cos, source[1] + extendDistance * sin];
 };
