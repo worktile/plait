@@ -90,6 +90,12 @@ export function getDirectionFactor(direction: Direction) {
 
 export function getFactorByPoints(source: Point, target: Point) {
     const distance = distanceBetweenPointAndPoint(...source, ...target);
+    if (Point.isEquals(source, target)) {
+        return {
+            x: 1,
+            y: 1
+        };
+    }
     return {
         x: (target[0] - source[0]) / distance,
         y: (target[1] - source[1]) / distance
