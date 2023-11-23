@@ -16,6 +16,9 @@
         &.editing {
             cursor: text;
         }
+        span{
+            user-select: none;
+        }
     }
 
     [the-underlined][the-strike] {
