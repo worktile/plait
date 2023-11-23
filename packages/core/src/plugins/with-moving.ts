@@ -12,6 +12,7 @@ import { addMovingElements, getMovingElements, removeMovingElements } from '../u
 import { MERGING } from '../interfaces/history';
 import { isPreventTouchMove, preventTouchMove, handleTouchTarget, getRectangleByElements } from '../utils';
 import { AlignReaction } from '../utils/reaction-manager';
+import { RectangleClient } from '../interfaces';
 
 export function withMoving(board: PlaitBoard) {
     const { pointerDown, pointerMove, globalPointerUp, globalPointerMove } = board;
@@ -22,6 +23,7 @@ export function withMoving(board: PlaitBoard) {
     let startPoint: Point | null;
     let activeElements: PlaitElement[] = [];
     let alignG: SVGGElement | null = null;
+    let activeElementsRectangle: RectangleClient | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
         const host = BOARD_TO_HOST.get(board);
@@ -40,6 +42,7 @@ export function withMoving(board: PlaitBoard) {
             }
             if (activeElements.length > 0) {
                 preventTouchMove(board, event, true);
+                activeElementsRectangle = getRectangleByElements(board, activeElements, true);
             }
         }
         pointerDown(event);
@@ -58,10 +61,12 @@ export function withMoving(board: PlaitBoard) {
             const tolerance = 5;
             if (Math.abs(offsetX) > tolerance || Math.abs(offsetY) > tolerance || getMovingElements(board).length > 0) {
                 throttleRAF(() => {
-                    const activeElementsRectangle = getRectangleByElements(board, activeElements, true);
-                    activeElementsRectangle.x += offsetX;
-                    activeElementsRectangle.y += offsetY;
-                    const reactionManager = new AlignReaction(board, activeElements, activeElementsRectangle);
+                    const newRectangle = {
+                        ...activeElementsRectangle!,
+                        x: activeElementsRectangle!.x + offsetX,
+                        y: activeElementsRectangle!.y + offsetY
+                    };
+                    const reactionManager = new AlignReaction(board, activeElements, newRectangle);
                     const ref = reactionManager.handleAlign();
                     offsetX -= ref.deltaX;
                     offsetY -= ref.deltaY;
@@ -118,6 +123,7 @@ export function withMoving(board: PlaitBoard) {
     function cancelMove(board: PlaitBoard) {
         alignG?.remove();
         startPoint = null;
+        activeElementsRectangle = null;
         offsetX = 0;
         offsetY = 0;
         activeElements = [];
