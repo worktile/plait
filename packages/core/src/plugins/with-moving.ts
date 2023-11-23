@@ -42,8 +42,8 @@ export function withMoving(board: PlaitBoard) {
             }
             if (activeElements.length > 0) {
                 preventTouchMove(board, event, true);
-                activeElementsRectangle = getRectangleByElements(board, activeElements, true);
             }
+            activeElementsRectangle = getRectangleByElements(board, activeElements, true);
         }
         pointerDown(event);
     };
