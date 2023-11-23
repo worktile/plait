@@ -13,7 +13,10 @@ export const getHitElementsBySelection = (
 ) => {
     const newSelection = selection || board.selection as Selection;
     const rectangleHitElements: PlaitElement[] = [];
-    const isCollapsed = newSelection && Selection.isCollapsed(newSelection);
+    if (!newSelection) {
+        return [];
+    }
+    const isCollapsed = Selection.isCollapsed(newSelection);
     if (isCollapsed) {
         const hitElement = getHitElementByPoint(board, newSelection.anchor, match);
         if (hitElement) {

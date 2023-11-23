@@ -1,5 +1,5 @@
 import { PlaitElement, RectangleClient, Selection, PlaitBoard, isPolylineHitRectangle, Point } from '@plait/core';
-import { PlaitDrawElement } from '../interfaces';
+import { PlaitDrawElement, PlaitGeometry } from '../interfaces';
 import { TRANSPARENT, getRectangleByPoints } from '@plait/common';
 import { getTextRectangle } from './geometry';
 import { getLinePoints, isHitLineText, isHitPolyLine } from './line';
@@ -8,11 +8,19 @@ import { DefaultGeometryStyle } from '../constants/geometry';
 import { getEngine } from '../engines';
 import { getShape } from './shape';
 
+export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
+    const client = getRectangleByPoints(geometry.points);
+    if (geometry.textHeight > client.height) {
+        return true;
+    }
+    return false;
+};
+
 export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitElement, selection: Selection) => {
+    const rangeRectangle = RectangleClient.toRectangleClient([selection.anchor, selection.focus]);
     if (PlaitDrawElement.isGeometry(element)) {
         const client = getRectangleByPoints(element.points);
-        const rangeRectangle = RectangleClient.toRectangleClient([selection.anchor, selection.focus]);
-        if (element.textHeight > client.height) {
+        if (isTextExceedingBounds(element)) {
             const textClient = getTextRectangle(element);
             return RectangleClient.isHit(rangeRectangle, client) || RectangleClient.isHit(rangeRectangle, textClient);
         }
@@ -20,7 +28,6 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
     }
     if (PlaitDrawElement.isImage(element)) {
         const client = getRectangleByPoints(element.points);
-        const rangeRectangle = RectangleClient.toRectangleClient([selection.anchor, selection.focus]);
         return RectangleClient.isHit(rangeRectangle, client);
     }
     if (PlaitDrawElement.isLine(element)) {
@@ -28,7 +35,6 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
         const strokeWidth = getStrokeWidthByElement(element);
         const isHitText = isHitLineText(board, element, selection.focus);
         const isHit = isHitPolyLine(points, selection.focus, strokeWidth, 3) || isHitText;
-        const rangeRectangle = RectangleClient.toRectangleClient([selection.anchor, selection.focus]);
         const isContainPolyLinePoint = points.some(point => {
             return RectangleClient.isHit(rangeRectangle, RectangleClient.toRectangleClient([point, point]));
         });
@@ -41,14 +47,23 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
 export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point) => {
     if (PlaitDrawElement.isGeometry(element)) {
         const fill = getFillByElement(element);
-        if (fill !== DefaultGeometryStyle.fill && fill !== TRANSPARENT) {
+        // when shape equals text, fill is not allowed
+        if (fill !== DefaultGeometryStyle.fill && fill !== TRANSPARENT && !PlaitDrawElement.isText(element)) {
             return isRectangleHitDrawElement(board, element, { anchor: point, focus: point });
         } else {
+            // if shape equals text, only check text rectangle
+            if (PlaitDrawElement.isText(element)) {
+                const textClient = getTextRectangle(element);
+                let isHitText = RectangleClient.isPointInRectangle(textClient, point);
+                return isHitText;
+            }
             const strokeWidth = getStrokeWidthByElement(element);
             const engine = getEngine(getShape(element));
             const corners = engine.getCornerPoints(getRectangleByPoints(element.points));
             const isHit = isHitPolyLine(corners, point, strokeWidth, 3);
-            return isHit;
+            const textClient = getTextRectangle(element);
+            let isHitText = RectangleClient.isPointInRectangle(textClient, point);
+            return isHit || isHitText;
         }
     }
     if (PlaitDrawElement.isImage(element) || PlaitDrawElement.isLine(element)) {
