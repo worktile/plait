@@ -180,6 +180,7 @@ export class AlignReaction {
         const alignDeltaY = deltaY;
 
         this.activeRectangle.x += deltaX;
+        this.activeRectangle.y += deltaY;
         const distributeHorizontalResult = this.alignDistribute(alignRectangles, true);
         const distributeVerticalResult = this.alignDistribute(alignRectangles, false);
         const distributeLines: Point[][] = [...distributeHorizontalResult.distributeLines, ...distributeVerticalResult.distributeLines];
