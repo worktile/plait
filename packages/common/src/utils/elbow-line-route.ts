@@ -1,4 +1,4 @@
-import { Direction, Point, RectangleClient } from '@plait/core';
+import { Direction, Point, RectangleClient, downScale } from '@plait/core';
 import { removeDuplicatePoints } from '../utils';
 import { DEFAULT_ROUTE_MARGIN } from '../constants';
 import { AStar, PointGraph } from '../algorithms';
@@ -91,8 +91,8 @@ const adjust = (route: Point[], options: AdjustOptions) => {
                         current &&
                         next &&
                         !(
-                            (Math.floor(current[0]) === Math.floor(pre[0]) && Math.floor(current[0]) === Math.floor(next[0])) ||
-                            (Math.floor(current[1]) === Math.floor(pre[1]) && Math.floor(current[1]) === Math.floor(next[1]))
+                            (downScale(current[0]) === downScale(pre[0]) && downScale(current[0]) === downScale(next[0])) ||
+                            (downScale(current[1]) === downScale(pre[1]) && downScale(current[1]) === downScale(next[1]))
                         )
                     ) {
                         cornerCount++;

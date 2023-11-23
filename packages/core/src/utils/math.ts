@@ -211,3 +211,7 @@ export const isPointInRoundRectangle = (point: Point, rectangle: RectangleClient
 
     return isInRectangle && !isInCorner;
 };
+
+export const downScale = (number: number) => {
+    return Number(number.toFixed(2));
+};
