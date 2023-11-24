@@ -22,7 +22,7 @@ export const SelectionTransforms: SelectionTransforms = {
 
 export function addSelectionWithTemporaryElements(board: PlaitBoard, elements: PlaitElement[]) {
     const timeoutId = setTimeout(() => {
-        setSelection(board, null);
+        setSelection(board, { anchor: [0, 0], focus: [0, 0] });
     }, 0);
     let ref = getTemporaryRef(board);
     if (ref) {
