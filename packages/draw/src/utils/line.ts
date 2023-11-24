@@ -334,6 +334,7 @@ function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
     //撑开 line
     const maskTargetFillRect = createRect(rectangle);
     maskTargetFillRect.setAttribute('opacity', '0');
+    maskTargetFillRect.setAttribute('fill', 'none');
     return { mask, maskTargetFillRect };
 }
 
