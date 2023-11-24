@@ -235,7 +235,7 @@ export class TextManage {
 
             if (origin === ExitOrigin.default) {
                 this.componentRef.instance.readonly = true;
-                this.componentRef.changeDetectorRef.detectChanges();
+                AngularEditor.deselect(editor);
             }
 
             IS_TEXT_EDITABLE.set(this.board, false);
