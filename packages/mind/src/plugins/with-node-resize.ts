@@ -48,7 +48,6 @@ export const withNodeResize = (board: PlaitBoard) => {
             targetElement = newTargetElement;
             startPoint = [event.x, event.y];
             preventTouchMove(board, event, true);
-            return;
         }
 
         pointerDown(event);

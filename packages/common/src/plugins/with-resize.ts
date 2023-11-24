@@ -74,7 +74,6 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
                 handle: resizeDetectResult.handle
             };
             preventTouchMove(board, event, true);
-            return;
         }
         pointerDown(event);
     };

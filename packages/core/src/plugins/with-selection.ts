@@ -37,7 +37,14 @@ export function withSelection(board: PlaitBoard) {
     let needPreventNativeSelectionWhenMoving = false;
 
     board.pointerDown = (event: PointerEvent) => {
-        if (event.target instanceof Element && !event.target.closest('.plait-richtext-container')) {
+        const isHitText = event.target instanceof Element && event.target.closest('.plait-richtext-container');
+
+        // prevent text from being selected when user pressed shift and pointer down
+        if (!isHitText && event.shiftKey) {
+            event.preventDefault();
+        }
+
+        if (!isHitText) {
             needPreventNativeSelectionWhenMoving = true;
         }
 
