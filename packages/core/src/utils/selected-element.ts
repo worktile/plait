@@ -83,8 +83,10 @@ export const addSelectedElement = (board: PlaitBoard, element: PlaitElement) => 
 
 export const removeSelectedElement = (board: PlaitBoard, element: PlaitElement) => {
     const selectedElements = getSelectedElements(board);
-    const newSelectedElements = selectedElements.filter(value => value !== element);
-    cacheSelectedElements(board, newSelectedElements);
+    if (selectedElements.includes(element)) {
+        const newSelectedElements = selectedElements.filter(value => value !== element);
+        cacheSelectedElements(board, newSelectedElements);
+    }
 };
 
 export const clearSelectedElement = (board: PlaitBoard) => {

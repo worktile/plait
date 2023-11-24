@@ -9,7 +9,8 @@ import {
     clearSelectedElement,
     getHitElementByPoint,
     getHitElementsBySelection,
-    getSelectedElements
+    getSelectedElements,
+    removeSelectedElement
 } from '../utils/selected-element';
 import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { getRectangleByElements } from '../utils/element';
@@ -65,12 +66,7 @@ export function withSelection(board: PlaitBoard) {
             return;
         }
 
-        if (
-            PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
-            !hitElement &&
-            options.isMultiple &&
-            !options.isDisabledSelect
-        ) {
+        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && !hitElement && options.isMultiple && !options.isDisabledSelect) {
             selectionRectangleG?.remove();
             start = point;
             preventTouchMove(board, event, true);
@@ -142,6 +138,13 @@ export function withSelection(board: PlaitBoard) {
             clearSelectedElement(board);
         }
 
+        // remove selected element if include
+        board.operations.forEach(op => {
+            if (op.type === 'remove_node') {
+                removeSelectedElement(board, op.node);
+            }
+        });
+
         // calc selected elements entry
         if (board.pointer !== PlaitPointerType.hand && !options.isDisabledSelect) {
             try {
@@ -159,22 +162,19 @@ export function withSelection(board: PlaitBoard) {
                         selectionRectangleG = createSelectionRectangleG(board);
                     }
                 } else {
-                    // wait node destroy and remove selected element state
-                    setTimeout(() => {
-                        const currentSelectedElements = getSelectedElements(board);
-                        if (currentSelectedElements.length && currentSelectedElements.length > 1) {
-                            if (
-                                currentSelectedElements.length !== previousSelectedElements.length ||
-                                currentSelectedElements.some((c, index) => c !== previousSelectedElements[index])
-                            ) {
-                                selectionRectangleG?.remove();
-                                selectionRectangleG = createSelectionRectangleG(board);
-                                previousSelectedElements = currentSelectedElements;
-                            }
-                        } else {
+                    const currentSelectedElements = getSelectedElements(board);
+                    if (currentSelectedElements.length && currentSelectedElements.length > 1) {
+                        if (
+                            currentSelectedElements.length !== previousSelectedElements.length ||
+                            currentSelectedElements.some((c, index) => c !== previousSelectedElements[index])
+                        ) {
                             selectionRectangleG?.remove();
+                            selectionRectangleG = createSelectionRectangleG(board);
+                            previousSelectedElements = currentSelectedElements;
                         }
-                    });
+                    } else {
+                        selectionRectangleG?.remove();
+                    }
                 }
             } catch (error) {
                 console.error(error);
