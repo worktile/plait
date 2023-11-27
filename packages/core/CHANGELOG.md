@@ -1,5 +1,29 @@
 # plait
 
+## 0.32.0
+
+### Minor Changes
+
+-   [#634](https://github.com/worktile/plait/pull/634) [`c096f853`](https://github.com/worktile/plait/commit/c096f8538a72eb7daab8821c7784f4de3d9f7e9d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent text from being selected when user pressed shift and pointer down
+
+*   [#634](https://github.com/worktile/plait/pull/634) [`8bf33508`](https://github.com/worktile/plait/commit/8bf33508a704e26c37436c453f14882aa5112953) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove selected element if include
+
+-   [#634](https://github.com/worktile/plait/pull/634) [`3d9ae405`](https://github.com/worktile/plait/commit/3d9ae4057a3d0bfb617a23ea302c50b3cbe42c3f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add user-select: node in firefox browser
+
+*   [#628](https://github.com/worktile/plait/pull/628) [`d41b1341`](https://github.com/worktile/plait/commit/d41b134155ddefeb82570c7202847423d733095d) Thanks [@WBbug](https://github.com/WBbug)! - optimize line when stroke wider
+
+### Patch Changes
+
+-   [`74641dae`](https://github.com/worktile/plait/commit/74641dae56bd04c9bbeefadf397def825691ecf1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve hit text logic
+
+*   [#632](https://github.com/worktile/plait/pull/632) [`4acfa3a0`](https://github.com/worktile/plait/commit/4acfa3a054893e939baaf08155506c1dca5a163a) Thanks [@WBbug](https://github.com/WBbug)! - fix get wrong corner count
+
+-   [`74641dae`](https://github.com/worktile/plait/commit/74641dae56bd04c9bbeefadf397def825691ecf1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - return empty array when selection is null
+
+*   [#630](https://github.com/worktile/plait/pull/630) [`1318ef90`](https://github.com/worktile/plait/commit/1318ef90f4aa13f4e71540bdd2c50170ad7ab990) Thanks [@WBbug](https://github.com/WBbug)! - fix get wrong rectangle when has line bound
+
+-   [#634](https://github.com/worktile/plait/pull/634) [`2e705a5d`](https://github.com/worktile/plait/commit/2e705a5d1689959789101f09eb1e3a9e1600b853) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - set free selection when set temporary selected element
+
 ## 0.31.0
 
 ### Minor Changes

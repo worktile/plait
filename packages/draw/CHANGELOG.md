@@ -1,5 +1,17 @@
 # @plait/draw
 
+## 0.32.0
+
+### Minor Changes
+
+-   [#628](https://github.com/worktile/plait/pull/628) [`d41b1341`](https://github.com/worktile/plait/commit/d41b134155ddefeb82570c7202847423d733095d) Thanks [@WBbug](https://github.com/WBbug)! - optimize line when stroke wider
+
+### Patch Changes
+
+-   [`74641dae`](https://github.com/worktile/plait/commit/74641dae56bd04c9bbeefadf397def825691ecf1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve hit text logic
+
+*   [#633](https://github.com/worktile/plait/pull/633) [`7d346602`](https://github.com/worktile/plait/commit/7d346602658c7de6123f30660ce7984e357ca82b) Thanks [@WBbug](https://github.com/WBbug)! - fix mask cover others
+
 ## 0.31.0
 
 ### Minor Changes

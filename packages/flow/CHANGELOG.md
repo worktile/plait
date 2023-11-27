@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.32.0
+
+### Minor Changes
+
+-   [#628](https://github.com/worktile/plait/pull/628) [`d41b1341`](https://github.com/worktile/plait/commit/d41b134155ddefeb82570c7202847423d733095d) Thanks [@WBbug](https://github.com/WBbug)! - optimize line when stroke wider
+
 ## 0.31.0
 
 ## 0.30.0
