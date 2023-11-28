@@ -154,10 +154,10 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
             this.activeG?.prepend(this.nodeG!);
             this.labelG && this.activeG?.append(this.labelG);
             this.markersG!.forEach(arrowLine => {
-                this.activeG?.append(arrowLine);
+                this.activeG?.prepend(arrowLine);
             });
             this.activeG?.append(this.handlesG!);
-            PlaitBoard.getElementActiveHost(this.board).append(this.activeG!);
+            PlaitBoard.getElementActiveHost(this.board).prepend(this.activeG!);
         }
     }
 

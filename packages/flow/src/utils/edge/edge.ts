@@ -1,6 +1,6 @@
-import { FlowElementStyles, FlowHandle, FlowPosition } from '../../interfaces/element';
-import { PlaitBoard, PlaitElement, RectangleClient, normalizePoint } from '@plait/core';
-import { getPoints } from './get-smooth-step-edge';
+import { FlowElementStyles, FlowHandle } from '../../interfaces/element';
+import { Direction, PlaitBoard, PlaitElement, RectangleClient, normalizePoint } from '@plait/core';
+import { getSmoothPoints } from './get-smooth-step-edge';
 import { getFakeFlowNodeById, getFlowNodeById } from '../node/get-node';
 import { FlowEdge } from '../../interfaces/edge';
 import { DEFAULT_EDGE_ACTIVE_STYLES, DEFAULT_EDGE_HOVER_STYLES, DEFAULT_EDGE_STYLES } from '../../constants/edge';
@@ -20,10 +20,10 @@ interface EdgePositions {
 export const getEdgePositions = (
     sourceNodeRect: RectangleClient,
     sourceHandle: FlowHandle,
-    sourcePosition: FlowPosition,
+    sourcePosition: Direction,
     targetNodeRect: RectangleClient,
     targetHandle: FlowHandle,
-    targetPosition: FlowPosition
+    targetPosition: Direction
 ): EdgePositions => {
     const edgeSourcePosition = getEdgePosition(sourcePosition, sourceNodeRect, sourceHandle);
     const edgeTargetPosition = getEdgePosition(targetPosition, targetNodeRect, targetHandle);
@@ -104,10 +104,20 @@ export const buildEdgePathPoints = (board: PlaitBoard, edge: FlowEdge) => {
         targetPosition
     );
 
-    return getPoints({
-        source: { x: sourceX, y: sourceY },
+    return getSmoothPoints({
+        sourceRectangle: {
+            x: sourceNodeX,
+            y: sourceNodeY,
+            width: sourceNodeWidth,
+            height: sourceNodeHeight
+        },
         sourcePosition,
-        target: { x: targetX, y: targetY },
+        targetRectangle: {
+            x: targetNodeX,
+            y: targetNodeY,
+            width: targetNodeWidth,
+            height: targetNodeHeight
+        },
         targetPosition,
         offset: 30
     });

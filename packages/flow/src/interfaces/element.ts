@@ -1,4 +1,4 @@
-import { PlaitElement } from '@plait/core';
+import { Direction, PlaitElement } from '@plait/core';
 import { Element } from 'slate';
 
 export enum FlowElementType {
@@ -6,15 +6,8 @@ export enum FlowElementType {
     edge = 'edge'
 }
 
-export enum FlowPosition {
-    left = 'left',
-    top = 'top',
-    right = 'right',
-    bottom = 'bottom'
-}
-
 export interface FlowHandle {
-    position: FlowPosition;
+    position: Direction;
     offsetX?: number;
     offsetY?: number;
 }
