@@ -1,4 +1,5 @@
-import { FlowBaseData, FlowElement, FlowElementType, FlowPosition } from '@plait/flow';
+import { Direction } from '@plait/core';
+import { FlowBaseData, FlowElement, FlowElementType } from '@plait/flow';
 
 export interface WorkflowType extends FlowBaseData {
     initialState?: boolean;
@@ -14,11 +15,11 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         type: FlowElementType.edge,
         source: {
             nodeId: '1001',
-            position: FlowPosition.top
+            position: Direction.top
         },
         target: {
             nodeId: '1002',
-            position: FlowPosition.top,
+            position: Direction.top,
             marker: true
         },
         points: []
@@ -31,11 +32,11 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         type: FlowElementType.edge,
         source: {
             nodeId: '1',
-            position: FlowPosition.bottom
+            position: Direction.bottom
         },
         target: {
             nodeId: '1001',
-            position: FlowPosition.left,
+            position: Direction.left,
             marker: true
         },
         undeletable: true,
@@ -49,11 +50,11 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         type: FlowElementType.edge,
         source: {
             nodeId: '1002',
-            position: FlowPosition.right
+            position: Direction.right
         },
         target: {
             nodeId: '1003',
-            position: FlowPosition.left,
+            position: Direction.left,
             marker: true
         },
         points: []

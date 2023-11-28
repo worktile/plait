@@ -1,8 +1,8 @@
 import { Options } from 'roughjs/bin/core';
-import { FlowPosition } from '../interfaces/element';
 import { DEFAULT_STYLES, PRIMARY_COLOR } from './default';
+import { Direction } from '@plait/core';
 
-export const DEFAULT_POSITIONS = [FlowPosition.top, FlowPosition.right, FlowPosition.bottom, FlowPosition.left];
+export const DEFAULT_POSITIONS = [Direction.top, Direction.right, Direction.bottom, Direction.left];
 
 export const HANDLE_DIAMETER = 8;
 

@@ -1,4 +1,5 @@
-import { FlowBaseData, FlowElement, FlowElementType, FlowHandle, FlowPosition } from './element';
+import { Direction } from '@plait/core';
+import { FlowBaseData, FlowElement, FlowElementType, FlowHandle } from './element';
 import { FlowNode } from './node';
 
 export type FlowEdgeMarkerType = 'arrow' | 'none';
@@ -18,7 +19,7 @@ export interface FlowEdgeDragInfo {
 
 export interface FlowEdgeHandle {
     nodeId: string;
-    position: FlowPosition;
+    position: Direction;
     // handleId?: string;
     marker?: FlowEdgeMarkerType;
 }
