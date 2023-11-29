@@ -97,7 +97,7 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
     let targetPoint = targetBoundElement
         ? getConnectionPoint(targetBoundElement, element.target.connection!)
         : element.points[element.points.length - 1];
-    let sourceDirection = getDirectionByVector([targetPoint[0] - sourcePoint[0], targetPoint[1] - sourcePoint[1]])!;
+    let sourceDirection = getDirectionByVector([targetPoint[0] - sourcePoint[0], targetPoint[1] - sourcePoint[1]]) || Direction.right;
     let targetDirection = getOppositeDirection(sourceDirection);
     const sourceFactor = getDirectionFactor(sourceDirection);
     const targetFactor = getDirectionFactor(targetDirection);

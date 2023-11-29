@@ -12,6 +12,7 @@ export interface ActiveGeneratorOptions<T> {
     getStrokeWidth: () => number;
     getStrokeOpacity: () => number;
     hasResizeHandle: () => boolean;
+    drawExtraG?: (rectangle: RectangleClient) => SVGGElement;
 }
 
 export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Generator<
@@ -79,6 +80,7 @@ export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Gene
         } else {
             this.hasResizeHandle = false;
         }
+        this.options.drawExtraG && activeG.append(this.options.drawExtraG(activeRectangle));
         return activeG;
     }
 }

@@ -6,7 +6,10 @@ import {
     isSelectionMoving,
     getSelectedElements,
     PlaitOptionsBoard,
-    ACTIVE_STROKE_WIDTH
+    ACTIVE_STROKE_WIDTH,
+    RectangleClient,
+    createG,
+    drawCircle
 } from '@plait/core';
 import { Subject } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
@@ -14,8 +17,15 @@ import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
-import { ActiveGenerator, WithTextPluginKey, WithTextOptions, getRectangleByPoints, CommonPluginElement } from '@plait/common';
-import { DefaultGeometryActiveStyle, GeometryThreshold } from './constants/geometry';
+import {
+    ActiveGenerator,
+    WithTextPluginKey,
+    WithTextOptions,
+    getRectangleByPoints,
+    CommonPluginElement,
+    RESIZE_HANDLE_DIAMETER
+} from '@plait/common';
+import { GeometryThreshold } from './constants/geometry';
 import { PlaitDrawElement, PlaitText } from './interfaces';
 import { getEngine } from './engines';
 
@@ -32,6 +42,8 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     activeGenerator!: ActiveGenerator<PlaitGeometry>;
 
     shapeGenerator!: GeometryShapeGenerator;
+
+    autoCompleteG!: SVGGElement;
 
     get textManage() {
         return this.getTextManages()[0];
@@ -68,6 +80,25 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                     return false;
                 }
                 return selectedElements.length === 1 && !isSelectionMoving(this.board);
+            },
+            drawExtraG: (rectangle: RectangleClient) => {
+                this.autoCompleteG = createG();
+                const selectedElements = getSelectedElements(this.board);
+                if (selectedElements.length === 1 && !isSelectionMoving(this.board)) {
+                    rectangle = RectangleClient.inflate(rectangle, (12 + RESIZE_HANDLE_DIAMETER / 2) * 2);
+                    const middlePoints = RectangleClient.getEdgeCenterPoints(rectangle);
+                    middlePoints.forEach((point, index) => {
+                        const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, RESIZE_HANDLE_DIAMETER, {
+                            stroke: 'none',
+                            fill: '#6698FF4d',
+                            fillStyle: 'solid'
+                        });
+                        circle.classList.add(`geometry-auto-complete-${index}`);
+                        this.autoCompleteG.appendChild(circle);
+                    });
+                }
+
+                return this.autoCompleteG;
             }
         });
         this.shapeGenerator = new GeometryShapeGenerator(this.board);
@@ -147,10 +178,25 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         this.initializeTextManages([manage]);
     }
 
+    removeAutoCompleteG(index: number) {
+        const style = (this.autoCompleteG.childNodes[index] as HTMLElement).style;
+        style.visibility = 'hidden';
+    }
+
+    recoverAutoCompleteG() {
+        this.autoCompleteG.childNodes.forEach(child => {
+            const style = (child as HTMLElement).style;
+            if (style.visibility !== 'visible') {
+                style.visibility = 'visible';
+            }
+        });
+    }
+
     ngOnDestroy(): void {
         super.ngOnDestroy();
         this.textManage.destroy();
         this.destroy$.next();
         this.destroy$.complete();
+        this.autoCompleteG.remove();
     }
 }
