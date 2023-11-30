@@ -101,7 +101,8 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         value: PlaitPluginElementContext<PlaitGeometry, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitGeometry, PlaitBoard>
     ) {
-        if (value.element !== previous.element) {
+        const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
+        if (value.element !== previous.element || isChangeTheme) {
             this.shapeGenerator.draw(this.element, this.g);
             this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
             this.autoCompleteGenerator.draw(this.element, this.g, { selected: this.selected });

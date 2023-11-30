@@ -53,7 +53,6 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
                 PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
             } else {
                 const temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
-                    strokeColor: DefaultBasicShapeProperty.strokeColor,
                     strokeWidth: DefaultBasicShapeProperty.strokeWidth
                 });
                 geometryGenerator.draw(temporaryElement, geometryShapeG);
@@ -142,7 +141,6 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         if (drawMode && pointer !== BasicShapes.text) {
             const points = normalizeShapePoints([start!, movingPoint], isShift);
             temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
-                strokeColor: DefaultBasicShapeProperty.strokeColor,
                 strokeWidth: DefaultBasicShapeProperty.strokeWidth
             });
             geometryGenerator.draw(temporaryElement, geometryShapeG);
@@ -162,7 +160,6 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
                 const points = getDefaultGeometryPoints(pointer, targetPoint);
                 if (pointer !== BasicShapes.text) {
                     temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
-                        strokeColor: DefaultBasicShapeProperty.strokeColor,
                         strokeWidth: DefaultBasicShapeProperty.strokeWidth
                     });
                 }

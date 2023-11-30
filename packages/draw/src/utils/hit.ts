@@ -46,7 +46,7 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
 
 export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point) => {
     if (PlaitDrawElement.isGeometry(element)) {
-        const fill = getFillByElement(element);
+        const fill = getFillByElement(board, element);
         // when shape equals text, fill is not allowed
         if (fill !== DefaultGeometryStyle.fill && fill !== TRANSPARENT && !PlaitDrawElement.isText(element)) {
             return isRectangleHitDrawElement(board, element, { anchor: point, focus: point });

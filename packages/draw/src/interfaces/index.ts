@@ -36,9 +36,9 @@ export const PlaitDrawElement = {
         return PlaitDrawElement.isImage(value) || PlaitDrawElement.isGeometry(value);
     },
     isBaseShape: (value: any) => {
-        return Object.keys(BasicShapes).includes(value.type);
+        return Object.keys(BasicShapes).includes(value.shape);
     },
     isFlowchart: (value: any) => {
-        return Object.keys(FlowchartSymbols).includes(value.type);
+        return Object.keys(FlowchartSymbols).includes(value.shape);
     }
 };

@@ -18,8 +18,8 @@ export class GeometryShapeGenerator extends Generator<PlaitGeometry, ShapeData> 
             return;
         }
         const strokeWidth = getStrokeWidthByElement(element);
-        const strokeColor = getStrokeColorByElement(element);
-        const fill = getFillByElement(element);
+        const strokeColor = getStrokeColorByElement(this.board, element);
+        const fill = getFillByElement(this.board, element);
         const strokeLineDash = getLineDashByElement(element);
         return drawGeometry(this.board, RectangleClient.inflate(rectangle, -strokeWidth), shape, {
             stroke: strokeColor,
