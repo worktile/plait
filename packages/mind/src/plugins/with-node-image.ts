@@ -13,12 +13,13 @@ import {
     setClipboardDataByMedia,
     getClipboardDataByMedia,
     RectangleClient,
-    getHitElementByPoint
+    getHitElementByPoint,
+    temporaryDisableSelection
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
 import { addImageFocus, removeImageFocus } from '../utils/node/image';
-import { isHitImage, temporaryDisableSelection } from '../utils';
+import { isHitImage } from '../utils';
 import { MindTransforms } from '../transforms';
 import { MediaKeys, acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/common';
 import { DEFAULT_MIND_IMAGE_WIDTH } from '../constants';

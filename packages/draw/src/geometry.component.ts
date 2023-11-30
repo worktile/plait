@@ -6,7 +6,10 @@ import {
     isSelectionMoving,
     getSelectedElements,
     PlaitOptionsBoard,
-    ACTIVE_STROKE_WIDTH
+    ACTIVE_STROKE_WIDTH,
+    RectangleClient,
+    createG,
+    drawCircle
 } from '@plait/core';
 import { Subject } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
@@ -14,10 +17,18 @@ import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
-import { ActiveGenerator, WithTextPluginKey, WithTextOptions, getRectangleByPoints, CommonPluginElement } from '@plait/common';
-import { DefaultGeometryActiveStyle, GeometryThreshold } from './constants/geometry';
+import {
+    ActiveGenerator,
+    WithTextPluginKey,
+    WithTextOptions,
+    getRectangleByPoints,
+    CommonPluginElement,
+    RESIZE_HANDLE_DIAMETER
+} from '@plait/common';
+import { GeometryThreshold } from './constants/geometry';
 import { PlaitDrawElement, PlaitText } from './interfaces';
 import { getEngine } from './engines';
+import { AutoCompleteGenerator } from './generators/auto-complete.generator';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -30,6 +41,8 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     destroy$ = new Subject<void>();
 
     activeGenerator!: ActiveGenerator<PlaitGeometry>;
+
+    autoCompleteGenerator!: AutoCompleteGenerator;
 
     shapeGenerator!: GeometryShapeGenerator;
 
@@ -70,6 +83,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                 return selectedElements.length === 1 && !isSelectionMoving(this.board);
             }
         });
+        this.autoCompleteGenerator = new AutoCompleteGenerator(this.board);
         this.shapeGenerator = new GeometryShapeGenerator(this.board);
         this.initializeTextManage();
     }
@@ -79,6 +93,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         this.initializeGenerator();
         this.shapeGenerator.draw(this.element, this.g);
         this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+        this.autoCompleteGenerator.draw(this.element, this.g, { selected: this.selected });
         this.drawText();
     }
 
@@ -89,12 +104,14 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         if (value.element !== previous.element) {
             this.shapeGenerator.draw(this.element, this.g);
             this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+            this.autoCompleteGenerator.draw(this.element, this.g, { selected: this.selected });
             this.updateText();
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
             if (!hasSameSelected || !hasSameHandleState) {
                 this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+                this.autoCompleteGenerator.draw(this.element, this.g, { selected: this.selected });
             }
         }
     }

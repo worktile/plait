@@ -5,6 +5,7 @@ import { BOARD_TO_SELECTED_ELEMENT } from './weak-maps';
 import { Selection } from '../interfaces/selection';
 import { PlaitElement } from '../interfaces/element';
 import { Point } from '../interfaces/point';
+import { PlaitOptionsBoard, PlaitPluginKey, WithPluginOptions } from '../public-api';
 
 export const getHitElementsBySelection = (
     board: PlaitBoard,
@@ -96,4 +97,14 @@ export const clearSelectedElement = (board: PlaitBoard) => {
 export const isSelectedElement = (board: PlaitBoard, element: PlaitElement) => {
     const selectedElements = getSelectedElements(board);
     return !!selectedElements.find(value => value === element);
+};
+
+export const temporaryDisableSelection = (board: PlaitOptionsBoard) => {
+    const currentOptions = board.getPluginOptions(PlaitPluginKey.withSelection);
+    board.setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, {
+        isDisabledSelect: true
+    });
+    setTimeout(() => {
+        board.setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { ...currentOptions });
+    }, 0);
 };
