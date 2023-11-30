@@ -21,6 +21,8 @@ import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineShapeGenerator } from '../generators/line.generator';
 import { DefaultLineStyle } from '../constants/line';
 
+export const AutoCompleteMargin = (12 + RESIZE_HANDLE_DIAMETER / 2) * 2;
+
 export const withAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, pointerUp } = board;
 
@@ -35,7 +37,7 @@ export const withAutoComplete = (board: PlaitBoard) => {
         const clickPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (selectedElements.length === 1 && PlaitDrawElement.isGeometry(selectedElements[0])) {
             let rectangle = getRectangleByPoints(selectedElements[0].points);
-            rectangle = RectangleClient.inflate(rectangle, (12 + RESIZE_HANDLE_DIAMETER / 2) * 2 + 1);
+            rectangle = RectangleClient.inflate(rectangle, AutoCompleteMargin);
             const centerPoints = RectangleClient.getEdgeCenterPoints(rectangle);
             const hitPoint = centerPoints.find(point => {
                 const movingRectangle = RectangleClient.toRectangleClient([clickPoint]);

@@ -28,6 +28,7 @@ import {
 import { GeometryThreshold } from './constants/geometry';
 import { PlaitDrawElement, PlaitText } from './interfaces';
 import { getEngine } from './engines';
+import { AutoCompleteGenerator } from './generators/auto-complete.generator';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -41,9 +42,9 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
 
     activeGenerator!: ActiveGenerator<PlaitGeometry>;
 
-    shapeGenerator!: GeometryShapeGenerator;
+    autoCompleteGenerator!: AutoCompleteGenerator<PlaitGeometry>;
 
-    autoCompleteG!: SVGGElement;
+    shapeGenerator!: GeometryShapeGenerator;
 
     get textManage() {
         return this.getTextManages()[0];
@@ -54,7 +55,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     }
 
     initializeGenerator() {
-        this.activeGenerator = new ActiveGenerator<PlaitGeometry>(this.board, {
+        const options = {
             getStrokeWidth: () => {
                 const selectedElements = getSelectedElements(this.board);
                 if (selectedElements.length === 1 && !isSelectionMoving(this.board)) {
@@ -80,27 +81,10 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                     return false;
                 }
                 return selectedElements.length === 1 && !isSelectionMoving(this.board);
-            },
-            drawExtraG: (rectangle: RectangleClient) => {
-                this.autoCompleteG = createG();
-                const selectedElements = getSelectedElements(this.board);
-                if (selectedElements.length === 1 && !isSelectionMoving(this.board)) {
-                    rectangle = RectangleClient.inflate(rectangle, (12 + RESIZE_HANDLE_DIAMETER / 2) * 2);
-                    const middlePoints = RectangleClient.getEdgeCenterPoints(rectangle);
-                    middlePoints.forEach((point, index) => {
-                        const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, RESIZE_HANDLE_DIAMETER, {
-                            stroke: 'none',
-                            fill: '#6698FF4d',
-                            fillStyle: 'solid'
-                        });
-                        circle.classList.add(`geometry-auto-complete-${index}`);
-                        this.autoCompleteG.appendChild(circle);
-                    });
-                }
-
-                return this.autoCompleteG;
             }
-        });
+        };
+        this.activeGenerator = new ActiveGenerator<PlaitGeometry>(this.board, options);
+        this.autoCompleteGenerator = new AutoCompleteGenerator(this.board, options);
         this.shapeGenerator = new GeometryShapeGenerator(this.board);
         this.initializeTextManage();
     }
@@ -110,6 +94,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         this.initializeGenerator();
         this.shapeGenerator.draw(this.element, this.g);
         this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+        this.autoCompleteGenerator.draw(this.element, this.g, { selected: this.selected });
         this.drawText();
     }
 
@@ -120,12 +105,14 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         if (value.element !== previous.element) {
             this.shapeGenerator.draw(this.element, this.g);
             this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+            this.autoCompleteGenerator.draw(this.element, this.g, { selected: this.selected });
             this.updateText();
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
             if (!hasSameSelected || !hasSameHandleState) {
                 this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+                this.autoCompleteGenerator.draw(this.element, this.g, { selected: this.selected });
             }
         }
     }
@@ -178,25 +165,10 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         this.initializeTextManages([manage]);
     }
 
-    removeAutoCompleteG(index: number) {
-        const style = (this.autoCompleteG.childNodes[index] as HTMLElement).style;
-        style.visibility = 'hidden';
-    }
-
-    recoverAutoCompleteG() {
-        this.autoCompleteG.childNodes.forEach(child => {
-            const style = (child as HTMLElement).style;
-            if (style.visibility !== 'visible') {
-                style.visibility = 'visible';
-            }
-        });
-    }
-
     ngOnDestroy(): void {
         super.ngOnDestroy();
         this.textManage.destroy();
         this.destroy$.next();
         this.destroy$.complete();
-        this.autoCompleteG.remove();
     }
 }

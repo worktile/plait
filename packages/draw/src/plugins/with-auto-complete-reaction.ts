@@ -3,6 +3,7 @@ import { PlaitDrawElement } from '../interfaces';
 import { getSelectedDrawElements } from '../utils';
 import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
 import { GeometryComponent } from '../geometry.component';
+import { AutoCompleteMargin } from './with-auto-complete';
 
 export const withAutoCompleteReaction = (board: PlaitBoard) => {
     const { pointerMove } = board;
@@ -15,7 +16,7 @@ export const withAutoCompleteReaction = (board: PlaitBoard) => {
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (selectedElements.length === 1 && PlaitDrawElement.isGeometry(selectedElements[0])) {
             let rectangle = getRectangleByPoints(selectedElements[0].points);
-            rectangle = RectangleClient.inflate(rectangle, (12 + RESIZE_HANDLE_DIAMETER / 2) * 2 + 1);
+            rectangle = RectangleClient.inflate(rectangle, AutoCompleteMargin);
             const centerPoints = RectangleClient.getEdgeCenterPoints(rectangle);
             const hitIndex = centerPoints.findIndex(point => {
                 const movingRectangle = RectangleClient.toRectangleClient([movingPoint]);
@@ -24,16 +25,18 @@ export const withAutoCompleteReaction = (board: PlaitBoard) => {
                 return RectangleClient.isHit(movingRectangle, rectangle);
             });
             const component = PlaitElement.getComponent(selectedElements[0]) as GeometryComponent;
-            component.recoverAutoCompleteG();
             const hitPoint = centerPoints[hitIndex];
-            if (hitPoint && !isSelectionMoving(board)) {
-                component.removeAutoCompleteG(hitIndex);
-                reactionG = drawCircle(PlaitBoard.getRoughSVG(board), hitPoint, 10, {
-                    stroke: 'none',
-                    fill: '#6698FF80',
-                    fillStyle: 'solid'
-                });
-                PlaitBoard.getElementActiveHost(board).append(reactionG);
+            if (!isSelectionMoving(board)) {
+                component.autoCompleteGenerator.recoverAutoCompleteG();
+                if (hitPoint) {
+                    component.autoCompleteGenerator.removeAutoCompleteG(hitIndex);
+                    reactionG = drawCircle(PlaitBoard.getRoughSVG(board), hitPoint, 10, {
+                        stroke: 'none',
+                        fill: '#6698FF80',
+                        fillStyle: 'solid'
+                    });
+                    PlaitBoard.getElementActiveHost(board).append(reactionG);
+                }
             }
         }
 
