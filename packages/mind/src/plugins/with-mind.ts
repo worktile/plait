@@ -30,17 +30,7 @@ import { withMindFragment } from './with-mind-fragment';
 
 export const withMind = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
-    const {
-        drawElement,
-        dblclick,
-        isRectangleHit,
-        isHit,
-        getRectangle,
-        isMovable,
-        isRecursion,
-        isAlign,
-        isImageBindingAllowed,
-    } = board;
+    const { drawElement, dblclick, isRectangleHit, isHit, getRectangle, isMovable, isRecursion, isAlign, isImageBindingAllowed } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMind.isMind(context.element)) {
@@ -55,7 +45,7 @@ export const withMind = (baseBoard: PlaitBoard) => {
         const mindElement = element as MindElement;
         const shouldClearProperty =
             !PlaitBoard.isBoard(element) && (mindElement?.branchColor || mindElement?.fill || mindElement?.strokeColor);
-        if (shouldClearProperty) {
+        if (PlaitMind.isMind(element) && shouldClearProperty) {
             const path = PlaitBoard.findPath(board, element);
             Transforms.setNode(board, { fill: null, strokeColor: null, branchColor: null }, path);
         }

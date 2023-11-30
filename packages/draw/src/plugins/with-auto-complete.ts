@@ -14,7 +14,13 @@ import {
     transformPoint
 } from '@plait/core';
 import { LineMarkerType, LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
-import { createLineElement, getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements, transformPointToConnection } from '../utils';
+import {
+    createLineElement,
+    getAutoCompletePoints,
+    getHitIndexOfAutoCompletePoint,
+    getSelectedDrawElements,
+    transformPointToConnection
+} from '../utils';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineShapeGenerator } from '../generators/line.generator';
 import { DefaultLineStyle } from '../constants/line';
@@ -83,11 +89,14 @@ export const withAutoComplete = (board: PlaitBoard) => {
             clearSelectedElement(board);
             addSelectedElement(board, temporaryElement);
         }
+        if (startPoint) {
+            BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
+            startPoint = null;
+        }
         lineShapeG?.remove();
         lineShapeG = null;
         sourceElement = null;
         temporaryElement = null;
-        BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         pointerUp(event);
     };
 

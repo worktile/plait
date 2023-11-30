@@ -81,8 +81,9 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         const isBoundedElementsChanged =
             boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;
         this.boundedElements = boundedElements;
+        const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
 
-        if (value.element !== previous.element) {
+        if (value.element !== previous.element || isChangeTheme) {
             this.shapeGenerator.draw(this.element, this.g);
             this.activeGenerator.draw(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
             this.updateText(previous.element.texts, value.element.texts);

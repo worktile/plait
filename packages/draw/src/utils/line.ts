@@ -288,7 +288,7 @@ export const isHitLineText = (board: PlaitBoard, element: PlaitLine, point: Poin
 
 export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     const strokeWidth = getStrokeWidthByElement(element);
-    const strokeColor = getStrokeColorByElement(element);
+    const strokeColor = getStrokeColorByElement(board, element);
     const strokeLineDash = getLineDashByElement(element);
     const options = { stroke: strokeColor, strokeWidth, strokeLineDash };
     const lineG = createG();

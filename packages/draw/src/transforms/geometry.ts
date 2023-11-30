@@ -7,10 +7,8 @@ import { normalizeShapePoints } from '@plait/common';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
     let newElement = createGeometryElement(shape, points, '', {
-        strokeColor: DefaultBasicShapeProperty.strokeColor,
         strokeWidth: DefaultBasicShapeProperty.strokeWidth
     }) as PlaitGeometry;
-
     Transforms.insertNode(board, newElement, [board.children.length]);
     clearSelectedElement(board);
     addSelectedElement(board, newElement);
