@@ -6,6 +6,7 @@ import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineHandle, PlaitLine } from '../interfaces';
 import { transformPointToConnection } from '../utils';
 import { DrawTransforms } from '../transforms';
+import { REACTION_MARGIN } from '../constants';
 
 export const withLineResize = (board: PlaitBoard) => {
     let pointIndex = 0;
@@ -39,7 +40,7 @@ export const withLineResize = (board: PlaitBoard) => {
             if (resizeRef.handle === LineResizeHandle.source || resizeRef.handle === LineResizeHandle.target) {
                 const object = resizeRef.handle === LineResizeHandle.source ? source : target;
                 points[pointIndex] = resizeState.endTransformPoint;
-                const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, -4);
+                const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, REACTION_MARGIN);
                 if (hitElement) {
                     object.connection = transformPointToConnection(board, resizeState.endTransformPoint, hitElement);
                     object.boundId = hitElement.id;

@@ -14,11 +14,11 @@ import {
     transformPoint
 } from '@plait/core';
 import { LineMarkerType, LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
-import { createLineElement, getSelectedDrawElements, transformPointToConnection } from '../utils';
+import { createLineElement, getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements, transformPointToConnection } from '../utils';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineShapeGenerator } from '../generators/line.generator';
 import { DefaultLineStyle } from '../constants/line';
-import { getAutoCompletePoints, getHitAutoCompletePoint } from '../generators/auto-complete.generator';
+import { REACTION_MARGIN } from '../constants';
 
 export const withAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, pointerUp } = board;
@@ -34,7 +34,7 @@ export const withAutoComplete = (board: PlaitBoard) => {
         const clickPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (selectedElements.length === 1 && PlaitDrawElement.isGeometry(selectedElements[0])) {
             const points = getAutoCompletePoints(selectedElements[0]);
-            const index = getHitAutoCompletePoint(clickPoint, points);
+            const index = getHitIndexOfAutoCompletePoint(clickPoint, points);
             const hitPoint = points[index];
             if (hitPoint) {
                 temporaryDisableSelection(board as PlaitOptionsBoard);
@@ -53,7 +53,7 @@ export const withAutoComplete = (board: PlaitBoard) => {
         if (startPoint && sourceElement) {
             const distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
             if (distance > tolerance) {
-                const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
+                const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
                 const targetConnection = hitElement ? transformPointToConnection(board, movingPoint, hitElement) : undefined;
                 const connection = transformPointToConnection(board, startPoint, sourceElement);
                 const targetBoundId = hitElement ? hitElement.id : undefined;

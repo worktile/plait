@@ -78,3 +78,4 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.storedData]: DefaultFlowchartProperty
 };
 
+export const REACTION_MARGIN = -4;

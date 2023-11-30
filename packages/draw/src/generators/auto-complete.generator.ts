@@ -1,6 +1,7 @@
 import { PlaitBoard, Point, RectangleClient, createG, drawCircle, getSelectedElements, isSelectionMoving } from '@plait/core';
 import { PlaitGeometry } from '../interfaces';
 import { ActiveGeneratorExtraData, Generator, RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
+import { getAutoCompletePoints } from '../utils';
 
 export class AutoCompleteGenerator extends Generator<PlaitGeometry, ActiveGeneratorExtraData> {
     autoCompleteG!: SVGGElement;
@@ -47,19 +48,3 @@ export class AutoCompleteGenerator extends Generator<PlaitGeometry, ActiveGenera
         }
     }
 }
-
-export const getAutoCompletePoints = (element: PlaitGeometry) => {
-    const AutoCompleteMargin = (12 + RESIZE_HANDLE_DIAMETER / 2) * 2;
-    let rectangle = getRectangleByPoints(element.points);
-    rectangle = RectangleClient.inflate(rectangle, AutoCompleteMargin);
-    return RectangleClient.getEdgeCenterPoints(rectangle);
-};
-
-export const getHitAutoCompletePoint = (movingPoint: Point, points: Point[]) => {
-    return points.findIndex(point => {
-        const movingRectangle = RectangleClient.toRectangleClient([movingPoint]);
-        let rectangle = RectangleClient.toRectangleClient([point]);
-        rectangle = RectangleClient.inflate(rectangle, RESIZE_HANDLE_DIAMETER);
-        return RectangleClient.isHit(movingRectangle, rectangle);
-    });
-};

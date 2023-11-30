@@ -20,7 +20,7 @@ import {
     ShapeDefaultSpace,
     getFlowchartPointers
 } from '../constants';
-import { getRectangleByPoints } from '@plait/common';
+import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
@@ -273,4 +273,20 @@ export const createDefaultFlowchart = (point: Point) => {
     );
 
     return [startElement, processElement1, decisionElement, processElement2, endElement, line1, line2, line3, line4, line5];
+};
+
+export const getAutoCompletePoints = (element: PlaitGeometry) => {
+    const AutoCompleteMargin = (12 + RESIZE_HANDLE_DIAMETER / 2) * 2;
+    let rectangle = getRectangleByPoints(element.points);
+    rectangle = RectangleClient.inflate(rectangle, AutoCompleteMargin);
+    return RectangleClient.getEdgeCenterPoints(rectangle);
+};
+
+export const getHitIndexOfAutoCompletePoint = (movingPoint: Point, points: Point[]) => {
+    return points.findIndex(point => {
+        const movingRectangle = RectangleClient.toRectangleClient([movingPoint]);
+        let rectangle = RectangleClient.toRectangleClient([point]);
+        rectangle = RectangleClient.inflate(rectangle, RESIZE_HANDLE_DIAMETER);
+        return RectangleClient.isHit(movingRectangle, rectangle);
+    });
 };

@@ -13,7 +13,7 @@ import {
 } from '@plait/core';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
 import { createLineElement, transformPointToConnection } from '../utils';
-import { getLinePointers } from '../constants';
+import { REACTION_MARGIN, getLinePointers } from '../constants';
 import { DefaultLineStyle } from '../constants/line';
 import { LineShapeGenerator } from '../generators/line.generator';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
@@ -38,7 +38,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         if (isLinePointer && isDrawingMode(board)) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
-            const hitElement = getHitOutlineGeometry(board, point, -4);
+            const hitElement = getHitOutlineGeometry(board, point, REACTION_MARGIN);
             if (hitElement) {
                 sourceRef.connection = transformPointToConnection(board, point, hitElement);
                 sourceRef.boundId = hitElement.id;
@@ -53,7 +53,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         lineShapeG = createG();
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (start) {
-            const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
+            const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
             targetRef.connection = hitElement ? transformPointToConnection(board, movingPoint, hitElement) : undefined;
             targetRef.boundId = hitElement ? hitElement.id : undefined;
             const lineGenerator = new LineShapeGenerator(board);

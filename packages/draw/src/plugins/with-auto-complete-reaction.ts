@@ -1,8 +1,7 @@
 import { PlaitBoard, PlaitElement, drawCircle, isSelectionMoving, toPoint, transformPoint } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
-import { getSelectedDrawElements } from '../utils';
+import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
 import { GeometryComponent } from '../geometry.component';
-import { getAutoCompletePoints, getHitAutoCompletePoint } from '../generators/auto-complete.generator';
 
 export const withAutoCompleteReaction = (board: PlaitBoard) => {
     const { pointerMove } = board;
@@ -20,7 +19,7 @@ export const withAutoCompleteReaction = (board: PlaitBoard) => {
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (selectedElements.length === 1 && PlaitDrawElement.isGeometry(selectedElements[0])) {
             const points = getAutoCompletePoints(selectedElements[0]);
-            const hitIndex = getHitAutoCompletePoint(movingPoint, points);
+            const hitIndex = getHitIndexOfAutoCompletePoint(movingPoint, points);
             const hitPoint = points[hitIndex];
             const component = PlaitElement.getComponent(selectedElements[0]) as GeometryComponent;
             component.autoCompleteGenerator.recoverAutoCompleteG();
