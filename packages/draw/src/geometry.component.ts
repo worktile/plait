@@ -42,7 +42,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
 
     activeGenerator!: ActiveGenerator<PlaitGeometry>;
 
-    autoCompleteGenerator!: AutoCompleteGenerator<PlaitGeometry>;
+    autoCompleteGenerator!: AutoCompleteGenerator;
 
     shapeGenerator!: GeometryShapeGenerator;
 
@@ -55,7 +55,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     }
 
     initializeGenerator() {
-        const options = {
+        this.activeGenerator = new ActiveGenerator<PlaitGeometry>(this.board, {
             getStrokeWidth: () => {
                 const selectedElements = getSelectedElements(this.board);
                 if (selectedElements.length === 1 && !isSelectionMoving(this.board)) {
@@ -82,9 +82,8 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                 }
                 return selectedElements.length === 1 && !isSelectionMoving(this.board);
             }
-        };
-        this.activeGenerator = new ActiveGenerator<PlaitGeometry>(this.board, options);
-        this.autoCompleteGenerator = new AutoCompleteGenerator(this.board, options);
+        });
+        this.autoCompleteGenerator = new AutoCompleteGenerator(this.board);
         this.shapeGenerator = new GeometryShapeGenerator(this.board);
         this.initializeTextManage();
     }

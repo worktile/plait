@@ -4,7 +4,6 @@ import {
     PlaitOptionsBoard,
     PlaitPointerType,
     Point,
-    RectangleClient,
     Transforms,
     addSelectedElement,
     clearSelectedElement,
@@ -16,12 +15,10 @@ import {
 } from '@plait/core';
 import { LineMarkerType, LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { createLineElement, getSelectedDrawElements, transformPointToConnection } from '../utils';
-import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineShapeGenerator } from '../generators/line.generator';
 import { DefaultLineStyle } from '../constants/line';
-
-export const AutoCompleteMargin = (12 + RESIZE_HANDLE_DIAMETER / 2) * 2;
+import { getAutoCompletePoints, getHitAutoCompletePoint } from '../generators/auto-complete.generator';
 
 export const withAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, pointerUp } = board;
@@ -36,15 +33,9 @@ export const withAutoComplete = (board: PlaitBoard) => {
         const selectedElements = getSelectedDrawElements(board);
         const clickPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (selectedElements.length === 1 && PlaitDrawElement.isGeometry(selectedElements[0])) {
-            let rectangle = getRectangleByPoints(selectedElements[0].points);
-            rectangle = RectangleClient.inflate(rectangle, AutoCompleteMargin);
-            const centerPoints = RectangleClient.getEdgeCenterPoints(rectangle);
-            const hitPoint = centerPoints.find(point => {
-                const movingRectangle = RectangleClient.toRectangleClient([clickPoint]);
-                let rectangle = RectangleClient.toRectangleClient([point]);
-                rectangle = RectangleClient.inflate(rectangle, RESIZE_HANDLE_DIAMETER);
-                return RectangleClient.isHit(movingRectangle, rectangle);
-            });
+            const points = getAutoCompletePoints(selectedElements[0]);
+            const index = getHitAutoCompletePoint(clickPoint, points);
+            const hitPoint = points[index];
             if (hitPoint) {
                 temporaryDisableSelection(board as PlaitOptionsBoard);
                 startPoint = clickPoint;

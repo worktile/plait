@@ -1,60 +1,65 @@
-import { PlaitBoard, PlaitElement, RectangleClient, createG, drawCircle, getSelectedElements, isSelectionMoving } from '@plait/core';
-import { RESIZE_HANDLE_DIAMETER } from '../../../common/src/constants/default';
-import { ActiveGenerator, ActiveGeneratorOptions } from '../../../common/src/generators/active.generator';
-// 抽取 AutoCompleteGenerator
-// 修改 (12 + RESIZE_HANDLE_DIAMETER / 2) * 2 + 1
-export interface ActiveGeneratorExtraData {
-    selected: boolean;
-}
+import { PlaitBoard, Point, RectangleClient, createG, drawCircle, getSelectedElements, isSelectionMoving } from '@plait/core';
+import { PlaitGeometry } from '../interfaces';
+import { ActiveGeneratorExtraData, Generator, RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
 
-export class AutoCompleteGenerator<T extends PlaitElement = PlaitElement> extends ActiveGenerator<T> {
-    hasResizeHandle = false;
+export class AutoCompleteGenerator extends Generator<PlaitGeometry, ActiveGeneratorExtraData> {
     autoCompleteG!: SVGGElement;
+    hoverElement: SVGGElement | null = null;
 
-    constructor(public board: PlaitBoard, public options: ActiveGeneratorOptions<T>) {
-        super(board, options);
+    constructor(public board: PlaitBoard) {
+        super(board);
     }
 
-    canDraw(element: T, data: ActiveGeneratorExtraData): boolean {
-        if (data.selected && this.options.hasResizeHandle()) {
+    canDraw(element: PlaitGeometry, data: ActiveGeneratorExtraData): boolean {
+        const selectedElements = getSelectedElements(this.board);
+
+        if (data.selected && selectedElements.length === 1 && !isSelectionMoving(this.board)) {
             return true;
         } else {
             return false;
         }
     }
 
-    baseDraw(element: T, data: ActiveGeneratorExtraData): SVGGElement {
+    baseDraw(element: PlaitGeometry, data: ActiveGeneratorExtraData): SVGGElement {
         this.autoCompleteG = createG();
-        const selectedElements = getSelectedElements(this.board);
-        let rectangle = this.options.getRectangle(element);
-        if (selectedElements.length === 1 && !isSelectionMoving(this.board)) {
-            rectangle = RectangleClient.inflate(rectangle, (12 + RESIZE_HANDLE_DIAMETER / 2) * 2 + 1);
-            const middlePoints = RectangleClient.getEdgeCenterPoints(rectangle);
-            middlePoints.forEach((point, index) => {
-                const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, RESIZE_HANDLE_DIAMETER, {
-                    stroke: 'none',
-                    fill: '#6698FF4d',
-                    fillStyle: 'solid'
-                });
-                circle.classList.add(`geometry-auto-complete-${index}`);
-                this.autoCompleteG.appendChild(circle);
+        const middlePoints = getAutoCompletePoints(element);
+        middlePoints.forEach((point, index) => {
+            const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, RESIZE_HANDLE_DIAMETER, {
+                stroke: 'none',
+                fill: '#6698FF4d',
+                fillStyle: 'solid'
             });
-        }
+            circle.classList.add(`geometry-auto-complete-${index}`);
+            this.autoCompleteG.appendChild(circle);
+        });
         return this.autoCompleteG;
     }
 
     removeAutoCompleteG(index: number) {
-        const style = (this.autoCompleteG.childNodes[index] as HTMLElement).style;
-        style.visibility = 'hidden';
+        this.hoverElement = this.autoCompleteG.querySelector(`.geometry-auto-complete-${index}`);
+        this.hoverElement!.style.visibility = 'hidden';
     }
 
     recoverAutoCompleteG() {
-        this.autoCompleteG &&
-            this.autoCompleteG.childNodes.forEach(child => {
-                const style = (child as HTMLElement).style;
-                if (style.visibility !== 'visible') {
-                    style.visibility = 'visible';
-                }
-            });
+        if (this.hoverElement) {
+            this.hoverElement.style.visibility = 'visible';
+            this.hoverElement = null;
+        }
     }
 }
+
+export const getAutoCompletePoints = (element: PlaitGeometry) => {
+    const AutoCompleteMargin = (12 + RESIZE_HANDLE_DIAMETER / 2) * 2;
+    let rectangle = getRectangleByPoints(element.points);
+    rectangle = RectangleClient.inflate(rectangle, AutoCompleteMargin);
+    return RectangleClient.getEdgeCenterPoints(rectangle);
+};
+
+export const getHitAutoCompletePoint = (movingPoint: Point, points: Point[]) => {
+    return points.findIndex(point => {
+        const movingRectangle = RectangleClient.toRectangleClient([movingPoint]);
+        let rectangle = RectangleClient.toRectangleClient([point]);
+        rectangle = RectangleClient.inflate(rectangle, RESIZE_HANDLE_DIAMETER);
+        return RectangleClient.isHit(movingRectangle, rectangle);
+    });
+};
