@@ -26,11 +26,3 @@ export const DrawThemeColors = {
         fill: '#163F5A'
     }
 };
-
-export const getDrawDefaultStrokeColor = (theme: ThemeColorMode) => {
-    return DrawThemeColors[theme].strokeColor;
-};
-
-export const getFlowchartDefaultFill = (theme: ThemeColorMode) => {
-    return DrawThemeColors[theme].fill;
-};

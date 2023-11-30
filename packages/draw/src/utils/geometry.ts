@@ -5,6 +5,7 @@ import {
     RectangleClient,
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
+    ThemeColorMode,
     createG,
     distanceBetweenPointAndSegment,
     drawCircle,
@@ -13,7 +14,7 @@ import {
 import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols } from '../interfaces/geometry';
 import { Alignment, buildText } from '@plait/text';
 import { Element } from 'slate';
-import { DefaultBasicShapeProperty, DefaultFlowchartPropertyMap, DefaultTextProperty, ShapeDefaultSpace } from '../constants';
+import { DefaultBasicShapeProperty, DefaultFlowchartPropertyMap, DefaultTextProperty, DrawThemeColors, ShapeDefaultSpace } from '../constants';
 import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
@@ -277,4 +278,12 @@ export const getHitIndexOfAutoCompletePoint = (movingPoint: Point, points: Point
         rectangle = RectangleClient.inflate(rectangle, RESIZE_HANDLE_DIAMETER);
         return RectangleClient.isHit(movingRectangle, rectangle);
     });
+};
+
+export const getDrawDefaultStrokeColor = (theme: ThemeColorMode) => {
+    return DrawThemeColors[theme].strokeColor;
+};
+
+export const getFlowchartDefaultFill = (theme: ThemeColorMode) => {
+    return DrawThemeColors[theme].fill;
 };
