@@ -24,12 +24,12 @@ import { ActivatedRoute, Params } from '@angular/router';
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
 @Component({
-    selector: 'app-basic-board-editor',
+    selector: 'app-basic-editor',
     templateUrl: './editor.component.html',
     standalone: true,
     imports: [PlaitBoardComponent, FormsModule, AppZoomToolbarComponent, AppMainToolbarComponent, AppSettingPanelComponent]
 })
-export class BasicBoardEditorComponent implements OnInit {
+export class BasicEditorComponent implements OnInit {
     plugins = [withMind, withMindExtend, withDraw];
 
     value: (PlaitElement | PlaitGeometry | PlaitMind)[] = [];
