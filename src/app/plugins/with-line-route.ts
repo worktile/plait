@@ -123,8 +123,8 @@ export const withLineRoute = (board: PlaitBoard) => {
                 const points = getGraphPoints(options);
                 points.forEach(p => {
                     const controlPointG = rough.circle(p[0], p[1], 4, {
-                        stroke: '#69b1e4',
-                        fill: '#69b1e4',
+                        stroke: '#f08c02',
+                        fill: '#f08c02',
                         fillStyle: 'solid'
                     });
                     g?.append(controlPointG);
