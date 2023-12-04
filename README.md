@@ -23,7 +23,8 @@ Plait 架构以富文本编辑器框架 Slate 为灵感，适用于交互式绘�
 ![online demo screen](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/screen-online-demo.png?raw=true)
 
 
-- 👉 [在线示例 (白板)](https://plait-gamma.vercel.app)
+- 👉 [在线示例 (流程图)](https://plait-gamma.vercel.app?init=draw)
+- 👉 [在线示例 (思维导图)](https://plait-gamma.vercel.app?init=mind)
 - 👉 [在线示例 (流程控制)](https://plait-gamma.vercel.app/flow)
 - 👉 [在线文档](https://plait-docs.vercel.app)
 
