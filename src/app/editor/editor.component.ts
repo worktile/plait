@@ -20,6 +20,7 @@ import { AppZoomToolbarComponent } from '../components/zoom-toolbar/zoom-toolbar
 import { FormsModule } from '@angular/forms';
 import { PlaitBoardComponent } from '../../../packages/core/src/board/board.component';
 import { ActivatedRoute, Params } from '@angular/router';
+import { mockLineData, withLineRoute } from '../plugins/with-line-route';
 
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
@@ -30,7 +31,7 @@ const LOCAL_STORAGE_KEY = 'plait-board-data';
     imports: [PlaitBoardComponent, FormsModule, AppZoomToolbarComponent, AppMainToolbarComponent, AppSettingPanelComponent]
 })
 export class BasicEditorComponent implements OnInit {
-    plugins = [withMind, withMindExtend, withDraw];
+    plugins = [withMind, withMindExtend, withDraw, withLineRoute];
 
     value: (PlaitElement | PlaitGeometry | PlaitMind)[] = [];
 
@@ -69,6 +70,9 @@ export class BasicEditorComponent implements OnInit {
                     break;
                 case 'empty':
                     this.value = [];
+                    break;
+                case 'route':
+                    this.value = [...mockLineData];
                     break;
                 default:
                     this.value = [];
