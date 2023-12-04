@@ -1,6 +1,7 @@
 import { PlaitDrawElement, PlaitGeometry, PlaitLine, StrokeStyle } from '../../interfaces';
-import { DefaultGeometryStyle, getDrawDefaultStrokeColor, getFlowchartDefaultFill } from '../../constants';
+import { DefaultGeometryStyle } from '../../constants';
 import { PlaitBoard } from '@plait/core';
+import { getDrawDefaultStrokeColor, getFlowchartDefaultFill } from '../geometry';
 
 export const getStrokeWidthByElement = (element: PlaitGeometry | PlaitLine) => {
     if (PlaitDrawElement.isText(element)) {
