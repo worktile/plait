@@ -9,8 +9,8 @@ import {
     ThemeColorMode,
     Viewport
 } from '@plait/core';
-import { mockData } from './mock-data';
-import { withMind, PlaitMindBoard } from '@plait/mind';
+import { mockDrawData, mockMindData } from './mock-data';
+import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
 import { AbstractResizeState, MindThemeColors } from '@plait/mind';
 import { withMindExtend } from '../plugins/with-mind-extend';
 import { PlaitGeometry, withDraw } from '@plait/draw';
@@ -19,8 +19,9 @@ import { AppMainToolbarComponent } from '../components/main-toolbar/main-toolbar
 import { AppZoomToolbarComponent } from '../components/zoom-toolbar/zoom-toolbar.component';
 import { FormsModule } from '@angular/forms';
 import { PlaitBoardComponent } from '../../../packages/core/src/board/board.component';
+import { ActivatedRoute, Params } from '@angular/router';
 
-const LOCAL_DATA_KEY = 'plait-board-change-data';
+const LOCAL_STORAGE_KEY = 'plait-board-data';
 
 @Component({
     selector: 'app-basic-board-editor',
@@ -31,7 +32,7 @@ const LOCAL_DATA_KEY = 'plait-board-change-data';
 export class BasicBoardEditorComponent implements OnInit {
     plugins = [withMind, withMindExtend, withDraw];
 
-    value: (PlaitElement | PlaitGeometry)[] = [...mockData];
+    value: (PlaitElement | PlaitGeometry | PlaitMind)[] = [];
 
     options: PlaitBoardOptions = {
         readonly: false,
@@ -46,26 +47,47 @@ export class BasicBoardEditorComponent implements OnInit {
 
     board!: PlaitBoard;
 
+    constructor(private activeRoute: ActivatedRoute) {}
+
     ngOnInit(): void {
-        const data = this.getLocalData() as PlaitBoardChangeEvent;
-        if (data) {
-            this.value = data.children;
-            this.viewport = data.viewport;
-            this.theme = data.theme;
-        }
+        this.activeRoute.queryParams.subscribe((params: Params) => {
+            const init = params['init'];
+            switch (init) {
+                case 'mind':
+                    this.value = [...mockMindData];
+                    break;
+                case 'draw':
+                    this.value = [...mockDrawData];
+                    break;
+                case 'local-storage':
+                    const data = this.getLocalStorage();
+                    if (data) {
+                        this.value = data.children;
+                        this.viewport = data.viewport;
+                        this.theme = data.theme;
+                    }
+                    break;
+                case 'empty':
+                    this.value = [];
+                    break;
+                default:
+                    this.value = [];
+                    break;
+            }
+        });
     }
 
     change(event: PlaitBoardChangeEvent) {
         this.setLocalData(JSON.stringify(event));
     }
 
-    setLocalData(data: string) {
-        localStorage.setItem(`${LOCAL_DATA_KEY}`, data);
+    getLocalStorage() {
+        const data = localStorage.getItem(`${LOCAL_STORAGE_KEY}`);
+        return data ? JSON.parse(data) : null;
     }
 
-    getLocalData() {
-        const data = localStorage.getItem(`${LOCAL_DATA_KEY}`);
-        return data ? JSON.parse(data) : null;
+    setLocalData(data: string) {
+        localStorage.setItem(`${LOCAL_STORAGE_KEY}`, data);
     }
 
     plaitBoardInitialized(value: PlaitBoard) {
