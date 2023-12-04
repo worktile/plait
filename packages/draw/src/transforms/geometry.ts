@@ -31,3 +31,8 @@ export const resizeGeometry = (board: PlaitBoard, points: [Point, Point], textHe
     }
     Transforms.setNode(board, newProperties, path);
 };
+
+export const transformShape = (board: PlaitBoard, element: PlaitGeometry, shape: GeometryShapes) => {
+    const path = PlaitBoard.findPath(board, element);
+    Transforms.setNode(board, { shape }, path);
+};
