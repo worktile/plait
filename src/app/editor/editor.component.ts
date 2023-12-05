@@ -31,7 +31,7 @@ const LOCAL_STORAGE_KEY = 'plait-board-data';
     imports: [PlaitBoardComponent, FormsModule, AppZoomToolbarComponent, AppMainToolbarComponent, AppSettingPanelComponent]
 })
 export class BasicEditorComponent implements OnInit {
-    plugins = [withMind, withMindExtend, withDraw, withLineRoute];
+    plugins = [withMind, withMindExtend, withDraw];
 
     value: (PlaitElement | PlaitGeometry | PlaitMind)[] = [];
 
@@ -73,6 +73,7 @@ export class BasicEditorComponent implements OnInit {
                     break;
                 case 'route':
                     this.value = [...mockLineData];
+                    this.plugins.push(withLineRoute);
                     break;
                 default:
                     this.value = [];
