@@ -12,7 +12,7 @@ import {
     transformPoint
 } from '@plait/core';
 import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
-import { createLineElement, transformPointToConnection } from '../utils';
+import { alignPoints, createLineElement, getLinePoints, transformPointToConnection } from '../utils';
 import { REACTION_MARGIN, getLinePointers } from '../constants';
 import { DefaultLineStyle } from '../constants/line';
 import { LineShapeGenerator } from '../generators/line.generator';
@@ -51,7 +51,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         lineShapeG?.remove();
         lineShapeG = createG();
-        const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        let movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (start) {
             const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
             targetRef.connection = hitElement ? transformPointToConnection(board, movingPoint, hitElement) : undefined;
@@ -68,6 +68,10 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
                     strokeWidth: DefaultLineStyle.strokeWidth
                 }
             );
+            const drawPoints = getLinePoints(board, temporaryElement);
+            const otherPoint = drawPoints[0];
+            movingPoint = alignPoints(otherPoint, movingPoint);
+            temporaryElement.points[1] = movingPoint;
             lineGenerator.draw(temporaryElement, lineShapeG);
             PlaitBoard.getElementActiveHost(board).append(lineShapeG);
         }
