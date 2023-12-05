@@ -4,7 +4,7 @@ import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineHandle, PlaitLine } from '../interfaces';
-import { transformPointToConnection } from '../utils';
+import { getLinePoints, transformPointToConnection } from '../utils';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
 
@@ -49,7 +49,9 @@ export const withLineResize = (board: PlaitBoard) => {
                     object.boundId = undefined;
                     if (points.length === 2) {
                         let movingPoint = points[pointIndex];
-                        const otherPoint = points[Number(!pointIndex)];
+                        const drawPoints = getLinePoints(board, resizeRef.element);
+                        const index = pointIndex === 0 ? drawPoints.length - 1 : pointIndex;
+                        const otherPoint = drawPoints[index];
                         points[pointIndex] = alignPoints(otherPoint, movingPoint);
                     }
                 }
