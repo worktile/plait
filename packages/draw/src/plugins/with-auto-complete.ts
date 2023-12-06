@@ -30,7 +30,9 @@ export interface AutoCompleteOptions {
     afterComplete: (element: PlaitLine) => {};
 }
 
-export const withAutoComplete = (board: PlaitBoard, options?: AutoCompleteOptions) => {
+export const withAutoCompletePluginKey = 'plait-auto-complete-plugin-key';
+
+export const withAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, pointerUp } = board;
 
     const tolerance = 3;
@@ -92,7 +94,9 @@ export const withAutoComplete = (board: PlaitBoard, options?: AutoCompleteOption
             Transforms.insertNode(board, temporaryElement, [board.children.length]);
             clearSelectedElement(board);
             addSelectedElement(board, temporaryElement);
-            options?.afterComplete && options.afterComplete(temporaryElement);
+            const afterComplete = (board as PlaitOptionsBoard).getPluginOptions<AutoCompleteOptions>(withAutoCompletePluginKey)
+                ?.afterComplete;
+            afterComplete && afterComplete(temporaryElement);
         }
         if (startPoint) {
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
