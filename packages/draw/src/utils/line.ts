@@ -15,7 +15,8 @@ import {
     PointOfRectangle,
     Direction,
     Vector,
-    distanceBetweenPointAndPoint
+    distanceBetweenPointAndPoint,
+    catmullRomFitting
 } from '@plait/core';
 import {
     getPoints,
@@ -237,12 +238,9 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
         curvePoints.push(target.point);
         return pointsOnBezierCurves(curvePoints) as Point[];
     } else {
-        //TODO 直接获取贝塞尔曲线上高密度点
-        const points = PlaitLine.getPoints(board, element);
-        const draw = PlaitBoard.getRoughSVG(board).generator.curve(points);
-        let bezierPoints = transformOpsToPoints(draw.sets[0].ops) as Point[];
-        bezierPoints = removeDuplicatePoints(bezierPoints);
-        return pointsOnBezierCurves(bezierPoints) as Point[];
+        const allPoints = PlaitLine.getPoints(board, element);
+        const points = catmullRomFitting(allPoints);
+        return pointsOnBezierCurves(points) as Point[];
     }
 };
 
