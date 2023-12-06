@@ -217,7 +217,7 @@ export const downScale = (number: number) => {
 };
 
 // https://gist.github.com/nicholaswmin/c2661eb11cad5671d816
-export const getSmoothCurvePoints = function(points: Point[]) {
+export const catmullRomFitting = function(points: Point[]) {
     const alpha = 0.5;
     let p0, p1, p2, p3, bp1, bp2, d1, d2, d3, A, B, N, M;
     var d3powA, d2powA, d3pow2A, d2pow2A, d1pow2A, d1powA;

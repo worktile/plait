@@ -16,7 +16,7 @@ import {
     Direction,
     Vector,
     distanceBetweenPointAndPoint,
-    getSmoothCurvePoints
+    catmullRomFitting
 } from '@plait/core';
 import {
     getPoints,
@@ -239,7 +239,7 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
         return pointsOnBezierCurves(curvePoints) as Point[];
     } else {
         const allPoints = PlaitLine.getPoints(board, element);
-        const points = getSmoothCurvePoints(allPoints);
+        const points = catmullRomFitting(allPoints);
         return pointsOnBezierCurves(points) as Point[];
     }
 };
