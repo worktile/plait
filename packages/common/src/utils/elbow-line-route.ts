@@ -44,7 +44,7 @@ export const generateElbowLineRoute = (options: ElbowLineRouteOptions) => {
     return route;
 };
 
-const routeAdjust = (path: Point[], options: RouteAdjustOptions) => {
+export const routeAdjust = (path: Point[], options: RouteAdjustOptions) => {
     // 基于 middleX/middleY 中线纠正 path
     // 1. 找垂直/水平的线段
     // 2. 找到和middleX/middleY相交的点
