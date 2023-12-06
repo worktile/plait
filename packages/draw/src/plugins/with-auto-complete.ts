@@ -26,6 +26,12 @@ import { LineShapeGenerator } from '../generators/line.generator';
 import { DefaultLineStyle } from '../constants/line';
 import { REACTION_MARGIN } from '../constants';
 
+export interface AutoCompleteOptions {
+    afterComplete: (element: PlaitLine) => {};
+}
+
+export const withAutoCompletePluginKey = 'plait-auto-complete-plugin-key';
+
 export const withAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, pointerUp } = board;
 
@@ -88,6 +94,9 @@ export const withAutoComplete = (board: PlaitBoard) => {
             Transforms.insertNode(board, temporaryElement, [board.children.length]);
             clearSelectedElement(board);
             addSelectedElement(board, temporaryElement);
+            const afterComplete = (board as PlaitOptionsBoard).getPluginOptions<AutoCompleteOptions>(withAutoCompletePluginKey)
+                ?.afterComplete;
+            afterComplete && afterComplete(temporaryElement);
         }
         if (startPoint) {
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
