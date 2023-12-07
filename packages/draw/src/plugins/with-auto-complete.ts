@@ -15,9 +15,11 @@ import {
 } from '@plait/core';
 import { LineMarkerType, LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import {
+    alignPoints,
     createLineElement,
     getAutoCompletePoints,
     getHitIndexOfAutoCompletePoint,
+    getLinePoints,
     getSelectedDrawElements,
     transformPointToConnection
 } from '../utils';
@@ -61,7 +63,7 @@ export const withAutoComplete = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         lineShapeG?.remove();
         lineShapeG = createG();
-        const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        let movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (startPoint && sourceElement) {
             const distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
             if (distance > tolerance) {
@@ -81,6 +83,10 @@ export const withAutoComplete = (board: PlaitBoard) => {
                         strokeWidth: DefaultLineStyle.strokeWidth
                     }
                 );
+                const drawPoints = getLinePoints(board, temporaryElement);
+                const otherPoint = drawPoints[0];
+                movingPoint = alignPoints(otherPoint, movingPoint);
+                temporaryElement.points[1] = movingPoint;
                 lineGenerator.draw(temporaryElement, lineShapeG);
                 PlaitBoard.getElementActiveHost(board).append(lineShapeG);
             }

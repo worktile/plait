@@ -68,14 +68,7 @@ export const withDraw = (board: PlaitBoard) => {
             return true;
         }
         if (PlaitDrawElement.isLine(element)) {
-            const selectedElements = getSelectedElements(board);
-            const isSelected = (boundId: string) => {
-                return !!selectedElements.find(value => value.id === boundId);
-            };
-            if (
-                (element.source.boundId && !isSelected(element.source.boundId)) ||
-                (element.target.boundId && !isSelected(element.target.boundId))
-            ) {
+            if (element.source.boundId || element.target.boundId) {
                 return false;
             }
             return true;
