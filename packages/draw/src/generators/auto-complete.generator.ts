@@ -21,7 +21,7 @@ export class AutoCompleteGenerator extends Generator<PlaitGeometry, ActiveGenera
         }
     }
 
-    baseDraw(element: PlaitGeometry, data: ActiveGeneratorExtraData): SVGGElement {
+    draw(element: PlaitGeometry, data: ActiveGeneratorExtraData): SVGGElement {
         this.autoCompleteG = createG();
         const middlePoints = getAutoCompletePoints(element);
         middlePoints.forEach((point, index) => {

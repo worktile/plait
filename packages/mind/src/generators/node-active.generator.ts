@@ -1,12 +1,4 @@
-import {
-    ACTIVE_STROKE_WIDTH,
-    PlaitBoard,
-    RectangleClient,
-    createG,
-    drawRoundRectangle,
-    getSelectedElements,
-    isSelectionMoving
-} from '@plait/core';
+import { ACTIVE_STROKE_WIDTH, PlaitBoard, RectangleClient, createG, drawRoundRectangle } from '@plait/core';
 import { MindElement, BaseData } from '../interfaces';
 import { getRectangleByNode } from '../utils/position/node';
 import { PRIMARY_COLOR } from '../constants/default';
@@ -33,7 +25,7 @@ export class NodeActiveGenerator extends Generator<MindElement, ActiveData> {
         }
     }
 
-    baseDraw(element: MindElement<BaseData>, data: ActiveData): SVGGElement {
+    draw(element: MindElement<BaseData>, data: ActiveData): SVGGElement {
         const activeG = createG();
         const node = MindElement.getNode(element);
         const rectangle = getRectangleByNode(node);

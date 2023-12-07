@@ -1,6 +1,5 @@
 import { PlaitBoard, createG } from '@plait/core';
 import { MindElement, BaseData, PlaitMind, MindElementShape, LayoutDirection } from '../interfaces';
-import { AfterDraw, BaseDrawer } from '../base/base.drawer';
 import { getRectangleByNode } from '../utils/position/node';
 import { getShapeByElement } from '../utils/node-style/shape';
 import { EXTEND_DIAMETER, QUICK_INSERT_CIRCLE_COLOR, QUICK_INSERT_INNER_CROSS_COLOR } from '../constants/default';
@@ -13,8 +12,10 @@ import { findNewChildNodePath } from '../utils/path';
 import { getBranchColorByMindElement, getBranchWidthByMindElement, getNextBranchColor } from '../utils/node-style/branch';
 import { getLayoutDirection, getPointByPlacement, moveXOfPoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
+import { AfterDraw, Generator } from '@plait/common';
+import { PlaitMindBoard } from '../plugins/with-mind.board';
 
-export class NodeInsertDrawer extends BaseDrawer implements AfterDraw {
+export class NodePlusGenerator extends Generator<MindElement> implements AfterDraw {
     canDraw(element: MindElement<BaseData>): boolean {
         if (PlaitBoard.isReadonly(this.board) || element?.isCollapsed) {
             return false;
@@ -22,11 +23,9 @@ export class NodeInsertDrawer extends BaseDrawer implements AfterDraw {
         return true;
     }
 
-    baseDraw(element: MindElement<BaseData>): SVGGElement {
-        const quickInsertG = createG();
-        this.g = quickInsertG;
-        quickInsertG.classList.add('quick-insert');
-
+    draw(element: MindElement<BaseData>): SVGGElement {
+        const plusG = createG();
+        plusG.classList.add('plus');
         const node = MindElement.getNode(element);
         const layout = MindQueries.getLayoutByElement(element) as MindLayoutType;
         const isHorizontal = isHorizontalLayout(layout);
@@ -98,29 +97,27 @@ export class NodeInsertDrawer extends BaseDrawer implements AfterDraw {
                 strokeWidth: 2
             }
         );
-
-        quickInsertG.appendChild(line);
-        quickInsertG.appendChild(circle);
-        quickInsertG.appendChild(innerCrossHLine);
-        quickInsertG.appendChild(innerCrossVLine);
-
-        return quickInsertG;
+        plusG.appendChild(line);
+        plusG.appendChild(circle);
+        plusG.appendChild(innerCrossHLine);
+        plusG.appendChild(innerCrossVLine);
+        return plusG;
     }
 
     afterDraw(element: MindElement): void {
         if (!this.g) {
             throw new Error(`can not find quick insert g`);
         }
-        fromEvent<MouseEvent>(this.g, 'mousedown')
+        fromEvent<MouseEvent>(this.g, 'pointerdown')
             .pipe(take(1))
             .subscribe(e => {
-                e.stopPropagation();
+                e.preventDefault();
             });
-        fromEvent(this.g, 'mouseup')
+        fromEvent(this.g, 'pointerup')
             .pipe(take(1))
             .subscribe(() => {
                 const path = findNewChildNodePath(this.board, element);
-                insertMindElement(this.board, element, path);
+                insertMindElement(this.board as PlaitMindBoard, element, path);
             });
     }
 }

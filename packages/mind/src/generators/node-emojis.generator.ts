@@ -6,7 +6,7 @@ import { getEmojiFontSize } from '../utils/space/emoji';
 import { getEmojiForeignRectangle } from '../utils/position/emoji';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
 
-class EmojiDrawer {
+class EmojiGenerator {
     componentRef: ComponentRef<MindEmojiBaseComponent> | null = null;
 
     constructor(private board: PlaitMindBoard, private viewContainerRef: ViewContainerRef) {}
@@ -37,8 +37,8 @@ class EmojiDrawer {
     }
 }
 
-export class NodeEmojisDrawer {
-    emojiDrawers: EmojiDrawer[] = [];
+export class NodeEmojisGenerator {
+    emojiGenerators: EmojiGenerator[] = [];
 
     g?: SVGGElement;
 
@@ -60,12 +60,12 @@ export class NodeEmojisDrawer {
             const container = document.createElement('div');
             container.classList.add('node-emojis-container');
             foreignObject.append(container);
-            this.emojiDrawers = element.data.emojis.map(emojiItem => {
-                const drawer = new EmojiDrawer(this.board, this.viewContainerRef);
+            this.emojiGenerators = element.data.emojis.map(emojiItem => {
+                const drawer = new EmojiGenerator(this.board, this.viewContainerRef);
                 drawer.draw(emojiItem, element);
                 return drawer;
             });
-            this.emojiDrawers.forEach(drawer => {
+            this.emojiGenerators.forEach(drawer => {
                 container.append(drawer.nativeElement!);
             });
             return this.g;
@@ -77,7 +77,7 @@ export class NodeEmojisDrawer {
         if (this.g) {
             this.g.remove();
         }
-        this.emojiDrawers.forEach(drawer => drawer.destroy());
-        this.emojiDrawers = [];
+        this.emojiGenerators.forEach(drawer => drawer.destroy());
+        this.emojiGenerators = [];
     }
 }

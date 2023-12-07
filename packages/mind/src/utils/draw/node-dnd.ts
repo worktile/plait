@@ -37,7 +37,7 @@ export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offset
 
     // draw emojis
     if (MindElement.hasEmojis(element)) {
-        const fakeEmojisG = (activeComponent.nodeEmojisDrawer.g as SVGGElement).cloneNode(true) as SVGGElement;
+        const fakeEmojisG = (activeComponent.nodeEmojisGenerator.g as SVGGElement).cloneNode(true) as SVGGElement;
         const foreignRectangle = getEmojiForeignRectangle(board as PlaitMindBoard, element);
         updateForeignObject(
             fakeEmojisG,

@@ -11,17 +11,17 @@ export abstract class Generator<
 > {
     g?: SVGGElement;
 
-    options?: V;
+    protected options?: V;
 
     constructor(protected board: PlaitBoard, options?: V) {
         this.options = options;
     }
 
-    draw(element: T, parentG: SVGGElement, data?: K) {
+    processDrawing(element: T, parentG: SVGGElement, data?: K) {
         if (this.canDraw && this.canDraw(element, data)) {
-            const g = this.baseDraw(element, data);
+            const g = this.draw(element, data);
             if (g) {
-                if (this.g) {
+                if (this.g && parentG.contains(this.g)) {
                     this.g.replaceWith(g);
                 } else {
                     parentG.appendChild(g);
@@ -38,9 +38,15 @@ export abstract class Generator<
         }
     }
 
-    abstract canDraw(element: T, data?: K): boolean;
+    /**
+     * abstract function
+     */
+    protected abstract canDraw(element: T, data?: K): boolean;
 
-    abstract baseDraw(element: T, data?: K): SVGGElement | undefined;
+    /**
+     * abstract function
+     */
+    protected abstract draw(element: T, data?: K): SVGGElement | undefined;
 
     destroy() {
         if (this.g) {

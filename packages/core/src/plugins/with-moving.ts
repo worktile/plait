@@ -61,10 +61,13 @@ export function withMoving(board: PlaitBoard) {
             const tolerance = 5;
             if (Math.abs(offsetX) > tolerance || Math.abs(offsetY) > tolerance || getMovingElements(board).length > 0) {
                 throttleRAF(() => {
+                    if (!activeElementsRectangle) {
+                        return;
+                    }
                     const newRectangle = {
-                        ...activeElementsRectangle!,
-                        x: activeElementsRectangle!.x + offsetX,
-                        y: activeElementsRectangle!.y + offsetY
+                        ...activeElementsRectangle,
+                        x: activeElementsRectangle.x + offsetX,
+                        y: activeElementsRectangle.y + offsetY
                     };
                     const reactionManager = new AlignReaction(board, activeElements, newRectangle);
                     const ref = reactionManager.handleAlign();

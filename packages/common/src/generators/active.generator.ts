@@ -33,7 +33,7 @@ export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Gene
         }
     }
 
-    baseDraw(element: T, data: ActiveGeneratorExtraData): SVGGElement {
+    draw(element: T, data: ActiveGeneratorExtraData): SVGGElement {
         const activeG = createG();
         const rectangle = this.options.getRectangle(element);
 

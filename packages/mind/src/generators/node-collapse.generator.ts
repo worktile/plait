@@ -1,6 +1,5 @@
 import { PlaitBoard, PlaitPointerType, Point, Transforms, createG, createText, drawLinearPath } from '@plait/core';
 import { MindElement, BaseData, PlaitMind, MindElementShape, LayoutDirection } from '../interfaces';
-import { AfterDraw, BaseDrawer } from '../base/base.drawer';
 import { getRectangleByNode } from '../utils/position/node';
 import { getShapeByElement } from '../utils/node-style/shape';
 import { EXTEND_OFFSET, EXTEND_DIAMETER } from '../constants/default';
@@ -12,8 +11,9 @@ import { filter, take } from 'rxjs/operators';
 import { getBranchColorByMindElement, getBranchWidthByMindElement } from '../utils/node-style/branch';
 import { getLayoutDirection, getPointByPlacement, moveXOfPoint, moveYOfPoint, transformPlacement } from '../utils/point-placement';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';
+import { AfterDraw, Generator } from '@plait/common';
 
-export class CollapseDrawer extends BaseDrawer implements AfterDraw {
+export class CollapseGenerator extends Generator<MindElement> implements AfterDraw {
     canDraw(element: MindElement<BaseData>): boolean {
         if (element.children.length && !PlaitMind.isMind(element)) {
             return true;
@@ -21,12 +21,9 @@ export class CollapseDrawer extends BaseDrawer implements AfterDraw {
         return false;
     }
 
-    baseDraw(element: MindElement<BaseData>): SVGGElement {
+    draw(element: MindElement<BaseData>): SVGGElement {
         const collapseG = createG();
-        this.g = collapseG;
-
-        collapseG.classList.add('collapse-container');
-
+        collapseG.classList.add('collapse');
         const node = MindElement.getNode(element);
         const stroke = getBranchColorByMindElement(this.board, element);
         const branchWidth = getBranchWidthByMindElement(this.board, element);
@@ -102,12 +99,13 @@ export class CollapseDrawer extends BaseDrawer implements AfterDraw {
             throw new Error(`can not find quick insert g`);
         }
 
-        fromEvent(this.g, 'mouseup')
+        fromEvent<PointerEvent>(this.g, 'pointerdown')
             .pipe(
                 filter(() => !PlaitBoard.isPointer(this.board, PlaitPointerType.hand) || !!PlaitBoard.isReadonly(this.board)),
                 take(1)
             )
-            .subscribe(() => {
+            .subscribe((event: PointerEvent) => {
+                event.preventDefault();
                 const isCollapsed = !element.isCollapsed;
                 const newElement: Partial<MindElement> = { isCollapsed };
                 const path = PlaitBoard.findPath(this.board, element);

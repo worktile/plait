@@ -52,8 +52,8 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
 
     ngOnInit(): void {
         this.initializeGenerator();
-        this.shapeGenerator.draw(this.element, this.g);
-        this.activeGenerator.draw(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+        this.shapeGenerator.processDrawing(this.element, this.g);
+        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
         super.ngOnInit();
         this.boundedElements = this.getBoundedElements();
         this.drawText();
@@ -84,22 +84,22 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
 
         if (value.element !== previous.element || isChangeTheme) {
-            this.shapeGenerator.draw(this.element, this.g);
-            this.activeGenerator.draw(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+            this.shapeGenerator.processDrawing(this.element, this.g);
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
             this.updateText(previous.element.texts, value.element.texts);
             this.updateTextRectangle();
         }
 
         if (isBoundedElementsChanged) {
-            this.shapeGenerator.draw(this.element, this.g);
-            this.activeGenerator.draw(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+            this.shapeGenerator.processDrawing(this.element, this.g);
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
             this.updateTextRectangle();
             return;
         }
 
         if (!isSelectionMoving(this.board)) {
             this.activeGenerator.hasResizeHandle = this.hasResizeHandle();
-            this.activeGenerator.draw(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
         }
     }
 

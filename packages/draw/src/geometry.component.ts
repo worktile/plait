@@ -91,9 +91,9 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     ngOnInit(): void {
         super.ngOnInit();
         this.initializeGenerator();
-        this.shapeGenerator.draw(this.element, this.g);
-        this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
-        this.autoCompleteGenerator.draw(this.element, this.g, { selected: this.selected });
+        this.shapeGenerator.processDrawing(this.element, this.g);
+        this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected });
+        this.autoCompleteGenerator.processDrawing(this.element, this.g, { selected: this.selected });
         this.drawText();
     }
 
@@ -103,23 +103,23 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     ) {
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (value.element !== previous.element || isChangeTheme) {
-            this.shapeGenerator.draw(this.element, this.g);
-            this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
-            this.autoCompleteGenerator.draw(this.element, this.g, { selected: this.selected });
+            this.shapeGenerator.processDrawing(this.element, this.g);
+            this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected });
+            this.autoCompleteGenerator.processDrawing(this.element, this.g, { selected: this.selected });
             this.updateText();
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
             if (!hasSameSelected || !hasSameHandleState) {
-                this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
-                this.autoCompleteGenerator.draw(this.element, this.g, { selected: this.selected });
+                this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected });
+                this.autoCompleteGenerator.processDrawing(this.element, this.g, { selected: this.selected });
             }
         }
     }
 
     editText() {
         this.textManage.edit();
-        this.activeGenerator.draw(this.element, this.g, { selected: this.selected });
+        this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected });
     }
 
     drawText() {

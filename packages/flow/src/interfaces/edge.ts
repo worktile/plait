@@ -6,6 +6,12 @@ export type FlowEdgeMarkerType = 'arrow' | 'none';
 
 export type FlowEdgeHandleType = 'source' | 'target';
 
+export enum FlowEdgeShape {
+    straight = 'straight',
+    curve = 'curve',
+    elbow = 'elbow'
+}
+
 export interface FlowEdgeHandleRef extends FlowHandle {
     node: FlowNode;
     type?: FlowEdgeHandleType;
@@ -25,8 +31,9 @@ export interface FlowEdgeHandle {
 }
 
 export interface FlowEdge<T extends FlowBaseData = FlowBaseData> extends FlowElement<T> {
-    source?: FlowEdgeHandle;
     target: FlowEdgeHandle;
+    source?: FlowEdgeHandle;
+    shape?: FlowEdgeShape;
 }
 
 export function isFlowEdgeElement(value: FlowElement): value is FlowEdge {

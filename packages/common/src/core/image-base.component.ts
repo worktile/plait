@@ -88,7 +88,7 @@ export abstract class ImageBaseComponent implements OnInit, OnDestroy {
     drawFocus() {
         if (this.initialized) {
             const activeG = PlaitBoard.getElementActiveHost(this.board);
-            this.activeGenerator.draw({} as PlaitElement, activeG, { selected: this._isFocus });
+            this.activeGenerator.processDrawing({} as PlaitElement, activeG, { selected: this._isFocus });
         }
     }
 

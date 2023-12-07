@@ -47,7 +47,7 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
     ngOnInit(): void {
         super.ngOnInit();
         this.initializeGenerator();
-        this.imageGenerator.draw(this.element, this.g, this.viewContainerRef);
+        this.imageGenerator.processDrawing(this.element, this.g, this.viewContainerRef);
     }
 
     onContextChanged(

@@ -55,7 +55,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
                 const temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
                     strokeWidth: DefaultBasicShapeProperty.strokeWidth
                 });
-                geometryGenerator.draw(temporaryElement, geometryShapeG);
+                geometryGenerator.processDrawing(temporaryElement, geometryShapeG);
                 PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
             }
         }
@@ -143,7 +143,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
                 strokeWidth: DefaultBasicShapeProperty.strokeWidth
             });
-            geometryGenerator.draw(temporaryElement, geometryShapeG);
+            geometryGenerator.processDrawing(temporaryElement, geometryShapeG);
             PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
         }
 

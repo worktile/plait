@@ -9,7 +9,7 @@ export class LineShapeGenerator extends Generator<PlaitLine, ShapeData> {
         return true;
     }
 
-    baseDraw(element: PlaitLine, data: ShapeData) {
+    draw(element: PlaitLine, data: ShapeData) {
         let lineG: SVGGElement | undefined;
         lineG = drawLine(this.board, element);
 
