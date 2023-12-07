@@ -7,3 +7,4 @@ export * from './direction';
 export * from './text';
 export * from './image';
 export * from './elbow-line-route';
+export * from './memorize';
