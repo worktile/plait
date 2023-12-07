@@ -12,14 +12,16 @@ export const getOverlapEdges = (board: PlaitBoard, edge: FlowEdge): FlowEdge[] =
             item.source?.nodeId === edge.target?.nodeId &&
             item.target.nodeId === edge.source?.nodeId &&
             item.source?.position === edge.target?.position &&
-            item.target?.position === edge.source?.position
+            item.target?.position === edge.source?.position &&
+            item?.shape === edge?.shape
         ) {
             overlapEdges.push(item);
         } else if (
             item.target?.nodeId === edge.target?.nodeId &&
             item.source?.nodeId === edge.source?.nodeId &&
             item.target?.position === edge.target?.position &&
-            item.source?.position === edge.source?.position
+            item.source?.position === edge.source?.position &&
+            item?.shape === edge?.shape
         ) {
             sameEdges.push(item);
         }

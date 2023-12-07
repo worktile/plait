@@ -1,40 +1,22 @@
-import { FlowElementStyles, FlowHandle } from '../../interfaces/element';
-import { Direction, PlaitBoard, PlaitElement, RectangleClient, normalizePoint } from '@plait/core';
-import { getSmoothPoints } from './get-smooth-step-edge';
+import { FlowElementStyles } from '../../interfaces/element';
+import { Direction, PlaitBoard, PlaitElement, Point, RectangleClient, normalizePoint } from '@plait/core';
+import { getElbowPoints } from './get-elbow-points';
 import { getFakeFlowNodeById, getFlowNodeById } from '../node/get-node';
-import { FlowEdge } from '../../interfaces/edge';
+import { FlowEdge, FlowEdgeShape } from '../../interfaces/edge';
 import { DEFAULT_EDGE_ACTIVE_STYLES, DEFAULT_EDGE_HOVER_STYLES, DEFAULT_EDGE_STYLES } from '../../constants/edge';
 import { FlowNode } from '../../interfaces/node';
 import { getEdgeDraggingInfo } from './dragging-edge';
-import { getEdgePosition } from './get-edge-position';
 import { FlowRenderMode } from '../../interfaces/flow';
 import { FlowEdgeComponent } from '../../flow-edge.component';
+import { getCurvePoints } from './get-curve-points';
+import { getStraightPoints } from './get-straight-points';
 
-interface EdgePositions {
-    sourceX: number;
-    sourceY: number;
-    targetX: number;
-    targetY: number;
+interface GetPointsParams {
+    sourceRectangle: RectangleClient;
+    sourcePosition: Direction;
+    targetRectangle: RectangleClient;
+    targetPosition: Direction;
 }
-
-export const getEdgePositions = (
-    sourceNodeRect: RectangleClient,
-    sourceHandle: FlowHandle,
-    sourcePosition: Direction,
-    targetNodeRect: RectangleClient,
-    targetHandle: FlowHandle,
-    targetPosition: Direction
-): EdgePositions => {
-    const edgeSourcePosition = getEdgePosition(sourcePosition, sourceNodeRect, sourceHandle);
-    const edgeTargetPosition = getEdgePosition(targetPosition, targetNodeRect, targetHandle);
-
-    return {
-        sourceX: edgeSourcePosition.x,
-        sourceY: edgeSourcePosition.y,
-        targetX: edgeTargetPosition.x,
-        targetY: edgeTargetPosition.y
-    };
-};
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
 export function getEdgeCenter({
@@ -55,6 +37,20 @@ export function getEdgeCenter({
     const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
 
     return [centerX, centerY, xOffset, yOffset];
+}
+
+export function getShapePoints(shape: FlowEdgeShape = FlowEdgeShape.elbow, params: GetPointsParams): Point[] {
+    switch (shape) {
+        case FlowEdgeShape.straight: {
+            return getStraightPoints(params);
+        }
+        case FlowEdgeShape.curve: {
+            return getCurvePoints(params);
+        }
+        default: {
+            return getElbowPoints(params);
+        }
+    }
 }
 
 export const buildEdgePathPoints = (board: PlaitBoard, edge: FlowEdge) => {
@@ -84,27 +80,7 @@ export const buildEdgePathPoints = (board: PlaitBoard, edge: FlowEdge) => {
 
     const { position: sourcePosition } = edge.source!;
     const { position: targetPosition } = edge.target;
-
-    const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
-        {
-            x: sourceNodeX,
-            y: sourceNodeY,
-            width: sourceNodeWidth,
-            height: sourceNodeHeight
-        },
-        edge.source!,
-        sourcePosition,
-        {
-            x: targetNodeX,
-            y: targetNodeY,
-            width: targetNodeWidth,
-            height: targetNodeHeight
-        },
-        edge.target,
-        targetPosition
-    );
-
-    return getSmoothPoints({
+    const params: GetPointsParams = {
         sourceRectangle: {
             x: sourceNodeX,
             y: sourceNodeY,
@@ -118,8 +94,15 @@ export const buildEdgePathPoints = (board: PlaitBoard, edge: FlowEdge) => {
             width: targetNodeWidth,
             height: targetNodeHeight
         },
-        targetPosition,
-        offset: 30
+        targetPosition
+    };
+
+    const points = getShapePoints(edge.shape, params);
+    return points.map(item => {
+        return {
+            x: item[0],
+            y: item[1]
+        };
     });
 };
 
