@@ -14,7 +14,7 @@ import {
     transformPoint
 } from '@plait/core';
 import { LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
-import { createDefaultLine, getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
+import { handleLineCreating, getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
 
 export interface AutoCompleteOptions {
     afterComplete: (element: PlaitLine) => {};
@@ -55,7 +55,7 @@ export const withAutoComplete = (board: PlaitBoard) => {
         if (startPoint && sourceElement) {
             const distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
             if (distance > tolerance) {
-                temporaryElement = createDefaultLine(board, LineShape.elbow, startPoint, movingPoint, sourceElement, lineShapeG);
+                temporaryElement = handleLineCreating(board, LineShape.elbow, startPoint, movingPoint, sourceElement, lineShapeG);
             }
         }
 

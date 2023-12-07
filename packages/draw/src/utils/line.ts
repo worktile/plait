@@ -443,7 +443,7 @@ export const alignPoints = (basePoint: Point, movingPoint: Point) => {
     return newPoint;
 };
 
-export const createDefaultLine = (
+export const handleLineCreating = (
     board: PlaitBoard,
     lineShape: LineShape,
     startPoint: Point,
@@ -456,7 +456,7 @@ export const createDefaultLine = (
     const connection = sourceElement ? transformPointToConnection(board, startPoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;
     const lineGenerator = new LineShapeGenerator(board);
-    const temporaryElement = createLineElement(
+    const temporaryLineElement = createLineElement(
         lineShape,
         [startPoint, movingPoint],
         { marker: LineMarkerType.none, connection: connection, boundId: sourceElement?.id },
@@ -466,10 +466,10 @@ export const createDefaultLine = (
             strokeWidth: DefaultLineStyle.strokeWidth
         }
     );
-    const drawPoints = getLinePoints(board, temporaryElement);
-    const otherPoint = drawPoints[0];
-    temporaryElement.points[1] = alignPoints(otherPoint, movingPoint);
-    lineGenerator.draw(temporaryElement, lineShapeG);
+    const linePoints = getLinePoints(board, temporaryLineElement);
+    const otherPoint = linePoints[0];
+    temporaryLineElement.points[1] = alignPoints(otherPoint, movingPoint);
+    lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
     PlaitBoard.getElementActiveHost(board).append(lineShapeG);
-    return temporaryElement;
+    return temporaryLineElement;
 };

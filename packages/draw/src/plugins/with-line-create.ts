@@ -12,7 +12,7 @@ import {
     transformPoint
 } from '@plait/core';
 import { LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
-import { createDefaultLine } from '../utils';
+import { handleLineCreating } from '../utils';
 import { REACTION_MARGIN, getLinePointers } from '../constants';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { isDrawingMode } from '@plait/common';
@@ -49,7 +49,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         let movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (start) {
             const lineShape = PlaitBoard.getPointer(board) as LineShape;
-            temporaryElement = createDefaultLine(board, lineShape, start, movingPoint, sourceElement, lineShapeG);
+            temporaryElement = handleLineCreating(board, lineShape, start, movingPoint, sourceElement, lineShapeG);
         }
 
         pointerMove(event);
