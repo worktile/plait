@@ -53,7 +53,10 @@ import { drawLineArrow } from './line-arrow';
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { Op } from 'roughjs/bin/core';
 import { getShape } from './shape';
-import { LINE_TEXT_SPACE } from '../constants/line';
+import { DefaultLineStyle, LINE_TEXT_SPACE } from '../constants/line';
+import { LineShapeGenerator } from '../generators/line.generator';
+import { REACTION_MARGIN } from '../constants';
+import { getHitOutlineGeometry } from './position/geometry';
 
 export const createLineElement = (
     shape: LineShape,
@@ -438,4 +441,35 @@ export const alignPoints = (basePoint: Point, movingPoint: Point) => {
         newPoint[1] = basePoint[1];
     }
     return newPoint;
+};
+
+export const handleLineCreating = (
+    board: PlaitBoard,
+    lineShape: LineShape,
+    startPoint: Point,
+    movingPoint: Point,
+    sourceElement: PlaitGeometry | null,
+    lineShapeG: SVGGElement
+) => {
+    const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
+    const targetConnection = hitElement ? transformPointToConnection(board, movingPoint, hitElement) : undefined;
+    const connection = sourceElement ? transformPointToConnection(board, startPoint, sourceElement) : undefined;
+    const targetBoundId = hitElement ? hitElement.id : undefined;
+    const lineGenerator = new LineShapeGenerator(board);
+    const temporaryLineElement = createLineElement(
+        lineShape,
+        [startPoint, movingPoint],
+        { marker: LineMarkerType.none, connection: connection, boundId: sourceElement?.id },
+        { marker: LineMarkerType.arrow, connection: targetConnection, boundId: targetBoundId },
+        [],
+        {
+            strokeWidth: DefaultLineStyle.strokeWidth
+        }
+    );
+    const linePoints = getLinePoints(board, temporaryLineElement);
+    const otherPoint = linePoints[0];
+    temporaryLineElement.points[1] = alignPoints(otherPoint, movingPoint);
+    lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
+    PlaitBoard.getElementActiveHost(board).append(lineShapeG);
+    return temporaryLineElement;
 };

@@ -11,11 +11,9 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { LineHandle, LineMarkerType, LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
-import { alignPoints, createLineElement, getLinePoints, transformPointToConnection } from '../utils';
+import { LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
+import { handleLineCreating } from '../utils';
 import { REACTION_MARGIN, getLinePointers } from '../constants';
-import { DefaultLineStyle } from '../constants/line';
-import { LineShapeGenerator } from '../generators/line.generator';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { isDrawingMode } from '@plait/common';
 
@@ -24,9 +22,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
 
     let start: Point | null = null;
 
-    let sourceRef: Partial<LineHandle> = {};
-
-    let targetRef: Partial<LineHandle> = {};
+    let sourceElement: PlaitGeometry | null;
 
     let lineShapeG: SVGGElement | null = null;
 
@@ -40,8 +36,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
             start = point;
             const hitElement = getHitOutlineGeometry(board, point, REACTION_MARGIN);
             if (hitElement) {
-                sourceRef.connection = transformPointToConnection(board, point, hitElement);
-                sourceRef.boundId = hitElement.id;
+                sourceElement = hitElement;
             }
             preventTouchMove(board, event, true);
         }
@@ -53,27 +48,8 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         lineShapeG = createG();
         let movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (start) {
-            const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
-            targetRef.connection = hitElement ? transformPointToConnection(board, movingPoint, hitElement) : undefined;
-            targetRef.boundId = hitElement ? hitElement.id : undefined;
-            const lineGenerator = new LineShapeGenerator(board);
             const lineShape = PlaitBoard.getPointer(board) as LineShape;
-            temporaryElement = createLineElement(
-                lineShape,
-                [start, movingPoint],
-                { marker: LineMarkerType.none, connection: sourceRef.connection, boundId: sourceRef?.boundId },
-                { marker: LineMarkerType.arrow, connection: targetRef.connection, boundId: targetRef?.boundId },
-                [],
-                {
-                    strokeWidth: DefaultLineStyle.strokeWidth
-                }
-            );
-            const drawPoints = getLinePoints(board, temporaryElement);
-            const otherPoint = drawPoints[0];
-            movingPoint = alignPoints(otherPoint, movingPoint);
-            temporaryElement.points[1] = movingPoint;
-            lineGenerator.processDrawing(temporaryElement, lineShapeG);
-            PlaitBoard.getElementActiveHost(board).append(lineShapeG);
+            temporaryElement = handleLineCreating(board, lineShape, start, movingPoint, sourceElement, lineShapeG);
         }
 
         pointerMove(event);
@@ -89,9 +65,8 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
 
         lineShapeG?.remove();
         lineShapeG = null;
+        sourceElement = null;
         start = null;
-        sourceRef = {};
-        targetRef = {};
         temporaryElement = null;
         preventTouchMove(board, event, false);
 

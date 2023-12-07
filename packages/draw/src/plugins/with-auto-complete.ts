@@ -13,18 +13,8 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { LineMarkerType, LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
-import {
-    createLineElement,
-    getAutoCompletePoints,
-    getHitIndexOfAutoCompletePoint,
-    getSelectedDrawElements,
-    transformPointToConnection
-} from '../utils';
-import { getHitOutlineGeometry } from '../utils/position/geometry';
-import { LineShapeGenerator } from '../generators/line.generator';
-import { DefaultLineStyle } from '../constants/line';
-import { REACTION_MARGIN } from '../constants';
+import { LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
+import { handleLineCreating, getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
 
 export interface AutoCompleteOptions {
     afterComplete: (element: PlaitLine) => {};
@@ -61,28 +51,11 @@ export const withAutoComplete = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         lineShapeG?.remove();
         lineShapeG = createG();
-        const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        let movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (startPoint && sourceElement) {
             const distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
             if (distance > tolerance) {
-                const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
-                const targetConnection = hitElement ? transformPointToConnection(board, movingPoint, hitElement) : undefined;
-                const connection = transformPointToConnection(board, startPoint, sourceElement);
-                const targetBoundId = hitElement ? hitElement.id : undefined;
-                const lineGenerator = new LineShapeGenerator(board);
-                temporaryElement = createLineElement(
-                    LineShape.elbow,
-                    [startPoint, movingPoint],
-                    { marker: LineMarkerType.none, connection: connection, boundId: sourceElement!.id },
-                    { marker: LineMarkerType.arrow, connection: targetConnection, boundId: targetBoundId },
-                    [],
-                    {
-                        strokeColor: DefaultLineStyle.strokeColor,
-                        strokeWidth: DefaultLineStyle.strokeWidth
-                    }
-                );
-                lineGenerator.processDrawing(temporaryElement, lineShapeG);
-                PlaitBoard.getElementActiveHost(board).append(lineShapeG);
+                temporaryElement = handleLineCreating(board, LineShape.elbow, startPoint, movingPoint, sourceElement, lineShapeG);
             }
         }
 
