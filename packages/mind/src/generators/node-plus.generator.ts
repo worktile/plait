@@ -23,7 +23,7 @@ export class NodePlusGenerator extends Generator<MindElement> implements AfterDr
         return true;
     }
 
-    baseDraw(element: MindElement<BaseData>): SVGGElement {
+    draw(element: MindElement<BaseData>): SVGGElement {
         const plusG = createG();
         plusG.classList.add('plus');
         const node = MindElement.getNode(element);

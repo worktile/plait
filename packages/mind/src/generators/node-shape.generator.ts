@@ -18,7 +18,7 @@ export class NodeShapeGenerator extends Generator<MindElement, ShapeData> {
         return false;
     }
 
-    baseDraw(element: MindElement, data: ShapeData) {
+    draw(element: MindElement, data: ShapeData) {
         const rectangle = getRectangleByNode(data.node);
         return drawRoundRectangleByElement(this.board, rectangle, data.node.origin);
     }

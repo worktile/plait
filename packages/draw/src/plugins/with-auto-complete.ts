@@ -81,7 +81,7 @@ export const withAutoComplete = (board: PlaitBoard) => {
                         strokeWidth: DefaultLineStyle.strokeWidth
                     }
                 );
-                lineGenerator.draw(temporaryElement, lineShapeG);
+                lineGenerator.processDrawing(temporaryElement, lineShapeG);
                 PlaitBoard.getElementActiveHost(board).append(lineShapeG);
             }
         }

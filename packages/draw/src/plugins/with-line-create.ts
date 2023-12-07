@@ -72,7 +72,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
             const otherPoint = drawPoints[0];
             movingPoint = alignPoints(otherPoint, movingPoint);
             temporaryElement.points[1] = movingPoint;
-            lineGenerator.draw(temporaryElement, lineShapeG);
+            lineGenerator.processDrawing(temporaryElement, lineShapeG);
             PlaitBoard.getElementActiveHost(board).append(lineShapeG);
         }
 

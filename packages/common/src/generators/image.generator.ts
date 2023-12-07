@@ -34,7 +34,7 @@ export class ImageGenerator<T extends PlaitElement = PlaitElement> extends Gener
         return !!this.options.getImageItem(element);
     }
 
-    baseDraw(element: T, viewContainerRef: ViewContainerRef): SVGGElement {
+    draw(element: T, viewContainerRef: ViewContainerRef): SVGGElement {
         const g = createG();
         const foreignRectangle = this.options.getRectangle(element);
         this.foreignObject = createForeignObject(foreignRectangle.x, foreignRectangle.y, foreignRectangle.width, foreignRectangle.height);

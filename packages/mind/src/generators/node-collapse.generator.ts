@@ -21,7 +21,7 @@ export class CollapseGenerator extends Generator<MindElement> implements AfterDr
         return false;
     }
 
-    baseDraw(element: MindElement<BaseData>): SVGGElement {
+    draw(element: MindElement<BaseData>): SVGGElement {
         const collapseG = createG();
         collapseG.classList.add('collapse');
         const node = MindElement.getNode(element);

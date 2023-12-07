@@ -11,7 +11,7 @@ export class GeometryShapeGenerator extends Generator<PlaitGeometry, ShapeData> 
         return true;
     }
 
-    baseDraw(element: PlaitGeometry, data: ShapeData) {
+    draw(element: PlaitGeometry, data: ShapeData) {
         const rectangle = getRectangleByPoints(element.points);
         const shape = element.shape;
         if (shape === BasicShapes.text) {

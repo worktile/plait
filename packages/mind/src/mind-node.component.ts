@@ -135,13 +135,13 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.index = NODE_TO_INDEX.get(this.element) || 0;
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
         this.parentG = PlaitElement.getComponent(MindElement.getRoot(this.board, this.element)).rootG as SVGGElement;
-        this.nodeShapeGenerator.draw(this.element, this.g, { node: this.node });
+        this.nodeShapeGenerator.processDrawing(this.element, this.g, { node: this.node });
         this.drawLink();
         this.drawTopic();
-        this.activeGenerator.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
+        this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
         this.drawEmojis();
         this.drawExtend();
-        this.imageGenerator.draw(this.element as MindElement<ImageData>, this.g, this.viewContainerRef);
+        this.imageGenerator.processDrawing(this.element as MindElement<ImageData>, this.g, this.viewContainerRef);
         if (PlaitMind.isMind(this.context.parent)) {
             this.g.classList.add('branch');
         }
@@ -156,13 +156,14 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.node = newNode;
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
-            this.activeGenerator.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
-            this.nodeShapeGenerator.draw(this.element, this.g, { node: this.node });
+            this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
+            this.nodeShapeGenerator.processDrawing(this.element, this.g, { node: this.node });
+            // this.nodeShapeGenerator.
             this.drawLink();
             this.drawEmojis();
             this.drawExtend();
             if (!MindElement.hasImage(previous.element) && MindElement.hasImage(this.element)) {
-                this.imageGenerator.draw(this.element, this.g, this.viewContainerRef);
+                this.imageGenerator.processDrawing(this.element, this.g, this.viewContainerRef);
             }
             if (MindElement.hasImage(previous.element) && MindElement.hasImage(this.element)) {
                 this.imageGenerator.updateImage(
@@ -179,7 +180,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             const hasSameSelected = value.selected === previous.selected;
             const hasSameParent = value.parent === previous.parent;
             if (!hasSameSelected) {
-                this.activeGenerator.draw(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
+                this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
             }
             if (!hasSameParent) {
                 this.drawLink();
@@ -226,8 +227,8 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         } else {
             this.g.classList.remove('collapsed');
         }
-        this.nodePlusGenerator.draw(this.element, this.extendG!);
-        this.collapseGenerator.draw(this.element, this.extendG!);
+        this.nodePlusGenerator.processDrawing(this.element, this.extendG!);
+        this.collapseGenerator.processDrawing(this.element, this.extendG!);
     }
 
     drawTopic() {
@@ -241,10 +242,10 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     }
 
     editTopic() {
-        this.activeGenerator.draw(this.element, this.g, { selected: this.selected, isEditing: true });
+        this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected, isEditing: true });
         this.textManage.edit((origin: ExitOrigin) => {
             if (origin === ExitOrigin.default) {
-                this.activeGenerator.draw(this.element, this.g, { selected: this.selected, isEditing: false });
+                this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected, isEditing: false });
             }
         });
     }

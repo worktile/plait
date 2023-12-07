@@ -19,7 +19,7 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
         }
     }
 
-    baseDraw(element: PlaitLine, data: ActiveData): SVGGElement {
+    draw(element: PlaitLine, data: ActiveData): SVGGElement {
         const activeG = createG();
         if (this.hasResizeHandle) {
             activeG.classList.add('active');

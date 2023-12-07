@@ -25,7 +25,7 @@ export class NodeActiveGenerator extends Generator<MindElement, ActiveData> {
         }
     }
 
-    baseDraw(element: MindElement<BaseData>, data: ActiveData): SVGGElement {
+    draw(element: MindElement<BaseData>, data: ActiveData): SVGGElement {
         const activeG = createG();
         const node = MindElement.getNode(element);
         const rectangle = getRectangleByNode(node);
