@@ -13,20 +13,8 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { LineMarkerType, LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
-import {
-    alignPoints,
-    createLineElement,
-    getAutoCompletePoints,
-    getHitIndexOfAutoCompletePoint,
-    getLinePoints,
-    getSelectedDrawElements,
-    transformPointToConnection
-} from '../utils';
-import { getHitOutlineGeometry } from '../utils/position/geometry';
-import { LineShapeGenerator } from '../generators/line.generator';
-import { DefaultLineStyle } from '../constants/line';
-import { REACTION_MARGIN } from '../constants';
+import { LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
+import { createDefaultLine, getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
 
 export interface AutoCompleteOptions {
     afterComplete: (element: PlaitLine) => {};
@@ -67,28 +55,7 @@ export const withAutoComplete = (board: PlaitBoard) => {
         if (startPoint && sourceElement) {
             const distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
             if (distance > tolerance) {
-                const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
-                const targetConnection = hitElement ? transformPointToConnection(board, movingPoint, hitElement) : undefined;
-                const connection = transformPointToConnection(board, startPoint, sourceElement);
-                const targetBoundId = hitElement ? hitElement.id : undefined;
-                const lineGenerator = new LineShapeGenerator(board);
-                temporaryElement = createLineElement(
-                    LineShape.elbow,
-                    [startPoint, movingPoint],
-                    { marker: LineMarkerType.none, connection: connection, boundId: sourceElement!.id },
-                    { marker: LineMarkerType.arrow, connection: targetConnection, boundId: targetBoundId },
-                    [],
-                    {
-                        strokeColor: DefaultLineStyle.strokeColor,
-                        strokeWidth: DefaultLineStyle.strokeWidth
-                    }
-                );
-                const drawPoints = getLinePoints(board, temporaryElement);
-                const otherPoint = drawPoints[0];
-                movingPoint = alignPoints(otherPoint, movingPoint);
-                temporaryElement.points[1] = movingPoint;
-                lineGenerator.draw(temporaryElement, lineShapeG);
-                PlaitBoard.getElementActiveHost(board).append(lineShapeG);
+                temporaryElement = createDefaultLine(board, LineShape.elbow, startPoint, movingPoint, sourceElement, lineShapeG);
             }
         }
 
