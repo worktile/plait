@@ -102,12 +102,13 @@ export class CollapseDrawer extends BaseDrawer implements AfterDraw {
             throw new Error(`can not find quick insert g`);
         }
 
-        fromEvent(this.g, 'mouseup')
+        fromEvent<PointerEvent>(this.g, 'pointerdown')
             .pipe(
                 filter(() => !PlaitBoard.isPointer(this.board, PlaitPointerType.hand) || !!PlaitBoard.isReadonly(this.board)),
                 take(1)
             )
-            .subscribe(() => {
+            .subscribe((event: PointerEvent) => {
+                event.preventDefault();
                 const isCollapsed = !element.isCollapsed;
                 const newElement: Partial<MindElement> = { isCollapsed };
                 const path = PlaitBoard.findPath(this.board, element);

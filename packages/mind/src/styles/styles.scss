@@ -62,9 +62,11 @@ $primary: #4e8afa;
         }
     }
 
-    &[class*='pointer-']:not(.pointer-selection) {
-        :not(.collapsed) > .extend {
-            display: none;
+    &:not(.readonly) {
+        &[class*='pointer-']:not(.pointer-selection) {
+            :not(.collapsed) > .extend {
+                display: none;
+            }
         }
     }
 

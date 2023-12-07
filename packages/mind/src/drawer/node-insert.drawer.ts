@@ -111,12 +111,12 @@ export class NodeInsertDrawer extends BaseDrawer implements AfterDraw {
         if (!this.g) {
             throw new Error(`can not find quick insert g`);
         }
-        fromEvent<MouseEvent>(this.g, 'mousedown')
+        fromEvent<MouseEvent>(this.g, 'pointerdown')
             .pipe(take(1))
             .subscribe(e => {
-                e.stopPropagation();
+                e.preventDefault();
             });
-        fromEvent(this.g, 'mouseup')
+        fromEvent(this.g, 'pointerup')
             .pipe(take(1))
             .subscribe(() => {
                 const path = findNewChildNodePath(this.board, element);
