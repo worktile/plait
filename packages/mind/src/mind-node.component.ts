@@ -18,18 +18,18 @@ import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { drawAbstractLink } from './utils/draw/node-link/abstract-link';
-import { NodeEmojisDrawer } from './drawer/node-emojis.drawer';
+import { NodeEmojisGenerator } from './generators/node-emojis.generator';
 import { MindTransforms } from './transforms';
-import { NodeInsertDrawer } from './drawer/node-insert.drawer';
+import { NodePlusGenerator } from './generators/node-plus.generator';
 import { PlaitMindBoard } from './plugins/with-mind.board';
 import { drawLink } from './utils/draw/node-link/draw-link';
 import { getTopicRectangleByNode } from './utils/position/topic';
-import { NodeActiveGenerator } from './drawer/node-active.generator';
-import { CollapseDrawer } from './drawer/node-collapse.drawer';
+import { NodeActiveGenerator } from './generators/node-active.generator';
+import { CollapseGenerator } from './generators/node-collapse.generator';
 import { NodeSpace } from './utils/space/node-space';
 import { NodeTopicThreshold } from './constants/node-topic-style';
 import { CommonPluginElement, ImageGenerator, WithTextOptions, WithTextPluginKey } from '@plait/common';
-import { NodeShapeGenerator } from './drawer/node-shape.generator';
+import { NodeShapeGenerator } from './generators/node-shape.generator';
 import { NgIf } from '@angular/common';
 import { getImageForeignRectangle } from './utils';
 import { ImageData } from './interfaces';
@@ -67,17 +67,17 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
 
     destroy$ = new Subject<void>();
 
-    nodeEmojisDrawer!: NodeEmojisDrawer;
+    nodeEmojisGenerator!: NodeEmojisGenerator;
 
     nodeShapeGenerator!: NodeShapeGenerator;
 
-    nodeInsertDrawer!: NodeInsertDrawer;
+    nodePlusGenerator!: NodePlusGenerator;
 
     imageGenerator!: ImageGenerator<MindElement<ImageData>>;
 
     activeGenerator!: NodeActiveGenerator;
 
-    collapseDrawer!: CollapseDrawer;
+    collapseGenerator!: CollapseGenerator;
 
     get textManage() {
         return this.getTextManages()[0];
@@ -89,10 +89,10 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
 
     initializeDrawer() {
         this.nodeShapeGenerator = new NodeShapeGenerator(this.board);
-        this.nodeEmojisDrawer = new NodeEmojisDrawer(this.board, this.viewContainerRef);
-        this.nodeInsertDrawer = new NodeInsertDrawer(this.board);
+        this.nodeEmojisGenerator = new NodeEmojisGenerator(this.board, this.viewContainerRef);
         this.activeGenerator = new NodeActiveGenerator(this.board);
-        this.collapseDrawer = new CollapseDrawer(this.board);
+        this.nodePlusGenerator = new NodePlusGenerator(this.board);
+        this.collapseGenerator = new CollapseGenerator(this.board);
         this.imageGenerator = new ImageGenerator<MindElement<ImageData>>(this.board, {
             getRectangle: (element: MindElement<ImageData>) => {
                 return getImageForeignRectangle(this.board as PlaitMindBoard, element);
@@ -188,7 +188,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     }
 
     drawEmojis() {
-        const g = this.nodeEmojisDrawer.drawEmojis(this.element);
+        const g = this.nodeEmojisGenerator.drawEmojis(this.element);
         if (g) {
             this.g.append(g);
         }
@@ -215,33 +215,19 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.g.append(this.linkG);
     }
 
-    destroyLine() {
-        if (this.linkG) {
-            this.linkG.remove();
-        }
-    }
-
     drawExtend() {
-        this.destroyExtend();
-
-        this.extendG = createG();
-        this.extendG.classList.add('extend');
-        this.g.append(this.extendG);
-
+        if (!this.extendG) {
+            this.extendG = createG();
+            this.extendG.classList.add('extend');
+            this.g.append(this.extendG);
+        }
         if (this.element.isCollapsed) {
             this.g.classList.add('collapsed');
         } else {
             this.g.classList.remove('collapsed');
         }
-
-        this.nodeInsertDrawer.draw(this.element, this.extendG!);
-        this.collapseDrawer.draw(this.element, this.extendG!);
-    }
-
-    destroyExtend() {
-        if (this.extendG) {
-            this.extendG.remove();
-        }
+        this.nodePlusGenerator.draw(this.element, this.extendG!);
+        this.collapseGenerator.draw(this.element, this.extendG!);
     }
 
     drawTopic() {
@@ -270,7 +256,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     ngOnDestroy(): void {
         super.ngOnDestroy();
         this.textManage.destroy();
-        this.nodeEmojisDrawer.destroy();
+        this.nodeEmojisGenerator.destroy();
         this.imageGenerator.destroy();
         this.destroy$.next();
         this.destroy$.complete();

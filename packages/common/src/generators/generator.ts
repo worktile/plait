@@ -21,7 +21,7 @@ export abstract class Generator<
         if (this.canDraw && this.canDraw(element, data)) {
             const g = this.baseDraw(element, data);
             if (g) {
-                if (this.g) {
+                if (this.g && parentG.contains(this.g)) {
                     this.g.replaceWith(g);
                 } else {
                     parentG.appendChild(g);

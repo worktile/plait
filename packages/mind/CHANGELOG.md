@@ -526,7 +526,7 @@
 
 *   [#430](https://github.com/worktile/plait/pull/430) [`275f9ce`](https://github.com/worktile/plait/commit/275f9ce077b652f7cd01fb6c994034243aea7742) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add format text
 
--   [#433](https://github.com/worktile/plait/pull/433) [`fc8e7f9`](https://github.com/worktile/plait/commit/fc8e7f96174462f95f4c69138fd14df841e00c91) Thanks [@WBbug](https://github.com/WBbug)! - add CollapseDrawer
+-   [#433](https://github.com/worktile/plait/pull/433) [`fc8e7f9`](https://github.com/worktile/plait/commit/fc8e7f96174462f95f4c69138fd14df841e00c91) Thanks [@WBbug](https://github.com/WBbug)! - add CollapseGenerator
 
 *   [#430](https://github.com/worktile/plait/pull/430) [`7adcf10`](https://github.com/worktile/plait/commit/7adcf1003d699d61bab5512f5e72817697270a19) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename richtext to text
 
