@@ -73,12 +73,14 @@ export const withDraw = (board: PlaitBoard) => {
                 return !!selectedElements.find(value => value.id === boundId);
             };
             if (
-                (element.source.boundId && !isSelected(element.source.boundId)) ||
-                (element.target.boundId && !isSelected(element.target.boundId))
+                (!element.source.boundId ||
+                    (element.source.boundId && isSelected(element.source.boundId) && selectedElements.includes(element))) &&
+                (!element.target.boundId ||
+                    (element.source.boundId && isSelected(element.source.boundId) && selectedElements.includes(element)))
             ) {
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
         return isMovable(element);
     };
