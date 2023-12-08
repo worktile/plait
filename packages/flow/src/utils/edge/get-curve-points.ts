@@ -1,32 +1,26 @@
-import { Direction, Point, RectangleClient, distanceBetweenPointAndPoint } from '@plait/core';
+import { Direction, Point, distanceBetweenPointAndPoint } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { getHandleXYPosition } from '../handle/get-handle-position';
 import { getDirectionFactor, getPointByVector } from '@plait/common';
 
 export function getCurvePoints({
-    sourceRectangle,
-    sourcePosition = Direction.bottom,
-    targetRectangle,
-    targetPosition = Direction.top
+    sourceDirection = Direction.bottom,
+    sourcePoint,
+    targetDirection = Direction.top,
+    targetPoint
 }: {
-    sourceRectangle: RectangleClient;
-    sourcePosition: Direction;
-    targetRectangle: RectangleClient;
-    targetPosition: Direction;
+    sourceDirection: Direction;
+    sourcePoint: Point;
+    targetDirection: Direction;
+    targetPoint: Point;
 }) {
-    const sourceXYPosition = getHandleXYPosition(sourcePosition, sourceRectangle);
-    const targetXYPosition = getHandleXYPosition(targetPosition, targetRectangle);
-    const sourcePoint: Point = [sourceXYPosition.x, sourceXYPosition.y];
-    const targetPoint: Point = [targetXYPosition.x, targetXYPosition.y];
-
     let curvePoints: Point[] = [sourcePoint];
     const sumDistance = distanceBetweenPointAndPoint(...sourcePoint, ...targetPoint);
     const offset = 12 + sumDistance / 3;
 
-    const sourceFactor = getDirectionFactor(sourcePosition!);
+    const sourceFactor = getDirectionFactor(sourceDirection!);
     curvePoints.push(getPointByVector(sourcePoint, [sourceFactor.x, sourceFactor.y], offset));
 
-    const targetFactor = getDirectionFactor(targetPosition);
+    const targetFactor = getDirectionFactor(targetDirection);
     curvePoints.push(getPointByVector(targetPoint, [targetFactor.x, targetFactor.y], offset));
 
     curvePoints.push(targetPoint);

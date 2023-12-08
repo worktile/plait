@@ -4,6 +4,7 @@ import { HANDLE_DIAMETER } from '../../constants/handle';
 import { getHandleXYPosition } from './get-handle-position';
 import { getEdgeDraggingInfo } from '../edge/dragging-edge';
 import { getFakeFlowNodeById, getFlowNodeById } from '../node/get-node';
+import { FlowNodeHandle } from '../../interfaces/node';
 
 export const getEdgeHandles = (board: PlaitBoard, edge: FlowEdge) => {
     const handles: FlowEdgeHandleRef[] = [];
@@ -15,8 +16,16 @@ export const getEdgeHandles = (board: PlaitBoard, edge: FlowEdge) => {
         } else {
             sourceNode = getFlowNodeById(board, edge.source.nodeId);
         }
+        let sourceHandle: FlowNodeHandle;
+        if (sourceNode.handles && edge.source.handleId) {
+            sourceHandle = sourceNode.handles.find(item => item.handleId === edge.source!.handleId) as FlowNodeHandle;
+        } else {
+            sourceHandle = {
+                position: edge.source.position
+            };
+        }
         handles.push({
-            position: edge.source.position,
+            ...sourceHandle,
             node: sourceNode,
             type: 'source'
         });
@@ -27,8 +36,16 @@ export const getEdgeHandles = (board: PlaitBoard, edge: FlowEdge) => {
         } else {
             targetNode = getFlowNodeById(board, edge.target.nodeId);
         }
+        let targetHandle: FlowNodeHandle;
+        if (targetNode.handles && edge.target?.handleId) {
+            targetHandle = targetNode.handles.find(item => item.handleId === edge.target?.handleId) as FlowNodeHandle;
+        } else {
+            targetHandle = {
+                position: edge.target.position
+            };
+        }
         handles.push({
-            position: edge.target.position,
+            ...targetHandle,
             node: targetNode,
             type: 'target'
         });

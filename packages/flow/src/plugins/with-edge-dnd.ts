@@ -88,7 +88,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
             const activePath = PlaitBoard.findPath(board, activeElement);
             deleteEdgeDraggingInfo(activeElement);
             if (hitNodeHandle) {
-                const { position, offsetX: handleOffsetX, offsetY: handleOffsetY, node } = hitNodeHandle;
+                const { position, handleId, offsetX: handleOffsetX, offsetY: handleOffsetY, node } = hitNodeHandle;
                 Transforms.setNode(
                     board,
                     {
@@ -96,6 +96,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                             ...activeElement[handleType],
                             nodeId: node.id,
                             position,
+                            handleId,
                             offsetX: handleOffsetX,
                             offsetY: handleOffsetY
                         }

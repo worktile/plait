@@ -26,7 +26,7 @@ export interface FlowEdgeDragInfo {
 export interface FlowEdgeHandle {
     nodeId: string;
     position: Direction;
-    // handleId?: string;
+    handleId?: string;
     marker?: FlowEdgeMarkerType;
 }
 

@@ -10,12 +10,15 @@ import { FlowRenderMode } from '../../interfaces/flow';
 import { FlowEdgeComponent } from '../../flow-edge.component';
 import { getCurvePoints } from './get-curve-points';
 import { getStraightPoints } from './get-straight-points';
+import { getHandleXYPosition } from '../handle/get-handle-position';
 
 interface GetPointsParams {
     sourceRectangle: RectangleClient;
-    sourcePosition: Direction;
+    sourceDirection: Direction;
+    sourcePoint: Point;
     targetRectangle: RectangleClient;
-    targetPosition: Direction;
+    targetDirection: Direction;
+    targetPoint: Point;
 }
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
@@ -42,10 +45,18 @@ export function getEdgeCenter({
 export function getShapePoints(shape: FlowEdgeShape = FlowEdgeShape.elbow, params: GetPointsParams): Point[] {
     switch (shape) {
         case FlowEdgeShape.straight: {
-            return getStraightPoints(params);
+            return getStraightPoints({
+                sourcePoint: params.sourcePoint,
+                targetPoint: params.targetPoint
+            });
         }
         case FlowEdgeShape.curve: {
-            return getCurvePoints(params);
+            return getCurvePoints({
+                sourceDirection: params.sourceDirection,
+                sourcePoint: params.sourcePoint,
+                targetDirection: params.targetDirection,
+                targetPoint: params.targetPoint
+            });
         }
         default: {
             return getElbowPoints(params);
@@ -78,25 +89,41 @@ export const buildEdgePathPoints = (board: PlaitBoard, edge: FlowEdge) => {
     const { width: sourceNodeWidth, height: sourceNodeHeight } = sourceNode;
     const { width: targetNodeWidth, height: targetNodeHeight } = targetNode;
 
-    const { position: sourcePosition } = edge.source!;
-    const { position: targetPosition } = edge.target;
-    const params: GetPointsParams = {
-        sourceRectangle: {
-            x: sourceNodeX,
-            y: sourceNodeY,
-            width: sourceNodeWidth,
-            height: sourceNodeHeight
-        },
-        sourcePosition,
-        targetRectangle: {
-            x: targetNodeX,
-            y: targetNodeY,
-            width: targetNodeWidth,
-            height: targetNodeHeight
-        },
-        targetPosition
-    };
+    const { position: sourceDirection } = edge.source!;
+    const { position: targetDirection } = edge.target;
 
+    const sourceRectangle = {
+        x: sourceNodeX,
+        y: sourceNodeY,
+        width: sourceNodeWidth,
+        height: sourceNodeHeight
+    };
+    const targetRectangle = {
+        x: targetNodeX,
+        y: targetNodeY,
+        width: targetNodeWidth,
+        height: targetNodeHeight
+    };
+    let sourceHandle, targetHandle;
+    if (edge.source?.handleId) {
+        sourceHandle = sourceNode.handles?.find(item => item.handleId === edge.source?.handleId);
+    }
+    if (edge.target?.handleId) {
+        targetHandle = targetNode.handles?.find(item => item.handleId === edge.target?.handleId);
+    }
+    const sourcePosition = getHandleXYPosition(sourceDirection, sourceRectangle, sourceHandle);
+    const targetPosition = getHandleXYPosition(targetDirection, targetRectangle, targetHandle);
+    const sourcePoint: Point = [sourcePosition.x, sourcePosition.y];
+    const targetPoint: Point = [targetPosition.x, targetPosition.y];
+
+    const params: GetPointsParams = {
+        sourceRectangle,
+        sourceDirection,
+        sourcePoint,
+        targetRectangle,
+        targetDirection,
+        targetPoint
+    };
     const points = getShapePoints(edge.shape, params);
     return points.map(item => {
         return {

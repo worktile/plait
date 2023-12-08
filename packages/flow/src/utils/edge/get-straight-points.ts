@@ -1,20 +1,5 @@
-import { Direction, Point, RectangleClient } from '@plait/core';
-import { getHandleXYPosition } from '../handle/get-handle-position';
+import { Point } from '@plait/core';
 
-export function getStraightPoints({
-    sourceRectangle,
-    sourcePosition = Direction.bottom,
-    targetRectangle,
-    targetPosition = Direction.top
-}: {
-    sourceRectangle: RectangleClient;
-    sourcePosition: Direction;
-    targetRectangle: RectangleClient;
-    targetPosition: Direction;
-}) {
-    const sourceXYPosition = getHandleXYPosition(sourcePosition, sourceRectangle);
-    const targetXYPosition = getHandleXYPosition(targetPosition, targetRectangle);
-    const sourcePoint: Point = [sourceXYPosition.x, sourceXYPosition.y];
-    const targetPoint: Point = [targetXYPosition.x, targetXYPosition.y];
+export function getStraightPoints({ sourcePoint, targetPoint }: { sourcePoint: Point; targetPoint: Point }) {
     return [sourcePoint, targetPoint];
 }
