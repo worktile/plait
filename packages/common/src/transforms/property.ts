@@ -1,17 +1,25 @@
 import { Path, PlaitBoard, PlaitElement, Transforms, getSelectedElements } from '@plait/core';
+import { memorizeLatest } from '../utils';
 
 export const setProperty = <T extends PlaitElement = PlaitElement>(
     board: PlaitBoard,
-    options: Partial<T>,
-    callback?: (element: T, path: Path) => void
+    properties: Partial<T>,
+    options?: {
+        callback?: (element: T, path: Path) => void;
+        getMemorizeKey?: (element: T) => string;
+    }
 ) => {
     const selectedElements = getSelectedElements(board) as T[];
     selectedElements.forEach(element => {
         const path = PlaitBoard.findPath(board, element);
-        if (callback) {
-            callback(element, path);
+        const memorizeKey = options?.getMemorizeKey ? options?.getMemorizeKey(element) : '';
+        for (let key in properties) {
+            memorizeKey && memorizeLatest(memorizeKey, key, properties[key]);
+        }
+        if (options?.callback) {
+            options.callback(element, path);
         } else {
-            Transforms.setNode(board, options, path);
+            Transforms.setNode(board, properties, path);
         }
     });
 };

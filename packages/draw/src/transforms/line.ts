@@ -1,5 +1,6 @@
 import { Path, PlaitBoard, Transforms } from '@plait/core';
-import { LineHandleKey, LineMarkerType, LineText, PlaitLine } from '../interfaces';
+import { LineHandleKey, LineMarkerType, LineText, MemorizeKey, PlaitLine } from '../interfaces';
+import { memorizeLatest } from '@plait/common';
 
 export const resizeLine = (board: PlaitBoard, options: Partial<PlaitLine>, path: Path) => {
     Transforms.setNode(board, options, path);
@@ -22,5 +23,6 @@ export const setLineMark = (board: PlaitBoard, element: PlaitLine, handleKey: Li
     const path = PlaitBoard.findPath(board, element);
     let handle = handleKey === LineHandleKey.source ? element.source : element.target;
     handle = { ...handle, marker };
+    memorizeLatest(MemorizeKey.line, handleKey, marker);
     Transforms.setNode(board, { [handleKey]: handle }, path);
 };
