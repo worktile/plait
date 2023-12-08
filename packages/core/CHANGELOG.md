@@ -1,5 +1,13 @@
 # plait
 
+## 0.33.0
+
+### Minor Changes
+
+-   [#636](https://github.com/worktile/plait/pull/636) [`6c2a693b`](https://github.com/worktile/plait/commit/6c2a693b75c6637067e624f1386bb1da43d219c2) Thanks [@WBbug](https://github.com/WBbug)! - support auto complete
+
+*   [#644](https://github.com/worktile/plait/pull/644) [`41887e53`](https://github.com/worktile/plait/commit/41887e535a39ef85773f53265891c455c78b20d7) Thanks [@WBbug](https://github.com/WBbug)! - change curve points
+
 ## 0.32.0
 
 ### Minor Changes

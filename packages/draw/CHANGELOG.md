@@ -1,5 +1,33 @@
 # @plait/draw
 
+## 0.33.0
+
+### Minor Changes
+
+-   [#636](https://github.com/worktile/plait/pull/636) [`6c2a693b`](https://github.com/worktile/plait/commit/6c2a693b75c6637067e624f1386bb1da43d219c2) Thanks [@WBbug](https://github.com/WBbug)! - support auto complete
+
+*   [#637](https://github.com/worktile/plait/pull/637) [`8d31241b`](https://github.com/worktile/plait/commit/8d31241b945c6b4362e9d057aaf52c2b420ad394) Thanks [@WBbug](https://github.com/WBbug)! - support change geometry style when change theme
+
+-   [`385eebb2`](https://github.com/worktile/plait/commit/385eebb2601f718dcf9c4d3806c3d3ad34384a13) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update generator function name
+
+*   [#645](https://github.com/worktile/plait/pull/645) [`d8de556b`](https://github.com/worktile/plait/commit/d8de556be0ae6e2e5c1987c003c50ae096562195) Thanks [@WBbug](https://github.com/WBbug)! - add AutoCompleteOptions
+
+-   [#639](https://github.com/worktile/plait/pull/639) [`f73ba437`](https://github.com/worktile/plait/commit/f73ba437634400263b2fdce7269257eed2efa034) Thanks [@WBbug](https://github.com/WBbug)! - support transform shape
+
+*   [#644](https://github.com/worktile/plait/pull/644) [`41887e53`](https://github.com/worktile/plait/commit/41887e535a39ef85773f53265891c455c78b20d7) Thanks [@WBbug](https://github.com/WBbug)! - change curve points
+
+### Patch Changes
+
+-   [`7967820b`](https://github.com/worktile/plait/commit/7967820b18f226d429902784b476fccc44e72577) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct line movable condition
+
+*   [#638](https://github.com/worktile/plait/pull/638) [`4c265d6e`](https://github.com/worktile/plait/commit/4c265d6e97540e4c3266e87c32143108160c03c2) Thanks [@WBbug](https://github.com/WBbug)! - fix wrong import
+
+-   [#641](https://github.com/worktile/plait/pull/641) [`85a03b00`](https://github.com/worktile/plait/commit/85a03b00a546bca47edeb1a062f5d5fd8e6743e9) Thanks [@WBbug](https://github.com/WBbug)! - fix can't align when moving
+
+*   [#647](https://github.com/worktile/plait/pull/647) [`cf826c57`](https://github.com/worktile/plait/commit/cf826c57a5c9b475ab6d6ff4fe1e3ce503ba4003) Thanks [@WBbug](https://github.com/WBbug)! - add createDefaultLine
+
+-   [#642](https://github.com/worktile/plait/pull/642) [`9bec7c26`](https://github.com/worktile/plait/commit/9bec7c2655ba1983ea7dcdad37d174d052894ed9) Thanks [@WBbug](https://github.com/WBbug)! - support align when create line
+
 ## 0.32.0
 
 ### Minor Changes

@@ -1,5 +1,19 @@
 # @plait/common
 
+## 0.33.0
+
+### Minor Changes
+
+-   [#636](https://github.com/worktile/plait/pull/636) [`6c2a693b`](https://github.com/worktile/plait/commit/6c2a693b75c6637067e624f1386bb1da43d219c2) Thanks [@WBbug](https://github.com/WBbug)! - support auto complete
+
+*   [`385eebb2`](https://github.com/worktile/plait/commit/385eebb2601f718dcf9c4d3806c3d3ad34384a13) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update generator function name
+
+-   [`a4864124`](https://github.com/worktile/plait/commit/a4864124d47e7b3f8811f4ec7b26e2f3f331e216) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename drawer to generator
+
+### Patch Changes
+
+-   [`fff12077`](https://github.com/worktile/plait/commit/fff120778974307456176ed2f6e72c85fa7aaedb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modified setProperty position and function's arguments
+
 ## 0.32.0
 
 ### Minor Changes

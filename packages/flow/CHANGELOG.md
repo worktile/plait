@@ -1,5 +1,13 @@
 # @plait/flow
 
+## 0.33.0
+
+### Patch Changes
+
+-   [#635](https://github.com/worktile/plait/pull/635) [`0f27705d`](https://github.com/worktile/plait/commit/0f27705debcafb95da55272cd2ff19d7a35fb8ad) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - replace get edge points algorithm
+
+*   [#646](https://github.com/worktile/plait/pull/646) [`aa6fb8d2`](https://github.com/worktile/plait/commit/aa6fb8d25560375cec91812b11f78ce1db8117e4) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support curve and straight edge and adjust label
+
 ## 0.32.0
 
 ### Minor Changes

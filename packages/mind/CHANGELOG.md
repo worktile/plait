@@ -1,5 +1,23 @@
 # mind
 
+## 0.33.0
+
+### Minor Changes
+
+-   [#636](https://github.com/worktile/plait/pull/636) [`6c2a693b`](https://github.com/worktile/plait/commit/6c2a693b75c6637067e624f1386bb1da43d219c2) Thanks [@WBbug](https://github.com/WBbug)! - support auto complete
+
+*   [#637](https://github.com/worktile/plait/pull/637) [`8d31241b`](https://github.com/worktile/plait/commit/8d31241b945c6b4362e9d057aaf52c2b420ad394) Thanks [@WBbug](https://github.com/WBbug)! - support change geometry style when change theme
+
+-   [`385eebb2`](https://github.com/worktile/plait/commit/385eebb2601f718dcf9c4d3806c3d3ad34384a13) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update generator function name
+
+*   [`a4864124`](https://github.com/worktile/plait/commit/a4864124d47e7b3f8811f4ec7b26e2f3f331e216) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename drawer to generator
+
+### Patch Changes
+
+-   [`9f5aa5eb`](https://github.com/worktile/plait/commit/9f5aa5eb238f55070fb8dffe4af1a1fe3fd4131e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix mind collapsed/expand can not show issue
+
+*   [`fff12077`](https://github.com/worktile/plait/commit/fff120778974307456176ed2f6e72c85fa7aaedb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modified setProperty position and function's arguments
+
 ## 0.32.0
 
 ### Minor Changes
