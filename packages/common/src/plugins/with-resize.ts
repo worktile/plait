@@ -39,10 +39,7 @@ export interface ResizeState {
 
 const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
     return (
-        PlaitBoard.isReadonly(board) ||
-        PlaitBoard.hasBeenTextEditing(board) ||
-        !PlaitBoard.isPointer(board, PlaitPointerType.hand) ||
-        !isMainPointer(event)
+        !PlaitBoard.isReadonly(board) && !PlaitBoard.hasBeenTextEditing(board) && PlaitBoard.isPointer(board, PlaitPointerType.selection)
     );
 };
 
@@ -57,7 +54,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
     let hoveDetectResult: ResizeDetectResult<T, K> | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
-        if (!options.canResize() || !generalCanResize(board, event)) {
+        if (!options.canResize() || !generalCanResize(board, event) || !isMainPointer(event)) {
             pointerDown(event);
             return;
         }
