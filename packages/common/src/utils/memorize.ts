@@ -5,24 +5,16 @@ export interface MemorizedProperty {
     strokeColor?: string;
 }
 
-export enum MemorizeMode {
-    creation,
-    set
-}
-
 export const memorizeLatest = <T extends MemorizedProperty = MemorizedProperty>(
-    mode: MemorizeMode,
     memorizedKey: string,
     propertyKey: keyof T,
     propertyValue: string | number
 ) => {
-    const key = `${mode}-${memorizedKey}`;
-    const newProperty = mode === MemorizeMode.set ? {} : [];
-    let obj = map.has(key) ? map.get(key) : newProperty;
+    let obj = map.has(memorizedKey) ? map.get(memorizedKey) : {};
     obj[propertyKey] = propertyValue;
-    map.set(key, obj);
+    map.set(memorizedKey, obj);
 };
 
-export const getCurrentProperty = <T extends MemorizedProperty = MemorizedProperty>(mode: MemorizeMode, memorizedKey: string): T => {
-    return map.get(`${mode}-${memorizedKey}`);
+export const getMemorizedLatest = <T extends MemorizedProperty = MemorizedProperty>(memorizedKey: string): T => {
+    return map.get(memorizedKey);
 };
