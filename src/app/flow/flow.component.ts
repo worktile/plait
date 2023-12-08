@@ -85,11 +85,7 @@ export class BasicFlowComponent implements OnInit {
     constructor(private injector: Injector, private cdr: ChangeDetectorRef) {}
 
     ngOnInit(): void {
-        const data = this.getLocalData() as PlaitBoardChangeEvent;
-        if (data) {
-            this.value = data.children;
-            this.viewport = data.viewport;
-        }
+        this.value = mockFlowData;
     }
 
     change(event: PlaitBoardChangeEvent) {
@@ -98,11 +94,6 @@ export class BasicFlowComponent implements OnInit {
 
     setLocalData(data: string) {
         localStorage.setItem(`${LOCAL_DATA_KEY}`, data);
-    }
-
-    getLocalData() {
-        const data = localStorage.getItem(`${LOCAL_DATA_KEY}`);
-        return data ? JSON.parse(data) : null;
     }
 
     plaitBoardInitialized(value: CustomBoard) {
