@@ -1,4 +1,22 @@
+<div class="sidebar">
+    <div class="menu">
+        <div class="menu-item overview" (click)="selectChange('default')" [ngClass]="{ active: activeKey === 'default' }">Overview</div>
+    </div>
+
+    <div *ngFor="let menu of menus" class="menu">
+        <h3 class="title">{{ menu.name }}</h3>
+        <div
+            *ngFor="let item of menu.children"
+            class="menu-item"
+            (click)="selectChange(item.key)"
+            [ngClass]="{ active: activeKey === item.key }"
+        >
+            <span>{{ item.name }}</span>
+        </div>
+    </div>
+</div>
 <plait-board
+    class="content"
     [plaitPlugins]="plugins"
     [plaitValue]="value"
     [plaitViewport]="viewport"
@@ -6,5 +24,4 @@
     (plaitBoardInitialized)="plaitBoardInitialized($event)"
     (plaitChange)="change($event)"
 >
-
 </plait-board>

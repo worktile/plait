@@ -1,6 +1,47 @@
 import { Direction } from '@plait/core';
 import { FlowBaseData, FlowElement, FlowElementType } from '@plait/flow';
 
+export const Handles = [
+    {
+        handleId: 'topLeft',
+        position: 'top',
+        offsetX: -30
+    },
+    {
+        handleId: 'topCenter',
+        position: 'top',
+        offsetX: 0
+    },
+    {
+        handleId: 'topRight',
+        position: 'top',
+        offsetX: 30
+    },
+    {
+        handleId: 'right',
+        position: 'right'
+    },
+    {
+        handleId: 'bottomLeft',
+        position: 'bottom',
+        offsetX: -30
+    },
+    {
+        handleId: 'bottomCenter',
+        position: 'bottom',
+        offsetX: 0
+    },
+    {
+        handleId: 'bottomRight',
+        position: 'bottom',
+        offsetX: 30
+    },
+    {
+        handleId: 'left',
+        position: 'left'
+    }
+];
+
 export interface WorkflowType extends FlowBaseData {
     initialState?: boolean;
 }
@@ -9,7 +50,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
     {
         id: '001',
         data: {
-            text: { children: [{ text: '连线1' }] },
+            text: { children: [{ text: '打开->进行中' }] },
             icon: '⚡️'
         },
         type: FlowElementType.edge,
@@ -45,7 +86,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
     {
         id: '003',
         data: {
-            text: { children: [{ text: '连线2' }] }
+            text: { children: [{ text: '进行中->已完成' }] }
         },
         type: FlowElementType.edge,
         source: {
@@ -81,6 +122,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         points: [[400, 268.5]],
         width: 120,
         height: 36,
+        handles: Handles,
         styles: {
             stroke: 'rgb(86, 171, 251)',
             fill: 'rgb(86, 171, 251)'
@@ -96,6 +138,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         points: [[600, 268.5]],
         width: 120,
         height: 36,
+        handles: Handles,
         styles: {
             stroke: 'rgb(246, 198, 89)',
             fill: 'rgb(246, 198, 89)',
@@ -109,119 +152,7 @@ export const mockFlowData: FlowElement<WorkflowType>[] = [
         },
         type: FlowElementType.node,
         points: [[900, 268.5]],
-        width: 120,
-        height: 36,
-        styles: {
-            stroke: 'rgb(115, 216, 151)',
-            fill: 'rgb(115, 216, 151)'
-        }
-    },
-    // 曲线/直线
-    {
-        id: 'edge-0',
-        data: {
-            text: { children: [{ text: 'label' }] },
-            icon: '⚡️'
-        },
-        shape: 'curve',
-        type: FlowElementType.edge,
-        source: {
-            nodeId: 'node-2',
-            position: Direction.top
-        },
-        target: {
-            nodeId: 'node-3',
-            position: Direction.top,
-            marker: true
-        },
-        points: []
-    },
-    {
-        id: 'edge-2',
-        data: {
-            text: { children: [{ text: 'create' }] }
-        },
-        type: FlowElementType.edge,
-        source: {
-            nodeId: 'node-1',
-            position: Direction.bottom
-        },
-        target: {
-            nodeId: 'node-2',
-            position: Direction.left,
-            marker: true
-        },
-        undeletable: true,
-        points: []
-    },
-    {
-        id: 'edge-3',
-        data: {
-            text: { children: [{ text: '连线2' }] }
-        },
-        shape: 'straight',
-        type: FlowElementType.edge,
-        source: {
-            nodeId: 'node-3',
-            position: Direction.right
-        },
-        target: {
-            nodeId: 'node-4',
-            position: Direction.left,
-            marker: true
-        },
-        points: []
-    },
-    {
-        id: 'node-1',
-        data: {
-            text: { children: [{ text: '开始' }] },
-            initialState: true
-        },
-        type: FlowElementType.node,
-        width: 120,
-        height: 36,
-        handles: [],
-        undeletable: true,
-        points: [[248, 400]]
-    },
-    {
-        id: 'node-2',
-        data: {
-            text: { children: [{ text: '打开' }] }
-        },
-        type: FlowElementType.node,
-        points: [[400, 500]],
-        width: 120,
-        height: 36,
-        styles: {
-            stroke: 'rgb(86, 171, 251)',
-            fill: 'rgb(86, 171, 251)'
-        },
-        undeletable: true
-    },
-    {
-        id: 'node-3',
-        data: {
-            text: { children: [{ text: '进行中' }] }
-        },
-        type: FlowElementType.node,
-        points: [[600, 500]],
-        width: 120,
-        height: 36,
-        styles: {
-            stroke: 'rgb(246, 198, 89)',
-            fill: 'rgb(246, 198, 89)',
-            activeFill: '#fff'
-        }
-    },
-    {
-        id: 'node-4',
-        data: {
-            text: { children: [{ text: '已完成' }] }
-        },
-        type: FlowElementType.node,
-        points: [[900, 500]],
+        handles: Handles,
         width: 120,
         height: 36,
         styles: {

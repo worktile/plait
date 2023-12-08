@@ -8,6 +8,7 @@ export enum FlowElementType {
 
 export interface FlowHandle {
     position: Direction;
+    handleId?: string;
     offsetX?: number;
     offsetY?: number;
 }

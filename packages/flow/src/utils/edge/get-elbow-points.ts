@@ -1,25 +1,24 @@
 import { generateElbowLineRoute, getNextPoint, reduceRouteMargin, getPoints } from '@plait/common';
 import { Direction, Point, RectangleClient } from '@plait/core';
-import { getHandleXYPosition } from '../handle/get-handle-position';
 
 export function getElbowPoints({
     sourceRectangle,
-    sourcePosition = Direction.bottom,
+    sourcePoint,
+    sourceDirection = Direction.bottom,
     targetRectangle,
-    targetPosition = Direction.top,
+    targetPoint,
+    targetDirection = Direction.top,
     offset = 30
 }: {
     sourceRectangle: RectangleClient;
-    sourcePosition: Direction;
+    sourceDirection: Direction;
+    sourcePoint: Point;
     targetRectangle: RectangleClient;
-    targetPosition: Direction;
+    targetDirection: Direction;
+    targetPoint: Point;
     offset?: number;
 }) {
     let points: Point[] = [];
-    const sourceXYPosition = getHandleXYPosition(sourcePosition, sourceRectangle);
-    const targetXYPosition = getHandleXYPosition(targetPosition, targetRectangle);
-    const sourcePoint: Point = [sourceXYPosition.x, sourceXYPosition.y];
-    const targetPoint: Point = [targetXYPosition.x, targetXYPosition.y];
     const { sourceOffset, targetOffset } = reduceRouteMargin(sourceRectangle, targetRectangle);
     const sourceOuterRectangle = RectangleClient.expand(
         sourceRectangle,
@@ -35,8 +34,8 @@ export function getElbowPoints({
         targetOffset[1],
         targetOffset[2]
     );
-    const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, sourcePosition);
-    const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, targetPosition);
+    const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, sourceDirection);
+    const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, targetDirection);
 
     const isIntersect =
         RectangleClient.isPointInRectangle(targetRectangle, sourcePoint) ||
@@ -55,7 +54,7 @@ export function getElbowPoints({
             targetOuterRectangle
         });
     } else {
-        points = getPoints(sourcePoint, sourcePosition, targetPoint, targetPosition, offset);
+        points = getPoints(sourcePoint, sourceDirection, targetPoint, targetDirection, offset);
     }
     return points;
 }
