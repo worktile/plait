@@ -1,31 +1,24 @@
-import { PropertyTransforms, memorizeLatest } from '@plait/common';
-import { PlaitBoard } from '@plait/core';
-import { getSelectedDrawElements } from '@plait/draw';
+import { PropertyTransforms } from '@plait/common';
+import { PlaitBoard, PlaitElement } from '@plait/core';
 import { MemorizeKey, PlaitDrawElement } from '../interfaces';
 
 export const setStrokeColor = (board: PlaitBoard, strokeColor: string) => {
-    setMemorize(board, 'strokeColor', strokeColor);
-    PropertyTransforms.setStrokeColor(board, strokeColor);
+    PropertyTransforms.setProperty(board, { strokeColor }, { getMemorizeKey });
 };
 
 export const setStrokeWidth = (board: PlaitBoard, strokeWidth: number) => {
-    setMemorize(board, 'strokeWidth', strokeWidth);
-    PropertyTransforms.setStrokeWidth(board, strokeWidth);
+    PropertyTransforms.setProperty(board, { strokeWidth }, { getMemorizeKey });
 };
 
 export const setFillColor = (board: PlaitBoard, fill: string) => {
-    setMemorize(board, 'fill', fill);
-    PropertyTransforms.setFillColor(board, fill);
+    PropertyTransforms.setProperty(board, { fill }, { getMemorizeKey });
 };
 
 export const setStrokeStyle = (board: PlaitBoard, strokeStyle: string) => {
-    setMemorize(board, 'strokeStyle', strokeStyle);
-    PropertyTransforms.setStrokeStyle(board, strokeStyle);
+    PropertyTransforms.setProperty(board, { strokeStyle }, { getMemorizeKey });
 };
 
-export const setMemorize = (board: PlaitBoard, propertyKey: string, value: string | number) => {
-    const element = getSelectedDrawElements(board)[0];
-    if (!element) return;
+export const getMemorizeKey = (element: PlaitElement) => {
     let key = '';
     switch (true) {
         case PlaitDrawElement.isBaseShape(element): {
@@ -37,9 +30,9 @@ export const setMemorize = (board: PlaitBoard, propertyKey: string, value: strin
             break;
         }
         case PlaitDrawElement.isLine(element): {
-            key = MemorizeKey.flowchart;
+            key = MemorizeKey.line;
             break;
         }
     }
-    memorizeLatest(key, propertyKey, value);
+    return key;
 };

@@ -5,7 +5,7 @@ import { MindTransforms } from '.';
 import { BranchShape, MindElementShape, MindElement, PlaitMind } from '../interfaces';
 
 const setLayout = (board: PlaitBoard, type: MindLayoutType) => {
-    const setAllLayout = (mindElement: MindElement, path: Path) => {
+    const callback = (mindElement: MindElement, path: Path) => {
         let rightNodeCount: { rightNodeCount?: number } = {};
         if (type === MindLayoutType.standard) {
             rightNodeCount = { rightNodeCount: (mindElement as PlaitMind).children.length / 2 };
@@ -13,7 +13,7 @@ const setLayout = (board: PlaitBoard, type: MindLayoutType) => {
         MindTransforms.setLayout(board, type, path);
         Transforms.setNode(board, rightNodeCount, path);
     };
-    PropertyTransforms.setProperty<MindElement>(board, {}, setAllLayout);
+    PropertyTransforms.setProperty<MindElement>(board, {}, { callback });
 };
 
 const setShape = (board: PlaitBoard, shape: MindElementShape) => {
