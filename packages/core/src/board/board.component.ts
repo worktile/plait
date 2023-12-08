@@ -51,7 +51,7 @@ import {
     setIsFromViewportChange,
     initializeViewportContainer,
     updateViewportOffset,
-    setIsFromScrolling
+    updateViewportByScrolling
 } from '../utils/viewport';
 import { withViewport } from '../plugins/with-viewport';
 import { Point } from '../interfaces/point';
@@ -428,14 +428,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 )
                 .subscribe((event: Event) => {
                     const { scrollLeft, scrollTop } = event.target as HTMLElement;
-                    const zoom = this.board.viewport.zoom;
-                    const viewBox = getViewBox(this.board, zoom);
-                    const origination = [scrollLeft / zoom + viewBox[0], scrollTop / zoom + viewBox[1]] as Point;
-                    if (Point.isEquals(origination, this.board.viewport.origination)) {
-                        return;
-                    }
-                    BoardTransforms.updateViewport(this.board, origination);
-                    setIsFromScrolling(this.board, true);
+                    updateViewportByScrolling(this.board, scrollLeft, scrollTop);
                 });
         });
         this.ngZone.runOutsideAngular(() => {

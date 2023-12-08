@@ -1,5 +1,6 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
 import { PlaitBoard, Point, RectangleClient } from '../interfaces';
+import { BoardTransforms } from '../transforms/board';
 import { getRectangleByElements } from './element';
 import { BOARD_TO_VIEWPORT_ORIGINATION } from './weak-maps';
 
@@ -99,8 +100,9 @@ export function setSVGViewBox(board: PlaitBoard, viewBox: number[]) {
 
 export function updateViewportOffset(board: PlaitBoard) {
     const origination = getViewportOrigination(board);
-    if (!origination) return;
-
+    if (!origination) {
+        return;
+    }
     const { zoom } = board.viewport;
     const viewBox = getViewBox(board, zoom);
     const scrollLeft = (origination![0] - viewBox[0]) * zoom;
@@ -110,11 +112,38 @@ export function updateViewportOffset(board: PlaitBoard) {
 
 export function updateViewportContainerScroll(board: PlaitBoard, left: number, top: number, isFromViewportChange: boolean = true) {
     const viewportContainer = PlaitBoard.getViewportContainer(board);
+    const previousScrollLeft = viewportContainer.scrollLeft;
+    const previousScrollTop = viewportContainer.scrollTop;
     if (viewportContainer.scrollLeft !== left || viewportContainer.scrollTop !== top) {
         viewportContainer.scrollLeft = left;
         viewportContainer.scrollTop = top;
-        isFromViewportChange && setIsFromViewportChange(board, true);
+        const offsetWidth = viewportContainer.offsetWidth;
+        const offsetHeight = viewportContainer.offsetHeight;
+        if (previousScrollLeft === viewportContainer.scrollLeft && previousScrollTop === viewportContainer.scrollTop) {
+            // The scroll event cannot be triggered, so the origination is modified directly based on the scroll distance.
+            updateViewportByScrolling(board, previousScrollLeft, previousScrollTop);
+        } else {
+            const isValidLeftOrTop =
+                left > 0 &&
+                top > 0 &&
+                left < viewportContainer.scrollWidth - offsetWidth &&
+                top < viewportContainer.scrollHeight - offsetHeight;
+            if (isFromViewportChange && isValidLeftOrTop) {
+                setIsFromViewportChange(board, true);
+            }
+        }
     }
+}
+
+export function updateViewportByScrolling(board: PlaitBoard, scrollLeft: number, scrollTop: number) {
+    const zoom = board.viewport.zoom;
+    const viewBox = getViewBox(board, zoom);
+    const origination = [scrollLeft / zoom + viewBox[0], scrollTop / zoom + viewBox[1]] as Point;
+    if (Point.isEquals(origination, board.viewport.origination)) {
+        return;
+    }
+    BoardTransforms.updateViewport(board, origination);
+    setIsFromScrolling(board, true);
 }
 
 export function initializeViewportContainer(board: PlaitBoard) {
