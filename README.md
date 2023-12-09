@@ -61,6 +61,9 @@ Plait 架构以富文本编辑器框架 Slate 为灵感，适用于交互式绘�
 |@plait/layouts|思维导图支持库，包含自动布局算法|
 
 
+#### 谁在使用
+
+- 🔥🔥🔥 [PingCode Wiki](https://pingcode.com/solutions/knowledge-manage)
 
 
 ### 开发
@@ -133,9 +136,11 @@ const demoData = [
 
 
 
-### 依赖
+### 感谢
 
-roughjs
+- [rough](https://github.com/rough-stuff/rough)
+
+- [slate-angular](https://github.com/worktile/slate-angular)
 
 
 
