@@ -14,7 +14,13 @@ import {
 import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols } from '../interfaces/geometry';
 import { Alignment, buildText } from '@plait/text';
 import { Element } from 'slate';
-import { DefaultBasicShapeProperty, DefaultFlowchartPropertyMap, DefaultTextProperty, DrawThemeColors, ShapeDefaultSpace } from '../constants';
+import {
+    DefaultBasicShapeProperty,
+    DefaultFlowchartPropertyMap,
+    DefaultTextProperty,
+    DrawThemeColors,
+    ShapeDefaultSpace
+} from '../constants';
 import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
@@ -140,12 +146,10 @@ export const createDefaultFlowchart = (point: Point) => {
     const terminalProperty = getDefaultFlowchartProperty(FlowchartSymbols.terminal);
 
     const options = {
-        strokeColor: DefaultBasicShapeProperty.strokeColor,
         strokeWidth: DefaultBasicShapeProperty.strokeWidth
     };
 
     const lineOptions = {
-        strokeColor: DefaultLineStyle.strokeColor,
         strokeWidth: DefaultLineStyle.strokeWidth
     };
     const startElement = createGeometryElement(

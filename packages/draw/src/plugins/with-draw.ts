@@ -76,7 +76,7 @@ export const withDraw = (board: PlaitBoard) => {
                 (!element.source.boundId ||
                     (element.source.boundId && isSelected(element.source.boundId) && selectedElements.includes(element))) &&
                 (!element.target.boundId ||
-                    (element.source.boundId && isSelected(element.source.boundId) && selectedElements.includes(element)))
+                    (element.target.boundId && isSelected(element.target.boundId) && selectedElements.includes(element)))
             ) {
                 return true;
             }
