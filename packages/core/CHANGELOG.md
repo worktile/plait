@@ -1,5 +1,15 @@
 # plait
 
+## 0.34.0
+
+### Minor Changes
+
+-   [`f60afdcc`](https://github.com/worktile/plait/commit/f60afdcc8e1b82ec861b7822c327fd307413109b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - added viewport boundary case handling
+
+    1.the target viewport is outside the current svg coordinate system
+
+    2.correct origination when container scroll distance does not change
+
 ## 0.33.0
 
 ### Minor Changes

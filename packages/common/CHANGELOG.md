@@ -1,5 +1,17 @@
 # @plait/common
 
+## 0.34.0
+
+### Minor Changes
+
+-   [#648](https://github.com/worktile/plait/pull/648) [`baeca78f`](https://github.com/worktile/plait/commit/baeca78fc922fab56ff91b0a50ec0d7e2f96f484) Thanks [@WBbug](https://github.com/WBbug)! - add memorize
+
+*   [#650](https://github.com/worktile/plait/pull/650) [`930a284a`](https://github.com/worktile/plait/commit/930a284a598748a5f41f21f690fd6d82600c0079) Thanks [@WBbug](https://github.com/WBbug)! - add transform
+
+### Patch Changes
+
+-   [`941a7d00`](https://github.com/worktile/plait/commit/941a7d00f8a3ab7e1ae0bc855048e6cd764b2ee1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct general can resize condition
+
 ## 0.33.0
 
 ### Minor Changes

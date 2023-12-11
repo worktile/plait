@@ -1,5 +1,11 @@
 # mind
 
+## 0.34.0
+
+### Minor Changes
+
+-   [#650](https://github.com/worktile/plait/pull/650) [`930a284a`](https://github.com/worktile/plait/commit/930a284a598748a5f41f21f690fd6d82600c0079) Thanks [@WBbug](https://github.com/WBbug)! - add transform
+
 ## 0.33.0
 
 ### Minor Changes

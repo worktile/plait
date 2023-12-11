@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.34.0
+
+### Patch Changes
+
+-   [#649](https://github.com/worktile/plait/pull/649) [`f873d18b`](https://github.com/worktile/plait/commit/f873d18b32a3fde85c4f54e972dbbd639c90edcd) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support handle offset
+
 ## 0.33.0
 
 ### Patch Changes

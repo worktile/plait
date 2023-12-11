@@ -1,5 +1,15 @@
 # @plait/draw
 
+## 0.34.0
+
+### Minor Changes
+
+-   [#650](https://github.com/worktile/plait/pull/650) [`930a284a`](https://github.com/worktile/plait/commit/930a284a598748a5f41f21f690fd6d82600c0079) Thanks [@WBbug](https://github.com/WBbug)! - add transform
+
+### Patch Changes
+
+-   [#651](https://github.com/worktile/plait/pull/651) [`cfd8d2eb`](https://github.com/worktile/plait/commit/cfd8d2eb222e26b2f78093be1d5972c8267b7b15) Thanks [@WBbug](https://github.com/WBbug)! - delete default stroke color
+
 ## 0.33.0
 
 ### Minor Changes
