@@ -66,6 +66,7 @@ import { HOST_CLASS_NAME } from '../constants';
 import { PlaitContextService } from '../services/image-context.service';
 import { isPreventTouchMove } from '../utils/touch';
 import { PlaitChildrenElementComponent } from '../core/children/children.component';
+import { ZOOM_STEP } from '../constants/zoom';
 
 const ElementHostClass = 'element-host';
 const ElementUpperHostClass = 'element-upper-host';
@@ -184,6 +185,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         this.ngZone.runOutsideAngular(() => {
             this.initializeHookListener();
             this.viewportScrollListener();
+            this.wheelZoomListener();
             this.elementResizeListener();
             fromEvent<MouseEvent>(document, 'mouseleave')
                 .pipe(takeUntil(this.destroy$))
@@ -414,32 +416,28 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     private viewportScrollListener() {
-        this.ngZone.runOutsideAngular(() => {
-            fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'scroll')
-                .pipe(
-                    takeUntil(this.destroy$),
-                    filter(() => {
-                        if (isFromViewportChange(this.board)) {
-                            setIsFromViewportChange(this.board, false);
-                            return false;
-                        }
-                        return true;
-                    })
-                )
-                .subscribe((event: Event) => {
-                    const { scrollLeft, scrollTop } = event.target as HTMLElement;
-                    updateViewportByScrolling(this.board, scrollLeft, scrollTop);
-                });
-        });
-        this.ngZone.runOutsideAngular(() => {
-            fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'touchmove', { passive: false })
-                .pipe(takeUntil(this.destroy$))
-                .subscribe((event: Event) => {
-                    if (isPreventTouchMove(this.board)) {
-                        event.preventDefault();
+        fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'scroll')
+            .pipe(
+                takeUntil(this.destroy$),
+                filter(() => {
+                    if (isFromViewportChange(this.board)) {
+                        setIsFromViewportChange(this.board, false);
+                        return false;
                     }
-                });
-        });
+                    return true;
+                })
+            )
+            .subscribe((event: Event) => {
+                const { scrollLeft, scrollTop } = event.target as HTMLElement;
+                updateViewportByScrolling(this.board, scrollLeft, scrollTop);
+            });
+        fromEvent<MouseEvent>(this.viewportContainer.nativeElement, 'touchmove', { passive: false })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: Event) => {
+                if (isPreventTouchMove(this.board)) {
+                    event.preventDefault();
+                }
+            });
     }
 
     private elementResizeListener() {
@@ -464,6 +462,35 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             }
             island.markForCheck();
         });
+    }
+
+    private wheelZoomListener() {
+        fromEvent<WheelEvent>(this.host, 'wheel', { passive: false })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((event: WheelEvent) => {
+                // Credits to excalidraw
+                // https://github.com/excalidraw/excalidraw/blob/b7d7ccc929696cc17b4cc34452e4afd846d59f4f/src/components/App.tsx#L9060
+                if (event.metaKey || event.ctrlKey) {
+                    event.preventDefault();
+                    const { deltaX, deltaY } = event;
+                    const zoom = this.board.viewport.zoom;
+                    const sign = Math.sign(deltaY);
+                    const MAX_STEP = ZOOM_STEP * 100;
+                    const absDelta = Math.abs(deltaY);
+                    let delta = deltaY;
+                    if (absDelta > MAX_STEP) {
+                        delta = MAX_STEP * sign;
+                    }
+                    let newZoom = zoom - delta / 100;
+                    // increase zoom steps the more zoomed-in we are (applies to >100% only)
+                    newZoom +=
+                        Math.log10(Math.max(1, zoom)) *
+                        -sign *
+                        // reduced amplification for small deltas (small movements on a trackpad)
+                        Math.min(1, absDelta / 20);
+                    BoardTransforms.updateZoom(this.board, newZoom, false);
+                }
+            });
     }
 
     trackBy = (index: number, element: PlaitElement) => {

@@ -1,4 +1,5 @@
 import { SCROLL_BAR_WIDTH } from '../constants';
+import { MAX_ZOOM, MIN_ZOOM } from '../constants/zoom';
 import { PlaitBoard, Point, RectangleClient } from '../interfaces';
 import { BoardTransforms } from '../transforms/board';
 import { getRectangleByElements } from './element';
@@ -62,7 +63,7 @@ export function getElementHostBBox(board: PlaitBoard, zoom: number) {
  * @param maxZoom 最大缩放比
  * @returns 正确的缩放比
  */
-export function clampZoomLevel(zoom: number, minZoom = 0.2, maxZoom = 4) {
+export function clampZoomLevel(zoom: number, minZoom = MIN_ZOOM, maxZoom = MAX_ZOOM) {
     return zoom < minZoom ? minZoom : zoom > maxZoom ? maxZoom : zoom;
 }
 
