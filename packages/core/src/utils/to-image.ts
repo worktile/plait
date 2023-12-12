@@ -1,9 +1,10 @@
-import { PlaitBoard } from '../interfaces';
+import { PlaitBoard, PlaitElement } from '../interfaces';
 import { getRectangleByElements } from './element';
 
 const IMAGE_CONTAINER = 'plait-image-container';
 
 export interface ToImageOptions {
+    elements?: PlaitElement[];
     name?: string;
     ratio?: number;
     padding?: number;
@@ -103,12 +104,19 @@ function cloneCSSStyle<T extends HTMLElement>(nativeNode: T, clonedNode: T) {
  * @param options parameter configuration
  * @returns clone svg element
  */
-async function cloneSvg(board: PlaitBoard, options: ToImageOptions) {
-    const elementHostBox = getRectangleByElements(board, board.children, true);
+async function cloneSvg(board: PlaitBoard, elements: PlaitElement[], options: ToImageOptions) {
+    const elementHostBox = getRectangleByElements(board, elements, true);
     const { width, height, x, y } = elementHostBox;
     const { padding = 4, inlineStyleClassNames } = options;
     const sourceSvg = PlaitBoard.getHost(board);
     const cloneSvgElement = sourceSvg.cloneNode(true) as SVGElement;
+    console.log(cloneSvgElement);
+    Array.from(cloneSvgElement.children).forEach(child => {
+        if (child.tagName === 'g' && !child.classList.contains('element-host')) {
+            cloneSvgElement.removeChild(child);
+        }
+    });
+    console.log(cloneSvgElement);
 
     cloneSvgElement.style.width = `${width}px`;
     cloneSvgElement.style.height = `${height}px`;
@@ -171,13 +179,15 @@ export async function toImage(board: PlaitBoard, options: ToImageOptions) {
         return undefined;
     }
 
-    const elementHostBox = getRectangleByElements(board, board.children, true);
+    const elements = options?.elements || board.children;
+    console.log(elements);
+    const elementHostBox = getRectangleByElements(board, elements, true);
     const { ratio = 2, fillStyle = 'transparent' } = options;
     const { width, height } = elementHostBox;
     const ratioWidth = width * ratio;
     const ratioHeight = height * ratio;
 
-    const cloneSvgElement = await cloneSvg(board, options);
+    const cloneSvgElement = await cloneSvg(board, elements, options);
     const { canvas, ctx } = createCanvas(ratioWidth, ratioHeight, fillStyle);
 
     const svgStr = new XMLSerializer().serializeToString(cloneSvgElement);
