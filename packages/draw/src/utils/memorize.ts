@@ -10,7 +10,7 @@ export const getMemorizeKey = (element: PlaitElement) => {
             key = MemorizeKey.text;
             break;
         }
-        case PlaitDrawElement.isBaseShape(element): {
+        case PlaitDrawElement.isBasicShape(element): {
             key = MemorizeKey.basicShape;
             break;
         }
@@ -32,7 +32,7 @@ export const getLineMemorizedLatest = () => {
 
 export const getMemorizedLatestByPointer = (pointer: DrawPointerType) => {
     let memorizeKey = '';
-    if (PlaitDrawElement.isBaseShape({ shape: pointer })) {
+    if (PlaitDrawElement.isBasicShape({ shape: pointer })) {
         memorizeKey = pointer === BasicShapes.text ? MemorizeKey.text : MemorizeKey.basicShape;
     } else {
         memorizeKey = MemorizeKey.flowchart;
