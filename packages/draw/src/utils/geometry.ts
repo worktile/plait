@@ -31,11 +31,13 @@ import { createLineElement } from './line';
 import { LineMarkerType, LineShape } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 
+export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
+
 export const createGeometryElement = (
     shape: GeometryShapes,
     points: [Point, Point],
     text: string | Element,
-    options?: Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>
+    options?: GeometryStyleOptions
 ): PlaitGeometry => {
     let textOptions = {};
     let alignment: undefined | Alignment = Alignment.center;

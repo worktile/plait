@@ -59,6 +59,7 @@ import { DefaultLineStyle, LINE_TEXT_SPACE } from '../constants/line';
 import { LineShapeGenerator } from '../generators/line.generator';
 import { REACTION_MARGIN } from '../constants';
 import { getHitOutlineGeometry } from './position/geometry';
+import { getLineMemorizedLatest } from './memorize';
 
 export const createLineElement = (
     shape: LineShape,
@@ -458,20 +459,12 @@ export const handleLineCreating = (
     const connection = sourceElement ? transformPointToConnection(board, startPoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;
     const lineGenerator = new LineShapeGenerator(board);
-    const memorizedLatest = getMemorizedLatest(MemorizeKey.line);
-    let properties: any = {};
+    const memorizedLatest = getLineMemorizedLatest();
     let sourceMarker, targetMarker;
-    if (memorizedLatest) {
-        for (let key in memorizedLatest) {
-            if (key === 'source') {
-                sourceMarker = memorizedLatest[key];
-            } else if (key === 'target') {
-                targetMarker = memorizedLatest[key];
-            } else {
-                properties[key] = memorizedLatest[key];
-            }
-        }
-    }
+    sourceMarker = memorizedLatest.source;
+    targetMarker = memorizedLatest.target;
+    sourceMarker && delete memorizedLatest.source;
+    targetMarker && delete memorizedLatest.target;
     const temporaryLineElement = createLineElement(
         lineShape,
         [startPoint, movingPoint],
@@ -480,7 +473,7 @@ export const handleLineCreating = (
         [],
         {
             strokeWidth: DefaultLineStyle.strokeWidth,
-            ...properties
+            ...memorizedLatest
         }
     );
     const linePoints = getLinePoints(board, temporaryLineElement);

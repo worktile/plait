@@ -1,4 +1,4 @@
-import { setFillColor, setStrokeColor, setStrokeStyle, setStrokeWidth } from './common';
+import { setFillColor, setStrokeColor, setStrokeStyle, setStrokeWidth } from './property';
 import { insertText, insertGeometry, resizeGeometry, transformShape } from './geometry';
 import { setText, setTextSize } from './geometry-text';
 import { insertImage } from './image';

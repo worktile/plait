@@ -13,9 +13,15 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { BasicShapes, FlowchartSymbols, GeometryShapes, MemorizeKey, PlaitDrawElement, PlaitGeometry } from '../interfaces';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
-import { createGeometryElement, getDefaultFlowchartProperty, getPointsByCenterPoint } from '../utils';
+import {
+    GeometryStyleOptions,
+    createGeometryElement,
+    getDefaultFlowchartProperty,
+    getMemorizedLatestByPointer,
+    getPointsByCenterPoint
+} from '../utils';
 import {
     DefaultBasicShapeProperty,
     DefaultTextProperty,
@@ -24,7 +30,7 @@ import {
     getGeometryPointers,
     ShapeDefaultSpace
 } from '../constants';
-import { normalizeShapePoints, isDndMode, isDrawingMode, getMemorizedLatest } from '@plait/common';
+import { normalizeShapePoints, isDndMode, isDrawingMode } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { DEFAULT_FONT_SIZE } from '@plait/text';
 import { isKeyHotkey } from 'is-hotkey';
@@ -119,8 +125,14 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
             preventTouchMove(board, event, true);
             if (pointer === BasicShapes.text) {
+                const memorizedLatest = getMemorizedLatestByPointer(pointer);
                 const points = getDefaultGeometryPoints(pointer, point);
-                const textElement = createGeometryElement(BasicShapes.text, points, DefaultTextProperty.text);
+                const textElement = createGeometryElement(
+                    BasicShapes.text,
+                    points,
+                    DefaultTextProperty.text,
+                    memorizedLatest as GeometryStyleOptions
+                );
                 Transforms.insertNode(board, textElement, [board.children.length]);
                 clearSelectedElement(board);
                 addSelectedElement(board, textElement);
@@ -140,8 +152,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
         if (drawMode && pointer !== BasicShapes.text) {
             const points = normalizeShapePoints([start!, movingPoint], isShift);
-            const memorizeKey = PlaitDrawElement.isBaseShape({ shape: pointer }) ? MemorizeKey.basicShape : MemorizeKey.flowchart;
-            const memorizedLatest = getMemorizedLatest(memorizeKey) || {};
+            const memorizedLatest = getMemorizedLatestByPointer(pointer);
             temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
                 strokeWidth: DefaultBasicShapeProperty.strokeWidth,
                 ...memorizedLatest
@@ -162,8 +173,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
                 const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
                 const points = getDefaultGeometryPoints(pointer, targetPoint);
                 if (pointer !== BasicShapes.text) {
-                    const memorizeKey = PlaitDrawElement.isBaseShape({ shape: pointer }) ? MemorizeKey.basicShape : MemorizeKey.flowchart;
-                    const memorizedLatest = getMemorizedLatest(memorizeKey) || {};
+                    const memorizedLatest = getMemorizedLatestByPointer(pointer);
                     temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
                         strokeWidth: DefaultBasicShapeProperty.strokeWidth,
                         ...memorizedLatest
