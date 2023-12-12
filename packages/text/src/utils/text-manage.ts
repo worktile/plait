@@ -1,5 +1,5 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { BaseElement, Descendant, Element, Node, Operation, Transforms } from 'slate';
+import { BaseElement, BaseOperation, Descendant, Element, Node, Operation, Transforms } from 'slate';
 import { PlaitRichtextComponent } from '../richtext/richtext.component';
 import {
     IS_TEXT_EDITABLE,
@@ -30,6 +30,7 @@ export interface TextManageRef {
     newValue?: Element;
     width: number;
     height: number;
+    operations?: BaseOperation[];
 }
 
 export class TextManage {
@@ -89,10 +90,11 @@ export class TextManage {
         (editor as PlaitTextEditor).board = this.board;
 
         let previousValue: Descendant[] = this.componentRef.instance.children;
-
+        let operations: BaseOperation[] = [];
         this.componentRef.instance.onChange
             .pipe(
                 tap(() => {
+                    operations = editor.operations;
                     if (editor.operations.every(op => Operation.isSelectionOperation(op))) {
                         this.onSelectionChangeHandle && this.onSelectionChangeHandle(editor);
                     }
@@ -119,11 +121,10 @@ export class TextManage {
                     updateForeignObject(this.g, this.options.getMaxWidth!(), height, x, y);
                     // do not need to revert because foreign will be updated when node changed
                 }
-
                 previousValue = editor.children;
                 const { width, height } = this.getSize();
                 this.options.onValueChangeHandle &&
-                    this.options.onValueChangeHandle({ width, height, newValue: editor.children[0] as Element });
+                    this.options.onValueChangeHandle({ width, height, newValue: editor.children[0] as Element, operations });
                 MERGING.set(this.board, true);
 
                 if (AngularEditor.isReadonly(editor) && this.isEditing) {

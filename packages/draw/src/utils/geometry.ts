@@ -12,7 +12,7 @@ import {
     idCreator
 } from '@plait/core';
 import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols } from '../interfaces/geometry';
-import { Alignment, buildText } from '@plait/text';
+import { Alignment, CustomText, buildText } from '@plait/text';
 import { Element } from 'slate';
 import {
     DefaultBasicShapeProperty,
@@ -33,11 +33,14 @@ import { DefaultLineStyle } from '../constants/line';
 
 export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
 
+export type TextProperties = Partial<CustomText> & { align?: Alignment };
+
 export const createGeometryElement = (
     shape: GeometryShapes,
     points: [Point, Point],
     text: string | Element,
-    options?: GeometryStyleOptions
+    options?: GeometryStyleOptions,
+    textProperties?: TextProperties
 ): PlaitGeometry => {
     let textOptions = {};
     let alignment: undefined | Alignment = Alignment.center;
@@ -45,7 +48,9 @@ export const createGeometryElement = (
         textOptions = { autoSize: true };
         alignment = undefined;
     }
-
+    textProperties = { ...textProperties };
+    textProperties?.align && (alignment = textProperties?.align);
+    delete textProperties?.align;
     return {
         id: idCreator(),
         type: 'geometry',
@@ -53,7 +58,7 @@ export const createGeometryElement = (
         angle: 0,
         opacity: 1,
         textHeight: DefaultTextProperty.height,
-        text: buildText(text, alignment),
+        text: buildText(text, alignment, textProperties),
         points,
         ...textOptions,
         ...options

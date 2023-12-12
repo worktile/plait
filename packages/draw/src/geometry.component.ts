@@ -17,18 +17,13 @@ import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
-import {
-    ActiveGenerator,
-    WithTextPluginKey,
-    WithTextOptions,
-    getRectangleByPoints,
-    CommonPluginElement,
-    RESIZE_HANDLE_DIAMETER
-} from '@plait/common';
+import { ActiveGenerator, WithTextPluginKey, WithTextOptions, getRectangleByPoints, CommonPluginElement } from '@plait/common';
 import { GeometryThreshold } from './constants/geometry';
 import { PlaitDrawElement, PlaitText } from './interfaces';
 import { getEngine } from './engines';
 import { AutoCompleteGenerator } from './generators/auto-complete.generator';
+import { getMemorizeKey, memorizeLatestText } from './utils';
+import { BaseSetNodeOperation, Node, Operation } from 'slate';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -151,6 +146,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                 } else {
                     DrawTransforms.setTextSize(this.board, this.element, width, height);
                 }
+                textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
             },
             getMaxWidth: () => {
                 let width = getTextRectangle(this.element).width;
