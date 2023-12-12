@@ -16,13 +16,13 @@ import {
 import { LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { handleLineCreating, getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
 
-export interface AutoCompleteOptions {
+export interface LineAutoCompleteOptions {
     afterComplete: (element: PlaitLine) => {};
 }
 
-export const withAutoCompletePluginKey = 'plait-auto-complete-plugin-key';
+export const withLineAutoCompletePluginKey = 'plait-line-auto-complete-plugin-key';
 
-export const withAutoComplete = (board: PlaitBoard) => {
+export const withLineAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, pointerUp } = board;
 
     const tolerance = 3;
@@ -67,7 +67,7 @@ export const withAutoComplete = (board: PlaitBoard) => {
             Transforms.insertNode(board, temporaryElement, [board.children.length]);
             clearSelectedElement(board);
             addSelectedElement(board, temporaryElement);
-            const afterComplete = (board as PlaitOptionsBoard).getPluginOptions<AutoCompleteOptions>(withAutoCompletePluginKey)
+            const afterComplete = (board as PlaitOptionsBoard).getPluginOptions<LineAutoCompleteOptions>(withLineAutoCompletePluginKey)
                 ?.afterComplete;
             afterComplete && afterComplete(temporaryElement);
         }

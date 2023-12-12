@@ -22,7 +22,7 @@
 
 -   [`385eebb2`](https://github.com/worktile/plait/commit/385eebb2601f718dcf9c4d3806c3d3ad34384a13) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update generator function name
 
-*   [#645](https://github.com/worktile/plait/pull/645) [`d8de556b`](https://github.com/worktile/plait/commit/d8de556be0ae6e2e5c1987c003c50ae096562195) Thanks [@WBbug](https://github.com/WBbug)! - add AutoCompleteOptions
+*   [#645](https://github.com/worktile/plait/pull/645) [`d8de556b`](https://github.com/worktile/plait/commit/d8de556be0ae6e2e5c1987c003c50ae096562195) Thanks [@WBbug](https://github.com/WBbug)! - add LineAutoCompleteOptions
 
 -   [#639](https://github.com/worktile/plait/pull/639) [`f73ba437`](https://github.com/worktile/plait/commit/f73ba437634400263b2fdce7269257eed2efa034) Thanks [@WBbug](https://github.com/WBbug)! - support transform shape
 

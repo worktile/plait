@@ -36,7 +36,7 @@ export class BasicEditorComponent implements OnInit {
     value: (PlaitElement | PlaitGeometry | PlaitMind)[] = [];
 
     options: PlaitBoardOptions = {
-        readonly: true,
+        readonly: false,
         hideScrollbar: false,
         disabledScrollOnNonFocus: false,
         themeColors: MindThemeColors

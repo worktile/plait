@@ -3,7 +3,7 @@ import { PlaitDrawElement } from '../interfaces';
 import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
 import { GeometryComponent } from '../geometry.component';
 
-export const withAutoCompleteReaction = (board: PlaitBoard) => {
+export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
     const { pointerMove } = board;
 
     let reactionG: SVGGElement | null = null;
