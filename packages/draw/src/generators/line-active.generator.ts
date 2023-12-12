@@ -46,10 +46,15 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
         } else {
             const points = getLinePoints(this.board, element);
             const activeRectangle = getRectangleByPoints(points);
+            let opacity = '0.5';
+            if (activeRectangle.height === 0 || activeRectangle.width === 0) {
+                opacity = '0.8';
+            }
             const strokeG = drawRectangle(this.board, activeRectangle, {
                 stroke: PRIMARY_COLOR,
                 strokeWidth: DefaultGeometryActiveStyle.selectionStrokeWidth
             });
+            strokeG.style.opacity = opacity;
             activeG.appendChild(strokeG);
         }
 
