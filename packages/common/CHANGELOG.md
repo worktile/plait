@@ -1,5 +1,7 @@
 # @plait/common
 
+## 0.35.0
+
 ## 0.34.0
 
 ### Minor Changes

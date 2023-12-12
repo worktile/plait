@@ -1,5 +1,11 @@
 # plait
 
+## 0.35.0
+
+### Minor Changes
+
+-   [`66762a2d`](https://github.com/worktile/plait/commit/66762a2d924848038936895a46e42dd5d0d9828f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support wheel zoom
+
 ## 0.34.0
 
 ### Minor Changes
