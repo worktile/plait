@@ -1,6 +1,6 @@
 import { PropertyTransforms } from '@plait/common';
-import { PlaitBoard, PlaitElement } from '@plait/core';
-import { MemorizeKey, PlaitDrawElement } from '../interfaces';
+import { PlaitBoard } from '@plait/core';
+import { getMemorizeKey } from '../utils/memorize';
 
 export const setStrokeColor = (board: PlaitBoard, strokeColor: string) => {
     PropertyTransforms.setProperty(board, { strokeColor }, { getMemorizeKey });
@@ -16,23 +16,4 @@ export const setFillColor = (board: PlaitBoard, fill: string) => {
 
 export const setStrokeStyle = (board: PlaitBoard, strokeStyle: string) => {
     PropertyTransforms.setProperty(board, { strokeStyle }, { getMemorizeKey });
-};
-
-export const getMemorizeKey = (element: PlaitElement) => {
-    let key = '';
-    switch (true) {
-        case PlaitDrawElement.isBaseShape(element): {
-            key = MemorizeKey.basicShape;
-            break;
-        }
-        case PlaitDrawElement.isFlowchart(element): {
-            key = MemorizeKey.flowchart;
-            break;
-        }
-        case PlaitDrawElement.isLine(element): {
-            key = MemorizeKey.line;
-            break;
-        }
-    }
-    return key;
 };

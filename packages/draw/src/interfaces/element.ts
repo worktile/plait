@@ -6,5 +6,6 @@ export enum StrokeStyle {
 export enum MemorizeKey {
     basicShape = 'basicShape',
     flowchart = 'flowchart',
+    text = 'text',
     line = 'line'
 }

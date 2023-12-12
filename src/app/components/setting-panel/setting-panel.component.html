@@ -162,7 +162,7 @@
     </select>
 </div>
 
-<div class="property-item width-setting-toolbar">
+<div *ngIf="isSelectedMind" class="property-item width-setting-toolbar">
     <div class="setting-panel-title">边框宽度：</div>
     <select [(ngModel)]="strokeWidth" (change)="propertyChange($event, 'strokeWidth')">
         <option value="1">1</option>
@@ -175,9 +175,22 @@
     </select>
 </div>
 
+<div  *ngIf="!isSelectedMind" class="property-item width-setting-toolbar">
+    <div class="setting-panel-title">边框宽度：</div>
+    <select [(ngModel)]="strokeWidth" (change)="changeStrokeWidth($event)">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="7">7</option>
+        <option value="9">9</option>
+        <option value="12">12</option>
+    </select>
+</div>
+
 <div class="property-item width-setting-toolbar">
     <div class="setting-panel-title">边框样式</div>
-    <select (change)="propertyChange($event, 'strokeStyle')">
+    <select (change)="changeStrokeStyle($event)">
         <option value="solid">实线</option>
         <option value="dashed">虚线</option>
     </select>
@@ -253,7 +266,7 @@
     <app-color-picker
         [defaultColor]="fillColor"
         [currentColor]="currentFillColor"
-        (colorChangeEvent)="colorChange($event, 'fill')"
+        (colorChangeEvent)="changeFill($event)"
     ></app-color-picker>
 </div>
 
@@ -262,7 +275,7 @@
     <app-color-picker
         [defaultColor]="strokeColor"
         [currentColor]="currentStrokeColor"
-        (colorChangeEvent)="colorChange($event, 'strokeColor')"
+        (colorChangeEvent)="changeStroke($event)"
     ></app-color-picker>
 </div>
 
