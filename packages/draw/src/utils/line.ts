@@ -33,7 +33,8 @@ import {
     generateElbowLineRoute,
     getNextPoint,
     DEFAULT_ROUTE_MARGIN,
-    getExtendPoint
+    getExtendPoint,
+    getMemorizedLatest
 } from '@plait/common';
 import {
     LineHandle,
@@ -42,6 +43,7 @@ import {
     LineMarkerType,
     LineShape,
     LineText,
+    MemorizeKey,
     PlaitDrawElement,
     PlaitGeometry,
     PlaitLine
@@ -456,14 +458,29 @@ export const handleLineCreating = (
     const connection = sourceElement ? transformPointToConnection(board, startPoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;
     const lineGenerator = new LineShapeGenerator(board);
+    const memorizedLatest = getMemorizedLatest(MemorizeKey.line);
+    let properties: any = {};
+    let sourceMarker, targetMarker;
+    if (memorizedLatest) {
+        for (let key in memorizedLatest) {
+            if (key === 'source') {
+                sourceMarker = memorizedLatest[key];
+            } else if (key === 'target') {
+                targetMarker = memorizedLatest[key];
+            } else {
+                properties[key] = memorizedLatest[key];
+            }
+        }
+    }
     const temporaryLineElement = createLineElement(
         lineShape,
         [startPoint, movingPoint],
-        { marker: LineMarkerType.none, connection: connection, boundId: sourceElement?.id },
-        { marker: LineMarkerType.arrow, connection: targetConnection, boundId: targetBoundId },
+        { marker: sourceMarker || LineMarkerType.none, connection: connection, boundId: sourceElement?.id },
+        { marker: targetMarker || LineMarkerType.arrow, connection: targetConnection, boundId: targetBoundId },
         [],
         {
-            strokeWidth: DefaultLineStyle.strokeWidth
+            strokeWidth: DefaultLineStyle.strokeWidth,
+            ...properties
         }
     );
     const linePoints = getLinePoints(board, temporaryLineElement);

@@ -13,7 +13,7 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitGeometry } from '../interfaces';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, MemorizeKey, PlaitDrawElement, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
 import { createGeometryElement, getDefaultFlowchartProperty, getPointsByCenterPoint } from '../utils';
 import {
@@ -24,7 +24,7 @@ import {
     getGeometryPointers,
     ShapeDefaultSpace
 } from '../constants';
-import { normalizeShapePoints, isDndMode, isDrawingMode } from '@plait/common';
+import { normalizeShapePoints, isDndMode, isDrawingMode, getMemorizedLatest } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { DEFAULT_FONT_SIZE } from '@plait/text';
 import { isKeyHotkey } from 'is-hotkey';
@@ -140,8 +140,11 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
         if (drawMode && pointer !== BasicShapes.text) {
             const points = normalizeShapePoints([start!, movingPoint], isShift);
+            const memorizeKey = PlaitDrawElement.isBaseShape({ shape: pointer }) ? MemorizeKey.basicShape : MemorizeKey.flowchart;
+            const memorizedLatest = getMemorizedLatest(memorizeKey) || {};
             temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
-                strokeWidth: DefaultBasicShapeProperty.strokeWidth
+                strokeWidth: DefaultBasicShapeProperty.strokeWidth,
+                ...memorizedLatest
             });
             geometryGenerator.processDrawing(temporaryElement, geometryShapeG);
             PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
@@ -159,8 +162,11 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
                 const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
                 const points = getDefaultGeometryPoints(pointer, targetPoint);
                 if (pointer !== BasicShapes.text) {
+                    const memorizeKey = PlaitDrawElement.isBaseShape({ shape: pointer }) ? MemorizeKey.basicShape : MemorizeKey.flowchart;
+                    const memorizedLatest = getMemorizedLatest(memorizeKey) || {};
                     temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
-                        strokeWidth: DefaultBasicShapeProperty.strokeWidth
+                        strokeWidth: DefaultBasicShapeProperty.strokeWidth,
+                        ...memorizedLatest
                     });
                 }
             }

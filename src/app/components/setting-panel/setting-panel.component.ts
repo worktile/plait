@@ -141,6 +141,24 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         }
     }
 
+    changeStrokeStyle(event: Event) {
+        let value = (event.target as HTMLSelectElement).value;
+        DrawTransforms.setStrokeStyle(this.board, value);
+    }
+
+    changeFill(property: string) {
+        DrawTransforms.setFillColor(this.board, property);
+    }
+
+    changeStroke(property: string) {
+        DrawTransforms.setStrokeColor(this.board, property);
+    }
+
+    changeStrokeWidth(event: Event) {
+        let value = parseInt((event.target as HTMLSelectElement).value, 10);
+        DrawTransforms.setStrokeWidth(this.board, value);
+    }
+
     colorChange(property: string | number | null, attribute: string) {
         const selectedElements = getSelectedElements(this.board);
 
