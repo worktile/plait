@@ -29,7 +29,7 @@ export function withMoving(board: PlaitBoard) {
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
         let movableElements = board.children.filter(item => board.isMovable(item));
-        if (movableElements.length && !isPreventTouchMove(board)) {
+        if (!PlaitBoard.isReadonly(board) && movableElements.length && !isPreventTouchMove(board)) {
             startPoint = point;
             const selectedMovableElements = getSelectedElements(board).filter(item => movableElements.includes(item));
             const hitElement = getHitElementByPoint(board, point);

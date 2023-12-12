@@ -29,7 +29,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     let newProperty: { end: number } | { start: number } | undefined;
 
     board.mousedown = (event: MouseEvent) => {
-        if (!isMainPointer(event)) {
+        if (!isMainPointer(event) || PlaitBoard.isReadonly(board)) {
             mousedown(event);
             return;
         }

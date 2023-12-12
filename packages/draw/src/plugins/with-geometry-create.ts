@@ -113,7 +113,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
     board.pointerDown = (event: PointerEvent) => {
         const geometryPointers = getGeometryPointers();
         const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
-        if (isGeometryPointer && isDrawingMode(board)) {
+        if (!PlaitBoard.isReadonly(board) && isGeometryPointer && isDrawingMode(board)) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
             const pointer = PlaitBoard.getPointer(board) as DrawPointerType;

@@ -18,34 +18,35 @@ export const withLineText = (board: PlaitBoard) => {
     const { dblclick } = board;
 
     board.dblclick = (event: MouseEvent) => {
-        const clickPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const hitTarget = getHitElementByPoint(board, clickPoint, (element: PlaitElement) => {
-            return PlaitDrawElement.isLine(element);
-        }) as undefined | PlaitLine;
-        if (hitTarget) {
-            const points = getLinePoints(board, hitTarget);
-            const point = getNearestPointBetweenPointAndSegments(clickPoint, points);
-            const texts = hitTarget.texts?.length ? [...hitTarget.texts] : [];
-            const textIndex = getHitLineTextIndex(board, hitTarget, clickPoint);
-            const isHitText = isHitLineText(board, hitTarget, clickPoint);
-            if (isHitText) {
-                editHandle(board, hitTarget, textIndex);
-            } else {
-                const ratio = getRatioByPoint(points, point);
-                texts.push({
-                    text: buildText('文本'),
-                    position: ratio,
-                    width: 28,
-                    height: 20
-                });
-                DrawTransforms.setLineTexts(board, hitTarget, texts);
-                setTimeout(() => {
-                    const hitComponent = PlaitElement.getComponent(hitTarget) as LineComponent;
-                    editHandle(board, hitTarget, hitComponent.textManages.length - 1, true);
-                });
+        if (!PlaitBoard.isReadonly(board)) {
+            const clickPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const hitTarget = getHitElementByPoint(board, clickPoint, (element: PlaitElement) => {
+                return PlaitDrawElement.isLine(element);
+            }) as undefined | PlaitLine;
+            if (hitTarget) {
+                const points = getLinePoints(board, hitTarget);
+                const point = getNearestPointBetweenPointAndSegments(clickPoint, points);
+                const texts = hitTarget.texts?.length ? [...hitTarget.texts] : [];
+                const textIndex = getHitLineTextIndex(board, hitTarget, clickPoint);
+                const isHitText = isHitLineText(board, hitTarget, clickPoint);
+                if (isHitText) {
+                    editHandle(board, hitTarget, textIndex);
+                } else {
+                    const ratio = getRatioByPoint(points, point);
+                    texts.push({
+                        text: buildText('文本'),
+                        position: ratio,
+                        width: 28,
+                        height: 20
+                    });
+                    DrawTransforms.setLineTexts(board, hitTarget, texts);
+                    setTimeout(() => {
+                        const hitComponent = PlaitElement.getComponent(hitTarget) as LineComponent;
+                        editHandle(board, hitTarget, hitComponent.textManages.length - 1, true);
+                    });
+                }
             }
         }
-
         dblclick(event);
     };
 

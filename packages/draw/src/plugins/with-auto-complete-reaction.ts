@@ -14,10 +14,9 @@ export const withAutoCompleteReaction = (board: PlaitBoard) => {
             pointerMove(event);
             return;
         }
-
         const selectedElements = getSelectedDrawElements(board);
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        if (selectedElements.length === 1 && PlaitDrawElement.isGeometry(selectedElements[0])) {
+        if (!PlaitBoard.isReadonly(board) && selectedElements.length === 1 && PlaitDrawElement.isGeometry(selectedElements[0])) {
             const points = getAutoCompletePoints(selectedElements[0]);
             const hitIndex = getHitIndexOfAutoCompletePoint(movingPoint, points);
             const hitPoint = points[hitIndex];
@@ -33,7 +32,6 @@ export const withAutoCompleteReaction = (board: PlaitBoard) => {
                 PlaitBoard.getElementActiveHost(board).append(reactionG);
             }
         }
-
         pointerMove(event);
     };
 

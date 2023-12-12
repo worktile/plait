@@ -21,6 +21,10 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
 
     board.pointerMove = (event: PointerEvent) => {
         boundShapeG?.remove();
+        if (PlaitBoard.isReadonly(board)) {
+            pointerMove(event);
+            return;
+        }
         const linePointers = Object.keys(LineShape);
         const isLinePointer = PlaitBoard.isInPointer(board, linePointers);
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
@@ -48,14 +52,12 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
                 PlaitBoard.getElementActiveHost(board).append(boundShapeG);
             }
         }
-
         pointerMove(event);
     };
 
     board.pointerUp = event => {
         boundShapeG?.remove();
         boundShapeG = null;
-
         pointerUp(event);
     };
 

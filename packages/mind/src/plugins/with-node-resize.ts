@@ -40,8 +40,11 @@ export const withNodeResize = (board: PlaitBoard) => {
     let startPoint: Point | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
+        if (PlaitBoard.isReadonly(board)) {
+            pointerDown(event);
+            return;
+        }
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-
         const newTargetElement = getSelectedTarget(board as PlaitMindBoard, point);
         if (newTargetElement) {
             PlaitBoard.getBoardContainer(board).classList.add(ResizeCursorClass['ew-resize']);

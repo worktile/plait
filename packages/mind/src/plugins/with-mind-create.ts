@@ -38,7 +38,7 @@ export const withCreateMind = (board: PlaitBoard) => {
     newBoard.mousedown = (event: MouseEvent) => {
         const isMindPointer = PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind);
         let movingPoint = PlaitBoard.getMovingPointInBoard(board);
-        if (movingPoint && isDrawingMode(board) && isMindPointer) {
+        if (!PlaitBoard.isReadonly(board) && movingPoint && isDrawingMode(board) && isMindPointer) {
             movingPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
             const emptyMind = createEmptyMind(newBoard, movingPoint);
             Transforms.insertNode(board, emptyMind, [board.children.length]);

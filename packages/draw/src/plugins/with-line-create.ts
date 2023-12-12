@@ -31,7 +31,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
     board.pointerDown = (event: PointerEvent) => {
         const linePointers = getLinePointers();
         const isLinePointer = PlaitBoard.isInPointer(board, linePointers);
-        if (isLinePointer && isDrawingMode(board)) {
+        if (!PlaitBoard.isReadonly(board) && isLinePointer && isDrawingMode(board)) {
             const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             start = point;
             const hitElement = getHitOutlineGeometry(board, point, REACTION_MARGIN);
@@ -62,14 +62,12 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
             addSelectedElement(board, temporaryElement);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
-
         lineShapeG?.remove();
         lineShapeG = null;
         sourceElement = null;
         start = null;
         temporaryElement = null;
         preventTouchMove(board, event, false);
-
         pointerUp(event);
     };
 

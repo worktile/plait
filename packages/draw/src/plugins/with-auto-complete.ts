@@ -34,7 +34,7 @@ export const withAutoComplete = (board: PlaitBoard) => {
     board.pointerDown = (event: PointerEvent) => {
         const selectedElements = getSelectedDrawElements(board);
         const clickPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        if (selectedElements.length === 1 && PlaitDrawElement.isGeometry(selectedElements[0])) {
+        if (!PlaitBoard.isReadonly(board) && selectedElements.length === 1 && PlaitDrawElement.isGeometry(selectedElements[0])) {
             const points = getAutoCompletePoints(selectedElements[0]);
             const index = getHitIndexOfAutoCompletePoint(clickPoint, points);
             const hitPoint = points[index];
