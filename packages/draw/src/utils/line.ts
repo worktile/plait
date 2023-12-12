@@ -365,7 +365,7 @@ export const transformPointToConnection = (board: PlaitBoard, point: Point, hitE
 export const getHitConnectorPoint = (movingPoint: Point, hitElement: PlaitGeometry, rectangle: RectangleClient) => {
     const shape = getShape(hitElement);
     const connector = getEngine(shape).getConnectorPoints(rectangle);
-    const points = getPointsByCenterPoint(movingPoint, 5, 5);
+    const points = getPointsByCenterPoint(movingPoint, 10, 10);
     const pointRectangle = getRectangleByPoints(points);
     return connector.find(point => {
         return RectangleClient.isHit(pointRectangle, RectangleClient.toRectangleClient([point, point]));
