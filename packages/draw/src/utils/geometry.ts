@@ -39,8 +39,8 @@ export const createGeometryElement = (
     shape: GeometryShapes,
     points: [Point, Point],
     text: string | Element,
-    options?: GeometryStyleOptions,
-    textProperties?: TextProperties
+    options: GeometryStyleOptions = {},
+    textProperties: TextProperties = {}
 ): PlaitGeometry => {
     let textOptions = {};
     let alignment: undefined | Alignment = Alignment.center;
