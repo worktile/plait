@@ -88,6 +88,11 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
             this.updateText(previous.element.texts, value.element.texts);
             this.updateTextRectangle();
+        } else {
+            const hasSameSelected = value.selected === previous.selected;
+            if (!hasSameSelected || (value.selected && isSelectionMoving(this.board))) {
+                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+            }
         }
 
         if (isBoundedElementsChanged) {
@@ -97,18 +102,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
             return;
         }
 
-        if (!isSelectionMoving(this.board)) {
-            this.activeGenerator.hasResizeHandle = this.hasResizeHandle();
-            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
-        }
-    }
-
-    hasResizeHandle() {
-        const selectedElements = getSelectedElements(this.board);
-        if (PlaitBoard.hasBeenTextEditing(this.board) && PlaitDrawElement.isText(this.element)) {
-            return false;
-        }
-        return selectedElements.length === 1 && !isSelectionMoving(this.board);
+        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
     }
 
     initializeTextManages() {
