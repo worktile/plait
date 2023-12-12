@@ -13,7 +13,7 @@ import { LineText, PlaitDrawElement, PlaitGeometry, PlaitLine } from './interfac
 import { TextManage, TextManageRef } from '@plait/text';
 import { LineShapeGenerator } from './generators/line.generator';
 import { LineActiveGenerator } from './generators/line-active.generator';
-import { getLineTextRectangle } from './utils';
+import { getLineTextRectangle, memorizeLatestText } from './utils';
 import { DrawTransforms } from './transforms';
 import { GeometryThreshold } from './constants';
 
@@ -151,6 +151,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
                     height
                 });
                 DrawTransforms.setLineTexts(this.board, this.element, texts);
+                textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
             },
             getMaxWidth: () => GeometryThreshold.defaultTextMaxWidth
         });
