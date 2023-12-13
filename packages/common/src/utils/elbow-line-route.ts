@@ -238,36 +238,31 @@ export const reduceRouteMargin = (sourceRectangle: RectangleClient, targetRectan
     const defaultOffset = DEFAULT_ROUTE_MARGIN;
     let sourceOffset: number[] = new Array(4).fill(defaultOffset);
     let targetOffset: number[] = new Array(4).fill(defaultOffset);
-    const sourceOuterRectangle = RectangleClient.inflate(sourceRectangle, defaultOffset * 2);
-    const targetOuterRectangle = RectangleClient.inflate(targetRectangle, defaultOffset * 2);
-    const isHit = RectangleClient.isHit(sourceOuterRectangle, targetOuterRectangle);
-    if (isHit) {
-        const leftToRight = sourceRectangle.x - (targetRectangle.x + targetRectangle.width);
-        const rightToLeft = targetRectangle.x - (sourceRectangle.x + sourceRectangle.width);
-        if (leftToRight > 0 && leftToRight < defaultOffset * 2) {
-            const offset = leftToRight / 2;
-            sourceOffset[3] = offset;
-            targetOffset[1] = offset;
-        }
+    const leftToRight = sourceRectangle.x - (targetRectangle.x + targetRectangle.width);
+    const rightToLeft = targetRectangle.x - (sourceRectangle.x + sourceRectangle.width);
+    if (leftToRight > 0 && leftToRight < defaultOffset * 2) {
+        const offset = leftToRight / 2;
+        sourceOffset[3] = offset;
+        targetOffset[1] = offset;
+    }
 
-        if (rightToLeft > 0 && rightToLeft < defaultOffset * 2) {
-            const offset = rightToLeft / 2;
-            targetOffset[3] = offset;
-            sourceOffset[1] = offset;
-        }
+    if (rightToLeft > 0 && rightToLeft < defaultOffset * 2) {
+        const offset = rightToLeft / 2;
+        targetOffset[3] = offset;
+        sourceOffset[1] = offset;
+    }
 
-        const topToBottom = sourceRectangle.y - (targetRectangle.y + targetRectangle.height);
-        const bottomToTop = targetRectangle.y - (sourceRectangle.y + sourceRectangle.height);
-        if (topToBottom > 0 && topToBottom < defaultOffset * 2) {
-            const offset = topToBottom / 2;
-            sourceOffset[0] = offset;
-            targetOffset[2] = offset;
-        }
-        if (bottomToTop > 0 && bottomToTop < defaultOffset * 2) {
-            const offset = bottomToTop / 2;
-            sourceOffset[2] = offset;
-            targetOffset[0] = offset;
-        }
+    const topToBottom = sourceRectangle.y - (targetRectangle.y + targetRectangle.height);
+    const bottomToTop = targetRectangle.y - (sourceRectangle.y + sourceRectangle.height);
+    if (topToBottom > 0 && topToBottom < defaultOffset * 2) {
+        const offset = topToBottom / 2;
+        sourceOffset[0] = offset;
+        targetOffset[2] = offset;
+    }
+    if (bottomToTop > 0 && bottomToTop < defaultOffset * 2) {
+        const offset = bottomToTop / 2;
+        sourceOffset[2] = offset;
+        targetOffset[0] = offset;
     }
     return { sourceOffset, targetOffset };
 };
