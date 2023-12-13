@@ -3,6 +3,7 @@ import { PlaitDrawElement } from '../interfaces';
 import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
 import { GeometryComponent } from '../geometry.component';
 import { PRIMARY_COLOR } from '@plait/common';
+import { LINE_AUTO_COMPLETE_HOVERED_DIAMETER, LINE_AUTO_COMPLETE_HOVERED_OPACITY } from '../constants/line';
 
 export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
     const { pointerMove } = board;
@@ -25,9 +26,9 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
             component.lineAutoCompleteGenerator!.recoverAutoCompleteG();
             if (hitPoint) {
                 component.lineAutoCompleteGenerator!.removeAutoCompleteG(hitIndex);
-                reactionG = drawCircle(PlaitBoard.getRoughSVG(board), hitPoint, 10, {
+                reactionG = drawCircle(PlaitBoard.getRoughSVG(board), hitPoint, LINE_AUTO_COMPLETE_HOVERED_DIAMETER, {
                     stroke: 'none',
-                    fill: RgbaToHEX(PRIMARY_COLOR, 0.7),
+                    fill: RgbaToHEX(PRIMARY_COLOR, LINE_AUTO_COMPLETE_HOVERED_OPACITY),
                     fillStyle: 'solid'
                 });
                 PlaitBoard.getElementActiveHost(board).append(reactionG);
