@@ -1,7 +1,9 @@
-import { PlaitBoard, createG, drawCircle, getSelectedElements, isSelectionMoving } from '@plait/core';
+import { PlaitBoard, RgbaToHEX, createG, drawCircle, getSelectedElements, isSelectionMoving } from '@plait/core';
 import { PlaitGeometry } from '../interfaces';
-import { ActiveGeneratorExtraData, Generator, RESIZE_HANDLE_DIAMETER } from '@plait/common';
+import { ActiveGeneratorExtraData, Generator, PRIMARY_COLOR } from '@plait/common';
 import { getAutoCompletePoints } from '../utils';
+
+const AUTO_COMPLETE_DIAMETER = 6;
 
 export class LineAutoCompleteGenerator extends Generator<PlaitGeometry, ActiveGeneratorExtraData> {
     autoCompleteG!: SVGGElement;
@@ -25,9 +27,9 @@ export class LineAutoCompleteGenerator extends Generator<PlaitGeometry, ActiveGe
         this.autoCompleteG = createG();
         const middlePoints = getAutoCompletePoints(element);
         middlePoints.forEach((point, index) => {
-            const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, RESIZE_HANDLE_DIAMETER, {
+            const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, AUTO_COMPLETE_DIAMETER, {
                 stroke: 'none',
-                fill: '#6698FF4d',
+                fill: RgbaToHEX(PRIMARY_COLOR, 0.3),
                 fillStyle: 'solid'
             });
             circle.classList.add(`geometry-auto-complete-${index}`);

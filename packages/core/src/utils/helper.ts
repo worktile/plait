@@ -15,3 +15,7 @@ export function normalizePoint(point: number[]) {
           }
         : point;
 }
+
+export const RgbaToHEX = (Rgb: string, opacity: number) => {
+    return Rgb + Math.floor(opacity * 255).toString(16);
+};
