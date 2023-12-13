@@ -94,15 +94,12 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
                 this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
             }
         }
-
         if (isBoundedElementsChanged) {
             this.shapeGenerator.processDrawing(this.element, this.g);
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
             this.updateTextRectangle();
             return;
         }
-
-        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
     }
 
     initializeTextManages() {
