@@ -50,7 +50,7 @@ export const withLineResize = (board: PlaitBoard) => {
                     if (points.length === 2) {
                         let movingPoint = points[pointIndex];
                         const drawPoints = getLinePoints(board, resizeRef.element);
-                        const index = pointIndex === 0 ? drawPoints.length - 1 : pointIndex;
+                        const index = pointIndex === 0 ? drawPoints.length - 1 : 0;
                         const otherPoint = drawPoints[index];
                         points[pointIndex] = alignPoints(otherPoint, movingPoint);
                     }

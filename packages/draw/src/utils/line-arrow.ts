@@ -10,8 +10,7 @@ interface ArrowOptions {
     target: Point;
     isSource: boolean;
 }
-
-const MAX_LENGTH = 100;
+const ARROW_LENGTH = 20;
 
 export const drawLineArrow = (element: PlaitLine, points: Point[], options: Options) => {
     const arrowG = createG();
@@ -25,12 +24,12 @@ export const drawLineArrow = (element: PlaitLine, points: Point[], options: Opti
     }
 
     if (!PlaitLine.isSourceMark(element, LineMarkerType.none)) {
-        const source = getExtendPoint(points[0], points[1], 24 + offset);
+        const source = getExtendPoint(points[0], points[1], ARROW_LENGTH + offset);
         const sourceArrow = getArrow(element, { marker: element.source.marker, source, target: points[0], isSource: true }, options);
         sourceArrow && arrowG.appendChild(sourceArrow);
     }
     if (!PlaitLine.isTargetMark(element, LineMarkerType.none)) {
-        const source = getExtendPoint(points[points.length - 1], points[points.length - 2], 24 + offset);
+        const source = getExtendPoint(points[points.length - 1], points[points.length - 2], ARROW_LENGTH + offset);
         const arrow = getArrow(
             element,
             { marker: element.target.marker, source, target: points[points.length - 1], isSource: false },
@@ -100,9 +99,10 @@ const drawArrow = (element: PlaitLine, source: Point, target: Point, options: Op
     const directionFactor = getFactorByPoints(source, target);
     const strokeWidth = getStrokeWidthByElement(element);
     const endPoint: Point = [target[0] + (strokeWidth * directionFactor.x) / 2, target[1] + (strokeWidth * directionFactor.y) / 2];
+    const distance = distanceBetweenPointAndPoint(...source, ...endPoint);
     const middlePoint: Point = [
-        endPoint[0] - (8 + strokeWidth / 2) * directionFactor.x,
-        endPoint[1] - (8 + strokeWidth / 2) * directionFactor.y
+        endPoint[0] - (((distance * 3) / 5 + strokeWidth) / 2) * directionFactor.x,
+        endPoint[1] - (((distance * 3) / 5 + strokeWidth) / 2) * directionFactor.y
     ];
     const { pointLeft, pointRight } = arrowPoints(source, endPoint, 30);
     const arrowG = drawLinearPath([pointLeft, endPoint, pointRight, middlePoint], { ...options, fill: options.stroke }, true);
