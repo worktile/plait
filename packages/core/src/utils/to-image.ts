@@ -1,9 +1,10 @@
-import { PlaitBoard } from '../interfaces';
-import { getRectangleByElements } from './element';
+import { PlaitBoard, PlaitElement, RectangleClient } from '../interfaces';
+import { findElements, getRectangleByElements } from './element';
 
 const IMAGE_CONTAINER = 'plait-image-container';
 
 export interface ToImageOptions {
+    elements?: PlaitElement[];
     name?: string;
     ratio?: number;
     padding?: number;
@@ -80,7 +81,7 @@ function convertImageToBase64(url: string) {
  * @param clonedNode clone node
  */
 function cloneCSSStyle<T extends HTMLElement>(nativeNode: T, clonedNode: T) {
-    const targetStyle = clonedNode.style;
+    const targetStyle = clonedNode?.style;
     if (!targetStyle) {
         return;
     }
@@ -98,54 +99,45 @@ function cloneCSSStyle<T extends HTMLElement>(nativeNode: T, clonedNode: T) {
 }
 
 /**
- * clone svg element
- * @param board board
- * @param options parameter configuration
- * @returns clone svg element
+ * batch clone target styles
+ * @param sourceNode
+ * @param cloneNode
+ * @param inlineStyleClassNames
  */
-async function cloneSvg(board: PlaitBoard, options: ToImageOptions) {
-    const elementHostBox = getRectangleByElements(board, board.children, true);
-    const { width, height, x, y } = elementHostBox;
-    const { padding = 4, inlineStyleClassNames } = options;
-    const sourceSvg = PlaitBoard.getHost(board);
-    const cloneSvgElement = sourceSvg.cloneNode(true) as SVGElement;
-
-    cloneSvgElement.style.width = `${width}px`;
-    cloneSvgElement.style.height = `${height}px`;
-    cloneSvgElement.style.backgroundColor = '';
-    cloneSvgElement.setAttribute('width', `${width}`);
-    cloneSvgElement.setAttribute('height', `${height}`);
-    cloneSvgElement.setAttribute('viewBox', [x - padding, y - padding, width + 2 * padding, height + 2 * padding].join(','));
-
+function batchCloneCSSStyle(sourceNode: SVGGElement, cloneNode: SVGGElement, inlineStyleClassNames: string) {
     if (inlineStyleClassNames) {
         const classNames = inlineStyleClassNames + `,.${IMAGE_CONTAINER}`;
-        const sourceNodes = Array.from(sourceSvg.querySelectorAll(classNames));
-        const cloneNodes = Array.from(cloneSvgElement.querySelectorAll(classNames));
+        const sourceNodes = Array.from(sourceNode.querySelectorAll(classNames));
+        const cloneNodes = Array.from(cloneNode.querySelectorAll(classNames));
 
         sourceNodes.forEach((node, index) => {
-            const cloneNode = cloneNodes[index];
             const childElements = Array.from(node.querySelectorAll('*')).filter(isElementNode) as HTMLElement[];
-            const cloneChildElements = Array.from(cloneNode.querySelectorAll('*')).filter(isElementNode) as HTMLElement[];
+            const cloneChildElements = Array.from(cloneNodes[index].querySelectorAll('*')).filter(isElementNode) as HTMLElement[];
             sourceNodes.push(...childElements);
             cloneNodes.push(...cloneChildElements);
         });
 
         // processing styles
         sourceNodes.map((node, index) => {
-            const cloneNode = cloneNodes[index];
-            cloneCSSStyle(node as HTMLElement, cloneNode as HTMLElement);
+            cloneCSSStyle(node as HTMLElement, cloneNodes[index] as HTMLElement);
         });
     }
+}
 
-    // 使用 Promise.all 等待所有异步操作完成
-    const sourceImageNodes = Array.from(sourceSvg.querySelectorAll(`.${IMAGE_CONTAINER}`));
-    const cloneImageNodes = Array.from(cloneSvgElement.querySelectorAll(`.${IMAGE_CONTAINER}`));
+/**
+ * convert images in target nodes in batches
+ * @param sourceNode
+ * @param cloneNode
+ */
+async function batchConvertImage(sourceNode: SVGGElement, cloneNode: SVGGElement) {
+    const sourceImageNodes = Array.from(sourceNode.querySelectorAll(`.${IMAGE_CONTAINER}`));
+    const cloneImageNodes = Array.from(cloneNode.querySelectorAll(`.${IMAGE_CONTAINER}`));
     await Promise.all(
         sourceImageNodes.map((_, index) => {
             return new Promise(resolve => {
-                const cloneNode = cloneImageNodes[index];
+                const cloneImageNode = cloneImageNodes[index];
                 // processing image
-                const image = (cloneNode as HTMLElement).querySelector('img');
+                const image = (cloneImageNode as HTMLElement).querySelector('img');
                 const url = image?.getAttribute('src');
                 if (!url) {
                     return resolve(true);
@@ -157,6 +149,37 @@ async function cloneSvg(board: PlaitBoard, options: ToImageOptions) {
             });
         })
     );
+}
+
+/**
+ * clone svg element
+ * @param board board
+ * @param options parameter configuration
+ * @returns clone svg element
+ */
+function cloneSvg(board: PlaitBoard, elements: PlaitElement[], rectangle: RectangleClient, options: ToImageOptions) {
+    const { width, height, x, y } = rectangle;
+    const { padding = 4, inlineStyleClassNames } = options;
+    const sourceSvg = PlaitBoard.getHost(board);
+    const selectedGElements = elements.map(value => PlaitElement.getComponent(value).g);
+    const cloneSvgElement = sourceSvg.cloneNode() as SVGElement;
+    const newHostElement = PlaitBoard.getElementHost(board).cloneNode() as SVGGElement;
+
+    cloneSvgElement.style.width = `${width}px`;
+    cloneSvgElement.style.height = `${height}px`;
+    cloneSvgElement.style.backgroundColor = '';
+    cloneSvgElement.setAttribute('width', `${width}`);
+    cloneSvgElement.setAttribute('height', `${height}`);
+    cloneSvgElement.setAttribute('viewBox', [x - padding, y - padding, width + 2 * padding, height + 2 * padding].join(','));
+
+    selectedGElements.forEach((child, i) => {
+        const cloneChild = child.cloneNode(true) as SVGGElement;
+        batchCloneCSSStyle(child, cloneChild, inlineStyleClassNames as string);
+        batchConvertImage(child, cloneChild);
+        newHostElement.appendChild(cloneChild);
+    });
+    cloneSvgElement.appendChild(newHostElement);
+
     return cloneSvgElement;
 }
 
@@ -171,13 +194,14 @@ export async function toImage(board: PlaitBoard, options: ToImageOptions) {
         return undefined;
     }
 
-    const elementHostBox = getRectangleByElements(board, board.children, true);
+    const elements = options?.elements || findElements(board, { match: () => true, recursion: () => true });
+    const targetRectangle = getRectangleByElements(board, elements, false);
     const { ratio = 2, fillStyle = 'transparent' } = options;
-    const { width, height } = elementHostBox;
+    const { width, height } = targetRectangle;
     const ratioWidth = width * ratio;
     const ratioHeight = height * ratio;
 
-    const cloneSvgElement = await cloneSvg(board, options);
+    const cloneSvgElement = await cloneSvg(board, elements, targetRectangle, options);
     const { canvas, ctx } = createCanvas(ratioWidth, ratioHeight, fillStyle);
 
     const svgStr = new XMLSerializer().serializeToString(cloneSvgElement);
