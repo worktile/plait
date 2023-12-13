@@ -196,7 +196,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             }
         }
         if (temporaryElement) {
-            memorizeLatestShape(temporaryElement.shape);
+            memorizeLatestShape(board, temporaryElement.shape);
             Transforms.insertNode(board, temporaryElement, [board.children.length]);
             clearSelectedElement(board);
             addSelectedElement(board, temporaryElement);

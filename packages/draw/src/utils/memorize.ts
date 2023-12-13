@@ -1,11 +1,11 @@
-import { PlaitElement } from '@plait/core';
+import { PlaitBoard, PlaitElement } from '@plait/core';
 import { BasicShapes, GeometryShapes, MemorizeKey, PlaitDrawElement } from '../interfaces';
 import { getMemorizedLatest, memorizeLatest } from '@plait/common';
 import { DrawPointerType } from '../constants';
 import { BaseOperation, BaseSetNodeOperation } from 'slate';
 
 const SHAPE_MAX_LENGTH = 6;
-const memorizedShape: GeometryShapes[] = [];
+const memorizedShape: WeakMap<PlaitBoard, GeometryShapes[]> = new WeakMap();
 
 export const getMemorizeKey = (element: PlaitElement) => {
     let key = '';
@@ -60,16 +60,18 @@ export const memorizeLatestText = (element: PlaitDrawElement, operations: BaseOp
     }
 };
 
-export const memorizeLatestShape = (shape: GeometryShapes) => {
-    if (shape === BasicShapes.text || memorizedShape[0] === shape) {
+export const memorizeLatestShape = (board: PlaitBoard, shape: GeometryShapes) => {
+    const shapes = memorizedShape.has(board) ? memorizedShape.get(board)! : [];
+    if (shape === BasicShapes.text || shapes[0] === shape) {
         return;
     }
-    if (memorizedShape.length === SHAPE_MAX_LENGTH) {
-        memorizedShape.pop();
+    if (shapes.length === SHAPE_MAX_LENGTH) {
+        shapes.pop();
     }
-    memorizedShape.unshift(shape);
+    shapes.unshift(shape);
+    memorizedShape.set(board, shapes);
 };
 
-export const getMemorizedLatestShape = () => {
-    return memorizedShape;
+export const getMemorizedLatestShape = (board: PlaitBoard) => {
+    return memorizedShape.get(board);
 };
