@@ -1,7 +1,6 @@
 import {
     MERGING,
     PRESS_AND_MOVE_BUFFER,
-    Path,
     PlaitBoard,
     PlaitElement,
     PlaitPointerType,
@@ -71,6 +70,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
                 handle: resizeDetectResult.handle
             };
             preventTouchMove(board, event, true);
+            return;
         }
         pointerDown(event);
     };
