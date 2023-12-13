@@ -131,7 +131,8 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
                     BasicShapes.text,
                     points,
                     DefaultTextProperty.text,
-                    memorizedLatest as GeometryStyleOptions
+                    memorizedLatest.geometryProperties as GeometryStyleOptions,
+                    memorizedLatest.textProperties
                 );
                 Transforms.insertNode(board, textElement, [board.children.length]);
                 clearSelectedElement(board);
@@ -153,10 +154,16 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         if (drawMode && pointer !== BasicShapes.text) {
             const points = normalizeShapePoints([start!, movingPoint], isShift);
             const memorizedLatest = getMemorizedLatestByPointer(pointer);
-            temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
-                strokeWidth: DefaultBasicShapeProperty.strokeWidth,
-                ...memorizedLatest
-            });
+            temporaryElement = createGeometryElement(
+                (pointer as unknown) as GeometryShapes,
+                points,
+                '',
+                {
+                    strokeWidth: DefaultBasicShapeProperty.strokeWidth,
+                    ...memorizedLatest.geometryProperties
+                },
+                memorizedLatest.textProperties
+            );
             geometryGenerator.processDrawing(temporaryElement, geometryShapeG);
             PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
         }
@@ -174,10 +181,16 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
                 const points = getDefaultGeometryPoints(pointer, targetPoint);
                 if (pointer !== BasicShapes.text) {
                     const memorizedLatest = getMemorizedLatestByPointer(pointer);
-                    temporaryElement = createGeometryElement((pointer as unknown) as GeometryShapes, points, '', {
-                        strokeWidth: DefaultBasicShapeProperty.strokeWidth,
-                        ...memorizedLatest
-                    });
+                    temporaryElement = createGeometryElement(
+                        (pointer as unknown) as GeometryShapes,
+                        points,
+                        '',
+                        {
+                            strokeWidth: DefaultBasicShapeProperty.strokeWidth,
+                            ...memorizedLatest.geometryProperties
+                        },
+                        memorizedLatest.textProperties
+                    );
                 }
             }
         }

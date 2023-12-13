@@ -21,9 +21,9 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
             const hitIndex = getHitIndexOfAutoCompletePoint(movingPoint, points);
             const hitPoint = points[hitIndex];
             const component = PlaitElement.getComponent(selectedElements[0]) as GeometryComponent;
-            component.autoCompleteGenerator.recoverAutoCompleteG();
+            component.lineAutoCompleteGenerator!.recoverAutoCompleteG();
             if (hitPoint) {
-                component.autoCompleteGenerator.removeAutoCompleteG(hitIndex);
+                component.lineAutoCompleteGenerator!.removeAutoCompleteG(hitIndex);
                 reactionG = drawCircle(PlaitBoard.getRoughSVG(board), hitPoint, 10, {
                     stroke: 'none',
                     fill: '#6698FF80',

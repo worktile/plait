@@ -101,7 +101,7 @@ export function withSelection(board: PlaitBoard) {
                     fill: SELECTION_FILL_COLOR,
                     fillStyle: 'solid'
                 });
-                PlaitBoard.getHost(board).append(selectionMovingG);
+                PlaitBoard.getElementActiveHost(board).append(selectionMovingG);
             }
         }
         globalPointerMove(event);
@@ -232,7 +232,7 @@ export function createSelectionRectangleG(board: PlaitBoard) {
             fillStyle: 'solid'
         });
         selectionRectangleG.classList.add(SELECTION_RECTANGLE_CLASS_NAME);
-        PlaitBoard.getHost(board).append(selectionRectangleG);
+        PlaitBoard.getElementActiveHost(board).append(selectionRectangleG);
         return selectionRectangleG;
     }
     return null;

@@ -1,9 +1,9 @@
-import { PlaitBoard, Point, RectangleClient, createG, drawCircle, getSelectedElements, isSelectionMoving } from '@plait/core';
+import { PlaitBoard, createG, drawCircle, getSelectedElements, isSelectionMoving } from '@plait/core';
 import { PlaitGeometry } from '../interfaces';
-import { ActiveGeneratorExtraData, Generator, RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
+import { ActiveGeneratorExtraData, Generator, RESIZE_HANDLE_DIAMETER } from '@plait/common';
 import { getAutoCompletePoints } from '../utils';
 
-export class AutoCompleteGenerator extends Generator<PlaitGeometry, ActiveGeneratorExtraData> {
+export class LineAutoCompleteGenerator extends Generator<PlaitGeometry, ActiveGeneratorExtraData> {
     autoCompleteG!: SVGGElement;
     hoverElement: SVGGElement | null = null;
 

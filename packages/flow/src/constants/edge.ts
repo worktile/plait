@@ -5,7 +5,7 @@ export const HIT_THRESHOLD = 10;
 
 export const EDGE_LABEL_PADDING = 10;
 
-export const EDGE_LABEL_FONTSIZE = 10;
+export const EDGE_LABEL_FONTSIZE = 12;
 
 export const EDGE_LABEL_ICON_PADDING = 2;
 
