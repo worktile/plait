@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement } from '../interfaces';
+import { PlaitBoard, PlaitElement, RectangleClient } from '../interfaces';
 import { findElements, getRectangleByElements } from './element';
 
 const IMAGE_CONTAINER = 'plait-image-container';
@@ -157,9 +157,8 @@ async function batchConvertImage(sourceNode: SVGGElement, cloneNode: SVGGElement
  * @param options parameter configuration
  * @returns clone svg element
  */
-function cloneSvg(board: PlaitBoard, elements: PlaitElement[], options: ToImageOptions) {
-    const elementHostBox = getRectangleByElements(board, elements, true);
-    const { width, height, x, y } = elementHostBox;
+function cloneSvg(board: PlaitBoard, elements: PlaitElement[], rectangle: RectangleClient, options: ToImageOptions) {
+    const { width, height, x, y } = rectangle;
     const { padding = 4, inlineStyleClassNames } = options;
     const sourceSvg = PlaitBoard.getHost(board);
     const selectedGElements = elements.map(value => PlaitElement.getComponent(value).g);
@@ -195,14 +194,14 @@ export async function toImage(board: PlaitBoard, options: ToImageOptions) {
         return undefined;
     }
 
-    const elements = options?.elements || findElements(board, { match: element => true, recursion: element => true });
-    const elementHostBox = getRectangleByElements(board, elements, true);
+    const elements = options?.elements || findElements(board, { match: () => true, recursion: () => true });
+    const targetRectangle = getRectangleByElements(board, elements, false);
     const { ratio = 2, fillStyle = 'transparent' } = options;
-    const { width, height } = elementHostBox;
+    const { width, height } = targetRectangle;
     const ratioWidth = width * ratio;
     const ratioHeight = height * ratio;
 
-    const cloneSvgElement = await cloneSvg(board, elements, options);
+    const cloneSvgElement = await cloneSvg(board, elements, targetRectangle, options);
     const { canvas, ctx } = createCanvas(ratioWidth, ratioHeight, fillStyle);
 
     const svgStr = new XMLSerializer().serializeToString(cloneSvgElement);
