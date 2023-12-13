@@ -62,11 +62,16 @@ export const memorizeLatestText = (element: PlaitDrawElement, operations: BaseOp
 
 export const memorizeLatestShape = (board: PlaitBoard, shape: GeometryShapes) => {
     const shapes = memorizedShape.has(board) ? memorizedShape.get(board)! : [];
-    if (shape === BasicShapes.text || shapes[0] === shape) {
+    const shapeIndex = shapes.indexOf(shape);
+    if (shape === BasicShapes.text || shapeIndex === 0) {
         return;
     }
-    if (shapes.length === SHAPE_MAX_LENGTH) {
-        shapes.pop();
+    if (shapeIndex !== -1) {
+        shapes.splice(shapeIndex, 1);
+    } else {
+        if (shapes.length === SHAPE_MAX_LENGTH) {
+            shapes.pop();
+        }
     }
     shapes.unshift(shape);
     memorizedShape.set(board, shapes);
