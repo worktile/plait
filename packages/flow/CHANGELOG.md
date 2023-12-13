@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.36.0
+
+### Patch Changes
+
+-   [#657](https://github.com/worktile/plait/pull/657) [`d1b30b4a`](https://github.com/worktile/plait/commit/d1b30b4aedc5ce6f829b2b149eab48a03ce4548c) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - set default label font-size to 12
+
 ## 0.35.0
 
 ## 0.34.0
