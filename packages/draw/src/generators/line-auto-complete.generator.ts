@@ -2,8 +2,7 @@ import { PlaitBoard, RgbaToHEX, createG, drawCircle, getSelectedElements, isSele
 import { PlaitGeometry } from '../interfaces';
 import { ActiveGeneratorExtraData, Generator, PRIMARY_COLOR } from '@plait/common';
 import { getAutoCompletePoints } from '../utils';
-
-const AUTO_COMPLETE_DIAMETER = 6;
+import { LINE_AUTO_COMPLETE_DIAMETER, LINE_AUTO_COMPLETE_OPACITY } from '../constants/line';
 
 export class LineAutoCompleteGenerator extends Generator<PlaitGeometry, ActiveGeneratorExtraData> {
     autoCompleteG!: SVGGElement;
@@ -27,19 +26,19 @@ export class LineAutoCompleteGenerator extends Generator<PlaitGeometry, ActiveGe
         this.autoCompleteG = createG();
         const middlePoints = getAutoCompletePoints(element);
         middlePoints.forEach((point, index) => {
-            const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, AUTO_COMPLETE_DIAMETER, {
+            const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, LINE_AUTO_COMPLETE_DIAMETER, {
                 stroke: 'none',
-                fill: RgbaToHEX(PRIMARY_COLOR, 0.3),
+                fill: RgbaToHEX(PRIMARY_COLOR, LINE_AUTO_COMPLETE_OPACITY),
                 fillStyle: 'solid'
             });
-            circle.classList.add(`geometry-auto-complete-${index}`);
+            circle.classList.add(`line-auto-complete-${index}`);
             this.autoCompleteG.appendChild(circle);
         });
         return this.autoCompleteG;
     }
 
     removeAutoCompleteG(index: number) {
-        this.hoverElement = this.autoCompleteG.querySelector(`.geometry-auto-complete-${index}`);
+        this.hoverElement = this.autoCompleteG.querySelector(`.line-auto-complete-${index}`);
         this.hoverElement!.style.visibility = 'hidden';
     }
 

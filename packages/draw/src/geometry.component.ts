@@ -6,10 +6,7 @@ import {
     isSelectionMoving,
     getSelectedElements,
     PlaitOptionsBoard,
-    ACTIVE_STROKE_WIDTH,
-    RectangleClient,
-    createG,
-    drawCircle
+    ACTIVE_STROKE_WIDTH
 } from '@plait/core';
 import { Subject } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
@@ -21,7 +18,7 @@ import { ActiveGenerator, WithTextPluginKey, WithTextOptions, getRectangleByPoin
 import { GeometryThreshold } from './constants/geometry';
 import { PlaitDrawElement, PlaitText } from './interfaces';
 import { getEngine } from './engines';
-import { LineAutoCompleteGenerator } from './generators/auto-complete.generator';
+import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 import { memorizeLatestText } from './utils';
 
 @Component({
@@ -87,7 +84,9 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         this.initializeGenerator();
         this.shapeGenerator.processDrawing(this.element, this.g);
         this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
-        this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+        this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+            selected: this.selected
+        });
         this.drawText();
     }
 
@@ -99,14 +98,18 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         if (value.element !== previous.element || isChangeTheme) {
             this.shapeGenerator.processDrawing(this.element, this.g);
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
-            this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+            this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+                selected: this.selected
+            });
             this.updateText();
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
             if (!hasSameSelected || !hasSameHandleState) {
                 this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
-                this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+                this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+                    selected: this.selected
+                });
             }
         }
     }
@@ -166,6 +169,6 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         this.destroy$.next();
         this.destroy$.complete();
         this.activeGenerator.destroy();
-        this.lineAutoCompleteGenerator
+        this.lineAutoCompleteGenerator;
     }
 }

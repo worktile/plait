@@ -4,3 +4,11 @@ export const DefaultLineStyle = {
 };
 
 export const LINE_TEXT_SPACE = 4;
+
+export const LINE_AUTO_COMPLETE_DIAMETER = 6;
+
+export const LINE_AUTO_COMPLETE_OPACITY = 0.6;
+
+export const LINE_AUTO_COMPLETE_HOVERED_OPACITY = 0.8;
+
+export const LINE_AUTO_COMPLETE_HOVERED_DIAMETER = 10;
