@@ -20,7 +20,8 @@ import {
     createGeometryElement,
     getDefaultFlowchartProperty,
     getMemorizedLatestByPointer,
-    getPointsByCenterPoint
+    getPointsByCenterPoint,
+    memorizeLatestShape
 } from '../utils';
 import {
     DefaultBasicShapeProperty,
@@ -195,6 +196,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             }
         }
         if (temporaryElement) {
+            memorizeLatestShape(temporaryElement.shape);
             Transforms.insertNode(board, temporaryElement, [board.children.length]);
             clearSelectedElement(board);
             addSelectedElement(board, temporaryElement);

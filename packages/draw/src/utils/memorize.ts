@@ -1,8 +1,11 @@
 import { PlaitElement } from '@plait/core';
-import { BasicShapes, MemorizeKey, PlaitDrawElement } from '../interfaces';
+import { BasicShapes, GeometryShapes, MemorizeKey, PlaitDrawElement } from '../interfaces';
 import { getMemorizedLatest, memorizeLatest } from '@plait/common';
 import { DrawPointerType } from '../constants';
-import { BaseOperation, BaseSetNodeOperation, Node } from 'slate';
+import { BaseOperation, BaseSetNodeOperation } from 'slate';
+
+const SHAPE_MAX_LENGTH = 6;
+const memorizedShape: GeometryShapes[] = [];
 
 export const getMemorizeKey = (element: PlaitElement) => {
     let key = '';
@@ -55,4 +58,18 @@ export const memorizeLatestText = (element: PlaitDrawElement, operations: BaseOp
         textMemory = { ...textMemory, ...newProperties };
         memorizeLatest(memorizeKey, 'text', textMemory);
     }
+};
+
+export const memorizeLatestShape = (shape: GeometryShapes) => {
+    if (shape === BasicShapes.text || memorizedShape[0] === shape) {
+        return;
+    }
+    if (memorizedShape.length === SHAPE_MAX_LENGTH) {
+        memorizedShape.pop();
+    }
+    memorizedShape.unshift(shape);
+};
+
+export const getMemorizedLatestShape = () => {
+    return memorizedShape;
 };
