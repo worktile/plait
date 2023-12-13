@@ -7,6 +7,7 @@ import {
     addSelectedElement,
     clearSelectedElement,
     createG,
+    distanceBetweenPointAndPoint,
     preventTouchMove,
     toPoint,
     transformPoint

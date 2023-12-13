@@ -20,6 +20,9 @@ export const drawLineArrow = (element: PlaitLine, points: Point[], options: Opti
     }
     const strokeWidth = getStrokeWidthByElement(element);
     const offset = (strokeWidth * strokeWidth) / 3;
+    if (points.length === 1) {
+        points = [points[0], [points[0][0] + 0.1, points[0][1]]];
+    }
 
     if (!PlaitLine.isSourceMark(element, LineMarkerType.none)) {
         const source = getExtendPoint(points[0], points[1], 24 + offset);

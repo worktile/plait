@@ -299,7 +299,6 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     let points = getLinePoints(board, element);
     let line;
     if (element.shape === LineShape.curve) {
-        //TODO element.points 应为曲线拐点
         line = PlaitBoard.getRoughSVG(board).curve(points, options);
     } else {
         line = drawLinearPath(points, options);
