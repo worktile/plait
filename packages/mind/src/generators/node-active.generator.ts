@@ -52,16 +52,16 @@ export class NodeActiveGenerator extends Generator<MindElement, ActiveData> {
     }
 
     updateAbstractOutline(element: MindElement, activeHandlePosition?: AbstractHandlePosition, resizingLocation?: number) {
-        if (this.abstractOutlineG) {
-            this.abstractOutlineG.remove();
-        }
-        this.abstractOutlineG = drawAbstractIncludedOutline(
+        const abstractOutlineG = drawAbstractIncludedOutline(
             this.board,
             PlaitBoard.getRoughSVG(this.board),
             element,
             activeHandlePosition,
             resizingLocation
         );
-        this.g!.append(this.abstractOutlineG);
+        if (this.abstractOutlineG) {
+            this.abstractOutlineG.replaceWith(abstractOutlineG);
+            this.abstractOutlineG = abstractOutlineG;
+        }
     }
 }

@@ -57,7 +57,6 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
             strokeG.style.opacity = opacity;
             activeG.appendChild(strokeG);
         }
-
         return activeG;
     }
 }

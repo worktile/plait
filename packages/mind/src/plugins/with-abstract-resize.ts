@@ -21,16 +21,16 @@ import { MindNodeComponent } from '../mind-node.component';
 export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitAbstractBoard;
 
-    const { mousedown, mousemove, mouseup } = board;
+    const { pointerDown, pointerMove, pointerUp } = board;
     let activeAbstractElement: MindElement | undefined;
     let abstractHandlePosition: AbstractHandlePosition | undefined;
     let touchedAbstract: MindElement | undefined;
     let startPoint: Point | undefined;
     let newProperty: { end: number } | { start: number } | undefined;
 
-    board.mousedown = (event: MouseEvent) => {
+    board.pointerDown = (event: PointerEvent) => {
         if (!isMainPointer(event) || PlaitBoard.isReadonly(board)) {
-            mousedown(event);
+            pointerDown(event);
             return;
         }
 
@@ -51,10 +51,10 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
 
-        mousedown(event);
+        pointerDown(event);
     };
 
-    board.mousemove = (event: MouseEvent) => {
+    board.pointerMove = (event: PointerEvent) => {
         getSelectedElements(board);
         const host = BOARD_TO_HOST.get(board);
         const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
@@ -117,10 +117,10 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
 
             abstractComponent!.activeGenerator.updateAbstractOutline(activeAbstractElement, abstractHandlePosition, location);
         }
-        mousemove(event);
+        pointerMove(event);
     };
 
-    board.mouseup = (event: MouseEvent) => {
+    board.pointerUp = (event: PointerEvent) => {
         startPoint = undefined;
         abstractHandlePosition = undefined;
         if (activeAbstractElement) {
@@ -137,7 +137,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
             }
             activeAbstractElement = undefined;
         }
-        mouseup(event);
+        pointerUp(event);
     };
     return board;
 };

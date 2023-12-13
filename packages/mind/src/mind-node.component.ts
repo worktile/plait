@@ -138,7 +138,10 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.nodeShapeGenerator.processDrawing(this.element, this.g, { node: this.node });
         this.drawLink();
         this.drawTopic();
-        this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
+        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+            selected: this.selected,
+            isEditing: this.textManage.isEditing
+        });
         this.drawEmojis();
         this.drawExtend();
         this.imageGenerator.processDrawing(this.element as MindElement<ImageData>, this.g, this.viewContainerRef);
@@ -156,7 +159,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.node = newNode;
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
-            this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected, isEditing: this.textManage.isEditing });
             this.nodeShapeGenerator.processDrawing(this.element, this.g, { node: this.node });
             // this.nodeShapeGenerator.
             this.drawLink();
@@ -180,7 +183,10 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             const hasSameSelected = value.selected === previous.selected;
             const hasSameParent = value.parent === previous.parent;
             if (!hasSameSelected) {
-                this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected, isEditing: this.textManage.isEditing });
+                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+                    selected: this.selected,
+                    isEditing: this.textManage.isEditing
+                });
             }
             if (!hasSameParent) {
                 this.drawLink();
@@ -242,10 +248,10 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     }
 
     editTopic() {
-        this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected, isEditing: true });
+        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected, isEditing: true });
         this.textManage.edit((origin: ExitOrigin) => {
             if (origin === ExitOrigin.default) {
-                this.activeGenerator.processDrawing(this.element, this.g, { selected: this.selected, isEditing: false });
+                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected, isEditing: false });
             }
         });
     }
@@ -259,6 +265,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.textManage.destroy();
         this.nodeEmojisGenerator.destroy();
         this.imageGenerator.destroy();
+        this.activeGenerator.destroy();
         this.destroy$.next();
         this.destroy$.complete();
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {
