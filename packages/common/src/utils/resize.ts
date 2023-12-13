@@ -1,5 +1,5 @@
-import { Path, PlaitBoard, PlaitElement, Point, RectangleClient } from '@plait/core';
-import { ResizeCursorClass, ResizeHandle } from '../constants/resize';
+import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, ResizeCursorClass } from '@plait/core';
+import { ResizeHandle } from '../constants/resize';
 
 export interface ResizeRef<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
     element: T;

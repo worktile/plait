@@ -1,5 +1,5 @@
 export * from './keycodes';
-export * from './resize';
+export * from './cursor';
 export * from './selection';
 
 export const CLIP_BOARD_FORMAT_KEY = 'x-plait-fragment';

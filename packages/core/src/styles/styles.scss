@@ -61,6 +61,9 @@
     &.nesw-resize {
         cursor: nesw-resize;
     }
+    &.crosshair {
+        cursor: crosshair;
+    }
 
     @include mixins.board-background-color();
 }

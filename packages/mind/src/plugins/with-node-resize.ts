@@ -47,7 +47,7 @@ export const withNodeResize = (board: PlaitBoard) => {
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const newTargetElement = getSelectedTarget(board as PlaitMindBoard, point);
         if (newTargetElement) {
-            PlaitBoard.getBoardContainer(board).classList.add(ResizeCursorClass['ew-resize']);
+            PlaitBoard.getBoardContainer(board).classList.add(ResizeCursorClass['ew']);
             targetElement = newTargetElement;
             startPoint = [event.x, event.y];
             preventTouchMove(board, event, true);
@@ -110,9 +110,9 @@ export const withNodeResize = (board: PlaitBoard) => {
                 const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
                 const newTargetElement = getSelectedTarget(board as PlaitMindBoard, point);
                 if (newTargetElement) {
-                    PlaitBoard.getBoardContainer(board).classList.add(`mind-${ResizeCursorClass['ew-resize']}`);
+                    PlaitBoard.getBoardContainer(board).classList.add(`mind-${ResizeCursorClass['ew']}`);
                 } else {
-                    PlaitBoard.getBoardContainer(board).classList.remove(`mind-${ResizeCursorClass['ew-resize']}`);
+                    PlaitBoard.getBoardContainer(board).classList.remove(`mind-${ResizeCursorClass['ew']}`);
                 }
             }
         }
@@ -151,7 +151,7 @@ export const addResizing = (board: PlaitBoard, element: MindElement) => {
 
 export const removeResizing = (board: PlaitBoard, element: MindElement) => {
     PlaitBoard.getBoardContainer(board).classList.remove('mind-node-resizing');
-    PlaitBoard.getBoardContainer(board).classList.remove(ResizeCursorClass['ew-resize']);
+    PlaitBoard.getBoardContainer(board).classList.remove(ResizeCursorClass['ew']);
     const component = PlaitElement.getComponent(element);
     if (component && component.g) {
         component.g.classList.remove('resizing');
