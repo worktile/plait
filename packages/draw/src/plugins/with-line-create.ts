@@ -7,6 +7,7 @@ import {
     addSelectedElement,
     clearSelectedElement,
     createG,
+    distanceBetweenPointAndPoint,
     preventTouchMove,
     toPoint,
     transformPoint
@@ -47,7 +48,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         lineShapeG?.remove();
         lineShapeG = createG();
         let movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        if (start) {
+        if (start && distanceBetweenPointAndPoint(...movingPoint, ...start) > 5) {
             const lineShape = PlaitBoard.getPointer(board) as LineShape;
             temporaryElement = handleLineCreating(board, lineShape, start, movingPoint, sourceElement, lineShapeG);
         }
