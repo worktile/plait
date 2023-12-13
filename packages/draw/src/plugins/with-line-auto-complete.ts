@@ -1,5 +1,6 @@
 import {
     BoardTransforms,
+    PRESS_AND_MOVE_BUFFER,
     PlaitBoard,
     PlaitOptionsBoard,
     PlaitPointerType,
@@ -25,7 +26,6 @@ export const withLineAutoCompletePluginKey = 'plait-line-auto-complete-plugin-ke
 export const withLineAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, pointerUp } = board;
 
-    const tolerance = 3;
     let startPoint: Point | null = null;
     let lineShapeG: SVGGElement | null = null;
     let sourceElement: PlaitGeometry | null;
@@ -54,7 +54,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         let movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         if (startPoint && sourceElement) {
             const distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
-            if (distance > tolerance) {
+            if (distance > PRESS_AND_MOVE_BUFFER) {
                 temporaryElement = handleLineCreating(board, LineShape.elbow, startPoint, movingPoint, sourceElement, lineShapeG);
             }
         }

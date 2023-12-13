@@ -10,9 +10,10 @@ import { PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
 import { addMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
-import { isPreventTouchMove, preventTouchMove, handleTouchTarget, getRectangleByElements } from '../utils';
+import { isPreventTouchMove, preventTouchMove, handleTouchTarget, getRectangleByElements, distanceBetweenPointAndPoint } from '../utils';
 import { AlignReaction } from '../utils/reaction-manager';
 import { RectangleClient } from '../interfaces';
+import { PRESS_AND_MOVE_BUFFER } from '../constants';
 
 export function withMoving(board: PlaitBoard) {
     const { pointerDown, pointerMove, globalPointerUp, globalPointerMove } = board;
@@ -58,8 +59,8 @@ export function withMoving(board: PlaitBoard) {
             const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
             offsetX = endPoint[0] - startPoint[0];
             offsetY = endPoint[1] - startPoint[1];
-            const tolerance = 5;
-            if (Math.abs(offsetX) > tolerance || Math.abs(offsetY) > tolerance || getMovingElements(board).length > 0) {
+            const distance = distanceBetweenPointAndPoint(...endPoint, ...startPoint);
+            if (distance > PRESS_AND_MOVE_BUFFER || getMovingElements(board).length > 0) {
                 throttleRAF(() => {
                     if (!activeElementsRectangle) {
                         return;
