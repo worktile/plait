@@ -4,8 +4,7 @@
             cursor: default;
         }
     }
-    &:not(.pointer-text):not(.pointer-selection):not(.pointer-hand)
-     {
+    &:not(.pointer-text):not(.pointer-selection):not(.pointer-hand) {
         .board-host-svg {
             cursor: crosshair;
         }

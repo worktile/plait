@@ -11,9 +11,10 @@ import {
     handleTouchTarget,
     throttleRAF,
     toPoint,
-    transformPoint
+    transformPoint,
+    ResizeCursorClass
 } from '@plait/core';
-import { ResizeHandle, ResizeCursorClass } from '../constants/resize';
+import { ResizeHandle } from '../constants/resize';
 import { ResizeRef, addResizing, isResizing, removeResizing } from '../utils/resize';
 
 export interface WithResizeOptions<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
