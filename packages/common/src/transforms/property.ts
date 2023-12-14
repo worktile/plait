@@ -1,14 +1,12 @@
 import { Path, PlaitBoard, PlaitElement, Transforms, getSelectedElements } from '@plait/core';
 import { memorizeLatest } from '../utils';
 
-export const setProperty = <T extends PlaitElement = PlaitElement>(
-    board: PlaitBoard,
-    properties: Partial<T>,
-    options?: {
-        callback?: (element: T, path: Path) => void;
-        getMemorizeKey?: (element: T) => string;
-    }
-) => {
+export interface SetOptions<T extends PlaitElement = PlaitElement> {
+    callback?: (element: T, path: Path) => void;
+    getMemorizeKey?: (element: T) => string;
+}
+
+export const setProperty = <T extends PlaitElement = PlaitElement>(board: PlaitBoard, properties: Partial<T>, options?: SetOptions<T>) => {
     const selectedElements = getSelectedElements(board) as T[];
     selectedElements.forEach(element => {
         const path = PlaitBoard.findPath(board, element);
@@ -24,20 +22,20 @@ export const setProperty = <T extends PlaitElement = PlaitElement>(
     });
 };
 
-const setStrokeStyle = (board: PlaitBoard, strokeStyle: string) => {
-    setProperty(board, { strokeStyle });
+const setStrokeStyle = (board: PlaitBoard, strokeStyle: string, options: SetOptions) => {
+    setProperty(board, { strokeStyle }, options);
 };
 
-const setFillColor = (board: PlaitBoard, fill: string) => {
-    setProperty(board, { fill });
+const setFillColor = (board: PlaitBoard, fill: string, options: SetOptions) => {
+    setProperty(board, { fill }, options);
 };
 
-const setStrokeColor = (board: PlaitBoard, strokeColor: string) => {
-    setProperty(board, { strokeColor });
+const setStrokeColor = (board: PlaitBoard, strokeColor: string, options: SetOptions) => {
+    setProperty(board, { strokeColor }, options);
 };
 
-const setStrokeWidth = (board: PlaitBoard, strokeWidth: number) => {
-    setProperty(board, { strokeWidth });
+const setStrokeWidth = (board: PlaitBoard, strokeWidth: number, options: SetOptions) => {
+    setProperty(board, { strokeWidth }, options);
 };
 
 export const PropertyTransforms = {
