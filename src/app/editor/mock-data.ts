@@ -117,9 +117,7 @@ export const mockDrawData: PlaitDrawElement[] = [
             [-107, 443.9999999999999],
             [13, 503.9999999999999]
         ],
-        strokeColor: '#333',
-        strokeWidth: 2,
-        fill: '#ffffff'
+        strokeWidth: 2
     },
     {
         id: 'WEycp',
@@ -140,9 +138,7 @@ export const mockDrawData: PlaitDrawElement[] = [
             [98, 283.9999999999999],
             [218, 343.9999999999999]
         ],
-        strokeColor: '#333',
-        strokeWidth: 2,
-        fill: '#ffffff'
+        strokeWidth: 2
     },
     {
         id: 'rJcaT',
@@ -163,9 +159,7 @@ export const mockDrawData: PlaitDrawElement[] = [
             [-117, 278.9999999999999],
             [23, 348.9999999999999]
         ],
-        strokeColor: '#333',
         strokeWidth: 2,
-        fill: '#ffffff'
     },
     {
         id: 'RpDPy',
@@ -186,9 +180,7 @@ export const mockDrawData: PlaitDrawElement[] = [
             [-107, 163.9999999999999],
             [13, 223.9999999999999]
         ],
-        strokeColor: '#333',
         strokeWidth: 2,
-        fill: '#ffffff'
     },
     {
         id: 'xRzpF',
@@ -209,9 +201,7 @@ export const mockDrawData: PlaitDrawElement[] = [
             [-107, 48.999999999999886],
             [13, 108.99999999999989]
         ],
-        strokeColor: '#333',
         strokeWidth: 2,
-        fill: '#ffffff'
     },
     {
         id: 'hhyEm',
@@ -233,7 +223,6 @@ export const mockDrawData: PlaitDrawElement[] = [
             [-277, -129.0000000000001],
             [-277, -129.0000000000001]
         ],
-        strokeColor: '#000',
         strokeWidth: 2
     },
     {
@@ -269,7 +258,6 @@ export const mockDrawData: PlaitDrawElement[] = [
             [-277, -129.0000000000001],
             [-277, -129.0000000000001]
         ],
-        strokeColor: '#000',
         strokeWidth: 2
     },
     {
@@ -305,7 +293,6 @@ export const mockDrawData: PlaitDrawElement[] = [
             [-277, -129.0000000000001],
             [-277, -129.0000000000001]
         ],
-        strokeColor: '#000',
         strokeWidth: 2
     },
     {
@@ -328,7 +315,6 @@ export const mockDrawData: PlaitDrawElement[] = [
             [-277, -129.0000000000001],
             [-277, -129.0000000000001]
         ],
-        strokeColor: '#000',
         strokeWidth: 2
     },
     {
@@ -351,7 +337,6 @@ export const mockDrawData: PlaitDrawElement[] = [
             [-277, -129.0000000000001],
             [-277, -129.0000000000001]
         ],
-        strokeColor: '#000',
         strokeWidth: 2
     }
 ] as PlaitDrawElement[];
