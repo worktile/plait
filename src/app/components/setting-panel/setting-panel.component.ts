@@ -8,6 +8,7 @@ import {
     PlaitDrawElement,
     PlaitGeometry,
     PlaitLine,
+    getMemorizeKey,
     getSelectedGeometryElements,
     getSelectedLineElements
 } from '@plait/draw';
@@ -18,6 +19,7 @@ import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
+import { PropertyTransforms } from '@plait/common';
 
 @Component({
     selector: 'app-setting-panel',
@@ -143,20 +145,20 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     changeStrokeStyle(event: Event) {
         let value = (event.target as HTMLSelectElement).value;
-        DrawTransforms.setStrokeStyle(this.board, value);
+        PropertyTransforms.setStrokeColor(this.board, value, { getMemorizeKey });
     }
 
     changeFill(property: string) {
-        DrawTransforms.setFillColor(this.board, property);
+        PropertyTransforms.setFillColor(this.board, property, { getMemorizeKey });
     }
 
     changeStroke(property: string) {
-        DrawTransforms.setStrokeColor(this.board, property);
+        PropertyTransforms.setStrokeColor(this.board, property, { getMemorizeKey });
     }
 
     changeStrokeWidth(event: Event) {
         let value = parseInt((event.target as HTMLSelectElement).value, 10);
-        DrawTransforms.setStrokeWidth(this.board, value);
+        PropertyTransforms.setStrokeWidth(this.board, value, { getMemorizeKey });
     }
 
     colorChange(property: string | number | null, attribute: string) {

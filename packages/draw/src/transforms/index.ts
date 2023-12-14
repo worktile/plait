@@ -1,4 +1,3 @@
-import { setFillColor, setStrokeColor, setStrokeStyle, setStrokeWidth } from './property';
 import { insertText, insertGeometry, resizeGeometry, transformShape } from './geometry';
 import { setText, setTextSize } from './geometry-text';
 import { insertImage } from './image';
@@ -15,9 +14,5 @@ export const DrawTransforms = {
     removeLineText,
     setLineMark,
     insertImage,
-    transformShape,
-    setStrokeColor,
-    setStrokeWidth,
-    setFillColor,
-    setStrokeStyle
+    transformShape
 };
