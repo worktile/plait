@@ -28,7 +28,7 @@ import { getEngine } from '../engines';
 import { getShape } from './shape';
 import { getDefaultGeometryPoints } from '../plugins/with-geometry-create';
 import { createLineElement } from './line';
-import { LineMarkerType, LineShape } from '../interfaces';
+import { LineMarkerType, LineShape, PlaitShape } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 
 export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
@@ -115,7 +115,7 @@ export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient,
     return getEngine(shape).draw(board, outerRectangle, options);
 };
 
-export const getNearestPoint = (element: PlaitGeometry, point: Point, inflateDelta = 0) => {
+export const getNearestPoint = (element: PlaitShape, point: Point, inflateDelta = 0) => {
     const rectangle = getRectangleByPoints(element.points);
     const activeRectangle = RectangleClient.inflate(rectangle, inflateDelta);
     const shape = getShape(element);
@@ -275,7 +275,7 @@ export const createDefaultFlowchart = (point: Point) => {
     return [startElement, processElement1, decisionElement, processElement2, endElement, line1, line2, line3, line4, line5];
 };
 
-export const getAutoCompletePoints = (element: PlaitGeometry) => {
+export const getAutoCompletePoints = (element: PlaitShape) => {
     const AutoCompleteMargin = (12 + RESIZE_HANDLE_DIAMETER / 2) * 2;
     let rectangle = getRectangleByPoints(element.points);
     rectangle = RectangleClient.inflate(rectangle, AutoCompleteMargin);

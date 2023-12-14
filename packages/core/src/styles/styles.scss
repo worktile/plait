@@ -44,8 +44,8 @@
     }
 
     &.element-moving {
-        .selection-rectangle {
-            opacity: 0;
+        .element-active-host {
+            display: none;
         }
     }
 

@@ -32,7 +32,7 @@ export const PlaitDrawElement = {
             return false;
         }
     },
-    isShape: (value: any) => {
+    isShape: (value: any): value is PlaitShape => {
         return PlaitDrawElement.isImage(value) || PlaitDrawElement.isGeometry(value);
     },
     isBasicShape: (value: any) => {

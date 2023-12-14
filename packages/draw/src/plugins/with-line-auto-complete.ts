@@ -14,7 +14,7 @@ import {
     toPoint,
     transformPoint
 } from '@plait/core';
-import { LineShape, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
+import { LineShape, PlaitDrawElement, PlaitLine, PlaitShape } from '../interfaces';
 import { handleLineCreating, getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
 
 export interface LineAutoCompleteOptions {
@@ -28,20 +28,21 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
 
     let startPoint: Point | null = null;
     let lineShapeG: SVGGElement | null = null;
-    let sourceElement: PlaitGeometry | null;
+    let sourceElement: PlaitShape | null;
     let temporaryElement: PlaitLine | null;
 
     board.pointerDown = (event: PointerEvent) => {
         const selectedElements = getSelectedDrawElements(board);
+        const targetElement = selectedElements.length === 1 && selectedElements[0];
         const clickPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        if (!PlaitBoard.isReadonly(board) && selectedElements.length === 1 && PlaitDrawElement.isGeometry(selectedElements[0])) {
-            const points = getAutoCompletePoints(selectedElements[0]);
+        if (!PlaitBoard.isReadonly(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
+            const points = getAutoCompletePoints(targetElement);
             const index = getHitIndexOfAutoCompletePoint(clickPoint, points);
             const hitPoint = points[index];
             if (hitPoint) {
                 temporaryDisableSelection(board as PlaitOptionsBoard);
                 startPoint = clickPoint;
-                sourceElement = selectedElements[0];
+                sourceElement = targetElement;
                 BoardTransforms.updatePointerType(board, LineShape.elbow);
             }
         }

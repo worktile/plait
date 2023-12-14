@@ -43,10 +43,10 @@ import {
     LineMarkerType,
     LineShape,
     LineText,
-    MemorizeKey,
     PlaitDrawElement,
     PlaitGeometry,
-    PlaitLine
+    PlaitLine,
+    PlaitShape
 } from '../interfaces';
 import { getPointsByCenterPoint, getNearestPoint } from './geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './style/stroke';
@@ -352,7 +352,7 @@ export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, d
     }
 };
 
-export const transformPointToConnection = (board: PlaitBoard, point: Point, hitElement: PlaitGeometry): Point => {
+export const transformPointToConnection = (board: PlaitBoard, point: Point, hitElement: PlaitShape): Point => {
     let rectangle = getRectangleByPoints(hitElement.points);
     rectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
     let nearestPoint = getNearestPoint(hitElement, point, ACTIVE_STROKE_WIDTH);
@@ -361,7 +361,7 @@ export const transformPointToConnection = (board: PlaitBoard, point: Point, hitE
     return [(nearestPoint[0] - rectangle.x) / rectangle.width, (nearestPoint[1] - rectangle.y) / rectangle.height];
 };
 
-export const getHitConnectorPoint = (movingPoint: Point, hitElement: PlaitGeometry, rectangle: RectangleClient) => {
+export const getHitConnectorPoint = (movingPoint: Point, hitElement: PlaitShape, rectangle: RectangleClient) => {
     const shape = getShape(hitElement);
     const connector = getEngine(shape).getConnectorPoints(rectangle);
     const points = getPointsByCenterPoint(movingPoint, 10, 10);
@@ -450,7 +450,7 @@ export const handleLineCreating = (
     lineShape: LineShape,
     startPoint: Point,
     movingPoint: Point,
-    sourceElement: PlaitGeometry | null,
+    sourceElement: PlaitShape | null,
     lineShapeG: SVGGElement
 ) => {
     const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);

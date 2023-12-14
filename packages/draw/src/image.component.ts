@@ -3,6 +3,7 @@ import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, isSelectionMov
 import { Subject } from 'rxjs';
 import { CommonPluginElement, ImageGenerator } from '@plait/common';
 import { PlaitImage } from './interfaces/image';
+import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -19,6 +20,8 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
     }
 
     imageGenerator!: ImageGenerator<PlaitImage>;
+
+    lineAutoCompleteGenerator!: LineAutoCompleteGenerator;
 
     constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
         super(cdr);
@@ -42,12 +45,16 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
                 };
             }
         });
+        this.lineAutoCompleteGenerator = new LineAutoCompleteGenerator(this.board);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
         this.initializeGenerator();
         this.imageGenerator.processDrawing(this.element, this.g, this.viewContainerRef);
+        this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+            selected: this.selected
+        });
     }
 
     onContextChanged(
@@ -57,11 +64,17 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
         if (value.element !== previous.element) {
             this.imageGenerator.updateImage(this.g, previous.element, value.element);
             this.imageGenerator.componentRef.instance.isFocus = this.selected;
+            this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+                selected: this.selected
+            });
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
             if (!hasSameSelected || !hasSameHandleState) {
                 this.imageGenerator.componentRef.instance.isFocus = this.selected;
+                this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+                    selected: this.selected
+                });
             }
         }
     }
@@ -71,5 +84,6 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
         this.destroy$.next();
         this.destroy$.complete();
         this.imageGenerator.destroy();
+        this.lineAutoCompleteGenerator.destroy();
     }
 }

@@ -1,10 +1,10 @@
 import { PlaitBoard, RgbaToHEX, createG, drawCircle, getSelectedElements, isSelectionMoving } from '@plait/core';
-import { PlaitGeometry } from '../interfaces';
+import { PlaitGeometry, PlaitShape } from '../interfaces';
 import { ActiveGeneratorExtraData, Generator, PRIMARY_COLOR } from '@plait/common';
 import { getAutoCompletePoints } from '../utils';
 import { LINE_AUTO_COMPLETE_DIAMETER, LINE_AUTO_COMPLETE_OPACITY } from '../constants/line';
 
-export class LineAutoCompleteGenerator extends Generator<PlaitGeometry, ActiveGeneratorExtraData> {
+export class LineAutoCompleteGenerator extends Generator<PlaitShape, ActiveGeneratorExtraData> {
     autoCompleteG!: SVGGElement;
     hoverElement: SVGGElement | null = null;
 
@@ -12,9 +12,8 @@ export class LineAutoCompleteGenerator extends Generator<PlaitGeometry, ActiveGe
         super(board);
     }
 
-    canDraw(element: PlaitGeometry, data: ActiveGeneratorExtraData): boolean {
+    canDraw(element: PlaitShape, data: ActiveGeneratorExtraData): boolean {
         const selectedElements = getSelectedElements(this.board);
-
         if (data.selected && selectedElements.length === 1 && !isSelectionMoving(this.board)) {
             return true;
         } else {

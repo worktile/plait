@@ -12,12 +12,13 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
         reactionG?.remove();
         PlaitBoard.getBoardContainer(board).classList.remove(CursorClass.crosshair);
         const selectedElements = getSelectedDrawElements(board);
+        const targetElement = selectedElements.length === 1 && selectedElements[0];
         const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        if (!PlaitBoard.isReadonly(board) && !isSelectionMoving(board) && selectedElements.length === 1 && PlaitDrawElement.isGeometry(selectedElements[0])) {
-            const points = getAutoCompletePoints(selectedElements[0]);
+        if (!PlaitBoard.isReadonly(board) && !isSelectionMoving(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
+            const points = getAutoCompletePoints(targetElement);
             const hitIndex = getHitIndexOfAutoCompletePoint(movingPoint, points);
             const hitPoint = points[hitIndex];
-            const component = PlaitElement.getComponent(selectedElements[0]) as GeometryComponent;
+            const component = PlaitElement.getComponent(targetElement) as GeometryComponent;
             component.lineAutoCompleteGenerator!.recoverAutoCompleteG();
             if (hitPoint) {
                 component.lineAutoCompleteGenerator!.removeAutoCompleteG(hitIndex);
