@@ -145,7 +145,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     changeStrokeStyle(event: Event) {
         let value = (event.target as HTMLSelectElement).value;
-        PropertyTransforms.setStrokeColor(this.board, value, { getMemorizeKey });
+        PropertyTransforms.setStrokeStyle(this.board, value, { getMemorizeKey });
     }
 
     changeFill(property: string) {

@@ -57,6 +57,8 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
 
     board.pointerUp = (event: PointerEvent) => {
         if (temporaryElement) {
+            console.log('=======temporaryElement.source=======', temporaryElement.source);
+
             Transforms.insertNode(board, temporaryElement, [board.children.length]);
             clearSelectedElement(board);
             addSelectedElement(board, temporaryElement);

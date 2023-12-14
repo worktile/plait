@@ -460,10 +460,11 @@ export const handleLineCreating = (
     const lineGenerator = new LineShapeGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();
     let sourceMarker, targetMarker;
-    sourceMarker = memorizedLatest.source;
-    targetMarker = memorizedLatest.target;
-    sourceMarker && delete memorizedLatest.source;
-    targetMarker && delete memorizedLatest.target;
+    const properties = { ...memorizedLatest };
+    sourceMarker = properties.source;
+    targetMarker = properties.target;
+    sourceMarker && delete properties.source;
+    targetMarker && delete properties.target;
     const temporaryLineElement = createLineElement(
         lineShape,
         [startPoint, movingPoint],
@@ -472,7 +473,7 @@ export const handleLineCreating = (
         [],
         {
             strokeWidth: DefaultLineStyle.strokeWidth,
-            ...memorizedLatest
+            ...properties
         }
     );
     const linePoints = getLinePoints(board, temporaryLineElement);
@@ -480,5 +481,6 @@ export const handleLineCreating = (
     temporaryLineElement.points[1] = alignPoints(otherPoint, movingPoint);
     lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
     PlaitBoard.getElementActiveHost(board).append(lineShapeG);
+    console.log('=======temporaryLineElement.source=======', temporaryLineElement.source);
     return temporaryLineElement;
 };
