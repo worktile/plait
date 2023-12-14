@@ -33,7 +33,7 @@ export const getMemorizeKey = (element: PlaitElement) => {
 export const getLineMemorizedLatest = () => {
     const properties = getMemorizedLatest(MemorizeKey.line);
     delete properties?.text;
-    return properties || {};
+    return { ...properties } || {};
 };
 
 export const getMemorizedLatestByPointer = (pointer: DrawPointerType) => {
