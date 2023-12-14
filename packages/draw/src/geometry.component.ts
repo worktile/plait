@@ -169,6 +169,6 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         this.destroy$.next();
         this.destroy$.complete();
         this.activeGenerator.destroy();
-        this.lineAutoCompleteGenerator;
+        this.lineAutoCompleteGenerator.destroy();
     }
 }
