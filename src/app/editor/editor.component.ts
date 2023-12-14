@@ -76,7 +76,7 @@ export class BasicEditorComponent implements OnInit {
                     this.plugins.push(withLineRoute);
                     break;
                 default:
-                    this.value = [];
+                    this.value = [...mockDrawData];
                     break;
             }
         });
