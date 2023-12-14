@@ -1,5 +1,16 @@
 # @plait/common
 
+## 0.36.0
+
+### Minor Changes
+
+-   [#663](https://github.com/worktile/plait/pull/663) [`5db82bd0`](https://github.com/worktile/plait/commit/5db82bd0c196b3311d742a2ffb9c92800468f359) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move cursor class enum to core
+    improve line auto complete reaction
+
+*   [`3f6816ff`](https://github.com/worktile/plait/commit/3f6816ff5540a69a9b4e5c6ac8589b108d3656b5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - should prevent pointerDown when resizeDetectResult exist
+
+-   [#661](https://github.com/worktile/plait/pull/661) [`c68584c7`](https://github.com/worktile/plait/commit/c68584c7e5f18f1a98f50485c1c8eb06d941923b) Thanks [@WBbug](https://github.com/WBbug)! - change reduceRouteMargin
+
 ## 0.35.0
 
 ## 0.34.0

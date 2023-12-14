@@ -1,5 +1,39 @@
 # @plait/draw
 
+## 0.36.0
+
+### Minor Changes
+
+-   [#662](https://github.com/worktile/plait/pull/662) [`c838a6fb`](https://github.com/worktile/plait/commit/c838a6fb695d1953bc1a485fc43999e5f8d853c8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve line auto complete opacity and diameter
+
+*   [#663](https://github.com/worktile/plait/pull/663) [`5db82bd0`](https://github.com/worktile/plait/commit/5db82bd0c196b3311d742a2ffb9c92800468f359) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move cursor class enum to core
+    improve line auto complete reaction
+
+-   [#652](https://github.com/worktile/plait/pull/652) [`d1c1bd49`](https://github.com/worktile/plait/commit/d1c1bd495d3daad9a3f44df552b996f7dc6b5bad) Thanks [@WBbug](https://github.com/WBbug)! - support use memorize
+
+*   [#656](https://github.com/worktile/plait/pull/656) [`9355246d`](https://github.com/worktile/plait/commit/9355246da73dd3c8387d355936c14f091979808f) Thanks [@WBbug](https://github.com/WBbug)! - support memorize shape
+
+-   [`d8a765c3`](https://github.com/worktile/plait/commit/d8a765c33f44f5df6fd9dbf0b88f8d0a48368204) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add readonly condition before edit board
+
+*   [#658](https://github.com/worktile/plait/pull/658) [`a8fe6593`](https://github.com/worktile/plait/commit/a8fe65932fa5e499223a83fd4a74cf6a480a0953) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move active g to element active host
+    replace mouse event with pointer event in with-abstract-resize
+
+-   [`75b8285b`](https://github.com/worktile/plait/commit/75b8285b31ad49e11de55d0231fb47384d5b744a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename with-auto-complete to with-line-auto-autocomplete
+
+*   [#653](https://github.com/worktile/plait/pull/653) [`a6f4faa4`](https://github.com/worktile/plait/commit/a6f4faa49e627ba598c379192e9bd625d7a61d4f) Thanks [@WBbug](https://github.com/WBbug)! - support text properties memorize
+
+-   [#660](https://github.com/worktile/plait/pull/660) [`dc6c7c89`](https://github.com/worktile/plait/commit/dc6c7c89aa98d021060cfa02d530685892f38359) Thanks [@WBbug](https://github.com/WBbug)! - change auto complete style
+
+### Patch Changes
+
+-   [`7ad7f5be`](https://github.com/worktile/plait/commit/7ad7f5be8645dd604602c109a0445c29b1b1007a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - generate line active only by selected state
+
+*   [#665](https://github.com/worktile/plait/pull/665) [`27d735f0`](https://github.com/worktile/plait/commit/27d735f06db6d078caf0ec74d57146668e933e3a) Thanks [@WBbug](https://github.com/WBbug)! - adjust arrow
+
+-   [#664](https://github.com/worktile/plait/pull/664) [`6c4973b4`](https://github.com/worktile/plait/commit/6c4973b4c0ba73fa9f7404f3cd7f9b28faff3ce9) Thanks [@WBbug](https://github.com/WBbug)! - add point when points is one
+
+*   [#655](https://github.com/worktile/plait/pull/655) [`cba170f1`](https://github.com/worktile/plait/commit/cba170f1c4c6cfb702c84a0c474f03085dd349ab) Thanks [@WBbug](https://github.com/WBbug)! - add hit area
+
 ## 0.35.0
 
 ## 0.34.0

@@ -1,5 +1,15 @@
 # text
 
+## 0.36.0
+
+### Minor Changes
+
+-   [#653](https://github.com/worktile/plait/pull/653) [`a6f4faa4`](https://github.com/worktile/plait/commit/a6f4faa49e627ba598c379192e9bd625d7a61d4f) Thanks [@WBbug](https://github.com/WBbug)! - support text properties memorize
+
+### Patch Changes
+
+-   [#655](https://github.com/worktile/plait/pull/655) [`cba170f1`](https://github.com/worktile/plait/commit/cba170f1c4c6cfb702c84a0c474f03085dd349ab) Thanks [@WBbug](https://github.com/WBbug)! - add hit area
+
 ## 0.35.0
 
 ## 0.34.0

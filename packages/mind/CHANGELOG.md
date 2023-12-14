@@ -1,5 +1,17 @@
 # mind
 
+## 0.36.0
+
+### Minor Changes
+
+-   [#663](https://github.com/worktile/plait/pull/663) [`5db82bd0`](https://github.com/worktile/plait/commit/5db82bd0c196b3311d742a2ffb9c92800468f359) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move cursor class enum to core
+    improve line auto complete reaction
+
+*   [`d8a765c3`](https://github.com/worktile/plait/commit/d8a765c33f44f5df6fd9dbf0b88f8d0a48368204) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add readonly condition before edit board
+
+-   [#658](https://github.com/worktile/plait/pull/658) [`a8fe6593`](https://github.com/worktile/plait/commit/a8fe65932fa5e499223a83fd4a74cf6a480a0953) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move active g to element active host
+    replace mouse event with pointer event in with-abstract-resize
+
 ## 0.35.0
 
 ## 0.34.0
