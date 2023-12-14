@@ -1,7 +1,7 @@
 import { BOARD_TO_HOST } from '../utils/weak-maps';
 import { PlaitBoard } from '../interfaces/board';
 import { isInPlaitBoard, transformPoint } from '../utils/board';
-import { toPoint } from '../utils/dom/common';
+import { isMainPointer, toPoint } from '../utils/dom/common';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
@@ -30,7 +30,7 @@ export function withMoving(board: PlaitBoard) {
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
         let movableElements = board.children.filter(item => board.isMovable(item));
-        if (!PlaitBoard.isReadonly(board) && movableElements.length && !isPreventTouchMove(board)) {
+        if (!PlaitBoard.isReadonly(board) && movableElements.length && !isPreventTouchMove(board) && isMainPointer(event)) {
             startPoint = point;
             const selectedMovableElements = getSelectedElements(board).filter(item => movableElements.includes(item));
             const hitElement = getHitElementByPoint(board, point);
