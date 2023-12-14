@@ -1,25 +1,16 @@
-import { BaseData, EmojiItem, MindElement, MindTransforms, PlaitMindBoard, WithMindPluginKey } from '@plait/mind';
-import { PlaitBoard } from '@plait/core';
+import { PlaitMindBoard, WithMindOptions, WithMindPluginKey } from '@plait/mind';
+import { PlaitBoard, PlaitOptionsBoard } from '@plait/core';
 import { MindEmojiComponent } from '../editor/emoji/emoji.component';
-import { MindImageComponent } from '../editor/image/image.component';
 
 export const withMindExtend = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitMindBoard;
-    const { getPluginOptions } = newBoard;
 
-    newBoard.drawEmoji = (emojiItem: EmojiItem, element: MindElement<BaseData>) => {
-        return MindEmojiComponent;
-    };
-
-    newBoard.getPluginOptions = (key: string) => {
-        return {
-            ...getPluginOptions(key),
-            isMultiple: true,
-            emojiPadding: 0,
-            spaceBetweenEmojis: 4,
-            imageComponentType: MindImageComponent
-        };
-    };
+    (board as PlaitOptionsBoard).setPluginOptions<WithMindOptions>(WithMindPluginKey, {
+        isMultiple: true,
+        emojiPadding: 0,
+        spaceBetweenEmojis: 4,
+        emojiComponentType: MindEmojiComponent
+    });
 
     return newBoard;
 };

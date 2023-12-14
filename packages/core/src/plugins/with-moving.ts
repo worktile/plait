@@ -13,7 +13,7 @@ import { MERGING } from '../interfaces/history';
 import { isPreventTouchMove, preventTouchMove, handleTouchTarget, getRectangleByElements, distanceBetweenPointAndPoint } from '../utils';
 import { AlignReaction } from '../utils/reaction-manager';
 import { RectangleClient } from '../interfaces';
-import { PRESS_AND_MOVE_BUFFER } from '../constants';
+import { ACTIVE_MOVING_CLASS_NAME, PRESS_AND_MOVE_BUFFER } from '../constants';
 
 export function withMoving(board: PlaitBoard) {
     const { pointerDown, pointerMove, globalPointerUp, globalPointerMove } = board;
@@ -75,6 +75,7 @@ export function withMoving(board: PlaitBoard) {
                     offsetX -= ref.deltaX;
                     offsetY -= ref.deltaY;
                     alignG = ref.g;
+                    alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
                     PlaitBoard.getElementActiveHost(board).append(alignG);
 
                     handleTouchTarget(board);

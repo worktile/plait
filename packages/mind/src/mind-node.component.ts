@@ -101,7 +101,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
                 return element.data.image;
             }
         });
-        const plugins = this.board.getPluginOptions<WithTextOptions>(WithTextPluginKey).textPlugins;
+        const plugins = (this.board.getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
         const textManage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
                 const rect = getTopicRectangleByNode(this.board, this.node);
@@ -159,9 +159,11 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.node = newNode;
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
-            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected, isEditing: this.textManage.isEditing });
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+                selected: this.selected,
+                isEditing: this.textManage.isEditing
+            });
             this.nodeShapeGenerator.processDrawing(this.element, this.g, { node: this.node });
-            // this.nodeShapeGenerator.
             this.drawLink();
             this.drawEmojis();
             this.drawExtend();
@@ -248,10 +250,16 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     }
 
     editTopic() {
-        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected, isEditing: true });
+        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+            selected: this.selected,
+            isEditing: true
+        });
         this.textManage.edit((origin: ExitOrigin) => {
             if (origin === ExitOrigin.default) {
-                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected, isEditing: false });
+                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+                    selected: this.selected,
+                    isEditing: false
+                });
             }
         });
     }

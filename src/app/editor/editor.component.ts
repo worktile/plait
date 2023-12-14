@@ -21,6 +21,7 @@ import { FormsModule } from '@angular/forms';
 import { PlaitBoardComponent } from '../../../packages/core/src/board/board.component';
 import { ActivatedRoute, Params } from '@angular/router';
 import { mockLineData, withLineRoute } from '../plugins/with-line-route';
+import { withCommonPlugin } from '../plugins/with-common';
 
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
@@ -31,7 +32,7 @@ const LOCAL_STORAGE_KEY = 'plait-board-data';
     imports: [PlaitBoardComponent, FormsModule, AppZoomToolbarComponent, AppMainToolbarComponent, AppSettingPanelComponent]
 })
 export class BasicEditorComponent implements OnInit {
-    plugins = [withMind, withMindExtend, withDraw];
+    plugins = [withCommonPlugin, withMind, withMindExtend, withDraw];
 
     value: (PlaitElement | PlaitGeometry | PlaitMind)[] = [];
 

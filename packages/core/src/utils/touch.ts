@@ -38,6 +38,7 @@ export const handleTouchTarget = (board: PlaitBoard) => {
         const host = createG();
         host.appendChild(touchRef.target);
         touchRef.host = host;
+        host.classList.add('touch-target');
         PlaitBoard.getElementActiveHost(board).append(host);
     }
 };

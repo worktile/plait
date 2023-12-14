@@ -130,7 +130,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     }
 
     initializeTextManage() {
-        const plugins = (this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey).textPlugins;
+        const plugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
 
         const manage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {

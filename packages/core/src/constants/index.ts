@@ -6,6 +6,8 @@ export const CLIP_BOARD_FORMAT_KEY = 'x-plait-fragment';
 
 export const HOST_CLASS_NAME = 'plait-board-container';
 
+export const ACTIVE_MOVING_CLASS_NAME = 'active-with-moving';
+
 export const SCROLL_BAR_WIDTH = 20;
 
 export const MAX_RADIUS = 16;

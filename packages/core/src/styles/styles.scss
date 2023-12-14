@@ -45,7 +45,9 @@
 
     &.element-moving {
         .element-active-host {
-            display: none;
+            & > g:not(.active-with-moving) {
+                display: none;
+            }
         }
     }
 

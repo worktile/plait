@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inpu
 import { ImageBaseComponent } from '@plait/common';
 
 @Component({
-    selector: 'app-mind-node-image',
+    selector: 'app-plait-image',
     template: `
         <img [src]="imageItem.url" [width]="imageItem.width" [height]="imageItem.height" />
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true
 })
-export class MindImageComponent extends ImageBaseComponent {
+export class PlaitImageComponent extends ImageBaseComponent {
     constructor(protected elementRef: ElementRef<HTMLElement>, cdr: ChangeDetectorRef) {
         super(elementRef, cdr);
     }

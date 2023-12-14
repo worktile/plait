@@ -8,10 +8,6 @@ import { WithMindPluginKey } from '../constants/default';
 export const withMindExtend = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitMindBoard;
 
-    newBoard.drawEmoji = (emoji: EmojiItem, element: MindElement) => {
-        throw new Error('Not implement drawEmoji method error.');
-    };
-
     (board as PlaitOptionsBoard).setPluginOptions<WithMindOptions>(WithMindPluginKey, { spaceBetweenEmojis: 4, emojiPadding: 0 });
 
     return newBoard;

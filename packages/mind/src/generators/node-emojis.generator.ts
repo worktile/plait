@@ -1,10 +1,11 @@
 import { ComponentRef, ViewContainerRef } from '@angular/core';
-import { EmojiData, EmojiItem, MindElement } from '../interfaces';
+import { EmojiData, EmojiItem, MindElement, WithMindOptions } from '../interfaces';
 import { MindEmojiBaseComponent } from '../base/emoji-base.component';
-import { createForeignObject, createG } from '@plait/core';
+import { PlaitOptionsBoard, createForeignObject, createG } from '@plait/core';
 import { getEmojiFontSize } from '../utils/space/emoji';
 import { getEmojiForeignRectangle } from '../utils/position/emoji';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
+import { WithMindPluginKey } from '../constants/default';
 
 class EmojiGenerator {
     componentRef: ComponentRef<MindEmojiBaseComponent> | null = null;
@@ -13,7 +14,10 @@ class EmojiGenerator {
 
     draw(emoji: EmojiItem, element: MindElement<EmojiData>) {
         this.destroy();
-        const componentType = this.board.drawEmoji(emoji, element);
+        const componentType = (this.board as PlaitOptionsBoard).getPluginOptions<WithMindOptions>(WithMindPluginKey).emojiComponentType;
+        if (!componentType) {
+            throw new Error('can not find emoji component');
+        }
         this.componentRef = this.viewContainerRef.createComponent(componentType);
         this.componentRef.instance.emojiItem = emoji;
         this.componentRef.instance.board = this.board;
