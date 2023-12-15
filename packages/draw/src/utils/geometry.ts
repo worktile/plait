@@ -12,15 +12,9 @@ import {
     idCreator
 } from '@plait/core';
 import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols } from '../interfaces/geometry';
-import { Alignment, CustomText, buildText } from '@plait/text';
+import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from '@plait/text';
 import { Element } from 'slate';
-import {
-    DefaultBasicShapeProperty,
-    DefaultFlowchartPropertyMap,
-    DefaultTextProperty,
-    DrawThemeColors,
-    ShapeDefaultSpace
-} from '../constants';
+import { DefaultBasicShapeProperty, DefaultFlowchartPropertyMap, DrawThemeColors, ShapeDefaultSpace } from '../constants';
 import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
@@ -36,6 +30,7 @@ export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 
 export type TextProperties = Partial<CustomText> & { align?: Alignment };
 
 export const createGeometryElement = (
+    board: PlaitBoard,
     shape: GeometryShapes,
     points: [Point, Point],
     text: string | Element,
@@ -51,13 +46,14 @@ export const createGeometryElement = (
     textProperties = { ...textProperties };
     textProperties?.align && (alignment = textProperties?.align);
     delete textProperties?.align;
+    const textHeight = getDefaultTextShapeProperty(board, textProperties['font-size']).height;
     return {
         id: idCreator(),
         type: 'geometry',
         shape,
         angle: 0,
         opacity: 1,
-        textHeight: DefaultTextProperty.height,
+        textHeight,
         text: buildText(text, alignment, textProperties),
         points,
         ...textOptions,
@@ -147,7 +143,7 @@ export const getDefaultFlowchartProperty = (symbol: FlowchartSymbols) => {
     return DefaultFlowchartPropertyMap[symbol];
 };
 
-export const createDefaultFlowchart = (point: Point) => {
+export const createDefaultFlowchart = (board: PlaitBoard, point: Point) => {
     const decisionProperty = getDefaultFlowchartProperty(FlowchartSymbols.decision);
     const processProperty = getDefaultFlowchartProperty(FlowchartSymbols.process);
     const terminalProperty = getDefaultFlowchartProperty(FlowchartSymbols.terminal);
@@ -160,40 +156,45 @@ export const createDefaultFlowchart = (point: Point) => {
         strokeWidth: DefaultLineStyle.strokeWidth
     };
     const startElement = createGeometryElement(
+        board,
         FlowchartSymbols.terminal,
-        getDefaultGeometryPoints(FlowchartSymbols.terminal, point),
+        getDefaultGeometryPoints(board, FlowchartSymbols.terminal, point),
         '开始',
         options
     );
 
     const processPoint1: Point = [point[0], point[1] + terminalProperty.height / 2 + 55 + processProperty.height / 2];
     const processElement1 = createGeometryElement(
+        board,
         FlowchartSymbols.process,
-        getDefaultGeometryPoints(FlowchartSymbols.process, processPoint1),
+        getDefaultGeometryPoints(board, FlowchartSymbols.process, processPoint1),
         '过程',
         options
     );
 
     const decisionPoint: Point = [processPoint1[0], processPoint1[1] + processProperty.height / 2 + 55 + decisionProperty.height / 2];
     const decisionElement = createGeometryElement(
+        board,
         FlowchartSymbols.decision,
-        getDefaultGeometryPoints(FlowchartSymbols.decision, decisionPoint),
+        getDefaultGeometryPoints(board, FlowchartSymbols.decision, decisionPoint),
         '过程',
         options
     );
 
     const processPoint2: Point = [decisionPoint[0] + decisionProperty.width / 2 + 75 + processProperty.width / 2, decisionPoint[1]];
     const processElement2 = createGeometryElement(
+        board,
         FlowchartSymbols.process,
-        getDefaultGeometryPoints(FlowchartSymbols.process, processPoint2),
+        getDefaultGeometryPoints(board, FlowchartSymbols.process, processPoint2),
         '过程',
         options
     );
 
     const endPoint: Point = [decisionPoint[0], decisionPoint[1] + decisionProperty.height / 2 + 95 + terminalProperty.height / 2];
     const endElement = createGeometryElement(
+        board,
         FlowchartSymbols.terminal,
-        getDefaultGeometryPoints(FlowchartSymbols.terminal, endPoint),
+        getDefaultGeometryPoints(board, FlowchartSymbols.terminal, endPoint),
         '结束',
         options
     );
@@ -297,4 +298,14 @@ export const getDrawDefaultStrokeColor = (theme: ThemeColorMode) => {
 
 export const getFlowchartDefaultFill = (theme: ThemeColorMode) => {
     return DrawThemeColors[theme].fill;
+};
+
+export const getDefaultTextShapeProperty = (board: PlaitBoard, fontSize?: number | string) => {
+    fontSize = fontSize ? Number(fontSize) : DEFAULT_FONT_SIZE;
+    const textSize = getTextSize(board, '文本', 10, { fontSize });
+    return {
+        width: textSize.width + ShapeDefaultSpace.rectangleAndText * 2,
+        height: textSize.height,
+        text: '文本'
+    };
 };
