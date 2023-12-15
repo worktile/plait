@@ -46,7 +46,7 @@ export const createGeometryElement = (
     textProperties = { ...textProperties };
     textProperties?.align && (alignment = textProperties?.align);
     delete textProperties?.align;
-    const textHeight = getDefaultTextShapeProperty(board, Number(textProperties['font-size'])).height;
+    const textHeight = getDefaultTextShapeProperty(board, textProperties['font-size']).height;
     return {
         id: idCreator(),
         type: 'geometry',
@@ -300,7 +300,8 @@ export const getFlowchartDefaultFill = (theme: ThemeColorMode) => {
     return DrawThemeColors[theme].fill;
 };
 
-export const getDefaultTextShapeProperty = (board: PlaitBoard, fontSize: number = DEFAULT_FONT_SIZE) => {
+export const getDefaultTextShapeProperty = (board: PlaitBoard, fontSize?: number | string) => {
+    fontSize = fontSize ? Number(fontSize) : DEFAULT_FONT_SIZE;
     const textSize = getTextSize(board, '文本', 10, { fontSize });
     return {
         width: textSize.width + ShapeDefaultSpace.rectangleAndText * 2,
