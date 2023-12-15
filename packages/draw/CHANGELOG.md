@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.38.0
+
+### Minor Changes
+
+-   [#669](https://github.com/worktile/plait/pull/669) [`50e9fa9f`](https://github.com/worktile/plait/commit/50e9fa9f18e20c0fda047e7a64d0e1275cb0f216) Thanks [@WBbug](https://github.com/WBbug)! - optimize create text
+
 ## 0.37.0
 
 ### Minor Changes
