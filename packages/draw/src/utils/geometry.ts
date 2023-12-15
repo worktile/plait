@@ -55,7 +55,6 @@ export const createGeometryElement = (
     textProperties?.textHeight && (textHeight = textProperties?.textHeight);
     delete textProperties?.align;
     delete textProperties?.textHeight;
-    // console.log('=======textHeight=======', textHeight);
     return {
         id: idCreator(),
         type: 'geometry',
