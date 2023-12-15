@@ -18,26 +18,19 @@ import {
     GeometryStyleOptions,
     createGeometryElement,
     getDefaultFlowchartProperty,
-    getDefaultTextProperty,
+    getDefaultTextShapeProperty,
     getMemorizedLatestByPointer,
     getPointsByCenterPoint,
     getTextRectangle,
     memorizeLatestShape
 } from '../utils';
-import {
-    DefaultBasicShapeProperty,
-    DefaultTextProperty,
-    DrawPointerType,
-    ShapeDefaultSpace,
-    getFlowchartPointers,
-    getGeometryPointers
-} from '../constants';
+import { DefaultBasicShapeProperty, DefaultTextProperty, DrawPointerType, getFlowchartPointers, getGeometryPointers } from '../constants';
 import { normalizeShapePoints, isDndMode, isDrawingMode, getRectangleByPoints } from '@plait/common';
 import { DEFAULT_FONT_SIZE, TextManage } from '@plait/text';
 import { isKeyHotkey } from 'is-hotkey';
 import { NgZone } from '@angular/core';
 
-export interface FakeCreateNodeRef {
+export interface FakeCreateTextRef {
     g: SVGGElement;
     textManage: TextManage;
 }
@@ -49,7 +42,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
 
     let temporaryElement: PlaitGeometry | null = null;
 
-    let fakeCreateNodeRef: FakeCreateNodeRef | null = null;
+    let fakeCreateTextRef: FakeCreateTextRef | null = null;
 
     board.pointerMove = (event: PointerEvent) => {
         geometryShapeG?.remove();
@@ -65,12 +58,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
         if (dragMode) {
             const memorizedLatest = getMemorizedLatestByPointer(pointer);
             if (pointer === BasicShapes.text) {
-                const points = getDefaultGeometryPoints(
-                    board,
-                    pointer,
-                    movingPoint,
-                    memorizedLatest.textProperties['font-size'] || DEFAULT_FONT_SIZE
-                );
+                const points = getDefaultGeometryPoints(board, pointer, movingPoint, memorizedLatest.textProperties['font-size']);
                 temporaryElement = createGeometryElement(
                     board,
                     BasicShapes.text,
@@ -79,7 +67,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
                     memorizedLatest.geometryProperties as GeometryStyleOptions,
                     memorizedLatest.textProperties
                 );
-                if (!fakeCreateNodeRef) {
+                if (!fakeCreateTextRef) {
                     const textManage = new TextManage(board, PlaitBoard.getComponent(board).viewContainerRef, {
                         getRectangle: () => {
                             return getTextRectangle(temporaryElement!);
@@ -90,16 +78,16 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
                         .run(() => {
                             textManage.draw(temporaryElement!.text);
                         });
-                    fakeCreateNodeRef = {
+                    fakeCreateTextRef = {
                         g: createG(),
                         textManage
                     };
 
-                    PlaitBoard.getHost(board).append(fakeCreateNodeRef.g);
-                    fakeCreateNodeRef.g.append(textManage.g);
+                    PlaitBoard.getHost(board).append(fakeCreateTextRef.g);
+                    fakeCreateTextRef.g.append(textManage.g);
                 } else {
-                    fakeCreateNodeRef.textManage.updateRectangle();
-                    fakeCreateNodeRef.g.append(fakeCreateNodeRef.textManage.g);
+                    fakeCreateTextRef.textManage.updateRectangle();
+                    fakeCreateTextRef.g.append(fakeCreateTextRef.textManage.g);
                 }
             } else {
                 const points = getDefaultGeometryPoints(board, pointer, movingPoint);
@@ -129,9 +117,9 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
 
         if (dragMode && temporaryElement) {
             insertElement(board, temporaryElement);
-            fakeCreateNodeRef?.textManage.destroy();
-            fakeCreateNodeRef?.g.remove();
-            fakeCreateNodeRef = null;
+            fakeCreateTextRef?.textManage.destroy();
+            fakeCreateTextRef?.g.remove();
+            fakeCreateTextRef = null;
         }
 
         geometryShapeG?.remove();
@@ -174,12 +162,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             preventTouchMove(board, event, true);
             if (pointer === BasicShapes.text) {
                 const memorizedLatest = getMemorizedLatestByPointer(pointer);
-                const points = getDefaultGeometryPoints(
-                    board,
-                    pointer,
-                    point,
-                    memorizedLatest.textProperties['font-size'] || DEFAULT_FONT_SIZE
-                );
+                const points = getDefaultGeometryPoints(board, pointer, point, memorizedLatest.textProperties['font-size']);
                 const textElement = createGeometryElement(
                     board,
                     BasicShapes.text,
@@ -251,7 +234,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             }
         }
         if (temporaryElement) {
-            insertElement(board, temporaryElement)
+            insertElement(board, temporaryElement);
         }
 
         geometryShapeG?.remove();
@@ -275,11 +258,7 @@ export const getGeometryDefaultProperty = (board: PlaitBoard, pointer: DrawPoint
     const isText = pointer === BasicShapes.text;
     const isFlowChart = getFlowchartPointers().includes(pointer);
     if (isText) {
-        const textProperty = getDefaultTextProperty(board, fontSize || DEFAULT_FONT_SIZE);
-        return {
-            width: textProperty.width + ShapeDefaultSpace.rectangleAndText * 2,
-            height: textProperty.height
-        };
+        return getDefaultTextShapeProperty(board, fontSize);
     } else if (isFlowChart) {
         return getDefaultFlowchartProperty(pointer as FlowchartSymbols);
     } else {

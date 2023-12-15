@@ -12,15 +12,9 @@ import {
     idCreator
 } from '@plait/core';
 import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols } from '../interfaces/geometry';
-import { Alignment, CustomText, buildText, getTextSize } from '@plait/text';
+import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from '@plait/text';
 import { Element } from 'slate';
-import {
-    DefaultBasicShapeProperty,
-    DefaultFlowchartPropertyMap,
-    DefaultTextProperty,
-    DrawThemeColors,
-    ShapeDefaultSpace
-} from '../constants';
+import { DefaultBasicShapeProperty, DefaultFlowchartPropertyMap, DrawThemeColors, ShapeDefaultSpace } from '../constants';
 import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
@@ -52,9 +46,7 @@ export const createGeometryElement = (
     textProperties = { ...textProperties };
     textProperties?.align && (alignment = textProperties?.align);
     delete textProperties?.align;
-    const textHeight = textProperties['font-size']
-        ? getDefaultTextProperty(board, Number(textProperties['font-size'])).height
-        : DefaultTextProperty.height;
+    const textHeight = getDefaultTextShapeProperty(board, Number(textProperties['font-size'])).height;
     return {
         id: idCreator(),
         type: 'geometry',
@@ -165,7 +157,6 @@ export const createDefaultFlowchart = (board: PlaitBoard, point: Point) => {
     };
     const startElement = createGeometryElement(
         board,
-
         FlowchartSymbols.terminal,
         getDefaultGeometryPoints(board, FlowchartSymbols.terminal, point),
         '开始',
@@ -309,9 +300,11 @@ export const getFlowchartDefaultFill = (theme: ThemeColorMode) => {
     return DrawThemeColors[theme].fill;
 };
 
-export const getDefaultTextProperty = (board: PlaitBoard, fontSize: number) => {
+export const getDefaultTextShapeProperty = (board: PlaitBoard, fontSize: number = DEFAULT_FONT_SIZE) => {
+    const textSize = getTextSize(board, '文本', 10, { fontSize });
     return {
-        ...getTextSize(board, '文本', 10, { fontSize }),
+        width: textSize.width + ShapeDefaultSpace.rectangleAndText * 2,
+        height: textSize.height,
         text: '文本'
     };
 };
