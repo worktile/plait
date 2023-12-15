@@ -1,5 +1,11 @@
 # @plait/common
 
+## 0.37.0
+
+### Minor Changes
+
+-   [#666](https://github.com/worktile/plait/pull/666) [`74e1b85a`](https://github.com/worktile/plait/commit/74e1b85a91ba4edce8218e34b89ad03e58f4227d) Thanks [@WBbug](https://github.com/WBbug)! - get common transform
+
 ## 0.36.0
 
 ### Minor Changes

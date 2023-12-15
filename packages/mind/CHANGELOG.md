@@ -1,5 +1,12 @@
 # mind
 
+## 0.37.0
+
+### Minor Changes
+
+-   [`2ca2c657`](https://github.com/worktile/plait/commit/2ca2c65710c278d3199ef62be45fef779ad17121) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move drawEmoji hook to options
+    solve align and distribute line can not show
+
 ## 0.36.0
 
 ### Minor Changes

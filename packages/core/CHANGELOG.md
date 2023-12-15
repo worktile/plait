@@ -1,5 +1,15 @@
 # plait
 
+## 0.37.0
+
+### Minor Changes
+
+-   [`2ca2c657`](https://github.com/worktile/plait/commit/2ca2c65710c278d3199ef62be45fef779ad17121) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move drawEmoji hook to options
+    solve align and distribute line can not show
+
+*   [`9562df03`](https://github.com/worktile/plait/commit/9562df03c7a1b5edd80090f1a97a09572dec30fc) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support line auto-complete in image element
+    hide active host on moving
+
 ## 0.36.0
 
 ### Minor Changes

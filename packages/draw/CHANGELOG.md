@@ -1,5 +1,21 @@
 # @plait/draw
 
+## 0.37.0
+
+### Minor Changes
+
+-   [#667](https://github.com/worktile/plait/pull/667) [`019c29fb`](https://github.com/worktile/plait/commit/019c29fbf41b755b8505b26c723732de4e4ac474) Thanks [@WBbug](https://github.com/WBbug)! - optimize memorize line
+
+*   [#666](https://github.com/worktile/plait/pull/666) [`74e1b85a`](https://github.com/worktile/plait/commit/74e1b85a91ba4edce8218e34b89ad03e58f4227d) Thanks [@WBbug](https://github.com/WBbug)! - get common transform
+
+-   [`2ca2c657`](https://github.com/worktile/plait/commit/2ca2c65710c278d3199ef62be45fef779ad17121) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move drawEmoji hook to options
+    solve align and distribute line can not show
+
+*   [`9562df03`](https://github.com/worktile/plait/commit/9562df03c7a1b5edd80090f1a97a09572dec30fc) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support line auto-complete in image element
+    hide active host on moving
+
+-   [#668](https://github.com/worktile/plait/pull/668) [`2d920c78`](https://github.com/worktile/plait/commit/2d920c782b4c9dfbc4956edc256b689a600a28d9) Thanks [@WBbug](https://github.com/WBbug)! - optimize text memorize
+
 ## 0.36.0
 
 ### Minor Changes
