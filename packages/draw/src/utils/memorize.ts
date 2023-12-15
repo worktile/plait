@@ -44,7 +44,7 @@ export const getMemorizedLatestByPointer = (pointer: DrawPointerType) => {
         memorizeKey = MemorizeKey.flowchart;
     }
     const properties = { ...getMemorizedLatest(memorizeKey) } || {};
-    const textProperties = properties.text || {};
+    const textProperties = { ...properties.text } || {};
     delete properties.text;
     return { textProperties, geometryProperties: properties };
 };

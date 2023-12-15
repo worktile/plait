@@ -6,7 +6,7 @@ import { Element } from 'slate';
 import { normalizeShapePoints } from '@plait/common';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
-    let newElement = createGeometryElement(board, shape, points, '', {
+    let newElement = createGeometryElement(shape, points, '', {
         strokeWidth: DefaultBasicShapeProperty.strokeWidth
     }) as PlaitGeometry;
     Transforms.insertNode(board, newElement, [board.children.length]);
@@ -15,7 +15,7 @@ export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape:
 };
 
 export const insertText = (board: PlaitBoard, points: [Point, Point], text: string | Element = '文本') => {
-    let newElement = createGeometryElement(board, BasicShapes.text, points, text) as PlaitGeometry;
+    let newElement = createGeometryElement(BasicShapes.text, points, text) as PlaitGeometry;
     Transforms.insertNode(board, newElement, [board.children.length]);
     clearSelectedElement(board);
     addSelectedElement(board, newElement);
