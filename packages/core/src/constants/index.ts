@@ -19,4 +19,4 @@ export const POINTER_BUTTON = {
     TOUCH: -1
 } as const;
 
-export const PRESS_AND_MOVE_BUFFER = 5;
+export const PRESS_AND_MOVE_BUFFER = 3;
