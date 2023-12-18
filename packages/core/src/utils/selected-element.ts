@@ -91,7 +91,19 @@ export const addSelectedElement = (board: PlaitBoard, element: PlaitElement | Pl
 export const removeSelectedElement = (board: PlaitBoard, element: PlaitElement) => {
     const selectedElements = getSelectedElements(board);
     if (selectedElements.includes(element)) {
-        const newSelectedElements = selectedElements.filter(value => value !== element);
+        const targetElements: PlaitElement[] = [];
+        if (board.isRecursion(element)) {
+            depthFirstRecursion(
+                element,
+                node => {
+                    targetElements.push(node);
+                },
+                node => board.isRecursion(node)
+            );
+        } else {
+            targetElements.push(element);
+        }
+        const newSelectedElements = selectedElements.filter(value => !targetElements.includes(value));
         cacheSelectedElements(board, newSelectedElements);
     }
 };
