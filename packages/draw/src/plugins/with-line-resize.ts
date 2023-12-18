@@ -4,7 +4,7 @@ import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineHandle, PlaitLine } from '../interfaces';
-import { alignPoints, getLinePoints, transformPointToConnection } from '../utils';
+import { alignPoints, transformPointToConnection } from '../utils';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
 
@@ -26,7 +26,7 @@ export const withLineResize = (board: PlaitBoard) => {
                             element: value,
                             handle: handleRef.handle
                         };
-                        pointIndex = handleRef.index;
+                        pointIndex = handleRef.handle === LineResizeHandle.addHandle ? handleRef.index + 1 : handleRef.index;
                     }
                 });
                 return result;
@@ -49,7 +49,7 @@ export const withLineResize = (board: PlaitBoard) => {
                     object.boundId = undefined;
                 }
             } else if (resizeRef.handle === LineResizeHandle.addHandle) {
-                points.splice(pointIndex + 1, 0, resizeState.endTransformPoint);
+                points.splice(pointIndex, 0, resizeState.endTransformPoint);
             } else {
                 points[pointIndex] = resizeState.endTransformPoint;
             }
