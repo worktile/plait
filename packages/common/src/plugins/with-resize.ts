@@ -71,6 +71,8 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
                 handle: resizeDetectResult.handle
             };
             preventTouchMove(board, event, true);
+            // prevent text from being selected when user pressed shift and pointer down
+            event.preventDefault();
             return;
         }
         pointerDown(event);

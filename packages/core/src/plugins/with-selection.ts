@@ -5,6 +5,7 @@ import { transformPoint } from '../utils/board';
 import { isMainPointer, toPoint } from '../utils/dom/common';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import {
+    addSelectedElement,
     cacheSelectedElements,
     clearSelectedElement,
     getHitElementByPoint,
@@ -19,6 +20,7 @@ import { ACTIVE_STROKE_WIDTH, ATTACHED_ELEMENT_CLASS_NAME, SELECTION_RECTANGLE_C
 import { drawRectangle, preventTouchMove, throttleRAF } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
+import { Selection } from '../interfaces/selection';
 
 export interface WithPluginOptions extends PlaitPluginOptions {
     isMultiple: boolean;
@@ -26,23 +28,23 @@ export interface WithPluginOptions extends PlaitPluginOptions {
 }
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, globalPointerMove, globalPointerUp, onChange } = board;
-
+    const { pointerDown, globalPointerMove, globalPointerUp, onChange, keyup } = board;
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
     let selectionRectangleG: SVGGElement | null;
     let previousSelectedElements: PlaitElement[];
-
     // prevent text from being selected when user pressed main pointer and is moving
     let needPreventNativeSelectionWhenMoving = false;
+    let isShift = false;
 
     board.pointerDown = (event: PointerEvent) => {
         const isHitText = event.target instanceof Element && event.target.closest('.plait-richtext-container');
-
-        // prevent text from being selected when user pressed shift and pointer down
-        if (!isHitText && event.shiftKey) {
+        if (event.shiftKey) {
             event.preventDefault();
+            isShift = true;
+        } else {
+            isShift = false;
         }
 
         if (!isHitText) {
@@ -55,13 +57,12 @@ export function withSelection(board: PlaitBoard) {
         }
 
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
-
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         const selection = { anchor: point, focus: point };
         const hitElement = getHitElementByPoint(board, point);
         const selectedElements = getSelectedElements(board);
 
-        if (hitElement && selectedElements.includes(hitElement) && !options.isDisabledSelect) {
+        if (!isShift && hitElement && selectedElements.includes(hitElement) && !options.isDisabledSelect) {
             pointerDown(event);
             return;
         }
@@ -75,6 +76,13 @@ export function withSelection(board: PlaitBoard) {
         Transforms.setSelection(board, selection);
 
         pointerDown(event);
+    };
+
+    board.keyup = (event: KeyboardEvent) => {
+        if (isShift && event.key === 'Shift') {
+            isShift = false;
+        }
+        keyup(event);
     };
 
     board.globalPointerMove = (event: PointerEvent) => {
@@ -147,18 +155,32 @@ export function withSelection(board: PlaitBoard) {
 
         // calc selected elements entry
         if (board.pointer !== PlaitPointerType.hand && !options.isDisabledSelect) {
+            const isSetSelection = board.operations.find(value => value.type === 'set_selection');
             try {
-                if (board.operations.find(value => value.type === 'set_selection')) {
+                if (isSetSelection) {
                     selectionRectangleG?.remove();
                     const temporaryElements = getTemporaryElements(board);
                     let elements = temporaryElements ? temporaryElements : getHitElementsBySelection(board);
                     if (!options.isMultiple && elements.length > 1) {
                         elements = [elements[0]];
                     }
-                    cacheSelectedElements(board, elements);
-                    previousSelectedElements = elements;
+                    if (isShift && board.selection && Selection.isCollapsed(board.selection)) {
+                        const newSelectedElements = [...getSelectedElements(board)];
+                        elements.forEach(element => {
+                            if (newSelectedElements.includes(element)) {
+                                newSelectedElements.splice(newSelectedElements.indexOf(element), 1);
+                            } else {
+                                newSelectedElements.push(element);
+                            }
+                        });
+                        cacheSelectedElements(board, newSelectedElements);
+                    } else {
+                        cacheSelectedElements(board, elements);
+                    }
+                    const newElements = getSelectedElements(board);
+                    previousSelectedElements = newElements;
                     deleteTemporaryElements(board);
-                    if (!isSelectionMoving(board) && elements.length > 1) {
+                    if (!isSelectionMoving(board) && newElements.length > 1) {
                         selectionRectangleG = createSelectionRectangleG(board);
                     }
                 } else {

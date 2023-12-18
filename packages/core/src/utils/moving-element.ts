@@ -5,6 +5,10 @@ export const getMovingElements = (board: PlaitBoard) => {
     return BOARD_TO_MOVING_ELEMENT.get(board) || [];
 };
 
+export const isMovingElements = (board: PlaitBoard) => {
+    return (BOARD_TO_MOVING_ELEMENT.get(board) || []).length > 0;
+};
+
 export const addMovingElements = (board: PlaitBoard, elements: PlaitElement[]) => {
     const movingElements = getMovingElements(board);
     const newElements = elements.filter(item => !movingElements.find(movingElement => movingElement.key === item.key));

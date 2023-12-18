@@ -12,7 +12,7 @@ export const getHitElementsBySelection = (
     selection?: Selection,
     match: (element: PlaitElement) => boolean = () => true
 ) => {
-    const newSelection = selection || board.selection as Selection;
+    const newSelection = selection || (board.selection as Selection);
     const rectangleHitElements: PlaitElement[] = [];
     if (!newSelection) {
         return [];
@@ -77,9 +77,15 @@ export const getSelectedElements = (board: PlaitBoard) => {
     return BOARD_TO_SELECTED_ELEMENT.get(board) || [];
 };
 
-export const addSelectedElement = (board: PlaitBoard, element: PlaitElement) => {
+export const addSelectedElement = (board: PlaitBoard, element: PlaitElement | PlaitElement[]) => {
+    let elements = [];
+    if (Array.isArray(element)) {
+        elements.push(...element);
+    } else {
+        elements.push(element);
+    }
     const selectedElements = getSelectedElements(board);
-    cacheSelectedElements(board, [...selectedElements, element]);
+    cacheSelectedElements(board, [...selectedElements, ...elements]);
 };
 
 export const removeSelectedElement = (board: PlaitBoard, element: PlaitElement) => {
