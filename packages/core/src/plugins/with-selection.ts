@@ -5,7 +5,6 @@ import { transformPoint } from '../utils/board';
 import { isMainPointer, toPoint } from '../utils/dom/common';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import {
-    addSelectedElement,
     cacheSelectedElements,
     clearSelectedElement,
     getHitElementByPoint,
@@ -91,7 +90,7 @@ export function withSelection(board: PlaitBoard) {
             event.preventDefault();
         }
 
-        if (start) {
+        if (start && PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
             const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const rectangle = RectangleClient.toRectangleClient([start, movedTarget]);
             selectionMovingG?.remove();
@@ -141,6 +140,10 @@ export function withSelection(board: PlaitBoard) {
     };
 
     board.onChange = () => {
+        if (PlaitBoard.isReadonly(board)) {
+            onChange();
+            return;
+        }
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
         if (options.isDisabledSelect) {
             clearSelectedElement(board);

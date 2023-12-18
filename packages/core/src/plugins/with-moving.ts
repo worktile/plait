@@ -12,7 +12,7 @@ import { addMovingElements, getMovingElements, removeMovingElements } from '../u
 import { MERGING } from '../interfaces/history';
 import { isPreventTouchMove, preventTouchMove, handleTouchTarget, getRectangleByElements, distanceBetweenPointAndPoint } from '../utils';
 import { AlignReaction } from '../utils/reaction-manager';
-import { RectangleClient } from '../interfaces';
+import { PlaitPointerType, RectangleClient } from '../interfaces';
 import { ACTIVE_MOVING_CLASS_NAME, PRESS_AND_MOVE_BUFFER } from '../constants';
 
 export function withMoving(board: PlaitBoard) {
@@ -30,7 +30,13 @@ export function withMoving(board: PlaitBoard) {
         const host = BOARD_TO_HOST.get(board);
         const point = transformPoint(board, toPoint(event.x, event.y, host!));
         let movableElements = board.children.filter(item => board.isMovable(item));
-        if (!PlaitBoard.isReadonly(board) && movableElements.length && !isPreventTouchMove(board) && isMainPointer(event)) {
+        if (
+            !PlaitBoard.isReadonly(board) &&
+            PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
+            movableElements.length &&
+            !isPreventTouchMove(board) &&
+            isMainPointer(event)
+        ) {
             startPoint = point;
             const selectedMovableElements = getSelectedElements(board).filter(item => movableElements.includes(item));
             const hitElement = getHitElementByPoint(board, point);

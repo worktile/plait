@@ -4,25 +4,25 @@ import { isMainPointer } from '../utils/dom/common';
 import { updateViewportContainerScroll } from '../utils/viewport';
 
 export function withHandPointer<T extends PlaitBoard>(board: T) {
-    const { mousedown, mousemove, globalMouseup, keydown, keyup } = board;
+    const { pointerDown, pointerMove, globalPointerUp, keydown, keyup } = board;
     let isMoving: boolean = false;
     const plaitBoardMove: PlaitBoardMove = {
         x: 0,
         y: 0
     };
 
-    board.mousedown = (event: MouseEvent) => {
+    board.pointerDown = (event: PointerEvent) => {
         if (PlaitBoard.isPointer(board, PlaitPointerType.hand) && isMainPointer(event)) {
             isMoving = true;
             PlaitBoard.getBoardContainer(board).classList.add('viewport-moving');
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
         }
-        mousedown(event);
+        pointerDown(event);
     };
 
-    board.mousemove = (event: MouseEvent) => {
-        if (PlaitBoard.isPointer(board, PlaitPointerType.hand) && board.selection && isMoving) {
+    board.pointerMove = (event: PointerEvent) => {
+        if (PlaitBoard.isPointer(board, PlaitPointerType.hand) && isMoving) {
             const viewportContainer = PlaitBoard.getViewportContainer(board);
             const left = viewportContainer.scrollLeft - (event.x - plaitBoardMove.x);
             const top = viewportContainer.scrollTop - (event.y - plaitBoardMove.y);
@@ -30,17 +30,17 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
             plaitBoardMove.x = event.x;
             plaitBoardMove.y = event.y;
         }
-        mousemove(event);
+        pointerMove(event);
     };
 
-    board.globalMouseup = (event: MouseEvent) => {
-        if (board.selection) {
+    board.globalPointerUp = (event: PointerEvent) => {
+        if (isMoving) {
             isMoving = false;
             PlaitBoard.getBoardContainer(board).classList.remove('viewport-moving');
             plaitBoardMove.x = 0;
             plaitBoardMove.y = 0;
         }
-        globalMouseup(event);
+        globalPointerUp(event);
     };
 
     board.keydown = (event: KeyboardEvent) => {
