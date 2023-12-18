@@ -37,29 +37,29 @@ export const withLineResize = (board: PlaitBoard) => {
             let points: Point[] = [...resizeRef.element.points];
             let source: LineHandle = { ...resizeRef.element.source };
             let target: LineHandle = { ...resizeRef.element.target };
+            const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, REACTION_MARGIN);
             if (resizeRef.handle === LineResizeHandle.source || resizeRef.handle === LineResizeHandle.target) {
                 const object = resizeRef.handle === LineResizeHandle.source ? source : target;
                 points[pointIndex] = resizeState.endTransformPoint;
-                const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, REACTION_MARGIN);
                 if (hitElement) {
                     object.connection = transformPointToConnection(board, resizeState.endTransformPoint, hitElement);
                     object.boundId = hitElement.id;
                 } else {
                     object.connection = undefined;
                     object.boundId = undefined;
-                    if (points.length === 2) {
-                        let movingPoint = points[pointIndex];
-                        const drawPoints = getLinePoints(board, resizeRef.element);
-                        const index = pointIndex === 0 ? drawPoints.length - 1 : 0;
-                        const otherPoint = drawPoints[index];
-                        points[pointIndex] = alignPoints(otherPoint, movingPoint);
-                    }
                 }
             } else if (resizeRef.handle === LineResizeHandle.addHandle) {
                 points.splice(pointIndex + 1, 0, resizeState.endTransformPoint);
             } else {
                 points[pointIndex] = resizeState.endTransformPoint;
             }
+            if (!hitElement) {
+                points.forEach((point, index) => {
+                    if (index === pointIndex) return;
+                    points[pointIndex] = alignPoints(point, points[pointIndex]);
+                });
+            }
+
             DrawTransforms.resizeLine(board, { points, source, target }, resizeRef.path);
         }
     };
