@@ -17,6 +17,7 @@ export const withSingleLine = <T extends AngularEditor>(editor: T) => {
             if (text.endsWith('\n')) {
                 text = text.substring(0, text.length - 1);
             }
+            text = text.trim().replace(/\t+/g, ' ');
             e.insertText(text);
             return;
         }
