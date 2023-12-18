@@ -1,30 +1,17 @@
-import {
-    BoardTransforms,
-    PlaitBoard,
-    PlaitPointerType,
-    Point,
-    RectangleClient,
-    Transforms,
-    addSelectedElement,
-    clearSelectedElement,
-    createG,
-    preventTouchMove,
-    toPoint,
-    transformPoint
-} from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, createG, preventTouchMove, toPoint, transformPoint } from '@plait/core';
 import { BasicShapes, GeometryShapes, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
 import {
-    GeometryStyleOptions,
-    createGeometryElement,
+    createDefaultGeometry,
+    createDefaultText,
     getDefaultGeometryPoints,
     getDefaultTextShapeProperty,
     getMemorizedLatestByPointer,
     getPointsByCenterPoint,
     getTextRectangle,
-    memorizeLatestShape
+    insertElement
 } from '../utils';
-import { DefaultBasicShapeProperty, DefaultTextProperty, DrawPointerType, getGeometryPointers } from '../constants';
+import { DrawPointerType, getGeometryPointers } from '../constants';
 import { normalizeShapePoints, isDndMode, isDrawingMode } from '@plait/common';
 import { TextManage } from '@plait/text';
 import { isKeyHotkey } from 'is-hotkey';
@@ -60,13 +47,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
             if (pointer === BasicShapes.text) {
                 const property = getDefaultTextShapeProperty(board, memorizedLatest.textProperties['font-size']);
                 const points = getPointsByCenterPoint(movingPoint, property.width, property.height);
-                temporaryElement = createGeometryElement(
-                    BasicShapes.text,
-                    points,
-                    DefaultTextProperty.text,
-                    memorizedLatest.geometryProperties as GeometryStyleOptions,
-                    { ...memorizedLatest.textProperties, textHeight: property.height }
-                );
+                temporaryElement = createDefaultText(board, points);
                 if (!fakeCreateTextRef) {
                     const textManage = new TextManage(board, PlaitBoard.getComponent(board).viewContainerRef, {
                         getRectangle: () => {
@@ -91,17 +72,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
                 }
             } else {
                 const points = getDefaultGeometryPoints(pointer, movingPoint);
-                const textHeight = getDefaultTextShapeProperty(board, memorizedLatest.textProperties['font-size']).height;
-                temporaryElement = createGeometryElement(
-                    (pointer as unknown) as GeometryShapes,
-                    points,
-                    '',
-                    {
-                        strokeWidth: DefaultBasicShapeProperty.strokeWidth,
-                        ...(memorizedLatest.geometryProperties as GeometryStyleOptions)
-                    },
-                    { ...memorizedLatest.textProperties, textHeight }
-                );
+                temporaryElement = createDefaultGeometry(board, points, pointer as GeometryShapes);
                 geometryGenerator.processDrawing(temporaryElement, geometryShapeG);
                 PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
             }
@@ -164,17 +135,8 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
                 const memorizedLatest = getMemorizedLatestByPointer(pointer);
                 const property = getDefaultTextShapeProperty(board, memorizedLatest.textProperties['font-size']);
                 const points = getPointsByCenterPoint(point, property.width, property.height);
-                const textElement = createGeometryElement(
-                    BasicShapes.text,
-                    points,
-                    DefaultTextProperty.text,
-                    memorizedLatest.geometryProperties as GeometryStyleOptions,
-                    { ...memorizedLatest.textProperties, textHeight: property.height }
-                );
-                Transforms.insertNode(board, textElement, [board.children.length]);
-                clearSelectedElement(board);
-                addSelectedElement(board, textElement);
-                BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
+                const textElement = createDefaultText(board, points);
+                insertElement(board, textElement);
                 start = null;
             }
         }
@@ -190,18 +152,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
         if (drawMode && pointer !== BasicShapes.text) {
             const points = normalizeShapePoints([start!, movingPoint], isShift);
-            const memorizedLatest = getMemorizedLatestByPointer(pointer);
-            const textHeight = getDefaultTextShapeProperty(board, memorizedLatest.textProperties['font-size']).height;
-            temporaryElement = createGeometryElement(
-                (pointer as unknown) as GeometryShapes,
-                points,
-                '',
-                {
-                    strokeWidth: DefaultBasicShapeProperty.strokeWidth,
-                    ...memorizedLatest.geometryProperties
-                },
-                { ...memorizedLatest.textProperties, textHeight }
-            );
+            temporaryElement = createDefaultGeometry(board, points, pointer as GeometryShapes);
             geometryGenerator.processDrawing(temporaryElement, geometryShapeG);
             PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
         }
@@ -218,18 +169,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
                 const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
                 if (pointer !== BasicShapes.text) {
                     const points = getDefaultGeometryPoints(pointer, targetPoint);
-                    const memorizedLatest = getMemorizedLatestByPointer(pointer);
-                    const textHeight = getDefaultTextShapeProperty(board, memorizedLatest.textProperties['font-size']).height;
-                    temporaryElement = createGeometryElement(
-                        (pointer as unknown) as GeometryShapes,
-                        points,
-                        '',
-                        {
-                            strokeWidth: DefaultBasicShapeProperty.strokeWidth,
-                            ...memorizedLatest.geometryProperties
-                        },
-                        { ...memorizedLatest.textProperties, textHeight }
-                    );
+                    temporaryElement = createDefaultGeometry(board, points, pointer as GeometryShapes);
                 }
             }
         }
@@ -247,12 +187,4 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
     };
 
     return board;
-};
-
-const insertElement = (board: PlaitBoard, element: PlaitGeometry) => {
-    memorizeLatestShape(board, element.shape);
-    Transforms.insertNode(board, element, [board.children.length]);
-    clearSelectedElement(board);
-    addSelectedElement(board, element);
-    BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
 };

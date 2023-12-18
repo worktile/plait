@@ -1,11 +1,16 @@
 import {
     ACTIVE_STROKE_WIDTH,
+    BoardTransforms,
     PlaitBoard,
+    PlaitPointerType,
     Point,
     RectangleClient,
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
     ThemeColorMode,
+    Transforms,
+    addSelectedElement,
+    clearSelectedElement,
     createG,
     distanceBetweenPointAndSegment,
     drawCircle,
@@ -31,6 +36,7 @@ import { getShape } from './shape';
 import { createLineElement } from './line';
 import { LineMarkerType, LineShape, PlaitShape } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
+import { getMemorizedLatestByPointer, memorizeLatestShape } from './memorize';
 
 export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
 
@@ -330,4 +336,39 @@ export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
 export const getDefaultTextPoints = (board: PlaitBoard, centerPoint: Point, fontSize?: number | string) => {
     const property = getDefaultTextShapeProperty(board, fontSize);
     return getPointsByCenterPoint(centerPoint, property.width, property.height);
+};
+
+export const insertElement = (board: PlaitBoard, element: PlaitGeometry) => {
+    memorizeLatestShape(board, element.shape);
+    Transforms.insertNode(board, element, [board.children.length]);
+    clearSelectedElement(board);
+    addSelectedElement(board, element);
+    BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
+};
+
+export const createDefaultText = (board: PlaitBoard, points: [Point, Point]) => {
+    const memorizedLatest = getMemorizedLatestByPointer(BasicShapes.text);
+    const property = getDefaultTextShapeProperty(board, memorizedLatest.textProperties['font-size']);
+    return createGeometryElement(
+        BasicShapes.text,
+        points,
+        DefaultTextProperty.text,
+        memorizedLatest.geometryProperties as GeometryStyleOptions,
+        { ...memorizedLatest.textProperties, textHeight: property.height }
+    );
+};
+
+export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
+    const memorizedLatest = getMemorizedLatestByPointer(BasicShapes.text);
+    const textHeight = getDefaultTextShapeProperty(board, memorizedLatest.textProperties['font-size']).height;
+    return createGeometryElement(
+        shape,
+        points,
+        '',
+        {
+            strokeWidth: DefaultBasicShapeProperty.strokeWidth,
+            ...(memorizedLatest.geometryProperties as GeometryStyleOptions)
+        },
+        { ...memorizedLatest.textProperties, textHeight }
+    );
 };

@@ -1,24 +1,17 @@
-import { PlaitBoard, Transforms, Point, addSelectedElement, clearSelectedElement, Path, PlaitNode } from '@plait/core';
-import { DefaultBasicShapeProperty } from '../constants';
-import { BasicShapes, PlaitDrawElement, PlaitGeometry, GeometryShapes, PlaitText } from '../interfaces';
-import { createGeometryElement } from '../utils';
+import { PlaitBoard, Transforms, Point, Path, PlaitNode } from '@plait/core';
+import { PlaitDrawElement, PlaitGeometry, GeometryShapes, PlaitText } from '../interfaces';
+import { createDefaultGeometry, createDefaultText, insertElement } from '../utils';
 import { Element } from 'slate';
 import { normalizeShapePoints } from '@plait/common';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
-    let newElement = createGeometryElement(shape, points, '', {
-        strokeWidth: DefaultBasicShapeProperty.strokeWidth
-    }) as PlaitGeometry;
-    Transforms.insertNode(board, newElement, [board.children.length]);
-    clearSelectedElement(board);
-    addSelectedElement(board, newElement);
+    const newElement = createDefaultGeometry(board, points, shape);
+    insertElement(board, newElement);
 };
 
 export const insertText = (board: PlaitBoard, points: [Point, Point], text: string | Element = '文本') => {
-    let newElement = createGeometryElement(BasicShapes.text, points, text) as PlaitGeometry;
-    Transforms.insertNode(board, newElement, [board.children.length]);
-    clearSelectedElement(board);
-    addSelectedElement(board, newElement);
+    const newElement = createDefaultText(board, points);
+    insertElement(board, newElement);
 };
 
 export const resizeGeometry = (board: PlaitBoard, points: [Point, Point], textHeight: number, path: Path) => {
