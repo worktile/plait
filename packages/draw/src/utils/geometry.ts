@@ -359,7 +359,7 @@ export const createDefaultText = (board: PlaitBoard, points: [Point, Point]) => 
 };
 
 export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
-    const memorizedLatest = getMemorizedLatestByPointer(BasicShapes.text);
+    const memorizedLatest = getMemorizedLatestByPointer(shape);
     const textHeight = getDefaultTextShapeProperty(board, memorizedLatest.textProperties['font-size']).height;
     return createGeometryElement(
         shape,
