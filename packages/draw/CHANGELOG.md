@@ -1,5 +1,15 @@
 # @plait/draw
 
+## 0.39.0
+
+### Minor Changes
+
+-   [#670](https://github.com/worktile/plait/pull/670) [`c87d653b`](https://github.com/worktile/plait/commit/c87d653bea2b9b6fcf76df1ad258796f82668b77) Thanks [@WBbug](https://github.com/WBbug)! - optimize geometry create
+
+### Patch Changes
+
+-   [#671](https://github.com/worktile/plait/pull/671) [`16f13f1a`](https://github.com/worktile/plait/commit/16f13f1a937d5c7cf687ccfe1b13ff48fcd535df) Thanks [@WBbug](https://github.com/WBbug)! - fix create wrong
+
 ## 0.38.0
 
 ### Minor Changes

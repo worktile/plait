@@ -1,5 +1,11 @@
 # text
 
+## 0.39.0
+
+### Minor Changes
+
+-   [`8cd50652`](https://github.com/worktile/plait/commit/8cd5065293aef59190631a17f879d1ea43335d96) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle clipboard data replacing '\t+' to ' '
+
 ## 0.38.0
 
 ## 0.37.0

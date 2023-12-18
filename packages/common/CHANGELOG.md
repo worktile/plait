@@ -1,5 +1,13 @@
 # @plait/common
 
+## 0.39.0
+
+### Minor Changes
+
+-   [`825dd399`](https://github.com/worktile/plait/commit/825dd39910458fba99298ca6c3df8fa74ff45762) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support shift select element
+
+*   [#673](https://github.com/worktile/plait/pull/673) [`2fa35217`](https://github.com/worktile/plait/commit/2fa352177f64844041654b4f47a21bfb2d445ee2) Thanks [@WBbug](https://github.com/WBbug)! - support match
+
 ## 0.38.0
 
 ## 0.37.0

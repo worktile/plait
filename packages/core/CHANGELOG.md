@@ -1,5 +1,21 @@
 # plait
 
+## 0.39.0
+
+### Minor Changes
+
+-   [`825dd399`](https://github.com/worktile/plait/commit/825dd39910458fba99298ca6c3df8fa74ff45762) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support shift select element
+
+*   [#670](https://github.com/worktile/plait/pull/670) [`c87d653b`](https://github.com/worktile/plait/commit/c87d653bea2b9b6fcf76df1ad258796f82668b77) Thanks [@WBbug](https://github.com/WBbug)! - optimize geometry create
+
+-   [`bcae0716`](https://github.com/worktile/plait/commit/bcae07168ed0435500671f70d8a729ad06c82473) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - change PRESS_AND_MOVE_BUFFER to 3
+
+### Patch Changes
+
+-   [`c3a701fc`](https://github.com/worktile/plait/commit/c3a701fc15531adbd8f77b984602e3f729b51f7c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - element selection should not be performed in readonly mode
+
+*   [`5339b459`](https://github.com/worktile/plait/commit/5339b4594002f3fef8059b39edb86bfa806e0fd9) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove child element from selected elements when remove parent element
+
 ## 0.38.0
 
 ## 0.37.0
