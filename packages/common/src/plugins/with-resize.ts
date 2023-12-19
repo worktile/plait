@@ -22,7 +22,8 @@ export interface WithResizeOptions<T extends PlaitElement = PlaitElement, K = Re
     canResize: () => boolean;
     detect: (point: Point) => ResizeDetectResult<T, K> | null;
     onResize: (resizeRef: ResizeRef<T, K>, resizeState: ResizeState) => void;
-    endResize?: (resizeRef: ResizeRef<T, K>) => void;
+    afterResize?: (resizeRef: ResizeRef<T, K>) => void;
+    beforeResize?: (resizeRef: ResizeRef<T, K>) => void;
 }
 
 export interface ResizeDetectResult<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
@@ -86,11 +87,12 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
         if (startPoint && resizeDetectResult && !isResizing(board)) {
             // prevent text from being selected
             event.preventDefault();
-
             const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance > PRESS_AND_MOVE_BUFFER) {
                 addResizing(board, resizeRef!, options.key);
+                MERGING.set(board, true);
+                options.beforeResize && options.beforeResize(resizeRef!);
             }
         }
 
@@ -105,7 +107,6 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
                     const offsetX = endPoint[0] - startPoint[0];
                     const offsetY = endPoint[1] - startPoint[1];
                     options.onResize(resizeRef, { offsetX, offsetY, endTransformPoint });
-                    MERGING.set(board, true);
                 }
             });
             return;
@@ -135,7 +136,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
     board.globalPointerUp = (event: PointerEvent) => {
         globalPointerUp(event);
         if (isResizing(board) || resizeDetectResult) {
-            options.endResize && options.endResize(resizeRef!);
+            options.beforeResize && options.beforeResize(resizeRef!);
             removeResizing(board, options.key);
             startPoint = null;
             resizeDetectResult = null;

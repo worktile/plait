@@ -14,13 +14,14 @@ export interface WithResizeOptions {
     detect: (point: Point) => ResizeDetectResult<T, K> | null;  
   	//resize 时修改元素相关属性
     onResize: (resizeRef: ResizeRef<T, K>, resizeState: ResizeState) => void;
-    endResize?: (resizeRef: ResizeRef<T, K>) => void;
+    afterResize?: (resizeRef: ResizeRef<T, K>) => void;
+    beforeResize?: (resizeRef: ResizeRef<T, K>) => void;
 }
 ```
 
 在 @Plait/common 抽取通用 with-resize 插件
 - pointerDown：调用 options.detect
-- pointerMove: 调用 options.onResize();
-- pointerUp：调用 options.endResize
+- pointerMove: 先调用 options.beforeResize 开启 resize，后续的移动会调用 options.onResize() 持续修改数据
+- pointerUp：调用 options.afterResize 
 
 使用时配置 options 并将其传入 withResize。
