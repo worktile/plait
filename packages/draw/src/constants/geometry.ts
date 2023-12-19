@@ -79,5 +79,3 @@ export const DefaultFlowchartPropertyMap = {
 };
 
 export const REACTION_MARGIN = -4;
-
-export const WithLineAutoCompletePluginKey = 'plait-line-auto-complete-plugin-key';

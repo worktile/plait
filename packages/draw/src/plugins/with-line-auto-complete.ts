@@ -16,7 +16,8 @@ import {
 } from '@plait/core';
 import { LineShape, PlaitDrawElement, PlaitLine, PlaitShape } from '../interfaces';
 import { handleLineCreating, getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
-import { WithLineAutoCompletePluginKey } from '../constants';
+
+export const WithLineAutoCompletePluginKey = 'plait-line-auto-complete-plugin-key';
 
 export interface LineAutoCompleteOptions {
     afterComplete: (element: PlaitLine) => {};
