@@ -19,7 +19,7 @@ export const StoredDataEngine: ShapeEngine = {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(
             `M${rectangle.x + rectangle.width / 10} ${rectangle.y} L${rectangle.x + rectangle.width} ${rectangle.y} A  ${rectangle.width /
-                10} ${rectangle.height / 2}, 1, 0, 0,${rectangle.x + rectangle.width} ${rectangle.y + rectangle.height} L${rectangle.x +
+                10} ${rectangle.height / 2}, 0, 0, 0,${rectangle.x + rectangle.width} ${rectangle.y + rectangle.height} L${rectangle.x +
                 rectangle.width / 10} ${rectangle.y + rectangle.height}A  ${rectangle.width / 10} ${rectangle.height /
                 2}, 0, 0, 1,${rectangle.x + rectangle.width / 10} ${rectangle.y}`,
             { ...options, fillStyle: 'solid' }
