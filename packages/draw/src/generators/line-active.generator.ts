@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, createG, drawCircle, drawRectangle, getSelectedElements } from '@plait/core';
+import { PlaitBoard, Point, createG, distanceBetweenPointAndPoint, drawCircle, drawRectangle, getSelectedElements } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
 import { getCurvePoints, getLinePoints } from '../utils';
@@ -64,9 +64,12 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
 export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
     const result: Point[] = [];
     const shape = element.shape;
+    const hideBuffer = 10;
     if (shape === LineShape.straight) {
         const points = PlaitLine.getPoints(board, element);
         for (let i = 0; i < points.length - 1; i++) {
+            const distance = distanceBetweenPointAndPoint(...points[i], ...points[i + 1]);
+            if (distance < hideBuffer) continue;
             result.push([(points[i][0] + points[i + 1][0]) / 2, (points[i][1] + points[i + 1][1]) / 2]);
         }
     }
@@ -83,6 +86,8 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
                 const startIndex = pointsOnBezier.findIndex(point => point[0] === points[i][0] && point[1] === points[i][1]);
                 const endIndex = pointsOnBezier.findIndex(point => point[0] === points[i + 1][0] && point[1] === points[i + 1][1]);
                 const middleIndex = Math.round((startIndex + endIndex) / 2);
+                const distance = distanceBetweenPointAndPoint(...points[i], ...points[i + 1]);
+                if (distance < hideBuffer) continue;
                 result.push(pointsOnBezier[middleIndex]);
             }
         }
