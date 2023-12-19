@@ -273,7 +273,7 @@ export const getHitLineTextIndex = (board: PlaitBoard, element: PlaitLine, point
     const texts = element.texts;
     if (!texts.length) return -1;
 
-    const points = getElbowPoints(board, element);
+    const points = getLinePoints(board, element);
     return texts.findIndex(text => {
         const center = getPointOnPolyline(points, text.position);
         const rectangle = {

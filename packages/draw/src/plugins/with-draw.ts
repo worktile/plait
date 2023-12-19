@@ -15,6 +15,7 @@ import { withLineText } from './with-line-text';
 import { ImageComponent } from '../image.component';
 import { withLineAutoCompleteReaction } from './with-line-auto-complete-reaction';
 import { withLineAutoComplete } from './with-line-auto-complete';
+import { withLineTextMove } from './with-line-text-move';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, isAlign } = board;
@@ -92,13 +93,17 @@ export const withDraw = (board: PlaitBoard) => {
         return isAlign(element);
     };
 
-    return withLineAutoCompleteReaction(
-        withLineText(
-            withLineBoundReaction(
-                withLineResize(
-                    withGeometryResize(
-                        withLineCreateByDraw(
-                            withLineAutoComplete(withGeometryCreateByDrag(withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board)))))
+    return withLineTextMove(
+        withLineAutoCompleteReaction(
+            withLineText(
+                withLineBoundReaction(
+                    withLineResize(
+                        withGeometryResize(
+                            withLineCreateByDraw(
+                                withLineAutoComplete(
+                                    withGeometryCreateByDrag(withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board))))
+                                )
+                            )
                         )
                     )
                 )
