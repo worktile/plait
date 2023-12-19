@@ -82,13 +82,14 @@ export function distanceBetweenPointAndSegments(points: Point[], point: Point) {
     return distance;
 }
 
-export function getNearestPointBetweenPointAndSegments(point: Point, points: Point[]) {
+export function getNearestPointBetweenPointAndSegments(point: Point, points: Point[], isClose: Boolean = true) {
     const len = points.length;
     let distance = Infinity;
     let result: Point = point;
 
     for (let i = 0; i < len; i++) {
         const p = points[i];
+        if (i === len - 1 && !isClose) continue;
         const p2 = i === len - 1 ? points[0] : points[i + 1];
         const currentDistance = distanceBetweenPointAndSegment(point[0], point[1], p[0], p[1], p2[0], p2[1]);
         if (currentDistance < distance) {
