@@ -152,9 +152,5 @@ $primary: #4e8afa;
         display: block;
     }
 
-    &.mind-ew-resize {
-        cursor: ew-resize;
-    }
-
     @include mixins.node-color();
 }
