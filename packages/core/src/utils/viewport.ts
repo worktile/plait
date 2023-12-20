@@ -9,6 +9,14 @@ const IS_FROM_SCROLLING = new WeakMap<PlaitBoard, boolean>();
 
 const IS_FROM_VIEWPORT_CHANGE = new WeakMap<PlaitBoard, boolean>();
 
+export function toSVGScreenPoint(board: PlaitBoard, point: Point) {
+    const { zoom } = board.viewport;
+    const viewBox = getViewBox(board, zoom);
+    const x = (point[0] - viewBox[0]) * zoom;
+    const y = (point[1] - viewBox[1]) * zoom;
+    return [x, y] as Point;
+}
+
 export function getViewportContainerRect(board: PlaitBoard) {
     const { hideScrollbar } = board.options;
     const scrollBarWidth = hideScrollbar ? SCROLL_BAR_WIDTH : 0;
@@ -104,10 +112,7 @@ export function updateViewportOffset(board: PlaitBoard) {
     if (!origination) {
         return;
     }
-    const { zoom } = board.viewport;
-    const viewBox = getViewBox(board, zoom);
-    const scrollLeft = (origination![0] - viewBox[0]) * zoom;
-    const scrollTop = (origination![1] - viewBox[1]) * zoom;
+    const [scrollLeft, scrollTop] = toSVGScreenPoint(board, origination);
     updateViewportContainerScroll(board, scrollLeft, scrollTop);
 }
 

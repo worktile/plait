@@ -1,13 +1,32 @@
 import { Options } from 'roughjs/bin/core';
 import { POINTER_BUTTON } from '../../constants';
-import { RectangleClient } from '../../interfaces';
+import { PlaitBoard, RectangleClient } from '../../interfaces';
 import { Point } from '../../interfaces/point';
 
 export const NS = 'http://www.w3.org/2000/svg';
 
-export function toPoint(x: number, y: number, container: SVGElement): Point {
-    const rect = container.getBoundingClientRect();
+/**
+ * Get the screen coordinates starting from the upper left corner of the svg element (based on the svg screen coordinate system)
+ * @param x screen x
+ * @param y screen x
+ * @returns
+ */
+export function toPoint(x: number, y: number, svg: SVGElement): Point {
+    const rect = svg.getBoundingClientRect();
     return [x - rect.x, y - rect.y];
+}
+
+/**
+ * `toPoint` reverse processing
+ * Get the screen coordinate starting from the upper left corner of the browser window (based on the screen coordinate system)
+ * @param point screen coordinates based on the upper left corner of the svg
+ * @returns
+ */
+export function toScreenPoint(board: PlaitBoard, point: Point) {
+    const host = PlaitBoard.getHost(board);
+    const rect = host.getBoundingClientRect();
+    console.log(rect.x, rect.y);
+    return [point[0] + rect.x, point[1] + rect.y] as Point;
 }
 
 export function createG() {

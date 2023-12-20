@@ -5,11 +5,10 @@ import {
     PlaitPluginElementContext,
     OnContextChanged,
     getElementById,
-    getSelectedElements,
     isSelectionMoving
 } from '@plait/core';
 import { Subject } from 'rxjs';
-import { LineText, PlaitDrawElement, PlaitGeometry, PlaitLine } from './interfaces';
+import { LineText, PlaitGeometry, PlaitLine } from './interfaces';
 import { TextManage, TextManageRef } from '@plait/text';
 import { LineShapeGenerator } from './generators/line.generator';
 import { LineActiveGenerator } from './generators/line-active.generator';
