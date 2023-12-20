@@ -4,6 +4,7 @@ import { createDefaultGeometry, createDefaultText, getLinePoints, insertElement,
 import { Element } from 'slate';
 import { normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '.';
+import { collectRefs } from './line';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
     const newElement = createDefaultGeometry(board, points, shape);
@@ -28,36 +29,17 @@ export const resizeGeometry = (board: PlaitBoard, points: [Point, Point], textHe
 
 export const switchGeometryShape = (board: PlaitBoard, shape: GeometryShapes) => {
     const selectedElements = getSelectedElements(board);
+    const refs: { property: Partial<PlaitLine>; path: Path }[] = [];
     selectedElements.forEach(item => {
         if (PlaitDrawElement.isGeometry(item) && !PlaitDrawElement.isText(item)) {
             const path = PlaitBoard.findPath(board, item);
             Transforms.setNode(board, { shape }, path);
-            updateLine(board, { ...item, shape });
+            collectRefs(board, { ...item, shape }, refs);
         }
     });
-};
-
-export const updateLine = (board: PlaitBoard, geometry: PlaitGeometry) => {
-    const lines = findElements(board, {
-        match: (element: PlaitElement) => {
-            if (PlaitDrawElement.isLine(element)) {
-                return element.source.boundId === geometry.id || element.target.boundId === geometry.id;
-            }
-            return false;
-        },
-        recursion: element => true
-    }) as PlaitLine[];
-    if (lines.length) {
-        lines.forEach(line => {
-            const source = { ...line.source };
-            const target = { ...line.target };
-            const isSourceBound = line.source.boundId === geometry.id;
-            const object = isSourceBound ? source : target;
-            const linePoints = getLinePoints(board, line);
-            const point = isSourceBound ? linePoints[0] : linePoints[linePoints.length - 1];
-            object.connection = transformPointToConnection(board, point, geometry);
-            const path = PlaitBoard.findPath(board, line);
-            DrawTransforms.resizeLine(board, { source, target }, path);
+    if (refs.length) {
+        refs.forEach(ref => {
+            DrawTransforms.resizeLine(board, ref.property, ref.path);
         });
     }
 };

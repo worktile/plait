@@ -1,6 +1,7 @@
-import { Path, PlaitBoard, Transforms } from '@plait/core';
-import { LineHandleKey, LineMarkerType, LineText, MemorizeKey, PlaitLine } from '../interfaces';
+import { Path, PlaitBoard, PlaitElement, Transforms, findElements } from '@plait/core';
+import { LineHandleKey, LineMarkerType, LineText, MemorizeKey, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { memorizeLatest } from '@plait/common';
+import { getLinePoints, transformPointToConnection } from '../utils';
 
 export const resizeLine = (board: PlaitBoard, options: Partial<PlaitLine>, path: Path) => {
     Transforms.setNode(board, options, path);
@@ -25,4 +26,38 @@ export const setLineMark = (board: PlaitBoard, element: PlaitLine, handleKey: Li
     handle = { ...handle, marker };
     memorizeLatest(MemorizeKey.line, handleKey, marker);
     Transforms.setNode(board, { [handleKey]: handle }, path);
+};
+
+export const collectRefs = (board: PlaitBoard, geometry: PlaitGeometry, refs: { property: Partial<PlaitLine>; path: Path }[]) => {
+    const lines = findElements(board, {
+        match: (element: PlaitElement) => {
+            if (PlaitDrawElement.isLine(element)) {
+                return element.source.boundId === geometry.id || element.target.boundId === geometry.id;
+            }
+            return false;
+        },
+        recursion: element => true
+    }) as PlaitLine[];
+    if (lines.length) {
+        lines.forEach(line => {
+            const isSourceBound = line.source.boundId === geometry.id;
+            const handle = isSourceBound ? 'source' : 'target';
+            const object = { ...line[handle] };
+            const linePoints = getLinePoints(board, line);
+            const point = isSourceBound ? linePoints[0] : linePoints[linePoints.length - 1];
+            object.connection = transformPointToConnection(board, point, geometry);
+            const path = PlaitBoard.findPath(board, line);
+            const index = refs.findIndex(obj => Path.equals(obj.path, path));
+            if (index === -1) {
+                refs.push({
+                    property: {
+                        [handle]: object
+                    },
+                    path
+                });
+            } else {
+                refs[index].property = { ...refs[index].property, [handle]: object };
+            }
+        });
+    }
 };
