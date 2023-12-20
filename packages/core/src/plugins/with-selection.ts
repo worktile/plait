@@ -27,7 +27,7 @@ export interface WithPluginOptions extends PlaitPluginOptions {
 }
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, globalPointerMove, globalPointerUp, keyup, afterChange } = board;
+    const { pointerDown, globalPointerMove, globalPointerUp, keyup, onChange, afterChange } = board;
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
@@ -139,67 +139,66 @@ export function withSelection(board: PlaitBoard) {
         globalPointerUp(event);
     };
 
-    board.afterChange = () => {
-        if (PlaitBoard.isReadonly(board)) {
-            afterChange();
-            return;
-        }
+    board.onChange = () => {
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
         if (options.isDisabledSelect) {
             clearSelectedElement(board);
         }
-
         // remove selected element if include
         board.operations.forEach(op => {
             if (op.type === 'remove_node') {
                 removeSelectedElement(board, op.node);
             }
         });
-
-        // calc selected elements entry
-        if (board.pointer !== PlaitPointerType.hand && !options.isDisabledSelect) {
-            const isSetSelection = board.operations.find(value => value.type === 'set_selection');
+        if (isHandleSelection(board) && isSetSelectionOperation(board)) {
             try {
-                if (isSetSelection) {
-                    selectionRectangleG?.remove();
-                    const temporaryElements = getTemporaryElements(board);
-                    let elements = temporaryElements ? temporaryElements : getHitElementsBySelection(board);
-                    if (!options.isMultiple && elements.length > 1) {
-                        elements = [elements[0]];
-                    }
-                    if (isShift && board.selection && Selection.isCollapsed(board.selection)) {
-                        const newSelectedElements = [...getSelectedElements(board)];
-                        elements.forEach(element => {
-                            if (newSelectedElements.includes(element)) {
-                                newSelectedElements.splice(newSelectedElements.indexOf(element), 1);
-                            } else {
-                                newSelectedElements.push(element);
-                            }
-                        });
-                        cacheSelectedElements(board, newSelectedElements);
-                    } else {
-                        cacheSelectedElements(board, elements);
-                    }
-                    const newElements = getSelectedElements(board);
-                    previousSelectedElements = newElements;
-                    deleteTemporaryElements(board);
-                    if (!isSelectionMoving(board) && newElements.length > 1) {
+                selectionRectangleG?.remove();
+                const temporaryElements = getTemporaryElements(board);
+                let elements = temporaryElements ? temporaryElements : getHitElementsBySelection(board);
+                if (!options.isMultiple && elements.length > 1) {
+                    elements = [elements[0]];
+                }
+                if (isShift && board.selection && Selection.isCollapsed(board.selection)) {
+                    const newSelectedElements = [...getSelectedElements(board)];
+                    elements.forEach(element => {
+                        if (newSelectedElements.includes(element)) {
+                            newSelectedElements.splice(newSelectedElements.indexOf(element), 1);
+                        } else {
+                            newSelectedElements.push(element);
+                        }
+                    });
+                    cacheSelectedElements(board, newSelectedElements);
+                } else {
+                    cacheSelectedElements(board, elements);
+                }
+                const newElements = getSelectedElements(board);
+                previousSelectedElements = newElements;
+                deleteTemporaryElements(board);
+                if (!isSelectionMoving(board) && newElements.length > 1) {
+                    selectionRectangleG = createSelectionRectangleG(board);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        onChange();
+    };
+
+    board.afterChange = () => {
+        if (isHandleSelection(board) && !isSetSelectionOperation(board)) {
+            try {
+                const currentSelectedElements = getSelectedElements(board);
+                if (currentSelectedElements.length && currentSelectedElements.length > 1) {
+                    if (
+                        currentSelectedElements.length !== previousSelectedElements.length ||
+                        currentSelectedElements.some((c, index) => c !== previousSelectedElements[index])
+                    ) {
+                        selectionRectangleG?.remove();
                         selectionRectangleG = createSelectionRectangleG(board);
+                        previousSelectedElements = currentSelectedElements;
                     }
                 } else {
-                    const currentSelectedElements = getSelectedElements(board);
-                    if (currentSelectedElements.length && currentSelectedElements.length > 1) {
-                        if (
-                            currentSelectedElements.length !== previousSelectedElements.length ||
-                            currentSelectedElements.some((c, index) => c !== previousSelectedElements[index])
-                        ) {
-                            selectionRectangleG?.remove();
-                            selectionRectangleG = createSelectionRectangleG(board);
-                            previousSelectedElements = currentSelectedElements;
-                        }
-                    } else {
-                        selectionRectangleG?.remove();
-                    }
+                    selectionRectangleG?.remove();
                 }
             } catch (error) {
                 console.error(error);
@@ -214,6 +213,15 @@ export function withSelection(board: PlaitBoard) {
     });
 
     return board;
+}
+
+export function isHandleSelection(board: PlaitBoard) {
+    const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
+    return board.pointer !== PlaitPointerType.hand && !options.isDisabledSelect && !PlaitBoard.isReadonly(board);
+}
+
+export function isSetSelectionOperation(board: PlaitBoard) {
+    return !!board.operations.find(value => value.type === 'set_selection');
 }
 
 export function getTemporaryElements(board: PlaitBoard) {
