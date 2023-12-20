@@ -6,9 +6,11 @@ import {
     isSelectionMoving,
     getSelectedElements,
     PlaitOptionsBoard,
-    ACTIVE_STROKE_WIDTH
+    ACTIVE_STROKE_WIDTH,
+    findElements,
+    PlaitElement
 } from '@plait/core';
-import { Subject } from 'rxjs';
+import { Subject, findIndex } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
 import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
@@ -16,10 +18,11 @@ import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
 import { ActiveGenerator, WithTextPluginKey, WithTextOptions, getRectangleByPoints, CommonPluginElement } from '@plait/common';
 import { GeometryThreshold } from './constants/geometry';
-import { PlaitDrawElement, PlaitText } from './interfaces';
+import { PlaitDrawElement, PlaitLine, PlaitText } from './interfaces';
 import { getEngine } from './engines';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
-import { memorizeLatestText } from './utils';
+import { getLinePoints, memorizeLatestText, transformPointToConnection } from './utils';
+import { LineResizeHandle } from './utils/position/line';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -102,6 +105,9 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                 selected: this.selected
             });
             this.updateText();
+            if (value.element.shape !== previous.element.shape) {
+                this.updateLine();
+            }
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
@@ -127,6 +133,29 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     updateText() {
         this.textManage.updateText(this.element.text);
         this.textManage.updateRectangle();
+    }
+
+    updateLine() {
+        const line = findElements(this.board, {
+            match: (element: PlaitElement) => {
+                if (PlaitDrawElement.isLine(element)) {
+                    return element.source.boundId === this.element.id || element.target.boundId === this.element.id;
+                }
+                return false;
+            },
+            recursion: element => true
+        })[0] as PlaitLine;
+        if (line) {
+            const source = { ...line.source };
+            const target = { ...line.target };
+            const isSourceBound = line.source.boundId === this.element.id;
+            const object = isSourceBound ? source : target;
+            const linePoints = getLinePoints(this.board, line);
+            const point = isSourceBound ? linePoints[0] : linePoints[linePoints.length - 1];
+            object.connection = transformPointToConnection(this.board, point, this.element);
+            const path = [this.board.children.findIndex(child => child.id === line.id)];
+            DrawTransforms.resizeLine(this.board, { source, target }, path);
+        }
     }
 
     initializeTextManage() {
