@@ -25,7 +25,6 @@ export function toPoint(x: number, y: number, svg: SVGElement): Point {
 export function toScreenPoint(board: PlaitBoard, point: Point) {
     const host = PlaitBoard.getHost(board);
     const rect = host.getBoundingClientRect();
-    console.log(rect.x, rect.y);
     return [point[0] + rect.x, point[1] + rect.y] as Point;
 }
 
