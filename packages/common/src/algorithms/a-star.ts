@@ -33,7 +33,8 @@ export class AStar {
             current.node.adjacentNodes.forEach(next => {
                 let newCost = costSoFar.get(current!.node)! + this.heuristic(next.data, current!.node.data);
                 const previousNode = this.cameFrom.get(current!.node);
-                // 拐点权重
+                // 拐点权重，出现拐点则 cost + 1 以避免拐点路径
+                // 以三点一线确定是否出现拐点
                 const previousPoint = previousNode ? previousNode.data : previousStart;
                 const x = previousPoint[0] === current?.node.data[0] && previousPoint[0] === next.data[0];
                 const y = previousPoint[1] === current?.node.data[1] && previousPoint[1] === next.data[1];

@@ -100,8 +100,8 @@ export const RectangleClient = {
         };
     },
     getGapCenter(rectangle1: RectangleClient, rectangle2: RectangleClient, isHorizontal: boolean) {
-        const axis = isHorizontal ? 'y' : 'x';
-        const side = isHorizontal ? 'height' : 'width';
+        const axis = isHorizontal ? 'x' : 'y';
+        const side = isHorizontal ? 'width' : 'height';
         const align = [rectangle1[axis], rectangle1[axis] + rectangle1[side], rectangle2[axis], rectangle2[axis] + rectangle2[side]];
         const sortArr = align.sort((a, b) => a - b);
         return (sortArr[1] + sortArr[2]) / 2;

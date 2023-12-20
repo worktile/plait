@@ -1,8 +1,9 @@
 import { PlaitMindBoard } from '@plait/mind';
-import { PlaitBoard, RectangleClient, createG, getElementById, getMovingElements } from '@plait/core';
-import { PlaitDrawElement, PlaitGeometry, PlaitLine, getLineHandleRefPair, getStrokeWidthByElement } from '@plait/draw';
+import { PlaitBoard, Point, RectangleClient, RgbaToHEX, createG, getElementById } from '@plait/core';
+import { PlaitDrawElement, PlaitGeometry, getLineHandleRefPair, getStrokeWidthByElement } from '@plait/draw';
 import {
     AStar,
+    PriorityQueue,
     createGraph,
     getGraphPoints,
     getNextPoint,
@@ -19,14 +20,12 @@ export const withLineRoute = (board: PlaitBoard) => {
     newBoard.pointerMove = (event: PointerEvent) => {
         g?.remove();
         g = fakeLineRouteProcess(board);
-        PlaitBoard.getElementActiveHost(board).append(g);
         return pointerMove(event);
     };
 
     setTimeout(() => {
         // 初始化渲染
         g = fakeLineRouteProcess(board);
-        PlaitBoard.getElementActiveHost(board).append(g);
     }, 0);
 
     return newBoard;
@@ -34,6 +33,7 @@ export const withLineRoute = (board: PlaitBoard) => {
 
 export const fakeLineRouteProcess = (board: PlaitBoard) => {
     const g = createG();
+    PlaitBoard.getElementActiveHost(board).append(g);
     const rough = PlaitBoard.getRoughSVG(board);
     const lineElement = getElementById(board, mockLineData[2].id);
     const handleRefPair = lineElement && PlaitDrawElement.isLine(lineElement) && getLineHandleRefPair(board, lineElement);
@@ -144,22 +144,58 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
             // 3、构造图结构
             const graph = createGraph(points);
 
+            // 获取 graph edges
+            const edges: [Point, Point][] = [];
+            const frontier = new PriorityQueue();
+            const startNode = graph.get(nextSourcePoint);
+            frontier.enqueue({ node: startNode!, priority: 0 });
+            const reached = new Set();
+            reached.add(startNode);
+            while (frontier.list.length > 0) {
+                var current = frontier.dequeue();
+                if (!current) {
+                    throw new Error(`can't find current`);
+                }
+                const currentPoint = current!.node.data;
+                current.node.adjacentNodes.forEach(next => {
+                    if (!reached.has(next)) {
+                        reached.add(next);
+                        frontier.enqueue({ node: next, priority: 0 });
+                    }
+                    if (
+                        !edges.find(line => {
+                            return Point.isEquals(line[0], next.data) && Point.isEquals(line[1], currentPoint);
+                        })
+                    ) {
+                        edges.push([currentPoint, next.data]);
+                    }
+                });
+            }
+            // 图 edges 效果示意
+            edges.forEach(edges => {
+                const connectionG = rough.line(edges[0][0], edges[0][1], edges[1][0], edges[1][1], {
+                    stroke: RgbaToHEX('#007500', 0.2),
+                    strokeWidth: 1.5
+                });
+                g?.append(connectionG);
+            });
+
             // 4、跑 A* 算法：获取拐点最少的最短路径
             const aStar = new AStar(graph);
             aStar.search(nextSourcePoint, nextTargetPoint, options.sourcePoint);
             let route = aStar.getRoute(nextSourcePoint, nextTargetPoint);
             route = [options.sourcePoint, ...route, nextTargetPoint, options.targetPoint];
-            const routeG = rough.linearPath(route, { stroke: '#e03130', strokeWidth: 3 });
+            const routeG = rough.linearPath(route, { stroke: RgbaToHEX('#e03130', 0.4), strokeWidth: 3 });
             g.append(routeG);
             // 5、纠正最短路径：获取图形间的中线 xAxis、yAxis（如果存在）
             const isHitX = RectangleClient.isHitX(options.sourceOuterRectangle, options.targetOuterRectangle);
             const isHitY = RectangleClient.isHitY(options.sourceOuterRectangle, options.targetOuterRectangle);
             const xAxis = isHitX
                 ? undefined
-                : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, false);
+                : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
             const yAxis = isHitY
                 ? undefined
-                : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
+                : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, false);
             // 5、纠正最短路径：基于中线 xAxis、yAxis 和最短路径对拐点进行纠正，使拐点经过中线
             route = routeAdjust(route, {
                 xAxis,
@@ -167,7 +203,7 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
                 sourceRectangle: options.sourceRectangle,
                 targetRectangle: options.targetRectangle
             });
-            const finalRouteG = rough.linearPath(route, { stroke: '#2f9e44', strokeWidth: 2.5 });
+            const finalRouteG = rough.linearPath(route, { stroke: '#2f9e44', strokeWidth: 4 });
             g.append(finalRouteG);
         }
     }

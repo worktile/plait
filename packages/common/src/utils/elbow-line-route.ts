@@ -36,21 +36,21 @@ export const generateElbowLineRoute = (options: ElbowLineRouteOptions) => {
     aStar.search(nextSourcePoint, nextTargetPoint, options.sourcePoint);
     let route = aStar.getRoute(nextSourcePoint, nextTargetPoint);
     route = [options.sourcePoint, ...route, nextTargetPoint, options.targetPoint];
+    // 中线纠正: 基于水平中线/垂直中线纠正最短路径 route
+    // 1. 找水平中线（xAxis）/垂直中线（yAxis）
+    // 2. 在 route 中找到和 xAxis/yAxis 相交的点、在 route 中找和 xAxis/yAxis 平行的线段
+    // 3. 基于步骤上一步找到的相交点和平行线构建矩形
+    // 4. 判断矩形是否和元素相交，不相交则可以基于上步构建的矩形进行中线的映射
+    // 5. 判断映射中线后的路径是否符合约束条件（拐点数据不能增加）
     const isHitX = RectangleClient.isHitX(options.sourceOuterRectangle, options.targetOuterRectangle);
     const isHitY = RectangleClient.isHitY(options.sourceOuterRectangle, options.targetOuterRectangle);
-    const xAxis = isHitX ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, false);
-    const yAxis = isHitY ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
+    const xAxis = isHitX ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
+    const yAxis = isHitY ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, false);
     route = routeAdjust(route, { xAxis, yAxis, sourceRectangle: options.sourceRectangle, targetRectangle: options.targetRectangle });
     return route;
 };
 
 export const routeAdjust = (path: Point[], options: RouteAdjustOptions) => {
-    // 基于 middleX/middleY 中线纠正 path
-    // 1. 找垂直/水平的线段
-    // 2. 找到和middleX/middleY相交的点
-    // 3. 基于垂直/水平的线段分别和相交点构建矩形
-    // 4. 判断矩形相交
-    // 5. 处理 path
     const { sourceRectangle, targetRectangle, xAxis, yAxis } = options;
     if (xAxis !== undefined) {
         const optionsX = getAdjustOptions(path, xAxis, true);
