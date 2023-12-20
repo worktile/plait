@@ -26,7 +26,9 @@ export const debounce = (func: () => void, wait: number, options?: { leading: bo
             });
         } else {
             if (options?.leading) {
-                func();
+                timer(0).subscribe(() => {
+                    func();
+                });
             }
             timerSubscription = timer(wait).subscribe();
         }

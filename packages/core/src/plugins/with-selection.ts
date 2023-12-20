@@ -27,7 +27,7 @@ export interface WithPluginOptions extends PlaitPluginOptions {
 }
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, globalPointerMove, globalPointerUp, onChange, keyup } = board;
+    const { pointerDown, globalPointerMove, globalPointerUp, keyup, afterChange } = board;
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
@@ -139,9 +139,9 @@ export function withSelection(board: PlaitBoard) {
         globalPointerUp(event);
     };
 
-    board.onChange = () => {
+    board.afterChange = () => {
         if (PlaitBoard.isReadonly(board)) {
-            onChange();
+            afterChange();
             return;
         }
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
@@ -205,7 +205,7 @@ export function withSelection(board: PlaitBoard) {
                 console.error(error);
             }
         }
-        onChange();
+        afterChange();
     };
 
     (board as PlaitOptionsBoard).setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, {

@@ -19,6 +19,8 @@ export const IS_TEXT_EDITABLE = new WeakMap<PlaitBoard, boolean>();
 
 export const BOARD_TO_ON_CHANGE = new WeakMap<PlaitBoard, () => void>();
 
+export const BOARD_TO_AFTER_CHANGE = new WeakMap<PlaitBoard, () => void>();
+
 export const BOARD_TO_COMPONENT = new WeakMap<PlaitBoard, BoardComponentInterface>();
 
 export const BOARD_TO_ROUGH_SVG = new WeakMap<PlaitBoard, RoughSVG>();
