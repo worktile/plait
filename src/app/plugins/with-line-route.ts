@@ -143,9 +143,10 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
             });
             // 3、构造图结构
             const graph = createGraph(points);
+
+            // 4、跑 A* 算法：获取拐点最少的最短路径
             const aStar = new AStar(graph);
             aStar.search(nextSourcePoint, nextTargetPoint, options.sourcePoint);
-            // 4、跑 A* 算法：获取拐点最少的最短路径
             let route = aStar.getRoute(nextSourcePoint, nextTargetPoint);
             route = [options.sourcePoint, ...route, nextTargetPoint, options.targetPoint];
             const routeG = rough.linearPath(route, { stroke: '#e03130', strokeWidth: 3 });
