@@ -46,6 +46,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
                 Promise.resolve().then(() => {
                     FLUSHING.set(board, false);
                     board.onChange();
+                    board.afterChange();
                     board.operations = [];
                 });
             }
@@ -79,6 +80,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
             return refs;
         },
         onChange: () => {},
+        afterChange: () => {},
         mousedown: (event: MouseEvent) => {},
         mousemove: (event: MouseEvent) => {},
         mouseleave: (event: MouseEvent) => {},
@@ -115,7 +117,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         pointerLeave: pointer => {},
         globalPointerMove: pointer => {},
         globalPointerUp: pointer => {},
-        isImageBindingAllowed: (element: PlaitElement) => false,
+        isImageBindingAllowed: (element: PlaitElement) => false
     };
     return board;
 }

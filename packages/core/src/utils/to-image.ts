@@ -30,7 +30,7 @@ function isElementNode(node: Node): node is HTMLElement {
 function loadImage(src: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
         const img = new Image();
-        img.crossOrigin = 'anonymous';
+        img.crossOrigin = 'Anonymous';
         img.onload = () => resolve(img);
         img.onerror = () => reject(new Error('Failed to load image'));
         img.src = src;
@@ -157,7 +157,7 @@ async function batchConvertImage(sourceNode: SVGGElement, cloneNode: SVGGElement
  * @param options parameter configuration
  * @returns clone svg element
  */
-function cloneSvg(board: PlaitBoard, elements: PlaitElement[], rectangle: RectangleClient, options: ToImageOptions) {
+async function cloneSvg(board: PlaitBoard, elements: PlaitElement[], rectangle: RectangleClient, options: ToImageOptions) {
     const { width, height, x, y } = rectangle;
     const { padding = 4, inlineStyleClassNames } = options;
     const sourceSvg = PlaitBoard.getHost(board);
@@ -172,14 +172,16 @@ function cloneSvg(board: PlaitBoard, elements: PlaitElement[], rectangle: Rectan
     cloneSvgElement.setAttribute('height', `${height}`);
     cloneSvgElement.setAttribute('viewBox', [x - padding, y - padding, width + 2 * padding, height + 2 * padding].join(','));
 
-    selectedGElements.forEach((child, i) => {
-        const cloneChild = child.cloneNode(true) as SVGGElement;
-        batchCloneCSSStyle(child, cloneChild, inlineStyleClassNames as string);
-        batchConvertImage(child, cloneChild);
-        newHostElement.appendChild(cloneChild);
-    });
-    cloneSvgElement.appendChild(newHostElement);
+    await Promise.all(
+        selectedGElements.map(async (child, i) => {
+            const cloneChild = child.cloneNode(true) as SVGGElement;
+            batchCloneCSSStyle(child, cloneChild, inlineStyleClassNames as string);
 
+            await batchConvertImage(child, cloneChild);
+            newHostElement.appendChild(cloneChild);
+        })
+    );
+    cloneSvgElement.appendChild(newHostElement);
     return cloneSvgElement;
 }
 

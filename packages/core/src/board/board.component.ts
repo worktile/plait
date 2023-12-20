@@ -40,11 +40,11 @@ import {
     BOARD_TO_HOST,
     BOARD_TO_ROUGH_SVG,
     BOARD_TO_MOVING_POINT_IN_BOARD,
-    BOARD_TO_MOVING_POINT
+    BOARD_TO_MOVING_POINT,
+    BOARD_TO_AFTER_CHANGE
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import {
-    getViewBox,
     initializeViewportOffset,
     initializeViewBox,
     isFromViewportChange,
@@ -54,7 +54,6 @@ import {
     updateViewportByScrolling
 } from '../utils/viewport';
 import { withViewport } from '../plugins/with-viewport';
-import { Point } from '../interfaces/point';
 import { withMoving } from '../plugins/with-moving';
 import { hasInputOrTextareaTarget } from '../utils/dom/common';
 import { withOptions } from '../plugins/with-options';
@@ -202,8 +201,10 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             activeHost: elementActiveHost
         });
         BOARD_TO_ON_CHANGE.set(this.board, () => {
+            this.update();
+        });
+        BOARD_TO_AFTER_CHANGE.set(this.board, () => {
             this.ngZone.run(() => {
-                this.detect();
                 const changeEvent: PlaitBoardChangeEvent = {
                     children: this.board.children,
                     operations: this.board.operations,
@@ -222,7 +223,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         this.initializeIslands();
     }
 
-    detect() {
+    update() {
         this.effect = {};
         this.cdr.detectChanges();
     }

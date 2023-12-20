@@ -198,13 +198,12 @@
 
 <div class="property-item width-setting-toolbar">
     <div class="setting-panel-title">修改形状</div>
-    <select (change)="propertyChange($event, 'shape')">
+    <select (change)="switchGeometryShape($event, 'shape')">
         <option value="rectangle">rectangle</option>
         <option value="ellipse">ellipse</option>
         <option value="diamond">diamond</option>
         <option value="roundRectangle">roundRectangle</option>
         <option value="parallelogram">parallelogram</option>
-        <option value="text">text</option>
         <option value="triangle">triangle</option>
         <option value="leftArrow">leftArrow</option>
         <option value="trapezoid">trapezoid</option>

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, for
 import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
 import {
     DrawTransforms,
+    GeometryShapes,
     LineHandleKey,
     LineMarkerType,
     LineShape,
@@ -124,6 +125,11 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             const path = PlaitBoard.findPath(this.board, selectedElement);
             MindTransforms.setLayout(this.board, value, path);
         }
+    }
+
+    switchGeometryShape(event: Event, key: string) {
+        let shape = (event.target as HTMLSelectElement).value as GeometryShapes;
+        DrawTransforms.switchGeometryShape(this.board, shape)
     }
 
     propertyChange(event: Event, key: string) {

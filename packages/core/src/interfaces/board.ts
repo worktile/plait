@@ -44,6 +44,7 @@ export interface PlaitBoard {
     redo: () => void;
     apply: (operation: PlaitOperation) => void;
     onChange: () => void;
+    afterChange: () => void;
     mousedown: (event: MouseEvent) => void;
     mousemove: (event: MouseEvent) => void;
     mouseleave: (event: MouseEvent) => void;

@@ -1,4 +1,4 @@
-import { insertText, insertGeometry, resizeGeometry, transformShape } from './geometry';
+import { insertText, insertGeometry, resizeGeometry, switchGeometryShape } from './geometry';
 import { setText, setTextSize } from './geometry-text';
 import { insertImage } from './image';
 import { removeLineText, resizeLine, setLineMark, setLineTexts } from './line';
@@ -14,5 +14,5 @@ export const DrawTransforms = {
     removeLineText,
     setLineMark,
     insertImage,
-    transformShape
+    switchGeometryShape
 };

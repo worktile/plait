@@ -115,7 +115,10 @@ export function updateViewportContainerScroll(board: PlaitBoard, left: number, t
     const viewportContainer = PlaitBoard.getViewportContainer(board);
     const previousScrollLeft = viewportContainer.scrollLeft;
     const previousScrollTop = viewportContainer.scrollTop;
-    if (viewportContainer.scrollLeft !== left || viewportContainer.scrollTop !== top) {
+    // scrollTop assign 11.8 will get 11.5 in chrome
+    // scrollTop assign 11.8 will get 11 in firefox, safari
+    // scrollTop assign 11.4 will get 11 in chrome, firefox, safari
+    if (viewportContainer.scrollLeft !== Math.floor(left) || viewportContainer.scrollTop !== Math.floor(top)) {
         viewportContainer.scrollLeft = left;
         viewportContainer.scrollTop = top;
         const offsetWidth = viewportContainer.offsetWidth;
@@ -140,7 +143,7 @@ export function updateViewportByScrolling(board: PlaitBoard, scrollLeft: number,
     const zoom = board.viewport.zoom;
     const viewBox = getViewBox(board, zoom);
     const origination = [scrollLeft / zoom + viewBox[0], scrollTop / zoom + viewBox[1]] as Point;
-    if (Point.isEquals(origination, board.viewport.origination)) {
+    if (Point.isEquals(origination, getViewportOrigination(board))) {
         return;
     }
     BoardTransforms.updateViewport(board, origination);
