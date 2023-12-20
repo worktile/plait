@@ -16,7 +16,7 @@ export const withLineTextMove = (board: PlaitBoard) => {
     let textIndex = 0;
     const movableBuffer = 100;
     const options: WithResizeOptions<PlaitLine> = {
-        key: 'draw-line',
+        key: 'line-text',
         canResize: () => {
             return true;
         },
