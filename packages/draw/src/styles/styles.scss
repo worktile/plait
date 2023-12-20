@@ -12,4 +12,8 @@
     &.draw-line-resizing .element-active-host .line-handle {
         display: none;
     }
+    &.line-text-resizing ,
+    &.line-text-resizing .slate-editable-container {
+        cursor: move;
+    }
 }
