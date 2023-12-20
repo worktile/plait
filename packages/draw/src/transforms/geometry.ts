@@ -38,7 +38,7 @@ export const switchGeometryShape = (board: PlaitBoard, shape: GeometryShapes) =>
 };
 
 export const updateLine = (board: PlaitBoard, geometry: PlaitGeometry) => {
-    const line = findElements(board, {
+    const lines = findElements(board, {
         match: (element: PlaitElement) => {
             if (PlaitDrawElement.isLine(element)) {
                 return element.source.boundId === geometry.id || element.target.boundId === geometry.id;
@@ -46,16 +46,18 @@ export const updateLine = (board: PlaitBoard, geometry: PlaitGeometry) => {
             return false;
         },
         recursion: element => true
-    })[0] as PlaitLine;
-    if (line) {
-        const source = { ...line.source };
-        const target = { ...line.target };
-        const isSourceBound = line.source.boundId === geometry.id;
-        const object = isSourceBound ? source : target;
-        const linePoints = getLinePoints(board, line);
-        const point = isSourceBound ? linePoints[0] : linePoints[linePoints.length - 1];
-        object.connection = transformPointToConnection(board, point, geometry);
-        const path = [board.children.findIndex(child => child.id === line.id)];
-        DrawTransforms.resizeLine(board, { source, target }, path);
+    }) as PlaitLine[];
+    if (lines.length) {
+        lines.forEach(line => {
+            const source = { ...line.source };
+            const target = { ...line.target };
+            const isSourceBound = line.source.boundId === geometry.id;
+            const object = isSourceBound ? source : target;
+            const linePoints = getLinePoints(board, line);
+            const point = isSourceBound ? linePoints[0] : linePoints[linePoints.length - 1];
+            object.connection = transformPointToConnection(board, point, geometry);
+            const path = PlaitBoard.findPath(board, line);
+            DrawTransforms.resizeLine(board, { source, target }, path);
+        });
     }
 };
