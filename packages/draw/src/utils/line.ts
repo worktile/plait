@@ -91,7 +91,11 @@ export const getLinePoints = (board: PlaitBoard, element: PlaitLine) => {
             return getCurvePoints(board, element);
         }
         default: {
-            return PlaitLine.getPoints(board, element);
+            const points = PlaitLine.getPoints(board, element);
+            const handleRefPair = getLineHandleRefPair(board, element);
+            points[0] = handleRefPair.source.point;
+            points[points.length - 1] = handleRefPair.target.point;
+            return points;
         }
     }
 };
