@@ -488,7 +488,7 @@ export const handleLineCreating = (
 };
 
 export const getConnectionPointByGeometryElement = (board: PlaitBoard, element: PlaitGeometry, point: Point) => {
-    const engine = getEngine(element.shape);
+    const engine = getEngine(element?.shape);
     const rectangle = getRectangleByElements(board, [element], false);
     const nearestPoint = engine.getNearestPoint(rectangle, point);
     return transformPointToConnection(board, nearestPoint, element);

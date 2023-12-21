@@ -1,7 +1,6 @@
 import {
     ACTIVE_STROKE_WIDTH,
     BoardTransforms,
-    Direction,
     PlaitBoard,
     PlaitPointerType,
     Point,
