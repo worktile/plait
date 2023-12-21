@@ -365,10 +365,15 @@ export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, d
     }
 };
 
-export const transformPointToConnection = (board: PlaitBoard, point: Point, hitElement: PlaitShape): Point => {
+export const transformPointToConnection = (
+    board: PlaitBoard,
+    point: Point,
+    hitElement: PlaitShape,
+    tolerance: number = ACTIVE_STROKE_WIDTH
+): Point => {
     let rectangle = getRectangleByPoints(hitElement.points);
-    rectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
-    let nearestPoint = getNearestPoint(hitElement, point, ACTIVE_STROKE_WIDTH);
+    rectangle = RectangleClient.inflate(rectangle, tolerance);
+    let nearestPoint = getNearestPoint(hitElement, point, tolerance);
     const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, rectangle);
     nearestPoint = hitConnector ? hitConnector : nearestPoint;
     return [(nearestPoint[0] - rectangle.x) / rectangle.width, (nearestPoint[1] - rectangle.y) / rectangle.height];
