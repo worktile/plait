@@ -83,29 +83,6 @@ export const getPointsByCenterPoint = (point: Point, width: number, height: numb
     return [leftTopPoint, rightBottomPoint];
 };
 
-export const getPointsByPointAndDirection = (point: Point, direction: Direction, width: number, height: number): [Point, Point] => {
-    let leftTopPoint: Point, rightBottomPoint: Point;
-    switch (direction) {
-        case Direction.left:
-            leftTopPoint = [point[0], point[1] - height / 2];
-            rightBottomPoint = [point[0] + width, point[1] + height / 2];
-            break;
-        case Direction.right:
-            leftTopPoint = [point[0] - width, point[1] - height / 2];
-            rightBottomPoint = [point[0], point[1] + height / 2];
-            break;
-        case Direction.top:
-            leftTopPoint = [point[0] - width / 2, point[1]];
-            rightBottomPoint = [point[0] + width / 2, point[1] + height];
-            break;
-        case Direction.bottom:
-            leftTopPoint = [point[0] - width / 2, point[1] - height];
-            rightBottomPoint = [point[0] + width / 2, point[1]];
-            break;
-    }
-    return [leftTopPoint, rightBottomPoint];
-};
-
 export const getTextRectangle = (element: PlaitGeometry) => {
     const elementRectangle = getRectangleByPoints(element.points!);
     const strokeWidth = getStrokeWidthByElement(element);

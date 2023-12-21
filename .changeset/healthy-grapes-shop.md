@@ -2,4 +2,4 @@
 '@plait/draw': patch
 ---
 
-add setLineAutoComplete
+add insertGeometryByVector and connectLineToGeometry

@@ -1,14 +1,33 @@
-import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements, findElements, PlaitElement } from '@plait/core';
-import { PlaitDrawElement, PlaitGeometry, GeometryShapes, PlaitText, PlaitLine } from '../interfaces';
-import { createDefaultGeometry, createDefaultText, getLinePoints, insertElement, transformPointToConnection } from '../utils';
+import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements, Vector, Direction } from '@plait/core';
+import { PlaitDrawElement, GeometryShapes, PlaitText, PlaitLine, FlowchartSymbols } from '../interfaces';
+import { createDefaultGeometry, createDefaultText, getPointsByCenterPoint, insertElement } from '../utils';
 import { Element } from 'slate';
-import { normalizeShapePoints } from '@plait/common';
+import { getDirectionByVector, getPointByVector, normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '.';
 import { collectRefs } from './line';
+import { DefaultBasicShapeProperty, DefaultFlowchartPropertyMap } from '../constants';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
     const newElement = createDefaultGeometry(board, points, shape);
     insertElement(board, newElement);
+    return newElement;
+};
+
+export const insertGeometryByVector = (board: PlaitBoard, point: Point, shape: GeometryShapes, vector: Vector) => {
+    const shapeProperty = DefaultFlowchartPropertyMap[shape as FlowchartSymbols] || DefaultBasicShapeProperty;
+    const direction = getDirectionByVector(vector);
+    if (direction) {
+        let offset = 0;
+        if ([Direction.left, Direction.right].includes(direction)) {
+            offset = -shapeProperty.width / 2;
+        } else {
+            offset = -shapeProperty.height / 2;
+        }
+        const vectorPoint = getPointByVector(point, vector, offset);
+        const points = getPointsByCenterPoint(vectorPoint, shapeProperty.width, shapeProperty.height);
+        return insertGeometry(board, points, shape);
+    }
+    return null;
 };
 
 export const insertText = (board: PlaitBoard, points: [Point, Point], text: string | Element = '文本') => {
