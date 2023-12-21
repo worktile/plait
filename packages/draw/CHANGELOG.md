@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.42.0
+
+### Minor Changes
+
+-   [`3f823bf8`](https://github.com/worktile/plait/commit/3f823bf8f5bdb7aef7147a4e4d0fe73382e9f479) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove tolerance in transformPointToConnection
+
 ## 0.41.0
 
 ### Minor Changes
