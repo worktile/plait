@@ -1,5 +1,14 @@
 # @plait/common
 
+## 0.40.0
+
+### Minor Changes
+
+-   [`025bd41b`](https://github.com/worktile/plait/commit/025bd41b8ef3656fb1ff19f008cf01760914294b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor mind node resize, use basic with resize in common
+
+*   [`e90c5c21`](https://github.com/worktile/plait/commit/e90c5c2192807eae2b6d6d7c230bc4e979d4c863) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct getGapCenter method logic, add note for a-star
+    improve line route demo and
+
 ## 0.39.0
 
 ### Minor Changes

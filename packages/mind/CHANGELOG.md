@@ -1,5 +1,11 @@
 # mind
 
+## 0.40.0
+
+### Minor Changes
+
+-   [`025bd41b`](https://github.com/worktile/plait/commit/025bd41b8ef3656fb1ff19f008cf01760914294b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - refactor mind node resize, use basic with resize in common
+
 ## 0.39.0
 
 ## 0.38.0

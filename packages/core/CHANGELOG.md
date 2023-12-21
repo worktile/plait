@@ -1,5 +1,26 @@
 # plait
 
+## 0.40.0
+
+### Minor Changes
+
+-   [`07eaf04d`](https://github.com/worktile/plait/commit/07eaf04d7a74f1b9fc67e5822ba01bf5e7e8e469) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add afterChange method and move the timing of plaitChange event trigging to afterChange
+    overriding the afterChange method of board can handle some things between the component update and the component triggering the change event.
+
+*   [`e90c5c21`](https://github.com/worktile/plait/commit/e90c5c2192807eae2b6d6d7c230bc4e979d4c863) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct getGapCenter method logic, add note for a-star
+    improve line route demo and
+
+-   [#674](https://github.com/worktile/plait/pull/674) [`804f9348`](https://github.com/worktile/plait/commit/804f9348179975840d9ef6a12e54e94159a1cb3a) Thanks [@WBbug](https://github.com/WBbug)! - support move text
+
+*   [#681](https://github.com/worktile/plait/pull/681) [`98ea1c1a`](https://github.com/worktile/plait/commit/98ea1c1aa18a48ca89a66e040a523b8d30c18704) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add toScreenPoint method
+    add toSVGScreenPoint method
+
+### Patch Changes
+
+-   [#679](https://github.com/worktile/plait/pull/679) [`2ea6ee7e`](https://github.com/worktile/plait/commit/2ea6ee7ef5199d995f67d6990cc1c106ffaa0d64) Thanks [@Maple13](https://github.com/Maple13)! - fix image node conversion error
+
+*   [`7e587778`](https://github.com/worktile/plait/commit/7e5877784d2ae42ceb8dafc0ef5d41a6831d9544) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct selected element updating logic in with-selection
+
 ## 0.39.0
 
 ### Minor Changes

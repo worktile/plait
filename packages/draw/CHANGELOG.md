@@ -1,5 +1,33 @@
 # @plait/draw
 
+## 0.40.0
+
+### Minor Changes
+
+-   [#678](https://github.com/worktile/plait/pull/678) [`ffb87367`](https://github.com/worktile/plait/commit/ffb8736734fee28d4af881fb1079da23000af784) Thanks [@WBbug](https://github.com/WBbug)! - change bound line when geometry shape change
+
+*   [#677](https://github.com/worktile/plait/pull/677) [`af8b682e`](https://github.com/worktile/plait/commit/af8b682e309c70ffbcb0f84ee028fe4bcfc96941) Thanks [@WBbug](https://github.com/WBbug)! - change text moving style
+
+-   [`07eaf04d`](https://github.com/worktile/plait/commit/07eaf04d7a74f1b9fc67e5822ba01bf5e7e8e469) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add afterChange method and move the timing of plaitChange event trigging to afterChange
+    overriding the afterChange method of board can handle some things between the component update and the component triggering the change event.
+
+*   [#682](https://github.com/worktile/plait/pull/682) [`7ff83a5f`](https://github.com/worktile/plait/commit/7ff83a5fae97f3b770aab04b7eb05bc3f7541ba6) Thanks [@WBbug](https://github.com/WBbug)! - add collect refs
+
+-   [#675](https://github.com/worktile/plait/pull/675) [`64fdf4a8`](https://github.com/worktile/plait/commit/64fdf4a8b93b46c82bf03f018906daa15466551e) Thanks [@WBbug](https://github.com/WBbug)! - fix draw wrong shape
+
+*   [#674](https://github.com/worktile/plait/pull/674) [`804f9348`](https://github.com/worktile/plait/commit/804f9348179975840d9ef6a12e54e94159a1cb3a) Thanks [@WBbug](https://github.com/WBbug)! - support move text
+
+-   [#672](https://github.com/worktile/plait/pull/672) [`8198fdbf`](https://github.com/worktile/plait/commit/8198fdbfaee5d61a593d5f6acf04c82338f936de) Thanks [@WBbug](https://github.com/WBbug)! - support all points align
+
+*   [#681](https://github.com/worktile/plait/pull/681) [`98ea1c1a`](https://github.com/worktile/plait/commit/98ea1c1aa18a48ca89a66e040a523b8d30c18704) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add toScreenPoint method
+    add toSVGScreenPoint method
+
+### Patch Changes
+
+-   [#676](https://github.com/worktile/plait/pull/676) [`4f697f90`](https://github.com/worktile/plait/commit/4f697f909cc9852c89b9e5aed815ead07bafb02b) Thanks [@WBbug](https://github.com/WBbug)! - export plugin key
+
+*   [#680](https://github.com/worktile/plait/pull/680) [`336a793d`](https://github.com/worktile/plait/commit/336a793d27810675b3457dfa93efd667875db465) Thanks [@WBbug](https://github.com/WBbug)! - use handle ref points
+
 ## 0.39.0
 
 ### Minor Changes
