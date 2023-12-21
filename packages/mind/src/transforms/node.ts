@@ -1,10 +1,13 @@
 import { Element, Path } from 'slate';
-import { MindElement } from '../interfaces/element';
-import { PlaitBoard, PlaitNode, Transforms } from '@plait/core';
-import { AbstractRef, getRelativeStartEndByAbstractRef } from '../utils/abstract/common';
-import { RightNodeCountRef } from '../utils/node/right-node-count';
+import { MindElement, PlaitMind } from '../interfaces/element';
+import { PlaitBoard, PlaitHistoryBoard, PlaitNode, Transforms, removeSelectedElement } from '@plait/core';
+import { AbstractRef, getRelativeStartEndByAbstractRef, insertElementHandleAbstract } from '../utils/abstract/common';
+import { RightNodeCountRef, insertElementHandleRightNodeCount, isInRightBranchOfStandardLayout } from '../utils/node/right-node-count';
 import { NodeSpace } from '../utils/space/node-space';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
+import { findNewChildNodePath, findNewSiblingNodePath, insertMindElement } from '../utils';
+import { setAbstractsByRefs } from './abstract-node';
+import { AbstractNode } from '@plait/layouts';
 
 const normalizeWidthAndHeight = (board: PlaitMindBoard, element: MindElement, width: number, height: number) => {
     const minWidth = NodeSpace.getNodeTopicMinWidth(board, element, element.isRoot);
@@ -73,4 +76,31 @@ export const setRightNodeCountByRefs = (board: PlaitBoard, refs: RightNodeCountR
     refs.forEach(ref => {
         Transforms.setNode(board, { rightNodeCount: ref.rightNodeCount }, ref.path);
     });
+};
+
+export const insertChildNode = (board: PlaitMindBoard, element: MindElement) => {
+    if (MindElement.isMindElement(board, element)) {
+        removeSelectedElement(board, element);
+        const targetElementPath = PlaitBoard.findPath(board, element);
+        if (element.isCollapsed) {
+            const newElement: Partial<MindElement> = { isCollapsed: false };
+            PlaitHistoryBoard.withoutSaving(board, () => {
+                Transforms.setNode(board, newElement, targetElementPath);
+            });
+        }
+        insertMindElement(board, element, findNewChildNodePath(board, element));
+    }
+};
+
+export const insertSiblingNode = (board: PlaitMindBoard, element: MindElement) => {
+    if (MindElement.isMindElement(board, element) && !PlaitMind.isMind(element) && !AbstractNode.isAbstract(element)) {
+        const path = PlaitBoard.findPath(board, element);
+        if (isInRightBranchOfStandardLayout(element)) {
+            const refs = insertElementHandleRightNodeCount(board, path.slice(0, 1), 1);
+            setRightNodeCountByRefs(board, refs);
+        }
+        const abstractRefs = insertElementHandleAbstract(board, Path.next(path));
+        setAbstractsByRefs(board, abstractRefs);
+        insertMindElement(board, element, findNewSiblingNodePath(board, element));
+    }
 };

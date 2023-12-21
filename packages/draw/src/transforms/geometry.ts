@@ -4,7 +4,7 @@ import { createDefaultGeometry, createDefaultText, getPointsByCenterPoint, inser
 import { Element } from 'slate';
 import { getDirectionByVector, getPointByVector, normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '.';
-import { collectRefs } from './line';
+import { collectLineUpdatedRefsByGeometry } from './line';
 import { DefaultBasicShapeProperty, DefaultFlowchartPropertyMap } from '../constants';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
@@ -53,7 +53,7 @@ export const switchGeometryShape = (board: PlaitBoard, shape: GeometryShapes) =>
         if (PlaitDrawElement.isGeometry(item) && !PlaitDrawElement.isText(item)) {
             const path = PlaitBoard.findPath(board, item);
             Transforms.setNode(board, { shape }, path);
-            collectRefs(board, { ...item, shape }, refs);
+            collectLineUpdatedRefsByGeometry(board, { ...item, shape }, refs);
         }
     });
     if (refs.length) {

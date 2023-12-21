@@ -37,6 +37,7 @@ import {
     getExtendPoint
 } from '@plait/common';
 import {
+    BasicShapes,
     LineHandle,
     LineHandleKey,
     LineHandleRef,
@@ -48,7 +49,7 @@ import {
     PlaitLine,
     PlaitShape
 } from '../interfaces';
-import { getPointsByCenterPoint, getNearestPoint } from './geometry';
+import { getPointsByCenterPoint, getNearestPoint, createGeometryElement } from './geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './style/stroke';
 import { getEngine } from '../engines';
 import { drawLineArrow } from './line-arrow';
@@ -149,69 +150,76 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
     return { source: sourceHandleRef, target: targetHandleRef };
 };
 
+const createFakeElement = (startPoint: Point, vector: Vector) => {
+    const point = getPointByVector(startPoint, vector, -25);
+    const points = getPointsByCenterPoint(point, 50, 50);
+    return createGeometryElement(BasicShapes.rectangle, points, '');
+};
+
 export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     if (element.points.length === 2) {
         const handleRefPair = getLineHandleRefPair(board, element);
-        const offset = element.source.boundId || element.target.boundId ? DEFAULT_ROUTE_MARGIN : 0;
-        const sourceElement = element.source.boundId && getElementById<PlaitGeometry>(board, element.source.boundId);
-        const targetElement = element.target.boundId && getElementById<PlaitGeometry>(board, element.target.boundId);
-        const isBound = sourceElement && targetElement;
-
+        let sourceElement = element.source.boundId ? getElementById<PlaitGeometry>(board, element.source.boundId) : undefined;
+        let targetElement = element.target.boundId ? getElementById<PlaitGeometry>(board, element.target.boundId) : undefined;
         let points: Point[] = [];
-        if (isBound) {
-            const targetRectangle = RectangleClient.inflate(
-                getRectangleByPoints(targetElement.points),
-                getStrokeWidthByElement(targetElement) * 2
-            );
-            const sourceRectangle = RectangleClient.inflate(
-                getRectangleByPoints(sourceElement.points),
-                getStrokeWidthByElement(sourceElement) * 2
-            );
-            const sourcePoint = handleRefPair.source.point;
-            const targetPoint = handleRefPair.target.point;
-            const { sourceOffset, targetOffset } = reduceRouteMargin(sourceRectangle, targetRectangle);
-            const sourceOuterRectangle = RectangleClient.expand(
-                sourceRectangle,
-                sourceOffset[3],
-                sourceOffset[0],
-                sourceOffset[1],
-                sourceOffset[2]
-            );
-            const targetOuterRectangle = RectangleClient.expand(
-                targetRectangle,
-                targetOffset[3],
-                targetOffset[0],
-                targetOffset[1],
-                targetOffset[2]
-            );
-            const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, handleRefPair.source.direction);
-            const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, handleRefPair.target.direction);
-            const isIntersect =
-                RectangleClient.isPointInRectangle(targetRectangle, sourcePoint) ||
-                RectangleClient.isPointInRectangle(targetOuterRectangle, nextSourcePoint) ||
-                RectangleClient.isPointInRectangle(sourceOuterRectangle, nextTargetPoint) ||
-                RectangleClient.isPointInRectangle(sourceRectangle, targetPoint);
-            if (!isIntersect) {
-                points = generateElbowLineRoute({
-                    sourcePoint,
-                    nextSourcePoint,
-                    sourceRectangle,
-                    sourceOuterRectangle,
-                    targetPoint,
-                    nextTargetPoint,
-                    targetRectangle,
-                    targetOuterRectangle
-                });
-            }
+        if (!sourceElement) {
+            const source = handleRefPair.source;
+            sourceElement = createFakeElement(source.point, source.vector);
         }
-
-        if (!points.length) {
+        if (!targetElement) {
+            const target = handleRefPair.target;
+            targetElement = createFakeElement(target.point, target.vector);
+        }
+        const targetRectangle = RectangleClient.inflate(
+            getRectangleByPoints(targetElement.points),
+            getStrokeWidthByElement(targetElement) * 2
+        );
+        const sourceRectangle = RectangleClient.inflate(
+            getRectangleByPoints(sourceElement.points),
+            getStrokeWidthByElement(sourceElement) * 2
+        );
+        const sourcePoint = handleRefPair.source.point;
+        const targetPoint = handleRefPair.target.point;
+        const { sourceOffset, targetOffset } = reduceRouteMargin(sourceRectangle, targetRectangle);
+        const sourceOuterRectangle = RectangleClient.expand(
+            sourceRectangle,
+            sourceOffset[3],
+            sourceOffset[0],
+            sourceOffset[1],
+            sourceOffset[2]
+        );
+        const targetOuterRectangle = RectangleClient.expand(
+            targetRectangle,
+            targetOffset[3],
+            targetOffset[0],
+            targetOffset[1],
+            targetOffset[2]
+        );
+        const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, handleRefPair.source.direction);
+        const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, handleRefPair.target.direction);
+        const isIntersect =
+            RectangleClient.isPointInRectangle(targetRectangle, sourcePoint) ||
+            RectangleClient.isPointInRectangle(targetOuterRectangle, nextSourcePoint) ||
+            RectangleClient.isPointInRectangle(sourceOuterRectangle, nextTargetPoint) ||
+            RectangleClient.isPointInRectangle(sourceRectangle, targetPoint);
+        if (!isIntersect) {
+            points = generateElbowLineRoute({
+                sourcePoint,
+                nextSourcePoint,
+                sourceRectangle,
+                sourceOuterRectangle,
+                targetPoint,
+                nextTargetPoint,
+                targetRectangle,
+                targetOuterRectangle
+            });
+        } else {
             points = getPoints(
                 handleRefPair.source.point,
                 handleRefPair.source.direction,
                 handleRefPair.target.point,
                 handleRefPair.target.direction,
-                offset
+                0
             );
         }
         points = removeDuplicatePoints(points);
@@ -356,10 +364,15 @@ export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, d
     }
 };
 
-export const transformPointToConnection = (board: PlaitBoard, point: Point, hitElement: PlaitShape): Point => {
+export const transformPointToConnection = (
+    board: PlaitBoard,
+    point: Point,
+    hitElement: PlaitShape,
+    tolerance: number = ACTIVE_STROKE_WIDTH
+): Point => {
     let rectangle = getRectangleByPoints(hitElement.points);
-    rectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
-    let nearestPoint = getNearestPoint(hitElement, point, ACTIVE_STROKE_WIDTH);
+    rectangle = RectangleClient.inflate(rectangle, tolerance);
+    let nearestPoint = getNearestPoint(hitElement, point, tolerance);
     const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, rectangle);
     nearestPoint = hitConnector ? hitConnector : nearestPoint;
     return [(nearestPoint[0] - rectangle.x) / rectangle.width, (nearestPoint[1] - rectangle.y) / rectangle.height];
@@ -485,11 +498,4 @@ export const handleLineCreating = (
     lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
     PlaitBoard.getElementActiveHost(board).append(lineShapeG);
     return temporaryLineElement;
-};
-
-export const getConnectionPointByGeometryElement = (board: PlaitBoard, element: PlaitGeometry, point: Point) => {
-    const engine = getEngine(element?.shape);
-    const rectangle = getRectangleByElements(board, [element], false);
-    const nearestPoint = engine.getNearestPoint(rectangle, point);
-    return transformPointToConnection(board, nearestPoint, element);
 };
