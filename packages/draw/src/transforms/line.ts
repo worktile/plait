@@ -28,7 +28,11 @@ export const setLineMark = (board: PlaitBoard, element: PlaitLine, handleKey: Li
     Transforms.setNode(board, { [handleKey]: handle }, path);
 };
 
-export const collectRefs = (board: PlaitBoard, geometry: PlaitGeometry, refs: { property: Partial<PlaitLine>; path: Path }[]) => {
+export const collectLineUpdatedRefsByGeometry = (
+    board: PlaitBoard,
+    geometry: PlaitGeometry,
+    refs: { property: Partial<PlaitLine>; path: Path }[]
+) => {
     const lines = findElements(board, {
         match: (element: PlaitElement) => {
             if (PlaitDrawElement.isLine(element)) {

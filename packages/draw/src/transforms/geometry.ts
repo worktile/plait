@@ -1,10 +1,10 @@
-import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements, findElements, PlaitElement } from '@plait/core';
-import { PlaitDrawElement, PlaitGeometry, GeometryShapes, PlaitText, PlaitLine } from '../interfaces';
-import { createDefaultGeometry, createDefaultText, getLinePoints, insertElement, transformPointToConnection } from '../utils';
+import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements } from '@plait/core';
+import { PlaitDrawElement, GeometryShapes, PlaitText, PlaitLine } from '../interfaces';
+import { createDefaultGeometry, createDefaultText, insertElement } from '../utils';
 import { Element } from 'slate';
 import { normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '.';
-import { collectRefs } from './line';
+import { collectLineUpdatedRefsByGeometry } from './line';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
     const newElement = createDefaultGeometry(board, points, shape);
@@ -34,7 +34,7 @@ export const switchGeometryShape = (board: PlaitBoard, shape: GeometryShapes) =>
         if (PlaitDrawElement.isGeometry(item) && !PlaitDrawElement.isText(item)) {
             const path = PlaitBoard.findPath(board, item);
             Transforms.setNode(board, { shape }, path);
-            collectRefs(board, { ...item, shape }, refs);
+            collectLineUpdatedRefsByGeometry(board, { ...item, shape }, refs);
         }
     });
     if (refs.length) {
