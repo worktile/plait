@@ -1,7 +1,20 @@
-import { Path, PlaitBoard, PlaitElement, Transforms, findElements } from '@plait/core';
-import { LineHandleKey, LineMarkerType, LineText, MemorizeKey, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
-import { memorizeLatest } from '@plait/common';
-import { getLinePoints, transformPointToConnection } from '../utils';
+import { Path, PlaitBoard, PlaitElement, PointOfRectangle, Transforms, findElements, getSelectedElements } from '@plait/core';
+import {
+    FlowchartSymbols,
+    GeometryShapes,
+    LineHandle,
+    LineHandleKey,
+    LineMarkerType,
+    LineText,
+    MemorizeKey,
+    PlaitDrawElement,
+    PlaitGeometry,
+    PlaitLine
+} from '../interfaces';
+import { getDirectionByVector, getOppositeDirection, memorizeLatest } from '@plait/common';
+import { getConnectionPointByGeometryElement, getLinePoints, getPointsByPointAndDirection, transformPointToConnection } from '../utils';
+import { DefaultBasicShapeProperty, DefaultFlowchartPropertyMap } from '../constants';
+import { insertGeometry } from './geometry';
 
 export const resizeLine = (board: PlaitBoard, options: Partial<PlaitLine>, path: Path) => {
     Transforms.setNode(board, options, path);
@@ -59,5 +72,25 @@ export const collectRefs = (board: PlaitBoard, geometry: PlaitGeometry, refs: { 
                 refs[index].property = { ...refs[index].property, [handle]: object };
             }
         });
+    }
+};
+
+export const setLineAutoComplete = (board: PlaitBoard, element: PlaitLine, shape: GeometryShapes) => {
+    const shapeProperty = DefaultFlowchartPropertyMap[shape as FlowchartSymbols] || DefaultBasicShapeProperty;
+    const [sourcePoint, targetPoint] = PlaitLine.getPoints(board, element);
+    const sourceDirection = getDirectionByVector([targetPoint[0] - sourcePoint[0], targetPoint[1] - sourcePoint[1]]);
+    let targetDirection = sourceDirection && getOppositeDirection(sourceDirection);
+    if (targetDirection) {
+        const geometryPoints = getPointsByPointAndDirection(targetPoint, targetDirection, shapeProperty.width, shapeProperty.height);
+        insertGeometry(board, geometryPoints, shape);
+        const selectElement = getSelectedElements(board)[0] as PlaitGeometry;
+        const connection: PointOfRectangle = getConnectionPointByGeometryElement(board, selectElement, targetPoint);
+        const target: LineHandle = {
+            ...element.target,
+            boundId: selectElement.id,
+            connection
+        };
+        const path = PlaitBoard.findPath(board, element);
+        resizeLine(board, { target }, path);
     }
 };

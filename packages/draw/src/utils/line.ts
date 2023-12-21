@@ -16,7 +16,8 @@ import {
     Direction,
     Vector,
     distanceBetweenPointAndPoint,
-    catmullRomFitting
+    catmullRomFitting,
+    getRectangleByElements
 } from '@plait/core';
 import {
     getPoints,
@@ -33,8 +34,7 @@ import {
     generateElbowLineRoute,
     getNextPoint,
     DEFAULT_ROUTE_MARGIN,
-    getExtendPoint,
-    getMemorizedLatest
+    getExtendPoint
 } from '@plait/common';
 import {
     LineHandle,
@@ -485,4 +485,11 @@ export const handleLineCreating = (
     lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
     PlaitBoard.getElementActiveHost(board).append(lineShapeG);
     return temporaryLineElement;
+};
+
+export const getConnectionPointByGeometryElement = (board: PlaitBoard, element: PlaitGeometry, point: Point) => {
+    const engine = getEngine(element.shape);
+    const rectangle = getRectangleByElements(board, [element], false);
+    const nearestPoint = engine.getNearestPoint(rectangle, point);
+    return transformPointToConnection(board, nearestPoint, element);
 };
