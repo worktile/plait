@@ -1,11 +1,7 @@
-import { Path, PlaitBoard, PlaitHistoryBoard, Transforms, getSelectedElements, removeSelectedElement } from '@plait/core';
+import { PlaitBoard, Transforms, getSelectedElements } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces';
 import { AbstractNode } from '@plait/layouts';
-import { insertMindElement } from '../utils/mind';
-import { findNewChildNodePath, findNewSiblingNodePath } from '../utils/path';
-import { insertElementHandleRightNodeCount, isInRightBranchOfStandardLayout } from '../utils/node/right-node-count';
 import { MindTransforms } from '../transforms';
-import { insertElementHandleAbstract } from '../utils/abstract/common';
 import { editTopic } from '../utils/node/common';
 import { PlaitMindBoard } from './with-mind.board';
 import { isSpaceHotkey, isExpandHotkey, isTabHotkey, isEnterHotkey, isVirtualKey, isDelete } from '@plait/common';
@@ -34,15 +30,7 @@ export const withMindHotkey = (baseBoard: PlaitBoard) => {
         if (!PlaitBoard.isReadonly(board)) {
             if (isTabHotkey(event) && isSingleMindElement) {
                 event.preventDefault();
-                removeSelectedElement(board, targetElement);
-                const targetElementPath = PlaitBoard.findPath(board, targetElement);
-                if (targetElement.isCollapsed) {
-                    const newElement: Partial<MindElement> = { isCollapsed: false };
-                    PlaitHistoryBoard.withoutSaving(board, () => {
-                        Transforms.setNode(board, newElement, targetElementPath);
-                    });
-                }
-                insertMindElement(board, targetElement, findNewChildNodePath(board, targetElement));
+                MindTransforms.insertChildNode(board, targetElement);
                 return;
             }
 
@@ -52,14 +40,7 @@ export const withMindHotkey = (baseBoard: PlaitBoard) => {
                 !PlaitMind.isMind(targetElement) &&
                 !AbstractNode.isAbstract(targetElement)
             ) {
-                const targetElementPath = PlaitBoard.findPath(board, targetElement);
-                if (isInRightBranchOfStandardLayout(targetElement)) {
-                    const refs = insertElementHandleRightNodeCount(board, targetElementPath.slice(0, 1), 1);
-                    MindTransforms.setRightNodeCountByRefs(board, refs);
-                }
-                const abstractRefs = insertElementHandleAbstract(board, Path.next(targetElementPath));
-                MindTransforms.setAbstractsByRefs(board, abstractRefs);
-                insertMindElement(board, targetElement, findNewSiblingNodePath(board, targetElement));
+                MindTransforms.insertSiblingNode(board, targetElement);
                 return;
             }
 
