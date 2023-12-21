@@ -16,8 +16,7 @@ import {
     Direction,
     Vector,
     distanceBetweenPointAndPoint,
-    catmullRomFitting,
-    drawRectangle
+    catmullRomFitting
 } from '@plait/core';
 import {
     getPoints,
@@ -33,9 +32,7 @@ import {
     reduceRouteMargin,
     generateElbowLineRoute,
     getNextPoint,
-    DEFAULT_ROUTE_MARGIN,
-    getExtendPoint,
-    getMemorizedLatest
+    getExtendPoint
 } from '@plait/common';
 import {
     BasicShapes,

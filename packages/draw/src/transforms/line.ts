@@ -1,5 +1,14 @@
-import { Path, PlaitBoard, PlaitElement, Transforms, findElements } from '@plait/core';
-import { LineHandleKey, LineMarkerType, LineText, MemorizeKey, PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
+import { Path, PlaitBoard, PlaitElement, PointOfRectangle, Transforms, findElements } from '@plait/core';
+import {
+    LineHandle,
+    LineHandleKey,
+    LineMarkerType,
+    LineText,
+    MemorizeKey,
+    PlaitDrawElement,
+    PlaitGeometry,
+    PlaitLine
+} from '../interfaces';
 import { memorizeLatest } from '@plait/common';
 import { getLinePoints, transformPointToConnection } from '../utils';
 
@@ -63,5 +72,35 @@ export const collectLineUpdatedRefsByGeometry = (
                 refs[index].property = { ...refs[index].property, [handle]: object };
             }
         });
+    }
+};
+
+export const connectLineToGeometry = (board: PlaitBoard, lineElement: PlaitLine, handle: LineHandleKey, geometryElement: PlaitGeometry) => {
+    const linePoints = PlaitLine.getPoints(board, lineElement);
+    const point = handle === LineHandleKey.source ? linePoints[0] : linePoints[linePoints.length - 1];
+    const connection: PointOfRectangle = transformPointToConnection(
+        board,
+        point,
+        geometryElement,
+        Math.max(geometryElement.width, geometryElement.height)
+    );
+    if (connection) {
+        let source: LineHandle = lineElement.source;
+        let target: LineHandle = lineElement.target;
+        if (handle === LineHandleKey.source) {
+            source = {
+                ...source,
+                boundId: geometryElement.id,
+                connection
+            };
+        } else {
+            target = {
+                ...target,
+                boundId: geometryElement.id,
+                connection
+            };
+        }
+        const path = PlaitBoard.findPath(board, lineElement);
+        resizeLine(board, { source, target }, path);
     }
 };
