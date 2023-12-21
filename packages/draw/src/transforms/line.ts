@@ -78,12 +78,7 @@ export const collectLineUpdatedRefsByGeometry = (
 export const connectLineToGeometry = (board: PlaitBoard, lineElement: PlaitLine, handle: LineHandleKey, geometryElement: PlaitGeometry) => {
     const linePoints = PlaitLine.getPoints(board, lineElement);
     const point = handle === LineHandleKey.source ? linePoints[0] : linePoints[linePoints.length - 1];
-    const connection: PointOfRectangle = transformPointToConnection(
-        board,
-        point,
-        geometryElement,
-        Math.max(geometryElement.width, geometryElement.height)
-    );
+    const connection: PointOfRectangle = transformPointToConnection(board, point, geometryElement);
     if (connection) {
         let source: LineHandle = lineElement.source;
         let target: LineHandle = lineElement.target;
