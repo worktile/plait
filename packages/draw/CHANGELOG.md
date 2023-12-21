@@ -1,5 +1,19 @@
 # @plait/draw
 
+## 0.41.0
+
+### Minor Changes
+
+-   [`1c3e4b05`](https://github.com/worktile/plait/commit/1c3e4b0538adb420a6d61b618878f58595c78084) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support tolerance in transformPointToConnection method
+
+*   [#685](https://github.com/worktile/plait/pull/685) [`87345e28`](https://github.com/worktile/plait/commit/87345e28fd82cab643bf2bb0f7679d2c6c8da4d0) Thanks [@WBbug](https://github.com/WBbug)! - create fake element
+
+### Patch Changes
+
+-   [#684](https://github.com/worktile/plait/pull/684) [`20fe849a`](https://github.com/worktile/plait/commit/20fe849a3915cc767db3ee470d1f73783835a146) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add insertGeometryByVector and connectLineToGeometry
+
+*   [#683](https://github.com/worktile/plait/pull/683) [`2b991d4d`](https://github.com/worktile/plait/commit/2b991d4d81b5d95ed704753b5ceca609ded60fe5) Thanks [@WBbug](https://github.com/WBbug)! - fix align
+
 ## 0.40.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # mind
 
+## 0.41.0
+
+### Patch Changes
+
+-   [#686](https://github.com/worktile/plait/pull/686) [`b58d09b7`](https://github.com/worktile/plait/commit/b58d09b7f6ae2aa7729c6e9035a1a52d0467c8cd) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add insertChildNode and insertSiblingNode
+
 ## 0.40.0
 
 ### Minor Changes
