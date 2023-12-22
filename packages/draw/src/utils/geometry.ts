@@ -345,12 +345,17 @@ export const insertElement = (board: PlaitBoard, element: PlaitGeometry) => {
     BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
 };
 
-export const createTextElement = (board: PlaitBoard, points: [Point, Point], text: string | Element = DefaultTextProperty.text) => {
+export const createTextElement = (
+    board: PlaitBoard,
+    points: [Point, Point],
+    text: string | Element = DefaultTextProperty.text,
+    textHeight?: number
+) => {
     const memorizedLatest = getMemorizedLatestByPointer(BasicShapes.text);
-    const property = getTextShapeProperty(board, text, memorizedLatest.textProperties['font-size']);
+    textHeight = textHeight ? textHeight : getRectangleByPoints(points).height;
     return createGeometryElement(BasicShapes.text, points, text, memorizedLatest.geometryProperties as GeometryStyleOptions, {
         ...memorizedLatest.textProperties,
-        textHeight: property.height
+        textHeight
     });
 };
 

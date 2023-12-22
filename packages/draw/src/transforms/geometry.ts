@@ -1,6 +1,13 @@
 import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements, Vector, Direction } from '@plait/core';
-import { PlaitDrawElement, GeometryShapes, PlaitText, PlaitLine, FlowchartSymbols } from '../interfaces';
-import { createDefaultGeometry, createTextElement, getPointsByCenterPoint, insertElement } from '../utils';
+import { PlaitDrawElement, GeometryShapes, PlaitText, PlaitLine, FlowchartSymbols, BasicShapes } from '../interfaces';
+import {
+    createDefaultGeometry,
+    createTextElement,
+    getMemorizedLatestByPointer,
+    getPointsByCenterPoint,
+    getTextShapeProperty,
+    insertElement
+} from '../utils';
 import { Element } from 'slate';
 import { getDirectionByVector, getPointByVector, normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '.';
@@ -30,7 +37,10 @@ export const insertGeometryByVector = (board: PlaitBoard, point: Point, shape: G
     return null;
 };
 
-export const insertText = (board: PlaitBoard, points: [Point, Point], text: string | Element) => {
+export const insertText = (board: PlaitBoard, point: Point, text: string | Element) => {
+    const memorizedLatest = getMemorizedLatestByPointer(BasicShapes.text);
+    const property = getTextShapeProperty(board, text, memorizedLatest.textProperties['font-size']);
+    const points: [Point, Point] = [point, [point[0] + property.width, point[1] + property.height]];
     const newElement = createTextElement(board, points, text);
     insertElement(board, newElement);
 };

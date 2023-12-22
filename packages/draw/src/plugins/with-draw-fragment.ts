@@ -8,7 +8,7 @@ import { getBoardLines } from '../utils/line';
 import { PlaitImage } from '../interfaces/image';
 import { acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/common';
 import { DEFAULT_IMAGE_WIDTH } from '../constants';
-import { getMemorizedLatestByPointer, getTextShapeProperty } from '../utils';
+import { getMemorizedLatestByPointer, getTextShapeProperty, insertElement } from '../utils';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard;
@@ -68,9 +68,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             const insertAsChildren = selectedElements.length === 1 && selectedElements[0].children;
             const insertAsFreeText = !insertAsChildren;
             if (text && insertAsFreeText) {
-                const memorizedLatest = getMemorizedLatestByPointer(BasicShapes.text);
-                const property = getTextShapeProperty(board, text, memorizedLatest.textProperties['font-size']);
-                DrawTransforms.insertText(board, [targetPoint, [targetPoint[0] + property.width, targetPoint[1] + property.height]], text);
+                DrawTransforms.insertText(board, targetPoint, text);
                 return;
             }
         }
