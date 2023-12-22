@@ -6,11 +6,9 @@ import {
     isSelectionMoving,
     getSelectedElements,
     PlaitOptionsBoard,
-    ACTIVE_STROKE_WIDTH,
-    findElements,
-    PlaitElement
+    ACTIVE_STROKE_WIDTH
 } from '@plait/core';
-import { Subject, findIndex } from 'rxjs';
+import { Subject } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
 import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
@@ -18,11 +16,10 @@ import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
 import { ActiveGenerator, WithTextPluginKey, WithTextOptions, getRectangleByPoints, CommonPluginElement } from '@plait/common';
 import { GeometryThreshold } from './constants/geometry';
-import { PlaitDrawElement, PlaitLine, PlaitText } from './interfaces';
+import { PlaitDrawElement, PlaitText } from './interfaces';
 import { getEngine } from './engines';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
-import { getLinePoints, memorizeLatestText, transformPointToConnection } from './utils';
-import { LineResizeHandle } from './utils/position/line';
+import { memorizeLatestText } from './utils';
 
 @Component({
     selector: 'plait-draw-geometry',

@@ -201,7 +201,9 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             activeHost: elementActiveHost
         });
         BOARD_TO_ON_CHANGE.set(this.board, () => {
-            this.update();
+            this.ngZone.run(() => {
+                this.update();
+            });
         });
         BOARD_TO_AFTER_CHANGE.set(this.board, () => {
             this.ngZone.run(() => {
