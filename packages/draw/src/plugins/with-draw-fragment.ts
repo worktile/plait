@@ -1,6 +1,6 @@
 import { PlaitBoard, PlaitElement, Point, RectangleClient, getDataFromClipboard, getSelectedElements, setClipboardData } from '@plait/core';
 import { getSelectedDrawElements, getSelectedImageElements } from '../utils/selected';
-import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShape } from '../interfaces';
+import { BasicShapes, PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShape } from '../interfaces';
 import { getTextFromClipboard, getTextSize } from '@plait/text';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
@@ -8,6 +8,7 @@ import { getBoardLines } from '../utils/line';
 import { PlaitImage } from '../interfaces/image';
 import { acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/common';
 import { DEFAULT_IMAGE_WIDTH } from '../constants';
+import { getMemorizedLatestByPointer, getTextShapeProperty } from '../utils';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard;
@@ -67,8 +68,9 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             const insertAsChildren = selectedElements.length === 1 && selectedElements[0].children;
             const insertAsFreeText = !insertAsChildren;
             if (text && insertAsFreeText) {
-                const { width, height } = getTextSize(board, text);
-                DrawTransforms.insertText(board, [targetPoint, [targetPoint[0] + width, targetPoint[1] + height]], text);
+                const memorizedLatest = getMemorizedLatestByPointer(BasicShapes.text);
+                const property = getTextShapeProperty(board, text, memorizedLatest.textProperties['font-size']);
+                DrawTransforms.insertText(board, [targetPoint, [targetPoint[0] + property.width, targetPoint[1] + property.height]], text);
                 return;
             }
         }

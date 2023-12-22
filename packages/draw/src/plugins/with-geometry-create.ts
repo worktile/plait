@@ -3,15 +3,15 @@ import { BasicShapes, GeometryShapes, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
 import {
     createDefaultGeometry,
-    createDefaultText,
+    createTextElement,
     getDefaultGeometryPoints,
-    getDefaultTextShapeProperty,
+    getTextShapeProperty,
     getMemorizedLatestByPointer,
     getPointsByCenterPoint,
     getTextRectangle,
     insertElement
 } from '../utils';
-import { DrawPointerType, getGeometryPointers } from '../constants';
+import { DefaultTextProperty, DrawPointerType, getGeometryPointers } from '../constants';
 import { normalizeShapePoints, isDndMode, isDrawingMode } from '@plait/common';
 import { TextManage } from '@plait/text';
 import { isKeyHotkey } from 'is-hotkey';
@@ -45,9 +45,9 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
         if (dragMode) {
             const memorizedLatest = getMemorizedLatestByPointer(pointer);
             if (pointer === BasicShapes.text) {
-                const property = getDefaultTextShapeProperty(board, memorizedLatest.textProperties['font-size']);
+                const property = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']);
                 const points = getPointsByCenterPoint(movingPoint, property.width, property.height);
-                temporaryElement = createDefaultText(board, points);
+                temporaryElement = createTextElement(board, points);
                 if (!fakeCreateTextRef) {
                     const textManage = new TextManage(board, PlaitBoard.getComponent(board).viewContainerRef, {
                         getRectangle: () => {
@@ -133,9 +133,9 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             preventTouchMove(board, event, true);
             if (pointer === BasicShapes.text) {
                 const memorizedLatest = getMemorizedLatestByPointer(pointer);
-                const property = getDefaultTextShapeProperty(board, memorizedLatest.textProperties['font-size']);
+                const property = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']);
                 const points = getPointsByCenterPoint(point, property.width, property.height);
-                const textElement = createDefaultText(board, points);
+                const textElement = createTextElement(board, points);
                 insertElement(board, textElement);
                 start = null;
             }
