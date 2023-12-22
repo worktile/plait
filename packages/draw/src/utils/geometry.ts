@@ -309,13 +309,12 @@ export const getFlowchartDefaultFill = (theme: ThemeColorMode) => {
     return DrawThemeColors[theme].fill;
 };
 
-export const getDefaultTextShapeProperty = (board: PlaitBoard, fontSize?: number | string) => {
+export const getTextShapeProperty = (board: PlaitBoard, text: string | Element = DefaultTextProperty.text, fontSize?: number | string) => {
     fontSize = fontSize ? Number(fontSize) : DEFAULT_FONT_SIZE;
-    const textSize = getTextSize(board, '文本', 10, { fontSize });
+    const textSize = getTextSize(board, text, Infinity, { fontSize });
     return {
         width: textSize.width + ShapeDefaultSpace.rectangleAndText * 2,
-        height: textSize.height,
-        text: '文本'
+        height: textSize.height
     };
 };
 
@@ -334,7 +333,7 @@ export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
 };
 
 export const getDefaultTextPoints = (board: PlaitBoard, centerPoint: Point, fontSize?: number | string) => {
-    const property = getDefaultTextShapeProperty(board, fontSize);
+    const property = getTextShapeProperty(board, DefaultTextProperty.text, fontSize);
     return getPointsByCenterPoint(centerPoint, property.width, property.height);
 };
 
@@ -346,21 +345,23 @@ export const insertElement = (board: PlaitBoard, element: PlaitGeometry) => {
     BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
 };
 
-export const createDefaultText = (board: PlaitBoard, points: [Point, Point]) => {
+export const createTextElement = (
+    board: PlaitBoard,
+    points: [Point, Point],
+    text: string | Element = DefaultTextProperty.text,
+    textHeight?: number
+) => {
     const memorizedLatest = getMemorizedLatestByPointer(BasicShapes.text);
-    const property = getDefaultTextShapeProperty(board, memorizedLatest.textProperties['font-size']);
-    return createGeometryElement(
-        BasicShapes.text,
-        points,
-        DefaultTextProperty.text,
-        memorizedLatest.geometryProperties as GeometryStyleOptions,
-        { ...memorizedLatest.textProperties, textHeight: property.height }
-    );
+    textHeight = textHeight ? textHeight : getRectangleByPoints(points).height;
+    return createGeometryElement(BasicShapes.text, points, text, memorizedLatest.geometryProperties as GeometryStyleOptions, {
+        ...memorizedLatest.textProperties,
+        textHeight
+    });
 };
 
 export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
     const memorizedLatest = getMemorizedLatestByPointer(shape);
-    const textHeight = getDefaultTextShapeProperty(board, memorizedLatest.textProperties['font-size']).height;
+    const textHeight = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']).height;
     return createGeometryElement(
         shape,
         points,
