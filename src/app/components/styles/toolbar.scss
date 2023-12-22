@@ -49,14 +49,14 @@
         }
         &:hover,
         &.active {
-            color: rgb(102, 152, 255);
-            background: rgba(102, 152, 255, 0.1);
+            color: var(--button-hover-color);
+            background: var(--button-hover-bg);
         }
     }
 
     .action-item:hover,
     &.app-zoom-toolbar {
-        top: 24px;
+        top: var(--top-margin);
         right: 34px;
         .zoom-value {
             width: 54px;
@@ -69,7 +69,7 @@
     }
 
     &.app-main-toolbar {
-        top: 24px;
+        top: var(--top-margin);
         left: 50%;
         transform: translate(-50%, 0);
     }
@@ -81,7 +81,7 @@
     display: flex;
     width: 200px;
     height: 160px;
-    overflow: scroll;
+    overflow-y: auto;
     flex-direction: column;
     align-items: flex-start;
     .title{

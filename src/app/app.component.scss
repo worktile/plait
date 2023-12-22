@@ -8,6 +8,7 @@
 @import './theme.scss';
 @import './components//styles/panel.scss';
 @import './components/styles/toolbar.scss';
+@import './components/styles/menu.scss';
 @import './flow/flow.component.scss';
 
 .theme-setting-toolbar {
@@ -19,5 +20,16 @@
         padding-left: 4px;
         padding-right: 4px;
         height: 24px;
+    }
+}
+
+app-basic-editor {
+    a {
+        font-weight: 500;
+        text-decoration: none;
+        color: var(--link-color);
+        -webkit-user-select: none;
+        user-select: none;
+        cursor: pointer;
     }
 }

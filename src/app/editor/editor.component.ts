@@ -7,9 +7,7 @@ import {
     PlaitElement,
     PlaitTheme,
     ThemeColorMode,
-    Viewport,
-    toSVGScreenPoint,
-    toScreenPoint
+    Viewport
 } from '@plait/core';
 import { mockDrawData, mockMindData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -24,6 +22,7 @@ import { PlaitBoardComponent } from '../../../packages/core/src/board/board.comp
 import { ActivatedRoute, Params } from '@angular/router';
 import { mockLineData, withLineRoute } from '../plugins/with-line-route';
 import { withCommonPlugin } from '../plugins/with-common';
+import { AppMenuComponent } from '../components/menu/menu.component';
 
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
@@ -31,7 +30,14 @@ const LOCAL_STORAGE_KEY = 'plait-board-data';
     selector: 'app-basic-editor',
     templateUrl: './editor.component.html',
     standalone: true,
-    imports: [PlaitBoardComponent, FormsModule, AppZoomToolbarComponent, AppMainToolbarComponent, AppSettingPanelComponent]
+    imports: [
+        PlaitBoardComponent,
+        FormsModule,
+        AppZoomToolbarComponent,
+        AppMainToolbarComponent,
+        AppSettingPanelComponent,
+        AppMenuComponent
+    ]
 })
 export class BasicEditorComponent implements OnInit {
     plugins = [withCommonPlugin, withMind, withMindExtend, withDraw];
