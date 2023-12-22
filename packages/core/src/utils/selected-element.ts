@@ -88,11 +88,11 @@ export const addSelectedElement = (board: PlaitBoard, element: PlaitElement | Pl
     cacheSelectedElements(board, [...selectedElements, ...elements]);
 };
 
-export const removeSelectedElement = (board: PlaitBoard, element: PlaitElement) => {
+export const removeSelectedElement = (board: PlaitBoard, element: PlaitElement, isRemoveChildren = false) => {
     const selectedElements = getSelectedElements(board);
     if (selectedElements.includes(element)) {
         const targetElements: PlaitElement[] = [];
-        if (board.isRecursion(element)) {
+        if (board.isRecursion(element) && isRemoveChildren) {
             depthFirstRecursion(
                 element,
                 node => {

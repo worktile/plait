@@ -147,7 +147,7 @@ export function withSelection(board: PlaitBoard) {
         // remove selected element if include
         board.operations.forEach(op => {
             if (op.type === 'remove_node') {
-                removeSelectedElement(board, op.node);
+                removeSelectedElement(board, op.node, true);
             }
         });
         if (isHandleSelection(board) && isSetSelectionOperation(board)) {

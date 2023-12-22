@@ -11,7 +11,7 @@ export const removeElements = (board: PlaitBoard, elements: PlaitElement[]) => {
             return () => {
                 removeNode(board, ref.current!);
                 ref.unref();
-                removeSelectedElement(board, element);
+                removeSelectedElement(board, element, true);
             };
         })
         .forEach(action => {
