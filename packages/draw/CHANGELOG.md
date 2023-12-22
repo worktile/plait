@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.43.0
+
+### Patch Changes
+
+-   [#687](https://github.com/worktile/plait/pull/687) [`016eec25`](https://github.com/worktile/plait/commit/016eec25358481843cbf9bc7efb3deb4096861f4) Thanks [@WBbug](https://github.com/WBbug)! - fix can't paste text
+
 ## 0.42.0
 
 ### Minor Changes

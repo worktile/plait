@@ -1,5 +1,16 @@
 # plait
 
+## 0.43.0
+
+### Minor Changes
+
+-   [`fd18e3f5`](https://github.com/worktile/plait/commit/fd18e3f5d3ae869e92df281a193f7780cfe99cf1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add sortElements to solve export image appear hierarchy issues
+
+### Patch Changes
+
+-   [`ef42363b`](https://github.com/worktile/plait/commit/ef42363b3d3d5c1dd22db40e692ac1b31bdb6eba) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add isRemoveChildren argument in removeSelectedElement
+    should not remove children selected state in the ngOnChanges method of PlaitElementComponent
+
 ## 0.42.0
 
 ## 0.41.0
