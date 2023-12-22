@@ -1,5 +1,6 @@
 import { PlaitBoard, PlaitElement, RectangleClient } from '../interfaces';
 import { findElements, getRectangleByElements } from './element';
+import { sortElements } from './position';
 
 const IMAGE_CONTAINER = 'plait-image-container';
 
@@ -195,8 +196,9 @@ export async function toImage(board: PlaitBoard, options: ToImageOptions) {
     if (!board) {
         return undefined;
     }
-
-    const elements = options?.elements || findElements(board, { match: () => true, recursion: () => true });
+    const elements = options.elements
+        ? sortElements(board, options.elements)
+        : findElements(board, { match: () => true, recursion: () => true, isReverse: false });
     const targetRectangle = getRectangleByElements(board, elements, false);
     const { ratio = 2, fillStyle = 'transparent' } = options;
     const { width, height } = targetRectangle;

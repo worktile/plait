@@ -71,9 +71,11 @@ export function findElements<T extends PlaitElement = PlaitElement>(
     options: {
         match: (element: PlaitElement) => boolean;
         recursion: (element: PlaitElement) => boolean;
+        isReverse?: boolean;
     }
 ): T[] {
     let elements: T[] = [];
+    const isReverse = options.isReverse ?? true;
     depthFirstRecursion<Ancestor>(
         board,
         node => {
@@ -88,7 +90,7 @@ export function findElements<T extends PlaitElement = PlaitElement>(
                 return getIsRecursionFunc(board)(value) && options.recursion(value);
             }
         },
-        true
+        isReverse
     );
     return elements;
 }
