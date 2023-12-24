@@ -6,6 +6,7 @@ import { Selection } from '../interfaces/selection';
 import { PlaitElement } from '../interfaces/element';
 import { Point } from '../interfaces/point';
 import { PlaitOptionsBoard, PlaitPluginKey, WithPluginOptions } from '../public-api';
+import { sortElements } from './position';
 
 export const getHitElementsBySelection = (
     board: PlaitBoard,
@@ -70,7 +71,8 @@ export const getHitElementByPoint = (
 };
 
 export const cacheSelectedElements = (board: PlaitBoard, selectedElements: PlaitElement[]) => {
-    BOARD_TO_SELECTED_ELEMENT.set(board, selectedElements);
+    const sortedElements = sortElements(board, selectedElements);
+    BOARD_TO_SELECTED_ELEMENT.set(board, sortedElements);
 };
 
 export const getSelectedElements = (board: PlaitBoard) => {
