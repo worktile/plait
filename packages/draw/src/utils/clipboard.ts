@@ -1,6 +1,7 @@
 import { PlaitBoard, Point, Transforms, getElementById, idCreator } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { PlaitImage } from '../interfaces/image';
+import { getConnectionPoint } from './line';
 
 export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement[], startPoint: Point) => {
     return elements.map(element => {
@@ -11,15 +12,25 @@ export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement
         if (PlaitDrawElement.isLine(element)) {
             let source = { ...element.source };
             let target = { ...element.target };
-            if (element.source.boundId && !getElementById(board, element.source.boundId, elements)) {
-                delete source.boundId;
-                delete source.connection;
+            let points = [...element.points];
+            if (element.source.boundId) {
+                points[0] = getConnectionPoint(getElementById<PlaitGeometry>(board, element.source.boundId)!, element.source.connection!);
+                if (!getElementById(board, element.source.boundId, elements)) {
+                    delete source.boundId;
+                    delete source.connection;
+                }
             }
-            if (element.target.boundId && !getElementById(board, element.target.boundId, elements)) {
-                delete target.boundId;
-                delete target.connection;
+            if (element.target.boundId) {
+                points[points.length - 1] = getConnectionPoint(
+                    getElementById<PlaitGeometry>(board, element.target.boundId)!,
+                    element.target.connection!
+                );
+                if (!getElementById(board, element.target.boundId, elements)) {
+                    delete target.boundId;
+                    delete target.connection;
+                }
             }
-            const points = element.points.map(point => [point[0] - startPoint[0], point[1] - startPoint[1]]);
+            points = points.map(point => [point[0] - startPoint[0], point[1] - startPoint[1]]);
             return { ...element, points, source, target } as PlaitLine;
         }
         return element;
