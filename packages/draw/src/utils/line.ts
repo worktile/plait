@@ -254,7 +254,8 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
         curvePoints.push(target.point);
         return pointsOnBezierCurves(curvePoints) as Point[];
     } else {
-        const allPoints = PlaitLine.getPoints(board, element);
+        let allPoints = PlaitLine.getPoints(board, element);
+        allPoints = removeDuplicatePoints(allPoints);
         const points = catmullRomFitting(allPoints);
         return pointsOnBezierCurves(points) as Point[];
     }
