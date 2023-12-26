@@ -98,6 +98,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
             CoreTransforms.removeElements(board, elements);
         },
         getDeletedFragment: (data: PlaitElement[]) => data,
+        getRelatedFragment: (data: PlaitElement[]) => data,
         drawElement: (context: PlaitPluginElementContext) => [],
         redrawElement: (context: PlaitPluginElementContext, previousContext) => {},
         destroyElement: (context: PlaitPluginElementContext) => {},

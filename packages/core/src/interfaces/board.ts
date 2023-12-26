@@ -58,6 +58,7 @@ export interface PlaitBoard {
     insertFragment: (data: DataTransfer | null, targetPoint: Point) => void;
     deleteFragment: (data: DataTransfer | null) => void;
     getDeletedFragment: (data: PlaitElement[]) => PlaitElement[];
+    getRelatedFragment: (data: PlaitElement[]) => PlaitElement[];
     dblclick: (event: MouseEvent) => void;
     drawElement: (context: PlaitPluginElementContext) => SVGGElement[] | ComponentType<PlaitPluginElementComponent>;
     redrawElement: (context: PlaitPluginElementContext, previousContext?: PlaitPluginElementContext) => SVGGElement[] | void;
