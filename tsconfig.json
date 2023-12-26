@@ -5,25 +5,25 @@
     "baseUrl": "./",
     "paths": {
       "@plait/flow": [
-        "dist/flow"
+        "packages/flow/dist"
       ],
       "@plait/layouts": [
-        "dist/layouts"
+        "packages/layouts/dist"
       ],
       "@plait/mind": [
-        "dist/mind"
+        "packages/mind/dist"
       ],
       "@plait/core": [
-        "dist/core"
+        "packages/core/dist"
       ],
       "@plait/text": [
-        "dist/text"
+        "packages/text/dist"
       ],
       "@plait/draw": [
-        "dist/draw"
+        "packages/draw/dist"
       ],
       "@plait/common": [
-        "dist/common"
+        "packages/common/dist"
       ]
     },
     "outDir": "./dist/out-tsc",

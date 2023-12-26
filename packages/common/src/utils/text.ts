@@ -29,6 +29,14 @@ export const getFirstTextEditor = (element: PlaitElement) => {
     return textEditor;
 };
 
+export const getFirstTextEditor1 = (element: PlaitElement) => {
+    const textEditor = getTextEditors(element)[0];
+    if (!textEditor) {
+        throw new Error('can not find textEditor');
+    }
+    return textEditor;
+};
+
 export const getTextMarksByElement = (element: PlaitElement) => {
     const editors = getTextEditors(element);
     const editor = editors[0];

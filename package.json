@@ -27,7 +27,9 @@
         "test": "ng test mind",
         "start:docs": "docgeni serve --port 4600",
         "lint": "ng lint --fix",
-        "pretty": "pretty-quick --staged"
+        "pretty": "pretty-quick --staged",
+        "version-packages": "changeset version",
+        "release": "npm run build && changeset publish"
     },
     "private": true,
     "repository": {
