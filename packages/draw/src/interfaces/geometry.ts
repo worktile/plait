@@ -1,5 +1,4 @@
 import { PlaitBoard, PlaitElement, Point, PointOfRectangle, RectangleClient, Vector } from '@plait/core';
-import { GeometryComponent } from '../geometry.component';
 import { Options } from 'roughjs/bin/core';
 import { ParagraphElement } from '@plait/text';
 import { StrokeStyle } from './element';
@@ -73,18 +72,7 @@ export interface PlaitDiamond extends PlaitGeometry {
     shape: BasicShapes.diamond;
 }
 
-export const PlaitGeometry = {
-    getTextEditor(element: PlaitGeometry) {
-        return PlaitGeometry.getTextManage(element).componentRef.instance.editor;
-    },
-    getTextManage(element: PlaitGeometry) {
-        const component = PlaitElement.getComponent(element) as GeometryComponent;
-        if (component) {
-            return component.textManage;
-        }
-        throw new Error('can not get correctly component in get text editor');
-    }
-};
+export const PlaitGeometry = {};
 
 export interface ShapeEngine {
     isHit: (rectangle: RectangleClient, point: Point) => boolean;

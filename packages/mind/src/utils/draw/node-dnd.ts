@@ -14,6 +14,7 @@ import { hasPreviousOrNextOfDropPath } from '../dnd/common';
 import { drawLink } from './node-link/draw-link';
 import { getEmojiForeignRectangle } from '../position/emoji';
 import { getImageForeignRectangle } from '../position';
+import { getFirstTextManage, getTextManages } from '@plait/common';
 
 export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offsetX: number, offsetY: number) => {
     const activeComponent = PlaitElement.getComponent(element) as MindNodeComponent;
@@ -29,7 +30,7 @@ export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offset
     const textRectangle = getTopicRectangleByNode(board as PlaitMindBoard, activeComponent.node);
     const fakeNodeG = drawRoundRectangleByNode(board, fakeDraggingNode);
 
-    const richtextG = MindElement.getTextManage(element).g.cloneNode(true) as SVGGElement;
+    const richtextG = getFirstTextManage(element).g.cloneNode(true) as SVGGElement;
     updateForeignObject(richtextG, textRectangle.width, textRectangle.height, textRectangle.x + offsetX, textRectangle.y + offsetY);
 
     dragFakeNodeG?.append(fakeNodeG);

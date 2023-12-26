@@ -42,7 +42,7 @@ export const withLineText = (board: PlaitBoard) => {
                     DrawTransforms.setLineTexts(board, hitTarget, texts);
                     setTimeout(() => {
                         const hitComponent = PlaitElement.getComponent(hitTarget) as LineComponent;
-                        editHandle(board, hitTarget, hitComponent.textManages.length - 1, true);
+                        editHandle(board, hitTarget, hitComponent.getTextManages().length - 1, true);
                     });
                 }
             }
@@ -55,7 +55,7 @@ export const withLineText = (board: PlaitBoard) => {
 
 function editHandle(board: PlaitBoard, element: PlaitLine, manageIndex: number, isFirstEdit: boolean = false) {
     const hitComponent = PlaitElement.getComponent(element) as LineComponent;
-    const textManage = hitComponent.textManages[manageIndex];
+    const textManage = hitComponent.getTextManages()[manageIndex];
     const originText = textManage.componentRef.instance.children;
 
     textManage.edit((origin, descendant) => {

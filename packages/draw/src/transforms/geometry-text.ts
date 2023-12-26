@@ -3,6 +3,7 @@ import { Element } from 'slate';
 import { PlaitGeometry, PlaitText } from '../interfaces';
 import { ShapeDefaultSpace } from '../constants';
 import { AlignEditor, Alignment } from '@plait/text';
+import { getFirstTextEditor } from '@plait/common';
 
 const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: number, textHeight: number) => {
     let points = element.points;
@@ -10,7 +11,7 @@ const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: numbe
     const defaultSpace = ShapeDefaultSpace.rectangleAndText;
 
     if (autoSize) {
-        const editor = PlaitGeometry.getTextEditor(element);
+        const editor = getFirstTextEditor(element);
         if (AlignEditor.isActive(editor, Alignment.right)) {
             points = [
                 [points[1][0] - (width + defaultSpace * 2), points[0][1]],

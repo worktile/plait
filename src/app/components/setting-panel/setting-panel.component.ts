@@ -20,7 +20,7 @@ import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-import { PropertyTransforms } from '@plait/common';
+import { PropertyTransforms, getFirstTextEditor, getTextEditors } from '@plait/common';
 
 @Component({
     selector: 'app-setting-panel',
@@ -96,7 +96,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.currentBranchColor = firstMindElement.branchColor || '';
             this.strokeWidth = firstMindElement.strokeWidth || 3;
             if (MindElement.hasMounted(firstMindElement)) {
-                this.currentMarks = PlaitMarkEditor.getMarks(MindElement.getTextEditor(firstMindElement));
+                this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstMindElement));
                 this.align = firstMindElement.data.topic.align || Alignment.left;
             }
         }
@@ -190,14 +190,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     textColorChange(value: string) {
         const selectedElements = getSelectedElements(this.board);
         if (selectedElements.length) {
+
             selectedElements.forEach(element => {
-                if (PlaitDrawElement.isLine(element)) {
-                    const editors = PlaitLine.getTextEditors(element);
-                    editors.forEach(editor => PlaitMarkEditor.setColorMark(editor, value));
-                } else {
-                    const editor = MindElement.getTextEditor(element as MindElement);
-                    PlaitMarkEditor.setColorMark(editor, value);
-                }
+                const editors = getTextEditors(element);
+                editors.forEach(editor => PlaitMarkEditor.setColorMark(editor, value));
             });
         }
     }
@@ -220,13 +216,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedElements = getSelectedElements(this.board) as MindElement[];
         if (selectedElements.length) {
             selectedElements.forEach(element => {
-                if (PlaitDrawElement.isLine(element)) {
-                    const editors = PlaitLine.getTextEditors(element);
-                    editors.forEach(editor => PlaitMarkEditor.toggleMark(editor, attribute as MarkTypes));
-                } else {
-                    const editor = MindElement.getTextEditor(element as MindElement);
-                    PlaitMarkEditor.toggleMark(editor, attribute as MarkTypes);
-                }
+                const editors = getTextEditors(element);
+                editors.forEach(editor => PlaitMarkEditor.toggleMark(editor, attribute as MarkTypes));
             });
         }
     }
@@ -234,8 +225,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     setLink(event: MouseEvent) {
         const selectedElements = getSelectedElements(this.board) as MindElement[];
 
+        
         if (selectedElements.length) {
-            const editor = MindElement.getTextEditor(selectedElements[0]);
+            const editor = getFirstTextEditor(selectedElements[0]);
 
             if (!editor.selection) {
                 SlateTransforms.select(editor, [0]);
@@ -267,38 +259,17 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const fontSize = (event.target as HTMLSelectElement).value as FontSizes;
         if (selectedElements.length) {
             selectedElements.forEach(element => {
-                if (PlaitDrawElement.isLine(element)) {
-                    const editors = PlaitLine.getTextEditors(element);
-                    editors.forEach(editor => PlaitMarkEditor.setFontSizeMark(editor, fontSize));
-                } else {
-                    const editor = MindElement.getTextEditor(element as MindElement);
-                    PlaitMarkEditor.setFontSizeMark(editor, fontSize);
-                }
+                const editors = getTextEditors(element);
+                editors.forEach(editor => PlaitMarkEditor.setFontSizeMark(editor, fontSize));
             });
         }
     }
 
     setAlign(event: Alignment) {
-        const selectedMindElements = getSelectedMindElements(this.board);
-        if (selectedMindElements.length) {
-            selectedMindElements.forEach(element => {
-                const editor = MindElement.getTextEditor(element);
-                AlignEditor.setAlign(editor, event as Alignment);
-            });
-        }
-        const selectedGeometryElements = getSelectedGeometryElements(this.board);
-        if (selectedGeometryElements.length) {
-            selectedGeometryElements.forEach(element => {
-                const editor = PlaitGeometry.getTextEditor(element);
-                AlignEditor.setAlign(editor, event);
-            });
-        }
-        const selectedLineElements = getSelectedLineElements(this.board);
-        if (selectedLineElements.length) {
-            selectedLineElements.forEach(element => {
-                const editors = PlaitLine.getTextEditors(element);
-                editors.forEach(editor => AlignEditor.setAlign(editor, event));
-            });
-        }
+        const selectedElements = getSelectedElements(this.board) as MindElement[];
+        selectedElements.forEach(element => {
+            const editors = getTextEditors(element);
+            editors.forEach(editor => AlignEditor.setAlign(editor, event));
+        });
     }
 }

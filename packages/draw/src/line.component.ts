@@ -15,6 +15,7 @@ import { LineActiveGenerator } from './generators/line-active.generator';
 import { getLineTextRectangle, memorizeLatestText } from './utils';
 import { DrawTransforms } from './transforms';
 import { GeometryThreshold } from './constants';
+import { CommonPluginElement } from '@plait/common';
 
 interface BoundedElements {
     source?: PlaitGeometry;
@@ -27,15 +28,13 @@ interface BoundedElements {
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true
 })
-export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitBoard>
+export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
     implements OnInit, OnDestroy, OnContextChanged<PlaitLine, PlaitBoard> {
     destroy$ = new Subject<void>();
 
     shapeGenerator!: LineShapeGenerator;
 
     activeGenerator!: LineActiveGenerator;
-
-    textManages: TextManage[] = [];
 
     boundedElements: BoundedElements = {};
 
@@ -46,7 +45,7 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
     initializeGenerator() {
         this.shapeGenerator = new LineShapeGenerator(this.board);
         this.activeGenerator = new LineActiveGenerator(this.board);
-        this.initializeTextManages();
+        this.initializeTextManagesByElement();
     }
 
     ngOnInit(): void {
@@ -101,24 +100,20 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         }
     }
 
-    initializeTextManages() {
+    initializeTextManagesByElement() {
         if (this.element.texts?.length) {
+            const textManages: TextManage[] = [];
             this.element.texts.forEach((text, index) => {
                 const manage = this.createTextManage(text, index);
-                this.textManages.push(manage);
+                textManages.push(manage);
             });
+            this.initializeTextManages(textManages);
         }
-    }
-
-    destroyTextManages() {
-        this.textManages.forEach(manage => {
-            manage.destroy();
-        });
     }
 
     drawText() {
         if (this.element.texts?.length) {
-            this.textManages.forEach((manage, index) => {
+            this.getTextManages().forEach((manage, index) => {
                 manage.draw(this.element.texts![index].text);
                 this.g.append(manage.g);
             });
@@ -151,22 +146,23 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         if (previousTexts === currentTexts) return;
         const previousTextsLength = previousTexts.length;
         const currentTextsLength = currentTexts.length;
+        const textManages = this.getTextManages();
         if (currentTextsLength === previousTextsLength) {
             for (let i = 0; i < previousTextsLength; i++) {
                 if (previousTexts[i].text !== currentTexts[i].text) {
-                    this.textManages[i].updateText(currentTexts[i].text);
+                    textManages[i].updateText(currentTexts[i].text);
                 }
             }
         } else {
             this.destroyTextManages();
-            this.textManages = [];
-            this.initializeTextManages();
+            this.initializeTextManagesByElement();
             this.drawText();
         }
     }
 
     updateTextRectangle() {
-        this.textManages.forEach(manage => {
+        const textManages = this.getTextManages();
+        textManages.forEach(manage => {
             manage.updateRectangle();
         });
     }
@@ -176,5 +172,6 @@ export class LineComponent extends PlaitPluginElementComponent<PlaitLine, PlaitB
         this.activeGenerator.destroy();
         this.destroy$.next();
         this.destroy$.complete();
+        this.destroyTextManages();
     }
 }

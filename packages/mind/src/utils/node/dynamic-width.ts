@@ -1,13 +1,13 @@
-import { PlaitBoard, PlaitElement } from '@plait/core';
+import { PlaitBoard } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
-import { MindNodeComponent } from '../../mind-node.component';
+import { getFirstTextManage } from '@plait/common';
 
 /**
  * 1. return new node height if height changed
  * 2. new height is effected by zoom
  */
 export const getNewNodeHeight = (board: PlaitBoard, element: MindElement, newNodeDynamicWidth: number) => {
-    const textManage = MindElement.getTextManage(element);
+    const textManage = getFirstTextManage(element);
     const { height } = textManage.getSize();
     textManage.updateRectangleWidth(newNodeDynamicWidth);
     const { height: newHeight } = textManage.getSize();

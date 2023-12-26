@@ -16,7 +16,7 @@ import { MindTransforms } from '../transforms';
 import { TextManage } from '@plait/text';
 import { EXTEND_OFFSET } from '../constants/default';
 import { isDragging } from '../utils/dnd/common';
-import { ResizeRef, ResizeState, WithResizeOptions, withResize } from '@plait/common';
+import { ResizeRef, ResizeState, WithResizeOptions, getFirstTextManage, getTextManages, withResize } from '@plait/common';
 
 interface TargetElementRef {
     minWidth: number;
@@ -48,7 +48,7 @@ export const withNodeResize = (board: PlaitBoard) => {
                 minWidth: NodeSpace.getNodeResizableMinWidth(board as PlaitMindBoard, resizeRef.element),
                 currentWidth: NodeSpace.getNodeDynamicWidth(board as PlaitMindBoard, resizeRef.element),
                 path: PlaitBoard.findPath(board, resizeRef.element),
-                textManage: MindElement.getTextManage(resizeRef.element)
+                textManage: getFirstTextManage(resizeRef.element)
             };
         },
         onResize: (resizeRef: ResizeRef<MindElement, null>, resizeState: ResizeState) => {

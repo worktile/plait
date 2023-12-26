@@ -28,7 +28,7 @@ export const withLineTextMove = (board: PlaitBoard) => {
             if (line) {
                 const index = getHitLineTextIndex(board, line, point);
                 const hitComponent = PlaitElement.getComponent(line) as LineComponent;
-                const textManage = hitComponent.textManages[index];
+                const textManage = hitComponent.getTextManages()[index];
                 if (index !== -1 && !textManage.isEditing) {
                     textIndex = index;
                     return { element: line, handle: ResizeHandle.e };

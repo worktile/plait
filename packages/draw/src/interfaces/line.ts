@@ -83,18 +83,6 @@ export interface PlaitElbowLine extends PlaitLine {
 }
 
 export const PlaitLine = {
-    getTextEditors(element: PlaitLine) {
-        const component = PlaitElement.getComponent(element) as LineComponent;
-        if (component) {
-            const manage = component.textManages.find(manage => manage.isEditing);
-            if (manage) {
-                return [manage.componentRef.instance.editor];
-            } else {
-                return component.textManages.map(manage => manage.componentRef.instance.editor);
-            }
-        }
-        throw new Error('can not get correctly component in get text editor');
-    },
     isSourceMarkOrTargetMark(line: PlaitLine, markType: LineMarkerType, handleKey: LineHandleKey) {
         if (handleKey === LineHandleKey.source) {
             return line.source.marker === markType;

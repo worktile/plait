@@ -7,10 +7,26 @@ export const getTextManages = (element: PlaitElement) => {
     return component.getTextManages();
 };
 
+export const getFirstTextManage = (element: PlaitElement) => {
+    const textManage = getTextManages(element)[0];
+    if (!textManage) {
+        throw new Error('can not find textManage');
+    }
+    return textManage;
+};
+
 export const getTextEditors = (element: PlaitElement) => {
     return getTextManages(element).map(manage => {
         return manage.componentRef.instance.editor;
     });
+};
+
+export const getFirstTextEditor = (element: PlaitElement) => {
+    const textEditor = getTextEditors(element)[0];
+    if (!textEditor) {
+        throw new Error('can not find textEditor');
+    }
+    return textEditor;
 };
 
 export const getTextMarksByElement = (element: PlaitElement) => {

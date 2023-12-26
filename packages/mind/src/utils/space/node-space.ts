@@ -9,6 +9,7 @@ import { getEmojisWidthHeight } from './emoji';
 import { Element } from 'slate';
 import { ROOT_TOPIC_FONT_SIZE } from '../../constants/node-topic-style';
 import { getStrokeWidthByElement } from '../node-style/shape';
+import { getFirstTextEditor } from '@plait/common';
 
 const NodeDefaultSpace = {
     horizontal: {
@@ -95,7 +96,7 @@ export const NodeSpace = {
     },
     getNodeTopicMinWidth(board: PlaitMindBoard, element: MindElement, isRoot: boolean = false) {
         const defaultFontSize = getNodeDefaultFontSize(isRoot);
-        const editor = MindElement.getTextEditor(element);
+        const editor = getFirstTextEditor(element);
         const marks = PlaitMarkEditor.getMarks(editor);
         const fontSize = (marks[MarkTypes.fontSize] as number) || defaultFontSize;
         return fontSize;

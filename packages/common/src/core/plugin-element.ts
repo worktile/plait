@@ -11,6 +11,17 @@ export abstract class CommonPluginElement<
         this.textManages = textManages;
     }
 
+    addTextManage(textManage: TextManage) {
+        this.textManages.push(textManage);
+    }
+
+    destroyTextManages() {
+        this.getTextManages().forEach(manage => {
+            manage.destroy();
+        });
+        this.textManages = [];
+    }
+
     getTextManages() {
         return this.textManages;
     }

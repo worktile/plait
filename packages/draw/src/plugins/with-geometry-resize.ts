@@ -5,6 +5,7 @@ import {
     ResizeRef,
     ResizeState,
     WithResizeOptions,
+    getFirstTextManage,
     getRectangleByPoints,
     normalizeShapePoints,
     withResize
@@ -86,7 +87,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 }
             }
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
-                const { height: textHeight } = PlaitGeometry.getTextManage(resizeRef.element).getSize();
+                const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path);
             } else {
                 points = normalizeShapePoints(points);
