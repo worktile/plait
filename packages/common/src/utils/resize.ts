@@ -1,4 +1,4 @@
-import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, ResizeCursorClass } from '@plait/core';
+import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, ResizeCursorClass, setDragging } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
 
 export interface ResizeRef<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
@@ -101,9 +101,11 @@ export const isResizingByCondition = <T extends PlaitElement, K>(board: PlaitBoa
 export const addResizing = <T extends PlaitElement, K>(board: PlaitBoard, resizeRef: ResizeRef<T, K>, key: string) => {
     PlaitBoard.getBoardContainer(board).classList.add(`${key}-resizing`);
     IS_RESIZING.set(board, resizeRef);
+    setDragging(board, true);
 };
 
 export const removeResizing = (board: PlaitBoard, key: string) => {
     PlaitBoard.getBoardContainer(board).classList.remove(`${key}-resizing`);
     IS_RESIZING.delete(board);
+    setDragging(board, false);
 };

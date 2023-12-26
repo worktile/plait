@@ -1,4 +1,5 @@
 import { PlaitBoard, PlaitElement } from '../interfaces';
+import { setDragging } from './dnd';
 import { BOARD_TO_MOVING_ELEMENT } from './weak-maps';
 
 export const getMovingElements = (board: PlaitBoard) => {
@@ -13,10 +14,12 @@ export const addMovingElements = (board: PlaitBoard, elements: PlaitElement[]) =
     const movingElements = getMovingElements(board);
     const newElements = elements.filter(item => !movingElements.find(movingElement => movingElement.key === item.key));
     cacheMovingElements(board, [...movingElements, ...newElements]);
+    setDragging(board, true);
 };
 
 export const removeMovingElements = (board: PlaitBoard) => {
     BOARD_TO_MOVING_ELEMENT.delete(board);
+    setDragging(board, false);
 };
 
 export const cacheMovingElements = (board: PlaitBoard, elements: PlaitElement[]) => {

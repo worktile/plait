@@ -24,7 +24,7 @@ export interface LineAutoCompleteOptions {
 }
 
 export const withLineAutoComplete = (board: PlaitBoard) => {
-    const { pointerDown, pointerMove, pointerUp } = board;
+    const { pointerDown, pointerMove, globalPointerUp } = board;
 
     let startPoint: Point | null = null;
     let lineShapeG: SVGGElement | null = null;
@@ -59,11 +59,10 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
                 temporaryElement = handleLineCreating(board, LineShape.elbow, startPoint, movingPoint, sourceElement, lineShapeG);
             }
         }
-
         pointerMove(event);
     };
 
-    board.pointerUp = event => {
+    board.globalPointerUp = event => {
         if (temporaryElement) {
             Transforms.insertNode(board, temporaryElement, [board.children.length]);
             clearSelectedElement(board);
@@ -80,7 +79,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         lineShapeG = null;
         sourceElement = null;
         temporaryElement = null;
-        pointerUp(event);
+        globalPointerUp(event);
     };
 
     return board;
