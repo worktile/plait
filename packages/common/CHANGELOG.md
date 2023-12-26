@@ -1,5 +1,13 @@
 # @plait/common
 
+## 0.45.0
+
+### Minor Changes
+
+-   [`1f7f90a5`](https://github.com/worktile/plait/commit/1f7f90a52eb5f9a2bf550b10f1af3a2efee2ec76) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getFirstTextManage and getFirstTextEditor, remove get textManage and getEditor in mind element and geometry element
+
+*   [#691](https://github.com/worktile/plait/pull/691) [`6f7d869c`](https://github.com/worktile/plait/commit/6f7d869c8e5343825c20547a0f90f2bfa6b1e236) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move set_selection to pointerUp
+
 ## 0.44.0
 
 ### Minor Changes

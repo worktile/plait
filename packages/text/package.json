@@ -1,6 +1,6 @@
 {
     "name": "@plait/text",
-    "version": "0.44.0",
+    "version": "0.45.0",
     "peerDependencies": {
         "@angular/common": "^16.0.0",
         "@angular/core": "^16.0.0",

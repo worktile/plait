@@ -1,5 +1,15 @@
 # plait
 
+## 0.45.0
+
+### Minor Changes
+
+-   [#691](https://github.com/worktile/plait/pull/691) [`6f7d869c`](https://github.com/worktile/plait/commit/6f7d869c8e5343825c20547a0f90f2bfa6b1e236) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move set_selection to pointerUp
+
+### Patch Changes
+
+-   [#690](https://github.com/worktile/plait/pull/690) [`c311a8ba`](https://github.com/worktile/plait/commit/c311a8bad44cda7423d728b59628ab9cbcc2370b) Thanks [@WBbug](https://github.com/WBbug)! - add getRelatedFragment
+
 ## 0.44.0
 
 ### Minor Changes

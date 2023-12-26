@@ -1,5 +1,11 @@
 # mind
 
+## 0.45.0
+
+### Minor Changes
+
+-   [`1f7f90a5`](https://github.com/worktile/plait/commit/1f7f90a52eb5f9a2bf550b10f1af3a2efee2ec76) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getFirstTextManage and getFirstTextEditor, remove get textManage and getEditor in mind element and geometry element
+
 ## 0.44.0
 
 ## 0.43.0
