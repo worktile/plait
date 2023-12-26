@@ -18,7 +18,7 @@ import { withLineAutoComplete } from './with-line-auto-complete';
 import { withLineTextMove } from './with-line-text-move';
 
 export const withDraw = (board: PlaitBoard) => {
-    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, isAlign } = board;
+    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, isAlign, getRelatedFragment } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isGeometry(context.element)) {
@@ -91,6 +91,18 @@ export const withDraw = (board: PlaitBoard) => {
             return true;
         }
         return isAlign(element);
+    };
+
+    board.getRelatedFragment = (elements: PlaitElement[]) => {
+        const selectedElements = getSelectedElements(board);
+        const lineElements = board.children.filter(element => PlaitDrawElement.isLine(element));
+        const activeLines = lineElements.filter(line => {
+            const source = selectedElements.find(element => element.id === line.source.boundId);
+            const target = selectedElements.find(element => element.id === line.target.boundId);
+            const isSelected = selectedElements.includes(line);
+            return source && target && !isSelected;
+        });
+        return getRelatedFragment([...elements, ...activeLines]);
     };
 
     return withLineTextMove(
