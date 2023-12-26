@@ -1,5 +1,11 @@
 # text
 
+## 0.46.0
+
+### Minor Changes
+
+-   [`c1326f7b`](https://github.com/worktile/plait/commit/c1326f7b626affab4fa7d4843fd780de1d066f27) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - test
+
 ## 0.45.0
 
 ## 0.44.0
