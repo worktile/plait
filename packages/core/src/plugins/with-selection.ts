@@ -16,7 +16,7 @@ import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { ACTIVE_STROKE_WIDTH, ATTACHED_ELEMENT_CLASS_NAME, SELECTION_RECTANGLE_CLASS_NAME } from '../constants/selection';
-import { drawRectangle, preventTouchMove, throttleRAF } from '../utils';
+import { drawRectangle, isDragging, preventTouchMove, setDragging, throttleRAF } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
 import { Selection } from '../interfaces/selection';
@@ -27,52 +27,39 @@ export interface WithPluginOptions extends PlaitPluginOptions {
 }
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, globalPointerMove, globalPointerUp, keyup, onChange, afterChange } = board;
+    const { pointerDown, pointerUp, globalPointerMove, globalPointerUp, keyup, onChange, afterChange } = board;
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
     let selectionRectangleG: SVGGElement | null;
     let previousSelectedElements: PlaitElement[];
-    // prevent text from being selected when user pressed main pointer and is moving
-    let needPreventNativeSelectionWhenMoving = false;
     let isShift = false;
+    let isTextSelection = false;
 
     board.pointerDown = (event: PointerEvent) => {
-        const isHitText = event.target instanceof Element && event.target.closest('.plait-richtext-container');
         if (event.shiftKey) {
-            event.preventDefault();
             isShift = true;
         } else {
             isShift = false;
         }
 
-        if (!isHitText) {
-            needPreventNativeSelectionWhenMoving = true;
+        const isHitText = !!(event.target instanceof Element && event.target.closest('.plait-richtext-container'));
+        isTextSelection = isHitText && PlaitBoard.hasBeenTextEditing(board);
+
+        // prevent text from being selected
+        if (event.shiftKey && !isTextSelection) {
+            event.preventDefault();
         }
 
-        if (!isMainPointer(event)) {
-            pointerDown(event);
-            return;
-        }
-
-        const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
         const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
-        const selection = { anchor: point, focus: point };
         const hitElement = getHitElementByPoint(board, point);
-        const selectedElements = getSelectedElements(board);
-
-        if (!isShift && hitElement && selectedElements.includes(hitElement) && !options.isDisabledSelect) {
-            pointerDown(event);
-            return;
-        }
+        const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
 
         if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && !hitElement && options.isMultiple && !options.isDisabledSelect) {
-            selectionRectangleG?.remove();
-            start = point;
             preventTouchMove(board, event, true);
+            // start rectangle selection
+            start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
         }
-
-        Transforms.setSelection(board, selection);
 
         pointerDown(event);
     };
@@ -85,7 +72,7 @@ export function withSelection(board: PlaitBoard) {
     };
 
     board.globalPointerMove = (event: PointerEvent) => {
-        if (needPreventNativeSelectionWhenMoving) {
+        if (!isTextSelection) {
             // prevent text from being selected
             event.preventDefault();
         }
@@ -114,6 +101,19 @@ export function withSelection(board: PlaitBoard) {
         globalPointerMove(event);
     };
 
+    // handle the end of click select
+    board.pointerUp = (event: PointerEvent) => {
+        const isSkip = !isMainPointer(event) || isDragging(board) || !PlaitBoard.isPointer(board, PlaitPointerType.selection);
+        if (isSkip) {
+            pointerDown(event);
+            return;
+        }
+        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const selection = { anchor: point, focus: point };
+        Transforms.setSelection(board, selection);
+        pointerUp(event);
+    };
+
     board.globalPointerUp = (event: PointerEvent) => {
         if (start && end) {
             selectionMovingG?.remove();
@@ -134,7 +134,7 @@ export function withSelection(board: PlaitBoard) {
 
         start = null;
         end = null;
-        needPreventNativeSelectionWhenMoving = false;
+        isTextSelection = false;
         preventTouchMove(board, event, false);
         globalPointerUp(event);
     };
@@ -169,7 +169,8 @@ export function withSelection(board: PlaitBoard) {
                     });
                     cacheSelectedElements(board, newSelectedElements);
                 } else {
-                    cacheSelectedElements(board, elements);
+                    const newSelectedElements = [...elements];
+                    cacheSelectedElements(board, newSelectedElements);
                 }
                 const newElements = getSelectedElements(board);
                 previousSelectedElements = newElements;
@@ -248,11 +249,13 @@ export function isSelectionMoving(board: PlaitBoard) {
 export function setSelectionMoving(board: PlaitBoard) {
     PlaitBoard.getBoardContainer(board).classList.add('selection-moving');
     BOARD_TO_IS_SELECTION_MOVING.set(board, true);
+    setDragging(board, true);
 }
 
 export function clearSelectionMoving(board: PlaitBoard) {
     PlaitBoard.getBoardContainer(board).classList.remove('selection-moving');
     BOARD_TO_IS_SELECTION_MOVING.delete(board);
+    setDragging(board, false);
 }
 
 export function createSelectionRectangleG(board: PlaitBoard) {

@@ -18,7 +18,7 @@ import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { isDrawingMode } from '@plait/common';
 
 export const withLineCreateByDraw = (board: PlaitBoard) => {
-    const { pointerDown, pointerMove, pointerUp } = board;
+    const { pointerDown, pointerMove, globalPointerUp } = board;
 
     let start: Point | null = null;
 
@@ -55,7 +55,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         pointerMove(event);
     };
 
-    board.pointerUp = (event: PointerEvent) => {
+    board.globalPointerUp = (event: PointerEvent) => {
         if (temporaryElement) {
             Transforms.insertNode(board, temporaryElement, [board.children.length]);
             clearSelectedElement(board);
@@ -68,7 +68,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         start = null;
         temporaryElement = null;
         preventTouchMove(board, event, false);
-        pointerUp(event);
+        globalPointerUp(event);
     };
 
     return board;

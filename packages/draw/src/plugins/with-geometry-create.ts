@@ -23,7 +23,7 @@ export interface FakeCreateTextRef {
 }
 
 export const withGeometryCreateByDrag = (board: PlaitBoard) => {
-    const { pointerMove, pointerUp } = board;
+    const { pointerMove, globalPointerUp } = board;
 
     let geometryShapeG: SVGGElement | null = null;
 
@@ -81,7 +81,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
         pointerMove(event);
     };
 
-    board.pointerUp = (event: PointerEvent) => {
+    board.globalPointerUp = (event: PointerEvent) => {
         const geometryPointers = getGeometryPointers();
         const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
         const dragMode = isGeometryPointer && isDndMode(board);
@@ -97,7 +97,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
         geometryShapeG = null;
         preventTouchMove(board, event, false);
 
-        pointerUp(event);
+        globalPointerUp(event);
     };
 
     return board;
