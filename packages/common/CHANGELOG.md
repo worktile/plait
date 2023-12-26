@@ -1,5 +1,11 @@
 # @plait/common
 
+## 0.44.0
+
+### Minor Changes
+
+-   [`81549415`](https://github.com/worktile/plait/commit/81549415f5239f80fdfe4a9bf321b364cb9dc536) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getTextMarksByElement in common
+
 ## 0.43.0
 
 ## 0.42.0

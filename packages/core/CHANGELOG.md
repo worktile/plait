@@ -1,5 +1,11 @@
 # plait
 
+## 0.44.0
+
+### Minor Changes
+
+-   [`77b01bc8`](https://github.com/worktile/plait/commit/77b01bc800a1ebbe68ea6f7515d3b00b719e33d7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - sort selected elements to correct elements position in export elements as image and paste elements
+
 ## 0.43.0
 
 ### Minor Changes

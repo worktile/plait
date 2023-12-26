@@ -1,5 +1,13 @@
 # @plait/draw
 
+## 0.44.0
+
+### Patch Changes
+
+-   [#689](https://github.com/worktile/plait/pull/689) [`931566dd`](https://github.com/worktile/plait/commit/931566dddf5b164005f630f63d8bfd3c9850e377) Thanks [@WBbug](https://github.com/WBbug)! - adjust points when has boundId
+
+*   [#688](https://github.com/worktile/plait/pull/688) [`ea92518e`](https://github.com/worktile/plait/commit/ea92518e5b1a1fea4e165a43d1a5fbfe1978749a) Thanks [@WBbug](https://github.com/WBbug)! - remove same point
+
 ## 0.43.0
 
 ### Patch Changes
