@@ -42,8 +42,8 @@ export function withMoving(board: PlaitBoard) {
             const hitElement = getHitElementByPoint(board, point);
             if (hitElement && movableElements.includes(hitElement)) {
                 if (selectedMovableElements.includes(hitElement)) {
-                    const elements = board.getRelatedFragment([]);
-                    activeElements = [...selectedMovableElements, ...elements];
+                    const relatedElements = board.getRelatedFragment([]);
+                    activeElements = [...selectedMovableElements, ...relatedElements];
                 } else {
                     activeElements = [hitElement];
                 }
