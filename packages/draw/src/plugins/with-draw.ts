@@ -73,12 +73,13 @@ export const withDraw = (board: PlaitBoard) => {
             const isSelected = (boundId: string) => {
                 return !!selectedElements.find(value => value.id === boundId);
             };
-            if (
-                (!element.source.boundId ||
-                    (element.source.boundId && isSelected(element.source.boundId) && selectedElements.includes(element))) &&
-                (!element.target.boundId ||
-                    (element.target.boundId && isSelected(element.target.boundId) && selectedElements.includes(element)))
-            ) {
+            if (!element.source.boundId && !element.target.boundId) {
+                return true;
+            }
+            if (element.source.boundId && isSelected(element.source.boundId) && selectedElements.includes(element)) {
+                return true;
+            }
+            if (element.target.boundId && isSelected(element.target.boundId) && selectedElements.includes(element)) {
                 return true;
             }
             return false;
