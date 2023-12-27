@@ -8,6 +8,7 @@ import { IS_APPLE } from './environment';
 const HOTKEYS: any = {
     bold: 'mod+b',
     compose: ['down', 'left', 'right', 'up', 'backspace', 'enter'],
+    arrow: ['down', 'left', 'right', 'up'],
     moveBackward: 'left',
     moveForward: 'right',
     moveUp: 'up',
@@ -79,6 +80,7 @@ const create = (key: string) => {
 const hotkeys = {
     isBold: create('bold'),
     isCompose: create('compose'),
+    isArrow: create('arrow'),
     isMoveBackward: create('moveBackward'),
     isMoveForward: create('moveForward'),
     isMoveUp: create('moveUp'),
