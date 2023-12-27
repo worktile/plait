@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.47.0
+
+### Minor Changes
+
+-   [`85562abc`](https://github.com/worktile/plait/commit/85562abc2af58991c1ce50a2e140a4f72ef02942) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - skip 0.46.0
+
 ## 0.46.0
 
 ## 0.45.0
