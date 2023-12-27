@@ -27,7 +27,7 @@ export interface WithPluginOptions extends PlaitPluginOptions {
 }
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, pointerUp, globalPointerMove, globalPointerUp, keyup, onChange, afterChange } = board;
+    const { pointerDown, pointerUp, globalPointerMove, globalPointerUp, keydown, keyup, onChange, afterChange } = board;
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
@@ -37,12 +37,6 @@ export function withSelection(board: PlaitBoard) {
     let isTextSelection = false;
 
     board.pointerDown = (event: PointerEvent) => {
-        if (event.shiftKey) {
-            isShift = true;
-        } else {
-            isShift = false;
-        }
-
         const isHitText = !!(event.target instanceof Element && event.target.closest('.plait-richtext-container'));
         isTextSelection = isHitText && PlaitBoard.hasBeenTextEditing(board);
 
@@ -63,6 +57,13 @@ export function withSelection(board: PlaitBoard) {
 
         pointerDown(event);
     };
+
+    board.keydown = (event: KeyboardEvent) => {
+        if (!isShift && event.key === 'Shift') {
+            isShift = true;
+        }
+        keydown(event);
+    }
 
     board.keyup = (event: KeyboardEvent) => {
         if (isShift && event.key === 'Shift') {

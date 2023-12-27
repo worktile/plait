@@ -87,7 +87,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
         if (startPoint && resizeDetectResult && !isResizing(board)) {
             // prevent text from being selected
             event.preventDefault();
-            const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const endPoint = [event.x, event.y];;
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance > PRESS_AND_MOVE_BUFFER) {
                 addResizing(board, resizeRef!, options.key);
