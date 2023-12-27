@@ -2,7 +2,7 @@ import { PlaitBoard, PlaitElement } from '@plait/core';
 
 export interface GeneratorExtraData {}
 
-export interface GeneratorOptions {}
+export interface GeneratorOptions { prepend?: boolean }
 
 export abstract class Generator<
     T extends PlaitElement = PlaitElement,
@@ -24,7 +24,11 @@ export abstract class Generator<
                 if (this.g && parentG.contains(this.g)) {
                     this.g.replaceWith(g);
                 } else {
-                    parentG.appendChild(g);
+                    if (this.options?.prepend) {
+                        parentG.prepend(g);
+                    } else {
+                        parentG.appendChild(g);
+                    }
                 }
                 this.g = g;
             } else {

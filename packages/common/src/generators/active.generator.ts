@@ -1,5 +1,5 @@
 import { PlaitBoard, PlaitElement, RectangleClient, createG, drawCircle, drawRectangle } from '@plait/core';
-import { Generator } from './generator';
+import { Generator, GeneratorOptions } from './generator';
 import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '../constants/default';
 import { Options } from 'roughjs/bin/core';
 
@@ -17,7 +17,7 @@ export interface ActiveGeneratorOptions<T> {
 export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Generator<
     T,
     ActiveGeneratorExtraData,
-    ActiveGeneratorOptions<T>
+    ActiveGeneratorOptions<T> & GeneratorOptions
 > {
     hasResizeHandle = false;
 

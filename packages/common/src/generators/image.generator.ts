@@ -7,7 +7,7 @@ import {
     createG,
     updateForeignObject
 } from '@plait/core';
-import { Generator } from './generator';
+import { Generator, GeneratorOptions } from './generator';
 import { ComponentRef, ViewContainerRef } from '@angular/core';
 import { ImageBaseComponent } from '../core/image-base.component';
 import { CommonImageItem, WithCommonPluginOptions } from '../utils';
@@ -21,7 +21,11 @@ export interface ImageGeneratorOptions<T> {
     getImageItem: (element: T) => CommonImageItem;
 }
 
-export class ImageGenerator<T extends PlaitElement = PlaitElement> extends Generator<T, ViewContainerRef, ImageGeneratorOptions<T>> {
+export class ImageGenerator<T extends PlaitElement = PlaitElement> extends Generator<
+    T,
+    ViewContainerRef,
+    ImageGeneratorOptions<T> & GeneratorOptions
+> {
     foreignObject!: SVGForeignObjectElement;
 
     componentRef!: ComponentRef<ImageBaseComponent>;
