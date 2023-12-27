@@ -1,15 +1,21 @@
 import { isHotkey } from 'is-hotkey';
-import { Ancestor, PlaitBoard, PlaitElement, PlaitPluginKey } from '../interfaces';
+import { Ancestor, MERGING, PlaitBoard, PlaitElement, PlaitPluginKey, Point } from '../interfaces';
 import { BoardTransforms, Transforms } from '../transforms';
-import { depthFirstRecursion, getSelectedElements, hotkeys } from '../utils';
+import { depthFirstRecursion, getSelectedElements, hotkeys, throttleRAF } from '../utils';
 import { PlaitOptionsBoard } from './with-options';
 import { WithPluginOptions } from './with-selection';
 
 export const withHotkey = (board: PlaitBoard) => {
-    const { keydown, globalKeydown } = board;
+    const { keydown, keyup, globalKeydown } = board;
+
+    let isShift = false;
 
     board.keydown = (event: KeyboardEvent) => {
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
+
+        if (hotkeys.isShift(event)) {
+            isShift = true;
+        }
 
         if (!PlaitBoard.isReadonly(board) && options.isMultiple && isHotkey('mod+a', event)) {
             event.preventDefault();
@@ -45,7 +51,56 @@ export const withHotkey = (board: PlaitBoard) => {
             board.deleteFragment(null);
         }
 
+        if (!PlaitBoard.isReadonly(board) && selectedElements.length > 0 && (hotkeys.isArrow(event) || hotkeys.isExtendArrow(event))) {
+            event.preventDefault();
+            const offset = [0, 0];
+            const buffer = isShift ? 10 : 1;
+            switch (true) {
+                case hotkeys.isMoveUp(event) || hotkeys.isExtendUp(event): {
+                    offset[1] = -buffer;
+                    break;
+                }
+                case hotkeys.isMoveDown(event) || hotkeys.isExtendDown(event): {
+                    offset[1] = buffer;
+                    break;
+                }
+                case hotkeys.isMoveBackward(event) || hotkeys.isExtendBackward(event): {
+                    offset[0] = -buffer;
+                    break;
+                }
+                case hotkeys.isMoveForward(event) || hotkeys.isExtendForward(event): {
+                    offset[0] = buffer;
+                    break;
+                }
+            }
+            const selectedElements = getSelectedElements(board);
+            const relatedElements = board.getRelatedFragment([]);
+
+            throttleRAF(() => {
+                [...selectedElements, ...relatedElements].forEach(element => {
+                    const points = element.points || [];
+                    const newPoints = points.map(p => [p[0] + offset[0], p[1] + offset[1]]) as Point[];
+                    Transforms.setNode(
+                        board,
+                        {
+                            points: newPoints
+                        },
+                        PlaitBoard.findPath(board, element)
+                    );
+                    MERGING.set(board, true);
+                });
+            });
+        }
+
         keydown(event);
+    };
+
+    board.keyup = (event: KeyboardEvent) => {
+        if (event.key === 'Shift') {
+            isShift = false;
+        }
+        MERGING.set(board, false);
+        keyup(event);
     };
 
     board.globalKeydown = (event: KeyboardEvent) => {
