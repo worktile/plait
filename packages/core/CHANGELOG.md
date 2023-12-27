@@ -1,5 +1,20 @@
 # plait
 
+## 0.46.0
+
+### Minor Changes
+
+-   [`4cb6e2d8`](https://github.com/worktile/plait/commit/4cb6e2d8358f9f4a671b897289c11b4286b1b0fe) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct with-resize plugin distance error
+    use keyDown record isShift
+
+*   [#692](https://github.com/worktile/plait/pull/692) [`990a9ffd`](https://github.com/worktile/plait/commit/990a9ffdc0290ad60d4e9d751e00931a60fabeaf) Thanks [@WBbug](https://github.com/WBbug)! - support arrow move element
+
+-   [#693](https://github.com/worktile/plait/pull/693) [`43aca57a`](https://github.com/worktile/plait/commit/43aca57aad7863102d38440afa7e585561c080eb) Thanks [@WBbug](https://github.com/WBbug)! - correct line drag condition
+
+### Patch Changes
+
+-   [`ae816e7e`](https://github.com/worktile/plait/commit/ae816e7ecfafa9c039566d2309d89a0ed5185017) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - resolve the text of outside board can not be selected issue
+
 ## 0.45.0
 
 ### Minor Changes

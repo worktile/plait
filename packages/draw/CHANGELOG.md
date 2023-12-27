@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.46.0
+
+### Minor Changes
+
+-   [#693](https://github.com/worktile/plait/pull/693) [`43aca57a`](https://github.com/worktile/plait/commit/43aca57aad7863102d38440afa7e585561c080eb) Thanks [@WBbug](https://github.com/WBbug)! - correct line drag condition
+
 ## 0.45.0
 
 ### Minor Changes

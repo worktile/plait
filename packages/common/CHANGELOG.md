@@ -1,5 +1,16 @@
 # @plait/common
 
+## 0.46.0
+
+### Minor Changes
+
+-   [`4cb6e2d8`](https://github.com/worktile/plait/commit/4cb6e2d8358f9f4a671b897289c11b4286b1b0fe) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct with-resize plugin distance error
+    use keyDown record isShift
+
+### Patch Changes
+
+-   [`7aee1f95`](https://github.com/worktile/plait/commit/7aee1f9598199840d00aaac3d96b20d2ac5fb192) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support prepend option in GeneratorOptions, and set prepend to true in node shape generator
+
 ## 0.45.0
 
 ### Minor Changes
