@@ -75,20 +75,23 @@ export const withHotkey = (board: PlaitBoard) => {
             }
             const selectedElements = getSelectedElements(board);
             const relatedElements = board.getRelatedFragment([]);
+            const movableElements = board.children.filter(item => board.isMovable(item));
 
             throttleRAF(() => {
-                [...selectedElements, ...relatedElements].forEach(element => {
-                    const points = element.points || [];
-                    const newPoints = points.map(p => [p[0] + offset[0], p[1] + offset[1]]) as Point[];
-                    Transforms.setNode(
-                        board,
-                        {
-                            points: newPoints
-                        },
-                        PlaitBoard.findPath(board, element)
-                    );
-                    MERGING.set(board, true);
-                });
+                [...selectedElements, ...relatedElements]
+                    .filter(element => movableElements.includes(element))
+                    .forEach(element => {
+                        const points = element.points || [];
+                        const newPoints = points.map(p => [p[0] + offset[0], p[1] + offset[1]]) as Point[];
+                        Transforms.setNode(
+                            board,
+                            {
+                                points: newPoints
+                            },
+                            PlaitBoard.findPath(board, element)
+                        );
+                        MERGING.set(board, true);
+                    });
             });
         }
 
