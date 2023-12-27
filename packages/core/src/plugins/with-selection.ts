@@ -20,6 +20,7 @@ import { drawRectangle, isDragging, preventTouchMove, setDragging, throttleRAF }
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
 import { Selection } from '../interfaces/selection';
+import { PRESS_AND_MOVE_BUFFER } from '../constants';
 
 export interface WithPluginOptions extends PlaitPluginOptions {
     isMultiple: boolean;
@@ -27,7 +28,7 @@ export interface WithPluginOptions extends PlaitPluginOptions {
 }
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, pointerUp, globalPointerMove, globalPointerUp, keydown, keyup, onChange, afterChange } = board;
+    const { pointerDown, pointerUp, pointerMove, globalPointerUp, keydown, keyup, onChange, afterChange } = board;
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
@@ -72,7 +73,7 @@ export function withSelection(board: PlaitBoard) {
         keyup(event);
     };
 
-    board.globalPointerMove = (event: PointerEvent) => {
+    board.pointerMove = (event: PointerEvent) => {
         if (!isTextSelection) {
             // prevent text from being selected
             event.preventDefault();
@@ -82,7 +83,7 @@ export function withSelection(board: PlaitBoard) {
             const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
             const rectangle = RectangleClient.toRectangleClient([start, movedTarget]);
             selectionMovingG?.remove();
-            if (Math.hypot(rectangle.width, rectangle.height) > 5) {
+            if (Math.hypot(rectangle.width, rectangle.height) > PRESS_AND_MOVE_BUFFER || isSelectionMoving(board)) {
                 end = movedTarget;
                 throttleRAF(() => {
                     if (start && end) {
@@ -99,7 +100,7 @@ export function withSelection(board: PlaitBoard) {
                 PlaitBoard.getElementActiveHost(board).append(selectionMovingG);
             }
         }
-        globalPointerMove(event);
+        pointerMove(event);
     };
 
     // handle the end of click select
