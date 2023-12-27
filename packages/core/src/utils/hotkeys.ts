@@ -9,6 +9,7 @@ const HOTKEYS: any = {
     bold: 'mod+b',
     compose: ['down', 'left', 'right', 'up', 'backspace', 'enter'],
     arrow: ['down', 'left', 'right', 'up'],
+    extendArrow: ['shift+down', 'shift+left', 'shift+right', 'shift+up'],
     moveBackward: 'left',
     moveForward: 'right',
     moveUp: 'up',
@@ -19,9 +20,12 @@ const HOTKEYS: any = {
     deleteForward: 'shift?+delete',
     extendBackward: 'shift+left',
     extendForward: 'shift+right',
+    extendUp: 'shift+up',
+    extendDown: 'shift+down',
     italic: 'mod+i',
     splitBlock: 'shift?+enter',
-    undo: 'mod+z'
+    undo: 'mod+z',
+    shift: 'shift'
 };
 
 const APPLE_HOTKEYS: any = {
@@ -93,6 +97,9 @@ const hotkeys = {
     isDeleteWordForward: create('deleteWordForward'),
     isExtendBackward: create('extendBackward'),
     isExtendForward: create('extendForward'),
+    isExtendUp: create('extendUp'),
+    isExtendDown: create('extendDown'),
+    isExtendArrow: create('extendArrow'),
     isExtendLineBackward: create('extendLineBackward'),
     isExtendLineForward: create('extendLineForward'),
     isItalic: create('italic'),
@@ -103,7 +110,8 @@ const hotkeys = {
     isRedo: create('redo'),
     isSplitBlock: create('splitBlock'),
     isTransposeCharacter: create('transposeCharacter'),
-    isUndo: create('undo')
+    isUndo: create('undo'),
+    isShift: create('shift')
 };
 export default hotkeys;
 export { hotkeys };

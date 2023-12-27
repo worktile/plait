@@ -8,8 +8,14 @@ import { WithPluginOptions } from './with-selection';
 export const withHotkey = (board: PlaitBoard) => {
     const { keydown, keyup, globalKeydown } = board;
 
+    let isShift = false;
+
     board.keydown = (event: KeyboardEvent) => {
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
+
+        if (hotkeys.isShift(event)) {
+            isShift = true;
+        }
 
         if (!PlaitBoard.isReadonly(board) && options.isMultiple && isHotkey('mod+a', event)) {
             event.preventDefault();
@@ -45,24 +51,25 @@ export const withHotkey = (board: PlaitBoard) => {
             board.deleteFragment(null);
         }
 
-        if (!PlaitBoard.isReadonly(board) && selectedElements.length > 0 && hotkeys.isArrow(event)) {
+        if (!PlaitBoard.isReadonly(board) && selectedElements.length > 0 && (hotkeys.isArrow(event) || hotkeys.isExtendArrow(event))) {
             event.preventDefault();
             const offset = [0, 0];
+            const buffer = isShift ? 10 : 1;
             switch (true) {
-                case hotkeys.isMoveUp(event): {
-                    offset[1] = -1;
+                case hotkeys.isMoveUp(event) || hotkeys.isExtendUp(event): {
+                    offset[1] = -buffer;
                     break;
                 }
-                case hotkeys.isMoveDown(event): {
-                    offset[1] = 1;
+                case hotkeys.isMoveDown(event) || hotkeys.isExtendDown(event): {
+                    offset[1] = buffer;
                     break;
                 }
-                case hotkeys.isMoveBackward(event): {
-                    offset[0] = -1;
+                case hotkeys.isMoveBackward(event) || hotkeys.isExtendBackward(event): {
+                    offset[0] = -buffer;
                     break;
                 }
-                case hotkeys.isMoveForward(event): {
-                    offset[0] = 1;
+                case hotkeys.isMoveForward(event) || hotkeys.isExtendForward(event): {
+                    offset[0] = buffer;
                     break;
                 }
             }
@@ -89,6 +96,9 @@ export const withHotkey = (board: PlaitBoard) => {
     };
 
     board.keyup = (event: KeyboardEvent) => {
+        if (event.key === 'Shift') {
+            isShift = false;
+        }
         MERGING.set(board, false);
         keyup(event);
     };
