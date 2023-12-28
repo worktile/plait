@@ -3,6 +3,7 @@ import { PlaitGeometry, PlaitShape } from '../interfaces';
 import { ActiveGeneratorExtraData, Generator, PRIMARY_COLOR } from '@plait/common';
 import { getAutoCompletePoints } from '../utils';
 import { LINE_AUTO_COMPLETE_DIAMETER, LINE_AUTO_COMPLETE_OPACITY } from '../constants/line';
+import { LINE_AUTO_COMPLETE } from '../constants';
 
 export class LineAutoCompleteGenerator extends Generator<PlaitShape, ActiveGeneratorExtraData> {
     autoCompleteG!: SVGGElement;
@@ -30,14 +31,14 @@ export class LineAutoCompleteGenerator extends Generator<PlaitShape, ActiveGener
                 fill: RgbaToHEX(PRIMARY_COLOR, LINE_AUTO_COMPLETE_OPACITY),
                 fillStyle: 'solid'
             });
-            circle.classList.add(`line-auto-complete-${index}`);
+            circle.classList.add(`${LINE_AUTO_COMPLETE}-${index}`);
             this.autoCompleteG.appendChild(circle);
         });
         return this.autoCompleteG;
     }
 
     removeAutoCompleteG(index: number) {
-        this.hoverElement = this.autoCompleteG.querySelector(`.line-auto-complete-${index}`);
+        this.hoverElement = this.autoCompleteG.querySelector(`.${LINE_AUTO_COMPLETE}-${index}`);
         this.hoverElement!.style.visibility = 'hidden';
     }
 
