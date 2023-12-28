@@ -1,5 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, forwardRef } from '@angular/core';
-import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
+import {
+    OnBoardChange,
+    PlaitBoard,
+    PlaitIslandBaseComponent,
+    PlaitPointerType,
+    Transforms,
+    getSelectedElements,
+    AlignTransform
+} from '@plait/core';
 import {
     DrawTransforms,
     GeometryShapes,
@@ -129,7 +137,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     switchGeometryShape(event: Event, key: string) {
         let shape = (event.target as HTMLSelectElement).value as GeometryShapes;
-        DrawTransforms.switchGeometryShape(this.board, shape)
+        DrawTransforms.switchGeometryShape(this.board, shape);
     }
 
     propertyChange(event: Event, key: string) {
@@ -190,7 +198,6 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     textColorChange(value: string) {
         const selectedElements = getSelectedElements(this.board);
         if (selectedElements.length) {
-
             selectedElements.forEach(element => {
                 const editors = getTextEditors(element);
                 editors.forEach(editor => PlaitMarkEditor.setColorMark(editor, value));
@@ -224,8 +231,6 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     setLink(event: MouseEvent) {
         const selectedElements = getSelectedElements(this.board) as MindElement[];
-
-        
         if (selectedElements.length) {
             const editor = getFirstTextEditor(selectedElements[0]);
 
@@ -265,11 +270,15 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         }
     }
 
-    setAlign(event: Alignment) {
+    setTextAlign(event: Alignment) {
         const selectedElements = getSelectedElements(this.board) as MindElement[];
         selectedElements.forEach(element => {
             const editors = getTextEditors(element);
             editors.forEach(editor => AlignEditor.setAlign(editor, event));
         });
+    }
+
+    setAlign(event: string) {
+        Transforms[event as keyof AlignTransform](this.board);
     }
 }

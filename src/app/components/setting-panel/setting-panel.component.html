@@ -114,9 +114,20 @@
         (colorChangeEvent)="textColorChange($event)"
     ></app-color-picker>
 </div>
+<div class="property-item text-setting-toolbar">
+    <div class="setting-panel-title">图形对齐：</div>
+    <select [(ngModel)]="align" (ngModelChange)="setAlign($event)">
+        <option value="alignTop">顶部对齐</option>
+        <option value="alignHorizontalCenter">水平居中</option>
+        <option value="alignBottom">底部对齐</option>
+        <option value="alignLeft">左对齐</option>
+        <option value="alignVerticalCenter">垂直居中</option>
+        <option value="alignRight">右对齐</option>
+    </select>
+</div>
 <div *ngIf="!isSelectedLine" class="property-item text-setting-toolbar">
     <div class="setting-panel-title">文本对齐：</div>
-    <select [(ngModel)]="align" (ngModelChange)="setAlign($event)">
+    <select [(ngModel)]="align" (ngModelChange)="setTextAlign($event)">
         <option value="left">居左对齐</option>
         <option value="center">居中对齐</option>
         <option value="right">居右对齐</option>
