@@ -24,6 +24,7 @@ export class LineAutoCompleteGenerator extends Generator<PlaitShape, ActiveGener
 
     draw(element: PlaitGeometry, data: ActiveGeneratorExtraData): SVGGElement {
         this.autoCompleteG = createG();
+        this.autoCompleteG.classList.add(LINE_AUTO_COMPLETE);
         const middlePoints = getAutoCompletePoints(element);
         middlePoints.forEach((point, index) => {
             const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, LINE_AUTO_COMPLETE_DIAMETER, {
