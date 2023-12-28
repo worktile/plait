@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef } from '@angular/core';
 import { PlaitBoard, PlaitIslandBaseComponent, ToImageOptions, getSelectedElements, toImage } from '@plait/core';
 import { NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
+import { closeAction } from '../../utils/popover';
 
 @Component({
     selector: 'app-menu',
@@ -20,8 +21,14 @@ export class AppMenuComponent extends PlaitIslandBaseComponent {
         super(cdr);
     }
 
-    open(event: PointerEvent) {
+    open(event: MouseEvent) {
         this.isShowMenu = !this.isShowMenu;
+        if (this.isShowMenu) {
+            closeAction(() => {
+                this.isShowMenu = false;
+                this.markForCheck();
+            });
+        }
     }
 
     exportImage(event: MouseEvent) {

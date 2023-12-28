@@ -5,6 +5,7 @@ import { DrawPointerType, DrawTransforms, LineShape, getLinePointers, BasicShape
 import { MindElement, MindPointerType, MindTransforms } from '@plait/mind';
 import { fromEvent, take } from 'rxjs';
 import { NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
+import { closeAction } from '../../utils/popover';
 
 type PointerType = MindPointerType | PlaitPointerType | DrawPointerType | LineShape;
 
@@ -32,7 +33,7 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
 
     BoardCreationMode = BoardCreationMode;
 
-    showToolbar = false;
+    isShowShapePopover = false;
 
     constructor(protected cdr: ChangeDetectorRef, private elementRef: ElementRef<HTMLElement>) {
         super(cdr);
@@ -40,6 +41,10 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
 
     isPointer(pointer: PointerType) {
         return PlaitBoard.isPointer<PointerType>(this.board, pointer);
+    }
+
+    isActiveItem(pointer: PointerType) {
+        return this.isPointer(pointer) && !this.isShowShapePopover;
     }
 
     setPointer(event: Event, pointer: PointerType) {
@@ -71,13 +76,12 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
     }
 
     openPopover() {
-        this.showToolbar = true;
-        const upEvent = fromEvent(document, 'mouseup')
-            .pipe(take(1))
-            .subscribe(event => {
-                this.showToolbar = false;
-                upEvent.unsubscribe();
-                this.cdr.markForCheck();
+        this.isShowShapePopover = !this.isShowShapePopover;
+        if (this.isShowShapePopover) {
+            closeAction(() => {
+                this.isShowShapePopover = false;
+                this.markForCheck();
             });
+        }
     }
 }

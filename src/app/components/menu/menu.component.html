@@ -1,4 +1,4 @@
-<a class="action-item" (pointerdown)="open($event)">
+<a class="action-item" [ngClass]="{ active: isShowMenu }" (click)="open($event)">
     <ng-template [ngTemplateOutlet]="menu"></ng-template>
 </a>
 <div *ngIf="isShowMenu" class="popover dropdown-menu-container plait-island-container">

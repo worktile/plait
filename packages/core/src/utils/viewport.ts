@@ -138,7 +138,6 @@ export function updateViewportContainerScroll(board: PlaitBoard, left: number, t
                 left < viewportContainer.scrollWidth - offsetWidth &&
                 top < viewportContainer.scrollHeight - offsetHeight;
             if (isFromViewportChange && isValidLeftOrTop) {
-                console.log('setIsFromViewportChange');
                 setIsFromViewportChange(board, true);
             }
         }

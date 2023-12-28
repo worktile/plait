@@ -1,22 +1,22 @@
-<a class="action-item" [ngClass]="{ active: isPointer(PlaitPointerType.hand) }" (click)="setPointer($event, PlaitPointerType.hand)">
+<a class="action-item" [ngClass]="{ active: isActiveItem(PlaitPointerType.hand) }" (click)="setPointer($event, PlaitPointerType.hand)">
     <ng-template [ngTemplateOutlet]="hand"></ng-template>
 </a>
 <a
     class="action-item"
-    [ngClass]="{ active: isPointer(PlaitPointerType.selection) }"
+    [ngClass]="{ active: isActiveItem(PlaitPointerType.selection) }"
     (click)="setPointer($event, PlaitPointerType.selection)"
 >
     <ng-template [ngTemplateOutlet]="selection"></ng-template>
 </a>
-<a class="action-item" [ngClass]="{ active: isPointer(MindPointerType.mind) }" (mousedown)="setPointer($event, MindPointerType.mind)">
+<a class="action-item" [ngClass]="{ active: isActiveItem(MindPointerType.mind) }" (mousedown)="setPointer($event, MindPointerType.mind)">
     <ng-template [ngTemplateOutlet]="mind"></ng-template>
 </a>
 
-<a class="action-item" (click)="openPopover()">
+<a class="action-item" [ngClass]="{ active: isShowShapePopover }" (click)="openPopover()">
     <ng-template [ngTemplateOutlet]="geometry"></ng-template>
 </a>
 
-<div *ngIf="showToolbar" class="popover plait-island-container ">
+<div *ngIf="isShowShapePopover" class="popover plait-island-container ">
     <div class="title">基础图形</div>
     <div class="shapes-container">
         <a
@@ -263,19 +263,19 @@
     </div>
 </div>
 
-<a class="action-item" [ngClass]="{ active: isPointer(GeometryShapeType.text) }" (mousedown)="setPointer($event, GeometryShapeType.text)">
+<a class="action-item" [ngClass]="{ active: isActiveItem(GeometryShapeType.text) }" (mousedown)="setPointer($event, GeometryShapeType.text)">
     <ng-template [ngTemplateOutlet]="text"></ng-template>
 </a>
 
-<a class="action-item" [ngClass]="{ active: isPointer(LineShapeType.elbow) }" (mousedown)="setPointer($event, LineShapeType.elbow)">
+<a class="action-item" [ngClass]="{ active: isActiveItem(LineShapeType.elbow) }" (mousedown)="setPointer($event, LineShapeType.elbow)">
     <ng-template [ngTemplateOutlet]="elbow"></ng-template>
 </a>
 
-<a class="action-item" [ngClass]="{ active: isPointer(LineShapeType.straight) }" (mousedown)="setPointer($event, LineShapeType.straight)">
+<a class="action-item" [ngClass]="{ active: isActiveItem(LineShapeType.straight) }" (mousedown)="setPointer($event, LineShapeType.straight)">
     <ng-template [ngTemplateOutlet]="straight"></ng-template>
 </a>
 
-<a class="action-item" [ngClass]="{ active: isPointer(LineShapeType.curve) }" (mousedown)="setPointer($event, LineShapeType.curve)">
+<a class="action-item" [ngClass]="{ active: isActiveItem(LineShapeType.curve) }" (mousedown)="setPointer($event, LineShapeType.curve)">
     <ng-template [ngTemplateOutlet]="curve"></ng-template>
 </a>
 
