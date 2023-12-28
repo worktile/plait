@@ -38,6 +38,12 @@ export function withSelection(board: PlaitBoard) {
     let isTextSelection = false;
 
     board.pointerDown = (event: PointerEvent) => {
+        if (!isShift && event.shiftKey) {
+            isShift = true;
+        }
+        if (isShift && !event.shiftKey) {
+            isShift = false;
+        }
         const isHitText = !!(event.target instanceof Element && event.target.closest('.plait-richtext-container'));
         isTextSelection = isHitText && PlaitBoard.hasBeenTextEditing(board);
 
@@ -57,20 +63,6 @@ export function withSelection(board: PlaitBoard) {
         }
 
         pointerDown(event);
-    };
-
-    board.keydown = (event: KeyboardEvent) => {
-        if (!isShift && event.key === 'Shift') {
-            isShift = true;
-        }
-        keydown(event);
-    }
-
-    board.keyup = (event: KeyboardEvent) => {
-        if (isShift && event.key === 'Shift') {
-            isShift = false;
-        }
-        keyup(event);
     };
 
     board.pointerMove = (event: PointerEvent) => {
