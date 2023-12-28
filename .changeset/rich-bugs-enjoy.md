@@ -1,5 +1,5 @@
 ---
-'@plait/core': minor
+'@plait/common': minor
 ---
 
 support shape align

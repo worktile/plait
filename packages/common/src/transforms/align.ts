@@ -1,6 +1,4 @@
-import { MERGING, PlaitBoard, Point, RectangleClient } from '../interfaces';
-import { Transforms } from '../public-api';
-import { getRectangleByElements, getSelectedElements } from '../utils';
+import { MERGING, PlaitBoard, Point, RectangleClient, Transforms, getRectangleByElements, getSelectedElements } from '@plait/core';
 
 export const alignTop = (board: PlaitBoard) => {
     function getOffset(outerRectangle: RectangleClient, rectangle: RectangleClient) {

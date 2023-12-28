@@ -1,13 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, forwardRef } from '@angular/core';
-import {
-    OnBoardChange,
-    PlaitBoard,
-    PlaitIslandBaseComponent,
-    PlaitPointerType,
-    Transforms,
-    getSelectedElements,
-    AlignTransform
-} from '@plait/core';
+import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
 import {
     DrawTransforms,
     GeometryShapes,
@@ -28,7 +20,7 @@ import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-import { PropertyTransforms, getFirstTextEditor, getTextEditors } from '@plait/common';
+import { AlignTransform, PropertyTransforms, getFirstTextEditor, getTextEditors } from '@plait/common';
 
 @Component({
     selector: 'app-setting-panel',
@@ -279,6 +271,6 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     setAlign(event: string) {
-        Transforms[event as keyof AlignTransform](this.board);
+        AlignTransform[event as keyof AlignTransform](this.board);
     }
 }
