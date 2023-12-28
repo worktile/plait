@@ -16,7 +16,7 @@ export function withViewport(board: PlaitBoard) {
 
     board.onChange = () => {
         const isSetViewport = board.operations.some(op => op.type === 'set_viewport');
-        const isOnlySetSelection = board.operations.some(op => op.type === 'set_selection');
+        const isOnlySetSelection = board.operations.every(op => op.type === 'set_selection');
         if (isOnlySetSelection) {
             return onChange();
         }
