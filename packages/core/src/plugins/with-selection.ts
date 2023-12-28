@@ -97,7 +97,9 @@ export function withSelection(board: PlaitBoard) {
 
     // handle the end of click select
     board.pointerUp = (event: PointerEvent) => {
-        const isSkip = !isMainPointer(event) || isDragging(board) || !PlaitBoard.isPointer(board, PlaitPointerType.selection);
+        const isSetSelectionPointer =
+            PlaitBoard.isPointer(board, PlaitPointerType.selection) || PlaitBoard.isPointer(board, PlaitPointerType.hand);
+        const isSkip = !isMainPointer(event) || isDragging(board) || !isSetSelectionPointer;
         if (isSkip) {
             pointerDown(event);
             return;
