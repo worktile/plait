@@ -31,7 +31,6 @@ export const MindNode = {
     }
 };
 
-// mind node extend 支持的布局类型
 export type ExtendLayoutType = Exclude<MindLayoutType, MindLayoutType.standard>;
 
 export type CoordinateType = {

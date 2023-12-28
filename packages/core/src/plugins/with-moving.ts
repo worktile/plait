@@ -107,7 +107,7 @@ export function withMoving(board: PlaitBoard) {
             }
         }
         if (isPreventDefault) {
-            // 阻止 move 过程中触发画布滚动行为
+            // Prevent canvas scrolling behavior from being triggered during move
             event.preventDefault();
         }
         pointerMove(event);

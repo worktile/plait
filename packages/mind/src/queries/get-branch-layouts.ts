@@ -6,7 +6,7 @@ import { PlaitBoard } from '@plait/core';
 export const getBranchLayouts = (board: PlaitBoard, element: MindElement) => {
     const layouts: MindLayoutType[] = [];
     if (element.layout) {
-        // TODO: getCorrectLayoutByElement 含有递归操作，getBranchLayouts 本身也有递归操作，有待优化
+        // TODO: getCorrectLayoutByElement Contains recursive operations. getBranchLayouts itself also has recursive operations and needs to be optimized.
         layouts.unshift(getCorrectLayoutByElement(board, element));
     }
     let parent = MindElement.findParent(element);

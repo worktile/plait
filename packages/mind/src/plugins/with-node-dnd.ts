@@ -183,7 +183,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
                 let insertPath = targetPathRef.current;
                 const parentPath = Path.parent(targetPathRef.current || targetPath);
                 if (!insertPath) {
-                    //当插入位置和选中节点位置相同时，使用记录的 previousPath
+                    // When the insertion position and the selected node position are the same, the recorded previousPath is used
                     const previousPath = targetPreviousPathRef && targetPreviousPathRef.unref();
                     if (previousPath) {
                         insertPath = Path.next(previousPath);

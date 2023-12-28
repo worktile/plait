@@ -117,7 +117,7 @@ export const directionDetector = (targetNode: MindNode, centerPoint: Point): Det
     const right = targetNode.x + targetNode.width;
     const direction: DetectResult[] = [];
 
-    // x 轴
+    // x-axis
     if (centerPoint[1] > y && centerPoint[1] < y + height) {
         if (centerPoint[0] > left && centerPoint[0] < xCenter) {
             direction.push('left');
@@ -125,7 +125,7 @@ export const directionDetector = (targetNode: MindNode, centerPoint: Point): Det
         if (centerPoint[0] > xCenter && centerPoint[0] < right) {
             direction.push('right');
         }
-        // 重合区域，返回两个方向
+        // Overlapping area, return in both directions
         if ((centerPoint[0] > x && centerPoint[0] < xCenter) || (centerPoint[0] > xCenter && centerPoint[0] < x + width)) {
             if (centerPoint[1] < yCenter) {
                 direction.push('top');
@@ -136,7 +136,7 @@ export const directionDetector = (targetNode: MindNode, centerPoint: Point): Det
         return direction.length ? direction : null;
     }
 
-    // y 轴
+    // y-axis
     if (centerPoint[0] > x && centerPoint[0] < x + width) {
         if (centerPoint[1] > top && centerPoint[1] < yCenter) {
             direction.push('top');
@@ -167,17 +167,14 @@ export const getPathByDropTarget = (board: PlaitBoard, dropTarget: { target: Min
         ? getRootLayout(dropTarget?.target)
         : MindQueries.getCorrectLayoutByElement(board, MindElement.getParent(dropTarget?.target));
     const children = getNonAbstractChildren(dropTarget.target);
-    // 上下布局：左右是兄弟节点，上下是子节点
     if (isVerticalLogicLayout(layout)) {
         if (dropTarget.detectResult === 'top' || dropTarget.detectResult === 'bottom') {
             targetPath.push(children.length);
         }
-        // 如果是左，位置不变，右则插入到下一个兄弟节点
         if (dropTarget.detectResult === 'right') {
             targetPath = Path.next(targetPath);
         }
     }
-    // 水平布局/标准布局：上下是兄弟节点，左右是子节点
     if (isHorizontalLogicLayout(layout)) {
         if (dropTarget.detectResult === 'right') {
             if (PlaitMind.isMind(dropTarget?.target) && isStandardLayout(layout)) {
@@ -189,13 +186,10 @@ export const getPathByDropTarget = (board: PlaitBoard, dropTarget: { target: Min
         if (dropTarget.detectResult === 'left') {
             targetPath.push(children.length);
         }
-        // 如果是上，位置不变，下插入到下一个兄弟节点
         if (dropTarget.detectResult === 'bottom') {
             targetPath = Path.next(targetPath);
         }
     }
-
-    // 缩进布局：上下是兄弟节点，左右是子节点，但上（左上/右上），探测到上是子节点，下则位置不变，反之同理。
     if (isIndentedLayout(layout)) {
         if (isTopLayout(layout) && dropTarget.detectResult === 'top') {
             targetPath = Path.next(targetPath);

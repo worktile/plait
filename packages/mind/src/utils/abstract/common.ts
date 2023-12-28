@@ -114,7 +114,7 @@ export const insertElementHandleAbstract = (
     board: PlaitBoard,
     path: Path,
     step = 1,
-    //由此区分拖拽和新增到概要概括最后一个节点
+    // This distinguishes between dragging and adding to the last node summarized in the abstract node
     isExtendPreviousNode: boolean = true,
     effectedAbstracts = new Map<MindElement, Pick<AbstractNode, 'start' | 'end'>>()
 ) => {
