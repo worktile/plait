@@ -116,13 +116,15 @@
 </div>
 <div class="property-item text-setting-toolbar">
     <div class="setting-panel-title">图形对齐：</div>
-    <select [(ngModel)]="align" (ngModelChange)="setAlign($event)">
+    <select (change)="setAlign($event)">
         <option value="alignTop">顶部对齐</option>
         <option value="alignHorizontalCenter">水平居中</option>
         <option value="alignBottom">底部对齐</option>
         <option value="alignLeft">左对齐</option>
         <option value="alignVerticalCenter">垂直居中</option>
         <option value="alignRight">右对齐</option>
+        <option value="distributeHorizontal">水平分布</option>
+        <option value="distributeVertical">垂直分布</option>
     </select>
 </div>
 <div *ngIf="!isSelectedLine" class="property-item text-setting-toolbar">
