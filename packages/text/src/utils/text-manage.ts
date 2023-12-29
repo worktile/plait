@@ -8,8 +8,8 @@ import {
     RectangleClient,
     createForeignObject,
     createG,
-    toPoint,
-    transformPoint,
+    toHostPoint,
+    toViewBoxPoint,
     updateForeignObject,
     updateForeignObjectWidth
 } from '@plait/core';
@@ -196,7 +196,7 @@ export class TextManage {
         });
 
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
-            const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
+            const point = toViewBoxPoint(this.board, toHostPoint(this.board, event.x, event.y));
             const textRec = this.options.getRectangle();
             const clickInText = RectangleClient.isHit(RectangleClient.toRectangleClient([point, point]), textRec);
             const isAttached = (event.target as HTMLElement).closest('.plait-board-attached');

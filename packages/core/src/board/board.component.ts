@@ -32,7 +32,7 @@ import { withBoard } from '../plugins/with-board';
 import { withHistory } from '../plugins/with-history';
 import { withHandPointer } from '../plugins/with-hand';
 import { withSelection } from '../plugins/with-selection';
-import { IS_CHROME, IS_FIREFOX, IS_SAFARI, getRectangleByElements, getSelectedElements, hotkeys, toPoint, transformPoint } from '../utils';
+import { IS_CHROME, IS_FIREFOX, IS_SAFARI, getRectangleByElements, getSelectedElements, toHostPoint, toViewBoxPoint } from '../utils';
 import {
     BOARD_TO_ON_CHANGE,
     BOARD_TO_COMPONENT,
@@ -399,7 +399,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             .subscribe((clipboardEvent: ClipboardEvent) => {
                 const mousePoint = PlaitBoard.getMovingPointInBoard(this.board);
                 if (mousePoint) {
-                    const targetPoint = transformPoint(this.board, toPoint(mousePoint[0], mousePoint[1], this.host));
+                    const targetPoint = toViewBoxPoint(this.board, toHostPoint(this.board, mousePoint[0], mousePoint[1]));
                     this.board.insertFragment(clipboardEvent.clipboardData, targetPoint);
                 }
             });

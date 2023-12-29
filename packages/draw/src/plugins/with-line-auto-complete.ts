@@ -11,8 +11,8 @@ import {
     createG,
     distanceBetweenPointAndPoint,
     temporaryDisableSelection,
-    toPoint,
-    transformPoint
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { LineShape, PlaitDrawElement, PlaitLine, PlaitShape } from '../interfaces';
 import { handleLineCreating, getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
@@ -34,7 +34,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
     board.pointerDown = (event: PointerEvent) => {
         const selectedElements = getSelectedDrawElements(board);
         const targetElement = selectedElements.length === 1 && selectedElements[0];
-        const clickPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (!PlaitBoard.isReadonly(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
             const points = getAutoCompletePoints(targetElement);
             const index = getHitIndexOfAutoCompletePoint(clickPoint, points);
@@ -52,7 +52,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         lineShapeG?.remove();
         lineShapeG = createG();
-        let movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        let movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (startPoint && sourceElement) {
             const distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
             if (distance > PRESS_AND_MOVE_BUFFER) {

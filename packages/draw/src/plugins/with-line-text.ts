@@ -3,8 +3,8 @@ import {
     PlaitElement,
     getHitElementByPoint,
     getNearestPointBetweenPointAndSegments,
-    toPoint,
-    transformPoint
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { PlaitDrawElement, PlaitLine } from '../interfaces';
 import { Node } from 'slate';
@@ -19,7 +19,7 @@ export const withLineText = (board: PlaitBoard) => {
 
     board.dblclick = (event: MouseEvent) => {
         if (!PlaitBoard.isReadonly(board)) {
-            const clickPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const hitTarget = getHitElementByPoint(board, clickPoint, (element: PlaitElement) => {
                 return PlaitDrawElement.isLine(element);
             }) as undefined | PlaitLine;

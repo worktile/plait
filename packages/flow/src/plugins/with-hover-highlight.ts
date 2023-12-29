@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, PlaitPlugin, getMovingElements, toPoint, transformPoint } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitPlugin, getMovingElements, toHostPoint, toViewBoxPoint } from '@plait/core';
 import { FlowNode } from '../interfaces/node';
 import { FlowEdge } from '../interfaces/edge';
 import { getEdgesByNodeId, getHitEdge, getHitNode, isEdgeDragging, isPlaceholderEdgeInfo, getHitHandleByNode } from '../utils';
@@ -14,7 +14,7 @@ export const withHoverHighlight: PlaitPlugin = (board: PlaitBoard) => {
 
     board.mousemove = (event: MouseEvent) => {
         mousemove(event);
-        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const newHitNode = getHitNode(board, point) || getHitEdge(board, point);
         const movingNodes = getMovingElements(board);
 

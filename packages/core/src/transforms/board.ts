@@ -2,7 +2,6 @@ import { ThemeColorMode } from '../interfaces/theme';
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { PlaitPointerType } from '../interfaces/pointer';
-import { toPoint } from '../utils/dom/common';
 import { getRectangleByElements } from '../utils/element';
 import { distanceBetweenPointAndRectangle } from '../utils/math';
 import {
@@ -39,14 +38,14 @@ const updatePointerType = <T extends string = PlaitPointerType>(board: PlaitBoar
 function updateZoom(board: PlaitBoard, newZoom: number, isCenter = true) {
     newZoom = clampZoomLevel(newZoom);
 
-    const mousePoint = PlaitBoard.getMovingPointInBoard(board);
+    const movingPoint = PlaitBoard.getMovingPointInBoard(board);
     const nativeElement = PlaitBoard.getBoardContainer(board);
     const nativeElementRect = nativeElement.getBoundingClientRect();
     const boardContainerRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
     let focusPoint = [boardContainerRect.width / 2, boardContainerRect.height / 2];
 
-    if (!isCenter && mousePoint && distanceBetweenPointAndRectangle(mousePoint[0], mousePoint[1], nativeElementRect) === 0) {
-        focusPoint = toPoint(mousePoint[0], mousePoint[1], (nativeElement as unknown) as SVGElement);
+    if (!isCenter && movingPoint && distanceBetweenPointAndRectangle(movingPoint[0], movingPoint[1], nativeElementRect) === 0) {
+        focusPoint = [movingPoint[0] - nativeElementRect.x, movingPoint[1] - nativeElementRect.y];
     }
 
     const zoom = board.viewport.zoom;

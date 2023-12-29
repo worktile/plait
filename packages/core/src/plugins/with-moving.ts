@@ -1,7 +1,6 @@
-import { BOARD_TO_HOST } from '../utils/weak-maps';
 import { PlaitBoard } from '../interfaces/board';
-import { isInPlaitBoard, transformPoint } from '../utils/board';
-import { isMainPointer, toPoint } from '../utils/dom/common';
+import { isInPlaitBoard } from '../utils/board';
+import { isMainPointer } from '../utils/dom/common';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
@@ -10,7 +9,15 @@ import { PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
 import { addMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
-import { isPreventTouchMove, preventTouchMove, handleTouchTarget, getRectangleByElements, distanceBetweenPointAndPoint } from '../utils';
+import {
+    isPreventTouchMove,
+    preventTouchMove,
+    handleTouchTarget,
+    getRectangleByElements,
+    distanceBetweenPointAndPoint,
+    toHostPoint,
+    toViewBoxPoint
+} from '../utils';
 import { AlignReaction } from '../utils/reaction-manager';
 import { PlaitPointerType, RectangleClient } from '../interfaces';
 import { ACTIVE_MOVING_CLASS_NAME, PRESS_AND_MOVE_BUFFER } from '../constants';
@@ -27,8 +34,7 @@ export function withMoving(board: PlaitBoard) {
     let activeElementsRectangle: RectangleClient | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
-        const host = BOARD_TO_HOST.get(board);
-        const point = transformPoint(board, toPoint(event.x, event.y, host!));
+        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         let movableElements = board.children.filter(item => board.isMovable(item));
         if (
             !PlaitBoard.isReadonly(board) &&
@@ -62,8 +68,7 @@ export function withMoving(board: PlaitBoard) {
                 isPreventDefault = true;
             }
             alignG?.remove();
-            const host = BOARD_TO_HOST.get(board);
-            const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
+            const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             offsetX = endPoint[0] - startPoint[0];
             offsetY = endPoint[1] - startPoint[1];
             const distance = distanceBetweenPointAndPoint(...endPoint, ...startPoint);

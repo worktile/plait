@@ -1,4 +1,4 @@
-import { CursorClass, PlaitBoard, PlaitElement, RgbaToHEX, drawCircle, isSelectionMoving, toPoint, transformPoint } from '@plait/core';
+import { CursorClass, PlaitBoard, PlaitElement, RgbaToHEX, drawCircle, isSelectionMoving, toHostPoint, toViewBoxPoint } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
 import { GeometryComponent } from '../geometry.component';
@@ -13,7 +13,7 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
         PlaitBoard.getBoardContainer(board).classList.remove(CursorClass.crosshair);
         const selectedElements = getSelectedDrawElements(board);
         const targetElement = selectedElements.length === 1 && selectedElements[0];
-        const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (!PlaitBoard.isReadonly(board) && !isSelectionMoving(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
             const points = getAutoCompletePoints(targetElement);
             const hitIndex = getHitIndexOfAutoCompletePoint(movingPoint, points);

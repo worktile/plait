@@ -8,8 +8,8 @@ import {
     Transforms,
     getSelectedElements,
     throttleRAF,
-    toPoint,
-    transformPoint
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { FlowEdgeComponent } from '../flow-edge.component';
 import { FlowEdge, FlowEdgeHandleType } from '../interfaces/edge';
@@ -40,7 +40,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
             return;
         }
         const host = BOARD_TO_HOST.get(board);
-        const point = transformPoint(board, toPoint(event.x, event.y, host!));
+        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const selectElements = getSelectedElements(board);
         if (selectElements.length && FlowEdge.isFlowEdgeElement(selectElements[0] as FlowElement)) {
             activeElement = selectElements[0] as FlowEdge;
@@ -55,8 +55,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
     board.mousemove = (event: MouseEvent) => {
         if (!board.options.readonly && startPoint && handleType) {
-            const host = BOARD_TO_HOST.get(board);
-            const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
+            const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             offsetX = endPoint[0] - startPoint[0];
             offsetY = endPoint[1] - startPoint[1];
             event.preventDefault();

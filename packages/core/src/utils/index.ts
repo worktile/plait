@@ -21,3 +21,4 @@ export * from './to-image';
 export * from './clipboard';
 export * from './touch';
 export * from './dnd';
+export * from './to-point';

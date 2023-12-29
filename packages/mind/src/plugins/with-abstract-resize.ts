@@ -7,8 +7,8 @@ import {
     Transforms,
     getSelectedElements,
     isMainPointer,
-    toPoint,
-    transformPoint
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { AbstractNode, LayoutNode, MindLayoutType, isHorizontalLayout, isStandardLayout } from '@plait/layouts';
 import { MindElement } from '../interfaces';
@@ -35,8 +35,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         }
 
         const activeAbstractElements = getSelectedElements(board).filter(element => AbstractNode.isAbstract(element)) as MindElement[];
-        const host = BOARD_TO_HOST.get(board);
-        const point = transformPoint(board, toPoint(event.x, event.y, host!));
+        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
 
         activeAbstractElement = activeAbstractElements.find(element => {
             abstractHandlePosition = getHitAbstractHandle(board, element as MindElement, point);
@@ -57,7 +56,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         getSelectedElements(board);
         const host = BOARD_TO_HOST.get(board);
-        const endPoint = transformPoint(board, toPoint(event.x, event.y, host!));
+        const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
 
         touchedAbstract = handleTouchedAbstract(board, touchedAbstract, endPoint);
 

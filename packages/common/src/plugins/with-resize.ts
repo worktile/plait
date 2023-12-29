@@ -10,9 +10,9 @@ import {
     preventTouchMove,
     handleTouchTarget,
     throttleRAF,
-    toPoint,
-    transformPoint,
-    ResizeCursorClass
+    ResizeCursorClass,
+    toViewBoxPoint,
+    toHostPoint
 } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
 import { ResizeRef, addResizing, isResizing, removeResizing } from '../utils/resize';
@@ -59,7 +59,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             pointerDown(event);
             return;
         }
-        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         resizeDetectResult = options.detect(point);
         if (resizeDetectResult) {
             if (resizeDetectResult.cursorClass) {
@@ -87,7 +87,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
         if (startPoint && resizeDetectResult && !isResizing(board)) {
             // prevent text from being selected
             event.preventDefault();
-            const endPoint = [event.x, event.y];;
+            const endPoint = [event.x, event.y];
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance > PRESS_AND_MOVE_BUFFER) {
                 addResizing(board, resizeRef!, options.key);
@@ -99,7 +99,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
         if (isResizing(board) && startPoint) {
             // prevent text from being selected
             event.preventDefault();
-            const endTransformPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const endTransformPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             throttleRAF(() => {
                 const endPoint = [event.x, event.y];
                 if (startPoint && resizeRef) {
@@ -111,7 +111,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             });
             return;
         } else {
-            const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const resizeDetectResult = options.detect(point);
             if (resizeDetectResult) {
                 if (hoveDetectResult && resizeDetectResult.cursorClass !== hoveDetectResult.cursorClass) {

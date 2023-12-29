@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitPlugin, PlaitElement, drawCircle, transformPoint, toPoint } from '@plait/core';
+import { PlaitBoard, PlaitPlugin, PlaitElement, drawCircle, toHostPoint, toViewBoxPoint } from '@plait/core';
 import { FlowNodeComponent } from '../flow-node.component';
 import { HitNodeHandle, getHitNodeHandle } from '../utils/handle/node';
 import { addHoverHandleInfo, deleteHoverHandleInfo } from '../utils/handle/hover-handle';
@@ -9,18 +9,18 @@ import { deleteCreateEdgeInfo, getCreateEdgeInfo } from '../utils/edge/create-ed
 export const withHandleBlink: PlaitPlugin = (board: PlaitBoard) => {
     const { globalMousemove, globalMouseup } = board;
 
-    let previousHoverdHandle: HitNodeHandle | null = null;
+    let previousHoveredHandle: HitNodeHandle | null = null;
     let hoveredHandle: HitNodeHandle | null;
     let activeHandleElement: SVGGElement;
 
     board.globalMousemove = (event: MouseEvent) => {
         if (!board.options.readonly) {
-            const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             hoveredHandle = getHitNodeHandle(board, point);
             addHoverHandleInfo(board, hoveredHandle);
             if (isEdgeDragging(board) || getCreateEdgeInfo(board)) {
-                if (hoveredHandle && previousHoverdHandle?.handlePoint.toString() !== hoveredHandle.handlePoint.toString()) {
-                    previousHoverdHandle = hoveredHandle;
+                if (hoveredHandle && previousHoveredHandle?.handlePoint.toString() !== hoveredHandle.handlePoint.toString()) {
+                    previousHoveredHandle = hoveredHandle;
                     const flowNodeComponent = PlaitElement.getComponent(hoveredHandle.node) as FlowNodeComponent;
                     activeHandleElement?.remove();
                     activeHandleElement = drawCircle(
@@ -36,9 +36,9 @@ export const withHandleBlink: PlaitPlugin = (board: PlaitBoard) => {
                     activeHandleElement?.setAttribute('stroke-linecap', 'round');
                     flowNodeComponent.g.append(activeHandleElement);
                 }
-                if (previousHoverdHandle && !hoveredHandle) {
+                if (previousHoveredHandle && !hoveredHandle) {
                     activeHandleElement?.remove();
-                    previousHoverdHandle = null;
+                    previousHoveredHandle = null;
                     deleteCreateEdgeInfo(board);
                 }
             }
@@ -50,7 +50,7 @@ export const withHandleBlink: PlaitPlugin = (board: PlaitBoard) => {
         globalMouseup(event);
         deleteHoverHandleInfo(board);
         if (hoveredHandle) {
-            previousHoverdHandle = null;
+            previousHoveredHandle = null;
             hoveredHandle = null;
             activeHandleElement?.remove();
         }

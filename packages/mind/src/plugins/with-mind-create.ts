@@ -8,8 +8,8 @@ import {
     createG,
     getSelectedElements,
     throttleRAF,
-    toPoint,
-    transformPoint
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { PlaitMindBoard } from './with-mind.board';
 import { MindPointerType } from '../interfaces/pointer';
@@ -39,7 +39,7 @@ export const withCreateMind = (board: PlaitBoard) => {
         const isMindPointer = PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind);
         let movingPoint = PlaitBoard.getMovingPointInBoard(board);
         if (!PlaitBoard.isReadonly(board) && movingPoint && isDrawingMode(board) && isMindPointer) {
-            movingPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
+            movingPoint = toViewBoxPoint(board, toHostPoint(board, movingPoint[0], movingPoint[1]));
             const emptyMind = createEmptyMind(newBoard, movingPoint);
             Transforms.insertNode(board, emptyMind, [board.children.length]);
             clearSelectedElement(board);
@@ -60,7 +60,7 @@ export const withCreateMind = (board: PlaitBoard) => {
                 let movingPoint = PlaitBoard.getMovingPointInBoard(board);
 
                 if (movingPoint) {
-                    movingPoint = transformPoint(newBoard, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
+                    movingPoint = toViewBoxPoint(newBoard, toHostPoint(board, movingPoint[0], movingPoint[1]));
                     emptyMind = createEmptyMind(newBoard, movingPoint);
                     const nodeRectangle = getRectangleByElement(newBoard, emptyMind);
                     const nodeG = drawRoundRectangleByElement(board, nodeRectangle, emptyMind);

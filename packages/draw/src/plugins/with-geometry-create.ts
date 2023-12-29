@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, RectangleClient, createG, preventTouchMove, toPoint, transformPoint } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, createG, preventTouchMove, toHostPoint, toViewBoxPoint } from '@plait/core';
 import { BasicShapes, GeometryShapes, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
 import {
@@ -39,7 +39,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
         const geometryPointers = getGeometryPointers();
         const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
         const dragMode = isGeometryPointer && isDndMode(board);
-        const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
 
         if (dragMode) {
@@ -127,7 +127,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         const geometryPointers = getGeometryPointers();
         const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
         if (!PlaitBoard.isReadonly(board) && isGeometryPointer && isDrawingMode(board)) {
-            const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             start = point;
             const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
             preventTouchMove(board, event, true);
@@ -148,7 +148,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         geometryShapeG = createG();
         const geometryGenerator = new GeometryShapeGenerator(board);
         const drawMode = !!start;
-        const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
         if (drawMode && pointer !== BasicShapes.text) {
             const points = normalizeShapePoints([start!, movingPoint], isShift);
@@ -163,7 +163,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
     board.pointerUp = (event: PointerEvent) => {
         const isDrawMode = !!start;
         if (isDrawMode) {
-            const targetPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const targetPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const { width, height } = RectangleClient.toRectangleClient([start!, targetPoint]);
             if (Math.hypot(width, height) === 0) {
                 const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
@@ -182,7 +182,6 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         start = null;
         temporaryElement = null;
         preventTouchMove(board, event, false);
-
         pointerUp(event);
     };
 
