@@ -1,5 +1,11 @@
 # @plait/common
 
+## 0.48.0
+
+### Minor Changes
+
+-   [#695](https://github.com/worktile/plait/pull/695) [`cb3d1320`](https://github.com/worktile/plait/commit/cb3d132042768739e1ed30a4bef4ac962877778f) Thanks [@WBbug](https://github.com/WBbug)! - support shape align
+
 ## 0.47.0
 
 ### Minor Changes

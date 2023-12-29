@@ -1,6 +1,6 @@
 {
   "name": "@plait/mind",
-  "version": "0.47.0",
+  "version": "0.48.0",
   "peerDependencies": {
     "@angular/common": "^16.0.0",
     "@angular/core": "^16.0.0"
