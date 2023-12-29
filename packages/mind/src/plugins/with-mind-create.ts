@@ -31,11 +31,11 @@ export interface FakeCreateNodeRef {
 
 export const withCreateMind = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitMindBoard;
-    const { keydown, mousedown, mousemove, mouseup } = board;
+    const { keydown, pointerDown, pointerMove, pointerUp } = board;
     let fakeCreateNodeRef: FakeCreateNodeRef | null = null;
     let emptyMind: MindElement | null = null;
 
-    newBoard.mousedown = (event: MouseEvent) => {
+    newBoard.pointerDown = (event: PointerEvent) => {
         const isMindPointer = PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind);
         let movingPoint = PlaitBoard.getMovingPointInBoard(board);
         if (!PlaitBoard.isReadonly(board) && movingPoint && isDrawingMode(board) && isMindPointer) {
@@ -46,12 +46,12 @@ export const withCreateMind = (board: PlaitBoard) => {
             addSelectedElement(board, emptyMind);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
-        mousedown(event);
+        pointerDown(event);
     };
 
-    newBoard.mousemove = (event: MouseEvent) => {
+    newBoard.pointerMove = (event: PointerEvent) => {
         if (PlaitBoard.isReadonly(board)) {
-            mousemove(event);
+            pointerMove(event);
             return;
         }
         const isMindPointer = PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind);
@@ -97,10 +97,10 @@ export const withCreateMind = (board: PlaitBoard) => {
         } else {
             destroy();
         }
-        mousemove(event);
+        pointerMove(event);
     };
 
-    newBoard.mouseup = (event: MouseEvent) => {
+    newBoard.pointerUp = (event: PointerEvent) => {
         if (emptyMind) {
             Transforms.insertNode(board, emptyMind, [board.children.length]);
             clearSelectedElement(board);
@@ -109,7 +109,7 @@ export const withCreateMind = (board: PlaitBoard) => {
             emptyMind = null;
         }
         destroy();
-        mouseup(event);
+        pointerUp(event);
     };
 
     board.keydown = (event: KeyboardEvent) => {
