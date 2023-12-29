@@ -18,10 +18,10 @@ export function toHostPoint(board: PlaitBoard, x: number, y: number): Point {
  * Get the point in the coordinate system of the svg viewBox
  */
 export function toViewBoxPoint(board: PlaitBoard, hostPoint: Point) {
-    const { width, height } = PlaitBoard.getHost(board).getBoundingClientRect();
     const viewBox = getViewBox(board);
-    const x = (hostPoint[0] / width) * viewBox.width + viewBox.x;
-    const y = (hostPoint[1] / height) * viewBox.height + viewBox.y;
+    const { zoom } = board.viewport;
+    const x = hostPoint[0] / zoom + viewBox.x;
+    const y = hostPoint[1] / zoom + viewBox.y;
     const newPoint = [x, y] as Point;
     return newPoint;
 }
@@ -44,7 +44,7 @@ export function toScreenPointFromHostPoint(board: PlaitBoard, hostPoint: Point) 
 }
 
 /**
- * `toHostPoint` reverse processing
+ * `toViewBoxPoint` reverse processing
  */
 export function toHostPointFromViewBoxPoint(board: PlaitBoard, viewBoxPoint: Point) {
     const { zoom } = board.viewport;
