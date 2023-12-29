@@ -1,4 +1,4 @@
-import { MERGING, PlaitBoard, Point, RectangleClient, Transforms, getRectangleByElements, getSelectedElements } from '@plait/core';
+import { C, MERGING, PlaitBoard, Point, RectangleClient, Transforms, getRectangleByElements, getSelectedElements } from '@plait/core';
 
 export const alignTop = (board: PlaitBoard) => {
     function getOffset(outerRectangle: RectangleClient, rectangle: RectangleClient) {
@@ -68,6 +68,52 @@ function setOffset(board: PlaitBoard, getOffset: (outerRectangle: RectangleClien
     MERGING.set(board, false);
 }
 
+export const distributeHorizontal = (board: PlaitBoard) => {
+    distribute(board, true);
+};
+
+export const distributeVertical = (board: PlaitBoard) => {
+    distribute(board, false);
+};
+
+const distribute = (board: PlaitBoard, isHorizontal: boolean) => {
+    const axis = isHorizontal ? 'x' : 'y';
+    const side = isHorizontal ? 'width' : 'height';
+    const selectedElements = getSelectedElements(board).filter(element => board.children.includes(element));
+    const refs = selectedElements.map(element => {
+        return { element, rectangle: board.getRectangle(element)! };
+    });
+    const outerRectangle = getRectangleByElements(board, selectedElements, false);
+    const minRectangleRef = refs.sort((a, b) => a.rectangle[axis] - b.rectangle[axis])[0];
+    const maxRectangleRef = refs.sort((a, b) => b.rectangle[axis] + b.rectangle[side] - (a.rectangle[axis] + a.rectangle[side]))[0];
+    const minIndex = refs.findIndex(ref => ref === minRectangleRef);
+    const maxIndex = refs.findIndex(ref => ref === maxRectangleRef);
+    let distributeRefs = refs.filter((element, index) => index !== minIndex && index !== maxIndex);
+    const sum = distributeRefs.reduce((accumulator, current) => current.rectangle[side] + accumulator, 0);
+    const offset =
+        (outerRectangle[side] - minRectangleRef.rectangle[side] - maxRectangleRef.rectangle[side] - sum) / (distributeRefs.length + 1);
+    distributeRefs = distributeRefs.sort((a, b) => a.rectangle[axis] - b.rectangle[axis]);
+    let position = minRectangleRef.rectangle[axis] + minRectangleRef.rectangle[side] + offset;
+    for (let i = 0; i < distributeRefs.length; i++) {
+        const rectangle = distributeRefs[i].rectangle;
+        const moveOffset = [0, 0];
+        const moveAxis = isHorizontal ? 0 : 1;
+        moveOffset[moveAxis] = position - rectangle[axis];
+        const path = PlaitBoard.findPath(board, distributeRefs[i].element);
+        const newPoints = distributeRefs[i].element.points!.map(p => [p[0] + moveOffset[0], p[1] + moveOffset[1]]) as Point[];
+        Transforms.setNode(
+            board,
+            {
+                points: newPoints
+            },
+            path
+        );
+        MERGING.set(board, true);
+        position = position + rectangle[side] + offset;
+    }
+    MERGING.set(board, false);
+};
+
 export interface AlignTransform {
     alignTop: (board: PlaitBoard) => void;
     alignHorizontalCenter: (board: PlaitBoard) => void;
@@ -75,6 +121,8 @@ export interface AlignTransform {
     alignLeft: (board: PlaitBoard) => void;
     alignVerticalCenter: (board: PlaitBoard) => void;
     alignRight: (board: PlaitBoard) => void;
+    distributeHorizontal: (board: PlaitBoard) => void;
+    distributeVertical: (board: PlaitBoard) => void;
 }
 
 export const AlignTransform: AlignTransform = {
@@ -83,5 +131,7 @@ export const AlignTransform: AlignTransform = {
     alignBottom,
     alignLeft,
     alignVerticalCenter,
-    alignRight
+    alignRight,
+    distributeHorizontal,
+    distributeVertical
 };

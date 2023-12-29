@@ -270,7 +270,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         });
     }
 
-    setAlign(event: string) {
-        AlignTransform[event as keyof AlignTransform](this.board);
+    setAlign(event: Event) {
+        const value = (event.target as HTMLSelectElement).value as any;
+        AlignTransform[value as keyof AlignTransform](this.board);
     }
 }
