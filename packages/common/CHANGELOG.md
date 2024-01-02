@@ -1,5 +1,21 @@
 # @plait/common
 
+## 0.49.0
+
+### Minor Changes
+
+-   [`d0834d52`](https://github.com/worktile/plait/commit/d0834d5212fcf9c7228b88718f0695721f18d3ef) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - setFontSize support argument defaultFontSize as number and method
+
+*   [`8250c28a`](https://github.com/worktile/plait/commit/8250c28a0580eb06a7a1a297871df263869167fa) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract to-point to handle coordinate transform
+
+-   [#696](https://github.com/worktile/plait/pull/696) [`f874b7ec`](https://github.com/worktile/plait/commit/f874b7ecdbca3a21a8467bcfd5e1a7761fb28d08) Thanks [@WBbug](https://github.com/WBbug)! - support distribute
+
+*   [`bfacadde`](https://github.com/worktile/plait/commit/bfacaddefa2b8602741989bd8022538ded67890c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add setLineShape, modify setLineMark to support set multiple line marks
+
+### Patch Changes
+
+-   [#697](https://github.com/worktile/plait/pull/697) [`1651e7e5`](https://github.com/worktile/plait/commit/1651e7e58e4801e3e05d81f0649d8f5969daaf85) Thanks [@Maple13](https://github.com/Maple13)! - setTextAlign deletes useless parameters
+
 ## 0.48.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @plait/flow
 
+## 0.49.0
+
+### Minor Changes
+
+-   [`8250c28a`](https://github.com/worktile/plait/commit/8250c28a0580eb06a7a1a297871df263869167fa) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract to-point to handle coordinate transform
+
 ## 0.48.0
 
 ## 0.47.0

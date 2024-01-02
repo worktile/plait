@@ -1,5 +1,13 @@
 # text
 
+## 0.49.0
+
+### Minor Changes
+
+-   [`d0834d52`](https://github.com/worktile/plait/commit/d0834d5212fcf9c7228b88718f0695721f18d3ef) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - setFontSize support argument defaultFontSize as number and method
+
+*   [`8250c28a`](https://github.com/worktile/plait/commit/8250c28a0580eb06a7a1a297871df263869167fa) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract to-point to handle coordinate transform
+
 ## 0.48.0
 
 ## 0.47.0
