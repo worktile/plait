@@ -7,15 +7,6 @@ export const alignTop = (board: PlaitBoard) => {
     setOffset(board, getOffset);
 };
 
-export const alignHorizontalCenter = (board: PlaitBoard) => {
-    function getOffset(outerRectangle: RectangleClient, rectangle: RectangleClient) {
-        const outerCenter = outerRectangle.y + outerRectangle.height / 2;
-        const elementCenter = rectangle.y + rectangle.height / 2;
-        return [0, outerCenter - elementCenter] as Point;
-    }
-    setOffset(board, getOffset);
-};
-
 export const alignBottom = (board: PlaitBoard) => {
     function getOffset(outerRectangle: RectangleClient, rectangle: RectangleClient) {
         return [0, outerRectangle.y + outerRectangle.height - (rectangle.y + rectangle.height)] as Point;
@@ -30,11 +21,20 @@ export const alignLeft = (board: PlaitBoard) => {
     setOffset(board, getOffset);
 };
 
-export const alignVerticalCenter = (board: PlaitBoard) => {
+export const alignHorizontalCenter = (board: PlaitBoard) => {
     function getOffset(outerRectangle: RectangleClient, rectangle: RectangleClient) {
         const outerCenter = outerRectangle.x + outerRectangle.width / 2;
         const elementCenter = rectangle.x + rectangle.width / 2;
         return [outerCenter - elementCenter, 0] as Point;
+    }
+    setOffset(board, getOffset);
+};
+
+export const alignVerticalCenter = (board: PlaitBoard) => {
+    function getOffset(outerRectangle: RectangleClient, rectangle: RectangleClient) {
+        const outerCenter = outerRectangle.y + outerRectangle.height / 2;
+        const elementCenter = rectangle.y + rectangle.height / 2;
+        return [0, outerCenter - elementCenter] as Point;
     }
     setOffset(board, getOffset);
 };
