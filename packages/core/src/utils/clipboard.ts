@@ -172,7 +172,50 @@ export const createClipboardThingByNative = (clipboardData: DataTransfer) => {
     return things;
 };
 
-export async function parseClipboardThings(things: ClipboardThing[]): Promise<PlaitPasteDataType | null> {
+export const createClipboardThingByClipboardApi = (clipboardItems: ClipboardItem[]) => {
+    // We need to populate the array of clipboard things
+    // based on the ClipboardItems from the Clipboard API.
+    // This is done in a different way than when using
+    // the clipboard data from the paste event.
+
+    const things: ClipboardThing[] = [];
+    if (Array.isArray(clipboardItems) && clipboardItems[0] instanceof ClipboardItem) {
+        for (const item of clipboardItems) {
+            if (isFile(item)) {
+                for (const type of item.types) {
+                    if (type.match(/^image\//)) {
+                        things.push({ type: 'blob', source: item.getType(type) });
+                    }
+                }
+            }
+
+            if (item.types.includes('text/html')) {
+                things.push({
+                    type: 'html',
+                    source: new Promise<string>(r => item.getType('text/html').then(blob => blobAsString(blob).then(r)))
+                });
+            }
+
+            if (item.types.includes('text/uri-list')) {
+                things.push({
+                    type: 'url',
+                    source: new Promise<string>(r => item.getType('text/uri-list').then(blob => blobAsString(blob).then(r)))
+                });
+            }
+
+            if (item.types.includes('text/plain')) {
+                things.push({
+                    type: 'text',
+                    source: new Promise<string>(r => item.getType('text/plain').then(blob => blobAsString(blob).then(r)))
+                });
+            }
+        }
+    }
+
+    return things;
+};
+
+export const parseClipboardThings = async (things: ClipboardThing[]): Promise<PlaitPasteDataType | null> => {
     const clipboardFiles = things.filter(t => (t.type === 'file' || t.type === 'blob') && t.source !== null) as Extract<
         ClipboardThing,
         { type: 'file' } | { type: 'blob' }
@@ -290,56 +333,13 @@ export async function parseClipboardThings(things: ClipboardThing[]): Promise<Pl
         }
     }
     return pasteTextContent;
-}
-
-export const createClipboardThingByClipboardApi = (clipboardItems: ClipboardItem[]) => {
-    // We need to populate the array of clipboard things
-    // based on the ClipboardItems from the Clipboard API.
-    // This is done in a different way than when using
-    // the clipboard data from the paste event.
-
-    const things: ClipboardThing[] = [];
-    if (Array.isArray(clipboardItems) && clipboardItems[0] instanceof ClipboardItem) {
-        for (const item of clipboardItems) {
-            if (isFile(item)) {
-                for (const type of item.types) {
-                    if (type.match(/^image\//)) {
-                        things.push({ type: 'blob', source: item.getType(type) });
-                    }
-                }
-            }
-
-            if (item.types.includes('text/html')) {
-                things.push({
-                    type: 'html',
-                    source: new Promise<string>(r => item.getType('text/html').then(blob => blobAsString(blob).then(r)))
-                });
-            }
-
-            if (item.types.includes('text/uri-list')) {
-                things.push({
-                    type: 'url',
-                    source: new Promise<string>(r => item.getType('text/uri-list').then(blob => blobAsString(blob).then(r)))
-                });
-            }
-
-            if (item.types.includes('text/plain')) {
-                things.push({
-                    type: 'text',
-                    source: new Promise<string>(r => item.getType('text/plain').then(blob => blobAsString(blob).then(r)))
-                });
-            }
-        }
-    }
-
-    return things;
 };
 
 const isFile = (item: ClipboardItem) => {
     return item.types.find(i => i.match(/^image\//));
 };
 
-async function blobAsString(blob: Blob) {
+const blobAsString = (blob: Blob) => {
     return new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.addEventListener('loadend', () => {
@@ -351,11 +351,11 @@ async function blobAsString(blob: Blob) {
         });
         reader.readAsText(blob);
     });
-}
+};
 
-function stripHtml(html: string) {
+const stripHtml = (html: string) => {
     // See <https://github.com/developit/preact-markup/blob/4788b8d61b4e24f83688710746ee36e7464f7bbc/src/parse-markup.js#L60-L69>
     const doc = document.implementation.createHTMLDocument('');
     doc.documentElement.innerHTML = html.trim();
     return doc.body.textContent || doc.body.innerText || '';
-}
+};
