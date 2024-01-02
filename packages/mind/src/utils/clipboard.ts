@@ -19,10 +19,10 @@ import { createMindElement } from './node/create-node';
 import { adjustAbstractToNode, adjustNodeToRoot, adjustRootToNode } from './node/adjust-node';
 import { Element } from 'slate';
 import { getTextSize } from '@plait/text';
-import { BRANCH_FONT_FAMILY, DEFAULT_FONT_FAMILY, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
+import { BRANCH_FONT_FAMILY, DEFAULT_FONT_FAMILY, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { findNewChildNodePath } from './path';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
-import { getFontSizeBySlateElement, getNodeDefaultFontSize } from './space/node-space';
+import { getFontSizeBySlateElement } from './space/node-space';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[], startPoint: Point) => {
     let result: MindElement[] = [];
@@ -97,7 +97,7 @@ export const insertClipboardData = (board: PlaitMindBoard, elements: PlaitElemen
                     ...styles,
                     width: newElement.manualWidth ? newElement.manualWidth : undefined
                 });
-                newElement.width = Math.max(width, getNodeDefaultFontSize());
+                newElement.width = Math.max(width, ROOT_TOPIC_FONT_SIZE);
                 newElement.height = height;
             }
             // handle abstract start and end

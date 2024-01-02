@@ -1,26 +1,38 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, forwardRef } from '@angular/core';
-import { OnBoardChange, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, Transforms, getSelectedElements } from '@plait/core';
+import {
+    OnBoardChange,
+    PlaitBoard,
+    PlaitElement,
+    PlaitIslandBaseComponent,
+    PlaitPointerType,
+    Transforms,
+    getSelectedElements
+} from '@plait/core';
 import {
     DrawTransforms,
     GeometryShapes,
     LineHandleKey,
     LineMarkerType,
     LineShape,
-    PlaitDrawElement,
-    PlaitGeometry,
-    PlaitLine,
     getMemorizeKey,
     getSelectedGeometryElements,
     getSelectedLineElements
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
-import { MindElement, MindPointerType, MindTransforms, canSetAbstract, getSelectedMindElements } from '@plait/mind';
+import {
+    MindElement,
+    MindPointerType,
+    MindTransforms,
+    canSetAbstract,
+    getDefaultMindElementFontSize,
+    getSelectedMindElements
+} from '@plait/mind';
 import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText, LinkEditor, AlignEditor, Alignment } from '@plait/text';
 import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-import { AlignTransform, PropertyTransforms, getFirstTextEditor, getTextEditors } from '@plait/common';
+import { AlignTransform, PropertyTransforms, TextTransforms, getFirstTextEditor, getTextEditors } from '@plait/common';
 
 @Component({
     selector: 'app-setting-panel',
@@ -243,14 +255,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     setFontSize(event: Event) {
-        const selectedElements = getSelectedElements(this.board) as MindElement[];
         const fontSize = (event.target as HTMLSelectElement).value as FontSizes;
-        if (selectedElements.length) {
-            selectedElements.forEach(element => {
-                const editors = getTextEditors(element);
-                editors.forEach(editor => PlaitMarkEditor.setFontSizeMark(editor, fontSize));
-            });
-        }
+        TextTransforms.setFontSize(this.board, fontSize, (element: PlaitElement) => {
+            return MindElement.isMindElement(this.board, element) ? getDefaultMindElementFontSize(this.board, element) : undefined;
+        });
     }
 
     setTextAlign(event: Alignment) {

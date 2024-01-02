@@ -1,12 +1,12 @@
-import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, Transforms } from '@plait/core';
+import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
 import { Node } from 'slate';
-import { MindElement } from '../interfaces/element';
+import { MindElement, PlaitMind } from '../interfaces/element';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
 import { editTopic } from './node/common';
 import { createMindElement, INHERIT_ATTRIBUTE_KEYS, InheritAttribute } from './node/create-node';
 import { MindNode } from '../interfaces/node';
-import { getNodeDefaultFontSize } from './space/node-space';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
+import { ROOT_TOPIC_FONT_SIZE, TOPIC_FONT_SIZE } from '../constants/node-topic-style';
 
 export const getChildrenCount = (element: MindElement) => {
     const count: number = element.children.reduce((p: number, c: MindElement) => {
@@ -79,7 +79,7 @@ export const insertMindElement = (board: PlaitMindBoard, inheritNode: MindElemen
         delete newNode.layout;
     }
 
-    const newElement = createMindElement('', getNodeDefaultFontSize(), TEXT_DEFAULT_HEIGHT, newNode);
+    const newElement = createMindElement('', TOPIC_FONT_SIZE, TEXT_DEFAULT_HEIGHT, newNode);
 
     Transforms.insertNode(board, newElement, path);
     clearSelectedElement(board);
@@ -112,4 +112,14 @@ export const divideElementByParent = (elements: MindElement[]) => {
         }
     }
     return { parentElements, abstractIncludedGroups };
+};
+
+export const getDefaultMindElementFontSize = (board: PlaitBoard, element: MindElement) => {
+    if (PlaitMind.isMind(element)) {
+        return ROOT_TOPIC_FONT_SIZE;
+    }
+    if (MindElement.isMindElement(board, element)) {
+        return TOPIC_FONT_SIZE;
+    }
+    throw new Error('can not find default font-size');
 };

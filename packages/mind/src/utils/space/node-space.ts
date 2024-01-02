@@ -7,9 +7,9 @@ import { WithMindOptions } from '../../interfaces/options';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
 import { getEmojisWidthHeight } from './emoji';
 import { Element } from 'slate';
-import { ROOT_TOPIC_FONT_SIZE } from '../../constants/node-topic-style';
 import { getStrokeWidthByElement } from '../node-style/shape';
 import { getFirstTextEditor } from '@plait/common';
+import { getDefaultMindElementFontSize } from '../mind';
 
 const NodeDefaultSpace = {
     horizontal: {
@@ -94,8 +94,8 @@ export const NodeSpace = {
             return minTopicWidth;
         }
     },
-    getNodeTopicMinWidth(board: PlaitMindBoard, element: MindElement, isRoot: boolean = false) {
-        const defaultFontSize = getNodeDefaultFontSize(isRoot);
+    getNodeTopicMinWidth(board: PlaitMindBoard, element: MindElement) {
+        const defaultFontSize = getDefaultMindElementFontSize(board, element);
         const editor = getFirstTextEditor(element);
         const marks = PlaitMarkEditor.getMarks(editor);
         const fontSize = (marks[MarkTypes.fontSize] as number) || defaultFontSize;
@@ -140,9 +140,4 @@ export const getFontSizeBySlateElement = (text: string | Element) => {
     const marks = PlaitMarkEditor.getMarksByElement(text);
     const fontSize = (marks[MarkTypes.fontSize] as number) || defaultFontSize;
     return fontSize;
-};
-
-export const getNodeDefaultFontSize = (isRoot = false) => {
-    const defaultFontSize = isRoot ? ROOT_TOPIC_FONT_SIZE : DEFAULT_FONT_SIZE;
-    return defaultFontSize;
 };
