@@ -1,41 +1,38 @@
-import { Path, PlaitBoard, Transforms } from '@plait/core';
-import { MindLayoutType } from '@plait/layouts';
+import { Path, PlaitBoard, PlaitNode, Transforms } from '@plait/core';
+import { MindLayoutType, isStandardLayout } from '@plait/layouts';
 import { PropertyTransforms } from '@plait/common';
-import { MindTransforms } from '.';
 import { BranchShape, MindElementShape, MindElement, PlaitMind } from '../interfaces';
+import { correctLogicLayoutNode } from './layout';
+import { setAbstractByStandardLayout } from './abstract-node';
 
-const setLayout = (board: PlaitBoard, type: MindLayoutType) => {
-    const callback = (mindElement: MindElement, path: Path) => {
-        let rightNodeCount: { rightNodeCount?: number } = {};
-        if (type === MindLayoutType.standard) {
-            rightNodeCount = { rightNodeCount: (mindElement as PlaitMind).children.length / 2 };
+export const setLayout = (board: PlaitBoard, type: MindLayoutType) => {
+    const callback = (element: MindElement, path: Path) => {
+        if (MindElement.isMindElement(board, element)) {
+            correctLogicLayoutNode(board, type, path);
+            const element = PlaitNode.get(board, path) as MindElement;
+            if (PlaitMind.isMind(element) && isStandardLayout(type)) {
+                let properties = { rightNodeCount: element.children.length / 2 };
+                Transforms.setNode(board, properties, path);
+                setAbstractByStandardLayout(board, element);
+            }
+            Transforms.setNode(board, { layout: type }, path);
         }
-        MindTransforms.setLayout(board, type, path);
-        Transforms.setNode(board, rightNodeCount, path);
     };
     PropertyTransforms.setProperty<MindElement>(board, {}, { callback });
 };
 
-const setShape = (board: PlaitBoard, shape: MindElementShape) => {
+export const setShape = (board: PlaitBoard, shape: MindElementShape) => {
     PropertyTransforms.setProperty(board, { shape });
 };
 
-const setBranchShape = (board: PlaitBoard, branchShape: BranchShape) => {
+export const setBranchShape = (board: PlaitBoard, branchShape: BranchShape) => {
     PropertyTransforms.setProperty(board, { branchShape });
 };
 
-const setBranchWidth = (board: PlaitBoard, branchWidth: number) => {
+export const setBranchWidth = (board: PlaitBoard, branchWidth: number) => {
     PropertyTransforms.setProperty(board, { branchWidth });
 };
 
-const setBranchColor = (board: PlaitBoard, branchColor: string) => {
+export const setBranchColor = (board: PlaitBoard, branchColor: string) => {
     PropertyTransforms.setProperty(board, { branchColor });
-};
-
-export const MindPropertyTransforms = {
-    setBranchColor,
-    setBranchWidth,
-    setBranchShape,
-    setShape,
-    setLayout
 };

@@ -118,13 +118,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     }
 
     layoutChange(event: Event) {
-        const selectedElements = getSelectedElements(this.board) as MindElement[];
         const value = (event.target as HTMLSelectElement).value as MindLayoutType;
-        const selectedElement = selectedElements?.[0];
-        if (selectedElement) {
-            const path = PlaitBoard.findPath(this.board, selectedElement);
-            MindTransforms.setLayout(this.board, value, path);
-        }
+        MindTransforms.setLayout(this.board, value);
     }
 
     switchGeometryShape(event: Event, key: string) {
