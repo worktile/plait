@@ -53,7 +53,7 @@ const setTextColor = (board: PlaitBoard, color: string, textSelection?: BaseRang
     }
 };
 
-const setTextAlign = (board: PlaitBoard, editors: AngularEditor[], align: Alignment) => {
+const setTextAlign = (board: PlaitBoard, align: Alignment) => {
     const selectedElements = getSelectedElements(board);
     if (selectedElements?.length) {
         selectedElements.forEach(element => {
