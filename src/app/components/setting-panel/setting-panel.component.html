@@ -188,7 +188,7 @@
     </select>
 </div>
 
-<div  *ngIf="!isSelectedMind" class="property-item width-setting-toolbar">
+<div *ngIf="!isSelectedMind" class="property-item width-setting-toolbar">
     <div class="setting-panel-title">边框宽度：</div>
     <select [(ngModel)]="strokeWidth" (change)="changeStrokeWidth($event)">
         <option value="1">1</option>
@@ -236,7 +236,7 @@
 
 <div *ngIf="isSelectedLine" class="property-item color-setting-toolbar">
     <div class="setting-panel-title">线条形状：</div>
-    <select [(ngModel)]="lineShape" (change)="propertyChange($event, 'shape')">
+    <select [(ngModel)]="lineShape" (change)="setLineShape($event)">
         <option value="straight">直线</option>
         <option value="elbow">正交线</option>
         <option value="curve">曲线</option>

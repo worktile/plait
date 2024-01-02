@@ -132,16 +132,16 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (key === 'branchWidth' || key === 'strokeWidth') {
             value = parseInt(value, 10);
         }
-        let extraAttribute = {};
         const selectedElement = getSelectedElements(this.board)[0];
-        if (key === 'shape' && PlaitDrawElement.isLine(selectedElement) && selectedElement.points.length > 2) {
-            extraAttribute = { points: [selectedElement.points[0], selectedElement.points[selectedElement.points.length - 1]] };
-        }
-
         if (selectedElement) {
             const path = PlaitBoard.findPath(this.board, selectedElement);
-            Transforms.setNode(this.board, { [key]: value, ...extraAttribute }, path);
+            Transforms.setNode(this.board, { [key]: value }, path);
         }
+    }
+
+    setLineShape(event: Event) {
+        let value = (event.target as HTMLSelectElement).value as LineShape;
+        DrawTransforms.setLineShape(this.board, { shape: value });
     }
 
     changeStrokeStyle(event: Event) {
@@ -175,11 +175,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     changeLineMarker(event: Event, key: string) {
         let value = (event.target as HTMLSelectElement).value as any;
-
-        const selectedElement = getSelectedLineElements(this.board)[0];
-        if (selectedElement) {
-            DrawTransforms.setLineMark(this.board, selectedElement, key as LineHandleKey, value as LineMarkerType);
-        }
+        DrawTransforms.setLineMark(this.board, key as LineHandleKey, value as LineMarkerType);
     }
 
     textColorChange(value: string) {
