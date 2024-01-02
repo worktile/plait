@@ -1,4 +1,15 @@
-import { Path, PlaitBoard, PlaitElement, PlaitNode, Point, RectangleClient, addSelectedElement, getDataFromClipboard } from '@plait/core';
+import {
+    Path,
+    PlaitBoard,
+    PlaitElement,
+    PlaitNode,
+    Point,
+    RectangleClient,
+    addSelectedElement,
+    geClipboardDataByClipboardApi,
+    getClipboardDataByNative,
+    setPlaitClipboardData
+} from '@plait/core';
 import { MindElement } from '../interfaces';
 import { AbstractNode } from '@plait/layouts';
 import { getFirstLevelElement } from '../utils/mind';
@@ -7,8 +18,7 @@ import { MindTransforms } from '../transforms';
 import { deleteElementHandleAbstract } from '../utils/abstract/common';
 import { getSelectedMindElements } from '../utils/node/common';
 import { PlaitMindBoard } from './with-mind.board';
-import { buildClipboardData, insertClipboardData, insertClipboardText, setMindClipboardData } from '../utils/clipboard';
-import { buildText, getTextFromClipboard } from '@plait/text';
+import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 
 export const withMindFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
@@ -33,32 +43,29 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
         return getDeletedFragment(data);
     };
 
-    board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null, type: 'copy' | 'cut') => {
+    board.setFragment = async (data: DataTransfer | null, rectangle: RectangleClient | null, type: 'copy' | 'cut') => {
         const targetMindElements = getSelectedMindElements(board);
         const firstLevelElements = getFirstLevelElement(targetMindElements);
         if (firstLevelElements.length) {
             const elements = buildClipboardData(board, firstLevelElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
-            setMindClipboardData(data, elements);
+            await setPlaitClipboardData(elements);
         }
         setFragment(data, rectangle, type);
     };
 
-    board.insertFragment = (data: DataTransfer | null, targetPoint: Point) => {
-        const elements = getDataFromClipboard(data);
-        const mindElements = elements.filter(value => MindElement.isMindElement(board, value));
-        if (elements.length > 0 && mindElements.length > 0) {
-            insertClipboardData(board, mindElements, targetPoint);
-        } else if (elements.length === 0) {
-            const mindElements = getSelectedMindElements(board);
-            if (mindElements.length === 1) {
-                const text = getTextFromClipboard(data);
-                if (text) {
-                    insertClipboardText(board, mindElements[0], buildText(text));
-                    return;
-                }
+    board.insertFragment = async (clipboardData: DataTransfer | null, targetPoint: Point) => {
+        const pasteData = clipboardData ? await getClipboardDataByNative(clipboardData) : await geClipboardDataByClipboardApi();
+        if (!pasteData || !pasteData?.value.length) {
+            return;
+        }
+        if (pasteData.type === 'plait') {
+            const elements = pasteData.value as PlaitElement[];
+            const mindElements = elements.filter(value => MindElement.isMindElement(board, value));
+            if (mindElements.length) {
+                insertClipboardData(board, mindElements, targetPoint);
             }
         }
-        insertFragment(data, targetPoint);
+        insertFragment(clipboardData, targetPoint);
     };
 
     return board;

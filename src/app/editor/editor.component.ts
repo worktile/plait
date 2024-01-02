@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import {
     BoardTransforms,
     PlaitBoard,
@@ -7,7 +7,15 @@ import {
     PlaitElement,
     PlaitTheme,
     ThemeColorMode,
-    Viewport
+    Viewport,
+    copy,
+    cut,
+    getRectangleByElements,
+    getSelectedElements,
+    paste,
+    setPlaitClipboardData,
+    toPoint,
+    transformPoint
 } from '@plait/core';
 import { mockDrawData, mockMindData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -23,7 +31,6 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { mockLineData, withLineRoute } from '../plugins/with-line-route';
 import { withCommonPlugin } from '../plugins/with-common';
 import { AppMenuComponent } from '../components/menu/menu.component';
-
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
 @Component({
@@ -56,6 +63,23 @@ export class BasicEditorComponent implements OnInit {
     theme!: PlaitTheme;
 
     board!: PlaitBoard;
+
+    @ViewChild('contextMenu', { static: true, read: ElementRef })
+    contextMenu!: ElementRef<any>;
+
+    @HostListener('contextmenu', ['$event']) onContextmenu(event: MouseEvent) {
+        if (!this.board.options.readonly) {
+            event.preventDefault();
+        }
+    }
+
+    @HostListener('mouseup', ['$event'])
+    onMouseup(event: MouseEvent): void {
+        this.contextMenu.nativeElement.style.display = 'none';
+        if (event.button === 2 && !this.board.options.readonly) {
+            this.openContextMenu(event);
+        }
+    }
 
     constructor(private activeRoute: ActivatedRoute) {}
 
@@ -112,5 +136,33 @@ export class BasicEditorComponent implements OnInit {
     themeChange(event: Event) {
         const value = (event.target as HTMLSelectElement).value;
         BoardTransforms.updateThemeColor(this.board, value as ThemeColorMode);
+    }
+
+    openContextMenu(e: MouseEvent) {
+        this.contextMenu.nativeElement.style.display = 'block';
+        this.contextMenu.nativeElement.style.left = `${e.clientX}px`;
+        this.contextMenu.nativeElement.style.top = `${e.clientY}px`;
+    }
+
+    closeContextMenu(event: MouseEvent) {
+        event.preventDefault();
+        this.contextMenu.nativeElement.style.display = 'none';
+    }
+
+    copy(event: MouseEvent) {
+        event.stopPropagation();
+        copy(this.board, event);
+    }
+
+    cut(event: MouseEvent) {
+        event.stopPropagation();
+        cut(this.board, event);
+    }
+
+    paste(event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+        const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
+        paste(this.board, event, point);
     }
 }
