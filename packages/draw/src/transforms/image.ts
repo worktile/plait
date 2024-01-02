@@ -1,12 +1,11 @@
 import { CommonImageItem } from '@plait/common';
-import { BOARD_TO_HOST, PlaitBoard, Point, Transforms, idCreator, toPoint, transformPoint } from '@plait/core';
+import { PlaitBoard, Point, Transforms, idCreator, toHostPoint, toViewBoxPoint } from '@plait/core';
 
 export const insertImage = (board: PlaitBoard, imageItem: CommonImageItem, startPoint?: Point) => {
     const { width, height, url } = imageItem;
-    const host = BOARD_TO_HOST.get(board);
     const viewportWidth = PlaitBoard.getComponent(board).nativeElement.clientWidth;
     const viewportHeight = PlaitBoard.getComponent(board).nativeElement.clientHeight;
-    const point = transformPoint(board, toPoint(viewportWidth / 2, viewportHeight / 2, host!));
+    const point = toViewBoxPoint(board, toHostPoint(board, viewportWidth / 2, viewportHeight / 2));
     const points: Point[] = startPoint
         ? [startPoint, [startPoint[0] + width, startPoint[1] + height]]
         : [

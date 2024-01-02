@@ -31,7 +31,7 @@ export function drawIndentedLink(
     beginY = isChildUp(node, child) ? beginRectangle.y : beginRectangle.y + beginRectangle.height;
     endX = node.left ? endNode.x + endNode.hGap + endRectangle.width : endNode.x + endNode.hGap;
     endY = isUnderlineShape ? endNode.y + endNode.height - endNode.vGap : endNode.y + endNode.height / 2;
-    //根据位置，设置正负参数
+
     let plusMinus = isChildUp(node, child) ? (node.left ? [-1, -1] : [1, -1]) : node.left ? [-1, 1] : [1, 1];
 
     let curve: Point[] = [

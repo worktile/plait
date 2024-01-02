@@ -2,14 +2,14 @@ import {
     PlaitBoard,
     PlaitPluginElementContext,
     RectangleClient,
-    toPoint,
-    transformPoint,
     Transforms,
     Selection,
     depthFirstRecursion,
     PlaitElement,
     getIsRecursionFunc,
-    Point
+    Point,
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces';
 import { PlaitMindComponent } from '../mind.component';
@@ -109,7 +109,7 @@ export const withMind = (baseBoard: PlaitBoard) => {
             dblclick(event);
             return;
         }
-        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         board.children
             .filter(value => PlaitMind.isMind(value))
             .forEach(mindMap => {

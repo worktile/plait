@@ -9,7 +9,7 @@ export interface ToImageOptions {
     ratio?: number;
     padding?: number;
     fillStyle?: string;
-    // 逗号类名列表。 该列表必须采用 class1,class2,... 的形式。
+    // List of class names. The list must be in the form class1,class2,...
     inlineStyleClassNames?: string;
 }
 

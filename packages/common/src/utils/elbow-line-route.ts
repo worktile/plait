@@ -36,12 +36,12 @@ export const generateElbowLineRoute = (options: ElbowLineRouteOptions) => {
     aStar.search(nextSourcePoint, nextTargetPoint, options.sourcePoint);
     let route = aStar.getRoute(nextSourcePoint, nextTargetPoint);
     route = [options.sourcePoint, ...route, nextTargetPoint, options.targetPoint];
-    // 中线纠正: 基于水平中线/垂直中线纠正最短路径 route
-    // 1. 找水平中线（xAxis）/垂直中线（yAxis）
-    // 2. 在 route 中找到和 xAxis/yAxis 相交的点、在 route 中找和 xAxis/yAxis 平行的线段
-    // 3. 基于步骤上一步找到的相交点和平行线构建矩形
-    // 4. 判断矩形是否和元素相交，不相交则可以基于上步构建的矩形进行中线的映射
-    // 5. 判断映射中线后的路径是否符合约束条件（拐点数据不能增加）
+    // Centerline correction: Correct the shortest path route based on the horizontal centerline/vertical centerline
+     // 1. Find the horizontal center line (xAxis)/vertical center line (yAxis)
+     // 2. Find the point that intersects xAxis/yAxis in route, and find the line segment parallel to xAxis/yAxis in route
+     // 3. Construct a rectangle based on the intersection points and parallel lines found in the previous step.
+     // 4. Determine whether the rectangle intersects with the element. If it does not intersect, the center line can be mapped based on the rectangle constructed in the previous step.
+     // 5. Determine whether the path after mapping the center line meets the constraints (inflection point cannot be increased)
     const isHitX = RectangleClient.isHitX(options.sourceOuterRectangle, options.targetOuterRectangle);
     const isHitY = RectangleClient.isHitY(options.sourceOuterRectangle, options.targetOuterRectangle);
     const xAxis = isHitX ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
@@ -77,7 +77,7 @@ const adjust = (route: Point[], options: AdjustOptions) => {
     const { parallelPaths, pointOfHit, sourceRectangle, targetRectangle } = options;
     let result = null;
     parallelPaths.forEach(parallelPath => {
-        // 构建矩形
+        // Construct a rectangle
         const tempRect = RectangleClient.toRectangleClient([pointOfHit, parallelPath[0], parallelPath[1]]);
         if (!RectangleClient.isHit(tempRect, sourceRectangle) && !RectangleClient.isHit(tempRect, targetRectangle)) {
             const getCornerCount = (path: Point[]) => {

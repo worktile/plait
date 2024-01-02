@@ -4,7 +4,6 @@ import { getTextSize } from '@plait/text';
 import { Node } from 'slate';
 import { BRANCH_FONT_FAMILY, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../../constants/node-topic-style';
 import { MindLayoutType } from '@plait/layouts';
-import { getNodeDefaultFontSize } from '../space/node-space';
 import { PlaitMindBoard } from '../../plugins/with-mind.board';
 
 export const adjustRootToNode = (board: PlaitBoard, node: MindElement) => {
@@ -43,7 +42,7 @@ export const adjustNodeToRoot = (board: PlaitMindBoard, node: MindElement): Mind
         fontFamily: BRANCH_FONT_FAMILY,
         width: node.manualWidth ? node.manualWidth : undefined
     });
-    newElement.width = Math.max(width, getNodeDefaultFontSize(true));
+    newElement.width = Math.max(width, ROOT_TOPIC_FONT_SIZE);
     newElement.height = height;
 
     return {

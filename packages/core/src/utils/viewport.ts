@@ -3,19 +3,12 @@ import { MAX_ZOOM, MIN_ZOOM } from '../constants/zoom';
 import { PlaitBoard, Point, RectangleClient } from '../interfaces';
 import { BoardTransforms } from '../transforms/board';
 import { getRectangleByElements } from './element';
+import { toHostPointFromViewBoxPoint, toViewBoxPoint } from './to-point';
 import { BOARD_TO_VIEWPORT_ORIGINATION } from './weak-maps';
 
 const IS_FROM_SCROLLING = new WeakMap<PlaitBoard, boolean>();
 
 const IS_FROM_VIEWPORT_CHANGE = new WeakMap<PlaitBoard, boolean>();
-
-export function toSVGScreenPoint(board: PlaitBoard, point: Point) {
-    const { zoom } = board.viewport;
-    const viewBox = getViewBox(board, zoom);
-    const x = (point[0] - viewBox[0]) * zoom;
-    const y = (point[1] - viewBox[1]) * zoom;
-    return [x, y] as Point;
-}
 
 export function getViewportContainerRect(board: PlaitBoard) {
     const { hideScrollbar } = board.options;
@@ -65,20 +58,15 @@ export function getElementHostBBox(board: PlaitBoard, zoom: number) {
 }
 
 /**
- * 验证缩放比是否符合限制，如果超出限制，则返回合适的缩放比
- * @param zoom 缩放比
- * @param minZoom 最小缩放比
- * @param maxZoom 最大缩放比
- * @returns 正确的缩放比
+ * Normalize the scaling ratio, or return the corrected scaling ratio if the limit is exceeded
  */
 export function clampZoomLevel(zoom: number, minZoom = MIN_ZOOM, maxZoom = MAX_ZOOM) {
     return zoom < minZoom ? minZoom : zoom > maxZoom ? maxZoom : zoom;
 }
 
-export function getViewBox(board: PlaitBoard, zoom: number) {
+export function calcNewViewBox(board: PlaitBoard, zoom: number) {
     const boardContainerRectangle = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
     const elementHostBBox = getElementHostBBox(board, zoom);
-
     const horizontalPadding = boardContainerRectangle.width / 2;
     const verticalPadding = boardContainerRectangle.height / 2;
     const viewBox = [
@@ -112,7 +100,7 @@ export function updateViewportOffset(board: PlaitBoard) {
     if (!origination) {
         return;
     }
-    const [scrollLeft, scrollTop] = toSVGScreenPoint(board, origination);
+    const [scrollLeft, scrollTop] = toHostPointFromViewBoxPoint(board, origination);
     updateViewportContainerScroll(board, scrollLeft, scrollTop);
 }
 
@@ -138,7 +126,6 @@ export function updateViewportContainerScroll(board: PlaitBoard, left: number, t
                 left < viewportContainer.scrollWidth - offsetWidth &&
                 top < viewportContainer.scrollHeight - offsetHeight;
             if (isFromViewportChange && isValidLeftOrTop) {
-                console.log('setIsFromViewportChange');
                 setIsFromViewportChange(board, true);
             }
         }
@@ -146,9 +133,7 @@ export function updateViewportContainerScroll(board: PlaitBoard, left: number, t
 }
 
 export function updateViewportByScrolling(board: PlaitBoard, scrollLeft: number, scrollTop: number) {
-    const zoom = board.viewport.zoom;
-    const viewBox = getViewBox(board, zoom);
-    const origination = [scrollLeft / zoom + viewBox[0], scrollTop / zoom + viewBox[1]] as Point;
+    const origination = toViewBoxPoint(board, [scrollLeft, scrollTop]);
     if (Point.isEquals(origination, getViewportOrigination(board))) {
         return;
     }
@@ -165,7 +150,7 @@ export function initializeViewportContainer(board: PlaitBoard) {
 
 export function initializeViewBox(board: PlaitBoard) {
     const zoom = board.viewport.zoom;
-    const viewBox = getViewBox(board, zoom);
+    const viewBox = calcNewViewBox(board, zoom);
     setSVGViewBox(board, viewBox);
 }
 
@@ -173,7 +158,7 @@ export function initializeViewportOffset(board: PlaitBoard) {
     if (!board.viewport?.origination) {
         const zoom = board.viewport.zoom;
         const viewportContainerRect = PlaitBoard.getBoardContainer(board).getBoundingClientRect();
-        const viewBox = getViewBox(board, zoom);
+        const viewBox = calcNewViewBox(board, zoom);
         const centerX = viewBox[0] + viewBox[2] / 2;
         const centerY = viewBox[1] + viewBox[3] / 2;
         const origination = [centerX - viewportContainerRect.width / 2 / zoom, centerY - viewportContainerRect.height / 2 / zoom] as Point;

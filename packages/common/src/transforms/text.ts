@@ -1,4 +1,4 @@
-import { PlaitBoard, getSelectedElements } from '@plait/core';
+import { PlaitBoard, PlaitElement, getSelectedElements } from '@plait/core';
 import { AlignEditor, Alignment, FontSizes, MarkTypes, PlaitMarkEditor } from '@plait/text';
 import { BaseRange, Editor, Transforms as SlateTransforms } from 'slate';
 import { AngularEditor } from 'slate-angular';
@@ -24,12 +24,13 @@ const setTextMarks = (board: PlaitBoard, mark: MarkTypes) => {
     }
 };
 
-const setFontSize = (board: PlaitBoard, size: FontSizes, defaultFontSize: number) => {
+const setFontSize = (board: PlaitBoard, size: FontSizes, defaultFontSize: number | ((element: PlaitElement) => number | undefined)) => {
     const selectedElements = getSelectedElements(board);
     if (selectedElements.length) {
         selectedElements.forEach(element => {
             const editors = getTextEditors(element);
-            editors.forEach(editor => PlaitMarkEditor.setFontSizeMark(editor, size, defaultFontSize));
+            const finalDefaultFontSize = typeof defaultFontSize === 'function' ? defaultFontSize(element) : defaultFontSize;
+            editors.forEach(editor => PlaitMarkEditor.setFontSizeMark(editor, size, finalDefaultFontSize));
         });
     }
 };
@@ -53,7 +54,7 @@ const setTextColor = (board: PlaitBoard, color: string, textSelection?: BaseRang
     }
 };
 
-const setTextAlign = (board: PlaitBoard, editors: AngularEditor[], align: Alignment) => {
+const setTextAlign = (board: PlaitBoard, align: Alignment) => {
     const selectedElements = getSelectedElements(board);
     if (selectedElements?.length) {
         selectedElements.forEach(element => {

@@ -3,6 +3,7 @@ import {
     LineHandle,
     LineHandleKey,
     LineMarkerType,
+    LineShape,
     LineText,
     MemorizeKey,
     PlaitDrawElement,
@@ -10,7 +11,7 @@ import {
     PlaitLine
 } from '../interfaces';
 import { memorizeLatest } from '@plait/common';
-import { getLinePoints, transformPointToConnection } from '../utils';
+import { getLinePoints, getSelectedLineElements, transformPointToConnection } from '../utils';
 
 export const resizeLine = (board: PlaitBoard, options: Partial<PlaitLine>, path: Path) => {
     Transforms.setNode(board, options, path);
@@ -29,12 +30,30 @@ export const removeLineText = (board: PlaitBoard, element: PlaitLine, index: num
     Transforms.setNode(board, { texts: newTexts }, path);
 };
 
-export const setLineMark = (board: PlaitBoard, element: PlaitLine, handleKey: LineHandleKey, marker: LineMarkerType) => {
-    const path = PlaitBoard.findPath(board, element);
-    let handle = handleKey === LineHandleKey.source ? element.source : element.target;
-    handle = { ...handle, marker };
+export const setLineMark = (board: PlaitBoard, handleKey: LineHandleKey, marker: LineMarkerType) => {
     memorizeLatest(MemorizeKey.line, handleKey, marker);
-    Transforms.setNode(board, { [handleKey]: handle }, path);
+    const selectedElements = getSelectedLineElements(board);
+    selectedElements.forEach((element: PlaitLine) => {
+        const path = PlaitBoard.findPath(board, element);
+        let handle = handleKey === LineHandleKey.source ? element.source : element.target;
+        handle = { ...handle, marker };
+        Transforms.setNode(board, { [handleKey]: handle }, path);
+    });
+};
+
+export const setLineShape = (board: PlaitBoard, newProperties: Partial<PlaitLine>) => {
+    const elements = getSelectedLineElements(board);
+    elements.map(element => {
+        const _properties = { ...newProperties };
+        if (element.shape === newProperties.shape) {
+            return;
+        }
+        if (newProperties.shape === LineShape.elbow) {
+            _properties.points = [element.points[0], element.points[element.points.length - 1]];
+        }
+        const path = PlaitBoard.findPath(board, element);
+        Transforms.setNode(board, _properties, path);
+    });
 };
 
 export const collectLineUpdatedRefsByGeometry = (

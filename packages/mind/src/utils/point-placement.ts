@@ -54,18 +54,18 @@ export const getLayoutDirection = (node: MindNode, isHorizontal: boolean) => {
     }
 };
 
-// 以右为基准
-// 右 -> 左:
-// 1. 终点 -> 起点/起点 -> 终点
-// 2. 加 -> 减
+// Based on right
+// Right -> Left:
+// 1. End point -> starting point/start point -> end point
+// 2. Add -> Subtract
 
-// 水平 -> 垂直:
-// 1. 起点/终点 -> 纵轴
-// 2. 加减 -> 纵轴
+// Horizontal -> Vertical:
+// 1. Starting point/end point -> vertical axis
+// 2. Addition and subtraction -> vertical axis
 
-// 下 -> 上:
-// 1. 终点 -> 起点/终点 -> 起点
-// 2. 加 -> 减
+// Bottom -> Top:
+// 1. End point -> starting point/end point -> starting point
+// 2. Add -> Subtract
 export const moveXOfPoint = (point: Point, distance: number, direction: LayoutDirection = LayoutDirection.right): Point => {
     if (direction === LayoutDirection.left) {
         return [point[0] - distance, point[1]];

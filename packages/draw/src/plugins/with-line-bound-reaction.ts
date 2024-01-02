@@ -5,8 +5,8 @@ import {
     RectangleClient,
     SELECTION_BORDER_COLOR,
     drawCircle,
-    toPoint,
-    transformPoint
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { LineShape, PlaitDrawElement } from '../interfaces';
 import { drawBoundMask, getHitConnectorPoint, getNearestPoint } from '../utils';
@@ -27,7 +27,7 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
         }
         const linePointers = Object.keys(LineShape);
         const isLinePointer = PlaitBoard.isInPointer(board, linePointers);
-        const movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const isLineResizing = isResizingByCondition<PlaitElement, LineResizeHandle>(board, resizeRef => {
             const { element, handle } = resizeRef;
             const isSourceOrTarget = handle === LineResizeHandle.target || handle === LineResizeHandle.source;

@@ -1,5 +1,24 @@
 # plait
 
+## 0.49.0
+
+### Minor Changes
+
+-   [`8250c28a`](https://github.com/worktile/plait/commit/8250c28a0580eb06a7a1a297871df263869167fa) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract to-point to handle coordinate transform
+
+## 0.48.0
+
+### Minor Changes
+
+-   [`580f2fc9`](https://github.com/worktile/plait/commit/580f2fc9747b10d173d28c103deb1daba71fb830) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - maintain isShift state by shiftKey of PointerEvent
+    maintain isShift state by keyDown and keyUp may appear keyUp is not triggered (conflict with other application hotkey)
+
+### Patch Changes
+
+-   [`f17a97f8`](https://github.com/worktile/plait/commit/f17a97f8e5af366b06bac383ecfc92a9503cfc85) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix isOnlySetSelection condition in with-viewport
+
+*   [`be9ef299`](https://github.com/worktile/plait/commit/be9ef299a5179e228c882791b624e3a2e0582de3) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - define hand and selection as setSelectionPointer and execute set_selection when pointer only is setSelectionPointer
+
 ## 0.47.0
 
 ### Minor Changes

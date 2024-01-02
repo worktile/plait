@@ -3,8 +3,6 @@ import {
     Path,
     PlaitBoard,
     Point,
-    toPoint,
-    transformPoint,
     Transforms,
     getSelectedElements,
     depthFirstRecursion,
@@ -13,12 +11,13 @@ import {
     PlaitPointerType,
     isMainPointer,
     CoreTransforms,
-    getHitElementByPoint
+    getHitElementByPoint,
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { MindElement, PlaitMind } from '../interfaces/element';
 import { DetectResult } from '../interfaces/node';
-
 import {
     deleteElementHandleAbstract,
     deleteElementsHandleRightNodeCount,
@@ -58,7 +57,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
             pointerDown(event);
             return;
         }
-        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const selectedElements = getSelectedElements(board);
         const hitElement = getHitElementByPoint(board, point);
         if (
@@ -92,7 +91,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
         if (!board.options.readonly && activeElements.length && startPoint) {
             // prevent text from being selected
             event.preventDefault();
-            const endPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance < DRAG_MOVE_BUFFER) {
                 return;
@@ -101,7 +100,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
             setIsDragging(board, true);
 
             fakeDropNodeG?.remove();
-            const detectPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const detectPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             dropTarget = detectDropTarget(board, detectPoint, dropTarget, [...activeElements, ...correspondingElements]);
             if (dropTarget?.target) {
                 targetPath = getPathByDropTarget(board, dropTarget);
@@ -183,7 +182,7 @@ export const withNodeDnd = (board: PlaitBoard) => {
                 let insertPath = targetPathRef.current;
                 const parentPath = Path.parent(targetPathRef.current || targetPath);
                 if (!insertPath) {
-                    //当插入位置和选中节点位置相同时，使用记录的 previousPath
+                    // When the insertion position and the selected node position are the same, the recorded previousPath is used
                     const previousPath = targetPreviousPathRef && targetPreviousPathRef.unref();
                     if (previousPath) {
                         insertPath = Path.next(previousPath);

@@ -31,14 +31,14 @@ export enum LineHandleKey {
 
 export interface LineText {
     text: Element;
-    //基于线长度，定位的百分比
+    // Percentage of positioning based on line length
     position: number;
     width: number;
     height: number;
 }
 
 export interface LineHandle {
-    // 关联元素的 id
+    // The id of the bounded element
     boundId?: string;
     connection?: PointOfRectangle;
     marker: LineMarkerType;

@@ -10,12 +10,9 @@ import {
     Viewport,
     copy,
     cut,
-    getRectangleByElements,
-    getSelectedElements,
     paste,
-    setPlaitClipboardData,
-    toPoint,
-    transformPoint
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { mockDrawData, mockMindData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -162,7 +159,7 @@ export class BasicEditorComponent implements OnInit {
     paste(event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        const point = transformPoint(this.board, toPoint(event.x, event.y, PlaitBoard.getHost(this.board)));
+        const point = toViewBoxPoint(this.board, toHostPoint(this.board, event.x, event.y));
         paste(this.board, event, point);
     }
 }

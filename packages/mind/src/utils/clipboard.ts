@@ -6,9 +6,8 @@ import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { getRelativeStartEndByAbstractRef, getOverallAbstracts, getValidAbstractRefs } from './abstract/common';
 import { adjustAbstractToNode, adjustNodeToRoot, adjustRootToNode } from './node/adjust-node';
 import { getTextSize } from '@plait/text';
-import { BRANCH_FONT_FAMILY, DEFAULT_FONT_FAMILY, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
-import { getNodeDefaultFontSize } from './space/node-space';
+import { BRANCH_FONT_FAMILY, DEFAULT_FONT_FAMILY, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[], startPoint: Point) => {
     let result: MindElement[] = [];
@@ -74,7 +73,7 @@ export const insertClipboardData = (board: PlaitMindBoard, elements: PlaitElemen
                     ...styles,
                     width: newElement.manualWidth ? newElement.manualWidth : undefined
                 });
-                newElement.width = Math.max(width, getNodeDefaultFontSize());
+                newElement.width = Math.max(width, ROOT_TOPIC_FONT_SIZE);
                 newElement.height = height;
             }
             // handle abstract start and end

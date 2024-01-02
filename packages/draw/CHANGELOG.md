@@ -1,5 +1,15 @@
 # @plait/draw
 
+## 0.49.0
+
+### Minor Changes
+
+-   [`8250c28a`](https://github.com/worktile/plait/commit/8250c28a0580eb06a7a1a297871df263869167fa) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract to-point to handle coordinate transform
+
+*   [`bfacadde`](https://github.com/worktile/plait/commit/bfacaddefa2b8602741989bd8022538ded67890c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add setLineShape, modify setLineMark to support set multiple line marks
+
+## 0.48.0
+
 ## 0.47.0
 
 ### Minor Changes

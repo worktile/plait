@@ -1,4 +1,3 @@
-import { Transforms } from 'slate';
 import { AngularEditor } from 'slate-angular';
 import { CLIPBOARD_FORMAT_KEY } from '../constant';
 

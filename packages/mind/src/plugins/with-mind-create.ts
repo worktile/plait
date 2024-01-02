@@ -8,8 +8,8 @@ import {
     createG,
     getSelectedElements,
     throttleRAF,
-    toPoint,
-    transformPoint
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { PlaitMindBoard } from './with-mind.board';
 import { MindPointerType } from '../interfaces/pointer';
@@ -31,27 +31,27 @@ export interface FakeCreateNodeRef {
 
 export const withCreateMind = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitMindBoard;
-    const { keydown, mousedown, mousemove, mouseup } = board;
+    const { keydown, pointerDown, pointerMove, pointerUp } = board;
     let fakeCreateNodeRef: FakeCreateNodeRef | null = null;
     let emptyMind: MindElement | null = null;
 
-    newBoard.mousedown = (event: MouseEvent) => {
+    newBoard.pointerDown = (event: PointerEvent) => {
         const isMindPointer = PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind);
         let movingPoint = PlaitBoard.getMovingPointInBoard(board);
         if (!PlaitBoard.isReadonly(board) && movingPoint && isDrawingMode(board) && isMindPointer) {
-            movingPoint = transformPoint(board, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
+            movingPoint = toViewBoxPoint(board, toHostPoint(board, movingPoint[0], movingPoint[1]));
             const emptyMind = createEmptyMind(newBoard, movingPoint);
             Transforms.insertNode(board, emptyMind, [board.children.length]);
             clearSelectedElement(board);
             addSelectedElement(board, emptyMind);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
-        mousedown(event);
+        pointerDown(event);
     };
 
-    newBoard.mousemove = (event: MouseEvent) => {
+    newBoard.pointerMove = (event: PointerEvent) => {
         if (PlaitBoard.isReadonly(board)) {
-            mousemove(event);
+            pointerMove(event);
             return;
         }
         const isMindPointer = PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind);
@@ -60,7 +60,7 @@ export const withCreateMind = (board: PlaitBoard) => {
                 let movingPoint = PlaitBoard.getMovingPointInBoard(board);
 
                 if (movingPoint) {
-                    movingPoint = transformPoint(newBoard, toPoint(movingPoint[0], movingPoint[1], PlaitBoard.getHost(board)));
+                    movingPoint = toViewBoxPoint(newBoard, toHostPoint(board, movingPoint[0], movingPoint[1]));
                     emptyMind = createEmptyMind(newBoard, movingPoint);
                     const nodeRectangle = getRectangleByElement(newBoard, emptyMind);
                     const nodeG = drawRoundRectangleByElement(board, nodeRectangle, emptyMind);
@@ -97,10 +97,10 @@ export const withCreateMind = (board: PlaitBoard) => {
         } else {
             destroy();
         }
-        mousemove(event);
+        pointerMove(event);
     };
 
-    newBoard.mouseup = (event: MouseEvent) => {
+    newBoard.pointerUp = (event: PointerEvent) => {
         if (emptyMind) {
             Transforms.insertNode(board, emptyMind, [board.children.length]);
             clearSelectedElement(board);
@@ -109,7 +109,7 @@ export const withCreateMind = (board: PlaitBoard) => {
             emptyMind = null;
         }
         destroy();
-        mouseup(event);
+        pointerUp(event);
     };
 
     board.keydown = (event: KeyboardEvent) => {

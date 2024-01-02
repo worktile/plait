@@ -1,8 +1,7 @@
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
-import { transformPoint } from '../utils/board';
-import { isMainPointer, toPoint } from '../utils/dom/common';
+import { isMainPointer } from '../utils/dom/common';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import {
     cacheSelectedElements,
@@ -16,7 +15,7 @@ import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_
 import { getRectangleByElements } from '../utils/element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { ACTIVE_STROKE_WIDTH, ATTACHED_ELEMENT_CLASS_NAME, SELECTION_RECTANGLE_CLASS_NAME } from '../constants/selection';
-import { drawRectangle, isDragging, preventTouchMove, setDragging, throttleRAF } from '../utils';
+import { drawRectangle, isDragging, preventTouchMove, setDragging, throttleRAF, toHostPoint, toViewBoxPoint } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
 import { Selection } from '../interfaces/selection';
@@ -38,6 +37,12 @@ export function withSelection(board: PlaitBoard) {
     let isTextSelection = false;
 
     board.pointerDown = (event: PointerEvent) => {
+        if (!isShift && event.shiftKey) {
+            isShift = true;
+        }
+        if (isShift && !event.shiftKey) {
+            isShift = false;
+        }
         const isHitText = !!(event.target instanceof Element && event.target.closest('.plait-richtext-container'));
         isTextSelection = isHitText && PlaitBoard.hasBeenTextEditing(board);
 
@@ -46,31 +51,17 @@ export function withSelection(board: PlaitBoard) {
             event.preventDefault();
         }
 
-        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const hitElement = getHitElementByPoint(board, point);
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
 
         if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && !hitElement && options.isMultiple && !options.isDisabledSelect) {
             preventTouchMove(board, event, true);
             // start rectangle selection
-            start = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            start = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         }
 
         pointerDown(event);
-    };
-
-    board.keydown = (event: KeyboardEvent) => {
-        if (!isShift && event.key === 'Shift') {
-            isShift = true;
-        }
-        keydown(event);
-    }
-
-    board.keyup = (event: KeyboardEvent) => {
-        if (isShift && event.key === 'Shift') {
-            isShift = false;
-        }
-        keyup(event);
     };
 
     board.pointerMove = (event: PointerEvent) => {
@@ -80,7 +71,7 @@ export function withSelection(board: PlaitBoard) {
         }
 
         if (start && PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
-            const movedTarget = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const movedTarget = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const rectangle = RectangleClient.toRectangleClient([start, movedTarget]);
             selectionMovingG?.remove();
             if (Math.hypot(rectangle.width, rectangle.height) > PRESS_AND_MOVE_BUFFER || isSelectionMoving(board)) {
@@ -105,12 +96,14 @@ export function withSelection(board: PlaitBoard) {
 
     // handle the end of click select
     board.pointerUp = (event: PointerEvent) => {
-        const isSkip = !isMainPointer(event) || isDragging(board) || !PlaitBoard.isPointer(board, PlaitPointerType.selection);
+        const isSetSelectionPointer =
+            PlaitBoard.isPointer(board, PlaitPointerType.selection) || PlaitBoard.isPointer(board, PlaitPointerType.hand);
+        const isSkip = !isMainPointer(event) || isDragging(board) || !isSetSelectionPointer;
         if (isSkip) {
             pointerDown(event);
             return;
         }
-        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const selection = { anchor: point, focus: point };
         Transforms.setSelection(board, selection);
         pointerUp(event);

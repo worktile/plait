@@ -8,8 +8,8 @@ import {
     clearSelectedElement,
     createG,
     preventTouchMove,
-    toPoint,
-    transformPoint
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
 import { handleLineCreating } from '../utils';
@@ -32,7 +32,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         const linePointers = getLinePointers();
         const isLinePointer = PlaitBoard.isInPointer(board, linePointers);
         if (!PlaitBoard.isReadonly(board) && isLinePointer && isDrawingMode(board)) {
-            const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+            const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             start = point;
             const hitElement = getHitOutlineGeometry(board, point, REACTION_MARGIN);
             if (hitElement) {
@@ -46,7 +46,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         lineShapeG?.remove();
         lineShapeG = createG();
-        let movingPoint = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        let movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (start) {
             const lineShape = PlaitBoard.getPointer(board) as LineShape;
             temporaryElement = handleLineCreating(board, lineShape, start, movingPoint, sourceElement, lineShapeG);

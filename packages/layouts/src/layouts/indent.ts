@@ -59,7 +59,7 @@ function abstractHandle(node: LayoutNode, abstract: LayoutNode) {
     const startNode = node.children[abstractNode.start];
     const endNode = node.children[abstractNode.end];
 
-    //概要和起始节点对齐
+    // abstract and start node alignment
     node.children[abstractIndex].y = startNode.y;
 
     const topContour = startNode.y;
@@ -82,7 +82,6 @@ function abstractHandle(node: LayoutNode, abstract: LayoutNode) {
     const abstractIncludedHeight = bottomContour - topContour;
     const abstractHeight = abstract.blackNode ? abstract.blackNode.height : abstract.height;
     const abstractBranchHeight = abstract.blackNode ? abstract.blackNode.rootY * 2 + abstract.blackNode.rootHeight : abstract.height;
-    //比较两者高度
     if (abstractBranchHeight > abstractIncludedHeight) {
         const distance = (abstractBranchHeight - abstractIncludedHeight) / 2;
         for (let i = abstractNode.start; i <= abstractNode.end; i++) {

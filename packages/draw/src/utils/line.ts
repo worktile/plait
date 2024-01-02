@@ -345,7 +345,7 @@ function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
         });
         mask.appendChild(rect);
     });
-    //撑开 line
+    // open line
     const maskTargetFillRect = createRect(rectangle);
     maskTargetFillRect.setAttribute('opacity', '0');
     maskTargetFillRect.setAttribute('fill', 'none');

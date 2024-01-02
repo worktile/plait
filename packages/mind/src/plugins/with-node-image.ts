@@ -1,18 +1,18 @@
 import {
     PlaitBoard,
     isMainPointer,
-    toPoint,
-    transformPoint,
     PlaitOptionsBoard,
     hotkeys,
     PlaitPointerType,
     addSelectedElement,
     Point,
     getSelectedElements,
+    getClipboardDataByNative,
+    geClipboardDataByClipboardApi,
     getHitElementByPoint,
     temporaryDisableSelection,
-    getClipboardDataByNative,
-    geClipboardDataByClipboardApi
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
@@ -34,7 +34,7 @@ export const withNodeImage = (board: PlaitBoard) => {
             pointerDown(event);
             return;
         }
-        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const hitElement = getHitElementByPoint(board, point);
         const isHitImageResult =
             hitElement &&

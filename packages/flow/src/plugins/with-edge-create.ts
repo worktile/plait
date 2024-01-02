@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitPlugin, toPoint, transformPoint, drawLine, idCreator, throttleRAF, drawCircle } from '@plait/core';
+import { PlaitBoard, PlaitPlugin, drawLine, idCreator, throttleRAF, drawCircle, toHostPoint, toViewBoxPoint } from '@plait/core';
 import { FlowNode } from '../interfaces/node';
 import { FlowElementType } from '../interfaces/element';
 import { isEdgeDragging } from '../utils/edge/dragging-edge';
@@ -22,7 +22,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
     let hoveredNode: FlowNode | null;
 
     board.mousedown = event => {
-        const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+        const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (hoveredNode) {
             sourceFlowNodeHandle = getHitHandleByNode(hoveredNode, point);
         }
@@ -33,7 +33,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
         if (!board.options.readonly) {
             if (sourceFlowNodeHandle) {
                 event.preventDefault();
-                const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+                const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
                 placeholderEdge?.remove();
                 throttleRAF(() => {
                     if (sourceFlowNodeHandle) {
@@ -83,7 +83,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                     return;
                 }
                 // 鼠标移入 flowNode 展示 handles
-                const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+                const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
                 const newHitNode = getHitNode(board, point);
                 if (hoveredNode) {
                     const isHitHoveredNodeHandle = !!getHitHandleByNode(hoveredNode, point);

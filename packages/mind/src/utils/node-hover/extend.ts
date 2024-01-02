@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, depthFirstRecursion, getIsRecursionFunc, toPoint, transformPoint } from '@plait/core';
+import { PlaitBoard, PlaitElement, depthFirstRecursion, getIsRecursionFunc, toHostPoint, toViewBoxPoint } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
 import { isHitMindElement } from '../position/node';
 
@@ -8,7 +8,7 @@ export interface NodeHoveredExtendRef {
 
 export const mouseMoveHandle = (board: PlaitBoard, event: MouseEvent, nodeHoveredExtendRef: NodeHoveredExtendRef | null) => {
     let target: MindElement | null = null;
-    const point = transformPoint(board, toPoint(event.x, event.y, PlaitBoard.getHost(board)));
+    const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
     depthFirstRecursion(
         (board as unknown) as MindElement,
         element => {

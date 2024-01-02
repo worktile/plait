@@ -11,7 +11,7 @@ export class LayoutTreeNode {
     childrenCount: number;
     x: number;
     preliminary: number;
-    modifier: number; // 描述整个子树应该水平移动多少
+    modifier: number; // Describes how much the entire subtree should be moved horizontally
     shift: number;
     change: number;
     tl: any;
@@ -30,7 +30,7 @@ export class LayoutTreeNode {
         this.childrenCount = children.length;
 
         this.x = 0;
-        this.preliminary = 0; // 初步的水平坐标
+        this.preliminary = 0; // initial horizontal coordinates
         this.modifier = 0;
         this.shift = 0;
         this.change = 0;
