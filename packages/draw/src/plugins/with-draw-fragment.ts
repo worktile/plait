@@ -58,7 +58,8 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                 [...targetDrawElements, ...boundLineElements],
                 rectangle ? [rectangle.x, rectangle.y] : [0, 0]
             );
-            await setPlaitClipboardData(elements);
+            const text = elements.map(item => item.text.children[0].text);
+            await setPlaitClipboardData(elements, text.join(' '));
         }
         setFragment(data, rectangle, type);
     };
@@ -76,8 +77,13 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             }
         }
         if (pasteData.type === 'text') {
-            DrawTransforms.insertText(board, targetPoint, pasteData.value);
-            return;
+            const selectedElements = getSelectedElements(board);
+            const insertAsChildren = selectedElements.length === 1 && selectedElements[0].children;
+            const insertAsFreeText = !insertAsChildren;
+            if (pasteData.value && insertAsFreeText) {
+                DrawTransforms.insertText(board, targetPoint, pasteData.value);
+                return;
+            }
         }
         if (pasteData.type === 'file') {
             const selectedElements = getSelectedElements(board);

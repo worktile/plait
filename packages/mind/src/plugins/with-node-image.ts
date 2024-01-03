@@ -12,7 +12,9 @@ import {
     getHitElementByPoint,
     temporaryDisableSelection,
     toHostPoint,
-    toViewBoxPoint
+    toViewBoxPoint,
+    RectangleClient,
+    setPlaitClipboardData
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
@@ -23,7 +25,7 @@ import { acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/c
 import { DEFAULT_MIND_IMAGE_WIDTH } from '../constants';
 
 export const withNodeImage = (board: PlaitBoard) => {
-    const { keydown, pointerDown, globalPointerUp, insertFragment, deleteFragment } = board;
+    const { keydown, pointerDown, globalPointerUp, insertFragment, deleteFragment, setFragment } = board;
 
     board.pointerDown = (event: PointerEvent) => {
         const elementOfFocusedImage = getElementOfFocusedImage(board);
@@ -86,21 +88,39 @@ export const withNodeImage = (board: PlaitBoard) => {
         deleteFragment(data);
     };
 
+    board.setFragment = async (data: DataTransfer | null, rectangle: RectangleClient | null, type: 'copy' | 'cut') => {
+        const selectedImageElement = getElementOfFocusedImage(board);
+        if (selectedImageElement) {
+            await setPlaitClipboardData([selectedImageElement.data.image]);
+            return;
+        }
+        setFragment(data, rectangle, type);
+    };
+
     board.insertFragment = async (clipboardData: DataTransfer | null, targetPoint: Point) => {
         const pasteData = clipboardData ? await getClipboardDataByNative(clipboardData) : await geClipboardDataByClipboardApi();
-        if (pasteData && pasteData.type === 'file' && pasteData.value?.length) {
+        if (pasteData && pasteData.value?.length) {
             const selectedElements = getSelectedElements(board);
             const isSelectedImage = !!getElementOfFocusedImage(board);
             const isSingleSelection = selectedElements.length === 1 && MindElement.isMindElement(board, selectedElements[0]);
             if (isSingleSelection || isSelectedImage) {
-                const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
                 const selectedElement = (selectedElements[0] || getElementOfFocusedImage(board)) as MindElement;
-                const imageFile = await pasteData.value[0];
-                if (acceptImageArray.includes(imageFile.type)) {
-                    buildImage(board, imageFile, DEFAULT_MIND_IMAGE_WIDTH, imageItem => {
+                if (pasteData.type === 'file') {
+                    const imageFile = await pasteData.value[0];
+                    const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
+                    if (acceptImageArray.includes(imageFile.type)) {
+                        buildImage(board, imageFile, DEFAULT_MIND_IMAGE_WIDTH, imageItem => {
+                            MindTransforms.setImage(board, selectedElement, imageItem);
+                        });
+                        return;
+                    }
+                }
+                if (pasteData.type === 'plait') {
+                    const imageItem = pasteData.value[0];
+                    if (imageItem.url) {
                         MindTransforms.setImage(board, selectedElement, imageItem);
-                    });
-                    return;
+                        return;
+                    }
                 }
             }
         }

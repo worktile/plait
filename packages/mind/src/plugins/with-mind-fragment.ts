@@ -12,13 +12,14 @@ import {
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { AbstractNode } from '@plait/layouts';
-import { getFirstLevelElement } from '../utils/mind';
+import { extractNodesText, getFirstLevelElement } from '../utils/mind';
 import { deleteElementsHandleRightNodeCount } from '../utils/node/right-node-count';
 import { MindTransforms } from '../transforms';
 import { deleteElementHandleAbstract } from '../utils/abstract/common';
 import { getSelectedMindElements } from '../utils/node/common';
 import { PlaitMindBoard } from './with-mind.board';
-import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
+import { buildClipboardData, insertClipboardData, insertClipboardText } from '../utils/clipboard';
+import { buildText } from '@plait/text';
 
 export const withMindFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
@@ -48,7 +49,10 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
         const firstLevelElements = getFirstLevelElement(targetMindElements);
         if (firstLevelElements.length) {
             const elements = buildClipboardData(board, firstLevelElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
-            await setPlaitClipboardData(elements);
+            const text = elements.reduce((string, currentNode) => {
+                return string + extractNodesText(currentNode);
+            }, '');
+            await setPlaitClipboardData(elements, text);
         }
         setFragment(data, rectangle, type);
     };
@@ -61,10 +65,17 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
         if (pasteData.type === 'plait') {
             const elements = pasteData.value as PlaitElement[];
             const mindElements = elements.filter(value => MindElement.isMindElement(board, value));
-            if (mindElements.length) {
+            if (elements.length > 0 && mindElements.length > 0) {
                 insertClipboardData(board, mindElements, targetPoint);
             }
         }
+        if (pasteData.type === 'text') {
+            const mindElements = getSelectedMindElements(board);
+            if (mindElements.length === 1) {
+                insertClipboardText(board, mindElements[0], buildText(pasteData.value));
+            }
+        }
+
         insertFragment(clipboardData, targetPoint);
     };
 

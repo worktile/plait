@@ -8,6 +8,10 @@ import { adjustAbstractToNode, adjustNodeToRoot, adjustRootToNode } from './node
 import { getTextSize } from '@plait/text';
 import { PlaitMindBoard } from '../plugins/with-mind.board';
 import { BRANCH_FONT_FAMILY, DEFAULT_FONT_FAMILY, ROOT_TOPIC_FONT_SIZE, TOPIC_DEFAULT_MAX_WORD_COUNT } from '../constants/node-topic-style';
+import { createMindElement } from './node';
+import { getFontSizeBySlateElement } from './space';
+import { findNewChildNodePath } from './path';
+import { Element } from 'slate';
 
 export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElement[], startPoint: Point) => {
     let result: MindElement[] = [];
@@ -101,4 +105,12 @@ export const insertClipboardData = (board: PlaitMindBoard, elements: PlaitElemen
         return;
     });
     Transforms.addSelectionWithTemporaryElements(board, newELements);
+};
+
+export const insertClipboardText = (board: PlaitMindBoard, targetParent: PlaitElement, text: string | Element) => {
+    const styles = PlaitMind.isMind(targetParent) ? { fontFamily: BRANCH_FONT_FAMILY } : { fontFamily: DEFAULT_FONT_FAMILY };
+    const { width, height } = getTextSize(board, text, TOPIC_DEFAULT_MAX_WORD_COUNT, styles);
+    const newElement = createMindElement(text, Math.max(width, getFontSizeBySlateElement(text)), height, {});
+    Transforms.insertNode(board, newElement, findNewChildNodePath(board, targetParent));
+    Transforms.addSelectionWithTemporaryElements(board, [newElement]);
 };

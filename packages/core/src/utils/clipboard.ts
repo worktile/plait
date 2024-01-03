@@ -46,6 +46,8 @@ export interface PlaitPasteDataType<T = any> {
     value: T;
 }
 
+export const probablySupportsClipboardWrite = 'clipboard' in navigator && 'write' in navigator.clipboard;
+
 export const copy = async (board: PlaitBoard, event: MouseEvent | ClipboardEvent) => {
     event.preventDefault();
     const selectedElements = getSelectedElements(board);
@@ -69,12 +71,8 @@ export const paste = async (board: PlaitBoard, event: MouseEvent | ClipboardEven
     await board.insertFragment(event instanceof ClipboardEvent ? event.clipboardData : null, targetPoint);
 };
 
-export const getTextFromClipboard = (data: DataTransfer | null) => {
-    return (data ? data.getData(`text/plain`) : '') as string;
-};
-
 export const clearPlaitClipboardData = async () => {
-    if (!('clipboard' in navigator && 'write' in navigator.clipboard)) {
+    if (!probablySupportsClipboardWrite) {
         return;
     }
     const clipboardData = await geClipboardDataByClipboardApi();
@@ -83,27 +81,32 @@ export const clearPlaitClipboardData = async () => {
     }
 };
 
-export const setPlaitClipboardData = async (elements: PlaitElement[]) => {
-    if (!('clipboard' in navigator && 'write' in navigator.clipboard)) {
+export const setPlaitClipboardData = async (elements: PlaitElement[], text: string = '') => {
+    if (!probablySupportsClipboardWrite) {
         return;
     }
-    let result = [...elements];
+    let htmlClipboard = [...elements];
+    let textClipboard = text;
     const clipboardData = await geClipboardDataByClipboardApi();
     if (clipboardData && clipboardData.type === 'plait' && (clipboardData.value as PlaitElement[]).length) {
-        result.push(...(clipboardData.value as PlaitElement[]));
+        if (clipboardData.type === 'plait') {
+            const element = clipboardData.value as PlaitElement[];
+            htmlClipboard.push(...element);
+            const text = element.map(item => item.text.children[0].text);
+            textClipboard += text.join(' ');
+        }
     }
     const stringifiedClipboard = JSON.stringify({
         type: `application/${CLIP_BOARD_FORMAT_KEY}`,
-        value: result
+        value: htmlClipboard
     });
-
     if (navigator.clipboard && typeof navigator.clipboard.write === 'function') {
         await navigator.clipboard.write([
             new ClipboardItem({
                 'text/html': new Blob([`<plait>${stringifiedClipboard}</plait>`], {
                     type: 'text/html'
                 }),
-                'text/plain': new Blob([JSON.stringify(elements)], { type: 'text/plain' })
+                'text/plain': new Blob([JSON.stringify(textClipboard ?? htmlClipboard)], { type: 'text/plain' })
             })
         ]);
     } else if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
