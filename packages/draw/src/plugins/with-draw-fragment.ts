@@ -1,11 +1,4 @@
-import {
-    PlaitBoard,
-    PlaitElement,
-    Point,
-    RectangleClient,
-    getSelectedElements,
-    setPlaitClipboardData
-} from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, RectangleClient, getPlaitClipboardData, getSelectedElements, setPlaitClipboardData } from '@plait/core';
 import { getSelectedDrawElements } from '../utils/selected';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShape } from '../interfaces';
 import { DrawTransforms } from '../transforms';
@@ -14,7 +7,6 @@ import { PlaitImage } from '../interfaces/image';
 import { acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/common';
 import { DEFAULT_IMAGE_WIDTH } from '../constants';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
-import { getPlaitClipboardData } from 'packages/core/src/utils';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard;
