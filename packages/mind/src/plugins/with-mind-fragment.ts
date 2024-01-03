@@ -6,8 +6,7 @@ import {
     Point,
     RectangleClient,
     addSelectedElement,
-    geClipboardDataByClipboardApi,
-    getClipboardDataByNative,
+    getPlaitClipboardData,
     setPlaitClipboardData
 } from '@plait/core';
 import { MindElement } from '../interfaces';
@@ -52,27 +51,26 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
             const text = elements.reduce((string, currentNode) => {
                 return string + extractNodesText(currentNode);
             }, '');
-            await setPlaitClipboardData(elements, text);
+            await setPlaitClipboardData(data, elements, text);
         }
         setFragment(data, rectangle, type);
     };
 
     board.insertFragment = async (clipboardData: DataTransfer | null, targetPoint: Point) => {
-        const pasteData = clipboardData ? await getClipboardDataByNative(clipboardData) : await geClipboardDataByClipboardApi();
+        const pasteData = await getPlaitClipboardData(clipboardData);
         if (!pasteData || !pasteData?.value.length) {
             return;
         }
         if (pasteData.type === 'plait') {
-            const elements = pasteData.value as PlaitElement[];
-            const mindElements = elements.filter(value => MindElement.isMindElement(board, value));
-            if (elements.length > 0 && mindElements.length > 0) {
-                insertClipboardData(board, mindElements, targetPoint);
+            const elements = (pasteData.value as PlaitElement[]).filter(value => MindElement.isMindElement(board, value));
+            if (elements.length > 0 && elements.length > 0) {
+                insertClipboardData(board, elements, targetPoint);
             }
         }
         if (pasteData.type === 'text') {
-            const mindElements = getSelectedMindElements(board);
-            if (mindElements.length === 1) {
-                insertClipboardText(board, mindElements[0], buildText(pasteData.value));
+            const selectedElements = getSelectedMindElements(board);
+            if (selectedElements.length === 1) {
+                insertClipboardText(board, selectedElements[0], buildText(pasteData.value));
             }
         }
 

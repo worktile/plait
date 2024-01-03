@@ -3,8 +3,6 @@ import {
     PlaitElement,
     Point,
     RectangleClient,
-    geClipboardDataByClipboardApi,
-    getClipboardDataByNative,
     getSelectedElements,
     setPlaitClipboardData
 } from '@plait/core';
@@ -16,6 +14,7 @@ import { PlaitImage } from '../interfaces/image';
 import { acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/common';
 import { DEFAULT_IMAGE_WIDTH } from '../constants';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
+import { getPlaitClipboardData } from 'packages/core/src/utils';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard;
@@ -58,14 +57,14 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                 [...targetDrawElements, ...boundLineElements],
                 rectangle ? [rectangle.x, rectangle.y] : [0, 0]
             );
-            const text = elements.map(item => item.text.children[0].text);
-            await setPlaitClipboardData(elements, text.join(' '));
+            const texts = elements.map(item => item.text?.children?.length && item.text.children[0].text);
+            await setPlaitClipboardData(data, elements, texts.join(' '));
         }
         setFragment(data, rectangle, type);
     };
 
     board.insertFragment = async (clipboardData: DataTransfer | null, targetPoint: Point) => {
-        const pasteData = clipboardData ? await getClipboardDataByNative(clipboardData) : await geClipboardDataByClipboardApi();
+        const pasteData = await getPlaitClipboardData(clipboardData);
         if (!pasteData || !pasteData?.value.length) {
             return;
         }

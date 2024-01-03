@@ -14,7 +14,8 @@ import {
     toHostPoint,
     toViewBoxPoint,
     RectangleClient,
-    setPlaitClipboardData
+    setPlaitClipboardData,
+    getPlaitClipboardData
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
@@ -91,14 +92,14 @@ export const withNodeImage = (board: PlaitBoard) => {
     board.setFragment = async (data: DataTransfer | null, rectangle: RectangleClient | null, type: 'copy' | 'cut') => {
         const selectedImageElement = getElementOfFocusedImage(board);
         if (selectedImageElement) {
-            await setPlaitClipboardData([selectedImageElement.data.image]);
+            await setPlaitClipboardData(data, [selectedImageElement.data.image]);
             return;
         }
         setFragment(data, rectangle, type);
     };
 
     board.insertFragment = async (clipboardData: DataTransfer | null, targetPoint: Point) => {
-        const pasteData = clipboardData ? await getClipboardDataByNative(clipboardData) : await geClipboardDataByClipboardApi();
+        const pasteData = await getPlaitClipboardData(clipboardData);
         if (pasteData && pasteData.value?.length) {
             const selectedElements = getSelectedElements(board);
             const isSelectedImage = !!getElementOfFocusedImage(board);

@@ -48,6 +48,10 @@ export interface PlaitPasteDataType<T = any> {
 
 export const probablySupportsClipboardWrite = 'clipboard' in navigator && 'write' in navigator.clipboard;
 
+export const probablySupportsClipboardRead = 'clipboard' in navigator && 'read' in navigator.clipboard;
+
+export const probablySupportsClipboardWriteText = 'clipboard' in navigator && 'writeText' in navigator.clipboard;
+
 export const copy = async (board: PlaitBoard, event: MouseEvent | ClipboardEvent) => {
     event.preventDefault();
     const selectedElements = getSelectedElements(board);
@@ -81,36 +85,88 @@ export const clearPlaitClipboardData = async () => {
     }
 };
 
-export const setPlaitClipboardData = async (elements: PlaitElement[], text: string = '') => {
-    if (!probablySupportsClipboardWrite) {
-        return;
-    }
+export const setPlaitClipboardData = async (clipboardData: DataTransfer | null, elements: PlaitElement[], text: string = '') => {
     let htmlClipboard = [...elements];
     let textClipboard = text;
-    const clipboardData = await geClipboardDataByClipboardApi();
-    if (clipboardData && clipboardData.type === 'plait' && (clipboardData.value as PlaitElement[]).length) {
-        if (clipboardData.type === 'plait') {
-            const element = clipboardData.value as PlaitElement[];
-            htmlClipboard.push(...element);
-            const text = element.map(item => item.text.children[0].text);
-            textClipboard += text.join(' ');
+    if (probablySupportsClipboardWrite) {
+        const clipboardData = await geClipboardDataByClipboardApi();
+        if (clipboardData && clipboardData.type === 'plait' && (clipboardData.value as PlaitElement[]).length) {
+            if (clipboardData.type === 'plait') {
+                const element = clipboardData.value as PlaitElement[];
+                htmlClipboard.push(...element);
+                const texts = element.map(item => item.text?.children?.length && item.text.children[0].text);
+                if (text) {
+                    textClipboard += texts.join(' ');
+                }
+            }
         }
+        const stringifiedClipboard = JSON.stringify({
+            type: `application/${CLIP_BOARD_FORMAT_KEY}`,
+            value: htmlClipboard
+        });
+        if (navigator.clipboard && typeof navigator.clipboard.write === 'function') {
+            await navigator.clipboard.write([
+                new ClipboardItem({
+                    'text/html': new Blob([`<plait>${stringifiedClipboard}</plait>`], {
+                        type: 'text/html'
+                    }),
+                    'text/plain': new Blob([JSON.stringify(textClipboard ?? htmlClipboard)], { type: 'text/plain' })
+                })
+            ]);
+        }
+        return;
     }
-    const stringifiedClipboard = JSON.stringify({
-        type: `application/${CLIP_BOARD_FORMAT_KEY}`,
-        value: htmlClipboard
-    });
-    if (navigator.clipboard && typeof navigator.clipboard.write === 'function') {
-        await navigator.clipboard.write([
-            new ClipboardItem({
-                'text/html': new Blob([`<plait>${stringifiedClipboard}</plait>`], {
-                    type: 'text/html'
-                }),
-                'text/plain': new Blob([JSON.stringify(textClipboard ?? htmlClipboard)], { type: 'text/plain' })
-            })
-        ]);
-    } else if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+
+    if (clipboardData) {
+        setClipboardData(clipboardData, htmlClipboard);
+        setClipboardDataByText(clipboardData, text);
+        return;
+    }
+
+    if (probablySupportsClipboardWriteText) {
+        const stringifiedClipboard = JSON.stringify({
+            type: `application/${CLIP_BOARD_FORMAT_KEY}`,
+            value: htmlClipboard
+        });
         await navigator.clipboard.writeText(`<plait>${stringifiedClipboard}</plait>`);
+        return;
+    }
+};
+
+export const setClipboardData = (data: DataTransfer | null, elements: PlaitElement[]) => {
+    const result = [...elements];
+    const pluginContextResult = getDataFromClipboard(data);
+    if (pluginContextResult) {
+        result.push(...pluginContextResult);
+        const stringObj = JSON.stringify(result);
+        const encoded = window.btoa(encodeURIComponent(stringObj));
+        data?.setData(`application/${CLIP_BOARD_FORMAT_KEY}`, encoded);
+    }
+};
+export const setClipboardDataByText = (data: DataTransfer | null, text: string) => {
+    const pluginContextResult = getTextFromClipboard(data);
+    data?.setData(`text/plain`, text + '\n' + pluginContextResult);
+};
+
+export const getTextFromClipboard = (data: DataTransfer | null) => {
+    return (data ? data.getData(`text/plain`) : '') as string;
+};
+
+export const getDataFromClipboard = (data: DataTransfer | null) => {
+    const encoded = data?.getData(`application/${CLIP_BOARD_FORMAT_KEY}`);
+    let nodesData: PlaitElement[] = [];
+    if (encoded) {
+        const decoded = decodeURIComponent(window.atob(encoded));
+        nodesData = JSON.parse(decoded);
+    }
+    return nodesData;
+};
+
+export const getPlaitClipboardData = async (clipboardData: DataTransfer | null): Promise<PlaitPasteDataType | null> => {
+    if (clipboardData) {
+        return await getClipboardDataByNative(clipboardData);
+    } else {
+        return await geClipboardDataByClipboardApi();
     }
 };
 
@@ -120,11 +176,11 @@ export const getClipboardDataByNative = async (clipboardData: DataTransfer) => {
 };
 
 export const geClipboardDataByClipboardApi = async () => {
-    if (!('clipboard' in navigator && 'write' in navigator.clipboard)) {
-        return;
+    if (!probablySupportsClipboardRead) {
+        return null;
     }
     try {
-        const clipboardItems = await navigator.clipboard?.read();
+        const clipboardItems = await navigator.clipboard.read();
         const things = createClipboardThingByClipboardApi(clipboardItems);
         return await parseClipboardThings(things);
     } catch (error) {
@@ -153,6 +209,20 @@ export const createClipboardThingByNative = (clipboardData: DataTransfer) => {
                             r(clipboardData.getData('text/html'));
                         }) as Promise<string>
                     });
+                } else if (item.type === `application/${CLIP_BOARD_FORMAT_KEY}`) {
+                    const elements = getDataFromClipboard(clipboardData);
+                    if (elements.length) {
+                        const stringifiedClipboard = JSON.stringify({
+                            type: `application/${CLIP_BOARD_FORMAT_KEY}`,
+                            value: elements
+                        });
+                        things.push({
+                            type: 'text',
+                            source: new Promise(r => {
+                                r(`<plait>${stringifiedClipboard}</plait>`);
+                            }) as Promise<string>
+                        });
+                    }
                 } else if (item.type === 'text/plain') {
                     things.push({
                         type: 'text',

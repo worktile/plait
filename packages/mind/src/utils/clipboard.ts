@@ -69,7 +69,7 @@ export const insertClipboardData = (board: PlaitMindBoard, elements: PlaitElemen
     const nonAbstractChildrenLength = targetParent && getNonAbstractChildren(targetParent).length;
     elements.forEach((item: PlaitElement, index: number) => {
         newElement = copyNewNode(item as MindElement);
-        if (hasTargetParent && PlaitMind.isMind(targetParent)) {
+        if (hasTargetParent && MindElement.isMindElement(board, targetParent)) {
             if (item.isRoot) {
                 newElement = adjustRootToNode(board, newElement);
                 const styles = PlaitMind.isMind(targetParent) ? { fontFamily: BRANCH_FONT_FAMILY } : { fontFamily: DEFAULT_FONT_FAMILY };
