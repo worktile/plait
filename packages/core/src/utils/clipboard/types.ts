@@ -1,4 +1,4 @@
-import { PlaitElement } from "../../interfaces";
+import { PlaitElement } from '../../interfaces';
 
 export enum WritableClipboardType {
     'medias' = 'medias',
@@ -10,11 +10,12 @@ export type WritableClipboardData = PlaitElement[] | any[];
 export interface WritableClipboardContext {
     text: string;
     type: WritableClipboardType;
-    data: WritableClipboardData
+    data: WritableClipboardData;
 }
 
 export interface ClipboardData {
     files?: File[];
     elements?: PlaitElement[];
     medias?: any[];
+    text?: string;
 }
