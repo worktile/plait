@@ -1,4 +1,4 @@
-import { Path, PlaitBoard, PlaitElement, PlaitNode, Point, RectangleClient, addSelectedElement, getDataFromClipboard } from '@plait/core';
+import { Path, PlaitBoard, PlaitElement, PlaitNode, Point, RectangleClient, addSelectedElement, getClipboardData } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { AbstractNode } from '@plait/layouts';
 import { getFirstLevelElement } from '../utils/mind';
@@ -44,11 +44,11 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
     };
 
     board.insertFragment = (data: DataTransfer | null, targetPoint: Point) => {
-        const elements = getDataFromClipboard(data);
-        const mindElements = elements.filter(value => MindElement.isMindElement(board, value));
-        if (elements.length > 0 && mindElements.length > 0) {
+        const clipboardData = getClipboardData(data);
+        const mindElements = clipboardData.elements?.filter(value => MindElement.isMindElement(board, value));
+        if (mindElements && mindElements.length > 0) {
             insertClipboardData(board, mindElements, targetPoint);
-        } else if (elements.length === 0) {
+        } else if (!clipboardData.elements || clipboardData.elements.length === 0) {
             const mindElements = getSelectedMindElements(board);
             if (mindElements.length === 1) {
                 const text = getTextFromClipboard(data);

@@ -1,6 +1,4 @@
 import {
-    CLIP_BOARD_FORMAT_KEY,
-    getRectangleByElements,
     getSelectedElements,
     Path,
     PlaitBoard,
@@ -8,7 +6,8 @@ import {
     Point,
     setClipboardData,
     setClipboardDataByText,
-    Transforms
+    Transforms,
+    WritableClipboardType
 } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces';
 import { copyNewNode, extractNodesText } from './mind';
@@ -73,7 +72,7 @@ export const setMindClipboardData = (data: DataTransfer | null, elements: MindEl
     const text = elements.reduce((string, currentNode) => {
         return string + extractNodesText(currentNode);
     }, '');
-    setClipboardData(data, elements);
+    setClipboardData(data, WritableClipboardType.elements, elements);
     setClipboardDataByText(data, text);
 };
 
