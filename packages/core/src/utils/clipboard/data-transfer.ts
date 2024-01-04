@@ -1,3 +1,4 @@
+import { getClipboardFromHtml, stripHtml } from './common';
 import { ClipboardData, WritableClipboardData, WritableClipboardType } from './types';
 
 export const setClipboardData = (dataTransfer: DataTransfer | null, type: WritableClipboardType, data: WritableClipboardData) => {
@@ -16,15 +17,14 @@ export const setClipboardDataByText = (data: DataTransfer | null, text: string) 
 
 export const getClipboardData = (data: DataTransfer | null): ClipboardData => {
     const html = data?.getData(`text/html`);
-    const stringObj = html?.match(/<plait[^>]*>(.*)<\/plait>/)?.[1];
-    if (stringObj) {
-        const jsonResult = JSON.parse(stringObj);
-        if (jsonResult.type === WritableClipboardType.elements) {
-            return { elements: jsonResult.data };
-        } else {
-            return { medias: jsonResult.data };
+    if (html) {
+        const htmlClipboardData = getClipboardFromHtml(html);
+        if (htmlClipboardData) {
+            return htmlClipboardData;
         }
+        return { text: stripHtml(html) };
     }
+
     return {};
 };
 

@@ -1,16 +1,13 @@
+import { buildPlaitHtml, getClipboardFromHtml, stripHtml } from './common';
 import { ClipboardData, WritableClipboardData, WritableClipboardType } from './types';
 
 export const setNavigatorClipboard = async (type: WritableClipboardType, data: WritableClipboardData, text: string = '') => {
     let textClipboard = text;
     if ('clipboard' in navigator && 'write' in navigator.clipboard) {
-        const stringifiedClipboard = JSON.stringify({
-            type,
-            data
-        });
         if (navigator.clipboard && typeof navigator.clipboard.write === 'function') {
             await navigator.clipboard.write([
                 new ClipboardItem({
-                    'text/html': new Blob([`<plait>${stringifiedClipboard}</plait>`], {
+                    'text/html': new Blob([buildPlaitHtml(type, data)], {
                         type: 'text/html'
                     }),
                     'text/plain': new Blob([JSON.stringify(textClipboard ?? data)], { type: 'text/plain' })
@@ -20,9 +17,9 @@ export const setNavigatorClipboard = async (type: WritableClipboardType, data: W
     }
 };
 
-export const getNavigatorClipboard = async (): Promise<ClipboardData | null> => {
+export const getNavigatorClipboard = async (): Promise<ClipboardData> => {
     if (!('clipboard' in navigator && 'read' in navigator.clipboard)) {
-        return null;
+        return {};
     }
     const clipboardItems = await navigator.clipboard.read();
     let clipboardData: ClipboardData = {};
@@ -45,32 +42,12 @@ export const getNavigatorClipboard = async (): Promise<ClipboardData | null> => 
             }
             if (item.types.includes('text/html')) {
                 const htmlContent = await blobAsString(await item.getType('text/html'));
-                const plaitHtmlComment = htmlContent.match(/<plait[^>]*>(.*)<\/plait>/)?.[1];
-                if (plaitHtmlComment) {
-                    try {
-                        const jsonComment = JSON.parse(plaitHtmlComment);
-                        if (jsonComment) {
-                            if (jsonComment.type === WritableClipboardType.elements) {
-                                return {
-                                    elements: jsonComment.data
-                                };
-                            } else if (jsonComment.type === WritableClipboardType.medias) {
-                                return {
-                                    medias: jsonComment.data
-                                };
-                            } else {
-                                clipboardData = {
-                                    text: jsonComment.data
-                                };
-                            }
-                        }
-                    } catch (error) {
-                        console.error(error);
-                    }
-                } else if (htmlContent && htmlContent.trim()) {
-                    clipboardData = {
-                        text: stripHtml(htmlContent)
-                    };
+                const htmlClipboardData = getClipboardFromHtml(htmlContent);
+                if (htmlClipboardData) {
+                    return htmlClipboardData;
+                }
+                if (htmlContent && htmlContent.trim()) {
+                    clipboardData = { text: stripHtml(htmlContent) };
                 }
             }
             if (item.types.includes('text/plain')) {
@@ -100,11 +77,4 @@ const blobAsString = (blob: Blob) => {
         });
         reader.readAsText(blob);
     });
-};
-
-const stripHtml = (html: string) => {
-    // See <https://github.com/developit/preact-markup/blob/4788b8d61b4e24f83688710746ee36e7464f7bbc/src/parse-markup.js#L60-L69>
-    const doc = document.implementation.createHTMLDocument('');
-    doc.documentElement.innerHTML = html.trim();
-    return doc.body.textContent || doc.body.innerText || '';
 };
