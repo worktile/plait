@@ -1,4 +1,13 @@
-import { PlaitBoard, PlaitElement, Point, RectangleClient, getDataFromClipboard, getSelectedElements, setClipboardData } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    RectangleClient,
+    WritableClipboardType,
+    getClipboardData,
+    getSelectedElements,
+    setClipboardData
+} from '@plait/core';
 import { getSelectedDrawElements } from '../utils/selected';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShape } from '../interfaces';
 import { getTextFromClipboard } from '@plait/text';
@@ -50,18 +59,18 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                 [...targetDrawElements, ...boundLineElements],
                 rectangle ? [rectangle.x, rectangle.y] : [0, 0]
             );
-            setClipboardData(data, elements);
+            setClipboardData(data, WritableClipboardType.elements, elements);
         }
         setFragment(data, rectangle, type);
     };
 
     board.insertFragment = (data: DataTransfer | null, targetPoint: Point) => {
-        const elements = getDataFromClipboard(data);
+        const clipboardData = getClipboardData(data);
         const selectedElements = getSelectedElements(board);
-        const drawElements = elements.filter(value => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
-        if (elements.length > 0 && drawElements.length > 0) {
+        const drawElements = clipboardData.elements?.filter(value => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
+        if (clipboardData.elements && clipboardData.elements.length > 0 && drawElements.length > 0) {
             insertClipboardData(board, drawElements, targetPoint);
-        } else if (elements.length === 0) {
+        } else if (!clipboardData.elements || clipboardData.elements.length === 0) {
             const text = getTextFromClipboard(data);
             // (*￣︶￣)
             const insertAsChildren = selectedElements.length === 1 && selectedElements[0].children;
@@ -71,7 +80,6 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                 return;
             }
         }
-
         if (data?.files.length) {
             const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
             const canInsertionImage =

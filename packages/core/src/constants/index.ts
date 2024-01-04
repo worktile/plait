@@ -2,8 +2,6 @@ export * from './keycodes';
 export * from './cursor';
 export * from './selection';
 
-export const CLIP_BOARD_FORMAT_KEY = 'x-plait-fragment';
-
 export const HOST_CLASS_NAME = 'plait-board-container';
 
 export const ACTIVE_MOVING_CLASS_NAME = 'active-with-moving';

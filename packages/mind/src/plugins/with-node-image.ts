@@ -7,11 +7,12 @@ import {
     addSelectedElement,
     Point,
     getSelectedElements,
-    setClipboardDataByMedia,
-    getClipboardDataByMedia,
     RectangleClient,
     getHitElementByPoint,
     temporaryDisableSelection,
+    setClipboardData,
+    WritableClipboardType,
+    getClipboardData,
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
@@ -80,9 +81,9 @@ export const withNodeImage = (board: PlaitBoard) => {
     };
 
     board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null, type: 'copy' | 'cut') => {
-        const selectedImageElement = getElementOfFocusedImage(board);
+        const selectedImageElement = getElementOfFocusedImage(board) as MindElement<ImageData>;
         if (selectedImageElement) {
-            setClipboardDataByMedia(data, selectedImageElement.data.image!, MediaKeys.image);
+            setClipboardData(data, WritableClipboardType.medias, [selectedImageElement.data.image]);
             return;
         }
         setFragment(data, rectangle, type);
@@ -114,10 +115,10 @@ export const withNodeImage = (board: PlaitBoard) => {
             }
         }
 
-        const imageItem = getClipboardDataByMedia(data, MediaKeys.image);
-        if (imageItem && (isSingleSelection || isSelectedImage)) {
+        const clipboardData = getClipboardData(data);
+        if (clipboardData && clipboardData.medias && (isSingleSelection || isSelectedImage)) {
             const selectedElement = (selectedElements[0] || getElementOfFocusedImage(board)) as MindElement;
-            MindTransforms.setImage(board, selectedElement, imageItem);
+            MindTransforms.setImage(board, selectedElement, clipboardData.medias[0]);
             return;
         }
 
