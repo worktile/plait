@@ -10,18 +10,19 @@ import {
     RectangleClient,
     getHitElementByPoint,
     temporaryDisableSelection,
-    setClipboardData,
     WritableClipboardType,
-    getClipboardData,
     toHostPoint,
-    toViewBoxPoint
+    toViewBoxPoint,
+    WritableClipboardContext,
+    createClipboardContext,
+    ClipboardData
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
 import { addImageFocus, removeImageFocus } from '../utils/node/image';
 import { isHitImage } from '../utils';
 import { MindTransforms } from '../transforms';
-import { MediaKeys, acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/common';
+import { acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/common';
 import { DEFAULT_MIND_IMAGE_WIDTH } from '../constants';
 
 export const withNodeImage = (board: PlaitBoard) => {
@@ -80,13 +81,17 @@ export const withNodeImage = (board: PlaitBoard) => {
         globalPointerUp(event);
     };
 
-    board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null, type: 'copy' | 'cut') => {
+    board.setFragment = (
+        data: DataTransfer | null,
+        clipboardContext: WritableClipboardContext | null,
+        rectangle: RectangleClient | null,
+        type: 'copy' | 'cut'
+    ) => {
         const selectedImageElement = getElementOfFocusedImage(board) as MindElement<ImageData>;
         if (selectedImageElement) {
-            setClipboardData(data, WritableClipboardType.medias, [selectedImageElement.data.image]);
-            return;
+            clipboardContext = createClipboardContext(WritableClipboardType.medias, [selectedImageElement.data.image], '');
         }
-        setFragment(data, rectangle, type);
+        setFragment(data, clipboardContext, rectangle, type);
     };
 
     board.deleteFragment = (data: DataTransfer | null) => {
@@ -97,32 +102,27 @@ export const withNodeImage = (board: PlaitBoard) => {
         deleteFragment(data);
     };
 
-    board.insertFragment = (data: DataTransfer | null, targetPoint: Point) => {
+    board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
         const selectedElements = getSelectedElements(board);
         const isSelectedImage = !!getElementOfFocusedImage(board);
         const isSingleSelection = selectedElements.length === 1 && MindElement.isMindElement(board, selectedElements[0]);
-
-        if (data?.files.length && (isSingleSelection || isSelectedImage)) {
-            const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
-            const selectedElement = (selectedElements[0] || getElementOfFocusedImage(board)) as MindElement;
-            if (acceptImageArray.includes(data?.files[0].type)) {
-                const imageFile = data.files[0];
-
-                buildImage(board, imageFile, DEFAULT_MIND_IMAGE_WIDTH, imageItem => {
-                    MindTransforms.setImage(board, selectedElement, imageItem);
-                });
-                return;
+        if (isSelectedImage || isSingleSelection) {
+            if (clipboardData?.files) {
+                const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
+                const selectedElement = (selectedElements[0] || getElementOfFocusedImage(board)) as MindElement;
+                if (acceptImageArray.includes(clipboardData.files[0].type)) {
+                    const imageFile = clipboardData.files[0];
+                    buildImage(board, imageFile, DEFAULT_MIND_IMAGE_WIDTH, imageItem => {
+                        MindTransforms.setImage(board, selectedElement, imageItem);
+                    });
+                }
+            }
+            if (clipboardData?.medias) {
+                const selectedElement = (selectedElements[0] || getElementOfFocusedImage(board)) as MindElement;
+                MindTransforms.setImage(board, selectedElement, clipboardData.medias[0]);
             }
         }
-
-        const clipboardData = getClipboardData(data);
-        if (clipboardData && clipboardData.medias && (isSingleSelection || isSelectedImage)) {
-            const selectedElement = (selectedElements[0] || getElementOfFocusedImage(board)) as MindElement;
-            MindTransforms.setImage(board, selectedElement, clipboardData.medias[0]);
-            return;
-        }
-
-        insertFragment(data, targetPoint);
+        insertFragment(data, clipboardData, targetPoint);
     };
 
     return board;

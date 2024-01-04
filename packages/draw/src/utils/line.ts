@@ -363,11 +363,7 @@ export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, d
     }
 };
 
-export const transformPointToConnection = (
-    board: PlaitBoard,
-    point: Point,
-    hitElement: PlaitShape
-): Point => {
+export const transformPointToConnection = (board: PlaitBoard, point: Point, hitElement: PlaitShape): Point => {
     let rectangle = getRectangleByPoints(hitElement.points);
     rectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
     let nearestPoint = getNearestPoint(hitElement, point, ACTIVE_STROKE_WIDTH);
@@ -503,4 +499,15 @@ export const handleLineCreating = (
     lineGenerator.processDrawing(temporaryLineElement, lineShapeG);
     PlaitBoard.getElementActiveHost(board).append(lineShapeG);
     return temporaryLineElement;
+};
+
+export const getLineElementText = (element: PlaitLine) => {
+    if (PlaitDrawElement.isLine(element) && element.texts.length) {
+        return element.texts
+            .map(item => item.text.children)
+            .reduce((acc, curr) => acc.concat(curr), [])
+            .map((item: any) => item.text)
+            .join(' ');
+    }
+    return null;
 };

@@ -9,6 +9,7 @@ import { PathRef, PathRefOptions } from '../interfaces/path-ref';
 import { Path } from '../interfaces/path';
 import { ThemeColorMode } from '../interfaces/theme';
 import { CoreTransforms } from '../transforms/element';
+import { WritableClipboardContext, setClipboardData } from '../utils';
 
 export function createBoard(children: PlaitElement[], options?: PlaitBoardOptions): PlaitBoard {
     const board: PlaitBoard = {
@@ -91,7 +92,9 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         globalKeydown: (event: KeyboardEvent) => {},
         keyup: (event: KeyboardEvent) => {},
         dblclick: (event: MouseEvent) => {},
-        setFragment: (data: DataTransfer | null) => {},
+        setFragment: (data: DataTransfer | null, clipboardContext: WritableClipboardContext | null) => {
+            setClipboardData(data, clipboardContext);
+        },
         insertFragment: (data: DataTransfer | null) => {},
         deleteFragment: (data: DataTransfer | null) => {
             const elements = board.getDeletedFragment([]);
