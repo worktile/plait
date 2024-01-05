@@ -1,5 +1,11 @@
 # @plait/draw
 
+## 0.50.1
+
+### Patch Changes
+
+-   [#702](https://github.com/worktile/plait/pull/702) [`aff5f597`](https://github.com/worktile/plait/commit/aff5f597156f562962bf42557256ef295d2328e3) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - compat firefox contextmenu copy and fix mind image copy
+
 ## 0.50.0
 
 ### Minor Changes
