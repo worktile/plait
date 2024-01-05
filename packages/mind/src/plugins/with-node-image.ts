@@ -15,7 +15,8 @@ import {
     toViewBoxPoint,
     WritableClipboardContext,
     createClipboardContext,
-    ClipboardData
+    ClipboardData,
+    isContextmenu
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
@@ -30,7 +31,10 @@ export const withNodeImage = (board: PlaitBoard) => {
 
     board.pointerDown = (event: PointerEvent) => {
         const elementOfFocusedImage = getElementOfFocusedImage(board);
-        if (PlaitBoard.isReadonly(board) || !isMainPointer(event) || !PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
+        if (
+            !isContextmenu(event) &&
+            (PlaitBoard.isReadonly(board) || !isMainPointer(event) || !PlaitBoard.isPointer(board, PlaitPointerType.selection))
+        ) {
             if (elementOfFocusedImage && MindElement.isMindElement(board, elementOfFocusedImage)) {
                 removeImageFocus(board, elementOfFocusedImage as MindElement<ImageData>);
             }
@@ -90,7 +94,6 @@ export const withNodeImage = (board: PlaitBoard) => {
         const selectedImageElement = getElementOfFocusedImage(board) as MindElement<ImageData>;
         if (selectedImageElement) {
             clipboardContext = createClipboardContext(WritableClipboardType.medias, [selectedImageElement.data.image], '');
-            return;
         }
         setFragment(data, clipboardContext, rectangle, type);
     };

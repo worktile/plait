@@ -22,5 +22,17 @@ export const getDataTransferClipboard = (data: DataTransfer | null): ClipboardDa
 };
 
 export const getDataTransferClipboardText = (data: DataTransfer | null) => {
-    return (data ? data.getData(`text/plain`) : '') as string;
+    if (!data) {
+        return {};
+    }
+    const text = data?.getData(`text/plain`);
+    if (text) {
+        const htmlClipboardData = getClipboardFromHtml(text);
+        if (htmlClipboardData) {
+            return htmlClipboardData;
+        }
+    }
+    return {
+        text
+    };
 };

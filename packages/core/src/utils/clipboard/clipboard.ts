@@ -1,4 +1,9 @@
-import { getProbablySupportsClipboardRead, getProbablySupportsClipboardWrite } from './common';
+import {
+    buildPlaitHtml,
+    getProbablySupportsClipboardRead,
+    getProbablySupportsClipboardWrite,
+    getProbablySupportsClipboardWriteText
+} from './common';
 import {
     getDataTransferClipboard,
     getDataTransferClipboardText,
@@ -16,9 +21,7 @@ export const getClipboardData = async (dataTransfer: DataTransfer | null): Promi
         }
         clipboardData = getDataTransferClipboard(dataTransfer);
         if (Object.keys(clipboardData).length === 0) {
-            clipboardData = {
-                text: getDataTransferClipboardText(dataTransfer)
-            };
+            clipboardData = getDataTransferClipboardText(dataTransfer);
         }
         return clipboardData;
     }
@@ -33,11 +36,20 @@ export const setClipboardData = async (dataTransfer: DataTransfer | null, clipbo
         return;
     }
     const { type, data, text } = clipboardContext;
+
     if (getProbablySupportsClipboardWrite()) {
         return await setNavigatorClipboard(type, data, text);
     }
+
     if (dataTransfer) {
         setDataTransferClipboard(dataTransfer, type, data);
         setDataTransferClipboardText(dataTransfer, text);
+        return;
+    }
+
+    // Compatible with situations where navigator.clipboard.write is not supported and dataTransfer is empty
+    // Such as contextmenu copy in Firefox.
+    if (getProbablySupportsClipboardWriteText()) {
+        return await navigator.clipboard.writeText(buildPlaitHtml(type, data));
     }
 };

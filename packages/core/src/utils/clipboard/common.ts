@@ -43,6 +43,10 @@ export const getProbablySupportsClipboardWrite = () => {
     return 'clipboard' in navigator && 'write' in navigator.clipboard;
 };
 
+export const getProbablySupportsClipboardWriteText = () => {
+    return 'clipboard' in navigator && 'writeText' in navigator.clipboard;
+};
+
 export const getProbablySupportsClipboardRead = () => {
     return 'clipboard' in navigator && 'read' in navigator.clipboard;
 };
