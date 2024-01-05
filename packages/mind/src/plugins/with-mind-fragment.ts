@@ -22,6 +22,7 @@ import { getSelectedMindElements } from '../utils/node/common';
 import { PlaitMindBoard } from './with-mind.board';
 import { buildClipboardData, insertClipboardData, insertClipboardText } from '../utils/clipboard';
 import { buildText } from '@plait/text';
+import { getElementsText } from '@plait/common';
 
 export const withMindFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
@@ -56,10 +57,7 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
         const firstLevelElements = getFirstLevelElement(targetMindElements);
         if (firstLevelElements.length) {
             const elements = buildClipboardData(board, firstLevelElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
-            const text = elements.reduce((string, currentNode) => {
-                return string + extractNodesText(currentNode);
-            }, '');
-
+            const text = getElementsText(targetMindElements);
             if (!clipboardContext) {
                 clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text);
             } else {
@@ -74,7 +72,7 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
     };
 
     board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
-        if (clipboardData?.elements) {
+        if (clipboardData?.elements?.length) {
             const mindElements = clipboardData.elements?.filter(value => MindElement.isMindElement(board, value));
             if (mindElements && mindElements.length > 0) {
                 insertClipboardData(board, mindElements, targetPoint);
@@ -83,7 +81,8 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
         if (clipboardData?.text) {
             const mindElements = getSelectedMindElements(board);
             if (mindElements.length === 1) {
-                insertClipboardText(board, mindElements[0], buildText(clipboardData?.text));
+                insertClipboardText(board, mindElements[0], buildText(clipboardData.text));
+                return;
             }
         }
 

@@ -1,6 +1,7 @@
 import { PlaitElement } from '@plait/core';
 import { CommonPluginElement } from '../core/plugin-element';
 import { CustomText, PlaitMarkEditor } from '@plait/text';
+import { Node } from 'slate';
 
 export const getTextManages = (element: PlaitElement) => {
     const component = PlaitElement.getComponent(element) as CommonPluginElement;
@@ -42,4 +43,22 @@ export const getTextMarksByElement = (element: PlaitElement) => {
     }
     const currentMarks: Omit<CustomText, 'text'> = PlaitMarkEditor.getMarks(editor);
     return currentMarks;
+};
+
+export const getElementsText = (elements: PlaitElement[]) => {
+    return elements
+        .map(item => {
+            try {
+                const editor = getFirstTextEditor(item);
+                if (editor) {
+                    const textsEntry = Node.texts(editor);
+                    return Array.from(textsEntry).reduce((total, text) => (total += text[0].text), '');
+                }
+                return '';
+            } catch (error) {
+                return '';
+            }
+        })
+        .filter(item => item)
+        .join(' ');
 };

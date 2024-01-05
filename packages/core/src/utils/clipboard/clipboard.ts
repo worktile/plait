@@ -3,7 +3,7 @@ import {
     getDataTransferClipboard,
     getDataTransferClipboardText,
     setDataTransferClipboard,
-    setDataTransferClipboardByText
+    setDataTransferClipboardText
 } from './data-transfer';
 import { getNavigatorClipboard, setNavigatorClipboard } from './navigator-clipboard';
 import { ClipboardData, WritableClipboardContext } from './types';
@@ -22,7 +22,7 @@ export const getClipboardData = async (dataTransfer: DataTransfer | null): Promi
         }
         return clipboardData;
     }
-    if (getProbablySupportsClipboardWrite()) {
+    if (getProbablySupportsClipboardRead()) {
         return await getNavigatorClipboard();
     }
     return clipboardData;
@@ -33,11 +33,11 @@ export const setClipboardData = async (dataTransfer: DataTransfer | null, clipbo
         return;
     }
     const { type, data, text } = clipboardContext;
-    if (getProbablySupportsClipboardRead()) {
+    if (getProbablySupportsClipboardWrite()) {
         return await setNavigatorClipboard(type, data, text);
     }
     if (dataTransfer) {
         setDataTransferClipboard(dataTransfer, type, data);
-        setDataTransferClipboardByText(dataTransfer, text);
+        setDataTransferClipboardText(dataTransfer, text);
     }
 };

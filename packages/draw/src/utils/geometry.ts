@@ -34,7 +34,7 @@ import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getShape } from './shape';
 import { createLineElement } from './line';
-import { LineMarkerType, LineShape, PlaitDrawElement, PlaitShape } from '../interfaces';
+import { LineMarkerType, LineShape, PlaitShape } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 import { getMemorizedLatestByPointer, memorizeLatestShape } from './memorize';
 
@@ -372,11 +372,4 @@ export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point],
         },
         { ...memorizedLatest.textProperties, textHeight }
     );
-};
-
-export const getGeometryElementText = (element: PlaitGeometry) => {
-    if (PlaitDrawElement.isGeometry(element) && element.text.children.length) {
-        return element.text.children.map((item: any) => item.text).join('');
-    }
-    return null;
 };

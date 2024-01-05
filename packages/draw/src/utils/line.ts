@@ -500,14 +500,3 @@ export const handleLineCreating = (
     PlaitBoard.getElementActiveHost(board).append(lineShapeG);
     return temporaryLineElement;
 };
-
-export const getLineElementText = (element: PlaitLine) => {
-    if (PlaitDrawElement.isLine(element) && element.texts.length) {
-        return element.texts
-            .map(item => item.text.children)
-            .reduce((acc, curr) => acc.concat(curr), [])
-            .map((item: any) => item.text)
-            .join(' ');
-    }
-    return null;
-};

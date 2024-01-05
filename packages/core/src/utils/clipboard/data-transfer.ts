@@ -1,18 +1,12 @@
-import { getClipboardFromHtml } from './common';
+import { buildPlaitHtml, getClipboardFromHtml } from './common';
 import { ClipboardData, WritableClipboardData, WritableClipboardType } from './types';
 
 export const setDataTransferClipboard = (dataTransfer: DataTransfer | null, type: WritableClipboardType, data: WritableClipboardData) => {
-    const writableData = {
-        type,
-        data
-    };
-    const stringObj = JSON.stringify(writableData);
-    dataTransfer?.setData(`text/html`, `<plait>${stringObj}</plait>`);
+    dataTransfer?.setData(`text/html`, buildPlaitHtml(type, data));
 };
 
-export const setDataTransferClipboardByText = (data: DataTransfer | null, text: string) => {
-    const pluginContextResult = getDataTransferClipboardText(data);
-    data?.setData(`text/plain`, text + '\n' + pluginContextResult);
+export const setDataTransferClipboardText = (data: DataTransfer | null, text: string) => {
+    data?.setData(`text/plain`, text);
 };
 
 export const getDataTransferClipboard = (data: DataTransfer | null): ClipboardData => {

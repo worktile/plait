@@ -14,11 +14,10 @@ import { getSelectedDrawElements } from '../utils/selected';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShape } from '../interfaces';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
-import { getBoardLines, getLineElementText } from '../utils/line';
+import { getBoardLines } from '../utils/line';
 import { PlaitImage } from '../interfaces/image';
-import { acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/common';
+import { acceptImageTypes, buildImage, getElementOfFocusedImage, getElementsText, getFirstTextEditor } from '@plait/common';
 import { DEFAULT_IMAGE_WIDTH } from '../constants';
-import { getGeometryElementText } from '../utils';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard;
@@ -63,19 +62,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             }
             const selectedElements = [...targetDrawElements, ...boundLineElements];
             const elements = buildClipboardData(board, selectedElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
-            const text = elements
-                .map(element => {
-                    if (PlaitDrawElement.isGeometry(element)) {
-                        return getGeometryElementText(element);
-                    }
-                    if (PlaitDrawElement.isLine(element)) {
-                        return getLineElementText(element);
-                    }
-                    return null;
-                })
-                .filter(item => item)
-                .join(' ');
-
+            const text = getElementsText(selectedElements);
             if (!clipboardContext) {
                 clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text);
             } else {
@@ -92,19 +79,20 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
     board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
         const selectedElements = getSelectedElements(board);
 
-        if (clipboardData?.files) {
+        if (clipboardData?.files?.length) {
             const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
             const canInsertionImage =
                 !getElementOfFocusedImage(board) && !(selectedElements.length === 1 && board.isImageBindingAllowed(selectedElements[0]));
-            if (acceptImageArray.includes(clipboardData?.files[0].type) && canInsertionImage) {
-                const imageFile = clipboardData?.files[0];
+            if (acceptImageArray.includes(clipboardData.files[0].type) && canInsertionImage) {
+                const imageFile = clipboardData.files[0];
                 buildImage(board, imageFile, DEFAULT_IMAGE_WIDTH, imageItem => {
                     DrawTransforms.insertImage(board, imageItem, targetPoint);
                 });
+                return;
             }
         }
 
-        if (clipboardData?.elements) {
+        if (clipboardData?.elements?.length) {
             const drawElements = clipboardData.elements?.filter(value => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
             if (clipboardData.elements && clipboardData.elements.length > 0 && drawElements.length > 0) {
                 insertClipboardData(board, drawElements, targetPoint);
@@ -118,6 +106,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                 const insertAsFreeText = !insertAsChildren;
                 if (insertAsFreeText) {
                     DrawTransforms.insertText(board, targetPoint, clipboardData.text);
+                    return;
                 }
             }
         }
