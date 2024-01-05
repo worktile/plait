@@ -1,12 +1,5 @@
-<plait-board
-    [plaitPlugins]="plugins"
-    [plaitValue]="value"
-    [plaitViewport]="viewport"
-    [plaitTheme]="theme"
-    [plaitOptions]="options"
-    (plaitBoardInitialized)="plaitBoardInitialized($event)"
-    (plaitChange)="change($event)"
->
+<plait-board [plaitPlugins]="plugins" [plaitValue]="value" [plaitViewport]="viewport" [plaitTheme]="theme"
+    [plaitOptions]="options" (plaitBoardInitialized)="plaitBoardInitialized($event)" (plaitChange)="change($event)">
     <div class="plait-toolbar island plait-board-attached theme-setting-toolbar">
         <select (change)="themeChange($event)">
             <option value="default">默认</option>
@@ -22,3 +15,9 @@
     <app-setting-panel></app-setting-panel>
     <app-menu></app-menu>
 </plait-board>
+
+<div #contextMenu class="context-menu">
+    <div class="context-menu-item" (pointerup)="copy($event)">复制</div>
+    <div class="context-menu-item" (pointerup)="cut($event)">剪切</div>
+    <div class="context-menu-item" (pointerup)="paste($event)" *ngIf="showPaste">粘贴</div>
+</div>

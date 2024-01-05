@@ -1,24 +1,28 @@
-import { buildPlaitHtml, getClipboardFromHtml, stripHtml } from './common';
+import {
+    buildPlaitHtml,
+    getClipboardFromHtml,
+    getProbablySupportsClipboardRead,
+    getProbablySupportsClipboardWrite,
+    stripHtml
+} from './common';
 import { ClipboardData, WritableClipboardData, WritableClipboardType } from './types';
 
 export const setNavigatorClipboard = async (type: WritableClipboardType, data: WritableClipboardData, text: string = '') => {
     let textClipboard = text;
-    if ('clipboard' in navigator && 'write' in navigator.clipboard) {
-        if (navigator.clipboard && typeof navigator.clipboard.write === 'function') {
-            await navigator.clipboard.write([
-                new ClipboardItem({
-                    'text/html': new Blob([buildPlaitHtml(type, data)], {
-                        type: 'text/html'
-                    }),
-                    'text/plain': new Blob([JSON.stringify(textClipboard ?? data)], { type: 'text/plain' })
-                })
-            ]);
-        }
+    if (getProbablySupportsClipboardWrite()) {
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                'text/html': new Blob([buildPlaitHtml(type, data)], {
+                    type: 'text/html'
+                }),
+                'text/plain': new Blob([JSON.stringify(textClipboard ?? data)], { type: 'text/plain' })
+            })
+        ]);
     }
 };
 
 export const getNavigatorClipboard = async (): Promise<ClipboardData> => {
-    if (!('clipboard' in navigator && 'read' in navigator.clipboard)) {
+    if (!getProbablySupportsClipboardRead()) {
         return {};
     }
     const clipboardItems = await navigator.clipboard.read();

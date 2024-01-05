@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import {
     BoardTransforms,
     PlaitBoard,
@@ -7,7 +7,13 @@ import {
     PlaitElement,
     PlaitTheme,
     ThemeColorMode,
-    Viewport
+    Viewport,
+    getClipboardData,
+    getProbablySupportsClipboardWrite,
+    getRectangleByElements,
+    getSelectedElements,
+    toHostPoint,
+    toViewBoxPoint
 } from '@plait/core';
 import { mockDrawData, mockMindData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -23,6 +29,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { mockLineData, withLineRoute } from '../plugins/with-line-route';
 import { withCommonPlugin } from '../plugins/with-common';
 import { AppMenuComponent } from '../components/menu/menu.component';
+import { NgIf } from '@angular/common';
 
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
@@ -36,7 +43,8 @@ const LOCAL_STORAGE_KEY = 'plait-board-data';
         AppZoomToolbarComponent,
         AppMainToolbarComponent,
         AppSettingPanelComponent,
-        AppMenuComponent
+        AppMenuComponent,
+        NgIf
     ]
 })
 export class BasicEditorComponent implements OnInit {
@@ -56,6 +64,28 @@ export class BasicEditorComponent implements OnInit {
     theme!: PlaitTheme;
 
     board!: PlaitBoard;
+
+    showPaste = getProbablySupportsClipboardWrite();
+
+    @ViewChild('contextMenu', { static: true, read: ElementRef })
+    contextMenu!: ElementRef<any>;
+
+    @HostListener('contextmenu', ['$event']) onContextmenu(event: MouseEvent) {
+        if (!this.board.options.readonly) {
+            event?.preventDefault();
+        }
+    }
+
+    @HostListener('mouseup', ['$event'])
+    onMouseup(event: MouseEvent): void {
+        event.preventDefault();
+        this.contextMenu.nativeElement.style.display = 'none';
+        if (event.button === 2 && !this.board.options.readonly) {
+            this.contextMenu.nativeElement.style.display = 'block';
+            this.contextMenu.nativeElement.style.left = `${event.clientX}px`;
+            this.contextMenu.nativeElement.style.top = `${event.clientY}px`;
+        }
+    }
 
     constructor(private activeRoute: ActivatedRoute) {}
 
@@ -112,5 +142,30 @@ export class BasicEditorComponent implements OnInit {
     themeChange(event: Event) {
         const value = (event.target as HTMLSelectElement).value;
         BoardTransforms.updateThemeColor(this.board, value as ThemeColorMode);
+    }
+
+    copy(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+        const selectedElements = getSelectedElements(this.board);
+        const rectangle = getRectangleByElements(this.board, selectedElements, false);
+        this.board.setFragment(null, null, rectangle, 'copy');
+    }
+
+    cut(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+        const selectedElements = getSelectedElements(this.board);
+        const rectangle = getRectangleByElements(this.board, selectedElements, false);
+        this.board.setFragment(null, null, rectangle, 'cut');
+        this.board.deleteFragment(null);
+    }
+
+    async paste(event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+        const targetPoint = toViewBoxPoint(this.board, toHostPoint(this.board, event.x, event.y));
+        const clipboardData = await getClipboardData(null);
+        this.board.insertFragment(null, clipboardData, targetPoint);
     }
 }
