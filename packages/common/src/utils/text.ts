@@ -49,10 +49,14 @@ export const getElementsText = (elements: PlaitElement[]) => {
     return elements
         .map(item => {
             try {
-                const editor = getFirstTextEditor(item);
-                if (editor) {
-                    const textsEntry = Node.texts(editor);
-                    return Array.from(textsEntry).reduce((total, text) => (total += text[0].text), '');
+                const editors = getTextEditors(item);
+                if (editors.length) {
+                    return editors
+                        .map(editor => {
+                            const textsEntry = Node.texts(editor);
+                            return Array.from(textsEntry).reduce((total, text) => (total += text[0].text), '');
+                        })
+                        .join(' ');
                 }
                 return '';
             } catch (error) {
