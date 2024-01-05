@@ -14,7 +14,7 @@ import {
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { AbstractNode } from '@plait/layouts';
-import { extractNodesText, getFirstLevelElement } from '../utils/mind';
+import { getFirstLevelElement } from '../utils/mind';
 import { deleteElementsHandleRightNodeCount } from '../utils/node/right-node-count';
 import { MindTransforms } from '../transforms';
 import { deleteElementHandleAbstract } from '../utils/abstract/common';

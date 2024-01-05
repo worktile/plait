@@ -1,4 +1,4 @@
-import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, PlaitElement, Transforms } from '@plait/core';
+import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, Transforms } from '@plait/core';
 import { Node } from 'slate';
 import { MindElement, PlaitMind } from '../interfaces/element';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
@@ -57,17 +57,6 @@ export const copyNewNode = (node: MindElement) => {
         newNode.children.push(copyNewNode(childNode));
     }
     return newNode;
-};
-
-export const extractNodesText = (node: MindElement) => {
-    let str = '';
-    if (node) {
-        str += Node.string(node.data.topic) + ' ';
-        for (const childNode of node.children) {
-            str += extractNodesText(childNode);
-        }
-    }
-    return str;
 };
 
 export const insertMindElement = (board: PlaitMindBoard, inheritNode: MindElement, path: Path) => {
