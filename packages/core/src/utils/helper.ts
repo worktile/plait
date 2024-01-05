@@ -19,3 +19,7 @@ export function normalizePoint(point: number[]) {
 export const RgbaToHEX = (Rgb: string, opacity: number) => {
     return Rgb + Math.floor(opacity * 255).toString(16);
 };
+
+export function isContextmenu(event: MouseEvent) {
+    return event.button === 2;
+}
