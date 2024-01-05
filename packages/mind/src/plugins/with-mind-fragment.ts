@@ -1,4 +1,17 @@
-import { Path, PlaitBoard, PlaitElement, PlaitNode, Point, RectangleClient, addSelectedElement, getClipboardData } from '@plait/core';
+import {
+    ClipboardData,
+    Path,
+    PlaitBoard,
+    PlaitElement,
+    PlaitNode,
+    Point,
+    RectangleClient,
+    WritableClipboardContext,
+    WritableClipboardType,
+    addClipboardContext,
+    addSelectedElement,
+    createClipboardContext
+} from '@plait/core';
 import { MindElement } from '../interfaces';
 import { AbstractNode } from '@plait/layouts';
 import { getFirstLevelElement } from '../utils/mind';
@@ -7,8 +20,9 @@ import { MindTransforms } from '../transforms';
 import { deleteElementHandleAbstract } from '../utils/abstract/common';
 import { getSelectedMindElements } from '../utils/node/common';
 import { PlaitMindBoard } from './with-mind.board';
-import { buildClipboardData, insertClipboardData, insertClipboardText, setMindClipboardData } from '../utils/clipboard';
-import { buildText, getTextFromClipboard } from '@plait/text';
+import { buildClipboardData, insertClipboardData, insertClipboardText } from '../utils/clipboard';
+import { buildText } from '@plait/text';
+import { getElementsText } from '@plait/common';
 
 export const withMindFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
@@ -33,32 +47,46 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
         return getDeletedFragment(data);
     };
 
-    board.setFragment = (data: DataTransfer | null, rectangle: RectangleClient | null, type: 'copy' | 'cut') => {
+    board.setFragment = (
+        data: DataTransfer | null,
+        clipboardContext: WritableClipboardContext | null,
+        rectangle: RectangleClient | null,
+        type: 'copy' | 'cut'
+    ) => {
         const targetMindElements = getSelectedMindElements(board);
         const firstLevelElements = getFirstLevelElement(targetMindElements);
         if (firstLevelElements.length) {
             const elements = buildClipboardData(board, firstLevelElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
-            setMindClipboardData(data, elements);
-        }
-        setFragment(data, rectangle, type);
-    };
-
-    board.insertFragment = (data: DataTransfer | null, targetPoint: Point) => {
-        const clipboardData = getClipboardData(data);
-        const mindElements = clipboardData.elements?.filter(value => MindElement.isMindElement(board, value));
-        if (mindElements && mindElements.length > 0) {
-            insertClipboardData(board, mindElements, targetPoint);
-        } else if (!clipboardData.elements || clipboardData.elements.length === 0) {
-            const mindElements = getSelectedMindElements(board);
-            if (mindElements.length === 1) {
-                const text = getTextFromClipboard(data);
-                if (text) {
-                    insertClipboardText(board, mindElements[0], buildText(text));
-                    return;
-                }
+            const text = getElementsText(targetMindElements);
+            if (!clipboardContext) {
+                clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text);
+            } else {
+                clipboardContext = addClipboardContext(clipboardContext, {
+                    text,
+                    type: WritableClipboardType.elements,
+                    data: elements
+                });
             }
         }
-        insertFragment(data, targetPoint);
+        setFragment(data, clipboardContext, rectangle, type);
+    };
+
+    board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
+        if (clipboardData?.elements?.length) {
+            const mindElements = clipboardData.elements?.filter(value => MindElement.isMindElement(board, value));
+            if (mindElements && mindElements.length > 0) {
+                insertClipboardData(board, mindElements, targetPoint);
+            }
+        }
+        if (clipboardData?.text) {
+            const mindElements = getSelectedMindElements(board);
+            if (mindElements.length === 1) {
+                insertClipboardText(board, mindElements[0], buildText(clipboardData.text));
+                return;
+            }
+        }
+
+        insertFragment(data, clipboardData, targetPoint);
     };
 
     return board;

@@ -28,6 +28,7 @@ import { Ancestor, PlaitNode } from './node';
 import { Path } from './path';
 import { PlaitTheme, ThemeColor, ThemeColors } from './theme';
 import { distanceBetweenPointAndRectangle } from '../utils/math';
+import { ClipboardData, WritableClipboardContext } from '../utils';
 
 export interface PlaitBoard {
     viewport: Viewport;
@@ -54,8 +55,13 @@ export interface PlaitBoard {
     keydown: (event: KeyboardEvent) => void;
     globalKeydown: (event: KeyboardEvent) => void;
     keyup: (event: KeyboardEvent) => void;
-    setFragment: (data: DataTransfer | null, rectangle: RectangleClient | null, type: 'copy' | 'cut') => void;
-    insertFragment: (data: DataTransfer | null, targetPoint: Point) => void;
+    setFragment: (
+        data: DataTransfer | null,
+        clipboardContext: WritableClipboardContext | null,
+        rectangle: RectangleClient | null,
+        type: 'copy' | 'cut'
+    ) => void;
+    insertFragment: (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => void;
     deleteFragment: (data: DataTransfer | null) => void;
     getDeletedFragment: (data: PlaitElement[]) => PlaitElement[];
     getRelatedFragment: (data: PlaitElement[]) => PlaitElement[];

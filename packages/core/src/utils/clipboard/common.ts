@@ -1,4 +1,4 @@
-import { ClipboardData, WritableClipboardData, WritableClipboardType } from './types';
+import { ClipboardData, WritableClipboardContext, WritableClipboardData, WritableClipboardType } from './types';
 
 export const buildPlaitHtml = (type: WritableClipboardType, data: WritableClipboardData) => {
     const stringifiedClipboard = JSON.stringify({
@@ -37,4 +37,39 @@ export const stripHtml = (html: string) => {
     const doc = document.implementation.createHTMLDocument('');
     doc.documentElement.innerHTML = html.trim();
     return doc.body.textContent || doc.body.innerText || '';
+};
+
+export const getProbablySupportsClipboardWrite = () => {
+    return 'clipboard' in navigator && 'write' in navigator.clipboard;
+};
+
+export const getProbablySupportsClipboardRead = () => {
+    return 'clipboard' in navigator && 'read' in navigator.clipboard;
+};
+
+export const createClipboardContext = (
+    type: WritableClipboardType,
+    data: WritableClipboardData,
+    text: string
+): WritableClipboardContext => {
+    return {
+        type,
+        data,
+        text
+    };
+};
+
+export const addClipboardContext = (
+    clipboardContext: WritableClipboardContext,
+    addition: WritableClipboardContext
+): WritableClipboardContext => {
+    const { type, data, text } = clipboardContext;
+    if (type === addition.type) {
+        return {
+            type,
+            data: data.concat(addition.data),
+            text: text + ' ' + addition.text
+        };
+    }
+    return clipboardContext;
 };

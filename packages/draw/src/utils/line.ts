@@ -363,11 +363,7 @@ export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, d
     }
 };
 
-export const transformPointToConnection = (
-    board: PlaitBoard,
-    point: Point,
-    hitElement: PlaitShape
-): Point => {
+export const transformPointToConnection = (board: PlaitBoard, point: Point, hitElement: PlaitShape): Point => {
     let rectangle = getRectangleByPoints(hitElement.points);
     rectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
     let nearestPoint = getNearestPoint(hitElement, point, ACTIVE_STROKE_WIDTH);

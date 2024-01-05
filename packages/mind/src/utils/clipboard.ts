@@ -1,16 +1,6 @@
-import {
-    getSelectedElements,
-    Path,
-    PlaitBoard,
-    PlaitElement,
-    Point,
-    setClipboardData,
-    setClipboardDataByText,
-    Transforms,
-    WritableClipboardType
-} from '@plait/core';
+import { getSelectedElements, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces';
-import { copyNewNode, extractNodesText } from './mind';
+import { copyNewNode } from './mind';
 import { getRectangleByNode } from './position/node';
 import { AbstractNode, getNonAbstractChildren } from '@plait/layouts';
 import { getRelativeStartEndByAbstractRef, getOverallAbstracts, getValidAbstractRefs } from './abstract/common';
@@ -66,14 +56,6 @@ export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElem
         }
     });
     return result;
-};
-
-export const setMindClipboardData = (data: DataTransfer | null, elements: MindElement[]) => {
-    const text = elements.reduce((string, currentNode) => {
-        return string + extractNodesText(currentNode);
-    }, '');
-    setClipboardData(data, WritableClipboardType.elements, elements);
-    setClipboardDataByText(data, text);
 };
 
 export const insertClipboardData = (board: PlaitMindBoard, elements: PlaitElement[], targetPoint: Point) => {
