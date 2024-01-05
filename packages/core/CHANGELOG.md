@@ -1,5 +1,19 @@
 # plait
 
+## 0.50.0
+
+### Minor Changes
+
+-   [#699](https://github.com/worktile/plait/pull/699) [`5c2f3d28`](https://github.com/worktile/plait/commit/5c2f3d28fc7a147606d101a6a2e9c44df55a7780) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove x-plait-fragment key and use text/html as standard key
+
+### Patch Changes
+
+-   [#701](https://github.com/worktile/plait/pull/701) [`18790e12`](https://github.com/worktile/plait/commit/18790e1272dffe80366927c19d334837ebc34b51) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add getElementsText
+
+*   [#700](https://github.com/worktile/plait/pull/700) [`cc08a1dc`](https://github.com/worktile/plait/commit/cc08a1dc734417f32a39d252f81103cb57c5b402) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - feat: add NavigatorClipboard handle
+
+-   [#701](https://github.com/worktile/plait/pull/701) [`18790e12`](https://github.com/worktile/plait/commit/18790e1272dffe80366927c19d334837ebc34b51) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor: uniformly handle clipboard data and add parameter for setFragment and insertFragment
+
 ## 0.49.0
 
 ### Minor Changes

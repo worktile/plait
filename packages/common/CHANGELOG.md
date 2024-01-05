@@ -1,5 +1,13 @@
 # @plait/common
 
+## 0.50.0
+
+### Patch Changes
+
+-   [#701](https://github.com/worktile/plait/pull/701) [`18790e12`](https://github.com/worktile/plait/commit/18790e1272dffe80366927c19d334837ebc34b51) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add getElementsText
+
+*   [`8178ea40`](https://github.com/worktile/plait/commit/8178ea409a23b27021b28aa9284c942ffe3c65c5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct alignHorizontalCenter and alignVerticalCenter logic
+
 ## 0.49.0
 
 ### Minor Changes
