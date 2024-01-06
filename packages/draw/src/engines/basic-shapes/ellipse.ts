@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, PointOfRectangle, RectangleClient, Vector, isPointInEllipse } from '@plait/core';
+import { PlaitBoard, Point, PointOfRectangle, RectangleClient, getEllipseTangentSlope, getVectorFromPointAndSlope, isPointInEllipse } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getTextRectangle } from '../../utils';
@@ -26,8 +26,9 @@ export const EllipseEngine: ShapeEngine = {
         const point = [connectionPoint[0] - centerPoint[0], -(connectionPoint[1] - centerPoint[1])];
         const a = rectangle.width / 2;
         const b = rectangle.height / 2;
-        const slope = getTangentSlope(point[0], point[1], a, b) as any;
-        return getVectorBySlope(point[0], point[1], slope);
+        const slope = getEllipseTangentSlope(point[0], point[1], a, b) as any;
+        const vector = getVectorFromPointAndSlope(point[0], point[1], slope);
+        return vector;
     },
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
@@ -84,32 +85,4 @@ export function getNearestPointBetweenPointAndEllipse(point: Point, center: Poin
     const signY = point[1] > center[1] ? 1 : -1;
 
     return [center[0] + a * tx * signX, center[1] + b * ty * signY];
-}
-
-/**
- * the result of slope is based on Cartesian coordinate system
- * x, y are based on the position in the Cartesian coordinate system
- */
-export function getTangentSlope(x: number, y: number, a: number, b: number) {
-    const k = (-b * b * x) / (a * a * y);
-    return k;
-}
-
-/**
- * x, y are based on the position in the Cartesian coordinate system
- */
-export function getVectorBySlope(x: number, y: number, slope: number) {
-    const deltaX = 30;
-    const deltaY = -slope * deltaX;
-    let start = [0 - deltaX, 0 - deltaY] as Point;
-    let end = [0 + deltaX, 0 + deltaY] as Point;
-    // y < 0 acts on the lower half of the x-axis, with the starting point at the top and the end point at the bottom.
-    
-    if (y < 0) {
-        const temp = start;
-        start = end;
-        end = temp;
-    }
-    const vector = [end[0] - start[0], end[1] - start[1]] as Vector;
-    return vector;
 }

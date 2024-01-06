@@ -4,14 +4,16 @@ import {
     PointOfRectangle,
     RectangleClient,
     Vector,
+    getEllipseTangentSlope,
     getNearestPointBetweenPointAndSegments,
+    getVectorFromPointAndSlope,
     isPointInEllipse,
     setStrokeLinecap
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
-import { getNearestPointBetweenPointAndEllipse, getTangentSlope, getVectorBySlope } from '../basic-shapes/ellipse';
+import { getNearestPointBetweenPointAndEllipse } from '../basic-shapes/ellipse';
 import { getTextRectangle } from '../../utils';
 
 export const StoredDataEngine: ShapeEngine = {
@@ -60,25 +62,20 @@ export const StoredDataEngine: ShapeEngine = {
     getNearestPoint(rectangle: RectangleClient, point: Point) {
         const nearestPoint = getNearestPointBetweenPointAndSegments(point, RectangleEngine.getCornerPoints(rectangle));
         if (nearestPoint[0] < rectangle.x + rectangle.width / 10) {
-            const nearestPoint = getNearestPointBetweenPointAndEllipse(
-                point,
-                [rectangle.x + rectangle.width / 10, rectangle.y + rectangle.height / 2],
-                rectangle.width / 10,
-                rectangle.height / 2
-            );
-            if (nearestPoint[0] > rectangle.x + rectangle.width / 10) {
-                nearestPoint[0] = (rectangle.x + rectangle.width / 10) * 2 - nearestPoint[0];
+            const centerPoint = [rectangle.x + rectangle.width / 10, rectangle.y + rectangle.height / 2] as Point;
+            const nearestPoint = getNearestPointBetweenPointAndEllipse(point, centerPoint, rectangle.width / 10, rectangle.height / 2);
+            if (nearestPoint[0] > centerPoint[0]) {
+                nearestPoint[0] = centerPoint[0] * 2 - nearestPoint[0];
             }
             return nearestPoint;
         }
-
         if (nearestPoint[0] > rectangle.x + (rectangle.width * 9) / 10) {
-            return getNearestPointBetweenPointAndEllipse(
-                point,
-                [rectangle.x + rectangle.width, rectangle.y + rectangle.height / 2],
-                rectangle.width / 10,
-                rectangle.height / 2
-            );
+            const centerPoint = [rectangle.x + rectangle.width, rectangle.y + rectangle.height / 2] as Point;
+            const nearestPoint = getNearestPointBetweenPointAndEllipse(point, centerPoint, rectangle.width / 10, rectangle.height / 2);
+            if (nearestPoint[0] > centerPoint[0]) {
+                nearestPoint[0] = centerPoint[0] * 2 - nearestPoint[0];
+            }
+            return nearestPoint;
         }
         return nearestPoint;
     },
@@ -92,8 +89,8 @@ export const StoredDataEngine: ShapeEngine = {
             centerPoint = [rectangle.x + rectangle.width, rectangle.y + rectangle.height / 2];
         }
         const point = [connectionPoint[0] - centerPoint[0], -(connectionPoint[1] - centerPoint[1])];
-        const slope = getTangentSlope(point[0], point[1], a, b) as any;
-        const vector = getVectorBySlope(point[0], point[1], slope);
+        const slope = getEllipseTangentSlope(point[0], point[1], a, b) as any;
+        const vector = getVectorFromPointAndSlope(point[0], point[1], slope);
         return isBackEllipse ? (vector.map(num => -num) as Vector) : vector;
     },
     getConnectorPoints(rectangle: RectangleClient) {

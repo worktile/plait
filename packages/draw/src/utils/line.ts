@@ -431,7 +431,7 @@ export const getVectorByConnection = (boundElement: PlaitGeometry, connection: P
     const engine = getEngine(shape);
     let vector: Vector = [0, 0];
     const direction = getDirectionByPointOfRectangle(connection);
-    if (direction) {
+    if (direction && boundElement.shape !== BasicShapes.ellipse) {
         const factor = getDirectionFactor(direction);
         return [factor.x, factor.y];
     }

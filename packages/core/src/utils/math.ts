@@ -276,3 +276,31 @@ export const catmullRomFitting = function(points: Point[]) {
 
     return result;
 };
+
+/**
+ * the result of slope is based on Cartesian coordinate system
+ * x, y are based on the position in the Cartesian coordinate system
+ */
+export function getEllipseTangentSlope(x: number, y: number, a: number, b: number) {
+    if (Math.abs(y) === 0) {
+        return x > 0 ? -Infinity : Infinity;
+    }
+    const k = (-b * b * x) / (a * a * y);
+    return k;
+}
+
+/**
+ * x, y are based on the position in the Cartesian coordinate system
+ */
+export function getVectorFromPointAndSlope(x: number, y: number, slope: number) {
+    if (slope === Infinity) {
+        return [0, -1] as Point;
+    } else if (slope === -Infinity) {
+        return [0, 1] as Point;
+    }
+    let vector = [1, -slope] as Point;
+    if (y < 0) {
+        vector = [-vector[0], -vector[1]];
+    }
+    return vector as Point;
+}
