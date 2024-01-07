@@ -128,7 +128,7 @@ export class BasicBoardComponent {
 
 ### 感谢
 
-- [rough](https://github.com/ianstormtaylor/slate)
+- [slate](https://github.com/ianstormtaylor/slate)
 
 - [slate-angular](https://github.com/worktile/slate-angular)
 

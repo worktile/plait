@@ -129,7 +129,7 @@ For more detailed examples refer to：  [https://github.com/pubuzhixing8/plait-b
 
 ### Thanks
 
-- [rough](https://github.com/ianstormtaylor/slate)
+- [slate](https://github.com/ianstormtaylor/slate)
 
 - [slate-angular](https://github.com/worktile/slate-angular)
 
