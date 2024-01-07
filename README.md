@@ -14,7 +14,7 @@
   </p>
   <h2>
     A modern drawing framework for building all-in-one whiteboard tools </br>
-    Such as mind maps, flow charts, hand writing, etc.
+    such as mind maps, flow charts, hand writing, etc.
   </h3>
 </div>
 
