@@ -22,7 +22,7 @@
 Plait is positioned as a drawing framework that provides a plugin mechanism, allowing developers to extend functionality through plugins. It only provides a basic drawing whiteboard at the bottom, which only includes basic functions such as zooming in, zooming out, and moving the canvas. It does not include any business functions. All business functions need to be expanded through plugins to achieve free combination and can be easily implemented independently. Or an all-in-one drawing tool.
 
 
-[中文文档](https://github.com/worktile/slate-angular/blob/master/README.zh-CN.md)
+[中文文档](https://github.com/worktile/plait/blob/develop/README.zh-CN.md)
 
 Plait will also provide some basic functional plugins, which have been implemented so far:
 

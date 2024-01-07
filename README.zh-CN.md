@@ -138,7 +138,7 @@ export class BasicBoardComponent {
 
 ### 贡献
 
-欢迎大家参与到 Plait 的建设中，一起构建新一代的画图框架，任何的 Issue、PR 都是可以，也希望得到大家的 ⭐️ 支持。
+欢迎大家贡献 Plait ，一起构建新一代的画图框架，任何的 Issue、PR 都是可以，也希望得到大家的 ⭐️ 支持。
 
 
 
