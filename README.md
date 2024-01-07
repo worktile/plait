@@ -1,5 +1,5 @@
 <p align="center">
-  <picture style="width: 360px">
+  <picture style="width: 320px">
     <source media="(prefers-color-scheme: light)" srcset="https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/plait-logo-h.png?raw=true" />
     <source media="(prefers-color-scheme: dark)" srcset="https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/plait-logo-h-dark.png?raw=true" />
     <img src="https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/plait-horizontal-logo.png?raw=true" width="360" alt="Plait logo and name" />
@@ -7,66 +7,72 @@
 </p>
 
 <div align="center">
+  <p>
+    <a href="https://www.npmjs.com/package/@plait/core"><img src="https://img.shields.io/npm/dm/@plait/core.svg" alt="Total Downloads"></a>
+    <a target="_blank" href="https://github.com/worktile/plait/releases/latest"><img src="https://img.shields.io/github/v/release/worktile/plait" /></a>
+    <a target="_blank" href="https://github.com/worktile/plait/blob/develop/LICENSE"><img src="https://badgen.now.sh/badge/license/MIT" /></a>
+  </p>
   <h2>
-    一款现代化的绘图框架用于构建一体化的白板工具 </br>
-    比如思维导图、流程图、自由画笔等等
+    A modern drawing framework for building all-in-one whiteboard tools </br>
+    Such as mind maps, flow charts, hand writing, etc.
   </h3>
 </div>
 
 
-Plait 被定位为一个绘图框架，提供插件机制，允许开发者通过插件的方式扩展功能。它底层只提供一个基础的绘图白板，仅仅包含放大、缩小、移动端画布等基础功能，而不包含任何业务功能，所有业务功能均需要通过插件的方式扩展，实现自由组合，可以方便的实现独立的或者一体化的绘图工具。
-
-Plait 也会提供一些基础的功能插件，目前已经实现：
-
-- 思维导图插件
-
-- 流程图插件
-
-- Flow 插件
+Plait is positioned as a drawing framework that provides a plugin mechanism, allowing developers to extend functionality through plugins. It only provides a basic drawing whiteboard at the bottom, which only includes basic functions such as zooming in, zooming out, and moving the canvas. It does not include any business functions. All business functions need to be expanded through plugins to achieve free combination and can be easily implemented independently. Or an all-in-one drawing tool.
 
 
+[中文文档](https://github.com/worktile/slate-angular/blob/master/README.zh-CN.md)
 
-Plait 架构以富文本编辑器框架 Slate 为灵感，适用于交互式绘图场景，当前还在 beta 状态。
+Plait will also provide some basic functional plugins, which have been implemented so far:
+
+- Mind plugin
+
+- Draw plugin
+
+- Flow plugin
+
+
+
+Plait architecture is inspired by the rich text editor framework Slate and is used for web-side interactive drawing business development.
 
 ![online demo screen](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/mind-draw-flow.gif?raw=true)
 
 
-- 👉 [在线示例 (流程图)](https://plait-gamma.vercel.app?init=draw)
-- 👉 [在线示例 (思维导图)](https://plait-gamma.vercel.app?init=mind)
-- 👉 [在线示例 (流程控制)](https://plait-gamma.vercel.app/flow)
-- 👉 [在线文档](https://plait-docs.vercel.app)
+- 👉 [Online example (Draw)](https://plait-gamma.vercel.app?init=draw)
+- 👉 [Online example (Mind)](https://plait-gamma.vercel.app?init=mind)
+- 👉 [Online example (Flow)](https://plait-gamma.vercel.app/flow)
+- 👉 [Documentation](https://plait-docs.vercel.app)
 
+#### Features
 
-#### 框架特性
-
-- 提供基础画板能力，比如放大、缩小、移动
-- 插件机制，提供插件机制用于扩展绘图功能
-- 数据模型，提供基础数据模型及数据变换函数（支持协同）
-- 前端组件化，基于组件组织业务逻辑（目前仅支持 Angular 框架）
-- 基础绘图工具函数
-
+- Provide basic drawing board capabilities
+- Plugin mechanism
+- Data model (supports collaboration)
+- Component-based development (currently only supports Angular framework)
+- Basic drawing tool functions
 
 
 
-#### 模块
+#### Packages
 
 |Package Name|Description
 |---|---|
-|@plait/core|框架核心：1.插件机制设计 2.提供数据模型、数据变换函数 3.提供基础的 board 组件，包含放大、缩小、滚动方案实现|
-|@plait/common|不同绘图插件复用的一些逻辑：1.基础工具函数 2.基础插件 3.基础渲染逻辑|
-|@plait/text|画板中接入文本数据显示和编辑，依赖 Slate 及 slate-angular|
-|@plait/mind|思维导图插件实现，基于独立的自动布局算法，目前支持：逻辑布局、标准布局、缩进布局|
-|@plait/draw|流程图插件实现，包括基础图形、标准流程图图形、连线、自由图片等元素交互式创建及修改|
-|@plait/flow| Flow 插件，可以用于实现可视化的状态流转配置、工作流转配置等基础功能，高度可配置|
-|@plait/layouts|思维导图支持库，包含自动布局算法|
+|@plait/core|Core of the framework: 1. Plugin mechanism 2. Provide data model and transform functions 3. Provide basic board components|
+|@plait/common|Some logic reused by different drawing plugins: 1. Basic tool functions 2. Basic plugins 3. Basic rendering logic|
+|@plait/text|Text support, dependent on packages slate and slate-angular|
+|@plait/mind|Mind plugin implementation, based on an independent automatic layout algorithm, currently supports: logical layout, standard layout, indented layout|
+|@plait/draw|Flowchart plugin implementation, including interactive creation and modification of basic graphics, standard flowchart graphics, connections, free pictures and other elements|
+|@plait/flow|Flow plugin, which can be used for visual configuration of process status|
+|@plait/layouts|Mind support library, including automatic layout algorithms|
 
 
-#### 谁在使用
+#### Who is using
 
 - 🔥🔥🔥 [PingCode Wiki](https://pingcode.com/solutions/knowledge-manage)
 
 
-### 开发
+### Development
 
 ```
 npm i
@@ -77,12 +83,11 @@ npm run start
 ```
 
 
+### Usage
 
-### 使用
+Basic usage (integrated @plait/mind plugin)
 
-基本使用（集成 @plait/mind 插件）
-
-HTML 模版：
+HTML：
 
 ```
 <plait-board [plaitPlugins]="plugins" [plaitValue]="value"
@@ -90,7 +95,7 @@ HTML 模版：
 </plait-board>
 ```
 
-TS 文件：
+TS：
 
 ```
 // .ts
@@ -116,43 +121,30 @@ export class BasicBoardComponent {
     this.board = value;
   }
 }
-
-const demoData = [
-  {
-    type: 'mindmap',
-    id: '2',
-    rightNodeCount: 3,
-    data: { topic: { children: [{ text: '思维导图' }] } },
-    children: [],
-    width: 72,
-    height: 25,
-    isRoot: true,
-    points: [[560, 700]],
-  },
-] as PlaitElement[];
 ```
 
-更详细的示例说明参考：  [https://github.com/pubuzhixing8/plait-basic](https://github.com/pubuzhixing8/plait-basic)  
+For more detailed examples refer to：  [https://github.com/pubuzhixing8/plait-basic](https://github.com/pubuzhixing8/plait-basic)  
 
 
 
-### 感谢
+### Thanks
 
-- [rough](https://github.com/rough-stuff/rough)
+- [rough](https://github.com/ianstormtaylor/slate)
 
 - [slate-angular](https://github.com/worktile/slate-angular)
 
-
-
-### 贡献
-
-欢迎大家参与到 Plait 的建设中，一起构建新一代的画图框架，任何的 Issue、PR 都是可以，也希望得到大家的 ⭐️ 支持。
+- [rough](https://github.com/rough-stuff/rough)
 
 
 
-### 开源协议
+### Contributing
+
+Everyone is welcome to contribute to Plait and build a new generation of drawing framework together. Any Issue or PR is acceptable, and we hope to get your ⭐️ support.
+
+
+
+### LICENSE
 
   [MIT License](https://github.com/worktile/slate-angular/blob/master/LICENSE)  
-
 
 
