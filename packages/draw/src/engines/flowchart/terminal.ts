@@ -9,9 +9,7 @@ import {
 } from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getEdgeOnPolygonByPoint } from '../../utils/geometry';
-import { RectangleEngine } from '../basic-shapes/rectangle';
-import { getNearestPointBetweenPointAndEllipse } from '../basic-shapes/ellipse';
+import { getNearestPointBetweenPointAndEllipse, getTangentSlope, getVectorBySlope } from '../basic-shapes/ellipse';
 
 export const TerminalEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
@@ -35,10 +33,18 @@ export const TerminalEngine: ShapeEngine = {
     getNearestPoint(rectangle: RectangleClient, point: Point) {
         return getNearestPointBetweenPointAndRoundRectangle(point, rectangle, getStartEndRadius(rectangle));
     },
-    getEdgeByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle): [Point, Point] | null {
-        const corners = RectangleEngine.getCornerPoints(rectangle);
-        const point = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
-        return getEdgeOnPolygonByPoint(corners, point);
+    getTangentVectorByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle) {
+        const connectionPoint = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
+        const radius = getStartEndRadius(rectangle);
+        const center = getBoundCenterOfRoundRectangle(rectangle, radius, connectionPoint);
+        if (center) {
+            const point = [connectionPoint[0] - center[0], -(connectionPoint[1] - center[1])];
+            const a = radius;
+            const b = radius;
+            const slope = getTangentSlope(point[0], point[1], a, b) as any;
+            return getVectorBySlope(point[0], point[1], slope);
+        }
+        return null;
     },
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
@@ -50,34 +56,36 @@ export const getStartEndRadius = (rectangle: RectangleClient) => {
 };
 
 export function getNearestPointBetweenPointAndRoundRectangle(point: Point, rectangle: RectangleClient, radius: number) {
-    const { x: rectX, y: rectY, width, height } = rectangle;
-    const cornerPoints = RectangleClient.getCornerPoints(rectangle);
-    let result = getNearestPointBetweenPointAndSegments(point, cornerPoints);
-    let circleCenter: Point | null = null;
-
-    const inLeftTop = point[0] >= rectX && point[0] <= rectX + radius && point[1] >= rectY && point[1] <= rectY + radius;
-    if (inLeftTop) {
-        circleCenter = [rectX + radius, rectY + radius];
-    }
-    const inLeftBottom =
-        point[0] >= rectX && point[0] <= rectX + radius && point[1] >= rectY + height && point[1] <= rectY + height - radius;
-    if (inLeftBottom) {
-        circleCenter = [rectX + radius, rectY + height - radius];
-    }
-    const inRightTop = point[0] >= rectX + width - radius && point[0] <= rectX + width && point[1] >= rectY && point[1] <= rectY + radius;
-    if (inRightTop) {
-        circleCenter = [rectX + width - radius, rectY + radius];
-    }
-    const inRightBottom =
-        point[0] >= rectX + width - radius &&
-        point[0] <= rectX + width &&
-        point[1] >= rectY + height - radius &&
-        point[1] <= rectY + height;
-    if (inRightBottom) {
-        circleCenter = [rectX + width - radius, rectY + height - radius];
-    }
-    if (circleCenter) {
-        result = getNearestPointBetweenPointAndEllipse(point, circleCenter, radius, radius);
+    let result: Point | null = null;
+    let boundCenter: Point | null = getBoundCenterOfRoundRectangle(rectangle, radius, point);
+    if (boundCenter) {
+        result = getNearestPointBetweenPointAndEllipse(point, boundCenter, radius, radius);
+    } else {
+        const cornerPoints = RectangleClient.getCornerPoints(rectangle);
+        result = getNearestPointBetweenPointAndSegments(point, cornerPoints);
     }
     return result;
+}
+
+export function getBoundCenterOfRoundRectangle(rectangle: RectangleClient, radius: number, point: Point) {
+    const { x, y, width, height } = rectangle;
+    let center: Point | null = null;
+    const inLeftTop = point[0] >= x && point[0] <= x + radius && point[1] >= y && point[1] <= y + radius;
+    if (inLeftTop) {
+        center = [x + radius, y + radius];
+    }
+    const inLeftBottom = point[0] >= x && point[0] <= x + radius && point[1] >= y + height - radius && point[1] <= y + height;
+    if (inLeftBottom) {
+        center = [x + radius, y + height - radius];
+    }
+    const inRightTop = point[0] >= x + width - radius && point[0] <= x + width && point[1] >= y && point[1] <= y + radius;
+    if (inRightTop) {
+        center = [x + width - radius, y + radius];
+    }
+    const inRightBottom =
+        point[0] >= x + width - radius && point[0] <= x + width && point[1] >= y + height - radius && point[1] <= y + height;
+    if (inRightBottom) {
+        center = [x + width - radius, y + height - radius];
+    }
+    return center;
 }
