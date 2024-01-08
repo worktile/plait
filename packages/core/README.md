@@ -1,64 +1,66 @@
+## @plait/core
+
+[中文](https://github.com/worktile/plait/blob/develop/packages/core/README.zh-CN.md)
 
 
-Plait 框架核心库，包含核心的数据模型定义、数据变换函数、插件机制等，除此之外还包含插件元素渲染基类定义以及包含基础交互的 board 组件。
-
-
-
-> 当前 @plait/core 承担了过多的职责，既包含核心数据模型、插件机制，又包含了前端框架层的桥接层，还有一些绘图相关的基础功能插件，因为当前只要是一些基础的画板需求（比如框选、拖拽移动元素位置）都会在 core 中，未来可能会考虑更细的包划分。
-
-
-
-####   **基础画板功能**
-
-1. 提供一个画板组件（基于 Angular）
-1. 放大、缩小、拖动画布
-1. 集成画布滚动方案
-1. 撤销、重做
-1. 点选/框选元素
-1. 拖拽调整元素位置
-1. 主题方案（进行中）
+The Plait framework core library includes core data model, data transformation functions, plugin mechanisms, etc. In addition, it also includes plugin element rendering base class and board components containing basic whiteboard interactions.
 
 
 
-
-#### **设计思路**
-
-Plait 是为构建一体化画板工具而设计的框架，它的核心是插件机制和数据模型，插件机制是外在表现，它允许开发者以插件化的扩展方式画板功能，而不必将功能全部集成一个库中，框架会提供必要的扩展桥梁和通讯机制为插件开发服务，数据模型是内核，它提供数据的定义及数据的操作变换函数，是插件的内在表示。
+> Currently @plait/core takes on too many responsibilities, including the core data model, plugin mechanism, the bridging layer of the front-end framework layer, and some basic drawing-related plugins, because currently it only needs some basic drawing board requirements (such as frame selection, dragging and moving element positions) will all be in the core, and more detailed package divisions may be considered in the future.
 
 
 
-**插件机制**
+####   **Basic whiteboard functions**
 
-插件机制基于可重写方法构建扩展桥梁，目前支持自定义交互、自定义渲染，在自定义交互方面 plait/core 目前以最原始的方式直接将基础的 DOM 事件定义为可重写方法，比如：mousedown、mouseup、mousemove、keydown、keyup 等等，没有过多业务层面的封装，自定义渲染目前支持以 Angular 组件的方式扩展插件的渲染。
-
-
-
-**数据模型**
-
-主要提供以下能力：
-
-1. 提供基础数据模型
-1. 提供基于原子的数据变化方法（Transforms）
-1. 基于不可变数据模型（基于 Immer）
-1. 提供 Change 机制，与框架配合完成数据驱动渲染
-1. 与插件机制融合，数据修改的过程可以被拦截处理
+1. Provide a drawing board component (based on Angular)
+1. Zoom in, zoom out, and drag the canvas
+1. Integrated canvas scrolling solution
+1. Undo, redo
+1. Click/drag to select elements
+1. Drag to adjust element position
+1. Theme plan
 
 
 
 
-**标准数据流**
+#### **Design ideas**
 
-![image.png](https://atlas-rc.pingcode.com/files/public/64772907e468e3b3652fa3ff/origin-url)
-
-
-
-#### **架构图**
-
-![image.png](https://atlas-rc.pingcode.com/files/public/647726b0e468e3b3652fa3fe/origin-url)
+Plait is a framework designed for all-in-one whiteboard tool, its core is plugin mechanism and data model. The plugin mechanism is the external manifestation, it allows developers to extend the functionality of the whiteboard in the form of plugins. The framework provides the necessary extension bridges and communication mechanisms to serve plugin development. The data model is the kernel, providing definitions for data and functions for data operation, and is the internal representation of the plugin.
 
 
+**Plugin mechanism**
 
-#### 依赖
+The plugin mechanism builds an extension bridge based on override methods. It currently supports custom interaction and custom rendering. In terms of custom interaction, plait/core currently directly defines basic DOM events as override methods in the most primitive way, such as: PointerDown, pointerUp, pointerMove, keyDown, keyUp, etc. do not have too many business-level encapsulations. Custom rendering currently supports extending the rendering of plugins in the form of Angular components.
 
-roughjs
+
+
+**Data Model**
+
+Mainly provides the following capabilities:
+
+1. Provide basic data model
+1. Provide atomic-based data change methods (Transforms)
+1. Based on immutable data model (based on Immer)
+1. Provide a Change mechanism to cooperate with the framework to complete data-driven rendering.
+1. Integrated with the plugin mechanism, the data modification process can be intercepted and processed
+
+
+
+
+**Standard data flow**
+
+![data flow](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/packages/data-flow.png?raw=true)
+
+
+
+#### **Architecture diagram**
+
+![architecture diagram](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/packages/architecture-diagram.png?raw=true)
+
+
+#### Dependence
+
+- roughjs
+- is-hotkey
 
