@@ -51,6 +51,10 @@
         }
     }
 
+    &.pointer-selection {
+        cursor: default;
+    }
+
     &.ns-resize {
         cursor: ns-resize;
     }
