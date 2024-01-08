@@ -7,7 +7,7 @@ import { PlaitElement } from '../interfaces/element';
 import { getHitElementByPoint, getSelectedElements } from '../utils/selected-element';
 import { PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
-import { addMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
+import { cacheMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
 import {
     isPreventTouchMove,
@@ -16,11 +16,13 @@ import {
     getRectangleByElements,
     distanceBetweenPointAndPoint,
     toHostPoint,
-    toViewBoxPoint
+    toViewBoxPoint,
+    hotkeys
 } from '../utils';
 import { AlignReaction } from '../utils/reaction-manager';
 import { PlaitPointerType, RectangleClient } from '../interfaces';
 import { ACTIVE_MOVING_CLASS_NAME, PRESS_AND_MOVE_BUFFER } from '../constants';
+import { addSelectionWithTemporaryElements } from '../transforms/selection';
 
 export function withMoving(board: PlaitBoard) {
     const { pointerDown, pointerMove, globalPointerUp, globalPointerMove } = board;
@@ -35,29 +37,26 @@ export function withMoving(board: PlaitBoard) {
 
     board.pointerDown = (event: PointerEvent) => {
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        let movableElements = board.children.filter(item => board.isMovable(item));
+        const targetElements = getTargetElements(board);
+        const hitElement = getHitElementByPoint(board, point);
         if (
             !PlaitBoard.isReadonly(board) &&
             PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
-            movableElements.length &&
+            (targetElements.length || hitElement) &&
             !isPreventTouchMove(board) &&
             isMainPointer(event)
         ) {
             startPoint = point;
-            const selectedMovableElements = getSelectedElements(board).filter(item => movableElements.includes(item));
-            const hitElement = getHitElementByPoint(board, point);
-            if (hitElement && movableElements.includes(hitElement)) {
-                if (selectedMovableElements.includes(hitElement)) {
-                    const relatedElements = board.getRelatedFragment([]);
-                    activeElements = [...selectedMovableElements, ...relatedElements];
-                } else {
-                    activeElements = [hitElement];
-                }
+            if (hitElement && targetElements.includes(hitElement)) {
+                activeElements = targetElements;
+            } else if (hitElement) {
+                activeElements = [hitElement];
+                addSelectionWithTemporaryElements(board, []);
             }
             if (activeElements.length > 0) {
                 preventTouchMove(board, event, true);
+                activeElementsRectangle = getRectangleByElements(board, activeElements, true);
             }
-            activeElementsRectangle = getRectangleByElements(board, activeElements, true);
         }
         pointerDown(event);
     };
@@ -89,25 +88,10 @@ export function withMoving(board: PlaitBoard) {
                     alignG = ref.g;
                     alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
                     PlaitBoard.getElementActiveHost(board).append(alignG);
-
                     handleTouchTarget(board);
-                    const currentElements = activeElements.map(activeElement => {
-                        const points = activeElement.points || [];
-                        const [x, y] = activeElement.points![0];
-                        const newPoints = points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];
-                        const index = board.children.findIndex(item => item.id === activeElement.id);
-                        Transforms.setNode(
-                            board,
-                            {
-                                points: newPoints
-                            },
-                            [index]
-                        );
-                        MERGING.set(board, true);
-                        return PlaitNode.get(board, [index]);
-                    });
+                    const currentElements = updatePoints(board, activeElements, offsetX, offsetY);
                     PlaitBoard.getBoardContainer(board).classList.add('element-moving');
-                    addMovingElements(board, currentElements as PlaitElement[]);
+                    cacheMovingElements(board, currentElements as PlaitElement[]);
                 });
             }
         }
@@ -149,5 +133,77 @@ export function withMoving(board: PlaitBoard) {
         PlaitBoard.getBoardContainer(board).classList.remove('element-moving');
     }
 
+    return withArrowMoving(board);
+}
+
+export function withArrowMoving(board: PlaitBoard) {
+    const { keydown, keyup } = board;
+    board.keydown = (event: KeyboardEvent) => {
+        const selectedElements = getSelectedElements(board);
+        if (!PlaitBoard.isReadonly(board) && selectedElements.length > 0 && (hotkeys.isArrow(event) || hotkeys.isExtendArrow(event))) {
+            event.preventDefault();
+            const isShift = event.shiftKey ? true : false;
+            const offset = [0, 0];
+            const buffer = isShift ? 10 : 1;
+            switch (true) {
+                case hotkeys.isMoveUp(event) || hotkeys.isExtendUp(event): {
+                    offset[1] = -buffer;
+                    break;
+                }
+                case hotkeys.isMoveDown(event) || hotkeys.isExtendDown(event): {
+                    offset[1] = buffer;
+                    break;
+                }
+                case hotkeys.isMoveBackward(event) || hotkeys.isExtendBackward(event): {
+                    offset[0] = -buffer;
+                    break;
+                }
+                case hotkeys.isMoveForward(event) || hotkeys.isExtendForward(event): {
+                    offset[0] = buffer;
+                    break;
+                }
+            }
+            const targetElements = getTargetElements(board);
+            throttleRAF(() => {
+                updatePoints(board, targetElements, offset[0], offset[1]);
+            });
+        }
+        keydown(event);
+    };
+
+    board.keyup = (event: KeyboardEvent) => {
+        MERGING.set(board, false);
+        keyup(event);
+    };
     return board;
+}
+
+export function getTargetElements(board: PlaitBoard) {
+    const selectedElements = getSelectedElements(board);
+    const movableElements = board.children.filter(item => board.isMovable(item));
+    const targetElements = selectedElements.filter(element => {
+        return movableElements.includes(element);
+    });
+    const relatedElements = board.getRelatedFragment([]);
+    targetElements.push(...relatedElements);
+    return targetElements;
+}
+
+export function updatePoints(board: PlaitBoard, targetElements: PlaitElement[], offsetX: number, offsetY: number) {
+    const validElements = targetElements.filter(element => board.children.findIndex(item => item.id === element.id) > -1);
+    const currentElements = validElements.map(element => {
+        const points = element.points || [];
+        const newPoints = points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];
+        const index = board.children.findIndex(item => item.id === element.id);
+        Transforms.setNode(
+            board,
+            {
+                points: newPoints
+            },
+            [index]
+        );
+        MERGING.set(board, true);
+        return PlaitNode.get(board, [index]);
+    });
+    return currentElements;
 }
