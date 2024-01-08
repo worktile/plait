@@ -49,13 +49,13 @@ Plait 是为构建一体化的白板工具产品而设计的框架，它的核�
 
 **标准数据流**
 
-![image.png](https://atlas-rc.pingcode.com/files/public/64772907e468e3b3652fa3ff/origin-url)
+![data flow](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/packages/data-flow.png?raw=true)
 
 
 
 #### **架构图**
 
-![image.png](https://atlas-rc.pingcode.com/files/public/647726b0e468e3b3652fa3fe/origin-url)
+![architecture diagram](https://github.com/worktile/plait/blob/develop/.docgeni/public/assets/packages/architecture-diagram.png?raw=true)
 
 
 
