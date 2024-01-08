@@ -49,7 +49,7 @@ export function withMoving(board: PlaitBoard) {
             startPoint = point;
             if (hitElement && targetElements.includes(hitElement)) {
                 activeElements = targetElements;
-            } else if (hitElement) {
+            } else if (hitElement && board.isMovable(hitElement)) {
                 activeElements = [hitElement];
                 addSelectionWithTemporaryElements(board, []);
             }
