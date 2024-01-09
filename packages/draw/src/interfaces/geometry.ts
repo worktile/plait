@@ -77,6 +77,7 @@ export const PlaitGeometry = {};
 export interface ShapeEngine {
     isHit: (rectangle: RectangleClient, point: Point) => boolean;
     getNearestPoint: (rectangle: RectangleClient, point: Point) => Point;
+    getNearestCrossingPoint?: (rectangle: RectangleClient, point: Point) => Point;
     getConnectorPoints: (rectangle: RectangleClient) => Point[];
     getCornerPoints: (rectangle: RectangleClient) => Point[];
     getEdgeByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => [Point, Point] | null;

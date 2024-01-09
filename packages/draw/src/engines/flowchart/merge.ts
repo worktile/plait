@@ -1,10 +1,10 @@
 import { Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
-import { getCenterPointsOnPolygon, getTextRectangle } from '../../utils/geometry';
 import { createPolygonEngine } from '../basic-shapes/polygon';
 import { getRectangleByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
+import { getCenterPointsOnPolygon } from '../../utils/polygon';
 
 export const getMergePoints = (rectangle: RectangleClient): Point[] => {
     return [

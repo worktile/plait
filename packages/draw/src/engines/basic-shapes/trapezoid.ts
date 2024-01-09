@@ -1,16 +1,8 @@
-import {
-    PlaitBoard,
-    Point,
-    PointOfRectangle,
-    RectangleClient,
-    getNearestPointBetweenPointAndSegments,
-    isPointInPolygon,
-    setStrokeLinecap
-} from '@plait/core';
+import { Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
-import { Options } from 'roughjs/bin/core';
-import { getCenterPointsOnPolygon, getPolygonEdgeByConnectionPoint, getTextRectangle } from '../../utils/geometry';
 import { createPolygonEngine } from './polygon';
+import { getCenterPointsOnPolygon } from '../../utils/polygon';
+import { getTextRectangle } from '../../utils/geometry';
 
 export const getTrapezoidPoints = (rectangle: RectangleClient): Point[] => {
     return [

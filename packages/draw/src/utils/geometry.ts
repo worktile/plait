@@ -9,6 +9,7 @@ import {
     SELECTION_FILL_COLOR,
     ThemeColorMode,
     Transforms,
+    Vector,
     addSelectedElement,
     clearSelectedElement,
     createG,
@@ -27,7 +28,7 @@ import {
     ShapeDefaultSpace,
     getFlowchartPointers
 } from '../constants';
-import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints, isPointOnSegment } from '@plait/common';
+import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
@@ -124,11 +125,10 @@ export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient,
     return getEngine(shape).draw(board, outerRectangle, options);
 };
 
-export const getNearestPoint = (element: PlaitShape, point: Point, inflateDelta = 0) => {
+export const getNearestPoint = (element: PlaitShape, point: Point) => {
     const rectangle = getRectangleByPoints(element.points);
-    const activeRectangle = RectangleClient.inflate(rectangle, inflateDelta);
     const shape = getShape(element);
-    return getEngine(shape).getNearestPoint(activeRectangle, point);
+    return getEngine(shape).getNearestPoint(rectangle, point);
 };
 
 export const getCenterPointsOnPolygon = (points: Point[]) => {
@@ -138,17 +138,6 @@ export const getCenterPointsOnPolygon = (points: Point[]) => {
         centerPoint.push([(points[i][0] + points[j][0]) / 2, (points[i][1] + points[j][1]) / 2]);
     }
     return centerPoint;
-};
-
-export const getPolygonEdgeByConnectionPoint = (corners: Point[], point: Point) => {
-    for (let index = 1; index <= corners.length; index++) {
-        let start = corners[index - 1];
-        let end = index === corners.length ? corners[0] : corners[index];
-        if (isPointOnSegment(point, start, end)) {
-            return [start, end] as [Point, Point];
-        }
-    }
-    return null;
 };
 
 export const getDefaultFlowchartProperty = (symbol: FlowchartSymbols) => {

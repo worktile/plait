@@ -1,9 +1,10 @@
 import { Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
-import { getCenterPointsOnPolygon, getStrokeWidthByElement } from '../../utils';
+import { getStrokeWidthByElement } from '../../utils/style';
 import { getRectangleByPoints } from '@plait/common';
 import { ShapeDefaultSpace } from '../../constants';
+import { getCenterPointsOnPolygon } from '../../utils/polygon';
 
 export const getTrianglePoints = (rectangle: RectangleClient): Point[] => {
     return [

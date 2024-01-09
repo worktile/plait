@@ -37,7 +37,7 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
             const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
             if (hitElement) {
                 boundShapeG = drawBoundMask(board, hitElement);
-                let nearestPoint = getNearestPoint(hitElement, movingPoint, ACTIVE_STROKE_WIDTH);
+                let nearestPoint = getNearestPoint(hitElement, movingPoint);
                 const rectangle = getRectangleByPoints(hitElement.points);
                 const activeRectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
                 const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, activeRectangle);

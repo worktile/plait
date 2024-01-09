@@ -16,6 +16,9 @@ import {
 } from '@plait/core';
 import { LineShape, PlaitDrawElement, PlaitLine, PlaitShape } from '../interfaces';
 import { handleLineCreating, getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
+import { getShape } from '../utils/shape';
+import { getEngine } from '../engines';
+import { getRectangleByPoints } from '@plait/common';
 
 export const WithLineAutoCompletePluginKey = 'plait-line-auto-complete-plugin-key';
 
@@ -56,7 +59,15 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         if (startPoint && sourceElement) {
             const distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
             if (distance > PRESS_AND_MOVE_BUFFER) {
-                temporaryElement = handleLineCreating(board, LineShape.elbow, startPoint, movingPoint, sourceElement, lineShapeG);
+                const rectangle = getRectangleByPoints(sourceElement.points);
+                const shape = getShape(sourceElement);
+                const engine = getEngine(shape);
+                let sourcePoint = startPoint;
+                if (engine.getNearestCrossingPoint) {
+                    const crossingPoint = engine.getNearestCrossingPoint(rectangle, startPoint);
+                    sourcePoint = crossingPoint;
+                }
+                temporaryElement = handleLineCreating(board, LineShape.elbow, sourcePoint, movingPoint, sourceElement, lineShapeG);
             }
         }
         pointerMove(event);

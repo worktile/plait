@@ -8,12 +8,12 @@ import {
     isPointInRoundRectangle
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
-import { getPolygonEdgeByConnectionPoint } from '../../utils/geometry';
 import { Options } from 'roughjs/bin/core';
 import { getRectangleByPoints } from '@plait/common';
 import { ShapeDefaultSpace } from '../../constants';
 import { getStrokeWidthByElement } from '../../utils';
 import { getRoundRectangleRadius } from './round-rectangle';
+import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 
 const heightRatio = 3 / 4;
 

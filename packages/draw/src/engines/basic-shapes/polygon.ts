@@ -3,13 +3,14 @@ import {
     Point,
     PointOfRectangle,
     RectangleClient,
+    distanceBetweenPointAndPoint,
     getNearestPointBetweenPointAndSegments,
     isPointInPolygon,
     setStrokeLinecap
 } from '@plait/core';
-import { getPolygonEdgeByConnectionPoint } from '../../utils';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
+import { getCrossingPointBetweenPointAndPolygon, getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 
 export interface CreateOptions {
     getPolygonPoints: (rectangle: RectangleClient) => Point[];
@@ -36,6 +37,23 @@ export function createPolygonEngine(options: CreateOptions): ShapeEngine {
         },
         getNearestPoint(rectangle: RectangleClient, point: Point) {
             return getNearestPointBetweenPointAndSegments(point, getPoints(rectangle));
+        },
+        getNearestCrossingPoint(rectangle: RectangleClient, point: Point) {
+            const corners = getPoints(rectangle);
+            const crossingPoints = getCrossingPointBetweenPointAndPolygon(corners, point);
+            let nearestPoint = crossingPoints[0];
+            let nearestDistance = distanceBetweenPointAndPoint(point[0], point[1], nearestPoint[0], nearestPoint[1]);
+            crossingPoints
+                .filter((v, index) => index > 0)
+                .forEach(crossingPoint => {
+                    let distance = distanceBetweenPointAndPoint(point[0], point[1], crossingPoint[0], crossingPoint[1]);
+                    if (distance < nearestDistance) {
+                        nearestDistance = distance;
+                        nearestPoint = crossingPoint;
+                    }
+                });
+
+            return nearestPoint;
         },
         getEdgeByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle): [Point, Point] | null {
             const corners = getPoints(rectangle);

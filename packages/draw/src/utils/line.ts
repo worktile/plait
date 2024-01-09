@@ -11,7 +11,6 @@ import {
     drawLinearPath,
     createMask,
     createRect,
-    ACTIVE_STROKE_WIDTH,
     PointOfRectangle,
     Direction,
     Vector,
@@ -261,20 +260,6 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
     }
 };
 
-export const transformOpsToPoints = (ops: Op[]) => {
-    const result = [];
-    for (let item of ops) {
-        if (item.op === 'move') {
-            result.push([item.data[0], item.data[1]]);
-        } else {
-            result.push([item.data[0], item.data[1]]);
-            result.push([item.data[2], item.data[3]]);
-            result.push([item.data[4], item.data[5]]);
-        }
-    }
-    return result;
-};
-
 export const isHitPolyLine = (pathPoints: Point[], point: Point, strokeWidth: number, expand: number = 0) => {
     const distance = distanceBetweenPointAndSegments(pathPoints, point);
     return distance <= strokeWidth + expand;
@@ -363,26 +348,18 @@ export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, d
     }
 };
 
-export const transformPointToConnection = (board: PlaitBoard, point: Point, hitElement: PlaitShape): Point => {
+export const getConnectionByNearestPoint = (board: PlaitBoard, point: Point, hitElement: PlaitShape): Point => {
     let rectangle = getRectangleByPoints(hitElement.points);
-    rectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
-    let nearestPoint = getNearestPoint(hitElement, point, ACTIVE_STROKE_WIDTH);
+    let nearestPoint = getNearestPoint(hitElement, point);
     const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, rectangle);
     nearestPoint = hitConnector ? hitConnector : nearestPoint;
     return [(nearestPoint[0] - rectangle.x) / rectangle.width, (nearestPoint[1] - rectangle.y) / rectangle.height];
 };
 
-// export const getConnectionByPointOnRectangleEdge = (board: PlaitBoard, point: Point, hitElement: PlaitShape): Point => {
-//     let rectangle = getRectangleByPoints(hitElement.points);
-//     const hitConnector = getHitConnectorPoint(point, hitElement, rectangle);
-//     const newPoint = hitConnector ?? point;
-//     return [(newPoint[0] - rectangle.x) / rectangle.width, (newPoint[1] - rectangle.y) / rectangle.height];
-// };
-
-export const getHitConnectorPoint = (movingPoint: Point, hitElement: PlaitShape, rectangle: RectangleClient) => {
+export const getHitConnectorPoint = (point: Point, hitElement: PlaitShape, rectangle: RectangleClient) => {
     const shape = getShape(hitElement);
     const connector = getEngine(shape).getConnectorPoints(rectangle);
-    const points = getPointsByCenterPoint(movingPoint, 10, 10);
+    const points = getPointsByCenterPoint(point, 10, 10);
     const pointRectangle = getRectangleByPoints(points);
     return connector.find(point => {
         return RectangleClient.isHit(pointRectangle, RectangleClient.toRectangleClient([point, point]));
@@ -466,14 +443,14 @@ export const alignPoints = (basePoint: Point, movingPoint: Point) => {
 export const handleLineCreating = (
     board: PlaitBoard,
     lineShape: LineShape,
-    startPoint: Point,
+    sourcePoint: Point,
     movingPoint: Point,
     sourceElement: PlaitShape | null,
     lineShapeG: SVGGElement
 ) => {
     const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
-    const targetConnection = hitElement ? transformPointToConnection(board, movingPoint, hitElement) : undefined;
-    const connection = sourceElement ? transformPointToConnection(board, startPoint, sourceElement) : undefined;
+    const targetConnection = hitElement ? getConnectionByNearestPoint(board, movingPoint, hitElement) : undefined;
+    const connection = sourceElement ? getConnectionByNearestPoint(board, sourcePoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;
     const lineGenerator = new LineShapeGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();
@@ -484,7 +461,7 @@ export const handleLineCreating = (
     targetMarker && delete memorizedLatest.target;
     const temporaryLineElement = createLineElement(
         lineShape,
-        [startPoint, movingPoint],
+        [sourcePoint, movingPoint],
         { marker: sourceMarker || LineMarkerType.none, connection: connection, boundId: sourceElement?.id },
         { marker: targetMarker || LineMarkerType.arrow, connection: targetConnection, boundId: targetBoundId },
         [],

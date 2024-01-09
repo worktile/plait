@@ -11,7 +11,7 @@ import {
     PlaitLine
 } from '../interfaces';
 import { memorizeLatest } from '@plait/common';
-import { getLinePoints, getSelectedLineElements, transformPointToConnection } from '../utils';
+import { getConnectionByNearestPoint, getLinePoints, getSelectedLineElements } from '../utils';
 
 export const resizeLine = (board: PlaitBoard, options: Partial<PlaitLine>, path: Path) => {
     Transforms.setNode(board, options, path);
@@ -77,7 +77,7 @@ export const collectLineUpdatedRefsByGeometry = (
             const object = { ...line[handle] };
             const linePoints = getLinePoints(board, line);
             const point = isSourceBound ? linePoints[0] : linePoints[linePoints.length - 1];
-            object.connection = transformPointToConnection(board, point, geometry);
+            object.connection = getConnectionByNearestPoint(board, point, geometry);
             const path = PlaitBoard.findPath(board, line);
             const index = refs.findIndex(obj => Path.equals(obj.path, path));
             if (index === -1) {
@@ -97,7 +97,7 @@ export const collectLineUpdatedRefsByGeometry = (
 export const connectLineToGeometry = (board: PlaitBoard, lineElement: PlaitLine, handle: LineHandleKey, geometryElement: PlaitGeometry) => {
     const linePoints = PlaitLine.getPoints(board, lineElement);
     const point = handle === LineHandleKey.source ? linePoints[0] : linePoints[linePoints.length - 1];
-    const connection: PointOfRectangle = transformPointToConnection(board, point, geometryElement);
+    const connection: PointOfRectangle = getConnectionByNearestPoint(board, point, geometryElement);
     if (connection) {
         let source: LineHandle = lineElement.source;
         let target: LineHandle = lineElement.target;
