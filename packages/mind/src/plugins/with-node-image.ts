@@ -27,18 +27,18 @@ import { acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/c
 import { DEFAULT_MIND_IMAGE_WIDTH } from '../constants';
 
 export const withNodeImage = (board: PlaitBoard) => {
-    const { keydown, pointerDown, globalPointerUp, setFragment, insertFragment, deleteFragment } = board;
+    const { keydown, pointerUp, globalPointerUp, setFragment, insertFragment, deleteFragment } = board;
 
-    board.pointerDown = (event: PointerEvent) => {
+    board.pointerUp = (event: PointerEvent) => {
         const elementOfFocusedImage = getElementOfFocusedImage(board);
         if (
+            elementOfFocusedImage &&
+            MindElement.isMindElement(board, elementOfFocusedImage) &&
             !isContextmenu(event) &&
             (PlaitBoard.isReadonly(board) || !isMainPointer(event) || !PlaitBoard.isPointer(board, PlaitPointerType.selection))
         ) {
-            if (elementOfFocusedImage && MindElement.isMindElement(board, elementOfFocusedImage)) {
-                removeImageFocus(board, elementOfFocusedImage as MindElement<ImageData>);
-            }
-            pointerDown(event);
+            removeImageFocus(board, elementOfFocusedImage as MindElement<ImageData>);
+            pointerUp(event);
             return;
         }
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
@@ -50,7 +50,7 @@ export const withNodeImage = (board: PlaitBoard) => {
             isHitImage(board, hitElement as MindElement<ImageData>, point);
         if (isHitImageResult && elementOfFocusedImage && hitElement === elementOfFocusedImage) {
             temporaryDisableSelection(board as PlaitOptionsBoard);
-            pointerDown(event);
+            pointerUp(event);
             return;
         }
         if (elementOfFocusedImage && MindElement.isMindElement(board, elementOfFocusedImage)) {
@@ -60,7 +60,7 @@ export const withNodeImage = (board: PlaitBoard) => {
             temporaryDisableSelection(board as PlaitOptionsBoard);
             addImageFocus(board, hitElement as MindElement<ImageData>);
         }
-        pointerDown(event);
+        pointerUp(event);
     };
 
     board.keydown = (event: KeyboardEvent) => {
