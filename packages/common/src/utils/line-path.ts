@@ -1,5 +1,6 @@
 import { Direction, Point, distanceBetweenPointAndPoint } from '@plait/core';
 import { getDirectionFactor } from './direction';
+import { isPointOnSegment } from './math';
 
 export function getOppositeDirection(direction: Direction) {
     switch (direction) {
@@ -148,12 +149,9 @@ export function calculatePolylineLength(points: Point[]) {
 
 export function getRatioByPoint(points: Point[], point: Point) {
     const totalLength = calculatePolylineLength(points);
-
     let distance = 0;
-
     for (let i = 0; i < points.length - 1; i++) {
-        const isOverlap = isPointOnLineSegment(point, points[i], points[i + 1]);
-
+        const isOverlap = isPointOnSegment(point, points[i], points[i + 1]);
         if (isOverlap) {
             distance += distanceBetweenPointAndPoint(point[0], point[1], points[i][0], points[i][1]);
             return distance / totalLength;
@@ -162,15 +160,6 @@ export function getRatioByPoint(points: Point[], point: Point) {
         }
     }
     throw new Error('Cannot get ratio by point');
-}
-
-export function isPointOnLineSegment(point: Point, startPoint: Point, endPoint: Point) {
-    const distanceToStart = distanceBetweenPointAndPoint(point[0], point[1], startPoint[0], startPoint[1]);
-    const distanceToEnd = distanceBetweenPointAndPoint(point[0], point[1], endPoint[0], endPoint[1]);
-
-    const segmentLength = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
-
-    return Math.abs(distanceToStart + distanceToEnd - segmentLength) < 0.1;
 }
 
 export const removeDuplicatePoints = (points: Point[]) => {

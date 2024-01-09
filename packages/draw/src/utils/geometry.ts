@@ -12,7 +12,6 @@ import {
     addSelectedElement,
     clearSelectedElement,
     createG,
-    distanceBetweenPointAndSegment,
     drawCircle,
     idCreator
 } from '@plait/core';
@@ -28,7 +27,7 @@ import {
     ShapeDefaultSpace,
     getFlowchartPointers
 } from '../constants';
-import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
+import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints, isPointOnSegment } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
@@ -141,12 +140,11 @@ export const getCenterPointsOnPolygon = (points: Point[]) => {
     return centerPoint;
 };
 
-export const getEdgeOnPolygonByPoint = (corners: Point[], point: Point) => {
+export const getPolygonEdgeByConnectionPoint = (corners: Point[], point: Point) => {
     for (let index = 1; index <= corners.length; index++) {
         let start = corners[index - 1];
         let end = index === corners.length ? corners[0] : corners[index];
-        const distance = distanceBetweenPointAndSegment(point[0], point[1], start[0], start[1], end[0], end[1]);
-        if (distance < 1) {
+        if (isPointOnSegment(point, start, end)) {
             return [start, end] as [Point, Point];
         }
     }

@@ -8,7 +8,7 @@ import {
     setStrokeLinecap
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
-import { getEdgeOnPolygonByPoint } from '../../utils/geometry';
+import { getPolygonEdgeByConnectionPoint } from '../../utils/geometry';
 import { Options } from 'roughjs/bin/core';
 import { getRectangleByPoints } from '@plait/common';
 import { ShapeDefaultSpace } from '../../constants';
@@ -37,7 +37,7 @@ export const CommentEngine: ShapeEngine = {
     getEdgeByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle): [Point, Point] | null {
         const corners = getCommentPoints(rectangle);
         const point = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
-        return getEdgeOnPolygonByPoint(corners, point);
+        return getPolygonEdgeByConnectionPoint(corners, point);
     },
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);

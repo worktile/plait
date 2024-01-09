@@ -7,7 +7,7 @@ import {
     isPointInPolygon,
     setStrokeLinecap
 } from '@plait/core';
-import { getEdgeOnPolygonByPoint } from '../../utils';
+import { getPolygonEdgeByConnectionPoint } from '../../utils';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 
@@ -40,7 +40,7 @@ export function createPolygonEngine(options: CreateOptions): ShapeEngine {
         getEdgeByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle): [Point, Point] | null {
             const corners = getPoints(rectangle);
             const point = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
-            return getEdgeOnPolygonByPoint(corners, point);
+            return getPolygonEdgeByConnectionPoint(corners, point);
         },
         getConnectorPoints(rectangle: RectangleClient) {
             if (options.getConnectorPoints) {

@@ -9,7 +9,7 @@ import {
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getCenterPointsOnPolygon, getEdgeOnPolygonByPoint, getTextRectangle } from '../../utils/geometry';
+import { getCenterPointsOnPolygon, getPolygonEdgeByConnectionPoint, getTextRectangle } from '../../utils/geometry';
 import { createPolygonEngine } from './polygon';
 
 export const getTrapezoidPoints = (rectangle: RectangleClient): Point[] => {

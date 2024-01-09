@@ -190,16 +190,16 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
             // 5、纠正最短路径：获取图形间的中线 xAxis、yAxis（如果存在）
             const isHitX = RectangleClient.isHitX(options.sourceOuterRectangle, options.targetOuterRectangle);
             const isHitY = RectangleClient.isHitY(options.sourceOuterRectangle, options.targetOuterRectangle);
-            const xAxis = isHitX
+            const centerX = isHitX
                 ? undefined
                 : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
-            const yAxis = isHitY
+            const centerY = isHitY
                 ? undefined
                 : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, false);
             // 5、纠正最短路径：基于中线 xAxis、yAxis 和最短路径对拐点进行纠正，使拐点经过中线
             route = routeAdjust(route, {
-                xAxis,
-                yAxis,
+                centerX,
+                centerY,
                 sourceRectangle: options.sourceRectangle,
                 targetRectangle: options.targetRectangle
             });

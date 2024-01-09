@@ -15,8 +15,8 @@ export interface ElbowLineRouteOptions {
 }
 
 export interface RouteAdjustOptions {
-    xAxis?: number;
-    yAxis?: number;
+    centerX?: number;
+    centerY?: number;
     sourceRectangle: RectangleClient;
     targetRectangle: RectangleClient;
 }
@@ -37,23 +37,23 @@ export const generateElbowLineRoute = (options: ElbowLineRouteOptions) => {
     let route = aStar.getRoute(nextSourcePoint, nextTargetPoint);
     route = [options.sourcePoint, ...route, nextTargetPoint, options.targetPoint];
     // Centerline correction: Correct the shortest path route based on the horizontal centerline/vertical centerline
-     // 1. Find the horizontal center line (xAxis)/vertical center line (yAxis)
-     // 2. Find the point that intersects xAxis/yAxis in route, and find the line segment parallel to xAxis/yAxis in route
-     // 3. Construct a rectangle based on the intersection points and parallel lines found in the previous step.
-     // 4. Determine whether the rectangle intersects with the element. If it does not intersect, the center line can be mapped based on the rectangle constructed in the previous step.
-     // 5. Determine whether the path after mapping the center line meets the constraints (inflection point cannot be increased)
+    // 1. Find the horizontal center line (centerX)/vertical center line (centerY)
+    // 2. Find the point that intersects centerX/centerY in route, and find the line segment parallel to centerX/centerY in route
+    // 3. Construct a rectangle based on the intersection points and parallel lines found in the previous step.
+    // 4. Determine whether the rectangle intersects with the element. If it does not intersect, the center line can be mapped based on the rectangle constructed in the previous step.
+    // 5. Determine whether the path after mapping the center line meets the constraints (inflection point cannot be increased)
     const isHitX = RectangleClient.isHitX(options.sourceOuterRectangle, options.targetOuterRectangle);
     const isHitY = RectangleClient.isHitY(options.sourceOuterRectangle, options.targetOuterRectangle);
-    const xAxis = isHitX ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
-    const yAxis = isHitY ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, false);
-    route = routeAdjust(route, { xAxis, yAxis, sourceRectangle: options.sourceRectangle, targetRectangle: options.targetRectangle });
+    const centerX = isHitX ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
+    const centerY = isHitY ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, false);
+    route = routeAdjust(route, { centerX, centerY, sourceRectangle: options.sourceRectangle, targetRectangle: options.targetRectangle });
     return route;
 };
 
 export const routeAdjust = (path: Point[], options: RouteAdjustOptions) => {
-    const { sourceRectangle, targetRectangle, xAxis, yAxis } = options;
-    if (xAxis !== undefined) {
-        const optionsX = getAdjustOptions(path, xAxis, true);
+    const { sourceRectangle, targetRectangle, centerX, centerY } = options;
+    if (centerX !== undefined) {
+        const optionsX = getAdjustOptions(path, centerX, true);
         const resultX =
             optionsX.pointOfHit &&
             adjust(path, { parallelPaths: optionsX.parallelPaths, pointOfHit: optionsX.pointOfHit, sourceRectangle, targetRectangle });
@@ -61,8 +61,8 @@ export const routeAdjust = (path: Point[], options: RouteAdjustOptions) => {
             path = resultX;
         }
     }
-    if (yAxis !== undefined) {
-        const optionsY = getAdjustOptions(path, yAxis, false);
+    if (centerY !== undefined) {
+        const optionsY = getAdjustOptions(path, centerY, false);
         const resultY =
             optionsY.pointOfHit &&
             adjust(path, { parallelPaths: optionsY.parallelPaths, pointOfHit: optionsY.pointOfHit, sourceRectangle, targetRectangle });
@@ -127,7 +127,7 @@ const adjust = (route: Point[], options: AdjustOptions) => {
     return result;
 };
 
-const getAdjustOptions = (path: Point[], middle: number, isHorizontal: boolean) => {
+const getAdjustOptions = (path: Point[], centerOfAxis: number, isHorizontal: boolean) => {
     const parallelPaths: [Point, Point][] = [];
     let start: null | Point = null;
     let pointOfHit: null | Point = null;
@@ -145,7 +145,7 @@ const getAdjustOptions = (path: Point[], middle: number, isHorizontal: boolean) 
                 start = null;
             }
         }
-        if (current[axis] === middle) {
+        if (current[axis] === centerOfAxis) {
             pointOfHit = current;
         }
     }

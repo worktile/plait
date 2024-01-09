@@ -8,3 +8,4 @@ export * from './text';
 export * from './image';
 export * from './elbow-line-route';
 export * from './memorize';
+export * from './math';
