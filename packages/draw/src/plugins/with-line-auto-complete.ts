@@ -44,7 +44,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
             const hitPoint = points[index];
             if (hitPoint) {
                 temporaryDisableSelection(board as PlaitOptionsBoard);
-                startPoint = clickPoint;
+                startPoint = hitPoint;
                 sourceElement = targetElement;
                 BoardTransforms.updatePointerType(board, LineShape.elbow);
             }
