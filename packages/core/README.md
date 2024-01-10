@@ -61,6 +61,6 @@ Mainly provides the following capabilities:
 
 #### Dependence
 
-- roughjs
-- is-hotkey
+- `roughjs`
+- `is-hotkey`
 

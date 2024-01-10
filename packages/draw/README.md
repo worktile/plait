@@ -1,3 +1,15 @@
 
-`@plait/draw` 库包含流程图的核心逻辑的实现，基于 Plait 框架。
+# `@plait/draw`
 
+Implementation of the core logic of the flowchart drawing tool plugin.
+
+
+- Basic graphics
+- Standard flowchart graphics
+
+
+### Dependencies
+
+- `@plait/core`
+- `@plait/common`
+- `@plait/text`

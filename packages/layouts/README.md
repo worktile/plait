@@ -1,25 +1,27 @@
+# @plait/layouts
 
-@plait/layouts 用于实现思维导图自动布局算法，基于独立的算法可以将思维导图节点布局逻辑与其他交互机实现解耦，自动布局算法只关注节点的位置分布。
-
-
-
-**布局分类**
-
-1. 逻辑布局
-1. 标准布局
-1. 缩进布局
-1. 布局嵌套
+It is used to implement the mind map automatic layout algorithm. Based on an independent algorithm, the mind map node layout logic can be decoupled from other functions. The automatic layout algorithm only focuses on the location distribution of nodes.
 
 
-> 时间线和鱼骨图暂不支持
+**Layout Classification**
+
+1. Logical layout
+1. Standard layout
+1. Indent layout
+1. Layout nesting
+
+
+> Timeline and fishbone are not supported yet
 
 
 
-**算法实现**
+**Algorithm Implementation**
 
-本库中的布局算法主要参考了   [Drawing Non-layered Tidy Trees in Linear Time] 论文中  的实现思路，对它进行了适当的改造，节点的抽象也沿用了论文中的抽象实现。
+The layout algorithm in this library mainly refers to the implementation ideas in the paper [Drawing Non-layered Tidy Trees in Linear Time], and has been appropriately transformed. The abstraction of nodes also follows the abstract implementation in the paper.
 
-论文翻译见：  [https://zhuanlan.zhihu.com/p/573659320](https://zhuanlan.zhihu.com/p/573659320)  
+### Reference
 
-参考：  [https://github.com/leungwensen/mindmap-layouts](https://github.com/leungwensen/mindmap-layouts)  
+For the paper, see: [https://github.com/Klortho/d3-flextree/tree/master/papers]()
 
+
+open source library: [https://github.com/leungwensen/mindmap-layouts](https://github.com/leungwensen/mindmap-layouts)
