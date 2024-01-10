@@ -110,5 +110,28 @@ export const RectangleClient = {
         const x = point[0],
             y = point[1];
         return x > rectangle.x && x < rectangle.x + rectangle.width && y > rectangle.y && y < rectangle.y + rectangle.height;
-    }
+    },
+    getBoundingRectangle(rectangles: RectangleClient[]): RectangleClient {
+        if (rectangles.length === 0) {
+          throw new Error('rectangles can not be empty array');
+        }
+        let minX = Number.MAX_VALUE;
+        let minY = Number.MAX_VALUE;
+        let maxX = Number.MIN_VALUE;
+        let maxY = Number.MIN_VALUE;
+
+        rectangles.forEach(rect => {
+          minX = Math.min(minX, rect.x);
+          minY = Math.min(minY, rect.y);
+          maxX = Math.max(maxX, rect.x + rect.width);
+          maxY = Math.max(maxY, rect.y + rect.height);
+        });
+      
+        return {
+          x: minX,
+          y: minY,
+          width: maxX - minX,
+          height: maxY - minY
+        };
+      }
 };

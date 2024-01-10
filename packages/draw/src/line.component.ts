@@ -1,12 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import {
-    PlaitBoard,
-    PlaitPluginElementComponent,
-    PlaitPluginElementContext,
-    OnContextChanged,
-    getElementById,
-    isSelectionMoving
-} from '@plait/core';
+import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, getElementById, isSelectionMoving } from '@plait/core';
 import { Subject } from 'rxjs';
 import { LineText, PlaitGeometry, PlaitLine } from './interfaces';
 import { TextManage, TextManageRef } from '@plait/text';

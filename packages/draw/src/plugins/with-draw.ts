@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Selection, getSelectedElements } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitPluginElementContext, RectangleClient, Selection, getSelectedElements } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
@@ -6,7 +6,7 @@ import { getRectangleByPoints } from '@plait/common';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDrawing, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
-import { getLinePoints, isRectangleHitDrawElement, isHitDrawElement } from '../utils';
+import { getLinePoints, isRectangleHitDrawElement, isHitDrawElement, getLineTextRectangle } from '../utils';
 import { withLineCreateByDraw } from './with-line-create';
 import { withGeometryResize } from './with-geometry-resize';
 import { withLineResize } from './with-line-resize';
@@ -37,7 +37,12 @@ export const withDraw = (board: PlaitBoard) => {
         }
         if (PlaitDrawElement.isLine(element)) {
             const points = getLinePoints(board, element);
-            return getRectangleByPoints(points);
+            const lineTextRectangles = element.texts.map((text, index) => {
+                const rectangle = getLineTextRectangle(board, element, index);
+                return rectangle;
+            })
+            const linePointsRectangle = getRectangleByPoints(points);
+            return RectangleClient.getBoundingRectangle([linePointsRectangle, ...lineTextRectangles]);
         }
         if (PlaitDrawElement.isImage(element)) {
             return getRectangleByPoints(element.points);

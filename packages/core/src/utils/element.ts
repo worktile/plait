@@ -2,38 +2,29 @@ import { Ancestor, PlaitBoard, PlaitElement, RectangleClient } from '../interfac
 import { depthFirstRecursion, getIsRecursionFunc } from './tree';
 
 export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement[], recursion: boolean): RectangleClient {
-    const boundaryBox = {
-        left: Number.MAX_VALUE,
-        top: Number.MAX_VALUE,
-        right: Number.NEGATIVE_INFINITY,
-        bottom: Number.NEGATIVE_INFINITY
-    };
-
-    const calcRectangleClient = (node: PlaitElement) => {
+    const rectangles: RectangleClient[] = [];
+    const callback = (node: PlaitElement) => {
         const nodeRectangle = board.getRectangle(node);
         if (nodeRectangle) {
-            boundaryBox.left = Math.min(boundaryBox.left, nodeRectangle.x);
-            boundaryBox.top = Math.min(boundaryBox.top, nodeRectangle.y);
-            boundaryBox.right = Math.max(boundaryBox.right, nodeRectangle.x + nodeRectangle.width);
-            boundaryBox.bottom = Math.max(boundaryBox.bottom, nodeRectangle.y + nodeRectangle.height);
+            rectangles.push(nodeRectangle);
         } else {
             console.error(`can not get rectangle of element:`, node);
         }
     };
-
     elements.forEach(element => {
         if (recursion) {
             depthFirstRecursion(
                 element,
-                node => calcRectangleClient(node),
+                node => callback(node),
                 node => board.isRecursion(node)
             );
         } else {
-            calcRectangleClient(element);
+            callback(element);
         }
     });
-
-    if (boundaryBox.left === Number.MAX_VALUE) {
+    if (rectangles.length > 0) {
+        return RectangleClient.getBoundingRectangle(rectangles);
+    } else {
         return {
             x: 0,
             y: 0,
@@ -41,13 +32,6 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
             height: 0
         };
     }
-
-    return {
-        x: boundaryBox.left,
-        y: boundaryBox.top,
-        width: boundaryBox.right - boundaryBox.left,
-        height: boundaryBox.bottom - boundaryBox.top
-    };
 }
 
 export function getBoardRectangle(board: PlaitBoard): RectangleClient {
