@@ -27,7 +27,7 @@ import { acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/c
 import { DEFAULT_MIND_IMAGE_WIDTH } from '../constants';
 
 export const withNodeImage = (board: PlaitBoard) => {
-    const { keydown, pointerUp, globalPointerUp, setFragment, insertFragment, deleteFragment } = board;
+    const { keyDown, pointerUp, globalPointerUp, setFragment, insertFragment, deleteFragment } = board;
 
     board.pointerUp = (event: PointerEvent) => {
         const elementOfFocusedImage = getElementOfFocusedImage(board);
@@ -63,14 +63,14 @@ export const withNodeImage = (board: PlaitBoard) => {
         pointerUp(event);
     };
 
-    board.keydown = (event: KeyboardEvent) => {
+    board.keyDown = (event: KeyboardEvent) => {
         const selectedImageElement = getElementOfFocusedImage(board);
         if (!PlaitBoard.isReadonly(board) && selectedImageElement && (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))) {
             addSelectedElement(board, selectedImageElement);
             MindTransforms.removeImage(board, selectedImageElement as MindElement<ImageData>);
             return;
         }
-        keydown(event);
+        keyDown(event);
     };
 
     board.globalPointerUp = (event: PointerEvent) => {

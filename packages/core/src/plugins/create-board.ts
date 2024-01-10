@@ -88,10 +88,10 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         globalMousemove: (event: MouseEvent) => {},
         mouseup: (event: MouseEvent) => {},
         globalMouseup: (event: MouseEvent) => {},
-        keydown: (event: KeyboardEvent) => {},
-        globalKeydown: (event: KeyboardEvent) => {},
-        keyup: (event: KeyboardEvent) => {},
-        dblclick: (event: MouseEvent) => {},
+        keyDown: (event: KeyboardEvent) => {},
+        globalKeyDown: (event: KeyboardEvent) => {},
+        keyUp: (event: KeyboardEvent) => {},
+        dblClick: (event: MouseEvent) => {},
         setFragment: (data: DataTransfer | null, clipboardContext: WritableClipboardContext | null) => {
             setClipboardData(data, clipboardContext);
         },

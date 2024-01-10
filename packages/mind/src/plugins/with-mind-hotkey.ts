@@ -8,9 +8,9 @@ import { isSpaceHotkey, isExpandHotkey, isTabHotkey, isEnterHotkey, isVirtualKey
 
 export const withMindHotkey = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
-    const { keydown } = board;
+    const { keyDown } = board;
 
-    board.keydown = (event: KeyboardEvent) => {
+    board.keyDown = (event: KeyboardEvent) => {
         const selectedElements = getSelectedElements(board);
         const isSingleSelection = selectedElements.length === 1;
         const isSingleMindElement = selectedElements.length === 1 && MindElement.isMindElement(board, selectedElements[0]);
@@ -57,7 +57,7 @@ export const withMindHotkey = (baseBoard: PlaitBoard) => {
             }
         }
 
-        keydown(event);
+        keyDown(event);
     };
 
     return board;

@@ -364,19 +364,19 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 filter(() => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: MouseEvent) => {
-                this.board.dblclick(event);
+                this.board.dblClick(event);
             });
 
         fromEvent<KeyboardEvent>(document, 'keydown')
             .pipe(
                 takeUntil(this.destroy$),
                 tap(event => {
-                    this.board.globalKeydown(event);
+                    this.board.globalKeyDown(event);
                 }),
                 filter(event => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board) && !hasInputOrTextareaTarget(event.target))
             )
             .subscribe((event: KeyboardEvent) => {
-                this.board.keydown(event);
+                this.board.keyDown(event);
             });
 
         fromEvent<KeyboardEvent>(document, 'keyup')
@@ -385,7 +385,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 filter(() => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: KeyboardEvent) => {
-                this.board?.keyup(event);
+                this.board?.keyUp(event);
             });
 
         fromEvent<ClipboardEvent>(document, 'copy')

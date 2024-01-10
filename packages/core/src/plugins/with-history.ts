@@ -3,7 +3,7 @@ import { isHotkey } from 'is-hotkey';
 import { PlaitHistoryBoard, shouldClear, shouldMerge, shouldSave } from '../utils';
 
 export function withHistory<T extends PlaitBoard>(board: T) {
-    const { apply, keydown } = board;
+    const { apply, keyDown } = board;
     board.history = { undos: [], redos: [] };
 
     board.redo = () => {
@@ -84,7 +84,7 @@ export function withHistory<T extends PlaitBoard>(board: T) {
         apply(op);
     };
 
-    board.keydown = (event: KeyboardEvent) => {
+    board.keyDown = (event: KeyboardEvent) => {
         if (isHotkey('mod+z', event)) {
             board.undo();
             return;
@@ -93,7 +93,7 @@ export function withHistory<T extends PlaitBoard>(board: T) {
             board.redo();
             return;
         }
-        keydown(event);
+        keyDown(event);
     };
 
     return board;

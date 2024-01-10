@@ -6,9 +6,9 @@ import { PlaitOptionsBoard } from './with-options';
 import { WithPluginOptions } from './with-selection';
 
 export const withHotkey = (board: PlaitBoard) => {
-    const { keydown, keyup, globalKeydown } = board;
+    const { keyDown, keyUp, globalKeyDown } = board;
 
-    board.keydown = (event: KeyboardEvent) => {
+    board.keyDown = (event: KeyboardEvent) => {
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
         if (!PlaitBoard.isReadonly(board) && options.isMultiple && isHotkey('mod+a', event)) {
             event.preventDefault();
@@ -44,14 +44,14 @@ export const withHotkey = (board: PlaitBoard) => {
             board.deleteFragment(null);
         }
 
-        keydown(event);
+        keyDown(event);
     };
 
-    board.keyup = (event: KeyboardEvent) => {
-        keyup(event);
+    board.keyUp = (event: KeyboardEvent) => {
+        keyUp(event);
     };
 
-    board.globalKeydown = (event: KeyboardEvent) => {
+    board.globalKeyDown = (event: KeyboardEvent) => {
         if (PlaitBoard.getMovingPointInBoard(board) || PlaitBoard.isMovingPointInBoard(board)) {
             if (isHotkey(['mod+=', 'mod++'], { byKey: true })(event)) {
                 event.preventDefault();
@@ -74,7 +74,7 @@ export const withHotkey = (board: PlaitBoard) => {
                 return;
             }
         }
-        globalKeydown(event);
+        globalKeyDown(event);
     };
 
     return board;

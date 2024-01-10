@@ -4,7 +4,7 @@ import { Element, Text } from 'slate';
 import { CustomBoard } from '../interfaces/board';
 
 export const withCommon: PlaitPlugin = (board: CustomBoard) => {
-    const { mouseup, keydown } = board;
+    const { mouseup, keyDown } = board;
 
     board.mouseup = event => {
         const newEdge = getCreateEdgeInfo(board);
@@ -29,7 +29,7 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
         mouseup(event);
     };
 
-    board.keydown = (event: KeyboardEvent) => {
+    board.keyDown = (event: KeyboardEvent) => {
         const selectedElements = getSelectedElements(board);
         if (selectedElements.length) {
             if (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event)) {
@@ -58,7 +58,7 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
                 }
             }
         }
-        keydown(event);
+        keyDown(event);
     };
 
     return board;

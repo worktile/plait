@@ -30,7 +30,7 @@ import { withMindFragment } from './with-mind-fragment';
 
 export const withMind = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
-    const { drawElement, dblclick, isRectangleHit, isHit, getRectangle, isMovable, isRecursion, isAlign, isImageBindingAllowed } = board;
+    const { drawElement, dblClick, isRectangleHit, isHit, getRectangle, isMovable, isRecursion, isAlign, isImageBindingAllowed } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMind.isMind(context.element)) {
@@ -104,9 +104,9 @@ export const withMind = (baseBoard: PlaitBoard) => {
         return isAlign(element);
     };
 
-    board.dblclick = (event: MouseEvent) => {
+    board.dblClick = (event: MouseEvent) => {
         if (PlaitBoard.isReadonly(board)) {
-            dblclick(event);
+            dblClick(event);
             return;
         }
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
@@ -126,7 +126,7 @@ export const withMind = (baseBoard: PlaitBoard) => {
         if (PlaitBoard.hasBeenTextEditing(board)) {
             return;
         }
-        dblclick(event);
+        dblClick(event);
     };
 
     return withNodeResize(

@@ -19,18 +19,18 @@ import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 
 export const withGeometryResize = (board: PlaitBoard) => {
-    const { keydown, keyup } = board;
+    const { keyDown, keyUp } = board;
 
     let isShift = false;
 
-    board.keydown = (event: KeyboardEvent) => {
+    board.keyDown = (event: KeyboardEvent) => {
         isShift = isKeyHotkey('shift', event);
-        keydown(event);
+        keyDown(event);
     };
 
-    board.keyup = (event: KeyboardEvent) => {
+    board.keyUp = (event: KeyboardEvent) => {
         isShift = false;
-        keyup(event);
+        keyUp(event);
     };
 
     const options: WithResizeOptions<PlaitGeometry | PlaitImage> = {

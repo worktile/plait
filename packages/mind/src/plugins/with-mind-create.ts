@@ -31,7 +31,7 @@ export interface FakeCreateNodeRef {
 
 export const withCreateMind = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitMindBoard;
-    const { keydown, pointerDown, pointerMove, pointerUp } = board;
+    const { keyDown, pointerDown, pointerMove, pointerUp } = board;
     let fakeCreateNodeRef: FakeCreateNodeRef | null = null;
     let emptyMind: MindElement | null = null;
 
@@ -112,9 +112,9 @@ export const withCreateMind = (board: PlaitBoard) => {
         pointerUp(event);
     };
 
-    board.keydown = (event: KeyboardEvent) => {
+    board.keyDown = (event: KeyboardEvent) => {
         if (PlaitBoard.isReadonly(board) || getSelectedElements(board).length > 0) {
-            keydown(event);
+            keyDown(event);
             return;
         }
         if (event.key === DefaultHotkey && !PlaitBoard.isPointer(board, MindPointerType.mind)) {
@@ -123,7 +123,7 @@ export const withCreateMind = (board: PlaitBoard) => {
             event.preventDefault();
             return;
         }
-        keydown(event);
+        keyDown(event);
     };
 
     function destroy() {

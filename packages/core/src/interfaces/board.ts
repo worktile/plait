@@ -52,9 +52,9 @@ export interface PlaitBoard {
     mouseup: (event: MouseEvent) => void;
     globalMousemove: (event: MouseEvent) => void;
     globalMouseup: (event: MouseEvent) => void;
-    keydown: (event: KeyboardEvent) => void;
-    globalKeydown: (event: KeyboardEvent) => void;
-    keyup: (event: KeyboardEvent) => void;
+    keyDown: (event: KeyboardEvent) => void;
+    globalKeyDown: (event: KeyboardEvent) => void;
+    keyUp: (event: KeyboardEvent) => void;
     setFragment: (
         data: DataTransfer | null,
         clipboardContext: WritableClipboardContext | null,
@@ -65,7 +65,7 @@ export interface PlaitBoard {
     deleteFragment: (data: DataTransfer | null) => void;
     getDeletedFragment: (data: PlaitElement[]) => PlaitElement[];
     getRelatedFragment: (data: PlaitElement[]) => PlaitElement[];
-    dblclick: (event: MouseEvent) => void;
+    dblClick: (event: MouseEvent) => void;
     drawElement: (context: PlaitPluginElementContext) => SVGGElement[] | ComponentType<PlaitPluginElementComponent>;
     redrawElement: (context: PlaitPluginElementContext, previousContext?: PlaitPluginElementContext) => SVGGElement[] | void;
     destroyElement: (context: PlaitPluginElementContext) => void;

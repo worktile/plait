@@ -5,9 +5,9 @@ import { PlaitDrawElement } from '../interfaces';
 import { getSelectedGeometryElements } from '../utils';
 
 export const withDrawHotkey = (board: PlaitBoard) => {
-    const { keydown, dblclick } = board;
+    const { keyDown, dblClick } = board;
 
-    board.keydown = (event: KeyboardEvent) => {
+    board.keyDown = (event: KeyboardEvent) => {
         const selectedElements = getSelectedElements(board);
         const isSingleSelection = selectedElements.length === 1;
         const targetElement = selectedElements[0];
@@ -24,17 +24,17 @@ export const withDrawHotkey = (board: PlaitBoard) => {
             return;
         }
 
-        keydown(event);
+        keyDown(event);
     };
 
-    board.dblclick = (event: MouseEvent) => {
+    board.dblClick = (event: MouseEvent) => {
         event.preventDefault();
         const geometries = getSelectedGeometryElements(board);
         if (!PlaitBoard.isReadonly(board) && geometries.length === 1) {
             const component = PlaitElement.getComponent(geometries[0]) as GeometryComponent;
             component.editText();
         }
-        dblclick(event);
+        dblClick(event);
     };
     return board;
 };

@@ -41,7 +41,7 @@ describe('with mind hotkey plugin', () => {
         let target = PlaitNode.get<MindElement>(board, targetPath);
         expect(target.isCollapsed).toEqual(undefined);
         const event = createKeyboardEvent('keydown', SLASH, '/', createModModifierKeys());
-        board.keydown(event);
+        board.keyDown(event);
         target = PlaitNode.get<MindElement>(board, targetPath);
         expect(target.isCollapsed).toEqual(true);
 
@@ -51,7 +51,7 @@ describe('with mind hotkey plugin', () => {
         clearNodeWeakMap(board);
         fakeNodeWeakMap(board);
 
-        board.keydown(event);
+        board.keyDown(event);
         target = PlaitNode.get<MindElement>(board, targetPath);
         expect(target.isCollapsed).toEqual(false);
     });
@@ -60,7 +60,7 @@ describe('with mind hotkey plugin', () => {
         let target = PlaitNode.get<MindElement>(board, targetPath);
         expect(target.isCollapsed).toEqual(undefined);
         const event = createKeyboardEvent('keydown', TAB, 'Tab', {});
-        board.keydown(event);
+        board.keyDown(event);
         target = PlaitNode.get<MindElement>(board, targetPath);
         expect(target.children.length).toEqual(2);
     });
@@ -71,7 +71,7 @@ describe('with mind hotkey plugin', () => {
         const secondTarget = PlaitNode.get<MindElement>(board, secondTargetPath);
         addSelectedElement(board, secondTarget);
         const event = createKeyboardEvent('keydown', TAB, 'Tab', {});
-        board.keydown(event);
+        board.keyDown(event);
         expect(target.children.length).toEqual(1);
     });
 
@@ -79,7 +79,7 @@ describe('with mind hotkey plugin', () => {
         let target = PlaitNode.get<MindElement>(board, targetPath);
         target.isCollapsed = true;
         const event = createKeyboardEvent('keydown', TAB, 'Tab', {});
-        board.keydown(event);
+        board.keyDown(event);
         target = PlaitNode.get<MindElement>(board, targetPath);
         expect(target.children.length).toEqual(2);
         expect(target.isCollapsed).toEqual(false);
@@ -90,7 +90,7 @@ describe('with mind hotkey plugin', () => {
         let parent = PlaitNode.get<MindElement>(board, parentPath);
         const childrenCount = parent.children.length;
         const event = createKeyboardEvent('keydown', ENTER, 'Enter', {});
-        board.keydown(event);
+        board.keyDown(event);
         parent = PlaitNode.get<MindElement>(board, parentPath);
         expect(parent.children.length).toEqual(childrenCount + 1);
     });
@@ -104,7 +104,7 @@ describe('with mind hotkey plugin', () => {
             let parent = PlaitNode.get<MindElement>(board, parentPath);
             const childrenCount = parent.children.length;
             const event = createKeyboardEvent('keydown', ENTER, 'Enter', {});
-            board.keydown(event);
+            board.keyDown(event);
             parent = PlaitNode.get<MindElement>(board, parentPath);
             expect(parent.children.length).toEqual(childrenCount);
         });
@@ -115,7 +115,7 @@ describe('with mind hotkey plugin', () => {
             let parent = PlaitNode.get<MindElement>(board, parentPath);
             addSelectedElement(board, parent);
             const event = createKeyboardEvent('keydown', ENTER, 'Enter', {});
-            board.keydown(event);
+            board.keyDown(event);
             parent = PlaitNode.get<MindElement>(board, parentPath);
             expect(board.children.length).toEqual(childrenCount);
         });
@@ -126,7 +126,7 @@ describe('with mind hotkey plugin', () => {
             let parent = PlaitNode.get<MindElement>(board, parentPath);
             const childrenCount = parent.children.length;
             const event = createKeyboardEvent('keydown', ENTER, 'Enter', {});
-            board.keydown(event);
+            board.keyDown(event);
             parent = PlaitNode.get<MindElement>(board, parentPath);
             expect(parent.children.length).toEqual(childrenCount);
         });

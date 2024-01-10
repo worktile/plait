@@ -16,7 +16,7 @@ export const withInline = <T extends AngularEditor>(editor: T) => {
     e.onKeydown = (event: KeyboardEvent) => {
         const { selection } = editor;
         if (!selection || !selection.anchor || !selection.focus) {
-            onKeydown(event);
+            onkeyDown(event);
             return;
         }
         const isMoveBackward = hotkeys.isMoveBackward(event);
@@ -51,7 +51,7 @@ export const withInline = <T extends AngularEditor>(editor: T) => {
                 return;
             }
         }
-        onKeydown(event);
+        onkeyDown(event);
     };
 
     return e;

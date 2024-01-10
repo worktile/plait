@@ -15,9 +15,9 @@ import { LineComponent } from '../line.component';
 import { DrawTransforms } from '../transforms';
 
 export const withLineText = (board: PlaitBoard) => {
-    const { dblclick } = board;
+    const { dblClick } = board;
 
-    board.dblclick = (event: MouseEvent) => {
+    board.dblClick = (event: MouseEvent) => {
         if (!PlaitBoard.isReadonly(board)) {
             const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const hitTarget = getHitElementByPoint(board, clickPoint, (element: PlaitElement) => {
@@ -47,7 +47,7 @@ export const withLineText = (board: PlaitBoard) => {
                 }
             }
         }
-        dblclick(event);
+        dblClick(event);
     };
 
     return board;

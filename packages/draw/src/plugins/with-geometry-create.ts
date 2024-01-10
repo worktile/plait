@@ -104,7 +104,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
 };
 
 export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
-    const { pointerDown, pointerMove, pointerUp, keydown, keyup } = board;
+    const { pointerDown, pointerMove, pointerUp, keyDown, keyUp } = board;
     let start: Point | null = null;
 
     let geometryShapeG: SVGGElement | null = null;
@@ -113,14 +113,14 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
 
     let isShift = false;
 
-    board.keydown = (event: KeyboardEvent) => {
+    board.keyDown = (event: KeyboardEvent) => {
         isShift = isKeyHotkey('shift', event);
-        keydown(event);
+        keyDown(event);
     };
 
-    board.keyup = (event: KeyboardEvent) => {
+    board.keyUp = (event: KeyboardEvent) => {
         isShift = false;
-        keyup(event);
+        keyUp(event);
     };
 
     board.pointerDown = (event: PointerEvent) => {

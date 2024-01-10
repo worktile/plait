@@ -137,8 +137,8 @@ export function withMoving(board: PlaitBoard) {
 }
 
 export function withArrowMoving(board: PlaitBoard) {
-    const { keydown, keyup } = board;
-    board.keydown = (event: KeyboardEvent) => {
+    const { keyDown, keyUp } = board;
+    board.keyDown = (event: KeyboardEvent) => {
         const selectedElements = getSelectedElements(board);
         if (!PlaitBoard.isReadonly(board) && selectedElements.length > 0 && (hotkeys.isArrow(event) || hotkeys.isExtendArrow(event))) {
             event.preventDefault();
@@ -168,12 +168,12 @@ export function withArrowMoving(board: PlaitBoard) {
                 updatePoints(board, targetElements, offset[0], offset[1]);
             });
         }
-        keydown(event);
+        keyDown(event);
     };
 
-    board.keyup = (event: KeyboardEvent) => {
+    board.keyUp = (event: KeyboardEvent) => {
         MERGING.set(board, false);
-        keyup(event);
+        keyUp(event);
     };
     return board;
 }

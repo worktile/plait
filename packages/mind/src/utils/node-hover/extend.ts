@@ -6,7 +6,7 @@ export interface NodeHoveredExtendRef {
     element: MindElement;
 }
 
-export const mouseMoveHandle = (board: PlaitBoard, event: MouseEvent, nodeHoveredExtendRef: NodeHoveredExtendRef | null) => {
+export const pointerMoveHandle = (board: PlaitBoard, event: PointerEvent, nodeHoveredExtendRef: NodeHoveredExtendRef | null) => {
     let target: MindElement | null = null;
     const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
     depthFirstRecursion(
@@ -48,7 +48,7 @@ export const mouseMoveHandle = (board: PlaitBoard, event: MouseEvent, nodeHovere
     return nodeHoveredExtendRef;
 };
 
-export const mouseLeaveHandle = (board: PlaitBoard, event: MouseEvent, nodeHoveredExtendRef: NodeHoveredExtendRef | null) => {
+export const pointerLeaveHandle = (board: PlaitBoard, event: PointerEvent, nodeHoveredExtendRef: NodeHoveredExtendRef | null) => {
     if (nodeHoveredExtendRef) {
         removeHovered(nodeHoveredExtendRef.element);
     }

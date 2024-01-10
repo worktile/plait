@@ -4,7 +4,7 @@ import { isMainPointer } from '../utils/dom/common';
 import { updateViewportContainerScroll } from '../utils/viewport';
 
 export function withHandPointer<T extends PlaitBoard>(board: T) {
-    const { pointerDown, pointerMove, globalPointerUp, keydown, keyup } = board;
+    const { pointerDown, pointerMove, globalPointerUp, keyDown, keyUp } = board;
     let isMoving: boolean = false;
     const plaitBoardMove: PlaitBoardMove = {
         x: 0,
@@ -43,21 +43,21 @@ export function withHandPointer<T extends PlaitBoard>(board: T) {
         globalPointerUp(event);
     };
 
-    board.keydown = (event: KeyboardEvent) => {
+    board.keyDown = (event: KeyboardEvent) => {
         if (event.code === 'Space') {
             if (!PlaitBoard.isPointer(board, PlaitPointerType.hand)) {
                 BoardTransforms.updatePointerType(board, PlaitPointerType.hand);
             }
             event.preventDefault();
         }
-        keydown(event);
+        keyDown(event);
     };
 
-    board.keyup = (event: KeyboardEvent) => {
+    board.keyUp = (event: KeyboardEvent) => {
         if (!board.options.readonly && event.code === 'Space') {
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
         }
-        keyup(event);
+        keyUp(event);
     };
 
     return board;
