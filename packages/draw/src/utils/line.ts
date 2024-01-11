@@ -15,7 +15,10 @@ import {
     Direction,
     Vector,
     distanceBetweenPointAndPoint,
-    catmullRomFitting
+    catmullRomFitting,
+    isPointsOnSameLine,
+    isHorizontalSegment,
+    isVerticalSegment
 } from '@plait/core';
 import {
     getPoints,
@@ -31,7 +34,8 @@ import {
     generateElbowLineRoute,
     getNextPoint,
     getExtendPoint,
-    getSourceAndTargetOuterRectangle
+    getSourceAndTargetOuterRectangle,
+    removeIntermediatePointsInSegment
 } from '@plait/common';
 import {
     BasicShapes,
@@ -219,13 +223,13 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                 0
             );
         }
-        points = removeDuplicatePoints(points);
+        points = removeIntermediatePointsInSegment(removeDuplicatePoints(points));
         return points;
     } else {
         const allPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
         let startSegment = [allPoints[0], allPoints[1]];
         let endSegment = [allPoints[allPoints.length - 2], allPoints[allPoints.length - 1]];
-        if (!isHorizontalSegment(startSegment[0], startSegment[1]) && !isVerticalSegment(startSegment[0], startSegment[1])) {
+        if (!isPointsOnSameLine(startSegment)) {
             const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: 0, y: 0 }, 0);
             startSegment = generateElbowLineRoute({
                 sourcePoint,
@@ -238,7 +242,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                 targetOuterRectangle: rectangle
             });
         }
-        if (!isHorizontalSegment(endSegment[0], endSegment[1]) && !isVerticalSegment(endSegment[0], endSegment[1])) {
+        if (!isPointsOnSameLine(endSegment)) {
             const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: 0, y: 0 }, 0);
             endSegment = generateElbowLineRoute({
                 sourcePoint: allPoints[allPoints.length - 2],
@@ -252,7 +256,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             });
         }
         points = [...startSegment, ...allPoints.slice(2, -2), ...endSegment];
-        return points;
+        return removeIntermediatePointsInSegment(points);
     }
 };
 
@@ -508,46 +512,3 @@ export const handleLineCreating = (
     PlaitBoard.getElementActiveHost(board).append(lineShapeG);
     return temporaryLineElement;
 };
-
-export function isPointsOnSameLine(points: Point[]) {
-    if (points.length < 3) {
-        return false;
-    }
-    const [x1, y1] = points[0];
-    const [x2, y2] = points[1];
-    const slope = (y2 - y1) / (x2 - x1);
-    for (let i = 2; i < points.length; i++) {
-        const [x, y] = points[i];
-        if ((y - y1) / (x - x1) !== slope) {
-            return false;
-        }
-    }
-    return true;
-}
-
-export function getElbowSegmentPoints(points: Point[]) {
-    const segmentPoints = [];
-    for (let i = 0; i < points.length; i++) {
-        if (i === 0 || i === points.length - 1) {
-            segmentPoints.push(points[i]);
-            continue;
-        }
-        if (segmentPoints.length && i < points.length - 1) {
-            const [currentX, currentY] = points[i];
-            const [nextX, nextY] = points[i + 1];
-            const [lastKeyPointX, lastKeyPointY] = segmentPoints[segmentPoints.length - 1];
-            if ((currentX === lastKeyPointX || currentY === lastKeyPointY) && nextX !== lastKeyPointX && nextY !== lastKeyPointY) {
-                segmentPoints.push(points[i]);
-            }
-        }
-    }
-    return segmentPoints;
-}
-
-export function isHorizontalSegment(startPoint: Point, endPoint: Point) {
-    return startPoint[1] === endPoint[1];
-}
-
-export function isVerticalSegment(startPoint: Point, endPoint: Point) {
-    return startPoint[0] === endPoint[0];
-}

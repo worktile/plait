@@ -1,19 +1,10 @@
-import { PlaitBoard, Point } from '@plait/core';
+import { PlaitBoard, Point, isHorizontalSegment, isVerticalSegment } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, removeDuplicatePoints, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineHandle, LineShape, PlaitLine } from '../interfaces';
-import {
-    alignPoints,
-    getLinePoints,
-    isHorizontalSegment,
-    isVerticalSegment,
-    getConnectionByNearestPoint,
-    getElbowPoints,
-    getElbowSegmentPoints,
-    getNextSourceAndTargetPoints
-} from '../utils';
+import { alignPoints, getLinePoints, getConnectionByNearestPoint, getElbowPoints, getNextSourceAndTargetPoints } from '../utils';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
 
@@ -49,7 +40,7 @@ export const withLineResize = (board: PlaitBoard) => {
             const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, REACTION_MARGIN);
             if (resizeRef.handle === LineResizeHandle.source || resizeRef.handle === LineResizeHandle.target) {
                 const object = resizeRef.handle === LineResizeHandle.source ? source : target;
-                points[handleIndex + 1] = resizeState.endTransformPoint;
+                points[handleIndex] = resizeState.endTransformPoint;
                 if (hitElement) {
                     object.connection = getConnectionByNearestPoint(board, resizeState.endTransformPoint, hitElement);
                     object.boundId = hitElement.id;
@@ -59,8 +50,7 @@ export const withLineResize = (board: PlaitBoard) => {
                 }
             } else if (resizeRef.handle === LineResizeHandle.addHandle) {
                 if (resizeRef.element.shape === LineShape.elbow) {
-                    const pointsOnElbow = getElbowPoints(board, resizeRef.element);
-                    let keyPoints = getElbowSegmentPoints(pointsOnElbow);
+                    let keyPoints = getElbowPoints(board, resizeRef.element);
                     const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, resizeRef.element);
                     keyPoints.splice(0, 1, nextSourcePoint);
                     keyPoints.splice(-1, 1, nextTargetPoint);
@@ -73,11 +63,11 @@ export const withLineResize = (board: PlaitBoard) => {
                         } else if (index === handleIndex) {
                             let startPoint = keyPoints[index];
                             let endPoint = keyPoints[index + 1];
-                            if (isHorizontalSegment(startPoint, endPoint)) {
+                            if (isHorizontalSegment([startPoint, endPoint])) {
                                 startPoint = [startPoint[0], startPoint[1] + resizeState.offsetY];
                                 endPoint = [endPoint[0], endPoint[1] + resizeState.offsetY];
                             }
-                            if (isVerticalSegment(startPoint, endPoint)) {
+                            if (isVerticalSegment([startPoint, endPoint])) {
                                 startPoint = [startPoint[0] + resizeState.offsetX, startPoint[1]];
                                 endPoint = [endPoint[0] + resizeState.offsetX, endPoint[1]];
                             }
@@ -92,19 +82,19 @@ export const withLineResize = (board: PlaitBoard) => {
                     points.splice(handleIndex + 1, 0, resizeState.endTransformPoint);
                 }
             } else {
-                points[handleIndex + 1] = resizeState.endTransformPoint;
+                points[handleIndex] = resizeState.endTransformPoint;
             }
             if (!hitElement) {
+                handleIndex = resizeRef.handle === LineResizeHandle.addHandle ? handleIndex + 1 : handleIndex;
                 const drawPoints = getLinePoints(board, resizeRef.element);
                 const newPoints = [...points];
                 newPoints[0] = drawPoints[0];
                 newPoints[newPoints.length - 1] = drawPoints[drawPoints.length - 1];
                 newPoints.forEach((point, index) => {
-                    if (index === handleIndex + 1) return;
-                    points[handleIndex + 1] = alignPoints(point, points[handleIndex + 1]);
+                    if (index === handleIndex) return;
+                    points[handleIndex] = alignPoints(point, points[handleIndex]);
                 });
             }
-
             DrawTransforms.resizeLine(board, { points, source, target }, resizeRef.path);
         }
     };
