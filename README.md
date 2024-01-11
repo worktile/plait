@@ -11,6 +11,7 @@
     <a href="https://www.npmjs.com/package/@plait/core"><img src="https://img.shields.io/npm/dm/@plait/core.svg" alt="Total Downloads"></a>
     <a target="_blank" href="https://github.com/worktile/plait/releases/latest"><img src="https://img.shields.io/github/v/release/worktile/plait" /></a>
     <a target="_blank" href="https://github.com/worktile/plait/blob/develop/LICENSE"><img src="https://badgen.now.sh/badge/license/MIT" /></a>
+    <a href="https://t.me/plaitboard"><img src="https://img.shields.io/badge/-Telegram-red?style=social&logo=telegram" height=20></a>
   </p>
   <h2>
     A modern drawing framework for building all-in-one whiteboard tools </br>
