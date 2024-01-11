@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, createG, distanceBetweenPointAndPoint, drawCircle, drawRectangle, getSelectedElements } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
-import { getCurvePoints, getLinePoints } from '../utils';
+import { isPointsOnSameLine, getCurvePoints, getElbowPoints, getLinePoints, getElbowSegmentPoints } from '../utils';
 import { DefaultGeometryActiveStyle } from '../constants';
 
 export interface ActiveData {
@@ -24,7 +24,10 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
         if (isSingleSelection) {
             activeG.classList.add('active');
             activeG.classList.add('line-handle');
-            const points = PlaitLine.getPoints(this.board, element);
+            let points = PlaitLine.getPoints(this.board, element);
+            if (element.shape === LineShape.elbow) {
+                points = points.slice(0, 1).concat(points.slice(-1));
+            }
             points.forEach(point => {
                 const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, RESIZE_HANDLE_DIAMETER, {
                     stroke: '#999999',
@@ -90,6 +93,22 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
                 const distance = distanceBetweenPointAndPoint(...points[i], ...points[i + 1]);
                 if (distance < hideBuffer) continue;
                 result.push(pointsOnBezier[middleIndex]);
+            }
+        }
+    }
+    if (shape === LineShape.elbow) {
+        const pointsOnElbow = getElbowPoints(board, element);
+        if (isPointsOnSameLine(pointsOnElbow)) {
+            const points = PlaitLine.getPoints(board, element);
+            const middlePoint = [(points[0][0] + points[1][0]) / 2, (points[1][1] + points[1][1]) / 2] as Point;
+            result.push(middlePoint);
+        } else {
+            const keyPoints = getElbowSegmentPoints(pointsOnElbow);
+            for (let i = 0; i < keyPoints.length - 1; i++) {
+                const [currentX, currentY] = keyPoints[i];
+                const [nextX, nextY] = keyPoints[i + 1];
+                const middlePoint = [(currentX + nextX) / 2, (currentY + nextY) / 2] as Point;
+                result.push(middlePoint);
             }
         }
     }

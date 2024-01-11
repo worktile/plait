@@ -31,7 +31,10 @@ import {
     reduceRouteMargin,
     generateElbowLineRoute,
     getNextPoint,
-    getExtendPoint
+    getExtendPoint,
+    getGraphPoints,
+    createGraph,
+    AStar
 } from '@plait/common';
 import {
     BasicShapes,
@@ -153,47 +156,78 @@ const createFakeElement = (startPoint: Point, vector: Vector) => {
     return createGeometryElement(BasicShapes.rectangle, points, '');
 };
 
+export const getNextSourceAndTargetPoints = (board: PlaitBoard, element: PlaitLine) => {
+    const handleRefPair = getLineHandleRefPair(board, element);
+    let sourceElement = element.source.boundId ? getElementById<PlaitGeometry>(board, element.source.boundId) : undefined;
+    let targetElement = element.target.boundId ? getElementById<PlaitGeometry>(board, element.target.boundId) : undefined;
+    if (!sourceElement) {
+        const source = handleRefPair.source;
+        sourceElement = createFakeElement(source.point, source.vector);
+    }
+    if (!targetElement) {
+        const target = handleRefPair.target;
+        targetElement = createFakeElement(target.point, target.vector);
+    }
+    const targetRectangle = RectangleClient.inflate(getRectangleByPoints(targetElement.points), getStrokeWidthByElement(targetElement) * 2);
+    const sourceRectangle = RectangleClient.inflate(getRectangleByPoints(sourceElement.points), getStrokeWidthByElement(sourceElement) * 2);
+    const sourcePoint = handleRefPair.source.point;
+    const targetPoint = handleRefPair.target.point;
+    const { sourceOffset, targetOffset } = reduceRouteMargin(sourceRectangle, targetRectangle);
+    const sourceOuterRectangle = RectangleClient.expand(
+        sourceRectangle,
+        sourceOffset[3],
+        sourceOffset[0],
+        sourceOffset[1],
+        sourceOffset[2]
+    );
+    const targetOuterRectangle = RectangleClient.expand(
+        targetRectangle,
+        targetOffset[3],
+        targetOffset[0],
+        targetOffset[1],
+        targetOffset[2]
+    );
+    const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, handleRefPair.source.direction);
+    const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, handleRefPair.target.direction);
+    return [nextSourcePoint, nextTargetPoint];
+};
+
 export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
+    const handleRefPair = getLineHandleRefPair(board, element);
+    let sourceElement = element.source.boundId ? getElementById<PlaitGeometry>(board, element.source.boundId) : undefined;
+    let targetElement = element.target.boundId ? getElementById<PlaitGeometry>(board, element.target.boundId) : undefined;
+    let points: Point[] = [];
+    if (!sourceElement) {
+        const source = handleRefPair.source;
+        sourceElement = createFakeElement(source.point, source.vector);
+    }
+    if (!targetElement) {
+        const target = handleRefPair.target;
+        targetElement = createFakeElement(target.point, target.vector);
+    }
+    const targetRectangle = RectangleClient.inflate(getRectangleByPoints(targetElement.points), getStrokeWidthByElement(targetElement) * 2);
+    const sourceRectangle = RectangleClient.inflate(getRectangleByPoints(sourceElement.points), getStrokeWidthByElement(sourceElement) * 2);
+    const sourcePoint = handleRefPair.source.point;
+    const targetPoint = handleRefPair.target.point;
+    const { sourceOffset, targetOffset } = reduceRouteMargin(sourceRectangle, targetRectangle);
+    const sourceOuterRectangle = RectangleClient.expand(
+        sourceRectangle,
+        sourceOffset[3],
+        sourceOffset[0],
+        sourceOffset[1],
+        sourceOffset[2]
+    );
+    const targetOuterRectangle = RectangleClient.expand(
+        targetRectangle,
+        targetOffset[3],
+        targetOffset[0],
+        targetOffset[1],
+        targetOffset[2]
+    );
+    const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, handleRefPair.source.direction);
+    const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, handleRefPair.target.direction);
+
     if (element.points.length === 2) {
-        const handleRefPair = getLineHandleRefPair(board, element);
-        let sourceElement = element.source.boundId ? getElementById<PlaitGeometry>(board, element.source.boundId) : undefined;
-        let targetElement = element.target.boundId ? getElementById<PlaitGeometry>(board, element.target.boundId) : undefined;
-        let points: Point[] = [];
-        if (!sourceElement) {
-            const source = handleRefPair.source;
-            sourceElement = createFakeElement(source.point, source.vector);
-        }
-        if (!targetElement) {
-            const target = handleRefPair.target;
-            targetElement = createFakeElement(target.point, target.vector);
-        }
-        const targetRectangle = RectangleClient.inflate(
-            getRectangleByPoints(targetElement.points),
-            getStrokeWidthByElement(targetElement) * 2
-        );
-        const sourceRectangle = RectangleClient.inflate(
-            getRectangleByPoints(sourceElement.points),
-            getStrokeWidthByElement(sourceElement) * 2
-        );
-        const sourcePoint = handleRefPair.source.point;
-        const targetPoint = handleRefPair.target.point;
-        const { sourceOffset, targetOffset } = reduceRouteMargin(sourceRectangle, targetRectangle);
-        const sourceOuterRectangle = RectangleClient.expand(
-            sourceRectangle,
-            sourceOffset[3],
-            sourceOffset[0],
-            sourceOffset[1],
-            sourceOffset[2]
-        );
-        const targetOuterRectangle = RectangleClient.expand(
-            targetRectangle,
-            targetOffset[3],
-            targetOffset[0],
-            targetOffset[1],
-            targetOffset[2]
-        );
-        const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, handleRefPair.source.direction);
-        const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, handleRefPair.target.direction);
         const isIntersect =
             RectangleClient.isPointInRectangle(targetRectangle, sourcePoint) ||
             RectangleClient.isPointInRectangle(targetOuterRectangle, nextSourcePoint) ||
@@ -221,8 +255,51 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         }
         points = removeDuplicatePoints(points);
         return points;
+    } else {
+        const allPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
+        for (let i = 0; i < allPoints.length - 1; i++) {
+            if (i > 1 && i < allPoints.length - 2) {
+                points.push(allPoints[i], allPoints[i + 1]);
+                continue;
+            }
+            const isHorizontal = isHorizontalSegment(allPoints[i], allPoints[i + 1]);
+            const isVertical = isVerticalSegment(allPoints[i], allPoints[i + 1]);
+            if (isHorizontal || isVertical) {
+                points.push(allPoints[i], allPoints[i + 1]);
+                continue;
+            }
+            const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: 0, y: 0 }, 0);
+            if (i === 0) {
+                points.push(
+                    ...generateElbowLineRoute({
+                        sourcePoint,
+                        nextSourcePoint,
+                        sourceRectangle,
+                        sourceOuterRectangle,
+                        targetPoint: allPoints[1],
+                        nextTargetPoint: allPoints[1],
+                        targetRectangle: rectangle,
+                        targetOuterRectangle: rectangle
+                    })
+                );
+            }
+            if (i === allPoints.length - 2) {
+                points.push(
+                    ...generateElbowLineRoute({
+                        sourcePoint: allPoints[allPoints.length - 2],
+                        nextSourcePoint: allPoints[allPoints.length - 2],
+                        sourceRectangle: rectangle,
+                        sourceOuterRectangle: rectangle,
+                        targetPoint: targetPoint,
+                        nextTargetPoint: nextTargetPoint,
+                        targetRectangle,
+                        targetOuterRectangle
+                    })
+                );
+            }
+        }
+        return points;
     }
-    return element.points;
 };
 
 export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
@@ -477,3 +554,55 @@ export const handleLineCreating = (
     PlaitBoard.getElementActiveHost(board).append(lineShapeG);
     return temporaryLineElement;
 };
+
+export function isPointsOnSameLine(points: Point[]) {
+    if (points.length < 3) {
+        return false;
+    }
+    const [x1, y1] = points[0];
+    const [x2, y2] = points[1];
+    const slope = (y2 - y1) / (x2 - x1);
+    for (let i = 2; i < points.length; i++) {
+        const [x, y] = points[i];
+        if ((y - y1) / (x - x1) !== slope) {
+            return false;
+        }
+    }
+    return true;
+}
+
+export function getElbowSegmentPoints(points: Point[]) {
+    const segmentPoints = [];
+    for (let i = 0; i < points.length; i++) {
+        if (i === 0 || i === points.length - 1) {
+            segmentPoints.push(points[i]);
+            continue;
+        }
+        if (segmentPoints.length && i < points.length - 1) {
+            const [currentX, currentY] = points[i];
+            const [nextX, nextY] = points[i + 1];
+            const [lastKeyPointX, lastKeyPointY] = segmentPoints[segmentPoints.length - 1];
+            if ((currentX === lastKeyPointX || currentY === lastKeyPointY) && nextX !== lastKeyPointX && nextY !== lastKeyPointY) {
+                segmentPoints.push(points[i]);
+            }
+        }
+    }
+    return segmentPoints;
+}
+
+export function getElbowPointsWithNextPoint(board: PlaitBoard, element: PlaitLine) {
+    const pointsOnElbow = getElbowPoints(board, element);
+    const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
+    const keyPoints = getElbowSegmentPoints(pointsOnElbow);
+    keyPoints.splice(1, 0, nextSourcePoint);
+    keyPoints.splice(-1, 0, nextTargetPoint);
+    return removeDuplicatePoints(keyPoints);
+}
+
+export function isHorizontalSegment(startPoint: Point, endPoint: Point) {
+    return startPoint[1] === endPoint[1];
+}
+
+export function isVerticalSegment(startPoint: Point, endPoint: Point) {
+    return startPoint[0] === endPoint[0];
+}

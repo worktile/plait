@@ -3,8 +3,16 @@ import { ResizeRef, ResizeState, WithResizeOptions, withResize } from '@plait/co
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
-import { LineHandle, PlaitLine } from '../interfaces';
-import { alignPoints, getConnectionByNearestPoint, getLinePoints } from '../utils';
+import { LineHandle, LineShape, PlaitLine } from '../interfaces';
+import {
+    alignPoints,
+    getLinePoints,
+    getElbowPointsWithNextPoint,
+    isPointsOnSameLine,
+    isHorizontalSegment,
+    isVerticalSegment,
+    getConnectionByNearestPoint
+} from '../utils';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
 
@@ -49,7 +57,43 @@ export const withLineResize = (board: PlaitBoard) => {
                     object.boundId = undefined;
                 }
             } else if (resizeRef.handle === LineResizeHandle.addHandle) {
-                points.splice(pointIndex, 0, resizeState.endTransformPoint);
+                if (resizeRef.element.shape === LineShape.elbow) {
+                    const keyPoints = getElbowPointsWithNextPoint(board, resizeRef.element);
+                    let segmentStartIndex = pointIndex;
+                    if (!isPointsOnSameLine(keyPoints.slice(0, 3))) {
+                        segmentStartIndex = pointIndex - 1;
+                    }
+                    const drawPoints: Point[] = [];
+                    keyPoints.forEach((item, index) => {
+                        if (index !== segmentStartIndex && index !== segmentStartIndex + 1) {
+                            drawPoints.push(item);
+                        } else if (index === segmentStartIndex) {
+                            let startPoint = keyPoints[index];
+                            let endPoint = keyPoints[index + 1];
+                            if (isHorizontalSegment(startPoint, endPoint)) {
+                                startPoint = [startPoint[0], startPoint[1] + resizeState.offsetY];
+                                endPoint = [endPoint[0], endPoint[1] + resizeState.offsetY];
+                            }
+                            if (isVerticalSegment(startPoint, endPoint)) {
+                                startPoint = [startPoint[0] + resizeState.offsetX, startPoint[1]];
+                                endPoint = [endPoint[0] + resizeState.offsetX, endPoint[1]];
+                            }
+                            if (segmentStartIndex === 1) {
+                                drawPoints.push(item);
+                            }
+                            drawPoints.push(startPoint);
+                            drawPoints.push(endPoint);
+                            if (segmentStartIndex === keyPoints.length - 3) {
+                                drawPoints.push(keyPoints[keyPoints.length - 2]);
+                            }
+                        }
+                    });
+                    drawPoints.splice(1, 1);
+                    drawPoints.splice(-2, 1);
+                    points = drawPoints;
+                } else {
+                    points.splice(pointIndex, 0, resizeState.endTransformPoint);
+                }
             } else {
                 points[pointIndex] = resizeState.endTransformPoint;
             }
