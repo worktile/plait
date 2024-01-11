@@ -223,47 +223,35 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         return points;
     } else {
         const allPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
-        for (let i = 0; i < allPoints.length - 1; i++) {
-            if (i > 1 && i < allPoints.length - 2) {
-                points.push(allPoints[i], allPoints[i + 1]);
-                continue;
-            }
-            const isHorizontal = isHorizontalSegment(allPoints[i], allPoints[i + 1]);
-            const isVertical = isVerticalSegment(allPoints[i], allPoints[i + 1]);
-            if (isHorizontal || isVertical) {
-                points.push(allPoints[i], allPoints[i + 1]);
-                continue;
-            }
+        let startSegment = [allPoints[0], allPoints[1]];
+        let endSegment = [allPoints[allPoints.length - 2], allPoints[allPoints.length - 1]];
+        if (!isHorizontalSegment(startSegment[0], startSegment[1]) && !isVerticalSegment(startSegment[0], startSegment[1])) {
             const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: 0, y: 0 }, 0);
-            if (i === 0) {
-                points.push(
-                    ...generateElbowLineRoute({
-                        sourcePoint,
-                        nextSourcePoint,
-                        sourceRectangle,
-                        sourceOuterRectangle,
-                        targetPoint: allPoints[1],
-                        nextTargetPoint: allPoints[1],
-                        targetRectangle: rectangle,
-                        targetOuterRectangle: rectangle
-                    })
-                );
-            }
-            if (i === allPoints.length - 2) {
-                points.push(
-                    ...generateElbowLineRoute({
-                        sourcePoint: allPoints[allPoints.length - 2],
-                        nextSourcePoint: allPoints[allPoints.length - 2],
-                        sourceRectangle: rectangle,
-                        sourceOuterRectangle: rectangle,
-                        targetPoint: targetPoint,
-                        nextTargetPoint: nextTargetPoint,
-                        targetRectangle,
-                        targetOuterRectangle
-                    })
-                );
-            }
+            startSegment = generateElbowLineRoute({
+                sourcePoint,
+                nextSourcePoint,
+                sourceRectangle,
+                sourceOuterRectangle,
+                targetPoint: allPoints[1],
+                nextTargetPoint: allPoints[1],
+                targetRectangle: rectangle,
+                targetOuterRectangle: rectangle
+            });
         }
+        if (!isHorizontalSegment(endSegment[0], endSegment[1]) && !isVerticalSegment(endSegment[0], endSegment[1])) {
+            const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: 0, y: 0 }, 0);
+            endSegment = generateElbowLineRoute({
+                sourcePoint: allPoints[allPoints.length - 2],
+                nextSourcePoint: allPoints[allPoints.length - 2],
+                sourceRectangle: rectangle,
+                sourceOuterRectangle: rectangle,
+                targetPoint: targetPoint,
+                nextTargetPoint: nextTargetPoint,
+                targetRectangle,
+                targetOuterRectangle
+            });
+        }
+        points = [...startSegment, ...allPoints.slice(2, -2), ...endSegment];
         return points;
     }
 };

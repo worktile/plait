@@ -81,19 +81,12 @@ export const withLineResize = (board: PlaitBoard) => {
                                 startPoint = [startPoint[0] + resizeState.offsetX, startPoint[1]];
                                 endPoint = [endPoint[0] + resizeState.offsetX, endPoint[1]];
                             }
-                            if (handleIndex === 0) {
-                                drawPoints.push(item);
-                            }
                             drawPoints.push(startPoint);
                             drawPoints.push(endPoint);
-                            if (handleIndex === keyPoints.length - 2) {
-                                drawPoints.push(keyPoints[keyPoints.length - 1]);
-                            }
                         }
                     });
-
-                    drawPoints.splice(0, 1, points[0]);
-                    drawPoints.splice(-1, 1, points[points.length - 1]);
+                    drawPoints.unshift(points[0]);
+                    drawPoints.push(points[points.length - 1]);
                     points = drawPoints;
                 } else {
                     points.splice(handleIndex + 1, 0, resizeState.endTransformPoint);
