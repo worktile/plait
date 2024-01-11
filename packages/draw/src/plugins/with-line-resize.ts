@@ -7,7 +7,7 @@ import { LineHandle, LineShape, PlaitLine } from '../interfaces';
 import {
     alignPoints,
     getLinePoints,
-    getElbowPointsWithNextPoint,
+    getElbowSegmentPointsWithNextPoint,
     isPointsOnSameLine,
     isHorizontalSegment,
     isVerticalSegment,
@@ -58,7 +58,7 @@ export const withLineResize = (board: PlaitBoard) => {
                 }
             } else if (resizeRef.handle === LineResizeHandle.addHandle) {
                 if (resizeRef.element.shape === LineShape.elbow) {
-                    const keyPoints = getElbowPointsWithNextPoint(board, resizeRef.element);
+                    const keyPoints = getElbowSegmentPointsWithNextPoint(board, resizeRef.element);
                     let segmentStartIndex = pointIndex;
                     if (!isPointsOnSameLine(keyPoints.slice(0, 3))) {
                         segmentStartIndex = pointIndex - 1;
