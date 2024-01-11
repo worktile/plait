@@ -1,4 +1,4 @@
-import { generateElbowLineRoute, getNextPoint, reduceRouteMargin, getPoints } from '@plait/common';
+import { generateElbowLineRoute, getNextPoint, getPoints, getSourceAndTargetOuterRectangle } from '@plait/common';
 import { Direction, Point, RectangleClient } from '@plait/core';
 
 export function getElbowPoints({
@@ -19,21 +19,7 @@ export function getElbowPoints({
     offset?: number;
 }) {
     let points: Point[] = [];
-    const { sourceOffset, targetOffset } = reduceRouteMargin(sourceRectangle, targetRectangle);
-    const sourceOuterRectangle = RectangleClient.expand(
-        sourceRectangle,
-        sourceOffset[3],
-        sourceOffset[0],
-        sourceOffset[1],
-        sourceOffset[2]
-    );
-    const targetOuterRectangle = RectangleClient.expand(
-        targetRectangle,
-        targetOffset[3],
-        targetOffset[0],
-        targetOffset[1],
-        targetOffset[2]
-    );
+    const { sourceOuterRectangle, targetOuterRectangle } = getSourceAndTargetOuterRectangle(sourceRectangle, targetRectangle);
     const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, sourceDirection);
     const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, targetDirection);
 

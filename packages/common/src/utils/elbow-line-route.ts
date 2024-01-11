@@ -283,3 +283,25 @@ export const getNextPoint = (point: Point, outerRectangle: RectangleClient, dire
         }
     }
 };
+
+export const getSourceAndTargetOuterRectangle = (sourceRectangle: RectangleClient, targetRectangle: RectangleClient) => {
+    const { sourceOffset, targetOffset } = reduceRouteMargin(sourceRectangle, targetRectangle);
+    const sourceOuterRectangle = RectangleClient.expand(
+        sourceRectangle,
+        sourceOffset[3],
+        sourceOffset[0],
+        sourceOffset[1],
+        sourceOffset[2]
+    );
+    const targetOuterRectangle = RectangleClient.expand(
+        targetRectangle,
+        targetOffset[3],
+        targetOffset[0],
+        targetOffset[1],
+        targetOffset[2]
+    );
+    return {
+        sourceOuterRectangle,
+        targetOuterRectangle
+    };
+};
