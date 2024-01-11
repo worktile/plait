@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, createG, distanceBetweenPointAndPoint, drawCircle, drawRectangle, getSelectedElements } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
-import { Generator, PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
-import { isPointsOnSameLine, getCurvePoints, getElbowPoints, getLinePoints, getElbowSegmentPoints } from '../utils';
+import { Generator, PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '@plait/common';
+import { isPointsOnSameLine, getCurvePoints, getElbowPoints, getElbowSegmentPoints, getNextSourceAndTargetPoints } from '../utils';
 import { DefaultGeometryActiveStyle } from '../constants';
 
 export interface ActiveData {
@@ -103,10 +103,17 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
             const middlePoint = [(points[0][0] + points[1][0]) / 2, (points[1][1] + points[1][1]) / 2] as Point;
             result.push(middlePoint);
         } else {
-            const keyPoints = getElbowSegmentPoints(pointsOnElbow);
-            for (let i = 0; i < keyPoints.length - 1; i++) {
-                const [currentX, currentY] = keyPoints[i];
-                const [nextX, nextY] = keyPoints[i + 1];
+            const segmentPoints = getElbowSegmentPoints(pointsOnElbow);
+            const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
+            for (let i = 0; i < segmentPoints.length - 1; i++) {
+                if (
+                    (i == 0 && Point.isEquals(segmentPoints[i + 1], nextSourcePoint)) ||
+                    (i === segmentPoints.length - 2 && Point.isEquals(segmentPoints[segmentPoints.length - 2], nextTargetPoint))
+                ) {
+                    continue;
+                }
+                const [currentX, currentY] = segmentPoints[i];
+                const [nextX, nextY] = segmentPoints[i + 1];
                 const middlePoint = [(currentX + nextX) / 2, (currentY + nextY) / 2] as Point;
                 result.push(middlePoint);
             }

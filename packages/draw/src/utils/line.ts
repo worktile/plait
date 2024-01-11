@@ -556,15 +556,6 @@ export function getElbowSegmentPoints(points: Point[]) {
     return segmentPoints;
 }
 
-export function getElbowSegmentPointsWithNextPoint(board: PlaitBoard, element: PlaitLine) {
-    const pointsOnElbow = getElbowPoints(board, element);
-    const keyPoints = getElbowSegmentPoints(pointsOnElbow);
-    const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
-    keyPoints.splice(1, 0, nextSourcePoint);
-    keyPoints.splice(-1, 0, nextTargetPoint);
-    return removeDuplicatePoints(keyPoints);
-}
-
 export function isHorizontalSegment(startPoint: Point, endPoint: Point) {
     return startPoint[1] === endPoint[1];
 }

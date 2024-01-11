@@ -29,6 +29,7 @@ export interface WithResizeOptions<T extends PlaitElement = PlaitElement, K = Re
 export interface ResizeDetectResult<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
     element: T;
     handle: K;
+    handleIndex?: number;
     cursorClass?: ResizeCursorClass;
 }
 
@@ -69,7 +70,8 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             resizeRef = {
                 path: PlaitBoard.findPath(board, resizeDetectResult.element),
                 element: resizeDetectResult.element,
-                handle: resizeDetectResult.handle
+                handle: resizeDetectResult.handle,
+                handleIndex: resizeDetectResult.handleIndex
             };
             preventTouchMove(board, event, true);
             // prevent text from being selected when user pressed shift and pointer down
