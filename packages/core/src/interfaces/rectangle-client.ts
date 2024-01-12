@@ -125,7 +125,6 @@ export const RectangleClient = {
           maxX = Math.max(maxX, rect.x + rect.width);
           maxY = Math.max(maxY, rect.y + rect.height);
         });
-      
         return {
           x: minX,
           y: minY,
