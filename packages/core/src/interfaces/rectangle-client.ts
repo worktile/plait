@@ -117,9 +117,8 @@ export const RectangleClient = {
         }
         let minX = Number.MAX_VALUE;
         let minY = Number.MAX_VALUE;
-        let maxX = Number.MIN_VALUE;
-        let maxY = Number.MIN_VALUE;
-
+        let maxX = Number.NEGATIVE_INFINITY;
+        let maxY = Number.NEGATIVE_INFINITY;
         rectangles.forEach(rect => {
           minX = Math.min(minX, rect.x);
           minY = Math.min(minY, rect.y);
