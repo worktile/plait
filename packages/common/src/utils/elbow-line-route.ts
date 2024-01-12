@@ -305,3 +305,23 @@ export const getSourceAndTargetOuterRectangle = (sourceRectangle: RectangleClien
         targetOuterRectangle
     };
 };
+
+export const isSourceAndTargetIntersect = (options: ElbowLineRouteOptions) => {
+    const {
+        sourcePoint,
+        nextSourcePoint,
+        sourceRectangle,
+        sourceOuterRectangle,
+        targetPoint,
+        nextTargetPoint,
+        targetRectangle,
+        targetOuterRectangle
+    } = options;
+
+    return (
+        RectangleClient.isPointInRectangle(targetRectangle, sourcePoint) ||
+        RectangleClient.isPointInRectangle(targetOuterRectangle, nextSourcePoint) ||
+        RectangleClient.isPointInRectangle(sourceOuterRectangle, nextTargetPoint) ||
+        RectangleClient.isPointInRectangle(sourceRectangle, targetPoint)
+    );
+};

@@ -1,4 +1,11 @@
-import { generateElbowLineRoute, getNextPoint, getPoints, getSourceAndTargetOuterRectangle } from '@plait/common';
+import {
+    ElbowLineRouteOptions,
+    generateElbowLineRoute,
+    getNextPoint,
+    getPoints,
+    getSourceAndTargetOuterRectangle,
+    isSourceAndTargetIntersect
+} from '@plait/common';
 import { Direction, Point, RectangleClient } from '@plait/core';
 
 export function getElbowPoints({
@@ -23,22 +30,19 @@ export function getElbowPoints({
     const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, sourceDirection);
     const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, targetDirection);
 
-    const isIntersect =
-        RectangleClient.isPointInRectangle(targetRectangle, sourcePoint) ||
-        RectangleClient.isPointInRectangle(targetOuterRectangle, nextSourcePoint) ||
-        RectangleClient.isPointInRectangle(sourceOuterRectangle, nextTargetPoint) ||
-        RectangleClient.isPointInRectangle(sourceRectangle, targetPoint);
+    const params: ElbowLineRouteOptions = {
+        sourcePoint,
+        nextSourcePoint,
+        sourceRectangle,
+        sourceOuterRectangle,
+        targetPoint,
+        nextTargetPoint,
+        targetRectangle,
+        targetOuterRectangle
+    };
+    const isIntersect = isSourceAndTargetIntersect(params);
     if (!isIntersect) {
-        points = generateElbowLineRoute({
-            sourcePoint,
-            nextSourcePoint,
-            sourceRectangle,
-            sourceOuterRectangle,
-            targetPoint,
-            nextTargetPoint,
-            targetRectangle,
-            targetOuterRectangle
-        });
+        points = generateElbowLineRoute(params);
     } else {
         points = getPoints(sourcePoint, sourceDirection, targetPoint, targetDirection, offset);
     }

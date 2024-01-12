@@ -16,9 +16,7 @@ import {
     Vector,
     distanceBetweenPointAndPoint,
     catmullRomFitting,
-    isPointsOnSameLine,
-    isHorizontalSegment,
-    isVerticalSegment
+    isPointsOnSameLine
 } from '@plait/core';
 import {
     getPoints,
@@ -35,7 +33,9 @@ import {
     getNextPoint,
     getExtendPoint,
     getSourceAndTargetOuterRectangle,
-    removeIntermediatePointsInSegment
+    removeIntermediatePointsInSegment,
+    ElbowLineRouteOptions,
+    isSourceAndTargetIntersect
 } from '@plait/common';
 import {
     BasicShapes,
@@ -198,22 +198,19 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, handleRefPair.target.direction);
     let points: Point[] = [];
     if (element.points.length === 2) {
-        const isIntersect =
-            RectangleClient.isPointInRectangle(targetRectangle, sourcePoint) ||
-            RectangleClient.isPointInRectangle(targetOuterRectangle, nextSourcePoint) ||
-            RectangleClient.isPointInRectangle(sourceOuterRectangle, nextTargetPoint) ||
-            RectangleClient.isPointInRectangle(sourceRectangle, targetPoint);
+        const params = {
+            sourcePoint,
+            nextSourcePoint,
+            sourceRectangle,
+            sourceOuterRectangle,
+            targetPoint,
+            nextTargetPoint,
+            targetRectangle,
+            targetOuterRectangle
+        };
+        const isIntersect = isSourceAndTargetIntersect(params);
         if (!isIntersect) {
-            points = generateElbowLineRoute({
-                sourcePoint,
-                nextSourcePoint,
-                sourceRectangle,
-                sourceOuterRectangle,
-                targetPoint,
-                nextTargetPoint,
-                targetRectangle,
-                targetOuterRectangle
-            });
+            points = generateElbowLineRoute(params);
         } else {
             points = getPoints(
                 handleRefPair.source.point,
@@ -229,36 +226,38 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         const allPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
         let startSegment = [allPoints[0], allPoints[1]];
         let endSegment = [allPoints[allPoints.length - 2], allPoints[allPoints.length - 1]];
+        const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: 0, y: 0 }, 0);
         if (!isPointsOnSameLine(startSegment)) {
-            const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: allPoints[1][0], y: allPoints[1][1] }, 0);
-            const targetDirection = getOppositeDirection(handleRefPair.source.direction);
-            const nextTargetPoint = getNextPoint(allPoints[1], rectangle, targetDirection);
-            startSegment = generateElbowLineRoute({
+            const params = {
                 sourcePoint,
                 nextSourcePoint,
                 sourceRectangle,
                 sourceOuterRectangle,
                 targetPoint: allPoints[1],
-                nextTargetPoint: nextTargetPoint,
+                nextTargetPoint: allPoints[1],
                 targetRectangle: rectangle,
                 targetOuterRectangle: rectangle
-            });
+            };
+            const isIntersect = isSourceAndTargetIntersect(params);
+            if (!isIntersect) {
+                startSegment = generateElbowLineRoute(params);
+            }
         }
         if (!isPointsOnSameLine(endSegment)) {
-            const sourcePoint = allPoints[allPoints.length - 2];
-            const sourceDirection = getOppositeDirection(handleRefPair.target.direction);
-            const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: sourcePoint[0], y: sourcePoint[1] }, 0);
-            const nextSourcePoint = getNextPoint(sourcePoint, rectangle, sourceDirection);
-            endSegment = generateElbowLineRoute({
-                sourcePoint,
-                nextSourcePoint: nextSourcePoint,
+            const params: ElbowLineRouteOptions = {
+                sourcePoint: allPoints[allPoints.length - 2],
+                nextSourcePoint: allPoints[allPoints.length - 2],
                 sourceRectangle: rectangle,
                 sourceOuterRectangle: rectangle,
-                targetPoint: targetPoint,
-                nextTargetPoint: nextTargetPoint,
+                targetPoint,
+                nextTargetPoint,
                 targetRectangle,
                 targetOuterRectangle
-            });
+            };
+            const isIntersect = isSourceAndTargetIntersect(params);
+            if (!isIntersect) {
+                endSegment = generateElbowLineRoute(params);
+            }
         }
         points = [...startSegment, ...allPoints.slice(2, -2), ...endSegment];
         return removeIntermediatePointsInSegment(points);
