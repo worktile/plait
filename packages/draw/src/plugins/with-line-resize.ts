@@ -79,26 +79,16 @@ export const withLineResize = (board: PlaitBoard) => {
                             }
                         }
                         if (startIndex > -1) {
-                            drawPoints.splice(startIndex + 1, 0, startPoint);
+                            startIndex = startIndex + 1;
                         } else {
-                            drawPoints.unshift(startPoint);
+                            startIndex = 0;
                         }
-                    }
-                    let endIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[handleIndex + 1]));
-                    if (endIndex > -1) {
-                        drawPoints.splice(endIndex, 1, endPoint);
-                    } else {
-                        for (let index = handleIndex; index <= drawPoints.length - 1; index++) {
-                            const nextIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[index]));
-                            if (nextIndex > -1) {
-                                endIndex = nextIndex;
-                                break;
-                            }
-                        }
-                        if (endIndex > -1) {
-                            drawPoints.splice(endIndex, 0, endPoint);
+                        drawPoints.splice(startIndex, 0, startPoint);
+                        const endIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[handleIndex + 1]));
+                        if (endIndex) {
+                            drawPoints.splice(endIndex, 1, endPoint);
                         } else {
-                            drawPoints.push(endPoint);
+                            drawPoints.splice(startIndex + 1, 0, endPoint);
                         }
                     }
                     points = [points[0], ...drawPoints, points[points.length - 1]];

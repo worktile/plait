@@ -223,9 +223,9 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         points = removeIntermediatePointsInSegment(removeDuplicatePoints(points));
         return points;
     } else {
-        const allPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
-        let startSegment = [allPoints[0], allPoints[1]];
-        let endSegment = [allPoints[allPoints.length - 2], allPoints[allPoints.length - 1]];
+        const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
+        let startSegment = [dataPoints[0], dataPoints[1]];
+        let endSegment = [dataPoints[dataPoints.length - 2], dataPoints[dataPoints.length - 1]];
         const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: 0, y: 0 }, 0);
         if (!isPointsOnSameLine(startSegment)) {
             const params = {
@@ -233,8 +233,8 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                 nextSourcePoint,
                 sourceRectangle,
                 sourceOuterRectangle,
-                targetPoint: allPoints[1],
-                nextTargetPoint: allPoints[1],
+                targetPoint: dataPoints[1],
+                nextTargetPoint: dataPoints[1],
                 targetRectangle: rectangle,
                 targetOuterRectangle: rectangle
             };
@@ -245,8 +245,8 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         }
         if (!isPointsOnSameLine(endSegment)) {
             const params: ElbowLineRouteOptions = {
-                sourcePoint: allPoints[allPoints.length - 2],
-                nextSourcePoint: allPoints[allPoints.length - 2],
+                sourcePoint: dataPoints[dataPoints.length - 2],
+                nextSourcePoint: dataPoints[dataPoints.length - 2],
                 sourceRectangle: rectangle,
                 sourceOuterRectangle: rectangle,
                 targetPoint,
@@ -259,7 +259,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                 endSegment = generateElbowLineRoute(params);
             }
         }
-        points = [...startSegment, ...allPoints.slice(2, -2), ...endSegment];
+        points = [...startSegment, ...dataPoints.slice(2, -2), ...endSegment];
         return removeIntermediatePointsInSegment(points);
     }
 };
@@ -292,9 +292,9 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
         curvePoints.push(target.point);
         return pointsOnBezierCurves(curvePoints) as Point[];
     } else {
-        let allPoints = PlaitLine.getPoints(board, element);
-        allPoints = removeDuplicatePoints(allPoints);
-        const points = catmullRomFitting(allPoints);
+        let dataPoints = PlaitLine.getPoints(board, element);
+        dataPoints = removeDuplicatePoints(dataPoints);
+        const points = catmullRomFitting(dataPoints);
         return pointsOnBezierCurves(points) as Point[];
     }
 };
