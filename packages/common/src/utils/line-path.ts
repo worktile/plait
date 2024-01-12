@@ -173,6 +173,25 @@ export const removeDuplicatePoints = (points: Point[]) => {
     return newArray;
 };
 
+export function removeIntermediatePointsInSegment(points: Point[]) {
+    const segmentPoints = [];
+    for (let i = 0; i < points.length; i++) {
+        if (i === 0 || i === points.length - 1) {
+            segmentPoints.push(points[i]);
+            continue;
+        }
+        if (segmentPoints.length && i < points.length - 1) {
+            const [currentX, currentY] = points[i];
+            const [nextX, nextY] = points[i + 1];
+            const [lastKeyPointX, lastKeyPointY] = segmentPoints[segmentPoints.length - 1];
+            if ((currentX === lastKeyPointX || currentY === lastKeyPointY) && nextX !== lastKeyPointX && nextY !== lastKeyPointY) {
+                segmentPoints.push(points[i]);
+            }
+        }
+    }
+    return segmentPoints;
+}
+
 export const getExtendPoint = (source: Point, target: Point, extendDistance: number): Point => {
     const distance = distanceBetweenPointAndPoint(...source, ...target);
     const isEqual = Point.isEquals(source, target);
