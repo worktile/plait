@@ -84,12 +84,12 @@ export const withLineResize = (board: PlaitBoard) => {
                             startIndex = 0;
                         }
                         drawPoints.splice(startIndex, 0, startPoint);
-                        const endIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[handleIndex + 1]));
-                        if (endIndex) {
-                            drawPoints.splice(endIndex, 1, endPoint);
-                        } else {
-                            drawPoints.splice(startIndex + 1, 0, endPoint);
-                        }
+                    }
+                    const endIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[handleIndex + 1]));
+                    if (endIndex > -1) {
+                        drawPoints.splice(endIndex, 1, endPoint);
+                    } else {
+                        drawPoints.splice(startIndex + 1, 0, endPoint);
                     }
                     points = [points[0], ...drawPoints, points[points.length - 1]];
                 } else {

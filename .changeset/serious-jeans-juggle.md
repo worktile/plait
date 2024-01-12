@@ -1,6 +1,13 @@
 ---
-'@plait/draw': patch
+'@plait/draw': minor
+'@plait/core': minor
+'@plait/common': minor
+'@plait/flow': minor
 ---
 
-[feat]: add points when adjust inflection point
-
+elbow-line supports dragging to adjust the inflection point
+extract getSourceAndTargetOuterRectangle to common
+extract isSourceAndTargetIntersect to common
+add isHorizontalSegment to core
+add isVerticalSegment to core
+add isPointsOnSameLine to core
