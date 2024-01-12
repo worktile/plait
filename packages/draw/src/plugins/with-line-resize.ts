@@ -56,28 +56,35 @@ export const withLineResize = (board: PlaitBoard) => {
                     keyPoints.splice(-1, 1, nextTargetPoint);
                     keyPoints = removeDuplicatePoints(keyPoints);
 
-                    const drawPoints: Point[] = [];
-                    keyPoints.forEach((item, index) => {
-                        if (index !== handleIndex && index !== handleIndex + 1) {
-                            drawPoints.push(item);
-                        } else if (index === handleIndex) {
-                            let startPoint = keyPoints[index];
-                            let endPoint = keyPoints[index + 1];
-                            if (isHorizontalSegment([startPoint, endPoint])) {
-                                startPoint = [startPoint[0], startPoint[1] + resizeState.offsetY];
-                                endPoint = [endPoint[0], endPoint[1] + resizeState.offsetY];
-                            }
-                            if (isVerticalSegment([startPoint, endPoint])) {
-                                startPoint = [startPoint[0] + resizeState.offsetX, startPoint[1]];
-                                endPoint = [endPoint[0] + resizeState.offsetX, endPoint[1]];
-                            }
-                            drawPoints.push(startPoint);
-                            drawPoints.push(endPoint);
+                    let startPoint = keyPoints[handleIndex];
+                    let endPoint = keyPoints[handleIndex + 1];
+                    if (isHorizontalSegment([startPoint, endPoint])) {
+                        startPoint = [startPoint[0], startPoint[1] + resizeState.offsetY];
+                        endPoint = [endPoint[0], endPoint[1] + resizeState.offsetY];
+                    }
+                    if (isVerticalSegment([startPoint, endPoint])) {
+                        startPoint = [startPoint[0] + resizeState.offsetX, startPoint[1]];
+                        endPoint = [endPoint[0] + resizeState.offsetX, endPoint[1]];
+                    }
+
+                    const startIndex = points.findIndex(item => Point.isEquals(item, keyPoints[handleIndex]));
+                    const endIndex = points.findIndex(item => Point.isEquals(item, keyPoints[handleIndex + 1]));
+                    if (startIndex >= 0 && endIndex >= 0) {
+                        points.splice(startIndex, 2, startPoint, endPoint);
+                    }
+                    if (startIndex >= 0 && endIndex < 0) {
+                        points.splice(startIndex, 1, startPoint, endPoint);
+                    }
+                    if (endIndex >= 0 && startIndex < 0) {
+                        points.splice(endIndex, 1, startPoint, endPoint);
+                    }
+                    if (endIndex < 0 && startIndex < 0) {
+                        if (handleIndex < points.length / 2) {
+                            points.splice(1, 0, startPoint, endPoint);
+                        } else {
+                            points.splice(-1, 0, startPoint, endPoint);
                         }
-                    });
-                    drawPoints.unshift(points[0]);
-                    drawPoints.push(points[points.length - 1]);
-                    points = drawPoints;
+                    }
                 } else {
                     points.splice(handleIndex + 1, 0, resizeState.endTransformPoint);
                 }

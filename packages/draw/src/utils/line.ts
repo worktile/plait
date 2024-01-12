@@ -230,23 +230,28 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         let startSegment = [allPoints[0], allPoints[1]];
         let endSegment = [allPoints[allPoints.length - 2], allPoints[allPoints.length - 1]];
         if (!isPointsOnSameLine(startSegment)) {
-            const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: 0, y: 0 }, 0);
+            const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: allPoints[1][0], y: allPoints[1][1] }, 0);
+            const targetDirection = getOppositeDirection(handleRefPair.source.direction);
+            const nextTargetPoint = getNextPoint(allPoints[1], rectangle, targetDirection);
             startSegment = generateElbowLineRoute({
                 sourcePoint,
                 nextSourcePoint,
                 sourceRectangle,
                 sourceOuterRectangle,
                 targetPoint: allPoints[1],
-                nextTargetPoint: allPoints[1],
+                nextTargetPoint: nextTargetPoint,
                 targetRectangle: rectangle,
                 targetOuterRectangle: rectangle
             });
         }
         if (!isPointsOnSameLine(endSegment)) {
-            const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: 0, y: 0 }, 0);
+            const sourcePoint = allPoints[allPoints.length - 2];
+            const sourceDirection = getOppositeDirection(handleRefPair.target.direction);
+            const rectangle = RectangleClient.inflate({ width: 0, height: 0, x: sourcePoint[0], y: sourcePoint[1] }, 0);
+            const nextSourcePoint = getNextPoint(sourcePoint, rectangle, sourceDirection);
             endSegment = generateElbowLineRoute({
-                sourcePoint: allPoints[allPoints.length - 2],
-                nextSourcePoint: allPoints[allPoints.length - 2],
+                sourcePoint,
+                nextSourcePoint: nextSourcePoint,
                 sourceRectangle: rectangle,
                 sourceOuterRectangle: rectangle,
                 targetPoint: targetPoint,
