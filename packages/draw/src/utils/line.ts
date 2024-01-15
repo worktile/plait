@@ -231,13 +231,12 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             const startPoint = dataPoints[i];
             if (i < dataPoints.length - 1) {
                 const endPoint = dataPoints[i + 1];
+                points.push(startPoint);
                 if (!isPointsOnSameLine([startPoint, endPoint])) {
                     const midElbowPoints = getMidElbowPoints(keyPoints, startPoint, endPoint);
                     if (midElbowPoints.length) {
                         points.push(...midElbowPoints);
                     }
-                } else {
-                    points.push(startPoint);
                 }
                 continue;
             } else {
@@ -502,7 +501,7 @@ export const handleLineCreating = (
 };
 
 export function getMidElbowPoints(points: Point[], startPoint: Point, endPoint: Point) {
-    const midElbowPoints: Point[] = [startPoint];
+    const midElbowPoints: Point[] = [];
     while (true) {
         if (isPointsOnSameLine([startPoint, endPoint])) {
             return midElbowPoints;
