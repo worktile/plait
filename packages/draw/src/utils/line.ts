@@ -225,31 +225,27 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     } else {
         const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
         const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
-        points = [keyPoints[0], keyPoints[1]];
-        for (let i = 1; i <= dataPoints.length - 1; i++) {
-            buildRenderPoints(dataPoints[i], points[points.length - 1]);
-        }
-        function buildRenderPoints(dataPoint: Point, lastPoint: Point) {
-            while (true) {
-                if (isPointsOnSameLine([dataPoint, lastPoint])) {
-                    points.push(dataPoint);
-                    return;
-                }
-                let index = -1;
-                for (let i = 2; i < keyPoints.length; i++) {
-                    if (isPointsOnSameLine([keyPoints[i], lastPoint])) {
-                        index = i;
+        dataPoints.splice(1, 0, keyPoints[1]);
+        dataPoints.splice(-1, 0, keyPoints[keyPoints.length - 2]);
+        for (let i = 0; i <= dataPoints.length - 1; i++) {
+            const startPoint = dataPoints[i];
+            if (i < dataPoints.length - 1) {
+                const endPoint = dataPoints[i + 1];
+                if (!isPointsOnSameLine([startPoint, endPoint])) {
+                    const midElbowPoints = getMidElbowPoints(keyPoints, startPoint, endPoint);
+                    if (midElbowPoints.length) {
+                        points.push(...midElbowPoints);
                     }
+                } else {
+                    points.push(startPoint);
                 }
-                if (index < 0 || points.findIndex(item => Point.isEquals(item, keyPoints[index])) > -1) {
-                    return;
-                }
-                points.push(keyPoints[index]);
-                lastPoint = points[points.length - 1];
+                continue;
+            } else {
+                points.push(startPoint);
             }
         }
-        return removeIntermediatePointsInSegment(points);
     }
+    return removeDuplicatePoints(points);
 };
 
 export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
@@ -504,3 +500,29 @@ export const handleLineCreating = (
     PlaitBoard.getElementActiveHost(board).append(lineShapeG);
     return temporaryLineElement;
 };
+
+export function getMidElbowPoints(points: Point[], startPoint: Point, endPoint: Point) {
+    const midElbowPoints: Point[] = [startPoint];
+    while (true) {
+        if (isPointsOnSameLine([startPoint, endPoint])) {
+            return midElbowPoints;
+        }
+        let pointIndex = -1;
+        for (let i = 2; i < points.length; i++) {
+            if (isPointsOnSameLine([points[i], startPoint])) {
+                if (
+                    points.some((item, index) => {
+                        return index > i && isPointsOnSameLine([item, endPoint]);
+                    })
+                ) {
+                    pointIndex = i;
+                }
+            }
+        }
+        if (pointIndex < 0) {
+            return midElbowPoints;
+        }
+        midElbowPoints.push(points[pointIndex]);
+        startPoint = midElbowPoints[midElbowPoints.length - 1];
+    }
+}
