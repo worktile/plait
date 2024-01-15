@@ -11,3 +11,4 @@ extract isSourceAndTargetIntersect to common
 add isHorizontalSegment to core
 add isVerticalSegment to core
 add isPointsOnSameLine to core
+refactor getElbowPoints when points.length > 2
