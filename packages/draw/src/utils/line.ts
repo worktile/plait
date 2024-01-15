@@ -502,14 +502,12 @@ export function getMidElbowPoints(points: Point[], startPoint: Point, endPoint: 
     let startPointIndex = -1;
     let endPointIndex = -1;
     for (let i = 2; i < points.length; i++) {
-        if (isPointsOnSameLine([points[i], startPoint])) {
-            const endIndex = points.findIndex((item, index) => {
-                return index > i && isPointsOnSameLine([item, endPoint]);
-            });
-            if (endIndex > -1) {
-                startPointIndex = i;
-                endPointIndex = endIndex;
-            }
+        if (startPointIndex == -1 && isPointsOnSameLine([points[i], startPoint])) {
+            startPointIndex = i;
+        }
+        if (startPointIndex > -1 && isPointsOnSameLine([points[i], endPoint])) {
+            endPointIndex = i;
+            break;
         }
     }
     if (startPointIndex > -1 && endPointIndex > -1) {
