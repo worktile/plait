@@ -241,7 +241,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         }
         points.push(keyPoints[keyPoints.length - 2], keyPoints[keyPoints.length - 1]);
     }
-    return removeDuplicatePoints(points);
+    return removeIntermediatePointsInSegment(points);
 };
 
 export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
@@ -507,7 +507,6 @@ export function getMidElbowPoints(points: Point[], startPoint: Point, endPoint: 
         }
         if (startPointIndex > -1 && isPointsOnSameLine([points[i], endPoint])) {
             endPointIndex = i;
-            break;
         }
     }
     if (startPointIndex > -1 && endPointIndex > -1) {

@@ -104,12 +104,14 @@ export const withLineResize = (board: PlaitBoard) => {
                 const newPoints = [...points];
                 newPoints[0] = drawPoints[0];
                 newPoints[newPoints.length - 1] = drawPoints[drawPoints.length - 1];
-                newPoints.forEach((point, index) => {
-                    if (index === handleIndex) return;
-                    if (points[handleIndex]) {
-                        points[handleIndex] = alignPoints(point, points[handleIndex]);
-                    }
-                });
+                if (resizeRef.element.shape !== LineShape.elbow) {
+                    newPoints.forEach((point, index) => {
+                        if (index === handleIndex) return;
+                        if (points[handleIndex]) {
+                            points[handleIndex] = alignPoints(point, points[handleIndex]);
+                        }
+                    });
+                }
             }
             DrawTransforms.resizeLine(board, { points, source, target }, resizeRef.path);
         }
