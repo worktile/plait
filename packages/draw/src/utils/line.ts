@@ -225,24 +225,21 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     } else {
         const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
         const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
-        dataPoints.splice(1, 0, keyPoints[1]);
-        dataPoints.splice(-1, 0, keyPoints[keyPoints.length - 2]);
-        for (let i = 0; i <= dataPoints.length - 1; i++) {
+        dataPoints.splice(0, 1, keyPoints[1]);
+        dataPoints.splice(-1, 1, keyPoints[keyPoints.length - 2]);
+        points.push(keyPoints[0]);
+        for (let i = 0; i < dataPoints.length - 1; i++) {
             const startPoint = dataPoints[i];
-            if (i < dataPoints.length - 1) {
-                const endPoint = dataPoints[i + 1];
-                points.push(startPoint);
-                if (!isPointsOnSameLine([startPoint, endPoint])) {
-                    const midElbowPoints = getMidElbowPoints(keyPoints, startPoint, endPoint);
-                    if (midElbowPoints.length) {
-                        points.push(...midElbowPoints);
-                    }
+            points.push(startPoint);
+            const endPoint = dataPoints[i + 1];
+            if (!isPointsOnSameLine([startPoint, endPoint])) {
+                const midElbowPoints = getMidElbowPoints(keyPoints, startPoint, endPoint);
+                if (midElbowPoints.length) {
+                    points.push(...midElbowPoints);
                 }
-                continue;
-            } else {
-                points.push(startPoint);
             }
         }
+        points.push(keyPoints[keyPoints.length - 2], keyPoints[keyPoints.length - 1]);
     }
     return removeDuplicatePoints(points);
 };
@@ -501,27 +498,22 @@ export const handleLineCreating = (
 };
 
 export function getMidElbowPoints(points: Point[], startPoint: Point, endPoint: Point) {
-    const midElbowPoints: Point[] = [];
-    while (true) {
-        if (isPointsOnSameLine([startPoint, endPoint])) {
-            return midElbowPoints;
-        }
-        let pointIndex = -1;
-        for (let i = 2; i < points.length; i++) {
-            if (isPointsOnSameLine([points[i], startPoint])) {
-                if (
-                    points.some((item, index) => {
-                        return index > i && isPointsOnSameLine([item, endPoint]);
-                    })
-                ) {
-                    pointIndex = i;
-                }
+    let midElbowPoints: Point[] = [];
+    let startPointIndex = -1;
+    let endPointIndex = -1;
+    for (let i = 2; i < points.length; i++) {
+        if (isPointsOnSameLine([points[i], startPoint])) {
+            const endIndex = points.findIndex((item, index) => {
+                return index > i && isPointsOnSameLine([item, endPoint]);
+            });
+            if (endIndex > -1) {
+                startPointIndex = i;
+                endPointIndex = endIndex;
             }
         }
-        if (pointIndex < 0) {
-            return midElbowPoints;
-        }
-        midElbowPoints.push(points[pointIndex]);
-        startPoint = midElbowPoints[midElbowPoints.length - 1];
     }
+    if (startPointIndex > -1 && endPointIndex > -1) {
+        midElbowPoints = points.slice(startPointIndex, endPointIndex);
+    }
+    return midElbowPoints;
 }
