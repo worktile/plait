@@ -39,7 +39,7 @@ export const withLineTextMove = (board: PlaitBoard) => {
         onResize: (resizeRef: ResizeRef<PlaitLine>, resizeState: ResizeState) => {
             const element = resizeRef.element;
             if (element) {
-                const movingPoint = resizeState.endTransformPoint;
+                const movingPoint = resizeState.endPoint;
                 const points = getLinePoints(board, element);
                 const distance = distanceBetweenPointAndSegments(points, movingPoint);
                 if (distance <= movableBuffer) {

@@ -37,21 +37,21 @@ export const withLineResize = (board: PlaitBoard) => {
             let points: Point[] = [...resizeRef.element.points];
             let source: LineHandle = { ...resizeRef.element.source };
             let target: LineHandle = { ...resizeRef.element.target };
-            const hitElement = getHitOutlineGeometry(board, resizeState.endTransformPoint, REACTION_MARGIN);
+            const hitElement = getHitOutlineGeometry(board, resizeState.endPoint, REACTION_MARGIN);
             if (resizeRef.handle === LineResizeHandle.source || resizeRef.handle === LineResizeHandle.target) {
                 const object = resizeRef.handle === LineResizeHandle.source ? source : target;
-                points[pointIndex] = resizeState.endTransformPoint;
+                points[pointIndex] = resizeState.endPoint;
                 if (hitElement) {
-                    object.connection = getConnectionByNearestPoint(board, resizeState.endTransformPoint, hitElement);
+                    object.connection = getConnectionByNearestPoint(board, resizeState.endPoint, hitElement);
                     object.boundId = hitElement.id;
                 } else {
                     object.connection = undefined;
                     object.boundId = undefined;
                 }
             } else if (resizeRef.handle === LineResizeHandle.addHandle) {
-                points.splice(pointIndex, 0, resizeState.endTransformPoint);
+                points.splice(pointIndex, 0, resizeState.endPoint);
             } else {
-                points[pointIndex] = resizeState.endTransformPoint;
+                points[pointIndex] = resizeState.endPoint;
             }
             if (!hitElement) {
                 const drawPoints = getLinePoints(board, resizeRef.element);

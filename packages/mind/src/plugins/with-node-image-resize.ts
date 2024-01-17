@@ -36,19 +36,15 @@ export const withNodeImageResize = (board: PlaitBoard) => {
             return null;
         },
         onResize: (resizeRef: ResizeRef<MindElement<ImageData>>, resizeState: ResizeState) => {
-            let offsetX = resizeState.offsetX;
-            let offsetY = resizeState.offsetY;
-            if (resizeRef.handle === ResizeHandle.nw || resizeRef.handle === ResizeHandle.sw) {
-                offsetX = -offsetX;
-            }
+            const offsetX = Point.getOffsetX(resizeState.startPoint, resizeState.endPoint);
             const originWidth = resizeRef.element.data.image.width;
             const originHeight = resizeRef.element.data.image.height;
             let width = originWidth + offsetX;
             if (width <= 100) {
                 width = 100;
             }
-            const ratio = originWidth / width;
-            const height = originHeight / ratio;
+            const ratio = originWidth / originHeight;
+            const height = width / ratio;
             const imageItem = { ...resizeRef.element.data.image, width, height };
             MindTransforms.setImage(board, PlaitNode.get(board, resizeRef.path), imageItem);
             addElementOfFocusedImage(board, PlaitNode.get(board, resizeRef.path));
