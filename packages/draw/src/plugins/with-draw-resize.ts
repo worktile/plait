@@ -137,32 +137,3 @@ export function withSelectionResize(board: PlaitBoard) {
 
     return board;
 }
-
-const getPointsByResizeHandle = (movingPoint: Point, elementPoints: Point[], handle: ResizeHandle): [Point, Point] => {
-    switch (handle) {
-        case ResizeHandle.nw: {
-            return [movingPoint, elementPoints[1]];
-        }
-        case ResizeHandle.ne: {
-            return [movingPoint, [elementPoints[0][0], elementPoints[1][1]]];
-        }
-        case ResizeHandle.se: {
-            return [movingPoint, elementPoints[0]];
-        }
-        case ResizeHandle.sw: {
-            return [movingPoint, [elementPoints[1][0], elementPoints[0][1]]];
-        }
-        case ResizeHandle.n: {
-            return [[elementPoints[0][0], movingPoint[1]], elementPoints[1]];
-        }
-        case ResizeHandle.s: {
-            return [elementPoints[0], [elementPoints[1][0], movingPoint[1]]];
-        }
-        case ResizeHandle.w: {
-            return [[movingPoint[0], elementPoints[0][1]], elementPoints[1]];
-        }
-        default: {
-            return [elementPoints[0], [movingPoint[0], elementPoints[1][1]]];
-        }
-    }
-};
