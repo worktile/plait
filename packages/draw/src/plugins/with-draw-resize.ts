@@ -24,8 +24,6 @@ export function withSelectionResize(board: PlaitBoard) {
 
     const { keyDown, keyUp } = board;
 
-    let targets: PlaitDrawElement[] = [];
-
     let isShift = false;
 
     board.keyDown = (event: KeyboardEvent) => {
@@ -49,15 +47,13 @@ export function withSelectionResize(board: PlaitBoard) {
             const boundingRectangle = getRectangleByElements(board, elements, false);
             const handleRef = getHitRectangleResizeHandleRef(board, boundingRectangle, point);
             if (handleRef) {
-                targets = elements;
                 return {
                     element: elements[0],
+                    elements: elements,
                     rectangle: boundingRectangle,
                     handle: handleRef.handle,
                     cursorClass: handleRef.cursorClass
                 };
-            } else {
-                targets = [];
             }
             return null;
         },
@@ -83,7 +79,9 @@ export function withSelectionResize(board: PlaitBoard) {
             } else {
                 const isHorizontal = Point.isHorizontalAlign(resizeOriginPoint, resizeHandlePoint, 0.1) || false;
                 let normalizedOffset = isHorizontal ? Point.getOffsetX(startPoint, endPoint) : Point.getOffsetY(startPoint, endPoint);
-                let benchmarkOffset = isHorizontal ? resizeHandlePoint[0] - resizeOriginPoint[0] : resizeHandlePoint[1] - resizeOriginPoint[1];
+                let benchmarkOffset = isHorizontal
+                    ? resizeHandlePoint[0] - resizeOriginPoint[0]
+                    : resizeHandlePoint[1] - resizeOriginPoint[1];
                 const zoom = normalizedOffset / benchmarkOffset;
                 if (isShift) {
                     xZoom = zoom;
@@ -101,7 +99,7 @@ export function withSelectionResize(board: PlaitBoard) {
                 const offsetY = (p[1] - resizeOriginPoint[1]) * yZoom;
                 return [p[0] + offsetX, p[1] + offsetY] as Point;
             };
-            targets.forEach(target => {
+            resizeRef.elements!.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
                 let points = target.points.map(p => {
                     return movePointByZoomAndOriginPoint(p);

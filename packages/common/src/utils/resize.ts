@@ -3,6 +3,7 @@ import { ResizeHandle } from '../constants/resize';
 
 export interface ResizeRef<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
     element: T;
+    elements?: T[];
     rectangle?: RectangleClient;
     path: Path;
     handle: K;

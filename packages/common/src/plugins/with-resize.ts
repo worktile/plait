@@ -29,6 +29,7 @@ export interface WithResizeOptions<T extends PlaitElement = PlaitElement, K = Re
 
 export interface ResizeDetectResult<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
     element: T;
+    elements?: T[];
     rectangle?: RectangleClient;
     handle: K;
     cursorClass?: ResizeCursorClass;
@@ -70,6 +71,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             resizeRef = {
                 path: PlaitBoard.findPath(board, resizeDetectResult.element),
                 element: resizeDetectResult.element,
+                elements: resizeDetectResult.elements,
                 handle: resizeDetectResult.handle,
                 rectangle: resizeDetectResult.rectangle
             };
