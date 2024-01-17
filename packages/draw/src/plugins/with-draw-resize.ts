@@ -72,9 +72,9 @@ export function withSelectionResize(board: PlaitBoard) {
             let offsetX = Point.getOffsetX(startPoint, endPoint);
             let xZoom = 0;
             let yZoom = 0;
-            const isCorner = isCornerHandle(board, resizeRef.handle);
-            const isMaintainAspectRatio = isShift || isCorner;
-            if (isCorner) {
+            const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
+            const isMaintainAspectRatio = isShift || isResizeFromCorner;
+            if (isResizeFromCorner) {
                 endPoint = getPointByUnitVectorAndVectorComponent(startPoint, unitVector, offsetX, true);
                 let normalizedOffsetX = Point.getOffsetX(startPoint, endPoint);
                 let normalizedOffsetY = Point.getOffsetY(startPoint, endPoint);
@@ -83,8 +83,8 @@ export function withSelectionResize(board: PlaitBoard) {
             } else {
                 const isHorizontal = Point.isHorizontalAlign(resizeOriginPoint, resizeHandlePoint, 0.1) || false;
                 let normalizedOffset = isHorizontal ? Point.getOffsetX(startPoint, endPoint) : Point.getOffsetY(startPoint, endPoint);
-                let benchmark = isHorizontal ? resizeHandlePoint[0] - resizeOriginPoint[0] : resizeHandlePoint[1] - resizeOriginPoint[1];
-                const zoom = normalizedOffset / benchmark;
+                let benchmarkOffset = isHorizontal ? resizeHandlePoint[0] - resizeOriginPoint[0] : resizeHandlePoint[1] - resizeOriginPoint[1];
+                const zoom = normalizedOffset / benchmarkOffset;
                 if (isShift) {
                     xZoom = zoom;
                     yZoom = zoom;

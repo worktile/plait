@@ -53,7 +53,7 @@ export const withNodeResize = (board: PlaitBoard) => {
         },
         onResize: (resizeRef: ResizeRef<MindElement, null>, resizeState: ResizeState) => {
             const zoom = board.viewport.zoom;
-            let resizedWidth = targetElementRef!.currentWidth + resizeState.offsetX / zoom;
+            let resizedWidth = targetElementRef!.currentWidth + Point.getOffsetX(resizeState.startPoint, resizeState.endPoint);
             if (resizedWidth <= targetElementRef!.minWidth) {
                 resizedWidth = targetElementRef!.minWidth;
             }
