@@ -12,7 +12,6 @@ export class LineShapeGenerator extends Generator<PlaitLine, ShapeData> {
     draw(element: PlaitLine, data: ShapeData) {
         let lineG: SVGGElement | undefined;
         lineG = drawLine(this.board, element);
-
         return lineG;
     }
 }

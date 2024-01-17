@@ -3,31 +3,26 @@ import { ResizeHandle } from '../constants/resize';
 
 export interface ResizeRef<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
     element: T;
+    rectangle?: RectangleClient;
     path: Path;
     handle: K;
 }
 
-const getResizeHandleByIndex = (index: number) => {
-    switch (index) {
-        case 0:
-            return ResizeHandle.nw;
-        case 1:
-            return ResizeHandle.ne;
-        case 2:
-            return ResizeHandle.se;
-        case 3:
-            return ResizeHandle.sw;
-        case 4:
-            return ResizeHandle.n;
-        case 5:
-            return ResizeHandle.e;
-        case 6:
-            return ResizeHandle.s;
-        case 7:
-            return ResizeHandle.w;
-        default:
-            return null;
+export const getResizeHandleByIndex = (index: number) => {
+    return `${index}` as ResizeHandle;
+};
+
+export const getIndexByResizeHandle = (resizeHandle: ResizeHandle) => {
+    return Number(resizeHandle);
+};
+
+export const getSymmetricHandleIndex = (board: PlaitBoard, index: number) => {
+    const originIndex = isEdgeHandle(board, getResizeHandleByIndex(index)) ? index - 4 : index;
+    let originSymmetricHandleIndex = originIndex + 2;
+    if (originSymmetricHandleIndex >= 4) {
+        originSymmetricHandleIndex = originSymmetricHandleIndex - 4;
     }
+    return isEdgeHandle(board, getResizeHandleByIndex(index)) ? originSymmetricHandleIndex + 4 : originSymmetricHandleIndex;
 };
 
 const getResizeCursorClassByIndex = (index: number) => {
@@ -76,6 +71,16 @@ export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diamete
     return refs;
 };
 
+export const getResizeHandlePointByIndex = (rectangle: RectangleClient, index: number) => {
+    if (index <= 3) {
+        const corners = RectangleClient.getCornerPoints(rectangle);
+        return corners[index];
+    } else {
+        const edgeCenterPoints = RectangleClient.getEdgeCenterPoints(rectangle);
+        return edgeCenterPoints[index - 4];
+    }
+};
+
 const getResizeSideRectangles = (cornerPoints: Point[], offset: number): RectangleClient[] => {
     const result = [];
     for (let i = 0; i < cornerPoints.length; i++) {
@@ -108,4 +113,17 @@ export const removeResizing = (board: PlaitBoard, key: string) => {
     PlaitBoard.getBoardContainer(board).classList.remove(`${key}-resizing`);
     IS_RESIZING.delete(board);
     setDragging(board, false);
+};
+
+export const isEdgeHandle = (board: PlaitBoard, handle: ResizeHandle) => {
+    const index = getIndexByResizeHandle(handle);
+    if (index >= 4) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+export const isCornerHandle = (board: PlaitBoard, handle: ResizeHandle) => {
+    return !isEdgeHandle(board, handle);
 };

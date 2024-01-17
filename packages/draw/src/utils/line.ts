@@ -46,7 +46,7 @@ import {
     PlaitLine,
     PlaitShape
 } from '../interfaces';
-import { getPointsByCenterPoint, getNearestPoint, createGeometryElement } from './geometry';
+import { getNearestPoint, createGeometryElement } from './geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from './style/stroke';
 import { getEngine } from '../engines';
 import { drawLineArrow } from './line-arrow';
@@ -149,7 +149,7 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
 
 const createFakeElement = (startPoint: Point, vector: Vector) => {
     const point = getPointByVector(startPoint, vector, -25);
-    const points = getPointsByCenterPoint(point, 50, 50);
+    const points = RectangleClient.getPoints(RectangleClient.createRectangleByCenterPoint(point, 50, 50));
     return createGeometryElement(BasicShapes.rectangle, points, '');
 };
 
@@ -359,7 +359,7 @@ export const getConnectionByNearestPoint = (board: PlaitBoard, point: Point, hit
 export const getHitConnectorPoint = (point: Point, hitElement: PlaitShape, rectangle: RectangleClient) => {
     const shape = getShape(hitElement);
     const connector = getEngine(shape).getConnectorPoints(rectangle);
-    const points = getPointsByCenterPoint(point, 10, 10);
+    const points = RectangleClient.getPoints(RectangleClient.createRectangleByCenterPoint(point, 10, 10));
     const pointRectangle = getRectangleByPoints(points);
     return connector.find(point => {
         return RectangleClient.isHit(pointRectangle, RectangleClient.toRectangleClient([point, point]));
