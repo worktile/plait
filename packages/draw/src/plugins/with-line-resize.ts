@@ -98,7 +98,7 @@ export const withLineResize = (board: PlaitBoard) => {
                     if (endIndex > -1) {
                         drawPoints.splice(endIndex, 1, endPoint);
                     } else {
-                        if (handleIndex + 1 === keyPoints.length - 1 && drawPoints.length > 1) {
+                        if (handleIndex === drawPoints.length - 1 && drawPoints.length > 1) {
                             drawPoints.splice(startIndex + 1, 1, endPoint);
                         } else {
                             drawPoints.splice(startIndex + 1, 0, endPoint);
