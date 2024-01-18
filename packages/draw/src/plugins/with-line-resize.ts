@@ -58,11 +58,13 @@ export const withLineResize = (board: PlaitBoard) => {
 
                     let startPoint = keyPoints[handleIndex];
                     let endPoint = keyPoints[handleIndex + 1];
-                    if (isHorizontalSegment([startPoint, endPoint])) {
+                    const isHorizontal = isHorizontalSegment([startPoint, endPoint]);
+                    const isVertical = isVerticalSegment([startPoint, endPoint]);
+                    if (isHorizontal) {
                         startPoint = [startPoint[0], startPoint[1] + resizeState.offsetY];
                         endPoint = [endPoint[0], endPoint[1] + resizeState.offsetY];
                     }
-                    if (isVerticalSegment([startPoint, endPoint])) {
+                    if (isVertical) {
                         startPoint = [startPoint[0] + resizeState.offsetX, startPoint[1]];
                         endPoint = [endPoint[0] + resizeState.offsetX, endPoint[1]];
                     }
@@ -80,16 +82,27 @@ export const withLineResize = (board: PlaitBoard) => {
                         }
                         if (startIndex > -1) {
                             startIndex = startIndex + 1;
+                            drawPoints.splice(startIndex, 0, startPoint);
                         } else {
                             startIndex = 0;
+                            if (handleIndex === 1 && drawPoints.length) {
+                                drawPoints.splice(startIndex, 1, startPoint);
+                            } else {
+                                drawPoints.splice(startIndex, 0, startPoint);
+                            }
                         }
-                        drawPoints.splice(startIndex, 0, startPoint);
                     }
-                    const endIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[handleIndex + 1]));
+                    const endIndex = drawPoints.findIndex(
+                        item => Point.isEquals(item, keyPoints[handleIndex + 1]) && !Point.isEquals(item, startPoint)
+                    );
                     if (endIndex > -1) {
                         drawPoints.splice(endIndex, 1, endPoint);
                     } else {
-                        drawPoints.splice(startIndex + 1, 0, endPoint);
+                        if (handleIndex + 1 === keyPoints.length - 1 && drawPoints.length > 1) {
+                            drawPoints.splice(startIndex + 1, 1, endPoint);
+                        } else {
+                            drawPoints.splice(startIndex + 1, 0, endPoint);
+                        }
                     }
                     points = [points[0], ...drawPoints, points[points.length - 1]];
                 } else {
