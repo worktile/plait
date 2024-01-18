@@ -38,6 +38,7 @@ export interface ResizeDetectResult<T extends PlaitElement = PlaitElement, K = R
 export interface ResizeState {
     startPoint: Point;
     endPoint: Point;
+    isShift: boolean;
 }
 
 const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
@@ -109,7 +110,8 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
                     handleTouchTarget(board);
                     options.onResize(resizeRef, {
                         startPoint: toViewBoxPoint(board, toHostPoint(board, startPoint[0], startPoint[1])),
-                        endPoint
+                        endPoint,
+                        isShift: !!event.shiftKey
                     });
                 }
             });

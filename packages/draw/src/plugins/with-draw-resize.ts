@@ -1,5 +1,4 @@
 import {
-    ResizeHandle,
     ResizeRef,
     ResizeState,
     WithResizeOptions,
@@ -17,24 +16,9 @@ import { PlaitBoard, Point, RectangleClient, Transforms, getRectangleByElements,
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { isKeyHotkey } from 'is-hotkey';
 
 export function withSelectionResize(board: PlaitBoard) {
     const { afterChange } = board;
-
-    const { keyDown, keyUp } = board;
-
-    let isShift = false;
-
-    board.keyDown = (event: KeyboardEvent) => {
-        isShift = isKeyHotkey('shift', event);
-        keyDown(event);
-    };
-
-    board.keyUp = (event: KeyboardEvent) => {
-        isShift = false;
-        keyUp(event);
-    };
 
     const options: WithResizeOptions<PlaitDrawElement> = {
         key: 'draw-elements',
@@ -69,7 +53,7 @@ export function withSelectionResize(board: PlaitBoard) {
             let xZoom = 0;
             let yZoom = 0;
             const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
-            const isMaintainAspectRatio = isShift || isResizeFromCorner;
+            const isMaintainAspectRatio = resizeState.isShift || isResizeFromCorner;
             if (isResizeFromCorner) {
                 endPoint = getPointByUnitVectorAndVectorComponent(startPoint, unitVector, offsetX, true);
                 let normalizedOffsetX = Point.getOffsetX(startPoint, endPoint);
@@ -83,7 +67,7 @@ export function withSelectionResize(board: PlaitBoard) {
                     ? resizeHandlePoint[0] - resizeOriginPoint[0]
                     : resizeHandlePoint[1] - resizeOriginPoint[1];
                 const zoom = normalizedOffset / benchmarkOffset;
-                if (isShift) {
+                if (resizeState.isShift) {
                     xZoom = zoom;
                     yZoom = zoom;
                 } else {

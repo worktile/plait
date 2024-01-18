@@ -20,20 +20,6 @@ import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 
 export const withGeometryResize = (board: PlaitBoard) => {
-    const { keyDown, keyUp } = board;
-
-    let isShift = false;
-
-    board.keyDown = (event: KeyboardEvent) => {
-        isShift = isKeyHotkey('shift', event);
-        keyDown(event);
-    };
-
-    board.keyUp = (event: KeyboardEvent) => {
-        isShift = false;
-        keyUp(event);
-    };
-
     const options: WithResizeOptions<PlaitGeometry | PlaitImage> = {
         key: 'draw-geometry',
         canResize: () => {
@@ -64,13 +50,13 @@ export const withGeometryResize = (board: PlaitBoard) => {
             const ratio = rectangle.height / rectangle.width;
             const cornerHandle = isCornerHandle(board, resizeRef.handle);
             points = getPointsByResizeHandle(resizeState.endPoint, resizeRef.element.points, resizeRef.handle);
-            if ((isShift || PlaitDrawElement.isImage(resizeRef.element)) && cornerHandle) {
+            if ((resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element)) && cornerHandle) {
                 const rectangle = getRectangleByPoints(points);
                 const factor = points[0][1] > points[1][1] ? 1 : -1;
                 const height = rectangle.width * ratio * factor;
                 points = [[resizeState.endPoint[0], points[1][1] + height], points[1]];
             }
-            if ((isShift || PlaitDrawElement.isImage(resizeRef.element)) && !cornerHandle) {
+            if ((resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element)) && !cornerHandle) {
                 const rectangle = getRectangleByPoints(points);
                 if (resizeRef.handle === ResizeHandle.n || resizeRef.handle === ResizeHandle.s) {
                     const newWidth = rectangle.height / ratio;

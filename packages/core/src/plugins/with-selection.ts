@@ -27,7 +27,7 @@ export interface WithPluginOptions extends PlaitPluginOptions {
 }
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, pointerUp, pointerMove, globalPointerUp, keyDown, keyUp, onChange, afterChange } = board;
+    const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange } = board;
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
