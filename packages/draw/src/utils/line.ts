@@ -207,41 +207,58 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         targetRectangle,
         targetOuterRectangle
     };
-    if (element.points.length === 2) {
-        const isIntersect = isSourceAndTargetIntersect(params);
-        if (!isIntersect) {
-            points = generateElbowLineRoute(params);
-        } else {
-            points = getPoints(
-                handleRefPair.source.point,
-                handleRefPair.source.direction,
-                handleRefPair.target.point,
-                handleRefPair.target.direction,
-                0
-            );
-        }
-        points = removeIntermediatePointsInSegment(removeDuplicatePoints(points));
-        return points;
+    const isIntersect = isSourceAndTargetIntersect(params);
+    if (!isIntersect) {
+        points = generateElbowLineRoute(params);
     } else {
-        const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
+        points = getPoints(
+            handleRefPair.source.point,
+            handleRefPair.source.direction,
+            handleRefPair.target.point,
+            handleRefPair.target.direction,
+            0
+        );
+    }
+    if (element.points.length === 2) {
+        return removeIntermediatePointsInSegment(removeDuplicatePoints(points));
+    } else {
+        const keyPoints = removeDuplicatePoints(points);
         const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
         dataPoints.splice(0, 1, keyPoints[1]);
         dataPoints.splice(-1, 1, keyPoints[keyPoints.length - 2]);
-        points.push(keyPoints[0]);
+        const renderPoints: Point[] = [keyPoints[0]];
         for (let i = 0; i < dataPoints.length - 1; i++) {
             const startPoint = dataPoints[i];
-            points.push(startPoint);
             const endPoint = dataPoints[i + 1];
+            renderPoints.push(startPoint);
             if (!isPointsOnSameLine([startPoint, endPoint])) {
                 const midElbowPoints = getMidElbowPoints(keyPoints, startPoint, endPoint);
                 if (midElbowPoints.length) {
-                    points.push(...midElbowPoints);
+                    renderPoints.push(...midElbowPoints);
+                } else {
+                    const previousStartPoint = dataPoints[i - 1];
+                    if (previousStartPoint && isPointsOnSameLine([previousStartPoint, startPoint])) {
+                        let newStartPoint: Point = [startPoint[0], endPoint[1]];
+                        if (Point.isHorizontalAlign(previousStartPoint, startPoint)) {
+                            newStartPoint = [endPoint[0], startPoint[1]];
+                        }
+                        renderPoints.splice(-1, 1, newStartPoint);
+                    } else {
+                        const nextEndPoint = dataPoints[i + 2];
+                        if (nextEndPoint && isPointsOnSameLine([endPoint, nextEndPoint])) {
+                            let newEndPoint: Point = [endPoint[0], startPoint[1]];
+                            if (Point.isHorizontalAlign(endPoint, nextEndPoint)) {
+                                newEndPoint = [startPoint[0], endPoint[1]] as Point;
+                            }
+                            dataPoints.splice(i + 1, 1, newEndPoint);
+                        }
+                    }
                 }
             }
         }
-        points.push(keyPoints[keyPoints.length - 2], keyPoints[keyPoints.length - 1]);
+        renderPoints.push(keyPoints[keyPoints.length - 2], keyPoints[keyPoints.length - 1]);
+        return removeIntermediatePointsInSegment(renderPoints);
     }
-    return removeIntermediatePointsInSegment(points);
 };
 
 export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
@@ -510,7 +527,7 @@ export function getMidElbowPoints(points: Point[], startPoint: Point, endPoint: 
         }
     }
     if (startPointIndex > -1 && endPointIndex > -1) {
-        midElbowPoints = points.slice(startPointIndex, endPointIndex);
+        midElbowPoints = points.slice(startPointIndex, endPointIndex + 1);
     }
     return midElbowPoints;
 }
