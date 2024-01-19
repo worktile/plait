@@ -258,7 +258,18 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             }
         }
         renderPoints.push(keyPoints[keyPoints.length - 2], keyPoints[keyPoints.length - 1]);
-        return renderPoints;
+        // Remove the middle point to avoid the situation where the starting and ending positions are drawn back, such as when sourcePoint is between nextSourcePoint and the first key point.
+        // Issue
+        //                           keyPoint2
+        //                                |
+        //                                |
+        // nextPoint---sourcePoint---keyPoint1
+        // The correct rendering should be (nextPoint should be filtered out):
+        //                           keyPoint2
+        //                                |
+        //                                |
+        //             sourcePoint---keyPoint1
+        return removeIntermediatePointsInSegment(renderPoints);
     }
 };
 
