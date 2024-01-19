@@ -232,7 +232,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             const startPoint = dataPoints[i];
             const endPoint = dataPoints[i + 1];
             renderPoints.push(startPoint);
-            if (!isPointsOnSameLine([startPoint, endPoint])) {
+            if (!isPointsOnSameLine([startPoint, endPoint], 0.01)) {
                 const midElbowPoints = getMidElbowPoints(normalizedKeyPoints, startPoint, endPoint);
                 if (midElbowPoints.length) {
                     renderPoints.push(...midElbowPoints);
