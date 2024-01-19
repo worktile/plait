@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, isHorizontalSegment, isPointsOnSameLine, isVerticalSegment } from '@plait/core';
+import { PlaitBoard, Point, isHorizontalSegment, isVerticalSegment } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, removeDuplicatePoints, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
@@ -67,10 +67,16 @@ export const withLineResize = (board: PlaitBoard) => {
                         endPoint = [endPoint[0] + resizeState.offsetX, endPoint[1]];
                     }
                     const drawPoints: Point[] = [...points].slice(1, points.length - 1);
-                    let startIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[handleIndex]));
-                    if (startIndex > -1) {
-                        drawPoints.splice(startIndex, 1, startPoint);
+                    const startIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[handleIndex]));
+                    const endIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[handleIndex + 1]));
+                    if (startIndex > -1 && endIndex > -1) {
+                        drawPoints.splice(startIndex, 2, startPoint, endPoint);
+                    } else if (startIndex > -1 && endIndex === -1) {
+                        drawPoints.splice(startIndex, 1, startPoint, endPoint);
+                    } else if (startIndex === -1 && endIndex > -1) {
+                        drawPoints.splice(endIndex, 1, startPoint, endPoint);
                     } else {
+                        let startIndex = -1;
                         for (let index = handleIndex - 1; index >= 0; index--) {
                             const previousIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[index]));
                             if (previousIndex > -1) {
@@ -79,17 +85,10 @@ export const withLineResize = (board: PlaitBoard) => {
                             }
                         }
                         if (startIndex > -1) {
-                            startIndex = startIndex + 1;
+                            drawPoints.splice(startIndex + 1, 0, startPoint, endPoint);
                         } else {
-                            startIndex = 0;
+                            drawPoints.splice(0, 0, startPoint, endPoint);
                         }
-                        drawPoints.splice(startIndex, 0, startPoint);
-                    }
-                    const endIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[handleIndex + 1]));
-                    if (endIndex > -1) {
-                        drawPoints.splice(endIndex, 1, endPoint);
-                    } else {
-                        drawPoints.splice(startIndex + 1, 0, endPoint);
                     }
                     points = [points[0], ...drawPoints, points[points.length - 1]];
                 } else {
