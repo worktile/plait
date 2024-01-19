@@ -59,12 +59,12 @@ export const withLineResize = (board: PlaitBoard) => {
                     let startPoint = keyPoints[handleIndex];
                     let endPoint = keyPoints[handleIndex + 1];
                     if (isHorizontalSegment([startPoint, endPoint])) {
-                        startPoint = [startPoint[0], startPoint[1] + resizeState.offsetY];
-                        endPoint = [endPoint[0], endPoint[1] + resizeState.offsetY];
+                        startPoint = [startPoint[0], startPoint[1] + Point.getOffsetX(resizeState.startPoint, resizeState.endPoint)];
+                        endPoint = [endPoint[0], endPoint[1] + Point.getOffsetY(resizeState.startPoint, resizeState.endPoint)];
                     }
                     if (isVerticalSegment([startPoint, endPoint])) {
-                        startPoint = [startPoint[0] + resizeState.offsetX, startPoint[1]];
-                        endPoint = [endPoint[0] + resizeState.offsetX, endPoint[1]];
+                        startPoint = [startPoint[0] + Point.getOffsetX(resizeState.startPoint, resizeState.endPoint), startPoint[1]];
+                        endPoint = [endPoint[0] + Point.getOffsetY(resizeState.startPoint, resizeState.endPoint), endPoint[1]];
                     }
                     const drawPoints: Point[] = [...points].slice(1, points.length - 1);
                     const startIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[handleIndex]));
