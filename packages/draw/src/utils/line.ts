@@ -16,7 +16,8 @@ import {
     Vector,
     distanceBetweenPointAndPoint,
     catmullRomFitting,
-    isPointsOnSameLine
+    isPointsOnSameLine,
+    RgbaToHEX
 } from '@plait/core';
 import {
     getPoints,
@@ -55,7 +56,6 @@ import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement 
 import { getEngine } from '../engines';
 import { drawLineArrow } from './line-arrow';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { Op } from 'roughjs/bin/core';
 import { getShape } from './shape';
 import { DefaultLineStyle, LINE_TEXT_SPACE } from '../constants/line';
 import { LineShapeGenerator } from '../generators/line.generator';
@@ -223,18 +223,65 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         return removeIntermediatePointsInSegment(removeDuplicatePoints(points));
     } else {
         const keyPoints = removeDuplicatePoints(points);
+        const normalizedKeyPoints = removeIntermediatePointsInSegment(keyPoints.slice(1, keyPoints.length - 1));
         const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
-        dataPoints.splice(0, 1, keyPoints[1]);
-        dataPoints.splice(-1, 1, keyPoints[keyPoints.length - 2]);
+        dataPoints.splice(0, 1, normalizedKeyPoints[0]);
+        dataPoints.splice(-1, 1, normalizedKeyPoints[normalizedKeyPoints.length - 1]);
+        normalizedKeyPoints.forEach((p, index) => {
+            const controlPointG = PlaitBoard.getRoughSVG(board).circle(p[0], p[1], 8, {
+                stroke: 'green',
+                fill: 'green',
+                fillStyle: 'solid'
+            });
+            // PlaitBoard.getElementActiveHost(board).append(controlPointG);
+        });
         const renderPoints: Point[] = [keyPoints[0]];
         for (let i = 0; i < dataPoints.length - 1; i++) {
             const startPoint = dataPoints[i];
             const endPoint = dataPoints[i + 1];
             renderPoints.push(startPoint);
             if (!isPointsOnSameLine([startPoint, endPoint])) {
-                const midElbowPoints = getMidElbowPoints(keyPoints, startPoint, endPoint);
+                console.log(i);
+                const midElbowPoints = getMidElbowPoints(normalizedKeyPoints, startPoint, endPoint);
+                if (i === 0) {
+                    const startPointG = PlaitBoard.getRoughSVG(board).circle(startPoint[0], startPoint[1], 8, {
+                        stroke: RgbaToHEX('#000000', 0.2),
+                        fill: RgbaToHEX('#000000', 0.2),
+                        fillStyle: 'solid'
+                    });
+                    const endPointG = PlaitBoard.getRoughSVG(board).circle(endPoint[0], endPoint[1], 8, {
+                        stroke: RgbaToHEX('#000000', 0.2),
+                        fill: RgbaToHEX('#000000', 0.2),
+                        fillStyle: 'solid'
+                    });
+                   
+                    // PlaitBoard.getElementActiveHost(board).append(startPointG);
+                    // PlaitBoard.getElementActiveHost(board).append(endPointG);
+                }
+                
                 if (midElbowPoints.length) {
                     renderPoints.push(...midElbowPoints);
+                    if (i === 0) {
+                        midElbowPoints.forEach((p, index) => {
+                            const controlPointG = PlaitBoard.getRoughSVG(board).circle(p[0], p[1], 8, {
+                                stroke: 'green',
+                                fill: 'green',
+                                fillStyle: 'solid'
+                            });
+                            PlaitBoard.getElementActiveHost(board).append(controlPointG);
+                        });
+                    }
+                    if (i === 2) {
+                        midElbowPoints.forEach((p, index) => {
+                            const controlPointG = PlaitBoard.getRoughSVG(board).circle(p[0], p[1], 8, {
+                                stroke: 'blue',
+                                fill: 'blue',
+                                fillStyle: 'solid'
+                            });
+                            PlaitBoard.getElementActiveHost(board).append(controlPointG);
+                        });
+                    }
+                    
                 } else {
                     const previousStartPoint = dataPoints[i - 1];
                     if (previousStartPoint && isPointsOnSameLine([previousStartPoint, startPoint])) {
@@ -257,7 +304,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             }
         }
         renderPoints.push(keyPoints[keyPoints.length - 2], keyPoints[keyPoints.length - 1]);
-        return removeIntermediatePointsInSegment(renderPoints);
+        return renderPoints;
     }
 };
 
@@ -514,20 +561,21 @@ export const handleLineCreating = (
     return temporaryLineElement;
 };
 
-export function getMidElbowPoints(points: Point[], startPoint: Point, endPoint: Point) {
+export function getMidElbowPoints(normalizedKeyPoints: Point[], startPoint: Point, endPoint: Point) {
     let midElbowPoints: Point[] = [];
     let startPointIndex = -1;
     let endPointIndex = -1;
-    for (let i = 2; i < points.length; i++) {
-        if (startPointIndex == -1 && isPointsOnSameLine([points[i], startPoint])) {
+    for (let i = 0; i < normalizedKeyPoints.length; i++) {
+        if (isPointsOnSameLine([normalizedKeyPoints[i], startPoint])) {
             startPointIndex = i;
         }
-        if (startPointIndex > -1 && isPointsOnSameLine([points[i], endPoint])) {
+        if (startPointIndex > -1 && isPointsOnSameLine([normalizedKeyPoints[i], endPoint])) {
             endPointIndex = i;
+            break;
         }
     }
     if (startPointIndex > -1 && endPointIndex > -1) {
-        midElbowPoints = points.slice(startPointIndex, endPointIndex + 1);
+        midElbowPoints = normalizedKeyPoints.slice(startPointIndex, endPointIndex + 1);
     }
     return midElbowPoints;
 }
