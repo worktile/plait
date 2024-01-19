@@ -16,6 +16,7 @@ import { ImageComponent } from '../image.component';
 import { withLineAutoCompleteReaction } from './with-line-auto-complete-reaction';
 import { withLineAutoComplete } from './with-line-auto-complete';
 import { withLineTextMove } from './with-line-text-move';
+import { withSelectionResize } from './with-draw-resize';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, isAlign, getRelatedFragment } = board;
@@ -40,7 +41,7 @@ export const withDraw = (board: PlaitBoard) => {
             const lineTextRectangles = element.texts.map((text, index) => {
                 const rectangle = getLineTextRectangle(board, element, index);
                 return rectangle;
-            })
+            });
             const linePointsRectangle = getRectangleByPoints(points);
             return RectangleClient.getBoundingRectangle([linePointsRectangle, ...lineTextRectangles]);
         }
@@ -111,15 +112,17 @@ export const withDraw = (board: PlaitBoard) => {
         return getRelatedFragment([...elements, ...activeLines]);
     };
 
-    return withLineTextMove(
-        withLineAutoCompleteReaction(
-            withLineText(
-                withLineBoundReaction(
-                    withLineResize(
-                        withGeometryResize(
-                            withLineCreateByDraw(
-                                withLineAutoComplete(
-                                    withGeometryCreateByDrag(withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board))))
+    return withSelectionResize(
+        withLineTextMove(
+            withLineAutoCompleteReaction(
+                withLineText(
+                    withLineBoundReaction(
+                        withLineResize(
+                            withGeometryResize(
+                                withLineCreateByDraw(
+                                    withLineAutoComplete(
+                                        withGeometryCreateByDrag(withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board))))
+                                    )
                                 )
                             )
                         )

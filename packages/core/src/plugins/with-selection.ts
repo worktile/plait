@@ -8,6 +8,7 @@ import {
     clearSelectedElement,
     getHitElementByPoint,
     getHitElementsBySelection,
+    getHitSelectedElements,
     getSelectedElements,
     removeSelectedElement
 } from '../utils/selected-element';
@@ -21,13 +22,15 @@ import { PlaitPluginKey } from '../interfaces/plugin-key';
 import { Selection } from '../interfaces/selection';
 import { PRESS_AND_MOVE_BUFFER } from '../constants';
 
+
+
 export interface WithPluginOptions extends PlaitPluginOptions {
     isMultiple: boolean;
     isDisabledSelect: boolean;
 }
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, pointerUp, pointerMove, globalPointerUp, keyDown, keyUp, onChange, afterChange } = board;
+    const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange } = board;
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
@@ -52,10 +55,13 @@ export function withSelection(board: PlaitBoard) {
         }
 
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+        
         const hitElement = getHitElementByPoint(board, point);
+        const hitSelectedElements = getHitSelectedElements(board, point);
+        const isHitTarget = hitElement || hitSelectedElements.length > 0;
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
 
-        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && !hitElement && options.isMultiple && !options.isDisabledSelect) {
+        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && !isHitTarget && options.isMultiple && !options.isDisabledSelect) {
             preventTouchMove(board, event, true);
             // start rectangle selection
             start = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
@@ -69,7 +75,6 @@ export function withSelection(board: PlaitBoard) {
             // prevent text from being selected
             event.preventDefault();
         }
-
         if (start && PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
             const movedTarget = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const rectangle = RectangleClient.toRectangleClient([start, movedTarget]);

@@ -47,6 +47,23 @@ export const RectangleClient = {
         const rect = { x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin };
         return rect;
     },
+    getPoints(rectangle: RectangleClient) {
+        return [
+            [rectangle.x, rectangle.y],
+            [rectangle.x + rectangle.width, rectangle.y + rectangle.height]
+        ] as [Point, Point];
+    },
+    createRectangleByCenterPoint(point: Point, width: number, height: number) {
+        return RectangleClient.createRectangleClient([point[0] - width / 2, point[1] - height / 2], width, height);
+    },
+    createRectangleClient(point: Point, width: number, height: number): RectangleClient {
+        return {
+            x: point[0],
+            y: point[1],
+            width,
+            height
+        };
+    },
     getOutlineRectangle: (rectangle: RectangleClient, offset: number) => {
         return {
             x: rectangle.x + offset,
@@ -79,6 +96,9 @@ export const RectangleClient = {
             [rectangle.x + rectangle.width, rectangle.y + rectangle.height],
             [rectangle.x, rectangle.y + rectangle.height]
         ] as [Point, Point, Point, Point];
+    },
+    getCenterPoint: (rectangle: RectangleClient) => {
+        return [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2] as Point;
     },
     getEdgeCenterPoints: (rectangle: RectangleClient) => {
         return [
@@ -113,23 +133,23 @@ export const RectangleClient = {
     },
     getBoundingRectangle(rectangles: RectangleClient[]): RectangleClient {
         if (rectangles.length === 0) {
-          throw new Error('rectangles can not be empty array');
+            throw new Error('rectangles can not be empty array');
         }
         let minX = Number.MAX_VALUE;
         let minY = Number.MAX_VALUE;
         let maxX = Number.NEGATIVE_INFINITY;
         let maxY = Number.NEGATIVE_INFINITY;
         rectangles.forEach(rect => {
-          minX = Math.min(minX, rect.x);
-          minY = Math.min(minY, rect.y);
-          maxX = Math.max(maxX, rect.x + rect.width);
-          maxY = Math.max(maxY, rect.y + rect.height);
+            minX = Math.min(minX, rect.x);
+            minY = Math.min(minY, rect.y);
+            maxX = Math.max(maxX, rect.x + rect.width);
+            maxY = Math.max(maxY, rect.y + rect.height);
         });
         return {
-          x: minX,
-          y: minY,
-          width: maxX - minX,
-          height: maxY - minY
+            x: minX,
+            y: minY,
+            width: maxX - minX,
+            height: maxY - minY
         };
-      }
+    }
 };

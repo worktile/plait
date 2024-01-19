@@ -1,13 +1,6 @@
-import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements, Vector, Direction } from '@plait/core';
+import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements, Vector, Direction, RectangleClient } from '@plait/core';
 import { PlaitDrawElement, GeometryShapes, PlaitText, PlaitLine, FlowchartSymbols, BasicShapes } from '../interfaces';
-import {
-    createDefaultGeometry,
-    createTextElement,
-    getMemorizedLatestByPointer,
-    getPointsByCenterPoint,
-    getTextShapeProperty,
-    insertElement
-} from '../utils';
+import { createDefaultGeometry, createTextElement, getMemorizedLatestByPointer, getTextShapeProperty, insertElement } from '../utils';
 import { Element } from 'slate';
 import { getDirectionByVector, getPointByVector, normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '.';
@@ -31,7 +24,9 @@ export const insertGeometryByVector = (board: PlaitBoard, point: Point, shape: G
             offset = -shapeProperty.height / 2;
         }
         const vectorPoint = getPointByVector(point, vector, offset);
-        const points = getPointsByCenterPoint(vectorPoint, shapeProperty.width, shapeProperty.height);
+        const points = RectangleClient.getPoints(
+            RectangleClient.createRectangleByCenterPoint(vectorPoint, shapeProperty.width, shapeProperty.height)
+        );
         return insertGeometry(board, points, shape);
     }
     return null;

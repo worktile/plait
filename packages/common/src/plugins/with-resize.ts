@@ -12,7 +12,8 @@ import {
     throttleRAF,
     ResizeCursorClass,
     toViewBoxPoint,
-    toHostPoint
+    toHostPoint,
+    RectangleClient
 } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
 import { ResizeRef, addResizing, isResizing, removeResizing } from '../utils/resize';
@@ -28,15 +29,17 @@ export interface WithResizeOptions<T extends PlaitElement = PlaitElement, K = Re
 
 export interface ResizeDetectResult<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
     element: T;
+    elements?: T[];
+    rectangle?: RectangleClient;
     handle: K;
     handleIndex?: number;
     cursorClass?: ResizeCursorClass;
 }
 
 export interface ResizeState {
-    offsetX: number;
-    offsetY: number;
-    endTransformPoint: Point;
+    startPoint: Point;
+    endPoint: Point;
+    isShift: boolean;
 }
 
 const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
@@ -70,8 +73,10 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             resizeRef = {
                 path: PlaitBoard.findPath(board, resizeDetectResult.element),
                 element: resizeDetectResult.element,
+                elements: resizeDetectResult.elements,
                 handle: resizeDetectResult.handle,
-                handleIndex: resizeDetectResult.handleIndex
+                handleIndex: resizeDetectResult.handleIndex,
+                rectangle: resizeDetectResult.rectangle
             };
             preventTouchMove(board, event, true);
             // prevent text from being selected when user pressed shift and pointer down
@@ -101,14 +106,15 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
         if (isResizing(board) && startPoint) {
             // prevent text from being selected
             event.preventDefault();
-            const endTransformPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+            const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             throttleRAF(() => {
-                const endPoint = [event.x, event.y];
                 if (startPoint && resizeRef) {
                     handleTouchTarget(board);
-                    const offsetX = endPoint[0] - startPoint[0];
-                    const offsetY = endPoint[1] - startPoint[1];
-                    options.onResize(resizeRef, { offsetX, offsetY, endTransformPoint });
+                    options.onResize(resizeRef, {
+                        startPoint: toViewBoxPoint(board, toHostPoint(board, startPoint[0], startPoint[1])),
+                        endPoint,
+                        isShift: !!event.shiftKey
+                    });
                 }
             });
             return;

@@ -75,13 +75,6 @@ export const createGeometryElement = (
     };
 };
 
-export const getPointsByCenterPoint = (point: Point, width: number, height: number): [Point, Point] => {
-    const leftTopPoint: Point = [point[0] - width / 2, point[1] - height / 2];
-    const rightBottomPoint: Point = [point[0] + width / 2, point[1] + height / 2];
-
-    return [leftTopPoint, rightBottomPoint];
-};
-
 export const getTextRectangle = (element: PlaitGeometry) => {
     const elementRectangle = getRectangleByPoints(element.points!);
     const strokeWidth = getStrokeWidthByElement(element);
@@ -306,8 +299,10 @@ export const getTextShapeProperty = (board: PlaitBoard, text: string | Element =
 };
 
 export const getDefaultGeometryPoints = (pointer: DrawPointerType, centerPoint: Point) => {
-    const defaultProperty = getDefaultGeometryProperty(pointer);
-    return getPointsByCenterPoint(centerPoint, defaultProperty.width, defaultProperty.height);
+    const property = getDefaultGeometryProperty(pointer);
+    return RectangleClient.getPoints(
+        RectangleClient.createRectangleByCenterPoint(centerPoint, property.width, property.height)
+    );
 };
 
 export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
@@ -321,7 +316,9 @@ export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
 
 export const getDefaultTextPoints = (board: PlaitBoard, centerPoint: Point, fontSize?: number | string) => {
     const property = getTextShapeProperty(board, DefaultTextProperty.text, fontSize);
-    return getPointsByCenterPoint(centerPoint, property.width, property.height);
+    return RectangleClient.getPoints(
+        RectangleClient.createRectangleByCenterPoint(centerPoint, property.width, property.height)
+    );
 };
 
 export const insertElement = (board: PlaitBoard, element: PlaitGeometry) => {
