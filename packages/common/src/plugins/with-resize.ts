@@ -32,6 +32,7 @@ export interface ResizeDetectResult<T extends PlaitElement = PlaitElement, K = R
     elements?: T[];
     rectangle?: RectangleClient;
     handle: K;
+    handleIndex?: number;
     cursorClass?: ResizeCursorClass;
 }
 
@@ -74,6 +75,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
                 element: resizeDetectResult.element,
                 elements: resizeDetectResult.elements,
                 handle: resizeDetectResult.handle,
+                handleIndex: resizeDetectResult.handleIndex,
                 rectangle: resizeDetectResult.rectangle
             };
             preventTouchMove(board, event, true);

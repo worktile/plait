@@ -7,6 +7,7 @@ export interface ResizeRef<T extends PlaitElement = PlaitElement, K = ResizeHand
     rectangle?: RectangleClient;
     path: Path;
     handle: K;
+    handleIndex?: number;
 }
 
 export const getResizeHandleByIndex = (index: number) => {
