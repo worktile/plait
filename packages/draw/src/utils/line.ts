@@ -621,7 +621,7 @@ export function getIndexAndDeleteCountByKeyPoint(
                 break;
             }
         }
-        index = index === null ? 0 : index;
+        index = index === null ? 0 : index + 1;
     }
 
     return {
