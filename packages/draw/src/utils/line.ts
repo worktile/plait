@@ -34,7 +34,6 @@ import {
     getExtendPoint,
     getSourceAndTargetOuterRectangle,
     removeIntermediatePointsInSegment,
-    ElbowLineRouteOptions,
     isSourceAndTargetIntersect
 } from '@plait/common';
 import {
@@ -196,7 +195,6 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     const targetPoint = handleRefPair.target.point;
     const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, handleRefPair.source.direction);
     const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, handleRefPair.target.direction);
-    let points: Point[] = [];
     const params = {
         sourcePoint,
         nextSourcePoint,
@@ -208,10 +206,8 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         targetOuterRectangle
     };
     const isIntersect = isSourceAndTargetIntersect(params);
-    if (!isIntersect) {
-        points = generateElbowLineRoute(params);
-    } else {
-        points = getPoints(
+    if (isIntersect) {
+        return getPoints(
             handleRefPair.source.point,
             handleRefPair.source.direction,
             handleRefPair.target.point,
@@ -219,10 +215,10 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             0
         );
     }
+    const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
     if (element.points.length === 2) {
-        return removeIntermediatePointsInSegment(removeDuplicatePoints(points));
+        return removeIntermediatePointsInSegment(keyPoints);
     } else {
-        const keyPoints = removeDuplicatePoints(points);
         const normalizedKeyPoints = removeIntermediatePointsInSegment(keyPoints.slice(1, keyPoints.length - 1));
         const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
         dataPoints.splice(0, 1, normalizedKeyPoints[0]);
