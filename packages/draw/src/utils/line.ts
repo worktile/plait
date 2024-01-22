@@ -33,7 +33,7 @@ import {
     getNextPoint,
     getExtendPoint,
     getSourceAndTargetOuterRectangle,
-    removeIntermediatePointsInSegment,
+    simplifyPoints,
     isSourceAndTargetIntersect
 } from '@plait/common';
 import {
@@ -217,9 +217,9 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     }
     const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
     if (element.points.length === 2) {
-        return removeIntermediatePointsInSegment(keyPoints);
+        return simplifyPoints(keyPoints);
     } else {
-        const normalizedKeyPoints = removeIntermediatePointsInSegment(keyPoints.slice(1, keyPoints.length - 1));
+        const normalizedKeyPoints = simplifyPoints(keyPoints.slice(1, keyPoints.length - 1));
         const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
         dataPoints.splice(0, 1, normalizedKeyPoints[0]);
         dataPoints.splice(-1, 1, normalizedKeyPoints[normalizedKeyPoints.length - 1]);
@@ -265,7 +265,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         //                                |
         //                                |
         //             sourcePoint---keyPoint1
-        return removeIntermediatePointsInSegment(renderPoints);
+        return simplifyPoints(renderPoints);
     }
 };
 
