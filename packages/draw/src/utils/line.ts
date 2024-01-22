@@ -545,17 +545,17 @@ export function getMidElbowPoints(normalizedKeyPoints: Point[], startPoint: Poin
     return midElbowPoints;
 }
 
-export function getUpdateIndexAndDeleteCount(
-    dataPoints: Point[],
-    keyPoints: Point[],
-    startPoint: Point,
-    endPoint: Point,
+export function getIndexAndDeleteCountByKeyPoint(
+    keyPoints1: Point[],
+    keyPoints2: Point[],
+    startKeyPoint: Point,
+    endKeyPoint: Point,
     handleIndex: number
 ) {
     let index: number | null = null;
     let deleteCount = 0;
-    const startIndex = dataPoints.findIndex(item => Point.isEquals(item, startPoint));
-    const endIndex = dataPoints.findIndex(item => Point.isEquals(item, endPoint));
+    const startIndex = keyPoints1.findIndex(item => Point.isEquals(item, startKeyPoint));
+    const endIndex = keyPoints1.findIndex(item => Point.isEquals(item, endKeyPoint));
     if (Math.max(startIndex, endIndex) > -1) {
         if (startIndex > -1 && endIndex > -1) {
             return {
@@ -565,8 +565,8 @@ export function getUpdateIndexAndDeleteCount(
         }
         if (startIndex > -1 && endIndex === -1) {
             const isReplace =
-                startIndex < dataPoints.length - 1 &&
-                isPointsOnSameLine([dataPoints[startIndex], dataPoints[startIndex + 1], startPoint, endPoint]);
+                startIndex < keyPoints1.length - 1 &&
+                isPointsOnSameLine([keyPoints1[startIndex], keyPoints1[startIndex + 1], startKeyPoint, endKeyPoint]);
             if (isReplace) {
                 return {
                     index: startIndex,
@@ -579,7 +579,8 @@ export function getUpdateIndexAndDeleteCount(
             };
         }
         if (startIndex === -1 && endIndex > -1) {
-            const isReplace = endIndex > 0 && isPointsOnSameLine([dataPoints[endIndex], dataPoints[endIndex - 1], startPoint, endPoint]);
+            const isReplace =
+                endIndex > 0 && isPointsOnSameLine([keyPoints1[endIndex], keyPoints1[endIndex - 1], startKeyPoint, endKeyPoint]);
             if (isReplace) {
                 return {
                     index: endIndex - 1,
@@ -592,20 +593,23 @@ export function getUpdateIndexAndDeleteCount(
             };
         }
     } else {
-        for (let i = 0; i < dataPoints.length - 1; i++) {
-            const currentPoint = dataPoints[i];
-            const nextPoint = dataPoints[i + 1];
-            if (isPointsOnSameLine([currentPoint, nextPoint, startPoint, endPoint])) {
+        for (let i = 0; i < keyPoints1.length - 1; i++) {
+            const currentPoint = keyPoints1[i];
+            const nextPoint = keyPoints1[i + 1];
+            if (isPointsOnSameLine([currentPoint, nextPoint, startKeyPoint, endKeyPoint])) {
                 index = i;
                 deleteCount = 2;
                 break;
             }
-            if (isPointsOnSameLine([currentPoint, nextPoint, startPoint]) && Point.isEquals(endPoint, keyPoints[keyPoints.length - 1])) {
+            if (
+                isPointsOnSameLine([currentPoint, nextPoint, startKeyPoint]) &&
+                Point.isEquals(endKeyPoint, keyPoints2[keyPoints2.length - 1])
+            ) {
                 index = -1;
                 deleteCount = 1;
                 break;
             }
-            if (isPointsOnSameLine([currentPoint, nextPoint, endPoint]) && Point.isEquals(startPoint, keyPoints[0])) {
+            if (isPointsOnSameLine([currentPoint, nextPoint, endKeyPoint]) && Point.isEquals(startKeyPoint, keyPoints2[0])) {
                 index = 0;
                 deleteCount = 1;
                 break;
@@ -615,7 +619,7 @@ export function getUpdateIndexAndDeleteCount(
     if (index === null) {
         deleteCount = 0;
         for (let i = handleIndex - 1; i >= 0; i--) {
-            const previousIndex = dataPoints.findIndex(item => Point.isEquals(item, keyPoints[i]));
+            const previousIndex = keyPoints1.findIndex(item => Point.isEquals(item, keyPoints2[i]));
             if (previousIndex > -1) {
                 index = previousIndex;
                 break;

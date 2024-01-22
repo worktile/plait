@@ -10,7 +10,7 @@ import {
     getConnectionByNearestPoint,
     getElbowPoints,
     getNextSourceAndTargetPoints,
-    getUpdateIndexAndDeleteCount
+    getIndexAndDeleteCountByKeyPoint
 } from '../utils';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
@@ -78,7 +78,13 @@ export const withLineResize = (board: PlaitBoard) => {
                         newEndPoint = [endPoint[0] + offsetX, endPoint[1]];
                     }
                     const drawPoints: Point[] = [...points].slice(1, points.length - 1);
-                    const { index, deleteCount } = getUpdateIndexAndDeleteCount(drawPoints, keyPoints, startPoint, endPoint, handleIndex);
+                    const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(
+                        drawPoints,
+                        keyPoints,
+                        startPoint,
+                        endPoint,
+                        handleIndex
+                    );
                     drawPoints.splice(index, deleteCount, newStartPoint, newEndPoint);
                     points = [points[0], ...drawPoints, points[points.length - 1]];
                 } else {
