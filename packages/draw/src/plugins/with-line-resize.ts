@@ -4,7 +4,14 @@ import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineHandle, LineShape, PlaitLine } from '../interfaces';
-import { alignPoints, getLinePoints, getConnectionByNearestPoint, getElbowPoints, getNextSourceAndTargetPoints } from '../utils';
+import {
+    alignPoints,
+    getLinePoints,
+    getConnectionByNearestPoint,
+    getElbowPoints,
+    getNextSourceAndTargetPoints,
+    getIndexAndDeleteCountByKeyPoint
+} from '../utils';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
 
@@ -56,40 +63,29 @@ export const withLineResize = (board: PlaitBoard) => {
                     keyPoints.splice(-1, 1, nextTargetPoint);
                     keyPoints = removeDuplicatePoints(keyPoints);
 
-                    let startPoint = keyPoints[handleIndex];
-                    let endPoint = keyPoints[handleIndex + 1];
+                    const startPoint = keyPoints[handleIndex];
+                    const endPoint = keyPoints[handleIndex + 1];
+                    let newStartPoint = startPoint;
+                    let newEndPoint = endPoint;
                     if (isHorizontalSegment([startPoint, endPoint])) {
-                        startPoint = [startPoint[0], startPoint[1] + Point.getOffsetY(resizeState.startPoint, resizeState.endPoint)];
-                        endPoint = [endPoint[0], endPoint[1] + Point.getOffsetY(resizeState.startPoint, resizeState.endPoint)];
+                        const offsetY = Point.getOffsetY(resizeState.startPoint, resizeState.endPoint);
+                        newStartPoint = [startPoint[0], startPoint[1] + offsetY];
+                        newEndPoint = [endPoint[0], endPoint[1] + offsetY];
                     }
                     if (isVerticalSegment([startPoint, endPoint])) {
-                        startPoint = [startPoint[0] + Point.getOffsetX(resizeState.startPoint, resizeState.endPoint), startPoint[1]];
-                        endPoint = [endPoint[0] + Point.getOffsetX(resizeState.startPoint, resizeState.endPoint), endPoint[1]];
+                        const offsetX = Point.getOffsetX(resizeState.startPoint, resizeState.endPoint);
+                        newStartPoint = [startPoint[0] + offsetX, startPoint[1]];
+                        newEndPoint = [endPoint[0] + offsetX, endPoint[1]];
                     }
                     const drawPoints: Point[] = [...points].slice(1, points.length - 1);
-                    const startIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[handleIndex]));
-                    const endIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[handleIndex + 1]));
-                    if (startIndex > -1 && endIndex > -1) {
-                        drawPoints.splice(startIndex, 2, startPoint, endPoint);
-                    } else if (startIndex > -1 && endIndex === -1) {
-                        drawPoints.splice(startIndex, 1, startPoint, endPoint);
-                    } else if (startIndex === -1 && endIndex > -1) {
-                        drawPoints.splice(endIndex, 1, startPoint, endPoint);
-                    } else {
-                        let startIndex = -1;
-                        for (let index = handleIndex - 1; index >= 0; index--) {
-                            const previousIndex = drawPoints.findIndex(item => Point.isEquals(item, keyPoints[index]));
-                            if (previousIndex > -1) {
-                                startIndex = previousIndex;
-                                break;
-                            }
-                        }
-                        if (startIndex > -1) {
-                            drawPoints.splice(startIndex + 1, 0, startPoint, endPoint);
-                        } else {
-                            drawPoints.splice(0, 0, startPoint, endPoint);
-                        }
-                    }
+                    const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(
+                        drawPoints,
+                        keyPoints,
+                        startPoint,
+                        endPoint,
+                        handleIndex
+                    );
+                    drawPoints.splice(index, deleteCount, newStartPoint, newEndPoint);
                     points = [points[0], ...drawPoints, points[points.length - 1]];
                 } else {
                     points.splice(handleIndex + 1, 0, resizeState.endPoint);
