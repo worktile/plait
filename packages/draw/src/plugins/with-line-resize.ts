@@ -80,7 +80,6 @@ export const withLineResize = (board: PlaitBoard) => {
                     const drawPoints: Point[] = [...points].slice(1, points.length - 1);
                     const { index, deleteCount } = getUpdateIndexAndDeleteCount(drawPoints, keyPoints, startPoint, endPoint, handleIndex);
                     drawPoints.splice(index, deleteCount, newStartPoint, newEndPoint);
-                    console.log(drawPoints);
                     points = [points[0], ...drawPoints, points[points.length - 1]];
                 } else {
                     points.splice(handleIndex + 1, 0, resizeState.endPoint);
