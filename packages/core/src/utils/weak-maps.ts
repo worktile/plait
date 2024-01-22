@@ -1,5 +1,5 @@
 import { RoughSVG } from 'roughjs/bin/svg';
-import { BoardComponentInterface, BoardElementHostInterface } from '../board/board.component.interface';
+import { BoardComponentInterface } from '../board/board.component.interface';
 import { PlaitElement } from '../interfaces/element';
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
@@ -27,7 +27,16 @@ export const BOARD_TO_ROUGH_SVG = new WeakMap<PlaitBoard, RoughSVG>();
 
 export const BOARD_TO_HOST = new WeakMap<PlaitBoard, SVGSVGElement>();
 
-export const BOARD_TO_ELEMENT_HOST = new WeakMap<PlaitBoard, BoardElementHostInterface>();
+export const BOARD_TO_ELEMENT_HOST = new WeakMap<
+    PlaitBoard,
+    {
+        host: SVGGElement;
+        upperHost: SVGGElement;
+        activeHost: SVGGElement;
+        container: HTMLElement;
+        viewportContainer: HTMLElement;
+    }
+>();
 
 export const BOARD_TO_SELECTED_ELEMENT = new WeakMap<PlaitBoard, PlaitElement[]>();
 

@@ -8,9 +8,3 @@ export interface BoardComponentInterface {
     viewContainerRef: ViewContainerRef;
     plaitChange: EventEmitter<PlaitBoardChangeEvent>;
 }
-
-export interface BoardElementHostInterface {
-    host: SVGGElement;
-    upperHost: SVGGElement;
-    activeHost: SVGGElement;
-}
