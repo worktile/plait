@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, isHorizontalSegment, isVerticalSegment } from '@plait/core';
+import { PlaitBoard, Point, getSegmentDirection, isHorizontalSegment, isVerticalSegment } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, removeDuplicatePoints, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
@@ -10,12 +10,19 @@ import {
     getConnectionByNearestPoint,
     getElbowPoints,
     getNextSourceAndTargetPoints,
-    getIndexAndDeleteCountByKeyPoint
+    getIndexAndDeleteCountByKeyPoint,
+    getResizeReferencePoints,
+    getNewResizePoints,
+    getLineHandleRefPair
 } from '../utils';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
 
 export const withLineResize = (board: PlaitBoard) => {
+    let elbowLineIndex: number;
+    let elbowLineDeleteCount: number;
+    let elbowLineKeyPoints: Point[];
+
     const options: WithResizeOptions<PlaitLine, LineResizeHandle> = {
         key: 'draw-line',
         canResize: () => {
@@ -39,6 +46,26 @@ export const withLineResize = (board: PlaitBoard) => {
             }
             return null;
         },
+        beforeResize: (resizeRef: ResizeRef<PlaitLine, LineResizeHandle>) => {
+            if (resizeRef.handle === LineResizeHandle.addHandle) {
+                if (resizeRef.element.shape === LineShape.elbow) {
+                    let points: Point[] = [...resizeRef.element.points];
+                    let handleIndex = resizeRef.handleIndex!;
+                    elbowLineKeyPoints = getElbowPoints(board, resizeRef.element);
+                    const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, resizeRef.element);
+                    elbowLineKeyPoints.splice(0, 1, nextSourcePoint);
+                    elbowLineKeyPoints.splice(-1, 1, nextTargetPoint);
+                    elbowLineKeyPoints = removeDuplicatePoints(elbowLineKeyPoints);
+
+                    const startPoint = elbowLineKeyPoints[handleIndex];
+                    const endPoint = elbowLineKeyPoints[handleIndex + 1];
+                    const drawPoints: Point[] = [...points].slice(1, points.length - 1);
+                    const value = getIndexAndDeleteCountByKeyPoint(drawPoints, elbowLineKeyPoints, startPoint, endPoint, handleIndex);
+                    elbowLineIndex = value.index;
+                    elbowLineDeleteCount = value.deleteCount;
+                }
+            }
+        },
         onResize: (resizeRef: ResizeRef<PlaitLine, LineResizeHandle>, resizeState: ResizeState) => {
             let points: Point[] = [...resizeRef.element.points];
             let source: LineHandle = { ...resizeRef.element.source };
@@ -57,36 +84,24 @@ export const withLineResize = (board: PlaitBoard) => {
                 }
             } else if (resizeRef.handle === LineResizeHandle.addHandle) {
                 if (resizeRef.element.shape === LineShape.elbow) {
-                    let keyPoints = getElbowPoints(board, resizeRef.element);
-                    const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, resizeRef.element);
-                    keyPoints.splice(0, 1, nextSourcePoint);
-                    keyPoints.splice(-1, 1, nextTargetPoint);
-                    keyPoints = removeDuplicatePoints(keyPoints);
-
-                    const startPoint = keyPoints[handleIndex];
-                    const endPoint = keyPoints[handleIndex + 1];
-                    let newStartPoint = startPoint;
-                    let newEndPoint = endPoint;
-                    if (isHorizontalSegment([startPoint, endPoint])) {
-                        const offsetY = Point.getOffsetY(resizeState.startPoint, resizeState.endPoint);
-                        newStartPoint = [startPoint[0], startPoint[1] + offsetY];
-                        newEndPoint = [endPoint[0], endPoint[1] + offsetY];
-                    }
-                    if (isVerticalSegment([startPoint, endPoint])) {
-                        const offsetX = Point.getOffsetX(resizeState.startPoint, resizeState.endPoint);
-                        newStartPoint = [startPoint[0] + offsetX, startPoint[1]];
-                        newEndPoint = [endPoint[0] + offsetX, endPoint[1]];
-                    }
-                    const drawPoints: Point[] = [...points].slice(1, points.length - 1);
-                    const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(
-                        drawPoints,
-                        keyPoints,
+                    const startPoint = elbowLineKeyPoints[handleIndex];
+                    const endPoint = elbowLineKeyPoints[handleIndex + 1];
+                    const direction = getSegmentDirection([startPoint, endPoint]);
+                    const handleRefPair = getLineHandleRefPair(board, resizeRef.element);
+                    const sourcePoint = handleRefPair.source.point;
+                    const targetPoint = handleRefPair.target.point;
+                    const referencePoints = getResizeReferencePoints(elbowLineKeyPoints, sourcePoint, targetPoint, handleIndex, direction);
+                    const [newStartPoint, newEndPoint] = getNewResizePoints(
                         startPoint,
                         endPoint,
-                        handleIndex
+                        resizeState,
+                        referencePoints,
+                        direction,
+                        4
                     );
-                    drawPoints.splice(index, deleteCount, newStartPoint, newEndPoint);
-                    points = [points[0], ...drawPoints, points[points.length - 1]];
+                    const drawPoints: Point[] = [...points].slice(1, points.length - 1);
+                    drawPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
+                    points = [sourcePoint, ...drawPoints, targetPoint];
                 } else {
                     points.splice(handleIndex + 1, 0, resizeState.endPoint);
                 }
