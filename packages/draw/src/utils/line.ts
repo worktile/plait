@@ -223,33 +223,121 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
         dataPoints.splice(0, 1, normalizedKeyPoints[0]);
         dataPoints.splice(-1, 1, normalizedKeyPoints[normalizedKeyPoints.length - 1]);
-        const renderPoints: Point[] = [keyPoints[0]];
-        for (let i = 0; i < dataPoints.length - 1; i++) {
-            const startPoint = dataPoints[i];
-            const endPoint = dataPoints[i + 1];
-            renderPoints.push(startPoint);
-            if (!isPointsOnSameLine([startPoint, endPoint], 0.01)) {
-                const midElbowPoints = getMidElbowPoints(normalizedKeyPoints, startPoint, endPoint);
-                if (midElbowPoints.length) {
-                    renderPoints.push(...midElbowPoints);
-                } else {
-                    const previousStartPoint = dataPoints[i - 1];
-                    if (previousStartPoint && isPointsOnSameLine([previousStartPoint, startPoint])) {
-                        let newStartPoint: Point = [startPoint[0], endPoint[1]];
-                        if (Point.isHorizontalAlign(previousStartPoint, startPoint)) {
-                            newStartPoint = [endPoint[0], startPoint[1]];
-                        }
-                        renderPoints.splice(-1, 1, newStartPoint);
-                    } else {
-                        const nextEndPoint = dataPoints[i + 2];
-                        if (nextEndPoint && isPointsOnSameLine([endPoint, nextEndPoint])) {
-                            let newEndPoint: Point = [endPoint[0], startPoint[1]];
-                            if (Point.isHorizontalAlign(endPoint, nextEndPoint)) {
-                                newEndPoint = [startPoint[0], endPoint[1]] as Point;
-                            }
-                            dataPoints.splice(i + 1, 1, newEndPoint);
+
+        for (let index = 0; index < dataPoints.length - 1; index++) {
+            const currentPoint = dataPoints[index];
+            const nextPoint = dataPoints[index + 1];
+            const afterNextPoint = dataPoints[index + 2];
+            const isStraight = isPointsOnSameLine([currentPoint, nextPoint]);
+            const midElbowPoints = !isStraight && getMidElbowPoints(normalizedKeyPoints, currentPoint, nextPoint);
+            if (!isStraight && midElbowPoints && midElbowPoints.length === 0) {
+                // 1.之前的点是直线
+                // 2.之后的点是直线
+                if (afterNextPoint && isPointsOnSameLine([nextPoint, afterNextPoint])) {
+                    const targetIndex = index + 1;
+                    const isHorizontal = Point.isHorizontalAlign(nextPoint, afterNextPoint);
+                    const adjustedDataIndex = isHorizontal ? 0 : 1;
+                    // 1.找平行的线段
+                    // 2.判断是否与 sourceRectangle 和 targetRectangle 相交
+                    // 3.修改 nextPoint 和 afterNextPoint
+                    const parallelPaths: [Point, Point][] = findParallelSegments([nextPoint, afterNextPoint], normalizedKeyPoints);
+                    console.log(parallelPaths);
+                    for (let index = 0; index < parallelPaths.length; index++) {
+                        const parallelPath = parallelPaths[index];
+                        const start = Point.clone(dataPoints[targetIndex]) as Point;
+                        const end = Point.clone(dataPoints[targetIndex]) as Point;
+                        start[adjustedDataIndex] = parallelPath[0][adjustedDataIndex];
+                        end[adjustedDataIndex] = parallelPath[1][adjustedDataIndex];
+                        const rect1 = getRectangleByPoints([start, end, ...parallelPath]);
+                        const p1 = PlaitBoard.getRoughSVG(board).rectangle(rect1.x, rect1.y, rect1.width, rect1.height, {
+                            stroke: 'black',
+                            strokeWidth: 5
+                        });
+                        // PlaitBoard.getElementActiveHost(board).append(p1);
+                        const valid = !RectangleClient.isHit(rect1, sourceRectangle) && !RectangleClient.isHit(rect1, targetRectangle);
+                        if (valid) {
+                            dataPoints.splice(targetIndex, 2, start, end);
+                            break;
                         }
                     }
+                    // parallelPaths.find(pp => {
+                    //     // const rect1 = getRectangleByPoints(pp);
+                    //     const start = Point.clone(dataPoints[targetIndex]) as Point;
+                    //     const end = Point.clone(dataPoints[targetIndex]) as Point;
+                    //     start[adjustedDataIndex] = pp[0][adjustedDataIndex];
+                    //     end[adjustedDataIndex] = pp[1][adjustedDataIndex];
+                    //     const rect1 = getRectangleByPoints([start, end, ...pp]);
+                    //     const p1 = PlaitBoard.getRoughSVG(board).rectangle(rect1.x, rect1.y, rect1.width, rect1.height, {
+                    //         stroke: 'black'
+                    //     });
+                    //     PlaitBoard.getElementActiveHost(board).append(p1);
+                    //     return !RectangleClient.isHit(rect1, sourceRectangle) && !RectangleClient.isHit(rect1, targetRectangle);
+                    // });
+                    // .forEach((p, index) => {
+                    //     const p1 = PlaitBoard.getRoughSVG(board).circle(p[0][0], p[0][1], 4 * (index + 1), {
+                    //         stroke: 'black',
+                    //         fill: 'black',
+                    //         fillStyle: 'solid'
+                    //     });
+                    //     const p2 = PlaitBoard.getRoughSVG(board).circle(p[1][0], p[1][1], 4 * (index + 1), {
+                    //         stroke: 'black',
+                    //         fill: 'black',
+                    //         fillStyle: 'solid'
+                    //     });
+                    //     PlaitBoard.getElementActiveHost(board).append(p1);
+                    //     PlaitBoard.getElementActiveHost(board).append(p2);
+                    // });
+                }
+            }
+        }
+
+        const renderPoints: Point[] = [keyPoints[0]];
+        for (let i = 0; i < dataPoints.length - 1; i++) {
+            const previousPoint = Point.clone(dataPoints[i - 1]);
+            const currentPoint = Point.clone(dataPoints[i]) as Point;
+            const nextPoint = Point.clone(dataPoints[i + 1]) as Point;
+            const afterNextPoint = Point.clone(dataPoints[i + 2]);
+            const isStraight = isPointsOnSameLine([currentPoint, nextPoint]);
+            const isStraightWithPrevious = previousPoint && isPointsOnSameLine([previousPoint, currentPoint]);
+            if (isStraight) {
+                renderPoints.push(currentPoint);
+            } else {
+                const midElbowPoints = getMidElbowPoints(normalizedKeyPoints, currentPoint, nextPoint);
+                if (midElbowPoints.length) {
+                    renderPoints.push(currentPoint);
+                    renderPoints.push(...midElbowPoints);
+                } else {
+                    if (isStraightWithPrevious) {
+                        let newCurrentPoint: Point = [currentPoint[0], nextPoint[1]];
+                        if (Point.isHorizontalAlign(previousPoint, currentPoint)) {
+                            newCurrentPoint = [nextPoint[0], currentPoint[1]];
+                        }
+                        renderPoints.push(newCurrentPoint);
+                    } else {
+                        renderPoints.push(currentPoint);
+                        if (afterNextPoint && isPointsOnSameLine([nextPoint, afterNextPoint])) {
+                            let newNextPoint: Point = [nextPoint[0], currentPoint[1]];
+                            if (Point.isHorizontalAlign(nextPoint, afterNextPoint)) {
+                                newNextPoint = [currentPoint[0], nextPoint[1]] as Point;
+                            }
+                            dataPoints.splice(i + 1, 1, newNextPoint);
+                        }
+                    }
+                    // const straightSegment: { startPoint: Point; endPoint: Point } = isStraightWithPrevious
+                    //     ? { startPoint: previousPoint, endPoint: currentPoint }
+                    //     : { startPoint: nextPoint, endPoint: afterNextPoint };
+                    // const referencePoints: { previousPoint?: Point; nextPoint?: Point } = isStraightWithPrevious
+                    //     ? { nextPoint }
+                    //     : { previousPoint: currentPoint };
+                    // const isHorizontalStraightSegment = Point.isHorizontalAlign(straightSegment.startPoint, straightSegment.endPoint);
+                    // const adjustIndex = isHorizontalStraightSegment ? 0 : 1;
+                    // if (referencePoints.previousPoint) {
+                    //     straightSegment.startPoint[adjustIndex] = referencePoints.previousPoint[adjustIndex];
+
+                    // }
+                    // if (referencePoints.nextPoint) {
+                    //     straightSegment.endPoint[adjustIndex] = referencePoints.nextPoint[adjustIndex];
+                    // }
                 }
             }
         }
@@ -527,4 +615,23 @@ export function getMidElbowPoints(normalizedKeyPoints: Point[], startPoint: Poin
         midElbowPoints = normalizedKeyPoints.slice(startPointIndex, endPointIndex + 1);
     }
     return midElbowPoints;
+}
+
+function findParallelSegments(segment: [Point, Point], keyPoints: Point[]): [Point, Point][] {
+    const isHorizontalSegment = Point.isHorizontalAlign(segment[0],segment[1]);
+    const parallelSegments: [Point, Point][] = [];
+
+    for (let i = 0; i < keyPoints.length - 1; i++) {
+        const current = keyPoints[i];
+        const next = keyPoints[i + 1];
+        const isHorizontal = Point.isHorizontalAlign(current, next);
+        if (isHorizontalSegment && isHorizontal) {
+            parallelSegments.push([current, next]);
+        }
+        if (!isHorizontalSegment && !isHorizontal) {
+            parallelSegments.push([current, next]);
+        }
+    }
+
+    return parallelSegments;
 }

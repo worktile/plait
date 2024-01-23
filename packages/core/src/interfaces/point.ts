@@ -9,6 +9,12 @@ export const Point = {
     isEquals(point?: Point, otherPoint?: Point) {
         return point && otherPoint && point[0] === otherPoint[0] && point[1] === otherPoint[1];
     },
+    clone(point?: Point) {
+        if (!point) {
+            return undefined;
+        }
+        return [point[0], point[1]] as Point;
+    },
     isHorizontalAlign(point?: Point, otherPoint?: Point, tolerance = 0) {
         return point && otherPoint && Math.abs(point[1] - otherPoint[1]) <= tolerance;
     },
