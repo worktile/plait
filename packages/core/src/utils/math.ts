@@ -316,7 +316,3 @@ export function isVerticalSegment(points: Point[], tolerance: number = 0) {
 export function isPointsOnSameLine(points: Point[], tolerance: number = 0) {
     return isHorizontalSegment(points, tolerance) || isVerticalSegment(points, tolerance);
 }
-
-export function getSegmentDirection(points: Point[], tolerance: number = 0): 'x' | 'y' | '' {
-    return isHorizontalSegment(points, tolerance) ? 'x' : isVerticalSegment(points, tolerance) ? 'y' : '';
-}

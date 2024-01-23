@@ -60,6 +60,7 @@ import { LineShapeGenerator } from '../generators/line.generator';
 import { REACTION_MARGIN } from '../constants';
 import { getHitOutlineGeometry } from './position/geometry';
 import { getLineMemorizedLatest } from './memorize';
+import { alignPoints } from './line-resize';
 
 export const createLineElement = (
     shape: LineShape,
@@ -469,18 +470,6 @@ export const getVectorByConnection = (boundElement: PlaitGeometry, connection: P
         }
     }
     return vector;
-};
-
-export const alignPoints = (basePoint: Point, movingPoint: Point) => {
-    const offset = 3;
-    const newPoint: Point = [...movingPoint];
-    if (Point.isVerticalAlign(newPoint, basePoint, offset)) {
-        newPoint[0] = basePoint[0];
-    }
-    if (Point.isHorizontalAlign(newPoint, basePoint, offset)) {
-        newPoint[1] = basePoint[1];
-    }
-    return newPoint;
 };
 
 export const handleLineCreating = (
