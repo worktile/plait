@@ -3,4 +3,4 @@
 '@plait/draw': patch
 ---
 
-rename removeIntermediatePointsInSegment to simplifyPoints and fix it's issue
+rename removeIntermediatePointsInSegment to simplifyOrthogonalPoints and fix it's issue
