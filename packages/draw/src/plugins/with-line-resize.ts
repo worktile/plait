@@ -1,5 +1,5 @@
-import { PlaitBoard, Point } from '@plait/core';
-import { ResizeRef, ResizeState, WithResizeOptions, removeDuplicatePoints, withResize } from '@plait/common';
+import { PlaitBoard, PlaitNode, Point } from '@plait/core';
+import { ResizeRef, ResizeState, WithResizeOptions, removeDuplicatePoints, simplifyOrthogonalPoints, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
@@ -18,11 +18,11 @@ import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
 
 export const withLineResize = (board: PlaitBoard) => {
-    let elbowLineIndex: number;
-    let elbowLineDeleteCount: number;
-    let elbowSourcePoint: Point;
-    let elbowTargetPoint: Point;
-    let elbowLineKeyPoints: Point[];
+    let elbowLineIndex: number | null;
+    let elbowLineDeleteCount: number | null;
+    let elbowSourcePoint: Point | null;
+    let elbowTargetPoint: Point | null;
+    let elbowLineKeyPoints: Point[] | null;
 
     const options: WithResizeOptions<PlaitLine, LineResizeHandle> = {
         key: 'draw-line',
@@ -85,13 +85,22 @@ export const withLineResize = (board: PlaitBoard) => {
                 }
             } else if (resizeRef.handle === LineResizeHandle.addHandle) {
                 if (resizeRef.element.shape === LineShape.elbow) {
-                    const referencePoints = getResizeReferencePoints(elbowLineKeyPoints, elbowSourcePoint, elbowTargetPoint, handleIndex);
-                    const startPoint = elbowLineKeyPoints[handleIndex];
-                    const endPoint = elbowLineKeyPoints[handleIndex + 1];
-                    const [newStartPoint, newEndPoint] = alignElbowSegment(startPoint, endPoint, resizeState, referencePoints);
-                    const drawPoints: Point[] = [...points].slice(1, points.length - 1);
-                    drawPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
-                    points = [elbowSourcePoint, ...drawPoints, elbowTargetPoint];
+                    if (elbowLineKeyPoints && elbowSourcePoint && elbowTargetPoint) {
+                        const referencePoints = getResizeReferencePoints(
+                            elbowLineKeyPoints,
+                            elbowSourcePoint,
+                            elbowTargetPoint,
+                            handleIndex
+                        );
+                        const startPoint = elbowLineKeyPoints[handleIndex];
+                        const endPoint = elbowLineKeyPoints[handleIndex + 1];
+                        const [newStartPoint, newEndPoint] = alignElbowSegment(startPoint, endPoint, resizeState, referencePoints);
+                        const drawPoints: Point[] = [...points].slice(1, points.length - 1);
+                        if (elbowLineIndex !== null && elbowLineDeleteCount !== null) {
+                            drawPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
+                            points = [elbowSourcePoint, ...drawPoints, elbowTargetPoint];
+                        }
+                    }
                 } else {
                     points.splice(handleIndex + 1, 0, resizeState.endPoint);
                 }
@@ -114,6 +123,29 @@ export const withLineResize = (board: PlaitBoard) => {
                 }
             }
             DrawTransforms.resizeLine(board, { points, source, target }, resizeRef.path);
+        },
+        afterResize: (resizeRef: ResizeRef<PlaitLine, LineResizeHandle>) => {
+            if (resizeRef.element.shape === LineShape.elbow) {
+                const element = PlaitNode.get(board, resizeRef.path);
+                let points = element && [...element.points!];
+                if (points.length > 2 && elbowLineKeyPoints) {
+                    points.splice(1, 0, elbowLineKeyPoints[0]);
+                    points.splice(-1, 0, elbowLineKeyPoints[elbowLineKeyPoints.length - 1]);
+                    points = simplifyOrthogonalPoints(points!);
+                    if (Point.isEquals(points[1], elbowLineKeyPoints[0])) {
+                        points.splice(1, 1);
+                    }
+                    if (Point.isEquals(points[points.length - 2], elbowLineKeyPoints[elbowLineKeyPoints.length - 1])) {
+                        points.splice(-1, 1);
+                    }
+                    DrawTransforms.resizeLine(board, { points }, resizeRef.path);
+                }
+            }
+            elbowLineIndex = null;
+            elbowLineDeleteCount = null;
+            elbowSourcePoint = null;
+            elbowTargetPoint = null;
+            elbowLineKeyPoints = null;
         }
     };
 

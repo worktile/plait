@@ -144,7 +144,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
     board.globalPointerUp = (event: PointerEvent) => {
         globalPointerUp(event);
         if (isResizing(board) || resizeDetectResult) {
-            options.beforeResize && options.beforeResize(resizeRef!);
+            options.afterResize && options.afterResize(resizeRef!);
             removeResizing(board, options.key);
             startPoint = null;
             resizeDetectResult = null;
