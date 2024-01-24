@@ -12,8 +12,7 @@ import {
     getNextSourceAndTargetPoints,
     getIndexAndDeleteCountByKeyPoint,
     getResizeReferencePoints,
-    alignElbowSegment,
-    removeIsolatedPoints
+    alignElbowSegment
 } from '../utils';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
@@ -141,7 +140,10 @@ export const withLineResize = (board: PlaitBoard) => {
                     if (Point.isEquals(points[points.length - 1], nextTargetPoint)) {
                         points.pop();
                     }
-                    points = [elbowSourcePoint, ...removeIsolatedPoints(points), elbowTargetPoint];
+                    if (points.length === 1) {
+                        points = [];
+                    }
+                    points = [elbowSourcePoint, ...points, elbowTargetPoint];
                     DrawTransforms.resizeLine(board, { points }, resizeRef.path);
                 }
             }

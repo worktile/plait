@@ -1,5 +1,5 @@
 import { ResizeState } from '@plait/common';
-import { Point, isHorizontalSegment, isPointsOnSameLine } from '@plait/core';
+import { Point, isPointsOnSameLine } from '@plait/core';
 import { LINE_ALIGN_TOLERANCE } from '../constants/line';
 
 export const alignPoints = (basePoint: Point, movingPoint: Point) => {
@@ -161,26 +161,4 @@ export function getIndexAndDeleteCountByKeyPoint(keyPoints1: Point[], keyPoints2
         index,
         deleteCount
     };
-}
-
-export function removeIsolatedPoints(points: Point[]) {
-    let dataPoint = [];
-    if (points.length > 1) {
-        for (let i = 0; i <= points.length - 1; i++) {
-            const currentPoint = points[i];
-            const nextPoint = points[i + 1];
-            if (nextPoint && isPointsOnSameLine([currentPoint, nextPoint])) {
-                dataPoint.push(currentPoint, nextPoint);
-                i++;
-                continue;
-            } else {
-                const previousPoint = points[i - 1];
-                if (previousPoint && isPointsOnSameLine([currentPoint, previousPoint])) {
-                    dataPoint.push(currentPoint);
-                    continue;
-                }
-            }
-        }
-    }
-    return dataPoint;
 }
