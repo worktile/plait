@@ -55,9 +55,9 @@ export function withSelection(board: PlaitBoard) {
         }
 
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        
+        const selectedElements = getSelectedElements(board);
         const hitElement = getHitElementByPoint(board, point);
-        const hitSelectedElements = getHitSelectedElements(board, point);
+        const hitSelectedElements = selectedElements.length > 1 ? getHitSelectedElements(board, point) : [];
         const isHitTarget = hitElement || hitSelectedElements.length > 0;
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
 
