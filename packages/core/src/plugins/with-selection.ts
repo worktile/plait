@@ -105,7 +105,7 @@ export function withSelection(board: PlaitBoard) {
             PlaitBoard.isPointer(board, PlaitPointerType.selection) || PlaitBoard.isPointer(board, PlaitPointerType.hand);
         const isSkip = !isMainPointer(event) || isDragging(board) || !isSetSelectionPointer;
         if (isSkip) {
-            pointerDown(event);
+            pointerUp(event);
             return;
         }
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
@@ -129,6 +129,7 @@ export function withSelection(board: PlaitBoard) {
             // The framework needs to determine whether the board is focused through selection
             if (!isInBoard && !start && !isAttachedElement && isInDocument) {
                 Transforms.setSelection(board, null);
+                console.log('clear selection');
             }
         }
 

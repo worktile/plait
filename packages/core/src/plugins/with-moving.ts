@@ -7,7 +7,7 @@ import { PlaitElement } from '../interfaces/element';
 import { getHitElementByPoint, getSelectedElements } from '../utils/selected-element';
 import { PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
-import { cacheMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
+import { cacheMovingElements, getMovingElements, isMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
 import {
     isPreventTouchMove,
@@ -134,7 +134,9 @@ export function withMoving(board: PlaitBoard) {
         offsetX = 0;
         offsetY = 0;
         activeElements = [];
-        removeMovingElements(board);
+        if (isMovingElements(board)) {
+            removeMovingElements(board);
+        }
         MERGING.set(board, false);
         PlaitBoard.getBoardContainer(board).classList.remove('element-moving');
     }
