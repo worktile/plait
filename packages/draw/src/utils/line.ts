@@ -265,18 +265,26 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                     const parallelSegments = findOrthogonalParallelSegments(segment, normalizedKeyPoints);
                     const referenceSegment = findReferenceSegment(board, segment, parallelSegments, sourceRectangle, targetRectangle);
                     if (referenceSegment) {
+                        const newCurrentPoint = referenceSegment[1];
+                        const isNewStraight = isPointsOnSameLine([newCurrentPoint, nextPoint]);
+                        renderPoints.push(newCurrentPoint);
+                        if (!isNewStraight) {
+                            const newMidElbowPoints = getMidElbowPoints(normalizedKeyPoints, newCurrentPoint, nextPoint);
+                            if (newMidElbowPoints && newMidElbowPoints.length > 0) {
+                                renderPoints.push(...newMidElbowPoints);
+                            } else {
+                                console.error('Unhandled exception, orthogonal connection still cannot be obtained after correction based on parallel lines')
+                            }
+                        }
                         dataPoints.splice(index - 1, 2, ...referenceSegment);
-                        // go through the current loop again, you may need to go through the getMidElbowPoints logic
-                        index--
-                        continue;
                     } else {
                         const isHorizontalWithPreviousPoint = Point.isHorizontalAlign(previousPoint, currentPoint);
                         const adjustIndex = isHorizontalWithPreviousPoint ? 0 : 1;
                         const newCurrentPoint = [currentPoint[0], currentPoint[1]] as Point;
                         newCurrentPoint[adjustIndex] = nextPoint[adjustIndex];
                         dataPoints.splice(index, 1, newCurrentPoint);
+                        renderPoints.push(dataPoints[index]);
                     }
-                    renderPoints.push(dataPoints[index]);
                 }
             } else {
                 renderPoints.push(currentPoint);
