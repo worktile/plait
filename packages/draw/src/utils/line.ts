@@ -234,14 +234,9 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         if (!isStraightWithPreviousPoint) {
             const midElbowPoints = getMidElbowPoints(normalizedKeyPoints, firstPoint, secondPoint);
             if (midElbowPoints.length === 0) {
-                const parallelSegments = findOrthogonalParallelSegments([firstPoint, secondPoint], normalizedKeyPoints);
-                const referenceSegment = findReferenceSegment(
-                    board,
-                    [firstPoint, secondPoint],
-                    parallelSegments,
-                    sourceRectangle,
-                    targetRectangle
-                );
+                const segment = [secondPoint, thirdPoint] as [Point, Point];
+                const parallelSegments = findOrthogonalParallelSegments(segment, normalizedKeyPoints);
+                const referenceSegment = findReferenceSegment(board, segment, parallelSegments, sourceRectangle, targetRectangle);
                 if (referenceSegment) {
                     dataPoints.splice(targetIndex, 2, ...referenceSegment);
                 } else {
@@ -253,10 +248,9 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                 }
             }
         }
-        renderPoints.push(dataPoints[0], dataPoints[1]);
         // adjust following points
         // because the reference lines are different, the processing of the first custom point and the following points will increase the cost of understanding, so the implementation is separated.
-        for (let index = 2; index < dataPoints.length - 1; index++) {
+        for (let index = 0; index < dataPoints.length - 1; index++) {
             let previousPoint = dataPoints[index - 1];
             let currentPoint = dataPoints[index];
             let nextPoint = dataPoints[index + 1];
@@ -267,16 +261,14 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                     renderPoints.push(currentPoint);
                     renderPoints.push(...midElbowPoints);
                 } else {
-                    const parallelSegments = findOrthogonalParallelSegments([currentPoint, nextPoint], normalizedKeyPoints);
-                    const referenceSegment = findReferenceSegment(
-                        board,
-                        [currentPoint, nextPoint],
-                        parallelSegments,
-                        sourceRectangle,
-                        targetRectangle
-                    );
+                    const segment = [previousPoint, currentPoint] as [Point, Point];
+                    const parallelSegments = findOrthogonalParallelSegments(segment, normalizedKeyPoints);
+                    const referenceSegment = findReferenceSegment(board, segment, parallelSegments, sourceRectangle, targetRectangle);
                     if (referenceSegment) {
-                        dataPoints.splice(index, 2, ...referenceSegment);
+                        dataPoints.splice(index - 1, 2, ...referenceSegment);
+                        // go through the current loop again, you may need to go through the getMidElbowPoints logic
+                        index--
+                        continue;
                     } else {
                         const isHorizontalWithPreviousPoint = Point.isHorizontalAlign(previousPoint, currentPoint);
                         const adjustIndex = isHorizontalWithPreviousPoint ? 0 : 1;
