@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, PlaitNode } from '@plait/core';
+import { PlaitBoard, Point, PlaitNode, Path } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
 import { getHitImageResizeHandleDirection } from '../utils';
@@ -19,7 +19,7 @@ export const withNodeImageResize = (board: PlaitBoard) => {
         canResize: () => {
             return true;
         },
-        detect: (point: Point) => {
+        hitTest: (point: Point) => {
             const elementOfFocusedImage = getElementOfFocusedImage(board);
             const selectedMindElement =
                 elementOfFocusedImage && MindElement.isMindElement(board, elementOfFocusedImage) ? elementOfFocusedImage : undefined;
@@ -39,6 +39,7 @@ export const withNodeImageResize = (board: PlaitBoard) => {
             const offsetX = Point.getOffsetX(resizeState.startPoint, resizeState.endPoint);
             const originWidth = resizeRef.element.data.image.width;
             const originHeight = resizeRef.element.data.image.height;
+            const path = resizeRef.path as Path;
             let width = originWidth + offsetX;
             if (width <= 100) {
                 width = 100;
@@ -46,8 +47,8 @@ export const withNodeImageResize = (board: PlaitBoard) => {
             const ratio = originWidth / originHeight;
             const height = width / ratio;
             const imageItem = { ...resizeRef.element.data.image, width, height };
-            MindTransforms.setImage(board, PlaitNode.get(board, resizeRef.path), imageItem);
-            addElementOfFocusedImage(board, PlaitNode.get(board, resizeRef.path));
+            MindTransforms.setImage(board, PlaitNode.get(board, path), imageItem);
+            addElementOfFocusedImage(board, PlaitNode.get(board, path));
         }
     };
 

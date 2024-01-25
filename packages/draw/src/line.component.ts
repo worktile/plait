@@ -5,10 +5,11 @@ import { LineText, PlaitGeometry, PlaitLine } from './interfaces';
 import { TextManage, TextManageRef } from '@plait/text';
 import { LineShapeGenerator } from './generators/line.generator';
 import { LineActiveGenerator } from './generators/line-active.generator';
-import { getLineTextRectangle, memorizeLatestText } from './utils';
 import { DrawTransforms } from './transforms';
 import { GeometryThreshold } from './constants';
 import { CommonPluginElement } from '@plait/common';
+import { getLineTextRectangle } from './utils/line/line-basic';
+import { memorizeLatestText } from './utils/memorize';
 
 interface BoundedElements {
     source?: PlaitGeometry;

@@ -2,8 +2,7 @@ import { PlaitBoard, Point, RectangleClient, drawCircle } from '@plait/core';
 import { PlaitLine } from '../../interfaces';
 import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '@plait/common';
 import { getMiddlePoints } from '../../generators/line-active.generator';
-import { getElbowLineKeyPoints } from '../line';
-import { getIndexAndDeleteCountByKeyPoint } from '../line-resize';
+import { getIndexAndDeleteCountByKeyPoint, getNextElbowKeyPoints } from '../line';
 
 export enum LineResizeHandle {
     'source' = 'source',
@@ -27,9 +26,8 @@ export const getHitLineResizeHandleRef = (board: PlaitBoard, element: PlaitLine,
     const middlePoints = getMiddlePoints(board, element);
     const middleIndex = getHitPointIndex(middlePoints, point);
     if (middleIndex !== -1) {
-        const isResizeIndex = isResizeMiddleIndex(board, element, middleIndex);
         return {
-            handle: !isResizeIndex ? LineResizeHandle.addHandle : undefined,
+            handle: LineResizeHandle.addHandle,
             index: middleIndex
         };
     }
@@ -54,7 +52,7 @@ export function getHitPointIndex(points: Point[], movingPoint: Point) {
 export function isResizeMiddleIndex(board: PlaitBoard, element: PlaitLine, middleIndex: number) {
     let points = PlaitLine.getPoints(board, element);
     points = [...points].slice(1, points.length - 1);
-    const elbowLineKeyPoints = getElbowLineKeyPoints(board, element);
+    const elbowLineKeyPoints = getNextElbowKeyPoints(board, element);
     const { deleteCount } = getIndexAndDeleteCountByKeyPoint(points, elbowLineKeyPoints, middleIndex);
     if (deleteCount > 1) {
         return true;

@@ -1,35 +1,28 @@
-import { PlaitBoard, PlaitNode, Point } from '@plait/core';
+import { Path, PlaitBoard, PlaitNode, Point } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, simplifyOrthogonalPoints, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineHandle, LineShape, PlaitLine } from '../interfaces';
-import {
-    alignPoints,
-    getLinePoints,
-    getConnectionByNearestPoint,
-    getElbowPoints,
-    getIndexAndDeleteCountByKeyPoint,
-    getResizeReferencePoints,
-    alignElbowSegment,
-    getElbowLineKeyPoints
-} from '../utils';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
+import { getElbowPoints, getNextElbowKeyPoints } from '../utils/line/elbow';
+import { alignElbowSegment, alignPoints, getIndexAndDeleteCountByKeyPoint, getResizeReferencePoints } from '../utils/line/line-resize';
+import { getConnectionByNearestPoint, getLinePoints } from '../utils/line/line-basic';
 
 export const withLineResize = (board: PlaitBoard) => {
     let elbowLineIndex: number | null;
     let elbowLineDeleteCount: number | null;
     let elbowSourcePoint: Point | null;
     let elbowTargetPoint: Point | null;
-    let elbowLineKeyPoints: Point[] | null;
+    let nextElbowKeyPoints: Point[] | null;
 
     const options: WithResizeOptions<PlaitLine, LineResizeHandle> = {
         key: 'draw-line',
         canResize: () => {
             return true;
         },
-        detect: (point: Point) => {
+        hitTest: (point: Point) => {
             const selectedLineElements = getSelectedLineElements(board);
             if (selectedLineElements.length > 0) {
                 let result = null;
@@ -54,10 +47,10 @@ export const withLineResize = (board: PlaitBoard) => {
                 const pointsOnElbow = getElbowPoints(board, resizeRef.element);
                 elbowSourcePoint = pointsOnElbow[0];
                 elbowTargetPoint = pointsOnElbow[pointsOnElbow.length - 1];
-                elbowLineKeyPoints = getElbowLineKeyPoints(board, resizeRef.element, pointsOnElbow);
+                nextElbowKeyPoints = getNextElbowKeyPoints(board, resizeRef.element, pointsOnElbow);
 
                 const drawPoints: Point[] = [...points].slice(1, points.length - 1);
-                const value = getIndexAndDeleteCountByKeyPoint(drawPoints, elbowLineKeyPoints, handleIndex);
+                const value = getIndexAndDeleteCountByKeyPoint(drawPoints, nextElbowKeyPoints, handleIndex);
                 elbowLineIndex = value.index;
                 elbowLineDeleteCount = value.deleteCount;
             }
@@ -80,10 +73,10 @@ export const withLineResize = (board: PlaitBoard) => {
                 }
             }
             if (resizeRef.element.shape === LineShape.elbow) {
-                if (elbowLineKeyPoints && elbowSourcePoint && elbowTargetPoint) {
-                    const referencePoints = getResizeReferencePoints(elbowLineKeyPoints, elbowSourcePoint, elbowTargetPoint, handleIndex);
-                    const startPoint = elbowLineKeyPoints[handleIndex];
-                    const endPoint = elbowLineKeyPoints[handleIndex + 1];
+                if (nextElbowKeyPoints && elbowSourcePoint && elbowTargetPoint) {
+                    const referencePoints = getResizeReferencePoints(nextElbowKeyPoints, elbowSourcePoint, elbowTargetPoint, handleIndex);
+                    const startPoint = nextElbowKeyPoints[handleIndex];
+                    const endPoint = nextElbowKeyPoints[handleIndex + 1];
                     const [newStartPoint, newEndPoint] = alignElbowSegment(startPoint, endPoint, resizeState, referencePoints);
                     const drawPoints: Point[] = [...points].slice(1, points.length - 1);
                     if (elbowLineIndex !== null && elbowLineDeleteCount !== null) {
@@ -113,15 +106,15 @@ export const withLineResize = (board: PlaitBoard) => {
                     });
                 }
             }
-            DrawTransforms.resizeLine(board, { points, source, target }, resizeRef.path);
+            DrawTransforms.resizeLine(board, { points, source, target }, resizeRef.path as Path);
         },
         afterResize: (resizeRef: ResizeRef<PlaitLine, LineResizeHandle>) => {
             if (resizeRef.element.shape === LineShape.elbow) {
-                const element = PlaitNode.get(board, resizeRef.path);
+                const element = PlaitNode.get(board, resizeRef.path as Path);
                 let points = element && [...element.points!];
-                if (points.length > 2 && elbowLineKeyPoints && elbowSourcePoint && elbowTargetPoint) {
-                    const nextSourcePoint = elbowLineKeyPoints[0];
-                    const nextTargetPoint = elbowLineKeyPoints[elbowLineKeyPoints.length - 1];
+                if (points.length > 2 && nextElbowKeyPoints && elbowSourcePoint && elbowTargetPoint) {
+                    const nextSourcePoint = nextElbowKeyPoints[0];
+                    const nextTargetPoint = nextElbowKeyPoints[nextElbowKeyPoints.length - 1];
                     points.splice(0, 1, nextSourcePoint);
                     points.splice(-1, 1, nextTargetPoint);
                     points = simplifyOrthogonalPoints(points!);
@@ -135,14 +128,14 @@ export const withLineResize = (board: PlaitBoard) => {
                         points = [];
                     }
                     points = [elbowSourcePoint, ...points, elbowTargetPoint];
-                    DrawTransforms.resizeLine(board, { points }, resizeRef.path);
+                    DrawTransforms.resizeLine(board, { points }, resizeRef.path as Path);
                 }
             }
             elbowLineIndex = null;
             elbowLineDeleteCount = null;
             elbowSourcePoint = null;
             elbowTargetPoint = null;
-            elbowLineKeyPoints = null;
+            nextElbowKeyPoints = null;
         }
     };
 

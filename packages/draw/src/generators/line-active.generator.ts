@@ -9,8 +9,9 @@ import {
 } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR } from '@plait/common';
-import { getCurvePoints, getElbowPoints, getNextSourceAndTargetPoints } from '../utils';
+import { getCurvePoints } from '../utils/line/line-basic';
 import { DefaultGeometryActiveStyle } from '../constants';
+import { getElbowPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
 import { createAddHandle, createUpdateHandle, getHitPointIndex, isResizeMiddleIndex } from '../utils/position/line';
 
 export interface ActiveData {

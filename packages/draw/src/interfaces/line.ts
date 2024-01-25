@@ -1,10 +1,9 @@
 import { Direction, PlaitBoard, PlaitElement, Point, PointOfRectangle, Vector, getElementById } from '@plait/core';
 import { Element } from 'slate';
-import { LineComponent } from '../line.component';
 import { PlaitGeometry } from './geometry';
 import { StrokeStyle } from './element';
-import { getConnectionPoint } from '../utils';
 import { PlaitImage } from '../interfaces/image';
+import { getConnectionPoint } from '../utils/line/line-common';
 
 export enum LineMarkerType {
     arrow = 'arrow',

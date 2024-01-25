@@ -2,7 +2,6 @@ import {
     MERGING,
     PRESS_AND_MOVE_BUFFER,
     PlaitBoard,
-    PlaitElement,
     PlaitPointerType,
     Point,
     distanceBetweenPointAndPoint,
@@ -10,37 +9,12 @@ import {
     preventTouchMove,
     handleTouchTarget,
     throttleRAF,
-    ResizeCursorClass,
     toViewBoxPoint,
-    toHostPoint,
-    RectangleClient
+    toHostPoint
 } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
-import { ResizeRef, addResizing, isResizing, removeResizing } from '../utils/resize';
-
-export interface WithResizeOptions<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
-    key: string;
-    canResize: () => boolean;
-    detect: (point: Point) => ResizeDetectResult<T, K> | null;
-    onResize: (resizeRef: ResizeRef<T, K>, resizeState: ResizeState) => void;
-    afterResize?: (resizeRef: ResizeRef<T, K>) => void;
-    beforeResize?: (resizeRef: ResizeRef<T, K>) => void;
-}
-
-export interface ResizeDetectResult<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
-    element: T;
-    elements?: T[];
-    rectangle?: RectangleClient;
-    handle: K;
-    handleIndex?: number;
-    cursorClass?: ResizeCursorClass;
-}
-
-export interface ResizeState {
-    startPoint: Point;
-    endPoint: Point;
-    isShift: boolean;
-}
+import { addResizing, isResizing, removeResizing } from '../utils/resize';
+import { PlaitElementOrArray, ResizeHitTestRef, ResizeRef, WithResizeOptions } from '../types/resize';
 
 const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
     return (
@@ -48,15 +22,15 @@ const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
     );
 };
 
-export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHandle>(
+export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle>(
     board: PlaitBoard,
     options: WithResizeOptions<T, K>
 ) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;
-    let resizeDetectResult: ResizeDetectResult<T, K> | null = null;
+    let resizeHitTestRef: ResizeHitTestRef<T, K> | null = null;
     let resizeRef: ResizeRef<T, K> | null = null;
     let startPoint: Point | null = null;
-    let hoveDetectResult: ResizeDetectResult<T, K> | null = null;
+    let hoverHitTestRef: ResizeHitTestRef<T, K> | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
         if (!options.canResize() || !generalCanResize(board, event) || !isMainPointer(event)) {
@@ -64,19 +38,21 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             return;
         }
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        resizeDetectResult = options.detect(point);
-        if (resizeDetectResult) {
-            if (resizeDetectResult.cursorClass) {
-                PlaitBoard.getBoardContainer(board).classList.add(`${resizeDetectResult.cursorClass}`);
+        resizeHitTestRef = options.hitTest(point);
+        if (resizeHitTestRef) {
+            if (resizeHitTestRef.cursorClass) {
+                PlaitBoard.getBoardContainer(board).classList.add(`${resizeHitTestRef.cursorClass}`);
             }
             startPoint = [event.x, event.y];
+            const path = Array.isArray(resizeHitTestRef.element)
+                ? resizeHitTestRef.element.map(el => PlaitBoard.findPath(board, el))
+                : PlaitBoard.findPath(board, resizeHitTestRef.element);
             resizeRef = {
-                path: PlaitBoard.findPath(board, resizeDetectResult.element),
-                element: resizeDetectResult.element,
-                elements: resizeDetectResult.elements,
-                handle: resizeDetectResult.handle,
-                handleIndex: resizeDetectResult.handleIndex,
-                rectangle: resizeDetectResult.rectangle
+                path,
+                element: resizeHitTestRef.element,
+                handle: resizeHitTestRef.handle,
+                handleIndex: resizeHitTestRef.handleIndex,
+                rectangle: resizeHitTestRef.rectangle
             };
             preventTouchMove(board, event, true);
             // prevent text from being selected when user pressed shift and pointer down
@@ -91,7 +67,7 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             pointerMove(event);
             return;
         }
-        if (startPoint && resizeDetectResult && !isResizing(board)) {
+        if (startPoint && resizeHitTestRef && !isResizing(board)) {
             // prevent text from being selected
             event.preventDefault();
             const endPoint = [event.x, event.y];
@@ -120,21 +96,21 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
             return;
         } else {
             const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-            const resizeDetectResult = options.detect(point);
-            if (resizeDetectResult) {
-                if (hoveDetectResult && resizeDetectResult.cursorClass !== hoveDetectResult.cursorClass) {
-                    PlaitBoard.getBoardContainer(board).classList.remove(`${hoveDetectResult.cursorClass}`);
+            const hitTestRef = options.hitTest(point);
+            if (hitTestRef) {
+                if (hoverHitTestRef && hitTestRef.cursorClass !== hoverHitTestRef.cursorClass) {
+                    PlaitBoard.getBoardContainer(board).classList.remove(`${hoverHitTestRef.cursorClass}`);
                 }
-                hoveDetectResult = resizeDetectResult;
-                if (hoveDetectResult.cursorClass) {
-                    PlaitBoard.getBoardContainer(board).classList.add(`${hoveDetectResult.cursorClass}`);
+                hoverHitTestRef = hitTestRef;
+                if (hoverHitTestRef.cursorClass) {
+                    PlaitBoard.getBoardContainer(board).classList.add(`${hoverHitTestRef.cursorClass}`);
                 }
             } else {
-                if (hoveDetectResult) {
-                    if (hoveDetectResult.cursorClass) {
-                        PlaitBoard.getBoardContainer(board).classList.remove(`${hoveDetectResult.cursorClass}`);
+                if (hoverHitTestRef) {
+                    if (hoverHitTestRef.cursorClass) {
+                        PlaitBoard.getBoardContainer(board).classList.remove(`${hoverHitTestRef.cursorClass}`);
                     }
-                    hoveDetectResult = null;
+                    hoverHitTestRef = null;
                 }
             }
         }
@@ -143,11 +119,11 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
 
     board.globalPointerUp = (event: PointerEvent) => {
         globalPointerUp(event);
-        if (isResizing(board) || resizeDetectResult) {
+        if (isResizing(board) || resizeHitTestRef) {
             options.afterResize && options.afterResize(resizeRef!);
             removeResizing(board, options.key);
             startPoint = null;
-            resizeDetectResult = null;
+            resizeHitTestRef = null;
             resizeRef = null;
             MERGING.set(board, false);
             preventTouchMove(board, event, false);
