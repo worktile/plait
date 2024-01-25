@@ -1,6 +1,6 @@
 import { ResizeState } from '@plait/common';
 import { Point, isPointsOnSameLine } from '@plait/core';
-import { LINE_ALIGN_TOLERANCE } from '../constants/line';
+import { LINE_ALIGN_TOLERANCE } from '../../constants/line';
 
 export const alignPoints = (basePoint: Point, movingPoint: Point) => {
     const newPoint: Point = [...movingPoint];

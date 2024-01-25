@@ -7,10 +7,10 @@ import {
     getNearestPointBetweenPointAndSegments
 } from '@plait/core';
 import { PlaitDrawElement, PlaitLine } from '../interfaces';
-import { getHitLineTextIndex, getLinePoints } from '../utils';
 import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, getRatioByPoint, withResize } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { LineComponent } from '../line.component';
+import { getHitLineTextIndex, getLinePoints } from '../utils/line/line-basic';
 
 export const withLineTextMove = (board: PlaitBoard) => {
     let textIndex = 0;

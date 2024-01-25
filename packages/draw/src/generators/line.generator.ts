@@ -1,6 +1,6 @@
 import { PlaitLine } from '../interfaces';
 import { Generator } from '@plait/common';
-import { drawLine } from '../utils';
+import { drawLine } from '../utils/line/line-basic';
 
 export interface ShapeData {}
 
