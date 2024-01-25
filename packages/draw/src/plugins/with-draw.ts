@@ -15,7 +15,7 @@ import { ImageComponent } from '../image.component';
 import { withLineAutoCompleteReaction } from './with-line-auto-complete-reaction';
 import { withLineAutoComplete } from './with-line-auto-complete';
 import { withLineTextMove } from './with-line-text-move';
-import { withSelectionResize } from './with-draw-resize';
+import { withDrawResize } from './with-draw-resize';
 import { isHitDrawElement, isRectangleHitDrawElement } from '../utils/hit';
 import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
 
@@ -113,7 +113,7 @@ export const withDraw = (board: PlaitBoard) => {
         return getRelatedFragment([...elements, ...activeLines]);
     };
 
-    return withSelectionResize(
+    return withDrawResize(
         withLineTextMove(
             withLineAutoCompleteReaction(
                 withLineText(
