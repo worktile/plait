@@ -55,8 +55,8 @@ export function isResizeMiddleIndex(board: PlaitBoard, element: PlaitLine, middl
     let points = PlaitLine.getPoints(board, element);
     points = [...points].slice(1, points.length - 1);
     const elbowLineKeyPoints = getElbowLineKeyPoints(board, element);
-    const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(points, elbowLineKeyPoints, middleIndex);
-    if (index > -1 && deleteCount > 1) {
+    const { deleteCount } = getIndexAndDeleteCountByKeyPoint(points, elbowLineKeyPoints, middleIndex);
+    if (deleteCount > 1) {
         return true;
     }
     return false;
