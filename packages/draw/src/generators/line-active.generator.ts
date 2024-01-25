@@ -36,18 +36,19 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
             activeG.classList.add('line-handle');
             const points = PlaitLine.getPoints(this.board, element);
             let updatePoints = [...points];
+            let elbowLineKeyPoints: Point[] = [];
             if (element.shape === LineShape.elbow) {
                 updatePoints = points.slice(0, 1).concat(points.slice(-1));
+                elbowLineKeyPoints = getNextElbowLinePoints(this.board, element);
             }
             updatePoints.forEach(point => {
                 const circle = createUpdateHandle(this.board, point);
                 activeG.appendChild(circle);
             });
-            const elbowLineKeyPoints = getNextElbowLinePoints(this.board, element);
             const middlePoints = getMiddlePoints(this.board, element);
             for (let i = 0; i < middlePoints.length; i++) {
                 const point = middlePoints[i];
-                if (element.shape === LineShape.elbow) {
+                if (element.shape === LineShape.elbow && elbowLineKeyPoints.length) {
                     const middleIndex = getHitPointIndex(middlePoints, point);
                     const isResizeIndex = isResizeMiddleIndex([...points].slice(1, points.length - 1), elbowLineKeyPoints, middleIndex);
                     if (isResizeIndex) {
