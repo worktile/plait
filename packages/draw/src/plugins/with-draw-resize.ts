@@ -20,7 +20,7 @@ import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 export function withSelectionResize(board: PlaitBoard) {
     const { afterChange } = board;
 
-    const options: WithResizeOptions<PlaitDrawElement> = {
+    const options: WithResizeOptions<PlaitDrawElement[]> = {
         key: 'draw-elements',
         canResize: () => {
             const elements = getSelectedElements(board);
@@ -32,8 +32,7 @@ export function withSelectionResize(board: PlaitBoard) {
             const handleRef = getHitRectangleResizeHandleRef(board, boundingRectangle, point);
             if (handleRef) {
                 return {
-                    element: elements[0],
-                    elements: elements,
+                    element: elements,
                     rectangle: boundingRectangle,
                     handle: handleRef.handle,
                     cursorClass: handleRef.cursorClass
@@ -41,7 +40,7 @@ export function withSelectionResize(board: PlaitBoard) {
             }
             return null;
         },
-        onResize: (resizeRef: ResizeRef<PlaitDrawElement>, resizeState: ResizeState) => {
+        onResize: (resizeRef: ResizeRef<PlaitDrawElement[]>, resizeState: ResizeState) => {
             const handleIndex = getIndexByResizeHandle(resizeRef.handle);
             const symmetricHandleIndex = getSymmetricHandleIndex(board, handleIndex);
             const resizeOriginPoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, symmetricHandleIndex);
@@ -83,7 +82,7 @@ export function withSelectionResize(board: PlaitBoard) {
                 const offsetY = (p[1] - resizeOriginPoint[1]) * yZoom;
                 return [p[0] + offsetX, p[1] + offsetY] as Point;
             };
-            resizeRef.elements!.forEach(target => {
+            resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
                 let points = target.points.map(p => {
                     return movePointByZoomAndOriginPoint(p);
@@ -113,7 +112,7 @@ export function withSelectionResize(board: PlaitBoard) {
         }
     };
 
-    withResize<PlaitDrawElement>(board, options);
+    withResize<PlaitDrawElement[]>(board, options);
 
     board.afterChange = () => {
         afterChange();

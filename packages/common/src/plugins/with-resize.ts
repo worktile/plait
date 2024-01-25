@@ -10,37 +10,12 @@ import {
     preventTouchMove,
     handleTouchTarget,
     throttleRAF,
-    ResizeCursorClass,
     toViewBoxPoint,
-    toHostPoint,
-    RectangleClient
+    toHostPoint
 } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
-import { ResizeRef, addResizing, isResizing, removeResizing } from '../utils/resize';
-
-export interface WithResizeOptions<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
-    key: string;
-    canResize: () => boolean;
-    detect: (point: Point) => ResizeDetectResult<T, K> | null;
-    onResize: (resizeRef: ResizeRef<T, K>, resizeState: ResizeState) => void;
-    afterResize?: (resizeRef: ResizeRef<T, K>) => void;
-    beforeResize?: (resizeRef: ResizeRef<T, K>) => void;
-}
-
-export interface ResizeDetectResult<T extends PlaitElement = PlaitElement, K = ResizeHandle> {
-    element: T;
-    elements?: T[];
-    rectangle?: RectangleClient;
-    handle: K;
-    handleIndex?: number;
-    cursorClass?: ResizeCursorClass;
-}
-
-export interface ResizeState {
-    startPoint: Point;
-    endPoint: Point;
-    isShift: boolean;
-}
+import { addResizing, isResizing, removeResizing } from '../utils/resize';
+import { PlaitElementOrArray, ResizeDetectResult, ResizeRef, WithResizeOptions } from '../types/resize';
 
 const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
     return (
@@ -48,7 +23,7 @@ const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
     );
 };
 
-export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHandle>(
+export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle>(
     board: PlaitBoard,
     options: WithResizeOptions<T, K>
 ) => {
@@ -70,10 +45,12 @@ export const withResize = <T extends PlaitElement = PlaitElement, K = ResizeHand
                 PlaitBoard.getBoardContainer(board).classList.add(`${resizeDetectResult.cursorClass}`);
             }
             startPoint = [event.x, event.y];
+            const path = Array.isArray(resizeDetectResult.element)
+                ? resizeDetectResult.element.map(el => PlaitBoard.findPath(board, el))
+                : PlaitBoard.findPath(board, resizeDetectResult.element);
             resizeRef = {
-                path: PlaitBoard.findPath(board, resizeDetectResult.element),
+                path,
                 element: resizeDetectResult.element,
-                elements: resizeDetectResult.elements,
                 handle: resizeDetectResult.handle,
                 handleIndex: resizeDetectResult.handleIndex,
                 rectangle: resizeDetectResult.rectangle

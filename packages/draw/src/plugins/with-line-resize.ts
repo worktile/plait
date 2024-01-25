@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitNode, Point } from '@plait/core';
+import { Path, PlaitBoard, PlaitNode, Point } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, removeDuplicatePoints, simplifyOrthogonalPoints, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
@@ -115,11 +115,11 @@ export const withLineResize = (board: PlaitBoard) => {
                     });
                 }
             }
-            DrawTransforms.resizeLine(board, { points, source, target }, resizeRef.path);
+            DrawTransforms.resizeLine(board, { points, source, target }, resizeRef.path as Path);
         },
         afterResize: (resizeRef: ResizeRef<PlaitLine, LineResizeHandle>) => {
             if (resizeRef.element.shape === LineShape.elbow) {
-                const element = PlaitNode.get(board, resizeRef.path);
+                const element = PlaitNode.get(board, resizeRef.path as Path);
                 let points = element && [...element.points!];
                 if (points.length > 2 && elbowLineKeyPoints && elbowSourcePoint && elbowTargetPoint) {
                     const nextSourcePoint = elbowLineKeyPoints[0];
@@ -137,7 +137,7 @@ export const withLineResize = (board: PlaitBoard) => {
                         points = [];
                     }
                     points = [elbowSourcePoint, ...points, elbowTargetPoint];
-                    DrawTransforms.resizeLine(board, { points }, resizeRef.path);
+                    DrawTransforms.resizeLine(board, { points }, resizeRef.path as Path);
                 }
             }
             elbowLineIndex = null;
