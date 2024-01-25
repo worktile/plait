@@ -9,10 +9,11 @@ import {
     toViewBoxPoint
 } from '@plait/core';
 import { LineShape, PlaitDrawElement } from '../interfaces';
-import { drawBoundMask, getHitConnectorPoint, getNearestPoint } from '../utils';
 import { getRectangleByPoints, isResizingByCondition } from '@plait/common';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineResizeHandle } from '../utils/position/line';
+import { drawBoundMask, getNearestPoint } from '../utils/geometry';
+import { getHitConnectorPoint } from '../utils/line/line-basic';
 
 export const withLineBoundReaction = (board: PlaitBoard) => {
     const { pointerMove, pointerUp } = board;

@@ -15,10 +15,12 @@ import {
     toViewBoxPoint
 } from '@plait/core';
 import { LineShape, PlaitDrawElement, PlaitLine, PlaitShape } from '../interfaces';
-import { handleLineCreating, getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
 import { getShape } from '../utils/shape';
 import { getEngine } from '../engines';
 import { getRectangleByPoints } from '@plait/common';
+import { handleLineCreating } from '../utils/line/line-basic';
+import { getSelectedDrawElements } from '../utils/selected';
+import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint } from '../utils/geometry';
 
 export const WithLineAutoCompletePluginKey = 'plait-line-auto-complete-plugin-key';
 

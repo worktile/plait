@@ -11,7 +11,8 @@ import {
     PlaitLine
 } from '../interfaces';
 import { memorizeLatest } from '@plait/common';
-import { getConnectionByNearestPoint, getLinePoints, getSelectedLineElements } from '../utils';
+import { getSelectedLineElements } from '../utils/selected';
+import { getConnectionByNearestPoint, getLinePoints } from '../utils/line/line-basic';
 
 export const resizeLine = (board: PlaitBoard, options: Partial<PlaitLine>, path: Path) => {
     Transforms.setNode(board, options, path);

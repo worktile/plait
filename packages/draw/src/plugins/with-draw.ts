@@ -6,7 +6,6 @@ import { getRectangleByPoints } from '@plait/common';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDrawing, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
-import { getLinePoints, isRectangleHitDrawElement, isHitDrawElement, getLineTextRectangle } from '../utils';
 import { withLineCreateByDraw } from './with-line-create';
 import { withGeometryResize } from './with-geometry-resize';
 import { withLineResize } from './with-line-resize';
@@ -17,6 +16,8 @@ import { withLineAutoCompleteReaction } from './with-line-auto-complete-reaction
 import { withLineAutoComplete } from './with-line-auto-complete';
 import { withLineTextMove } from './with-line-text-move';
 import { withSelectionResize } from './with-draw-resize';
+import { isHitDrawElement, isRectangleHitDrawElement } from '../utils/hit';
+import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, isAlign, getRelatedFragment } = board;

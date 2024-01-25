@@ -10,8 +10,9 @@ import {
 } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '@plait/common';
-import { getCurvePoints, getElbowPoints, getNextSourceAndTargetPoints } from '../utils';
+import { getCurvePoints } from '../utils/line/line-basic';
 import { DefaultGeometryActiveStyle } from '../constants';
+import { getElbowPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
 
 export interface ActiveData {
     selected: boolean;

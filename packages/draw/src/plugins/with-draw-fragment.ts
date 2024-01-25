@@ -14,7 +14,7 @@ import { getSelectedDrawElements } from '../utils/selected';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShape } from '../interfaces';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
-import { getBoardLines } from '../utils/line';
+import { getBoardLines } from '../utils/line/line-basic';
 import { PlaitImage } from '../interfaces/image';
 import { acceptImageTypes, buildImage, getElementOfFocusedImage, getElementsText, getFirstTextEditor } from '@plait/common';
 import { DEFAULT_IMAGE_WIDTH } from '../constants';

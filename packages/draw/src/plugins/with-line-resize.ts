@@ -1,21 +1,14 @@
-import { PlaitBoard, PlaitNode, Point, isPointsOnSameLine } from '@plait/core';
+import { PlaitBoard, PlaitNode, Point } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, removeDuplicatePoints, simplifyOrthogonalPoints, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineHandle, LineShape, PlaitLine } from '../interfaces';
-import {
-    alignPoints,
-    getLinePoints,
-    getConnectionByNearestPoint,
-    getElbowPoints,
-    getNextSourceAndTargetPoints,
-    getIndexAndDeleteCountByKeyPoint,
-    getResizeReferencePoints,
-    alignElbowSegment
-} from '../utils';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
+import { getElbowPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
+import { alignElbowSegment, alignPoints, getIndexAndDeleteCountByKeyPoint, getResizeReferencePoints } from '../utils/line/line-resize';
+import { getConnectionByNearestPoint, getLinePoints } from '../utils/line/line-basic';
 
 export const withLineResize = (board: PlaitBoard) => {
     let elbowLineIndex: number | null;

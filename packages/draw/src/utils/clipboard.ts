@@ -1,7 +1,7 @@
 import { PlaitBoard, Point, Transforms, getElementById, idCreator } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { PlaitImage } from '../interfaces/image';
-import { getConnectionPoint } from './line';
+import { getConnectionPoint } from './line/line-common';
 
 export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement[], startPoint: Point) => {
     return elements.map(element => {

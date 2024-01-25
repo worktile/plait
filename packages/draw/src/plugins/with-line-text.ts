@@ -8,11 +8,11 @@ import {
 } from '@plait/core';
 import { PlaitDrawElement, PlaitLine } from '../interfaces';
 import { Node } from 'slate';
-import { getHitLineTextIndex, getLinePoints, isHitLineText } from '../utils';
 import { getRatioByPoint } from '@plait/common';
 import { buildText } from '@plait/text';
 import { LineComponent } from '../line.component';
 import { DrawTransforms } from '../transforms';
+import { getHitLineTextIndex, getLinePoints, isHitLineText } from '../utils/line/line-basic';
 
 export const withLineText = (board: PlaitBoard) => {
     const { dblClick } = board;

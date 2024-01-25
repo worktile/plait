@@ -33,7 +33,7 @@ import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getShape } from './shape';
-import { createLineElement } from './line';
+import { createLineElement } from './line/line-basic';
 import { LineMarkerType, LineShape, PlaitShape } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 import { getMemorizedLatestByPointer, memorizeLatestShape } from './memorize';

@@ -12,10 +12,10 @@ import {
     toViewBoxPoint
 } from '@plait/core';
 import { LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
-import { handleLineCreating } from '../utils';
 import { REACTION_MARGIN, getLinePointers } from '../constants';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { isDrawingMode } from '@plait/common';
+import { handleLineCreating } from '../utils/line/line-basic';
 
 export const withLineCreateByDraw = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;

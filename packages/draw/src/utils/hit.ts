@@ -2,7 +2,7 @@ import { PlaitElement, RectangleClient, Selection, PlaitBoard, isPolylineHitRect
 import { PlaitDrawElement, PlaitGeometry } from '../interfaces';
 import { TRANSPARENT, getRectangleByPoints } from '@plait/common';
 import { getTextRectangle } from './geometry';
-import { getLinePoints, isHitLineText, isHitPolyLine } from './line';
+import { getLinePoints, isHitLineText, isHitPolyLine } from './line/line-basic';
 import { getFillByElement, getStrokeWidthByElement } from './style/stroke';
 import { DefaultGeometryStyle } from '../constants/geometry';
 import { getEngine } from '../engines';
