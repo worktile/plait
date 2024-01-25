@@ -8,7 +8,7 @@ import { LineActiveGenerator } from './generators/line-active.generator';
 import { DrawTransforms } from './transforms';
 import { GeometryThreshold } from './constants';
 import { CommonPluginElement } from '@plait/common';
-import { getLineTextRectangle } from './utils/line/line-basic';
+import { getLinePoints, getLineTextRectangle } from './utils/line/line-basic';
 import { memorizeLatestText } from './utils/memorize';
 
 interface BoundedElements {
@@ -45,7 +45,11 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
     ngOnInit(): void {
         this.initializeGenerator();
         this.shapeGenerator.processDrawing(this.element, this.g);
-        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+        const linePoints = getLinePoints(this.board, this.element);
+        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+            selected: this.selected,
+            linePoints
+        });
         super.ngOnInit();
         this.boundedElements = this.getBoundedElements();
         this.drawText();
@@ -74,21 +78,30 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
             boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;
         this.boundedElements = boundedElements;
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
-
+        const linePoints = getLinePoints(this.board, this.element);
         if (value.element !== previous.element || isChangeTheme) {
             this.shapeGenerator.processDrawing(this.element, this.g);
-            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+                selected: this.selected,
+                linePoints
+            });
             this.updateText(previous.element.texts, value.element.texts);
             this.updateTextRectangle();
         } else {
             const hasSameSelected = value.selected === previous.selected;
             if (!hasSameSelected || (value.selected && isSelectionMoving(this.board))) {
-                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+                    selected: this.selected,
+                    linePoints
+                });
             }
         }
         if (isBoundedElementsChanged) {
             this.shapeGenerator.processDrawing(this.element, this.g);
-            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+                selected: this.selected,
+                linePoints
+            });
             this.updateTextRectangle();
             return;
         }

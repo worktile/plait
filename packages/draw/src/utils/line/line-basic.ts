@@ -25,7 +25,7 @@ import { LineShapeGenerator } from '../../generators/line.generator';
 import { REACTION_MARGIN } from '../../constants';
 import { getHitOutlineGeometry } from '../position/geometry';
 import { getLineMemorizedLatest } from '../memorize';
-import { alignPoints } from './line-resize';
+import { alignPoints, getIndexAndDeleteCountByKeyPoint } from './line-resize';
 import { getLineHandleRefPair } from './line-common';
 import { getElbowPoints } from './elbow';
 import { drawLineArrow } from './line-arrow';
@@ -271,4 +271,12 @@ function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
     maskTargetFillRect.setAttribute('opacity', '0');
     maskTargetFillRect.setAttribute('fill', 'none');
     return { mask, maskTargetFillRect };
+}
+
+export function isResizeMiddleIndex(points: Point[], nextKeyPoints: Point[], middleIndex: number) {
+    const { deleteCount } = getIndexAndDeleteCountByKeyPoint(points, nextKeyPoints, middleIndex);
+    if (deleteCount > 1) {
+        return true;
+    }
+    return false;
 }
