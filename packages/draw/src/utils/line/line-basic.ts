@@ -14,22 +14,21 @@ import {
     catmullRomFitting
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-
 import { getRectangleByPoints, getPointOnPolyline, getPointByVector, removeDuplicatePoints, getExtendPoint } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, LineText, PlaitDrawElement, PlaitLine, PlaitShape } from '../../interfaces';
 import { getNearestPoint } from '../geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
-import { drawLineArrow } from './line-arrow';
 import { getShape } from '../shape';
 import { DefaultLineStyle, LINE_TEXT_SPACE } from '../../constants/line';
 import { LineShapeGenerator } from '../../generators/line.generator';
 import { REACTION_MARGIN } from '../../constants';
 import { getHitOutlineGeometry } from '../position/geometry';
 import { getLineMemorizedLatest } from '../memorize';
-import { alignPoints } from './line-resize';
+import { alignPoints, getIndexAndDeleteCountByKeyPoint } from './line-resize';
 import { getLineHandleRefPair } from './line-common';
 import { getElbowPoints } from './elbow';
+import { drawLineArrow } from './line-arrow';
 
 export const createLineElement = (
     shape: LineShape,
@@ -272,4 +271,12 @@ function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
     maskTargetFillRect.setAttribute('opacity', '0');
     maskTargetFillRect.setAttribute('fill', 'none');
     return { mask, maskTargetFillRect };
+}
+
+export function isResizeMiddleIndex(points: Point[], nextKeyPoints: Point[], middleIndex: number) {
+    const { deleteCount } = getIndexAndDeleteCountByKeyPoint(points, nextKeyPoints, middleIndex);
+    if (deleteCount > 1) {
+        return true;
+    }
+    return false;
 }

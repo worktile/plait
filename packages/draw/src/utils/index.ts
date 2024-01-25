@@ -1,4 +1,4 @@
-export * from './line';
+export * from './line/index';
 export * from './geometry';
 export * from './selected';
 export * from './style';

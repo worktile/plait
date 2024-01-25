@@ -3,19 +3,20 @@ import {
     Point,
     createG,
     distanceBetweenPointAndPoint,
-    drawCircle,
     drawRectangle,
     getSelectedElements,
     isPointsOnSameLine
 } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
-import { Generator, PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '@plait/common';
-import { getCurvePoints } from '../utils/line/line-basic';
+import { Generator, PRIMARY_COLOR } from '@plait/common';
+import { getCurvePoints, isResizeMiddleIndex } from '../utils/line/line-basic';
 import { DefaultGeometryActiveStyle } from '../constants';
-import { getElbowPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
+import { getElbowPoints, getNextElbowLinePoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
+import { createAddHandle, createUpdateHandle, getHitPointIndex } from '../utils/position/line';
 
 export interface ActiveData {
     selected: boolean;
+    linePoints: Point[];
 }
 
 export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
@@ -34,28 +35,32 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
         if (isSingleSelection) {
             activeG.classList.add('active');
             activeG.classList.add('line-handle');
-            let points = PlaitLine.getPoints(this.board, element);
+            const points = PlaitLine.getPoints(this.board, element);
+            let updatePoints = [...points];
+            let elbowLineKeyPoints: Point[] = [];
             if (element.shape === LineShape.elbow) {
-                points = points.slice(0, 1).concat(points.slice(-1));
+                updatePoints = points.slice(0, 1).concat(points.slice(-1));
+                elbowLineKeyPoints = getNextElbowLinePoints(this.board, element, data.linePoints);
             }
-            points.forEach(point => {
-                const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, RESIZE_HANDLE_DIAMETER, {
-                    stroke: '#999999',
-                    strokeWidth: 1,
-                    fill: '#FFF',
-                    fillStyle: 'solid'
-                });
+            updatePoints.forEach(point => {
+                const circle = createUpdateHandle(this.board, point);
                 activeG.appendChild(circle);
             });
-            getMiddlePoints(this.board, element).forEach(point => {
-                const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, RESIZE_HANDLE_DIAMETER, {
-                    stroke: '#FFFFFF80',
-                    strokeWidth: 1,
-                    fill: `${PRIMARY_COLOR}80`,
-                    fillStyle: 'solid'
-                });
+            const middlePoints = getMiddlePoints(this.board, element);
+            for (let i = 0; i < middlePoints.length; i++) {
+                const point = middlePoints[i];
+                if (element.shape === LineShape.elbow && elbowLineKeyPoints.length) {
+                    const middleIndex = getHitPointIndex(middlePoints, point);
+                    const isResizeIndex = isResizeMiddleIndex([...points].slice(1, points.length - 1), elbowLineKeyPoints, middleIndex);
+                    if (isResizeIndex) {
+                        const circle = createUpdateHandle(this.board, point);
+                        activeG.appendChild(circle);
+                        continue;
+                    }
+                }
+                const circle = createAddHandle(this.board, point);
                 activeG.appendChild(circle);
-            });
+            }
         } else {
             const activeRectangle = this.board.getRectangle(element);
             if (activeRectangle) {

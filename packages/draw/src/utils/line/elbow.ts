@@ -234,3 +234,12 @@ function findReferenceSegment(
     }
     return undefined;
 }
+
+export function getNextElbowLinePoints(board: PlaitBoard, element: PlaitLine, pointsOnElbow?: Point[]) {
+    let nextElbowKeyPoints = pointsOnElbow ?? getElbowPoints(board, element);
+    const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
+    nextElbowKeyPoints.splice(0, 1, nextSourcePoint);
+    nextElbowKeyPoints.splice(-1, 1, nextTargetPoint);
+    nextElbowKeyPoints = removeDuplicatePoints(nextElbowKeyPoints);
+    return nextElbowKeyPoints;
+}
