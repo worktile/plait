@@ -24,7 +24,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
         canResize: () => {
             return true;
         },
-        detect: (point: Point) => {
+        hitTest: (point: Point) => {
             const selectedElements = [...getSelectedGeometryElements(board), ...getSelectedImageElements(board)];
             if (selectedElements.length !== 1 || getSelectedElements(board).length !== 1) {
                 return null;

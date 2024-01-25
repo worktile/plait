@@ -19,7 +19,7 @@ export const withNodeImageResize = (board: PlaitBoard) => {
         canResize: () => {
             return true;
         },
-        detect: (point: Point) => {
+        hitTest: (point: Point) => {
             const elementOfFocusedImage = getElementOfFocusedImage(board);
             const selectedMindElement =
                 elementOfFocusedImage && MindElement.isMindElement(board, elementOfFocusedImage) ? elementOfFocusedImage : undefined;

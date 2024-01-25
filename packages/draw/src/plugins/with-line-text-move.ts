@@ -20,7 +20,7 @@ export const withLineTextMove = (board: PlaitBoard) => {
         canResize: () => {
             return true;
         },
-        detect: (point: Point) => {
+        hitTest: (point: Point) => {
             let result = null;
             const line = getHitElementByPoint(board, point, (element: PlaitElement) => {
                 return PlaitDrawElement.isLine(element);

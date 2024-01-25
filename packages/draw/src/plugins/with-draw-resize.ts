@@ -26,7 +26,7 @@ export function withSelectionResize(board: PlaitBoard) {
             const elements = getSelectedElements(board);
             return elements.length > 1 && elements.every(el => PlaitDrawElement.isDrawElement(el));
         },
-        detect: (point: Point) => {
+        hitTest: (point: Point) => {
             const elements = getSelectedElements(board) as PlaitDrawElement[];
             const boundingRectangle = getRectangleByElements(board, elements, false);
             const handleRef = getHitRectangleResizeHandleRef(board, boundingRectangle, point);

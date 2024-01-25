@@ -22,7 +22,7 @@ export const withLineResize = (board: PlaitBoard) => {
         canResize: () => {
             return true;
         },
-        detect: (point: Point) => {
+        hitTest: (point: Point) => {
             const selectedLineElements = getSelectedLineElements(board);
             if (selectedLineElements.length > 0) {
                 let result = null;
