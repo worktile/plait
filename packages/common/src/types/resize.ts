@@ -6,13 +6,13 @@ export type PlaitElementOrArray = PlaitElement | PlaitElement[];
 export interface WithResizeOptions<T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle> {
     key: string;
     canResize: () => boolean;
-    detect: (point: Point) => ResizeDetectResult<T, K> | null;
+    hitTest: (point: Point) => ResizeHitTestRef<T, K> | null;
     onResize: (resizeRef: ResizeRef<T, K>, resizeState: ResizeState) => void;
     afterResize?: (resizeRef: ResizeRef<T, K>) => void;
     beforeResize?: (resizeRef: ResizeRef<T, K>) => void;
 }
 
-export interface ResizeDetectResult<T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle> {
+export interface ResizeHitTestRef<T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle> {
     element: T;
     rectangle?: RectangleClient;
     handle: K;
