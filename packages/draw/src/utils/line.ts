@@ -273,7 +273,9 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                             if (newMidElbowPoints && newMidElbowPoints.length > 0) {
                                 renderPoints.push(...newMidElbowPoints);
                             } else {
-                                console.error('Unhandled exception, orthogonal connection still cannot be obtained after correction based on parallel lines')
+                                console.error(
+                                    'Unhandled exception, orthogonal connection still cannot be obtained after correction based on parallel lines'
+                                );
                             }
                         }
                         dataPoints.splice(index - 1, 2, ...referenceSegment);
@@ -607,4 +609,13 @@ function findReferenceSegment(
         }
     }
     return undefined;
+}
+
+export function getElbowLineKeyPoints(board: PlaitBoard, element: PlaitLine, pointsOnElbow?: Point[]) {
+    let elbowLineKeyPoints = pointsOnElbow ?? getElbowPoints(board, element);
+    const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
+    elbowLineKeyPoints.splice(0, 1, nextSourcePoint);
+    elbowLineKeyPoints.splice(-1, 1, nextTargetPoint);
+    elbowLineKeyPoints = removeDuplicatePoints(elbowLineKeyPoints);
+    return elbowLineKeyPoints;
 }

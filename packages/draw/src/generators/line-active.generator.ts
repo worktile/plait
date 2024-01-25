@@ -3,15 +3,15 @@ import {
     Point,
     createG,
     distanceBetweenPointAndPoint,
-    drawCircle,
     drawRectangle,
     getSelectedElements,
     isPointsOnSameLine
 } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
-import { Generator, PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '@plait/common';
+import { Generator, PRIMARY_COLOR } from '@plait/common';
 import { getCurvePoints, getElbowPoints, getNextSourceAndTargetPoints } from '../utils';
 import { DefaultGeometryActiveStyle } from '../constants';
+import { createAddHandle, createUpdateHandle, getHitPointIndex, isResizeMiddleIndex } from '../utils/position/line';
 
 export interface ActiveData {
     selected: boolean;
@@ -38,23 +38,24 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
                 points = points.slice(0, 1).concat(points.slice(-1));
             }
             points.forEach(point => {
-                const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, RESIZE_HANDLE_DIAMETER, {
-                    stroke: '#999999',
-                    strokeWidth: 1,
-                    fill: '#FFF',
-                    fillStyle: 'solid'
-                });
+                const circle = createUpdateHandle(this.board, point);
                 activeG.appendChild(circle);
             });
-            getMiddlePoints(this.board, element).forEach(point => {
-                const circle = drawCircle(PlaitBoard.getRoughSVG(this.board), point, RESIZE_HANDLE_DIAMETER, {
-                    stroke: '#FFFFFF80',
-                    strokeWidth: 1,
-                    fill: `${PRIMARY_COLOR}80`,
-                    fillStyle: 'solid'
-                });
+            const middlePoints = getMiddlePoints(this.board, element);
+            for (let i = 0; i < middlePoints.length; i++) {
+                const point = middlePoints[i];
+                if (element.shape === LineShape.elbow) {
+                    const middleIndex = getHitPointIndex(middlePoints, point);
+                    const isResizeIndex = isResizeMiddleIndex(this.board, element, middleIndex);
+                    if (isResizeIndex) {
+                        const circle = createUpdateHandle(this.board, point);
+                        activeG.appendChild(circle);
+                        continue;
+                    }
+                }
+                const circle = createAddHandle(this.board, point);
                 activeG.appendChild(circle);
-            });
+            }
         } else {
             const activeRectangle = this.board.getRectangle(element);
             if (activeRectangle) {
