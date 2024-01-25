@@ -129,7 +129,6 @@ export function withSelection(board: PlaitBoard) {
             // The framework needs to determine whether the board is focused through selection
             if (!isInBoard && !start && !isAttachedElement && isInDocument) {
                 Transforms.setSelection(board, null);
-                console.log('clear selection');
             }
         }
 
