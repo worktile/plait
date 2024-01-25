@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements } from '@plait/core';
+import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeHandle,
@@ -14,7 +14,6 @@ import {
 import { getSelectedGeometryElements, getSelectedImageElements } from '../utils/selected';
 import { getHitGeometryResizeHandleRef } from '../utils/position/geometry';
 import { DrawTransforms } from '../transforms';
-import { isKeyHotkey } from 'is-hotkey';
 import { GeometryComponent } from '../geometry.component';
 import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
@@ -75,10 +74,10 @@ export const withGeometryResize = (board: PlaitBoard) => {
             }
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
-                DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path);
+                DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);
             } else {
                 points = normalizeShapePoints(points);
-                Transforms.setNode(board, { points }, resizeRef.path);
+                Transforms.setNode(board, { points }, resizeRef.path as Path);
             }
         }
     };
