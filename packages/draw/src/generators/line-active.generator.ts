@@ -9,10 +9,11 @@ import {
 } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR } from '@plait/common';
-import { getCurvePoints, isResizeMiddleIndex } from '../utils/line/line-basic';
+import { getCurvePoints } from '../utils/line/line-basic';
 import { DefaultGeometryActiveStyle } from '../constants';
-import { getElbowPoints, getNextElbowLinePoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
-import { createAddHandle, createUpdateHandle, getHitPointIndex } from '../utils/position/line';
+import { getElbowPoints, getNextKeyPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
+import { getHitPointIndex } from '../utils/position/line';
+import { createAddHandle, createUpdateHandle, isResizeMiddleIndex } from '../utils/line/line-resize';
 
 export interface ActiveData {
     selected: boolean;
@@ -40,7 +41,7 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
             let elbowLineKeyPoints: Point[] = [];
             if (element.shape === LineShape.elbow) {
                 updatePoints = points.slice(0, 1).concat(points.slice(-1));
-                elbowLineKeyPoints = getNextElbowLinePoints(this.board, element, data.linePoints);
+                elbowLineKeyPoints = getNextKeyPoints(this.board, element, data.linePoints);
             }
             updatePoints.forEach(point => {
                 const circle = createUpdateHandle(this.board, point);
