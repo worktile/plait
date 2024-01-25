@@ -1,5 +1,5 @@
-import { ResizeState } from '@plait/common';
-import { Point, isPointsOnSameLine } from '@plait/core';
+import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER, ResizeState } from '@plait/common';
+import { PlaitBoard, Point, drawCircle, isPointsOnSameLine } from '@plait/core';
 import { LINE_ALIGN_TOLERANCE } from '../../constants/line';
 
 export const alignPoints = (basePoint: Point, movingPoint: Point) => {
@@ -161,4 +161,30 @@ export function getIndexAndDeleteCountByKeyPoint(keyPoints1: Point[], keyPoints2
         index,
         deleteCount
     };
+}
+
+export function isResizeMiddleIndex(points: Point[], nextKeyPoints: Point[], middleIndex: number) {
+    const { deleteCount } = getIndexAndDeleteCountByKeyPoint(points, nextKeyPoints, middleIndex);
+    if (deleteCount > 1) {
+        return true;
+    }
+    return false;
+}
+
+export function createUpdateHandle(board: PlaitBoard, point: Point) {
+    return drawCircle(PlaitBoard.getRoughSVG(board), point, RESIZE_HANDLE_DIAMETER, {
+        stroke: '#999999',
+        strokeWidth: 1,
+        fill: '#FFF',
+        fillStyle: 'solid'
+    });
+}
+
+export function createAddHandle(board: PlaitBoard, point: Point) {
+    return drawCircle(PlaitBoard.getRoughSVG(board), point, RESIZE_HANDLE_DIAMETER, {
+        stroke: '#FFFFFF80',
+        strokeWidth: 1,
+        fill: `${PRIMARY_COLOR}80`,
+        fillStyle: 'solid'
+    });
 }

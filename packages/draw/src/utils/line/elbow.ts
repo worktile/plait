@@ -44,13 +44,14 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         );
     }
     const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
+    const nextKeyPoints = keyPoints.slice(1, keyPoints.length - 1);
     if (element.points.length === 2) {
         return simplifyOrthogonalPoints(keyPoints);
     } else {
-        const normalizedKeyPoints = simplifyOrthogonalPoints(keyPoints.slice(1, keyPoints.length - 1));
+        const simplifiedNextKeyPoints = simplifyOrthogonalPoints(nextKeyPoints);
         const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
-        dataPoints.splice(0, 1, normalizedKeyPoints[0]);
-        dataPoints.splice(-1, 1, normalizedKeyPoints[normalizedKeyPoints.length - 1]);
+        dataPoints.splice(0, 1, simplifiedNextKeyPoints[0]);
+        dataPoints.splice(-1, 1, simplifiedNextKeyPoints[simplifiedNextKeyPoints.length - 1]);
         const renderPoints: Point[] = [keyPoints[0]];
 
         // adjust first custom point
@@ -60,10 +61,10 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         const thirdPoint = dataPoints[2];
         const isStraightWithPreviousPoint = isPointsOnSameLine([firstPoint, secondPoint]);
         if (!isStraightWithPreviousPoint) {
-            const midElbowPoints = getMidElbowPoints(normalizedKeyPoints, firstPoint, secondPoint);
-            if (midElbowPoints.length === 0) {
+            const midKeyPoints = getMidKeyPoints(simplifiedNextKeyPoints, firstPoint, secondPoint);
+            if (midKeyPoints.length === 0) {
                 const segment = [secondPoint, thirdPoint] as [Point, Point];
-                const parallelSegments = findOrthogonalParallelSegments(segment, normalizedKeyPoints);
+                const parallelSegments = findOrthogonalParallelSegments(segment, simplifiedNextKeyPoints);
                 const referenceSegment = findReferenceSegment(board, segment, parallelSegments, sourceRectangle, targetRectangle);
                 if (referenceSegment) {
                     dataPoints.splice(targetIndex, 2, ...referenceSegment);
@@ -84,20 +85,20 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             let nextPoint = dataPoints[index + 1];
             const isStraight = isPointsOnSameLine([currentPoint, nextPoint]);
             if (!isStraight) {
-                const midElbowPoints = getMidElbowPoints(normalizedKeyPoints, currentPoint, nextPoint);
-                if (midElbowPoints.length) {
+                const midKeyPoints = getMidKeyPoints(simplifiedNextKeyPoints, currentPoint, nextPoint);
+                if (midKeyPoints.length) {
                     renderPoints.push(currentPoint);
-                    renderPoints.push(...midElbowPoints);
+                    renderPoints.push(...midKeyPoints);
                 } else {
                     const segment = [previousPoint, currentPoint] as [Point, Point];
-                    const parallelSegments = findOrthogonalParallelSegments(segment, normalizedKeyPoints);
+                    const parallelSegments = findOrthogonalParallelSegments(segment, simplifiedNextKeyPoints);
                     const referenceSegment = findReferenceSegment(board, segment, parallelSegments, sourceRectangle, targetRectangle);
                     if (referenceSegment) {
                         const newCurrentPoint = referenceSegment[1];
                         const isNewStraight = isPointsOnSameLine([newCurrentPoint, nextPoint]);
                         renderPoints.push(newCurrentPoint);
                         if (!isNewStraight) {
-                            const newMidElbowPoints = getMidElbowPoints(normalizedKeyPoints, newCurrentPoint, nextPoint);
+                            const newMidElbowPoints = getMidKeyPoints(simplifiedNextKeyPoints, newCurrentPoint, nextPoint);
                             if (newMidElbowPoints && newMidElbowPoints.length > 0) {
                                 renderPoints.push(...newMidElbowPoints);
                             } else {
@@ -173,21 +174,21 @@ const createFakeElement = (startPoint: Point, vector: Vector) => {
     return createGeometryElement(BasicShapes.rectangle, points, '');
 };
 
-export function getMidElbowPoints(normalizedKeyPoints: Point[], startPoint: Point, endPoint: Point) {
+export function getMidKeyPoints(simplifiedNextKeyPoints: Point[], startPoint: Point, endPoint: Point) {
     let midElbowPoints: Point[] = [];
     let startPointIndex = -1;
     let endPointIndex = -1;
-    for (let i = 0; i < normalizedKeyPoints.length; i++) {
-        if (isPointsOnSameLine([normalizedKeyPoints[i], startPoint])) {
+    for (let i = 0; i < simplifiedNextKeyPoints.length; i++) {
+        if (isPointsOnSameLine([simplifiedNextKeyPoints[i], startPoint])) {
             startPointIndex = i;
         }
-        if (startPointIndex > -1 && isPointsOnSameLine([normalizedKeyPoints[i], endPoint])) {
+        if (startPointIndex > -1 && isPointsOnSameLine([simplifiedNextKeyPoints[i], endPoint])) {
             endPointIndex = i;
             break;
         }
     }
     if (startPointIndex > -1 && endPointIndex > -1) {
-        midElbowPoints = normalizedKeyPoints.slice(startPointIndex, endPointIndex + 1);
+        midElbowPoints = simplifiedNextKeyPoints.slice(startPointIndex, endPointIndex + 1);
     }
     return midElbowPoints;
 }
@@ -235,11 +236,10 @@ function findReferenceSegment(
     return undefined;
 }
 
-export function getNextElbowLinePoints(board: PlaitBoard, element: PlaitLine, pointsOnElbow?: Point[]) {
-    let nextElbowKeyPoints = pointsOnElbow ?? getElbowPoints(board, element);
+export function getNextKeyPoints(board: PlaitBoard, element: PlaitLine, keyPoints?: Point[]) {
+    let newKeyPoints = keyPoints ?? getElbowPoints(board, element);
     const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
-    nextElbowKeyPoints.splice(0, 1, nextSourcePoint);
-    nextElbowKeyPoints.splice(-1, 1, nextTargetPoint);
-    nextElbowKeyPoints = removeDuplicatePoints(nextElbowKeyPoints);
-    return nextElbowKeyPoints;
+    newKeyPoints.splice(0, 1, nextSourcePoint);
+    newKeyPoints.splice(-1, 1, nextTargetPoint);
+    return removeDuplicatePoints(newKeyPoints);
 }

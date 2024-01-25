@@ -6,7 +6,7 @@ import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineHandle, LineShape, PlaitLine } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
-import { getElbowPoints, getNextElbowLinePoints } from '../utils/line/elbow';
+import { getElbowPoints, getNextKeyPoints } from '../utils/line/elbow';
 import { alignElbowSegment, alignPoints, getIndexAndDeleteCountByKeyPoint, getResizeReferencePoints } from '../utils/line/line-resize';
 import { getConnectionByNearestPoint, getLinePoints } from '../utils/line/line-basic';
 
@@ -47,7 +47,7 @@ export const withLineResize = (board: PlaitBoard) => {
                 const pointsOnElbow = getElbowPoints(board, resizeRef.element);
                 elbowSourcePoint = pointsOnElbow[0];
                 elbowTargetPoint = pointsOnElbow[pointsOnElbow.length - 1];
-                elbowNextKeyPoints = getNextElbowLinePoints(board, resizeRef.element, pointsOnElbow);
+                elbowNextKeyPoints = getNextKeyPoints(board, resizeRef.element, pointsOnElbow);
 
                 const drawPoints: Point[] = [...points].slice(1, points.length - 1);
                 const value = getIndexAndDeleteCountByKeyPoint(drawPoints, elbowNextKeyPoints, handleIndex);

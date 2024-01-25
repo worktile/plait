@@ -272,11 +272,3 @@ function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
     maskTargetFillRect.setAttribute('fill', 'none');
     return { mask, maskTargetFillRect };
 }
-
-export function isResizeMiddleIndex(points: Point[], nextKeyPoints: Point[], middleIndex: number) {
-    const { deleteCount } = getIndexAndDeleteCountByKeyPoint(points, nextKeyPoints, middleIndex);
-    if (deleteCount > 1) {
-        return true;
-    }
-    return false;
-}
