@@ -5,11 +5,6 @@ import { getEngine } from '../../engines';
 import { PlaitImage } from '../../interfaces/image';
 import { getShape } from '../shape';
 
-export const getHitGeometryResizeHandleRef = (board: PlaitBoard, element: PlaitGeometry | PlaitImage, point: Point) => {
-    const rectangle = getRectangleByPoints(element.points);
-    return getHitRectangleResizeHandleRef(board, rectangle, point);
-};
-
 export const getHitRectangleResizeHandleRef = (board: PlaitBoard, rectangle: RectangleClient, point: Point) => {
     const resizeHandleRefs = getRectangleResizeHandleRefs(rectangle, RESIZE_HANDLE_DIAMETER);
     const result = resizeHandleRefs.find(resizeHandleRef => {

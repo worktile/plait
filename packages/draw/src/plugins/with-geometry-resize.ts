@@ -1,22 +1,21 @@
 import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
-    ResizeHandle,
     ResizeRef,
     ResizeState,
     WithResizeOptions,
     getFirstTextManage,
-    getRectangleByPoints,
     isCornerHandle,
     normalizeShapePoints,
     withResize
 } from '@plait/common';
 import { getSelectedGeometryElements, getSelectedImageElements } from '../utils/selected';
-import { getHitGeometryResizeHandleRef } from '../utils/position/geometry';
 import { DrawTransforms } from '../transforms';
 import { GeometryComponent } from '../geometry.component';
 import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
+import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
+import { getResizeOriginAndZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
 
 export const withGeometryResize = (board: PlaitBoard) => {
     const options: WithResizeOptions<PlaitGeometry | PlaitImage> = {
@@ -32,46 +31,26 @@ export const withGeometryResize = (board: PlaitBoard) => {
             const target = selectedElements[0];
             const targetComponent = PlaitElement.getComponent(selectedElements[0]) as GeometryComponent;
             if (targetComponent.activeGenerator.hasResizeHandle) {
-                const handleRef = getHitGeometryResizeHandleRef(board, target, point);
+                const rectangle = board.getRectangle(target) as RectangleClient;
+                const handleRef = getHitRectangleResizeHandleRef(board, rectangle, point);
                 if (handleRef) {
                     return {
                         element: target,
                         handle: handleRef.handle,
-                        cursorClass: handleRef.cursorClass
+                        cursorClass: handleRef.cursorClass,
+                        rectangle
                     };
                 }
             }
             return null;
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
-            let points: [Point, Point] = [...resizeRef.element.points];
-            const rectangle = resizeRef.rectangle ? resizeRef.rectangle : getRectangleByPoints(resizeRef.element.points);
-            const ratio = rectangle.height / rectangle.width;
-            const cornerHandle = isCornerHandle(board, resizeRef.handle);
-            points = getPointsByResizeHandle(resizeState.endPoint, resizeRef.element.points, resizeRef.handle);
-            if ((resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element)) && cornerHandle) {
-                const rectangle = getRectangleByPoints(points);
-                const factor = points[0][1] > points[1][1] ? 1 : -1;
-                const height = rectangle.width * ratio * factor;
-                points = [[resizeState.endPoint[0], points[1][1] + height], points[1]];
-            }
-            if ((resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element)) && !cornerHandle) {
-                const rectangle = getRectangleByPoints(points);
-                if (resizeRef.handle === ResizeHandle.n || resizeRef.handle === ResizeHandle.s) {
-                    const newWidth = rectangle.height / ratio;
-                    const offset = (newWidth - rectangle.width) / 2;
-                    const newRectangle = RectangleClient.expand(rectangle, offset, 0);
-                    const cornerPoints = RectangleClient.getCornerPoints(newRectangle);
-                    points = [cornerPoints[0], cornerPoints[2]];
-                }
-                if (resizeRef.handle === ResizeHandle.e || resizeRef.handle === ResizeHandle.w) {
-                    const newHeight = rectangle.width * ratio;
-                    const offset = (newHeight - rectangle.height) / 2;
-                    const newRectangle = RectangleClient.expand(rectangle, 0, offset);
-                    const cornerPoints = RectangleClient.getCornerPoints(newRectangle);
-                    points = [cornerPoints[0], cornerPoints[2]];
-                }
-            }
+            const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
+            const isMaintainAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
+            const result = getResizeOriginAndZoom(board, resizeRef, resizeState, isResizeFromCorner, isMaintainAspectRatio);
+            let points = resizeRef.element.points.map(p => {
+                return movePointByZoomAndOriginPoint(p, result.originPoint, result.xZoom, result.yZoom);
+            }) as [Point, Point];
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);
@@ -85,33 +64,4 @@ export const withGeometryResize = (board: PlaitBoard) => {
     withResize<PlaitGeometry | PlaitImage>(board, options);
 
     return board;
-};
-
-const getPointsByResizeHandle = (movingPoint: Point, elementPoints: Point[], handle: ResizeHandle): [Point, Point] => {
-    switch (handle) {
-        case ResizeHandle.nw: {
-            return [movingPoint, elementPoints[1]];
-        }
-        case ResizeHandle.ne: {
-            return [movingPoint, [elementPoints[0][0], elementPoints[1][1]]];
-        }
-        case ResizeHandle.se: {
-            return [movingPoint, elementPoints[0]];
-        }
-        case ResizeHandle.sw: {
-            return [movingPoint, [elementPoints[1][0], elementPoints[0][1]]];
-        }
-        case ResizeHandle.n: {
-            return [[elementPoints[0][0], movingPoint[1]], elementPoints[1]];
-        }
-        case ResizeHandle.s: {
-            return [elementPoints[0], [elementPoints[1][0], movingPoint[1]]];
-        }
-        case ResizeHandle.w: {
-            return [[movingPoint[0], elementPoints[0][1]], elementPoints[1]];
-        }
-        default: {
-            return [elementPoints[0], [movingPoint[0], elementPoints[1][1]]];
-        }
-    }
 };

@@ -17,7 +17,7 @@ import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 
-export function withSelectionResize(board: PlaitBoard) {
+export function withDrawResize(board: PlaitBoard) {
     const { afterChange } = board;
 
     const options: WithResizeOptions<PlaitDrawElement[]> = {
@@ -41,51 +41,13 @@ export function withSelectionResize(board: PlaitBoard) {
             return null;
         },
         onResize: (resizeRef: ResizeRef<PlaitDrawElement[]>, resizeState: ResizeState) => {
-            const handleIndex = getIndexByResizeHandle(resizeRef.handle);
-            const symmetricHandleIndex = getSymmetricHandleIndex(board, handleIndex);
-            const resizeOriginPoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, symmetricHandleIndex);
-            const resizeHandlePoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, handleIndex);
-            const unitVector = getUnitVectorByPointAndPoint(resizeOriginPoint, resizeHandlePoint);
-            const startPoint = resizeState.startPoint as Point;
-            let endPoint = resizeState.endPoint as Point;
-            let offsetX = Point.getOffsetX(startPoint, endPoint);
-            let xZoom = 0;
-            let yZoom = 0;
             const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
             const isMaintainAspectRatio = resizeState.isShift || isResizeFromCorner;
-            if (isResizeFromCorner) {
-                endPoint = getPointByUnitVectorAndVectorComponent(startPoint, unitVector, offsetX, true);
-                let normalizedOffsetX = Point.getOffsetX(startPoint, endPoint);
-                let normalizedOffsetY = Point.getOffsetY(startPoint, endPoint);
-                xZoom = normalizedOffsetX / (resizeHandlePoint[0] - resizeOriginPoint[0]);
-                yZoom = normalizedOffsetY / (resizeHandlePoint[1] - resizeOriginPoint[1]);
-            } else {
-                const isHorizontal = Point.isHorizontalAlign(resizeOriginPoint, resizeHandlePoint, 0.1) || false;
-                let normalizedOffset = isHorizontal ? Point.getOffsetX(startPoint, endPoint) : Point.getOffsetY(startPoint, endPoint);
-                let benchmarkOffset = isHorizontal
-                    ? resizeHandlePoint[0] - resizeOriginPoint[0]
-                    : resizeHandlePoint[1] - resizeOriginPoint[1];
-                const zoom = normalizedOffset / benchmarkOffset;
-                if (resizeState.isShift) {
-                    xZoom = zoom;
-                    yZoom = zoom;
-                } else {
-                    if (isHorizontal) {
-                        xZoom = zoom;
-                    } else {
-                        yZoom = zoom;
-                    }
-                }
-            }
-            const movePointByZoomAndOriginPoint = (p: Point) => {
-                const offsetX = (p[0] - resizeOriginPoint[0]) * xZoom;
-                const offsetY = (p[1] - resizeOriginPoint[1]) * yZoom;
-                return [p[0] + offsetX, p[1] + offsetY] as Point;
-            };
+            const result = getResizeOriginAndZoom(board, resizeRef, resizeState, isResizeFromCorner, isMaintainAspectRatio);
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
                 let points = target.points.map(p => {
-                    return movePointByZoomAndOriginPoint(p);
+                    return movePointByZoomAndOriginPoint(p, result.originPoint, result.xZoom, result.yZoom);
                 });
                 if (PlaitDrawElement.isGeometry(target)) {
                     const { height: textHeight } = getFirstTextManage(target).getSize();
@@ -99,7 +61,7 @@ export function withSelectionResize(board: PlaitBoard) {
                         // The image element does not follow the resize, but moves based on the center point.
                         const targetRectangle = getRectangleByPoints(target.points);
                         const centerPoint = RectangleClient.getCenterPoint(targetRectangle);
-                        const newCenterPoint = movePointByZoomAndOriginPoint(centerPoint);
+                        const newCenterPoint = movePointByZoomAndOriginPoint(centerPoint, result.originPoint, result.xZoom, result.yZoom);
                         const newTargetRectangle = RectangleClient.createRectangleByCenterPoint(
                             newCenterPoint,
                             targetRectangle.width,
@@ -120,3 +82,53 @@ export function withSelectionResize(board: PlaitBoard) {
 
     return board;
 }
+
+export const getResizeOriginAndZoom = (
+    board: PlaitBoard,
+    resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
+    resizeState: ResizeState,
+    isResizeFromCorner: boolean,
+    isMaintainAspectRatio: boolean
+) => {
+    const handleIndex = getIndexByResizeHandle(resizeRef.handle);
+    const symmetricHandleIndex = getSymmetricHandleIndex(board, handleIndex);
+    const resizeOriginPoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, symmetricHandleIndex);
+    const resizeHandlePoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, handleIndex);
+    const unitVector = getUnitVectorByPointAndPoint(resizeOriginPoint, resizeHandlePoint);
+    const startPoint = resizeState.startPoint;
+    let endPoint = resizeState.endPoint;
+    let offsetX = Point.getOffsetX(startPoint, endPoint);
+    let xZoom = 0;
+    let yZoom = 0;
+    if (isResizeFromCorner) {
+        if (isMaintainAspectRatio) {
+            endPoint = getPointByUnitVectorAndVectorComponent(startPoint, unitVector, offsetX, true);
+        }
+        let normalizedOffsetX = Point.getOffsetX(startPoint, endPoint);
+        let normalizedOffsetY = Point.getOffsetY(startPoint, endPoint);
+        xZoom = normalizedOffsetX / (resizeHandlePoint[0] - resizeOriginPoint[0]);
+        yZoom = normalizedOffsetY / (resizeHandlePoint[1] - resizeOriginPoint[1]);
+    } else {
+        const isHorizontal = Point.isHorizontalAlign(resizeOriginPoint, resizeHandlePoint, 0.1) || false;
+        let normalizedOffset = isHorizontal ? Point.getOffsetX(startPoint, endPoint) : Point.getOffsetY(startPoint, endPoint);
+        let benchmarkOffset = isHorizontal ? resizeHandlePoint[0] - resizeOriginPoint[0] : resizeHandlePoint[1] - resizeOriginPoint[1];
+        const zoom = normalizedOffset / benchmarkOffset;
+        if (resizeState.isShift) {
+            xZoom = zoom;
+            yZoom = zoom;
+        } else {
+            if (isHorizontal) {
+                xZoom = zoom;
+            } else {
+                yZoom = zoom;
+            }
+        }
+    }
+    return { xZoom, yZoom, originPoint: resizeOriginPoint };
+};
+
+export const movePointByZoomAndOriginPoint = (p: Point, resizeOriginPoint: Point, xZoom: number, yZoom: number) => {
+    const offsetX = (p[0] - resizeOriginPoint[0]) * xZoom;
+    const offsetY = (p[1] - resizeOriginPoint[1]) * yZoom;
+    return [p[0] + offsetX, p[1] + offsetY] as Point;
+};
