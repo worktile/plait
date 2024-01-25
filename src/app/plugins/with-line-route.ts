@@ -3,11 +3,13 @@ import { PlaitBoard, Point, RectangleClient, RgbaToHEX, createG, getElementById 
 import { PlaitDrawElement, PlaitGeometry, getLineHandleRefPair, getStrokeWidthByElement } from '@plait/draw';
 import {
     AStar,
+    ElbowLineRouteOptions,
     PriorityQueue,
     createGraph,
     getGraphPoints,
     getNextPoint,
     getRectangleByPoints,
+    isSourceAndTargetIntersect,
     reduceRouteMargin,
     routeAdjust
 } from '@plait/common';
@@ -115,11 +117,17 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
         g.append(nextSourceG);
         g.append(nextTargetG);
 
-        const isIntersect =
-            RectangleClient.isPointInRectangle(targetRectangle, sourcePoint) ||
-            RectangleClient.isPointInRectangle(targetOuterRectangle, nextSourcePoint) ||
-            RectangleClient.isPointInRectangle(sourceOuterRectangle, nextTargetPoint) ||
-            RectangleClient.isPointInRectangle(sourceRectangle, targetPoint);
+        const options: ElbowLineRouteOptions = {
+            sourcePoint,
+            nextSourcePoint,
+            sourceRectangle,
+            sourceOuterRectangle,
+            targetPoint,
+            nextTargetPoint,
+            targetRectangle,
+            targetOuterRectangle
+        };
+        const isIntersect = isSourceAndTargetIntersect(options);
         if (!isIntersect) {
             const options = {
                 sourcePoint,

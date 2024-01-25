@@ -163,13 +163,13 @@ export const PlaitBoard = {
         return BOARD_TO_COMPONENT.get(board) as BoardComponentInterface;
     },
     getBoardContainer(board: PlaitBoard) {
-        return PlaitBoard.getComponent(board).nativeElement;
+        return BOARD_TO_ELEMENT_HOST.get(board)?.container as HTMLElement;
     },
     getRectangle(board: PlaitBoard) {
         return getRectangleByElements(board, board.children, true);
     },
     getViewportContainer(board: PlaitBoard) {
-        return PlaitBoard.getHost(board).parentElement as HTMLElement;
+        return BOARD_TO_ELEMENT_HOST.get(board)?.viewportContainer as HTMLElement;
     },
     isFocus(board: PlaitBoard) {
         return !!board.selection;

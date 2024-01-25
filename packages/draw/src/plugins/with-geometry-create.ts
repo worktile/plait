@@ -7,7 +7,6 @@ import {
     getDefaultGeometryPoints,
     getTextShapeProperty,
     getMemorizedLatestByPointer,
-    getPointsByCenterPoint,
     getTextRectangle,
     insertElement
 } from '../utils';
@@ -46,7 +45,9 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
             const memorizedLatest = getMemorizedLatestByPointer(pointer);
             if (pointer === BasicShapes.text) {
                 const property = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']);
-                const points = getPointsByCenterPoint(movingPoint, property.width, property.height);
+                const points = RectangleClient.getPoints(
+                    RectangleClient.createRectangleByCenterPoint(movingPoint, property.width, property.height)
+                );
                 temporaryElement = createTextElement(board, points);
                 if (!fakeCreateTextRef) {
                     const textManage = new TextManage(board, PlaitBoard.getComponent(board).viewContainerRef, {
@@ -134,7 +135,9 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             if (pointer === BasicShapes.text) {
                 const memorizedLatest = getMemorizedLatestByPointer(pointer);
                 const property = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']);
-                const points = getPointsByCenterPoint(point, property.width, property.height);
+                const points = RectangleClient.getPoints(
+                    RectangleClient.createRectangleByCenterPoint(point, property.width, property.height)
+                );
                 const textElement = createTextElement(board, points);
                 insertElement(board, textElement);
                 start = null;

@@ -1,4 +1,4 @@
-import { Direction, Point, distanceBetweenPointAndPoint } from '@plait/core';
+import { Direction, Point, distanceBetweenPointAndPoint, isHorizontalSegment, isVerticalSegment } from '@plait/core';
 import { getDirectionFactor } from './direction';
 import { isPointOnSegment } from './math';
 
@@ -172,6 +172,22 @@ export const removeDuplicatePoints = (points: Point[]) => {
     });
     return newArray;
 };
+
+export function simplifyOrthogonalPoints(points: Point[]) {
+    if (points.length <= 2) return points;
+    let simplifiedPoints: Point[] = [points[0]];
+    for (let i = 1; i < points.length - 1; i++) {
+        const previous = points[i - 1];
+        const current = points[i];
+        const next = points[i + 1];
+        const isTurn = !(isHorizontalSegment([previous, current, next]) || isVerticalSegment([previous, current, next]));
+        if (isTurn) {
+            simplifiedPoints.push(current);
+        }
+    }
+    simplifiedPoints.push(points[points.length - 1]);
+    return simplifiedPoints;
+}
 
 export const getExtendPoint = (source: Point, target: Point, extendDistance: number): Point => {
     const distance = distanceBetweenPointAndPoint(...source, ...target);

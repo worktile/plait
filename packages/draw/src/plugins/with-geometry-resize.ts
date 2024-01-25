@@ -7,6 +7,7 @@ import {
     WithResizeOptions,
     getFirstTextManage,
     getRectangleByPoints,
+    isCornerHandle,
     normalizeShapePoints,
     withResize
 } from '@plait/common';
@@ -19,20 +20,6 @@ import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 
 export const withGeometryResize = (board: PlaitBoard) => {
-    const { keyDown, keyUp } = board;
-
-    let isShift = false;
-
-    board.keyDown = (event: KeyboardEvent) => {
-        isShift = isKeyHotkey('shift', event);
-        keyDown(event);
-    };
-
-    board.keyUp = (event: KeyboardEvent) => {
-        isShift = false;
-        keyUp(event);
-    };
-
     const options: WithResizeOptions<PlaitGeometry | PlaitImage> = {
         key: 'draw-geometry',
         canResize: () => {
@@ -59,17 +46,17 @@ export const withGeometryResize = (board: PlaitBoard) => {
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
             let points: [Point, Point] = [...resizeRef.element.points];
-            const rectangle = getRectangleByPoints(resizeRef.element.points);
+            const rectangle = resizeRef.rectangle ? resizeRef.rectangle : getRectangleByPoints(resizeRef.element.points);
             const ratio = rectangle.height / rectangle.width;
-            const isCornerHandle = [ResizeHandle.nw, ResizeHandle.ne, ResizeHandle.se, ResizeHandle.sw].includes(resizeRef.handle);
-            points = getPointsByResizeHandle(resizeState.endTransformPoint, resizeRef.element.points, resizeRef.handle);
-            if ((isShift || PlaitDrawElement.isImage(resizeRef.element)) && isCornerHandle) {
+            const cornerHandle = isCornerHandle(board, resizeRef.handle);
+            points = getPointsByResizeHandle(resizeState.endPoint, resizeRef.element.points, resizeRef.handle);
+            if ((resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element)) && cornerHandle) {
                 const rectangle = getRectangleByPoints(points);
                 const factor = points[0][1] > points[1][1] ? 1 : -1;
                 const height = rectangle.width * ratio * factor;
-                points = [[resizeState.endTransformPoint[0], points[1][1] + height], points[1]];
+                points = [[resizeState.endPoint[0], points[1][1] + height], points[1]];
             }
-            if ((isShift || PlaitDrawElement.isImage(resizeRef.element)) && !isCornerHandle) {
+            if ((resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element)) && !cornerHandle) {
                 const rectangle = getRectangleByPoints(points);
                 if (resizeRef.handle === ResizeHandle.n || resizeRef.handle === ResizeHandle.s) {
                     const newWidth = rectangle.height / ratio;

@@ -7,7 +7,7 @@ import { PlaitElement } from '../interfaces/element';
 import { getHitElementByPoint, getSelectedElements } from '../utils/selected-element';
 import { PlaitNode } from '../interfaces/node';
 import { throttleRAF } from '../utils/common';
-import { cacheMovingElements, getMovingElements, removeMovingElements } from '../utils/moving-element';
+import { cacheMovingElements, getMovingElements, isMovingElements, removeMovingElements } from '../utils/moving-element';
 import { MERGING } from '../interfaces/history';
 import {
     isPreventTouchMove,
@@ -36,25 +36,31 @@ export function withMoving(board: PlaitBoard) {
     let activeElementsRectangle: RectangleClient | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
+        if (
+            PlaitBoard.isReadonly(board) ||
+            !PlaitBoard.isPointer(board, PlaitPointerType.selection) ||
+            isPreventTouchMove(board) ||
+            !isMainPointer(event)
+        ) {
+            pointerDown(event);
+        }
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const targetElements = getTargetElements(board);
-        const hitElement = getHitElementByPoint(board, point);
-        if (
-            !PlaitBoard.isReadonly(board) &&
-            PlaitBoard.isPointer(board, PlaitPointerType.selection) &&
-            (targetElements.length || hitElement) &&
-            !isPreventTouchMove(board) &&
-            isMainPointer(event)
-        ) {
+        const targetRectangle = targetElements.length > 0 && getRectangleByElements(board, targetElements, false);
+        const isInTargetRectangle = targetRectangle && RectangleClient.isPointInRectangle(targetRectangle, point);
+        if (isInTargetRectangle) {
             startPoint = point;
-            if (hitElement && targetElements.includes(hitElement)) {
-                activeElements = targetElements;
-            } else if (hitElement && board.isMovable(hitElement)) {
-                activeElements = [hitElement];
-                addSelectionWithTemporaryElements(board, []);
-            }
-            if (activeElements.length > 0) {
-                preventTouchMove(board, event, true);
+            activeElements = targetElements;
+            preventTouchMove(board, event, true);
+            activeElementsRectangle = getRectangleByElements(board, activeElements, true);
+        } else {
+            const targetElement = getHitElementByPoint(board, point, (el) => board.isMovable(el));
+            if (targetElement) {
+                startPoint = point;
+                activeElements = [targetElement];
+                if (targetElements.length > 0) {
+                    addSelectionWithTemporaryElements(board, []);
+                }
                 activeElementsRectangle = getRectangleByElements(board, activeElements, true);
             }
         }
@@ -128,7 +134,9 @@ export function withMoving(board: PlaitBoard) {
         offsetX = 0;
         offsetY = 0;
         activeElements = [];
-        removeMovingElements(board);
+        if (isMovingElements(board)) {
+            removeMovingElements(board);
+        }
         MERGING.set(board, false);
         PlaitBoard.getBoardContainer(board).classList.remove('element-moving');
     }

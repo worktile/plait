@@ -5,8 +5,12 @@ import { BOARD_TO_SELECTED_ELEMENT } from './weak-maps';
 import { Selection } from '../interfaces/selection';
 import { PlaitElement } from '../interfaces/element';
 import { Point } from '../interfaces/point';
-import { PlaitOptionsBoard, PlaitPluginKey, WithPluginOptions } from '../public-api';
 import { sortElements } from './position';
+import { RectangleClient } from '../interfaces/rectangle-client';
+import { getRectangleByElements } from './element';
+import { PlaitOptionsBoard } from '../plugins/with-options';
+import { PlaitPluginKey } from '../interfaces/plugin-key';
+import { WithPluginOptions } from '../plugins/with-selection';
 
 export const getHitElementsBySelection = (
     board: PlaitBoard,
@@ -68,6 +72,17 @@ export const getHitElementByPoint = (
         true
     );
     return hitElement || rectangleHitElement;
+};
+
+export const getHitSelectedElements = (board: PlaitBoard, point: Point) => {
+    const selectedElements = getSelectedElements(board);
+    const targetRectangle = selectedElements.length > 0 && getRectangleByElements(board, selectedElements, false);
+    const isInTargetRectangle = targetRectangle && RectangleClient.isPointInRectangle(targetRectangle, point);
+    if (isInTargetRectangle) {
+        return selectedElements;
+    } else {
+        return [];
+    }
 };
 
 export const cacheSelectedElements = (board: PlaitBoard, selectedElements: PlaitElement[]) => {

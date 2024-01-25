@@ -14,5 +14,11 @@ export const Point = {
     },
     isVerticalAlign(point?: Point, otherPoint?: Point, tolerance = 0) {
         return point && otherPoint && Math.abs(point[0] - otherPoint[0]) <= tolerance;
+    },
+    getOffsetX(point1: Point, point2: Point) {
+        return point2[0] - point1[0];
+    },
+    getOffsetY(point1: Point, point2: Point) {
+        return point2[1] - point1[1];
     }
 };

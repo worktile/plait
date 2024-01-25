@@ -3,7 +3,7 @@ export function isNullOrUndefined(value: any) {
 }
 
 /**
- * 规范 point
+ * get {x,y} point
  * @param point
  * @returns point
  */

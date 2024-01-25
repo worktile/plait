@@ -1,4 +1,11 @@
-import { generateElbowLineRoute, getNextPoint, reduceRouteMargin, getPoints } from '@plait/common';
+import {
+    ElbowLineRouteOptions,
+    generateElbowLineRoute,
+    getNextPoint,
+    getPoints,
+    getSourceAndTargetOuterRectangle,
+    isSourceAndTargetIntersect
+} from '@plait/common';
 import { Direction, Point, RectangleClient } from '@plait/core';
 
 export function getElbowPoints({
@@ -19,40 +26,23 @@ export function getElbowPoints({
     offset?: number;
 }) {
     let points: Point[] = [];
-    const { sourceOffset, targetOffset } = reduceRouteMargin(sourceRectangle, targetRectangle);
-    const sourceOuterRectangle = RectangleClient.expand(
-        sourceRectangle,
-        sourceOffset[3],
-        sourceOffset[0],
-        sourceOffset[1],
-        sourceOffset[2]
-    );
-    const targetOuterRectangle = RectangleClient.expand(
-        targetRectangle,
-        targetOffset[3],
-        targetOffset[0],
-        targetOffset[1],
-        targetOffset[2]
-    );
+    const { sourceOuterRectangle, targetOuterRectangle } = getSourceAndTargetOuterRectangle(sourceRectangle, targetRectangle);
     const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, sourceDirection);
     const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, targetDirection);
 
-    const isIntersect =
-        RectangleClient.isPointInRectangle(targetRectangle, sourcePoint) ||
-        RectangleClient.isPointInRectangle(targetOuterRectangle, nextSourcePoint) ||
-        RectangleClient.isPointInRectangle(sourceOuterRectangle, nextTargetPoint) ||
-        RectangleClient.isPointInRectangle(sourceRectangle, targetPoint);
+    const params: ElbowLineRouteOptions = {
+        sourcePoint,
+        nextSourcePoint,
+        sourceRectangle,
+        sourceOuterRectangle,
+        targetPoint,
+        nextTargetPoint,
+        targetRectangle,
+        targetOuterRectangle
+    };
+    const isIntersect = isSourceAndTargetIntersect(params);
     if (!isIntersect) {
-        points = generateElbowLineRoute({
-            sourcePoint,
-            nextSourcePoint,
-            sourceRectangle,
-            sourceOuterRectangle,
-            targetPoint,
-            nextTargetPoint,
-            targetRectangle,
-            targetOuterRectangle
-        });
+        points = generateElbowLineRoute(params);
     } else {
         points = getPoints(sourcePoint, sourceDirection, targetPoint, targetDirection, offset);
     }
