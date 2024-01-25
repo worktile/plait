@@ -6,7 +6,7 @@ import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineHandle, LineShape, PlaitLine } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
-import { getElbowPoints, getNextElbowKeyPoints } from '../utils/line/elbow';
+import { getElbowPoints, getNextElbowLinePoints } from '../utils/line/elbow';
 import { alignElbowSegment, alignPoints, getIndexAndDeleteCountByKeyPoint, getResizeReferencePoints } from '../utils/line/line-resize';
 import { getConnectionByNearestPoint, getLinePoints } from '../utils/line/line-basic';
 
@@ -47,7 +47,7 @@ export const withLineResize = (board: PlaitBoard) => {
                 const pointsOnElbow = getElbowPoints(board, resizeRef.element);
                 elbowSourcePoint = pointsOnElbow[0];
                 elbowTargetPoint = pointsOnElbow[pointsOnElbow.length - 1];
-                nextElbowKeyPoints = getNextElbowKeyPoints(board, resizeRef.element, pointsOnElbow);
+                nextElbowKeyPoints = getNextElbowLinePoints(board, resizeRef.element, pointsOnElbow);
 
                 const drawPoints: Point[] = [...points].slice(1, points.length - 1);
                 const value = getIndexAndDeleteCountByKeyPoint(drawPoints, nextElbowKeyPoints, handleIndex);
@@ -71,26 +71,33 @@ export const withLineResize = (board: PlaitBoard) => {
                     object.connection = undefined;
                     object.boundId = undefined;
                 }
-            }
-            if (resizeRef.element.shape === LineShape.elbow) {
-                if (nextElbowKeyPoints && elbowSourcePoint && elbowTargetPoint) {
-                    const referencePoints = getResizeReferencePoints(nextElbowKeyPoints, elbowSourcePoint, elbowTargetPoint, handleIndex);
-                    const startPoint = nextElbowKeyPoints[handleIndex];
-                    const endPoint = nextElbowKeyPoints[handleIndex + 1];
-                    const [newStartPoint, newEndPoint] = alignElbowSegment(startPoint, endPoint, resizeState, referencePoints);
-                    const drawPoints: Point[] = [...points].slice(1, points.length - 1);
-                    if (elbowLineIndex !== null && elbowLineDeleteCount !== null) {
-                        drawPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
-                        points = [elbowSourcePoint, ...drawPoints, elbowTargetPoint];
+            } else {
+                if (resizeRef.element.shape === LineShape.elbow) {
+                    if (nextElbowKeyPoints && elbowSourcePoint && elbowTargetPoint) {
+                        const referencePoints = getResizeReferencePoints(
+                            nextElbowKeyPoints,
+                            elbowSourcePoint,
+                            elbowTargetPoint,
+                            handleIndex
+                        );
+                        const startPoint = nextElbowKeyPoints[handleIndex];
+                        const endPoint = nextElbowKeyPoints[handleIndex + 1];
+                        const [newStartPoint, newEndPoint] = alignElbowSegment(startPoint, endPoint, resizeState, referencePoints);
+                        const drawPoints: Point[] = [...points].slice(1, points.length - 1);
+                        if (elbowLineIndex !== null && elbowLineDeleteCount !== null) {
+                            drawPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
+                            points = [elbowSourcePoint, ...drawPoints, elbowTargetPoint];
+                        }
+                    }
+                } else {
+                    if (resizeRef.handle === LineResizeHandle.addHandle) {
+                        points.splice(handleIndex + 1, 0, resizeState.endPoint);
+                    } else {
+                        points[handleIndex] = resizeState.endPoint;
                     }
                 }
-            } else {
-                if (resizeRef.handle === LineResizeHandle.addHandle) {
-                    points.splice(handleIndex + 1, 0, resizeState.endPoint);
-                } else {
-                    points[handleIndex] = resizeState.endPoint;
-                }
             }
+
             if (!hitElement) {
                 handleIndex = resizeRef.handle === LineResizeHandle.addHandle ? handleIndex + 1 : handleIndex;
                 const drawPoints = getLinePoints(board, resizeRef.element);

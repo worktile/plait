@@ -2,7 +2,7 @@ import { PlaitBoard, Point, RectangleClient, drawCircle } from '@plait/core';
 import { PlaitLine } from '../../interfaces';
 import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '@plait/common';
 import { getMiddlePoints } from '../../generators/line-active.generator';
-import { getIndexAndDeleteCountByKeyPoint, getNextElbowKeyPoints } from '../line';
+import { getIndexAndDeleteCountByKeyPoint } from '../line/line-resize';
 
 export enum LineResizeHandle {
     'source' = 'source',
@@ -49,11 +49,8 @@ export function getHitPointIndex(points: Point[], movingPoint: Point) {
     return rectangle ? rectangles.indexOf(rectangle) : -1;
 }
 
-export function isResizeMiddleIndex(board: PlaitBoard, element: PlaitLine, middleIndex: number) {
-    let points = PlaitLine.getPoints(board, element);
-    points = [...points].slice(1, points.length - 1);
-    const elbowLineKeyPoints = getNextElbowKeyPoints(board, element);
-    const { deleteCount } = getIndexAndDeleteCountByKeyPoint(points, elbowLineKeyPoints, middleIndex);
+export function isResizeMiddleIndex(points: Point[], nextElbowKeyPoints: Point[], middleIndex: number) {
+    const { deleteCount } = getIndexAndDeleteCountByKeyPoint(points, nextElbowKeyPoints, middleIndex);
     if (deleteCount > 1) {
         return true;
     }
