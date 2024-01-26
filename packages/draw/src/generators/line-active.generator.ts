@@ -8,10 +8,10 @@ import {
     isPointsOnSameLine
 } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
-import { Generator, PRIMARY_COLOR } from '@plait/common';
+import { Generator, PRIMARY_COLOR, isSourceAndTargetIntersect } from '@plait/common';
 import { getCurvePoints } from '../utils/line/line-basic';
 import { DefaultGeometryActiveStyle } from '../constants';
-import { getElbowPoints, getNextKeyPoints, getNextSourceAndTargetPoints, isElbowSourceAndTargetIntersect } from '../utils/line/elbow';
+import { getElbowLineRouteOptions, getElbowPoints, getNextKeyPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
 import { createAddHandle, createUpdateHandle, isResizeMiddleIndex } from '../utils/line';
 import { getHitPointIndex } from '../utils/position/line';
 
@@ -119,7 +119,8 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
             const middlePoint = [(points[0][0] + points[1][0]) / 2, (points[1][1] + points[1][1]) / 2] as Point;
             result.push(middlePoint);
         } else {
-            const isIntersect = isElbowSourceAndTargetIntersect(board, element);
+            const options = getElbowLineRouteOptions(board, element);
+            const isIntersect = isSourceAndTargetIntersect(options);
             if (!isIntersect) {
                 const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
                 for (let i = 0; i < pointsOnElbow.length - 1; i++) {

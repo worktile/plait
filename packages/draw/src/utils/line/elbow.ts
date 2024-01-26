@@ -15,7 +15,7 @@ import { createGeometryElement } from '../geometry';
 import { getStrokeWidthByElement } from '../style/stroke';
 import { getLineHandleRefPair } from './line-common';
 
-const getElbowLineRouteOptions = (board: PlaitBoard, element: PlaitLine, handleRefPair?: LineHandleRefPair) => {
+export const getElbowLineRouteOptions = (board: PlaitBoard, element: PlaitLine, handleRefPair?: LineHandleRefPair) => {
     handleRefPair = handleRefPair ?? getLineHandleRefPair(board, element);
     const { sourceRectangle, targetRectangle } = getSourceAndTargetRectangle(board, element, handleRefPair);
     const { sourceOuterRectangle, targetOuterRectangle } = getSourceAndTargetOuterRectangle(sourceRectangle, targetRectangle);
@@ -152,11 +152,6 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         //             sourcePoint---keyPoint1
         return simplifyOrthogonalPoints(renderPoints);
     }
-};
-
-export const isElbowSourceAndTargetIntersect = (board: PlaitBoard, element: PlaitLine) => {
-    const options = getElbowLineRouteOptions(board, element);
-    return isSourceAndTargetIntersect(options);
 };
 
 export const getNextSourceAndTargetPoints = (board: PlaitBoard, element: PlaitLine) => {

@@ -6,7 +6,7 @@ import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineHandle, LineShape, PlaitLine } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
-import { getElbowPoints, getNextKeyPoints, isElbowSourceAndTargetIntersect } from '../utils/line/elbow';
+import { getElbowLineRouteOptions, getElbowPoints, getNextKeyPoints } from '../utils/line/elbow';
 import { alignElbowSegment, alignPoints, getIndexAndDeleteCountByKeyPoint, getResizeReferencePoints } from '../utils/line/line-resize';
 import { getConnectionByNearestPoint, getLinePoints } from '../utils/line/line-basic';
 
@@ -42,7 +42,8 @@ export const withLineResize = (board: PlaitBoard) => {
         },
         beforeResize: (resizeRef: ResizeRef<PlaitLine, LineResizeHandle>) => {
             if (resizeRef.element.shape === LineShape.elbow) {
-                const isIntersect = isElbowSourceAndTargetIntersect(board, resizeRef.element);
+                const params = getElbowLineRouteOptions(board, resizeRef.element);
+                const isIntersect = isSourceAndTargetIntersect(params);
                 if (isIntersect) {
                     return;
                 }
