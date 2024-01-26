@@ -42,6 +42,8 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
         this.initializeTextManagesByElement();
     }
 
+    xxxxx: SVGGElement[] = [];
+
     ngOnInit(): void {
         this.initializeGenerator();
         this.shapeGenerator.processDrawing(this.element, this.g);
@@ -53,6 +55,25 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
         super.ngOnInit();
         this.boundedElements = this.getBoundedElements();
         this.drawText();
+
+        this.xxxxx.forEach(g => g.remove());
+        this.xxxxx = [];
+        const points = this.element.points;
+        points.forEach((p, index) => {
+            if (index === 0) {
+                return;
+            }
+            if (index === points.length - 1) {
+                return;
+            }
+            const controlPointG = PlaitBoard.getRoughSVG(this.board).circle(p[0], p[1], 8*index, {
+                stroke: '#f08c02',
+                fill: '#f08c02',
+                fillStyle: 'solid'
+            });
+            this.xxxxx.push(controlPointG);
+            PlaitBoard.getElementActiveHost(this.board).append(controlPointG);
+        });
     }
 
     getBoundedElements() {
