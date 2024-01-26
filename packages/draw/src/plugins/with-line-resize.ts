@@ -1,12 +1,12 @@
 import { Path, PlaitBoard, PlaitNode, Point } from '@plait/core';
-import { ResizeRef, ResizeState, WithResizeOptions, simplifyOrthogonalPoints, withResize } from '@plait/common';
+import { ResizeRef, ResizeState, WithResizeOptions, isSourceAndTargetIntersect, simplifyOrthogonalPoints, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineHandle, LineShape, PlaitLine } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
-import { getElbowPoints, getNextKeyPoints } from '../utils/line/elbow';
+import { getElbowPoints, getNextKeyPoints, isElbowSourceAndTargetIntersect } from '../utils/line/elbow';
 import { alignElbowSegment, alignPoints, getIndexAndDeleteCountByKeyPoint, getResizeReferencePoints } from '../utils/line/line-resize';
 import { getConnectionByNearestPoint, getLinePoints } from '../utils/line/line-basic';
 
@@ -42,6 +42,10 @@ export const withLineResize = (board: PlaitBoard) => {
         },
         beforeResize: (resizeRef: ResizeRef<PlaitLine, LineResizeHandle>) => {
             if (resizeRef.element.shape === LineShape.elbow) {
+                const isIntersect = isElbowSourceAndTargetIntersect(board, resizeRef.element);
+                if (isIntersect) {
+                    return;
+                }
                 let points: Point[] = [...resizeRef.element.points];
                 let handleIndex = resizeRef.handleIndex!;
                 const pointsOnElbow = getElbowPoints(board, resizeRef.element);

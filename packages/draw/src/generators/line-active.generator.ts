@@ -11,9 +11,9 @@ import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR } from '@plait/common';
 import { getCurvePoints } from '../utils/line/line-basic';
 import { DefaultGeometryActiveStyle } from '../constants';
-import { getElbowPoints, getNextKeyPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
+import { getElbowPoints, getNextKeyPoints, getNextSourceAndTargetPoints, isElbowSourceAndTargetIntersect } from '../utils/line/elbow';
+import { createAddHandle, createUpdateHandle, isResizeMiddleIndex } from '../utils/line';
 import { getHitPointIndex } from '../utils/position/line';
-import { createAddHandle, createUpdateHandle, isResizeMiddleIndex } from '../utils/line/line-resize';
 
 export interface ActiveData {
     selected: boolean;
@@ -119,18 +119,21 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
             const middlePoint = [(points[0][0] + points[1][0]) / 2, (points[1][1] + points[1][1]) / 2] as Point;
             result.push(middlePoint);
         } else {
-            const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
-            for (let i = 0; i < pointsOnElbow.length - 1; i++) {
-                if (
-                    (i == 0 && Point.isEquals(pointsOnElbow[i + 1], nextSourcePoint)) ||
-                    (i === pointsOnElbow.length - 2 && Point.isEquals(pointsOnElbow[pointsOnElbow.length - 2], nextTargetPoint))
-                ) {
-                    continue;
+            const isIntersect = isElbowSourceAndTargetIntersect(board, element);
+            if (!isIntersect) {
+                const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
+                for (let i = 0; i < pointsOnElbow.length - 1; i++) {
+                    if (
+                        (i == 0 && Point.isEquals(pointsOnElbow[i + 1], nextSourcePoint)) ||
+                        (i === pointsOnElbow.length - 2 && Point.isEquals(pointsOnElbow[pointsOnElbow.length - 2], nextTargetPoint))
+                    ) {
+                        continue;
+                    }
+                    const [currentX, currentY] = pointsOnElbow[i];
+                    const [nextX, nextY] = pointsOnElbow[i + 1];
+                    const middlePoint = [(currentX + nextX) / 2, (currentY + nextY) / 2] as Point;
+                    result.push(middlePoint);
                 }
-                const [currentX, currentY] = pointsOnElbow[i];
-                const [nextX, nextY] = pointsOnElbow[i + 1];
-                const middlePoint = [(currentX + nextX) / 2, (currentY + nextY) / 2] as Point;
-                result.push(middlePoint);
             }
         }
     }

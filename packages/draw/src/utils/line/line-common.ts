@@ -7,12 +7,12 @@ import {
     getOppositeDirection,
     getDirectionByPointOfRectangle
 } from '@plait/common';
-import { BasicShapes, LineHandleKey, LineHandleRef, LineMarkerType, PlaitGeometry, PlaitLine } from '../../interfaces';
+import { BasicShapes, LineHandleKey, LineHandleRef, LineHandleRefPair, LineMarkerType, PlaitGeometry, PlaitLine } from '../../interfaces';
 import { getStrokeWidthByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
 import { getShape } from '../shape';
 
-export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine) => {
+export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): LineHandleRefPair => {
     const strokeWidth = getStrokeWidthByElement(element);
     const sourceBoundElement = element.source.boundId ? getElementById<PlaitGeometry>(board, element.source.boundId) : undefined;
     const targetBoundElement = element.target.boundId ? getElementById<PlaitGeometry>(board, element.target.boundId) : undefined;

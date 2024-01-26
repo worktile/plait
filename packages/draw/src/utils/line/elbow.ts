@@ -10,20 +10,20 @@ import {
     simplifyOrthogonalPoints,
     isSourceAndTargetIntersect
 } from '@plait/common';
-import { BasicShapes, PlaitGeometry, PlaitLine } from '../../interfaces';
+import { BasicShapes, LineHandleRefPair, PlaitGeometry, PlaitLine } from '../../interfaces';
 import { createGeometryElement } from '../geometry';
 import { getStrokeWidthByElement } from '../style/stroke';
 import { getLineHandleRefPair } from './line-common';
 
-export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
-    const { sourceRectangle, targetRectangle } = getSourceAndTargetRectangle(board, element);
+const getElbowLineRouteOptions = (board: PlaitBoard, element: PlaitLine, handleRefPair?: LineHandleRefPair) => {
+    handleRefPair = handleRefPair ?? getLineHandleRefPair(board, element);
+    const { sourceRectangle, targetRectangle } = getSourceAndTargetRectangle(board, element, handleRefPair);
     const { sourceOuterRectangle, targetOuterRectangle } = getSourceAndTargetOuterRectangle(sourceRectangle, targetRectangle);
-    const handleRefPair = getLineHandleRefPair(board, element);
     const sourcePoint = handleRefPair.source.point;
     const targetPoint = handleRefPair.target.point;
     const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, handleRefPair.source.direction);
     const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, handleRefPair.target.direction);
-    const params = {
+    return {
         sourcePoint,
         nextSourcePoint,
         sourceRectangle,
@@ -33,6 +33,11 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         targetRectangle,
         targetOuterRectangle
     };
+};
+
+export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
+    const handleRefPair = getLineHandleRefPair(board, element);
+    const params = getElbowLineRouteOptions(board, element, handleRefPair);
     const isIntersect = isSourceAndTargetIntersect(params);
     if (isIntersect) {
         return getPoints(
@@ -65,7 +70,13 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             if (midKeyPoints.length === 0) {
                 const segment = [secondPoint, thirdPoint] as [Point, Point];
                 const parallelSegments = findOrthogonalParallelSegments(segment, simplifiedNextKeyPoints);
-                const referenceSegment = findReferenceSegment(board, segment, parallelSegments, sourceRectangle, targetRectangle);
+                const referenceSegment = findReferenceSegment(
+                    board,
+                    segment,
+                    parallelSegments,
+                    params.sourceRectangle,
+                    params.targetRectangle
+                );
                 if (referenceSegment) {
                     dataPoints.splice(targetIndex, 2, ...referenceSegment);
                 } else {
@@ -92,7 +103,13 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                 } else {
                     const segment = [previousPoint, currentPoint] as [Point, Point];
                     const parallelSegments = findOrthogonalParallelSegments(segment, simplifiedNextKeyPoints);
-                    const referenceSegment = findReferenceSegment(board, segment, parallelSegments, sourceRectangle, targetRectangle);
+                    const referenceSegment = findReferenceSegment(
+                        board,
+                        segment,
+                        parallelSegments,
+                        params.sourceRectangle,
+                        params.targetRectangle
+                    );
                     if (referenceSegment) {
                         const newCurrentPoint = referenceSegment[1];
                         const isNewStraight = isPointsOnSameLine([newCurrentPoint, nextPoint]);
@@ -137,19 +154,17 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     }
 };
 
-export const getNextSourceAndTargetPoints = (board: PlaitBoard, element: PlaitLine) => {
-    const { sourceRectangle, targetRectangle } = getSourceAndTargetRectangle(board, element);
-    const { sourceOuterRectangle, targetOuterRectangle } = getSourceAndTargetOuterRectangle(sourceRectangle, targetRectangle);
-    const handleRefPair = getLineHandleRefPair(board, element);
-    const sourcePoint = handleRefPair.source.point;
-    const targetPoint = handleRefPair.target.point;
-    const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, handleRefPair.source.direction);
-    const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, handleRefPair.target.direction);
-    return [nextSourcePoint, nextTargetPoint];
+export const isElbowSourceAndTargetIntersect = (board: PlaitBoard, element: PlaitLine) => {
+    const options = getElbowLineRouteOptions(board, element);
+    return isSourceAndTargetIntersect(options);
 };
 
-export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitLine) => {
-    const handleRefPair = getLineHandleRefPair(board, element);
+export const getNextSourceAndTargetPoints = (board: PlaitBoard, element: PlaitLine) => {
+    const options = getElbowLineRouteOptions(board, element);
+    return [options.nextSourcePoint, options.nextTargetPoint];
+};
+
+export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitLine, handleRefPair: LineHandleRefPair) => {
     let sourceElement = element.source.boundId ? getElementById<PlaitGeometry>(board, element.source.boundId) : undefined;
     let targetElement = element.target.boundId ? getElementById<PlaitGeometry>(board, element.target.boundId) : undefined;
     if (!sourceElement) {

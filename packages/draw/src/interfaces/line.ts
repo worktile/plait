@@ -51,6 +51,11 @@ export interface LineHandleRef {
     boundElement?: PlaitGeometry;
 }
 
+export interface LineHandleRefPair {
+    source: LineHandleRef;
+    target: LineHandleRef;
+}
+
 export interface PlaitLine extends PlaitElement {
     type: 'line';
     shape: LineShape;
