@@ -130,16 +130,13 @@ export function getIndexAndDeleteCountByKeyPoint(keyPoints1: Point[], keyPoints2
                 deleteCount = 2;
                 break;
             }
-            if (
-                isPointsOnSameLine([currentPoint, nextPoint, startKeyPoint]) &&
-                Point.isEquals(endKeyPoint, keyPoints2[keyPoints2.length - 1])
-            ) {
-                index = -1;
+            if (isPointsOnSameLine([currentPoint, nextPoint, startKeyPoint])) {
+                index = Math.min(i + 1, keyPoints1.length - 1);
                 deleteCount = 1;
                 break;
             }
-            if (isPointsOnSameLine([currentPoint, nextPoint, endKeyPoint]) && Point.isEquals(startKeyPoint, keyPoints2[0])) {
-                index = 0;
+            if (isPointsOnSameLine([currentPoint, nextPoint, endKeyPoint])) {
+                index = Math.max(i - 1, 0);
                 deleteCount = 1;
                 break;
             }
