@@ -117,7 +117,6 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             adjustByParallelSegment(startIndex, false);
         }
         for (let index = 0; index < dataPoints.length - 1; index++) {
-            let previousPoint = dataPoints[index - 1];
             let currentPoint = dataPoints[index];
             let nextPoint = dataPoints[index + 1];
             const isStraight = isPointsOnSameLine([currentPoint, nextPoint]);
@@ -127,12 +126,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                     renderPoints.push(currentPoint);
                     renderPoints.push(...midKeyPoints);
                 } else {
-                    const isHorizontalWithPreviousPoint = Point.isHorizontalAlign(previousPoint, currentPoint);
-                    const adjustIndex = isHorizontalWithPreviousPoint ? 0 : 1;
-                    const newCurrentPoint = [currentPoint[0], currentPoint[1]] as Point;
-                    newCurrentPoint[adjustIndex] = nextPoint[adjustIndex];
-                    dataPoints.splice(index, 1, newCurrentPoint);
-                    renderPoints.push(dataPoints[index]);
+                    console.log('unknown data points');
                 }
             } else {
                 renderPoints.push(currentPoint);
