@@ -58,7 +58,6 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         dataPoints.splice(0, 1, simplifiedNextKeyPoints[0]);
         dataPoints.splice(-1, 1, simplifiedNextKeyPoints[simplifiedNextKeyPoints.length - 1]);
         const renderPoints: Point[] = [keyPoints[0]];
-        // 特殊处理自定点
         const adjustByParallelSegment = (startIndex: number, before: boolean = true) => {
             const beforePoint = dataPoints[startIndex - 1];
             const startPoint = dataPoints[startIndex];
@@ -97,13 +96,13 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                         const isHorizontal = Point.isHorizontalAlign(startPoint, endPoint);
                         const adjustIndex = isHorizontal ? 0 : 1;
                         if (before) {
-                            const newSecondPoint = [startPoint[0], startPoint[1]] as Point;
-                            newSecondPoint[adjustIndex] = beforePoint[adjustIndex];
-                            dataPoints.splice(startIndex, 1, newSecondPoint);
+                            const newStartPoint = [startPoint[0], startPoint[1]] as Point;
+                            newStartPoint[adjustIndex] = beforePoint[adjustIndex];
+                            dataPoints.splice(startIndex, 1, newStartPoint);
                         } else {
-                            const newSecondPoint = [endPoint[0], endPoint[1]] as Point;
-                            newSecondPoint[adjustIndex] = afterPoint[adjustIndex];
-                            dataPoints.splice(startIndex, 1, newSecondPoint);
+                            const newEndPoint = [endPoint[0], endPoint[1]] as Point;
+                            newEndPoint[adjustIndex] = afterPoint[adjustIndex];
+                            dataPoints.splice(startIndex + 1, 1, newEndPoint);
                         }
                     }
                 }
@@ -134,47 +133,6 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                     newCurrentPoint[adjustIndex] = nextPoint[adjustIndex];
                     dataPoints.splice(index, 1, newCurrentPoint);
                     renderPoints.push(dataPoints[index]);
-                    // const segment = [previousPoint, currentPoint] as [Point, Point];
-                    // const parallelSegments = findOrthogonalParallelSegments(segment, simplifiedNextKeyPoints);
-                    // const referenceSegment = findReferenceSegment(
-                    //     board,
-                    //     segment,
-                    //     parallelSegments,
-                    //     params.sourceRectangle,
-                    //     params.targetRectangle
-                    // );
-                    // if (referenceSegment) {
-                    //     const newCurrentPoint = referenceSegment[1];
-                    //     const isNewStraight = isPointsOnSameLine([newCurrentPoint, nextPoint]);
-                    //     renderPoints.push(newCurrentPoint);
-                    //     if (!isNewStraight) {
-                    //         const newMidKeyPoints = getMidKeyPoints(simplifiedNextKeyPoints, newCurrentPoint, nextPoint);
-                    //         if (newMidKeyPoints && newMidKeyPoints.length > 0) {
-                    //             let updateTwoPoints = true;
-                    //             if (fourthPoint && isPointsOnSameLine([thirdPoint, fourthPoint])) {
-                    //                 updateTwoPoints = false;
-                    //             }
-                    //             if (updateTwoPoints) {
-                    //                 dataPoints.splice(targetIndex, 2, ...referenceSegment);
-                    //             } else {
-                    //                 dataPoints.splice(targetIndex, 1, referenceSegment[0]);
-                    //             }
-                    //             renderPoints.push(...newMidKeyPoints);
-                    //         } else {
-                    //             console.error(
-                    //                 'Unhandled exception, orthogonal connection still cannot be obtained after correction based on parallel lines'
-                    //             );
-                    //         }
-                    //     }
-                    //     dataPoints.splice(index - 1, 2, ...referenceSegment);
-                    // } else {
-                    //     const isHorizontalWithPreviousPoint = Point.isHorizontalAlign(previousPoint, currentPoint);
-                    //     const adjustIndex = isHorizontalWithPreviousPoint ? 0 : 1;
-                    //     const newCurrentPoint = [currentPoint[0], currentPoint[1]] as Point;
-                    //     newCurrentPoint[adjustIndex] = nextPoint[adjustIndex];
-                    //     dataPoints.splice(index, 1, newCurrentPoint);
-                    //     renderPoints.push(dataPoints[index]);
-                    // }
                 }
             } else {
                 renderPoints.push(currentPoint);
@@ -192,7 +150,8 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         //                                |
         //                                |
         //             sourcePoint---keyPoint1
-        return simplifyOrthogonalPoints(renderPoints);
+        const ret = simplifyOrthogonalPoints(renderPoints);
+        return ret;
     }
 };
 
