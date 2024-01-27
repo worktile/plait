@@ -1,6 +1,6 @@
 import { PlaitElement } from '@plait/core';
 
-export const mockTurnPointData = [
+export const mockTurningPointData = [
     {
         id: 'fxCWx',
         type: 'geometry',
