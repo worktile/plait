@@ -30,6 +30,7 @@ import { mockLineData, withLineRoute } from '../plugins/with-line-route';
 import { withCommonPlugin } from '../plugins/with-common';
 import { AppMenuComponent } from '../components/menu/menu.component';
 import { NgIf } from '@angular/common';
+import { mockTurningPointData } from './mock-turning-point-data';
 
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
@@ -113,6 +114,9 @@ export class BasicEditorComponent implements OnInit {
                 case 'route':
                     this.value = [...mockLineData];
                     this.plugins.push(withLineRoute);
+                    break;
+                case 'turning-point':
+                    this.value = [...mockTurningPointData];
                     break;
                 default:
                     this.value = [...mockDrawData];

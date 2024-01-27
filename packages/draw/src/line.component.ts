@@ -53,6 +53,22 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
         super.ngOnInit();
         this.boundedElements = this.getBoundedElements();
         this.drawText();
+
+        // const points = this.element.points;
+        // points.forEach((p, index) => {
+        //     if (index === 0) {
+        //         return;
+        //     }
+        //     if (index === points.length - 1) {
+        //         return;
+        //     }
+        //     const dataPointG = PlaitBoard.getRoughSVG(this.board).circle(p[0], p[1], 8 * index, {
+        //         stroke: '#f08c02',
+        //         fill: '#f08c02',
+        //         fillStyle: 'solid'
+        //     });
+        //     PlaitBoard.getElementActiveHost(this.board).append(dataPointG);
+        // });
     }
 
     getBoundedElements() {
