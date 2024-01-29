@@ -95,10 +95,16 @@ export function getIndexAndDeleteCountByKeyPoint(
     handleIndex: number
 ) {
     let index: number | null = null;
-    let deleteCount = 0;
+    let deleteCount: number | null = null;
 
     const startKeyPoint = nextRenderPoints[handleIndex];
     const endKeyPoint = nextRenderPoints[handleIndex + 1];
+    if (!startKeyPoint || !endKeyPoint) {
+        return {
+            index,
+            deleteCount
+        };
+    }
     const midDataPoints = dataPoints.slice(1, -1);
     const startIndex = midDataPoints.findIndex(item => Point.isEquals(item, startKeyPoint));
     const endIndex = midDataPoints.findIndex(item => Point.isEquals(item, endKeyPoint));
@@ -251,7 +257,7 @@ export function isResizeMiddleIndex(
     middleIndex: number
 ) {
     const { deleteCount } = getIndexAndDeleteCountByKeyPoint(board, element, dataPoints, nextRenderPoints, middleIndex);
-    if (deleteCount > 1) {
+    if (deleteCount !== null && deleteCount > 1) {
         return true;
     }
     return false;
