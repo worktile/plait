@@ -42,7 +42,11 @@ export const withLineResize = (board: PlaitBoard) => {
             return null;
         },
         beforeResize: (resizeRef: ResizeRef<PlaitLine, LineResizeHandle>) => {
-            if (resizeRef.element.shape === LineShape.elbow) {
+            if (
+                resizeRef.element.shape === LineShape.elbow &&
+                resizeRef.handle !== LineResizeHandle.source &&
+                resizeRef.handle !== LineResizeHandle.target
+            ) {
                 const params = getElbowLineRouteOptions(board, resizeRef.element);
                 const isIntersect = isSourceAndTargetIntersect(params);
                 if (isIntersect) {
