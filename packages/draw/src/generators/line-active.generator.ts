@@ -11,8 +11,8 @@ import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, isSourceAndTargetIntersect } from '@plait/common';
 import { getCurvePoints } from '../utils/line/line-basic';
 import { DefaultGeometryActiveStyle } from '../constants';
-import { getElbowLineRouteOptions, getElbowPoints, getNextKeyPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
-import { createAddHandle, createUpdateHandle, isResizeMiddleIndex } from '../utils/line';
+import { getElbowPoints, getNextKeyPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
+import { createAddHandle, createUpdateHandle, getElbowLineRouteOptions, isResizeMiddleIndex } from '../utils/line';
 import { getHitPointIndex } from '../utils/position/line';
 
 export interface ActiveData {
@@ -52,7 +52,7 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
                 const point = middlePoints[i];
                 if (element.shape === LineShape.elbow && elbowLineKeyPoints.length) {
                     const middleIndex = getHitPointIndex(middlePoints, point);
-                    const isResizeIndex = isResizeMiddleIndex([...points].slice(1, points.length - 1), elbowLineKeyPoints, middleIndex);
+                    const isResizeIndex = isResizeMiddleIndex(this.board, element, [...points], elbowLineKeyPoints, middleIndex);
                     if (isResizeIndex) {
                         const circle = createUpdateHandle(this.board, point);
                         activeG.appendChild(circle);

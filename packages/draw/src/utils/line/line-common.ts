@@ -5,12 +5,15 @@ import {
     rotateVectorAnti90,
     getDirectionByVector,
     getOppositeDirection,
-    getDirectionByPointOfRectangle
+    getDirectionByPointOfRectangle,
+    getSourceAndTargetOuterRectangle,
+    getNextPoint
 } from '@plait/common';
 import { BasicShapes, LineHandleKey, LineHandleRef, LineHandleRefPair, LineMarkerType, PlaitGeometry, PlaitLine } from '../../interfaces';
 import { getStrokeWidthByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
 import { getShape } from '../shape';
+import { getSourceAndTargetRectangle } from './elbow';
 
 export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): LineHandleRefPair => {
     const strokeWidth = getStrokeWidthByElement(element);
@@ -96,4 +99,24 @@ export const getVectorByConnection = (boundElement: PlaitGeometry, connection: P
         }
     }
     return vector;
+};
+
+export const getElbowLineRouteOptions = (board: PlaitBoard, element: PlaitLine, handleRefPair?: LineHandleRefPair) => {
+    handleRefPair = handleRefPair ?? getLineHandleRefPair(board, element);
+    const { sourceRectangle, targetRectangle } = getSourceAndTargetRectangle(board, element, handleRefPair);
+    const { sourceOuterRectangle, targetOuterRectangle } = getSourceAndTargetOuterRectangle(sourceRectangle, targetRectangle);
+    const sourcePoint = handleRefPair.source.point;
+    const targetPoint = handleRefPair.target.point;
+    const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, handleRefPair.source.direction);
+    const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, handleRefPair.target.direction);
+    return {
+        sourcePoint,
+        nextSourcePoint,
+        sourceRectangle,
+        sourceOuterRectangle,
+        targetPoint,
+        nextTargetPoint,
+        targetRectangle,
+        targetOuterRectangle
+    };
 };
