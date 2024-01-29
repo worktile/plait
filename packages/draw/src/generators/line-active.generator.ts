@@ -11,7 +11,7 @@ import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, isSourceAndTargetIntersect } from '@plait/common';
 import { getCurvePoints } from '../utils/line/line-basic';
 import { DefaultGeometryActiveStyle } from '../constants';
-import { getElbowPoints, getNextKeyPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
+import { getElbowPoints, getNextRenderPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
 import { createAddHandle, createUpdateHandle, getElbowLineRouteOptions, isResizeMiddleIndex } from '../utils/line';
 import { getHitPointIndex } from '../utils/position/line';
 
@@ -41,7 +41,7 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
             let elbowNextRenderPoints: Point[] = [];
             if (element.shape === LineShape.elbow) {
                 updatePoints = points.slice(0, 1).concat(points.slice(-1));
-                elbowNextRenderPoints = getNextKeyPoints(this.board, element, data.linePoints);
+                elbowNextRenderPoints = getNextRenderPoints(this.board, element, data.linePoints);
             }
             updatePoints.forEach(point => {
                 const circle = createUpdateHandle(this.board, point);

@@ -104,7 +104,7 @@ const createFakeElement = (startPoint: Point, vector: Vector) => {
     return createGeometryElement(BasicShapes.rectangle, points, '');
 };
 
-export function getNextKeyPoints(board: PlaitBoard, element: PlaitLine, renderPoints?: Point[]) {
+export function getNextRenderPoints(board: PlaitBoard, element: PlaitLine, renderPoints?: Point[]) {
     let newRenderKeyPoints = renderPoints ?? getElbowPoints(board, element);
     const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
     newRenderKeyPoints.splice(0, 1, nextSourcePoint);
