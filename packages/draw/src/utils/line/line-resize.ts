@@ -170,8 +170,8 @@ export function getMirrorDataPoints(board: PlaitBoard, nextDataPoints: Point[], 
         const afterSegment = [endPoint, afterPoint];
         const isStraightWithBefore = isPointsOnSameLine(beforeSegment);
         const isStraightWithAfter = isPointsOnSameLine(afterSegment);
-        const isAdjustStart = !isStraightWithBefore && getMidKeyPoints(nextKeyPoints, beforeSegment[0], beforeSegment[1]).length === 0;
-        const isAdjustEnd = !isStraightWithAfter && getMidKeyPoints(nextKeyPoints, afterSegment[0], afterSegment[1]).length === 0;
+        const isAdjustStart = !isStraightWithBefore;
+        const isAdjustEnd = !isStraightWithAfter;
         if (isAdjustStart || isAdjustEnd) {
             const parallelSegment = [startPoint, endPoint] as [Point, Point];
             const parallelSegments = findOrthogonalParallelSegments(parallelSegment, nextKeyPoints);
