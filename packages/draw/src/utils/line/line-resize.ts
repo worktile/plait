@@ -24,18 +24,18 @@ export const alignPoints = (basePoint: Point, movingPoint: Point) => {
     return newPoint;
 };
 
-export function getResizeReferencePoints(keyPoints: Point[], sourcePoint: Point, targetPoint: Point, handleIndex: number) {
+export function getResizeReferencePoints(nextRenderPoints: Point[], sourcePoint: Point, targetPoint: Point, handleIndex: number) {
     const referencePoint: { previous: Point | null; next: Point | null } = {
         previous: null,
         next: null
     };
 
-    const startPoint = keyPoints[handleIndex];
-    const endPoint = keyPoints[handleIndex + 1];
+    const startPoint = nextRenderPoints[handleIndex];
+    const endPoint = nextRenderPoints[handleIndex + 1];
     const isHorizontal = Point.isHorizontalAlign(startPoint, endPoint);
     const isVertical = Point.isVerticalAlign(startPoint, endPoint);
-    const previousPoint = keyPoints[handleIndex - 1] ?? keyPoints[0];
-    const beforePreviousPoint = keyPoints[handleIndex - 2] ?? sourcePoint;
+    const previousPoint = nextRenderPoints[handleIndex - 1] ?? nextRenderPoints[0];
+    const beforePreviousPoint = nextRenderPoints[handleIndex - 2] ?? sourcePoint;
     if (
         (isHorizontal && Point.isHorizontalAlign(beforePreviousPoint, previousPoint)) ||
         (isVertical && Point.isVerticalAlign(beforePreviousPoint, previousPoint))
@@ -43,8 +43,8 @@ export function getResizeReferencePoints(keyPoints: Point[], sourcePoint: Point,
         referencePoint.previous = previousPoint;
     }
 
-    const nextPoint = keyPoints[handleIndex + 2] ?? keyPoints[keyPoints.length - 1];
-    const afterNextPoint = keyPoints[handleIndex + 3] ?? targetPoint;
+    const nextPoint = nextRenderPoints[handleIndex + 2] ?? nextRenderPoints[nextRenderPoints.length - 1];
+    const afterNextPoint = nextRenderPoints[handleIndex + 3] ?? targetPoint;
     if (
         (isHorizontal && Point.isHorizontalAlign(nextPoint, afterNextPoint)) ||
         (isVertical && Point.isVerticalAlign(nextPoint, afterNextPoint))
@@ -91,14 +91,14 @@ export function getIndexAndDeleteCountByKeyPoint(
     board: PlaitBoard,
     element: PlaitLine,
     dataPoints: Point[],
-    nextKeyPoints: Point[],
+    nextRenderPoints: Point[],
     handleIndex: number
 ) {
     let index: number | null = null;
     let deleteCount = 0;
 
-    const startKeyPoint = nextKeyPoints[handleIndex];
-    const endKeyPoint = nextKeyPoints[handleIndex + 1];
+    const startKeyPoint = nextRenderPoints[handleIndex];
+    const endKeyPoint = nextRenderPoints[handleIndex + 1];
     const midDataPoints = dataPoints.slice(1, -1);
     const startIndex = midDataPoints.findIndex(item => Point.isEquals(item, startKeyPoint));
     const endIndex = midDataPoints.findIndex(item => Point.isEquals(item, endKeyPoint));
@@ -167,10 +167,10 @@ export function getIndexAndDeleteCountByKeyPoint(
             const params = getElbowLineRouteOptions(board, element, handleRefPair);
             const keyPoints = simplifyOrthogonalPoints(removeDuplicatePoints(generateElbowLineRoute(params)));
             const simplifiedNextKeyPoints = keyPoints.slice(1, keyPoints.length - 1);
-            const nextDataPoints = [nextKeyPoints[0], ...midDataPoints, nextKeyPoints[nextKeyPoints.length - 1]];
+            const nextDataPoints = [nextRenderPoints[0], ...midDataPoints, nextRenderPoints[nextRenderPoints.length - 1]];
             const mirrorDataPoints = getMirrorDataPoints(board, nextDataPoints, simplifiedNextKeyPoints, params);
             for (let i = handleIndex - 1; i >= 0; i--) {
-                const previousIndex = mirrorDataPoints.slice(1, -1).findIndex(item => Point.isEquals(item, nextKeyPoints[i]));
+                const previousIndex = mirrorDataPoints.slice(1, -1).findIndex(item => Point.isEquals(item, nextRenderPoints[i]));
                 if (previousIndex > -1) {
                     index = previousIndex + 1;
                     break;
@@ -243,8 +243,14 @@ export function getMirrorDataPoints(board: PlaitBoard, nextDataPoints: Point[], 
     return nextDataPoints;
 }
 
-export function isResizeMiddleIndex(board: PlaitBoard, element: PlaitLine, points: Point[], nextKeyPoints: Point[], middleIndex: number) {
-    const { deleteCount } = getIndexAndDeleteCountByKeyPoint(board, element, points, nextKeyPoints, middleIndex);
+export function isResizeMiddleIndex(
+    board: PlaitBoard,
+    element: PlaitLine,
+    dataPoints: Point[],
+    nextRenderPoints: Point[],
+    middleIndex: number
+) {
+    const { deleteCount } = getIndexAndDeleteCountByKeyPoint(board, element, dataPoints, nextRenderPoints, middleIndex);
     if (deleteCount > 1) {
         return true;
     }
