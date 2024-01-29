@@ -1697,5 +1697,96 @@ export const mockTurningPointData = [
             [10337.580408495369, 196.6232263988063]
         ],
         strokeWidth: 2
+    },
+    {
+        id: 'ptHwj',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [8877.7421875, -581.94091796875],
+            [9005.4453125, -475.48388671875]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'tcFEG',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [9256.01171875, -370.83544921875],
+            [9383.71484375, -264.37841796875]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'FGGRP',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [0, 0.5],
+            boundId: 'ptHwj'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [1, 0.5],
+            boundId: 'tcFEG'
+        },
+        opacity: 1,
+        points: [
+            [8877.7421875, -528.71240234375],
+            [8796.28515625, -528.71240234375],
+            [8796.28515625, -423.15966796875],
+            [9468.546875, -402.47119140625],
+            [9468.546875, -317.60693359375],
+            [9383.71484375, -317.60693359375]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'pziWQ',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [0, 0.5],
+            boundId: 'ptHwj'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [1, 0.5],
+            boundId: 'tcFEG'
+        },
+        opacity: 1,
+        points: [
+            [8877.7421875, -528.71240234375],
+            [9383.71484375, -317.60693359375]
+        ],
+        strokeWidth: 2,
+        strokeColor: '#e03130'
     }
 ] as PlaitElement[];
