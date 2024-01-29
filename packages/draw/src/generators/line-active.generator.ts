@@ -12,7 +12,7 @@ import { Generator, PRIMARY_COLOR, isSourceAndTargetIntersect } from '@plait/com
 import { getCurvePoints } from '../utils/line/line-basic';
 import { DefaultGeometryActiveStyle } from '../constants';
 import { getElbowPoints, getNextRenderPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
-import { createAddHandle, createUpdateHandle, getElbowLineRouteOptions, isResizeMiddleIndex } from '../utils/line';
+import { createAddHandle, createUpdateHandle, getElbowLineRouteOptions, isUpdatedHandleIndex } from '../utils/line';
 import { getHitPointIndex } from '../utils/position/line';
 
 export interface ActiveData {
@@ -51,9 +51,9 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
             for (let i = 0; i < middlePoints.length; i++) {
                 const point = middlePoints[i];
                 if (element.shape === LineShape.elbow && elbowNextRenderPoints.length) {
-                    const middleIndex = getHitPointIndex(middlePoints, point);
-                    const isResizeIndex = isResizeMiddleIndex(this.board, element, [...points], elbowNextRenderPoints, middleIndex);
-                    if (isResizeIndex) {
+                    const handleIndex = getHitPointIndex(middlePoints, point);
+                    const isUpdateHandleIndex = isUpdatedHandleIndex(this.board, element, [...points], elbowNextRenderPoints, handleIndex);
+                    if (isUpdateHandleIndex) {
                         const circle = createUpdateHandle(this.board, point);
                         activeG.appendChild(circle);
                         continue;
@@ -113,8 +113,8 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
         }
     }
     if (shape === LineShape.elbow) {
-        const pointsOnElbow = getElbowPoints(board, element);
-        if (isPointsOnSameLine(pointsOnElbow)) {
+        const renderPoints = getElbowPoints(board, element);
+        if (isPointsOnSameLine(renderPoints)) {
             const points = PlaitLine.getPoints(board, element);
             const middlePoint = [(points[0][0] + points[1][0]) / 2, (points[1][1] + points[1][1]) / 2] as Point;
             result.push(middlePoint);
@@ -123,15 +123,15 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
             const isIntersect = isSourceAndTargetIntersect(options);
             if (!isIntersect) {
                 const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
-                for (let i = 0; i < pointsOnElbow.length - 1; i++) {
+                for (let i = 0; i < renderPoints.length - 1; i++) {
                     if (
-                        (i == 0 && Point.isEquals(pointsOnElbow[i + 1], nextSourcePoint)) ||
-                        (i === pointsOnElbow.length - 2 && Point.isEquals(pointsOnElbow[pointsOnElbow.length - 2], nextTargetPoint))
+                        (i == 0 && Point.isEquals(renderPoints[i + 1], nextSourcePoint)) ||
+                        (i === renderPoints.length - 2 && Point.isEquals(renderPoints[renderPoints.length - 2], nextTargetPoint))
                     ) {
                         continue;
                     }
-                    const [currentX, currentY] = pointsOnElbow[i];
-                    const [nextX, nextY] = pointsOnElbow[i + 1];
+                    const [currentX, currentY] = renderPoints[i];
+                    const [nextX, nextY] = renderPoints[i + 1];
                     const middlePoint = [(currentX + nextX) / 2, (currentY + nextY) / 2] as Point;
                     result.push(middlePoint);
                 }

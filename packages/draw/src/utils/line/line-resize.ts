@@ -24,7 +24,7 @@ export const alignPoints = (basePoint: Point, movingPoint: Point) => {
     return newPoint;
 };
 
-export function getResizeReferencePoints(nextRenderPoints: Point[], sourcePoint: Point, targetPoint: Point, handleIndex: number) {
+export function getResizedPreviousAndNextPoint(nextRenderPoints: Point[], sourcePoint: Point, targetPoint: Point, handleIndex: number) {
     const referencePoint: { previous: Point | null; next: Point | null } = {
         previous: null,
         next: null
@@ -55,34 +55,34 @@ export function getResizeReferencePoints(nextRenderPoints: Point[], sourcePoint:
 }
 
 export function alignElbowSegment(
-    keyPoints1: Point,
-    keyPoints2: Point,
+    startKeyPoint: Point,
+    endKeyPoint: Point,
     resizeState: ResizeState,
-    referencePoints: { previous: Point | null; next: Point | null }
+    resizedPreviousAndNextPoint: { previous: Point | null; next: Point | null }
 ) {
-    let newStartPoint = keyPoints1;
-    let newEndPoint = keyPoints2;
-    if (Point.isHorizontalAlign(keyPoints1, keyPoints2)) {
+    let newStartPoint = startKeyPoint;
+    let newEndPoint = endKeyPoint;
+    if (Point.isHorizontalAlign(startKeyPoint, endKeyPoint)) {
         const offsetY = Point.getOffsetY(resizeState.startPoint, resizeState.endPoint);
-        let pointY = keyPoints1[1] + offsetY;
-        if (referencePoints.previous && Math.abs(referencePoints.previous[1] - pointY) < LINE_ALIGN_TOLERANCE) {
-            pointY = referencePoints.previous[1];
-        } else if (referencePoints.next && Math.abs(referencePoints.next[1] - pointY) < LINE_ALIGN_TOLERANCE) {
-            pointY = referencePoints.next[1];
+        let pointY = startKeyPoint[1] + offsetY;
+        if (resizedPreviousAndNextPoint.previous && Math.abs(resizedPreviousAndNextPoint.previous[1] - pointY) < LINE_ALIGN_TOLERANCE) {
+            pointY = resizedPreviousAndNextPoint.previous[1];
+        } else if (resizedPreviousAndNextPoint.next && Math.abs(resizedPreviousAndNextPoint.next[1] - pointY) < LINE_ALIGN_TOLERANCE) {
+            pointY = resizedPreviousAndNextPoint.next[1];
         }
-        newStartPoint = [keyPoints1[0], pointY];
-        newEndPoint = [keyPoints2[0], pointY];
+        newStartPoint = [startKeyPoint[0], pointY];
+        newEndPoint = [endKeyPoint[0], pointY];
     }
-    if (Point.isVerticalAlign(keyPoints1, keyPoints2)) {
+    if (Point.isVerticalAlign(startKeyPoint, endKeyPoint)) {
         const offsetX = Point.getOffsetX(resizeState.startPoint, resizeState.endPoint);
-        let pointX = keyPoints1[0] + offsetX;
-        if (referencePoints.previous && Math.abs(referencePoints.previous[0] - pointX) < LINE_ALIGN_TOLERANCE) {
-            pointX = referencePoints.previous[0];
-        } else if (referencePoints.next && Math.abs(referencePoints.next[0] - pointX) < LINE_ALIGN_TOLERANCE) {
-            pointX = referencePoints.next[0];
+        let pointX = startKeyPoint[0] + offsetX;
+        if (resizedPreviousAndNextPoint.previous && Math.abs(resizedPreviousAndNextPoint.previous[0] - pointX) < LINE_ALIGN_TOLERANCE) {
+            pointX = resizedPreviousAndNextPoint.previous[0];
+        } else if (resizedPreviousAndNextPoint.next && Math.abs(resizedPreviousAndNextPoint.next[0] - pointX) < LINE_ALIGN_TOLERANCE) {
+            pointX = resizedPreviousAndNextPoint.next[0];
         }
-        newStartPoint = [pointX, keyPoints1[1]];
-        newEndPoint = [pointX, keyPoints2[1]];
+        newStartPoint = [pointX, startKeyPoint[1]];
+        newEndPoint = [pointX, endKeyPoint[1]];
     }
     return [newStartPoint, newEndPoint];
 }
@@ -249,14 +249,14 @@ export function getMirrorDataPoints(board: PlaitBoard, nextDataPoints: Point[], 
     return nextDataPoints;
 }
 
-export function isResizeMiddleIndex(
+export function isUpdatedHandleIndex(
     board: PlaitBoard,
     element: PlaitLine,
     dataPoints: Point[],
     nextRenderPoints: Point[],
-    middleIndex: number
+    handleIndex: number
 ) {
-    const { deleteCount } = getIndexAndDeleteCountByKeyPoint(board, element, dataPoints, nextRenderPoints, middleIndex);
+    const { deleteCount } = getIndexAndDeleteCountByKeyPoint(board, element, dataPoints, nextRenderPoints, handleIndex);
     if (deleteCount !== null && deleteCount > 1) {
         return true;
     }
