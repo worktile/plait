@@ -25,7 +25,7 @@ import { LineShapeGenerator } from '../../generators/line.generator';
 import { REACTION_MARGIN } from '../../constants';
 import { getHitOutlineGeometry } from '../position/geometry';
 import { getLineMemorizedLatest } from '../memorize';
-import { alignPoints, getIndexAndDeleteCountByKeyPoint } from './line-resize';
+import { alignPoints } from './line-resize';
 import { getLineHandleRefPair } from './line-common';
 import { getElbowPoints } from './elbow';
 import { drawLineArrow } from './line-arrow';

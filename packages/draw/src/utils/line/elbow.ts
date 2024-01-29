@@ -5,36 +5,14 @@ import {
     getPointByVector,
     removeDuplicatePoints,
     generateElbowLineRoute,
-    getNextPoint,
-    getSourceAndTargetOuterRectangle,
     simplifyOrthogonalPoints,
     isSourceAndTargetIntersect
 } from '@plait/common';
 import { BasicShapes, LineHandleRefPair, PlaitGeometry, PlaitLine } from '../../interfaces';
 import { createGeometryElement } from '../geometry';
 import { getStrokeWidthByElement } from '../style/stroke';
-import { getLineHandleRefPair } from './line-common';
+import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
 import { getMidKeyPoints, getMirrorDataPoints } from './line-resize';
-
-export const getElbowLineRouteOptions = (board: PlaitBoard, element: PlaitLine, handleRefPair?: LineHandleRefPair) => {
-    handleRefPair = handleRefPair ?? getLineHandleRefPair(board, element);
-    const { sourceRectangle, targetRectangle } = getSourceAndTargetRectangle(board, element, handleRefPair);
-    const { sourceOuterRectangle, targetOuterRectangle } = getSourceAndTargetOuterRectangle(sourceRectangle, targetRectangle);
-    const sourcePoint = handleRefPair.source.point;
-    const targetPoint = handleRefPair.target.point;
-    const nextSourcePoint = getNextPoint(sourcePoint, sourceOuterRectangle, handleRefPair.source.direction);
-    const nextTargetPoint = getNextPoint(targetPoint, targetOuterRectangle, handleRefPair.target.direction);
-    return {
-        sourcePoint,
-        nextSourcePoint,
-        sourceRectangle,
-        sourceOuterRectangle,
-        targetPoint,
-        nextTargetPoint,
-        targetRectangle,
-        targetOuterRectangle
-    };
-};
 
 export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     const handleRefPair = getLineHandleRefPair(board, element);
@@ -126,10 +104,10 @@ const createFakeElement = (startPoint: Point, vector: Vector) => {
     return createGeometryElement(BasicShapes.rectangle, points, '');
 };
 
-export function getNextKeyPoints(board: PlaitBoard, element: PlaitLine, keyPoints?: Point[]) {
-    let newKeyPoints = keyPoints ?? getElbowPoints(board, element);
+export function getNextRenderPoints(board: PlaitBoard, element: PlaitLine, renderPoints?: Point[]) {
+    let newRenderKeyPoints = renderPoints ?? getElbowPoints(board, element);
     const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
-    newKeyPoints.splice(0, 1, nextSourcePoint);
-    newKeyPoints.splice(-1, 1, nextTargetPoint);
-    return removeDuplicatePoints(newKeyPoints);
+    newRenderKeyPoints.splice(0, 1, nextSourcePoint);
+    newRenderKeyPoints.splice(-1, 1, nextTargetPoint);
+    return removeDuplicatePoints(newRenderKeyPoints);
 }

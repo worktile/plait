@@ -11,8 +11,8 @@ import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, isSourceAndTargetIntersect } from '@plait/common';
 import { getCurvePoints } from '../utils/line/line-basic';
 import { DefaultGeometryActiveStyle } from '../constants';
-import { getElbowLineRouteOptions, getElbowPoints, getNextKeyPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
-import { createAddHandle, createUpdateHandle, isResizeMiddleIndex } from '../utils/line';
+import { getElbowPoints, getNextRenderPoints, getNextSourceAndTargetPoints } from '../utils/line/elbow';
+import { createAddHandle, createUpdateHandle, getElbowLineRouteOptions, isResizeMiddleIndex } from '../utils/line';
 import { getHitPointIndex } from '../utils/position/line';
 
 export interface ActiveData {
@@ -38,10 +38,10 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
             activeG.classList.add('line-handle');
             const points = PlaitLine.getPoints(this.board, element);
             let updatePoints = [...points];
-            let elbowLineKeyPoints: Point[] = [];
+            let elbowNextRenderPoints: Point[] = [];
             if (element.shape === LineShape.elbow) {
                 updatePoints = points.slice(0, 1).concat(points.slice(-1));
-                elbowLineKeyPoints = getNextKeyPoints(this.board, element, data.linePoints);
+                elbowNextRenderPoints = getNextRenderPoints(this.board, element, data.linePoints);
             }
             updatePoints.forEach(point => {
                 const circle = createUpdateHandle(this.board, point);
@@ -50,9 +50,9 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
             const middlePoints = getMiddlePoints(this.board, element);
             for (let i = 0; i < middlePoints.length; i++) {
                 const point = middlePoints[i];
-                if (element.shape === LineShape.elbow && elbowLineKeyPoints.length) {
+                if (element.shape === LineShape.elbow && elbowNextRenderPoints.length) {
                     const middleIndex = getHitPointIndex(middlePoints, point);
-                    const isResizeIndex = isResizeMiddleIndex([...points].slice(1, points.length - 1), elbowLineKeyPoints, middleIndex);
+                    const isResizeIndex = isResizeMiddleIndex(this.board, element, [...points], elbowNextRenderPoints, middleIndex);
                     if (isResizeIndex) {
                         const circle = createUpdateHandle(this.board, point);
                         activeG.appendChild(circle);
