@@ -1,12 +1,4 @@
-import {
-    PlaitBoard,
-    Point,
-    createG,
-    distanceBetweenPointAndPoint,
-    drawRectangle,
-    getSelectedElements,
-    isPointsOnSameLine
-} from '@plait/core';
+import { PlaitBoard, Point, createG, distanceBetweenPointAndPoint, drawRectangle, getSelectedElements } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, isSourceAndTargetIntersect } from '@plait/common';
 import { getCurvePoints } from '../utils/line/line-basic';
@@ -114,27 +106,21 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
     }
     if (shape === LineShape.elbow) {
         const pointsOnElbow = getElbowPoints(board, element);
-        if (isPointsOnSameLine(pointsOnElbow)) {
-            const points = PlaitLine.getPoints(board, element);
-            const middlePoint = [(points[0][0] + points[1][0]) / 2, (points[1][1] + points[1][1]) / 2] as Point;
-            result.push(middlePoint);
-        } else {
-            const options = getElbowLineRouteOptions(board, element);
-            const isIntersect = isSourceAndTargetIntersect(options);
-            if (!isIntersect) {
-                const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
-                for (let i = 0; i < pointsOnElbow.length - 1; i++) {
-                    if (
-                        (i == 0 && Point.isEquals(pointsOnElbow[i + 1], nextSourcePoint)) ||
-                        (i === pointsOnElbow.length - 2 && Point.isEquals(pointsOnElbow[pointsOnElbow.length - 2], nextTargetPoint))
-                    ) {
-                        continue;
-                    }
-                    const [currentX, currentY] = pointsOnElbow[i];
-                    const [nextX, nextY] = pointsOnElbow[i + 1];
-                    const middlePoint = [(currentX + nextX) / 2, (currentY + nextY) / 2] as Point;
-                    result.push(middlePoint);
+        const options = getElbowLineRouteOptions(board, element);
+        const isIntersect = isSourceAndTargetIntersect(options);
+        if (!isIntersect) {
+            const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
+            for (let i = 0; i < pointsOnElbow.length - 1; i++) {
+                if (
+                    (i == 0 && Point.isEquals(pointsOnElbow[i + 1], nextSourcePoint)) ||
+                    (i === pointsOnElbow.length - 2 && Point.isEquals(pointsOnElbow[pointsOnElbow.length - 2], nextTargetPoint))
+                ) {
+                    continue;
                 }
+                const [currentX, currentY] = pointsOnElbow[i];
+                const [nextX, nextY] = pointsOnElbow[i + 1];
+                const middlePoint = [(currentX + nextX) / 2, (currentY + nextY) / 2] as Point;
+                result.push(middlePoint);
             }
         }
     }
