@@ -522,6 +522,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         BOARD_TO_HOST.delete(this.board);
         BOARD_TO_ELEMENT_HOST.delete(this.board);
         BOARD_TO_ON_CHANGE.delete(this.board);
+        BOARD_TO_AFTER_CHANGE.set(this.board, () => {});
     }
 
     markForCheck() {
