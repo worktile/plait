@@ -9,7 +9,7 @@ import {
     toViewBoxPoint
 } from '@plait/core';
 import { LineShape, PlaitDrawElement } from '../interfaces';
-import { getRectangleByPoints, isResizingByCondition } from '@plait/common';
+import { isResizingByCondition } from '@plait/common';
 import { getHitOutlineGeometry } from '../utils/position/geometry';
 import { LineResizeHandle } from '../utils/position/line';
 import { drawBoundMask, getNearestPoint } from '../utils/geometry';
@@ -39,7 +39,7 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
             if (hitElement) {
                 boundShapeG = drawBoundMask(board, hitElement);
                 let nearestPoint = getNearestPoint(hitElement, movingPoint);
-                const rectangle = getRectangleByPoints(hitElement.points);
+                const rectangle = RectangleClient.getRectangleByPoints(hitElement.points);
                 const activeRectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
                 const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, activeRectangle);
                 nearestPoint = hitConnector ? hitConnector : nearestPoint;

@@ -1,7 +1,6 @@
-import { Point, PlaitBoard, getElementById, RectangleClient, Vector, isPointsOnSameLine } from '@plait/core';
+import { Point, PlaitBoard, getElementById, RectangleClient, Vector } from '@plait/core';
 import {
     getPoints,
-    getRectangleByPoints,
     getPointByVector,
     removeDuplicatePoints,
     generateElbowLineRoute,
@@ -44,7 +43,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         for (let index = 0; index < mirrorDataPoints.length - 1; index++) {
             let currentPoint = mirrorDataPoints[index];
             let nextPoint = mirrorDataPoints[index + 1];
-            const isStraight = isPointsOnSameLine([currentPoint, nextPoint]);
+            const isStraight = Point.isAlign([currentPoint, nextPoint]);
             if (!isStraight) {
                 const midKeyPoints = getMidKeyPoints(simplifiedNextKeyPoints, currentPoint, nextPoint);
                 if (midKeyPoints.length) {
@@ -90,8 +89,8 @@ export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitLin
         const target = handleRefPair.target;
         targetElement = createFakeElement(target.point, target.vector);
     }
-    const sourceRectangle = RectangleClient.inflate(getRectangleByPoints(sourceElement.points), getStrokeWidthByElement(sourceElement) * 2);
-    const targetRectangle = RectangleClient.inflate(getRectangleByPoints(targetElement.points), getStrokeWidthByElement(targetElement) * 2);
+    const sourceRectangle = RectangleClient.inflate(RectangleClient.getRectangleByPoints(sourceElement.points), getStrokeWidthByElement(sourceElement) * 2);
+    const targetRectangle = RectangleClient.inflate(RectangleClient.getRectangleByPoints(targetElement.points), getStrokeWidthByElement(targetElement) * 2);
     return {
         sourceRectangle,
         targetRectangle
@@ -100,7 +99,7 @@ export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitLin
 
 const createFakeElement = (startPoint: Point, vector: Vector) => {
     const point = getPointByVector(startPoint, vector, -25);
-    const points = RectangleClient.getPoints(RectangleClient.createRectangleByCenterPoint(point, 50, 50));
+    const points = RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(point, 50, 50));
     return createGeometryElement(BasicShapes.rectangle, points, '');
 };
 

@@ -5,6 +5,7 @@ import {
     PlaitOptionsBoard,
     PlaitPointerType,
     Point,
+    RectangleClient,
     Transforms,
     addSelectedElement,
     clearSelectedElement,
@@ -17,7 +18,6 @@ import {
 import { LineShape, PlaitDrawElement, PlaitLine, PlaitShape } from '../interfaces';
 import { getShape } from '../utils/shape';
 import { getEngine } from '../engines';
-import { getRectangleByPoints } from '@plait/common';
 import { handleLineCreating } from '../utils/line/line-basic';
 import { getSelectedDrawElements } from '../utils/selected';
 import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint } from '../utils/geometry';
@@ -61,7 +61,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         if (startPoint && sourceElement) {
             const distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
             if (distance > PRESS_AND_MOVE_BUFFER) {
-                const rectangle = getRectangleByPoints(sourceElement.points);
+                const rectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
                 const shape = getShape(sourceElement);
                 const engine = getEngine(shape);
                 let sourcePoint = startPoint;

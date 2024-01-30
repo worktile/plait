@@ -28,7 +28,7 @@ import {
     ShapeDefaultSpace,
     getFlowchartPointers
 } from '../constants';
-import { RESIZE_HANDLE_DIAMETER, getRectangleByPoints } from '@plait/common';
+import { RESIZE_HANDLE_DIAMETER } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
@@ -76,7 +76,7 @@ export const createGeometryElement = (
 };
 
 export const getTextRectangle = (element: PlaitGeometry) => {
-    const elementRectangle = getRectangleByPoints(element.points!);
+    const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
     const strokeWidth = getStrokeWidthByElement(element);
     const height = element.textHeight;
     const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
@@ -90,7 +90,7 @@ export const getTextRectangle = (element: PlaitGeometry) => {
 
 export const drawBoundMask = (board: PlaitBoard, element: PlaitGeometry) => {
     const G = createG();
-    const rectangle = getRectangleByPoints(element.points);
+    const rectangle = RectangleClient.getRectangleByPoints(element.points);
     const activeRectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
     const shape = getShape(element);
     const maskG = drawGeometry(board, activeRectangle, shape, {
@@ -119,7 +119,7 @@ export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient,
 };
 
 export const getNearestPoint = (element: PlaitShape, point: Point) => {
-    const rectangle = getRectangleByPoints(element.points);
+    const rectangle = RectangleClient.getRectangleByPoints(element.points);
     const shape = getShape(element);
     return getEngine(shape).getNearestPoint(rectangle, point);
 };
@@ -267,15 +267,15 @@ export const createDefaultFlowchart = (point: Point) => {
 
 export const getAutoCompletePoints = (element: PlaitShape) => {
     const AutoCompleteMargin = (12 + RESIZE_HANDLE_DIAMETER / 2) * 2;
-    let rectangle = getRectangleByPoints(element.points);
+    let rectangle = RectangleClient.getRectangleByPoints(element.points);
     rectangle = RectangleClient.inflate(rectangle, AutoCompleteMargin);
     return RectangleClient.getEdgeCenterPoints(rectangle);
 };
 
 export const getHitIndexOfAutoCompletePoint = (movingPoint: Point, points: Point[]) => {
     return points.findIndex(point => {
-        const movingRectangle = RectangleClient.toRectangleClient([movingPoint]);
-        let rectangle = RectangleClient.toRectangleClient([point]);
+        const movingRectangle = RectangleClient.getRectangleByPoints([movingPoint]);
+        let rectangle = RectangleClient.getRectangleByPoints([point]);
         rectangle = RectangleClient.inflate(rectangle, RESIZE_HANDLE_DIAMETER);
         return RectangleClient.isHit(movingRectangle, rectangle);
     });
@@ -301,7 +301,7 @@ export const getTextShapeProperty = (board: PlaitBoard, text: string | Element =
 export const getDefaultGeometryPoints = (pointer: DrawPointerType, centerPoint: Point) => {
     const property = getDefaultGeometryProperty(pointer);
     return RectangleClient.getPoints(
-        RectangleClient.createRectangleByCenterPoint(centerPoint, property.width, property.height)
+        RectangleClient.getRectangleByCenterPoint(centerPoint, property.width, property.height)
     );
 };
 
@@ -317,7 +317,7 @@ export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
 export const getDefaultTextPoints = (board: PlaitBoard, centerPoint: Point, fontSize?: number | string) => {
     const property = getTextShapeProperty(board, DefaultTextProperty.text, fontSize);
     return RectangleClient.getPoints(
-        RectangleClient.createRectangleByCenterPoint(centerPoint, property.width, property.height)
+        RectangleClient.getRectangleByCenterPoint(centerPoint, property.width, property.height)
     );
 };
 
@@ -336,7 +336,7 @@ export const createTextElement = (
     textHeight?: number
 ) => {
     const memorizedLatest = getMemorizedLatestByPointer(BasicShapes.text);
-    textHeight = textHeight ? textHeight : getRectangleByPoints(points).height;
+    textHeight = textHeight ? textHeight : RectangleClient.getRectangleByPoints(points).height;
     return createGeometryElement(BasicShapes.text, points, text, memorizedLatest.geometryProperties as GeometryStyleOptions, {
         ...memorizedLatest.textProperties,
         textHeight

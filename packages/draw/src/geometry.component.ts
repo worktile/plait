@@ -6,7 +6,8 @@ import {
     isSelectionMoving,
     getSelectedElements,
     PlaitOptionsBoard,
-    ACTIVE_STROKE_WIDTH
+    ACTIVE_STROKE_WIDTH,
+    RectangleClient
 } from '@plait/core';
 import { Subject } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
@@ -14,7 +15,7 @@ import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
-import { ActiveGenerator, WithTextPluginKey, WithTextOptions, getRectangleByPoints, CommonPluginElement } from '@plait/common';
+import { ActiveGenerator, WithTextPluginKey, WithTextOptions, CommonPluginElement } from '@plait/common';
 import { GeometryThreshold } from './constants/geometry';
 import { PlaitDrawElement, PlaitText } from './interfaces';
 import { getEngine } from './engines';
@@ -64,7 +65,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                 }
             },
             getRectangle: (element: PlaitGeometry) => {
-                return getRectangleByPoints(element.points);
+                return RectangleClient.getRectangleByPoints(element.points);
             },
             hasResizeHandle: () => {
                 const selectedElements = getSelectedElements(this.board);

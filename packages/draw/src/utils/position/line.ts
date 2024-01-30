@@ -47,7 +47,7 @@ export function getHitPointIndex(points: Point[], movingPoint: Point) {
         };
     });
     const rectangle = rectangles.find(rectangle => {
-        return RectangleClient.isHit(RectangleClient.toRectangleClient([movingPoint, movingPoint]), rectangle);
+        return RectangleClient.isHit(RectangleClient.getRectangleByPoints([movingPoint, movingPoint]), rectangle);
     });
     return rectangle ? rectangles.indexOf(rectangle) : -1;
 }

@@ -78,7 +78,7 @@ export const getResizeHandlePointByIndex = (rectangle: RectangleClient, index: n
 const getResizeSideRectangles = (cornerPoints: Point[], offset: number): RectangleClient[] => {
     const result = [];
     for (let i = 0; i < cornerPoints.length; i++) {
-        let rectangle = RectangleClient.toRectangleClient([cornerPoints[i], cornerPoints[(i + 1) % 4]]);
+        let rectangle = RectangleClient.getRectangleByPoints([cornerPoints[i], cornerPoints[(i + 1) % 4]]);
         const arr = new Array(2).fill(0);
         arr[(i + 1) % 2] = offset / 2;
         rectangle = RectangleClient.expand(rectangle, arr[0], arr[1]);

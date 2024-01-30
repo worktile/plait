@@ -1,4 +1,4 @@
-import { Direction, Point, distanceBetweenPointAndPoint, isHorizontalSegment, isVerticalSegment } from '@plait/core';
+import { Direction, Point, distanceBetweenPointAndPoint } from '@plait/core';
 import { getDirectionFactor } from './direction';
 import { isPointOnSegment } from './math';
 
@@ -180,7 +180,7 @@ export function simplifyOrthogonalPoints(points: Point[]) {
         const previous = points[i - 1];
         const current = points[i];
         const next = points[i + 1];
-        const isTurn = !(isHorizontalSegment([previous, current, next]) || isVerticalSegment([previous, current, next]));
+        const isTurn = !(Point.isOverHorizontal([previous, current, next]) || Point.isOverVertical([previous, current, next]));
         if (isTurn) {
             simplifiedPoints.push(current);
         }

@@ -77,7 +77,7 @@ export function withSelection(board: PlaitBoard) {
         }
         if (start && PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
             const movedTarget = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-            const rectangle = RectangleClient.toRectangleClient([start, movedTarget]);
+            const rectangle = RectangleClient.getRectangleByPoints([start, movedTarget]);
             selectionMovingG?.remove();
             if (Math.hypot(rectangle.width, rectangle.height) > PRESS_AND_MOVE_BUFFER || isSelectionMoving(board)) {
                 end = movedTarget;

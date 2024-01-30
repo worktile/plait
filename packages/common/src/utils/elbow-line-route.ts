@@ -78,7 +78,7 @@ const adjust = (route: Point[], options: AdjustOptions) => {
     let result = null;
     parallelPaths.forEach(parallelPath => {
         // Construct a rectangle
-        const tempRect = RectangleClient.toRectangleClient([pointOfHit, parallelPath[0], parallelPath[1]]);
+        const tempRect = RectangleClient.getRectangleByPoints([pointOfHit, parallelPath[0], parallelPath[1]]);
         if (!RectangleClient.isHit(tempRect, sourceRectangle) && !RectangleClient.isHit(tempRect, targetRectangle)) {
             const getCornerCount = (path: Point[]) => {
                 let cornerCount = 0;

@@ -1,6 +1,5 @@
 import { Point, PlaitBoard, getElementById, RectangleClient, PointOfRectangle, Direction, Vector } from '@plait/core';
 import {
-    getRectangleByPoints,
     getDirectionFactor,
     rotateVectorAnti90,
     getDirectionByVector,
@@ -65,7 +64,7 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): Lin
 };
 
 export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, direction?: Direction, delta?: number): Point => {
-    const rectangle = getRectangleByPoints(geometry.points);
+    const rectangle = RectangleClient.getRectangleByPoints(geometry.points);
     if (direction && delta) {
         const directionFactor = getDirectionFactor(direction);
         const point = RectangleClient.getConnectionPoint(rectangle, connection);
@@ -76,7 +75,7 @@ export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, d
 };
 
 export const getVectorByConnection = (boundElement: PlaitGeometry, connection: PointOfRectangle): Vector => {
-    const rectangle = getRectangleByPoints(boundElement.points);
+    const rectangle = RectangleClient.getRectangleByPoints(boundElement.points);
     const shape = getShape(boundElement);
     const engine = getEngine(shape);
     let vector: Vector = [0, 0];

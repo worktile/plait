@@ -2,7 +2,6 @@ import { PlaitBoard, PlaitElement, PlaitPluginElementContext, RectangleClient, S
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
-import { getRectangleByPoints } from '@plait/common';
 import { withDrawHotkey } from './with-draw-hotkey';
 import { withGeometryCreateByDrawing, withGeometryCreateByDrag } from './with-geometry-create';
 import { withDrawFragment } from './with-draw-fragment';
@@ -35,7 +34,7 @@ export const withDraw = (board: PlaitBoard) => {
 
     board.getRectangle = (element: PlaitElement) => {
         if (PlaitDrawElement.isGeometry(element)) {
-            return getRectangleByPoints(element.points);
+            return RectangleClient.getRectangleByPoints(element.points);
         }
         if (PlaitDrawElement.isLine(element)) {
             const points = getLinePoints(board, element);
@@ -43,11 +42,11 @@ export const withDraw = (board: PlaitBoard) => {
                 const rectangle = getLineTextRectangle(board, element, index);
                 return rectangle;
             });
-            const linePointsRectangle = getRectangleByPoints(points);
+            const linePointsRectangle = RectangleClient.getRectangleByPoints(points);
             return RectangleClient.getBoundingRectangle([linePointsRectangle, ...lineTextRectangles]);
         }
         if (PlaitDrawElement.isImage(element)) {
-            return getRectangleByPoints(element.points);
+            return RectangleClient.getRectangleByPoints(element.points);
         }
         return getRectangle(element);
     };

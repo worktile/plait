@@ -8,7 +8,6 @@ import {
     createGraph,
     getGraphPoints,
     getNextPoint,
-    getRectangleByPoints,
     isSourceAndTargetIntersect,
     reduceRouteMargin,
     routeAdjust
@@ -44,11 +43,11 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
     if (lineElement && sourceElement && targetElement && handleRefPair) {
         // 1、准备数据：源/目标 Rectangle
         const targetRectangle = RectangleClient.inflate(
-            getRectangleByPoints(targetElement.points),
+            RectangleClient.getRectangleByPoints(targetElement.points),
             getStrokeWidthByElement(targetElement) * 2
         );
         const sourceRectangle = RectangleClient.inflate(
-            getRectangleByPoints(sourceElement.points),
+            RectangleClient.getRectangleByPoints(sourceElement.points),
             getStrokeWidthByElement(sourceElement) * 2
         );
         const sourceRectG = rough.rectangle(sourceRectangle.x, sourceRectangle.y, sourceRectangle.width, sourceRectangle.height, {
