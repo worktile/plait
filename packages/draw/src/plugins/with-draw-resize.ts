@@ -109,7 +109,7 @@ export const getResizeOriginAndZoom = (
         xZoom = normalizedOffsetX / (resizeHandlePoint[0] - resizeOriginPoint[0]);
         yZoom = normalizedOffsetY / (resizeHandlePoint[1] - resizeOriginPoint[1]);
     } else {
-        const isHorizontal = Point.isHorizontalAlign(resizeOriginPoint, resizeHandlePoint, 0.1) || false;
+        const isHorizontal = Point.isHorizontal(resizeOriginPoint, resizeHandlePoint, 0.1) || false;
         let normalizedOffset = isHorizontal ? Point.getOffsetX(startPoint, endPoint) : Point.getOffsetY(startPoint, endPoint);
         let benchmarkOffset = isHorizontal ? resizeHandlePoint[0] - resizeOriginPoint[0] : resizeHandlePoint[1] - resizeOriginPoint[1];
         const zoom = normalizedOffset / benchmarkOffset;

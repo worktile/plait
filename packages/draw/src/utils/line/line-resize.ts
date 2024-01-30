@@ -8,17 +8,17 @@ import {
     removeDuplicatePoints,
     simplifyOrthogonalPoints
 } from '@plait/common';
-import { PlaitBoard, Point, RectangleClient, drawCircle, isPointsOnSameLine } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, drawCircle } from '@plait/core';
 import { LINE_ALIGN_TOLERANCE } from '../../constants/line';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
 import { PlaitLine } from '../../interfaces';
 
 export const alignPoints = (basePoint: Point, movingPoint: Point) => {
     const newPoint: Point = [...movingPoint];
-    if (Point.isVerticalAlign(newPoint, basePoint, LINE_ALIGN_TOLERANCE)) {
+    if (Point.isVertical(newPoint, basePoint, LINE_ALIGN_TOLERANCE)) {
         newPoint[0] = basePoint[0];
     }
-    if (Point.isHorizontalAlign(newPoint, basePoint, LINE_ALIGN_TOLERANCE)) {
+    if (Point.isHorizontal(newPoint, basePoint, LINE_ALIGN_TOLERANCE)) {
         newPoint[1] = basePoint[1];
     }
     return newPoint;
@@ -32,23 +32,20 @@ export function getResizedPreviousAndNextPoint(nextRenderPoints: Point[], source
 
     const startPoint = nextRenderPoints[handleIndex];
     const endPoint = nextRenderPoints[handleIndex + 1];
-    const isHorizontal = Point.isHorizontalAlign(startPoint, endPoint);
-    const isVertical = Point.isVerticalAlign(startPoint, endPoint);
+    const isHorizontal = Point.isHorizontal(startPoint, endPoint);
+    const isVertical = Point.isVertical(startPoint, endPoint);
     const previousPoint = nextRenderPoints[handleIndex - 1] ?? nextRenderPoints[0];
     const beforePreviousPoint = nextRenderPoints[handleIndex - 2] ?? sourcePoint;
     if (
-        (isHorizontal && Point.isHorizontalAlign(beforePreviousPoint, previousPoint)) ||
-        (isVertical && Point.isVerticalAlign(beforePreviousPoint, previousPoint))
+        (isHorizontal && Point.isHorizontal(beforePreviousPoint, previousPoint)) ||
+        (isVertical && Point.isVertical(beforePreviousPoint, previousPoint))
     ) {
         referencePoint.previous = previousPoint;
     }
 
     const nextPoint = nextRenderPoints[handleIndex + 2] ?? nextRenderPoints[nextRenderPoints.length - 1];
     const afterNextPoint = nextRenderPoints[handleIndex + 3] ?? targetPoint;
-    if (
-        (isHorizontal && Point.isHorizontalAlign(nextPoint, afterNextPoint)) ||
-        (isVertical && Point.isVerticalAlign(nextPoint, afterNextPoint))
-    ) {
+    if ((isHorizontal && Point.isHorizontal(nextPoint, afterNextPoint)) || (isVertical && Point.isVertical(nextPoint, afterNextPoint))) {
         referencePoint.next = nextPoint;
     }
     return referencePoint;
@@ -62,7 +59,7 @@ export function alignElbowSegment(
 ) {
     let newStartPoint = startKeyPoint;
     let newEndPoint = endKeyPoint;
-    if (Point.isHorizontalAlign(startKeyPoint, endKeyPoint)) {
+    if (Point.isHorizontal(startKeyPoint, endKeyPoint)) {
         const offsetY = Point.getOffsetY(resizeState.startPoint, resizeState.endPoint);
         let pointY = startKeyPoint[1] + offsetY;
         if (resizedPreviousAndNextPoint.previous && Math.abs(resizedPreviousAndNextPoint.previous[1] - pointY) < LINE_ALIGN_TOLERANCE) {
@@ -73,7 +70,7 @@ export function alignElbowSegment(
         newStartPoint = [startKeyPoint[0], pointY];
         newEndPoint = [endKeyPoint[0], pointY];
     }
-    if (Point.isVerticalAlign(startKeyPoint, endKeyPoint)) {
+    if (Point.isVertical(startKeyPoint, endKeyPoint)) {
         const offsetX = Point.getOffsetX(resizeState.startPoint, resizeState.endPoint);
         let pointX = startKeyPoint[0] + offsetX;
         if (resizedPreviousAndNextPoint.previous && Math.abs(resizedPreviousAndNextPoint.previous[0] - pointX) < LINE_ALIGN_TOLERANCE) {
@@ -119,7 +116,7 @@ export function getIndexAndDeleteCountByKeyPoint(
         if (startIndex > -1 && endIndex === -1) {
             const isReplace =
                 startIndex < midDataPoints.length - 1 &&
-                isPointsOnSameLine([midDataPoints[startIndex], midDataPoints[startIndex + 1], startKeyPoint, endKeyPoint]);
+                Point.isAlign([midDataPoints[startIndex], midDataPoints[startIndex + 1], startKeyPoint, endKeyPoint]);
             if (isReplace) {
                 return {
                     index: startIndex,
@@ -133,7 +130,7 @@ export function getIndexAndDeleteCountByKeyPoint(
         }
         if (startIndex === -1 && endIndex > -1) {
             const isReplace =
-                endIndex > 0 && isPointsOnSameLine([midDataPoints[endIndex], midDataPoints[endIndex - 1], startKeyPoint, endKeyPoint]);
+                endIndex > 0 && Point.isAlign([midDataPoints[endIndex], midDataPoints[endIndex - 1], startKeyPoint, endKeyPoint]);
             if (isReplace) {
                 return {
                     index: endIndex - 1,
@@ -149,17 +146,17 @@ export function getIndexAndDeleteCountByKeyPoint(
         for (let i = 0; i < midDataPoints.length - 1; i++) {
             const currentPoint = midDataPoints[i];
             const nextPoint = midDataPoints[i + 1];
-            if (isPointsOnSameLine([currentPoint, nextPoint, startKeyPoint, endKeyPoint])) {
+            if (Point.isAlign([currentPoint, nextPoint, startKeyPoint, endKeyPoint])) {
                 index = i;
                 deleteCount = 2;
                 break;
             }
-            if (isPointsOnSameLine([currentPoint, nextPoint, startKeyPoint])) {
+            if (Point.isAlign([currentPoint, nextPoint, startKeyPoint])) {
                 index = Math.min(i + 1, midDataPoints.length - 1);
                 deleteCount = 1;
                 break;
             }
-            if (isPointsOnSameLine([currentPoint, nextPoint, endKeyPoint])) {
+            if (Point.isAlign([currentPoint, nextPoint, endKeyPoint])) {
                 index = Math.max(i - 1, 0);
                 deleteCount = 1;
                 break;
@@ -202,8 +199,8 @@ export function getMirrorDataPoints(board: PlaitBoard, nextDataPoints: Point[], 
         const afterPoint = nextDataPoints[startIndex + 2];
         const beforeSegment = [beforePoint, startPoint];
         const afterSegment = [endPoint, afterPoint];
-        const isStraightWithBefore = isPointsOnSameLine(beforeSegment);
-        const isStraightWithAfter = isPointsOnSameLine(afterSegment);
+        const isStraightWithBefore = Point.isAlign(beforeSegment);
+        const isStraightWithAfter = Point.isAlign(afterSegment);
         const isAdjustStart = !isStraightWithBefore && getMidKeyPoints(nextKeyPoints, beforeSegment[0], beforeSegment[1]).length === 0;
         const isAdjustEnd = !isStraightWithAfter && getMidKeyPoints(nextKeyPoints, afterSegment[0], afterSegment[1]).length === 0;
         if (isAdjustStart || isAdjustEnd) {
@@ -224,7 +221,7 @@ export function getMirrorDataPoints(board: PlaitBoard, nextDataPoints: Point[], 
                     nextDataPoints.splice(startIndex + 1, 1, mirrorSegment[1]);
                 }
             } else {
-                const isHorizontal = Point.isHorizontalAlign(startPoint, endPoint);
+                const isHorizontal = Point.isHorizontal(startPoint, endPoint);
                 const adjustIndex = isHorizontal ? 0 : 1;
                 if (isAdjustStart) {
                     const newStartPoint = [startPoint[0], startPoint[1]] as Point;
@@ -286,10 +283,10 @@ export function getMidKeyPoints(simplifiedNextKeyPoints: Point[], startPoint: Po
     let startPointIndex = -1;
     let endPointIndex = -1;
     for (let i = 0; i < simplifiedNextKeyPoints.length; i++) {
-        if (isPointsOnSameLine([simplifiedNextKeyPoints[i], startPoint])) {
+        if (Point.isAlign([simplifiedNextKeyPoints[i], startPoint])) {
             startPointIndex = i;
         }
-        if (startPointIndex > -1 && isPointsOnSameLine([simplifiedNextKeyPoints[i], endPoint])) {
+        if (startPointIndex > -1 && Point.isAlign([simplifiedNextKeyPoints[i], endPoint])) {
             endPointIndex = i;
             break;
         }
@@ -301,13 +298,13 @@ export function getMidKeyPoints(simplifiedNextKeyPoints: Point[], startPoint: Po
 }
 
 function findOrthogonalParallelSegments(segment: [Point, Point], keyPoints: Point[]): [Point, Point][] {
-    const isHorizontalSegment = Point.isHorizontalAlign(segment[0], segment[1]);
+    const isHorizontalSegment = Point.isHorizontal(segment[0], segment[1]);
     const parallelSegments: [Point, Point][] = [];
 
     for (let i = 0; i < keyPoints.length - 1; i++) {
         const current = keyPoints[i];
         const next = keyPoints[i + 1];
-        const isHorizontal = Point.isHorizontalAlign(current, next, 0.1);
+        const isHorizontal = Point.isHorizontal(current, next, 0.1);
         if (isHorizontalSegment && isHorizontal) {
             parallelSegments.push([current, next]);
         }
@@ -330,7 +327,7 @@ function findMirrorSegment(
         const parallelPath = parallelSegments[index];
         const startPoint = [segment[0][0], segment[0][1]] as Point;
         const endPoint = [segment[1][0], segment[1][1]] as Point;
-        const isHorizontal = Point.isHorizontalAlign(startPoint, endPoint);
+        const isHorizontal = Point.isHorizontal(startPoint, endPoint);
         const adjustDataIndex = isHorizontal ? 0 : 1;
         startPoint[adjustDataIndex] = parallelPath[0][adjustDataIndex];
         endPoint[adjustDataIndex] = parallelPath[1][adjustDataIndex];

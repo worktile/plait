@@ -304,15 +304,3 @@ export function getVectorFromPointAndSlope(x: number, y: number, slope: number) 
     }
     return vector as Point;
 }
-
-export function isHorizontalSegment(points: Point[], tolerance: number = 0) {
-    return points.every(point => Math.abs(point[1] - points[0][1]) <= tolerance);
-}
-
-export function isVerticalSegment(points: Point[], tolerance: number = 0) {
-    return points.every(point => Math.abs(point[0] - points[0][0]) <= tolerance);
-}
-
-export function isPointsOnSameLine(points: Point[], tolerance: number = 0) {
-    return isHorizontalSegment(points, tolerance) || isVerticalSegment(points, tolerance);
-}

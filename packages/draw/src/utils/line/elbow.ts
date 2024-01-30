@@ -1,4 +1,4 @@
-import { Point, PlaitBoard, getElementById, RectangleClient, Vector, isPointsOnSameLine } from '@plait/core';
+import { Point, PlaitBoard, getElementById, RectangleClient, Vector } from '@plait/core';
 import {
     getPoints,
     getRectangleByPoints,
@@ -44,7 +44,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         for (let index = 0; index < mirrorDataPoints.length - 1; index++) {
             let currentPoint = mirrorDataPoints[index];
             let nextPoint = mirrorDataPoints[index + 1];
-            const isStraight = isPointsOnSameLine([currentPoint, nextPoint]);
+            const isStraight = Point.isAlign([currentPoint, nextPoint]);
             if (!isStraight) {
                 const midKeyPoints = getMidKeyPoints(simplifiedNextKeyPoints, currentPoint, nextPoint);
                 if (midKeyPoints.length) {

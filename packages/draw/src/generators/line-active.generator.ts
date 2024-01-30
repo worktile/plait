@@ -1,12 +1,4 @@
-import {
-    PlaitBoard,
-    Point,
-    createG,
-    distanceBetweenPointAndPoint,
-    drawRectangle,
-    getSelectedElements,
-    isPointsOnSameLine
-} from '@plait/core';
+import { PlaitBoard, Point, createG, distanceBetweenPointAndPoint, drawRectangle, getSelectedElements } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, isSourceAndTargetIntersect } from '@plait/common';
 import { getCurvePoints } from '../utils/line/line-basic';
@@ -114,7 +106,7 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
     }
     if (shape === LineShape.elbow) {
         const renderPoints = getElbowPoints(board, element);
-        if (isPointsOnSameLine(renderPoints)) {
+        if (Point.isAlign(renderPoints)) {
             const points = PlaitLine.getPoints(board, element);
             const middlePoint = [(points[0][0] + points[1][0]) / 2, (points[1][1] + points[1][1]) / 2] as Point;
             result.push(middlePoint);
