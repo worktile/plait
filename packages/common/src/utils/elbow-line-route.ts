@@ -104,9 +104,7 @@ const adjust = (route: Point[], options: AdjustOptions) => {
             const indexRangeInPath: number[] = [];
             const indexRangeInCorner: number[] = [];
             route.forEach((point, index) => {
-                const cornerResult = tempCorners.findIndex(
-                    corner => Math.floor(corner[0]) === Math.floor(point[0]) && Math.floor(corner[1]) === Math.floor(point[1])
-                );
+                const cornerResult = tempCorners.findIndex(corner => Point.isEquals(point, corner));
                 if (cornerResult !== -1) {
                     indexRangeInPath.push(index);
                     indexRangeInCorner.push(cornerResult);
