@@ -182,7 +182,14 @@ export function getIndexAndDeleteCountByKeyPoint(
                     break;
                 }
             }
-            index = index === null ? 0 : index;
+            if (index === null) {
+                index = 0;
+                // When renderPoints is a straight line and dataPoints are not on the line,
+                // the default 'deleteCount' is set to 1.
+                if (isPointsOnSameLine(nextRenderPoints)) {
+                    deleteCount = 1;
+                }
+            }
         } else {
             index = 0;
         }
