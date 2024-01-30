@@ -5,7 +5,6 @@ import {
     getFirstTextManage,
     getIndexByResizeHandle,
     getPointByUnitVectorAndVectorComponent,
-    getRectangleByPoints,
     getResizeHandlePointByIndex,
     getSymmetricHandleIndex,
     getUnitVectorByPointAndPoint,
@@ -59,10 +58,10 @@ export function withDrawResize(board: PlaitBoard) {
                         Transforms.setNode(board, { points }, path);
                     } else {
                         // The image element does not follow the resize, but moves based on the center point.
-                        const targetRectangle = getRectangleByPoints(target.points);
+                        const targetRectangle = RectangleClient.getRectangleByPoints(target.points);
                         const centerPoint = RectangleClient.getCenterPoint(targetRectangle);
                         const newCenterPoint = movePointByZoomAndOriginPoint(centerPoint, result.originPoint, result.xZoom, result.yZoom);
-                        const newTargetRectangle = RectangleClient.createRectangleByCenterPoint(
+                        const newTargetRectangle = RectangleClient.getRectangleByCenterPoint(
                             newCenterPoint,
                             targetRectangle.width,
                             targetRectangle.height

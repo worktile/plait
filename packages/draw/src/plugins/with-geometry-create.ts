@@ -46,7 +46,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
             if (pointer === BasicShapes.text) {
                 const property = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']);
                 const points = RectangleClient.getPoints(
-                    RectangleClient.createRectangleByCenterPoint(movingPoint, property.width, property.height)
+                    RectangleClient.getRectangleByCenterPoint(movingPoint, property.width, property.height)
                 );
                 temporaryElement = createTextElement(board, points);
                 if (!fakeCreateTextRef) {
@@ -136,7 +136,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
                 const memorizedLatest = getMemorizedLatestByPointer(pointer);
                 const property = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']);
                 const points = RectangleClient.getPoints(
-                    RectangleClient.createRectangleByCenterPoint(point, property.width, property.height)
+                    RectangleClient.getRectangleByCenterPoint(point, property.width, property.height)
                 );
                 const textElement = createTextElement(board, points);
                 insertElement(board, textElement);
@@ -167,7 +167,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         const isDrawMode = !!start;
         if (isDrawMode) {
             const targetPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-            const { width, height } = RectangleClient.toRectangleClient([start!, targetPoint]);
+            const { width, height } = RectangleClient.getRectangleByPoints([start!, targetPoint]);
             if (Math.hypot(width, height) === 0) {
                 const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
                 if (pointer !== BasicShapes.text) {

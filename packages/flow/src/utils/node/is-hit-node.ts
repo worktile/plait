@@ -7,7 +7,7 @@ export function isHitNode(board: PlaitBoard, node: FlowNode, point: [Point, Poin
     const { x, y } = normalizePoint(node.points![0]);
     const isSelected = isSelectedElement(board, node);
     const isHitNodeHandle = !!getHitHandleByNode(node, point[0]);
-    let hitFlowNode = RectangleClient.isHit(RectangleClient.toRectangleClient(point), {
+    let hitFlowNode = RectangleClient.isHit(RectangleClient.getRectangleByPoints(point), {
         x: isSelected ? x : x + OUTLINE_BUFFER,
         y: isSelected ? y : y + OUTLINE_BUFFER,
         width: isSelected ? node.width : node.width - OUTLINE_BUFFER * 2,

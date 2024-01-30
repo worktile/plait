@@ -9,7 +9,6 @@ import {
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getRectangleByPoints } from '@plait/common';
 import { ShapeDefaultSpace } from '../../constants';
 import { getStrokeWidthByElement } from '../../utils';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
@@ -43,7 +42,7 @@ export const CommentEngine: ShapeEngine = {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getTextRectangle(element: PlaitGeometry) {
-        const elementRectangle = getRectangleByPoints(element.points!);
+        const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const height = element.textHeight;
         const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;

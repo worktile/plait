@@ -37,7 +37,24 @@ export const RectangleClient = {
             return false;
         }
     },
-    toRectangleClient: (points: Point[]) => {
+    getPoints(rectangle: RectangleClient) {
+        return [
+            [rectangle.x, rectangle.y],
+            [rectangle.x + rectangle.width, rectangle.y + rectangle.height]
+        ] as [Point, Point];
+    },
+    getRectangleByCenterPoint(point: Point, width: number, height: number) {
+        return RectangleClient.getRectangleByPoint([point[0] - width / 2, point[1] - height / 2], width, height);
+    },
+    getRectangleByPoint(point: Point, width: number, height: number): RectangleClient {
+        return {
+            x: point[0],
+            y: point[1],
+            width,
+            height
+        };
+    },
+    getRectangleByPoints(points: Point[]): RectangleClient {
         const xArray = points.map(ele => ele[0]);
         const yArray = points.map(ele => ele[1]);
         const xMin = Math.min(...xArray);
@@ -46,23 +63,6 @@ export const RectangleClient = {
         const yMax = Math.max(...yArray);
         const rect = { x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin };
         return rect;
-    },
-    getPoints(rectangle: RectangleClient) {
-        return [
-            [rectangle.x, rectangle.y],
-            [rectangle.x + rectangle.width, rectangle.y + rectangle.height]
-        ] as [Point, Point];
-    },
-    createRectangleByCenterPoint(point: Point, width: number, height: number) {
-        return RectangleClient.createRectangleClient([point[0] - width / 2, point[1] - height / 2], width, height);
-    },
-    createRectangleClient(point: Point, width: number, height: number): RectangleClient {
-        return {
-            x: point[0],
-            y: point[1],
-            width,
-            height
-        };
     },
     getOutlineRectangle: (rectangle: RectangleClient, offset: number) => {
         return {

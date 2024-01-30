@@ -25,7 +25,7 @@ export const insertGeometryByVector = (board: PlaitBoard, point: Point, shape: G
         }
         const vectorPoint = getPointByVector(point, vector, offset);
         const points = RectangleClient.getPoints(
-            RectangleClient.createRectangleByCenterPoint(vectorPoint, shapeProperty.width, shapeProperty.height)
+            RectangleClient.getRectangleByCenterPoint(vectorPoint, shapeProperty.width, shapeProperty.height)
         );
         return insertGeometry(board, points, shape);
     }

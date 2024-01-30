@@ -1,5 +1,5 @@
 import { BasicShapes, PlaitGeometry } from '../interfaces';
-import { getRectangleByPoints, Generator } from '@plait/common';
+import { Generator } from '@plait/common';
 import { getFillByElement, getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../utils/style/stroke';
 import { drawGeometry } from '../utils';
 import { RectangleClient } from '@plait/core';
@@ -12,7 +12,7 @@ export class GeometryShapeGenerator extends Generator<PlaitGeometry, ShapeData> 
     }
 
     draw(element: PlaitGeometry, data: ShapeData) {
-        const rectangle = getRectangleByPoints(element.points);
+        const rectangle = RectangleClient.getRectangleByPoints(element.points);
         const shape = element.shape;
         if (shape === BasicShapes.text) {
             return;

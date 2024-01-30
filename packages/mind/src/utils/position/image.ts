@@ -35,7 +35,7 @@ export const getHitImageResizeHandleDirection = (board: PlaitBoard, element: Min
     const imageRectangle = getImageForeignRectangle(board as PlaitMindBoard, element);
     const resizeHandleRefs = getRectangleResizeHandleRefs(imageRectangle, RESIZE_HANDLE_DIAMETER);
     const result = resizeHandleRefs.find(resizeHandleRef => {
-        return RectangleClient.isHit(RectangleClient.toRectangleClient([point, point]), resizeHandleRef.rectangle);
+        return RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), resizeHandleRef.rectangle);
     });
     return result;
 };

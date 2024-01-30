@@ -31,5 +31,5 @@ export function getEmojiForeignRectangle(board: PlaitMindBoard, element: MindEle
 }
 
 export const isHitEmojis = (board: PlaitBoard, element: MindElement<EmojiData>, point: Point) => {
-    return RectangleClient.isHit(RectangleClient.toRectangleClient([point, point]), getEmojiRectangle(board as PlaitMindBoard, element));
+    return RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), getEmojiRectangle(board as PlaitMindBoard, element));
 };

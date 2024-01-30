@@ -14,7 +14,7 @@ import {
     catmullRomFitting
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { getRectangleByPoints, getPointOnPolyline, getPointByVector, removeDuplicatePoints, getExtendPoint } from '@plait/common';
+import { getPointOnPolyline, getPointByVector, removeDuplicatePoints, getExtendPoint } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, LineText, PlaitDrawElement, PlaitLine, PlaitShape } from '../../interfaces';
 import { getNearestPoint } from '../geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../style/stroke';
@@ -122,7 +122,7 @@ export const getHitLineTextIndex = (board: PlaitBoard, element: PlaitLine, point
             width: text.width!,
             height: text.height!
         };
-        return RectangleClient.isHit(rectangle, RectangleClient.toRectangleClient([point, point]));
+        return RectangleClient.isHit(rectangle, RectangleClient.getRectangleByPoints([point, point]));
     });
 };
 
@@ -155,7 +155,7 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
 };
 
 export const getConnectionByNearestPoint = (board: PlaitBoard, point: Point, hitElement: PlaitShape): Point => {
-    let rectangle = getRectangleByPoints(hitElement.points);
+    let rectangle = RectangleClient.getRectangleByPoints(hitElement.points);
     let nearestPoint = getNearestPoint(hitElement, point);
     const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, rectangle);
     nearestPoint = hitConnector ? hitConnector : nearestPoint;
@@ -165,10 +165,10 @@ export const getConnectionByNearestPoint = (board: PlaitBoard, point: Point, hit
 export const getHitConnectorPoint = (point: Point, hitElement: PlaitShape, rectangle: RectangleClient) => {
     const shape = getShape(hitElement);
     const connector = getEngine(shape).getConnectorPoints(rectangle);
-    const points = RectangleClient.getPoints(RectangleClient.createRectangleByCenterPoint(point, 10, 10));
-    const pointRectangle = getRectangleByPoints(points);
+    const points = RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(point, 10, 10));
+    const pointRectangle = RectangleClient.getRectangleByPoints(points);
     return connector.find(point => {
-        return RectangleClient.isHit(pointRectangle, RectangleClient.toRectangleClient([point, point]));
+        return RectangleClient.isHit(pointRectangle, RectangleClient.getRectangleByPoints([point, point]));
     });
 };
 
@@ -250,7 +250,7 @@ function drawMask(board: PlaitBoard, element: PlaitLine, id: string) {
     const mask = createMask();
     mask.setAttribute('id', id);
     const points = getLinePoints(board, element);
-    let rectangle = getRectangleByPoints(points);
+    let rectangle = RectangleClient.getRectangleByPoints(points);
     rectangle = RectangleClient.getOutlineRectangle(rectangle, -30);
     const maskFillRect = createRect(rectangle, {
         fill: 'white'

@@ -30,7 +30,7 @@ export const DelayEngine: ShapeEngine = {
     },
     isHit(rectangle: RectangleClient, point: Point) {
         //split shape to rectangle and a half ellipse
-        const rangeRectangle = RectangleClient.toRectangleClient([point, point]);
+        const rangeRectangle = RectangleClient.getRectangleByPoints([point, point]);
         const isInRectangle = RectangleClient.isHit(
             {
                 ...rectangle,

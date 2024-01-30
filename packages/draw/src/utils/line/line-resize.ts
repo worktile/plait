@@ -4,7 +4,6 @@ import {
     RESIZE_HANDLE_DIAMETER,
     ResizeState,
     generateElbowLineRoute,
-    getRectangleByPoints,
     removeDuplicatePoints,
     simplifyOrthogonalPoints
 } from '@plait/common';
@@ -331,7 +330,7 @@ function findMirrorSegment(
         const adjustDataIndex = isHorizontal ? 0 : 1;
         startPoint[adjustDataIndex] = parallelPath[0][adjustDataIndex];
         endPoint[adjustDataIndex] = parallelPath[1][adjustDataIndex];
-        const fakeRectangle = getRectangleByPoints([startPoint, endPoint, ...parallelPath]);
+        const fakeRectangle = RectangleClient.getRectangleByPoints([startPoint, endPoint, ...parallelPath]);
         const isValid = !RectangleClient.isHit(fakeRectangle, sourceRectangle) && !RectangleClient.isHit(fakeRectangle, targetRectangle);
         if (isValid) {
             // const fakeRectangleG = PlaitBoard.getRoughSVG(board).rectangle(

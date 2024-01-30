@@ -8,7 +8,7 @@ export const RectangleEngine: ShapeEngine = {
         return drawRectangle(board, rectangle, { ...options, fillStyle: 'solid' });
     },
     isHit(rectangle: RectangleClient, point: Point) {
-        const rangeRectangle = RectangleClient.toRectangleClient([point, point]);
+        const rangeRectangle = RectangleClient.getRectangleByPoints([point, point]);
         return RectangleClient.isHit(rectangle, rangeRectangle);
     },
     getCornerPoints(rectangle: RectangleClient) {
