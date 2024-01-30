@@ -10,10 +10,15 @@ import {
     handleTouchTarget,
     throttleRAF,
     toViewBoxPoint,
-    toHostPoint
+    toHostPoint,
+    getRectangleByElements,
+    PlaitElement,
+    RectangleClient,
+    AlignReaction,
+    ACTIVE_MOVING_CLASS_NAME
 } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
-import { addResizing, isResizing, removeResizing } from '../utils/resize';
+import { addResizing, getActiveRectangle, isResizing, removeResizing, updateEndPointByDelta } from '../utils/resize';
 import { PlaitElementOrArray, ResizeHitTestRef, ResizeRef, WithResizeOptions } from '../types/resize';
 
 const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
@@ -31,6 +36,10 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
     let resizeRef: ResizeRef<T, K> | null = null;
     let startPoint: Point | null = null;
     let hoverHitTestRef: ResizeHitTestRef<T, K> | null = null;
+    let activeElementsRectangle: RectangleClient | null = null;
+    let offsetX = 0;
+    let offsetY = 0;
+    let alignG: SVGGElement | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
         if (!options.canResize() || !generalCanResize(board, event) || !isMainPointer(event)) {
@@ -55,6 +64,7 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
                 rectangle: resizeHitTestRef.rectangle
             };
             preventTouchMove(board, event, true);
+            activeElementsRectangle = getRectangleByElements(board, [resizeRef.element] as PlaitElement[], true);
             // prevent text from being selected when user pressed shift and pointer down
             event.preventDefault();
             return;
@@ -63,6 +73,7 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
     };
 
     board.pointerMove = (event: PointerEvent) => {
+        alignG?.remove();
         if (!options.canResize() || !generalCanResize(board, event)) {
             pointerMove(event);
             return;
@@ -86,9 +97,21 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
             throttleRAF(() => {
                 if (startPoint && resizeRef) {
                     handleTouchTarget(board);
+                    if (!activeElementsRectangle) {
+                        return;
+                    }
+                    const [startPointX, startPointY] = toViewBoxPoint(board, toHostPoint(board, startPoint[0], startPoint[1]));
+                    offsetX = endPoint[0] - startPointX;
+                    offsetY = endPoint[1] - startPointY;
+                    const newRectangle = getActiveRectangle<K>(resizeRef.handle, activeElementsRectangle, offsetX, offsetY);
+                    const reactionManager = new AlignReaction(board, [resizeRef.element] as PlaitElement[], newRectangle);
+                    const { deltaX, deltaY, deltaWidth, deltaHeight, g } = reactionManager.handleAlign();
+                    alignG = g;
+                    alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
+                    PlaitBoard.getElementActiveHost(board).append(alignG);
                     options.onResize(resizeRef, {
-                        startPoint: toViewBoxPoint(board, toHostPoint(board, startPoint[0], startPoint[1])),
-                        endPoint,
+                        startPoint: [startPointX, startPointY],
+                        endPoint: updateEndPointByDelta(resizeRef.handle, endPoint, deltaX, deltaY, deltaWidth, deltaHeight),
                         isShift: !!event.shiftKey
                     });
                 }
@@ -125,6 +148,10 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
             startPoint = null;
             resizeHitTestRef = null;
             resizeRef = null;
+            offsetX = 0;
+            offsetY = 0;
+            alignG?.remove();
+            alignG = null;
             MERGING.set(board, false);
             preventTouchMove(board, event, false);
         }

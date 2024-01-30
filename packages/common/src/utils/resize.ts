@@ -93,7 +93,10 @@ export const isResizing = (board: PlaitBoard) => {
     return !!IS_RESIZING.get(board);
 };
 
-export const isResizingByCondition = <T extends PlaitElementOrArray, K>(board: PlaitBoard, match: (resizeRef: ResizeRef<T, K>) => boolean) => {
+export const isResizingByCondition = <T extends PlaitElementOrArray, K>(
+    board: PlaitBoard,
+    match: (resizeRef: ResizeRef<T, K>) => boolean
+) => {
     return isResizing(board) && match(IS_RESIZING.get(board)!);
 };
 
@@ -120,4 +123,62 @@ export const isEdgeHandle = (board: PlaitBoard, handle: ResizeHandle) => {
 
 export const isCornerHandle = (board: PlaitBoard, handle: ResizeHandle) => {
     return !isEdgeHandle(board, handle);
+};
+
+export const getActiveRectangle = <K = ResizeHandle>(handle: K, rectangle: RectangleClient, offsetX: number, offsetY: number) => {
+    const { x, y, width, height } = rectangle;
+    let newRectangle = {
+        x,
+        y,
+        width: Math.abs(width + offsetX),
+        height: Math.abs(height + offsetY)
+    };
+    if (handle === ResizeHandle.nw) {
+        newRectangle = {
+            x: x + offsetX,
+            y: y + offsetY,
+            width: Math.abs(width - offsetX),
+            height: Math.abs(height - offsetY)
+        };
+    }
+    if (handle === ResizeHandle.ne) {
+        newRectangle = {
+            x,
+            y: y + offsetY,
+            width: Math.abs(width + offsetX),
+            height: Math.abs(height - offsetY)
+        };
+    }
+    if (handle === ResizeHandle.sw) {
+        newRectangle = {
+            x: x + offsetX,
+            y,
+            width: Math.abs(width - offsetX),
+            height: Math.abs(height + offsetY)
+        };
+    }
+    return newRectangle;
+};
+
+export const updateEndPointByDelta = <K = ResizeHandle>(
+    handle: K,
+    point: Point,
+    deltaX: number,
+    deltaY: number,
+    deltaWidth: number,
+    deltaHeight: number
+): Point => {
+    const [x, y] = point;
+    console.log(deltaX, deltaWidth);
+    let endPoint: Point = [x - deltaX + deltaWidth, y - deltaY + deltaHeight];
+    if (handle === ResizeHandle.nw) {
+        endPoint = [x - deltaX - deltaWidth, y - deltaY - deltaHeight];
+    }
+    if (handle === ResizeHandle.ne) {
+        endPoint = [x - deltaX + deltaWidth, y - deltaY - deltaHeight];
+    }
+    if (handle === ResizeHandle.sw) {
+        endPoint = [x - deltaX - deltaWidth, y - deltaY + deltaHeight];
+    }
+    return endPoint;
 };
