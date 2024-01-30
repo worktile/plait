@@ -182,7 +182,7 @@ export function getIndexAndDeleteCountByKeyPoint(
                 index = 0;
                 // When renderPoints is a straight line and dataPoints are not on the line,
                 // the default 'deleteCount' is set to 1.
-                if (isPointsOnSameLine(nextRenderPoints)) {
+                if (Point.isAlign(nextRenderPoints)) {
                     deleteCount = 1;
                 }
             }
