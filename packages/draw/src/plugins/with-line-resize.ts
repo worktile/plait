@@ -7,7 +7,12 @@ import { LineHandle, LineShape, PlaitLine } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { REACTION_MARGIN } from '../constants';
 import { getElbowPoints, getNextRenderPoints } from '../utils/line/elbow';
-import { alignElbowSegment, alignPoints, getIndexAndDeleteCountByKeyPoint, getResizeReferencePoints } from '../utils/line/line-resize';
+import {
+    alignElbowSegment,
+    alignPoints,
+    getIndexAndDeleteCountByKeyPoint,
+    getResizedPreviousAndNextPoint
+} from '../utils/line/line-resize';
 import { getConnectionByNearestPoint, getLinePoints } from '../utils/line/line-basic';
 import { getElbowLineRouteOptions } from '../utils/line';
 
@@ -33,7 +38,7 @@ export const withLineResize = (board: PlaitBoard) => {
                         result = {
                             element: value,
                             handle: handleRef.handle,
-                            handleIndex: handleRef.index
+                            handleIndex: handleRef.handleIndex
                         };
                     }
                 });
@@ -83,15 +88,20 @@ export const withLineResize = (board: PlaitBoard) => {
             } else {
                 if (resizeRef.element.shape === LineShape.elbow) {
                     if (elbowNextRenderPoints && elbowSourcePoint && elbowTargetPoint) {
-                        const referencePoints = getResizeReferencePoints(
+                        const resizedPreviousAndNextPoint = getResizedPreviousAndNextPoint(
                             elbowNextRenderPoints,
                             elbowSourcePoint,
                             elbowTargetPoint,
                             handleIndex
                         );
-                        const startPoint = elbowNextRenderPoints[handleIndex];
-                        const endPoint = elbowNextRenderPoints[handleIndex + 1];
-                        const [newStartPoint, newEndPoint] = alignElbowSegment(startPoint, endPoint, resizeState, referencePoints);
+                        const startKeyPoint = elbowNextRenderPoints[handleIndex];
+                        const endKeyPoint = elbowNextRenderPoints[handleIndex + 1];
+                        const [newStartPoint, newEndPoint] = alignElbowSegment(
+                            startKeyPoint,
+                            endKeyPoint,
+                            resizeState,
+                            resizedPreviousAndNextPoint
+                        );
                         const drawPoints: Point[] = [...points].slice(1, points.length - 1);
                         if (elbowLineIndex !== null && elbowLineDeleteCount !== null) {
                             drawPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
