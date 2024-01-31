@@ -1,4 +1,4 @@
-import { Point } from '@plait/core';
+import { Point, RectangleClient } from '@plait/core';
 import { ElbowLineRouteOptions, generateElbowLineRoute } from './elbow-line-route';
 
 describe('generate elbow line route', () => {
@@ -106,9 +106,110 @@ describe('generate elbow line route', () => {
             const route = generateElbowLineRoute(options);
             verifyOrthogonalPoints(route);
         });
+        it('The calculation of the number of inflection points is abnormal, causing the centerline correction to fail.', () => {
+            const elements = [
+                {
+                    id: 'iEcSZ',
+                    type: 'geometry',
+                    shape: 'rectangle',
+                    angle: 0,
+                    opacity: 1,
+                    textHeight: 20,
+                    text: {
+                        children: [
+                            {
+                                text: '1'
+                            }
+                        ],
+                        align: 'center'
+                    },
+                    points: [
+                        [6969.2275390625, -355.5415588876942],
+                        [7103.027912782662, -261.1848421117797]
+                    ],
+                    strokeWidth: 2
+                },
+                {
+                    id: 'jArZJ',
+                    type: 'geometry',
+                    shape: 'rectangle',
+                    angle: 0,
+                    opacity: 1,
+                    textHeight: 20,
+                    text: {
+                        children: [
+                            {
+                                text: '2'
+                            }
+                        ],
+                        align: 'center'
+                    },
+                    points: [
+                        [7288.517009092338, -355.5415588876941],
+                        [7422.3173828125, -261.1848421117797]
+                    ],
+                    strokeWidth: 2
+                },
+                {
+                    id: 'CXFrs',
+                    type: 'line',
+                    shape: 'elbow',
+                    source: {
+                        marker: 'none',
+                        connection: [0.5, 0],
+                        boundId: 'iEcSZ'
+                    },
+                    texts: [],
+                    target: {
+                        marker: 'arrow',
+                        connection: [0, 0.5],
+                        boundId: 'jArZJ'
+                    },
+                    opacity: 1,
+                    points: [
+                        [7279.877707419132, -291.823020614771],
+                        [7464.375654066191, -476.36040830452293]
+                    ],
+                    strokeWidth: 2
+                }
+            ];
+            const options: ElbowLineRouteOptions = {
+                sourcePoint: [7036.127725922581, -355.5415588876942],
+                nextSourcePoint: [7036.127725922581, -387.5415588876942],
+                sourceRectangle: {
+                    x: 6967.2275390625,
+                    y: -357.5415588876942,
+                    width: 137.8003737201616,
+                    height: 98.35671677591449
+                },
+                sourceOuterRectangle: {
+                    x: 6937.2275390625,
+                    y: -387.5415588876942,
+                    width: 197.8003737201616,
+                    height: 158.3567167759145
+                },
+                targetPoint: [7286.517009092338, -308.3632004997369],
+                nextTargetPoint: [7256.517009092338, -308.3632004997369],
+                targetRectangle: {
+                    x: 7286.517009092338,
+                    y: -357.5415588876941,
+                    width: 137.8003737201616,
+                    height: 98.35671677591444
+                },
+                targetOuterRectangle: {
+                    x: 7256.517009092338,
+                    y: -387.5415588876941,
+                    width: 197.8003737201616,
+                    height: 158.35671677591444
+                }
+            };
+            const centerX = RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
+            const route = generateElbowLineRoute(options);
+            verifyOrthogonalPoints(route);
+            verifyOrthogonalPointsPassThroughCenterX(route, centerX);
+        });
     });
 });
-
 
 export const verifyOrthogonalPoints = (points: Point[]) => {
     for (let index = 1; index < points.length; index++) {
@@ -116,4 +217,14 @@ export const verifyOrthogonalPoints = (points: Point[]) => {
         const current = points[index];
         expect(Point.isAlign([previous, current])).toBeTrue();
     }
-}
+};
+
+export const verifyOrthogonalPointsPassThroughCenterX = (points: Point[], centerX: number) => {
+    let count = 0;
+    for (let index = 0; index < points.length; index++) {
+        if (points[index][0] === centerX) {
+            count++;
+        }
+    }
+    expect(count).toBeGreaterThanOrEqual(2);
+};

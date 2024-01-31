@@ -1,5 +1,5 @@
-import { Direction, Point, RectangleClient, downScale } from '@plait/core';
-import { removeDuplicatePoints } from '../utils';
+import { Direction, PlaitBoard, Point, RectangleClient } from '@plait/core';
+import { removeDuplicatePoints, simplifyOrthogonalPoints } from '../utils';
 import { DEFAULT_ROUTE_MARGIN } from '../constants';
 import { AStar, PointGraph } from '../algorithms';
 
@@ -80,26 +80,6 @@ const adjust = (route: Point[], options: AdjustOptions) => {
         // Construct a rectangle
         const tempRect = RectangleClient.getRectangleByPoints([pointOfHit, parallelPath[0], parallelPath[1]]);
         if (!RectangleClient.isHit(tempRect, sourceRectangle) && !RectangleClient.isHit(tempRect, targetRectangle)) {
-            const getCornerCount = (path: Point[]) => {
-                let cornerCount = 0;
-                for (let index = 1; index < path.length - 1; index++) {
-                    const pre = path[index - 1];
-                    const current = path[index];
-                    const next = path[index + 1];
-                    if (
-                        pre &&
-                        current &&
-                        next &&
-                        !(
-                            (downScale(current[0]) === downScale(pre[0]) && downScale(current[0]) === downScale(next[0])) ||
-                            (downScale(current[1]) === downScale(pre[1]) && downScale(current[1]) === downScale(next[1]))
-                        )
-                    ) {
-                        cornerCount++;
-                    }
-                }
-                return cornerCount;
-            };
             const tempCorners = RectangleClient.getCornerPoints(tempRect);
             const indexRangeInPath: number[] = [];
             const indexRangeInCorner: number[] = [];
@@ -114,9 +94,9 @@ const adjust = (route: Point[], options: AdjustOptions) => {
             const missCorner = tempCorners.find((c, index) => !indexRangeInCorner.includes(index)) as Point;
             const removeLength = Math.abs(indexRangeInPath[0] - indexRangeInPath[indexRangeInPath.length - 1]) + 1;
             newPath.splice(indexRangeInPath[0] + 1, removeLength - 2, missCorner);
-            const cornerCount = getCornerCount([...route]);
-            const newCornerCount = getCornerCount([...newPath]);
-            if (newCornerCount <= cornerCount) {
+            const turnCount = simplifyOrthogonalPoints([...route]).length - 1;
+            const newTurnCount = simplifyOrthogonalPoints([...newPath]).length - 1;
+            if (newTurnCount <= turnCount) {
                 result = newPath;
             }
         }

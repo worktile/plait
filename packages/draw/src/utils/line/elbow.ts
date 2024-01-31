@@ -16,6 +16,7 @@ import { getMidKeyPoints, getMirrorDataPoints } from './line-resize';
 export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     const handleRefPair = getLineHandleRefPair(board, element);
     const params = getElbowLineRouteOptions(board, element, handleRefPair);
+    // console.log(params, 'params');
     const isIntersect = isSourceAndTargetIntersect(params);
     if (isIntersect) {
         return getPoints(

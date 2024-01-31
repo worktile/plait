@@ -213,10 +213,6 @@ export const isPointInRoundRectangle = (point: Point, rectangle: RectangleClient
     return isInRectangle && !isInCorner;
 };
 
-export const downScale = (number: number) => {
-    return Number(number.toFixed(2));
-};
-
 // https://gist.github.com/nicholaswmin/c2661eb11cad5671d816
 export const catmullRomFitting = function(points: Point[]) {
     const alpha = 0.5;
@@ -303,4 +299,15 @@ export function getVectorFromPointAndSlope(x: number, y: number, slope: number) 
         vector = [-vector[0], -vector[1]];
     }
     return vector as Point;
+}
+
+/**
+ * The DOM likes values to be fixed to 3 decimal places
+ */
+export function toDomPrecision(v: number) {
+	return +v.toFixed(4)
+}
+
+export function toFixed(v: number) {
+	return +v.toFixed(2)
 }
