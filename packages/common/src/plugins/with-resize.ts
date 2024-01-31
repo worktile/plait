@@ -40,6 +40,7 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
     let offsetX = 0;
     let offsetY = 0;
     let alignG: SVGGElement | null = null;
+    let resizeElements: PlaitElement[] | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
         if (!options.canResize() || !generalCanResize(board, event) || !isMainPointer(event)) {
@@ -64,7 +65,11 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
                 rectangle: resizeHitTestRef.rectangle
             };
             preventTouchMove(board, event, true);
-            activeElementsRectangle = getRectangleByElements(board, [resizeRef.element] as PlaitElement[], true);
+            resizeElements = [resizeRef.element] as PlaitElement[];
+            if(Array.isArray(resizeRef.element)){
+                resizeElements = resizeRef.element;
+            }
+            activeElementsRectangle = getRectangleByElements(board, resizeElements, true);
             // prevent text from being selected when user pressed shift and pointer down
             event.preventDefault();
             return;
@@ -104,7 +109,7 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
                     offsetX = endPoint[0] - startPointX;
                     offsetY = endPoint[1] - startPointY;
                     const newRectangle = getActiveRectangle<K>(resizeRef.handle, activeElementsRectangle, offsetX, offsetY);
-                    const reactionManager = new AlignReaction(board, [resizeRef.element] as PlaitElement[], newRectangle);
+                    const reactionManager = new AlignReaction(board, resizeElements!, newRectangle);
                     const directions = getHandleDirections(resizeRef.handle as ResizeHandle);
                     const { deltaX, deltaY, g } = reactionManager.handleAlign('resize', directions);
                     alignG = g;
@@ -151,6 +156,7 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
             resizeRef = null;
             offsetX = 0;
             offsetY = 0;
+            resizeElements = null;
             alignG?.remove();
             alignG = null;
             MERGING.set(board, false);

@@ -18,7 +18,7 @@ export interface DistributeRef {
 
 export type AlignAction = 'move' | 'resize';
 
-const ALIGN_TOLERANCE = 10;
+const ALIGN_TOLERANCE = 2;
 
 export class AlignReaction {
     alignRectangles: RectangleClient[];
@@ -67,24 +67,32 @@ export class AlignReaction {
             if (closestDistances.absXDistance < ALIGN_TOLERANCE) {
                 if (action && action === 'resize') {
                     if (closestDistances.absXDistance > 0) {
-                        deltaX = closestDistances.xDistance;
-                        this.activeRectangle.width -= deltaX;
                         if (actionDirections?.includes(Direction.left)) {
+                            deltaX = closestDistances.xDistance;
                             this.activeRectangle.x -= deltaX;
+                        }
+                        if (actionDirections?.includes(Direction.right)) {
+                            deltaX = closestDistances.xDistance;
+                            this.activeRectangle.width -= deltaX;
                         }
                     }
                     if (closestDistances.absXDistance === 0) {
                         const offsetWidth = this.activeRectangle.width - alignRectangle.width;
                         if (Math.abs(offsetWidth) < ALIGN_TOLERANCE) {
-                            deltaX = offsetWidth;
                             if (actionDirections?.includes(Direction.left)) {
                                 deltaX = -offsetWidth;
                                 this.activeRectangle.x -= deltaX;
+                                this.activeRectangle.width = alignRectangle.width;
                             }
-                            this.activeRectangle.width = alignRectangle.width;
+                            if (actionDirections?.includes(Direction.right)) {
+                                deltaX = offsetWidth;
+                                this.activeRectangle.width = alignRectangle.width;
+                            }
                         }
                     }
-                    canDrawHorizontal = true;
+                    if (deltaX !== 0) {
+                        canDrawHorizontal = true;
+                    }
                 } else {
                     if (!isCorrectX) {
                         deltaX = closestDistances.xDistance;
@@ -147,11 +155,43 @@ export class AlignReaction {
             }
 
             let canDrawVertical = false;
-            if (!isCorrectY && closestDistances.absYDistance < ALIGN_TOLERANCE) {
-                deltaY = closestDistances.yDistance;
-                this.activeRectangle.y -= deltaY;
-                isCorrectY = true;
-                canDrawVertical = true;
+            if (closestDistances.absYDistance < ALIGN_TOLERANCE) {
+                if (action && action === 'resize') {
+                    if (closestDistances.absYDistance > 0) {
+                        if (actionDirections?.includes(Direction.top)) {
+                            deltaY = closestDistances.yDistance;
+                            this.activeRectangle.y -= deltaY;
+                        }
+                        if (actionDirections?.includes(Direction.bottom)) {
+                            deltaY = closestDistances.yDistance;
+                            this.activeRectangle.height -= deltaY;
+                        }
+                    }
+                    if (closestDistances.absYDistance === 0) {
+                        const offsetHeight = this.activeRectangle.height - alignRectangle.height;
+                        if (Math.abs(offsetHeight) < ALIGN_TOLERANCE) {
+                            if (actionDirections?.includes(Direction.top)) {
+                                deltaY = -offsetHeight;
+                                this.activeRectangle.y -= deltaY;
+                                this.activeRectangle.height = alignRectangle.height;
+                            }
+                            if (actionDirections?.includes(Direction.bottom)) {
+                                deltaY = offsetHeight;
+                                this.activeRectangle.height = alignRectangle.height;
+                            }
+                        }
+                    }
+                    if (deltaY !== 0) {
+                        canDrawVertical = true;
+                    }
+                } else {
+                    if (!isCorrectY) {
+                        deltaY = closestDistances.yDistance;
+                        this.activeRectangle.y -= deltaY;
+                        isCorrectY = true;
+                        canDrawVertical = true;
+                    }
+                }
             }
             if (closestDistances.absYDistance === 0) {
                 canDrawVertical = true;
@@ -208,6 +248,9 @@ export class AlignReaction {
         if (action && action === 'resize') {
             if (actionDirections?.includes(Direction.left)) {
                 this.activeRectangle.x += deltaX;
+            }
+            if (actionDirections?.includes(Direction.top)) {
+                this.activeRectangle.y += deltaY;
             }
         } else {
             this.activeRectangle.x += deltaX;
@@ -268,7 +311,7 @@ export class AlignReaction {
 
         const xDistancesAbs = xDistances.map(distance => Math.abs(distance));
         const yDistancesAbs = yDistances.map(distance => Math.abs(distance));
-        
+
         const indexX = xDistancesAbs.indexOf(Math.min(...xDistancesAbs));
         const indexY = yDistancesAbs.indexOf(Math.min(...yDistancesAbs));
 

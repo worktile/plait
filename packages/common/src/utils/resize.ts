@@ -126,14 +126,9 @@ export const isCornerHandle = (board: PlaitBoard, handle: ResizeHandle) => {
 };
 
 export const getActiveRectangle = <K = ResizeHandle>(handle: K, rectangle: RectangleClient, offsetX: number, offsetY: number) => {
-    const { x, y, width, height } = rectangle;
-    let newRectangle = {
-        x,
-        y,
-        width: Math.abs(width + offsetX),
-        height: Math.abs(height + offsetY)
-    };
-    if (handle === ResizeHandle.nw) {
+    let { x, y, width, height } = rectangle;
+    let newRectangle = rectangle;
+    if (handle === ResizeHandle.nw || handle === ResizeHandle.n) {
         newRectangle = {
             x: x + offsetX,
             y: y + offsetY,
@@ -141,7 +136,7 @@ export const getActiveRectangle = <K = ResizeHandle>(handle: K, rectangle: Recta
             height: Math.abs(height - offsetY)
         };
     }
-    if (handle === ResizeHandle.ne) {
+    if (handle === ResizeHandle.ne || handle === ResizeHandle.e) {
         newRectangle = {
             x,
             y: y + offsetY,
@@ -149,7 +144,15 @@ export const getActiveRectangle = <K = ResizeHandle>(handle: K, rectangle: Recta
             height: Math.abs(height - offsetY)
         };
     }
-    if (handle === ResizeHandle.sw) {
+    if (handle === ResizeHandle.se || handle === ResizeHandle.s) {
+        newRectangle = {
+            x,
+            y,
+            width: Math.abs(width + offsetX),
+            height: Math.abs(height + offsetY)
+        };
+    }
+    if (handle === ResizeHandle.sw || handle === ResizeHandle.w) {
         newRectangle = {
             x: x + offsetX,
             y,
@@ -157,6 +160,7 @@ export const getActiveRectangle = <K = ResizeHandle>(handle: K, rectangle: Recta
             height: Math.abs(height + offsetY)
         };
     }
+
     return newRectangle;
 };
 
