@@ -14,7 +14,7 @@ import {
     catmullRomFitting
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { getPointOnPolyline, getPointByVector, removeDuplicatePoints, getExtendPoint } from '@plait/common';
+import { getPointOnPolyline, getPointByVector, removeDuplicatePoints, getExtendPoint, isSourceAndTargetIntersect } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, LineText, PlaitDrawElement, PlaitLine, PlaitShape } from '../../interfaces';
 import { getNearestPoint } from '../geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../style/stroke';
@@ -26,8 +26,8 @@ import { REACTION_MARGIN } from '../../constants';
 import { getHitOutlineGeometry } from '../position/geometry';
 import { getLineMemorizedLatest } from '../memorize';
 import { alignPoints } from './line-resize';
-import { getLineHandleRefPair } from './line-common';
-import { getElbowPoints } from './elbow';
+import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
+import { getElbowPoints, getNextSourceAndTargetPoints } from './elbow';
 import { drawLineArrow } from './line-arrow';
 
 export const createLineElement = (
@@ -104,31 +104,59 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
     }
 };
 
-export const isHitPolyLine = (pathPoints: Point[], point: Point, strokeWidth: number, expand: number = 0) => {
-    const distance = distanceBetweenPointAndSegments(pathPoints, point);
-    return distance <= strokeWidth + expand;
-};
-
-export const getHitLineTextIndex = (board: PlaitBoard, element: PlaitLine, point: Point) => {
-    const texts = element.texts;
-    if (!texts.length) return -1;
-
-    const points = getLinePoints(board, element);
-    return texts.findIndex(text => {
-        const center = getPointOnPolyline(points, text.position);
-        const rectangle = {
-            x: center[0] - text.width! / 2,
-            y: center[1] - text.height! / 2,
-            width: text.width!,
-            height: text.height!
-        };
-        return RectangleClient.isHit(rectangle, RectangleClient.getRectangleByPoints([point, point]));
-    });
-};
-
-export const isHitLineText = (board: PlaitBoard, element: PlaitLine, point: Point) => {
-    return getHitLineTextIndex(board, element, point) !== -1;
-};
+export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
+    const result: Point[] = [];
+    const shape = element.shape;
+    const hideBuffer = 10;
+    if (shape === LineShape.straight) {
+        const points = PlaitLine.getPoints(board, element);
+        for (let i = 0; i < points.length - 1; i++) {
+            const distance = distanceBetweenPointAndPoint(...points[i], ...points[i + 1]);
+            if (distance < hideBuffer) continue;
+            result.push([(points[i][0] + points[i + 1][0]) / 2, (points[i][1] + points[i + 1][1]) / 2]);
+        }
+    }
+    if (shape === LineShape.curve) {
+        const points = PlaitLine.getPoints(board, element);
+        const pointsOnBezier = getCurvePoints(board, element);
+        if (points.length === 2) {
+            const start = 0;
+            const endIndex = pointsOnBezier.length - 1;
+            const middleIndex = Math.round((start + endIndex) / 2);
+            result.push(pointsOnBezier[middleIndex]);
+        } else {
+            for (let i = 0; i < points.length - 1; i++) {
+                const startIndex = pointsOnBezier.findIndex(point => point[0] === points[i][0] && point[1] === points[i][1]);
+                const endIndex = pointsOnBezier.findIndex(point => point[0] === points[i + 1][0] && point[1] === points[i + 1][1]);
+                const middleIndex = Math.round((startIndex + endIndex) / 2);
+                const distance = distanceBetweenPointAndPoint(...points[i], ...points[i + 1]);
+                if (distance < hideBuffer) continue;
+                result.push(pointsOnBezier[middleIndex]);
+            }
+        }
+    }
+    if (shape === LineShape.elbow) {
+        const renderPoints = getElbowPoints(board, element);
+        const options = getElbowLineRouteOptions(board, element);
+        const isIntersect = isSourceAndTargetIntersect(options);
+        if (!isIntersect) {
+            const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
+            for (let i = 0; i < renderPoints.length - 1; i++) {
+                if (
+                    (i == 0 && Point.isEquals(renderPoints[i + 1], nextSourcePoint)) ||
+                    (i === renderPoints.length - 2 && Point.isEquals(renderPoints[renderPoints.length - 2], nextTargetPoint))
+                ) {
+                    continue;
+                }
+                const [currentX, currentY] = renderPoints[i];
+                const [nextX, nextY] = renderPoints[i + 1];
+                const middlePoint = [(currentX + nextX) / 2, (currentY + nextY) / 2] as Point;
+                result.push(middlePoint);
+            }
+        }
+    }
+    return result;
+}
 
 export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     const strokeWidth = getStrokeWidthByElement(element);

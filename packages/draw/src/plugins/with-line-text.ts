@@ -12,7 +12,9 @@ import { getRatioByPoint } from '@plait/common';
 import { buildText } from '@plait/text';
 import { LineComponent } from '../line.component';
 import { DrawTransforms } from '../transforms';
-import { getHitLineTextIndex, getLinePoints, isHitLineText } from '../utils/line/line-basic';
+import { getLinePoints } from '../utils/line/line-basic';
+import { getHitLineTextIndex } from '../utils/position/line';
+import { isHitLineText } from '../utils/hit';
 
 export const withLineText = (board: PlaitBoard) => {
     const { dblClick } = board;

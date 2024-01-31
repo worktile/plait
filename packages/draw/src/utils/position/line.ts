@@ -1,7 +1,7 @@
-import { PlaitBoard, Point, RectangleClient, drawCircle } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, distanceBetweenPointAndSegments } from '@plait/core';
 import { LineShape, PlaitLine } from '../../interfaces';
-import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '@plait/common';
-import { getMiddlePoints } from '../../generators/line-active.generator';
+import { RESIZE_HANDLE_DIAMETER, getPointOnPolyline } from '@plait/common';
+import { getLinePoints, getMiddlePoints } from '../line/line-basic';
 
 export enum LineResizeHandle {
     'source' = 'source',
@@ -51,3 +51,20 @@ export function getHitPointIndex(points: Point[], movingPoint: Point) {
     });
     return rectangle ? rectangles.indexOf(rectangle) : -1;
 }
+
+export const getHitLineTextIndex = (board: PlaitBoard, element: PlaitLine, point: Point) => {
+    const texts = element.texts;
+    if (!texts.length) return -1;
+
+    const points = getLinePoints(board, element);
+    return texts.findIndex(text => {
+        const center = getPointOnPolyline(points, text.position);
+        const rectangle = {
+            x: center[0] - text.width! / 2,
+            y: center[1] - text.height! / 2,
+            width: text.width!,
+            height: text.height!
+        };
+        return RectangleClient.isHit(rectangle, RectangleClient.getRectangleByPoints([point, point]));
+    });
+};

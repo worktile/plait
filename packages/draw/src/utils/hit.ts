@@ -1,12 +1,21 @@
-import { PlaitElement, RectangleClient, Selection, PlaitBoard, isPolylineHitRectangle, Point } from '@plait/core';
-import { PlaitDrawElement, PlaitGeometry } from '../interfaces';
+import {
+    PlaitElement,
+    RectangleClient,
+    Selection,
+    PlaitBoard,
+    isPolylineHitRectangle,
+    Point,
+    distanceBetweenPointAndSegments
+} from '@plait/core';
+import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { TRANSPARENT } from '@plait/common';
 import { getTextRectangle } from './geometry';
-import { getLinePoints, isHitLineText, isHitPolyLine } from './line/line-basic';
+import { getLinePoints } from './line/line-basic';
 import { getFillByElement, getStrokeWidthByElement } from './style/stroke';
 import { DefaultGeometryStyle } from '../constants/geometry';
 import { getEngine } from '../engines';
 import { getShape } from './shape';
+import { getHitLineTextIndex } from './position/line';
 
 export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     const client = RectangleClient.getRectangleByPoints(geometry.points);
@@ -14,6 +23,15 @@ export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
         return true;
     }
     return false;
+};
+
+export const isHitLineText = (board: PlaitBoard, element: PlaitLine, point: Point) => {
+    return getHitLineTextIndex(board, element, point) !== -1;
+};
+
+export const isHitPolyLine = (pathPoints: Point[], point: Point, strokeWidth: number, expand: number = 0) => {
+    const distance = distanceBetweenPointAndSegments(pathPoints, point);
+    return distance <= strokeWidth + expand;
 };
 
 export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitElement, selection: Selection) => {

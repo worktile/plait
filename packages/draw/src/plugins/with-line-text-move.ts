@@ -10,7 +10,8 @@ import { PlaitDrawElement, PlaitLine } from '../interfaces';
 import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, getRatioByPoint, withResize } from '@plait/common';
 import { DrawTransforms } from '../transforms';
 import { LineComponent } from '../line.component';
-import { getHitLineTextIndex, getLinePoints } from '../utils/line/line-basic';
+import { getLinePoints } from '../utils/line/line-basic';
+import { getHitLineTextIndex } from '../utils/position/line';
 
 export const withLineTextMove = (board: PlaitBoard) => {
     let textIndex = 0;
