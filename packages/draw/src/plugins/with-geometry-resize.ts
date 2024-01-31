@@ -1,4 +1,13 @@
-import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements } from '@plait/core';
+import {
+    Path,
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    RectangleClient,
+    ResizeAlignReaction,
+    Transforms,
+    getSelectedElements
+} from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeRef,
@@ -51,6 +60,16 @@ export const withGeometryResize = (board: PlaitBoard) => {
             let points = resizeRef.element.points.map(p => {
                 return movePointByZoomAndOriginPoint(p, result.originPoint, result.xZoom, result.yZoom);
             }) as [Point, Point];
+            const newRectangle = {
+                x: points[0][0],
+                y: points[0][1],
+                width: Math.abs(points[1][0] - points[0][0]),
+                height: Math.abs(points[1][1] - points[0][1])
+            };
+            const resizeAlignReaction = new ResizeAlignReaction(board, [resizeRef.element], newRectangle);
+            const { deltaX, deltaY } = resizeAlignReaction.handleAlign();
+            // TODO: 根据 resize 的方向修改 points 中的数据
+            points = [points[0], [points[1][0] - deltaX, points[1][1] - deltaY]];
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);
