@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, Point, RectangleClient, ResizeCursorClass, setDragging } from '@plait/core';
+import { Direction, PlaitBoard, PlaitElement, Point, RectangleClient, ResizeCursorClass, setDragging } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
 import { PlaitElementOrArray, ResizeRef } from '../types/resize';
 
@@ -160,25 +160,19 @@ export const getActiveRectangle = <K = ResizeHandle>(handle: K, rectangle: Recta
     return newRectangle;
 };
 
-export const updateEndPointByDelta = <K = ResizeHandle>(
-    handle: K,
-    point: Point,
-    deltaX: number,
-    deltaY: number,
-    deltaWidth: number,
-    deltaHeight: number
-): Point => {
-    const [x, y] = point;
-    console.log(deltaX, deltaWidth);
-    let endPoint: Point = [x - deltaX + deltaWidth, y - deltaY + deltaHeight];
-    if (handle === ResizeHandle.nw) {
-        endPoint = [x - deltaX - deltaWidth, y - deltaY - deltaHeight];
+export const getHandleDirections = (handle: ResizeHandle) => {
+    let directions: Direction[] = [];
+    if ([ResizeHandle.n, ResizeHandle.nw, ResizeHandle.ne].includes(handle)) {
+        directions.push(Direction.top);
     }
-    if (handle === ResizeHandle.ne) {
-        endPoint = [x - deltaX + deltaWidth, y - deltaY - deltaHeight];
+    if ([ResizeHandle.e, ResizeHandle.ne, ResizeHandle.se].includes(handle)) {
+        directions.push(Direction.right);
     }
-    if (handle === ResizeHandle.sw) {
-        endPoint = [x - deltaX - deltaWidth, y - deltaY + deltaHeight];
+    if ([ResizeHandle.s, ResizeHandle.se, ResizeHandle.sw].includes(handle)) {
+        directions.push(Direction.bottom);
     }
-    return endPoint;
+    if ([ResizeHandle.w, ResizeHandle.nw, ResizeHandle.sw].includes(handle)) {
+        directions.push(Direction.left);
+    }
+    return directions;
 };

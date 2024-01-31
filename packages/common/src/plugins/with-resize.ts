@@ -18,7 +18,7 @@ import {
     ACTIVE_MOVING_CLASS_NAME
 } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
-import { addResizing, getActiveRectangle, isResizing, removeResizing, updateEndPointByDelta } from '../utils/resize';
+import { addResizing, getActiveRectangle, getHandleDirections, isResizing, removeResizing } from '../utils/resize';
 import { PlaitElementOrArray, ResizeHitTestRef, ResizeRef, WithResizeOptions } from '../types/resize';
 
 const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
@@ -105,13 +105,14 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
                     offsetY = endPoint[1] - startPointY;
                     const newRectangle = getActiveRectangle<K>(resizeRef.handle, activeElementsRectangle, offsetX, offsetY);
                     const reactionManager = new AlignReaction(board, [resizeRef.element] as PlaitElement[], newRectangle);
-                    const { deltaX, deltaY, deltaWidth, deltaHeight, g } = reactionManager.handleAlign();
+                    const directions = getHandleDirections(resizeRef.handle as ResizeHandle);
+                    const { deltaX, deltaY, g } = reactionManager.handleAlign('resize', directions);
                     alignG = g;
                     alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
                     PlaitBoard.getElementActiveHost(board).append(alignG);
                     options.onResize(resizeRef, {
                         startPoint: [startPointX, startPointY],
-                        endPoint: updateEndPointByDelta(resizeRef.handle, endPoint, deltaX, deltaY, deltaWidth, deltaHeight),
+                        endPoint: [endPoint[0] - deltaX, endPoint[1] - deltaY],
                         isShift: !!event.shiftKey
                     });
                 }

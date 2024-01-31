@@ -2,14 +2,12 @@ import { PlaitBoard } from '../interfaces/board';
 import { createG } from './dom/common';
 import { PlaitElement } from '../interfaces/element';
 import { Ancestor } from '../interfaces/node';
-import { Point, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
+import { Direction, Point, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { depthFirstRecursion } from './tree';
 
 export interface AlignRef {
     deltaX: number;
     deltaY: number;
-    deltaWidth: number;
-    deltaHeight: number;
     g: SVGGElement;
 }
 
@@ -18,7 +16,9 @@ export interface DistributeRef {
     after: { distance: number; index: number }[];
 }
 
-const ALIGN_TOLERANCE = 5;
+export type AlignAction = 'move' | 'resize';
+
+const ALIGN_TOLERANCE = 10;
 
 export class AlignReaction {
     alignRectangles: RectangleClient[];
@@ -50,7 +50,7 @@ export class AlignReaction {
         return result;
     }
 
-    handleAlign(): AlignRef {
+    handleAlign(action?: AlignAction, actionDirections?: Direction[]): AlignRef {
         const alignRectangles = this.getAlignRectangle();
         const g = createG();
         let alignLines = [];
@@ -58,29 +58,40 @@ export class AlignReaction {
         const offset = 12;
         let deltaX = 0;
         let deltaY = 0;
-        let deltaWidth = 0;
-        let deltaHeight = 0;
         let isCorrectX = false;
         let isCorrectY = false;
 
         for (let alignRectangle of alignRectangles) {
             const closestDistances = this.calculateClosestDistances(this.activeRectangle, alignRectangle);
             let canDrawHorizontal = false;
-            if (!isCorrectX && closestDistances.absXDistance < ALIGN_TOLERANCE) {
-                deltaX = closestDistances.xDistance;
-                deltaWidth = 0;
-                this.activeRectangle.x -= deltaX;
-                isCorrectX = true;
-                canDrawHorizontal = true;
-            }
-            const offsetWidth = alignRectangle.width - this.activeRectangle.width;
-            if (Math.abs(offsetWidth) < ALIGN_TOLERANCE) {
-                deltaWidth = offsetWidth;
-                deltaX = 0;
-                this.activeRectangle.width = alignRectangle.width;
-                if (this.activeRectangle.x !== alignRectangle.x && closestDistances.absXDistance < ALIGN_TOLERANCE) {
-                    this.activeRectangle.x -= deltaWidth;
-                    isCorrectX = true;
+            if (closestDistances.absXDistance < ALIGN_TOLERANCE) {
+                if (action && action === 'resize') {
+                    if (closestDistances.absXDistance > 0) {
+                        deltaX = closestDistances.xDistance;
+                        this.activeRectangle.width -= deltaX;
+                        if (actionDirections?.includes(Direction.left)) {
+                            this.activeRectangle.x -= deltaX;
+                        }
+                    }
+                    if (closestDistances.absXDistance === 0) {
+                        const offsetWidth = this.activeRectangle.width - alignRectangle.width;
+                        if (Math.abs(offsetWidth) < ALIGN_TOLERANCE) {
+                            deltaX = offsetWidth;
+                            if (actionDirections?.includes(Direction.left)) {
+                                deltaX = -offsetWidth;
+                                this.activeRectangle.x -= deltaX;
+                            }
+                            this.activeRectangle.width = alignRectangle.width;
+                        }
+                    }
+                    canDrawHorizontal = true;
+                } else {
+                    if (!isCorrectX) {
+                        deltaX = closestDistances.xDistance;
+                        this.activeRectangle.x -= deltaX;
+                        isCorrectX = true;
+                        canDrawHorizontal = true;
+                    }
                 }
             }
 
@@ -138,19 +149,9 @@ export class AlignReaction {
             let canDrawVertical = false;
             if (!isCorrectY && closestDistances.absYDistance < ALIGN_TOLERANCE) {
                 deltaY = closestDistances.yDistance;
-                deltaHeight = 0;
                 this.activeRectangle.y -= deltaY;
                 isCorrectY = true;
                 canDrawVertical = true;
-            }
-            const offsetHeight = alignRectangle.height - this.activeRectangle.height;
-            if (Math.abs(offsetHeight) < ALIGN_TOLERANCE) {
-                deltaHeight = offsetHeight;
-                deltaY = 0;
-                this.activeRectangle.height = alignRectangle.height;
-                if (this.activeRectangle.y !== alignRectangle.y && closestDistances.absYDistance < ALIGN_TOLERANCE) {
-                    this.activeRectangle.y -= deltaHeight;
-                }
             }
             if (closestDistances.absYDistance === 0) {
                 canDrawVertical = true;
@@ -204,8 +205,15 @@ export class AlignReaction {
         const alignDeltaX = deltaX;
         const alignDeltaY = deltaY;
 
-        this.activeRectangle.x += deltaX;
-        this.activeRectangle.y += deltaY;
+        if (action && action === 'resize') {
+            if (actionDirections?.includes(Direction.left)) {
+                this.activeRectangle.x += deltaX;
+            }
+        } else {
+            this.activeRectangle.x += deltaX;
+            this.activeRectangle.y += deltaY;
+        }
+
         const distributeHorizontalResult = this.alignDistribute(alignRectangles, true);
         const distributeVerticalResult = this.alignDistribute(alignRectangles, false);
         const distributeLines: Point[][] = [...distributeHorizontalResult.distributeLines, ...distributeVerticalResult.distributeLines];
@@ -235,8 +243,7 @@ export class AlignReaction {
             this.drawDistributeLines(distributeLines, g);
         }
 
-        console.log(2, deltaX);
-        return { deltaX, deltaY, deltaWidth, deltaHeight, g };
+        return { deltaX, deltaY, g };
     }
 
     calculateClosestDistances(activeRectangle: RectangleClient, alignRectangle: RectangleClient) {
@@ -261,7 +268,7 @@ export class AlignReaction {
 
         const xDistancesAbs = xDistances.map(distance => Math.abs(distance));
         const yDistancesAbs = yDistances.map(distance => Math.abs(distance));
-
+        
         const indexX = xDistancesAbs.indexOf(Math.min(...xDistancesAbs));
         const indexY = yDistancesAbs.indexOf(Math.min(...yDistancesAbs));
 
