@@ -14,7 +14,7 @@ import { getSelectedDrawElements } from '../utils/selected';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShape } from '../interfaces';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
-import { getBoardLines } from '../utils/line/line-basic';
+import { getLines } from '../utils/line/line-basic';
 import { PlaitImage } from '../interfaces/image';
 import { acceptImageTypes, buildImage, getElementOfFocusedImage, getElementsText, getFirstTextEditor } from '@plait/common';
 import { DEFAULT_IMAGE_WIDTH } from '../constants';
@@ -118,7 +118,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
 };
 
 export const getBoundedLineElements = (board: PlaitBoard, plaitShapes: PlaitShape[]) => {
-    const lines = getBoardLines(board);
+    const lines = getLines(board);
     return lines.filter(line =>
         plaitShapes.find(shape => PlaitLine.isBoundElementOfSource(line, shape) || PlaitLine.isBoundElementOfTarget(line, shape))
     );

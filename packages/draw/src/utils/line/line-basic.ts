@@ -1,7 +1,6 @@
 import {
     Point,
     idCreator,
-    distanceBetweenPointAndSegments,
     PlaitBoard,
     createG,
     RectangleClient,
@@ -212,7 +211,7 @@ export const getLineTextRectangle = (board: PlaitBoard, element: PlaitLine, inde
     };
 };
 
-export const getBoardLines = (board: PlaitBoard) => {
+export const getLines = (board: PlaitBoard) => {
     return findElements(board, {
         match: (element: PlaitElement) => PlaitDrawElement.isLine(element),
         recursion: (element: PlaitElement) => PlaitDrawElement.isDrawElement(element)
