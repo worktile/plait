@@ -56,7 +56,7 @@ export const withCreateMind = (board: PlaitBoard) => {
         }
         const isMindPointer = PlaitBoard.isPointer<MindPointerType | PlaitPointerType>(board, MindPointerType.mind);
         if (isDndMode(board) && isMindPointer) {
-            throttleRAF(() => {
+            throttleRAF(board, 'with-mind-create', () => {
                 let movingPoint = PlaitBoard.getMovingPointInBoard(board);
 
                 if (movingPoint) {

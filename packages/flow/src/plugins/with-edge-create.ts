@@ -35,7 +35,7 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                 event.preventDefault();
                 const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
                 placeholderEdge?.remove();
-                throttleRAF(() => {
+                throttleRAF(board, 'with-common-edge-create', () => {
                     if (sourceFlowNodeHandle) {
                         placeholderEdge = drawLine(
                             PlaitBoard.getRoughSVG(board),

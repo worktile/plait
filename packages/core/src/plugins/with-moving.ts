@@ -54,7 +54,7 @@ export function withMoving(board: PlaitBoard) {
             preventTouchMove(board, event, true);
             activeElementsRectangle = getRectangleByElements(board, activeElements, true);
         } else {
-            const targetElement = getHitElementByPoint(board, point, (el) => board.isMovable(el));
+            const targetElement = getHitElementByPoint(board, point, el => board.isMovable(el));
             if (targetElement) {
                 startPoint = point;
                 activeElements = [targetElement];
@@ -78,7 +78,7 @@ export function withMoving(board: PlaitBoard) {
             offsetY = endPoint[1] - startPoint[1];
             const distance = distanceBetweenPointAndPoint(...endPoint, ...startPoint);
             if (distance > PRESS_AND_MOVE_BUFFER || getMovingElements(board).length > 0) {
-                throttleRAF(() => {
+                throttleRAF(board, 'with-moving', () => {
                     if (!activeElementsRectangle) {
                         return;
                     }
@@ -172,7 +172,7 @@ export function withArrowMoving(board: PlaitBoard) {
                 }
             }
             const targetElements = getTargetElements(board);
-            throttleRAF(() => {
+            throttleRAF(board, 'with-arrow-moving', () => {
                 updatePoints(board, targetElements, offset[0], offset[1]);
             });
         }

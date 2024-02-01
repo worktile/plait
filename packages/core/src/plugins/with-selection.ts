@@ -22,8 +22,6 @@ import { PlaitPluginKey } from '../interfaces/plugin-key';
 import { Selection } from '../interfaces/selection';
 import { PRESS_AND_MOVE_BUFFER } from '../constants';
 
-
-
 export interface WithPluginOptions extends PlaitPluginOptions {
     isMultiple: boolean;
     isDisabledSelect: boolean;
@@ -81,7 +79,7 @@ export function withSelection(board: PlaitBoard) {
             selectionMovingG?.remove();
             if (Math.hypot(rectangle.width, rectangle.height) > PRESS_AND_MOVE_BUFFER || isSelectionMoving(board)) {
                 end = movedTarget;
-                throttleRAF(() => {
+                throttleRAF(board, 'with-selection', () => {
                     if (start && end) {
                         Transforms.setSelection(board, { anchor: start, focus: end });
                     }

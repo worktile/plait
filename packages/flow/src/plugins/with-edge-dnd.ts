@@ -60,7 +60,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
             offsetY = endPoint[1] - startPoint[1];
             event.preventDefault();
             if (activeElement) {
-                throttleRAF(() => {
+                throttleRAF(board, 'with-flow-edge-dnd', () => {
                     addEdgeDraggingInfo(activeElement!, {
                         offsetX,
                         offsetY,
