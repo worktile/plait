@@ -1,4 +1,14 @@
-import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements } from '@plait/core';
+import {
+    ACTIVE_MOVING_CLASS_NAME,
+    Path,
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    RectangleClient,
+    ResizeAlignReaction,
+    Transforms,
+    getSelectedElements
+} from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeRef,
@@ -16,8 +26,10 @@ import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeOriginAndZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
+import { getResizeAlignRef } from '../utils/resize';
 
 export const withGeometryResize = (board: PlaitBoard) => {
+    let alignG: SVGGElement | null;
     const options: WithResizeOptions<PlaitGeometry | PlaitImage> = {
         key: 'draw-geometry',
         canResize: () => {
@@ -45,6 +57,13 @@ export const withGeometryResize = (board: PlaitBoard) => {
             return null;
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
+            alignG?.remove();
+            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(board, resizeRef, resizeState);
+            alignG = g;
+            alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
+            PlaitBoard.getElementActiveHost(board).append(alignG);
+            resizeState.endPoint = [resizeState.endPoint[0] - deltaWidth, resizeState.endPoint[1] - deltaHeight];
+
             const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
             const isMaintainAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
             const result = getResizeOriginAndZoom(board, resizeRef, resizeState, isResizeFromCorner, isMaintainAspectRatio);
@@ -58,6 +77,10 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 points = normalizeShapePoints(points);
                 Transforms.setNode(board, { points }, resizeRef.path as Path);
             }
+        },
+        afterResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>) => {
+            alignG?.remove();
+            alignG = null;
         }
     };
 
