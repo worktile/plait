@@ -29,10 +29,8 @@ export function getResizeAlignRef(
     const resizeAlignReaction = new ResizeAlignReaction(board, activeElements, newRectangle);
 
     const [x, y] = result.unitVector;
-    const horizontal = x === 0 ? x : x / Math.abs(x);
-    const vertical = y === 0 ? y : y / Math.abs(y);
-    
-    let { deltaWidth, deltaHeight, g } = resizeAlignReaction.handleAlign([horizontal, vertical]);
+    const vectorFactor = [x === 0 ? x : x / Math.abs(x), y === 0 ? y : y / Math.abs(y)];
+    let { deltaWidth, deltaHeight, g } = resizeAlignReaction.handleAlign(vectorFactor);
     return {
         deltaWidth,
         deltaHeight,

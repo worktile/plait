@@ -2,7 +2,7 @@ import { PlaitBoard } from '../interfaces/board';
 import { createG } from './dom/common';
 import { PlaitElement } from '../interfaces/element';
 import { Ancestor } from '../interfaces/node';
-import { Point, RectangleClient, SELECTION_BORDER_COLOR, Vector } from '../interfaces';
+import { Point, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { depthFirstRecursion } from './tree';
 
 export interface ResizeAlignRef {
@@ -45,11 +45,11 @@ export class ResizeAlignReaction {
         return result;
     }
 
-    handleAlign(vectorFactor: Vector): ResizeAlignRef {
+    handleAlign(vectorFactor: number[]): ResizeAlignRef {
         const alignRectangles = this.getAlignRectangle();
         const g = createG();
         let alignLines = [];
-        
+
         let deltaWidth = 0;
         let deltaHeight = 0;
         let isCorrectWidth = false;
