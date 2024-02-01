@@ -2,7 +2,7 @@ import { PlaitBoard } from '../interfaces/board';
 import { createG } from './dom/common';
 import { PlaitElement } from '../interfaces/element';
 import { Ancestor } from '../interfaces/node';
-import { Point, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
+import { Point, RectangleClient, SELECTION_BORDER_COLOR, Vector } from '../interfaces';
 import { depthFirstRecursion } from './tree';
 
 export interface ResizeAlignRef {
@@ -11,19 +11,9 @@ export interface ResizeAlignRef {
     g: SVGGElement;
 }
 
-export interface ResizeDistributeRef {
-    before: { distance: number; index: number }[];
-    after: { distance: number; index: number }[];
-}
-
 const ALIGN_TOLERANCE = 2;
 
 const EQUAL_SPACING = 10;
-
-export const enum ResizeAlignDirection {
-    x = 'x',
-    y = 'y'
-}
 
 export class ResizeAlignReaction {
     alignRectangles: RectangleClient[];
@@ -55,15 +45,17 @@ export class ResizeAlignReaction {
         return result;
     }
 
-    handleAlign(direction?: ResizeAlignDirection | null): ResizeAlignRef {
+    handleAlign(vectorFactor: Vector): ResizeAlignRef {
         const alignRectangles = this.getAlignRectangle();
         const g = createG();
         let alignLines = [];
-
+        
         let deltaWidth = 0;
         let deltaHeight = 0;
         let isCorrectWidth = false;
         let isCorrectHeight = false;
+        let drawActiveHorizontal = false;
+        let drawActiveVertical = false;
 
         for (let alignRectangle of alignRectangles) {
             const offsetWidth = this.activeRectangle.width - alignRectangle.width;
@@ -72,56 +64,68 @@ export class ResizeAlignReaction {
             const absOffsetHeight = Math.abs(offsetHeight);
 
             let canDrawHorizontal = false;
-            if (!isCorrectWidth && absOffsetWidth < ALIGN_TOLERANCE) {
-                deltaWidth = offsetWidth;
-                this.activeRectangle.width -= deltaWidth;
-                isCorrectWidth = true;
-                canDrawHorizontal = true;
-            }
+            if (vectorFactor[0] !== 0) {
+                if (!isCorrectWidth && absOffsetWidth < ALIGN_TOLERANCE) {
+                    this.activeRectangle.width -= offsetWidth;
+                    deltaWidth = offsetWidth * vectorFactor[0];
+                    if (vectorFactor[0] === -1) {
+                        this.activeRectangle.x -= deltaWidth;
+                    }
+                    isCorrectWidth = true;
+                    canDrawHorizontal = true;
+                }
 
-            if (absOffsetWidth === 0) {
-                canDrawHorizontal = true;
-            }
+                if (absOffsetWidth === 0) {
+                    canDrawHorizontal = true;
+                }
 
-            if (direction && direction === ResizeAlignDirection.y) {
-                canDrawHorizontal = false;
-            }
-
-            if (canDrawHorizontal) {
-                const linePoints: Point[] = [
-                    [alignRectangle.x, alignRectangle.y - EQUAL_SPACING],
-                    [alignRectangle.x + alignRectangle.width, alignRectangle.y - EQUAL_SPACING]
-                ];
-                alignLines.push(linePoints);
+                if (canDrawHorizontal) {
+                    const alignPoints: Point[] = getEqualLinePoints(alignRectangle, true);
+                    if (!drawActiveHorizontal) {
+                        const activePoints: Point[] = getEqualLinePoints(this.activeRectangle, true);
+                        alignLines.push(activePoints);
+                        drawActiveHorizontal = true;
+                    }
+                    alignLines.push(alignPoints);
+                }
             }
 
             let canDrawVertical = false;
-            if (!isCorrectHeight && absOffsetHeight < ALIGN_TOLERANCE) {
-                deltaHeight = offsetHeight;
-                this.activeRectangle.height -= deltaHeight;
-                canDrawVertical = true;
-                isCorrectHeight = true;
-            }
+            if (vectorFactor[1] !== 0) {
+                if (!isCorrectHeight && absOffsetHeight < ALIGN_TOLERANCE) {
+                    this.activeRectangle.height -= offsetHeight;
+                    deltaHeight = offsetHeight * vectorFactor[1];
+                    if (vectorFactor[1] === -1) {
+                        this.activeRectangle.y -= deltaHeight;
+                    }
+                    canDrawVertical = true;
+                    isCorrectHeight = true;
+                }
 
-            if (absOffsetHeight === 0) {
-                canDrawVertical = true;
-            }
+                if (absOffsetHeight === 0) {
+                    canDrawVertical = true;
+                }
 
-            if (direction && direction === ResizeAlignDirection.x) {
-                canDrawVertical = false;
-            }
-
-            if (canDrawVertical) {
-                const linePoints: Point[] = [
-                    [alignRectangle.x - EQUAL_SPACING, alignRectangle.y],
-                    [alignRectangle.x - EQUAL_SPACING, alignRectangle.y + alignRectangle.height]
-                ];
-                alignLines.push(linePoints);
+                if (canDrawVertical) {
+                    const alignPoints: Point[] = getEqualLinePoints(alignRectangle, false);
+                    if (!drawActiveVertical) {
+                        const activePoints: Point[] = getEqualLinePoints(this.activeRectangle, false);
+                        alignLines.push(activePoints);
+                        drawActiveVertical = true;
+                    }
+                    alignLines.push(alignPoints);
+                }
             }
         }
 
         this.activeRectangle.width += deltaWidth;
         this.activeRectangle.height += deltaHeight;
+        if (vectorFactor[0] === -1) {
+            this.activeRectangle.x += deltaWidth;
+        }
+        if (vectorFactor[1] === -1) {
+            this.activeRectangle.y += deltaHeight;
+        }
         if (alignLines.length) {
             this.drawEqualLines(alignLines, g);
         }
@@ -131,14 +135,13 @@ export class ResizeAlignReaction {
     drawEqualLines(lines: Point[][], g: SVGGElement) {
         lines.forEach(line => {
             if (!line.length) return;
-            let isHorizontal = line[0][1] === line[1][1];
             const yAlign = PlaitBoard.getRoughSVG(this.board).line(line[0][0], line[0][1], line[1][0], line[1][1], {
                 stroke: SELECTION_BORDER_COLOR,
                 strokeWidth: 1
             });
             g.appendChild(yAlign);
             line.forEach(point => {
-                const barPoint = getBarPoint(point, isHorizontal);
+                const barPoint = getBarPoint(point, !!Point.isHorizontal(line[0], line[1]));
                 const bar = PlaitBoard.getRoughSVG(this.board).line(barPoint[0][0], barPoint[0][1], barPoint[1][0], barPoint[1][1], {
                     stroke: SELECTION_BORDER_COLOR,
                     strokeWidth: 1
@@ -158,5 +161,17 @@ function getBarPoint(point: Point, isHorizontal: boolean) {
         : [
               [point[0] - 4, point[1]],
               [point[0] + 4, point[1]]
+          ];
+}
+
+function getEqualLinePoints(rectangle: RectangleClient, isHorizontal: boolean): Point[] {
+    return isHorizontal
+        ? [
+              [rectangle.x, rectangle.y - EQUAL_SPACING],
+              [rectangle.x + rectangle.width, rectangle.y - EQUAL_SPACING]
+          ]
+        : [
+              [rectangle.x - EQUAL_SPACING, rectangle.y],
+              [rectangle.x - EQUAL_SPACING, rectangle.y + rectangle.height]
           ];
 }

@@ -14,7 +14,6 @@ import {
     ResizeRef,
     ResizeState,
     WithResizeOptions,
-    getDirectionByVector,
     getFirstTextManage,
     isCornerHandle,
     normalizeShapePoints,
@@ -26,7 +25,7 @@ import { GeometryComponent } from '../geometry.component';
 import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getResizeOriginAndZoom, getResizeUnitVector, movePointByZoomAndOriginPoint } from './with-draw-resize';
+import { getResizeOriginAndZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
 import { getResizeAlignRef } from '../utils/resize';
 
 export const withGeometryResize = (board: PlaitBoard) => {
@@ -59,12 +58,12 @@ export const withGeometryResize = (board: PlaitBoard) => {
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
             alignG?.remove();
-            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(board, resizeRef, resizeState)
+            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(board, resizeRef, resizeState);
             alignG = g;
             alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
             PlaitBoard.getElementActiveHost(board).append(alignG);
             resizeState.endPoint = [resizeState.endPoint[0] - deltaWidth, resizeState.endPoint[1] - deltaHeight];
-           
+
             const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
             const isMaintainAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
             const result = getResizeOriginAndZoom(board, resizeRef, resizeState, isResizeFromCorner, isMaintainAspectRatio);

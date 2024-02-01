@@ -51,12 +51,12 @@ export function withDrawResize(board: PlaitBoard) {
         },
         onResize: (resizeRef: ResizeRef<PlaitDrawElement[]>, resizeState: ResizeState) => {
             alignG?.remove();
-            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(board, resizeRef, resizeState)
+            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(board, resizeRef, resizeState);
             alignG = g;
             alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
             PlaitBoard.getElementActiveHost(board).append(alignG);
             resizeState.endPoint = [resizeState.endPoint[0] - deltaWidth, resizeState.endPoint[1] - deltaHeight];
-           
+
             const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
             const isMaintainAspectRatio = resizeState.isShift || isResizeFromCorner;
             const result = getResizeOriginAndZoom(board, resizeRef, resizeState, isResizeFromCorner, isMaintainAspectRatio);
@@ -104,15 +104,6 @@ export function withDrawResize(board: PlaitBoard) {
     return board;
 }
 
-export const getResizeUnitVector = (board: PlaitBoard, resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>) => {
-    const handleIndex = getIndexByResizeHandle(resizeRef.handle);
-    const symmetricHandleIndex = getSymmetricHandleIndex(board, handleIndex);
-    const resizeOriginPoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, symmetricHandleIndex);
-    const resizeHandlePoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, handleIndex);
-    const unitVector = getUnitVectorByPointAndPoint(resizeOriginPoint, resizeHandlePoint);
-    return unitVector;
-};
-
 export const getResizeOriginAndZoom = (
     board: PlaitBoard,
     resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
@@ -154,7 +145,7 @@ export const getResizeOriginAndZoom = (
             }
         }
     }
-    return { xZoom, yZoom, originPoint: resizeOriginPoint };
+    return { xZoom, yZoom, originPoint: resizeOriginPoint, unitVector };
 };
 
 export const movePointByZoomAndOriginPoint = (p: Point, resizeOriginPoint: Point, xZoom: number, yZoom: number) => {
