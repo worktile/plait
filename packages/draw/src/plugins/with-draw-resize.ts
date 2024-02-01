@@ -11,14 +11,24 @@ import {
     isCornerHandle,
     withResize
 } from '@plait/common';
-import { PlaitBoard, Point, RectangleClient, Transforms, getRectangleByElements, getSelectedElements } from '@plait/core';
+import {
+    ACTIVE_MOVING_CLASS_NAME,
+    PlaitBoard,
+    Point,
+    RectangleClient,
+    ResizeAlignReaction,
+    Transforms,
+    getRectangleByElements,
+    getSelectedElements
+} from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
+import { getResizeAlignRef } from '../utils/resize';
 
 export function withDrawResize(board: PlaitBoard) {
     const { afterChange } = board;
-
+    let alignG: SVGGElement | null;
     const options: WithResizeOptions<PlaitDrawElement[]> = {
         key: 'draw-elements',
         canResize: () => {
@@ -40,14 +50,22 @@ export function withDrawResize(board: PlaitBoard) {
             return null;
         },
         onResize: (resizeRef: ResizeRef<PlaitDrawElement[]>, resizeState: ResizeState) => {
+            alignG?.remove();
+            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(board, resizeRef, resizeState)
+            alignG = g;
+            alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
+            PlaitBoard.getElementActiveHost(board).append(alignG);
+            resizeState.endPoint = [resizeState.endPoint[0] - deltaWidth, resizeState.endPoint[1] - deltaHeight];
+           
             const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
             const isMaintainAspectRatio = resizeState.isShift || isResizeFromCorner;
-            const result = getResizeOriginAndZoom(board, resizeRef, resizeState, isResizeFromCorner, isMaintainAspectRatio);
+            let result = getResizeOriginAndZoom(board, resizeRef, resizeState, isResizeFromCorner, isMaintainAspectRatio);
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
                 let points = target.points.map(p => {
                     return movePointByZoomAndOriginPoint(p, result.originPoint, result.xZoom, result.yZoom);
                 });
+
                 if (PlaitDrawElement.isGeometry(target)) {
                     const { height: textHeight } = getFirstTextManage(target).getSize();
                     DrawTransforms.resizeGeometry(board, points as [Point, Point], textHeight, path);
@@ -70,6 +88,10 @@ export function withDrawResize(board: PlaitBoard) {
                     }
                 }
             });
+        },
+        afterResize: (resizeRef: ResizeRef<PlaitDrawElement[]>) => {
+            alignG?.remove();
+            alignG = null;
         }
     };
 
@@ -81,6 +103,15 @@ export function withDrawResize(board: PlaitBoard) {
 
     return board;
 }
+
+export const getResizeUnitVector = (board: PlaitBoard, resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>) => {
+    const handleIndex = getIndexByResizeHandle(resizeRef.handle);
+    const symmetricHandleIndex = getSymmetricHandleIndex(board, handleIndex);
+    const resizeOriginPoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, symmetricHandleIndex);
+    const resizeHandlePoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, handleIndex);
+    const unitVector = getUnitVectorByPointAndPoint(resizeOriginPoint, resizeHandlePoint);
+    return unitVector;
+};
 
 export const getResizeOriginAndZoom = (
     board: PlaitBoard,
