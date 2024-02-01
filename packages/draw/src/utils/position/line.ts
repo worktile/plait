@@ -11,10 +11,6 @@ export enum LineResizeHandle {
 
 export const getHitLineResizeHandleRef = (board: PlaitBoard, element: PlaitLine, point: Point) => {
     let dataPoints = PlaitLine.getPoints(board, element);
-    // elbow line, data points only verify source connection point and target connection point
-    if (element.shape === LineShape.elbow) {
-        dataPoints = [dataPoints[0], dataPoints[dataPoints.length - 1]];
-    }
     const index = getHitPointIndex(dataPoints, point);
     if (index !== -1) {
         const handleIndex = index;
@@ -24,7 +20,10 @@ export const getHitLineResizeHandleRef = (board: PlaitBoard, element: PlaitLine,
         if (index === dataPoints.length - 1) {
             return { handle: LineResizeHandle.target, handleIndex };
         }
-        return { handleIndex };
+        // elbow line, data points only verify source connection point and target connection point
+        if (element.shape !== LineShape.elbow) {
+            return { handleIndex };
+        }
     }
     const middlePoints = getMiddlePoints(board, element);
     const indexOfMiddlePoints = getHitPointIndex(middlePoints, point);
