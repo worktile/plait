@@ -1,17 +1,32 @@
+import { PlaitBoard } from '../interfaces/board';
 import { Subscription, timer } from 'rxjs';
 
-let timerId: number | null = null;
+const BOARD_TO_RAF = new WeakMap<PlaitBoard, { [key: string]: number | null }>();
 
-export const throttleRAF = (fn: () => void) => {
+const getTimerId = (board: PlaitBoard, key: string) => {
+    const state = getRAFState(board);
+    return state[key] || null;
+};
+
+const getRAFState = (board: PlaitBoard) => {
+    return BOARD_TO_RAF.get(board) || {};
+};
+
+export const throttleRAF = (board: PlaitBoard, key: string, fn: () => void) => {
     const scheduleFunc = () => {
-        timerId = requestAnimationFrame(() => {
-            timerId = null;
+        let timerId = requestAnimationFrame(() => {
+            const value = BOARD_TO_RAF.get(board) || {};
+            value[key] = null;
+            BOARD_TO_RAF.set(board, value);
             fn();
         });
+        const state = getRAFState(board);
+        state[key] = timerId;
+        BOARD_TO_RAF.set(board, state);
     };
+    let timerId = getTimerId(board, key);
     if (timerId !== null) {
         cancelAnimationFrame(timerId);
-        timerId = null;
     }
     scheduleFunc();
 };

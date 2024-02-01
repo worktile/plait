@@ -10,7 +10,8 @@ import {
     handleTouchTarget,
     throttleRAF,
     toViewBoxPoint,
-    toHostPoint
+    toHostPoint,
+    isDragging
 } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
 import { addResizing, isResizing, removeResizing } from '../utils/resize';
@@ -78,40 +79,42 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
                 options.beforeResize && options.beforeResize(resizeRef!);
             }
         }
-
-        if (isResizing(board) && startPoint) {
-            // prevent text from being selected
-            event.preventDefault();
-            const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-            throttleRAF(() => {
-                if (startPoint && resizeRef) {
-                    handleTouchTarget(board);
-                    options.onResize(resizeRef, {
-                        startPoint: toViewBoxPoint(board, toHostPoint(board, startPoint[0], startPoint[1])),
-                        endPoint,
-                        isShift: !!event.shiftKey
-                    });
-                }
-            });
-            return;
-        } else {
+        if (!isResizing(board) && !isDragging(board)) {
             const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-            const hitTestRef = options.hitTest(point);
-            if (hitTestRef) {
-                if (hoverHitTestRef && hitTestRef.cursorClass !== hoverHitTestRef.cursorClass) {
-                    PlaitBoard.getBoardContainer(board).classList.remove(`${hoverHitTestRef.cursorClass}`);
-                }
-                hoverHitTestRef = hitTestRef;
-                if (hoverHitTestRef.cursorClass) {
-                    PlaitBoard.getBoardContainer(board).classList.add(`${hoverHitTestRef.cursorClass}`);
-                }
-            } else {
-                if (hoverHitTestRef) {
-                    if (hoverHitTestRef.cursorClass) {
+            throttleRAF(board, options.key + '-common-resize-hit-test', () => {
+                const hitTestRef = options.hitTest(point);
+                if (hitTestRef) {
+                    if (hoverHitTestRef && hitTestRef.cursorClass !== hoverHitTestRef.cursorClass) {
                         PlaitBoard.getBoardContainer(board).classList.remove(`${hoverHitTestRef.cursorClass}`);
                     }
-                    hoverHitTestRef = null;
+                    hoverHitTestRef = hitTestRef;
+                    if (hoverHitTestRef.cursorClass) {
+                        PlaitBoard.getBoardContainer(board).classList.add(`${hoverHitTestRef.cursorClass}`);
+                    }
+                } else {
+                    if (hoverHitTestRef) {
+                        if (hoverHitTestRef.cursorClass) {
+                            PlaitBoard.getBoardContainer(board).classList.remove(`${hoverHitTestRef.cursorClass}`);
+                        }
+                        hoverHitTestRef = null;
+                    }
                 }
+            });
+        } else {
+            if (startPoint && isResizing(board)) {
+                event.preventDefault();
+                const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+                throttleRAF(board, 'with-common-resize', () => {
+                    if (startPoint && resizeRef) {
+                        handleTouchTarget(board);
+                        options.onResize(resizeRef, {
+                            startPoint: toViewBoxPoint(board, toHostPoint(board, startPoint[0], startPoint[1])),
+                            endPoint,
+                            isShift: !!event.shiftKey
+                        });
+                    }
+                });
+                return;
             }
         }
         pointerMove(event);
