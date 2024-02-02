@@ -6,12 +6,13 @@ import { PlaitDrawElement } from '../interfaces';
 export function getNormalizedResizeRef(
     board: PlaitBoard,
     resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
-    originPoint: Point,
-    handlePoint: Point,
+    resizeOriginPointAndHandlePoint: { originPoint: Point; handlePoint: Point },
     resizeZoom: { xZoom: number; yZoom: number },
     isMaintainAspectRatio: boolean
 ): ResizeAlignRef {
+    const { originPoint, handlePoint } = resizeOriginPointAndHandlePoint;
     const { xZoom, yZoom } = resizeZoom;
+
     let activeElements: PlaitElement[];
     let points: Point[] = [];
     if (Array.isArray(resizeRef.element)) {

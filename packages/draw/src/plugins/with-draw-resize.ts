@@ -58,8 +58,7 @@ export function withDrawResize(board: PlaitBoard) {
             const { deltaWidth, deltaHeight, g } = getNormalizedResizeRef(
                 board,
                 resizeRef,
-                originPoint,
-                handlePoint,
+                { originPoint, handlePoint },
                 { xZoom, yZoom },
                 isMaintainAspectRatio
             );
