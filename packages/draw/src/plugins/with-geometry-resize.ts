@@ -5,7 +5,6 @@ import {
     PlaitElement,
     Point,
     RectangleClient,
-    ResizeAlignReaction,
     Transforms,
     getSelectedElements
 } from '@plait/core';
@@ -26,7 +25,7 @@ import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeOriginAndZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
-import { getResizeAlignRef } from '../utils/resize';
+import { getNormalizedResizeRef } from '../utils/resize';
 
 export const withGeometryResize = (board: PlaitBoard) => {
     let alignG: SVGGElement | null;
@@ -58,11 +57,11 @@ export const withGeometryResize = (board: PlaitBoard) => {
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
             alignG?.remove();
-            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(board, resizeRef, resizeState);
+            const { deltaWidth, deltaHeight, g } = getNormalizedResizeRef(board, resizeRef, resizeState);
             alignG = g;
             alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
             PlaitBoard.getElementActiveHost(board).append(alignG);
-            resizeState.endPoint = [resizeState.endPoint[0] - deltaWidth, resizeState.endPoint[1] - deltaHeight];
+            resizeState.endPoint = [resizeState.endPoint[0] + deltaWidth, resizeState.endPoint[1] + deltaHeight];
 
             const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
             const isMaintainAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);

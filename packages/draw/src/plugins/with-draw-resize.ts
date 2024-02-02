@@ -16,7 +16,6 @@ import {
     PlaitBoard,
     Point,
     RectangleClient,
-    ResizeAlignReaction,
     Transforms,
     getRectangleByElements,
     getSelectedElements
@@ -24,7 +23,7 @@ import {
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getResizeAlignRef } from '../utils/resize';
+import { getNormalizedResizeRef } from '../utils/resize';
 
 export function withDrawResize(board: PlaitBoard) {
     const { afterChange } = board;
@@ -51,11 +50,11 @@ export function withDrawResize(board: PlaitBoard) {
         },
         onResize: (resizeRef: ResizeRef<PlaitDrawElement[]>, resizeState: ResizeState) => {
             alignG?.remove();
-            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(board, resizeRef, resizeState);
+            const { deltaWidth, deltaHeight, g } = getNormalizedResizeRef(board, resizeRef, resizeState);
             alignG = g;
             alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
             PlaitBoard.getElementActiveHost(board).append(alignG);
-            resizeState.endPoint = [resizeState.endPoint[0] - deltaWidth, resizeState.endPoint[1] - deltaHeight];
+            resizeState.endPoint = [resizeState.endPoint[0] + deltaWidth, resizeState.endPoint[1] + deltaHeight];
 
             const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
             const isMaintainAspectRatio = resizeState.isShift || isResizeFromCorner;
@@ -102,6 +101,22 @@ export function withDrawResize(board: PlaitBoard) {
     };
 
     return board;
+}
+
+
+
+export const getResizeOriginPointAndHandlePoint = (
+    board: PlaitBoard,
+    resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
+) => {
+    const handleIndex = getIndexByResizeHandle(resizeRef.handle);
+    const symmetricHandleIndex = getSymmetricHandleIndex(board, handleIndex);
+    const resizeOriginPoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, symmetricHandleIndex);
+    const resizeHandlePoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, handleIndex);
+    return {
+        resizeOriginPoint,
+        resizeHandlePoint
+    }
 }
 
 export const getResizeOriginAndZoom = (

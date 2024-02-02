@@ -25,4 +25,4 @@ export * from './clipboard';
 export * from './touch';
 export * from './dnd';
 export * from './to-point';
-export * from './resize-manager';
+export * from './resize-align-reaction';

@@ -3,7 +3,7 @@ import { getResizeOriginAndZoom, movePointByZoomAndOriginPoint } from '../plugin
 import { ResizeRef, ResizeState, isCornerHandle } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
 
-export function getResizeAlignRef(
+export function getNormalizedResizeRef(
     board: PlaitBoard,
     resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
     resizeState: ResizeState
@@ -29,8 +29,11 @@ export function getResizeAlignRef(
     const resizeAlignReaction = new ResizeAlignReaction(board, activeElements, newRectangle);
 
     const [x, y] = result.unitVector;
-    const vectorFactor = [x === 0 ? x : x / Math.abs(x), y === 0 ? y : y / Math.abs(y)];
-    let { deltaWidth, deltaHeight, g } = resizeAlignReaction.handleAlign(vectorFactor);
+    const resizeDirectionFactors: [number, number] = [x === 0 ? x : x / Math.abs(x), y === 0 ? y : y / Math.abs(y)];
+    let { deltaWidth, deltaHeight, g } = resizeAlignReaction.handleAlign({
+        resizeDirectionFactors,
+        isMaintainAspectRatio
+    });
     return {
         deltaWidth,
         deltaHeight,
