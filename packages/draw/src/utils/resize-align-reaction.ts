@@ -1,8 +1,4 @@
-import { PlaitBoard } from '../interfaces/board';
-import { createG } from './dom/common';
-import { PlaitElement } from '../interfaces/element';
-import { Point, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
-import { findElements } from './element';
+import { PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR, createG, findElements } from '@plait/core';
 
 export interface ResizeAlignRef {
     deltaWidth: number;
