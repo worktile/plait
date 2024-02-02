@@ -1,12 +1,4 @@
-import {
-    Path,
-    PlaitBoard,
-    PlaitElement,
-    Point,
-    RectangleClient,
-    Transforms,
-    getSelectedElements
-} from '@plait/core';
+import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeRef,
@@ -58,20 +50,19 @@ export const withGeometryResize = (board: PlaitBoard) => {
             alignG?.remove();
             const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
             const isMaintainAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
-            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
-            const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
-
             const { deltaWidth, deltaHeight, g } = getResizeAlignRef(
                 board,
                 resizeRef,
-                { originPoint, handlePoint },
-                { xZoom, yZoom },
-                isMaintainAspectRatio
+                resizeState,
+                isMaintainAspectRatio,
+                isResizeFromCorner
             );
             alignG = g;
             PlaitBoard.getElementActiveHost(board).append(alignG);
             resizeState.endPoint = [resizeState.endPoint[0] + deltaWidth, resizeState.endPoint[1] + deltaHeight];
 
+            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
+            const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
             let points = resizeRef.element.points.map(p => {
                 return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
             }) as [Point, Point];

@@ -51,20 +51,20 @@ export function withDrawResize(board: PlaitBoard) {
             alignG?.remove();
             const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
             const isMaintainAspectRatio = resizeState.isShift || isResizeFromCorner;
-            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
-            const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
-
+           
             const { deltaWidth, deltaHeight, g } = getResizeAlignRef(
                 board,
                 resizeRef,
-                { originPoint, handlePoint },
-                { xZoom, yZoom },
-                isMaintainAspectRatio
+                resizeState,
+                isMaintainAspectRatio,
+                isResizeFromCorner
             );
             alignG = g;
             PlaitBoard.getElementActiveHost(board).append(alignG);
             resizeState.endPoint = [resizeState.endPoint[0] + deltaWidth, resizeState.endPoint[1] + deltaHeight];
-
+            
+            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
+            const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
                 let points = target.points.map(p => {
