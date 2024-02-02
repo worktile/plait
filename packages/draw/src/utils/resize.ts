@@ -1,5 +1,5 @@
 import { PlaitBoard, Point, RectangleClient, getRectangleByElements, PlaitElement } from '@plait/core';
-import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
+import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
 import { ResizeRef, ResizeState, getDirectionFactorByVectorComponent, getUnitVectorByPointAndPoint } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
 import { ResizeAlignReaction, ResizeAlignRef } from './resize-align-reaction';
@@ -8,10 +8,14 @@ export function getResizeAlignRef(
     board: PlaitBoard,
     resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
     resizeState: ResizeState,
+    resizeOriginPointAndHandlePoint: {
+        originPoint: Point;
+        handlePoint: Point;
+    },
     isMaintainAspectRatio: boolean,
     isResizeFromCorner: boolean
 ): ResizeAlignRef {
-    const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
+    const { originPoint, handlePoint } = resizeOriginPointAndHandlePoint;
     const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
 
     let activeElements: PlaitElement[];
