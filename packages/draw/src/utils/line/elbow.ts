@@ -19,12 +19,14 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     // console.log(params, 'params');
     const isIntersect = isSourceAndTargetIntersect(params);
     if (isIntersect) {
-        return getPoints(
-            handleRefPair.source.point,
-            handleRefPair.source.direction,
-            handleRefPair.target.point,
-            handleRefPair.target.direction,
-            0
+        return simplifyOrthogonalPoints(
+            getPoints(
+                handleRefPair.source.point,
+                handleRefPair.source.direction,
+                handleRefPair.target.point,
+                handleRefPair.target.direction,
+                0
+            )
         );
     }
     const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
@@ -90,8 +92,14 @@ export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitLin
         const target = handleRefPair.target;
         targetElement = createFakeElement(target.point, target.vector);
     }
-    const sourceRectangle = RectangleClient.inflate(RectangleClient.getRectangleByPoints(sourceElement.points), getStrokeWidthByElement(sourceElement) * 2);
-    const targetRectangle = RectangleClient.inflate(RectangleClient.getRectangleByPoints(targetElement.points), getStrokeWidthByElement(targetElement) * 2);
+    const sourceRectangle = RectangleClient.inflate(
+        RectangleClient.getRectangleByPoints(sourceElement.points),
+        getStrokeWidthByElement(sourceElement) * 2
+    );
+    const targetRectangle = RectangleClient.inflate(
+        RectangleClient.getRectangleByPoints(targetElement.points),
+        getStrokeWidthByElement(targetElement) * 2
+    );
     return {
         sourceRectangle,
         targetRectangle

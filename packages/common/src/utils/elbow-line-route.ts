@@ -1,4 +1,4 @@
-import { Direction, PlaitBoard, Point, RectangleClient } from '@plait/core';
+import { Direction, Point, RectangleClient } from '@plait/core';
 import { removeDuplicatePoints, simplifyOrthogonalPoints } from '../utils';
 import { DEFAULT_ROUTE_MARGIN } from '../constants';
 import { AStar, PointGraph } from '../algorithms';
