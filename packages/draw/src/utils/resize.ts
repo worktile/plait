@@ -1,7 +1,8 @@
-import { PlaitBoard, Point, RectangleClient, ResizeAlignReaction, ResizeAlignRef, getRectangleByElements, PlaitElement } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, getRectangleByElements, PlaitElement } from '@plait/core';
 import { movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
 import { ResizeRef, getDirectionFactorByVectorComponent, getUnitVectorByPointAndPoint } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
+import { ResizeAlignReaction, ResizeAlignRef } from './resize-align-reaction';
 
 export function getNormalizedResizeRef(
     board: PlaitBoard,
