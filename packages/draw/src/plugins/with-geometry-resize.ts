@@ -25,7 +25,7 @@ import { GeometryComponent } from '../geometry.component';
 import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getResizeOriginAndZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
+import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
 import { getResizeAlignRef } from '../utils/resize';
 
 export const withGeometryResize = (board: PlaitBoard) => {
@@ -58,17 +58,19 @@ export const withGeometryResize = (board: PlaitBoard) => {
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
             alignG?.remove();
+            const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
+            const isMaintainAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
+            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
+
             const { deltaWidth, deltaHeight, g } = getResizeAlignRef(board, resizeRef, resizeState);
             alignG = g;
             alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
             PlaitBoard.getElementActiveHost(board).append(alignG);
             resizeState.endPoint = [resizeState.endPoint[0] - deltaWidth, resizeState.endPoint[1] - deltaHeight];
 
-            const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
-            const isMaintainAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
-            const result = getResizeOriginAndZoom(board, resizeRef, resizeState, isResizeFromCorner, isMaintainAspectRatio);
+            const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
             let points = resizeRef.element.points.map(p => {
-                return movePointByZoomAndOriginPoint(p, result.originPoint, result.xZoom, result.yZoom);
+                return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
             }) as [Point, Point];
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
