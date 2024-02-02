@@ -1,16 +1,17 @@
 import { PlaitBoard, Point, RectangleClient, ResizeAlignReaction, ResizeAlignRef, getRectangleByElements, PlaitElement } from '@plait/core';
-import { getResizeOriginAndZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
-import { ResizeRef, ResizeState, isCornerHandle } from '@plait/common';
+import { movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
+import { ResizeRef, getDirectionFactorByVectorComponent, getUnitVectorByPointAndPoint } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
 
 export function getNormalizedResizeRef(
     board: PlaitBoard,
     resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
-    resizeState: ResizeState
+    originPoint: Point,
+    handlePoint: Point,
+    resizeZoom: { xZoom: number; yZoom: number },
+    isMaintainAspectRatio: boolean
 ): ResizeAlignRef {
-    const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
-    const isMaintainAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
-    let result = getResizeOriginAndZoom(board, resizeRef, resizeState, isResizeFromCorner, isMaintainAspectRatio);
+    const { xZoom, yZoom } = resizeZoom;
     let activeElements: PlaitElement[];
     let points: Point[] = [];
     if (Array.isArray(resizeRef.element)) {
@@ -23,15 +24,16 @@ export function getNormalizedResizeRef(
     }
 
     const resizePoints = points.map(p => {
-        return movePointByZoomAndOriginPoint(p, result.originPoint, result.xZoom, result.yZoom);
+        return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
     }) as [Point, Point];
     const newRectangle = RectangleClient.getRectangleByPoints(resizePoints);
     const resizeAlignReaction = new ResizeAlignReaction(board, activeElements, newRectangle);
 
-    const [x, y] = result.unitVector;
-    const resizeDirectionFactors: [number, number] = [x === 0 ? x : x / Math.abs(x), y === 0 ? y : y / Math.abs(y)];
+    const resizeHandlePoint = movePointByZoomAndOriginPoint(handlePoint, originPoint, xZoom, yZoom);
+    const [x, y] = getUnitVectorByPointAndPoint(originPoint, resizeHandlePoint);
+
     let { deltaWidth, deltaHeight, g } = resizeAlignReaction.handleAlign({
-        resizeDirectionFactors,
+        resizeDirectionFactors: [getDirectionFactorByVectorComponent(x), getDirectionFactorByVectorComponent(y)],
         isMaintainAspectRatio
     });
     return {

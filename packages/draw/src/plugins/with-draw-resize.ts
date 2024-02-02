@@ -50,19 +50,28 @@ export function withDrawResize(board: PlaitBoard) {
         },
         onResize: (resizeRef: ResizeRef<PlaitDrawElement[]>, resizeState: ResizeState) => {
             alignG?.remove();
-            const { deltaWidth, deltaHeight, g } = getNormalizedResizeRef(board, resizeRef, resizeState);
+            const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
+            const isMaintainAspectRatio = resizeState.isShift || isResizeFromCorner;
+            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
+            const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
+
+            const { deltaWidth, deltaHeight, g } = getNormalizedResizeRef(
+                board,
+                resizeRef,
+                originPoint,
+                handlePoint,
+                { xZoom, yZoom },
+                isMaintainAspectRatio
+            );
             alignG = g;
             alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
             PlaitBoard.getElementActiveHost(board).append(alignG);
             resizeState.endPoint = [resizeState.endPoint[0] + deltaWidth, resizeState.endPoint[1] + deltaHeight];
 
-            const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
-            const isMaintainAspectRatio = resizeState.isShift || isResizeFromCorner;
-            const result = getResizeOriginAndZoom(board, resizeRef, resizeState, isResizeFromCorner, isMaintainAspectRatio);
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
                 let points = target.points.map(p => {
-                    return movePointByZoomAndOriginPoint(p, result.originPoint, result.xZoom, result.yZoom);
+                    return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
                 });
 
                 if (PlaitDrawElement.isGeometry(target)) {
@@ -77,7 +86,7 @@ export function withDrawResize(board: PlaitBoard) {
                         // The image element does not follow the resize, but moves based on the center point.
                         const targetRectangle = RectangleClient.getRectangleByPoints(target.points);
                         const centerPoint = RectangleClient.getCenterPoint(targetRectangle);
-                        const newCenterPoint = movePointByZoomAndOriginPoint(centerPoint, result.originPoint, result.xZoom, result.yZoom);
+                        const newCenterPoint = movePointByZoomAndOriginPoint(centerPoint, originPoint, xZoom, yZoom);
                         const newTargetRectangle = RectangleClient.getRectangleByCenterPoint(
                             newCenterPoint,
                             targetRectangle.width,
@@ -103,33 +112,24 @@ export function withDrawResize(board: PlaitBoard) {
     return board;
 }
 
-
-
-export const getResizeOriginPointAndHandlePoint = (
-    board: PlaitBoard,
-    resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
-) => {
+export const getResizeOriginPointAndHandlePoint = (board: PlaitBoard, resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>) => {
     const handleIndex = getIndexByResizeHandle(resizeRef.handle);
     const symmetricHandleIndex = getSymmetricHandleIndex(board, handleIndex);
-    const resizeOriginPoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, symmetricHandleIndex);
-    const resizeHandlePoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, handleIndex);
+    const originPoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, symmetricHandleIndex);
+    const handlePoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, handleIndex);
     return {
-        resizeOriginPoint,
-        resizeHandlePoint
-    }
-}
+        originPoint,
+        handlePoint
+    };
+};
 
-export const getResizeOriginAndZoom = (
-    board: PlaitBoard,
-    resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
+export const getResizeZoom = (
     resizeState: ResizeState,
+    resizeOriginPoint: Point,
+    resizeHandlePoint: Point,
     isResizeFromCorner: boolean,
     isMaintainAspectRatio: boolean
 ) => {
-    const handleIndex = getIndexByResizeHandle(resizeRef.handle);
-    const symmetricHandleIndex = getSymmetricHandleIndex(board, handleIndex);
-    const resizeOriginPoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, symmetricHandleIndex);
-    const resizeHandlePoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, handleIndex);
     const unitVector = getUnitVectorByPointAndPoint(resizeOriginPoint, resizeHandlePoint);
     const startPoint = resizeState.startPoint;
     let endPoint = resizeState.endPoint;
@@ -160,7 +160,7 @@ export const getResizeOriginAndZoom = (
             }
         }
     }
-    return { xZoom, yZoom, originPoint: resizeOriginPoint, unitVector };
+    return { xZoom, yZoom };
 };
 
 export const movePointByZoomAndOriginPoint = (p: Point, resizeOriginPoint: Point, xZoom: number, yZoom: number) => {
