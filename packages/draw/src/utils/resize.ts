@@ -4,7 +4,7 @@ import { ResizeRef, getDirectionFactorByVectorComponent, getUnitVectorByPointAnd
 import { PlaitDrawElement } from '../interfaces';
 import { ResizeAlignReaction, ResizeAlignRef } from './resize-align-reaction';
 
-export function getNormalizedResizeRef(
+export function getResizeAlignRef(
     board: PlaitBoard,
     resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
     resizeOriginPointAndHandlePoint: { originPoint: Point; handlePoint: Point },

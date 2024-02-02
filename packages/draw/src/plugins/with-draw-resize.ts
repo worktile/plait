@@ -12,7 +12,6 @@ import {
     withResize
 } from '@plait/common';
 import {
-    ACTIVE_MOVING_CLASS_NAME,
     PlaitBoard,
     Point,
     RectangleClient,
@@ -23,7 +22,7 @@ import {
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getNormalizedResizeRef } from '../utils/resize';
+import { getResizeAlignRef } from '../utils/resize';
 
 export function withDrawResize(board: PlaitBoard) {
     const { afterChange } = board;
@@ -55,7 +54,7 @@ export function withDrawResize(board: PlaitBoard) {
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
             const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
 
-            const { deltaWidth, deltaHeight, g } = getNormalizedResizeRef(
+            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(
                 board,
                 resizeRef,
                 { originPoint, handlePoint },
@@ -63,7 +62,6 @@ export function withDrawResize(board: PlaitBoard) {
                 isMaintainAspectRatio
             );
             alignG = g;
-            alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
             PlaitBoard.getElementActiveHost(board).append(alignG);
             resizeState.endPoint = [resizeState.endPoint[0] + deltaWidth, resizeState.endPoint[1] + deltaHeight];
 
