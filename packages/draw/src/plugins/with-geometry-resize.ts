@@ -1,14 +1,4 @@
-import {
-    ACTIVE_MOVING_CLASS_NAME,
-    Path,
-    PlaitBoard,
-    PlaitElement,
-    Point,
-    RectangleClient,
-    ResizeAlignReaction,
-    Transforms,
-    getSelectedElements
-} from '@plait/core';
+import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeRef,
@@ -62,13 +52,24 @@ export const withGeometryResize = (board: PlaitBoard) => {
             const isMaintainAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
 
-            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(board, resizeRef, resizeState);
+            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(
+                board,
+                resizeRef,
+                resizeState,
+                {
+                    originPoint,
+                    handlePoint
+                },
+                isMaintainAspectRatio,
+                isResizeFromCorner
+            );
             alignG = g;
-            alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
             PlaitBoard.getElementActiveHost(board).append(alignG);
-            resizeState.endPoint = [resizeState.endPoint[0] - deltaWidth, resizeState.endPoint[1] - deltaHeight];
-
-            const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
+            const newResizeState: ResizeState = {
+                ...resizeState,
+                endPoint: [resizeState.endPoint[0] + deltaWidth, resizeState.endPoint[1] + deltaHeight]
+            };
+            const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
             let points = resizeRef.element.points.map(p => {
                 return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
             }) as [Point, Point];

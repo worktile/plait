@@ -1,4 +1,4 @@
-import { Point, Vector } from "@plait/core";
+import { Point, Vector } from '@plait/core';
 
 export function getUnitVectorByPointAndPoint(point1: Point, point2: Point): Point {
     const deltaX = point2[0] - point1[0];

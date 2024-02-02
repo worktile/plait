@@ -11,16 +11,7 @@ import {
     isCornerHandle,
     withResize
 } from '@plait/common';
-import {
-    ACTIVE_MOVING_CLASS_NAME,
-    PlaitBoard,
-    Point,
-    RectangleClient,
-    ResizeAlignReaction,
-    Transforms,
-    getRectangleByElements,
-    getSelectedElements
-} from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, Transforms, getRectangleByElements, getSelectedElements } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
@@ -51,16 +42,29 @@ export function withDrawResize(board: PlaitBoard) {
         },
         onResize: (resizeRef: ResizeRef<PlaitDrawElement[]>, resizeState: ResizeState) => {
             alignG?.remove();
-            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(board, resizeRef, resizeState);
-            alignG = g;
-            alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
-            PlaitBoard.getElementActiveHost(board).append(alignG);
-            resizeState.endPoint = [resizeState.endPoint[0] - deltaWidth, resizeState.endPoint[1] - deltaHeight];
-
             const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
             const isMaintainAspectRatio = resizeState.isShift || isResizeFromCorner;
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
-            const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
+
+            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(
+                board,
+                resizeRef,
+                resizeState,
+                {
+                    originPoint,
+                    handlePoint
+                },
+                isMaintainAspectRatio,
+                isResizeFromCorner
+            );
+            alignG = g;
+            PlaitBoard.getElementActiveHost(board).append(alignG);
+
+            const newResizeState: ResizeState = {
+                ...resizeState,
+                endPoint: [resizeState.endPoint[0] + deltaWidth, resizeState.endPoint[1] + deltaHeight]
+            };
+            const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
                 let points = target.points.map(p => {

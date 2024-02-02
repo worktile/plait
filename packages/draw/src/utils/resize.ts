@@ -1,16 +1,21 @@
-import { PlaitBoard, Point, RectangleClient, ResizeAlignReaction, ResizeAlignRef, getRectangleByElements, PlaitElement } from '@plait/core';
-import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
-import { ResizeRef, ResizeState, getUnitVectorByPointAndPoint, isCornerHandle } from '@plait/common';
+import { PlaitBoard, Point, RectangleClient, getRectangleByElements, PlaitElement } from '@plait/core';
+import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
+import { ResizeRef, ResizeState, getDirectionFactorByVectorComponent, getUnitVectorByPointAndPoint } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
+import { ResizeAlignReaction, ResizeAlignRef } from './resize-align-reaction';
 
 export function getResizeAlignRef(
     board: PlaitBoard,
     resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
-    resizeState: ResizeState
+    resizeState: ResizeState,
+    resizeOriginPointAndHandlePoint: {
+        originPoint: Point;
+        handlePoint: Point;
+    },
+    isMaintainAspectRatio: boolean,
+    isResizeFromCorner: boolean
 ): ResizeAlignRef {
-    const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
-    const isMaintainAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
-    const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
+    const { originPoint, handlePoint } = resizeOriginPointAndHandlePoint;
     const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
 
     let activeElements: PlaitElement[];
@@ -32,8 +37,11 @@ export function getResizeAlignRef(
 
     const resizeHandlePoint = movePointByZoomAndOriginPoint(handlePoint, originPoint, xZoom, yZoom);
     const [x, y] = getUnitVectorByPointAndPoint(originPoint, resizeHandlePoint);
-    const vectorFactor = [x === 0 ? x : x / Math.abs(x), y === 0 ? y : y / Math.abs(y)];
-    let { deltaWidth, deltaHeight, g } = resizeAlignReaction.handleAlign(vectorFactor);
+
+    let { deltaWidth, deltaHeight, g } = resizeAlignReaction.handleAlign({
+        resizeDirectionFactors: [getDirectionFactorByVectorComponent(x), getDirectionFactorByVectorComponent(y)],
+        isMaintainAspectRatio
+    });
     return {
         deltaWidth,
         deltaHeight,

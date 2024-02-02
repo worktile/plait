@@ -89,3 +89,7 @@ export function getFactorByPoints(source: Point, target: Point) {
         y: unit[1]
     };
 }
+
+export function getDirectionFactorByVectorComponent(vectorComponent: number): number {
+    return vectorComponent === 0 ? vectorComponent : vectorComponent / Math.abs(vectorComponent);
+}
