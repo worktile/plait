@@ -15,7 +15,7 @@ import { PlaitBoard, Point, RectangleClient, Transforms, getRectangleByElements,
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getResizeAlignRef } from '../utils/resize';
+import { getResizeAlignRef } from '../utils/resize-align';
 
 export function withDrawResize(board: PlaitBoard) {
     const { afterChange } = board;
@@ -47,7 +47,7 @@ export function withDrawResize(board: PlaitBoard) {
             const isMaintainAspectRatio = resizeState.isShift || isResizeFromCorner;
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
 
-            const { deltaWidth, deltaHeight, equalLinesG } = getResizeAlignRef(
+            const resizeAlignRef = getResizeAlignRef(
                 board,
                 resizeRef,
                 resizeState,
@@ -58,12 +58,12 @@ export function withDrawResize(board: PlaitBoard) {
                 isMaintainAspectRatio,
                 isResizeFromCorner
             );
-            alignG = equalLinesG;
-            PlaitBoard.getElementActiveHost(board).append(equalLinesG);
+            alignG = resizeAlignRef.equalLinesG;
+            PlaitBoard.getElementActiveHost(board).append(resizeAlignRef.equalLinesG);
 
             const newResizeState: ResizeState = {
                 ...resizeState,
-                endPoint: [resizeState.endPoint[0] + deltaWidth, resizeState.endPoint[1] + deltaHeight]
+                endPoint: [resizeState.endPoint[0] + resizeAlignRef.deltaX, resizeState.endPoint[1] + resizeAlignRef.deltaY]
             };
             const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
             resizeRef.element.forEach(target => {
