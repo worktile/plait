@@ -31,6 +31,14 @@ export class ResizeAlignReaction {
         this.alignRectangles = this.getAlignRectangle();
     }
 
+    get isHorizontalResize() {
+        return this.resizeAlignOptions.directionFactors[0] !== 0;
+    }
+
+    get isVerticalResize() {
+        return this.resizeAlignOptions.directionFactors[1] !== 0;
+    }
+
     getAlignRectangle() {
         const elements = findElements(this.board, {
             match: element => this.board.isAlign(element) && !this.activeElements.some(item => item.id === element.id),
@@ -41,24 +49,31 @@ export class ResizeAlignReaction {
     }
 
     getDeltaAndAlignRectangle(): ResizeAlignDeltaAndRectangle | null {
-        const widthAlignRectangle = this.alignRectangles.find(item => Math.abs(item.width - this.activeRectangle.width) < ALIGN_TOLERANCE);
-        const heightAlignRectangle = this.alignRectangles.find(
-            item => Math.abs(item.height - this.activeRectangle.height) < ALIGN_TOLERANCE
-        );
+        let widthAlignRectangle: RectangleClient | undefined = undefined;
+        let heightAlignRectangle: RectangleClient | undefined = undefined;
         let result: ResizeAlignDeltaAndRectangle = {
             deltaWidth: 0,
             deltaHeight: 0
         };
-        if (widthAlignRectangle) {
-            const offsetWidth = widthAlignRectangle.width - this.activeRectangle.width;
-            result.deltaWidth = offsetWidth * this.resizeAlignOptions.directionFactors[0];
-            result.widthAlignRectangle = widthAlignRectangle;
+
+        if (this.isHorizontalResize) {
+            widthAlignRectangle = this.alignRectangles.find(item => Math.abs(item.width - this.activeRectangle.width) < ALIGN_TOLERANCE);
+            if (widthAlignRectangle) {
+                const offsetWidth = widthAlignRectangle.width - this.activeRectangle.width;
+                result.deltaWidth = offsetWidth * this.resizeAlignOptions.directionFactors[0];
+                result.widthAlignRectangle = widthAlignRectangle;
+            }
         }
-        if (heightAlignRectangle) {
-            const offsetHeight = heightAlignRectangle.height - this.activeRectangle.height;
-            result.deltaHeight = offsetHeight * this.resizeAlignOptions.directionFactors[1];
-            result.heightAlignRectangle = heightAlignRectangle;
+
+        if (this.isVerticalResize) {
+            heightAlignRectangle = this.alignRectangles.find(item => Math.abs(item.height - this.activeRectangle.height) < ALIGN_TOLERANCE);
+            if (heightAlignRectangle) {
+                const offsetHeight = heightAlignRectangle.height - this.activeRectangle.height;
+                result.deltaHeight = offsetHeight * this.resizeAlignOptions.directionFactors[1];
+                result.heightAlignRectangle = heightAlignRectangle;
+            }
         }
+
         return result;
     }
 
@@ -66,18 +81,14 @@ export class ResizeAlignReaction {
         if (result?.widthAlignRectangle) {
             if (this.resizeAlignOptions.directionFactors[0] === -1) {
                 this.activeRectangle.x += result.deltaWidth;
-                this.activeRectangle.width += result.deltaWidth * this.resizeAlignOptions.directionFactors[0];
-            } else {
-                this.activeRectangle.width += result.deltaWidth;
             }
+            this.activeRectangle.width += result.deltaWidth * this.resizeAlignOptions.directionFactors[0];
         }
         if (result?.heightAlignRectangle) {
             if (this.resizeAlignOptions.directionFactors[1] === -1) {
                 this.activeRectangle.y += result.deltaHeight;
-                this.activeRectangle.height += result.deltaHeight * this.resizeAlignOptions.directionFactors[1];
-            } else {
-                this.activeRectangle.height += result.deltaHeight;
             }
+            this.activeRectangle.height += result.deltaHeight * this.resizeAlignOptions.directionFactors[1];
         }
     }
 
@@ -85,17 +96,17 @@ export class ResizeAlignReaction {
         let widthAlignPoints = [];
         let heightAlignPoints = [];
         for (let alignRectangle of this.alignRectangles) {
-            if (this.activeRectangle.width === alignRectangle.width) {
+            if (this.activeRectangle.width === alignRectangle.width && this.isHorizontalResize) {
                 widthAlignPoints.push(getEqualLinePoints(alignRectangle, true));
             }
-            if (this.activeRectangle.height === alignRectangle.height) {
+            if (this.activeRectangle.height === alignRectangle.height && this.isVerticalResize) {
                 heightAlignPoints.push(getEqualLinePoints(alignRectangle, false));
             }
         }
-        if (widthAlignPoints.length) {
+        if (widthAlignPoints.length && this.isHorizontalResize) {
             widthAlignPoints.push(getEqualLinePoints(this.activeRectangle, true));
         }
-        if (heightAlignPoints.length) {
+        if (heightAlignPoints.length && this.isVerticalResize) {
             heightAlignPoints.push(getEqualLinePoints(this.activeRectangle, false));
         }
         const alignLines = [...widthAlignPoints, ...heightAlignPoints];
