@@ -20,6 +20,7 @@ import { getResizeAlignRef } from '../utils/resize';
 export function withDrawResize(board: PlaitBoard) {
     const { afterChange } = board;
     let alignG: SVGGElement | null;
+
     const options: WithResizeOptions<PlaitDrawElement[]> = {
         key: 'draw-elements',
         canResize: () => {
@@ -46,7 +47,7 @@ export function withDrawResize(board: PlaitBoard) {
             const isMaintainAspectRatio = resizeState.isShift || isResizeFromCorner;
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
 
-            const { deltaWidth, deltaHeight, g } = getResizeAlignRef(
+            const { deltaWidth, deltaHeight, equalLinesG } = getResizeAlignRef(
                 board,
                 resizeRef,
                 resizeState,
@@ -57,8 +58,8 @@ export function withDrawResize(board: PlaitBoard) {
                 isMaintainAspectRatio,
                 isResizeFromCorner
             );
-            alignG = g;
-            PlaitBoard.getElementActiveHost(board).append(alignG);
+            alignG = equalLinesG;
+            PlaitBoard.getElementActiveHost(board).append(equalLinesG);
 
             const newResizeState: ResizeState = {
                 ...resizeState,

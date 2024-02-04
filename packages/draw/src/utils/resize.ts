@@ -38,13 +38,13 @@ export function getResizeAlignRef(
     const resizeHandlePoint = movePointByZoomAndOriginPoint(handlePoint, originPoint, xZoom, yZoom);
     const [x, y] = getUnitVectorByPointAndPoint(originPoint, resizeHandlePoint);
 
-    let { deltaWidth, deltaHeight, g } = resizeAlignReaction.handleAlign({
-        resizeDirectionFactors: [getDirectionFactorByVectorComponent(x), getDirectionFactorByVectorComponent(y)],
+    let { deltaWidth, deltaHeight, equalLinesG } = resizeAlignReaction.handleResizeAlign({
+        directionFactors: [getDirectionFactorByVectorComponent(x), getDirectionFactorByVectorComponent(y)],
         isMaintainAspectRatio
     });
     return {
         deltaWidth,
         deltaHeight,
-        g
+        equalLinesG
     };
 }
