@@ -3,7 +3,7 @@ import { PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLO
 export interface ResizeAlignRef {
     deltaWidth: number;
     deltaHeight: number;
-    g: SVGGElement;
+    equalLinesG: SVGGElement;
 }
 
 export interface ResizeAlignOptions {
@@ -24,10 +24,6 @@ export class ResizeAlignReaction {
     alignRectangles: RectangleClient[];
 
     resizeAlignOptions!: ResizeAlignOptions;
-
-    isAdjustRectangleWidth: boolean = false;
-
-    isAdjustRectangleHeight: boolean = false;
 
     constructor(private board: PlaitBoard, private activeElements: PlaitElement[], private activeRectangle: RectangleClient) {
         this.alignRectangles = this.getAlignRectangle();
@@ -80,13 +76,15 @@ export class ResizeAlignReaction {
     }
 
     updateActiveRectangle(equalLineRef: EqualLineRef) {
-        if (this.isAdjustRectangleWidth) {
+        const isAdjustRectangleWidth = equalLineRef.deltaWidth !== 0;
+        const isAdjustRectangleHeight = equalLineRef.deltaHeight !== 0;
+        if (isAdjustRectangleWidth) {
             if (this.resizeAlignOptions.directionFactors[0] === -1) {
                 this.activeRectangle.x += equalLineRef.deltaWidth;
             }
             this.activeRectangle.width += equalLineRef.deltaWidth * this.resizeAlignOptions.directionFactors[0];
         }
-        if (this.isAdjustRectangleHeight) {
+        if (isAdjustRectangleHeight) {
             if (this.resizeAlignOptions.directionFactors[1] === -1) {
                 this.activeRectangle.y += equalLineRef.deltaHeight;
             }
@@ -97,7 +95,7 @@ export class ResizeAlignReaction {
     drawEqualLines() {
         let widthEqualPoints = [];
         let heightEqualPoints = [];
-        
+
         for (let alignRectangle of this.alignRectangles) {
             if (this.activeRectangle.width === alignRectangle.width && this.isHorizontalResize) {
                 widthEqualPoints.push(getEqualLinePoints(alignRectangle, true));
@@ -118,22 +116,15 @@ export class ResizeAlignReaction {
     }
 
     handleResizeAlign(resizeAlignOptions: ResizeAlignOptions): ResizeAlignRef {
-        let g = createG();
-        let deltaWidth = 0;
-        let deltaHeight = 0;
         this.resizeAlignOptions = resizeAlignOptions;
 
         const equalLineRef = this.getEqualLineRef();
-        this.isAdjustRectangleWidth = equalLineRef.deltaWidth !== 0;
-        this.isAdjustRectangleHeight = equalLineRef.deltaHeight !== 0;
-        if (this.isAdjustRectangleWidth || this.isAdjustRectangleHeight) {
-            deltaWidth = equalLineRef.deltaWidth;
-            deltaHeight = equalLineRef.deltaHeight;
-            this.updateActiveRectangle(equalLineRef);
-            g = this.drawEqualLines();
-        }
+        this.updateActiveRectangle(equalLineRef);
+        const equalLinesG = this.drawEqualLines();
+        const deltaWidth = equalLineRef.deltaWidth;
+        const deltaHeight = equalLineRef.deltaHeight;
 
-        return { deltaWidth, deltaHeight, g };
+        return { deltaWidth, deltaHeight, equalLinesG };
     }
 }
 
