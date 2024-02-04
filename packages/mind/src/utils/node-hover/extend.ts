@@ -2,11 +2,11 @@ import { PlaitBoard, PlaitElement, depthFirstRecursion, getIsRecursionFunc, toHo
 import { MindElement } from '../../interfaces/element';
 import { isHitMindElement } from '../position/node';
 
-export interface NodeHoveredExtendRef {
+export interface NodeExtendHoveredRef {
     element: MindElement;
 }
 
-export const pointerMoveHandle = (board: PlaitBoard, event: PointerEvent, nodeHoveredExtendRef: NodeHoveredExtendRef | null) => {
+export const pointerMoveHandle = (board: PlaitBoard, event: PointerEvent, nodeExtendHoveredRef: NodeExtendHoveredRef | null) => {
     let target: MindElement | null = null;
     const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
     depthFirstRecursion(
@@ -27,30 +27,30 @@ export const pointerMoveHandle = (board: PlaitBoard, event: PointerEvent, nodeHo
         true
     );
 
-    if (nodeHoveredExtendRef && target && nodeHoveredExtendRef.element === target) {
-        return nodeHoveredExtendRef;
+    if (nodeExtendHoveredRef && target && nodeExtendHoveredRef.element === target) {
+        return nodeExtendHoveredRef;
     }
 
-    if (nodeHoveredExtendRef) {
-        removeHovered(nodeHoveredExtendRef.element);
+    if (nodeExtendHoveredRef) {
+        removeHovered(nodeExtendHoveredRef.element);
     }
 
     if (target) {
         addHovered(target);
-        if (nodeHoveredExtendRef) {
-            nodeHoveredExtendRef.element = target;
+        if (nodeExtendHoveredRef) {
+            nodeExtendHoveredRef.element = target;
         } else {
-            nodeHoveredExtendRef = { element: target };
+            nodeExtendHoveredRef = { element: target };
         }
     } else {
-        nodeHoveredExtendRef = null;
+        nodeExtendHoveredRef = null;
     }
-    return nodeHoveredExtendRef;
+    return nodeExtendHoveredRef;
 };
 
-export const pointerLeaveHandle = (board: PlaitBoard, event: PointerEvent, nodeHoveredExtendRef: NodeHoveredExtendRef | null) => {
-    if (nodeHoveredExtendRef) {
-        removeHovered(nodeHoveredExtendRef.element);
+export const pointerLeaveHandle = (board: PlaitBoard, event: PointerEvent, nodeExtendHoveredRef: NodeExtendHoveredRef | null) => {
+    if (nodeExtendHoveredRef) {
+        removeHovered(nodeExtendHoveredRef.element);
     }
 };
 

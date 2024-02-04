@@ -1,6 +1,4 @@
 import { PlaitBoard, PlaitOptionsBoard } from '@plait/core';
-import { MindElement } from '../interfaces/element';
-import { EmojiItem } from '../interfaces/element-data';
 import { PlaitMindBoard } from './with-mind.board';
 import { WithMindOptions } from '../interfaces/options';
 import { WithMindPluginKey } from '../constants/default';

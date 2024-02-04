@@ -21,7 +21,7 @@ import { withAbstract } from './with-abstract-resize';
 import { withMindExtend } from './with-mind-extend';
 import { withCreateMind } from './with-mind-create';
 import { withMindHotkey } from './with-mind-hotkey';
-import { withNodeHoverDetect } from './with-node-hover-detect';
+import { withNodeHoverHitTest } from './with-node-hover-hit-test';
 import { withNodeImage } from './with-node-image';
 import { PlaitMindBoard } from './with-mind.board';
 import { withNodeResize } from './with-node-resize';
@@ -132,7 +132,7 @@ export const withMind = (baseBoard: PlaitBoard) => {
     return withNodeResize(
         withNodeImageResize(
             withNodeImage(
-                withNodeHoverDetect(withMindFragment(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board)))))))
+                withNodeHoverHitTest(withMindFragment(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board)))))))
             )
         )
     );
