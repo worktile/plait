@@ -1,8 +1,8 @@
 import { PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR, createG, findElements } from '@plait/core';
 
 export interface ResizeAlignRef {
-    deltaWidth: number;
-    deltaHeight: number;
+    deltaX: number;
+    deltaY: number;
     equalLinesG: SVGGElement;
 }
 
@@ -12,8 +12,8 @@ export interface ResizeAlignOptions {
 }
 
 export interface EqualLineRef {
-    deltaWidth: number;
-    deltaHeight: number;
+    deltaX: number;
+    deltaY: number;
 }
 
 const ALIGN_TOLERANCE = 2;
@@ -48,8 +48,8 @@ export class ResizeAlignReaction {
 
     getEqualLineRef(): EqualLineRef {
         let equalLineRef: EqualLineRef = {
-            deltaWidth: 0,
-            deltaHeight: 0
+            deltaX: 0,
+            deltaY: 0
         };
 
         if (this.isHorizontalResize) {
@@ -57,8 +57,8 @@ export class ResizeAlignReaction {
                 item => Math.abs(item.width - this.activeRectangle.width) < ALIGN_TOLERANCE
             );
             if (widthAlignRectangle) {
-                const offsetWidth = widthAlignRectangle.width - this.activeRectangle.width;
-                equalLineRef.deltaWidth = offsetWidth * this.resizeAlignOptions.directionFactors[0];
+                const deltaWidth = widthAlignRectangle.width - this.activeRectangle.width;
+                equalLineRef.deltaX = deltaWidth * this.resizeAlignOptions.directionFactors[0];
             }
         }
 
@@ -67,28 +67,26 @@ export class ResizeAlignReaction {
                 item => Math.abs(item.height - this.activeRectangle.height) < ALIGN_TOLERANCE
             );
             if (heightAlignRectangle) {
-                const offsetHeight = heightAlignRectangle.height - this.activeRectangle.height;
-                equalLineRef.deltaHeight = offsetHeight * this.resizeAlignOptions.directionFactors[1];
+                const deltaHeight = heightAlignRectangle.height - this.activeRectangle.height;
+                equalLineRef.deltaY = deltaHeight * this.resizeAlignOptions.directionFactors[1];
             }
         }
 
         return equalLineRef;
     }
 
-    updateActiveRectangle(equalLineRef: EqualLineRef) {
-        const isAdjustRectangleWidth = equalLineRef.deltaWidth !== 0;
-        const isAdjustRectangleHeight = equalLineRef.deltaHeight !== 0;
-        if (isAdjustRectangleWidth) {
+    updateActiveRectangle(deltaX: number, deltaY: number) {
+        if (deltaX !== 0) {
             if (this.resizeAlignOptions.directionFactors[0] === -1) {
-                this.activeRectangle.x += equalLineRef.deltaWidth;
+                this.activeRectangle.x += deltaX;
             }
-            this.activeRectangle.width += equalLineRef.deltaWidth * this.resizeAlignOptions.directionFactors[0];
+            this.activeRectangle.width += deltaX * this.resizeAlignOptions.directionFactors[0];
         }
-        if (isAdjustRectangleHeight) {
+        if (deltaY !== 0) {
             if (this.resizeAlignOptions.directionFactors[1] === -1) {
-                this.activeRectangle.y += equalLineRef.deltaHeight;
+                this.activeRectangle.y += deltaY;
             }
-            this.activeRectangle.height += equalLineRef.deltaHeight * this.resizeAlignOptions.directionFactors[1];
+            this.activeRectangle.height += deltaY * this.resizeAlignOptions.directionFactors[1];
         }
     }
 
@@ -119,12 +117,12 @@ export class ResizeAlignReaction {
         this.resizeAlignOptions = resizeAlignOptions;
 
         const equalLineRef = this.getEqualLineRef();
-        this.updateActiveRectangle(equalLineRef);
+        const deltaX = equalLineRef.deltaX || 0;// equal || align || 0
+        const deltaY = equalLineRef.deltaY || 0;
+        this.updateActiveRectangle(deltaX, deltaY);
         const equalLinesG = this.drawEqualLines();
-        const deltaWidth = equalLineRef.deltaWidth;
-        const deltaHeight = equalLineRef.deltaHeight;
 
-        return { deltaWidth, deltaHeight, equalLinesG };
+        return { deltaX, deltaY, equalLinesG };
     }
 }
 
