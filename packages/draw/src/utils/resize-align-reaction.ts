@@ -7,8 +7,15 @@ export interface ResizeAlignRef {
 }
 
 export interface ResizeAlignOptions {
-    resizeDirectionFactors: [number, number];
+    directionFactors: [number, number];
     isMaintainAspectRatio: boolean;
+}
+
+export interface ResizeAlignDeltaAndRectangle {
+    deltaWidth: number;
+    deltaHeight: number;
+    widthAlignRectangle?: RectangleClient;
+    heightAlignRectangle?: RectangleClient;
 }
 
 const ALIGN_TOLERANCE = 2;
@@ -16,7 +23,13 @@ const ALIGN_TOLERANCE = 2;
 const EQUAL_SPACING = 10;
 
 export class ResizeAlignReaction {
-    constructor(private board: PlaitBoard, private activeElements: PlaitElement[], private activeRectangle: RectangleClient) {}
+    alignRectangles: RectangleClient[];
+
+    resizeAlignOptions!: ResizeAlignOptions;
+
+    constructor(private board: PlaitBoard, private activeElements: PlaitElement[], private activeRectangle: RectangleClient) {
+        this.alignRectangles = this.getAlignRectangle();
+    }
 
     getAlignRectangle() {
         const elements = findElements(this.board, {
@@ -27,85 +40,73 @@ export class ResizeAlignReaction {
         return elements.map(item => this.board.getRectangle(item)!);
     }
 
-    handleAlign(resizeAlignOptions: ResizeAlignOptions): ResizeAlignRef {
-        const alignRectangles = this.getAlignRectangle();
-        const g = createG();
-        let alignLines = [];
-
-        let deltaWidth = 0;
-        let deltaHeight = 0;
-        let isCorrectWidth = false;
-        let isCorrectHeight = false;
-        let drawActiveHorizontal = false;
-        let drawActiveVertical = false;
-        const { resizeDirectionFactors } = resizeAlignOptions;
-
-        for (let alignRectangle of alignRectangles) {
-            const offsetWidth = alignRectangle.width - this.activeRectangle.width;
-            const offsetHeight = alignRectangle.height - this.activeRectangle.height;
-
-            let canDrawHorizontal = false;
-            if (resizeDirectionFactors[0] !== 0) {
-                if (!isCorrectWidth && Math.abs(offsetWidth) < ALIGN_TOLERANCE) {
-                    this.activeRectangle.width += offsetWidth;
-                    deltaWidth = offsetWidth * resizeDirectionFactors[0];
-                    if (resizeDirectionFactors[0] === -1) {
-                        this.activeRectangle.x += deltaWidth;
-                    }
-                    isCorrectWidth = true;
-                    canDrawHorizontal = true;
-                }
-
-                if (offsetWidth === 0) {
-                    canDrawHorizontal = true;
-                }
-
-                if (canDrawHorizontal) {
-                    const alignPoints: Point[] = getEqualLinePoints(alignRectangle, true);
-                    if (!drawActiveHorizontal) {
-                        const activePoints: Point[] = getEqualLinePoints(this.activeRectangle, true);
-                        alignLines.push(activePoints);
-                        drawActiveHorizontal = true;
-                    }
-                    alignLines.push(alignPoints);
-                }
-            }
-
-            let canDrawVertical = false;
-            if (resizeDirectionFactors[1] !== 0) {
-                if (!isCorrectHeight && Math.abs(offsetHeight) < ALIGN_TOLERANCE) {
-                    this.activeRectangle.height += offsetHeight;
-                    deltaHeight = offsetHeight * resizeDirectionFactors[1];
-                    if (resizeDirectionFactors[1] === -1) {
-                        this.activeRectangle.y += deltaHeight;
-                    }
-                    canDrawVertical = true;
-                    isCorrectHeight = true;
-                }
-
-                if (offsetHeight === 0) {
-                    canDrawVertical = true;
-                }
-
-                if (canDrawVertical) {
-                    const alignPoints: Point[] = getEqualLinePoints(alignRectangle, false);
-                    if (!drawActiveVertical) {
-                        const activePoints: Point[] = getEqualLinePoints(this.activeRectangle, false);
-                        alignLines.push(activePoints);
-                        drawActiveVertical = true;
-                    }
-                    alignLines.push(alignPoints);
-                }
-            }
+    getDeltaAndAlignRectangle(): ResizeAlignDeltaAndRectangle | null {
+        const widthAlignRectangle = this.alignRectangles.find(item => Math.abs(item.width - this.activeRectangle.width) < ALIGN_TOLERANCE);
+        const heightAlignRectangle = this.alignRectangles.find(
+            item => Math.abs(item.height - this.activeRectangle.height) < ALIGN_TOLERANCE
+        );
+        let result: ResizeAlignDeltaAndRectangle = {
+            deltaWidth: 0,
+            deltaHeight: 0
+        };
+        if (widthAlignRectangle) {
+            const offsetWidth = widthAlignRectangle.width - this.activeRectangle.width;
+            result.deltaWidth = offsetWidth * this.resizeAlignOptions.directionFactors[0];
+            result.widthAlignRectangle = widthAlignRectangle;
         }
-
-        if (alignLines.length) {
-            this.drawEqualLines(alignLines, g);
+        if (heightAlignRectangle) {
+            const offsetHeight = heightAlignRectangle.height - this.activeRectangle.height;
+            result.deltaHeight = offsetHeight * this.resizeAlignOptions.directionFactors[1];
+            result.heightAlignRectangle = heightAlignRectangle;
         }
-        return { deltaWidth, deltaHeight, g };
+        return result;
     }
 
-    drawEqualLines(lines: Point[][], g: SVGGElement) {
+    updateActiveRectangle(result: ResizeAlignDeltaAndRectangle) {
+        if (result?.widthAlignRectangle) {
+            if (this.resizeAlignOptions.directionFactors[0] === -1) {
+                this.activeRectangle.x += result.deltaWidth;
+                this.activeRectangle.width += result.deltaWidth * this.resizeAlignOptions.directionFactors[0];
+            } else {
+                this.activeRectangle.width += result.deltaWidth;
+            }
+        }
+        if (result?.heightAlignRectangle) {
+            if (this.resizeAlignOptions.directionFactors[1] === -1) {
+                this.activeRectangle.y += result.deltaHeight;
+                this.activeRectangle.height += result.deltaHeight * this.resizeAlignOptions.directionFactors[1];
+            } else {
+                this.activeRectangle.height += result.deltaHeight;
+            }
+        }
+    }
+
+    getEqualAlignLines() {
+        let widthAlignPoints = [];
+        let heightAlignPoints = [];
+        for (let alignRectangle of this.alignRectangles) {
+            if (this.activeRectangle.width === alignRectangle.width) {
+                widthAlignPoints.push(getEqualLinePoints(alignRectangle, true));
+            }
+            if (this.activeRectangle.height === alignRectangle.height) {
+                heightAlignPoints.push(getEqualLinePoints(alignRectangle, false));
+            }
+        }
+        if (widthAlignPoints.length) {
+            widthAlignPoints.push(getEqualLinePoints(this.activeRectangle, true));
+        }
+        if (heightAlignPoints.length) {
+            heightAlignPoints.push(getEqualLinePoints(this.activeRectangle, false));
+        }
+        const alignLines = [...widthAlignPoints, ...heightAlignPoints];
+        if (alignLines.length) {
+            return this.drawEqualLines(alignLines);
+        }
+        return null;
+    }
+
+    drawEqualLines(lines: Point[][]) {
+        const g = createG();
         lines.forEach(line => {
             if (!line.length) return;
             const yAlign = PlaitBoard.getRoughSVG(this.board).line(line[0][0], line[0][1], line[1][0], line[1][1], {
@@ -122,6 +123,27 @@ export class ResizeAlignReaction {
                 g.appendChild(bar);
             });
         });
+        return g;
+    }
+
+    handleResizeAlign(resizeAlignOptions: ResizeAlignOptions): ResizeAlignRef {
+        let g = createG();
+        let deltaWidth = 0;
+        let deltaHeight = 0;
+
+        this.resizeAlignOptions = resizeAlignOptions;
+        const result = this.getDeltaAndAlignRectangle();
+        if (result?.widthAlignRectangle || result?.heightAlignRectangle) {
+            deltaWidth = result.deltaWidth;
+            deltaHeight = result.deltaHeight;
+            this.updateActiveRectangle(result);
+            const equalAlignLines = this.getEqualAlignLines();
+            if (equalAlignLines) {
+                g = equalAlignLines;
+            }
+        }
+
+        return { deltaWidth, deltaHeight, g };
     }
 }
 
