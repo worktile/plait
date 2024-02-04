@@ -11,11 +11,9 @@ export interface ResizeAlignOptions {
     isMaintainAspectRatio: boolean;
 }
 
-export interface ResizeAlignDeltaAndRectangle {
+export interface EqualLineRef {
     deltaWidth: number;
     deltaHeight: number;
-    widthAlignRectangle?: RectangleClient;
-    heightAlignRectangle?: RectangleClient;
 }
 
 const ALIGN_TOLERANCE = 2;
@@ -26,6 +24,10 @@ export class ResizeAlignReaction {
     alignRectangles: RectangleClient[];
 
     resizeAlignOptions!: ResizeAlignOptions;
+
+    isAdjustRectangleWidth: boolean = false;
+
+    isAdjustRectangleHeight: boolean = false;
 
     constructor(private board: PlaitBoard, private activeElements: PlaitElement[], private activeRectangle: RectangleClient) {
         this.alignRectangles = this.getAlignRectangle();
@@ -48,110 +50,87 @@ export class ResizeAlignReaction {
         return elements.map(item => this.board.getRectangle(item)!);
     }
 
-    getDeltaAndAlignRectangle(): ResizeAlignDeltaAndRectangle | null {
-        let widthAlignRectangle: RectangleClient | undefined = undefined;
-        let heightAlignRectangle: RectangleClient | undefined = undefined;
-        let result: ResizeAlignDeltaAndRectangle = {
+    getEqualLineRef(): EqualLineRef {
+        let equalLineRef: EqualLineRef = {
             deltaWidth: 0,
             deltaHeight: 0
         };
 
         if (this.isHorizontalResize) {
-            widthAlignRectangle = this.alignRectangles.find(item => Math.abs(item.width - this.activeRectangle.width) < ALIGN_TOLERANCE);
+            const widthAlignRectangle = this.alignRectangles.find(
+                item => Math.abs(item.width - this.activeRectangle.width) < ALIGN_TOLERANCE
+            );
             if (widthAlignRectangle) {
                 const offsetWidth = widthAlignRectangle.width - this.activeRectangle.width;
-                result.deltaWidth = offsetWidth * this.resizeAlignOptions.directionFactors[0];
-                result.widthAlignRectangle = widthAlignRectangle;
+                equalLineRef.deltaWidth = offsetWidth * this.resizeAlignOptions.directionFactors[0];
             }
         }
 
         if (this.isVerticalResize) {
-            heightAlignRectangle = this.alignRectangles.find(item => Math.abs(item.height - this.activeRectangle.height) < ALIGN_TOLERANCE);
+            const heightAlignRectangle = this.alignRectangles.find(
+                item => Math.abs(item.height - this.activeRectangle.height) < ALIGN_TOLERANCE
+            );
             if (heightAlignRectangle) {
                 const offsetHeight = heightAlignRectangle.height - this.activeRectangle.height;
-                result.deltaHeight = offsetHeight * this.resizeAlignOptions.directionFactors[1];
-                result.heightAlignRectangle = heightAlignRectangle;
+                equalLineRef.deltaHeight = offsetHeight * this.resizeAlignOptions.directionFactors[1];
             }
         }
 
-        return result;
+        return equalLineRef;
     }
 
-    updateActiveRectangle(result: ResizeAlignDeltaAndRectangle) {
-        if (result?.widthAlignRectangle) {
+    updateActiveRectangle(equalLineRef: EqualLineRef) {
+        if (this.isAdjustRectangleWidth) {
             if (this.resizeAlignOptions.directionFactors[0] === -1) {
-                this.activeRectangle.x += result.deltaWidth;
+                this.activeRectangle.x += equalLineRef.deltaWidth;
             }
-            this.activeRectangle.width += result.deltaWidth * this.resizeAlignOptions.directionFactors[0];
+            this.activeRectangle.width += equalLineRef.deltaWidth * this.resizeAlignOptions.directionFactors[0];
         }
-        if (result?.heightAlignRectangle) {
+        if (this.isAdjustRectangleHeight) {
             if (this.resizeAlignOptions.directionFactors[1] === -1) {
-                this.activeRectangle.y += result.deltaHeight;
+                this.activeRectangle.y += equalLineRef.deltaHeight;
             }
-            this.activeRectangle.height += result.deltaHeight * this.resizeAlignOptions.directionFactors[1];
+            this.activeRectangle.height += equalLineRef.deltaHeight * this.resizeAlignOptions.directionFactors[1];
         }
     }
 
-    getEqualAlignLines() {
-        let widthAlignPoints = [];
-        let heightAlignPoints = [];
+    drawEqualLines() {
+        let widthEqualPoints = [];
+        let heightEqualPoints = [];
+        
         for (let alignRectangle of this.alignRectangles) {
             if (this.activeRectangle.width === alignRectangle.width && this.isHorizontalResize) {
-                widthAlignPoints.push(getEqualLinePoints(alignRectangle, true));
+                widthEqualPoints.push(getEqualLinePoints(alignRectangle, true));
             }
             if (this.activeRectangle.height === alignRectangle.height && this.isVerticalResize) {
-                heightAlignPoints.push(getEqualLinePoints(alignRectangle, false));
+                heightEqualPoints.push(getEqualLinePoints(alignRectangle, false));
             }
         }
-        if (widthAlignPoints.length && this.isHorizontalResize) {
-            widthAlignPoints.push(getEqualLinePoints(this.activeRectangle, true));
+        if (widthEqualPoints.length && this.isHorizontalResize) {
+            widthEqualPoints.push(getEqualLinePoints(this.activeRectangle, true));
         }
-        if (heightAlignPoints.length && this.isVerticalResize) {
-            heightAlignPoints.push(getEqualLinePoints(this.activeRectangle, false));
+        if (heightEqualPoints.length && this.isVerticalResize) {
+            heightEqualPoints.push(getEqualLinePoints(this.activeRectangle, false));
         }
-        const alignLines = [...widthAlignPoints, ...heightAlignPoints];
-        if (alignLines.length) {
-            return this.drawEqualLines(alignLines);
-        }
-        return null;
-    }
 
-    drawEqualLines(lines: Point[][]) {
-        const g = createG();
-        lines.forEach(line => {
-            if (!line.length) return;
-            const yAlign = PlaitBoard.getRoughSVG(this.board).line(line[0][0], line[0][1], line[1][0], line[1][1], {
-                stroke: SELECTION_BORDER_COLOR,
-                strokeWidth: 1
-            });
-            g.appendChild(yAlign);
-            line.forEach(point => {
-                const barPoint = getBarPoint(point, !!Point.isHorizontal(line[0], line[1]));
-                const bar = PlaitBoard.getRoughSVG(this.board).line(barPoint[0][0], barPoint[0][1], barPoint[1][0], barPoint[1][1], {
-                    stroke: SELECTION_BORDER_COLOR,
-                    strokeWidth: 1
-                });
-                g.appendChild(bar);
-            });
-        });
-        return g;
+        const equalLinePoints = [...widthEqualPoints, ...heightEqualPoints];
+        return drawEqualLines(this.board, equalLinePoints);
     }
 
     handleResizeAlign(resizeAlignOptions: ResizeAlignOptions): ResizeAlignRef {
         let g = createG();
         let deltaWidth = 0;
         let deltaHeight = 0;
-
         this.resizeAlignOptions = resizeAlignOptions;
-        const result = this.getDeltaAndAlignRectangle();
-        if (result?.widthAlignRectangle || result?.heightAlignRectangle) {
-            deltaWidth = result.deltaWidth;
-            deltaHeight = result.deltaHeight;
-            this.updateActiveRectangle(result);
-            const equalAlignLines = this.getEqualAlignLines();
-            if (equalAlignLines) {
-                g = equalAlignLines;
-            }
+
+        const equalLineRef = this.getEqualLineRef();
+        this.isAdjustRectangleWidth = equalLineRef.deltaWidth !== 0;
+        this.isAdjustRectangleHeight = equalLineRef.deltaHeight !== 0;
+        if (this.isAdjustRectangleWidth || this.isAdjustRectangleHeight) {
+            deltaWidth = equalLineRef.deltaWidth;
+            deltaHeight = equalLineRef.deltaHeight;
+            this.updateActiveRectangle(equalLineRef);
+            g = this.drawEqualLines();
         }
 
         return { deltaWidth, deltaHeight, g };
@@ -180,4 +159,25 @@ function getEqualLinePoints(rectangle: RectangleClient, isHorizontal: boolean): 
               [rectangle.x - EQUAL_SPACING, rectangle.y],
               [rectangle.x - EQUAL_SPACING, rectangle.y + rectangle.height]
           ];
+}
+
+function drawEqualLines(board: PlaitBoard, lines: Point[][]) {
+    const g = createG();
+    lines.forEach(line => {
+        if (!line.length) return;
+        const yAlign = PlaitBoard.getRoughSVG(board).line(line[0][0], line[0][1], line[1][0], line[1][1], {
+            stroke: SELECTION_BORDER_COLOR,
+            strokeWidth: 1
+        });
+        g.appendChild(yAlign);
+        line.forEach(point => {
+            const barPoint = getBarPoint(point, !!Point.isHorizontal(line[0], line[1]));
+            const bar = PlaitBoard.getRoughSVG(board).line(barPoint[0][0], barPoint[0][1], barPoint[1][0], barPoint[1][1], {
+                stroke: SELECTION_BORDER_COLOR,
+                strokeWidth: 1
+            });
+            g.appendChild(bar);
+        });
+    });
+    return g;
 }
