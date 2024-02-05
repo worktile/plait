@@ -8,7 +8,7 @@ export interface ResizeAlignRef {
 
 export interface ResizeAlignOptions {
     directionFactors: [number, number];
-    isMaintainAspectRatio: boolean;
+    isAspectRatio: boolean;
 }
 
 export interface EqualLineRef {

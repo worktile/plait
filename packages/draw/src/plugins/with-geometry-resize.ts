@@ -48,8 +48,8 @@ export const withGeometryResize = (board: PlaitBoard) => {
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
             alignG?.remove();
-            const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
-            const isMaintainAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
+            const isFromCorner = isCornerHandle(board, resizeRef.handle);
+            const isAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
 
             const resizeAlignRef = getResizeAlignRef(
@@ -60,8 +60,8 @@ export const withGeometryResize = (board: PlaitBoard) => {
                     originPoint,
                     handlePoint
                 },
-                isMaintainAspectRatio,
-                isResizeFromCorner
+                isAspectRatio,
+                isFromCorner
             );
             alignG = resizeAlignRef.equalLinesG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
@@ -69,7 +69,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 ...resizeState,
                 endPoint: [resizeState.endPoint[0] + resizeAlignRef.deltaX, resizeState.endPoint[1] + resizeAlignRef.deltaY]
             };
-            const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
+            const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isFromCorner, isAspectRatio);
             let points = resizeRef.element.points.map(p => {
                 return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
             }) as [Point, Point];

@@ -12,11 +12,11 @@ export function getResizeAlignRef(
         originPoint: Point;
         handlePoint: Point;
     },
-    isMaintainAspectRatio: boolean,
-    isResizeFromCorner: boolean
+    isAspectRatio: boolean,
+    isFromCorner: boolean
 ): ResizeAlignRef {
     const { originPoint, handlePoint } = resizeOriginPointAndHandlePoint;
-    const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
+    const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isFromCorner, isAspectRatio);
 
     let activeElements: PlaitElement[];
     let points: Point[] = [];
@@ -40,6 +40,6 @@ export function getResizeAlignRef(
 
     return resizeAlignReaction.handleResizeAlign({
         directionFactors: [getDirectionFactorByVectorComponent(x), getDirectionFactorByVectorComponent(y)],
-        isMaintainAspectRatio
+        isAspectRatio
     });
 }

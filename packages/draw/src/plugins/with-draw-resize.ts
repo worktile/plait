@@ -43,8 +43,8 @@ export function withDrawResize(board: PlaitBoard) {
         },
         onResize: (resizeRef: ResizeRef<PlaitDrawElement[]>, resizeState: ResizeState) => {
             alignG?.remove();
-            const isResizeFromCorner = isCornerHandle(board, resizeRef.handle);
-            const isMaintainAspectRatio = resizeState.isShift || isResizeFromCorner;
+            const isFromCorner = isCornerHandle(board, resizeRef.handle);
+            const isAspectRatio = resizeState.isShift || isFromCorner;
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
 
             const resizeAlignRef = getResizeAlignRef(
@@ -55,8 +55,8 @@ export function withDrawResize(board: PlaitBoard) {
                     originPoint,
                     handlePoint
                 },
-                isMaintainAspectRatio,
-                isResizeFromCorner
+                isAspectRatio,
+                isFromCorner
             );
             alignG = resizeAlignRef.equalLinesG;
             PlaitBoard.getElementActiveHost(board).append(resizeAlignRef.equalLinesG);
@@ -65,7 +65,7 @@ export function withDrawResize(board: PlaitBoard) {
                 ...resizeState,
                 endPoint: [resizeState.endPoint[0] + resizeAlignRef.deltaX, resizeState.endPoint[1] + resizeAlignRef.deltaY]
             };
-            const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isResizeFromCorner, isMaintainAspectRatio);
+            const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isFromCorner, isAspectRatio);
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
                 let points = target.points.map(p => {
@@ -78,7 +78,7 @@ export function withDrawResize(board: PlaitBoard) {
                 } else if (PlaitDrawElement.isLine(target)) {
                     Transforms.setNode(board, { points }, path);
                 } else if (PlaitDrawElement.isImage(target)) {
-                    if (isMaintainAspectRatio) {
+                    if (isAspectRatio) {
                         Transforms.setNode(board, { points }, path);
                     } else {
                         // The image element does not follow the resize, but moves based on the center point.
@@ -125,15 +125,15 @@ export const getResizeZoom = (
     resizeState: ResizeState,
     resizeOriginPoint: Point,
     resizeHandlePoint: Point,
-    isResizeFromCorner: boolean,
-    isMaintainAspectRatio: boolean
+    isFromCorner: boolean,
+    isAspectRatio: boolean
 ) => {
     const startPoint = resizeState.startPoint;
     const endPoint = resizeState.endPoint;
     let xZoom = 0;
     let yZoom = 0;
-    if (isResizeFromCorner) {
-        if (isMaintainAspectRatio) {
+    if (isFromCorner) {
+        if (isAspectRatio) {
             let normalizedOffsetX = Point.getOffsetX(startPoint, endPoint);
             xZoom = normalizedOffsetX / (resizeHandlePoint[0] - resizeOriginPoint[0]);
             yZoom = xZoom;
@@ -148,7 +148,7 @@ export const getResizeZoom = (
         let normalizedOffset = isHorizontal ? Point.getOffsetX(startPoint, endPoint) : Point.getOffsetY(startPoint, endPoint);
         let benchmarkOffset = isHorizontal ? resizeHandlePoint[0] - resizeOriginPoint[0] : resizeHandlePoint[1] - resizeOriginPoint[1];
         const zoom = normalizedOffset / benchmarkOffset;
-        if (isMaintainAspectRatio) {
+        if (isAspectRatio) {
             xZoom = zoom;
             yZoom = zoom;
         } else {
