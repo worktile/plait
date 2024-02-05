@@ -71,11 +71,11 @@ export const getPoints = (source: Point, sourcePosition: Direction, target: Poin
         if (sourcePosition !== targetPosition) {
             const dirAccessorOpposite = dirAccessor === 'x' ? 1 : 0;
             const isSameDir = sourceDir[dirAccessor] === targetDir[dirAccessor === 'x' ? 'y' : 'x'];
-            const sourceGtTargetOppo = sourceGapped[dirAccessorOpposite] > targetGapped[dirAccessorOpposite];
-            const sourceLtTargetOppo = sourceGapped[dirAccessorOpposite] < targetGapped[dirAccessorOpposite];
+            const sourceGtTarget = sourceGapped[dirAccessorOpposite] > targetGapped[dirAccessorOpposite];
+            const sourceLtTarget = sourceGapped[dirAccessorOpposite] < targetGapped[dirAccessorOpposite];
             flipSourceTarget =
-                (sourceDir[dirAccessor] === 1 && ((!isSameDir && sourceGtTargetOppo) || (isSameDir && sourceLtTargetOppo))) ||
-                (sourceDir[dirAccessor] !== 1 && ((!isSameDir && sourceLtTargetOppo) || (isSameDir && sourceGtTargetOppo)));
+                (sourceDir[dirAccessor] === 1 && ((!isSameDir && sourceGtTarget) || (isSameDir && sourceLtTarget))) ||
+                (sourceDir[dirAccessor] !== 1 && ((!isSameDir && sourceLtTarget) || (isSameDir && sourceGtTarget)));
 
             if (flipSourceTarget) {
                 points = dirAccessor === 'x' ? sourceTarget : targetSource;

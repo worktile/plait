@@ -1,7 +1,7 @@
 import { Point, arrowPoints, createG, createPath, distanceBetweenPointAndPoint, drawLinearPath, rotate } from '@plait/core';
 import { LineMarkerType, PlaitLine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getFactorByPoints, getExtendPoint } from '@plait/common';
+import { getExtendPoint, getUnitVectorByPointAndPoint } from '@plait/common';
 import { getStrokeWidthByElement } from '../style';
 
 interface ArrowOptions {
@@ -96,13 +96,13 @@ const drawSharpArrow = (source: Point, target: Point, options: Options) => {
 };
 
 const drawArrow = (element: PlaitLine, source: Point, target: Point, options: Options) => {
-    const directionFactor = getFactorByPoints(source, target);
+    const unitVector = getUnitVectorByPointAndPoint(source, target);
     const strokeWidth = getStrokeWidthByElement(element);
-    const endPoint: Point = [target[0] + (strokeWidth * directionFactor.x) / 2, target[1] + (strokeWidth * directionFactor.y) / 2];
+    const endPoint: Point = [target[0] + (strokeWidth * unitVector[0]) / 2, target[1] + (strokeWidth * unitVector[1]) / 2];
     const distance = distanceBetweenPointAndPoint(...source, ...endPoint);
     const middlePoint: Point = [
-        endPoint[0] - (((distance * 3) / 5 + strokeWidth) / 2) * directionFactor.x,
-        endPoint[1] - (((distance * 3) / 5 + strokeWidth) / 2) * directionFactor.y
+        endPoint[0] - (((distance * 3) / 5 + strokeWidth) / 2) * unitVector[0],
+        endPoint[1] - (((distance * 3) / 5 + strokeWidth) / 2) * unitVector[1]
     ];
     const { pointLeft, pointRight } = arrowPoints(source, endPoint, 30);
     const arrowG = drawLinearPath([pointLeft, endPoint, pointRight, middlePoint], { ...options, fill: options.stroke }, true);
@@ -118,9 +118,9 @@ const drawSolidTriangle = (source: Point, target: Point, options: Options) => {
 };
 
 const drawOpenTriangle = (element: PlaitLine, source: Point, target: Point, options: Options) => {
-    const directionFactor = getFactorByPoints(source, target);
+    const unitVector = getUnitVectorByPointAndPoint(source, target);
     const strokeWidth = getStrokeWidthByElement(element);
-    const endPoint: Point = [target[0] + (strokeWidth * directionFactor.x) / 2, target[1] + (strokeWidth * directionFactor.y) / 2];
+    const endPoint: Point = [target[0] + (strokeWidth * unitVector[0]) / 2, target[1] + (strokeWidth * unitVector[1]) / 2];
     const { pointLeft, pointRight } = arrowPoints(source, endPoint, 40);
     return drawLinearPath([pointLeft, endPoint, pointRight], options);
 };

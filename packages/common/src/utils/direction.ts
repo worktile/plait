@@ -1,5 +1,4 @@
 import { Direction, Point, PointOfRectangle, Vector } from '@plait/core';
-import { getUnitVectorByPointAndPoint } from './vector';
 
 const handleDirectionFactors = {
     [Direction.left]: { x: -1, y: 0 },
@@ -74,20 +73,6 @@ export function getDirectionBetweenPointAndPoint(source: Point, target: Point) {
 
 export function getDirectionFactor(direction: Direction) {
     return handleDirectionFactors[direction];
-}
-
-export function getFactorByPoints(source: Point, target: Point) {
-    if (Point.isEquals(source, target)) {
-        return {
-            x: 1,
-            y: 1
-        };
-    }
-    const unit = getUnitVectorByPointAndPoint(source, target);
-    return {
-        x: unit[0],
-        y: unit[1]
-    };
 }
 
 export function getDirectionFactorByVectorComponent(vectorComponent: number): number {
