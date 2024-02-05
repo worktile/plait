@@ -19,27 +19,32 @@ export function getResizeAlignRef(
     const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isFromCorner, isAspectRatio);
 
     let activeElements: PlaitElement[];
-    let points: Point[] = [];
+    let resizePoints: Point[] = [];
     if (Array.isArray(resizeRef.element)) {
         activeElements = resizeRef.element;
         const rectangle = getRectangleByElements(board, resizeRef.element, false);
-        points = RectangleClient.getPoints(rectangle);
+        resizePoints = RectangleClient.getPoints(rectangle);
     } else {
         activeElements = [resizeRef.element];
-        points = resizeRef.element.points;
+        resizePoints = resizeRef.element.points;
     }
 
-    const resizePoints = points.map(p => {
+    const points = resizePoints.map(p => {
         return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
     }) as [Point, Point];
-    const newRectangle = RectangleClient.getRectangleByPoints(resizePoints);
+    const newRectangle = RectangleClient.getRectangleByPoints(points);
     const resizeAlignReaction = new ResizeAlignReaction(board, activeElements, newRectangle);
 
     const resizeHandlePoint = movePointByZoomAndOriginPoint(handlePoint, originPoint, xZoom, yZoom);
     const [x, y] = getUnitVectorByPointAndPoint(originPoint, resizeHandlePoint);
 
     return resizeAlignReaction.handleResizeAlign({
+        resizeState,
+        resizePoints,
+        originPoint,
+        handlePoint,
         directionFactors: [getDirectionFactorByVectorComponent(x), getDirectionFactorByVectorComponent(y)],
-        isAspectRatio
+        isAspectRatio,
+        isFromCorner
     });
 }

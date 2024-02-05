@@ -4,10 +4,8 @@ import {
     WithResizeOptions,
     getFirstTextManage,
     getIndexByResizeHandle,
-    getPointByUnitVectorAndVectorComponent,
     getResizeHandlePointByIndex,
     getSymmetricHandleIndex,
-    getUnitVectorByPointAndPoint,
     isCornerHandle,
     withResize
 } from '@plait/common';
@@ -61,15 +59,10 @@ export function withDrawResize(board: PlaitBoard) {
             alignG = resizeAlignRef.equalLinesG;
             PlaitBoard.getElementActiveHost(board).append(resizeAlignRef.equalLinesG);
 
-            const newResizeState: ResizeState = {
-                ...resizeState,
-                endPoint: [resizeState.endPoint[0] + resizeAlignRef.deltaX, resizeState.endPoint[1] + resizeAlignRef.deltaY]
-            };
-            const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isFromCorner, isAspectRatio);
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
                 let points = target.points.map(p => {
-                    return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
+                    return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
                 });
 
                 if (PlaitDrawElement.isGeometry(target)) {
@@ -84,7 +77,12 @@ export function withDrawResize(board: PlaitBoard) {
                         // The image element does not follow the resize, but moves based on the center point.
                         const targetRectangle = RectangleClient.getRectangleByPoints(target.points);
                         const centerPoint = RectangleClient.getCenterPoint(targetRectangle);
-                        const newCenterPoint = movePointByZoomAndOriginPoint(centerPoint, originPoint, xZoom, yZoom);
+                        const newCenterPoint = movePointByZoomAndOriginPoint(
+                            centerPoint,
+                            originPoint,
+                            resizeAlignRef.xZoom,
+                            resizeAlignRef.yZoom
+                        );
                         const newTargetRectangle = RectangleClient.getRectangleByCenterPoint(
                             newCenterPoint,
                             targetRectangle.width,
