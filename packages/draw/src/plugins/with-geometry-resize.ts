@@ -65,7 +65,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
             );
             alignG = resizeAlignRef.equalLinesG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
-            let points = resizeAlignRef.points as [Point, Point] 
+            let points = resizeAlignRef.activePoints as [Point, Point] 
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);

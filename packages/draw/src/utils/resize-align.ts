@@ -19,28 +19,29 @@ export function getResizeAlignRef(
     const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isFromCorner, isAspectRatio);
 
     let activeElements: PlaitElement[];
-    let resizePoints: Point[] = [];
+    let resizeOriginPoints: Point[] = [];
     if (Array.isArray(resizeRef.element)) {
         activeElements = resizeRef.element;
         const rectangle = getRectangleByElements(board, resizeRef.element, false);
-        resizePoints = RectangleClient.getPoints(rectangle);
+        resizeOriginPoints = RectangleClient.getPoints(rectangle);
     } else {
         activeElements = [resizeRef.element];
-        resizePoints = resizeRef.element.points;
+        resizeOriginPoints = resizeRef.element.points;
     }
 
-    const points = resizePoints.map(p => {
+    const points = resizeOriginPoints.map(p => {
         return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
     }) as [Point, Point];
-    const newRectangle = RectangleClient.getRectangleByPoints(points);
-    const resizeAlignReaction = new ResizeAlignReaction(board, activeElements, newRectangle);
-
+    const activeRectangle = RectangleClient.getRectangleByPoints(points);
+    
+    const resizeAlignReaction = new ResizeAlignReaction(board, activeElements);
     const resizeHandlePoint = movePointByZoomAndOriginPoint(handlePoint, originPoint, xZoom, yZoom);
     const [x, y] = getUnitVectorByPointAndPoint(originPoint, resizeHandlePoint);
 
     return resizeAlignReaction.handleResizeAlign({
         resizeState,
-        resizePoints,
+        resizeOriginPoints,
+        activeRectangle,
         originPoint,
         handlePoint,
         directionFactors: [getDirectionFactorByVectorComponent(x), getDirectionFactorByVectorComponent(y)],
