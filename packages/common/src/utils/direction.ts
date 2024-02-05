@@ -76,5 +76,6 @@ export function getDirectionFactor(direction: Direction) {
 }
 
 export function getDirectionFactorByVectorComponent(vectorComponent: number): DirectionFactor {
-    return vectorComponent === 0 ? vectorComponent : ((vectorComponent / Math.abs(vectorComponent)) as DirectionFactor);
+    const directionFactor = vectorComponent === 0 ? vectorComponent : vectorComponent / Math.abs(vectorComponent);
+    return directionFactor as DirectionFactor;
 }
