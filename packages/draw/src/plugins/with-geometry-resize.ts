@@ -65,14 +65,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
             );
             alignG = resizeAlignRef.equalLinesG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
-            const newResizeState: ResizeState = {
-                ...resizeState,
-                endPoint: [resizeState.endPoint[0] + resizeAlignRef.deltaX, resizeState.endPoint[1] + resizeAlignRef.deltaY]
-            };
-            const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isFromCorner, isAspectRatio);
-            let points = resizeRef.element.points.map(p => {
-                return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
-            }) as [Point, Point];
+            let points = resizeAlignRef.activePoints as [Point, Point] 
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);

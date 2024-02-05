@@ -1,19 +1,31 @@
+import { ResizeState } from '@plait/common';
 import { DirectionFactors, PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR, createG, findElements } from '@plait/core';
+import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
 
-export interface ResizeAlignRef {
+export interface ResizeAlignDelta {
     deltaX: number;
     deltaY: number;
+}
+
+export interface EqualLineRef extends ResizeAlignDelta {
+    xZoom: number;
+    yZoom: number;
+    activePoints: Point[];
+}
+
+export interface ResizeAlignRef extends EqualLineRef {
     equalLinesG: SVGGElement;
 }
 
 export interface ResizeAlignOptions {
+    resizeState: ResizeState;
+    resizeOriginPoints: Point[];
+    activeRectangle: RectangleClient;
     directionFactors: DirectionFactors;
+    originPoint: Point;
+    handlePoint: Point;
+    isFromCorner: boolean;
     isAspectRatio: boolean;
-}
-
-export interface EqualLineRef {
-    deltaX: number;
-    deltaY: number;
 }
 
 const ALIGN_TOLERANCE = 2;
@@ -23,18 +35,8 @@ const EQUAL_SPACING = 10;
 export class ResizeAlignReaction {
     alignRectangles: RectangleClient[];
 
-    resizeAlignOptions!: ResizeAlignOptions;
-
-    constructor(private board: PlaitBoard, private activeElements: PlaitElement[], private activeRectangle: RectangleClient) {
+    constructor(private board: PlaitBoard, private activeElements: PlaitElement[]) {
         this.alignRectangles = this.getAlignRectangle();
-    }
-
-    get isHorizontalResize() {
-        return this.resizeAlignOptions.directionFactors[0] !== 0;
-    }
-
-    get isVerticalResize() {
-        return this.resizeAlignOptions.directionFactors[1] !== 0;
     }
 
     getAlignRectangle() {
@@ -46,67 +48,77 @@ export class ResizeAlignReaction {
         return elements.map(item => this.board.getRectangle(item)!);
     }
 
-    getEqualLineRef(): EqualLineRef {
-        let equalLineRef: EqualLineRef = {
+    getEqualLineDelta(resizeAlignOptions: ResizeAlignOptions) {
+        let equalLineDelta: ResizeAlignDelta = {
             deltaX: 0,
             deltaY: 0
         };
-
-        if (this.isHorizontalResize) {
-            const widthAlignRectangle = this.alignRectangles.find(
-                item => Math.abs(item.width - this.activeRectangle.width) < ALIGN_TOLERANCE
-            );
-            if (widthAlignRectangle) {
-                const deltaWidth = widthAlignRectangle.width - this.activeRectangle.width;
-                equalLineRef.deltaX = deltaWidth * this.resizeAlignOptions.directionFactors[0];
+        const { isAspectRatio, activeRectangle } = resizeAlignOptions;
+        const widthAlignRectangle = this.alignRectangles.find(item => Math.abs(item.width - activeRectangle.width) < ALIGN_TOLERANCE);
+        if (widthAlignRectangle) {
+            const deltaWidth = widthAlignRectangle.width - activeRectangle.width;
+            equalLineDelta.deltaX = deltaWidth * resizeAlignOptions.directionFactors[0];
+            if (isAspectRatio) {
+                equalLineDelta.deltaY = equalLineDelta.deltaX / (activeRectangle.width / activeRectangle.height);
+                return equalLineDelta;
             }
         }
 
-        if (this.isVerticalResize) {
-            const heightAlignRectangle = this.alignRectangles.find(
-                item => Math.abs(item.height - this.activeRectangle.height) < ALIGN_TOLERANCE
-            );
-            if (heightAlignRectangle) {
-                const deltaHeight = heightAlignRectangle.height - this.activeRectangle.height;
-                equalLineRef.deltaY = deltaHeight * this.resizeAlignOptions.directionFactors[1];
+        const heightAlignRectangle = this.alignRectangles.find(item => Math.abs(item.height - activeRectangle.height) < ALIGN_TOLERANCE);
+        if (heightAlignRectangle) {
+            const deltaHeight = heightAlignRectangle.height - activeRectangle.height;
+            equalLineDelta.deltaY = deltaHeight * resizeAlignOptions.directionFactors[1];
+            if (isAspectRatio) {
+                equalLineDelta.deltaX = equalLineDelta.deltaX * (activeRectangle.width / activeRectangle.height);
+                return equalLineDelta;
             }
         }
 
-        return equalLineRef;
+        return equalLineDelta;
     }
 
-    updateActiveRectangle(deltaX: number, deltaY: number) {
-        if (deltaX !== 0) {
-            if (this.resizeAlignOptions.directionFactors[0] === -1) {
-                this.activeRectangle.x += deltaX;
-            }
-            this.activeRectangle.width += deltaX * this.resizeAlignOptions.directionFactors[0];
-        }
-        if (deltaY !== 0) {
-            if (this.resizeAlignOptions.directionFactors[1] === -1) {
-                this.activeRectangle.y += deltaY;
-            }
-            this.activeRectangle.height += deltaY * this.resizeAlignOptions.directionFactors[1];
-        }
+    getEqualLineRef(resizeAlignOptions: ResizeAlignOptions): EqualLineRef {
+        const { deltaX, deltaY } = this.getEqualLineDelta(resizeAlignOptions);
+        const { resizeState, originPoint, handlePoint, isFromCorner, isAspectRatio, resizeOriginPoints } = resizeAlignOptions;
+        const newResizeState: ResizeState = {
+            ...resizeState,
+            endPoint: [resizeState.endPoint[0] + deltaX, resizeState.endPoint[1] + deltaY]
+        };
+        const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isFromCorner, isAspectRatio);
+        const activePoints = resizeOriginPoints.map(p => {
+            return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
+        }) as [Point, Point];
+
+        return {
+            deltaX,
+            deltaY,
+            xZoom,
+            yZoom,
+            activePoints
+        };
     }
 
-    drawEqualLines() {
+    drawEqualLines(activePoints: Point[], resizeAlignOptions: ResizeAlignOptions) {
         let widthEqualPoints = [];
         let heightEqualPoints = [];
 
+        const drawHorizontalLine = resizeAlignOptions.directionFactors[0] !== 0 || resizeAlignOptions.isAspectRatio;
+        const drawVerticalLine = resizeAlignOptions.directionFactors[1] !== 0 || resizeAlignOptions.isAspectRatio;
+
+        const activeRectangle = RectangleClient.getRectangleByPoints(activePoints);
         for (let alignRectangle of this.alignRectangles) {
-            if (this.activeRectangle.width === alignRectangle.width && this.isHorizontalResize) {
+            if (activeRectangle.width === alignRectangle.width && drawHorizontalLine) {
                 widthEqualPoints.push(getEqualLinePoints(alignRectangle, true));
             }
-            if (this.activeRectangle.height === alignRectangle.height && this.isVerticalResize) {
+            if (activeRectangle.height === alignRectangle.height && drawVerticalLine) {
                 heightEqualPoints.push(getEqualLinePoints(alignRectangle, false));
             }
         }
-        if (widthEqualPoints.length && this.isHorizontalResize) {
-            widthEqualPoints.push(getEqualLinePoints(this.activeRectangle, true));
+        if (widthEqualPoints.length && drawHorizontalLine) {
+            widthEqualPoints.push(getEqualLinePoints(activeRectangle, true));
         }
-        if (heightEqualPoints.length && this.isVerticalResize) {
-            heightEqualPoints.push(getEqualLinePoints(this.activeRectangle, false));
+        if (heightEqualPoints.length && drawVerticalLine) {
+            heightEqualPoints.push(getEqualLinePoints(activeRectangle, false));
         }
 
         const equalLinePoints = [...widthEqualPoints, ...heightEqualPoints];
@@ -114,15 +126,9 @@ export class ResizeAlignReaction {
     }
 
     handleResizeAlign(resizeAlignOptions: ResizeAlignOptions): ResizeAlignRef {
-        this.resizeAlignOptions = resizeAlignOptions;
-
-        const equalLineRef = this.getEqualLineRef();
-        const deltaX = equalLineRef.deltaX || 0;// equal || align || 0
-        const deltaY = equalLineRef.deltaY || 0;
-        this.updateActiveRectangle(deltaX, deltaY);
-        const equalLinesG = this.drawEqualLines();
-
-        return { deltaX, deltaY, equalLinesG };
+        const equalLineRef = this.getEqualLineRef(resizeAlignOptions);
+        const equalLinesG = this.drawEqualLines(equalLineRef.activePoints, resizeAlignOptions);
+        return { ...equalLineRef, equalLinesG };
     }
 }
 
