@@ -128,26 +128,27 @@ export const getResizeZoom = (
     isResizeFromCorner: boolean,
     isMaintainAspectRatio: boolean
 ) => {
-    const unitVector = getUnitVectorByPointAndPoint(resizeOriginPoint, resizeHandlePoint);
     const startPoint = resizeState.startPoint;
-    let endPoint = resizeState.endPoint;
-    let offsetX = Point.getOffsetX(startPoint, endPoint);
+    const endPoint = resizeState.endPoint;
     let xZoom = 0;
     let yZoom = 0;
     if (isResizeFromCorner) {
         if (isMaintainAspectRatio) {
-            endPoint = getPointByUnitVectorAndVectorComponent(startPoint, unitVector, offsetX, true);
+            let normalizedOffsetX = Point.getOffsetX(startPoint, endPoint);
+            xZoom = normalizedOffsetX / (resizeHandlePoint[0] - resizeOriginPoint[0]);
+            yZoom = xZoom;
+        } else {
+            let normalizedOffsetX = Point.getOffsetX(startPoint, endPoint);
+            let normalizedOffsetY = Point.getOffsetY(startPoint, endPoint);
+            xZoom = normalizedOffsetX / (resizeHandlePoint[0] - resizeOriginPoint[0]);
+            yZoom = normalizedOffsetY / (resizeHandlePoint[1] - resizeOriginPoint[1]);
         }
-        let normalizedOffsetX = Point.getOffsetX(startPoint, endPoint);
-        let normalizedOffsetY = Point.getOffsetY(startPoint, endPoint);
-        xZoom = normalizedOffsetX / (resizeHandlePoint[0] - resizeOriginPoint[0]);
-        yZoom = normalizedOffsetY / (resizeHandlePoint[1] - resizeOriginPoint[1]);
     } else {
         const isHorizontal = Point.isHorizontal(resizeOriginPoint, resizeHandlePoint, 0.1) || false;
         let normalizedOffset = isHorizontal ? Point.getOffsetX(startPoint, endPoint) : Point.getOffsetY(startPoint, endPoint);
         let benchmarkOffset = isHorizontal ? resizeHandlePoint[0] - resizeOriginPoint[0] : resizeHandlePoint[1] - resizeOriginPoint[1];
         const zoom = normalizedOffset / benchmarkOffset;
-        if (resizeState.isShift) {
+        if (isMaintainAspectRatio) {
             xZoom = zoom;
             yZoom = zoom;
         } else {
