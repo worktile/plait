@@ -1788,5 +1788,367 @@ export const mockTurningPointData = [
         ],
         strokeWidth: 2,
         strokeColor: '#e03130'
+    },
+    {
+        id: 'DpRtN',
+        type: 'geometry',
+        shape: 'process',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '过程'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [11280.14453125, 51.41943359375],
+            [11400.14453125, 244.52490234375]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'pRQza',
+        type: 'geometry',
+        shape: 'terminal',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '开始'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [10861.0234375, 184.27197265625],
+            [10981.0234375, 381.01806640625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'TjiJY',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [0, 0.5],
+            boundId: 'pRQza'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [1, 0.5],
+            boundId: 'DpRtN'
+        },
+        opacity: 1,
+        points: [
+            [10861.0234375, 282.64501953125],
+            [11402.3359375, 76.11181640625]
+        ],
+        strokeWidth: 2,
+        strokeColor: '#e03130'
+    },
+    {
+        id: 'JXtHG',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [0, 0.5],
+            boundId: 'pRQza'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [1, 0.5],
+            boundId: 'DpRtN'
+        },
+        opacity: 1,
+        points: [
+            [10861.0234375, 282.64501953125],
+            [10719.78515625, 213.48681640625],
+            [10719.78515625, 52.25048828125],
+            [11094.32421875, 52.25048828125],
+            [11445.88671875, 208.72900390625],
+            [11445.88671875, 80.17626953125],
+            [11402.3359375, 76.11181640625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'fYAhm',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '1'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [11706.78515625, 126.07958984375],
+            [11992.02734375, 276.38818359375]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'nzHYf',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '2'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [12193.165405273438, 110.55908203125],
+            [12478.407592773438, 260.86767578125]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'swEHm',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [0.5, 0],
+            boundId: 'fYAhm'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [1, 0.5],
+            boundId: 'nzHYf'
+        },
+        opacity: 1,
+        points: [
+            [11849.40625, 126.07958984375],
+            [12621.954467773438, 88.98193359375],
+            [12621.954467773438, 262.51025390625],
+            [12478.407592773438, 185.71337890625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'kpEaE',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [0.5, 0],
+            boundId: 'fYAhm'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [1, 0.5],
+            boundId: 'nzHYf'
+        },
+        opacity: 1,
+        points: [
+            [11849.40625, 126.07958984375],
+            [12478.407592773438, 185.71337890625]
+        ],
+        strokeWidth: 2,
+        strokeColor: '#e03130'
+    },
+    {
+        id: 'BEMXH',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '1'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [12973.78515625, 103.55908203125],
+            [13259.02734375, 253.86767578125]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'EwtXj',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '2'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [13598.126953125, 191.35400390625],
+            [13883.369140625, 341.66259765625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'YhjiJ',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [1, 0.5],
+            boundId: 'BEMXH'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [0, 0.5],
+            boundId: 'EwtXj'
+        },
+        opacity: 1,
+        points: [
+            [13259.02734375, 178.71337890625],
+            [13598.126953125, 266.50830078125]
+        ],
+        strokeWidth: 2,
+        strokeColor: '#e03130'
+    },
+    {
+        id: 'hytxF',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [1, 0.5],
+            boundId: 'BEMXH'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [0, 0.5],
+            boundId: 'EwtXj'
+        },
+        opacity: 1,
+        points: [
+            [13259.02734375, 178.71337890625],
+            [13422.9599609375, 290.36767578125],
+            [13554.892578125, 290.36767578125],
+            [13598.126953125, 266.50830078125]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'zFEdr',
+        type: 'geometry',
+        shape: 'process',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '过程'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [11266.34765625, -341.65087890625],
+            [11386.34765625, -148.54541015625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'HXphd',
+        type: 'geometry',
+        shape: 'terminal',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '开始'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [10847.2265625, -208.79833984375],
+            [10967.2265625, -12.05224609375]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'aFDsj',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [0, 0.5],
+            boundId: 'HXphd'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [1, 0.5],
+            boundId: 'zFEdr'
+        },
+        opacity: 1,
+        points: [
+            [10847.2265625, -110.42529296875],
+            [11386.34765625, -245.09814453125]
+        ],
+        strokeWidth: 2,
+        strokeColor: '#e03130'
+    },
+    {
+        id: 'szHYY',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [0, 0.5],
+            boundId: 'HXphd'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [1, 0.5],
+            boundId: 'zFEdr'
+        },
+        opacity: 1,
+        points: [
+            [10847.2265625, -110.42529296875],
+            [10705.98828125, -179.58349609375],
+            [10705.98828125, -340.81982421875],
+            [11080.52734375, -340.81982421875],
+            [11432.08984375, -184.34130859375],
+            [11432.08984375, -312.89404296875],
+            [11386.34765625, -245.09814453125]
+        ],
+        strokeWidth: 2
     }
 ] as PlaitElement[];

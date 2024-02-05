@@ -198,59 +198,60 @@ export function getIndexAndDeleteCountByKeyPoint(
 }
 
 export function getMirrorDataPoints(board: PlaitBoard, nextDataPoints: Point[], nextKeyPoints: Point[], params: ElbowLineRouteOptions) {
-    const adjustByParallelSegments = (startIndex: number, reverseParallels: boolean = false) => {
-        const beforePoint = nextDataPoints[startIndex - 1];
-        const startPoint = nextDataPoints[startIndex];
-        const endPoint = nextDataPoints[startIndex + 1];
-        const afterPoint = nextDataPoints[startIndex + 2];
-        const beforeSegment = [beforePoint, startPoint];
-        const afterSegment = [endPoint, afterPoint];
-        const isStraightWithBefore = Point.isAlign(beforeSegment);
-        const isStraightWithAfter = Point.isAlign(afterSegment);
-        const isAdjustStart = !isStraightWithBefore && getMidKeyPoints(nextKeyPoints, beforeSegment[0], beforeSegment[1]).length === 0;
-        const isAdjustEnd = !isStraightWithAfter && getMidKeyPoints(nextKeyPoints, afterSegment[0], afterSegment[1]).length === 0;
-        if (isAdjustStart || isAdjustEnd) {
-            const parallelSegment = [startPoint, endPoint] as [Point, Point];
-            const parallelSegments = findOrthogonalParallelSegments(parallelSegment, nextKeyPoints);
-            const mirrorSegment = findMirrorSegment(
-                board,
-                parallelSegment,
-                reverseParallels ? parallelSegments.reverse() : parallelSegments,
-                params.sourceRectangle,
-                params.targetRectangle
-            );
-            if (mirrorSegment) {
-                if (isAdjustStart) {
-                    nextDataPoints.splice(startIndex, 1, mirrorSegment[0]);
-                }
-                if (isAdjustEnd) {
-                    nextDataPoints.splice(startIndex + 1, 1, mirrorSegment[1]);
-                }
-            } else {
-                const isHorizontal = Point.isHorizontal(startPoint, endPoint);
-                const adjustIndex = isHorizontal ? 0 : 1;
-                if (isAdjustStart) {
-                    const newStartPoint = [startPoint[0], startPoint[1]] as Point;
-                    newStartPoint[adjustIndex] = beforePoint[adjustIndex];
-                    nextDataPoints.splice(startIndex, 1, newStartPoint);
-                }
-                if (isAdjustEnd) {
-                    const newEndPoint = [endPoint[0], endPoint[1]] as Point;
-                    newEndPoint[adjustIndex] = afterPoint[adjustIndex];
-                    nextDataPoints.splice(startIndex + 1, 1, newEndPoint);
-                }
-            }
-        }
-    };
-    // adjust first and second custom points
-    adjustByParallelSegments(1);
-    // adjust last and last second custom points
-    if (nextDataPoints.length >= 5) {
-        const startIndex = nextDataPoints.length - 3;
-        adjustByParallelSegments(startIndex, true);
+    for (let index = 1; index < nextDataPoints.length - 2; index++) {
+        adjustByCustomPointStartIndex(board, index, nextDataPoints, nextKeyPoints, params);
     }
     return nextDataPoints;
 }
+
+/**
+ * adjust based parallel segment
+ */
+const adjustByCustomPointStartIndex = (
+    board: PlaitBoard,
+    customPointStartIndex: number,
+    nextDataPoints: Point[],
+    nextKeyPoints: Point[],
+    params: ElbowLineRouteOptions
+) => {
+    const beforePoint = nextDataPoints[customPointStartIndex - 1];
+    const startPoint = nextDataPoints[customPointStartIndex];
+    const endPoint = nextDataPoints[customPointStartIndex + 1];
+    const afterPoint = nextDataPoints[customPointStartIndex + 2];
+    const beforeSegment = [beforePoint, startPoint];
+    const afterSegment = [endPoint, afterPoint];
+    const isStraightWithBefore = Point.isAlign(beforeSegment);
+    const isStraightWithAfter = Point.isAlign(afterSegment);
+    const isAdjustStart = !isStraightWithBefore && getMidKeyPoints(nextKeyPoints, beforeSegment[0], beforeSegment[1]).length === 0;
+    const isAdjustEnd = !isStraightWithAfter && getMidKeyPoints(nextKeyPoints, afterSegment[0], afterSegment[1]).length === 0;
+    if (isAdjustStart || isAdjustEnd) {
+        const parallelSegment = [startPoint, endPoint] as [Point, Point];
+        const parallelSegments = findOrthogonalParallelSegments(parallelSegment, nextKeyPoints);
+        const mirrorSegments = findMirrorSegments(board, parallelSegment, parallelSegments, params.sourceRectangle, params.targetRectangle);
+        if (mirrorSegments.length === 1) {
+            const mirrorSegment = mirrorSegments[0];
+            if (isAdjustStart) {
+                nextDataPoints.splice(customPointStartIndex, 1, mirrorSegment[0]);
+            }
+            if (isAdjustEnd) {
+                nextDataPoints.splice(customPointStartIndex + 1, 1, mirrorSegment[1]);
+            }
+        } else {
+            const isHorizontal = Point.isHorizontal(startPoint, endPoint);
+            const adjustIndex = isHorizontal ? 0 : 1;
+            if (isAdjustStart) {
+                const newStartPoint = [startPoint[0], startPoint[1]] as Point;
+                newStartPoint[adjustIndex] = beforePoint[adjustIndex];
+                nextDataPoints.splice(customPointStartIndex, 1, newStartPoint);
+            }
+            if (isAdjustEnd) {
+                const newEndPoint = [endPoint[0], endPoint[1]] as Point;
+                newEndPoint[adjustIndex] = afterPoint[adjustIndex];
+                nextDataPoints.splice(customPointStartIndex + 1, 1, newEndPoint);
+            }
+        }
+    }
+};
 
 export function isUpdatedHandleIndex(
     board: PlaitBoard,
@@ -322,13 +323,14 @@ function findOrthogonalParallelSegments(segment: [Point, Point], keyPoints: Poin
     return parallelSegments;
 }
 
-function findMirrorSegment(
+function findMirrorSegments(
     board: PlaitBoard,
     segment: [Point, Point],
     parallelSegments: [Point, Point][],
     sourceRectangle: RectangleClient,
     targetRectangle: RectangleClient
 ) {
+    const mirrorSegments: [Point, Point][] = [];
     for (let index = 0; index < parallelSegments.length; index++) {
         const parallelPath = parallelSegments[index];
         const startPoint = [segment[0][0], segment[0][1]] as Point;
@@ -340,6 +342,7 @@ function findMirrorSegment(
         const fakeRectangle = RectangleClient.getRectangleByPoints([startPoint, endPoint, ...parallelPath]);
         const isValid = !RectangleClient.isHit(fakeRectangle, sourceRectangle) && !RectangleClient.isHit(fakeRectangle, targetRectangle);
         if (isValid) {
+            mirrorSegments.push([startPoint, endPoint]);
             // const fakeRectangleG = PlaitBoard.getRoughSVG(board).rectangle(
             //     fakeRectangle.x,
             //     fakeRectangle.y,
@@ -348,8 +351,7 @@ function findMirrorSegment(
             //     { stroke: 'blue' }
             // );
             // PlaitBoard.getElementActiveHost(board).append(fakeRectangleG);
-            return [startPoint, endPoint] as [Point, Point];
         }
     }
-    return undefined;
+    return mirrorSegments;
 }
