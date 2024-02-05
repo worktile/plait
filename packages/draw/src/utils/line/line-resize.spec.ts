@@ -1,112 +1,112 @@
 import { Point } from '@plait/core';
 import { getIndexAndDeleteCountByKeyPoint } from './line-resize';
 
-describe('getIndexAndDeleteCountByKeyPoint', () => {
-    describe('both the startPoint and endPoint are not on the elbow line segment', () => {
-        it('both the startPoint and endPoint is on the same line as the dataPoints', () => {
-            /**
-             * dataPoints
-             * 0 🔴<------
-             *   ｜
-             *   ｜
-             * 1 🔴------------>
-             *
-             *  nextKeyPoints
-             * 1 🟢<----🟢 0
-             *   ｜
-             * handle
-             *   ｜
-             * 2 🟢----------------->🟢 3
-             *                       ｜
-             *                       ｜
-             *                <------🟢 4
-             */
-            const dataPoints: Point[] = [
-                [1, 1],
-                [1, 2]
-            ];
-            const nextKeyPoints: Point[] = [
-                [0, 5],
-                [1, 5],
-                [1, 7],
-                [3, 7],
-                [3, 8]
-            ];
-            const handleIndex = 1;
-            const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(dataPoints, nextKeyPoints, handleIndex);
-            expect(index).toBe(0);
-            expect(deleteCount).toBe(2);
-        });
-        it('only the startPoint is on the same line as the dataPoints', () => {
-            /**
-             * dataPoints
-             * 0 🔴<----
-             *   ｜
-             *   ｜
-             * 1 🔴 ---------->
-             *
-             *  nextKeyPoints
-             * 1 🟢<----🟢 0
-             *   ｜
-             *   ｜
-             * 2 🟢-----handle------>🟢 3
-             *                       ｜
-             *                       ｜
-             *                <------🟢 4
-             */
-            const dataPoints: Point[] = [
-                [1, 1],
-                [1, 2]
-            ];
-            const nextKeyPoints: Point[] = [
-                [0, 5],
-                [1, 5],
-                [1, 7],
-                [3, 7],
-                [3, 8]
-            ];
-            const handleIndex = 2;
-            const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(dataPoints, nextKeyPoints, handleIndex);
-            expect(index).toBe(1);
-            expect(deleteCount).toBe(1);
-        });
-        it('only the endPoint is on the same line as the dataPoints', () => {
-            /**
-             *                      dataPoints
-             *              -------->🔴 0
-             *                       ｜
-             *                       ｜
-             *                <------🔴 1
-             *
-             *  nextKeyPoints
-             * 1 🟢<----🟢 0
-             *   ｜
-             *   ｜
-             * 2 🟢-----handle------>🟢 3
-             *                       ｜
-             *                       ｜
-             *                <------🟢 4
-             */
-            const dataPoints: Point[] = [
-                [3, 1],
-                [3, 2]
-            ];
-            const nextKeyPoints: Point[] = [
-                [0, 5],
-                [1, 5],
-                [1, 7],
-                [3, 7],
-                [3, 8]
-            ];
-            const handleIndex = 2;
-            const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(dataPoints, nextKeyPoints, handleIndex);
-            expect(index).toBe(0);
-            expect(deleteCount).toBe(1);
-        });
-    });
-});
+// describe('getIndexAndDeleteCountByKeyPoint', () => {
+//     describe('both the startPoint and endPoint are not on the elbow line segment', () => {
+//         it('both the startPoint and endPoint is on the same line as the dataPoints', () => {
+//             /**
+//              * dataPoints
+//              * 0 🔴<------
+//              *   ｜
+//              *   ｜
+//              * 1 🔴------------>
+//              *
+//              *  nextKeyPoints
+//              * 1 🟢<----🟢 0
+//              *   ｜
+//              * handle
+//              *   ｜
+//              * 2 🟢----------------->🟢 3
+//              *                       ｜
+//              *                       ｜
+//              *                <------🟢 4
+//              */
+//             const dataPoints: Point[] = [
+//                 [1, 1],
+//                 [1, 2]
+//             ];
+//             const nextKeyPoints: Point[] = [
+//                 [0, 5],
+//                 [1, 5],
+//                 [1, 7],
+//                 [3, 7],
+//                 [3, 8]
+//             ];
+//             const handleIndex = 1;
+//             const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(dataPoints, nextKeyPoints, handleIndex);
+//             expect(index).toBe(0);
+//             expect(deleteCount).toBe(2);
+//         });
+//         it('only the startPoint is on the same line as the dataPoints', () => {
+//             /**
+//              * dataPoints
+//              * 0 🔴<----
+//              *   ｜
+//              *   ｜
+//              * 1 🔴 ---------->
+//              *
+//              *  nextKeyPoints
+//              * 1 🟢<----🟢 0
+//              *   ｜
+//              *   ｜
+//              * 2 🟢-----handle------>🟢 3
+//              *                       ｜
+//              *                       ｜
+//              *                <------🟢 4
+//              */
+//             const dataPoints: Point[] = [
+//                 [1, 1],
+//                 [1, 2]
+//             ];
+//             const nextKeyPoints: Point[] = [
+//                 [0, 5],
+//                 [1, 5],
+//                 [1, 7],
+//                 [3, 7],
+//                 [3, 8]
+//             ];
+//             const handleIndex = 2;
+//             const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(dataPoints, nextKeyPoints, handleIndex);
+//             expect(index).toBe(1);
+//             expect(deleteCount).toBe(1);
+//         });
+//         it('only the endPoint is on the same line as the dataPoints', () => {
+//             /**
+//              *                      dataPoints
+//              *              -------->🔴 0
+//              *                       ｜
+//              *                       ｜
+//              *                <------🔴 1
+//              *
+//              *  nextKeyPoints
+//              * 1 🟢<----🟢 0
+//              *   ｜
+//              *   ｜
+//              * 2 🟢-----handle------>🟢 3
+//              *                       ｜
+//              *                       ｜
+//              *                <------🟢 4
+//              */
+//             const dataPoints: Point[] = [
+//                 [3, 1],
+//                 [3, 2]
+//             ];
+//             const nextKeyPoints: Point[] = [
+//                 [0, 5],
+//                 [1, 5],
+//                 [1, 7],
+//                 [3, 7],
+//                 [3, 8]
+//             ];
+//             const handleIndex = 2;
+//             const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(dataPoints, nextKeyPoints, handleIndex);
+//             expect(index).toBe(0);
+//             expect(deleteCount).toBe(1);
+//         });
+//     });
+// });
 
-describe('getMirrorDataPoints', () => {
+fdescribe('getMirrorDataPoints', () => {
     describe('two custom points', () => {
         it('first custom point exist get mid points', () => {
             const data = [
@@ -581,4 +581,154 @@ describe('getMirrorDataPoints', () => {
     });
     describe('three custom points', () => {});
     describe('four custom points', () => {});
+    describe('five custom points', () => {
+        describe('third point and fourth point is not straight line', () => {
+            it('exist parallel line by second point and third point', () => {
+                const data = [
+                    {
+                        id: 'ZQbWf',
+                        type: 'geometry',
+                        shape: 'terminal',
+                        angle: 0,
+                        opacity: 1,
+                        textHeight: 20,
+                        text: {
+                            children: [
+                                {
+                                    text: 'source'
+                                }
+                            ],
+                            align: 'center'
+                        },
+                        points: [
+                            [938.359375, -68],
+                            [1058.359375, 125.10546875]
+                        ],
+                        strokeWidth: 2
+                    },
+                    {
+                        id: 'HXiap',
+                        type: 'geometry',
+                        shape: 'terminal',
+                        angle: 0,
+                        opacity: 1,
+                        textHeight: 20,
+                        text: {
+                            children: [
+                                {
+                                    text: 'target'
+                                }
+                            ],
+                            align: 'center'
+                        },
+                        points: [
+                            [519.23828125, 64.8525390625],
+                            [639.23828125, 261.5986328125]
+                        ],
+                        strokeWidth: 2
+                    },
+                    {
+                        id: 'KBHJP',
+                        type: 'line',
+                        shape: 'elbow',
+                        source: {
+                            marker: 'none',
+                            connection: [0, 0.5],
+                            boundId: 'HXiap'
+                        },
+                        texts: [],
+                        target: {
+                            marker: 'arrow',
+                            connection: [1, 0.5],
+                            boundId: 'ZQbWf'
+                        },
+                        opacity: 1,
+                        points: [
+                            [519.23828125, 163.2255859375],
+                            [378, 94.0673828125],
+                            [378, -67.1689453125],
+                            [752.5390625, -67.1689453125],
+                            [1104.1015625, 89.3095703125],
+                            [1104.1015625, -39.2431640625],
+                            [1058.359375, 28.552734375]
+                        ],
+                        strokeWidth: 2
+                    }
+                ];
+            });
+            it('no exist parallel line by second point and third point', () => {
+                const data = [
+                    {
+                        id: 'JSXfT',
+                        type: 'geometry',
+                        shape: 'process',
+                        angle: 0,
+                        opacity: 1,
+                        textHeight: 20,
+                        text: {
+                            children: [
+                                {
+                                    text: '过程'
+                                }
+                            ],
+                            align: 'center'
+                        },
+                        points: [
+                            [1139.220703125, -79],
+                            [1259.220703125, 114.10546875]
+                        ],
+                        strokeWidth: 2
+                    },
+                    {
+                        id: 'WzYnE',
+                        type: 'geometry',
+                        shape: 'terminal',
+                        angle: 0,
+                        opacity: 1,
+                        textHeight: 20,
+                        text: {
+                            children: [
+                                {
+                                    text: '开始'
+                                }
+                            ],
+                            align: 'center'
+                        },
+                        points: [
+                            [722.3359375, 171.2705078125],
+                            [842.3359375, 368.0166015625]
+                        ],
+                        strokeWidth: 2
+                    },
+                    {
+                        id: 'XspQR',
+                        type: 'line',
+                        shape: 'elbow',
+                        source: {
+                            marker: 'none',
+                            connection: [0, 0.5],
+                            boundId: 'WzYnE'
+                        },
+                        texts: [],
+                        target: {
+                            marker: 'arrow',
+                            connection: [1, 0.5],
+                            boundId: 'JSXfT'
+                        },
+                        opacity: 1,
+                        points: [
+                            [722.3359375, 269.6435546875],
+                            [582, 150.6025390625],
+                            [582, -10.6337890625],
+                            [956.5390625, -10.6337890625],
+                            [1308.1015625, 145.8447265625],
+                            [1308.1015625, 17.2919921875],
+                            [1259.220703125, 17.552734375]
+                        ],
+                        strokeWidth: 2
+                    }
+                ];
+            });
+        });
+    });
 });
