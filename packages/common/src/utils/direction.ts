@@ -1,4 +1,4 @@
-import { Direction, Point, PointOfRectangle, Vector } from '@plait/core';
+import { Direction, DirectionFactor, Point, PointOfRectangle, Vector } from '@plait/core';
 
 const handleDirectionFactors = {
     [Direction.left]: { x: -1, y: 0 },
@@ -75,6 +75,7 @@ export function getDirectionFactor(direction: Direction) {
     return handleDirectionFactors[direction];
 }
 
-export function getDirectionFactorByVectorComponent(vectorComponent: number): number {
-    return vectorComponent === 0 ? vectorComponent : vectorComponent / Math.abs(vectorComponent);
+export function getDirectionFactorByVectorComponent(vectorComponent: number): DirectionFactor {
+    const directionFactor = vectorComponent === 0 ? vectorComponent : vectorComponent / Math.abs(vectorComponent);
+    return directionFactor as DirectionFactor;
 }

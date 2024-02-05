@@ -1,5 +1,5 @@
 import { ResizeState } from '@plait/common';
-import { PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR, createG, findElements } from '@plait/core';
+import { DirectionFactors, PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR, createG, findElements } from '@plait/core';
 import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
 
 export interface ResizeAlignDelta {
@@ -21,7 +21,7 @@ export interface ResizeAlignOptions {
     resizeState: ResizeState;
     resizeOriginPoints: Point[];
     activeRectangle: RectangleClient;
-    directionFactors: [number, number];
+    directionFactors: DirectionFactors;
     originPoint: Point;
     handlePoint: Point;
     isFromCorner: boolean;
