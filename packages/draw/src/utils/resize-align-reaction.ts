@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR, createG, findElements } from '@plait/core';
+import { DirectionFactors, PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR, createG, findElements } from '@plait/core';
 
 export interface ResizeAlignRef {
     deltaX: number;
@@ -7,7 +7,7 @@ export interface ResizeAlignRef {
 }
 
 export interface ResizeAlignOptions {
-    directionFactors: [number, number];
+    directionFactors: DirectionFactors;
     isAspectRatio: boolean;
 }
 
