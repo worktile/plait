@@ -267,24 +267,6 @@ export function isUpdatedHandleIndex(
     return false;
 }
 
-export function createUpdateHandle(board: PlaitBoard, point: Point) {
-    return drawCircle(PlaitBoard.getRoughSVG(board), point, RESIZE_HANDLE_DIAMETER, {
-        stroke: '#999999',
-        strokeWidth: 1,
-        fill: '#FFF',
-        fillStyle: 'solid'
-    });
-}
-
-export function createAddHandle(board: PlaitBoard, point: Point) {
-    return drawCircle(PlaitBoard.getRoughSVG(board), point, RESIZE_HANDLE_DIAMETER, {
-        stroke: '#FFFFFF80',
-        strokeWidth: 1,
-        fill: `${PRIMARY_COLOR}80`,
-        fillStyle: 'solid'
-    });
-}
-
 export function getMidKeyPoints(simplifiedNextKeyPoints: Point[], startPoint: Point, endPoint: Point) {
     let midElbowPoints: Point[] = [];
     let startPointIndex = -1;

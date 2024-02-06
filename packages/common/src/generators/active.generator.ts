@@ -1,7 +1,7 @@
-import { PlaitBoard, PlaitElement, RectangleClient, createG, drawCircle, drawRectangle } from '@plait/core';
+import { PlaitBoard, PlaitElement, RectangleClient, createG, drawRectangle } from '@plait/core';
 import { Generator, GeneratorOptions } from './generator';
-import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '../constants/default';
-import { Options } from 'roughjs/bin/core';
+import { PRIMARY_COLOR } from '../constants/default';
+import { drawHandle } from '../utils/drawing';
 
 export interface ActiveGeneratorExtraData {
     selected: boolean;
@@ -49,33 +49,11 @@ export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Gene
         strokeG.style.opacity = `${this.options.getStrokeOpacity()}`;
         if (this.options.hasResizeHandle()) {
             this.hasResizeHandle = true;
-            // resize handle
-            const options: Options = { stroke: '#999999', strokeWidth: 1, fill: '#FFF', fillStyle: 'solid' };
-            const leftTopHandleG = drawCircle(
-                PlaitBoard.getRoughSVG(this.board),
-                [activeRectangle.x, activeRectangle.y],
-                RESIZE_HANDLE_DIAMETER,
-                options
-            );
-            const rightTopHandleG = drawCircle(
-                PlaitBoard.getRoughSVG(this.board),
-                [activeRectangle.x + activeRectangle.width, activeRectangle.y],
-                RESIZE_HANDLE_DIAMETER,
-                options
-            );
-            const rightBottomHandleG = drawCircle(
-                PlaitBoard.getRoughSVG(this.board),
-                [activeRectangle.x + activeRectangle.width, activeRectangle.y + activeRectangle.height],
-                RESIZE_HANDLE_DIAMETER,
-                options
-            );
-            const leftBottomHandleG = drawCircle(
-                PlaitBoard.getRoughSVG(this.board),
-                [activeRectangle.x, activeRectangle.y + activeRectangle.height],
-                RESIZE_HANDLE_DIAMETER,
-                options
-            );
-            activeG.append(...[leftTopHandleG, rightTopHandleG, rightBottomHandleG, leftBottomHandleG]);
+            // draw resize handle
+            RectangleClient.getCornerPoints(activeRectangle).forEach(corner => {
+                const cornerHandleG = drawHandle(this.board, corner);
+                activeG.append(cornerHandleG);
+            });
         } else {
             this.hasResizeHandle = false;
         }

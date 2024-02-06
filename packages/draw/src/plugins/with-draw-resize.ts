@@ -19,12 +19,14 @@ export function withDrawResize(board: PlaitBoard) {
     const { afterChange } = board;
     let alignG: SVGGElement | null;
 
+    const canResize = () => {
+        const elements = getSelectedElements(board);
+        return elements.length > 1 && elements.every(el => PlaitDrawElement.isDrawElement(el));
+    }
+
     const options: WithResizeOptions<PlaitDrawElement[]> = {
         key: 'draw-elements',
-        canResize: () => {
-            const elements = getSelectedElements(board);
-            return elements.length > 1 && elements.every(el => PlaitDrawElement.isDrawElement(el));
-        },
+        canResize,
         hitTest: (point: Point) => {
             const elements = getSelectedElements(board) as PlaitDrawElement[];
             const boundingRectangle = getRectangleByElements(board, elements, false);
@@ -102,6 +104,9 @@ export function withDrawResize(board: PlaitBoard) {
     withResize<PlaitDrawElement[]>(board, options);
 
     board.afterChange = () => {
+        if (canResize()) {
+            
+        }
         afterChange();
     };
 

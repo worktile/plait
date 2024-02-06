@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, Point, RectangleClient, ResizeCursorClass, setDragging } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, ResizeCursorClass, setDragging } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
 import { PlaitElementOrArray, ResizeRef } from '../types/resize';
 

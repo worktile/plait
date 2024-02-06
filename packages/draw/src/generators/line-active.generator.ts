@@ -1,10 +1,10 @@
 import { Point, createG, drawRectangle, getSelectedElements } from '@plait/core';
 import { LineShape, PlaitLine } from '../interfaces';
-import { Generator, PRIMARY_COLOR } from '@plait/common';
+import { Generator, PRIMARY_COLOR, drawFillPrimaryHandle, drawPrimaryHandle } from '@plait/common';
 import { getMiddlePoints } from '../utils/line/line-basic';
 import { DefaultGeometryActiveStyle } from '../constants';
 import { getNextRenderPoints } from '../utils/line/elbow';
-import { createAddHandle, createUpdateHandle, isUpdatedHandleIndex } from '../utils/line';
+import { isUpdatedHandleIndex } from '../utils/line';
 import { getHitPointIndex } from '../utils/position/line';
 
 export interface ActiveData {
@@ -36,8 +36,8 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
                 elbowNextRenderPoints = getNextRenderPoints(this.board, element, data.linePoints);
             }
             updatePoints.forEach(point => {
-                const circle = createUpdateHandle(this.board, point);
-                activeG.appendChild(circle);
+                const updateHandle = drawPrimaryHandle(this.board, point);
+                activeG.appendChild(updateHandle);
             });
             const middlePoints = getMiddlePoints(this.board, element);
             for (let i = 0; i < middlePoints.length; i++) {
@@ -46,12 +46,12 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
                     const handleIndex = getHitPointIndex(middlePoints, point);
                     const isUpdateHandleIndex = isUpdatedHandleIndex(this.board, element, [...points], elbowNextRenderPoints, handleIndex);
                     if (isUpdateHandleIndex) {
-                        const circle = createUpdateHandle(this.board, point);
-                        activeG.appendChild(circle);
+                        const updateHandle = drawPrimaryHandle(this.board, point);
+                        activeG.appendChild(updateHandle);
                         continue;
                     }
                 }
-                const circle = createAddHandle(this.board, point);
+                const circle = drawFillPrimaryHandle(this.board, point);
                 activeG.appendChild(circle);
             }
         } else {
