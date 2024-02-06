@@ -100,21 +100,21 @@ export class ResizeAlignReaction {
             const deltaWidth = widthAlignRectangle.width - activeRectangle.width;
             equalLineDelta.deltaX = deltaWidth * resizeAlignOptions.directionFactors[0];
             if (isAspectRatio) {
-                equalLineDelta.deltaY = equalLineDelta.deltaX / (activeRectangle.width / activeRectangle.height);
+                const deltaHeight = deltaWidth / (activeRectangle.width / activeRectangle.height);
+                equalLineDelta.deltaY = deltaHeight * resizeAlignOptions.directionFactors[1];
                 return equalLineDelta;
             }
         }
-
         const heightAlignRectangle = this.alignRectangles.find(item => Math.abs(item.height - activeRectangle.height) < ALIGN_TOLERANCE);
         if (heightAlignRectangle) {
             const deltaHeight = heightAlignRectangle.height - activeRectangle.height;
             equalLineDelta.deltaY = deltaHeight * resizeAlignOptions.directionFactors[1];
             if (isAspectRatio) {
-                equalLineDelta.deltaX = equalLineDelta.deltaY * (activeRectangle.width / activeRectangle.height);
+                const deltaWidth = deltaHeight * (activeRectangle.width / activeRectangle.height);
+                equalLineDelta.deltaX = deltaWidth * resizeAlignOptions.directionFactors[0];
                 return equalLineDelta;
             }
         }
-
         return equalLineDelta;
     }
 
