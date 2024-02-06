@@ -37,7 +37,7 @@ export interface ResizeAlignOptions {
     isAspectRatio: boolean;
 }
 
-const ALIGN_TOLERANCE = 5;
+const ALIGN_TOLERANCE = 2;
 
 const EQUAL_SPACING = 10;
 
