@@ -1,5 +1,5 @@
 import { ResizeState } from '@plait/common';
-import { PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR, createG, findElements } from '@plait/core';
+import { Direction, PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR, createG, findElements } from '@plait/core';
 import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
 
 export interface ResizeAlignDelta {
@@ -14,7 +14,12 @@ export interface EqualLineRef extends ResizeAlignDelta {
 }
 
 export interface ResizeAlignRef extends EqualLineRef {
-    equalLinesG: SVGGElement;
+    alignG: SVGGElement;
+}
+
+export interface ResizeAlignDistance {
+    absDistance: number;
+    distance: number;
 }
 
 export interface ResizeAlignOptions {
@@ -32,6 +37,8 @@ const ALIGN_TOLERANCE = 2;
 
 const EQUAL_SPACING = 10;
 
+const ALIGN_SPACING = 12;
+
 export class ResizeAlignReaction {
     alignRectangles: RectangleClient[];
 
@@ -46,6 +53,27 @@ export class ResizeAlignReaction {
             isReverse: false
         });
         return elements.map(item => this.board.getRectangle(item)!);
+    }
+
+    getAlignLineRef(resizeAlignDelta: ResizeAlignDelta, resizeAlignOptions: ResizeAlignOptions): EqualLineRef {
+        const { deltaX, deltaY } = resizeAlignDelta;
+        const { resizeState, originPoint, handlePoint, isFromCorner, isAspectRatio, resizeOriginPoints } = resizeAlignOptions;
+        const newResizeState: ResizeState = {
+            ...resizeState,
+            endPoint: [resizeState.endPoint[0] + deltaX, resizeState.endPoint[1] + deltaY]
+        };
+        const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isFromCorner, isAspectRatio);
+        const activePoints = resizeOriginPoints.map(p => {
+            return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
+        }) as [Point, Point];
+
+        return {
+            deltaX,
+            deltaY,
+            xZoom,
+            yZoom,
+            activePoints
+        };
     }
 
     getEqualLineDelta(resizeAlignOptions: ResizeAlignOptions) {
@@ -69,33 +97,12 @@ export class ResizeAlignReaction {
             const deltaHeight = heightAlignRectangle.height - activeRectangle.height;
             equalLineDelta.deltaY = deltaHeight * resizeAlignOptions.directionFactors[1];
             if (isAspectRatio) {
-                equalLineDelta.deltaX = equalLineDelta.deltaX * (activeRectangle.width / activeRectangle.height);
+                equalLineDelta.deltaX = equalLineDelta.deltaY * (activeRectangle.width / activeRectangle.height);
                 return equalLineDelta;
             }
         }
 
         return equalLineDelta;
-    }
-
-    getEqualLineRef(resizeAlignOptions: ResizeAlignOptions): EqualLineRef {
-        const { deltaX, deltaY } = this.getEqualLineDelta(resizeAlignOptions);
-        const { resizeState, originPoint, handlePoint, isFromCorner, isAspectRatio, resizeOriginPoints } = resizeAlignOptions;
-        const newResizeState: ResizeState = {
-            ...resizeState,
-            endPoint: [resizeState.endPoint[0] + deltaX, resizeState.endPoint[1] + deltaY]
-        };
-        const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isFromCorner, isAspectRatio);
-        const activePoints = resizeOriginPoints.map(p => {
-            return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
-        }) as [Point, Point];
-
-        return {
-            deltaX,
-            deltaY,
-            xZoom,
-            yZoom,
-            activePoints
-        };
     }
 
     drawEqualLines(activePoints: Point[], resizeAlignOptions: ResizeAlignOptions) {
@@ -125,10 +132,111 @@ export class ResizeAlignReaction {
         return drawEqualLines(this.board, equalLinePoints);
     }
 
+    getAlignLineDelta(resizeAlignOptions: ResizeAlignOptions) {
+        let alignLineDelta: ResizeAlignDelta = {
+            deltaX: 0,
+            deltaY: 0
+        };
+        const { isAspectRatio, activeRectangle } = resizeAlignOptions;
+        const closestAlignRectangle = this.alignRectangles.find(item => {
+            const { leftDistances, rightDistances, topDistances, bottomDistances } = calculateClosestDistances(activeRectangle, item);
+            return [leftDistances.absDistance, rightDistances.absDistance, topDistances.absDistance, bottomDistances.absDistance].some(
+                distance => distance < ALIGN_TOLERANCE && distance !== 0
+            );
+        });
+
+        if (closestAlignRectangle) {
+            const { leftDistances, rightDistances, topDistances, bottomDistances } = calculateClosestDistances(
+                activeRectangle,
+                closestAlignRectangle
+            );
+            alignLineDelta.deltaX = getDeltaByDistances(leftDistances, rightDistances);
+            if (alignLineDelta.deltaX !== 0 && isAspectRatio) {
+                alignLineDelta.deltaY = alignLineDelta.deltaX / (activeRectangle.width / activeRectangle.height);
+                return alignLineDelta;
+            }
+            alignLineDelta.deltaY = getDeltaByDistances(topDistances, bottomDistances);
+            if (alignLineDelta.deltaY !== 0 && isAspectRatio) {
+                alignLineDelta.deltaX = alignLineDelta.deltaY * (activeRectangle.width / activeRectangle.height);
+                return alignLineDelta;
+            }
+        }
+        return alignLineDelta;
+    }
+
+    drawAlignLines(activePoints: Point[]) {
+        const activeRectangle = RectangleClient.getRectangleByPoints(activePoints);
+        let alignLinePoints: number[][] = [];
+        for (let alignRectangle of this.alignRectangles) {
+            const { leftDistances, rightDistances, topDistances, bottomDistances } = calculateClosestDistances(
+                activeRectangle,
+                alignRectangle
+            );
+
+            const xDistance = Math.min(leftDistances.absDistance, rightDistances.absDistance);
+            if (xDistance === 0) {
+                const verticalY = [
+                    alignRectangle.y,
+                    alignRectangle.y + alignRectangle.height,
+                    activeRectangle.y,
+                    activeRectangle.y + activeRectangle.height
+                ];
+                const lineTopY = Math.min(...verticalY) - ALIGN_SPACING;
+                const lineBottomY = Math.max(...verticalY) + ALIGN_SPACING;
+                if (leftDistances.distance === 0) {
+                    const leftLine: number[] = [activeRectangle.x, lineTopY, activeRectangle.x, lineBottomY];
+                    alignLinePoints.push(leftLine);
+                }
+                if (rightDistances.distance == 0) {
+                    const rightLine = [
+                        activeRectangle.x + activeRectangle.width,
+                        lineTopY,
+                        activeRectangle.x + activeRectangle.width,
+                        lineBottomY
+                    ];
+                    alignLinePoints.push(rightLine);
+                }
+            }
+
+            const yDistance = Math.min(topDistances.absDistance, bottomDistances.absDistance);
+            if (yDistance === 0) {
+                const horizontalX = [
+                    alignRectangle.x,
+                    alignRectangle.x + alignRectangle.width,
+                    activeRectangle.x,
+                    activeRectangle.x + activeRectangle.width
+                ];
+                const lineLeftX = Math.min(...horizontalX) - ALIGN_SPACING;
+                const lineRightX = Math.max(...horizontalX) + ALIGN_SPACING;
+                if (topDistances.distance === 0) {
+                    const topLine = [lineLeftX, activeRectangle.y, lineRightX, activeRectangle.y];
+                    alignLinePoints.push(topLine);
+                }
+                if (bottomDistances.distance == 0) {
+                    const bottomLine = [
+                        lineLeftX,
+                        activeRectangle.y + activeRectangle.height,
+                        lineRightX,
+                        activeRectangle.y + activeRectangle.height
+                    ];
+                    alignLinePoints.push(bottomLine);
+                }
+            }
+        }
+        return drawAlignLines(this.board, alignLinePoints);
+    }
+
     handleResizeAlign(resizeAlignOptions: ResizeAlignOptions): ResizeAlignRef {
-        const equalLineRef = this.getEqualLineRef(resizeAlignOptions);
+        const alignG = createG();
+        let alignLineDelta = this.getEqualLineDelta(resizeAlignOptions);
+        if (alignLineDelta.deltaX === 0 && alignLineDelta.deltaY === 0) {
+            alignLineDelta = this.getAlignLineDelta(resizeAlignOptions);
+        }
+        const equalLineRef = this.getAlignLineRef(alignLineDelta, resizeAlignOptions);
         const equalLinesG = this.drawEqualLines(equalLineRef.activePoints, resizeAlignOptions);
-        return { ...equalLineRef, equalLinesG };
+        const alignLinesG = this.drawAlignLines(equalLineRef.activePoints);
+        alignG.append(equalLinesG, alignLinesG);
+        return { ...equalLineRef, alignG };
     }
 }
 
@@ -173,6 +281,85 @@ function drawEqualLines(board: PlaitBoard, lines: Point[][]) {
             });
             g.appendChild(bar);
         });
+    });
+    return g;
+}
+
+function calculateClosestDistances(activeRectangle: RectangleClient, alignRectangle: RectangleClient) {
+    const leftDistances = calculateClosestDistancesByDirection(activeRectangle, alignRectangle, Direction.left);
+    const rightDistances = calculateClosestDistancesByDirection(activeRectangle, alignRectangle, Direction.right);
+    const topDistances = calculateClosestDistancesByDirection(activeRectangle, alignRectangle, Direction.top);
+    const bottomDistances = calculateClosestDistancesByDirection(activeRectangle, alignRectangle, Direction.bottom);
+    return {
+        leftDistances,
+        rightDistances,
+        topDistances,
+        bottomDistances
+    };
+}
+
+function calculateClosestDistancesByDirection(activeRectangle: RectangleClient, alignRectangle: RectangleClient, direction: Direction) {
+    let distances: number[];
+    switch (direction) {
+        case Direction.left:
+            distances = [
+                alignRectangle.x - activeRectangle.x,
+                alignRectangle.x + alignRectangle.width / 2 - activeRectangle.x,
+                alignRectangle.x + alignRectangle.width - activeRectangle.x
+            ];
+            break;
+        case Direction.right:
+            distances = [
+                alignRectangle.x + alignRectangle.width - (activeRectangle.x + activeRectangle.width),
+                alignRectangle.x + alignRectangle.width / 2 - (activeRectangle.x + activeRectangle.width),
+                alignRectangle.x - (activeRectangle.x + activeRectangle.width)
+            ];
+            break;
+
+        case Direction.top:
+            distances = [
+                alignRectangle.y - activeRectangle.y,
+                alignRectangle.y + alignRectangle.height / 2 - activeRectangle.y,
+                alignRectangle.y + alignRectangle.height - activeRectangle.y
+            ];
+            break;
+        case Direction.bottom:
+            distances = [
+                alignRectangle.y + alignRectangle.height - (activeRectangle.y + activeRectangle.height),
+                alignRectangle.y + alignRectangle.height / 2 - (activeRectangle.y + activeRectangle.height),
+                alignRectangle.y - (activeRectangle.y + activeRectangle.height)
+            ];
+            break;
+    }
+
+    const distancesAbs = distances.map(distance => Math.abs(distance));
+    const index = distancesAbs.indexOf(Math.min(...distancesAbs));
+
+    return {
+        absDistance: distancesAbs[index],
+        distance: distances[index]
+    };
+}
+
+function getDeltaByDistances(distance1: ResizeAlignDistance, distance2: ResizeAlignDistance): number {
+    if (distance1.absDistance < ALIGN_TOLERANCE && distance1.absDistance !== 0) {
+        return distance1.distance;
+    } else if (distance2.absDistance < ALIGN_TOLERANCE && distance2.absDistance !== 0) {
+        return distance2.distance;
+    }
+    return 0;
+}
+
+function drawAlignLines(board: PlaitBoard, lines: number[][]) {
+    const g = createG();
+    lines.forEach(points => {
+        if (!points.length) return;
+        const xAlign = PlaitBoard.getRoughSVG(board).line(points[0], points[1], points[2], points[3], {
+            stroke: SELECTION_BORDER_COLOR,
+            strokeWidth: 1,
+            strokeLineDash: [4, 4]
+        });
+        g.appendChild(xAlign);
     });
     return g;
 }

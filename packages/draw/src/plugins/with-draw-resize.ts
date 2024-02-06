@@ -56,9 +56,8 @@ export function withDrawResize(board: PlaitBoard) {
                 isAspectRatio,
                 isFromCorner
             );
-            alignG = resizeAlignRef.equalLinesG;
-            PlaitBoard.getElementActiveHost(board).append(resizeAlignRef.equalLinesG);
-
+            alignG = resizeAlignRef.alignG;
+            PlaitBoard.getElementActiveHost(board).append(alignG);
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
                 let points = target.points.map(p => {
