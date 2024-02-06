@@ -1,5 +1,14 @@
 import { ResizeState } from '@plait/common';
-import { DirectionFactors, PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR, createG, findElements } from '@plait/core';
+import {
+    DirectionFactors,
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    RectangleClient,
+    SELECTION_BORDER_COLOR,
+    createG,
+    findElements
+} from '@plait/core';
 import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
 
 export interface ResizeAlignDelta {
@@ -28,7 +37,7 @@ export interface ResizeAlignOptions {
     isAspectRatio: boolean;
 }
 
-const ALIGN_TOLERANCE = 2;
+const ALIGN_TOLERANCE = 5;
 
 const EQUAL_SPACING = 10;
 
@@ -59,21 +68,21 @@ export class ResizeAlignReaction {
             const deltaWidth = widthAlignRectangle.width - activeRectangle.width;
             equalLineDelta.deltaX = deltaWidth * resizeAlignOptions.directionFactors[0];
             if (isAspectRatio) {
-                equalLineDelta.deltaY = equalLineDelta.deltaX / (activeRectangle.width / activeRectangle.height);
+                const deltaHeight = deltaWidth / (activeRectangle.width / activeRectangle.height);
+                equalLineDelta.deltaY = deltaHeight * resizeAlignOptions.directionFactors[1];
                 return equalLineDelta;
             }
         }
-
         const heightAlignRectangle = this.alignRectangles.find(item => Math.abs(item.height - activeRectangle.height) < ALIGN_TOLERANCE);
         if (heightAlignRectangle) {
             const deltaHeight = heightAlignRectangle.height - activeRectangle.height;
             equalLineDelta.deltaY = deltaHeight * resizeAlignOptions.directionFactors[1];
             if (isAspectRatio) {
-                equalLineDelta.deltaX = equalLineDelta.deltaX * (activeRectangle.width / activeRectangle.height);
+                const deltaWidth = deltaHeight * (activeRectangle.width / activeRectangle.height);
+                equalLineDelta.deltaX = deltaWidth * resizeAlignOptions.directionFactors[0];
                 return equalLineDelta;
             }
         }
-
         return equalLineDelta;
     }
 
