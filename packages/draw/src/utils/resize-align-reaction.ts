@@ -1,6 +1,5 @@
 import { ResizeState } from '@plait/common';
 import {
-    Direction,
     DirectionFactors,
     PlaitBoard,
     PlaitElement,
@@ -27,11 +26,6 @@ export interface ResizeAlignRef extends EqualLineRef {
     alignG: SVGGElement;
 }
 
-export interface ResizeAlignDistance {
-    absDistance: number;
-    distance: number;
-}
-
 export interface ResizeAlignOptions {
     resizeState: ResizeState;
     resizeOriginPoints: Point[];
@@ -43,13 +37,20 @@ export interface ResizeAlignOptions {
     isAspectRatio: boolean;
 }
 
-export type TripleAlignAxis = [number, number, number];
+type TripleAlignAxis = [number, number, number];
+
+type AlignLineRef = {
+    axis: number;
+    isHorizontal: boolean;
+    points: [Point, Point] | null;
+};
+
 
 const ALIGN_TOLERANCE = 2;
 
 const EQUAL_SPACING = 10;
 
-const ALIGN_SPACING = 12;
+const ALIGN_SPACING = 24;
 
 export class ResizeAlignReaction {
     alignRectangles: RectangleClient[];
@@ -184,47 +185,63 @@ export class ResizeAlignReaction {
     }
 
     drawAlignLines(activePoints: Point[]) {
+        let alignLinePoints: [Point, Point][] = [];
         const activeRectangle = RectangleClient.getRectangleByPoints(activePoints);
-        let alignLinePoints: number[][] = [];
+        const alignAxisX = getTripleAlignAxis(activeRectangle, true);
+        const alignAxisY = getTripleAlignAxis(activeRectangle, true);
+        const alignLineRefs: AlignLineRef[] = [
+            {
+                axis: alignAxisX[0],
+                isHorizontal: true,
+                points: null
+            },
+            {
+                axis: alignAxisX[2],
+                isHorizontal: true,
+                points: null
+            },
+            {
+                axis: alignAxisY[0],
+                isHorizontal: false,
+                points: null
+            },
+            {
+                axis: alignAxisY[2],
+                isHorizontal: false,
+                points: null
+            }
+        ];
+        const setAlignLine = (axis: number, alignRectangle: RectangleClient, isHorizontal: boolean) => {
+            const boundingRectangle = RectangleClient.inflate(
+                RectangleClient.getBoundingRectangle([activeRectangle, alignRectangle]),
+                ALIGN_SPACING
+            );
+            if (isHorizontal) {
+                const pointStart = [axis, boundingRectangle.y] as Point;
+                const pointEnd = [axis, boundingRectangle.y + boundingRectangle.height] as Point;
+                alignLinePoints.push([pointStart, pointEnd]);
+            } else {
+                const pointStart = [boundingRectangle.x, axis] as Point;
+                const pointEnd = [boundingRectangle.x + boundingRectangle.width, axis] as Point;
+                alignLinePoints.push([pointStart, pointEnd]);
+            }
+        };
 
-        const alignLeftRectangle = this.alignRectangles.find(item => {
-            return isAlign(activeRectangle.x, item, true);
-        });
-        if (alignLeftRectangle) {
-            const [min, max] = getMinAndMaxAlignAxis(activeRectangle, alignLeftRectangle, true);
-            const leftLine: number[] = [activeRectangle.x, min, activeRectangle.x, max];
-            alignLinePoints.push(leftLine);
+        for (let index = 0; index < this.alignRectangles.length; index++) {
+            const element = this.alignRectangles[index];
+            if (!alignLineRefs[0].points && isAlign(alignLineRefs[0].axis, element, alignLineRefs[0].isHorizontal)) {
+                setAlignLine(alignLineRefs[0].axis, element, alignLineRefs[0].isHorizontal);
+            }
+            if (!alignLineRefs[1].points && isAlign(alignLineRefs[1].axis, element, alignLineRefs[1].isHorizontal)) {
+                setAlignLine(alignLineRefs[1].axis, element, alignLineRefs[1].isHorizontal);
+            }
+            if (!alignLineRefs[2].points && isAlign(alignLineRefs[2].axis, element, alignLineRefs[2].isHorizontal)) {
+                setAlignLine(alignLineRefs[2].axis, element, alignLineRefs[2].isHorizontal);
+            }
+            if (!alignLineRefs[3].points && isAlign(alignLineRefs[3].axis, element, alignLineRefs[3].isHorizontal)) {
+                setAlignLine(alignLineRefs[3].axis, element, alignLineRefs[3].isHorizontal);
+            }
         }
-
-        const alignRightRectangle = this.alignRectangles.find(item => {
-            return isAlign(activeRectangle.x + activeRectangle.width, item, true);
-        });
-        if (alignRightRectangle) {
-            const [min, max] = getMinAndMaxAlignAxis(activeRectangle, alignRightRectangle, true);
-            const rightLine: number[] = [activeRectangle.x + activeRectangle.width, min, activeRectangle.x + activeRectangle.width, max];
-            alignLinePoints.push(rightLine);
-        }
-
-        const alignTopRectangle = this.alignRectangles.find(item => {
-            return isAlign(activeRectangle.y, item, false);
-        });
-
-        if (alignTopRectangle) {
-            const [min, max] = getMinAndMaxAlignAxis(activeRectangle, alignTopRectangle, false);
-            const topLine = [min, activeRectangle.y, max, activeRectangle.y];
-            alignLinePoints.push(topLine);
-        }
-
-        const alignBottomRectangle = this.alignRectangles.find(item => {
-            return isAlign(activeRectangle.y + activeRectangle.height, item, false);
-        });
-
-        if (alignBottomRectangle) {
-            const [min, max] = getMinAndMaxAlignAxis(activeRectangle, alignBottomRectangle, false);
-            const topLine: number[] = [min, activeRectangle.y + activeRectangle.height, max, activeRectangle.y + activeRectangle.height];
-            alignLinePoints.push(topLine);
-        }
-
         return drawAlignLines(this.board, alignLinePoints);
     }
 
@@ -287,11 +304,11 @@ function drawEqualLines(board: PlaitBoard, lines: Point[][]) {
     return g;
 }
 
-function drawAlignLines(board: PlaitBoard, lines: number[][]) {
+function drawAlignLines(board: PlaitBoard, lines: [Point, Point][]) {
     const g = createG();
     lines.forEach(points => {
         if (!points.length) return;
-        const xAlign = PlaitBoard.getRoughSVG(board).line(points[0], points[1], points[2], points[3], {
+        const xAlign = PlaitBoard.getRoughSVG(board).line(points[0][0], points[0][1], points[1][0], points[1][1], {
             stroke: SELECTION_BORDER_COLOR,
             strokeWidth: 1,
             strokeLineDash: [4, 4]
@@ -322,16 +339,4 @@ export const getClosestDistances = (axis: number, rectangle: RectangleClient, is
         absDistance: distancesAbs[index],
         distance: distances[index]
     };
-};
-
-export const getMinAndMaxAlignAxis = (activeRectangle: RectangleClient, alignRectangle: RectangleClient, isHorizontal: boolean) => {
-    const axis = isHorizontal ? 'y' : 'x';
-    const side = isHorizontal ? 'height' : 'width';
-    const axisData = [
-        alignRectangle[axis],
-        alignRectangle[axis] + alignRectangle[side],
-        activeRectangle[axis],
-        activeRectangle[axis] + activeRectangle[side]
-    ];
-    return [Math.min(...axisData) - ALIGN_SPACING, Math.max(...axisData) + ALIGN_SPACING];
 };
