@@ -16,13 +16,13 @@ export interface ResizeAlignDelta {
     deltaY: number;
 }
 
-export interface EqualLineRef extends ResizeAlignDelta {
+export interface AlignLineRef extends ResizeAlignDelta {
     xZoom: number;
     yZoom: number;
     activePoints: Point[];
 }
 
-export interface ResizeAlignRef extends EqualLineRef {
+export interface ResizeAlignRef extends AlignLineRef {
     alignG: SVGGElement;
 }
 
@@ -39,12 +39,11 @@ export interface ResizeAlignOptions {
 
 type TripleAlignAxis = [number, number, number];
 
-type AlignLineRef = {
+type DrawAlignLineRef = {
     axis: number;
     isHorizontal: boolean;
-    points: [Point, Point] | null;
+    linePoints: [Point, Point] | null;
 };
-
 
 const ALIGN_TOLERANCE = 2;
 
@@ -68,7 +67,7 @@ export class ResizeAlignReaction {
         return elements.map(item => this.board.getRectangle(item)!);
     }
 
-    getAlignLineRef(resizeAlignDelta: ResizeAlignDelta, resizeAlignOptions: ResizeAlignOptions): EqualLineRef {
+    getAlignLineRef(resizeAlignDelta: ResizeAlignDelta, resizeAlignOptions: ResizeAlignOptions): AlignLineRef {
         const { deltaX, deltaY } = resizeAlignDelta;
         const { resizeState, originPoint, handlePoint, isFromCorner, isAspectRatio, resizeOriginPoints } = resizeAlignOptions;
         const newResizeState: ResizeState = {
@@ -152,29 +151,32 @@ export class ResizeAlignReaction {
         };
         const { isAspectRatio, activeRectangle, directionFactors } = resizeAlignOptions;
 
+        const drawHorizontal = resizeAlignOptions.directionFactors[0] !== 0 || resizeAlignOptions.isAspectRatio;
+        const drawVertical = resizeAlignOptions.directionFactors[1] !== 0 || resizeAlignOptions.isAspectRatio;
+
         const xAlignAxis = getTripleAlignAxis(activeRectangle, true);
         const alignX = directionFactors[0] === -1 ? xAlignAxis[0] : xAlignAxis[2];
         const yAlignAxis = getTripleAlignAxis(activeRectangle, false);
         const alignY = directionFactors[1] === -1 ? yAlignAxis[0] : yAlignAxis[2];
 
         const closestAlignRectangle = this.alignRectangles.find(item => {
-            const xDeltas = getClosestDelta(alignX, item, true);
-            const yDeltas = getClosestDelta(alignY, item, false);
-            return Math.min(xDeltas.absDelta, yDeltas.absDelta) < ALIGN_TOLERANCE;
+            const deltaX = drawHorizontal ? getClosestDelta(alignX, item, true) : ALIGN_TOLERANCE;
+            const deltaY = drawVertical ? getClosestDelta(alignY, item, false) : ALIGN_TOLERANCE;
+            return Math.min(Math.abs(deltaX), Math.abs(deltaY)) < ALIGN_TOLERANCE;
         });
         if (closestAlignRectangle) {
-            const xDeltas = getClosestDelta(alignX, closestAlignRectangle, true);
-            if (xDeltas.absDelta < ALIGN_TOLERANCE) {
-                alignLineDelta.deltaX = xDeltas.delta;
+            const deltaX = getClosestDelta(alignX, closestAlignRectangle, true);
+            if (Math.abs(deltaX) < ALIGN_TOLERANCE) {
+                alignLineDelta.deltaX = deltaX;
                 if (alignLineDelta.deltaX !== 0 && isAspectRatio) {
                     alignLineDelta.deltaY = alignLineDelta.deltaX / (activeRectangle.width / activeRectangle.height);
                     return alignLineDelta;
                 }
             }
 
-            const yDeltas = getClosestDelta(alignY, closestAlignRectangle, false);
-            if (yDeltas.absDelta < ALIGN_TOLERANCE) {
-                alignLineDelta.deltaY = yDeltas.delta;
+            const deltaY = getClosestDelta(alignY, closestAlignRectangle, false);
+            if (Math.abs(deltaY) < ALIGN_TOLERANCE) {
+                alignLineDelta.deltaY = deltaY;
                 if (alignLineDelta.deltaY !== 0 && isAspectRatio) {
                     alignLineDelta.deltaX = alignLineDelta.deltaY * (activeRectangle.width / activeRectangle.height);
                     return alignLineDelta;
@@ -189,26 +191,26 @@ export class ResizeAlignReaction {
         const activeRectangle = RectangleClient.getRectangleByPoints(activePoints);
         const alignAxisX = getTripleAlignAxis(activeRectangle, true);
         const alignAxisY = getTripleAlignAxis(activeRectangle, false);
-        const alignLineRefs: AlignLineRef[] = [
+        const alignLineRefs: DrawAlignLineRef[] = [
             {
                 axis: alignAxisX[0],
                 isHorizontal: true,
-                points: null
+                linePoints: null
             },
             {
                 axis: alignAxisX[2],
                 isHorizontal: true,
-                points: null
+                linePoints: null
             },
             {
                 axis: alignAxisY[0],
                 isHorizontal: false,
-                points: null
+                linePoints: null
             },
             {
                 axis: alignAxisY[2],
                 isHorizontal: false,
-                points: null
+                linePoints: null
             }
         ];
         const setAlignLine = (axis: number, alignRectangle: RectangleClient, isHorizontal: boolean) => {
@@ -229,16 +231,16 @@ export class ResizeAlignReaction {
 
         for (let index = 0; index < this.alignRectangles.length; index++) {
             const element = this.alignRectangles[index];
-            if (!alignLineRefs[0].points && isAlign(alignLineRefs[0].axis, element, alignLineRefs[0].isHorizontal)) {
+            if (!alignLineRefs[0].linePoints && isAlign(alignLineRefs[0].axis, element, alignLineRefs[0].isHorizontal)) {
                 setAlignLine(alignLineRefs[0].axis, element, alignLineRefs[0].isHorizontal);
             }
-            if (!alignLineRefs[1].points && isAlign(alignLineRefs[1].axis, element, alignLineRefs[1].isHorizontal)) {
+            if (!alignLineRefs[1].linePoints && isAlign(alignLineRefs[1].axis, element, alignLineRefs[1].isHorizontal)) {
                 setAlignLine(alignLineRefs[1].axis, element, alignLineRefs[1].isHorizontal);
             }
-            if (!alignLineRefs[2].points && isAlign(alignLineRefs[2].axis, element, alignLineRefs[2].isHorizontal)) {
+            if (!alignLineRefs[2].linePoints && isAlign(alignLineRefs[2].axis, element, alignLineRefs[2].isHorizontal)) {
                 setAlignLine(alignLineRefs[2].axis, element, alignLineRefs[2].isHorizontal);
             }
-            if (!alignLineRefs[3].points && isAlign(alignLineRefs[3].axis, element, alignLineRefs[3].isHorizontal)) {
+            if (!alignLineRefs[3].linePoints && isAlign(alignLineRefs[3].axis, element, alignLineRefs[3].isHorizontal)) {
                 setAlignLine(alignLineRefs[3].axis, element, alignLineRefs[3].isHorizontal);
             }
         }
@@ -334,9 +336,5 @@ export const getClosestDelta = (axis: number, rectangle: RectangleClient, isHori
     const deltas = alignAxis.map(item => item - axis);
     const absDeltas = deltas.map(item => Math.abs(item));
     const index = absDeltas.indexOf(Math.min(...absDeltas));
-
-    return {
-        absDelta: absDeltas[index],
-        delta: deltas[index]
-    };
+    return deltas[index];
 };
