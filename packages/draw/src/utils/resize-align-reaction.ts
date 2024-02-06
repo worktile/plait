@@ -1,9 +1,15 @@
 import { ResizeState } from '@plait/common';
-<<<<<<< HEAD
-import { DirectionFactors, PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR, createG, findElements } from '@plait/core';
-=======
-import { Direction, PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR, createG, findElements } from '@plait/core';
->>>>>>> 2046f41a (feat(draw): render align lines #WIK-14486)
+import {
+    Direction,
+    DirectionFactors,
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    RectangleClient,
+    SELECTION_BORDER_COLOR,
+    createG,
+    findElements
+} from '@plait/core';
 import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
 
 export interface ResizeAlignDelta {
