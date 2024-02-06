@@ -2,6 +2,7 @@ import {
     ResizeRef,
     ResizeState,
     WithResizeOptions,
+    drawHandle,
     getFirstTextManage,
     getIndexByResizeHandle,
     getResizeHandlePointByIndex,
@@ -9,7 +10,7 @@ import {
     isCornerHandle,
     withResize
 } from '@plait/common';
-import { PlaitBoard, Point, RectangleClient, Transforms, getRectangleByElements, getSelectedElements } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, Transforms, createG, getRectangleByElements, getSelectedElements, isSelectionMoving } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
@@ -18,6 +19,7 @@ import { getResizeAlignRef } from '../utils/resize-align';
 export function withDrawResize(board: PlaitBoard) {
     const { afterChange } = board;
     let alignG: SVGGElement | null;
+    let handleG: SVGGElement | null;
 
     const canResize = () => {
         const elements = getSelectedElements(board);
@@ -104,10 +106,22 @@ export function withDrawResize(board: PlaitBoard) {
     withResize<PlaitDrawElement[]>(board, options);
 
     board.afterChange = () => {
-        if (canResize()) {
-            
-        }
         afterChange();
+        if (handleG) {
+            handleG.remove();
+            handleG = null;
+        }
+        if (canResize() && !isSelectionMoving(board)) {
+            handleG = createG();
+            const elements = getSelectedElements(board) as PlaitDrawElement[];
+            const boundingRectangle = getRectangleByElements(board, elements, false);
+            const corners = RectangleClient.getCornerPoints(boundingRectangle);
+            corners.forEach((corner) => {
+                const g = drawHandle(board, corner);
+                handleG && handleG.append(g);
+            });
+            PlaitBoard.getElementActiveHost(board).append(handleG);
+        }
     };
 
     return board;
