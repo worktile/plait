@@ -53,6 +53,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
                     renderPoints.push(currentPoint);
                     renderPoints.push(...midKeyPoints);
                 } else {
+                    renderPoints.push(currentPoint);
                     console.log('unknown data points');
                 }
             } else {
