@@ -150,22 +150,34 @@ export function withSelection(board: PlaitBoard) {
         });
         if (isHandleSelection(board) && isSetSelectionOperation(board)) {
             try {
-                selectionRectangleG?.remove();
+                if (!isShift) {
+                    selectionRectangleG?.remove();
+                }
                 const temporaryElements = getTemporaryElements(board);
                 let elements = temporaryElements ? temporaryElements : getHitElementsBySelection(board);
                 if (!options.isMultiple && elements.length > 1) {
                     elements = [elements[0]];
                 }
-                if (isShift && board.selection && Selection.isCollapsed(board.selection)) {
-                    const newSelectedElements = [...getSelectedElements(board)];
-                    elements.forEach(element => {
-                        if (newSelectedElements.includes(element)) {
-                            newSelectedElements.splice(newSelectedElements.indexOf(element), 1);
-                        } else {
-                            newSelectedElements.push(element);
-                        }
-                    });
-                    cacheSelectedElements(board, newSelectedElements);
+                if (isShift) {
+                    if (board.selection && Selection.isCollapsed(board.selection)) {
+                        const newSelectedElements = [...getSelectedElements(board)];
+                        elements.forEach(element => {
+                            if (newSelectedElements.includes(element)) {
+                                newSelectedElements.splice(newSelectedElements.indexOf(element), 1);
+                            } else {
+                                newSelectedElements.push(element);
+                            }
+                        });
+                        cacheSelectedElements(board, newSelectedElements);
+                    } else {
+                        const newSelectedElements = [...getSelectedElements(board)];
+                        elements.forEach(element => {
+                            if (!newSelectedElements.includes(element)) {
+                                newSelectedElements.push(element);
+                            }
+                        });
+                        cacheSelectedElements(board, newSelectedElements);
+                    }
                 } else {
                     const newSelectedElements = [...elements];
                     cacheSelectedElements(board, newSelectedElements);
@@ -174,6 +186,7 @@ export function withSelection(board: PlaitBoard) {
                 previousSelectedElements = newElements;
                 deleteTemporaryElements(board);
                 if (!isSelectionMoving(board) && newElements.length > 1) {
+                    selectionRectangleG?.remove();
                     selectionRectangleG = createSelectionRectangleG(board);
                 }
             } catch (error) {
