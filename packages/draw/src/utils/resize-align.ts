@@ -44,7 +44,7 @@ export function getResizeAlignRef(
         activeRectangle,
         originPoint,
         handlePoint,
-        directionFactors: [getDirectionFactorByVectorComponent(x) as DirectionFactor, getDirectionFactorByVectorComponent(y) as DirectionFactor],
+        directionFactors: [getDirectionFactorByVectorComponent(x), getDirectionFactorByVectorComponent(y)],
         isAspectRatio,
         isFromCorner
     });

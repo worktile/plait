@@ -158,23 +158,23 @@ export class ResizeAlignReaction {
         const alignY = directionFactors[1] === -1 ? yAlignAxis[0] : yAlignAxis[2];
 
         const closestAlignRectangle = this.alignRectangles.find(item => {
-            const xDistances = getClosestDistances(alignX, item, true);
-            const yDistances = getClosestDistances(alignY, item, false);
-            return Math.min(xDistances.absDistance, yDistances.absDistance) < ALIGN_TOLERANCE;
+            const xDeltas = getClosestDelta(alignX, item, true);
+            const yDeltas = getClosestDelta(alignY, item, false);
+            return Math.min(xDeltas.absDelta, yDeltas.absDelta) < ALIGN_TOLERANCE;
         });
         if (closestAlignRectangle) {
-            const xDistances = getClosestDistances(alignX, closestAlignRectangle, true);
-            if (xDistances.absDistance < ALIGN_TOLERANCE) {
-                alignLineDelta.deltaX = xDistances.distance;
+            const xDeltas = getClosestDelta(alignX, closestAlignRectangle, true);
+            if (xDeltas.absDelta < ALIGN_TOLERANCE) {
+                alignLineDelta.deltaX = xDeltas.delta;
                 if (alignLineDelta.deltaX !== 0 && isAspectRatio) {
                     alignLineDelta.deltaY = alignLineDelta.deltaX / (activeRectangle.width / activeRectangle.height);
                     return alignLineDelta;
                 }
             }
 
-            const yDistances = getClosestDistances(alignY, closestAlignRectangle, false);
-            if (yDistances.absDistance < ALIGN_TOLERANCE) {
-                alignLineDelta.deltaY = yDistances.distance;
+            const yDeltas = getClosestDelta(alignY, closestAlignRectangle, false);
+            if (yDeltas.absDelta < ALIGN_TOLERANCE) {
+                alignLineDelta.deltaY = yDeltas.delta;
                 if (alignLineDelta.deltaY !== 0 && isAspectRatio) {
                     alignLineDelta.deltaX = alignLineDelta.deltaY * (activeRectangle.width / activeRectangle.height);
                     return alignLineDelta;
@@ -329,14 +329,14 @@ export const isAlign = (axis: number, rectangle: RectangleClient, isHorizontal: 
     return alignAxis.includes(axis);
 };
 
-export const getClosestDistances = (axis: number, rectangle: RectangleClient, isHorizontal: boolean) => {
+export const getClosestDelta = (axis: number, rectangle: RectangleClient, isHorizontal: boolean) => {
     const alignAxis = getTripleAlignAxis(rectangle, isHorizontal);
-    const distances = alignAxis.map(item => item - axis);
-    const distancesAbs = distances.map(item => Math.abs(item));
-    const index = distancesAbs.indexOf(Math.min(...distancesAbs));
+    const deltas = alignAxis.map(item => item - axis);
+    const absDeltas = deltas.map(item => Math.abs(item));
+    const index = absDeltas.indexOf(Math.min(...absDeltas));
 
     return {
-        absDistance: distancesAbs[index],
-        distance: distances[index]
+        absDelta: absDeltas[index],
+        delta: deltas[index]
     };
 };
