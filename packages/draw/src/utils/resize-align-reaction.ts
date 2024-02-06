@@ -188,7 +188,7 @@ export class ResizeAlignReaction {
         let alignLinePoints: [Point, Point][] = [];
         const activeRectangle = RectangleClient.getRectangleByPoints(activePoints);
         const alignAxisX = getTripleAlignAxis(activeRectangle, true);
-        const alignAxisY = getTripleAlignAxis(activeRectangle, true);
+        const alignAxisY = getTripleAlignAxis(activeRectangle, false);
         const alignLineRefs: AlignLineRef[] = [
             {
                 axis: alignAxisX[0],
