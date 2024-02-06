@@ -79,7 +79,6 @@ export class BasicEditorComponent implements OnInit {
 
     @HostListener('mouseup', ['$event'])
     onMouseup(event: MouseEvent): void {
-        event.preventDefault();
         this.contextMenu.nativeElement.style.display = 'none';
         if (event.button === 2 && !this.board.options.readonly) {
             this.contextMenu.nativeElement.style.display = 'block';
