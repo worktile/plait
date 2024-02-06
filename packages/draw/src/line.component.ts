@@ -104,8 +104,8 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
             this.updateText(previous.element.texts, value.element.texts);
             this.updateTextRectangle();
         } else {
-            const hasSameSelected = value.selected === previous.selected;
-            if (!hasSameSelected || (value.selected && isSelectionMoving(this.board))) {
+            const needUpdate = value.selected !== previous.selected || this.activeGenerator.needUpdate();
+            if (needUpdate) {
                 this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                     selected: this.selected,
                     linePoints

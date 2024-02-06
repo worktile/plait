@@ -13,6 +13,8 @@ export interface ActiveData {
 }
 
 export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
+    onlySelectedCurrentLine = false;
+
     canDraw(element: PlaitLine, data: ActiveData): boolean {
         if (data.selected) {
             return true;
@@ -24,8 +26,8 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
     draw(element: PlaitLine, data: ActiveData): SVGGElement {
         const activeG = createG();
         const selectedElements = getSelectedElements(this.board);
-        const isSingleSelection = selectedElements.length === 1;
-        if (isSingleSelection) {
+        this.onlySelectedCurrentLine = selectedElements.length === 1;
+        if (this.onlySelectedCurrentLine) {
             activeG.classList.add('active');
             activeG.classList.add('line-handle');
             const points = PlaitLine.getPoints(this.board, element);
@@ -70,5 +72,11 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
             }
         }
         return activeG;
+    }
+
+    needUpdate() {
+        const selectedElements = getSelectedElements(this.board);
+        const onlySelectedCurrentLine = selectedElements.length === 1;
+        return onlySelectedCurrentLine !== this.onlySelectedCurrentLine;
     }
 }
