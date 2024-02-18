@@ -151,8 +151,8 @@ export class ResizeAlignReaction {
         };
         const { isAspectRatio, activeRectangle, directionFactors } = resizeAlignOptions;
 
-        const drawHorizontal = resizeAlignOptions.directionFactors[0] !== 0 || resizeAlignOptions.isAspectRatio;
-        const drawVertical = resizeAlignOptions.directionFactors[1] !== 0 || resizeAlignOptions.isAspectRatio;
+        const drawHorizontal = directionFactors[0] !== 0 || isAspectRatio;
+        const drawVertical = directionFactors[1] !== 0 || isAspectRatio;
 
         const xAlignAxis = getTripleAlignAxis(activeRectangle, true);
         const alignX = directionFactors[0] === -1 ? xAlignAxis[0] : xAlignAxis[2];
@@ -186,7 +186,7 @@ export class ResizeAlignReaction {
         return alignLineDelta;
     }
 
-    drawAlignLines(activePoints: Point[]) {
+    drawAlignLines(activePoints: Point[], resizeAlignOptions: ResizeAlignOptions) {
         let alignLinePoints: [Point, Point][] = [];
         const activeRectangle = RectangleClient.getRectangleByPoints(activePoints);
         const alignAxisX = getTripleAlignAxis(activeRectangle, true);
@@ -228,19 +228,22 @@ export class ResizeAlignReaction {
                 alignLinePoints.push([pointStart, pointEnd]);
             }
         };
+        const { isAspectRatio, directionFactors } = resizeAlignOptions;
+        const drawHorizontal = directionFactors[0] !== 0 || isAspectRatio;
+        const drawVertical = directionFactors[1] !== 0 || isAspectRatio;
 
         for (let index = 0; index < this.alignRectangles.length; index++) {
             const element = this.alignRectangles[index];
-            if (!alignLineRefs[0].linePoints && isAlign(alignLineRefs[0].axis, element, alignLineRefs[0].isHorizontal)) {
+            if (drawHorizontal && !alignLineRefs[0].linePoints && isAlign(alignLineRefs[0].axis, element, alignLineRefs[0].isHorizontal)) {
                 setAlignLine(alignLineRefs[0].axis, element, alignLineRefs[0].isHorizontal);
             }
-            if (!alignLineRefs[1].linePoints && isAlign(alignLineRefs[1].axis, element, alignLineRefs[1].isHorizontal)) {
+            if (drawHorizontal && !alignLineRefs[1].linePoints && isAlign(alignLineRefs[1].axis, element, alignLineRefs[1].isHorizontal)) {
                 setAlignLine(alignLineRefs[1].axis, element, alignLineRefs[1].isHorizontal);
             }
-            if (!alignLineRefs[2].linePoints && isAlign(alignLineRefs[2].axis, element, alignLineRefs[2].isHorizontal)) {
+            if (drawVertical && !alignLineRefs[2].linePoints && isAlign(alignLineRefs[2].axis, element, alignLineRefs[2].isHorizontal)) {
                 setAlignLine(alignLineRefs[2].axis, element, alignLineRefs[2].isHorizontal);
             }
-            if (!alignLineRefs[3].linePoints && isAlign(alignLineRefs[3].axis, element, alignLineRefs[3].isHorizontal)) {
+            if (drawVertical && !alignLineRefs[3].linePoints && isAlign(alignLineRefs[3].axis, element, alignLineRefs[3].isHorizontal)) {
                 setAlignLine(alignLineRefs[3].axis, element, alignLineRefs[3].isHorizontal);
             }
         }
@@ -255,7 +258,7 @@ export class ResizeAlignReaction {
         }
         const equalLineRef = this.getAlignLineRef(alignLineDelta, resizeAlignOptions);
         const equalLinesG = this.drawEqualLines(equalLineRef.activePoints, resizeAlignOptions);
-        const alignLinesG = this.drawAlignLines(equalLineRef.activePoints);
+        const alignLinesG = this.drawAlignLines(equalLineRef.activePoints, resizeAlignOptions);
         alignG.append(equalLinesG, alignLinesG);
         return { ...equalLineRef, alignG };
     }
