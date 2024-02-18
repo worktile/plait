@@ -159,30 +159,24 @@ export class ResizeAlignReaction {
         const yAlignAxis = getTripleAlignAxis(activeRectangle, false);
         const alignY = directionFactors[1] === -1 ? yAlignAxis[0] : yAlignAxis[2];
 
-        const closestAlignRectangle = this.alignRectangles.find(item => {
-            const deltaX = drawHorizontal ? getClosestDelta(alignX, item, true) : ALIGN_TOLERANCE;
-            const deltaY = drawVertical ? getClosestDelta(alignY, item, false) : ALIGN_TOLERANCE;
-            return Math.min(Math.abs(deltaX), Math.abs(deltaY)) < ALIGN_TOLERANCE;
-        });
-        if (closestAlignRectangle) {
-            const deltaX = getClosestDelta(alignX, closestAlignRectangle, true);
-            if (Math.abs(deltaX) < ALIGN_TOLERANCE) {
-                alignLineDelta.deltaX = deltaX;
-                if (alignLineDelta.deltaX !== 0 && isAspectRatio) {
-                    alignLineDelta.deltaY = alignLineDelta.deltaX / (activeRectangle.width / activeRectangle.height);
-                    return alignLineDelta;
-                }
-            }
-
-            const deltaY = getClosestDelta(alignY, closestAlignRectangle, false);
-            if (Math.abs(deltaY) < ALIGN_TOLERANCE) {
-                alignLineDelta.deltaY = deltaY;
-                if (alignLineDelta.deltaY !== 0 && isAspectRatio) {
-                    alignLineDelta.deltaX = alignLineDelta.deltaY * (activeRectangle.width / activeRectangle.height);
-                    return alignLineDelta;
-                }
+        const deltaX = getMinAlignDelta(this.alignRectangles, alignX, true, drawHorizontal);
+        if (Math.abs(deltaX) < ALIGN_TOLERANCE) {
+            alignLineDelta.deltaX = deltaX;
+            if (alignLineDelta.deltaX !== 0 && isAspectRatio) {
+                alignLineDelta.deltaY = alignLineDelta.deltaX / (activeRectangle.width / activeRectangle.height);
+                return alignLineDelta;
             }
         }
+
+        const deltaY = getMinAlignDelta(this.alignRectangles, alignY, false, drawVertical);
+        if (Math.abs(deltaY) < ALIGN_TOLERANCE) {
+            alignLineDelta.deltaY = deltaY;
+            if (alignLineDelta.deltaY !== 0 && isAspectRatio) {
+                alignLineDelta.deltaX = alignLineDelta.deltaY * (activeRectangle.width / activeRectangle.height);
+                return alignLineDelta;
+            }
+        }
+
         return alignLineDelta;
     }
 
@@ -232,21 +226,24 @@ export class ResizeAlignReaction {
         const drawHorizontal = directionFactors[0] !== 0 || isAspectRatio;
         const drawVertical = directionFactors[1] !== 0 || isAspectRatio;
 
-        for (let index = 0; index < this.alignRectangles.length; index++) {
-            const element = this.alignRectangles[index];
-            if (drawHorizontal && !alignLineRefs[0].linePoints && isAlign(alignLineRefs[0].axis, element, alignLineRefs[0].isHorizontal)) {
-                setAlignLine(alignLineRefs[0].axis, element, alignLineRefs[0].isHorizontal);
-            }
-            if (drawHorizontal && !alignLineRefs[1].linePoints && isAlign(alignLineRefs[1].axis, element, alignLineRefs[1].isHorizontal)) {
-                setAlignLine(alignLineRefs[1].axis, element, alignLineRefs[1].isHorizontal);
-            }
-            if (drawVertical && !alignLineRefs[2].linePoints && isAlign(alignLineRefs[2].axis, element, alignLineRefs[2].isHorizontal)) {
-                setAlignLine(alignLineRefs[2].axis, element, alignLineRefs[2].isHorizontal);
-            }
-            if (drawVertical && !alignLineRefs[3].linePoints && isAlign(alignLineRefs[3].axis, element, alignLineRefs[3].isHorizontal)) {
-                setAlignLine(alignLineRefs[3].axis, element, alignLineRefs[3].isHorizontal);
-            }
+        const [leftRectangle, rightRectangle, topRectangle, bottomRectangle] = getAlignRectangles(
+            alignLineRefs,
+            this.alignRectangles,
+            activeRectangle
+        );
+        if (drawHorizontal && leftRectangle) {
+            setAlignLine(alignLineRefs[0].axis, leftRectangle, alignLineRefs[0].isHorizontal);
         }
+        if (drawHorizontal && rightRectangle) {
+            setAlignLine(alignLineRefs[1].axis, rightRectangle, alignLineRefs[1].isHorizontal);
+        }
+        if (drawVertical && topRectangle) {
+            setAlignLine(alignLineRefs[2].axis, topRectangle, alignLineRefs[2].isHorizontal);
+        }
+        if (drawVertical && bottomRectangle) {
+            setAlignLine(alignLineRefs[3].axis, bottomRectangle, alignLineRefs[3].isHorizontal);
+        }
+
         return drawAlignLines(this.board, alignLinePoints);
     }
 
@@ -341,3 +338,67 @@ export const getClosestDelta = (axis: number, rectangle: RectangleClient, isHori
     const index = absDeltas.indexOf(Math.min(...absDeltas));
     return deltas[index];
 };
+
+function getMinAlignDelta(alignRectangles: RectangleClient[], axis: number, isHorizontal: boolean, isDraw: boolean) {
+    let delta = ALIGN_TOLERANCE;
+
+    alignRectangles.forEach(item => {
+        const distance = isDraw ? getClosestDelta(axis, item, isHorizontal) : ALIGN_TOLERANCE;
+        if (Math.abs(distance) < Math.abs(delta)) {
+            delta = distance;
+        }
+    });
+    return delta;
+}
+
+function getAlignRectangles(alignLineRefs: DrawAlignLineRef[], alignRectangles: RectangleClient[], activeRectangle: RectangleClient) {
+    let leftRectangles: RectangleClient[] = [];
+    let rightRectangles: RectangleClient[] = [];
+    let topRectangles: RectangleClient[] = [];
+    let bottomRectangles: RectangleClient[] = [];
+    let result: [RectangleClient | null, RectangleClient | null, RectangleClient | null, RectangleClient | null] = [null, null, null, null];
+
+    for (let index = 0; index < alignRectangles.length; index++) {
+        const element = alignRectangles[index];
+        if (!alignLineRefs[0].linePoints && isAlign(alignLineRefs[0].axis, element, alignLineRefs[0].isHorizontal)) {
+            leftRectangles.push(element);
+        }
+        if (!alignLineRefs[1].linePoints && isAlign(alignLineRefs[1].axis, element, alignLineRefs[1].isHorizontal)) {
+            rightRectangles.push(element);
+        }
+        if (!alignLineRefs[2].linePoints && isAlign(alignLineRefs[2].axis, element, alignLineRefs[2].isHorizontal)) {
+            topRectangles.push(element);
+        }
+        if (!alignLineRefs[3].linePoints && isAlign(alignLineRefs[3].axis, element, alignLineRefs[3].isHorizontal)) {
+            bottomRectangles.push(element);
+        }
+    }
+
+    if (leftRectangles.length) {
+        result[0] = leftRectangles.length === 1 ? leftRectangles[0] : getNearestAlignRectangle(leftRectangles, activeRectangle);
+    }
+    if (rightRectangles.length) {
+        result[1] = rightRectangles.length === 1 ? rightRectangles[0] : getNearestAlignRectangle(rightRectangles, activeRectangle);
+    }
+    if (topRectangles.length) {
+        result[2] = topRectangles.length === 1 ? topRectangles[0] : getNearestAlignRectangle(topRectangles, activeRectangle);
+    }
+    if (bottomRectangles.length) {
+        result[3] = bottomRectangles.length === 1 ? bottomRectangles[0] : getNearestAlignRectangle(bottomRectangles, activeRectangle);
+    }
+    return result;
+}
+
+function getNearestAlignRectangle(alignRectangles: RectangleClient[], activeRectangle: RectangleClient) {
+    let minDistance = Infinity;
+    let nearestRectangle = null;
+    
+    alignRectangles.forEach(item => {
+        const distance = Math.sqrt(Math.pow(activeRectangle.x - item.x, 2) + Math.pow(activeRectangle.y - item.y, 2));
+        if (distance < minDistance) {
+            minDistance = distance;
+            nearestRectangle = item;
+        }
+    });
+    return nearestRectangle;
+}
