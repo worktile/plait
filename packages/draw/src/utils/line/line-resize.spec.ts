@@ -1,112 +1,238 @@
-import { Point } from '@plait/core';
+import { PlaitBoard, Point, createTestingBoard } from '@plait/core';
 import { getIndexAndDeleteCountByKeyPoint } from './line-resize';
+import { PlaitLine } from '../../interfaces';
 
-// describe('getIndexAndDeleteCountByKeyPoint', () => {
-//     describe('both the startPoint and endPoint are not on the elbow line segment', () => {
-//         it('both the startPoint and endPoint is on the same line as the dataPoints', () => {
-//             /**
-//              * dataPoints
-//              * 0 🔴<------
-//              *   ｜
-//              *   ｜
-//              * 1 🔴------------>
-//              *
-//              *  nextKeyPoints
-//              * 1 🟢<----🟢 0
-//              *   ｜
-//              * handle
-//              *   ｜
-//              * 2 🟢----------------->🟢 3
-//              *                       ｜
-//              *                       ｜
-//              *                <------🟢 4
-//              */
-//             const dataPoints: Point[] = [
-//                 [1, 1],
-//                 [1, 2]
-//             ];
-//             const nextKeyPoints: Point[] = [
-//                 [0, 5],
-//                 [1, 5],
-//                 [1, 7],
-//                 [3, 7],
-//                 [3, 8]
-//             ];
-//             const handleIndex = 1;
-//             const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(dataPoints, nextKeyPoints, handleIndex);
-//             expect(index).toBe(0);
-//             expect(deleteCount).toBe(2);
-//         });
-//         it('only the startPoint is on the same line as the dataPoints', () => {
-//             /**
-//              * dataPoints
-//              * 0 🔴<----
-//              *   ｜
-//              *   ｜
-//              * 1 🔴 ---------->
-//              *
-//              *  nextKeyPoints
-//              * 1 🟢<----🟢 0
-//              *   ｜
-//              *   ｜
-//              * 2 🟢-----handle------>🟢 3
-//              *                       ｜
-//              *                       ｜
-//              *                <------🟢 4
-//              */
-//             const dataPoints: Point[] = [
-//                 [1, 1],
-//                 [1, 2]
-//             ];
-//             const nextKeyPoints: Point[] = [
-//                 [0, 5],
-//                 [1, 5],
-//                 [1, 7],
-//                 [3, 7],
-//                 [3, 8]
-//             ];
-//             const handleIndex = 2;
-//             const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(dataPoints, nextKeyPoints, handleIndex);
-//             expect(index).toBe(1);
-//             expect(deleteCount).toBe(1);
-//         });
-//         it('only the endPoint is on the same line as the dataPoints', () => {
-//             /**
-//              *                      dataPoints
-//              *              -------->🔴 0
-//              *                       ｜
-//              *                       ｜
-//              *                <------🔴 1
-//              *
-//              *  nextKeyPoints
-//              * 1 🟢<----🟢 0
-//              *   ｜
-//              *   ｜
-//              * 2 🟢-----handle------>🟢 3
-//              *                       ｜
-//              *                       ｜
-//              *                <------🟢 4
-//              */
-//             const dataPoints: Point[] = [
-//                 [3, 1],
-//                 [3, 2]
-//             ];
-//             const nextKeyPoints: Point[] = [
-//                 [0, 5],
-//                 [1, 5],
-//                 [1, 7],
-//                 [3, 7],
-//                 [3, 8]
-//             ];
-//             const handleIndex = 2;
-//             const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(dataPoints, nextKeyPoints, handleIndex);
-//             expect(index).toBe(0);
-//             expect(deleteCount).toBe(1);
-//         });
-//     });
-// });
+describe('getIndexAndDeleteCountByKeyPoint', () => {
+    let board: PlaitBoard;
+    let resizeLine: PlaitLine;
+    beforeEach(() => {
+        board = createTestingBoard([], []);
+    });
+    it('both the startPoint and endPoint are on the elbow line segment', () => {
+        const dataPoints: Point[] = [
+            [2, 1],
+            [1, 1],
+            [1, 2],
+            [0, 0]
+        ];
+        const nextKeyPoints: Point[] = [
+            [2, 1],
+            [1, 1],
+            [1, 2],
+            [0, 0]
+        ];
+        const handleIndex = 1;
+        const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(board, resizeLine, dataPoints, nextKeyPoints, handleIndex);
+        expect(index).toBe(0);
+        expect(deleteCount).toBe(2);
+    });
+    describe('only the startPoint is on the elbow line segment', () => {
+        it('startPoint and endPoint are on the same line as the dataPoints', () => {
+            const dataPoints: Point[] = [
+                [2, 1],
+                [1, 1],
+                [1, 5],
+                [0, 0]
+            ];
+            const nextKeyPoints: Point[] = [
+                [2, 1],
+                [1, 1],
+                [1, 2],
+                [0, 0]
+            ];
+            const handleIndex = 1;
+            const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(board, resizeLine, dataPoints, nextKeyPoints, handleIndex);
+            expect(index).toBe(0);
+            expect(deleteCount).toBe(2);
+        });
+        it('startPoint and endPoint are not on the same line as the dataPoints', () => {
+            const dataPoints: Point[] = [
+                [2, 1],
+                [1, 1],
+                [3, 5],
+                [0, 0]
+            ];
+            const nextKeyPoints: Point[] = [
+                [2, 1],
+                [1, 1],
+                [1, 2],
+                [0, 0]
+            ];
+            const handleIndex = 1;
+            const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(board, resizeLine, dataPoints, nextKeyPoints, handleIndex);
+            expect(index).toBe(0);
+            expect(deleteCount).toBe(1);
+        });
+    });
+    describe('only the endPoint is on the elbow line segment', () => {
+        it('startPoint and endPoint are on the same line as the dataPoints', () => {
+            const dataPoints: Point[] = [
+                [2, 1],
+                [1, 3],
+                [1, 2],
+                [0, 0]
+            ];
+            const nextKeyPoints: Point[] = [
+                [2, 1],
+                [1, 1],
+                [1, 2],
+                [0, 0]
+            ];
+            const handleIndex = 1;
+            const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(board, resizeLine, dataPoints, nextKeyPoints, handleIndex);
+            expect(index).toBe(0);
+            expect(deleteCount).toBe(2);
+        });
+        it('startPoint and endPoint are not on the same line as the dataPoints', () => {
+            const dataPoints: Point[] = [
+                [2, 1],
+                [3, 1],
+                [1, 2],
+                [0, 0]
+            ];
+            const nextKeyPoints: Point[] = [
+                [2, 1],
+                [1, 1],
+                [1, 2],
+                [0, 0]
+            ];
+            const handleIndex = 1;
+            const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(board, resizeLine, dataPoints, nextKeyPoints, handleIndex);
+            expect(index).toBe(1);
+            expect(deleteCount).toBe(1);
+        });
+    });
+    describe('both the startPoint and endPoint are not on the elbow line segment', () => {
+        it('both the startPoint and endPoint are on the same line as the dataPoints', () => {
+            /**
+             * dataPoints
+             * 0 🔴<------
+             *   ｜
+             *   ｜
+             * 1 🔴------------>
+             *
+             *  nextKeyPoints
+             * 1 🟢<----🟢 0
+             *   ｜
+             * handle
+             *   ｜
+             * 2 🟢----------------->🟢 3
+             *                       ｜
+             *                       ｜
+             *                <------🟢 4
+             */
+            const dataPoints: Point[] = [
+                [0, 5],
+                [1, 1],
+                [1, 2],
+                [3, 8]
+            ];
+            const nextKeyPoints: Point[] = [
+                [0, 5],
+                [1, 5],
+                [1, 7],
+                [3, 7],
+                [3, 8]
+            ];
+            const handleIndex = 1;
+            const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(board, resizeLine, dataPoints, nextKeyPoints, handleIndex);
+            expect(index).toBe(0);
+            expect(deleteCount).toBe(2);
+        });
+        it('only the startPoint is on the same line as the dataPoints', () => {
+            /**
+             * dataPoints
+             * 0 🔴<----
+             *   ｜
+             *   ｜
+             * 1 🔴 ---------->
+             *
+             *  nextKeyPoints
+             * 1 🟢<----🟢 0
+             *   ｜
+             *   ｜
+             * 2 🟢-----handle------>🟢 3
+             *                       ｜
+             *                       ｜
+             *                <------🟢 4
+             */
+            const dataPoints: Point[] = [
+                [0, 5],
+                [1, 1],
+                [1, 2],
+                [3, 8]
+            ];
+            const nextKeyPoints: Point[] = [
+                [0, 5],
+                [1, 5],
+                [1, 7],
+                [3, 7],
+                [3, 8]
+            ];
+            const handleIndex = 2;
+            const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(board, resizeLine, dataPoints, nextKeyPoints, handleIndex);
+            expect(index).toBe(1);
+            expect(deleteCount).toBe(1);
+        });
+        it('only the endPoint is on the same line as the dataPoints', () => {
+            /**
+             *                      dataPoints
+             *              -------->🔴 0
+             *                       ｜
+             *                       ｜
+             *                <------🔴 1
+             *
+             *  nextKeyPoints
+             * 1 🟢<----🟢 0
+             *   ｜
+             *   ｜
+             * 2 🟢-----handle------>🟢 3
+             *                       ｜
+             *                       ｜
+             *                <------🟢 4
+             */
+            const dataPoints: Point[] = [
+                [0, 5],
+                [3, 1],
+                [3, 2],
+                [3, 8]
+            ];
+            const nextKeyPoints: Point[] = [
+                [0, 5],
+                [1, 5],
+                [1, 7],
+                [3, 7],
+                [3, 8]
+            ];
+            const handleIndex = 2;
+            const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(board, resizeLine, dataPoints, nextKeyPoints, handleIndex);
+            expect(index).toBe(0);
+            expect(deleteCount).toBe(1);
+        });
+        describe('both the startPoint and endPoint are not on the same line as the dataPoints', () => {
+            it('when there are no custom resize points', () => {
+                const dataPoints: Point[] = [
+                    [2, 1],
+                    [0, 0]
+                ];
+                const nextKeyPoints: Point[] = [
+                    [2, 1],
+                    [1, 1],
+                    [1, 2],
+                    [0, 0]
+                ];
+                const handleIndex = 1;
+                const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(board, resizeLine, dataPoints, nextKeyPoints, handleIndex);
+                expect(index).toBe(0);
+                expect(deleteCount).toBe(0);
+            });
+            it('when custom resize points exist', () => {
+            });
+        });
+    });
+});
 
-fdescribe('getMirrorDataPoints', () => {
+describe('getMirrorDataPoints', () => {
     describe('two custom points', () => {
         it('first custom point exist get mid points', () => {
             const data = [
