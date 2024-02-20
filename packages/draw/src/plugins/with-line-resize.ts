@@ -11,7 +11,8 @@ import {
     alignElbowSegment,
     alignPoints,
     getIndexAndDeleteCountByKeyPoint,
-    getResizedPreviousAndNextPoint
+    getResizedPreviousAndNextPoint,
+    hasIllegalPoint
 } from '../utils/line/line-resize';
 import { getConnectionByNearestPoint, getLinePoints } from '../utils/line/line-basic';
 import { getElbowLineRouteOptions } from '../utils/line';
@@ -102,14 +103,14 @@ export const withLineResize = (board: PlaitBoard) => {
                             resizeState,
                             resizedPreviousAndNextPoint
                         );
-                        let drawPoints: Point[] = [...points].slice(1, points.length - 1);
+                        let midDataPoints: Point[] = [...points].slice(1, points.length - 1);
                         if (elbowLineIndex !== null && elbowLineDeleteCount !== null) {
-                            if (elbowLineIndex === 0 && elbowLineDeleteCount === 0 && points.length !== 2) {
-                                drawPoints = [newStartPoint, newEndPoint];
-                            } else {
-                                drawPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
+                            if (hasIllegalPoint(midDataPoints)) {
+                                midDataPoints = [newStartPoint, newEndPoint];
+                            }else {
+                                midDataPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
                             }
-                            points = [elbowSourcePoint, ...drawPoints, elbowTargetPoint];
+                            points = [elbowSourcePoint, ...midDataPoints, elbowTargetPoint];
                         }
                     }
                 } else {
