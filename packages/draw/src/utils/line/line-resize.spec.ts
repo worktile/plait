@@ -36,15 +36,15 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
 
     // move source and target
     describe('the startPoint and endPoint are not in the dataPoints', () => {
-        describe('the startPoint and endPoint are align with relation points in dataPoints', () => {
+        describe('there are relation points on dataPoints with the startPoint and endPoint', () => {
             it('both the startPoint and endPoint are align with relation points in dataPoints', () => {});
             it('only the startPoint is align with relation points in dataPoints', () => {});
             it('only the endPoint is align with relation points in dataPoints', () => {});
         });
 
-        describe('the startPoint and endPoint are not align with relation points in dataPoints', () => {
-            it('when there are no custom resize points', () => {});
-            describe('when custom resize points exist', () => {
+        describe('there are not relation points on dataPoints with the startPoint and endPoint', () => {
+            it('custom resize points not exist', () => {});
+            describe('custom resize points exist', () => {
                 it('in dataPoints, the relation points for the previous point can be found.', () => {});
                 describe('in dataPoints, the relation points for the previous point can not be found.', () => {
                     it('nextRenderPoints is a straight line', () => {});
