@@ -341,7 +341,7 @@ function findMirrorSegments(
 export const hasIllegalPoint = (midDataPoints: Point[]): boolean => {
     return midDataPoints.some((item, index) => {
         if (midDataPoints.length === 1) {
-            return false;
+            return true;
         }
         if (index > 0 && index < midDataPoints.length - 1) {
             const beforePoint = midDataPoints[index - 1];
