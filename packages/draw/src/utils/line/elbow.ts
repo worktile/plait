@@ -35,12 +35,21 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         return simplifyOrthogonalPoints(keyPoints);
     } else {
         const simplifiedNextKeyPoints = simplifyOrthogonalPoints(nextKeyPoints);
-        const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
-        const nextDataPoints = [
-            simplifiedNextKeyPoints[0],
-            ...dataPoints.slice(1, -1),
-            simplifiedNextKeyPoints[simplifiedNextKeyPoints.length - 1]
-        ];
+        let dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
+        dataPoints.splice(1, -1);
+
+        const hasIllegalPoint = dataPoints.some((item, index) => {
+            if (index < dataPoints.length - 1) {
+                const nextPoint = dataPoints[index + 1];
+                return !Point.isAlign([item, nextPoint]);
+            }
+            return dataPoints.length === 1;
+        });
+        if (hasIllegalPoint) {
+            return simplifyOrthogonalPoints(keyPoints);
+        }
+
+        const nextDataPoints = [simplifiedNextKeyPoints[0], ...dataPoints, simplifiedNextKeyPoints[simplifiedNextKeyPoints.length - 1]];
         const mirrorDataPoints = getMirrorDataPoints(board, nextDataPoints, simplifiedNextKeyPoints, params);
         const renderPoints: Point[] = [keyPoints[0]];
         for (let index = 0; index < mirrorDataPoints.length - 1; index++) {

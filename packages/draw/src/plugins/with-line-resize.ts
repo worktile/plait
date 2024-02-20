@@ -57,7 +57,7 @@ export const withLineResize = (board: PlaitBoard) => {
                 if (isIntersect) {
                     return;
                 }
-                let points: Point[] = [...resizeRef.element.points];
+                const points: Point[] = [...resizeRef.element.points];
                 const handleIndex = resizeRef.handleIndex!;
                 const pointsOnElbow = getElbowPoints(board, resizeRef.element);
                 elbowSourcePoint = pointsOnElbow[0];
@@ -102,9 +102,13 @@ export const withLineResize = (board: PlaitBoard) => {
                             resizeState,
                             resizedPreviousAndNextPoint
                         );
-                        const drawPoints: Point[] = [...points].slice(1, points.length - 1);
+                        let drawPoints: Point[] = [...points].slice(1, points.length - 1);
                         if (elbowLineIndex !== null && elbowLineDeleteCount !== null) {
-                            drawPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
+                            if (elbowLineIndex === 0 && elbowLineDeleteCount === 0 && points.length !== 2) {
+                                drawPoints = [newStartPoint, newEndPoint];
+                            } else {
+                                drawPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
+                            }
                             points = [elbowSourcePoint, ...drawPoints, elbowTargetPoint];
                         }
                     }
