@@ -338,7 +338,7 @@ function findMirrorSegments(
     return mirrorSegments;
 }
 
-export const hasIllegalPoint = (midDataPoints: Point[]): boolean => {
+export const hasIllegalElbowPoint = (midDataPoints: Point[]): boolean => {
     if (midDataPoints.length === 1) {
         return true;
     }

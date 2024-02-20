@@ -11,7 +11,7 @@ import { BasicShapes, LineHandleRefPair, PlaitGeometry, PlaitLine } from '../../
 import { createGeometryElement } from '../geometry';
 import { getStrokeWidthByElement } from '../style/stroke';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
-import { getMidKeyPoints, getMirrorDataPoints, hasIllegalPoint } from './line-resize';
+import { getMidKeyPoints, getMirrorDataPoints, hasIllegalElbowPoint } from './line-resize';
 
 export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     const handleRefPair = getLineHandleRefPair(board, element);
@@ -37,7 +37,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         const simplifiedNextKeyPoints = simplifyOrthogonalPoints(nextKeyPoints);
         const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
         const midDataPoints = dataPoints.slice(1, -1);
-        if (hasIllegalPoint(midDataPoints)) {
+        if (hasIllegalElbowPoint(midDataPoints)) {
             return simplifyOrthogonalPoints(keyPoints);
         }
         

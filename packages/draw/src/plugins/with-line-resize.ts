@@ -12,7 +12,7 @@ import {
     alignPoints,
     getIndexAndDeleteCountByKeyPoint,
     getResizedPreviousAndNextPoint,
-    hasIllegalPoint
+    hasIllegalElbowPoint
 } from '../utils/line/line-resize';
 import { getConnectionByNearestPoint, getLinePoints } from '../utils/line/line-basic';
 import { getElbowLineRouteOptions } from '../utils/line';
@@ -105,7 +105,7 @@ export const withLineResize = (board: PlaitBoard) => {
                         );
                         let midDataPoints: Point[] = [...points].slice(1, points.length - 1);
                         if (elbowLineIndex !== null && elbowLineDeleteCount !== null) {
-                            if (hasIllegalPoint(midDataPoints)) {
+                            if (hasIllegalElbowPoint(midDataPoints)) {
                                 midDataPoints = [newStartPoint, newEndPoint];
                             }else {
                                 midDataPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
