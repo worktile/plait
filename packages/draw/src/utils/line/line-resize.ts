@@ -339,6 +339,9 @@ function findMirrorSegments(
 }
 
 export const hasIllegalPoint = (midDataPoints: Point[]): boolean => {
+    if (midDataPoints.length === 1) {
+        return true;
+    }
     return midDataPoints.some((item, index) => {
         const beforePoint = midDataPoints[index - 1];
         const afterPoint = midDataPoints[index + 1];
@@ -352,6 +355,6 @@ export const hasIllegalPoint = (midDataPoints: Point[]): boolean => {
         if (index === midDataPoints.length - 1) {
             return !isStraightWithBefore;
         }
-        return !(isStraightWithBefore && isStraightWithAfter);
+        return !isStraightWithBefore && !isStraightWithAfter;
     });
 };
