@@ -19,7 +19,7 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
      * 🟢 : point in the nextRenderPoints
      * 0/1/2...: index of dataPoints or nextRenderPoints
      */
-    describe('the startPoint and endPoint are in the dataPoints', () => {
+    describe('the startPoint or endPoint is in the dataPoints', () => {
         it('both the startPoint and endPoint are in the dataPoints', () => {});
         // move target
         describe('only the startPoint is in the dataPoints', () => {
