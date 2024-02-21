@@ -2619,5 +2619,71 @@ export const mockTurningPointData = [
             [14571.081420898438, 47.97216796875]
         ],
         autoSize: true
+    },
+    {
+        id: 'mbzSs',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '1'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [14223.296875, 764.55908203125],
+            [14293.16796875, 855.10986328125]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'pahmD',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '2'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [14514.34765625, 773.51025390625],
+            [14584.21875, 864.06103515625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'NPYhJ',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [0, 0.5],
+            boundId: 'mbzSs'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [0, 0.5],
+            boundId: 'pahmD'
+        },
+        opacity: 1,
+        points: [
+            [14223.296875, 809.83447265625],
+            [14123.78515625, 818.78564453125],
+            [14123.78515625, 741.51025390625],
+            [14514.34765625, 818.78564453125]
+        ],
+        strokeWidth: 2
     }
 ] as PlaitElement[];
