@@ -73,14 +73,16 @@ export const routeAdjust = (path: Point[], options: RouteAdjustOptions) => {
     return path;
 };
 
-const adjust = (route: Point[], options: AdjustOptions) => {
+const adjust = (route: Point[], options: AdjustOptions): null | Point[] => {
     const { parallelPaths, pointOfHit, sourceRectangle, targetRectangle } = options;
     let result = null;
     parallelPaths.forEach(parallelPath => {
         // Construct a rectangle
-        const tempRect = RectangleClient.getRectangleByPoints([pointOfHit, parallelPath[0], parallelPath[1]]);
+        const tempRectPoints = [pointOfHit, parallelPath[0], parallelPath[1]];
+        // directly use getCornerPoints will bring the precision issue (eg: 263.6923375175286 - 57.130859375)
+        const tempRect = RectangleClient.getRectangleByPoints(tempRectPoints);
         if (!RectangleClient.isHit(tempRect, sourceRectangle) && !RectangleClient.isHit(tempRect, targetRectangle)) {
-            const tempCorners = RectangleClient.getCornerPoints(tempRect);
+            const tempCorners = RectangleClient.getCornerPointsByPoints(tempRectPoints);
             const indexRangeInPath: number[] = [];
             const indexRangeInCorner: number[] = [];
             route.forEach((point, index) => {

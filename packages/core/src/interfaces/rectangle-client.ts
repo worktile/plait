@@ -64,6 +64,20 @@ export const RectangleClient = {
         const rect = { x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin };
         return rect;
     },
+    getCornerPointsByPoints(points: Point[]) {
+        const xArray = points.map(ele => ele[0]);
+        const yArray = points.map(ele => ele[1]);
+        const xMin = Math.min(...xArray);
+        const xMax = Math.max(...xArray);
+        const yMin = Math.min(...yArray);
+        const yMax = Math.max(...yArray);
+        return [
+            [xMin, yMin],
+            [xMax, yMin],
+            [xMax, yMax],
+            [xMin, yMax]
+        ] as [Point, Point, Point, Point];
+    },
     getOutlineRectangle: (rectangle: RectangleClient, offset: number) => {
         return {
             x: rectangle.x + offset,
