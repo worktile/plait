@@ -1,10 +1,4 @@
-import {
-    ElbowLineRouteOptions,
-    ResizeState,
-    generateElbowLineRoute,
-    removeDuplicatePoints,
-    simplifyOrthogonalPoints
-} from '@plait/common';
+import { ElbowLineRouteOptions, ResizeState, generateElbowLineRoute, removeDuplicatePoints, simplifyOrthogonalPoints } from '@plait/common';
 import { PlaitBoard, Point, RectangleClient, drawCircle } from '@plait/core';
 import { LINE_ALIGN_TOLERANCE } from '../../constants/line';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
@@ -220,8 +214,15 @@ const adjustByCustomPointStartIndex = (
     const afterSegment = [endPoint, afterPoint];
     const isStraightWithBefore = Point.isAlign(beforeSegment);
     const isStraightWithAfter = Point.isAlign(afterSegment);
-    const isAdjustStart = !isStraightWithBefore && getMidKeyPoints(nextKeyPoints, beforeSegment[0], beforeSegment[1]).length === 0;
-    const isAdjustEnd = !isStraightWithAfter && getMidKeyPoints(nextKeyPoints, afterSegment[0], afterSegment[1]).length === 0;
+    let isAdjustStart = false;
+    let isAdjustEnd = false;
+    if (!isStraightWithBefore || !isStraightWithAfter) {
+        const midKeyPointsWithBefore = getMidKeyPoints(nextKeyPoints, beforeSegment[0], beforeSegment[1]);
+        const midKeyPointsWithAfter = getMidKeyPoints(nextKeyPoints, afterSegment[0], afterSegment[1]);
+        const hasMidKeyPoints = midKeyPointsWithBefore.length > 0 && midKeyPointsWithAfter.length > 0;
+        isAdjustStart = !isStraightWithBefore && !hasMidKeyPoints;
+        isAdjustEnd = !isStraightWithAfter && !hasMidKeyPoints;
+    }
     if (isAdjustStart || isAdjustEnd) {
         const parallelSegment = [startPoint, endPoint] as [Point, Point];
         const parallelSegments = findOrthogonalParallelSegments(parallelSegment, nextKeyPoints);

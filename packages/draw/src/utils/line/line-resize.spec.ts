@@ -1,6 +1,8 @@
-import { PlaitBoard, Point, createTestingBoard } from '@plait/core';
-import { getIndexAndDeleteCountByKeyPoint } from './line-resize';
+import { PlaitBoard, PlaitElement, Point, createTestingBoard } from '@plait/core';
+import { getIndexAndDeleteCountByKeyPoint, getMirrorDataPoints } from './line-resize';
 import { PlaitLine } from '../../interfaces';
+import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
+import { generateElbowLineRoute, removeDuplicatePoints, simplifyOrthogonalPoints } from '@plait/common';
 
 describe('getIndexAndDeleteCountByKeyPoint', () => {
     let board: PlaitBoard;
@@ -16,14 +18,14 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
      * nextRenderPoints: the points actually rendered
      *
      *
-     * 
+     *
      * Graphic Annotations:
      * ---handle---: resize line
      * 🔴 : point in the dataPoints, only render points with index 1 and 2
      * 🟢 : point in the nextRenderPoints
      * 🟣 : coincident point of dataPoints and nextRenderPoints
      * 0/1/2...: index of dataPoints or nextRenderPoints. In dataPoints, there are only 1 and 2
-     * 
+     *
      */
     describe('the startPoint or endPoint is in the dataPoints', () => {
         it('both the startPoint and endPoint are in the dataPoints', () => {
@@ -389,6 +391,13 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
     });
 });
 
+/*
+ * Graphic Annotations:
+ * 🟠 : point in the nextDataPoints
+ * 🟢 : point in the nextKeyPoints
+ * 🟣 : coincident point of dataPoints and nextKeyPoints
+ * 0/1/2...: index of nextDataPoints or nextKeyPoints.
+ */
 describe('getMirrorDataPoints', () => {
     describe('two custom points', () => {
         it('first custom point exist get mid points', () => {
@@ -672,7 +681,20 @@ describe('getMirrorDataPoints', () => {
                 }
             ];
         });
-        it('first custom point(as endPoint argument in getMidKeyPoints call) align the point of keyPoints', () => {
+        /**
+         *
+         *  nextKeyPoints/nextDataPoints
+         * 0 🟢----------------->🟢 1
+         *                       ｜
+         *                       ｜
+         *                       ｜
+         *              1 🟠    2 🟢----------->🟢 3
+         *                 |
+         *                 |
+         *                 |
+         *              2 🟠
+         */
+        it('first custom point(as the endPoint parameter when calling getMidKeyPoints) align the point of keyPoints', () => {
             const case1 = [
                 {
                     id: 'yDcPf',
@@ -740,7 +762,21 @@ describe('getMirrorDataPoints', () => {
                     ],
                     strokeWidth: 2
                 }
-            ];
+            ] as PlaitElement[];
+            const argumentsOfCase1 = fakeGetMirrorDataPointsArguments(case1, case1[2] as PlaitLine);
+            const mirrorDataPointsOfCase1 = getMirrorDataPoints(
+                argumentsOfCase1.board,
+                argumentsOfCase1.nextDataPoints,
+                argumentsOfCase1.nextKeyPoints,
+                argumentsOfCase1.params
+            );
+            const correctMirrorDataPointsOfCase1 = [
+                [749.3426513671875, -251.4306640625],
+                [829.2276611328125, -251.4306640625],
+                [829.2276611328125, -148.5517578125],
+                [1022.4017333984375, -148.5517578125]
+            ] as Point[];
+            verifyMirrorDataPoints(correctMirrorDataPointsOfCase1, mirrorDataPointsOfCase1);
             // opposite of case1
             const case2 = [
                 {
@@ -806,6 +842,74 @@ describe('getMirrorDataPoints', () => {
                         [811.662353515625, 100.8173828125],
                         [811.662353515625, 208.2861328125],
                         [659.06640625, 100.8173828125]
+                    ],
+                    strokeWidth: 2
+                }
+            ];
+            const case3 = [
+                {
+                    id: 'NsZDk',
+                    type: 'geometry',
+                    shape: 'rectangle',
+                    angle: 0,
+                    opacity: 1,
+                    textHeight: 20,
+                    text: {
+                        children: [
+                            {
+                                text: '1'
+                            }
+                        ],
+                        align: 'center'
+                    },
+                    points: [
+                        [1355.9581298828125, -291.78515625],
+                        [1425.8292236328125, -201.234375]
+                    ],
+                    strokeWidth: 2
+                },
+                {
+                    id: 'ZhfWz',
+                    type: 'geometry',
+                    shape: 'rectangle',
+                    angle: 0,
+                    opacity: 1,
+                    textHeight: 20,
+                    text: {
+                        children: [
+                            {
+                                text: '2'
+                            }
+                        ],
+                        align: 'center'
+                    },
+                    points: [
+                        [1647.0089111328125, -282.833984375],
+                        [1716.8800048828125, -192.283203125]
+                    ],
+                    strokeWidth: 2
+                },
+                {
+                    id: 'WNkHc',
+                    type: 'line',
+                    shape: 'elbow',
+                    source: {
+                        marker: 'none',
+                        connection: [0, 0.5],
+                        boundId: 'NsZDk'
+                    },
+                    texts: [],
+                    target: {
+                        marker: 'arrow',
+                        connection: [0, 0.5],
+                        boundId: 'ZhfWz'
+                    },
+                    opacity: 1,
+                    points: [
+                        [1344.0948486328125, -237.55859375],
+                        [1256.4464111328125, -237.55859375],
+                        [1256.4464111328125, -314.833984375],
+                        [1645.0089111328125, -253.96875]
                     ],
                     strokeWidth: 2
                 }
@@ -1154,3 +1258,22 @@ describe('getMirrorDataPoints', () => {
         });
     });
 });
+
+function fakeGetMirrorDataPointsArguments(data: PlaitElement[], line: PlaitLine) {
+    const board = createTestingBoard([], data);
+    const handleRefPair = getLineHandleRefPair(board, line);
+    const params = getElbowLineRouteOptions(board, line, handleRefPair);
+    const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
+    const nextKeyPoints = keyPoints.slice(1, keyPoints.length - 1);
+    const simplifiedNextKeyPoints = simplifyOrthogonalPoints(nextKeyPoints);
+    const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, line));
+    const midDataPoints = dataPoints.slice(1, -1);
+    const nextDataPoints = [simplifiedNextKeyPoints[0], ...midDataPoints, simplifiedNextKeyPoints[simplifiedNextKeyPoints.length - 1]];
+    return { board, nextDataPoints, nextKeyPoints: simplifiedNextKeyPoints, params };
+}
+
+function verifyMirrorDataPoints(except: Point[], actual: Point[]) {
+    except.forEach((e, index) => {
+        expect(Point.isEquals(e, actual[index])).toEqual(true);
+    });
+}
