@@ -37,10 +37,10 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
              *
              */
             const dataPoints: Point[] = [
-                [0, 5],
+                [0, 1],
                 [1, 5],
                 [1, 8],
-                [2, 8]
+                [2, 10]
             ];
             const nextRenderPoints: Point[] = [
                 [0, 5],
@@ -71,10 +71,10 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
                  *
                  */
                 const dataPoints: Point[] = [
-                    [0, 5],
+                    [0, 1],
                     [1, 5],
                     [1, 2],
-                    [2, 8]
+                    [2, 10]
                 ];
                 const nextRenderPoints: Point[] = [
                     [0, 5],
@@ -108,10 +108,10 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
                  *
                  */
                 const dataPoints: Point[] = [
-                    [0, 5],
+                    [0, 1],
                     [1, 5],
                     [1, 2],
-                    [2, 6]
+                    [2, 10]
                 ];
                 const nextRenderPoints: Point[] = [
                     [0, 5],
@@ -151,10 +151,10 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
                  *
                  */
                 const dataPoints: Point[] = [
-                    [0, 5],
+                    [0, 1],
                     [1, 2],
                     [1, 8],
-                    [2, 8]
+                    [2, 10]
                 ];
                 const nextRenderPoints: Point[] = [
                     [0, 5],
@@ -188,10 +188,10 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
                  *
                  */
                 const dataPoints: Point[] = [
-                    [0, 5],
+                    [0, 1],
                     [1, 2],
                     [1, 6],
-                    [2, 6]
+                    [2, 10]
                 ];
                 const nextRenderPoints: Point[] = [
                     [0, 5],
@@ -236,10 +236,10 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
                  *                <------🟢 4
                  */
                 const dataPoints: Point[] = [
-                    [0, 5],
+                    [0, 1],
                     [1, 1],
                     [1, 2],
-                    [3, 8]
+                    [3, 5]
                 ];
                 const nextRenderPoints: Point[] = [
                     [0, 5],
@@ -277,10 +277,10 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
                  *                <------🟢 4
                  */
                 const dataPoints: Point[] = [
-                    [0, 5],
+                    [0, 1],
                     [1, 1],
                     [1, 2],
-                    [3, 8]
+                    [3, 5]
                 ];
                 const nextRenderPoints: Point[] = [
                     [0, 5],
@@ -318,10 +318,10 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
                  *                <------🟢 4
                  */
                 const dataPoints: Point[] = [
-                    [0, 5],
+                    [0, 1],
                     [3, 1],
                     [3, 2],
-                    [3, 8]
+                    [3, 5]
                 ];
                 const nextRenderPoints: Point[] = [
                     [0, 5],
@@ -358,8 +358,8 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
                  *
                  */
                 const dataPoints: Point[] = [
-                    [0, 5],
-                    [3, 7]
+                    [0, 1],
+                    [3, 5]
                 ];
                 const nextRenderPoints: Point[] = [
                     [0, 5],
