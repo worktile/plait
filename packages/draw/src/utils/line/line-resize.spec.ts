@@ -1,112 +1,395 @@
-import { Point } from '@plait/core';
+import { PlaitBoard, Point, createTestingBoard } from '@plait/core';
 import { getIndexAndDeleteCountByKeyPoint } from './line-resize';
+import { PlaitLine } from '../../interfaces';
 
-// describe('getIndexAndDeleteCountByKeyPoint', () => {
-//     describe('both the startPoint and endPoint are not on the elbow line segment', () => {
-//         it('both the startPoint and endPoint is on the same line as the dataPoints', () => {
-//             /**
-//              * dataPoints
-//              * 0 🔴<------
-//              *   ｜
-//              *   ｜
-//              * 1 🔴------------>
-//              *
-//              *  nextKeyPoints
-//              * 1 🟢<----🟢 0
-//              *   ｜
-//              * handle
-//              *   ｜
-//              * 2 🟢----------------->🟢 3
-//              *                       ｜
-//              *                       ｜
-//              *                <------🟢 4
-//              */
-//             const dataPoints: Point[] = [
-//                 [1, 1],
-//                 [1, 2]
-//             ];
-//             const nextKeyPoints: Point[] = [
-//                 [0, 5],
-//                 [1, 5],
-//                 [1, 7],
-//                 [3, 7],
-//                 [3, 8]
-//             ];
-//             const handleIndex = 1;
-//             const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(dataPoints, nextKeyPoints, handleIndex);
-//             expect(index).toBe(0);
-//             expect(deleteCount).toBe(2);
-//         });
-//         it('only the startPoint is on the same line as the dataPoints', () => {
-//             /**
-//              * dataPoints
-//              * 0 🔴<----
-//              *   ｜
-//              *   ｜
-//              * 1 🔴 ---------->
-//              *
-//              *  nextKeyPoints
-//              * 1 🟢<----🟢 0
-//              *   ｜
-//              *   ｜
-//              * 2 🟢-----handle------>🟢 3
-//              *                       ｜
-//              *                       ｜
-//              *                <------🟢 4
-//              */
-//             const dataPoints: Point[] = [
-//                 [1, 1],
-//                 [1, 2]
-//             ];
-//             const nextKeyPoints: Point[] = [
-//                 [0, 5],
-//                 [1, 5],
-//                 [1, 7],
-//                 [3, 7],
-//                 [3, 8]
-//             ];
-//             const handleIndex = 2;
-//             const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(dataPoints, nextKeyPoints, handleIndex);
-//             expect(index).toBe(1);
-//             expect(deleteCount).toBe(1);
-//         });
-//         it('only the endPoint is on the same line as the dataPoints', () => {
-//             /**
-//              *                      dataPoints
-//              *              -------->🔴 0
-//              *                       ｜
-//              *                       ｜
-//              *                <------🔴 1
-//              *
-//              *  nextKeyPoints
-//              * 1 🟢<----🟢 0
-//              *   ｜
-//              *   ｜
-//              * 2 🟢-----handle------>🟢 3
-//              *                       ｜
-//              *                       ｜
-//              *                <------🟢 4
-//              */
-//             const dataPoints: Point[] = [
-//                 [3, 1],
-//                 [3, 2]
-//             ];
-//             const nextKeyPoints: Point[] = [
-//                 [0, 5],
-//                 [1, 5],
-//                 [1, 7],
-//                 [3, 7],
-//                 [3, 8]
-//             ];
-//             const handleIndex = 2;
-//             const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(dataPoints, nextKeyPoints, handleIndex);
-//             expect(index).toBe(0);
-//             expect(deleteCount).toBe(1);
-//         });
-//     });
-// });
+describe('getIndexAndDeleteCountByKeyPoint', () => {
+    let board: PlaitBoard;
+    let resizeLine: PlaitLine;
+    beforeEach(() => {
+        board = createTestingBoard([], []);
+    });
+    /*
+     * Annotations:
+     * startPoint: the start point of the resize line in the nextRenderPoints
+     * endPoint: the end point of the resize line in the nextRenderPoints
+     * dataPoints: the points in the data
+     * nextRenderPoints: the points actually rendered
+     *
+     *
+     * 
+     * Graphic Annotations:
+     * ---handle---: resize line
+     * 🔴 : point in the dataPoints, only render points with index 1 and 2
+     * 🟢 : point in the nextRenderPoints
+     * 🟣 : coincident point of dataPoints and nextRenderPoints
+     * 0/1/2...: index of dataPoints or nextRenderPoints. In dataPoints, there are only 1 and 2
+     * 
+     */
+    describe('the startPoint or endPoint is in the dataPoints', () => {
+        it('both the startPoint and endPoint are in the dataPoints', () => {
+            /**
+             * dataPoints / nextRenderPoints
+             *          2 🟣-------->🟢 3
+             *            ｜
+             *          handle
+             *            ｜
+             * 0 🟢------>🟣 1
+             *
+             */
+            const dataPoints: Point[] = [
+                [0, 1],
+                [1, 5],
+                [1, 8],
+                [2, 10]
+            ];
+            const nextRenderPoints: Point[] = [
+                [0, 5],
+                [1, 5],
+                [1, 8],
+                [2, 8]
+            ];
+            const handleIndex = 1;
+            const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(board, resizeLine, dataPoints, nextRenderPoints, handleIndex);
+            expect(index).toBe(0);
+            expect(deleteCount).toBe(2);
+        });
+        // move target
+        describe('only the startPoint is in the dataPoints', () => {
+            it('the startPoint and endPoint are align with relation points in dataPoints', () => {
+                /**
+                 * dataPoints / nextRenderPoints
+                 *
+                 *            2           3
+                 *            🟢--------->🟢
+                 *            ｜
+                 *          handle
+                 *            ｜
+                 * 0 🟢------>🟣 1
+                 *            ｜
+                 *            ｜
+                 *            🔴 2
+                 *
+                 */
+                const dataPoints: Point[] = [
+                    [0, 1],
+                    [1, 5],
+                    [1, 2],
+                    [2, 10]
+                ];
+                const nextRenderPoints: Point[] = [
+                    [0, 5],
+                    [1, 5],
+                    [1, 8],
+                    [2, 8]
+                ];
+                const handleIndex = 1;
+                const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(
+                    board,
+                    resizeLine,
+                    dataPoints,
+                    nextRenderPoints,
+                    handleIndex
+                );
+                expect(index).toBe(0);
+                expect(deleteCount).toBe(2);
+            });
+            it('the startPoint or endPoint is not align with relation points in dataPoints', () => {
+                /**
+                 * dataPoints / nextRenderPoints
+                 *
+                 *            2              3
+                 *            🟢---handle--->🟢
+                 *            ｜             ｜
+                 *            ｜           4 🟢----->
+                 * 0 🟢------>🟣 1
+                 *            ｜
+                 *            ｜
+                 *            🔴 2
+                 *
+                 */
+                const dataPoints: Point[] = [
+                    [0, 1],
+                    [1, 5],
+                    [1, 2],
+                    [2, 10]
+                ];
+                const nextRenderPoints: Point[] = [
+                    [0, 5],
+                    [1, 5],
+                    [1, 8],
+                    [2, 8],
+                    [2, 6]
+                ];
+                const handleIndex = 2;
+                const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(
+                    board,
+                    resizeLine,
+                    dataPoints,
+                    nextRenderPoints,
+                    handleIndex
+                );
+                expect(index).toBe(1);
+                expect(deleteCount).toBe(1);
+            });
+        });
 
-fdescribe('getMirrorDataPoints', () => {
+        // move source
+        describe('only the endPoint is in the dataPoints', () => {
+            it('the startPoint and endPoint are align with relation points in dataPoints', () => {
+                /**
+                 * dataPoints / nextRenderPoints
+                 *
+                 *            2           3
+                 *            🟣--------->🟢
+                 *            ｜
+                 *          handle
+                 *            ｜
+                 * 0 🟢------>🟢 1
+                 *            ｜
+                 *            ｜
+                 *            🔴 1
+                 *
+                 */
+                const dataPoints: Point[] = [
+                    [0, 1],
+                    [1, 2],
+                    [1, 8],
+                    [2, 10]
+                ];
+                const nextRenderPoints: Point[] = [
+                    [0, 5],
+                    [1, 5],
+                    [1, 8],
+                    [2, 8]
+                ];
+                const handleIndex = 1;
+                const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(
+                    board,
+                    resizeLine,
+                    dataPoints,
+                    nextRenderPoints,
+                    handleIndex
+                );
+                expect(index).toBe(0);
+                expect(deleteCount).toBe(2);
+            });
+            it('the startPoint or endPoint is not align with relation points in dataPoints', () => {
+                /**
+                 * dataPoints / nextRenderPoints
+                 *
+                 *            2                3
+                 *            🟣----handle---->🟢
+                 *            ｜               ｜
+                 *            ｜             4 🟢--->
+                 * 0 🟢------>🟢 1
+                 *            ｜
+                 *            ｜
+                 *            🔴 1
+                 *
+                 */
+                const dataPoints: Point[] = [
+                    [0, 1],
+                    [1, 2],
+                    [1, 6],
+                    [2, 10]
+                ];
+                const nextRenderPoints: Point[] = [
+                    [0, 5],
+                    [1, 5],
+                    [1, 8],
+                    [2, 8],
+                    [2, 6]
+                ];
+                const handleIndex = 2;
+                const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(
+                    board,
+                    resizeLine,
+                    dataPoints,
+                    nextRenderPoints,
+                    handleIndex
+                );
+                expect(index).toBe(1);
+                expect(deleteCount).toBe(1);
+            });
+        });
+    });
+
+    // move source and target
+    describe('the startPoint and endPoint are not in the dataPoints', () => {
+        describe('there are relation points on dataPoints with the startPoint and endPoint', () => {
+            it('both the startPoint and endPoint are align with relation points in dataPoints', () => {
+                /**
+                 * dataPoints
+                 * 1 🔴<------
+                 *   ｜
+                 *   ｜
+                 * 2 🔴------------>
+                 *
+                 *  nextRenderPoints
+                 * 1 🟢<----🟢 0
+                 *   ｜
+                 * handle
+                 *   ｜
+                 * 2 🟢----------------->🟢 3
+                 *                       ｜
+                 *                       ｜
+                 *                <------🟢 4
+                 */
+                const dataPoints: Point[] = [
+                    [0, 1],
+                    [1, 1],
+                    [1, 2],
+                    [3, 5]
+                ];
+                const nextRenderPoints: Point[] = [
+                    [0, 5],
+                    [1, 5],
+                    [1, 7],
+                    [3, 7],
+                    [3, 8]
+                ];
+                const handleIndex = 1;
+                const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(
+                    board,
+                    resizeLine,
+                    dataPoints,
+                    nextRenderPoints,
+                    handleIndex
+                );
+                expect(index).toBe(0);
+                expect(deleteCount).toBe(2);
+            });
+            it('only the startPoint is align with relation points in dataPoints', () => {
+                /**
+                 * dataPoints
+                 * 1 🔴<----
+                 *   ｜
+                 *   ｜
+                 * 2 🔴 ---------->
+                 *
+                 *  nextRenderPoints
+                 * 1 🟢<----🟢 0
+                 *   ｜
+                 *   ｜
+                 * 2 🟢-----handle------>🟢 3
+                 *                       ｜
+                 *                       ｜
+                 *                <------🟢 4
+                 */
+                const dataPoints: Point[] = [
+                    [0, 1],
+                    [1, 1],
+                    [1, 2],
+                    [3, 5]
+                ];
+                const nextRenderPoints: Point[] = [
+                    [0, 5],
+                    [1, 5],
+                    [1, 7],
+                    [3, 7],
+                    [3, 8]
+                ];
+                const handleIndex = 2;
+                const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(
+                    board,
+                    resizeLine,
+                    dataPoints,
+                    nextRenderPoints,
+                    handleIndex
+                );
+                expect(index).toBe(1);
+                expect(deleteCount).toBe(1);
+            });
+            it('only the endPoint is align with relation points in dataPoints', () => {
+                /**
+                 *                      dataPoints
+                 *              -------->🔴 1
+                 *                       ｜
+                 *                       ｜
+                 *                <------🔴 2
+                 *
+                 *  nextRenderPoints
+                 * 1 🟢<----🟢 0
+                 *   ｜
+                 *   ｜
+                 * 2 🟢-----handle------>🟢 3
+                 *                       ｜
+                 *                       ｜
+                 *                <------🟢 4
+                 */
+                const dataPoints: Point[] = [
+                    [0, 1],
+                    [3, 1],
+                    [3, 2],
+                    [3, 5]
+                ];
+                const nextRenderPoints: Point[] = [
+                    [0, 5],
+                    [1, 5],
+                    [1, 7],
+                    [3, 7],
+                    [3, 8]
+                ];
+                const handleIndex = 2;
+                const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(
+                    board,
+                    resizeLine,
+                    dataPoints,
+                    nextRenderPoints,
+                    handleIndex
+                );
+                expect(index).toBe(0);
+                expect(deleteCount).toBe(1);
+            });
+        });
+
+        describe('there are not relation points on dataPoints with the startPoint and endPoint', () => {
+            it('custom resize points not exist', () => {
+                /**
+                 *  dataPoints
+                 *
+                 *
+                 *  nextRenderPoints
+                 * 1 🟢<----🟢 0
+                 *   ｜
+                 * handle
+                 *   ｜
+                 * 2 🟢----------->🟢 3
+                 *
+                 */
+                const dataPoints: Point[] = [
+                    [0, 1],
+                    [3, 5]
+                ];
+                const nextRenderPoints: Point[] = [
+                    [0, 5],
+                    [1, 5],
+                    [1, 7],
+                    [3, 7]
+                ];
+                const handleIndex = 1;
+                const { index, deleteCount } = getIndexAndDeleteCountByKeyPoint(
+                    board,
+                    resizeLine,
+                    dataPoints,
+                    nextRenderPoints,
+                    handleIndex
+                );
+                expect(index).toBe(0);
+                expect(deleteCount).toBe(0);
+            });
+            describe('custom resize points exist', () => {
+                it('in dataPoints, the relation points for the previous point can be found.', () => {});
+                describe('in dataPoints, the relation points for the previous point can not be found.', () => {
+                    it('nextRenderPoints is a straight line', () => {});
+                    it('nextRenderPoints is not a straight line', () => {});
+                });
+            });
+        });
+    });
+});
+
+describe('getMirrorDataPoints', () => {
     describe('two custom points', () => {
         it('first custom point exist get mid points', () => {
             const data = [

@@ -1,7 +1,5 @@
 import {
     ElbowLineRouteOptions,
-    PRIMARY_COLOR,
-    RESIZE_HANDLE_DIAMETER,
     ResizeState,
     generateElbowLineRoute,
     removeDuplicatePoints,
