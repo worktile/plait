@@ -11,6 +11,7 @@ import {
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getCrossingPointBetweenPointAndPolygon, getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
+import { setTransformRotate } from '../../../../core/src/utils/dom';
 
 export interface CreateOptions {
     getPolygonPoints: (rectangle: RectangleClient) => Point[];
@@ -26,6 +27,7 @@ export function createPolygonEngine(options: CreateOptions): ShapeEngine {
             const rs = PlaitBoard.getRoughSVG(board);
             const polygon = rs.polygon(points, { ...options, fillStyle: 'solid' });
             setStrokeLinecap(polygon, 'round');
+            setTransformRotate(polygon, rectangle, options.angle || 0);
             return polygon;
         },
         isHit(rectangle: RectangleClient, point: Point) {

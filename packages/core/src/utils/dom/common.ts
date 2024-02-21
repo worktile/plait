@@ -31,6 +31,26 @@ export const setStrokeLinecap = (g: SVGGElement, value: 'round' | 'square') => {
     g.setAttribute('stroke-linecap', value);
 };
 
+export const setTransformRotate = (g: SVGGElement, rectangle: RectangleClient, angle: number) => {
+    var centerX = rectangle.x + rectangle.width / 2;
+    var centerY = rectangle.y + rectangle.height / 2;
+
+    let cosTheta = Math.cos(angle);
+    let sinTheta = Math.sin(angle);
+
+    let transformMatrix = [
+        cosTheta,
+        sinTheta,
+        -sinTheta,
+        cosTheta,
+        centerX * (1 - cosTheta) + centerY * sinTheta,
+        centerY * (1 - cosTheta) - centerX * sinTheta
+    ];
+
+    let matrix = 'matrix(' + transformMatrix.join(',') + ')';
+    g.setAttribute('transform', `${matrix}`);
+};
+
 export const setPathStrokeLinecap = (g: SVGGElement, value: 'round' | 'square') => {
     g.querySelectorAll('path').forEach(path => {
         path.setAttribute('stroke-linecap', value);

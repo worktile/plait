@@ -3,7 +3,7 @@ import { RoughSVG } from 'roughjs/bin/svg';
 import { MAX_RADIUS } from '../../constants';
 import { PlaitBoard } from '../../interfaces/board';
 import { RectangleClient } from '../../interfaces/rectangle-client';
-import { setStrokeLinecap } from '../dom/common';
+import { setStrokeLinecap, setTransformRotate } from '../dom/common';
 
 /**
  * drawRoundRectangle
@@ -49,5 +49,6 @@ export const drawRectangle = (board: PlaitBoard, rectangle: RectangleClient, opt
     const roughSVG = PlaitBoard.getRoughSVG(board);
     const rectangleG = roughSVG.rectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height, options);
     setStrokeLinecap(rectangleG, 'round');
+    setTransformRotate(rectangleG, rectangle, options.angle || 0);
     return rectangleG;
 };

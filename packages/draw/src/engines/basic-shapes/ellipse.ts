@@ -1,13 +1,24 @@
-import { PlaitBoard, Point, PointOfRectangle, RectangleClient, getEllipseTangentSlope, getVectorFromPointAndSlope, isPointInEllipse } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    PointOfRectangle,
+    RectangleClient,
+    getEllipseTangentSlope,
+    getVectorFromPointAndSlope,
+    isPointInEllipse
+} from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getTextRectangle } from '../../utils';
+import { setTransformRotate } from '../../../../core/src/utils/dom';
 
 export const EllipseEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const centerPoint = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
         const rs = PlaitBoard.getRoughSVG(board);
-        return rs.ellipse(centerPoint[0], centerPoint[1], rectangle.width, rectangle.height, { ...options, fillStyle: 'solid' });
+        const ellipseG = rs.ellipse(centerPoint[0], centerPoint[1], rectangle.width, rectangle.height, { ...options, fillStyle: 'solid' });
+        setTransformRotate(ellipseG, rectangle, options.angle || 0);
+        return ellipseG;
     },
     isHit(rectangle: RectangleClient, point: Point) {
         const centerPoint: Point = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
