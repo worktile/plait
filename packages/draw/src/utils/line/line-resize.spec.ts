@@ -672,6 +672,145 @@ describe('getMirrorDataPoints', () => {
                 }
             ];
         });
+        it('first custom point(as endPoint argument in getMidKeyPoints call) align the point of keyPoints', () => {
+            const case1 = [
+                {
+                    id: 'yDcPf',
+                    type: 'geometry',
+                    shape: 'rectangle',
+                    angle: 0,
+                    opacity: 1,
+                    textHeight: 20,
+                    text: {
+                        children: [
+                            {
+                                text: '1'
+                            }
+                        ],
+                        align: 'center'
+                    },
+                    points: [
+                        [613.2762451171875, -316.4130859375],
+                        [717.3426513671875, -186.4482421875]
+                    ],
+                    strokeWidth: 2
+                },
+                {
+                    id: 'bmssB',
+                    type: 'geometry',
+                    shape: 'rectangle',
+                    angle: 0,
+                    opacity: 1,
+                    textHeight: 20,
+                    text: {
+                        children: [
+                            {
+                                text: '2'
+                            }
+                        ],
+                        align: 'center'
+                    },
+                    points: [
+                        [1054.4017333984375, -213.5341796875],
+                        [1158.4681396484375, -83.5693359375]
+                    ],
+                    strokeWidth: 2
+                },
+                {
+                    id: 'PWReA',
+                    type: 'line',
+                    shape: 'elbow',
+                    source: {
+                        marker: 'none',
+                        connection: [1, 0.5],
+                        boundId: 'yDcPf'
+                    },
+                    texts: [],
+                    target: {
+                        marker: 'arrow',
+                        connection: [0, 0.5],
+                        boundId: 'bmssB'
+                    },
+                    opacity: 1,
+                    points: [
+                        [717.3426513671875, -251.4306640625],
+                        [829.2276611328125, -148.5517578125],
+                        [829.2276611328125, -45.0498046875],
+                        [1054.4017333984375, -148.5517578125]
+                    ],
+                    strokeWidth: 2
+                }
+            ];
+            // opposite of case1
+            const case2 = [
+                {
+                    id: 'ErBNz',
+                    type: 'geometry',
+                    shape: 'rectangle',
+                    angle: 0,
+                    opacity: 1,
+                    textHeight: 20,
+                    text: {
+                        children: [
+                            {
+                                text: '1'
+                            }
+                        ],
+                        align: 'center'
+                    },
+                    points: [
+                        [1113.57470703125, 145.6826171875],
+                        [1217.64111328125, 275.6474609375]
+                    ],
+                    strokeWidth: 2
+                },
+                {
+                    id: 'EspJZ',
+                    type: 'geometry',
+                    shape: 'rectangle',
+                    angle: 0,
+                    opacity: 1,
+                    textHeight: 20,
+                    text: {
+                        children: [
+                            {
+                                text: '2'
+                            }
+                        ],
+                        align: 'center'
+                    },
+                    points: [
+                        [555, 35.8349609375],
+                        [659.06640625, 165.7998046875]
+                    ],
+                    strokeWidth: 2
+                },
+                {
+                    id: 'RCHsH',
+                    type: 'line',
+                    shape: 'elbow',
+                    source: {
+                        marker: 'none',
+                        connection: [0, 0.5],
+                        boundId: 'ErBNz'
+                    },
+                    texts: [],
+                    target: {
+                        marker: 'arrow',
+                        connection: [1, 0.5],
+                        boundId: 'EspJZ'
+                    },
+                    opacity: 1,
+                    points: [
+                        [1113.57470703125, 210.6650390625],
+                        [811.662353515625, 100.8173828125],
+                        [811.662353515625, 208.2861328125],
+                        [659.06640625, 100.8173828125]
+                    ],
+                    strokeWidth: 2
+                }
+            ];
+        });
         describe('exist multiple parallel segments', () => {
             it('parallel is out of boundary of rectangle of source and target', () => {
                 const data = [

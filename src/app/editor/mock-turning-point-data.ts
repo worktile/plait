@@ -2150,5 +2150,474 @@ export const mockTurningPointData = [
             [11386.34765625, -245.09814453125]
         ],
         strokeWidth: 2
+    },
+    {
+        id: 'ANiSi',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '1'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [14158.561401367188, 93.05908203125],
+            [14262.627807617188, 223.02392578125]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'CmtTa',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '2'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [14599.686889648438, 195.93798828125],
+            [14703.753295898438, 325.90283203125]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'cWCFP',
+        type: 'geometry',
+        shape: 'ellipse',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [14279.615478515625, 152.90283203125],
+            [14290.916259765625, 164.20361328125]
+        ],
+        strokeWidth: 2,
+        fill: '#333333',
+        strokeColor: '#1e1e1e'
+    },
+    {
+        id: 'TsmfH',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: 'startPoint'
+                }
+            ]
+        },
+        points: [
+            [14281.705322265625, 118.87158203125],
+            [14353.228759765625, 138.87158203125]
+        ],
+        autoSize: true
+    },
+    {
+        id: 'KyBpt',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: 'endPoint',
+                    color: '#f08c02'
+                }
+            ]
+        },
+        points: [
+            [14319.611572265625, 268.43017578125],
+            [14384.986572265625, 288.43017578125]
+        ],
+        autoSize: true,
+        strokeColor: '#f08c02',
+        fill: '#e48483'
+    },
+    {
+        id: 'DESQD',
+        type: 'geometry',
+        shape: 'ellipse',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [14425.955322265625, 153.44189453125],
+            [14437.256103515625, 164.74267578125]
+        ],
+        strokeWidth: 2,
+        fill: '#e48483',
+        strokeColor: '#e03130'
+    },
+    {
+        id: 'jxQnz',
+        type: 'geometry',
+        shape: 'ellipse',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [14425.955322265625, 254.44189453125],
+            [14437.256103515625, 265.74267578125]
+        ],
+        strokeWidth: 2,
+        fill: '#e48483',
+        strokeColor: '#e03130'
+    },
+    {
+        id: 'QyCey',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: 'startPointIndex = 1',
+                    color: '#e03130'
+                }
+            ]
+        },
+        points: [
+            [14439.170166015625, 138.87158203125],
+            [14568.342041015625, 158.87158203125]
+        ],
+        autoSize: true,
+        strokeColor: '#f08c02',
+        fill: '#e48483'
+    },
+    {
+        id: 'taQzf',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: 'endPointIndex = 2',
+                    color: '#e03130'
+                }
+            ]
+        },
+        points: [
+            [14439.170166015625, 237.74658203125],
+            [14564.982666015625, 257.74658203125]
+        ],
+        autoSize: true,
+        strokeColor: '#f08c02',
+        fill: '#e48483'
+    },
+    {
+        id: 'rMDrt',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '1'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [14658.85986328125, 555.15478515625],
+            [14762.92626953125, 685.11962890625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'ckGNQ',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: '2'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [14100.28515625, 445.30712890625],
+            [14204.3515625, 575.27197265625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'XPTXF',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: 'endPoint',
+                    color: '#f08c02'
+                }
+            ]
+        },
+        points: [
+            [14324.390014648438, 474.71240234375],
+            [14389.765014648438, 494.71240234375]
+        ],
+        autoSize: true,
+        strokeColor: '#f08c02',
+        fill: '#e48483'
+    },
+    {
+        id: 'Qpsfd',
+        type: 'geometry',
+        shape: 'ellipse',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [14613.218139648438, 613.70068359375],
+            [14624.518920898438, 625.00146484375]
+        ],
+        strokeWidth: 2,
+        fill: '#333333',
+        strokeColor: '#1e1e1e'
+    },
+    {
+        id: 'cRXpR',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: 'startPoint'
+                }
+            ]
+        },
+        points: [
+            [14579.106811523438, 584.54443359375],
+            [14650.630249023438, 604.54443359375]
+        ],
+        autoSize: true
+    },
+    {
+        id: 'KfWSb',
+        type: 'geometry',
+        shape: 'ellipse',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [14426.679077148438, 614.01708984375],
+            [14437.979858398438, 625.31787109375]
+        ],
+        strokeWidth: 2,
+        fill: '#e48483',
+        strokeColor: '#e03130'
+    },
+    {
+        id: 'WTYdp',
+        type: 'geometry',
+        shape: 'ellipse',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [14425.679077148438, 505.01708984375],
+            [14436.979858398438, 516.31787109375]
+        ],
+        strokeWidth: 2,
+        fill: '#e48483',
+        strokeColor: '#e03130'
+    },
+    {
+        id: 'CmSDN',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: 'startPointIndex = 1',
+                    color: '#e03130'
+                }
+            ]
+        },
+        points: [
+            [14439.893920898438, 599.44677734375],
+            [14569.065795898438, 619.44677734375]
+        ],
+        autoSize: true,
+        strokeColor: '#f08c02',
+        fill: '#e48483'
+    },
+    {
+        id: 'KynGb',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: 'endPointIndex = 2',
+                    color: '#e03130'
+                }
+            ]
+        },
+        points: [
+            [14438.893920898438, 488.32177734375],
+            [14564.706420898438, 508.32177734375]
+        ],
+        autoSize: true,
+        strokeColor: '#f08c02',
+        fill: '#e48483'
+    },
+    {
+        id: 'KkRYt',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [1, 0.5],
+            boundId: 'ANiSi'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [0, 0.5],
+            boundId: 'CmtTa'
+        },
+        opacity: 1,
+        points: [
+            [14262.627807617188, 158.04150390625],
+            [14374.512817382812, 260.92041015625],
+            [14374.512817382812, 364.42236328125],
+            [14599.686889648438, 260.92041015625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'DEdxZ',
+        type: 'line',
+        shape: 'elbow',
+        source: {
+            marker: 'none',
+            connection: [0, 0.5],
+            boundId: 'rMDrt'
+        },
+        texts: [],
+        target: {
+            marker: 'arrow',
+            connection: [1, 0.5],
+            boundId: 'ckGNQ'
+        },
+        opacity: 1,
+        points: [
+            [14658.85986328125, 620.13720703125],
+            [14356.947509765625, 510.28955078125],
+            [14356.947509765625, 617.75830078125],
+            [14204.3515625, 510.28955078125]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'KKbYs',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 22.5,
+        text: {
+            children: [
+                {
+                    text: 'getMidKeyPoints 查找导致的异常',
+                    'font-size': 15
+                }
+            ]
+        },
+        points: [
+            [14335.050476074219, 25.47216796875],
+            [14571.081420898438, 47.97216796875]
+        ],
+        autoSize: true
     }
 ] as PlaitElement[];
