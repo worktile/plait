@@ -41,7 +41,7 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
     const sourceElement = lineElement && lineElement.source.boundId && getElementById<PlaitGeometry>(board, lineElement.source.boundId);
     const targetElement = lineElement && lineElement.target.boundId && getElementById<PlaitGeometry>(board, lineElement.target.boundId);
     if (lineElement && sourceElement && targetElement && handleRefPair) {
-        // 1、准备数据：源/目标 Rectangle
+        // 1、Prepare Data: source, target Rectangle
         const targetRectangle = RectangleClient.inflate(
             RectangleClient.getRectangleByPoints(targetElement.points),
             getStrokeWidthByElement(targetElement) * 2
@@ -61,7 +61,7 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
 
         const sourcePoint = handleRefPair.source.point;
         const targetPoint = handleRefPair.target.point;
-        // 1、准备数据：源、目标外围 Rectangle
+        // 1、Prepare data: source, target outer Rectangle
         const { sourceOffset, targetOffset } = reduceRouteMargin(sourceRectangle, targetRectangle);
         const sourceOuterRectangle = RectangleClient.expand(
             sourceRectangle,
@@ -128,7 +128,17 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
         };
         const isIntersect = isSourceAndTargetIntersect(options);
         if (!isIntersect) {
-            // 2、构造连通点
+            const options = {
+                sourcePoint,
+                nextSourcePoint,
+                sourceRectangle,
+                sourceOuterRectangle,
+                targetPoint,
+                nextTargetPoint,
+                targetRectangle,
+                targetOuterRectangle
+            };
+            // 2、Construct connected points
             const points = getGraphPoints(options);
             points.forEach(p => {
                 const controlPointG = rough.circle(p[0], p[1], 4, {
@@ -138,10 +148,10 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
                 });
                 g?.append(controlPointG);
             });
-            // 3、构造图结构
+            // 3、Construct graph structure
             const graph = createGraph(points);
 
-            // 获取 graph edges
+            // Get graph edges
             const edges: [Point, Point][] = [];
             const frontier = new PriorityQueue();
             const startNode = graph.get(nextSourcePoint);
@@ -168,7 +178,7 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
                     }
                 });
             }
-            // 图 edges 效果示意
+            // Figure edges effect diagram
             edges.forEach(edges => {
                 const connectionG = rough.line(edges[0][0], edges[0][1], edges[1][0], edges[1][1], {
                     stroke: RgbaToHEX('#007500', 0.2),
@@ -177,14 +187,14 @@ export const fakeLineRouteProcess = (board: PlaitBoard) => {
                 g?.append(connectionG);
             });
 
-            // 4、跑 A* 算法：获取拐点最少的最短路径
+            // 4、Run A* algorithm: get the shortest path with the fewest turning points
             const aStar = new AStar(graph);
             aStar.search(nextSourcePoint, nextTargetPoint, options.sourcePoint);
             let route = aStar.getRoute(nextSourcePoint, nextTargetPoint);
             route = [options.sourcePoint, ...route, nextTargetPoint, options.targetPoint];
             const routeG = rough.linearPath(route, { stroke: RgbaToHEX('#e03130', 0.4), strokeWidth: 3 });
             g.append(routeG);
-            // 5、纠正最短路径：获取图形间的中线 xAxis、yAxis（如果存在）
+            // 5、Correct the shortest path: get the midline xAxis, yAxis between figures (if they exist)
             const isHitX = RectangleClient.isHitX(options.sourceOuterRectangle, options.targetOuterRectangle);
             const isHitY = RectangleClient.isHitY(options.sourceOuterRectangle, options.targetOuterRectangle);
             const centerX = isHitX
@@ -218,7 +228,7 @@ export const mockLineData = [
         text: {
             children: [
                 {
-                    text: '开始'
+                    text: 'Start'
                 }
             ],
             align: 'center'
@@ -239,7 +249,7 @@ export const mockLineData = [
         text: {
             children: [
                 {
-                    text: '结束'
+                    text: 'End'
                 }
             ],
             align: 'center'
@@ -279,18 +289,19 @@ export const mockLineData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
+        textHeight: 45,
         text: {
             children: [
                 {
-                    text: '红色连线：A* 算法得到的拐点最少的最短路径',
-                    color: '#e03130'
+                    text: 'Red connection: the shortest path with the fewest turning points obtained by the A* algorithm',
+                    color: '#e03130',
+                    'font-size': 15
                 }
             ]
         },
         points: [
-            [379.8231201171873, -165.77630615234375],
-            [674.7684326171873, -145.77630615234375]
+            [379.8231201171873, -167.06341552734375],
+            [861.4403076171873, -122.06341552734375]
         ],
         autoSize: true
     },
@@ -300,18 +311,20 @@ export const mockLineData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
+        textHeight: 45,
         text: {
             children: [
                 {
-                    text: '绿色连线：基于拐点最少的最短路径纠正的经过中线的连线',
-                    color: '#2f9e44'
+                    text:
+                        'Green connection: the connection through the center line corrected based on the shortest path with the fewest turning points',
+                    color: '#2f9e44',
+                    'font-size': 15
                 }
             ]
         },
         points: [
-            [379.8231201171873, -125.12396240234375],
-            [751.8231201171873, -105.12396240234375]
+            [379.8231201171873, -105.19818115234375],
+            [850.5028076171873, -60.19818115234375]
         ],
         autoSize: true
     },
@@ -321,19 +334,179 @@ export const mockLineData = [
         shape: 'text',
         angle: 0,
         opacity: 1,
-        textHeight: 20,
+        textHeight: 22.5,
         text: {
             children: [
                 {
-                    text: '橙色点：构造的虚拟连通控制点',
-                    color: '#f08c02'
+                    text: 'Orange point: Constructed virtual connectivity control point',
+                    color: '#f08c02',
+                    'font-size': 15
                 }
             ]
         },
         points: [
             [379.8231201171873, -206.42864990234375],
-            [583.8231201171873, -186.42864990234375]
+            [802.4403076171873, -183.92864990234375]
         ],
         autoSize: true
-    }
+    },
+    // turning points note
+    // {
+    //     id: 'TmwRd',
+    //     type: 'geometry',
+    //     shape: 'text',
+    //     angle: 0,
+    //     opacity: 1,
+    //     textHeight: 22.5,
+    //     text: {
+    //         children: [
+    //             {
+    //                 text: 'Fewer turning points',
+    //                 color: '#e03130',
+    //                 'font-size': 15
+    //             }
+    //         ]
+    //     },
+    //     points: [
+    //         [-70.67498779296875, -234.2685546875],
+    //         [80.80157470703125, -211.7685546875]
+    //     ],
+    //     autoSize: true
+    // },
+    // {
+    //     id: 'QhYch',
+    //     type: 'geometry',
+    //     shape: 'text',
+    //     angle: 0,
+    //     opacity: 1,
+    //     textHeight: 22.5,
+    //     text: {
+    //         children: [
+    //             {
+    //                 text: 'More turning points',
+    //                 color: '#1871c2',
+    //                 'font-size': 15
+    //             }
+    //         ]
+    //     },
+    //     points: [
+    //         [-70.67498779296875, -131.921630859375],
+    //         [74.52032470703125, -109.421630859375]
+    //     ],
+    //     autoSize: true
+    // },
+    // {
+    //     id: 'drFzQ',
+    //     type: 'line',
+    //     shape: 'elbow',
+    //     source: {
+    //         marker: 'none'
+    //     },
+    //     texts: [],
+    //     target: {
+    //         marker: 'none'
+    //     },
+    //     opacity: 1,
+    //     points: [
+    //         [-245.88592529296875, -201.5302734375],
+    //         [-245.88592529296875, -148.3974609375]
+    //     ],
+    //     strokeWidth: 2,
+    //     strokeColor: '#1871c2'
+    // },
+    // {
+    //     id: 'SNQfA',
+    //     type: 'line',
+    //     shape: 'straight',
+    //     source: {
+    //         marker: 'none'
+    //     },
+    //     texts: [],
+    //     target: {
+    //         marker: 'none'
+    //     },
+    //     opacity: 1,
+    //     points: [
+    //         [-246.67889404296875, -147.6669921875],
+    //         [-75.87811279296875, -147.6669921875]
+    //     ],
+    //     strokeWidth: 2,
+    //     strokeColor: '#1871c2'
+    // },
+    // {
+    //     id: 'BBMPW',
+    //     type: 'line',
+    //     shape: 'elbow',
+    //     source: {
+    //         marker: 'none'
+    //     },
+    //     texts: [],
+    //     target: {
+    //         marker: 'none'
+    //     },
+    //     opacity: 1,
+    //     points: [
+    //         [-76.45233154296875, -148.1591796875],
+    //         [-76.45233154296875, -95.0263671875]
+    //     ],
+    //     strokeWidth: 2,
+    //     strokeColor: '#1871c2'
+    // },
+    // {
+    //     id: 'ikjbe',
+    //     type: 'line',
+    //     shape: 'straight',
+    //     source: {
+    //         marker: 'none'
+    //     },
+    //     texts: [],
+    //     target: {
+    //         marker: 'none'
+    //     },
+    //     opacity: 1,
+    //     points: [
+    //         [-77.79217529296875, -94.1708984375],
+    //         [81.92266845703125, -94.1708984375]
+    //     ],
+    //     strokeWidth: 2,
+    //     strokeColor: '#1871c2'
+    // },
+    // {
+    //     id: 'dpKYw',
+    //     type: 'line',
+    //     shape: 'elbow',
+    //     source: {
+    //         marker: 'none'
+    //     },
+    //     texts: [],
+    //     target: {
+    //         marker: 'none'
+    //     },
+    //     opacity: 1,
+    //     points: [
+    //         [81.93438720703125, -94.8779296875],
+    //         [81.93438720703125, -61.6748046875]
+    //     ],
+    //     strokeWidth: 2,
+    //     strokeColor: '#1871c2'
+    // },
+    // {
+    //     id: 'HmJbj',
+    //     type: 'line',
+    //     shape: 'straight',
+    //     source: {
+    //         marker: 'none'
+    //     },
+    //     texts: [],
+    //     target: {
+    //         marker: 'arrow'
+    //     },
+    //     opacity: 1,
+    //     points: [
+    //         [81.58282470703125, -60.8818359375],
+    //         [118.4559936523442, -60.8818359375]
+    //     ],
+    //     strokeWidth: 2,
+    //     strokeColor: '#1871c2'
+    // }
 ] as PlaitDrawElement[];
