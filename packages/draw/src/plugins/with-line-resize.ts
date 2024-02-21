@@ -107,7 +107,7 @@ export const withLineResize = (board: PlaitBoard) => {
                         if (elbowLineIndex !== null && elbowLineDeleteCount !== null) {
                             if (hasIllegalElbowPoint(midDataPoints)) {
                                 midDataPoints = [newStartPoint, newEndPoint];
-                            }else {
+                            } else {
                                 midDataPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
                             }
                             points = [elbowSourcePoint, ...midDataPoints, elbowTargetPoint];
