@@ -11,7 +11,8 @@ import {
     alignElbowSegment,
     alignPoints,
     getIndexAndDeleteCountByKeyPoint,
-    getResizedPreviousAndNextPoint
+    getResizedPreviousAndNextPoint,
+    hasIllegalElbowPoint
 } from '../utils/line/line-resize';
 import { getConnectionByNearestPoint, getLinePoints } from '../utils/line/line-basic';
 import { getElbowLineRouteOptions } from '../utils/line';
@@ -57,7 +58,7 @@ export const withLineResize = (board: PlaitBoard) => {
                 if (isIntersect) {
                     return;
                 }
-                let points: Point[] = [...resizeRef.element.points];
+                const points: Point[] = [...resizeRef.element.points];
                 const handleIndex = resizeRef.handleIndex!;
                 const pointsOnElbow = getElbowPoints(board, resizeRef.element);
                 elbowSourcePoint = pointsOnElbow[0];
@@ -102,10 +103,14 @@ export const withLineResize = (board: PlaitBoard) => {
                             resizeState,
                             resizedPreviousAndNextPoint
                         );
-                        const drawPoints: Point[] = [...points].slice(1, points.length - 1);
+                        let midDataPoints: Point[] = [...points].slice(1, points.length - 1);
                         if (elbowLineIndex !== null && elbowLineDeleteCount !== null) {
-                            drawPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
-                            points = [elbowSourcePoint, ...drawPoints, elbowTargetPoint];
+                            if (hasIllegalElbowPoint(midDataPoints)) {
+                                midDataPoints = [newStartPoint, newEndPoint];
+                            } else {
+                                midDataPoints.splice(elbowLineIndex, elbowLineDeleteCount, newStartPoint, newEndPoint);
+                            }
+                            points = [elbowSourcePoint, ...midDataPoints, elbowTargetPoint];
                         }
                     }
                 } else {

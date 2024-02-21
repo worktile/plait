@@ -49,9 +49,6 @@ export const setLineShape = (board: PlaitBoard, newProperties: Partial<PlaitLine
         if (element.shape === newProperties.shape) {
             return;
         }
-        if (newProperties.shape === LineShape.elbow) {
-            _properties.points = [element.points[0], element.points[element.points.length - 1]];
-        }
         const path = PlaitBoard.findPath(board, element);
         Transforms.setNode(board, _properties, path);
     });

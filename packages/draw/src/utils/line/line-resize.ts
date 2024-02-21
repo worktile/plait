@@ -337,3 +337,24 @@ function findMirrorSegments(
     }
     return mirrorSegments;
 }
+
+export const hasIllegalElbowPoint = (midDataPoints: Point[]): boolean => {
+    if (midDataPoints.length === 1) {
+        return true;
+    }
+    return midDataPoints.some((item, index) => {
+        const beforePoint = midDataPoints[index - 1];
+        const afterPoint = midDataPoints[index + 1];
+        const beforeSegment = beforePoint && [beforePoint, item];
+        const afterSegment = afterPoint && [item, afterPoint];
+        const isStraightWithBefore = beforeSegment && Point.isAlign(beforeSegment);
+        const isStraightWithAfter = afterSegment && Point.isAlign(afterSegment);
+        if (index === 0) {
+            return !isStraightWithAfter;
+        }
+        if (index === midDataPoints.length - 1) {
+            return !isStraightWithBefore;
+        }
+        return !isStraightWithBefore && !isStraightWithAfter;
+    });
+};

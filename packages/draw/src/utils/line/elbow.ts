@@ -11,7 +11,7 @@ import { BasicShapes, LineHandleRefPair, PlaitGeometry, PlaitLine } from '../../
 import { createGeometryElement } from '../geometry';
 import { getStrokeWidthByElement } from '../style/stroke';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
-import { getMidKeyPoints, getMirrorDataPoints } from './line-resize';
+import { getMidKeyPoints, getMirrorDataPoints, hasIllegalElbowPoint } from './line-resize';
 
 export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     const handleRefPair = getLineHandleRefPair(board, element);
@@ -36,11 +36,12 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     } else {
         const simplifiedNextKeyPoints = simplifyOrthogonalPoints(nextKeyPoints);
         const dataPoints = removeDuplicatePoints(PlaitLine.getPoints(board, element));
-        const nextDataPoints = [
-            simplifiedNextKeyPoints[0],
-            ...dataPoints.slice(1, -1),
-            simplifiedNextKeyPoints[simplifiedNextKeyPoints.length - 1]
-        ];
+        const midDataPoints = dataPoints.slice(1, -1);
+        if (hasIllegalElbowPoint(midDataPoints)) {
+            return simplifyOrthogonalPoints(keyPoints);
+        }
+        
+        const nextDataPoints = [simplifiedNextKeyPoints[0], ...midDataPoints, simplifiedNextKeyPoints[simplifiedNextKeyPoints.length - 1]];
         const mirrorDataPoints = getMirrorDataPoints(board, nextDataPoints, simplifiedNextKeyPoints, params);
         const renderPoints: Point[] = [keyPoints[0]];
         for (let index = 0; index < mirrorDataPoints.length - 1; index++) {
