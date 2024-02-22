@@ -43,6 +43,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         
         const nextDataPoints = [simplifiedNextKeyPoints[0], ...midDataPoints, simplifiedNextKeyPoints[simplifiedNextKeyPoints.length - 1]];
         const mirrorDataPoints = getMirrorDataPoints(board, nextDataPoints, simplifiedNextKeyPoints, params);
+        // console.log(mirrorDataPoints, 'mirrorDataPoints');
         const renderPoints: Point[] = [keyPoints[0]];
         for (let index = 0; index < mirrorDataPoints.length - 1; index++) {
             let currentPoint = mirrorDataPoints[index];
