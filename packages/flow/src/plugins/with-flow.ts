@@ -83,6 +83,14 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
                 height
             };
         }
+        if (FlowEdge.isFlowEdgeElement(element as FlowElement)) {
+            return {
+                x: 0,
+                y: 0,
+                width: 0,
+                height: 0
+            };
+        }
         return getRectangle(element);
     };
 
