@@ -1,4 +1,12 @@
-import { PlaitBoard, Point, PointOfRectangle, RectangleClient, getEllipseTangentSlope, getVectorFromPointAndSlope, isPointInEllipse } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    PointOfRectangle,
+    RectangleClient,
+    getEllipseTangentSlope,
+    getVectorFromPointAndSlope,
+    isPointInEllipse
+} from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getTextRectangle } from '../../utils';
