@@ -1,8 +1,10 @@
-import { PlaitBoard, PlaitElement } from '@plait/core';
+import { PlaitBoard, PlaitElement, setTransformRotate } from '@plait/core';
 
 export interface GeneratorExtraData {}
 
-export interface GeneratorOptions { prepend?: boolean }
+export interface GeneratorOptions {
+    prepend?: boolean;
+}
 
 export abstract class Generator<
     T extends PlaitElement = PlaitElement,
@@ -31,6 +33,10 @@ export abstract class Generator<
                     }
                 }
                 this.g = g;
+                const rect = this.board.getRectangle(element);
+                if (rect && element.angle) {
+                    setTransformRotate(g, rect, element.angle);
+                }
             } else {
                 this.destroy();
             }
