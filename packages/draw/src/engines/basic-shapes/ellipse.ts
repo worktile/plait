@@ -15,8 +15,7 @@ export const EllipseEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const centerPoint = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
         const rs = PlaitBoard.getRoughSVG(board);
-        const ellipseG = rs.ellipse(centerPoint[0], centerPoint[1], rectangle.width, rectangle.height, { ...options, fillStyle: 'solid' });
-        return ellipseG;
+        return rs.ellipse(centerPoint[0], centerPoint[1], rectangle.width, rectangle.height, { ...options, fillStyle: 'solid' });
     },
     isHit(rectangle: RectangleClient, point: Point) {
         const centerPoint: Point = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];

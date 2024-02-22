@@ -34,7 +34,6 @@ export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Gene
     }
 
     draw(element: T, data: ActiveGeneratorExtraData): SVGGElement {
-        // TODO 修改选中框
         const activeG = createG();
         const rectangle = this.options.getRectangle(element);
 
