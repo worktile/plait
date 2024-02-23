@@ -339,88 +339,88 @@ export const mockDrawData: PlaitDrawElement[] = [
         ],
         strokeWidth: 2
     },
-    {
-        id: 'aYaKp',
-        type: 'geometry',
-        shape: 'rectangle',
-        angle: 5.86874495248496,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: ''
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-478.30078125, 108.99999999999989],
-            [-195.15234375, 231.88671875]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'JaNyh',
-        type: 'geometry',
-        shape: 'ellipse',
-        angle: 6.86874495248496,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: ''
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-834.0263671875, 236.5234375],
-            [-637.8779296875, 311.93359375]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'FHknH',
-        type: 'geometry',
-        shape: 'triangle',
-        angle: 4.86874495248496,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: ''
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-693.52490234375, -13.8203125],
-            [-600.31005859375, 132.7578125]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'zMSeG',
-        type: 'geometry',
-        shape: 'rightArrow',
-        angle: 0.86874495248496,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: ''
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-542.94287109375, 307.9296875],
-            [-338.20458984375, 382.59375]
-        ],
-        strokeWidth: 2
-    }
+    // {
+    //     id: 'aYaKp',
+    //     type: 'geometry',
+    //     shape: 'rectangle',
+    //     angle: 5.86874495248496,
+    //     opacity: 1,
+    //     textHeight: 20,
+    //     text: {
+    //         children: [
+    //             {
+    //                 text: ''
+    //             }
+    //         ],
+    //         align: 'center'
+    //     },
+    //     points: [
+    //         [-478.30078125, 108.99999999999989],
+    //         [-195.15234375, 231.88671875]
+    //     ],
+    //     strokeWidth: 2
+    // },
+    // {
+    //     id: 'JaNyh',
+    //     type: 'geometry',
+    //     shape: 'ellipse',
+    //     angle: 6.86874495248496,
+    //     opacity: 1,
+    //     textHeight: 20,
+    //     text: {
+    //         children: [
+    //             {
+    //                 text: ''
+    //             }
+    //         ],
+    //         align: 'center'
+    //     },
+    //     points: [
+    //         [-834.0263671875, 236.5234375],
+    //         [-637.8779296875, 311.93359375]
+    //     ],
+    //     strokeWidth: 2
+    // },
+    // {
+    //     id: 'FHknH',
+    //     type: 'geometry',
+    //     shape: 'triangle',
+    //     angle: 4.86874495248496,
+    //     opacity: 1,
+    //     textHeight: 20,
+    //     text: {
+    //         children: [
+    //             {
+    //                 text: ''
+    //             }
+    //         ],
+    //         align: 'center'
+    //     },
+    //     points: [
+    //         [-693.52490234375, -13.8203125],
+    //         [-600.31005859375, 132.7578125]
+    //     ],
+    //     strokeWidth: 2
+    // },
+    // {
+    //     id: 'zMSeG',
+    //     type: 'geometry',
+    //     shape: 'rightArrow',
+    //     angle: 0.86874495248496,
+    //     opacity: 1,
+    //     textHeight: 20,
+    //     text: {
+    //         children: [
+    //             {
+    //                 text: ''
+    //             }
+    //         ],
+    //         align: 'center'
+    //     },
+    //     points: [
+    //         [-542.94287109375, 307.9296875],
+    //         [-338.20458984375, 382.59375]
+    //     ],
+    //     strokeWidth: 2
+    // }
 ] as PlaitDrawElement[];
