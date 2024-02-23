@@ -9,7 +9,7 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import { TextManage } from '@plait/text';
-import { PlaitPluginElementComponent, PlaitPluginElementContext, PlaitBoard, normalizePoint, createG, OnContextChanged } from '@plait/core';
+import { PlaitPluginElementComponent, PlaitPluginElementContext, PlaitBoard, normalizePoint, createG, OnContextChanged, ACTIVE_MOVING_CLASS_NAME } from '@plait/core';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { drawNodeHandles } from './draw/handle';
 import { drawActiveMask, drawNode } from './draw/node';
@@ -100,6 +100,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
                 this.activeG?.prepend(this.activeMaskG!);
             }
             this.activeG?.append(this.handlesG!);
+            this.activeG?.classList.add(ACTIVE_MOVING_CLASS_NAME);
             PlaitBoard.getElementActiveHost(this.board).append(this.activeG!);
         }
     }

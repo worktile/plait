@@ -9,6 +9,7 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import {
+    ACTIVE_MOVING_CLASS_NAME,
     PlaitPluginElementComponent,
     PlaitPluginElementContext,
     XYPosition,
@@ -157,6 +158,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Pl
                 this.activeG?.prepend(arrowLine);
             });
             this.activeG?.append(this.handlesG!);
+            this.activeG?.classList.add(ACTIVE_MOVING_CLASS_NAME);
             PlaitBoard.getElementActiveHost(this.board).prepend(this.activeG!);
         }
     }
