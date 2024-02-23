@@ -400,7 +400,7 @@ describe('getIndexAndDeleteCountByKeyPoint', () => {
  */
 describe('getMirrorDataPoints', () => {
     describe('two custom points', () => {
-        it('first custom point exist get mid points', () => {
+        it('the custom points exist get mid points', () => {
             const data = [
                 {
                     id: 'cfKPC',
@@ -445,29 +445,6 @@ describe('getMirrorDataPoints', () => {
                     strokeWidth: 2
                 },
                 {
-                    id: 'wxJsD',
-                    type: 'line',
-                    shape: 'elbow',
-                    source: {
-                        marker: 'none',
-                        connection: [1, 0.5],
-                        boundId: 'cfKPC'
-                    },
-                    texts: [],
-                    target: {
-                        marker: 'arrow',
-                        connection: [0, 0.5],
-                        boundId: 'PjDEn'
-                    },
-                    opacity: 1,
-                    points: [
-                        [903.994140625, -385.13671875],
-                        [1237.8208618164062, -376.5731201171875]
-                    ],
-                    strokeWidth: 2,
-                    strokeColor: '#e03130'
-                },
-                {
                     id: 'fxZDF',
                     type: 'line',
                     shape: 'elbow',
@@ -491,7 +468,26 @@ describe('getMirrorDataPoints', () => {
                     ],
                     strokeWidth: 2
                 }
-            ];
+            ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
+            const expectedMirrorDataPoints = [
+                [
+                    919.994140625,
+                    -385.13671875
+                ],
+                [
+                    1061.6392211914062,
+                    -268.562255859375
+                ],
+                [
+                    1203.2843017578125,
+                    -268.562255859375
+                ],
+                [
+                    1203.2843017578125,
+                    -326.359130859375
+                ]
+            ] as Point[];
+            verifyGetMirrorDataPointsMethod(data, expectedMirrorDataPoints);
         });
         it('first custom point exist mirror point', () => {});
         it('second custom point exist mirror point', () => {});
@@ -540,29 +536,6 @@ describe('getMirrorDataPoints', () => {
                     strokeWidth: 2
                 },
                 {
-                    id: 'wxJsD',
-                    type: 'line',
-                    shape: 'elbow',
-                    source: {
-                        marker: 'none',
-                        connection: [1, 0.5],
-                        boundId: 'cfKPC'
-                    },
-                    texts: [],
-                    target: {
-                        marker: 'arrow',
-                        connection: [0, 0.5],
-                        boundId: 'PjDEn'
-                    },
-                    opacity: 1,
-                    points: [
-                        [903.994140625, -385.13671875],
-                        [1237.8208618164062, -376.5731201171875]
-                    ],
-                    strokeWidth: 2,
-                    strokeColor: '#e03130'
-                },
-                {
                     id: 'iMrYD',
                     type: 'line',
                     shape: 'elbow',
@@ -586,7 +559,26 @@ describe('getMirrorDataPoints', () => {
                     ],
                     strokeWidth: 2
                 }
-            ];
+            ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
+            const expectedMirrorDataPoints = [
+                [
+                    950.04296875,
+                    -423.04296875
+                ],
+                [
+                    996.9478149414062,
+                    -423.04296875
+                ],
+                [
+                    996.9478149414062,
+                    -303.616943359375
+                ],
+                [
+                    1184.4971923828125,
+                    -303.616943359375
+                ]
+            ] as Point[];
+            verifyGetMirrorDataPointsMethod(data, expectedMirrorDataPoints);
         });
         it('can not get mirror points by parallel segment', () => {
             const data = [
@@ -633,29 +625,6 @@ describe('getMirrorDataPoints', () => {
                     strokeWidth: 2
                 },
                 {
-                    id: 'WQyZs',
-                    type: 'line',
-                    shape: 'elbow',
-                    source: {
-                        marker: 'none',
-                        connection: [1, 0.5],
-                        boundId: 'cfKPC'
-                    },
-                    texts: [],
-                    target: {
-                        marker: 'arrow',
-                        connection: [0, 0.5],
-                        boundId: 'PjDEn'
-                    },
-                    opacity: 1,
-                    points: [
-                        [989.874755859375, -157.346435546875],
-                        [1225.8949584960938, -98.471923828125]
-                    ],
-                    strokeWidth: 2,
-                    strokeColor: '#e03130'
-                },
-                {
                     id: 'PhJhw',
                     type: 'line',
                     shape: 'elbow',
@@ -679,7 +648,14 @@ describe('getMirrorDataPoints', () => {
                     ],
                     strokeWidth: 2
                 }
-            ];
+            ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
+            const expectedMirrorDataPoints = [
+                [988.1049194335938, -145.438232421875],
+                [1050.6166381835938, -145.438232421875],
+                [1050.6166381835938, 63.845947265625],
+                [988.1049194335938, 63.845947265625]
+            ] as Point[];
+            verifyGetMirrorDataPointsMethod(data, expectedMirrorDataPoints);
         });
         /**
          *
@@ -915,22 +891,10 @@ describe('getMirrorDataPoints', () => {
                 }
             ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
             const correctMirrorDataPointsOfCase3 = [
-                [
-                    1323.9581298828125,
-                    -246.509765625
-                ],
-                [
-                    1256.4464111328125,
-                    -246.509765625
-                ],
-                [
-                    1256.4464111328125,
-                    -169.234375
-                ],
-                [
-                    1615.0089111328125,
-                    -237.55859375
-                ]
+                [1323.9581298828125, -246.509765625],
+                [1256.4464111328125, -246.509765625],
+                [1256.4464111328125, -169.234375],
+                [1615.0089111328125, -237.55859375]
             ] as Point[];
             verifyGetMirrorDataPointsMethod(case3, correctMirrorDataPointsOfCase3);
         });
@@ -1005,22 +969,10 @@ describe('getMirrorDataPoints', () => {
                     }
                 ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
                 const expectedMirrorDataPoints = [
-                    [
-                        831.253662109375,
-                        -264.500732421875
-                    ],
-                    [
-                        1603.8018798828125,
-                        -264.500732421875
-                    ],
-                    [
-                        1603.8018798828125,
-                        -172.866943359375
-                    ],
-                    [
-                        1492.2550048828125,
-                        -172.866943359375
-                    ]
+                    [831.253662109375, -264.500732421875],
+                    [1603.8018798828125, -264.500732421875],
+                    [1603.8018798828125, -172.866943359375],
+                    [1492.2550048828125, -172.866943359375]
                 ] as Point[];
                 verifyGetMirrorDataPointsMethod(data, expectedMirrorDataPoints);
             });
@@ -1032,9 +984,9 @@ describe('getMirrorDataPoints', () => {
              *                ｜
              *                ｜
              *              2 🟢---------->🟢 3
-             * 
+             *
              *          1 🟠       2 🟠
-             *            
+             *
              */
             it('parallel between source rectangle and target rectangle', () => {
                 const data = [
@@ -1107,22 +1059,10 @@ describe('getMirrorDataPoints', () => {
                     }
                 ] as [PlaitGeometry, PlaitGeometry, PlaitLine];
                 const expectedMirrorDataPoints = [
-                    [
-                        1005.874755859375,
-                        -157.346435546875
-                    ],
-                    [
-                        1005.874755859375,
-                        -69.628662109375
-                    ],
-                    [
-                        1163.3389892578125,
-                        -69.628662109375
-                    ],
-                    [
-                        1163.3389892578125,
-                        -100.089599609375
-                    ]
+                    [1005.874755859375, -157.346435546875],
+                    [1005.874755859375, -69.628662109375],
+                    [1163.3389892578125, -69.628662109375],
+                    [1163.3389892578125, -100.089599609375]
                 ] as Point[];
                 verifyGetMirrorDataPointsMethod(data, expectedMirrorDataPoints);
             });
