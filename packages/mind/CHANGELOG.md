@@ -1,5 +1,15 @@
 # mind
 
+## 0.51.0
+
+### Minor Changes
+
+-   [#742](https://github.com/worktile/plait/pull/742) [`1c3cfa4d`](https://github.com/worktile/plait/commit/1c3cfa4d35c9d7b1d1c2c553546a81337e89bdfc) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - throttleRAF support set key and board to avoid the effect of multiple scene call
+
+### Patch Changes
+
+-   [`d685e28b`](https://github.com/worktile/plait/commit/d685e28b55a91b4ef648951ec633f1ef2d22171e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move image focus logic to pointerUp to resolve image focus issue which can not prevent mind element selected
+
 ## 0.50.1
 
 ### Patch Changes

@@ -1,5 +1,21 @@
 # @plait/flow
 
+## 0.51.0
+
+### Minor Changes
+
+-   [`c135b9d4`](https://github.com/worktile/plait/commit/c135b9d4a5940aabb15763541fd1e9616e799877) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add ACTIVE_MOVING_CLASS_NAME class to avoid the dom element in active host being invisible when flow node is moving
+
+*   [#742](https://github.com/worktile/plait/pull/742) [`1c3cfa4d`](https://github.com/worktile/plait/commit/1c3cfa4d35c9d7b1d1c2c553546a81337e89bdfc) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - throttleRAF support set key and board to avoid the effect of multiple scene call
+
+-   [#714](https://github.com/worktile/plait/pull/714) [`541bd50d`](https://github.com/worktile/plait/commit/541bd50dc64477d526ca959635b2ff3ad7494f70) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - elbow-line supports dragging to adjust the inflection point
+    extract getSourceAndTargetOuterRectangle to common
+    extract isSourceAndTargetIntersect to common
+    add isHorizontalSegment to core
+    add isVerticalSegment to core
+    add isPointsOnSameLine to core
+    refactor getElbowPoints when points.length > 2
+
 ## 0.50.1
 
 ## 0.50.0

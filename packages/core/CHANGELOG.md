@@ -1,5 +1,62 @@
 # plait
 
+## 0.51.0
+
+### Minor Changes
+
+-   [#742](https://github.com/worktile/plait/pull/742) [`1c3cfa4d`](https://github.com/worktile/plait/commit/1c3cfa4d35c9d7b1d1c2c553546a81337e89bdfc) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - throttleRAF support set key and board to avoid the effect of multiple scene call
+
+*   [`a76fe602`](https://github.com/worktile/plait/commit/a76fe602af45e1021ca4af22ad3df855872068c1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - replace Number.MIN_VALUE with Number.NEGATIVE_INFINITY to resolve negative number problems
+
+-   [#714](https://github.com/worktile/plait/pull/714) [`541bd50d`](https://github.com/worktile/plait/commit/541bd50dc64477d526ca959635b2ff3ad7494f70) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - elbow-line supports dragging to adjust the inflection point
+    extract getSourceAndTargetOuterRectangle to common
+    extract isSourceAndTargetIntersect to common
+    add isHorizontalSegment to core
+    add isVerticalSegment to core
+    add isPointsOnSameLine to core
+    refactor getElbowPoints when points.length > 2
+
+*   [#709](https://github.com/worktile/plait/pull/709) [`469acbd1`](https://github.com/worktile/plait/commit/469acbd1fc945b1b68497f85d112feecba29d743) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support resize entire draw elements
+
+-   [`df5e2132`](https://github.com/worktile/plait/commit/df5e21327a172cd7cd45efbe5ee742afea43fd0d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move arrowMoving to with-moving file
+    extract getTargetElements and updatePoints
+
+*   [`a00de88e`](https://github.com/worktile/plait/commit/a00de88e9a93fe350b37fd19cf757ed078c2ad82) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move getEllipseTangentSlope and getVectorFromPointAndSlope of ellipse to utils/math
+    resolve stored-data shape connection point and direction issue
+
+-   [`7d17a9b1`](https://github.com/worktile/plait/commit/7d17a9b10eced701e2aeebd21322f1bdd15082fb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support move elements by pointer down entire selection rectangle
+
+### Patch Changes
+
+-   [#744](https://github.com/worktile/plait/pull/744) [`712ccb12`](https://github.com/worktile/plait/commit/712ccb12a6113c5b59eb48b022732824ff529044) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - optimize the code for drawing equal lines
+    add getDirectionFactorByVectorComponent
+
+*   [#737](https://github.com/worktile/plait/pull/737) [`91d1685c`](https://github.com/worktile/plait/commit/91d1685c62c4ac4b7717da315e3a32a0838f1174) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - isHorizontalSegment renamed to isOverHorizontal
+    isVerticalSegment renamed to isOverVertical
+    isPointsOnSameLine renamed to isAlign
+    move the three method to Point instance
+    move getRectangleByPoints to RectangleClient instance
+
+-   [`de835ae1`](https://github.com/worktile/plait/commit/de835ae19e9bc26fc6d53cb1ff486b0433c3f0e7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add correctly isShift state in common with resize
+
+*   [`3892784b`](https://github.com/worktile/plait/commit/3892784be7c9e40370a3777517b62dab27280ba4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - the selected state is lost after Resize the element
+
+-   [#720](https://github.com/worktile/plait/pull/720) [`e709924d`](https://github.com/worktile/plait/commit/e709924df57627663d5da1d0a04c71500943819d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add line resize snapping effect
+
+*   [`b5c7e4c6`](https://github.com/worktile/plait/commit/b5c7e4c6637f598a0a990167b48b5000fba806ca) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rectangle selection support shift multiple select
+
+-   [`66219f5a`](https://github.com/worktile/plait/commit/66219f5a2c98c10da76aeb9e13cf781c90e49288) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Solve the precision issue of floating point number operations
+    Extract getCornerPointsByPoints to obtain corner points (avoid obtaining corner point via floating point operations)
+
+*   [#741](https://github.com/worktile/plait/pull/741) [`7a107ae9`](https://github.com/worktile/plait/commit/7a107ae95f02a3d20152c4e5b9184a59132715cb) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support equal line when resize
+
+-   [`09b5f86d`](https://github.com/worktile/plait/commit/09b5f86d673fb64f0066502110b971c85831ca98) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix issue that after the line is selected, clicking on the blank area cannot make the rectangle selection
+
+*   [`71b8f23f`](https://github.com/worktile/plait/commit/71b8f23f07ff9ebf3ec71e396ecbeafc87e6574f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract getBoundingRectangle in rectangle-client and refactor getRectangleByElements by getBoundingRectangle
+    calculate line rectangle by texts's rectangle and line points's rectangle
+
+-   [`5a700b54`](https://github.com/worktile/plait/commit/5a700b5499b975f16ac7d0faaefded3a04771b8a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - isPointsOnSameLine add tolerance argument
+
 ## 0.50.1
 
 ### Patch Changes
