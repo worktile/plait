@@ -52,7 +52,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     board.isHit = (element, point) => {
         if (!board.options.readonly) {
             const elementComponent = PlaitElement.getComponent(element) as FlowNodeComponent | FlowEdgeComponent;
-            if (FlowElement.isFlowElement(element) && elementComponent && board.selection) {
+            if (FlowElement.isFlowElement(element) && elementComponent) {
                 if (FlowNode.isFlowNodeElement(element)) {
                     return isHitNode(board, element, [point, point]);
                 }
