@@ -7,13 +7,13 @@ import { FlowRenderMode } from '../interfaces/flow';
 import { FlowEdgeComponent } from '../flow-edge.component';
 
 export const withHoverHighlight: PlaitPlugin = (board: PlaitBoard) => {
-    const { mousemove, mouseleave } = board;
+    const { pointerMove, pointerLeave } = board;
 
     let hoveredElement: FlowNode | FlowEdge | null;
     let relationEdges: FlowEdge[] | null;
 
-    board.mousemove = (event: MouseEvent) => {
-        mousemove(event);
+    board.pointerMove = (event: PointerEvent) => {
+        pointerMove(event);
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const newHitNode = getHitNode(board, point) || getHitEdge(board, point);
         const movingNodes = getMovingElements(board);
@@ -51,10 +51,10 @@ export const withHoverHighlight: PlaitPlugin = (board: PlaitBoard) => {
         }
     };
 
-    board.mouseleave = (event: MouseEvent) => {
+    board.pointerLeave = (event: PointerEvent) => {
         hoveredElement = null;
         relationEdges = null;
-        mouseleave(event);
+        pointerLeave(event);
     };
 
     return board;

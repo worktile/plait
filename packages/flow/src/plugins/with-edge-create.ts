@@ -12,7 +12,7 @@ import { getHoverHandleInfo } from '../utils/handle/hover-handle';
 import { addPlaceholderEdgeInfo, deletePlaceholderEdgeInfo } from '../utils/edge/placeholder-edge';
 
 export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
-    const { mousedown, globalMousemove, globalMouseup } = board;
+    const { pointerDown, globalPointerMove, globalPointerUp } = board;
 
     let sourceFlowNodeHandle: HitNodeHandle | null = null;
     let targetFlowNodeHandle: HitNodeHandle | null = null;
@@ -21,15 +21,18 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
     let drawNodeHandles = true;
     let hoveredNode: FlowNode | null;
 
-    board.mousedown = event => {
+    board.pointerDown = event => {
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (hoveredNode) {
             sourceFlowNodeHandle = getHitHandleByNode(hoveredNode, point);
+            if (sourceFlowNodeHandle) {
+                return;
+            }
         }
-        mousedown(event);
+        pointerDown(event);
     };
 
-    board.globalMousemove = (event: MouseEvent) => {
+    board.globalPointerMove = (event: PointerEvent) => {
         if (!board.options.readonly) {
             if (sourceFlowNodeHandle) {
                 event.preventDefault();
@@ -94,11 +97,11 @@ export const withEdgeCreate: PlaitPlugin = (board: PlaitBoard) => {
                 hoveredNode = newHitNode;
             }
         }
-        globalMousemove(event);
+        globalPointerMove(event);
     };
 
-    board.globalMouseup = (event: MouseEvent) => {
-        globalMouseup(event);
+    board.globalPointerUp = (event: PointerEvent) => {
+        globalPointerUp(event);
         if (placeholderEdge) {
             sourceFlowNodeHandle = null;
             targetFlowNodeHandle = null;

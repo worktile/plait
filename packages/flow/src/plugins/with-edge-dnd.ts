@@ -23,7 +23,7 @@ import { FlowElement } from '../interfaces/element';
 import { FlowRenderMode } from '../interfaces/flow';
 
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
-    const { mousedown, mousemove, globalMouseup } = board;
+    const { pointerDown, pointerMove, globalPointerUp } = board;
 
     let activeElement: FlowEdge | null;
     let startPoint: Point | null;
@@ -34,12 +34,11 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     let hitNodeHandle: HitNodeHandle | null = null;
     let drawNodeHandles = true;
 
-    board.mousedown = (event: MouseEvent) => {
+    board.pointerDown = (event: PointerEvent) => {
         if (board.options.readonly || IS_TEXT_EDITABLE.get(board) || event.button === 2) {
-            mousedown(event);
+            pointerDown(event);
             return;
         }
-        const host = BOARD_TO_HOST.get(board);
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const selectElements = getSelectedElements(board);
         if (selectElements.length && FlowEdge.isFlowEdgeElement(selectElements[0] as FlowElement)) {
@@ -50,10 +49,10 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 return;
             }
         }
-        mousedown(event);
+        pointerDown(event);
     };
 
-    board.mousemove = (event: MouseEvent) => {
+    board.pointerMove = (event: PointerEvent) => {
         if (!board.options.readonly && startPoint && handleType) {
             const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             offsetX = endPoint[0] - startPoint[0];
@@ -78,10 +77,10 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                 });
             }
         }
-        mousemove(event);
+        pointerMove(event);
     };
 
-    board.globalMouseup = (event: MouseEvent) => {
+    board.globalPointerUp = (event: PointerEvent) => {
         if (!board.options.readonly && handleType && activeElement) {
             const activeComponent = PlaitElement.getComponent(activeElement) as FlowEdgeComponent;
             const activePath = PlaitBoard.findPath(board, activeElement);
@@ -114,7 +113,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
         offsetY = 0;
         flowNodeElements = [];
         drawNodeHandles = true;
-        globalMouseup(event);
+        globalPointerUp(event);
     };
     return board;
 };
