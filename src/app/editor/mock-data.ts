@@ -99,251 +99,10 @@ export const mockMindData: PlaitMind[] = [
 
 export const mockDrawData: PlaitDrawElement[] = [
     {
-        id: 'GMKAE',
-        type: 'geometry',
-        shape: 'terminal',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: '结束'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-107, 443.9999999999999],
-            [13, 503.9999999999999]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'WEycp',
-        type: 'geometry',
-        shape: 'process',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: '过程'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [98, 283.9999999999999],
-            [218, 343.9999999999999]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'rJcaT',
-        type: 'geometry',
-        shape: 'decision',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: '过程'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-117, 278.9999999999999],
-            [23, 348.9999999999999]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'RpDPy',
-        type: 'geometry',
-        shape: 'process',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: '过程'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-107, 163.9999999999999],
-            [13, 223.9999999999999]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'xRzpF',
-        type: 'geometry',
-        shape: 'terminal',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: '开始'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-107, 48.999999999999886],
-            [13, 108.99999999999989]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'hhyEm',
-        type: 'line',
-        shape: 'elbow',
-        source: {
-            marker: 'none',
-            connection: [0.5, 1],
-            boundId: 'WEycp'
-        },
-        texts: [],
-        target: {
-            marker: 'arrow',
-            connection: [1, 0.5],
-            boundId: 'GMKAE'
-        },
-        opacity: 1,
-        points: [
-            [-277, -129.0000000000001],
-            [-277, -129.0000000000001]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'NQbHa',
-        type: 'line',
-        shape: 'elbow',
-        source: {
-            marker: 'none',
-            connection: [1, 0.5],
-            boundId: 'rJcaT'
-        },
-        texts: [
-            {
-                text: {
-                    children: [
-                        {
-                            text: '否'
-                        }
-                    ]
-                },
-                position: 0.5,
-                width: 14,
-                height: 20
-            }
-        ],
-        target: {
-            marker: 'arrow',
-            connection: [0, 0.5],
-            boundId: 'WEycp'
-        },
-        opacity: 1,
-        points: [
-            [-277, -129.0000000000001],
-            [-277, -129.0000000000001]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'dBQka',
-        type: 'line',
-        shape: 'elbow',
-        source: {
-            marker: 'none',
-            connection: [0.5, 1],
-            boundId: 'rJcaT'
-        },
-        texts: [
-            {
-                text: {
-                    children: [
-                        {
-                            text: '是'
-                        }
-                    ]
-                },
-                position: 0.5,
-                width: 14,
-                height: 20
-            }
-        ],
-        target: {
-            marker: 'arrow',
-            connection: [0.5, 0],
-            boundId: 'GMKAE'
-        },
-        opacity: 1,
-        points: [
-            [-277, -129.0000000000001],
-            [-277, -129.0000000000001]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'nTHrr',
-        type: 'line',
-        shape: 'elbow',
-        source: {
-            marker: 'none',
-            connection: [0.5, 1],
-            boundId: 'RpDPy'
-        },
-        texts: [],
-        target: {
-            marker: 'arrow',
-            connection: [0.5, 0],
-            boundId: 'rJcaT'
-        },
-        opacity: 1,
-        points: [
-            [-277, -129.0000000000001],
-            [-277, -129.0000000000001]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'PMShX',
-        type: 'line',
-        shape: 'elbow',
-        source: {
-            marker: 'none',
-            connection: [0.5, 1],
-            boundId: 'xRzpF'
-        },
-        texts: [],
-        target: {
-            marker: 'arrow',
-            connection: [0.5, 0],
-            boundId: 'RpDPy'
-        },
-        opacity: 1,
-        points: [
-            [-277, -129.0000000000001],
-            [-277, -129.0000000000001]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'aYaKp',
+        id: 'frjFC',
         type: 'geometry',
         shape: 'rectangle',
-        angle: 5.86874495248496,
+        angle: 0,
         opacity: 1,
         textHeight: 20,
         text: {
@@ -355,18 +114,21 @@ export const mockDrawData: PlaitDrawElement[] = [
             align: 'center'
         },
         points: [
-            [-478.30078125, 108.99999999999989],
-            [-195.15234375, 231.88671875]
+            [-190.90234375, 161.58984375],
+            [20.24609375, 258.29296875]
         ],
-        strokeWidth: 2
+        strokeWidth: 2,
+        fill: '#e48483',
+        parentId: 'group'
     },
     {
-        id: 'JaNyh',
+        id: 'jwtwC',
         type: 'geometry',
-        shape: 'ellipse',
-        angle: 6.86874495248496,
+        shape: 'rectangle',
+        angle: 0,
         opacity: 1,
         textHeight: 20,
+        fill: '#e48483',
         text: {
             children: [
                 {
@@ -376,37 +138,21 @@ export const mockDrawData: PlaitDrawElement[] = [
             align: 'center'
         },
         points: [
-            [-834.0263671875, 236.5234375],
-            [-637.8779296875, 311.93359375]
+            [52.52978515625, 161.58984375],
+            [263.67822265625, 258.29296875]
         ],
-        strokeWidth: 2
+        strokeWidth: 2,
+        parentId: 'group'
     },
     {
-        id: 'FHknH',
-        type: 'geometry',
-        shape: 'triangle',
-        angle: 4.86874495248496,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: ''
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-693.52490234375, -13.8203125],
-            [-600.31005859375, 132.7578125]
-        ],
-        strokeWidth: 2
+        id: 'group',
+        type: 'group'
     },
     {
-        id: 'zMSeG',
+        id: 'cKSSh',
         type: 'geometry',
-        shape: 'rightArrow',
-        angle: 0.86874495248496,
+        shape: 'rectangle',
+        angle: 0,
         opacity: 1,
         textHeight: 20,
         text: {
@@ -418,8 +164,8 @@ export const mockDrawData: PlaitDrawElement[] = [
             align: 'center'
         },
         points: [
-            [-542.94287109375, 307.9296875],
-            [-338.20458984375, 382.59375]
+            [-108.545654296875, 326.53515625],
+            [111.805908203125, 400.48046875]
         ],
         strokeWidth: 2
     }
