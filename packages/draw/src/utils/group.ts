@@ -13,9 +13,9 @@ export const getGroupRectangle = (board: PlaitBoard, element: PlaitElement) => {
     return getRectangleByElements(board, elementsInGroup, false);
 };
 
-export const getGroupByElement = (board: PlaitBoard, element: PlaitElement) => {
+export const getGroupByElement = (board: PlaitBoard, element: PlaitElement): PlaitGroup | null => {
     if (element?.parentId) {
-        return board.children.find(item => item.id === element?.parentId);
+        return board.children.find(item => item.id === element?.parentId) as PlaitGroup || null;
     }
     return null;
 };
