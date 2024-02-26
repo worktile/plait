@@ -1,5 +1,12 @@
 # @plait/flow
 
+## 0.51.1
+
+### Patch Changes
+
+-   [#761](https://github.com/worktile/plait/pull/761) [`134e669f`](https://github.com/worktile/plait/commit/134e669f84c0c1e57368a1aae30275e0f4c6bee3) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - use pointer event
+    fix can't move node after refresh page
+
 ## 0.51.0
 
 ### Minor Changes
