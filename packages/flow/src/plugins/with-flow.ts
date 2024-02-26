@@ -24,8 +24,6 @@ import { withHoverHighlight } from './with-hover-highlight';
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, isRectangleHit, isHit, isMovable, getRectangle } = board;
 
-    let relationEdges: FlowEdge[];
-
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (FlowElement.isFlowElement(context.element)) {
             if (FlowEdge.isFlowEdgeElement(context.element)) {

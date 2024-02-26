@@ -7,13 +7,13 @@ import { isEdgeDragging } from '../utils/edge/dragging-edge';
 import { deleteCreateEdgeInfo, getCreateEdgeInfo } from '../utils/edge/create-edge';
 
 export const withHandleBlink: PlaitPlugin = (board: PlaitBoard) => {
-    const { globalMousemove, globalMouseup } = board;
+    const { globalPointerMove, globalPointerUp } = board;
 
     let previousHoveredHandle: HitNodeHandle | null = null;
     let hoveredHandle: HitNodeHandle | null;
     let activeHandleElement: SVGGElement;
 
-    board.globalMousemove = (event: MouseEvent) => {
+    board.globalPointerMove = (event: PointerEvent) => {
         if (!board.options.readonly) {
             const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             hoveredHandle = getHitNodeHandle(board, point);
@@ -43,11 +43,11 @@ export const withHandleBlink: PlaitPlugin = (board: PlaitBoard) => {
                 }
             }
         }
-        globalMousemove(event);
+        globalPointerMove(event);
     };
 
-    board.globalMouseup = (event: MouseEvent) => {
-        globalMouseup(event);
+    board.globalPointerUp = (event: PointerEvent) => {
+        globalPointerUp(event);
         deleteHoverHandleInfo(board);
         if (hoveredHandle) {
             previousHoveredHandle = null;

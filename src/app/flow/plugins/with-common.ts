@@ -4,9 +4,9 @@ import { Element, Text } from 'slate';
 import { CustomBoard } from '../interfaces/board';
 
 export const withCommon: PlaitPlugin = (board: CustomBoard) => {
-    const { mouseup, keyDown } = board;
+    const { pointerUp, keyDown } = board;
 
-    board.mouseup = event => {
+    board.pointerUp = event => {
         const newEdge = getCreateEdgeInfo(board);
         if (newEdge) {
             const sourceNode = getFlowNodeById(board, newEdge?.source?.nodeId!);
@@ -25,8 +25,9 @@ export const withCommon: PlaitPlugin = (board: CustomBoard) => {
             );
             const node = board.children[0];
             addSelectedElement(board, node);
+            return;
         }
-        mouseup(event);
+        pointerUp(event);
     };
 
     board.keyDown = (event: KeyboardEvent) => {
