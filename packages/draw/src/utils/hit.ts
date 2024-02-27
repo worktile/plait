@@ -5,7 +5,8 @@ import {
     PlaitBoard,
     isPolylineHitRectangle,
     Point,
-    distanceBetweenPointAndSegments
+    distanceBetweenPointAndSegments,
+    rotate
 } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { TRANSPARENT } from '@plait/common';
@@ -36,18 +37,51 @@ export const isHitPolyLine = (pathPoints: Point[], point: Point, strokeWidth: nu
 
 export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitElement, selection: Selection) => {
     const rangeRectangle = RectangleClient.getRectangleByPoints([selection.anchor, selection.focus]);
-    if (PlaitDrawElement.isGeometry(element)) {
+    if (PlaitDrawElement.isGeometry(element) || PlaitDrawElement.isImage(element)) {
         const client = RectangleClient.getRectangleByPoints(element.points);
-        if (isTextExceedingBounds(element)) {
-            const textClient = getTextRectangle(element);
-            return RectangleClient.isHit(rangeRectangle, client) || RectangleClient.isHit(rangeRectangle, textClient);
+        if (Point.isEquals(selection.anchor, selection.focus)) {
+            const centerPoint = RectangleClient.getCenterPoint(client);
+            const rotateFocusPoint = rotate(
+                selection.focus[0],
+                selection.focus[1],
+                centerPoint[0],
+                centerPoint[1],
+                -element.angle || 0
+            ) as Point;
+            const shape = getShape(element);
+            const isFocusHitRectangle = getEngine(shape).isHit(client, rotateFocusPoint);
+            if (isFocusHitRectangle) {
+                return isFocusHitRectangle;
+            }
         }
-        return RectangleClient.isHit(rangeRectangle, client);
+
+        const localCornerPoints = RectangleClient.getLocalCornerPoints(client, { angle: element.angle });
+        let isPolylineEdgeHitRectangle: boolean = false;
+        let isTextEdgeHitRectangle: boolean = false;
+
+        for (let i = 0; i < localCornerPoints.length; i++) {
+            const A = localCornerPoints[i];
+            const B = localCornerPoints[(i + 1) % localCornerPoints.length];
+            isPolylineEdgeHitRectangle = isPolylineHitRectangle([A, B] as Point[], rangeRectangle);
+            if (isPolylineEdgeHitRectangle) {
+                return isPolylineEdgeHitRectangle;
+            }
+        }
+
+        if (PlaitDrawElement.isGeometry(element) && isTextExceedingBounds(element)) {
+            const textClient = getTextRectangle(element);
+            const localTextCornerPoints = RectangleClient.getLocalCornerPoints(textClient, { angle: element.angle });
+            for (let i = 0; i < localTextCornerPoints.length; i++) {
+                const A = localTextCornerPoints[i];
+                const B = localTextCornerPoints[(i + 1) % localTextCornerPoints.length];
+                isTextEdgeHitRectangle = isPolylineHitRectangle([A, B] as Point[], rangeRectangle);
+                if (isTextEdgeHitRectangle) {
+                    return isTextEdgeHitRectangle;
+                }
+            }
+        }
     }
-    if (PlaitDrawElement.isImage(element)) {
-        const client = RectangleClient.getRectangleByPoints(element.points);
-        return RectangleClient.isHit(rangeRectangle, client);
-    }
+
     if (PlaitDrawElement.isLine(element)) {
         const points = getLinePoints(board, element);
         const strokeWidth = getStrokeWidthByElement(element);
@@ -77,10 +111,13 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
             }
             const strokeWidth = getStrokeWidthByElement(element);
             const engine = getEngine(getShape(element));
+            const rectangle = board.getRectangle(element);
             const corners = engine.getCornerPoints(RectangleClient.getRectangleByPoints(element.points));
-            const isHit = isHitPolyLine(corners, point, strokeWidth, 3);
+            const centerPoint = RectangleClient.getCenterPoint(rectangle!);
+            const rotatedPoint = rotate(point[0], point[1], centerPoint[0], centerPoint[1], -element.angle) as Point;
+            const isHit = isHitPolyLine(corners, rotatedPoint, strokeWidth, 3);
             const textClient = getTextRectangle(element);
-            let isHitText = RectangleClient.isPointInRectangle(textClient, point);
+            let isHitText = RectangleClient.isPointInRectangle(textClient, rotatedPoint);
             return isHit || isHitText;
         }
     }

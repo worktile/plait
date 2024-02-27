@@ -338,7 +338,7 @@ export const mockDrawData: PlaitDrawElement[] = [
             [-277, -129.0000000000001]
         ],
         strokeWidth: 2
-    },
+    }
     // {
     //     id: 'aYaKp',
     //     type: 'geometry',

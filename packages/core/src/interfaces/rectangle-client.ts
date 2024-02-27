@@ -1,3 +1,4 @@
+import { rotate } from '../utils';
 import { Point } from './point';
 
 export interface RectangleClient {
@@ -110,6 +111,12 @@ export const RectangleClient = {
             [rectangle.x + rectangle.width, rectangle.y + rectangle.height],
             [rectangle.x, rectangle.y + rectangle.height]
         ] as [Point, Point, Point, Point];
+    },
+
+    getLocalCornerPoints: (rectangle: RectangleClient, transform: { angle?: number }) => {
+        const points = RectangleClient.getCornerPoints(rectangle);
+        const centerPoint = RectangleClient.getCenterPoint(rectangle);
+        return points.map(point => rotate(point[0], point[1], centerPoint[0], centerPoint[1], transform.angle || 0));
     },
     getCenterPoint: (rectangle: RectangleClient) => {
         return [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2] as Point;

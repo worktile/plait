@@ -71,9 +71,9 @@ export function getNearestPointBetweenPointAndSegment(point: Point, linePoints: 
 export function distanceBetweenPointAndSegments(points: Point[], point: Point) {
     const len = points.length;
     let distance = Infinity;
-    for (let i = 0; i < len - 1; i++) {
+    for (let i = 0; i < len; i++) {
         const p = points[i];
-        const p2 = points[i + 1];
+        const p2 = points[(i + 1) % len];
         const currentDistance = distanceBetweenPointAndSegment(point[0], point[1], p[0], p[1], p2[0], p2[1]);
         if (currentDistance < distance) {
             distance = currentDistance;
@@ -305,9 +305,9 @@ export function getVectorFromPointAndSlope(x: number, y: number, slope: number) 
  * The DOM likes values to be fixed to 3 decimal places
  */
 export function toDomPrecision(v: number) {
-	return +v.toFixed(4)
+    return +v.toFixed(4);
 }
 
 export function toFixed(v: number) {
-	return +v.toFixed(2)
+    return +v.toFixed(2);
 }
