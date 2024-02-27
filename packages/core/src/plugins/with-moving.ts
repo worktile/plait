@@ -43,6 +43,7 @@ export function withMoving(board: PlaitBoard) {
             !isMainPointer(event)
         ) {
             pointerDown(event);
+            return;
         }
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const targetElements = getTargetElements(board);
