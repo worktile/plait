@@ -1,4 +1,11 @@
-import { PlaitBoard, PlaitElement, PlaitPluginElementContext, RectangleClient, Selection, addSelectedElement, getSelectedElements } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitElement,
+    PlaitPluginElementContext,
+    RectangleClient,
+    Selection,
+    getSelectedElements
+} from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
@@ -19,8 +26,8 @@ import { isHitDrawElement, isRectangleHitDrawElement } from '../utils/hit';
 import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
 import { PlaitGroupElement } from '../interfaces/group';
 import { GroupComponent } from '../group.component';
-import { getGroupRectangle } from '../utils/group';
 import { withGroup } from './with-group';
+import { getRectangleByGroup } from '../utils/group';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, isAlign, getRelatedFragment } = board;
@@ -55,7 +62,7 @@ export const withDraw = (board: PlaitBoard) => {
             return RectangleClient.getRectangleByPoints(element.points);
         }
         if (PlaitGroupElement.isGroup(element)) {
-            return getGroupRectangle(board, element);
+            return getRectangleByGroup(board, element);
         }
         return getRectangle(element);
     };
@@ -121,7 +128,7 @@ export const withDraw = (board: PlaitBoard) => {
         return getRelatedFragment([...elements, ...activeLines]);
     };
 
-    return withGroup(withDrawResize(
+    return withDrawResize(
         withLineTextMove(
             withLineAutoCompleteReaction(
                 withLineText(
@@ -130,7 +137,9 @@ export const withDraw = (board: PlaitBoard) => {
                             withGeometryResize(
                                 withLineCreateByDraw(
                                     withLineAutoComplete(
-                                        withGeometryCreateByDrag(withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board))))
+                                        withGeometryCreateByDrag(
+                                            withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(withGroup(board))))
+                                        )
                                     )
                                 )
                             )
@@ -138,6 +147,6 @@ export const withDraw = (board: PlaitBoard) => {
                     )
                 )
             )
-        ))
+        )
     );
 };

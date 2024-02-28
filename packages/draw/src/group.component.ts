@@ -3,7 +3,7 @@ import { ActiveGenerator, CommonPluginElement } from '@plait/common';
 import { OnContextChanged, PlaitBoard, PlaitPluginElementContext, isSelectionMoving } from '@plait/core';
 import { PlaitGroup } from './interfaces/group';
 import { GroupGenerator } from './generators/group.generator';
-import { getGroupRectangle } from './utils/group';
+import { getRectangleByGroup } from './utils/group';
 
 @Component({
     selector: 'plait-group',
@@ -24,7 +24,7 @@ export class GroupComponent extends CommonPluginElement<PlaitGroup, PlaitBoard>
     initializeGenerator() {
         this.activeGenerator = new ActiveGenerator<PlaitGroup>(this.board, {
             getRectangle: (element: PlaitGroup) => {
-                return getGroupRectangle(this.board, element);
+                return getRectangleByGroup(this.board, element);
             },
             getStrokeWidth: () => 0,
             getStrokeOpacity: () => 0,

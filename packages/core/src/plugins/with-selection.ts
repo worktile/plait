@@ -202,8 +202,9 @@ export function withSelection(board: PlaitBoard) {
                 const currentSelectedElements = getSelectedElements(board);
                 if (currentSelectedElements.length && currentSelectedElements.length > 1) {
                     if (
-                        currentSelectedElements.length !== previousSelectedElements.length ||
-                        currentSelectedElements.some((c, index) => c !== previousSelectedElements[index])
+                        previousSelectedElements &&
+                        (currentSelectedElements.length !== previousSelectedElements.length ||
+                            currentSelectedElements.some((c, index) => c !== previousSelectedElements[index]))
                     ) {
                         selectionRectangleG?.remove();
                         selectionRectangleG = createSelectionRectangleG(board);
