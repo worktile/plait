@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, PlaitPluginElementContext, RectangleClient, Selection, getSelectedElements } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, RectangleClient, Selection, getSelectedElements } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
@@ -15,11 +15,11 @@ import { withLineAutoCompleteReaction } from './with-line-auto-complete-reaction
 import { withLineAutoComplete } from './with-line-auto-complete';
 import { withLineTextMove } from './with-line-text-move';
 import { withDrawResize } from './with-draw-resize';
-import { isHitDrawElement, isRectangleHitDrawElement } from '../utils/hit';
+import { isHitDrawElement, isHitElementInside, isRectangleHitDrawElement } from '../utils/hit';
 import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
 
 export const withDraw = (board: PlaitBoard) => {
-    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, isAlign, getRelatedFragment } = board;
+    const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isGeometry(context.element)) {
@@ -65,6 +65,14 @@ export const withDraw = (board: PlaitBoard) => {
             return result;
         }
         return isHit(element, point);
+    };
+
+    board.isInsidePoint = (element: PlaitElement, point: Point) => {
+        const result = isHitElementInside(board, element, point);
+        if (result !== null) {
+            return result;
+        }
+        return isInsidePoint(element, point);
     };
 
     board.isMovable = (element: PlaitElement) => {

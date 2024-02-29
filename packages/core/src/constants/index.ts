@@ -18,3 +18,5 @@ export const POINTER_BUTTON = {
 } as const;
 
 export const PRESS_AND_MOVE_BUFFER = 3;
+
+export const HIT_DISTANCE_BUFFER = 5;

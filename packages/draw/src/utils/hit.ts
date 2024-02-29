@@ -7,13 +7,13 @@ import {
     Point,
     distanceBetweenPointAndSegments,
     distanceBetweenPointAndPoint,
-    PRESS_AND_MOVE_BUFFER
+    HIT_DISTANCE_BUFFER
 } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { TRANSPARENT } from '@plait/common';
 import { getTextRectangle } from './geometry';
 import { getLinePoints } from './line/line-basic';
-import { getFillByElement, getStrokeWidthByElement } from './style/stroke';
+import { getFillByElement } from './style/stroke';
 import { DefaultGeometryStyle } from '../constants/geometry';
 import { getEngine } from '../engines';
 import { getShape } from './shape';
@@ -31,9 +31,9 @@ export const isHitLineText = (board: PlaitBoard, element: PlaitLine, point: Poin
     return getHitLineTextIndex(board, element, point) !== -1;
 };
 
-export const isHitPolyLine = (pathPoints: Point[], point: Point, strokeWidth: number, expand: number = 0) => {
+export const isHitPolyLine = (pathPoints: Point[], point: Point) => {
     const distance = distanceBetweenPointAndSegments(pathPoints, point);
-    return distance <= strokeWidth + expand;
+    return distance <= HIT_DISTANCE_BUFFER;
 };
 
 export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitElement, selection: Selection) => {
@@ -52,9 +52,8 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
     }
     if (PlaitDrawElement.isLine(element)) {
         const points = getLinePoints(board, element);
-        const strokeWidth = getStrokeWidthByElement(element);
         const isHitText = isHitLineText(board, element, selection.focus);
-        const isHit = isHitPolyLine(points, selection.focus, strokeWidth, 3) || isHitText;
+        const isHit = isHitPolyLine(points, selection.focus) || isHitText;
         const isContainPolyLinePoint = points.some(point => {
             return RectangleClient.isHit(rangeRectangle, RectangleClient.getRectangleByPoints([point, point]));
         });
@@ -69,10 +68,9 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
         const fill = getFillByElement(board, element);
         const engine = getEngine(getShape(element));
         const rectangle = board.getRectangle(element);
-        const strokeWidth = getStrokeWidthByElement(element);
         const nearestPoint = engine.getNearestPoint(rectangle!, point);
         const distance = distanceBetweenPointAndPoint(nearestPoint[0], nearestPoint[1], point[0], point[1]);
-        const isHitEdge = distance <= strokeWidth + PRESS_AND_MOVE_BUFFER;
+        const isHitEdge = distance <= HIT_DISTANCE_BUFFER;
         if (isHitEdge) {
             return isHitEdge;
         }
@@ -97,6 +95,29 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
                 if (isHitTextRectangle) {
                     return isHitTextRectangle;
                 }
+            }
+        }
+    }
+    if (PlaitDrawElement.isImage(element) || PlaitDrawElement.isLine(element)) {
+        return isRectangleHitDrawElement(board, element, { anchor: point, focus: point });
+    }
+    return null;
+};
+
+export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, point: Point) => {
+    if (PlaitDrawElement.isGeometry(element)) {
+        const engine = getEngine(getShape(element));
+        const rectangle = board.getRectangle(element);
+        const isHitInside = engine.isInsidePoint(rectangle!, point);
+        if (isHitInside) {
+            return isHitInside;
+        }
+
+        if (engine.getTextRectangle) {
+            const textClient = engine.getTextRectangle(element);
+            const isHitTextRectangle = RectangleClient.isPointInRectangle(textClient, point);
+            if (isHitTextRectangle) {
+                return isHitTextRectangle;
             }
         }
     }

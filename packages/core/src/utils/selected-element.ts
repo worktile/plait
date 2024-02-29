@@ -49,7 +49,6 @@ export const getHitElementByPoint = (
     point: Point,
     match: (element: PlaitElement) => boolean = () => true
 ): undefined | PlaitElement => {
-    let rectangleHitElement: PlaitElement | undefined = undefined;
     let hitElement: PlaitElement | undefined = undefined;
     depthFirstRecursion<Ancestor>(
         board,
@@ -64,14 +63,15 @@ export const getHitElementByPoint = (
                 hitElement = node;
                 return;
             }
-            if (!rectangleHitElement && board.isRectangleHit(node, { anchor: point, focus: point })) {
-                rectangleHitElement = node;
+            if (board.isInsidePoint(node, point)) {
+                hitElement = node;
+                return;
             }
         },
         getIsRecursionFunc(board),
         true
     );
-    return hitElement || rectangleHitElement;
+    return hitElement;
 };
 
 export const getHitSelectedElements = (board: PlaitBoard, point: Point) => {
