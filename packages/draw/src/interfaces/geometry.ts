@@ -75,7 +75,7 @@ export interface PlaitDiamond extends PlaitGeometry {
 export const PlaitGeometry = {};
 
 export interface ShapeEngine {
-    isHit: (rectangle: RectangleClient, point: Point) => boolean;
+    isInsidePoint: (rectangle: RectangleClient, point: Point) => boolean;
     getNearestPoint: (rectangle: RectangleClient, point: Point) => Point;
     getNearestCrossingPoint?: (rectangle: RectangleClient, point: Point) => Point;
     getConnectorPoints: (rectangle: RectangleClient) => Point[];

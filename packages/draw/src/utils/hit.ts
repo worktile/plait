@@ -78,7 +78,7 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
         }
         // when shape equals text, fill is not allowed
         if (fill !== DefaultGeometryStyle.fill && fill !== TRANSPARENT && !PlaitDrawElement.isText(element)) {
-            const isHitFillElementInside = engine.isHit(rectangle!, point);
+            const isHitFillElementInside = engine.isInsidePoint(rectangle!, point);
             if (isHitFillElementInside) {
                 return isHitFillElementInside;
             }
