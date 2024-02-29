@@ -50,6 +50,7 @@ export const getHitElementByPoint = (
     match: (element: PlaitElement) => boolean = () => true
 ): undefined | PlaitElement => {
     let hitElement: PlaitElement | undefined = undefined;
+    let hitInsideElement: PlaitElement | undefined = undefined;
     depthFirstRecursion<Ancestor>(
         board,
         node => {
@@ -63,15 +64,23 @@ export const getHitElementByPoint = (
                 hitElement = node;
                 return;
             }
-            if (board.isInsidePoint(node, point)) {
-                hitElement = node;
-                return;
+
+            /**
+             * 需要增加场景测试
+             * hitInsideElement 存的是第一个符合 isInsidePoint 的元素
+             * 当有元素符合 isHit 时结束遍历，并返回 hitElement
+             * 当所有元素都不符合 isHit ，则返回第一个符合 isInsidePoint 的元素
+             * 这样保证最上面的元素优先被探测到；
+             */
+
+            if (!hitInsideElement && board.isInsidePoint(node, point)) {
+                hitInsideElement = node;
             }
         },
         getIsRecursionFunc(board),
         true
     );
-    return hitElement;
+    return hitElement || hitInsideElement;
 };
 
 export const getHitSelectedElements = (board: PlaitBoard, point: Point) => {

@@ -36,6 +36,12 @@ export const isHitPolyLine = (pathPoints: Point[], point: Point) => {
     return distance <= HIT_DISTANCE_BUFFER;
 };
 
+export const isHitLine = (board: PlaitBoard, element: PlaitLine, point: Point) => {
+    const points = getLinePoints(board, element);
+    const isHitText = isHitLineText(board, element, point);
+    return isHitText || isHitPolyLine(points, point);
+};
+
 export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitElement, selection: Selection) => {
     const rangeRectangle = RectangleClient.getRectangleByPoints([selection.anchor, selection.focus]);
     if (PlaitDrawElement.isGeometry(element)) {
@@ -52,13 +58,7 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
     }
     if (PlaitDrawElement.isLine(element)) {
         const points = getLinePoints(board, element);
-        const isHitText = isHitLineText(board, element, selection.focus);
-        const isHit = isHitPolyLine(points, selection.focus) || isHitText;
-        const isContainPolyLinePoint = points.some(point => {
-            return RectangleClient.isHit(rangeRectangle, RectangleClient.getRectangleByPoints([point, point]));
-        });
-        const isIntersect = Point.isEquals(selection.anchor, selection.focus) ? isHit : isPolylineHitRectangle(points, rangeRectangle);
-        return isContainPolyLinePoint || isIntersect;
+        return isPolylineHitRectangle(points, rangeRectangle);
     }
     return null;
 };
@@ -76,9 +76,9 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
         }
         // when shape equals text, fill is not allowed
         if (fill !== DefaultGeometryStyle.fill && fill !== TRANSPARENT && !PlaitDrawElement.isText(element)) {
-            const isHitFillElementInside = engine.isInsidePoint(rectangle!, point);
-            if (isHitFillElementInside) {
-                return isHitFillElementInside;
+            const isHitInside = engine.isInsidePoint(rectangle!, point);
+            if (isHitInside) {
+                return isHitInside;
             }
         } else {
             // if shape equals text, only check text rectangle
@@ -98,8 +98,12 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
             }
         }
     }
-    if (PlaitDrawElement.isImage(element) || PlaitDrawElement.isLine(element)) {
+    if (PlaitDrawElement.isImage(element)) {
         return isRectangleHitDrawElement(board, element, { anchor: point, focus: point });
+    }
+
+    if (PlaitDrawElement.isLine(element)) {
+        return isHitLine(board, element, point);
     }
     return null;
 };
@@ -121,8 +125,13 @@ export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, poi
             }
         }
     }
-    if (PlaitDrawElement.isImage(element) || PlaitDrawElement.isLine(element)) {
+    if (PlaitDrawElement.isImage(element)) {
         return isRectangleHitDrawElement(board, element, { anchor: point, focus: point });
     }
+
+    if (PlaitDrawElement.isLine(element)) {
+        return isHitLine(board, element, point);
+    }
+
     return null;
 };
