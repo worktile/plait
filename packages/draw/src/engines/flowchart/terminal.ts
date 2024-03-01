@@ -26,7 +26,7 @@ export const TerminalEngine: ShapeEngine = {
             getStartEndRadius(rectangle)
         );
     },
-    isHit(rectangle: RectangleClient, point: Point) {
+    isInsidePoint(rectangle: RectangleClient, point: Point) {
         return isPointInRoundRectangle(point, rectangle, getStartEndRadius(rectangle));
     },
     getCornerPoints(rectangle: RectangleClient) {

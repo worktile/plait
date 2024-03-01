@@ -17,7 +17,7 @@ export const EllipseEngine: ShapeEngine = {
         const rs = PlaitBoard.getRoughSVG(board);
         return rs.ellipse(centerPoint[0], centerPoint[1], rectangle.width, rectangle.height, { ...options, fillStyle: 'solid' });
     },
-    isHit(rectangle: RectangleClient, point: Point) {
+    isInsidePoint(rectangle: RectangleClient, point: Point) {
         const centerPoint: Point = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
         return isPointInEllipse(point, centerPoint, rectangle.width / 2, rectangle.height / 2);
     },

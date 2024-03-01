@@ -108,6 +108,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         isWithinSelection: element => false,
         isRectangleHit: element => false,
         isHit: element => false,
+        isInsidePoint: element => false,
         isRecursion: element => true,
         isMovable: element => false,
         getRectangle: element => null,

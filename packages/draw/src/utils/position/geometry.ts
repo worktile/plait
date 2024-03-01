@@ -22,7 +22,7 @@ export const getHitOutlineGeometry = (board: PlaitBoard, point: Point, offset: n
                 let client = RectangleClient.getRectangleByPoints(node.points);
                 client = RectangleClient.getOutlineRectangle(client, offset);
                 const shape = getShape(node);
-                const isHit = getEngine(shape).isHit(client, point);
+                const isHit = getEngine(shape).isInsidePoint(client, point);
                 if (isHit) {
                     geometry = node;
                 }

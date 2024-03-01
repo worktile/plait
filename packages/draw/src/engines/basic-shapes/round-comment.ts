@@ -43,7 +43,7 @@ export const RoundCommentEngine: ShapeEngine = {
             { ...options, fillStyle: 'solid' }
         );
     },
-    isHit(rectangle: RectangleClient, point: Point) {
+    isInsidePoint(rectangle: RectangleClient, point: Point) {
         const points: Point[] = [
             [rectangle.x + rectangle.width / 4, rectangle.y + (rectangle.height * 3) / 4],
             [rectangle.x + rectangle.width / 4, rectangle.y + rectangle.height],

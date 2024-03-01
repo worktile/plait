@@ -26,7 +26,7 @@ export const RoundRectangleEngine: ShapeEngine = {
             getRoundRectangleRadius(rectangle)
         );
     },
-    isHit(rectangle: RectangleClient, point: Point) {
+    isInsidePoint(rectangle: RectangleClient, point: Point) {
         return isPointInRoundRectangle(point, rectangle, getRoundRectangleRadius(rectangle));
     },
     getCornerPoints(rectangle: RectangleClient) {
