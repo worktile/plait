@@ -89,12 +89,10 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
             }
 
             // check textRectangle of element
-            if (engine.getTextRectangle) {
-                const textClient = engine.getTextRectangle(element);
-                const isHitTextRectangle = RectangleClient.isPointInRectangle(textClient, point);
-                if (isHitTextRectangle) {
-                    return isHitTextRectangle;
-                }
+            const textClient = engine.getTextRectangle ? engine.getTextRectangle(element) : getTextRectangle(element);
+            const isHitTextRectangle = RectangleClient.isPointInRectangle(textClient, point);
+            if (isHitTextRectangle) {
+                return isHitTextRectangle;
             }
         }
     }
