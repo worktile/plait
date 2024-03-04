@@ -1,7 +1,7 @@
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
-import { createG, isMainPointer } from '../utils/dom/common';
+import { isMainPointer } from '../utils/dom/common';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import {
     cacheSelectedElements,
@@ -21,7 +21,7 @@ import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
 import { Selection } from '../interfaces/selection';
 import { PRESS_AND_MOVE_BUFFER } from '../constants';
-import { getNewSelectedElements, getRelatedElements } from '../utils/group';
+import { createGroupRectangleG, getNewSelectedElements, getRelatedElements } from '../utils/group';
 
 export interface WithPluginOptions extends PlaitPluginOptions {
     isMultiple: boolean;
@@ -307,25 +307,4 @@ export function createSelectionRectangleG(board: PlaitBoard) {
         return selectionRectangleG;
     }
     return null;
-}
-
-export function createGroupRectangleG(board: PlaitBoard, elements: PlaitElement[]): SVGGElement | null {
-    const selectedElements = getSelectedElements(board);
-    const unSelectedElements = elements.filter(item => !selectedElements.includes(item));
-    if (!unSelectedElements.length) {
-        return null;
-    }
-    const groupRectangleG: SVGGElement = createG();
-    unSelectedElements.forEach(item => {
-        const elements = getRelatedElements(board, [item]);
-        const rectangle = getRectangleByElements(board, elements, false);
-        groupRectangleG.append(
-            drawRectangle(board, rectangle, {
-                stroke: SELECTION_BORDER_COLOR,
-                strokeWidth: ACTIVE_STROKE_WIDTH,
-                strokeLineDash: [5]
-            })
-        );
-    });
-    return groupRectangleG;
 }

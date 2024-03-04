@@ -1,5 +1,8 @@
-import { PlaitBoard, PlaitElement } from '../interfaces';
+import { ACTIVE_STROKE_WIDTH } from '../constants';
+import { PlaitBoard, PlaitElement, SELECTION_BORDER_COLOR } from '../interfaces';
 import { PlaitGroup, PlaitGroupElement } from '../interfaces/group';
+import { createG } from './dom';
+import { drawRectangle } from './drawing/rectangle';
 import { getRectangleByElements } from './element';
 import { getSelectedElements } from './selected-element';
 
@@ -104,3 +107,24 @@ export const getCommonElements = (board: PlaitBoard, elements: PlaitElement[]) =
     });
     return result;
 };
+
+export function createGroupRectangleG(board: PlaitBoard, elements: PlaitElement[]): SVGGElement | null {
+    const selectedElements = getSelectedElements(board);
+    const unSelectedElements = elements.filter(item => !selectedElements.includes(item));
+    if (!unSelectedElements.length) {
+        return null;
+    }
+    const groupRectangleG: SVGGElement = createG();
+    unSelectedElements.forEach(item => {
+        const elements = getRelatedElements(board, [item]);
+        const rectangle = getRectangleByElements(board, elements, false);
+        groupRectangleG.append(
+            drawRectangle(board, rectangle, {
+                stroke: SELECTION_BORDER_COLOR,
+                strokeWidth: ACTIVE_STROKE_WIDTH,
+                strokeLineDash: [5]
+            })
+        );
+    });
+    return groupRectangleG;
+}
