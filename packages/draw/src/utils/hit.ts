@@ -47,16 +47,20 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
     const rangeRectangle = RectangleClient.getRectangleByPoints([selection.anchor, selection.focus]);
     if (PlaitDrawElement.isGeometry(element)) {
         const client = RectangleClient.getRectangleByPoints(element.points);
+        let maxCornerPoints = RectangleClient.getRotateCornerPoints(client, element.angle);
         if (isTextExceedingBounds(element)) {
             const textClient = getTextRectangle(element);
-            return RectangleClient.isHit(rangeRectangle, client) || RectangleClient.isHit(rangeRectangle, textClient);
+            maxCornerPoints = RectangleClient.getRotateCornerPoints(textClient, element.angle);
         }
-        return RectangleClient.isHit(rangeRectangle, client);
+        return isPolylineHitRectangle(maxCornerPoints, rangeRectangle);
     }
+
     if (PlaitDrawElement.isImage(element)) {
         const client = RectangleClient.getRectangleByPoints(element.points);
-        return RectangleClient.isHit(rangeRectangle, client);
+        const cornerPoints = RectangleClient.getRotateCornerPoints(client, element.angle);
+        return isPolylineHitRectangle(cornerPoints, client);
     }
+
     if (PlaitDrawElement.isLine(element)) {
         const points = getLinePoints(board, element);
         return isPolylineHitRectangle(points, rangeRectangle);

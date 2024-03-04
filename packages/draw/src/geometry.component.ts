@@ -123,10 +123,9 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
 
     drawText() {
         this.textManage.draw(this.element.text);
-        const engine = getEngine(this.element.shape);
-        const textRect = engine.getTextRectangle ? engine.getTextRectangle(this.element) : getTextRectangle(this.element);
-        if (textRect && this.element.angle) {
-            setTransformRotate(this.textManage.g, textRect, this.element.angle);
+        const rect = this.board.getRectangle(this.element);
+        if (rect && this.element) {
+            setTransformRotate(this.textManage.g, rect, this.element.angle);
         }
         this.g.append(this.textManage.g);
     }

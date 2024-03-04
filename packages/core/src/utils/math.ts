@@ -134,15 +134,18 @@ export const isLineHitLine = (a: Point, b: Point, c: Point, d: Point): boolean =
     return crossProduct(ab, ac) * crossProduct(ab, ad) <= 0 && crossProduct(cd, ca) * crossProduct(cd, cb) <= 0;
 };
 
-export const isPolylineHitRectangle = (points: Point[], rectangle: RectangleClient) => {
+export const isPolylineHitRectangle = (points: Point[], rectangle: RectangleClient, isClose: boolean = true) => {
     const rectanglePoints = RectangleClient.getCornerPoints(rectangle);
-
-    for (let i = 1; i < points.length; i++) {
+    const len = points.length;
+    for (let i = 0; i < len; i++) {
+        if (i === len - 1 && !isClose) continue;
+        const p1 = points[i];
+        const p2 = points[(i + 1) % len];
         const isIntersect =
-            isLineHitLine(points[i], points[i - 1], rectanglePoints[0], rectanglePoints[1]) ||
-            isLineHitLine(points[i], points[i - 1], rectanglePoints[1], rectanglePoints[2]) ||
-            isLineHitLine(points[i], points[i - 1], rectanglePoints[2], rectanglePoints[3]) ||
-            isLineHitLine(points[i], points[i - 1], rectanglePoints[3], rectanglePoints[0]);
+            isLineHitLine(p1, p2, rectanglePoints[0], rectanglePoints[1]) ||
+            isLineHitLine(p1, p2, rectanglePoints[1], rectanglePoints[2]) ||
+            isLineHitLine(p1, p2, rectanglePoints[2], rectanglePoints[3]) ||
+            isLineHitLine(p1, p2, rectanglePoints[3], rectanglePoints[0]);
         if (isIntersect) {
             return true;
         }
