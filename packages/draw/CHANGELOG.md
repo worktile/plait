@@ -15,7 +15,7 @@
 ### Minor Changes
 
 -   [`72927957`](https://github.com/worktile/plait/commit/729279576c78e16d4016613dba7c58a47c93ed33) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add `getCrossingPointsBetweenPointAndSegment` method in math
-    add utils for vector: `getPointByUnitVectorAndVectorComponent`, `getUnitVectorByPointAndPoint`
+    add utils for vector: `getPointByUnitVectorAndDirectionComponent`, `getUnitVectorByPointAndPoint`
     Use the `getCrossingPointsBetweenPointAndSegment` method to get the associated points (intersection points of the axis and the line segment) that can get points and line segments. It can be used differently from `getNearestPointBetweenPointAndSegment`.
 
 *   [#730](https://github.com/worktile/plait/pull/730) [`7cdb504a`](https://github.com/worktile/plait/commit/7cdb504ad10c49041208ce5d937d6bd4d2271295) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getMirrorDataPoints method to get correctly turning point
