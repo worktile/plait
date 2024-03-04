@@ -7,7 +7,8 @@ import {
     Point,
     distanceBetweenPointAndSegments,
     distanceBetweenPointAndPoint,
-    HIT_DISTANCE_BUFFER
+    HIT_DISTANCE_BUFFER,
+    rotate
 } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { TRANSPARENT } from '@plait/common';
@@ -64,10 +65,14 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
 };
 
 export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point) => {
+    const rectangle = board.getRectangle(element);
+    const centerPoint = RectangleClient.getCenterPoint(rectangle!);
+    if (element.angle) {
+        point = rotate(point[0], point[1], centerPoint[0], centerPoint[1], -element.angle) as Point;
+    }
     if (PlaitDrawElement.isGeometry(element)) {
         const fill = getFillByElement(board, element);
         const engine = getEngine(getShape(element));
-        const rectangle = board.getRectangle(element);
         const nearestPoint = engine.getNearestPoint(rectangle!, point);
         const distance = distanceBetweenPointAndPoint(nearestPoint[0], nearestPoint[1], point[0], point[1]);
         const isHitEdge = distance <= HIT_DISTANCE_BUFFER;
@@ -107,9 +112,13 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
 };
 
 export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, point: Point) => {
+    const rectangle = board.getRectangle(element);
+    const centerPoint = RectangleClient.getCenterPoint(rectangle!);
+    if (element.angle) {
+        point = rotate(point[0], point[1], centerPoint[0], centerPoint[1], -element.angle) as Point;
+    }
     if (PlaitDrawElement.isGeometry(element)) {
         const engine = getEngine(getShape(element));
-        const rectangle = board.getRectangle(element);
         const isHitInside = engine.isInsidePoint(rectangle!, point);
         if (isHitInside) {
             return isHitInside;

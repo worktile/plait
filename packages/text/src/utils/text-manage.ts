@@ -185,7 +185,6 @@ export class TextManage {
         }
 
         this.updateRectangle();
-
         const { width, height } = this.getSize();
         this.options.onValueChangeHandle && this.options.onValueChangeHandle({ width, height });
 
@@ -250,8 +249,12 @@ export class TextManage {
 
     getSize() {
         const editor = this.componentRef.instance.editor;
+        const transformMatrix = this.g.getAttribute('transform');
+        this.g.setAttribute('transform', '');
         const paragraph = AngularEditor.toDOMNode(editor, editor.children[0]);
-        return measureDivSize(paragraph);
+        const { width, height } = measureDivSize(paragraph);
+        this.g.setAttribute('transform', transformMatrix!);
+        return { width, height };
     }
 
     setOnChangeHandle(onChange: ((editor: PlaitTextEditor) => void) | null) {
