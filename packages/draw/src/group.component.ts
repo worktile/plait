@@ -3,6 +3,7 @@ import { ActiveGenerator, CommonPluginElement } from '@plait/common';
 import {
     OnContextChanged,
     PlaitBoard,
+    PlaitGroup,
     PlaitPluginElementContext,
     getCommonElements,
     getElementsByGroup,
@@ -10,7 +11,6 @@ import {
     getSelectedElements,
     isSelectionMoving
 } from '@plait/core';
-import { PlaitGroup } from './interfaces/group';
 import { GroupGenerator } from './generators/group.generator';
 
 @Component({

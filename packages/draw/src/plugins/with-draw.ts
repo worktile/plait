@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, PlaitPluginElementContext, RectangleClient, Selection, getRectangleByGroup, getSelectedElements } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitGroupElement, PlaitPluginElementContext, RectangleClient, Selection, getRectangleByGroup, getSelectedElements } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
@@ -17,7 +17,6 @@ import { withLineTextMove } from './with-line-text-move';
 import { withDrawResize } from './with-draw-resize';
 import { isHitDrawElement, isRectangleHitDrawElement } from '../utils/hit';
 import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
-import { PlaitGroupElement } from '../interfaces/group';
 import { GroupComponent } from '../group.component';
 
 export const withDraw = (board: PlaitBoard) => {

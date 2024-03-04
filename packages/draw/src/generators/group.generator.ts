@@ -1,6 +1,5 @@
 import { Generator } from '@plait/common';
-import { ACTIVE_STROKE_WIDTH, drawRectangle, getRectangleByGroup } from '@plait/core';
-import { PlaitGroup } from '../interfaces/group';
+import { ACTIVE_STROKE_WIDTH, PlaitGroup, drawRectangle, getRectangleByGroup } from '@plait/core';
 import { Options } from 'roughjs/bin/core';
 
 export class GroupGenerator extends Generator<PlaitGroup> {
