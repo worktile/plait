@@ -1,5 +1,11 @@
 # plait
 
+## 0.51.2
+
+### Patch Changes
+
+-   [`5679c8bd`](https://github.com/worktile/plait/commit/5679c8bd40461ca1339d334557a40930bd985689) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add return to stop moving for special scene
+
 ## 0.51.1
 
 ## 0.51.0

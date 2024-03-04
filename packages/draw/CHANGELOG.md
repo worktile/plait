@@ -1,5 +1,13 @@
 # @plait/draw
 
+## 0.51.2
+
+### Patch Changes
+
+-   [#766](https://github.com/worktile/plait/pull/766) [`d102c69d`](https://github.com/worktile/plait/commit/d102c69d353b66b015917c758750504bf3bd71be) Thanks [@MissLixf](https://github.com/MissLixf)! - judge the edge of the element use getNearestPoint
+    rename the isHit in engine to isInsidePoint
+    add isInsidePoint for board
+
 ## 0.51.1
 
 ## 0.51.0
