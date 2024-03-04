@@ -1,7 +1,7 @@
 import { PlaitBoard } from '../interfaces/board';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
-import { isMainPointer } from '../utils/dom/common';
+import { createG, isMainPointer } from '../utils/dom/common';
 import { RectangleClient } from '../interfaces/rectangle-client';
 import {
     cacheSelectedElements,
@@ -21,6 +21,7 @@ import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
 import { Selection } from '../interfaces/selection';
 import { PRESS_AND_MOVE_BUFFER } from '../constants';
+import { getNewSelectedElements, getRelatedElements } from '../utils/group';
 
 export interface WithPluginOptions extends PlaitPluginOptions {
     isMultiple: boolean;
@@ -34,6 +35,7 @@ export function withSelection(board: PlaitBoard) {
     let selectionMovingG: SVGGElement;
     let selectionRectangleG: SVGGElement | null;
     let previousSelectedElements: PlaitElement[];
+    let groupRectangleG: SVGGElement | null;
     let isShift = false;
     let isTextSelection = false;
 
@@ -73,25 +75,35 @@ export function withSelection(board: PlaitBoard) {
             // prevent text from being selected
             event.preventDefault();
         }
-        if (start && PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
+        groupRectangleG?.remove();
+        if (PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
             const movedTarget = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-            const rectangle = RectangleClient.getRectangleByPoints([start, movedTarget]);
-            selectionMovingG?.remove();
-            if (Math.hypot(rectangle.width, rectangle.height) > PRESS_AND_MOVE_BUFFER || isSelectionMoving(board)) {
-                end = movedTarget;
-                throttleRAF(board, 'with-selection', () => {
-                    if (start && end) {
-                        Transforms.setSelection(board, { anchor: start, focus: end });
-                    }
-                });
-                setSelectionMoving(board);
-                selectionMovingG = drawRectangle(board, rectangle, {
-                    stroke: SELECTION_BORDER_COLOR,
-                    strokeWidth: 1,
-                    fill: SELECTION_FILL_COLOR,
-                    fillStyle: 'solid'
-                });
-                PlaitBoard.getElementActiveHost(board).append(selectionMovingG);
+            let selection: Selection = { anchor: movedTarget, focus: movedTarget };
+            if (start) {
+                const rectangle = RectangleClient.getRectangleByPoints([start, movedTarget]);
+                selectionMovingG?.remove();
+                if (Math.hypot(rectangle.width, rectangle.height) > PRESS_AND_MOVE_BUFFER || isSelectionMoving(board)) {
+                    end = movedTarget;
+                    selection = { anchor: start, focus: end };
+                    throttleRAF(board, 'with-selection', () => {
+                        if (start && end) {
+                            Transforms.setSelection(board, selection);
+                        }
+                    });
+                    setSelectionMoving(board);
+                    selectionMovingG = drawRectangle(board, rectangle, {
+                        stroke: SELECTION_BORDER_COLOR,
+                        strokeWidth: 1,
+                        fill: SELECTION_FILL_COLOR,
+                        fillStyle: 'solid'
+                    });
+                    PlaitBoard.getElementActiveHost(board).append(selectionMovingG);
+                }
+            }
+            const hitElements = getHitElementsBySelection(board, selection);
+            if (hitElements.length) {
+                groupRectangleG = createGroupRectangleG(board, hitElements);
+                groupRectangleG && PlaitBoard.getElementActiveHost(board).append(groupRectangleG);
             }
         }
         pointerMove(event);
@@ -129,7 +141,7 @@ export function withSelection(board: PlaitBoard) {
                 Transforms.setSelection(board, null);
             }
         }
-
+        groupRectangleG?.remove();
         start = null;
         end = null;
         isTextSelection = false;
@@ -158,6 +170,7 @@ export function withSelection(board: PlaitBoard) {
                 if (!options.isMultiple && elements.length > 1) {
                     elements = [elements[0]];
                 }
+                const hitElementsWithGroup = elements.some(item => item.groupId);
                 if (isShift) {
                     if (board.selection && Selection.isCollapsed(board.selection)) {
                         const newSelectedElements = [...getSelectedElements(board)];
@@ -179,8 +192,18 @@ export function withSelection(board: PlaitBoard) {
                         cacheSelectedElements(board, newSelectedElements);
                     }
                 } else {
-                    const newSelectedElements = [...elements];
-                    cacheSelectedElements(board, newSelectedElements);
+                    let newSelectedElements = [...elements];
+                    if (hitElementsWithGroup) {
+                        if (isSelectionMoving(board)) {
+                            clearSelectedElement(board);
+                            newSelectedElements = getRelatedElements(board, elements);
+                        } else {
+                            newSelectedElements = getNewSelectedElements(board, elements);
+                            cacheSelectedElements(board, newSelectedElements);
+                        }
+                    } else {
+                        cacheSelectedElements(board, newSelectedElements);
+                    }
                 }
                 const newElements = getSelectedElements(board);
                 previousSelectedElements = newElements;
@@ -284,4 +307,25 @@ export function createSelectionRectangleG(board: PlaitBoard) {
         return selectionRectangleG;
     }
     return null;
+}
+
+export function createGroupRectangleG(board: PlaitBoard, elements: PlaitElement[]): SVGGElement | null {
+    const selectedElements = getSelectedElements(board);
+    const unSelectedElements = elements.filter(item => !selectedElements.includes(item));
+    if (!unSelectedElements.length) {
+        return null;
+    }
+    const groupRectangleG: SVGGElement = createG();
+    unSelectedElements.forEach(item => {
+        const elements = getRelatedElements(board, [item]);
+        const rectangle = getRectangleByElements(board, elements, false);
+        groupRectangleG.append(
+            drawRectangle(board, rectangle, {
+                stroke: SELECTION_BORDER_COLOR,
+                strokeWidth: ACTIVE_STROKE_WIDTH,
+                strokeLineDash: [5]
+            })
+        );
+    });
+    return groupRectangleG;
 }

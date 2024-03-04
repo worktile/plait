@@ -1,9 +1,17 @@
 import { OnInit, OnDestroy, ViewContainerRef, ChangeDetectorRef, ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActiveGenerator, CommonPluginElement } from '@plait/common';
-import { OnContextChanged, PlaitBoard, PlaitPluginElementContext, isSelectionMoving } from '@plait/core';
+import {
+    OnContextChanged,
+    PlaitBoard,
+    PlaitPluginElementContext,
+    getCommonElements,
+    getElementsByGroup,
+    getRectangleByGroup,
+    getSelectedElements,
+    isSelectionMoving
+} from '@plait/core';
 import { PlaitGroup } from './interfaces/group';
 import { GroupGenerator } from './generators/group.generator';
-import { getRectangleByGroup } from './utils/group';
 
 @Component({
     selector: 'plait-group',
@@ -38,11 +46,22 @@ export class GroupComponent extends CommonPluginElement<PlaitGroup, PlaitBoard>
     ngOnInit(): void {
         super.ngOnInit();
         this.initializeGenerator();
-        this.groupGenerator.processDrawing(this.element, this.g);
     }
 
     onContextChanged(
         value: PlaitPluginElementContext<PlaitGroup, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitGroup, PlaitBoard>
-    ) {}
+    ) {
+        const selectedElements = getSelectedElements(this.board);
+        const groupElements = getElementsByGroup(this.board, value.element, true);
+       
+        let isPartialSelected = false;
+        if (groupElements.some(item => selectedElements.includes(item)) && !groupElements.every(item => selectedElements.includes(item))) {
+            const commonElements = getCommonElements(this.board, selectedElements);
+            if (commonElements.some(item => item.groupId === value.element.id)) {
+                isPartialSelected = true;
+            }
+        }
+        this.groupGenerator.processDrawing(value.element, this.g, isPartialSelected);
+    }
 }

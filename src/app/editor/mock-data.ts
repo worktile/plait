@@ -349,7 +349,7 @@ export const mockGroupData: PlaitDrawElement[] = [
     {
         id: 'group2',
         type: 'group',
-        parentId: 'group3'
+        groupId: 'group3'
     },
     {
         id: 'group3',
@@ -362,7 +362,7 @@ export const mockGroupData: PlaitDrawElement[] = [
         angle: 0,
         opacity: 1,
         textHeight: 20,
-        parentId: 'group1',
+        groupId: 'group1',
         text: {
             children: [
                 {
@@ -385,7 +385,7 @@ export const mockGroupData: PlaitDrawElement[] = [
         angle: 0,
         opacity: 1,
         textHeight: 20,
-        parentId: 'group1',
+        groupId: 'group1',
         text: {
             children: [
                 {
@@ -408,7 +408,7 @@ export const mockGroupData: PlaitDrawElement[] = [
         angle: 0,
         opacity: 1,
         textHeight: 20,
-        parentId: 'group3',
+        groupId: 'group3',
         text: {
             children: [
                 {
@@ -451,7 +451,7 @@ export const mockGroupData: PlaitDrawElement[] = [
         angle: 0,
         opacity: 1,
         textHeight: 20,
-        parentId: 'group2',
+        groupId: 'group2',
         text: {
             children: [
                 {
@@ -474,7 +474,7 @@ export const mockGroupData: PlaitDrawElement[] = [
         angle: 0,
         opacity: 1,
         textHeight: 20,
-        parentId: 'group2',
+        groupId: 'group2',
         text: {
             children: [
                 {
