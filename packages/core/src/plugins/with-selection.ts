@@ -102,7 +102,8 @@ export function withSelection(board: PlaitBoard) {
             }
             const hitElements = getHitElementsBySelection(board, selection);
             if (hitElements.length) {
-                groupRectangleG = createGroupRectangleG(board, hitElements);
+                const elementWithGroup = hitElements.filter(item=> item.groupId);
+                groupRectangleG = createGroupRectangleG(board, elementWithGroup);
                 groupRectangleG && PlaitBoard.getElementActiveHost(board).append(groupRectangleG);
             }
         }
