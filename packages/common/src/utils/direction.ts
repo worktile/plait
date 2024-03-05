@@ -88,7 +88,7 @@ export function getDirectionFactor(direction: Direction) {
     return handleDirectionFactors[direction];
 }
 
-export function getDirectionFactorByVectorComponent(vectorComponent: number): DirectionFactor {
-    const directionFactor = vectorComponent === 0 ? vectorComponent : vectorComponent / Math.abs(vectorComponent);
+export function getDirectionFactorByDirectionComponent(directionComponent: number): DirectionFactor {
+    const directionFactor = directionComponent === 0 ? directionComponent : directionComponent / Math.abs(directionComponent);
     return directionFactor as DirectionFactor;
 }

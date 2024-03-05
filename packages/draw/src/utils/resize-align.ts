@@ -1,6 +1,6 @@
 import { PlaitBoard, Point, RectangleClient, getRectangleByElements, PlaitElement, DirectionFactor } from '@plait/core';
 import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
-import { ResizeRef, ResizeState, getDirectionFactorByVectorComponent, getUnitVectorByPointAndPoint } from '@plait/common';
+import { ResizeRef, ResizeState, getDirectionFactorByDirectionComponent, getUnitVectorByPointAndPoint } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
 import { ResizeAlignReaction, ResizeAlignRef } from './resize-align-reaction';
 
@@ -44,7 +44,7 @@ export function getResizeAlignRef(
         activeRectangle,
         originPoint,
         handlePoint,
-        directionFactors: [getDirectionFactorByVectorComponent(x), getDirectionFactorByVectorComponent(y)],
+        directionFactors: [getDirectionFactorByDirectionComponent(x), getDirectionFactorByDirectionComponent(y)],
         isAspectRatio,
         isFromCorner
     });
