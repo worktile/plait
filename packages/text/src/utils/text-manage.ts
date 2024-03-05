@@ -140,9 +140,7 @@ export class TextManage {
     }
 
     updateAngle(centerPoint: Point, angle: number = 0) {
-        if (centerPoint) {
-            setAngleForG(this.g, centerPoint, angle);
-        }
+        setAngleForG(this.g, centerPoint, angle);
     }
 
     updateRectangle(rectangle?: RectangleClient) {
