@@ -1,5 +1,13 @@
 # @plait/draw
 
+## 0.51.2
+
+### Patch Changes
+
+-   [#766](https://github.com/worktile/plait/pull/766) [`d102c69d`](https://github.com/worktile/plait/commit/d102c69d353b66b015917c758750504bf3bd71be) Thanks [@MissLixf](https://github.com/MissLixf)! - judge the edge of the element use getNearestPoint
+    rename the isHit in engine to isInsidePoint
+    add isInsidePoint for board
+
 ## 0.51.1
 
 ## 0.51.0
@@ -7,7 +15,7 @@
 ### Minor Changes
 
 -   [`72927957`](https://github.com/worktile/plait/commit/729279576c78e16d4016613dba7c58a47c93ed33) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add `getCrossingPointsBetweenPointAndSegment` method in math
-    add utils for vector: `getPointByUnitVectorAndVectorComponent`, `getUnitVectorByPointAndPoint`
+    add utils for vector: `getPointByUnitVectorAndDirectionComponent`, `getUnitVectorByPointAndPoint`
     Use the `getCrossingPointsBetweenPointAndSegment` method to get the associated points (intersection points of the axis and the line segment) that can get points and line segments. It can be used differently from `getNearestPointBetweenPointAndSegment`.
 
 *   [#730](https://github.com/worktile/plait/pull/730) [`7cdb504a`](https://github.com/worktile/plait/commit/7cdb504ad10c49041208ce5d937d6bd4d2271295) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getMirrorDataPoints method to get correctly turning point
@@ -34,7 +42,7 @@
 -   [#743](https://github.com/worktile/plait/pull/743) [`c8b3e730`](https://github.com/worktile/plait/commit/c8b3e730b6002df0d4226a7901c9718f6d9780ed) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix get vector error when resize to other side
 
 *   [#744](https://github.com/worktile/plait/pull/744) [`712ccb12`](https://github.com/worktile/plait/commit/712ccb12a6113c5b59eb48b022732824ff529044) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - optimize the code for drawing equal lines
-    add getDirectionFactorByVectorComponent
+    add getDirectionFactorByDirectionComponent
 
 -   [#737](https://github.com/worktile/plait/pull/737) [`91d1685c`](https://github.com/worktile/plait/commit/91d1685c62c4ac4b7717da315e3a32a0838f1174) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - isHorizontalSegment renamed to isOverHorizontal
     isVerticalSegment renamed to isOverVertical

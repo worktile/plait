@@ -9,6 +9,7 @@ export interface PlaitElement {
     children?: PlaitElement[];
     points?: Point[];
     type?: string;
+    groupId?: string;
 }
 
 export const PlaitElement = {

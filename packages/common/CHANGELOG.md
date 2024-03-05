@@ -1,5 +1,7 @@
 # @plait/common
 
+## 0.51.2
+
 ## 0.51.1
 
 ## 0.51.0
@@ -7,7 +9,7 @@
 ### Minor Changes
 
 -   [`72927957`](https://github.com/worktile/plait/commit/729279576c78e16d4016613dba7c58a47c93ed33) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add `getCrossingPointsBetweenPointAndSegment` method in math
-    add utils for vector: `getPointByUnitVectorAndVectorComponent`, `getUnitVectorByPointAndPoint`
+    add utils for vector: `getPointByUnitVectorAndDirectionComponent`, `getUnitVectorByPointAndPoint`
     Use the `getCrossingPointsBetweenPointAndSegment` method to get the associated points (intersection points of the axis and the line segment) that can get points and line segments. It can be used differently from `getNearestPointBetweenPointAndSegment`.
 
 *   [#742](https://github.com/worktile/plait/pull/742) [`1c3cfa4d`](https://github.com/worktile/plait/commit/1c3cfa4d35c9d7b1d1c2c553546a81337e89bdfc) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - throttleRAF support set key and board to avoid the effect of multiple scene call
@@ -25,7 +27,7 @@
 ### Patch Changes
 
 -   [#744](https://github.com/worktile/plait/pull/744) [`712ccb12`](https://github.com/worktile/plait/commit/712ccb12a6113c5b59eb48b022732824ff529044) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - optimize the code for drawing equal lines
-    add getDirectionFactorByVectorComponent
+    add getDirectionFactorByDirectionComponent
 
 *   [#737](https://github.com/worktile/plait/pull/737) [`91d1685c`](https://github.com/worktile/plait/commit/91d1685c62c4ac4b7717da315e3a32a0838f1174) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - isHorizontalSegment renamed to isOverHorizontal
     isVerticalSegment renamed to isOverVertical

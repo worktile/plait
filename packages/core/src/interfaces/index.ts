@@ -15,3 +15,4 @@ export * from './history';
 export * from './plugin-key';
 export * from './theme';
 export * from './direction';
+export * from './group';

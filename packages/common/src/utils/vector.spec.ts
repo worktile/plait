@@ -1,5 +1,5 @@
 import { Point } from '@plait/core';
-import { getPointByUnitVectorAndVectorComponent, getUnitVectorByPointAndPoint } from './vector';
+import { getPointByUnitVectorAndDirectionComponent, getUnitVectorByPointAndPoint } from './vector';
 
 describe('vector', () => {
     describe('get unit vector by point and point', () => {
@@ -45,10 +45,10 @@ describe('vector', () => {
             const end = [0, 0] as Point;
             const horizontalComponent = -50;
             const unitVector = getUnitVectorByPointAndPoint(start, end);
-            const result1 = getPointByUnitVectorAndVectorComponent(start, unitVector, horizontalComponent, true);
+            const result1 = getPointByUnitVectorAndDirectionComponent(start, unitVector, horizontalComponent, true);
             expect(result1[0]).toEqual(150);
             expect(result1[1]).toEqual(75);
-            const result2 = getPointByUnitVectorAndVectorComponent(start, unitVector, -horizontalComponent, true);
+            const result2 = getPointByUnitVectorAndDirectionComponent(start, unitVector, -horizontalComponent, true);
             expect(result2[0]).toEqual(250);
             expect(result2[1]).toEqual(125);
         });
@@ -57,10 +57,10 @@ describe('vector', () => {
             const end = [0, 0] as Point;
             const verticalComponent = -50;
             const unitVector = getUnitVectorByPointAndPoint(start, end);
-            const result1 = getPointByUnitVectorAndVectorComponent(start, unitVector, verticalComponent, false);
+            const result1 = getPointByUnitVectorAndDirectionComponent(start, unitVector, verticalComponent, false);
             expect(result1[0]).toEqual(100);
             expect(result1[1]).toEqual(50);
-            const result2 = getPointByUnitVectorAndVectorComponent(start, unitVector, -verticalComponent, false);
+            const result2 = getPointByUnitVectorAndDirectionComponent(start, unitVector, -verticalComponent, false);
             expect(result2[0]).toEqual(300);
             expect(result2[1]).toEqual(150);
         });

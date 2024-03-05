@@ -424,3 +424,154 @@ export const mockDrawData: PlaitDrawElement[] = [
     //     strokeWidth: 2
     // }
 ] as PlaitDrawElement[];
+
+export const mockGroupData: PlaitDrawElement[] = [
+    {
+        id: 'group1',
+        type: 'group'
+    },
+    {
+        id: 'group2',
+        type: 'group',
+        groupId: 'group3'
+    },
+    {
+        id: 'group3',
+        type: 'group'
+    },
+    {
+        id: 'jimNt',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        groupId: 'group1',
+        text: {
+            children: [
+                {
+                    text: 'group1'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-98.814453125, 66.53125],
+            [55.880859375, 126.71875]
+        ],
+        strokeWidth: 2,
+        fill: '#e48483'
+    },
+    {
+        id: 'bRBzf',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        groupId: 'group1',
+        text: {
+            children: [
+                {
+                    text: 'group1'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [136.806640625, 66.53125],
+            [291.501953125, 126.71875]
+        ],
+        strokeWidth: 2,
+        fill: '#e48483'
+    },
+    {
+        id: 'erasy',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        groupId: 'group3',
+        text: {
+            children: [
+                {
+                    text: 'group3'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [19.580078125, 318.6376953125],
+            [174.275390625, 378.8251953125]
+        ],
+        strokeWidth: 2,
+        fill: '#69b1e4'
+    },
+    {
+        id: 'YcTFs',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: 'group3 包含 group2'
+                }
+            ]
+        },
+        points: [
+            [-275.482421875, 302.318359375],
+            [-138.091796875, 322.318359375]
+        ],
+        autoSize: true
+    },
+    {
+        id: 'ztmWw',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        groupId: 'group2',
+        text: {
+            children: [
+                {
+                    text: 'group2'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-98.814453125, 197.279296875],
+            [55.880859375, 257.466796875]
+        ],
+        strokeWidth: 2,
+        fill: '#e48483'
+    },
+    {
+        id: 'bWiPp',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        groupId: 'group2',
+        text: {
+            children: [
+                {
+                    text: 'group2'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [139.3486328125, 197.279296875],
+            [294.0439453125, 257.466796875]
+        ],
+        strokeWidth: 2,
+        fill: '#e48483'
+    }
+] as PlaitDrawElement[];

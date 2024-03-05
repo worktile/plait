@@ -70,7 +70,7 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
         const points = getLinePoints(board, element);
         return isPolylineHitRectangle(points, rangeRectangle);
     }
-    return null;
+   return null;
 };
 
 export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point) => {

@@ -1,4 +1,14 @@
-import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, RectangleClient, Selection, getSelectedElements } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitElement,
+    PlaitGroupElement,
+    PlaitPluginElementContext,
+    Point,
+    RectangleClient,
+    Selection,
+    getRectangleByGroup,
+    getSelectedElements
+} from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
@@ -17,6 +27,7 @@ import { withLineTextMove } from './with-line-text-move';
 import { withDrawResize } from './with-draw-resize';
 import { isHitDrawElement, isHitElementInside, isRectangleHitDrawElement } from '../utils/hit';
 import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
+import { GroupComponent } from '../group.component';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;
@@ -28,6 +39,8 @@ export const withDraw = (board: PlaitBoard) => {
             return LineComponent;
         } else if (PlaitDrawElement.isImage(context.element)) {
             return ImageComponent;
+        } else if (PlaitGroupElement.isGroup(context.element)) {
+            return GroupComponent;
         }
         return drawElement(context);
     };
@@ -47,6 +60,9 @@ export const withDraw = (board: PlaitBoard) => {
         }
         if (PlaitDrawElement.isImage(element)) {
             return RectangleClient.getRectangleByPoints(element.points);
+        }
+        if (PlaitGroupElement.isGroup(element)) {
+            return getRectangleByGroup(board, element);
         }
         return getRectangle(element);
     };

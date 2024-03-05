@@ -25,3 +25,5 @@ export * from './clipboard';
 export * from './touch';
 export * from './dnd';
 export * from './to-point';
+export * from './group';
+export * from './selection';

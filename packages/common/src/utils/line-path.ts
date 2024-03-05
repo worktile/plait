@@ -2,24 +2,11 @@ import { Direction, Point, distanceBetweenPointAndPoint } from '@plait/core';
 import { getDirectionFactor } from './direction';
 import { isPointOnSegment } from './math';
 
-export function getOppositeDirection(direction: Direction) {
-    switch (direction) {
-        case Direction.left:
-            return Direction.right;
-        case Direction.right:
-            return Direction.left;
-        case Direction.top:
-            return Direction.bottom;
-        case Direction.bottom:
-            return Direction.top;
-    }
-}
-
 export const getPoints = (source: Point, sourcePosition: Direction, target: Point, targetPosition: Direction, offset: number) => {
-    const sourceDir = getDirectionFactor(sourcePosition);
-    const targetDir = getDirectionFactor(targetPosition);
-    const sourceGapped: Point = [source[0] + sourceDir.x * offset, source[1] + sourceDir.y * offset];
-    const targetGapped: Point = [target[0] + targetDir.x * offset, target[1] + targetDir.y * offset];
+    const sourceDirectionFactors = getDirectionFactor(sourcePosition);
+    const targetDFs = getDirectionFactor(targetPosition);
+    const sourceGapped: Point = [source[0] + sourceDirectionFactors.x * offset, source[1] + sourceDirectionFactors.y * offset];
+    const targetGapped: Point = [target[0] + targetDFs.x * offset, target[1] + targetDFs.y * offset];
     const dir = getDirection(sourceGapped, sourcePosition, targetGapped);
     const dirAccessor = dir.x !== 0 ? 'x' : 'y';
     const currDir = dir[dirAccessor];
@@ -33,7 +20,7 @@ export const getPoints = (source: Point, sourcePosition: Direction, target: Poin
         targetY: target[1]
     });
     // opposite handle positions, default case
-    if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
+    if (sourceDirectionFactors[dirAccessor] * targetDFs[dirAccessor] === -1) {
         centerX = defaultCenterX;
         centerY = defaultCenterY;
         //    --->
@@ -50,7 +37,7 @@ export const getPoints = (source: Point, sourcePosition: Direction, target: Poin
             [sourceGapped[0], centerY],
             [targetGapped[0], centerY]
         ];
-        if (sourceDir[dirAccessor] === currDir) {
+        if (sourceDirectionFactors[dirAccessor] === currDir) {
             points = dirAccessor === 'x' ? verticalSplit : horizontalSplit;
         } else {
             points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
@@ -61,21 +48,21 @@ export const getPoints = (source: Point, sourcePosition: Direction, target: Poin
         const targetSource: Point[] = [[targetGapped[0], sourceGapped[1]]];
         // this handles edges with same handle positions
         if (dirAccessor === 'x') {
-            points = sourceDir.x === currDir ? targetSource : sourceTarget;
+            points = sourceDirectionFactors.x === currDir ? targetSource : sourceTarget;
         } else {
-            points = sourceDir.y === currDir ? sourceTarget : targetSource;
+            points = sourceDirectionFactors.y === currDir ? sourceTarget : targetSource;
         }
 
         // these are conditions for handling mixed handle positions like right -> bottom for example
         let flipSourceTarget;
         if (sourcePosition !== targetPosition) {
             const dirAccessorOpposite = dirAccessor === 'x' ? 1 : 0;
-            const isSameDir = sourceDir[dirAccessor] === targetDir[dirAccessor === 'x' ? 'y' : 'x'];
+            const isSameDir = sourceDirectionFactors[dirAccessor] === targetDFs[dirAccessor === 'x' ? 'y' : 'x'];
             const sourceGtTarget = sourceGapped[dirAccessorOpposite] > targetGapped[dirAccessorOpposite];
             const sourceLtTarget = sourceGapped[dirAccessorOpposite] < targetGapped[dirAccessorOpposite];
             flipSourceTarget =
-                (sourceDir[dirAccessor] === 1 && ((!isSameDir && sourceGtTarget) || (isSameDir && sourceLtTarget))) ||
-                (sourceDir[dirAccessor] !== 1 && ((!isSameDir && sourceLtTarget) || (isSameDir && sourceGtTarget)));
+                (sourceDirectionFactors[dirAccessor] === 1 && ((!isSameDir && sourceGtTarget) || (isSameDir && sourceLtTarget))) ||
+                (sourceDirectionFactors[dirAccessor] !== 1 && ((!isSameDir && sourceLtTarget) || (isSameDir && sourceGtTarget)));
 
             if (flipSourceTarget) {
                 points = dirAccessor === 'x' ? sourceTarget : targetSource;

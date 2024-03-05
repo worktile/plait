@@ -1,5 +1,5 @@
 import { Point, distanceBetweenPointAndPoint } from '@plait/core';
-import { getPointByUnitVectorAndVectorComponent, getUnitVectorByPointAndPoint } from './vector';
+import { getPointByUnitVectorAndDirectionComponent, getUnitVectorByPointAndPoint } from './vector';
 
 export function isPointOnSegment(point: Point, startPoint: Point, endPoint: Point) {
     const distanceToStart = distanceBetweenPointAndPoint(point[0], point[1], startPoint[0], startPoint[1]);
@@ -14,10 +14,10 @@ export const getCrossingPointsBetweenPointAndSegment = (point: Point, startPoint
     const yRange = [Math.min(startPoint[1], endPoint[1]), Math.max(startPoint[1], endPoint[1])];
     const unitVector = getUnitVectorByPointAndPoint(startPoint, endPoint);
     if (point[0] >= xRange[0] && point[0] <= xRange[1]) {
-        const crossingPoint = getPointByUnitVectorAndVectorComponent(startPoint, unitVector, point[0] - startPoint[0], true) as Point;
+        const crossingPoint = getPointByUnitVectorAndDirectionComponent(startPoint, unitVector, point[0] - startPoint[0], true) as Point;
         result.push(crossingPoint);
     } else if (point[1] >= yRange[0] && point[1] <= yRange[1]) {
-        const crossingPoint = getPointByUnitVectorAndVectorComponent(startPoint, unitVector, point[1] - startPoint[1], false) as Point;
+        const crossingPoint = getPointByUnitVectorAndDirectionComponent(startPoint, unitVector, point[1] - startPoint[1], false) as Point;
         result.push(crossingPoint);
     }
     return result;
