@@ -28,7 +28,7 @@ export function createPolygonEngine(options: CreateOptions): ShapeEngine {
             setStrokeLinecap(polygon, 'round');
             return polygon;
         },
-        isHit(rectangle: RectangleClient, point: Point) {
+        isInsidePoint(rectangle: RectangleClient, point: Point) {
             const points = getPoints(rectangle);
             return isPointInPolygon(point, points);
         },

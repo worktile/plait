@@ -1,5 +1,57 @@
 # @plait/common
 
+## 0.51.2
+
+## 0.51.1
+
+## 0.51.0
+
+### Minor Changes
+
+-   [`72927957`](https://github.com/worktile/plait/commit/729279576c78e16d4016613dba7c58a47c93ed33) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add `getCrossingPointsBetweenPointAndSegment` method in math
+    add utils for vector: `getPointByUnitVectorAndDirectionComponent`, `getUnitVectorByPointAndPoint`
+    Use the `getCrossingPointsBetweenPointAndSegment` method to get the associated points (intersection points of the axis and the line segment) that can get points and line segments. It can be used differently from `getNearestPointBetweenPointAndSegment`.
+
+*   [#742](https://github.com/worktile/plait/pull/742) [`1c3cfa4d`](https://github.com/worktile/plait/commit/1c3cfa4d35c9d7b1d1c2c553546a81337e89bdfc) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - throttleRAF support set key and board to avoid the effect of multiple scene call
+
+-   [#714](https://github.com/worktile/plait/pull/714) [`541bd50d`](https://github.com/worktile/plait/commit/541bd50dc64477d526ca959635b2ff3ad7494f70) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - elbow-line supports dragging to adjust the inflection point
+    extract getSourceAndTargetOuterRectangle to common
+    extract isSourceAndTargetIntersect to common
+    add isHorizontalSegment to core
+    add isVerticalSegment to core
+    add isPointsOnSameLine to core
+    refactor getElbowPoints when points.length > 2
+
+*   [#709](https://github.com/worktile/plait/pull/709) [`469acbd1`](https://github.com/worktile/plait/commit/469acbd1fc945b1b68497f85d112feecba29d743) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support resize entire draw elements
+
+### Patch Changes
+
+-   [#744](https://github.com/worktile/plait/pull/744) [`712ccb12`](https://github.com/worktile/plait/commit/712ccb12a6113c5b59eb48b022732824ff529044) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - optimize the code for drawing equal lines
+    add getDirectionFactorByVectorComponent
+
+*   [#737](https://github.com/worktile/plait/pull/737) [`91d1685c`](https://github.com/worktile/plait/commit/91d1685c62c4ac4b7717da315e3a32a0838f1174) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - isHorizontalSegment renamed to isOverHorizontal
+    isVerticalSegment renamed to isOverVertical
+    isPointsOnSameLine renamed to isAlign
+    move the three method to Point instance
+    move getRectangleByPoints to RectangleClient instance
+
+-   [#719](https://github.com/worktile/plait/pull/719) [`fb5688e9`](https://github.com/worktile/plait/commit/fb5688e927d2ed73b50aa3b5dd52a173d447b0f7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename removeIntermediatePointsInSegment to simplifyOrthogonalPoints and fix it's issue
+
+*   [`de835ae1`](https://github.com/worktile/plait/commit/de835ae19e9bc26fc6d53cb1ff486b0433c3f0e7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add correctly isShift state in common with resize
+
+-   [`66219f5a`](https://github.com/worktile/plait/commit/66219f5a2c98c10da76aeb9e13cf781c90e49288) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Solve the precision issue of floating point number operations
+    Extract getCornerPointsByPoints to obtain corner points (avoid obtaining corner point via floating point operations)
+
+*   [#723](https://github.com/worktile/plait/pull/723) [`e78b3bed`](https://github.com/worktile/plait/commit/e78b3bedeee8f1d33483595c2bbb3375369dba80) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - merge same points after line resize
+
+-   [`5a8ba4dd`](https://github.com/worktile/plait/commit/5a8ba4dd1889547d2b9f46a4668a2569aa89dee5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use simplified orthogonal points to get turn count and remove getCornerCount
+
+*   [`6ebef0fd`](https://github.com/worktile/plait/commit/6ebef0fdc46af7f995f7d52fefa0ada7930ec991) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Correct the abnormal problem of orthogonal data points and ensure that the connection between two points of the orthogonal line must be a horizontal or vertical line segment
+
+-   [`6fc12925`](https://github.com/worktile/plait/commit/6fc129250950de940a73687d4cdeda8d2b88a940) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename isPointOnLineSegment to isPointOnSegment and move to math file
+    rename xAxis/yAxis to centerX/centerY
+    rename getEdgeOnPolygonByPoint to getPolygonEdgeByConnectionPoint
+
 ## 0.50.1
 
 ### Patch Changes

@@ -172,16 +172,16 @@ export const isPointInPolygon = (point: Point, points: Point[]) => {
     return inside;
 };
 
-export const isPointInEllipse = (point: Point, center: Point, rx: number, ry: number, rotation = 0) => {
-    const cosAngle = Math.cos(rotation);
-    const sinAngle = Math.sin(rotation);
+export const isPointInEllipse = (point: Point, center: Point, rx: number, ry: number, angle = 0) => {
+    const cosAngle = Math.cos(angle);
+    const sinAngle = Math.sin(angle);
     const x1 = (point[0] - center[0]) * cosAngle + (point[1] - center[1]) * sinAngle;
     const y1 = (point[1] - center[1]) * cosAngle - (point[0] - center[0]) * sinAngle;
 
     return (x1 * x1) / (rx * rx) + (y1 * y1) / (ry * ry) <= 1;
 };
 
-export const isPointInRoundRectangle = (point: Point, rectangle: RectangleClient, radius: number) => {
+export const isPointInRoundRectangle = (point: Point, rectangle: RectangleClient, radius: number, angle = 0) => {
     const { x: rectX, y: rectY, width, height } = rectangle;
     const isInRectangle = point[0] >= rectX && point[0] <= rectX + width && point[1] >= rectY && point[1] <= rectY + height;
     const handleLeftTop =
@@ -305,9 +305,9 @@ export function getVectorFromPointAndSlope(x: number, y: number, slope: number) 
  * The DOM likes values to be fixed to 3 decimal places
  */
 export function toDomPrecision(v: number) {
-	return +v.toFixed(4)
+    return +v.toFixed(4);
 }
 
 export function toFixed(v: number) {
-	return +v.toFixed(2)
+    return +v.toFixed(2);
 }

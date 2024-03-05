@@ -208,10 +208,13 @@ describe('generate elbow line route', () => {
             verifyOrthogonalPoints(route);
             verifyOrthogonalPointsPassThroughCenterX(route, centerX);
         });
+        it('Obtain the incorrect corner points in the processing of adjust by centerX', () => {
+            // can not obtain the incorrect data
+        });
     });
 });
 
-export const verifyOrthogonalPoints = (points: Point[]) => {
+const verifyOrthogonalPoints = (points: Point[]) => {
     for (let index = 1; index < points.length; index++) {
         const previous = points[index - 1];
         const current = points[index];
@@ -219,7 +222,7 @@ export const verifyOrthogonalPoints = (points: Point[]) => {
     }
 };
 
-export const verifyOrthogonalPointsPassThroughCenterX = (points: Point[], centerX: number) => {
+const verifyOrthogonalPointsPassThroughCenterX = (points: Point[], centerX: number) => {
     let count = 0;
     for (let index = 0; index < points.length; index++) {
         if (points[index][0] === centerX) {

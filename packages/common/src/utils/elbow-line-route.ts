@@ -82,7 +82,7 @@ const adjust = (route: Point[], options: AdjustOptions): null | Point[] => {
         // directly use getCornerPoints will bring the precision issue (eg: 263.6923375175286 - 57.130859375)
         const tempRect = RectangleClient.getRectangleByPoints(tempRectPoints);
         if (!RectangleClient.isHit(tempRect, sourceRectangle) && !RectangleClient.isHit(tempRect, targetRectangle)) {
-            const tempCorners = RectangleClient.getCornerPointsByPoints(tempRectPoints);
+            const tempCorners = RectangleClient.getCornerPoints(tempRect);
             const indexRangeInPath: number[] = [];
             const indexRangeInCorner: number[] = [];
             route.forEach((point, index) => {

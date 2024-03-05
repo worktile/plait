@@ -20,11 +20,16 @@ export function getPointByVector(point: Point, vector: Vector, component: number
     return [point[0] + (vector[0] / distance) * component, point[1] + (vector[1] / distance) * component];
 }
 
-export function getPointByUnitVectorAndVectorComponent(point: Point, unitVector: Vector, vectorComponent: number, isHorizontal: boolean) {
+export function getPointByUnitVectorAndDirectionComponent(
+    point: Point,
+    unitVector: Vector,
+    directionComponent: number,
+    isHorizontal: boolean
+) {
     if (isHorizontal) {
-        return [point[0] + vectorComponent, point[1] + (vectorComponent / unitVector[0]) * unitVector[1]] as Point;
+        return [point[0] + directionComponent, point[1] + (directionComponent / unitVector[0]) * unitVector[1]] as Point;
     } else {
-        return [point[0] + (vectorComponent / unitVector[1]) * unitVector[0], point[1] + vectorComponent] as Point;
+        return [point[0] + (directionComponent / unitVector[1]) * unitVector[0], point[1] + directionComponent] as Point;
     }
 }
 

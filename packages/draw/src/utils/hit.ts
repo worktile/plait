@@ -5,13 +5,15 @@ import {
     PlaitBoard,
     isPolylineHitRectangle,
     Point,
-    distanceBetweenPointAndSegments
+    distanceBetweenPointAndSegments,
+    distanceBetweenPointAndPoint,
+    HIT_DISTANCE_BUFFER
 } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { TRANSPARENT } from '@plait/common';
 import { getTextRectangle } from './geometry';
 import { getLinePoints } from './line/line-basic';
-import { getFillByElement, getStrokeWidthByElement } from './style/stroke';
+import { getFillByElement } from './style/stroke';
 import { DefaultGeometryStyle } from '../constants/geometry';
 import { getEngine } from '../engines';
 import { getShape } from './shape';
@@ -29,9 +31,15 @@ export const isHitLineText = (board: PlaitBoard, element: PlaitLine, point: Poin
     return getHitLineTextIndex(board, element, point) !== -1;
 };
 
-export const isHitPolyLine = (pathPoints: Point[], point: Point, strokeWidth: number, expand: number = 0) => {
+export const isHitPolyLine = (pathPoints: Point[], point: Point) => {
     const distance = distanceBetweenPointAndSegments(pathPoints, point);
-    return distance <= strokeWidth + expand;
+    return distance <= HIT_DISTANCE_BUFFER;
+};
+
+export const isHitLine = (board: PlaitBoard, element: PlaitLine, point: Point) => {
+    const points = getLinePoints(board, element);
+    const isHitText = isHitLineText(board, element, point);
+    return isHitText || isHitPolyLine(points, point);
 };
 
 export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitElement, selection: Selection) => {
@@ -50,14 +58,7 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
     }
     if (PlaitDrawElement.isLine(element)) {
         const points = getLinePoints(board, element);
-        const strokeWidth = getStrokeWidthByElement(element);
-        const isHitText = isHitLineText(board, element, selection.focus);
-        const isHit = isHitPolyLine(points, selection.focus, strokeWidth, 3) || isHitText;
-        const isContainPolyLinePoint = points.some(point => {
-            return RectangleClient.isHit(rangeRectangle, RectangleClient.getRectangleByPoints([point, point]));
-        });
-        const isIntersect = Point.isEquals(selection.anchor, selection.focus) ? isHit : isPolylineHitRectangle(points, rangeRectangle);
-        return isContainPolyLinePoint || isIntersect;
+        return isPolylineHitRectangle(points, rangeRectangle);
     }
    return null;
 };
@@ -65,9 +66,20 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
 export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point) => {
     if (PlaitDrawElement.isGeometry(element)) {
         const fill = getFillByElement(board, element);
+        const engine = getEngine(getShape(element));
+        const rectangle = board.getRectangle(element);
+        const nearestPoint = engine.getNearestPoint(rectangle!, point);
+        const distance = distanceBetweenPointAndPoint(nearestPoint[0], nearestPoint[1], point[0], point[1]);
+        const isHitEdge = distance <= HIT_DISTANCE_BUFFER;
+        if (isHitEdge) {
+            return isHitEdge;
+        }
         // when shape equals text, fill is not allowed
         if (fill !== DefaultGeometryStyle.fill && fill !== TRANSPARENT && !PlaitDrawElement.isText(element)) {
-            return isRectangleHitDrawElement(board, element, { anchor: point, focus: point });
+            const isHitInside = engine.isInsidePoint(rectangle!, point);
+            if (isHitInside) {
+                return isHitInside;
+            }
         } else {
             // if shape equals text, only check text rectangle
             if (PlaitDrawElement.isText(element)) {
@@ -75,17 +87,49 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
                 let isHitText = RectangleClient.isPointInRectangle(textClient, point);
                 return isHitText;
             }
-            const strokeWidth = getStrokeWidthByElement(element);
-            const engine = getEngine(getShape(element));
-            const corners = engine.getCornerPoints(RectangleClient.getRectangleByPoints(element.points));
-            const isHit = isHitPolyLine(corners, point, strokeWidth, 3);
-            const textClient = getTextRectangle(element);
-            let isHitText = RectangleClient.isPointInRectangle(textClient, point);
-            return isHit || isHitText;
+
+            // check textRectangle of element
+            const textClient = engine.getTextRectangle ? engine.getTextRectangle(element) : getTextRectangle(element);
+            const isHitTextRectangle = RectangleClient.isPointInRectangle(textClient, point);
+            if (isHitTextRectangle) {
+                return isHitTextRectangle;
+            }
         }
     }
-    if (PlaitDrawElement.isImage(element) || PlaitDrawElement.isLine(element)) {
+    if (PlaitDrawElement.isImage(element)) {
         return isRectangleHitDrawElement(board, element, { anchor: point, focus: point });
     }
+
+    if (PlaitDrawElement.isLine(element)) {
+        return isHitLine(board, element, point);
+    }
+    return null;
+};
+
+export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, point: Point) => {
+    if (PlaitDrawElement.isGeometry(element)) {
+        const engine = getEngine(getShape(element));
+        const rectangle = board.getRectangle(element);
+        const isHitInside = engine.isInsidePoint(rectangle!, point);
+        if (isHitInside) {
+            return isHitInside;
+        }
+
+        if (engine.getTextRectangle) {
+            const textClient = engine.getTextRectangle(element);
+            const isHitTextRectangle = RectangleClient.isPointInRectangle(textClient, point);
+            if (isHitTextRectangle) {
+                return isHitTextRectangle;
+            }
+        }
+    }
+    if (PlaitDrawElement.isImage(element)) {
+        return isRectangleHitDrawElement(board, element, { anchor: point, focus: point });
+    }
+
+    if (PlaitDrawElement.isLine(element)) {
+        return isHitLine(board, element, point);
+    }
+
     return null;
 };

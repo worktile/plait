@@ -1,5 +1,136 @@
 # @plait/draw
 
+## 0.51.2
+
+### Patch Changes
+
+-   [#766](https://github.com/worktile/plait/pull/766) [`d102c69d`](https://github.com/worktile/plait/commit/d102c69d353b66b015917c758750504bf3bd71be) Thanks [@MissLixf](https://github.com/MissLixf)! - judge the edge of the element use getNearestPoint
+    rename the isHit in engine to isInsidePoint
+    add isInsidePoint for board
+
+## 0.51.1
+
+## 0.51.0
+
+### Minor Changes
+
+-   [`72927957`](https://github.com/worktile/plait/commit/729279576c78e16d4016613dba7c58a47c93ed33) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add `getCrossingPointsBetweenPointAndSegment` method in math
+    add utils for vector: `getPointByUnitVectorAndDirectionComponent`, `getUnitVectorByPointAndPoint`
+    Use the `getCrossingPointsBetweenPointAndSegment` method to get the associated points (intersection points of the axis and the line segment) that can get points and line segments. It can be used differently from `getNearestPointBetweenPointAndSegment`.
+
+*   [#730](https://github.com/worktile/plait/pull/730) [`7cdb504a`](https://github.com/worktile/plait/commit/7cdb504ad10c49041208ce5d937d6bd4d2271295) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getMirrorDataPoints method to get correctly turning point
+
+-   [#714](https://github.com/worktile/plait/pull/714) [`541bd50d`](https://github.com/worktile/plait/commit/541bd50dc64477d526ca959635b2ff3ad7494f70) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - elbow-line supports dragging to adjust the inflection point
+    extract getSourceAndTargetOuterRectangle to common
+    extract isSourceAndTargetIntersect to common
+    add isHorizontalSegment to core
+    add isVerticalSegment to core
+    add isPointsOnSameLine to core
+    refactor getElbowPoints when points.length > 2
+
+*   [#709](https://github.com/worktile/plait/pull/709) [`469acbd1`](https://github.com/worktile/plait/commit/469acbd1fc945b1b68497f85d112feecba29d743) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support resize entire draw elements
+
+-   [`f9e2148d`](https://github.com/worktile/plait/commit/f9e2148deaccbd4476dc1ff293ba49c176b1e9e1) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - simplify elbow line points which from getPoints to avoid duplicated points which case line arrow error
+
+*   [#722](https://github.com/worktile/plait/pull/722) [`be7fa3e5`](https://github.com/worktile/plait/commit/be7fa3e5aa437088285bc51b5474da22d11da359) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - adjust elbow line data points by key points
+
+-   [`a00de88e`](https://github.com/worktile/plait/commit/a00de88e9a93fe350b37fd19cf757ed078c2ad82) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - move getEllipseTangentSlope and getVectorFromPointAndSlope of ellipse to utils/math
+    resolve stored-data shape connection point and direction issue
+
+### Patch Changes
+
+-   [#743](https://github.com/worktile/plait/pull/743) [`c8b3e730`](https://github.com/worktile/plait/commit/c8b3e730b6002df0d4226a7901c9718f6d9780ed) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix get vector error when resize to other side
+
+*   [#744](https://github.com/worktile/plait/pull/744) [`712ccb12`](https://github.com/worktile/plait/commit/712ccb12a6113c5b59eb48b022732824ff529044) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - optimize the code for drawing equal lines
+    add getDirectionFactorByVectorComponent
+
+-   [#737](https://github.com/worktile/plait/pull/737) [`91d1685c`](https://github.com/worktile/plait/commit/91d1685c62c4ac4b7717da315e3a32a0838f1174) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - isHorizontalSegment renamed to isOverHorizontal
+    isVerticalSegment renamed to isOverVertical
+    isPointsOnSameLine renamed to isAlign
+    move the three method to Point instance
+    move getRectangleByPoints to RectangleClient instance
+
+*   [#753](https://github.com/worktile/plait/pull/753) [`6ae6671c`](https://github.com/worktile/plait/commit/6ae6671c798a03119ab7bb0049b7cc54f5d93641) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - remove all midDataPoints when renderPoints is a straight line and dataPoints are not on the line
+
+-   [#719](https://github.com/worktile/plait/pull/719) [`fb5688e9`](https://github.com/worktile/plait/commit/fb5688e927d2ed73b50aa3b5dd52a173d447b0f7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename removeIntermediatePointsInSegment to simplifyOrthogonalPoints and fix it's issue
+
+*   [#759](https://github.com/worktile/plait/pull/759) [`ac0893bc`](https://github.com/worktile/plait/commit/ac0893bc5278cef73c2cbb0bf0ddfe1a37b7896c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - 数据点之间存在 key points 的 scene 一定是成对出现，所以基于 start 点和 end 点计算两边的 middle key points (统一为 hasMidKeyPoints)，由 hasMidKeyPoints 去判定是否需要纠正 start 点和 end 点。
+    避免 start 或者 end 点单边出现 middleKeyPoints 不为空的情况。
+
+    Scenes with key points between data points must appear in pairs, so the middle key points on both sides are calculated based on the start point and the end point (unified as hasMidKeyPoints), and hasMidKeyPoints is used to determine whether the start point and end point need to be corrected.
+    Avoid the situation where middleKeyPoints is not empty on one side of the start or end point.
+
+-   [`de835ae1`](https://github.com/worktile/plait/commit/de835ae19e9bc26fc6d53cb1ff486b0433c3f0e7) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add correctly isShift state in common with resize
+
+*   [#749](https://github.com/worktile/plait/pull/749) [`f814763b`](https://github.com/worktile/plait/commit/f814763b902d2df31e5ed8a1a866dd464c2e3827) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - adjust all custom points and prevent parallel segment adjust when come up multiple segments
+
+-   [#720](https://github.com/worktile/plait/pull/720) [`e709924d`](https://github.com/worktile/plait/commit/e709924df57627663d5da1d0a04c71500943819d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add line resize snapping effect
+
+*   [#745](https://github.com/worktile/plait/pull/745) [`d891359c`](https://github.com/worktile/plait/commit/d891359c3c95fba1c0b2ac18d602fd874721435e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor ResizeAlignReaction
+
+-   [#728](https://github.com/worktile/plait/pull/728) [`9bf3cccb`](https://github.com/worktile/plait/commit/9bf3cccbe5550ab427691dcee8da9de33aeb91a8) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - adjust getIndexAndDeleteCountByKeyPoint return value
+
+*   [#716](https://github.com/worktile/plait/pull/716) [`5f87a900`](https://github.com/worktile/plait/commit/5f87a900ad017c662b343c52a22454719c2fb0d0) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - handle data mismatch when resize line
+
+-   [#717](https://github.com/worktile/plait/pull/717) [`4e114faf`](https://github.com/worktile/plait/commit/4e114faf5570212f077527e64c4104c1f8661a73) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - return getPoints result when source and target intersect
+
+*   [#718](https://github.com/worktile/plait/pull/718) [`bc7791d5`](https://github.com/worktile/plait/commit/bc7791d539f28c15c4dbbd216de2d212e19602aa) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix add point index error when resize
+
+-   [#752](https://github.com/worktile/plait/pull/752) [`b618ae00`](https://github.com/worktile/plait/commit/b618ae003aff057e8bdf84aed29f8da1a8f8e186) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - draw align line for different scenarios
+    find the smallest distance as the delta
+    render only the align lines for the most recent element
+
+*   [#724](https://github.com/worktile/plait/pull/724) [`589d2033`](https://github.com/worktile/plait/commit/589d2033057922ac1f1582d080ba0d25ba0d6e3f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - modify geometry-resize by draw-resize
+
+-   [#727](https://github.com/worktile/plait/pull/727) [`bb197d93`](https://github.com/worktile/plait/commit/bb197d93f96b2e6af04bec281eae1e2210ee87ea) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - prevent render middle point when source and target intersect
+
+*   [#736](https://github.com/worktile/plait/pull/736) [`0e27b5b9`](https://github.com/worktile/plait/commit/0e27b5b983c8502da12fcd94beb4504c55724b78) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - render middle points by render points
+
+-   [#751](https://github.com/worktile/plait/pull/751) [`c95c28bb`](https://github.com/worktile/plait/commit/c95c28bb7c04e886268fc2dc3de11b73fbdcada4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - get correct deltaX by deltaHeight
+
+*   [#733](https://github.com/worktile/plait/pull/733) [`34c29aba`](https://github.com/worktile/plait/commit/34c29abaf71fd6fdcbe68da673480fff3f5a3006) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - exec getIndexAndDeleteCountByKeyPoint when resizeRef.handle is not source or target
+
+-   [#731](https://github.com/worktile/plait/pull/731) [`bb46cca2`](https://github.com/worktile/plait/commit/bb46cca2954be18dc56daac3f87324c6e05c74d2) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Remove the call to getMidKeyPoints in method getMirrorDataPoints
+
+*   [#740](https://github.com/worktile/plait/pull/740) [`632349a1`](https://github.com/worktile/plait/commit/632349a108767f0acc1c47e403f05a677258d665) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix return handleIndex error
+
+-   [#746](https://github.com/worktile/plait/pull/746) [`e6cb6fdf`](https://github.com/worktile/plait/commit/e6cb6fdfebf6090b2a17fe512087e84dee12aa69) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename deltaWidth to deltaX, deltaHeight to deltaY
+
+*   [#732](https://github.com/worktile/plait/pull/732) [`106dcfb8`](https://github.com/worktile/plait/commit/106dcfb87741d39e833093fd5e07f1360872e64e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - find update point index by mirrorDataPoints
+
+-   [`07465108`](https://github.com/worktile/plait/commit/07465108b0f1e6aa1132fadf5dc5b827425e098a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getTangentVectorByConnectionPoint in terminal engine
+
+*   [#723](https://github.com/worktile/plait/pull/723) [`e78b3bed`](https://github.com/worktile/plait/commit/e78b3bedeee8f1d33483595c2bbb3375369dba80) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - merge same points after line resize
+
+-   [`3258ae79`](https://github.com/worktile/plait/commit/3258ae798b0d12e1b93c422a10d06e2ab566bcf5) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use isAspectRatio to replace isShift to resolve image resize issue
+
+*   [#760](https://github.com/worktile/plait/pull/760) [`030f2d62`](https://github.com/worktile/plait/commit/030f2d6233a57ecf2267aa4c9fa7b0af241f0e03) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add next point to simplifiedNextKeyPoints
+
+-   [#741](https://github.com/worktile/plait/pull/741) [`7a107ae9`](https://github.com/worktile/plait/commit/7a107ae95f02a3d20152c4e5b9184a59132715cb) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support equal line when resize
+
+*   [`8e4e569e`](https://github.com/worktile/plait/commit/8e4e569e78e86dc314a8b43f1e4107c2162a808f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add resize handle when selected multiple draw elements
+
+-   [#747](https://github.com/worktile/plait/pull/747) [`c4639948`](https://github.com/worktile/plait/commit/c4639948dafe30e431970ef9e234b2f4a824e0a1) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - draw equal line when aspect ratio resize
+
+*   [#725](https://github.com/worktile/plait/pull/725) [`9f8d4168`](https://github.com/worktile/plait/commit/9f8d4168febece0e72b865a21a997d6e223e156e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - rerender middle point style after resize line
+
+-   [`656c1199`](https://github.com/worktile/plait/commit/656c1199e6fceca5335fbf14cb61bc449bac7727) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - correct auto complete line position issue
+
+*   [#715](https://github.com/worktile/plait/pull/715) [`2e0f1690`](https://github.com/worktile/plait/commit/2e0f16901a9a07fd06c15e18f711b6f1d3ad3d2f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve getMidElbowPoints method to get a more precise key points
+
+-   [#750](https://github.com/worktile/plait/pull/750) [`51953bc2`](https://github.com/worktile/plait/commit/51953bc2a34425d59975d98ab3483d690e940564) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - render align lines
+
+*   [`6fc12925`](https://github.com/worktile/plait/commit/6fc129250950de940a73687d4cdeda8d2b88a940) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename isPointOnLineSegment to isPointOnSegment and move to math file
+    rename xAxis/yAxis to centerX/centerY
+    rename getEdgeOnPolygonByPoint to getPolygonEdgeByConnectionPoint
+
+-   [`71b8f23f`](https://github.com/worktile/plait/commit/71b8f23f07ff9ebf3ec71e396ecbeafc87e6574f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - extract getBoundingRectangle in rectangle-client and refactor getRectangleByElements by getBoundingRectangle
+    calculate line rectangle by texts's rectangle and line points's rectangle
+
+*   [`5a700b54`](https://github.com/worktile/plait/commit/5a700b5499b975f16ac7d0faaefded3a04771b8a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - isPointsOnSameLine add tolerance argument
+
+-   [#755](https://github.com/worktile/plait/pull/755) [`04d847a6`](https://github.com/worktile/plait/commit/04d847a6bbd1fbf6b8cf0fb713fe5b1b17f51daf) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - preserve custom points when switching line shapes
+
 ## 0.50.1
 
 ### Patch Changes
