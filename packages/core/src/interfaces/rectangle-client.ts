@@ -116,14 +116,6 @@ export const RectangleClient = {
         return [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2] as Point;
     },
 
-    getRotateCornerPoints(rectangle: RectangleClient, angle: number = 0): Point[] {
-        const centerPoint = RectangleClient.getCenterPoint(rectangle);
-        const points = RectangleClient.getCornerPoints(rectangle).map(point => {
-            return rotate(point[0], point[1], centerPoint[0], centerPoint[1], angle) as Point;
-        });
-        return points;
-    },
-
     getEdgeCenterPoints: (rectangle: RectangleClient) => {
         return [
             [rectangle.x + rectangle.width / 2, rectangle.y],

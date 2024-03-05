@@ -7,8 +7,7 @@ import {
     getSelectedElements,
     PlaitOptionsBoard,
     ACTIVE_STROKE_WIDTH,
-    RectangleClient,
-    setTransformRotate
+    RectangleClient
 } from '@plait/core';
 import { Subject } from 'rxjs';
 import { PlaitGeometry } from './interfaces/geometry';
@@ -123,16 +122,16 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
 
     drawText() {
         this.textManage.draw(this.element.text);
-        const rect = this.board.getRectangle(this.element);
-        if (rect && this.element) {
-            setTransformRotate(this.textManage.g, rect, this.element.angle);
-        }
         this.g.append(this.textManage.g);
+        const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
+        this.textManage.updateRotate(centerPoint, this.element.angle);
     }
 
     updateText() {
         this.textManage.updateText(this.element.text);
         this.textManage.updateRectangle();
+        const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
+        this.textManage.updateRotate(centerPoint, this.element.angle);
     }
 
     initializeTextManage() {

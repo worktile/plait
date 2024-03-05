@@ -19,6 +19,7 @@ import { DefaultGeometryStyle } from '../constants/geometry';
 import { getEngine } from '../engines';
 import { getShape } from './shape';
 import { getHitLineTextIndex } from './position/line';
+import { getRotatedPoints } from './rotate';
 
 export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     const client = RectangleClient.getRectangleByPoints(geometry.points);
@@ -47,18 +48,23 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
     const rangeRectangle = RectangleClient.getRectangleByPoints([selection.anchor, selection.focus]);
     if (PlaitDrawElement.isGeometry(element)) {
         const client = RectangleClient.getRectangleByPoints(element.points);
-        let maxCornerPoints = RectangleClient.getRotateCornerPoints(client, element.angle);
+        const centerPoint = RectangleClient.getCenterPoint(client);
+        let rotateCornerPoints = getRotatedPoints(RectangleClient.getCornerPoints(client), centerPoint, element.angle);
         if (isTextExceedingBounds(element)) {
             const textClient = getTextRectangle(element);
-            maxCornerPoints = RectangleClient.getRotateCornerPoints(textClient, element.angle);
+            rotateCornerPoints = getRotatedPoints(RectangleClient.getCornerPoints(textClient), centerPoint, element.angle);
         }
-        return isPolylineHitRectangle(maxCornerPoints, rangeRectangle);
+        return isPolylineHitRectangle(rotateCornerPoints, rangeRectangle);
     }
 
     if (PlaitDrawElement.isImage(element)) {
         const client = RectangleClient.getRectangleByPoints(element.points);
-        const cornerPoints = RectangleClient.getRotateCornerPoints(client, element.angle);
-        return isPolylineHitRectangle(cornerPoints, client);
+        const rotateCornerPoints = getRotatedPoints(
+            RectangleClient.getCornerPoints(client),
+            RectangleClient.getCenterPoint(client),
+            element.angle
+        );
+        return isPolylineHitRectangle(rotateCornerPoints, client);
     }
 
     if (PlaitDrawElement.isLine(element)) {

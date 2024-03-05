@@ -4,3 +4,4 @@ export * from './selected';
 export * from './style';
 export * from './hit';
 export * from './memorize';
+export * from './rotate';

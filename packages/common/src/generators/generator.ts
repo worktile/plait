@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, setTransformRotate } from '@plait/core';
+import { PlaitBoard, PlaitElement, RectangleClient, setRotate } from '@plait/core';
 
 export interface GeneratorExtraData {}
 
@@ -35,7 +35,7 @@ export abstract class Generator<
                 this.g = g;
                 const rect = this.board.getRectangle(element);
                 if (rect && element.angle) {
-                    setTransformRotate(g, rect, element.angle);
+                    setRotate(g, RectangleClient.getCenterPoint(rect), element.angle);
                 }
             } else {
                 this.destroy();

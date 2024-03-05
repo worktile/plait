@@ -5,9 +5,11 @@ import {
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
+    Point,
     RectangleClient,
     createForeignObject,
     createG,
+    setRotate,
     toHostPoint,
     toViewBoxPoint,
     updateForeignObject,
@@ -137,6 +139,12 @@ export class TextManage {
         updateForeignObjectWidth(this.g, width);
     }
 
+    updateRotate(centerPoint: Point, angle: number = 0) {
+        if (centerPoint) {
+            setRotate(this.g, centerPoint, angle);
+        }
+    }
+
     updateRectangle(rectangle?: RectangleClient) {
         const { x, y, width, height } = rectangle || this.options.getRectangle();
         if (this.isEditing) {
@@ -253,7 +261,9 @@ export class TextManage {
         this.g.setAttribute('transform', '');
         const paragraph = AngularEditor.toDOMNode(editor, editor.children[0]);
         const { width, height } = measureDivSize(paragraph);
-        this.g.setAttribute('transform', transformMatrix!);
+        if (transformMatrix) {
+            this.g.setAttribute('transform', transformMatrix);
+        }
         return { width, height };
     }
 
