@@ -11,7 +11,7 @@ import {
     rotate
 } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
-import { TRANSPARENT } from '@plait/common';
+import { TRANSPARENT, rotatePoints } from '@plait/common';
 import { getTextRectangle } from './geometry';
 import { getLinePoints } from './line/line-basic';
 import { getFillByElement } from './style/stroke';
@@ -19,7 +19,6 @@ import { DefaultGeometryStyle } from '../constants/geometry';
 import { getEngine } from '../engines';
 import { getShape } from './shape';
 import { getHitLineTextIndex } from './position/line';
-import { getRotatedPoints } from './rotate';
 
 export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     const client = RectangleClient.getRectangleByPoints(geometry.points);
@@ -49,22 +48,22 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
     if (PlaitDrawElement.isGeometry(element)) {
         const client = RectangleClient.getRectangleByPoints(element.points);
         const centerPoint = RectangleClient.getCenterPoint(client);
-        let rotateCornerPoints = getRotatedPoints(RectangleClient.getCornerPoints(client), centerPoint, element.angle);
+        let rotatedCornerPoints = rotatePoints(RectangleClient.getCornerPoints(client), centerPoint, element.angle);
         if (isTextExceedingBounds(element)) {
             const textClient = getTextRectangle(element);
-            rotateCornerPoints = getRotatedPoints(RectangleClient.getCornerPoints(textClient), centerPoint, element.angle);
+            rotatedCornerPoints = rotatePoints(RectangleClient.getCornerPoints(textClient), centerPoint, element.angle);
         }
-        return isPolylineHitRectangle(rotateCornerPoints, rangeRectangle);
+        return isPolylineHitRectangle(rotatedCornerPoints, rangeRectangle);
     }
 
     if (PlaitDrawElement.isImage(element)) {
         const client = RectangleClient.getRectangleByPoints(element.points);
-        const rotateCornerPoints = getRotatedPoints(
+        const rotatedCornerPoints = rotatePoints(
             RectangleClient.getCornerPoints(client),
             RectangleClient.getCenterPoint(client),
             element.angle
         );
-        return isPolylineHitRectangle(rotateCornerPoints, client);
+        return isPolylineHitRectangle(rotatedCornerPoints, client);
     }
 
     if (PlaitDrawElement.isLine(element)) {

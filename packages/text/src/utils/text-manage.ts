@@ -9,7 +9,7 @@ import {
     RectangleClient,
     createForeignObject,
     createG,
-    setRotate,
+    setAngleForG,
     toHostPoint,
     toViewBoxPoint,
     updateForeignObject,
@@ -139,9 +139,9 @@ export class TextManage {
         updateForeignObjectWidth(this.g, width);
     }
 
-    updateRotate(centerPoint: Point, angle: number = 0) {
+    updateAngle(centerPoint: Point, angle: number = 0) {
         if (centerPoint) {
-            setRotate(this.g, centerPoint, angle);
+            setAngleForG(this.g, centerPoint, angle);
         }
     }
 
