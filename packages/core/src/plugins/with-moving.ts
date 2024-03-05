@@ -17,7 +17,8 @@ import {
     distanceBetweenPointAndPoint,
     toHostPoint,
     toViewBoxPoint,
-    hotkeys
+    hotkeys,
+    getElementsInGroupByElement
 } from '../utils';
 import { AlignReaction } from '../utils/reaction-manager';
 import { PlaitPointerType, RectangleClient } from '../interfaces';
@@ -58,7 +59,7 @@ export function withMoving(board: PlaitBoard) {
             const targetElement = getHitElementByPoint(board, point, el => board.isMovable(el));
             if (targetElement) {
                 startPoint = point;
-                activeElements = [targetElement];
+                activeElements = getElementsInGroupByElement(board, targetElement);
                 if (targetElements.length > 0) {
                     addSelectionWithTemporaryElements(board, []);
                 }
