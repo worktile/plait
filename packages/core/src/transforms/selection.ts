@@ -3,7 +3,7 @@ import { PlaitBoard } from '../interfaces/board';
 import { Selection } from '../interfaces/selection';
 import { BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
 import { PlaitElement } from '../interfaces/element';
-import { getTemporaryRef } from '../plugins/with-selection';
+import { getTemporaryRef } from '../utils';
 
 export function setSelection(board: PlaitBoard, selection: Selection | null) {
     const operation: SetSelectionOperation = { type: 'set_selection', properties: board.selection, newProperties: selection };

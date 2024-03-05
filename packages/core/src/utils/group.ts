@@ -5,6 +5,7 @@ import { createG } from './dom';
 import { drawRectangle } from './drawing/rectangle';
 import { getRectangleByElements } from './element';
 import { getSelectedElements } from './selected-element';
+import { isSelectionMoving } from './selection';
 
 export const getElementsByGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean, includeGroup?: boolean) => {
     let result: PlaitElement[] = [];
@@ -48,7 +49,7 @@ export const getGroupByElement = (board: PlaitBoard, element: PlaitElement, recu
     }
 };
 
-export const getRelatedElements = (board: PlaitBoard, elements: PlaitElement[]) => {
+export const replenishGroupElements = (board: PlaitBoard, elements: PlaitElement[]) => {
     const result: PlaitElement[] = [];
     elements.forEach(item => {
         if (!item.groupId) {
@@ -61,41 +62,34 @@ export const getRelatedElements = (board: PlaitBoard, elements: PlaitElement[]) 
     return result;
 };
 
-export const getNewSelectedElements = (board: PlaitBoard, elements: PlaitElement[]) => {
-    const selectedElements = getSelectedElements(board);
-    let group: PlaitGroup;
-    let newSelectedElements: PlaitElement[] = [...elements];
-
-    if (elements.length === 1 && selectedElements.length > 1) {
-        const groups = getGroupByElement(board, elements[0], true) as PlaitGroup[];
-        if (groups?.length) {
-            let selectedGroupIndex = -1;
-            for (let i = groups.length - 1; i >= 0; i--) {
-                const groupElements = getElementsByGroup(board, groups[i], true);
-                if (groupElements.every(item => selectedElements.includes(item))) {
-                    selectedGroupIndex = i;
-                    break;
-                }
-            }
-            if (selectedGroupIndex > 0) {
-                group = groups[selectedGroupIndex - 1];
-                newSelectedElements = getElementsByGroup(board, group, true);
-            }
-        }
-    } else {
-        newSelectedElements = getRelatedElements(board, elements);
-    }
-    return newSelectedElements;
+export const isSelectGroup = (board: PlaitBoard, group: PlaitGroup, selectedElements: PlaitElement[]) => {
+    const groupElements = getElementsByGroup(board, group, true);
+    return groupElements.every(item => selectedElements.includes(item));
 };
 
-export const getCommonElements = (board: PlaitBoard, elements: PlaitElement[]) => {
+export const getSelectedGroups = (board: PlaitBoard, groups: PlaitGroup[]) => {
+    const selectedElements = getSelectedElements(board);
+    const selectedGroups: PlaitGroup[] = [];
+    groups.forEach(group => {
+        if (isSelectGroup(board, group, selectedElements)) {
+            selectedGroups.push(group);
+        }
+    });
+    return selectedGroups;
+};
+
+export const isSelectedElementsIncludeGroup = (selectedGroups: PlaitGroup[]) => {
+    return selectedGroups.length > 0;
+};
+
+export const getSelectGroupsAndElements = (board: PlaitBoard): PlaitElement[] => {
     let result: PlaitElement[] = [];
-    elements.forEach(element => {
+    const selectedElements = getSelectedElements(board);
+    selectedElements.forEach(element => {
         if (element.groupId) {
             if (!result.find(item => item.id === element.groupId)) {
-                const group = getGroupByElement(board, element, false) as PlaitGroup;
-                const elementsInGroup = getElementsByGroup(board, group, false, true);
-                if (elementsInGroup.every(item => elements.includes(item))) {
+                const group = getGroupByElement(board, element) as PlaitGroup;
+                if (isSelectGroup(board, group, selectedElements)) {
                     result.push(group);
                 } else {
                     result.push(element);
@@ -108,23 +102,40 @@ export const getCommonElements = (board: PlaitBoard, elements: PlaitElement[]) =
     return result;
 };
 
+export const isPartialSelectGroup = (board: PlaitBoard, group: PlaitGroup) => {
+    const groupElements = getElementsByGroup(board, group, false, true);
+    const selectedGroupsAndElements = getSelectGroupsAndElements(board);
+
+    if (selectedGroupsAndElements.find(item => item.id === group.id)) {
+        return false;
+    }
+    if (
+        groupElements.some(item => selectedGroupsAndElements.includes(item)) &&
+        !groupElements.every(item => selectedGroupsAndElements.includes(item))
+    ) {
+        return true;
+    }
+    return false;
+};
+
 export function createGroupRectangleG(board: PlaitBoard, elements: PlaitElement[]): SVGGElement | null {
     const selectedElements = getSelectedElements(board);
-    const unSelectedElements = elements.filter(item => !selectedElements.includes(item));
-    if (!unSelectedElements.length) {
-        return null;
-    }
     const groupRectangleG: SVGGElement = createG();
-    unSelectedElements.forEach(item => {
-        const elements = getRelatedElements(board, [item]);
-        const rectangle = getRectangleByElements(board, elements, false);
-        groupRectangleG.append(
-            drawRectangle(board, rectangle, {
-                stroke: SELECTION_BORDER_COLOR,
-                strokeWidth: ACTIVE_STROKE_WIDTH,
-                strokeLineDash: [5]
-            })
-        );
+    const isMoving = isSelectionMoving(board);
+
+    elements.forEach(item => {
+        const isRender = (!selectedElements.includes(item) && !isMoving) || isMoving;
+        if (item.groupId && isRender) {
+            const elements = replenishGroupElements(board, [item]);
+            const rectangle = getRectangleByElements(board, elements, false);
+            groupRectangleG.append(
+                drawRectangle(board, rectangle, {
+                    stroke: SELECTION_BORDER_COLOR,
+                    strokeWidth: ACTIVE_STROKE_WIDTH,
+                    strokeLineDash: [5]
+                })
+            );
+        }
     });
     return groupRectangleG;
 }
