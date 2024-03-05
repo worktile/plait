@@ -2,19 +2,6 @@ import { Direction, Point, distanceBetweenPointAndPoint } from '@plait/core';
 import { getDirectionFactor } from './direction';
 import { isPointOnSegment } from './math';
 
-export function getOppositeDirection(direction: Direction) {
-    switch (direction) {
-        case Direction.left:
-            return Direction.right;
-        case Direction.right:
-            return Direction.left;
-        case Direction.top:
-            return Direction.bottom;
-        case Direction.bottom:
-            return Direction.top;
-    }
-}
-
 export const getPoints = (source: Point, sourcePosition: Direction, target: Point, targetPosition: Direction, offset: number) => {
     const sourceDir = getDirectionFactor(sourcePosition);
     const targetDir = getDirectionFactor(targetPosition);
