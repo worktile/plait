@@ -197,10 +197,10 @@ export function withSelection(board: PlaitBoard) {
                     let newSelectedElements = [...elements];
                     if (hitElementsWithGroup) {
                         const isCollapsed = Selection.isCollapsed(board.selection!);
-                        const groups = getGroupByElement(board, elements[0], true) as PlaitGroup[];
                         if (!isCollapsed) {
                             newSelectedElements = replenishGroupElements(board, elements);
                         } else {
+                            const groups = getGroupByElement(board, elements[0], true) as PlaitGroup[];
                             const selectedGroups = getSelectedGroups(board, groups);
                             if (isSelectedElementsIncludeGroup(selectedGroups)) {
                                 if (selectedGroups.length > 1) {
