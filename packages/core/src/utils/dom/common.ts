@@ -34,6 +34,7 @@ export const setStrokeLinecap = (g: SVGGElement, value: 'round' | 'square') => {
 export const setAngleForG = (g: SVGGElement, centerPoint: Point, angle: number) => {
     if (angle === 0) {
         g.removeAttribute('transform');
+        return;
     }
     var centerX = centerPoint[0];
     var centerY = centerPoint[1];
