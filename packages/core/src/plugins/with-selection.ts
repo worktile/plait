@@ -22,9 +22,9 @@ import { PRESS_AND_MOVE_BUFFER } from '../constants';
 import {
     getElementsByGroup,
     getGroupByElement,
-    replenishGroupElements,
     getSelectedGroups,
-    isSelectedElementsIncludeGroup
+    isSelectedElementsIncludeGroup,
+    getElementsInGroupByElement
 } from '../utils/group';
 import {
     clearSelectionMoving,
@@ -198,7 +198,14 @@ export function withSelection(board: PlaitBoard) {
                     if (hitElementsWithGroup) {
                         const isCollapsed = Selection.isCollapsed(board.selection!);
                         if (!isCollapsed) {
-                            newSelectedElements = replenishGroupElements(board, elements);
+                            newSelectedElements = [];
+                            elements.forEach(item => {
+                                if (!item.groupId) {
+                                    newSelectedElements.push(item);
+                                } else {
+                                    newSelectedElements.push(...getElementsInGroupByElement(board, item));
+                                }
+                            });
                         } else {
                             const groups = getGroupByElement(board, elements[0], true) as PlaitGroup[];
                             const selectedGroups = getSelectedGroups(board, groups);

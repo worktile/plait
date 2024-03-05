@@ -49,17 +49,21 @@ export const getGroupByElement = (board: PlaitBoard, element: PlaitElement, recu
     }
 };
 
-export const replenishGroupElements = (board: PlaitBoard, elements: PlaitElement[]) => {
-    const result: PlaitElement[] = [];
-    elements.forEach(item => {
-        if (!item.groupId) {
-            result.push(item);
-        } else {
-            const groups = getGroupByElement(board, item, true) as PlaitGroup[];
-            result.push(...getElementsByGroup(board, groups[groups.length - 1], true));
-        }
-    });
-    return result;
+export const getHighestGroup = (board: PlaitBoard, element: PlaitElement) => {
+    const groups = getGroupByElement(board, element, true) as PlaitGroup[];
+    if (groups.length) {
+        return groups[groups.length - 1];
+    }
+    return null;
+};
+
+export const getElementsInGroupByElement = (board: PlaitBoard, element: PlaitElement) => {
+    const highestGroup = getHighestGroup(board, element);
+    if (highestGroup) {
+        return getElementsByGroup(board, highestGroup, true) as PlaitGroup[];
+    } else {
+        return [element];
+    }
 };
 
 export const isSelectGroup = (board: PlaitBoard, group: PlaitGroup, selectedElements: PlaitElement[]) => {
@@ -126,7 +130,7 @@ export function createGroupRectangleG(board: PlaitBoard, elements: PlaitElement[
     elements.forEach(item => {
         const isRender = (!selectedElements.includes(item) && !isMoving) || isMoving;
         if (item.groupId && isRender) {
-            const elements = replenishGroupElements(board, [item]);
+            const elements = getElementsInGroupByElement(board, item);
             const rectangle = getRectangleByElements(board, elements, false);
             groupRectangleG.append(
                 drawRectangle(board, rectangle, {

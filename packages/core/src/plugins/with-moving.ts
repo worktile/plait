@@ -18,7 +18,7 @@ import {
     toHostPoint,
     toViewBoxPoint,
     hotkeys,
-    replenishGroupElements
+    getElementsInGroupByElement
 } from '../utils';
 import { AlignReaction } from '../utils/reaction-manager';
 import { PlaitPointerType, RectangleClient } from '../interfaces';
@@ -52,14 +52,14 @@ export function withMoving(board: PlaitBoard) {
         const isInTargetRectangle = targetRectangle && RectangleClient.isPointInRectangle(targetRectangle, point);
         if (isInTargetRectangle) {
             startPoint = point;
-            activeElements = replenishGroupElements(board, targetElements);
+            activeElements = targetElements;
             preventTouchMove(board, event, true);
             activeElementsRectangle = getRectangleByElements(board, activeElements, true);
         } else {
             const targetElement = getHitElementByPoint(board, point, el => board.isMovable(el));
             if (targetElement) {
                 startPoint = point;
-                activeElements = replenishGroupElements(board, [targetElement]);
+                activeElements = getElementsInGroupByElement(board, targetElement);
                 if (targetElements.length > 0) {
                     addSelectionWithTemporaryElements(board, []);
                 }
