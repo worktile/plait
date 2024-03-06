@@ -193,6 +193,8 @@ export function withSelection(board: PlaitBoard) {
                                     const selectedElementsInGroup = elementsInHighestGroup.filter(item =>
                                         newSelectedElements.includes(item)
                                     );
+                                    // When partially selected elements belong to a group, 
+                                    // only select those elements along with the hit elements.
                                     if (selectedElementsInGroup.length) {
                                         newGroupElements.push(...selectedElementsInGroup);
                                     } else {
