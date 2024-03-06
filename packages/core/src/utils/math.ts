@@ -141,12 +141,12 @@ export const isPolylineHitRectangle = (points: Point[], rectangle: RectangleClie
         if (i === len - 1 && !isClose) continue;
         const p1 = points[i];
         const p2 = points[(i + 1) % len];
-        const isIntersect =
+        const isHit =
             isLineHitLine(p1, p2, rectanglePoints[0], rectanglePoints[1]) ||
             isLineHitLine(p1, p2, rectanglePoints[1], rectanglePoints[2]) ||
             isLineHitLine(p1, p2, rectanglePoints[2], rectanglePoints[3]) ||
             isLineHitLine(p1, p2, rectanglePoints[3], rectanglePoints[0]);
-        if (isIntersect) {
+        if (isHit || isPointInPolygon(p1, rectanglePoints) || isPointInPolygon(p2, rectanglePoints)) {
             return true;
         }
     }
