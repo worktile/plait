@@ -82,10 +82,6 @@ export const getSelectedGroups = (board: PlaitBoard, groups: PlaitGroup[]) => {
     return selectedGroups;
 };
 
-export const isSelectedElementsIncludeGroup = (selectedGroups: PlaitGroup[]) => {
-    return selectedGroups.length > 0;
-};
-
 export const getSelectedGroupsAndElements = (board: PlaitBoard): PlaitElement[] => {
     let result: PlaitElement[] = [];
     const selectedElements = getSelectedElements(board);
