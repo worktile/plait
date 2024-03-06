@@ -1,3 +1,4 @@
+import { rotate } from '../utils';
 import { Point } from './point';
 
 export interface RectangleClient {
@@ -114,6 +115,7 @@ export const RectangleClient = {
     getCenterPoint: (rectangle: RectangleClient) => {
         return [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2] as Point;
     },
+
     getEdgeCenterPoints: (rectangle: RectangleClient) => {
         return [
             [rectangle.x + rectangle.width / 2, rectangle.y],

@@ -123,11 +123,15 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     drawText() {
         this.textManage.draw(this.element.text);
         this.g.append(this.textManage.g);
+        const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
+        this.textManage.updateAngle(centerPoint, this.element.angle);
     }
 
     updateText() {
         this.textManage.updateText(this.element.text);
         this.textManage.updateRectangle();
+        const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
+        this.textManage.updateAngle(centerPoint, this.element.angle);
     }
 
     initializeTextManage() {
