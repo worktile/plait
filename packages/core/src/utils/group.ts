@@ -118,7 +118,7 @@ export const getSelectedGroupsAndElements = (board: PlaitBoard): PlaitElement[] 
     return result;
 };
 
-export const isPartialSelect = (board: PlaitBoard, group: PlaitGroup) => {
+export const isPartialSelectGroup = (board: PlaitBoard, group: PlaitGroup) => {
     const groupElements = getElementsByGroup(board, group, false, true);
     const selectedGroupsAndElements = getSelectedGroupsAndElements(board);
 
@@ -198,25 +198,4 @@ export const removeGroup = (board: PlaitBoard) => {
 export const isSelectGroup = (board: PlaitBoard) => {
     const selectedGroupsAndElements = getSelectedGroupsAndElements(board);
     return selectedGroupsAndElements.some(item => PlaitGroupElement.isGroup(item));
-};
-
-export const isPartialSelectGroup = (board: PlaitBoard) => {
-    const selectedGroupsAndElements = getSelectedGroupsAndElements(board);
-    const selectedElements = getSelectedElements(board);
-
-    for (let i = 0; i < selectedGroupsAndElements.length; i++) {
-        const element = selectedGroupsAndElements[i];
-        if (PlaitGroupElement.isGroup(element)) {
-            const elementsInGroup = getElementsByGroup(board, element, true);
-            const isSelectGroup = elementsInGroup.every(item => selectedElements.includes(item));
-            if (!isSelectGroup || element.groupId) {
-                return true;
-            }
-        } else {
-            if (element.groupId) {
-                return true;
-            }
-        }
-    }
-    return false;
 };

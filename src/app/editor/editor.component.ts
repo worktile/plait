@@ -78,15 +78,12 @@ export class BasicEditorComponent implements OnInit {
 
     isSelectGroup!: boolean;
 
-    get showaddGroup() {
+    get showAddGroup() {
         if (this.selectedElements.length <= 1) {
             return false;
         }
         const selectedGroupsAndElements = getSelectedGroupsAndElements(this.board);
-        return (
-            !isPartialSelectGroup(this.board) &&
-            !(selectedGroupsAndElements.length === 1 && PlaitGroupElement.isGroup(selectedGroupsAndElements[0]))
-        );
+        return !selectedGroupsAndElements.find(item => item.groupId) && selectedGroupsAndElements.length !== 1;
     }
 
     @ViewChild('contextMenu', { static: true, read: ElementRef })

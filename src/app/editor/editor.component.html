@@ -17,7 +17,7 @@
 </plait-board>
 
 <div #contextMenu class="context-menu">
-    <div class="context-menu-item" *ngIf="showaddGroup" (pointerup)="addGroup($event)">成组</div>
+    <div class="context-menu-item" *ngIf="showAddGroup" (pointerup)="addGroup($event)">成组</div>
     <div class="context-menu-item" *ngIf="isSelectGroup" (pointerup)="removeGroup($event)">取消成组</div>
     <div class="context-menu-item" (pointerup)="copy($event)">复制</div>
     <div class="context-menu-item" (pointerup)="cut($event)">剪切</div>
