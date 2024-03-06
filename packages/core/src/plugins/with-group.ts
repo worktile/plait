@@ -1,6 +1,6 @@
 import { PlaitBoard, Selection } from '../interfaces';
 import {
-    addGroupRectangleG,
+    createGroupRectangleG,
     toViewBoxPoint,
     toHostPoint,
     getHitElementsBySelection
@@ -19,7 +19,7 @@ export function withGroup(board: PlaitBoard) {
         }
         const hitElements = getHitElementsBySelection(board, selection);
         if (hitElements.length) {
-            groupRectangleG = addGroupRectangleG(board, hitElements);
+            groupRectangleG = createGroupRectangleG(board, hitElements);
             groupRectangleG && PlaitBoard.getElementActiveHost(board).append(groupRectangleG);
         }
 

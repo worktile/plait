@@ -134,7 +134,7 @@ export const isPartialSelect = (board: PlaitBoard, group: PlaitGroup) => {
     return false;
 };
 
-export const addGroupRectangleG = (board: PlaitBoard, elements: PlaitElement[]): SVGGElement | null => {
+export const createGroupRectangleG = (board: PlaitBoard, elements: PlaitElement[]): SVGGElement | null => {
     const selectedElements = getSelectedElements(board);
     const groupRectangleG: SVGGElement = createG();
     const isMoving = isSelectionMoving(board);
@@ -201,10 +201,22 @@ export const isSelectGroup = (board: PlaitBoard) => {
 };
 
 export const isPartialSelectGroup = (board: PlaitBoard) => {
+    const selectedGroupsAndElements = getSelectedGroupsAndElements(board);
     const selectedElements = getSelectedElements(board);
-    for (let i = 0; i < selectedElements.length; i++) {
-        const highestGroup = getHighestGroup(board, selectedElements[i]);
-        return highestGroup && isPartialSelect(board, highestGroup);
+
+    for (let i = 0; i < selectedGroupsAndElements.length; i++) {
+        const element = selectedGroupsAndElements[i];
+        if (PlaitGroupElement.isGroup(element)) {
+            const elementsInGroup = getElementsByGroup(board, element, true);
+            const isSelectGroup = elementsInGroup.every(item => selectedElements.includes(item));
+            if (!isSelectGroup || element.groupId) {
+                return true;
+            }
+        } else {
+            if (element.groupId) {
+                return true;
+            }
+        }
     }
     return false;
 };
