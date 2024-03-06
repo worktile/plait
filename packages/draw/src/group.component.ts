@@ -6,7 +6,7 @@ import {
     PlaitGroup,
     PlaitPluginElementContext,
     getRectangleByGroup,
-    isPartialSelectGroup,
+    isPartialSelect,
     isSelectionMoving
 } from '@plait/core';
 import { GroupGenerator } from './generators/group.generator';
@@ -50,6 +50,6 @@ export class GroupComponent extends CommonPluginElement<PlaitGroup, PlaitBoard>
         value: PlaitPluginElementContext<PlaitGroup, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitGroup, PlaitBoard>
     ) {
-        this.groupGenerator.processDrawing(value.element, this.g, isPartialSelectGroup(this.board, value.element));
+        this.groupGenerator.processDrawing(value.element, this.g, isPartialSelect(this.board, value.element));
     }
 }

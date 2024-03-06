@@ -8,12 +8,17 @@ import {
     PlaitTheme,
     ThemeColorMode,
     Viewport,
+    addGroup,
     getClipboardData,
     getProbablySupportsClipboardWrite,
     getRectangleByElements,
     getSelectedElements,
+    isSelectGroup,
+    isPartialSelectGroup,
+    removeGroup,
     toHostPoint,
-    toViewBoxPoint
+    toViewBoxPoint,
+    getSelectedGroupsAndElements
 } from '@plait/core';
 import { mockDrawData, mockGroupData, mockMindData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -31,6 +36,7 @@ import { withCommonPlugin } from '../plugins/with-common';
 import { AppMenuComponent } from '../components/menu/menu.component';
 import { NgIf } from '@angular/common';
 import { mockTurningPointData } from './mock-turning-point-data';
+import { PlaitGroupElement } from 'packages/core/src/interfaces';
 
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
@@ -67,6 +73,21 @@ export class BasicEditorComponent implements OnInit {
     board!: PlaitBoard;
 
     showPaste = getProbablySupportsClipboardWrite();
+
+    selectedElements: PlaitElement[] = [];
+
+    isSelectGroup!: boolean;
+
+    get showaddGroup() {
+        if (this.selectedElements.length <= 1) {
+            return false;
+        }
+        const selectedGroupsAndElements = getSelectedGroupsAndElements(this.board);
+        return (
+            !isPartialSelectGroup(this.board) &&
+            !(selectedGroupsAndElements.length === 1 && PlaitGroupElement.isGroup(selectedGroupsAndElements[0]))
+        );
+    }
 
     @ViewChild('contextMenu', { static: true, read: ElementRef })
     contextMenu!: ElementRef<any>;
@@ -129,6 +150,8 @@ export class BasicEditorComponent implements OnInit {
 
     change(event: PlaitBoardChangeEvent) {
         this.setLocalData(JSON.stringify(event));
+        this.selectedElements = getSelectedElements(this.board);
+        this.isSelectGroup = isSelectGroup(this.board);
     }
 
     getLocalStorage() {
@@ -153,18 +176,28 @@ export class BasicEditorComponent implements OnInit {
     copy(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        const selectedElements = getSelectedElements(this.board);
-        const rectangle = getRectangleByElements(this.board, selectedElements, false);
+        const rectangle = getRectangleByElements(this.board, this.selectedElements, false);
         this.board.setFragment(null, null, rectangle, 'copy');
     }
 
     cut(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        const selectedElements = getSelectedElements(this.board);
-        const rectangle = getRectangleByElements(this.board, selectedElements, false);
+        const rectangle = getRectangleByElements(this.board, this.selectedElements, false);
         this.board.setFragment(null, null, rectangle, 'cut');
         this.board.deleteFragment(null);
+    }
+
+    addGroup(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+        addGroup(this.board);
+    }
+
+    removeGroup(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+        removeGroup(this.board);
     }
 
     async paste(event: MouseEvent) {
