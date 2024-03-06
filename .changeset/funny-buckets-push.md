@@ -3,4 +3,4 @@
 '@plait/draw': patch
 ---
 
-support adGroup and removeGroup function
+support addGroup and removeGroup function
