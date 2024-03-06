@@ -4,11 +4,13 @@ import {
     Selection,
     PlaitBoard,
     isPolylineHitRectangle,
+    hasIntersectionPolygonAndRectangle,
     Point,
     distanceBetweenPointAndSegments,
     distanceBetweenPointAndPoint,
     HIT_DISTANCE_BUFFER,
-    rotate
+    rotate,
+    isPointInPolygon
 } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { TRANSPARENT, rotatePoints } from '@plait/common';
@@ -53,7 +55,7 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
             const textClient = getTextRectangle(element);
             rotatedCornerPoints = rotatePoints(RectangleClient.getCornerPoints(textClient), centerPoint, element.angle);
         }
-        return isPolylineHitRectangle(rotatedCornerPoints, rangeRectangle);
+        return hasIntersectionPolygonAndRectangle(rotatedCornerPoints, rangeRectangle);
     }
 
     if (PlaitDrawElement.isImage(element)) {
@@ -63,14 +65,20 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
             RectangleClient.getCenterPoint(client),
             element.angle
         );
-        return isPolylineHitRectangle(rotatedCornerPoints, client);
+        return hasIntersectionPolygonAndRectangle(rotatedCornerPoints, client);
     }
 
     if (PlaitDrawElement.isLine(element)) {
         const points = getLinePoints(board, element);
-        return isPolylineHitRectangle(points, rangeRectangle);
+        const rectanglePoints = RectangleClient.getCornerPoints(rangeRectangle);
+        const polylineHitRectangle = isPolylineHitRectangle(points, rangeRectangle);
+        if (polylineHitRectangle) {
+            return polylineHitRectangle;
+        }
+        const hasPointInRectangle = points.some(point => isPointInPolygon(point, rectanglePoints));
+        return hasPointInRectangle;
     }
-   return null;
+    return null;
 };
 
 export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point) => {

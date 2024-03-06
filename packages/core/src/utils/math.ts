@@ -154,6 +154,16 @@ export const isPolylineHitRectangle = (points: Point[], rectangle: RectangleClie
     return false;
 };
 
+export const hasIntersectionPolygonAndRectangle = (points: Point[], rectangle: RectangleClient) => {
+    const polylineHitRectangle = isPolylineHitRectangle(points, rectangle);
+    if (polylineHitRectangle) {
+        return polylineHitRectangle;
+    }
+    const rectanglePoints = RectangleClient.getCornerPoints(rectangle);
+    const hasPolygonCornerInRectangle = points.some(point => isPointInPolygon(point, rectanglePoints));
+    return hasPolygonCornerInRectangle;
+};
+
 //https://stackoverflow.com/questions/22521982/check-if-point-is-inside-a-polygon
 export const isPointInPolygon = (point: Point, points: Point[]) => {
     // ray-casting algorithm based on
