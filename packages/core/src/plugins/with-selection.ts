@@ -26,7 +26,6 @@ import {
     getTemporaryElements,
     isDragging,
     isHandleSelection,
-    isSelectedElementsIncludeGroup,
     isSelectionMoving,
     isSetSelectionOperation,
     preventTouchMove,
@@ -175,33 +174,34 @@ export function withSelection(board: PlaitBoard) {
                 if (!options.isMultiple && elements.length > 1) {
                     elements = [elements[0]];
                 }
-                const hitElementsWithGroup = elements.some(item => item.groupId);
+                const isHitElementWithGroup = elements.some(item => item.groupId);
                 if (isShift) {
                     const newSelectedElements = [...getSelectedElements(board)];
                     if (board.selection && Selection.isCollapsed(board.selection)) {
-                        if (hitElementsWithGroup) {
-                            let newGroupElements: PlaitElement[] = [...elements];
-                            const groups = getGroupByElement(board, elements[0], true) as PlaitGroup[];
+                        if (isHitElementWithGroup) {
+                            let pendingElements: PlaitElement[] = [...elements];
+                            const hitElement = elements[0];
+                            const groups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
                             const selectedGroups = getSelectedGroups(board, groups);
                             const elementsInHighestGroup = getElementsByGroup(board, groups[groups.length - 1], true);
-                            if (isSelectedElementsIncludeGroup(selectedGroups)) {
+                            if (selectedGroups.length > 0) {
                                 if (selectedGroups.length > 1) {
-                                    newGroupElements = getElementsByGroup(board, selectedGroups[selectedGroups.length - 2], true);
+                                    pendingElements = getElementsByGroup(board, selectedGroups[selectedGroups.length - 2], true);
                                 }
                             } else {
-                                if (!newSelectedElements.includes(elements[0])) {
+                                if (!newSelectedElements.includes(hitElement)) {
                                     const selectedElementsInGroup = elementsInHighestGroup.filter(item =>
                                         newSelectedElements.includes(item)
                                     );
-                                    // When partially selected elements belong to a group, 
+                                    // When partially selected elements belong to a group,
                                     // only select those elements along with the hit elements.
                                     if (selectedElementsInGroup.length) {
-                                        newGroupElements.push(...selectedElementsInGroup);
+                                        pendingElements.push(...selectedElementsInGroup);
                                     } else {
-                                        newGroupElements = elementsInHighestGroup;
+                                        pendingElements = elementsInHighestGroup;
                                     }
                                 } else {
-                                    newGroupElements = [];
+                                    pendingElements = [];
                                 }
                             }
                             elementsInHighestGroup.forEach(element => {
@@ -209,8 +209,8 @@ export function withSelection(board: PlaitBoard) {
                                     newSelectedElements.splice(newSelectedElements.indexOf(element), 1);
                                 }
                             });
-                            if (newGroupElements.length) {
-                                newSelectedElements.push(...newGroupElements);
+                            if (pendingElements.length) {
+                                newSelectedElements.push(...pendingElements);
                             }
                         } else {
                             elements.forEach(element => {
@@ -224,7 +224,7 @@ export function withSelection(board: PlaitBoard) {
                         cacheSelectedElements(board, newSelectedElements);
                     } else {
                         let newElements: PlaitElement[] = [...elements];
-                        if (hitElementsWithGroup) {
+                        if (isHitElementWithGroup) {
                             elements.forEach(item => {
                                 if (!item.groupId) {
                                     newElements.push(item);
@@ -242,7 +242,7 @@ export function withSelection(board: PlaitBoard) {
                     }
                 } else {
                     let newSelectedElements = [...elements];
-                    if (hitElementsWithGroup) {
+                    if (isHitElementWithGroup) {
                         const isCollapsed = Selection.isCollapsed(board.selection!);
                         if (!isCollapsed) {
                             newSelectedElements = [];
@@ -254,9 +254,10 @@ export function withSelection(board: PlaitBoard) {
                                 }
                             });
                         } else {
-                            const groups = getGroupByElement(board, elements[0], true) as PlaitGroup[];
+                            const hitElement = elements[0];
+                            const groups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
                             const selectedGroups = getSelectedGroups(board, groups);
-                            if (isSelectedElementsIncludeGroup(selectedGroups)) {
+                            if (selectedGroups.length > 0) {
                                 if (selectedGroups.length > 1) {
                                     newSelectedElements = getElementsByGroup(board, selectedGroups[selectedGroups.length - 2], true);
                                 }
