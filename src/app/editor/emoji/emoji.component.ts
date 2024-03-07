@@ -4,6 +4,7 @@ import { MindEmojiBaseComponent } from '@plait/mind';
 @Component({
     selector: 'app-mind-node-emoji',
     template: ``,
+    standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MindEmojiComponent extends MindEmojiBaseComponent implements OnInit {
