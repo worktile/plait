@@ -13,12 +13,13 @@ import {
     getProbablySupportsClipboardWrite,
     getRectangleByElements,
     getSelectedElements,
-    isSelectGroup,
-    isPartialSelectGroup,
     removeGroup,
     toHostPoint,
     toViewBoxPoint,
-    getSelectedGroupsAndElements
+    getHighestSelectedGroups,
+    canRemoveGroup,
+    canAddGroup,
+    getPartialSelectedElementsInGroup
 } from '@plait/core';
 import { mockDrawData, mockGroupData, mockMindData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -36,7 +37,6 @@ import { withCommonPlugin } from '../plugins/with-common';
 import { AppMenuComponent } from '../components/menu/menu.component';
 import { NgIf } from '@angular/common';
 import { mockTurningPointData } from './mock-turning-point-data';
-import { PlaitGroupElement } from 'packages/core/src/interfaces';
 
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
@@ -76,15 +76,9 @@ export class BasicEditorComponent implements OnInit {
 
     selectedElements: PlaitElement[] = [];
 
-    isSelectGroup!: boolean;
+    showAddGroup!: boolean;
 
-    get showAddGroup() {
-        if (this.selectedElements.length <= 1) {
-            return false;
-        }
-        const selectedGroupsAndElements = getSelectedGroupsAndElements(this.board);
-        return !selectedGroupsAndElements.find(item => item.groupId) && selectedGroupsAndElements.length !== 1;
-    }
+    showRemoveGroup!: boolean;
 
     @ViewChild('contextMenu', { static: true, read: ElementRef })
     contextMenu!: ElementRef<any>;
@@ -148,7 +142,12 @@ export class BasicEditorComponent implements OnInit {
     change(event: PlaitBoardChangeEvent) {
         this.setLocalData(JSON.stringify(event));
         this.selectedElements = getSelectedElements(this.board);
-        this.isSelectGroup = isSelectGroup(this.board);
+        const selectedGroups = getHighestSelectedGroups(this.board);
+        this.showRemoveGroup = canRemoveGroup(this.board, selectedGroups);
+        const partialSelectedElementsInGroup = getPartialSelectedElementsInGroup(this.board, selectedGroups);
+        const elementOutGroup = this.selectedElements.filter(item => !item.groupId);
+        this.showAddGroup = canAddGroup(this.board, selectedGroups, elementOutGroup, partialSelectedElementsInGroup)
+  
     }
 
     getLocalStorage() {
