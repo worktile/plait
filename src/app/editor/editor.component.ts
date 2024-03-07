@@ -19,7 +19,7 @@ import {
     getHighestSelectedGroups,
     canRemoveGroup,
     canAddGroup,
-    getPartialSelectedElementsInGroup
+    getHighestSelectedElements
 } from '@plait/core';
 import { mockDrawData, mockGroupData, mockMindData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -144,10 +144,8 @@ export class BasicEditorComponent implements OnInit {
         this.selectedElements = getSelectedElements(this.board);
         const selectedGroups = getHighestSelectedGroups(this.board);
         this.showRemoveGroup = canRemoveGroup(this.board, selectedGroups);
-        const partialSelectedElementsInGroup = getPartialSelectedElementsInGroup(this.board, selectedGroups);
-        const elementOutGroup = this.selectedElements.filter(item => !item.groupId);
-        this.showAddGroup = canAddGroup(this.board, selectedGroups, elementOutGroup, partialSelectedElementsInGroup)
-  
+        const highestSelectedElements = getHighestSelectedElements(this.board);
+        this.showAddGroup = canAddGroup(highestSelectedElements);
     }
 
     getLocalStorage() {
