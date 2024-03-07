@@ -83,13 +83,13 @@ export const isSelectedAllElementsInGroup = (board: PlaitBoard, group: PlaitGrou
 };
 
 export const getSelectedGroups = (board: PlaitBoard, groups: PlaitGroup[]): PlaitGroup[] => {
-    const selectGroups: PlaitGroup[] = [];
+    const selectedGroups: PlaitGroup[] = [];
     groups.forEach(item => {
         if (isSelectedElementOrGroup(board, item)) {
-            selectGroups.push(item);
+            selectedGroups.push(item);
         }
     });
-    return selectGroups;
+    return selectedGroups;
 };
 
 export const getHighestSelectedGroup = (board: PlaitBoard, element: PlaitElement): PlaitGroup | null => {
