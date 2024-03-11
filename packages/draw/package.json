@@ -2,8 +2,8 @@
     "name": "@plait/draw",
     "version": "0.51.3",
     "peerDependencies": {
-        "@angular/common": "^16.0.0",
-        "@angular/core": "^16.0.0",
+        "@angular/common": "^17.2.4",
+        "@angular/core": "^17.2.4",
         "is-hotkey": "^0.2.0"
     },
     "dependencies": {

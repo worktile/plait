@@ -5,6 +5,7 @@ import { FlowNode, FlowNodeComponent, FlowRenderMode } from '@plait/flow';
 @Component({
     selector: 'custom-flow-node',
     template: '',
+    standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomFlowNodeComponent extends FlowNodeComponent {
