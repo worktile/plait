@@ -6,6 +6,7 @@ import { FlowEdgeLabelIconBaseComponent } from '@plait/flow';
     template: `
         {{ iconItem.name }}
     `,
+    standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IconComponent extends FlowEdgeLabelIconBaseComponent implements OnInit {
