@@ -1,5 +1,16 @@
 # @plait/draw
 
+## 0.51.3
+
+### Patch Changes
+
+-   [#767](https://github.com/worktile/plait/pull/767) [`524cd91e`](https://github.com/worktile/plait/commit/524cd91efc94b8523191fdad95b3579cc4defb03) Thanks [@MissLixf](https://github.com/MissLixf)! - hit select correct with angle
+    rectangle hit select correct with angle
+
+*   [#771](https://github.com/worktile/plait/pull/771) [`1a16e813`](https://github.com/worktile/plait/commit/1a16e81385577ae69f9d0a949809f84ef113e0e1) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support addGroup and removeGroup function
+
+-   [#764](https://github.com/worktile/plait/pull/764) [`4df58289`](https://github.com/worktile/plait/commit/4df58289a7818317fe700c803f3dd4f95840e075) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support group render and select
+
 ## 0.51.2
 
 ### Patch Changes
