@@ -183,13 +183,13 @@ export function withSelection(board: PlaitBoard) {
                             const hitElement = elements[0];
                             const groups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
                             const selectedGroups = getSelectedGroups(board, groups);
-                            const elementsInHighestGroup = getElementsInGroup(board, groups[groups.length - 1], true);
+                            const elementsInHighestGroup = groups.length && getElementsInGroup(board, groups[groups.length - 1], true) || [];
                             if (selectedGroups.length > 0) {
                                 if (selectedGroups.length > 1) {
                                     pendingElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
                                 }
                             } else {
-                                if (!newSelectedElements.includes(hitElement)) {
+                                if (elementsInHighestGroup && !newSelectedElements.includes(hitElement)) {
                                     const selectedElementsInGroup = elementsInHighestGroup.filter(item =>
                                         newSelectedElements.includes(item)
                                     );
@@ -262,7 +262,9 @@ export function withSelection(board: PlaitBoard) {
                                     newSelectedElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
                                 }
                             } else {
-                                newSelectedElements = getElementsInGroup(board, groups[groups.length - 1], true);
+                                if(groups.length){
+                                    newSelectedElements = getElementsInGroup(board, groups[groups.length - 1], true);
+                                }
                             }
                         }
                     }
