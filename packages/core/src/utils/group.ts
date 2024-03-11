@@ -91,6 +91,17 @@ export const getSelectedGroups = (board: PlaitBoard, groups: PlaitGroup[], eleme
     return selectedGroups;
 };
 
+export const getAllSelectedGroups = (board: PlaitBoard): PlaitGroup[] => {
+    const highestSelectedGroups = getHighestSelectedGroups(board);
+    const groups: PlaitGroup[] = [];
+    highestSelectedGroups.forEach(item => {
+        groups.push(item);
+        const elementsInGroup = getElementsInGroup(board, item, true, true);
+        groups.push(...(elementsInGroup.filter(item => PlaitGroupElement.isGroup(item)) as PlaitGroup[]));
+    });
+    return groups;
+};
+
 export const getHighestSelectedGroup = (board: PlaitBoard, element: PlaitElement, elements?: PlaitElement[]): PlaitGroup | null => {
     const groups = getGroupByElement(board, element, true) as PlaitGroup[];
     const selectedGroups = getSelectedGroups(board, groups, elements);

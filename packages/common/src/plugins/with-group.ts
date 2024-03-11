@@ -11,7 +11,7 @@ import {
     getSelectedIsolatedElements,
     PlaitElement,
     PlaitGroup,
-    getElementsInGroup,
+    getAllSelectedGroups,
     Selection,
     Point,
     Transforms,
@@ -64,20 +64,14 @@ export function withGroup(board: PlaitBoard) {
         rectangle: RectangleClient | null,
         type: 'copy' | 'cut'
     ) => {
-        const groups = getHighestSelectedGroups(board);
-        const clipboardGroups: PlaitElement[] = [];
-        groups.forEach(item => {
-            clipboardGroups.push(item);
-            const elementsInGroup = getElementsInGroup(board, item, true, true);
-            clipboardGroups.push(...elementsInGroup.filter(item => PlaitGroupElement.isGroup(item)));
-        });
+        const groups = getAllSelectedGroups(board);
         if (!clipboardContext) {
-            clipboardContext = createClipboardContext(WritableClipboardType.elements, clipboardGroups, '');
+            clipboardContext = createClipboardContext(WritableClipboardType.elements, groups, '');
         } else {
             clipboardContext = addClipboardContext(clipboardContext, {
                 text: '',
                 type: WritableClipboardType.elements,
-                data: clipboardGroups
+                data: groups
             });
         }
         setFragment(data, clipboardContext, rectangle, type);
@@ -85,9 +79,9 @@ export function withGroup(board: PlaitBoard) {
 
     board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
         if (clipboardData?.elements?.length) {
+            const elements: PlaitElement[] = [];
             const groups = getHighestSelectedGroups(board, clipboardData?.elements);
             const selectedIsolatedElements = getSelectedIsolatedElements(board, clipboardData?.elements);
-            const elements: PlaitElement[] = [];
             selectedIsolatedElements.forEach(item => {
                 elements.push(!item.groupId ? item : updateElementsGroupId(item));
             });
@@ -98,11 +92,12 @@ export function withGroup(board: PlaitBoard) {
                     elements.push(...rebuildGroupElements(item, clipboardData.elements!, newGroup.id));
                 });
             }
+            clipboardData.elements = elements;
+
             const groupElements = elements?.filter(value => PlaitGroupElement.isGroup(value)) as PlaitElement[];
             groupElements.forEach(element => {
                 Transforms.insertNode(board, element, [board.children.length]);
             });
-            clipboardData.elements = elements;
         }
         insertFragment(data, clipboardData, targetPoint);
     };
