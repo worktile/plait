@@ -1,12 +1,26 @@
 import { Ancestor, PlaitBoard, PlaitElement, RectangleClient } from '../interfaces';
 import { depthFirstRecursion, getIsRecursionFunc } from './tree';
+// TODO  rotatePoints 方法无法引入;core 依赖了 common
+import { rotatePoints } from '../../../common/src/utils';
 
 export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement[], recursion: boolean): RectangleClient {
     const rectangles: RectangleClient[] = [];
+    const angle = getSelectionAngle(elements);
+    let isRotateBasedOrigin: boolean = false;
     const callback = (node: PlaitElement) => {
-        const nodeRectangle = board.getRectangle(node);
-        if (nodeRectangle) {
-            rectangles.push(nodeRectangle);
+        const nodeOriginRectangle = board.getRectangle(node);
+        if (nodeOriginRectangle) {
+            const points = RectangleClient.getCornerPoints(nodeOriginRectangle);
+            const rotatedPoints = rotatePoints(points, RectangleClient.getCenterPoint(nodeOriginRectangle), node.angle);
+            if (angle) {
+                const reRotatedPoints = rotatePoints(rotatedPoints, [0, 0], -angle);
+                isRotateBasedOrigin = true;
+                const nodeRotatedRectangle = RectangleClient.getRectangleByPoints(reRotatedPoints);
+                rectangles.push(nodeRotatedRectangle);
+            } else {
+                const nodeRotatedRectangle = RectangleClient.getRectangleByPoints(rotatedPoints);
+                rectangles.push(nodeRotatedRectangle);
+            }
         } else {
             console.error(`can not get rectangle of element:`, node);
         }
@@ -23,7 +37,15 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
         }
     });
     if (rectangles.length > 0) {
-        return RectangleClient.getBoundingRectangle(rectangles);
+        let rectangle = RectangleClient.getBoundingRectangle(rectangles);
+        if (isRotateBasedOrigin && rectangle) {
+            const rectangleCorners = RectangleClient.getCornerPoints(rectangle);
+            const rotatedCornersBaseOrigin = rotatePoints(rectangleCorners, [0, 0], angle);
+            const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(rotatedCornersBaseOrigin));
+            const rotatedCornersBaseCenter = rotatePoints(rotatedCornersBaseOrigin, centerPoint, -angle);
+            rectangle = RectangleClient.getRectangleByPoints(rotatedCornersBaseCenter);
+        }
+        return rectangle;
     } else {
         return {
             x: 0,
@@ -78,3 +100,12 @@ export function findElements<T extends PlaitElement = PlaitElement>(
     );
     return elements;
 }
+
+// getSelectionAngle
+export const getSelectionAngle = (elements: PlaitElement[]) => {
+    let angle = elements[0].angle || 0;
+    if (elements.find(item => item.angle !== angle)) {
+        angle = 0;
+    }
+    return angle;
+};

@@ -8,3 +8,5 @@ export enum ResizeCursorClass {
 export enum CursorClass {
     crosshair = 'crosshair'
 }
+
+export const RESIZE_CURSORS = ['ns-resize', 'nesw-resize', 'ew-resize', 'nwse-resize'];

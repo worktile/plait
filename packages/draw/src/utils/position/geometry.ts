@@ -1,14 +1,16 @@
 import { Ancestor, PlaitBoard, Point, RectangleClient, depthFirstRecursion, getIsRecursionFunc } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry } from '../../interfaces';
-import { RESIZE_HANDLE_DIAMETER, getRectangleResizeHandleRefs, ResizeHandle } from '@plait/common';
+import { RESIZE_HANDLE_DIAMETER, getRectangleResizeHandleRefs, rotatePoints } from '@plait/common';
 import { getEngine } from '../../engines';
 import { PlaitImage } from '../../interfaces/image';
 import { getShape } from '../shape';
 
-export const getHitRectangleResizeHandleRef = (board: PlaitBoard, rectangle: RectangleClient, point: Point) => {
-    const resizeHandleRefs = getRectangleResizeHandleRefs(rectangle, RESIZE_HANDLE_DIAMETER);
+export const getHitRectangleResizeHandleRef = (board: PlaitBoard, rectangle: RectangleClient, point: Point, angle: number = 0) => {
+    const centerPoint = RectangleClient.getCenterPoint(rectangle);
+    const rotatedPoint = rotatePoints([point], centerPoint, -angle)[0];
+    const resizeHandleRefs = getRectangleResizeHandleRefs(rectangle, RESIZE_HANDLE_DIAMETER, angle);
     const result = resizeHandleRefs.find(resizeHandleRef => {
-        return RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), resizeHandleRef.rectangle);
+        return RectangleClient.isHit(RectangleClient.getRectangleByPoints([rotatedPoint, rotatedPoint]), resizeHandleRef.rectangle);
     });
     return result;
 };

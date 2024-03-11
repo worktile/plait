@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, RectangleClient, ResizeCursorClass, setDragging } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, ResizeCursorClass, setDragging, RESIZE_CURSORS } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
 import { PlaitElementOrArray, ResizeRef } from '../types/resize';
 
@@ -38,7 +38,16 @@ const getResizeCursorClassByIndex = (index: number) => {
     }
 };
 
-export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diameter: number) => {
+export const rotateResizeCursor = (cursor: ResizeCursorClass, angle: number) => {
+    const index = RESIZE_CURSORS.indexOf(cursor);
+    if (index >= 0) {
+        const temp = Math.round(angle / (Math.PI / 4));
+        cursor = RESIZE_CURSORS[(index + temp) % RESIZE_CURSORS.length] as ResizeCursorClass;
+    }
+    return cursor;
+};
+
+export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diameter: number, angle: number = 0) => {
     const corners = RectangleClient.getCornerPoints(rectangle);
     const refs = corners.map((corner, index: number) => {
         return {
@@ -49,7 +58,7 @@ export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diamete
                 height: diameter
             },
             handle: getResizeHandleByIndex(index) as ResizeHandle,
-            cursorClass: getResizeCursorClassByIndex(index) as ResizeCursorClass
+            cursorClass: rotateResizeCursor(getResizeCursorClassByIndex(index) as ResizeCursorClass, angle)
         };
     });
     const rectangles = getResizeSideRectangles(corners, diameter / 2);
@@ -58,7 +67,7 @@ export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diamete
             return {
                 rectangle,
                 handle: getResizeHandleByIndex(index + 4) as ResizeHandle,
-                cursorClass: getResizeCursorClassByIndex(index + 4) as ResizeCursorClass
+                cursorClass: rotateResizeCursor(getResizeCursorClassByIndex(index + 4) as ResizeCursorClass, angle)
             };
         })
     );
@@ -93,7 +102,10 @@ export const isResizing = (board: PlaitBoard) => {
     return !!IS_RESIZING.get(board);
 };
 
-export const isResizingByCondition = <T extends PlaitElementOrArray, K>(board: PlaitBoard, match: (resizeRef: ResizeRef<T, K>) => boolean) => {
+export const isResizingByCondition = <T extends PlaitElementOrArray, K>(
+    board: PlaitBoard,
+    match: (resizeRef: ResizeRef<T, K>) => boolean
+) => {
     return isResizing(board) && match(IS_RESIZING.get(board)!);
 };
 

@@ -8,9 +8,21 @@ import {
     getResizeHandlePointByIndex,
     getSymmetricHandleIndex,
     isCornerHandle,
+    rotatePoints,
     withResize
 } from '@plait/common';
-import { PlaitBoard, Point, RectangleClient, Transforms, createG, getRectangleByElements, getSelectedElements, isSelectionMoving } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    RectangleClient,
+    Transforms,
+    createG,
+    getRectangleByElements,
+    getSelectedElements,
+    isSelectionMoving,
+    getSelectionAngle,
+    rotate
+} from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
@@ -24,7 +36,7 @@ export function withDrawResize(board: PlaitBoard) {
     const canResize = () => {
         const elements = getSelectedElements(board);
         return elements.length > 1 && elements.every(el => PlaitDrawElement.isDrawElement(el));
-    }
+    };
 
     const options: WithResizeOptions<PlaitDrawElement[]> = {
         key: 'draw-elements',
@@ -32,7 +44,8 @@ export function withDrawResize(board: PlaitBoard) {
         hitTest: (point: Point) => {
             const elements = getSelectedElements(board) as PlaitDrawElement[];
             const boundingRectangle = getRectangleByElements(board, elements, false);
-            const handleRef = getHitRectangleResizeHandleRef(board, boundingRectangle, point);
+            const angle = getSelectionAngle(elements);
+            const handleRef = getHitRectangleResizeHandleRef(board, boundingRectangle, point, angle);
             if (handleRef) {
                 return {
                     element: elements,
@@ -48,7 +61,11 @@ export function withDrawResize(board: PlaitBoard) {
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || isFromCorner;
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
-
+            const angle = getSelectionAngle(resizeRef.element);
+            const centerPoint = RectangleClient.getCenterPoint(resizeRef.rectangle!);
+            const [rotatedStartPoint, rotateEndPoint] = rotatePoints([resizeState.startPoint, resizeState.endPoint], centerPoint, -angle);
+            resizeState.startPoint = rotatedStartPoint;
+            resizeState.endPoint = rotateEndPoint;
             const resizeAlignRef = getResizeAlignRef(
                 board,
                 resizeRef,
@@ -67,6 +84,30 @@ export function withDrawResize(board: PlaitBoard) {
                 let points = target.points.map(p => {
                     return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
                 });
+                // 处理旋转后resize导致的中心点偏移
+                if (angle) {
+                    const newCenter: Point = RectangleClient.getCenterPoint(
+                        RectangleClient.getRectangleByPoints(resizeAlignRef.activePoints)
+                    );
+                    // 选框的新中心点
+                    const rotatedRectangleCenter = rotate(newCenter[0], newCenter[1], centerPoint[0], centerPoint[1], angle);
+                    const rotatedTopLeft = rotate(points[0][0], points[0][1], centerPoint[0], centerPoint[1], angle);
+                    const rotatedBottomRight = rotate(points[1][0], points[1][1], centerPoint[0], centerPoint[1], angle);
+                    points[0] = rotate(
+                        rotatedTopLeft[0],
+                        rotatedTopLeft[1],
+                        rotatedRectangleCenter[0],
+                        rotatedRectangleCenter[1],
+                        -angle
+                    ) as Point;
+                    points[1] = rotate(
+                        rotatedBottomRight[0],
+                        rotatedBottomRight[1],
+                        rotatedRectangleCenter[0],
+                        rotatedRectangleCenter[1],
+                        -angle
+                    ) as Point;
+                }
 
                 if (PlaitDrawElement.isGeometry(target)) {
                     const { height: textHeight } = getFirstTextManage(target).getSize();
@@ -114,15 +155,19 @@ export function withDrawResize(board: PlaitBoard) {
             handleG = createG();
             const elements = getSelectedElements(board) as PlaitDrawElement[];
             const boundingRectangle = getRectangleByElements(board, elements, false);
-            const corners = RectangleClient.getCornerPoints(boundingRectangle);
-            corners.forEach((corner) => {
+            let corners = RectangleClient.getCornerPoints(boundingRectangle);
+            const angle = getSelectionAngle(elements);
+            if (angle) {
+                const centerPoint = RectangleClient.getCenterPoint(boundingRectangle);
+                corners = rotatePoints(corners, centerPoint, angle) as [Point, Point, Point, Point];
+            }
+            corners.forEach(corner => {
                 const g = drawHandle(board, corner);
                 handleG && handleG.append(g);
             });
             PlaitBoard.getElementActiveHost(board).append(handleG);
         }
     };
-
     return board;
 }
 

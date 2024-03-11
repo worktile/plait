@@ -15,7 +15,7 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { mockDrawData, mockGroupData, mockMindData } from './mock-data';
+import { mockDrawData, mockGroupData, mockMindData, mockRotateData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
 import { AbstractResizeState, MindThemeColors } from '@plait/mind';
 import { withMindExtend } from '../plugins/with-mind-extend';
@@ -119,6 +119,9 @@ export class BasicEditorComponent implements OnInit {
                     break;
                 case 'group':
                     this.value = [...mockGroupData];
+                    break;
+                case 'rotate':
+                    this.value = [...mockRotateData];
                     break;
                 default:
                     this.value = [...mockDrawData];

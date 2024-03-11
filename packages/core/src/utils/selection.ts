@@ -1,9 +1,9 @@
-import { getSelectedElements } from '.';
+import { getSelectedElements, setAngleForG } from '.';
 import { ACTIVE_STROKE_WIDTH, SELECTION_RECTANGLE_CLASS_NAME } from '../constants';
 import { PlaitBoard, PlaitPluginKey, PlaitPointerType, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { PlaitOptionsBoard, WithPluginOptions, drawRectangle } from '../public-api';
 import { setDragging } from './dnd';
-import { getRectangleByElements } from './element';
+import { getSelectionAngle, getRectangleByElements } from './element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from './weak-maps';
 
 export function isSelectionMoving(board: PlaitBoard) {
@@ -59,6 +59,11 @@ export function createSelectionRectangleG(board: PlaitBoard) {
         });
         selectionRectangleG.classList.add(SELECTION_RECTANGLE_CLASS_NAME);
         PlaitBoard.getElementActiveHost(board).append(selectionRectangleG);
+        const angle = getSelectionAngle(elements);
+        if (angle) {
+            setAngleForG(selectionRectangleG, RectangleClient.getCenterPoint(rectangle), angle);
+        }
+
         return selectionRectangleG;
     }
     return null;
