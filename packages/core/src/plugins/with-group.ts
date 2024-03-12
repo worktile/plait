@@ -1,40 +1,25 @@
+import { PlaitBoard, Selection, Point, PlaitGroupElement, RectangleClient, PlaitElement, PlaitGroup } from '../interfaces';
+import { Transforms } from '../transforms';
 import {
-    PlaitBoard,
-    PlaitPluginElementContext,
-    PlaitGroupElement,
     toViewBoxPoint,
     toHostPoint,
     getHitElementsBySelection,
     createGroupRectangleG,
+    WritableClipboardContext,
+    getSelectedGroups,
+    createClipboardContext,
+    WritableClipboardType,
+    addClipboardContext,
     ClipboardData,
     getHighestSelectedGroups,
     getSelectedIsolatedElements,
-    PlaitElement,
-    PlaitGroup,
-    getSelectedGroups,
-    Selection,
-    Point,
-    Transforms,
-    WritableClipboardContext,
-    RectangleClient,
-    addClipboardContext,
-    createClipboardContext,
-    WritableClipboardType,
     idCreator
-} from '@plait/core';
-import { GroupComponent } from '../core/group.component';
+} from '../utils';
 
 export function withGroup(board: PlaitBoard) {
     let groupRectangleG: SVGGElement | null;
 
-    const { drawElement, pointerMove, globalPointerUp, setFragment, insertFragment } = board;
-
-    board.drawElement = (context: PlaitPluginElementContext) => {
-        if (PlaitGroupElement.isGroup(context.element)) {
-            return GroupComponent;
-        }
-        return drawElement(context);
-    };
+    const { pointerMove, globalPointerUp, setFragment, insertFragment } = board;
 
     board.pointerMove = (event: PointerEvent) => {
         groupRectangleG?.remove();
