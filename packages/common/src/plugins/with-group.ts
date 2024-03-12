@@ -11,7 +11,7 @@ import {
     getSelectedIsolatedElements,
     PlaitElement,
     PlaitGroup,
-    getAllSelectedGroups,
+    getSelectedGroups,
     Selection,
     Point,
     Transforms,
@@ -64,7 +64,7 @@ export function withGroup(board: PlaitBoard) {
         rectangle: RectangleClient | null,
         type: 'copy' | 'cut'
     ) => {
-        const groups = getAllSelectedGroups(board);
+        const groups = getSelectedGroups(board);
         if (!clipboardContext) {
             clipboardContext = createClipboardContext(WritableClipboardType.elements, groups, '');
         } else {
@@ -83,7 +83,7 @@ export function withGroup(board: PlaitBoard) {
             const groups = getHighestSelectedGroups(board, clipboardData?.elements);
             const selectedIsolatedElements = getSelectedIsolatedElements(board, clipboardData?.elements);
             selectedIsolatedElements.forEach(item => {
-                elements.push(!item.groupId ? item : updateElementsGroupId(item));
+                elements.push(!item.groupId ? item : updateElementsGroupId(item, undefined));
             });
             if (groups.length) {
                 groups.forEach(item => {

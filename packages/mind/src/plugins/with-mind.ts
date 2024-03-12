@@ -27,6 +27,7 @@ import { PlaitMindBoard } from './with-mind.board';
 import { withNodeResize } from './with-node-resize';
 import { withNodeImageResize } from './with-node-image-resize';
 import { withMindFragment } from './with-mind-fragment';
+import { withGroup } from '@plait/common';
 
 export const withMind = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
@@ -129,10 +130,12 @@ export const withMind = (baseBoard: PlaitBoard) => {
         dblClick(event);
     };
 
-    return withNodeResize(
-        withNodeImageResize(
-            withNodeImage(
-                withNodeHoverHitTest(withMindFragment(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board)))))))
+    return withGroup(
+        withNodeResize(
+            withNodeImageResize(
+                withNodeImage(
+                    withNodeHoverHitTest(withMindFragment(withMindHotkey(withMindExtend(withCreateMind(withAbstract(withNodeDnd(board)))))))
+                )
             )
         )
     );

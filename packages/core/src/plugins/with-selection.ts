@@ -22,7 +22,7 @@ import {
     getElementsInGroup,
     getElementsInGroupByElement,
     getGroupByElement,
-    getSelectedGroups,
+    getSelectedGroupsInGroups,
     getTemporaryElements,
     isDragging,
     isHandleSelection,
@@ -182,8 +182,9 @@ export function withSelection(board: PlaitBoard) {
                             let pendingElements: PlaitElement[] = [...elements];
                             const hitElement = elements[0];
                             const groups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
-                            const selectedGroups = getSelectedGroups(board, groups);
-                            const elementsInHighestGroup = groups.length && getElementsInGroup(board, groups[groups.length - 1], true) || [];
+                            const selectedGroups = getSelectedGroupsInGroups(board, groups);
+                            const elementsInHighestGroup =
+                                (groups.length && getElementsInGroup(board, groups[groups.length - 1], true)) || [];
                             if (selectedGroups.length > 0) {
                                 if (selectedGroups.length > 1) {
                                     pendingElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
@@ -256,13 +257,13 @@ export function withSelection(board: PlaitBoard) {
                         } else {
                             const hitElement = elements[0];
                             const groups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
-                            const selectedGroups = getSelectedGroups(board, groups);
+                            const selectedGroups = getSelectedGroupsInGroups(board, groups);
                             if (selectedGroups.length > 0) {
                                 if (selectedGroups.length > 1) {
                                     newSelectedElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
                                 }
                             } else {
-                                if(groups.length){
+                                if (groups.length) {
                                     newSelectedElements = getElementsInGroup(board, groups[groups.length - 1], true);
                                 }
                             }
