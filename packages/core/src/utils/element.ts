@@ -1,12 +1,20 @@
-import { Ancestor, PlaitBoard, PlaitElement, RectangleClient } from '../interfaces';
+import { Ancestor, PlaitBoard, PlaitElement, Point, RectangleClient } from '../interfaces';
+import { getSelectionAngle, hasSameAngle, resizeSelectionRectangle, rotatePoints } from './angle';
 import { depthFirstRecursion, getIsRecursionFunc } from './tree';
 
 export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement[], recursion: boolean): RectangleClient {
-    const rectangles: RectangleClient[] = [];
+    const rectangleCornerPoints: [Point, Point, Point, Point][] = [];
     const callback = (node: PlaitElement) => {
         const nodeRectangle = board.getRectangle(node);
         if (nodeRectangle) {
-            rectangles.push(nodeRectangle);
+            const cornerPoints = RectangleClient.getCornerPoints(nodeRectangle);
+            const rotatedCornerPoints = rotatePoints(cornerPoints, RectangleClient.getCenterPoint(nodeRectangle), node.angle || 0) as [
+                Point,
+                Point,
+                Point,
+                Point
+            ];
+            rectangleCornerPoints.push(rotatedCornerPoints);
         } else {
             console.error(`can not get rectangle of element:`, node);
         }
@@ -22,8 +30,16 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
             callback(element);
         }
     });
-    if (rectangles.length > 0) {
-        return RectangleClient.getBoundingRectangle(rectangles);
+    if (rectangleCornerPoints.length > 0) {
+        if (hasSameAngle(elements)) {
+            const angle = getSelectionAngle(elements);
+            return resizeSelectionRectangle(rectangleCornerPoints, angle);
+        } else {
+            const flatPoints: Point[] = rectangleCornerPoints.reduce((acc: Point[], val) => {
+                return acc.concat(val);
+            }, []);
+            return RectangleClient.getRectangleByPoints(flatPoints);
+        }
     } else {
         return {
             x: 0,

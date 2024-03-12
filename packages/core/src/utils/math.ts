@@ -314,3 +314,14 @@ export function toDomPrecision(v: number) {
 export function toFixed(v: number) {
     return +v.toFixed(2);
 }
+
+/**
+ * Whether two numbers numbers a and b are approximately equal.
+ *
+ * @param a - The first point.
+ * @param b - The second point.
+ * @public
+ */
+export function approximately(a: number, b: number, precision = 0.000001) {
+    return Math.abs(a - b) <= precision;
+}

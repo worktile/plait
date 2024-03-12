@@ -491,3 +491,142 @@ export const mockGroupData: PlaitDrawElement[] = [
         fill: '#e48483'
     }
 ] as PlaitDrawElement[];
+
+export const mockRotateData: PlaitDrawElement[] = [
+    {
+        id: 'FjKbf',
+        type: 'geometry',
+        shape: 'text',
+        angle: 5.86874495248496,
+        opacity: 1,
+        textHeight: 30,
+        text: {
+            children: [
+                {
+                    text: '文本测试',
+                    'font-size': 20
+                }
+            ]
+        },
+        points: [
+            [-1530.898193359375, 164.9169921875],
+            [-1437.683349609375, 201.4208984375]
+        ],
+        autoSize: false
+    },
+    {
+        id: 'Ejnnf',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 5.86874495248496,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-285.984375, 361.66845703125],
+            [-4.35546875, 474.97705078125]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'tARBe',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 5.86874495248496,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-245.51953125, 543.79248046875],
+            [95.875, 624.54638671875]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'JaNyh',
+        type: 'geometry',
+        shape: 'ellipse',
+        angle: 6.86874495248496,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-533.3525390625, 128.17773437499994],
+            [-337.2041015625, 226.22460937499994]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'FHknH',
+        type: 'geometry',
+        shape: 'triangle',
+        angle: 4.86874495248496,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-782.08349609375, 86.6845703125],
+            [-688.86865234375, 233.2626953125]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'axRKz',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 5.86874495248496,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-1311.2099609375, 146.718994140625],
+            [-917.285014484772, 306.13338010187175]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'sZzjB',
+        type: 'image',
+        angle: 5.86874495248496,
+        points: [
+            [-1094.410016442224, 410.4649548597526],
+            [-625.7626953125, 722.8965022795687]
+        ],
+        url: 'blob:http://localhost:7100/002b0121-5e05-4b84-8ef4-c69b2d408dff'
+    }
+] as PlaitDrawElement[];
