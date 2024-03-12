@@ -8,7 +8,8 @@ import {
     distanceBetweenPointAndSegments,
     distanceBetweenPointAndPoint,
     HIT_DISTANCE_BUFFER,
-    rotate
+    rotate,
+    isPointInPolygon
 } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { TRANSPARENT, rotatePoints } from '@plait/common';
@@ -63,14 +64,14 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
             RectangleClient.getCenterPoint(client),
             element.angle
         );
-        return isPolylineHitRectangle(rotatedCornerPoints, client);
+        return isPolylineHitRectangle(rotatedCornerPoints, rangeRectangle);
     }
 
     if (PlaitDrawElement.isLine(element)) {
         const points = getLinePoints(board, element);
         return isPolylineHitRectangle(points, rangeRectangle);
     }
-   return null;
+    return null;
 };
 
 export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point) => {
@@ -111,7 +112,13 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
         }
     }
     if (PlaitDrawElement.isImage(element)) {
-        return isRectangleHitDrawElement(board, element, { anchor: point, focus: point });
+        const client = RectangleClient.getRectangleByPoints(element.points);
+        const rotatedCornerPoints = rotatePoints(
+            RectangleClient.getCornerPoints(client),
+            RectangleClient.getCenterPoint(client),
+            element.angle
+        );
+        return isPointInPolygon(point, rotatedCornerPoints);
     }
 
     if (PlaitDrawElement.isLine(element)) {
