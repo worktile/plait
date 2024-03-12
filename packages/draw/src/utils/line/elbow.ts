@@ -1,7 +1,7 @@
 import { Point, PlaitBoard, getElementById, RectangleClient, Vector } from '@plait/core';
 import {
     getPoints,
-    getPointByVector,
+    getPointByVectorComponent,
     removeDuplicatePoints,
     generateElbowLineRoute,
     simplifyOrthogonalPoints,
@@ -110,7 +110,7 @@ export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitLin
 };
 
 const createFakeElement = (startPoint: Point, vector: Vector) => {
-    const point = getPointByVector(startPoint, vector, -25);
+    const point = getPointByVectorComponent(startPoint, vector, -25);
     const points = RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(point, 50, 50));
     return createGeometryElement(BasicShapes.rectangle, points, '');
 };

@@ -13,7 +13,7 @@ import {
     catmullRomFitting
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { getPointOnPolyline, getPointByVector, removeDuplicatePoints, getExtendPoint, isSourceAndTargetIntersect } from '@plait/common';
+import { getPointOnPolyline, getPointByVectorComponent, removeDuplicatePoints, getExtendPoint, isSourceAndTargetIntersect } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, LineText, PlaitDrawElement, PlaitLine, PlaitShape } from '../../interfaces';
 import { getNearestPoint } from '../geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../style/stroke';
@@ -78,10 +78,10 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
         const sumDistance = distanceBetweenPointAndPoint(...source.point, ...target.point);
         const offset = 12 + sumDistance / 3;
         if (sourceBoundElement) {
-            curvePoints.push(getPointByVector(source.point, source.vector, offset));
+            curvePoints.push(getPointByVectorComponent(source.point, source.vector, offset));
         }
         if (targetBoundElement) {
-            curvePoints.push(getPointByVector(target.point, target.vector, offset));
+            curvePoints.push(getPointByVectorComponent(target.point, target.vector, offset));
         }
         const isSingleBound = (sourceBoundElement && !targetBoundElement) || (!sourceBoundElement && targetBoundElement);
         if (isSingleBound) {
@@ -90,8 +90,8 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
             return pointsOnBezierCurves(points) as Point[];
         }
         if (!sourceBoundElement && !targetBoundElement) {
-            curvePoints.push(getPointByVector(source.point, source.vector, offset));
-            curvePoints.push(getPointByVector(target.point, target.vector, offset));
+            curvePoints.push(getPointByVectorComponent(source.point, source.vector, offset));
+            curvePoints.push(getPointByVectorComponent(target.point, target.vector, offset));
         }
         curvePoints.push(target.point);
         return pointsOnBezierCurves(curvePoints) as Point[];

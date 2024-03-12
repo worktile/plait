@@ -2,7 +2,7 @@ import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements, Ve
 import { PlaitDrawElement, GeometryShapes, PlaitText, PlaitLine, FlowchartSymbols, BasicShapes } from '../interfaces';
 import { createDefaultGeometry, createTextElement, getMemorizedLatestByPointer, getTextShapeProperty, insertElement } from '../utils';
 import { Element } from 'slate';
-import { getDirectionByVector, getPointByVector, normalizeShapePoints } from '@plait/common';
+import { getDirectionByVector, getPointByVectorComponent, normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '.';
 import { collectLineUpdatedRefsByGeometry } from './line';
 import { DefaultBasicShapeProperty, DefaultFlowchartPropertyMap } from '../constants';
@@ -23,7 +23,7 @@ export const insertGeometryByVector = (board: PlaitBoard, point: Point, shape: G
         } else {
             offset = -shapeProperty.height / 2;
         }
-        const vectorPoint = getPointByVector(point, vector, offset);
+        const vectorPoint = getPointByVectorComponent(point, vector, offset);
         const points = RectangleClient.getPoints(
             RectangleClient.getRectangleByCenterPoint(vectorPoint, shapeProperty.width, shapeProperty.height)
         );

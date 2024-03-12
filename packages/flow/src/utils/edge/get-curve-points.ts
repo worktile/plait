@@ -1,6 +1,6 @@
 import { Direction, Point, distanceBetweenPointAndPoint } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { getDirectionFactor, getPointByVector } from '@plait/common';
+import { getDirectionFactor, getPointByVectorComponent } from '@plait/common';
 
 export function getCurvePoints({
     sourceDirection = Direction.bottom,
@@ -18,10 +18,10 @@ export function getCurvePoints({
     const offset = 12 + sumDistance / 3;
 
     const sourceFactor = getDirectionFactor(sourceDirection!);
-    curvePoints.push(getPointByVector(sourcePoint, [sourceFactor.x, sourceFactor.y], offset));
+    curvePoints.push(getPointByVectorComponent(sourcePoint, [sourceFactor.x, sourceFactor.y], offset));
 
     const targetFactor = getDirectionFactor(targetDirection);
-    curvePoints.push(getPointByVector(targetPoint, [targetFactor.x, targetFactor.y], offset));
+    curvePoints.push(getPointByVectorComponent(targetPoint, [targetFactor.x, targetFactor.y], offset));
 
     curvePoints.push(targetPoint);
     return pointsOnBezierCurves(curvePoints) as Point[];
