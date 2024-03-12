@@ -10,5 +10,8 @@
     "@plait/mind": "0.51.3",
     "@plait/text": "0.51.3"
   },
-  "changesets": []
+  "changesets": [
+    "angry-icons-nail",
+    "fair-items-trade"
+  ]
 }
