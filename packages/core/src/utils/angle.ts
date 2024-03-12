@@ -24,17 +24,17 @@ export const hasSameAngle = (elements: PlaitElement[]) => {
     return !!getSelectionAngle(elements);
 };
 
-export const resizeSelectionRectangle = (rectangleCornerPoints: [Point, Point, Point, Point][], angle: number) => {
+export const resizeSelectionRectangle = (rectanglesCornerPoints: [Point, Point, Point, Point][], angle: number) => {
     let rectanglesFromOrigin: RectangleClient[] = [];
-    for (let i = 0; i < rectangleCornerPoints.length; i++) {
-        const rotatedCornerPoints = rectangleCornerPoints[i];
-        const cornerPointsFromOrigin = rotatePoints(rotatedCornerPoints, [0, 0], -angle);
-        rectanglesFromOrigin.push(RectangleClient.getRectangleByPoints(cornerPointsFromOrigin));
+    for (let i = 0; i < rectanglesCornerPoints.length; i++) {
+        const cornerPoints = rectanglesCornerPoints[i];
+        const invertCornerPointsFromOrigin = rotatePoints(cornerPoints, [0, 0], -angle);
+        rectanglesFromOrigin.push(RectangleClient.getRectangleByPoints(invertCornerPointsFromOrigin));
     }
 
     const selectionRectangleFromOrigin = RectangleClient.getBoundingRectangle(rectanglesFromOrigin);
-    const selectionCornersPoints = RectangleClient.getCornerPoints(selectionRectangleFromOrigin);
-    const cornerPointsFromOrigin = rotatePoints(selectionCornersPoints, [0, 0], angle);
+    const selectionCornerPoints = RectangleClient.getCornerPoints(selectionRectangleFromOrigin);
+    const cornerPointsFromOrigin = rotatePoints(selectionCornerPoints, [0, 0], angle);
     const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(cornerPointsFromOrigin));
     return RectangleClient.getRectangleByPoints(rotatePoints(cornerPointsFromOrigin, centerPoint, -angle));
 };

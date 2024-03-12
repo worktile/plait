@@ -3,7 +3,7 @@ import { getSelectionAngle, hasSameAngle, resizeSelectionRectangle, rotatePoints
 import { depthFirstRecursion, getIsRecursionFunc } from './tree';
 
 export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement[], recursion: boolean): RectangleClient {
-    const rectangleCornerPoints: [Point, Point, Point, Point][] = [];
+    const rectanglesCornerPoints: [Point, Point, Point, Point][] = [];
     const callback = (node: PlaitElement) => {
         const nodeRectangle = board.getRectangle(node);
         if (nodeRectangle) {
@@ -14,7 +14,7 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
                 Point,
                 Point
             ];
-            rectangleCornerPoints.push(rotatedCornerPoints);
+            rectanglesCornerPoints.push(rotatedCornerPoints);
         } else {
             console.error(`can not get rectangle of element:`, node);
         }
@@ -30,15 +30,15 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
             callback(element);
         }
     });
-    if (rectangleCornerPoints.length > 0) {
+    if (rectanglesCornerPoints.length > 0) {
         if (hasSameAngle(elements)) {
             const angle = getSelectionAngle(elements);
-            return resizeSelectionRectangle(rectangleCornerPoints, angle);
+            return resizeSelectionRectangle(rectanglesCornerPoints, angle);
         } else {
-            const flatPoints: Point[] = rectangleCornerPoints.reduce((acc: Point[], val) => {
+            const flatCornerPoints: Point[] = rectanglesCornerPoints.reduce((acc: Point[], val) => {
                 return acc.concat(val);
             }, []);
-            return RectangleClient.getRectangleByPoints(flatPoints);
+            return RectangleClient.getRectangleByPoints(flatCornerPoints);
         }
     } else {
         return {
