@@ -1,0 +1,14 @@
+{
+  "mode": "pre",
+  "tag": "next",
+  "initialVersions": {
+    "@plait/common": "0.51.3",
+    "@plait/core": "0.51.3",
+    "@plait/draw": "0.51.3",
+    "@plait/flow": "0.51.3",
+    "@plait/layouts": "0.51.3",
+    "@plait/mind": "0.51.3",
+    "@plait/text": "0.51.3"
+  },
+  "changesets": []
+}
