@@ -10,7 +10,18 @@ import {
     isCornerHandle,
     withResize
 } from '@plait/common';
-import { PlaitBoard, Point, RectangleClient, Transforms, createG, getRectangleByElements, getSelectedElements, isSelectionMoving } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    RectangleClient,
+    Transforms,
+    createG,
+    getRectangleByElements,
+    getSelectedElements,
+    isSelectionMoving,
+    getSelectionAngle,
+    rotatePoints
+} from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
@@ -24,7 +35,7 @@ export function withDrawResize(board: PlaitBoard) {
     const canResize = () => {
         const elements = getSelectedElements(board);
         return elements.length > 1 && elements.every(el => PlaitDrawElement.isDrawElement(el));
-    }
+    };
 
     const options: WithResizeOptions<PlaitDrawElement[]> = {
         key: 'draw-elements',
@@ -114,8 +125,13 @@ export function withDrawResize(board: PlaitBoard) {
             handleG = createG();
             const elements = getSelectedElements(board) as PlaitDrawElement[];
             const boundingRectangle = getRectangleByElements(board, elements, false);
-            const corners = RectangleClient.getCornerPoints(boundingRectangle);
-            corners.forEach((corner) => {
+            let corners = RectangleClient.getCornerPoints(boundingRectangle);
+            const angle = getSelectionAngle(elements);
+            if (angle) {
+                const centerPoint = RectangleClient.getCenterPoint(boundingRectangle);
+                corners = rotatePoints(corners, centerPoint, angle) as [Point, Point, Point, Point];
+            }
+            corners.forEach(corner => {
                 const g = drawHandle(board, corner);
                 handleG && handleG.append(g);
             });

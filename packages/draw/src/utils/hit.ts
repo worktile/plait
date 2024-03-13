@@ -9,10 +9,11 @@ import {
     distanceBetweenPointAndPoint,
     HIT_DISTANCE_BUFFER,
     rotate,
+    rotatePoints,
     isPointInPolygon
 } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
-import { TRANSPARENT, rotatePoints } from '@plait/common';
+import { TRANSPARENT } from '@plait/common';
 import { getTextRectangle } from './geometry';
 import { getLinePoints } from './line/line-basic';
 import { getFillByElement } from './style/stroke';
