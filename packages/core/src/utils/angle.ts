@@ -24,7 +24,7 @@ export const hasSameAngle = (elements: PlaitElement[]) => {
     return !!getSelectionAngle(elements);
 };
 
-export const resizeSelectionRectangle = (rectanglesCornerPoints: [Point, Point, Point, Point][], angle: number) => {
+export const getRotatedBoundingRectangle = (rectanglesCornerPoints: [Point, Point, Point, Point][], angle: number) => {
     let rectanglesFromOrigin: RectangleClient[] = [];
     for (let i = 0; i < rectanglesCornerPoints.length; i++) {
         const cornerPoints = rectanglesCornerPoints[i];
