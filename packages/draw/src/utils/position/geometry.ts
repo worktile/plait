@@ -1,6 +1,6 @@
-import { Ancestor, PlaitBoard, Point, RectangleClient, depthFirstRecursion, getIsRecursionFunc } from '@plait/core';
+import { Ancestor, PlaitBoard, Point, RectangleClient, depthFirstRecursion, getIsRecursionFunc, rotatePoints } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry } from '../../interfaces';
-import { RESIZE_HANDLE_DIAMETER, getRectangleResizeHandleRefs, rotatePoints } from '@plait/common';
+import { RESIZE_HANDLE_DIAMETER, getRectangleResizeHandleRefs } from '@plait/common';
 import { getEngine } from '../../engines';
 import { PlaitImage } from '../../interfaces/image';
 import { getShape } from '../shape';

@@ -8,12 +8,18 @@ import {
     PlaitTheme,
     ThemeColorMode,
     Viewport,
+    addGroup,
     getClipboardData,
     getProbablySupportsClipboardWrite,
     getRectangleByElements,
     getSelectedElements,
+    removeGroup,
     toHostPoint,
-    toViewBoxPoint
+    toViewBoxPoint,
+    getHighestSelectedGroups,
+    canRemoveGroup,
+    canAddGroup,
+    getHighestSelectedElements
 } from '@plait/core';
 import { mockDrawData, mockGroupData, mockMindData, mockRotateData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -67,6 +73,12 @@ export class BasicEditorComponent implements OnInit {
     board!: PlaitBoard;
 
     showPaste = getProbablySupportsClipboardWrite();
+
+    selectedElements: PlaitElement[] = [];
+
+    showAddGroup!: boolean;
+
+    showRemoveGroup!: boolean;
 
     @ViewChild('contextMenu', { static: true, read: ElementRef })
     contextMenu!: ElementRef<any>;
@@ -132,6 +144,11 @@ export class BasicEditorComponent implements OnInit {
 
     change(event: PlaitBoardChangeEvent) {
         this.setLocalData(JSON.stringify(event));
+        this.selectedElements = getSelectedElements(this.board);
+        const selectedGroups = getHighestSelectedGroups(this.board);
+        this.showRemoveGroup = canRemoveGroup(this.board, selectedGroups);
+        const highestSelectedElements = getHighestSelectedElements(this.board);
+        this.showAddGroup = canAddGroup(highestSelectedElements);
     }
 
     getLocalStorage() {
@@ -156,18 +173,28 @@ export class BasicEditorComponent implements OnInit {
     copy(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        const selectedElements = getSelectedElements(this.board);
-        const rectangle = getRectangleByElements(this.board, selectedElements, false);
+        const rectangle = getRectangleByElements(this.board, this.selectedElements, false);
         this.board.setFragment(null, null, rectangle, 'copy');
     }
 
     cut(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        const selectedElements = getSelectedElements(this.board);
-        const rectangle = getRectangleByElements(this.board, selectedElements, false);
+        const rectangle = getRectangleByElements(this.board, this.selectedElements, false);
         this.board.setFragment(null, null, rectangle, 'cut');
         this.board.deleteFragment(null);
+    }
+
+    addGroup(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+        addGroup(this.board);
+    }
+
+    removeGroup(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+        removeGroup(this.board);
     }
 
     async paste(event: MouseEvent) {

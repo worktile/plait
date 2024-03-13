@@ -27,3 +27,4 @@ export * from './dnd';
 export * from './to-point';
 export * from './group';
 export * from './selection';
+export * from './angle';

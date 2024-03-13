@@ -618,5 +618,15 @@ export const mockRotateData: PlaitDrawElement[] = [
             [-917.285014484772, 306.13338010187175]
         ],
         strokeWidth: 2
+    },
+    {
+        id: 'sZzjB',
+        type: 'image',
+        angle: 5.86874495248496,
+        points: [
+            [-1094.410016442224, 410.4649548597526],
+            [-625.7626953125, 722.8965022795687]
+        ],
+        url: 'blob:http://localhost:7100/002b0121-5e05-4b84-8ef4-c69b2d408dff'
     }
 ] as PlaitDrawElement[];

@@ -15,12 +15,12 @@ export function getUnitVectorByPointAndPoint(point1: Point, point2: Point): Poin
     return [unitX, unitY];
 }
 
-export function getPointByVector(point: Point, vector: Vector, component: number): Point {
+export function getPointByVectorComponent(point: Point, vector: Vector, component: number): Point {
     const distance = Math.hypot(vector[0], vector[1]);
     return [point[0] + (vector[0] / distance) * component, point[1] + (vector[1] / distance) * component];
 }
 
-export function getPointByUnitVectorAndDirectionComponent(
+export function getPointByVectorDirectionComponent(
     point: Point,
     unitVector: Vector,
     directionComponent: number,

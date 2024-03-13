@@ -8,7 +8,6 @@ import {
     getResizeHandlePointByIndex,
     getSymmetricHandleIndex,
     isCornerHandle,
-    rotatePoints,
     withResize
 } from '@plait/common';
 import {
@@ -21,7 +20,8 @@ import {
     getSelectedElements,
     isSelectionMoving,
     getSelectionAngle,
-    rotate
+    rotate,
+    rotatePoints
 } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';

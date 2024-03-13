@@ -1,5 +1,19 @@
 # @plait/common
 
+## 0.51.4
+
+### Patch Changes
+
+-   [`c7565c08`](https://github.com/worktile/plait/commit/c7565c08e6d52a91e2df87ac5405bdcd21406cbb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename getPointByVector to getPointByVectorComponent
+    rename getPointByUnitVectorAndDirectionComponent to getPointByVectorDirectionComponent
+
+## 0.51.3
+
+### Patch Changes
+
+-   [#767](https://github.com/worktile/plait/pull/767) [`524cd91e`](https://github.com/worktile/plait/commit/524cd91efc94b8523191fdad95b3579cc4defb03) Thanks [@MissLixf](https://github.com/MissLixf)! - hit select correct with angle
+    rectangle hit select correct with angle
+
 ## 0.51.2
 
 ## 0.51.1

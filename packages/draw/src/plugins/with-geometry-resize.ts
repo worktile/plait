@@ -1,4 +1,4 @@
-import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements, rotate } from '@plait/core';
+import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements, rotate, rotatePoints } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeRef,
@@ -7,7 +7,6 @@ import {
     getFirstTextManage,
     isCornerHandle,
     normalizeShapePoints,
-    rotatePoints,
     withResize
 } from '@plait/common';
 import { getSelectedGeometryElements, getSelectedImageElements } from '../utils/selected';

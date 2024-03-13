@@ -1,26 +1,20 @@
-import { Ancestor, PlaitBoard, PlaitElement, RectangleClient } from '../interfaces';
+import { Ancestor, PlaitBoard, PlaitElement, Point, RectangleClient } from '../interfaces';
+import { getSelectionAngle, hasSameAngle, getRotatedBoundingRectangle, rotatePoints } from './angle';
 import { depthFirstRecursion, getIsRecursionFunc } from './tree';
-// TODO  rotatePoints 方法无法引入;core 依赖了 common
-import { rotatePoints } from '../../../common/src/utils';
 
 export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement[], recursion: boolean): RectangleClient {
-    const rectangles: RectangleClient[] = [];
-    const angle = getSelectionAngle(elements);
-    let isRotateBasedOrigin: boolean = false;
+    const rectanglesCornerPoints: [Point, Point, Point, Point][] = [];
     const callback = (node: PlaitElement) => {
-        const nodeOriginRectangle = board.getRectangle(node);
-        if (nodeOriginRectangle) {
-            const points = RectangleClient.getCornerPoints(nodeOriginRectangle);
-            const rotatedPoints = rotatePoints(points, RectangleClient.getCenterPoint(nodeOriginRectangle), node.angle);
-            if (angle) {
-                const reRotatedPoints = rotatePoints(rotatedPoints, [0, 0], -angle);
-                isRotateBasedOrigin = true;
-                const nodeRotatedRectangle = RectangleClient.getRectangleByPoints(reRotatedPoints);
-                rectangles.push(nodeRotatedRectangle);
-            } else {
-                const nodeRotatedRectangle = RectangleClient.getRectangleByPoints(rotatedPoints);
-                rectangles.push(nodeRotatedRectangle);
-            }
+        const nodeRectangle = board.getRectangle(node);
+        if (nodeRectangle) {
+            const cornerPoints = RectangleClient.getCornerPoints(nodeRectangle);
+            const rotatedCornerPoints = rotatePoints(cornerPoints, RectangleClient.getCenterPoint(nodeRectangle), node.angle || 0) as [
+                Point,
+                Point,
+                Point,
+                Point
+            ];
+            rectanglesCornerPoints.push(rotatedCornerPoints);
         } else {
             console.error(`can not get rectangle of element:`, node);
         }
@@ -36,16 +30,16 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
             callback(element);
         }
     });
-    if (rectangles.length > 0) {
-        let rectangle = RectangleClient.getBoundingRectangle(rectangles);
-        if (isRotateBasedOrigin && rectangle) {
-            const rectangleCorners = RectangleClient.getCornerPoints(rectangle);
-            const rotatedCornersBaseOrigin = rotatePoints(rectangleCorners, [0, 0], angle);
-            const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(rotatedCornersBaseOrigin));
-            const rotatedCornersBaseCenter = rotatePoints(rotatedCornersBaseOrigin, centerPoint, -angle);
-            rectangle = RectangleClient.getRectangleByPoints(rotatedCornersBaseCenter);
+    if (rectanglesCornerPoints.length > 0) {
+        if (hasSameAngle(elements)) {
+            const angle = getSelectionAngle(elements);
+            return getRotatedBoundingRectangle(rectanglesCornerPoints, angle);
+        } else {
+            const flatCornerPoints: Point[] = rectanglesCornerPoints.reduce((acc: Point[], val) => {
+                return acc.concat(val);
+            }, []);
+            return RectangleClient.getRectangleByPoints(flatCornerPoints);
         }
-        return rectangle;
     } else {
         return {
             x: 0,
@@ -100,12 +94,3 @@ export function findElements<T extends PlaitElement = PlaitElement>(
     );
     return elements;
 }
-
-// getSelectionAngle
-export const getSelectionAngle = (elements: PlaitElement[]) => {
-    let angle = elements[0].angle || 0;
-    if (elements.find(item => item.angle !== angle)) {
-        angle = 0;
-    }
-    return angle;
-};

@@ -9,4 +9,4 @@ export enum CursorClass {
     crosshair = 'crosshair'
 }
 
-export const RESIZE_CURSORS = ['ns-resize', 'nesw-resize', 'ew-resize', 'nwse-resize'];
+export const RESIZE_CURSORS = [ResizeCursorClass.ns, ResizeCursorClass.nesw, ResizeCursorClass.ew, ResizeCursorClass.nwse];
