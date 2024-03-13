@@ -1,5 +1,12 @@
 # @plait/flow
 
+## 0.51.4
+
+### Patch Changes
+
+-   [`c7565c08`](https://github.com/worktile/plait/commit/c7565c08e6d52a91e2df87ac5405bdcd21406cbb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename getPointByVector to getPointByVectorComponent
+    rename getPointByUnitVectorAndDirectionComponent to getPointByVectorDirectionComponent
+
 ## 0.51.3
 
 ## 0.51.2

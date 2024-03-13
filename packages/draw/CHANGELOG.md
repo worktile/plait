@@ -1,5 +1,16 @@
 # @plait/draw
 
+## 0.51.4
+
+### Patch Changes
+
+-   [#777](https://github.com/worktile/plait/pull/777) [`2a0af6ef`](https://github.com/worktile/plait/commit/2a0af6ef8463b9871f86e311430d6b3efa901811) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(draw): select correct elements with angle
+
+*   [#776](https://github.com/worktile/plait/pull/776) [`3b4be4f0`](https://github.com/worktile/plait/commit/3b4be4f0f4d8e983596a61edb5016bfc6e3919bd) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(draw): fix can not hit image
+
+-   [`c7565c08`](https://github.com/worktile/plait/commit/c7565c08e6d52a91e2df87ac5405bdcd21406cbb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename getPointByVector to getPointByVectorComponent
+    rename getPointByUnitVectorAndDirectionComponent to getPointByVectorDirectionComponent
+
 ## 0.51.3
 
 ### Patch Changes
