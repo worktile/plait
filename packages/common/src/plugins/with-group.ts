@@ -83,13 +83,13 @@ export function withGroup(board: PlaitBoard) {
             const groups = getHighestSelectedGroups(board, clipboardData?.elements);
             const selectedIsolatedElements = getSelectedIsolatedElements(board, clipboardData?.elements);
             selectedIsolatedElements.forEach(item => {
-                elements.push(!item.groupId ? item : updateElementsGroupId(item, undefined));
+                elements.push(!item.groupId ? item : updateGroupId(item, undefined));
             });
             if (groups.length) {
                 groups.forEach(item => {
-                    const newGroup = { ...updateElementsGroupId(item, undefined), id: idCreator() };
+                    const newGroup = { ...updateGroupId(item, undefined), id: idCreator() };
                     elements.push(newGroup);
-                    elements.push(...rebuildGroupElements(item, clipboardData.elements!, newGroup.id));
+                    elements.push(...updateElementsGroupId(item, clipboardData.elements!, newGroup.id));
                 });
             }
             clipboardData.elements = elements;
@@ -105,24 +105,24 @@ export function withGroup(board: PlaitBoard) {
     return board;
 }
 
-const updateElementsGroupId = (element: PlaitElement, groupId?: string) => {
+const updateGroupId = (element: PlaitElement, groupId?: string) => {
     return {
         ...element,
         groupId: groupId
     };
 };
 
-const rebuildGroupElements = (group: PlaitGroup, clipboardDataElements: PlaitElement[], newGroupId: string) => {
+const updateElementsGroupId = (group: PlaitGroup, clipboardDataElements: PlaitElement[], newGroupId: string) => {
     const elements: PlaitElement[] = [];
     const elementsInGroup = clipboardDataElements.filter(item => item.groupId === group.id);
     if (elementsInGroup.length) {
         elementsInGroup.forEach(item => {
             if (PlaitGroupElement.isGroup(item)) {
-                const newGroup = { ...updateElementsGroupId(item, newGroupId), id: idCreator() };
+                const newGroup = { ...updateGroupId(item, newGroupId), id: idCreator() };
                 elements.push(newGroup);
-                elements.push(...rebuildGroupElements(item, clipboardDataElements, newGroup.id));
+                elements.push(...updateElementsGroupId(item, clipboardDataElements, newGroup.id));
             } else {
-                elements.push(updateElementsGroupId(item, newGroupId));
+                elements.push(updateGroupId(item, newGroupId));
             }
         });
     }
