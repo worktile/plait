@@ -27,7 +27,6 @@ import { withLineTextMove } from './with-line-text-move';
 import { withDrawResize } from './with-draw-resize';
 import { isHitDrawElement, isHitElementInside, isRectangleHitDrawElement } from '../utils/hit';
 import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
-import { withGroup } from '@plait/common';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;
@@ -134,8 +133,7 @@ export const withDraw = (board: PlaitBoard) => {
         return getRelatedFragment([...elements, ...activeLines]);
     };
 
-
-    return withGroup(withDrawResize(
+    return withDrawResize(
         withLineTextMove(
             withLineAutoCompleteReaction(
                 withLineText(
@@ -152,6 +150,6 @@ export const withDraw = (board: PlaitBoard) => {
                     )
                 )
             )
-        ))
+        )
     );
 };

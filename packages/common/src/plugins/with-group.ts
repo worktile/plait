@@ -20,14 +20,15 @@ import {
     addClipboardContext,
     createClipboardContext,
     WritableClipboardType,
-    idCreator
+    idCreator,
+    getSelectedElements
 } from '@plait/core';
 import { GroupComponent } from '../core/group.component';
 
 export function withGroup(board: PlaitBoard) {
     let groupRectangleG: SVGGElement | null;
 
-    const { drawElement, pointerMove, globalPointerUp, setFragment, insertFragment } = board;
+    const { drawElement, pointerMove, globalPointerUp, setFragment, insertFragment, getRelatedFragment } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitGroupElement.isGroup(context.element)) {
@@ -58,20 +59,25 @@ export function withGroup(board: PlaitBoard) {
         globalPointerUp(event);
     };
 
+    board.getRelatedFragment = (elements: PlaitElement[]) => {
+        return getSelectedGroups(board, elements);
+    };
+
     board.setFragment = (
         data: DataTransfer | null,
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
         type: 'copy' | 'cut'
     ) => {
-        const groups = getSelectedGroups(board);
+        const selectedElements = getSelectedElements(board);
+        const selectedGroups = board.getRelatedFragment(selectedElements);
         if (!clipboardContext) {
-            clipboardContext = createClipboardContext(WritableClipboardType.elements, groups, '');
+            clipboardContext = createClipboardContext(WritableClipboardType.elements, selectedGroups, '');
         } else {
             clipboardContext = addClipboardContext(clipboardContext, {
                 text: '',
                 type: WritableClipboardType.elements,
-                data: groups
+                data: selectedGroups
             });
         }
         setFragment(data, clipboardContext, rectangle, type);

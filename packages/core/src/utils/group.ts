@@ -51,9 +51,9 @@ export const getGroupByElement = (board: PlaitBoard, element: PlaitElement, recu
 };
 
 export const getHighestGroup = (board: PlaitBoard, element: PlaitElement) => {
-    const groups = getGroupByElement(board, element, true) as PlaitGroup[];
-    if (groups.length) {
-        return groups[groups.length - 1];
+    const hitElementGroups = getGroupByElement(board, element, true) as PlaitGroup[];
+    if (hitElementGroups.length) {
+        return hitElementGroups[hitElementGroups.length - 1];
     }
     return null;
 };
@@ -81,7 +81,7 @@ export const isSelectedAllElementsInGroup = (board: PlaitBoard, group: PlaitGrou
     return elementsInGroup.every(item => selectedElements.map(element => element.id).includes(item.id));
 };
 
-export const getSelectedGroupsInGroups = (board: PlaitBoard, groups: PlaitGroup[], elements?: PlaitElement[]): PlaitGroup[] => {
+export const filterSelectedGroups = (board: PlaitBoard, groups: PlaitGroup[], elements?: PlaitElement[]): PlaitGroup[] => {
     const selectedGroups: PlaitGroup[] = [];
     groups.forEach(item => {
         if (isSelectedElementOrGroup(board, item, elements)) {
@@ -91,8 +91,8 @@ export const getSelectedGroupsInGroups = (board: PlaitBoard, groups: PlaitGroup[
     return selectedGroups;
 };
 
-export const getSelectedGroups = (board: PlaitBoard): PlaitGroup[] => {
-    const highestSelectedGroups = getHighestSelectedGroups(board);
+export const getSelectedGroups = (board: PlaitBoard, elements?: PlaitElement[]): PlaitGroup[] => {
+    const highestSelectedGroups = getHighestSelectedGroups(board, elements);
     const groups: PlaitGroup[] = [];
     highestSelectedGroups.forEach(item => {
         groups.push(item);
@@ -103,8 +103,8 @@ export const getSelectedGroups = (board: PlaitBoard): PlaitGroup[] => {
 };
 
 export const getHighestSelectedGroup = (board: PlaitBoard, element: PlaitElement, elements?: PlaitElement[]): PlaitGroup | null => {
-    const groups = getGroupByElement(board, element, true) as PlaitGroup[];
-    const selectedGroups = getSelectedGroupsInGroups(board, groups, elements);
+    const hitElementGroups = getGroupByElement(board, element, true) as PlaitGroup[];
+    const selectedGroups = filterSelectedGroups(board, hitElementGroups, elements);
     if (selectedGroups.length) {
         return selectedGroups[selectedGroups.length - 1];
     }
