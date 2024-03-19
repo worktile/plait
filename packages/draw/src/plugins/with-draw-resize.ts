@@ -60,12 +60,9 @@ export function withDrawResize(board: PlaitBoard) {
             alignG?.remove();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || isFromCorner;
+            const centerPoint = RectangleClient.getCenterPoint(resizeRef.rectangle!);
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
             const angle = getSelectionAngle(resizeRef.element);
-            const centerPoint = RectangleClient.getCenterPoint(resizeRef.rectangle!);
-            const [rotatedStartPoint, rotateEndPoint] = rotatePoints([resizeState.startPoint, resizeState.endPoint], centerPoint, -angle);
-            resizeState.startPoint = rotatedStartPoint;
-            resizeState.endPoint = rotateEndPoint;
             const resizeAlignRef = getResizeAlignRef(
                 board,
                 resizeRef,
@@ -81,21 +78,9 @@ export function withDrawResize(board: PlaitBoard) {
             PlaitBoard.getElementActiveHost(board).append(alignG);
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
-                const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(target.points));
-                const cornerPoints = RectangleClient.getCornerPoints(RectangleClient.getRectangleByPoints(target.points));
-                const rotatedCornerPoints = rotatePoints(cornerPoints, centerPoint, target.angle);
-                const movedCornerPoints = rotatedCornerPoints.map(p => {
+                let points = target.points.map(p => {
                     return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
                 });
-                const movedCenterPoint = movePointByZoomAndOriginPoint(
-                    centerPoint,
-                    originPoint,
-                    resizeAlignRef.xZoom,
-                    resizeAlignRef.yZoom
-                );
-                let points = RectangleClient.getPoints(
-                    RectangleClient.getRectangleByPoints(rotatePoints(movedCornerPoints, movedCenterPoint, -target.angle))
-                );
                 if (angle) {
                     const newCenter: Point = RectangleClient.getCenterPoint(
                         RectangleClient.getRectangleByPoints(resizeAlignRef.activePoints)
