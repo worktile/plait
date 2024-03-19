@@ -21,12 +21,15 @@ import {
     getSelectedElements,
     isSelectionMoving,
     getSelectionAngle,
-    rotatePoints
+    rotatePoints,
+    setAngleForG
 } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeAlignRef } from '../utils/resize-align';
+
+let tempG: SVGGElement[] = [];
 
 export function withDrawResize(board: PlaitBoard) {
     const { afterChange } = board;
@@ -86,22 +89,42 @@ export function withDrawResize(board: PlaitBoard) {
             alignG = resizeAlignRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
 
+            const outPoints = RectangleClient.getPoints(resizeRef.rectangle!);
+            const newOutPoints = outPoints.map(p => {
+                return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+            });
+
+            const outsidePoints = resetPointsAfterResize(
+                RectangleClient.getRectangleByPoints(outPoints),
+                RectangleClient.getRectangleByPoints(newOutPoints),
+                centerPoint,
+                RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(newOutPoints)),
+                angle
+            );
+
+            const newCenter = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(outsidePoints));
+
+            const rect = RectangleClient.getRectangleByPoints(outsidePoints);
+            tempG.forEach((g) => g.remove());
+            tempG = [];
+            const rectG = PlaitBoard.getRoughSVG(board).rectangle(rect.x, rect.y, rect.width, rect.height, { stroke: 'red', strokeWidth:2 });
+            tempG.push(rectG);
+            setAngleForG(rectG, newCenter, angle);
+            PlaitBoard.getElementActiveHost(board).append(rectG);
+
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
                 let points = target.points.map(p => {
                     return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
                 });
                 if (angle) {
-                    const newCenter: Point = RectangleClient.getCenterPoint(
-                        RectangleClient.getRectangleByPoints(resizeAlignRef.activePoints)
-                    );
-                    points = resetPointsAfterResize(
-                        RectangleClient.getRectangleByPoints(target.points),
-                        RectangleClient.getRectangleByPoints(points),
-                        centerPoint,
-                        newCenter,
-                        angle
-                    );
+                    // const newCenter: Point = RectangleClient.getCenterPoint(
+                    //     RectangleClient.getRectangleByPoints(resizeAlignRef.activePoints)
+                    // );
+                    const offsetX = newCenter[0] - centerPoint[0];
+                    const offsetY = newCenter[1] - centerPoint[1];
+                    console.log(offsetX, offsetY);
+                    points = points.map((p) => [p[0] + offsetX, p[1] + offsetY]);
                 }
 
                 if (PlaitDrawElement.isGeometry(target)) {
