@@ -63,6 +63,15 @@ export function withDrawResize(board: PlaitBoard) {
             const centerPoint = RectangleClient.getCenterPoint(resizeRef.rectangle!);
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
             const angle = getSelectionAngle(resizeRef.element);
+            if (angle) {
+                const [rotatedStartPoint, rotateEndPoint] = rotatePoints(
+                    [resizeState.startPoint, resizeState.endPoint],
+                    centerPoint,
+                    -angle
+                );
+                resizeState.startPoint = rotatedStartPoint;
+                resizeState.endPoint = rotateEndPoint;
+            }
             const resizeAlignRef = getResizeAlignRef(
                 board,
                 resizeRef,
@@ -76,6 +85,7 @@ export function withDrawResize(board: PlaitBoard) {
             );
             alignG = resizeAlignRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
+
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
                 let points = target.points.map(p => {
