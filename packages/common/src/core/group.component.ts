@@ -1,5 +1,4 @@
 import { OnInit, OnDestroy, ViewContainerRef, ChangeDetectorRef, ChangeDetectionStrategy, Component } from '@angular/core';
-import { ActiveGenerator, CommonPluginElement } from '@plait/common';
 import {
     OnContextChanged,
     PlaitBoard,
@@ -10,7 +9,9 @@ import {
     isSelectedElementOrGroup,
     isSelectionMoving
 } from '@plait/core';
-import { GroupGenerator } from './generators/group.generator';
+import { GroupGenerator } from '../generators/group.generator';
+import { ActiveGenerator } from '../generators';
+import { CommonPluginElement } from './plugin-element';
 
 @Component({
     selector: 'plait-group',

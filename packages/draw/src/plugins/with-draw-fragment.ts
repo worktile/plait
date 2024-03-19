@@ -2,6 +2,7 @@ import {
     ClipboardData,
     PlaitBoard,
     PlaitElement,
+    PlaitGroupElement,
     Point,
     RectangleClient,
     WritableClipboardContext,
@@ -78,7 +79,6 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
 
     board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
         const selectedElements = getSelectedElements(board);
-
         if (clipboardData?.files?.length) {
             const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
             const canInsertionImage =

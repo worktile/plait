@@ -22,7 +22,7 @@ import {
     getElementsInGroup,
     getElementsInGroupByElement,
     getGroupByElement,
-    getSelectedGroups,
+    filterSelectedGroups,
     getTemporaryElements,
     isDragging,
     isHandleSelection,
@@ -181,36 +181,39 @@ export function withSelection(board: PlaitBoard) {
                         if (isHitElementWithGroup) {
                             let pendingElements: PlaitElement[] = [...elements];
                             const hitElement = elements[0];
-                            const groups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
-                            const selectedGroups = getSelectedGroups(board, groups);
-                            const elementsInHighestGroup = getElementsInGroup(board, groups[groups.length - 1], true);
-                            if (selectedGroups.length > 0) {
-                                if (selectedGroups.length > 1) {
-                                    pendingElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
-                                }
-                            } else {
-                                if (!newSelectedElements.includes(hitElement)) {
-                                    const selectedElementsInGroup = elementsInHighestGroup.filter(item =>
-                                        newSelectedElements.includes(item)
-                                    );
-                                    // When partially selected elements belong to a group,
-                                    // only select those elements along with the hit elements.
-                                    if (selectedElementsInGroup.length) {
-                                        pendingElements.push(...selectedElementsInGroup);
-                                    } else {
-                                        pendingElements = elementsInHighestGroup;
+                            const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
+                            if (hitElementGroups.length) {
+                                const selectedGroups = filterSelectedGroups(board, hitElementGroups);
+                                const elementsInHighestGroup =
+                                    getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
+                                if (selectedGroups.length > 0) {
+                                    if (selectedGroups.length > 1) {
+                                        pendingElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
                                     }
                                 } else {
-                                    pendingElements = [];
+                                    if (!newSelectedElements.includes(hitElement)) {
+                                        const selectedElementsInGroup = elementsInHighestGroup.filter(item =>
+                                            newSelectedElements.includes(item)
+                                        );
+                                        // When partially selected elements belong to a group,
+                                        // only select those elements along with the hit elements.
+                                        if (selectedElementsInGroup.length) {
+                                            pendingElements.push(...selectedElementsInGroup);
+                                        } else {
+                                            pendingElements = elementsInHighestGroup;
+                                        }
+                                    } else {
+                                        pendingElements = [];
+                                    }
                                 }
-                            }
-                            elementsInHighestGroup.forEach(element => {
-                                if (newSelectedElements.includes(element)) {
-                                    newSelectedElements.splice(newSelectedElements.indexOf(element), 1);
+                                elementsInHighestGroup.forEach(element => {
+                                    if (newSelectedElements.includes(element)) {
+                                        newSelectedElements.splice(newSelectedElements.indexOf(element), 1);
+                                    }
+                                });
+                                if (pendingElements.length) {
+                                    newSelectedElements.push(...pendingElements);
                                 }
-                            });
-                            if (pendingElements.length) {
-                                newSelectedElements.push(...pendingElements);
                             }
                         } else {
                             elements.forEach(element => {
@@ -255,14 +258,16 @@ export function withSelection(board: PlaitBoard) {
                             });
                         } else {
                             const hitElement = elements[0];
-                            const groups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
-                            const selectedGroups = getSelectedGroups(board, groups);
-                            if (selectedGroups.length > 0) {
-                                if (selectedGroups.length > 1) {
-                                    newSelectedElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
+                            const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
+                            if (hitElementGroups.length) {
+                                const selectedGroups = filterSelectedGroups(board, hitElementGroups);
+                                if (selectedGroups.length > 0) {
+                                    if (selectedGroups.length > 1) {
+                                        newSelectedElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
+                                    }
+                                } else {
+                                    newSelectedElements = getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true);
                                 }
-                            } else {
-                                newSelectedElements = getElementsInGroup(board, groups[groups.length - 1], true);
                             }
                         }
                     }
