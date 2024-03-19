@@ -7,7 +7,8 @@ import {
     getFirstTextManage,
     isCornerHandle,
     normalizeShapePoints,
-    withResize
+    withResize,
+    resetPointsAfterResize
 } from '@plait/common';
 import { getSelectedGeometryElements, getSelectedImageElements } from '../utils/selected';
 import { DrawTransforms } from '../transforms';
@@ -15,7 +16,7 @@ import { GeometryComponent } from '../geometry.component';
 import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
+import { getResizeOriginPointAndHandlePoint } from './with-draw-resize';
 import { getResizeAlignRef } from '../utils/resize-align';
 
 export const withGeometryResize = (board: PlaitBoard) => {
@@ -75,15 +76,15 @@ export const withGeometryResize = (board: PlaitBoard) => {
             alignG = resizeAlignRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
             let points = resizeAlignRef.activePoints as [Point, Point];
-
             // 处理旋转后resize导致的中心点偏移
             if (angle) {
-                const newCenter: Point = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points));
-                const rotatedNewCenter = rotate(newCenter[0], newCenter[1], centerPoint[0], centerPoint[1], angle);
-                const rotatedTopLeft = rotate(points[0][0], points[0][1], centerPoint[0], centerPoint[1], angle);
-                const rotatedBottomRight = rotate(points[1][0], points[1][1], centerPoint[0], centerPoint[1], angle);
-                points[0] = rotate(rotatedTopLeft[0], rotatedTopLeft[1], rotatedNewCenter[0], rotatedNewCenter[1], -angle) as Point;
-                points[1] = rotate(rotatedBottomRight[0], rotatedBottomRight[1], rotatedNewCenter[0], rotatedNewCenter[1], -angle) as Point;
+                points = resetPointsAfterResize(
+                    resizeRef.rectangle!,
+                    RectangleClient.getRectangleByPoints(points),
+                    centerPoint,
+                    RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points)),
+                    angle
+                );
             }
 
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {

@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, RectangleClient, ResizeCursorClass, setDragging, RESIZE_CURSORS } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, ResizeCursorClass, setDragging, RESIZE_CURSORS, rotatePoints } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
 import { PlaitElementOrArray, ResizeRef } from '../types/resize';
 
@@ -38,7 +38,7 @@ const getResizeCursorClassByIndex = (index: number) => {
     }
 };
 
-export const rotateResizeCursor = (cursor: ResizeCursorClass, angle: number) => {
+export const getRotatedResizeCursorClassByAngle = (cursor: ResizeCursorClass, angle: number) => {
     const index = RESIZE_CURSORS.indexOf(cursor);
     if (index >= 0) {
         const temp = Math.round(angle / (Math.PI / 4));
@@ -58,7 +58,7 @@ export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diamete
                 height: diameter
             },
             handle: getResizeHandleByIndex(index) as ResizeHandle,
-            cursorClass: rotateResizeCursor(getResizeCursorClassByIndex(index) as ResizeCursorClass, angle)
+            cursorClass: getRotatedResizeCursorClassByAngle(getResizeCursorClassByIndex(index) as ResizeCursorClass, angle)
         };
     });
     const rectangles = getResizeSideRectangles(corners, diameter / 2);
@@ -67,7 +67,7 @@ export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diamete
             return {
                 rectangle,
                 handle: getResizeHandleByIndex(index + 4) as ResizeHandle,
-                cursorClass: rotateResizeCursor(getResizeCursorClassByIndex(index + 4) as ResizeCursorClass, angle)
+                cursorClass: getRotatedResizeCursorClassByAngle(getResizeCursorClassByIndex(index + 4) as ResizeCursorClass, angle)
             };
         })
     );
@@ -132,4 +132,28 @@ export const isEdgeHandle = (board: PlaitBoard, handle: ResizeHandle) => {
 
 export const isCornerHandle = (board: PlaitBoard, handle: ResizeHandle) => {
     return !isEdgeHandle(board, handle);
+};
+
+// 处理元素先旋转后resize导致的位置偏移
+export const resetPointsAfterResize = (
+    originRectangle: RectangleClient,
+    currentRectangle: RectangleClient,
+    originSelectionCenterPoint: Point,
+    currentSelectionCenterPoint: Point,
+    angle: number
+): [Point, Point] => {
+    const correctSelectionCenterPoint = rotatePoints([currentSelectionCenterPoint], originSelectionCenterPoint, angle)[0];
+    const rotatedElementCenterPoint = rotatePoints(
+        [RectangleClient.getCenterPoint(currentRectangle) as Point],
+        originSelectionCenterPoint,
+        angle
+    )[0];
+
+    const currentPoints = RectangleClient.getPoints(currentRectangle);
+    const originRectangleCenterPoint = RectangleClient.getCenterPoint(originRectangle);
+
+    const correctElementCenterPoint = rotatePoints([rotatedElementCenterPoint], correctSelectionCenterPoint, -angle)[0];
+
+    const rotatedPoints = rotatePoints(currentPoints, originRectangleCenterPoint, angle);
+    return rotatePoints(rotatedPoints, correctElementCenterPoint, -angle) as [Point, Point];
 };

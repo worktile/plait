@@ -8,7 +8,8 @@ import {
     getResizeHandlePointByIndex,
     getSymmetricHandleIndex,
     isCornerHandle,
-    withResize
+    withResize,
+    resetPointsAfterResize
 } from '@plait/common';
 import {
     PlaitBoard,
@@ -20,7 +21,6 @@ import {
     getSelectedElements,
     isSelectionMoving,
     getSelectionAngle,
-    rotate,
     rotatePoints
 } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
@@ -81,32 +81,32 @@ export function withDrawResize(board: PlaitBoard) {
             PlaitBoard.getElementActiveHost(board).append(alignG);
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
-                let points = target.points.map(p => {
+                const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(target.points));
+                const cornerPoints = RectangleClient.getCornerPoints(RectangleClient.getRectangleByPoints(target.points));
+                const rotatedCornerPoints = rotatePoints(cornerPoints, centerPoint, target.angle);
+                const movedCornerPoints = rotatedCornerPoints.map(p => {
                     return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
                 });
-                // 处理旋转后resize导致的中心点偏移
+                const movedCenterPoint = movePointByZoomAndOriginPoint(
+                    centerPoint,
+                    originPoint,
+                    resizeAlignRef.xZoom,
+                    resizeAlignRef.yZoom
+                );
+                let points = RectangleClient.getPoints(
+                    RectangleClient.getRectangleByPoints(rotatePoints(movedCornerPoints, movedCenterPoint, -target.angle))
+                );
                 if (angle) {
                     const newCenter: Point = RectangleClient.getCenterPoint(
                         RectangleClient.getRectangleByPoints(resizeAlignRef.activePoints)
                     );
-                    // 选框的新中心点
-                    const rotatedRectangleCenter = rotate(newCenter[0], newCenter[1], centerPoint[0], centerPoint[1], angle);
-                    const rotatedTopLeft = rotate(points[0][0], points[0][1], centerPoint[0], centerPoint[1], angle);
-                    const rotatedBottomRight = rotate(points[1][0], points[1][1], centerPoint[0], centerPoint[1], angle);
-                    points[0] = rotate(
-                        rotatedTopLeft[0],
-                        rotatedTopLeft[1],
-                        rotatedRectangleCenter[0],
-                        rotatedRectangleCenter[1],
-                        -angle
-                    ) as Point;
-                    points[1] = rotate(
-                        rotatedBottomRight[0],
-                        rotatedBottomRight[1],
-                        rotatedRectangleCenter[0],
-                        rotatedRectangleCenter[1],
-                        -angle
-                    ) as Point;
+                    points = resetPointsAfterResize(
+                        RectangleClient.getRectangleByPoints(target.points),
+                        RectangleClient.getRectangleByPoints(points),
+                        centerPoint,
+                        newCenter,
+                        angle
+                    );
                 }
 
                 if (PlaitDrawElement.isGeometry(target)) {
