@@ -98,7 +98,7 @@ export function withGroup(board: PlaitBoard) {
     board.deleteFragment = (data: DataTransfer | null) => {
         removeGroups = getRemoveGroups(board);
         if (removeGroups?.length) {
-            updateElementGroupId(board, removeGroups);
+            updateSiblingElementGroupId(board, removeGroups);
         }
         deleteFragment(data);
         removeGroups = null;
@@ -183,7 +183,7 @@ const findAboveGroupWithAnotherNode = (board: PlaitBoard, groups: PlaitGroup[], 
     return group;
 };
 
-const updateElementGroupId = (board: PlaitBoard, removeGroups: PlaitGroup[]) => {
+const updateSiblingElementGroupId = (board: PlaitBoard, removeGroups: PlaitGroup[]) => {
     const selectedIsolatedElements = getSelectedIsolatedElements(board);
     selectedIsolatedElements.forEach(item => {
         const groups = getGroupByElement(board, item, true) as PlaitGroup[];
