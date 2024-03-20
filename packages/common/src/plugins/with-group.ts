@@ -21,14 +21,16 @@ import {
     createClipboardContext,
     WritableClipboardType,
     idCreator,
-    getSelectedElements
+    getSelectedElements,
+    getGroupByElement,
+    getElementsInGroup
 } from '@plait/core';
 import { GroupComponent } from '../core/group.component';
 
 export function withGroup(board: PlaitBoard) {
     let groupRectangleG: SVGGElement | null;
 
-    const { drawElement, pointerMove, globalPointerUp, setFragment, insertFragment, getRelatedFragment } = board;
+    const { drawElement, pointerMove, globalPointerUp, setFragment, insertFragment, getDeletedFragment } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitGroupElement.isGroup(context.element)) {
@@ -106,6 +108,36 @@ export function withGroup(board: PlaitBoard) {
             });
         }
         insertFragment(data, clipboardData, targetPoint);
+    };
+
+    board.getDeletedFragment = (data: PlaitElement[]) => {
+        const selectedGroups = getHighestSelectedGroups(board);
+        const selectedIsolatedElements = getSelectedIsolatedElements(board);
+        const removeNodes = [...selectedGroups, ...selectedIsolatedElements];
+        data.push(...selectedGroups);
+        removeNodes.forEach(item => {
+            const group = getGroupByElement(board, item) as PlaitGroup;
+            if (group) {
+                const elementsInGroup = getElementsInGroup(board, group, false, true);
+                const siblingElements = elementsInGroup.filter(element => element.id !== item.id);
+                if (siblingElements.length === 1) {
+                    const siblingElement = siblingElements[0];
+                    if (PlaitGroupElement.isGroup(siblingElement)) {
+                        const elementsInRemoveGroup = getElementsInGroup(board, siblingElement, false, true);
+                        elementsInRemoveGroup.forEach(node => {
+                            const path = PlaitBoard.findPath(board, node);
+                            Transforms.setNode(board, { groupId: siblingElement.groupId || undefined }, path);
+                        });
+                        data.push(siblingElement);
+                    } else {
+                        const path = PlaitBoard.findPath(board, siblingElement);
+                        Transforms.setNode(board, { groupId: group.groupId || undefined }, path);
+                        data.push(group);
+                    }
+                }
+            }
+        });
+        return getDeletedFragment(data);
     };
 
     return board;
