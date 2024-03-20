@@ -15,11 +15,6 @@ import {
     Selection,
     Point,
     Transforms,
-    WritableClipboardContext,
-    RectangleClient,
-    addClipboardContext,
-    createClipboardContext,
-    WritableClipboardType,
     idCreator,
     getSelectedElements,
     getGroupByElement,
@@ -29,8 +24,9 @@ import { GroupComponent } from '../core/group.component';
 
 export function withGroup(board: PlaitBoard) {
     let groupRectangleG: SVGGElement | null;
+    let removeGroups: PlaitGroup[] | null;
 
-    const { drawElement, pointerMove, globalPointerUp, setFragment, insertFragment, getDeletedFragment } = board;
+    const { drawElement, pointerMove, globalPointerUp, insertFragment, getDeletedFragment, deleteFragment, getRelatedFragment } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitGroupElement.isGroup(context.element)) {
@@ -62,27 +58,9 @@ export function withGroup(board: PlaitBoard) {
     };
 
     board.getRelatedFragment = (elements: PlaitElement[]) => {
-        return getSelectedGroups(board, elements);
-    };
-
-    board.setFragment = (
-        data: DataTransfer | null,
-        clipboardContext: WritableClipboardContext | null,
-        rectangle: RectangleClient | null,
-        type: 'copy' | 'cut'
-    ) => {
         const selectedElements = getSelectedElements(board);
-        const selectedGroups = board.getRelatedFragment(selectedElements);
-        if (!clipboardContext) {
-            clipboardContext = createClipboardContext(WritableClipboardType.elements, selectedGroups, '');
-        } else {
-            clipboardContext = addClipboardContext(clipboardContext, {
-                text: '',
-                type: WritableClipboardType.elements,
-                data: selectedGroups
-            });
-        }
-        setFragment(data, clipboardContext, rectangle, type);
+        const groups = getSelectedGroups(board, selectedElements);
+        return getRelatedFragment([...elements, ...groups]);
     };
 
     board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
@@ -111,33 +89,19 @@ export function withGroup(board: PlaitBoard) {
     };
 
     board.getDeletedFragment = (data: PlaitElement[]) => {
-        const selectedGroups = getHighestSelectedGroups(board);
-        const selectedIsolatedElements = getSelectedIsolatedElements(board);
-        const removeNodes = [...selectedGroups, ...selectedIsolatedElements];
-        data.push(...selectedGroups);
-        removeNodes.forEach(item => {
-            const group = getGroupByElement(board, item) as PlaitGroup;
-            if (group) {
-                const elementsInGroup = getElementsInGroup(board, group, false, true);
-                const siblingElements = elementsInGroup.filter(element => element.id !== item.id);
-                if (siblingElements.length === 1) {
-                    const siblingElement = siblingElements[0];
-                    if (PlaitGroupElement.isGroup(siblingElement)) {
-                        const elementsInRemoveGroup = getElementsInGroup(board, siblingElement, false, true);
-                        elementsInRemoveGroup.forEach(node => {
-                            const path = PlaitBoard.findPath(board, node);
-                            Transforms.setNode(board, { groupId: siblingElement.groupId || undefined }, path);
-                        });
-                        data.push(siblingElement);
-                    } else {
-                        const path = PlaitBoard.findPath(board, siblingElement);
-                        Transforms.setNode(board, { groupId: group.groupId || undefined }, path);
-                        data.push(group);
-                    }
-                }
-            }
-        });
+        if (removeGroups && removeGroups.length) {
+            data.push(...removeGroups);
+        }
         return getDeletedFragment(data);
+    };
+
+    board.deleteFragment = (data: DataTransfer | null) => {
+        removeGroups = getRemoveGroups(board);
+        if (removeGroups?.length) {
+            updateElementGroupId(board, removeGroups);
+        }
+        deleteFragment(data);
+        removeGroups = null;
     };
 
     return board;
@@ -165,4 +129,72 @@ const updateElementsGroupId = (group: PlaitGroup, clipboardDataElements: PlaitEl
         });
     }
     return elements;
+};
+
+const getRemoveGroups = (board: PlaitBoard) => {
+    const selectedGroups = board.getRelatedFragment([]) as PlaitGroup[];
+    const removeGroups = [...selectedGroups];
+    const highestSelectedGroups = getHighestSelectedGroups(board);
+    const selectedIsolatedElements = getSelectedIsolatedElements(board);
+    const removeNodes = [...highestSelectedGroups, ...selectedIsolatedElements];
+    removeNodes.forEach(item => {
+        const groups = getGroupByElement(board, item, true) as PlaitGroup[];
+        if (groups.length) {
+            const elementsInGroup = getElementsInGroup(board, groups[0], false, true);
+            const siblingElements = elementsInGroup.filter(
+                element => ![...removeNodes, ...removeGroups].map(item => item.id).includes(element.id)
+            );
+            if (siblingElements.length === 1 || siblingElements.length === 0) {
+                if (!removeGroups.includes(groups[0])) {
+                    removeGroups.push(groups[0]);
+                }
+                if (siblingElements.length === 1) {
+                    if (groups.length > 1) {
+                        const aboveGroup = findAboveGroupWithAnotherNode(board, groups.slice(1, groups.length), [
+                            ...removeNodes,
+                            ...removeGroups
+                        ]);
+                        const index = groups.findIndex(item => item.id === aboveGroup.id);
+                        [...groups.slice(1, index)].forEach(item => {
+                            if (removeGroups.includes(item)) {
+                                removeGroups.push(item);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    });
+    return removeGroups;
+};
+
+const findAboveGroupWithAnotherNode = (board: PlaitBoard, groups: PlaitGroup[], excludeNodes: PlaitElement[]) => {
+    let group = groups[0];
+    if (groups.length > 1) {
+        for (let i = 0; i < groups.length; i++) {
+            const elementsInGroup = getElementsInGroup(board, groups[i], false, true);
+            const siblingElements = elementsInGroup.filter(element => !excludeNodes.map(item => item.id).includes(element.id));
+            if (siblingElements.length > 0) {
+                group = groups[i];
+                break;
+            }
+        }
+    }
+    return group;
+};
+
+const updateElementGroupId = (board: PlaitBoard, removeGroups: PlaitGroup[]) => {
+    const selectedIsolatedElements = getSelectedIsolatedElements(board);
+    selectedIsolatedElements.forEach(item => {
+        const groups = getGroupByElement(board, item, true) as PlaitGroup[];
+        const elementsInGroup = getElementsInGroup(board, groups[0], false, true);
+        const siblingElements = elementsInGroup.filter(element => element.id !== item.id);
+        if (siblingElements.length === 1) {
+            if (groups.some(group => removeGroups.includes(group))) {
+                const group = groups.find(group => !removeGroups.includes(group));
+                const path = PlaitBoard.findPath(board, siblingElements[0]);
+                Transforms.setNode(board, { groupId: group?.id || undefined }, path);
+            }
+        }
+    });
 };
