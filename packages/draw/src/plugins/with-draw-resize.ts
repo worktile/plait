@@ -29,7 +29,7 @@ import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeAlignRef } from '../utils/resize-align';
 
-interface RotateRef {
+export interface RotateRef {
     boundingOffsetX: number;
     boundingOffsetY: number;
     boundingNewCenterPoint: Point;

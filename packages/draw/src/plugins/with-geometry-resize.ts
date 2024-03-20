@@ -50,13 +50,15 @@ export const withGeometryResize = (board: PlaitBoard) => {
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
             const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(resizeRef.element.points));
             const angle = resizeRef.element.angle;
-            const [rotatedStartPoint, rotateEndPoint] = rotatePoints(
-                [resizeState.startPoint, resizeState.endPoint],
-                centerPoint,
-                -resizeRef.element.angle
-            );
-            resizeState.startPoint = rotatedStartPoint;
-            resizeState.endPoint = rotateEndPoint;
+            if (angle) {
+                const [rotatedStartPoint, rotateEndPoint] = rotatePoints(
+                    [resizeState.startPoint, resizeState.endPoint],
+                    centerPoint,
+                    -resizeRef.element.angle
+                );
+                resizeState.startPoint = rotatedStartPoint;
+                resizeState.endPoint = rotateEndPoint;
+            }
 
             alignG?.remove();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
