@@ -156,7 +156,7 @@ const getRemoveGroups = (board: PlaitBoard) => {
                         ]);
                         const index = groups.findIndex(item => item.id === aboveGroup.id);
                         [...groups.slice(1, index)].forEach(item => {
-                            if (removeGroups.includes(item)) {
+                            if (!removeGroups.includes(item)) {
                                 removeGroups.push(item);
                             }
                         });
@@ -185,7 +185,8 @@ const findAboveGroupWithAnotherNode = (board: PlaitBoard, groups: PlaitGroup[], 
 
 const updateSiblingElementGroupId = (board: PlaitBoard, removeGroups: PlaitGroup[]) => {
     const selectedIsolatedElements = getSelectedIsolatedElements(board);
-    selectedIsolatedElements.forEach(item => {
+    const isolatedElementsInGroup = selectedIsolatedElements.filter(item=> item.groupId);
+    isolatedElementsInGroup.forEach(item => {
         const groups = getGroupByElement(board, item, true) as PlaitGroup[];
         const elementsInGroup = getElementsInGroup(board, groups[0], false, true);
         const siblingElements = elementsInGroup.filter(element => element.id !== item.id);
