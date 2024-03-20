@@ -38,3 +38,16 @@ export const getRotatedBoundingRectangle = (rectanglesCornerPoints: [Point, Poin
     const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(cornerPointsFromOrigin));
     return RectangleClient.getRectangleByPoints(rotatePoints(cornerPointsFromOrigin, centerPoint, -angle));
 };
+
+export const getOffsetAfterRotate = (rectangle: RectangleClient, rotateCenterPoint: Point, angle: number) => {
+    const targetCenterPoint = RectangleClient.getCenterPoint(rectangle);
+    const [rotatedCenterPoint] = rotatePoints([targetCenterPoint], rotateCenterPoint, angle);
+    const offsetX = rotatedCenterPoint[0] - targetCenterPoint[0];
+    const offsetY = rotatedCenterPoint[1] - targetCenterPoint[1];
+    return { offsetX, offsetY };
+};
+
+export const rotatedDataPoints = (points: Point[], rotateCenterPoint: Point, angle: number): Point[] => {
+    const { offsetX, offsetY } = getOffsetAfterRotate(RectangleClient.getRectangleByPoints(points), rotateCenterPoint, angle);
+    return points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];
+};

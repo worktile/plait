@@ -157,27 +157,3 @@ export const resetPointsAfterResize = (
     const rotatedPoints = rotatePoints(currentPoints, originRectangleCenterPoint, angle);
     return rotatePoints(rotatedPoints, correctElementCenterPoint, -angle) as [Point, Point];
 };
-
-export const getOffsetAfterRotate = (
-    rectangle: RectangleClient,
-    rotateCenterPoint: Point,
-    revertRotateCenterPoint: Point,
-    angle: number
-) => {
-    const targetCenterPoint = RectangleClient.getCenterPoint(rectangle);
-    const [rotatedCenterPoint] = rotatePoints([targetCenterPoint], rotateCenterPoint, angle);
-    const [revertRotatedCenterPoint] = rotatePoints([rotatedCenterPoint], revertRotateCenterPoint, -angle);
-    const offsetX = revertRotatedCenterPoint[0] - targetCenterPoint[0];
-    const offsetY = revertRotatedCenterPoint[1] - targetCenterPoint[1];
-    return { offsetX, offsetY };
-};
-
-export const rotatedDataPoints = (points: Point[], rotateCenterPoint: Point, revertRotateCenterPoint: Point, angle: number): Point[] => {
-    const { offsetX, offsetY } = getOffsetAfterRotate(
-        RectangleClient.getRectangleByPoints(points),
-        rotateCenterPoint,
-        revertRotateCenterPoint,
-        angle
-    );
-    return points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];
-};
