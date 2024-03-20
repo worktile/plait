@@ -9,7 +9,8 @@ import {
     getSymmetricHandleIndex,
     isCornerHandle,
     withResize,
-    resetPointsAfterResize
+    resetPointsAfterResize,
+    rotatedDataPoints
 } from '@plait/common';
 import {
     PlaitBoard,
@@ -99,19 +100,6 @@ export function withDrawResize(board: PlaitBoard) {
 
             const newBoundingCenter = RectangleClient.getCenterPoint(newBoundingRect);
 
-            const newBoundingRectG = PlaitBoard.getRoughSVG(board).rectangle(
-                newBoundingRect.x,
-                newBoundingRect.y,
-                newBoundingRect.width,
-                newBoundingRect.height,
-                {
-                    stroke: 'blue',
-                    strokeWidth: 2
-                }
-            );
-            tempG.push(newBoundingRectG);
-            PlaitBoard.getElementActiveHost(board).append(newBoundingRectG);
-
             const adjustedNewBoundingPoints = resetPointsAfterResize(
                 RectangleClient.getRectangleByPoints(boundingPoints),
                 RectangleClient.getRectangleByPoints(newBoundingPoints),
@@ -121,100 +109,29 @@ export function withDrawResize(board: PlaitBoard) {
             );
 
             const newCenter = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(adjustedNewBoundingPoints));
-
-            const adjustedNewBoundingRect = RectangleClient.getRectangleByPoints(adjustedNewBoundingPoints);
-            const adjustedNewBoundingRectG = PlaitBoard.getRoughSVG(board).rectangle(
-                adjustedNewBoundingRect.x,
-                adjustedNewBoundingRect.y,
-                adjustedNewBoundingRect.width,
-                adjustedNewBoundingRect.height,
-                {
-                    stroke: 'red',
-                    strokeWidth: 2
-                }
-            );
-            const adjustedNewBoundingRectG2 = PlaitBoard.getRoughSVG(board).rectangle(
-                adjustedNewBoundingRect.x,
-                adjustedNewBoundingRect.y,
-                adjustedNewBoundingRect.width,
-                adjustedNewBoundingRect.height,
-                {
-                    stroke: 'red',
-                    strokeWidth: 2
-                }
-            );
-            tempG.push(adjustedNewBoundingRectG);
-            tempG.push(adjustedNewBoundingRectG2);
-            // setAngleForG(adjustedNewBoundingRectG, newCenter, angle);
-
-            PlaitBoard.getElementActiveHost(board).append(adjustedNewBoundingRectG);
-            PlaitBoard.getElementActiveHost(board).append(adjustedNewBoundingRectG2);
             const boundingOffsetX = newCenter[0] - newBoundingCenter[0];
             const boundingOffsetY = newCenter[1] - newBoundingCenter[1];
-            console.log(boundingOffsetX, boundingOffsetY);
 
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
-                const targetCenter = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(target.points));
-                const [beforeRotatedTargetCenter] = rotatePoints([targetCenter], centerPoint, -angle);
-                const offsetX = beforeRotatedTargetCenter[0] - targetCenter[0];
-                const offsetY = beforeRotatedTargetCenter[1] - targetCenter[1];
-                const beforeRotatedPoints = target.points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];
-                let resizedPoints = beforeRotatedPoints.map(p => {
+                const beforeRotatedPoints = rotatedDataPoints(
+                    target.points,
+                    RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(target.points)),
+                    centerPoint,
+                    angle
+                );
+
+                let resizedPoints = beforeRotatedPoints.map((p: Point) => {
                     return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
                 }) as [Point, Point];
-                let resizedRectangle = RectangleClient.getRectangleByPoints(resizedPoints);
-                let resizedCornerPoints = RectangleClient.getCornerPoints(RectangleClient.getRectangleByPoints(resizedPoints));
-                let resizedCenterPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(resizedPoints));
                 let points = resizedPoints;
+
                 if (angle) {
-                    const targetRotatedPoints = rotatePoints(resizedPoints, newCenter, angle);
-                    const [targetRotatedCenterPoint] = rotatePoints([resizedCenterPoint], newCenter, angle);
-                    // points = rotatePoints(targetRotatedPoints, targetRotatedCenterPoint, -angle);
-
-                    // const newCenter: Point = RectangleClient.getCenterPoint(
-                    //     RectangleClient.getRectangleByPoints(resizeAlignRef.activePoints)
-                    // );
-                    // const offsetX = newCenter[0] - centerPoint[0];
-                    // const offsetY = newCenter[1] - centerPoint[1];
-                    // console.log(offsetX, offsetY);
-
-                    const polygonG = PlaitBoard.getRoughSVG(board).polygon(resizedCornerPoints, {
-                        stroke: 'blue',
-                        strokeWidth: 2,
-                        strokeLineDash: [2, 2]
-                    });
-                    tempG.push(polygonG);
-                    PlaitBoard.getElementActiveHost(board).append(polygonG);
-
-                    const adjustTargetPoints = resizedPoints.map(p => [p[0] + boundingOffsetX, p[1] + boundingOffsetY]) as [Point, Point];
-
+                    const adjustTargetPoints = resizedPoints.map(p => [p[0] + boundingOffsetX, p[1] + boundingOffsetY]) as Point[];
                     const adjustTargetRectangle = RectangleClient.getRectangleByPoints(adjustTargetPoints);
-                    const adjustTargetCornerPoints = RectangleClient.getCornerPoints(adjustTargetRectangle);
                     const adjustTargetCenter = RectangleClient.getCenterPoint(adjustTargetRectangle);
-                    const adjustRotatedTargetCornerPoints = rotatePoints(adjustTargetCornerPoints, newCenter, angle);
                     const [adjustRotatedTargetCenter] = rotatePoints([adjustTargetCenter], newCenter, angle);
-                    points = RectangleClient.getPoints(
-                        RectangleClient.getRectangleByPoints(
-                            rotatePoints(adjustRotatedTargetCornerPoints, adjustRotatedTargetCenter, -angle)
-                        )
-                    );
-
-                    const adjustPolygonG = PlaitBoard.getRoughSVG(board).polygon(RectangleClient.getCornerPoints(adjustTargetRectangle), {
-                        stroke: 'red',
-                        strokeWidth: 2,
-                        strokeLineDash: [2, 2]
-                    });
-                    tempG.push(adjustPolygonG);
-                    // setAngleForG(adjustPolygonG, newCenter, angle);
-                    PlaitBoard.getElementActiveHost(board).append(adjustPolygonG);
-
-                    // const cornerPoints = RectangleClient.getCornerPointsByPoints(beforeRotatedPoints);
-                    // const newRotatedPoints = rotatePoints(resizedPoints, newCenter, angle);
-
-                    // const targetCenter = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(rotatedCornerPoints));
-                    // const targetCornerPoints = rotatePoints(cornerPoints, targetCenter, angle);
-                    // points = RectangleClient.getPoints(RectangleClient.getRectangleByPoints(targetCornerPoints));
+                    points = rotatedDataPoints(adjustTargetPoints, newCenter, adjustRotatedTargetCenter, angle) as [Point, Point];
                 }
                 if (PlaitDrawElement.isGeometry(target)) {
                     const { height: textHeight } = getFirstTextManage(target).getSize();
