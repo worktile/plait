@@ -30,8 +30,6 @@ import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeAlignRef } from '../utils/resize-align';
 
-let tempG: SVGGElement[] = [];
-
 export function withDrawResize(board: PlaitBoard) {
     const { afterChange } = board;
     let alignG: SVGGElement | null;
@@ -62,8 +60,6 @@ export function withDrawResize(board: PlaitBoard) {
         },
         onResize: (resizeRef: ResizeRef<PlaitDrawElement[]>, resizeState: ResizeState) => {
             alignG?.remove();
-            tempG.forEach(g => g.remove());
-            tempG = [];
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || isFromCorner;
             const centerPoint = RectangleClient.getCenterPoint(resizeRef.rectangle!);
