@@ -1,7 +1,7 @@
 ---
-'@plait/common': patch
-'@plait/core': patch
-'@plait/draw': patch
+'@plait/common': minor
+'@plait/core': minor
+'@plait/draw': minor
 ---
 
 support group copy and paste

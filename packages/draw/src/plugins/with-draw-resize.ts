@@ -22,12 +22,16 @@ import {
     isSelectionMoving,
     getSelectionAngle,
     rotatePoints,
-    rotatedDataPoints
+    rotatedDataPoints,
+    createDebugGenerator
 } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeAlignRef } from '../utils/resize-align';
+
+const debugKey = 'debug:plait:resize-for-rotation';
+const debugGenerator = createDebugGenerator(debugKey);
 
 export interface BulkRotationRef {
     angle: number;
@@ -66,6 +70,7 @@ export function withDrawResize(board: PlaitBoard) {
         },
         onResize: (resizeRef: ResizeRef<PlaitDrawElement[]>, resizeState: ResizeState) => {
             alignG?.remove();
+            debugGenerator.isDebug() && debugGenerator.clear();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || isFromCorner;
             const centerPoint = RectangleClient.getCenterPoint(resizeRef.rectangle!);
@@ -108,6 +113,9 @@ export function withDrawResize(board: PlaitBoard) {
                     return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
                 });
                 const newBoundingBox = RectangleClient.getRectangleByPoints(resizedBoundingBoxCornerPoints);
+
+                debugGenerator.isDebug() && debugGenerator.drawRectangle(board, newBoundingBox, { stroke: 'blue' });
+
                 const newBoundingBoxCenter = RectangleClient.getCenterPoint(newBoundingBox);
                 const adjustedNewBoundingBoxPoints = resetPointsAfterResize(
                     RectangleClient.getRectangleByPoints(boundingBoxCornerPoints),
@@ -122,6 +130,8 @@ export function withDrawResize(board: PlaitBoard) {
                     offsetY: newCenter[1] - newBoundingBoxCenter[1],
                     newCenterPoint: newCenter
                 });
+
+                debugGenerator.isDebug() && debugGenerator.drawRectangle(board, adjustedNewBoundingBoxPoints);
             }
 
             resizeRef.element.forEach(target => {

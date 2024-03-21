@@ -49,14 +49,19 @@ export const getRectangleByGroup = (board: PlaitBoard, group: PlaitGroup, recurs
     return getRectangleByElements(board, elementsInGroup, false);
 };
 
-export const getGroupByElement = (board: PlaitBoard, element: PlaitElement, recursion?: boolean): PlaitGroup | PlaitGroup[] | null => {
-    const group = board.children.find(item => item.id === element?.groupId);
+export const getGroupByElement = (
+    board: PlaitBoard,
+    element: PlaitElement,
+    recursion?: boolean,
+    source?: PlaitElement[]
+): PlaitGroup | PlaitGroup[] | null => {
+    const group = (source || board.children).find(item => item.id === element?.groupId);
     if (!group) {
         return recursion ? [] : null;
     }
     if (recursion) {
         const groups = [group];
-        const grandGroups = getGroupByElement(board, group, recursion) as PlaitGroup[];
+        const grandGroups = getGroupByElement(board, group, recursion, source) as PlaitGroup[];
         if (grandGroups.length) {
             groups.push(...grandGroups);
         }
@@ -119,7 +124,7 @@ export const getSelectedGroups = (board: PlaitBoard, elements?: PlaitElement[]):
 };
 
 export const getHighestSelectedGroup = (board: PlaitBoard, element: PlaitElement, elements?: PlaitElement[]): PlaitGroup | null => {
-    const hitElementGroups = getGroupByElement(board, element, true) as PlaitGroup[];
+    const hitElementGroups = getGroupByElement(board, element, true, elements) as PlaitGroup[];
     const selectedGroups = filterSelectedGroups(board, hitElementGroups, elements);
     if (selectedGroups.length) {
         return selectedGroups[selectedGroups.length - 1];
