@@ -18,7 +18,9 @@ import {
     idCreator,
     getSelectedElements,
     getGroupByElement,
-    getElementsInGroup
+    getAllowedSelectedIsolatedElements,
+    getAllowedElementsInGroup,
+    getRectangleByGroup
 } from '@plait/core';
 import { GroupComponent } from '../core/group.component';
 
@@ -26,7 +28,16 @@ export function withGroup(board: PlaitBoard) {
     let groupRectangleG: SVGGElement | null;
     let removeGroups: PlaitGroup[] | null;
 
-    const { drawElement, pointerMove, globalPointerUp, insertFragment, getDeletedFragment, deleteFragment, getRelatedFragment } = board;
+    const {
+        drawElement,
+        pointerMove,
+        globalPointerUp,
+        insertFragment,
+        getDeletedFragment,
+        deleteFragment,
+        getRelatedFragment,
+        getRectangle
+    } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitGroupElement.isGroup(context.element)) {
@@ -104,6 +115,13 @@ export function withGroup(board: PlaitBoard) {
         removeGroups = null;
     };
 
+    board.getRectangle = (element: PlaitElement) => {
+        if (PlaitGroupElement.isGroup(element)) {
+            return getRectangleByGroup(board, element);
+        }
+        return getRectangle(element);
+    };
+
     return board;
 }
 
@@ -135,12 +153,12 @@ const getRemoveGroups = (board: PlaitBoard) => {
     const selectedGroups = board.getRelatedFragment([]) as PlaitGroup[];
     const removeGroups = [...selectedGroups];
     const highestSelectedGroups = getHighestSelectedGroups(board);
-    const selectedIsolatedElements = getSelectedIsolatedElements(board);
+    const selectedIsolatedElements = getAllowedSelectedIsolatedElements(board);
     const removeNodes = [...highestSelectedGroups, ...selectedIsolatedElements];
     removeNodes.forEach(item => {
         const hitElementGroups = getGroupByElement(board, item, true) as PlaitGroup[];
         if (hitElementGroups.length) {
-            const elementsInGroup = getElementsInGroup(board, hitElementGroups[0], false, true);
+            const elementsInGroup = getAllowedElementsInGroup(board, hitElementGroups[0], false, true);
             const siblingElements = elementsInGroup.filter(
                 element => ![...removeNodes, ...removeGroups].map(item => item.id).includes(element.id)
             );
@@ -174,7 +192,7 @@ const getRemoveGroups = (board: PlaitBoard) => {
 const findAboveGroupWithAnotherElement = (board: PlaitBoard, groups: PlaitGroup[], excludeNodes: PlaitElement[]) => {
     let group: PlaitGroup | null = null;
     for (let i = 0; i < groups.length; i++) {
-        const elementsInGroup = getElementsInGroup(board, groups[i], false, true);
+        const elementsInGroup = getAllowedElementsInGroup(board, groups[i], false, true);
         const siblingElements = elementsInGroup.filter(element => !excludeNodes.map(item => item.id).includes(element.id));
         if (siblingElements.length > 0) {
             group = groups[i];
@@ -185,13 +203,13 @@ const findAboveGroupWithAnotherElement = (board: PlaitBoard, groups: PlaitGroup[
 };
 
 const updateSiblingElementGroupId = (board: PlaitBoard, removeGroups: PlaitGroup[]) => {
-    const selectedIsolatedElements = getSelectedIsolatedElements(board);
+    const selectedIsolatedElements = getAllowedSelectedIsolatedElements(board);
     const highestSelectedGroups = getHighestSelectedGroups(board);
     const isolatedElementsInGroup = selectedIsolatedElements.filter(item => item.groupId);
     [...highestSelectedGroups, ...isolatedElementsInGroup].forEach(item => {
         const hitElementGroups = getGroupByElement(board, item, true) as PlaitGroup[];
         if (hitElementGroups.length) {
-            const elementsInGroup = getElementsInGroup(board, hitElementGroups[0], false, true);
+            const elementsInGroup = getAllowedElementsInGroup(board, hitElementGroups[0], false, true);
             const siblingElements = elementsInGroup.filter(element => element.id !== item.id);
             if (siblingElements.length === 1) {
                 if (hitElementGroups.some(group => removeGroups.includes(group))) {

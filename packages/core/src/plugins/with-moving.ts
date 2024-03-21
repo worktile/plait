@@ -21,7 +21,7 @@ import {
     getElementsInGroupByElement
 } from '../utils';
 import { AlignReaction } from '../utils/reaction-manager';
-import { PlaitPointerType, RectangleClient } from '../interfaces';
+import { PlaitGroupElement, PlaitPointerType, RectangleClient } from '../interfaces';
 import { ACTIVE_MOVING_CLASS_NAME, PRESS_AND_MOVE_BUFFER } from '../constants';
 import { addSelectionWithTemporaryElements } from '../transforms/selection';
 
@@ -200,7 +200,9 @@ export function getTargetElements(board: PlaitBoard) {
 }
 
 export function updatePoints(board: PlaitBoard, targetElements: PlaitElement[], offsetX: number, offsetY: number) {
-    const validElements = targetElements.filter(element => board.children.findIndex(item => item.id === element.id) > -1);
+    const validElements = targetElements.filter(
+        element => !PlaitGroupElement.isGroup(element) && board.children.findIndex(item => item.id === element.id) > -1
+    );
     const currentElements = validElements.map(element => {
         const points = element.points || [];
         const newPoints = points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];

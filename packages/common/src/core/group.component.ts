@@ -4,7 +4,7 @@ import {
     PlaitBoard,
     PlaitGroup,
     PlaitPluginElementContext,
-    getElementsInGroup,
+    getAllowedElementsInGroup,
     getRectangleByGroup,
     isSelectedElementOrGroup,
     isSelectionMoving
@@ -52,7 +52,7 @@ export class GroupComponent extends CommonPluginElement<PlaitGroup, PlaitBoard>
         value: PlaitPluginElementContext<PlaitGroup, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitGroup, PlaitBoard>
     ) {
-        const elementsInGroup = getElementsInGroup(this.board, value.element, false, true);
+        const elementsInGroup = getAllowedElementsInGroup(this.board, value.element, false, true);
         const isPartialSelectGroup =
             elementsInGroup.some(item => isSelectedElementOrGroup(this.board, item)) &&
             !elementsInGroup.every(item => isSelectedElementOrGroup(this.board, item));
