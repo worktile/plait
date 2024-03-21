@@ -15,20 +15,18 @@ import {
     Selection,
     Point,
     Transforms,
-    WritableClipboardContext,
-    RectangleClient,
-    addClipboardContext,
-    createClipboardContext,
-    WritableClipboardType,
     idCreator,
-    getSelectedElements
+    getSelectedElements,
+    getGroupByElement,
+    getElementsInGroup
 } from '@plait/core';
 import { GroupComponent } from '../core/group.component';
 
 export function withGroup(board: PlaitBoard) {
     let groupRectangleG: SVGGElement | null;
+    let removeGroups: PlaitGroup[] | null;
 
-    const { drawElement, pointerMove, globalPointerUp, setFragment, insertFragment, getRelatedFragment } = board;
+    const { drawElement, pointerMove, globalPointerUp, insertFragment, getDeletedFragment, deleteFragment, getRelatedFragment } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitGroupElement.isGroup(context.element)) {
@@ -60,27 +58,9 @@ export function withGroup(board: PlaitBoard) {
     };
 
     board.getRelatedFragment = (elements: PlaitElement[]) => {
-        return getSelectedGroups(board, elements);
-    };
-
-    board.setFragment = (
-        data: DataTransfer | null,
-        clipboardContext: WritableClipboardContext | null,
-        rectangle: RectangleClient | null,
-        type: 'copy' | 'cut'
-    ) => {
         const selectedElements = getSelectedElements(board);
-        const selectedGroups = board.getRelatedFragment(selectedElements);
-        if (!clipboardContext) {
-            clipboardContext = createClipboardContext(WritableClipboardType.elements, selectedGroups, '');
-        } else {
-            clipboardContext = addClipboardContext(clipboardContext, {
-                text: '',
-                type: WritableClipboardType.elements,
-                data: selectedGroups
-            });
-        }
-        setFragment(data, clipboardContext, rectangle, type);
+        const groups = getSelectedGroups(board, selectedElements);
+        return getRelatedFragment([...elements, ...groups]);
     };
 
     board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
@@ -108,6 +88,22 @@ export function withGroup(board: PlaitBoard) {
         insertFragment(data, clipboardData, targetPoint);
     };
 
+    board.getDeletedFragment = (data: PlaitElement[]) => {
+        if (removeGroups && removeGroups.length) {
+            data.push(...removeGroups);
+        }
+        return getDeletedFragment(data);
+    };
+
+    board.deleteFragment = (data: DataTransfer | null) => {
+        removeGroups = getRemoveGroups(board);
+        if (removeGroups?.length) {
+            updateSiblingElementGroupId(board, removeGroups);
+        }
+        deleteFragment(data);
+        removeGroups = null;
+    };
+
     return board;
 }
 
@@ -133,4 +129,77 @@ const updateElementsGroupId = (group: PlaitGroup, clipboardDataElements: PlaitEl
         });
     }
     return elements;
+};
+
+const getRemoveGroups = (board: PlaitBoard) => {
+    const selectedGroups = board.getRelatedFragment([]) as PlaitGroup[];
+    const removeGroups = [...selectedGroups];
+    const highestSelectedGroups = getHighestSelectedGroups(board);
+    const selectedIsolatedElements = getSelectedIsolatedElements(board);
+    const removeNodes = [...highestSelectedGroups, ...selectedIsolatedElements];
+    removeNodes.forEach(item => {
+        const hitElementGroups = getGroupByElement(board, item, true) as PlaitGroup[];
+        if (hitElementGroups.length) {
+            const elementsInGroup = getElementsInGroup(board, hitElementGroups[0], false, true);
+            const siblingElements = elementsInGroup.filter(
+                element => ![...removeNodes, ...removeGroups].map(item => item.id).includes(element.id)
+            );
+            if (siblingElements.length === 1 || siblingElements.length === 0) {
+                if (!removeGroups.includes(hitElementGroups[0])) {
+                    removeGroups.push(hitElementGroups[0]);
+                }
+                if (siblingElements.length === 1) {
+                    if (hitElementGroups.length > 1) {
+                        const aboveGroup = findAboveGroupWithAnotherElement(board, hitElementGroups.slice(1, hitElementGroups.length), [
+                            ...removeNodes,
+                            ...removeGroups
+                        ]);
+                        let index = hitElementGroups.length;
+                        if (aboveGroup) {
+                            index = hitElementGroups.findIndex(item => item.id === aboveGroup.id);
+                        }
+                        [...hitElementGroups.slice(1, index)].forEach(item => {
+                            if (!removeGroups.includes(item)) {
+                                removeGroups.push(item);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    });
+    return removeGroups;
+};
+
+const findAboveGroupWithAnotherElement = (board: PlaitBoard, groups: PlaitGroup[], excludeNodes: PlaitElement[]) => {
+    let group: PlaitGroup | null = null;
+    for (let i = 0; i < groups.length; i++) {
+        const elementsInGroup = getElementsInGroup(board, groups[i], false, true);
+        const siblingElements = elementsInGroup.filter(element => !excludeNodes.map(item => item.id).includes(element.id));
+        if (siblingElements.length > 0) {
+            group = groups[i];
+            break;
+        }
+    }
+    return group;
+};
+
+const updateSiblingElementGroupId = (board: PlaitBoard, removeGroups: PlaitGroup[]) => {
+    const selectedIsolatedElements = getSelectedIsolatedElements(board);
+    const highestSelectedGroups = getHighestSelectedGroups(board);
+    const isolatedElementsInGroup = selectedIsolatedElements.filter(item => item.groupId);
+    [...highestSelectedGroups, ...isolatedElementsInGroup].forEach(item => {
+        const hitElementGroups = getGroupByElement(board, item, true) as PlaitGroup[];
+        if (hitElementGroups.length) {
+            const elementsInGroup = getElementsInGroup(board, hitElementGroups[0], false, true);
+            const siblingElements = elementsInGroup.filter(element => element.id !== item.id);
+            if (siblingElements.length === 1) {
+                if (hitElementGroups.some(group => removeGroups.includes(group))) {
+                    const group = hitElementGroups.find(group => !removeGroups.includes(group));
+                    const path = PlaitBoard.findPath(board, siblingElements[0]);
+                    Transforms.setNode(board, { groupId: group?.id || undefined }, path);
+                }
+            }
+        }
+    });
 };

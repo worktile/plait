@@ -75,6 +75,7 @@ import { PlaitContextService } from '../services/image-context.service';
 import { isPreventTouchMove } from '../utils/touch';
 import { PlaitChildrenElementComponent } from '../core/children/children.component';
 import { ZOOM_STEP } from '../constants/zoom';
+import { withRelatedFragment } from '../plugins/with-related-fragment';
 
 const ElementHostClass = 'element-host';
 const ElementUpperHostClass = 'element-upper-host';
@@ -260,10 +261,12 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     private initializePlugins() {
-        let board = withHotkey(
-            withHandPointer(
-                withHistory(
-                    withSelection(withMoving(withBoard(withViewport(withOptions(createBoard(this.plaitValue, this.plaitOptions))))))
+        let board = withRelatedFragment(
+            withHotkey(
+                withHandPointer(
+                    withHistory(
+                        withSelection(withMoving(withBoard(withViewport(withOptions(createBoard(this.plaitValue, this.plaitOptions))))))
+                    )
                 )
             )
         );
