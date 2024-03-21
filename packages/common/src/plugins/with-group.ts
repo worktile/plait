@@ -150,7 +150,7 @@ const getRemoveGroups = (board: PlaitBoard) => {
                 }
                 if (siblingElements.length === 1) {
                     if (hitElementGroups.length > 1) {
-                        const aboveGroup = findAboveGroupWithAnotherNode(board, hitElementGroups.slice(1, hitElementGroups.length), [
+                        const aboveGroup = findAboveGroupWithAnotherElement(board, hitElementGroups.slice(1, hitElementGroups.length), [
                             ...removeNodes,
                             ...removeGroups
                         ]);
@@ -170,7 +170,7 @@ const getRemoveGroups = (board: PlaitBoard) => {
     return removeGroups;
 };
 
-const findAboveGroupWithAnotherNode = (board: PlaitBoard, groups: PlaitGroup[], excludeNodes: PlaitElement[]) => {
+const findAboveGroupWithAnotherElement = (board: PlaitBoard, groups: PlaitGroup[], excludeNodes: PlaitElement[]) => {
     let group: PlaitGroup | null = null;
     for (let i = 0; i < groups.length; i++) {
         const elementsInGroup = getElementsInGroup(board, groups[i], false, true);
