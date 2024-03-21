@@ -1,4 +1,14 @@
-import { Direction, PlaitBoard, PlaitElement, Point, PointOfRectangle, Vector, getElementById } from '@plait/core';
+import {
+    Direction,
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    PointOfRectangle,
+    RectangleClient,
+    Vector,
+    getElementById,
+    rotatePoints
+} from '@plait/core';
 import { Element } from 'slate';
 import { PlaitGeometry } from './geometry';
 import { StrokeStyle } from './element';
@@ -107,12 +117,31 @@ export const PlaitLine = {
         return line.target.boundId === element.id;
     },
     getPoints(board: PlaitBoard, line: PlaitLine) {
-        let sourcePoint = line.source.boundId
-            ? getConnectionPoint(getElementById<PlaitGeometry>(board, line.source.boundId)!, line.source.connection!)
-            : line.points[0];
-        let targetPoint = line.target.boundId
-            ? getConnectionPoint(getElementById<PlaitGeometry>(board, line.target.boundId)!, line.target.connection!)
-            : line.points[line.points.length - 1];
+        let sourcePoint;
+        if (line.source.boundId) {
+            const sourceElement = getElementById<PlaitGeometry>(board, line.source.boundId)!;
+            const sourceConnectionPoint = getConnectionPoint(sourceElement, line.source.connection!);
+            sourcePoint = rotatePoints(
+                [sourceConnectionPoint],
+                RectangleClient.getCenterPoint(board.getRectangle(sourceElement)!),
+                sourceElement.angle
+            )[0];
+        } else {
+            sourcePoint = line.points[0];
+        }
+
+        let targetPoint;
+        if (line.target.boundId) {
+            const targetElement = getElementById<PlaitGeometry>(board, line.target.boundId)!;
+            const targetConnectionPoint = getConnectionPoint(targetElement, line.target.connection!);
+            targetPoint = rotatePoints(
+                [targetConnectionPoint],
+                RectangleClient.getCenterPoint(board.getRectangle(targetElement)!),
+                targetElement.angle
+            )[0];
+        } else {
+            targetPoint = line.points[line.points.length - 1];
+        }
         const restPoints = line.points.length > 2 ? line.points.slice(1, line.points.length - 1) : [];
         return [sourcePoint, ...restPoints, targetPoint];
     }

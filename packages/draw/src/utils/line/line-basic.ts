@@ -10,10 +10,18 @@ import {
     createMask,
     createRect,
     distanceBetweenPointAndPoint,
-    catmullRomFitting
+    catmullRomFitting,
+    rotatePoints,
+    createDebugGenerator
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { getPointOnPolyline, getPointByVectorComponent, removeDuplicatePoints, getExtendPoint, isSourceAndTargetIntersect } from '@plait/common';
+import {
+    getPointOnPolyline,
+    getPointByVectorComponent,
+    removeDuplicatePoints,
+    getExtendPoint,
+    isSourceAndTargetIntersect
+} from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, LineText, PlaitDrawElement, PlaitLine, PlaitShape } from '../../interfaces';
 import { getNearestPoint } from '../geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../style/stroke';
@@ -244,8 +252,26 @@ export const handleLineCreating = (
     lineShapeG: SVGGElement
 ) => {
     const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
-    const targetConnection = hitElement ? getConnectionByNearestPoint(board, movingPoint, hitElement) : undefined;
-    const connection = sourceElement ? getConnectionByNearestPoint(board, sourcePoint, sourceElement) : undefined;
+    let targetConnection;
+    if (hitElement) {
+        const rotatedMovingPoint = rotatePoints(
+            [movingPoint],
+            RectangleClient.getCenterPoint(board.getRectangle(hitElement)!),
+            -hitElement.angle
+        )[0];
+        targetConnection = getConnectionByNearestPoint(board, rotatedMovingPoint, hitElement);
+    }
+
+    let revertSourcePoint = sourcePoint;
+    if (sourceElement) {
+        [revertSourcePoint] = rotatePoints(
+            [sourcePoint],
+            RectangleClient.getCenterPoint(board.getRectangle(sourceElement)!),
+            -sourceElement.angle
+        );
+    }
+
+    const connection = sourceElement ? getConnectionByNearestPoint(board, revertSourcePoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;
     const lineGenerator = new LineShapeGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();

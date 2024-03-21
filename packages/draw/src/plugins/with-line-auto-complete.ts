@@ -9,8 +9,10 @@ import {
     Transforms,
     addSelectedElement,
     clearSelectedElement,
+    createDebugGenerator,
     createG,
     distanceBetweenPointAndPoint,
+    rotatePoints,
     temporaryDisableSelection,
     toHostPoint,
     toViewBoxPoint
@@ -42,7 +44,12 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (!PlaitBoard.isReadonly(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
             const points = getAutoCompletePoints(targetElement);
-            const index = getHitIndexOfAutoCompletePoint(clickPoint, points);
+            const [rotatedClickPoint] = rotatePoints(
+                [clickPoint],
+                RectangleClient.getCenterPoint(board.getRectangle(targetElement)!),
+                -targetElement.angle
+            );
+            const index = getHitIndexOfAutoCompletePoint(rotatedClickPoint, points);
             const hitPoint = points[index];
             if (hitPoint) {
                 temporaryDisableSelection(board as PlaitOptionsBoard);
@@ -59,7 +66,12 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         lineShapeG = createG();
         let movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (startPoint && sourceElement) {
-            const distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
+            const [rotatedStartPoint] = rotatePoints(
+                [startPoint],
+                RectangleClient.getCenterPoint(board.getRectangle(sourceElement)!),
+                sourceElement.angle
+            );
+            const distance = distanceBetweenPointAndPoint(...movingPoint, ...rotatedStartPoint);
             if (distance > PRESS_AND_MOVE_BUFFER) {
                 const rectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
                 const shape = getShape(sourceElement);
@@ -68,6 +80,10 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
                 if (engine.getNearestCrossingPoint) {
                     const crossingPoint = engine.getNearestCrossingPoint(rectangle, startPoint);
                     sourcePoint = crossingPoint;
+                }
+
+                if (sourceElement.angle) {
+                    sourcePoint = rotatePoints([sourcePoint], RectangleClient.getCenterPoint(rectangle), sourceElement.angle)[0];
                 }
                 temporaryElement = handleLineCreating(board, LineShape.elbow, sourcePoint, movingPoint, sourceElement, lineShapeG);
             }

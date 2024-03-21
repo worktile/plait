@@ -20,12 +20,7 @@ export function getPointByVectorComponent(point: Point, vector: Vector, componen
     return [point[0] + (vector[0] / distance) * component, point[1] + (vector[1] / distance) * component];
 }
 
-export function getPointByVectorDirectionComponent(
-    point: Point,
-    unitVector: Vector,
-    directionComponent: number,
-    isHorizontal: boolean
-) {
+export function getPointByVectorDirectionComponent(point: Point, unitVector: Vector, directionComponent: number, isHorizontal: boolean) {
     if (isHorizontal) {
         return [point[0] + directionComponent, point[1] + (directionComponent / unitVector[0]) * unitVector[1]] as Point;
     } else {
@@ -38,5 +33,16 @@ export function rotateVectorAnti90(vector: Vector): Vector {
     const y = vector[1];
     const rotatedX = y;
     const rotatedY = -x;
+    return [rotatedX, rotatedY];
+}
+
+export function rotateVector(vector: Vector, angle: number): Vector {
+    if (!angle) {
+        return vector;
+    }
+    const x = vector[0];
+    const y = vector[1];
+    const rotatedX = x * Math.cos(angle) - y * Math.sin(angle);
+    const rotatedY = x * Math.sin(angle) + y * Math.cos(angle);
     return [rotatedX, rotatedY];
 }

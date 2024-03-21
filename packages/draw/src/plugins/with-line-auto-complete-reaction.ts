@@ -1,4 +1,16 @@
-import { CursorClass, PlaitBoard, PlaitElement, RgbaToHEX, drawCircle, isSelectionMoving, toHostPoint, toViewBoxPoint } from '@plait/core';
+import {
+    CursorClass,
+    PlaitBoard,
+    PlaitElement,
+    RectangleClient,
+    RgbaToHEX,
+    drawCircle,
+    isSelectionMoving,
+    rotatePoints,
+    setAngleForG,
+    toHostPoint,
+    toViewBoxPoint
+} from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
 import { GeometryComponent } from '../geometry.component';
@@ -15,8 +27,13 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
         const targetElement = selectedElements.length === 1 && selectedElements[0];
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (!PlaitBoard.isReadonly(board) && !isSelectionMoving(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
+            const [rotatedMovingPoint] = rotatePoints(
+                [movingPoint],
+                RectangleClient.getCenterPoint(board.getRectangle(targetElement)!),
+                -targetElement.angle
+            );
             const points = getAutoCompletePoints(targetElement);
-            const hitIndex = getHitIndexOfAutoCompletePoint(movingPoint, points);
+            const hitIndex = getHitIndexOfAutoCompletePoint(rotatedMovingPoint, points);
             const hitPoint = points[hitIndex];
             const component = PlaitElement.getComponent(targetElement) as GeometryComponent;
             component.lineAutoCompleteGenerator!.recoverAutoCompleteG();
@@ -29,6 +46,7 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
                 });
                 PlaitBoard.getElementActiveHost(board).append(reactionG);
                 PlaitBoard.getBoardContainer(board).classList.add(CursorClass.crosshair);
+                setAngleForG(reactionG, RectangleClient.getCenterPoint(board.getRectangle(targetElement)!), targetElement.angle);
             }
         }
         pointerMove(event);
