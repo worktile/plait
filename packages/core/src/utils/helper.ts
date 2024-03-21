@@ -1,4 +1,4 @@
-import { PlaitElement } from '@plait/core';
+import { PlaitElement } from "../interfaces";
 
 export function isNullOrUndefined(value: any) {
     return value === null || value === undefined;
