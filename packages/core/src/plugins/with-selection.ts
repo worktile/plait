@@ -32,7 +32,8 @@ import {
     setSelectionMoving,
     throttleRAF,
     toHostPoint,
-    toViewBoxPoint
+    toViewBoxPoint,
+    uniqueById
 } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
@@ -224,7 +225,7 @@ export function withSelection(board: PlaitBoard) {
                                 }
                             });
                         }
-                        cacheSelectedElements(board, newSelectedElements);
+                        cacheSelectedElements(board, uniqueById(newSelectedElements));
                     } else {
                         let newElements: PlaitElement[] = [...elements];
                         if (isHitElementWithGroup) {
@@ -241,7 +242,7 @@ export function withSelection(board: PlaitBoard) {
                                 newSelectedElements.push(element);
                             }
                         });
-                        cacheSelectedElements(board, newSelectedElements);
+                        cacheSelectedElements(board, uniqueById(newSelectedElements));
                     }
                 } else {
                     let newSelectedElements = [...elements];
@@ -271,7 +272,7 @@ export function withSelection(board: PlaitBoard) {
                             }
                         }
                     }
-                    cacheSelectedElements(board, newSelectedElements);
+                    cacheSelectedElements(board, uniqueById(newSelectedElements));
                 }
                 const newElements = getSelectedElements(board);
                 previousSelectedElements = newElements;
