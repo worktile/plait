@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, getElementById, isSelectionMoving } from '@plait/core';
+import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, getElementById, createDebugGenerator } from '@plait/core';
 import { Subject } from 'rxjs';
 import { LineText, PlaitGeometry, PlaitLine } from './interfaces';
 import { TextManage, TextManageRef } from '@plait/text';
@@ -15,6 +15,9 @@ interface BoundedElements {
     source?: PlaitGeometry;
     target?: PlaitGeometry;
 }
+
+const debugKey = 'debug:plait:line-turning';
+const debugGenerator = createDebugGenerator(debugKey);
 
 @Component({
     selector: 'plait-draw-line',
@@ -54,21 +57,7 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
         this.boundedElements = this.getBoundedElements();
         this.drawText();
 
-        // const points = this.element.points;
-        // points.forEach((p, index) => {
-        //     if (index === 0) {
-        //         return;
-        //     }
-        //     if (index === points.length - 1) {
-        //         return;
-        //     }
-        //     const dataPointG = PlaitBoard.getRoughSVG(this.board).circle(p[0], p[1], 8 * index, {
-        //         stroke: '#f08c02',
-        //         fill: '#f08c02',
-        //         fillStyle: 'solid'
-        //     });
-        //     PlaitBoard.getElementActiveHost(this.board).append(dataPointG);
-        // });
+        debugGenerator.isDebug() && debugGenerator.drawCircles(this.board, this.element.points.slice(1, -1), 4, true);
     }
 
     getBoundedElements() {
