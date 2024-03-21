@@ -78,7 +78,6 @@ export const withGeometryResize = (board: PlaitBoard) => {
             alignG = resizeAlignRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
             let points = resizeAlignRef.activePoints as [Point, Point];
-            // 处理旋转后resize导致的中心点偏移
             if (angle) {
                 points = resetPointsAfterResize(
                     resizeRef.rectangle!,

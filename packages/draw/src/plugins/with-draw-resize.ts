@@ -29,10 +29,11 @@ import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeAlignRef } from '../utils/resize-align';
 
-export interface RotateRef {
-    boundingOffsetX: number;
-    boundingOffsetY: number;
-    boundingNewCenterPoint: Point;
+export interface BulkRotationRef {
+    angle: number;
+    offsetX: number;
+    offsetY: number;
+    newCenterPoint: Point;
 }
 
 export function withDrawResize(board: PlaitBoard) {
@@ -70,15 +71,26 @@ export function withDrawResize(board: PlaitBoard) {
             const centerPoint = RectangleClient.getCenterPoint(resizeRef.rectangle!);
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
             const angle = getSelectionAngle(resizeRef.element);
+            let bulkRotationRef: BulkRotationRef | undefined;
             if (angle) {
+                bulkRotationRef = {
+                    angle: angle,
+                    offsetX: 0,
+                    offsetY: 0,
+                    newCenterPoint: [0, 0]
+                };
+            }
+
+            if (bulkRotationRef) {
                 const [rotatedStartPoint, rotateEndPoint] = rotatePoints(
                     [resizeState.startPoint, resizeState.endPoint],
                     centerPoint,
-                    -angle
+                    -bulkRotationRef.angle
                 );
                 resizeState.startPoint = rotatedStartPoint;
                 resizeState.endPoint = rotateEndPoint;
             }
+
             const resizeAlignRef = getResizeAlignRef(
                 board,
                 resizeRef,
@@ -93,46 +105,44 @@ export function withDrawResize(board: PlaitBoard) {
             alignG = resizeAlignRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
 
-            let rotateRef: RotateRef;
-            if (angle) {
-                const boundingPoints = RectangleClient.getPoints(resizeRef.rectangle!);
-                const newBoundingPoints = boundingPoints.map(p => {
+            if (bulkRotationRef) {
+                const boundingBoxCornerPoints = RectangleClient.getPoints(resizeRef.rectangle!);
+                const resizedBoundingBoxCornerPoints = boundingBoxCornerPoints.map(p => {
                     return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
                 });
-                const newBoundingRect = RectangleClient.getRectangleByPoints(newBoundingPoints);
-                const newBoundingCenter = RectangleClient.getCenterPoint(newBoundingRect);
-                const adjustedNewBoundingPoints = resetPointsAfterResize(
-                    RectangleClient.getRectangleByPoints(boundingPoints),
-                    RectangleClient.getRectangleByPoints(newBoundingPoints),
+                const newBoundingBox = RectangleClient.getRectangleByPoints(resizedBoundingBoxCornerPoints);
+                const newBoundingBoxCenter = RectangleClient.getCenterPoint(newBoundingBox);
+                const adjustedNewBoundingBoxPoints = resetPointsAfterResize(
+                    RectangleClient.getRectangleByPoints(boundingBoxCornerPoints),
+                    RectangleClient.getRectangleByPoints(resizedBoundingBoxCornerPoints),
                     centerPoint,
-                    RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(newBoundingPoints)),
-                    angle
+                    newBoundingBoxCenter,
+                    bulkRotationRef.angle
                 );
-                const newCenter = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(adjustedNewBoundingPoints));
-                const boundingOffsetX = newCenter[0] - newBoundingCenter[0];
-                const boundingOffsetY = newCenter[1] - newBoundingCenter[1];
-                rotateRef = {
-                    boundingOffsetX: boundingOffsetX || 0,
-                    boundingOffsetY: boundingOffsetY || 0,
-                    boundingNewCenterPoint: newCenter
-                };
+                const newCenter = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(adjustedNewBoundingBoxPoints));
+                bulkRotationRef = Object.assign(bulkRotationRef, {
+                    offsetX: newCenter[0] - newBoundingBoxCenter[0],
+                    offsetY: newCenter[1] - newBoundingBoxCenter[1],
+                    newCenterPoint: newCenter
+                });
             }
 
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
-                const beforeRotatedPoints = rotatedDataPoints(target.points, centerPoint, -angle);
-
-                let resizedPoints = beforeRotatedPoints.map((p: Point) => {
+                let points = target.points.map(p => {
                     return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
-                }) as [Point, Point];
-                let points = resizedPoints;
+                });
 
-                if (rotateRef) {
-                    const adjustTargetPoints = resizedPoints.map(p => [
-                        p[0] + rotateRef.boundingOffsetX,
-                        p[1] + rotateRef.boundingOffsetY
+                if (bulkRotationRef) {
+                    const reversedPoints = rotatedDataPoints(target.points, centerPoint, -bulkRotationRef.angle);
+                    points = reversedPoints.map((p: Point) => {
+                        return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+                    }) as [Point, Point];
+                    const adjustTargetPoints = points.map(p => [
+                        p[0] + bulkRotationRef!.offsetX,
+                        p[1] + bulkRotationRef!.offsetY
                     ]) as Point[];
-                    points = rotatedDataPoints(adjustTargetPoints, rotateRef.boundingNewCenterPoint, angle) as [Point, Point];
+                    points = rotatedDataPoints(adjustTargetPoints, bulkRotationRef.newCenterPoint, bulkRotationRef.angle) as [Point, Point];
                 }
 
                 if (PlaitDrawElement.isGeometry(target)) {
