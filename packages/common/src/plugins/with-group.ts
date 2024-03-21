@@ -19,7 +19,7 @@ import {
     getSelectedElements,
     getGroupByElement,
     getAllowedSelectedIsolatedElements,
-    getAllowedElementsInGroup,
+    getElementsInGroup,
     getRectangleByGroup
 } from '@plait/core';
 import { GroupComponent } from '../core/group.component';
@@ -158,7 +158,7 @@ const getRemoveGroups = (board: PlaitBoard) => {
     removeNodes.forEach(item => {
         const hitElementGroups = getGroupByElement(board, item, true) as PlaitGroup[];
         if (hitElementGroups.length) {
-            const elementsInGroup = getAllowedElementsInGroup(board, hitElementGroups[0], false, true);
+            const elementsInGroup = getElementsInGroup(board, hitElementGroups[0], false, true);
             const siblingElements = elementsInGroup.filter(
                 element => ![...removeNodes, ...removeGroups].map(item => item.id).includes(element.id)
             );
@@ -192,7 +192,7 @@ const getRemoveGroups = (board: PlaitBoard) => {
 const findAboveGroupWithAnotherElement = (board: PlaitBoard, groups: PlaitGroup[], excludeNodes: PlaitElement[]) => {
     let group: PlaitGroup | null = null;
     for (let i = 0; i < groups.length; i++) {
-        const elementsInGroup = getAllowedElementsInGroup(board, groups[i], false, true);
+        const elementsInGroup = getElementsInGroup(board, groups[i], false, true);
         const siblingElements = elementsInGroup.filter(element => !excludeNodes.map(item => item.id).includes(element.id));
         if (siblingElements.length > 0) {
             group = groups[i];
@@ -209,7 +209,7 @@ const updateSiblingElementGroupId = (board: PlaitBoard, removeGroups: PlaitGroup
     [...highestSelectedGroups, ...isolatedElementsInGroup].forEach(item => {
         const hitElementGroups = getGroupByElement(board, item, true) as PlaitGroup[];
         if (hitElementGroups.length) {
-            const elementsInGroup = getAllowedElementsInGroup(board, hitElementGroups[0], false, true);
+            const elementsInGroup = getElementsInGroup(board, hitElementGroups[0], false, true);
             const siblingElements = elementsInGroup.filter(element => element.id !== item.id);
             if (siblingElements.length === 1) {
                 if (hitElementGroups.some(group => removeGroups.includes(group))) {

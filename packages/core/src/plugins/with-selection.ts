@@ -33,7 +33,7 @@ import {
     throttleRAF,
     toHostPoint,
     toViewBoxPoint,
-    getAllowedElementsInGroup
+    getElementsInGroup
 } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
@@ -186,10 +186,10 @@ export function withSelection(board: PlaitBoard) {
                             if (hitElementGroups.length) {
                                 const selectedGroups = filterSelectedGroups(board, hitElementGroups);
                                 const elementsInHighestGroup =
-                                getAllowedElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
+                                getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
                                 if (selectedGroups.length > 0) {
                                     if (selectedGroups.length > 1) {
-                                        pendingElements = getAllowedElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
+                                        pendingElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
                                     }
                                 } else {
                                     if (!newSelectedElements.includes(hitElement)) {

@@ -9,26 +9,30 @@ import { getSelectedElements } from './selected-element';
 import { isSelectionMoving } from './selection';
 import { depthFirstRecursion } from './tree';
 
-export const getAllElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean, includeGroup?: boolean) => {
-    let rootNodes: PlaitElement[] = [];
+export const getElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean, includeGroup?: boolean) => {
+    let result: PlaitElement[] = [];
     const elements = board.children.filter(value => (value as PlaitElement).groupId === group.id) as PlaitElement[];
     if (recursion) {
         elements.forEach(item => {
             if (PlaitGroupElement.isGroup(item)) {
                 if (includeGroup) {
-                    rootNodes.push(item);
+                    result.push(item);
                 }
-                rootNodes.push(...getAllElementsInGroup(board, item, recursion, includeGroup));
+                result.push(...getElementsInGroup(board, item, recursion, includeGroup));
             } else {
-                rootNodes.push(item);
+                result.push(item);
             }
         });
     } else {
-        rootNodes = includeGroup ? elements : (elements.filter(item => !PlaitGroupElement.isGroup(item)) as PlaitElement[]);
+        result = includeGroup ? elements : (elements.filter(item => !PlaitGroupElement.isGroup(item)) as PlaitElement[]);
     }
+    return result;
+};
 
-    let result: PlaitElement[] = [];
-    rootNodes.forEach(element => {
+export const getAllElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean, includeGroup?: boolean) => {
+    const elementsInGroup = getElementsInGroup(board, group, recursion, includeGroup);
+    const result: PlaitElement[] = [];
+    elementsInGroup.forEach(element => {
         depthFirstRecursion(
             element,
             node => {
@@ -38,11 +42,6 @@ export const getAllElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recu
         );
     });
     return result;
-};
-
-export const getAllowedElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean, includeGroup?: boolean) => {
-    const result = getAllElementsInGroup(board, group, recursion, includeGroup);
-    return result.filter(item => canGroup(item));
 };
 
 export const getRectangleByGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean) => {
@@ -94,7 +93,7 @@ export const isSelectedElementOrGroup = (board: PlaitBoard, element: PlaitElemen
 
 export const isSelectedAllElementsInGroup = (board: PlaitBoard, group: PlaitGroup, elements?: PlaitElement[]) => {
     const selectedElements = elements || getSelectedElements(board);
-    const elementsInGroup = getAllowedElementsInGroup(board, group, true);
+    const elementsInGroup = getElementsInGroup(board, group, true);
     return elementsInGroup.every(item => selectedElements.map(element => element.id).includes(item.id));
 };
 
@@ -113,7 +112,7 @@ export const getSelectedGroups = (board: PlaitBoard, elements?: PlaitElement[]):
     const groups: PlaitGroup[] = [];
     highestSelectedGroups.forEach(item => {
         groups.push(item);
-        const elementsInGroup = getAllowedElementsInGroup(board, item, true, true);
+        const elementsInGroup = getElementsInGroup(board, item, true, true);
         groups.push(...(elementsInGroup.filter(item => PlaitGroupElement.isGroup(item)) as PlaitGroup[]));
     });
     return groups;
