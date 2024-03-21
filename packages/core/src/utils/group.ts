@@ -1,9 +1,8 @@
 import { ACTIVE_STROKE_WIDTH } from '../constants';
 import { PlaitBoard, PlaitElement, PlaitGroup, PlaitGroupElement, SELECTION_BORDER_COLOR } from '../interfaces';
-import { Transforms } from '../transforms';
 import { createG } from './dom';
 import { drawRectangle } from './drawing/rectangle';
-import { getRectangleByElements, findElements } from './element';
+import { getRectangleByElements } from './element';
 import { idCreator } from './id-creator';
 import { getSelectedElements } from './selected-element';
 import { isSelectionMoving } from './selection';
@@ -224,51 +223,7 @@ export const canAddGroup = (board: PlaitBoard, highestSelectedElements: PlaitEle
     return false;
 };
 
-export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
-    const selectedGroups = getHighestSelectedGroups(board, elements);
-    const selectedIsolatedElements = getSelectedIsolatedElementsCanAddToGroup(board);
-    const highestSelectedElements = [...selectedGroups, ...selectedIsolatedElements];
-    const group = createGroup();
-    if (canAddGroup(board, highestSelectedElements)) {
-        highestSelectedElements.forEach(item => {
-            const path = PlaitBoard.findPath(board, item);
-            Transforms.setNode(board, { groupId: group.id }, path);
-        });
-        if (hasSelectedElementsInSameGroup(highestSelectedElements)) {
-            const newGroupId = selectedIsolatedElements[0].groupId;
-            Transforms.insertNode(
-                board,
-                {
-                    ...group,
-                    groupId: newGroupId
-                },
-                [board.children.length]
-            );
-        } else {
-            Transforms.insertNode(board, group, [board.children.length]);
-        }
-    }
-};
-
 export const canRemoveGroup = (board: PlaitBoard, selectedGroups: PlaitGroup[]) => {
     const selectedElements = getSelectedElements(board);
     return selectedElements.length > 0 && selectedGroups.length > 0;
-};
-
-export const removeGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
-    const selectedGroups = getHighestSelectedGroups(board, elements);
-    if (canRemoveGroup(board, selectedGroups)) {
-        selectedGroups.map(group => {
-            const elementsInGroup = findElements(board, {
-                match: item => item.groupId === group.id,
-                recursion: () => false
-            });
-            elementsInGroup.forEach(item => {
-                const path = PlaitBoard.findPath(board, item);
-                Transforms.setNode(board, { groupId: group.groupId || undefined }, path);
-            });
-            const groupPath = PlaitBoard.findPath(board, group);
-            Transforms.removeNode(board, groupPath);
-        });
-    }
 };

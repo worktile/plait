@@ -5,6 +5,7 @@ import { ViewportTransforms } from './viewport';
 
 export { BoardTransforms } from './board';
 export { CoreTransforms } from './element';
+export { GroupTransforms } from './group';
 
 export const Transforms: GeneralTransforms & ViewportTransforms & SelectionTransforms & NodeTransforms = {
     ...GeneralTransforms,

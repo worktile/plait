@@ -16,13 +16,14 @@ import {
     Point,
     Transforms,
     idCreator,
-    getSelectedElements,
     getGroupByElement,
     getSelectedIsolatedElementsCanAddToGroup,
     getElementsInGroup,
-    getRectangleByGroup
+    getRectangleByGroup,
+    GroupTransforms
 } from '@plait/core';
 import { GroupComponent } from '../core/group.component';
+import { isKeyHotkey } from 'is-hotkey';
 
 export function withGroup(board: PlaitBoard) {
     let groupRectangleG: SVGGElement | null;
@@ -36,7 +37,8 @@ export function withGroup(board: PlaitBoard) {
         getDeletedFragment,
         deleteFragment,
         getRelatedFragment,
-        getRectangle
+        getRectangle,
+        keyDown
     } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
@@ -119,6 +121,22 @@ export function withGroup(board: PlaitBoard) {
             return getRectangleByGroup(board, element);
         }
         return getRectangle(element);
+    };
+
+    board.keyDown = (event: KeyboardEvent) => {
+        if (!PlaitBoard.isReadonly(board)) {
+            if (isKeyHotkey('mod+g', event)) {
+                event.preventDefault();
+                GroupTransforms.addGroup(board);
+                return;
+            }
+            if (isKeyHotkey('mod+shift+g', event)) {
+                event.preventDefault();
+                GroupTransforms.removeGroup(board);
+                return;
+            }
+        }
+        keyDown(event);
     };
 
     return board;
