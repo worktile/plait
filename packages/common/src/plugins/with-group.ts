@@ -76,8 +76,8 @@ export function withGroup(board: PlaitBoard) {
     };
 
     board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
+        const elements: PlaitElement[] = [];
         if (clipboardData?.elements?.length) {
-            const elements: PlaitElement[] = [];
             const groups = getHighestSelectedGroups(board, clipboardData?.elements);
             const selectedIsolatedElements = getSelectedIsolatedElements(board, clipboardData?.elements);
             selectedIsolatedElements.forEach(item => {
@@ -91,13 +91,12 @@ export function withGroup(board: PlaitBoard) {
                 });
             }
             clipboardData.elements = elements;
-
-            const groupElements = elements?.filter(value => PlaitGroupElement.isGroup(value)) as PlaitElement[];
-            groupElements.forEach(element => {
-                Transforms.insertNode(board, element, [board.children.length]);
-            });
         }
         insertFragment(data, clipboardData, targetPoint);
+        const groupElements = elements?.filter(value => PlaitGroupElement.isGroup(value)) as PlaitElement[];
+        groupElements.forEach(element => {
+            Transforms.insertNode(board, element, [board.children.length]);
+        });
     };
 
     board.getDeletedFragment = (data: PlaitElement[]) => {
