@@ -122,7 +122,8 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         pointerLeave: pointer => {},
         globalPointerMove: pointer => {},
         globalPointerUp: pointer => {},
-        isImageBindingAllowed: (element: PlaitElement) => false
+        isImageBindingAllowed: (element: PlaitElement) => false,
+        canAddToGroup: (element: PlaitElement) => true
     };
     return board;
 }

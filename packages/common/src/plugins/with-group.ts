@@ -18,7 +18,7 @@ import {
     idCreator,
     getSelectedElements,
     getGroupByElement,
-    getAllowedSelectedIsolatedElements,
+    getSelectedIsolatedElementsCanAddToGroup,
     getElementsInGroup,
     getRectangleByGroup
 } from '@plait/core';
@@ -152,7 +152,7 @@ const getRemoveGroups = (board: PlaitBoard) => {
     const selectedGroups = board.getRelatedFragment([]) as PlaitGroup[];
     const removeGroups = [...selectedGroups];
     const highestSelectedGroups = getHighestSelectedGroups(board);
-    const selectedIsolatedElements = getAllowedSelectedIsolatedElements(board);
+    const selectedIsolatedElements = getSelectedIsolatedElementsCanAddToGroup(board);
     const removeNodes = [...highestSelectedGroups, ...selectedIsolatedElements];
     removeNodes.forEach(item => {
         const hitElementGroups = getGroupByElement(board, item, true) as PlaitGroup[];
@@ -202,7 +202,7 @@ const findAboveGroupWithAnotherElement = (board: PlaitBoard, groups: PlaitGroup[
 };
 
 const updateSiblingElementGroupId = (board: PlaitBoard, removeGroups: PlaitGroup[]) => {
-    const selectedIsolatedElements = getAllowedSelectedIsolatedElements(board);
+    const selectedIsolatedElements = getSelectedIsolatedElementsCanAddToGroup(board);
     const highestSelectedGroups = getHighestSelectedGroups(board);
     const isolatedElementsInGroup = selectedIsolatedElements.filter(item => item.groupId);
     [...highestSelectedGroups, ...isolatedElementsInGroup].forEach(item => {

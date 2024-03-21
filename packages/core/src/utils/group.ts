@@ -164,9 +164,9 @@ export const getSelectedIsolatedElements = (board: PlaitBoard, elements?: PlaitE
     return result;
 };
 
-export const getAllowedSelectedIsolatedElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
+export const getSelectedIsolatedElementsCanAddToGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedIsolatedElements = getSelectedIsolatedElements(board, elements);
-    return selectedIsolatedElements.filter(item => canGroup(item));
+    return selectedIsolatedElements.filter(item => board.canAddToGroup(item));
 };
 
 export const getHighestSelectedElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
@@ -216,8 +216,8 @@ export const hasSelectedElementsInSameGroup = (elements: PlaitElement[]) => {
     return elements.every(item => item.groupId && item.groupId === elements[0].groupId);
 };
 
-export const canAddGroup = (highestSelectedElements: PlaitElement[]) => {
-    const rootElements = highestSelectedElements.filter(item => canGroup(item));
+export const canAddGroup = (board: PlaitBoard, highestSelectedElements: PlaitElement[]) => {
+    const rootElements = highestSelectedElements.filter(item => board.canAddToGroup(item));
     if (rootElements.length > 1) {
         return nonGroupInHighestSelectedElements(rootElements) || hasSelectedElementsInSameGroup(rootElements);
     }
@@ -226,10 +226,10 @@ export const canAddGroup = (highestSelectedElements: PlaitElement[]) => {
 
 export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedGroups = getHighestSelectedGroups(board, elements);
-    const selectedIsolatedElements = getAllowedSelectedIsolatedElements(board);
+    const selectedIsolatedElements = getSelectedIsolatedElementsCanAddToGroup(board);
     const highestSelectedElements = [...selectedGroups, ...selectedIsolatedElements];
     const group = createGroup();
-    if (canAddGroup(highestSelectedElements)) {
+    if (canAddGroup(board, highestSelectedElements)) {
         highestSelectedElements.forEach(item => {
             const path = PlaitBoard.findPath(board, item);
             Transforms.setNode(board, { groupId: group.id }, path);
@@ -271,8 +271,4 @@ export const removeGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
             Transforms.removeNode(board, groupPath);
         });
     }
-};
-
-export const canGroup = (element: PlaitElement) => {
-    return !!element.type;
 };
