@@ -1,12 +1,10 @@
 import {
     PlaitBoard,
     PlaitElement,
-    PlaitGroupElement,
     PlaitPluginElementContext,
     Point,
     RectangleClient,
     Selection,
-    getRectangleByGroup,
     getSelectedElements
 } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
@@ -57,9 +55,6 @@ export const withDraw = (board: PlaitBoard) => {
         }
         if (PlaitDrawElement.isImage(element)) {
             return RectangleClient.getRectangleByPoints(element.points);
-        }
-        if (PlaitGroupElement.isGroup(element)) {
-            return getRectangleByGroup(board, element);
         }
         return getRectangle(element);
     };

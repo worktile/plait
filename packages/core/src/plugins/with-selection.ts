@@ -19,7 +19,7 @@ import {
     createSelectionRectangleG,
     deleteTemporaryElements,
     drawRectangle,
-    getElementsInGroup,
+    getAllElementsInGroup,
     getElementsInGroupByElement,
     getGroupByElement,
     filterSelectedGroups,
@@ -33,6 +33,7 @@ import {
     throttleRAF,
     toHostPoint,
     toViewBoxPoint,
+    getElementsInGroup,
     uniqueById
 } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
@@ -186,7 +187,7 @@ export function withSelection(board: PlaitBoard) {
                             if (hitElementGroups.length) {
                                 const selectedGroups = filterSelectedGroups(board, hitElementGroups);
                                 const elementsInHighestGroup =
-                                    getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
+                                getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
                                 if (selectedGroups.length > 0) {
                                     if (selectedGroups.length > 1) {
                                         pendingElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
@@ -264,10 +265,10 @@ export function withSelection(board: PlaitBoard) {
                                 const selectedGroups = filterSelectedGroups(board, hitElementGroups);
                                 if (selectedGroups.length > 0) {
                                     if (selectedGroups.length > 1) {
-                                        newSelectedElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
+                                        newSelectedElements = getAllElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
                                     }
                                 } else {
-                                    newSelectedElements = getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true);
+                                    newSelectedElements = getAllElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true);
                                 }
                             }
                         }

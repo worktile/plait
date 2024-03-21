@@ -7,6 +7,7 @@ import { getRectangleByElements, findElements } from './element';
 import { idCreator } from './id-creator';
 import { getSelectedElements } from './selected-element';
 import { isSelectionMoving } from './selection';
+import { depthFirstRecursion } from './tree';
 
 export const getElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean, includeGroup?: boolean) => {
     let result: PlaitElement[] = [];
@@ -28,8 +29,23 @@ export const getElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursi
     return result;
 };
 
+export const getAllElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean, includeGroup?: boolean) => {
+    const elementsInGroup = getElementsInGroup(board, group, recursion, includeGroup);
+    const result: PlaitElement[] = [];
+    elementsInGroup.forEach(element => {
+        depthFirstRecursion(
+            element,
+            node => {
+                result.push(node);
+            },
+            () => true
+        );
+    });
+    return result;
+};
+
 export const getRectangleByGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean) => {
-    const elementsInGroup = getElementsInGroup(board, group, recursion) as PlaitElement[];
+    const elementsInGroup = getAllElementsInGroup(board, group, recursion) as PlaitElement[];
     return getRectangleByElements(board, elementsInGroup, false);
 };
 
@@ -66,7 +82,7 @@ export const getHighestGroup = (board: PlaitBoard, element: PlaitElement) => {
 export const getElementsInGroupByElement = (board: PlaitBoard, element: PlaitElement) => {
     const highestGroup = getHighestGroup(board, element);
     if (highestGroup) {
-        return getElementsInGroup(board, highestGroup, true) as PlaitGroup[];
+        return getAllElementsInGroup(board, highestGroup, true) as PlaitGroup[];
     } else {
         return [element];
     }
@@ -133,17 +149,24 @@ export const getHighestSelectedGroups = (board: PlaitBoard, elements?: PlaitElem
 export const getSelectedIsolatedElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
     let result: PlaitElement[] = [];
     const selectedElements = elements || getSelectedElements(board);
-    selectedElements.forEach(item => {
-        if (!item.groupId) {
-            result.push(item);
-        } else {
-            const group = getHighestSelectedGroup(board, item, elements);
-            if (!group) {
+    selectedElements
+        .filter(item => !PlaitGroupElement.isGroup(item))
+        .forEach(item => {
+            if (!item.groupId) {
                 result.push(item);
+            } else {
+                const group = getHighestSelectedGroup(board, item, elements);
+                if (!group) {
+                    result.push(item);
+                }
             }
-        }
-    });
+        });
     return result;
+};
+
+export const getSelectedIsolatedElementsCanAddToGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
+    const selectedIsolatedElements = getSelectedIsolatedElements(board, elements);
+    return selectedIsolatedElements.filter(item => board.canAddToGroup(item));
 };
 
 export const getHighestSelectedElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
@@ -193,19 +216,20 @@ export const hasSelectedElementsInSameGroup = (elements: PlaitElement[]) => {
     return elements.every(item => item.groupId && item.groupId === elements[0].groupId);
 };
 
-export const canAddGroup = (highestSelectedElements: PlaitElement[]) => {
-    if (highestSelectedElements.length > 1) {
-        return nonGroupInHighestSelectedElements(highestSelectedElements) || hasSelectedElementsInSameGroup(highestSelectedElements);
+export const canAddGroup = (board: PlaitBoard, highestSelectedElements: PlaitElement[]) => {
+    const rootElements = highestSelectedElements.filter(item => board.canAddToGroup(item));
+    if (rootElements.length > 1) {
+        return nonGroupInHighestSelectedElements(rootElements) || hasSelectedElementsInSameGroup(rootElements);
     }
     return false;
 };
 
-export const addGroup = (board: PlaitBoard) => {
-    const selectedGroups = getHighestSelectedGroups(board);
-    const selectedIsolatedElements = getSelectedIsolatedElements(board);
+export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
+    const selectedGroups = getHighestSelectedGroups(board, elements);
+    const selectedIsolatedElements = getSelectedIsolatedElementsCanAddToGroup(board);
     const highestSelectedElements = [...selectedGroups, ...selectedIsolatedElements];
     const group = createGroup();
-    if (canAddGroup(highestSelectedElements)) {
+    if (canAddGroup(board, highestSelectedElements)) {
         highestSelectedElements.forEach(item => {
             const path = PlaitBoard.findPath(board, item);
             Transforms.setNode(board, { groupId: group.id }, path);
@@ -231,8 +255,8 @@ export const canRemoveGroup = (board: PlaitBoard, selectedGroups: PlaitGroup[]) 
     return selectedElements.length > 0 && selectedGroups.length > 0;
 };
 
-export const removeGroup = (board: PlaitBoard) => {
-    const selectedGroups = getHighestSelectedGroups(board);
+export const removeGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
+    const selectedGroups = getHighestSelectedGroups(board, elements);
     if (canRemoveGroup(board, selectedGroups)) {
         selectedGroups.map(group => {
             const elementsInGroup = findElements(board, {

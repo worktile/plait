@@ -18,7 +18,9 @@ import {
     idCreator,
     getSelectedElements,
     getGroupByElement,
-    getElementsInGroup
+    getSelectedIsolatedElementsCanAddToGroup,
+    getElementsInGroup,
+    getRectangleByGroup
 } from '@plait/core';
 import { GroupComponent } from '../core/group.component';
 
@@ -26,7 +28,16 @@ export function withGroup(board: PlaitBoard) {
     let groupRectangleG: SVGGElement | null;
     let removeGroups: PlaitGroup[] | null;
 
-    const { drawElement, pointerMove, globalPointerUp, insertFragment, getDeletedFragment, deleteFragment, getRelatedFragment } = board;
+    const {
+        drawElement,
+        pointerMove,
+        globalPointerUp,
+        insertFragment,
+        getDeletedFragment,
+        deleteFragment,
+        getRelatedFragment,
+        getRectangle
+    } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitGroupElement.isGroup(context.element)) {
@@ -103,6 +114,13 @@ export function withGroup(board: PlaitBoard) {
         removeGroups = null;
     };
 
+    board.getRectangle = (element: PlaitElement) => {
+        if (PlaitGroupElement.isGroup(element)) {
+            return getRectangleByGroup(board, element);
+        }
+        return getRectangle(element);
+    };
+
     return board;
 }
 
@@ -134,7 +152,7 @@ const getRemoveGroups = (board: PlaitBoard) => {
     const selectedGroups = board.getRelatedFragment([]) as PlaitGroup[];
     const removeGroups = [...selectedGroups];
     const highestSelectedGroups = getHighestSelectedGroups(board);
-    const selectedIsolatedElements = getSelectedIsolatedElements(board);
+    const selectedIsolatedElements = getSelectedIsolatedElementsCanAddToGroup(board);
     const removeNodes = [...highestSelectedGroups, ...selectedIsolatedElements];
     removeNodes.forEach(item => {
         const hitElementGroups = getGroupByElement(board, item, true) as PlaitGroup[];
@@ -184,7 +202,7 @@ const findAboveGroupWithAnotherElement = (board: PlaitBoard, groups: PlaitGroup[
 };
 
 const updateSiblingElementGroupId = (board: PlaitBoard, removeGroups: PlaitGroup[]) => {
-    const selectedIsolatedElements = getSelectedIsolatedElements(board);
+    const selectedIsolatedElements = getSelectedIsolatedElementsCanAddToGroup(board);
     const highestSelectedGroups = getHighestSelectedGroups(board);
     const isolatedElementsInGroup = selectedIsolatedElements.filter(item => item.groupId);
     [...highestSelectedGroups, ...isolatedElementsInGroup].forEach(item => {

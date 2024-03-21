@@ -149,7 +149,7 @@ export class BasicEditorComponent implements OnInit {
         const selectedGroups = getHighestSelectedGroups(this.board);
         this.showRemoveGroup = canRemoveGroup(this.board, selectedGroups);
         const highestSelectedElements = getHighestSelectedElements(this.board);
-        this.showAddGroup = canAddGroup(highestSelectedElements);
+        this.showAddGroup = canAddGroup(this.board, highestSelectedElements);
     }
 
     getLocalStorage() {

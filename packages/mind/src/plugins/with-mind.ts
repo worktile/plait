@@ -30,7 +30,18 @@ import { withMindFragment } from './with-mind-fragment';
 
 export const withMind = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
-    const { drawElement, dblClick, isRectangleHit, isHit, getRectangle, isMovable, isRecursion, isAlign, isImageBindingAllowed } = board;
+    const {
+        drawElement,
+        dblClick,
+        isRectangleHit,
+        isHit,
+        getRectangle,
+        isMovable,
+        isRecursion,
+        isAlign,
+        isImageBindingAllowed,
+        canAddToGroup
+    } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitMind.isMind(context.element)) {
@@ -56,6 +67,13 @@ export const withMind = (baseBoard: PlaitBoard) => {
             return getRectangleByNode(MindElement.getNode(element));
         }
         return getRectangle(element);
+    };
+
+    board.canAddToGroup = (element: PlaitElement) => {
+        if (MindElement.isMindElement(board, element) && !element.isRoot) {
+            return false;
+        }
+        return canAddToGroup(element);
     };
 
     board.isRecursion = element => {
