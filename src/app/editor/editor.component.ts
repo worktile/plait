@@ -8,18 +8,17 @@ import {
     PlaitTheme,
     ThemeColorMode,
     Viewport,
-    addGroup,
     getClipboardData,
     getProbablySupportsClipboardWrite,
     getRectangleByElements,
     getSelectedElements,
-    removeGroup,
     toHostPoint,
     toViewBoxPoint,
     getHighestSelectedGroups,
     canRemoveGroup,
     canAddGroup,
-    getHighestSelectedElements
+    getHighestSelectedElements,
+    GroupTransforms
 } from '@plait/core';
 import { mockDrawData, mockGroupData, mockMindData, mockRotateData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -189,13 +188,13 @@ export class BasicEditorComponent implements OnInit {
     addGroup(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        addGroup(this.board);
+        GroupTransforms.addGroup(this.board);
     }
 
     removeGroup(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        removeGroup(this.board);
+        GroupTransforms.removeGroup(this.board);
     }
 
     async paste(event: MouseEvent) {
