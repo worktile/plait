@@ -1,4 +1,4 @@
-import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements } from '@plait/core';
+import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements, rotate, rotatePoints } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeRef,
@@ -7,7 +7,8 @@ import {
     getFirstTextManage,
     isCornerHandle,
     normalizeShapePoints,
-    withResize
+    withResize,
+    resetPointsAfterResize
 } from '@plait/common';
 import { getSelectedGeometryElements, getSelectedImageElements } from '../utils/selected';
 import { DrawTransforms } from '../transforms';
@@ -15,7 +16,7 @@ import { GeometryComponent } from '../geometry.component';
 import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
+import { getResizeOriginPointAndHandlePoint } from './with-draw-resize';
 import { getResizeAlignRef } from '../utils/resize-align';
 
 export const withGeometryResize = (board: PlaitBoard) => {
@@ -34,7 +35,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
             const targetComponent = PlaitElement.getComponent(selectedElements[0]) as GeometryComponent;
             if (targetComponent.activeGenerator.hasResizeHandle) {
                 const rectangle = board.getRectangle(target) as RectangleClient;
-                const handleRef = getHitRectangleResizeHandleRef(board, rectangle, point);
+                const handleRef = getHitRectangleResizeHandleRef(board, rectangle, point, target.angle);
                 if (handleRef) {
                     return {
                         element: target,
@@ -47,11 +48,22 @@ export const withGeometryResize = (board: PlaitBoard) => {
             return null;
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
+            const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(resizeRef.element.points));
+            const angle = resizeRef.element.angle;
+            if (angle) {
+                const [rotatedStartPoint, rotateEndPoint] = rotatePoints(
+                    [resizeState.startPoint, resizeState.endPoint],
+                    centerPoint,
+                    -resizeRef.element.angle
+                );
+                resizeState.startPoint = rotatedStartPoint;
+                resizeState.endPoint = rotateEndPoint;
+            }
+
             alignG?.remove();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
-
             const resizeAlignRef = getResizeAlignRef(
                 board,
                 resizeRef,
@@ -66,6 +78,16 @@ export const withGeometryResize = (board: PlaitBoard) => {
             alignG = resizeAlignRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
             let points = resizeAlignRef.activePoints as [Point, Point];
+            if (angle) {
+                points = resetPointsAfterResize(
+                    resizeRef.rectangle!,
+                    RectangleClient.getRectangleByPoints(points),
+                    centerPoint,
+                    RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points)),
+                    angle
+                );
+            }
+
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);
