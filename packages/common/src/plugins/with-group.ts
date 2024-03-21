@@ -161,6 +161,8 @@ const getRemoveGroups = (board: PlaitBoard) => {
                                     removeGroups.push(item);
                                 }
                             });
+                        } else {
+                            removeGroups.push(...hitElementGroups.slice(1, hitElementGroups.length));
                         }
                     }
                 }
