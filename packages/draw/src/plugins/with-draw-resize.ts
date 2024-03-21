@@ -79,9 +79,6 @@ export function withDrawResize(board: PlaitBoard) {
                     offsetY: 0,
                     newCenterPoint: [0, 0]
                 };
-            }
-
-            if (bulkRotationRef) {
                 const [rotatedStartPoint, rotateEndPoint] = rotatePoints(
                     [resizeState.startPoint, resizeState.endPoint],
                     centerPoint,
@@ -129,10 +126,7 @@ export function withDrawResize(board: PlaitBoard) {
 
             resizeRef.element.forEach(target => {
                 const path = PlaitBoard.findPath(board, target);
-                let points = target.points.map(p => {
-                    return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
-                });
-
+                let points;
                 if (bulkRotationRef) {
                     const reversedPoints = rotatedDataPoints(target.points, centerPoint, -bulkRotationRef.angle);
                     points = reversedPoints.map((p: Point) => {
@@ -143,6 +137,10 @@ export function withDrawResize(board: PlaitBoard) {
                         p[1] + bulkRotationRef!.offsetY
                     ]) as Point[];
                     points = rotatedDataPoints(adjustTargetPoints, bulkRotationRef.newCenterPoint, bulkRotationRef.angle) as [Point, Point];
+                } else {
+                    points = target.points.map(p => {
+                        return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+                    });
                 }
 
                 if (PlaitDrawElement.isGeometry(target)) {

@@ -11,7 +11,7 @@ export const rotatePoints = (points: Point[], centerPoint: Point, angle: number)
 };
 
 export const getSelectionAngle = (elements: PlaitElement[]) => {
-    let angle = elements[0].angle || 0;
+    let angle = elements[0]?.angle || 0;
     elements.forEach(item => {
         if (item.angle !== angle && !approximately((item.angle % (Math.PI / 2)) - (angle % (Math.PI / 2)), 0)) {
             angle = 0;
