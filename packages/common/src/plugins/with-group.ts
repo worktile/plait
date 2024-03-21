@@ -154,16 +154,15 @@ const getRemoveGroups = (board: PlaitBoard) => {
                             ...removeNodes,
                             ...removeGroups
                         ]);
+                        let index = hitElementGroups.length;
                         if (aboveGroup) {
-                            const index = hitElementGroups.findIndex(item => item.id === aboveGroup.id);
-                            [...hitElementGroups.slice(1, index)].forEach(item => {
-                                if (!removeGroups.includes(item)) {
-                                    removeGroups.push(item);
-                                }
-                            });
-                        } else {
-                            removeGroups.push(...hitElementGroups.slice(1, hitElementGroups.length));
+                            index = hitElementGroups.findIndex(item => item.id === aboveGroup.id);
                         }
+                        [...hitElementGroups.slice(1, index)].forEach(item => {
+                            if (!removeGroups.includes(item)) {
+                                removeGroups.push(item);
+                            }
+                        });
                     }
                 }
             }
