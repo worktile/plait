@@ -185,8 +185,9 @@ const findAboveGroupWithAnotherNode = (board: PlaitBoard, groups: PlaitGroup[], 
 
 const updateSiblingElementGroupId = (board: PlaitBoard, removeGroups: PlaitGroup[]) => {
     const selectedIsolatedElements = getSelectedIsolatedElements(board);
-    const isolatedElementsInGroup = selectedIsolatedElements.filter(item=> item.groupId);
-    isolatedElementsInGroup.forEach(item => {
+    const highestSelectedGroups = getHighestSelectedGroups(board);
+    const isolatedElementsInGroup = selectedIsolatedElements.filter(item => item.groupId);
+    [...highestSelectedGroups, ...isolatedElementsInGroup].forEach(item => {
         const groups = getGroupByElement(board, item, true) as PlaitGroup[];
         const elementsInGroup = getElementsInGroup(board, groups[0], false, true);
         const siblingElements = elementsInGroup.filter(element => element.id !== item.id);
