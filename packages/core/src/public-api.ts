@@ -17,3 +17,4 @@ export * from './plugins/with-moving';
 export * from './plugins/with-options';
 export * from './testing';
 export * from './services/image-context.service';
+export * from './utils/debug';
