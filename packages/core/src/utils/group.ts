@@ -37,15 +37,15 @@ export const getGroupByElement = (
     board: PlaitBoard,
     element: PlaitElement,
     recursion?: boolean,
-    elements?: PlaitElement[]
+    source?: PlaitElement[]
 ): PlaitGroup | PlaitGroup[] | null => {
-    const group = board.children.concat(elements || []).find(item => item.id === element?.groupId);
+    const group = (source || board.children).find(item => item.id === element?.groupId);
     if (!group) {
         return recursion ? [] : null;
     }
     if (recursion) {
         const groups = [group];
-        const grandGroups = getGroupByElement(board, group, recursion, elements) as PlaitGroup[];
+        const grandGroups = getGroupByElement(board, group, recursion, source) as PlaitGroup[];
         if (grandGroups.length) {
             groups.push(...grandGroups);
         }

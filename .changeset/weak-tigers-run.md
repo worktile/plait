@@ -2,4 +2,6 @@
 '@plait/core': patch
 ---
 
-concat outer elements when find group
+add source elements when find group
+add uniqueById
+
