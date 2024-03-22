@@ -177,103 +177,93 @@ export function withSelection(board: PlaitBoard) {
                     elements = [elements[0]];
                 }
                 const isHitElementWithGroup = elements.some(item => item.groupId);
-                if (isShift) {
-                    const newSelectedElements = [...getSelectedElements(board)];
+                const selectedElements = getSelectedElements(board);
+                if (isHitElementWithGroup) {
                     if (board.selection && Selection.isCollapsed(board.selection)) {
-                        if (isHitElementWithGroup) {
-                            let pendingElements: PlaitElement[] = [...elements];
-                            const hitElement = elements[0];
-                            const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
-                            if (hitElementGroups.length) {
-                                const selectedGroups = filterSelectedGroups(board, hitElementGroups);
-                                const elementsInHighestGroup =
+                        const hitElement = elements[0];
+                        const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
+                        if (hitElementGroups.length) {
+                            let newElements = [...selectedElements];
+                            const elementsInHighestGroup =
                                 getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
-                                if (selectedGroups.length > 0) {
-                                    if (selectedGroups.length > 1) {
-                                        pendingElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
-                                    }
+                            const isSelectGroupElement = selectedElements.some(element =>
+                                elementsInHighestGroup.map(item => item.id).includes(element.id)
+                            );
+                            if (isShift) {
+                                let pendingElements: PlaitElement[] = [];
+                                if (!isSelectGroupElement) {
+                                    pendingElements = elementsInHighestGroup;
                                 } else {
-                                    if (!newSelectedElements.includes(hitElement)) {
-                                        const selectedElementsInGroup = elementsInHighestGroup.filter(item =>
-                                            newSelectedElements.includes(item)
-                                        );
-                                        // When partially selected elements belong to a group,
-                                        // only select those elements along with the hit elements.
-                                        if (selectedElementsInGroup.length) {
-                                            pendingElements.push(...selectedElementsInGroup);
-                                        } else {
-                                            pendingElements = elementsInHighestGroup;
-                                        }
+                                    const isHitSelectedElement = selectedElements.some(item => item.id === hitElement.id);
+                                    const selectedElementsInGroup = elementsInHighestGroup.filter(item => selectedElements.includes(item));
+                                    if (isHitSelectedElement) {
+                                        pendingElements = selectedElementsInGroup.filter(item => item.id !== hitElement.id);
                                     } else {
-                                        pendingElements = [];
+                                        pendingElements.push(...selectedElementsInGroup, ...elements);
                                     }
                                 }
                                 elementsInHighestGroup.forEach(element => {
-                                    if (newSelectedElements.includes(element)) {
-                                        newSelectedElements.splice(newSelectedElements.indexOf(element), 1);
+                                    if (newElements.includes(element)) {
+                                        newElements.splice(newElements.indexOf(element), 1);
                                     }
                                 });
                                 if (pendingElements.length) {
-                                    newSelectedElements.push(...pendingElements);
+                                    newElements.push(...pendingElements);
                                 }
-                            }
-                        } else {
-                            elements.forEach(element => {
-                                if (newSelectedElements.includes(element)) {
-                                    newSelectedElements.splice(newSelectedElements.indexOf(element), 1);
-                                } else {
-                                    newSelectedElements.push(element);
-                                }
-                            });
-                        }
-                        cacheSelectedElements(board, uniqueById(newSelectedElements));
-                    } else {
-                        let newElements: PlaitElement[] = [...elements];
-                        if (isHitElementWithGroup) {
-                            elements.forEach(item => {
-                                if (!item.groupId) {
-                                    newElements.push(item);
-                                } else {
-                                    newElements.push(...getElementsInGroupByElement(board, item));
-                                }
-                            });
-                        }
-                        newElements.forEach(element => {
-                            if (!newSelectedElements.includes(element)) {
-                                newSelectedElements.push(element);
-                            }
-                        });
-                        cacheSelectedElements(board, uniqueById(newSelectedElements));
-                    }
-                } else {
-                    let newSelectedElements = [...elements];
-                    if (isHitElementWithGroup) {
-                        const isCollapsed = Selection.isCollapsed(board.selection!);
-                        if (!isCollapsed) {
-                            newSelectedElements = [];
-                            elements.forEach(item => {
-                                if (!item.groupId) {
-                                    newSelectedElements.push(item);
-                                } else {
-                                    newSelectedElements.push(...getElementsInGroupByElement(board, item));
-                                }
-                            });
-                        } else {
-                            const hitElement = elements[0];
-                            const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
-                            if (hitElementGroups.length) {
+                            } else {
+                                newElements = [...elements];
                                 const selectedGroups = filterSelectedGroups(board, hitElementGroups);
                                 if (selectedGroups.length > 0) {
                                     if (selectedGroups.length > 1) {
-                                        newSelectedElements = getAllElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
+                                        newElements = getAllElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
                                     }
                                 } else {
-                                    newSelectedElements = getAllElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true);
+                                    const elementsInGroup = getAllElementsInGroup(
+                                        board,
+                                        hitElementGroups[hitElementGroups.length - 1],
+                                        true
+                                    );
+                                    if (!isSelectGroupElement) {
+                                        newElements = elementsInGroup;
+                                    }
                                 }
                             }
+                            cacheSelectedElements(board, uniqueById(newElements));
                         }
+                    } else {
+                        let newElements = [...selectedElements];
+                        elements.forEach(item => {
+                            if (!item.groupId) {
+                                newElements.push(item);
+                            } else {
+                                newElements.push(...getElementsInGroupByElement(board, item));
+                            }
+                        });
+                        cacheSelectedElements(board, uniqueById(newElements));
                     }
-                    cacheSelectedElements(board, uniqueById(newSelectedElements));
+                } else {
+                    if (isShift) {
+                        const newElements = [...selectedElements];
+                        if (board.selection && Selection.isCollapsed(board.selection)) {
+                            elements.forEach(element => {
+                                if (newElements.includes(element)) {
+                                    newElements.splice(newElements.indexOf(element), 1);
+                                } else {
+                                    newElements.push(element);
+                                }
+                            });
+                            cacheSelectedElements(board, newElements);
+                        } else {
+                            elements.forEach(element => {
+                                if (!newElements.includes(element)) {
+                                    newElements.push(element);
+                                }
+                            });
+                            cacheSelectedElements(board, [...newElements]);
+                        }
+                    } else {
+                        cacheSelectedElements(board, [...elements]);
+                    }
                 }
                 const newElements = getSelectedElements(board);
                 previousSelectedElements = newElements;
