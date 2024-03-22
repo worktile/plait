@@ -228,8 +228,9 @@ const updateSiblingElementGroupId = (board: PlaitBoard, removeGroups: PlaitGroup
             const elementsInGroup = getElementsInGroup(board, hitElementGroups[0], false, true);
             const siblingElements = elementsInGroup.filter(element => element.id !== item.id);
             if (siblingElements.length === 1) {
-                if (hitElementGroups.some(group => removeGroups.includes(group))) {
-                    const group = hitElementGroups.find(group => !removeGroups.includes(group));
+                const removeGroupIds = removeGroups.map(item=> item.id);
+                if (hitElementGroups.some(group => removeGroupIds.includes(group.id))) {
+                    const group = hitElementGroups.find(group => !removeGroupIds.includes(group.id));
                     const path = PlaitBoard.findPath(board, siblingElements[0]);
                     Transforms.setNode(board, { groupId: group?.id || undefined }, path);
                 }
