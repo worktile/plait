@@ -60,6 +60,9 @@ export function withMoving(board: PlaitBoard) {
             if (targetElement) {
                 startPoint = point;
                 activeElements = getElementsInGroupByElement(board, targetElement);
+                if (targetElements.length > 0) {
+                    addSelectionWithTemporaryElements(board, []);
+                }
                 activeElementsRectangle = getRectangleByElements(board, activeElements, true);
             }
         }
