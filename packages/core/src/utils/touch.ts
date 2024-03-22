@@ -33,7 +33,12 @@ export const preventTouchMove = (board: PlaitBoard, event: PointerEvent, state: 
  */
 export const handleTouchTarget = (board: PlaitBoard) => {
     const touchRef = BOARD_TO_TOUCH_REF.get(board);
-    if (touchRef && touchRef.target && !touchRef.target.contains(PlaitBoard.getElementActiveHost(board))) {
+    if (
+        touchRef &&
+        touchRef.target &&
+        !PlaitBoard.getElementHost(board).contains(touchRef.target) &&
+        !PlaitBoard.getElementActiveHost(board).contains(touchRef.target)
+    ) {
         touchRef.target.style.opacity = '0';
         const host = createG();
         host.appendChild(touchRef.target);
