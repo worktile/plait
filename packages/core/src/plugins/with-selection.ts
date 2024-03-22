@@ -187,7 +187,7 @@ export function withSelection(board: PlaitBoard) {
                             if (hitElementGroups.length) {
                                 const selectedGroups = filterSelectedGroups(board, hitElementGroups);
                                 const elementsInHighestGroup =
-                                getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
+                                    getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
                                 if (selectedGroups.length > 0) {
                                     if (selectedGroups.length > 1) {
                                         pendingElements = getElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
@@ -205,7 +205,9 @@ export function withSelection(board: PlaitBoard) {
                                             pendingElements = elementsInHighestGroup;
                                         }
                                     } else {
-                                        pendingElements = [];
+                                        pendingElements = elementsInHighestGroup.filter(
+                                            item => item.id !== hitElement.id && newSelectedElements.includes(item)
+                                        );
                                     }
                                 }
                                 elementsInHighestGroup.forEach(element => {
@@ -268,7 +270,19 @@ export function withSelection(board: PlaitBoard) {
                                         newSelectedElements = getAllElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
                                     }
                                 } else {
-                                    newSelectedElements = getAllElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true);
+                                    const selectedElements = [...getSelectedElements(board)];
+                                    const elementsInGroup = getAllElementsInGroup(
+                                        board,
+                                        hitElementGroups[hitElementGroups.length - 1],
+                                        true
+                                    );
+                                    if (!selectedElements.some(element => elementsInGroup.map(item => item.id).includes(element.id))) {
+                                        newSelectedElements = getAllElementsInGroup(
+                                            board,
+                                            hitElementGroups[hitElementGroups.length - 1],
+                                            true
+                                        );
+                                    }
                                 }
                             }
                         }
