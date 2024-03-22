@@ -277,11 +277,7 @@ export function withSelection(board: PlaitBoard) {
                                         true
                                     );
                                     if (!selectedElements.some(element => elementsInGroup.map(item => item.id).includes(element.id))) {
-                                        newSelectedElements = getAllElementsInGroup(
-                                            board,
-                                            hitElementGroups[hitElementGroups.length - 1],
-                                            true
-                                        );
+                                        newSelectedElements = elementsInGroup;
                                     }
                                 }
                             }
