@@ -26,6 +26,7 @@
         "watch": "ng build --watch --configuration development",
         "test": "ng test mind",
         "test:draw": "ng test draw",
+        "test:core": "ng test core",
         "start:docs": "docgeni serve --port 4600",
         "lint": "ng lint --fix",
         "pretty": "pretty-quick --staged"
