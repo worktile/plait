@@ -96,17 +96,17 @@ export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitLin
     }
 
     let sourceRectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
-    const sourceElementCornerPoints =
+    const rotatedSourceCornerPoints =
         rotatePointsByElement(RectangleClient.getCornerPoints(sourceRectangle), sourceElement) ||
         RectangleClient.getCornerPoints(sourceRectangle);
-    sourceRectangle = RectangleClient.getRectangleByPoints(sourceElementCornerPoints);
+    sourceRectangle = RectangleClient.getRectangleByPoints(rotatedSourceCornerPoints);
     sourceRectangle = RectangleClient.inflate(sourceRectangle, getStrokeWidthByElement(sourceElement) * 2);
 
     let targetRectangle = RectangleClient.getRectangleByPoints(targetElement.points);
-    const targetElementCornerPoints =
+    const rotatedTargetCornerPoints =
         rotatePointsByElement(RectangleClient.getCornerPoints(targetRectangle), targetElement) ||
         RectangleClient.getCornerPoints(targetRectangle);
-    targetRectangle = RectangleClient.getRectangleByPoints(targetElementCornerPoints);
+    targetRectangle = RectangleClient.getRectangleByPoints(rotatedTargetCornerPoints);
     targetRectangle = RectangleClient.inflate(targetRectangle, getStrokeWidthByElement(targetElement) * 2);
 
     return {

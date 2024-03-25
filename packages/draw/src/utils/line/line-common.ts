@@ -6,8 +6,8 @@ import {
     PointOfRectangle,
     Direction,
     Vector,
-    rotatePoints,
-    hasValidAngle
+    hasValidAngle,
+    rotatePointsByElement
 } from '@plait/core';
 import {
     getDirectionFactor,
@@ -55,23 +55,15 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): Lin
         sourceHandleRef.vector = sourceVector;
         sourceHandleRef.boundElement = sourceBoundElement;
         if (hasValidAngle(sourceBoundElement)) {
-            const rotatedSourceVector = rotateVector(sourceVector, sourceBoundElement.angle);
-            const direction = getDirectionByVector(rotatedSourceVector);
+            const direction = getDirectionByVector(rotateVector(sourceVector, sourceBoundElement.angle));
             sourceDirection = direction ? direction : sourceDirection;
-            sourceHandleRef.direction = sourceDirection;
-            sourcePoint = getConnectionPoint(sourceBoundElement, element.source.connection!, sourceDirection, connectionOffset);
-            sourceHandleRef.point = rotatePoints(
-                sourcePoint,
-                RectangleClient.getCenterPoint(board.getRectangle(sourceBoundElement!)!),
-                sourceBoundElement.angle
-            );
         } else {
             const direction = getDirectionByVector(sourceVector);
             sourceDirection = direction ? direction : sourceDirection;
-            sourceHandleRef.direction = sourceDirection;
-            sourcePoint = getConnectionPoint(sourceBoundElement, element.source.connection!, sourceDirection, connectionOffset);
-            sourceHandleRef.point = sourcePoint;
         }
+        sourceHandleRef.direction = sourceDirection;
+        sourcePoint = getConnectionPoint(sourceBoundElement, element.source.connection!, sourceDirection, connectionOffset);
+        sourceHandleRef.point = rotatePointsByElement(sourcePoint, sourceBoundElement) || sourcePoint;
     }
     if (targetBoundElement) {
         const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element, LineMarkerType.none, LineHandleKey.target) ? 0 : strokeWidth;
@@ -79,23 +71,15 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): Lin
         targetHandleRef.vector = targetVector;
         targetHandleRef.boundElement = targetBoundElement;
         if (hasValidAngle(targetBoundElement)) {
-            const rotatedTargetVector = rotateVector(targetVector, targetBoundElement.angle);
-            const direction = getDirectionByVector(rotatedTargetVector);
+            const direction = getDirectionByVector(rotateVector(targetVector, targetBoundElement.angle));
             targetDirection = direction ? direction : targetDirection;
-            targetHandleRef.direction = targetDirection;
-            targetPoint = getConnectionPoint(targetBoundElement, element.target.connection!, targetDirection, connectionOffset);
-            targetHandleRef.point = rotatePoints(
-                targetPoint,
-                RectangleClient.getCenterPoint(board.getRectangle(targetBoundElement)!),
-                targetBoundElement.angle
-            );
         } else {
             const direction = getDirectionByVector(targetVector);
             targetDirection = direction ? direction : targetDirection;
-            targetHandleRef.direction = targetDirection;
-            targetPoint = getConnectionPoint(targetBoundElement, element.target.connection!, targetDirection, connectionOffset);
-            targetHandleRef.point = targetPoint;
         }
+        targetHandleRef.direction = targetDirection;
+        targetPoint = getConnectionPoint(targetBoundElement, element.target.connection!, targetDirection, connectionOffset);
+        targetHandleRef.point = rotatePointsByElement(targetPoint, targetBoundElement) || targetPoint;
     }
     return { source: sourceHandleRef, target: targetHandleRef };
 };

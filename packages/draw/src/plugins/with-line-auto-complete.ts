@@ -79,10 +79,14 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
                     sourcePoint = crossingPoint;
                 }
 
-                if (hasValidAngle(sourceElement)) {
-                    sourcePoint = rotatePoints(sourcePoint, RectangleClient.getCenterPoint(rectangle), sourceElement.angle);
-                }
-                temporaryElement = handleLineCreating(board, LineShape.elbow, sourcePoint, movingPoint, sourceElement, lineShapeG);
+                temporaryElement = handleLineCreating(
+                    board,
+                    LineShape.elbow,
+                    rotatePointsByElement(sourcePoint, sourceElement) || sourcePoint,
+                    movingPoint,
+                    sourceElement,
+                    lineShapeG
+                );
             }
         }
         pointerMove(event);
