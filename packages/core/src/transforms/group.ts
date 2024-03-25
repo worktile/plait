@@ -38,7 +38,7 @@ export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
 
 export const removeGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedGroups = getHighestSelectedGroups(board, elements);
-    if (canRemoveGroup(board, selectedGroups)) {
+    if (canRemoveGroup(board)) {
         selectedGroups.map(group => {
             const elementsInGroup = findElements(board, {
                 match: item => item.groupId === group.id,

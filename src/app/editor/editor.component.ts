@@ -145,10 +145,8 @@ export class BasicEditorComponent implements OnInit {
     change(event: PlaitBoardChangeEvent) {
         this.setLocalData(JSON.stringify(event));
         this.selectedElements = getSelectedElements(this.board);
-        const selectedGroups = getHighestSelectedGroups(this.board);
-        this.showRemoveGroup = canRemoveGroup(this.board, selectedGroups);
-        const highestSelectedElements = getHighestSelectedElements(this.board);
-        this.showAddGroup = canAddGroup(this.board, highestSelectedElements);
+        this.showRemoveGroup = canRemoveGroup(this.board);
+        this.showAddGroup = canAddGroup(this.board);
     }
 
     getLocalStorage() {

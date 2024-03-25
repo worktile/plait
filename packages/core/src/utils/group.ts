@@ -215,7 +215,8 @@ export const hasSelectedElementsInSameGroup = (elements: PlaitElement[]) => {
     return elements.every(item => item.groupId && item.groupId === elements[0].groupId);
 };
 
-export const canAddGroup = (board: PlaitBoard, highestSelectedElements: PlaitElement[]) => {
+export const canAddGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
+    const highestSelectedElements = getHighestSelectedElements(board, elements);
     const rootElements = highestSelectedElements.filter(item => board.canAddToGroup(item));
     if (rootElements.length > 1) {
         return nonGroupInHighestSelectedElements(rootElements) || hasSelectedElementsInSameGroup(rootElements);
@@ -223,7 +224,8 @@ export const canAddGroup = (board: PlaitBoard, highestSelectedElements: PlaitEle
     return false;
 };
 
-export const canRemoveGroup = (board: PlaitBoard, selectedGroups: PlaitGroup[]) => {
-    const selectedElements = getSelectedElements(board);
+export const canRemoveGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
+    const selectedGroups = getHighestSelectedGroups(board, elements);
+    const selectedElements = elements || getSelectedElements(board);
     return selectedElements.length > 0 && selectedGroups.length > 0;
 };
