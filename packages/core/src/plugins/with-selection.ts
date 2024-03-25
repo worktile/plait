@@ -180,55 +180,61 @@ export function withSelection(board: PlaitBoard) {
                 const selectedElements = getSelectedElements(board);
                 if (isHitElementWithGroup) {
                     if (board.selection && Selection.isCollapsed(board.selection)) {
-                        const hitElement = elements[0];
-                        const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
-                        if (hitElementGroups.length) {
-                            let newElements = [...selectedElements];
-                            const elementsInHighestGroup =
-                                getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
-                            const isSelectGroupElement = selectedElements.some(element =>
-                                elementsInHighestGroup.map(item => item.id).includes(element.id)
-                            );
-                            if (isShift) {
-                                let pendingElements: PlaitElement[] = [];
-                                if (!isSelectGroupElement) {
-                                    pendingElements = elementsInHighestGroup;
-                                } else {
-                                    const isHitSelectedElement = selectedElements.some(item => item.id === hitElement.id);
-                                    const selectedElementsInGroup = elementsInHighestGroup.filter(item => selectedElements.includes(item));
-                                    if (isHitSelectedElement) {
-                                        pendingElements = selectedElementsInGroup.filter(item => item.id !== hitElement.id);
-                                    } else {
-                                        pendingElements.push(...selectedElementsInGroup, ...elements);
-                                    }
-                                }
-                                elementsInHighestGroup.forEach(element => {
-                                    if (newElements.includes(element)) {
-                                        newElements.splice(newElements.indexOf(element), 1);
-                                    }
-                                });
-                                if (pendingElements.length) {
-                                    newElements.push(...pendingElements);
-                                }
-                            } else {
-                                newElements = [...elements];
-                                const selectedGroups = filterSelectedGroups(board, hitElementGroups);
-                                if (selectedGroups.length > 0) {
-                                    if (selectedGroups.length > 1) {
-                                        newElements = getAllElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
-                                    }
-                                } else {
-                                    const elementsInGroup = getAllElementsInGroup(
-                                        board,
-                                        hitElementGroups[hitElementGroups.length - 1],
-                                        true
-                                    );
+                        if (elements.length === 1) {
+                            const hitElement = elements[0];
+                            const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
+                            if (hitElementGroups.length) {
+                                let newElements = [...selectedElements];
+                                const elementsInHighestGroup =
+                                    getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
+                                const isSelectGroupElement = selectedElements.some(element =>
+                                    elementsInHighestGroup.map(item => item.id).includes(element.id)
+                                );
+                                if (isShift) {
+                                    let pendingElements: PlaitElement[] = [];
                                     if (!isSelectGroupElement) {
-                                        newElements = elementsInGroup;
+                                        pendingElements = elementsInHighestGroup;
+                                    } else {
+                                        const isHitSelectedElement = selectedElements.some(item => item.id === hitElement.id);
+                                        const selectedElementsInGroup = elementsInHighestGroup.filter(item =>
+                                            selectedElements.includes(item)
+                                        );
+                                        if (isHitSelectedElement) {
+                                            pendingElements = selectedElementsInGroup.filter(item => item.id !== hitElement.id);
+                                        } else {
+                                            pendingElements.push(...selectedElementsInGroup, ...elements);
+                                        }
+                                    }
+                                    elementsInHighestGroup.forEach(element => {
+                                        if (newElements.includes(element)) {
+                                            newElements.splice(newElements.indexOf(element), 1);
+                                        }
+                                    });
+                                    if (pendingElements.length) {
+                                        newElements.push(...pendingElements);
+                                    }
+                                } else {
+                                    newElements = [...elements];
+                                    const selectedGroups = filterSelectedGroups(board, hitElementGroups);
+                                    if (selectedGroups.length > 0) {
+                                        if (selectedGroups.length > 1) {
+                                            newElements = getAllElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
+                                        }
+                                    } else {
+                                        const elementsInGroup = getAllElementsInGroup(
+                                            board,
+                                            hitElementGroups[hitElementGroups.length - 1],
+                                            true
+                                        );
+                                        if (!isSelectGroupElement) {
+                                            newElements = elementsInGroup;
+                                        }
                                     }
                                 }
+                                cacheSelectedElements(board, uniqueById(newElements));
                             }
-                            cacheSelectedElements(board, uniqueById(newElements));
+                        } else {
+                            cacheSelectedElements(board, [...elements]);
                         }
                     } else {
                         let newElements = [...selectedElements];
