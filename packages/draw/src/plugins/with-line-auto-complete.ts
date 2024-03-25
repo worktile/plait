@@ -9,8 +9,13 @@ import {
     Transforms,
     addSelectedElement,
     clearSelectedElement,
+    createDebugGenerator,
     createG,
     distanceBetweenPointAndPoint,
+    hasValidAngle,
+    rotateAntiPointsByElement,
+    rotatePoints,
+    rotatePointsByElement,
     temporaryDisableSelection,
     toHostPoint,
     toViewBoxPoint
@@ -42,7 +47,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (!PlaitBoard.isReadonly(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
             const points = getAutoCompletePoints(targetElement);
-            const index = getHitIndexOfAutoCompletePoint(clickPoint, points);
+            const index = getHitIndexOfAutoCompletePoint(rotateAntiPointsByElement(clickPoint, targetElement) || clickPoint, points);
             const hitPoint = points[index];
             if (hitPoint) {
                 temporaryDisableSelection(board as PlaitOptionsBoard);
@@ -59,7 +64,11 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         lineShapeG = createG();
         let movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (startPoint && sourceElement) {
-            const distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
+            const distance = distanceBetweenPointAndPoint(
+                ...movingPoint,
+                ...(rotatePointsByElement(startPoint, sourceElement) || startPoint)
+            );
+
             if (distance > PRESS_AND_MOVE_BUFFER) {
                 const rectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
                 const shape = getShape(sourceElement);
@@ -69,7 +78,15 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
                     const crossingPoint = engine.getNearestCrossingPoint(rectangle, startPoint);
                     sourcePoint = crossingPoint;
                 }
-                temporaryElement = handleLineCreating(board, LineShape.elbow, sourcePoint, movingPoint, sourceElement, lineShapeG);
+
+                temporaryElement = handleLineCreating(
+                    board,
+                    LineShape.elbow,
+                    rotatePointsByElement(sourcePoint, sourceElement) || sourcePoint,
+                    movingPoint,
+                    sourceElement,
+                    lineShapeG
+                );
             }
         }
         pointerMove(event);

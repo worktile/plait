@@ -1,13 +1,17 @@
 import { PlaitElement, Point, RectangleClient } from '../interfaces';
 import { approximately, rotate } from './math';
 
-export const rotatePoints = (points: Point[], centerPoint: Point, angle: number) => {
+export const rotatePoints = <T>(points: T, centerPoint: Point, angle: number): T => {
     if (!angle) {
         angle = 0;
     }
-    return points.map(point => {
-        return rotate(point[0], point[1], centerPoint[0], centerPoint[1], angle) as Point;
-    });
+    if (Array.isArray(points) && typeof points[0] === 'number') {
+        return rotate(points[0], points[1], centerPoint[0], centerPoint[1], angle) as T;
+    } else {
+        return (points as Point[]).map(point => {
+            return rotate(point[0], point[1], centerPoint[0], centerPoint[1], angle);
+        }) as T;
+    }
 };
 
 export const getSelectionAngle = (elements: PlaitElement[]) => {
@@ -50,4 +54,28 @@ export const getOffsetAfterRotate = (rectangle: RectangleClient, rotateCenterPoi
 export const rotatedDataPoints = (points: Point[], rotateCenterPoint: Point, angle: number): Point[] => {
     const { offsetX, offsetY } = getOffsetAfterRotate(RectangleClient.getRectangleByPoints(points), rotateCenterPoint, angle);
     return points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];
+};
+
+export const hasValidAngle = (node: PlaitElement) => {
+    return node.angle && node.angle !== 0;
+};
+
+export const rotatePointsByElement = <T>(points: T, element: PlaitElement): T | null => {
+    if (hasValidAngle(element)) {
+        let rectangle = RectangleClient.getRectangleByPoints(element.points!);
+        const centerPoint = RectangleClient.getCenterPoint(rectangle);
+        return rotatePoints(points, centerPoint, element.angle);
+    } else {
+        return null;
+    }
+};
+
+export const rotateAntiPointsByElement = <T>(points: T, element: PlaitElement): T | null => {
+    if (hasValidAngle(element)) {
+        let rectangle = RectangleClient.getRectangleByPoints(element.points!);
+        const centerPoint = RectangleClient.getCenterPoint(rectangle);
+        return rotatePoints(points, centerPoint, -element.angle);
+    } else {
+        return null;
+    }
 };

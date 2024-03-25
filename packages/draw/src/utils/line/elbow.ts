@@ -1,4 +1,4 @@
-import { Point, PlaitBoard, getElementById, RectangleClient, Vector } from '@plait/core';
+import { Point, PlaitBoard, getElementById, RectangleClient, Vector, rotatePoints, rotatePointsByElement } from '@plait/core';
 import {
     getPoints,
     getPointByVectorComponent,
@@ -40,7 +40,6 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         if (hasIllegalElbowPoint(midDataPoints)) {
             return simplifyOrthogonalPoints(keyPoints);
         }
-        
         const nextDataPoints = [simplifiedNextKeyPoints[0], ...midDataPoints, simplifiedNextKeyPoints[simplifiedNextKeyPoints.length - 1]];
         const mirrorDataPoints = getMirrorDataPoints(board, nextDataPoints, simplifiedNextKeyPoints, params);
         // console.log(mirrorDataPoints, 'mirrorDataPoints');
@@ -95,14 +94,21 @@ export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitLin
         const target = handleRefPair.target;
         targetElement = createFakeElement(target.point, target.vector);
     }
-    const sourceRectangle = RectangleClient.inflate(
-        RectangleClient.getRectangleByPoints(sourceElement.points),
-        getStrokeWidthByElement(sourceElement) * 2
-    );
-    const targetRectangle = RectangleClient.inflate(
-        RectangleClient.getRectangleByPoints(targetElement.points),
-        getStrokeWidthByElement(targetElement) * 2
-    );
+
+    let sourceRectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
+    const rotatedSourceCornerPoints =
+        rotatePointsByElement(RectangleClient.getCornerPoints(sourceRectangle), sourceElement) ||
+        RectangleClient.getCornerPoints(sourceRectangle);
+    sourceRectangle = RectangleClient.getRectangleByPoints(rotatedSourceCornerPoints);
+    sourceRectangle = RectangleClient.inflate(sourceRectangle, getStrokeWidthByElement(sourceElement) * 2);
+
+    let targetRectangle = RectangleClient.getRectangleByPoints(targetElement.points);
+    const rotatedTargetCornerPoints =
+        rotatePointsByElement(RectangleClient.getCornerPoints(targetRectangle), targetElement) ||
+        RectangleClient.getCornerPoints(targetRectangle);
+    targetRectangle = RectangleClient.getRectangleByPoints(rotatedTargetCornerPoints);
+    targetRectangle = RectangleClient.inflate(targetRectangle, getStrokeWidthByElement(targetElement) * 2);
+
     return {
         sourceRectangle,
         targetRectangle

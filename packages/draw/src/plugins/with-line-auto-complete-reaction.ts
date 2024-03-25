@@ -1,4 +1,17 @@
-import { CursorClass, PlaitBoard, PlaitElement, RgbaToHEX, drawCircle, isSelectionMoving, toHostPoint, toViewBoxPoint } from '@plait/core';
+import {
+    CursorClass,
+    PlaitBoard,
+    PlaitElement,
+    RectangleClient,
+    RgbaToHEX,
+    drawCircle,
+    hasValidAngle,
+    isSelectionMoving,
+    rotateAntiPointsByElement,
+    setAngleForG,
+    toHostPoint,
+    toViewBoxPoint
+} from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
 import { GeometryComponent } from '../geometry.component';
@@ -16,7 +29,7 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (!PlaitBoard.isReadonly(board) && !isSelectionMoving(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
             const points = getAutoCompletePoints(targetElement);
-            const hitIndex = getHitIndexOfAutoCompletePoint(movingPoint, points);
+            const hitIndex = getHitIndexOfAutoCompletePoint(rotateAntiPointsByElement(movingPoint, targetElement) || movingPoint, points);
             const hitPoint = points[hitIndex];
             const component = PlaitElement.getComponent(targetElement) as GeometryComponent;
             component.lineAutoCompleteGenerator!.recoverAutoCompleteG();
@@ -29,6 +42,9 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
                 });
                 PlaitBoard.getElementActiveHost(board).append(reactionG);
                 PlaitBoard.getBoardContainer(board).classList.add(CursorClass.crosshair);
+                if (hasValidAngle(targetElement)) {
+                    setAngleForG(reactionG, RectangleClient.getCenterPoint(board.getRectangle(targetElement)!), targetElement.angle);
+                }
             }
         }
         pointerMove(event);

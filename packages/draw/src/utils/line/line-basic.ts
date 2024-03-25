@@ -10,10 +10,19 @@ import {
     createMask,
     createRect,
     distanceBetweenPointAndPoint,
-    catmullRomFitting
+    catmullRomFitting,
+    rotatePoints,
+    hasValidAngle,
+    rotateAntiPointsByElement
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { getPointOnPolyline, getPointByVectorComponent, removeDuplicatePoints, getExtendPoint, isSourceAndTargetIntersect } from '@plait/common';
+import {
+    getPointOnPolyline,
+    getPointByVectorComponent,
+    removeDuplicatePoints,
+    getExtendPoint,
+    isSourceAndTargetIntersect
+} from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, LineText, PlaitDrawElement, PlaitLine, PlaitShape } from '../../interfaces';
 import { getNearestPoint } from '../geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../style/stroke';
@@ -244,8 +253,13 @@ export const handleLineCreating = (
     lineShapeG: SVGGElement
 ) => {
     const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
-    const targetConnection = hitElement ? getConnectionByNearestPoint(board, movingPoint, hitElement) : undefined;
-    const connection = sourceElement ? getConnectionByNearestPoint(board, sourcePoint, sourceElement) : undefined;
+    const targetConnection = hitElement
+        ? getConnectionByNearestPoint(board, rotateAntiPointsByElement(movingPoint, hitElement) || movingPoint, hitElement)
+        : undefined;
+    const sourceConnection = sourceElement
+        ? getConnectionByNearestPoint(board, rotateAntiPointsByElement(sourcePoint, sourceElement) || sourcePoint, sourceElement)
+        : undefined;
+
     const targetBoundId = hitElement ? hitElement.id : undefined;
     const lineGenerator = new LineShapeGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();
@@ -257,7 +271,7 @@ export const handleLineCreating = (
     const temporaryLineElement = createLineElement(
         lineShape,
         [sourcePoint, movingPoint],
-        { marker: sourceMarker || LineMarkerType.none, connection: connection, boundId: sourceElement?.id },
+        { marker: sourceMarker || LineMarkerType.none, connection: sourceConnection, boundId: sourceElement?.id },
         { marker: targetMarker || LineMarkerType.arrow, connection: targetConnection, boundId: targetBoundId },
         [],
         {

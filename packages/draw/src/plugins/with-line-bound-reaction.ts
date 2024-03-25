@@ -5,6 +5,9 @@ import {
     RectangleClient,
     SELECTION_BORDER_COLOR,
     drawCircle,
+    hasValidAngle,
+    rotateAntiPointsByElement,
+    setAngleForG,
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
@@ -37,9 +40,9 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
         if (isLinePointer || isLineResizing) {
             const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
             if (hitElement) {
-                boundShapeG = drawBoundMask(board, hitElement);
-                let nearestPoint = getNearestPoint(hitElement, movingPoint);
                 const rectangle = RectangleClient.getRectangleByPoints(hitElement.points);
+                boundShapeG = drawBoundMask(board, hitElement);
+                let nearestPoint = getNearestPoint(hitElement, rotateAntiPointsByElement(movingPoint, hitElement) || movingPoint);
                 const activeRectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
                 const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, activeRectangle);
                 nearestPoint = hitConnector ? hitConnector : nearestPoint;
@@ -51,6 +54,9 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
                 });
                 boundShapeG.appendChild(circleG);
                 PlaitBoard.getElementActiveHost(board).append(boundShapeG);
+                if (hasValidAngle(hitElement)) {
+                    setAngleForG(boundShapeG, RectangleClient.getCenterPoint(rectangle), hitElement.angle);
+                }
             }
         }
         pointerMove(event);
