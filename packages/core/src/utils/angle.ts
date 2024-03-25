@@ -60,23 +60,21 @@ export const hasValidAngle = (node: PlaitElement) => {
     return node.angle && node.angle !== 0;
 };
 
-export const rotatePointsByElement = (element: PlaitElement) => {
+export const rotatePointsByElement = <T>(points: T, element: PlaitElement): T | null => {
     if (hasValidAngle(element)) {
         let rectangle = RectangleClient.getRectangleByPoints(element.points!);
         const centerPoint = RectangleClient.getCenterPoint(rectangle);
-        const cornerPoints = RectangleClient.getCornerPoints(rectangle);
-        return rotatePoints(cornerPoints, centerPoint, element.angle);
+        return rotatePoints(points, centerPoint, element.angle);
     } else {
         return null;
     }
 };
 
-export const rotateAntiPointsByElement = (element: PlaitElement) => {
+export const rotateAntiPointsByElement = <T>(points: T, element: PlaitElement): T | null => {
     if (hasValidAngle(element)) {
         let rectangle = RectangleClient.getRectangleByPoints(element.points!);
         const centerPoint = RectangleClient.getCenterPoint(rectangle);
-        const cornerPoints = RectangleClient.getCornerPoints(rectangle);
-        return rotatePoints(cornerPoints, centerPoint, -element.angle);
+        return rotatePoints(points, centerPoint, -element.angle);
     } else {
         return null;
     }

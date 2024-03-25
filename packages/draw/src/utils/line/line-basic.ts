@@ -12,7 +12,8 @@ import {
     distanceBetweenPointAndPoint,
     catmullRomFitting,
     rotatePoints,
-    hasValidAngle
+    hasValidAngle,
+    rotateAntiPointsByElement
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
 import {
@@ -252,33 +253,12 @@ export const handleLineCreating = (
     lineShapeG: SVGGElement
 ) => {
     const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
-    let targetConnection = undefined,
-        sourceConnection = undefined;
-    if (hitElement) {
-        if (hasValidAngle(hitElement)) {
-            const rotatedMovingPoint = rotatePoints(
-                [movingPoint],
-                RectangleClient.getCenterPoint(board.getRectangle(hitElement)!),
-                -hitElement.angle
-            )[0];
-            targetConnection = getConnectionByNearestPoint(board, rotatedMovingPoint, hitElement);
-        } else {
-            targetConnection = getConnectionByNearestPoint(board, movingPoint, hitElement);
-        }
-    }
-
-    if (sourceElement) {
-        if (hasValidAngle(sourceElement)) {
-            const revertSourcePoint = rotatePoints(
-                [sourcePoint],
-                RectangleClient.getCenterPoint(board.getRectangle(sourceElement)!),
-                -sourceElement.angle
-            )[0];
-            sourceConnection = getConnectionByNearestPoint(board, revertSourcePoint, sourceElement);
-        } else {
-            sourceConnection = getConnectionByNearestPoint(board, sourcePoint, sourceElement);
-        }
-    }
+    const targetConnection = hitElement
+        ? getConnectionByNearestPoint(board, rotateAntiPointsByElement(movingPoint, hitElement) || movingPoint, hitElement)
+        : undefined;
+    const sourceConnection = sourceElement
+        ? getConnectionByNearestPoint(board, rotateAntiPointsByElement(sourcePoint, sourceElement) || sourcePoint, sourceElement)
+        : undefined;
 
     const targetBoundId = hitElement ? hitElement.id : undefined;
     const lineGenerator = new LineShapeGenerator(board);

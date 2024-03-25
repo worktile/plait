@@ -6,7 +6,8 @@ import {
     depthFirstRecursion,
     getIsRecursionFunc,
     rotatePoints,
-    hasValidAngle
+    hasValidAngle,
+    rotateAntiPointsByElement
 } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry } from '../../interfaces';
 import { RESIZE_HANDLE_DIAMETER, getRectangleResizeHandleRefs } from '@plait/common';
@@ -33,14 +34,7 @@ export const getHitOutlineGeometry = (board: PlaitBoard, point: Point, offset: n
                 let client = RectangleClient.getRectangleByPoints(node.points);
                 client = RectangleClient.getOutlineRectangle(client, offset);
                 const shape = getShape(node);
-
-                let isHit;
-                if (hasValidAngle(node)) {
-                    const rotatedPoint = rotatePoints(point, RectangleClient.getCenterPoint(client), -node.angle);
-                    isHit = getEngine(shape).isInsidePoint(client, rotatedPoint);
-                } else {
-                    isHit = getEngine(shape).isInsidePoint(client, point);
-                }
+                const isHit = getEngine(shape).isInsidePoint(client, rotateAntiPointsByElement(point, node) || point);
                 if (isHit) {
                     geometry = node;
                 }

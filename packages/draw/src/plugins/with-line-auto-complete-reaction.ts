@@ -7,7 +7,7 @@ import {
     drawCircle,
     hasValidAngle,
     isSelectionMoving,
-    rotatePoints,
+    rotateAntiPointsByElement,
     setAngleForG,
     toHostPoint,
     toViewBoxPoint
@@ -29,18 +29,7 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (!PlaitBoard.isReadonly(board) && !isSelectionMoving(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
             const points = getAutoCompletePoints(targetElement);
-            let hitIndex;
-            if (hasValidAngle(targetElement)) {
-                const rotatedMovingPoint = rotatePoints(
-                    movingPoint,
-                    RectangleClient.getCenterPoint(board.getRectangle(targetElement)!),
-                    -targetElement.angle
-                );
-
-                hitIndex = getHitIndexOfAutoCompletePoint(rotatedMovingPoint, points);
-            } else {
-                hitIndex = getHitIndexOfAutoCompletePoint(movingPoint, points);
-            }
+            const hitIndex = getHitIndexOfAutoCompletePoint(rotateAntiPointsByElement(movingPoint, targetElement) || movingPoint, points);
             const hitPoint = points[hitIndex];
             const component = PlaitElement.getComponent(targetElement) as GeometryComponent;
             component.lineAutoCompleteGenerator!.recoverAutoCompleteG();

@@ -1,4 +1,4 @@
-import { Path, PlaitBoard, PlaitNode, Point, RectangleClient, hasValidAngle, rotatePoints } from '@plait/core';
+import { Path, PlaitBoard, PlaitNode, Point, RectangleClient, hasValidAngle, rotateAntiPointsByElement, rotatePoints } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, isSourceAndTargetIntersect, simplifyOrthogonalPoints, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
@@ -80,17 +80,11 @@ export const withLineResize = (board: PlaitBoard) => {
                 const object = resizeRef.handle === LineResizeHandle.source ? source : target;
                 points[handleIndex] = resizeState.endPoint;
                 if (hitElement) {
-                    if (hasValidAngle(hitElement)) {
-                        const rotatedEndPoint = rotatePoints(
-                            resizeState.endPoint,
-                            RectangleClient.getCenterPoint(board.getRectangle(hitElement)!),
-                            -hitElement.angle
-                        );
-                        object.connection = getConnectionByNearestPoint(board, rotatedEndPoint, hitElement);
-                    } else {
-                        object.connection = getConnectionByNearestPoint(board, resizeState.endPoint, hitElement);
-                    }
-
+                    object.connection = getConnectionByNearestPoint(
+                        board,
+                        rotateAntiPointsByElement(resizeState.endPoint, hitElement) || resizeState.endPoint,
+                        hitElement
+                    );
                     object.boundId = hitElement.id;
                 } else {
                     object.connection = undefined;

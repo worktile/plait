@@ -6,7 +6,7 @@ import {
     SELECTION_BORDER_COLOR,
     drawCircle,
     hasValidAngle,
-    rotatePoints,
+    rotateAntiPointsByElement,
     setAngleForG,
     toHostPoint,
     toViewBoxPoint
@@ -42,13 +42,7 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
             if (hitElement) {
                 const rectangle = RectangleClient.getRectangleByPoints(hitElement.points);
                 boundShapeG = drawBoundMask(board, hitElement);
-                let nearestPoint;
-                if (hasValidAngle(hitElement)) {
-                    const rotatedMovingPoint = rotatePoints(movingPoint, RectangleClient.getCenterPoint(rectangle), -hitElement.angle);
-                    nearestPoint = getNearestPoint(hitElement, rotatedMovingPoint);
-                } else {
-                    nearestPoint = getNearestPoint(hitElement, movingPoint);
-                }
+                let nearestPoint = getNearestPoint(hitElement, rotateAntiPointsByElement(movingPoint, hitElement) || movingPoint);
                 const activeRectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
                 const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, activeRectangle);
                 nearestPoint = hitConnector ? hitConnector : nearestPoint;

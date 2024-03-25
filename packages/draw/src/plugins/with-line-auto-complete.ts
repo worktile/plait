@@ -13,7 +13,9 @@ import {
     createG,
     distanceBetweenPointAndPoint,
     hasValidAngle,
+    rotateAntiPointsByElement,
     rotatePoints,
+    rotatePointsByElement,
     temporaryDisableSelection,
     toHostPoint,
     toViewBoxPoint
@@ -45,17 +47,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (!PlaitBoard.isReadonly(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
             const points = getAutoCompletePoints(targetElement);
-            let index;
-            if (hasValidAngle(targetElement)) {
-                const rotatedClickPoint = rotatePoints(
-                    clickPoint,
-                    RectangleClient.getCenterPoint(board.getRectangle(targetElement)!),
-                    -targetElement.angle
-                );
-                index = getHitIndexOfAutoCompletePoint(rotatedClickPoint, points);
-            } else {
-                index = getHitIndexOfAutoCompletePoint(clickPoint, points);
-            }
+            const index = getHitIndexOfAutoCompletePoint(rotateAntiPointsByElement(clickPoint, targetElement) || clickPoint, points);
             const hitPoint = points[index];
             if (hitPoint) {
                 temporaryDisableSelection(board as PlaitOptionsBoard);
@@ -72,17 +64,10 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         lineShapeG = createG();
         let movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (startPoint && sourceElement) {
-            let distance;
-            if (hasValidAngle(sourceElement)) {
-                const rotatedStartPoint = rotatePoints(
-                    startPoint,
-                    RectangleClient.getCenterPoint(board.getRectangle(sourceElement)!),
-                    sourceElement.angle
-                );
-                distance = distanceBetweenPointAndPoint(...movingPoint, ...rotatedStartPoint);
-            } else {
-                distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
-            }
+            const distance = distanceBetweenPointAndPoint(
+                ...movingPoint,
+                ...(rotatePointsByElement(startPoint, sourceElement) || startPoint)
+            );
 
             if (distance > PRESS_AND_MOVE_BUFFER) {
                 const rectangle = RectangleClient.getRectangleByPoints(sourceElement.points);

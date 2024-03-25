@@ -61,10 +61,10 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): Lin
             sourceHandleRef.direction = sourceDirection;
             sourcePoint = getConnectionPoint(sourceBoundElement, element.source.connection!, sourceDirection, connectionOffset);
             sourceHandleRef.point = rotatePoints(
-                [sourcePoint],
+                sourcePoint,
                 RectangleClient.getCenterPoint(board.getRectangle(sourceBoundElement!)!),
                 sourceBoundElement.angle
-            )[0];
+            );
         } else {
             const direction = getDirectionByVector(sourceVector);
             sourceDirection = direction ? direction : sourceDirection;
@@ -85,16 +85,15 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): Lin
             targetHandleRef.direction = targetDirection;
             targetPoint = getConnectionPoint(targetBoundElement, element.target.connection!, targetDirection, connectionOffset);
             targetHandleRef.point = rotatePoints(
-                [targetPoint],
+                targetPoint,
                 RectangleClient.getCenterPoint(board.getRectangle(targetBoundElement)!),
-                targetBoundElement?.angle!
-            )[0];
+                targetBoundElement.angle
+            );
         } else {
             const direction = getDirectionByVector(targetVector);
             targetDirection = direction ? direction : targetDirection;
             targetHandleRef.direction = targetDirection;
             targetPoint = getConnectionPoint(targetBoundElement, element.target.connection!, targetDirection, connectionOffset);
-
             targetHandleRef.point = targetPoint;
         }
     }

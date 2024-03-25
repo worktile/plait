@@ -1,15 +1,4 @@
-import {
-    Direction,
-    PlaitBoard,
-    PlaitElement,
-    Point,
-    PointOfRectangle,
-    RectangleClient,
-    Vector,
-    getElementById,
-    hasValidAngle,
-    rotatePoints
-} from '@plait/core';
+import { Direction, PlaitBoard, PlaitElement, Point, PointOfRectangle, Vector, getElementById, rotatePointsByElement } from '@plait/core';
 import { Element } from 'slate';
 import { PlaitGeometry } from './geometry';
 import { StrokeStyle } from './element';
@@ -122,15 +111,7 @@ export const PlaitLine = {
         if (line.source.boundId) {
             const sourceElement = getElementById<PlaitGeometry>(board, line.source.boundId)!;
             const sourceConnectionPoint = getConnectionPoint(sourceElement, line.source.connection!);
-            if (hasValidAngle(sourceElement)) {
-                sourcePoint = rotatePoints(
-                    sourceConnectionPoint,
-                    RectangleClient.getCenterPoint(board.getRectangle(sourceElement)!),
-                    sourceElement.angle
-                );
-            } else {
-                sourcePoint = sourceConnectionPoint;
-            }
+            sourcePoint = rotatePointsByElement(sourceConnectionPoint, sourceElement) || sourceConnectionPoint;
         } else {
             sourcePoint = line.points[0];
         }
@@ -139,15 +120,7 @@ export const PlaitLine = {
         if (line.target.boundId) {
             const targetElement = getElementById<PlaitGeometry>(board, line.target.boundId)!;
             const targetConnectionPoint = getConnectionPoint(targetElement, line.target.connection!);
-            if (hasValidAngle(targetElement)) {
-                targetPoint = rotatePoints(
-                    targetConnectionPoint,
-                    RectangleClient.getCenterPoint(board.getRectangle(targetElement)!),
-                    targetElement.angle
-                );
-            } else {
-                targetPoint = targetConnectionPoint;
-            }
+            targetPoint = rotatePointsByElement(targetConnectionPoint, targetElement) || targetConnectionPoint;
         } else {
             targetPoint = line.points[line.points.length - 1];
         }
