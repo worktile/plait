@@ -494,139 +494,207 @@ export const mockGroupData: PlaitDrawElement[] = [
 
 export const mockRotateData: PlaitDrawElement[] = [
     {
-        id: 'FjKbf',
+        id: 'jhETT',
         type: 'geometry',
-        shape: 'text',
-        angle: 5.86874495248496,
+        shape: 'rectangle',
+        angle: 0.26179938779914913,
         opacity: 1,
-        textHeight: 30,
+        textHeight: 20,
         text: {
             children: [
                 {
-                    text: '文本测试',
-                    'font-size': 20
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-1030.04296875, 90.8828125],
+            [-888.55859375, 157.25390625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'xHBRi',
+        type: 'geometry',
+        shape: 'ellipse',
+        angle: 0.26179938779914913,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-773.125, 79.6015625],
+            [-596.98046875, 157.25390625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'rGzmy',
+        type: 'geometry',
+        shape: 'triangle',
+        angle: 0.26179938779914913,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-477.746678637868, 63.45135257428139],
+            [-397.718165112132, 164.65973141009368]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'zsHJk',
+        type: 'geometry',
+        shape: 'twoWayArrow',
+        angle: 0.7853981633974483,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-1035.76171875, 283.5751953125],
+            [-882.83984375, 333.6494140625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'MXpTt',
+        type: 'geometry',
+        shape: 'cross',
+        angle: 0.7853981633974483,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-745.8359375, 265.3056640625],
+            [-602.85546875, 351.9189453125]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'kpnyW',
+        type: 'geometry',
+        shape: 'roundComment',
+        angle: 0.7853981633974483,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-494.71484375, 267.48193359375],
+            [-344.26953125, 355.75146484375]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'SwRcR',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0.26179938779914913,
+        opacity: 1,
+        textHeight: 24,
+        text: {
+            children: [
+                {
+                    text: '测试测试 ： Test',
+                    'font-size': 16
                 }
             ]
         },
         points: [
-            [-1530.898193359375, 164.9169921875],
-            [-1437.683349609375, 201.4208984375]
+            [-215.50390625, 102.0555419921875],
+            [-84.30078125, 126.0555419921875]
         ],
-        autoSize: false
+        autoSize: true
     },
     {
-        id: 'Ejnnf',
-        type: 'geometry',
-        shape: 'rectangle',
-        angle: 5.86874495248496,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: ''
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-285.984375, 361.66845703125],
-            [-4.35546875, 474.97705078125]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'tARBe',
-        type: 'geometry',
-        shape: 'rectangle',
-        angle: 5.86874495248496,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: ''
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-245.51953125, 543.79248046875],
-            [95.875, 624.54638671875]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'JaNyh',
-        type: 'geometry',
-        shape: 'ellipse',
-        angle: 6.86874495248496,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: ''
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-533.3525390625, 128.17773437499994],
-            [-337.2041015625, 226.22460937499994]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'FHknH',
-        type: 'geometry',
-        shape: 'triangle',
-        angle: 4.86874495248496,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: ''
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-782.08349609375, 86.6845703125],
-            [-688.86865234375, 233.2626953125]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'axRKz',
-        type: 'geometry',
-        shape: 'rectangle',
-        angle: 5.86874495248496,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: ''
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-1311.2099609375, 146.718994140625],
-            [-917.285014484772, 306.13338010187175]
-        ],
-        strokeWidth: 2
-    },
-    {
-        id: 'sZzjB',
+        id: 'reEQK',
         type: 'image',
-        angle: 5.86874495248496,
+        angle: 0.7853981633974483,
         points: [
-            [-1094.410016442224, 410.4649548597526],
-            [-625.7626953125, 722.8965022795687]
+            [-223.90771484375, 247.76884450604837],
+            [-40.78662109375, 369.45576486895163]
         ],
-        url: 'blob:http://localhost:7100/002b0121-5e05-4b84-8ef4-c69b2d408dff'
+        url: 'https://cdn-aliyun.pingcode.com/static/site/img/why-pingcode.8922701.png'
+    },
+
+    {
+        id: 'CWwJT',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 24,
+        text: {
+            children: [
+                {
+                    text: '旋转 15 度',
+                    bold: true,
+                    'font-size': 16,
+                    color: '#e03130'
+                }
+            ]
+        },
+        points: [
+            [-1237.798828125, 97.84893798828125],
+            [-1154.970703125, 121.84893798828125]
+        ],
+        autoSize: true
+    },
+    {
+        id: 'YapKc',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 24,
+        text: {
+            children: [
+                {
+                    text: '旋转 45 度',
+                    bold: true,
+                    'font-size': 16,
+                    color: '#e03130'
+                }
+            ]
+        },
+        points: [
+            [-1233.25830078125, 288.90362548828125],
+            [-1147.39892578125, 312.90362548828125]
+        ],
+        autoSize: true
     }
 ] as PlaitDrawElement[];

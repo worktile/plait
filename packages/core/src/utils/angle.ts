@@ -1,13 +1,17 @@
 import { PlaitElement, Point, RectangleClient } from '../interfaces';
 import { approximately, rotate } from './math';
 
-export const rotatePoints = (points: Point[], centerPoint: Point, angle: number) => {
+export const rotatePoints = <T>(points: T, centerPoint: Point, angle: number): T => {
     if (!angle) {
         angle = 0;
     }
-    return points.map(point => {
-        return rotate(point[0], point[1], centerPoint[0], centerPoint[1], angle) as Point;
-    });
+    if (Array.isArray(points) && typeof points[0] === 'number') {
+        return rotate(points[0], points[1], centerPoint[0], centerPoint[1], angle) as T;
+    } else {
+        return (points as Point[]).map(point => {
+            return rotate(point[0], point[1], centerPoint[0], centerPoint[1], angle);
+        }) as T;
+    }
 };
 
 export const getSelectionAngle = (elements: PlaitElement[]) => {
@@ -54,4 +58,26 @@ export const rotatedDataPoints = (points: Point[], rotateCenterPoint: Point, ang
 
 export const hasValidAngle = (node: PlaitElement) => {
     return node.angle && node.angle !== 0;
+};
+
+export const rotatePointsByElement = (element: PlaitElement) => {
+    if (hasValidAngle(element)) {
+        let rectangle = RectangleClient.getRectangleByPoints(element.points!);
+        const centerPoint = RectangleClient.getCenterPoint(rectangle);
+        const cornerPoints = RectangleClient.getCornerPoints(rectangle);
+        return rotatePoints(cornerPoints, centerPoint, element.angle);
+    } else {
+        return null;
+    }
+};
+
+export const rotateAntiPointsByElement = (element: PlaitElement) => {
+    if (hasValidAngle(element)) {
+        let rectangle = RectangleClient.getRectangleByPoints(element.points!);
+        const centerPoint = RectangleClient.getCenterPoint(rectangle);
+        const cornerPoints = RectangleClient.getCornerPoints(rectangle);
+        return rotatePoints(cornerPoints, centerPoint, -element.angle);
+    } else {
+        return null;
+    }
 };

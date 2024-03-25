@@ -5,6 +5,7 @@ import {
     RectangleClient,
     RgbaToHEX,
     drawCircle,
+    hasValidAngle,
     isSelectionMoving,
     rotatePoints,
     setAngleForG,
@@ -27,13 +28,19 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
         const targetElement = selectedElements.length === 1 && selectedElements[0];
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (!PlaitBoard.isReadonly(board) && !isSelectionMoving(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
-            const [rotatedMovingPoint] = rotatePoints(
-                [movingPoint],
-                RectangleClient.getCenterPoint(board.getRectangle(targetElement)!),
-                -targetElement.angle
-            );
             const points = getAutoCompletePoints(targetElement);
-            const hitIndex = getHitIndexOfAutoCompletePoint(rotatedMovingPoint, points);
+            let hitIndex;
+            if (hasValidAngle(targetElement)) {
+                const rotatedMovingPoint = rotatePoints(
+                    movingPoint,
+                    RectangleClient.getCenterPoint(board.getRectangle(targetElement)!),
+                    -targetElement.angle
+                );
+
+                hitIndex = getHitIndexOfAutoCompletePoint(rotatedMovingPoint, points);
+            } else {
+                hitIndex = getHitIndexOfAutoCompletePoint(movingPoint, points);
+            }
             const hitPoint = points[hitIndex];
             const component = PlaitElement.getComponent(targetElement) as GeometryComponent;
             component.lineAutoCompleteGenerator!.recoverAutoCompleteG();
@@ -46,7 +53,9 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
                 });
                 PlaitBoard.getElementActiveHost(board).append(reactionG);
                 PlaitBoard.getBoardContainer(board).classList.add(CursorClass.crosshair);
-                setAngleForG(reactionG, RectangleClient.getCenterPoint(board.getRectangle(targetElement)!), targetElement.angle);
+                if (hasValidAngle(targetElement)) {
+                    setAngleForG(reactionG, RectangleClient.getCenterPoint(board.getRectangle(targetElement)!), targetElement.angle);
+                }
             }
         }
         pointerMove(event);

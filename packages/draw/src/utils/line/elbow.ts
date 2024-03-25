@@ -1,4 +1,4 @@
-import { Point, PlaitBoard, getElementById, RectangleClient, Vector, rotatePoints } from '@plait/core';
+import { Point, PlaitBoard, getElementById, RectangleClient, Vector, rotatePoints, rotatePointsByElement } from '@plait/core';
 import {
     getPoints,
     getPointByVectorComponent,
@@ -12,8 +12,6 @@ import { createGeometryElement } from '../geometry';
 import { getStrokeWidthByElement } from '../style/stroke';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
 import { getMidKeyPoints, getMirrorDataPoints, hasIllegalElbowPoint } from './line-resize';
-import { getShape } from '../shape';
-import { getEngine } from '../../engines';
 
 export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     const handleRefPair = getLineHandleRefPair(board, element);
@@ -98,27 +96,13 @@ export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitLin
     }
 
     let sourceRectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
-    const sourceShape = getShape(sourceElement);
-    const sourceEngine = getEngine(sourceShape);
-    const sourceElementCornerPoints = sourceEngine.getCornerPoints(sourceRectangle);
-    const rotatedSourceElementCornerPoints = rotatePoints(
-        sourceElementCornerPoints,
-        RectangleClient.getCenterPoint(sourceRectangle),
-        sourceElement.angle
-    );
-    sourceRectangle = RectangleClient.getRectangleByPoints(rotatedSourceElementCornerPoints);
+    const sourceElementCornerPoints = rotatePointsByElement(sourceElement) || RectangleClient.getCornerPoints(sourceRectangle);
+    sourceRectangle = RectangleClient.getRectangleByPoints(sourceElementCornerPoints);
     sourceRectangle = RectangleClient.inflate(sourceRectangle, getStrokeWidthByElement(sourceElement) * 2);
 
     let targetRectangle = RectangleClient.getRectangleByPoints(targetElement.points);
-    const shape = getShape(targetElement);
-    const engine = getEngine(shape);
-    const targetElementCornerPoints = engine.getCornerPoints(targetRectangle);
-    const rotatedTargetElementCornerPoints = rotatePoints(
-        targetElementCornerPoints,
-        RectangleClient.getCenterPoint(targetRectangle),
-        targetElement.angle
-    );
-    targetRectangle = RectangleClient.getRectangleByPoints(rotatedTargetElementCornerPoints);
+    const targetElementCornerPoints = rotatePointsByElement(targetElement) || RectangleClient.getCornerPoints(targetRectangle);
+    targetRectangle = RectangleClient.getRectangleByPoints(targetElementCornerPoints);
     targetRectangle = RectangleClient.inflate(targetRectangle, getStrokeWidthByElement(targetElement) * 2);
 
     return {

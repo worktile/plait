@@ -36,7 +36,7 @@ export const getHitOutlineGeometry = (board: PlaitBoard, point: Point, offset: n
 
                 let isHit;
                 if (hasValidAngle(node)) {
-                    const rotatedPoint = rotatePoints([point], RectangleClient.getCenterPoint(client), -node.angle)[0];
+                    const rotatedPoint = rotatePoints(point, RectangleClient.getCenterPoint(client), -node.angle);
                     isHit = getEngine(shape).isInsidePoint(client, rotatedPoint);
                 } else {
                     isHit = getEngine(shape).isInsidePoint(client, point);

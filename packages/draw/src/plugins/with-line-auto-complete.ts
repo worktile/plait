@@ -12,6 +12,7 @@ import {
     createDebugGenerator,
     createG,
     distanceBetweenPointAndPoint,
+    hasValidAngle,
     rotatePoints,
     temporaryDisableSelection,
     toHostPoint,
@@ -44,12 +45,17 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (!PlaitBoard.isReadonly(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
             const points = getAutoCompletePoints(targetElement);
-            const [rotatedClickPoint] = rotatePoints(
-                [clickPoint],
-                RectangleClient.getCenterPoint(board.getRectangle(targetElement)!),
-                -targetElement.angle
-            );
-            const index = getHitIndexOfAutoCompletePoint(rotatedClickPoint, points);
+            let index;
+            if (hasValidAngle(targetElement)) {
+                const rotatedClickPoint = rotatePoints(
+                    clickPoint,
+                    RectangleClient.getCenterPoint(board.getRectangle(targetElement)!),
+                    -targetElement.angle
+                );
+                index = getHitIndexOfAutoCompletePoint(rotatedClickPoint, points);
+            } else {
+                index = getHitIndexOfAutoCompletePoint(clickPoint, points);
+            }
             const hitPoint = points[index];
             if (hitPoint) {
                 temporaryDisableSelection(board as PlaitOptionsBoard);
@@ -66,12 +72,18 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         lineShapeG = createG();
         let movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (startPoint && sourceElement) {
-            const [rotatedStartPoint] = rotatePoints(
-                [startPoint],
-                RectangleClient.getCenterPoint(board.getRectangle(sourceElement)!),
-                sourceElement.angle
-            );
-            const distance = distanceBetweenPointAndPoint(...movingPoint, ...rotatedStartPoint);
+            let distance;
+            if (hasValidAngle(sourceElement)) {
+                const rotatedStartPoint = rotatePoints(
+                    startPoint,
+                    RectangleClient.getCenterPoint(board.getRectangle(sourceElement)!),
+                    sourceElement.angle
+                );
+                distance = distanceBetweenPointAndPoint(...movingPoint, ...rotatedStartPoint);
+            } else {
+                distance = distanceBetweenPointAndPoint(...movingPoint, ...startPoint);
+            }
+
             if (distance > PRESS_AND_MOVE_BUFFER) {
                 const rectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
                 const shape = getShape(sourceElement);
@@ -82,8 +94,8 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
                     sourcePoint = crossingPoint;
                 }
 
-                if (sourceElement.angle) {
-                    sourcePoint = rotatePoints([sourcePoint], RectangleClient.getCenterPoint(rectangle), sourceElement.angle)[0];
+                if (hasValidAngle(sourceElement)) {
+                    sourcePoint = rotatePoints(sourcePoint, RectangleClient.getCenterPoint(rectangle), sourceElement.angle);
                 }
                 temporaryElement = handleLineCreating(board, LineShape.elbow, sourcePoint, movingPoint, sourceElement, lineShapeG);
             }
