@@ -172,13 +172,13 @@ export function withSelection(board: PlaitBoard) {
                     selectionRectangleG?.remove();
                 }
                 const temporaryElements = getTemporaryElements(board);
-                let elements = temporaryElements ? temporaryElements : getHitElementsBySelection(board);
-                if (!options.isMultiple && elements.length > 1) {
-                    elements = [elements[0]];
-                }
-                if (board.selection && Selection.isCollapsed(board.selection) && elements.length > 1) {
-                    cacheSelectedElements(board, [...elements]);
+                if (temporaryElements) {
+                    cacheSelectedElements(board, [...temporaryElements]);
                 } else {
+                    let elements = getHitElementsBySelection(board);
+                    if (!options.isMultiple && elements.length > 1) {
+                        elements = [elements[0]];
+                    }
                     const isHitElementWithGroup = elements.some(item => item.groupId);
                     const selectedElements = getSelectedElements(board);
                     if (isHitElementWithGroup) {
@@ -271,6 +271,7 @@ export function withSelection(board: PlaitBoard) {
                         }
                     }
                 }
+
                 const newElements = getSelectedElements(board);
                 previousSelectedElements = newElements;
                 deleteTemporaryElements(board);
