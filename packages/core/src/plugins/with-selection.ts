@@ -172,99 +172,106 @@ export function withSelection(board: PlaitBoard) {
                     selectionRectangleG?.remove();
                 }
                 const temporaryElements = getTemporaryElements(board);
-                let elements = temporaryElements ? temporaryElements : getHitElementsBySelection(board);
-                if (!options.isMultiple && elements.length > 1) {
-                    elements = [elements[0]];
-                }
-                const isHitElementWithGroup = elements.some(item => item.groupId);
-                const selectedElements = getSelectedElements(board);
-                if (isHitElementWithGroup) {
-                    if (board.selection && Selection.isCollapsed(board.selection)) {
-                        const hitElement = elements[0];
-                        const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
-                        if (hitElementGroups.length) {
-                            let newElements = [...selectedElements];
-                            const elementsInHighestGroup =
-                                getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
-                            const isSelectGroupElement = selectedElements.some(element =>
-                                elementsInHighestGroup.map(item => item.id).includes(element.id)
-                            );
-                            if (isShift) {
-                                let pendingElements: PlaitElement[] = [];
-                                if (!isSelectGroupElement) {
-                                    pendingElements = elementsInHighestGroup;
-                                } else {
-                                    const isHitSelectedElement = selectedElements.some(item => item.id === hitElement.id);
-                                    const selectedElementsInGroup = elementsInHighestGroup.filter(item => selectedElements.includes(item));
-                                    if (isHitSelectedElement) {
-                                        pendingElements = selectedElementsInGroup.filter(item => item.id !== hitElement.id);
-                                    } else {
-                                        pendingElements.push(...selectedElementsInGroup, ...elements);
-                                    }
-                                }
-                                elementsInHighestGroup.forEach(element => {
-                                    if (newElements.includes(element)) {
-                                        newElements.splice(newElements.indexOf(element), 1);
-                                    }
-                                });
-                                if (pendingElements.length) {
-                                    newElements.push(...pendingElements);
-                                }
-                            } else {
-                                newElements = [...elements];
-                                const selectedGroups = filterSelectedGroups(board, hitElementGroups);
-                                if (selectedGroups.length > 0) {
-                                    if (selectedGroups.length > 1) {
-                                        newElements = getAllElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
-                                    }
-                                } else {
-                                    const elementsInGroup = getAllElementsInGroup(
-                                        board,
-                                        hitElementGroups[hitElementGroups.length - 1],
-                                        true
-                                    );
+                if (temporaryElements) {
+                    cacheSelectedElements(board, [...temporaryElements]);
+                } else {
+                    let elements = getHitElementsBySelection(board);
+                    if (!options.isMultiple && elements.length > 1) {
+                        elements = [elements[0]];
+                    }
+                    const isHitElementWithGroup = elements.some(item => item.groupId);
+                    const selectedElements = getSelectedElements(board);
+                    if (isHitElementWithGroup) {
+                        if (board.selection && Selection.isCollapsed(board.selection)) {
+                            const hitElement = elements[0];
+                            const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
+                            if (hitElementGroups.length) {
+                                let newElements = [...selectedElements];
+                                const elementsInHighestGroup =
+                                    getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
+                                const isSelectGroupElement = selectedElements.some(element =>
+                                    elementsInHighestGroup.map(item => item.id).includes(element.id)
+                                );
+                                if (isShift) {
+                                    let pendingElements: PlaitElement[] = [];
                                     if (!isSelectGroupElement) {
-                                        newElements = elementsInGroup;
+                                        pendingElements = elementsInHighestGroup;
+                                    } else {
+                                        const isHitSelectedElement = selectedElements.some(item => item.id === hitElement.id);
+                                        const selectedElementsInGroup = elementsInHighestGroup.filter(item =>
+                                            selectedElements.includes(item)
+                                        );
+                                        if (isHitSelectedElement) {
+                                            pendingElements = selectedElementsInGroup.filter(item => item.id !== hitElement.id);
+                                        } else {
+                                            pendingElements.push(...selectedElementsInGroup, ...elements);
+                                        }
+                                    }
+                                    elementsInHighestGroup.forEach(element => {
+                                        if (newElements.includes(element)) {
+                                            newElements.splice(newElements.indexOf(element), 1);
+                                        }
+                                    });
+                                    if (pendingElements.length) {
+                                        newElements.push(...pendingElements);
+                                    }
+                                } else {
+                                    newElements = [...elements];
+                                    const selectedGroups = filterSelectedGroups(board, hitElementGroups);
+                                    if (selectedGroups.length > 0) {
+                                        if (selectedGroups.length > 1) {
+                                            newElements = getAllElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
+                                        }
+                                    } else {
+                                        const elementsInGroup = getAllElementsInGroup(
+                                            board,
+                                            hitElementGroups[hitElementGroups.length - 1],
+                                            true
+                                        );
+                                        if (!isSelectGroupElement) {
+                                            newElements = elementsInGroup;
+                                        }
                                     }
                                 }
+                                cacheSelectedElements(board, uniqueById(newElements));
                             }
+                        } else {
+                            let newElements = [...selectedElements];
+                            elements.forEach(item => {
+                                if (!item.groupId) {
+                                    newElements.push(item);
+                                } else {
+                                    newElements.push(...getElementsInGroupByElement(board, item));
+                                }
+                            });
                             cacheSelectedElements(board, uniqueById(newElements));
                         }
                     } else {
-                        let newElements = [...selectedElements];
-                        elements.forEach(item => {
-                            if (!item.groupId) {
-                                newElements.push(item);
+                        if (isShift) {
+                            const newElements = [...selectedElements];
+                            if (board.selection && Selection.isCollapsed(board.selection)) {
+                                elements.forEach(element => {
+                                    if (newElements.includes(element)) {
+                                        newElements.splice(newElements.indexOf(element), 1);
+                                    } else {
+                                        newElements.push(element);
+                                    }
+                                });
+                                cacheSelectedElements(board, newElements);
                             } else {
-                                newElements.push(...getElementsInGroupByElement(board, item));
+                                elements.forEach(element => {
+                                    if (!newElements.includes(element)) {
+                                        newElements.push(element);
+                                    }
+                                });
+                                cacheSelectedElements(board, [...newElements]);
                             }
-                        });
-                        cacheSelectedElements(board, uniqueById(newElements));
-                    }
-                } else {
-                    if (isShift) {
-                        const newElements = [...selectedElements];
-                        if (board.selection && Selection.isCollapsed(board.selection)) {
-                            elements.forEach(element => {
-                                if (newElements.includes(element)) {
-                                    newElements.splice(newElements.indexOf(element), 1);
-                                } else {
-                                    newElements.push(element);
-                                }
-                            });
-                            cacheSelectedElements(board, newElements);
                         } else {
-                            elements.forEach(element => {
-                                if (!newElements.includes(element)) {
-                                    newElements.push(element);
-                                }
-                            });
-                            cacheSelectedElements(board, [...newElements]);
+                            cacheSelectedElements(board, [...elements]);
                         }
-                    } else {
-                        cacheSelectedElements(board, [...elements]);
                     }
                 }
+
                 const newElements = getSelectedElements(board);
                 previousSelectedElements = newElements;
                 deleteTemporaryElements(board);
