@@ -47,23 +47,32 @@ export function withMoving(board: PlaitBoard) {
             return;
         }
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        const targetElements = getTargetElements(board);
-        const targetRectangle = targetElements.length > 0 && getRectangleByElements(board, targetElements, false);
-        const isInTargetRectangle = targetRectangle && RectangleClient.isPointInRectangle(targetRectangle, point);
-        if (isInTargetRectangle) {
+        const hitTargetElement = getHitElementByPoint(board, point, el => board.isMovable(el));
+        const selectedTargetElements = getSelectedTargetElements(board);
+        const isHitSelectedTarget = hitTargetElement && selectedTargetElements.includes(hitTargetElement);
+        if (hitTargetElement && isHitSelectedTarget) {
             startPoint = point;
-            activeElements = targetElements;
-            preventTouchMove(board, event, true);
+            activeElements = selectedTargetElements;
             activeElementsRectangle = getRectangleByElements(board, activeElements, true);
+            preventTouchMove(board, event, true);
+        } else if (hitTargetElement) {
+            startPoint = point;
+            activeElements = getElementsInGroupByElement(board, hitTargetElement);
+            activeElementsRectangle = getRectangleByElements(board, activeElements, true);
+            preventTouchMove(board, event, true);
+            if (selectedTargetElements.length > 0) {
+                addSelectionWithTemporaryElements(board, []);
+            }
         } else {
-            const targetElement = getHitElementByPoint(board, point, el => board.isMovable(el));
-            if (targetElement) {
+            // 只有判定用户未击中元素之后才可以验证用户是否击中了已选元素所在的空白区域
+            // Only after it is determined that the user has not hit the element can it be verified whether the user hit the blank area where the selected element is located.
+            const targetRectangle = selectedTargetElements.length > 0 && getRectangleByElements(board, selectedTargetElements, false);
+            const isHitInTargetRectangle = targetRectangle && RectangleClient.isPointInRectangle(targetRectangle, point);
+            if (isHitInTargetRectangle) {
                 startPoint = point;
-                activeElements = getElementsInGroupByElement(board, targetElement);
-                if (targetElements.length > 0) {
-                    addSelectionWithTemporaryElements(board, []);
-                }
-                activeElementsRectangle = getRectangleByElements(board, activeElements, true);
+                activeElements = selectedTargetElements;
+                activeElementsRectangle = targetRectangle;
+                preventTouchMove(board, event, true);
             }
         }
         pointerDown(event);
@@ -173,7 +182,7 @@ export function withArrowMoving(board: PlaitBoard) {
                     break;
                 }
             }
-            const targetElements = getTargetElements(board);
+            const targetElements = getSelectedTargetElements(board);
             throttleRAF(board, 'with-arrow-moving', () => {
                 updatePoints(board, targetElements, offset[0], offset[1]);
             });
@@ -188,7 +197,7 @@ export function withArrowMoving(board: PlaitBoard) {
     return board;
 }
 
-export function getTargetElements(board: PlaitBoard) {
+export function getSelectedTargetElements(board: PlaitBoard) {
     const selectedElements = getSelectedElements(board);
     const movableElements = board.children.filter(item => board.isMovable(item));
     const targetElements = selectedElements.filter(element => {
