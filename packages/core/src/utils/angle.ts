@@ -51,3 +51,7 @@ export const rotatedDataPoints = (points: Point[], rotateCenterPoint: Point, ang
     const { offsetX, offsetY } = getOffsetAfterRotate(RectangleClient.getRectangleByPoints(points), rotateCenterPoint, angle);
     return points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];
 };
+
+export const hasValidAngle = (node: PlaitElement) => {
+    return node.angle && node.angle !== 0;
+};

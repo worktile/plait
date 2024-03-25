@@ -12,7 +12,7 @@ import {
     distanceBetweenPointAndPoint,
     catmullRomFitting,
     rotatePoints,
-    createDebugGenerator
+    hasValidAngle
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
 import {
@@ -252,26 +252,34 @@ export const handleLineCreating = (
     lineShapeG: SVGGElement
 ) => {
     const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
-    let targetConnection;
+    let targetConnection = undefined,
+        sourceConnection = undefined;
     if (hitElement) {
-        const rotatedMovingPoint = rotatePoints(
-            [movingPoint],
-            RectangleClient.getCenterPoint(board.getRectangle(hitElement)!),
-            -hitElement.angle
-        )[0];
-        targetConnection = getConnectionByNearestPoint(board, rotatedMovingPoint, hitElement);
+        if (hasValidAngle(hitElement)) {
+            const rotatedMovingPoint = rotatePoints(
+                [movingPoint],
+                RectangleClient.getCenterPoint(board.getRectangle(hitElement)!),
+                -hitElement.angle
+            )[0];
+            targetConnection = getConnectionByNearestPoint(board, rotatedMovingPoint, hitElement);
+        } else {
+            targetConnection = getConnectionByNearestPoint(board, movingPoint, hitElement);
+        }
     }
 
-    let revertSourcePoint = sourcePoint;
     if (sourceElement) {
-        [revertSourcePoint] = rotatePoints(
-            [sourcePoint],
-            RectangleClient.getCenterPoint(board.getRectangle(sourceElement)!),
-            -sourceElement.angle
-        );
+        if (hasValidAngle(sourceElement)) {
+            const revertSourcePoint = rotatePoints(
+                [sourcePoint],
+                RectangleClient.getCenterPoint(board.getRectangle(sourceElement)!),
+                -sourceElement.angle
+            )[0];
+            sourceConnection = getConnectionByNearestPoint(board, revertSourcePoint, sourceElement);
+        } else {
+            sourceConnection = getConnectionByNearestPoint(board, sourcePoint, sourceElement);
+        }
     }
 
-    const connection = sourceElement ? getConnectionByNearestPoint(board, revertSourcePoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;
     const lineGenerator = new LineShapeGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();
@@ -283,7 +291,7 @@ export const handleLineCreating = (
     const temporaryLineElement = createLineElement(
         lineShape,
         [sourcePoint, movingPoint],
-        { marker: sourceMarker || LineMarkerType.none, connection: connection, boundId: sourceElement?.id },
+        { marker: sourceMarker || LineMarkerType.none, connection: sourceConnection, boundId: sourceElement?.id },
         { marker: targetMarker || LineMarkerType.arrow, connection: targetConnection, boundId: targetBoundId },
         [],
         {

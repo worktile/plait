@@ -1,4 +1,14 @@
-import { Point, PlaitBoard, getElementById, RectangleClient, PointOfRectangle, Direction, Vector, rotatePoints } from '@plait/core';
+import {
+    Point,
+    PlaitBoard,
+    getElementById,
+    RectangleClient,
+    PointOfRectangle,
+    Direction,
+    Vector,
+    rotatePoints,
+    hasValidAngle
+} from '@plait/core';
 import {
     getDirectionFactor,
     rotateVectorAnti90,
@@ -42,44 +52,51 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): Lin
     if (sourceBoundElement) {
         const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element, LineMarkerType.none, LineHandleKey.source) ? 0 : strokeWidth;
         const sourceVector = getVectorByConnection(sourceBoundElement, element.source.connection!);
-        const rotatedSourceVector = rotateVector(sourceVector, sourceBoundElement.angle);
-        const direction = getDirectionByVector(rotatedSourceVector);
-        sourceDirection = direction ? direction : sourceDirection;
-        sourcePoint = getConnectionPoint(sourceBoundElement, element.source.connection!, sourceDirection, connectionOffset);
+        sourceHandleRef.vector = sourceVector;
         sourceHandleRef.boundElement = sourceBoundElement;
-        sourceHandleRef.direction = sourceDirection;
-        if (sourceBoundElement.angle) {
+        if (hasValidAngle(sourceBoundElement)) {
+            const rotatedSourceVector = rotateVector(sourceVector, sourceBoundElement.angle);
+            const direction = getDirectionByVector(rotatedSourceVector);
+            sourceDirection = direction ? direction : sourceDirection;
+            sourceHandleRef.direction = sourceDirection;
+            sourcePoint = getConnectionPoint(sourceBoundElement, element.source.connection!, sourceDirection, connectionOffset);
             sourceHandleRef.point = rotatePoints(
                 [sourcePoint],
                 RectangleClient.getCenterPoint(board.getRectangle(sourceBoundElement!)!),
-                sourceBoundElement?.angle!
+                sourceBoundElement.angle
             )[0];
         } else {
+            const direction = getDirectionByVector(sourceVector);
+            sourceDirection = direction ? direction : sourceDirection;
+            sourceHandleRef.direction = sourceDirection;
+            sourcePoint = getConnectionPoint(sourceBoundElement, element.source.connection!, sourceDirection, connectionOffset);
             sourceHandleRef.point = sourcePoint;
         }
-        sourceHandleRef.vector = sourceVector;
     }
     if (targetBoundElement) {
         const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element, LineMarkerType.none, LineHandleKey.target) ? 0 : strokeWidth;
         const targetVector = getVectorByConnection(targetBoundElement, element.target.connection!);
-        const rotatedTargetVector = rotateVector(targetVector, targetBoundElement.angle);
-        const direction = getDirectionByVector(rotatedTargetVector);
-        targetDirection = direction ? direction : targetDirection;
-        targetPoint = getConnectionPoint(targetBoundElement, element.target.connection!, targetDirection, connectionOffset);
+        targetHandleRef.vector = targetVector;
         targetHandleRef.boundElement = targetBoundElement;
-        targetHandleRef.direction = targetDirection;
-
-        if (targetBoundElement.angle) {
+        if (hasValidAngle(targetBoundElement)) {
+            const rotatedTargetVector = rotateVector(targetVector, targetBoundElement.angle);
+            const direction = getDirectionByVector(rotatedTargetVector);
+            targetDirection = direction ? direction : targetDirection;
+            targetHandleRef.direction = targetDirection;
+            targetPoint = getConnectionPoint(targetBoundElement, element.target.connection!, targetDirection, connectionOffset);
             targetHandleRef.point = rotatePoints(
                 [targetPoint],
                 RectangleClient.getCenterPoint(board.getRectangle(targetBoundElement)!),
                 targetBoundElement?.angle!
             )[0];
         } else {
+            const direction = getDirectionByVector(targetVector);
+            targetDirection = direction ? direction : targetDirection;
+            targetHandleRef.direction = targetDirection;
+            targetPoint = getConnectionPoint(targetBoundElement, element.target.connection!, targetDirection, connectionOffset);
+
             targetHandleRef.point = targetPoint;
         }
-
-        targetHandleRef.vector = targetVector;
     }
     return { source: sourceHandleRef, target: targetHandleRef };
 };
