@@ -228,8 +228,10 @@ describe('group', () => {
         });
 
         it('should get canAddGroup value to be false', () => {
+            expect(canAddGroup(board, [children[0]])).toBe(false);
             expect(canAddGroup(board, group1)).toBe(false);
             expect(canAddGroup(board, [...group1, group2[1]])).toBe(false);
+            expect(canAddGroup(board, [...children, group2[1]])).toBe(false);
         });
     });
 
