@@ -176,11 +176,13 @@ export function withSelection(board: PlaitBoard) {
                 if (!options.isMultiple && elements.length > 1) {
                     elements = [elements[0]];
                 }
-                const isHitElementWithGroup = elements.some(item => item.groupId);
-                const selectedElements = getSelectedElements(board);
-                if (isHitElementWithGroup) {
-                    if (board.selection && Selection.isCollapsed(board.selection)) {
-                        if (elements.length === 1) {
+                if (board.selection && Selection.isCollapsed(board.selection) && elements.length > 1) {
+                    cacheSelectedElements(board, [...elements]);
+                } else {
+                    const isHitElementWithGroup = elements.some(item => item.groupId);
+                    const selectedElements = getSelectedElements(board);
+                    if (isHitElementWithGroup) {
+                        if (board.selection && Selection.isCollapsed(board.selection)) {
                             const hitElement = elements[0];
                             const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
                             if (hitElementGroups.length) {
@@ -234,41 +236,39 @@ export function withSelection(board: PlaitBoard) {
                                 cacheSelectedElements(board, uniqueById(newElements));
                             }
                         } else {
+                            let newElements = [...selectedElements];
+                            elements.forEach(item => {
+                                if (!item.groupId) {
+                                    newElements.push(item);
+                                } else {
+                                    newElements.push(...getElementsInGroupByElement(board, item));
+                                }
+                            });
+                            cacheSelectedElements(board, uniqueById(newElements));
+                        }
+                    } else {
+                        if (isShift) {
+                            const newElements = [...selectedElements];
+                            if (board.selection && Selection.isCollapsed(board.selection)) {
+                                elements.forEach(element => {
+                                    if (newElements.includes(element)) {
+                                        newElements.splice(newElements.indexOf(element), 1);
+                                    } else {
+                                        newElements.push(element);
+                                    }
+                                });
+                                cacheSelectedElements(board, newElements);
+                            } else {
+                                elements.forEach(element => {
+                                    if (!newElements.includes(element)) {
+                                        newElements.push(element);
+                                    }
+                                });
+                                cacheSelectedElements(board, [...newElements]);
+                            }
+                        } else {
                             cacheSelectedElements(board, [...elements]);
                         }
-                    } else {
-                        let newElements = [...selectedElements];
-                        elements.forEach(item => {
-                            if (!item.groupId) {
-                                newElements.push(item);
-                            } else {
-                                newElements.push(...getElementsInGroupByElement(board, item));
-                            }
-                        });
-                        cacheSelectedElements(board, uniqueById(newElements));
-                    }
-                } else {
-                    if (isShift) {
-                        const newElements = [...selectedElements];
-                        if (board.selection && Selection.isCollapsed(board.selection)) {
-                            elements.forEach(element => {
-                                if (newElements.includes(element)) {
-                                    newElements.splice(newElements.indexOf(element), 1);
-                                } else {
-                                    newElements.push(element);
-                                }
-                            });
-                            cacheSelectedElements(board, newElements);
-                        } else {
-                            elements.forEach(element => {
-                                if (!newElements.includes(element)) {
-                                    newElements.push(element);
-                                }
-                            });
-                            cacheSelectedElements(board, [...newElements]);
-                        }
-                    } else {
-                        cacheSelectedElements(board, [...elements]);
                     }
                 }
                 const newElements = getSelectedElements(board);
