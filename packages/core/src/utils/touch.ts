@@ -2,7 +2,7 @@ import { PlaitBoard } from '../interfaces/board';
 import { createG } from './dom/common';
 
 export interface TouchRef {
-    target?: SVGElement;
+    target?: HTMLElement | SVGElement;
     state: boolean;
     host?: SVGGElement;
 }
@@ -14,8 +14,17 @@ export const isPreventTouchMove = (board: PlaitBoard) => {
 };
 
 export const preventTouchMove = (board: PlaitBoard, event: PointerEvent, state: boolean) => {
-    if (state && (event.target instanceof HTMLElement || event.target instanceof SVGElement)) {
-        BOARD_TO_TOUCH_REF.set(board, { state, target: event.target instanceof SVGElement ? event.target : undefined });
+    const hostElement = PlaitBoard.getElementHost(board);
+    const activeHostElement = PlaitBoard.getElementActiveHost(board);
+    if (state) {
+        if (
+            (event.target instanceof HTMLElement || event.target instanceof SVGElement) &&
+            (hostElement.contains(event.target) || activeHostElement.contains(event.target))
+        ) {
+            BOARD_TO_TOUCH_REF.set(board, { state, target: event.target instanceof SVGElement ? event.target : undefined });
+        } else {
+            BOARD_TO_TOUCH_REF.set(board, { state, target: undefined });
+        }
     } else {
         const ref = BOARD_TO_TOUCH_REF.get(board);
         if (ref) {
