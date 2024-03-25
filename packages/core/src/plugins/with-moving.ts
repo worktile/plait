@@ -35,6 +35,9 @@ export function withMoving(board: PlaitBoard) {
     let activeElements: PlaitElement[] = [];
     let alignG: SVGGElement | null = null;
     let activeElementsRectangle: RectangleClient | null = null;
+    let selectedTargetElements: PlaitElement[] | null = null;
+    let hitTargetElement: PlaitElement | undefined = undefined;
+    let isHitSelectedTarget: boolean | undefined = undefined;
 
     board.pointerDown = (event: PointerEvent) => {
         if (
@@ -47,9 +50,9 @@ export function withMoving(board: PlaitBoard) {
             return;
         }
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        const hitTargetElement = getHitElementByPoint(board, point, el => board.isMovable(el));
-        const selectedTargetElements = getSelectedTargetElements(board);
-        const isHitSelectedTarget = hitTargetElement && selectedTargetElements.includes(hitTargetElement);
+        hitTargetElement = getHitElementByPoint(board, point, el => board.isMovable(el));
+        selectedTargetElements = getSelectedTargetElements(board);
+        isHitSelectedTarget = hitTargetElement && selectedTargetElements.includes(hitTargetElement);
         if (hitTargetElement && isHitSelectedTarget) {
             startPoint = point;
             activeElements = selectedTargetElements;
@@ -60,9 +63,6 @@ export function withMoving(board: PlaitBoard) {
             activeElements = getElementsInGroupByElement(board, hitTargetElement);
             activeElementsRectangle = getRectangleByElements(board, activeElements, true);
             preventTouchMove(board, event, true);
-            if (selectedTargetElements.length > 0) {
-                addSelectionWithTemporaryElements(board, []);
-            }
         } else {
             // 只有判定用户未击中元素之后才可以验证用户是否击中了已选元素所在的空白区域
             // Only after it is determined that the user has not hit the element can it be verified whether the user hit the blank area where the selected element is located.
@@ -89,6 +89,12 @@ export function withMoving(board: PlaitBoard) {
             offsetY = endPoint[1] - startPoint[1];
             const distance = distanceBetweenPointAndPoint(...endPoint, ...startPoint);
             if (distance > PRESS_AND_MOVE_BUFFER || getMovingElements(board).length > 0) {
+                if (hitTargetElement && !isHitSelectedTarget && selectedTargetElements && selectedTargetElements.length > 0) {
+                    addSelectionWithTemporaryElements(board, []);
+                    hitTargetElement = undefined;
+                    selectedTargetElements = null;
+                    isHitSelectedTarget = undefined;
+                }
                 throttleRAF(board, 'with-moving', () => {
                     if (!activeElementsRectangle) {
                         return;
@@ -131,6 +137,9 @@ export function withMoving(board: PlaitBoard) {
 
     board.globalPointerUp = event => {
         isPreventDefault = false;
+        hitTargetElement = undefined;
+        selectedTargetElements = null;
+        isHitSelectedTarget = undefined;
         if (startPoint) {
             cancelMove(board);
         }
