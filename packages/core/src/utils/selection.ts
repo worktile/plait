@@ -100,7 +100,7 @@ export function setSelectedElementsWithGroup(board: PlaitBoard, elements: PlaitE
             const elementsInHighestGroup = getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
             const isSelectGroupElement = selectedElements.some(element => elementsInHighestGroup.map(item => item.id).includes(element.id));
             if (isShift) {
-                cacheSelectedElementsWithGroupOnShit(board, elements, isSelectGroupElement, elementsInHighestGroup);
+                cacheSelectedElementsWithGroupOnShift(board, elements, isSelectGroupElement, elementsInHighestGroup);
             } else {
                 cacheSelectedElementsWithGroup(board, elements, isSelectGroupElement, hitElementGroups);
             }
@@ -108,7 +108,7 @@ export function setSelectedElementsWithGroup(board: PlaitBoard, elements: PlaitE
     }
 }
 
-export function cacheSelectedElementsWithGroupOnShit(
+export function cacheSelectedElementsWithGroupOnShift(
     board: PlaitBoard,
     elements: PlaitElement[],
     isSelectGroupElement: boolean,
