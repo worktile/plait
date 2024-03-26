@@ -1,5 +1,7 @@
 ---
 '@plait/core': patch
+'@plait/common': patch
 ---
 
-add group test
+add test for group in utils 
+add test for withGroup plugin
