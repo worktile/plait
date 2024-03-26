@@ -1,5 +1,28 @@
 # @plait/common
 
+## 0.53.0
+
+### Minor Changes
+
+-   [#781](https://github.com/worktile/plait/pull/781) [`88140782`](https://github.com/worktile/plait/commit/881407821ab449553b438d33e2db216121414ba7) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add canAddToGroup for board
+    support mindmap group
+
+*   [#775](https://github.com/worktile/plait/pull/775) [`63fa2b8b`](https://github.com/worktile/plait/commit/63fa2b8bf40f5ad4c9f888145d7ce9e511b76bd8) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support group copy and paste
+
+-   [#783](https://github.com/worktile/plait/pull/783) [`09b2f382`](https://github.com/worktile/plait/commit/09b2f382723d21bcb1e1f7ea4b11833355d66716) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - export GroupTransforms and support group hotkey
+
+*   [#779](https://github.com/worktile/plait/pull/779) [`18b05a82`](https://github.com/worktile/plait/commit/18b05a8287ba7c5befc6e30fed9208c33ed1688f) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - remove group with only one element
+
+### Patch Changes
+
+-   [#794](https://github.com/worktile/plait/pull/794) [`ae0365a0`](https://github.com/worktile/plait/commit/ae0365a09d43f207ea5ebb645d67ab90afafce67) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support group align and distribute
+
+*   [#784](https://github.com/worktile/plait/pull/784) [`ac620059`](https://github.com/worktile/plait/commit/ac620059e81d21885c34f8427d32eb47531c971b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - insert group at the end
+
+-   [#793](https://github.com/worktile/plait/pull/793) [`a1df7e51`](https://github.com/worktile/plait/commit/a1df7e518080593a08deb339f3aea6b5a6abfe0f) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(common): fix image with angle drag error
+
+*   [#786](https://github.com/worktile/plait/pull/786) [`3bfc967f`](https://github.com/worktile/plait/commit/3bfc967fdc3453753bad2086cea7beedbecaafc0) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix remove group error
+
 ## 0.51.4
 
 ## 0.52.0
