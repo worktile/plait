@@ -5,6 +5,7 @@ import {
     RectangleClient,
     createForeignObject,
     createG,
+    setAngleForG,
     updateForeignObject
 } from '@plait/core';
 import { Generator, GeneratorOptions } from './generator';
@@ -64,6 +65,7 @@ export class ImageGenerator<T extends PlaitElement = PlaitElement> extends Gener
     updateImage(nodeG: SVGGElement, previous: T, current: T) {
         if (previous !== current && this.componentRef) {
             this.componentRef.instance.imageItem = this.options.getImageItem(current);
+            this.componentRef.instance.element = current;
             this.componentRef!.instance.getRectangle = () => {
                 return this.options.getRectangle(current);
             };
@@ -76,6 +78,9 @@ export class ImageGenerator<T extends PlaitElement = PlaitElement> extends Gener
             currentForeignObject.x,
             currentForeignObject.y
         );
+        if (currentForeignObject && current.angle) {
+            setAngleForG(this.g!, RectangleClient.getCenterPoint(currentForeignObject), current.angle);
+        }
         // solve image lose on move node
         if (this.foreignObject.children.length === 0) {
             this.foreignObject.append(this.componentRef!.instance.nativeElement);
