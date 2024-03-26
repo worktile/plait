@@ -1,5 +1,115 @@
 # plait
 
+## 0.53.0
+
+### Minor Changes
+
+-   [#781](https://github.com/worktile/plait/pull/781) [`88140782`](https://github.com/worktile/plait/commit/881407821ab449553b438d33e2db216121414ba7) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add canAddToGroup for board
+    support mindmap group
+
+*   [#775](https://github.com/worktile/plait/pull/775) [`63fa2b8b`](https://github.com/worktile/plait/commit/63fa2b8bf40f5ad4c9f888145d7ce9e511b76bd8) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support group copy and paste
+
+-   [#783](https://github.com/worktile/plait/pull/783) [`09b2f382`](https://github.com/worktile/plait/commit/09b2f382723d21bcb1e1f7ea4b11833355d66716) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - export GroupTransforms and support group hotkey
+
+*   [#780](https://github.com/worktile/plait/pull/780) [`248ada7a`](https://github.com/worktile/plait/commit/248ada7aa6c3280640b51f391b888119e803132b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add debug util methods to help developer to generate temporary drawing elements
+
+    ### Debug 工具使用说明
+
+    #### 定义
+
+    定义 debugKey 并且创建 debug generator
+
+    ```
+    const debugKey = 'debug:plait:resize-for-rotation';
+    const debugGenerator = createDebugGenerator(debugKey);
+    ```
+
+    > 如果想绘制真正的辅助线，需要在 localStorage 中添加键值对（'debugKey',true），例如：debug:plait:resize-for-rotation = true;
+
+    #### 清理
+
+    在下一个渲染周期开始时清理生成的临时图形
+
+    ```
+    debugGenerator.isDebug() && debugGenerator.clear();
+    ```
+
+    #### 绘制辅助元素
+
+    真正绘制辅助元素的方法，目前支持：`drawPolygon`、`drawRectangle`、`drawCircles` 三种类型的元素绘制
+
+    绘制函数主要做的事情：
+
+    1. 生成元素 g
+    2. 添加到 g 到 activeHost
+    3. 添加到待清理列表，使调用 clear 时可以清楚上次绘制的元素 g
+    4. 返回新生成的 g 元素，方便开发做其它处理
+
+    ```
+    debugGenerator.isDebug() && debugGenerator.drawRectangle(board, newBoundingBox, { stroke: 'blue' });
+    ```
+
+    ---
+
+    add debug util methods to help developer drawing temporary geometry elements
+
+    #### Define
+
+    Define debugKey and create debug generator
+
+    ```
+    const debugKey = 'debug:plait:resize-for-rotation';
+    const debugGenerator = createDebugGenerator(debugKey);
+    ```
+
+    > If you want to draw real auxiliary lines, you need to add a key-value pair ('debugKey', true) in localStorage, for example: debug:plait:resize-for-rotation = true;
+
+    #### Clear
+
+    Clean up the resulting temporary graphics at the start of the next render cycle
+
+    ```
+    debugGenerator.isDebug() && debugGenerator.clear();
+    ```
+
+    #### Draw auxiliary elements
+
+    The actual method of drawing auxiliary elements, currently supports three types of element drawing: `drawPolygon`, `drawRectangle`, and `drawCircles`
+
+    The main things the drawing function does:
+
+    1. Generate element g
+    2. Add g to activeHost
+    3. Add it to the list to be cleaned so that the last drawn element g can be cleared when calling clear
+    4. Return the newly generated g element to facilitate development and other processing
+
+    ```
+    debugGenerator.isDebug() && debugGenerator.drawRectangle(board, newBoundingBox, { stroke: 'blue' });
+    ```
+
+### Patch Changes
+
+-   [#790](https://github.com/worktile/plait/pull/790) [`5d01db16`](https://github.com/worktile/plait/commit/5d01db16057da326989155638b5e462d9cb4c1d6) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - set all elements to cache when temporaryElements.length > 1
+
+*   [`13179e6c`](https://github.com/worktile/plait/commit/13179e6c4fa1cbaefc8af47a3de03a273c96a3b3) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - only handle the g had been removed from element host to avoid handling normal g
+
+    resolve issue: background color element's g was removed when resizing
+
+-   [#791](https://github.com/worktile/plait/pull/791) [`c1ea98a8`](https://github.com/worktile/plait/commit/c1ea98a870c3181e6315e9aabd911adf70dcf463) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - move addSelectionWithTemporaryElements to pointerMove
+
+*   [#792](https://github.com/worktile/plait/pull/792) [`e4516379`](https://github.com/worktile/plait/commit/e4516379f2e80219157db530f62aa528c6ce813f) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add group test
+
+-   [#788](https://github.com/worktile/plait/pull/788) [`8599fad3`](https://github.com/worktile/plait/commit/8599fad3bffdc93eb02d643fc1d159ce06068119) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Only after it is determined that the user has not hit the element can it be verified whether the user hit the blank area where the selected element is located.
+
+    只有判定用户未击中元素之后才可以验证用户是否击中了已选元素所在的空白区域
+
+*   [#795](https://github.com/worktile/plait/pull/795) [`f40d5d89`](https://github.com/worktile/plait/commit/f40d5d89314db91181f2f8daf30abe22c1243119) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add setSelectedElementsWithGroup function
+
+-   [#782](https://github.com/worktile/plait/pull/782) [`9ccc189f`](https://github.com/worktile/plait/commit/9ccc189fc670850a4e74cfda879004eafcd8347b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add source elements when find group
+    add uniqueById
+
+*   [#787](https://github.com/worktile/plait/pull/787) [`9706f282`](https://github.com/worktile/plait/commit/9706f28254e134ac29d0dd86362f57ecd1da7bfd) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - adjust group element select
+
 ## 0.51.4
 
 ## 0.52.0

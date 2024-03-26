@@ -1,5 +1,24 @@
 # @plait/draw
 
+## 0.53.0
+
+### Minor Changes
+
+-   [#781](https://github.com/worktile/plait/pull/781) [`88140782`](https://github.com/worktile/plait/commit/881407821ab449553b438d33e2db216121414ba7) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add canAddToGroup for board
+    support mindmap group
+
+*   [#775](https://github.com/worktile/plait/pull/775) [`63fa2b8b`](https://github.com/worktile/plait/commit/63fa2b8bf40f5ad4c9f888145d7ce9e511b76bd8) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support group copy and paste
+
+-   [#783](https://github.com/worktile/plait/pull/783) [`09b2f382`](https://github.com/worktile/plait/commit/09b2f382723d21bcb1e1f7ea4b11833355d66716) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - export GroupTransforms and support group hotkey
+
+*   [#773](https://github.com/worktile/plait/pull/773) [`3c273292`](https://github.com/worktile/plait/commit/3c2732924b0c090f343be64efe28c4459dd4a8d5) Thanks [@MissLixf](https://github.com/MissLixf)! - feat(draw): support rotate resize
+
+-   [#785](https://github.com/worktile/plait/pull/785) [`69645906`](https://github.com/worktile/plait/commit/69645906a4ece02e3ad66ca2bb45eaff429428d2) Thanks [@MissLixf](https://github.com/MissLixf)! - support draw line for element with angle
+
+### Patch Changes
+
+-   [#789](https://github.com/worktile/plait/pull/789) [`df12d194`](https://github.com/worktile/plait/commit/df12d194c16fcfcafb9482888c73495393a66f6e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - edit hitElement text when dblClick
+
 ## 0.51.4
 
 ### Patch Changes
