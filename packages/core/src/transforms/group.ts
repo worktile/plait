@@ -15,7 +15,7 @@ export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedIsolatedElements = getSelectedIsolatedElementsCanAddToGroup(board);
     const highestSelectedElements = [...selectedGroups, ...selectedIsolatedElements];
     const group = createGroup();
-    if (canAddGroup(board, highestSelectedElements)) {
+    if (canAddGroup(board)) {
         highestSelectedElements.forEach(item => {
             const path = PlaitBoard.findPath(board, item);
             NodeTransforms.setNode(board, { groupId: group.id }, path);

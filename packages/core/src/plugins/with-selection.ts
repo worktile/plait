@@ -12,17 +12,13 @@ import {
     getSelectedElements,
     removeSelectedElement
 } from '../utils/selected-element';
-import { PlaitElement, PlaitGroup, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
+import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
 import {
     clearSelectionMoving,
     createSelectionRectangleG,
     deleteTemporaryElements,
     drawRectangle,
-    getAllElementsInGroup,
-    getElementsInGroupByElement,
-    getGroupByElement,
-    filterSelectedGroups,
     getTemporaryElements,
     isDragging,
     isHandleSelection,
@@ -33,8 +29,7 @@ import {
     throttleRAF,
     toHostPoint,
     toViewBoxPoint,
-    getElementsInGroup,
-    uniqueById
+    setSelectedElementsWithGroup
 } from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
@@ -182,70 +177,7 @@ export function withSelection(board: PlaitBoard) {
                     const isHitElementWithGroup = elements.some(item => item.groupId);
                     const selectedElements = getSelectedElements(board);
                     if (isHitElementWithGroup) {
-                        if (board.selection && Selection.isCollapsed(board.selection)) {
-                            const hitElement = elements[0];
-                            const hitElementGroups = getGroupByElement(board, hitElement, true) as PlaitGroup[];
-                            if (hitElementGroups.length) {
-                                let newElements = [...selectedElements];
-                                const elementsInHighestGroup =
-                                    getElementsInGroup(board, hitElementGroups[hitElementGroups.length - 1], true) || [];
-                                const isSelectGroupElement = selectedElements.some(element =>
-                                    elementsInHighestGroup.map(item => item.id).includes(element.id)
-                                );
-                                if (isShift) {
-                                    let pendingElements: PlaitElement[] = [];
-                                    if (!isSelectGroupElement) {
-                                        pendingElements = elementsInHighestGroup;
-                                    } else {
-                                        const isHitSelectedElement = selectedElements.some(item => item.id === hitElement.id);
-                                        const selectedElementsInGroup = elementsInHighestGroup.filter(item =>
-                                            selectedElements.includes(item)
-                                        );
-                                        if (isHitSelectedElement) {
-                                            pendingElements = selectedElementsInGroup.filter(item => item.id !== hitElement.id);
-                                        } else {
-                                            pendingElements.push(...selectedElementsInGroup, ...elements);
-                                        }
-                                    }
-                                    elementsInHighestGroup.forEach(element => {
-                                        if (newElements.includes(element)) {
-                                            newElements.splice(newElements.indexOf(element), 1);
-                                        }
-                                    });
-                                    if (pendingElements.length) {
-                                        newElements.push(...pendingElements);
-                                    }
-                                } else {
-                                    newElements = [...elements];
-                                    const selectedGroups = filterSelectedGroups(board, hitElementGroups);
-                                    if (selectedGroups.length > 0) {
-                                        if (selectedGroups.length > 1) {
-                                            newElements = getAllElementsInGroup(board, selectedGroups[selectedGroups.length - 2], true);
-                                        }
-                                    } else {
-                                        const elementsInGroup = getAllElementsInGroup(
-                                            board,
-                                            hitElementGroups[hitElementGroups.length - 1],
-                                            true
-                                        );
-                                        if (!isSelectGroupElement) {
-                                            newElements = elementsInGroup;
-                                        }
-                                    }
-                                }
-                                cacheSelectedElements(board, uniqueById(newElements));
-                            }
-                        } else {
-                            let newElements = [...selectedElements];
-                            elements.forEach(item => {
-                                if (!item.groupId) {
-                                    newElements.push(item);
-                                } else {
-                                    newElements.push(...getElementsInGroupByElement(board, item));
-                                }
-                            });
-                            cacheSelectedElements(board, uniqueById(newElements));
-                        }
+                        setSelectedElementsWithGroup(board, elements, isShift);
                     } else {
                         if (isShift) {
                             const newElements = [...selectedElements];
@@ -271,7 +203,6 @@ export function withSelection(board: PlaitBoard) {
                         }
                     }
                 }
-
                 const newElements = getSelectedElements(board);
                 previousSelectedElements = newElements;
                 deleteTemporaryElements(board);
