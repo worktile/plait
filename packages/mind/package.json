@@ -1,9 +1,9 @@
 {
   "name": "@plait/mind",
-  "version": "0.51.4",
+  "version": "0.52.0",
   "peerDependencies": {
-    "@angular/common": "^16.0.0",
-    "@angular/core": "^16.0.0"
+    "@angular/common": "^17.2.4",
+    "@angular/core": "^17.2.4"
   },
   "dependencies": {
     "tslib": "^2.3.0"
