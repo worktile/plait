@@ -1,6 +1,5 @@
-import { PlaitElement } from '@plait/core';
 import { ACTIVE_STROKE_WIDTH, SELECTION_RECTANGLE_CLASS_NAME } from '../constants';
-import { PlaitBoard, PlaitGroup, PlaitPluginKey, PlaitPointerType, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
+import { PlaitBoard, PlaitElement, PlaitGroup, PlaitPluginKey, PlaitPointerType, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { setDragging } from './dnd';
 import { getRectangleByElements } from './element';
 import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from './weak-maps';
