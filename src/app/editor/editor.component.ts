@@ -18,7 +18,8 @@ import {
     canRemoveGroup,
     canAddGroup,
     getHighestSelectedElements,
-    GroupTransforms
+    GroupTransforms,
+    deleteFragment
 } from '@plait/core';
 import { mockDrawData, mockGroupData, mockMindData, mockRotateData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -180,7 +181,7 @@ export class BasicEditorComponent implements OnInit {
         event.preventDefault();
         const rectangle = getRectangleByElements(this.board, this.selectedElements, false);
         this.board.setFragment(null, null, rectangle, 'cut');
-        this.board.deleteFragment(null);
+        deleteFragment(this.board);
     }
 
     addGroup(event: MouseEvent) {

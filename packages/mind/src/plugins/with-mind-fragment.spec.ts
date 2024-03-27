@@ -6,6 +6,7 @@ import {
     clearNodeWeakMap,
     clearSelectedElement,
     createTestingBoard,
+    deleteFragment,
     fakeNodeWeakMap
 } from '@plait/core';
 import { getTestingChildren } from '../testing/data/basic';
@@ -37,7 +38,7 @@ describe('with mind fragment plugin', () => {
             const parentPath = Path.parent(targetPath);
             let parent = PlaitNode.get<MindElement>(board, parentPath);
             const childrenCount = parent.children.length;
-            board.deleteFragment(null);
+            deleteFragment(board);
             parent = PlaitNode.get<MindElement>(board, parentPath);
             expect(parent.children.length).toEqual(childrenCount - 1);
 
@@ -51,7 +52,7 @@ describe('with mind fragment plugin', () => {
             const parentPath = Path.parent(targetPath);
             let parent = PlaitNode.get<MindElement>(board, parentPath);
             const childrenCount = parent.children.length;
-            board.deleteFragment(null);
+            deleteFragment(board);
             parent = PlaitNode.get<MindElement>(board, parentPath);
             expect(parent.children.length).toEqual(childrenCount - 1);
         });
@@ -64,7 +65,7 @@ describe('with mind fragment plugin', () => {
             const parentPath = Path.parent(targetPath);
             let parent = PlaitNode.get<MindElement>(board, parentPath);
             const childrenCount = parent.children.length;
-            board.deleteFragment(null);
+            deleteFragment(board);
             parent = PlaitNode.get<MindElement>(board, parentPath);
             expect(parent.children.length).toEqual(childrenCount - 3);
         });
