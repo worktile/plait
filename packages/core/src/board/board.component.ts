@@ -36,6 +36,7 @@ import {
     IS_CHROME,
     IS_FIREFOX,
     IS_SAFARI,
+    deleteFragment,
     getClipboardData,
     getRectangleByElements,
     getSelectedElements,
@@ -429,7 +430,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 event.preventDefault();
                 const rectangle = getRectangleByElements(this.board, selectedElements, false);
                 this.board.setFragment(event.clipboardData, null, rectangle, 'cut');
-                this.board.deleteFragment(event.clipboardData);
+                deleteFragment(this.board);
             });
     }
 

@@ -43,8 +43,8 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
         return getDeletedFragment(data);
     };
 
-    board.deleteFragment = (data: DataTransfer | null) => {
-        deleteFragment(data);
+    board.deleteFragment = (elements: PlaitElement[]) => {
+        deleteFragment(elements);
         if (firstLevelElements) {
             const nextSelected = getNextSelectedElement(board, firstLevelElements);
             if (nextSelected) {

@@ -100,18 +100,18 @@ export function withGroup(board: PlaitBoard) {
     };
 
     board.getDeletedFragment = (data: PlaitElement[]) => {
+        removeGroups = getRemoveGroups(board);
         if (removeGroups && removeGroups.length) {
             data.push(...removeGroups);
         }
         return getDeletedFragment(data);
     };
 
-    board.deleteFragment = (data: DataTransfer | null) => {
-        removeGroups = getRemoveGroups(board);
+    board.deleteFragment = (elements: PlaitElement[]) => {
         if (removeGroups?.length) {
             updateSiblingElementGroupId(board, removeGroups);
         }
-        deleteFragment(data);
+        deleteFragment(elements);
         removeGroups = null;
     };
 
@@ -228,7 +228,7 @@ const updateSiblingElementGroupId = (board: PlaitBoard, removeGroups: PlaitGroup
             const elementsInGroup = getElementsInGroup(board, hitElementGroups[0], false, true);
             const siblingElements = elementsInGroup.filter(element => element.id !== item.id);
             if (siblingElements.length === 1) {
-                const removeGroupIds = removeGroups.map(item=> item.id);
+                const removeGroupIds = removeGroups.map(item => item.id);
                 if (hitElementGroups.some(group => removeGroupIds.includes(group.id))) {
                     const group = hitElementGroups.find(group => !removeGroupIds.includes(group.id));
                     const path = PlaitBoard.findPath(board, siblingElements[0]);

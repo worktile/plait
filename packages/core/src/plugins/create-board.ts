@@ -96,8 +96,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
             setClipboardData(data, clipboardContext);
         },
         insertFragment: (data: DataTransfer | null) => {},
-        deleteFragment: (data: DataTransfer | null) => {
-            const elements = board.getDeletedFragment([]);
+        deleteFragment: (elements: PlaitElement[]) => {
             CoreTransforms.removeElements(board, elements);
         },
         getDeletedFragment: (data: PlaitElement[]) => data,

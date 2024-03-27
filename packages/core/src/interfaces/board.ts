@@ -62,7 +62,7 @@ export interface PlaitBoard {
         type: 'copy' | 'cut'
     ) => void;
     insertFragment: (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => void;
-    deleteFragment: (data: DataTransfer | null) => void;
+    deleteFragment: (data: PlaitElement[]) => void;
     getDeletedFragment: (data: PlaitElement[]) => PlaitElement[];
     getRelatedFragment: (data: PlaitElement[]) => PlaitElement[];
     dblClick: (event: MouseEvent) => void;

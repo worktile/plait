@@ -1,7 +1,7 @@
 import { isHotkey } from 'is-hotkey';
 import { Ancestor, PlaitBoard, PlaitElement, PlaitPluginKey } from '../interfaces';
 import { BoardTransforms, Transforms } from '../transforms';
-import { depthFirstRecursion, getSelectedElements, hotkeys } from '../utils';
+import { deleteFragment, depthFirstRecursion, getSelectedElements, hotkeys } from '../utils';
 import { PlaitOptionsBoard } from './with-options';
 import { WithPluginOptions } from './with-selection';
 
@@ -41,7 +41,7 @@ export const withHotkey = (board: PlaitBoard) => {
             (hotkeys.isDeleteBackward(event) || hotkeys.isDeleteForward(event))
         ) {
             event.preventDefault();
-            board.deleteFragment(null);
+            deleteFragment(board);
         }
 
         keyDown(event);
