@@ -29,7 +29,7 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
             )
         );
     }
-    const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
+    const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params, board));
     const nextKeyPoints = keyPoints.slice(1, keyPoints.length - 1);
     if (element.points.length === 2) {
         return simplifyOrthogonalPoints(keyPoints);

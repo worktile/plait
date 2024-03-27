@@ -35,6 +35,17 @@ export class DebugGenerator {
         setTemporaryGArray(this.debugKey, gArray);
         return polygonG;
     }
+    drawLine(board: PlaitBoard, points: Point[], options?: Options) {
+        if (!isDebug(this.debugKey)) {
+            return;
+        }
+        const lineG = PlaitBoard.getRoughSVG(board).linearPath(points, options || { stroke: 'red' });
+        PlaitBoard.getElementActiveHost(board).append(lineG);
+        const gArray = getTemporaryGArray(this.debugKey);
+        gArray.push(lineG);
+        setTemporaryGArray(this.debugKey, gArray);
+        return lineG;
+    }
     drawRectangle(board: PlaitBoard, data: Point[] | RectangleClient, options?: Options) {
         if (!isDebug(this.debugKey)) {
             return;

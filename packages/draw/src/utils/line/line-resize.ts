@@ -162,7 +162,7 @@ export function getIndexAndDeleteCountByKeyPoint(
         if (midDataPoints.length > 0) {
             const handleRefPair = getLineHandleRefPair(board, element);
             const params = getElbowLineRouteOptions(board, element, handleRefPair);
-            const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
+            const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params, board));
             const nextKeyPoints = simplifyOrthogonalPoints(keyPoints.slice(1, keyPoints.length - 1));
             const nextDataPoints = [nextRenderPoints[0], ...midDataPoints, nextRenderPoints[nextRenderPoints.length - 1]];
             const mirrorDataPoints = getMirrorDataPoints(board, nextDataPoints, nextKeyPoints, params);
