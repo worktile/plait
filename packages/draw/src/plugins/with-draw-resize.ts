@@ -151,7 +151,13 @@ export function withDrawResize(board: PlaitBoard) {
                     points = rotatedDataPoints(adjustTargetPoints, bulkRotationRef.newCenterPoint, bulkRotationRef.angle) as [Point, Point];
                 } else {
                     if (hasValidAngle(target) && isAxisChangedByAngle(target.angle)) {
-                        points = getResizePointsByOtherwiseAxis(target.points, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+                        points = getResizePointsByOtherwiseAxis(
+                            board,
+                            target.points,
+                            originPoint,
+                            resizeAlignRef.xZoom,
+                            resizeAlignRef.yZoom
+                        );
                     } else {
                         points = target.points.map(p => {
                             return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
@@ -284,13 +290,22 @@ export const movePointByZoomAndOriginPoint = (p: Point, resizeOriginPoint: Point
  * 2. Scale based on the rotated points
  * 3. Reverse rotate the scaled points by 90°
  */
-export const getResizePointsByOtherwiseAxis = (points: Point[], resizeOriginPoint: Point, xZoom: number, yZoom: number) => {
+export const getResizePointsByOtherwiseAxis = (
+    board: PlaitBoard,
+    points: Point[],
+    resizeOriginPoint: Point,
+    xZoom: number,
+    yZoom: number
+) => {
     const currentRectangle = RectangleClient.getRectangleByPoints(points);
+    debugGenerator.isDebug() && debugGenerator.drawRectangle(board, currentRectangle, { stroke: 'black' });
     let resultPoints = points;
     resultPoints = rotatePoints(resultPoints, RectangleClient.getCenterPoint(currentRectangle), (1 / 2) * Math.PI);
+    debugGenerator.isDebug() && debugGenerator.drawRectangle(board, resultPoints, { stroke: 'blue' });
     resultPoints = resultPoints.map(p => {
         return movePointByZoomAndOriginPoint(p, resizeOriginPoint, xZoom, yZoom);
     });
+    debugGenerator.isDebug() && debugGenerator.drawRectangle(board, resultPoints);
     const newRectangle = RectangleClient.getRectangleByPoints(resultPoints);
     return rotatePoints(resultPoints, RectangleClient.getCenterPoint(newRectangle), -(1 / 2) * Math.PI);
 };
