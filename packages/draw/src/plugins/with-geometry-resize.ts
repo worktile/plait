@@ -1,4 +1,14 @@
-import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements, rotate, rotatePoints } from '@plait/core';
+import {
+    Path,
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    RectangleClient,
+    Transforms,
+    getSelectedElements,
+    hasValidAngle,
+    rotateAntiPointsByElement
+} from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeRef,
@@ -49,17 +59,8 @@ export const withGeometryResize = (board: PlaitBoard) => {
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
             const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(resizeRef.element.points));
-            const angle = resizeRef.element.angle;
-            if (angle) {
-                const [rotatedStartPoint, rotateEndPoint] = rotatePoints(
-                    [resizeState.startPoint, resizeState.endPoint],
-                    centerPoint,
-                    -resizeRef.element.angle
-                );
-                resizeState.startPoint = rotatedStartPoint;
-                resizeState.endPoint = rotateEndPoint;
-            }
-
+            resizeState.startPoint = rotateAntiPointsByElement(resizeState.startPoint, resizeRef.element) || resizeState.startPoint;
+            resizeState.endPoint = rotateAntiPointsByElement(resizeState.endPoint, resizeRef.element) || resizeState.endPoint;
             alignG?.remove();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
@@ -78,13 +79,13 @@ export const withGeometryResize = (board: PlaitBoard) => {
             alignG = resizeAlignRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
             let points = resizeAlignRef.activePoints as [Point, Point];
-            if (angle) {
+            if (hasValidAngle(resizeRef.element)) {
                 points = resetPointsAfterResize(
                     resizeRef.rectangle!,
                     RectangleClient.getRectangleByPoints(points),
                     centerPoint,
                     RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points)),
-                    angle
+                    resizeRef.element.angle
                 );
             }
 
