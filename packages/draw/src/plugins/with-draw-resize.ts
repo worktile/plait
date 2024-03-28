@@ -23,7 +23,9 @@ import {
     getSelectionAngle,
     rotatePoints,
     rotatedDataPoints,
-    createDebugGenerator
+    createDebugGenerator,
+    hasValidAngle,
+    isAxisChangedByAngle
 } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
@@ -148,9 +150,13 @@ export function withDrawResize(board: PlaitBoard) {
                     ]) as Point[];
                     points = rotatedDataPoints(adjustTargetPoints, bulkRotationRef.newCenterPoint, bulkRotationRef.angle) as [Point, Point];
                 } else {
-                    points = target.points.map(p => {
-                        return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
-                    });
+                    if (hasValidAngle(target) && isAxisChangedByAngle(target.angle)) {
+                        points = getResizePointsByOtherwiseAxis(target.points, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+                    } else {
+                        points = target.points.map(p => {
+                            return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+                        });
+                    }
                 }
 
                 if (PlaitDrawElement.isGeometry(target)) {
@@ -271,4 +277,20 @@ export const movePointByZoomAndOriginPoint = (p: Point, resizeOriginPoint: Point
     const offsetX = (p[0] - resizeOriginPoint[0]) * xZoom;
     const offsetY = (p[1] - resizeOriginPoint[1]) * yZoom;
     return [p[0] + offsetX, p[1] + offsetY] as Point;
+};
+
+/**
+ * 1. Rotate 90°
+ * 2. Scale based on the rotated points
+ * 3. Reverse rotate the scaled points by 90°
+ */
+export const getResizePointsByOtherwiseAxis = (points: Point[], resizeOriginPoint: Point, xZoom: number, yZoom: number) => {
+    const currentRectangle = RectangleClient.getRectangleByPoints(points);
+    let resultPoints = points;
+    resultPoints = rotatePoints(resultPoints, RectangleClient.getCenterPoint(currentRectangle), (1 / 2) * Math.PI);
+    resultPoints = resultPoints.map(p => {
+        return movePointByZoomAndOriginPoint(p, resizeOriginPoint, xZoom, yZoom);
+    });
+    const newRectangle = RectangleClient.getRectangleByPoints(resultPoints);
+    return rotatePoints(resultPoints, RectangleClient.getCenterPoint(newRectangle), -(1 / 2) * Math.PI);
 };
