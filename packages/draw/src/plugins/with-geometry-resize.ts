@@ -1,4 +1,4 @@
-import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements, rotate, rotatePoints } from '@plait/core';
+import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, createDebugGenerator, getSelectedElements, rotate, rotatePoints } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeRef,
@@ -18,6 +18,9 @@ import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeOriginPointAndHandlePoint } from './with-draw-resize';
 import { getResizeAlignRef } from '../utils/resize-align';
+
+const debugKey = 'debug:plait:resize-geometry';
+const debugGenerator = createDebugGenerator(debugKey);
 
 export const withGeometryResize = (board: PlaitBoard) => {
     let alignG: SVGGElement | null;
@@ -48,6 +51,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
             return null;
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
+            debugGenerator.clear();
             const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(resizeRef.element.points));
             const angle = resizeRef.element.angle;
             if (angle) {
@@ -75,6 +79,11 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 isAspectRatio,
                 isFromCorner
             );
+
+            console.log(resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+
+            debugGenerator.drawCircles(board, [originPoint, handlePoint], 8, true);
+            
             alignG = resizeAlignRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
             let points = resizeAlignRef.activePoints as [Point, Point];
@@ -87,6 +96,8 @@ export const withGeometryResize = (board: PlaitBoard) => {
                     angle
                 );
             }
+
+
 
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();

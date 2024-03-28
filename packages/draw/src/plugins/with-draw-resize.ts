@@ -23,7 +23,9 @@ import {
     getSelectionAngle,
     rotatePoints,
     rotatedDataPoints,
-    createDebugGenerator
+    createDebugGenerator,
+    setAngleForG,
+    G
 } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
@@ -106,7 +108,6 @@ export function withDrawResize(board: PlaitBoard) {
             );
             alignG = resizeAlignRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
-
             if (bulkRotationRef) {
                 const boundingBoxCornerPoints = RectangleClient.getPoints(resizeRef.rectangle!);
                 const resizedBoundingBoxCornerPoints = boundingBoxCornerPoints.map(p => {
@@ -148,9 +149,53 @@ export function withDrawResize(board: PlaitBoard) {
                     ]) as Point[];
                     points = rotatedDataPoints(adjustTargetPoints, bulkRotationRef.newCenterPoint, bulkRotationRef.angle) as [Point, Point];
                 } else {
-                    points = target.points.map(p => {
-                        return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
-                    });
+                    if (target.angle) {
+                        const targetRectangle = RectangleClient.getRectangleByPoints(target.points);
+                        const unitAngle = target.angle % ((1 / 2) * Math.PI);
+                        const isAdjustAxis = unitAngle >= (1 / 4) * Math.PI || unitAngle <= (-1 / 4) * Math.PI;
+                        console.log(isAdjustAxis);
+                        const handleIndex = getIndexByResizeHandle(resizeRef.handle);
+                        const symmetricHandleIndex = getSymmetricHandleIndex(board, handleIndex);
+                        const targetOriginPoint = getResizeHandlePointByIndex(targetRectangle, symmetricHandleIndex);
+                        debugGenerator.drawCircles(board, [targetOriginPoint], 15);
+                        debugGenerator.drawRectangle(board, targetRectangle);
+                        const resizedPoints = target.points.map(p => {
+                            const xZoom = isAdjustAxis ? resizeAlignRef.yZoom : resizeAlignRef.xZoom;
+                            const yZoom = isAdjustAxis ? resizeAlignRef.xZoom : resizeAlignRef.yZoom;
+                            console.log(xZoom, yZoom);
+                            return movePointByZoomAndOriginPoint(p, targetOriginPoint, xZoom, yZoom);
+                        });
+                        const resizedTargetRectangle = RectangleClient.getRectangleByPoints(resizedPoints);
+                        // points = resizedPoints;
+                        points = resetPointsAfterResize(
+                            targetRectangle,
+                            resizedTargetRectangle,
+                            RectangleClient.getCenterPoint(targetRectangle),
+                            RectangleClient.getCenterPoint(resizedTargetRectangle),
+                            target.angle
+                        );
+                        // const resetRectangle = RectangleClient.getRectangleByPoints(points);
+                        // if (debugGenerator.isDebug()) {
+                        //     const gg = debugGenerator.drawRectangle(board, resizedTargetRectangle, { stroke: 'black' });
+                        //     // gg && target.angle && setAngleForG(gg, RectangleClient.getCenterPoint(resizedTargetRectangle), target.angle);
+                        // }
+                        // if (debugGenerator.isDebug()) {
+                        //     const gg = debugGenerator.drawRectangle(board, resizedTargetRectangle, { stroke: 'blue', strokeWidth:3 });
+                        //     gg && target.angle && setAngleForG(gg, RectangleClient.getCenterPoint(resizedTargetRectangle), target.angle);
+                        // }
+                        // if (debugGenerator.isDebug()) {
+                        //     const gg = debugGenerator.drawRectangle(board, resetRectangle);
+                        //     gg && target.angle && setAngleForG(gg, RectangleClient.getCenterPoint(resetRectangle), target.angle);
+                        // }
+                        // if (debugGenerator.isDebug()) {
+                        //     const gg = debugGenerator.drawRectangle(board, resetRectangle);
+                        //     // gg && target.angle && setAngleForG(gg, RectangleClient.getCenterPoint(resetRectangle), target.angle);
+                        // }
+                    } else {
+                        points = target.points.map(p => {
+                            return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+                        });
+                    }
                 }
 
                 if (PlaitDrawElement.isGeometry(target)) {
