@@ -8,9 +8,8 @@ import {
     distanceBetweenPointAndSegments,
     distanceBetweenPointAndPoint,
     HIT_DISTANCE_BUFFER,
-    rotate,
-    rotatePoints,
-    isPointInPolygon
+    rotatePointsByElement,
+    rotateAntiPointsByElement
 } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { TRANSPARENT } from '@plait/common';
@@ -49,22 +48,20 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
     const rangeRectangle = RectangleClient.getRectangleByPoints([selection.anchor, selection.focus]);
     if (PlaitDrawElement.isGeometry(element)) {
         const client = RectangleClient.getRectangleByPoints(element.points);
-        const centerPoint = RectangleClient.getCenterPoint(client);
-        let rotatedCornerPoints = rotatePoints(RectangleClient.getCornerPoints(client), centerPoint, element.angle);
+        let rotatedCornerPoints =
+            rotatePointsByElement(RectangleClient.getCornerPoints(client), element) || RectangleClient.getCornerPoints(client);
         if (isTextExceedingBounds(element)) {
             const textClient = getTextRectangle(element);
-            rotatedCornerPoints = rotatePoints(RectangleClient.getCornerPoints(textClient), centerPoint, element.angle);
+            rotatedCornerPoints =
+                rotatePointsByElement(RectangleClient.getCornerPoints(textClient), element) || RectangleClient.getCornerPoints(textClient);
         }
         return isPolylineHitRectangle(rotatedCornerPoints, rangeRectangle);
     }
 
     if (PlaitDrawElement.isImage(element)) {
         const client = RectangleClient.getRectangleByPoints(element.points);
-        const rotatedCornerPoints = rotatePoints(
-            RectangleClient.getCornerPoints(client),
-            RectangleClient.getCenterPoint(client),
-            element.angle
-        );
+        const rotatedCornerPoints =
+            rotatePointsByElement(RectangleClient.getCornerPoints(client), element) || RectangleClient.getCornerPoints(client);
         return isPolylineHitRectangle(rotatedCornerPoints, rangeRectangle);
     }
 
@@ -77,10 +74,7 @@ export const isRectangleHitDrawElement = (board: PlaitBoard, element: PlaitEleme
 
 export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point: Point) => {
     const rectangle = board.getRectangle(element);
-    const centerPoint = RectangleClient.getCenterPoint(rectangle!);
-    if (element.angle) {
-        point = rotate(point[0], point[1], centerPoint[0], centerPoint[1], -element.angle) as Point;
-    }
+    point = rotateAntiPointsByElement(point, element) || point;
     if (PlaitDrawElement.isGeometry(element)) {
         const fill = getFillByElement(board, element);
         const engine = getEngine(getShape(element));
@@ -114,12 +108,7 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
     }
     if (PlaitDrawElement.isImage(element)) {
         const client = RectangleClient.getRectangleByPoints(element.points);
-        const rotatedCornerPoints = rotatePoints(
-            RectangleClient.getCornerPoints(client),
-            RectangleClient.getCenterPoint(client),
-            element.angle
-        );
-        return isPointInPolygon(point, rotatedCornerPoints);
+        return RectangleClient.isPointInRectangle(client, point);
     }
 
     if (PlaitDrawElement.isLine(element)) {
@@ -130,10 +119,7 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
 
 export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, point: Point) => {
     const rectangle = board.getRectangle(element);
-    const centerPoint = RectangleClient.getCenterPoint(rectangle!);
-    if (element.angle) {
-        point = rotate(point[0], point[1], centerPoint[0], centerPoint[1], -element.angle) as Point;
-    }
+    point = rotateAntiPointsByElement(point, element) || point;
     if (PlaitDrawElement.isGeometry(element)) {
         const engine = getEngine(getShape(element));
         const isHitInside = engine.isInsidePoint(rectangle!, point);
@@ -150,7 +136,8 @@ export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, poi
         }
     }
     if (PlaitDrawElement.isImage(element)) {
-        return isRectangleHitDrawElement(board, element, { anchor: point, focus: point });
+        const client = RectangleClient.getRectangleByPoints(element.points);
+        return RectangleClient.isPointInRectangle(client, point);
     }
 
     if (PlaitDrawElement.isLine(element)) {
