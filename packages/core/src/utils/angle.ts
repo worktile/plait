@@ -79,3 +79,8 @@ export const rotateAntiPointsByElement = <T>(points: T, element: PlaitElement): 
         return null;
     }
 };
+
+export const isAxisChangedByAngle = (angle: number) => {
+    const unitAngle = Math.abs(angle) % Math.PI;
+    return unitAngle >= (1 / 4) * Math.PI && unitAngle <= (3 / 4) * Math.PI;
+};
