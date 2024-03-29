@@ -29,6 +29,7 @@ export class DebugGenerator {
             return;
         }
         const polygonG = PlaitBoard.getRoughSVG(board).polygon(points, options || { stroke: 'red' });
+        polygonG.classList.add(this.debugKey);
         PlaitBoard.getElementActiveHost(board).append(polygonG);
         const gArray = getTemporaryGArray(this.debugKey);
         gArray.push(polygonG);
@@ -40,6 +41,7 @@ export class DebugGenerator {
             return;
         }
         const lineG = PlaitBoard.getRoughSVG(board).linearPath(points, options || { stroke: 'red' });
+        lineG.classList.add(this.debugKey);
         PlaitBoard.getElementActiveHost(board).append(lineG);
         const gArray = getTemporaryGArray(this.debugKey);
         gArray.push(lineG);
@@ -63,6 +65,7 @@ export class DebugGenerator {
             rectangle.height,
             options || { stroke: 'red' }
         );
+        rectangleG.classList.add(this.debugKey);
         PlaitBoard.getElementActiveHost(board).append(rectangleG);
         const gArray = getTemporaryGArray(this.debugKey);
         gArray.push(rectangleG);
@@ -81,6 +84,7 @@ export class DebugGenerator {
                 isCumulativeDiameter ? diameter * (i + 1) : diameter,
                 Object.assign({}, { stroke: 'red', fill: 'red', fillStyle: 'solid' }, options || {})
             );
+            circle.classList.add(this.debugKey);
             PlaitBoard.getElementActiveHost(board).append(circle);
             const gArray = getTemporaryGArray(this.debugKey);
             gArray.push(circle);
