@@ -21,6 +21,7 @@ import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from
 import { Element } from 'slate';
 import {
     DefaultBasicShapeProperty,
+    DefaultCloudShapeProperty,
     DefaultFlowchartPropertyMap,
     DefaultTextProperty,
     DrawPointerType,
@@ -310,6 +311,9 @@ export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
     if (isFlowChart) {
         return getDefaultFlowchartProperty(pointer as FlowchartSymbols);
     } else {
+        if(pointer === BasicShapes.cloud){
+            return DefaultCloudShapeProperty;
+        }
         return DefaultBasicShapeProperty;
     }
 };

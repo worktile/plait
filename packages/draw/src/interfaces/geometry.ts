@@ -23,7 +23,8 @@ export enum BasicShapes {
     processArrow = 'processArrow',
     twoWayArrow = 'twoWayArrow',
     comment = 'comment',
-    roundComment = 'roundComment'
+    roundComment = 'roundComment',
+    cloud = 'cloud'
 }
 
 export enum FlowchartSymbols {
