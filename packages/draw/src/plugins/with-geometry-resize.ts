@@ -90,25 +90,17 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 isFromCorner
             );
             alignG = resizeAlignRef.alignG;
-            debugGenerator.isDebug() && debugGenerator.clear();
-
             PlaitBoard.getElementActiveHost(board).append(alignG);
             let points = resizeAlignRef.activePoints as [Point, Point];
-            debugGenerator.isDebug() && debugGenerator.drawCircles(board, points, 6, false, { fill: 'green', stroke: 'green' });
-
-            if (angle) {
-                // points = resetPointsAfterResize(
-                //     resizeRef.rectangle!,
-                //     RectangleClient.getRectangleByPoints(points),
-                //     centerPoint,
-                //     RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points)),
-                //     angle
-                // );
-            }
-            // debugGenerator.isDebug() && debugGenerator.drawCircles(board, points, 6, false, { fill: 'yellow', stroke: 'yellow' });
-
-            // debugGenerator.isDebug() &&
-            //     debugGenerator.drawRectangle(board, RectangleClient.getRectangleByPoints(points), { stroke: 'green' });
+            // if (angle) {
+            //     points = resetPointsAfterResize(
+            //         resizeRef.rectangle!,
+            //         RectangleClient.getRectangleByPoints(points),
+            //         centerPoint,
+            //         RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points)),
+            //         angle
+            //     );
+            // }
 
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();

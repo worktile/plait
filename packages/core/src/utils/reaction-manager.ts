@@ -54,7 +54,6 @@ export class AlignReaction {
 
     handleAlign(): AlignRef {
         const alignRectangles = this.getAlignRectangle();
-        // debugGenerator.isDebug() && debugGenerator.clear();
         const g = createG();
         let alignLines = [];
 
@@ -65,8 +64,6 @@ export class AlignReaction {
         let isCorrectY = false;
 
         for (let alignRectangle of alignRectangles) {
-            // debugGenerator.isDebug() && debugGenerator.drawRectangle(this.board, this.activeRectangle, { stroke: 'blue' });
-            // debugGenerator.isDebug() && debugGenerator.drawRectangle(this.board, alignRectangle, { stroke: 'red' });
             const closestDistances = this.calculateClosestDistances(this.activeRectangle, alignRectangle);
             let canDrawHorizontal = false;
             if (!isCorrectX && closestDistances.absXDistance < ALIGN_TOLERANCE) {
