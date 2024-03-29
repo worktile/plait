@@ -79,3 +79,13 @@ export const rotateAntiPointsByElement = <T>(points: T, element: PlaitElement): 
         return null;
     }
 };
+
+export const getRectangleByAngle = (rectangle: RectangleClient, angle: number) => {
+    if (angle) {
+        const cornerPoints = RectangleClient.getCornerPoints(rectangle);
+        const centerPoint = RectangleClient.getCenterPoint(rectangle);
+        return RectangleClient.getRectangleByPoints(rotatePoints(cornerPoints, centerPoint, angle));
+    } else {
+        return null;
+    }
+};

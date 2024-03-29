@@ -1,12 +1,4 @@
-import {
-    PlaitBoard,
-    PlaitElement,
-    PlaitPluginElementContext,
-    Point,
-    RectangleClient,
-    Selection,
-    getSelectedElements
-} from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, RectangleClient, Selection, getSelectedElements } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';

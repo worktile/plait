@@ -2,7 +2,7 @@ import { PlaitBoard, Point, RectangleClient, getRectangleByElements, PlaitElemen
 import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
 import { ResizeRef, ResizeState, getDirectionFactorByDirectionComponent, getUnitVectorByPointAndPoint } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
-import { ResizeAlignReaction, ResizeAlignRef } from './resize-align-reaction';
+import { ResizeAlignReaction, ResizeAlignRef, debugGenerator } from './resize-align-reaction';
 
 export function getResizeAlignRef(
     board: PlaitBoard,
@@ -28,12 +28,13 @@ export function getResizeAlignRef(
         activeElements = [resizeRef.element];
         resizeOriginPoints = resizeRef.element.points;
     }
+    debugGenerator.isDebug() && debugGenerator.clear();
 
     const points = resizeOriginPoints.map(p => {
         return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
     }) as [Point, Point];
     const activeRectangle = RectangleClient.getRectangleByPoints(points);
-
+    // debugGenerator.isDebug() && debugGenerator.drawRectangle(board, activeRectangle, { stroke: 'green' });
     const resizeAlignReaction = new ResizeAlignReaction(board, activeElements);
     const resizeHandlePoint = movePointByZoomAndOriginPoint(handlePoint, originPoint, xZoom, yZoom);
     const [x, y] = getUnitVectorByPointAndPoint(originPoint, resizeHandlePoint);

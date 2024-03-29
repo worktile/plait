@@ -4,6 +4,8 @@ import { PlaitElement } from '../interfaces/element';
 import { Ancestor } from '../interfaces/node';
 import { Point, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { depthFirstRecursion } from './tree';
+import { createDebugGenerator } from './debug';
+import { getRectangleByAngle, getSelectionAngle } from './angle';
 
 export interface AlignRef {
     deltaX: number;
@@ -23,6 +25,8 @@ export class AlignReaction {
 
     constructor(private board: PlaitBoard, private activeElements: PlaitElement[], private activeRectangle: RectangleClient) {
         this.alignRectangles = this.getAlignRectangle();
+        const angle = getSelectionAngle(activeElements);
+        this.activeRectangle = getRectangleByAngle(activeRectangle, angle) || activeRectangle;
     }
 
     getAlignRectangle() {
@@ -33,7 +37,7 @@ export class AlignReaction {
                 if (PlaitBoard.isBoard(node) || this.activeElements.some(element => node.id === element.id) || !this.board.isAlign(node)) {
                     return;
                 }
-                const rectangle = this.board.getRectangle(node);
+                const rectangle = getRectangleByAngle(this.board.getRectangle(node)!, node.angle) || this.board.getRectangle(node);
                 rectangle && result.push(rectangle);
             },
             node => {
@@ -50,6 +54,7 @@ export class AlignReaction {
 
     handleAlign(): AlignRef {
         const alignRectangles = this.getAlignRectangle();
+        // debugGenerator.isDebug() && debugGenerator.clear();
         const g = createG();
         let alignLines = [];
 
@@ -60,6 +65,8 @@ export class AlignReaction {
         let isCorrectY = false;
 
         for (let alignRectangle of alignRectangles) {
+            // debugGenerator.isDebug() && debugGenerator.drawRectangle(this.board, this.activeRectangle, { stroke: 'blue' });
+            // debugGenerator.isDebug() && debugGenerator.drawRectangle(this.board, alignRectangle, { stroke: 'red' });
             const closestDistances = this.calculateClosestDistances(this.activeRectangle, alignRectangle);
             let canDrawHorizontal = false;
             if (!isCorrectX && closestDistances.absXDistance < ALIGN_TOLERANCE) {

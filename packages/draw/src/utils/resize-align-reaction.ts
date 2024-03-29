@@ -1,4 +1,4 @@
-import { ResizeState } from '@plait/common';
+import { ResizeState, resetPointsAfterResize } from '@plait/common';
 import {
     DirectionFactors,
     PlaitBoard,
@@ -6,10 +6,14 @@ import {
     Point,
     RectangleClient,
     SELECTION_BORDER_COLOR,
+    createDebugGenerator,
     createG,
-    findElements
+    findElements,
+    getOffsetAfterRotate,
+    getSelectionAngle
 } from '@plait/core';
 import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
+import { getRectangleByAngle } from '../../../core/src/utils';
 
 export interface ResizeAlignDelta {
     deltaX: number;
@@ -45,17 +49,21 @@ type DrawAlignLineRef = {
     alignRectangles: RectangleClient[];
 };
 
-const ALIGN_TOLERANCE = 2;
+const ALIGN_TOLERANCE = 1;
 
 const EQUAL_SPACING = 10;
 
 const ALIGN_SPACING = 24;
-
+const debugKey = 'debug:plait:resize-for-rotation';
+export const debugGenerator = createDebugGenerator(debugKey);
 export class ResizeAlignReaction {
     alignRectangles: RectangleClient[];
 
+    angle: number;
+
     constructor(private board: PlaitBoard, private activeElements: PlaitElement[]) {
         this.alignRectangles = this.getAlignRectangle();
+        this.angle = getSelectionAngle(activeElements);
     }
 
     getAlignRectangle() {
@@ -64,7 +72,7 @@ export class ResizeAlignReaction {
             recursion: () => false,
             isReverse: false
         });
-        return elements.map(item => this.board.getRectangle(item)!);
+        return elements.map(item => getRectangleByAngle(this.board.getRectangle(item)!, item.angle) || this.board.getRectangle(item)!);
     }
 
     getAlignLineRef(resizeAlignDelta: ResizeAlignDelta, resizeAlignOptions: ResizeAlignOptions): AlignLineRef {
@@ -75,9 +83,17 @@ export class ResizeAlignReaction {
             endPoint: [resizeState.endPoint[0] + deltaX, resizeState.endPoint[1] + deltaY]
         };
         const { xZoom, yZoom } = getResizeZoom(newResizeState, originPoint, handlePoint, isFromCorner, isAspectRatio);
-        const activePoints = resizeOriginPoints.map(p => {
+        let activePoints = resizeOriginPoints.map(p => {
             return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
         }) as [Point, Point];
+
+        activePoints = resetPointsAfterResize(
+            RectangleClient.getRectangleByPoints(resizeOriginPoints),
+            RectangleClient.getRectangleByPoints(activePoints),
+            RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(resizeOriginPoints)),
+            RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(activePoints)),
+            this.angle
+        );
 
         return {
             deltaX,
@@ -93,7 +109,10 @@ export class ResizeAlignReaction {
             deltaX: 0,
             deltaY: 0
         };
-        const { isAspectRatio, activeRectangle } = resizeAlignOptions;
+        let { isAspectRatio, activeRectangle } = resizeAlignOptions;
+
+        activeRectangle = getRectangleByAngle(activeRectangle, this.angle) || activeRectangle;
+
         const widthAlignRectangle = this.alignRectangles.find(item => Math.abs(item.width - activeRectangle.width) < ALIGN_TOLERANCE);
         if (widthAlignRectangle) {
             const deltaWidth = widthAlignRectangle.width - activeRectangle.width;
@@ -184,7 +203,12 @@ export class ResizeAlignReaction {
 
     drawAlignLines(activePoints: Point[], resizeAlignOptions: ResizeAlignOptions) {
         let alignLinePoints: [Point, Point][] = [];
-        const activeRectangle = RectangleClient.getRectangleByPoints(activePoints);
+        // debugGenerator.isDebug() && debugGenerator.clear();
+        const activeRectangle =
+            getRectangleByAngle(RectangleClient.getRectangleByPoints(activePoints), this.angle) ||
+            RectangleClient.getRectangleByPoints(activePoints);
+        debugGenerator.isDebug() && debugGenerator.drawRectangle(this.board, activeRectangle, { stroke: 'green' });
+
         const alignAxisX = getTripleAlignAxis(activeRectangle, true);
         const alignAxisY = getTripleAlignAxis(activeRectangle, false);
         const alignLineRefs: DrawAlignLineRef[] = [
@@ -231,6 +255,8 @@ export class ResizeAlignReaction {
 
         for (let index = 0; index < this.alignRectangles.length; index++) {
             const element = this.alignRectangles[index];
+            debugGenerator.isDebug() && debugGenerator.drawRectangle(this.board, element);
+
             if (isAlign(alignLineRefs[0].axis, element, alignLineRefs[0].isHorizontal)) {
                 alignLineRefs[0].alignRectangles.push(element);
             }
@@ -276,6 +302,7 @@ export class ResizeAlignReaction {
                     : getNearestAlignRectangle(alignLineRefs[3].alignRectangles, activeRectangle);
             setAlignLine(alignLineRefs[3].axis, bottomRectangle, alignLineRefs[3].isHorizontal);
         }
+        console.log('============ alignLinePoints ============', alignLinePoints);
 
         return drawAlignLines(this.board, alignLinePoints);
     }
@@ -344,7 +371,7 @@ function drawAlignLines(board: PlaitBoard, lines: [Point, Point][]) {
     lines.forEach(points => {
         if (!points.length) return;
         const xAlign = PlaitBoard.getRoughSVG(board).line(points[0][0], points[0][1], points[1][0], points[1][1], {
-            stroke: SELECTION_BORDER_COLOR,
+            stroke: 'red',
             strokeWidth: 1,
             strokeLineDash: [4, 4]
         });

@@ -1,4 +1,15 @@
-import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements, rotate, rotatePoints } from '@plait/core';
+import {
+    Path,
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    RectangleClient,
+    Transforms,
+    createDebugGenerator,
+    getSelectedElements,
+    rotate,
+    rotatePoints
+} from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeRef,
@@ -18,6 +29,9 @@ import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeOriginPointAndHandlePoint } from './with-draw-resize';
 import { getResizeAlignRef } from '../utils/resize-align';
+
+const debugKey = 'debug:plait:resize-for-geometry';
+export const debugGenerator = createDebugGenerator(debugKey);
 
 export const withGeometryResize = (board: PlaitBoard) => {
     let alignG: SVGGElement | null;
@@ -76,17 +90,25 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 isFromCorner
             );
             alignG = resizeAlignRef.alignG;
+            debugGenerator.isDebug() && debugGenerator.clear();
+
             PlaitBoard.getElementActiveHost(board).append(alignG);
             let points = resizeAlignRef.activePoints as [Point, Point];
+            debugGenerator.isDebug() && debugGenerator.drawCircles(board, points, 6, false, { fill: 'green', stroke: 'green' });
+
             if (angle) {
-                points = resetPointsAfterResize(
-                    resizeRef.rectangle!,
-                    RectangleClient.getRectangleByPoints(points),
-                    centerPoint,
-                    RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points)),
-                    angle
-                );
+                // points = resetPointsAfterResize(
+                //     resizeRef.rectangle!,
+                //     RectangleClient.getRectangleByPoints(points),
+                //     centerPoint,
+                //     RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points)),
+                //     angle
+                // );
             }
+            // debugGenerator.isDebug() && debugGenerator.drawCircles(board, points, 6, false, { fill: 'yellow', stroke: 'yellow' });
+
+            // debugGenerator.isDebug() &&
+            //     debugGenerator.drawRectangle(board, RectangleClient.getRectangleByPoints(points), { stroke: 'green' });
 
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
