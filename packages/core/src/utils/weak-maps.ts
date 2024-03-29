@@ -27,6 +27,8 @@ export const BOARD_TO_ROUGH_SVG = new WeakMap<PlaitBoard, RoughSVG>();
 
 export const BOARD_TO_HOST = new WeakMap<PlaitBoard, SVGSVGElement>();
 
+export const IS_BOARD_ALIVE = new WeakMap<PlaitBoard, boolean>();
+
 export const BOARD_TO_ELEMENT_HOST = new WeakMap<
     PlaitBoard,
     {

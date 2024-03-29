@@ -132,7 +132,10 @@ export const withLineResize = (board: PlaitBoard) => {
                 const newPoints = [...points];
                 newPoints[0] = drawPoints[0];
                 newPoints[newPoints.length - 1] = drawPoints[drawPoints.length - 1];
-                if (resizeRef.element.shape !== LineShape.elbow) {
+                if (
+                    resizeRef.element.shape !== LineShape.elbow ||
+                    (resizeRef.element.shape === LineShape.elbow && newPoints.length === 2)
+                ) {
                     newPoints.forEach((point, index) => {
                         if (index === handleIndex) return;
                         if (points[handleIndex]) {
