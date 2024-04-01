@@ -7,9 +7,9 @@ import {
     RectangleClient,
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
+    SNAPPING_STROKE_WIDTH,
     ThemeColorMode,
     Transforms,
-    Vector,
     addSelectedElement,
     clearSelectedElement,
     createG,
@@ -95,11 +95,11 @@ export const drawBoundReaction = (
 ) => {
     const g = createG();
     const rectangle = RectangleClient.getRectangleByPoints(element.points);
-    const activeRectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
+    const activeRectangle = RectangleClient.inflate(rectangle, SNAPPING_STROKE_WIDTH);
     const shape = getElementShape(element);
     const strokeG = drawGeometry(board, activeRectangle, shape, {
         stroke: SELECTION_BORDER_COLOR,
-        strokeWidth: ACTIVE_STROKE_WIDTH
+        strokeWidth: SNAPPING_STROKE_WIDTH
     });
     g.appendChild(strokeG);
     if (options.hasMask) {
@@ -112,7 +112,7 @@ export const drawBoundReaction = (
         g.appendChild(maskG);
     }
     if (options.hasConnector) {
-        const connectorPoints = getEngine(shape).getConnectorPoints(activeRectangle);
+        const connectorPoints = getEngine(shape).getConnectorPoints(rectangle);
         connectorPoints.forEach(point => {
             const circleG = drawCircle(PlaitBoard.getRoughSVG(board), point, 8, {
                 stroke: SELECTION_BORDER_COLOR,

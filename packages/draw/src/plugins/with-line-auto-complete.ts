@@ -9,12 +9,9 @@ import {
     Transforms,
     addSelectedElement,
     clearSelectedElement,
-    createDebugGenerator,
     createG,
     distanceBetweenPointAndPoint,
-    hasValidAngle,
     rotateAntiPointsByElement,
-    rotatePoints,
     rotatePointsByElement,
     temporaryDisableSelection,
     toHostPoint,
@@ -36,7 +33,7 @@ export interface LineAutoCompleteOptions {
 export const withLineAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;
 
-    let startPoint: Point | null = null;
+    let autoCompletePoint: Point | null = null;
     let lineShapeG: SVGGElement | null = null;
     let sourceElement: PlaitShapeElement | null;
     let temporaryElement: PlaitLine | null;
@@ -51,7 +48,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
             const hitPoint = points[index];
             if (hitPoint) {
                 temporaryDisableSelection(board as PlaitOptionsBoard);
-                startPoint = hitPoint;
+                autoCompletePoint = hitPoint;
                 sourceElement = targetElement;
                 BoardTransforms.updatePointerType(board, LineShape.elbow);
             }
@@ -63,23 +60,22 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         lineShapeG?.remove();
         lineShapeG = createG();
         let movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        if (startPoint && sourceElement) {
+        if (autoCompletePoint && sourceElement) {
             const distance = distanceBetweenPointAndPoint(
-                ...movingPoint,
-                ...(rotatePointsByElement(startPoint, sourceElement) || startPoint)
+                ...(rotateAntiPointsByElement(movingPoint, sourceElement) || movingPoint),
+                ...autoCompletePoint
             );
-
             if (distance > PRESS_AND_MOVE_BUFFER) {
                 const rectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
                 const shape = getElementShape(sourceElement);
                 const engine = getEngine(shape);
-                let sourcePoint = startPoint;
                 if (engine.getNearestCrossingPoint) {
-                    const crossingPoint = engine.getNearestCrossingPoint(rectangle, startPoint);
-                    sourcePoint = crossingPoint;
+                    const crossingPoint = engine.getNearestCrossingPoint(rectangle, autoCompletePoint);
+                    autoCompletePoint = crossingPoint;
                 }
-
-                temporaryElement = handleLineCreating(board, LineShape.elbow, sourcePoint, movingPoint, sourceElement, lineShapeG);
+                // source point must be click point
+                const rotatedSourcePoint = rotatePointsByElement(autoCompletePoint, sourceElement) || autoCompletePoint;
+                temporaryElement = handleLineCreating(board, LineShape.elbow, rotatedSourcePoint, movingPoint, sourceElement, lineShapeG);
             }
         }
         pointerMove(event);
@@ -94,9 +90,9 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
                 ?.afterComplete;
             afterComplete && afterComplete(temporaryElement);
         }
-        if (startPoint) {
+        if (autoCompletePoint) {
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
-            startPoint = null;
+            autoCompletePoint = null;
         }
         lineShapeG?.remove();
         lineShapeG = null;

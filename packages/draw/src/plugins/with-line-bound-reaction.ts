@@ -1,5 +1,5 @@
 import {
-    ACTIVE_STROKE_WIDTH,
+    SNAPPING_STROKE_WIDTH,
     PlaitBoard,
     PlaitElement,
     RectangleClient,
@@ -44,7 +44,7 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
                 if (isSnapping) {
                     const circleG = drawCircle(PlaitBoard.getRoughSVG(board), ref.connectorPoint || ref.edgePoint, 6, {
                         stroke: SELECTION_BORDER_COLOR,
-                        strokeWidth: ACTIVE_STROKE_WIDTH,
+                        strokeWidth: SNAPPING_STROKE_WIDTH,
                         fill: SELECTION_BORDER_COLOR,
                         fillStyle: 'solid'
                     });
