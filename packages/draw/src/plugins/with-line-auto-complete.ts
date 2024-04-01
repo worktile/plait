@@ -20,8 +20,8 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { LineShape, PlaitDrawElement, PlaitLine, PlaitShape } from '../interfaces';
-import { getShape } from '../utils/shape';
+import { LineShape, PlaitDrawElement, PlaitLine, PlaitShapeElement } from '../interfaces';
+import { getElementShape } from '../utils/shape';
 import { getEngine } from '../engines';
 import { handleLineCreating } from '../utils/line/line-basic';
 import { getSelectedDrawElements } from '../utils/selected';
@@ -38,14 +38,14 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
 
     let startPoint: Point | null = null;
     let lineShapeG: SVGGElement | null = null;
-    let sourceElement: PlaitShape | null;
+    let sourceElement: PlaitShapeElement | null;
     let temporaryElement: PlaitLine | null;
 
     board.pointerDown = (event: PointerEvent) => {
         const selectedElements = getSelectedDrawElements(board);
         const targetElement = selectedElements.length === 1 && selectedElements[0];
         const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        if (!PlaitBoard.isReadonly(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
+        if (!PlaitBoard.isReadonly(board) && targetElement && PlaitDrawElement.isShapeElement(targetElement)) {
             const points = getAutoCompletePoints(targetElement);
             const index = getHitIndexOfAutoCompletePoint(rotateAntiPointsByElement(clickPoint, targetElement) || clickPoint, points);
             const hitPoint = points[index];
@@ -71,7 +71,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
 
             if (distance > PRESS_AND_MOVE_BUFFER) {
                 const rectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
-                const shape = getShape(sourceElement);
+                const shape = getElementShape(sourceElement);
                 const engine = getEngine(shape);
                 let sourcePoint = startPoint;
                 if (engine.getNearestCrossingPoint) {
@@ -79,14 +79,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
                     sourcePoint = crossingPoint;
                 }
 
-                temporaryElement = handleLineCreating(
-                    board,
-                    LineShape.elbow,
-                    rotatePointsByElement(sourcePoint, sourceElement) || sourcePoint,
-                    movingPoint,
-                    sourceElement,
-                    lineShapeG
-                );
+                temporaryElement = handleLineCreating(board, LineShape.elbow, sourcePoint, movingPoint, sourceElement, lineShapeG);
             }
         }
         pointerMove(event);

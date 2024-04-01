@@ -1,6 +1,6 @@
-import { BasicShapes, PlaitDrawElement, PlaitShape } from '../interfaces';
+import { BasicShapes, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
 
-export const getShape = (value: PlaitShape) => {
+export const getElementShape = (value: PlaitShapeElement) => {
     if (PlaitDrawElement.isImage(value)) {
         return BasicShapes.rectangle;
     }

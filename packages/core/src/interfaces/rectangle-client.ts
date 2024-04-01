@@ -115,7 +115,9 @@ export const RectangleClient = {
     getCenterPoint: (rectangle: RectangleClient) => {
         return [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2] as Point;
     },
-
+    getCenterPointByPoints: (points: Point[]) => {
+        return RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points));
+    },
     getEdgeCenterPoints: (rectangle: RectangleClient) => {
         return [
             [rectangle.x + rectangle.width / 2, rectangle.y],

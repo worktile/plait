@@ -12,7 +12,7 @@ import {
     getSelectedElements
 } from '@plait/core';
 import { getSelectedDrawElements } from '../utils/selected';
-import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShape } from '../interfaces';
+import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../interfaces';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
 import { getLines } from '../utils/line/line-basic';
@@ -117,7 +117,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
     return board;
 };
 
-export const getBoundedLineElements = (board: PlaitBoard, plaitShapes: PlaitShape[]) => {
+export const getBoundedLineElements = (board: PlaitBoard, plaitShapes: PlaitShapeElement[]) => {
     const lines = getLines(board);
     return lines.filter(line =>
         plaitShapes.find(shape => PlaitLine.isBoundElementOfSource(line, shape) || PlaitLine.isBoundElementOfTarget(line, shape))

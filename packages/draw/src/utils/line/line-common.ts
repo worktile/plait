@@ -22,7 +22,7 @@ import {
 import { BasicShapes, LineHandleKey, LineHandleRef, LineHandleRefPair, LineMarkerType, PlaitGeometry, PlaitLine } from '../../interfaces';
 import { getStrokeWidthByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
-import { getShape } from '../shape';
+import { getElementShape } from '../shape';
 import { getSourceAndTargetRectangle } from './elbow';
 
 export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): LineHandleRefPair => {
@@ -97,7 +97,7 @@ export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, d
 
 export const getVectorByConnection = (boundElement: PlaitGeometry, connection: PointOfRectangle): Vector => {
     const rectangle = RectangleClient.getRectangleByPoints(boundElement.points);
-    const shape = getShape(boundElement);
+    const shape = getElementShape(boundElement);
     const engine = getEngine(shape);
     let vector: Vector = [0, 0];
     const direction = getDirectionByPointOfRectangle(connection);

@@ -8,11 +8,12 @@ import {
     rotatePoints,
     rotateAntiPointsByElement
 } from '@plait/core';
-import { PlaitDrawElement, PlaitGeometry } from '../../interfaces';
 import { RESIZE_HANDLE_DIAMETER, getRectangleResizeHandleRefs, getRotatedResizeCursorClassByAngle } from '@plait/common';
-import { getEngine } from '../../engines';
-import { PlaitImage } from '../../interfaces/image';
-import { getShape } from '../shape';
+import { PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../../interfaces';
+import { isHitEdgeOfShape, isInsideOfShape } from '../hit';
+import { LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER } from '../../constants/geometry';
+import { getNearestPoint } from '../geometry';
+import { getHitConnectorPoint } from '../line/line-basic';
 
 export const getHitRectangleResizeHandleRef = (board: PlaitBoard, rectangle: RectangleClient, point: Point, angle: number = 0) => {
     const centerPoint = RectangleClient.getCenterPoint(rectangle);
@@ -33,23 +34,44 @@ export const getHitRectangleResizeHandleRef = (board: PlaitBoard, rectangle: Rec
     }
 };
 
-export const getHitOutlineGeometry = (board: PlaitBoard, point: Point, offset: number = 0): PlaitGeometry | null => {
-    let geometry: PlaitGeometry | PlaitImage | null = null;
+export const getSnappingGeometry = (board: PlaitBoard, point: Point): PlaitGeometry | null => {
+    let hitElement: PlaitShapeElement | null = getHitGeometry(board, point);
+    if (hitElement) {
+        const ref = getSnappingRef(board, hitElement, point);
+        if (ref.isHitConnector || ref.isHitEdge) {
+            return hitElement;
+        }
+    }
+    return null;
+};
+
+export const getSnappingRef = (board: PlaitBoard, hitElement: PlaitShapeElement, point: Point) => {
+    const rotatedPoint = rotateAntiPointsByElement(point, hitElement) || point;
+    const connectorPoint = getHitConnectorPoint(rotatedPoint, hitElement);
+    const edgePoint = getNearestPoint(hitElement, rotatedPoint);
+    const isHitEdge = isHitEdgeOfShape(board, hitElement, rotatedPoint, LINE_SNAPPING_BUFFER);
+    return { isHitEdge, isHitConnector: !!connectorPoint, connectorPoint, edgePoint };
+};
+
+export const getHitGeometry = (board: PlaitBoard, point: Point, offset = LINE_HIT_GEOMETRY_BUFFER): PlaitGeometry | null => {
+    let hitShape: PlaitShapeElement | null = null;
+    traverseDrawShapes(board, (element: PlaitShapeElement) => {
+        if (hitShape === null && isInsideOfShape(board, element, rotateAntiPointsByElement(point, element) || point, offset * 2)) {
+            hitShape = element;
+        }
+    });
+    return hitShape;
+};
+
+export const traverseDrawShapes = (board: PlaitBoard, callback: (element: PlaitShapeElement) => void) => {
     depthFirstRecursion<Ancestor>(
         board,
         node => {
-            if (PlaitDrawElement.isGeometry(node) || PlaitDrawElement.isImage(node)) {
-                let client = RectangleClient.getRectangleByPoints(node.points);
-                client = RectangleClient.getOutlineRectangle(client, offset);
-                const shape = getShape(node);
-                const isHit = getEngine(shape).isInsidePoint(client, rotateAntiPointsByElement(point, node) || point);
-                if (isHit) {
-                    geometry = node;
-                }
+            if (!PlaitBoard.isBoard(node) && PlaitDrawElement.isShapeElement(node)) {
+                callback(node);
             }
         },
         getIsRecursionFunc(board),
         true
     );
-    return geometry;
 };
