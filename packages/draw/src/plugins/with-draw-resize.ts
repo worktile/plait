@@ -50,7 +50,7 @@ export function withDrawResize(board: PlaitBoard) {
     const { afterChange, drawActiveRectangle } = board;
     let alignG: SVGGElement | null;
     let handleG: SVGGElement | null;
-    let needCustomActiveSelection = false;
+    let needCustomActiveRectangle = false;
     let resizeActivePoints: Point[] | null = null;
 
     const canResize = () => {
@@ -165,7 +165,7 @@ export function withDrawResize(board: PlaitBoard) {
                             resizeAlignRef.xZoom,
                             resizeAlignRef.yZoom
                         );
-                        needCustomActiveSelection = true;
+                        needCustomActiveRectangle = true;
                     } else {
                         points = target.points.map(p => {
                             return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
@@ -204,8 +204,8 @@ export function withDrawResize(board: PlaitBoard) {
         afterResize: (resizeRef: ResizeRef<PlaitDrawElement[]>) => {
             alignG?.remove();
             alignG = null;
-            if (needCustomActiveSelection) {
-                needCustomActiveSelection = false;
+            if (needCustomActiveRectangle) {
+                needCustomActiveRectangle = false;
                 resizeActivePoints = null;
                 const selectedElements = getSelectedElements(board);
                 Transforms.addSelectionWithTemporaryElements(board, selectedElements);
@@ -224,7 +224,7 @@ export function withDrawResize(board: PlaitBoard) {
         if (canResize() && !isSelectionMoving(board)) {
             handleG = createG();
             const elements = getSelectedElements(board) as PlaitDrawElement[];
-            const boundingRectangle = needCustomActiveSelection
+            const boundingRectangle = needCustomActiveRectangle
                 ? RectangleClient.getRectangleByPoints(resizeActivePoints!)
                 : getRectangleByElements(board, elements, false);
             let corners = RectangleClient.getCornerPoints(boundingRectangle);
@@ -242,7 +242,7 @@ export function withDrawResize(board: PlaitBoard) {
     };
 
     board.drawActiveRectangle = () => {
-        if (needCustomActiveSelection) {
+        if (needCustomActiveRectangle) {
             const rectangle = RectangleClient.getRectangleByPoints(resizeActivePoints!);
             return drawRectangle(board, RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH), {
                 stroke: SELECTION_BORDER_COLOR,
