@@ -51,7 +51,8 @@ import {
     BOARD_TO_ROUGH_SVG,
     BOARD_TO_MOVING_POINT_IN_BOARD,
     BOARD_TO_MOVING_POINT,
-    BOARD_TO_AFTER_CHANGE
+    BOARD_TO_AFTER_CHANGE,
+    IS_BOARD_ALIVE
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import {
@@ -206,6 +207,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ROUGH_SVG.set(this.board, roughSVG);
         BOARD_TO_HOST.set(this.board, this.host);
+        IS_BOARD_ALIVE.set(this.board, true);
         BOARD_TO_ELEMENT_HOST.set(this.board, {
             host: elementHost,
             upperHost: elementUpperHost,
@@ -525,6 +527,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         BOARD_TO_ROUGH_SVG.delete(this.board);
         BOARD_TO_HOST.delete(this.board);
         BOARD_TO_ELEMENT_HOST.delete(this.board);
+        IS_BOARD_ALIVE.set(this.board, false);
         BOARD_TO_ON_CHANGE.delete(this.board);
         BOARD_TO_AFTER_CHANGE.set(this.board, () => {});
     }

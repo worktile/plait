@@ -37,8 +37,8 @@ export class AlignReaction {
                 if (PlaitBoard.isBoard(node) || this.activeElements.some(element => node.id === element.id) || !this.board.isAlign(node)) {
                     return;
                 }
-                const rectangle = getRectangleByAngle(this.board.getRectangle(node)!, node.angle) || this.board.getRectangle(node);
-                rectangle && result.push(rectangle);
+                const rectangle = this.board.getRectangle(node);
+                rectangle && result.push(getRectangleByAngle(rectangle, node.angle) || rectangle);
             },
             node => {
                 if (node && (PlaitBoard.isBoard(node) || this.board.isRecursion(node))) {

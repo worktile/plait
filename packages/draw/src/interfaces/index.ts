@@ -10,7 +10,7 @@ export * from './element';
 
 export type PlaitDrawElement = PlaitGeometry | PlaitLine | PlaitImage;
 
-export type PlaitShape = PlaitGeometry | PlaitImage;
+export type PlaitShapeElement = PlaitGeometry | PlaitImage;
 
 export const PlaitDrawElement = {
     isGeometry: (value: any): value is PlaitGeometry => {
@@ -32,7 +32,7 @@ export const PlaitDrawElement = {
             return false;
         }
     },
-    isShape: (value: any): value is PlaitShape => {
+    isShapeElement: (value: any): value is PlaitShapeElement => {
         return PlaitDrawElement.isImage(value) || PlaitDrawElement.isGeometry(value);
     },
     isBasicShape: (value: any) => {

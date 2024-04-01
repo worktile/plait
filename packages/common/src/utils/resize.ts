@@ -47,7 +47,7 @@ export const getRotatedResizeCursorClassByAngle = (cursor: ResizeCursorClass, an
     return cursor;
 };
 
-export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diameter: number, angle: number = 0) => {
+export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diameter: number) => {
     const corners = RectangleClient.getCornerPoints(rectangle);
     const refs = corners.map((corner, index: number) => {
         return {
@@ -58,7 +58,7 @@ export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diamete
                 height: diameter
             },
             handle: getResizeHandleByIndex(index) as ResizeHandle,
-            cursorClass: getRotatedResizeCursorClassByAngle(getResizeCursorClassByIndex(index) as ResizeCursorClass, angle)
+            cursorClass: getResizeCursorClassByIndex(index) as ResizeCursorClass
         };
     });
     const rectangles = getResizeSideRectangles(corners, diameter / 2);
@@ -67,7 +67,7 @@ export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diamete
             return {
                 rectangle,
                 handle: getResizeHandleByIndex(index + 4) as ResizeHandle,
-                cursorClass: getRotatedResizeCursorClassByAngle(getResizeCursorClassByIndex(index + 4) as ResizeCursorClass, angle)
+                cursorClass: getResizeCursorClassByIndex(index + 4) as ResizeCursorClass
             };
         })
     );

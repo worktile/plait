@@ -27,7 +27,7 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
         const selectedElements = getSelectedDrawElements(board);
         const targetElement = selectedElements.length === 1 && selectedElements[0];
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        if (!PlaitBoard.isReadonly(board) && !isSelectionMoving(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
+        if (!PlaitBoard.isReadonly(board) && !isSelectionMoving(board) && targetElement && PlaitDrawElement.isShapeElement(targetElement)) {
             const points = getAutoCompletePoints(targetElement);
             const hitIndex = getHitIndexOfAutoCompletePoint(rotateAntiPointsByElement(movingPoint, targetElement) || movingPoint, points);
             const hitPoint = points[hitIndex];

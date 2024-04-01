@@ -9,19 +9,16 @@ import {
     Transforms,
     addSelectedElement,
     clearSelectedElement,
-    createDebugGenerator,
     createG,
     distanceBetweenPointAndPoint,
-    hasValidAngle,
     rotateAntiPointsByElement,
-    rotatePoints,
     rotatePointsByElement,
     temporaryDisableSelection,
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { LineShape, PlaitDrawElement, PlaitLine, PlaitShape } from '../interfaces';
-import { getShape } from '../utils/shape';
+import { LineShape, PlaitDrawElement, PlaitLine, PlaitShapeElement } from '../interfaces';
+import { getElementShape } from '../utils/shape';
 import { getEngine } from '../engines';
 import { handleLineCreating } from '../utils/line/line-basic';
 import { getSelectedDrawElements } from '../utils/selected';
@@ -36,22 +33,22 @@ export interface LineAutoCompleteOptions {
 export const withLineAutoComplete = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;
 
-    let startPoint: Point | null = null;
+    let autoCompletePoint: Point | null = null;
     let lineShapeG: SVGGElement | null = null;
-    let sourceElement: PlaitShape | null;
+    let sourceElement: PlaitShapeElement | null;
     let temporaryElement: PlaitLine | null;
 
     board.pointerDown = (event: PointerEvent) => {
         const selectedElements = getSelectedDrawElements(board);
         const targetElement = selectedElements.length === 1 && selectedElements[0];
         const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        if (!PlaitBoard.isReadonly(board) && targetElement && PlaitDrawElement.isShape(targetElement)) {
+        if (!PlaitBoard.isReadonly(board) && targetElement && PlaitDrawElement.isShapeElement(targetElement)) {
             const points = getAutoCompletePoints(targetElement);
             const index = getHitIndexOfAutoCompletePoint(rotateAntiPointsByElement(clickPoint, targetElement) || clickPoint, points);
             const hitPoint = points[index];
             if (hitPoint) {
                 temporaryDisableSelection(board as PlaitOptionsBoard);
-                startPoint = hitPoint;
+                autoCompletePoint = hitPoint;
                 sourceElement = targetElement;
                 BoardTransforms.updatePointerType(board, LineShape.elbow);
             }
@@ -63,30 +60,22 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
         lineShapeG?.remove();
         lineShapeG = createG();
         let movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        if (startPoint && sourceElement) {
+        if (autoCompletePoint && sourceElement) {
             const distance = distanceBetweenPointAndPoint(
-                ...movingPoint,
-                ...(rotatePointsByElement(startPoint, sourceElement) || startPoint)
+                ...(rotateAntiPointsByElement(movingPoint, sourceElement) || movingPoint),
+                ...autoCompletePoint
             );
-
             if (distance > PRESS_AND_MOVE_BUFFER) {
                 const rectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
-                const shape = getShape(sourceElement);
+                const shape = getElementShape(sourceElement);
                 const engine = getEngine(shape);
-                let sourcePoint = startPoint;
                 if (engine.getNearestCrossingPoint) {
-                    const crossingPoint = engine.getNearestCrossingPoint(rectangle, startPoint);
-                    sourcePoint = crossingPoint;
+                    const crossingPoint = engine.getNearestCrossingPoint(rectangle, autoCompletePoint);
+                    autoCompletePoint = crossingPoint;
                 }
-
-                temporaryElement = handleLineCreating(
-                    board,
-                    LineShape.elbow,
-                    rotatePointsByElement(sourcePoint, sourceElement) || sourcePoint,
-                    movingPoint,
-                    sourceElement,
-                    lineShapeG
-                );
+                // source point must be click point
+                const rotatedSourcePoint = rotatePointsByElement(autoCompletePoint, sourceElement) || autoCompletePoint;
+                temporaryElement = handleLineCreating(board, LineShape.elbow, rotatedSourcePoint, movingPoint, sourceElement, lineShapeG);
             }
         }
         pointerMove(event);
@@ -101,9 +90,9 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
                 ?.afterComplete;
             afterComplete && afterComplete(temporaryElement);
         }
-        if (startPoint) {
+        if (autoCompletePoint) {
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
-            startPoint = null;
+            autoCompletePoint = null;
         }
         lineShapeG?.remove();
         lineShapeG = null;

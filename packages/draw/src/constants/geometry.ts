@@ -78,4 +78,8 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.storedData]: DefaultFlowchartProperty
 };
 
-export const REACTION_MARGIN = -4;
+export const LINE_HIT_GEOMETRY_BUFFER = 10;
+
+export const LINE_SNAPPING_BUFFER = 6;
+
+export const LINE_SNAPPING_CONNECTOR_BUFFER = 8;

@@ -125,6 +125,10 @@ export const PlaitBoard = {
         IS_BOARD_CACHE.set(value, isBoard);
         return isBoard;
     },
+    isAlive(board: PlaitBoard) {
+        const isAlive = IS_BOARD_CACHE.get(board);
+        return !!isAlive;
+    },
     findPath(board: PlaitBoard, node: PlaitNode): Path {
         const path: Path = [];
         let child: Ancestor = node;

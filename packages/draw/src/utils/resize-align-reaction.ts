@@ -14,6 +14,9 @@ import {
 } from '@plait/core';
 import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
 
+const debugKey = 'debug:plait:align-for-geometry';
+export const debugGenerator = createDebugGenerator(debugKey);
+
 export interface ResizeAlignDelta {
     deltaX: number;
     deltaY: number;
@@ -53,8 +56,7 @@ const ALIGN_TOLERANCE = 2;
 const EQUAL_SPACING = 10;
 
 const ALIGN_SPACING = 24;
-const debugKey = 'debug:plait:resize-for-geometry';
-export const debugGenerator = createDebugGenerator(debugKey);
+
 export class ResizeAlignReaction {
     alignRectangles: RectangleClient[];
 

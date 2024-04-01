@@ -1,22 +1,20 @@
 import {
-    ACTIVE_STROKE_WIDTH,
+    SNAPPING_STROKE_WIDTH,
     PlaitBoard,
     PlaitElement,
     RectangleClient,
     SELECTION_BORDER_COLOR,
     drawCircle,
     hasValidAngle,
-    rotateAntiPointsByElement,
     setAngleForG,
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
 import { LineShape, PlaitDrawElement } from '../interfaces';
 import { isResizingByCondition } from '@plait/common';
-import { getHitOutlineGeometry } from '../utils/position/geometry';
+import { getHitGeometry, getSnappingRef } from '../utils/position/geometry';
 import { LineResizeHandle } from '../utils/position/line';
-import { drawBoundMask, getNearestPoint } from '../utils/geometry';
-import { getHitConnectorPoint } from '../utils/line/line-basic';
+import { drawBoundReaction } from '../utils/geometry';
 
 export const withLineBoundReaction = (board: PlaitBoard) => {
     const { pointerMove, pointerUp } = board;
@@ -38,25 +36,24 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
             return PlaitDrawElement.isLine(element) && isSourceOrTarget;
         });
         if (isLinePointer || isLineResizing) {
-            const hitElement = getHitOutlineGeometry(board, movingPoint, -4);
+            const hitElement = getHitGeometry(board, movingPoint);
             if (hitElement) {
-                const rectangle = RectangleClient.getRectangleByPoints(hitElement.points);
-                boundShapeG = drawBoundMask(board, hitElement);
-                let nearestPoint = getNearestPoint(hitElement, rotateAntiPointsByElement(movingPoint, hitElement) || movingPoint);
-                const activeRectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
-                const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, activeRectangle);
-                nearestPoint = hitConnector ? hitConnector : nearestPoint;
-                const circleG = drawCircle(PlaitBoard.getRoughSVG(board), nearestPoint, 6, {
-                    stroke: SELECTION_BORDER_COLOR,
-                    strokeWidth: ACTIVE_STROKE_WIDTH,
-                    fill: SELECTION_BORDER_COLOR,
-                    fillStyle: 'solid'
-                });
-                boundShapeG.appendChild(circleG);
-                PlaitBoard.getElementActiveHost(board).append(boundShapeG);
-                if (hasValidAngle(hitElement)) {
-                    setAngleForG(boundShapeG, RectangleClient.getCenterPoint(rectangle), hitElement.angle);
+                const ref = getSnappingRef(board, hitElement, movingPoint);
+                const isSnapping = ref.isHitEdge || ref.isHitConnector;
+                boundShapeG = drawBoundReaction(board, hitElement, { hasMask: isSnapping, hasConnector: true });
+                if (isSnapping) {
+                    const circleG = drawCircle(PlaitBoard.getRoughSVG(board), ref.connectorPoint || ref.edgePoint, 6, {
+                        stroke: SELECTION_BORDER_COLOR,
+                        strokeWidth: SNAPPING_STROKE_WIDTH,
+                        fill: SELECTION_BORDER_COLOR,
+                        fillStyle: 'solid'
+                    });
+                    boundShapeG.appendChild(circleG);
                 }
+                if (hasValidAngle(hitElement)) {
+                    setAngleForG(boundShapeG, RectangleClient.getCenterPointByPoints(hitElement.points), hitElement.angle);
+                }
+                PlaitBoard.getElementActiveHost(board).append(boundShapeG);
             }
         }
         pointerMove(event);

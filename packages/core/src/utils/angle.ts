@@ -89,3 +89,8 @@ export const getRectangleByAngle = (rectangle: RectangleClient, angle: number) =
         return null;
     }
 };
+
+export const isAxisChangedByAngle = (angle: number) => {
+    const unitAngle = Math.abs(angle) % Math.PI;
+    return unitAngle >= (1 / 4) * Math.PI && unitAngle <= (3 / 4) * Math.PI;
+};

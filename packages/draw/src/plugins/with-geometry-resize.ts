@@ -5,10 +5,8 @@ import {
     Point,
     RectangleClient,
     Transforms,
-    createDebugGenerator,
     getSelectedElements,
-    rotate,
-    rotatePoints
+    rotateAntiPointsByElement
 } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
@@ -18,8 +16,7 @@ import {
     getFirstTextManage,
     isCornerHandle,
     normalizeShapePoints,
-    withResize,
-    resetPointsAfterResize
+    withResize
 } from '@plait/common';
 import { getSelectedGeometryElements, getSelectedImageElements } from '../utils/selected';
 import { DrawTransforms } from '../transforms';
@@ -29,9 +26,6 @@ import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeOriginPointAndHandlePoint } from './with-draw-resize';
 import { getResizeAlignRef } from '../utils/resize-align';
-
-const debugKey = 'debug:plait:resize-for-geometry';
-export const debugGenerator = createDebugGenerator(debugKey);
 
 export const withGeometryResize = (board: PlaitBoard) => {
     let alignG: SVGGElement | null;
@@ -63,17 +57,8 @@ export const withGeometryResize = (board: PlaitBoard) => {
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
             const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(resizeRef.element.points));
-            const angle = resizeRef.element.angle;
-            if (angle) {
-                const [rotatedStartPoint, rotateEndPoint] = rotatePoints(
-                    [resizeState.startPoint, resizeState.endPoint],
-                    centerPoint,
-                    -resizeRef.element.angle
-                );
-                resizeState.startPoint = rotatedStartPoint;
-                resizeState.endPoint = rotateEndPoint;
-            }
-
+            resizeState.startPoint = rotateAntiPointsByElement(resizeState.startPoint, resizeRef.element) || resizeState.startPoint;
+            resizeState.endPoint = rotateAntiPointsByElement(resizeState.endPoint, resizeRef.element) || resizeState.endPoint;
             alignG?.remove();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
@@ -92,16 +77,6 @@ export const withGeometryResize = (board: PlaitBoard) => {
             alignG = resizeAlignRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
             let points = resizeAlignRef.activePoints as [Point, Point];
-            // if (angle) {
-            //     points = resetPointsAfterResize(
-            //         resizeRef.rectangle!,
-            //         RectangleClient.getRectangleByPoints(points),
-            //         centerPoint,
-            //         RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points)),
-            //         angle
-            //     );
-            // }
-
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);

@@ -28,10 +28,12 @@ export function getResizeAlignRef(
         activeElements = [resizeRef.element];
         resizeOriginPoints = resizeRef.element.points;
     }
+
     const points = resizeOriginPoints.map(p => {
         return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
     }) as [Point, Point];
     const activeRectangle = RectangleClient.getRectangleByPoints(points);
+
     const resizeAlignReaction = new ResizeAlignReaction(board, activeElements);
     const resizeHandlePoint = movePointByZoomAndOriginPoint(handlePoint, originPoint, xZoom, yZoom);
     const [x, y] = getUnitVectorByPointAndPoint(originPoint, resizeHandlePoint);
