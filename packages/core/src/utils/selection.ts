@@ -55,7 +55,7 @@ export function deleteTemporaryElements(board: PlaitBoard) {
     BOARD_TO_TEMPORARY_ELEMENTS.delete(board);
 }
 
-export function createSelectionRectangleG(board: PlaitBoard) {
+export function drawEntireActiveRectangleG(board: PlaitBoard) {
     const elements = getSelectedElements(board);
     const rectangle = getRectangleByElements(board, elements, false);
     if (rectangle.width > 0 && rectangle.height > 0 && elements.length > 1) {
@@ -65,7 +65,6 @@ export function createSelectionRectangleG(board: PlaitBoard) {
             fillStyle: 'solid'
         });
         selectionRectangleG.classList.add(SELECTION_RECTANGLE_CLASS_NAME);
-        PlaitBoard.getElementActiveHost(board).append(selectionRectangleG);
         const angle = getSelectionAngle(elements);
         if (angle) {
             setAngleForG(selectionRectangleG, RectangleClient.getCenterPoint(rectangle), angle);
