@@ -6,7 +6,11 @@ import {
     PlaitIslandBaseComponent,
     PlaitPointerType,
     Transforms,
-    getSelectedElements
+    getSelectedElements,
+    getSelectionAngle,
+    degreesToRadians,
+    radiansToDegrees,
+    rotateElements
 } from '@plait/core';
 import {
     DrawTransforms,
@@ -16,6 +20,7 @@ import {
     LineShape,
     getMemorizeKey,
     getSelectedGeometryElements,
+    getSelectedImageElements,
     getSelectedLineElements
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
@@ -82,6 +87,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     strokeWidth = 3;
 
+    angle = 0;
+
+    setAngleDisabled = false;
+
     @HostBinding('class.visible')
     get isVisible() {
         const selectedCount = getSelectedElements(this.board).length;
@@ -118,6 +127,16 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             const firstGeometry = selectedGeometryElements[0];
             this.align = firstGeometry.text.align || Alignment.center;
             this.strokeWidth = firstGeometry.strokeWidth || 3;
+        }
+
+        const selectedImageElements = getSelectedImageElements(this.board);
+        const selectedElements = [...selectedImageElements, ...selectedGeometryElements];
+        const selectionAngle = getSelectionAngle(selectedElements);
+        this.angle = Math.round(radiansToDegrees(selectionAngle));
+        if (!selectionAngle && selectedElements.length > 1) {
+            this.setAngleDisabled = true;
+        } else {
+            this.setAngleDisabled = false;
         }
 
         if (selectedLineElements.length) {
@@ -188,6 +207,12 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     changeLineMarker(event: Event, key: string) {
         let value = (event.target as HTMLSelectElement).value as any;
         DrawTransforms.setLineMark(this.board, key as LineHandleKey, value as LineMarkerType);
+    }
+
+    changeAngle() {
+        const selectedElements = getSelectedElements(this.board);
+        const originAngle = getSelectionAngle(selectedElements);
+        rotateElements(this.board, selectedElements, degreesToRadians(this.angle) - originAngle);
     }
 
     textColorChange(value: string) {
