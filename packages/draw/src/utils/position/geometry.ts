@@ -6,23 +6,31 @@ import {
     depthFirstRecursion,
     getIsRecursionFunc,
     rotatePoints,
-    hasValidAngle,
     rotateAntiPointsByElement
 } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry } from '../../interfaces';
-import { RESIZE_HANDLE_DIAMETER, getRectangleResizeHandleRefs } from '@plait/common';
+import { RESIZE_HANDLE_DIAMETER, getRectangleResizeHandleRefs, getRotatedResizeCursorClassByAngle } from '@plait/common';
 import { getEngine } from '../../engines';
 import { PlaitImage } from '../../interfaces/image';
 import { getShape } from '../shape';
 
 export const getHitRectangleResizeHandleRef = (board: PlaitBoard, rectangle: RectangleClient, point: Point, angle: number = 0) => {
     const centerPoint = RectangleClient.getCenterPoint(rectangle);
-    const rotatedPoint = rotatePoints([point], centerPoint, -angle)[0];
-    const resizeHandleRefs = getRectangleResizeHandleRefs(rectangle, RESIZE_HANDLE_DIAMETER, angle);
-    const result = resizeHandleRefs.find(resizeHandleRef => {
-        return RectangleClient.isHit(RectangleClient.getRectangleByPoints([rotatedPoint, rotatedPoint]), resizeHandleRef.rectangle);
-    });
-    return result;
+    const resizeHandleRefs = getRectangleResizeHandleRefs(rectangle, RESIZE_HANDLE_DIAMETER);
+    if (angle) {
+        const rotatedPoint = rotatePoints([point], centerPoint, -angle)[0];
+        let result = resizeHandleRefs.find(resizeHandleRef => {
+            return RectangleClient.isHit(RectangleClient.getRectangleByPoints([rotatedPoint, rotatedPoint]), resizeHandleRef.rectangle);
+        });
+        if (result) {
+            result.cursorClass = getRotatedResizeCursorClassByAngle(result.cursorClass, angle);
+        }
+        return result;
+    } else {
+        return resizeHandleRefs.find(resizeHandleRef => {
+            return RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), resizeHandleRef.rectangle);
+        });
+    }
 };
 
 export const getHitOutlineGeometry = (board: PlaitBoard, point: Point, offset: number = 0): PlaitGeometry | null => {
