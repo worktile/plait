@@ -4,6 +4,7 @@ import { PlaitElement } from '../interfaces/element';
 import { Ancestor } from '../interfaces/node';
 import { Point, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { depthFirstRecursion } from './tree';
+import { getRectangleByAngle } from './angle';
 
 export interface AlignRef {
     deltaX: number;
@@ -34,7 +35,7 @@ export class AlignReaction {
                     return;
                 }
                 const rectangle = this.board.getRectangle(node);
-                rectangle && result.push(rectangle);
+                rectangle && result.push(getRectangleByAngle(rectangle, node.angle) || rectangle);
             },
             node => {
                 if (node && (PlaitBoard.isBoard(node) || this.board.isRecursion(node))) {

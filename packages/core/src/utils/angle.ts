@@ -91,6 +91,16 @@ export const rotateAntiPointsByElement = <T>(points: T, element: PlaitElement): 
     }
 };
 
+export const getRectangleByAngle = (rectangle: RectangleClient, angle: number) => {
+    if (angle) {
+        const cornerPoints = RectangleClient.getCornerPoints(rectangle);
+        const centerPoint = RectangleClient.getCenterPoint(rectangle);
+        return RectangleClient.getRectangleByPoints(rotatePoints(cornerPoints, centerPoint, angle));
+    } else {
+        return null;
+    }
+};
+
 export const isAxisChangedByAngle = (angle: number) => {
     const unitAngle = Math.abs(angle) % Math.PI;
     return unitAngle >= (1 / 4) * Math.PI && unitAngle <= (3 / 4) * Math.PI;

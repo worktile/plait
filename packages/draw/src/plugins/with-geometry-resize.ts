@@ -6,7 +6,6 @@ import {
     RectangleClient,
     Transforms,
     getSelectedElements,
-    hasValidAngle,
     rotateAntiPointsByElement
 } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
@@ -17,8 +16,7 @@ import {
     getFirstTextManage,
     isCornerHandle,
     normalizeShapePoints,
-    withResize,
-    resetPointsAfterResize
+    withResize
 } from '@plait/common';
 import { getSelectedGeometryElements, getSelectedImageElements } from '../utils/selected';
 import { DrawTransforms } from '../transforms';
@@ -79,16 +77,6 @@ export const withGeometryResize = (board: PlaitBoard) => {
             alignG = resizeAlignRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
             let points = resizeAlignRef.activePoints as [Point, Point];
-            if (hasValidAngle(resizeRef.element)) {
-                points = resetPointsAfterResize(
-                    resizeRef.rectangle!,
-                    RectangleClient.getRectangleByPoints(points),
-                    centerPoint,
-                    RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points)),
-                    resizeRef.element.angle
-                );
-            }
-
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);
