@@ -1,4 +1,6 @@
-import { PlaitElement, Point, RectangleClient } from '../interfaces';
+import { PlaitBoard, PlaitElement, Point, RectangleClient } from '../interfaces';
+import { Transforms } from '../transforms';
+import { getRectangleByElements } from './element';
 import { approximately, rotate } from './math';
 
 export const rotatePoints = <T>(points: T, centerPoint: Point, angle: number): T => {
@@ -25,7 +27,16 @@ export const getSelectionAngle = (elements: PlaitElement[]) => {
 };
 
 export const hasSameAngle = (elements: PlaitElement[]) => {
-    return !!getSelectionAngle(elements);
+    if (!elements.length) {
+        return false;
+    }
+
+    const angle = elements[0].angle;
+    if (angle === undefined) {
+        return false;
+    }
+
+    return !elements.some(item => item.angle !== angle);
 };
 
 export const getRotatedBoundingRectangle = (rectanglesCornerPoints: [Point, Point, Point, Point][], angle: number) => {
@@ -84,3 +95,22 @@ export const isAxisChangedByAngle = (angle: number) => {
     const unitAngle = Math.abs(angle) % Math.PI;
     return unitAngle >= (1 / 4) * Math.PI && unitAngle <= (3 / 4) * Math.PI;
 };
+
+export function degreesToRadians(d: number): number {
+    return (d / 180) * Math.PI;
+}
+
+export function radiansToDegrees(r: number): number {
+    return (r / Math.PI) * 180;
+}
+
+export function rotateElements(board: PlaitBoard, elements: PlaitElement[], angle: number) {
+    const selectionRectangle = getRectangleByElements(board, elements, false);
+    const selectionCenterPoint = RectangleClient.getCenterPoint(selectionRectangle);
+    elements.forEach(item => {
+        const originAngle = item.angle;
+        const points = rotatedDataPoints(item.points!, selectionCenterPoint, angle);
+        const path = PlaitBoard.findPath(board, item);
+        Transforms.setNode(board, { points, angle: originAngle + angle }, path);
+    });
+}
