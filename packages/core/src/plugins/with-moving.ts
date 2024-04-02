@@ -22,7 +22,7 @@ import {
     getRectangleByAngle,
     getSelectionAngle
 } from '../utils';
-import { AlignReaction } from '../utils/reaction-manager';
+import { MovingSnapReaction } from '../utils/moving-snap';
 import { PlaitGroupElement, PlaitPointerType, RectangleClient } from '../interfaces';
 import { ACTIVE_MOVING_CLASS_NAME, PRESS_AND_MOVE_BUFFER } from '../constants';
 import { addSelectionWithTemporaryElements } from '../transforms/selection';
@@ -107,12 +107,12 @@ export function withMoving(board: PlaitBoard) {
                         x: activeElementsRectangle.x + offsetX,
                         y: activeElementsRectangle.y + offsetY
                     };
-                    const reactionManager = new AlignReaction(
+                    const movingSnapReaction = new MovingSnapReaction(
                         board,
                         activeElements,
                         getRectangleByAngle(newRectangle, getSelectionAngle(activeElements)) || newRectangle
                     );
-                    const ref = reactionManager.handleAlign();
+                    const ref = movingSnapReaction.handleSnapping();
                     offsetX -= ref.deltaX;
                     offsetY -= ref.deltaY;
                     alignG = ref.g;

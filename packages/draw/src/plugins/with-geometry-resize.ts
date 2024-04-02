@@ -25,7 +25,7 @@ import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeOriginPointAndHandlePoint } from './with-draw-resize';
-import { getResizeAlignRef } from '../utils/resize-align';
+import { getResizeSnapRef } from '../utils/resize-snap';
 
 export const withGeometryResize = (board: PlaitBoard) => {
     let alignG: SVGGElement | null;
@@ -63,7 +63,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
-            const resizeAlignRef = getResizeAlignRef(
+            const resizeAlignRef = getResizeSnapRef(
                 board,
                 resizeRef,
                 resizeState,

@@ -1,4 +1,10 @@
-import { ResizeState, resetPointsAfterResize } from '@plait/common';
+import {
+    ResizeRef,
+    ResizeState,
+    getDirectionFactorByDirectionComponent,
+    getUnitVectorByPointAndPoint,
+    resetPointsAfterResize
+} from '@plait/common';
 import {
     DirectionFactors,
     PlaitBoard,
@@ -10,9 +16,11 @@ import {
     createG,
     findElements,
     getSelectionAngle,
-    getRectangleByAngle
+    getRectangleByAngle,
+    getRectangleByElements
 } from '@plait/core';
 import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
+import { PlaitDrawElement } from '../interfaces';
 
 const debugKey = 'debug:plait:align-for-geometry';
 export const debugGenerator = createDebugGenerator(debugKey);
@@ -22,17 +30,17 @@ export interface ResizeAlignDelta {
     deltaY: number;
 }
 
-export interface AlignLineRef extends ResizeAlignDelta {
+export interface SnapRef extends ResizeAlignDelta {
     xZoom: number;
     yZoom: number;
     activePoints: Point[];
 }
 
-export interface ResizeAlignRef extends AlignLineRef {
+export interface ResizeSnapRef extends SnapRef {
     alignG: SVGGElement;
 }
 
-export interface ResizeAlignOptions {
+export interface ResizeSnapOptions {
     resizeState: ResizeState;
     resizeOriginPoints: Point[];
     activeRectangle: RectangleClient;
@@ -57,7 +65,7 @@ const EQUAL_SPACING = 10;
 
 const ALIGN_SPACING = 24;
 
-export class ResizeAlignReaction {
+export class ResizeSnapReaction {
     alignRectangles: RectangleClient[];
 
     angle: number;
@@ -76,9 +84,9 @@ export class ResizeAlignReaction {
         return elements.map(item => getRectangleByAngle(this.board.getRectangle(item)!, item.angle) || this.board.getRectangle(item)!);
     }
 
-    getAlignLineRef(resizeAlignDelta: ResizeAlignDelta, resizeAlignOptions: ResizeAlignOptions): AlignLineRef {
+    getSnapRef(resizeAlignDelta: ResizeAlignDelta, resizeSnapOptions: ResizeSnapOptions): SnapRef {
         const { deltaX, deltaY } = resizeAlignDelta;
-        const { resizeState, originPoint, handlePoint, isFromCorner, isAspectRatio, resizeOriginPoints } = resizeAlignOptions;
+        const { resizeState, originPoint, handlePoint, isFromCorner, isAspectRatio, resizeOriginPoints } = resizeSnapOptions;
         const newResizeState: ResizeState = {
             ...resizeState,
             endPoint: [resizeState.endPoint[0] + deltaX, resizeState.endPoint[1] + deltaY]
@@ -107,41 +115,41 @@ export class ResizeAlignReaction {
         };
     }
 
-    getEqualLineDelta(resizeAlignOptions: ResizeAlignOptions) {
+    getEqualLineDelta(resizeSnapOptions: ResizeSnapOptions) {
         let equalLineDelta: ResizeAlignDelta = {
             deltaX: 0,
             deltaY: 0
         };
-        const { isAspectRatio, activeRectangle } = resizeAlignOptions;
+        const { isAspectRatio, activeRectangle } = resizeSnapOptions;
         const widthAlignRectangle = this.alignRectangles.find(item => Math.abs(item.width - activeRectangle.width) < ALIGN_TOLERANCE);
         if (widthAlignRectangle) {
             const deltaWidth = widthAlignRectangle.width - activeRectangle.width;
-            equalLineDelta.deltaX = deltaWidth * resizeAlignOptions.directionFactors[0];
+            equalLineDelta.deltaX = deltaWidth * resizeSnapOptions.directionFactors[0];
             if (isAspectRatio) {
                 const deltaHeight = deltaWidth / (activeRectangle.width / activeRectangle.height);
-                equalLineDelta.deltaY = deltaHeight * resizeAlignOptions.directionFactors[1];
+                equalLineDelta.deltaY = deltaHeight * resizeSnapOptions.directionFactors[1];
                 return equalLineDelta;
             }
         }
         const heightAlignRectangle = this.alignRectangles.find(item => Math.abs(item.height - activeRectangle.height) < ALIGN_TOLERANCE);
         if (heightAlignRectangle) {
             const deltaHeight = heightAlignRectangle.height - activeRectangle.height;
-            equalLineDelta.deltaY = deltaHeight * resizeAlignOptions.directionFactors[1];
+            equalLineDelta.deltaY = deltaHeight * resizeSnapOptions.directionFactors[1];
             if (isAspectRatio) {
                 const deltaWidth = deltaHeight * (activeRectangle.width / activeRectangle.height);
-                equalLineDelta.deltaX = deltaWidth * resizeAlignOptions.directionFactors[0];
+                equalLineDelta.deltaX = deltaWidth * resizeSnapOptions.directionFactors[0];
                 return equalLineDelta;
             }
         }
         return equalLineDelta;
     }
 
-    drawEqualLines(activePoints: Point[], resizeAlignOptions: ResizeAlignOptions) {
+    drawEqualLines(activePoints: Point[], resizeSnapOptions: ResizeSnapOptions) {
         let widthEqualPoints = [];
         let heightEqualPoints = [];
 
-        const drawHorizontalLine = resizeAlignOptions.directionFactors[0] !== 0 || resizeAlignOptions.isAspectRatio;
-        const drawVerticalLine = resizeAlignOptions.directionFactors[1] !== 0 || resizeAlignOptions.isAspectRatio;
+        const drawHorizontalLine = resizeSnapOptions.directionFactors[0] !== 0 || resizeSnapOptions.isAspectRatio;
+        const drawVerticalLine = resizeSnapOptions.directionFactors[1] !== 0 || resizeSnapOptions.isAspectRatio;
         const activeRectangle =
             getRectangleByAngle(RectangleClient.getRectangleByPoints(activePoints), this.angle) ||
             RectangleClient.getRectangleByPoints(activePoints);
@@ -164,12 +172,12 @@ export class ResizeAlignReaction {
         return drawEqualLines(this.board, equalLinePoints);
     }
 
-    getAlignLineDelta(resizeAlignOptions: ResizeAlignOptions) {
+    getAlignLineDelta(resizeSnapOptions: ResizeSnapOptions) {
         let alignLineDelta: ResizeAlignDelta = {
             deltaX: 0,
             deltaY: 0
         };
-        const { isAspectRatio, activeRectangle, directionFactors } = resizeAlignOptions;
+        const { isAspectRatio, activeRectangle, directionFactors } = resizeSnapOptions;
         const drawHorizontal = directionFactors[0] !== 0 || isAspectRatio;
         const drawVertical = directionFactors[1] !== 0 || isAspectRatio;
 
@@ -202,7 +210,7 @@ export class ResizeAlignReaction {
         return alignLineDelta;
     }
 
-    drawAlignLines(activePoints: Point[], resizeAlignOptions: ResizeAlignOptions) {
+    drawAlignLines(activePoints: Point[], resizeSnapOptions: ResizeSnapOptions) {
         debugGenerator.isDebug() && debugGenerator.clear();
         let alignLinePoints: [Point, Point][] = [];
         const activeRectangle =
@@ -249,7 +257,7 @@ export class ResizeAlignReaction {
             }
         };
 
-        const { isAspectRatio, directionFactors } = resizeAlignOptions;
+        const { isAspectRatio, directionFactors } = resizeSnapOptions;
         const drawHorizontal = directionFactors[0] !== 0 || isAspectRatio;
         const drawVertical = directionFactors[1] !== 0 || isAspectRatio;
 
@@ -306,15 +314,15 @@ export class ResizeAlignReaction {
         return drawAlignLines(this.board, alignLinePoints);
     }
 
-    handleResizeAlign(resizeAlignOptions: ResizeAlignOptions): ResizeAlignRef {
+    handleResizeSnap(resizeSnapOptions: ResizeSnapOptions): ResizeSnapRef {
         const alignG = createG();
-        let alignLineDelta = this.getEqualLineDelta(resizeAlignOptions);
+        let alignLineDelta = this.getEqualLineDelta(resizeSnapOptions);
         if (alignLineDelta.deltaX === 0 && alignLineDelta.deltaY === 0) {
-            alignLineDelta = this.getAlignLineDelta(resizeAlignOptions);
+            alignLineDelta = this.getAlignLineDelta(resizeSnapOptions);
         }
-        const equalLineRef = this.getAlignLineRef(alignLineDelta, resizeAlignOptions);
-        const equalLinesG = this.drawEqualLines(equalLineRef.activePoints, resizeAlignOptions);
-        const alignLinesG = this.drawAlignLines(equalLineRef.activePoints, resizeAlignOptions);
+        const equalLineRef = this.getSnapRef(alignLineDelta, resizeSnapOptions);
+        const equalLinesG = this.drawEqualLines(equalLineRef.activePoints, resizeSnapOptions);
+        const alignLinesG = this.drawAlignLines(equalLineRef.activePoints, resizeSnapOptions);
         alignG.append(equalLinesG, alignLinesG);
         return { ...equalLineRef, alignG };
     }
@@ -422,4 +430,52 @@ function getNearestAlignRectangle(alignRectangles: RectangleClient[], activeRect
         }
     });
     return nearestRectangle;
+}
+
+export function getResizeSnapRef(
+    board: PlaitBoard,
+    resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
+    resizeState: ResizeState,
+    resizeOriginPointAndHandlePoint: {
+        originPoint: Point;
+        handlePoint: Point;
+    },
+    isAspectRatio: boolean,
+    isFromCorner: boolean
+): ResizeSnapRef {
+    const { originPoint, handlePoint } = resizeOriginPointAndHandlePoint;
+    const { xZoom, yZoom } = getResizeZoom(resizeState, originPoint, handlePoint, isFromCorner, isAspectRatio);
+
+    let activeElements: PlaitElement[];
+    let resizeOriginPoints: Point[] = [];
+    if (Array.isArray(resizeRef.element)) {
+        activeElements = resizeRef.element;
+        const rectangle = getRectangleByElements(board, resizeRef.element, false);
+        resizeOriginPoints = RectangleClient.getPoints(rectangle);
+    } else {
+        activeElements = [resizeRef.element];
+        resizeOriginPoints = resizeRef.element.points;
+    }
+
+    const points = resizeOriginPoints.map(p => {
+        return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
+    }) as [Point, Point];
+    const activeRectangle =
+        getRectangleByAngle(RectangleClient.getRectangleByPoints(points), getSelectionAngle(activeElements)) ||
+        RectangleClient.getRectangleByPoints(points);
+
+    const resizeSnapReaction = new ResizeSnapReaction(board, activeElements);
+    const resizeHandlePoint = movePointByZoomAndOriginPoint(handlePoint, originPoint, xZoom, yZoom);
+    const [x, y] = getUnitVectorByPointAndPoint(originPoint, resizeHandlePoint);
+
+    return resizeSnapReaction.handleResizeSnap({
+        resizeState,
+        resizeOriginPoints,
+        activeRectangle,
+        originPoint,
+        handlePoint,
+        directionFactors: [getDirectionFactorByDirectionComponent(x), getDirectionFactorByDirectionComponent(y)],
+        isAspectRatio,
+        isFromCorner
+    });
 }
