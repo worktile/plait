@@ -113,9 +113,6 @@ export class ResizeAlignReaction {
             deltaY: 0
         };
         let { isAspectRatio, activeRectangle } = resizeAlignOptions;
-
-        activeRectangle = getRectangleByAngle(activeRectangle, this.angle) || activeRectangle;
-
         const widthAlignRectangle = this.alignRectangles.find(item => Math.abs(item.width - activeRectangle.width) < ALIGN_TOLERANCE);
         if (widthAlignRectangle) {
             const deltaWidth = widthAlignRectangle.width - activeRectangle.width;
@@ -145,8 +142,9 @@ export class ResizeAlignReaction {
 
         const drawHorizontalLine = resizeAlignOptions.directionFactors[0] !== 0 || resizeAlignOptions.isAspectRatio;
         const drawVerticalLine = resizeAlignOptions.directionFactors[1] !== 0 || resizeAlignOptions.isAspectRatio;
-        let activeRectangle = RectangleClient.getRectangleByPoints(activePoints);
-        activeRectangle = getRectangleByAngle(activeRectangle, this.angle) || activeRectangle;
+        const activeRectangle =
+            getRectangleByAngle(RectangleClient.getRectangleByPoints(activePoints), this.angle) ||
+            RectangleClient.getRectangleByPoints(activePoints);
         for (let alignRectangle of this.alignRectangles) {
             if (activeRectangle.width === alignRectangle.width && drawHorizontalLine) {
                 widthEqualPoints.push(getEqualLinePoints(alignRectangle, true));

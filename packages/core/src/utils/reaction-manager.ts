@@ -4,8 +4,7 @@ import { PlaitElement } from '../interfaces/element';
 import { Ancestor } from '../interfaces/node';
 import { Point, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { depthFirstRecursion } from './tree';
-import { createDebugGenerator } from './debug';
-import { getRectangleByAngle, getSelectionAngle } from './angle';
+import { getRectangleByAngle } from './angle';
 
 export interface AlignRef {
     deltaX: number;
@@ -25,8 +24,6 @@ export class AlignReaction {
 
     constructor(private board: PlaitBoard, private activeElements: PlaitElement[], private activeRectangle: RectangleClient) {
         this.alignRectangles = this.getAlignRectangle();
-        const angle = getSelectionAngle(activeElements);
-        this.activeRectangle = getRectangleByAngle(activeRectangle, angle) || activeRectangle;
     }
 
     getAlignRectangle() {

@@ -18,7 +18,9 @@ import {
     toHostPoint,
     toViewBoxPoint,
     hotkeys,
-    getElementsInGroupByElement
+    getElementsInGroupByElement,
+    getRectangleByAngle,
+    getSelectionAngle
 } from '../utils';
 import { AlignReaction } from '../utils/reaction-manager';
 import { PlaitGroupElement, PlaitPointerType, RectangleClient } from '../interfaces';
@@ -104,7 +106,11 @@ export function withMoving(board: PlaitBoard) {
                         x: activeElementsRectangle.x + offsetX,
                         y: activeElementsRectangle.y + offsetY
                     };
-                    const reactionManager = new AlignReaction(board, activeElements, newRectangle);
+                    const reactionManager = new AlignReaction(
+                        board,
+                        activeElements,
+                        getRectangleByAngle(newRectangle, getSelectionAngle(activeElements)) || newRectangle
+                    );
                     const ref = reactionManager.handleAlign();
                     offsetX -= ref.deltaX;
                     offsetY -= ref.deltaY;
