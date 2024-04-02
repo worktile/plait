@@ -25,12 +25,16 @@ import {
     rotatedDataPoints,
     createDebugGenerator,
     hasValidAngle,
-    isAxisChangedByAngle
+    isAxisChangedByAngle,
+    drawRectangle,
+    ACTIVE_STROKE_WIDTH,
+    SELECTION_BORDER_COLOR
 } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeAlignRef } from '../utils/resize-align';
+import { ResizeAlignRef } from '../utils/resize-align-reaction';
 
 const debugKey = 'debug:plait:resize-for-rotation';
 const debugGenerator = createDebugGenerator(debugKey);
@@ -43,9 +47,11 @@ export interface BulkRotationRef {
 }
 
 export function withDrawResize(board: PlaitBoard) {
-    const { afterChange } = board;
+    const { afterChange, drawActiveRectangle } = board;
     let alignG: SVGGElement | null;
     let handleG: SVGGElement | null;
+    let needCustomActiveRectangle = false;
+    let resizeActivePoints: Point[] | null = null;
 
     const canResize = () => {
         const elements = getSelectedElements(board);
@@ -106,6 +112,7 @@ export function withDrawResize(board: PlaitBoard) {
                 isAspectRatio,
                 isFromCorner
             );
+            resizeActivePoints = resizeAlignRef.activePoints;
             alignG = resizeAlignRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
 
@@ -158,6 +165,7 @@ export function withDrawResize(board: PlaitBoard) {
                             resizeAlignRef.xZoom,
                             resizeAlignRef.yZoom
                         );
+                        needCustomActiveRectangle = true;
                     } else {
                         points = target.points.map(p => {
                             return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
@@ -196,6 +204,12 @@ export function withDrawResize(board: PlaitBoard) {
         afterResize: (resizeRef: ResizeRef<PlaitDrawElement[]>) => {
             alignG?.remove();
             alignG = null;
+            if (needCustomActiveRectangle) {
+                needCustomActiveRectangle = false;
+                resizeActivePoints = null;
+                const selectedElements = getSelectedElements(board);
+                Transforms.addSelectionWithTemporaryElements(board, selectedElements);
+            }
         }
     };
 
@@ -210,7 +224,9 @@ export function withDrawResize(board: PlaitBoard) {
         if (canResize() && !isSelectionMoving(board)) {
             handleG = createG();
             const elements = getSelectedElements(board) as PlaitDrawElement[];
-            const boundingRectangle = getRectangleByElements(board, elements, false);
+            const boundingRectangle = needCustomActiveRectangle
+                ? RectangleClient.getRectangleByPoints(resizeActivePoints!)
+                : getRectangleByElements(board, elements, false);
             let corners = RectangleClient.getCornerPoints(boundingRectangle);
             const angle = getSelectionAngle(elements);
             if (angle) {
@@ -224,6 +240,18 @@ export function withDrawResize(board: PlaitBoard) {
             PlaitBoard.getElementActiveHost(board).append(handleG);
         }
     };
+
+    board.drawActiveRectangle = () => {
+        if (needCustomActiveRectangle) {
+            const rectangle = RectangleClient.getRectangleByPoints(resizeActivePoints!);
+            return drawRectangle(board, RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH), {
+                stroke: SELECTION_BORDER_COLOR,
+                strokeWidth: ACTIVE_STROKE_WIDTH
+            });
+        }
+        return drawActiveRectangle();
+    };
+
     return board;
 }
 

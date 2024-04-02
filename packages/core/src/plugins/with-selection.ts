@@ -16,7 +16,6 @@ import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_
 import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
 import {
     clearSelectionMoving,
-    createSelectionRectangleG,
     deleteTemporaryElements,
     drawRectangle,
     getTemporaryElements,
@@ -42,7 +41,7 @@ export interface WithPluginOptions extends PlaitPluginOptions {
 }
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange } = board;
+    const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange, drawActiveRectangle } = board;
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
@@ -209,7 +208,8 @@ export function withSelection(board: PlaitBoard) {
                 if (!isSelectionMoving(board)) {
                     selectionRectangleG?.remove();
                     if (newElements.length > 1) {
-                        selectionRectangleG = createSelectionRectangleG(board);
+                        selectionRectangleG = board.drawActiveRectangle();
+                        PlaitBoard.getElementActiveHost(board).append(selectionRectangleG!);
                     }
                 }
             } catch (error) {
@@ -230,7 +230,8 @@ export function withSelection(board: PlaitBoard) {
                             currentSelectedElements.some((c, index) => c !== previousSelectedElements[index]))
                     ) {
                         selectionRectangleG?.remove();
-                        selectionRectangleG = createSelectionRectangleG(board);
+                        selectionRectangleG = board.drawActiveRectangle();
+                        PlaitBoard.getElementActiveHost(board).append(selectionRectangleG!);
                         previousSelectedElements = currentSelectedElements;
                     }
                 } else {
