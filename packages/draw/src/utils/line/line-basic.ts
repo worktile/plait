@@ -10,19 +10,11 @@ import {
     createMask,
     createRect,
     distanceBetweenPointAndPoint,
-    catmullRomFitting,
-    rotateAntiPointsByElement
+    catmullRomFitting
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import {
-    getPointOnPolyline,
-    getPointByVectorComponent,
-    removeDuplicatePoints,
-    getExtendPoint,
-    isSourceAndTargetIntersect
-} from '@plait/common';
+import { getPointOnPolyline, getPointByVectorComponent, removeDuplicatePoints, getExtendPoint } from '@plait/common';
 import { LineHandle, LineMarkerType, LineShape, LineText, PlaitDrawElement, PlaitLine, PlaitShapeElement } from '../../interfaces';
-import { getNearestPoint } from '../geometry';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
 import { getElementShape } from '../shape';
@@ -33,7 +25,7 @@ import { getSnappingGeometry, getSnappingRef } from '../position/geometry';
 import { getLineMemorizedLatest } from '../memorize';
 import { alignPoints } from './line-resize';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
-import { getElbowPoints, getNextSourceAndTargetPoints } from './elbow';
+import { getElbowPoints, getNextSourceAndTargetPoints, isUseDefaultOrthogonalRoute } from './elbow';
 import { drawLineArrow } from './line-arrow';
 
 export const createLineElement = (
@@ -144,8 +136,7 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
     if (shape === LineShape.elbow) {
         const renderPoints = getElbowPoints(board, element);
         const options = getElbowLineRouteOptions(board, element);
-        const isIntersect = isSourceAndTargetIntersect(options);
-        if (!isIntersect) {
+        if (!isUseDefaultOrthogonalRoute(element, options)) {
             const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
             for (let i = 0; i < renderPoints.length - 1; i++) {
                 if (

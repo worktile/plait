@@ -1,11 +1,11 @@
-import { Path, PlaitBoard, PlaitNode, Point, RectangleClient, hasValidAngle, rotateAntiPointsByElement, rotatePoints } from '@plait/core';
-import { ResizeRef, ResizeState, WithResizeOptions, isSourceAndTargetIntersect, simplifyOrthogonalPoints, withResize } from '@plait/common';
+import { Path, PlaitBoard, PlaitNode, Point } from '@plait/core';
+import { ResizeRef, ResizeState, WithResizeOptions, simplifyOrthogonalPoints, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
 import { getSnappingGeometry } from '../utils/position/geometry';
 import { LineHandle, LineShape, PlaitLine } from '../interfaces';
 import { DrawTransforms } from '../transforms';
-import { getElbowPoints, getNextRenderPoints } from '../utils/line/elbow';
+import { getElbowPoints, getNextRenderPoints, isUseDefaultOrthogonalRoute } from '../utils/line/elbow';
 import {
     alignElbowSegment,
     alignPoints,
@@ -53,8 +53,7 @@ export const withLineResize = (board: PlaitBoard) => {
                 resizeRef.handle !== LineResizeHandle.target
             ) {
                 const params = getElbowLineRouteOptions(board, resizeRef.element);
-                const isIntersect = isSourceAndTargetIntersect(params);
-                if (isIntersect) {
+                if (isUseDefaultOrthogonalRoute(resizeRef.element, params)) {
                     return;
                 }
                 const points: Point[] = [...resizeRef.element.points];

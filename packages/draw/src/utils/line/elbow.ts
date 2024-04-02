@@ -5,7 +5,9 @@ import {
     removeDuplicatePoints,
     generateElbowLineRoute,
     simplifyOrthogonalPoints,
-    isSourceAndTargetIntersect
+    isSourceAndTargetIntersect,
+    DEFAULT_ROUTE_MARGIN,
+    ElbowLineRouteOptions
 } from '@plait/common';
 import { BasicShapes, LineHandleRefPair, PlaitGeometry, PlaitLine } from '../../interfaces';
 import { createGeometryElement } from '../geometry';
@@ -13,19 +15,26 @@ import { getStrokeWidthByElement } from '../style/stroke';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
 import { getMidKeyPoints, getMirrorDataPoints, hasIllegalElbowPoint } from './line-resize';
 
+export const isSelfLoop = (element: PlaitLine) => {
+    return element.source.boundId && element.source.boundId === element.target.boundId;
+};
+
+export const isUseDefaultOrthogonalRoute = (element: PlaitLine, options: ElbowLineRouteOptions) => {
+    return isSourceAndTargetIntersect(options) && !isSelfLoop(element);
+};
+
 export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     const handleRefPair = getLineHandleRefPair(board, element);
     const params = getElbowLineRouteOptions(board, element, handleRefPair);
     // console.log(params, 'params');
-    const isIntersect = isSourceAndTargetIntersect(params);
-    if (isIntersect) {
+    if (isUseDefaultOrthogonalRoute(element, params)) {
         return simplifyOrthogonalPoints(
             getPoints(
                 handleRefPair.source.point,
                 handleRefPair.source.direction,
                 handleRefPair.target.point,
                 handleRefPair.target.direction,
-                0
+                DEFAULT_ROUTE_MARGIN
             )
         );
     }
