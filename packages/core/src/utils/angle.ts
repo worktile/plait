@@ -27,7 +27,16 @@ export const getSelectionAngle = (elements: PlaitElement[]) => {
 };
 
 export const hasSameAngle = (elements: PlaitElement[]) => {
-    return !!getSelectionAngle(elements);
+    if (!elements.length) {
+        return false;
+    }
+
+    const angle = elements[0].angle;
+    if (angle === undefined) {
+        return false;
+    }
+
+    return !elements.some(item => item.angle !== angle);
 };
 
 export const getRotatedBoundingRectangle = (rectanglesCornerPoints: [Point, Point, Point, Point][], angle: number) => {
@@ -88,11 +97,11 @@ export const isAxisChangedByAngle = (angle: number) => {
 };
 
 export function degreesToRadians(d: number): number {
-    return (d * Math.PI) / 180;
+    return (d / 180) * Math.PI;
 }
 
 export function radiansToDegrees(r: number): number {
-    return (r * 180) / Math.PI;
+    return (r / Math.PI) * 180;
 }
 
 export function rotateElements(board: PlaitBoard, elements: PlaitElement[], angle: number) {

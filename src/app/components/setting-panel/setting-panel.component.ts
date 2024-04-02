@@ -10,7 +10,8 @@ import {
     getSelectionAngle,
     degreesToRadians,
     radiansToDegrees,
-    rotateElements
+    rotateElements,
+    hasSameAngle
 } from '@plait/core';
 import {
     DrawTransforms,
@@ -133,10 +134,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedElements = [...selectedImageElements, ...selectedGeometryElements];
         const selectionAngle = getSelectionAngle(selectedElements);
         this.angle = Math.round(radiansToDegrees(selectionAngle));
-        if (!selectionAngle && selectedElements.length > 1) {
-            this.setAngleDisabled = true;
-        } else {
+        if (hasSameAngle(selectedElements)) {
             this.setAngleDisabled = false;
+        } else {
+            this.setAngleDisabled = true;
         }
 
         if (selectedLineElements.length) {
