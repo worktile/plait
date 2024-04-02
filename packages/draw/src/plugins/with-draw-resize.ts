@@ -157,6 +157,9 @@ export function withDrawResize(board: PlaitBoard) {
                     ]) as Point[];
                     points = rotatedDataPoints(adjustTargetPoints, bulkRotationRef.newCenterPoint, bulkRotationRef.angle) as [Point, Point];
                 } else {
+                    if (hasValidAngle(target)) {
+                        needCustomActiveRectangle = true;
+                    }
                     if (hasValidAngle(target) && isAxisChangedByAngle(target.angle)) {
                         points = getResizePointsByOtherwiseAxis(
                             board,
@@ -165,7 +168,6 @@ export function withDrawResize(board: PlaitBoard) {
                             resizeAlignRef.xZoom,
                             resizeAlignRef.yZoom
                         );
-                        needCustomActiveRectangle = true;
                     } else {
                         points = target.points.map(p => {
                             return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
