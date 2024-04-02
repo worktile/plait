@@ -60,7 +60,8 @@ export function withMoving(board: PlaitBoard) {
             preventTouchMove(board, event, true);
         } else if (hitTargetElement) {
             startPoint = point;
-            activeElements = getElementsInGroupByElement(board, hitTargetElement);
+            const relatedElements = board.getRelatedFragment([], [hitTargetElement]);
+            activeElements = [...getElementsInGroupByElement(board, hitTargetElement), ...relatedElements];
             activeElementsRectangle = getRectangleByElements(board, activeElements, true);
             preventTouchMove(board, event, true);
         } else {

@@ -20,7 +20,8 @@ import {
     getSelectedIsolatedElementsCanAddToGroup,
     getElementsInGroup,
     getRectangleByGroup,
-    GroupTransforms
+    GroupTransforms,
+    getSelectedElements
 } from '@plait/core';
 import { GroupComponent } from '../core/group.component';
 import { isKeyHotkey } from 'is-hotkey';
@@ -70,9 +71,9 @@ export function withGroup(board: PlaitBoard) {
         globalPointerUp(event);
     };
 
-    board.getRelatedFragment = (elements: PlaitElement[]) => {
-        const groups = getSelectedGroups(board);
-        return getRelatedFragment([...elements, ...groups]);
+    board.getRelatedFragment = (elements: PlaitElement[], originData?: PlaitElement[]) => {
+        const groups = getSelectedGroups(board, originData);
+        return getRelatedFragment([...elements, ...groups], originData);
     };
 
     board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
@@ -166,7 +167,8 @@ const updateElementsGroupId = (group: PlaitGroup, clipboardDataElements: PlaitEl
 };
 
 const getRemoveGroups = (board: PlaitBoard) => {
-    const selectedGroups = board.getRelatedFragment([]) as PlaitGroup[];
+    const selectedElements = getSelectedElements(board);
+    const selectedGroups = board.getRelatedFragment([], selectedElements) as PlaitGroup[];
     const removeGroups = [...selectedGroups];
     const highestSelectedGroups = getHighestSelectedGroups(board);
     const selectedIsolatedElements = getSelectedIsolatedElementsCanAddToGroup(board);

@@ -1,12 +1,4 @@
-import {
-    PlaitBoard,
-    PlaitElement,
-    PlaitPluginElementContext,
-    Point,
-    RectangleClient,
-    Selection,
-    getSelectedElements
-} from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitPluginElementContext, Point, RectangleClient, Selection, getSelectedElements } from '@plait/core';
 import { GeometryComponent } from '../geometry.component';
 import { LineComponent } from '../line.component';
 import { PlaitDrawElement } from '../interfaces';
@@ -116,8 +108,8 @@ export const withDraw = (board: PlaitBoard) => {
         return isAlign(element);
     };
 
-    board.getRelatedFragment = (elements: PlaitElement[]) => {
-        const selectedElements = getSelectedElements(board);
+    board.getRelatedFragment = (elements: PlaitElement[], originData?: PlaitElement[]) => {
+        const selectedElements = originData || getSelectedElements(board);
         const lineElements = board.children.filter(element => PlaitDrawElement.isLine(element));
         const activeLines = lineElements.filter(line => {
             const source = selectedElements.find(element => element.id === line.source.boundId);
@@ -125,7 +117,7 @@ export const withDraw = (board: PlaitBoard) => {
             const isSelected = selectedElements.includes(line);
             return source && target && !isSelected;
         });
-        return getRelatedFragment([...elements, ...activeLines]);
+        return getRelatedFragment([...elements, ...activeLines], originData);
     };
 
     return withDrawResize(
