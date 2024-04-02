@@ -112,7 +112,7 @@ export class ResizeAlignReaction {
             deltaX: 0,
             deltaY: 0
         };
-        let { isAspectRatio, activeRectangle } = resizeAlignOptions;
+        const { isAspectRatio, activeRectangle } = resizeAlignOptions;
         const widthAlignRectangle = this.alignRectangles.find(item => Math.abs(item.width - activeRectangle.width) < ALIGN_TOLERANCE);
         if (widthAlignRectangle) {
             const deltaWidth = widthAlignRectangle.width - activeRectangle.width;
