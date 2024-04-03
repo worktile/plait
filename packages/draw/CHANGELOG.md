@@ -1,5 +1,39 @@
 # @plait/draw
 
+## 0.54.0
+
+### Minor Changes
+
+-   [`c16b08ab`](https://github.com/worktile/plait/commit/c16b08ab502fb1b7d2f4b52b24f6b463766c3147) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update line snapping logic:
+
+    1. snapping when the point is close to edge or connector
+
+    2. no snapping when the end point is at inside element
+
+*   [`2cd8d926`](https://github.com/worktile/plait/commit/2cd8d926092a88b3a117e32f1170053e6546fd73) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename align to snap
+
+-   [#801](https://github.com/worktile/plait/pull/801) [`a301c889`](https://github.com/worktile/plait/commit/a301c8899b9f84d97f0f94bbb9a09f5c9ac9221d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - When batching `Resize`, if the element has a rotation angle, the axis of `Resize` will be re-determined based on the rotation angle.
+
+    `plait/core`: Extract the `isAxisChangedByAngle` method to determine whether the rotation angle will cause the `Resize` axis of the element to change.
+
+    批量`Resize`时，如果元素有旋转角度则根据旋转角度重新确定`Resize`的轴
+
+    `plait/core`: 提取`isAxisChangedByAngle`方法用于判断旋转角度是会造成元素的`Resize`轴线是否发生变化
+
+*   [`9b25c6d6`](https://github.com/worktile/plait/commit/9b25c6d6cbebbb172540df5f1faeb7f499963557) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support assign the origin data when invoke getRelatedFragment
+
+-   [`0f4fe824`](https://github.com/worktile/plait/commit/0f4fe8243bc5e3b7154244131dd762dab4ee9584) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle self-loop line route
+
+### Patch Changes
+
+-   [#799](https://github.com/worktile/plait/pull/799) [`52b78c14`](https://github.com/worktile/plait/commit/52b78c1465510909f003d2b4d4cdce23e32a0770) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - align elbow line points without custom points
+
+*   [#798](https://github.com/worktile/plait/pull/798) [`1af71bf8`](https://github.com/worktile/plait/commit/1af71bf8f0166a733a43e6839e2d426493502ef7) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(draw): check element angle when rotate
+
+-   [#803](https://github.com/worktile/plait/pull/803) [`fa314cf4`](https://github.com/worktile/plait/commit/fa314cf4a9f6c04200bc80c616f533ed3f4ea1a8) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(draw): align for rotate element
+
+*   [#805](https://github.com/worktile/plait/pull/805) [`a5139e8a`](https://github.com/worktile/plait/commit/a5139e8a65636068d203027193dbcf3efdf4c104) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add overridable method drawActiveRectangle to implement custom drawing active rectangle
+
 ## 0.53.0
 
 ### Minor Changes

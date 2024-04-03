@@ -1,5 +1,53 @@
 # plait
 
+## 0.54.0
+
+### Minor Changes
+
+-   [`c16b08ab`](https://github.com/worktile/plait/commit/c16b08ab502fb1b7d2f4b52b24f6b463766c3147) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update line snapping logic:
+
+    1. snapping when the point is close to edge or connector
+
+    2. no snapping when the end point is at inside element
+
+*   [`89e9acd0`](https://github.com/worktile/plait/commit/89e9acd02c0c1342bc9f52f711d250c6ec1f8290) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add alive state to avoid executing callback in requestAnimationFrame
+
+-   [`2cd8d926`](https://github.com/worktile/plait/commit/2cd8d926092a88b3a117e32f1170053e6546fd73) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename align to snap
+
+*   [`9b25c6d6`](https://github.com/worktile/plait/commit/9b25c6d6cbebbb172540df5f1faeb7f499963557) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support assign the origin data when invoke getRelatedFragment
+
+-   [#797](https://github.com/worktile/plait/pull/797) [`15e9069c`](https://github.com/worktile/plait/commit/15e9069c0b5a03a678ec06a87df634fe61506c9d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename getDeletedFragment method to getDeleteFragment
+
+*   [#797](https://github.com/worktile/plait/pull/797) [`15e9069c`](https://github.com/worktile/plait/commit/15e9069c0b5a03a678ec06a87df634fe61506c9d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Guaranteed that the `getDeletedFragment` overridable function is called before the `deleteFragment` overridable function
+
+    Remove the `getDeletedFragment` call from the default implementation of `deleteFragment` and call it externally, while encapsulating the tool function `deleteFragment`:
+
+    ```
+    export const deleteFragment = (board: PlaitBoard) => {
+         const elements = board.getDeletedFragment([]);
+         board.deleteFragment(elements);
+    }
+    ```
+
+    Where board.deleteFragment(null) was used before, the tool function `deleteFragment()` is now uniformly called.
+
+    保证 `getDeletedFragment` 可重写函数调用先于 `deleteFragment` 可重写函数
+
+    将 `getDeletedFragment` 调用从 `deleteFragment` 默认实现中移除，改为在外部调用，同时封装工具函数 `deleteFragment`：
+
+    ```
+    export const deleteFragment = (board: PlaitBoard) => {
+        const elements = board.getDeletedFragment([]);
+        board.deleteFragment(elements);
+    }
+    ```
+
+    以前使用 board.deleteFragment(null) 的地方现在统一改为调用工具函数 `deleteFragment()`
+
+### Patch Changes
+
+-   [#805](https://github.com/worktile/plait/pull/805) [`a5139e8a`](https://github.com/worktile/plait/commit/a5139e8a65636068d203027193dbcf3efdf4c104) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add overridable method drawActiveRectangle to implement custom drawing active rectangle
+
 ## 0.53.0
 
 ### Minor Changes
