@@ -1,4 +1,12 @@
-import { PlaitBoard, PlaitElement, RectangleClient, setAngleForG } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitElement,
+    PlaitGroupElement,
+    RectangleClient,
+    getElementsInGroup,
+    getSelectionAngle,
+    setAngleForG
+} from '@plait/core';
 
 export interface GeneratorExtraData {}
 
@@ -34,8 +42,13 @@ export abstract class Generator<
                 }
                 this.g = g;
                 const rect = this.board.getRectangle(element);
-                if (rect && element.angle) {
-                    setAngleForG(g, RectangleClient.getCenterPoint(rect), element.angle);
+                if (rect) {
+                    if (PlaitGroupElement.isGroup(element)) {
+                        const angle = getSelectionAngle(getElementsInGroup(this.board, element));
+                        setAngleForG(g, RectangleClient.getCenterPoint(rect), angle);
+                    } else {
+                        setAngleForG(g, RectangleClient.getCenterPoint(rect), element.angle);
+                    }
                 }
             } else {
                 this.destroy();
