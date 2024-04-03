@@ -118,7 +118,7 @@ export function withGroup(board: PlaitBoard) {
 
     board.getRectangle = (element: PlaitElement) => {
         if (PlaitGroupElement.isGroup(element)) {
-            return getRectangleByGroup(board, element);
+            return getRectangleByGroup(board, element, true);
         }
         return getRectangle(element);
     };
