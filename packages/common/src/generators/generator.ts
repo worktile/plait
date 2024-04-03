@@ -43,11 +43,14 @@ export abstract class Generator<
                 this.g = g;
                 const rect = this.board.getRectangle(element);
                 if (rect) {
+                    let angle;
                     if (PlaitGroupElement.isGroup(element)) {
-                        const angle = getSelectionAngle(getElementsInGroup(this.board, element));
-                        setAngleForG(g, RectangleClient.getCenterPoint(rect), angle);
+                        angle = getSelectionAngle(getElementsInGroup(this.board, element, true));
                     } else {
-                        setAngleForG(g, RectangleClient.getCenterPoint(rect), element.angle);
+                        angle = element.angle;
+                    }
+                    if (angle) {
+                        setAngleForG(g, RectangleClient.getCenterPoint(rect), angle);
                     }
                 }
             } else {
