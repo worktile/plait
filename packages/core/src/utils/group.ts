@@ -233,5 +233,3 @@ export const canRemoveGroup = (board: PlaitBoard, elements?: PlaitElement[]) => 
     const selectedElements = elements || getSelectedElements(board);
     return selectedElements.length > 0 && selectedGroups.length > 0;
 };
-
-// export const getGroupAngle =
