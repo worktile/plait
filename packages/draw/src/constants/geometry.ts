@@ -75,7 +75,8 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.manualLoop]: DefaultFlowchartProperty,
     [FlowchartSymbols.merge]: DefaultMergeProperty,
     [FlowchartSymbols.delay]: DefaultFlowchartProperty,
-    [FlowchartSymbols.storedData]: DefaultFlowchartProperty
+    [FlowchartSymbols.storedData]: DefaultFlowchartProperty,
+    [FlowchartSymbols.predefinedProcess]: DefaultFlowchartProperty
 };
 
 export const LINE_HIT_GEOMETRY_BUFFER = 10;
