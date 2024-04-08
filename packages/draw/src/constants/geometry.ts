@@ -75,6 +75,7 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.manualLoop]: DefaultFlowchartProperty,
     [FlowchartSymbols.merge]: DefaultMergeProperty,
     [FlowchartSymbols.delay]: DefaultFlowchartProperty,
+    [FlowchartSymbols.offPage]: DefaultFlowchartProperty,
     [FlowchartSymbols.storedData]: DefaultFlowchartProperty
 };
 

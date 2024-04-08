@@ -25,6 +25,7 @@ import { ManualLoopEngine } from './flowchart/manual-loop';
 import { MergeEngine } from './flowchart/merge';
 import { DelayEngine } from './flowchart/delay';
 import { StoredDataEngine } from './flowchart/stored-data';
+import { OffPageEngine } from './flowchart/off-page';
 
 export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [BasicShapes.rectangle]: RectangleEngine,
@@ -57,6 +58,7 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [FlowchartSymbols.manualLoop]: ManualLoopEngine,
     [FlowchartSymbols.merge]: MergeEngine,
     [FlowchartSymbols.delay]: DelayEngine,
+    [FlowchartSymbols.offPage]: OffPageEngine,
     [FlowchartSymbols.storedData]: StoredDataEngine
 };
 
