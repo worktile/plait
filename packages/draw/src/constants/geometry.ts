@@ -24,6 +24,13 @@ export const DefaultBasicShapeProperty = {
     strokeWidth: 2
 };
 
+export const DefaultCloudShapeProperty = {
+    width: 120,
+    height: 100,
+    strokeColor: '#333',
+    strokeWidth: 2
+};
+
 export const DefaultTextProperty = {
     width: 36,
     height: 20,
