@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, PointOfRectangle, RectangleClient, drawRectangle, getNearestPointBetweenPointAndSegments } from '@plait/core';
+import { PlaitBoard, Point, PointOfRectangle, RectangleClient, drawRectangle, getNearestPointBetweenPointAndSegments, setPathStrokeLinecap } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
@@ -12,8 +12,7 @@ export const CloudEngine: ShapeEngine = {
         const divisionHeight = rectangle.height / 3.2;
         const xRadius = divisionWidth / 8.5;
         const yRadius = divisionHeight / 20;
-
-        return rs.path(
+        const svgElement = rs.path(
             `M ${rectangle.x + divisionWidth} ${rectangle.y + divisionHeight}
              A ${xRadius} ${yRadius * 1.2} 0 1 1 ${rectangle.x + divisionWidth * 2} ${rectangle.y + divisionHeight / 2}
              A ${xRadius} ${yRadius} 0 1 1 ${rectangle.x + divisionWidth * 4.2} ${rectangle.y + divisionHeight / 2.2}
@@ -26,6 +25,8 @@ export const CloudEngine: ShapeEngine = {
             Z`,
             { ...options, fillStyle: 'solid' }
         );
+        setPathStrokeLinecap(svgElement, 'round');
+        return svgElement;
     },
     isInsidePoint(rectangle: RectangleClient, point: Point) {
         const rangeRectangle = RectangleClient.getRectangleByPoints([point, point]);
@@ -55,7 +56,7 @@ export const CloudEngine: ShapeEngine = {
             height,
             width: width > 0 ? width : 0,
             x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth + originWidth / 6,
-            y: elementRectangle.y + elementRectangle.height  / 6 + ((elementRectangle.height * 4) / 5 - height) / 2.5
+            y: elementRectangle.y + elementRectangle.height / 6 + ((elementRectangle.height * 4) / 6 - height) / 2
         };
     }
 };
