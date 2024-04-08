@@ -14,6 +14,7 @@ import {
     ResizeState,
     WithResizeOptions,
     getFirstTextManage,
+    getIndexByResizeHandle,
     isCornerHandle,
     normalizeShapePoints,
     withResize
@@ -56,13 +57,13 @@ export const withGeometryResize = (board: PlaitBoard) => {
             return null;
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
-            const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(resizeRef.element.points));
             resizeState.startPoint = rotateAntiPointsByElement(resizeState.startPoint, resizeRef.element) || resizeState.startPoint;
             resizeState.endPoint = rotateAntiPointsByElement(resizeState.endPoint, resizeRef.element) || resizeState.endPoint;
             alignG?.remove();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
-            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
+            const handleIndex = getIndexByResizeHandle(resizeRef.handle);
+            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, handleIndex, resizeRef.rectangle!);
             const resizeAlignRef = getResizeSnapRef(
                 board,
                 resizeRef,

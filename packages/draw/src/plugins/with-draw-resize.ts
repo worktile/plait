@@ -81,7 +81,8 @@ export function withDrawResize(board: PlaitBoard) {
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || isFromCorner;
             const centerPoint = RectangleClient.getCenterPoint(resizeRef.rectangle!);
-            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
+            const handleIndex = getIndexByResizeHandle(resizeRef.handle);
+            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, handleIndex, resizeRef.rectangle!);
             const angle = getSelectionAngle(resizeRef.element);
             let bulkRotationRef: BulkRotationRef | undefined;
             if (angle) {
@@ -256,11 +257,10 @@ export function withDrawResize(board: PlaitBoard) {
     return board;
 }
 
-export const getResizeOriginPointAndHandlePoint = (board: PlaitBoard, resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>) => {
-    const handleIndex = getIndexByResizeHandle(resizeRef.handle);
+export const getResizeOriginPointAndHandlePoint = (board: PlaitBoard, handleIndex: number, rectangle: RectangleClient) => {
     const symmetricHandleIndex = getSymmetricHandleIndex(board, handleIndex);
-    const originPoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, symmetricHandleIndex);
-    const handlePoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, handleIndex);
+    const originPoint = getResizeHandlePointByIndex(rectangle as RectangleClient, symmetricHandleIndex);
+    const handlePoint = getResizeHandlePointByIndex(rectangle as RectangleClient, handleIndex);
     return {
         originPoint,
         handlePoint
@@ -268,31 +268,30 @@ export const getResizeOriginPointAndHandlePoint = (board: PlaitBoard, resizeRef:
 };
 
 export const getResizeZoom = (
-    resizeState: ResizeState,
-    resizeOriginPoint: Point,
+    resizePoints: Point[],
+    elementPoint: Point,
     resizeHandlePoint: Point,
     isFromCorner: boolean,
     isAspectRatio: boolean
 ) => {
-    const startPoint = resizeState.startPoint;
-    const endPoint = resizeState.endPoint;
+    const [startPoint, endPoint] = resizePoints;
     let xZoom = 0;
     let yZoom = 0;
     if (isFromCorner) {
         if (isAspectRatio) {
             let normalizedOffsetX = Point.getOffsetX(startPoint, endPoint);
-            xZoom = normalizedOffsetX / (resizeHandlePoint[0] - resizeOriginPoint[0]);
+            xZoom = normalizedOffsetX / (resizeHandlePoint[0] - elementPoint[0]);
             yZoom = xZoom;
         } else {
             let normalizedOffsetX = Point.getOffsetX(startPoint, endPoint);
             let normalizedOffsetY = Point.getOffsetY(startPoint, endPoint);
-            xZoom = normalizedOffsetX / (resizeHandlePoint[0] - resizeOriginPoint[0]);
-            yZoom = normalizedOffsetY / (resizeHandlePoint[1] - resizeOriginPoint[1]);
+            xZoom = normalizedOffsetX / (resizeHandlePoint[0] - elementPoint[0]);
+            yZoom = normalizedOffsetY / (resizeHandlePoint[1] - elementPoint[1]);
         }
     } else {
-        const isHorizontal = Point.isHorizontal(resizeOriginPoint, resizeHandlePoint, 0.1) || false;
+        const isHorizontal = Point.isHorizontal(elementPoint, resizeHandlePoint, 0.1) || false;
         let normalizedOffset = isHorizontal ? Point.getOffsetX(startPoint, endPoint) : Point.getOffsetY(startPoint, endPoint);
-        let benchmarkOffset = isHorizontal ? resizeHandlePoint[0] - resizeOriginPoint[0] : resizeHandlePoint[1] - resizeOriginPoint[1];
+        let benchmarkOffset = isHorizontal ? resizeHandlePoint[0] - elementPoint[0] : resizeHandlePoint[1] - elementPoint[1];
         const zoom = normalizedOffset / benchmarkOffset;
         if (isAspectRatio) {
             xZoom = zoom;
