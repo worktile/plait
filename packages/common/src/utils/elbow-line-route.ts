@@ -1,7 +1,9 @@
-import { Direction, Point, RectangleClient } from '@plait/core';
+import { Direction, PlaitBoard, Point, RectangleClient, createDebugGenerator, DebugGenerator } from '@plait/core';
 import { removeDuplicatePoints, simplifyOrthogonalPoints } from '../utils';
 import { DEFAULT_ROUTE_MARGIN } from '../constants';
 import { AStar, PointGraph } from '../algorithms';
+
+const debugGenerator = createDebugGenerator('debug:plait:elbow-line-routing');
 
 export interface ElbowLineRouteOptions {
     sourcePoint: Point;
@@ -28,7 +30,7 @@ export interface AdjustOptions {
     targetRectangle: RectangleClient;
 }
 
-export const generateElbowLineRoute = (options: ElbowLineRouteOptions) => {
+export const generateElbowLineRoute = (options: ElbowLineRouteOptions, board?: PlaitBoard) => {
     const { nextSourcePoint, nextTargetPoint } = options;
     const points = getGraphPoints(options);
     const graph = createGraph(points);
@@ -46,17 +48,20 @@ export const generateElbowLineRoute = (options: ElbowLineRouteOptions) => {
     const isHitY = RectangleClient.isHitY(options.sourceOuterRectangle, options.targetOuterRectangle);
     const centerX = isHitX ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
     const centerY = isHitY ? undefined : RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, false);
-    route = routeAdjust(route, { centerX, centerY, sourceRectangle: options.sourceRectangle, targetRectangle: options.targetRectangle });
+    route = routeAdjust(route, { centerX, centerY, sourceRectangle: options.sourceRectangle, targetRectangle: options.targetRectangle }, board);
     return route;
 };
 
-export const routeAdjust = (path: Point[], options: RouteAdjustOptions) => {
+export const routeAdjust = (path: Point[], options: RouteAdjustOptions, board?: PlaitBoard) => {
     const { sourceRectangle, targetRectangle, centerX, centerY } = options;
+    if (board) {
+        debugGenerator.clear();
+    }
     if (centerX !== undefined) {
         const optionsX = getAdjustOptions(path, centerX, true);
         const resultX =
             optionsX.pointOfHit &&
-            adjust(path, { parallelPaths: optionsX.parallelPaths, pointOfHit: optionsX.pointOfHit, sourceRectangle, targetRectangle });
+            adjust(path, { parallelPaths: optionsX.parallelPaths, pointOfHit: optionsX.pointOfHit, sourceRectangle, targetRectangle }, board);
         if (resultX) {
             path = resultX;
         }
@@ -65,7 +70,7 @@ export const routeAdjust = (path: Point[], options: RouteAdjustOptions) => {
         const optionsY = getAdjustOptions(path, centerY, false);
         const resultY =
             optionsY.pointOfHit &&
-            adjust(path, { parallelPaths: optionsY.parallelPaths, pointOfHit: optionsY.pointOfHit, sourceRectangle, targetRectangle });
+            adjust(path, { parallelPaths: optionsY.parallelPaths, pointOfHit: optionsY.pointOfHit, sourceRectangle, targetRectangle },  board);
         if (resultY) {
             path = resultY;
         }
@@ -73,7 +78,7 @@ export const routeAdjust = (path: Point[], options: RouteAdjustOptions) => {
     return path;
 };
 
-const adjust = (route: Point[], options: AdjustOptions): null | Point[] => {
+const adjust = (route: Point[], options: AdjustOptions, board?: PlaitBoard): null | Point[] => {
     const { parallelPaths, pointOfHit, sourceRectangle, targetRectangle } = options;
     let result = null;
     parallelPaths.forEach(parallelPath => {
@@ -82,7 +87,10 @@ const adjust = (route: Point[], options: AdjustOptions): null | Point[] => {
         // directly use getCornerPoints will bring the precision issue (eg: 263.6923375175286 - 57.130859375)
         const tempRect = RectangleClient.getRectangleByPoints(tempRectPoints);
         if (!RectangleClient.isHit(tempRect, sourceRectangle) && !RectangleClient.isHit(tempRect, targetRectangle)) {
-            const tempCorners = RectangleClient.getCornerPoints(tempRect);
+            const tempCorners = RectangleClient.getCornerPointsByPoints(tempRectPoints);
+            if (board) {
+                debugGenerator.drawRectangle(board, tempRect);
+            }
             const indexRangeInPath: number[] = [];
             const indexRangeInCorner: number[] = [];
             route.forEach((point, index) => {
@@ -97,7 +105,11 @@ const adjust = (route: Point[], options: AdjustOptions): null | Point[] => {
             const removeLength = Math.abs(indexRangeInPath[0] - indexRangeInPath[indexRangeInPath.length - 1]) + 1;
             newPath.splice(indexRangeInPath[0] + 1, removeLength - 2, missCorner);
             const turnCount = simplifyOrthogonalPoints([...route]).length - 1;
-            const newTurnCount = simplifyOrthogonalPoints([...newPath]).length - 1;
+            const simplifyPoints = simplifyOrthogonalPoints([...newPath]);
+            // if (board) {
+            //     debugGenerator.drawLine(board, simplifyPoints);
+            // }
+            const newTurnCount = simplifyPoints.length - 1;
             if (newTurnCount <= turnCount) {
                 result = newPath;
             }

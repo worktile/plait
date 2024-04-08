@@ -26,25 +26,32 @@ import { getElementsText } from '@plait/common';
 
 export const withMindFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
-    const { getDeletedFragment, insertFragment, setFragment } = board;
+    let firstLevelElements: MindElement[] | null;
+    const { getDeletedFragment, insertFragment, setFragment, deleteFragment } = board;
 
     board.getDeletedFragment = (data: PlaitElement[]) => {
         const targetMindElements = getSelectedMindElements(board);
         if (targetMindElements.length) {
-            const firstLevelElements = getFirstLevelElement(targetMindElements).reverse();
+            firstLevelElements = getFirstLevelElement(targetMindElements).reverse();
             const abstractRefs = deleteElementHandleAbstract(board, firstLevelElements);
             MindTransforms.setAbstractsByRefs(board, abstractRefs);
             const refs = deleteElementsHandleRightNodeCount(board, targetMindElements);
             MindTransforms.setRightNodeCountByRefs(board, refs);
             const deletableElements = getFirstLevelElement(targetMindElements);
             data.push(...deletableElements);
+        }
+        return getDeletedFragment(data);
+    };
 
+    board.deleteFragment = (elements: PlaitElement[]) => {
+        deleteFragment(elements);
+        if (firstLevelElements) {
             const nextSelected = getNextSelectedElement(board, firstLevelElements);
             if (nextSelected) {
                 addSelectedElement(board, nextSelected);
             }
+            firstLevelElements = null;
         }
-        return getDeletedFragment(data);
     };
 
     board.setFragment = (

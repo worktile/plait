@@ -134,16 +134,19 @@ export const isLineHitLine = (a: Point, b: Point, c: Point, d: Point): boolean =
     return crossProduct(ab, ac) * crossProduct(ab, ad) <= 0 && crossProduct(cd, ca) * crossProduct(cd, cb) <= 0;
 };
 
-export const isPolylineHitRectangle = (points: Point[], rectangle: RectangleClient) => {
+export const isPolylineHitRectangle = (points: Point[], rectangle: RectangleClient, isClose: boolean = true) => {
     const rectanglePoints = RectangleClient.getCornerPoints(rectangle);
-
-    for (let i = 1; i < points.length; i++) {
-        const isIntersect =
-            isLineHitLine(points[i], points[i - 1], rectanglePoints[0], rectanglePoints[1]) ||
-            isLineHitLine(points[i], points[i - 1], rectanglePoints[1], rectanglePoints[2]) ||
-            isLineHitLine(points[i], points[i - 1], rectanglePoints[2], rectanglePoints[3]) ||
-            isLineHitLine(points[i], points[i - 1], rectanglePoints[3], rectanglePoints[0]);
-        if (isIntersect) {
+    const len = points.length;
+    for (let i = 0; i < len; i++) {
+        if (i === len - 1 && !isClose) continue;
+        const p1 = points[i];
+        const p2 = points[(i + 1) % len];
+        const isHit =
+            isLineHitLine(p1, p2, rectanglePoints[0], rectanglePoints[1]) ||
+            isLineHitLine(p1, p2, rectanglePoints[1], rectanglePoints[2]) ||
+            isLineHitLine(p1, p2, rectanglePoints[2], rectanglePoints[3]) ||
+            isLineHitLine(p1, p2, rectanglePoints[3], rectanglePoints[0]);
+        if (isHit || isPointInPolygon(p1, rectanglePoints) || isPointInPolygon(p2, rectanglePoints)) {
             return true;
         }
     }
@@ -310,4 +313,15 @@ export function toDomPrecision(v: number) {
 
 export function toFixed(v: number) {
     return +v.toFixed(2);
+}
+
+/**
+ * Whether two numbers numbers a and b are approximately equal.
+ *
+ * @param a - The first point.
+ * @param b - The second point.
+ * @public
+ */
+export function approximately(a: number, b: number, precision = 0.000001) {
+    return Math.abs(a - b) <= precision;
 }

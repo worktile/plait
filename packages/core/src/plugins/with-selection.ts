@@ -13,10 +13,23 @@ import {
     removeSelectedElement
 } from '../utils/selected-element';
 import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
-import { getRectangleByElements } from '../utils/element';
-import { BOARD_TO_IS_SELECTION_MOVING, BOARD_TO_TEMPORARY_ELEMENTS } from '../utils/weak-maps';
-import { ACTIVE_STROKE_WIDTH, ATTACHED_ELEMENT_CLASS_NAME, SELECTION_RECTANGLE_CLASS_NAME } from '../constants/selection';
-import { drawRectangle, isDragging, preventTouchMove, setDragging, throttleRAF, toHostPoint, toViewBoxPoint } from '../utils';
+import { ATTACHED_ELEMENT_CLASS_NAME } from '../constants/selection';
+import {
+    clearSelectionMoving,
+    deleteTemporaryElements,
+    drawRectangle,
+    getTemporaryElements,
+    isDragging,
+    isHandleSelection,
+    isSelectionMoving,
+    isSetSelectionOperation,
+    preventTouchMove,
+    setSelectionMoving,
+    throttleRAF,
+    toHostPoint,
+    toViewBoxPoint,
+    setSelectedElementsWithGroup
+} from '../utils';
 import { PlaitOptionsBoard, PlaitPluginOptions } from './with-options';
 import { PlaitPluginKey } from '../interfaces/plugin-key';
 import { Selection } from '../interfaces/selection';
@@ -28,7 +41,7 @@ export interface WithPluginOptions extends PlaitPluginOptions {
 }
 
 export function withSelection(board: PlaitBoard) {
-    const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange } = board;
+    const { pointerDown, pointerUp, pointerMove, globalPointerUp, onChange, afterChange, drawActiveRectangle } = board;
     let start: Point | null = null;
     let end: Point | null = null;
     let selectionMovingG: SVGGElement;
@@ -73,7 +86,7 @@ export function withSelection(board: PlaitBoard) {
             // prevent text from being selected
             event.preventDefault();
         }
-        if (start && PlaitBoard.isPointer(board, PlaitPointerType.selection)) {
+        if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && start) {
             const movedTarget = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const rectangle = RectangleClient.getRectangleByPoints([start, movedTarget]);
             selectionMovingG?.remove();
@@ -129,7 +142,6 @@ export function withSelection(board: PlaitBoard) {
                 Transforms.setSelection(board, null);
             }
         }
-
         start = null;
         end = null;
         isTextSelection = false;
@@ -154,40 +166,51 @@ export function withSelection(board: PlaitBoard) {
                     selectionRectangleG?.remove();
                 }
                 const temporaryElements = getTemporaryElements(board);
-                let elements = temporaryElements ? temporaryElements : getHitElementsBySelection(board);
-                if (!options.isMultiple && elements.length > 1) {
-                    elements = [elements[0]];
-                }
-                if (isShift) {
-                    if (board.selection && Selection.isCollapsed(board.selection)) {
-                        const newSelectedElements = [...getSelectedElements(board)];
-                        elements.forEach(element => {
-                            if (newSelectedElements.includes(element)) {
-                                newSelectedElements.splice(newSelectedElements.indexOf(element), 1);
-                            } else {
-                                newSelectedElements.push(element);
-                            }
-                        });
-                        cacheSelectedElements(board, newSelectedElements);
-                    } else {
-                        const newSelectedElements = [...getSelectedElements(board)];
-                        elements.forEach(element => {
-                            if (!newSelectedElements.includes(element)) {
-                                newSelectedElements.push(element);
-                            }
-                        });
-                        cacheSelectedElements(board, newSelectedElements);
-                    }
+                if (temporaryElements) {
+                    cacheSelectedElements(board, [...temporaryElements]);
                 } else {
-                    const newSelectedElements = [...elements];
-                    cacheSelectedElements(board, newSelectedElements);
+                    let elements = getHitElementsBySelection(board);
+                    if (!options.isMultiple && elements.length > 1) {
+                        elements = [elements[0]];
+                    }
+                    const isHitElementWithGroup = elements.some(item => item.groupId);
+                    const selectedElements = getSelectedElements(board);
+                    if (isHitElementWithGroup) {
+                        setSelectedElementsWithGroup(board, elements, isShift);
+                    } else {
+                        if (isShift) {
+                            const newElements = [...selectedElements];
+                            if (board.selection && Selection.isCollapsed(board.selection)) {
+                                elements.forEach(element => {
+                                    if (newElements.includes(element)) {
+                                        newElements.splice(newElements.indexOf(element), 1);
+                                    } else {
+                                        newElements.push(element);
+                                    }
+                                });
+                                cacheSelectedElements(board, newElements);
+                            } else {
+                                elements.forEach(element => {
+                                    if (!newElements.includes(element)) {
+                                        newElements.push(element);
+                                    }
+                                });
+                                cacheSelectedElements(board, [...newElements]);
+                            }
+                        } else {
+                            cacheSelectedElements(board, [...elements]);
+                        }
+                    }
                 }
                 const newElements = getSelectedElements(board);
                 previousSelectedElements = newElements;
                 deleteTemporaryElements(board);
-                if (!isSelectionMoving(board) && newElements.length > 1) {
+                if (!isSelectionMoving(board)) {
                     selectionRectangleG?.remove();
-                    selectionRectangleG = createSelectionRectangleG(board);
+                    if (newElements.length > 1) {
+                        selectionRectangleG = board.drawActiveRectangle();
+                        PlaitBoard.getElementActiveHost(board).append(selectionRectangleG!);
+                    }
                 }
             } catch (error) {
                 console.error(error);
@@ -202,11 +225,13 @@ export function withSelection(board: PlaitBoard) {
                 const currentSelectedElements = getSelectedElements(board);
                 if (currentSelectedElements.length && currentSelectedElements.length > 1) {
                     if (
-                        currentSelectedElements.length !== previousSelectedElements.length ||
-                        currentSelectedElements.some((c, index) => c !== previousSelectedElements[index])
+                        previousSelectedElements &&
+                        (currentSelectedElements.length !== previousSelectedElements.length ||
+                            currentSelectedElements.some((c, index) => c !== previousSelectedElements[index]))
                     ) {
                         selectionRectangleG?.remove();
-                        selectionRectangleG = createSelectionRectangleG(board);
+                        selectionRectangleG = board.drawActiveRectangle();
+                        PlaitBoard.getElementActiveHost(board).append(selectionRectangleG!);
                         previousSelectedElements = currentSelectedElements;
                     }
                 } else {
@@ -225,62 +250,4 @@ export function withSelection(board: PlaitBoard) {
     });
 
     return board;
-}
-
-export function isHandleSelection(board: PlaitBoard) {
-    const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
-    return board.pointer !== PlaitPointerType.hand && !options.isDisabledSelect && !PlaitBoard.isReadonly(board);
-}
-
-export function isSetSelectionOperation(board: PlaitBoard) {
-    return !!board.operations.find(value => value.type === 'set_selection');
-}
-
-export function getTemporaryElements(board: PlaitBoard) {
-    const ref = BOARD_TO_TEMPORARY_ELEMENTS.get(board);
-    if (ref) {
-        return ref.elements;
-    } else {
-        return undefined;
-    }
-}
-
-export function getTemporaryRef(board: PlaitBoard) {
-    return BOARD_TO_TEMPORARY_ELEMENTS.get(board);
-}
-
-export function deleteTemporaryElements(board: PlaitBoard) {
-    BOARD_TO_TEMPORARY_ELEMENTS.delete(board);
-}
-
-export function isSelectionMoving(board: PlaitBoard) {
-    return !!BOARD_TO_IS_SELECTION_MOVING.get(board);
-}
-
-export function setSelectionMoving(board: PlaitBoard) {
-    PlaitBoard.getBoardContainer(board).classList.add('selection-moving');
-    BOARD_TO_IS_SELECTION_MOVING.set(board, true);
-    setDragging(board, true);
-}
-
-export function clearSelectionMoving(board: PlaitBoard) {
-    PlaitBoard.getBoardContainer(board).classList.remove('selection-moving');
-    BOARD_TO_IS_SELECTION_MOVING.delete(board);
-    setDragging(board, false);
-}
-
-export function createSelectionRectangleG(board: PlaitBoard) {
-    const elements = getSelectedElements(board);
-    const rectangle = getRectangleByElements(board, elements, false);
-    if (rectangle.width > 0 && rectangle.height > 0 && elements.length > 1) {
-        const selectionRectangleG = drawRectangle(board, RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH), {
-            stroke: SELECTION_BORDER_COLOR,
-            strokeWidth: ACTIVE_STROKE_WIDTH,
-            fillStyle: 'solid'
-        });
-        selectionRectangleG.classList.add(SELECTION_RECTANGLE_CLASS_NAME);
-        PlaitBoard.getElementActiveHost(board).append(selectionRectangleG);
-        return selectionRectangleG;
-    }
-    return null;
 }

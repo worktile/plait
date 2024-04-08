@@ -13,20 +13,19 @@ import {
     catmullRomFitting
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
-import { getPointOnPolyline, getPointByVector, removeDuplicatePoints, getExtendPoint, isSourceAndTargetIntersect } from '@plait/common';
-import { LineHandle, LineMarkerType, LineShape, LineText, PlaitDrawElement, PlaitLine, PlaitShape } from '../../interfaces';
-import { getNearestPoint } from '../geometry';
+import { getPointOnPolyline, getPointByVectorComponent, removeDuplicatePoints, getExtendPoint } from '@plait/common';
+import { LineHandle, LineMarkerType, LineShape, LineText, PlaitDrawElement, PlaitLine, PlaitShapeElement } from '../../interfaces';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
-import { getShape } from '../shape';
+import { getElementShape } from '../shape';
 import { DefaultLineStyle, LINE_TEXT_SPACE } from '../../constants/line';
 import { LineShapeGenerator } from '../../generators/line.generator';
-import { REACTION_MARGIN } from '../../constants';
-import { getHitOutlineGeometry } from '../position/geometry';
+import { LINE_SNAPPING_CONNECTOR_BUFFER } from '../../constants';
+import { getSnappingGeometry, getSnappingRef } from '../position/geometry';
 import { getLineMemorizedLatest } from '../memorize';
 import { alignPoints } from './line-resize';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
-import { getElbowPoints, getNextSourceAndTargetPoints } from './elbow';
+import { getElbowPoints, getNextSourceAndTargetPoints, isUseDefaultOrthogonalRoute } from './elbow';
 import { drawLineArrow } from './line-arrow';
 
 export const createLineElement = (
@@ -78,10 +77,10 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
         const sumDistance = distanceBetweenPointAndPoint(...source.point, ...target.point);
         const offset = 12 + sumDistance / 3;
         if (sourceBoundElement) {
-            curvePoints.push(getPointByVector(source.point, source.vector, offset));
+            curvePoints.push(getPointByVectorComponent(source.point, source.vector, offset));
         }
         if (targetBoundElement) {
-            curvePoints.push(getPointByVector(target.point, target.vector, offset));
+            curvePoints.push(getPointByVectorComponent(target.point, target.vector, offset));
         }
         const isSingleBound = (sourceBoundElement && !targetBoundElement) || (!sourceBoundElement && targetBoundElement);
         if (isSingleBound) {
@@ -90,8 +89,8 @@ export const getCurvePoints = (board: PlaitBoard, element: PlaitLine) => {
             return pointsOnBezierCurves(points) as Point[];
         }
         if (!sourceBoundElement && !targetBoundElement) {
-            curvePoints.push(getPointByVector(source.point, source.vector, offset));
-            curvePoints.push(getPointByVector(target.point, target.vector, offset));
+            curvePoints.push(getPointByVectorComponent(source.point, source.vector, offset));
+            curvePoints.push(getPointByVectorComponent(target.point, target.vector, offset));
         }
         curvePoints.push(target.point);
         return pointsOnBezierCurves(curvePoints) as Point[];
@@ -137,8 +136,7 @@ export function getMiddlePoints(board: PlaitBoard, element: PlaitLine) {
     if (shape === LineShape.elbow) {
         const renderPoints = getElbowPoints(board, element);
         const options = getElbowLineRouteOptions(board, element);
-        const isIntersect = isSourceAndTargetIntersect(options);
-        if (!isIntersect) {
+        if (!isUseDefaultOrthogonalRoute(element, options)) {
             const [nextSourcePoint, nextTargetPoint] = getNextSourceAndTargetPoints(board, element);
             for (let i = 0; i < renderPoints.length - 1; i++) {
                 if (
@@ -181,21 +179,19 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     return lineG;
 };
 
-export const getConnectionByNearestPoint = (board: PlaitBoard, point: Point, hitElement: PlaitShape): Point => {
+export const getHitConnection = (board: PlaitBoard, point: Point, hitElement: PlaitShapeElement): Point => {
     let rectangle = RectangleClient.getRectangleByPoints(hitElement.points);
-    let nearestPoint = getNearestPoint(hitElement, point);
-    const hitConnector = getHitConnectorPoint(nearestPoint, hitElement, rectangle);
-    nearestPoint = hitConnector ? hitConnector : nearestPoint;
-    return [(nearestPoint[0] - rectangle.x) / rectangle.width, (nearestPoint[1] - rectangle.y) / rectangle.height];
+    const ref = getSnappingRef(board, hitElement, point);
+    const connectionPoint = ref.connectorPoint || ref.edgePoint;
+    return [(connectionPoint[0] - rectangle.x) / rectangle.width, (connectionPoint[1] - rectangle.y) / rectangle.height];
 };
 
-export const getHitConnectorPoint = (point: Point, hitElement: PlaitShape, rectangle: RectangleClient) => {
-    const shape = getShape(hitElement);
-    const connector = getEngine(shape).getConnectorPoints(rectangle);
-    const points = RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(point, 10, 10));
-    const pointRectangle = RectangleClient.getRectangleByPoints(points);
-    return connector.find(point => {
-        return RectangleClient.isHit(pointRectangle, RectangleClient.getRectangleByPoints([point, point]));
+export const getHitConnectorPoint = (point: Point, hitElement: PlaitShapeElement) => {
+    const rectangle = RectangleClient.getRectangleByPoints(hitElement.points);
+    const shape = getElementShape(hitElement);
+    const connectorPoints = getEngine(shape).getConnectorPoints(rectangle);
+    return connectorPoints.find(connectorPoint => {
+        return distanceBetweenPointAndPoint(...connectorPoint, ...point) <= LINE_SNAPPING_CONNECTOR_BUFFER;
     });
 };
 
@@ -240,12 +236,12 @@ export const handleLineCreating = (
     lineShape: LineShape,
     sourcePoint: Point,
     movingPoint: Point,
-    sourceElement: PlaitShape | null,
+    sourceElement: PlaitShapeElement | null,
     lineShapeG: SVGGElement
 ) => {
-    const hitElement = getHitOutlineGeometry(board, movingPoint, REACTION_MARGIN);
-    const targetConnection = hitElement ? getConnectionByNearestPoint(board, movingPoint, hitElement) : undefined;
-    const connection = sourceElement ? getConnectionByNearestPoint(board, sourcePoint, sourceElement) : undefined;
+    const hitElement = getSnappingGeometry(board, movingPoint);
+    const targetConnection = hitElement ? getHitConnection(board, movingPoint, hitElement) : undefined;
+    const sourceConnection = sourceElement ? getHitConnection(board, sourcePoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;
     const lineGenerator = new LineShapeGenerator(board);
     const memorizedLatest = getLineMemorizedLatest();
@@ -257,7 +253,7 @@ export const handleLineCreating = (
     const temporaryLineElement = createLineElement(
         lineShape,
         [sourcePoint, movingPoint],
-        { marker: sourceMarker || LineMarkerType.none, connection: connection, boundId: sourceElement?.id },
+        { marker: sourceMarker || LineMarkerType.none, connection: sourceConnection, boundId: sourceElement?.id },
         { marker: targetMarker || LineMarkerType.arrow, connection: targetConnection, boundId: targetBoundId },
         [],
         {

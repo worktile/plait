@@ -1,4 +1,14 @@
-import { Point, PlaitBoard, getElementById, RectangleClient, PointOfRectangle, Direction, Vector } from '@plait/core';
+import {
+    Point,
+    PlaitBoard,
+    getElementById,
+    RectangleClient,
+    PointOfRectangle,
+    Direction,
+    Vector,
+    hasValidAngle,
+    rotatePointsByElement
+} from '@plait/core';
 import {
     getDirectionFactor,
     rotateVectorAnti90,
@@ -6,12 +16,13 @@ import {
     getOppositeDirection,
     getDirectionByPointOfRectangle,
     getSourceAndTargetOuterRectangle,
-    getNextPoint
+    getNextPoint,
+    rotateVector
 } from '@plait/common';
 import { BasicShapes, LineHandleKey, LineHandleRef, LineHandleRefPair, LineMarkerType, PlaitGeometry, PlaitLine } from '../../interfaces';
 import { getStrokeWidthByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
-import { getShape } from '../shape';
+import { getElementShape } from '../shape';
 import { getSourceAndTargetRectangle } from './elbow';
 
 export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): LineHandleRefPair => {
@@ -41,24 +52,34 @@ export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): Lin
     if (sourceBoundElement) {
         const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element, LineMarkerType.none, LineHandleKey.source) ? 0 : strokeWidth;
         const sourceVector = getVectorByConnection(sourceBoundElement, element.source.connection!);
-        const direction = getDirectionByVector(sourceVector);
-        sourceDirection = direction ? direction : sourceDirection;
-        sourcePoint = getConnectionPoint(sourceBoundElement, element.source.connection!, sourceDirection, connectionOffset);
-        sourceHandleRef.boundElement = sourceBoundElement;
-        sourceHandleRef.direction = sourceDirection;
-        sourceHandleRef.point = sourcePoint;
         sourceHandleRef.vector = sourceVector;
+        sourceHandleRef.boundElement = sourceBoundElement;
+        if (hasValidAngle(sourceBoundElement)) {
+            const direction = getDirectionByVector(rotateVector(sourceVector, sourceBoundElement.angle));
+            sourceDirection = direction ? direction : sourceDirection;
+        } else {
+            const direction = getDirectionByVector(sourceVector);
+            sourceDirection = direction ? direction : sourceDirection;
+        }
+        sourceHandleRef.direction = sourceDirection;
+        sourcePoint = getConnectionPoint(sourceBoundElement, element.source.connection!, sourceDirection, connectionOffset);
+        sourceHandleRef.point = rotatePointsByElement(sourcePoint, sourceBoundElement) || sourcePoint;
     }
     if (targetBoundElement) {
         const connectionOffset = PlaitLine.isSourceMarkOrTargetMark(element, LineMarkerType.none, LineHandleKey.target) ? 0 : strokeWidth;
         const targetVector = getVectorByConnection(targetBoundElement, element.target.connection!);
-        const direction = getDirectionByVector(targetVector);
-        targetDirection = direction ? direction : targetDirection;
-        targetPoint = getConnectionPoint(targetBoundElement, element.target.connection!, targetDirection, connectionOffset);
-        targetHandleRef.boundElement = targetBoundElement;
-        targetHandleRef.direction = targetDirection;
-        targetHandleRef.point = targetPoint;
         targetHandleRef.vector = targetVector;
+        targetHandleRef.boundElement = targetBoundElement;
+        if (hasValidAngle(targetBoundElement)) {
+            const direction = getDirectionByVector(rotateVector(targetVector, targetBoundElement.angle));
+            targetDirection = direction ? direction : targetDirection;
+        } else {
+            const direction = getDirectionByVector(targetVector);
+            targetDirection = direction ? direction : targetDirection;
+        }
+        targetHandleRef.direction = targetDirection;
+        targetPoint = getConnectionPoint(targetBoundElement, element.target.connection!, targetDirection, connectionOffset);
+        targetHandleRef.point = rotatePointsByElement(targetPoint, targetBoundElement) || targetPoint;
     }
     return { source: sourceHandleRef, target: targetHandleRef };
 };
@@ -76,7 +97,7 @@ export const getConnectionPoint = (geometry: PlaitGeometry, connection: Point, d
 
 export const getVectorByConnection = (boundElement: PlaitGeometry, connection: PointOfRectangle): Vector => {
     const rectangle = RectangleClient.getRectangleByPoints(boundElement.points);
-    const shape = getShape(boundElement);
+    const shape = getElementShape(boundElement);
     const engine = getEngine(shape);
     let vector: Vector = [0, 0];
     const direction = getDirectionByPointOfRectangle(connection);

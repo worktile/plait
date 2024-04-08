@@ -16,7 +16,8 @@ import {
     WritableClipboardContext,
     createClipboardContext,
     ClipboardData,
-    isContextmenu
+    isContextmenu,
+    PlaitElement
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
@@ -98,12 +99,12 @@ export const withNodeImage = (board: PlaitBoard) => {
         setFragment(data, clipboardContext, rectangle, type);
     };
 
-    board.deleteFragment = (data: DataTransfer | null) => {
+    board.deleteFragment = (elements: PlaitElement[]) => {
         const selectedImageElement = getElementOfFocusedImage(board);
         if (selectedImageElement) {
             MindTransforms.removeImage(board, selectedImageElement as MindElement<ImageData>);
         }
-        deleteFragment(data);
+        deleteFragment(elements);
     };
 
     board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {

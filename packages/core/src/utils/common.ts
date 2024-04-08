@@ -18,7 +18,7 @@ export const throttleRAF = (board: PlaitBoard, key: string, fn: () => void) => {
             const value = BOARD_TO_RAF.get(board) || {};
             value[key] = null;
             BOARD_TO_RAF.set(board, value);
-            fn();
+            PlaitBoard.isAlive(board) && fn();
         });
         const state = getRAFState(board);
         state[key] = timerId;

@@ -1,12 +1,11 @@
 import { Path, PlaitBoard, PlaitNode, Point } from '@plait/core';
-import { ResizeRef, ResizeState, WithResizeOptions, isSourceAndTargetIntersect, simplifyOrthogonalPoints, withResize } from '@plait/common';
+import { ResizeRef, ResizeState, WithResizeOptions, simplifyOrthogonalPoints, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
-import { getHitOutlineGeometry } from '../utils/position/geometry';
+import { getSnappingGeometry } from '../utils/position/geometry';
 import { LineHandle, LineShape, PlaitLine } from '../interfaces';
 import { DrawTransforms } from '../transforms';
-import { REACTION_MARGIN } from '../constants';
-import { getElbowPoints, getNextRenderPoints } from '../utils/line/elbow';
+import { getElbowPoints, getNextRenderPoints, isUseDefaultOrthogonalRoute } from '../utils/line/elbow';
 import {
     alignElbowSegment,
     alignPoints,
@@ -14,7 +13,7 @@ import {
     getResizedPreviousAndNextPoint,
     hasIllegalElbowPoint
 } from '../utils/line/line-resize';
-import { getConnectionByNearestPoint, getLinePoints } from '../utils/line/line-basic';
+import { getHitConnection, getLinePoints } from '../utils/line/line-basic';
 import { getElbowLineRouteOptions } from '../utils/line';
 
 export const withLineResize = (board: PlaitBoard) => {
@@ -54,8 +53,7 @@ export const withLineResize = (board: PlaitBoard) => {
                 resizeRef.handle !== LineResizeHandle.target
             ) {
                 const params = getElbowLineRouteOptions(board, resizeRef.element);
-                const isIntersect = isSourceAndTargetIntersect(params);
-                if (isIntersect) {
+                if (isUseDefaultOrthogonalRoute(resizeRef.element, params)) {
                     return;
                 }
                 const points: Point[] = [...resizeRef.element.points];
@@ -75,12 +73,12 @@ export const withLineResize = (board: PlaitBoard) => {
             let source: LineHandle = { ...resizeRef.element.source };
             let target: LineHandle = { ...resizeRef.element.target };
             let handleIndex = resizeRef.handleIndex!;
-            const hitElement = getHitOutlineGeometry(board, resizeState.endPoint, REACTION_MARGIN);
+            const hitElement = getSnappingGeometry(board, resizeState.endPoint);
             if (resizeRef.handle === LineResizeHandle.source || resizeRef.handle === LineResizeHandle.target) {
                 const object = resizeRef.handle === LineResizeHandle.source ? source : target;
                 points[handleIndex] = resizeState.endPoint;
                 if (hitElement) {
-                    object.connection = getConnectionByNearestPoint(board, resizeState.endPoint, hitElement);
+                    object.connection = getHitConnection(board, resizeState.endPoint, hitElement);
                     object.boundId = hitElement.id;
                 } else {
                     object.connection = undefined;
@@ -128,7 +126,10 @@ export const withLineResize = (board: PlaitBoard) => {
                 const newPoints = [...points];
                 newPoints[0] = drawPoints[0];
                 newPoints[newPoints.length - 1] = drawPoints[drawPoints.length - 1];
-                if (resizeRef.element.shape !== LineShape.elbow) {
+                if (
+                    resizeRef.element.shape !== LineShape.elbow ||
+                    (resizeRef.element.shape === LineShape.elbow && newPoints.length === 2)
+                ) {
                     newPoints.forEach((point, index) => {
                         if (index === handleIndex) return;
                         if (points[handleIndex]) {

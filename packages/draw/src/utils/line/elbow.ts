@@ -1,11 +1,13 @@
-import { Point, PlaitBoard, getElementById, RectangleClient, Vector } from '@plait/core';
+import { Point, PlaitBoard, getElementById, RectangleClient, Vector, rotatePoints, rotatePointsByElement } from '@plait/core';
 import {
     getPoints,
-    getPointByVector,
+    getPointByVectorComponent,
     removeDuplicatePoints,
     generateElbowLineRoute,
     simplifyOrthogonalPoints,
-    isSourceAndTargetIntersect
+    isSourceAndTargetIntersect,
+    DEFAULT_ROUTE_MARGIN,
+    ElbowLineRouteOptions
 } from '@plait/common';
 import { BasicShapes, LineHandleRefPair, PlaitGeometry, PlaitLine } from '../../interfaces';
 import { createGeometryElement } from '../geometry';
@@ -13,23 +15,30 @@ import { getStrokeWidthByElement } from '../style/stroke';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
 import { getMidKeyPoints, getMirrorDataPoints, hasIllegalElbowPoint } from './line-resize';
 
+export const isSelfLoop = (element: PlaitLine) => {
+    return element.source.boundId && element.source.boundId === element.target.boundId;
+};
+
+export const isUseDefaultOrthogonalRoute = (element: PlaitLine, options: ElbowLineRouteOptions) => {
+    return isSourceAndTargetIntersect(options) && !isSelfLoop(element);
+};
+
 export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
     const handleRefPair = getLineHandleRefPair(board, element);
     const params = getElbowLineRouteOptions(board, element, handleRefPair);
     // console.log(params, 'params');
-    const isIntersect = isSourceAndTargetIntersect(params);
-    if (isIntersect) {
+    if (isUseDefaultOrthogonalRoute(element, params)) {
         return simplifyOrthogonalPoints(
             getPoints(
                 handleRefPair.source.point,
                 handleRefPair.source.direction,
                 handleRefPair.target.point,
                 handleRefPair.target.direction,
-                0
+                DEFAULT_ROUTE_MARGIN
             )
         );
     }
-    const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
+    const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params, board));
     const nextKeyPoints = keyPoints.slice(1, keyPoints.length - 1);
     if (element.points.length === 2) {
         return simplifyOrthogonalPoints(keyPoints);
@@ -40,7 +49,6 @@ export const getElbowPoints = (board: PlaitBoard, element: PlaitLine) => {
         if (hasIllegalElbowPoint(midDataPoints)) {
             return simplifyOrthogonalPoints(keyPoints);
         }
-        
         const nextDataPoints = [simplifiedNextKeyPoints[0], ...midDataPoints, simplifiedNextKeyPoints[simplifiedNextKeyPoints.length - 1]];
         const mirrorDataPoints = getMirrorDataPoints(board, nextDataPoints, simplifiedNextKeyPoints, params);
         // console.log(mirrorDataPoints, 'mirrorDataPoints');
@@ -95,14 +103,21 @@ export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitLin
         const target = handleRefPair.target;
         targetElement = createFakeElement(target.point, target.vector);
     }
-    const sourceRectangle = RectangleClient.inflate(
-        RectangleClient.getRectangleByPoints(sourceElement.points),
-        getStrokeWidthByElement(sourceElement) * 2
-    );
-    const targetRectangle = RectangleClient.inflate(
-        RectangleClient.getRectangleByPoints(targetElement.points),
-        getStrokeWidthByElement(targetElement) * 2
-    );
+
+    let sourceRectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
+    const rotatedSourceCornerPoints =
+        rotatePointsByElement(RectangleClient.getCornerPoints(sourceRectangle), sourceElement) ||
+        RectangleClient.getCornerPoints(sourceRectangle);
+    sourceRectangle = RectangleClient.getRectangleByPoints(rotatedSourceCornerPoints);
+    sourceRectangle = RectangleClient.inflate(sourceRectangle, getStrokeWidthByElement(sourceElement) * 2);
+
+    let targetRectangle = RectangleClient.getRectangleByPoints(targetElement.points);
+    const rotatedTargetCornerPoints =
+        rotatePointsByElement(RectangleClient.getCornerPoints(targetRectangle), targetElement) ||
+        RectangleClient.getCornerPoints(targetRectangle);
+    targetRectangle = RectangleClient.getRectangleByPoints(rotatedTargetCornerPoints);
+    targetRectangle = RectangleClient.inflate(targetRectangle, getStrokeWidthByElement(targetElement) * 2);
+
     return {
         sourceRectangle,
         targetRectangle
@@ -110,7 +125,7 @@ export const getSourceAndTargetRectangle = (board: PlaitBoard, element: PlaitLin
 };
 
 const createFakeElement = (startPoint: Point, vector: Vector) => {
-    const point = getPointByVector(startPoint, vector, -25);
+    const point = getPointByVectorComponent(startPoint, vector, -25);
     const points = RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(point, 50, 50));
     return createGeometryElement(BasicShapes.rectangle, points, '');
 };

@@ -25,6 +25,7 @@ import { ManualLoopEngine } from './flowchart/manual-loop';
 import { MergeEngine } from './flowchart/merge';
 import { DelayEngine } from './flowchart/delay';
 import { StoredDataEngine } from './flowchart/stored-data';
+import { CloudEngine } from './basic-shapes/cloud';
 
 export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [BasicShapes.rectangle]: RectangleEngine,
@@ -47,6 +48,7 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [BasicShapes.twoWayArrow]: TwoWayArrowEngine,
     [BasicShapes.comment]: CommentEngine,
     [BasicShapes.roundComment]: RoundCommentEngine,
+    [BasicShapes.cloud]: CloudEngine,
     [FlowchartSymbols.process]: RectangleEngine,
     [FlowchartSymbols.decision]: DiamondEngine,
     [FlowchartSymbols.connector]: EllipseEngine,
@@ -57,7 +59,7 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [FlowchartSymbols.manualLoop]: ManualLoopEngine,
     [FlowchartSymbols.merge]: MergeEngine,
     [FlowchartSymbols.delay]: DelayEngine,
-    [FlowchartSymbols.storedData]: StoredDataEngine
+    [FlowchartSymbols.storedData]: StoredDataEngine,
 };
 
 export const getEngine = (shape: GeometryShapes) => {

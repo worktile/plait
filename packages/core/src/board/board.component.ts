@@ -36,6 +36,7 @@ import {
     IS_CHROME,
     IS_FIREFOX,
     IS_SAFARI,
+    deleteFragment,
     getClipboardData,
     getRectangleByElements,
     getSelectedElements,
@@ -50,7 +51,8 @@ import {
     BOARD_TO_ROUGH_SVG,
     BOARD_TO_MOVING_POINT_IN_BOARD,
     BOARD_TO_MOVING_POINT,
-    BOARD_TO_AFTER_CHANGE
+    BOARD_TO_AFTER_CHANGE,
+    IS_BOARD_ALIVE
 } from '../utils/weak-maps';
 import { BoardComponentInterface } from './board.component.interface';
 import {
@@ -75,6 +77,7 @@ import { PlaitContextService } from '../services/image-context.service';
 import { isPreventTouchMove } from '../utils/touch';
 import { PlaitChildrenElementComponent } from '../core/children/children.component';
 import { ZOOM_STEP } from '../constants/zoom';
+import { withRelatedFragment } from '../plugins/with-related-fragment';
 
 const ElementHostClass = 'element-host';
 const ElementUpperHostClass = 'element-upper-host';
@@ -204,6 +207,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         BOARD_TO_COMPONENT.set(this.board, this);
         BOARD_TO_ROUGH_SVG.set(this.board, roughSVG);
         BOARD_TO_HOST.set(this.board, this.host);
+        IS_BOARD_ALIVE.set(this.board, true);
         BOARD_TO_ELEMENT_HOST.set(this.board, {
             host: elementHost,
             upperHost: elementUpperHost,
@@ -260,10 +264,12 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     private initializePlugins() {
-        let board = withHotkey(
-            withHandPointer(
-                withHistory(
-                    withSelection(withMoving(withBoard(withViewport(withOptions(createBoard(this.plaitValue, this.plaitOptions))))))
+        let board = withRelatedFragment(
+            withHotkey(
+                withHandPointer(
+                    withHistory(
+                        withSelection(withMoving(withBoard(withViewport(withOptions(createBoard(this.plaitValue, this.plaitOptions))))))
+                    )
                 )
             )
         );
@@ -426,7 +432,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 event.preventDefault();
                 const rectangle = getRectangleByElements(this.board, selectedElements, false);
                 this.board.setFragment(event.clipboardData, null, rectangle, 'cut');
-                this.board.deleteFragment(event.clipboardData);
+                deleteFragment(this.board);
             });
     }
 
@@ -521,6 +527,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         BOARD_TO_ROUGH_SVG.delete(this.board);
         BOARD_TO_HOST.delete(this.board);
         BOARD_TO_ELEMENT_HOST.delete(this.board);
+        IS_BOARD_ALIVE.set(this.board, false);
         BOARD_TO_ON_CHANGE.delete(this.board);
         BOARD_TO_AFTER_CHANGE.set(this.board, () => {});
     }

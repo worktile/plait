@@ -9,7 +9,7 @@ import { PathRef, PathRefOptions } from '../interfaces/path-ref';
 import { Path } from '../interfaces/path';
 import { ThemeColorMode } from '../interfaces/theme';
 import { CoreTransforms } from '../transforms/element';
-import { WritableClipboardContext, setClipboardData } from '../utils';
+import { WritableClipboardContext, drawEntireActiveRectangleG, setClipboardData } from '../utils';
 
 export function createBoard(children: PlaitElement[], options?: PlaitBoardOptions): PlaitBoard {
     const board: PlaitBoard = {
@@ -82,6 +82,9 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         },
         onChange: () => {},
         afterChange: () => {},
+        drawActiveRectangle: () => {
+            return drawEntireActiveRectangleG(board);
+        },
         mousedown: (event: MouseEvent) => {},
         mousemove: (event: MouseEvent) => {},
         mouseleave: (event: MouseEvent) => {},
@@ -96,18 +99,18 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
             setClipboardData(data, clipboardContext);
         },
         insertFragment: (data: DataTransfer | null) => {},
-        deleteFragment: (data: DataTransfer | null) => {
-            const elements = board.getDeletedFragment([]);
+        deleteFragment: (elements: PlaitElement[]) => {
             CoreTransforms.removeElements(board, elements);
         },
         getDeletedFragment: (data: PlaitElement[]) => data,
-        getRelatedFragment: (data: PlaitElement[]) => data,
+        getRelatedFragment: (data: PlaitElement[], originData?: PlaitElement[]) => data,
         drawElement: (context: PlaitPluginElementContext) => [],
         redrawElement: (context: PlaitPluginElementContext, previousContext) => {},
         destroyElement: (context: PlaitPluginElementContext) => {},
         isWithinSelection: element => false,
         isRectangleHit: element => false,
         isHit: element => false,
+        isInsidePoint: element => false,
         isRecursion: element => true,
         isMovable: element => false,
         getRectangle: element => null,
@@ -121,7 +124,8 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         pointerLeave: pointer => {},
         globalPointerMove: pointer => {},
         globalPointerUp: pointer => {},
-        isImageBindingAllowed: (element: PlaitElement) => false
+        isImageBindingAllowed: (element: PlaitElement) => false,
+        canAddToGroup: (element: PlaitElement) => true
     };
     return board;
 }

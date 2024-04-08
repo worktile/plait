@@ -1,8 +1,11 @@
 import { ElbowLineRouteOptions, ResizeState, generateElbowLineRoute, removeDuplicatePoints, simplifyOrthogonalPoints } from '@plait/common';
-import { PlaitBoard, Point, RectangleClient, drawCircle } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, createDebugGenerator } from '@plait/core';
 import { LINE_ALIGN_TOLERANCE } from '../../constants/line';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
 import { PlaitLine } from '../../interfaces';
+
+const debugKey = 'debug:plait:line-mirror';
+const debugGenerator = createDebugGenerator(debugKey);
 
 export const alignPoints = (basePoint: Point, movingPoint: Point) => {
     const newPoint: Point = [...movingPoint];
@@ -159,7 +162,7 @@ export function getIndexAndDeleteCountByKeyPoint(
         if (midDataPoints.length > 0) {
             const handleRefPair = getLineHandleRefPair(board, element);
             const params = getElbowLineRouteOptions(board, element, handleRefPair);
-            const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params));
+            const keyPoints = removeDuplicatePoints(generateElbowLineRoute(params, board));
             const nextKeyPoints = simplifyOrthogonalPoints(keyPoints.slice(1, keyPoints.length - 1));
             const nextDataPoints = [nextRenderPoints[0], ...midDataPoints, nextRenderPoints[nextRenderPoints.length - 1]];
             const mirrorDataPoints = getMirrorDataPoints(board, nextDataPoints, nextKeyPoints, params);
@@ -311,6 +314,8 @@ function findMirrorSegments(
     sourceRectangle: RectangleClient,
     targetRectangle: RectangleClient
 ) {
+    debugGenerator.isDebug() && debugGenerator.clear();
+
     const mirrorSegments: [Point, Point][] = [];
     for (let index = 0; index < parallelSegments.length; index++) {
         const parallelPath = parallelSegments[index];
@@ -324,14 +329,8 @@ function findMirrorSegments(
         const isValid = !RectangleClient.isHit(fakeRectangle, sourceRectangle) && !RectangleClient.isHit(fakeRectangle, targetRectangle);
         if (isValid) {
             mirrorSegments.push([startPoint, endPoint]);
-            // const fakeRectangleG = PlaitBoard.getRoughSVG(board).rectangle(
-            //     fakeRectangle.x,
-            //     fakeRectangle.y,
-            //     fakeRectangle.width,
-            //     fakeRectangle.height,
-            //     { stroke: 'blue' }
-            // );
-            // PlaitBoard.getElementActiveHost(board).append(fakeRectangleG);
+
+            debugGenerator.isDebug() && debugGenerator.drawPolygon(board, RectangleClient.getCornerPoints(fakeRectangle));
         }
     }
     return mirrorSegments;

@@ -1,6 +1,6 @@
 import { Options } from 'roughjs/bin/core';
 import { POINTER_BUTTON } from '../../constants';
-import { RectangleClient } from '../../interfaces';
+import { Point, RectangleClient } from '../../interfaces';
 
 export const NS = 'http://www.w3.org/2000/svg';
 
@@ -31,9 +31,13 @@ export const setStrokeLinecap = (g: SVGGElement, value: 'round' | 'square') => {
     g.setAttribute('stroke-linecap', value);
 };
 
-export const setTransformRotate = (g: SVGGElement, rectangle: RectangleClient, angle: number) => {
-    var centerX = rectangle.x + rectangle.width / 2;
-    var centerY = rectangle.y + rectangle.height / 2;
+export const setAngleForG = (g: SVGGElement, centerPoint: Point, angle: number) => {
+    if (angle === 0) {
+        g.removeAttribute('transform');
+        return;
+    }
+    var centerX = centerPoint[0];
+    var centerY = centerPoint[1];
 
     let cosTheta = Math.cos(angle);
     let sinTheta = Math.sin(angle);

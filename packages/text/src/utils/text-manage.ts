@@ -5,9 +5,11 @@ import {
     IS_TEXT_EDITABLE,
     MERGING,
     PlaitBoard,
+    Point,
     RectangleClient,
     createForeignObject,
     createG,
+    setAngleForG,
     toHostPoint,
     toViewBoxPoint,
     updateForeignObject,
@@ -137,6 +139,10 @@ export class TextManage {
         updateForeignObjectWidth(this.g, width);
     }
 
+    updateAngle(centerPoint: Point, angle: number = 0) {
+        setAngleForG(this.g, centerPoint, angle);
+    }
+
     updateRectangle(rectangle?: RectangleClient) {
         const { x, y, width, height } = rectangle || this.options.getRectangle();
         if (this.isEditing) {
@@ -185,7 +191,6 @@ export class TextManage {
         }
 
         this.updateRectangle();
-
         const { width, height } = this.getSize();
         this.options.onValueChangeHandle && this.options.onValueChangeHandle({ width, height });
 
@@ -250,8 +255,14 @@ export class TextManage {
 
     getSize() {
         const editor = this.componentRef.instance.editor;
+        const transformMatrix = this.g.getAttribute('transform');
+        this.g.setAttribute('transform', '');
         const paragraph = AngularEditor.toDOMNode(editor, editor.children[0]);
-        return measureDivSize(paragraph);
+        const { width, height } = measureDivSize(paragraph);
+        if (transformMatrix) {
+            this.g.setAttribute('transform', transformMatrix);
+        }
+        return { width, height };
     }
 
     setOnChangeHandle(onChange: ((editor: PlaitTextEditor) => void) | null) {

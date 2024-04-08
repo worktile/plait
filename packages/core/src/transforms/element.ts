@@ -9,7 +9,7 @@ export const removeElements = (board: PlaitBoard, elements: PlaitElement[]) => {
             const path = PlaitBoard.findPath(board, element);
             const ref = board.pathRef(path);
             return () => {
-                removeNode(board, ref.current!);
+                ref.current && removeNode(board, ref.current);
                 ref.unref();
                 removeSelectedElement(board, element, true);
             };

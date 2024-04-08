@@ -1,4 +1,12 @@
-import { PlaitBoard, PlaitElement, setTransformRotate } from '@plait/core';
+import {
+    PlaitBoard,
+    PlaitElement,
+    PlaitGroupElement,
+    RectangleClient,
+    getElementsInGroup,
+    getSelectionAngle,
+    setAngleForG
+} from '@plait/core';
 
 export interface GeneratorExtraData {}
 
@@ -34,8 +42,16 @@ export abstract class Generator<
                 }
                 this.g = g;
                 const rect = this.board.getRectangle(element);
-                if (rect && element.angle) {
-                    setTransformRotate(g, rect, element.angle);
+                if (rect) {
+                    let angle;
+                    if (PlaitGroupElement.isGroup(element)) {
+                        angle = getSelectionAngle(getElementsInGroup(this.board, element, true));
+                    } else {
+                        angle = element.angle;
+                    }
+                    if (angle) {
+                        setAngleForG(g, RectangleClient.getCenterPoint(rect), angle);
+                    }
                 }
             } else {
                 this.destroy();

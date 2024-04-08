@@ -1,5 +1,75 @@
 # @plait/common
 
+## 0.54.0
+
+### Minor Changes
+
+-   [`9b25c6d6`](https://github.com/worktile/plait/commit/9b25c6d6cbebbb172540df5f1faeb7f499963557) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support assign the origin data when invoke getRelatedFragment
+
+### Patch Changes
+
+-   [#807](https://github.com/worktile/plait/pull/807) [`7b6c2cb4`](https://github.com/worktile/plait/commit/7b6c2cb4d0a1c1868bf9c6bd559775a20a73cbaa) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(common): set angle for group hover rectangle and selected rectangle
+
+*   [`ad997d91`](https://github.com/worktile/plait/commit/ad997d9155fd94ad39bf594d47158253b2c4e4b4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use getCornerPointsByPoints to get correct corners and add fail data and unit test case
+
+-   [#796](https://github.com/worktile/plait/pull/796) [`b218fadb`](https://github.com/worktile/plait/commit/b218fadbf4663663e16053a867236e33315cfc74) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add test for withGroup plugin
+
+## 0.53.0
+
+### Minor Changes
+
+-   [#781](https://github.com/worktile/plait/pull/781) [`88140782`](https://github.com/worktile/plait/commit/881407821ab449553b438d33e2db216121414ba7) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add canAddToGroup for board
+    support mindmap group
+
+*   [#775](https://github.com/worktile/plait/pull/775) [`63fa2b8b`](https://github.com/worktile/plait/commit/63fa2b8bf40f5ad4c9f888145d7ce9e511b76bd8) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support group copy and paste
+
+-   [#783](https://github.com/worktile/plait/pull/783) [`09b2f382`](https://github.com/worktile/plait/commit/09b2f382723d21bcb1e1f7ea4b11833355d66716) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - export GroupTransforms and support group hotkey
+
+*   [#779](https://github.com/worktile/plait/pull/779) [`18b05a82`](https://github.com/worktile/plait/commit/18b05a8287ba7c5befc6e30fed9208c33ed1688f) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - remove group with only one element
+
+### Patch Changes
+
+-   [#794](https://github.com/worktile/plait/pull/794) [`ae0365a0`](https://github.com/worktile/plait/commit/ae0365a09d43f207ea5ebb645d67ab90afafce67) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support group align and distribute
+
+*   [#784](https://github.com/worktile/plait/pull/784) [`ac620059`](https://github.com/worktile/plait/commit/ac620059e81d21885c34f8427d32eb47531c971b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - insert group at the end
+
+-   [#793](https://github.com/worktile/plait/pull/793) [`a1df7e51`](https://github.com/worktile/plait/commit/a1df7e518080593a08deb339f3aea6b5a6abfe0f) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(common): fix image with angle drag error
+
+*   [#786](https://github.com/worktile/plait/pull/786) [`3bfc967f`](https://github.com/worktile/plait/commit/3bfc967fdc3453753bad2086cea7beedbecaafc0) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix remove group error
+
+## 0.51.4
+
+## 0.52.0
+
+### Minor Changes
+
+-   [`6b6678df`](https://github.com/worktile/plait/commit/6b6678dfd65d9cfe1b80726afdd9ef4044d9202a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump angular into v17
+
+### Patch Changes
+
+-   [`c7565c08`](https://github.com/worktile/plait/commit/c7565c08e6d52a91e2df87ac5405bdcd21406cbb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename getPointByVector to getPointByVectorComponent
+    rename getPointByUnitVectorAndDirectionComponent to getPointByVectorDirectionComponent
+
+## 0.52.0-next.0
+
+### Minor Changes
+
+-   [`6b6678df`](https://github.com/worktile/plait/commit/6b6678dfd65d9cfe1b80726afdd9ef4044d9202a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump angular into v17
+
+### Patch Changes
+
+-   [`c7565c08`](https://github.com/worktile/plait/commit/c7565c08e6d52a91e2df87ac5405bdcd21406cbb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename getPointByVector to getPointByVectorComponent
+    rename getPointByUnitVectorAndDirectionComponent to getPointByVectorDirectionComponent
+
+## 0.51.3
+
+### Patch Changes
+
+-   [#767](https://github.com/worktile/plait/pull/767) [`524cd91e`](https://github.com/worktile/plait/commit/524cd91efc94b8523191fdad95b3579cc4defb03) Thanks [@MissLixf](https://github.com/MissLixf)! - hit select correct with angle
+    rectangle hit select correct with angle
+
+## 0.51.2
+
 ## 0.51.1
 
 ## 0.51.0
@@ -7,7 +77,7 @@
 ### Minor Changes
 
 -   [`72927957`](https://github.com/worktile/plait/commit/729279576c78e16d4016613dba7c58a47c93ed33) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add `getCrossingPointsBetweenPointAndSegment` method in math
-    add utils for vector: `getPointByUnitVectorAndVectorComponent`, `getUnitVectorByPointAndPoint`
+    add utils for vector: `getPointByUnitVectorAndDirectionComponent`, `getUnitVectorByPointAndPoint`
     Use the `getCrossingPointsBetweenPointAndSegment` method to get the associated points (intersection points of the axis and the line segment) that can get points and line segments. It can be used differently from `getNearestPointBetweenPointAndSegment`.
 
 *   [#742](https://github.com/worktile/plait/pull/742) [`1c3cfa4d`](https://github.com/worktile/plait/commit/1c3cfa4d35c9d7b1d1c2c553546a81337e89bdfc) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - throttleRAF support set key and board to avoid the effect of multiple scene call
@@ -25,7 +95,7 @@
 ### Patch Changes
 
 -   [#744](https://github.com/worktile/plait/pull/744) [`712ccb12`](https://github.com/worktile/plait/commit/712ccb12a6113c5b59eb48b022732824ff529044) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - optimize the code for drawing equal lines
-    add getDirectionFactorByVectorComponent
+    add getDirectionFactorByDirectionComponent
 
 *   [#737](https://github.com/worktile/plait/pull/737) [`91d1685c`](https://github.com/worktile/plait/commit/91d1685c62c4ac4b7717da315e3a32a0838f1174) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - isHorizontalSegment renamed to isOverHorizontal
     isVerticalSegment renamed to isOverVertical

@@ -203,13 +203,128 @@ describe('generate elbow line route', () => {
                     height: 158.35671677591444
                 }
             };
-            const centerX = RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, true);
+            const isHorizontal = true;
+            const centerX = RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, isHorizontal);
             const route = generateElbowLineRoute(options);
             verifyOrthogonalPoints(route);
-            verifyOrthogonalPointsPassThroughCenterX(route, centerX);
+            verifyOrthogonalPointsPassThroughCenterXOrCenterY(route, centerX, isHorizontal);
         });
         it('Obtain the incorrect corner points in the processing of adjust by centerX', () => {
             // can not obtain the incorrect data
+            const elements = [
+                {
+                    id: 'GMKAE',
+                    type: 'geometry',
+                    shape: 'terminal',
+                    angle: 0,
+                    opacity: 1,
+                    textHeight: 20,
+                    text: {
+                        children: [
+                            {
+                                text: '结束'
+                            }
+                        ],
+                        align: 'center'
+                    },
+                    points: [
+                        [-152.40805846473785, 392.0424757605864],
+                        [-6.296362204602474, 479.7238481181446]
+                    ],
+                    strokeWidth: 2
+                },
+                {
+                    id: 'rJcaT',
+                    type: 'geometry',
+                    shape: 'decision',
+                    angle: 0,
+                    opacity: 1,
+                    textHeight: 20,
+                    text: {
+                        children: [
+                            {
+                                text: '过程'
+                            }
+                        ],
+                        align: 'center'
+                    },
+                    points: [
+                        [-478.931640625, 150.92016662105166],
+                        [-308.46799498817535, 253.21510103820273]
+                    ],
+                    strokeWidth: 2
+                },
+                {
+                    id: 'dBQka',
+                    type: 'line',
+                    shape: 'elbow',
+                    source: {
+                        marker: 'none',
+                        connection: [0.5, 1],
+                        boundId: 'rJcaT'
+                    },
+                    texts: [
+                        {
+                            text: {
+                                children: [
+                                    {
+                                        text: '是'
+                                    }
+                                ]
+                            },
+                            position: 0.5,
+                            width: 14,
+                            height: 20
+                        }
+                    ],
+                    target: {
+                        marker: 'arrow',
+                        connection: [0.5, 0],
+                        boundId: 'GMKAE'
+                    },
+                    opacity: 1,
+                    points: [
+                        [-417.72637207305854, -445.31316541034334],
+                        [-417.72637207305854, -445.31316541034334]
+                    ],
+                    strokeWidth: 2
+                }
+            ];
+            const options: ElbowLineRouteOptions = {
+                sourcePoint: [-393.6998178065877, 253.21510103820273],
+                nextSourcePoint: [-393.6998178065877, 285.21510103820276],
+                sourceRectangle: {
+                    x: -480.931640625,
+                    y: 148.92016662105166,
+                    width: 174.46364563682465,
+                    height: 106.29493441715107
+                },
+                sourceOuterRectangle: {
+                    x: -510.931640625,
+                    y: 118.92016662105166,
+                    width: 234.46364563682465,
+                    height: 166.29493441715107
+                },
+                targetPoint: [-79.35221033467016, 390.0424757605864],
+                nextTargetPoint: [-79.35221033467016, 360.0424757605864],
+                targetRectangle: {
+                    x: -154.40805846473785,
+                    y: 390.0424757605864,
+                    width: 150.11169626013537,
+                    height: 91.68137235755819
+                },
+                targetOuterRectangle: {
+                    x: -184.40805846473785,
+                    y: 360.0424757605864,
+                    width: 210.11169626013537,
+                    height: 151.6813723575582
+                }
+            };
+            const isHorizontal = false;
+            const centerY = RectangleClient.getGapCenter(options.sourceOuterRectangle, options.targetOuterRectangle, isHorizontal);
+            const route = generateElbowLineRoute(options);
+            verifyOrthogonalPoints(route);
+            verifyOrthogonalPointsPassThroughCenterXOrCenterY(route, centerY, isHorizontal);
         });
     });
 });
@@ -222,10 +337,11 @@ const verifyOrthogonalPoints = (points: Point[]) => {
     }
 };
 
-const verifyOrthogonalPointsPassThroughCenterX = (points: Point[], centerX: number) => {
+const verifyOrthogonalPointsPassThroughCenterXOrCenterY = (points: Point[], center: number, isHorizontal: boolean) => {
     let count = 0;
+    const pointIndex = isHorizontal ? 0 : 1;
     for (let index = 0; index < points.length; index++) {
-        if (points[index][0] === centerX) {
+        if (points[index][pointIndex] === center) {
             count++;
         }
     }

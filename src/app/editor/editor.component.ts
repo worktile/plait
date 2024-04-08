@@ -13,9 +13,15 @@ import {
     getRectangleByElements,
     getSelectedElements,
     toHostPoint,
-    toViewBoxPoint
+    toViewBoxPoint,
+    getHighestSelectedGroups,
+    canRemoveGroup,
+    canAddGroup,
+    getHighestSelectedElements,
+    GroupTransforms,
+    deleteFragment
 } from '@plait/core';
-import { mockDrawData, mockMindData } from './mock-data';
+import { mockDrawData, mockGroupData, mockMindData, mockRotateData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
 import { AbstractResizeState, MindThemeColors } from '@plait/mind';
 import { withMindExtend } from '../plugins/with-mind-extend';
@@ -32,6 +38,7 @@ import { AppMenuComponent } from '../components/menu/menu.component';
 import { NgIf } from '@angular/common';
 import { mockTurningPointData } from './mock-turning-point-data';
 import { moveDown, moveUp } from '@plait/common';
+import { withGroup } from '@plait/common';
 
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
@@ -50,7 +57,7 @@ const LOCAL_STORAGE_KEY = 'plait-board-data';
     ]
 })
 export class BasicEditorComponent implements OnInit {
-    plugins = [withCommonPlugin, withMind, withMindExtend, withDraw];
+    plugins = [withCommonPlugin, withMind, withMindExtend, withDraw, withGroup];
 
     value: (PlaitElement | PlaitGeometry | PlaitMind)[] = [];
 
@@ -68,6 +75,12 @@ export class BasicEditorComponent implements OnInit {
     board!: PlaitBoard;
 
     showPaste = getProbablySupportsClipboardWrite();
+
+    selectedElements: PlaitElement[] = [];
+
+    showAddGroup!: boolean;
+
+    showRemoveGroup!: boolean;
 
     @ViewChild('contextMenu', { static: true, read: ElementRef })
     contextMenu!: ElementRef<any>;
@@ -118,6 +131,12 @@ export class BasicEditorComponent implements OnInit {
                 case 'turning-point':
                     this.value = [...mockTurningPointData];
                     break;
+                case 'group':
+                    this.value = [...mockGroupData];
+                    break;
+                case 'rotate':
+                    this.value = [...mockRotateData];
+                    break;
                 default:
                     this.value = [...mockDrawData];
                     break;
@@ -127,6 +146,9 @@ export class BasicEditorComponent implements OnInit {
 
     change(event: PlaitBoardChangeEvent) {
         this.setLocalData(JSON.stringify(event));
+        this.selectedElements = getSelectedElements(this.board);
+        this.showRemoveGroup = canRemoveGroup(this.board);
+        this.showAddGroup = canAddGroup(this.board);
     }
 
     getLocalStorage() {
@@ -163,18 +185,28 @@ export class BasicEditorComponent implements OnInit {
     copy(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        const selectedElements = getSelectedElements(this.board);
-        const rectangle = getRectangleByElements(this.board, selectedElements, false);
+        const rectangle = getRectangleByElements(this.board, this.selectedElements, false);
         this.board.setFragment(null, null, rectangle, 'copy');
     }
 
     cut(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        const selectedElements = getSelectedElements(this.board);
-        const rectangle = getRectangleByElements(this.board, selectedElements, false);
+        const rectangle = getRectangleByElements(this.board, this.selectedElements, false);
         this.board.setFragment(null, null, rectangle, 'cut');
-        this.board.deleteFragment(null);
+        deleteFragment(this.board);
+    }
+
+    addGroup(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+        GroupTransforms.addGroup(this.board);
+    }
+
+    removeGroup(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+        GroupTransforms.removeGroup(this.board);
     }
 
     async paste(event: MouseEvent) {

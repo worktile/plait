@@ -1,5 +1,32 @@
 # text
 
+## 0.54.0
+
+## 0.53.0
+
+## 0.51.4
+
+## 0.52.0
+
+### Minor Changes
+
+-   [`6b6678df`](https://github.com/worktile/plait/commit/6b6678dfd65d9cfe1b80726afdd9ef4044d9202a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump angular into v17
+
+## 0.52.0-next.0
+
+### Minor Changes
+
+-   [`6b6678df`](https://github.com/worktile/plait/commit/6b6678dfd65d9cfe1b80726afdd9ef4044d9202a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump angular into v17
+
+## 0.51.3
+
+### Patch Changes
+
+-   [#767](https://github.com/worktile/plait/pull/767) [`524cd91e`](https://github.com/worktile/plait/commit/524cd91efc94b8523191fdad95b3579cc4defb03) Thanks [@MissLixf](https://github.com/MissLixf)! - hit select correct with angle
+    rectangle hit select correct with angle
+
+## 0.51.2
+
 ## 0.51.1
 
 ## 0.51.0

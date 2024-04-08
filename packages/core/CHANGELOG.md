@@ -1,5 +1,198 @@
 # plait
 
+## 0.54.0
+
+### Minor Changes
+
+-   [`c16b08ab`](https://github.com/worktile/plait/commit/c16b08ab502fb1b7d2f4b52b24f6b463766c3147) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update line snapping logic:
+
+    1. snapping when the point is close to edge or connector
+
+    2. no snapping when the end point is at inside element
+
+*   [`89e9acd0`](https://github.com/worktile/plait/commit/89e9acd02c0c1342bc9f52f711d250c6ec1f8290) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add alive state to avoid executing callback in requestAnimationFrame
+
+-   [`2cd8d926`](https://github.com/worktile/plait/commit/2cd8d926092a88b3a117e32f1170053e6546fd73) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename align to snap
+
+*   [`9b25c6d6`](https://github.com/worktile/plait/commit/9b25c6d6cbebbb172540df5f1faeb7f499963557) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support assign the origin data when invoke getRelatedFragment
+
+-   [#797](https://github.com/worktile/plait/pull/797) [`15e9069c`](https://github.com/worktile/plait/commit/15e9069c0b5a03a678ec06a87df634fe61506c9d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename getDeletedFragment method to getDeleteFragment
+
+*   [#797](https://github.com/worktile/plait/pull/797) [`15e9069c`](https://github.com/worktile/plait/commit/15e9069c0b5a03a678ec06a87df634fe61506c9d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Guaranteed that the `getDeletedFragment` overridable function is called before the `deleteFragment` overridable function
+
+    Remove the `getDeletedFragment` call from the default implementation of `deleteFragment` and call it externally, while encapsulating the tool function `deleteFragment`:
+
+    ```
+    export const deleteFragment = (board: PlaitBoard) => {
+         const elements = board.getDeletedFragment([]);
+         board.deleteFragment(elements);
+    }
+    ```
+
+    Where board.deleteFragment(null) was used before, the tool function `deleteFragment()` is now uniformly called.
+
+    保证 `getDeletedFragment` 可重写函数调用先于 `deleteFragment` 可重写函数
+
+    将 `getDeletedFragment` 调用从 `deleteFragment` 默认实现中移除，改为在外部调用，同时封装工具函数 `deleteFragment`：
+
+    ```
+    export const deleteFragment = (board: PlaitBoard) => {
+        const elements = board.getDeletedFragment([]);
+        board.deleteFragment(elements);
+    }
+    ```
+
+    以前使用 board.deleteFragment(null) 的地方现在统一改为调用工具函数 `deleteFragment()`
+
+### Patch Changes
+
+-   [#805](https://github.com/worktile/plait/pull/805) [`a5139e8a`](https://github.com/worktile/plait/commit/a5139e8a65636068d203027193dbcf3efdf4c104) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add overridable method drawActiveRectangle to implement custom drawing active rectangle
+
+## 0.53.0
+
+### Minor Changes
+
+-   [#781](https://github.com/worktile/plait/pull/781) [`88140782`](https://github.com/worktile/plait/commit/881407821ab449553b438d33e2db216121414ba7) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add canAddToGroup for board
+    support mindmap group
+
+*   [#775](https://github.com/worktile/plait/pull/775) [`63fa2b8b`](https://github.com/worktile/plait/commit/63fa2b8bf40f5ad4c9f888145d7ce9e511b76bd8) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support group copy and paste
+
+-   [#783](https://github.com/worktile/plait/pull/783) [`09b2f382`](https://github.com/worktile/plait/commit/09b2f382723d21bcb1e1f7ea4b11833355d66716) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - export GroupTransforms and support group hotkey
+
+*   [#780](https://github.com/worktile/plait/pull/780) [`248ada7a`](https://github.com/worktile/plait/commit/248ada7aa6c3280640b51f391b888119e803132b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add debug util methods to help developer to generate temporary drawing elements
+
+    ### Debug 工具使用说明
+
+    #### 定义
+
+    定义 debugKey 并且创建 debug generator
+
+    ```
+    const debugKey = 'debug:plait:resize-for-rotation';
+    const debugGenerator = createDebugGenerator(debugKey);
+    ```
+
+    > 如果想绘制真正的辅助线，需要在 localStorage 中添加键值对（'debugKey',true），例如：debug:plait:resize-for-rotation = true;
+
+    #### 清理
+
+    在下一个渲染周期开始时清理生成的临时图形
+
+    ```
+    debugGenerator.isDebug() && debugGenerator.clear();
+    ```
+
+    #### 绘制辅助元素
+
+    真正绘制辅助元素的方法，目前支持：`drawPolygon`、`drawRectangle`、`drawCircles` 三种类型的元素绘制
+
+    绘制函数主要做的事情：
+
+    1. 生成元素 g
+    2. 添加到 g 到 activeHost
+    3. 添加到待清理列表，使调用 clear 时可以清楚上次绘制的元素 g
+    4. 返回新生成的 g 元素，方便开发做其它处理
+
+    ```
+    debugGenerator.isDebug() && debugGenerator.drawRectangle(board, newBoundingBox, { stroke: 'blue' });
+    ```
+
+    ---
+
+    add debug util methods to help developer drawing temporary geometry elements
+
+    #### Define
+
+    Define debugKey and create debug generator
+
+    ```
+    const debugKey = 'debug:plait:resize-for-rotation';
+    const debugGenerator = createDebugGenerator(debugKey);
+    ```
+
+    > If you want to draw real auxiliary lines, you need to add a key-value pair ('debugKey', true) in localStorage, for example: debug:plait:resize-for-rotation = true;
+
+    #### Clear
+
+    Clean up the resulting temporary graphics at the start of the next render cycle
+
+    ```
+    debugGenerator.isDebug() && debugGenerator.clear();
+    ```
+
+    #### Draw auxiliary elements
+
+    The actual method of drawing auxiliary elements, currently supports three types of element drawing: `drawPolygon`, `drawRectangle`, and `drawCircles`
+
+    The main things the drawing function does:
+
+    1. Generate element g
+    2. Add g to activeHost
+    3. Add it to the list to be cleaned so that the last drawn element g can be cleared when calling clear
+    4. Return the newly generated g element to facilitate development and other processing
+
+    ```
+    debugGenerator.isDebug() && debugGenerator.drawRectangle(board, newBoundingBox, { stroke: 'blue' });
+    ```
+
+### Patch Changes
+
+-   [#790](https://github.com/worktile/plait/pull/790) [`5d01db16`](https://github.com/worktile/plait/commit/5d01db16057da326989155638b5e462d9cb4c1d6) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - set all elements to cache when temporaryElements.length > 1
+
+*   [`13179e6c`](https://github.com/worktile/plait/commit/13179e6c4fa1cbaefc8af47a3de03a273c96a3b3) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - only handle the g had been removed from element host to avoid handling normal g
+
+    resolve issue: background color element's g was removed when resizing
+
+-   [#791](https://github.com/worktile/plait/pull/791) [`c1ea98a8`](https://github.com/worktile/plait/commit/c1ea98a870c3181e6315e9aabd911adf70dcf463) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - move addSelectionWithTemporaryElements to pointerMove
+
+*   [#792](https://github.com/worktile/plait/pull/792) [`e4516379`](https://github.com/worktile/plait/commit/e4516379f2e80219157db530f62aa528c6ce813f) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add group test
+
+-   [#788](https://github.com/worktile/plait/pull/788) [`8599fad3`](https://github.com/worktile/plait/commit/8599fad3bffdc93eb02d643fc1d159ce06068119) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - Only after it is determined that the user has not hit the element can it be verified whether the user hit the blank area where the selected element is located.
+
+    只有判定用户未击中元素之后才可以验证用户是否击中了已选元素所在的空白区域
+
+*   [#795](https://github.com/worktile/plait/pull/795) [`f40d5d89`](https://github.com/worktile/plait/commit/f40d5d89314db91181f2f8daf30abe22c1243119) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add setSelectedElementsWithGroup function
+
+-   [#782](https://github.com/worktile/plait/pull/782) [`9ccc189f`](https://github.com/worktile/plait/commit/9ccc189fc670850a4e74cfda879004eafcd8347b) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add source elements when find group
+    add uniqueById
+
+*   [#787](https://github.com/worktile/plait/pull/787) [`9706f282`](https://github.com/worktile/plait/commit/9706f28254e134ac29d0dd86362f57ecd1da7bfd) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - adjust group element select
+
+## 0.51.4
+
+## 0.52.0
+
+### Minor Changes
+
+-   [`6b6678df`](https://github.com/worktile/plait/commit/6b6678dfd65d9cfe1b80726afdd9ef4044d9202a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump angular into v17
+
+## 0.52.0-next.0
+
+### Minor Changes
+
+-   [`6b6678df`](https://github.com/worktile/plait/commit/6b6678dfd65d9cfe1b80726afdd9ef4044d9202a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump angular into v17
+
+## 0.51.3
+
+### Patch Changes
+
+-   [#770](https://github.com/worktile/plait/pull/770) [`1ad11997`](https://github.com/worktile/plait/commit/1ad11997c47f0e4ee54d9744e689d7c97cdfcafc) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support shift select in group
+
+*   [#767](https://github.com/worktile/plait/pull/767) [`524cd91e`](https://github.com/worktile/plait/commit/524cd91efc94b8523191fdad95b3579cc4defb03) Thanks [@MissLixf](https://github.com/MissLixf)! - hit select correct with angle
+    rectangle hit select correct with angle
+
+-   [#771](https://github.com/worktile/plait/pull/771) [`1a16e813`](https://github.com/worktile/plait/commit/1a16e81385577ae69f9d0a949809f84ef113e0e1) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support addGroup and removeGroup function
+
+*   [#769](https://github.com/worktile/plait/pull/769) [`ee1cd186`](https://github.com/worktile/plait/commit/ee1cd186d745598a629e3909b91462d567d82054) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(core): fix selection contain element but not selected
+
+-   [#764](https://github.com/worktile/plait/pull/764) [`4df58289`](https://github.com/worktile/plait/commit/4df58289a7818317fe700c803f3dd4f95840e075) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support group render and select
+
+## 0.51.2
+
+### Patch Changes
+
+-   [`5679c8bd`](https://github.com/worktile/plait/commit/5679c8bd40461ca1339d334557a40930bd985689) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add return to stop moving for special scene
+
 ## 0.51.1
 
 ## 0.51.0
@@ -31,7 +224,7 @@
 ### Patch Changes
 
 -   [#744](https://github.com/worktile/plait/pull/744) [`712ccb12`](https://github.com/worktile/plait/commit/712ccb12a6113c5b59eb48b022732824ff529044) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - optimize the code for drawing equal lines
-    add getDirectionFactorByVectorComponent
+    add getDirectionFactorByDirectionComponent
 
 *   [#737](https://github.com/worktile/plait/pull/737) [`91d1685c`](https://github.com/worktile/plait/commit/91d1685c62c4ac4b7717da315e3a32a0838f1174) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - isHorizontalSegment renamed to isOverHorizontal
     isVerticalSegment renamed to isOverVertical

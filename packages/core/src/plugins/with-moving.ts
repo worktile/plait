@@ -17,10 +17,13 @@ import {
     distanceBetweenPointAndPoint,
     toHostPoint,
     toViewBoxPoint,
-    hotkeys
+    hotkeys,
+    getElementsInGroupByElement,
+    getRectangleByAngle,
+    getSelectionAngle
 } from '../utils';
-import { AlignReaction } from '../utils/reaction-manager';
-import { PlaitPointerType, RectangleClient } from '../interfaces';
+import { MovingSnapReaction } from '../utils/moving-snap';
+import { PlaitGroupElement, PlaitPointerType, RectangleClient } from '../interfaces';
 import { ACTIVE_MOVING_CLASS_NAME, PRESS_AND_MOVE_BUFFER } from '../constants';
 import { addSelectionWithTemporaryElements } from '../transforms/selection';
 
@@ -34,6 +37,9 @@ export function withMoving(board: PlaitBoard) {
     let activeElements: PlaitElement[] = [];
     let alignG: SVGGElement | null = null;
     let activeElementsRectangle: RectangleClient | null = null;
+    let selectedTargetElements: PlaitElement[] | null = null;
+    let hitTargetElement: PlaitElement | undefined = undefined;
+    let isHitSelectedTarget: boolean | undefined = undefined;
 
     board.pointerDown = (event: PointerEvent) => {
         if (
@@ -46,23 +52,30 @@ export function withMoving(board: PlaitBoard) {
             return;
         }
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        const targetElements = getTargetElements(board);
-        const targetRectangle = targetElements.length > 0 && getRectangleByElements(board, targetElements, false);
-        const isInTargetRectangle = targetRectangle && RectangleClient.isPointInRectangle(targetRectangle, point);
-        if (isInTargetRectangle) {
+        hitTargetElement = getHitElementByPoint(board, point, el => board.isMovable(el));
+        selectedTargetElements = getSelectedTargetElements(board);
+        isHitSelectedTarget = hitTargetElement && selectedTargetElements.includes(hitTargetElement);
+        if (hitTargetElement && isHitSelectedTarget) {
             startPoint = point;
-            activeElements = targetElements;
-            preventTouchMove(board, event, true);
+            activeElements = selectedTargetElements;
             activeElementsRectangle = getRectangleByElements(board, activeElements, true);
+            preventTouchMove(board, event, true);
+        } else if (hitTargetElement) {
+            startPoint = point;
+            const relatedElements = board.getRelatedFragment([], [hitTargetElement]);
+            activeElements = [...getElementsInGroupByElement(board, hitTargetElement), ...relatedElements];
+            activeElementsRectangle = getRectangleByElements(board, activeElements, true);
+            preventTouchMove(board, event, true);
         } else {
-            const targetElement = getHitElementByPoint(board, point, el => board.isMovable(el));
-            if (targetElement) {
+            // 只有判定用户未击中元素之后才可以验证用户是否击中了已选元素所在的空白区域
+            // Only after it is determined that the user has not hit the element can it be verified whether the user hit the blank area where the selected element is located.
+            const targetRectangle = selectedTargetElements.length > 0 && getRectangleByElements(board, selectedTargetElements, false);
+            const isHitInTargetRectangle = targetRectangle && RectangleClient.isPointInRectangle(targetRectangle, point);
+            if (isHitInTargetRectangle) {
                 startPoint = point;
-                activeElements = [targetElement];
-                if (targetElements.length > 0) {
-                    addSelectionWithTemporaryElements(board, []);
-                }
-                activeElementsRectangle = getRectangleByElements(board, activeElements, true);
+                activeElements = selectedTargetElements;
+                activeElementsRectangle = targetRectangle;
+                preventTouchMove(board, event, true);
             }
         }
         pointerDown(event);
@@ -79,6 +92,12 @@ export function withMoving(board: PlaitBoard) {
             offsetY = endPoint[1] - startPoint[1];
             const distance = distanceBetweenPointAndPoint(...endPoint, ...startPoint);
             if (distance > PRESS_AND_MOVE_BUFFER || getMovingElements(board).length > 0) {
+                if (hitTargetElement && !isHitSelectedTarget && selectedTargetElements && selectedTargetElements.length > 0) {
+                    addSelectionWithTemporaryElements(board, []);
+                    hitTargetElement = undefined;
+                    selectedTargetElements = null;
+                    isHitSelectedTarget = undefined;
+                }
                 throttleRAF(board, 'with-moving', () => {
                     if (!activeElementsRectangle) {
                         return;
@@ -88,8 +107,12 @@ export function withMoving(board: PlaitBoard) {
                         x: activeElementsRectangle.x + offsetX,
                         y: activeElementsRectangle.y + offsetY
                     };
-                    const reactionManager = new AlignReaction(board, activeElements, newRectangle);
-                    const ref = reactionManager.handleAlign();
+                    const movingSnapReaction = new MovingSnapReaction(
+                        board,
+                        activeElements,
+                        getRectangleByAngle(newRectangle, getSelectionAngle(activeElements)) || newRectangle
+                    );
+                    const ref = movingSnapReaction.handleSnapping();
                     offsetX -= ref.deltaX;
                     offsetY -= ref.deltaY;
                     alignG = ref.g;
@@ -121,6 +144,9 @@ export function withMoving(board: PlaitBoard) {
 
     board.globalPointerUp = event => {
         isPreventDefault = false;
+        hitTargetElement = undefined;
+        selectedTargetElements = null;
+        isHitSelectedTarget = undefined;
         if (startPoint) {
             cancelMove(board);
         }
@@ -172,7 +198,7 @@ export function withArrowMoving(board: PlaitBoard) {
                     break;
                 }
             }
-            const targetElements = getTargetElements(board);
+            const targetElements = getSelectedTargetElements(board);
             throttleRAF(board, 'with-arrow-moving', () => {
                 updatePoints(board, targetElements, offset[0], offset[1]);
             });
@@ -187,7 +213,7 @@ export function withArrowMoving(board: PlaitBoard) {
     return board;
 }
 
-export function getTargetElements(board: PlaitBoard) {
+export function getSelectedTargetElements(board: PlaitBoard) {
     const selectedElements = getSelectedElements(board);
     const movableElements = board.children.filter(item => board.isMovable(item));
     const targetElements = selectedElements.filter(element => {
@@ -199,7 +225,9 @@ export function getTargetElements(board: PlaitBoard) {
 }
 
 export function updatePoints(board: PlaitBoard, targetElements: PlaitElement[], offsetX: number, offsetY: number) {
-    const validElements = targetElements.filter(element => board.children.findIndex(item => item.id === element.id) > -1);
+    const validElements = targetElements.filter(
+        element => !PlaitGroupElement.isGroup(element) && board.children.findIndex(item => item.id === element.id) > -1
+    );
     const currentElements = validElements.map(element => {
         const points = element.points || [];
         const newPoints = points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];

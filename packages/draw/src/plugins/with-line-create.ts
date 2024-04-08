@@ -12,8 +12,8 @@ import {
     toViewBoxPoint
 } from '@plait/core';
 import { LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
-import { REACTION_MARGIN, getLinePointers } from '../constants';
-import { getHitOutlineGeometry } from '../utils/position/geometry';
+import { getLinePointers } from '../constants';
+import { getSnappingGeometry } from '../utils/position/geometry';
 import { isDrawingMode } from '@plait/common';
 import { handleLineCreating } from '../utils/line/line-basic';
 
@@ -34,7 +34,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         if (!PlaitBoard.isReadonly(board) && isLinePointer && isDrawingMode(board)) {
             const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             start = point;
-            const hitElement = getHitOutlineGeometry(board, point, REACTION_MARGIN);
+            const hitElement = getSnappingGeometry(board, point);
             if (hitElement) {
                 sourceElement = hitElement;
             }

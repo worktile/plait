@@ -1,4 +1,13 @@
-import { Path, PlaitBoard, PlaitElement, Point, RectangleClient, Transforms, getSelectedElements } from '@plait/core';
+import {
+    Path,
+    PlaitBoard,
+    PlaitElement,
+    Point,
+    RectangleClient,
+    Transforms,
+    getSelectedElements,
+    rotateAntiPointsByElement
+} from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
 import {
     ResizeRef,
@@ -15,8 +24,8 @@ import { GeometryComponent } from '../geometry.component';
 import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
-import { getResizeAlignRef } from '../utils/resize-align';
+import { getResizeOriginPointAndHandlePoint } from './with-draw-resize';
+import { getResizeSnapRef } from '../utils/resize-snap';
 
 export const withGeometryResize = (board: PlaitBoard) => {
     let alignG: SVGGElement | null;
@@ -34,7 +43,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
             const targetComponent = PlaitElement.getComponent(selectedElements[0]) as GeometryComponent;
             if (targetComponent.activeGenerator.hasResizeHandle) {
                 const rectangle = board.getRectangle(target) as RectangleClient;
-                const handleRef = getHitRectangleResizeHandleRef(board, rectangle, point);
+                const handleRef = getHitRectangleResizeHandleRef(board, rectangle, point, target.angle);
                 if (handleRef) {
                     return {
                         element: target,
@@ -47,12 +56,14 @@ export const withGeometryResize = (board: PlaitBoard) => {
             return null;
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
+            const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(resizeRef.element.points));
+            resizeState.startPoint = rotateAntiPointsByElement(resizeState.startPoint, resizeRef.element) || resizeState.startPoint;
+            resizeState.endPoint = rotateAntiPointsByElement(resizeState.endPoint, resizeRef.element) || resizeState.endPoint;
             alignG?.remove();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
-
-            const resizeAlignRef = getResizeAlignRef(
+            const resizeAlignRef = getResizeSnapRef(
                 board,
                 resizeRef,
                 resizeState,

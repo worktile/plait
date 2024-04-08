@@ -1,5 +1,107 @@
 # @plait/draw
 
+## 0.54.0
+
+### Minor Changes
+
+-   [`c16b08ab`](https://github.com/worktile/plait/commit/c16b08ab502fb1b7d2f4b52b24f6b463766c3147) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update line snapping logic:
+
+    1. snapping when the point is close to edge or connector
+
+    2. no snapping when the end point is at inside element
+
+*   [`2cd8d926`](https://github.com/worktile/plait/commit/2cd8d926092a88b3a117e32f1170053e6546fd73) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename align to snap
+
+-   [#801](https://github.com/worktile/plait/pull/801) [`a301c889`](https://github.com/worktile/plait/commit/a301c8899b9f84d97f0f94bbb9a09f5c9ac9221d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - When batching `Resize`, if the element has a rotation angle, the axis of `Resize` will be re-determined based on the rotation angle.
+
+    `plait/core`: Extract the `isAxisChangedByAngle` method to determine whether the rotation angle will cause the `Resize` axis of the element to change.
+
+    批量`Resize`时，如果元素有旋转角度则根据旋转角度重新确定`Resize`的轴
+
+    `plait/core`: 提取`isAxisChangedByAngle`方法用于判断旋转角度是会造成元素的`Resize`轴线是否发生变化
+
+*   [`9b25c6d6`](https://github.com/worktile/plait/commit/9b25c6d6cbebbb172540df5f1faeb7f499963557) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support assign the origin data when invoke getRelatedFragment
+
+-   [`0f4fe824`](https://github.com/worktile/plait/commit/0f4fe8243bc5e3b7154244131dd762dab4ee9584) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - handle self-loop line route
+
+### Patch Changes
+
+-   [#799](https://github.com/worktile/plait/pull/799) [`52b78c14`](https://github.com/worktile/plait/commit/52b78c1465510909f003d2b4d4cdce23e32a0770) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - align elbow line points without custom points
+
+*   [#798](https://github.com/worktile/plait/pull/798) [`1af71bf8`](https://github.com/worktile/plait/commit/1af71bf8f0166a733a43e6839e2d426493502ef7) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(draw): check element angle when rotate
+
+-   [#803](https://github.com/worktile/plait/pull/803) [`fa314cf4`](https://github.com/worktile/plait/commit/fa314cf4a9f6c04200bc80c616f533ed3f4ea1a8) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(draw): align for rotate element
+
+*   [#805](https://github.com/worktile/plait/pull/805) [`a5139e8a`](https://github.com/worktile/plait/commit/a5139e8a65636068d203027193dbcf3efdf4c104) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add overridable method drawActiveRectangle to implement custom drawing active rectangle
+
+## 0.53.0
+
+### Minor Changes
+
+-   [#781](https://github.com/worktile/plait/pull/781) [`88140782`](https://github.com/worktile/plait/commit/881407821ab449553b438d33e2db216121414ba7) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add canAddToGroup for board
+    support mindmap group
+
+*   [#775](https://github.com/worktile/plait/pull/775) [`63fa2b8b`](https://github.com/worktile/plait/commit/63fa2b8bf40f5ad4c9f888145d7ce9e511b76bd8) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support group copy and paste
+
+-   [#783](https://github.com/worktile/plait/pull/783) [`09b2f382`](https://github.com/worktile/plait/commit/09b2f382723d21bcb1e1f7ea4b11833355d66716) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - export GroupTransforms and support group hotkey
+
+*   [#773](https://github.com/worktile/plait/pull/773) [`3c273292`](https://github.com/worktile/plait/commit/3c2732924b0c090f343be64efe28c4459dd4a8d5) Thanks [@MissLixf](https://github.com/MissLixf)! - feat(draw): support rotate resize
+
+-   [#785](https://github.com/worktile/plait/pull/785) [`69645906`](https://github.com/worktile/plait/commit/69645906a4ece02e3ad66ca2bb45eaff429428d2) Thanks [@MissLixf](https://github.com/MissLixf)! - support draw line for element with angle
+
+### Patch Changes
+
+-   [#789](https://github.com/worktile/plait/pull/789) [`df12d194`](https://github.com/worktile/plait/commit/df12d194c16fcfcafb9482888c73495393a66f6e) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - edit hitElement text when dblClick
+
+## 0.51.4
+
+### Patch Changes
+
+-   [#777](https://github.com/worktile/plait/pull/777) [`2a0af6ef`](https://github.com/worktile/plait/commit/2a0af6ef8463b9871f86e311430d6b3efa901811) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(draw): select correct elements with angle
+
+*   [#776](https://github.com/worktile/plait/pull/776) [`3b4be4f0`](https://github.com/worktile/plait/commit/3b4be4f0f4d8e983596a61edb5016bfc6e3919bd) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(draw): fix can not hit image
+
+## 0.52.0
+
+### Minor Changes
+
+-   [`6b6678df`](https://github.com/worktile/plait/commit/6b6678dfd65d9cfe1b80726afdd9ef4044d9202a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump angular into v17
+
+### Patch Changes
+
+-   [`c7565c08`](https://github.com/worktile/plait/commit/c7565c08e6d52a91e2df87ac5405bdcd21406cbb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename getPointByVector to getPointByVectorComponent
+    rename getPointByUnitVectorAndDirectionComponent to getPointByVectorDirectionComponent
+
+## 0.52.0-next.0
+
+### Minor Changes
+
+-   [`6b6678df`](https://github.com/worktile/plait/commit/6b6678dfd65d9cfe1b80726afdd9ef4044d9202a) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump angular into v17
+
+### Patch Changes
+
+-   [`c7565c08`](https://github.com/worktile/plait/commit/c7565c08e6d52a91e2df87ac5405bdcd21406cbb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rename getPointByVector to getPointByVectorComponent
+    rename getPointByUnitVectorAndDirectionComponent to getPointByVectorDirectionComponent
+
+## 0.51.3
+
+### Patch Changes
+
+-   [#767](https://github.com/worktile/plait/pull/767) [`524cd91e`](https://github.com/worktile/plait/commit/524cd91efc94b8523191fdad95b3579cc4defb03) Thanks [@MissLixf](https://github.com/MissLixf)! - hit select correct with angle
+    rectangle hit select correct with angle
+
+*   [#771](https://github.com/worktile/plait/pull/771) [`1a16e813`](https://github.com/worktile/plait/commit/1a16e81385577ae69f9d0a949809f84ef113e0e1) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support addGroup and removeGroup function
+
+-   [#764](https://github.com/worktile/plait/pull/764) [`4df58289`](https://github.com/worktile/plait/commit/4df58289a7818317fe700c803f3dd4f95840e075) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support group render and select
+
+## 0.51.2
+
+### Patch Changes
+
+-   [#766](https://github.com/worktile/plait/pull/766) [`d102c69d`](https://github.com/worktile/plait/commit/d102c69d353b66b015917c758750504bf3bd71be) Thanks [@MissLixf](https://github.com/MissLixf)! - judge the edge of the element use getNearestPoint
+    rename the isHit in engine to isInsidePoint
+    add isInsidePoint for board
+
 ## 0.51.1
 
 ## 0.51.0
@@ -7,7 +109,7 @@
 ### Minor Changes
 
 -   [`72927957`](https://github.com/worktile/plait/commit/729279576c78e16d4016613dba7c58a47c93ed33) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add `getCrossingPointsBetweenPointAndSegment` method in math
-    add utils for vector: `getPointByUnitVectorAndVectorComponent`, `getUnitVectorByPointAndPoint`
+    add utils for vector: `getPointByUnitVectorAndDirectionComponent`, `getUnitVectorByPointAndPoint`
     Use the `getCrossingPointsBetweenPointAndSegment` method to get the associated points (intersection points of the axis and the line segment) that can get points and line segments. It can be used differently from `getNearestPointBetweenPointAndSegment`.
 
 *   [#730](https://github.com/worktile/plait/pull/730) [`7cdb504a`](https://github.com/worktile/plait/commit/7cdb504ad10c49041208ce5d937d6bd4d2271295) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add getMirrorDataPoints method to get correctly turning point
@@ -34,7 +136,7 @@
 -   [#743](https://github.com/worktile/plait/pull/743) [`c8b3e730`](https://github.com/worktile/plait/commit/c8b3e730b6002df0d4226a7901c9718f6d9780ed) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix get vector error when resize to other side
 
 *   [#744](https://github.com/worktile/plait/pull/744) [`712ccb12`](https://github.com/worktile/plait/commit/712ccb12a6113c5b59eb48b022732824ff529044) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - optimize the code for drawing equal lines
-    add getDirectionFactorByVectorComponent
+    add getDirectionFactorByDirectionComponent
 
 -   [#737](https://github.com/worktile/plait/pull/737) [`91d1685c`](https://github.com/worktile/plait/commit/91d1685c62c4ac4b7717da315e3a32a0838f1174) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - isHorizontalSegment renamed to isOverHorizontal
     isVerticalSegment renamed to isOverVertical

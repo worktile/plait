@@ -9,7 +9,6 @@ import {
     getSelectedElements
 } from '@plait/core';
 import { arrayToMap, findIndex, findLastIndex } from '../utils';
-import { getRectangleByElement } from '@plait/mind';
 
 // export const bringForward = (board: PlaitBoard) => {
 //     const selectElement
@@ -24,16 +23,16 @@ export const moveToTop = () => {};
 export const moveToBottom = () => {};
 
 export const moveUp = (board: PlaitBoard) => {
-    const selectedElements = getSelectedElements(board);
-    const rectangle = getRectangleByElements(board, selectedElements, false);
-    const points = RectangleClient.getPoints(rectangle);
+    // const selectedElements = getSelectedElements(board);
+    // const rectangle = getRectangleByElements(board, selectedElements, false);
+    // const points = RectangleClient.getPoints(rectangle);
     const elements = shiftElementsByOne(board, 'right');
-    board.children = elements;
-    board.onChange();
-    // CoreTransforms.removeElements(board, board.children);
-    // elements.forEach(item => {
-    //     Transforms.insertNode(board, item, [board.children.length]);
-    // });
+    // board.children = elements;
+    // board.onChange();
+    CoreTransforms.removeElements(board, board.children);
+    elements.forEach(item => {
+        Transforms.insertNode(board, item, [board.children.length]);
+    });
 };
 
 export const moveDown = (board: PlaitBoard) => {
@@ -49,7 +48,6 @@ const shiftElementsByOne = (board: PlaitBoard, direction: 'left' | 'right') => {
         groupedIndices = groupedIndices.reverse();
     }
     let elements = [...board.children];
-
     groupedIndices.forEach((indices, i) => {
         const leadingIndex = indices[0];
         const trailingIndex = indices[indices.length - 1];

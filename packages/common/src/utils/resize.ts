@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, RectangleClient, ResizeCursorClass, setDragging } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, ResizeCursorClass, setDragging, RESIZE_CURSORS, rotatePoints } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
 import { PlaitElementOrArray, ResizeRef } from '../types/resize';
 
@@ -36,6 +36,15 @@ const getResizeCursorClassByIndex = (index: number) => {
         default:
             return null;
     }
+};
+
+export const getRotatedResizeCursorClassByAngle = (cursor: ResizeCursorClass, angle: number) => {
+    const index = RESIZE_CURSORS.indexOf(cursor);
+    if (index >= 0) {
+        const temp = Math.round(angle / (Math.PI / 4));
+        cursor = RESIZE_CURSORS[(index + temp) % RESIZE_CURSORS.length] as ResizeCursorClass;
+    }
+    return cursor;
 };
 
 export const getRectangleResizeHandleRefs = (rectangle: RectangleClient, diameter: number) => {
@@ -93,7 +102,10 @@ export const isResizing = (board: PlaitBoard) => {
     return !!IS_RESIZING.get(board);
 };
 
-export const isResizingByCondition = <T extends PlaitElementOrArray, K>(board: PlaitBoard, match: (resizeRef: ResizeRef<T, K>) => boolean) => {
+export const isResizingByCondition = <T extends PlaitElementOrArray, K>(
+    board: PlaitBoard,
+    match: (resizeRef: ResizeRef<T, K>) => boolean
+) => {
     return isResizing(board) && match(IS_RESIZING.get(board)!);
 };
 
@@ -120,4 +132,28 @@ export const isEdgeHandle = (board: PlaitBoard, handle: ResizeHandle) => {
 
 export const isCornerHandle = (board: PlaitBoard, handle: ResizeHandle) => {
     return !isEdgeHandle(board, handle);
+};
+
+// 处理元素先旋转后resize导致的位置偏移
+export const resetPointsAfterResize = (
+    originRectangle: RectangleClient,
+    currentRectangle: RectangleClient,
+    originSelectionCenterPoint: Point,
+    currentSelectionCenterPoint: Point,
+    angle: number
+): [Point, Point] => {
+    const correctSelectionCenterPoint = rotatePoints([currentSelectionCenterPoint], originSelectionCenterPoint, angle)[0];
+    const rotatedElementCenterPoint = rotatePoints(
+        [RectangleClient.getCenterPoint(currentRectangle) as Point],
+        originSelectionCenterPoint,
+        angle
+    )[0];
+
+    const currentPoints = RectangleClient.getPoints(currentRectangle);
+    const originRectangleCenterPoint = RectangleClient.getCenterPoint(originRectangle);
+
+    const correctElementCenterPoint = rotatePoints([rotatedElementCenterPoint], correctSelectionCenterPoint, -angle)[0];
+
+    const rotatedPoints = rotatePoints(currentPoints, originRectangleCenterPoint, angle);
+    return rotatePoints(rotatedPoints, correctElementCenterPoint, -angle) as [Point, Point];
 };

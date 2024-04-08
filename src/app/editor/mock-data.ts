@@ -338,89 +338,363 @@ export const mockDrawData: PlaitDrawElement[] = [
             [-277, -129.0000000000001]
         ],
         strokeWidth: 2
+    }
+] as PlaitDrawElement[];
+
+export const mockGroupData: PlaitDrawElement[] = [
+    {
+        id: 'group1',
+        type: 'group'
     },
-    // {
-    //     id: 'aYaKp',
-    //     type: 'geometry',
-    //     shape: 'rectangle',
-    //     angle: 5.86874495248496,
-    //     opacity: 1,
-    //     textHeight: 20,
-    //     text: {
-    //         children: [
-    //             {
-    //                 text: ''
-    //             }
-    //         ],
-    //         align: 'center'
-    //     },
-    //     points: [
-    //         [-478.30078125, 108.99999999999989],
-    //         [-195.15234375, 231.88671875]
-    //     ],
-    //     strokeWidth: 2
-    // },
-    // {
-    //     id: 'JaNyh',
-    //     type: 'geometry',
-    //     shape: 'ellipse',
-    //     angle: 6.86874495248496,
-    //     opacity: 1,
-    //     textHeight: 20,
-    //     text: {
-    //         children: [
-    //             {
-    //                 text: ''
-    //             }
-    //         ],
-    //         align: 'center'
-    //     },
-    //     points: [
-    //         [-834.0263671875, 236.5234375],
-    //         [-637.8779296875, 311.93359375]
-    //     ],
-    //     strokeWidth: 2
-    // },
-    // {
-    //     id: 'FHknH',
-    //     type: 'geometry',
-    //     shape: 'triangle',
-    //     angle: 4.86874495248496,
-    //     opacity: 1,
-    //     textHeight: 20,
-    //     text: {
-    //         children: [
-    //             {
-    //                 text: ''
-    //             }
-    //         ],
-    //         align: 'center'
-    //     },
-    //     points: [
-    //         [-693.52490234375, -13.8203125],
-    //         [-600.31005859375, 132.7578125]
-    //     ],
-    //     strokeWidth: 2
-    // },
-    // {
-    //     id: 'zMSeG',
-    //     type: 'geometry',
-    //     shape: 'rightArrow',
-    //     angle: 0.86874495248496,
-    //     opacity: 1,
-    //     textHeight: 20,
-    //     text: {
-    //         children: [
-    //             {
-    //                 text: ''
-    //             }
-    //         ],
-    //         align: 'center'
-    //     },
-    //     points: [
-    //         [-542.94287109375, 307.9296875],
-    //         [-338.20458984375, 382.59375]
-    //     ],
-    //     strokeWidth: 2
-    // }
+    {
+        id: 'group2',
+        type: 'group',
+        groupId: 'group3'
+    },
+    {
+        id: 'group3',
+        type: 'group'
+    },
+    {
+        id: 'jimNt',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        groupId: 'group1',
+        text: {
+            children: [
+                {
+                    text: 'group1'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-98.814453125, 66.53125],
+            [55.880859375, 126.71875]
+        ],
+        strokeWidth: 2,
+        fill: '#e48483'
+    },
+    {
+        id: 'bRBzf',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        groupId: 'group1',
+        text: {
+            children: [
+                {
+                    text: 'group1'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [136.806640625, 66.53125],
+            [291.501953125, 126.71875]
+        ],
+        strokeWidth: 2,
+        fill: '#e48483'
+    },
+    {
+        id: 'erasy',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        groupId: 'group3',
+        text: {
+            children: [
+                {
+                    text: 'group3'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [19.580078125, 318.6376953125],
+            [174.275390625, 378.8251953125]
+        ],
+        strokeWidth: 2,
+        fill: '#69b1e4'
+    },
+    {
+        id: 'YcTFs',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: 'group3 包含 group2'
+                }
+            ]
+        },
+        points: [
+            [-275.482421875, 302.318359375],
+            [-138.091796875, 322.318359375]
+        ],
+        autoSize: true
+    },
+    {
+        id: 'ztmWw',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        groupId: 'group2',
+        text: {
+            children: [
+                {
+                    text: 'group2'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-98.814453125, 197.279296875],
+            [55.880859375, 257.466796875]
+        ],
+        strokeWidth: 2,
+        fill: '#e48483'
+    },
+    {
+        id: 'bWiPp',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        groupId: 'group2',
+        text: {
+            children: [
+                {
+                    text: 'group2'
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [139.3486328125, 197.279296875],
+            [294.0439453125, 257.466796875]
+        ],
+        strokeWidth: 2,
+        fill: '#e48483'
+    }
+] as PlaitDrawElement[];
+
+export const mockRotateData: PlaitDrawElement[] = [
+    {
+        id: 'jhETT',
+        type: 'geometry',
+        shape: 'rectangle',
+        angle: 0.26179938779914913,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-1030.04296875, 90.8828125],
+            [-888.55859375, 157.25390625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'xHBRi',
+        type: 'geometry',
+        shape: 'ellipse',
+        angle: 0.26179938779914913,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-773.125, 79.6015625],
+            [-596.98046875, 157.25390625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'rGzmy',
+        type: 'geometry',
+        shape: 'triangle',
+        angle: 0.26179938779914913,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-477.746678637868, 63.45135257428139],
+            [-397.718165112132, 164.65973141009368]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'zsHJk',
+        type: 'geometry',
+        shape: 'twoWayArrow',
+        angle: 0.7853981633974483,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-1035.76171875, 283.5751953125],
+            [-882.83984375, 333.6494140625]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'MXpTt',
+        type: 'geometry',
+        shape: 'cross',
+        angle: 0.7853981633974483,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-745.8359375, 265.3056640625],
+            [-602.85546875, 351.9189453125]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'kpnyW',
+        type: 'geometry',
+        shape: 'roundComment',
+        angle: 0.7853981633974483,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        points: [
+            [-494.71484375, 267.48193359375],
+            [-344.26953125, 355.75146484375]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'SwRcR',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0.26179938779914913,
+        opacity: 1,
+        textHeight: 24,
+        text: {
+            children: [
+                {
+                    text: '测试测试 ： Test',
+                    'font-size': 16
+                }
+            ]
+        },
+        points: [
+            [-215.50390625, 102.0555419921875],
+            [-84.30078125, 126.0555419921875]
+        ],
+        autoSize: true
+    },
+    {
+        id: 'reEQK',
+        type: 'image',
+        angle: 0.7853981633974483,
+        points: [
+            [-223.90771484375, 247.76884450604837],
+            [-40.78662109375, 369.45576486895163]
+        ],
+        url: 'https://cdn-aliyun.pingcode.com/static/site/img/why-pingcode.8922701.png'
+    },
+
+    {
+        id: 'CWwJT',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 24,
+        text: {
+            children: [
+                {
+                    text: '旋转 15 度',
+                    bold: true,
+                    'font-size': 16,
+                    color: '#e03130'
+                }
+            ]
+        },
+        points: [
+            [-1237.798828125, 97.84893798828125],
+            [-1154.970703125, 121.84893798828125]
+        ],
+        autoSize: true
+    },
+    {
+        id: 'YapKc',
+        type: 'geometry',
+        shape: 'text',
+        angle: 0,
+        opacity: 1,
+        textHeight: 24,
+        text: {
+            children: [
+                {
+                    text: '旋转 45 度',
+                    bold: true,
+                    'font-size': 16,
+                    color: '#e03130'
+                }
+            ]
+        },
+        points: [
+            [-1233.25830078125, 288.90362548828125],
+            [-1147.39892578125, 312.90362548828125]
+        ],
+        autoSize: true
+    }
 ] as PlaitDrawElement[];

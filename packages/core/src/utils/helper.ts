@@ -1,3 +1,5 @@
+import { PlaitElement } from "../interfaces";
+
 export function isNullOrUndefined(value: any) {
     return value === null || value === undefined;
 }
@@ -22,4 +24,16 @@ export const RgbaToHEX = (Rgb: string, opacity: number) => {
 
 export function isContextmenu(event: MouseEvent) {
     return event.button === 2;
+}
+
+export function uniqueById(elements: PlaitElement[]) {
+    const uniqueMap = new Map();
+
+    elements.forEach(item => {
+        if (!uniqueMap.has(item.id)) {
+            uniqueMap.set(item.id, item);
+        }
+    });
+
+    return Array.from(uniqueMap.values());
 }

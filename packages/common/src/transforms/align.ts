@@ -1,4 +1,15 @@
-import { C, MERGING, PlaitBoard, Point, RectangleClient, Transforms, getRectangleByElements, getSelectedElements } from '@plait/core';
+import {
+    MERGING,
+    PlaitBoard,
+    PlaitElement,
+    PlaitGroupElement,
+    Point,
+    RectangleClient,
+    Transforms,
+    getElementsInGroup,
+    getHighestSelectedElements,
+    getRectangleByElements
+} from '@plait/core';
 
 export const alignTop = (board: PlaitBoard) => {
     function getOffset(outerRectangle: RectangleClient, rectangle: RectangleClient) {
@@ -47,22 +58,29 @@ export const alignRight = (board: PlaitBoard) => {
 };
 
 function setOffset(board: PlaitBoard, getOffset: (outerRectangle: RectangleClient, rectangle: RectangleClient) => Point) {
-    let elements = getSelectedElements(board);
-    elements = elements.filter(element => board.children.includes(element));
+    const elements = getHighestSelectedElements(board);
     const outerRectangle = getRectangleByElements(board, elements, false);
     elements.forEach(element => {
-        if (!element.points) return;
-        const path = PlaitBoard.findPath(board, element);
+        if (!element.points && !PlaitGroupElement.isGroup(element)) return;
         const rectangle = board.getRectangle(element)!;
         const offset = getOffset(outerRectangle, rectangle);
-        const newPoints = element.points.map(p => [p[0] + offset[0], p[1] + offset[1]]) as Point[];
-        Transforms.setNode(
-            board,
-            {
-                points: newPoints
-            },
-            path
-        );
+        let updateElements: PlaitElement[] = [];
+        if (PlaitGroupElement.isGroup(element)) {
+            updateElements = getElementsInGroup(board, element, true, false);
+        } else if (element.points) {
+            updateElements = [element];
+        }
+        updateElements.forEach(item => {
+            const newPoints = item.points!.map(p => [p[0] + offset[0], p[1] + offset[1]]) as Point[];
+            const path = PlaitBoard.findPath(board, item);
+            Transforms.setNode(
+                board,
+                {
+                    points: newPoints
+                },
+                path
+            );
+        });
         MERGING.set(board, true);
     });
     MERGING.set(board, false);
@@ -79,11 +97,11 @@ export const distributeVertical = (board: PlaitBoard) => {
 const distribute = (board: PlaitBoard, isHorizontal: boolean) => {
     const axis = isHorizontal ? 'x' : 'y';
     const side = isHorizontal ? 'width' : 'height';
-    const selectedElements = getSelectedElements(board).filter(element => board.children.includes(element));
-    const refs = selectedElements.map(element => {
+    const highestSelectedElements = getHighestSelectedElements(board);
+    const refs = highestSelectedElements.map(element => {
         return { element, rectangle: board.getRectangle(element)! };
     });
-    const outerRectangle = getRectangleByElements(board, selectedElements, false);
+    const outerRectangle = getRectangleByElements(board, highestSelectedElements, false);
     const minRectangleRef = refs.sort((a, b) => a.rectangle[axis] - b.rectangle[axis])[0];
     const maxRectangleRef = refs.sort((a, b) => b.rectangle[axis] + b.rectangle[side] - (a.rectangle[axis] + a.rectangle[side]))[0];
     const minIndex = refs.findIndex(ref => ref === minRectangleRef);

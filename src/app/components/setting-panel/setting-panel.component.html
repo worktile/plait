@@ -231,6 +231,7 @@
         <option value="twoWayArrow">twoWayArrow</option>
         <option value="comment">comment</option>
         <option value="roundComment">roundComment</option>
+        <option value="cloud">cloud</option>
     </select>
 </div>
 
@@ -271,6 +272,11 @@
         <option value="hollow-triangle">hollow-triangle</option>
         <option value="single-slash">single-slash</option>
     </select>
+</div>
+
+<div *ngIf="!isSelectedLine && !isSelectedMind" class="property-item rotation-toolbar">
+    <div class="setting-panel-title">旋转角度：</div>
+    <input type="text" [(ngModel)]="angle" [disabled]="setAngleDisabled" (change)="changeAngle()" />
 </div>
 
 <div *ngIf="!isSelectedLine" class="property-item color-setting-toolbar">

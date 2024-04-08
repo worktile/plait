@@ -24,6 +24,13 @@ export const DefaultBasicShapeProperty = {
     strokeWidth: 2
 };
 
+export const DefaultCloudShapeProperty = {
+    width: 120,
+    height: 100,
+    strokeColor: '#333',
+    strokeWidth: 2
+};
+
 export const DefaultTextProperty = {
     width: 36,
     height: 20,
@@ -78,4 +85,8 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.storedData]: DefaultFlowchartProperty
 };
 
-export const REACTION_MARGIN = -4;
+export const LINE_HIT_GEOMETRY_BUFFER = 10;
+
+export const LINE_SNAPPING_BUFFER = 6;
+
+export const LINE_SNAPPING_CONNECTOR_BUFFER = 8;

@@ -7,6 +7,19 @@ const handleDirectionFactors = {
     [Direction.bottom]: { x: 0, y: 1 }
 };
 
+export function getOppositeDirection(direction: Direction) {
+    switch (direction) {
+        case Direction.left:
+            return Direction.right;
+        case Direction.right:
+            return Direction.left;
+        case Direction.top:
+            return Direction.bottom;
+        case Direction.bottom:
+            return Direction.top;
+    }
+}
+
 export function getDirectionByPointOfRectangle(point: PointOfRectangle): Direction | undefined {
     if (point[0] === 0) {
         return Direction.left;
@@ -75,7 +88,7 @@ export function getDirectionFactor(direction: Direction) {
     return handleDirectionFactors[direction];
 }
 
-export function getDirectionFactorByVectorComponent(vectorComponent: number): DirectionFactor {
-    const directionFactor = vectorComponent === 0 ? vectorComponent : vectorComponent / Math.abs(vectorComponent);
+export function getDirectionFactorByDirectionComponent(directionComponent: number): DirectionFactor {
+    const directionFactor = directionComponent === 0 ? directionComponent : directionComponent / Math.abs(directionComponent);
     return directionFactor as DirectionFactor;
 }

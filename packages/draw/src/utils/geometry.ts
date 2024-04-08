@@ -7,9 +7,9 @@ import {
     RectangleClient,
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
+    SNAPPING_STROKE_WIDTH,
     ThemeColorMode,
     Transforms,
-    Vector,
     addSelectedElement,
     clearSelectedElement,
     createG,
@@ -21,6 +21,7 @@ import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from
 import { Element } from 'slate';
 import {
     DefaultBasicShapeProperty,
+    DefaultCloudShapeProperty,
     DefaultFlowchartPropertyMap,
     DefaultTextProperty,
     DrawPointerType,
@@ -32,9 +33,9 @@ import { RESIZE_HANDLE_DIAMETER } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
-import { getShape } from './shape';
+import { getElementShape } from './shape';
 import { createLineElement } from './line/line-basic';
-import { LineMarkerType, LineShape, PlaitShape } from '../interfaces';
+import { LineMarkerType, LineShape, PlaitShapeElement } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 import { getMemorizedLatestByPointer, memorizeLatestShape } from './memorize';
 
@@ -88,39 +89,51 @@ export const getTextRectangle = (element: PlaitGeometry) => {
     };
 };
 
-export const drawBoundMask = (board: PlaitBoard, element: PlaitGeometry) => {
-    const G = createG();
+export const drawBoundReaction = (
+    board: PlaitBoard,
+    element: PlaitGeometry,
+    options: { hasMask: boolean; hasConnector: boolean } = { hasMask: true, hasConnector: true }
+) => {
+    const g = createG();
     const rectangle = RectangleClient.getRectangleByPoints(element.points);
-    const activeRectangle = RectangleClient.inflate(rectangle, ACTIVE_STROKE_WIDTH);
-    const shape = getShape(element);
-    const maskG = drawGeometry(board, activeRectangle, shape, {
+    const activeRectangle = RectangleClient.inflate(rectangle, SNAPPING_STROKE_WIDTH);
+    const shape = getElementShape(element);
+    const strokeG = drawGeometry(board, activeRectangle, shape, {
         stroke: SELECTION_BORDER_COLOR,
-        strokeWidth: 1,
-        fill: SELECTION_FILL_COLOR,
-        fillStyle: 'solid'
+        strokeWidth: SNAPPING_STROKE_WIDTH
     });
-    G.appendChild(maskG);
-    const connectorPoints = getEngine(shape).getConnectorPoints(activeRectangle);
-    connectorPoints.forEach(point => {
-        const circleG = drawCircle(PlaitBoard.getRoughSVG(board), point, 6, {
-            stroke: '#999999',
-            strokeWidth: 1,
-            fill: '#FFF',
+    g.appendChild(strokeG);
+    if (options.hasMask) {
+        const maskG = drawGeometry(board, activeRectangle, shape, {
+            stroke: SELECTION_BORDER_COLOR,
+            strokeWidth: 0,
+            fill: SELECTION_FILL_COLOR,
             fillStyle: 'solid'
         });
-        G.appendChild(circleG);
-    });
-
-    return G;
+        g.appendChild(maskG);
+    }
+    if (options.hasConnector) {
+        const connectorPoints = getEngine(shape).getConnectorPoints(rectangle);
+        connectorPoints.forEach(point => {
+            const circleG = drawCircle(PlaitBoard.getRoughSVG(board), point, 8, {
+                stroke: SELECTION_BORDER_COLOR,
+                strokeWidth: ACTIVE_STROKE_WIDTH,
+                fill: '#FFF',
+                fillStyle: 'solid'
+            });
+            g.appendChild(circleG);
+        });
+    }
+    return g;
 };
 
 export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient, shape: GeometryShapes, options: Options) => {
     return getEngine(shape).draw(board, outerRectangle, options);
 };
 
-export const getNearestPoint = (element: PlaitShape, point: Point) => {
+export const getNearestPoint = (element: PlaitShapeElement, point: Point) => {
     const rectangle = RectangleClient.getRectangleByPoints(element.points);
-    const shape = getShape(element);
+    const shape = getElementShape(element);
     return getEngine(shape).getNearestPoint(rectangle, point);
 };
 
@@ -265,7 +278,7 @@ export const createDefaultFlowchart = (point: Point) => {
     return [startElement, processElement1, decisionElement, processElement2, endElement, line1, line2, line3, line4, line5];
 };
 
-export const getAutoCompletePoints = (element: PlaitShape) => {
+export const getAutoCompletePoints = (element: PlaitShapeElement) => {
     const AutoCompleteMargin = (12 + RESIZE_HANDLE_DIAMETER / 2) * 2;
     let rectangle = RectangleClient.getRectangleByPoints(element.points);
     rectangle = RectangleClient.inflate(rectangle, AutoCompleteMargin);
@@ -300,9 +313,7 @@ export const getTextShapeProperty = (board: PlaitBoard, text: string | Element =
 
 export const getDefaultGeometryPoints = (pointer: DrawPointerType, centerPoint: Point) => {
     const property = getDefaultGeometryProperty(pointer);
-    return RectangleClient.getPoints(
-        RectangleClient.getRectangleByCenterPoint(centerPoint, property.width, property.height)
-    );
+    return RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(centerPoint, property.width, property.height));
 };
 
 export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
@@ -310,15 +321,16 @@ export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
     if (isFlowChart) {
         return getDefaultFlowchartProperty(pointer as FlowchartSymbols);
     } else {
+        if(pointer === BasicShapes.cloud){
+            return DefaultCloudShapeProperty;
+        }
         return DefaultBasicShapeProperty;
     }
 };
 
 export const getDefaultTextPoints = (board: PlaitBoard, centerPoint: Point, fontSize?: number | string) => {
     const property = getTextShapeProperty(board, DefaultTextProperty.text, fontSize);
-    return RectangleClient.getPoints(
-        RectangleClient.getRectangleByCenterPoint(centerPoint, property.width, property.height)
-    );
+    return RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(centerPoint, property.width, property.height));
 };
 
 export const insertElement = (board: PlaitBoard, element: PlaitGeometry) => {

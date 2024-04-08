@@ -4,8 +4,9 @@ import { PlaitElement } from '../interfaces/element';
 import { Ancestor } from '../interfaces/node';
 import { Point, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { depthFirstRecursion } from './tree';
+import { getRectangleByAngle } from './angle';
 
-export interface AlignRef {
+export interface SnapRef {
     deltaX: number;
     deltaY: number;
     g: SVGGElement;
@@ -16,9 +17,9 @@ export interface DistributeRef {
     after: { distance: number; index: number }[];
 }
 
-const ALIGN_TOLERANCE = 2;
+const SNAP_TOLERANCE = 2;
 
-export class AlignReaction {
+export class MovingSnapReaction {
     alignRectangles: RectangleClient[];
 
     constructor(private board: PlaitBoard, private activeElements: PlaitElement[], private activeRectangle: RectangleClient) {
@@ -34,7 +35,7 @@ export class AlignReaction {
                     return;
                 }
                 const rectangle = this.board.getRectangle(node);
-                rectangle && result.push(rectangle);
+                rectangle && result.push(getRectangleByAngle(rectangle, node.angle) || rectangle);
             },
             node => {
                 if (node && (PlaitBoard.isBoard(node) || this.board.isRecursion(node))) {
@@ -48,7 +49,7 @@ export class AlignReaction {
         return result;
     }
 
-    handleAlign(): AlignRef {
+    handleSnapping(): SnapRef {
         const alignRectangles = this.getAlignRectangle();
         const g = createG();
         let alignLines = [];
@@ -62,7 +63,7 @@ export class AlignReaction {
         for (let alignRectangle of alignRectangles) {
             const closestDistances = this.calculateClosestDistances(this.activeRectangle, alignRectangle);
             let canDrawHorizontal = false;
-            if (!isCorrectX && closestDistances.absXDistance < ALIGN_TOLERANCE) {
+            if (!isCorrectX && closestDistances.absXDistance < SNAP_TOLERANCE) {
                 deltaX = closestDistances.xDistance;
                 this.activeRectangle.x -= deltaX;
                 isCorrectX = true;
@@ -121,7 +122,7 @@ export class AlignReaction {
             }
 
             let canDrawVertical = false;
-            if (!isCorrectY && closestDistances.absYDistance < ALIGN_TOLERANCE) {
+            if (!isCorrectY && closestDistances.absYDistance < SNAP_TOLERANCE) {
                 deltaY = closestDistances.yDistance;
                 this.activeRectangle.y -= deltaY;
                 isCorrectY = true;
@@ -291,7 +292,7 @@ export class AlignReaction {
                 //middle
                 let _center = (before[axis] + before[side] + after[axis]) / 2;
                 dif = Math.abs(activeRectangleCenter - _center);
-                if (dif < ALIGN_TOLERANCE) {
+                if (dif < SNAP_TOLERANCE) {
                     distributeDistance = (after[axis] - (before[axis] + before[side]) - this.activeRectangle[side]) / 2;
                     delta = activeRectangleCenter - _center;
                     beforeIndex = i;
@@ -302,7 +303,7 @@ export class AlignReaction {
                 const distanceRight = after[axis] - (before[axis] + before[side]);
                 _center = after[axis] + after[side] + distanceRight + this.activeRectangle[side] / 2;
                 dif = Math.abs(activeRectangleCenter - _center);
-                if (!distributeDistance && dif < ALIGN_TOLERANCE) {
+                if (!distributeDistance && dif < SNAP_TOLERANCE) {
                     distributeDistance = distanceRight;
                     beforeIndex = j;
                     delta = activeRectangleCenter - _center;
@@ -313,7 +314,7 @@ export class AlignReaction {
                 _center = before[axis] - distanceBefore - this.activeRectangle[side] / 2;
                 dif = Math.abs(activeRectangleCenter - _center);
 
-                if (!distributeDistance && dif < ALIGN_TOLERANCE) {
+                if (!distributeDistance && dif < SNAP_TOLERANCE) {
                     distributeDistance = distanceBefore;
                     afterIndex = i;
                     delta = activeRectangleCenter - _center;

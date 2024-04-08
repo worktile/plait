@@ -23,7 +23,7 @@ export const CommentEngine: ShapeEngine = {
         setStrokeLinecap(polygon, 'round');
         return polygon;
     },
-    isHit(rectangle: RectangleClient, point: Point) {
+    isInsidePoint(rectangle: RectangleClient, point: Point) {
         const parallelogramPoints = getCommentPoints(rectangle);
         return isPointInPolygon(point, parallelogramPoints);
     },

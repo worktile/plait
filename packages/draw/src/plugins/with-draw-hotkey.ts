@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, getSelectedElements } from '@plait/core';
+import { PlaitBoard, PlaitElement, getHitElementByPoint, getSelectedElements, toHostPoint, toViewBoxPoint } from '@plait/core';
 import { isVirtualKey, isSpaceHotkey, isDelete } from '@plait/common';
 import { GeometryComponent } from '../geometry.component';
 import { PlaitDrawElement } from '../interfaces';
@@ -29,10 +29,13 @@ export const withDrawHotkey = (board: PlaitBoard) => {
 
     board.dblClick = (event: MouseEvent) => {
         event.preventDefault();
-        const geometries = getSelectedGeometryElements(board);
-        if (!PlaitBoard.isReadonly(board) && geometries.length === 1) {
-            const component = PlaitElement.getComponent(geometries[0]) as GeometryComponent;
-            component.editText();
+        if (!PlaitBoard.isReadonly(board)) {
+            const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+            const hitElement = getHitElementByPoint(board, point);
+            if (hitElement && PlaitDrawElement.isGeometry(hitElement)) {
+                const component = PlaitElement.getComponent(hitElement) as GeometryComponent;
+                component.editText();
+            }
         }
         dblClick(event);
     };
