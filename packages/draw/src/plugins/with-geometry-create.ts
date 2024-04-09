@@ -165,7 +165,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             const activeRectangle = RectangleClient.getRectangleByPoints(points);
             const resizeSnapReaction = new ResizeSnapReaction(board, []);
             const [x, y] = getUnitVectorByPointAndPoint(start, movingPoint);
-            const resizeAlignRef = resizeSnapReaction.handleResizeSnap({
+            const resizeSnapRef = resizeSnapReaction.handleResizeSnap({
                 resizePoints: points,
                 activeRectangle,
                 directionFactors: [getDirectionFactorByDirectionComponent(x), getDirectionFactorByDirectionComponent(y)],
@@ -173,9 +173,9 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
                 isFromCorner: true,
                 isCreate: true
             });
-            alignG = resizeAlignRef.alignG;
+            alignG = resizeSnapRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
-            points = normalizeShapePoints(resizeAlignRef.activePoints as [Point, Point], isShift);
+            points = normalizeShapePoints(resizeSnapRef.activePoints as [Point, Point], isShift);
             temporaryElement = createDefaultGeometry(board, points, pointer as GeometryShapes);
             geometryGenerator.processDrawing(temporaryElement, geometryShapeG);
             PlaitBoard.getElementActiveHost(board).append(geometryShapeG);

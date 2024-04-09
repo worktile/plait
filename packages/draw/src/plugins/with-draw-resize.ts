@@ -101,7 +101,7 @@ export function withDrawResize(board: PlaitBoard) {
                 resizeState.endPoint = rotateEndPoint;
             }
 
-            const resizeAlignRef = getResizeSnapRef(
+            const resizeSnapRef = getResizeSnapRef(
                 board,
                 resizeRef,
                 resizeState,
@@ -112,14 +112,14 @@ export function withDrawResize(board: PlaitBoard) {
                 isAspectRatio,
                 isFromCorner
             );
-            resizeActivePoints = resizeAlignRef.activePoints;
-            alignG = resizeAlignRef.alignG;
+            resizeActivePoints = resizeSnapRef.activePoints;
+            alignG = resizeSnapRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
 
             if (bulkRotationRef) {
                 const boundingBoxCornerPoints = RectangleClient.getPoints(resizeRef.rectangle!);
                 const resizedBoundingBoxCornerPoints = boundingBoxCornerPoints.map(p => {
-                    return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+                    return movePointByZoomAndOriginPoint(p, originPoint, resizeSnapRef.xZoom, resizeSnapRef.yZoom);
                 });
                 const newBoundingBox = RectangleClient.getRectangleByPoints(resizedBoundingBoxCornerPoints);
 
@@ -149,7 +149,7 @@ export function withDrawResize(board: PlaitBoard) {
                 if (bulkRotationRef) {
                     const reversedPoints = rotatedDataPoints(target.points, centerPoint, -bulkRotationRef.angle);
                     points = reversedPoints.map((p: Point) => {
-                        return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+                        return movePointByZoomAndOriginPoint(p, originPoint, resizeSnapRef.xZoom, resizeSnapRef.yZoom);
                     }) as [Point, Point];
                     const adjustTargetPoints = points.map(p => [
                         p[0] + bulkRotationRef!.offsetX,
@@ -165,12 +165,12 @@ export function withDrawResize(board: PlaitBoard) {
                             board,
                             target.points,
                             originPoint,
-                            resizeAlignRef.xZoom,
-                            resizeAlignRef.yZoom
+                            resizeSnapRef.xZoom,
+                            resizeSnapRef.yZoom
                         );
                     } else {
                         points = target.points.map(p => {
-                            return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+                            return movePointByZoomAndOriginPoint(p, originPoint, resizeSnapRef.xZoom, resizeSnapRef.yZoom);
                         });
                     }
                 }
@@ -190,8 +190,8 @@ export function withDrawResize(board: PlaitBoard) {
                         const newCenterPoint = movePointByZoomAndOriginPoint(
                             centerPoint,
                             originPoint,
-                            resizeAlignRef.xZoom,
-                            resizeAlignRef.yZoom
+                            resizeSnapRef.xZoom,
+                            resizeSnapRef.yZoom
                         );
                         const newTargetRectangle = RectangleClient.getRectangleByCenterPoint(
                             newCenterPoint,

@@ -64,7 +64,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
             const isAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
             const handleIndex = getIndexByResizeHandle(resizeRef.handle);
             const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, handleIndex, resizeRef.rectangle!);
-            const resizeAlignRef = getResizeSnapRef(
+            const resizeSnapRef = getResizeSnapRef(
                 board,
                 resizeRef,
                 resizeState,
@@ -75,9 +75,9 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 isAspectRatio,
                 isFromCorner
             );
-            alignG = resizeAlignRef.alignG;
+            alignG = resizeSnapRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
-            let points = resizeAlignRef.activePoints as [Point, Point];
+            let points = resizeSnapRef.activePoints as [Point, Point];
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);

@@ -25,12 +25,12 @@ import { PlaitDrawElement } from '../interfaces';
 const debugKey = 'debug:plait:align-for-geometry';
 export const debugGenerator = createDebugGenerator(debugKey);
 
-export interface ResizeAlignDelta {
+export interface ResizeSnapDelta {
     deltaX: number;
     deltaY: number;
 }
 
-export interface SnapRef extends ResizeAlignDelta {
+export interface SnapRef extends ResizeSnapDelta {
     xZoom: number;
     yZoom: number;
     activePoints: Point[];
@@ -46,7 +46,7 @@ export interface ResizeSnapOptions {
     directionFactors: DirectionFactors;
     isFromCorner: boolean;
     isAspectRatio: boolean;
-    elementPoints?: Point[];
+    originDataPoints?: Point[];
     originPoint?: Point;
     handlePoint?: Point;
     isCreate?: boolean;
@@ -85,26 +85,26 @@ export class ResizeSnapReaction {
         return elements.map(item => getRectangleByAngle(this.board.getRectangle(item)!, item.angle) || this.board.getRectangle(item)!);
     }
 
-    getSnapRef(resizeAlignDelta: ResizeAlignDelta, resizeSnapOptions: ResizeSnapOptions): SnapRef {
-        const { deltaX, deltaY } = resizeAlignDelta;
+    getSnapRef(resizeSnapDelta: ResizeSnapDelta, resizeSnapOptions: ResizeSnapOptions): SnapRef {
+        const { deltaX, deltaY } = resizeSnapDelta;
         const { resizePoints, isCreate } = resizeSnapOptions;
         const newResizePoints: Point[] = [resizePoints[0], [resizePoints[1][0] + deltaX, resizePoints[1][1] + deltaY]];
         let activePoints = newResizePoints;
         let xZoom = 0;
         let yZoom = 0;
         if (!isCreate) {
-            const { originPoint, handlePoint, isFromCorner, isAspectRatio, elementPoints } = resizeSnapOptions;
+            const { originPoint, handlePoint, isFromCorner, isAspectRatio, originDataPoints } = resizeSnapOptions;
             const resizeZoom = getResizeZoom(newResizePoints, originPoint!, handlePoint!, isFromCorner, isAspectRatio);
             xZoom = resizeZoom.xZoom;
             yZoom = resizeZoom.yZoom;
-            activePoints = elementPoints!.map(p => {
+            activePoints = originDataPoints!.map(p => {
                 return movePointByZoomAndOriginPoint(p, originPoint!, xZoom, yZoom);
             }) as [Point, Point];
             if (this.angle) {
                 activePoints = resetPointsAfterResize(
-                    RectangleClient.getRectangleByPoints(elementPoints!),
+                    RectangleClient.getRectangleByPoints(originDataPoints!),
                     RectangleClient.getRectangleByPoints(activePoints),
-                    RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(elementPoints!)),
+                    RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(originDataPoints!)),
                     RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(activePoints)),
                     this.angle
                 );
@@ -121,7 +121,7 @@ export class ResizeSnapReaction {
     }
 
     getEqualLineDelta(resizeSnapOptions: ResizeSnapOptions) {
-        let equalLineDelta: ResizeAlignDelta = {
+        let equalLineDelta: ResizeSnapDelta = {
             deltaX: 0,
             deltaY: 0
         };
@@ -178,7 +178,7 @@ export class ResizeSnapReaction {
     }
 
     getAlignLineDelta(resizeSnapOptions: ResizeSnapOptions) {
-        let alignLineDelta: ResizeAlignDelta = {
+        let alignLineDelta: ResizeSnapDelta = {
             deltaX: 0,
             deltaY: 0
         };
@@ -453,17 +453,17 @@ export function getResizeSnapRef(
     const { xZoom, yZoom } = getResizeZoom(resizePoints, originPoint, handlePoint, isFromCorner, isAspectRatio);
 
     let activeElements: PlaitElement[];
-    let elementPoints: Point[] = [];
+    let originDataPoints: Point[] = [];
     if (Array.isArray(resizeRef.element)) {
         activeElements = resizeRef.element;
         const rectangle = getRectangleByElements(board, resizeRef.element, false);
-        elementPoints = RectangleClient.getPoints(rectangle);
+        originDataPoints = RectangleClient.getPoints(rectangle);
     } else {
         activeElements = [resizeRef.element];
-        elementPoints = resizeRef.element.points;
+        originDataPoints = resizeRef.element.points;
     }
 
-    const points = elementPoints.map(p => {
+    const points = originDataPoints.map(p => {
         return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
     }) as [Point, Point];
     const activeRectangle =
@@ -475,7 +475,7 @@ export function getResizeSnapRef(
 
     return resizeSnapReaction.handleResizeSnap({
         resizePoints,
-        elementPoints,
+        originDataPoints,
         activeRectangle,
         originPoint,
         handlePoint,
