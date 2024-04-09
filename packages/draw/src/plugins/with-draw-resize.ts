@@ -33,7 +33,7 @@ import {
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getResizeSnapRefOptions, ResizeSnapReaction } from '../utils/resize-snap';
+import { getResizeSnapRefOptions, handleResizeSnap } from '../utils/resize-snap';
 
 const debugKey = 'debug:plait:resize-for-rotation';
 const debugGenerator = createDebugGenerator(debugKey);
@@ -100,7 +100,6 @@ export function withDrawResize(board: PlaitBoard) {
                 resizeState.startPoint = rotatedStartPoint;
                 resizeState.endPoint = rotateEndPoint;
             }
-
             const resizeSnapRefOptions = getResizeSnapRefOptions(
                 board,
                 resizeRef,
@@ -112,8 +111,7 @@ export function withDrawResize(board: PlaitBoard) {
                 isAspectRatio,
                 isFromCorner
             );
-            const resizeSnapReaction = new ResizeSnapReaction(board, resizeRef.element);
-            const resizeSnapRef = resizeSnapReaction.handleResizeSnap(resizeSnapRefOptions);
+            const resizeSnapRef = handleResizeSnap(board, resizeRef.element, resizeSnapRefOptions);
             resizeActivePoints = resizeSnapRef.activePoints;
             alignG = resizeSnapRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);

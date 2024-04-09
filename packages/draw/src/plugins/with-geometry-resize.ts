@@ -5,9 +5,7 @@ import {
     Point,
     RectangleClient,
     Transforms,
-    getRectangleByAngle,
     getSelectedElements,
-    getSelectionAngle,
     rotateAntiPointsByElement
 } from '@plait/core';
 import { PlaitGeometry } from '../interfaces/geometry';
@@ -15,10 +13,8 @@ import {
     ResizeRef,
     ResizeState,
     WithResizeOptions,
-    getDirectionFactorByDirectionComponent,
     getFirstTextManage,
     getIndexByResizeHandle,
-    getUnitVectorByPointAndPoint,
     isCornerHandle,
     normalizeShapePoints,
     withResize
@@ -29,8 +25,8 @@ import { GeometryComponent } from '../geometry.component';
 import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOriginPoint } from './with-draw-resize';
-import { getResizeSnapRefOptions, ResizeSnapReaction } from '../utils/resize-snap';
+import { getResizeOriginPointAndHandlePoint } from './with-draw-resize';
+import { getResizeSnapRefOptions, handleResizeSnap } from '../utils/resize-snap';
 
 export const withGeometryResize = (board: PlaitBoard) => {
     let alignG: SVGGElement | null;
@@ -79,8 +75,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 isAspectRatio,
                 isFromCorner
             );
-            const resizeSnapReaction = new ResizeSnapReaction(board, [resizeRef.element]);
-            const resizeSnapRef = resizeSnapReaction.handleResizeSnap(resizeSnapRefOptions);
+            const resizeSnapRef = handleResizeSnap(board, [resizeRef.element], resizeSnapRefOptions);
             alignG = resizeSnapRef.alignG;
             PlaitBoard.getElementActiveHost(board).append(alignG);
             let points = resizeSnapRef.activePoints as [Point, Point];

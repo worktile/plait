@@ -21,7 +21,7 @@ import {
 import { TextManage } from '@plait/text';
 import { isKeyHotkey } from 'is-hotkey';
 import { NgZone } from '@angular/core';
-import { ResizeSnapReaction } from '../utils/resize-snap';
+import { handleResizeSnap } from '../utils/resize-snap';
 
 export interface FakeCreateTextRef {
     g: SVGGElement;
@@ -163,9 +163,8 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         if (start && pointer !== BasicShapes.text) {
             let points: [Point, Point] = normalizeShapePoints([start, movingPoint], isShift);
             const activeRectangle = RectangleClient.getRectangleByPoints(points);
-            const resizeSnapReaction = new ResizeSnapReaction(board, []);
             const [x, y] = getUnitVectorByPointAndPoint(start, movingPoint);
-            const resizeSnapRef = resizeSnapReaction.handleResizeSnap({
+            const resizeSnapRef = handleResizeSnap(board, [], {
                 resizePoints: points,
                 activeRectangle,
                 directionFactors: [getDirectionFactorByDirectionComponent(x), getDirectionFactorByDirectionComponent(y)],
