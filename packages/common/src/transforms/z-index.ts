@@ -1,38 +1,28 @@
-import {
-    CoreTransforms,
-    PlaitBoard,
-    PlaitElement,
-    RectangleClient,
-    Transforms,
-    addSelectedElement,
-    getRectangleByElements,
-    getSelectedElements
-} from '@plait/core';
+import { CoreTransforms, PlaitBoard, PlaitElement, Transforms, addSelectedElement, getSelectedElements } from '@plait/core';
 import { arrayToMap, findIndex, findLastIndex } from '../utils';
-
-// export const bringForward = (board: PlaitBoard) => {
-//     const selectElement
-// };
-//  moveToTop
-//  moveToBottom
-//  moveUp
-//  moveDown
 
 export const moveToTop = () => {};
 
 export const moveToBottom = () => {};
 
 export const moveUp = (board: PlaitBoard) => {
-    // const selectedElements = getSelectedElements(board);
-    // const rectangle = getRectangleByElements(board, selectedElements, false);
-    // const points = RectangleClient.getPoints(rectangle);
-    const elements = shiftElementsByOne(board, 'right');
-    // board.children = elements;
-    // board.onChange();
+    const selectedElementIds = getSelectedElements(board).map(item => item.id);
+    const { elements, group } = shiftElementsByOne(board, 'right');
+    // group.forEach(item => {
+    //     console.log(item);
+    //     Transforms.moveNode(board, [item[0]], [item[1] + 1]);
+    // });
     CoreTransforms.removeElements(board, board.children);
-    elements.forEach(item => {
-        Transforms.insertNode(board, item, [board.children.length]);
-    });
+    setTimeout(() => {
+        elements.forEach(item => {
+            Transforms.insertNode(board, item, [board.children.length]);
+        });
+        board.children.forEach(item => {
+            if (selectedElementIds.includes(item.id)) {
+                addSelectedElement(board, item);
+            }
+        });
+    }, 0);
 };
 
 export const moveDown = (board: PlaitBoard) => {
@@ -48,11 +38,14 @@ const shiftElementsByOne = (board: PlaitBoard, direction: 'left' | 'right') => {
         groupedIndices = groupedIndices.reverse();
     }
     let elements = [...board.children];
+    let leadingIndex = -1;
+    let targetIndex = -1;
+    let group: number[][] = [];
     groupedIndices.forEach((indices, i) => {
-        const leadingIndex = indices[0];
+        leadingIndex = indices[0];
         const trailingIndex = indices[indices.length - 1];
         const boundaryIndex = direction === 'left' ? leadingIndex : trailingIndex;
-        const targetIndex = getTargetIndex(board, boundaryIndex, direction);
+        targetIndex = getTargetIndex(board, boundaryIndex, direction);
         if (targetIndex === -1 || boundaryIndex === targetIndex) {
             return;
         }
@@ -62,13 +55,18 @@ const shiftElementsByOne = (board: PlaitBoard, direction: 'left' | 'right') => {
             direction === 'left' ? elements.slice(targetIndex, leadingIndex) : elements.slice(trailingIndex + 1, targetIndex + 1);
         const trailingElements = direction === 'left' ? elements.slice(trailingIndex + 1) : elements.slice(targetIndex + 1);
 
+        console.log(trailingIndex, targetIndex);
         elements =
             direction === 'left'
                 ? [...leadingElements, ...targetElements, ...displacedElements, ...trailingElements]
                 : [...leadingElements, ...displacedElements, ...targetElements, ...trailingElements];
+        group.push([trailingIndex, targetIndex]);
     });
 
-    return elements;
+    return {
+        elements,
+        group
+    };
 };
 
 /**
@@ -143,3 +141,5 @@ const getTargetIndex = (board: PlaitBoard, boundaryIndex: number, direction: 'le
 
     return candidateIndex;
 };
+
+export const ZIndexTransforms = { moveUp, moveDown, moveToTop, moveToBottom };
