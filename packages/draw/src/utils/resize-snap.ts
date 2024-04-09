@@ -437,7 +437,7 @@ function getNearestAlignRectangle(alignRectangles: RectangleClient[], activeRect
     return nearestRectangle;
 }
 
-export function getResizeSnapRef(
+export function getResizeSnapRefOptions(
     board: PlaitBoard,
     resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>,
     resizeState: ResizeState,
@@ -447,7 +447,7 @@ export function getResizeSnapRef(
     },
     isAspectRatio: boolean,
     isFromCorner: boolean
-): ResizeSnapRef {
+): ResizeSnapOptions {
     const { originPoint, handlePoint } = resizeOriginPointAndHandlePoint;
     const resizePoints: Point[] = [resizeState.startPoint, resizeState.endPoint];
     const { xZoom, yZoom } = getResizeZoom(resizePoints, originPoint, handlePoint, isFromCorner, isAspectRatio);
@@ -469,11 +469,9 @@ export function getResizeSnapRef(
     const activeRectangle =
         getRectangleByAngle(RectangleClient.getRectangleByPoints(points), getSelectionAngle(activeElements)) ||
         RectangleClient.getRectangleByPoints(points);
-    const resizeSnapReaction = new ResizeSnapReaction(board, activeElements);
     const resizeHandlePoint = movePointByZoomAndOriginPoint(handlePoint, originPoint, xZoom, yZoom);
     const [x, y] = getUnitVectorByPointAndPoint(originPoint, resizeHandlePoint);
-
-    return resizeSnapReaction.handleResizeSnap({
+    return {
         resizePoints,
         originDataPoints,
         activeRectangle,
@@ -482,5 +480,5 @@ export function getResizeSnapRef(
         directionFactors: [getDirectionFactorByDirectionComponent(x), getDirectionFactorByDirectionComponent(y)],
         isAspectRatio,
         isFromCorner
-    });
+    };
 }
