@@ -108,15 +108,15 @@ export function getSnapResizingRefOptions(
 export function getSnapResizingRef(board: PlaitBoard, activeElements: PlaitElement[], resizeSnapOptions: ResizeSnapOptions): ResizeSnapRef {
     const snapG = createG();
     const snapRectangles = getSnapRectangles(board, activeElements);
-    let snapLineDelta = getEqualLineDelta(snapRectangles, resizeSnapOptions);
+    let snapLineDelta = getIsometricLineDelta(snapRectangles, resizeSnapOptions);
     if (snapLineDelta.deltaX === 0 && snapLineDelta.deltaY === 0) {
         snapLineDelta = getSnapPointDelta(snapRectangles, resizeSnapOptions);
     }
     const angle = getSelectionAngle(activeElements);
     const activePointAndZoom = getActivePointAndZoom(snapLineDelta, resizeSnapOptions, angle);
-    const equalLinesG = drawEqualSnapLines(board, activePointAndZoom.activePoints, snapRectangles, resizeSnapOptions, angle);
+    const isometricLinesG = drawIsometricSnapLines(board, activePointAndZoom.activePoints, snapRectangles, resizeSnapOptions, angle);
     const pointLinesG = drawPointSnapLines(board, activePointAndZoom.activePoints, snapRectangles, resizeSnapOptions, angle);
-    snapG.append(equalLinesG, pointLinesG);
+    snapG.append(isometricLinesG, pointLinesG);
     return { ...activePointAndZoom, ...snapLineDelta, snapG };
 }
 
@@ -191,8 +191,8 @@ function getActivePointAndZoom(resizeSnapDelta: SnapDelta, resizeSnapOptions: Re
     };
 }
 
-function getEqualLineDelta(pointRectangles: RectangleClient[], resizeSnapOptions: ResizeSnapOptions) {
-    let equalLineDelta: SnapDelta = {
+function getIsometricLineDelta(pointRectangles: RectangleClient[], resizeSnapOptions: ResizeSnapOptions) {
+    let isometricLineDelta: SnapDelta = {
         deltaX: 0,
         deltaY: 0
     };
@@ -200,27 +200,27 @@ function getEqualLineDelta(pointRectangles: RectangleClient[], resizeSnapOptions
     const widthSnapRectangle = pointRectangles.find(item => Math.abs(item.width - activeRectangle.width) < SNAP_TOLERANCE);
     if (widthSnapRectangle) {
         const deltaWidth = widthSnapRectangle.width - activeRectangle.width;
-        equalLineDelta.deltaX = deltaWidth * resizeSnapOptions.directionFactors[0];
+        isometricLineDelta.deltaX = deltaWidth * resizeSnapOptions.directionFactors[0];
         if (isAspectRatio) {
             const deltaHeight = deltaWidth / (activeRectangle.width / activeRectangle.height);
-            equalLineDelta.deltaY = deltaHeight * resizeSnapOptions.directionFactors[1];
-            return equalLineDelta;
+            isometricLineDelta.deltaY = deltaHeight * resizeSnapOptions.directionFactors[1];
+            return isometricLineDelta;
         }
     }
     const heightSnapRectangle = pointRectangles.find(item => Math.abs(item.height - activeRectangle.height) < SNAP_TOLERANCE);
     if (heightSnapRectangle) {
         const deltaHeight = heightSnapRectangle.height - activeRectangle.height;
-        equalLineDelta.deltaY = deltaHeight * resizeSnapOptions.directionFactors[1];
+        isometricLineDelta.deltaY = deltaHeight * resizeSnapOptions.directionFactors[1];
         if (isAspectRatio) {
             const deltaWidth = deltaHeight * (activeRectangle.width / activeRectangle.height);
-            equalLineDelta.deltaX = deltaWidth * resizeSnapOptions.directionFactors[0];
-            return equalLineDelta;
+            isometricLineDelta.deltaX = deltaWidth * resizeSnapOptions.directionFactors[0];
+            return isometricLineDelta;
         }
     }
-    return equalLineDelta;
+    return isometricLineDelta;
 }
 
-function getEqualLinePoints(rectangle: RectangleClient, isHorizontal: boolean): Point[] {
+function getIsometricLinePoints(rectangle: RectangleClient, isHorizontal: boolean): Point[] {
     return isHorizontal
         ? [
               [rectangle.x, rectangle.y - EQUAL_SPACING],
@@ -342,15 +342,15 @@ function drawPointSnapLines(
     return drawDashedLines(board, pointLinePoints);
 }
 
-function drawEqualSnapLines(
+function drawIsometricSnapLines(
     board: PlaitBoard,
     activePoints: Point[],
     pointRectangles: RectangleClient[],
     resizeSnapOptions: ResizeSnapOptions,
     angle: number
 ) {
-    let widthEqualPoints = [];
-    let heightEqualPoints = [];
+    let widthIsometricPoints = [];
+    let heightIsometricPoints = [];
 
     const drawHorizontalLine = resizeSnapOptions.directionFactors[0] !== 0 || resizeSnapOptions.isAspectRatio;
     const drawVerticalLine = resizeSnapOptions.directionFactors[1] !== 0 || resizeSnapOptions.isAspectRatio;
@@ -359,21 +359,21 @@ function drawEqualSnapLines(
         RectangleClient.getRectangleByPoints(activePoints);
     for (let pointRectangle of pointRectangles) {
         if (activeRectangle.width === pointRectangle.width && drawHorizontalLine) {
-            widthEqualPoints.push(getEqualLinePoints(pointRectangle, true));
+            widthIsometricPoints.push(getIsometricLinePoints(pointRectangle, true));
         }
         if (activeRectangle.height === pointRectangle.height && drawVerticalLine) {
-            heightEqualPoints.push(getEqualLinePoints(pointRectangle, false));
+            heightIsometricPoints.push(getIsometricLinePoints(pointRectangle, false));
         }
     }
-    if (widthEqualPoints.length && drawHorizontalLine) {
-        widthEqualPoints.push(getEqualLinePoints(activeRectangle, true));
+    if (widthIsometricPoints.length && drawHorizontalLine) {
+        widthIsometricPoints.push(getIsometricLinePoints(activeRectangle, true));
     }
-    if (heightEqualPoints.length && drawVerticalLine) {
-        heightEqualPoints.push(getEqualLinePoints(activeRectangle, false));
+    if (heightIsometricPoints.length && drawVerticalLine) {
+        heightIsometricPoints.push(getIsometricLinePoints(activeRectangle, false));
     }
 
-    const equalLines = [...widthEqualPoints, ...heightEqualPoints];
-    return drawSolidLines(board, equalLines);
+    const isometricLines = [...widthIsometricPoints, ...heightIsometricPoints];
+    return drawSolidLines(board, isometricLines);
 }
 
 const getTripleAxis = (rectangle: RectangleClient, isHorizontal: boolean): TripleSnapAxis => {
