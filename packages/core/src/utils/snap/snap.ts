@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, Point, SELECTION_BORDER_COLOR } from '../../interfaces';
+import { PlaitBoard, PlaitElement, Point, RectangleClient, SELECTION_BORDER_COLOR } from '../../interfaces';
 import { getRectangleByAngle } from '../angle';
 import { createG } from '../dom';
 import { findElements } from '../element';
@@ -17,7 +17,17 @@ export interface GapSnapRef {
     after: { distance: number; index: number }[];
 }
 
+type PointSnapLineRef = {
+    axis: number;
+    isHorizontal: boolean;
+    pointRectangles: RectangleClient[];
+};
+
+type TripleSnapAxis = [number, number, number];
+
 export const SNAP_TOLERANCE = 2;
+
+const SNAP_SPACING = 24;
 
 export function getSnapRectangles(board: PlaitBoard, activeElements: PlaitElement[]) {
     const elements = findElements(board, {
@@ -38,6 +48,148 @@ export function getBarPoint(point: Point, isHorizontal: boolean) {
               [point[0] - 4, point[1]],
               [point[0] + 4, point[1]]
           ];
+}
+
+export function getMinPointDelta(pointRectangles: RectangleClient[], axis: number, isHorizontal: boolean) {
+    let delta = SNAP_TOLERANCE;
+    pointRectangles.forEach(item => {
+        const distance = getNearestDelta(axis, item, isHorizontal);
+        if (Math.abs(distance) < Math.abs(delta)) {
+            delta = distance;
+        }
+    });
+    return delta;
+}
+
+export const getNearestDelta = (axis: number, rectangle: RectangleClient, isHorizontal: boolean) => {
+    const pointAxis = getTripleAxis(rectangle, isHorizontal);
+    const deltas = pointAxis.map(item => item - axis);
+    const absDeltas = deltas.map(item => Math.abs(item));
+    const index = absDeltas.indexOf(Math.min(...absDeltas));
+    return deltas[index];
+};
+
+export const getTripleAxis = (rectangle: RectangleClient, isHorizontal: boolean): TripleSnapAxis => {
+    const axis = isHorizontal ? 'x' : 'y';
+    const side = isHorizontal ? 'width' : 'height';
+    return [rectangle[axis], rectangle[axis] + rectangle[side] / 2, rectangle[axis] + rectangle[side]];
+};
+
+export function getNearestPointRectangle(snapRectangles: RectangleClient[], activeRectangle: RectangleClient) {
+    let minDistance = Infinity;
+    let nearestRectangle = snapRectangles[0];
+
+    snapRectangles.forEach(item => {
+        const distance = Math.sqrt(Math.pow(activeRectangle.x - item.x, 2) + Math.pow(activeRectangle.y - item.y, 2));
+        if (distance < minDistance) {
+            minDistance = distance;
+            nearestRectangle = item;
+        }
+    });
+    return nearestRectangle;
+}
+
+export const isSnapPoint = (axis: number, rectangle: RectangleClient, isHorizontal: boolean) => {
+    const pointAxis = getTripleAxis(rectangle, isHorizontal);
+    return pointAxis.includes(axis);
+};
+
+export function drawPointSnapLines(
+    board: PlaitBoard,
+    activeRectangle: RectangleClient,
+    snapRectangles: RectangleClient[],
+    drawHorizontal = true,
+    drawVertical = true
+) {
+    let pointLinePoints: [Point, Point][] = [];
+    const pointAxisX = getTripleAxis(activeRectangle, true);
+    const pointAxisY = getTripleAxis(activeRectangle, false);
+    const pointLineRefs: PointSnapLineRef[] = [
+        {
+            axis: pointAxisX[0],
+            isHorizontal: true,
+            pointRectangles: []
+        },
+        {
+            axis: pointAxisX[2],
+            isHorizontal: true,
+            pointRectangles: []
+        },
+        {
+            axis: pointAxisY[0],
+            isHorizontal: false,
+            pointRectangles: []
+        },
+        {
+            axis: pointAxisY[2],
+            isHorizontal: false,
+            pointRectangles: []
+        }
+    ];
+    for (let index = 0; index < snapRectangles.length; index++) {
+        const element = snapRectangles[index];
+        if (isSnapPoint(pointLineRefs[0].axis, element, pointLineRefs[0].isHorizontal)) {
+            pointLineRefs[0].pointRectangles.push(element);
+        }
+        if (isSnapPoint(pointLineRefs[1].axis, element, pointLineRefs[1].isHorizontal)) {
+            pointLineRefs[1].pointRectangles.push(element);
+        }
+        if (isSnapPoint(pointLineRefs[2].axis, element, pointLineRefs[2].isHorizontal)) {
+            pointLineRefs[2].pointRectangles.push(element);
+        }
+        if (isSnapPoint(pointLineRefs[3].axis, element, pointLineRefs[3].isHorizontal)) {
+            pointLineRefs[3].pointRectangles.push(element);
+        }
+    }
+
+    const setResizePointSnapLine = (axis: number, pointRectangle: RectangleClient, isHorizontal: boolean) => {
+        const boundingRectangle = RectangleClient.inflate(
+            RectangleClient.getBoundingRectangle([activeRectangle, pointRectangle]),
+            SNAP_SPACING
+        );
+        if (isHorizontal) {
+            const pointStart = [axis, boundingRectangle.y] as Point;
+            const pointEnd = [axis, boundingRectangle.y + boundingRectangle.height] as Point;
+            pointLinePoints.push([pointStart, pointEnd]);
+        } else {
+            const pointStart = [boundingRectangle.x, axis] as Point;
+            const pointEnd = [boundingRectangle.x + boundingRectangle.width, axis] as Point;
+            pointLinePoints.push([pointStart, pointEnd]);
+        }
+    };
+    if (drawHorizontal && pointLineRefs[0].pointRectangles.length) {
+        const leftRectangle =
+            pointLineRefs[0].pointRectangles.length === 1
+                ? pointLineRefs[0].pointRectangles[0]
+                : getNearestPointRectangle(pointLineRefs[0].pointRectangles, activeRectangle);
+        setResizePointSnapLine(pointLineRefs[0].axis, leftRectangle, pointLineRefs[0].isHorizontal);
+    }
+
+    if (drawHorizontal && pointLineRefs[1].pointRectangles.length) {
+        const rightRectangle =
+            pointLineRefs[1].pointRectangles.length === 1
+                ? pointLineRefs[1].pointRectangles[0]
+                : getNearestPointRectangle(pointLineRefs[1].pointRectangles, activeRectangle);
+        setResizePointSnapLine(pointLineRefs[1].axis, rightRectangle, pointLineRefs[1].isHorizontal);
+    }
+
+    if (drawVertical && pointLineRefs[2].pointRectangles.length) {
+        const topRectangle =
+            pointLineRefs[2].pointRectangles.length === 1
+                ? pointLineRefs[2].pointRectangles[0]
+                : getNearestPointRectangle(pointLineRefs[2].pointRectangles, activeRectangle);
+        setResizePointSnapLine(pointLineRefs[2].axis, topRectangle, pointLineRefs[2].isHorizontal);
+    }
+
+    if (drawVertical && pointLineRefs[3].pointRectangles.length) {
+        const bottomRectangle =
+            pointLineRefs[3].pointRectangles.length === 1
+                ? pointLineRefs[3].pointRectangles[0]
+                : getNearestPointRectangle(pointLineRefs[3].pointRectangles, activeRectangle);
+        setResizePointSnapLine(pointLineRefs[3].axis, bottomRectangle, pointLineRefs[3].isHorizontal);
+    }
+
+    return drawDashedLines(board, pointLinePoints);
 }
 
 export function drawDashedLines(board: PlaitBoard, lines: [Point, Point][]) {

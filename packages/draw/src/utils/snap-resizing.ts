@@ -21,7 +21,9 @@ import {
     getSnapRectangles,
     SNAP_TOLERANCE,
     drawSolidLines,
-    drawDashedLines
+    drawPointSnapLines,
+    getTripleAxis,
+    getMinPointDelta
 } from '@plait/core';
 import { getResizeZoom, movePointByZoomAndOriginPoint } from '../plugins/with-draw-resize';
 import { PlaitDrawElement } from '../interfaces';
@@ -47,17 +49,7 @@ export interface ResizeSnapOptions {
     isCreate?: boolean;
 }
 
-type TripleSnapAxis = [number, number, number];
-
-type ResizePointSnapLineRef = {
-    axis: number;
-    isHorizontal: boolean;
-    pointRectangles: RectangleClient[];
-};
-
 const EQUAL_SPACING = 10;
-
-const SNAP_SPACING = 24;
 
 export function getSnapResizingRefOptions(
     board: PlaitBoard,
@@ -115,12 +107,12 @@ export function getSnapResizingRef(board: PlaitBoard, activeElements: PlaitEleme
     const angle = getSelectionAngle(activeElements);
     const activePointAndZoom = getActivePointAndZoom(snapLineDelta, resizeSnapOptions, angle);
     const isometricLinesG = drawIsometricSnapLines(board, activePointAndZoom.activePoints, snapRectangles, resizeSnapOptions, angle);
-    const pointLinesG = drawPointSnapLines(board, activePointAndZoom.activePoints, snapRectangles, resizeSnapOptions, angle);
+    const pointLinesG = drawResizingPointSnapLines(board, activePointAndZoom.activePoints, snapRectangles, resizeSnapOptions, angle);
     snapG.append(isometricLinesG, pointLinesG);
     return { ...activePointAndZoom, ...snapLineDelta, snapG };
 }
 
-function getSnapPointDelta(pointRectangles: RectangleClient[], resizeSnapOptions: ResizeSnapOptions) {
+function getSnapPointDelta(snapRectangles: RectangleClient[], resizeSnapOptions: ResizeSnapOptions) {
     let pointLineDelta: SnapDelta = {
         deltaX: 0,
         deltaY: 0
@@ -132,7 +124,7 @@ function getSnapPointDelta(pointRectangles: RectangleClient[], resizeSnapOptions
     if (drawHorizontal) {
         const xSnapAxis = getTripleAxis(activeRectangle, true);
         const pointX = directionFactors[0] === -1 ? xSnapAxis[0] : xSnapAxis[2];
-        const deltaX = getMinPointDelta(pointRectangles, pointX, true);
+        const deltaX = getMinPointDelta(snapRectangles, pointX, true);
         if (Math.abs(deltaX) < SNAP_TOLERANCE) {
             pointLineDelta.deltaX = deltaX;
             if (pointLineDelta.deltaX !== 0 && isAspectRatio) {
@@ -145,7 +137,7 @@ function getSnapPointDelta(pointRectangles: RectangleClient[], resizeSnapOptions
     if (drawVertical) {
         const ySnapAxis = getTripleAxis(activeRectangle, false);
         const pointY = directionFactors[1] === -1 ? ySnapAxis[0] : ySnapAxis[2];
-        const deltaY = getMinPointDelta(pointRectangles, pointY, false);
+        const deltaY = getMinPointDelta(snapRectangles, pointY, false);
         if (Math.abs(deltaY) < SNAP_TOLERANCE) {
             pointLineDelta.deltaY = deltaY;
             if (pointLineDelta.deltaY !== 0 && isAspectRatio) {
@@ -191,13 +183,13 @@ function getActivePointAndZoom(resizeSnapDelta: SnapDelta, resizeSnapOptions: Re
     };
 }
 
-function getIsometricLineDelta(pointRectangles: RectangleClient[], resizeSnapOptions: ResizeSnapOptions) {
+function getIsometricLineDelta(snapRectangles: RectangleClient[], resizeSnapOptions: ResizeSnapOptions) {
     let isometricLineDelta: SnapDelta = {
         deltaX: 0,
         deltaY: 0
     };
     const { isAspectRatio, activeRectangle } = resizeSnapOptions;
-    const widthSnapRectangle = pointRectangles.find(item => Math.abs(item.width - activeRectangle.width) < SNAP_TOLERANCE);
+    const widthSnapRectangle = snapRectangles.find(item => Math.abs(item.width - activeRectangle.width) < SNAP_TOLERANCE);
     if (widthSnapRectangle) {
         const deltaWidth = widthSnapRectangle.width - activeRectangle.width;
         isometricLineDelta.deltaX = deltaWidth * resizeSnapOptions.directionFactors[0];
@@ -207,7 +199,7 @@ function getIsometricLineDelta(pointRectangles: RectangleClient[], resizeSnapOpt
             return isometricLineDelta;
         }
     }
-    const heightSnapRectangle = pointRectangles.find(item => Math.abs(item.height - activeRectangle.height) < SNAP_TOLERANCE);
+    const heightSnapRectangle = snapRectangles.find(item => Math.abs(item.height - activeRectangle.height) < SNAP_TOLERANCE);
     if (heightSnapRectangle) {
         const deltaHeight = heightSnapRectangle.height - activeRectangle.height;
         isometricLineDelta.deltaY = deltaHeight * resizeSnapOptions.directionFactors[1];
@@ -232,120 +224,28 @@ function getIsometricLinePoints(rectangle: RectangleClient, isHorizontal: boolea
           ];
 }
 
-function drawPointSnapLines(
+function drawResizingPointSnapLines(
     board: PlaitBoard,
     activePoints: Point[],
-    pointRectangles: RectangleClient[],
+    snapRectangles: RectangleClient[],
     resizeSnapOptions: ResizeSnapOptions,
     angle: number
 ) {
     debugGenerator.isDebug() && debugGenerator.clear();
-    let pointLinePoints: [Point, Point][] = [];
     const activeRectangle =
         getRectangleByAngle(RectangleClient.getRectangleByPoints(activePoints), angle) ||
         RectangleClient.getRectangleByPoints(activePoints);
-    debugGenerator.isDebug() && debugGenerator.drawRectangle(board, activeRectangle, { stroke: 'green' });
-    const pointAxisX = getTripleAxis(activeRectangle, true);
-    const pointAxisY = getTripleAxis(activeRectangle, false);
-    const pointLineRefs: ResizePointSnapLineRef[] = [
-        {
-            axis: pointAxisX[0],
-            isHorizontal: true,
-            pointRectangles: []
-        },
-        {
-            axis: pointAxisX[2],
-            isHorizontal: true,
-            pointRectangles: []
-        },
-        {
-            axis: pointAxisY[0],
-            isHorizontal: false,
-            pointRectangles: []
-        },
-        {
-            axis: pointAxisY[2],
-            isHorizontal: false,
-            pointRectangles: []
-        }
-    ];
-    const setResizePointSnapLine = (axis: number, pointRectangle: RectangleClient, isHorizontal: boolean) => {
-        const boundingRectangle = RectangleClient.inflate(
-            RectangleClient.getBoundingRectangle([activeRectangle, pointRectangle]),
-            SNAP_SPACING
-        );
-        if (isHorizontal) {
-            const pointStart = [axis, boundingRectangle.y] as Point;
-            const pointEnd = [axis, boundingRectangle.y + boundingRectangle.height] as Point;
-            pointLinePoints.push([pointStart, pointEnd]);
-        } else {
-            const pointStart = [boundingRectangle.x, axis] as Point;
-            const pointEnd = [boundingRectangle.x + boundingRectangle.width, axis] as Point;
-            pointLinePoints.push([pointStart, pointEnd]);
-        }
-    };
 
     const { isAspectRatio, directionFactors } = resizeSnapOptions;
     const drawHorizontal = directionFactors[0] !== 0 || isAspectRatio;
     const drawVertical = directionFactors[1] !== 0 || isAspectRatio;
-
-    for (let index = 0; index < pointRectangles.length; index++) {
-        const element = pointRectangles[index];
-        debugGenerator.isDebug() && debugGenerator.drawRectangle(board, element);
-
-        if (isSnapPoint(pointLineRefs[0].axis, element, pointLineRefs[0].isHorizontal)) {
-            pointLineRefs[0].pointRectangles.push(element);
-        }
-        if (isSnapPoint(pointLineRefs[1].axis, element, pointLineRefs[1].isHorizontal)) {
-            pointLineRefs[1].pointRectangles.push(element);
-        }
-        if (isSnapPoint(pointLineRefs[2].axis, element, pointLineRefs[2].isHorizontal)) {
-            pointLineRefs[2].pointRectangles.push(element);
-        }
-        if (isSnapPoint(pointLineRefs[3].axis, element, pointLineRefs[3].isHorizontal)) {
-            pointLineRefs[3].pointRectangles.push(element);
-        }
-    }
-
-    if (drawHorizontal && pointLineRefs[0].pointRectangles.length) {
-        const leftRectangle =
-            pointLineRefs[0].pointRectangles.length === 1
-                ? pointLineRefs[0].pointRectangles[0]
-                : getNearestPointRectangle(pointLineRefs[0].pointRectangles, activeRectangle);
-        setResizePointSnapLine(pointLineRefs[0].axis, leftRectangle, pointLineRefs[0].isHorizontal);
-    }
-
-    if (drawHorizontal && pointLineRefs[1].pointRectangles.length) {
-        const rightRectangle =
-            pointLineRefs[1].pointRectangles.length === 1
-                ? pointLineRefs[1].pointRectangles[0]
-                : getNearestPointRectangle(pointLineRefs[1].pointRectangles, activeRectangle);
-        setResizePointSnapLine(pointLineRefs[1].axis, rightRectangle, pointLineRefs[1].isHorizontal);
-    }
-
-    if (drawVertical && pointLineRefs[2].pointRectangles.length) {
-        const topRectangle =
-            pointLineRefs[2].pointRectangles.length === 1
-                ? pointLineRefs[2].pointRectangles[0]
-                : getNearestPointRectangle(pointLineRefs[2].pointRectangles, activeRectangle);
-        setResizePointSnapLine(pointLineRefs[2].axis, topRectangle, pointLineRefs[2].isHorizontal);
-    }
-
-    if (drawVertical && pointLineRefs[3].pointRectangles.length) {
-        const bottomRectangle =
-            pointLineRefs[3].pointRectangles.length === 1
-                ? pointLineRefs[3].pointRectangles[0]
-                : getNearestPointRectangle(pointLineRefs[3].pointRectangles, activeRectangle);
-        setResizePointSnapLine(pointLineRefs[3].axis, bottomRectangle, pointLineRefs[3].isHorizontal);
-    }
-
-    return drawDashedLines(board, pointLinePoints);
+    return drawPointSnapLines(board, activeRectangle, snapRectangles, drawHorizontal, drawVertical);
 }
 
 function drawIsometricSnapLines(
     board: PlaitBoard,
     activePoints: Point[],
-    pointRectangles: RectangleClient[],
+    snapRectangles: RectangleClient[],
     resizeSnapOptions: ResizeSnapOptions,
     angle: number
 ) {
@@ -357,12 +257,12 @@ function drawIsometricSnapLines(
     const activeRectangle =
         getRectangleByAngle(RectangleClient.getRectangleByPoints(activePoints), angle) ||
         RectangleClient.getRectangleByPoints(activePoints);
-    for (let pointRectangle of pointRectangles) {
-        if (activeRectangle.width === pointRectangle.width && drawHorizontalLine) {
-            widthIsometricPoints.push(getIsometricLinePoints(pointRectangle, true));
+    for (let snapRectangle of snapRectangles) {
+        if (activeRectangle.width === snapRectangle.width && drawHorizontalLine) {
+            widthIsometricPoints.push(getIsometricLinePoints(snapRectangle, true));
         }
-        if (activeRectangle.height === pointRectangle.height && drawVerticalLine) {
-            heightIsometricPoints.push(getIsometricLinePoints(pointRectangle, false));
+        if (activeRectangle.height === snapRectangle.height && drawVerticalLine) {
+            heightIsometricPoints.push(getIsometricLinePoints(snapRectangle, false));
         }
     }
     if (widthIsometricPoints.length && drawHorizontalLine) {
@@ -376,47 +276,3 @@ function drawIsometricSnapLines(
     return drawSolidLines(board, isometricLines);
 }
 
-const getTripleAxis = (rectangle: RectangleClient, isHorizontal: boolean): TripleSnapAxis => {
-    const axis = isHorizontal ? 'x' : 'y';
-    const side = isHorizontal ? 'width' : 'height';
-    return [rectangle[axis], rectangle[axis] + rectangle[side] / 2, rectangle[axis] + rectangle[side]];
-};
-
-const isSnapPoint = (axis: number, rectangle: RectangleClient, isHorizontal: boolean) => {
-    const pointAxis = getTripleAxis(rectangle, isHorizontal);
-    return pointAxis.includes(axis);
-};
-
-const getNearestDelta = (axis: number, rectangle: RectangleClient, isHorizontal: boolean) => {
-    const pointAxis = getTripleAxis(rectangle, isHorizontal);
-    const deltas = pointAxis.map(item => item - axis);
-    const absDeltas = deltas.map(item => Math.abs(item));
-    const index = absDeltas.indexOf(Math.min(...absDeltas));
-    return deltas[index];
-};
-
-function getMinPointDelta(pointRectangles: RectangleClient[], axis: number, isHorizontal: boolean) {
-    let delta = SNAP_TOLERANCE;
-
-    pointRectangles.forEach(item => {
-        const distance = getNearestDelta(axis, item, isHorizontal);
-        if (Math.abs(distance) < Math.abs(delta)) {
-            delta = distance;
-        }
-    });
-    return delta;
-}
-
-function getNearestPointRectangle(pointRectangles: RectangleClient[], activeRectangle: RectangleClient) {
-    let minDistance = Infinity;
-    let nearestRectangle = pointRectangles[0];
-
-    pointRectangles.forEach(item => {
-        const distance = Math.sqrt(Math.pow(activeRectangle.x - item.x, 2) + Math.pow(activeRectangle.y - item.y, 2));
-        if (distance < minDistance) {
-            minDistance = distance;
-            nearestRectangle = item;
-        }
-    });
-    return nearestRectangle;
-}
