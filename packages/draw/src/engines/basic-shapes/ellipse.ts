@@ -1,54 +1,8 @@
-import {
-    PlaitBoard,
-    Point,
-    PointOfRectangle,
-    RectangleClient,
-    getEllipseTangentSlope,
-    getVectorFromPointAndSlope,
-    isPointInEllipse
-} from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
-import { Options } from 'roughjs/bin/core';
-import { getTextRectangle } from '../../utils';
+import { Point } from '@plait/core';
+import { ShapeEngine } from '../../interfaces';
+import { createCircleEngine } from './circle';
 
-export const EllipseEngine: ShapeEngine = {
-    draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
-        const centerPoint = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
-        const rs = PlaitBoard.getRoughSVG(board);
-        return rs.ellipse(centerPoint[0], centerPoint[1], rectangle.width, rectangle.height, { ...options, fillStyle: 'solid' });
-    },
-    isInsidePoint(rectangle: RectangleClient, point: Point) {
-        const centerPoint: Point = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
-        return isPointInEllipse(point, centerPoint, rectangle.width / 2, rectangle.height / 2);
-    },
-    getCornerPoints(rectangle: RectangleClient) {
-        return RectangleClient.getEdgeCenterPoints(rectangle);
-    },
-    getNearestPoint(rectangle: RectangleClient, point: Point) {
-        const centerPoint: Point = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
-        return getNearestPointBetweenPointAndEllipse(point, centerPoint, rectangle.width / 2, rectangle.height / 2);
-    },
-    getTangentVectorByConnectionPoint(rectangle: RectangleClient, pointOfRectangle: PointOfRectangle) {
-        const connectionPoint = RectangleClient.getConnectionPoint(rectangle, pointOfRectangle);
-        const centerPoint: Point = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
-        const point = [connectionPoint[0] - centerPoint[0], -(connectionPoint[1] - centerPoint[1])];
-        const a = rectangle.width / 2;
-        const b = rectangle.height / 2;
-        const slope = getEllipseTangentSlope(point[0], point[1], a, b) as any;
-        const vector = getVectorFromPointAndSlope(point[0], point[1], slope);
-        return vector;
-    },
-    getConnectorPoints(rectangle: RectangleClient) {
-        return RectangleClient.getEdgeCenterPoints(rectangle);
-    },
-    getTextRectangle(element: PlaitGeometry) {
-        const rectangle = getTextRectangle(element);
-        const width = rectangle.width;
-        rectangle.width = (rectangle.width * 3) / 4;
-        rectangle.x += width / 8;
-        return rectangle;
-    }
-};
+export const EllipseEngine: ShapeEngine = createCircleEngine();
 
 export function getNearestPointBetweenPointAndEllipse(point: Point, center: Point, rx: number, ry: number, rotation: number = 0): Point {
     const rectangleClient = {

@@ -38,7 +38,9 @@ export enum FlowchartSymbols {
     manualLoop = 'manualLoop',
     merge = 'merge',
     delay = 'delay',
-    storedData = 'storedData'
+    storedData = 'storedData',
+    or = 'or',
+    summingJunction = 'summingJunction'
 }
 
 export type GeometryShapes = BasicShapes | FlowchartSymbols;

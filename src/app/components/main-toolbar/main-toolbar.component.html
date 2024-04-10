@@ -268,6 +268,16 @@
         >
             <ng-template [ngTemplateOutlet]="connector"></ng-template>
         </a>
+        <a class="action-item" [ngClass]="{ active: isPointer(FlowchartSymbols.or) }" (mousedown)="setPointer($event, FlowchartSymbols.or)">
+            <ng-template [ngTemplateOutlet]="or"></ng-template>
+        </a>
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.summingJunction) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.summingJunction)"
+        >
+            <ng-template [ngTemplateOutlet]="summingJunction"></ng-template>
+        </a>
     </div>
 </div>
 
@@ -1118,6 +1128,49 @@
                 id="形状结合"
                 fill="#999999"
             />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #or>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/或者</title>
+        <g id="1.Base基础/1.icon图标/11.editor/或者" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M8,1 C11.8659932,1 15,4.13400675 15,8 C15,11.8659932 11.8659932,15 8,15 C4.13400675,15 1,11.8659932 1,8 C1,4.13400675 4.13400675,1 8,1 Z M7.4,8.6 L2.23077413,8.60112665 C2.51121735,11.3246498 4.67621172,13.4893457 7.39987137,13.7693285 L7.4,8.6 Z M13.7692259,8.60112665 L8.6,8.6 L8.60112665,13.7692259 C11.3243171,13.4888169 13.4888169,11.3243171 13.7692259,8.60112665 Z M2.23067146,7.39987137 L7.4,7.4 L7.39987137,2.23067146 C4.67587904,2.51068847 2.51068847,4.67587904 2.23067146,7.39987137 Z M8.60112665,2.23077413 L8.6,7.4 L13.7693285,7.39987137 C13.4893457,4.67621172 11.3246498,2.51121735 8.60112665,2.23077413 Z"
+                id="形状结合"
+                fill="#999999"
+            ></path>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #summingJunction>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/汇总连接</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/汇总连接" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M8,1 C11.8659932,1 15,4.13400675 15,8 C15,11.8659932 11.8659932,15 8,15 C4.13400675,15 1,11.8659932 1,8 C1,4.13400675 4.13400675,1 8,1 Z M7.4,8.6 L2.23077413,8.60112665 C2.51121735,11.3246498 4.67621172,13.4893457 7.39987137,13.7693285 L7.4,8.6 Z M13.7692259,8.60112665 L8.6,8.6 L8.60112665,13.7692259 C11.3243171,13.4888169 13.4888169,11.3243171 13.7692259,8.60112665 Z M2.23067146,7.39987137 L7.4,7.4 L7.39987137,2.23067146 C4.67587904,2.51068847 2.51068847,4.67587904 2.23067146,7.39987137 Z M8.60112665,2.23077413 L8.6,7.4 L13.7693285,7.39987137 C13.4893457,4.67621172 11.3246498,2.51121735 8.60112665,2.23077413 Z"
+                id="形状结合"
+                fill="#999999"
+                transform="translate(8.000000, 8.000000) rotate(-45.000000) translate(-8.000000, -8.000000) "
+            ></path>
         </g>
     </svg>
 </ng-template>

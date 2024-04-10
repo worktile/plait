@@ -26,6 +26,8 @@ import { MergeEngine } from './flowchart/merge';
 import { DelayEngine } from './flowchart/delay';
 import { StoredDataEngine } from './flowchart/stored-data';
 import { CloudEngine } from './basic-shapes/cloud';
+import { OrEngine } from './flowchart/or';
+import { SummingJunctionEngine } from './flowchart/summing-junction';
 
 export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [BasicShapes.rectangle]: RectangleEngine,
@@ -60,6 +62,8 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [FlowchartSymbols.merge]: MergeEngine,
     [FlowchartSymbols.delay]: DelayEngine,
     [FlowchartSymbols.storedData]: StoredDataEngine,
+    [FlowchartSymbols.or]: OrEngine,
+    [FlowchartSymbols.summingJunction]: SummingJunctionEngine
 };
 
 export const getEngine = (shape: GeometryShapes) => {
