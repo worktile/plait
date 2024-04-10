@@ -29,3 +29,4 @@ export * from './group';
 export * from './selection';
 export * from './angle';
 export * from './fragment';
+export * from './snap/snap';

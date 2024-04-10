@@ -21,7 +21,7 @@ import {
 import { TextManage } from '@plait/text';
 import { isKeyHotkey } from 'is-hotkey';
 import { NgZone } from '@angular/core';
-import { handleResizeSnap } from '../utils/resize-snap';
+import { getSnapResizingRef } from '../utils/snap-resizing';
 
 export interface FakeCreateTextRef {
     g: SVGGElement;
@@ -121,7 +121,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
 
     let isShift = false;
 
-    let alignG: SVGGElement | null;
+    let snapG: SVGGElement | null;
 
     board.keyDown = (event: KeyboardEvent) => {
         isShift = isKeyHotkey('shift', event);
@@ -159,12 +159,12 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         const geometryGenerator = new GeometryShapeGenerator(board);
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
-        alignG?.remove();
+        snapG?.remove();
         if (start && pointer !== BasicShapes.text) {
             let points: [Point, Point] = normalizeShapePoints([start, movingPoint], isShift);
             const activeRectangle = RectangleClient.getRectangleByPoints(points);
             const [x, y] = getUnitVectorByPointAndPoint(start, movingPoint);
-            const resizeSnapRef = handleResizeSnap(board, [], {
+            const resizeSnapRef = getSnapResizingRef(board, [], {
                 resizePoints: points,
                 activeRectangle,
                 directionFactors: [getDirectionFactorByDirectionComponent(x), getDirectionFactorByDirectionComponent(y)],
@@ -172,8 +172,8 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
                 isFromCorner: true,
                 isCreate: true
             });
-            alignG = resizeSnapRef.alignG;
-            PlaitBoard.getElementActiveHost(board).append(alignG);
+            snapG = resizeSnapRef.snapG;
+            PlaitBoard.getElementActiveHost(board).append(snapG);
             points = normalizeShapePoints(resizeSnapRef.activePoints as [Point, Point], isShift);
             temporaryElement = createDefaultGeometry(board, points, pointer as GeometryShapes);
             geometryGenerator.processDrawing(temporaryElement, geometryShapeG);
@@ -200,7 +200,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             insertElement(board, temporaryElement);
         }
 
-        alignG?.remove();
+        snapG?.remove();
         geometryShapeG?.remove();
         geometryShapeG = null;
         start = null;

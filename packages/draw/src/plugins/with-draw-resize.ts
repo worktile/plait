@@ -33,7 +33,7 @@ import {
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getResizeSnapRefOptions, handleResizeSnap } from '../utils/resize-snap';
+import { getSnapResizingRefOptions, getSnapResizingRef } from '../utils/snap-resizing';
 
 const debugKey = 'debug:plait:resize-for-rotation';
 const debugGenerator = createDebugGenerator(debugKey);
@@ -47,7 +47,7 @@ export interface BulkRotationRef {
 
 export function withDrawResize(board: PlaitBoard) {
     const { afterChange, drawActiveRectangle } = board;
-    let alignG: SVGGElement | null;
+    let snapG: SVGGElement | null;
     let handleG: SVGGElement | null;
     let needCustomActiveRectangle = false;
     let resizeActivePoints: Point[] | null = null;
@@ -76,7 +76,7 @@ export function withDrawResize(board: PlaitBoard) {
             return null;
         },
         onResize: (resizeRef: ResizeRef<PlaitDrawElement[]>, resizeState: ResizeState) => {
-            alignG?.remove();
+            snapG?.remove();
             debugGenerator.isDebug() && debugGenerator.clear();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || isFromCorner;
@@ -100,7 +100,7 @@ export function withDrawResize(board: PlaitBoard) {
                 resizeState.startPoint = rotatedStartPoint;
                 resizeState.endPoint = rotateEndPoint;
             }
-            const resizeSnapRefOptions = getResizeSnapRefOptions(
+            const resizeSnapRefOptions = getSnapResizingRefOptions(
                 board,
                 resizeRef,
                 resizeState,
@@ -111,10 +111,10 @@ export function withDrawResize(board: PlaitBoard) {
                 isAspectRatio,
                 isFromCorner
             );
-            const resizeSnapRef = handleResizeSnap(board, resizeRef.element, resizeSnapRefOptions);
+            const resizeSnapRef = getSnapResizingRef(board, resizeRef.element, resizeSnapRefOptions);
             resizeActivePoints = resizeSnapRef.activePoints;
-            alignG = resizeSnapRef.alignG;
-            PlaitBoard.getElementActiveHost(board).append(alignG);
+            snapG = resizeSnapRef.snapG;
+            PlaitBoard.getElementActiveHost(board).append(snapG);
 
             if (bulkRotationRef) {
                 const boundingBoxCornerPoints = RectangleClient.getPoints(resizeRef.rectangle!);
@@ -204,8 +204,8 @@ export function withDrawResize(board: PlaitBoard) {
             });
         },
         afterResize: (resizeRef: ResizeRef<PlaitDrawElement[]>) => {
-            alignG?.remove();
-            alignG = null;
+            snapG?.remove();
+            snapG = null;
             if (needCustomActiveRectangle) {
                 needCustomActiveRectangle = false;
                 resizeActivePoints = null;
