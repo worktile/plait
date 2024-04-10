@@ -99,7 +99,8 @@ export function drawPointSnapLines(
     activeRectangle: RectangleClient,
     snapRectangles: RectangleClient[],
     drawHorizontal = true,
-    drawVertical = true
+    drawVertical = true,
+    snapMiddle = false
 ) {
     let pointLinePoints: [Point, Point][] = [];
     const pointAxisX = getTripleAxis(activeRectangle, true);
@@ -111,12 +112,22 @@ export function drawPointSnapLines(
             pointRectangles: []
         },
         {
+            axis: pointAxisX[1],
+            isHorizontal: true,
+            pointRectangles: []
+        },
+        {
             axis: pointAxisX[2],
             isHorizontal: true,
             pointRectangles: []
         },
         {
             axis: pointAxisY[0],
+            isHorizontal: false,
+            pointRectangles: []
+        },
+        {
+            axis: pointAxisY[1],
             isHorizontal: false,
             pointRectangles: []
         },
@@ -139,6 +150,12 @@ export function drawPointSnapLines(
         }
         if (isSnapPoint(pointLineRefs[3].axis, element, pointLineRefs[3].isHorizontal)) {
             pointLineRefs[3].pointRectangles.push(element);
+        }
+        if (isSnapPoint(pointLineRefs[4].axis, element, pointLineRefs[4].isHorizontal)) {
+            pointLineRefs[4].pointRectangles.push(element);
+        }
+        if (isSnapPoint(pointLineRefs[5].axis, element, pointLineRefs[5].isHorizontal)) {
+            pointLineRefs[5].pointRectangles.push(element);
         }
     }
 
@@ -164,29 +181,44 @@ export function drawPointSnapLines(
                 : getNearestPointRectangle(pointLineRefs[0].pointRectangles, activeRectangle);
         setResizePointSnapLine(pointLineRefs[0].axis, leftRectangle, pointLineRefs[0].isHorizontal);
     }
-
-    if (drawHorizontal && pointLineRefs[1].pointRectangles.length) {
-        const rightRectangle =
+    if (drawHorizontal && snapMiddle && pointLineRefs[1].pointRectangles.length) {
+        const middleRectangle =
             pointLineRefs[1].pointRectangles.length === 1
                 ? pointLineRefs[1].pointRectangles[0]
                 : getNearestPointRectangle(pointLineRefs[1].pointRectangles, activeRectangle);
-        setResizePointSnapLine(pointLineRefs[1].axis, rightRectangle, pointLineRefs[1].isHorizontal);
+        setResizePointSnapLine(pointLineRefs[1].axis, middleRectangle, pointLineRefs[1].isHorizontal);
     }
 
-    if (drawVertical && pointLineRefs[2].pointRectangles.length) {
-        const topRectangle =
+    if (drawHorizontal && pointLineRefs[2].pointRectangles.length) {
+        const rightRectangle =
             pointLineRefs[2].pointRectangles.length === 1
                 ? pointLineRefs[2].pointRectangles[0]
                 : getNearestPointRectangle(pointLineRefs[2].pointRectangles, activeRectangle);
-        setResizePointSnapLine(pointLineRefs[2].axis, topRectangle, pointLineRefs[2].isHorizontal);
+        setResizePointSnapLine(pointLineRefs[2].axis, rightRectangle, pointLineRefs[2].isHorizontal);
     }
 
     if (drawVertical && pointLineRefs[3].pointRectangles.length) {
-        const bottomRectangle =
+        const topRectangle =
             pointLineRefs[3].pointRectangles.length === 1
                 ? pointLineRefs[3].pointRectangles[0]
                 : getNearestPointRectangle(pointLineRefs[3].pointRectangles, activeRectangle);
-        setResizePointSnapLine(pointLineRefs[3].axis, bottomRectangle, pointLineRefs[3].isHorizontal);
+        setResizePointSnapLine(pointLineRefs[3].axis, topRectangle, pointLineRefs[3].isHorizontal);
+    }
+
+    if (drawVertical && snapMiddle && pointLineRefs[4].pointRectangles.length) {
+        const middleRectangle =
+            pointLineRefs[4].pointRectangles.length === 1
+                ? pointLineRefs[4].pointRectangles[0]
+                : getNearestPointRectangle(pointLineRefs[4].pointRectangles, activeRectangle);
+        setResizePointSnapLine(pointLineRefs[4].axis, middleRectangle, pointLineRefs[4].isHorizontal);
+    }
+
+    if (drawVertical && pointLineRefs[5].pointRectangles.length) {
+        const rightRectangle =
+            pointLineRefs[5].pointRectangles.length === 1
+                ? pointLineRefs[5].pointRectangles[0]
+                : getNearestPointRectangle(pointLineRefs[5].pointRectangles, activeRectangle);
+        setResizePointSnapLine(pointLineRefs[5].axis, rightRectangle, pointLineRefs[5].isHorizontal);
     }
 
     return drawDashedLines(board, pointLinePoints);

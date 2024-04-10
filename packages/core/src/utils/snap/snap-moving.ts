@@ -73,7 +73,7 @@ function drawMovingPointSnapLines(
     snapRectangles: RectangleClient[]
 ) {
     const newActiveRectangle = updateActiveRectangle(snapDelta, activeRectangle);
-    return drawPointSnapLines(board, newActiveRectangle, snapRectangles);
+    return drawPointSnapLines(board, newActiveRectangle, snapRectangles, true, true, true);
 }
 
 function getGapSnapLinesAndDelta(
