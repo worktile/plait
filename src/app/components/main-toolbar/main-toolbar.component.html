@@ -268,6 +268,14 @@
         >
             <ng-template [ngTemplateOutlet]="connector"></ng-template>
         </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.offPage) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.offPage)"
+        >
+            <ng-template [ngTemplateOutlet]="offPage"></ng-template>
+        </a>
     </div>
 </div>
 
@@ -997,6 +1005,26 @@
                 id="形状结合"
                 fill="#999999"
             />
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #offPage>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/页外连接符</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/页外连接符" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M14.5,2 C14.7761424,2 15,2.22385763 15,2.5 L15,8.77166426 C15,8.9166849 14.9370358,9.05456117 14.8274386,9.14953188 L8.02040186,15.0481237 L1.17365238,9.1496027 C1.06340035,9.05461983 1,8.91631649 1,8.77079242 L1,2.5 C1,2.22385763 1.22385763,2 1.5,2 L14.5,2 Z M13.8,3.2 L2.2,3.2 L2.2,8.45 L8.018,13.462 L13.8,8.451 L13.8,3.2 Z"
+                id="矩形"
+                fill="#999999"
+            ></path>
         </g>
     </svg>
 </ng-template>
