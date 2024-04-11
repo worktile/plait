@@ -169,14 +169,13 @@ export const Path = {
 
                     // If the old and new path are the same, it's a no-op.
                     if (Path.equals(op, onp)) {
-                        return;
+                        return p;
                     }
 
                     if (Path.isAncestor(op, p) || Path.equals(op, p)) {
                         const copy = onp.slice();
-                        // op.length <= onp.length is different for slate
-                        // resolve drag from [0, 0] to [0, 3] issue
-                        if (Path.endsBefore(op, onp) && op.length <= onp.length) {
+
+                        if (Path.endsBefore(op, onp) && op.length < onp.length) {
                             copy[op.length - 1] -= 1;
                         }
 
