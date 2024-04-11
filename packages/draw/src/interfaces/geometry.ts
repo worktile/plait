@@ -38,6 +38,7 @@ export enum FlowchartSymbols {
     manualLoop = 'manualLoop',
     merge = 'merge',
     delay = 'delay',
+    offPage = 'offPage',
     storedData = 'storedData'
 }
 
