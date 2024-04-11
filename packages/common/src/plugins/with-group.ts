@@ -203,7 +203,6 @@ const getRemoveGroups = (board: PlaitBoard) => {
             }
         }
     });
-    console.log(removeGroups);
     return removeGroups;
 };
 
