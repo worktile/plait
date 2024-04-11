@@ -1,4 +1,4 @@
-import { Direction, Point } from '@plait/core';
+import { Direction } from '@plait/core';
 import { getStraightPoints } from './get-straight-points';
 import { getElbowPoints } from './get-elbow-points';
 
@@ -60,7 +60,6 @@ describe('utils', () => {
         };
         const points = getElbowPoints(params);
         expect(points.length).toBe(7);
-        console.log(points);
         expect(points[0]).toEqual([20, 5]);
         expect(points[1]).toEqual([20, 40]);
         expect(points[2]).toEqual([30, 40]);
