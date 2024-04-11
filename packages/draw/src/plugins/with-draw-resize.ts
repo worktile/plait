@@ -268,30 +268,30 @@ export const getResizeOriginPointAndHandlePoint = (board: PlaitBoard, handleInde
 };
 
 export const getResizeZoom = (
-    resizePoints: Point[],
-    elementPoint: Point,
+    resizeStartAndEnd: [Point, Point],
+    resizeOriginPoint: Point,
     resizeHandlePoint: Point,
     isFromCorner: boolean,
     isAspectRatio: boolean
 ) => {
-    const [startPoint, endPoint] = resizePoints;
+    const [startPoint, endPoint] = resizeStartAndEnd;
     let xZoom = 0;
     let yZoom = 0;
     if (isFromCorner) {
         if (isAspectRatio) {
             let normalizedOffsetX = Point.getOffsetX(startPoint, endPoint);
-            xZoom = normalizedOffsetX / (resizeHandlePoint[0] - elementPoint[0]);
+            xZoom = normalizedOffsetX / (resizeHandlePoint[0] - resizeOriginPoint[0]);
             yZoom = xZoom;
         } else {
             let normalizedOffsetX = Point.getOffsetX(startPoint, endPoint);
             let normalizedOffsetY = Point.getOffsetY(startPoint, endPoint);
-            xZoom = normalizedOffsetX / (resizeHandlePoint[0] - elementPoint[0]);
-            yZoom = normalizedOffsetY / (resizeHandlePoint[1] - elementPoint[1]);
+            xZoom = normalizedOffsetX / (resizeHandlePoint[0] - resizeOriginPoint[0]);
+            yZoom = normalizedOffsetY / (resizeHandlePoint[1] - resizeOriginPoint[1]);
         }
     } else {
-        const isHorizontal = Point.isHorizontal(elementPoint, resizeHandlePoint, 0.1) || false;
+        const isHorizontal = Point.isHorizontal(resizeOriginPoint, resizeHandlePoint, 0.1) || false;
         let normalizedOffset = isHorizontal ? Point.getOffsetX(startPoint, endPoint) : Point.getOffsetY(startPoint, endPoint);
-        let benchmarkOffset = isHorizontal ? resizeHandlePoint[0] - elementPoint[0] : resizeHandlePoint[1] - elementPoint[1];
+        let benchmarkOffset = isHorizontal ? resizeHandlePoint[0] - resizeOriginPoint[0] : resizeHandlePoint[1] - resizeOriginPoint[1];
         const zoom = normalizedOffset / benchmarkOffset;
         if (isAspectRatio) {
             xZoom = zoom;

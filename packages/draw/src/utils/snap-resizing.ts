@@ -43,7 +43,7 @@ export interface ResizeSnapOptions {
     directionFactors: DirectionFactors;
     isFromCorner: boolean;
     isAspectRatio: boolean;
-    originDataPoints?: Point[];
+    resizeOriginPoint?: Point[];
     originPoint?: Point;
     handlePoint?: Point;
     isCreate?: boolean;
@@ -67,17 +67,17 @@ export function getSnapResizingRefOptions(
     const { xZoom, yZoom } = getResizeZoom(resizePoints, originPoint, handlePoint, isFromCorner, isAspectRatio);
 
     let activeElements: PlaitElement[];
-    let originDataPoints: Point[] = [];
+    let resizeOriginPoint: Point[] = [];
     if (Array.isArray(resizeRef.element)) {
         activeElements = resizeRef.element;
         const rectangle = getRectangleByElements(board, resizeRef.element, false);
-        originDataPoints = RectangleClient.getPoints(rectangle);
+        resizeOriginPoint = RectangleClient.getPoints(rectangle);
     } else {
         activeElements = [resizeRef.element];
-        originDataPoints = resizeRef.element.points;
+        resizeOriginPoint = resizeRef.element.points;
     }
 
-    const points = originDataPoints.map(p => {
+    const points = resizeOriginPoint.map(p => {
         return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
     }) as [Point, Point];
     const activeRectangle =
@@ -87,7 +87,7 @@ export function getSnapResizingRefOptions(
     const [x, y] = getUnitVectorByPointAndPoint(originPoint, resizeHandlePoint);
     return {
         resizePoints,
-        originDataPoints,
+        resizeOriginPoint,
         activeRectangle,
         originPoint,
         handlePoint,
@@ -158,18 +158,18 @@ function getActivePointAndZoom(resizeSnapDelta: SnapDelta, resizeSnapOptions: Re
     let xZoom = 0;
     let yZoom = 0;
     if (!isCreate) {
-        const { originPoint, handlePoint, isFromCorner, isAspectRatio, originDataPoints } = resizeSnapOptions;
+        const { originPoint, handlePoint, isFromCorner, isAspectRatio, resizeOriginPoint } = resizeSnapOptions;
         const resizeZoom = getResizeZoom(newResizePoints, originPoint!, handlePoint!, isFromCorner, isAspectRatio);
         xZoom = resizeZoom.xZoom;
         yZoom = resizeZoom.yZoom;
-        activePoints = originDataPoints!.map(p => {
+        activePoints = resizeOriginPoint!.map(p => {
             return movePointByZoomAndOriginPoint(p, originPoint!, xZoom, yZoom);
         }) as [Point, Point];
         if (angle) {
             activePoints = resetPointsAfterResize(
-                RectangleClient.getRectangleByPoints(originDataPoints!),
+                RectangleClient.getRectangleByPoints(resizeOriginPoint!),
                 RectangleClient.getRectangleByPoints(activePoints),
-                RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(originDataPoints!)),
+                RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(resizeOriginPoint!)),
                 RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(activePoints)),
                 angle
             );
