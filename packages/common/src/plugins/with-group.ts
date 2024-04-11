@@ -167,8 +167,7 @@ const updateElementsGroupId = (group: PlaitGroup, clipboardDataElements: PlaitEl
 };
 
 const getRemoveGroups = (board: PlaitBoard) => {
-    const selectedElements = getSelectedElements(board);
-    const selectedGroups = board.getRelatedFragment([], selectedElements) as PlaitGroup[];
+    const selectedGroups = board.getRelatedFragment([]) as PlaitGroup[];
     const removeGroups = [...selectedGroups];
     const highestSelectedGroups = getHighestSelectedGroups(board);
     const selectedIsolatedElements = getSelectedIsolatedElementsCanAddToGroup(board);
@@ -204,6 +203,7 @@ const getRemoveGroups = (board: PlaitBoard) => {
             }
         }
     });
+    console.log(removeGroups);
     return removeGroups;
 };
 
