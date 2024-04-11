@@ -63,7 +63,7 @@ export function getSnapResizingRefOptions(
     isFromCorner: boolean
 ): ResizeSnapOptions {
     const { originPoint, handlePoint } = resizeOriginPointAndHandlePoint;
-    const resizePoints: Point[] = [resizeState.startPoint, resizeState.endPoint];
+    const resizePoints: [Point, Point] = [resizeState.startPoint, resizeState.endPoint];
     const { xZoom, yZoom } = getResizeZoom(resizePoints, originPoint, handlePoint, isFromCorner, isAspectRatio);
 
     let activeElements: PlaitElement[];
@@ -153,7 +153,7 @@ function getSnapPointDelta(snapRectangles: RectangleClient[], resizeSnapOptions:
 function getActivePointAndZoom(resizeSnapDelta: SnapDelta, resizeSnapOptions: ResizeSnapOptions, angle: number) {
     const { deltaX, deltaY } = resizeSnapDelta;
     const { resizePoints, isCreate } = resizeSnapOptions;
-    const newResizePoints: Point[] = [resizePoints[0], [resizePoints[1][0] + deltaX, resizePoints[1][1] + deltaY]];
+    const newResizePoints: [Point, Point] = [resizePoints[0], [resizePoints[1][0] + deltaX, resizePoints[1][1] + deltaY]];
     let activePoints = newResizePoints;
     let xZoom = 0;
     let yZoom = 0;
