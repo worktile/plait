@@ -39,18 +39,28 @@ export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
 export const removeGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
     const selectedGroups = getHighestSelectedGroups(board, elements);
     if (canRemoveGroup(board)) {
-        selectedGroups.map(group => {
+        selectedGroups.forEach(group => {
             const elementsInGroup = findElements(board, {
                 match: item => item.groupId === group.id,
                 recursion: () => false
             });
-            elementsInGroup.forEach(item => {
-                const path = PlaitBoard.findPath(board, item);
+            elementsInGroup.forEach(element => {
+                const path = PlaitBoard.findPath(board, element);
                 NodeTransforms.setNode(board, { groupId: group.groupId || undefined }, path);
             });
-            const groupPath = PlaitBoard.findPath(board, group);
-            NodeTransforms.removeNode(board, groupPath);
         });
+        selectedGroups
+            .map(group => {
+                const groupPath = PlaitBoard.findPath(board, group);
+                const groupRef = board.pathRef(groupPath);
+                return () => {
+                    groupRef.current && NodeTransforms.removeNode(board, groupRef.current);
+                    groupRef.unref();
+                };
+            })
+            .forEach(action => {
+                action();
+            });
     }
 };
 
