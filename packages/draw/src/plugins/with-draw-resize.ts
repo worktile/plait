@@ -33,7 +33,7 @@ import {
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
-import { getResizeSnapRef } from '../utils/resize-snap';
+import { getSnapResizingRefOptions, getSnapResizingRef } from '../utils/snap-resizing';
 
 const debugKey = 'debug:plait:resize-for-rotation';
 const debugGenerator = createDebugGenerator(debugKey);
@@ -47,7 +47,7 @@ export interface BulkRotationRef {
 
 export function withDrawResize(board: PlaitBoard) {
     const { afterChange, drawActiveRectangle } = board;
-    let alignG: SVGGElement | null;
+    let snapG: SVGGElement | null;
     let handleG: SVGGElement | null;
     let needCustomActiveRectangle = false;
     let resizeActivePoints: Point[] | null = null;
@@ -76,12 +76,13 @@ export function withDrawResize(board: PlaitBoard) {
             return null;
         },
         onResize: (resizeRef: ResizeRef<PlaitDrawElement[]>, resizeState: ResizeState) => {
-            alignG?.remove();
+            snapG?.remove();
             debugGenerator.isDebug() && debugGenerator.clear();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || isFromCorner;
             const centerPoint = RectangleClient.getCenterPoint(resizeRef.rectangle!);
-            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
+            const handleIndex = getIndexByResizeHandle(resizeRef.handle);
+            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, handleIndex, resizeRef.rectangle!);
             const angle = getSelectionAngle(resizeRef.element);
             let bulkRotationRef: BulkRotationRef | undefined;
             if (angle) {
@@ -99,8 +100,7 @@ export function withDrawResize(board: PlaitBoard) {
                 resizeState.startPoint = rotatedStartPoint;
                 resizeState.endPoint = rotateEndPoint;
             }
-
-            const resizeAlignRef = getResizeSnapRef(
+            const resizeSnapRefOptions = getSnapResizingRefOptions(
                 board,
                 resizeRef,
                 resizeState,
@@ -111,14 +111,15 @@ export function withDrawResize(board: PlaitBoard) {
                 isAspectRatio,
                 isFromCorner
             );
-            resizeActivePoints = resizeAlignRef.activePoints;
-            alignG = resizeAlignRef.alignG;
-            PlaitBoard.getElementActiveHost(board).append(alignG);
+            const resizeSnapRef = getSnapResizingRef(board, resizeRef.element, resizeSnapRefOptions);
+            resizeActivePoints = resizeSnapRef.activePoints;
+            snapG = resizeSnapRef.snapG;
+            PlaitBoard.getElementActiveHost(board).append(snapG);
 
             if (bulkRotationRef) {
                 const boundingBoxCornerPoints = RectangleClient.getPoints(resizeRef.rectangle!);
                 const resizedBoundingBoxCornerPoints = boundingBoxCornerPoints.map(p => {
-                    return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+                    return movePointByZoomAndOriginPoint(p, originPoint, resizeSnapRef.xZoom, resizeSnapRef.yZoom);
                 });
                 const newBoundingBox = RectangleClient.getRectangleByPoints(resizedBoundingBoxCornerPoints);
 
@@ -148,7 +149,7 @@ export function withDrawResize(board: PlaitBoard) {
                 if (bulkRotationRef) {
                     const reversedPoints = rotatedDataPoints(target.points, centerPoint, -bulkRotationRef.angle);
                     points = reversedPoints.map((p: Point) => {
-                        return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+                        return movePointByZoomAndOriginPoint(p, originPoint, resizeSnapRef.xZoom, resizeSnapRef.yZoom);
                     }) as [Point, Point];
                     const adjustTargetPoints = points.map(p => [
                         p[0] + bulkRotationRef!.offsetX,
@@ -164,12 +165,12 @@ export function withDrawResize(board: PlaitBoard) {
                             board,
                             target.points,
                             originPoint,
-                            resizeAlignRef.xZoom,
-                            resizeAlignRef.yZoom
+                            resizeSnapRef.xZoom,
+                            resizeSnapRef.yZoom
                         );
                     } else {
                         points = target.points.map(p => {
-                            return movePointByZoomAndOriginPoint(p, originPoint, resizeAlignRef.xZoom, resizeAlignRef.yZoom);
+                            return movePointByZoomAndOriginPoint(p, originPoint, resizeSnapRef.xZoom, resizeSnapRef.yZoom);
                         });
                     }
                 }
@@ -189,8 +190,8 @@ export function withDrawResize(board: PlaitBoard) {
                         const newCenterPoint = movePointByZoomAndOriginPoint(
                             centerPoint,
                             originPoint,
-                            resizeAlignRef.xZoom,
-                            resizeAlignRef.yZoom
+                            resizeSnapRef.xZoom,
+                            resizeSnapRef.yZoom
                         );
                         const newTargetRectangle = RectangleClient.getRectangleByCenterPoint(
                             newCenterPoint,
@@ -203,8 +204,8 @@ export function withDrawResize(board: PlaitBoard) {
             });
         },
         afterResize: (resizeRef: ResizeRef<PlaitDrawElement[]>) => {
-            alignG?.remove();
-            alignG = null;
+            snapG?.remove();
+            snapG = null;
             if (needCustomActiveRectangle) {
                 needCustomActiveRectangle = false;
                 resizeActivePoints = null;
@@ -256,11 +257,10 @@ export function withDrawResize(board: PlaitBoard) {
     return board;
 }
 
-export const getResizeOriginPointAndHandlePoint = (board: PlaitBoard, resizeRef: ResizeRef<PlaitDrawElement | PlaitDrawElement[]>) => {
-    const handleIndex = getIndexByResizeHandle(resizeRef.handle);
+export const getResizeOriginPointAndHandlePoint = (board: PlaitBoard, handleIndex: number, rectangle: RectangleClient) => {
     const symmetricHandleIndex = getSymmetricHandleIndex(board, handleIndex);
-    const originPoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, symmetricHandleIndex);
-    const handlePoint = getResizeHandlePointByIndex(resizeRef.rectangle as RectangleClient, handleIndex);
+    const originPoint = getResizeHandlePointByIndex(rectangle as RectangleClient, symmetricHandleIndex);
+    const handlePoint = getResizeHandlePointByIndex(rectangle as RectangleClient, handleIndex);
     return {
         originPoint,
         handlePoint
@@ -268,14 +268,13 @@ export const getResizeOriginPointAndHandlePoint = (board: PlaitBoard, resizeRef:
 };
 
 export const getResizeZoom = (
-    resizeState: ResizeState,
+    resizeStartAndEnd: [Point, Point],
     resizeOriginPoint: Point,
     resizeHandlePoint: Point,
     isFromCorner: boolean,
     isAspectRatio: boolean
 ) => {
-    const startPoint = resizeState.startPoint;
-    const endPoint = resizeState.endPoint;
+    const [startPoint, endPoint] = resizeStartAndEnd;
     let xZoom = 0;
     let yZoom = 0;
     if (isFromCorner) {
