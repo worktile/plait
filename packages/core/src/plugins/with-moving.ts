@@ -22,7 +22,7 @@ import {
     getRectangleByAngle,
     getSelectionAngle
 } from '../utils';
-import { MovingSnapReaction } from '../utils/moving-snap';
+import { getSnapMovingRef } from '../utils/snap/snap-moving';
 import { PlaitGroupElement, PlaitPointerType, RectangleClient } from '../interfaces';
 import { ACTIVE_MOVING_CLASS_NAME, PRESS_AND_MOVE_BUFFER } from '../constants';
 import { addSelectionWithTemporaryElements } from '../transforms/selection';
@@ -35,7 +35,7 @@ export function withMoving(board: PlaitBoard) {
     let isPreventDefault = false;
     let startPoint: Point | null;
     let activeElements: PlaitElement[] = [];
-    let alignG: SVGGElement | null = null;
+    let snapG: SVGGElement | null = null;
     let activeElementsRectangle: RectangleClient | null = null;
     let selectedTargetElements: PlaitElement[] | null = null;
     let hitTargetElement: PlaitElement | undefined = undefined;
@@ -86,7 +86,7 @@ export function withMoving(board: PlaitBoard) {
             if (!isPreventDefault) {
                 isPreventDefault = true;
             }
-            alignG?.remove();
+            snapG?.remove();
             const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             offsetX = endPoint[0] - startPoint[0];
             offsetY = endPoint[1] - startPoint[1];
@@ -107,17 +107,14 @@ export function withMoving(board: PlaitBoard) {
                         x: activeElementsRectangle.x + offsetX,
                         y: activeElementsRectangle.y + offsetY
                     };
-                    const movingSnapReaction = new MovingSnapReaction(
-                        board,
-                        activeElements,
-                        getRectangleByAngle(newRectangle, getSelectionAngle(activeElements)) || newRectangle
-                    );
-                    const ref = movingSnapReaction.handleSnapping();
-                    offsetX -= ref.deltaX;
-                    offsetY -= ref.deltaY;
-                    alignG = ref.g;
-                    alignG.classList.add(ACTIVE_MOVING_CLASS_NAME);
-                    PlaitBoard.getElementActiveHost(board).append(alignG);
+
+                    const activeRectangle = getRectangleByAngle(newRectangle, getSelectionAngle(activeElements)) || newRectangle;
+                    const ref = getSnapMovingRef(board, activeRectangle, activeElements);
+                    offsetX += ref.deltaX;
+                    offsetY += ref.deltaY;
+                    snapG = ref.snapG;
+                    snapG.classList.add(ACTIVE_MOVING_CLASS_NAME);
+                    PlaitBoard.getElementActiveHost(board).append(snapG);
                     handleTouchTarget(board);
                     const currentElements = updatePoints(board, activeElements, offsetX, offsetY);
                     PlaitBoard.getBoardContainer(board).classList.add('element-moving');
@@ -155,7 +152,7 @@ export function withMoving(board: PlaitBoard) {
     };
 
     function cancelMove(board: PlaitBoard) {
-        alignG?.remove();
+        snapG?.remove();
         startPoint = null;
         activeElementsRectangle = null;
         offsetX = 0;
