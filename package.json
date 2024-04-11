@@ -24,7 +24,7 @@
         "pub:draw": "cd dist/draw && npm publish --access public",
         "pub": "./scripts/publish.sh",
         "watch": "ng build --watch --configuration development",
-        "test": "ng test mind",
+        "test": "ng test --watch=false",
         "test:draw": "ng test draw",
         "test:core": "ng test core",
         "test:common": "ng test common",
