@@ -38,7 +38,15 @@ import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-import { AlignTransform, PropertyTransforms, TextTransforms, getFirstTextEditor, getTextEditors } from '@plait/common';
+import {
+    AlignTransform,
+    PropertyTransforms,
+    TextTransforms,
+    ZIndexTransforms,
+    canSetZIndex,
+    getFirstTextEditor,
+    getTextEditors
+} from '@plait/common';
 
 @Component({
     selector: 'app-setting-panel',
@@ -69,6 +77,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     isSelectedMind = false;
 
     isSelectedLine = false;
+
+    canSetZIndex = false;
 
     fillColor = ['#333333', '#e48483', '#69b1e4', '#e681d4', '#a287e1', ''];
 
@@ -111,6 +121,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedLineElements = getSelectedLineElements(this.board);
         this.isSelectedMind = !!selectedMindElements.length;
         this.isSelectedLine = !!selectedLineElements.length;
+        this.canSetZIndex = canSetZIndex(this.board);
         if (selectedMindElements.length) {
             const firstMindElement = selectedMindElements[0];
             this.currentFillColor = firstMindElement.fill || '';
@@ -298,5 +309,21 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     setAlign(event: Event) {
         const value = (event.target as HTMLSelectElement).value as any;
         AlignTransform[value as keyof AlignTransform](this.board);
+    }
+
+    moveUp() {
+        ZIndexTransforms.moveUp(this.board);
+    }
+
+    moveDown() {
+        ZIndexTransforms.moveDown(this.board);
+    }
+
+    moveToTop() {
+        ZIndexTransforms.moveToTop(this.board);
+    }
+
+    moveToBottom() {
+        ZIndexTransforms.moveToBottom(this.board);
     }
 }

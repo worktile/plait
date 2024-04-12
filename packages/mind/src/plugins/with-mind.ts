@@ -40,7 +40,8 @@ export const withMind = (baseBoard: PlaitBoard) => {
         isRecursion,
         isAlign,
         isImageBindingAllowed,
-        canAddToGroup
+        canAddToGroup,
+        canSetZIndex
     } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
@@ -74,6 +75,13 @@ export const withMind = (baseBoard: PlaitBoard) => {
             return false;
         }
         return canAddToGroup(element);
+    };
+
+    board.canSetZIndex = (element: PlaitElement) => {
+        if (MindElement.isMindElement(board, element) && !element.isRoot) {
+            return false;
+        }
+        return canSetZIndex(element);
     };
 
     board.isRecursion = element => {

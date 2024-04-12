@@ -11,4 +11,4 @@ export * from './memorize';
 export * from './vector';
 export * from './math';
 export * from './drawing';
-export * from './utils';
+export * from './z-index';

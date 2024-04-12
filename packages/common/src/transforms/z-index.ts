@@ -11,16 +11,22 @@ import {
     getSelectedElements,
     getSelectedGroups
 } from '@plait/core';
-import { findIndex, findLastIndex } from '../utils';
+import { ascendingSortElements, findIndex, findLastIndex } from '../utils';
 
 interface ZIndexMoveOptions {
     element: PlaitElement;
     newPath: Path;
 }
 
-export const moveToTop = () => {};
+export const moveToTop = (board: PlaitBoard) => {
+    const zIndexMoveOptions = getZIndexMoveOptionsByAll(board, 'up');
+    moveElementsToNewPath(board, zIndexMoveOptions);
+};
 
-export const moveToBottom = () => {};
+export const moveToBottom = (board: PlaitBoard) => {
+    const zIndexMoveOptions = getZIndexMoveOptionsByAll(board, 'down');
+    moveElementsToNewPath(board, zIndexMoveOptions);
+};
 
 export const moveUp = (board: PlaitBoard) => {
     const zIndexMoveOptions = getZIndexMoveOptionsByOne(board, 'up');
@@ -63,31 +69,61 @@ const getZIndexMoveOptionsByOne = (board: PlaitBoard, direction: 'down' | 'up'):
             return;
         }
         if (direction === 'down') {
-            moveContents.push(
-                ...indices.reverse().map(path => {
-                    return {
-                        element: board.children[path],
-                        newPath: [targetIndex]
-                    };
-                })
-            );
-        } else {
-            moveContents.push(
-                ...indices.map(path => {
-                    return {
-                        element: board.children[path],
-                        newPath: [targetIndex]
-                    };
-                })
-            );
+            indices.reverse();
         }
+        moveContents.push(
+            ...indices.map(path => {
+                return {
+                    element: board.children[path],
+                    newPath: [targetIndex]
+                };
+            })
+        );
+    });
+
+    return moveContents;
+};
+
+const getZIndexMoveOptionsByAll = (board: PlaitBoard, direction: 'down' | 'up') => {
+    const indicesToMove = getIndicesToMove(board);
+    let groupedIndices = toContiguousGroups(board, indicesToMove);
+    let targetIndex = 0;
+    let moveContents: ZIndexMoveOptions[] = [];
+    if (direction === 'up') {
+        groupedIndices = groupedIndices.reverse();
+        targetIndex = board.children.length - 1;
+    }
+    groupedIndices.forEach(indices => {
+        const leadingIndex = indices[0];
+        const trailingIndex = indices[indices.length - 1];
+        const boundaryIndex = direction === 'down' ? leadingIndex : trailingIndex;
+        const sourceElement = board.children[boundaryIndex];
+        const editingGroup = getEditingGroup(board, sourceElement);
+        if (editingGroup) {
+            const elementsInGroup = ascendingSortElements(board, getElementsInGroup(board, editingGroup, true, true));
+            targetIndex =
+                direction === 'down'
+                    ? board.children.indexOf(elementsInGroup[0])
+                    : board.children.indexOf(elementsInGroup[elementsInGroup.length - 1]);
+        }
+        if (direction === 'down') {
+            indices = indices.reverse();
+        }
+        moveContents.push(
+            ...indices.map(path => {
+                return {
+                    element: board.children[path],
+                    newPath: [targetIndex]
+                };
+            })
+        );
     });
 
     return moveContents;
 };
 
 const getIndicesToMove = (board: PlaitBoard) => {
-    const selectedElements = [...getSelectedElements(board), ...getSelectedGroups(board)];
+    const selectedElements = [...getSelectedElements(board), ...getSelectedGroups(board)].filter(item => board.canSetZIndex(item));
     return selectedElements
         .map(item => {
             return board.children.indexOf(item);
@@ -162,14 +198,7 @@ const getTargetIndex = (board: PlaitBoard, boundaryIndex: number, direction: 'do
     if (siblingGroup) {
         let elementsInSiblingGroup = getElementsInGroup(board, siblingGroup, true, true);
         if (elementsInSiblingGroup.length) {
-            elementsInSiblingGroup = [...elementsInSiblingGroup, siblingGroup];
-            elementsInSiblingGroup.sort((a, b) => {
-                const indexA = board.children.findIndex(child => child.id === a.id);
-                const indexB = board.children.findIndex(child => child.id === b.id);
-                return indexA - indexB;
-            });
-            // assumes getElementsInGroup() returned elements are sorted
-            // by zIndex (ascending)
+            elementsInSiblingGroup = ascendingSortElements(board, [...elementsInSiblingGroup, siblingGroup]);
             return direction === 'down'
                 ? elements.indexOf(elementsInSiblingGroup[0])
                 : elements.indexOf(elementsInSiblingGroup[elementsInSiblingGroup.length - 1]);

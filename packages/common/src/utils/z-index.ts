@@ -1,3 +1,18 @@
+import { getSelectedElements, PlaitBoard, PlaitElement } from '@plait/core';
+
+export const ascendingSortElements = (board: PlaitBoard, elements: PlaitElement[] = []) => {
+    return elements.sort((a, b) => {
+        const indexA = board.children.findIndex(child => child.id === a.id);
+        const indexB = board.children.findIndex(child => child.id === b.id);
+        return indexA - indexB;
+    });
+};
+
+export const canSetZIndex = (board: PlaitBoard) => {
+    const selectedElements = getSelectedElements(board).filter(item => board.canSetZIndex(item));
+    return selectedElements.length > 0;
+};
+
 export const findLastIndex = <T>(
     array: readonly T[],
     cb: (element: T, index: number, array: readonly T[]) => boolean,

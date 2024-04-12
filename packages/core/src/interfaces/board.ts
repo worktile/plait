@@ -84,6 +84,7 @@ export interface PlaitBoard {
     isAlign: (element: PlaitElement) => boolean;
     isImageBindingAllowed: (element: PlaitElement) => boolean;
     canAddToGroup: (element: PlaitElement) => boolean;
+    canSetZIndex: (element: PlaitElement) => boolean;
 
     // pointer hook
     pointerDown: (pointer: PointerEvent) => void;
