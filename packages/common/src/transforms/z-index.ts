@@ -11,7 +11,7 @@ import {
     getSelectedElements,
     getSelectedGroups
 } from '@plait/core';
-import { arrayToMap, findIndex, findLastIndex } from '../utils';
+import { findIndex, findLastIndex } from '../utils';
 
 interface ZIndexMoveOptions {
     element: PlaitElement;
@@ -86,39 +86,15 @@ const getZIndexMoveOptionsByOne = (board: PlaitBoard, direction: 'down' | 'up'):
     return moveContents;
 };
 
-/**
- * Returns indices of elements to move based on selected elements.
- * Includes contiguous deleted elements that are between two selected elements,
- *  e.g.: [0 (selected), 1 (deleted), 2 (deleted), 3 (selected)]
- *
- * Specified elements (elementsToBeMoved) take precedence over
- * appState.selectedElementsIds
- */
-const getIndicesToMove = (board: PlaitBoard, elementsToBeMoved?: readonly PlaitElement[]) => {
-    let selectedIndices: number[] = [];
-    let deletedIndices: number[] = [];
-    let includeDeletedIndex = null;
-    let index = -1;
-    const selectedElementIds = arrayToMap(
-        elementsToBeMoved ? elementsToBeMoved : [...getSelectedElements(board), ...getSelectedGroups(board)]
-    );
-    while (++index < board.children.length) {
-        const element = board.children[index];
-        if (selectedElementIds.get(element.id)) {
-            if (deletedIndices.length) {
-                selectedIndices = selectedIndices.concat(deletedIndices);
-                deletedIndices = [];
-            }
-            selectedIndices.push(index);
-            includeDeletedIndex = index + 1;
-        } else if (element.isDeleted && includeDeletedIndex === index) {
-            includeDeletedIndex = index + 1;
-            deletedIndices.push(index);
-        } else {
-            deletedIndices = [];
-        }
-    }
-    return selectedIndices;
+const getIndicesToMove = (board: PlaitBoard) => {
+    const selectedElements = [...getSelectedElements(board), ...getSelectedGroups(board)];
+    return selectedElements
+        .map(item => {
+            return board.children.indexOf(item);
+        })
+        .sort((a, b) => {
+            return a - b;
+        });
 };
 
 const toContiguousGroups = (board: PlaitBoard, array: number[]) => {
