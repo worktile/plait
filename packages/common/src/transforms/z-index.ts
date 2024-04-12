@@ -8,11 +8,12 @@ import {
     getEditingGroup,
     getElementsInGroup,
     getGroupByElement,
-    getSelectedElements
+    getSelectedElements,
+    getSelectedGroups
 } from '@plait/core';
 import { arrayToMap, findIndex, findLastIndex } from '../utils';
 
-interface MoveParams {
+interface ZIndexMoveOptions {
     element: PlaitElement;
     newPath: Path;
 }
@@ -22,17 +23,17 @@ export const moveToTop = () => {};
 export const moveToBottom = () => {};
 
 export const moveUp = (board: PlaitBoard) => {
-    const moveUpContents = getMoveContentsByOne(board, 'up');
-    moveElementsToNewPath(board, moveUpContents);
+    const zIndexMoveOptions = getZIndexMoveOptionsByOne(board, 'up');
+    moveElementsToNewPath(board, zIndexMoveOptions);
 };
 
 export const moveDown = (board: PlaitBoard) => {
-    const moveDownContents = getMoveContentsByOne(board, 'down');
-    moveElementsToNewPath(board, moveDownContents);
+    const zIndexMoveOptions = getZIndexMoveOptionsByOne(board, 'down');
+    moveElementsToNewPath(board, zIndexMoveOptions);
 };
 
-const moveElementsToNewPath = (board: PlaitBoard, moveContents: MoveParams[]) => {
-    moveContents
+const moveElementsToNewPath = (board: PlaitBoard, zIndexMoveOptions: ZIndexMoveOptions[]) => {
+    zIndexMoveOptions
         .map(item => {
             const path = PlaitBoard.findPath(board, item.element);
             const ref = board.pathRef(path);
@@ -46,22 +47,18 @@ const moveElementsToNewPath = (board: PlaitBoard, moveContents: MoveParams[]) =>
         });
 };
 
-const getMoveContentsByOne = (board: PlaitBoard, direction: 'down' | 'up'): MoveParams[] => {
+const getZIndexMoveOptionsByOne = (board: PlaitBoard, direction: 'down' | 'up'): ZIndexMoveOptions[] => {
     const indicesToMove = getIndicesToMove(board);
-    let groupedIndices = toContiguousGroups(indicesToMove);
-
+    let groupedIndices = toContiguousGroups(board, indicesToMove);
     if (direction === 'up') {
         groupedIndices = groupedIndices.reverse();
     }
-    let leadingIndex = -1;
-    let targetIndex = -1;
-    let moveContents: MoveParams[] = [];
-
+    let moveContents: ZIndexMoveOptions[] = [];
     groupedIndices.forEach((indices, i) => {
-        leadingIndex = indices[0];
+        const leadingIndex = indices[0];
         const trailingIndex = indices[indices.length - 1];
         const boundaryIndex = direction === 'down' ? leadingIndex : trailingIndex;
-        targetIndex = getTargetIndex(board, boundaryIndex, direction);
+        const targetIndex = getTargetIndex(board, boundaryIndex, direction);
         if (targetIndex === -1 || boundaryIndex === targetIndex) {
             return;
         }
@@ -75,7 +72,7 @@ const getMoveContentsByOne = (board: PlaitBoard, direction: 'down' | 'up'): Move
                 })
             );
         } else {
-            moveContents.unshift(
+            moveContents.push(
                 ...indices.map(path => {
                     return {
                         element: board.children[path],
@@ -102,7 +99,9 @@ const getIndicesToMove = (board: PlaitBoard, elementsToBeMoved?: readonly PlaitE
     let deletedIndices: number[] = [];
     let includeDeletedIndex = null;
     let index = -1;
-    const selectedElementIds = arrayToMap(elementsToBeMoved ? elementsToBeMoved : getSelectedElements(board));
+    const selectedElementIds = arrayToMap(
+        elementsToBeMoved ? elementsToBeMoved : [...getSelectedElements(board), ...getSelectedGroups(board)]
+    );
     while (++index < board.children.length) {
         const element = board.children[index];
         if (selectedElementIds.get(element.id)) {
@@ -122,11 +121,17 @@ const getIndicesToMove = (board: PlaitBoard, elementsToBeMoved?: readonly PlaitE
     return selectedIndices;
 };
 
-const toContiguousGroups = (array: number[]) => {
+const toContiguousGroups = (board: PlaitBoard, array: number[]) => {
     let cursor = 0;
     return array.reduce((acc, value, index) => {
-        if (index > 0 && array[index - 1] !== value - 1) {
-            cursor = ++cursor;
+        if (index > 0) {
+            const currentElement = board.children[value];
+            const previousElement = board.children[array[index - 1]];
+            const isInSameGroup = currentElement.groupId === previousElement.groupId;
+            const isContain = currentElement.id === previousElement.groupId || currentElement.groupId === previousElement.id;
+            if (array[index - 1] !== value - 1 || (!isInSameGroup && !isContain)) {
+                cursor = ++cursor;
+            }
         }
         (acc[cursor] || (acc[cursor] = [])).push(value);
         return acc;
@@ -138,6 +143,9 @@ const toContiguousGroups = (array: number[]) => {
  *  is a non-deleted element, and not inside a group (unless we're editing it).
  */
 const getTargetIndex = (board: PlaitBoard, boundaryIndex: number, direction: 'down' | 'up') => {
+    if ((boundaryIndex === 0 && direction === 'down') || (boundaryIndex === board.children.length - 1 && direction === 'up')) {
+        return -1;
+    }
     const indexFilter = (element: PlaitElement) => {
         if (element.isDeleted || PlaitGroupElement.isGroup(element)) {
             return false;
@@ -175,23 +183,24 @@ const getTargetIndex = (board: PlaitBoard, boundaryIndex: number, direction: 'do
     } else {
         siblingGroup = nextElementGroups[nextElementGroups.length - 1];
     }
-
-    const elementsInSiblingGroup = getElementsInGroup(board, siblingGroup, true, true);
-    if (elementsInSiblingGroup.length) {
-        // assumes getElementsInGroup() returned elements are sorted
-        // by zIndex (ascending)
-        return direction === 'down'
-            ? elements.indexOf(elementsInSiblingGroup[0])
-            : elements.indexOf(elementsInSiblingGroup[elementsInSiblingGroup.length - 1]);
+    if (siblingGroup) {
+        let elementsInSiblingGroup = getElementsInGroup(board, siblingGroup, true, true);
+        if (elementsInSiblingGroup.length) {
+            elementsInSiblingGroup = [...elementsInSiblingGroup, siblingGroup];
+            elementsInSiblingGroup.sort((a, b) => {
+                const indexA = board.children.findIndex(child => child.id === a.id);
+                const indexB = board.children.findIndex(child => child.id === b.id);
+                return indexA - indexB;
+            });
+            // assumes getElementsInGroup() returned elements are sorted
+            // by zIndex (ascending)
+            return direction === 'down'
+                ? elements.indexOf(elementsInSiblingGroup[0])
+                : elements.indexOf(elementsInSiblingGroup[elementsInSiblingGroup.length - 1]);
+        }
     }
+
     return candidateIndex;
-};
-
-const getTargetIndexAccountingForBinding = (board: PlaitBoard, nextElement: PlaitElement, direction: 'down' | 'up') => {
-    if (direction === 'down') {
-        const group = getGroupByElement(board, nextElement);
-    }
-    return -1;
 };
 
 export const ZIndexTransforms = { moveUp, moveDown, moveToTop, moveToBottom };

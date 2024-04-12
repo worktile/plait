@@ -37,8 +37,7 @@ import { withCommonPlugin } from '../plugins/with-common';
 import { AppMenuComponent } from '../components/menu/menu.component';
 import { NgIf } from '@angular/common';
 import { mockTurningPointData } from './mock-turning-point-data';
-import { moveDown, moveUp } from '@plait/common';
-import { withGroup } from '@plait/common';
+import { withGroup, ZIndexTransforms } from '@plait/common';
 
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
@@ -173,13 +172,13 @@ export class BasicEditorComponent implements OnInit {
     moveUp(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        moveUp(this.board);
+        ZIndexTransforms.moveUp(this.board);
     }
 
     moveDown(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        moveDown(this.board);
+        ZIndexTransforms.moveDown(this.board);
     }
 
     copy(event: MouseEvent) {
@@ -217,10 +216,3 @@ export class BasicEditorComponent implements OnInit {
         this.board.insertFragment(null, clipboardData, targetPoint);
     }
 }
-
-export const arrayToMap = <T extends { id: string } | string>(items: readonly T[]) => {
-    return items.reduce((acc: Map<string, T>, element) => {
-        acc.set(typeof element === 'string' ? element : element.id, element);
-        return acc;
-    }, new Map());
-};
