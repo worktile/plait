@@ -30,6 +30,7 @@ import {
     ACTIVE_STROKE_WIDTH,
     SELECTION_BORDER_COLOR
 } from '@plait/core';
+import { isRotating } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
@@ -222,7 +223,7 @@ export function withDrawResize(board: PlaitBoard) {
             handleG.remove();
             handleG = null;
         }
-        if (canResize() && !isSelectionMoving(board)) {
+        if (canResize() && !isSelectionMoving(board) && !isRotating(board)) {
             handleG = createG();
             const elements = getSelectedElements(board) as PlaitDrawElement[];
             const boundingRectangle = needCustomActiveRectangle

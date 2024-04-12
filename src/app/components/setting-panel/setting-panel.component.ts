@@ -134,11 +134,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedElements = [...selectedImageElements, ...selectedGeometryElements];
         const selectionAngle = getSelectionAngle(selectedElements);
         this.angle = Math.round(radiansToDegrees(selectionAngle));
-        if (hasSameAngle(selectedElements)) {
-            this.setAngleDisabled = false;
-        } else {
-            this.setAngleDisabled = true;
-        }
+        this.setAngleDisabled = false;
 
         if (selectedLineElements.length) {
             const firstLine = selectedLineElements[0];
