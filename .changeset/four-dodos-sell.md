@@ -3,4 +3,4 @@
 '@plait/core': minor
 ---
 
-support zIndex
+support transform z index
