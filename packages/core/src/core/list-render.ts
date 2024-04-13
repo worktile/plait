@@ -1,13 +1,5 @@
 import { ComponentRef, IterableChangeRecord, IterableDiffer, IterableDiffers, ViewContainerRef } from '@angular/core';
-import {
-    Ancestor,
-    ComponentType,
-    PlaitBoard,
-    PlaitChildrenContext,
-    PlaitElement,
-    PlaitNode,
-    PlaitPluginElementContext
-} from '../interfaces';
+import { Ancestor, ComponentType, PlaitBoard, PlaitChildrenContext, PlaitElement, PlaitPluginElementContext } from '../interfaces';
 import { PlaitPluginElementComponent } from './element/plugin-element';
 import { NODE_TO_INDEX, NODE_TO_PARENT } from '../utils/weak-maps';
 import { addSelectedElement, isSelectedElement, removeSelectedElement } from '../utils/selected-element';
@@ -47,7 +39,7 @@ export class ListRender {
         if (!this.differ) {
             throw new Error('Exception: Can not find differ ');
         }
-        const { board, parent, parentG } = childrenContext;
+        const { board, parent } = childrenContext;
         const diffResult = this.differ.diff(children);
         if (diffResult) {
             const newContexts: PlaitPluginElementContext[] = [];
@@ -62,7 +54,6 @@ export class ListRender {
                     const componentRef = createPluginComponent(componentType, context, this.viewContainerRef, childrenContext);
                     newContexts.push(context);
                     newComponentRefs.push(componentRef);
-                    // mountOnItemChange(record.currentIndex as number, componentRef.instance.getContainerG(), parentG, childrenContext);
                 } else {
                     const componentRef = this.componentRefs[record.previousIndex];
                     componentRef.instance.context = context;
@@ -164,32 +155,23 @@ const getContext = (
 };
 
 export const mountElementG = (index: number, g: SVGGElement, childrenContext: PlaitChildrenContext) => {
-    const { parent, board, parentG } = childrenContext;
-    let siblingG: SVGGElement | undefined;
-    if (!PlaitBoard.isBoard(parent)) {
-        siblingG = PlaitElement.getComponent(parent).getElementG();
-    }
-    if (index > 0) {
-        const brotherElement = (parent.children as PlaitElement[])[index - 1];
-        const lastElement = PlaitNode.last(board, PlaitBoard.findPath(board, brotherElement));
-        let component = PlaitElement.getComponent(lastElement) || PlaitElement.getComponent(brotherElement);
-        siblingG = component.getContainerG();
-    }
-    if (siblingG && isChildNode(parentG, siblingG)) {
-        parentG.insertBefore(g, siblingG);
+    const { parent, parentG } = childrenContext;
+    if (PlaitBoard.isBoard(parent)) {
+        if (index > 0) {
+            const previousElement = parent.children[index - 1];
+            const previousContainerG = PlaitElement.getContainerG(previousElement);
+            previousContainerG.insertAdjacentElement('afterend', g);
+        } else {
+            parentG.append(g);
+        }
     } else {
-        parentG.append(g);
-    }
-};
-
-const isChildNode = (parent: Element, child: Element) => {
-    if (parent.children.length > 0) {
-        for (let index = 0; index < parent.children.length; index++) {
-            const element = parent.children[index];
-            if (element === child) {
-                return true;
-            }
+        if (index > 0) {
+            const previousElement = (parent.children as PlaitElement[])[index - 1];
+            const previousElementG = PlaitElement.getElementG(previousElement);
+            previousElementG.insertAdjacentElement('afterend', g);
+        } else {
+            let parentElementG = PlaitElement.getElementG(parent);
+            parentG.insertBefore(g, parentElementG);
         }
     }
-    return false;
 };

@@ -15,6 +15,12 @@ export const NODE_TO_INDEX = new WeakMap<PlaitNode, number>();
 
 export const NODE_TO_PARENT = new WeakMap<PlaitNode, Ancestor>();
 
+export const NODE_TO_G = new WeakMap<PlaitNode, SVGGElement>();
+
+export const NODE_TO_PARENT_G = new WeakMap<PlaitNode, SVGGElement>();
+
+export const NODE_TO_CONTAINER_G = new WeakMap<PlaitNode, SVGGElement>();
+
 export const IS_TEXT_EDITABLE = new WeakMap<PlaitBoard, boolean>();
 
 export const BOARD_TO_ON_CHANGE = new WeakMap<PlaitBoard, () => void>();

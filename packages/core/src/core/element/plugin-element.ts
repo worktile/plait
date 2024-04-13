@@ -1,20 +1,29 @@
 import { ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
-import { PlaitBoard, PlaitChildrenContext, PlaitElement, PlaitPluginElementContext } from '../../interfaces';
+import { PlaitBoard, PlaitChildrenContext, PlaitElement, PlaitNode, PlaitPluginElementContext } from '../../interfaces';
 import { removeSelectedElement } from '../../utils/selected-element';
 import { createG } from '../../utils/dom/common';
 import { hasBeforeContextChange, hasOnContextChanged } from './context-change';
 import { ListRender, mountElementG } from '../list-render';
+import { NODE_TO_CONTAINER_G, NODE_TO_G, NODE_TO_PARENT_G } from '../../utils/weak-maps';
 
 @Directive()
 export abstract class PlaitPluginElementComponent<T extends PlaitElement = PlaitElement, K extends PlaitBoard = PlaitBoard>
     implements OnInit, OnDestroy {
     viewContainerRef = inject(ViewContainerRef);
 
-    private g!: SVGGElement;
+    private _g!: SVGGElement;
+
+    private _parentG?: SVGGElement;
+
+    private _containerG!: SVGGElement;
 
     initialized = false;
 
     protected _context!: PlaitPluginElementContext<T, K>;
+
+    get hasChildren() {
+        return !!this.element.children;
+    }
 
     @Input()
     set context(value: PlaitPluginElementContext<T, K>) {
@@ -27,13 +36,33 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
             ELEMENT_TO_COMPONENT.set(this.element, this);
         }
         if (this.initialized) {
+            const elementG = this.getElementG();
+            const parentG = this.getParentG();
+            const containerG = this.getContainerG();
+            NODE_TO_G.set(this.element, elementG);
+            NODE_TO_CONTAINER_G.set(this.element, containerG);
+            parentG && PlaitElement.isRootElement(this.element) && NODE_TO_PARENT_G.set(this.element, parentG);
             this.updateListRender();
             this.cdr.markForCheck();
             if (hasOnContextChanged<T>(this)) {
                 this.onContextChanged(value, previousContext);
             }
         } else {
-            this.g = createG();
+            if (PlaitElement.isRootElement(this.element) && this.hasChildren) {
+                this._g = createG();
+                this._parentG = createG();
+                this._parentG.append(this._g);
+                this._containerG = this._parentG;
+            } else {
+                this._g = createG();
+                this._containerG = this._g;
+            }
+            const elementG = this.getElementG();
+            const parentG = this.getParentG();
+            const containerG = this.getContainerG();
+            NODE_TO_G.set(this.element, elementG);
+            NODE_TO_CONTAINER_G.set(this.element, containerG);
+            parentG && NODE_TO_PARENT_G.set(this.element, parentG);
         }
     }
 
@@ -53,21 +82,18 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
         return this.context && this.context.selected;
     }
 
-    listRender!: ListRender;
+    listRender?: ListRender;
 
-    // 子元素容器 g
     getParentG() {
-        return this.g;
+        return this._parentG;
     }
 
-    // ListRender 操作节点时的 g
     getContainerG() {
-        return this.g;
+        return this._containerG;
     }
 
-    // 元素特定 g
     getElementG() {
-        return this.g;
+        return this._g;
     }
 
     constructor(protected cdr: ChangeDetectorRef) {}
@@ -77,20 +103,30 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
             this.getContainerG().setAttribute(`plait-${this.element.type}`, 'true');
         }
         this.getContainerG().setAttribute('plait-data-id', this.element.id);
+        if (!PlaitElement.isRootElement(this.element)) {
+            const path = PlaitBoard.findPath(this.board, this.element);
+            const rootNode = PlaitNode.get(this.board, path.slice(0, 1));
+            this._parentG = PlaitElement.getParentG(rootNode);
+        }
         this.initialized = true;
     }
 
     public initializeListRender() {
-        this.listRender = new ListRender(this.board, this.viewContainerRef);
-        if (this.element.children && this.board.isExpanded(this.element)) {
-            this.listRender.initialize(this.element.children, this.initializeChildrenContext());
+        if (this.hasChildren) {
+            this.listRender = new ListRender(this.board, this.viewContainerRef);
+            if (this.board.isExpanded(this.element)) {
+                this.listRender.initialize(this.element.children!, this.initializeChildrenContext());
+            }
         }
     }
 
     private updateListRender() {
-        if (this.element.children) {
+        if (this.hasChildren) {
+            if (!this.listRender) {
+                throw new Error('incorrectly initialize list render');
+            }
             if (this.board.isExpanded(this.element)) {
-                this.listRender.update(this.element.children, this.initializeChildrenContext());
+                this.listRender.update(this.element.children!, this.initializeChildrenContext());
             } else {
                 if (this.listRender.initialized) {
                     this.listRender.destroy();
@@ -100,10 +136,14 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
     }
 
     private initializeChildrenContext(): PlaitChildrenContext {
+        const parentG = this.getParentG();
+        if (!parentG) {
+            throw new Error('parent g is not initialized incorrectly');
+        }
         return {
             board: this.board,
             parent: this.element,
-            parentG: this.getParentG()
+            parentG
         };
     }
 

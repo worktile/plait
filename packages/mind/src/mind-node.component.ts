@@ -31,7 +31,6 @@ import { CommonPluginElement, ImageGenerator, WithTextOptions, WithTextPluginKey
 import { NodeShapeGenerator } from './generators/node-shape.generator';
 import { getImageForeignRectangle } from './utils';
 import { ImageData } from './interfaces';
-import { PlaitMindComponent } from './mind.component';
 
 @Component({
     selector: 'plait-mind-node',
@@ -66,10 +65,6 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     activeGenerator!: NodeActiveGenerator;
 
     collapseGenerator!: CollapseGenerator;
-
-    getParentG() {
-        return (PlaitElement.getComponent(MindElement.getRoot(this.board, this.element)) as PlaitMindComponent).mindG as SVGGElement;
-    }
 
     get textManage() {
         return this.getTextManages()[0];

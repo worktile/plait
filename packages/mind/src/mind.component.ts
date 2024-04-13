@@ -18,19 +18,7 @@ import { getDefaultLayout } from './utils/layout';
 export class PlaitMindComponent extends MindNodeComponent implements OnInit, BeforeContextChange<PlaitMind> {
     root!: MindNode;
 
-    mindG!: SVGGElement;
-
-    getParentG(): SVGGElement {
-        return this.mindG;
-    }
-
-    getContainerG() {
-        return this.mindG;
-    }
-
     ngOnInit(): void {
-        this.mindG = createG();
-        this.mindG.append(this.getElementG());
         this.updateMindLayout();
         super.ngOnInit();
         this.getElementG().classList.add('root');
