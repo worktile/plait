@@ -56,12 +56,12 @@ export const pointerLeaveHandle = (board: PlaitBoard, event: PointerEvent, nodeE
 
 export const addHovered = (element: MindElement) => {
     const component = PlaitElement.getComponent(element);
-    component.g.classList.add('hovered');
+    component.getElementG().classList.add('hovered');
 };
 
 export const removeHovered = (element: MindElement) => {
     const component = PlaitElement.getComponent(element);
-    if (component && component.g) {
-        component.g.classList.remove('hovered');
+    if (component && component.getElementG()) {
+        component.getElementG().classList.remove('hovered');
     }
 };

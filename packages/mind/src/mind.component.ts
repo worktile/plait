@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
-import { BeforeContextChange, PlaitChildrenElementComponent, PlaitPluginElementContext, depthFirstRecursion } from '@plait/core';
+import { BeforeContextChange, PlaitPluginElementContext, createG, depthFirstRecursion } from '@plait/core';
 import { GlobalLayout, OriginNode } from '@plait/layouts';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { MindNodeComponent } from './mind-node.component';
@@ -10,22 +10,30 @@ import { getDefaultLayout } from './utils/layout';
 
 @Component({
     selector: 'plait-mind',
-    template: `
-        <plait-children [board]="board" [parent]="element" [effect]="effect" [parentG]="rootG"></plait-children>
-    `,
+    template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
-    imports: [PlaitChildrenElementComponent, MindNodeComponent]
+    imports: [MindNodeComponent]
 })
 export class PlaitMindComponent extends MindNodeComponent implements OnInit, BeforeContextChange<PlaitMind> {
     root!: MindNode;
 
-    rootG!: SVGGElement;
+    mindG!: SVGGElement;
+
+    getParentG(): SVGGElement {
+        return this.mindG;
+    }
+
+    getContainerG() {
+        return this.mindG;
+    }
 
     ngOnInit(): void {
+        this.mindG = createG();
+        this.mindG.append(this.getElementG());
         this.updateMindLayout();
         super.ngOnInit();
-        this.g.classList.add('root');
+        this.getElementG().classList.add('root');
     }
 
     beforeContextChange(value: PlaitPluginElementContext<PlaitMind>) {

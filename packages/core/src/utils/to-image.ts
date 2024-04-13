@@ -161,7 +161,7 @@ async function cloneSvg(board: PlaitBoard, elements: PlaitElement[], rectangle: 
     const { width, height, x, y } = rectangle;
     const { padding = 4, inlineStyleClassNames } = options;
     const sourceSvg = PlaitBoard.getHost(board);
-    const selectedGElements = elements.map(value => PlaitElement.getComponent(value).g);
+    const selectedGElements = elements.map(value => PlaitElement.getComponent(value).getElementG());
     const cloneSvgElement = sourceSvg.cloneNode() as SVGElement;
     const newHostElement = PlaitBoard.getElementHost(board).cloneNode() as SVGGElement;
 

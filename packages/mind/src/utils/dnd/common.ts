@@ -9,7 +9,7 @@ export const IS_DRAGGING = new WeakMap<PlaitBoard, boolean>();
 
 export const addActiveOnDragOrigin = (activeElement: MindElement) => {
     const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
-    activeComponent.g.classList.add('dragging-node');
+    activeComponent.getElementG().classList.add('dragging-node');
 
     !activeElement.isCollapsed &&
         activeElement.children.forEach(child => {
@@ -19,7 +19,7 @@ export const addActiveOnDragOrigin = (activeElement: MindElement) => {
 
 export const removeActiveOnDragOrigin = (activeElement: MindElement) => {
     const activeComponent = PlaitElement.getComponent(activeElement) as MindNodeComponent;
-    activeComponent.g.classList.remove('dragging-node');
+    activeComponent.getElementG().classList.remove('dragging-node');
     !activeElement.isCollapsed &&
         activeElement.children.forEach(child => {
             removeActiveOnDragOrigin(child);

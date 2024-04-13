@@ -14,7 +14,7 @@ import { hasPreviousOrNextOfDropPath } from '../dnd/common';
 import { drawLink } from './node-link/draw-link';
 import { getEmojiForeignRectangle } from '../position/emoji';
 import { getImageForeignRectangle } from '../position';
-import { getFirstTextManage, getTextManages } from '@plait/common';
+import { getFirstTextManage } from '@plait/common';
 
 export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offsetX: number, offsetY: number) => {
     const activeComponent = PlaitElement.getComponent(element) as MindNodeComponent;

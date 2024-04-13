@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, PlaitOptionsBoard, PlaitPluginKey, WithPluginOptions, getSelectedElements } from '@plait/core';
+import { PlaitBoard, PlaitElement, getSelectedElements } from '@plait/core';
 import { MindElement } from '../../interfaces/element';
 import { MindNodeComponent } from '../../mind-node.component';
 
