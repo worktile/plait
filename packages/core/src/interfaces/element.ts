@@ -35,9 +35,17 @@ export const PlaitElement = {
         }
         return g;
     },
-    getContainerG(value: PlaitElement) {
-        const containerG = NODE_TO_CONTAINER_G.get(value);
+    getContainerG<T extends boolean>(
+        value: PlaitElement,
+        options: {
+            suppressThrow: T;
+        }
+    ): T extends true ? SVGGElement | null : SVGGElement {
+        const containerG = NODE_TO_CONTAINER_G.get(value) || null;
         if (!containerG) {
+            if (options.suppressThrow) {
+                return null as T extends true ? SVGGElement | null : SVGGElement;
+            }
             throw new Error('can not resolve container g');
         }
         return containerG;

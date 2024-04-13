@@ -3,9 +3,11 @@ import { PlaitElement } from '../interfaces/element';
 
 export function depthFirstRecursion<T extends TreeNode = TreeNode>(
     node: T,
-    callback: (node: T) => void,
+    callback: (node: T, index?: number, parent?: T) => void,
     recursion?: (node: T) => boolean,
-    isReverse?: boolean
+    isReverse?: boolean,
+    index?: number,
+    parent?: T
 ) {
     if (!recursion || recursion(node)) {
         let children: TreeNode[] = [];
@@ -13,11 +15,11 @@ export function depthFirstRecursion<T extends TreeNode = TreeNode>(
             children = [...node.children];
         }
         children = isReverse ? children.reverse() : children;
-        children.forEach(child => {
-            depthFirstRecursion(child as T, callback, recursion);
+        children.forEach((child, index) => {
+            depthFirstRecursion(child as T, callback, recursion, isReverse, index, node);
         });
     }
-    callback(node);
+    callback(node, index, parent);
 }
 
 export const getIsRecursionFunc = (board: PlaitBoard) => {
