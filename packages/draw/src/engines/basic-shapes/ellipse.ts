@@ -1,8 +1,8 @@
 import { Point } from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
-import { createCircleEngine } from './circle';
+import { createEllipseEngine } from './circle';
 
-export const EllipseEngine: ShapeEngine = createCircleEngine();
+export const EllipseEngine: ShapeEngine = createEllipseEngine();
 
 export function getNearestPointBetweenPointAndEllipse(point: Point, center: Point, rx: number, ry: number, rotation: number = 0): Point {
     const rectangleClient = {

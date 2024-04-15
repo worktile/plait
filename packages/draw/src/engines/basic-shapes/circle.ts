@@ -17,7 +17,7 @@ export interface CreateCircleOptions {
     getTextRectangle?: (element: PlaitGeometry) => RectangleClient;
 }
 
-export function createCircleEngine(createOptions?: CreateCircleOptions): ShapeEngine {
+export function createEllipseEngine(createOptions?: CreateCircleOptions): ShapeEngine {
     const engine: ShapeEngine = {
         draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
             const centerPoint = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];

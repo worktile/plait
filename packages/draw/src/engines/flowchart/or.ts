@@ -2,9 +2,9 @@ import { PlaitBoard, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getTextRectangle } from '../../utils';
-import { createCircleEngine } from '../basic-shapes/circle';
+import { createEllipseEngine } from '../basic-shapes/circle';
 
-export const OrEngine: ShapeEngine = createCircleEngine({
+export const OrEngine: ShapeEngine = createEllipseEngine({
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const rx = rectangle.width / 2;
