@@ -64,7 +64,13 @@ export enum SwimlaneSymbols {
     swimlaneHorizontal = 'swimlaneHorizontal'
 }
 
-export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols;
+export enum UMLSymbols {
+    actor = 'actor',
+    useCase = 'useCase',
+    container = 'container'
+}
+
+export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols | UMLSymbols;
 
 export interface PlaitCommonGeometry extends PlaitElement {
     points: [Point, Point];
