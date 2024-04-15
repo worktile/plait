@@ -145,6 +145,12 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
         if (ELEMENT_TO_COMPONENT.get(this.element) === this) {
             ELEMENT_TO_COMPONENT.delete(this.element);
         }
+        if (NODE_TO_G.get(this.element) === this._g) {
+            NODE_TO_G.delete(this.element);
+        }
+        if (NODE_TO_CONTAINER_G.get(this.element) === this._containerG) {
+            NODE_TO_CONTAINER_G.delete(this.element);
+        }
         removeSelectedElement(this.board, this.element);
         this.getContainerG().remove();
     }
