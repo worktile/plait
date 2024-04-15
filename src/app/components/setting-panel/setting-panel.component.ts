@@ -46,7 +46,8 @@ import {
     getSelectedDrawElements,
     getSelectedTableElements,
     getGeometryAlign,
-    PlaitDrawElement
+    PlaitDrawElement,
+    getSwimlaneCount
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 
@@ -108,6 +109,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     angle = 0;
 
+    swimlaneCount = 3;
+
     @HostBinding('class.visible')
     get isVisible() {
         const selectedCount = getSelectedElements(this.board).length;
@@ -128,6 +131,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         this.isSelectedMind = !!selectedMindElements.length;
         this.isSelectedLine = !!selectedLineElements.length;
         this.isSelectSwimlane = isSingleSelectSwimlane(this.board);
+        if (this.isSelectSwimlane) {
+            this.swimlaneCount = getSwimlaneCount(getSelectedElements(this.board)[0] as PlaitSwimlane);
+        }
         this.canSetZIndex = canSetZIndex(this.board);
         if (selectedMindElements.length) {
             const firstMindElement = selectedMindElements[0];
@@ -148,7 +154,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(item));
             if (firstGeometry && PlaitElement.hasMounted(firstGeometry)) {
                 this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstGeometry));
-                this.align = getGeometryAlign(firstGeometry);
+                this.align = getGeometryAlign(this.board, firstGeometry);
             }
             setTimeout(() => {
                 const editor = firstGeometry && getEditingTextEditor(this.board, [firstGeometry]);
@@ -354,23 +360,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         Transforms.moveToBottom(this.board);
     }
 
-    addSwimlaneRow(event: Event) {
+    updateSwimlaneCount() {
         const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
-        DrawTransforms.addSwimlaneRow(this.board, selectedElements[0], selectedElements[0].rows.length);
-    }
-
-    removeSwimlaneRow(event: Event) {
-        const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
-        DrawTransforms.removeSwimlaneRow(this.board, selectedElements[0], selectedElements[0].rows.length - 1);
-    }
-
-    addSwimlaneColumn(event: Event) {
-        const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
-        DrawTransforms.addSwimlaneColumn(this.board, selectedElements[0], selectedElements[0].columns.length);
-    }
-
-    removeSwimlaneColumn(event: Event) {
-        const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
-        DrawTransforms.removeSwimlaneColumn(this.board, selectedElements[0], selectedElements[0].columns.length - 1);
+        DrawTransforms.updateSwimlaneCount(this.board, selectedElements[0], this.swimlaneCount);
     }
 }

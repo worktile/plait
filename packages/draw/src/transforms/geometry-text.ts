@@ -33,7 +33,7 @@ const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: numbe
                 RectangleClient.getRectangleByPoints(points),
                 RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(element.points)),
                 RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points)),
-                element.angle
+                element.angle!
             );
         }
     }

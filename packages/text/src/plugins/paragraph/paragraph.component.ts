@@ -6,7 +6,10 @@ import { ParagraphElement } from '../../custom-types';
     selector: 'div[plaitTextParagraphElement]',
     template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true
+    standalone: true,
+    host: {
+        class: 'plait-text-paragraph'
+    }
 })
 export class ParagraphElementComponent extends BaseElementComponent<ParagraphElement> implements OnInit {
     ngOnInit(): void {

@@ -57,8 +57,6 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
                 options: resizeHitTestRef.options
             };
             preventTouchMove(board, event, true);
-            // prevent text from being selected when user pressed shift and pointer down
-            event.preventDefault();
             return;
         }
         pointerDown(event);
@@ -71,8 +69,6 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
             return;
         }
         if (startPoint && resizeHitTestRef && !isResizing(board)) {
-            // prevent text from being selected
-            event.preventDefault();
             const endPoint = [event.x, event.y];
             const distance = distanceBetweenPointAndPoint(startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
             if (distance > PRESS_AND_MOVE_BUFFER) {

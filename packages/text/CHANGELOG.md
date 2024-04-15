@@ -1,5 +1,11 @@
 # text
 
+## 0.60.0
+
+### Patch Changes
+
+-   [#902](https://github.com/worktile/plait/pull/902) [`22d2431ff`](https://github.com/worktile/plait/commit/22d2431fff54a84177c815c61c8bbe5bb28ae123) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - set user-select to text paragraph instead of event.preventDefault
+
 ## 0.59.0
 
 ### Minor Changes

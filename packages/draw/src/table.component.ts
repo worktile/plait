@@ -8,7 +8,7 @@ import {
     degreesToRadians
 } from '@plait/core';
 import { ActiveGenerator, CommonElementFlavour, canResize } from '@plait/common';
-import { PlaitTable, PlaitTableCell, PlaitTableElement } from './interfaces/table';
+import { PlaitTable, PlaitTableBoard, PlaitTableCell, PlaitTableElement } from './interfaces/table';
 import { getTextManage, PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
 import { TableGenerator } from './generators/table.generator';
 import { TextManageRef } from '@plait/text';
@@ -27,7 +27,6 @@ import { TableSymbols } from './interfaces';
 import { getHorizontalTextRectangle } from './engines/table/table';
 import { ShapeDefaultSpace } from './constants';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
-import { PlaitTableBoard } from './plugins/with-table';
 
 export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T, PlaitBoard> implements OnContextChanged<T, PlaitBoard> {
     activeGenerator!: ActiveGenerator<T>;

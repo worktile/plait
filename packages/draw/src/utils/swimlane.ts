@@ -45,7 +45,7 @@ export const createDefaultSwimlane = (shape: SwimlaneSymbols, points: [Point, Po
     const columns = createDefaultRowsOrColumns(shape, 'column');
     const swimlane = {
         id: idCreator(),
-        type: 'table',
+        type: 'swimlane',
         shape,
         points,
         rows,
@@ -131,4 +131,14 @@ export const createDefaultCells = (
         }
         return item;
     });
+};
+
+export const getSwimlaneCount = (swimlane: PlaitSwimlane) => {
+    if (PlaitDrawElement.isHorizontalSwimlane(swimlane)) {
+        return swimlane.rows.length;
+    }
+    if (PlaitDrawElement.isVerticalSwimlane(swimlane)) {
+        return swimlane.columns.length;
+    }
+    return 0;
 };

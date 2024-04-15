@@ -1,13 +1,13 @@
 import { TableSymbols } from '../interfaces';
 import { Generator } from '@plait/common';
 import { PlaitElement, RectangleClient } from '@plait/core';
-import { PlaitTable } from '../interfaces/table';
+import { PlaitBaseTable } from '../interfaces/table';
 import { getEngine } from '../engines';
 import { getDrawDefaultStrokeColor } from '../utils';
 
 export interface TableData {}
 
-export class TableGenerator<T extends PlaitElement = PlaitTable> extends Generator<T, TableData> {
+export class TableGenerator<T extends PlaitElement = PlaitBaseTable> extends Generator<T, TableData> {
     canDraw(element: T, data: TableData): boolean {
         return true;
     }

@@ -32,3 +32,4 @@ export const getSelectedSwimlane = (board: PlaitBoard): PlaitSwimlane => {
     const selectedElements = getSelectedElements(board);
     return selectedElements.find(item => PlaitDrawElement.isSwimlane(item)) as PlaitSwimlane;
 };
+

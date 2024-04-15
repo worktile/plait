@@ -12,7 +12,7 @@ import {
     getSelectedElements
 } from '@plait/core';
 import { getSelectedDrawElements } from '../utils/selected';
-import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../interfaces';
+import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement, PlaitSwimlane } from '../interfaces';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
 import { getLines } from '../utils/line/line-basic';
@@ -32,11 +32,13 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             const lineElements = drawElements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
             const imageElements = drawElements.filter(value => PlaitDrawElement.isImage(value)) as PlaitImage[];
             const tableElements = drawElements.filter(value => PlaitDrawElement.isTable(value)) as PlaitTable[];
+            const swimlaneElements = drawElements.filter(value => PlaitDrawElement.isSwimlane(value)) as PlaitSwimlane[];
 
             const boundLineElements = [
                 ...getBoundedLineElements(board, geometryElements),
                 ...getBoundedLineElements(board, imageElements),
-                ...getBoundedLineElements(board, tableElements)
+                ...getBoundedLineElements(board, tableElements),
+                ...getBoundedLineElements(board, swimlaneElements)
             ].filter(line => !lineElements.includes(line));
             data.push(
                 ...[
@@ -44,6 +46,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                     ...lineElements,
                     ...imageElements,
                     ...tableElements,
+                    ...swimlaneElements,
                     ...boundLineElements.filter(line => !lineElements.includes(line))
                 ]
             );

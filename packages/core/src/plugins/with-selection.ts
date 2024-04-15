@@ -47,7 +47,6 @@ export function withSelection(board: PlaitBoard) {
     let selectionRectangleG: SVGGElement | null;
     let previousSelectedElements: PlaitElement[];
     let isShift = false;
-    let isTextSelection = false;
 
     board.pointerDown = (event: PointerEvent) => {
         if (!isShift && event.shiftKey) {
@@ -57,12 +56,6 @@ export function withSelection(board: PlaitBoard) {
             isShift = false;
         }
         const isHitText = !!(event.target instanceof Element && event.target.closest('.plait-richtext-container'));
-        isTextSelection = isHitText && PlaitBoard.hasBeenTextEditing(board);
-
-        // prevent text from being selected
-        if (event.shiftKey && !isTextSelection) {
-            event.preventDefault();
-        }
 
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const isHitTarget = isHitElement(board, point);
@@ -76,10 +69,6 @@ export function withSelection(board: PlaitBoard) {
     };
 
     board.pointerMove = (event: PointerEvent) => {
-        if (!isTextSelection) {
-            // prevent text from being selected
-            event.preventDefault();
-        }
         if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && start) {
             const movedTarget = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const rectangle = RectangleClient.getRectangleByPoints([start, movedTarget]);
@@ -138,7 +127,6 @@ export function withSelection(board: PlaitBoard) {
         }
         start = null;
         end = null;
-        isTextSelection = false;
         preventTouchMove(board, event, false);
         globalPointerUp(event);
     };

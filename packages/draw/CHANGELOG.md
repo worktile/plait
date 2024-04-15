@@ -1,5 +1,19 @@
 # @plait/draw
 
+## 0.60.0
+
+### Minor Changes
+
+-   [#895](https://github.com/worktile/plait/pull/895) [`c6e292d37`](https://github.com/worktile/plait/commit/c6e292d37310b8158a9b6973dd883fe803222eaf) Thanks [@MissLixf](https://github.com/MissLixf)! - add class and interface shape for uml
+
+*   [#896](https://github.com/worktile/plait/pull/896) [`3a1f880c6`](https://github.com/worktile/plait/commit/3a1f880c6d5d51e9018179d11adfe9172bac2776) Thanks [@MissLixf](https://github.com/MissLixf)! - add activation,object and deletion shape for uml
+
+-   [#898](https://github.com/worktile/plait/pull/898) [`ba6a379f7`](https://github.com/worktile/plait/commit/ba6a379f726105fbf151f95a825f5da8a59b4992) Thanks [@MissLixf](https://github.com/MissLixf)! - add note,activityClass,simpleClass,port and branchMerge shape for uml
+
+### Patch Changes
+
+-   [#899](https://github.com/worktile/plait/pull/899) [`72f63865b`](https://github.com/worktile/plait/commit/72f63865b2c4a7d1ede3a8ae0f327f6c77bf4af2) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix remove column and row error
+
 ## 0.59.0
 
 ### Minor Changes
