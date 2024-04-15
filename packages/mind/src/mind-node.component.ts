@@ -1,17 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import {
-    createG,
-    PlaitBoard,
-    PlaitElement,
-    NODE_TO_INDEX,
-    PlaitPluginElementContext,
-    OnContextChanged,
-    RectangleClient
-} from '@plait/core';
+import { createG, PlaitBoard, NODE_TO_INDEX, PlaitPluginElementContext, OnContextChanged, RectangleClient } from '@plait/core';
 import { isHorizontalLayout, AbstractNode, MindLayoutType } from '@plait/layouts';
 import { TextManageRef, TextManage } from '@plait/text';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { Subject } from 'rxjs';
 import { MindElement, PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
 import { MindQueries } from './queries';
@@ -27,19 +17,13 @@ import { NodeActiveGenerator } from './generators/node-active.generator';
 import { CollapseGenerator } from './generators/node-collapse.generator';
 import { NodeSpace } from './utils/space/node-space';
 import { NodeTopicThreshold } from './constants/node-topic-style';
-import { CommonPluginElement, ImageGenerator, WithTextOptions, WithTextPluginKey } from '@plait/common';
+import { CommonElementFlavour, ImageGenerator, WithTextOptions, WithTextPluginKey } from '@plait/common';
 import { NodeShapeGenerator } from './generators/node-shape.generator';
 import { getImageForeignRectangle } from './utils';
 import { ImageData } from './interfaces';
 
-@Component({
-    selector: 'plait-mind-node',
-    template: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true
-})
-export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMindBoard>
-    implements OnInit, OnDestroy, OnContextChanged<MindElement, PlaitMindBoard> {
+export class MindNodeComponent extends CommonElementFlavour<MindElement, PlaitMindBoard>
+    implements OnContextChanged<MindElement, PlaitMindBoard> {
     roughSVG!: RoughSVG;
 
     node!: MindNode;
@@ -51,8 +35,6 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     linkG?: SVGGElement;
 
     extendG?: SVGGElement;
-
-    destroy$ = new Subject<void>();
 
     nodeEmojisGenerator!: NodeEmojisGenerator;
 
@@ -76,7 +58,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
 
     initializeGenerator() {
         this.nodeShapeGenerator = new NodeShapeGenerator(this.board);
-        this.nodeEmojisGenerator = new NodeEmojisGenerator(this.board, this.viewContainerRef);
+        this.nodeEmojisGenerator = new NodeEmojisGenerator(this.board, PlaitBoard.getViewContainerRef(this.board));
         this.activeGenerator = new NodeActiveGenerator(this.board);
         this.nodePlusGenerator = new NodePlusGenerator(this.board);
         this.collapseGenerator = new CollapseGenerator(this.board);
@@ -89,7 +71,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             }
         });
         const plugins = (this.board.getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
-        const textManage = new TextManage(this.board, this.viewContainerRef, {
+        const textManage = new TextManage(this.board, PlaitBoard.getViewContainerRef(this.board), {
             getRectangle: () => {
                 const rect = getTopicRectangleByNode(this.board, this.node);
                 return rect;
@@ -118,8 +100,8 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.getRef().addGenerator(ImageGenerator.key, this.imageGenerator);
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
+    initialize(): void {
+        super.initialize();
         this.initializeGenerator();
         this.node = MindElement.getNode(this.element);
         this.index = NODE_TO_INDEX.get(this.element) || 0;
@@ -132,7 +114,11 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         });
         this.drawEmojis();
         this.drawExtend();
-        this.imageGenerator.processDrawing(this.element as MindElement<ImageData>, this.getElementG(), this.viewContainerRef);
+        this.imageGenerator.processDrawing(
+            this.element as MindElement<ImageData>,
+            this.getElementG(),
+            PlaitBoard.getViewContainerRef(this.board)
+        );
         if (PlaitMind.isMind(this.context.parent)) {
             this.getElementG().classList.add('branch');
         }
@@ -156,7 +142,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             this.drawEmojis();
             this.drawExtend();
             if (!MindElement.hasImage(previous.element) && MindElement.hasImage(this.element)) {
-                this.imageGenerator.processDrawing(this.element, this.getElementG(), this.viewContainerRef);
+                this.imageGenerator.processDrawing(this.element, this.getElementG(), PlaitBoard.getViewContainerRef(this.board));
             }
             if (MindElement.hasImage(previous.element) && MindElement.hasImage(this.element)) {
                 this.imageGenerator.updateImage(
@@ -240,13 +226,11 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         return node.origin.id;
     };
 
-    ngOnDestroy(): void {
-        super.ngOnDestroy();
+    destroy(): void {
+        super.destroy();
         this.nodeEmojisGenerator.destroy();
         this.imageGenerator.destroy();
         this.activeGenerator.destroy();
-        this.destroy$.next();
-        this.destroy$.complete();
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {
             ELEMENT_TO_NODE.delete(this.element);
         }

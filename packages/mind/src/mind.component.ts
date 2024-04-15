@@ -1,26 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { PlaitMind } from './interfaces/element';
 import { MindNode } from './interfaces/node';
-import { BeforeContextChange, PlaitPluginElementContext, createG, depthFirstRecursion } from '@plait/core';
+import { BeforeContextChange, PlaitPluginElementContext, depthFirstRecursion } from '@plait/core';
 import { GlobalLayout, OriginNode } from '@plait/layouts';
 import { ELEMENT_TO_NODE } from './utils/weak-maps';
 import { MindNodeComponent } from './mind-node.component';
 import { getLayoutOptions } from './utils/space/layout-options';
 import { getDefaultLayout } from './utils/layout';
 
-@Component({
-    selector: 'plait-mind',
-    template: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [MindNodeComponent]
-})
-export class PlaitMindComponent extends MindNodeComponent implements OnInit, BeforeContextChange<PlaitMind> {
+export class PlaitMindComponent extends MindNodeComponent implements BeforeContextChange<PlaitMind> {
     root!: MindNode;
 
-    ngOnInit(): void {
+    initialize(): void {
         this.updateMindLayout();
-        super.ngOnInit();
+        super.initialize();
         this.getElementG().classList.add('root');
     }
 
