@@ -90,7 +90,6 @@ export class GeometryComponent extends CommonPluginElement<PlaitCommonGeometry, 
         value: PlaitPluginElementContext<PlaitCommonGeometry, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitCommonGeometry, PlaitBoard>
     ) {
-        this.initializeWeakMap();
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (value.element !== previous.element || isChangeTheme) {
             this.shapeGenerator.processDrawing(this.element as PlaitGeometry, this.getElementG());
@@ -162,9 +161,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitCommonGeometry, 
                 }
             );
         }
-
         this.textGenerator.initialize();
-        this.initializeTextManages(this.textGenerator.textManages);
     }
 
     ngOnDestroy(): void {
@@ -174,6 +171,5 @@ export class GeometryComponent extends CommonPluginElement<PlaitCommonGeometry, 
         this.activeGenerator.destroy();
         this.lineAutoCompleteGenerator.destroy();
         this.textGenerator.destroy();
-        this.destroyTextManages();
     }
 }
