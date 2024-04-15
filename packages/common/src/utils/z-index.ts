@@ -50,30 +50,22 @@ export const getOneMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): 
             return;
         }
         if (direction === 'down') {
-            moveContents.push(
-                ...indices.reverse().map(path => {
-                    return {
-                        element: board.children[path],
-                        newPath: [targetIndex]
-                    };
-                })
-            );
-        } else {
-            moveContents.push(
-                ...indices.map(path => {
-                    return {
-                        element: board.children[path],
-                        newPath: [targetIndex]
-                    };
-                })
-            );
+            indices = indices.reverse();
         }
+        moveContents.push(
+            ...indices.map(path => {
+                return {
+                    element: board.children[path],
+                    newPath: [targetIndex]
+                };
+            })
+        );
     });
 
     return moveContents;
 };
 
-export const getAllZIndexMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): ZIndexMoveOption[] => {
+export const getAllMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): ZIndexMoveOption[] => {
     const indicesToMove = getIndicesToMove(board);
     let groupedIndices = toContiguousGroups(board, indicesToMove);
     let targetIndex = 0;

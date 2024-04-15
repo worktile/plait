@@ -41,7 +41,6 @@ export const withMind = (baseBoard: PlaitBoard) => {
         isAlign,
         isImageBindingAllowed,
         canAddToGroup,
-        isExpanded,
         canSetZIndex
     } = board;
 
