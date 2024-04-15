@@ -25,6 +25,8 @@ import { ManualLoopEngine } from './flowchart/manual-loop';
 import { MergeEngine } from './flowchart/merge';
 import { DelayEngine } from './flowchart/delay';
 import { StoredDataEngine } from './flowchart/stored-data';
+import { PredefinedProcessEngine } from './flowchart/predefined-process';
+import { OffPageEngine } from './flowchart/off-page';
 import { CloudEngine } from './basic-shapes/cloud';
 
 export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
@@ -60,6 +62,8 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [FlowchartSymbols.merge]: MergeEngine,
     [FlowchartSymbols.delay]: DelayEngine,
     [FlowchartSymbols.storedData]: StoredDataEngine,
+    [FlowchartSymbols.predefinedProcess]: PredefinedProcessEngine,
+    [FlowchartSymbols.offPage]: OffPageEngine
 };
 
 export const getEngine = (shape: GeometryShapes) => {

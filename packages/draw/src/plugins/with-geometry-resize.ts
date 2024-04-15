@@ -14,6 +14,7 @@ import {
     ResizeState,
     WithResizeOptions,
     getFirstTextManage,
+    getIndexByResizeHandle,
     isCornerHandle,
     normalizeShapePoints,
     withResize
@@ -25,10 +26,10 @@ import { PlaitImage } from '../interfaces/image';
 import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeOriginPointAndHandlePoint } from './with-draw-resize';
-import { getResizeSnapRef } from '../utils/resize-snap';
+import { getSnapResizingRefOptions, getSnapResizingRef } from '../utils/snap-resizing';
 
 export const withGeometryResize = (board: PlaitBoard) => {
-    let alignG: SVGGElement | null;
+    let snapG: SVGGElement | null;
     const options: WithResizeOptions<PlaitGeometry | PlaitImage> = {
         key: 'draw-geometry',
         canResize: () => {
@@ -56,14 +57,14 @@ export const withGeometryResize = (board: PlaitBoard) => {
             return null;
         },
         onResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>, resizeState: ResizeState) => {
-            const centerPoint = RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(resizeRef.element.points));
             resizeState.startPoint = rotateAntiPointsByElement(resizeState.startPoint, resizeRef.element) || resizeState.startPoint;
             resizeState.endPoint = rotateAntiPointsByElement(resizeState.endPoint, resizeRef.element) || resizeState.endPoint;
-            alignG?.remove();
+            snapG?.remove();
             const isFromCorner = isCornerHandle(board, resizeRef.handle);
             const isAspectRatio = resizeState.isShift || PlaitDrawElement.isImage(resizeRef.element);
-            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, resizeRef);
-            const resizeAlignRef = getResizeSnapRef(
+            const handleIndex = getIndexByResizeHandle(resizeRef.handle);
+            const { originPoint, handlePoint } = getResizeOriginPointAndHandlePoint(board, handleIndex, resizeRef.rectangle!);
+            const resizeSnapRefOptions = getSnapResizingRefOptions(
                 board,
                 resizeRef,
                 resizeState,
@@ -74,9 +75,10 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 isAspectRatio,
                 isFromCorner
             );
-            alignG = resizeAlignRef.alignG;
-            PlaitBoard.getElementActiveHost(board).append(alignG);
-            let points = resizeAlignRef.activePoints as [Point, Point];
+            const resizeSnapRef = getSnapResizingRef(board, [resizeRef.element], resizeSnapRefOptions);
+            snapG = resizeSnapRef.snapG;
+            PlaitBoard.getElementActiveHost(board).append(snapG);
+            let points = resizeSnapRef.activePoints as [Point, Point];
             if (PlaitDrawElement.isGeometry(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);
@@ -86,8 +88,8 @@ export const withGeometryResize = (board: PlaitBoard) => {
             }
         },
         afterResize: (resizeRef: ResizeRef<PlaitGeometry | PlaitImage>) => {
-            alignG?.remove();
-            alignG = null;
+            snapG?.remove();
+            snapG = null;
         }
     };
 

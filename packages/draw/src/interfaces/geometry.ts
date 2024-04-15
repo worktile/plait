@@ -38,7 +38,9 @@ export enum FlowchartSymbols {
     manualLoop = 'manualLoop',
     merge = 'merge',
     delay = 'delay',
-    storedData = 'storedData'
+    storedData = 'storedData',
+    predefinedProcess = 'predefinedProcess',
+    offPage = 'offPage'
 }
 
 export type GeometryShapes = BasicShapes | FlowchartSymbols;
