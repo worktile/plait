@@ -1,9 +1,7 @@
 import { idCreator, PlaitBoard, Point, RectangleClient, Transforms } from '@plait/core';
 import { PlaitDrawElement, PlaitSwimlane, SwimlaneSymbols } from '../interfaces';
 import { PlaitTableCell } from '../interfaces/table';
-import { Alignment } from '@plait/text';
 import { getCellWithPoints } from '../utils/table';
-import { DEFAULT_TEXT_HEIGHT } from '../constants';
 
 export const addSwimlaneRow = (board: PlaitBoard, swimlane: PlaitSwimlane, index: number) => {
     if (PlaitDrawElement.isSwimlane(swimlane) && swimlane.shape === SwimlaneSymbols.swimlaneHorizontal) {

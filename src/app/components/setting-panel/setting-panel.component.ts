@@ -14,20 +14,7 @@ import {
     hasSameAngle,
     canSetZIndex
 } from '@plait/core';
-import {
-    DrawTransforms,
-    GeometryShapes,
-    LineHandleKey,
-    LineMarkerType,
-    LineShape,
-    PlaitSwimlane,
-    getMemorizeKey,
-    getSelectedGeometryElements,
-    getSelectedImageElements,
-    getSelectedLineElements,
-    isSingleSelectSwimlane
-} from '@plait/draw';
-import { MindLayoutType } from '@plait/layouts';
+
 import {
     MindElement,
     MindPointerType,
@@ -42,6 +29,22 @@ import { AppColorPickerComponent } from '../color-picker/color-picker.component'
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
 import { AlignTransform, PropertyTransforms, TextTransforms, getFirstTextEditor, getTextEditors } from '@plait/common';
+import {
+    LineShape,
+    LineMarkerType,
+    getSelectedLineElements,
+    isSingleSelectSwimlane,
+    getSelectedGeometryElements,
+    isMultipleTextGeometry,
+    PlaitGeometry,
+    getSelectedImageElements,
+    GeometryShapes,
+    DrawTransforms,
+    getMemorizeKey,
+    LineHandleKey,
+    PlaitSwimlane
+} from '@plait/draw';
+import { MindLayoutType } from '@plait/layouts';
 
 @Component({
     selector: 'app-setting-panel',
@@ -135,7 +138,11 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedGeometryElements = getSelectedGeometryElements(this.board);
         if (selectedGeometryElements.length) {
             const firstGeometry = selectedGeometryElements[0];
-            this.align = firstGeometry.text.align || Alignment.center;
+            if (isMultipleTextGeometry(firstGeometry)) {
+                this.align = firstGeometry.texts[0].text.align || Alignment.center;
+            } else {
+                this.align = (firstGeometry as PlaitGeometry).text.align || Alignment.center;
+            }
             this.strokeWidth = firstGeometry.strokeWidth || 3;
         }
 

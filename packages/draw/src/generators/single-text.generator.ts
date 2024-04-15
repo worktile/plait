@@ -10,7 +10,13 @@ export class SingleTextGenerator<T extends PlaitElement = PlaitGeometry> extends
         return this.textManages[0];
     }
 
-    constructor(board: PlaitBoard, element: T, text: ParagraphElement, viewContainerRef: ViewContainerRef, options: TextGeneratorOptions<T>) {
+    constructor(
+        board: PlaitBoard,
+        element: T,
+        text: ParagraphElement,
+        viewContainerRef: ViewContainerRef,
+        options: TextGeneratorOptions<T>
+    ) {
         super(board, element, [{ key: element.id, text: text, textHeight: element.textHeight }], viewContainerRef, options);
     }
 

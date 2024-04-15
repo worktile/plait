@@ -1,5 +1,6 @@
 import { ACTIVE_STROKE_WIDTH } from '@plait/core';
-import { BasicShapes, FlowchartSymbols, UMLSymbols } from '../interfaces';
+import { Alignment } from '@plait/text';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, MultipleTextGeometryCommonTextKeys, UMLSymbols } from '../interfaces';
 
 export const ShapeDefaultSpace = {
     rectangleAndText: 4
@@ -119,6 +120,40 @@ export const DefaultContainerProperty = {
     height: 240
 };
 
+export const DefaultPackageProperty = {
+    width: 210,
+    height: 150,
+    texts: [
+        {
+            key: MultipleTextGeometryCommonTextKeys.name,
+            text: '包名',
+            align: Alignment.left
+        },
+        {
+            key: MultipleTextGeometryCommonTextKeys.content,
+            text: '',
+            align: Alignment.left
+        }
+    ]
+};
+
+export const DefaultCombinedFragmentProperty = {
+    width: 400,
+    height: 280,
+    texts: [
+        {
+            key: MultipleTextGeometryCommonTextKeys.name,
+            text: 'Opt | Alt | Loop',
+            align: Alignment.left
+        },
+        {
+            key: MultipleTextGeometryCommonTextKeys.content,
+            text: '[Condition]',
+            align: Alignment.left
+        }
+    ]
+};
+
 export const DefaultBasicShapePropertyMap: Record<string, { width: number; height: number }> = {
     [BasicShapes.pentagonArrow]: DefaultPentagonArrowProperty,
     [BasicShapes.processArrow]: DefaultPentagonArrowProperty,
@@ -158,7 +193,14 @@ export const DefaultFlowchartPropertyMap = {
 export const DefaultUMLPropertyMap = {
     [UMLSymbols.actor]: DefaultActorProperty,
     [UMLSymbols.useCase]: DefaultDocumentProperty,
-    [UMLSymbols.container]: DefaultContainerProperty
+    [UMLSymbols.container]: DefaultContainerProperty,
+    [UMLSymbols.package]: DefaultPackageProperty,
+    [UMLSymbols.combinedFragment]: DefaultCombinedFragmentProperty
+};
+
+export const MultipleTextGeometryTextKeys: { [key in GeometryShapes]?: string[] } = {
+    [UMLSymbols.package]: Object.keys(MultipleTextGeometryCommonTextKeys),
+    [UMLSymbols.combinedFragment]: Object.keys(MultipleTextGeometryCommonTextKeys)
 };
 
 export const LINE_HIT_GEOMETRY_BUFFER = 10;
