@@ -73,15 +73,47 @@ export const getOneMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): 
     return moveContents;
 };
 
-const getIndicesToMove = (board: PlaitBoard) => {
-    const selectedElements = [...getSelectedElements(board), ...getSelectedGroups(board)];
-    return selectedElements
-        .map(item => {
-            return board.children.indexOf(item);
-        })
-        .sort((a, b) => {
-            return a - b;
-        });
+export const getAllZIndexMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): ZIndexMoveOption[] => {
+    const indicesToMove = getIndicesToMove(board);
+    let groupedIndices = toContiguousGroups(board, indicesToMove);
+    let targetIndex = 0;
+    let moveContents: ZIndexMoveOption[] = [];
+    if (direction === 'up') {
+        groupedIndices = groupedIndices.reverse();
+        targetIndex = board.children.length - 1;
+    }
+    groupedIndices.forEach(indices => {
+        const leadingIndex = indices[0];
+        const trailingIndex = indices[indices.length - 1];
+        const boundaryIndex = direction === 'down' ? leadingIndex : trailingIndex;
+        const sourceElement = board.children[boundaryIndex];
+        const editingGroup = getEditingGroup(board, sourceElement);
+        if (editingGroup) {
+            const elementsInGroup = ascendingSortElements(board, getElementsInGroup(board, editingGroup, true, true));
+            targetIndex =
+                direction === 'down'
+                    ? board.children.indexOf(elementsInGroup[0])
+                    : board.children.indexOf(elementsInGroup[elementsInGroup.length - 1]);
+        }
+        if (direction === 'down') {
+            indices = indices.reverse();
+        }
+        moveContents.push(
+            ...indices.map(path => {
+                return {
+                    element: board.children[path],
+                    newPath: [targetIndex]
+                };
+            })
+        );
+    });
+
+    return moveContents;
+};
+
+export const canSetZIndex = (board: PlaitBoard) => {
+    const selectedElements = getSelectedElements(board).filter(item => board.canSetZIndex(item));
+    return selectedElements.length > 0;
 };
 
 const toContiguousGroups = (board: PlaitBoard, array: number[]) => {
@@ -164,4 +196,23 @@ const getTargetIndex = (board: PlaitBoard, boundaryIndex: number, direction: 'do
     }
 
     return candidateIndex;
+};
+
+const getIndicesToMove = (board: PlaitBoard) => {
+    const selectedElements = [...getSelectedElements(board), ...getSelectedGroups(board)].filter(item => board.canSetZIndex(item));
+    return selectedElements
+        .map(item => {
+            return board.children.indexOf(item);
+        })
+        .sort((a, b) => {
+            return a - b;
+        });
+};
+
+const ascendingSortElements = (board: PlaitBoard, elements: PlaitElement[] = []) => {
+    return elements.sort((a, b) => {
+        const indexA = board.children.findIndex(child => child.id === a.id);
+        const indexB = board.children.findIndex(child => child.id === b.id);
+        return indexA - indexB;
+    });
 };
