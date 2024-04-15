@@ -1,5 +1,12 @@
-<plait-board [plaitPlugins]="plugins" [plaitValue]="value" [plaitViewport]="viewport" [plaitTheme]="theme"
-    [plaitOptions]="options" (plaitBoardInitialized)="plaitBoardInitialized($event)" (plaitChange)="change($event)">
+<plait-board
+    [plaitPlugins]="plugins"
+    [plaitValue]="value"
+    [plaitViewport]="viewport"
+    [plaitTheme]="theme"
+    [plaitOptions]="options"
+    (plaitBoardInitialized)="plaitBoardInitialized($event)"
+    (plaitChange)="change($event)"
+>
     <div class="plait-toolbar island plait-board-attached theme-setting-toolbar">
         <select (change)="themeChange($event)">
             <option value="default">默认</option>
@@ -17,8 +24,6 @@
 </plait-board>
 
 <div #contextMenu class="context-menu">
-    <div class="context-menu-item" (pointerup)="moveUp($event)">上移一层</div>
-    <div class="context-menu-item" (pointerup)="moveDown($event)">下移一层</div>
     <div class="context-menu-item" *ngIf="showAddGroup" (pointerup)="addGroup($event)">成组</div>
     <div class="context-menu-item" *ngIf="showRemoveGroup" (pointerup)="removeGroup($event)">取消成组</div>
     <div class="context-menu-item" (pointerup)="copy($event)">复制</div>

@@ -1,9 +1,16 @@
 import { PlaitBoard } from '@plait/core';
-import { getOneMoveOptions, moveElementsToNewPath } from '../utils';
+import { getOneMoveOptions, moveElementsToNewPath, getAllMoveOptions } from '../utils';
 
-const moveToTop = () => {};
+const moveToTop = (board: PlaitBoard) => {
+    const moveOptions = getAllMoveOptions(board, 'up');
+    moveElementsToNewPath(board, moveOptions);
+};
 
-const moveToBottom = () => {};
+const moveToBottom = (board: PlaitBoard) => {
+    const moveOptions = getAllMoveOptions(board, 'down');
+    moveElementsToNewPath(board, moveOptions);
+};
+
 
 const moveUp = (board: PlaitBoard) => {
     const moveOptions = getOneMoveOptions(board, 'up');
