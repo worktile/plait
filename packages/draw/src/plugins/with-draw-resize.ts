@@ -30,7 +30,6 @@ import {
     ACTIVE_STROKE_WIDTH,
     SELECTION_BORDER_COLOR
 } from '@plait/core';
-import { isRotating } from '@plait/common';
 import { PlaitDrawElement } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
