@@ -1,4 +1,4 @@
-import { PlaitElement, RectangleClient } from '@plait/core';
+import { RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getTextRectangle } from '../../utils';

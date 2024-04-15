@@ -1,5 +1,13 @@
 # text
 
+## 0.57.0
+
+## 0.56.2
+
+### Patch Changes
+
+-   [#868](https://github.com/worktile/plait/pull/868) [`49b51b7e8`](https://github.com/worktile/plait/commit/49b51b7e8f34df6bddbd2ebd531a772210f67cff) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve wrapLink function: should insert link node when paragraph is empty
+
 ## 0.56.1
 
 ## 0.56.0

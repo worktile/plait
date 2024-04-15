@@ -141,7 +141,8 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.internalStorage]: DefaultInternalStorageProperty,
     [FlowchartSymbols.noteCurlyLeft]: DefaultNoteProperty,
     [FlowchartSymbols.noteCurlyRight]: DefaultNoteProperty,
-    [FlowchartSymbols.noteSquare]: DefaultNoteProperty
+    [FlowchartSymbols.noteSquare]: DefaultNoteProperty,
+    [FlowchartSymbols.display]: DefaultFlowchartProperty
 };
 
 export const LINE_HIT_GEOMETRY_BUFFER = 10;

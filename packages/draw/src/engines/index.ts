@@ -38,6 +38,7 @@ import { InternalStorageEngine } from './flowchart/internal-storage';
 import { NoteCurlyLeftEngine } from './flowchart/note-curly-left';
 import { NoteCurlyRightEngine } from './flowchart/note-curly-right';
 import { NoteSquareEngine } from './flowchart/note-square';
+import { DisplayEngine } from './flowchart/display';
 import { TableEngine } from './table/table';
 
 export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine | TableEngine> = {
@@ -85,6 +86,7 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine | TableEngine> =
     [FlowchartSymbols.noteCurlyLeft]: NoteCurlyLeftEngine,
     [FlowchartSymbols.noteCurlyRight]: NoteCurlyRightEngine,
     [FlowchartSymbols.noteSquare]: NoteSquareEngine,
+    [FlowchartSymbols.display]: DisplayEngine,
     [SwimlaneSymbols.swimlaneHorizontal]: TableEngine,
     [SwimlaneSymbols.swimlaneVertical]: TableEngine,
     [TableSymbols.table]: TableEngine

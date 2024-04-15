@@ -327,6 +327,14 @@
 
         <a
             class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.display) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.display)"
+        >
+            <ng-template [ngTemplateOutlet]="display"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
             [ngClass]="{ active: isPointer(FlowchartSymbols.offPage) }"
             (mousedown)="setPointer($event, FlowchartSymbols.offPage)"
         >
@@ -1141,6 +1149,26 @@
             <path
                 d="M14.5,2 C14.7761424,2 15,2.22385763 15,2.5 L15,8.77166426 C15,8.9166849 14.9370358,9.05456117 14.8274386,9.14953188 L8.02040186,15.0481237 L1.17365238,9.1496027 C1.06340035,9.05461983 1,8.91631649 1,8.77079242 L1,2.5 C1,2.22385763 1.22385763,2 1.5,2 L14.5,2 Z M13.8,3.2 L2.2,3.2 L2.2,8.45 L8.018,13.462 L13.8,8.451 L13.8,3.2 Z"
                 id="矩形"
+                fill="#999999"
+            ></path>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #display>
+    <svg
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/显示</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/显示" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M11.5,3 C13.9852814,3 16,5.23857625 16,8 C16,10.7614237 13.9852814,13 11.5,13 L3.26519621,13 C3.09934121,13 2.94428,12.9086186 2.85125276,12.7560528 L0,8.0799656 L2.85190553,3.25077161 C2.94433029,3.09426675 3.10147391,3 3.26994436,3 L11.5,3 Z M1.442,8.06777778 L3.636,11.6666667 L11.5,11.6666667 C13.2596935,11.6666667 14.6976959,10.1363074 14.7947761,8.208068 L14.8,8 C14.8,5.97495592 13.3225397,4.33333333 11.5,4.33333333 L3.648,4.33333333 L1.442,8.06777778 Z"
+                id="形状结合"
                 fill="#999999"
             ></path>
         </g>

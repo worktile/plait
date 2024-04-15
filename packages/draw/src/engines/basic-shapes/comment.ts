@@ -1,6 +1,5 @@
 import {
     PlaitBoard,
-    PlaitElement,
     Point,
     PointOfRectangle,
     RectangleClient,

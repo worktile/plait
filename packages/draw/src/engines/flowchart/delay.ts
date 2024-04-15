@@ -10,7 +10,7 @@ import {
     setStrokeLinecap,
     getNearestPointBetweenPointAndEllipse
 } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 

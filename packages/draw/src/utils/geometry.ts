@@ -2,6 +2,7 @@ import {
     ACTIVE_STROKE_WIDTH,
     BoardTransforms,
     PlaitBoard,
+    PlaitElement,
     PlaitPointerType,
     Point,
     RectangleClient,
@@ -14,6 +15,7 @@ import {
     clearSelectedElement,
     createG,
     drawCircle,
+    getSelectedElements,
     idCreator
 } from '@plait/core';
 import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols } from '../interfaces/geometry';
@@ -29,7 +31,7 @@ import {
     ShapeDefaultSpace,
     getFlowchartPointers
 } from '../constants';
-import { RESIZE_HANDLE_DIAMETER, getFirstTextManage } from '@plait/common';
+import { ActiveGenerator, PlaitCommonElementRef, RESIZE_HANDLE_DIAMETER, getFirstTextManage } from '@plait/common';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
@@ -137,7 +139,7 @@ export const getDefaultFlowchartProperty = (symbol: FlowchartSymbols) => {
 };
 
 export const getDefaultBasicShapeProperty = (shape: BasicShapes) => {
-    return DefaultBasicShapePropertyMap[shape] || DefaultBasicShapeProperty
+    return DefaultBasicShapePropertyMap[shape] || DefaultBasicShapeProperty;
 };
 
 export const createDefaultFlowchart = (point: Point) => {
@@ -357,7 +359,20 @@ export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point],
     );
 };
 
-export const editText = (element: PlaitGeometry) => {
+export const editText = (board: PlaitBoard, element: PlaitGeometry) => {
     const textManage = getFirstTextManage(element);
-    textManage.edit();
+    textManage.edit(() => {
+        // delay to avoid blinking
+        setTimeout(() => {
+            rerenderGeometryActive(board, element);
+        }, 200);
+    });
+    rerenderGeometryActive(board, element);
+};
+
+export const rerenderGeometryActive = (board: PlaitBoard, element: PlaitGeometry) => {
+    const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(element);
+    const activeGenerator = elementRef.getGenerator(ActiveGenerator.key);
+    const selected = getSelectedElements(board).includes(element);
+    activeGenerator.processDrawing(element, PlaitBoard.getElementActiveHost(board), { selected });
 };

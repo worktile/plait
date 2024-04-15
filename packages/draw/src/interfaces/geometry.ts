@@ -50,7 +50,8 @@ export enum FlowchartSymbols {
     internalStorage = 'internalStorage',
     noteCurlyRight = 'noteCurlyRight',
     noteCurlyLeft = 'noteCurlyLeft',
-    noteSquare = 'noteSquare'
+    noteSquare = 'noteSquare',
+    display = 'display'
 }
 
 export enum TableSymbols {

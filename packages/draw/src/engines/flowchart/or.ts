@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, RectangleClient } from '@plait/core';
+import { PlaitBoard, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getTextRectangle } from '../../utils';

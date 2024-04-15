@@ -1,5 +1,15 @@
 # @plait/common
 
+## 0.57.0
+
+## 0.56.2
+
+### Patch Changes
+
+-   [#868](https://github.com/worktile/plait/pull/868) [`bf12a3c55`](https://github.com/worktile/plait/commit/bf12a3c55a62a70afc49b1a724541e44e3bd6f58) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add findFirstTextEditor to get first text editor correctly
+
+    fix error when first element has no text
+
 ## 0.56.1
 
 ## 0.56.0

@@ -124,11 +124,11 @@ export const withDraw = (board: PlaitBoard) => {
 
     return withTable(
         withDrawResize(
-            withLineResize(
-                withLineTextMove(
-                    withLineAutoCompleteReaction(
-                        withLineText(
-                            withLineBoundReaction(
+            withLineAutoCompleteReaction(
+                withLineBoundReaction(
+                    withLineResize(
+                        withLineTextMove(
+                            withLineText(
                                 withGeometryResize(
                                     withDrawRotate(
                                         withLineCreateByDraw(

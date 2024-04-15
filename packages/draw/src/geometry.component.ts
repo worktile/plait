@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import {
     PlaitBoard,
     PlaitPluginElementContext,
@@ -75,6 +75,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         this.shapeGenerator = new GeometryShapeGenerator(this.board);
         this.initializeTextManage();
         this.getRef().addGenerator(LineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
+        this.getRef().addGenerator(ActiveGenerator.key, this.activeGenerator);
     }
 
     ngOnInit(): void {

@@ -1,5 +1,25 @@
 # @plait/draw
 
+## 0.57.0
+
+### Minor Changes
+
+-   [#865](https://github.com/worktile/plait/pull/865) [`dcb5263a9`](https://github.com/worktile/plait/commit/dcb5263a9110085a5b2e8db69be3f103937b6bce) Thanks [@MissLixf](https://github.com/MissLixf)! - add display shape for flowchart
+
+*   [#858](https://github.com/worktile/plait/pull/858) [`35418e50e`](https://github.com/worktile/plait/commit/35418e50e0d873515c7e21f1edbb02b7ca702691) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - init swimlane
+
+## 0.56.2
+
+### Patch Changes
+
+-   [#868](https://github.com/worktile/plait/pull/868) [`fcd154300`](https://github.com/worktile/plait/commit/fcd154300695773f21123fab718b839267815658) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - adjusting the execution order of plugins.
+
+*   [#868](https://github.com/worktile/plait/pull/868) [`6f6345b2e`](https://github.com/worktile/plait/commit/6f6345b2e67fe95e0028574f60d98b6722789037) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - rerender geometry active state when start to edit text and exit to edit text
+
+    clear clearHoverHitTestRef state when canResize is false
+
+-   [#868](https://github.com/worktile/plait/pull/868) [`a28925a24`](https://github.com/worktile/plait/commit/a28925a249e015d4079cac272af15fce32e5777d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - adjust start text position
+
 ## 0.56.1
 
 ### Patch Changes

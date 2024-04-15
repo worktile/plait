@@ -1,6 +1,5 @@
 import {
     PlaitBoard,
-    PlaitElement,
     Point,
     PointOfRectangle,
     RectangleClient,
@@ -105,7 +104,7 @@ export const DatabaseEngine: ShapeEngine = {
         return vector;
     },
 
-    getTextRectangle: (element: PlaitElement) => {
+    getTextRectangle: (element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const height = element.textHeight;
