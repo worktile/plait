@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, RectangleClient } from '@plait/core';
+import { idCreator, PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitTable, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
 import { getTextManage } from '../generators/text.generator';
 import { PlaitTableBoard } from '../plugins/with-table';
@@ -118,3 +118,27 @@ export const updateRows = (table: PlaitTable, rowId: string, height: number, off
     const points = [table.points[0], [table.points[1][0], table.points[1][1] + offset]] as Point[];
     return { rows, points };
 };
+
+export function updateCellIdsByRowOrColumn(cells: PlaitTableCell[], oldId: string, newId: string, type: 'row' | 'column') {
+    const id: 'rowId' | 'columnId' = `${type}Id`;
+    cells.forEach(item => {
+        if (item[id] === oldId) {
+            item[id] = newId;
+        }
+    });
+}
+
+export function updateRowOrColumnIds(element: PlaitTable, type: 'row' | 'column') {
+    element[`${type}s`].forEach(item => {
+        const newId = idCreator();
+        updateCellIdsByRowOrColumn(element.cells, item.id, newId, type);
+        item.id = newId;
+    });
+}
+
+export function updateCellIds(cells: PlaitTableCell[]) {
+    cells.forEach(item => {
+        const newId = idCreator();
+        item.id = newId;
+    });
+}
