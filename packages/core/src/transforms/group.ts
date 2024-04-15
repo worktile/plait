@@ -27,11 +27,11 @@ export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
             const path = PlaitBoard.findPath(board, item);
             NodeTransforms.setNode(board, { groupId: group.id }, path);
         });
-        const highestIndexOfSelectedElement = getHighestIndexOfElement(board, highestSelectedElements);
+        const selectedElements = getSelectedElements(board);
+        const highestIndexOfSelectedElement = getHighestIndexOfElement(board, [...selectedElements, ...selectedGroups]);
         const indices = getElementsIndices(board, highestSelectedElements);
         const isContinuous = isIndexesContinuous(indices);
         if (!isContinuous) {
-            const selectedElements = getSelectedElements(board);
             moveElementsToNewPathAfterAddGroup(board, [...selectedElements, ...selectedGroups], [highestIndexOfSelectedElement - 1]);
         }
         const groupPath = [highestIndexOfSelectedElement + 1];
