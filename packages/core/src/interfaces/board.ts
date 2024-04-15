@@ -13,6 +13,7 @@ import {
     BOARD_TO_MOVING_POINT,
     BOARD_TO_MOVING_POINT_IN_BOARD,
     BOARD_TO_ROUGH_SVG,
+    IS_BOARD_ALIVE,
     IS_BOARD_CACHE,
     IS_TEXT_EDITABLE,
     NODE_TO_INDEX,
@@ -128,7 +129,7 @@ export const PlaitBoard = {
         return isBoard;
     },
     isAlive(board: PlaitBoard) {
-        const isAlive = IS_BOARD_CACHE.get(board);
+        const isAlive = IS_BOARD_ALIVE.get(board);
         return !!isAlive;
     },
     findPath(board: PlaitBoard, node: PlaitNode): Path {
