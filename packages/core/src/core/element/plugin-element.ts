@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
+import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { PlaitBoard, PlaitChildrenContext, PlaitElement, PlaitNode, PlaitPluginElementContext } from '../../interfaces';
 import { removeSelectedElement } from '../../utils/selected-element';
 import { createG } from '../../utils/dom/common';
 import { hasBeforeContextChange, hasOnContextChanged } from './context-change';
-import { ListRender, mountElementG } from '../list-render';
-import { NODE_TO_CONTAINER_G, NODE_TO_G, NODE_TO_PARENT_G } from '../../utils/weak-maps';
+import { ListRender } from '../list-render';
+import { NODE_TO_CONTAINER_G, NODE_TO_G } from '../../utils/weak-maps';
 
 @Directive()
 export abstract class PlaitPluginElementComponent<T extends PlaitElement = PlaitElement, K extends PlaitBoard = PlaitBoard>
@@ -13,9 +13,11 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
 
     private _g!: SVGGElement;
 
-    private _parentG?: SVGGElement;
-
     private _containerG!: SVGGElement;
+
+    // children elements's render need rootContainerG
+    // the value of rootContainerG come from the containerG of root element
+    private _rootContainerG?: SVGGElement;
 
     initialized = false;
 
@@ -37,11 +39,9 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
         }
         if (this.initialized) {
             const elementG = this.getElementG();
-            const parentG = this.getParentG();
             const containerG = this.getContainerG();
             NODE_TO_G.set(this.element, elementG);
             NODE_TO_CONTAINER_G.set(this.element, containerG);
-            parentG && PlaitElement.isRootElement(this.element) && NODE_TO_PARENT_G.set(this.element, parentG);
             this.updateListRender();
             this.cdr.markForCheck();
             if (hasOnContextChanged<T>(this)) {
@@ -50,19 +50,14 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
         } else {
             if (PlaitElement.isRootElement(this.element) && this.hasChildren) {
                 this._g = createG();
-                this._parentG = createG();
-                this._parentG.append(this._g);
-                this._containerG = this._parentG;
+                this._containerG = createG();
+                this._containerG.append(this._g);
             } else {
                 this._g = createG();
                 this._containerG = this._g;
             }
-            const elementG = this.getElementG();
-            const parentG = this.getParentG();
-            const containerG = this.getContainerG();
-            NODE_TO_G.set(this.element, elementG);
-            NODE_TO_CONTAINER_G.set(this.element, containerG);
-            parentG && NODE_TO_PARENT_G.set(this.element, parentG);
+            NODE_TO_G.set(this.element, this._g);
+            NODE_TO_CONTAINER_G.set(this.element, this._containerG);
         }
     }
 
@@ -84,10 +79,6 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
 
     listRender?: ListRender;
 
-    getParentG() {
-        return this._parentG;
-    }
-
     getContainerG() {
         return this._containerG;
     }
@@ -102,12 +93,16 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
         if (this.element.type) {
             this.getContainerG().setAttribute(`plait-${this.element.type}`, 'true');
         }
-        this.getContainerG().setAttribute('plait-data-id', this.element.id);
-        if (!PlaitElement.isRootElement(this.element)) {
-            const path = PlaitBoard.findPath(this.board, this.element);
-            const rootNode = PlaitNode.get(this.board, path.slice(0, 1));
-            this._parentG = PlaitElement.getParentG(rootNode);
+        if (this.hasChildren) {
+            if (PlaitElement.isRootElement(this.element)) {
+                this._rootContainerG = this._containerG;
+            } else {
+                const path = PlaitBoard.findPath(this.board, this.element);
+                const rootNode = PlaitNode.get(this.board, path.slice(0, 1));
+                this._rootContainerG = PlaitElement.getContainerG(rootNode, { suppressThrow: false });
+            }
         }
+        this.getContainerG().setAttribute('plait-data-id', this.element.id);
         this.initialized = true;
     }
 
@@ -136,14 +131,13 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
     }
 
     private initializeChildrenContext(): PlaitChildrenContext {
-        const parentG = this.getParentG();
-        if (!parentG) {
-            throw new Error('parent g is not initialized incorrectly');
+        if (!this._rootContainerG) {
+            throw new Error('can not resolve root container g');
         }
         return {
             board: this.board,
             parent: this.element,
-            parentG
+            parentG: this._rootContainerG
         };
     }
 
