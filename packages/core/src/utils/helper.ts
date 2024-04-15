@@ -74,3 +74,13 @@ export const findIndex = <T>(
     }
     return -1;
 };
+
+export const isIndexesContinuous = (indexes: number[]): boolean => {
+    indexes.sort((a, b) => a - b);
+    for (let i = 1; i < indexes.length; i++) {
+        if (indexes[i] !== indexes[i - 1] + 1) {
+            return false;
+        }
+    }
+    return true;
+};
