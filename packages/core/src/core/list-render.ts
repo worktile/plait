@@ -33,7 +33,6 @@ export class ListRender {
             this.componentRefs.push(componentRef);
             this.contexts.push(context);
         });
-        // mount(this.componentRefs, childrenContext);
         const newDiffers = this.viewContainerRef.injector.get(IterableDiffers);
         this.differ = newDiffers.find(children).create(trackBy);
         this.differ.diff(children);
@@ -213,7 +212,6 @@ export const mountElementG = (index: number, g: SVGGElement, childrenContext: Pl
 
 const mountOnItemMove = (element: PlaitElement, index: number, childrenContext: PlaitChildrenContext, isChild: boolean = false) => {
     const containerG = PlaitElement.getContainerG(element, { suppressThrow: false });
-    console.log(element.id, index);
     mountElementG(index, containerG, childrenContext, isChild ? false : true);
     if (element.children && !PlaitElement.isRootElement(element)) {
         element.children.forEach((child, index) => {
