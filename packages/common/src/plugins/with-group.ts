@@ -83,7 +83,8 @@ export function withGroup(board: PlaitBoard) {
             const groups = getHighestSelectedGroups(board, clipboardData?.elements);
             const selectedIsolatedElements = getSelectedIsolatedElements(board, clipboardData?.elements);
             selectedIsolatedElements.forEach(item => {
-                elements.push(!item.groupId ? item : updateGroupId(item, undefined));
+                const index = clipboardData.elements!.map(element => element.id).indexOf(item.id);
+                elements.splice(index, 1, !item.groupId ? item : updateGroupId(item, undefined));
             });
             if (groups.length) {
                 groups.forEach(item => {
