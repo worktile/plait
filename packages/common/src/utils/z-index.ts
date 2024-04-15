@@ -68,11 +68,9 @@ export const getOneMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): 
 export const getAllMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): ZIndexMoveOption[] => {
     const indicesToMove = getIndicesToMove(board);
     let groupedIndices = toContiguousGroups(board, indicesToMove);
-    let targetIndex = 0;
     let moveContents: ZIndexMoveOption[] = [];
     if (direction === 'up') {
         groupedIndices = groupedIndices.reverse();
-        targetIndex = board.children.length - 1;
     }
     groupedIndices.forEach(indices => {
         const leadingIndex = indices[0];
@@ -80,6 +78,7 @@ export const getAllMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): 
         const boundaryIndex = direction === 'down' ? leadingIndex : trailingIndex;
         const sourceElement = board.children[boundaryIndex];
         const editingGroup = getEditingGroup(board, sourceElement);
+        let targetIndex = direction === 'down' ? 0 : board.children.length - 1;
         if (editingGroup) {
             const elementsInGroup = ascendingSortElements(board, getElementsInGroup(board, editingGroup, true, true));
             targetIndex =
