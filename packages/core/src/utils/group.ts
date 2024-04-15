@@ -1,5 +1,5 @@
 import { ACTIVE_STROKE_WIDTH } from '../constants';
-import { PlaitBoard, PlaitElement, PlaitGroup, PlaitGroupElement, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
+import { Path, PlaitBoard, PlaitElement, PlaitGroup, PlaitGroupElement, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
 import { getSelectionAngle } from './angle';
 import { createG, setAngleForG } from './dom';
 import { drawRectangle } from './drawing/rectangle';
@@ -8,6 +8,8 @@ import { idCreator } from './id-creator';
 import { getSelectedElements } from './selected-element';
 import { isSelectionMoving } from './selection';
 import { depthFirstRecursion } from './tree';
+import { moveElementsToNewPath } from './common';
+import { sortElements } from './position';
 
 export const getElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean, includeGroup?: boolean) => {
     let result: PlaitElement[] = [];
@@ -234,7 +236,6 @@ export const canRemoveGroup = (board: PlaitBoard, elements?: PlaitElement[]) => 
     return selectedElements.length > 0 && selectedGroups.length > 0;
 };
 
-
 export const getEditingGroup = (board: PlaitBoard, element: PlaitElement) => {
     const groups = getGroupByElement(board, element, true) as PlaitGroup[];
     let editingGroup = null;
@@ -247,4 +248,18 @@ export const getEditingGroup = (board: PlaitBoard, element: PlaitElement) => {
         }
     }
     return editingGroup;
+};
+
+export const moveElementsToNewPathAfterAddGroup = (board: PlaitBoard, moveElements: PlaitElement[], newPath: Path) => {
+    sortElements(board, moveElements);
+    moveElements.pop();
+    moveElementsToNewPath(
+        board,
+        moveElements.map(element => {
+            return {
+                element,
+                newPath
+            };
+        })
+    );
 };
