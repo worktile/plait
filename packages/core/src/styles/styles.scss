@@ -51,6 +51,23 @@
         }
     }
 
+    &.element-rotating {
+        .element-active-host {
+            & > g:not(.selection-rectangle, .active-with-rotating) {
+                display: none;
+            }
+            & > g:has(.selection-rectangle) {
+                display: inherit;
+                & > g {
+                    display: none;
+                }
+                & > g.selection-rectangle {
+                    display: inherit;
+                }
+            }
+        }
+    }
+
     &.pointer-selection {
         cursor: default;
     }

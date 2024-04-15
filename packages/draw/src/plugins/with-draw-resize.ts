@@ -223,7 +223,7 @@ export function withDrawResize(board: PlaitBoard) {
             handleG.remove();
             handleG = null;
         }
-        if (canResize() && !isSelectionMoving(board) && !isRotating(board)) {
+        if (canResize() && !isSelectionMoving(board)) {
             handleG = createG();
             const elements = getSelectedElements(board) as PlaitDrawElement[];
             const boundingRectangle = needCustomActiveRectangle

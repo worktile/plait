@@ -90,8 +90,6 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     angle = 0;
 
-    setAngleDisabled = false;
-
     @HostBinding('class.visible')
     get isVisible() {
         const selectedCount = getSelectedElements(this.board).length;
@@ -134,7 +132,6 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedElements = [...selectedImageElements, ...selectedGeometryElements];
         const selectionAngle = getSelectionAngle(selectedElements);
         this.angle = Math.round(radiansToDegrees(selectionAngle));
-        this.setAngleDisabled = false;
 
         if (selectedLineElements.length) {
             const firstLine = selectedLineElements[0];
