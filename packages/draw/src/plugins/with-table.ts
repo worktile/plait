@@ -7,11 +7,16 @@ import {
     RectangleClient,
     Selection,
     isPolylineHitRectangle,
-    getSelectedElements
+    getSelectedElements,
+    toViewBoxPoint,
+    toHostPoint,
+    getHitElementByPoint
 } from '@plait/core';
+import { getTextManages } from '@plait/common';
+import { getHitCell } from '../utils/table';
 
 export const withTable = (board: PlaitBoard) => {
-    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, getDeletedFragment } = board;
+    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, getDeletedFragment, dblClick } = board;
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitTableElement.isTable(context.element)) {
             return TableComponent;
@@ -58,5 +63,23 @@ export const withTable = (board: PlaitBoard) => {
         }
         return isRectangleHit(element, selection);
     };
+
+    board.dblClick = (event: MouseEvent) => {
+        event.preventDefault();
+        if (!PlaitBoard.isReadonly(board)) {
+            const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
+            const hitElement = getHitElementByPoint(board, point);
+            if (PlaitTableElement.isTable(hitElement)) {
+                const hitCell = getHitCell(hitElement, point);
+                if (hitCell && hitCell.text && hitCell.textHeight) {
+                    const cellIndex = hitElement.cells.indexOf(hitCell);
+                    const textManages = getTextManages(hitElement);
+                    textManages[cellIndex]?.edit();
+                }
+            }
+        }
+        dblClick(event);
+    };
+    
     return board;
 };

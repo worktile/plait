@@ -5,6 +5,9 @@ import { PlaitTable, PlaitTableCell } from './interfaces/table';
 import { PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
 import { TableGenerator } from './generators/table.generator';
 import { TextManageRef } from '@plait/text';
+import { DrawTransforms } from './transforms';
+import { getCellsWithPoints } from './utils/table';
+import { memorizeLatestText } from './utils';
 
 @Component({
     selector: 'plait-draw-table',
@@ -63,7 +66,22 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
     initializeTextManage() {
         const texts = this.getDrawShapeTexts(this.element.cells);
         this.textGenerator = new TextGenerator(this.board, this.element, texts, this.viewContainerRef, {
-            onValueChangeHandle: (textChangeRef: TextManageRef, text: PlaitDrawShapeText) => {}
+            onValueChangeHandle: (textManageRef: TextManageRef, text: PlaitDrawShapeText) => {
+                const cells = getCellsWithPoints(this.element);
+                const height = textManageRef.height / this.board.viewport.zoom;
+                const width = textManageRef.width / this.board.viewport.zoom;
+                if (textManageRef.newValue) {
+                    DrawTransforms.setTableText(
+                        this.board,
+                        this.element,
+                        cells.find(item => item.id === text.key)!,
+                        textManageRef.newValue,
+                        width,
+                        height
+                    );
+                }
+                textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
+            }
         });
         this.textGenerator.initialize();
         this.initializeTextManages(this.textGenerator.textManages);
