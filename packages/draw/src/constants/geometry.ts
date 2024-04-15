@@ -84,7 +84,9 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.delay]: DefaultFlowchartProperty,
     [FlowchartSymbols.storedData]: DefaultFlowchartProperty,
     [FlowchartSymbols.or]: DefaultConnectorProperty,
-    [FlowchartSymbols.summingJunction]: DefaultConnectorProperty
+    [FlowchartSymbols.summingJunction]: DefaultConnectorProperty,
+    [FlowchartSymbols.predefinedProcess]: DefaultFlowchartProperty,
+    [FlowchartSymbols.offPage]: DefaultFlowchartProperty
 };
 
 export const LINE_HIT_GEOMETRY_BUFFER = 10;

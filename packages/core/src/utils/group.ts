@@ -233,3 +233,18 @@ export const canRemoveGroup = (board: PlaitBoard, elements?: PlaitElement[]) => 
     const selectedElements = elements || getSelectedElements(board);
     return selectedElements.length > 0 && selectedGroups.length > 0;
 };
+
+
+export const getEditingGroup = (board: PlaitBoard, element: PlaitElement) => {
+    const groups = getGroupByElement(board, element, true) as PlaitGroup[];
+    let editingGroup = null;
+    if (groups?.length) {
+        for (let i = 0; i < groups?.length; i++) {
+            if (!isSelectedAllElementsInGroup(board, groups[i])) {
+                editingGroup = groups[i];
+                break;
+            }
+        }
+    }
+    return editingGroup;
+};

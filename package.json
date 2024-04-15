@@ -28,6 +28,7 @@
         "test:draw": "ng test draw",
         "test:core": "ng test core",
         "test:common": "ng test common",
+        "test:flow": "ng test flow",
         "start:docs": "docgeni serve --port 4600",
         "lint": "ng lint --fix",
         "pretty": "pretty-quick --staged"

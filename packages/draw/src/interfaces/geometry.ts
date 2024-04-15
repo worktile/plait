@@ -40,7 +40,9 @@ export enum FlowchartSymbols {
     delay = 'delay',
     storedData = 'storedData',
     or = 'or',
-    summingJunction = 'summingJunction'
+    summingJunction = 'summingJunction',
+    predefinedProcess = 'predefinedProcess',
+    offPage = 'offPage'
 }
 
 export type GeometryShapes = BasicShapes | FlowchartSymbols;
