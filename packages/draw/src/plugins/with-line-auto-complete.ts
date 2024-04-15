@@ -69,12 +69,13 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
                 const rectangle = RectangleClient.getRectangleByPoints(sourceElement.points);
                 const shape = getElementShape(sourceElement);
                 const engine = getEngine(shape);
+                let sourcePoint = autoCompletePoint;
                 if (engine.getNearestCrossingPoint) {
                     const crossingPoint = engine.getNearestCrossingPoint(rectangle, autoCompletePoint);
-                    autoCompletePoint = crossingPoint;
+                    sourcePoint = crossingPoint;
                 }
                 // source point must be click point
-                const rotatedSourcePoint = rotatePointsByElement(autoCompletePoint, sourceElement) || autoCompletePoint;
+                const rotatedSourcePoint = rotatePointsByElement(sourcePoint, sourceElement) || sourcePoint;
                 temporaryElement = handleLineCreating(board, LineShape.elbow, rotatedSourcePoint, movingPoint, sourceElement, lineShapeG);
             }
         }

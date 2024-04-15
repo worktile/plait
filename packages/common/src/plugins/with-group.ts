@@ -118,7 +118,7 @@ export function withGroup(board: PlaitBoard) {
 
     board.getRectangle = (element: PlaitElement) => {
         if (PlaitGroupElement.isGroup(element)) {
-            return getRectangleByGroup(board, element);
+            return getRectangleByGroup(board, element, true);
         }
         return getRectangle(element);
     };
@@ -167,8 +167,7 @@ const updateElementsGroupId = (group: PlaitGroup, clipboardDataElements: PlaitEl
 };
 
 const getRemoveGroups = (board: PlaitBoard) => {
-    const selectedElements = getSelectedElements(board);
-    const selectedGroups = board.getRelatedFragment([], selectedElements) as PlaitGroup[];
+    const selectedGroups = board.getRelatedFragment([]) as PlaitGroup[];
     const removeGroups = [...selectedGroups];
     const highestSelectedGroups = getHighestSelectedGroups(board);
     const selectedIsolatedElements = getSelectedIsolatedElementsCanAddToGroup(board);

@@ -23,7 +23,8 @@ export enum BasicShapes {
     processArrow = 'processArrow',
     twoWayArrow = 'twoWayArrow',
     comment = 'comment',
-    roundComment = 'roundComment'
+    roundComment = 'roundComment',
+    cloud = 'cloud'
 }
 
 export enum FlowchartSymbols {
@@ -38,7 +39,8 @@ export enum FlowchartSymbols {
     merge = 'merge',
     delay = 'delay',
     storedData = 'storedData',
-    predefinedProcess = 'predefinedProcess'
+    predefinedProcess = 'predefinedProcess',
+    offPage = 'offPage'
 }
 
 export type GeometryShapes = BasicShapes | FlowchartSymbols;

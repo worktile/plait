@@ -1,5 +1,19 @@
 # @plait/common
 
+## 0.54.0
+
+### Minor Changes
+
+-   [`9b25c6d6`](https://github.com/worktile/plait/commit/9b25c6d6cbebbb172540df5f1faeb7f499963557) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support assign the origin data when invoke getRelatedFragment
+
+### Patch Changes
+
+-   [#807](https://github.com/worktile/plait/pull/807) [`7b6c2cb4`](https://github.com/worktile/plait/commit/7b6c2cb4d0a1c1868bf9c6bd559775a20a73cbaa) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(common): set angle for group hover rectangle and selected rectangle
+
+*   [`ad997d91`](https://github.com/worktile/plait/commit/ad997d9155fd94ad39bf594d47158253b2c4e4b4) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - use getCornerPointsByPoints to get correct corners and add fail data and unit test case
+
+-   [#796](https://github.com/worktile/plait/pull/796) [`b218fadb`](https://github.com/worktile/plait/commit/b218fadbf4663663e16053a867236e33315cfc74) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add test for withGroup plugin
+
 ## 0.53.0
 
 ### Minor Changes

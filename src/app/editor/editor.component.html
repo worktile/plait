@@ -17,6 +17,8 @@
 </plait-board>
 
 <div #contextMenu class="context-menu">
+    <div class="context-menu-item" (pointerup)="moveUp($event)">上移一层</div>
+    <div class="context-menu-item" (pointerup)="moveDown($event)">下移一层</div>
     <div class="context-menu-item" *ngIf="showAddGroup" (pointerup)="addGroup($event)">成组</div>
     <div class="context-menu-item" *ngIf="showRemoveGroup" (pointerup)="removeGroup($event)">取消成组</div>
     <div class="context-menu-item" (pointerup)="copy($event)">复制</div>

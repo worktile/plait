@@ -37,7 +37,7 @@ import { withCommonPlugin } from '../plugins/with-common';
 import { AppMenuComponent } from '../components/menu/menu.component';
 import { NgIf } from '@angular/common';
 import { mockTurningPointData } from './mock-turning-point-data';
-import { withGroup } from '@plait/common';
+import { withGroup, ZIndexTransforms } from '@plait/common';
 
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
@@ -167,6 +167,18 @@ export class BasicEditorComponent implements OnInit {
     themeChange(event: Event) {
         const value = (event.target as HTMLSelectElement).value;
         BoardTransforms.updateThemeColor(this.board, value as ThemeColorMode);
+    }
+
+    moveUp(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+        ZIndexTransforms.moveUp(this.board);
+    }
+
+    moveDown(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+        ZIndexTransforms.moveDown(this.board);
     }
 
     copy(event: MouseEvent) {

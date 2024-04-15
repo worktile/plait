@@ -1,6 +1,7 @@
 import { ACTIVE_STROKE_WIDTH } from '../constants';
-import { PlaitBoard, PlaitElement, PlaitGroup, PlaitGroupElement, SELECTION_BORDER_COLOR } from '../interfaces';
-import { createG } from './dom';
+import { PlaitBoard, PlaitElement, PlaitGroup, PlaitGroupElement, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
+import { getSelectionAngle } from './angle';
+import { createG, setAngleForG } from './dom';
 import { drawRectangle } from './drawing/rectangle';
 import { getRectangleByElements } from './element';
 import { idCreator } from './id-creator';
@@ -182,13 +183,16 @@ export const createGroupRectangleG = (board: PlaitBoard, elements: PlaitElement[
         if (item.groupId && isRender) {
             const elements = getElementsInGroupByElement(board, item);
             const rectangle = getRectangleByElements(board, elements, false);
-            groupRectangleG.append(
-                drawRectangle(board, rectangle, {
-                    stroke: SELECTION_BORDER_COLOR,
-                    strokeWidth: ACTIVE_STROKE_WIDTH,
-                    strokeLineDash: [5]
-                })
-            );
+            const rectangleG = drawRectangle(board, rectangle, {
+                stroke: SELECTION_BORDER_COLOR,
+                strokeWidth: ACTIVE_STROKE_WIDTH,
+                strokeLineDash: [5]
+            });
+            const angle = getSelectionAngle(elements);
+            if (angle) {
+                setAngleForG(rectangleG, RectangleClient.getCenterPoint(rectangle), angle);
+            }
+            groupRectangleG.append(rectangleG);
         }
     });
     return groupRectangleG;
@@ -228,4 +232,19 @@ export const canRemoveGroup = (board: PlaitBoard, elements?: PlaitElement[]) => 
     const selectedGroups = getHighestSelectedGroups(board, elements);
     const selectedElements = elements || getSelectedElements(board);
     return selectedElements.length > 0 && selectedGroups.length > 0;
+};
+
+
+export const getEditingGroup = (board: PlaitBoard, element: PlaitElement) => {
+    const groups = getGroupByElement(board, element, true) as PlaitGroup[];
+    let editingGroup = null;
+    if (groups?.length) {
+        for (let i = 0; i < groups?.length; i++) {
+            if (!isSelectedAllElementsInGroup(board, groups[i])) {
+                editingGroup = groups[i];
+                break;
+            }
+        }
+    }
+    return editingGroup;
 };

@@ -24,6 +24,13 @@ export const DefaultBasicShapeProperty = {
     strokeWidth: 2
 };
 
+export const DefaultCloudShapeProperty = {
+    width: 120,
+    height: 100,
+    strokeColor: '#333',
+    strokeWidth: 2
+};
+
 export const DefaultTextProperty = {
     width: 36,
     height: 20,
@@ -76,7 +83,8 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.merge]: DefaultMergeProperty,
     [FlowchartSymbols.delay]: DefaultFlowchartProperty,
     [FlowchartSymbols.storedData]: DefaultFlowchartProperty,
-    [FlowchartSymbols.predefinedProcess]: DefaultFlowchartProperty
+    [FlowchartSymbols.predefinedProcess]: DefaultFlowchartProperty,
+    [FlowchartSymbols.offPage]: DefaultFlowchartProperty
 };
 
 export const LINE_HIT_GEOMETRY_BUFFER = 10;
