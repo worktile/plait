@@ -32,3 +32,8 @@ export const getSelectedTableElements = (board: PlaitBoard, elements?: PlaitElem
     const selectedElements = elements?.length ? elements : getSelectedElements(board);
     return selectedElements.filter(value => PlaitTableElement.isTable(value)) as PlaitTable[];
 };
+
+export const isSingleSelectTable = (board: PlaitBoard) => {
+    const selectedElements = getSelectedElements(board);
+    return selectedElements && selectedElements.length === 1 && PlaitTableElement.isTable(selectedElements[0]);
+};

@@ -20,6 +20,7 @@ import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
 import { withDrawRotate } from './with-draw-rotate';
 import { withTable } from './with-table';
 import { withSwimlane } from './with-swimlane';
+import { withTableResize } from './with-table-resize';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;
@@ -127,19 +128,21 @@ export const withDraw = (board: PlaitBoard) => {
     };
 
     return withSwimlane(
-        withTable(
-            withDrawResize(
-                withLineAutoCompleteReaction(
-                    withLineBoundReaction(
-                        withLineResize(
-                            withLineTextMove(
-                                withLineText(
-                                    withGeometryResize(
-                                        withDrawRotate(
-                                            withLineCreateByDraw(
-                                                withLineAutoComplete(
-                                                    withGeometryCreateByDrag(
-                                                        withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board)))
+        withTableResize(
+            withTable(
+                withDrawResize(
+                    withLineAutoCompleteReaction(
+                        withLineBoundReaction(
+                            withLineResize(
+                                withLineTextMove(
+                                    withLineText(
+                                        withGeometryResize(
+                                            withDrawRotate(
+                                                withLineCreateByDraw(
+                                                    withLineAutoComplete(
+                                                        withGeometryCreateByDrag(
+                                                            withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board)))
+                                                        )
                                                     )
                                                 )
                                             )
