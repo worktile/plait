@@ -1,5 +1,5 @@
 import { PlaitBoard, setDragging } from '@plait/core';
-import { RotateRef } from '../types/rotate';
+import { RotateRef } from '../types';
 
 export const IS_ROTATING = new WeakMap<PlaitBoard, RotateRef>();
 

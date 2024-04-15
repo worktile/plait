@@ -10,5 +10,5 @@ export * from './plugins';
 export * from './utils';
 export * from './core/plugin-element';
 export * from './core/image-base.component';
-export * from './algorithms'
-export * from './types/resize';
+export * from './algorithms';
+export * from './types';

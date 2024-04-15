@@ -82,7 +82,7 @@ export const traverseDrawShapes = (board: PlaitBoard, callback: (element: PlaitS
     );
 };
 
-export const getRectangleRotateHandleRectangle = (rectangle: RectangleClient) => {
+export const getRotateHandleRectangle = (rectangle: RectangleClient) => {
     return {
         x: rectangle.x - ROTATE_HANDLE_DISTANCE_TO_ELEMENT - ROTATE_HANDLE_SIZE,
         y: rectangle.y + rectangle.height + ROTATE_HANDLE_DISTANCE_TO_ELEMENT,

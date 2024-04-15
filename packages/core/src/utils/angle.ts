@@ -134,3 +134,9 @@ export const normalizeAngle = (angle: number): number => {
     }
     return angle;
 };
+
+export const getAngleBetweenPoints = (startPoint: Point, endPoint: Point, centerPoint: Point): number => {
+    const startAngle = (5 * Math.PI) / 2 + Math.atan2(startPoint[1] - centerPoint[1], startPoint[0] - centerPoint[0]);
+    const endAngle = (5 * Math.PI) / 2 + Math.atan2(endPoint[1] - centerPoint[1], endPoint[0] - centerPoint[0]);
+    return normalizeAngle(endAngle - startAngle);
+};
