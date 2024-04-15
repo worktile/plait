@@ -582,10 +582,11 @@ export const mockTableData: PlaitDrawElement[] = [
                 text: {
                     children: [
                         {
-                            text: 'merge cell'
+                            text: '合并单元格'
                         }
                     ],
-                    align: 'center'
+                    align: 'center',
+                    direction: 'vertical'
                 }
             },
             {
@@ -596,10 +597,11 @@ export const mockTableData: PlaitDrawElement[] = [
                 text: {
                     children: [
                         {
-                            text: ''
+                            text: 'cell-1-2'
                         }
                     ],
-                    align: 'center'
+                    align: 'center',
+                    direction: 'vertical'
                 }
             },
             {
@@ -709,7 +711,7 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
         id: 'swimlaneVertical',
         points: [
             [-100, -100],
-            [500, 300]
+            [200, 400]
         ],
         type: 'table',
         shape: 'swimlaneVertical',
@@ -732,9 +734,6 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
             },
             {
                 id: 'column-2'
-            },
-            {
-                id: 'column-3'
             }
         ],
         cells: [
@@ -742,12 +741,12 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                 id: 'v-cell-1-1',
                 rowId: 'row-1',
                 columnId: 'column-1',
-                colspan: 3,
+                colspan: 2,
                 textHeight: 20,
                 text: {
                     children: [
                         {
-                            text: 'swimlaneVertical'
+                            text: '垂直泳道'
                         }
                     ],
                     align: 'center'
@@ -761,7 +760,7 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                 text: {
                     children: [
                         {
-                            text: 'cell-2-1'
+                            text: ''
                         }
                     ],
                     align: 'center'
@@ -782,20 +781,6 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'v-cell-2-3',
-                rowId: 'row-2',
-                textHeight: 20,
-                columnId: 'column-3',
-                text: {
-                    children: [
-                        {
-                            text: ''
-                        }
-                    ],
-                    align: 'center'
-                }
-            },
-            {
                 id: 'v-cell-3-1',
                 rowId: 'row-3',
                 columnId: 'column-1'
@@ -804,19 +789,14 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                 id: 'v-cell-3-2',
                 rowId: 'row-3',
                 columnId: 'column-2'
-            },
-            {
-                id: 'v-cell-3-3',
-                rowId: 'row-3',
-                columnId: 'column-3'
             }
         ]
     },
     {
         id: 'swimlaneHorizontal',
         points: [
-            [600, -100],
-            [1200, 300]
+            [300, 0],
+            [900, 300]
         ],
         type: 'table',
         shape: 'swimlaneHorizontal',
@@ -826,12 +806,6 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
             },
             {
                 id: 'row-2'
-            },
-            {
-                id: 'row-3'
-            },
-            {
-                id: 'row-4'
             }
         ],
         columns: [
@@ -853,72 +827,55 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                 rowId: 'row-1',
                 columnId: 'column-1',
                 textHeight: 20,
-                rowspan: 4,
+                rowspan: 2,
                 text: {
                     children: [
                         {
-                            text: 'swimlaneHorizontal'
+                            text: '水平泳道'
                         }
                     ],
-                    align: 'center'
+                    align: 'center',
+                    direction: 'vertical'
                 }
             },
             {
                 id: 'h-cell-1-2',
                 rowId: 'row-1',
-                textHeight: 20,
                 columnId: 'column-2',
+                textHeight: 20,
                 text: {
                     children: [
                         {
                             text: ''
                         }
                     ],
-                    align: 'center'
+                    align: 'center',
+                    direction: 'vertical'
                 }
             },
             {
                 id: 'h-cell-1-3',
                 rowId: 'row-1',
+                columnId: 'column-3'
+            },
+            {
+                id: 'h-cell-2-2',
+                rowId: 'row-2',
+                columnId: 'column-2',
                 textHeight: 20,
-                columnId: 'column-3',
                 text: {
                     children: [
                         {
                             text: ''
                         }
                     ],
-                    align: 'center'
+                    align: 'center',
+                    direction: 'vertical'
                 }
-            },
-            {
-                id: 'h-cell-2-2',
-                rowId: 'row-2',
-                columnId: 'column-2'
             },
             {
                 id: 'h-cell-2-3',
                 rowId: 'row-2',
-                columnId: 'column-3'
-            },
-            {
-                id: 'h-cell-3-2',
-                rowId: 'row-3',
-                columnId: 'column-2'
-            },
-            {
-                id: 'h-cell-3-3',
-                rowId: 'row-3',
-                columnId: 'column-3'
-            },
-            {
-                id: 'h-cell-4-2',
-                rowId: 'row-4',
-                columnId: 'column-2'
-            },
-            {
-                id: 'h-cell-4-3',
-                rowId: 'row-4',
                 columnId: 'column-3'
             }
         ]

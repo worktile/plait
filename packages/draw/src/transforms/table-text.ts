@@ -1,7 +1,7 @@
 import { PlaitBoard, RectangleClient, Transforms } from '@plait/core';
 import { ShapeDefaultSpace } from '../constants';
 import { Element } from 'slate';
-import { PlaitTable, PlaitTableCellParagraph, PlaitTableCellWithPoints } from '../interfaces/table';
+import { PlaitTable, PlaitTableCell, PlaitTableCellWithPoints, PlaitTableElement } from '../interfaces/table';
 
 export const setTableText = (
     board: PlaitBoard,
@@ -13,18 +13,28 @@ export const setTableText = (
 ) => {
     const cellIndex = table.cells.findIndex(item => item.id === cell.id);
     let rows = [...table.rows];
+    let columns = [...table.columns];
     let cells = [...table.cells];
     let points = [...table.points];
-    const { height: cellHeight } = RectangleClient.getRectangleByPoints(cell.points);
-    if (cell.text!.writingMode === 'vertical-lr') {
-        // 文字高度发生改变，修改该列的宽度
-        // update table width
+    const { width: cellWidth, height: cellHeight } = RectangleClient.getRectangleByPoints(cell.points);
+    const defaultSpace = ShapeDefaultSpace.rectangleAndText;
+    if (PlaitTableElement.isVerticalText(cell as PlaitTableCell)) {
+        const columnIdx = table.columns.findIndex(column => column.id === cell.columnId);
+        const tableColumn = table.columns[columnIdx];
+        if (textHeight > cellWidth) {
+            const newColumnWidth = textHeight + defaultSpace * 2;
+            columns[columnIdx] = {
+                ...tableColumn,
+                width: newColumnWidth
+            };
+            const offset = newColumnWidth - cellWidth;
+            points = [points[0], [points[1][0] + offset, points[1][1]]];
+        }
     } else {
         const rowIdx = table.rows.findIndex(row => row.id === cell.rowId);
         const tableRow = table.rows[rowIdx];
         const compareHeight = tableRow.height ?? Math.max(cellHeight, cell.textHeight || 0);
         if (textHeight > compareHeight) {
-            const defaultSpace = ShapeDefaultSpace.rectangleAndText;
             const newRowHeight = textHeight + defaultSpace * 2;
             rows[rowIdx] = {
                 ...tableRow,
@@ -38,8 +48,9 @@ export const setTableText = (
     cells[cellIndex] = {
         ...cell,
         textHeight: textHeight,
-        text: text as PlaitTableCellParagraph
+        text
     };
+
     const path = board.children.findIndex(child => child === table);
-    Transforms.setNode(board, { rows, cells, points }, [path]);
+    Transforms.setNode(board, { rows, columns, cells, points }, [path]);
 };

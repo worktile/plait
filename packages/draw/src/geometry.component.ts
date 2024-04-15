@@ -15,9 +15,12 @@ import { TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { ActiveGenerator, CommonPluginElement, canResize } from '@plait/common';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
-import { isMultipleTextGeometry, memorizeLatestText } from './utils';
+import { getTextRectangle, isMultipleTextGeometry, memorizeLatestText } from './utils';
 import { TextGenerator } from './generators/text.generator';
 import { SingleTextGenerator } from './generators/single-text.generator';
+import { PlaitText } from './interfaces';
+import { GeometryThreshold } from './constants';
+import { getEngine } from './engines';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -157,7 +160,15 @@ export class GeometryComponent extends CommonPluginElement<PlaitCommonGeometry, 
                 this.element.text,
                 this.viewContainerRef,
                 {
-                    onValueChangeHandle: onTextValueChangeHandle
+                    onValueChangeHandle: onTextValueChangeHandle,
+                    getMaxWidth: ()=>{
+                        let width = getTextRectangle(this.element).width;
+                        const getRectangle = getEngine(this.element.shape).getTextRectangle;
+                        if (getRectangle) {
+                            width = getRectangle(this.element as PlaitGeometry).width;
+                        }
+                        return (this.element as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
+                    }
                 }
             );
         }
