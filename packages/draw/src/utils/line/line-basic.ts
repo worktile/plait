@@ -31,13 +31,12 @@ import { getElementShape } from '../shape';
 import { DefaultLineStyle, LINE_TEXT_SPACE } from '../../constants/line';
 import { LineShapeGenerator } from '../../generators/line.generator';
 import { LINE_SNAPPING_CONNECTOR_BUFFER } from '../../constants';
-import { getSnappingGeometry, getSnappingRef } from '../position/geometry';
 import { getLineMemorizedLatest } from '../memorize';
 import { alignPoints } from './line-resize';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
 import { getElbowPoints, getNextSourceAndTargetPoints, isUseDefaultOrthogonalRoute } from './elbow';
 import { drawLineArrow } from './line-arrow';
-import { getStrokeWidthByElement } from '../common';
+import { getSnappingRef, getSnappingShape, getStrokeWidthByElement } from '../common';
 
 export const createLineElement = (
     shape: LineShape,
@@ -254,7 +253,7 @@ export const handleLineCreating = (
     sourceElement: PlaitShapeElement | null,
     lineShapeG: SVGGElement
 ) => {
-    const hitElement = getSnappingGeometry(board, movingPoint);
+    const hitElement = getSnappingShape(board, movingPoint);
     const targetConnection = hitElement ? getHitConnection(board, movingPoint, hitElement) : undefined;
     const sourceConnection = sourceElement ? getHitConnection(board, sourcePoint, sourceElement) : undefined;
     const targetBoundId = hitElement ? hitElement.id : undefined;

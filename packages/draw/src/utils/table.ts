@@ -142,3 +142,7 @@ export function updateCellIds(cells: PlaitTableCell[]) {
         item.id = newId;
     });
 }
+
+export function isCellIncludeText(cell: PlaitTableCell) {
+   return cell.text && cell.textHeight
+}

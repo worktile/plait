@@ -14,7 +14,7 @@ import { TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { ActiveGenerator, CommonElementFlavour, canResize } from '@plait/common';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
-import { getTextRectangle, isMultipleTextGeometry, memorizeLatestText } from './utils';
+import { getTextRectangle, isGeometryIncludeText, isMultipleTextGeometry, memorizeLatestText } from './utils';
 import { PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
 import { SingleTextGenerator } from './generators/single-text.generator';
 import { PlaitText } from './interfaces';
@@ -62,7 +62,9 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
         });
         this.lineAutoCompleteGenerator = new LineAutoCompleteGenerator(this.board);
         this.shapeGenerator = new GeometryShapeGenerator(this.board);
-        this.initializeTextManage();
+        if (isGeometryIncludeText(this.element)) {
+            this.initializeTextManage();
+        }
         this.getRef().addGenerator(LineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
         this.getRef().addGenerator(ActiveGenerator.key, this.activeGenerator);
     }
@@ -77,7 +79,7 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
         this.lineAutoCompleteGenerator.processDrawing(this.element as PlaitGeometry, PlaitBoard.getElementActiveHost(this.board), {
             selected: this.selected
         });
-        this.textGenerator.draw(this.getElementG());
+        this.textGenerator && this.textGenerator.draw(this.getElementG());
     }
 
     onContextChanged(
@@ -91,7 +93,7 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
             this.lineAutoCompleteGenerator.processDrawing(this.element as PlaitGeometry, PlaitBoard.getElementActiveHost(this.board), {
                 selected: this.selected
             });
-            this.updateText(previous.element, value.element);
+            this.textGenerator && this.updateText(previous.element, value.element);
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
@@ -178,6 +180,6 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
         super.destroy();
         this.activeGenerator.destroy();
         this.lineAutoCompleteGenerator.destroy();
-        this.textGenerator.destroy();
+        this.textGenerator?.destroy();
     }
 }

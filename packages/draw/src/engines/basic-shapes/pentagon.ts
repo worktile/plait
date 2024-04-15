@@ -19,7 +19,7 @@ export const PentagonEngine: ShapeEngine = createPolygonEngine({
     getTextRectangle(element: PlaitGeometry) {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const height = element.textHeight;
+        const height = element.textHeight!;
         const originWidth = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
         const width = (originWidth * 3) / 5;
         return {

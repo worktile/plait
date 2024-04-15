@@ -19,6 +19,7 @@ import { getLines } from '../utils/line/line-basic';
 import { PlaitImage } from '../interfaces/image';
 import { acceptImageTypes, buildImage, getElementOfFocusedImage, getElementsText } from '@plait/common';
 import { DEFAULT_IMAGE_WIDTH } from '../constants';
+import { PlaitTable } from '../interfaces/table';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard;
@@ -30,6 +31,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             const geometryElements = drawElements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
             const lineElements = drawElements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
             const imageElements = drawElements.filter(value => PlaitDrawElement.isImage(value)) as PlaitImage[];
+            const tableElements = drawElements.filter(value => PlaitDrawElement.isTable(value)) as PlaitTable[];
 
             const boundLineElements = [
                 ...getBoundedLineElements(board, geometryElements),
@@ -40,6 +42,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                     ...geometryElements,
                     ...lineElements,
                     ...imageElements,
+                    ...tableElements,
                     ...boundLineElements.filter(line => !lineElements.includes(line))
                 ]
             );
