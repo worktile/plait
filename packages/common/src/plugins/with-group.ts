@@ -77,18 +77,21 @@ export function withGroup(board: PlaitBoard) {
     };
 
     board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
-        const elements: PlaitElement[] = [];
+        let elements: PlaitElement[] = [];
         if (clipboardData?.elements?.length) {
+            elements = new Array(clipboardData?.elements?.length);
             const groups = getHighestSelectedGroups(board, clipboardData?.elements);
             const selectedIsolatedElements = getSelectedIsolatedElements(board, clipboardData?.elements);
             selectedIsolatedElements.forEach(item => {
-                elements.push(!item.groupId ? item : updateGroupId(item, undefined));
+                const index = clipboardData.elements!.map(element => element.id).indexOf(item.id);
+                elements.splice(index, 1, !item.groupId ? item : updateGroupId(item, undefined));
             });
             if (groups.length) {
                 groups.forEach(item => {
+                    const index = clipboardData.elements!.map(element => element.id).indexOf(item.id);
                     const newGroup = { ...updateGroupId(item, undefined), id: idCreator() };
-                    elements.push(newGroup);
-                    elements.push(...updateElementsGroupId(item, clipboardData.elements!, newGroup.id));
+                    elements.splice(index, 1, newGroup);
+                    updateElementsGroupId(item, clipboardData.elements!, newGroup.id, elements);
                 });
             }
             clipboardData.elements = elements;
@@ -149,17 +152,17 @@ const updateGroupId = (element: PlaitElement, groupId?: string) => {
     };
 };
 
-const updateElementsGroupId = (group: PlaitGroup, clipboardDataElements: PlaitElement[], newGroupId: string) => {
-    const elements: PlaitElement[] = [];
+const updateElementsGroupId = (group: PlaitGroup, clipboardDataElements: PlaitElement[], newGroupId: string, elements: PlaitElement[]) => {
     const elementsInGroup = clipboardDataElements.filter(item => item.groupId === group.id);
     if (elementsInGroup.length) {
         elementsInGroup.forEach(item => {
+            const index = clipboardDataElements.map(item => item.id).indexOf(item.id);
             if (PlaitGroupElement.isGroup(item)) {
                 const newGroup = { ...updateGroupId(item, newGroupId), id: idCreator() };
-                elements.push(newGroup);
-                elements.push(...updateElementsGroupId(item, clipboardDataElements, newGroup.id));
+                elements.splice(index, 1, newGroup);
+                updateElementsGroupId(item, clipboardDataElements, newGroup.id, elements);
             } else {
-                elements.push(updateGroupId(item, newGroupId));
+                elements.splice(index, 1, updateGroupId(item, newGroupId));
             }
         });
     }
