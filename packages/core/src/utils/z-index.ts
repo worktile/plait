@@ -119,10 +119,6 @@ const getTargetIndex = (board: PlaitBoard, boundaryIndex: number, direction: 'do
         return -1;
     }
 
-    if (!nextElement.groupId) {
-        return candidateIndex;
-    }
-
     const elements = [...board.children];
     const sourceElement = elements[boundaryIndex];
     const editingGroup = getEditingGroup(board, sourceElement);
@@ -134,6 +130,11 @@ const getTargetIndex = (board: PlaitBoard, boundaryIndex: number, direction: 'do
             return -1;
         }
     }
+
+    if (!nextElement.groupId) {
+        return candidateIndex;
+    }
+
     let siblingGroup: PlaitGroup;
     if (editingGroup) {
         siblingGroup = nextElementGroups[nextElementGroups.indexOf(editingGroup) - 1];
