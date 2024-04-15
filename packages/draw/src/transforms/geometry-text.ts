@@ -1,12 +1,12 @@
-import { PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
+import { PlaitBoard, Point, Transforms } from '@plait/core';
 import { Element } from 'slate';
 import { PlaitGeometry, PlaitText } from '../interfaces';
 import { ShapeDefaultSpace } from '../constants';
 import { AlignEditor, Alignment } from '@plait/text';
 import { getFirstTextEditor } from '@plait/common';
 
-const normalizePoints = (board: PlaitBoard, element: PlaitElement, width: number, textHeight: number) => {
-    let points = element.points!;
+const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: number, textHeight: number) => {
+    let points = element.points;
     let autoSize = (element as PlaitText).autoSize;
     const defaultSpace = ShapeDefaultSpace.rectangleAndText;
 
@@ -32,7 +32,7 @@ const normalizePoints = (board: PlaitBoard, element: PlaitElement, width: number
     return { points };
 };
 
-export const setText = (board: PlaitBoard, element: PlaitElement, text: Element, width: number, textHeight: number) => {
+export const setText = (board: PlaitBoard, element: PlaitGeometry, text: Element, width: number, textHeight: number) => {
     const newElement = {
         text,
         textHeight,
@@ -44,14 +44,14 @@ export const setText = (board: PlaitBoard, element: PlaitElement, text: Element,
     Transforms.setNode(board, newElement, [path]);
 };
 
-export const setTextSize = (board: PlaitBoard, element: PlaitElement, textWidth: number, textHeight: number) => {
+export const setTextSize = (board: PlaitBoard, element: PlaitGeometry, textWidth: number, textHeight: number) => {
     if ((element as PlaitText).autoSize) {
         const newElement = {
             textHeight,
             ...normalizePoints(board, element, textWidth, textHeight)
         };
         const isPointsEqual =
-            Point.isEquals(element.points![0], newElement.points[0]) && Point.isEquals(element.points![1], newElement.points[1]);
+            Point.isEquals(element.points[0], newElement.points[0]) && Point.isEquals(element.points![1], newElement.points[1]);
         const isTextHeightEqual = Math.round(textHeight) === Math.round(element.textHeight);
         if (!isPointsEqual || !isTextHeightEqual) {
             const path = board.children.findIndex(child => child === element);

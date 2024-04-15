@@ -36,7 +36,7 @@ import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { createLineElement } from './line/line-basic';
-import { LineMarkerType, LineShape, PlaitShapeElement, ShapeEngine } from '../interfaces';
+import { LineMarkerType, LineShape, PlaitShapeElement } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 import { getMemorizedLatestByPointer, memorizeLatestShape } from './memorize';
 

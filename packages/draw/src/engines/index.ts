@@ -108,6 +108,6 @@ export const getEngine = <
     K extends EngineExtraData = EngineExtraData
 >(
     shape: DrawShapes
-): ShapeEngine<T, P, K>  => {
+): ShapeEngine<T, P, K> => {
     return ShapeEngineMap[shape];
 };

@@ -1,4 +1,4 @@
-import { Point, RectangleClient } from '@plait/core';
+import { RectangleClient } from '@plait/core';
 import { PlaitTable, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
 
 export function getCellsWithPoints(table: PlaitTable): PlaitTableCellWithPoints[] {

@@ -11,7 +11,7 @@ import {
     rotatePointsByElement,
     rotateAntiPointsByElement
 } from '@plait/core';
-import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement, ShapeEngine } from '../interfaces';
+import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../interfaces';
 import { TRANSPARENT } from '@plait/common';
 import { getNearestPoint } from './geometry';
 import { getLinePoints } from './line/line-basic';

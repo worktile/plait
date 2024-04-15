@@ -9,7 +9,7 @@ import {
     getVectorFromPointAndSlope,
     isPointInEllipse,
     setStrokeLinecap,
-    getNearestPointBetweenPointAndEllipse,
+    getNearestPointBetweenPointAndEllipse
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
