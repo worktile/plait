@@ -333,7 +333,7 @@
 <div *ngIf="canSetZIndex" class="property-item">
     <div class="setting-panel-title">层级：</div>
     <div class="abstract-container">
-        <label class="label-icon" [ngClass]="{ active: false }" (click)="moveToBottom()"
+        <label class="label-icon" [ngClass]="{ active: false }" (click)="moveToBottom($event)"
             ><svg
                 width="16px"
                 height="16px"
@@ -353,7 +353,7 @@
                     <rect id="矩形" stroke="#333333" stroke-width="1.2" x="8.1" y="0.6" width="7.3" height="7.3" rx="1.5"></rect>
                 </g></svg
         ></label>
-        <label class="label-icon" [ngClass]="{ active: false }" (click)="moveDown()"
+        <label class="label-icon" [ngClass]="{ active: false }" (click)="moveDown($event)"
             ><svg
                 width="16px"
                 height="16px"
@@ -372,7 +372,7 @@
                     <rect id="矩形" stroke="#333333" stroke-width="1.2" x="4.6" y="1.6" width="9.8" height="9.8" rx="1.5"></rect>
                 </g></svg
         ></label>
-        <label class="label-icon" [ngClass]="{ active: false }" (click)="moveToTop()"
+        <label class="label-icon" [ngClass]="{ active: false }" (click)="moveToTop($event)"
             ><svg
                 width="16px"
                 height="16px"
@@ -393,7 +393,7 @@
                     ></path>
                 </g></svg
         ></label>
-        <label class="label-icon" [ngClass]="{ active: false }" (click)="moveUp()"
+        <label class="label-icon" [ngClass]="{ active: false }" (click)="moveUp($event)"
             ><svg
                 width="16px"
                 height="16px"

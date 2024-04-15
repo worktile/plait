@@ -311,19 +311,27 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         AlignTransform[value as keyof AlignTransform](this.board);
     }
 
-    moveUp() {
+    moveUp(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
         ZIndexTransforms.moveUp(this.board);
     }
 
-    moveDown() {
+    moveDown(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
         ZIndexTransforms.moveDown(this.board);
     }
 
-    moveToTop() {
+    moveToTop(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
         ZIndexTransforms.moveToTop(this.board);
     }
 
-    moveToBottom() {
+    moveToBottom(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
         ZIndexTransforms.moveToBottom(this.board);
     }
 }
