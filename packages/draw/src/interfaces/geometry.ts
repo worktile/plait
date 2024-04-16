@@ -39,6 +39,8 @@ export enum FlowchartSymbols {
     merge = 'merge',
     delay = 'delay',
     storedData = 'storedData',
+    or = 'or',
+    summingJunction = 'summingJunction',
     predefinedProcess = 'predefinedProcess',
     offPage = 'offPage'
 }

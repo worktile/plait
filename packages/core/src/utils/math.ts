@@ -325,3 +325,56 @@ export function toFixed(v: number) {
 export function approximately(a: number, b: number, precision = 0.000001) {
     return Math.abs(a - b) <= precision;
 }
+
+// https://medium.com/@steveruiz/find-the-points-where-a-line-segment-intercepts-an-angled-ellipse-in-javascript-typescript-e451524beece
+export function getCrossingPointsBetweenEllipseAndSegment(
+    startPoint: Point,
+    endPoint: Point,
+    cx: number,
+    cy: number,
+    rx: number,
+    ry: number,
+    segment_only = true
+) {
+    // If the ellipse or line segment are empty, return no tValues.
+    if (rx === 0 || ry === 0 || (startPoint[0] === endPoint[0] && startPoint[1] === endPoint[1])) {
+        return [];
+    }
+
+    rx = rx < 0 ? rx : -rx;
+    ry = ry < 0 ? ry : -ry;
+
+    startPoint[0] -= cx;
+    startPoint[1] -= cy;
+    endPoint[0] -= cx;
+    endPoint[1] -= cy;
+
+    // Calculate the quadratic parameters.
+    var A =
+        ((endPoint[0] - startPoint[0]) * (endPoint[0] - startPoint[0])) / rx / rx +
+        ((endPoint[1] - startPoint[1]) * (endPoint[1] - startPoint[1])) / ry / ry;
+    var B = (2 * startPoint[0] * (endPoint[0] - startPoint[0])) / rx / rx + (2 * startPoint[1] * (endPoint[1] - startPoint[1])) / ry / ry;
+    var C = (startPoint[0] * startPoint[0]) / rx / rx + (startPoint[1] * startPoint[1]) / ry / ry - 1;
+
+    // Make a list of t values (normalized points on the line where intersections occur).
+    var tValues: number[] = [];
+
+    // Calculate the discriminant.
+    var discriminant = B * B - 4 * A * C;
+
+    if (discriminant === 0) {
+        // One real solution.
+        tValues.push(-B / 2 / A);
+    } else if (discriminant > 0) {
+        // Two real solutions.
+        tValues.push((-B + Math.sqrt(discriminant)) / 2 / A);
+        tValues.push((-B - Math.sqrt(discriminant)) / 2 / A);
+    }
+    return (
+        tValues
+            // Filter to only points that are on the segment.
+            .filter(t => !segment_only || (t >= 0 && t <= 1))
+            // Solve for points.
+            .map(t => [startPoint[0] + (endPoint[0] - startPoint[0]) * t + cx, startPoint[1] + (endPoint[1] - startPoint[1]) * t + cy])
+    );
+}
