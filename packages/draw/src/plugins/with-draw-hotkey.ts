@@ -2,7 +2,6 @@ import { PlaitBoard, PlaitElement, getHitElementByPoint, getSelectedElements, to
 import { isVirtualKey, isSpaceHotkey, isDelete } from '@plait/common';
 import { GeometryComponent } from '../geometry.component';
 import { PlaitDrawElement } from '../interfaces';
-import { getSelectedGeometryElements } from '../utils';
 
 export const withDrawHotkey = (board: PlaitBoard) => {
     const { keyDown, dblClick } = board;

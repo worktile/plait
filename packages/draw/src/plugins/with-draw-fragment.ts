@@ -22,7 +22,7 @@ import { DEFAULT_IMAGE_WIDTH } from '../constants';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard;
-    const { getDeletedFragment, setFragment, insertFragment } = board;
+    const { getDeletedFragment, buildFragment, insertFragment } = board;
 
     board.getDeletedFragment = (data: PlaitElement[]) => {
         const drawElements = getSelectedDrawElements(board);
@@ -47,8 +47,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
         return getDeletedFragment(data);
     };
 
-    board.setFragment = (
-        data: DataTransfer | null,
+    board.buildFragment = (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
         type: 'copy' | 'cut'
@@ -70,14 +69,14 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                 clipboardContext = addClipboardContext(clipboardContext, {
                     text,
                     type: WritableClipboardType.elements,
-                    data: elements
+                    elements
                 });
             }
         }
-        setFragment(data, clipboardContext, rectangle, type);
+        return buildFragment(clipboardContext, rectangle, type);
     };
 
-    board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
+    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point) => {
         const selectedElements = getSelectedElements(board);
         if (clipboardData?.files?.length) {
             const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
@@ -111,7 +110,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             }
         }
 
-        insertFragment(data, clipboardData, targetPoint);
+        insertFragment(clipboardData, targetPoint);
     };
 
     return board;

@@ -33,7 +33,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { mockLineData, withLineRoute } from '../plugins/with-line-route';
 import { withCommonPlugin } from '../plugins/with-common';
 import { AppMenuComponent } from '../components/menu/menu.component';
-import { NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { mockTurningPointData } from './mock-turning-point-data';
 import { withGroup } from '@plait/common';
 
@@ -78,6 +78,8 @@ export class BasicEditorComponent implements OnInit {
     showAddGroup!: boolean;
 
     showRemoveGroup!: boolean;
+
+    CONTROL_KEY = typeof window != 'undefined' && /Mac|iPod|iPhone|iPad/.test(window.navigator.platform) ? '⌘' : 'Ctrl';
 
     @ViewChild('contextMenu', { static: true, read: ElementRef })
     contextMenu!: ElementRef<any>;
@@ -146,6 +148,7 @@ export class BasicEditorComponent implements OnInit {
         this.selectedElements = getSelectedElements(this.board);
         this.showRemoveGroup = canRemoveGroup(this.board);
         this.showAddGroup = canAddGroup(this.board);
+        this.contextMenu.nativeElement.style.display = 'none';
     }
 
     getLocalStorage() {
@@ -171,14 +174,14 @@ export class BasicEditorComponent implements OnInit {
         event.stopPropagation();
         event.preventDefault();
         const rectangle = getRectangleByElements(this.board, this.selectedElements, false);
-        this.board.setFragment(null, null, rectangle, 'copy');
+        this.board.buildFragment(null, rectangle, 'copy');
     }
 
     cut(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
         const rectangle = getRectangleByElements(this.board, this.selectedElements, false);
-        this.board.setFragment(null, null, rectangle, 'cut');
+        this.board.buildFragment(null, rectangle, 'cut');
         deleteFragment(this.board);
     }
 
@@ -194,11 +197,16 @@ export class BasicEditorComponent implements OnInit {
         Transforms.removeGroup(this.board);
     }
 
+    duplicate(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
     async paste(event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
         const targetPoint = toViewBoxPoint(this.board, toHostPoint(this.board, event.x, event.y));
         const clipboardData = await getClipboardData(null);
-        this.board.insertFragment(null, clipboardData, targetPoint);
+        this.board.insertFragment(clipboardData, targetPoint);
     }
 }

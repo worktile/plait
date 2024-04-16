@@ -74,7 +74,7 @@ export function withGroup(board: PlaitBoard) {
         return getRelatedFragment([...elements, ...groups], originData);
     };
 
-    board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
+    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point) => {
         let elements: PlaitElement[] = [];
         if (clipboardData?.elements?.length) {
             elements = new Array(clipboardData?.elements?.length);
@@ -94,10 +94,10 @@ export function withGroup(board: PlaitBoard) {
             }
             clipboardData.elements = elements;
         }
-        insertFragment(data, clipboardData, targetPoint);
+        insertFragment(clipboardData, targetPoint);
         const groupElements = elements?.filter(value => PlaitGroupElement.isGroup(value)) as PlaitElement[];
         groupElements.forEach(element => {
-            Transforms.insertNode(board, element, [board.children.length]);
+            Transforms.insertNode(board, element, [elements.indexOf(element)]);
         });
     };
 

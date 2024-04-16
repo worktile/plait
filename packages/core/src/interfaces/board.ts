@@ -57,13 +57,12 @@ export interface PlaitBoard {
     keyDown: (event: KeyboardEvent) => void;
     globalKeyDown: (event: KeyboardEvent) => void;
     keyUp: (event: KeyboardEvent) => void;
-    setFragment: (
-        data: DataTransfer | null,
+    buildFragment: (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
         type: 'copy' | 'cut'
-    ) => void;
-    insertFragment: (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => void;
+    ) => WritableClipboardContext | null;
+    insertFragment: (clipboardData: ClipboardData | null, targetPoint: Point) => void;
     deleteFragment: (data: PlaitElement[]) => void;
     getDeletedFragment: (data: PlaitElement[]) => PlaitElement[];
     getRelatedFragment: (data: PlaitElement[], originData?: PlaitElement[]) => PlaitElement[];

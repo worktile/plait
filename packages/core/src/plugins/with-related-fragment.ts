@@ -7,10 +7,9 @@ import {
 } from '../utils';
 
 export function withRelatedFragment(board: PlaitBoard) {
-    const { setFragment } = board;
+    const { buildFragment } = board;
 
-    board.setFragment = (
-        data: DataTransfer | null,
+    board.buildFragment = (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
         type: 'copy' | 'cut'
@@ -22,10 +21,10 @@ export function withRelatedFragment(board: PlaitBoard) {
             clipboardContext = addClipboardContext(clipboardContext, {
                 text: '',
                 type: WritableClipboardType.elements,
-                data: relatedFragment
+                elements: relatedFragment
             });
         }
-        setFragment(data, clipboardContext, rectangle, type);
+        return buildFragment(clipboardContext, rectangle, type);
     };
 
     return board;

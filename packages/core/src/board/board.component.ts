@@ -40,6 +40,7 @@ import {
     getClipboardData,
     getRectangleByElements,
     getSelectedElements,
+    setClipboardData,
     toHostPoint,
     toViewBoxPoint
 } from '../utils';
@@ -401,7 +402,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 const selectedElements = getSelectedElements(this.board);
                 event.preventDefault();
                 const rectangle = getRectangleByElements(this.board, selectedElements, false);
-                this.board.setFragment(event.clipboardData, null, rectangle, 'copy');
+                const clipboardContext = this.board.buildFragment(null, rectangle, 'copy');
+                clipboardContext && setClipboardData(event.clipboardData, clipboardContext);
             });
 
         fromEvent<ClipboardEvent>(document, 'paste')
@@ -414,7 +416,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 if (mousePoint) {
                     const targetPoint = toViewBoxPoint(this.board, toHostPoint(this.board, mousePoint[0], mousePoint[1]));
                     const clipboardData = await getClipboardData(clipboardEvent.clipboardData);
-                    this.board.insertFragment(clipboardEvent.clipboardData, clipboardData, targetPoint);
+                    this.board.insertFragment(clipboardData, targetPoint);
                 }
             });
 
@@ -427,7 +429,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 const selectedElements = getSelectedElements(this.board);
                 event.preventDefault();
                 const rectangle = getRectangleByElements(this.board, selectedElements, false);
-                this.board.setFragment(event.clipboardData, null, rectangle, 'cut');
+                const clipboardContext = this.board.buildFragment(null, rectangle, 'cut');
+                clipboardContext && setClipboardData(event.clipboardData, clipboardContext);
                 deleteFragment(this.board);
             });
     }

@@ -53,12 +53,12 @@ export const getProbablySupportsClipboardRead = () => {
 
 export const createClipboardContext = (
     type: WritableClipboardType,
-    data: WritableClipboardData,
+    elements: WritableClipboardData,
     text: string
 ): WritableClipboardContext => {
     return {
         type,
-        data,
+        elements,
         text
     };
 };
@@ -67,11 +67,11 @@ export const addClipboardContext = (
     clipboardContext: WritableClipboardContext,
     addition: WritableClipboardContext
 ): WritableClipboardContext => {
-    const { type, data, text } = clipboardContext;
+    const { type, elements, text } = clipboardContext;
     if (type === addition.type) {
         return {
             type,
-            data: data.concat(addition.data),
+            elements: elements.concat(addition.elements),
             text: text + ' ' + addition.text
         };
     }
