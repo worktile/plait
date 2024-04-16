@@ -17,6 +17,7 @@ import { withLineTextMove } from './with-line-text-move';
 import { withDrawResize } from './with-draw-resize';
 import { isHitDrawElement, isHitElementInside, isRectangleHitDrawElement } from '../utils/hit';
 import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
+import { withDrawRotate } from './with-draw-rotate';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;
@@ -127,9 +128,11 @@ export const withDraw = (board: PlaitBoard) => {
                     withLineBoundReaction(
                         withLineResize(
                             withGeometryResize(
-                                withLineCreateByDraw(
-                                    withLineAutoComplete(
-                                        withGeometryCreateByDrag(withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board))))
+                                withDrawRotate(
+                                    withLineCreateByDraw(
+                                        withLineAutoComplete(
+                                            withGeometryCreateByDrag(withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board))))
+                                        )
                                     )
                                 )
                             )

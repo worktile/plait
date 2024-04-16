@@ -6,6 +6,10 @@ export const HOST_CLASS_NAME = 'plait-board-container';
 
 export const ACTIVE_MOVING_CLASS_NAME = 'active-with-moving';
 
+export const ROTATE_HANDLE_CLASS_NAME = 'rotate-handle';
+
+export const RESIZE_HANDLE_CLASS_NAME = 'resize-handle';
+
 export const SCROLL_BAR_WIDTH = 20;
 
 export const MAX_RADIUS = 16;

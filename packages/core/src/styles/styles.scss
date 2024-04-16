@@ -51,6 +51,15 @@
         }
     }
 
+    &.element-rotating {
+        .element-active-host {
+            g.resize-handle,
+            g[class^='line-auto-complete-'] {
+                display: none;
+            }
+        }
+    }
+
     &.pointer-selection {
         cursor: default;
     }

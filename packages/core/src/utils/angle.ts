@@ -119,8 +119,24 @@ export function rotateElements(board: PlaitBoard, elements: PlaitElement[], angl
     const selectionCenterPoint = RectangleClient.getCenterPoint(selectionRectangle);
     elements.forEach(item => {
         const originAngle = item.angle;
-        const points = rotatedDataPoints(item.points!, selectionCenterPoint, angle);
+        const points = rotatedDataPoints(item.points!, selectionCenterPoint, normalizeAngle(angle));
         const path = PlaitBoard.findPath(board, item);
-        Transforms.setNode(board, { points, angle: originAngle + angle }, path);
+        Transforms.setNode(board, { points, angle: normalizeAngle(originAngle + angle) }, path);
     });
 }
+
+export const normalizeAngle = (angle: number): number => {
+    if (angle < 0) {
+        return angle + 2 * Math.PI;
+    }
+    if (angle >= 2 * Math.PI) {
+        return angle - 2 * Math.PI;
+    }
+    return angle;
+};
+
+export const getAngleBetweenPoints = (startPoint: Point, endPoint: Point, centerPoint: Point): number => {
+    const startAngle = (5 * Math.PI) / 2 + Math.atan2(startPoint[1] - centerPoint[1], startPoint[0] - centerPoint[0]);
+    const endAngle = (5 * Math.PI) / 2 + Math.atan2(endPoint[1] - centerPoint[1], endPoint[0] - centerPoint[0]);
+    return normalizeAngle(endAngle - startAngle);
+};

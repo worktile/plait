@@ -8,7 +8,13 @@ import {
     rotatePoints,
     rotateAntiPointsByElement
 } from '@plait/core';
-import { RESIZE_HANDLE_DIAMETER, getRectangleResizeHandleRefs, getRotatedResizeCursorClassByAngle } from '@plait/common';
+import {
+    RESIZE_HANDLE_DIAMETER,
+    getRectangleResizeHandleRefs,
+    getRotatedResizeCursorClassByAngle,
+    ROTATE_HANDLE_SIZE,
+    ROTATE_HANDLE_DISTANCE_TO_ELEMENT
+} from '@plait/common';
 import { PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../../interfaces';
 import { isHitEdgeOfShape, isInsideOfShape } from '../hit';
 import { LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER } from '../../constants/geometry';
@@ -74,4 +80,13 @@ export const traverseDrawShapes = (board: PlaitBoard, callback: (element: PlaitS
         getIsRecursionFunc(board),
         true
     );
+};
+
+export const getRotateHandleRectangle = (rectangle: RectangleClient) => {
+    return {
+        x: rectangle.x - ROTATE_HANDLE_DISTANCE_TO_ELEMENT - ROTATE_HANDLE_SIZE,
+        y: rectangle.y + rectangle.height + ROTATE_HANDLE_DISTANCE_TO_ELEMENT,
+        width: ROTATE_HANDLE_SIZE,
+        height: ROTATE_HANDLE_SIZE
+    };
 };

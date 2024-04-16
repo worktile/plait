@@ -1,4 +1,4 @@
-import { PlaitBoard, PlaitElement, RectangleClient, createG, drawRectangle } from '@plait/core';
+import { PlaitBoard, PlaitElement, RectangleClient, SELECTION_RECTANGLE_CLASS_NAME, createG, drawRectangle } from '@plait/core';
 import { Generator, GeneratorOptions } from './generator';
 import { PRIMARY_COLOR } from '../constants/default';
 import { drawHandle } from '../utils/drawing';
@@ -46,6 +46,7 @@ export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Gene
         });
 
         activeG.append(strokeG);
+        strokeG.classList.add(SELECTION_RECTANGLE_CLASS_NAME);
         strokeG.style.opacity = `${this.options.getStrokeOpacity()}`;
         if (this.options.hasResizeHandle()) {
             this.hasResizeHandle = true;
