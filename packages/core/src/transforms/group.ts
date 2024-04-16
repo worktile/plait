@@ -26,13 +26,12 @@ export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
             NodeTransforms.setNode(board, { groupId: group.id }, path);
         });
         const selectedElements = getSelectedElements(board);
-        const highestIndexOfSelectedElement = getHighestIndexOfElement(board, [...selectedElements, ...selectedGroups]);
+        const highestIndexOfSelectedElement = getHighestIndexOfElement(board, selectedElements);
         const indices = getElementsIndices(board, highestSelectedElements);
         const isContinuous = isIndicesContinuous(indices);
         if (!isContinuous) {
-            moveElementsToNewPathAfterAddGroup(board, [...selectedElements, ...selectedGroups], [highestIndexOfSelectedElement - 1]);
+            moveElementsToNewPathAfterAddGroup(board, selectedElements, [highestIndexOfSelectedElement - 1]);
         }
-        const groupPath = [highestIndexOfSelectedElement + 1];
         if (hasSelectedElementsInSameGroup(highestSelectedElements)) {
             const newGroupId = selectedIsolatedElements[0].groupId;
             NodeTransforms.insertNode(
@@ -41,10 +40,10 @@ export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
                     ...group,
                     groupId: newGroupId
                 },
-                groupPath
+                [board.children.length]
             );
         } else {
-            NodeTransforms.insertNode(board, group, groupPath);
+            NodeTransforms.insertNode(board, group, [board.children.length]);
         }
     }
 };
