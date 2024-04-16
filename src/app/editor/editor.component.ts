@@ -17,7 +17,8 @@ import {
     canRemoveGroup,
     canAddGroup,
     deleteFragment,
-    Transforms
+    Transforms,
+    duplicateElements
 } from '@plait/core';
 import { mockDrawData, mockGroupData, mockMindData, mockRotateData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -33,7 +34,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { mockLineData, withLineRoute } from '../plugins/with-line-route';
 import { withCommonPlugin } from '../plugins/with-common';
 import { AppMenuComponent } from '../components/menu/menu.component';
-import { NgFor, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { mockTurningPointData } from './mock-turning-point-data';
 import { withGroup } from '@plait/common';
 
@@ -200,6 +201,7 @@ export class BasicEditorComponent implements OnInit {
     duplicate(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
+        duplicateElements(this.board);
     }
 
     async paste(event: MouseEvent) {

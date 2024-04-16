@@ -57,7 +57,7 @@
 
 -   [#701](https://github.com/worktile/plait/pull/701) [`18790e12`](https://github.com/worktile/plait/commit/18790e1272dffe80366927c19d334837ebc34b51) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add getElementsText
 
-*   [#701](https://github.com/worktile/plait/pull/701) [`18790e12`](https://github.com/worktile/plait/commit/18790e1272dffe80366927c19d334837ebc34b51) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor: uniformly handle clipboard data and add parameter for buildFragment and insertFragment
+*   [#701](https://github.com/worktile/plait/pull/701) [`18790e12`](https://github.com/worktile/plait/commit/18790e1272dffe80366927c19d334837ebc34b51) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - refactor: uniformly handle clipboard data and add parameter for setFragment and insertFragment
 
 ## 0.49.0
 
@@ -248,7 +248,7 @@
 
 -   [`42cdd3bd`](https://github.com/worktile/plait/commit/42cdd3bd692712c6a117b780a135fff863e4abed) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support draw-element copy and paste
 
-*   [`f2b506ee`](https://github.com/worktile/plait/commit/f2b506ee18e614b9a5087ae64dd0188b5f80439c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - buildFragment support type property
+*   [`f2b506ee`](https://github.com/worktile/plait/commit/f2b506ee18e614b9a5087ae64dd0188b5f80439c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - setFragment support type property
     handle bound geometry element for line element
 
 -   [`aedbae54`](https://github.com/worktile/plait/commit/aedbae5464735592f7682335c14cf1e733b9e46d) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - update geometry stroke width generate logic
@@ -317,7 +317,7 @@
 
 *   [#582](https://github.com/worktile/plait/pull/582) [`32a40c6c`](https://github.com/worktile/plait/commit/32a40c6c1d7d9821bbd2616194794e8e7572f6af) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - improve mind node shape logic
 
--   [`f2b506ee`](https://github.com/worktile/plait/commit/f2b506ee18e614b9a5087ae64dd0188b5f80439c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - buildFragment support type property
+-   [`f2b506ee`](https://github.com/worktile/plait/commit/f2b506ee18e614b9a5087ae64dd0188b5f80439c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - setFragment support type property
     handle bound geometry element for line element
 
 *   [#582](https://github.com/worktile/plait/pull/582) [`8f98117d`](https://github.com/worktile/plait/commit/8f98117db94761789bd9c4a97b4b560aa242a69e) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove the effect about stroke width in layout options
@@ -425,7 +425,7 @@
 
 ### Minor Changes
 
--   [#509](https://github.com/worktile/plait/pull/509) [`1231d720`](https://github.com/worktile/plait/commit/1231d720caa5ee2f1f4d3e798f2e413952104bff) Thanks [@WBbug](https://github.com/WBbug)! - support deleteFragment and buildFragment in image
+-   [#509](https://github.com/worktile/plait/pull/509) [`1231d720`](https://github.com/worktile/plait/commit/1231d720caa5ee2f1f4d3e798f2e413952104bff) Thanks [@WBbug](https://github.com/WBbug)! - support deleteFragment and setFragment in image
 
 ### Patch Changes
 
