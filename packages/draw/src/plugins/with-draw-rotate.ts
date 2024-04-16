@@ -21,7 +21,7 @@ import {
     rotateElements,
     PlaitElement,
     getAngleBetweenPoints,
-    ACTIVE_ROTATING_CLASS_NAME,
+    ROTATE_HANDLE_CLASS_NAME,
     SELECTION_RECTANGLE_CLASS_NAME
 } from '@plait/core';
 import { addRotating, removeRotating, drawHandle, drawRotateHandle, isRotating, RotateRef } from '@plait/common';
@@ -110,7 +110,7 @@ export const withDrawRotate = (board: PlaitBoard) => {
             if (needCustomActiveRectangle && rotateRef) {
                 const boundingRectangle = getRectangleByElements(board, rotateRef.elements, false);
                 rotateHandleG = drawRotateHandle(board, boundingRectangle);
-                rotateHandleG.classList.add(ACTIVE_ROTATING_CLASS_NAME);
+                rotateHandleG.classList.add(ROTATE_HANDLE_CLASS_NAME);
                 if (rotateRef.angle) {
                     setAngleForG(rotateHandleG, RectangleClient.getCenterPoint(boundingRectangle), rotateRef.angle);
                 }
@@ -118,7 +118,7 @@ export const withDrawRotate = (board: PlaitBoard) => {
                 const elements = getSelectedElements(board) as PlaitDrawElement[];
                 const boundingRectangle = getRectangleByElements(board, elements, false);
                 rotateHandleG = drawRotateHandle(board, boundingRectangle);
-                rotateHandleG.classList.add(ACTIVE_ROTATING_CLASS_NAME);
+                rotateHandleG.classList.add(ROTATE_HANDLE_CLASS_NAME);
                 setAngleForG(rotateHandleG, RectangleClient.getCenterPoint(boundingRectangle), getSelectionAngle(elements));
             }
             PlaitBoard.getElementActiveHost(board).append(rotateHandleG);

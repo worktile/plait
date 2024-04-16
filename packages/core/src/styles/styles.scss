@@ -53,17 +53,9 @@
 
     &.element-rotating {
         .element-active-host {
-            & > g:not(.selection-rectangle, .active-with-rotating) {
+            g.resize-handle,
+            g[class^='line-auto-complete-'] {
                 display: none;
-            }
-            & > g:has(.selection-rectangle) {
-                display: inherit;
-                & > g {
-                    display: none;
-                }
-                & > g.selection-rectangle {
-                    display: inherit;
-                }
             }
         }
     }

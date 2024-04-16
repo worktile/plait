@@ -1,10 +1,12 @@
-import { PlaitBoard, Point, drawCircle } from '@plait/core';
+import { RESIZE_HANDLE_CLASS_NAME, PlaitBoard, Point, drawCircle } from '@plait/core';
 import { Options } from 'roughjs/bin/core';
 import { PRIMARY_COLOR, RESIZE_HANDLE_DIAMETER } from '../../constants/default';
 
 export const drawHandle = (board: PlaitBoard, centerPoint: Point) => {
     const options: Options = { stroke: '#99999995', strokeWidth: 2, fill: '#FFF', fillStyle: 'solid' };
-    return drawCircle(PlaitBoard.getRoughSVG(board), centerPoint, RESIZE_HANDLE_DIAMETER, options);
+    const handleG = drawCircle(PlaitBoard.getRoughSVG(board), centerPoint, RESIZE_HANDLE_DIAMETER, options);
+    handleG.classList.add(RESIZE_HANDLE_CLASS_NAME);
+    return handleG;
 };
 
 export function drawFillPrimaryHandle(board: PlaitBoard, point: Point) {
