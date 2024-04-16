@@ -21,7 +21,7 @@ import { CommonPluginElement } from './plugin-element';
 })
 export class GroupComponent extends CommonPluginElement<PlaitGroup, PlaitBoard>
     implements OnInit, OnDestroy, OnContextChanged<PlaitGroup, PlaitBoard> {
-    constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
+    constructor(protected cdr: ChangeDetectorRef) {
         super(cdr);
     }
 
@@ -56,6 +56,6 @@ export class GroupComponent extends CommonPluginElement<PlaitGroup, PlaitBoard>
         const isPartialSelectGroup =
             elementsInGroup.some(item => isSelectedElementOrGroup(this.board, item)) &&
             !elementsInGroup.every(item => isSelectedElementOrGroup(this.board, item));
-        this.groupGenerator.processDrawing(value.element, this.g, isPartialSelectGroup);
+        this.groupGenerator.processDrawing(value.element, this.getElementG(), isPartialSelectGroup);
     }
 }

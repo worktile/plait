@@ -22,9 +22,9 @@ export class CustomFlowNodeComponent extends FlowNodeComponent {
         this.drawHandles(element, mode);
 
         if (mode === FlowRenderMode.default) {
-            this.g.append(this.nodeG!);
-            this.g.append(this.textManage.g);
-            this.render2.addClass(this.g, 'flow-custom-node');
+            this.getElementG().append(this.nodeG!);
+            this.getElementG().append(this.textManage.g);
+            this.render2.addClass(this.getElementG(), 'flow-custom-node');
             this.activeG?.remove();
         } else {
             this.activeG = this.activeG || createG();

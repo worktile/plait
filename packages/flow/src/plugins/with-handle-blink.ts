@@ -34,7 +34,7 @@ export const withHandleBlink: PlaitPlugin = (board: PlaitBoard) => {
                         }
                     );
                     activeHandleElement?.setAttribute('stroke-linecap', 'round');
-                    flowNodeComponent.g.append(activeHandleElement);
+                    flowNodeComponent.getElementG().append(activeHandleElement);
                 }
                 if (previousHoveredHandle && !hoveredHandle) {
                     activeHandleElement?.remove();

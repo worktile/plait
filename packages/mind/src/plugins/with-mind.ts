@@ -41,7 +41,8 @@ export const withMind = (baseBoard: PlaitBoard) => {
         isAlign,
         isImageBindingAllowed,
         canAddToGroup,
-        canSetZIndex
+        canSetZIndex,
+        isExpanded
     } = board;
 
     board.drawElement = (context: PlaitPluginElementContext) => {
@@ -128,6 +129,13 @@ export const withMind = (baseBoard: PlaitBoard) => {
             return true;
         }
         return isAlign(element);
+    };
+
+    board.isExpanded = (element: PlaitElement) => {
+        if (MindElement.isMindElement(board, element) && !PlaitMind.isMind(element)) {
+            return !element.isCollapsed;
+        }
+        return isExpanded(element);
     };
 
     board.dblClick = (event: MouseEvent) => {

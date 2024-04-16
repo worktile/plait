@@ -75,9 +75,10 @@ import { withHotkey } from '../plugins/with-hotkey';
 import { HOST_CLASS_NAME } from '../constants';
 import { PlaitContextService } from '../services/image-context.service';
 import { isPreventTouchMove } from '../utils/touch';
-import { PlaitChildrenElementComponent } from '../core/children/children.component';
 import { ZOOM_STEP } from '../constants/zoom';
 import { withRelatedFragment } from '../plugins/with-related-fragment';
+import { ListRender } from '../core/list-render';
+import { PlaitChildrenContext } from '../interfaces';
 
 const ElementHostClass = 'element-host';
 const ElementUpperHostClass = 'element-upper-host';
@@ -92,19 +93,15 @@ const ElementActiveHostClass = 'element-active-host';
                 <g class="element-upper-host"></g>
                 <g class="element-active-host"></g>
             </svg>
-            <plait-children [board]="board" [effect]="effect"></plait-children>
         </div>
         <ng-content></ng-content>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [PlaitContextService],
-    standalone: true,
-    imports: [PlaitChildrenElementComponent]
+    standalone: true
 })
 export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnChanges, AfterViewInit, AfterContentInit, OnDestroy {
     hasInitialized = false;
-
-    effect = {};
 
     board!: PlaitBoard;
 
@@ -177,6 +174,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @ContentChildren(PlaitIslandBaseComponent, { descendants: true }) islands?: QueryList<PlaitIslandBaseComponent>;
 
+    listRender!: ListRender;
+
     constructor(
         public cdr: ChangeDetectorRef,
         public viewContainerRef: ViewContainerRef,
@@ -193,6 +192,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         });
         this.roughSVG = roughSVG;
         this.initializePlugins();
+
         this.ngZone.runOutsideAngular(() => {
             this.initializeHookListener();
             this.viewportScrollListener();
@@ -217,7 +217,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         });
         BOARD_TO_ON_CHANGE.set(this.board, () => {
             this.ngZone.run(() => {
-                this.update();
+                this.updateListRender();
             });
         });
         BOARD_TO_AFTER_CHANGE.set(this.board, () => {
@@ -233,16 +233,12 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 this.plaitChange.emit(changeEvent);
             });
         });
+        this.initializeListRender();
         this.hasInitialized = true;
     }
 
     ngAfterContentInit(): void {
         this.initializeIslands();
-    }
-
-    update() {
-        this.effect = {};
-        this.cdr.detectChanges();
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -434,6 +430,23 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 this.board.setFragment(event.clipboardData, null, rectangle, 'cut');
                 deleteFragment(this.board);
             });
+    }
+
+    private initializeListRender() {
+        this.listRender = new ListRender(this.board, this.viewContainerRef);
+        this.listRender.initialize(this.board.children, this.initializeChildrenContext());
+    }
+
+    private updateListRender() {
+        this.listRender.update(this.board.children, this.initializeChildrenContext());
+    }
+
+    private initializeChildrenContext(): PlaitChildrenContext {
+        return {
+            board: this.board,
+            parent: this.board,
+            parentG: PlaitBoard.getElementHost(this.board)
+        };
     }
 
     private viewportScrollListener() {
