@@ -51,6 +51,7 @@ export class ListRender {
         if (diffResult) {
             const newContexts: PlaitPluginElementContext[] = [];
             const newComponentRefs: ComponentRef<PlaitPluginElementComponent>[] = [];
+            let currentIndexForFirstElement: number | null = null;
             diffResult.forEachItem((record: IterableChangeRecord<any>) => {
                 NODE_TO_INDEX.set(record.item, record.currentIndex as number);
                 NODE_TO_PARENT.set(record.item, childrenContext.parent);
@@ -67,6 +68,9 @@ export class ListRender {
                     newComponentRefs.push(componentRef);
                     newContexts.push(context);
                 }
+                if (record.item === this.children[0]) {
+                    currentIndexForFirstElement = record.currentIndex;
+                }
             });
             diffResult.forEachOperation(record => {
                 // removed
@@ -76,7 +80,7 @@ export class ListRender {
                 }
                 // moved
                 if (record.previousIndex !== null && record.currentIndex !== null) {
-                    mountOnItemMove(record.item, record.currentIndex, childrenContext);
+                    mountOnItemMove(record.item, record.currentIndex, childrenContext, currentIndexForFirstElement);
                 }
             });
             this.componentRefs = newComponentRefs;
@@ -166,7 +170,13 @@ const getContext = (
 // [2]([2-1-1][2-1-2][2-1][2-2][2-3-1][2-3-2][2-3][2])-
 // [3]-
 // [4]
-export const mountElementG = (index: number, g: SVGGElement, childrenContext: PlaitChildrenContext, isMove: boolean = false) => {
+export const mountElementG = (
+    index: number,
+    g: SVGGElement,
+    childrenContext: PlaitChildrenContext,
+    // for moving scene: the current index for first element before moving
+    currentIndexForFirstElement: number | null = null
+) => {
     const { parent, parentG } = childrenContext;
     if (PlaitBoard.isBoard(parent)) {
         if (index > 0) {
@@ -174,11 +184,11 @@ export const mountElementG = (index: number, g: SVGGElement, childrenContext: Pl
             const previousContainerG = PlaitElement.getContainerG(previousElement, { suppressThrow: false });
             previousContainerG.insertAdjacentElement('afterend', g);
         } else {
-            if (isMove) {
-                const nextElement = parent.children[1];
-                const previousContainerG = nextElement && PlaitElement.getContainerG(nextElement, { suppressThrow: true });
-                if (nextElement && previousContainerG) {
-                    parentG.insertBefore(g, previousContainerG);
+            if (currentIndexForFirstElement !== null) {
+                const firstElement = parent.children[currentIndexForFirstElement];
+                const firstContainerG = firstElement && PlaitElement.getContainerG(firstElement, { suppressThrow: true });
+                if (firstElement && firstContainerG) {
+                    parentG.insertBefore(g, firstContainerG);
                 } else {
                     throw new Error('fail to mount container on moving');
                 }
@@ -192,8 +202,8 @@ export const mountElementG = (index: number, g: SVGGElement, childrenContext: Pl
             const previousElementG = PlaitElement.getElementG(previousElement);
             previousElementG.insertAdjacentElement('afterend', g);
         } else {
-            if (isMove) {
-                const nextElement = (parent.children as PlaitElement[])[1];
+            if (currentIndexForFirstElement) {
+                const nextElement = (parent.children as PlaitElement[])[currentIndexForFirstElement];
                 const nextPath = nextElement && PlaitBoard.findPath(childrenContext.board, nextElement);
                 const first = nextPath && PlaitNode.first(childrenContext.board, nextPath);
                 const firstContainerG = first && PlaitElement.getContainerG(first, { suppressThrow: false });
@@ -210,12 +220,17 @@ export const mountElementG = (index: number, g: SVGGElement, childrenContext: Pl
     }
 };
 
-const mountOnItemMove = (element: PlaitElement, index: number, childrenContext: PlaitChildrenContext, isChild: boolean = false) => {
+const mountOnItemMove = (
+    element: PlaitElement,
+    index: number,
+    childrenContext: PlaitChildrenContext,
+    currentIndexForFirstElement: number | null
+) => {
     const containerG = PlaitElement.getContainerG(element, { suppressThrow: false });
-    mountElementG(index, containerG, childrenContext, isChild ? false : true);
+    mountElementG(index, containerG, childrenContext, currentIndexForFirstElement);
     if (element.children && !PlaitElement.isRootElement(element)) {
         element.children.forEach((child, index) => {
-            mountOnItemMove(child, index, { ...childrenContext, parent: element }, true);
+            mountOnItemMove(child, index, { ...childrenContext, parent: element }, null);
         });
     }
 };
