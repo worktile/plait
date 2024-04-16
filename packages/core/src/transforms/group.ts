@@ -6,7 +6,12 @@ import {
     canAddGroup,
     hasSelectedElementsInSameGroup,
     canRemoveGroup,
-    findElements
+    findElements,
+    getElementsIndices,
+    isIndicesContinuous,
+    getSelectedElements,
+    getHighestIndexOfElement,
+    moveElementsToNewPathAfterAddGroup
 } from '../utils';
 import { NodeTransforms } from './node';
 
@@ -20,6 +25,14 @@ export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
             const path = PlaitBoard.findPath(board, item);
             NodeTransforms.setNode(board, { groupId: group.id }, path);
         });
+        const selectedElements = getSelectedElements(board);
+        const highestIndexOfSelectedElement = getHighestIndexOfElement(board, [...selectedElements, ...selectedGroups]);
+        const indices = getElementsIndices(board, highestSelectedElements);
+        const isContinuous = isIndicesContinuous(indices);
+        if (!isContinuous) {
+            moveElementsToNewPathAfterAddGroup(board, [...selectedElements, ...selectedGroups], [highestIndexOfSelectedElement - 1]);
+        }
+        const groupPath = [highestIndexOfSelectedElement + 1];
         if (hasSelectedElementsInSameGroup(highestSelectedElements)) {
             const newGroupId = selectedIsolatedElements[0].groupId;
             NodeTransforms.insertNode(
@@ -28,10 +41,10 @@ export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
                     ...group,
                     groupId: newGroupId
                 },
-                [board.children.length]
+                groupPath
             );
         } else {
-            NodeTransforms.insertNode(board, group, [board.children.length]);
+            NodeTransforms.insertNode(board, group, groupPath);
         }
     }
 };
