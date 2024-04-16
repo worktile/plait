@@ -2,4 +2,4 @@
 '@plait/common': patch
 ---
 
-get selectedGroups from board.childen when remove
+get selectedGroups from board.children when remove

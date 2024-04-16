@@ -40,7 +40,7 @@ export const getAllMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): 
     const indicesToMove = getIndicesToMove(board);
     let groupedIndices = toContiguousGroups(board, indicesToMove);
     let moveContents: MoveNodeOption[] = [];
-    if (direction === 'up') {
+    if (direction === 'down') {
         groupedIndices = groupedIndices.reverse();
     }
     groupedIndices.forEach(indices => {
