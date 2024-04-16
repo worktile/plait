@@ -11,7 +11,8 @@ import {
     degreesToRadians,
     radiansToDegrees,
     rotateElements,
-    hasSameAngle
+    hasSameAngle,
+    canSetZIndex
 } from '@plait/core';
 import {
     DrawTransforms,
@@ -42,8 +43,6 @@ import {
     AlignTransform,
     PropertyTransforms,
     TextTransforms,
-    ZIndexTransforms,
-    canSetZIndex,
     getFirstTextEditor,
     getTextEditors
 } from '@plait/common';
@@ -314,24 +313,24 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     moveUp(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        ZIndexTransforms.moveUp(this.board);
+        Transforms.moveUp(this.board);
     }
 
     moveDown(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        ZIndexTransforms.moveDown(this.board);
+        Transforms.moveDown(this.board);
     }
 
     moveToTop(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        ZIndexTransforms.moveToTop(this.board);
+        Transforms.moveToTop(this.board);
     }
 
     moveToBottom(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        ZIndexTransforms.moveToBottom(this.board);
+        Transforms.moveToBottom(this.board);
     }
 }

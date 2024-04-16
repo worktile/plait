@@ -1,4 +1,4 @@
-import { isHotkey } from 'is-hotkey';
+import { isHotkey, isKeyHotkey } from 'is-hotkey';
 import { Ancestor, PlaitBoard, PlaitElement, PlaitPluginKey } from '../interfaces';
 import { BoardTransforms, Transforms } from '../transforms';
 import { deleteFragment, depthFirstRecursion, getSelectedElements, hotkeys } from '../utils';
@@ -32,6 +32,28 @@ export const withHotkey = (board: PlaitBoard) => {
             );
             Transforms.addSelectionWithTemporaryElements(board, elements);
             return;
+        }
+        if (!PlaitBoard.isReadonly(board)) {
+            if (isKeyHotkey('mod+]', event)) {
+                event.preventDefault();
+                Transforms.moveUp(board);
+                return;
+            }
+            if (isKeyHotkey('mod+[', event)) {
+                event.preventDefault();
+                Transforms.moveDown(board);
+                return;
+            }
+            if (isKeyHotkey('mod+option+‘', event)) {
+                event.preventDefault();
+                Transforms.moveToTop(board);
+                return;
+            }
+            if (isKeyHotkey('mod+option+“', event)) {
+                event.preventDefault();
+                Transforms.moveToBottom(board);
+                return;
+            }
         }
 
         const selectedElements = getSelectedElements(board);
