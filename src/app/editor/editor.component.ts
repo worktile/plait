@@ -18,7 +18,8 @@ import {
     canAddGroup,
     deleteFragment,
     Transforms,
-    duplicateElements
+    duplicateElements,
+    setClipboardData
 } from '@plait/core';
 import { mockDrawData, mockGroupData, mockMindData, mockRotateData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -175,14 +176,16 @@ export class BasicEditorComponent implements OnInit {
         event.stopPropagation();
         event.preventDefault();
         const rectangle = getRectangleByElements(this.board, this.selectedElements, false);
-        this.board.buildFragment(null, rectangle, 'copy');
+        const clipboardContext = this.board.buildFragment(null, rectangle, 'copy');
+        clipboardContext && setClipboardData(null, clipboardContext);
     }
 
     cut(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
         const rectangle = getRectangleByElements(this.board, this.selectedElements, false);
-        this.board.buildFragment(null, rectangle, 'cut');
+        const clipboardContext = this.board.buildFragment(null, rectangle, 'cut');
+        clipboardContext && setClipboardData(null, clipboardContext);
         deleteFragment(this.board);
     }
 
