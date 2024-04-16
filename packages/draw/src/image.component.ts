@@ -23,7 +23,7 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
 
     lineAutoCompleteGenerator!: LineAutoCompleteGenerator;
 
-    constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
+    constructor(protected cdr: ChangeDetectorRef) {
         super(cdr);
     }
 
@@ -51,7 +51,7 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
     ngOnInit(): void {
         super.ngOnInit();
         this.initializeGenerator();
-        this.imageGenerator.processDrawing(this.element, this.g, this.viewContainerRef);
+        this.imageGenerator.processDrawing(this.element, this.getElementG(), this.viewContainerRef);
         this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
             selected: this.selected
         });
@@ -62,7 +62,7 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
         previous: PlaitPluginElementContext<PlaitImage, PlaitBoard>
     ) {
         if (value.element !== previous.element) {
-            this.imageGenerator.updateImage(this.g, previous.element, value.element);
+            this.imageGenerator.updateImage(this.getElementG(), previous.element, value.element);
             this.imageGenerator.componentRef.instance.isFocus = this.selected;
             this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: this.selected

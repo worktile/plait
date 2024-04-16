@@ -46,5 +46,21 @@ export const PlaitNode = {
             n = n.children[i];
         }
         return n;
+    },
+    first(board: PlaitBoard, path: Path) {
+        const p = path.slice();
+        let n = PlaitNode.get(board, p);
+        if (!n.children) {
+            return n;
+        }
+        while (n) {
+            if (n.children!.length === 0) {
+                break;
+            } else {
+                n = n.children![0];
+                p.push(0);
+            }
+        }
+        return n;
     }
 };

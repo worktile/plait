@@ -104,9 +104,9 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         },
         getDeletedFragment: (data: PlaitElement[]) => data,
         getRelatedFragment: (data: PlaitElement[], originData?: PlaitElement[]) => data,
-        drawElement: (context: PlaitPluginElementContext) => [],
-        redrawElement: (context: PlaitPluginElementContext, previousContext) => {},
-        destroyElement: (context: PlaitPluginElementContext) => {},
+        drawElement: (context: PlaitPluginElementContext) => {
+            throw new Error(`can not resolve plugin element component type: ${context.element.type}`);
+        },
         isWithinSelection: element => false,
         isRectangleHit: element => false,
         isHit: element => false,
@@ -125,7 +125,9 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         globalPointerMove: pointer => {},
         globalPointerUp: pointer => {},
         isImageBindingAllowed: (element: PlaitElement) => false,
-        canAddToGroup: (element: PlaitElement) => true
+        canAddToGroup: (element: PlaitElement) => true,
+        canSetZIndex: (element: PlaitElement) => true,
+        isExpanded: (element: PlaitElement) => true
     };
     return board;
 }

@@ -6,8 +6,7 @@ import {
     NODE_TO_INDEX,
     PlaitPluginElementContext,
     OnContextChanged,
-    RectangleClient,
-    PlaitChildrenElementComponent
+    RectangleClient
 } from '@plait/core';
 import { isHorizontalLayout, AbstractNode, MindLayoutType } from '@plait/layouts';
 import { TextManageRef, TextManage, ExitOrigin } from '@plait/text';
@@ -30,24 +29,14 @@ import { NodeSpace } from './utils/space/node-space';
 import { NodeTopicThreshold } from './constants/node-topic-style';
 import { CommonPluginElement, ImageGenerator, WithTextOptions, WithTextPluginKey } from '@plait/common';
 import { NodeShapeGenerator } from './generators/node-shape.generator';
-import { NgIf } from '@angular/common';
 import { getImageForeignRectangle } from './utils';
 import { ImageData } from './interfaces';
 
 @Component({
     selector: 'plait-mind-node',
-    template: `
-        <plait-children
-            *ngIf="!element.isCollapsed"
-            [board]="board"
-            [parent]="element"
-            [effect]="effect"
-            [parentG]="parentG"
-        ></plait-children>
-    `,
+    template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [NgIf, PlaitChildrenElementComponent]
+    standalone: true
 })
 export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMindBoard>
     implements OnInit, OnDestroy, OnContextChanged<MindElement, PlaitMindBoard> {
@@ -56,8 +45,6 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     node!: MindNode;
 
     index!: number;
-
-    parentG!: SVGGElement;
 
     shapeG: SVGGElement | null = null;
 
@@ -83,7 +70,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         return this.getTextManages()[0];
     }
 
-    constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
+    constructor(protected cdr: ChangeDetectorRef) {
         super(cdr);
     }
 
@@ -134,8 +121,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.node = MindElement.getNode(this.element);
         this.index = NODE_TO_INDEX.get(this.element) || 0;
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
-        this.parentG = PlaitElement.getComponent(MindElement.getRoot(this.board, this.element)).rootG as SVGGElement;
-        this.nodeShapeGenerator.processDrawing(this.element, this.g, { node: this.node });
+        this.nodeShapeGenerator.processDrawing(this.element, this.getElementG(), { node: this.node });
         this.drawLink();
         this.drawTopic();
         this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
@@ -144,9 +130,9 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         });
         this.drawEmojis();
         this.drawExtend();
-        this.imageGenerator.processDrawing(this.element as MindElement<ImageData>, this.g, this.viewContainerRef);
+        this.imageGenerator.processDrawing(this.element as MindElement<ImageData>, this.getElementG(), this.viewContainerRef);
         if (PlaitMind.isMind(this.context.parent)) {
-            this.g.classList.add('branch');
+            this.getElementG().classList.add('branch');
         }
     }
 
@@ -163,16 +149,16 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
                 selected: this.selected,
                 isEditing: this.textManage.isEditing
             });
-            this.nodeShapeGenerator.processDrawing(this.element, this.g, { node: this.node });
+            this.nodeShapeGenerator.processDrawing(this.element, this.getElementG(), { node: this.node });
             this.drawLink();
             this.drawEmojis();
             this.drawExtend();
             if (!MindElement.hasImage(previous.element) && MindElement.hasImage(this.element)) {
-                this.imageGenerator.processDrawing(this.element, this.g, this.viewContainerRef);
+                this.imageGenerator.processDrawing(this.element, this.getElementG(), this.viewContainerRef);
             }
             if (MindElement.hasImage(previous.element) && MindElement.hasImage(this.element)) {
                 this.imageGenerator.updateImage(
-                    this.g,
+                    this.getElementG(),
                     previous.element as MindElement<ImageData>,
                     value.element as MindElement<ImageData>
                 );
@@ -199,7 +185,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     drawEmojis() {
         const g = this.nodeEmojisGenerator.drawEmojis(this.element);
         if (g) {
-            this.g.append(g);
+            this.getElementG().append(g);
         }
     }
 
@@ -221,19 +207,19 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         } else {
             this.linkG = drawLink(this.board, parentNode, this.node, isHorizontalLayout(layout));
         }
-        this.g.append(this.linkG);
+        this.getElementG().append(this.linkG);
     }
 
     drawExtend() {
         if (!this.extendG) {
             this.extendG = createG();
             this.extendG.classList.add('extend');
-            this.g.append(this.extendG);
+            this.getElementG().append(this.extendG);
         }
         if (this.element.isCollapsed) {
-            this.g.classList.add('collapsed');
+            this.getElementG().classList.add('collapsed');
         } else {
-            this.g.classList.remove('collapsed');
+            this.getElementG().classList.remove('collapsed');
         }
         this.nodePlusGenerator.processDrawing(this.element, this.extendG!);
         this.collapseGenerator.processDrawing(this.element, this.extendG!);
@@ -241,7 +227,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
 
     drawTopic() {
         this.textManage.draw(this.element.data.topic);
-        this.g.append(this.textManage.g);
+        this.getElementG().append(this.textManage.g);
     }
 
     updateTopic() {

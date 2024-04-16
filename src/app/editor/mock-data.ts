@@ -36,7 +36,7 @@ export const mockMindData: PlaitMind[] = [
                     },
                     {
                         id: '1-4-2',
-                        data: { topic: { children: [{ text: 'non-layerd-tidy-trees' }] } },
+                        data: { topic: { children: [{ text: 'non-layered-tidy-trees' }] } },
                         children: [
                             {
                                 id: '1-4-2-1',

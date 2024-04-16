@@ -14,12 +14,10 @@ import {
     getSelectedElements,
     toHostPoint,
     toViewBoxPoint,
-    getHighestSelectedGroups,
     canRemoveGroup,
     canAddGroup,
-    getHighestSelectedElements,
-    GroupTransforms,
-    deleteFragment
+    deleteFragment,
+    Transforms
 } from '@plait/core';
 import { mockDrawData, mockGroupData, mockMindData, mockRotateData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -37,7 +35,7 @@ import { withCommonPlugin } from '../plugins/with-common';
 import { AppMenuComponent } from '../components/menu/menu.component';
 import { NgIf } from '@angular/common';
 import { mockTurningPointData } from './mock-turning-point-data';
-import { withGroup, ZIndexTransforms } from '@plait/common';
+import { withGroup } from '@plait/common';
 
 const LOCAL_STORAGE_KEY = 'plait-board-data';
 
@@ -169,18 +167,6 @@ export class BasicEditorComponent implements OnInit {
         BoardTransforms.updateThemeColor(this.board, value as ThemeColorMode);
     }
 
-    moveUp(event: MouseEvent) {
-        event.stopPropagation();
-        event.preventDefault();
-        ZIndexTransforms.moveUp(this.board);
-    }
-
-    moveDown(event: MouseEvent) {
-        event.stopPropagation();
-        event.preventDefault();
-        ZIndexTransforms.moveDown(this.board);
-    }
-
     copy(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
@@ -199,13 +185,13 @@ export class BasicEditorComponent implements OnInit {
     addGroup(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        GroupTransforms.addGroup(this.board);
+        Transforms.addGroup(this.board);
     }
 
     removeGroup(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        GroupTransforms.removeGroup(this.board);
+        Transforms.removeGroup(this.board);
     }
 
     async paste(event: MouseEvent) {

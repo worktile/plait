@@ -35,7 +35,7 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
 
     boundedElements: BoundedElements = {};
 
-    constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
+    constructor(protected cdr: ChangeDetectorRef) {
         super(cdr);
     }
 
@@ -47,7 +47,7 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
 
     ngOnInit(): void {
         this.initializeGenerator();
-        this.shapeGenerator.processDrawing(this.element, this.g);
+        this.shapeGenerator.processDrawing(this.element, this.getElementG());
         const linePoints = getLinePoints(this.board, this.element);
         this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
             selected: this.selected,
@@ -85,7 +85,7 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         const linePoints = getLinePoints(this.board, this.element);
         if (value.element !== previous.element || isChangeTheme) {
-            this.shapeGenerator.processDrawing(this.element, this.g);
+            this.shapeGenerator.processDrawing(this.element, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: this.selected,
                 linePoints
@@ -102,7 +102,7 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
             }
         }
         if (isBoundedElementsChanged) {
-            this.shapeGenerator.processDrawing(this.element, this.g);
+            this.shapeGenerator.processDrawing(this.element, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: this.selected,
                 linePoints
@@ -127,7 +127,7 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
         if (this.element.texts?.length) {
             this.getTextManages().forEach((manage, index) => {
                 manage.draw(this.element.texts![index].text);
-                this.g.append(manage.g);
+                this.getElementG().append(manage.g);
             });
         }
     }

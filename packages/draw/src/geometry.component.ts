@@ -42,7 +42,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         return this.getTextManages()[0];
     }
 
-    constructor(private viewContainerRef: ViewContainerRef, protected cdr: ChangeDetectorRef) {
+    constructor(protected cdr: ChangeDetectorRef) {
         super(cdr);
     }
 
@@ -83,7 +83,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     ngOnInit(): void {
         super.ngOnInit();
         this.initializeGenerator();
-        this.shapeGenerator.processDrawing(this.element, this.g);
+        this.shapeGenerator.processDrawing(this.element, this.getElementG());
         this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
         this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
             selected: this.selected
@@ -97,7 +97,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     ) {
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (value.element !== previous.element || isChangeTheme) {
-            this.shapeGenerator.processDrawing(this.element, this.g);
+            this.shapeGenerator.processDrawing(this.element, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
             this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: this.selected
@@ -122,7 +122,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
 
     drawText() {
         this.textManage.draw(this.element.text);
-        this.g.append(this.textManage.g);
+        this.getElementG().append(this.textManage.g);
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
         this.textManage.updateAngle(centerPoint, this.element.angle);
     }

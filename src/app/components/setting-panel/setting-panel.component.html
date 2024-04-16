@@ -329,3 +329,84 @@
         ></label>
     </div>
 </div>
+
+<div *ngIf="canSetZIndex" class="property-item">
+    <div class="setting-panel-title">层级：</div>
+    <div class="abstract-container">
+        <label class="label-icon" [ngClass]="{ active: false }" (click)="moveToBottom($event)"
+            ><svg
+                width="16px"
+                height="16px"
+                viewBox="0 0 16 16"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+            >
+                <title>置底</title>
+                <g id="置底" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <path
+                        d="M8.13092063,3.75949459 L8.20455455,6.39521267 C8.23952451,7.50698815 9.1626752,8.37381246 10.2666982,8.3390714 L12.2599206,8.27549459 L12.2599206,11.2599206 C12.2599206,11.8122054 11.8122054,12.2599206 11.2599206,12.2599206 L8.09692063,12.2599206 L8.16040566,10.2656291 C8.19165279,9.15480897 7.32174539,8.23456298 6.21761233,8.20351508 L3.75992063,8.13392063 L3.75992063,4.75992063 C3.75992063,4.20763589 4.20763589,3.75992063 4.75992063,3.75992063 L8.13092063,3.75949459 Z"
+                        id="形状结合"
+                        fill="#333333"
+                    ></path>
+                    <rect id="矩形备份-2" stroke="#333333" stroke-width="1.2" x="0.6" y="8.1" width="7.3" height="7.3" rx="1.5"></rect>
+                    <rect id="矩形" stroke="#333333" stroke-width="1.2" x="8.1" y="0.6" width="7.3" height="7.3" rx="1.5"></rect>
+                </g></svg
+        ></label>
+        <label class="label-icon" [ngClass]="{ active: false }" (click)="moveDown($event)"
+            ><svg
+                width="16px"
+                height="16px"
+                viewBox="0 0 16 16"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+            >
+                <title>下移一层</title>
+                <g id="下移一层" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <path
+                        d="M4.888,4 L4.88888889,10.1111111 C4.88888889,10.6633959 5.33660414,11.1111111 5.88888889,11.1111111 L12,11.111 L12,14 C12,14.5522847 11.5522847,15 11,15 L2,15 C1.44771525,15 1,14.5522847 1,14 L1,5 C1,4.44771525 1.44771525,4 2,4 L4.888,4 Z"
+                        id="形状结合"
+                        fill="#333333"
+                    ></path>
+                    <rect id="矩形" stroke="#333333" stroke-width="1.2" x="4.6" y="1.6" width="9.8" height="9.8" rx="1.5"></rect>
+                </g></svg
+        ></label>
+        <label class="label-icon" [ngClass]="{ active: false }" (click)="moveToTop($event)"
+            ><svg
+                width="16px"
+                height="16px"
+                viewBox="0 0 16 16"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+            >
+                <title>置顶</title>
+                <g id="置顶" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <rect id="矩形备份" fill="#333333" x="3.81415976" y="3.78717712" width="8.5" height="8.5" rx="1.5"></rect>
+                    <rect id="矩形备份-2" stroke="#333333" stroke-width="1.2" x="0.6" y="8.1" width="7.3" height="7.3" rx="1.5"></rect>
+                    <path
+                        d="M14.5,0.6 C14.7485281,0.6 14.9735281,0.700735931 15.1363961,0.863603897 C15.2992641,1.02647186 15.4,1.25147186 15.4,1.5 L15.4,7 C15.4,7.24852814 15.2992641,7.47352814 15.1363961,7.6363961 C14.9735281,7.79926407 14.7485281,7.9 14.5,7.9 L9,7.9 C8.75147186,7.9 8.52647186,7.79926407 8.3636039,7.6363961 C8.20073593,7.47352814 8.1,7.24852814 8.1,7 L8.1,1.5 C8.1,1.25147186 8.20073593,1.02647186 8.3636039,0.863603897 C8.52647186,0.700735931 8.75147186,0.6 9,0.6 Z"
+                        id="矩形"
+                        stroke="#333333"
+                        stroke-width="1.2"
+                    ></path>
+                </g></svg
+        ></label>
+        <label class="label-icon" [ngClass]="{ active: false }" (click)="moveUp($event)"
+            ><svg
+                width="16px"
+                height="16px"
+                viewBox="0 0 16 16"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+            >
+                <title>上移一层</title>
+                <g id="上移一层" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <rect id="矩形" stroke="#333333" stroke-width="1.2" x="1.6" y="4.6" width="9.8" height="9.8" rx="1.5"></rect>
+                    <rect id="矩形备份" fill="#333333" x="4" y="1" width="11" height="11" rx="1.5"></rect>
+                </g></svg
+        ></label>
+    </div>
+</div>

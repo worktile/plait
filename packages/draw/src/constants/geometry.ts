@@ -83,6 +83,8 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.merge]: DefaultMergeProperty,
     [FlowchartSymbols.delay]: DefaultFlowchartProperty,
     [FlowchartSymbols.storedData]: DefaultFlowchartProperty,
+    [FlowchartSymbols.or]: DefaultConnectorProperty,
+    [FlowchartSymbols.summingJunction]: DefaultConnectorProperty,
     [FlowchartSymbols.predefinedProcess]: DefaultFlowchartProperty,
     [FlowchartSymbols.offPage]: DefaultFlowchartProperty
 };

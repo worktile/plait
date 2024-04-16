@@ -1,5 +1,4 @@
-import { PlaitGroupElement } from '@plait/core';
-import { PlaitBoard, PlaitElement } from '../interfaces';
+import { PlaitBoard, PlaitElement, PlaitGroupElement } from '../interfaces';
 import { clearNodeWeakMap, createTestingBoard, fakeNodeWeakMap } from '../testing';
 import { addSelectedElement } from '../utils';
 import { GroupTransforms } from './group';

@@ -13,6 +13,7 @@ import {
     BOARD_TO_MOVING_POINT,
     BOARD_TO_MOVING_POINT_IN_BOARD,
     BOARD_TO_ROUGH_SVG,
+    IS_BOARD_ALIVE,
     IS_BOARD_CACHE,
     IS_TEXT_EDITABLE,
     NODE_TO_INDEX,
@@ -67,9 +68,7 @@ export interface PlaitBoard {
     getDeletedFragment: (data: PlaitElement[]) => PlaitElement[];
     getRelatedFragment: (data: PlaitElement[], originData?: PlaitElement[]) => PlaitElement[];
     dblClick: (event: MouseEvent) => void;
-    drawElement: (context: PlaitPluginElementContext) => SVGGElement[] | ComponentType<PlaitPluginElementComponent>;
-    redrawElement: (context: PlaitPluginElementContext, previousContext?: PlaitPluginElementContext) => SVGGElement[] | void;
-    destroyElement: (context: PlaitPluginElementContext) => void;
+    drawElement: (context: PlaitPluginElementContext) => ComponentType<PlaitPluginElementComponent>;
     isRectangleHit: (element: PlaitElement, range: Selection) => boolean;
     // When the element has no fill color, it is considered a hit only if it hits the border.
     isHit: (element: PlaitElement, point: Point) => boolean;
@@ -84,7 +83,8 @@ export interface PlaitBoard {
     isAlign: (element: PlaitElement) => boolean;
     isImageBindingAllowed: (element: PlaitElement) => boolean;
     canAddToGroup: (element: PlaitElement) => boolean;
-
+    canSetZIndex: (element: PlaitElement) => boolean;
+    isExpanded: (element: PlaitElement) => boolean;
     // pointer hook
     pointerDown: (pointer: PointerEvent) => void;
     pointerMove: (pointer: PointerEvent) => void;
@@ -127,7 +127,7 @@ export const PlaitBoard = {
         return isBoard;
     },
     isAlive(board: PlaitBoard) {
-        const isAlive = IS_BOARD_CACHE.get(board);
+        const isAlive = IS_BOARD_ALIVE.get(board);
         return !!isAlive;
     },
     findPath(board: PlaitBoard, node: PlaitNode): Path {
