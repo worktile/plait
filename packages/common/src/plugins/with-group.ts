@@ -97,7 +97,7 @@ export function withGroup(board: PlaitBoard) {
         insertFragment(clipboardData, targetPoint);
         const groupElements = elements?.filter(value => PlaitGroupElement.isGroup(value)) as PlaitElement[];
         groupElements.forEach(element => {
-            Transforms.insertNode(board, element, [elements.indexOf(element)]);
+            Transforms.insertNode(board, element, [board.children.length]);
         });
     };
 
