@@ -1,19 +1,9 @@
-import {
-    PlaitBoard,
-    getSelectedElements,
-    getSelectedGroups,
-    PlaitElement,
-    PlaitGroupElement,
-    findLastIndex,
-    getEditingGroup,
-    getGroupByElement,
-    PlaitGroup,
-    getElementsInGroup,
-    findIndex,
-    getElementsIndices,
-    MoveNodeOption,
-    sortElements
-} from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitGroupElement, PlaitGroup } from '../interfaces';
+import { MoveNodeOption, getElementsIndices } from './common';
+import { getEditingGroup, getElementsInGroup, getGroupByElement, getSelectedGroups } from './group';
+import { findIndex, findLastIndex } from './helper';
+import { sortElements } from './position';
+import { getSelectedElements } from './selected-element';
 
 export const getOneMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): MoveNodeOption[] => {
     const indicesToMove = getIndicesToMove(board);

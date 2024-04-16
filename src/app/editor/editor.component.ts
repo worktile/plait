@@ -16,8 +16,8 @@ import {
     toViewBoxPoint,
     canRemoveGroup,
     canAddGroup,
-    GroupTransforms,
-    deleteFragment
+    deleteFragment,
+    Transforms
 } from '@plait/core';
 import { mockDrawData, mockGroupData, mockMindData, mockRotateData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -185,13 +185,13 @@ export class BasicEditorComponent implements OnInit {
     addGroup(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        GroupTransforms.addGroup(this.board);
+        Transforms.addGroup(this.board);
     }
 
     removeGroup(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        GroupTransforms.removeGroup(this.board);
+        Transforms.removeGroup(this.board);
     }
 
     async paste(event: MouseEvent) {

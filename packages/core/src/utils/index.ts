@@ -30,4 +30,5 @@ export * from './selection';
 export * from './angle';
 export * from './fragment';
 export * from './snap/snap';
+export * from './z-index';
 export * from './position';

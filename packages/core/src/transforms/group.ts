@@ -77,6 +77,11 @@ export const removeGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
     }
 };
 
+export interface GroupTransforms {
+    addGroup: (board: PlaitBoard, elements?: PlaitElement[]) => void;
+    removeGroup: (board: PlaitBoard, elements?: PlaitElement[]) => void;
+}
+
 export const GroupTransforms = {
     addGroup,
     removeGroup

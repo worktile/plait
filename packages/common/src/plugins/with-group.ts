@@ -19,9 +19,7 @@ import {
     getGroupByElement,
     getSelectedIsolatedElementsCanAddToGroup,
     getElementsInGroup,
-    getRectangleByGroup,
-    GroupTransforms,
-    getSelectedElements
+    getRectangleByGroup
 } from '@plait/core';
 import { GroupComponent } from '../core/group.component';
 import { isKeyHotkey } from 'is-hotkey';
@@ -130,12 +128,12 @@ export function withGroup(board: PlaitBoard) {
         if (!PlaitBoard.isReadonly(board)) {
             if (isKeyHotkey('mod+g', event)) {
                 event.preventDefault();
-                GroupTransforms.addGroup(board);
+                Transforms.addGroup(board);
                 return;
             }
             if (isKeyHotkey('mod+shift+g', event)) {
                 event.preventDefault();
-                GroupTransforms.removeGroup(board);
+                Transforms.removeGroup(board);
                 return;
             }
         }

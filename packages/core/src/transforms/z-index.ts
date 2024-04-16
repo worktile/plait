@@ -1,5 +1,6 @@
-import { moveElementsToNewPath, PlaitBoard } from '@plait/core';
-import { getOneMoveOptions, getAllMoveOptions } from '../utils';
+import { PlaitBoard } from '../interfaces';
+import { moveElementsToNewPath } from '../utils';
+import { getAllMoveOptions, getOneMoveOptions } from '../utils/z-index';
 
 const moveToTop = (board: PlaitBoard) => {
     const moveOptions = getAllMoveOptions(board, 'up');
@@ -11,7 +12,6 @@ const moveToBottom = (board: PlaitBoard) => {
     moveElementsToNewPath(board, moveOptions);
 };
 
-
 const moveUp = (board: PlaitBoard) => {
     const moveOptions = getOneMoveOptions(board, 'up');
     moveElementsToNewPath(board, moveOptions);
@@ -21,5 +21,12 @@ const moveDown = (board: PlaitBoard) => {
     const moveOptions = getOneMoveOptions(board, 'down');
     moveElementsToNewPath(board, moveOptions);
 };
+
+export interface ZIndexTransforms {
+    moveUp: (board: PlaitBoard) => void;
+    moveDown: (board: PlaitBoard) => void;
+    moveToTop: (board: PlaitBoard) => void;
+    moveToBottom: (board: PlaitBoard) => void;
+}
 
 export const ZIndexTransforms = { moveUp, moveDown, moveToTop, moveToBottom };
