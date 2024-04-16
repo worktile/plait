@@ -8,10 +8,8 @@ import {
     canRemoveGroup,
     findElements,
     getElementsIndices,
-    isIndexesContinuous,
-    sortElements,
+    isIndicesContinuous,
     getSelectedElements,
-    moveElementsToNewPath,
     getHighestIndexOfElement,
     moveElementsToNewPathAfterAddGroup
 } from '../utils';
@@ -30,7 +28,7 @@ export const addGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
         const selectedElements = getSelectedElements(board);
         const highestIndexOfSelectedElement = getHighestIndexOfElement(board, [...selectedElements, ...selectedGroups]);
         const indices = getElementsIndices(board, highestSelectedElements);
-        const isContinuous = isIndexesContinuous(indices);
+        const isContinuous = isIndicesContinuous(indices);
         if (!isContinuous) {
             moveElementsToNewPathAfterAddGroup(board, [...selectedElements, ...selectedGroups], [highestIndexOfSelectedElement - 1]);
         }

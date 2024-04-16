@@ -8,7 +8,8 @@ import { idCreator } from './id-creator';
 import { getSelectedElements } from './selected-element';
 import { isSelectionMoving } from './selection';
 import { depthFirstRecursion } from './tree';
-import { moveElementsToNewPath, sortElements } from './common';
+import { moveElementsToNewPath } from './common';
+import { sortElements } from './position';
 
 export const getElementsInGroup = (board: PlaitBoard, group: PlaitGroup, recursion?: boolean, includeGroup?: boolean) => {
     let result: PlaitElement[] = [];

@@ -11,8 +11,8 @@ import {
     getElementsInGroup,
     findIndex,
     getElementsIndices,
+    MoveNodeOption,
     sortElements,
-    MoveNodeOption
 } from '@plait/core';
 
 export const getOneMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): MoveNodeOption[] => {

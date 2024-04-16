@@ -1,9 +1,9 @@
 import { PlaitBoard, PlaitElement } from '../interfaces';
 
-export const sortElements = (board: PlaitBoard, elements: PlaitElement[]) => {
+export const sortElements = (board: PlaitBoard, elements: PlaitElement[], ascendingOrder = true) => {
     return [...elements].sort((a: PlaitElement, b: PlaitElement) => {
-        const pathA = PlaitBoard.findPath(board, a);
-        const pathB = PlaitBoard.findPath(board, b);
-        return pathA[0] - pathB[0];
+        const indexA = board.children.findIndex(child => child.id === a.id);
+        const indexB = board.children.findIndex(child => child.id === b.id);
+        return ascendingOrder ? indexA - indexB : indexB - indexA;
     });
 };

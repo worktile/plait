@@ -2,6 +2,7 @@ import { Path, PlaitElement } from '../interfaces';
 import { PlaitBoard } from '../interfaces/board';
 import { Subscription, timer } from 'rxjs';
 import { NodeTransforms } from '../transforms/node';
+import { sortElements } from './position';
 
 const BOARD_TO_RAF = new WeakMap<PlaitBoard, { [key: string]: number | null }>();
 
@@ -58,32 +59,15 @@ export const debounce = (func: () => void, wait: number, options?: { leading: bo
 };
 
 export const getElementsIndices = (board: PlaitBoard, elements: PlaitElement[]): number[] => {
-    return elements
-        .map(item => {
-            return board.children.map(item=> item.id).indexOf(item.id);
-        })
-        .sort((a, b) => {
-            return a - b;
-        });
+    sortElements(board, elements);
+    return elements.map(item => {
+        return board.children.map(item => item.id).indexOf(item.id);
+    });
 };
 
 export const getHighestIndexOfElement = (board: PlaitBoard, elements: PlaitElement[]) => {
-    let maxIndex = -1;
-    for (let i = 0; i < elements.length; i++) {
-        const indexInA = board.children.map(item => item.id).lastIndexOf(elements[i].id);
-        if (indexInA > maxIndex) {
-            maxIndex = indexInA;
-        }
-    }
-    return maxIndex;
-};
-
-export const sortElements = (board: PlaitBoard, elements: PlaitElement[] = [], ascendingOrder = true) => {
-    return elements.sort((a, b) => {
-        const indexA = board.children.findIndex(child => child.id === a.id);
-        const indexB = board.children.findIndex(child => child.id === b.id);
-        return ascendingOrder ? indexA - indexB : indexB - indexA;
-    });
+    const indices = getElementsIndices(board, elements);
+    return indices[indices.length-1];
 };
 
 export const moveElementsToNewPath = (board: PlaitBoard, moveOptions: MoveNodeOption[]) => {
