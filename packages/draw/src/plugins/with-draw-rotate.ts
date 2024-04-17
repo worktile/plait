@@ -30,7 +30,7 @@ import { PlaitDrawElement } from '../interfaces';
 import { getRotateHandleRectangle } from '../utils/position/geometry';
 
 export const withDrawRotate = (board: PlaitBoard) => {
-    const { pointerDown, pointerMove, globalPointerUp, afterChange, drawActiveRectangle, keyDown } = board;
+    const { pointerDown, pointerMove, globalPointerUp, afterChange, drawActiveRectangle } = board;
     let rotateRef: RotateRef | null = null;
     let rotateHandleG: SVGGElement | null;
     let needCustomActiveRectangle = false;
