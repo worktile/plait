@@ -26,7 +26,14 @@ export const getFillByElement = (board: PlaitBoard, element: PlaitGeometry | Pla
 };
 
 export const getLineDashByElement = (element: PlaitGeometry | PlaitLine) => {
-    return element.strokeStyle === 'dashed' ? [8, 8 + getStrokeWidthByElement(element)] : undefined;
+    switch (element.strokeStyle) {
+        case StrokeStyle.dashed:
+            return [8, 8 + getStrokeWidthByElement(element)];
+        case StrokeStyle.dotted:
+            return [3, 3 + getStrokeWidthByElement(element)];
+        default:
+            return undefined;
+    }
 };
 
 export const getStrokeStyleByElement = (element: PlaitGeometry | PlaitLine) => {

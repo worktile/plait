@@ -1,6 +1,7 @@
 export enum StrokeStyle {
     solid = 'solid',
-    dashed = 'dashed'
+    dashed = 'dashed',
+    dotted = 'dotted'
 }
 
 export enum MemorizeKey {
