@@ -5,7 +5,7 @@ import { createG, setAngleForG } from './dom';
 import { drawRectangle } from './drawing/rectangle';
 import { getRectangleByElements } from './element';
 import { idCreator } from './id-creator';
-import { getSelectedElements } from './selected-element';
+import { cacheSelectedElements, getSelectedElements } from './selected-element';
 import { isSelectionMoving } from './selection';
 import { depthFirstRecursion } from './tree';
 import { moveElementsToNewPath } from './common';
@@ -250,7 +250,8 @@ export const getEditingGroup = (board: PlaitBoard, element: PlaitElement) => {
     return editingGroup;
 };
 
-export const moveElementsToNewPathAfterAddGroup = (board: PlaitBoard, moveElements: PlaitElement[], newPath: Path) => {
+export const moveElementsToNewPathAfterAddGroup = (board: PlaitBoard, selectedElements: PlaitElement[], newPath: Path) => {
+    const moveElements = [...selectedElements];
     sortElements(board, moveElements);
     moveElements.pop();
     moveElementsToNewPath(

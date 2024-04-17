@@ -1,6 +1,6 @@
 import { PlaitBoard, PlaitElement, PlaitGroupElement } from '../interfaces';
 import { clearNodeWeakMap, createTestingBoard, fakeNodeWeakMap } from '../testing';
-import { addSelectedElement } from '../utils';
+import { addSelectedElement, getSelectedElements } from '../utils';
 import { GroupTransforms } from './group';
 
 const children: PlaitElement[] = [
@@ -96,7 +96,7 @@ const children: PlaitElement[] = [
         groupId: 'JDQpa'
     },
     {
-        id: 'DPMaD',
+        id: 'DPMsD',
         type: 'geometry',
         shape: 'rectangle',
         angle: 0,
@@ -160,5 +160,16 @@ describe('group transform', () => {
         expect(board.children.length).toBe(5);
         const elementIngroup = board.children.filter(item => item.groupId);
         expect(elementIngroup.length).toBe(0);
+    });
+
+    it('should correctly moving elements when selecting elements from different layers for grouping.', () => {
+        addSelectedElement(board, [children[0], children[1], children[4], children[5]]);
+        GroupTransforms.addGroup(board);
+        expect(board.children[2].id).toBe(children[0].id);
+        expect(board.children[3].id).toBe(children[1].id);
+        expect(board.children[4].id).toBe(children[4].id);
+        expect(board.children[5].id).toBe(children[5].id);
+        const selectedElements = getSelectedElements(board);
+        expect(selectedElements.length).toBe(4);
     });
 });
