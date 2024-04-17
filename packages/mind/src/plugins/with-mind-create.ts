@@ -45,6 +45,7 @@ export const withCreateMind = (board: PlaitBoard) => {
             clearSelectedElement(board);
             addSelectedElement(board, emptyMind);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
+            return;
         }
         pointerDown(event);
     };
