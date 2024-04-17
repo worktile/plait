@@ -40,6 +40,8 @@ import {
     getClipboardData,
     getRectangleByElements,
     getSelectedElements,
+    setClipboardData,
+    setFragment,
     toHostPoint,
     toViewBoxPoint
 } from '../utils';
@@ -398,10 +400,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 filter(() => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: ClipboardEvent) => {
-                const selectedElements = getSelectedElements(this.board);
                 event.preventDefault();
-                const rectangle = getRectangleByElements(this.board, selectedElements, false);
-                this.board.setFragment(event.clipboardData, null, rectangle, 'copy');
+                setFragment(this.board, 'copy', event.clipboardData);
             });
 
         fromEvent<ClipboardEvent>(document, 'paste')
@@ -414,7 +414,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 if (mousePoint) {
                     const targetPoint = toViewBoxPoint(this.board, toHostPoint(this.board, mousePoint[0], mousePoint[1]));
                     const clipboardData = await getClipboardData(clipboardEvent.clipboardData);
-                    this.board.insertFragment(clipboardEvent.clipboardData, clipboardData, targetPoint);
+                    this.board.insertFragment(clipboardData, targetPoint);
                 }
             });
 
@@ -424,10 +424,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 filter(() => this.isFocused && !PlaitBoard.isReadonly(this.board) && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: ClipboardEvent) => {
-                const selectedElements = getSelectedElements(this.board);
                 event.preventDefault();
-                const rectangle = getRectangleByElements(this.board, selectedElements, false);
-                this.board.setFragment(event.clipboardData, null, rectangle, 'cut');
+                setFragment(this.board, 'cut', event.clipboardData);
                 deleteFragment(this.board);
             });
     }

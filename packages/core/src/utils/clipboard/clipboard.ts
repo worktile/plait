@@ -35,14 +35,14 @@ export const setClipboardData = async (dataTransfer: DataTransfer | null, clipbo
     if (!clipboardContext) {
         return;
     }
-    const { type, data, text } = clipboardContext;
+    const { type, elements, text } = clipboardContext;
 
     if (getProbablySupportsClipboardWrite()) {
-        return await setNavigatorClipboard(type, data, text);
+        return await setNavigatorClipboard(type, elements, text);
     }
 
     if (dataTransfer) {
-        setDataTransferClipboard(dataTransfer, type, data);
+        setDataTransferClipboard(dataTransfer, type, elements);
         setDataTransferClipboardText(dataTransfer, text);
         return;
     }
@@ -50,6 +50,6 @@ export const setClipboardData = async (dataTransfer: DataTransfer | null, clipbo
     // Compatible with situations where navigator.clipboard.write is not supported and dataTransfer is empty
     // Such as contextmenu copy in Firefox.
     if (getProbablySupportsClipboardWriteText()) {
-        return await navigator.clipboard.writeText(buildPlaitHtml(type, data));
+        return await navigator.clipboard.writeText(buildPlaitHtml(type, elements));
     }
 };

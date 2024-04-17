@@ -95,10 +95,8 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         globalKeyDown: (event: KeyboardEvent) => {},
         keyUp: (event: KeyboardEvent) => {},
         dblClick: (event: MouseEvent) => {},
-        setFragment: (data: DataTransfer | null, clipboardContext: WritableClipboardContext | null) => {
-            setClipboardData(data, clipboardContext);
-        },
-        insertFragment: (data: DataTransfer | null) => {},
+        buildFragment: (clipboardContext: WritableClipboardContext | null) => clipboardContext,
+        insertFragment: () => {},
         deleteFragment: (elements: PlaitElement[]) => {
             CoreTransforms.removeElements(board, elements);
         },

@@ -27,7 +27,7 @@ import { getElementsText } from '@plait/common';
 export const withMindFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard & PlaitMindBoard;
     let firstLevelElements: MindElement[] | null;
-    const { getDeletedFragment, insertFragment, setFragment, deleteFragment } = board;
+    const { getDeletedFragment, insertFragment, buildFragment, deleteFragment } = board;
 
     board.getDeletedFragment = (data: PlaitElement[]) => {
         const targetMindElements = getSelectedMindElements(board);
@@ -54,8 +54,7 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
         }
     };
 
-    board.setFragment = (
-        data: DataTransfer | null,
+    board.buildFragment = (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
         type: 'copy' | 'cut'
@@ -71,14 +70,14 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
                 clipboardContext = addClipboardContext(clipboardContext, {
                     text,
                     type: WritableClipboardType.elements,
-                    data: elements
+                    elements
                 });
             }
         }
-        setFragment(data, clipboardContext, rectangle, type);
+        return buildFragment(clipboardContext, rectangle, type);
     };
 
-    board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
+    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point) => {
         if (clipboardData?.elements?.length) {
             const mindElements = clipboardData.elements?.filter(value => MindElement.isMindElement(board, value));
             if (mindElements && mindElements.length > 0) {
@@ -93,7 +92,7 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
             }
         }
 
-        insertFragment(data, clipboardData, targetPoint);
+        insertFragment(clipboardData, targetPoint);
     };
 
     return board;

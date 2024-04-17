@@ -28,7 +28,7 @@ import { acceptImageTypes, buildImage, getElementOfFocusedImage } from '@plait/c
 import { DEFAULT_MIND_IMAGE_WIDTH } from '../constants';
 
 export const withNodeImage = (board: PlaitBoard) => {
-    const { keyDown, pointerUp, globalPointerUp, setFragment, insertFragment, deleteFragment } = board;
+    const { keyDown, pointerUp, globalPointerUp, buildFragment, insertFragment, deleteFragment } = board;
 
     board.pointerUp = (event: PointerEvent) => {
         const elementOfFocusedImage = getElementOfFocusedImage(board);
@@ -86,8 +86,7 @@ export const withNodeImage = (board: PlaitBoard) => {
         globalPointerUp(event);
     };
 
-    board.setFragment = (
-        data: DataTransfer | null,
+    board.buildFragment = (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
         type: 'copy' | 'cut'
@@ -96,7 +95,7 @@ export const withNodeImage = (board: PlaitBoard) => {
         if (selectedImageElement) {
             clipboardContext = createClipboardContext(WritableClipboardType.medias, [selectedImageElement.data.image], '');
         }
-        setFragment(data, clipboardContext, rectangle, type);
+        return buildFragment(clipboardContext, rectangle, type);
     };
 
     board.deleteFragment = (elements: PlaitElement[]) => {
@@ -107,7 +106,7 @@ export const withNodeImage = (board: PlaitBoard) => {
         deleteFragment(elements);
     };
 
-    board.insertFragment = (data: DataTransfer | null, clipboardData: ClipboardData | null, targetPoint: Point) => {
+    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point) => {
         const selectedElements = getSelectedElements(board);
         const isSelectedImage = !!getElementOfFocusedImage(board);
         const isSingleSelection = selectedElements.length === 1 && MindElement.isMindElement(board, selectedElements[0]);
@@ -129,7 +128,7 @@ export const withNodeImage = (board: PlaitBoard) => {
                 return;
             }
         }
-        insertFragment(data, clipboardData, targetPoint);
+        insertFragment(clipboardData, targetPoint);
     };
 
     return board;

@@ -41,13 +41,33 @@ app-basic-editor {
     border: 1px solid #ccc;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
+    width: 220px;
+    padding: 8px 0;
+    hr {
+        border: none;
+        background-color: #eee;
+        height: 1px;
+    }
     .context-menu-item {
-        padding: 8px 30px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 9px 20px;
+        position: relative;
+        color: #333;
         cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s;
+        justify-content: space-between;
+        font-size: 14px;
         &:hover {
             background-color: #f0f0f0;
         }
-        border-bottom: 1px solid #eee;
+
+        .shortcut {
+            color: #aaa;
+            font-size: 12px;
+        }
         &:last-child {
             border-bottom: 0;
         }
