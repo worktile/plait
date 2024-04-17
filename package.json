@@ -30,7 +30,7 @@
         "test:common": "ng test common",
         "test:flow": "ng test flow",
         "start:docs": "docgeni serve --port 4600",
-        "ci:test": "ng test --watch=false",
+        "ci:test": "ng test --watch=false --progress=false --browsers=ChromeHeadlessCI",
         "lint": "ng lint --fix",
         "pretty": "pretty-quick --staged"
     },
