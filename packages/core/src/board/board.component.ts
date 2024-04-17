@@ -41,6 +41,7 @@ import {
     getRectangleByElements,
     getSelectedElements,
     setClipboardData,
+    setFragment,
     toHostPoint,
     toViewBoxPoint
 } from '../utils';
@@ -399,11 +400,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 filter(() => this.isFocused && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: ClipboardEvent) => {
-                const selectedElements = getSelectedElements(this.board);
                 event.preventDefault();
-                const rectangle = getRectangleByElements(this.board, selectedElements, false);
-                const clipboardContext = this.board.buildFragment(null, rectangle, 'copy');
-                clipboardContext && setClipboardData(event.clipboardData, clipboardContext);
+                setFragment(this.board, 'copy', event.clipboardData);
             });
 
         fromEvent<ClipboardEvent>(document, 'paste')
@@ -426,11 +424,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 filter(() => this.isFocused && !PlaitBoard.isReadonly(this.board) && !PlaitBoard.hasBeenTextEditing(this.board))
             )
             .subscribe((event: ClipboardEvent) => {
-                const selectedElements = getSelectedElements(this.board);
                 event.preventDefault();
-                const rectangle = getRectangleByElements(this.board, selectedElements, false);
-                const clipboardContext = this.board.buildFragment(null, rectangle, 'cut');
-                clipboardContext && setClipboardData(event.clipboardData, clipboardContext);
+                setFragment(this.board, 'cut', event.clipboardData);
                 deleteFragment(this.board);
             });
     }
