@@ -1,6 +1,5 @@
-import { PlaitBoard, throttleRAF } from '@plait/core';
+import { PlaitBoard, PlaitElement, throttleRAF } from '@plait/core';
 import { NodeExtendHoveredRef, pointerLeaveHandle, pointerMoveHandle } from '../utils/node-hover/extend';
-import { PlaitElement } from 'packages/core/src/interfaces';
 
 export const withNodeHoverHitTest = (board: PlaitBoard) => {
     const { pointerMove, pointerLeave } = board;
