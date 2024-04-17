@@ -10,11 +10,21 @@ import {
     createMask,
     createRect,
     distanceBetweenPointAndPoint,
-    catmullRomFitting
+    catmullRomFitting,
+    setStrokeLinecap
 } from '@plait/core';
 import { pointsOnBezierCurves } from 'points-on-curve';
 import { getPointOnPolyline, getPointByVectorComponent, removeDuplicatePoints, getExtendPoint } from '@plait/common';
-import { LineHandle, LineMarkerType, LineShape, LineText, PlaitDrawElement, PlaitLine, PlaitShapeElement } from '../../interfaces';
+import {
+    LineHandle,
+    LineMarkerType,
+    LineShape,
+    LineText,
+    PlaitDrawElement,
+    PlaitLine,
+    PlaitShapeElement,
+    StrokeStyle
+} from '../../interfaces';
 import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
 import { getElementShape } from '../shape';
@@ -170,7 +180,11 @@ export const drawLine = (board: PlaitBoard, element: PlaitLine) => {
     }
     const id = idCreator();
     line.setAttribute('mask', `url(#${id})`);
+    if (element.strokeStyle === StrokeStyle.dotted) {
+        setStrokeLinecap(line, 'round');
+    }
     lineG.appendChild(line);
+
     const { mask, maskTargetFillRect } = drawMask(board, element, id);
     lineG.appendChild(mask);
     line.appendChild(maskTargetFillRect);
