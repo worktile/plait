@@ -1,12 +1,12 @@
 import { PlaitBoard, PlaitElement, PlaitGroupElement, PlaitGroup } from '../interfaces';
 import { MoveNodeOption, getElementsIndices } from './common';
-import { getEditingGroup, getElementsInGroup, getGroupByElement, getSelectedGroups } from './group';
+import { getEditingGroup, getElementsInGroup, getGroupByElement, getHighestGroup, isSelectedAllElementsInGroup } from './group';
 import { findIndex, findLastIndex } from './helper';
 import { sortElements } from './position';
 import { getSelectedElements } from './selected-element';
 
 export const getOneMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): MoveNodeOption[] => {
-    const indicesToMove = getIndicesToMove(board);
+    const indicesToMove = getElementsIndices(board, getSelectedElements(board));
     let groupedIndices = toContiguousGroups(board, indicesToMove);
     if (direction === 'up') {
         groupedIndices = groupedIndices.reverse();
@@ -37,7 +37,7 @@ export const getOneMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): 
 };
 
 export const getAllMoveOptions = (board: PlaitBoard, direction: 'down' | 'up'): MoveNodeOption[] => {
-    const indicesToMove = getIndicesToMove(board);
+    const indicesToMove = getElementsIndices(board, getSelectedElements(board));
     let groupedIndices = toContiguousGroups(board, indicesToMove);
     let moveContents: MoveNodeOption[] = [];
     if (direction === 'down') {
@@ -84,9 +84,30 @@ const toContiguousGroups = (board: PlaitBoard, array: number[]) => {
         if (index > 0) {
             const currentElement = board.children[value];
             const previousElement = board.children[array[index - 1]];
-            const isInSameGroup = currentElement.groupId === previousElement.groupId;
-            const isContain = currentElement.id === previousElement.groupId || currentElement.groupId === previousElement.id;
-            if (array[index - 1] !== value - 1 || (!isInSameGroup && !isContain)) {
+            const isContiguous =
+                value - 1 === array[index - 1]
+                    ? true
+                    : board.children.every((item, childIndex) => {
+                          if (childIndex > array[index - 1] && childIndex <= value - 1) {
+                              return PlaitGroupElement.isGroup(item);
+                          }
+                          return true;
+                      });
+            let isPartialSelectGroupElement = false;
+            if (previousElement.groupId || (currentElement.groupId && previousElement.groupId !== currentElement.groupId)) {
+                let isPartialSelectPreviousGroup = false;
+                let isPartialSelectCurrentElement = false;
+                if (previousElement.groupId) {
+                    const highestGroup = getHighestGroup(board, previousElement);
+                    isPartialSelectPreviousGroup = !isSelectedAllElementsInGroup(board, highestGroup!);
+                }
+                if (currentElement.groupId) {
+                    const highestGroup = getHighestGroup(board, currentElement);
+                    isPartialSelectCurrentElement = !isSelectedAllElementsInGroup(board, highestGroup!);
+                }
+                isPartialSelectGroupElement = isPartialSelectPreviousGroup || isPartialSelectCurrentElement;
+            }
+            if (!isContiguous || isPartialSelectGroupElement) {
                 cursor = ++cursor;
             }
         }
@@ -142,9 +163,8 @@ const getTargetIndex = (board: PlaitBoard, boundaryIndex: number, direction: 'do
         siblingGroup = nextElementGroups[nextElementGroups.length - 1];
     }
     if (siblingGroup) {
-        let elementsInSiblingGroup = getElementsInGroup(board, siblingGroup, true, true);
+        let elementsInSiblingGroup = getElementsInGroup(board, siblingGroup, true, false);
         if (elementsInSiblingGroup.length) {
-            elementsInSiblingGroup = [...elementsInSiblingGroup, siblingGroup];
             elementsInSiblingGroup.sort((a, b) => {
                 const indexA = board.children.findIndex(child => child.id === a.id);
                 const indexB = board.children.findIndex(child => child.id === b.id);
@@ -159,9 +179,4 @@ const getTargetIndex = (board: PlaitBoard, boundaryIndex: number, direction: 'do
     }
 
     return candidateIndex;
-};
-
-const getIndicesToMove = (board: PlaitBoard) => {
-    const selectedElements = [...getSelectedElements(board), ...getSelectedGroups(board)];
-    return getElementsIndices(board, selectedElements);
 };
