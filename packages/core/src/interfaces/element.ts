@@ -27,9 +27,17 @@ export const PlaitElement = {
     getElementG(value: PlaitElement) {
         const g = NODE_TO_G.get(value);
         if (!g) {
-            throw new Error('can not resolve element g');
+            throw new Error(`can not resolve element g: ${JSON.stringify(value)}`);
         }
         return g;
+    },
+    hasMounted(element: PlaitElement) {
+        const containerG = PlaitElement.getContainerG(element, { suppressThrow: true });
+        if (containerG) {
+            return true;
+        } else {
+            return false;
+        }
     },
     getContainerG<T extends boolean>(
         value: PlaitElement,
