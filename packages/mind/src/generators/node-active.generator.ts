@@ -11,7 +11,6 @@ import { Generator } from '@plait/common';
 
 export interface ActiveData {
     selected: boolean;
-    isEditing: boolean;
 }
 
 export class NodeActiveGenerator extends Generator<MindElement, ActiveData> {

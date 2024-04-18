@@ -125,8 +125,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.drawLink();
         this.drawTopic();
         this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-            selected: this.selected,
-            isEditing: this.textManage.isEditing
+            selected: this.selected
         });
         this.drawEmojis();
         this.drawExtend();
@@ -147,8 +146,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-                selected: this.selected,
-                isEditing: this.textManage.isEditing
+                selected: this.selected
             });
             this.nodeShapeGenerator.processDrawing(this.element, this.getElementG(), { node: this.node });
             this.drawLink();
@@ -173,8 +171,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             const hasSameParent = value.parent === previous.parent;
             if (!hasSameSelected) {
                 this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-                    selected: this.selected,
-                    isEditing: this.textManage.isEditing
+                    selected: this.selected
                 });
             }
             if (!hasSameParent) {
@@ -234,21 +231,6 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
     updateTopic() {
         this.textManage.updateText(this.element.data.topic);
         this.textManage.updateRectangle();
-    }
-
-    editTopic() {
-        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-            selected: this.selected,
-            isEditing: true
-        });
-        this.textManage.edit((origin: ExitOrigin) => {
-            if (origin === ExitOrigin.default) {
-                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-                    selected: this.selected,
-                    isEditing: false
-                });
-            }
-        });
     }
 
     trackBy = (index: number, node: MindNode) => {

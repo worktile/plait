@@ -116,11 +116,6 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         }
     }
 
-    editText() {
-        this.textManage.edit();
-        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
-    }
-
     drawText() {
         this.textManage.draw(this.element.text);
         this.getElementG().append(this.textManage.g);
