@@ -4,5 +4,4 @@ export interface RotateRef<T extends PlaitElement = PlaitElement> {
     elements: T[];
     startPoint: Point;
     angle?: number;
-    isShift?: boolean;
 }

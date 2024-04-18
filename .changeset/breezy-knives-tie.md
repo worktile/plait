@@ -1,5 +1,5 @@
 ---
-'@plait/draw': patch
+'@plait/draw': minor
 ---
 
-fix(draw): support snap angle when rotate with hotkey
+feat(rotate): support snap angle when rotate with hotkey

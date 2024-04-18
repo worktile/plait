@@ -63,7 +63,7 @@ export const withDrawRotate = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         if (rotateRef) {
             event.preventDefault();
-            rotateRef.isShift = !!event.shiftKey;
+            const isShift = !!event.shiftKey;
             addRotating(board, rotateRef);
             const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const selectionRectangle = getRectangleByElements(board, rotateRef.elements, false);
@@ -75,7 +75,7 @@ export const withDrawRotate = (board: PlaitBoard) => {
             throttleRAF(board, 'with-common-rotate', () => {
                 if (rotateRef && rotateRef.startPoint) {
                     let angle = getAngleBetweenPoints(rotateRef.startPoint, endPoint, selectionCenterPoint);
-                    if (rotateRef.isShift) {
+                    if (isShift) {
                         angle += Math.PI / 12 / 2;
                         angle -= angle % (Math.PI / 12);
                     }
