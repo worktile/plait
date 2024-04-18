@@ -1,5 +1,36 @@
 # @plait/draw
 
+## 0.55.0
+
+### Minor Changes
+
+-   [#833](https://github.com/worktile/plait/pull/833) [`28a239cc`](https://github.com/worktile/plait/commit/28a239ccd8afd1835a6afc47208c6cd5f4d87c2c) Thanks [@MissLixf](https://github.com/MissLixf)! - support snap angle when rotate with hotkey
+
+*   [#828](https://github.com/worktile/plait/pull/828) [`2b083781`](https://github.com/worktile/plait/commit/2b083781c5264c0d30f81f43346ce73de77d06d5) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - rename setFragment to buildFragment
+
+    remove DataTransfer param of setFragment and insertFragment
+
+    support duplicate elements
+
+### Patch Changes
+
+-   [#808](https://github.com/worktile/plait/pull/808) [`f813d61c`](https://github.com/worktile/plait/commit/f813d61c142a712bec5458df3fadcfa1506700be) Thanks [@MissLixf](https://github.com/MissLixf)! - add predefinedProcess shape
+
+*   [#802](https://github.com/worktile/plait/pull/802) [`a028814d`](https://github.com/worktile/plait/commit/a028814d5dfda0f04d8c3b37b56448e60820b1c0) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add cloud shape
+
+-   [#812](https://github.com/worktile/plait/pull/812) [`8d68ce81`](https://github.com/worktile/plait/commit/8d68ce81d1c82a1ff08ea3ce28ea063eca4c97aa) Thanks [@MissLixf](https://github.com/MissLixf)! - add or and summingJunction shape for flow and add createCircleEngine function
+
+*   [#809](https://github.com/worktile/plait/pull/809) [`86e5b856`](https://github.com/worktile/plait/commit/86e5b856858aa0f681e8ffc4d1f82ab30280449b) Thanks [@MissLixf](https://github.com/MissLixf)! - add offPage shape
+
+-   [#811](https://github.com/worktile/plait/pull/811) [`e8c80010`](https://github.com/worktile/plait/commit/e8c800106ccb7f04ee86dbeabd1572c734d32355) Thanks [@MissLixf](https://github.com/MissLixf)! - fix(draw): fix manualInput shape line error
+
+*   [#835](https://github.com/worktile/plait/pull/835) [`1406d03c`](https://github.com/worktile/plait/commit/1406d03cfbbb714825771d464deab21151aeb9dd) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support dotted line
+
+-   [#810](https://github.com/worktile/plait/pull/810) [`d3be4a3d`](https://github.com/worktile/plait/commit/d3be4a3d6faf7b959ad931e6e04eb3da26a90ceb) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support render snap line when create
+    refactor snap handle
+
+*   [#820](https://github.com/worktile/plait/pull/820) [`cea92cad`](https://github.com/worktile/plait/commit/cea92cad6224f9209989e56d0153b47a419bb1cf) Thanks [@MissLixf](https://github.com/MissLixf)! - feat(draw): support rotate interaction
+
 ## 0.54.0
 
 ### Minor Changes

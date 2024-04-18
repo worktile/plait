@@ -1,5 +1,50 @@
 # plait
 
+## 0.55.0
+
+### Minor Changes
+
+-   [#821](https://github.com/worktile/plait/pull/821) [`3227986b`](https://github.com/worktile/plait/commit/3227986b7dfaabe2b4ae3de8fab488b475efcf27) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - render element g by list-render
+
+    normalize the depth of element g
+
+*   [#817](https://github.com/worktile/plait/pull/817) [`d30361f5`](https://github.com/worktile/plait/commit/d30361f58158474d526c1d91975dec0ddd9bef9f) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support transform z index
+
+-   [#823](https://github.com/worktile/plait/pull/823) [`1159be17`](https://github.com/worktile/plait/commit/1159be17cd3acd0511e20625075afff52a24de45) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support moveToTop and moveToBottom
+
+*   [#828](https://github.com/worktile/plait/pull/828) [`2b083781`](https://github.com/worktile/plait/commit/2b083781c5264c0d30f81f43346ce73de77d06d5) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - rename setFragment to buildFragment
+
+    remove DataTransfer param of setFragment and insertFragment
+
+    support duplicate elements
+
+### Patch Changes
+
+-   [#829](https://github.com/worktile/plait/pull/829) [`99fecff2`](https://github.com/worktile/plait/commit/99fecff2be9f35dada7125710f40f1aa4a27d58c) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - do not handle the hierarchy of the group element when addGroup
+
+*   [#832](https://github.com/worktile/plait/pull/832) [`43e1220c`](https://github.com/worktile/plait/commit/43e1220c0dec055708fef514070f78786240844f) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix select elements error after move node
+
+-   [#825](https://github.com/worktile/plait/pull/825) [`051ab14e`](https://github.com/worktile/plait/commit/051ab14ef87b8d73ec97ba4bda73a560417083f6) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support z index hotkey
+
+*   [#815](https://github.com/worktile/plait/pull/815) [`ced56afb`](https://github.com/worktile/plait/commit/ced56afbbe31a996be005f52977fcbb16df8b09d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - transform.moveNode performance optimize
+
+-   [#824](https://github.com/worktile/plait/pull/824) [`ba48c19f`](https://github.com/worktile/plait/commit/ba48c19f42ff7ccc32b191b0ccddb800d1491f06) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - ensuring consistent hierarchy of all selected elements when add group
+
+*   [#827](https://github.com/worktile/plait/pull/827) [`34161f8f`](https://github.com/worktile/plait/commit/34161f8f66365fd753002469173b7d06a8c1975a) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix set z index error when selected indices not continuous
+
+-   [#816](https://github.com/worktile/plait/pull/816) [`501f2cd1`](https://github.com/worktile/plait/commit/501f2cd179835b037136465ad44ea586d738e4ca) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix remove group error when multiple groups are selected
+
+*   [#836](https://github.com/worktile/plait/pull/836) [`93306068`](https://github.com/worktile/plait/commit/9330606820cb2374224a4f2fc1a29e5f2edcd80c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent pointerDown from invoking when mind is creating, fix getNode error before mind having been initialized
+
+    add hasMounted method to get element mounted state, fix getElementG error after element had been deleted
+
+-   [#810](https://github.com/worktile/plait/pull/810) [`d3be4a3d`](https://github.com/worktile/plait/commit/d3be4a3d6faf7b959ad931e6e04eb3da26a90ceb) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support render snap line when create
+    refactor snap handle
+
+*   [#834](https://github.com/worktile/plait/pull/834) [`3e90c64e`](https://github.com/worktile/plait/commit/3e90c64ee9929eeb543cf46ef4d2b90e252fb35c) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add z index transform test
+
+    fix moving up/down one layer when adjacent groups and elements are selected is incorrect
+
 ## 0.54.0
 
 ### Minor Changes

@@ -1,5 +1,31 @@
 # @plait/common
 
+## 0.55.0
+
+### Minor Changes
+
+-   [#817](https://github.com/worktile/plait/pull/817) [`d30361f5`](https://github.com/worktile/plait/commit/d30361f58158474d526c1d91975dec0ddd9bef9f) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support transform z index
+
+*   [#823](https://github.com/worktile/plait/pull/823) [`1159be17`](https://github.com/worktile/plait/commit/1159be17cd3acd0511e20625075afff52a24de45) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support moveToTop and moveToBottom
+
+-   [#828](https://github.com/worktile/plait/pull/828) [`2b083781`](https://github.com/worktile/plait/commit/2b083781c5264c0d30f81f43346ce73de77d06d5) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - rename setFragment to buildFragment
+
+    remove DataTransfer param of setFragment and insertFragment
+
+    support duplicate elements
+
+### Patch Changes
+
+-   [#825](https://github.com/worktile/plait/pull/825) [`051ab14e`](https://github.com/worktile/plait/commit/051ab14ef87b8d73ec97ba4bda73a560417083f6) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support z index hotkey
+
+*   [#822](https://github.com/worktile/plait/pull/822) [`9eff29fc`](https://github.com/worktile/plait/commit/9eff29fc07f5fa4a723518f2311c54140341d886) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix the issue of inconsistent element order when pasting
+
+-   [#824](https://github.com/worktile/plait/pull/824) [`ba48c19f`](https://github.com/worktile/plait/commit/ba48c19f42ff7ccc32b191b0ccddb800d1491f06) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - ensuring consistent hierarchy of all selected elements when add group
+
+*   [#826](https://github.com/worktile/plait/pull/826) [`b8f49aa8`](https://github.com/worktile/plait/commit/b8f49aa8801a2a4835eb145cb14a1903df9fcc78) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - fix getTargetIndex error
+
+-   [#814](https://github.com/worktile/plait/pull/814) [`13614e23`](https://github.com/worktile/plait/commit/13614e23879ae3c6aa3715e93211d19fe270ddba) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - get selectedGroups from board.children when remove
+
 ## 0.54.0
 
 ### Minor Changes

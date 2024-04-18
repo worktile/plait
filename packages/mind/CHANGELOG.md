@@ -1,5 +1,23 @@
 # mind
 
+## 0.55.0
+
+### Minor Changes
+
+-   [#823](https://github.com/worktile/plait/pull/823) [`1159be17`](https://github.com/worktile/plait/commit/1159be17cd3acd0511e20625075afff52a24de45) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support moveToTop and moveToBottom
+
+*   [#828](https://github.com/worktile/plait/pull/828) [`2b083781`](https://github.com/worktile/plait/commit/2b083781c5264c0d30f81f43346ce73de77d06d5) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - rename setFragment to buildFragment
+
+    remove DataTransfer param of setFragment and insertFragment
+
+    support duplicate elements
+
+### Patch Changes
+
+-   [#836](https://github.com/worktile/plait/pull/836) [`93306068`](https://github.com/worktile/plait/commit/9330606820cb2374224a4f2fc1a29e5f2edcd80c) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - prevent pointerDown from invoking when mind is creating, fix getNode error before mind having been initialized
+
+    add hasMounted method to get element mounted state, fix getElementG error after element had been deleted
+
 ## 0.54.0
 
 ## 0.53.0
