@@ -16,7 +16,7 @@ import { MindTransforms } from '../transforms';
 import { TextManage } from '@plait/text';
 import { EXTEND_OFFSET } from '../constants/default';
 import { isDragging } from '../utils/dnd/common';
-import { ResizeRef, ResizeState, WithResizeOptions, getFirstTextManage, getTextManages, withResize } from '@plait/common';
+import { ResizeRef, ResizeState, WithResizeOptions, getFirstTextManage, withResize } from '@plait/common';
 
 interface TargetElementRef {
     minWidth: number;

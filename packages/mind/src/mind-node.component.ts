@@ -140,6 +140,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         value: PlaitPluginElementContext<MindElement, PlaitMindBoard>,
         previous: PlaitPluginElementContext<MindElement, PlaitMindBoard>
     ) {
+        this.updateTextManagesMap();
         const newNode = MindElement.getNode(value.element);
         const isEqualNode = RectangleClient.isEqual(this.node, newNode);
         this.node = newNode;
@@ -256,7 +257,6 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        this.textManage.destroy();
         this.nodeEmojisGenerator.destroy();
         this.imageGenerator.destroy();
         this.activeGenerator.destroy();
@@ -265,5 +265,6 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {
             ELEMENT_TO_NODE.delete(this.element);
         }
+        this.destroyTextManages();
     }
 }

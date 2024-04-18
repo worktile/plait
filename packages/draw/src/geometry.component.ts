@@ -95,6 +95,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         value: PlaitPluginElementContext<PlaitGeometry, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitGeometry, PlaitBoard>
     ) {
+        this.updateTextManagesMap();
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (value.element !== previous.element || isChangeTheme) {
             this.shapeGenerator.processDrawing(this.element, this.getElementG());
@@ -170,10 +171,10 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        this.textManage.destroy();
         this.destroy$.next();
         this.destroy$.complete();
         this.activeGenerator.destroy();
         this.lineAutoCompleteGenerator.destroy();
+        this.destroyTextManages();
     }
 }

@@ -1,11 +1,10 @@
 import { PlaitElement } from '@plait/core';
 import { CommonPluginElement } from '../core/plugin-element';
-import { CustomText, PlaitMarkEditor } from '@plait/text';
+import { CustomText, PlaitMarkEditor, TextManage } from '@plait/text';
 import { Node } from 'slate';
 
 export const getTextManages = (element: PlaitElement) => {
-    const component = PlaitElement.getComponent(element) as CommonPluginElement;
-    return component.getTextManages();
+    return ELEMENT_TO_TEXT_MANAGES.get(element) || [];
 };
 
 export const getFirstTextManage = (element: PlaitElement) => {
@@ -66,3 +65,5 @@ export const getElementsText = (elements: PlaitElement[]) => {
         .filter(item => item)
         .join(' ');
 };
+
+export const ELEMENT_TO_TEXT_MANAGES: WeakMap<PlaitElement, TextManage[]> = new WeakMap();

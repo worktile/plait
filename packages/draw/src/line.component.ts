@@ -78,6 +78,7 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
     }
 
     onContextChanged(value: PlaitPluginElementContext<PlaitLine, PlaitBoard>, previous: PlaitPluginElementContext<PlaitLine, PlaitBoard>) {
+        this.updateTextManagesMap();
         const boundedElements = this.getBoundedElements();
         const isBoundedElementsChanged =
             boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;
