@@ -1,6 +1,23 @@
 import { PlaitMind } from '@plait/mind';
 import { PlaitDrawElement } from '@plait/draw';
 
+/**
+ * 数据结构说明
+ * 1. type 属性定义数据类型，不同插件的数据结构 type 不同
+ * 2. points 确定元素位置
+ *   1. 思维导图只有根节点有 points 属性，其余节点位置是根据思维导图布局算法推算出来的，每个思维导图节点都存一个 width 和 height 属性，确定节点的宽度和高度，文本变化或者拖动宽度是会调整 width 和 height
+ *   2. 流程图每一个节点都有 points 属性，类型为：[Point, Point]，确定流程图元素的 Rectangle 范围，所有流程图都统一基于 Rectangle 确定图形
+ *   3. 流程图连线 - 不存在自定义节点: points 类型也是 [Source, Target]，当关联到其它元素时 points 里面的 Source 和 Target 失效以关联元素推算 Source 和 Target
+ *   3. 流程图连线 - 存在自定义节点: points 类型也是 [Source, ...turningPoints, Target], 中间部分 turningPoints 代表自定义拐点
+ * 3. 思维导图节点可能存在 children 属性代表子节点，流程图图形不存在节点嵌套永远在跟层
+ * 4. 思维导图存在 data 属性：存储节点文本和Emoji，流程图存在 text 属性：存储元素文本（类型和思维导图中的 data.topic 相同）
+ * 5. 思维导图和流程图图形 text 字段都支持基本的富文本格式，类型是 Slate 富文本编辑器的 Element 类型
+ * 6. 思维导图 type 目前只有一个: 'mindmap', 流程图 type 目前有三种情况：'geometry'（几何图形）|'line'（连线）|'image'（图片）
+ * 7. 流程图 type type 是 geometry 的情况：通过 shape 区分不同的图形（GeometryShapes 枚举），基本图形和流程图图形不基于字段区分，只以 shape 字段区分
+ * 8. 其它的属性
+ */
+
+// 基础思维导图数据结构
 export const mockMindData: PlaitMind[] = [
     {
         type: 'mindmap',
@@ -97,6 +114,7 @@ export const mockMindData: PlaitMind[] = [
     }
 ];
 
+// 基础流程图数据结构
 export const mockDrawData: PlaitDrawElement[] = [
     {
         id: 'GMKAE',
@@ -150,7 +168,7 @@ export const mockDrawData: PlaitDrawElement[] = [
         text: {
             children: [
                 {
-                    text: '过程'
+                    text: '判断'
                 }
             ],
             align: 'center'
