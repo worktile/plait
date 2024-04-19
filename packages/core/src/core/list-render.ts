@@ -226,7 +226,6 @@ const mountOnItemMove = (
     childrenContext: PlaitChildrenContext,
     currentIndexForFirstElement: number | null
 ) => {
-    console.log(index, 'index', currentIndexForFirstElement);
     const containerG = PlaitElement.getContainerG(element, { suppressThrow: false });
     mountElementG(index, containerG, childrenContext, currentIndexForFirstElement);
     if (element.children && !PlaitElement.isRootElement(element)) {
