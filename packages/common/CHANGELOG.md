@@ -1,5 +1,13 @@
 # @plait/common
 
+## 0.55.1
+
+### Patch Changes
+
+-   [#838](https://github.com/worktile/plait/pull/838) [`3ff6179c`](https://github.com/worktile/plait/commit/3ff6179cf55ae50b37bf3ba2d0466cc68ea3ae4f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add onStable observable stream to emit callback after new children have rendered completely
+
+    render group state by onStable status to resolve group throw exception when group element is in front of contained elements
+
 ## 0.55.0
 
 ### Minor Changes

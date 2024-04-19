@@ -1,5 +1,23 @@
 # plait
 
+## 0.55.1
+
+### Patch Changes
+
+-   [#838](https://github.com/worktile/plait/pull/838) [`3ff6179c`](https://github.com/worktile/plait/commit/3ff6179cf55ae50b37bf3ba2d0466cc68ea3ae4f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - add onStable observable stream to emit callback after new children have rendered completely
+
+    render group state by onStable status to resolve group throw exception when group element is in front of contained elements
+
+*   [#837](https://github.com/worktile/plait/pull/837) [`8a472c2d`](https://github.com/worktile/plait/commit/8a472c2d1d9ba1f44b3bd7212769bd7d7eca18fd) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - only deals with the hierarchy of direct child elements
+
+-   [#841](https://github.com/worktile/plait/pull/841) [`33bdfa11`](https://github.com/worktile/plait/commit/33bdfa11d12ae7fb205994c8bcde82fd05a67f2f) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix g hierarchy when add group and element move
+
+    set correctly currentIndexForFirstElement value when move operation and update operation happened on same timing
+
+*   [#840](https://github.com/worktile/plait/pull/840) [`2010baa0`](https://github.com/worktile/plait/commit/2010baa014d24d41ff76b67762644709a3ebe9c5) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - return null when hover selected element
+
+-   [#839](https://github.com/worktile/plait/pull/839) [`2a33c1cb`](https://github.com/worktile/plait/commit/2a33c1cbb163d2d4b8fabb264db8e141574e1443) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - clone the duplicated content before inserting to resolve console error
+
 ## 0.55.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
     "name": "@plait/draw",
-    "version": "0.55.0",
+    "version": "0.55.1",
     "peerDependencies": {
         "@angular/common": "^17.2.4",
         "@angular/core": "^17.2.4",
