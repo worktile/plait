@@ -183,7 +183,9 @@ export const createGroupRectangleG = (board: PlaitBoard, elements: PlaitElement[
     elements.forEach(item => {
         const isRender = (!selectedElementIds.includes(item.id) && !isMoving) || isMoving;
         if (item.groupId && isRender) {
-            groupRectangleG = createG();
+            if (!groupRectangleG) {
+                groupRectangleG = createG();
+            }
             const elements = getElementsInGroupByElement(board, item);
             const rectangle = getRectangleByElements(board, elements, false);
             const rectangleG = drawRectangle(board, rectangle, {
