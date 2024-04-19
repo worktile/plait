@@ -5,25 +5,39 @@ import { ZIndexTransforms } from './z-index';
 
 const children: PlaitElement[] = [
     {
-        id: 'JRnNj',
-        type: 'geometry',
-        shape: 'rectangle',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: ''
-                }
-            ],
-            align: 'center'
+        id: 'fHsir',
+        data: {
+            topic: {
+                children: [
+                    {
+                        text: '思维导图'
+                    }
+                ]
+            }
         },
-        points: [
-            [166.896484375, 123.013671875],
-            [273.189453125, 199.064453125]
+        children: [
+            {
+                id: 'PjhrX',
+                data: {
+                    topic: {
+                        children: [
+                            {
+                                text: ''
+                            }
+                        ]
+                    }
+                },
+                children: [],
+                width: 14,
+                height: 20
+            }
         ],
-        strokeWidth: 2
+        width: 72,
+        height: 25,
+        layout: 'right',
+        isRoot: true,
+        type: 'mindmap',
+        points: [[626, -306.5]]
     },
 
     {
@@ -185,7 +199,7 @@ describe('zIndex transform', () => {
         });
 
         it('multiple select elements', () => {
-            addSelectedElement(board, [children[0], children[1]]);
+            addSelectedElement(board, [children[0], children[0].children![0], children[1]]);
             ZIndexTransforms.moveToTop(board);
             expect(board.children[board.children.length - 2].id).toBe(children[0].id);
             expect(board.children[board.children.length - 1].id).toBe(children[1].id);

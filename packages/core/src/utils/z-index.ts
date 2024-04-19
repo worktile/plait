@@ -94,7 +94,7 @@ const toContiguousGroups = (board: PlaitBoard, array: number[]) => {
                           return true;
                       });
             let isPartialSelectGroupElement = false;
-            if (previousElement.groupId || (currentElement.groupId && previousElement.groupId !== currentElement.groupId)) {
+            if (previousElement?.groupId || (currentElement?.groupId && previousElement?.groupId !== currentElement?.groupId)) {
                 let isPartialSelectPreviousGroup = false;
                 let isPartialSelectCurrentElement = false;
                 if (previousElement.groupId) {
