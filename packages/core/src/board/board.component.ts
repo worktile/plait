@@ -17,7 +17,8 @@ import {
     QueryList,
     SimpleChanges,
     ViewChild,
-    ViewContainerRef
+    ViewContainerRef,
+    inject
 } from '@angular/core';
 import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
@@ -75,7 +76,7 @@ import { BoardTransforms } from '../transforms/board';
 import { PlaitTheme } from '../interfaces/theme';
 import { withHotkey } from '../plugins/with-hotkey';
 import { HOST_CLASS_NAME } from '../constants';
-import { PlaitContextService } from '../services/image-context.service';
+import { PlaitContextService } from '../services/context.service';
 import { isPreventTouchMove } from '../utils/touch';
 import { ZOOM_STEP } from '../constants/zoom';
 import { withRelatedFragment } from '../plugins/with-related-fragment';
@@ -177,6 +178,8 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     @ContentChildren(PlaitIslandBaseComponent, { descendants: true }) islands?: QueryList<PlaitIslandBaseComponent>;
 
     listRender!: ListRender;
+
+    contextService = inject(PlaitContextService);
 
     constructor(
         public cdr: ChangeDetectorRef,
@@ -437,6 +440,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     private updateListRender() {
         this.listRender.update(this.board.children, this.initializeChildrenContext());
+        this.contextService.nextStable();
     }
 
     private initializeChildrenContext(): PlaitChildrenContext {

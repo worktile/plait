@@ -1,7 +1,9 @@
-import { OnInit, OnDestroy, ViewContainerRef, ChangeDetectorRef, ChangeDetectionStrategy, Component } from '@angular/core';
+import { OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, Component, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
     OnContextChanged,
     PlaitBoard,
+    PlaitContextService,
     PlaitGroup,
     PlaitPluginElementContext,
     getElementsInGroup,
@@ -21,7 +23,9 @@ import { CommonPluginElement } from './plugin-element';
 })
 export class GroupComponent extends CommonPluginElement<PlaitGroup, PlaitBoard>
     implements OnInit, OnDestroy, OnContextChanged<PlaitGroup, PlaitBoard> {
-    constructor(protected cdr: ChangeDetectorRef) {
+    contextService = inject(PlaitContextService);
+
+    constructor(protected cdr: ChangeDetectorRef, private destroyRef: DestroyRef) {
         super(cdr);
     }
 
@@ -46,16 +50,20 @@ export class GroupComponent extends CommonPluginElement<PlaitGroup, PlaitBoard>
     ngOnInit(): void {
         super.ngOnInit();
         this.initializeGenerator();
+        this.contextService
+            .onStable()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => {
+                const elementsInGroup = getElementsInGroup(this.board, this.element, false, true);
+                const isPartialSelectGroup =
+                    elementsInGroup.some(item => isSelectedElementOrGroup(this.board, item)) &&
+                    !elementsInGroup.every(item => isSelectedElementOrGroup(this.board, item));
+                this.groupGenerator.processDrawing(this.element, this.getElementG(), isPartialSelectGroup);
+            });
     }
 
     onContextChanged(
         value: PlaitPluginElementContext<PlaitGroup, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitGroup, PlaitBoard>
-    ) {
-        const elementsInGroup = getElementsInGroup(this.board, value.element, false, true);
-        const isPartialSelectGroup =
-            elementsInGroup.some(item => isSelectedElementOrGroup(this.board, item)) &&
-            !elementsInGroup.every(item => isSelectedElementOrGroup(this.board, item));
-        this.groupGenerator.processDrawing(value.element, this.getElementG(), isPartialSelectGroup);
-    }
+    ) {}
 }

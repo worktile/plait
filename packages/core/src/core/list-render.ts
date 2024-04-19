@@ -125,7 +125,7 @@ const createPluginComponent = (
     viewContainerRef: ViewContainerRef,
     childrenContext: PlaitChildrenContext
 ) => {
-    const componentRef = viewContainerRef.createComponent(componentType);
+    const componentRef = viewContainerRef.createComponent(componentType, { injector: viewContainerRef.injector });
     const instance = componentRef.instance;
     instance.context = context;
     componentRef.changeDetectorRef.detectChanges();

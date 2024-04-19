@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ImageEntry } from '../interfaces';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class PlaitContextService {
+    private _stable = new Subject();
+
     private uploadingFiles: ImageEntry[] = [];
 
     getUploadingFile(url: string) {
@@ -15,5 +18,13 @@ export class PlaitContextService {
 
     removeUploadingFile(fileEntry: ImageEntry) {
         this.uploadingFiles = this.uploadingFiles.filter(file => file.url !== fileEntry.url);
+    }
+
+    onStable() {
+        return this._stable.asObservable();
+    }
+
+    nextStable() {
+        this._stable.next('');
     }
 }
