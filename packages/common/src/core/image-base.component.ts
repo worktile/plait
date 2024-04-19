@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { ACTIVE_STROKE_WIDTH, PlaitBoard, PlaitElement, RectangleClient, getSelectedElements, isSelectionMoving } from '@plait/core';
 import { ActiveGenerator } from '../generators';
-import { CommonImageItem } from '../utils';
+import { CommonImageItem, canResize } from '../utils';
 
 @Directive({
     host: {
@@ -77,10 +77,7 @@ export abstract class ImageBaseComponent implements OnInit, OnDestroy {
             getRectangle: () => {
                 return this.getRectangle();
             },
-            hasResizeHandle: () => {
-                const selectedElements = getSelectedElements(this.board);
-                return (selectedElements.length === 1 && !isSelectionMoving(this.board)) || !selectedElements.length;
-            }
+            hasResizeHandle: () => true
         });
         this.initialized = true;
     }

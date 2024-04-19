@@ -15,9 +15,9 @@ import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
-import { ActiveGenerator, WithTextPluginKey, WithTextOptions, CommonPluginElement } from '@plait/common';
+import { ActiveGenerator, WithTextPluginKey, WithTextOptions, CommonPluginElement, canResize } from '@plait/common';
 import { GeometryThreshold } from './constants/geometry';
-import { PlaitDrawElement, PlaitText } from './interfaces';
+import { PlaitText } from './interfaces';
 import { getEngine } from './engines';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 import { memorizeLatestText } from './utils';
@@ -68,11 +68,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                 return RectangleClient.getRectangleByPoints(element.points);
             },
             hasResizeHandle: () => {
-                const selectedElements = getSelectedElements(this.board);
-                if (PlaitBoard.hasBeenTextEditing(this.board) && PlaitDrawElement.isText(this.element)) {
-                    return false;
-                }
-                return selectedElements.length === 1 && !isSelectionMoving(this.board);
+                return canResize(this.board, this.element);
             }
         });
         this.lineAutoCompleteGenerator = new LineAutoCompleteGenerator(this.board);

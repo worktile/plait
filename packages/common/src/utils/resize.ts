@@ -1,4 +1,15 @@
-import { PlaitBoard, Point, RectangleClient, ResizeCursorClass, setDragging, RESIZE_CURSORS, rotatePoints } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    RectangleClient,
+    ResizeCursorClass,
+    setDragging,
+    RESIZE_CURSORS,
+    rotatePoints,
+    PlaitElement,
+    getSelectedElements,
+    isSelectionMoving
+} from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
 import { PlaitElementOrArray, ResizeRef } from '../types/resize';
 
@@ -156,4 +167,12 @@ export const resetPointsAfterResize = (
 
     const rotatedPoints = rotatePoints(currentPoints, originRectangleCenterPoint, angle);
     return rotatePoints(rotatedPoints, correctElementCenterPoint, -angle) as [Point, Point];
+};
+
+export const canResize = (board: PlaitBoard, element: PlaitElement) => {
+    if (PlaitBoard.hasBeenTextEditing(board) || isSelectionMoving(board)) {
+        return false;
+    }
+    const selectedElements = getSelectedElements(board);
+    return selectedElements.length === 1 && selectedElements[0] === element;
 };
