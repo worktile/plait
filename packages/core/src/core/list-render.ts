@@ -52,7 +52,7 @@ export class ListRender {
             const newContexts: PlaitPluginElementContext[] = [];
             const newComponentRefs: ComponentRef<PlaitPluginElementComponent>[] = [];
             let currentIndexForFirstElement: number | null = null;
-            diffResult.forEachItem((record: IterableChangeRecord<any>) => {
+            diffResult.forEachItem((record: IterableChangeRecord<PlaitElement>) => {
                 NODE_TO_INDEX.set(record.item, record.currentIndex as number);
                 NODE_TO_PARENT.set(record.item, childrenContext.parent);
                 const previousContext = record.previousIndex === null ? undefined : this.contexts[record.previousIndex];
@@ -68,7 +68,8 @@ export class ListRender {
                     newComponentRefs.push(componentRef);
                     newContexts.push(context);
                 }
-                if (record.item === this.children[0]) {
+                // item might has been changed, so need to compare the id
+                if (record.item === this.children[0] || record.item.id === this.children[0]?.id) {
                     currentIndexForFirstElement = record.currentIndex;
                 }
             });
