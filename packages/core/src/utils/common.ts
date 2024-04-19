@@ -60,14 +60,16 @@ export const debounce = (func: () => void, wait: number, options?: { leading: bo
 
 export const getElementsIndices = (board: PlaitBoard, elements: PlaitElement[]): number[] => {
     sortElements(board, elements);
-    return elements.map(item => {
-        return board.children.map(item => item.id).indexOf(item.id);
-    });
+    return elements
+        .map(item => {
+            return board.children.map(item => item.id).indexOf(item.id);
+        })
+        .filter(item => item >= 0);
 };
 
 export const getHighestIndexOfElement = (board: PlaitBoard, elements: PlaitElement[]) => {
     const indices = getElementsIndices(board, elements);
-    return indices[indices.length-1];
+    return indices[indices.length - 1];
 };
 
 export const moveElementsToNewPath = (board: PlaitBoard, moveOptions: MoveNodeOption[]) => {
