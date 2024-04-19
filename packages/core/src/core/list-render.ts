@@ -68,6 +68,7 @@ export class ListRender {
                     newComponentRefs.push(componentRef);
                     newContexts.push(context);
                 }
+                // item might has been changed, so need to compare the id
                 if (record.item === this.children[0] || record.item.id === this.children[0]?.id) {
                     currentIndexForFirstElement = record.currentIndex;
                 }
