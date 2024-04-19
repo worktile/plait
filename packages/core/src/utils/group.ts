@@ -176,13 +176,14 @@ export const getHighestSelectedElements = (board: PlaitBoard, elements?: PlaitEl
 };
 
 export const createGroupRectangleG = (board: PlaitBoard, elements: PlaitElement[]): SVGGElement | null => {
-    const selectedElements = getSelectedElements(board);
-    const groupRectangleG: SVGGElement = createG();
+    const selectedElementIds = getSelectedElements(board).map(item => item.id);
+    let groupRectangleG: SVGGElement | null = null;
     const isMoving = isSelectionMoving(board);
 
     elements.forEach(item => {
-        const isRender = (!selectedElements.includes(item) && !isMoving) || isMoving;
+        const isRender = (!selectedElementIds.includes(item.id) && !isMoving) || isMoving;
         if (item.groupId && isRender) {
+            groupRectangleG = createG();
             const elements = getElementsInGroupByElement(board, item);
             const rectangle = getRectangleByElements(board, elements, false);
             const rectangleG = drawRectangle(board, rectangle, {
