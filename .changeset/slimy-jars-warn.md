@@ -2,6 +2,6 @@
 '@plait/core': patch
 ---
 
-fix move g hierarchy when add group
+fix g hierarchy when add group and element move
 
 set correctly currentIndexForFirstElement value when move operation and update operation happened on same timing
