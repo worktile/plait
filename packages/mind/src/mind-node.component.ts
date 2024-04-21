@@ -70,8 +70,8 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         return this.getTextManages()[0];
     }
 
-    constructor(protected cdr: ChangeDetectorRef) {
-        super(cdr);
+    constructor() {
+        super();
     }
 
     initializeDrawer() {
@@ -139,7 +139,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         value: PlaitPluginElementContext<MindElement, PlaitMindBoard>,
         previous: PlaitPluginElementContext<MindElement, PlaitMindBoard>
     ) {
-        this.updateTextManagesMap();
+        this.initializeWeakMap();
         const newNode = MindElement.getNode(value.element);
         const isEqualNode = RectangleClient.isEqual(this.node, newNode);
         this.node = newNode;

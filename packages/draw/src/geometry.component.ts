@@ -42,10 +42,6 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         return this.getTextManages()[0];
     }
 
-    constructor(protected cdr: ChangeDetectorRef) {
-        super(cdr);
-    }
-
     initializeGenerator() {
         this.activeGenerator = new ActiveGenerator<PlaitGeometry>(this.board, {
             getStrokeWidth: () => {
@@ -74,6 +70,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         this.lineAutoCompleteGenerator = new LineAutoCompleteGenerator(this.board);
         this.shapeGenerator = new GeometryShapeGenerator(this.board);
         this.initializeTextManage();
+        this.getRef().addGenerator(LineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
     }
 
     ngOnInit(): void {
@@ -91,7 +88,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         value: PlaitPluginElementContext<PlaitGeometry, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitGeometry, PlaitBoard>
     ) {
-        this.updateTextManagesMap();
+        this.initializeWeakMap();
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (value.element !== previous.element || isChangeTheme) {
             this.shapeGenerator.processDrawing(this.element, this.getElementG());

@@ -35,10 +35,6 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
 
     boundedElements: BoundedElements = {};
 
-    constructor(protected cdr: ChangeDetectorRef) {
-        super(cdr);
-    }
-
     initializeGenerator() {
         this.shapeGenerator = new LineShapeGenerator(this.board);
         this.activeGenerator = new LineActiveGenerator(this.board);
@@ -78,7 +74,7 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
     }
 
     onContextChanged(value: PlaitPluginElementContext<PlaitLine, PlaitBoard>, previous: PlaitPluginElementContext<PlaitLine, PlaitBoard>) {
-        this.updateTextManagesMap();
+        this.initializeWeakMap();
         const boundedElements = this.getBoundedElements();
         const isBoundedElementsChanged =
             boundedElements.source !== this.boundedElements.source || boundedElements.target !== this.boundedElements.target;

@@ -5,6 +5,8 @@ import { getAutoCompletePoints } from '../utils';
 import { LINE_AUTO_COMPLETE_DIAMETER, LINE_AUTO_COMPLETE_OPACITY } from '../constants/line';
 
 export class LineAutoCompleteGenerator extends Generator<PlaitShapeElement, ActiveGeneratorExtraData> {
+    static key = 'line-auto-complete-generator';
+
     autoCompleteG!: SVGGElement;
     hoverElement: SVGGElement | null = null;
 

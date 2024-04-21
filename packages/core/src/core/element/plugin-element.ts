@@ -4,12 +4,15 @@ import { removeSelectedElement } from '../../utils/selected-element';
 import { createG } from '../../utils/dom/common';
 import { hasBeforeContextChange, hasOnContextChanged } from './context-change';
 import { ListRender } from '../list-render';
-import { NODE_TO_CONTAINER_G, NODE_TO_G } from '../../utils/weak-maps';
+import { ELEMENT_TO_REF, NODE_TO_CONTAINER_G, NODE_TO_G } from '../../utils/weak-maps';
+import { PlaitElementRef } from './element-ref';
 
 @Directive()
-export abstract class PlaitPluginElementComponent<T extends PlaitElement = PlaitElement, K extends PlaitBoard = PlaitBoard>
+export abstract class PlaitPluginElementComponent<T extends PlaitElement = PlaitElement, K extends PlaitBoard = PlaitBoard, R extends PlaitElementRef = PlaitElementRef>
     implements OnInit, OnDestroy {
     viewContainerRef = inject(ViewContainerRef);
+    cdr = inject(ChangeDetectorRef);
+
 
     private _g!: SVGGElement;
 
@@ -42,6 +45,7 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
             const containerG = this.getContainerG();
             NODE_TO_G.set(this.element, elementG);
             NODE_TO_CONTAINER_G.set(this.element, containerG);
+            ELEMENT_TO_REF.set(this.element, this.ref);
             this.updateListRender();
             this.cdr.markForCheck();
             if (hasOnContextChanged<T>(this)) {
@@ -58,6 +62,7 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
             }
             NODE_TO_G.set(this.element, this._g);
             NODE_TO_CONTAINER_G.set(this.element, this._containerG);
+            ELEMENT_TO_REF.set(this.element, this.ref);
         }
     }
 
@@ -87,7 +92,7 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
         return this._g;
     }
 
-    constructor(protected cdr: ChangeDetectorRef) {}
+    constructor(private ref: R) {}
 
     ngOnInit(): void {
         if (this.element.type) {
@@ -113,6 +118,10 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
                 this.listRender.initialize(this.element.children!, this.initializeChildrenContext());
             }
         }
+    }
+
+    public getRef() {
+        return this.ref;
     }
 
     private updateListRender() {
