@@ -10,7 +10,7 @@ export const getTextManages = (element: PlaitElement) => {
 export const getFirstTextManage = (element: PlaitElement) => {
     const textManage = getTextManages(element)[0];
     if (!textManage) {
-        throw new Error('can not find textManage');
+        console.warn('can not find textManage');
     }
     return textManage;
 };

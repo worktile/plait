@@ -5,7 +5,7 @@ import { ExitOrigin } from '@plait/text';
 
 export function editTopic(element: MindElement) {
     const textManage = getFirstTextManage(element);
-    textManage.edit((origin: ExitOrigin) => {
+    textManage?.edit((origin: ExitOrigin) => {
         if (origin === ExitOrigin.default) {
         }
     });
