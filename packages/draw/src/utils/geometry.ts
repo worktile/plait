@@ -181,7 +181,7 @@ export const createDefaultFlowchart = (point: Point) => {
     const decisionElement = createGeometryElement(
         FlowchartSymbols.decision,
         getDefaultGeometryPoints(FlowchartSymbols.decision, decisionPoint),
-        '过程',
+        '判断',
         options
     );
 
