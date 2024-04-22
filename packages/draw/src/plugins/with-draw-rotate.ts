@@ -75,14 +75,14 @@ export const withDrawRotate = (board: PlaitBoard) => {
             throttleRAF(board, 'with-common-rotate', () => {
                 if (rotateRef && rotateRef.startPoint) {
                     let angle = getAngleBetweenPoints(rotateRef.startPoint, endPoint, selectionCenterPoint);
+                    const selectionAngle = getSelectionAngle(rotateRef.elements);
+                    angle = normalizeAngle(selectionAngle + angle);
                     if (isShift) {
                         angle += Math.PI / 12 / 2;
                         angle -= angle % (Math.PI / 12);
                     }
 
-                    const selectionAngle = getSelectionAngle(rotateRef.elements);
-                    let remainder = (selectionAngle + angle) % (Math.PI / 2);
-
+                    let remainder = angle % (Math.PI / 2);
                     if (Math.PI / 2 - remainder <= degreesToRadians(5)) {
                         const snapAngle = Math.PI / 2 - remainder;
                         angle += snapAngle;
@@ -93,10 +93,8 @@ export const withDrawRotate = (board: PlaitBoard) => {
                         angle += snapAngle;
                     }
 
-                    rotateRef.angle = normalizeAngle(angle);
-                    if (rotateRef.angle) {
-                        rotateElements(board, rotateRef.elements, rotateRef.angle);
-                    }
+                    rotateRef.angle = normalizeAngle(angle - selectionAngle) || 0;
+                    rotateElements(board, rotateRef.elements, rotateRef.angle);
                     PlaitBoard.getBoardContainer(board).classList.add('element-rotating');
                 }
             });
