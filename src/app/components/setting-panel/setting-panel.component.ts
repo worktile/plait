@@ -125,7 +125,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.currentStrokeColor = firstMindElement.strokeColor || '';
             this.currentBranchColor = firstMindElement.branchColor || '';
             this.strokeWidth = firstMindElement.strokeWidth || 3;
-            if (MindElement.hasMounted(firstMindElement)) {
+            if (PlaitElement.hasMounted(firstMindElement)) {
                 this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstMindElement));
                 this.align = firstMindElement.data.topic.align || Alignment.left;
             }

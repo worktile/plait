@@ -7,6 +7,7 @@ import {
     getSelectionAngle,
     setAngleForG
 } from '@plait/core';
+import { PlaitCommonElementRef } from '../core/element-ref';
 
 export interface GeneratorExtraData {}
 

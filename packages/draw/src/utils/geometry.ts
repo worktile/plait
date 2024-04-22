@@ -29,7 +29,7 @@ import {
     ShapeDefaultSpace,
     getFlowchartPointers
 } from '../constants';
-import { RESIZE_HANDLE_DIAMETER } from '@plait/common';
+import { RESIZE_HANDLE_DIAMETER, getFirstTextManage } from '@plait/common';
 import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
@@ -321,7 +321,7 @@ export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
     if (isFlowChart) {
         return getDefaultFlowchartProperty(pointer as FlowchartSymbols);
     } else {
-        if(pointer === BasicShapes.cloud){
+        if (pointer === BasicShapes.cloud) {
             return DefaultCloudShapeProperty;
         }
         return DefaultBasicShapeProperty;
@@ -368,4 +368,9 @@ export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point],
         },
         { ...memorizedLatest.textProperties, textHeight }
     );
+};
+
+export const editText = (element: PlaitGeometry) => {
+    const textManage = getFirstTextManage(element);
+    textManage.edit();
 };

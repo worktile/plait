@@ -8,9 +8,8 @@ import {
 } from '@plait/core';
 import { PlaitDrawElement, PlaitLine } from '../interfaces';
 import { Node } from 'slate';
-import { getRatioByPoint } from '@plait/common';
+import { getRatioByPoint, getTextManages } from '@plait/common';
 import { buildText } from '@plait/text';
-import { LineComponent } from '../line.component';
 import { DrawTransforms } from '../transforms';
 import { getLinePoints } from '../utils/line/line-basic';
 import { getHitLineTextIndex } from '../utils/position/line';
@@ -43,8 +42,8 @@ export const withLineText = (board: PlaitBoard) => {
                     });
                     DrawTransforms.setLineTexts(board, hitTarget, texts);
                     setTimeout(() => {
-                        const hitComponent = PlaitElement.getComponent(hitTarget) as LineComponent;
-                        editHandle(board, hitTarget, hitComponent.getTextManages().length - 1, true);
+                        const textManages = getTextManages(hitTarget);
+                        editHandle(board, hitTarget, textManages.length - 1, true);
                     });
                 }
             }
@@ -56,8 +55,8 @@ export const withLineText = (board: PlaitBoard) => {
 };
 
 function editHandle(board: PlaitBoard, element: PlaitLine, manageIndex: number, isFirstEdit: boolean = false) {
-    const hitComponent = PlaitElement.getComponent(element) as LineComponent;
-    const textManage = hitComponent.getTextManages()[manageIndex];
+    const textManages = getTextManages(element);
+    const textManage = textManages[manageIndex];
     const originText = textManage.componentRef.instance.children;
 
     textManage.edit((origin, descendant) => {

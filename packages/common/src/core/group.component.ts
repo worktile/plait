@@ -25,8 +25,8 @@ export class GroupComponent extends CommonPluginElement<PlaitGroup, PlaitBoard>
     implements OnInit, OnDestroy, OnContextChanged<PlaitGroup, PlaitBoard> {
     contextService = inject(PlaitContextService);
 
-    constructor(protected cdr: ChangeDetectorRef, private destroyRef: DestroyRef) {
-        super(cdr);
+    constructor(private destroyRef: DestroyRef) {
+        super();
     }
 
     activeGenerator!: ActiveGenerator<PlaitGroup>;

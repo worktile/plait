@@ -119,10 +119,6 @@ export const MindElement = {
     },
     getEmojis(element: MindElement<EmojiData>) {
         return element.data.emojis;
-    },
-    hasMounted(element: MindElement) {
-        const component = PlaitElement.getComponent(element) as MindNodeComponent;
-        return !!component;
     }
 };
 

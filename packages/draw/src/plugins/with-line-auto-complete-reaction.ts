@@ -14,9 +14,9 @@ import {
 } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
 import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
-import { GeometryComponent } from '../geometry.component';
-import { PRIMARY_COLOR } from '@plait/common';
+import { PRIMARY_COLOR, PlaitCommonElementRef } from '@plait/common';
 import { LINE_AUTO_COMPLETE_HOVERED_DIAMETER, LINE_AUTO_COMPLETE_HOVERED_OPACITY } from '../constants/line';
+import { LineAutoCompleteGenerator } from '../generators/line-auto-complete.generator';
 
 export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
     const { pointerMove } = board;
@@ -31,10 +31,11 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
             const points = getAutoCompletePoints(targetElement);
             const hitIndex = getHitIndexOfAutoCompletePoint(rotateAntiPointsByElement(movingPoint, targetElement) || movingPoint, points);
             const hitPoint = points[hitIndex];
-            const component = PlaitElement.getComponent(targetElement) as GeometryComponent;
-            component.lineAutoCompleteGenerator!.recoverAutoCompleteG();
+            const ref = PlaitElement.getElementRef<PlaitCommonElementRef>(targetElement);
+            const lineAutoCompleteGenerator = ref.getGenerator<LineAutoCompleteGenerator>(LineAutoCompleteGenerator.key);
+            lineAutoCompleteGenerator.recoverAutoCompleteG();
             if (hitPoint) {
-                component.lineAutoCompleteGenerator!.removeAutoCompleteG(hitIndex);
+                lineAutoCompleteGenerator.removeAutoCompleteG(hitIndex);
                 reactionG = drawCircle(PlaitBoard.getRoughSVG(board), hitPoint, LINE_AUTO_COMPLETE_HOVERED_DIAMETER, {
                     stroke: 'none',
                     fill: RgbaToHEX(PRIMARY_COLOR, LINE_AUTO_COMPLETE_HOVERED_OPACITY),

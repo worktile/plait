@@ -7,9 +7,8 @@ import {
     getNearestPointBetweenPointAndSegments
 } from '@plait/core';
 import { PlaitDrawElement, PlaitLine } from '../interfaces';
-import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, getRatioByPoint, withResize } from '@plait/common';
+import { ResizeHandle, ResizeRef, ResizeState, WithResizeOptions, getRatioByPoint, getTextManages, withResize } from '@plait/common';
 import { DrawTransforms } from '../transforms';
-import { LineComponent } from '../line.component';
 import { getLinePoints } from '../utils/line/line-basic';
 import { getHitLineTextIndex } from '../utils/position/line';
 
@@ -28,8 +27,8 @@ export const withLineTextMove = (board: PlaitBoard) => {
             }) as undefined | PlaitLine;
             if (line) {
                 const index = getHitLineTextIndex(board, line, point);
-                const hitComponent = PlaitElement.getComponent(line) as LineComponent;
-                const textManage = hitComponent.getTextManages()[index];
+                const textManages = getTextManages(line);
+                const textManage = textManages[index];
                 if (index !== -1 && !textManage.isEditing) {
                     textIndex = index;
                     return { element: line, handle: ResizeHandle.e };

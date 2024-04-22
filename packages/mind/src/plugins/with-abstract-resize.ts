@@ -16,7 +16,8 @@ import { findLocationLeftIndex, getHitAbstractHandle, getLocationScope, handleTo
 import { separateChildren } from '../utils/abstract/common';
 import { AbstractHandlePosition, AbstractResizeState, PlaitAbstractBoard } from './with-abstract-resize.board';
 import { MindQueries } from '../queries';
-import { MindNodeComponent } from '../mind-node.component';
+import { PlaitCommonElementRef } from '@plait/common';
+import { NodeActiveGenerator } from '../generators/node-active.generator';
 
 export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
     const newBoard = board as PlaitBoard & PlaitAbstractBoard;
@@ -63,11 +64,9 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
         if (abstractHandlePosition && activeAbstractElement) {
             // prevent text from being selected
             event.preventDefault();
-            const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;
-            const element = abstractComponent.element;
             const nodeLayout = MindQueries.getCorrectLayoutByElement(board, activeAbstractElement as MindElement) as MindLayoutType;
             const isHorizontal = isHorizontalLayout(nodeLayout);
-            const parentElement = MindElement.getParent(element);
+            const parentElement = MindElement.getParent(activeAbstractElement);
 
             let children = parentElement.children;
 
@@ -89,7 +88,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
 
             const resizingLocation = isHorizontal ? endPoint[1] : endPoint[0];
             const parent = (MindElement.getNode(parentElement) as unknown) as LayoutNode;
-            const scope = getLocationScope(board, abstractHandlePosition, children, element, parent, isHorizontal);
+            const scope = getLocationScope(board, abstractHandlePosition, children, activeAbstractElement, parent, isHorizontal);
             const location = Math.min(scope.max, Math.max(scope.min, resizingLocation));
 
             let locationIndex = findLocationLeftIndex(board, children, location, isHorizontal);
@@ -104,7 +103,7 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
             } else {
                 if (isStandardLayout(parent.layout)) {
                     const rightNodeCount = parent.origin.rightNodeCount;
-                    let start = element.start!;
+                    let start = activeAbstractElement.start!;
                     if (start >= rightNodeCount) {
                         locationIndex += rightNodeCount;
                     }
@@ -114,7 +113,9 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                     abstractHandlePosition === AbstractHandlePosition.start ? { start: locationIndex + 1 } : { end: locationIndex };
             }
 
-            abstractComponent!.activeGenerator.updateAbstractOutline(activeAbstractElement, abstractHandlePosition, location);
+            const ref = PlaitElement.getElementRef<PlaitCommonElementRef>(activeAbstractElement);
+            const activeGenerator = ref.getGenerator<NodeActiveGenerator>(NodeActiveGenerator.key);
+            activeGenerator.updateAbstractOutline(activeAbstractElement, abstractHandlePosition, location);
         }
         pointerMove(event);
     };
@@ -131,8 +132,9 @@ export const withAbstract: PlaitPlugin = (board: PlaitBoard) => {
                 const path = PlaitBoard.findPath(board, activeAbstractElement);
                 Transforms.setNode(board, newProperty, path);
             } else {
-                const abstractComponent = PlaitElement.getComponent(activeAbstractElement) as MindNodeComponent;
-                abstractComponent!.activeGenerator.updateAbstractOutline(activeAbstractElement);
+                const ref = PlaitElement.getElementRef<PlaitCommonElementRef>(activeAbstractElement);
+                const activeGenerator = ref.getGenerator<NodeActiveGenerator>(NodeActiveGenerator.key);
+                activeGenerator.updateAbstractOutline(activeAbstractElement);
             }
             activeAbstractElement = undefined;
         }
