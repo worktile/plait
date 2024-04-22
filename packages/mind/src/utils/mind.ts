@@ -1,5 +1,4 @@
 import { addSelectedElement, clearSelectedElement, idCreator, Path, PlaitBoard, Transforms } from '@plait/core';
-import { Node } from 'slate';
 import { MindElement, PlaitMind } from '../interfaces/element';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
 import { editTopic } from './node/common';

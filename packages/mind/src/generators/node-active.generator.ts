@@ -11,10 +11,11 @@ import { Generator } from '@plait/common';
 
 export interface ActiveData {
     selected: boolean;
-    isEditing: boolean;
 }
 
 export class NodeActiveGenerator extends Generator<MindElement, ActiveData> {
+    static key = 'mind-node-active';
+
     abstractOutlineG?: SVGGElement;
 
     canDraw(element: MindElement<BaseData>, data: ActiveData): boolean {

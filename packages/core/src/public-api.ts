@@ -7,6 +7,7 @@ export * from './constants';
 export * from './core/element/plugin-element';
 export * from './core/element/context-change';
 export * from './core/island/island-base.component';
+export * from './core/element/element-ref';
 export * from './interfaces';
 export * from './transforms';
 export * from './utils';

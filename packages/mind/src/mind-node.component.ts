@@ -70,11 +70,11 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         return this.getTextManages()[0];
     }
 
-    constructor(protected cdr: ChangeDetectorRef) {
-        super(cdr);
+    constructor() {
+        super();
     }
 
-    initializeDrawer() {
+    initializeGenerator() {
         this.nodeShapeGenerator = new NodeShapeGenerator(this.board);
         this.nodeEmojisGenerator = new NodeEmojisGenerator(this.board, this.viewContainerRef);
         this.activeGenerator = new NodeActiveGenerator(this.board);
@@ -113,11 +113,14 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             }
         });
         this.initializeTextManages([textManage]);
+        this.getRef().addGenerator(NodeActiveGenerator.key, this.activeGenerator);
+        this.getRef().addGenerator(NodeEmojisGenerator.key, this.nodeEmojisGenerator);
+        this.getRef().addGenerator(ImageGenerator.key, this.imageGenerator);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.initializeDrawer();
+        this.initializeGenerator();
         this.node = MindElement.getNode(this.element);
         this.index = NODE_TO_INDEX.get(this.element) || 0;
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);
@@ -125,8 +128,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.drawLink();
         this.drawTopic();
         this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-            selected: this.selected,
-            isEditing: this.textManage.isEditing
+            selected: this.selected
         });
         this.drawEmojis();
         this.drawExtend();
@@ -140,14 +142,14 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         value: PlaitPluginElementContext<MindElement, PlaitMindBoard>,
         previous: PlaitPluginElementContext<MindElement, PlaitMindBoard>
     ) {
+        this.initializeWeakMap();
         const newNode = MindElement.getNode(value.element);
         const isEqualNode = RectangleClient.isEqual(this.node, newNode);
         this.node = newNode;
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (!isEqualNode || value.element !== previous.element || isChangeTheme) {
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-                selected: this.selected,
-                isEditing: this.textManage.isEditing
+                selected: this.selected
             });
             this.nodeShapeGenerator.processDrawing(this.element, this.getElementG(), { node: this.node });
             this.drawLink();
@@ -172,8 +174,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             const hasSameParent = value.parent === previous.parent;
             if (!hasSameSelected) {
                 this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-                    selected: this.selected,
-                    isEditing: this.textManage.isEditing
+                    selected: this.selected
                 });
             }
             if (!hasSameParent) {
@@ -235,28 +236,12 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         this.textManage.updateRectangle();
     }
 
-    editTopic() {
-        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-            selected: this.selected,
-            isEditing: true
-        });
-        this.textManage.edit((origin: ExitOrigin) => {
-            if (origin === ExitOrigin.default) {
-                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-                    selected: this.selected,
-                    isEditing: false
-                });
-            }
-        });
-    }
-
     trackBy = (index: number, node: MindNode) => {
         return node.origin.id;
     };
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        this.textManage.destroy();
         this.nodeEmojisGenerator.destroy();
         this.imageGenerator.destroy();
         this.activeGenerator.destroy();
@@ -265,5 +250,6 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         if (ELEMENT_TO_NODE.get(this.element) === this.node) {
             ELEMENT_TO_NODE.delete(this.element);
         }
+        this.destroyTextManages();
     }
 }

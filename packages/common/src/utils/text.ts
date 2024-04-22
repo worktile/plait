@@ -1,17 +1,16 @@
 import { PlaitElement } from '@plait/core';
 import { CommonPluginElement } from '../core/plugin-element';
-import { CustomText, PlaitMarkEditor } from '@plait/text';
+import { CustomText, PlaitMarkEditor, TextManage } from '@plait/text';
 import { Node } from 'slate';
 
 export const getTextManages = (element: PlaitElement) => {
-    const component = PlaitElement.getComponent(element) as CommonPluginElement;
-    return component.getTextManages();
+    return ELEMENT_TO_TEXT_MANAGES.get(element) || [];
 };
 
 export const getFirstTextManage = (element: PlaitElement) => {
     const textManage = getTextManages(element)[0];
     if (!textManage) {
-        throw new Error('can not find textManage');
+        console.warn('can not find textManage');
     }
     return textManage;
 };
@@ -25,7 +24,7 @@ export const getTextEditors = (element: PlaitElement) => {
 export const getFirstTextEditor = (element: PlaitElement) => {
     const textEditor = getTextEditors(element)[0];
     if (!textEditor) {
-        throw new Error('can not find textEditor');
+        console.warn('can not find textManage');
     }
     return textEditor;
 };
@@ -66,3 +65,5 @@ export const getElementsText = (elements: PlaitElement[]) => {
         .filter(item => item)
         .join(' ');
 };
+
+export const ELEMENT_TO_TEXT_MANAGES: WeakMap<PlaitElement, TextManage[]> = new WeakMap();

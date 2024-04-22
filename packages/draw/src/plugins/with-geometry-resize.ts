@@ -13,6 +13,7 @@ import {
     ResizeRef,
     ResizeState,
     WithResizeOptions,
+    canResize,
     getFirstTextManage,
     getIndexByResizeHandle,
     isCornerHandle,
@@ -41,8 +42,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
                 return null;
             }
             const target = selectedElements[0];
-            const targetComponent = PlaitElement.getComponent(selectedElements[0]) as GeometryComponent;
-            if (targetComponent.activeGenerator.hasResizeHandle) {
+            if (canResize(board, target)) {
                 const rectangle = board.getRectangle(target) as RectangleClient;
                 const handleRef = getHitRectangleResizeHandleRef(board, rectangle, point, target.angle);
                 if (handleRef) {

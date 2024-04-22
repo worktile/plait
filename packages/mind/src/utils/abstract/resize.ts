@@ -6,6 +6,8 @@ import { MindQueries } from '../../queries';
 import { getCorrectStartEnd } from '@plait/layouts';
 import { MindNodeComponent } from '../../mind-node.component';
 import { AbstractHandlePosition } from '../../plugins/with-abstract-resize.board';
+import { PlaitCommonElementRef } from '@plait/common';
+import { NodeActiveGenerator } from '../../generators/node-active.generator';
 
 export const getRectangleByResizingLocation = (
     abstractRectangle: RectangleClient,
@@ -216,15 +218,17 @@ export function handleTouchedAbstract(board: PlaitBoard, touchedAbstract: MindEl
     }
 
     if (touchedAbstract) {
-        const component = PlaitElement.getComponent(touchedAbstract!) as MindNodeComponent;
-        component.activeGenerator.updateAbstractOutline(touchedAbstract);
+        const ref = PlaitElement.getElementRef<PlaitCommonElementRef>(touchedAbstract);
+        const activeGenerator = ref.getGenerator<NodeActiveGenerator>(NodeActiveGenerator.key);
+        activeGenerator.updateAbstractOutline(touchedAbstract);
         touchedAbstract = undefined;
     }
 
     if (abstract) {
         touchedAbstract = abstract;
-        const component = PlaitElement.getComponent(touchedAbstract!) as MindNodeComponent;
-        component.activeGenerator.updateAbstractOutline(touchedAbstract, touchedHandle);
+        const ref = PlaitElement.getElementRef<PlaitCommonElementRef>(touchedAbstract);
+        const activeGenerator = ref.getGenerator<NodeActiveGenerator>(NodeActiveGenerator.key);
+        activeGenerator.updateAbstractOutline(touchedAbstract, touchedHandle);
     }
 
     return touchedAbstract;

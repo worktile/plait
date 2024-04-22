@@ -15,9 +15,9 @@ import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
-import { ActiveGenerator, WithTextPluginKey, WithTextOptions, CommonPluginElement } from '@plait/common';
+import { ActiveGenerator, WithTextPluginKey, WithTextOptions, CommonPluginElement, canResize } from '@plait/common';
 import { GeometryThreshold } from './constants/geometry';
-import { PlaitDrawElement, PlaitText } from './interfaces';
+import { PlaitText } from './interfaces';
 import { getEngine } from './engines';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 import { memorizeLatestText } from './utils';
@@ -42,10 +42,6 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         return this.getTextManages()[0];
     }
 
-    constructor(protected cdr: ChangeDetectorRef) {
-        super(cdr);
-    }
-
     initializeGenerator() {
         this.activeGenerator = new ActiveGenerator<PlaitGeometry>(this.board, {
             getStrokeWidth: () => {
@@ -68,16 +64,13 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                 return RectangleClient.getRectangleByPoints(element.points);
             },
             hasResizeHandle: () => {
-                const selectedElements = getSelectedElements(this.board);
-                if (PlaitBoard.hasBeenTextEditing(this.board) && PlaitDrawElement.isText(this.element)) {
-                    return false;
-                }
-                return selectedElements.length === 1 && !isSelectionMoving(this.board);
+                return canResize(this.board, this.element);
             }
         });
         this.lineAutoCompleteGenerator = new LineAutoCompleteGenerator(this.board);
         this.shapeGenerator = new GeometryShapeGenerator(this.board);
         this.initializeTextManage();
+        this.getRef().addGenerator(LineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
     }
 
     ngOnInit(): void {
@@ -95,6 +88,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         value: PlaitPluginElementContext<PlaitGeometry, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitGeometry, PlaitBoard>
     ) {
+        this.initializeWeakMap();
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (value.element !== previous.element || isChangeTheme) {
             this.shapeGenerator.processDrawing(this.element, this.getElementG());
@@ -113,11 +107,6 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                 });
             }
         }
-    }
-
-    editText() {
-        this.textManage.edit();
-        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
     }
 
     drawText() {
@@ -170,10 +159,10 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        this.textManage.destroy();
         this.destroy$.next();
         this.destroy$.complete();
         this.activeGenerator.destroy();
         this.lineAutoCompleteGenerator.destroy();
+        this.destroyTextManages();
     }
 }
