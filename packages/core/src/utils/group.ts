@@ -5,7 +5,7 @@ import { createG, setAngleForG } from './dom';
 import { drawRectangle } from './drawing/rectangle';
 import { getRectangleByElements } from './element';
 import { idCreator } from './id-creator';
-import { cacheSelectedElements, getSelectedElements } from './selected-element';
+import { getSelectedElements } from './selected-element';
 import { isSelectionMoving } from './selection';
 import { depthFirstRecursion } from './tree';
 import { moveElementsToNewPath } from './common';
