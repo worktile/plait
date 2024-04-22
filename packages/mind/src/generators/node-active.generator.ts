@@ -14,6 +14,8 @@ export interface ActiveData {
 }
 
 export class NodeActiveGenerator extends Generator<MindElement, ActiveData> {
+    static key = 'mind-node-active';
+
     abstractOutlineG?: SVGGElement;
 
     canDraw(element: MindElement<BaseData>, data: ActiveData): boolean {

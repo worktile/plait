@@ -8,11 +8,13 @@ import { ELEMENT_TO_REF, NODE_TO_CONTAINER_G, NODE_TO_G } from '../../utils/weak
 import { PlaitElementRef } from './element-ref';
 
 @Directive()
-export abstract class PlaitPluginElementComponent<T extends PlaitElement = PlaitElement, K extends PlaitBoard = PlaitBoard, R extends PlaitElementRef = PlaitElementRef>
-    implements OnInit, OnDestroy {
+export abstract class PlaitPluginElementComponent<
+    T extends PlaitElement = PlaitElement,
+    K extends PlaitBoard = PlaitBoard,
+    R extends PlaitElementRef = PlaitElementRef
+> implements OnInit, OnDestroy {
     viewContainerRef = inject(ViewContainerRef);
     cdr = inject(ChangeDetectorRef);
-
 
     private _g!: SVGGElement;
 
@@ -159,6 +161,9 @@ export abstract class PlaitPluginElementComponent<T extends PlaitElement = Plait
         }
         if (NODE_TO_CONTAINER_G.get(this.element) === this._containerG) {
             NODE_TO_CONTAINER_G.delete(this.element);
+        }
+        if (ELEMENT_TO_REF.get(this.element) === this.ref) {
+            ELEMENT_TO_REF.set(this.element, this.ref);
         }
         removeSelectedElement(this.board, this.element);
         this.getContainerG().remove();

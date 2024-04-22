@@ -27,6 +27,7 @@ export abstract class CommonPluginElement<
 
     initializeTextManages(textManages: TextManage[]) {
         this.textManages = textManages;
+        this.initializeWeakMap();
     }
 
     addTextManage(textManage: TextManage) {

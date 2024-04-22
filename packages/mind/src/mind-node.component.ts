@@ -74,7 +74,7 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         super();
     }
 
-    initializeDrawer() {
+    initializeGenerator() {
         this.nodeShapeGenerator = new NodeShapeGenerator(this.board);
         this.nodeEmojisGenerator = new NodeEmojisGenerator(this.board, this.viewContainerRef);
         this.activeGenerator = new NodeActiveGenerator(this.board);
@@ -113,11 +113,12 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
             }
         });
         this.initializeTextManages([textManage]);
+        this.getRef().addGenerator(NodeActiveGenerator.key, this.activeGenerator);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.initializeDrawer();
+        this.initializeGenerator();
         this.node = MindElement.getNode(this.element);
         this.index = NODE_TO_INDEX.get(this.element) || 0;
         this.roughSVG = PlaitBoard.getRoughSVG(this.board);

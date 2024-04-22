@@ -1,5 +1,5 @@
 /**
- * 用于存储和元素渲染实例引用
+ * store the instance ref for element
  */
 export interface PlaitElementRef {
 }

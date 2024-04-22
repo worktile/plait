@@ -24,7 +24,7 @@ export const getTextEditors = (element: PlaitElement) => {
 export const getFirstTextEditor = (element: PlaitElement) => {
     const textEditor = getTextEditors(element)[0];
     if (!textEditor) {
-        throw new Error('can not find textEditor');
+        console.warn('can not find textManage');
     }
     return textEditor;
 };
