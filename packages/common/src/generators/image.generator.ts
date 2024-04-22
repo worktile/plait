@@ -27,6 +27,8 @@ export class ImageGenerator<T extends PlaitElement = PlaitElement> extends Gener
     ViewContainerRef,
     ImageGeneratorOptions<T> & GeneratorOptions
 > {
+    static key = 'image-generator';
+
     foreignObject!: SVGForeignObjectElement;
 
     componentRef!: ComponentRef<ImageBaseComponent>;

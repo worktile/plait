@@ -1,7 +1,6 @@
 import { drawRoundRectangleByNode } from './node-shape';
 import { BASE, PRIMARY_COLOR, STROKE_WIDTH } from '../../constants';
 import { DetectResult, LayoutDirection, MindElement, MindNode, PlaitMind } from '../../interfaces';
-import { MindNodeComponent } from '../../mind-node.component';
 import { getRectangleByNode } from '../position/node';
 import { PlaitBoard, Point, drawRoundRectangle, createG, Path, PlaitNode, PlaitElement, updateForeignObject } from '@plait/core';
 import { MindQueries } from '../../queries';
@@ -14,20 +13,22 @@ import { hasPreviousOrNextOfDropPath } from '../dnd/common';
 import { drawLink } from './node-link/draw-link';
 import { getEmojiForeignRectangle } from '../position/emoji';
 import { getImageForeignRectangle } from '../position';
-import { getFirstTextManage } from '@plait/common';
+import { ImageGenerator, PlaitCommonElementRef, getFirstTextManage } from '@plait/common';
+import { NodeEmojisGenerator } from '../../generators/node-emojis.generator';
 
 export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offsetX: number, offsetY: number) => {
-    const activeComponent = PlaitElement.getComponent(element) as MindNodeComponent;
+    const ref = PlaitElement.getElementRef<PlaitCommonElementRef>(element);
+    const mindNode = MindElement.getNode(element);
     const dragFakeNodeG = createG();
     dragFakeNodeG.classList.add('dragging', 'fake-node', 'plait-board-attached');
 
     const fakeDraggingNode: MindNode = {
-        ...activeComponent.node,
+        ...mindNode,
         children: [],
-        x: activeComponent.node.x + offsetX,
-        y: activeComponent.node.y + offsetY
+        x: mindNode.x + offsetX,
+        y: mindNode.y + offsetY
     };
-    const textRectangle = getTopicRectangleByNode(board as PlaitMindBoard, activeComponent.node);
+    const textRectangle = getTopicRectangleByNode(board as PlaitMindBoard, mindNode);
     const fakeNodeG = drawRoundRectangleByNode(board, fakeDraggingNode);
 
     const richtextG = getFirstTextManage(element).g.cloneNode(true) as SVGGElement;
@@ -38,7 +39,8 @@ export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offset
 
     // draw emojis
     if (MindElement.hasEmojis(element)) {
-        const fakeEmojisG = (activeComponent.nodeEmojisGenerator.g as SVGGElement).cloneNode(true) as SVGGElement;
+        const nodeEmojisGenerator = ref.getGenerator<NodeEmojisGenerator>(NodeEmojisGenerator.key);
+        const fakeEmojisG = (nodeEmojisGenerator.g as SVGGElement).cloneNode(true) as SVGGElement;
         const foreignRectangle = getEmojiForeignRectangle(board as PlaitMindBoard, element);
         updateForeignObject(
             fakeEmojisG,
@@ -51,7 +53,8 @@ export const drawFakeDragNode = (board: PlaitBoard, element: MindElement, offset
     }
 
     if (MindElement.hasImage(element)) {
-        const fakeImageG = (activeComponent.imageGenerator.g as SVGGElement).cloneNode(true) as SVGGElement;
+        const imageGenerator = ref.getGenerator<ImageGenerator>(ImageGenerator.key);
+        const fakeImageG = (imageGenerator.g as SVGGElement).cloneNode(true) as SVGGElement;
         const foreignRectangle = getImageForeignRectangle(board as PlaitMindBoard, element);
         updateForeignObject(
             fakeImageG,

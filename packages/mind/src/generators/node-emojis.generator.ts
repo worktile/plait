@@ -42,6 +42,8 @@ class EmojiGenerator {
 }
 
 export class NodeEmojisGenerator {
+    static key = 'node-emojis-generator';
+
     emojiGenerators: EmojiGenerator[] = [];
 
     g?: SVGGElement;

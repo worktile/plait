@@ -114,6 +114,8 @@ export class MindNodeComponent extends CommonPluginElement<MindElement, PlaitMin
         });
         this.initializeTextManages([textManage]);
         this.getRef().addGenerator(NodeActiveGenerator.key, this.activeGenerator);
+        this.getRef().addGenerator(NodeEmojisGenerator.key, this.nodeEmojisGenerator);
+        this.getRef().addGenerator(ImageGenerator.key, this.imageGenerator);
     }
 
     ngOnInit(): void {
