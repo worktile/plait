@@ -19,10 +19,12 @@ import {
     getGroupByElement,
     getSelectedIsolatedElementsCanAddToGroup,
     getElementsInGroup,
-    getRectangleByGroup
+    getRectangleByGroup,
+    PlaitPointerType
 } from '@plait/core';
 import { GroupComponent } from '../core/group.component';
 import { isKeyHotkey } from 'is-hotkey';
+import { isResizing } from '../utils';
 
 export function withGroup(board: PlaitBoard) {
     let groupRectangleG: SVGGElement | null;
@@ -54,12 +56,14 @@ export function withGroup(board: PlaitBoard) {
         if (board.selection && !Selection.isCollapsed(board.selection)) {
             selection = board.selection;
         }
-        const hitElements = getHitElementsBySelection(board, selection);
-        if (hitElements.length) {
-            groupRectangleG = createGroupRectangleG(board, hitElements);
-            groupRectangleG && PlaitBoard.getElementActiveHost(board).append(groupRectangleG);
+        const pointer = PlaitBoard.getPointer(board);
+        if (!isResizing(board) && pointer === PlaitPointerType.selection) {
+            const hitElements = getHitElementsBySelection(board, selection);
+            if (hitElements.length) {
+                groupRectangleG = createGroupRectangleG(board, hitElements);
+                groupRectangleG && PlaitBoard.getElementActiveHost(board).append(groupRectangleG);
+            }
         }
-
         pointerMove(event);
     };
 
