@@ -7,12 +7,12 @@ import {
     getNearestPointBetweenPointAndSegments,
     getVectorFromPointAndSlope,
     isPointInEllipse,
-    setStrokeLinecap
+    setStrokeLinecap,
+    getNearestPointBetweenPointAndEllipse
 } from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
-import { getNearestPointBetweenPointAndEllipse } from '../basic-shapes/ellipse';
 
 export const DelayEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {

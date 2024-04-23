@@ -5,11 +5,11 @@ import {
     RectangleClient,
     drawRoundRectangle,
     getNearestPointBetweenPointAndSegments,
-    isPointInRoundRectangle
+    isPointInRoundRectangle,
+    getNearestPointBetweenPointAndEllipse
 } from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getNearestPointBetweenPointAndEllipse } from './ellipse';
 import { RectangleEngine } from './rectangle';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 

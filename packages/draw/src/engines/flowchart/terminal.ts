@@ -7,11 +7,11 @@ import {
     getEllipseTangentSlope,
     getNearestPointBetweenPointAndSegments,
     getVectorFromPointAndSlope,
-    isPointInRoundRectangle
+    isPointInRoundRectangle,
+    getNearestPointBetweenPointAndEllipse
 } from '@plait/core';
 import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
-import { getNearestPointBetweenPointAndEllipse } from '../basic-shapes/ellipse';
 
 export const TerminalEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {

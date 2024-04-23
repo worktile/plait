@@ -8,12 +8,12 @@ import {
     getNearestPointBetweenPointAndSegments,
     getVectorFromPointAndSlope,
     isPointInEllipse,
-    setStrokeLinecap
+    setStrokeLinecap,
+    getNearestPointBetweenPointAndEllipse
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
-import { getNearestPointBetweenPointAndEllipse } from '../basic-shapes/ellipse';
 import { getTextRectangle } from '../../utils';
 
 export const StoredDataEngine: ShapeEngine = {
