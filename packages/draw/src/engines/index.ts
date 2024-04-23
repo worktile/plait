@@ -30,6 +30,8 @@ import { OffPageEngine } from './flowchart/off-page';
 import { CloudEngine } from './basic-shapes/cloud';
 import { OrEngine } from './flowchart/or';
 import { SummingJunctionEngine } from './flowchart/summing-junction';
+import { DocumentEngine } from './flowchart/document';
+import { MultiDocumentEngine } from './flowchart/multi-document';
 
 export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [BasicShapes.rectangle]: RectangleEngine,
@@ -67,7 +69,9 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [FlowchartSymbols.or]: OrEngine,
     [FlowchartSymbols.summingJunction]: SummingJunctionEngine,
     [FlowchartSymbols.predefinedProcess]: PredefinedProcessEngine,
-    [FlowchartSymbols.offPage]: OffPageEngine
+    [FlowchartSymbols.offPage]: OffPageEngine,
+    [FlowchartSymbols.document]: DocumentEngine,
+    [FlowchartSymbols.multiDocument]: MultiDocumentEngine
 };
 
 export const getEngine = (shape: GeometryShapes) => {

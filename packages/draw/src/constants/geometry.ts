@@ -61,6 +61,16 @@ export const DefaultDataProperty = {
     height: 60
 };
 
+export const DefaultDocumentProperty = {
+    width: 120,
+    height: 70
+};
+
+export const DefaultMultiDocumentProperty = {
+    width: 120,
+    height: 80
+};
+
 export const DefaultManualInputProperty = {
     width: 117,
     height: 59
@@ -86,7 +96,9 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.or]: DefaultConnectorProperty,
     [FlowchartSymbols.summingJunction]: DefaultConnectorProperty,
     [FlowchartSymbols.predefinedProcess]: DefaultFlowchartProperty,
-    [FlowchartSymbols.offPage]: DefaultFlowchartProperty
+    [FlowchartSymbols.offPage]: DefaultFlowchartProperty,
+    [FlowchartSymbols.document]: DefaultDocumentProperty,
+    [FlowchartSymbols.multiDocument]: DefaultMultiDocumentProperty
 };
 
 export const LINE_HIT_GEOMETRY_BUFFER = 10;

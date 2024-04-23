@@ -42,7 +42,9 @@ export enum FlowchartSymbols {
     or = 'or',
     summingJunction = 'summingJunction',
     predefinedProcess = 'predefinedProcess',
-    offPage = 'offPage'
+    offPage = 'offPage',
+    document = 'document',
+    multiDocument = 'multiDocument'
 }
 
 export type GeometryShapes = BasicShapes | FlowchartSymbols;
