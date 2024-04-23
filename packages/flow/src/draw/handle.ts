@@ -7,7 +7,8 @@ import { FlowEdge } from '../interfaces/edge';
 import { DEFAULT_HANDLE_STYLES, HANDLE_DIAMETER } from '../constants/handle';
 import { getEdgeHandles } from '../utils/handle/edge';
 
-export function drawNodeHandles(roughSVG: RoughSVG, node: FlowNode) {
+export function drawNodeHandles(board: PlaitBoard, node: FlowNode) {
+    const roughSVG = PlaitBoard.getRoughSVG(board);
     const handles = node.handles || getDefaultHandles();
     const { x, y } = normalizePoint(node.points![0]);
     return handles.map(handle => {

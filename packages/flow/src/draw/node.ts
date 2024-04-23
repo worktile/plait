@@ -1,10 +1,10 @@
-import { RoughSVG } from 'roughjs/bin/svg';
-import { drawRoundRectangle, normalizePoint } from '@plait/core';
+import { PlaitBoard, drawRoundRectangle, normalizePoint } from '@plait/core';
 import { FlowElementStyles } from '../interfaces/element';
 import { FlowNode } from '../interfaces/node';
 import { DEFAULT_NODE_ACTIVE_STYLES, DEFAULT_NODE_STYLES, OUTLINE_BUFFER } from '../constants/node';
 
-export function drawNode(roughSVG: RoughSVG, node: FlowNode, outline = false) {
+export function drawNode(board: PlaitBoard, node: FlowNode, outline = false) {
+    const roughSVG = PlaitBoard.getRoughSVG(board);
     let nodeStyles: FlowElementStyles = {
         ...DEFAULT_NODE_STYLES,
         ...(node.styles || {})
@@ -28,7 +28,8 @@ export function drawNode(roughSVG: RoughSVG, node: FlowNode, outline = false) {
     return nodeG;
 }
 
-export function drawActiveMask(roughSVG: RoughSVG, node: FlowNode) {
+export function drawNodeActiveMask(board: PlaitBoard, node: FlowNode) {
+    const roughSVG = PlaitBoard.getRoughSVG(board);
     let nodeStyles: FlowElementStyles = {
         ...DEFAULT_NODE_ACTIVE_STYLES,
         ...(node.styles || {})

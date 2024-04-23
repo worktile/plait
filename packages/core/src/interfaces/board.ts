@@ -66,6 +66,7 @@ export interface PlaitBoard {
     deleteFragment: (data: PlaitElement[]) => void;
     getDeletedFragment: (data: PlaitElement[]) => PlaitElement[];
     getRelatedFragment: (data: PlaitElement[], originData?: PlaitElement[]) => PlaitElement[];
+    getRelatedSelectionFragment: (data: PlaitElement[], originData?: PlaitElement[]) => PlaitElement[];
     dblClick: (event: MouseEvent) => void;
     drawElement: (context: PlaitPluginElementContext) => ComponentType<PlaitPluginElementComponent>;
     isRectangleHit: (element: PlaitElement, range: Selection) => boolean;
