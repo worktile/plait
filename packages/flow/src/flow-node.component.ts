@@ -71,6 +71,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
             this.nodeActiveGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: value.selected
             });
+            // 先销毁，解决层级问题，否知直接执行替换会有层级问题
             this.nodeHandleGenerator.destroy();
             this.nodeHandleGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: value.selected,
