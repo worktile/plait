@@ -102,7 +102,6 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         },
         getDeletedFragment: (data: PlaitElement[]) => data,
         getRelatedFragment: (data: PlaitElement[], originData?: PlaitElement[]) => data,
-        getRelatedSelectionFragment: (data: PlaitElement[], originData?: PlaitElement[]) => data,
         drawElement: (context: PlaitPluginElementContext) => {
             throw new Error(`can not resolve plugin element component type: ${context.element.type}`);
         },
