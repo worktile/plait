@@ -71,6 +71,7 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
             this.nodeActiveGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: value.selected
             });
+            this.nodeHandleGenerator.destroy();
             this.nodeHandleGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: value.selected,
                 hovered: false
@@ -102,8 +103,8 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
 
         // this.activeG && this.activeG.remove();
         if (mode === FlowRenderMode.default) {
-            const upperHost = PlaitBoard.getElementUpperHost(this.board);
-            upperHost.append(this.textManage.g);
+            // const upperHost = PlaitBoard.getElementUpperHost(this.board);
+            // upperHost.append(this.textManage.g);
         } else {
             // this.activeG = createG();
             // this.activeG?.append(this.textManage.g);

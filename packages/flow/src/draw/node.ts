@@ -39,7 +39,8 @@ export function drawNodeActiveMask(board: PlaitBoard, node: FlowNode) {
     nodeStyles = {
         ...nodeStyles,
         stroke: node.styles?.activeStroke || DEFAULT_NODE_ACTIVE_STYLES.stroke,
-        fill: node.styles?.activeFill || DEFAULT_NODE_ACTIVE_STYLES.fill
+        // TODO: 这个是否有异议，存在 fill 目前会导致层级盖住文本及 node
+        fill: ''
     };
     const nodeG = drawRoundRectangle(
         roughSVG,
