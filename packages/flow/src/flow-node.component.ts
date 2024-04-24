@@ -15,7 +15,6 @@ import { FlowBaseData } from './interfaces/element';
 import { FlowRenderMode } from './interfaces/flow';
 import { setRelationEdgeSelected } from './utils/edge/relation-edge-selected';
 import { NodeGenerator } from './generators/node.generator';
-import { NodeHandleGenerator } from './generators/node-handle.generator';
 import { NodeActiveGenerator } from './generators/node-active.generator';
 import { CommonPluginElement } from '@plait/common';
 
@@ -28,7 +27,6 @@ import { CommonPluginElement } from '@plait/common';
 export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends CommonPluginElement<FlowNode<T>>
     implements OnInit, OnContextChanged<FlowNode, PlaitBoard>, OnDestroy {
     nodeGenerator!: NodeGenerator;
-    nodeHandleGenerator!: NodeHandleGenerator;
     nodeActiveGenerator!: NodeActiveGenerator;
     textManage!: TextManage;
 
@@ -51,7 +49,6 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
 
     initializeGenerator() {
         this.nodeGenerator = new NodeGenerator(this.board);
-        this.nodeHandleGenerator = new NodeHandleGenerator(this.board);
         this.nodeActiveGenerator = new NodeActiveGenerator(this.board);
         this.textManage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
@@ -61,36 +58,28 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
                 return { x, y, width, height };
             }
         });
-        this.getRef().addGenerator<NodeHandleGenerator>(NodeHandleGenerator.key, this.nodeHandleGenerator);
-        // this.getRef().addGenerator(NodeEmojisGenerator.key, this.nodeEmojisGenerator);
-        // this.getRef().addGenerator(ImageGenerator.key, this.imageGenerator);
+        this.getRef().addGenerator<NodeActiveGenerator>(NodeActiveGenerator.key, this.nodeActiveGenerator);
     }
 
     onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
         if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected)) {
             this.nodeActiveGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-                selected: value.selected
-            });
-            // 先销毁，解决层级问题，否知直接执行替换会有层级问题
-            this.nodeHandleGenerator.destroy();
-            this.nodeHandleGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: value.selected,
                 hovered: false
             });
             this.nodeGenerator.processDrawing(this.element, this.getElementG());
             this.updateText();
-            // this.drawElement(value.element, value.selected ? FlowRenderMode.active : FlowRenderMode.default);
         }
-        // if (previous.selected !== value.selected) {
-        //     if (value.selected) {
-        //         // setTimeout 解决当多个节点关联 edge 有交集时，先执行清空在执行选中操作
-        //         setTimeout(() => {
-        //             setRelationEdgeSelected(this.board, this.element.id, value.selected);
-        //         }, 0);
-        //     } else {
-        //         setRelationEdgeSelected(this.board, this.element.id, value.selected);
-        //     }
-        // }
+        if (previous.selected !== value.selected) {
+            if (value.selected) {
+                // setTimeout 解决当多个节点关联 edge 有交集时，先执行清空在执行选中操作
+                setTimeout(() => {
+                    setRelationEdgeSelected(this.board, this.element.id, value.selected);
+                }, 0);
+            } else {
+                setRelationEdgeSelected(this.board, this.element.id, value.selected);
+            }
+        }
     }
 
     drawElement(element: FlowNode = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
