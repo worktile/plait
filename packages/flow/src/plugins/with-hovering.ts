@@ -1,7 +1,7 @@
 import { PlaitBoard, PlaitElement, PlaitPlugin, getMovingElements, isSelectedElement, toHostPoint, toViewBoxPoint } from '@plait/core';
 import { FlowNode } from '../interfaces/node';
 import { FlowEdge } from '../interfaces/edge';
-import { getHitEdge, getHitNode, isEdgeDragging, isPlaceholderEdgeInfo, setEdgeState, setRelatedEdgeState } from '../utils';
+import { getHitEdge, getHitNode, isEdgeDragging, isPlaceholderEdgeInfo, renderEdge, renderRelatedEdges, updateEdgeState, updateRelatedEdgeState } from '../utils';
 import { PlaitCommonElementRef } from '@plait/common';
 import { NodeActiveGenerator } from '../generators/node-active.generator';
 import { EdgeState } from '../public-api';
@@ -30,9 +30,9 @@ export const withHovering: PlaitPlugin = (board: PlaitBoard) => {
                 if (!selected) {
                     handleGenerator.destroy();
                 }
-                setRelatedEdgeState(board, hoveredElement.id, EdgeState['']);
+                renderRelatedEdges(board, hoveredElement.id);
             } else {
-                setEdgeState(board, hoveredElement, EdgeState['']);
+                renderEdge(board, hoveredElement);
             }
         }
         hoveredElement = newHitNode;
@@ -44,9 +44,9 @@ export const withHovering: PlaitPlugin = (board: PlaitBoard) => {
                 if (!selected) {
                     handleGenerator.processDrawing(hoveredElement, PlaitBoard.getElementActiveHost(board), { selected, hovered: true });
                 }
-                setRelatedEdgeState(board, hoveredElement.id, EdgeState.hovering);
+                renderRelatedEdges(board, hoveredElement.id, EdgeState.hovering);
             } else {
-                setEdgeState(board, hoveredElement, EdgeState.hovering);
+                renderEdge(board, hoveredElement, EdgeState.hovering);
             }
         }
     };

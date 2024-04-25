@@ -13,7 +13,7 @@ import { PlaitPluginElementContext, PlaitBoard, normalizePoint, OnContextChanged
 import { FlowNode } from './interfaces/node';
 import { FlowBaseData } from './interfaces/element';
 import { EdgeState } from './interfaces/flow';
-import { setRelatedEdgeState } from './utils/edge/edge-state';
+import { updateRelatedEdgeState } from './utils/edge/edge-state';
 import { NodeGenerator } from './generators/node.generator';
 import { NodeActiveGenerator } from './generators/node-active.generator';
 import { CommonPluginElement } from '@plait/common';
@@ -70,10 +70,10 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
             if (value.selected) {
                 // setTimeout 解决当多个节点关联 edge 有交集时，先执行清空在执行选中操作
                 setTimeout(() => {
-                    setRelatedEdgeState(this.board, this.element.id, EdgeState.highlight);
+                    updateRelatedEdgeState(this.board, this.element.id, EdgeState.highlight);
                 }, 0);
             } else {
-                setRelatedEdgeState(this.board, this.element.id, EdgeState['']);
+                updateRelatedEdgeState(this.board, this.element.id, EdgeState['']);
             }
         }
     }
