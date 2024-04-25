@@ -44,7 +44,10 @@ export enum FlowchartSymbols {
     predefinedProcess = 'predefinedProcess',
     offPage = 'offPage',
     document = 'document',
-    multiDocument = 'multiDocument'
+    multiDocument = 'multiDocument',
+    noteCurlyRight = 'noteCurlyRight',
+    noteCurlyLeft = 'noteCurlyLeft',
+    noteSquare = 'noteSquare'
 }
 
 export type GeometryShapes = BasicShapes | FlowchartSymbols;
