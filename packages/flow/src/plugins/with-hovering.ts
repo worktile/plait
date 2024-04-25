@@ -4,8 +4,9 @@ import { FlowEdge } from '../interfaces/edge';
 import { getHitEdge, getHitNode, isEdgeDragging, isPlaceholderEdgeInfo, setEdgeState, setRelatedEdgeState } from '../utils';
 import { PlaitCommonElementRef } from '@plait/common';
 import { NodeActiveGenerator } from '../generators/node-active.generator';
+import { EdgeState } from '../public-api';
 
-export const withHoverHighlight: PlaitPlugin = (board: PlaitBoard) => {
+export const withHovering: PlaitPlugin = (board: PlaitBoard) => {
     const { pointerMove, pointerLeave } = board;
 
     let hoveredElement: FlowNode | FlowEdge | null;
@@ -29,9 +30,9 @@ export const withHoverHighlight: PlaitPlugin = (board: PlaitBoard) => {
                 if (!selected) {
                     handleGenerator.destroy();
                 }
-                setRelatedEdgeState(board, hoveredElement.id, false);
+                setRelatedEdgeState(board, hoveredElement.id, EdgeState['']);
             } else {
-                setEdgeState(board, hoveredElement, false);
+                setEdgeState(board, hoveredElement, EdgeState['']);
             }
         }
         hoveredElement = newHitNode;
@@ -43,9 +44,9 @@ export const withHoverHighlight: PlaitPlugin = (board: PlaitBoard) => {
                 if (!selected) {
                     handleGenerator.processDrawing(hoveredElement, PlaitBoard.getElementActiveHost(board), { selected, hovered: true });
                 }
-                setRelatedEdgeState(board, hoveredElement.id, true);
+                setRelatedEdgeState(board, hoveredElement.id, EdgeState.hovering);
             } else {
-                setEdgeState(board, hoveredElement, true);
+                setEdgeState(board, hoveredElement, EdgeState.hovering);
             }
         }
     };

@@ -2,7 +2,7 @@ import { createForeignObject, createG, updateForeignObject } from '@plait/core';
 import { Generator, GeneratorOptions } from '@plait/common';
 import { FlowEdge } from '../interfaces/edge';
 import { drawEdgeLabelShape, drawEdgeMarkers, drawEdgeRoute } from '../draw/edge';
-import { FlowRenderMode } from '../interfaces/flow';
+import { EdgeState } from '../interfaces/flow';
 import { EdgeLabelSpace } from '../utils/edge/label-space';
 import { PlaitFlowBoard } from '../interfaces';
 import { ComponentRef, ViewContainerRef } from '@angular/core';
@@ -10,12 +10,11 @@ import { FlowEdgeLabelIconBaseComponent } from '../core/edge-label-icon-base.com
 import { LabelIconItem } from '../interfaces/icon';
 import { drawEdgeHandles } from '../draw/handle';
 
-export interface EdgeActiveData {
-    selected: boolean;
-    hovered: boolean;
+export interface EdgeData {
+    state: EdgeState;
 }
 
-export class EdgeGenerator extends Generator<FlowEdge, EdgeActiveData, GeneratorOptions, PlaitFlowBoard> {
+export class EdgeGenerator extends Generator<FlowEdge, EdgeData, GeneratorOptions, PlaitFlowBoard> {
     static key = 'edge-generator';
 
     labelIconRef: {
@@ -27,18 +26,17 @@ export class EdgeGenerator extends Generator<FlowEdge, EdgeActiveData, Generator
         super(board, { prepend: true });
     }
 
-    canDraw(element: FlowEdge, data: EdgeActiveData): boolean {
+    canDraw(element: FlowEdge, data: EdgeData): boolean {
         return true;
     }
 
-    draw(element: FlowEdge, data: EdgeActiveData) {
-        const mode = data.selected ? FlowRenderMode.active : data.hovered ? FlowRenderMode.hover : FlowRenderMode.default;
+    draw(element: FlowEdge, data: EdgeData) {
         const edgeG = createG();
-        const edgeRouteG = drawEdgeRoute(this.board, element, mode);
-        const edgeMarksG = drawEdgeMarkers(this.board, element, mode);
+        const edgeRouteG = drawEdgeRoute(this.board, element, data.state);
+        const edgeMarksG = drawEdgeMarkers(this.board, element, data.state);
         edgeG.append(edgeRouteG);
         edgeG.append(...edgeMarksG);
-        if (mode === FlowRenderMode.active) {
+        if (data.state === EdgeState.active) {
             const handles = drawEdgeHandles(this.board, element);
             handles.forEach(item => {
                 item.classList.add('flow-handle');
@@ -49,7 +47,7 @@ export class EdgeGenerator extends Generator<FlowEdge, EdgeActiveData, Generator
         if (FlowEdge.hasLabel(element)) {
             const textRectangle = EdgeLabelSpace.getLabelTextRectangle(this.board, element);
             const labelRectangle = EdgeLabelSpace.getLabelRect(textRectangle, element);
-            const labelShapeG = drawEdgeLabelShape(this.board, element, labelRectangle, mode);
+            const labelShapeG = drawEdgeLabelShape(this.board, element, labelRectangle, data.state);
             edgeG.append(labelShapeG);
             if (this.labelIconRef) {
                 this.updateLabelIcon(element);

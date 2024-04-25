@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PlaitPluginElementContext, Point, drawCircle, PlaitBoard, createG } from '@plait/core';
-import { FlowNode, FlowNodeComponent, FlowRenderMode } from '@plait/flow';
+import { FlowNode, FlowNodeComponent } from '@plait/flow';
 
 @Component({
     selector: 'custom-flow-node',
@@ -11,11 +11,11 @@ import { FlowNode, FlowNodeComponent, FlowRenderMode } from '@plait/flow';
 export class CustomFlowNodeComponent extends FlowNodeComponent {
     onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
         if (value.element !== previous.element && this.initialized) {
-            this.drawElement(value.element);
+            // this.drawElement(value.element);
         }
     }
 
-    drawElement(element: FlowNode = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
+    // drawElement(element: FlowNode = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
         // this.drawNode(element);
         // this.drawRichtext(element);
         // // this.drawActiveMask(element, mode);
@@ -37,7 +37,7 @@ export class CustomFlowNodeComponent extends FlowNodeComponent {
         //     this.render2.addClass(this.activeG, 'flow-custom-node');
         //     PlaitBoard.getElementActiveHost(this.board).append(this.activeG!);
         // }
-    }
+    // }
 
     drawNode(element: FlowNode = this.element) {
         // this.destroyElement();

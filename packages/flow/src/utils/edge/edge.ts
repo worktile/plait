@@ -6,8 +6,7 @@ import { FlowEdge, FlowEdgeShape } from '../../interfaces/edge';
 import { DEFAULT_EDGE_ACTIVE_STYLES, DEFAULT_EDGE_HOVER_STYLES, DEFAULT_EDGE_STYLES } from '../../constants/edge';
 import { FlowNode } from '../../interfaces/node';
 import { getEdgeDraggingInfo } from './dragging-edge';
-import { FlowRenderMode } from '../../interfaces/flow';
-import { FlowEdgeComponent } from '../../flow-edge.component';
+import { EdgeState } from '../../interfaces/flow';
 import { getCurvePoints } from './get-curve-points';
 import { getStraightPoints } from './get-straight-points';
 import { getHandleXYPosition } from '../handle/get-handle-position';
@@ -139,14 +138,14 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
     return edgeRef.getPoints();
 };
 
-export const getEdgeStyle = (edge: FlowEdge, mode: FlowRenderMode = FlowRenderMode.default) => {
+export const getEdgeStyle = (edge: FlowEdge, state: EdgeState = EdgeState['']) => {
     const edgeStyles: FlowElementStyles = {
         ...DEFAULT_EDGE_STYLES,
         ...(edge.styles || {}),
         stroke:
-            mode === FlowRenderMode.active
+            state === EdgeState.active
                 ? edge.styles?.activeStroke || DEFAULT_EDGE_ACTIVE_STYLES.stroke
-                : mode === FlowRenderMode.hover
+                : state === EdgeState.highlight || state === EdgeState.hovering
                 ? edge.styles?.hoverStroke || DEFAULT_EDGE_HOVER_STYLES.stroke
                 : edge.styles?.stroke || DEFAULT_EDGE_STYLES.stroke
     };

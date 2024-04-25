@@ -4,16 +4,12 @@ import { FlowEdge } from '../interfaces/edge';
 import { buildEdgePathPoints } from '../utils/edge/edge';
 import { PlaitFlowBoard } from '../interfaces';
 import { TextManage } from '@plait/text';
-
-export enum EdgeState {
-    'active' = 'active',
-    'highlight' = 'highlight'
-}
+import { EdgeState } from '../interfaces/flow';
 
 export class EdgeElementRef extends PlaitCommonElementRef {
     private pathPoints: XYPosition[] = [];
 
-    private state: EdgeState | '' = '';
+    private state: EdgeState = EdgeState[''];
 
     private labelTextManage: TextManage | null = null;
 
@@ -25,7 +21,7 @@ export class EdgeElementRef extends PlaitCommonElementRef {
         return [...this.pathPoints];
     }
 
-    setState(state: EdgeState | '') {
+    setState(state: EdgeState) {
         this.state = state;
     }
 

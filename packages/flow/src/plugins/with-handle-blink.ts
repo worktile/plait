@@ -1,5 +1,5 @@
 import { PlaitBoard, PlaitPlugin, PlaitElement, drawCircle, toHostPoint, toViewBoxPoint } from '@plait/core';
-import { FlowNodeComponent } from '../flow-node.component';
+import { FlowNodeComponent } from '../node.component';
 import { HitNodeHandle, getHitNodeHandle } from '../utils/handle/node';
 import { addHoverHandleInfo, deleteHoverHandleInfo } from '../utils/handle/hover-handle';
 import { DEFAULT_HANDLE_STYLES, HANDLE_BUFFER, HANDLE_DIAMETER } from '../constants/handle';

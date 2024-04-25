@@ -12,7 +12,7 @@ import { TextManage } from '@plait/text';
 import { PlaitPluginElementContext, PlaitBoard, normalizePoint, OnContextChanged } from '@plait/core';
 import { FlowNode } from './interfaces/node';
 import { FlowBaseData } from './interfaces/element';
-import { FlowRenderMode } from './interfaces/flow';
+import { EdgeState } from './interfaces/flow';
 import { setRelatedEdgeState } from './utils/edge/edge-state';
 import { NodeGenerator } from './generators/node.generator';
 import { NodeActiveGenerator } from './generators/node-active.generator';
@@ -27,12 +27,10 @@ import { CommonPluginElement } from '@plait/common';
 export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends CommonPluginElement<FlowNode<T>>
     implements OnInit, OnContextChanged<FlowNode, PlaitBoard>, OnDestroy {
     nodeGenerator!: NodeGenerator;
+
     nodeActiveGenerator!: NodeActiveGenerator;
+
     textManage!: TextManage;
-
-    // roughSVG!: RoughSVG;
-
-    // activeG: SVGGElement | null = null;
 
     constructor(public viewContainerRef: ViewContainerRef, public render2: Renderer2, public ngZone: NgZone) {
         super();
@@ -43,8 +41,6 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
         this.initializeGenerator();
         this.nodeGenerator.processDrawing(this.element, this.getElementG());
         this.drawText();
-        // this.roughSVG = PlaitBoard.getRoughSVG(this.board);
-        // this.drawElement();
     }
 
     initializeGenerator() {
@@ -74,44 +70,13 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
             if (value.selected) {
                 // setTimeout 解决当多个节点关联 edge 有交集时，先执行清空在执行选中操作
                 setTimeout(() => {
-                    setRelatedEdgeState(this.board, this.element.id, value.selected);
+                    setRelatedEdgeState(this.board, this.element.id, EdgeState.highlight);
                 }, 0);
             } else {
-                setRelatedEdgeState(this.board, this.element.id, value.selected);
+                setRelatedEdgeState(this.board, this.element.id, EdgeState['']);
             }
         }
     }
-
-    drawElement(element: FlowNode = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
-        // 处理节点高亮当前为 selected 不绘制
-        if (this.selected && mode !== FlowRenderMode.active) {
-            return;
-        }
-        // this.drawRichtext(element);
-        // this.drawNodeActiveMask(element, mode);
-        // this.drawHandles(element, mode);
-
-        // this.activeG && this.activeG.remove();
-        if (mode === FlowRenderMode.default) {
-            // const upperHost = PlaitBoard.getElementUpperHost(this.board);
-            // upperHost.append(this.textManage.g);
-        } else {
-            // this.activeG = createG();
-            // this.activeG?.append(this.textManage.g);
-            // if (mode === FlowRenderMode.active) {
-            //     this.activeG?.prepend(this.activeMaskG!);
-            // }
-            // this.activeG?.classList.add(ACTIVE_MOVING_CLASS_NAME);
-            // PlaitBoard.getElementActiveHost(this.board).append(this.activeG!);
-        }
-    }
-
-    // drawNodeActiveMask(element: FlowNode = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
-    //     this.destroyActiveMask();
-    //     if (mode === FlowRenderMode.active) {
-    //         this.activeMaskG = drawNodeActiveMask(this.roughSVG, element);
-    //     }
-    // }
 
     drawText(element: FlowNode = this.element) {
         const text = this.element.data?.text;
@@ -131,36 +96,12 @@ export class FlowNodeComponent<T extends FlowBaseData = FlowBaseData> extends Co
         }
     }
 
-    // drawHandles(element: FlowNode = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
-    //     this.destroyHandles();
-    //     if (mode !== FlowRenderMode.default) {
-    //         this.handlesG = createG();
-    //         const handles = drawNodeHandles(this.roughSVG, element);
-    //         handles.forEach(item => {
-    //             this.handlesG?.append(item);
-    //             this.render2.addClass(item, 'flow-handle');
-    //         });
-    //         this.handlesG?.setAttribute('stroke-linecap', 'round');
-    //     }
-    // }
-
-    // destroyActiveMask() {
-    //     if (this.activeMaskG) {
-    //         this.activeMaskG.remove();
-    //         this.activeMaskG = null;
-    //     }
-    // }
-
-    destroyRichtext() {
+    destroyText() {
         this.textManage.destroy();
     }
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
-        // this.destroyHandles();
-        // this.destroyActiveMask();
-        this.destroyRichtext();
-        // this.activeG?.remove();
-        // this.activeG = null;
+        this.destroyText();
     }
 }

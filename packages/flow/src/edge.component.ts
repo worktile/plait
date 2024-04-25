@@ -10,6 +10,7 @@ import { FlowNode } from './interfaces/node';
 import { EdgeGenerator } from './generators/edge-generator';
 import { CommonPluginElement } from '@plait/common';
 import { EdgeElementRef } from './core/edge-ref';
+import { EdgeState } from './public-api';
 
 interface BoundedElements {
     source?: FlowNode;
@@ -53,7 +54,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
         super.ngOnInit();
         this.initializeGenerator();
         this.getRef().buildPathPoints(this.board, this.element);
-        this.edgeGenerator.processDrawing(this.element, this.getElementG(), { selected: false, hovered: false });
+        this.edgeGenerator.processDrawing(this.element, this.getElementG(), { state: this.getRef().getState() });
         this.drawLabelText();
         this.boundedElements = this.getBoundedElements();
     }
@@ -67,7 +68,9 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
             this.getRef().buildPathPoints(this.board, this.element);
         }
         if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected || isBoundedElementsChanged)) {
-            this.edgeGenerator.processDrawing(this.element, this.getElementG(), { selected: value.selected, hovered: false });
+            this.getRef().setState(value.selected ? EdgeState.active : EdgeState['']);
+            console.log('state', this.getRef().getState());
+            this.edgeGenerator.processDrawing(this.element, this.getElementG(), { state: this.getRef().getState() });
             this.updateText();
         }
     }

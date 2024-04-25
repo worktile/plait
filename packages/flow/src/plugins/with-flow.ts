@@ -7,8 +7,8 @@ import {
     WithPluginOptions,
     PlaitPluginKey
 } from '@plait/core';
-import { FlowNodeComponent } from '../flow-node.component';
-import { FlowEdgeComponent } from '../flow-edge.component';
+import { FlowNodeComponent } from '../node.component';
+import { FlowEdgeComponent } from '../edge.component';
 import { isHitEdge } from '../utils/edge/is-hit-edge';
 import { FlowElement } from '../interfaces/element';
 import { FlowEdge } from '../interfaces/edge';
@@ -19,7 +19,7 @@ import { isHitNode } from '../utils/node/is-hit-node';
 import { withHandleBlink } from './with-handle-blink';
 import { FlowPluginOptions, FlowPluginKey } from '../interfaces/flow';
 import { TEXT_DEFAULT_HEIGHT } from '@plait/text';
-import { withHoverHighlight } from './with-hover-highlight';
+import { withHovering } from './with-hovering';
 
 export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
     const { drawElement, isRectangleHit, isHit, isMovable, getRectangle } = board;
@@ -98,5 +98,5 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
         edgeLabelOptions: { height: TEXT_DEFAULT_HEIGHT }
     });
 
-    return withHandleBlink(withFlowEdgeDnd(withEdgeCreate(withHoverHighlight(board))));
+    return withHandleBlink(withFlowEdgeDnd(withEdgeCreate(withHovering(board))));
 };

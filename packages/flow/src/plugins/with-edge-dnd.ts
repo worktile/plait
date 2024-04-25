@@ -105,7 +105,7 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
             } else {
                 const edgeRef = PlaitElement.getElementRef<EdgeElementRef>(activeElement);
                 const edgeGenerator = edgeRef.getGenerator<EdgeGenerator>(EdgeGenerator.key);
-                edgeGenerator.processDrawing(activeElement, PlaitElement.getElementG(activeElement), { selected: true, hovered: false });
+                edgeGenerator.processDrawing(activeElement, PlaitElement.getElementG(activeElement), { state: edgeRef.getState() });
             }
             destroyAllNodesHandle(board, flowNodeElements);
         }

@@ -11,8 +11,11 @@ export interface EdgeLabelOptions {
     maxWidth?: number;
 }
 
-export enum FlowRenderMode {
-    default = 'default',
-    active = 'active',
-    hover = 'hover'
+export enum EdgeState {
+    'active' = 'active',
+    'highlight' = 'highlight',
+    'hovering' = 'hovering',
+    '' = ''
 }
+
+export type NodeState = EdgeState;
