@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { ACTIVE_MOVING_CLASS_NAME, PlaitPluginElementContext, XYPosition, createG, getElementById, isSelectedElement } from '@plait/core';
+import { ACTIVE_MOVING_CLASS_NAME, PlaitPluginElementContext, getElementById } from '@plait/core';
 import { PlaitBoard, OnContextChanged } from '@plait/core';
 import { TextManage } from '@plait/text';
 import { FlowEdge } from './interfaces/edge';
 import { FlowBaseData } from './interfaces/element';
 import { PlaitFlowBoard } from './interfaces';
-import { EdgeLabelSpace, buildEdgePathPoints } from './utils';
-import { FlowRenderMode } from './interfaces/flow';
+import { EdgeLabelSpace } from './utils';
 import { FlowNode } from './interfaces/node';
 import { EdgeGenerator } from './generators/edge-generator';
 import { CommonPluginElement } from '@plait/common';
@@ -23,7 +22,8 @@ interface BoundedElements {
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true
 })
-export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends CommonPluginElement<FlowEdge<T>, PlaitFlowBoard, EdgeElementRef>
+export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
+    extends CommonPluginElement<FlowEdge<T>, PlaitFlowBoard, EdgeElementRef>
     implements OnInit, OnContextChanged<FlowEdge, PlaitBoard>, OnDestroy {
     edgeGenerator!: EdgeGenerator;
 
@@ -31,14 +31,10 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Co
 
     textManage!: TextManage;
 
-    // relatedNodeSelected = false;
-
-    // pathPoints!: XYPosition[];
-
     boundedElements!: BoundedElements;
 
     constructor(public render2: Renderer2, public ngZone: NgZone) {
-        const edgeElementRef = new EdgeElementRef()
+        const edgeElementRef = new EdgeElementRef();
         super(edgeElementRef);
     }
 
@@ -50,6 +46,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData> extends Co
         });
         this.edgeGenerator = new EdgeGenerator(this.board, this.viewContainerRef);
         this.getRef().addGenerator<EdgeGenerator>(EdgeGenerator.key, this.edgeGenerator);
+        this.getRef().initializeLabelTextManage(this.textManage);
     }
 
     ngOnInit(): void {

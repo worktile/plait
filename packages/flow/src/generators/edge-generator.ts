@@ -8,6 +8,7 @@ import { PlaitFlowBoard } from '../interfaces';
 import { ComponentRef, ViewContainerRef } from '@angular/core';
 import { FlowEdgeLabelIconBaseComponent } from '../core/edge-label-icon-base.component';
 import { LabelIconItem } from '../interfaces/icon';
+import { drawEdgeHandles } from '../draw/handle';
 
 export interface EdgeActiveData {
     selected: boolean;
@@ -37,6 +38,14 @@ export class EdgeGenerator extends Generator<FlowEdge, EdgeActiveData, Generator
         const edgeMarksG = drawEdgeMarkers(this.board, element, mode);
         edgeG.append(edgeRouteG);
         edgeG.append(...edgeMarksG);
+        if (mode === FlowRenderMode.active) {
+            const handles = drawEdgeHandles(this.board, element);
+            handles.forEach(item => {
+                item.classList.add('flow-handle');
+                item.setAttribute('stroke-linecap', 'round');
+            });
+            edgeG.append(...handles);
+        }
         if (FlowEdge.hasLabel(element)) {
             const textRectangle = EdgeLabelSpace.getLabelTextRectangle(this.board, element);
             const labelRectangle = EdgeLabelSpace.getLabelRect(textRectangle, element);

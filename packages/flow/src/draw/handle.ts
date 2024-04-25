@@ -26,7 +26,7 @@ export function drawNodeHandles(board: PlaitBoard, node: FlowNode) {
     });
 }
 
-export function drawEdgeHandles(board: PlaitBoard, roughSVG: RoughSVG, edge: FlowEdge) {
+export function drawEdgeHandles(board: PlaitBoard, edge: FlowEdge) {
     const handles = getEdgeHandles(board, edge);
     return handles.map(handle => {
         let { x, y } = normalizePoint(handle.node.points![0]);
@@ -40,6 +40,6 @@ export function drawEdgeHandles(board: PlaitBoard, roughSVG: RoughSVG, edge: Flo
             },
             handle
         );
-        return roughSVG.circle(position.x, position.y, HANDLE_DIAMETER, DEFAULT_HANDLE_STYLES);
+        return PlaitBoard.getRoughSVG(board).circle(position.x, position.y, HANDLE_DIAMETER, DEFAULT_HANDLE_STYLES);
     });
 }
