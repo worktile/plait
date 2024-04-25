@@ -32,6 +32,9 @@ import { OrEngine } from './flowchart/or';
 import { SummingJunctionEngine } from './flowchart/summing-junction';
 import { DocumentEngine } from './flowchart/document';
 import { MultiDocumentEngine } from './flowchart/multi-document';
+import { NoteCurlyLeftEngine } from './flowchart/note-curly-left';
+import { NoteCurlyRightEngine } from './flowchart/note-curly-right';
+import { NoteSquareEngine } from './flowchart/note-square';
 
 export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [BasicShapes.rectangle]: RectangleEngine,
@@ -71,7 +74,10 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [FlowchartSymbols.predefinedProcess]: PredefinedProcessEngine,
     [FlowchartSymbols.offPage]: OffPageEngine,
     [FlowchartSymbols.document]: DocumentEngine,
-    [FlowchartSymbols.multiDocument]: MultiDocumentEngine
+    [FlowchartSymbols.multiDocument]: MultiDocumentEngine,
+    [FlowchartSymbols.noteCurlyLeft]: NoteCurlyLeftEngine,
+    [FlowchartSymbols.noteCurlyRight]: NoteCurlyRightEngine,
+    [FlowchartSymbols.noteSquare]: NoteSquareEngine
 };
 
 export const getEngine = (shape: GeometryShapes) => {
