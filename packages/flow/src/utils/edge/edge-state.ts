@@ -1,7 +1,5 @@
 import { PlaitBoard, PlaitElement, isSelectedElement } from '@plait/core';
 import { getEdgesByNodeId } from './get-edges-by-node';
-import { FlowRenderMode } from '../../interfaces/flow';
-import { FlowEdgeComponent } from '../../flow-edge.component';
 import { PlaitCommonElementRef } from '@plait/common';
 import { EdgeGenerator } from '../../generators/edge-generator';
 import { FlowEdge } from '../../interfaces/edge';

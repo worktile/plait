@@ -40,11 +40,21 @@ export function isFlowEdgeElement(value: FlowElement): value is FlowEdge {
     return value.type === FlowElementType.edge;
 }
 
-export const hasIcon = (value: FlowEdge) => {
+export const hasLabelIcon = (value: FlowEdge) => {
     return value.data?.icon;
+};
+
+export const hasLabelText = (value: FlowEdge) => {
+    return value.data?.text;
+};
+
+export const hasLabel = (value: FlowEdge) => {
+    return value.data?.text;
 };
 
 export const FlowEdge = {
     isFlowEdgeElement,
-    hasIcon
+    hasLabelIcon,
+    hasLabelText,
+    hasLabel
 };

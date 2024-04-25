@@ -23,7 +23,7 @@ export const drawEdgeLabelShape = (board: PlaitBoard, edge: FlowEdge, textBackgr
 
 export const drawEdgeMarkers = (board: PlaitBoard, edge: FlowEdge, mode: FlowRenderMode) => {
     const roughSVG = PlaitBoard.getRoughSVG(board);
-    const pathPoints = getEdgePoints(board, edge);
+    const pathPoints = [...getEdgePoints(board, edge)];
     const edgeStyles = getEdgeStyle(edge, mode);
     const edgeMarkers: SVGGElement[] = [];
     if (edge.target.marker) {

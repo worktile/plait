@@ -11,6 +11,7 @@ import { FlowEdgeComponent } from '../../flow-edge.component';
 import { getCurvePoints } from './get-curve-points';
 import { getStraightPoints } from './get-straight-points';
 import { getHandleXYPosition } from '../handle/get-handle-position';
+import { EdgeElementRef } from '../../core/edge-ref';
 
 interface GetPointsParams {
     sourceRectangle: RectangleClient;
@@ -134,8 +135,8 @@ export const buildEdgePathPoints = (board: PlaitBoard, edge: FlowEdge) => {
 };
 
 export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
-    const component = PlaitElement.getComponent(edge) as FlowEdgeComponent;
-    return component?.pathPoints ? [...component?.pathPoints] : buildEdgePathPoints(board, edge);
+    const edgeRef = PlaitElement.getElementRef<EdgeElementRef>(edge);
+    return edgeRef.getPoints();
 };
 
 export const getEdgeStyle = (edge: FlowEdge, mode: FlowRenderMode = FlowRenderMode.default) => {

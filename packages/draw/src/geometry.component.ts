@@ -42,6 +42,10 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         return this.getTextManages()[0];
     }
 
+    constructor() {
+        super();
+    }
+
     initializeGenerator() {
         this.activeGenerator = new ActiveGenerator<PlaitGeometry>(this.board, {
             getStrokeWidth: () => {
