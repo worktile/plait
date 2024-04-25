@@ -69,7 +69,6 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
         }
         if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected || isBoundedElementsChanged)) {
             this.getRef().setState(value.selected ? EdgeState.active : EdgeState['']);
-            console.log('state', this.getRef().getState());
             this.edgeGenerator.processDrawing(this.element, this.getElementG(), { state: this.getRef().getState() });
             this.updateText();
         }
