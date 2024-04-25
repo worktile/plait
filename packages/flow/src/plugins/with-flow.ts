@@ -36,8 +36,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
 
     board.isRectangleHit = (element, range) => {
         if (!board.options.readonly) {
-            const elementComponent = PlaitElement.getComponent(element) as FlowNodeComponent | FlowEdgeComponent;
-            if (FlowElement.isFlowElement(element) && elementComponent && board.selection) {
+            if (FlowElement.isFlowElement(element) && PlaitElement.hasMounted(element) && board.selection) {
                 if (FlowNode.isFlowNodeElement(element)) {
                     return isHitNode(board, element, [range.anchor, range.focus]);
                 }
@@ -51,8 +50,7 @@ export const withFlow: PlaitPlugin = (board: PlaitBoard) => {
 
     board.isHit = (element, point) => {
         if (!board.options.readonly) {
-            const elementComponent = PlaitElement.getComponent(element) as FlowNodeComponent | FlowEdgeComponent;
-            if (FlowElement.isFlowElement(element) && elementComponent) {
+            if (FlowElement.isFlowElement(element) && PlaitElement.hasMounted(element)) {
                 if (FlowNode.isFlowNodeElement(element)) {
                     return isHitNode(board, element, [point, point]);
                 }

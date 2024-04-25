@@ -32,7 +32,7 @@ export class BasicFlowComponent implements OnInit {
     activeKey = 'default';
 
     options: PlaitBoardOptions = {
-        readonly: false,
+        readonly: true,
         hideScrollbar: false,
         disabledScrollOnNonFocus: false
     };

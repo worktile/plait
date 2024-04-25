@@ -1,5 +1,4 @@
 import { PlaitBoard, PlaitPlugin, PlaitElement, drawCircle, toHostPoint, toViewBoxPoint } from '@plait/core';
-import { FlowNodeComponent } from '../node.component';
 import { HitNodeHandle, getHitNodeHandle } from '../utils/handle/node';
 import { addHoverHandleInfo, deleteHoverHandleInfo } from '../utils/handle/hover-handle';
 import { DEFAULT_HANDLE_STYLES, HANDLE_BUFFER, HANDLE_DIAMETER } from '../constants/handle';
@@ -21,7 +20,6 @@ export const withHandleBlink: PlaitPlugin = (board: PlaitBoard) => {
             if (isEdgeDragging(board) || getCreateEdgeInfo(board)) {
                 if (hoveredHandle && previousHoveredHandle?.handlePoint.toString() !== hoveredHandle.handlePoint.toString()) {
                     previousHoveredHandle = hoveredHandle;
-                    const flowNodeComponent = PlaitElement.getComponent(hoveredHandle.node) as FlowNodeComponent;
                     activeHandleElement?.remove();
                     activeHandleElement = drawCircle(
                         PlaitBoard.getRoughSVG(board),
@@ -34,7 +32,7 @@ export const withHandleBlink: PlaitPlugin = (board: PlaitBoard) => {
                         }
                     );
                     activeHandleElement?.setAttribute('stroke-linecap', 'round');
-                    flowNodeComponent.getElementG().append(activeHandleElement);
+                    PlaitElement.getElementG(hoveredHandle.node).append(activeHandleElement);
                 }
                 if (previousHoveredHandle && !hoveredHandle) {
                     activeHandleElement?.remove();
