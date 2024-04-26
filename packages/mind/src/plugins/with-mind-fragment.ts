@@ -57,9 +57,10 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
     board.buildFragment = (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
-        type: 'copy' | 'cut'
+        type: 'copy' | 'cut',
+        elements?: PlaitElement[]
     ) => {
-        const targetMindElements = getSelectedMindElements(board);
+        const targetMindElements = getSelectedMindElements(board, elements);
         const firstLevelElements = getFirstLevelElement(targetMindElements);
         if (firstLevelElements.length) {
             const elements = buildClipboardData(board, firstLevelElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
@@ -74,7 +75,7 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
                 });
             }
         }
-        return buildFragment(clipboardContext, rectangle, type);
+        return buildFragment(clipboardContext, rectangle, type, elements);
     };
 
     board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point) => {
