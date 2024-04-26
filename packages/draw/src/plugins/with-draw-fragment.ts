@@ -51,9 +51,9 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
         type: 'copy' | 'cut',
-        elements?: PlaitElement[]
+        originData?: PlaitElement[]
     ) => {
-        const targetDrawElements = getSelectedDrawElements(board, elements);
+        const targetDrawElements = getSelectedDrawElements(board, originData);
         let boundLineElements: PlaitLine[] = [];
         if (targetDrawElements.length) {
             if (type === 'cut') {
@@ -74,7 +74,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                 });
             }
         }
-        return buildFragment(clipboardContext, rectangle, type, elements);
+        return buildFragment(clipboardContext, rectangle, type, originData);
     };
 
     board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point) => {

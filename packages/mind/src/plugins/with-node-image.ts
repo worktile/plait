@@ -90,13 +90,13 @@ export const withNodeImage = (board: PlaitBoard) => {
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
         type: 'copy' | 'cut',
-        elements?: PlaitElement[]
+        originData?: PlaitElement[]
     ) => {
         const selectedImageElement = getElementOfFocusedImage(board) as MindElement<ImageData>;
         if (selectedImageElement) {
             clipboardContext = createClipboardContext(WritableClipboardType.medias, [selectedImageElement.data.image], '');
         }
-        return buildFragment(clipboardContext, rectangle, type, elements);
+        return buildFragment(clipboardContext, rectangle, type, originData);
     };
 
     board.deleteFragment = (elements: PlaitElement[]) => {

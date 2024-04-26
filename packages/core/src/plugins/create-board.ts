@@ -100,7 +100,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
             clipboardContext: WritableClipboardContext | null,
             rectangle: RectangleClient | null,
             type: 'copy' | 'cut',
-            elements?: PlaitElement[]
+            originData?: PlaitElement[]
         ) => clipboardContext,
         insertFragment: () => {},
         deleteFragment: (elements: PlaitElement[]) => {
