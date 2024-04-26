@@ -23,7 +23,9 @@ import {
     getSelectionAngle,
     duplicateElements,
     drawRectangle,
-    depthFirstRecursion
+    depthFirstRecursion,
+    getAngleByElement,
+    setAngleForG
 } from '../utils';
 import { getSnapMovingRef } from '../utils/snap/snap-moving';
 import { PlaitGroupElement, PlaitPointerType, RectangleClient, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
@@ -44,14 +46,12 @@ export function withMoving(board: PlaitBoard) {
     let selectedTargetElements: PlaitElement[] | null = null;
     let hitTargetElement: PlaitElement | undefined = undefined;
     let isHitSelectedTarget: boolean | undefined = undefined;
-    let isAltKeyDown: boolean = false;
     let pendingNodesG: SVGGElement | null = null;
 
     board.globalKeyDown = (event: KeyboardEvent) => {
         if (!PlaitBoard.isReadonly(board)) {
             if (isKeyHotkey('option', event)) {
                 event.preventDefault();
-                isAltKeyDown = true;
                 if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
                     pendingNodesG = drawPendingNodesG(board, activeElements, offsetX, offsetY);
                     pendingNodesG && PlaitBoard.getElementActiveHost(board).append(pendingNodesG);
@@ -63,14 +63,13 @@ export function withMoving(board: PlaitBoard) {
 
     board.keyUp = (event: KeyboardEvent) => {
         if (!PlaitBoard.isReadonly(board)) {
-            if (isAltKeyDown && pendingNodesG && startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
+            if (event.altKey && pendingNodesG && startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
                 event.preventDefault();
                 const currentElements = updatePoints(board, activeElements, offsetX, offsetY);
                 PlaitBoard.getBoardContainer(board).classList.add('element-moving');
                 cacheMovingElements(board, currentElements as PlaitElement[]);
             }
         }
-        isAltKeyDown = false;
         pendingNodesG?.remove();
         keyUp(event);
     };
@@ -150,7 +149,7 @@ export function withMoving(board: PlaitBoard) {
                     snapG.classList.add(ACTIVE_MOVING_CLASS_NAME);
                     PlaitBoard.getElementActiveHost(board).append(snapG);
                     handleTouchTarget(board);
-                    if (isAltKeyDown) {
+                    if (event.altKey) {
                         pendingNodesG = drawPendingNodesG(board, activeElements, offsetX, offsetY);
                         pendingNodesG && PlaitBoard.getElementActiveHost(board).append(pendingNodesG);
                     } else {
@@ -179,7 +178,7 @@ export function withMoving(board: PlaitBoard) {
     };
 
     board.globalPointerUp = event => {
-        if (isAltKeyDown && activeElements.length) {
+        if (event.altKey && activeElements.length) {
             const validElements = getValidElements(board, activeElements);
             const rectangle = getRectangleByElements(board, activeElements, false);
             duplicateElements(board, rectangle, [rectangle.x + offsetX, rectangle.y + offsetY], validElements);
@@ -324,6 +323,8 @@ export function drawPendingNodesG(board: PlaitBoard, activeElements: PlaitElemen
                 pendingNodesG = createG();
                 pendingNodesG.classList.add(ACTIVE_MOVING_CLASS_NAME);
             }
+            const angle = getAngleByElement(item);
+            angle && setAngleForG(movingG, RectangleClient.getCenterPoint(rectangle), angle);
             pendingNodesG.append(movingG);
         }
     });

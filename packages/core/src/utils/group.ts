@@ -1,7 +1,7 @@
 import { ACTIVE_STROKE_WIDTH } from '../constants';
 import { Path, PlaitBoard, PlaitElement, PlaitGroup, PlaitGroupElement, RectangleClient, SELECTION_BORDER_COLOR } from '../interfaces';
-import { getSelectionAngle } from './angle';
-import { createG, setAngleForG } from './dom';
+import { getSelectionAngle, setAngleForG } from './angle';
+import { createG } from './dom';
 import { drawRectangle } from './drawing/rectangle';
 import { getRectangleByElements } from './element';
 import { idCreator } from './id-creator';
