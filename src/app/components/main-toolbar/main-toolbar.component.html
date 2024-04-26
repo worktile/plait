@@ -253,6 +253,30 @@
 
         <a
             class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.database) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.database)"
+        >
+            <ng-template [ngTemplateOutlet]="database"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.hardDisk) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.hardDisk)"
+        >
+            <ng-template [ngTemplateOutlet]="hardDisk"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
+            [ngClass]="{ active: isPointer(FlowchartSymbols.internalStorage) }"
+            (mousedown)="setPointer($event, FlowchartSymbols.internalStorage)"
+        >
+            <ng-template [ngTemplateOutlet]="internalStorage"></ng-template>
+        </a>
+
+        <a
+            class="action-item"
             [ngClass]="{ active: isPointer(FlowchartSymbols.manualLoop) }"
             (mousedown)="setPointer($event, FlowchartSymbols.manualLoop)"
         >
@@ -1280,6 +1304,65 @@
                 id="形状结合"
                 fill="#999999"
                 transform="translate(8.000000, 8.000000) rotate(-45.000000) translate(-8.000000, -8.000000) "
+            ></path>
+        </g>
+    </svg>
+</ng-template>
+
+<ng-template #database>
+    <svg
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/流程图/数据库</title>
+        <g id="1.Base基础/1.icon图标/11.editor/流程图/数据库" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M8,7 C6.02789825,7 4.27801812,6.52427806 3.18434482,5.7898268 L3.19939982,5.79989298 L3.2,12.5 C3.2,12.490409 3.21112777,12.5111492 3.26486536,12.5683815 L3.31364979,12.6182443 C3.4943454,12.7962495 3.80386136,12.9871428 4.21889777,13.1600746 C5.18107783,13.560983 6.537317,13.8 8,13.8 C9.462683,13.8 10.8189222,13.560983 11.7811022,13.1600746 C12.1961386,12.9871428 12.5056546,12.7962495 12.6863502,12.6182443 L12.7974216,12.4985901 L12.8016064,5.79922292 L12.8405635,5.77297764 C11.7486602,6.51699411 9.98714219,7 8,7 Z M8,2.2 C6.56476739,2.2 5.23596358,2.48101831 4.29401563,2.95199229 C3.54054713,3.32872653 3.2,3.73129846 3.2,4 C3.2,4.26870154 3.54054713,4.67127347 4.29401563,5.04800771 C5.23596358,5.51898169 6.56476739,5.8 8,5.8 C9.43523261,5.8 10.7640364,5.51898169 11.7059844,5.04800771 C12.4594529,4.67127347 12.8,4.26870154 12.8,4 C12.8,3.73129846 12.4594529,3.32872653 11.7059844,2.95199229 C10.7640364,2.48101831 9.43523261,2.2 8,2.2 Z M8,1 C11.221661,1 13.8502775,2.26956292 13.9938259,3.86267705 L14,4 L14,12.5 C14,13.8807119 11.3137085,15 8,15 C4.6862915,15 2,13.8807119 2,12.5 L2,4 C2,2.34314575 4.6862915,1 8,1 Z"
+                id="形状结合"
+                fill="#999999"
+            ></path>
+        </g>
+    </svg>
+</ng-template>
+<ng-template #hardDisk>
+    <svg
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/硬盘</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/硬盘" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M8,6.75 C6.0194756,6.75 4.26307505,6.27020587 3.17036786,5.53040236 L3.20040641,5.5505629 L3.207,11.851 L3.21820492,11.9299973 C3.42153975,12.9471753 5.29826662,13.9788339 7.74491109,14.046481 L8,14.05 C10.5705811,14.05 12.5744241,12.9816584 12.7892888,11.9254773 L12.8,11.847 L12.8016064,5.54922292 L12.8405635,5.52297764 C11.7486602,6.26699411 9.98714219,6.75 8,6.75 Z M8,1.95 C6.56476739,1.95 5.23596358,2.23101831 4.29401563,2.70199229 C3.54054713,3.07872653 3.2,3.48129846 3.2,3.75 C3.2,4.01870154 3.54054713,4.42127347 4.29401563,4.79800771 C5.23596358,5.26898169 6.56476739,5.55 8,5.55 C9.43523261,5.55 10.7640364,5.26898169 11.7059844,4.79800771 C12.4594529,4.42127347 12.8,4.01870154 12.8,3.75 C12.8,3.48129846 12.4594529,3.07872653 11.7059844,2.70199229 C10.7640364,2.23101831 9.43523261,1.95 8,1.95 Z M8,0.75 C11.221661,0.75 13.8502775,2.01956292 13.9938259,3.61267705 L14,3.75 L14,11.926792 C13.8345312,13.7776996 11.2120149,15.25 8,15.25 C4.78798508,15.25 2.16546878,13.7776996 2.00753034,11.926895 L2,3.75 C2,2.09314575 4.6862915,0.75 8,0.75 Z"
+                id="形状结合"
+                fill="#999999"
+                transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000) "
+            ></path>
+        </g>
+    </svg>
+</ng-template>
+<ng-template #internalStorage>
+    <svg
+        width="16px"
+        height="16px"
+        viewBox="0 0 16 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        <title>1.Base基础/1.icon图标/11.editor/ 流程图/内部存储</title>
+        <g id="1.Base基础/1.icon图标/11.editor/-流程图/内部存储" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path
+                d="M14.5,1 C14.7761424,1 15,1.22385763 15,1.5 L15,14.5 C15,14.7761424 14.7761424,15 14.5,15 L1.5,15 C1.22385763,15 1,14.7761424 1,14.5 L1,1.5 C1,1.22385763 1.22385763,1 1.5,1 L14.5,1 Z M4.499,5.699 L2.2,5.699 L2.2,13.8 L4.499,13.8 L4.499,5.699 Z M13.8,5.699 L5.699,5.699 L5.699,13.8 L13.8,13.8 L13.8,5.699 Z M4.499,2.2 L2.2,2.2 L2.2,4.499 L4.499,4.499 L4.499,2.2 Z M13.8,2.2 L5.699,2.2 L5.699,4.499 L13.8,4.499 L13.8,2.2 Z"
+                id="形状结合"
+                fill="#999999"
             ></path>
         </g>
     </svg>

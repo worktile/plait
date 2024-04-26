@@ -51,6 +51,16 @@ export const DefaultFlowchartProperty = {
     height: 60
 };
 
+export const DefaultDataBaseProperty = {
+    width: 70,
+    height: 80
+};
+
+export const DefaultInternalStorageProperty = {
+    width: 80,
+    height: 80
+};
+
 export const DefaultDecisionProperty = {
     width: 140,
     height: 70
@@ -98,7 +108,10 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.predefinedProcess]: DefaultFlowchartProperty,
     [FlowchartSymbols.offPage]: DefaultFlowchartProperty,
     [FlowchartSymbols.document]: DefaultDocumentProperty,
-    [FlowchartSymbols.multiDocument]: DefaultMultiDocumentProperty
+    [FlowchartSymbols.multiDocument]: DefaultMultiDocumentProperty,
+    [FlowchartSymbols.database]: DefaultDataBaseProperty,
+    [FlowchartSymbols.hardDisk]: DefaultFlowchartProperty,
+    [FlowchartSymbols.internalStorage]: DefaultInternalStorageProperty
 };
 
 export const LINE_HIT_GEOMETRY_BUFFER = 10;
