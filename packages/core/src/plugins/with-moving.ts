@@ -1,6 +1,6 @@
 import { PlaitBoard } from '../interfaces/board';
 import { isInPlaitBoard } from '../utils/board';
-import { isMainPointer } from '../utils/dom/common';
+import { createG, isMainPointer } from '../utils/dom/common';
 import { Point } from '../interfaces/point';
 import { Transforms } from '../transforms';
 import { PlaitElement } from '../interfaces/element';
@@ -20,15 +20,21 @@ import {
     hotkeys,
     getElementsInGroupByElement,
     getRectangleByAngle,
-    getSelectionAngle
+    getSelectionAngle,
+    duplicateElements,
+    drawRectangle,
+    depthFirstRecursion,
+    getAngleByElement,
+    setAngleForG
 } from '../utils';
 import { getSnapMovingRef } from '../utils/snap/snap-moving';
-import { PlaitGroupElement, PlaitPointerType, RectangleClient } from '../interfaces';
+import { PlaitGroupElement, PlaitPointerType, RectangleClient, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
 import { ACTIVE_MOVING_CLASS_NAME, PRESS_AND_MOVE_BUFFER } from '../constants';
 import { addSelectionWithTemporaryElements } from '../transforms/selection';
+import { isKeyHotkey } from 'is-hotkey';
 
 export function withMoving(board: PlaitBoard) {
-    const { pointerDown, pointerMove, globalPointerUp, globalPointerMove } = board;
+    const { pointerDown, pointerMove, globalPointerUp, globalPointerMove, globalKeyDown, keyUp } = board;
 
     let offsetX = 0;
     let offsetY = 0;
@@ -40,6 +46,33 @@ export function withMoving(board: PlaitBoard) {
     let selectedTargetElements: PlaitElement[] | null = null;
     let hitTargetElement: PlaitElement | undefined = undefined;
     let isHitSelectedTarget: boolean | undefined = undefined;
+    let pendingNodesG: SVGGElement | null = null;
+
+    board.globalKeyDown = (event: KeyboardEvent) => {
+        if (!PlaitBoard.isReadonly(board)) {
+            if (isKeyHotkey('option', event)) {
+                event.preventDefault();
+                if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
+                    pendingNodesG = drawPendingNodesG(board, activeElements, offsetX, offsetY);
+                    pendingNodesG && PlaitBoard.getElementActiveHost(board).append(pendingNodesG);
+                }
+            }
+        }
+        globalKeyDown(event);
+    };
+
+    board.keyUp = (event: KeyboardEvent) => {
+        if (!PlaitBoard.isReadonly(board)) {
+            if (event.altKey && pendingNodesG && startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
+                event.preventDefault();
+                const currentElements = updatePoints(board, activeElements, offsetX, offsetY);
+                PlaitBoard.getBoardContainer(board).classList.add('element-moving');
+                cacheMovingElements(board, currentElements as PlaitElement[]);
+            }
+        }
+        pendingNodesG?.remove();
+        keyUp(event);
+    };
 
     board.pointerDown = (event: PointerEvent) => {
         if (
@@ -87,6 +120,7 @@ export function withMoving(board: PlaitBoard) {
                 isPreventDefault = true;
             }
             snapG?.remove();
+            pendingNodesG?.remove();
             const endPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             offsetX = endPoint[0] - startPoint[0];
             offsetY = endPoint[1] - startPoint[1];
@@ -107,7 +141,6 @@ export function withMoving(board: PlaitBoard) {
                         x: activeElementsRectangle.x + offsetX,
                         y: activeElementsRectangle.y + offsetY
                     };
-
                     const activeRectangle = getRectangleByAngle(newRectangle, getSelectionAngle(activeElements)) || newRectangle;
                     const ref = getSnapMovingRef(board, activeRectangle, activeElements);
                     offsetX += ref.deltaX;
@@ -116,9 +149,14 @@ export function withMoving(board: PlaitBoard) {
                     snapG.classList.add(ACTIVE_MOVING_CLASS_NAME);
                     PlaitBoard.getElementActiveHost(board).append(snapG);
                     handleTouchTarget(board);
-                    const currentElements = updatePoints(board, activeElements, offsetX, offsetY);
-                    PlaitBoard.getBoardContainer(board).classList.add('element-moving');
-                    cacheMovingElements(board, currentElements as PlaitElement[]);
+                    if (event.altKey) {
+                        pendingNodesG = drawPendingNodesG(board, activeElements, offsetX, offsetY);
+                        pendingNodesG && PlaitBoard.getElementActiveHost(board).append(pendingNodesG);
+                    } else {
+                        const currentElements = updatePoints(board, activeElements, offsetX, offsetY);
+                        PlaitBoard.getBoardContainer(board).classList.add('element-moving');
+                        cacheMovingElements(board, currentElements as PlaitElement[]);
+                    }
                 });
             }
         }
@@ -140,6 +178,11 @@ export function withMoving(board: PlaitBoard) {
     };
 
     board.globalPointerUp = event => {
+        if (event.altKey && activeElements.length) {
+            const validElements = getValidElements(board, activeElements);
+            const rectangle = getRectangleByElements(board, validElements, false);
+            duplicateElements(board, validElements, [rectangle.x + offsetX, rectangle.y + offsetY]);
+        }
         isPreventDefault = false;
         hitTargetElement = undefined;
         selectedTargetElements = null;
@@ -153,6 +196,7 @@ export function withMoving(board: PlaitBoard) {
 
     function cancelMove(board: PlaitBoard) {
         snapG?.remove();
+        pendingNodesG?.remove();
         startPoint = null;
         activeElementsRectangle = null;
         offsetX = 0;
@@ -221,10 +265,15 @@ export function getSelectedTargetElements(board: PlaitBoard) {
     return targetElements;
 }
 
-export function updatePoints(board: PlaitBoard, targetElements: PlaitElement[], offsetX: number, offsetY: number) {
-    const validElements = targetElements.filter(
+export function getValidElements(board: PlaitBoard, activeElements: PlaitElement[]) {
+    const validElements = [...activeElements].filter(
         element => !PlaitGroupElement.isGroup(element) && board.children.findIndex(item => item.id === element.id) > -1
     );
+    return validElements;
+}
+
+export function updatePoints(board: PlaitBoard, activeElements: PlaitElement[], offsetX: number, offsetY: number) {
+    const validElements = getValidElements(board, activeElements);
     const currentElements = validElements.map(element => {
         const points = element.points || [];
         const newPoints = points.map(p => [p[0] + offsetX, p[1] + offsetY]) as Point[];
@@ -240,4 +289,44 @@ export function updatePoints(board: PlaitBoard, targetElements: PlaitElement[], 
         return PlaitNode.get(board, [index]);
     });
     return currentElements;
+}
+
+export function drawPendingNodesG(board: PlaitBoard, activeElements: PlaitElement[], offsetX: number, offsetY: number) {
+    let pendingNodesG: SVGElement | null = null;
+    const elements: PlaitElement[] = [];
+    const validElements = getValidElements(board, activeElements);
+    validElements.forEach(element => {
+        depthFirstRecursion(
+            element,
+            node => {
+                elements.push(node);
+            },
+            () => true
+        );
+    });
+    elements.forEach(item => {
+        let rectangle = board.getRectangle(item);
+        if (rectangle) {
+            rectangle = {
+                x: rectangle.x + offsetX,
+                y: rectangle.y + offsetY,
+                width: rectangle.width,
+                height: rectangle.height
+            };
+            const movingG = drawRectangle(board, rectangle!, {
+                stroke: SELECTION_BORDER_COLOR,
+                strokeWidth: 1,
+                fill: SELECTION_FILL_COLOR,
+                fillStyle: 'solid'
+            });
+            if (!pendingNodesG) {
+                pendingNodesG = createG();
+                pendingNodesG.classList.add(ACTIVE_MOVING_CLASS_NAME);
+            }
+            const angle = getAngleByElement(item);
+            angle && setAngleForG(movingG, RectangleClient.getCenterPoint(rectangle), angle);
+            pendingNodesG.append(movingG);
+        }
+    });
+    return pendingNodesG;
 }

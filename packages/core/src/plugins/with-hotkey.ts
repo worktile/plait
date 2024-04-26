@@ -1,7 +1,7 @@
 import { isHotkey, isKeyHotkey } from 'is-hotkey';
-import { Ancestor, PlaitBoard, PlaitElement, PlaitPluginKey } from '../interfaces';
+import { Ancestor, PlaitBoard, PlaitElement, PlaitPluginKey, Point } from '../interfaces';
 import { BoardTransforms, Transforms } from '../transforms';
-import { deleteFragment, depthFirstRecursion, duplicateElements, getSelectedElements, hotkeys } from '../utils';
+import { deleteFragment, depthFirstRecursion, duplicateElements, getRectangleByElements, getSelectedElements, hotkeys } from '../utils';
 import { PlaitOptionsBoard } from './with-options';
 import { WithPluginOptions } from './with-selection';
 
@@ -60,7 +60,7 @@ export const withHotkey = (board: PlaitBoard) => {
         if (!PlaitBoard.isReadonly(board) && selectedElements.length > 0) {
             if (isKeyHotkey('mod+d', event)) {
                 event.preventDefault();
-                duplicateElements(board, selectedElements);
+                duplicateElements(board);
                 return;
             }
         }

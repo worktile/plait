@@ -74,7 +74,7 @@ export function withGroup(board: PlaitBoard) {
     };
 
     board.getRelatedFragment = (elements: PlaitElement[], originData?: PlaitElement[]) => {
-        const groups = getSelectedGroups(board, originData);
+        const groups = getSelectedGroups(board, elements, originData);
         return getRelatedFragment([...elements, ...groups], originData);
     };
 

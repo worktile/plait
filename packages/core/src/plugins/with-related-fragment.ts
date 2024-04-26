@@ -1,10 +1,5 @@
-import { PlaitBoard, RectangleClient } from '../interfaces';
-import {
-    WritableClipboardContext,
-    createClipboardContext,
-    WritableClipboardType,
-    addClipboardContext
-} from '../utils';
+import { PlaitBoard, PlaitElement, RectangleClient } from '../interfaces';
+import { WritableClipboardContext, createClipboardContext, WritableClipboardType, addClipboardContext } from '../utils';
 
 export function withRelatedFragment(board: PlaitBoard) {
     const { buildFragment } = board;
@@ -12,19 +7,27 @@ export function withRelatedFragment(board: PlaitBoard) {
     board.buildFragment = (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
-        type: 'copy' | 'cut'
+        type: 'copy' | 'cut',
+        originData?: PlaitElement[]
     ) => {
-        const relatedFragment = board.getRelatedFragment([]);
-        if (!clipboardContext) {
-            clipboardContext = createClipboardContext(WritableClipboardType.elements, relatedFragment, '');
-        } else {
-            clipboardContext = addClipboardContext(clipboardContext, {
-                text: '',
-                type: WritableClipboardType.elements,
-                elements: relatedFragment
-            });
+        let relatedFragment = board.getRelatedFragment(originData || []);
+        if (relatedFragment) {
+            if (originData?.length) {
+                relatedFragment = relatedFragment.filter(item => !originData.map(element => element.id).includes(item.id));
+            }
+            if (relatedFragment.length) {
+                if (!clipboardContext) {
+                    clipboardContext = createClipboardContext(WritableClipboardType.elements, relatedFragment, '');
+                } else {
+                    clipboardContext = addClipboardContext(clipboardContext, {
+                        text: '',
+                        type: WritableClipboardType.elements,
+                        elements: relatedFragment
+                    });
+                }
+            }
         }
-        return buildFragment(clipboardContext, rectangle, type);
+        return buildFragment(clipboardContext, rectangle, type, originData);
     };
 
     return board;

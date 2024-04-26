@@ -1,10 +1,10 @@
-import { PlaitBoard, getSelectedElements } from '@plait/core';
+import { PlaitBoard, PlaitElement, getSelectedElements } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { PlaitImage } from '../interfaces/image';
 
-export const getSelectedDrawElements = (board: PlaitBoard) => {
-    const selectedElements = getSelectedElements(board).filter(value => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
-    return selectedElements;
+export const getSelectedDrawElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
+    const selectedElements = elements?.length ? elements : getSelectedElements(board);
+    return selectedElements.filter(value => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
 };
 
 export const getSelectedGeometryElements = (board: PlaitBoard) => {
