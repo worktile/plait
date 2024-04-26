@@ -238,9 +238,9 @@ export const canAddGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
     return false;
 };
 
-export const canRemoveGroup = (board: PlaitBoard, elements?: PlaitElement[]) => {
-    const selectedGroups = getHighestSelectedGroups(board, elements);
-    const selectedElements = elements || getSelectedElements(board);
+export const canRemoveGroup = (board: PlaitBoard, elements?: PlaitElement[], originElements?: PlaitElement[]) => {
+    const selectedGroups = getHighestSelectedGroups(board, elements, originElements);
+    const selectedElements = elements?.length ? elements : getSelectedElements(board);
     return selectedElements.length > 0 && selectedGroups.length > 0;
 };
 

@@ -196,7 +196,7 @@ const group2: PlaitElement[] = [
 describe('group', () => {
     let board: PlaitBoard;
     beforeEach(() => {
-        board = createTestingBoard([], []);
+        board = createTestingBoard([], [...children, ...group1, ...group2]);
     });
 
     describe('getHighestSelectedElements', () => {
