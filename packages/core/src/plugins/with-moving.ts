@@ -32,7 +32,7 @@ import { addSelectionWithTemporaryElements } from '../transforms/selection';
 import { isKeyHotkey } from 'is-hotkey';
 
 export function withMoving(board: PlaitBoard) {
-    const { pointerDown, pointerMove, globalPointerUp, globalPointerMove, globalKeyDown, keyUp, pointerUp } = board;
+    const { pointerDown, pointerMove, globalPointerUp, globalPointerMove, globalKeyDown, keyUp } = board;
 
     let offsetX = 0;
     let offsetY = 0;
@@ -50,6 +50,7 @@ export function withMoving(board: PlaitBoard) {
     board.globalKeyDown = (event: KeyboardEvent) => {
         if (!PlaitBoard.isReadonly(board)) {
             if (isKeyHotkey('option', event)) {
+                event.preventDefault();
                 isAltKeyDown = true;
                 if (startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
                     pendingNodesG = drawPendingNodesG(board, activeElements, offsetX, offsetY);
@@ -63,6 +64,7 @@ export function withMoving(board: PlaitBoard) {
     board.keyUp = (event: KeyboardEvent) => {
         if (!PlaitBoard.isReadonly(board)) {
             if (isAltKeyDown && pendingNodesG && startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
+                event.preventDefault();
                 const currentElements = updatePoints(board, activeElements, offsetX, offsetY);
                 PlaitBoard.getBoardContainer(board).classList.add('element-moving');
                 cacheMovingElements(board, currentElements as PlaitElement[]);
@@ -176,17 +178,12 @@ export function withMoving(board: PlaitBoard) {
         globalPointerMove(event);
     };
 
-    board.pointerUp = (event: PointerEvent) => {
+    board.globalPointerUp = event => {
         if (isAltKeyDown && activeElements.length) {
             const validElements = getValidElements(board, activeElements);
             const rectangle = getRectangleByElements(board, activeElements, false);
             duplicateElements(board, rectangle, [rectangle.x + offsetX, rectangle.y + offsetY], validElements);
-            return;
         }
-        pointerUp(event);
-    };
-
-    board.globalPointerUp = event => {
         isPreventDefault = false;
         hitTargetElement = undefined;
         selectedTargetElements = null;
@@ -327,7 +324,7 @@ export function drawPendingNodesG(board: PlaitBoard, activeElements: PlaitElemen
                 pendingNodesG = createG();
                 pendingNodesG.classList.add(ACTIVE_MOVING_CLASS_NAME);
             }
-            pendingNodesG!.append(movingG);
+            pendingNodesG.append(movingG);
         }
     });
     return pendingNodesG;
