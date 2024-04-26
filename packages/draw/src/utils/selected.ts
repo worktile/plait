@@ -3,7 +3,7 @@ import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { PlaitImage } from '../interfaces/image';
 
 export const getSelectedDrawElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
-    const selectedElements = elements || getSelectedElements(board);
+    const selectedElements = elements?.length ? elements : getSelectedElements(board);
     return selectedElements.filter(value => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
 };
 

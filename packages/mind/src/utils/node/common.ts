@@ -12,6 +12,6 @@ export function editTopic(element: MindElement) {
 }
 
 export const getSelectedMindElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
-    const selectedElements = elements || getSelectedElements(board);
+    const selectedElements = elements?.length ? elements : getSelectedElements(board);
     return selectedElements.filter(value => MindElement.isMindElement(board, value)) as MindElement[];
 };

@@ -15,13 +15,10 @@ export const setFragment = (board: PlaitBoard, type: 'copy' | 'cut', clipboardDa
     clipboardContext && setClipboardData(clipboardData, clipboardContext);
 };
 
-export const duplicateElements = (board: PlaitBoard, rectangle?: RectangleClient, point?: Point, element?: PlaitElement[]) => {
-    let targetRectangle = rectangle;
-    if (!targetRectangle) {
-        const selectedElements = getSelectedElements(board);
-        targetRectangle = getRectangleByElements(board, selectedElements, false);
-    }
-    const clipboardContext = board.buildFragment(null, targetRectangle, 'copy', element);
+export const duplicateElements = (board: PlaitBoard, elements?: PlaitElement[], point?: Point) => {
+    const targetElements = elements?.length ? elements : getSelectedElements(board);
+    const targetRectangle = getRectangleByElements(board, targetElements, false);
+    const clipboardContext = board.buildFragment(null, targetRectangle, 'copy', targetElements);
     const stringifiedContext = clipboardContext && JSON.stringify(clipboardContext);
     const clonedContext = stringifiedContext && JSON.parse(stringifiedContext);
     clonedContext &&

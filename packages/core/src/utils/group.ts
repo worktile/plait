@@ -155,7 +155,7 @@ export const getHighestSelectedGroups = (board: PlaitBoard, elements?: PlaitElem
 
 export const getSelectedIsolatedElements = (board: PlaitBoard, elements?: PlaitElement[]) => {
     let result: PlaitElement[] = [];
-    const selectedElements = elements || getSelectedElements(board);
+    const selectedElements = elements?.length ? elements : getSelectedElements(board);
     selectedElements
         .filter(item => !PlaitGroupElement.isGroup(item))
         .forEach(item => {

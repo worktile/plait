@@ -180,8 +180,8 @@ export function withMoving(board: PlaitBoard) {
     board.globalPointerUp = event => {
         if (event.altKey && activeElements.length) {
             const validElements = getValidElements(board, activeElements);
-            const rectangle = getRectangleByElements(board, activeElements, false);
-            duplicateElements(board, rectangle, [rectangle.x + offsetX, rectangle.y + offsetY], validElements);
+            const rectangle = getRectangleByElements(board, validElements, false);
+            duplicateElements(board, validElements, [rectangle.x + offsetX, rectangle.y + offsetY]);
         }
         isPreventDefault = false;
         hitTargetElement = undefined;
