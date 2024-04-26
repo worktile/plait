@@ -57,7 +57,7 @@ export const getHitElementByPoint = (
             if (hitElement) {
                 return;
             }
-            if (PlaitBoard.isBoard(node) || !match(node)) {
+            if (PlaitBoard.isBoard(node) || !match(node) || !PlaitElement.hasMounted(node)) {
                 return;
             }
             if (board.isHit(node, point)) {

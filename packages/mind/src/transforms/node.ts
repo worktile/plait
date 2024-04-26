@@ -104,3 +104,8 @@ export const insertSiblingNode = (board: PlaitMindBoard, element: MindElement) =
         insertMindElement(board, element, findNewSiblingNodePath(board, element));
     }
 };
+
+export const insertMind = (board: PlaitMindBoard, mind: MindElement) => {
+    Transforms.insertNode(board, mind, [board.children.length]);
+    Transforms.addSelectionWithTemporaryElements(board, [mind]);
+};
