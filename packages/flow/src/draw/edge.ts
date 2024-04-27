@@ -1,7 +1,7 @@
 import { PlaitBoard, drawRoundRectangle, RectangleClient, drawArrow } from '@plait/core';
 import { getEdgePoints, getEdgeStyle } from '../utils/edge/edge';
 import { FlowEdge } from '../interfaces/edge';
-import { EdgeState } from '../interfaces/flow';
+import { EdgeState } from '../interfaces/edge';
 import { getExtendPoint } from '@plait/common';
 
 export const drawEdgeRoute = (board: PlaitBoard, edge: FlowEdge, state: EdgeState) => {

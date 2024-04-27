@@ -1,15 +1,14 @@
 import { PlaitCommonElementRef } from '@plait/common';
 import { XYPosition } from '@plait/core';
-import { FlowEdge } from '../interfaces/edge';
+import { EdgeStableState, FlowEdge } from '../interfaces/edge';
 import { buildEdgePathPoints } from '../utils/edge/edge';
 import { PlaitFlowBoard } from '../interfaces';
 import { TextManage } from '@plait/text';
-import { EdgeState } from '../interfaces/flow';
 
 export class EdgeElementRef extends PlaitCommonElementRef {
     private pathPoints: XYPosition[] = [];
 
-    private state: EdgeState = EdgeState[''];
+    private state: EdgeStableState = EdgeStableState[''];
 
     private labelTextManage: TextManage | null = null;
 
@@ -21,7 +20,7 @@ export class EdgeElementRef extends PlaitCommonElementRef {
         return [...this.pathPoints];
     }
 
-    setState(state: EdgeState) {
+    setState(state: EdgeStableState) {
         this.state = state;
     }
 

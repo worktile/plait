@@ -2,11 +2,11 @@ import { FlowElementStyles } from '../../interfaces/element';
 import { Direction, PlaitBoard, PlaitElement, Point, RectangleClient, normalizePoint } from '@plait/core';
 import { getElbowPoints } from './get-elbow-points';
 import { getFakeFlowNodeById, getFlowNodeById } from '../node/get-node';
-import { FlowEdge, FlowEdgeShape } from '../../interfaces/edge';
+import { EdgeStableState, FlowEdge, FlowEdgeShape } from '../../interfaces/edge';
 import { DEFAULT_EDGE_ACTIVE_STYLES, DEFAULT_EDGE_HOVER_STYLES, DEFAULT_EDGE_STYLES } from '../../constants/edge';
 import { FlowNode } from '../../interfaces/node';
 import { getEdgeDraggingInfo } from './dragging-edge';
-import { EdgeState } from '../../interfaces/flow';
+import { EdgeState } from '../../interfaces/edge';
 import { getCurvePoints } from './get-curve-points';
 import { getStraightPoints } from './get-straight-points';
 import { getHandleXYPosition } from '../handle/get-handle-position';
@@ -138,14 +138,14 @@ export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
     return edgeRef.getPoints();
 };
 
-export const getEdgeStyle = (edge: FlowEdge, state: EdgeState = EdgeState['']) => {
+export const getEdgeStyle = (edge: FlowEdge, state: EdgeState = EdgeStableState['']) => {
     const edgeStyles: FlowElementStyles = {
         ...DEFAULT_EDGE_STYLES,
         ...(edge.styles || {}),
         stroke:
-            state === EdgeState.active
+            state === EdgeStableState.active
                 ? edge.styles?.activeStroke || DEFAULT_EDGE_ACTIVE_STYLES.stroke
-                : state === EdgeState.highlight || state === EdgeState.hovering
+                : state === EdgeStableState.highlight || state === 'hovering'
                 ? edge.styles?.hoverStroke || DEFAULT_EDGE_HOVER_STYLES.stroke
                 : edge.styles?.stroke || DEFAULT_EDGE_STYLES.stroke
     };

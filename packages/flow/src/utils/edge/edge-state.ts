@@ -1,29 +1,30 @@
 import { PlaitBoard, PlaitElement } from '@plait/core';
 import { getEdgesByNodeId } from './get-edges-by-node';
 import { EdgeGenerator } from '../../generators/edge-generator';
-import { FlowEdge } from '../../interfaces/edge';
+import { EdgeStableState, EdgeState, FlowEdge } from '../../interfaces/edge';
 import { EdgeElementRef } from '../../core/edge-ref';
 import { PlaitFlowBoard } from '../../interfaces';
-import { EdgeState } from '../../interfaces/flow';
 
-export const updateRelatedEdgeState = (board: PlaitBoard, nodeId: string, state: EdgeState) => {
+export const updateRelatedEdgeHighlight = (board: PlaitBoard, nodeId: string, highlight: boolean) => {
     const relationEdges = getEdgesByNodeId(board, nodeId);
     (relationEdges || []).forEach(edge => {
-        updateEdgeState(board, edge, state);
+        const elementRef = PlaitElement.getElementRef<EdgeElementRef>(edge);
+        const currentState = elementRef.getState();
+        const state = highlight
+            ? EdgeStableState.highlight
+            : currentState === EdgeStableState.active
+            ? EdgeStableState.active
+            : EdgeStableState[''];
+        elementRef.setState(state);
+        renderEdge(board, edge, state);
     });
-};
-
-export const updateEdgeState = (board: PlaitBoard, edge: FlowEdge, state: EdgeState) => {
-    const elementRef = PlaitElement.getElementRef<EdgeElementRef>(edge);
-    elementRef.setState(state);
-    renderEdge(board, edge, elementRef.getState());
 };
 
 export const renderEdge = (board: PlaitBoard, edge: FlowEdge, state?: EdgeState) => {
     const elementRef = PlaitElement.getElementRef<EdgeElementRef>(edge);
     const edgeGenerator = elementRef.getGenerator<EdgeGenerator>(EdgeGenerator.key);
     const currentEdgeState = elementRef.getState();
-    if (state === EdgeState.hovering && (currentEdgeState === EdgeState.active || currentEdgeState === EdgeState.highlight)) {
+    if (state === 'hovering' && (currentEdgeState === EdgeStableState.active || currentEdgeState === EdgeStableState.highlight)) {
         return;
     }
     edgeGenerator.processDrawing(edge, PlaitElement.getElementG(edge), { state: state || elementRef.getState() });

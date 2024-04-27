@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit, Renderer
 import { ACTIVE_MOVING_CLASS_NAME, PlaitPluginElementContext, getElementById } from '@plait/core';
 import { PlaitBoard, OnContextChanged } from '@plait/core';
 import { TextManage } from '@plait/text';
-import { FlowEdge } from './interfaces/edge';
+import { EdgeStableState, FlowEdge } from './interfaces/edge';
 import { FlowBaseData } from './interfaces/element';
 import { PlaitFlowBoard } from './interfaces';
 import { EdgeLabelSpace } from './utils';
@@ -68,7 +68,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
             this.getRef().buildPathPoints(this.board, this.element);
         }
         if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected || isBoundedElementsChanged)) {
-            this.getRef().setState(value.selected ? EdgeState.active : EdgeState['']);
+            this.getRef().setState(value.selected ? EdgeStableState.active : EdgeStableState['']);
             this.edgeGenerator.processDrawing(this.element, this.getElementG(), { state: this.getRef().getState() });
             this.updateText();
         }
@@ -96,7 +96,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
         if (text) {
             this.textManage.draw(text);
             const g = this.textManage.g;
-            g.classList.add('flow-edge-text');
+            g.classList.add('flow-edge-richtext');
             this.getElementG().append(g);
         }
     }

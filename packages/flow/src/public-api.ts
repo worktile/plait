@@ -21,3 +21,4 @@ export * from './draw/edge';
 export * from './draw/handle';
 export * from './draw/node';
 export * from './core/edge-label-icon-base.component';
+export * from './generators';

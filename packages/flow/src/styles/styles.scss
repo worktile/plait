@@ -1,6 +1,6 @@
 .plait-board-container {
-    .flow-node-text,
-    .flow-edge-text {
+    .flow-node-richtext,
+    .flow-edge-richtext {
         .plait-richtext-container,
         .flow-edge-label-icon {
             display: flex;
@@ -14,11 +14,11 @@
         cursor: crosshair;
     }
 
-    .flow-edge-text div {
+    .flow-edge-richtext div {
         font-size: 12px;
         color: #666;
     }
-    .flow-node-text span {
+    .flow-node-richtext span {
         color: #fff;
     }
 }

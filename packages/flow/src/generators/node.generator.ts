@@ -5,7 +5,7 @@ import { drawNode } from '../draw/node';
 
 export class NodeGenerator extends Generator<FlowNode> {
     constructor(board: PlaitBoard) {
-        super(board, { prepend: true });
+        super(board);
     }
 
     canDraw(element: FlowNode): boolean {

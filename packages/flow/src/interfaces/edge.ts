@@ -58,3 +58,11 @@ export const FlowEdge = {
     hasLabelText,
     hasLabel
 };
+
+export enum EdgeStableState {
+    'active' = 'active',
+    'highlight' = 'highlight',
+    '' = ''
+}
+
+export type EdgeState = EdgeStableState | 'hovering';

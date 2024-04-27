@@ -1,8 +1,7 @@
 import { createForeignObject, createG, updateForeignObject } from '@plait/core';
 import { Generator, GeneratorOptions } from '@plait/common';
-import { FlowEdge } from '../interfaces/edge';
+import { EdgeStableState, EdgeState, FlowEdge } from '../interfaces/edge';
 import { drawEdgeLabelShape, drawEdgeMarkers, drawEdgeRoute } from '../draw/edge';
-import { EdgeState } from '../interfaces/flow';
 import { EdgeLabelSpace } from '../utils/edge/label-space';
 import { PlaitFlowBoard } from '../interfaces';
 import { ComponentRef, ViewContainerRef } from '@angular/core';
@@ -36,7 +35,7 @@ export class EdgeGenerator extends Generator<FlowEdge, EdgeData, GeneratorOption
         const edgeMarksG = drawEdgeMarkers(this.board, element, data.state);
         edgeG.append(edgeRouteG);
         edgeG.append(...edgeMarksG);
-        if (data.state === EdgeState.active) {
+        if (data.state === EdgeStableState.active) {
             const handles = drawEdgeHandles(this.board, element);
             handles.forEach(item => {
                 item.classList.add('flow-handle');
