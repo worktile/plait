@@ -83,6 +83,7 @@ import { withRelatedFragment } from '../plugins/with-related-fragment';
 import { ListRender } from '../core/list-render';
 import { PlaitChildrenContext } from '../interfaces';
 
+const ElementLowerHostClass = 'element-lower-host';
 const ElementHostClass = 'element-host';
 const ElementUpperHostClass = 'element-upper-host';
 const ElementActiveHostClass = 'element-active-host';
@@ -92,6 +93,7 @@ const ElementActiveHostClass = 'element-active-host';
     template: `
         <div class="viewport-container" #viewportContainer>
             <svg #svg width="100%" height="100%" style="position: relative;" class="board-host-svg">
+                <g class="element-lower-host"></g>
                 <g class="element-host"></g>
                 <g class="element-upper-host"></g>
                 <g class="element-active-host"></g>
@@ -189,6 +191,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     ) {}
 
     ngOnInit(): void {
+        const elementLowerHost = this.host.querySelector(`.${ElementLowerHostClass}`) as SVGGElement;
         const elementHost = this.host.querySelector(`.${ElementHostClass}`) as SVGGElement;
         const elementUpperHost = this.host.querySelector(`.${ElementUpperHostClass}`) as SVGGElement;
         const elementActiveHost = this.host.querySelector(`.${ElementActiveHostClass}`) as SVGGElement;
@@ -214,6 +217,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         BOARD_TO_HOST.set(this.board, this.host);
         IS_BOARD_ALIVE.set(this.board, true);
         BOARD_TO_ELEMENT_HOST.set(this.board, {
+            lowerHost: elementLowerHost,
             host: elementHost,
             upperHost: elementUpperHost,
             activeHost: elementActiveHost,

@@ -10,8 +10,6 @@ export class EdgeElementRef extends PlaitCommonElementRef {
 
     private state: EdgeStableState = EdgeStableState[''];
 
-    private labelTextManage: TextManage | null = null;
-
     buildPathPoints(board: PlaitFlowBoard, element: FlowEdge) {
         this.pathPoints = buildEdgePathPoints(board, element);
     }
@@ -26,17 +24,5 @@ export class EdgeElementRef extends PlaitCommonElementRef {
 
     getState() {
         return this.state;
-    }
-
-    initializeLabelTextManage(labelTextManage: TextManage) {
-        this.labelTextManage = labelTextManage;
-    }
-
-    updateLabelTextManage(element: FlowEdge) {
-        const text = element.data?.text;
-        if (text && this.labelTextManage) {
-            this.labelTextManage.updateText(text);
-            this.labelTextManage.updateRectangle();
-        }
     }
 }

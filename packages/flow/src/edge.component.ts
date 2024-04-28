@@ -10,6 +10,7 @@ import { FlowNode } from './interfaces/node';
 import { EdgeGenerator } from './generators/edge-generator';
 import { CommonPluginElement } from '@plait/common';
 import { EdgeElementRef } from './core/edge-ref';
+import { EdgeLabelGenerator } from './generators/edge-label-generator';
 
 interface BoundedElements {
     source?: FlowNode;
@@ -27,9 +28,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
     implements OnInit, OnContextChanged<FlowEdge, PlaitBoard>, OnDestroy {
     edgeGenerator!: EdgeGenerator;
 
-    handlesG: SVGGElement | null = null;
-
-    textManage!: TextManage;
+    edgeLabelGenerator!: EdgeLabelGenerator;
 
     boundedElements!: BoundedElements;
 
@@ -39,14 +38,15 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
     }
 
     initializeGenerator() {
-        this.textManage = new TextManage(this.board, this.viewContainerRef, {
+        const textManage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
                 return EdgeLabelSpace.getLabelTextRectangle(this.board, this.element);
             }
         });
         this.edgeGenerator = new EdgeGenerator(this.board, this.viewContainerRef);
+        this.edgeLabelGenerator = new EdgeLabelGenerator(this.board, this.viewContainerRef, textManage);
         this.getRef().addGenerator<EdgeGenerator>(EdgeGenerator.key, this.edgeGenerator);
-        this.getRef().initializeLabelTextManage(this.textManage);
+        this.getRef().addGenerator<EdgeLabelGenerator>(EdgeLabelGenerator.key, this.edgeLabelGenerator);
     }
 
     ngOnInit(): void {
@@ -54,7 +54,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
         this.initializeGenerator();
         this.getRef().buildPathPoints(this.board, this.element);
         this.edgeGenerator.processDrawing(this.element, this.getElementG(), { state: this.getRef().getState() });
-        this.drawLabelText();
+        this.edgeLabelGenerator.processDrawing(this.element, this.getElementG(), { state: this.getRef().getState() });
         this.boundedElements = this.getBoundedElements();
     }
 
@@ -67,9 +67,16 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
             this.getRef().buildPathPoints(this.board, this.element);
         }
         if (this.initialized && (value.element !== previous.element || value.selected !== previous.selected || isBoundedElementsChanged)) {
-            this.getRef().setState(value.selected ? EdgeStableState.active : EdgeStableState['']);
+            const currentState = this.getRef().getState();
+            this.getRef().setState(
+                value.selected
+                    ? EdgeStableState.active
+                    : currentState === EdgeStableState.highlight
+                    ? EdgeStableState.highlight
+                    : EdgeStableState['']
+            );
             this.edgeGenerator.processDrawing(this.element, this.getElementG(), { state: this.getRef().getState() });
-            this.updateText();
+            this.edgeLabelGenerator.processDrawing(this.element, this.getElementG(), { state: this.getRef().getState() });
         }
     }
 
@@ -88,24 +95,6 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
             }
         }
         return boundedElements;
-    }
-
-    drawLabelText() {
-        const text = this.element.data?.text;
-        if (text) {
-            this.textManage.draw(text);
-            const g = this.textManage.g;
-            g.classList.add('flow-edge-richtext');
-            this.getElementG().append(g);
-        }
-    }
-
-    updateText() {
-        const text = this.element.data?.text;
-        if (text) {
-            this.textManage.updateText(text);
-            this.textManage.updateRectangle();
-        }
     }
 
     ngOnDestroy(): void {
