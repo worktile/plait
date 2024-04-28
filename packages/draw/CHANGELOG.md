@@ -1,5 +1,45 @@
 # @plait/draw
 
+## 0.56.0
+
+### Minor Changes
+
+-   [#851](https://github.com/worktile/plait/pull/851) [`f854a648`](https://github.com/worktile/plait/commit/f854a648867742a1e6dab7d6387e96601e8baa11) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support alt key duplicate
+
+*   [#848](https://github.com/worktile/plait/pull/848) [`123d4880`](https://github.com/worktile/plait/commit/123d4880e1a121f481e0499f29da8e78f93c99fa) Thanks [@MissLixf](https://github.com/MissLixf)! - add noteSquare, noteCurlyLeft and noteCurlyRight shape for flowchart
+
+-   [#850](https://github.com/worktile/plait/pull/850) [`fd05792e`](https://github.com/worktile/plait/commit/fd05792e54c1ee63b81b5d22f831f46eb986f80a) Thanks [@MissLixf](https://github.com/MissLixf)! - add database,hardDisk and internalStorage shape for flowchart
+
+*   [#846](https://github.com/worktile/plait/pull/846) [`ac660c60`](https://github.com/worktile/plait/commit/ac660c6066499beb861076533749dbbf92ab437e) Thanks [@MissLixf](https://github.com/MissLixf)! - add document and multiDocument shape for flowchart
+
+-   [#845](https://github.com/worktile/plait/pull/845) [`d873bc39`](https://github.com/worktile/plait/commit/d873bc391dbfc9cc56a912a986f81399a7182b9b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - try to remove ELEMENT_TO_COMPONENT and getComponent
+
+    add NODE_TO_CONTAINER_G、NODE_TO_G to store element and g's connection
+
+    add ELEMENT_TO_REF to store element and other element-instance's connection
+
+    remove the code that invoke getComponent in core、common、mind、draw
+
+*   [`8f2083f9`](https://github.com/worktile/plait/commit/8f2083f93acbe897154bae72c6f6b4ab66cceb57) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - should update target line element ref when add text
+
+### Patch Changes
+
+-   [`1c56b92d`](https://github.com/worktile/plait/commit/1c56b92d1232fe69cb6d3678925efe5436005ddb) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - fix element can not be selected after creating
+
+    [mind]: fix console error after creating
+
+*   [#844](https://github.com/worktile/plait/pull/844) [`ce31af08`](https://github.com/worktile/plait/commit/ce31af089a6dd145f470bfb58aad6ebad4c55401) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - prevent draw group rectangleG when pointer type is not selection or resizing
+
+-   [#852](https://github.com/worktile/plait/pull/852) [`94cc6da4`](https://github.com/worktile/plait/commit/94cc6da46779b3f5eed3da9a87e6a8bd8003fa99) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - hide middlePoints on line when edit text
+
+    fix the issue where the line cannot be resized when the text and drag point overlap
+
+*   [#843](https://github.com/worktile/plait/pull/843) [`b1f8557e`](https://github.com/worktile/plait/commit/b1f8557e2a0477fcb2025ef2fe13064c6a26a230) Thanks [@MissLixf](https://github.com/MissLixf)! - fix angle snap error when rotate
+
+-   [#847](https://github.com/worktile/plait/pull/847) [`99097c54`](https://github.com/worktile/plait/commit/99097c545284f1d5e0509455c70d31020c0f76ad) Thanks [@MissLixf](https://github.com/MissLixf)! - remove circle engine
+
+    move function getNearestPointBetweenPointAndEllipse into math file
+
 ## 0.55.1
 
 ## 0.55.0

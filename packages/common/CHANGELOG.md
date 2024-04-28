@@ -1,5 +1,23 @@
 # @plait/common
 
+## 0.56.0
+
+### Minor Changes
+
+-   [#851](https://github.com/worktile/plait/pull/851) [`f854a648`](https://github.com/worktile/plait/commit/f854a648867742a1e6dab7d6387e96601e8baa11) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support alt key duplicate
+
+*   [#845](https://github.com/worktile/plait/pull/845) [`d873bc39`](https://github.com/worktile/plait/commit/d873bc391dbfc9cc56a912a986f81399a7182b9b) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - try to remove ELEMENT_TO_COMPONENT and getComponent
+
+    add NODE_TO_CONTAINER_G、NODE_TO_G to store element and g's connection
+
+    add ELEMENT_TO_REF to store element and other element-instance's connection
+
+    remove the code that invoke getComponent in core、common、mind、draw
+
+### Patch Changes
+
+-   [#844](https://github.com/worktile/plait/pull/844) [`ce31af08`](https://github.com/worktile/plait/commit/ce31af089a6dd145f470bfb58aad6ebad4c55401) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - prevent draw group rectangleG when pointer type is not selection or resizing
+
 ## 0.55.1
 
 ### Patch Changes
