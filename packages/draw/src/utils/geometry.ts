@@ -21,7 +21,7 @@ import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from
 import { Element } from 'slate';
 import {
     DefaultBasicShapeProperty,
-    DefaultCloudShapeProperty,
+    DefaultBasicShapePropertyMap,
     DefaultFlowchartPropertyMap,
     DefaultTextProperty,
     DrawPointerType,
@@ -148,6 +148,10 @@ export const getCenterPointsOnPolygon = (points: Point[]) => {
 
 export const getDefaultFlowchartProperty = (symbol: FlowchartSymbols) => {
     return DefaultFlowchartPropertyMap[symbol];
+};
+
+export const getDefaultBasicShapeProperty = (shape: BasicShapes) => {
+    return DefaultBasicShapePropertyMap[shape] || DefaultBasicShapeProperty
 };
 
 export const createDefaultFlowchart = (point: Point) => {
@@ -321,10 +325,7 @@ export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
     if (isFlowChart) {
         return getDefaultFlowchartProperty(pointer as FlowchartSymbols);
     } else {
-        if (pointer === BasicShapes.cloud) {
-            return DefaultCloudShapeProperty;
-        }
-        return DefaultBasicShapeProperty;
+        return getDefaultBasicShapeProperty(pointer as BasicShapes);
     }
 };
 
