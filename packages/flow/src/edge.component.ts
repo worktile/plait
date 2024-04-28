@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { ACTIVE_MOVING_CLASS_NAME, PlaitPluginElementContext, getElementById } from '@plait/core';
+import { PlaitPluginElementContext, getElementById } from '@plait/core';
 import { PlaitBoard, OnContextChanged } from '@plait/core';
 import { TextManage } from '@plait/text';
 import { EdgeStableState, FlowEdge } from './interfaces/edge';
@@ -10,7 +10,6 @@ import { FlowNode } from './interfaces/node';
 import { EdgeGenerator } from './generators/edge-generator';
 import { CommonPluginElement } from '@plait/common';
 import { EdgeElementRef } from './core/edge-ref';
-import { EdgeState } from './public-api';
 
 interface BoundedElements {
     source?: FlowNode;
