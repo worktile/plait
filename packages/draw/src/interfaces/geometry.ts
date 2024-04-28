@@ -45,6 +45,9 @@ export enum FlowchartSymbols {
     offPage = 'offPage',
     document = 'document',
     multiDocument = 'multiDocument',
+    database = 'database',
+    hardDisk = 'hardDisk',
+    internalStorage = 'internalStorage',
     noteCurlyRight = 'noteCurlyRight',
     noteCurlyLeft = 'noteCurlyLeft',
     noteSquare = 'noteSquare'

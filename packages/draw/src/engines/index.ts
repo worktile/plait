@@ -32,6 +32,9 @@ import { OrEngine } from './flowchart/or';
 import { SummingJunctionEngine } from './flowchart/summing-junction';
 import { DocumentEngine } from './flowchart/document';
 import { MultiDocumentEngine } from './flowchart/multi-document';
+import { DatabaseEngine } from './flowchart/database';
+import { HardDiskEngine } from './flowchart/hard-disk';
+import { InternalStorageEngine } from './flowchart/internal-storage';
 import { NoteCurlyLeftEngine } from './flowchart/note-curly-left';
 import { NoteCurlyRightEngine } from './flowchart/note-curly-right';
 import { NoteSquareEngine } from './flowchart/note-square';
@@ -63,6 +66,9 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [FlowchartSymbols.connector]: EllipseEngine,
     [FlowchartSymbols.data]: ParallelogramEngine,
     [FlowchartSymbols.terminal]: TerminalEngine,
+    [FlowchartSymbols.database]: DatabaseEngine,
+    [FlowchartSymbols.hardDisk]: HardDiskEngine,
+    [FlowchartSymbols.internalStorage]: InternalStorageEngine,
     [FlowchartSymbols.manualInput]: ManualInputEngine,
     [FlowchartSymbols.preparation]: PreparationEngine,
     [FlowchartSymbols.manualLoop]: ManualLoopEngine,
