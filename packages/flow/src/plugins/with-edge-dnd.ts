@@ -19,9 +19,8 @@ import { getHitHandleTypeByEdge } from '../utils/handle/edge';
 import { getHoverHandleInfo } from '../utils/handle/hover-handle';
 import { FlowElement } from '../interfaces/element';
 import { EdgeElementRef } from '../core/edge-ref';
-import { PlaitFlowBoard } from '../interfaces';
 import { EdgeGenerator } from '../generators/edge-generator';
-import { renderEdgeOnDragging } from '../utils/edge/edge-state';
+import { renderEdgeOnDragging } from '../utils/edge/edge-render';
 
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;

@@ -5,7 +5,7 @@ import { TextManage } from '@plait/text';
 import { EdgeStableState, FlowEdge } from './interfaces/edge';
 import { FlowBaseData } from './interfaces/element';
 import { PlaitFlowBoard } from './interfaces';
-import { EdgeLabelSpace } from './utils';
+import { EdgeLabelSpace, renderEdge } from './utils';
 import { FlowNode } from './interfaces/node';
 import { EdgeGenerator } from './generators/edge-generator';
 import { CommonPluginElement } from '@plait/common';
@@ -53,8 +53,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
         super.ngOnInit();
         this.initializeGenerator();
         this.getRef().buildPathPoints(this.board, this.element);
-        this.edgeGenerator.processDrawing(this.element, this.getElementG(), { state: this.getRef().getState() });
-        this.edgeLabelGenerator.processDrawing(this.element, this.getElementG(), { state: this.getRef().getState() });
+        renderEdge(this.board, this.element, this.getRef().getState());
         this.boundedElements = this.getBoundedElements();
     }
 
@@ -75,8 +74,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
                     ? EdgeStableState.highlight
                     : EdgeStableState['']
             );
-            this.edgeGenerator.processDrawing(this.element, this.getElementG(), { state: this.getRef().getState() });
-            this.edgeLabelGenerator.processDrawing(this.element, this.getElementG(), { state: this.getRef().getState() });
+            renderEdge(this.board, this.element, this.getRef().getState());
         }
     }
 
