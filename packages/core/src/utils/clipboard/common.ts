@@ -1,4 +1,4 @@
-import { ClipboardData, WritableClipboardContext, WritableClipboardData, WritableClipboardType } from './types';
+import { ClipboardData, WritableClipboardContext, WritableClipboardData, WritableClipboardOperationType, WritableClipboardType } from './types';
 
 export const buildPlaitHtml = (type: WritableClipboardType, data: WritableClipboardData) => {
     const stringifiedClipboard = JSON.stringify({
@@ -54,12 +54,14 @@ export const getProbablySupportsClipboardRead = () => {
 export const createClipboardContext = (
     type: WritableClipboardType,
     elements: WritableClipboardData,
-    text: string
+    text: string,
+    operationType?: WritableClipboardOperationType
 ): WritableClipboardContext => {
     return {
         type,
         elements,
-        text
+        text,
+        operationType
     };
 };
 

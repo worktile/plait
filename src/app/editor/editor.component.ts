@@ -20,7 +20,8 @@ import {
     Transforms,
     duplicateElements,
     setClipboardData,
-    setFragment
+    setFragment,
+    WritableClipboardOperationType
 } from '@plait/core';
 import { mockDrawData, mockGroupData, mockMindData, mockRotateData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -176,13 +177,13 @@ export class BasicEditorComponent implements OnInit {
     copy(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        setFragment(this.board, 'copy', null);
+        setFragment(this.board, WritableClipboardOperationType.copy, null);
     }
 
     cut(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        setFragment(this.board, 'cut', null);
+        setFragment(this.board, WritableClipboardOperationType.cut, null);
         deleteFragment(this.board);
     }
 

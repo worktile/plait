@@ -29,7 +29,7 @@ import { Ancestor, PlaitNode } from './node';
 import { Path } from './path';
 import { PlaitTheme, ThemeColor, ThemeColors } from './theme';
 import { distanceBetweenPointAndRectangle } from '../utils/math';
-import { ClipboardData, WritableClipboardContext } from '../utils';
+import { ClipboardData, WritableClipboardContext, WritableClipboardOperationType } from '../utils';
 
 export interface PlaitBoard {
     viewport: Viewport;
@@ -60,7 +60,7 @@ export interface PlaitBoard {
     buildFragment: (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
-        type: 'copy' | 'cut',
+        operationType: WritableClipboardOperationType,
         originData?: PlaitElement[]
     ) => WritableClipboardContext | null;
     insertFragment: (clipboardData: ClipboardData | null, targetPoint: Point) => void;

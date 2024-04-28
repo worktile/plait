@@ -9,7 +9,7 @@ import { PathRef, PathRefOptions } from '../interfaces/path-ref';
 import { Path } from '../interfaces/path';
 import { ThemeColorMode } from '../interfaces/theme';
 import { CoreTransforms } from '../transforms/element';
-import { WritableClipboardContext, drawEntireActiveRectangleG } from '../utils';
+import { WritableClipboardContext, WritableClipboardOperationType, drawEntireActiveRectangleG } from '../utils';
 import { RectangleClient } from '../interfaces';
 
 export function createBoard(children: PlaitElement[], options?: PlaitBoardOptions): PlaitBoard {
@@ -99,7 +99,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
         buildFragment: (
             clipboardContext: WritableClipboardContext | null,
             rectangle: RectangleClient | null,
-            type: 'copy' | 'cut',
+            operationType: WritableClipboardOperationType,
             originData?: PlaitElement[]
         ) => clipboardContext,
         insertFragment: () => {},

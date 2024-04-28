@@ -2,10 +2,10 @@ import {
     ClipboardData,
     PlaitBoard,
     PlaitElement,
-    PlaitGroupElement,
     Point,
     RectangleClient,
     WritableClipboardContext,
+    WritableClipboardOperationType,
     WritableClipboardType,
     addClipboardContext,
     createClipboardContext,
@@ -17,7 +17,7 @@ import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
 import { getLines } from '../utils/line/line-basic';
 import { PlaitImage } from '../interfaces/image';
-import { acceptImageTypes, buildImage, getElementOfFocusedImage, getElementsText, getFirstTextEditor } from '@plait/common';
+import { acceptImageTypes, buildImage, getElementOfFocusedImage, getElementsText } from '@plait/common';
 import { DEFAULT_IMAGE_WIDTH } from '../constants';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
@@ -50,13 +50,13 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
     board.buildFragment = (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
-        type: 'copy' | 'cut',
+        operationType: WritableClipboardOperationType,
         originData?: PlaitElement[]
     ) => {
         const targetDrawElements = getSelectedDrawElements(board, originData);
         let boundLineElements: PlaitLine[] = [];
         if (targetDrawElements.length) {
-            if (type === 'cut') {
+            if (operationType === WritableClipboardOperationType.cut) {
                 const geometryElements = targetDrawElements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
                 const lineElements = targetDrawElements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
                 boundLineElements = getBoundedLineElements(board, geometryElements).filter(line => !lineElements.includes(line));
@@ -65,16 +65,17 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             const elements = buildClipboardData(board, selectedElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
             const text = getElementsText(selectedElements);
             if (!clipboardContext) {
-                clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text);
+                clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text, operationType);
             } else {
                 clipboardContext = addClipboardContext(clipboardContext, {
                     text,
                     type: WritableClipboardType.elements,
-                    elements
+                    elements,
+                    operationType
                 });
             }
         }
-        return buildFragment(clipboardContext, rectangle, type, originData);
+        return buildFragment(clipboardContext, rectangle, operationType, originData);
     };
 
     board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point) => {

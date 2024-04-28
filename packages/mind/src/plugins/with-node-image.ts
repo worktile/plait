@@ -17,7 +17,8 @@ import {
     createClipboardContext,
     ClipboardData,
     isContextmenu,
-    PlaitElement
+    PlaitElement,
+    WritableClipboardOperationType
 } from '@plait/core';
 import { MindElement } from '../interfaces';
 import { ImageData } from '../interfaces/element-data';
@@ -89,14 +90,14 @@ export const withNodeImage = (board: PlaitBoard) => {
     board.buildFragment = (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
-        type: 'copy' | 'cut',
+        operationType: WritableClipboardOperationType,
         originData?: PlaitElement[]
     ) => {
         const selectedImageElement = getElementOfFocusedImage(board) as MindElement<ImageData>;
         if (selectedImageElement) {
-            clipboardContext = createClipboardContext(WritableClipboardType.medias, [selectedImageElement.data.image], '');
+            clipboardContext = createClipboardContext(WritableClipboardType.medias, [selectedImageElement.data.image], '', operationType);
         }
-        return buildFragment(clipboardContext, rectangle, type, originData);
+        return buildFragment(clipboardContext, rectangle, operationType, originData);
     };
 
     board.deleteFragment = (elements: PlaitElement[]) => {

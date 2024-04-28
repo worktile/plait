@@ -37,6 +37,7 @@ import {
     IS_CHROME,
     IS_FIREFOX,
     IS_SAFARI,
+    WritableClipboardOperationType,
     deleteFragment,
     getClipboardData,
     getRectangleByElements,
@@ -409,7 +410,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             )
             .subscribe((event: ClipboardEvent) => {
                 event.preventDefault();
-                setFragment(this.board, 'copy', event.clipboardData);
+                setFragment(this.board, WritableClipboardOperationType.copy, event.clipboardData);
             });
 
         fromEvent<ClipboardEvent>(document, 'paste')
@@ -433,7 +434,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
             )
             .subscribe((event: ClipboardEvent) => {
                 event.preventDefault();
-                setFragment(this.board, 'cut', event.clipboardData);
+                setFragment(this.board, WritableClipboardOperationType.cut, event.clipboardData);
                 deleteFragment(this.board);
             });
     }

@@ -7,6 +7,7 @@ import {
     Point,
     RectangleClient,
     WritableClipboardContext,
+    WritableClipboardOperationType,
     WritableClipboardType,
     addClipboardContext,
     addSelectedElement,
@@ -57,7 +58,7 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
     board.buildFragment = (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
-        type: 'copy' | 'cut',
+        operationType: WritableClipboardOperationType,
         originData?: PlaitElement[]
     ) => {
         const targetMindElements = getSelectedMindElements(board, originData);
@@ -66,23 +67,24 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
             const elements = buildClipboardData(board, firstLevelElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
             const text = getElementsText(targetMindElements);
             if (!clipboardContext) {
-                clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text);
+                clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text, operationType);
             } else {
                 clipboardContext = addClipboardContext(clipboardContext, {
                     text,
                     type: WritableClipboardType.elements,
-                    elements
+                    elements,
+                    operationType
                 });
             }
         }
-        return buildFragment(clipboardContext, rectangle, type, originData);
+        return buildFragment(clipboardContext, rectangle, operationType, originData);
     };
 
     board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point) => {
         if (clipboardData?.elements?.length) {
             const mindElements = clipboardData.elements?.filter(value => MindElement.isMindElement(board, value));
             if (mindElements && mindElements.length > 0) {
-                insertClipboardData(board, mindElements, targetPoint);
+                insertClipboardData(board, mindElements, targetPoint, clipboardData?.operationType);
             }
         }
         if (clipboardData?.text) {
