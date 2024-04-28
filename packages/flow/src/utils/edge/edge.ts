@@ -2,15 +2,15 @@ import { FlowElementStyles } from '../../interfaces/element';
 import { Direction, PlaitBoard, PlaitElement, Point, RectangleClient, normalizePoint } from '@plait/core';
 import { getElbowPoints } from './get-elbow-points';
 import { getFakeFlowNodeById, getFlowNodeById } from '../node/get-node';
-import { FlowEdge, FlowEdgeShape } from '../../interfaces/edge';
+import { EdgeStableState, FlowEdge, FlowEdgeShape } from '../../interfaces/edge';
 import { DEFAULT_EDGE_ACTIVE_STYLES, DEFAULT_EDGE_HOVER_STYLES, DEFAULT_EDGE_STYLES } from '../../constants/edge';
 import { FlowNode } from '../../interfaces/node';
 import { getEdgeDraggingInfo } from './dragging-edge';
-import { FlowRenderMode } from '../../interfaces/flow';
-import { FlowEdgeComponent } from '../../flow-edge.component';
+import { EdgeState } from '../../interfaces/edge';
 import { getCurvePoints } from './get-curve-points';
 import { getStraightPoints } from './get-straight-points';
 import { getHandleXYPosition } from '../handle/get-handle-position';
+import { EdgeElementRef } from '../../core/edge-ref';
 
 interface GetPointsParams {
     sourceRectangle: RectangleClient;
@@ -134,18 +134,18 @@ export const buildEdgePathPoints = (board: PlaitBoard, edge: FlowEdge) => {
 };
 
 export const getEdgePoints = (board: PlaitBoard, edge: FlowEdge) => {
-    const component = PlaitElement.getComponent(edge) as FlowEdgeComponent;
-    return component?.pathPoints ? [...component?.pathPoints] : buildEdgePathPoints(board, edge);
+    const edgeRef = PlaitElement.getElementRef<EdgeElementRef>(edge);
+    return edgeRef.getPoints();
 };
 
-export const getEdgeStyle = (edge: FlowEdge, mode: FlowRenderMode = FlowRenderMode.default) => {
+export const getEdgeStyle = (edge: FlowEdge, state: EdgeState = EdgeStableState['']) => {
     const edgeStyles: FlowElementStyles = {
         ...DEFAULT_EDGE_STYLES,
         ...(edge.styles || {}),
         stroke:
-            mode === FlowRenderMode.active
+            state === EdgeStableState.active
                 ? edge.styles?.activeStroke || DEFAULT_EDGE_ACTIVE_STYLES.stroke
-                : mode === FlowRenderMode.hover
+                : state === EdgeStableState.highlight || state === 'hovering'
                 ? edge.styles?.hoverStroke || DEFAULT_EDGE_HOVER_STYLES.stroke
                 : edge.styles?.stroke || DEFAULT_EDGE_STYLES.stroke
     };

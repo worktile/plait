@@ -10,9 +10,3 @@ export interface EdgeLabelOptions {
     height?: number;
     maxWidth?: number;
 }
-
-export enum FlowRenderMode {
-    default = 'default',
-    active = 'active',
-    hover = 'hover'
-}

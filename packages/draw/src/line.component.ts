@@ -35,6 +35,10 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
 
     boundedElements: BoundedElements = {};
 
+    constructor() {
+        super();
+    }
+
     initializeGenerator() {
         this.shapeGenerator = new LineShapeGenerator(this.board);
         this.activeGenerator = new LineActiveGenerator(this.board);

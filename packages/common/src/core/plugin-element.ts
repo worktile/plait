@@ -12,8 +12,7 @@ export abstract class CommonPluginElement<
 > extends PlaitPluginElementComponent<T, K, R> {
     private textManages: TextManage[] = [];
 
-    constructor() {
-        const elementRef = new PlaitCommonElementRef();
+    constructor(elementRef = new PlaitCommonElementRef()) {
         super(elementRef as R);
     }
 

@@ -18,13 +18,14 @@ export interface GeneratorOptions {
 export abstract class Generator<
     T extends PlaitElement = PlaitElement,
     K extends GeneratorExtraData = GeneratorExtraData,
-    V extends GeneratorOptions = GeneratorOptions
+    V extends GeneratorOptions = GeneratorOptions,
+    P extends PlaitBoard = PlaitBoard
 > {
     g?: SVGGElement;
 
     protected options?: V;
 
-    constructor(protected board: PlaitBoard, options?: V) {
+    constructor(protected board: P, options?: V) {
         this.options = options;
     }
 
