@@ -1,5 +1,11 @@
 import { PlaitBoard, PlaitElement, RectangleClient } from '../interfaces';
-import { WritableClipboardContext, createClipboardContext, WritableClipboardType, addClipboardContext } from '../utils';
+import {
+    WritableClipboardContext,
+    createClipboardContext,
+    WritableClipboardType,
+    addClipboardContext,
+    WritableClipboardOperationType
+} from '../utils';
 
 export function withRelatedFragment(board: PlaitBoard) {
     const { buildFragment } = board;
@@ -7,7 +13,7 @@ export function withRelatedFragment(board: PlaitBoard) {
     board.buildFragment = (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
-        type: 'copy' | 'cut',
+        operationType: WritableClipboardOperationType,
         originData?: PlaitElement[]
     ) => {
         let relatedFragment = board.getRelatedFragment(originData || []);
@@ -27,7 +33,7 @@ export function withRelatedFragment(board: PlaitBoard) {
                 }
             }
         }
-        return buildFragment(clipboardContext, rectangle, type, originData);
+        return buildFragment(clipboardContext, rectangle, operationType, originData);
     };
 
     return board;

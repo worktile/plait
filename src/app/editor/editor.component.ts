@@ -10,7 +10,6 @@ import {
     Viewport,
     getClipboardData,
     getProbablySupportsClipboardWrite,
-    getRectangleByElements,
     getSelectedElements,
     toHostPoint,
     toViewBoxPoint,
@@ -19,8 +18,8 @@ import {
     deleteFragment,
     Transforms,
     duplicateElements,
-    setClipboardData,
-    setFragment
+    setFragment,
+    WritableClipboardOperationType
 } from '@plait/core';
 import { mockDrawData, mockGroupData, mockMindData, mockRotateData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
@@ -176,13 +175,13 @@ export class BasicEditorComponent implements OnInit {
     copy(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        setFragment(this.board, 'copy', null);
+        setFragment(this.board, WritableClipboardOperationType.copy, null);
     }
 
     cut(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        setFragment(this.board, 'cut', null);
+        setFragment(this.board, WritableClipboardOperationType.cut, null);
         deleteFragment(this.board);
     }
 
@@ -209,6 +208,6 @@ export class BasicEditorComponent implements OnInit {
         event.stopPropagation();
         const targetPoint = toViewBoxPoint(this.board, toHostPoint(this.board, event.x, event.y));
         const clipboardData = await getClipboardData(null);
-        this.board.insertFragment(clipboardData, targetPoint);
+        this.board.insertFragment(clipboardData, targetPoint, WritableClipboardOperationType.paste);
     }
 }

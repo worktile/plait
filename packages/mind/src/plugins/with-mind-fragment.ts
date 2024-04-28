@@ -7,6 +7,7 @@ import {
     Point,
     RectangleClient,
     WritableClipboardContext,
+    WritableClipboardOperationType,
     WritableClipboardType,
     addClipboardContext,
     addSelectedElement,
@@ -57,7 +58,7 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
     board.buildFragment = (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
-        type: 'copy' | 'cut',
+        operationType: WritableClipboardOperationType,
         originData?: PlaitElement[]
     ) => {
         const targetMindElements = getSelectedMindElements(board, originData);
@@ -75,14 +76,14 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
                 });
             }
         }
-        return buildFragment(clipboardContext, rectangle, type, originData);
+        return buildFragment(clipboardContext, rectangle, operationType, originData);
     };
 
-    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point) => {
+    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point, operationType?: WritableClipboardOperationType) => {
         if (clipboardData?.elements?.length) {
             const mindElements = clipboardData.elements?.filter(value => MindElement.isMindElement(board, value));
             if (mindElements && mindElements.length > 0) {
-                insertClipboardData(board, mindElements, targetPoint);
+                insertClipboardData(board, mindElements, targetPoint, operationType);
             }
         }
         if (clipboardData?.text) {
@@ -93,7 +94,7 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
             }
         }
 
-        insertFragment(clipboardData, targetPoint);
+        insertFragment(clipboardData, targetPoint, operationType);
     };
 
     return board;

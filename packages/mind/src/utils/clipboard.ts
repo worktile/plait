@@ -1,4 +1,4 @@
-import { getSelectedElements, Path, PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
+import { getSelectedElements, Path, PlaitBoard, PlaitElement, Point, Transforms, WritableClipboardOperationType } from '@plait/core';
 import { MindElement, PlaitMind } from '../interfaces';
 import { copyNewNode } from './mind';
 import { getRectangleByNode } from './position/node';
@@ -58,7 +58,12 @@ export const buildClipboardData = (board: PlaitBoard, selectedElements: MindElem
     return result;
 };
 
-export const insertClipboardData = (board: PlaitMindBoard, elements: PlaitElement[], targetPoint: Point) => {
+export const insertClipboardData = (
+    board: PlaitMindBoard,
+    elements: PlaitElement[],
+    targetPoint: Point,
+    operationType?: WritableClipboardOperationType
+) => {
     let newElement: MindElement, path: Path;
     const selectedElements = getSelectedElements(board);
     let newELements: PlaitElement[] = [];
@@ -70,7 +75,7 @@ export const insertClipboardData = (board: PlaitMindBoard, elements: PlaitElemen
 
     elements.forEach((item: PlaitElement, index: number) => {
         newElement = copyNewNode(item as MindElement);
-        if (hasTargetParent) {
+        if (hasTargetParent && operationType !== WritableClipboardOperationType.duplicate) {
             if (item.isRoot) {
                 newElement = adjustRootToNode(board, newElement);
                 const styles = PlaitMind.isMind(targetParent) ? { fontFamily: BRANCH_FONT_FAMILY } : { fontFamily: DEFAULT_FONT_FAMILY };
