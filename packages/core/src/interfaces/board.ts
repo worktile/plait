@@ -60,7 +60,8 @@ export interface PlaitBoard {
     buildFragment: (
         clipboardContext: WritableClipboardContext | null,
         rectangle: RectangleClient | null,
-        type: 'copy' | 'cut'
+        type: 'copy' | 'cut',
+        originData?: PlaitElement[]
     ) => WritableClipboardContext | null;
     insertFragment: (clipboardData: ClipboardData | null, targetPoint: Point) => void;
     deleteFragment: (data: PlaitElement[]) => void;

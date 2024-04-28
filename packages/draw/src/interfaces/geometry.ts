@@ -47,7 +47,10 @@ export enum FlowchartSymbols {
     multiDocument = 'multiDocument',
     database = 'database',
     hardDisk = 'hardDisk',
-    internalStorage = 'internalStorage'
+    internalStorage = 'internalStorage',
+    noteCurlyRight = 'noteCurlyRight',
+    noteCurlyLeft = 'noteCurlyLeft',
+    noteSquare = 'noteSquare'
 }
 
 export type GeometryShapes = BasicShapes | FlowchartSymbols;

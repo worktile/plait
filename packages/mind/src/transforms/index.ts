@@ -7,7 +7,8 @@ import {
     setRightNodeCountByRefs,
     setNodeManualWidth,
     insertChildNode,
-    insertSiblingNode
+    insertSiblingNode,
+    insertMind
 } from './node';
 import { addEmoji, removeEmoji, replaceEmoji } from './emoji';
 import { removeImage, setImage } from './image';
@@ -34,5 +35,6 @@ export const MindTransforms = {
     removeImage,
     setImage,
     insertChildNode,
-    insertSiblingNode
+    insertSiblingNode,
+    insertMind
 };

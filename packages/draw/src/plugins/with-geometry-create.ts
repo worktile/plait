@@ -28,8 +28,22 @@ export interface FakeCreateTextRef {
     textManage: TextManage;
 }
 
+const isGeometryDndMode = (board: PlaitBoard) => {
+    const geometryPointers = getGeometryPointers();
+    const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
+    const dndMode = isGeometryPointer && isDndMode(board);
+    return dndMode;
+};
+
+const isGeometryDrawingMode = (board: PlaitBoard) => {
+    const geometryPointers = getGeometryPointers();
+    const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
+    const drawingMode = isGeometryPointer && isDrawingMode(board);
+    return drawingMode;
+};
+
 export const withGeometryCreateByDrag = (board: PlaitBoard) => {
-    const { pointerMove, globalPointerUp } = board;
+    const { pointerMove, globalPointerUp, pointerUp } = board;
 
     let geometryShapeG: SVGGElement | null = null;
 
@@ -89,22 +103,23 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
         pointerMove(event);
     };
 
-    board.globalPointerUp = (event: PointerEvent) => {
-        const geometryPointers = getGeometryPointers();
-        const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
-        const dragMode = isGeometryPointer && isDndMode(board);
+    board.pointerUp = (event: PointerEvent) => {
+        if (isGeometryDndMode(board) && temporaryElement) {
+            return;
+        }
+        pointerUp(event);
+    };
 
-        if (dragMode && temporaryElement) {
+    board.globalPointerUp = (event: PointerEvent) => {
+        if (isGeometryDndMode(board) && temporaryElement) {
             insertElement(board, temporaryElement);
             fakeCreateTextRef?.textManage.destroy();
             fakeCreateTextRef?.g.remove();
             fakeCreateTextRef = null;
         }
-
         geometryShapeG?.remove();
         geometryShapeG = null;
         preventTouchMove(board, event, false);
-
         globalPointerUp(event);
     };
 
@@ -134,9 +149,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
     };
 
     board.pointerDown = (event: PointerEvent) => {
-        const geometryPointers = getGeometryPointers();
-        const isGeometryPointer = PlaitBoard.isInPointer(board, geometryPointers);
-        if (!PlaitBoard.isReadonly(board) && isGeometryPointer && isDrawingMode(board)) {
+        if (!PlaitBoard.isReadonly(board) && isGeometryDrawingMode(board)) {
             const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             start = point;
             const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
@@ -160,7 +173,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
         snapG?.remove();
-        if (start && pointer !== BasicShapes.text) {
+        if (start && isGeometryDrawingMode(board)) {
             let points: [Point, Point] = normalizeShapePoints([start, movingPoint], isShift);
             const activeRectangle = RectangleClient.getRectangleByPoints(points);
             const [x, y] = getUnitVectorByPointAndPoint(start, movingPoint);
@@ -179,33 +192,31 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             geometryGenerator.processDrawing(temporaryElement, geometryShapeG);
             PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
         }
-
         pointerMove(event);
     };
 
     board.pointerUp = (event: PointerEvent) => {
-        const isDrawMode = !!start;
-        if (isDrawMode) {
+        if (isGeometryDrawingMode(board) && start) {
             const targetPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const { width, height } = RectangleClient.getRectangleByPoints([start!, targetPoint]);
-            if (Math.hypot(width, height) === 0) {
+            if (Math.hypot(width, height) < 8) {
                 const pointer = PlaitBoard.getPointer(board) as DrawPointerType;
                 if (pointer !== BasicShapes.text) {
                     const points = getDefaultGeometryPoints(pointer, targetPoint);
                     temporaryElement = createDefaultGeometry(board, points, pointer as GeometryShapes);
                 }
             }
+            if (temporaryElement) {
+                insertElement(board, temporaryElement);
+            }
+            snapG?.remove();
+            geometryShapeG?.remove();
+            geometryShapeG = null;
+            start = null;
+            temporaryElement = null;
+            preventTouchMove(board, event, false);
+            return;
         }
-        if (temporaryElement) {
-            insertElement(board, temporaryElement);
-        }
-
-        snapG?.remove();
-        geometryShapeG?.remove();
-        geometryShapeG = null;
-        start = null;
-        temporaryElement = null;
-        preventTouchMove(board, event, false);
         pointerUp(event);
     };
     return board;

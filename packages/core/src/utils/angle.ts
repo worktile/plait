@@ -140,3 +140,31 @@ export const getAngleBetweenPoints = (startPoint: Point, endPoint: Point, center
     const endAngle = (5 * Math.PI) / 2 + Math.atan2(endPoint[1] - centerPoint[1], endPoint[0] - centerPoint[0]);
     return normalizeAngle(endAngle - startAngle);
 };
+
+export const getAngleByElement = (element: PlaitElement): number => {
+    return element?.angle;
+};
+
+export const setAngleForG = (g: SVGGElement, centerPoint: Point, angle: number) => {
+    if (angle === 0) {
+        g.removeAttribute('transform');
+        return;
+    }
+    var centerX = centerPoint[0];
+    var centerY = centerPoint[1];
+
+    let cosTheta = Math.cos(angle);
+    let sinTheta = Math.sin(angle);
+
+    let transformMatrix = [
+        cosTheta,
+        sinTheta,
+        -sinTheta,
+        cosTheta,
+        centerX * (1 - cosTheta) + centerY * sinTheta,
+        centerY * (1 - cosTheta) - centerX * sinTheta
+    ];
+
+    let matrix = 'matrix(' + transformMatrix.join(',') + ')';
+    g.setAttribute('transform', `${matrix}`);
+};

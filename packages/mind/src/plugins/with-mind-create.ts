@@ -20,6 +20,7 @@ import { TextManage } from '@plait/text';
 import { createEmptyMind } from '../utils/node/create-node';
 import { MindElement } from '../interfaces';
 import { BoardCreationMode, isDndMode, isDrawingMode, setCreationMode } from '@plait/common';
+import { MindTransforms } from '../transforms';
 
 const DefaultHotkey = 'm';
 
@@ -41,9 +42,7 @@ export const withCreateMind = (board: PlaitBoard) => {
         if (!PlaitBoard.isReadonly(board) && movingPoint && isDrawingMode(board) && isMindPointer) {
             movingPoint = toViewBoxPoint(board, toHostPoint(board, movingPoint[0], movingPoint[1]));
             const emptyMind = createEmptyMind(newBoard, movingPoint);
-            Transforms.insertNode(board, emptyMind, [board.children.length]);
-            clearSelectedElement(board);
-            addSelectedElement(board, emptyMind);
+            MindTransforms.insertMind(board as PlaitMindBoard, emptyMind);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
             return;
         }
@@ -103,13 +102,12 @@ export const withCreateMind = (board: PlaitBoard) => {
 
     newBoard.pointerUp = (event: PointerEvent) => {
         if (emptyMind) {
-            Transforms.insertNode(board, emptyMind, [board.children.length]);
-            clearSelectedElement(board);
-            addSelectedElement(board, emptyMind);
+            MindTransforms.insertMind(board as PlaitMindBoard, emptyMind);
             BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
             emptyMind = null;
+            destroy();
+            return;
         }
-        destroy();
         pointerUp(event);
     };
 

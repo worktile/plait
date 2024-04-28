@@ -1,6 +1,7 @@
 import {
     PlaitBoard,
     PlaitElement,
+    PlaitNode,
     getHitElementByPoint,
     getNearestPointBetweenPointAndSegments,
     toHostPoint,
@@ -24,6 +25,7 @@ export const withLineText = (board: PlaitBoard) => {
             const hitTarget = getHitElementByPoint(board, clickPoint, (element: PlaitElement) => {
                 return PlaitDrawElement.isLine(element);
             }) as undefined | PlaitLine;
+            const hitTargetPath = hitTarget && PlaitBoard.findPath(board, hitTarget);
             if (hitTarget) {
                 const points = getLinePoints(board, hitTarget);
                 const point = getNearestPointBetweenPointAndSegments(clickPoint, points);
@@ -42,8 +44,11 @@ export const withLineText = (board: PlaitBoard) => {
                     });
                     DrawTransforms.setLineTexts(board, hitTarget, texts);
                     setTimeout(() => {
-                        const textManages = getTextManages(hitTarget);
-                        editHandle(board, hitTarget, textManages.length - 1, true);
+                        if (hitTargetPath) {
+                            const newHitTarget = PlaitNode.get(board, hitTargetPath) as PlaitLine;
+                            const textManages = getTextManages(newHitTarget);
+                            editHandle(board, newHitTarget, textManages.length - 1, true);
+                        }
                     });
                 }
             }
@@ -58,7 +63,6 @@ function editHandle(board: PlaitBoard, element: PlaitLine, manageIndex: number, 
     const textManages = getTextManages(element);
     const textManage = textManages[manageIndex];
     const originText = textManage.componentRef.instance.children;
-
     textManage.edit((origin, descendant) => {
         const text = Node.string(descendant[0]);
         const shouldRemove = (isFirstEdit && originText === descendant) || !text;

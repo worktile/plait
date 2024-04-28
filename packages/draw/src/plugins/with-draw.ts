@@ -110,7 +110,7 @@ export const withDraw = (board: PlaitBoard) => {
     };
 
     board.getRelatedFragment = (elements: PlaitElement[], originData?: PlaitElement[]) => {
-        const selectedElements = originData || getSelectedElements(board);
+        const selectedElements = originData?.length ? originData : getSelectedElements(board);
         const lineElements = board.children.filter(element => PlaitDrawElement.isLine(element));
         const activeLines = lineElements.filter(line => {
             const source = selectedElements.find(element => element.id === line.source.boundId);
@@ -122,11 +122,11 @@ export const withDraw = (board: PlaitBoard) => {
     };
 
     return withDrawResize(
-        withLineTextMove(
-            withLineAutoCompleteReaction(
-                withLineText(
-                    withLineBoundReaction(
-                        withLineResize(
+        withLineResize(
+            withLineTextMove(
+                withLineAutoCompleteReaction(
+                    withLineText(
+                        withLineBoundReaction(
                             withGeometryResize(
                                 withDrawRotate(
                                     withLineCreateByDraw(

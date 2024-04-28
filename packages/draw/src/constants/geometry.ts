@@ -76,6 +76,11 @@ export const DefaultDocumentProperty = {
     height: 70
 };
 
+export const DefaultNoteProperty = {
+    width: 160,
+    height: 100
+};
+
 export const DefaultMultiDocumentProperty = {
     width: 120,
     height: 80
@@ -111,7 +116,10 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.multiDocument]: DefaultMultiDocumentProperty,
     [FlowchartSymbols.database]: DefaultDataBaseProperty,
     [FlowchartSymbols.hardDisk]: DefaultFlowchartProperty,
-    [FlowchartSymbols.internalStorage]: DefaultInternalStorageProperty
+    [FlowchartSymbols.internalStorage]: DefaultInternalStorageProperty,
+    [FlowchartSymbols.noteCurlyLeft]: DefaultNoteProperty,
+    [FlowchartSymbols.noteCurlyRight]: DefaultNoteProperty,
+    [FlowchartSymbols.noteSquare]: DefaultNoteProperty
 };
 
 export const LINE_HIT_GEOMETRY_BUFFER = 10;
