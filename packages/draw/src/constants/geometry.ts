@@ -1,5 +1,5 @@
 import { ACTIVE_STROKE_WIDTH } from '@plait/core';
-import { FlowchartSymbols } from '../interfaces';
+import { BasicShapes, FlowchartSymbols } from '../interfaces';
 
 export const ShapeDefaultSpace = {
     rectangleAndText: 4
@@ -24,11 +24,24 @@ export const DefaultBasicShapeProperty = {
     strokeWidth: 2
 };
 
-export const DefaultCloudShapeProperty = {
+export const DefaultPentagonArrowProperty = {
     width: 120,
-    height: 100,
-    strokeColor: '#333',
-    strokeWidth: 2
+    height: 50
+};
+
+export const DefaultTwoWayArrowProperty = {
+    width: 138,
+    height: 80
+};
+
+export const DefaultArrowProperty = {
+    width: 100,
+    height: 80
+};
+
+export const DefaultCloudProperty = {
+    width: 120,
+    height: 100
 };
 
 export const DefaultTextProperty = {
@@ -94,6 +107,15 @@ export const DefaultManualInputProperty = {
 export const DefaultMergeProperty = {
     width: 47,
     height: 33
+};
+
+export const DefaultBasicShapePropertyMap: Record<string, { width: number; height: number }> = {
+    [BasicShapes.pentagonArrow]: DefaultPentagonArrowProperty,
+    [BasicShapes.processArrow]: DefaultPentagonArrowProperty,
+    [BasicShapes.cloud]: DefaultCloudProperty,
+    [BasicShapes.twoWayArrow]: DefaultTwoWayArrowProperty,
+    [BasicShapes.leftArrow]: DefaultArrowProperty,
+    [BasicShapes.rightArrow]: DefaultArrowProperty
 };
 
 export const DefaultFlowchartPropertyMap = {
