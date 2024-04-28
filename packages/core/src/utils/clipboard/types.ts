@@ -5,6 +5,13 @@ export enum WritableClipboardType {
     'elements' = 'elements'
 }
 
+export enum WritableClipboardOperationType {
+    'copy' = 'copy',
+    'cut' = 'cut',
+    'duplicate' = 'duplicate',
+    'paste' = 'paste'
+}
+
 export type WritableClipboardData = PlaitElement[] | any[];
 
 export interface WritableClipboardContext {
@@ -18,4 +25,5 @@ export interface ClipboardData {
     elements?: PlaitElement[];
     medias?: any[];
     text?: string;
+    operationType?: WritableClipboardOperationType;
 }
