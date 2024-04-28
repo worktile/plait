@@ -23,6 +23,10 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
 
     lineAutoCompleteGenerator!: LineAutoCompleteGenerator;
 
+    constructor() {
+        super();
+    }
+
     initializeGenerator() {
         this.imageGenerator = new ImageGenerator<PlaitImage>(this.board, {
             getRectangle: (element: PlaitImage) => {

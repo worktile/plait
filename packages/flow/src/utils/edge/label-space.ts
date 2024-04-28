@@ -7,7 +7,7 @@ import { getEdgeTextXYPosition } from './text';
 import { FlowPluginOptions, FlowPluginKey } from '../../interfaces/flow';
 
 // 使用 getSizeByText，渲染 dom 获取文本宽度，频繁调用会有性能问题
-function getLabelTextRect(board: PlaitBoard, edge: FlowEdge): RectangleClient {
+function getLabelTextRectangle(board: PlaitBoard, edge: FlowEdge): RectangleClient {
     const text = ((edge.data?.text as Element).children[0] as BaseText).text;
     const labelTextWidth = getTextSize(board, text, undefined, { fontSize: EDGE_LABEL_FONTSIZE })?.width;
     const { edgeLabelOptions } = (board as PlaitOptionsBoard).getPluginOptions<FlowPluginOptions>(FlowPluginKey.flowOptions);
@@ -36,7 +36,7 @@ function getLabelIconWidth() {
     return EDGE_LABEL_FONTSIZE + EDGE_LABEL_ICON_PADDING;
 }
 
-function getLabelIconRect(textRect: RectangleClient): RectangleClient {
+function getLabelIconRectangle(textRect: RectangleClient): RectangleClient {
     const { x, y, height } = textRect!;
     return {
         x: x - getLabelIconWidth() - EDGE_LABEL_ICON_PADDING,
@@ -51,7 +51,7 @@ function getLabelRect(textRect: RectangleClient, element: FlowEdge): RectangleCl
     x = x - EDGE_LABEL_PADDING;
     width = width + EDGE_LABEL_PADDING * 2;
 
-    if (FlowEdge.hasIcon(element)) {
+    if (FlowEdge.hasLabelIcon(element)) {
         x = x - getLabelIconWidth();
         width = width + getLabelIconWidth();
     }
@@ -65,8 +65,8 @@ function getLabelRect(textRect: RectangleClient, element: FlowEdge): RectangleCl
 }
 
 export const EdgeLabelSpace = {
-    getLabelTextRect,
+    getLabelTextRectangle,
     getLabelIconFontSize,
-    getLabelIconRect,
+    getLabelIconRectangle,
     getLabelRect
 };

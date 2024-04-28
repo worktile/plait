@@ -1,5 +1,4 @@
 import {
-    BOARD_TO_HOST,
     IS_TEXT_EDITABLE,
     PlaitBoard,
     PlaitElement,
@@ -11,7 +10,6 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { FlowEdgeComponent } from '../flow-edge.component';
 import { FlowEdge, FlowEdgeHandleType } from '../interfaces/edge';
 import { FlowNode } from '../interfaces/node';
 import { deleteEdgeDraggingInfo, addEdgeDraggingInfo } from '../utils/edge/dragging-edge';
@@ -20,7 +18,10 @@ import { HitNodeHandle } from '../utils/handle/node';
 import { getHitHandleTypeByEdge } from '../utils/handle/edge';
 import { getHoverHandleInfo } from '../utils/handle/hover-handle';
 import { FlowElement } from '../interfaces/element';
-import { FlowRenderMode } from '../interfaces/flow';
+import { EdgeElementRef } from '../core/edge-ref';
+import { PlaitFlowBoard } from '../interfaces';
+import { EdgeGenerator } from '../generators/edge-generator';
+import { renderEdgeOnDragging } from '../utils/edge/edge-state';
 
 export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;
@@ -60,14 +61,15 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
             event.preventDefault();
             if (activeElement) {
                 throttleRAF(board, 'with-flow-edge-dnd', () => {
+                    if (!activeElement) {
+                        return;
+                    }
                     addEdgeDraggingInfo(activeElement!, {
                         offsetX,
                         offsetY,
                         handleType: handleType!
                     });
-                    const activeComponent = activeElement && (PlaitElement.getComponent(activeElement) as FlowEdgeComponent);
-                    activeComponent?.updatePathPoints();
-                    activeComponent?.drawElement(activeElement!, FlowRenderMode.active);
+                    renderEdgeOnDragging(board, activeElement);
                     hitNodeHandle = getHoverHandleInfo(board) as HitNodeHandle;
                     if (drawNodeHandles) {
                         drawNodeHandles = false;
@@ -82,7 +84,6 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
 
     board.globalPointerUp = (event: PointerEvent) => {
         if (!board.options.readonly && handleType && activeElement) {
-            const activeComponent = PlaitElement.getComponent(activeElement) as FlowEdgeComponent;
             const activePath = PlaitBoard.findPath(board, activeElement);
             deleteEdgeDraggingInfo(activeElement);
             if (hitNodeHandle) {
@@ -102,7 +103,9 @@ export const withFlowEdgeDnd: PlaitPlugin = (board: PlaitBoard) => {
                     activePath
                 );
             } else {
-                activeComponent?.drawElement(activeElement, FlowRenderMode.active);
+                const edgeRef = PlaitElement.getElementRef<EdgeElementRef>(activeElement);
+                const edgeGenerator = edgeRef.getGenerator<EdgeGenerator>(EdgeGenerator.key);
+                edgeGenerator.processDrawing(activeElement, PlaitElement.getElementG(activeElement), { state: edgeRef.getState() });
             }
             destroyAllNodesHandle(board, flowNodeElements);
         }

@@ -10,7 +10,7 @@ export * from './edge/text';
 export * from './edge/label-space';
 export * from './edge/get-hit-edge';
 export * from './edge/placeholder-edge';
-export * from './edge/relation-edge-selected';
+export * from './edge/edge-state';
 export * from './edge/get-overlap-edges';
 
 export * from './handle/get-default-handles';

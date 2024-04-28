@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import {
     createG,
     PlaitBoard,
@@ -9,7 +9,7 @@ import {
     RectangleClient
 } from '@plait/core';
 import { isHorizontalLayout, AbstractNode, MindLayoutType } from '@plait/layouts';
-import { TextManageRef, TextManage, ExitOrigin } from '@plait/text';
+import { TextManageRef, TextManage } from '@plait/text';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { Subject } from 'rxjs';
 import { MindElement, PlaitMind } from './interfaces/element';

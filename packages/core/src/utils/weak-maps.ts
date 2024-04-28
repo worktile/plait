@@ -37,6 +37,7 @@ export const IS_BOARD_ALIVE = new WeakMap<PlaitBoard, boolean>();
 export const BOARD_TO_ELEMENT_HOST = new WeakMap<
     PlaitBoard,
     {
+        lowerHost: SVGGElement;
         host: SVGGElement;
         upperHost: SVGGElement;
         activeHost: SVGGElement;

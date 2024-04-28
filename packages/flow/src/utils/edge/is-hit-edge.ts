@@ -36,7 +36,7 @@ export function isHitEdge(board: PlaitBoard, edge: FlowEdge, point: Point) {
 }
 
 export function isHitEdgeText(board: PlaitBoard, edge: FlowEdge, point: Point) {
-    const textRect = EdgeLabelSpace.getLabelTextRect(board, edge);
+    const textRect = EdgeLabelSpace.getLabelTextRectangle(board, edge);
     const labelRect = EdgeLabelSpace.getLabelRect(textRect, edge);
     const distance = distanceBetweenPointAndRectangle(point[0], point[1], labelRect);
     return distance === 0;

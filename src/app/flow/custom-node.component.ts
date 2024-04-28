@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { PlaitPluginElementContext, Point, drawCircle, PlaitBoard, createG } from '@plait/core';
-import { FlowNode, FlowNodeComponent, FlowRenderMode } from '@plait/flow';
+import { PlaitBoard, Point, drawCircle, normalizePoint } from '@plait/core';
+import { FlowNode, FlowNodeComponent, NodeActiveGenerator, NodeGenerator } from '@plait/flow';
+import { TextManage } from '@plait/text';
 
 @Component({
     selector: 'custom-flow-node',
@@ -9,43 +10,40 @@ import { FlowNode, FlowNodeComponent, FlowRenderMode } from '@plait/flow';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomFlowNodeComponent extends FlowNodeComponent {
-    onContextChanged(value: PlaitPluginElementContext<FlowNode, PlaitBoard>, previous: PlaitPluginElementContext<FlowNode, PlaitBoard>) {
-        if (value.element !== previous.element && this.initialized) {
-            this.drawElement(value.element);
-        }
-    }
-
-    drawElement(element: FlowNode = this.element, mode: FlowRenderMode = FlowRenderMode.default) {
-        this.drawNode(element);
-        this.drawRichtext(element);
-        this.drawActiveMask(element, mode);
-        this.drawHandles(element, mode);
-
-        if (mode === FlowRenderMode.default) {
-            this.getElementG().append(this.nodeG!);
-            this.getElementG().append(this.textManage.g);
-            this.render2.addClass(this.getElementG(), 'flow-custom-node');
-            this.activeG?.remove();
-        } else {
-            this.activeG = this.activeG || createG();
-            this.activeG?.append(this.nodeG!);
-            this.activeG?.append(this.textManage.g);
-            if (mode === FlowRenderMode.active) {
-                this.activeG?.prepend(this.activeMaskG!);
+    initializeGenerator() {
+        this.nodeGenerator = new CustomNodeGenerator(this.board);
+        this.nodeActiveGenerator = new CustomNodeActiveGenerator(this.board);
+        this.textManage = new TextManage(this.board, this.viewContainerRef, {
+            getRectangle: () => {
+                const { x, y } = normalizePoint(this.element.points![0]);
+                const width = this.element.width;
+                const height = this.element.height;
+                return { x, y, width, height };
             }
-            this.activeG?.append(this.handlesG!);
-            this.render2.addClass(this.activeG, 'flow-custom-node');
-            PlaitBoard.getElementActiveHost(this.board).append(this.activeG!);
-        }
+        });
+        this.getRef().addGenerator<NodeActiveGenerator>(NodeActiveGenerator.key, this.nodeActiveGenerator);
     }
 
-    drawNode(element: FlowNode = this.element) {
-        this.destroyElement();
+    ngOnInit(): void {
+        super.ngOnInit();
+        this.render2.addClass(this.getElementG(), 'flow-custom-node');
+    }
+}
+
+export class CustomNodeGenerator extends NodeGenerator {
+    draw(element: FlowNode) {
         const drawCirclePoint = [element.points![0][0] + element.width / 2, element.points![0][1] + element.height / 2] as Point;
-        this.nodeG = drawCircle(this.roughSVG, drawCirclePoint, 40, {
+        const circleG = drawCircle(PlaitBoard.getRoughSVG(this.board), drawCirclePoint, 40, {
             fillStyle: 'solid',
             fill: 'rgb(238, 238, 238)',
             stroke: 'rgb(238, 238, 238)'
         });
+        return circleG;
+    }
+}
+
+export class CustomNodeActiveGenerator extends NodeActiveGenerator {
+    canDraw() {
+        return false;
     }
 }
