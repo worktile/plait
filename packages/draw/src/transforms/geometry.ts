@@ -5,7 +5,7 @@ import { Element } from 'slate';
 import { getDirectionByVector, getPointByVectorComponent, normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '.';
 import { collectLineUpdatedRefsByGeometry } from './line';
-import { DefaultBasicShapeProperty, DefaultFlowchartPropertyMap } from '../constants';
+import { DefaultBasicShapeProperty, DefaultBasicShapePropertyMap, DefaultFlowchartPropertyMap } from '../constants';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
     const newElement = createDefaultGeometry(board, points, shape);
@@ -14,7 +14,10 @@ export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape:
 };
 
 export const insertGeometryByVector = (board: PlaitBoard, point: Point, shape: GeometryShapes, vector: Vector) => {
-    const shapeProperty = DefaultFlowchartPropertyMap[shape as FlowchartSymbols] || DefaultBasicShapeProperty;
+    const shapeProperty =
+        DefaultFlowchartPropertyMap[shape as FlowchartSymbols] ||
+        DefaultBasicShapePropertyMap[shape as BasicShapes] ||
+        DefaultBasicShapeProperty;
     const direction = getDirectionByVector(vector);
     if (direction) {
         let offset = 0;

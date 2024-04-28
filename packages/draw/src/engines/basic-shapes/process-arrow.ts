@@ -18,11 +18,11 @@ export const getProcessArrowPoints = (rectangle: RectangleClient): Point[] => {
 export const ProcessArrowEngine: ShapeEngine = createPolygonEngine({
     getPolygonPoints: getProcessArrowPoints,
     getTextRectangle(element: PlaitGeometry) {
-        const rectangle = getTextRectangle(element);
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const width = rectangle.width;
-        rectangle.width = elementRectangle.height / 2;
-        rectangle.x += elementRectangle.height / 2;
+        const rectangle = getTextRectangle(element);
+        const wider = elementRectangle.width > elementRectangle.height + 20;
+        rectangle.width = wider ? elementRectangle.width - elementRectangle.height : rectangle.width;
+        rectangle.x = wider ? elementRectangle.x + elementRectangle.height / 2:  rectangle.x;
         return rectangle;
     }
 });
