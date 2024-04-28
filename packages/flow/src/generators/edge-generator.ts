@@ -14,7 +14,7 @@ export class EdgeGenerator extends Generator<FlowEdge, EdgeData, GeneratorOption
     static key = 'edge-generator';
 
     constructor(board: PlaitFlowBoard, public viewContainerRef: ViewContainerRef) {
-        super(board);
+        super(board, { prepend: true });
     }
 
     canDraw(element: FlowEdge, data: EdgeData): boolean {

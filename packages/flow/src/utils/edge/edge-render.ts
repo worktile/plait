@@ -29,8 +29,18 @@ export const renderEdge = (board: PlaitBoard, edge: FlowEdge, state?: EdgeState)
     if (state === 'hovering' && (currentEdgeState === EdgeStableState.active || currentEdgeState === EdgeStableState.highlight)) {
         return;
     }
-    edgeGenerator.processDrawing(edge, PlaitElement.getElementG(edge), { state: state || elementRef.getState() });
-    edgeLabelGenerator.processDrawing(edge, PlaitElement.getElementG(edge), { state: state || elementRef.getState() });
+    const renderState = state || elementRef.getState();
+    edgeGenerator.processDrawing(edge, getEdgeLayer(board, edge, renderState), { state: renderState });
+    edgeLabelGenerator.processDrawing(edge, PlaitElement.getElementG(edge), { state: renderState });
+    if (renderState !== EdgeStableState['']) {
+        const upperHost = PlaitBoard.getElementUpperHost(board);
+        const elementG = PlaitElement.getElementG(edge);
+        upperHost.append(elementG);
+    } else {
+        const elementHost = PlaitBoard.getElementHost(board);
+        const elementG = PlaitElement.getElementG(edge);
+        elementHost.append(elementG);
+    }
 };
 
 export const renderRelatedEdges = (board: PlaitBoard, nodeId: string, state?: EdgeState) => {
@@ -46,6 +56,15 @@ export const renderEdgeOnDragging = (board: PlaitBoard, edge: FlowEdge) => {
     const edgeGenerator = edgeRef.getGenerator<EdgeGenerator>(EdgeGenerator.key);
     const edgeLabelGenerator = edgeRef.getGenerator<EdgeLabelGenerator>(EdgeLabelGenerator.key);
     const state = edgeRef.getState();
-    edgeGenerator.processDrawing(edge, PlaitElement.getElementG(edge), { state });
+    edgeGenerator.processDrawing(edge, getEdgeLayer(board, edge, state), { state });
     edgeLabelGenerator.processDrawing(edge, PlaitElement.getElementG(edge), { state });
+};
+
+export const getEdgeLayer = (board: PlaitBoard, edge: FlowEdge, state: EdgeState) => {
+    if (state === EdgeStableState['']) {
+        const lowerHost = PlaitBoard.getElementLowerHost(board);
+        return lowerHost;
+    } else {
+        return PlaitElement.getElementG(edge);
+    }
 };
