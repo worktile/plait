@@ -36,6 +36,9 @@ export abstract class Generator<
                 if (this.g && parentG.contains(this.g)) {
                     this.g.replaceWith(g);
                 } else {
+                    if (this.g) {
+                        this.g.remove();
+                    }
                     if (this.options?.prepend) {
                         parentG.prepend(g);
                     } else {

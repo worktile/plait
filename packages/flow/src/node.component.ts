@@ -11,7 +11,7 @@ import { TextManage } from '@plait/text';
 import { PlaitPluginElementContext, PlaitBoard, normalizePoint, OnContextChanged } from '@plait/core';
 import { FlowNode } from './interfaces/node';
 import { FlowBaseData } from './interfaces/element';
-import { updateRelatedEdgeHighlight } from './utils/edge/edge-state';
+import { updateRelatedEdgeHighlight } from './utils/edge/edge-render';
 import { NodeGenerator } from './generators/node.generator';
 import { NodeActiveGenerator } from './generators/node-active.generator';
 import { CommonPluginElement } from '@plait/common';
