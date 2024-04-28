@@ -1,6 +1,6 @@
-import { BasicShapes, FlowchartSymbols, LineShape } from '../interfaces';
+import { BasicShapes, FlowchartSymbols, LineShape, SwimlaneSymbols } from '../interfaces';
 
-export type DrawPointerType = BasicShapes | LineShape | FlowchartSymbols;
+export type DrawPointerType = BasicShapes | LineShape | FlowchartSymbols | SwimlaneSymbols;
 
 export const getGeometryPointers = () => {
     return [...Object.keys(BasicShapes), ...Object.keys(FlowchartSymbols)];

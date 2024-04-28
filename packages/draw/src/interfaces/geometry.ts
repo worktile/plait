@@ -2,6 +2,7 @@ import { PlaitBoard, PlaitElement, Point, PointOfRectangle, RectangleClient, Vec
 import { Options } from 'roughjs/bin/core';
 import { ParagraphElement } from '@plait/text';
 import { StrokeStyle } from './element';
+import { PlaitTable } from './table';
 
 export enum BasicShapes {
     rectangle = 'rectangle',
@@ -53,7 +54,14 @@ export enum FlowchartSymbols {
     noteSquare = 'noteSquare'
 }
 
-export type GeometryShapes = BasicShapes | FlowchartSymbols;
+export enum SwimlaneSymbols {
+    vertical = 'vertical',
+    horizontal = 'horizontal',
+    separatorVertical = 'separatorVertical',
+    separatorHorizontal = 'separatorHorizontal'
+}
+
+export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols;
 
 export interface PlaitGeometry extends PlaitElement {
     points: [Point, Point];
@@ -71,6 +79,7 @@ export interface PlaitGeometry extends PlaitElement {
 
     angle: number;
     opacity: number;
+    swimlaneId?: string;
 }
 
 export interface PlaitRectangle extends PlaitGeometry {
@@ -83,6 +92,27 @@ export interface PlaitEllipse extends PlaitGeometry {
 
 export interface PlaitDiamond extends PlaitGeometry {
     shape: BasicShapes.diamond;
+}
+
+export interface PlaitSwimlane extends PlaitTable {
+    type: 'geometry';
+    shape: SwimlaneSymbols;
+}
+
+export interface PlaitSwimlaneVertical extends PlaitSwimlane {
+    shape: SwimlaneSymbols.vertical;
+}
+
+export interface PlaitSwimlaneHorizontal extends PlaitSwimlane {
+    shape: SwimlaneSymbols.horizontal;
+}
+
+export interface PlaitSwimlaneSeparatorVertical extends PlaitSwimlane {
+    shape: SwimlaneSymbols.separatorVertical;
+}
+
+export interface PlaitSwimlaneSeparatorHorizontal extends PlaitSwimlane {
+    shape: SwimlaneSymbols.horizontal;
 }
 
 export const PlaitGeometry = {};

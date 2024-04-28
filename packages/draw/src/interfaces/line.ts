@@ -72,6 +72,7 @@ export interface PlaitLine extends PlaitElement {
     strokeStyle?: StrokeStyle;
 
     opacity: number;
+    swimlaneId?: string;
 }
 
 export interface PlaitStraightLine extends PlaitLine {
