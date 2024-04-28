@@ -9,8 +9,8 @@ import { PathRef, PathRefOptions } from '../interfaces/path-ref';
 import { Path } from '../interfaces/path';
 import { ThemeColorMode } from '../interfaces/theme';
 import { CoreTransforms } from '../transforms/element';
-import { WritableClipboardContext, WritableClipboardOperationType, drawEntireActiveRectangleG } from '../utils';
-import { RectangleClient } from '../interfaces';
+import { ClipboardData, WritableClipboardContext, WritableClipboardOperationType, drawEntireActiveRectangleG } from '../utils';
+import { Point, RectangleClient } from '../interfaces';
 
 export function createBoard(children: PlaitElement[], options?: PlaitBoardOptions): PlaitBoard {
     const board: PlaitBoard = {
@@ -102,7 +102,7 @@ export function createBoard(children: PlaitElement[], options?: PlaitBoardOption
             operationType: WritableClipboardOperationType,
             originData?: PlaitElement[]
         ) => clipboardContext,
-        insertFragment: () => {},
+        insertFragment: (clipboardData: ClipboardData | null, targetPoint: Point, operationType?: WritableClipboardOperationType) => {},
         deleteFragment: (elements: PlaitElement[]) => {
             CoreTransforms.removeElements(board, elements);
         },

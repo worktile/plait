@@ -10,7 +10,6 @@ import {
     Viewport,
     getClipboardData,
     getProbablySupportsClipboardWrite,
-    getRectangleByElements,
     getSelectedElements,
     toHostPoint,
     toViewBoxPoint,
@@ -19,7 +18,6 @@ import {
     deleteFragment,
     Transforms,
     duplicateElements,
-    setClipboardData,
     setFragment,
     WritableClipboardOperationType
 } from '@plait/core';
@@ -210,6 +208,6 @@ export class BasicEditorComponent implements OnInit {
         event.stopPropagation();
         const targetPoint = toViewBoxPoint(this.board, toHostPoint(this.board, event.x, event.y));
         const clipboardData = await getClipboardData(null);
-        this.board.insertFragment(clipboardData, targetPoint);
+        this.board.insertFragment(clipboardData, targetPoint, WritableClipboardOperationType.paste);
     }
 }

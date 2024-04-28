@@ -95,7 +95,7 @@ export const withNodeImage = (board: PlaitBoard) => {
     ) => {
         const selectedImageElement = getElementOfFocusedImage(board) as MindElement<ImageData>;
         if (selectedImageElement) {
-            clipboardContext = createClipboardContext(WritableClipboardType.medias, [selectedImageElement.data.image], '', operationType);
+            clipboardContext = createClipboardContext(WritableClipboardType.medias, [selectedImageElement.data.image], '');
         }
         return buildFragment(clipboardContext, rectangle, operationType, originData);
     };
@@ -108,7 +108,7 @@ export const withNodeImage = (board: PlaitBoard) => {
         deleteFragment(elements);
     };
 
-    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point) => {
+    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point, operationType?: WritableClipboardOperationType) => {
         const selectedElements = getSelectedElements(board);
         const isSelectedImage = !!getElementOfFocusedImage(board);
         const isSingleSelection = selectedElements.length === 1 && MindElement.isMindElement(board, selectedElements[0]);
@@ -130,7 +130,7 @@ export const withNodeImage = (board: PlaitBoard) => {
                 return;
             }
         }
-        insertFragment(clipboardData, targetPoint);
+        insertFragment(clipboardData, targetPoint, operationType);
     };
 
     return board;

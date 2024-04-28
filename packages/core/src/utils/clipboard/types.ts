@@ -8,7 +8,8 @@ export enum WritableClipboardType {
 export enum WritableClipboardOperationType {
     'copy' = 'copy',
     'cut' = 'cut',
-    'duplicate' = 'duplicate'
+    'duplicate' = 'duplicate',
+    'paste' = 'paste'
 }
 
 export type WritableClipboardData = PlaitElement[] | any[];

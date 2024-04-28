@@ -65,20 +65,19 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             const elements = buildClipboardData(board, selectedElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
             const text = getElementsText(selectedElements);
             if (!clipboardContext) {
-                clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text, operationType);
+                clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text);
             } else {
                 clipboardContext = addClipboardContext(clipboardContext, {
                     text,
                     type: WritableClipboardType.elements,
-                    elements,
-                    operationType
+                    elements
                 });
             }
         }
         return buildFragment(clipboardContext, rectangle, operationType, originData);
     };
 
-    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point) => {
+    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point, operationType?: WritableClipboardOperationType) => {
         const selectedElements = getSelectedElements(board);
         if (clipboardData?.files?.length) {
             const acceptImageArray = acceptImageTypes.map(type => 'image/' + type);
@@ -112,7 +111,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
             }
         }
 
-        insertFragment(clipboardData, targetPoint);
+        insertFragment(clipboardData, targetPoint, operationType);
     };
 
     return board;

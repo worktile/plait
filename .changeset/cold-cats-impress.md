@@ -4,4 +4,4 @@
 '@plait/mind': patch
 ---
 
-add operation type for clipboardContext
+add operation type for setFragment

@@ -67,24 +67,23 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
             const elements = buildClipboardData(board, firstLevelElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
             const text = getElementsText(targetMindElements);
             if (!clipboardContext) {
-                clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text, operationType);
+                clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text);
             } else {
                 clipboardContext = addClipboardContext(clipboardContext, {
                     text,
                     type: WritableClipboardType.elements,
-                    elements,
-                    operationType
+                    elements
                 });
             }
         }
         return buildFragment(clipboardContext, rectangle, operationType, originData);
     };
 
-    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point) => {
+    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point, operationType?: WritableClipboardOperationType) => {
         if (clipboardData?.elements?.length) {
             const mindElements = clipboardData.elements?.filter(value => MindElement.isMindElement(board, value));
             if (mindElements && mindElements.length > 0) {
-                insertClipboardData(board, mindElements, targetPoint, clipboardData?.operationType);
+                insertClipboardData(board, mindElements, targetPoint, operationType);
             }
         }
         if (clipboardData?.text) {
@@ -95,7 +94,7 @@ export const withMindFragment = (baseBoard: PlaitBoard) => {
             }
         }
 
-        insertFragment(clipboardData, targetPoint);
+        insertFragment(clipboardData, targetPoint, operationType);
     };
 
     return board;

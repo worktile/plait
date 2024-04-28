@@ -23,13 +23,12 @@ export function withRelatedFragment(board: PlaitBoard) {
             }
             if (relatedFragment.length) {
                 if (!clipboardContext) {
-                    clipboardContext = createClipboardContext(WritableClipboardType.elements, relatedFragment, '', operationType);
+                    clipboardContext = createClipboardContext(WritableClipboardType.elements, relatedFragment, '');
                 } else {
                     clipboardContext = addClipboardContext(clipboardContext, {
                         text: '',
                         type: WritableClipboardType.elements,
-                        elements: relatedFragment,
-                        operationType
+                        elements: relatedFragment
                     });
                 }
             }

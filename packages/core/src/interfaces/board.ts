@@ -63,7 +63,7 @@ export interface PlaitBoard {
         operationType: WritableClipboardOperationType,
         originData?: PlaitElement[]
     ) => WritableClipboardContext | null;
-    insertFragment: (clipboardData: ClipboardData | null, targetPoint: Point) => void;
+    insertFragment: (clipboardData: ClipboardData | null, targetPoint: Point, operationType?: WritableClipboardOperationType) => void;
     deleteFragment: (data: PlaitElement[]) => void;
     getDeletedFragment: (data: PlaitElement[]) => PlaitElement[];
     getRelatedFragment: (data: PlaitElement[], originData?: PlaitElement[]) => PlaitElement[];

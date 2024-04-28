@@ -28,6 +28,7 @@ export const duplicateElements = (board: PlaitBoard, elements?: PlaitElement[], 
                 ...clonedContext,
                 text: undefined
             },
-            point || [targetRectangle.x + targetRectangle.width / 2, targetRectangle.y + targetRectangle.height / 2]
+            point || [targetRectangle.x + targetRectangle.width / 2, targetRectangle.y + targetRectangle.height / 2],
+            WritableClipboardOperationType.duplicate
         );
 };

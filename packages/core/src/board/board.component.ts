@@ -423,7 +423,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
                 if (mousePoint) {
                     const targetPoint = toViewBoxPoint(this.board, toHostPoint(this.board, mousePoint[0], mousePoint[1]));
                     const clipboardData = await getClipboardData(clipboardEvent.clipboardData);
-                    this.board.insertFragment(clipboardData, targetPoint);
+                    this.board.insertFragment(clipboardData, targetPoint, WritableClipboardOperationType.paste);
                 }
             });
 
