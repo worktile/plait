@@ -18,7 +18,6 @@ export interface WritableClipboardContext {
     text: string;
     type: WritableClipboardType;
     elements: WritableClipboardData;
-    operationType?: WritableClipboardOperationType;
 }
 
 export interface ClipboardData {
