@@ -13,6 +13,10 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
     implements OnInit, OnDestroy, OnContextChanged<PlaitTable, PlaitBoard> {
     activeGenerator!: ActiveGenerator<PlaitTable>;
 
+    constructor() {
+        super();
+    }
+
     initializeGenerator() {
         this.activeGenerator = new ActiveGenerator<PlaitTable>(this.board, {
             getStrokeWidth: () => {
