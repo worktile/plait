@@ -63,7 +63,7 @@ export function withMoving(board: PlaitBoard) {
 
     board.keyUp = (event: KeyboardEvent) => {
         if (!PlaitBoard.isReadonly(board)) {
-            if (event.altKey && pendingNodesG && startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
+            if (pendingNodesG && startPoint && activeElements.length && !PlaitBoard.hasBeenTextEditing(board)) {
                 event.preventDefault();
                 const currentElements = updatePoints(board, activeElements, offsetX, offsetY);
                 PlaitBoard.getBoardContainer(board).classList.add('element-moving');
