@@ -1,5 +1,13 @@
 # plait
 
+## 0.56.1
+
+### Patch Changes
+
+-   [`d67c34517`](https://github.com/worktile/plait/commit/d67c345172391eaf477928950e423a363045641d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add operation type for setFragment
+
+*   [`e2db54758`](https://github.com/worktile/plait/commit/e2db54758c36a29ea55b0ab396478e3519dd0419) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - update points when keyup
+
 ## 0.56.0
 
 ### Minor Changes
