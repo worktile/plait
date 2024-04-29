@@ -1,5 +1,11 @@
 # mind
 
+## 0.56.1
+
+### Patch Changes
+
+-   [`d67c34517`](https://github.com/worktile/plait/commit/d67c345172391eaf477928950e423a363045641d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add operation type for setFragment
+
 ## 0.56.0
 
 ### Minor Changes

@@ -1,5 +1,15 @@
 # @plait/draw
 
+## 0.56.1
+
+### Patch Changes
+
+-   [`c659c36f2`](https://github.com/worktile/plait/commit/c659c36f2498a90c2145e96fc0c910d267fadb01) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - delete text memory property when remove this property
+
+*   [`857b32b57`](https://github.com/worktile/plait/commit/857b32b57bf52001957518dffdd93b781f1f4688) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - set property for some basic shapes
+
+-   [`d67c34517`](https://github.com/worktile/plait/commit/d67c345172391eaf477928950e423a363045641d) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add operation type for setFragment
+
 ## 0.56.0
 
 ### Minor Changes
