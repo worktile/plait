@@ -51,6 +51,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
 
     ngOnInit(): void {
         super.ngOnInit();
+        this.getRef().setState(this.context.selected ? EdgeStableState.active : EdgeStableState['']);
         this.initializeGenerator();
         this.getRef().buildPathPoints(this.board, this.element);
         renderEdge(this.board, this.element, this.getRef().getState());
@@ -97,5 +98,7 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
 
     ngOnDestroy(): void {
         super.ngOnDestroy();
+        this.edgeGenerator.destroy();
+        this.edgeLabelGenerator.destroy();
     }
 }

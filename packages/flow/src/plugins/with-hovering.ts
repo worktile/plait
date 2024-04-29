@@ -4,7 +4,6 @@ import { FlowEdge } from '../interfaces/edge';
 import { getHitEdge, getHitNode, isEdgeDragging, isPlaceholderEdgeInfo, renderEdge, renderRelatedEdges } from '../utils';
 import { PlaitCommonElementRef } from '@plait/common';
 import { NodeActiveGenerator } from '../generators/node-active.generator';
-import { EdgeState } from '../public-api';
 
 export const withHovering: PlaitPlugin = (board: PlaitBoard) => {
     const { pointerMove, pointerLeave } = board;
@@ -22,7 +21,7 @@ export const withHovering: PlaitPlugin = (board: PlaitBoard) => {
             hoveredElement = newHitNode;
             return;
         }
-        if (hoveredElement) {
+        if (hoveredElement && PlaitElement.hasMounted(hoveredElement)) {
             const selected = isSelectedElement(board, hoveredElement);
             if (FlowNode.isFlowNodeElement(hoveredElement)) {
                 const elementRef = PlaitElement.getElementRef<PlaitCommonElementRef>(hoveredElement);

@@ -128,4 +128,10 @@ export class EdgeLabelGenerator extends Generator<FlowEdge, EdgeData, GeneratorO
             this.textManage.updateRectangle();
         }
     }
+
+    destroy(): void {
+        super.destroy();
+        this.textManage.destroy();
+        this.labelIconRef && this.labelIconRef.labelIconComponentRef.destroy();
+    }
 }
