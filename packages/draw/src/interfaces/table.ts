@@ -1,8 +1,9 @@
-import { PlaitElement } from '@plait/core';
+import { PlaitElement, Point } from '@plait/core';
 import { ParagraphElement } from '@plait/text';
 
 export interface PlaitTable extends PlaitElement {
     id: string;
+    points: Point[];
     rows: {
         id: string;
         height?: number;
@@ -12,7 +13,6 @@ export interface PlaitTable extends PlaitElement {
         width?: number;
     }[];
     cells: PlaitTableCell[];
-    mergeable?: boolean;
     groupId?: string;
     relatedIds: {
         relatedId: string;
@@ -27,8 +27,6 @@ export interface PlaitTableCell {
     colspan?: number;
     rowspan?: number;
     text?: PlaitTableCellParagraph;
-    // 是否可编辑
-    editable?: boolean;
 }
 
 export interface PlaitTableCellParagraph extends ParagraphElement {
