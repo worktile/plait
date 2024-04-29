@@ -13,4 +13,5 @@ export const withTable = (board: PlaitBoard) => {
         }
         return drawElement(context);
     };
+    return board;
 };
