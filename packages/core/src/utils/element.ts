@@ -1,5 +1,5 @@
 import { Ancestor, PlaitBoard, PlaitElement, Point, RectangleClient } from '../interfaces';
-import { getSelectionAngle, hasSameAngle, getRotatedBoundingRectangle, rotatePointsByElement } from './angle';
+import { getSelectionAngle, hasSameAngle, getRotatedBoundingRectangle, rotatePointsByElement, getRectangleByAngle } from './angle';
 import { depthFirstRecursion, getIsRecursionFunc } from './tree';
 
 export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement[], recursion: boolean): RectangleClient {
@@ -43,6 +43,12 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
             height: 0
         };
     }
+}
+
+export function getBoundingRectangleByElements(board: PlaitBoard, elements: PlaitElement[], recursion: boolean): RectangleClient {
+    const rectangle = getRectangleByElements(board, elements, recursion)!;
+    const angle = getSelectionAngle(elements);
+    return getRectangleByAngle(rectangle, angle) || rectangle;
 }
 
 export function getBoardRectangle(board: PlaitBoard): RectangleClient {
