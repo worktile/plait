@@ -2,7 +2,7 @@ import { PlaitBoard, PlaitElement } from '@plait/core';
 import { BasicShapes, GeometryShapes, MemorizeKey, PlaitDrawElement } from '../interfaces';
 import { getMemorizedLatest, memorizeLatest } from '@plait/common';
 import { DrawPointerType } from '../constants';
-import { BaseOperation, BaseSetNodeOperation } from 'slate';
+import { BaseOperation, BaseSetNodeOperation, Node } from 'slate';
 
 const SHAPE_MAX_LENGTH = 6;
 const memorizedShape: WeakMap<PlaitBoard, GeometryShapes[]> = new WeakMap();
@@ -54,8 +54,20 @@ export const memorizeLatestText = (element: PlaitDrawElement, operations: BaseOp
     let textMemory = getMemorizedLatest(memorizeKey)?.text || {};
     const setNodeOperation = operations.find(operation => operation.type === 'set_node');
     if (setNodeOperation) {
-        const newProperties = (setNodeOperation as BaseSetNodeOperation).newProperties;
-        textMemory = { ...textMemory, ...newProperties };
+        const { properties, newProperties } = setNodeOperation as BaseSetNodeOperation;
+        for (const key in newProperties) {
+            const value = newProperties[key as keyof Partial<Node>];
+            if (value == null) {
+                delete textMemory[key];
+            } else {
+                textMemory[key] = value;
+            }
+        }
+        for (const key in properties) {
+            if (!newProperties.hasOwnProperty(key)) {
+                delete textMemory[key];
+            }
+        }
         memorizeLatest(memorizeKey, 'text', textMemory);
     }
 };
