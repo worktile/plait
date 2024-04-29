@@ -1,4 +1,4 @@
-import { BasicShapes, FlowchartSymbols, GeometryShapes, ShapeEngine, SwimlaneSymbols } from '../interfaces';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, ShapeEngine, SwimlaneSymbols, TableSymbols } from '../interfaces';
 import { CommentEngine } from './basic-shapes/comment';
 import { CrossEngine } from './basic-shapes/cross';
 import { DiamondEngine } from './basic-shapes/diamond';
@@ -39,7 +39,6 @@ import { NoteCurlyLeftEngine } from './flowchart/note-curly-left';
 import { NoteCurlyRightEngine } from './flowchart/note-curly-right';
 import { NoteSquareEngine } from './flowchart/note-square';
 import { TableEngine } from './table/table';
-import { SwimlaneSeparatorEngine } from './swimlane/swimlane-separator';
 
 export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [BasicShapes.rectangle]: RectangleEngine,
@@ -86,10 +85,9 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
     [FlowchartSymbols.noteCurlyLeft]: NoteCurlyLeftEngine,
     [FlowchartSymbols.noteCurlyRight]: NoteCurlyRightEngine,
     [FlowchartSymbols.noteSquare]: NoteSquareEngine,
-    [SwimlaneSymbols.horizontal]: TableEngine,
-    [SwimlaneSymbols.vertical]: TableEngine,
-    [SwimlaneSymbols.separatorHorizontal]: SwimlaneSeparatorEngine,
-    [SwimlaneSymbols.separatorVertical]: SwimlaneSeparatorEngine
+    [SwimlaneSymbols.swimlaneHorizontal]: TableEngine,
+    [SwimlaneSymbols.swimlaneVertical]: TableEngine,
+    [TableSymbols.table]: TableEngine,
 };
 
 export const getEngine = (shape: GeometryShapes) => {

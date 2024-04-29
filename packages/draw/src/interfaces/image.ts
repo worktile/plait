@@ -5,5 +5,4 @@ export interface PlaitImage extends PlaitElement {
     type: 'image';
     url: string;
     angle: number;
-    swimlaneId?: string;
 }

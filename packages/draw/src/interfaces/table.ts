@@ -14,10 +14,6 @@ export interface PlaitTable extends PlaitElement {
     }[];
     cells: PlaitTableCell[];
     groupId?: string;
-    relatedIds: {
-        relatedId: string;
-        childId: string;
-    }[];
 }
 
 export interface PlaitTableCell {

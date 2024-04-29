@@ -7,7 +7,7 @@ export const withTable = (board: PlaitBoard) => {
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (
             PlaitDrawElement.isGeometry(context.element) &&
-            [SwimlaneSymbols.horizontal, SwimlaneSymbols.vertical].includes(context.element.shape as SwimlaneSymbols)
+            [SwimlaneSymbols.swimlaneHorizontal, SwimlaneSymbols.swimlaneVertical].includes(context.element.shape as SwimlaneSymbols)
         ) {
             return TableComponent;
         }

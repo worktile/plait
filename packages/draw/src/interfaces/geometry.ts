@@ -54,14 +54,16 @@ export enum FlowchartSymbols {
     noteSquare = 'noteSquare'
 }
 
-export enum SwimlaneSymbols {
-    vertical = 'vertical',
-    horizontal = 'horizontal',
-    separatorVertical = 'separatorVertical',
-    separatorHorizontal = 'separatorHorizontal'
+export enum TableSymbols {
+    table = 'table'
 }
 
-export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols;
+export enum SwimlaneSymbols {
+    swimlaneVertical = 'swimlaneVertical',
+    swimlaneHorizontal = 'swimlaneHorizontal'
+}
+
+export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols | TableSymbols;
 
 export interface PlaitGeometry extends PlaitElement {
     points: [Point, Point];
@@ -79,7 +81,6 @@ export interface PlaitGeometry extends PlaitElement {
 
     angle: number;
     opacity: number;
-    swimlaneId?: string;
 }
 
 export interface PlaitRectangle extends PlaitGeometry {
@@ -100,19 +101,11 @@ export interface PlaitSwimlane extends PlaitTable {
 }
 
 export interface PlaitSwimlaneVertical extends PlaitSwimlane {
-    shape: SwimlaneSymbols.vertical;
+    shape: SwimlaneSymbols.swimlaneVertical;
 }
 
 export interface PlaitSwimlaneHorizontal extends PlaitSwimlane {
-    shape: SwimlaneSymbols.horizontal;
-}
-
-export interface PlaitSwimlaneSeparatorVertical extends PlaitSwimlane {
-    shape: SwimlaneSymbols.separatorVertical;
-}
-
-export interface PlaitSwimlaneSeparatorHorizontal extends PlaitSwimlane {
-    shape: SwimlaneSymbols.horizontal;
+    shape: SwimlaneSymbols.swimlaneHorizontal;
 }
 
 export const PlaitGeometry = {};
