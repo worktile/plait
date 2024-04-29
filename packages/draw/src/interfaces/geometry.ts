@@ -2,6 +2,7 @@ import { PlaitBoard, PlaitElement, Point, PointOfRectangle, RectangleClient, Vec
 import { Options } from 'roughjs/bin/core';
 import { ParagraphElement } from '@plait/text';
 import { StrokeStyle } from './element';
+import { PlaitTable } from './table';
 
 export enum BasicShapes {
     rectangle = 'rectangle',
@@ -53,7 +54,16 @@ export enum FlowchartSymbols {
     noteSquare = 'noteSquare'
 }
 
-export type GeometryShapes = BasicShapes | FlowchartSymbols;
+export enum TableSymbols {
+    table = 'table'
+}
+
+export enum SwimlaneSymbols {
+    swimlaneVertical = 'swimlaneVertical',
+    swimlaneHorizontal = 'swimlaneHorizontal'
+}
+
+export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols | TableSymbols;
 
 export interface PlaitGeometry extends PlaitElement {
     points: [Point, Point];
@@ -83,6 +93,19 @@ export interface PlaitEllipse extends PlaitGeometry {
 
 export interface PlaitDiamond extends PlaitGeometry {
     shape: BasicShapes.diamond;
+}
+
+export interface PlaitSwimlane extends PlaitTable {
+    type: 'geometry';
+    shape: SwimlaneSymbols;
+}
+
+export interface PlaitSwimlaneVertical extends PlaitSwimlane {
+    shape: SwimlaneSymbols.swimlaneVertical;
+}
+
+export interface PlaitSwimlaneHorizontal extends PlaitSwimlane {
+    shape: SwimlaneSymbols.swimlaneHorizontal;
 }
 
 export const PlaitGeometry = {};

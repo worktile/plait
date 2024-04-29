@@ -18,6 +18,7 @@ import { withDrawResize } from './with-draw-resize';
 import { isHitDrawElement, isHitElementInside, isRectangleHitDrawElement } from '../utils/hit';
 import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
 import { withDrawRotate } from './with-draw-rotate';
+import { withTable } from './with-table';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;
@@ -121,17 +122,21 @@ export const withDraw = (board: PlaitBoard) => {
         return getRelatedFragment([...elements, ...activeLines], originData);
     };
 
-    return withDrawResize(
-        withLineResize(
-            withLineTextMove(
-                withLineAutoCompleteReaction(
-                    withLineText(
-                        withLineBoundReaction(
-                            withGeometryResize(
-                                withDrawRotate(
-                                    withLineCreateByDraw(
-                                        withLineAutoComplete(
-                                            withGeometryCreateByDrag(withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board))))
+    return withTable(
+        withDrawResize(
+            withLineResize(
+                withLineTextMove(
+                    withLineAutoCompleteReaction(
+                        withLineText(
+                            withLineBoundReaction(
+                                withGeometryResize(
+                                    withDrawRotate(
+                                        withLineCreateByDraw(
+                                            withLineAutoComplete(
+                                                withGeometryCreateByDrag(
+                                                    withGeometryCreateByDrawing(withDrawFragment(withDrawHotkey(board)))
+                                                )
+                                            )
                                         )
                                     )
                                 )
