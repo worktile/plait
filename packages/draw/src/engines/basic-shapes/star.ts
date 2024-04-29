@@ -35,7 +35,7 @@ export const StarEngine: ShapeEngine = createPolygonEngine({
             height,
             width: width > 0 ? width : 0,
             x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth + originWidth / 4,
-            y: elementRectangle.y + (elementRectangle.height * 1) / 5 + ((elementRectangle.height * 4) / 5 - height) / 2
+            y: elementRectangle.y + (elementRectangle.height * 1) / 6 + ((elementRectangle.height * 4) / 5 - height) / 2
         };
     }
 });
