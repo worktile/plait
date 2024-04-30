@@ -359,154 +359,175 @@ export const mockDrawData: PlaitDrawElement[] = [
     }
 ] as PlaitDrawElement[];
 
-export const mockGroupData: PlaitDrawElement[] = [
+export const mockTableData: PlaitDrawElement[] = [
     {
-        id: 'group1',
-        type: 'group'
-    },
-    {
-        id: 'group2',
-        type: 'group',
-        groupId: 'group3'
-    },
-    {
-        id: 'group3',
-        type: 'group'
-    },
-    {
-        id: 'jimNt',
-        type: 'geometry',
-        shape: 'rectangle',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        groupId: 'group1',
-        text: {
-            children: [
-                {
-                    text: 'group1'
-                }
-            ],
-            align: 'center'
-        },
+        id: 'jhETT',
         points: [
-            [-98.814453125, 66.53125],
-            [55.880859375, 126.71875]
+            [-100, -100],
+            [500, 300]
         ],
-        strokeWidth: 2,
-        fill: '#e48483'
+        rows: [
+            {
+                id: 'row-1',
+                height: 30
+            },
+            {
+                id: 'row-2',
+                height: 30
+            },
+            {
+                id: 'row-3'
+            },
+            {
+                id: 'row-4'
+            }
+        ],
+        columns: [
+            {
+                id: 'column-1'
+            },
+            {
+                id: 'column-2'
+            },
+            {
+                id: 'column-3'
+            }
+        ],
+        cells: [
+            {
+                id: 'cell-1-1',
+                rowId: 'row-1',
+                columnId: 'column-1',
+                colspan: 3
+            },
+            {
+                id: 'cell-2-1',
+                rowId: 'row-2',
+                columnId: 'column-1'
+            },
+            {
+                id: 'cell-2-2',
+                rowId: 'row-2',
+                columnId: 'column-2'
+            },
+            {
+                id: 'cell-2-3',
+                rowId: 'row-2',
+                columnId: 'column-3'
+            },
+            {
+                id: 'cell-3-1',
+                rowId: 'row-3',
+                columnId: 'column-1',
+            },
+            {
+                id: 'cell-3-2',
+                rowId: 'row-3',
+                columnId: 'column-2',
+            },
+            {
+                id: 'cell-3-3',
+                rowId: 'row-3',
+                columnId: 'column-3',
+            },
+            {
+                id: 'cell-4-1',
+                rowId: 'row-4',
+                columnId: 'column-1'
+            },
+            {
+                id: 'cell-4-2',
+                rowId: 'row-4',
+                columnId: 'column-2'
+            },
+            {
+                id: 'cell-4-3',
+                rowId: 'row-4',
+                columnId: 'column-3'
+            },
+        ]
     },
     {
-        id: 'bRBzf',
-        type: 'geometry',
-        shape: 'rectangle',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        groupId: 'group1',
-        text: {
-            children: [
-                {
-                    text: 'group1'
-                }
-            ],
-            align: 'center'
-        },
+        id: 'TTjhE',
         points: [
-            [136.806640625, 66.53125],
-            [291.501953125, 126.71875]
+            [600, -100],
+            [1200, 300]
         ],
-        strokeWidth: 2,
-        fill: '#e48483'
-    },
-    {
-        id: 'erasy',
-        type: 'geometry',
-        shape: 'rectangle',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        groupId: 'group3',
-        text: {
-            children: [
-                {
-                    text: 'group3'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [19.580078125, 318.6376953125],
-            [174.275390625, 378.8251953125]
+        rows: [
+            {
+                id: 'row-1'
+            },
+            {
+                id: 'row-2'
+            },
+            {
+                id: 'row-3'
+            },
+            {
+                id: 'row-4'
+            }
         ],
-        strokeWidth: 2,
-        fill: '#69b1e4'
-    },
-    {
-        id: 'YcTFs',
-        type: 'geometry',
-        shape: 'text',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        text: {
-            children: [
-                {
-                    text: 'group3 包含 group2'
-                }
-            ]
-        },
-        points: [
-            [-275.482421875, 302.318359375],
-            [-138.091796875, 322.318359375]
+        columns: [
+            {
+                id: 'column-1',
+                width: 30
+            },
+            {
+                id: 'column-2',
+                width: 30
+            },
+            {
+                id: 'column-3'
+            }
         ],
-        autoSize: true
-    },
-    {
-        id: 'ztmWw',
-        type: 'geometry',
-        shape: 'rectangle',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        groupId: 'group2',
-        text: {
-            children: [
-                {
-                    text: 'group2'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [-98.814453125, 197.279296875],
-            [55.880859375, 257.466796875]
-        ],
-        strokeWidth: 2,
-        fill: '#e48483'
-    },
-    {
-        id: 'bWiPp',
-        type: 'geometry',
-        shape: 'rectangle',
-        angle: 0,
-        opacity: 1,
-        textHeight: 20,
-        groupId: 'group2',
-        text: {
-            children: [
-                {
-                    text: 'group2'
-                }
-            ],
-            align: 'center'
-        },
-        points: [
-            [139.3486328125, 197.279296875],
-            [294.0439453125, 257.466796875]
-        ],
-        strokeWidth: 2,
-        fill: '#e48483'
+        cells: [
+            {
+                id: 'cell-1-1',
+                rowId: 'row-1',
+                columnId: 'column-1',
+                rowspan: 4
+            },
+            {
+                id: 'cell-1-2',
+                rowId: 'row-1',
+                columnId: 'column-2'
+            },
+            {
+                id: 'cell-1-3',
+                rowId: 'row-1',
+                columnId: 'column-3'
+            },
+            {
+                id: 'cell-2-2',
+                rowId: 'row-2',
+                columnId: 'column-2'
+            },
+            {
+                id: 'cell-2-3',
+                rowId: 'row-2',
+                columnId: 'column-3'
+            },
+            {
+                id: 'cell-3-2',
+                rowId: 'row-3',
+                columnId: 'column-2',
+            },
+            {
+                id: 'cell-3-3',
+                rowId: 'row-3',
+                columnId: 'column-3',
+            },
+            {
+                id: 'cell-4-2',
+                rowId: 'row-4',
+                columnId: 'column-2'
+            },
+            {
+                id: 'cell-4-3',
+                rowId: 'row-4',
+                columnId: 'column-3'
+            },
+        ]
     }
 ] as PlaitDrawElement[];
 

@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, ACTIVE_STROKE_WIDTH, RectangleClient } from '@plait/core';
 import { ActiveGenerator, canResize, CommonPluginElement } from '@plait/common';
 import { PlaitTable } from './interfaces/table';
+import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
+import { TableGenerator } from './generators/table.generator';
 
 @Component({
     selector: 'plait-draw-table',
@@ -12,6 +14,8 @@ import { PlaitTable } from './interfaces/table';
 export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
     implements OnInit, OnDestroy, OnContextChanged<PlaitTable, PlaitBoard> {
     activeGenerator!: ActiveGenerator<PlaitTable>;
+
+    tableGenerator!: TableGenerator;
 
     constructor() {
         super();
@@ -32,11 +36,14 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
                 return canResize(this.board, this.element);
             }
         });
+        this.tableGenerator = new TableGenerator(this.board);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
         this.initializeGenerator();
+        this.tableGenerator.processDrawing(this.element, this.getElementG());
+
     }
 
     onContextChanged(

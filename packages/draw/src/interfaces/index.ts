@@ -1,6 +1,7 @@
 import { BasicShapes, FlowchartSymbols, PlaitGeometry } from './geometry';
 import { PlaitImage } from './image';
 import { PlaitLine } from './line';
+import { PlaitTable } from './table';
 import { PlaitText } from './text';
 
 export * from './line';
@@ -8,7 +9,7 @@ export * from './geometry';
 export * from './text';
 export * from './element';
 
-export type PlaitDrawElement = PlaitGeometry | PlaitLine | PlaitImage;
+export type PlaitDrawElement = PlaitGeometry | PlaitLine | PlaitImage | PlaitTable;
 
 export type PlaitShapeElement = PlaitGeometry | PlaitImage;
 
