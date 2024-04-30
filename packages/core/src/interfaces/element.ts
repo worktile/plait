@@ -1,4 +1,3 @@
-import { ELEMENT_TO_COMPONENT, PlaitPluginElementComponent } from '../core/element/plugin-element';
 import { ELEMENT_TO_REF, NODE_TO_CONTAINER_G, NODE_TO_G, NODE_TO_PARENT } from '../utils';
 import { PlaitBoard } from './board';
 import { Point } from './point';
@@ -21,9 +20,6 @@ export const PlaitElement = {
         } else {
             return false;
         }
-    },
-    getComponent(value: PlaitElement) {
-        return ELEMENT_TO_COMPONENT.get(value) as PlaitPluginElementComponent;
     },
     getElementRef<T extends PlaitElementRef = PlaitElementRef>(value: PlaitElement) {
         return ELEMENT_TO_REF.get(value) as T;
