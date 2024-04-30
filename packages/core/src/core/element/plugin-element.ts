@@ -39,9 +39,6 @@ export abstract class PlaitPluginElementComponent<
         }
         const previousContext = this._context;
         this._context = value;
-        if (this.element) {
-            ELEMENT_TO_COMPONENT.set(this.element, this);
-        }
         if (this.initialized) {
             const elementG = this.getElementG();
             const containerG = this.getContainerG();
@@ -153,9 +150,6 @@ export abstract class PlaitPluginElementComponent<
     }
 
     ngOnDestroy(): void {
-        if (ELEMENT_TO_COMPONENT.get(this.element) === this) {
-            ELEMENT_TO_COMPONENT.delete(this.element);
-        }
         if (NODE_TO_G.get(this.element) === this._g) {
             NODE_TO_G.delete(this.element);
         }
@@ -169,5 +163,3 @@ export abstract class PlaitPluginElementComponent<
         this.getContainerG().remove();
     }
 }
-
-export const ELEMENT_TO_COMPONENT = new WeakMap<PlaitElement, PlaitPluginElementComponent>();
