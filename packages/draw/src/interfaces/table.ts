@@ -16,13 +16,14 @@ export interface PlaitTable extends PlaitElement {
     groupId?: string;
 }
 
-export interface PlaitTableCell {
+export interface PlaitTableCell extends PlaitElement {
     id: string;
     rowId: string;
     columnId: string;
     colspan?: number;
     rowspan?: number;
     text?: PlaitTableCellParagraph;
+    textHeight?: number;
 }
 
 export interface PlaitTableCellParagraph extends ParagraphElement {

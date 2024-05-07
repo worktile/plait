@@ -8,6 +8,7 @@ export * from './line';
 export * from './geometry';
 export * from './text';
 export * from './element';
+export * from './engine';
 
 export type PlaitDrawElement = PlaitGeometry | PlaitLine | PlaitImage | PlaitTable;
 

@@ -11,9 +11,9 @@ import {
 } from '@plait/common';
 import { BasicShapes, LineHandleRefPair, PlaitGeometry, PlaitLine } from '../../interfaces';
 import { createGeometryElement } from '../geometry';
-import { getStrokeWidthByElement } from '../style/stroke';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
 import { getMidKeyPoints, getMirrorDataPoints, hasIllegalElbowPoint } from './line-resize';
+import { getStrokeWidthByElement } from '../common';
 
 export const isSelfLoop = (element: PlaitLine) => {
     return element.source.boundId && element.source.boundId === element.target.boundId;

@@ -398,53 +398,79 @@ export const mockTableData: PlaitDrawElement[] = [
                 id: 'cell-1-1',
                 rowId: 'row-1',
                 columnId: 'column-1',
-                colspan: 3
+                colspan: 3,
+                textHeight: 20,
+                text: {
+                    children: [
+                        {
+                            text: 'merge cell'
+                        }
+                    ],
+                    align: 'center'
+                },
             },
             {
                 id: 'cell-2-1',
                 rowId: 'row-2',
-                columnId: 'column-1'
+                textHeight: 20,
+                columnId: 'column-1',
+                text: {
+                    children: [
+                        {
+                            text: 'cell-2-1'
+                        }
+                    ],
+                    align: 'center'
+                },
             },
             {
                 id: 'cell-2-2',
                 rowId: 'row-2',
+                textHeight: 20,
                 columnId: 'column-2'
             },
             {
                 id: 'cell-2-3',
                 rowId: 'row-2',
+                textHeight: 20,
                 columnId: 'column-3'
             },
             {
                 id: 'cell-3-1',
                 rowId: 'row-3',
-                columnId: 'column-1',
+                textHeight: 20,
+                columnId: 'column-1'
             },
             {
                 id: 'cell-3-2',
                 rowId: 'row-3',
-                columnId: 'column-2',
+                textHeight: 20,
+                columnId: 'column-2'
             },
             {
                 id: 'cell-3-3',
                 rowId: 'row-3',
-                columnId: 'column-3',
+                textHeight: 20,
+                columnId: 'column-3'
             },
             {
                 id: 'cell-4-1',
                 rowId: 'row-4',
+                textHeight: 20,
                 columnId: 'column-1'
             },
             {
                 id: 'cell-4-2',
                 rowId: 'row-4',
+                textHeight: 20,
                 columnId: 'column-2'
             },
             {
                 id: 'cell-4-3',
                 rowId: 'row-4',
+                textHeight: 20,
                 columnId: 'column-3'
-            },
+            }
         ]
     },
     {
@@ -485,48 +511,74 @@ export const mockTableData: PlaitDrawElement[] = [
                 id: 'cell-1-1',
                 rowId: 'row-1',
                 columnId: 'column-1',
-                rowspan: 4
+                textHeight: 20,
+                rowspan: 4,
+                text: {
+                    children: [
+                        {
+                            text: 'merge cell'
+                        }
+                    ],
+                    align: 'center'
+                },
+
             },
             {
                 id: 'cell-1-2',
                 rowId: 'row-1',
+                textHeight: 20,
                 columnId: 'column-2'
             },
             {
                 id: 'cell-1-3',
                 rowId: 'row-1',
+                textHeight: 20,
                 columnId: 'column-3'
             },
             {
                 id: 'cell-2-2',
                 rowId: 'row-2',
-                columnId: 'column-2'
+                textHeight: 20,
+                columnId: 'column-2',
             },
             {
                 id: 'cell-2-3',
                 rowId: 'row-2',
+                textHeight: 20,
                 columnId: 'column-3'
             },
             {
                 id: 'cell-3-2',
                 rowId: 'row-3',
-                columnId: 'column-2',
+                textHeight: 20,
+                columnId: 'column-2'
             },
             {
                 id: 'cell-3-3',
                 rowId: 'row-3',
+                textHeight: 20,
                 columnId: 'column-3',
+                text: {
+                    children: [
+                        {
+                            text: 'cell-3-3'
+                        }
+                    ],
+                    align: 'center'
+                },
             },
             {
                 id: 'cell-4-2',
                 rowId: 'row-4',
+                textHeight: 20,
                 columnId: 'column-2'
             },
             {
                 id: 'cell-4-3',
                 rowId: 'row-4',
+                textHeight: 20,
                 columnId: 'column-3'
-            },
+            }
         ]
     }
 ] as PlaitDrawElement[];

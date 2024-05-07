@@ -1,5 +1,6 @@
 import {
     PlaitBoard,
+    PlaitElement,
     Point,
     PointOfRectangle,
     RectangleClient,
@@ -10,11 +11,11 @@ import {
     isPointInEllipse,
     setStrokeLinecap
 } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { ShapeDefaultSpace } from '../../constants';
-import { getStrokeWidthByElement } from '../../utils/style/stroke';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
+import { getStrokeWidthByElement } from '../../utils';
 
 export const HardDiskEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
@@ -105,7 +106,7 @@ export const HardDiskEngine: ShapeEngine = {
         return vector;
     },
 
-    getTextRectangle: (element: PlaitGeometry) => {
+    getTextRectangle: (element: PlaitElement) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const height = element.textHeight;

@@ -2,10 +2,10 @@ import { PlaitBoard, Point, createG, drawRectangle, getSelectedElements } from '
 import { LineShape, PlaitLine } from '../interfaces';
 import { Generator, PRIMARY_COLOR, drawFillPrimaryHandle, drawPrimaryHandle } from '@plait/common';
 import { getMiddlePoints } from '../utils/line/line-basic';
-import { DefaultGeometryActiveStyle } from '../constants';
 import { getNextRenderPoints } from '../utils/line/elbow';
 import { isUpdatedHandleIndex } from '../utils/line';
 import { getHitPointIndex } from '../utils/position/line';
+import { DefaultDrawActiveStyle } from '../constants';
 
 export interface ActiveData {
     selected: boolean;
@@ -73,7 +73,7 @@ export class LineActiveGenerator extends Generator<PlaitLine, ActiveData> {
                 }
                 const strokeG = drawRectangle(this.board, activeRectangle, {
                     stroke: PRIMARY_COLOR,
-                    strokeWidth: DefaultGeometryActiveStyle.selectionStrokeWidth
+                    strokeWidth: DefaultDrawActiveStyle.selectionStrokeWidth
                 });
                 strokeG.style.opacity = opacity;
                 activeG.appendChild(strokeG);

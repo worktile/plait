@@ -1,12 +1,13 @@
 import {
     PlaitBoard,
+    PlaitElement,
     Point,
     PointOfRectangle,
     RectangleClient,
     getNearestPointBetweenPointAndSegments,
     setStrokeLinecap
 } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
@@ -48,7 +49,7 @@ export const PredefinedProcessEngine: ShapeEngine = {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
 
-    getTextRectangle: (element: PlaitGeometry) => {
+    getTextRectangle: (element: PlaitElement) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const height = element.textHeight;

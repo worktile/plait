@@ -5,14 +5,14 @@ export const ShapeDefaultSpace = {
     rectangleAndText: 4
 };
 
-export const DefaultGeometryStyle = {
+export const DefaultDrawStyle = {
     strokeWidth: 2,
     defaultRadius: 4,
     strokeColor: '#000',
     fill: 'none'
 };
 
-export const DefaultGeometryActiveStyle = {
+export const DefaultDrawActiveStyle = {
     strokeWidth: ACTIVE_STROKE_WIDTH,
     selectionStrokeWidth: ACTIVE_STROKE_WIDTH
 };

@@ -9,9 +9,10 @@ import {
     getVectorFromPointAndSlope,
     isPointInEllipse,
     setStrokeLinecap,
-    getNearestPointBetweenPointAndEllipse
+    getNearestPointBetweenPointAndEllipse,
+    PlaitElement
 } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getTextRectangle } from '../../utils';
@@ -101,7 +102,7 @@ export const StoredDataEngine: ShapeEngine = {
             [rectangle.x, rectangle.y + rectangle.height / 2]
         ];
     },
-    getTextRectangle(element: PlaitGeometry) {
+    getTextRectangle(element: PlaitElement) {
         const rectangle = getTextRectangle(element);
         const width = rectangle.width;
         rectangle.width = (rectangle.width * 3) / 4;

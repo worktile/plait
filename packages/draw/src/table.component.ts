@@ -1,9 +1,22 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, ACTIVE_STROKE_WIDTH, RectangleClient } from '@plait/core';
-import { ActiveGenerator, canResize, CommonPluginElement } from '@plait/common';
+import {
+    PlaitBoard,
+    PlaitPluginElementContext,
+    OnContextChanged,
+    ACTIVE_STROKE_WIDTH,
+    RectangleClient,
+    PlaitOptionsBoard
+} from '@plait/core';
+import { ActiveGenerator, canResize, CommonPluginElement, WithTextOptions, WithTextPluginKey } from '@plait/common';
 import { PlaitTable } from './interfaces/table';
-import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TableGenerator } from './generators/table.generator';
+import { TextManage, TextManageRef } from '@plait/text';
+import { getEngine } from './engines';
+import { getCellsWithPoints } from './utils/table';
+import { getTextRectangle, memorizeLatestText } from './utils';
+import { DrawTransforms } from './transforms';
+import { PlaitText, TableSymbols } from './interfaces';
+import { GeometryThreshold } from './constants';
 
 @Component({
     selector: 'plait-draw-table',
@@ -37,19 +50,93 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
             }
         });
         this.tableGenerator = new TableGenerator(this.board);
+        this.initializeTextManage();
     }
 
     ngOnInit(): void {
         super.ngOnInit();
         this.initializeGenerator();
         this.tableGenerator.processDrawing(this.element, this.getElementG());
+        this.drawText();
+    }
 
+    initializeTextManage() {
+        const plugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
+        const manages = this.element.cells.map((cell, index) => {
+            return new TextManage(this.board, this.viewContainerRef, {
+                getRectangle: () => {
+                    const cells = getCellsWithPoints(this.element);
+                    const getRectangle = getEngine(TableSymbols.table).getTextRectangle;
+                    if (getRectangle) {
+                        return getRectangle(cells[index]);
+                    }
+                    return getTextRectangle(cells[index]);
+                },
+                onValueChangeHandle: (textManageRef: TextManageRef) => {
+                    const cells = getCellsWithPoints(this.element);
+                    const height = textManageRef.height / this.board.viewport.zoom;
+                    const width = textManageRef.width / this.board.viewport.zoom;
+                    if (textManageRef.newValue) {
+                        DrawTransforms.setText(this.board, cells[index], textManageRef.newValue, width, height);
+                    } else {
+                        DrawTransforms.setTextSize(this.board, cells[index], width, height);
+                    }
+                    textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
+                },
+                getMaxWidth: () => {
+                    const cells = getCellsWithPoints(this.element);
+                    let width = getTextRectangle(cells[index]).width;
+                    const getRectangle = getEngine(TableSymbols.table).getTextRectangle;
+                    if (getRectangle) {
+                        width = getRectangle(this.element).width;
+                    }
+                    return ((cells[index] as unknown) as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
+                },
+                textPlugins: plugins
+            });
+        });
+
+        this.initializeTextManages(manages);
+    }
+
+    drawText() {
+        const textManages = this.getTextManages();
+        this.element.cells.forEach((cell, index) => {
+            const textManage = textManages[index];
+            if (cell.text) {
+                textManage.draw(cell.text);
+                this.getElementG().append(textManage.g);
+            }
+        });
+    }
+
+    updateText() {
+        const textManages = this.getTextManages();
+        this.element.cells.forEach((cell, index) => {
+            const textManage = textManages[index];
+            if (cell.text) {
+                textManage.updateText(cell.text);
+                textManage.updateRectangle();
+            }
+        });
     }
 
     onContextChanged(
         value: PlaitPluginElementContext<PlaitTable, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitTable, PlaitBoard>
-    ) {}
+    ) {
+        if (value.element !== previous.element) {
+            this.tableGenerator.processDrawing(this.element, this.getElementG());
+            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+            this.updateText();
+        } else {
+            const hasSameSelected = value.selected === previous.selected;
+            const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
+            if (!hasSameSelected || !hasSameHandleState) {
+                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+            }
+        }
+    }
 
     ngOnDestroy(): void {
         super.ngOnDestroy();

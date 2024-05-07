@@ -1,5 +1,6 @@
 import {
     PlaitBoard,
+    PlaitElement,
     Point,
     PointOfRectangle,
     RectangleClient,
@@ -8,14 +9,14 @@ import {
     isPointInPolygon,
     setStrokeLinecap
 } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getCrossingPointBetweenPointAndPolygon, getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 
 export interface CreateOptions {
     getPolygonPoints: (rectangle: RectangleClient) => Point[];
     getConnectorPoints?: (rectangle: RectangleClient) => Point[];
-    getTextRectangle?: (element: PlaitGeometry) => RectangleClient;
+    getTextRectangle?: (element: PlaitElement) => RectangleClient;
 }
 
 export function createPolygonEngine(options: CreateOptions): ShapeEngine {

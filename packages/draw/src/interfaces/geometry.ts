@@ -1,5 +1,4 @@
-import { PlaitBoard, PlaitElement, Point, PointOfRectangle, RectangleClient, Vector } from '@plait/core';
-import { Options } from 'roughjs/bin/core';
+import { PlaitElement, Point } from '@plait/core';
 import { ParagraphElement } from '@plait/text';
 import { StrokeStyle } from './element';
 import { PlaitTable } from './table';
@@ -109,15 +108,3 @@ export interface PlaitSwimlaneHorizontal extends PlaitSwimlane {
 }
 
 export const PlaitGeometry = {};
-
-export interface ShapeEngine {
-    isInsidePoint: (rectangle: RectangleClient, point: Point) => boolean;
-    getNearestPoint: (rectangle: RectangleClient, point: Point) => Point;
-    getNearestCrossingPoint?: (rectangle: RectangleClient, point: Point) => Point;
-    getConnectorPoints: (rectangle: RectangleClient) => Point[];
-    getCornerPoints: (rectangle: RectangleClient) => Point[];
-    getEdgeByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => [Point, Point] | null;
-    getTangentVectorByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => Vector | null;
-    draw: (board: PlaitBoard, rectangle: RectangleClient, options: Options, element?: PlaitElement) => SVGGElement;
-    getTextRectangle?: (element: PlaitGeometry) => RectangleClient;
-}

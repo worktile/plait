@@ -1,4 +1,4 @@
-import { Point, RectangleClient } from '@plait/core';
+import { PlaitElement, Point, RectangleClient } from '@plait/core';
 import { ElbowLineRouteOptions, generateElbowLineRoute } from './elbow-line-route';
 
 describe('generate elbow line route', () => {

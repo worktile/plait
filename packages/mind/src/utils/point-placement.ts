@@ -1,4 +1,4 @@
-import { Point, RectangleClient } from '@plait/core';
+import { PlaitElement, Point, RectangleClient } from '@plait/core';
 import { MindNode } from '../interfaces/node';
 import { LayoutDirection } from '../interfaces/layout';
 import { HorizontalPlacement, PointPlacement, VerticalPlacement } from '../interfaces/types';

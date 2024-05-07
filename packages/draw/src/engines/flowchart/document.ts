@@ -1,5 +1,6 @@
 import {
     PlaitBoard,
+    PlaitElement,
     Point,
     PointOfRectangle,
     RectangleClient,
@@ -8,7 +9,7 @@ import {
     setStrokeLinecap
 } from '@plait/core';
 import { getUnitVectorByPointAndPoint } from '@plait/common';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getStrokeWidthByElement } from '../../utils';
@@ -91,7 +92,7 @@ export const DocumentEngine: ShapeEngine = {
         return getUnitVectorByPointAndPoint(connectionPoint, [rectangle.x + rectangle.width / 4, rectangle.y + rectangle.height]);
     },
 
-    getTextRectangle: (element: PlaitGeometry) => {
+    getTextRectangle: (element: PlaitElement) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const height = element.textHeight;

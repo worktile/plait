@@ -6,15 +6,16 @@ import {
     getEllipseTangentSlope,
     getVectorFromPointAndSlope,
     isPointInEllipse,
-    getNearestPointBetweenPointAndEllipse
+    getNearestPointBetweenPointAndEllipse,
+    PlaitElement
 } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getTextRectangle } from '../../utils';
 
 export interface CreateEllipseOptions {
     draw?: (board: PlaitBoard, rectangle: RectangleClient, options: Options) => SVGGElement;
-    getTextRectangle?: (element: PlaitGeometry) => RectangleClient;
+    getTextRectangle?: (element: PlaitElement) => RectangleClient;
 }
 
 export function createEllipseEngine(createOptions?: CreateEllipseOptions): ShapeEngine {
@@ -48,7 +49,7 @@ export function createEllipseEngine(createOptions?: CreateEllipseOptions): Shape
         getConnectorPoints(rectangle: RectangleClient) {
             return RectangleClient.getEdgeCenterPoints(rectangle);
         },
-        getTextRectangle(element: PlaitGeometry) {
+        getTextRectangle(element: PlaitElement) {
             const rectangle = getTextRectangle(element);
             const width = rectangle.width;
             rectangle.width = (rectangle.width * 3) / 4;
