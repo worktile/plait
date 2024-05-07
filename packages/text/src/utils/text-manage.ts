@@ -145,10 +145,6 @@ export class TextManage {
 
     updateRectangle(rectangle?: RectangleClient) {
         const { x, y, width, height } = rectangle || this.options.getRectangle();
-        console.log(this.g);
-        if(!this.g){
-            console.log(423)
-        }
         if (this.isEditing) {
             const editor = this.componentRef.instance.editor;
             if (AlignEditor.isActive(editor, Alignment.right) || AlignEditor.isActive(editor, Alignment.center)) {
