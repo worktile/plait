@@ -19,6 +19,8 @@ export class ActiveGenerator<T extends PlaitElement = PlaitElement> extends Gene
     ActiveGeneratorExtraData,
     ActiveGeneratorOptions<T> & GeneratorOptions
 > {
+    static key = 'active-generator';
+
     hasResizeHandle = false;
 
     constructor(public board: PlaitBoard, public options: ActiveGeneratorOptions<T>) {

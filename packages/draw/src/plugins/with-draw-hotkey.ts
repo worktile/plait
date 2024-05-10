@@ -19,7 +19,7 @@ export const withDrawHotkey = (board: PlaitBoard) => {
             PlaitDrawElement.isGeometry(targetElement)
         ) {
             event.preventDefault();
-            editText(targetElement);
+            editText(board, targetElement);
             return;
         }
 
@@ -32,7 +32,7 @@ export const withDrawHotkey = (board: PlaitBoard) => {
             const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const hitElement = getHitElementByPoint(board, point);
             if (hitElement && PlaitDrawElement.isGeometry(hitElement)) {
-                editText(hitElement);
+                editText(board, hitElement);
             }
         }
         dblClick(event);
