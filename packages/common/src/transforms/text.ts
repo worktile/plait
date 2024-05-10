@@ -2,12 +2,15 @@ import { PlaitBoard, PlaitElement, getSelectedElements } from '@plait/core';
 import { AlignEditor, Alignment, FontSizes, MarkTypes, PlaitMarkEditor } from '@plait/text';
 import { BaseRange, Editor, Transforms as SlateTransforms } from 'slate';
 import { AngularEditor } from 'slate-angular';
-import { getTextEditors } from '../utils/text';
+import { findFirstTextEditor, getTextEditors } from '../utils/text';
 
 const setTextMarks = (board: PlaitBoard, mark: MarkTypes) => {
     const selectedElements = getSelectedElements(board);
     if (selectedElements.length) {
-        const firstEditor = getTextEditors(selectedElements[0])[0];
+        const firstEditor = findFirstTextEditor(board);
+        if (!firstEditor) {
+            return;
+        }
         const activeMarks = PlaitMarkEditor.getMarks(firstEditor);
         const elements = selectedElements.filter(element => {
             const editors = getTextEditors(element);

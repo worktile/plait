@@ -1,7 +1,6 @@
-import { PlaitElement } from '@plait/core';
-import { CommonPluginElement } from '../core/plugin-element';
+import { PlaitBoard, PlaitElement, getSelectedElements } from '@plait/core';
 import { CustomText, PlaitMarkEditor, TextManage } from '@plait/text';
-import { Node } from 'slate';
+import { Editor, Node } from 'slate';
 
 export const getTextManages = (element: PlaitElement) => {
     return ELEMENT_TO_TEXT_MANAGES.get(element) || [];
@@ -27,6 +26,18 @@ export const getFirstTextEditor = (element: PlaitElement) => {
         console.warn('can not find textManage');
     }
     return textEditor;
+};
+
+export const findFirstTextEditor = (board: PlaitBoard) => {
+    const selectedElements = getSelectedElements(board);
+    let firstEditor: Editor | null = null;
+    selectedElements.forEach(element => {
+        const editors = getTextEditors(element);
+        if (!firstEditor && editors && editors.length > 0) {
+            firstEditor = editors[0];
+        }
+    });
+    return firstEditor;
 };
 
 export const getTextMarksByElement = (element: PlaitElement) => {
