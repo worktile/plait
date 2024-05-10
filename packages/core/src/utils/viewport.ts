@@ -3,6 +3,7 @@ import { MAX_ZOOM, MIN_ZOOM } from '../constants/zoom';
 import { PlaitBoard, Point, RectangleClient } from '../interfaces';
 import { BoardTransforms } from '../transforms/board';
 import { getRectangleByElements } from './element';
+import { approximately } from './math';
 import { toHostPointFromViewBoxPoint, toViewBoxPoint } from './to-point';
 import { BOARD_TO_VIEWPORT_ORIGINATION } from './weak-maps';
 
@@ -111,7 +112,8 @@ export function updateViewportContainerScroll(board: PlaitBoard, left: number, t
     // scrollTop assign 11.8 will get 11.5 in chrome
     // scrollTop assign 11.8 will get 11 in firefox, safari
     // scrollTop assign 11.4 will get 11 in chrome, firefox, safari
-    if (viewportContainer.scrollLeft !== Math.floor(left) || viewportContainer.scrollTop !== Math.floor(top)) {
+    // use approximately method to determine the new value is valid updating to avoid debouncing
+    if (!approximately(viewportContainer.scrollLeft, left, 1) || !approximately(viewportContainer.scrollTop, top, 1)) {
         viewportContainer.scrollLeft = left;
         viewportContainer.scrollTop = top;
         const offsetWidth = viewportContainer.offsetWidth;
