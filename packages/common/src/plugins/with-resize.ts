@@ -65,6 +65,7 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
 
     board.pointerMove = (event: PointerEvent) => {
         if (!options.canResize() || !generalCanResize(board, event)) {
+            clearHoverHitTestRef();
             pointerMove(event);
             return;
         }
@@ -92,12 +93,7 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
                         PlaitBoard.getBoardContainer(board).classList.add(`${hoverHitTestRef.cursorClass}`);
                     }
                 } else {
-                    if (hoverHitTestRef) {
-                        if (hoverHitTestRef.cursorClass) {
-                            PlaitBoard.getBoardContainer(board).classList.remove(`${hoverHitTestRef.cursorClass}`);
-                        }
-                        hoverHitTestRef = null;
-                    }
+                    clearHoverHitTestRef();
                 }
             });
         } else {
@@ -132,6 +128,15 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
             preventTouchMove(board, event, false);
         }
     };
+
+    const clearHoverHitTestRef = () => {
+        if (hoverHitTestRef) {
+            if (hoverHitTestRef.cursorClass) {
+                PlaitBoard.getBoardContainer(board).classList.remove(`${hoverHitTestRef.cursorClass}`);
+            }
+            hoverHitTestRef = null;
+        }
+    }
 
     return board;
 };
