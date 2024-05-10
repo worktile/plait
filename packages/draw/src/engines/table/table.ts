@@ -1,9 +1,11 @@
 import { PlaitBoard, RectangleClient, Point, createG, PlaitElement, drawLine } from '@plait/core';
 import { Options } from 'roughjs/bin/core';
-import { PlaitTable } from '../../interfaces/table';
+import { PlaitTable, PlaitTableCell, PlaitTableElement } from '../../interfaces/table';
 
 import { ShapeEngine } from '../../interfaces';
 import { getCellsWithPoints } from '../../utils/table';
+import { getStrokeWidthByElement, getTextRectangle } from '../../utils';
+import { ShapeDefaultSpace } from '../../constants';
 
 export const TableEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options, element?: PlaitElement) {
@@ -35,5 +37,20 @@ export const TableEngine: ShapeEngine = {
     },
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
+    },
+    getTextRectangle(element: PlaitElement) {
+        if (PlaitTableElement.isVerticalCell(element as PlaitTableCell)) {
+            const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
+            const strokeWidth = getStrokeWidthByElement(element);
+            const height = elementRectangle.height - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+            const width = element.textHeight;
+            return {
+                width,
+                height: height > 0 ? height : 0,
+                x: elementRectangle.x + (elementRectangle.width - width) / 2,
+                y: elementRectangle.y + ShapeDefaultSpace.rectangleAndText + strokeWidth
+            };
+        }
+        return getTextRectangle(element);
     }
 };

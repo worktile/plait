@@ -7,6 +7,11 @@ export enum Alignment {
     right = 'right'
 }
 
+export enum WritingMode {
+    verticalLR = 'vertical-lr',
+    horizontalTB = 'horizontal-tb'
+}
+
 export type CustomText = {
     bold?: boolean;
     italic?: boolean;
@@ -25,6 +30,7 @@ export interface LinkElement extends BaseElement {
 
 export interface ParagraphElement extends BaseElement {
     align?: Alignment;
+    writingMode?: WritingMode;
 }
 
 export type CustomElement = ParagraphElement | LinkElement;
