@@ -137,8 +137,9 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
             }
         }
     }
-
     ngOnDestroy(): void {
         super.ngOnDestroy();
+        this.activeGenerator.destroy();
+        this.destroyTextManages();
     }
 }

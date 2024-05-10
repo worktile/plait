@@ -1,15 +1,31 @@
 import { TableComponent } from '../table.component';
 import { PlaitTableElement } from '../interfaces/table';
-import { PlaitBoard, PlaitPluginElementContext, PlaitElement, RectangleClient, Selection, isPolylineHitRectangle } from '@plait/core';
-import { isRectangleHitDrawElement } from '../utils';
+import {
+    PlaitBoard,
+    PlaitPluginElementContext,
+    PlaitElement,
+    RectangleClient,
+    Selection,
+    isPolylineHitRectangle,
+    getSelectedElements
+} from '@plait/core';
 
 export const withTable = (board: PlaitBoard) => {
-    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable } = board;
+    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, getDeletedFragment } = board;
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitTableElement.isTable(context.element)) {
             return TableComponent;
         }
         return drawElement(context);
+    };
+
+    board.getDeletedFragment = (data: PlaitElement[]) => {
+        const elements = getSelectedElements(board);
+        if (elements.length) {
+            const tableElements = elements.filter(value => PlaitTableElement.isTable(value));
+            data.push(...[...tableElements]);
+        }
+        return getDeletedFragment(data);
     };
 
     board.isHit = (element, point) => {
