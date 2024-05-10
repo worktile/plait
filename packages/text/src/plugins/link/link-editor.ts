@@ -1,4 +1,4 @@
-import { Editor, Transforms, Range, Element, BaseRange, Location } from 'slate';
+import { Editor, Transforms, Range, Element, BaseRange, Location, Node } from 'slate';
 import { AngularEditor } from 'slate-angular';
 import { CustomElement, LinkElement } from '../../custom-types';
 
@@ -14,12 +14,11 @@ export const LinkEditor = {
             url,
             children: [{ text }]
         };
-
-        if (AngularEditor.isReadonly(editor)) {
+        if (isCollapsed || Node.string(editor) === '') {
+            Transforms.insertNodes(editor, link);
+        } else if (AngularEditor.isReadonly(editor)) {
             const at = { anchor: Editor.start(editor, [0]), focus: Editor.end(editor, [0]) };
             Transforms.wrapNodes(editor, link, { split: true, at });
-        } else if (isCollapsed) {
-            Transforms.insertNodes(editor, link);
         } else {
             Transforms.wrapNodes(editor, link, { split: true });
             Transforms.collapse(editor, { edge: 'end' });
