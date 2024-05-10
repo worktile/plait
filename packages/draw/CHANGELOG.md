@@ -1,5 +1,13 @@
 # @plait/draw
 
+## 0.57.0
+
+### Minor Changes
+
+-   [#865](https://github.com/worktile/plait/pull/865) [`dcb5263a9`](https://github.com/worktile/plait/commit/dcb5263a9110085a5b2e8db69be3f103937b6bce) Thanks [@MissLixf](https://github.com/MissLixf)! - add display shape for flowchart
+
+*   [#858](https://github.com/worktile/plait/pull/858) [`35418e50e`](https://github.com/worktile/plait/commit/35418e50e0d873515c7e21f1edbb02b7ca702691) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - init swimlane
+
 ## 0.56.2
 
 ### Patch Changes

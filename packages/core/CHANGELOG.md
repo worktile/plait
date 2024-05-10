@@ -1,5 +1,17 @@
 # plait
 
+## 0.57.0
+
+### Minor Changes
+
+-   [#862](https://github.com/worktile/plait/pull/862) [`a1e2b94dc`](https://github.com/worktile/plait/commit/a1e2b94dc9d38fa503a62459f0fac51fa882836b) Thanks [@MissLixf](https://github.com/MissLixf)! - add getBoundingRectangleByElements function
+
+*   [#863](https://github.com/worktile/plait/pull/863) [`61d00e03a`](https://github.com/worktile/plait/commit/61d00e03a3cfb85db97d9c1cceabf61871de93c8) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - remove get component bridge officially 🎉🎉🎉
+
+    -   remove ELEMENT_TO_COMPONENT
+
+    -   remove getComponent method
+
 ## 0.56.2
 
 ## 0.56.1
