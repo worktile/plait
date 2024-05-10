@@ -7,7 +7,13 @@ import {
     RectangleClient,
     PlaitOptionsBoard
 } from '@plait/core';
-import { ActiveGenerator, canResize, CommonPluginElement, WithTextOptions, WithTextPluginKey } from '@plait/common';
+import {
+    ActiveGenerator,
+    canResize,
+    CommonPluginElement,
+    WithTextOptions,
+    WithTextPluginKey
+} from '@plait/common';
 import { PlaitTable } from './interfaces/table';
 import { TableGenerator } from './generators/table.generator';
 import { TextManage, TextManageRef } from '@plait/text';
@@ -34,6 +40,16 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
         super();
     }
 
+    get _textManages() {
+        return this.getTextManages();
+    }
+
+    ngOnInit(): void {
+        super.ngOnInit();
+        this.initializeGenerator();
+        this.drawText();
+    }
+
     initializeGenerator() {
         this.activeGenerator = new ActiveGenerator<PlaitTable>(this.board, {
             getStrokeWidth: () => {
@@ -50,19 +66,13 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
             }
         });
         this.tableGenerator = new TableGenerator(this.board);
-        this.initializeTextManage();
-    }
-
-    ngOnInit(): void {
-        super.ngOnInit();
-        this.initializeGenerator();
         this.tableGenerator.processDrawing(this.element, this.getElementG());
-        this.drawText();
+        this.initializeTextManage();
     }
 
     initializeTextManage() {
         const plugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
-        const manages = this.element.cells.map((cell, index) => {
+        const manages = this.element.cells.map((_, index) => {
             return new TextManage(this.board, this.viewContainerRef, {
                 getRectangle: () => {
                     const cells = getCellsWithPoints(this.element);
@@ -77,9 +87,7 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
                     const height = textManageRef.height / this.board.viewport.zoom;
                     const width = textManageRef.width / this.board.viewport.zoom;
                     if (textManageRef.newValue) {
-                        DrawTransforms.setText(this.board, cells[index], textManageRef.newValue, width, height);
-                    } else {
-                        DrawTransforms.setTextSize(this.board, cells[index], width, height);
+                        DrawTransforms.setTableText(this.board, this.element, cells[index], textManageRef.newValue, width, height);
                     }
                     textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
                 },
@@ -95,14 +103,12 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
                 textPlugins: plugins
             });
         });
-
         this.initializeTextManages(manages);
     }
 
     drawText() {
-        const textManages = this.getTextManages();
         this.element.cells.forEach((cell, index) => {
-            const textManage = textManages[index];
+            const textManage = this._textManages[index];
             if (cell.text) {
                 textManage.draw(cell.text);
                 this.getElementG().append(textManage.g);
@@ -111,9 +117,8 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
     }
 
     updateText() {
-        const textManages = this.getTextManages();
         this.element.cells.forEach((cell, index) => {
-            const textManage = textManages[index];
+            const textManage = this._textManages[index];
             if (cell.text) {
                 textManage.updateText(cell.text);
                 textManage.updateRectangle();
@@ -125,6 +130,7 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
         value: PlaitPluginElementContext<PlaitTable, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitTable, PlaitBoard>
     ) {
+        this.initializeWeakMap();
         if (value.element !== previous.element) {
             this.tableGenerator.processDrawing(this.element, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });

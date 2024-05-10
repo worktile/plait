@@ -407,7 +407,7 @@ export const mockTableData: PlaitDrawElement[] = [
                         }
                     ],
                     align: 'center'
-                },
+                }
             },
             {
                 id: 'cell-2-1',
@@ -421,55 +421,119 @@ export const mockTableData: PlaitDrawElement[] = [
                         }
                     ],
                     align: 'center'
-                },
+                }
             },
             {
                 id: 'cell-2-2',
                 rowId: 'row-2',
                 textHeight: 20,
-                columnId: 'column-2'
+                columnId: 'column-2',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-2-3',
                 rowId: 'row-2',
                 textHeight: 20,
-                columnId: 'column-3'
+                columnId: 'column-3',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-3-1',
                 rowId: 'row-3',
                 textHeight: 20,
-                columnId: 'column-1'
+                columnId: 'column-1',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-3-2',
                 rowId: 'row-3',
                 textHeight: 20,
-                columnId: 'column-2'
+                columnId: 'column-2',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-3-3',
                 rowId: 'row-3',
                 textHeight: 20,
-                columnId: 'column-3'
+                columnId: 'column-3',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-4-1',
                 rowId: 'row-4',
                 textHeight: 20,
-                columnId: 'column-1'
+                columnId: 'column-1',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-4-2',
                 rowId: 'row-4',
                 textHeight: 20,
-                columnId: 'column-2'
+                columnId: 'column-2',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-4-3',
                 rowId: 'row-4',
                 textHeight: 20,
-                columnId: 'column-3'
+                columnId: 'column-3',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             }
         ]
     },
@@ -520,38 +584,77 @@ export const mockTableData: PlaitDrawElement[] = [
                         }
                     ],
                     align: 'center'
-                },
-
+                }
             },
             {
                 id: 'cell-1-2',
                 rowId: 'row-1',
                 textHeight: 20,
-                columnId: 'column-2'
+                columnId: 'column-2',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-1-3',
                 rowId: 'row-1',
                 textHeight: 20,
-                columnId: 'column-3'
+                columnId: 'column-3',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-2-2',
                 rowId: 'row-2',
                 textHeight: 20,
                 columnId: 'column-2',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-2-3',
                 rowId: 'row-2',
                 textHeight: 20,
-                columnId: 'column-3'
+                columnId: 'column-3',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-3-2',
                 rowId: 'row-3',
                 textHeight: 20,
-                columnId: 'column-2'
+                columnId: 'column-2',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-3-3',
@@ -565,19 +668,35 @@ export const mockTableData: PlaitDrawElement[] = [
                         }
                     ],
                     align: 'center'
-                },
+                }
             },
             {
                 id: 'cell-4-2',
                 rowId: 'row-4',
                 textHeight: 20,
-                columnId: 'column-2'
+                columnId: 'column-2',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             },
             {
                 id: 'cell-4-3',
                 rowId: 'row-4',
                 textHeight: 20,
-                columnId: 'column-3'
+                columnId: 'column-3',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
             }
         ]
     }
