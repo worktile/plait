@@ -119,6 +119,6 @@ export interface ShapeEngine {
     getCornerPoints: (rectangle: RectangleClient) => Point[];
     getEdgeByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => [Point, Point] | null;
     getTangentVectorByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => Vector | null;
-    draw: (board: PlaitBoard, rectangle: RectangleClient, options: Options) => SVGGElement;
-    getTextRectangle?: (element: PlaitGeometry) => RectangleClient;
+    draw: <T>(board: PlaitBoard, rectangle: RectangleClient, roughOptions: Options, options?: T) => SVGGElement;
+    getTextRectangle?: <T>(element: PlaitGeometry, options?: T) => RectangleClient;
 }
