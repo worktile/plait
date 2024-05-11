@@ -1,5 +1,5 @@
 ---
-'@plait/draw': patch
+'@plait/draw': minor
 ---
 
-add genericity to draw and getTextRectangle
+add generics to draw and getTextRectangle
