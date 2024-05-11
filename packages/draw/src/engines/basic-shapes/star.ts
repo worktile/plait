@@ -1,5 +1,5 @@
 import { Point, RectangleClient } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, GeometryEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
@@ -19,7 +19,7 @@ export const getStarPoints = (rectangle: RectangleClient): Point[] => {
     ];
 };
 
-export const StarEngine: ShapeEngine = createPolygonEngine({
+export const StarEngine: GeometryEngine = createPolygonEngine({
     getPolygonPoints: getStarPoints,
     getConnectorPoints: (rectangle: RectangleClient) => {
         const points = getStarPoints(rectangle);

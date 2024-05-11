@@ -1,5 +1,5 @@
 import { Point, RectangleClient } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, GeometryEngine } from '../../interfaces';
 import { createPolygonEngine } from '../basic-shapes/polygon';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
@@ -13,7 +13,7 @@ export const getMergePoints = (rectangle: RectangleClient): Point[] => {
     ];
 };
 
-export const MergeEngine: ShapeEngine = createPolygonEngine({
+export const MergeEngine: GeometryEngine = createPolygonEngine({
     getPolygonPoints: getMergePoints,
     getConnectorPoints: (rectangle: RectangleClient) => {
         const cornerPoints = getMergePoints(rectangle);

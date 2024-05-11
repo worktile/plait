@@ -10,7 +10,7 @@ import {
     setStrokeLinecap
 } from '@plait/core';
 import { getDirectionByPointOfRectangle, getDirectionFactor, getUnitVectorByPointAndPoint } from '@plait/common';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, GeometryEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
@@ -44,7 +44,7 @@ export const getMultiDocumentPoints = (rectangle: RectangleClient): Point[] => {
     return [...linePoints, ...curvePoints];
 };
 
-export const MultiDocumentEngine: ShapeEngine = {
+export const MultiDocumentEngine: GeometryEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(

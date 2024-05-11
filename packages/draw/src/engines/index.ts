@@ -1,4 +1,4 @@
-import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitGeometry, ShapeEngine, SwimlaneSymbols, TableSymbols } from '../interfaces';
+import { BasicShapes, DrawShapes, FlowchartSymbols, GeometryEngine, SwimlaneSymbols, TableSymbols } from '../interfaces';
 import { CommentEngine } from './basic-shapes/comment';
 import { CrossEngine } from './basic-shapes/cross';
 import { DiamondEngine } from './basic-shapes/diamond';
@@ -41,7 +41,7 @@ import { NoteSquareEngine } from './flowchart/note-square';
 import { DisplayEngine } from './flowchart/display';
 import { TableEngine } from './table/table';
 
-export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine | TableEngine> = {
+export const ShapeEngineMap: Record<DrawShapes, GeometryEngine | TableEngine> = {
     [BasicShapes.rectangle]: RectangleEngine,
     [BasicShapes.diamond]: DiamondEngine,
     [BasicShapes.ellipse]: EllipseEngine,
@@ -92,6 +92,6 @@ export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine | TableEngine> =
     [TableSymbols.table]: TableEngine
 };
 
-export const getEngine = (shape: GeometryShapes) => {
+export const getEngine = (shape: DrawShapes) => {
     return ShapeEngineMap[shape];
 };

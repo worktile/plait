@@ -1,11 +1,18 @@
-import { PlaitBoard, Point, PointOfRectangle, RectangleClient, getNearestPointBetweenPointAndSegments, setPathStrokeLinecap } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import {
+    PlaitBoard,
+    Point,
+    PointOfRectangle,
+    RectangleClient,
+    getNearestPointBetweenPointAndSegments,
+    setPathStrokeLinecap
+} from '@plait/core';
+import { PlaitGeometry, GeometryEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 
-export const CloudEngine: ShapeEngine = {
+export const CloudEngine: GeometryEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const divisionWidth = rectangle.width / 7;

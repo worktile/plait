@@ -1,5 +1,5 @@
 import { Point, RectangleClient } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { GeometryEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 
 export const getTwoWayArrowPoints = (rectangle: RectangleClient): Point[] => {
@@ -17,7 +17,7 @@ export const getTwoWayArrowPoints = (rectangle: RectangleClient): Point[] => {
     ];
 };
 
-export const TwoWayArrowEngine: ShapeEngine = createPolygonEngine({
+export const TwoWayArrowEngine: GeometryEngine = createPolygonEngine({
     getPolygonPoints: getTwoWayArrowPoints,
     getConnectorPoints: (rectangle: RectangleClient) => {
         return [

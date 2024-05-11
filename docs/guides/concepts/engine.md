@@ -6,7 +6,7 @@ order: 5
 作用：抽取不同形状对应不同情况下的统一逻辑
 
 ```
-export interface ShapeEngine {
+export interface GeometryEngine {
     draw;	//绘制逻辑
     isHit; //是否击中
     getNearestPoint; // 获取最近距离

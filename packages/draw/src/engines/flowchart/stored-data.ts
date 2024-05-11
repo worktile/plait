@@ -10,14 +10,13 @@ import {
     isPointInEllipse,
     setStrokeLinecap,
     getNearestPointBetweenPointAndEllipse,
-    PlaitElement
 } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, GeometryEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getTextRectangle } from '../../utils';
 
-export const StoredDataEngine: ShapeEngine = {
+export const StoredDataEngine: GeometryEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(

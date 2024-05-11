@@ -1,5 +1,5 @@
 import { Point, RectangleClient } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, GeometryEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getCenterPointsOnPolygon } from '../../utils/polygon';
 import { getTextRectangle } from '../../utils';
@@ -12,7 +12,7 @@ export const getParallelogramPoints = (rectangle: RectangleClient): Point[] => {
         [rectangle.x, rectangle.y + rectangle.height]
     ];
 };
-export const ParallelogramEngine: ShapeEngine = createPolygonEngine({
+export const ParallelogramEngine: GeometryEngine = createPolygonEngine({
     getPolygonPoints: getParallelogramPoints,
     getConnectorPoints: (rectangle: RectangleClient) => {
         const cornerPoints = getParallelogramPoints(rectangle);

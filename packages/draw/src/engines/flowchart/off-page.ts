@@ -1,5 +1,5 @@
 import { Point, RectangleClient } from '@plait/core';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, GeometryEngine } from '../../interfaces';
 import { createPolygonEngine } from '../basic-shapes/polygon';
 import { ShapeDefaultSpace } from '../../constants';
 import { getStrokeWidthByElement } from '../../utils';
@@ -14,7 +14,7 @@ export const getOffPagePoints = (rectangle: RectangleClient): Point[] => {
     ];
 };
 
-export const OffPageEngine: ShapeEngine = createPolygonEngine({
+export const OffPageEngine: GeometryEngine = createPolygonEngine({
     getPolygonPoints: getOffPagePoints,
     getConnectorPoints: (rectangle: RectangleClient) => {
         return RectangleClient.getEdgeCenterPoints(rectangle);

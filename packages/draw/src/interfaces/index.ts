@@ -1,4 +1,4 @@
-import { BasicShapes, FlowchartSymbols, PlaitGeometry } from './geometry';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitGeometry, TableSymbols } from './geometry';
 import { PlaitImage } from './image';
 import { PlaitLine } from './line';
 import { PlaitTable } from './table';
@@ -13,6 +13,8 @@ export * from './engine';
 export type PlaitDrawElement = PlaitGeometry | PlaitLine | PlaitImage | PlaitTable;
 
 export type PlaitShapeElement = PlaitGeometry | PlaitImage;
+
+export type DrawShapes = GeometryShapes | TableSymbols;
 
 export const PlaitDrawElement = {
     isGeometry: (value: any): value is PlaitGeometry => {

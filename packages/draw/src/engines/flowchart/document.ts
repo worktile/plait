@@ -8,14 +8,14 @@ import {
     setStrokeLinecap
 } from '@plait/core';
 import { getUnitVectorByPointAndPoint } from '@plait/common';
-import { PlaitGeometry, ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, GeometryEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 import { pointsOnBezierCurves } from 'points-on-curve';
 
-export const DocumentEngine: ShapeEngine = {
+export const DocumentEngine: GeometryEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(

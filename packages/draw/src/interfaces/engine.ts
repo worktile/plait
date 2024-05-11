@@ -12,7 +12,7 @@ export interface BaseEngine {
     getTangentVectorByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => Vector | null;
 }
 
-export interface ShapeEngine extends BaseEngine {
+export interface GeometryEngine extends BaseEngine {
     draw: (board: PlaitBoard, rectangle: RectangleClient, options: Options) => SVGGElement;
     getTextRectangle?: (element: PlaitGeometry) => RectangleClient;
 }
