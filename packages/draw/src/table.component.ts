@@ -1,22 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import {
-    PlaitBoard,
-    PlaitPluginElementContext,
-    OnContextChanged,
-    ACTIVE_STROKE_WIDTH,
-    RectangleClient,
-    PlaitOptionsBoard
-} from '@plait/core';
-import { ActiveGenerator, canResize, CommonPluginElement, WithTextOptions, WithTextPluginKey } from '@plait/common';
+import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, ACTIVE_STROKE_WIDTH, RectangleClient } from '@plait/core';
+import { ActiveGenerator, canResize, CommonPluginElement } from '@plait/common';
 import { PlaitTable } from './interfaces/table';
-import { TableGenerator } from './generators/table.generator';
+import { TableCellTextGenerator, TableGenerator } from './generators/table.generator';
 import { TextManage, TextManageRef } from '@plait/text';
-import { getEngine } from './engines';
-import { getCellsWithPoints } from './utils/table';
-import { getTextRectangle, memorizeLatestText } from './utils';
-import { DrawTransforms } from './transforms';
-import { PlaitText, TableSymbols } from './interfaces';
-import { GeometryThreshold } from './constants';
 
 @Component({
     selector: 'plait-draw-table',
@@ -29,6 +16,8 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
     activeGenerator!: ActiveGenerator<PlaitTable>;
 
     tableGenerator!: TableGenerator;
+
+    textGenerators!: TableCellTextGenerator[];
 
     constructor() {
         super();
@@ -50,6 +39,9 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
             }
         });
         this.tableGenerator = new TableGenerator(this.board);
+        this.textGenerators = this.element.cells.map(() => {
+            return new TableCellTextGenerator(this.board);
+        });
         this.initializeTextManage();
     }
 
@@ -61,41 +53,20 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
     }
 
     initializeTextManage() {
-        const plugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
-        const manages = this.element.cells.map((cell, index) => {
+        const manages = this.textGenerators.map((textGenerator, index) => {
             return new TextManage(this.board, this.viewContainerRef, {
                 getRectangle: () => {
-                    const cells = getCellsWithPoints(this.element);
-                    const getRectangle = getEngine(TableSymbols.table).getTextRectangle;
-                    if (getRectangle) {
-                        return getRectangle(cells[index]);
-                    }
-                    return getTextRectangle(cells[index]);
+                    return textGenerator.getRectangle(this.element, index);
                 },
                 onValueChangeHandle: (textManageRef: TextManageRef) => {
-                    const cells = getCellsWithPoints(this.element);
-                    const height = textManageRef.height / this.board.viewport.zoom;
-                    const width = textManageRef.width / this.board.viewport.zoom;
-                    if (textManageRef.newValue) {
-                        DrawTransforms.setText(this.board, cells[index], textManageRef.newValue, width, height);
-                    } else {
-                        DrawTransforms.setTextSize(this.board, cells[index], width, height);
-                    }
-                    textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
+                    return textGenerator.onValueChangeHandle(textManageRef, this.element, index);
                 },
                 getMaxWidth: () => {
-                    const cells = getCellsWithPoints(this.element);
-                    let width = getTextRectangle(cells[index]).width;
-                    const getRectangle = getEngine(TableSymbols.table).getTextRectangle;
-                    if (getRectangle) {
-                        width = getRectangle(this.element).width;
-                    }
-                    return ((cells[index] as unknown) as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
+                    return textGenerator.getMaxWidth(this.element, index);
                 },
-                textPlugins: plugins
+                textPlugins: textGenerator.textPlugins
             });
         });
-
         this.initializeTextManages(manages);
     }
 
@@ -125,6 +96,7 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
         value: PlaitPluginElementContext<PlaitTable, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitTable, PlaitBoard>
     ) {
+        this.initializeWeakMap();
         if (value.element !== previous.element) {
             this.tableGenerator.processDrawing(this.element, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });

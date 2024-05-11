@@ -1,8 +1,8 @@
-import { RectangleClient, PointOfRectangle, Vector, PlaitBoard, PlaitElement, Point } from '@plait/core';
+import { RectangleClient, PointOfRectangle, Vector, PlaitBoard, Point } from '@plait/core';
 import { Options } from 'roughjs/bin/core';
 import { PlaitGeometry } from './geometry';
 
-export interface ShapeEngine {
+export interface BaseEngine {
     isInsidePoint: (rectangle: RectangleClient, point: Point) => boolean;
     getNearestPoint: (rectangle: RectangleClient, point: Point) => Point;
     getNearestCrossingPoint?: (rectangle: RectangleClient, point: Point) => Point;
@@ -10,6 +10,10 @@ export interface ShapeEngine {
     getCornerPoints: (rectangle: RectangleClient) => Point[];
     getEdgeByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => [Point, Point] | null;
     getTangentVectorByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => Vector | null;
-    draw: (board: PlaitBoard, rectangle: RectangleClient, options: Options, element?: PlaitElement) => SVGGElement;
-    getTextRectangle?: (element: PlaitElement) => RectangleClient;
 }
+
+export interface ShapeEngine extends BaseEngine {
+    draw: (board: PlaitBoard, rectangle: RectangleClient, options: Options) => SVGGElement;
+    getTextRectangle?: (element: PlaitGeometry) => RectangleClient;
+}
+

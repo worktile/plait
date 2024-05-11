@@ -1,12 +1,16 @@
 import { PlaitBoard, RectangleClient, Point, createG, PlaitElement, drawLine } from '@plait/core';
 import { Options } from 'roughjs/bin/core';
-import { PlaitTable } from '../../interfaces/table';
-
-import { ShapeEngine } from '../../interfaces';
+import { PlaitTable, PlaitTableCell } from '../../interfaces/table';
+import { BaseEngine } from '../../interfaces';
 import { getCellsWithPoints } from '../../utils/table';
 
-export const TableEngine: ShapeEngine = {
-    draw(board: PlaitBoard, rectangle: RectangleClient, options: Options, element?: PlaitElement) {
+export interface TableEngine extends BaseEngine {
+    draw: (board: PlaitBoard, element: PlaitElement, rectangle: RectangleClient, options: Options) => SVGGElement;
+    getTextRectangle?: (element: PlaitTableCell) => RectangleClient;
+}
+
+export const TableEngine: TableEngine = {
+    draw(board: PlaitBoard, element: PlaitElement, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const g = createG();
         const { x, y, width, height } = rectangle;

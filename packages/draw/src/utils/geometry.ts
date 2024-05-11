@@ -34,7 +34,7 @@ import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { createLineElement } from './line/line-basic';
-import { LineMarkerType, LineShape, PlaitShapeElement } from '../interfaces';
+import { LineMarkerType, LineShape, PlaitShapeElement, ShapeEngine } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 import { getMemorizedLatestByPointer, memorizeLatestShape } from './memorize';
 
@@ -114,7 +114,7 @@ export const drawBoundReaction = (
 };
 
 export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient, shape: GeometryShapes, options: Options) => {
-    return getEngine(shape).draw(board, outerRectangle, options);
+    return (getEngine(shape) as ShapeEngine).draw(board, outerRectangle, options);
 };
 
 export const getNearestPoint = (element: PlaitShapeElement, point: Point) => {

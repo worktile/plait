@@ -16,7 +16,7 @@ import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { ActiveGenerator, WithTextPluginKey, WithTextOptions, CommonPluginElement, canResize } from '@plait/common';
 import { GeometryThreshold } from './constants/geometry';
-import { PlaitText } from './interfaces';
+import { PlaitText, ShapeEngine } from './interfaces';
 import { getEngine } from './engines';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 import { memorizeLatestText } from './utils';
@@ -132,7 +132,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
 
         const manage = new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
-                const getRectangle = getEngine(this.element.shape).getTextRectangle;
+                const getRectangle = (getEngine(this.element.shape) as ShapeEngine).getTextRectangle;
                 if (getRectangle) {
                     return getRectangle(this.element);
                 }
@@ -150,7 +150,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
             },
             getMaxWidth: () => {
                 let width = getTextRectangle(this.element).width;
-                const getRectangle = getEngine(this.element.shape).getTextRectangle;
+                const getRectangle = (getEngine(this.element.shape) as ShapeEngine).getTextRectangle;
                 if (getRectangle) {
                     width = getRectangle(this.element).width;
                 }

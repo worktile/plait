@@ -1,5 +1,5 @@
-import { PlaitElement, Point, RectangleClient } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { Point, RectangleClient } from '@plait/core';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getCenterPointsOnPolygon } from '../../utils/polygon';
 import { getTextRectangle } from '../../utils';
@@ -19,7 +19,7 @@ export const TrapezoidEngine: ShapeEngine = createPolygonEngine({
         const points = getTrapezoidPoints(rectangle);
         return getCenterPointsOnPolygon(points);
     },
-    getTextRectangle(element: PlaitElement) {
+    getTextRectangle(element: PlaitGeometry) {
         const rectangle = getTextRectangle(element);
         const width = rectangle.width;
         rectangle.width = (rectangle.width * 3) / 4;

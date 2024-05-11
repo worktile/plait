@@ -16,7 +16,7 @@ export interface PlaitTable extends PlaitElement {
     groupId?: string;
 }
 
-export interface PlaitTableCell extends PlaitElement {
+export interface PlaitTableCell {
     id: string;
     rowId: string;
     columnId: string;

@@ -11,7 +11,7 @@ import {
     isPointInEllipse,
     setStrokeLinecap
 } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { ShapeDefaultSpace } from '../../constants';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';

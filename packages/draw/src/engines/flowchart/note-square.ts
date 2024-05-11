@@ -7,7 +7,7 @@ import {
     getNearestPointBetweenPointAndSegments,
     setStrokeLinecap
 } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';

@@ -11,7 +11,7 @@ import {
     setStrokeLinecap
 } from '@plait/core';
 import { getDirectionByPointOfRectangle, getDirectionFactor, getUnitVectorByPointAndPoint } from '@plait/common';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';

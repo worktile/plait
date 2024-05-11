@@ -1,5 +1,5 @@
-import { PlaitElement, Point, RectangleClient } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { Point, RectangleClient } from '@plait/core';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from '../basic-shapes/polygon';
 import { ShapeDefaultSpace } from '../../constants';
 import { getCenterPointsOnPolygon } from '../../utils/polygon';
@@ -20,7 +20,7 @@ export const ManualInputEngine: ShapeEngine = createPolygonEngine({
         const cornerPoints = getManualInputPoints(rectangle);
         return getCenterPointsOnPolygon(cornerPoints);
     },
-    getTextRectangle: (element: PlaitElement) => {
+    getTextRectangle: (element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const height = element.textHeight;

@@ -12,7 +12,7 @@ import {
     getNearestPointBetweenPointAndEllipse,
     PlaitElement
 } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getTextRectangle } from '../../utils';
@@ -102,7 +102,7 @@ export const StoredDataEngine: ShapeEngine = {
             [rectangle.x, rectangle.y + rectangle.height / 2]
         ];
     },
-    getTextRectangle(element: PlaitElement) {
+    getTextRectangle(element: PlaitGeometry) {
         const rectangle = getTextRectangle(element);
         const width = rectangle.width;
         rectangle.width = (rectangle.width * 3) / 4;

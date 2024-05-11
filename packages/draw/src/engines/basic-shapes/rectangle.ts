@@ -1,5 +1,5 @@
 import { PlaitBoard, Point, PointOfRectangle, RectangleClient, drawRectangle, getNearestPointBetweenPointAndSegments } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 

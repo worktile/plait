@@ -1,5 +1,5 @@
-import { PlaitElement, Point, RectangleClient } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { Point, RectangleClient } from '@plait/core';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getTextRectangle } from '../../utils';
 export const getCrossPoints = (rectangle: RectangleClient): Point[] => {
@@ -24,7 +24,7 @@ export const CrossEngine: ShapeEngine = createPolygonEngine({
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
-    getTextRectangle(element: PlaitElement) {
+    getTextRectangle(element: PlaitGeometry) {
         const rectangle = getTextRectangle(element);
         const width = rectangle.width;
         rectangle.width = rectangle.width / 2;

@@ -40,8 +40,7 @@ import { NoteCurlyRightEngine } from './flowchart/note-curly-right';
 import { NoteSquareEngine } from './flowchart/note-square';
 import { TableEngine } from './table/table';
 
-
-export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine> = {
+export const ShapeEngineMap: Record<GeometryShapes, ShapeEngine | TableEngine> = {
     [BasicShapes.rectangle]: RectangleEngine,
     [BasicShapes.diamond]: DiamondEngine,
     [BasicShapes.ellipse]: EllipseEngine,

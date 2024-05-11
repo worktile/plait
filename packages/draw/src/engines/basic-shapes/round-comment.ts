@@ -8,7 +8,7 @@ import {
     isPointInPolygon,
     isPointInRoundRectangle
 } from '@plait/core';
-import { ShapeEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { ShapeDefaultSpace } from '../../constants';
 import { getRoundRectangleRadius } from './round-rectangle';
@@ -72,7 +72,7 @@ export const RoundCommentEngine: ShapeEngine = {
             [rectangle.x, rectangle.y + rectangle.height / 2]
         ];
     },
-    getTextRectangle(element: PlaitElement) {
+    getTextRectangle(element: PlaitGeometry) {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const height = element.textHeight;
