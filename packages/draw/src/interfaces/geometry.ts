@@ -3,7 +3,7 @@ import { Options } from 'roughjs/bin/core';
 import { ParagraphElement } from '@plait/text';
 import { StrokeStyle } from './element';
 import { PlaitTable } from './table';
-import { UMLClassTextKeys, UMLInterfaceTextKeys } from './uml-geometry';
+import { UMLDefaultTextKeys } from './uml-geometry';
 
 export enum BasicShapes {
     rectangle = 'rectangle',
@@ -67,7 +67,7 @@ export enum SwimlaneSymbols {
 
 export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols | TableSymbols;
 
-export type PlaitGeometryTextKeys = UMLClassTextKeys | UMLInterfaceTextKeys;
+export type PlaitGeometryTextKeys = UMLDefaultTextKeys;
 
 export interface PlaitGeometryText {
     key: PlaitGeometryTextKeys;
@@ -75,15 +75,10 @@ export interface PlaitGeometryText {
     textHeight: number;
 }
 
-export interface PlaitGeometry extends PlaitElement {
+export interface PlaitCommonGeometry extends PlaitElement {
     points: [Point, Point];
     type: 'geometry';
     shape: GeometryShapes;
-
-    text: ParagraphElement;
-    textHeight: number;
-
-    texts?: PlaitGeometryText[];
 
     // node style attributes
     fill?: string;
@@ -93,6 +88,15 @@ export interface PlaitGeometry extends PlaitElement {
 
     angle: number;
     opacity: number;
+}
+
+export interface PlaitMultipleTextGeometry extends PlaitCommonGeometry {
+    texts?: PlaitGeometryText[];
+}
+
+export interface PlaitGeometry extends PlaitCommonGeometry {
+    text: ParagraphElement;
+    textHeight: number;
 }
 
 export interface PlaitRectangle extends PlaitGeometry {

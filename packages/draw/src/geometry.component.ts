@@ -10,7 +10,7 @@ import {
     RectangleClient
 } from '@plait/core';
 import { Subject } from 'rxjs';
-import { PlaitGeometry, PlaitGeometryText } from './interfaces/geometry';
+import { PlaitCommonGeometry, PlaitGeometry, PlaitGeometryText } from './interfaces/geometry';
 import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { ParagraphElement, TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
@@ -20,7 +20,7 @@ import { GeometryThreshold } from './constants/geometry';
 import { PlaitText } from './interfaces';
 import { getEngine } from './engines';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
-import { memorizeLatestText } from './utils';
+import { isMultipleTextGeometry, memorizeLatestText } from './utils';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -28,11 +28,11 @@ import { memorizeLatestText } from './utils';
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true
 })
-export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitBoard>
-    implements OnInit, OnDestroy, OnContextChanged<PlaitGeometry, PlaitBoard> {
+export class GeometryComponent<T extends PlaitCommonGeometry = PlaitGeometry> extends CommonPluginElement<T, PlaitBoard>
+    implements OnInit, OnDestroy, OnContextChanged<T, PlaitBoard> {
     destroy$ = new Subject<void>();
 
-    activeGenerator!: ActiveGenerator<PlaitGeometry>;
+    activeGenerator!: ActiveGenerator<T>;
 
     lineAutoCompleteGenerator!: LineAutoCompleteGenerator;
 
@@ -43,7 +43,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     }
 
     initializeGenerator() {
-        this.activeGenerator = new ActiveGenerator<PlaitGeometry>(this.board, {
+        this.activeGenerator = new ActiveGenerator<T>(this.board, {
             getStrokeWidth: () => {
                 const selectedElements = getSelectedElements(this.board);
                 if (selectedElements.length === 1 && !isSelectionMoving(this.board)) {
@@ -60,7 +60,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
                     return 0.5;
                 }
             },
-            getRectangle: (element: PlaitGeometry) => {
+            getRectangle: (element: T) => {
                 return RectangleClient.getRectangleByPoints(element.points);
             },
             hasResizeHandle: () => {
@@ -77,35 +77,46 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     ngOnInit(): void {
         super.ngOnInit();
         this.initializeGenerator();
-        this.shapeGenerator.processDrawing(this.element, this.getElementG());
-        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
-        this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+        this.shapeGenerator.processDrawing((this.element as unknown) as PlaitGeometry, this.getElementG());
+        this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
             selected: this.selected
         });
+        this.lineAutoCompleteGenerator.processDrawing(
+            (this.element as unknown) as PlaitGeometry,
+            PlaitBoard.getElementActiveHost(this.board),
+            {
+                selected: this.selected
+            }
+        );
         this.drawText();
     }
 
-    onContextChanged(
-        value: PlaitPluginElementContext<PlaitGeometry, PlaitBoard>,
-        previous: PlaitPluginElementContext<PlaitGeometry, PlaitBoard>
-    ) {
+    onContextChanged(value: PlaitPluginElementContext<T, PlaitBoard>, previous: PlaitPluginElementContext<T, PlaitBoard>) {
         this.initializeWeakMap();
         const isChangeTheme = this.board.operations.find(op => op.type === 'set_theme');
         if (value.element !== previous.element || isChangeTheme) {
-            this.shapeGenerator.processDrawing(this.element, this.getElementG());
+            this.shapeGenerator.processDrawing((this.element as unknown) as PlaitGeometry, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
-            this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-                selected: this.selected
-            });
-            this.updateText(previous.element, value.element);
+            this.lineAutoCompleteGenerator.processDrawing(
+                (this.element as unknown) as PlaitGeometry,
+                PlaitBoard.getElementActiveHost(this.board),
+                {
+                    selected: this.selected
+                }
+            );
+            this.updateText(value.element);
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
             if (!hasSameSelected || !hasSameHandleState) {
                 this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
-                this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
-                    selected: this.selected
-                });
+                this.lineAutoCompleteGenerator.processDrawing(
+                    (this.element as unknown) as PlaitGeometry,
+                    PlaitBoard.getElementActiveHost(this.board),
+                    {
+                        selected: this.selected
+                    }
+                );
             }
         }
     }
@@ -122,17 +133,14 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
         }
     }
 
-    updateText(previousElement: PlaitGeometry, currentElement: PlaitGeometry) {
-        const previousTextElements = this.getElementTextElements(previousElement);
+    updateText(currentElement: T) {
         const currentTextElements = this.getElementTextElements(currentElement);
-
-        const textManages = this.getTextManages();
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
-        for (let i = 0; i < previousTextElements.length; i++) {
-            textManages[i].updateText(currentTextElements[i]);
-            textManages[i].updateRectangle();
-            textManages[i].updateAngle(centerPoint, this.element.angle);
-        }
+        this.getTextManages().forEach((manage, index) => {
+            manage.updateText(currentTextElements[index]);
+            manage.updateRectangle();
+            manage.updateAngle(centerPoint, this.element.angle);
+        });
     }
 
     initializeTextManage() {
@@ -159,34 +167,34 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
             getRectangle: () => {
                 const getRectangle = getEngine(this.element.shape).getTextRectangle;
                 if (getRectangle) {
-                    return getRectangle(this.element, options);
+                    return getRectangle((this.element as unknown) as PlaitGeometry, options);
                 }
-                return getTextRectangle(this.element);
+                return getTextRectangle((this.element as unknown) as PlaitGeometry);
             },
             onValueChangeHandle: (textManageRef: TextManageRef) => {
                 const height = textManageRef.height / this.board.viewport.zoom;
                 const width = textManageRef.width / this.board.viewport.zoom;
                 if (textManageRef.newValue) {
-                    DrawTransforms.setText(this.board, this.element, textManageRef.newValue, width, height);
+                    DrawTransforms.setText(this.board, (this.element as unknown) as PlaitGeometry, textManageRef.newValue, width, height);
                 } else {
-                    DrawTransforms.setTextSize(this.board, this.element, width, height);
+                    DrawTransforms.setTextSize(this.board, (this.element as unknown) as PlaitGeometry, width, height);
                 }
-                textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
+                textManageRef.operations && memorizeLatestText((this.element as unknown) as PlaitGeometry, textManageRef.operations);
             },
             getMaxWidth: () => {
-                let width = getTextRectangle(this.element).width;
+                let width = getTextRectangle((this.element as unknown) as PlaitGeometry).width;
                 const getRectangle = getEngine(this.element.shape).getTextRectangle;
                 if (getRectangle) {
-                    width = getRectangle(this.element).width;
+                    width = getRectangle((this.element as unknown) as PlaitGeometry).width;
                 }
-                return (this.element as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
+                return ((this.element as unknown) as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
             },
             textPlugins: plugins
         });
     }
 
-    getElementTextElements(element: PlaitGeometry): ParagraphElement[] {
-        return element.text ? [element.text] : (element.texts || []).map((item: PlaitGeometryText) => item && item.text);
+    getElementTextElements(element: T): ParagraphElement[] {
+        return isMultipleTextGeometry(element) ? (element.texts || []).map((item: PlaitGeometryText) => item && item.text) : [element.text];
     }
 
     ngOnDestroy(): void {

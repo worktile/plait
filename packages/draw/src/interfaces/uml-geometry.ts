@@ -1,10 +1,4 @@
-export enum UMLClassTextKeys {
-    title = 'title',
-    topContent = 'topContent',
-    bottomContent = 'bottomContent'
-}
-
-export enum UMLInterfaceTextKeys {
-    title = 'title',
+export enum UMLDefaultTextKeys {
+    name = 'name',
     content = 'content'
 }
