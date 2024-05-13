@@ -1,3 +1,5 @@
+import { ParagraphElement } from '@plait/text';
+import { EngineExtraData } from './engine';
 import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitGeometry, TableSymbols } from './geometry';
 import { PlaitImage } from './image';
 import { PlaitLine } from './line';

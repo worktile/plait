@@ -2,9 +2,10 @@ import { PlaitBoard, RectangleClient, Point, createG, drawLine } from '@plait/co
 import { Options } from 'roughjs/bin/core';
 import { PlaitTable, PlaitTableDrawOptions } from '../../interfaces/table';
 import { getCellsWithPoints } from '../../utils/table';
-import { PlaitDrawShapeText, ShapeEngine } from '../../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { ShapeDefaultSpace } from '../../constants';
 import { getStrokeWidthByElement } from '../../utils';
+import { PlaitDrawShapeText } from '../../generators/text.generator';
 
 export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDrawShapeText> = {
     draw(board: PlaitBoard, rectangle: RectangleClient, roughOptions: Options, options?: PlaitTableDrawOptions) {

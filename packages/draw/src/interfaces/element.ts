@@ -13,9 +13,3 @@ export enum MemorizeKey {
     text = 'text',
     line = 'line'
 }
-
-export interface PlaitDrawShapeText extends EngineExtraData{
-    key: string;
-    text: ParagraphElement;
-    textHeight: number;
-}

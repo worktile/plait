@@ -1,4 +1,4 @@
-import { PlaitBoard, Point, Transforms } from '@plait/core';
+import { PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
 import { Element } from 'slate';
 import { PlaitGeometry, PlaitText } from '../interfaces';
 import { ShapeDefaultSpace } from '../constants';
@@ -6,7 +6,7 @@ import { AlignEditor, Alignment } from '@plait/text';
 import { getFirstTextEditor } from '@plait/common';
 import { PlaitTableCellWithPoints } from '../interfaces/table';
 
-const normalizePoints = (board: PlaitBoard, element: PlaitGeometry | PlaitTableCellWithPoints, width: number, textHeight: number) => {
+const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: number, textHeight: number) => {
     let points = element.points;
     let autoSize = (element as PlaitText).autoSize;
     const defaultSpace = ShapeDefaultSpace.rectangleAndText;
@@ -33,9 +33,9 @@ const normalizePoints = (board: PlaitBoard, element: PlaitGeometry | PlaitTableC
     return { points };
 };
 
-export const setText = (
+export const setText =(
     board: PlaitBoard,
-    element: PlaitGeometry | PlaitTableCellWithPoints,
+    element: PlaitGeometry,
     text: Element,
     width: number,
     textHeight: number
@@ -51,13 +51,8 @@ export const setText = (
     Transforms.setNode(board, newElement, [path]);
 };
 
-export const setTextSize = (
-    board: PlaitBoard,
-    element: PlaitGeometry | PlaitTableCellWithPoints,
-    textWidth: number,
-    textHeight: number
-) => {
-    if ((element as PlaitText).autoSize) {
+export const setTextSize = (board: PlaitBoard, element: PlaitGeometry, textWidth: number, textHeight: number) => {
+    if ((element as unknown as PlaitText).autoSize) {
         const newElement = {
             textHeight,
             ...normalizePoints(board, element, textWidth, textHeight)

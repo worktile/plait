@@ -2,11 +2,8 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, ACTIVE_STROKE_WIDTH, RectangleClient } from '@plait/core';
 import { ActiveGenerator, canResize, CommonPluginElement } from '@plait/common';
 import { PlaitTable, PlaitTableCell } from './interfaces/table';
-import { TableCellTextGenerator, TableGenerator } from './generators/table.generator';
-import { TextManage, TextManageRef } from '@plait/text';
-import { TextGenerator } from './generators/text.generator';
-import { PlaitDrawShapeText, TableSymbols } from './interfaces';
-import { getCellsWithPoints } from './utils/table';
+import { PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
+import { TableGenerator } from './generators/table.generator';
 
 @Component({
     selector: 'plait-draw-table',
@@ -19,8 +16,6 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
     activeGenerator!: ActiveGenerator<PlaitTable>;
 
     tableGenerator!: TableGenerator;
-
-    textGenerators!: TableCellTextGenerator[];
 
     textGenerator!: TextGenerator<PlaitTable>;
 
@@ -44,9 +39,6 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
             }
         });
         this.tableGenerator = new TableGenerator(this.board);
-        this.textGenerators = this.element.cells.map(() => {
-            return new TableCellTextGenerator(this.board);
-        });
         this.initializeTextManage();
     }
 
@@ -54,10 +46,10 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
         super.ngOnInit();
         this.initializeGenerator();
         this.tableGenerator.processDrawing(this.element, this.getElementG());
-        this.drawText();
+        this.textGenerator.draw(this.getElementG());
     }
 
-    getDrawShapeTexts(cells: PlaitTableCell[]) {
+    getDrawShapeTexts(cells: PlaitTableCell[]): PlaitDrawShapeText[] {
         return cells.map(item => {
             return {
                 key: item.id,
@@ -68,29 +60,16 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
     }
 
     initializeTextManage() {
-        const texts: PlaitDrawShapeText[] = this.getDrawShapeTexts(this.element.cells);
-        this.textGenerator = new TextGenerator(
-            this.board,
-            this.element,
-            texts,
-            TableSymbols.table,
-            this.getElementG(),
-            this.viewContainerRef
-        );
+        const texts = this.getDrawShapeTexts(this.element.cells);
+        this.textGenerator = new TextGenerator(this.board, this.element, texts, this.viewContainerRef);
         this.textGenerator.initialize();
         this.initializeTextManages(this.textGenerator.textManages);
     }
 
-    drawText() {
-        const textManages = this.getTextManages();
-        this.textGenerator.draw(textManages);
-    }
-
     updateText(previousTable: PlaitTable, currentTable: PlaitTable) {
-        const textManages = this.getTextManages();
-        const previousTexts: PlaitDrawShapeText[] = this.getDrawShapeTexts(previousTable.cells);
-        const currentTexts: PlaitDrawShapeText[] = this.getDrawShapeTexts(currentTable.cells);
-        this.textGenerator.update(this.element, previousTexts, currentTexts, textManages);
+        const previousTexts = this.getDrawShapeTexts(previousTable.cells);
+        const currentTexts = this.getDrawShapeTexts(currentTable.cells);
+        this.textGenerator.update(this.element, previousTexts, currentTexts, this.getElementG());
     }
 
     onContextChanged(
@@ -101,7 +80,9 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
         if (value.element !== previous.element) {
             this.tableGenerator.processDrawing(this.element, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
-            this.updateText(previous.element, value.element);
+            const previousTexts = this.getDrawShapeTexts(previous.element.cells);
+            const currentTexts = this.getDrawShapeTexts(this.element.cells);
+            this.textGenerator.update(this.element, previousTexts, currentTexts, this.getElementG());
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
@@ -113,6 +94,7 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
     ngOnDestroy(): void {
         super.ngOnDestroy();
         this.activeGenerator.destroy();
-        this.destroyTextManages();
+        this.tableGenerator.destroy();
+        this.textGenerator.destroy();
     }
 }
