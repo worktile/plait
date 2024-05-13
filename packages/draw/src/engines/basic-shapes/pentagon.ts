@@ -1,5 +1,5 @@
 import { Point, RectangleClient } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
@@ -14,7 +14,7 @@ export const getPentagonPoints = (rectangle: RectangleClient): Point[] => {
     ];
 };
 
-export const PentagonEngine: GeometryEngine = createPolygonEngine({
+export const PentagonEngine: ShapeEngine = createPolygonEngine({
     getPolygonPoints: getPentagonPoints,
     getTextRectangle(element: PlaitGeometry) {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);

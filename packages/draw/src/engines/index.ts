@@ -1,4 +1,13 @@
-import { BasicShapes, DrawShapes, FlowchartSymbols, GeometryEngine, SwimlaneSymbols, TableSymbols } from '../interfaces';
+import {
+    BasicShapes,
+    DrawShapes,
+    EngineExtraData,
+    FlowchartSymbols,
+    PlaitGeometry,
+    ShapeEngine,
+    SwimlaneSymbols,
+    TableSymbols
+} from '../interfaces';
 import { CommentEngine } from './basic-shapes/comment';
 import { CrossEngine } from './basic-shapes/cross';
 import { DiamondEngine } from './basic-shapes/diamond';
@@ -10,7 +19,6 @@ import { ParallelogramEngine } from './basic-shapes/parallelogram';
 import { PentagonEngine } from './basic-shapes/pentagon';
 import { PentagonArrowEngine } from './basic-shapes/pentagon-arrow';
 import { ProcessArrowEngine } from './basic-shapes/process-arrow';
-import { RectangleEngine } from './basic-shapes/rectangle';
 import { RightArrowEngine } from './basic-shapes/right-arrow';
 import { RoundCommentEngine } from './basic-shapes/round-comment';
 import { RoundRectangleEngine } from './basic-shapes/round-rectangle';
@@ -40,8 +48,10 @@ import { NoteCurlyRightEngine } from './flowchart/note-curly-right';
 import { NoteSquareEngine } from './flowchart/note-square';
 import { DisplayEngine } from './flowchart/display';
 import { TableEngine } from './table/table';
+import { RectangleEngine } from './basic-shapes/rectangle';
+import { PlaitElement } from '@plait/core';
 
-export const ShapeEngineMap: Record<DrawShapes, GeometryEngine | TableEngine> = {
+export const ShapeEngineMap: Record<DrawShapes, ShapeEngine<any, any, any>> = {
     [BasicShapes.rectangle]: RectangleEngine,
     [BasicShapes.diamond]: DiamondEngine,
     [BasicShapes.ellipse]: EllipseEngine,
@@ -92,6 +102,12 @@ export const ShapeEngineMap: Record<DrawShapes, GeometryEngine | TableEngine> = 
     [TableSymbols.table]: TableEngine
 };
 
-export const getEngine = (shape: DrawShapes) => {
+export const getEngine = <
+    T extends PlaitElement = PlaitGeometry,
+    P extends EngineExtraData = EngineExtraData,
+    K extends EngineExtraData = EngineExtraData
+>(
+    shape: DrawShapes
+): ShapeEngine<T, P, K>  => {
     return ShapeEngineMap[shape];
 };

@@ -1,5 +1,5 @@
 import { Point, RectangleClient } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from '../basic-shapes/polygon';
 import { getCenterPointsOnPolygon } from '../../utils/polygon';
 import { getTextRectangle } from '../../utils';
@@ -12,7 +12,7 @@ export const getManualLoopPoints = (rectangle: RectangleClient): Point[] => {
         [rectangle.x + rectangle.width / 8, rectangle.y + rectangle.height]
     ];
 };
-export const ManualLoopEngine: GeometryEngine = createPolygonEngine({
+export const ManualLoopEngine: ShapeEngine = createPolygonEngine({
     getPolygonPoints: getManualLoopPoints,
     getConnectorPoints: (rectangle: RectangleClient) => {
         const cornerPoints = getManualLoopPoints(rectangle);

@@ -1,5 +1,5 @@
 import { Point, RectangleClient } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getTextRectangle } from '../../utils';
 
@@ -15,7 +15,7 @@ export const getProcessArrowPoints = (rectangle: RectangleClient): Point[] => {
     ];
 };
 
-export const ProcessArrowEngine: GeometryEngine = createPolygonEngine({
+export const ProcessArrowEngine: ShapeEngine = createPolygonEngine({
     getPolygonPoints: getProcessArrowPoints,
     getTextRectangle(element: PlaitGeometry) {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);

@@ -10,13 +10,13 @@ import {
     isPointInEllipse,
     setStrokeLinecap
 } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { ShapeDefaultSpace } from '../../constants';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getStrokeWidthByElement } from '../../utils';
 
-export const HardDiskEngine: GeometryEngine = {
+export const HardDiskEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(

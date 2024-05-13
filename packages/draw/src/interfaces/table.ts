@@ -1,5 +1,6 @@
 import { PlaitElement, Point } from '@plait/core';
 import { ParagraphElement } from '@plait/text';
+import { EngineExtraData } from './engine';
 
 export interface PlaitTable extends PlaitElement {
     id: string;
@@ -24,6 +25,14 @@ export interface PlaitTableCell {
     rowspan?: number;
     text?: PlaitTableCellParagraph;
     textHeight?: number;
+}
+
+export interface PlaitTableDrawOptions extends EngineExtraData {
+    element: PlaitTable;
+}
+
+export interface PlaitTableCellWithPoints extends PlaitTableCell {
+    points: [Point, Point];
 }
 
 export interface PlaitTableCellParagraph extends ParagraphElement {

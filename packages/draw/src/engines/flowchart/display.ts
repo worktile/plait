@@ -11,7 +11,7 @@ import {
     isPointInPolygon,
     setStrokeLinecap
 } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getStrokeWidthByElement } from '../../utils';
 
@@ -25,7 +25,7 @@ export const getDisplayPoints = (rectangle: RectangleClient): Point[] => {
     ];
 };
 
-export const DisplayEngine: GeometryEngine = {
+export const DisplayEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(

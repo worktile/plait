@@ -6,14 +6,14 @@ import {
     getNearestPointBetweenPointAndSegments,
     setStrokeLinecap
 } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 
-export const PredefinedProcessEngine: GeometryEngine = {
+export const PredefinedProcessEngine: ShapeEngine<PlaitGeometry> = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(

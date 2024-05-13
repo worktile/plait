@@ -7,7 +7,7 @@ import {
     isPointInPolygon,
     setStrokeLinecap
 } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { ShapeDefaultSpace } from '../../constants';
 import { getStrokeWidthByElement } from '../../utils';
@@ -15,7 +15,7 @@ import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 
 const heightRatio = 3 / 4;
 
-export const CommentEngine: GeometryEngine = {
+export const CommentEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const points = getCommentPoints(rectangle);
         const rs = PlaitBoard.getRoughSVG(board);

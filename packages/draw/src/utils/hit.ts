@@ -11,7 +11,7 @@ import {
     rotatePointsByElement,
     rotateAntiPointsByElement
 } from '@plait/core';
-import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement, GeometryEngine } from '../interfaces';
+import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement, ShapeEngine } from '../interfaces';
 import { TRANSPARENT } from '@plait/common';
 import { getNearestPoint } from './geometry';
 import { getLinePoints } from './line/line-basic';
@@ -81,7 +81,7 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
         if (isHitEdgeOfShape(board, element, point, HIT_DISTANCE_BUFFER)) {
             return true;
         }
-        const engine = getEngine(getElementShape(element)) as GeometryEngine;
+        const engine = getEngine(getElementShape(element));
         // when shape equals text, fill is not allowed
         if (fill !== DefaultDrawStyle.fill && fill !== TRANSPARENT && !PlaitDrawElement.isText(element)) {
             const isHitInside = engine.isInsidePoint(rectangle!, point);
@@ -129,7 +129,7 @@ export const isHitElementInside = (board: PlaitBoard, element: PlaitElement, poi
     const rectangle = board.getRectangle(element);
     point = rotateAntiPointsByElement(point, element) || point;
     if (PlaitDrawElement.isGeometry(element)) {
-        const engine = getEngine(getElementShape(element)) as GeometryEngine;
+        const engine = getEngine(getElementShape(element));
         const isHitInside = engine.isInsidePoint(rectangle!, point);
         if (isHitInside) {
             return isHitInside;

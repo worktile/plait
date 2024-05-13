@@ -8,7 +8,6 @@ import { DrawTransforms } from '../transforms';
 import { getCellsWithPoints } from '../utils/table';
 import { GeometryThreshold } from '../constants';
 import { getTextRectangle, memorizeLatestText } from '../utils';
-import { TableEngine } from '../engines/table/table';
 
 export interface TableData {}
 
@@ -19,10 +18,17 @@ export class TableGenerator extends Generator<PlaitTable, TableData> {
 
     draw(element: PlaitTable, data: TableData) {
         const rectangle = RectangleClient.getRectangleByPoints(element.points);
-        return (getEngine(TableSymbols.table) as TableEngine).draw(this.board, element, rectangle, {
-            strokeWidth: 1,
-            stroke: '#333'
-        });
+        return getEngine(TableSymbols.table).draw(
+            this.board,
+            rectangle,
+            {
+                strokeWidth: 1,
+                stroke: '#333'
+            },
+            {
+                element: element
+            }
+        );
     }
 }
 
@@ -38,9 +44,11 @@ export class TableCellTextGenerator {
 
     getRectangle(table: PlaitTable, cellIndex: number) {
         const cells = getCellsWithPoints(table);
-        const getRectangle = (getEngine(TableSymbols.table) as TableEngine).getTextRectangle;
+        const getRectangle = getEngine<PlaitTable>(TableSymbols.table).getTextRectangle;
         if (getRectangle) {
-            return getRectangle(cells[cellIndex]);
+            return getRectangle(table, {
+                cell: cells[cellIndex]
+            });
         }
         return getTextRectangle(cells[cellIndex]);
     }
@@ -58,9 +66,9 @@ export class TableCellTextGenerator {
     getMaxWidth(table: PlaitTable, cellIndex: number) {
         const cells = getCellsWithPoints(table);
         let width = getTextRectangle(cells[cellIndex]).width;
-        const getRectangle = (getEngine(TableSymbols.table) as TableEngine).getTextRectangle;
+        const getRectangle = getEngine<PlaitTable>(TableSymbols.table).getTextRectangle;
         if (getRectangle) {
-            width = getRectangle(cells[cellIndex]).width;
+            width = getRectangle(table, cells[cellIndex]).width;
         }
         return ((cells[cellIndex] as unknown) as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
     }

@@ -1,10 +1,10 @@
 import { PlaitBoard, RectangleClient, getCrossingPointsBetweenEllipseAndSegment } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getTextRectangle } from '../../utils';
 import { createEllipseEngine } from '../basic-shapes/ellipse';
 
-export const SummingJunctionEngine: GeometryEngine = createEllipseEngine({
+export const SummingJunctionEngine: ShapeEngine = createEllipseEngine({
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const rx = rectangle.width / 2;

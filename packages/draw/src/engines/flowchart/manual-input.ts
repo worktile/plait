@@ -1,5 +1,5 @@
 import { Point, RectangleClient } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from '../basic-shapes/polygon';
 import { ShapeDefaultSpace } from '../../constants';
 import { getCenterPointsOnPolygon } from '../../utils/polygon';
@@ -14,7 +14,7 @@ export const getManualInputPoints = (rectangle: RectangleClient): Point[] => {
     ];
 };
 
-export const ManualInputEngine: GeometryEngine = createPolygonEngine({
+export const ManualInputEngine: ShapeEngine = createPolygonEngine({
     getPolygonPoints: getManualInputPoints,
     getConnectorPoints: (rectangle: RectangleClient) => {
         const cornerPoints = getManualInputPoints(rectangle);

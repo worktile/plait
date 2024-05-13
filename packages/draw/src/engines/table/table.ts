@@ -1,28 +1,23 @@
-import { PlaitBoard, RectangleClient, Point, createG, PlaitElement, drawLine } from '@plait/core';
+import { PlaitBoard, RectangleClient, Point, createG, drawLine } from '@plait/core';
 import { Options } from 'roughjs/bin/core';
-import { PlaitTable, PlaitTableCell } from '../../interfaces/table';
-import { BaseEngine } from '../../interfaces';
+import { PlaitTable, PlaitTableDrawOptions } from '../../interfaces/table';
 import { getCellsWithPoints } from '../../utils/table';
+import { ShapeEngine } from '../../interfaces';
 
-export interface TableEngine extends BaseEngine {
-    draw: (board: PlaitBoard, element: PlaitElement, rectangle: RectangleClient, options: Options) => SVGGElement;
-    getTextRectangle?: (element: PlaitTableCell) => RectangleClient;
-}
-
-export const TableEngine: TableEngine = {
-    draw(board: PlaitBoard, element: PlaitElement, rectangle: RectangleClient, options: Options) {
+export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions> = {
+    draw(board: PlaitBoard, rectangle: RectangleClient, roughOptions: Options, options?: PlaitTableDrawOptions) {
         const rs = PlaitBoard.getRoughSVG(board);
         const g = createG();
         const { x, y, width, height } = rectangle;
-        const tableTopBorder = drawLine(rs, [x, y], [x + width, y], options);
-        const tableLeftBorder = drawLine(rs, [x, y], [x, y + height], options);
+        const tableTopBorder = drawLine(rs, [x, y], [x + width, y], roughOptions);
+        const tableLeftBorder = drawLine(rs, [x, y], [x, y + height], roughOptions);
         g.append(tableTopBorder, tableLeftBorder);
-        const pointCells = getCellsWithPoints({ ...element } as PlaitTable);
+        const pointCells = getCellsWithPoints({ ...options?.element } as PlaitTable);
         pointCells.forEach(cell => {
             const rectangle = RectangleClient.getRectangleByPoints(cell.points!);
             const { x, y, width, height } = rectangle;
-            const cellRightBorder = drawLine(rs, [x + width, y], [x + width, y + height], options);
-            const cellBottomBorder = drawLine(rs, [x, y + height], [x + width, y + height], options);
+            const cellRightBorder = drawLine(rs, [x + width, y], [x + width, y + height], roughOptions);
+            const cellBottomBorder = drawLine(rs, [x, y + height], [x + width, y + height], roughOptions);
             g.append(cellRightBorder, cellBottomBorder);
         });
         return g;

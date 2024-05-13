@@ -10,11 +10,11 @@ import {
     setStrokeLinecap,
     getNearestPointBetweenPointAndEllipse
 } from '@plait/core';
-import { GeometryEngine } from '../../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
 
-export const DelayEngine: GeometryEngine = {
+export const DelayEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const shape = rs.path(

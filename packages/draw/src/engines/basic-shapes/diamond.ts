@@ -1,9 +1,9 @@
 import { RectangleClient } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getTextRectangle } from '../../utils';
 
-export const DiamondEngine: GeometryEngine = createPolygonEngine({
+export const DiamondEngine: ShapeEngine = createPolygonEngine({
     getPolygonPoints: RectangleClient.getEdgeCenterPoints,
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);

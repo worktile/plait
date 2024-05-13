@@ -1,5 +1,5 @@
 import { Point, RectangleClient } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getTextRectangle } from '../../utils';
 
@@ -14,7 +14,7 @@ export const getHexagonPoints = (rectangle: RectangleClient): Point[] => {
     ];
 };
 
-export const HexagonEngine: GeometryEngine = createPolygonEngine({
+export const HexagonEngine: ShapeEngine = createPolygonEngine({
     getPolygonPoints: getHexagonPoints,
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);

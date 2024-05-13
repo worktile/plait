@@ -10,10 +10,10 @@ import {
     isPointInRoundRectangle,
     getNearestPointBetweenPointAndEllipse
 } from '@plait/core';
-import { GeometryEngine } from '../../interfaces';
+import { ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 
-export const TerminalEngine: GeometryEngine = {
+export const TerminalEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         return drawRoundRectangle(
             PlaitBoard.getRoughSVG(board),

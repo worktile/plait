@@ -1,5 +1,5 @@
 import { Point, RectangleClient } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getCenterPointsOnPolygon } from '../../utils/polygon';
 import { getTextRectangle } from '../../utils';
@@ -13,7 +13,7 @@ export const getTrapezoidPoints = (rectangle: RectangleClient): Point[] => {
     ];
 };
 
-export const TrapezoidEngine: GeometryEngine = createPolygonEngine({
+export const TrapezoidEngine: ShapeEngine = createPolygonEngine({
     getPolygonPoints: getTrapezoidPoints,
     getConnectorPoints(rectangle: RectangleClient) {
         const points = getTrapezoidPoints(rectangle);

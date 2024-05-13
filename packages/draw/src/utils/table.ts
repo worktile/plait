@@ -1,14 +1,14 @@
 import { Point, RectangleClient } from '@plait/core';
-import { PlaitTable, PlaitTableCell } from '../interfaces/table';
+import { PlaitTable, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
 
-export function getCellsWithPoints(table: PlaitTable): (PlaitTableCell & { points: [Point, Point] })[] {
+export function getCellsWithPoints(table: PlaitTable): PlaitTableCellWithPoints[] {
     const rectangle = RectangleClient.getRectangleByPoints(table.points);
     const columnsCount = table.columns.length;
     const rowsCount = table.rows.length;
     const cellWidths = calculateCellsSize(table.columns, rectangle.width, columnsCount, true);
     const cellHeights = calculateCellsSize(table.rows, rectangle.height, rowsCount, false);
 
-    const cells: (PlaitTableCell & { points: [Point, Point] })[] = table.cells.map(cell => {
+    const cells: PlaitTableCellWithPoints[] = table.cells.map(cell => {
         const rowIdx = table.rows.findIndex(row => row.id === cell.rowId);
         const columnIdx = table.columns.findIndex(column => column.id === cell.columnId);
 

@@ -6,13 +6,13 @@ import {
     getNearestPointBetweenPointAndSegments,
     setPathStrokeLinecap
 } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 
-export const CloudEngine: GeometryEngine = {
+export const CloudEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
         const rs = PlaitBoard.getRoughSVG(board);
         const divisionWidth = rectangle.width / 7;

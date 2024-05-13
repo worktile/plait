@@ -8,7 +8,7 @@ import {
     isPointInEllipse,
     getNearestPointBetweenPointAndEllipse
 } from '@plait/core';
-import { PlaitGeometry, GeometryEngine } from '../../interfaces';
+import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getTextRectangle } from '../../utils';
 
@@ -17,8 +17,8 @@ export interface CreateEllipseOptions {
     getTextRectangle?: (element: PlaitGeometry) => RectangleClient;
 }
 
-export function createEllipseEngine(createOptions?: CreateEllipseOptions): GeometryEngine {
-    const engine: GeometryEngine = {
+export function createEllipseEngine(createOptions?: CreateEllipseOptions): ShapeEngine {
+    const engine: ShapeEngine = {
         draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {
             const centerPoint = [rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2];
             const rs = PlaitBoard.getRoughSVG(board);
@@ -67,4 +67,4 @@ export function createEllipseEngine(createOptions?: CreateEllipseOptions): Geome
     return engine;
 }
 
-export const EllipseEngine: GeometryEngine = createEllipseEngine();
+export const EllipseEngine: ShapeEngine = createEllipseEngine();
