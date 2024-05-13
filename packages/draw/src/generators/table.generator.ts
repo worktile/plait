@@ -53,23 +53,8 @@ export class TableCellTextGenerator {
         return getTextRectangle(cells[cellIndex]);
     }
     onValueChangeHandle(textManageRef: TextManageRef, table: PlaitTable, cellIndex: number) {
-        const cells = getCellsWithPoints(table);
-        const height = textManageRef.height / this.board.viewport.zoom;
-        const width = textManageRef.width / this.board.viewport.zoom;
-        if (textManageRef.newValue) {
-            DrawTransforms.setText(this.board, cells[cellIndex], textManageRef.newValue, width, height);
-        } else {
-            DrawTransforms.setTextSize(this.board, cells[cellIndex], width, height);
-        }
-        textManageRef.operations && memorizeLatestText(table, textManageRef.operations);
     }
     getMaxWidth(table: PlaitTable, cellIndex: number) {
-        const cells = getCellsWithPoints(table);
-        let width = getTextRectangle(cells[cellIndex]).width;
-        const getRectangle = getEngine<PlaitTable>(TableSymbols.table).getTextRectangle;
-        if (getRectangle) {
-            width = getRectangle(table, cells[cellIndex]).width;
-        }
-        return ((cells[cellIndex] as unknown) as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
+       return 0;
     }
 }

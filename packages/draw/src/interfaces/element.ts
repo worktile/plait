@@ -1,3 +1,6 @@
+import { ParagraphElement } from '@plait/text';
+import { EngineExtraData } from './engine';
+
 export enum StrokeStyle {
     solid = 'solid',
     dashed = 'dashed',
@@ -9,4 +12,10 @@ export enum MemorizeKey {
     flowchart = 'flowchart',
     text = 'text',
     line = 'line'
+}
+
+export interface PlaitDrawShapeText extends EngineExtraData{
+    key: string;
+    text: ParagraphElement;
+    textHeight: number;
 }

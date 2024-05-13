@@ -1,12 +1,11 @@
 import { PlaitElement, RectangleClient } from '@plait/core';
 import { DefaultDrawStyle, ShapeDefaultSpace } from '../constants';
 import { PlaitDrawElement, PlaitGeometry } from '../interfaces';
-import { PlaitTableCellWithPoints } from '../interfaces/table';
 
-export const getTextRectangle = (element: PlaitGeometry | PlaitTableCellWithPoints) => {
+export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(element: T) => {
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
     const strokeWidth = getStrokeWidthByElement(element);
-    const height = element.textHeight || 0;
+    const height = element.textHeight;
     const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
     return {
         height,
