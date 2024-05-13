@@ -10,9 +10,9 @@ import {
     RectangleClient
 } from '@plait/core';
 import { Subject } from 'rxjs';
-import { PlaitGeometry } from './interfaces/geometry';
+import { PlaitGeometry, PlaitGeometryText } from './interfaces/geometry';
 import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
-import { TextManage, TextManageRef } from '@plait/text';
+import { ParagraphElement, TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { getTextRectangle } from './utils/geometry';
 import { ActiveGenerator, WithTextPluginKey, WithTextOptions, CommonPluginElement, canResize } from '@plait/common';
@@ -37,10 +37,6 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     lineAutoCompleteGenerator!: LineAutoCompleteGenerator;
 
     shapeGenerator!: GeometryShapeGenerator;
-
-    get textManage() {
-        return this.getTextManages()[0];
-    }
 
     constructor() {
         super();
@@ -101,7 +97,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
             this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
                 selected: this.selected
             });
-            this.updateText();
+            this.updateText(previous.element, value.element);
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
@@ -115,27 +111,55 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
     }
 
     drawText() {
-        this.textManage.draw(this.element.text);
-        this.getElementG().append(this.textManage.g);
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
-        this.textManage.updateAngle(centerPoint, this.element.angle);
+        if (this.element.text || this.element.texts?.length) {
+            const textElements = this.getElementTextElements(this.element);
+            this.getTextManages().forEach((manage, index) => {
+                manage.draw(textElements[index]);
+                this.getElementG().append(manage.g);
+                manage.updateAngle(centerPoint, this.element.angle);
+            });
+        }
     }
 
-    updateText() {
-        this.textManage.updateText(this.element.text);
-        this.textManage.updateRectangle();
+    updateText(previousElement: PlaitGeometry, currentElement: PlaitGeometry) {
+        const previousTextElements = this.getElementTextElements(previousElement);
+        const currentTextElements = this.getElementTextElements(currentElement);
+
+        const textManages = this.getTextManages();
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
-        this.textManage.updateAngle(centerPoint, this.element.angle);
+        for (let i = 0; i < previousTextElements.length; i++) {
+            textManages[i].updateText(currentTextElements[i]);
+            textManages[i].updateRectangle();
+            textManages[i].updateAngle(centerPoint, this.element.angle);
+        }
     }
 
     initializeTextManage() {
-        const plugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
+        if (this.element.texts?.length) {
+            let manages: TextManage[] = [];
+            const texts = this.element.texts;
+            for (let i = 0; i < texts.length; i++) {
+                let manage = this.createTextManage({ key: texts[i].key });
+                manages.push(manage);
+            }
+            this.initializeTextManages(manages);
+            return;
+        }
 
-        const manage = new TextManage(this.board, this.viewContainerRef, {
+        if (this.element.text) {
+            const manage = this.createTextManage();
+            this.initializeTextManages([manage]);
+        }
+    }
+
+    createTextManage(options?: { [key: string]: any }) {
+        const plugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
+        return new TextManage(this.board, this.viewContainerRef, {
             getRectangle: () => {
                 const getRectangle = getEngine(this.element.shape).getTextRectangle;
                 if (getRectangle) {
-                    return getRectangle(this.element);
+                    return getRectangle(this.element, options);
                 }
                 return getTextRectangle(this.element);
             },
@@ -159,7 +183,10 @@ export class GeometryComponent extends CommonPluginElement<PlaitGeometry, PlaitB
             },
             textPlugins: plugins
         });
-        this.initializeTextManages([manage]);
+    }
+
+    getElementTextElements(element: PlaitGeometry): ParagraphElement[] {
+        return element.text ? [element.text] : (element.texts || []).map((item: PlaitGeometryText) => item && item.text);
     }
 
     ngOnDestroy(): void {
