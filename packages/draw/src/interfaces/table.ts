@@ -5,6 +5,7 @@ import { EngineExtraData } from './engine';
 export interface PlaitTable extends PlaitElement {
     id: string;
     points: Point[];
+    type: 'table';
     rows: {
         id: string;
         height?: number;
@@ -41,6 +42,6 @@ export interface PlaitTableCellParagraph extends ParagraphElement {
 
 export const PlaitTableElement = {
     isTable: (value: any): value is PlaitTable => {
-        return value.rows && value.columns && value.cells;
+       return value.type === 'table'
     }
 };
