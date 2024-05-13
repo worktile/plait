@@ -366,6 +366,7 @@ export const mockTableData: PlaitDrawElement[] = [
             [-100, -100],
             [500, 300]
         ],
+        type: 'table',
         rows: [
             {
                 id: 'row-1',
@@ -479,6 +480,7 @@ export const mockTableData: PlaitDrawElement[] = [
             [600, -100],
             [1200, 300]
         ],
+        type: 'table',
         rows: [
             {
                 id: 'row-1'

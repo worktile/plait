@@ -96,7 +96,6 @@ export interface PlaitDiamond extends PlaitGeometry {
 }
 
 export interface PlaitSwimlane extends PlaitTable {
-    type: 'geometry';
     shape: SwimlaneSymbols;
 }
 

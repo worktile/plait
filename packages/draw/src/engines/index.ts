@@ -51,7 +51,7 @@ import { TableEngine } from './table/table';
 import { RectangleEngine } from './basic-shapes/rectangle';
 import { PlaitElement } from '@plait/core';
 
-export const ShapeEngineMap: Record<DrawShapes, ShapeEngine<any, any, any>> = {
+const ShapeEngineMap: Record<DrawShapes, ShapeEngine<any, any, any>> = {
     [BasicShapes.rectangle]: RectangleEngine,
     [BasicShapes.diamond]: DiamondEngine,
     [BasicShapes.ellipse]: EllipseEngine,
