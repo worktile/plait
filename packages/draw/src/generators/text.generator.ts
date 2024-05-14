@@ -1,11 +1,10 @@
 import { ELEMENT_TO_TEXT_MANAGES, WithTextOptions, WithTextPluginKey } from '@plait/common';
-import { createG, PlaitBoard, PlaitElement, PlaitOptionsBoard, RectangleClient } from '@plait/core';
+import { PlaitBoard, PlaitElement, PlaitOptionsBoard, RectangleClient } from '@plait/core';
 import { TextPlugin, TextManageRef, TextManage, ParagraphElement } from '@plait/text';
 import { getEngine } from '../engines';
 import { DrawShapes, EngineExtraData, PlaitGeometry } from '../interfaces';
-import { getTextRectangle, memorizeLatestText } from '../utils';
+import { getTextRectangle } from '../utils';
 import { ViewContainerRef } from '@angular/core';
-import { DrawTransforms } from '../transforms';
 
 export interface PlaitDrawShapeText extends EngineExtraData {
     key: string;
@@ -14,8 +13,7 @@ export interface PlaitDrawShapeText extends EngineExtraData {
 }
 
 export interface TextGeneratorOptions {
-    onValueChangeHandle?: (textChangeRef: TextManageRef, text: PlaitDrawShapeText) => void;
-    getMaxWidth?: (text: PlaitDrawShapeText) => number;
+    onValueChangeHandle: (textChangeRef: TextManageRef, text: PlaitDrawShapeText) => void;
 }
 
 export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
@@ -27,7 +25,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
 
     protected viewContainerRef: ViewContainerRef;
 
-    protected options: TextGeneratorOptions | undefined;
+    protected options: TextGeneratorOptions;
 
     public textManages!: TextManage[];
 
@@ -40,7 +38,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         element: T,
         texts: PlaitDrawShapeText[],
         viewContainerRef: ViewContainerRef,
-        options?: TextGeneratorOptions
+        options: TextGeneratorOptions
     ) {
         this.board = board;
         this.texts = texts;
@@ -118,29 +116,11 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
     }
 
     onValueChangeHandle(textManageRef: TextManageRef, text: PlaitDrawShapeText) {
-        if (this.options?.onValueChangeHandle) {
-            return this.options?.onValueChangeHandle(textManageRef, text);
-        }
-        const height = textManageRef.height / this.board.viewport.zoom;
-        const width = textManageRef.width / this.board.viewport.zoom;
-        if (textManageRef.newValue) {
-            DrawTransforms.setText(this.board, (this.element as unknown) as PlaitGeometry, textManageRef.newValue, width, height);
-        } else {
-            DrawTransforms.setTextSize(this.board, (this.element as unknown) as PlaitGeometry, width, height);
-        }
-        textManageRef.operations && memorizeLatestText((this.element as unknown) as PlaitGeometry, textManageRef.operations);
+        return this.options.onValueChangeHandle(textManageRef, text);
     }
 
     getMaxWidth(text: PlaitDrawShapeText) {
-        if (this.options?.getMaxWidth) {
-            return this.options?.getMaxWidth(text);
-        }
-        let width = getTextRectangle(this.element).width;
-        const getRectangle = getEngine<T>(this.shape).getTextRectangle;
-        if (getRectangle) {
-            width = getRectangle(this.element, text).width;
-        }
-        return width;
+        return this.getRectangle(text).width;
     }
 
     destroy() {

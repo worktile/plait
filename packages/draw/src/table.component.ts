@@ -4,6 +4,7 @@ import { ActiveGenerator, canResize, CommonPluginElement } from '@plait/common';
 import { PlaitTable, PlaitTableCell } from './interfaces/table';
 import { PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
 import { TableGenerator } from './generators/table.generator';
+import { TextManageRef } from '@plait/text';
 
 @Component({
     selector: 'plait-draw-table',
@@ -61,7 +62,9 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
 
     initializeTextManage() {
         const texts = this.getDrawShapeTexts(this.element.cells);
-        this.textGenerator = new TextGenerator(this.board, this.element, texts, this.viewContainerRef);
+        this.textGenerator = new TextGenerator(this.board, this.element, texts, this.viewContainerRef, {
+            onValueChangeHandle: (textChangeRef: TextManageRef, text: PlaitDrawShapeText) => {}
+        });
         this.textGenerator.initialize();
         this.initializeTextManages(this.textGenerator.textManages);
     }

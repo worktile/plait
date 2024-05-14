@@ -1,10 +1,9 @@
-import { PlaitBoard, PlaitElement, Point, Transforms } from '@plait/core';
+import { PlaitBoard, Point, Transforms } from '@plait/core';
 import { Element } from 'slate';
 import { PlaitGeometry, PlaitText } from '../interfaces';
 import { ShapeDefaultSpace } from '../constants';
 import { AlignEditor, Alignment } from '@plait/text';
 import { getFirstTextEditor } from '@plait/common';
-import { PlaitTableCellWithPoints } from '../interfaces/table';
 
 const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: number, textHeight: number) => {
     let points = element.points;
@@ -33,13 +32,7 @@ const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: numbe
     return { points };
 };
 
-export const setText =(
-    board: PlaitBoard,
-    element: PlaitGeometry,
-    text: Element,
-    width: number,
-    textHeight: number
-) => {
+export const setText = (board: PlaitBoard, element: PlaitGeometry, text: Element, width: number, textHeight: number) => {
     const newElement = {
         text,
         textHeight,
@@ -52,14 +45,14 @@ export const setText =(
 };
 
 export const setTextSize = (board: PlaitBoard, element: PlaitGeometry, textWidth: number, textHeight: number) => {
-    if ((element as unknown as PlaitText).autoSize) {
+    if ((element as PlaitText).autoSize) {
         const newElement = {
             textHeight,
             ...normalizePoints(board, element, textWidth, textHeight)
         };
         const isPointsEqual =
-            Point.isEquals(element.points[0], newElement.points[0]) && Point.isEquals(element.points![1], newElement.points[1]);
-        const isTextHeightEqual = Math.round(textHeight) === Math.round(element.textHeight || 0);
+            Point.isEquals(element.points[0], newElement.points[0]) && Point.isEquals(element.points[1], newElement.points[1]);
+        const isTextHeightEqual = Math.round(textHeight) === Math.round(element.textHeight);
         if (!isPointsEqual || !isTextHeightEqual) {
             const path = board.children.findIndex(child => child === element);
             Transforms.setNode(board, newElement, [path]);

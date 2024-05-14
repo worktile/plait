@@ -49,7 +49,7 @@ export const getMemorizedLatestByPointer = (pointer: DrawPointerType) => {
     return { textProperties, geometryProperties: properties };
 };
 
-export const memorizeLatestText = (element: PlaitDrawElement, operations: BaseOperation[]) => {
+export const memorizeLatestText = <T extends PlaitElement = PlaitDrawElement>(element: T, operations: BaseOperation[]) => {
     const memorizeKey = getMemorizeKey(element);
     let textMemory = getMemorizedLatest(memorizeKey)?.text || {};
     const setNodeOperation = operations.find(operation => operation.type === 'set_node');
