@@ -68,20 +68,8 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
 
     update(element: T, previousDrawShapeTexts: PlaitDrawShapeText[], currentDrawShapeTexts: PlaitDrawShapeText[], elementG: SVGElement) {
         this.element = element;
-        previousDrawShapeTexts.forEach((drawShapeText, index) => {
-            if (!currentDrawShapeTexts.some(item => item.key === drawShapeText.key)) {
-                const textManage = this.textManages[index];
-                textManage.destroy();
-            }
-        });
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
-        const textPlugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
         currentDrawShapeTexts.forEach((drawShapeText, index) => {
-            if (!previousDrawShapeTexts.some(item => item.key === drawShapeText.key)) {
-                const textManage = this.createTextManage(drawShapeText, textPlugins);
-                this.textManages.push(textManage);
-                elementG.append(textManage.g);
-            }
             const textManage = this.textManages[index];
             if (drawShapeText.text) {
                 textManage.updateText(drawShapeText.text);
