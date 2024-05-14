@@ -1,6 +1,3 @@
-import { ParagraphElement } from '@plait/text';
-import { EngineExtraData } from './engine';
-
 export enum StrokeStyle {
     solid = 'solid',
     dashed = 'dashed',

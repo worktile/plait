@@ -16,7 +16,7 @@ import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { ActiveGenerator, WithTextPluginKey, WithTextOptions, CommonPluginElement, canResize } from '@plait/common';
 import { GeometryThreshold } from './constants/geometry';
-import { PlaitText, ShapeEngine } from './interfaces';
+import { PlaitText } from './interfaces';
 import { getEngine } from './engines';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 import { memorizeLatestText } from './utils';
