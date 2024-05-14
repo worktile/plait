@@ -521,14 +521,24 @@ export const mockTableData: PlaitDrawElement[] = [
                             text: 'merge cell'
                         }
                     ],
-                    align: 'center'
+                    align: 'center',
+                    writingMode: 'vertical-lr'
                 }
             },
             {
                 id: 'cell-1-2',
                 rowId: 'row-1',
                 textHeight: 20,
-                columnId: 'column-2'
+                columnId: 'column-2',
+                text: {
+                    children: [
+                        {
+                            text: 'cell-1-2'
+                        }
+                    ],
+                    align: 'center',
+                    writingMode: 'vertical-lr'
+                }
             },
             {
                 id: 'cell-1-3',

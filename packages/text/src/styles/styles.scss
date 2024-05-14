@@ -1,5 +1,11 @@
 @forward '../plugins/link/link.component.scss';
 
+.plait-richtext-container,
+.slate-editable-container,
+div[plaitTextParagraphElement] {
+    height: 100%;
+}
+
 .plait-richtext-container {
     font-size: 14px;
     min-height: 20px;
@@ -8,14 +14,20 @@
     white-space: pre-wrap;
     white-space: break-spaces;
     word-break: break-all;
+    height: 100%;
 
     .slate-editable-container {
         outline: none;
         padding: 0;
+        height: 100%;
         cursor: default;
         &.editing {
             cursor: text;
         }
+    }
+
+    [plaittextparagraphelement] {
+        height: 100%;
     }
 
     [the-underlined][the-strike] {
