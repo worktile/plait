@@ -14,13 +14,13 @@ import { PlaitGeometry } from './interfaces/geometry';
 import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManage, TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
-import { getTextRectangle } from './utils/geometry';
 import { ActiveGenerator, WithTextPluginKey, WithTextOptions, CommonPluginElement, canResize } from '@plait/common';
 import { GeometryThreshold } from './constants/geometry';
 import { PlaitText } from './interfaces';
 import { getEngine } from './engines';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 import { memorizeLatestText } from './utils';
+import { getTextRectangle } from './utils/common';
 
 @Component({
     selector: 'plait-draw-geometry',

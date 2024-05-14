@@ -2,7 +2,7 @@ import { Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from './polygon';
 import { getCenterPointsOnPolygon } from '../../utils/polygon';
-import { getTextRectangle } from '../../utils/geometry';
+import { getTextRectangle } from '../../utils';
 
 export const getTrapezoidPoints = (rectangle: RectangleClient): Point[] => {
     return [

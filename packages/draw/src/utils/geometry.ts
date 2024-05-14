@@ -32,7 +32,6 @@ import {
     getFlowchartPointers
 } from '../constants';
 import { ActiveGenerator, PlaitCommonElementRef, RESIZE_HANDLE_DIAMETER, getFirstTextManage } from '@plait/common';
-import { getStrokeWidthByElement } from './style/stroke';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
@@ -78,19 +77,6 @@ export const createGeometryElement = (
     };
 };
 
-export const getTextRectangle = (element: PlaitGeometry) => {
-    const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-    const strokeWidth = getStrokeWidthByElement(element);
-    const height = element.textHeight;
-    const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
-    return {
-        height,
-        width: width > 0 ? width : 0,
-        x: elementRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-        y: elementRectangle.y + (elementRectangle.height - height) / 2
-    };
-};
-
 export const drawBoundReaction = (
     board: PlaitBoard,
     element: PlaitGeometry,
@@ -129,8 +115,8 @@ export const drawBoundReaction = (
     return g;
 };
 
-export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient, shape: GeometryShapes, options: Options) => {
-    return getEngine(shape).draw(board, outerRectangle, options);
+export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient, shape: GeometryShapes, roughOptions: Options) => {
+    return getEngine(shape).draw(board, outerRectangle, roughOptions);
 };
 
 export const getNearestPoint = (element: PlaitShapeElement, point: Point) => {

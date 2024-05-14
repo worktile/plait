@@ -25,7 +25,7 @@ import {
     PlaitShapeElement,
     StrokeStyle
 } from '../../interfaces';
-import { getLineDashByElement, getStrokeColorByElement, getStrokeWidthByElement } from '../style/stroke';
+import { getLineDashByElement, getStrokeColorByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
 import { getElementShape } from '../shape';
 import { DefaultLineStyle, LINE_TEXT_SPACE } from '../../constants/line';
@@ -37,6 +37,7 @@ import { alignPoints } from './line-resize';
 import { getElbowLineRouteOptions, getLineHandleRefPair } from './line-common';
 import { getElbowPoints, getNextSourceAndTargetPoints, isUseDefaultOrthogonalRoute } from './elbow';
 import { drawLineArrow } from './line-arrow';
+import { getStrokeWidthByElement } from '../common';
 
 export const createLineElement = (
     shape: LineShape,

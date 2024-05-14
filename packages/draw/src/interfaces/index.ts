@@ -1,16 +1,22 @@
-import { BasicShapes, FlowchartSymbols, PlaitGeometry } from './geometry';
+import { ParagraphElement } from '@plait/text';
+import { EngineExtraData } from './engine';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitGeometry, TableSymbols } from './geometry';
 import { PlaitImage } from './image';
 import { PlaitLine } from './line';
+import { PlaitTable } from './table';
 import { PlaitText } from './text';
 
 export * from './line';
 export * from './geometry';
 export * from './text';
 export * from './element';
+export * from './engine';
 
-export type PlaitDrawElement = PlaitGeometry | PlaitLine | PlaitImage;
+export type PlaitDrawElement = PlaitGeometry | PlaitLine | PlaitImage | PlaitTable;
 
 export type PlaitShapeElement = PlaitGeometry | PlaitImage;
+
+export type DrawShapes = GeometryShapes | TableSymbols;
 
 export const PlaitDrawElement = {
     isGeometry: (value: any): value is PlaitGeometry => {

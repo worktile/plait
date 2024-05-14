@@ -2,7 +2,7 @@ import { Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from '../basic-shapes/polygon';
 import { ShapeDefaultSpace } from '../../constants';
-import { getStrokeWidthByElement } from '../../utils/style/stroke';
+import { getStrokeWidthByElement } from '../../utils';
 
 export const getOffPagePoints = (rectangle: RectangleClient): Point[] => {
     return [
