@@ -25,6 +25,9 @@ export const withDraw = (board: PlaitBoard) => {
 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitDrawElement.isGeometry(context.element)) {
+            if (PlaitDrawElement.isUML(context.element)) {
+                return GeometryComponent;
+            }
             return GeometryComponent;
         } else if (PlaitDrawElement.isLine(context.element)) {
             return LineComponent;
