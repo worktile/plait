@@ -1,8 +1,8 @@
 import { Point, RectangleClient } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
-import { getTextRectangle } from '../../utils/geometry';
 import { createPolygonEngine } from '../basic-shapes/polygon';
 import { getCenterPointsOnPolygon } from '../../utils/polygon';
+import { getTextRectangle } from '../../utils';
 
 export const getManualLoopPoints = (rectangle: RectangleClient): Point[] => {
     return [

@@ -1,9 +1,8 @@
-import { PlaitBoard, PlaitElement, Point, PointOfRectangle, RectangleClient, Vector } from '@plait/core';
-import { Options } from 'roughjs/bin/core';
+import { PlaitElement, Point } from '@plait/core';
 import { ParagraphElement } from '@plait/text';
 import { StrokeStyle } from './element';
 import { PlaitTable } from './table';
-import { UMLDefaultTextKeys } from './uml-geometry';
+import { PlaitDrawShapeText } from '../generators/text.generator';
 
 export enum BasicShapes {
     rectangle = 'rectangle',
@@ -65,15 +64,7 @@ export enum SwimlaneSymbols {
     swimlaneHorizontal = 'swimlaneHorizontal'
 }
 
-export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols | TableSymbols;
-
-export type PlaitGeometryTextKeys = UMLDefaultTextKeys;
-
-export interface PlaitGeometryText {
-    key: PlaitGeometryTextKeys;
-    text: ParagraphElement;
-    textHeight: number;
-}
+export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols;
 
 export interface PlaitCommonGeometry extends PlaitElement {
     points: [Point, Point];
@@ -91,7 +82,7 @@ export interface PlaitCommonGeometry extends PlaitElement {
 }
 
 export interface PlaitMultipleTextGeometry extends PlaitCommonGeometry {
-    texts?: PlaitGeometryText[];
+    texts?: PlaitDrawShapeText[];
 }
 
 export interface PlaitGeometry extends PlaitCommonGeometry {
@@ -112,7 +103,6 @@ export interface PlaitDiamond extends PlaitGeometry {
 }
 
 export interface PlaitSwimlane extends PlaitTable {
-    type: 'geometry';
     shape: SwimlaneSymbols;
 }
 
@@ -125,15 +115,3 @@ export interface PlaitSwimlaneHorizontal extends PlaitSwimlane {
 }
 
 export const PlaitGeometry = {};
-
-export interface ShapeEngine {
-    isInsidePoint: (rectangle: RectangleClient, point: Point) => boolean;
-    getNearestPoint: (rectangle: RectangleClient, point: Point) => Point;
-    getNearestCrossingPoint?: (rectangle: RectangleClient, point: Point) => Point;
-    getConnectorPoints: (rectangle: RectangleClient) => Point[];
-    getCornerPoints: (rectangle: RectangleClient) => Point[];
-    getEdgeByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => [Point, Point] | null;
-    getTangentVectorByConnectionPoint?: (rectangle: RectangleClient, point: PointOfRectangle) => Vector | null;
-    draw: <T>(board: PlaitBoard, rectangle: RectangleClient, roughOptions: Options, options?: T) => SVGGElement;
-    getTextRectangle?: <T>(element: PlaitGeometry, options?: T) => RectangleClient;
-}

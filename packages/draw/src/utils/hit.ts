@@ -13,13 +13,14 @@ import {
 } from '@plait/core';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../interfaces';
 import { TRANSPARENT } from '@plait/common';
-import { getNearestPoint, getTextRectangle } from './geometry';
+import { getNearestPoint } from './geometry';
 import { getLinePoints } from './line/line-basic';
 import { getFillByElement } from './style/stroke';
-import { DefaultGeometryStyle } from '../constants/geometry';
+import { DefaultDrawStyle } from '../constants/geometry';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { getHitLineTextIndex } from './position/line';
+import { getTextRectangle } from './common';
 
 export const isTextExceedingBounds = (geometry: PlaitGeometry) => {
     const client = RectangleClient.getRectangleByPoints(geometry.points);
@@ -82,7 +83,7 @@ export const isHitDrawElement = (board: PlaitBoard, element: PlaitElement, point
         }
         const engine = getEngine(getElementShape(element));
         // when shape equals text, fill is not allowed
-        if (fill !== DefaultGeometryStyle.fill && fill !== TRANSPARENT && !PlaitDrawElement.isText(element)) {
+        if (fill !== DefaultDrawStyle.fill && fill !== TRANSPARENT && !PlaitDrawElement.isText(element)) {
             const isHitInside = engine.isInsidePoint(rectangle!, point);
             if (isHitInside) {
                 return isHitInside;

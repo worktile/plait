@@ -5,22 +5,19 @@ import {
     OnContextChanged,
     isSelectionMoving,
     getSelectedElements,
-    PlaitOptionsBoard,
     ACTIVE_STROKE_WIDTH,
     RectangleClient
 } from '@plait/core';
 import { Subject } from 'rxjs';
-import { PlaitCommonGeometry, PlaitGeometry, PlaitGeometryText } from './interfaces/geometry';
+import { PlaitCommonGeometry, PlaitGeometry } from './interfaces/geometry';
 import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
-import { ParagraphElement, TextManage, TextManageRef } from '@plait/text';
+import { TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
-import { getTextRectangle } from './utils/geometry';
-import { ActiveGenerator, WithTextPluginKey, WithTextOptions, CommonPluginElement, canResize } from '@plait/common';
-import { GeometryThreshold } from './constants/geometry';
-import { PlaitText } from './interfaces';
-import { getEngine } from './engines';
+import { ActiveGenerator, CommonPluginElement, canResize } from '@plait/common';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 import { isMultipleTextGeometry, memorizeLatestText } from './utils';
+import { TextGenerator } from './generators/text.generator';
+import { SingleTextGenerator } from './generators/single-text.generator';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -37,6 +34,8 @@ export class GeometryComponent<T extends PlaitCommonGeometry = PlaitGeometry> ex
     lineAutoCompleteGenerator!: LineAutoCompleteGenerator;
 
     shapeGenerator!: GeometryShapeGenerator;
+
+    textGenerator!: TextGenerator<T>;
 
     constructor() {
         super();
@@ -88,7 +87,7 @@ export class GeometryComponent<T extends PlaitCommonGeometry = PlaitGeometry> ex
                 selected: this.selected
             }
         );
-        this.drawText();
+        this.textGenerator.draw(this.getElementG());
     }
 
     onContextChanged(value: PlaitPluginElementContext<T, PlaitBoard>, previous: PlaitPluginElementContext<T, PlaitBoard>) {
@@ -104,7 +103,7 @@ export class GeometryComponent<T extends PlaitCommonGeometry = PlaitGeometry> ex
                     selected: this.selected
                 }
             );
-            this.updateText(value.element);
+            this.updateText(previous.element, value.element);
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
@@ -121,80 +120,44 @@ export class GeometryComponent<T extends PlaitCommonGeometry = PlaitGeometry> ex
         }
     }
 
-    drawText() {
-        const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
-        if (this.element.text || this.element.texts?.length) {
-            const textElements = this.getElementTextElements(this.element);
-            this.getTextManages().forEach((manage, index) => {
-                manage.draw(textElements[index]);
-                this.getElementG().append(manage.g);
-                manage.updateAngle(centerPoint, this.element.angle);
-            });
+    updateText(previousElement: T, currentElement: T) {
+        if (isMultipleTextGeometry(this.element)) {
+            this.textGenerator.update(this.element, previousElement.texts, currentElement.texts, this.getElementG());
+        } else {
+            this.textGenerator.update(this.element, previousElement.text, currentElement.text, this.getElementG());
         }
-    }
-
-    updateText(currentElement: T) {
-        const currentTextElements = this.getElementTextElements(currentElement);
-        const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
-        this.getTextManages().forEach((manage, index) => {
-            manage.updateText(currentTextElements[index]);
-            manage.updateRectangle();
-            manage.updateAngle(centerPoint, this.element.angle);
-        });
     }
 
     initializeTextManage() {
-        if (this.element.texts?.length) {
-            let manages: TextManage[] = [];
-            const texts = this.element.texts;
-            for (let i = 0; i < texts.length; i++) {
-                let manage = this.createTextManage({ key: texts[i].key });
-                manages.push(manage);
+        const TextGeneratorClass = isMultipleTextGeometry(this.element) ? TextGenerator : SingleTextGenerator;
+
+        this.textGenerator = new TextGeneratorClass(
+            this.board,
+            this.element,
+            isMultipleTextGeometry(this.element) ? this.element.texts! : this.element.text,
+            this.viewContainerRef,
+            {
+                onValueChangeHandle: (textManageRef: TextManageRef) => {
+                    const height = textManageRef.height / this.board.viewport.zoom;
+                    const width = textManageRef.width / this.board.viewport.zoom;
+                    if (textManageRef.newValue) {
+                        DrawTransforms.setText(
+                            this.board,
+                            (this.element as unknown) as PlaitGeometry,
+                            textManageRef.newValue,
+                            width,
+                            height
+                        );
+                    } else {
+                        DrawTransforms.setTextSize(this.board, (this.element as unknown) as PlaitGeometry, width, height);
+                    }
+                    textManageRef.operations && memorizeLatestText((this.element as unknown) as PlaitGeometry, textManageRef.operations);
+                }
             }
-            this.initializeTextManages(manages);
-            return;
-        }
+        );
 
-        if (this.element.text) {
-            const manage = this.createTextManage();
-            this.initializeTextManages([manage]);
-        }
-    }
-
-    createTextManage(options?: { [key: string]: any }) {
-        const plugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
-        return new TextManage(this.board, this.viewContainerRef, {
-            getRectangle: () => {
-                const getRectangle = getEngine(this.element.shape).getTextRectangle;
-                if (getRectangle) {
-                    return getRectangle((this.element as unknown) as PlaitGeometry, options);
-                }
-                return getTextRectangle((this.element as unknown) as PlaitGeometry);
-            },
-            onValueChangeHandle: (textManageRef: TextManageRef) => {
-                const height = textManageRef.height / this.board.viewport.zoom;
-                const width = textManageRef.width / this.board.viewport.zoom;
-                if (textManageRef.newValue) {
-                    DrawTransforms.setText(this.board, (this.element as unknown) as PlaitGeometry, textManageRef.newValue, width, height);
-                } else {
-                    DrawTransforms.setTextSize(this.board, (this.element as unknown) as PlaitGeometry, width, height);
-                }
-                textManageRef.operations && memorizeLatestText((this.element as unknown) as PlaitGeometry, textManageRef.operations);
-            },
-            getMaxWidth: () => {
-                let width = getTextRectangle((this.element as unknown) as PlaitGeometry).width;
-                const getRectangle = getEngine(this.element.shape).getTextRectangle;
-                if (getRectangle) {
-                    width = getRectangle((this.element as unknown) as PlaitGeometry).width;
-                }
-                return ((this.element as unknown) as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
-            },
-            textPlugins: plugins
-        });
-    }
-
-    getElementTextElements(element: T): ParagraphElement[] {
-        return isMultipleTextGeometry(element) ? (element.texts || []).map((item: PlaitGeometryText) => item && item.text) : [element.text];
+        this.textGenerator.initialize();
+        this.initializeTextManages(this.textGenerator.textManages);
     }
 
     ngOnDestroy(): void {
@@ -203,6 +166,7 @@ export class GeometryComponent<T extends PlaitCommonGeometry = PlaitGeometry> ex
         this.destroy$.complete();
         this.activeGenerator.destroy();
         this.lineAutoCompleteGenerator.destroy();
+        this.textGenerator.destroy();
         this.destroyTextManages();
     }
 }

@@ -12,9 +12,9 @@ import {
 } from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { ShapeDefaultSpace } from '../../constants';
-import { getStrokeWidthByElement } from '../../utils/style/stroke';
 import { Options } from 'roughjs/bin/core';
 import { RectangleEngine } from '../basic-shapes/rectangle';
+import { getStrokeWidthByElement } from '../../utils';
 
 export const HardDiskEngine: ShapeEngine = {
     draw(board: PlaitBoard, rectangle: RectangleClient, options: Options) {

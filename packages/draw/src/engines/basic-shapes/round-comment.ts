@@ -10,9 +10,9 @@ import {
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { ShapeDefaultSpace } from '../../constants';
-import { getStrokeWidthByElement } from '../../utils';
 import { getRoundRectangleRadius } from './round-rectangle';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
+import { getStrokeWidthByElement } from '../../utils/common';
 
 const heightRatio = 3 / 4;
 

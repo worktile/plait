@@ -20,10 +20,10 @@ import {
     rotateVector
 } from '@plait/common';
 import { BasicShapes, LineHandleKey, LineHandleRef, LineHandleRefPair, LineMarkerType, PlaitGeometry, PlaitLine } from '../../interfaces';
-import { getStrokeWidthByElement } from '../style/stroke';
 import { getEngine } from '../../engines';
 import { getElementShape } from '../shape';
 import { getSourceAndTargetRectangle } from './elbow';
+import { getStrokeWidthByElement } from '../common';
 
 export const getLineHandleRefPair = (board: PlaitBoard, element: PlaitLine): LineHandleRefPair => {
     const strokeWidth = getStrokeWidthByElement(element);

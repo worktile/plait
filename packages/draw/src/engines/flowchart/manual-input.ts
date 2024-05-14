@@ -3,7 +3,7 @@ import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { createPolygonEngine } from '../basic-shapes/polygon';
 import { ShapeDefaultSpace } from '../../constants';
 import { getCenterPointsOnPolygon } from '../../utils/polygon';
-import { getStrokeWidthByElement } from '../../utils/style/stroke';
+import { getStrokeWidthByElement } from '../../utils';
 
 export const getManualInputPoints = (rectangle: RectangleClient): Point[] => {
     return [

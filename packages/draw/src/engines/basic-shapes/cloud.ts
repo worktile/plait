@@ -1,4 +1,11 @@
-import { PlaitBoard, Point, PointOfRectangle, RectangleClient, drawRectangle, getNearestPointBetweenPointAndSegments, setPathStrokeLinecap } from '@plait/core';
+import {
+    PlaitBoard,
+    Point,
+    PointOfRectangle,
+    RectangleClient,
+    getNearestPointBetweenPointAndSegments,
+    setPathStrokeLinecap
+} from '@plait/core';
 import { PlaitGeometry, ShapeEngine } from '../../interfaces';
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';

@@ -1,15 +1,8 @@
 import { PlaitDrawElement, PlaitGeometry, PlaitLine, StrokeStyle } from '../../interfaces';
-import { DefaultGeometryStyle } from '../../constants';
-import { PlaitBoard } from '@plait/core';
+import { DefaultDrawStyle } from '../../constants';
+import { PlaitBoard, PlaitElement } from '@plait/core';
 import { getDrawDefaultStrokeColor, getFlowchartDefaultFill } from '../geometry';
-
-export const getStrokeWidthByElement = (element: PlaitGeometry | PlaitLine) => {
-    if (PlaitDrawElement.isText(element)) {
-        return 0;
-    }
-    const strokeWidth = element.strokeWidth || DefaultGeometryStyle.strokeWidth;
-    return strokeWidth;
-};
+import { getStrokeWidthByElement } from '../common';
 
 export const getStrokeColorByElement = (board: PlaitBoard, element: PlaitGeometry | PlaitLine) => {
     const defaultColor = getDrawDefaultStrokeColor(board.theme.themeColorMode);
@@ -20,7 +13,7 @@ export const getStrokeColorByElement = (board: PlaitBoard, element: PlaitGeometr
 export const getFillByElement = (board: PlaitBoard, element: PlaitGeometry | PlaitLine) => {
     const defaultFill = PlaitDrawElement.isFlowchart(element)
         ? getFlowchartDefaultFill(board.theme.themeColorMode)
-        : DefaultGeometryStyle.fill;
+        : DefaultDrawStyle.fill;
     const fill = element.fill || defaultFill;
     return fill;
 };
@@ -36,6 +29,6 @@ export const getLineDashByElement = (element: PlaitGeometry | PlaitLine) => {
     }
 };
 
-export const getStrokeStyleByElement = (element: PlaitGeometry | PlaitLine) => {
+export const getStrokeStyleByElement = (element: PlaitElement) => {
     return element.strokeStyle || StrokeStyle.solid;
 };
