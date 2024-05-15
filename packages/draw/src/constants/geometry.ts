@@ -1,5 +1,5 @@
 import { ACTIVE_STROKE_WIDTH } from '@plait/core';
-import { BasicShapes, FlowchartSymbols } from '../interfaces';
+import { BasicShapes, FlowchartSymbols, UMLSymbols } from '../interfaces';
 
 export const ShapeDefaultSpace = {
     rectangleAndText: 4
@@ -109,6 +109,16 @@ export const DefaultMergeProperty = {
     height: 33
 };
 
+export const DefaultActorProperty = {
+    width: 68,
+    height: 100
+};
+
+export const DefaultContainerProperty = {
+    width: 300,
+    height: 240
+};
+
 export const DefaultBasicShapePropertyMap: Record<string, { width: number; height: number }> = {
     [BasicShapes.pentagonArrow]: DefaultPentagonArrowProperty,
     [BasicShapes.processArrow]: DefaultPentagonArrowProperty,
@@ -143,6 +153,12 @@ export const DefaultFlowchartPropertyMap = {
     [FlowchartSymbols.noteCurlyRight]: DefaultNoteProperty,
     [FlowchartSymbols.noteSquare]: DefaultNoteProperty,
     [FlowchartSymbols.display]: DefaultFlowchartProperty
+};
+
+export const DefaultUMLPropertyMap = {
+    [UMLSymbols.actor]: DefaultActorProperty,
+    [UMLSymbols.useCase]: DefaultDocumentProperty,
+    [UMLSymbols.container]: DefaultContainerProperty
 };
 
 export const LINE_HIT_GEOMETRY_BUFFER = 10;

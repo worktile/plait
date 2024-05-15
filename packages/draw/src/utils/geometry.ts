@@ -18,7 +18,7 @@ import {
     getSelectedElements,
     idCreator
 } from '@plait/core';
-import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, PlaitMultipleTextGeometry } from '../interfaces/geometry';
+import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, UMLSymbols, PlaitMultipleTextGeometry } from '../interfaces/geometry';
 import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from '@plait/text';
 import { Element } from 'slate';
 import {
@@ -26,10 +26,12 @@ import {
     DefaultBasicShapePropertyMap,
     DefaultFlowchartPropertyMap,
     DefaultTextProperty,
+    DefaultUMLPropertyMap,
     DrawPointerType,
     DrawThemeColors,
     ShapeDefaultSpace,
-    getFlowchartPointers
+    getFlowchartPointers,
+    getUMLPointers
 } from '../constants';
 import { ActiveGenerator, PlaitCommonElementRef, RESIZE_HANDLE_DIAMETER, getFirstTextManage } from '@plait/common';
 import { Options } from 'roughjs/bin/core';
@@ -140,6 +142,10 @@ export const getDefaultFlowchartProperty = (symbol: FlowchartSymbols) => {
 
 export const getDefaultBasicShapeProperty = (shape: BasicShapes) => {
     return DefaultBasicShapePropertyMap[shape] || DefaultBasicShapeProperty;
+};
+
+export const getDefaultUMLProperty = (shape: UMLSymbols) => {
+    return DefaultUMLPropertyMap[shape];
 };
 
 export const createDefaultFlowchart = (point: Point) => {
@@ -310,8 +316,11 @@ export const getDefaultGeometryPoints = (pointer: DrawPointerType, centerPoint: 
 
 export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
     const isFlowChart = getFlowchartPointers().includes(pointer);
+    const isUML = getUMLPointers().includes(pointer);
     if (isFlowChart) {
         return getDefaultFlowchartProperty(pointer as FlowchartSymbols);
+    } else if (isUML) {
+        return getDefaultUMLProperty(pointer as UMLSymbols);
     } else {
         return getDefaultBasicShapeProperty(pointer as BasicShapes);
     }

@@ -1,11 +1,11 @@
 import { PlaitBoard, Transforms, Point, Path, PlaitNode, getSelectedElements, Vector, Direction, RectangleClient } from '@plait/core';
-import { PlaitDrawElement, GeometryShapes, PlaitText, PlaitLine, FlowchartSymbols, BasicShapes } from '../interfaces';
+import { PlaitDrawElement, GeometryShapes, PlaitText, PlaitLine, FlowchartSymbols, BasicShapes, UMLSymbols } from '../interfaces';
 import { createDefaultGeometry, createTextElement, getMemorizedLatestByPointer, getTextShapeProperty, insertElement } from '../utils';
 import { Element } from 'slate';
 import { getDirectionByVector, getPointByVectorComponent, normalizeShapePoints } from '@plait/common';
 import { DrawTransforms } from '.';
 import { collectLineUpdatedRefsByGeometry } from './line';
-import { DefaultBasicShapeProperty, DefaultBasicShapePropertyMap, DefaultFlowchartPropertyMap } from '../constants';
+import { DefaultBasicShapeProperty, DefaultBasicShapePropertyMap, DefaultFlowchartPropertyMap, DefaultUMLPropertyMap } from '../constants';
 
 export const insertGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
     const newElement = createDefaultGeometry(board, points, shape);
@@ -17,6 +17,7 @@ export const insertGeometryByVector = (board: PlaitBoard, point: Point, shape: G
     const shapeProperty =
         DefaultFlowchartPropertyMap[shape as FlowchartSymbols] ||
         DefaultBasicShapePropertyMap[shape as BasicShapes] ||
+        DefaultUMLPropertyMap[shape as UMLSymbols] ||
         DefaultBasicShapeProperty;
     const direction = getDirectionByVector(vector);
     if (direction) {
