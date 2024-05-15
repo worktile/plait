@@ -68,7 +68,7 @@ export const withTable = (board: PlaitBoard) => {
         if (!PlaitBoard.isReadonly(board)) {
             const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const hitElement = getHitElementByPoint(board, point);
-            if (PlaitTableElement.isTable(hitElement)) {
+            if (hitElement && PlaitTableElement.isTable(hitElement)) {
                 const hitCell = getHitCell(hitElement, point);
                 if (hitCell && hitCell.text && hitCell.textHeight) {
                     editCell(hitCell);
