@@ -1,5 +1,6 @@
-import { RectangleClient } from '@plait/core';
+import { Point, RectangleClient } from '@plait/core';
 import { PlaitTable, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
+import { getTextManage } from '../generators/text.generator';
 
 export function getCellsWithPoints(table: PlaitTable): PlaitTableCellWithPoints[] {
     const rectangle = RectangleClient.getRectangleByPoints(table.points);
@@ -73,4 +74,26 @@ function calculateCellSize(cell: PlaitTableCell, sizes: number[], index: number,
         size += sizes[cellIndex];
     }
     return size;
+}
+
+export function getHitCell(table: PlaitTable, point: Point) {
+    const cells = getCellsWithPoints(table);
+    const rectangle = RectangleClient.getRectangleByPoints([point, point]);
+    const cell = cells.find(item => {
+        const cellRectangle = RectangleClient.getRectangleByPoints(item.points);
+        return RectangleClient.isHit(rectangle, cellRectangle);
+    });
+    if (cell) {
+        return table.cells.find(item => item.id === cell.id);
+    }
+    return null;
+}
+
+export function editCell(cell: PlaitTableCell) {
+    const textManage = getTextManageByCell(cell);
+    textManage && textManage.edit();
+}
+
+export function getTextManageByCell(cell: PlaitTableCell) {
+    return getTextManage(cell.id);
 }

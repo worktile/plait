@@ -30,8 +30,8 @@ export class SingleTextGenerator<T extends PlaitElement = PlaitGeometry> extends
         if (!isMultipleTextGeometry((element as unknown) as PlaitCommonGeometry)) {
             super.update(
                 element,
-                [{ text: previousText as ParagraphElement, key: element.shape, textHeight: element.textHeight }],
-                [{ text: currentText as ParagraphElement, key: element.shape, textHeight: element.textHeight }],
+                [{ text: previousText as ParagraphElement, key: element.id, textHeight: element.textHeight }],
+                [{ text: currentText as ParagraphElement, key: element.id, textHeight: element.textHeight }],
                 elementG
             );
         }
