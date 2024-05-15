@@ -3,9 +3,10 @@ import { Options } from 'roughjs/bin/core';
 import { getCellsWithPoints } from '../../utils/table';
 import { ShapeEngine } from '../../interfaces';
 import { PlaitDrawShapeText } from '../../generators/text.generator';
-import { PlaitTable, PlaitTableCellWithPoints, PlaitTableDrawOptions, PlaitTableElement } from '../../interfaces/table';
+import { PlaitTable, PlaitTableDrawOptions, PlaitTableElement } from '../../interfaces/table';
 import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
+
 
 export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDrawShapeText> = {
     draw(board: PlaitBoard, rectangle: RectangleClient, roughOptions: Options, options?: PlaitTableDrawOptions) {
@@ -44,18 +45,17 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDr
         const cell = cells[cellIndex];
         const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
         const strokeWidth = getStrokeWidthByElement(cell);
+        const height = cell.textHeight || 0;
         if (PlaitTableElement.isVerticalText(cell)) {
-            const height = cellRectangle.height - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
-            const width = cell.textHeight || 0;
+            const width = cellRectangle.height - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
             return {
-                width,
-                height: height > 0 ? height : 0,
-                x: cellRectangle.x + (cellRectangle.width - width) / 2,
-                y: cellRectangle.y + ShapeDefaultSpace.rectangleAndText + strokeWidth
+                width: width > 0 ? width : 0,
+                height,
+                x: cellRectangle.x - width / 2 + cellRectangle.width / 2,
+                y: cellRectangle.y + (cellRectangle.height - height) / 2
             };
         } else {
             const width = cellRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
-            const height = (cell as PlaitTableCellWithPoints).textHeight || 0;
             return {
                 height,
                 width: width > 0 ? width : 0,
