@@ -6,7 +6,7 @@ export interface PlaitCommonImage extends PlaitElement {
     angle: number;
 }
 
-export interface PlaitImage extends PlaitElement {
+export interface PlaitImage extends PlaitCommonImage {
     url: string;
 }
 
