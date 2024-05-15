@@ -135,6 +135,6 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         });
         this.textManages = [];
         ELEMENT_TO_TEXT_MANAGES.delete(this.element);
-        ID_TO_TEXT_MANAGE.clear();
+        KEY_TO_TEXT_MANAGE.clear();
     }
 }
