@@ -1,8 +1,16 @@
 import { PlaitElement, Point } from '@plait/core';
 
-export interface PlaitImage extends PlaitElement {
+export interface PlaitCommonImage extends PlaitElement {
     points: [Point, Point];
     type: 'image';
-    url: string;
     angle: number;
 }
+
+export interface PlaitImage extends PlaitCommonImage {
+    url: string;
+}
+
+// export interface PlaitEmojiImage extends PlaitElement {
+//     sourceType: 'emoji',
+//     emojiName: ''
+// }

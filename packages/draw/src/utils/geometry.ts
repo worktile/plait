@@ -18,7 +18,7 @@ import {
     getSelectedElements,
     idCreator
 } from '@plait/core';
-import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols } from '../interfaces/geometry';
+import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, PlaitMultipleTextGeometry } from '../interfaces/geometry';
 import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from '@plait/text';
 import { Element } from 'slate';
 import {
@@ -375,4 +375,8 @@ export const rerenderGeometryActive = (board: PlaitBoard, element: PlaitGeometry
     const activeGenerator = elementRef.getGenerator(ActiveGenerator.key);
     const selected = getSelectedElements(board).includes(element);
     activeGenerator.processDrawing(element, PlaitBoard.getElementActiveHost(board), { selected });
+};
+
+export const isMultipleTextGeometry = (geometry: PlaitGeometry | PlaitMultipleTextGeometry): geometry is PlaitMultipleTextGeometry => {
+    return !!geometry.texts;
 };
