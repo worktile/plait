@@ -2,6 +2,7 @@ import { PlaitElement, Point } from '@plait/core';
 import { ParagraphElement } from '@plait/text';
 import { StrokeStyle } from './element';
 import { PlaitTable } from './table';
+import { PlaitDrawShapeText } from '../generators/text.generator';
 
 export enum BasicShapes {
     rectangle = 'rectangle',
@@ -65,13 +66,10 @@ export enum SwimlaneSymbols {
 
 export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols;
 
-export interface PlaitGeometry extends PlaitElement {
+export interface PlaitCommonGeometry extends PlaitElement {
     points: [Point, Point];
     type: 'geometry';
     shape: GeometryShapes;
-
-    text: ParagraphElement;
-    textHeight: number;
 
     // node style attributes
     fill?: string;
@@ -81,6 +79,15 @@ export interface PlaitGeometry extends PlaitElement {
 
     angle: number;
     opacity: number;
+}
+
+export interface PlaitMultipleTextGeometry extends PlaitCommonGeometry {
+    texts?: PlaitDrawShapeText[];
+}
+
+export interface PlaitGeometry extends PlaitCommonGeometry {
+    text: ParagraphElement;
+    textHeight: number;
 }
 
 export interface PlaitRectangle extends PlaitGeometry {
