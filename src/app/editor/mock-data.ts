@@ -396,7 +396,7 @@ export const mockTableData: PlaitDrawElement[] = [
         ],
         cells: [
             {
-                id: 'cell-1-1',
+                id: 'v-cell-1-1',
                 rowId: 'row-1',
                 columnId: 'column-1',
                 colspan: 3,
@@ -411,7 +411,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-2-1',
+                id: 'v-cell-2-1',
                 rowId: 'row-2',
                 textHeight: 20,
                 columnId: 'column-1',
@@ -425,7 +425,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-2-2',
+                id: 'v-cell-2-2',
                 rowId: 'row-2',
                 textHeight: 20,
                 columnId: 'column-2',
@@ -439,7 +439,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-2-3',
+                id: 'v-cell-2-3',
                 rowId: 'row-2',
                 textHeight: 20,
                 columnId: 'column-3',
@@ -453,7 +453,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-3-1',
+                id: 'v-cell-3-1',
                 rowId: 'row-3',
                 textHeight: 20,
                 columnId: 'column-1',
@@ -467,7 +467,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-3-2',
+                id: 'v-cell-3-2',
                 rowId: 'row-3',
                 textHeight: 20,
                 columnId: 'column-2',
@@ -481,7 +481,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-3-3',
+                id: 'v-cell-3-3',
                 rowId: 'row-3',
                 textHeight: 20,
                 columnId: 'column-3',
@@ -495,7 +495,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-4-1',
+                id: 'v-cell-4-1',
                 rowId: 'row-4',
                 textHeight: 20,
                 columnId: 'column-1',
@@ -509,7 +509,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-4-2',
+                id: 'v-cell-4-2',
                 rowId: 'row-4',
                 textHeight: 20,
                 columnId: 'column-2',
@@ -523,7 +523,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-4-3',
+                id: 'v-cell-4-3',
                 rowId: 'row-4',
                 textHeight: 20,
                 columnId: 'column-3',
@@ -574,7 +574,7 @@ export const mockTableData: PlaitDrawElement[] = [
         ],
         cells: [
             {
-                id: 'cell-1-1',
+                id: 'h-cell-1-1',
                 rowId: 'row-1',
                 columnId: 'column-1',
                 textHeight: 20,
@@ -589,7 +589,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-1-2',
+                id: 'h-cell-1-2',
                 rowId: 'row-1',
                 textHeight: 20,
                 columnId: 'column-2',
@@ -603,7 +603,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-1-3',
+                id: 'h-cell-1-3',
                 rowId: 'row-1',
                 textHeight: 20,
                 columnId: 'column-3',
@@ -617,7 +617,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-2-2',
+                id: 'h-cell-2-2',
                 rowId: 'row-2',
                 textHeight: 20,
                 columnId: 'column-2',
@@ -631,7 +631,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-2-3',
+                id: 'h-cell-2-3',
                 rowId: 'row-2',
                 textHeight: 20,
                 columnId: 'column-3',
@@ -645,7 +645,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-3-2',
+                id: 'h-cell-3-2',
                 rowId: 'row-3',
                 textHeight: 20,
                 columnId: 'column-2',
@@ -659,7 +659,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-3-3',
+                id: 'h-cell-3-3',
                 rowId: 'row-3',
                 textHeight: 20,
                 columnId: 'column-3',
@@ -673,7 +673,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-4-2',
+                id: 'h-cell-4-2',
                 rowId: 'row-4',
                 textHeight: 20,
                 columnId: 'column-2',
@@ -687,7 +687,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             },
             {
-                id: 'cell-4-3',
+                id: 'h-cell-4-3',
                 rowId: 'row-4',
                 textHeight: 20,
                 columnId: 'column-3',

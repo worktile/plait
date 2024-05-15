@@ -84,20 +84,12 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
             }
         });
         this.textGenerator.initialize();
-        this.initializeTextManages(this.textGenerator.textManages);
-    }
-
-    updateText(previousTable: PlaitTable, currentTable: PlaitTable) {
-        const previousTexts = this.getDrawShapeTexts(previousTable.cells);
-        const currentTexts = this.getDrawShapeTexts(currentTable.cells);
-        this.textGenerator.update(this.element, previousTexts, currentTexts, this.getElementG());
     }
 
     onContextChanged(
         value: PlaitPluginElementContext<PlaitTable, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitTable, PlaitBoard>
     ) {
-        this.initializeWeakMap();
         if (value.element !== previous.element) {
             this.tableGenerator.processDrawing(this.element, this.getElementG());
             this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });

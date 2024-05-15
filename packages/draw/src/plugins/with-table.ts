@@ -12,8 +12,7 @@ import {
     toHostPoint,
     getHitElementByPoint
 } from '@plait/core';
-import { getTextManages } from '@plait/common';
-import { getHitCell } from '../utils/table';
+import { editCell, getHitCell } from '../utils/table';
 
 export const withTable = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, getDeletedFragment, dblClick } = board;
@@ -72,9 +71,7 @@ export const withTable = (board: PlaitBoard) => {
             if (PlaitTableElement.isTable(hitElement)) {
                 const hitCell = getHitCell(hitElement, point);
                 if (hitCell && hitCell.text && hitCell.textHeight) {
-                    const cellIndex = hitElement.cells.indexOf(hitCell);
-                    const textManages = getTextManages(hitElement);
-                    textManages[cellIndex]?.edit();
+                    editCell(hitCell);
                 }
             }
         }
