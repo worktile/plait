@@ -704,6 +704,227 @@ export const mockTableData: PlaitDrawElement[] = [
     }
 ] as PlaitDrawElement[];
 
+export const mockSwimlaneData: PlaitDrawElement[] = [
+    {
+        id: 'swimlaneVertical',
+        points: [
+            [-100, -100],
+            [500, 300]
+        ],
+        type: 'table',
+        shape: 'swimlaneVertical',
+        rows: [
+            {
+                id: 'row-1',
+                height: 30
+            },
+            {
+                id: 'row-2',
+                height: 30
+            },
+            {
+                id: 'row-3'
+            }
+        ],
+        columns: [
+            {
+                id: 'column-1'
+            },
+            {
+                id: 'column-2'
+            },
+            {
+                id: 'column-3'
+            }
+        ],
+        cells: [
+            {
+                id: 'v-cell-1-1',
+                rowId: 'row-1',
+                columnId: 'column-1',
+                colspan: 3,
+                textHeight: 20,
+                text: {
+                    children: [
+                        {
+                            text: 'swimlaneVertical'
+                        }
+                    ],
+                    align: 'center'
+                }
+            },
+            {
+                id: 'v-cell-2-1',
+                rowId: 'row-2',
+                textHeight: 20,
+                columnId: 'column-1',
+                text: {
+                    children: [
+                        {
+                            text: 'cell-2-1'
+                        }
+                    ],
+                    align: 'center'
+                }
+            },
+            {
+                id: 'v-cell-2-2',
+                rowId: 'row-2',
+                textHeight: 20,
+                columnId: 'column-2',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
+            },
+            {
+                id: 'v-cell-2-3',
+                rowId: 'row-2',
+                textHeight: 20,
+                columnId: 'column-3',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
+            },
+            {
+                id: 'v-cell-3-1',
+                rowId: 'row-3',
+                columnId: 'column-1'
+            },
+            {
+                id: 'v-cell-3-2',
+                rowId: 'row-3',
+                columnId: 'column-2'
+            },
+            {
+                id: 'v-cell-3-3',
+                rowId: 'row-3',
+                columnId: 'column-3'
+            }
+        ]
+    },
+    {
+        id: 'swimlaneHorizontal',
+        points: [
+            [600, -100],
+            [1200, 300]
+        ],
+        type: 'table',
+        shape: 'swimlaneHorizontal',
+        rows: [
+            {
+                id: 'row-1'
+            },
+            {
+                id: 'row-2'
+            },
+            {
+                id: 'row-3'
+            },
+            {
+                id: 'row-4'
+            }
+        ],
+        columns: [
+            {
+                id: 'column-1',
+                width: 30
+            },
+            {
+                id: 'column-2',
+                width: 30
+            },
+            {
+                id: 'column-3'
+            }
+        ],
+        cells: [
+            {
+                id: 'h-cell-1-1',
+                rowId: 'row-1',
+                columnId: 'column-1',
+                textHeight: 20,
+                rowspan: 4,
+                text: {
+                    children: [
+                        {
+                            text: 'swimlaneHorizontal'
+                        }
+                    ],
+                    align: 'center'
+                }
+            },
+            {
+                id: 'h-cell-1-2',
+                rowId: 'row-1',
+                textHeight: 20,
+                columnId: 'column-2',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
+            },
+            {
+                id: 'h-cell-1-3',
+                rowId: 'row-1',
+                textHeight: 20,
+                columnId: 'column-3',
+                text: {
+                    children: [
+                        {
+                            text: ''
+                        }
+                    ],
+                    align: 'center'
+                }
+            },
+            {
+                id: 'h-cell-2-2',
+                rowId: 'row-2',
+                columnId: 'column-2'
+            },
+            {
+                id: 'h-cell-2-3',
+                rowId: 'row-2',
+                columnId: 'column-3'
+            },
+            {
+                id: 'h-cell-3-2',
+                rowId: 'row-3',
+                columnId: 'column-2'
+            },
+            {
+                id: 'h-cell-3-3',
+                rowId: 'row-3',
+                columnId: 'column-3'
+            },
+            {
+                id: 'h-cell-4-2',
+                rowId: 'row-4',
+                columnId: 'column-2'
+            },
+            {
+                id: 'h-cell-4-3',
+                rowId: 'row-4',
+                columnId: 'column-3'
+            }
+        ]
+    }
+] as PlaitDrawElement[];
+
 export const mockGroupData: PlaitDrawElement[] = [
     {
         id: 'group1',

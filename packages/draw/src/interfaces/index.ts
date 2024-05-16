@@ -1,6 +1,6 @@
 import { ParagraphElement } from '@plait/text';
 import { EngineExtraData } from './engine';
-import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitGeometry, TableSymbols, UMLSymbols } from './geometry';
+import { BasicShapes, FlowchartSymbols, GeometryShapes, PlaitGeometry, SwimlaneSymbols, TableSymbols, UMLSymbols } from './geometry';
 import { PlaitImage } from './image';
 import { PlaitLine } from './line';
 import { PlaitTable } from './table';
@@ -49,6 +49,9 @@ export const PlaitDrawElement = {
     },
     isUML: (value: any) => {
         return Object.keys(UMLSymbols).includes(value.shape);
+    },
+    isSwimlane: (value: any) => {
+        return Object.keys(SwimlaneSymbols).includes(value.shape);
     },
     isUMLClassOrInterface: (value: any) => {
         return false;
