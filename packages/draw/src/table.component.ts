@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, ACTIVE_STROKE_WIDTH, RectangleClient } from '@plait/core';
-import { ActiveGenerator, canResize, CommonPluginElement } from '@plait/common';
+import { ActiveGenerator, canResize, CommonElementFlavour } from '@plait/common';
 import { PlaitTable, PlaitTableCell } from './interfaces/table';
 import { PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
 import { TableGenerator } from './generators/table.generator';
@@ -9,14 +8,7 @@ import { DrawTransforms } from './transforms';
 import { getCellsWithPoints } from './utils/table';
 import { memorizeLatestText } from './utils';
 
-@Component({
-    selector: 'plait-draw-table',
-    template: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true
-})
-export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
-    implements OnInit, OnDestroy, OnContextChanged<PlaitTable, PlaitBoard> {
+export class TableComponent extends CommonElementFlavour<PlaitTable, PlaitBoard> implements OnContextChanged<PlaitTable, PlaitBoard> {
     activeGenerator!: ActiveGenerator<PlaitTable>;
 
     tableGenerator!: TableGenerator;
@@ -46,8 +38,8 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
         this.initializeTextManage();
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
+    initialize(): void {
+        super.initialize();
         this.initializeGenerator();
         this.tableGenerator.processDrawing(this.element, this.getElementG());
         this.textGenerator.draw(this.getElementG());
@@ -65,7 +57,7 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
 
     initializeTextManage() {
         const texts = this.getDrawShapeTexts(this.element.cells);
-        this.textGenerator = new TextGenerator(this.board, this.element, texts, this.viewContainerRef, {
+        this.textGenerator = new TextGenerator(this.board, this.element, texts, PlaitBoard.getViewContainerRef(this.board), {
             onValueChangeHandle: (textManageRef: TextManageRef, text: PlaitDrawShapeText) => {
                 const cells = getCellsWithPoints(this.element);
                 const height = textManageRef.height / this.board.viewport.zoom;
@@ -104,8 +96,9 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
             }
         }
     }
-    ngOnDestroy(): void {
-        super.ngOnDestroy();
+
+    destroy(): void {
+        super.destroy();
         this.activeGenerator.destroy();
         this.tableGenerator.destroy();
         this.textGenerator.destroy();

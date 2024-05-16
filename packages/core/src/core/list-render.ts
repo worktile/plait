@@ -1,4 +1,4 @@
-import { ComponentRef, IterableChangeRecord, IterableDiffer, IterableDiffers, ViewContainerRef } from '@angular/core';
+import { IterableChangeRecord, IterableDiffer, IterableDiffers } from '@angular/core';
 import {
     Ancestor,
     ComponentType,
@@ -8,18 +8,18 @@ import {
     PlaitNode,
     PlaitPluginElementContext
 } from '../interfaces';
-import { PlaitPluginElementComponent } from './element/plugin-element';
 import { NODE_TO_INDEX, NODE_TO_PARENT } from '../utils/weak-maps';
 import { addSelectedElement, isSelectedElement, removeSelectedElement } from '../utils/selected-element';
+import { ElementFlavour } from './element/element-flavour';
 
 export class ListRender {
     private children: PlaitElement[] = [];
-    private componentRefs: ComponentRef<PlaitPluginElementComponent>[] = [];
+    private instances: ElementFlavour[] = [];
     private contexts: PlaitPluginElementContext[] = [];
     private differ: IterableDiffer<any> | null = null;
     public initialized = false;
 
-    constructor(private board: PlaitBoard, private viewContainerRef: ViewContainerRef) {}
+    constructor(private board: PlaitBoard) {}
 
     public initialize(children: PlaitElement[], childrenContext: PlaitChildrenContext) {
         this.initialized = true;
@@ -29,11 +29,11 @@ export class ListRender {
             NODE_TO_PARENT.set(descendant, childrenContext.parent);
             const context = getContext(this.board, descendant, index, childrenContext.parent);
             const componentType = getComponentType(this.board, context);
-            const componentRef = createPluginComponent(componentType, context, this.viewContainerRef, childrenContext);
-            this.componentRefs.push(componentRef);
+            const instance = createPluginComponent(this.board, componentType, context,  childrenContext);
+            this.instances.push(instance);
             this.contexts.push(context);
         });
-        const newDiffers = this.viewContainerRef.injector.get(IterableDiffers);
+        const newDiffers = PlaitBoard.getViewContainerRef(this.board).injector.get(IterableDiffers);
         this.differ = newDiffers.find(children).create(trackBy);
         this.differ.diff(children);
     }
@@ -50,7 +50,7 @@ export class ListRender {
         const diffResult = this.differ.diff(children);
         if (diffResult) {
             const newContexts: PlaitPluginElementContext[] = [];
-            const newComponentRefs: ComponentRef<PlaitPluginElementComponent>[] = [];
+            const newInstances: ElementFlavour[] = [];
             let currentIndexForFirstElement: number | null = null;
             diffResult.forEachItem((record: IterableChangeRecord<PlaitElement>) => {
                 NODE_TO_INDEX.set(record.item, record.currentIndex as number);
@@ -59,13 +59,13 @@ export class ListRender {
                 const context = getContext(board, record.item, record.currentIndex as number, parent, previousContext);
                 if (record.previousIndex === null) {
                     const componentType = getComponentType(board, context);
-                    const componentRef = createPluginComponent(componentType, context, this.viewContainerRef, childrenContext);
+                    const componentRef = createPluginComponent(board, componentType, context, childrenContext);
                     newContexts.push(context);
-                    newComponentRefs.push(componentRef);
+                    newInstances.push(componentRef);
                 } else {
-                    const componentRef = this.componentRefs[record.previousIndex];
-                    componentRef.instance.context = context;
-                    newComponentRefs.push(componentRef);
+                    const instance = this.instances[record.previousIndex];
+                    instance.context = context;
+                    newInstances.push(instance);
                     newContexts.push(context);
                 }
                 // item might has been changed, so need to compare the id
@@ -76,7 +76,7 @@ export class ListRender {
             diffResult.forEachOperation(record => {
                 // removed
                 if (record.currentIndex === null) {
-                    const componentRef = this.componentRefs[record.previousIndex as number];
+                    const componentRef = this.instances[record.previousIndex as number];
                     componentRef?.destroy();
                 }
                 // moved
@@ -84,7 +84,7 @@ export class ListRender {
                     mountOnItemMove(record.item, record.currentIndex, childrenContext, currentIndexForFirstElement);
                 }
             });
-            this.componentRefs = newComponentRefs;
+            this.instances = newInstances;
             this.contexts = newContexts;
             this.children = children;
         } else {
@@ -93,9 +93,9 @@ export class ListRender {
                 NODE_TO_INDEX.set(element, index);
                 NODE_TO_PARENT.set(element, childrenContext.parent);
                 const previousContext = this.contexts[index];
-                const previousComponentRef = this.componentRefs[index];
+                const previousInstance = this.instances[index];
                 const context = getContext(board, element, index, parent, previousContext);
-                previousComponentRef.instance.context = context;
+                previousInstance.context = context;
                 newContexts.push(context);
             });
             this.contexts = newContexts;
@@ -104,11 +104,11 @@ export class ListRender {
 
     public destroy() {
         this.children.forEach((element: PlaitElement, index: number) => {
-            if (this.componentRefs[index]) {
-                this.componentRefs[index].destroy();
+            if (this.instances[index]) {
+                this.instances[index].destroy();
             }
         });
-        this.componentRefs = [];
+        this.instances = [];
         this.children = [];
         this.contexts = [];
         this.initialized = false;
@@ -121,19 +121,20 @@ const trackBy = (index: number, element: PlaitElement) => {
 };
 
 const createPluginComponent = (
-    componentType: ComponentType<PlaitPluginElementComponent>,
+    board: PlaitBoard,
+    componentType: ComponentType<ElementFlavour>,
     context: PlaitPluginElementContext,
-    viewContainerRef: ViewContainerRef,
     childrenContext: PlaitChildrenContext
 ) => {
-    const componentRef = viewContainerRef.createComponent(componentType, { injector: viewContainerRef.injector });
-    const instance = componentRef.instance;
+    // const componentRef = PlaitBoard.getViewContainerRef(board).createComponent(componentType, { injector: PlaitBoard.getViewContainerRef(board).injector });
+    // const instance = componentRef.instance;
+    const instance = new componentType();
     instance.context = context;
-    componentRef.changeDetectorRef.detectChanges();
-    const g = componentRef.instance.getContainerG();
+    instance.initialize();
+    const g = instance.getContainerG();
     mountElementG(context.index, g, childrenContext);
-    componentRef.instance.initializeListRender();
-    return componentRef;
+    instance.initializeListRender();
+    return instance;
 };
 
 const getComponentType = (board: PlaitBoard, context: PlaitPluginElementContext) => {

@@ -1,4 +1,3 @@
-import { ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { PlaitPluginElementContext, getElementById } from '@plait/core';
 import { PlaitBoard, OnContextChanged } from '@plait/core';
 import { TextManage } from '@plait/text';
@@ -8,7 +7,7 @@ import { PlaitFlowBoard } from './interfaces';
 import { EdgeLabelSpace, renderEdge } from './utils';
 import { FlowNode } from './interfaces/node';
 import { EdgeGenerator } from './generators/edge-generator';
-import { CommonPluginElement } from '@plait/common';
+import { CommonElementFlavour } from '@plait/common';
 import { EdgeElementRef } from './core/edge-ref';
 import { EdgeLabelGenerator } from './generators/edge-label-generator';
 
@@ -17,40 +16,34 @@ interface BoundedElements {
     target?: FlowNode;
 }
 
-@Component({
-    selector: 'plait-flow-edge',
-    template: '',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true
-})
 export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
-    extends CommonPluginElement<FlowEdge<T>, PlaitFlowBoard, EdgeElementRef>
-    implements OnInit, OnContextChanged<FlowEdge, PlaitBoard>, OnDestroy {
+    extends CommonElementFlavour<FlowEdge<T>, PlaitFlowBoard, EdgeElementRef>
+    implements OnContextChanged<FlowEdge, PlaitBoard> {
     edgeGenerator!: EdgeGenerator;
 
     edgeLabelGenerator!: EdgeLabelGenerator;
 
     boundedElements!: BoundedElements;
 
-    constructor(public render2: Renderer2, public ngZone: NgZone) {
+    constructor() {
         const edgeElementRef = new EdgeElementRef();
         super(edgeElementRef);
     }
 
     initializeGenerator() {
-        const textManage = new TextManage(this.board, this.viewContainerRef, {
+        const textManage = new TextManage(this.board, PlaitBoard.getViewContainerRef(this.board), {
             getRectangle: () => {
                 return EdgeLabelSpace.getLabelTextRectangle(this.board, this.element);
             }
         });
-        this.edgeGenerator = new EdgeGenerator(this.board, this.viewContainerRef);
-        this.edgeLabelGenerator = new EdgeLabelGenerator(this.board, this.viewContainerRef, textManage);
+        this.edgeGenerator = new EdgeGenerator(this.board, PlaitBoard.getViewContainerRef(this.board));
+        this.edgeLabelGenerator = new EdgeLabelGenerator(this.board, PlaitBoard.getViewContainerRef(this.board), textManage);
         this.getRef().addGenerator<EdgeGenerator>(EdgeGenerator.key, this.edgeGenerator);
         this.getRef().addGenerator<EdgeLabelGenerator>(EdgeLabelGenerator.key, this.edgeLabelGenerator);
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
+    initialize(): void {
+        super.initialize();
         this.getRef().setState(this.context.selected ? EdgeStableState.active : EdgeStableState['']);
         this.initializeGenerator();
         this.getRef().buildPathPoints(this.board, this.element);
@@ -96,8 +89,8 @@ export class FlowEdgeComponent<T extends FlowBaseData = FlowBaseData>
         return boundedElements;
     }
 
-    ngOnDestroy(): void {
-        super.ngOnDestroy();
+    destroy(): void {
+        super.destroy();
         this.edgeGenerator.destroy();
         this.edgeLabelGenerator.destroy();
     }

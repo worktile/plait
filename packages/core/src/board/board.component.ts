@@ -444,7 +444,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
     }
 
     private initializeListRender() {
-        this.listRender = new ListRender(this.board, this.viewContainerRef);
+        this.listRender = new ListRender(this.board);
         this.listRender.initialize(this.board.children, this.initializeChildrenContext());
     }
 
