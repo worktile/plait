@@ -99,7 +99,7 @@ export function getTextManageByCell(cell: PlaitTableCell) {
     return getTextManage(cell.id);
 }
 
-export function getHitTable(tableElements: PlaitTable[], points: Point[]) {
+export function getHitTableElement(tableElements: PlaitTable[], points: Point[]) {
     return tableElements.find(item => {
         const tableRectangle = RectangleClient.getRectangleByPoints(item.points);
         const centerPoint = RectangleClient.getCenterPointByPoints(points);
@@ -123,7 +123,7 @@ export function setElementsTableId(board: PlaitBoard, elements: PlaitDrawElement
     }) as PlaitTable[];
     if (tableElements.length && elements.length) {
         elements.forEach(element => {
-            const hitTable = getHitTable(tableElements, element.points);
+            const hitTable = getHitTableElement(tableElements, element.points);
             if (!hitTable && element.tableId) {
                 const path = PlaitBoard.findPath(board, element);
                 Transforms.setNode(board, { tableId: undefined }, path);
