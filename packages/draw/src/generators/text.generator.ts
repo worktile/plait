@@ -78,7 +78,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
             if (drawShapeText.text && textManage) {
                 textManage.draw(drawShapeText.text);
                 elementG.append(textManage.g);
-                this.element.angle && textManage.updateAngle(centerPoint, this.element.angle);
+                textManage.updateAngle(centerPoint, this.element.angle || 0);
             }
         });
     }
@@ -92,7 +92,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
             if (drawShapeText.text && textManage) {
                 textManage.updateText(drawShapeText.text);
                 textManage.updateRectangle();
-                this.element.angle && textManage.updateAngle(centerPoint, this.element.angle);
+                textManage.updateAngle(centerPoint, this.element.angle || 0);
             }
         });
     }

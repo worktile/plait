@@ -67,7 +67,14 @@ export enum SwimlaneSymbols {
 export enum UMLSymbols {
     actor = 'actor',
     useCase = 'useCase',
-    container = 'container'
+    container = 'container',
+    package = 'package',
+    combinedFragment = 'combinedFragment'
+}
+
+export enum MultipleTextGeometryCommonTextKeys {
+    name = 'name',
+    content = 'content'
 }
 
 export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols | UMLSymbols;
@@ -88,7 +95,7 @@ export interface PlaitCommonGeometry extends PlaitElement {
 }
 
 export interface PlaitMultipleTextGeometry extends PlaitCommonGeometry {
-    texts?: PlaitDrawShapeText[];
+    texts: PlaitDrawShapeText[];
 }
 
 export interface PlaitGeometry extends PlaitCommonGeometry {

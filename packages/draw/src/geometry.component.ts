@@ -16,7 +16,7 @@ import { DrawTransforms } from './transforms';
 import { ActiveGenerator, CommonPluginElement, canResize } from '@plait/common';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 import { isMultipleTextGeometry, memorizeLatestText } from './utils';
-import { TextGenerator } from './generators/text.generator';
+import { PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
 import { SingleTextGenerator } from './generators/single-text.generator';
 
 @Component({
@@ -129,11 +129,21 @@ export class GeometryComponent extends CommonPluginElement<PlaitCommonGeometry, 
     }
 
     initializeTextManage() {
-        const onTextValueChangeHandle = (textManageRef: TextManageRef) => {
+        const onTextValueChangeHandle = (textManageRef: TextManageRef, text: PlaitDrawShapeText) => {
             const height = textManageRef.height / this.board.viewport.zoom;
             const width = textManageRef.width / this.board.viewport.zoom;
             if (textManageRef.newValue) {
-                DrawTransforms.setText(this.board, this.element as PlaitGeometry, textManageRef.newValue, width, height);
+                if (isMultipleTextGeometry(this.element)) {
+                    DrawTransforms.setDrawShapeText(
+                        this.board,
+                        this.element,
+                        { key: text.key, text: textManageRef.newValue, textHeight: height },
+                        width,
+                        height
+                    );
+                } else {
+                    DrawTransforms.setText(this.board, this.element as PlaitGeometry, textManageRef.newValue, width, height);
+                }
             } else {
                 DrawTransforms.setTextSize(this.board, this.element as PlaitGeometry, width, height);
             }
