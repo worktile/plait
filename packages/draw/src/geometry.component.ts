@@ -1,4 +1,3 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import {
     PlaitBoard,
     PlaitPluginElementContext,
@@ -13,7 +12,7 @@ import { PlaitCommonGeometry, PlaitGeometry, PlaitMultipleTextGeometry } from '.
 import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
-import { ActiveGenerator, CommonPluginElement, canResize } from '@plait/common';
+import { ActiveGenerator, CommonElementFlavour, canResize } from '@plait/common';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 import { getTextRectangle, isMultipleTextGeometry, memorizeLatestText } from './utils';
 import { TextGenerator } from './generators/text.generator';
@@ -22,16 +21,8 @@ import { PlaitText } from './interfaces';
 import { GeometryThreshold } from './constants';
 import { getEngine } from './engines';
 
-@Component({
-    selector: 'plait-draw-geometry',
-    template: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true
-})
-export class GeometryComponent extends CommonPluginElement<PlaitCommonGeometry, PlaitBoard>
-    implements OnInit, OnDestroy, OnContextChanged<PlaitCommonGeometry, PlaitBoard> {
-    destroy$ = new Subject<void>();
-
+export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry, PlaitBoard>
+    implements OnContextChanged<PlaitCommonGeometry, PlaitBoard> {
     activeGenerator!: ActiveGenerator<PlaitCommonGeometry>;
 
     lineAutoCompleteGenerator!: LineAutoCompleteGenerator;
@@ -76,8 +67,8 @@ export class GeometryComponent extends CommonPluginElement<PlaitCommonGeometry, 
         this.getRef().addGenerator(ActiveGenerator.key, this.activeGenerator);
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
+    initialize(): void {
+        super.initialize();
         this.initializeGenerator();
         this.shapeGenerator.processDrawing(this.element as PlaitGeometry, this.getElementG());
         this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
@@ -148,7 +139,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitCommonGeometry, 
                 this.board,
                 this.element as PlaitMultipleTextGeometry,
                 this.element.texts!,
-                this.viewContainerRef,
+                PlaitBoard.getViewContainerRef(this.board),
                 {
                     onValueChangeHandle: onTextValueChangeHandle
                 }
@@ -158,7 +149,7 @@ export class GeometryComponent extends CommonPluginElement<PlaitCommonGeometry, 
                 this.board,
                 this.element as PlaitGeometry,
                 this.element.text,
-                this.viewContainerRef,
+                PlaitBoard.getViewContainerRef(this.board),
                 {
                     onValueChangeHandle: onTextValueChangeHandle,
                     getMaxWidth: ()=>{
@@ -175,10 +166,8 @@ export class GeometryComponent extends CommonPluginElement<PlaitCommonGeometry, 
         this.textGenerator.initialize();
     }
 
-    ngOnDestroy(): void {
-        super.ngOnDestroy();
-        this.destroy$.next();
-        this.destroy$.complete();
+    destroy(): void {
+        super.destroy();
         this.activeGenerator.destroy();
         this.lineAutoCompleteGenerator.destroy();
         this.textGenerator.destroy();

@@ -16,6 +16,7 @@ import { editCell, getHitCell } from '../utils/table';
 
 export const withTable = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, getDeletedFragment, dblClick } = board;
+ 
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitTableElement.isTable(context.element)) {
             return TableComponent;

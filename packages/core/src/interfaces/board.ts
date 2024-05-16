@@ -5,7 +5,6 @@ import { PlaitHistory } from './history';
 import { PlaitOperation } from './operation';
 import { Selection } from './selection';
 import { Viewport } from './viewport';
-import { PlaitPluginElementComponent } from '../core/element/plugin-element';
 import {
     BOARD_TO_COMPONENT,
     BOARD_TO_ELEMENT_HOST,
@@ -30,6 +29,7 @@ import { Path } from './path';
 import { PlaitTheme, ThemeColor, ThemeColors } from './theme';
 import { distanceBetweenPointAndRectangle } from '../utils/math';
 import { ClipboardData, WritableClipboardContext, WritableClipboardOperationType } from '../utils';
+import { ElementFlavour } from '../core/element/element-flavour';
 
 export interface PlaitBoard {
     viewport: Viewport;
@@ -68,7 +68,7 @@ export interface PlaitBoard {
     getDeletedFragment: (data: PlaitElement[]) => PlaitElement[];
     getRelatedFragment: (data: PlaitElement[], originData?: PlaitElement[]) => PlaitElement[];
     dblClick: (event: MouseEvent) => void;
-    drawElement: (context: PlaitPluginElementContext) => ComponentType<PlaitPluginElementComponent>;
+    drawElement: (context: PlaitPluginElementContext) => ComponentType<ElementFlavour>;
     isRectangleHit: (element: PlaitElement, range: Selection) => boolean;
     // When the element has no fill color, it is considered a hit only if it hits the border.
     isHit: (element: PlaitElement, point: Point) => boolean;
@@ -171,6 +171,9 @@ export const PlaitBoard = {
     },
     getComponent(board: PlaitBoard) {
         return BOARD_TO_COMPONENT.get(board) as BoardComponentInterface;
+    },
+    getViewContainerRef(board: PlaitBoard) {
+        return (BOARD_TO_COMPONENT.get(board) as BoardComponentInterface).viewContainerRef;
     },
     getBoardContainer(board: PlaitBoard) {
         return BOARD_TO_ELEMENT_HOST.get(board)?.container as HTMLElement;
