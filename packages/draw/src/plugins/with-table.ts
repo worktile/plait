@@ -10,12 +10,27 @@ import {
     getSelectedElements,
     toViewBoxPoint,
     toHostPoint,
-    getHitElementByPoint
+    getHitElementByPoint,
+    getMovingElements,
+    isMovingElements,
+    InsertNodeOperation
 } from '@plait/core';
-import { editCell, getHitCell } from '../utils/table';
+import { editCell, getHitCell, getRelatedElementsInTable, setElementsTableId } from '../utils/table';
+import { PlaitDrawElement } from '../interfaces';
 
 export const withTable = (board: PlaitBoard) => {
-    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, getDeletedFragment, dblClick } = board;
+    const {
+        drawElement,
+        getRectangle,
+        isRectangleHit,
+        isHit,
+        isMovable,
+        getDeletedFragment,
+        dblClick,
+        getRelatedFragment,
+        onChange,
+        pointerMove
+    } = board;
     board.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitTableElement.isTable(context.element)) {
             return TableComponent;
@@ -55,6 +70,12 @@ export const withTable = (board: PlaitBoard) => {
         return isMovable(element);
     };
 
+    board.getRelatedFragment = (elements: PlaitElement[], originData?: PlaitElement[]) => {
+        const selectedElements = originData?.length ? originData : getSelectedElements(board);
+        const elementsInTable = getRelatedElementsInTable(board, selectedElements);
+        return getRelatedFragment([...elements, ...elementsInTable], originData);
+    };
+
     board.isRectangleHit = (element: PlaitElement, selection: Selection) => {
         if (PlaitTableElement.isTable(element)) {
             const rangeRectangle = RectangleClient.getRectangleByPoints([selection.anchor, selection.focus]);
@@ -77,6 +98,22 @@ export const withTable = (board: PlaitBoard) => {
         }
         dblClick(event);
     };
-    
+
+    board.pointerMove = (event: PointerEvent) => {
+        pointerMove(event);
+        if (isMovingElements(board)) {
+            const movingDrawElements = getMovingElements(board).filter(item => PlaitDrawElement.isDrawElement(item)) as PlaitDrawElement[];
+            setElementsTableId(board, movingDrawElements);
+        }
+    };
+
+    board.onChange = () => {
+        onChange();
+        const insertNodes = board.operations
+            .filter(op => op.type === 'insert_node' && PlaitDrawElement.isDrawElement(op.node))
+            .map(item => (item as InsertNodeOperation).node) as PlaitDrawElement[];
+        setElementsTableId(board, insertNodes);
+    };
+
     return board;
 };

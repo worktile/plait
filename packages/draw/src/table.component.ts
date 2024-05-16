@@ -1,5 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, ACTIVE_STROKE_WIDTH, RectangleClient } from '@plait/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+    PlaitBoard,
+    PlaitPluginElementContext,
+    OnContextChanged,
+    ACTIVE_STROKE_WIDTH,
+    RectangleClient,
+    PlaitContextService
+} from '@plait/core';
 import { ActiveGenerator, canResize, CommonPluginElement } from '@plait/common';
 import { PlaitTable, PlaitTableCell } from './interfaces/table';
 import { PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
@@ -23,7 +30,9 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
 
     textGenerator!: TextGenerator<PlaitTable>;
 
-    constructor() {
+    contextService = inject(PlaitContextService);
+
+    constructor(private destroyRef: DestroyRef) {
         super();
     }
 

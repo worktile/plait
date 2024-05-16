@@ -701,6 +701,50 @@ export const mockTableData: PlaitDrawElement[] = [
                 }
             }
         ]
+    },
+    {
+        id: 'QPFwr',
+        type: 'geometry',
+        shape: 'ellipse',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        tableId: 'jhETT',
+        points: [
+            [166.91015625, 4.05859375],
+            [251.8828125, 77.99609375]
+        ],
+        strokeWidth: 2
+    },
+    {
+        id: 'mWDfM',
+        type: 'geometry',
+        shape: 'rightArrow',
+        angle: 0,
+        opacity: 1,
+        textHeight: 20,
+        text: {
+            children: [
+                {
+                    text: ''
+                }
+            ],
+            align: 'center'
+        },
+        tableId: 'TTjhE',
+        points: [
+            [802.728515625, 15.724609375],
+            [982.013671875, 89.662109375]
+        ],
+        strokeWidth: 2
     }
 ] as PlaitDrawElement[];
 
