@@ -117,6 +117,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
             fakeCreateTextRef?.g.remove();
             fakeCreateTextRef = null;
         }
+        temporaryElement = null;
         geometryShapeG?.remove();
         geometryShapeG = null;
         preventTouchMove(board, event, false);

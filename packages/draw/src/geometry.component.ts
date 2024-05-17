@@ -15,9 +15,12 @@ import { TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
 import { ActiveGenerator, CommonPluginElement, canResize } from '@plait/common';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
-import { isMultipleTextGeometry, memorizeLatestText } from './utils';
+import { getTextRectangle, isMultipleTextGeometry, memorizeLatestText } from './utils';
 import { PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
 import { SingleTextGenerator } from './generators/single-text.generator';
+import { PlaitText } from './interfaces';
+import { GeometryThreshold } from './constants';
+import { getEngine } from './engines';
 
 @Component({
     selector: 'plait-draw-geometry',
@@ -134,13 +137,11 @@ export class GeometryComponent extends CommonPluginElement<PlaitCommonGeometry, 
             const width = textManageRef.width / this.board.viewport.zoom;
             if (textManageRef.newValue) {
                 if (isMultipleTextGeometry(this.element)) {
-                    DrawTransforms.setDrawShapeText(
-                        this.board,
-                        this.element,
-                        { key: text.key, text: textManageRef.newValue, textHeight: height },
-                        width,
-                        height
-                    );
+                    DrawTransforms.setDrawShapeText(this.board, this.element, {
+                        key: text.key,
+                        text: textManageRef.newValue,
+                        textHeight: height
+                    });
                 } else {
                     DrawTransforms.setText(this.board, this.element as PlaitGeometry, textManageRef.newValue, width, height);
                 }
@@ -167,7 +168,15 @@ export class GeometryComponent extends CommonPluginElement<PlaitCommonGeometry, 
                 this.element.text,
                 this.viewContainerRef,
                 {
-                    onValueChangeHandle: onTextValueChangeHandle
+                    onValueChangeHandle: onTextValueChangeHandle,
+                    getMaxWidth: () => {
+                        let width = getTextRectangle(this.element).width;
+                        const getRectangle = getEngine(this.element.shape).getTextRectangle;
+                        if (getRectangle) {
+                            width = getRectangle(this.element as PlaitGeometry).width;
+                        }
+                        return (this.element as PlaitText)?.autoSize ? GeometryThreshold.defaultTextMaxWidth : width;
+                    }
                 }
             );
         }
