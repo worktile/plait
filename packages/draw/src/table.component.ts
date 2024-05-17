@@ -72,7 +72,7 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
                 const textManage = getTextManage(item.id);
                 if (textManage) {
                     const engine = getEngine<PlaitTable>(TableSymbols.table);
-                    const rectangle = engine.getTextRectangle!(this.element, { key: item.id, state: 'original' });
+                    const rectangle = engine.getTextRectangle!(this.element, { key: item.id });
                     textManage.g.classList.add('vertical-cell-text');
                     setAngleForG(textManage.g, RectangleClient.getCenterPoint(rectangle), degreesToRadians(-90));
                 }
