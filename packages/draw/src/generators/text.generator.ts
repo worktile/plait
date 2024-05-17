@@ -12,8 +12,9 @@ export interface PlaitDrawShapeText extends EngineExtraData {
     textHeight: number;
 }
 
-export interface TextGeneratorOptions {
+export interface TextGeneratorOptions<T> {
     onValueChangeHandle: (textChangeRef: TextManageRef, text: PlaitDrawShapeText) => void;
+    getRenderRectangle?: (element: T, text: PlaitDrawShapeText) => RectangleClient;
     getMaxWidth?: () => number;
 }
 
@@ -40,7 +41,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
 
     protected viewContainerRef: ViewContainerRef;
 
-    protected options: TextGeneratorOptions;
+    protected options: TextGeneratorOptions<T>;
 
     public textManages!: TextManage[];
 
@@ -53,7 +54,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         element: T,
         texts: PlaitDrawShapeText[],
         viewContainerRef: ViewContainerRef,
-        options: TextGeneratorOptions
+        options: TextGeneratorOptions<T>
     ) {
         this.board = board;
         this.texts = texts;
@@ -108,6 +109,9 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
             },
             getMaxWidth: () => {
                 return this.getMaxWidth(text);
+            },
+            getRenderRectangle: () => {
+                return this.options.getRenderRectangle ? this.options.getRenderRectangle(this.element, text) : this.getRectangle(text);
             },
             textPlugins
         });

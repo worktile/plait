@@ -1,13 +1,25 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, ACTIVE_STROKE_WIDTH, RectangleClient } from '@plait/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, HostListener } from '@angular/core';
+import {
+    PlaitBoard,
+    PlaitPluginElementContext,
+    OnContextChanged,
+    ACTIVE_STROKE_WIDTH,
+    RectangleClient,
+    setAngleForG,
+    degreesToRadians
+} from '@plait/core';
 import { ActiveGenerator, canResize, CommonPluginElement } from '@plait/common';
-import { PlaitTable, PlaitTableCell } from './interfaces/table';
-import { PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
+import { PlaitTable, PlaitTableCell, PlaitTableElement } from './interfaces/table';
+import { getTextManage, PlaitDrawShapeText, TextGenerator } from './generators/text.generator';
 import { TableGenerator } from './generators/table.generator';
 import { TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
-import { getCellsWithPoints } from './utils/table';
-import { memorizeLatestText } from './utils';
+import { getCellsWithPoints, getCellWithPoints } from './utils/table';
+import { getStrokeWidthByElement, memorizeLatestText } from './utils';
+import { getEngine } from './engines';
+import { TableSymbols } from './interfaces';
+import { getHorizontalTextRectangle } from './engines/table/table';
+import { ShapeDefaultSpace } from './constants';
 
 @Component({
     selector: 'plait-draw-table',
@@ -51,6 +63,21 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
         this.initializeGenerator();
         this.tableGenerator.processDrawing(this.element, this.getElementG());
         this.textGenerator.draw(this.getElementG());
+        this.rotateVerticalText();
+    }
+
+    rotateVerticalText() {
+        this.element.cells.forEach(item => {
+            if (PlaitTableElement.isVerticalText(item)) {
+                const textManage = getTextManage(item.id);
+                if (textManage) {
+                    const engine = getEngine<PlaitTable>(TableSymbols.table);
+                    const rectangle = engine.getTextRectangle!(this.element, { key: item.id });
+                    textManage.g.classList.add('vertical-cell-text');
+                    setAngleForG(textManage.g, RectangleClient.getCenterPoint(rectangle), degreesToRadians(-90));
+                }
+            }
+        });
     }
 
     getDrawShapeTexts(cells: PlaitTableCell[]): PlaitDrawShapeText[] {
@@ -81,6 +108,23 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
                     );
                 }
                 textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
+            },
+            getRenderRectangle: (element: PlaitTable, text: PlaitDrawShapeText) => {
+                const cell = getCellWithPoints(element, text.key);
+                if (PlaitTableElement.isVerticalText(cell)) {
+                    const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
+                    const strokeWidth = getStrokeWidthByElement(cell);
+                    const width = cell.textHeight || 0;
+                    const height = cellRectangle.height - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+                    return {
+                        width,
+                        height: height > 0 ? height : 0,
+                        x: cellRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
+                        y: cellRectangle.y + (cellRectangle.height - height) / 2
+                    };
+                } else {
+                    return getHorizontalTextRectangle(cell);
+                }
             }
         });
         this.textGenerator.initialize();
@@ -96,6 +140,7 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
             const previousTexts = this.getDrawShapeTexts(previous.element.cells);
             const currentTexts = this.getDrawShapeTexts(this.element.cells);
             this.textGenerator.update(this.element, previousTexts, currentTexts, this.getElementG());
+            this.rotateVerticalText();
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;

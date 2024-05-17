@@ -582,10 +582,11 @@ export const mockTableData: PlaitDrawElement[] = [
                 text: {
                     children: [
                         {
-                            text: 'merge cell'
+                            text: '合并单元格'
                         }
                     ],
-                    align: 'center'
+                    align: 'center',
+                    direction: 'vertical'
                 }
             },
             {
@@ -596,10 +597,11 @@ export const mockTableData: PlaitDrawElement[] = [
                 text: {
                     children: [
                         {
-                            text: ''
+                            text: 'cell-1-2'
                         }
                     ],
-                    align: 'center'
+                    align: 'center',
+                    direction: 'vertical'
                 }
             },
             {
