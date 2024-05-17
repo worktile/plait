@@ -14,10 +14,12 @@ import { getTextManage, PlaitDrawShapeText, TextGenerator } from './generators/t
 import { TableGenerator } from './generators/table.generator';
 import { TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
-import { getCellsWithPoints } from './utils/table';
-import { memorizeLatestText } from './utils';
+import { getCellsWithPoints, getCellWithPoints } from './utils/table';
+import { getStrokeWidthByElement, memorizeLatestText } from './utils';
 import { getEngine } from './engines';
 import { TableSymbols } from './interfaces';
+import { getHorizontalTextRectangle } from './engines/table/table';
+import { ShapeDefaultSpace } from './constants';
 
 @Component({
     selector: 'plait-draw-table',
@@ -106,6 +108,23 @@ export class TableComponent extends CommonPluginElement<PlaitTable, PlaitBoard>
                     );
                 }
                 textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
+            },
+            getRenderRectangle: (element: PlaitTable, text: PlaitDrawShapeText) => {
+                const cell = getCellWithPoints(element, text.key);
+                if (PlaitTableElement.isVerticalText(cell)) {
+                    const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
+                    const strokeWidth = getStrokeWidthByElement(cell);
+                    const width = cell.textHeight || 0;
+                    const height = cellRectangle.height - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+                    return {
+                        width,
+                        height: height > 0 ? height : 0,
+                        x: cellRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
+                        y: cellRectangle.y + (cellRectangle.height - height) / 2
+                    };
+                } else {
+                    return getHorizontalTextRectangle(cell);
+                }
             }
         });
         this.textGenerator.initialize();
