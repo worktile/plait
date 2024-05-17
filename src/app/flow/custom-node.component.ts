@@ -19,7 +19,7 @@ export class CustomFlowNodeComponent extends FlowNodeComponent {
 
     initialize(): void {
         super.initialize();
-        this.getElementG().classList.add('flow=custom-node');
+        this.getElementG().classList.add('flow-custom-node');
     }
 }
 
