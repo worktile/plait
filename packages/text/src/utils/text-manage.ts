@@ -204,7 +204,6 @@ export class TextManage {
         const mousedown$ = fromEvent<MouseEvent>(document, 'mousedown').subscribe((event: MouseEvent) => {
             const point = toViewBoxPoint(this.board, toHostPoint(this.board, event.x, event.y));
             const textRec = this.options.getRenderRectangle? this.options.getRenderRectangle(): this.options.getRectangle();
-            // TODO: 获取旋转后的 textRec
             const clickInText = RectangleClient.isHit(RectangleClient.getRectangleByPoints([point, point]), textRec);
             const isAttached = (event.target as HTMLElement).closest('.plait-board-attached');
 

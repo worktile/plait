@@ -582,7 +582,7 @@ export const mockTableData: PlaitDrawElement[] = [
                 text: {
                     children: [
                         {
-                            text: 'merge cell 哈哈'
+                            text: '合并单元格'
                         }
                     ],
                     align: 'center',
