@@ -41,6 +41,12 @@ export function getCellsWithPoints(table: PlaitTable): PlaitTableCellWithPoints[
     return cells;
 }
 
+export function getCellWithPoints(table: PlaitTable, cellId: string) {
+    const cells = getCellsWithPoints(table);
+    const cellIndex = table.cells.findIndex(item => item.id === cellId);
+    return cells[cellIndex];
+}
+
 function calculateCellsSize(items: { id: string; [key: string]: any }[], tableSize: number, count: number, isWidth: boolean) {
     const cellSizes: number[] = [];
     const sizeType = isWidth ? 'width' : 'height';
