@@ -60,18 +60,16 @@ export interface PlaitLine extends PlaitElement {
     type: 'line';
     shape: LineShape;
     points: Point[];
-
     source: LineHandle;
     target: LineHandle;
-
     texts: LineText[];
-
+    opacity: number;
     // node style attributes
     strokeColor?: string;
     strokeWidth?: number;
     strokeStyle?: StrokeStyle;
-
-    opacity: number;
+    //  end
+    tableId?: string;
 }
 
 export interface PlaitStraightLine extends PlaitLine {

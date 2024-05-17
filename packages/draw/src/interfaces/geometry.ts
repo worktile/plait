@@ -76,15 +76,15 @@ export interface PlaitCommonGeometry extends PlaitElement {
     points: [Point, Point];
     type: 'geometry';
     shape: GeometryShapes;
-
+    angle: number;
+    opacity: number;
     // node style attributes
     fill?: string;
     strokeColor?: string;
     strokeWidth?: number;
     strokeStyle?: StrokeStyle;
-
-    angle: number;
-    opacity: number;
+    // end
+    tableId?: string;
 }
 
 export interface PlaitMultipleTextGeometry extends PlaitCommonGeometry {
