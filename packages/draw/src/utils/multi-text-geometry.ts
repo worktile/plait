@@ -30,9 +30,10 @@ export const createMultipleTextGeometryElement = (
     points: [Point, Point],
     options: GeometryStyleOptions = {}
 ): PlaitMultipleTextGeometry => {
-    const drawShapeTexts: PlaitDrawShapeText[] = buildDefaultTextsByShape(shape);
+    const id = idCreator();
+    const drawShapeTexts: PlaitDrawShapeText[] = buildDefaultTextsByShape(shape, id);
     return {
-        id: idCreator(),
+        id,
         type: 'geometry',
         shape,
         angle: 0,
@@ -43,7 +44,7 @@ export const createMultipleTextGeometryElement = (
     };
 };
 
-export const buildDefaultTextsByShape = (shape: GeometryShapes) => {
+export const buildDefaultTextsByShape = (shape: GeometryShapes, elementId: string) => {
     const memorizedLatest = getMemorizedLatestByPointer(shape);
     const textProperties = { ...memorizedLatest.textProperties };
     const alignment = textProperties?.align;
@@ -55,7 +56,7 @@ export const buildDefaultTextsByShape = (shape: GeometryShapes) => {
     return (textKeys || []).map((textKey: string) => {
         const text = defaultTexts?.find((item: { key: string; text: string; align?: Alignment }) => item?.key === textKey) || {};
         return {
-            key: textKey,
+            key: `${elementId}-${textKey}`,
             text: buildText(text.text || '', alignment || text.align || Alignment.center, textProperties),
             textHeight: textHeight
         };
@@ -72,5 +73,9 @@ export const getHitText = (element: PlaitMultipleTextGeometry, point: Point) => 
             return RectangleClient.isHit(rectangle, textRectangle);
         });
     }
-    return hitText || element.texts.find(item => item.key === MultipleTextGeometryCommonTextKeys.content) || element.texts[0];
+    return hitText || element.texts.find(item => item.key.includes(MultipleTextGeometryCommonTextKeys.content)) || element.texts[0];
+};
+
+export const getElementTextKeyByName = (element: PlaitMultipleTextGeometry, textName: string) => {
+    return `${element.id}-${textName}`;
 };
