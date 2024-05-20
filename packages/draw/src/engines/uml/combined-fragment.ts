@@ -10,7 +10,7 @@ import { MultipleTextGeometryCommonTextKeys, PlaitMultipleTextGeometry, ShapeEng
 import { Options } from 'roughjs/bin/core';
 import { getPolygonEdgeByConnectionPoint } from '../../utils/polygon';
 import { RectangleEngine } from '../basic-shapes/rectangle';
-import { getElementTextKeyByName, getStrokeWidthByElement } from '../../utils';
+import { getStrokeWidthByElement } from '../../utils';
 import { ShapeDefaultSpace } from '../../constants';
 import { PlaitDrawShapeText } from '../../generators/text.generator';
 
@@ -57,7 +57,7 @@ export const CombinedFragmentEngine: ShapeEngine<PlaitMultipleTextGeometry, {}, 
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
         const textHeight = element.texts?.find(item => item.key === options?.key)?.textHeight!;
-        if (options?.key === getElementTextKeyByName(element, MultipleTextGeometryCommonTextKeys.name)) {
+        if (options?.key === MultipleTextGeometryCommonTextKeys.name) {
             const width = elementRectangle.width / 3 - 8 - ShapeDefaultSpace.rectangleAndText - strokeWidth;
             return {
                 height: textHeight,
@@ -66,7 +66,7 @@ export const CombinedFragmentEngine: ShapeEngine<PlaitMultipleTextGeometry, {}, 
                 y: elementRectangle.y + (25 - textHeight) / 2
             };
         }
-        if (options?.key === getElementTextKeyByName(element, MultipleTextGeometryCommonTextKeys.content)) {
+        if (options?.key === MultipleTextGeometryCommonTextKeys.content) {
             const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
             return {
                 height: textHeight,

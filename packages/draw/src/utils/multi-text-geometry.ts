@@ -51,14 +51,13 @@ export const buildDefaultTextsByShape = (shape: GeometryShapes, elementId: strin
     const textHeight = textProperties?.textHeight || DefaultTextProperty.height;
     delete textProperties?.align;
     delete textProperties?.textHeight;
-    const defaultProperty = (getDefaultGeometryProperty(shape) as unknown) as PlaitMultipleTextGeometry;
-    const defaultTexts = defaultProperty.texts || [];
+    const defaultTexts = (getDefaultGeometryProperty(shape) as any)?.texts || [];
     const textKeys = getMultipleTextGeometryTextKeys(shape);
     return (textKeys || []).map((textKey: string) => {
-        const text = defaultTexts?.find((item: PlaitDrawShapeText) => item?.key === textKey);
+        const text = defaultTexts?.find((item: { key: string }) => item?.key === textKey);
         return {
-            key: `${elementId}-${textKey}`,
-            text: buildText(text?.text || '', alignment || defaultProperty.align || Alignment.center, textProperties),
+            key: textKey,
+            text: buildText(text?.text || '', alignment || text?.align || Alignment.center, textProperties),
             textHeight: textHeight
         };
     });
@@ -74,9 +73,5 @@ export const getHitText = (element: PlaitMultipleTextGeometry, point: Point) => 
             return RectangleClient.isHit(rectangle, textRectangle);
         });
     }
-    return hitText || element.texts.find(item => item.key.includes(MultipleTextGeometryCommonTextKeys.content)) || element.texts[0];
-};
-
-export const getElementTextKeyByName = (element: PlaitMultipleTextGeometry, textName: string) => {
-    return `${element.id}-${textName}`;
+    return hitText;
 };

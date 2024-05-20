@@ -2,8 +2,8 @@ import { ELEMENT_TO_TEXT_MANAGES, WithTextOptions, WithTextPluginKey } from '@pl
 import { PlaitBoard, PlaitElement, PlaitOptionsBoard, RectangleClient } from '@plait/core';
 import { TextPlugin, TextManageRef, TextManage, ParagraphElement } from '@plait/text';
 import { getEngine } from '../engines';
-import { DrawShapes, EngineExtraData, PlaitGeometry } from '../interfaces';
-import { getTextRectangle } from '../utils';
+import { DrawShapes, EngineExtraData, PlaitCommonGeometry, PlaitGeometry } from '../interfaces';
+import { getTextRectangle, isMultipleTextGeometry } from '../utils';
 import { ViewContainerRef } from '@angular/core';
 
 export interface PlaitDrawShapeText extends EngineExtraData {
@@ -67,16 +67,24 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         const textPlugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
         this.textManages = this.texts.map(text => {
             const textManage = this.createTextManage(text, textPlugins);
-            setTextManage(text.key, textManage);
+            setTextManage(this.getTextKey(text), textManage);
             return textManage;
         });
         ELEMENT_TO_TEXT_MANAGES.set(this.element, this.textManages);
     }
 
+    getTextKey(text: PlaitDrawShapeText) {
+        if (isMultipleTextGeometry((this.element as unknown) as PlaitCommonGeometry)) {
+            return `${this.element.id}-${text.key}`;
+        } else {
+            return text.key;
+        }
+    }
+
     draw(elementG: SVGElement) {
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
         this.texts.forEach(drawShapeText => {
-            const textManage = getTextManage(drawShapeText.key);
+            const textManage = getTextManage(this.getTextKey(drawShapeText));
             if (drawShapeText.text && textManage) {
                 textManage.draw(drawShapeText.text);
                 elementG.append(textManage.g);
@@ -90,7 +98,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         ELEMENT_TO_TEXT_MANAGES.set(this.element, this.textManages);
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
         currentDrawShapeTexts.forEach(drawShapeText => {
-            const textManage = getTextManage(drawShapeText.key);
+            const textManage = getTextManage(this.getTextKey(drawShapeText));
             if (drawShapeText.text && textManage) {
                 textManage.updateText(drawShapeText.text);
                 textManage.updateRectangle();
