@@ -19,7 +19,7 @@ import { isHitDrawElement, isHitElementInside, isRectangleHitDrawElement } from 
 import { getLinePoints, getLineTextRectangle } from '../utils/line/line-basic';
 import { withDrawRotate } from './with-draw-rotate';
 import { withTable } from './with-table';
-import { SwimlaneComponent } from '../swimlane.component';
+import { TableComponent } from '../table.component';
 
 export const withDraw = (board: PlaitBoard) => {
     const { drawElement, getRectangle, isRectangleHit, isHit, isInsidePoint, isMovable, isAlign, getRelatedFragment } = board;
@@ -35,7 +35,7 @@ export const withDraw = (board: PlaitBoard) => {
         } else if (PlaitDrawElement.isImage(context.element)) {
             return ImageComponent;
         } else if (PlaitDrawElement.isSwimlane(context.element)) {
-            return SwimlaneComponent;
+            return TableComponent;
         }
         return drawElement(context);
     };

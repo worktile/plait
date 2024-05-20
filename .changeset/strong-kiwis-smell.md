@@ -3,3 +3,5 @@
 ---
 
 init swimlane
+
+support add/remove swimlane row/column

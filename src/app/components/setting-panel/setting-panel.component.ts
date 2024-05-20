@@ -20,10 +20,12 @@ import {
     LineHandleKey,
     LineMarkerType,
     LineShape,
+    PlaitSwimlane,
     getMemorizeKey,
     getSelectedGeometryElements,
     getSelectedImageElements,
-    getSelectedLineElements
+    getSelectedLineElements,
+    isSingleSelectSwimlane
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 import {
@@ -39,13 +41,7 @@ import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-import {
-    AlignTransform,
-    PropertyTransforms,
-    TextTransforms,
-    getFirstTextEditor,
-    getTextEditors
-} from '@plait/common';
+import { AlignTransform, PropertyTransforms, TextTransforms, getFirstTextEditor, getTextEditors } from '@plait/common';
 
 @Component({
     selector: 'app-setting-panel',
@@ -77,6 +73,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     isSelectedLine = false;
 
+    isSelectSwimlane = false;
+
     canSetZIndex = false;
 
     fillColor = ['#333333', '#e48483', '#69b1e4', '#e681d4', '#a287e1', ''];
@@ -94,6 +92,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     lineTargetMarker = LineMarkerType.openTriangle;
 
     lineSourceMarker = LineMarkerType.openTriangle;
+
+    swimlaneOperation = 'addRow';
 
     strokeWidth = 3;
 
@@ -118,6 +118,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedLineElements = getSelectedLineElements(this.board);
         this.isSelectedMind = !!selectedMindElements.length;
         this.isSelectedLine = !!selectedLineElements.length;
+        this.isSelectSwimlane = isSingleSelectSwimlane(this.board);
         this.canSetZIndex = canSetZIndex(this.board);
         if (selectedMindElements.length) {
             const firstMindElement = selectedMindElements[0];
@@ -325,5 +326,25 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         event.stopPropagation();
         event.preventDefault();
         Transforms.moveToBottom(this.board);
+    }
+
+    addSwimlaneRow(event: Event) {
+        const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
+        DrawTransforms.addSwimlaneRow(this.board, selectedElements[0], selectedElements[0].rows.length);
+    }
+
+    removeSwimlaneRow(event: Event) {
+        const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
+        DrawTransforms.removeSwimlaneRow(this.board, selectedElements[0], selectedElements[0].rows.length - 1);
+    }
+
+    addSwimlaneColumn(event: Event) {
+        const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
+        DrawTransforms.addSwimlaneColumn(this.board, selectedElements[0], selectedElements[0].columns.length);
+    }
+
+    removeSwimlaneColumn(event: Event) {
+        const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
+        DrawTransforms.removeSwimlaneColumn(this.board, selectedElements[0], selectedElements[0].columns.length - 1);
     }
 }

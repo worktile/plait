@@ -89,14 +89,38 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         this.element = element;
         ELEMENT_TO_TEXT_MANAGES.set(this.element, this.textManages);
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
+        const textPlugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
+        const removedTexts = previousDrawShapeTexts.filter(value => {
+            return !currentDrawShapeTexts.find(item => item.key === value.key);
+        });
+        if (removedTexts.length) {
+            removedTexts.forEach(item => {
+                const textManage = getTextManage(item.key);
+                const index = this.textManages.findIndex(value => value === textManage);
+                if (index > -1 && item.text && item.textHeight) {
+                    this.textManages.splice(index, 1);
+                }
+                textManage?.destroy();
+                deleteTextManage(item.key);
+            });
+        }
         currentDrawShapeTexts.forEach(drawShapeText => {
-            const textManage = getTextManage(drawShapeText.key);
-            if (drawShapeText.text && textManage) {
-                textManage.updateText(drawShapeText.text);
-                textManage.updateRectangle();
+            let textManage = getTextManage(drawShapeText.key);
+            if (drawShapeText.text) {
+                if (!textManage) {
+                    textManage = this.createTextManage(drawShapeText, textPlugins);
+                    setTextManage(drawShapeText.key, textManage);
+                    textManage.draw(drawShapeText.text);
+                    elementG.append(textManage.g);
+                    this.textManages.push(textManage);
+                } else {
+                    textManage.updateText(drawShapeText.text);
+                    textManage.updateRectangle();
+                }
                 this.element.angle && textManage.updateAngle(centerPoint, this.element.angle);
             }
         });
+        console.log(2, this.textManages);
     }
 
     private createTextManage(text: PlaitDrawShapeText, textPlugins: TextPlugin[] | undefined) {
@@ -140,6 +164,8 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         });
         this.textManages = [];
         ELEMENT_TO_TEXT_MANAGES.delete(this.element);
-        KEY_TO_TEXT_MANAGE.clear();
+        this.texts.forEach(item => {
+            deleteTextManage(item.key);
+        });
     }
 }
