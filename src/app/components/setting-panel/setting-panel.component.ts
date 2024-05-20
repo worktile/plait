@@ -20,10 +20,12 @@ import {
     LineHandleKey,
     LineMarkerType,
     LineShape,
+    PlaitGeometry,
     getMemorizeKey,
     getSelectedGeometryElements,
     getSelectedImageElements,
-    getSelectedLineElements
+    getSelectedLineElements,
+    isMultipleTextGeometry
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 import {
@@ -39,13 +41,7 @@ import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-import {
-    AlignTransform,
-    PropertyTransforms,
-    TextTransforms,
-    getFirstTextEditor,
-    getTextEditors
-} from '@plait/common';
+import { AlignTransform, PropertyTransforms, TextTransforms, getFirstTextEditor, getTextEditors } from '@plait/common';
 
 @Component({
     selector: 'app-setting-panel',
@@ -134,7 +130,11 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedGeometryElements = getSelectedGeometryElements(this.board);
         if (selectedGeometryElements.length) {
             const firstGeometry = selectedGeometryElements[0];
-            this.align = firstGeometry.text.align || Alignment.center;
+            if (isMultipleTextGeometry(firstGeometry)) {
+                this.align = firstGeometry.texts[0].text.align || Alignment.center;
+            } else {
+                this.align = (firstGeometry as PlaitGeometry).text.align || Alignment.center;
+            }
             this.strokeWidth = firstGeometry.strokeWidth || 3;
         }
 
