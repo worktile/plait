@@ -7,7 +7,7 @@ import { LineShapeGenerator } from './generators/line.generator';
 import { LineActiveGenerator } from './generators/line-active.generator';
 import { DrawTransforms } from './transforms';
 import { GeometryThreshold } from './constants';
-import { CommonPluginElement } from '@plait/common';
+import { CommonElementFlavour } from '@plait/common';
 import { getLinePoints, getLineTextRectangle } from './utils/line/line-basic';
 import { memorizeLatestText } from './utils/memorize';
 
@@ -19,16 +19,7 @@ interface BoundedElements {
 const debugKey = 'debug:plait:line-turning';
 const debugGenerator = createDebugGenerator(debugKey);
 
-@Component({
-    selector: 'plait-draw-line',
-    template: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true
-})
-export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
-    implements OnInit, OnDestroy, OnContextChanged<PlaitLine, PlaitBoard> {
-    destroy$ = new Subject<void>();
-
+export class LineComponent extends CommonElementFlavour<PlaitLine, PlaitBoard> implements OnContextChanged<PlaitLine, PlaitBoard> {
     shapeGenerator!: LineShapeGenerator;
 
     activeGenerator!: LineActiveGenerator;
@@ -45,7 +36,7 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
         this.initializeTextManagesByElement();
     }
 
-    ngOnInit(): void {
+    initialize(): void {
         this.initializeGenerator();
         this.shapeGenerator.processDrawing(this.element, this.getElementG());
         const linePoints = getLinePoints(this.board, this.element);
@@ -53,7 +44,7 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
             selected: this.selected,
             linePoints
         });
-        super.ngOnInit();
+        super.initialize();
         this.boundedElements = this.getBoundedElements();
         this.drawText();
 
@@ -134,7 +125,7 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
     }
 
     createTextManage(text: LineText, index: number) {
-        return new TextManage(this.board, this.viewContainerRef, {
+        return new TextManage(this.board, PlaitBoard.getViewContainerRef(this.board), {
             getRectangle: () => {
                 return getLineTextRectangle(this.board, this.element, index);
             },
@@ -180,11 +171,9 @@ export class LineComponent extends CommonPluginElement<PlaitLine, PlaitBoard>
         });
     }
 
-    ngOnDestroy(): void {
-        super.ngOnDestroy();
+    destroy(): void {
+        super.destroy();
         this.activeGenerator.destroy();
-        this.destroy$.next();
-        this.destroy$.complete();
         this.destroyTextManages();
     }
 }

@@ -13,16 +13,9 @@ import {
 } from '@plait/core';
 import { GroupGenerator } from '../generators/group.generator';
 import { ActiveGenerator } from '../generators';
-import { CommonPluginElement } from './plugin-element';
+import { CommonElementFlavour } from './element-flavour';
 
-@Component({
-    selector: 'plait-group',
-    template: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true
-})
-export class GroupComponent extends CommonPluginElement<PlaitGroup, PlaitBoard>
-    implements OnInit, OnDestroy, OnContextChanged<PlaitGroup, PlaitBoard> {
+export class GroupComponent extends CommonElementFlavour<PlaitGroup, PlaitBoard> implements OnContextChanged<PlaitGroup, PlaitBoard> {
     contextService = inject(PlaitContextService);
 
     constructor(private destroyRef: DestroyRef) {
@@ -47,8 +40,8 @@ export class GroupComponent extends CommonPluginElement<PlaitGroup, PlaitBoard>
         this.groupGenerator = new GroupGenerator(this.board);
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
+    initialize(): void {
+        super.initialize();
         this.initializeGenerator();
         this.contextService
             .onStable()

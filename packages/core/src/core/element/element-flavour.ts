@@ -1,4 +1,7 @@
-import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
+/**
+ * 基于 element-flavour 实现元素的绘制，取代 Angular 组件
+ */
+
 import { PlaitBoard, PlaitChildrenContext, PlaitElement, PlaitNode, PlaitPluginElementContext } from '../../interfaces';
 import { removeSelectedElement } from '../../utils/selected-element';
 import { createG } from '../../utils/dom/common';
@@ -7,15 +10,11 @@ import { ListRender } from '../list-render';
 import { ELEMENT_TO_REF, NODE_TO_CONTAINER_G, NODE_TO_G } from '../../utils/weak-maps';
 import { PlaitElementRef } from './element-ref';
 
-@Directive()
-export abstract class PlaitPluginElementComponent<
+export class ElementFlavour<
     T extends PlaitElement = PlaitElement,
     K extends PlaitBoard = PlaitBoard,
     R extends PlaitElementRef = PlaitElementRef
-> implements OnInit, OnDestroy {
-    viewContainerRef = inject(ViewContainerRef);
-    cdr = inject(ChangeDetectorRef);
-
+> {
     private _g!: SVGGElement;
 
     private _containerG!: SVGGElement;
@@ -32,7 +31,6 @@ export abstract class PlaitPluginElementComponent<
         return !!this.element.children;
     }
 
-    @Input()
     set context(value: PlaitPluginElementContext<T, K>) {
         if (hasBeforeContextChange<T, K>(this)) {
             this.beforeContextChange(value);
@@ -46,7 +44,6 @@ export abstract class PlaitPluginElementComponent<
             NODE_TO_CONTAINER_G.set(this.element, containerG);
             ELEMENT_TO_REF.set(this.element, this.ref);
             this.updateListRender();
-            this.cdr.markForCheck();
             if (hasOnContextChanged<T>(this)) {
                 this.onContextChanged(value, previousContext);
             }
@@ -93,7 +90,7 @@ export abstract class PlaitPluginElementComponent<
 
     constructor(private ref: R) {}
 
-    ngOnInit(): void {
+    initialize() {
         if (this.element.type) {
             this.getContainerG().setAttribute(`plait-${this.element.type}`, 'true');
         }
@@ -112,7 +109,7 @@ export abstract class PlaitPluginElementComponent<
 
     public initializeListRender() {
         if (this.hasChildren) {
-            this.listRender = new ListRender(this.board, this.viewContainerRef);
+            this.listRender = new ListRender(this.board);
             if (this.board.isExpanded(this.element)) {
                 this.listRender.initialize(this.element.children!, this.initializeChildrenContext());
             }
@@ -149,7 +146,7 @@ export abstract class PlaitPluginElementComponent<
         };
     }
 
-    ngOnDestroy(): void {
+    destroy() {
         if (NODE_TO_G.get(this.element) === this._g) {
             NODE_TO_G.delete(this.element);
         }
@@ -161,5 +158,6 @@ export abstract class PlaitPluginElementComponent<
         }
         removeSelectedElement(this.board, this.element);
         this.getContainerG().remove();
+        this.listRender?.destroy();
     }
 }
