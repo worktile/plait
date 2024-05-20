@@ -120,7 +120,6 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
                 this.element.angle && textManage.updateAngle(centerPoint, this.element.angle);
             }
         });
-        console.log(2, this.textManages);
     }
 
     private createTextManage(text: PlaitDrawShapeText, textPlugins: TextPlugin[] | undefined) {
