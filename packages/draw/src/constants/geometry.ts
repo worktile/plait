@@ -123,16 +123,15 @@ export const DefaultContainerProperty = {
 export const DefaultPackageProperty = {
     width: 210,
     height: 150,
+    align: Alignment.left,
     texts: [
         {
             key: MultipleTextGeometryCommonTextKeys.name,
-            text: '包名',
-            align: Alignment.left
+            text: '包名'
         },
         {
             key: MultipleTextGeometryCommonTextKeys.content,
-            text: '',
-            align: Alignment.left
+            text: ''
         }
     ]
 };
@@ -140,16 +139,15 @@ export const DefaultPackageProperty = {
 export const DefaultCombinedFragmentProperty = {
     width: 400,
     height: 280,
+    align: Alignment.left,
     texts: [
         {
             key: MultipleTextGeometryCommonTextKeys.name,
-            text: 'Opt | Alt | Loop',
-            align: Alignment.left
+            text: 'Opt | Alt | Loop'
         },
         {
             key: MultipleTextGeometryCommonTextKeys.content,
-            text: '[Condition]',
-            align: Alignment.left
+            text: '[Condition]'
         }
     ]
 };

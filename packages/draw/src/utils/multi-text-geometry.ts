@@ -51,13 +51,14 @@ export const buildDefaultTextsByShape = (shape: GeometryShapes, elementId: strin
     const textHeight = textProperties?.textHeight || DefaultTextProperty.height;
     delete textProperties?.align;
     delete textProperties?.textHeight;
-    const defaultTexts = (getDefaultGeometryProperty(shape) as any).texts || [];
+    const defaultProperty = (getDefaultGeometryProperty(shape) as unknown) as PlaitMultipleTextGeometry;
+    const defaultTexts = defaultProperty.texts || [];
     const textKeys = getMultipleTextGeometryTextKeys(shape);
     return (textKeys || []).map((textKey: string) => {
-        const text = defaultTexts?.find((item: { key: string; text: string; align?: Alignment }) => item?.key === textKey) || {};
+        const text = defaultTexts?.find((item: PlaitDrawShapeText) => item?.key === textKey);
         return {
             key: `${elementId}-${textKey}`,
-            text: buildText(text.text || '', alignment || text.align || Alignment.center, textProperties),
+            text: buildText(text?.text || '', alignment || defaultProperty.align || Alignment.center, textProperties),
             textHeight: textHeight
         };
     });
