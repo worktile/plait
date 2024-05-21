@@ -15,7 +15,7 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDr
         const tableTopBorder = drawLine(rs, [x, y], [x + width, y], roughOptions);
         const tableLeftBorder = drawLine(rs, [x, y], [x, y + height], roughOptions);
         g.append(tableTopBorder, tableLeftBorder);
-        const pointCells = getCellsWithPoints({ ...options?.element } as PlaitTable);
+        const pointCells = getCellsWithPoints(board, { ...options?.element } as PlaitTable);
         pointCells.forEach(cell => {
             const rectangle = RectangleClient.getRectangleByPoints(cell.points!);
             const { x, y, width, height } = rectangle;
@@ -39,7 +39,7 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDr
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getTextRectangle(element: PlaitTable, options?: PlaitDrawShapeText) {
-        const cell = getCellWithPoints(element, options!.key);
+        const cell = getCellWithPoints(options?.board!, element, options!.key);
         if (PlaitTableElement.isVerticalText(cell)) {
             return getVerticalTextRectangle(cell);
         } else {

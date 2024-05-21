@@ -1,16 +1,18 @@
 import { PlaitBoard, RectangleClient, Transforms } from '@plait/core';
 import { ShapeDefaultSpace } from '../constants';
 import { Element } from 'slate';
-import { PlaitTable, PlaitTableCell, PlaitTableCellWithPoints, PlaitTableElement } from '../interfaces/table';
+import { PlaitTable, PlaitTableCell, PlaitTableElement } from '../interfaces/table';
+import { getCellWithPoints } from '../utils/table';
 
 export const setTableText = (
     board: PlaitBoard,
     table: PlaitTable,
-    cell: PlaitTableCellWithPoints,
+    cellId: string,
     text: Element,
     textWidth: number,
     textHeight: number
 ) => {
+    const cell = getCellWithPoints(board, table, cellId);
     const cellIndex = table.cells.findIndex(item => item.id === cell.id);
     let rows = [...table.rows];
     let columns = [...table.columns];
@@ -50,11 +52,6 @@ export const setTableText = (
         textHeight: textHeight,
         text
     };
-    cells = cells.map(item => {
-        delete item.rowspan;
-        delete item.colspan;
-        return item;
-    });
 
     const path = board.children.findIndex(child => child.id === table.id);
     Transforms.setNode(board, { rows, columns, cells, points }, [path]);

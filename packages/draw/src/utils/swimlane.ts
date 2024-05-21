@@ -1,6 +1,6 @@
 import { PlaitDrawElement, PlaitSwimlane } from '../interfaces';
 
-export function buildSwimlane(element: PlaitSwimlane) {
+export function buildSwimlaneTable(element: PlaitSwimlane) {
     const swimlaneElement = { ...element };
     if (PlaitDrawElement.isHorizontalSwimlane(element)) {
         swimlaneElement.cells = element.cells.map((item, index) => {

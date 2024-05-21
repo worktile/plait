@@ -13,7 +13,7 @@ export const addSwimlaneRow = (board: PlaitBoard, swimlane: PlaitSwimlane, index
         newCells.shift();
         newCells = [...swimlane.cells, ...newCells];
 
-        const lastCellPoints = getCellWithPoints(swimlane, swimlane.cells[swimlane.cells.length - 1].id).points;
+        const lastCellPoints = getCellWithPoints(board, swimlane, swimlane.cells[swimlane.cells.length - 1].id).points;
         const lastRowHeight = RectangleClient.getRectangleByPoints(lastCellPoints).height;
         const newPoints: Point[] = [swimlane.points[0], [swimlane.points[1][0], swimlane.points[1][1] + lastRowHeight]];
 
@@ -31,7 +31,7 @@ export const addSwimlaneColumn = (board: PlaitBoard, swimlane: PlaitSwimlane, in
         newCells.shift();
         newCells = [...swimlane.cells, ...newCells];
 
-        const lastCellPoints = getCellWithPoints(swimlane, swimlane.cells[swimlane.cells.length - 1].id).points;
+        const lastCellPoints = getCellWithPoints(board, swimlane, swimlane.cells[swimlane.cells.length - 1].id).points;
         const lastColumnWidth = RectangleClient.getRectangleByPoints(lastCellPoints).width;
         const newPoints: Point[] = [swimlane.points[0], [swimlane.points[1][0] + lastColumnWidth, swimlane.points[1][1]]];
 
@@ -51,7 +51,7 @@ export const removeSwimlaneRow = (board: PlaitBoard, swimlane: PlaitSwimlane, in
             const newCells = swimlane.cells.filter(item => item.rowId !== removeRow.id);
             let removeRowHeight = removeRow.height;
             if (!removeRowHeight) {
-                const cellPoints = getCellWithPoints(swimlane, swimlane.cells[index].id).points;
+                const cellPoints = getCellWithPoints(board, swimlane, swimlane.cells[index].id).points;
                 removeRowHeight = RectangleClient.getRectangleByPoints(cellPoints).height;
             }
             const newPoints: Point[] = [swimlane.points[0], [swimlane.points[1][0], swimlane.points[1][1] - removeRowHeight]];
@@ -72,7 +72,7 @@ export const removeSwimlaneColumn = (board: PlaitBoard, swimlane: PlaitSwimlane,
             const newCells = swimlane.cells.filter(item => item.columnId !== removeColumn.id);
             let removeColumnWidth = removeColumn.width;
             if (!removeColumnWidth) {
-                const cellPoints = getCellWithPoints(swimlane, swimlane.cells[index].id).points;
+                const cellPoints = getCellWithPoints(board, swimlane, swimlane.cells[index].id).points;
                 removeColumnWidth = RectangleClient.getRectangleByPoints(cellPoints).width;
             }
             const newPoints: Point[] = [swimlane.points[0], [swimlane.points[1][0] - removeColumnWidth, swimlane.points[1][1]]];

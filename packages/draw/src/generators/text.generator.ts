@@ -10,6 +10,7 @@ export interface PlaitDrawShapeText extends EngineExtraData {
     key: string;
     text: ParagraphElement;
     textHeight: number;
+    board?: PlaitBoard;
 }
 
 export interface TextGeneratorOptions<T> {
