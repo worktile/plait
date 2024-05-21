@@ -65,7 +65,7 @@ export const isRectangleHitElementText = (element: PlaitCommonGeometry, rectangl
     if (isMultipleTextGeometry(element)) {
         const texts = element.texts;
         return texts.some(item => {
-            const textClient = engine.getTextRectangle!(element, item.key);
+            const textClient = engine.getTextRectangle!(element, { key: item.key });
             const rotatedCornerPoints =
                 rotatePointsByElement(RectangleClient.getCornerPoints(textClient), element) || RectangleClient.getCornerPoints(textClient);
             return isPolylineHitRectangle(rotatedCornerPoints, rectangle);
