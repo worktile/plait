@@ -26,6 +26,9 @@ export const getMemorizeKey = (element: PlaitElement) => {
             key = MemorizeKey.line;
             break;
         }
+        case PlaitDrawElement.isUML(element): {
+            key = MemorizeKey.UML;
+        }
     }
     return key;
 };
@@ -40,6 +43,8 @@ export const getMemorizedLatestByPointer = (pointer: DrawPointerType) => {
     let memorizeKey = '';
     if (PlaitDrawElement.isBasicShape({ shape: pointer })) {
         memorizeKey = pointer === BasicShapes.text ? MemorizeKey.text : MemorizeKey.basicShape;
+    } else if (PlaitDrawElement.isUML({ shape: pointer })) {
+        memorizeKey = MemorizeKey.UML;
     } else {
         memorizeKey = MemorizeKey.flowchart;
     }
