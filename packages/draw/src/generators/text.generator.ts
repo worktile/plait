@@ -13,7 +13,7 @@ export interface PlaitDrawShapeText extends EngineExtraData {
 }
 
 export interface TextGeneratorOptions<T> {
-    onValueChangeHandle: (textChangeRef: TextManageRef, text: PlaitDrawShapeText) => void;
+    onValueChangeHandle: (element: T, textChangeRef: TextManageRef, text: PlaitDrawShapeText) => void;
     getRenderRectangle?: (element: T, text: PlaitDrawShapeText) => RectangleClient;
     getMaxWidth?: () => number;
 }
@@ -150,7 +150,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
     }
 
     onValueChangeHandle(textManageRef: TextManageRef, text: PlaitDrawShapeText) {
-        return this.options.onValueChangeHandle(textManageRef, text);
+        return this.options.onValueChangeHandle(this.element, textManageRef, text);
     }
 
     getMaxWidth(text: PlaitDrawShapeText) {

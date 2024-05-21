@@ -741,7 +741,6 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                 id: 'v-cell-1-1',
                 rowId: 'row-1',
                 columnId: 'column-1',
-                colspan: 2,
                 textHeight: 20,
                 text: {
                     children: [
@@ -827,15 +826,13 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                 rowId: 'row-1',
                 columnId: 'column-1',
                 textHeight: 20,
-                rowspan: 2,
                 text: {
                     children: [
                         {
                             text: '水平泳道'
                         }
                     ],
-                    align: 'center',
-                    direction: 'vertical'
+                    align: 'center'
                 }
             },
             {
@@ -849,8 +846,7 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                             text: ''
                         }
                     ],
-                    align: 'center',
-                    direction: 'vertical'
+                    align: 'center'
                 }
             },
             {
@@ -869,8 +865,7 @@ export const mockSwimlaneData: PlaitDrawElement[] = [
                             text: ''
                         }
                     ],
-                    align: 'center',
-                    direction: 'vertical'
+                    align: 'center'
                 }
             },
             {

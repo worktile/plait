@@ -31,7 +31,7 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         super();
     }
 
-    initializeGenerator() {
+    initializeGenerator(element: T = this.element) {
         this.activeGenerator = new ActiveGenerator<T>(this.board, {
             getStrokeWidth: () => {
                 return ACTIVE_STROKE_WIDTH;
@@ -39,32 +39,36 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
             getStrokeOpacity: () => {
                 return 1;
             },
-            getRectangle: (element: T) => {
-                return RectangleClient.getRectangleByPoints(element.points!);
+            getRectangle: (value: T) => {
+                return RectangleClient.getRectangleByPoints(value.points!);
             },
             hasResizeHandle: () => {
-                return canResize(this.board, this.element);
+                return canResize(this.board, element);
             }
         });
         this.tableGenerator = new TableGenerator<T>(this.board);
-        this.initializeTextManage();
+        this.initializeTextManage(element);
     }
 
-    initialize(): void {
+    initialize(element: T = this.element): void {
         super.initialize();
-        this.initializeGenerator();
-        this.tableGenerator.processDrawing(this.element, this.getElementG());
-        this.textGenerator.draw(this.getElementG());
-        this.rotateVerticalText();
+        this.initializeGenerator(element);
+        this.draw(element);
     }
 
-    rotateVerticalText() {
-        this.element.cells.forEach(item => {
+    draw(element: T = this.element) {
+        this.tableGenerator.processDrawing(element, this.getElementG());
+        this.textGenerator.draw(this.getElementG());
+        this.rotateVerticalText(element);
+    }
+
+    rotateVerticalText(element: T = this.element) {
+        element.cells.forEach(item => {
             if (PlaitTableElement.isVerticalText(item)) {
                 const textManage = getTextManage(item.id);
                 if (textManage) {
                     const engine = getEngine<PlaitTable>(TableSymbols.table);
-                    const rectangle = engine.getTextRectangle!(this.element, { key: item.id });
+                    const rectangle = engine.getTextRectangle!(element, { key: item.id });
                     textManage.g.classList.add('vertical-cell-text');
                     setAngleForG(textManage.g, RectangleClient.getCenterPoint(rectangle), degreesToRadians(-90));
                 }
@@ -82,27 +86,27 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         });
     }
 
-    initializeTextManage() {
-        const texts = this.getDrawShapeTexts(this.element.cells);
-        this.textGenerator = new TextGenerator(this.board, this.element, texts, PlaitBoard.getViewContainerRef(this.board), {
-            onValueChangeHandle: (textManageRef: TextManageRef, text: PlaitDrawShapeText) => {
-                const cells = getCellsWithPoints((this.element as unknown) as PlaitTable);
+    initializeTextManage(element: T = this.element) {
+        const texts = this.getDrawShapeTexts(element.cells);
+        this.textGenerator = new TextGenerator(this.board, element, texts, PlaitBoard.getViewContainerRef(this.board), {
+            onValueChangeHandle: (value: PlaitTable, textManageRef: TextManageRef, text: PlaitDrawShapeText) => {
+                const cells = getCellsWithPoints(value);
                 const height = textManageRef.height / this.board.viewport.zoom;
                 const width = textManageRef.width / this.board.viewport.zoom;
                 if (textManageRef.newValue) {
                     DrawTransforms.setTableText(
                         this.board,
-                        (this.element as unknown) as PlaitTable,
+                        value,
                         cells.find(item => item.id === text.key)!,
                         textManageRef.newValue,
                         width,
                         height
                     );
                 }
-                textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
+                textManageRef.operations && memorizeLatestText(value, textManageRef.operations);
             },
-            getRenderRectangle: (element: PlaitTable, text: PlaitDrawShapeText) => {
-                const cell = getCellWithPoints(element, text.key);
+            getRenderRectangle: (value: PlaitTable, text: PlaitDrawShapeText) => {
+                const cell = getCellWithPoints(value, text.key);
                 if (PlaitTableElement.isVerticalText(cell)) {
                     const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
                     const strokeWidth = getStrokeWidthByElement(cell);
@@ -124,17 +128,19 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
 
     onContextChanged(value: PlaitPluginElementContext<T, PlaitBoard>, previous: PlaitPluginElementContext<T, PlaitBoard>) {
         if (value.element !== previous.element) {
-            this.tableGenerator.processDrawing(this.element, this.getElementG());
-            this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+            this.tableGenerator.processDrawing(value.element, this.getElementG());
+            this.activeGenerator.processDrawing(value.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
             const previousTexts = this.getDrawShapeTexts(previous.element.cells);
-            const currentTexts = this.getDrawShapeTexts(this.element.cells);
-            this.textGenerator.update(this.element, previousTexts, currentTexts, this.getElementG());
-            this.rotateVerticalText();
+            const currentTexts = this.getDrawShapeTexts(value.element.cells);
+            this.textGenerator.update(value.element, previousTexts, currentTexts, this.getElementG());
+            this.rotateVerticalText(value.element);
         } else {
             const hasSameSelected = value.selected === previous.selected;
             const hasSameHandleState = this.activeGenerator.options.hasResizeHandle() === this.activeGenerator.hasResizeHandle;
             if (!hasSameSelected || !hasSameHandleState) {
-                this.activeGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), { selected: this.selected });
+                this.activeGenerator.processDrawing(value.element, PlaitBoard.getElementActiveHost(this.board), {
+                    selected: this.selected
+                });
             }
         }
     }

@@ -46,11 +46,16 @@ export const setTableText = (
         }
     }
     cells[cellIndex] = {
-        ...cell,
+        ...cells[cellIndex],
         textHeight: textHeight,
         text
     };
+    cells = cells.map(item => {
+        delete item.rowspan;
+        delete item.colspan;
+        return item;
+    });
 
-    const path = board.children.findIndex(child => child === table);
+    const path = board.children.findIndex(child => child.id === table.id);
     Transforms.setNode(board, { rows, columns, cells, points }, [path]);
 };

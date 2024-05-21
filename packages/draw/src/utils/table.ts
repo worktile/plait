@@ -2,6 +2,7 @@ import { Point, RectangleClient } from '@plait/core';
 import { PlaitTable, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
 import { getTextManage } from '../generators/text.generator';
 
+
 export function getCellsWithPoints(table: PlaitTable): PlaitTableCellWithPoints[] {
     const rectangle = RectangleClient.getRectangleByPoints(table.points);
     const columnsCount = table.columns.length;

@@ -123,15 +123,15 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
     }
 
     initializeTextManage() {
-        const onTextValueChangeHandle = (textManageRef: TextManageRef) => {
+        const onTextValueChangeHandle = (element: PlaitCommonGeometry, textManageRef: TextManageRef) => {
             const height = textManageRef.height / this.board.viewport.zoom;
             const width = textManageRef.width / this.board.viewport.zoom;
             if (textManageRef.newValue) {
-                DrawTransforms.setText(this.board, this.element as PlaitGeometry, textManageRef.newValue, width, height);
+                DrawTransforms.setText(this.board, element as PlaitGeometry, textManageRef.newValue, width, height);
             } else {
-                DrawTransforms.setTextSize(this.board, this.element as PlaitGeometry, width, height);
+                DrawTransforms.setTextSize(this.board, element as PlaitGeometry, width, height);
             }
-            textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
+            textManageRef.operations && memorizeLatestText(element, textManageRef.operations);
         };
 
         if (isMultipleTextGeometry(this.element)) {
@@ -152,7 +152,7 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
                 PlaitBoard.getViewContainerRef(this.board),
                 {
                     onValueChangeHandle: onTextValueChangeHandle,
-                    getMaxWidth: ()=>{
+                    getMaxWidth: () => {
                         let width = getTextRectangle(this.element).width;
                         const getRectangle = getEngine(this.element.shape).getTextRectangle;
                         if (getRectangle) {

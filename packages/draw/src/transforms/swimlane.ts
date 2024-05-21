@@ -14,11 +14,6 @@ export const addSwimlaneRow = (board: PlaitBoard, swimlane: PlaitSwimlane, index
         let newCells = createNewRowCells(swimlane, newRowId);
         newCells.shift();
         newCells = [...swimlane.cells, ...newCells];
-        newCells[0] = {
-            ...newCells[0],
-            rowspan: (swimlane.cells[0].rowspan || 0) + 1
-        };
-        setInitialCellProperties(newCells[swimlane.cells.length], 'vertical');
 
         const lastCellPoints = getCellWithPoints(swimlane, swimlane.cells[swimlane.cells.length - 1].id).points;
         const lastRowHeight = RectangleClient.getRectangleByPoints(lastCellPoints).height;
@@ -37,11 +32,6 @@ export const addSwimlaneColumn = (board: PlaitBoard, swimlane: PlaitSwimlane, in
         let newCells = createNewColumnCells(swimlane, newColumnId);
         newCells.shift();
         newCells = [...swimlane.cells, ...newCells];
-        newCells[0] = {
-            ...newCells[0],
-            colspan: (swimlane.cells[0].colspan || 0) + 1
-        };
-        setInitialCellProperties(newCells[swimlane.cells.length], 'horizontal');
 
         const lastCellPoints = getCellWithPoints(swimlane, swimlane.cells[swimlane.cells.length - 1].id).points;
         const lastColumnWidth = RectangleClient.getRectangleByPoints(lastCellPoints).width;
@@ -59,13 +49,8 @@ export const removeSwimlaneRow = (board: PlaitBoard, swimlane: PlaitSwimlane, in
             const path = PlaitBoard.findPath(board, swimlane);
             Transforms.removeNode(board, path);
         } else {
-            const rowspan = swimlane.cells[0].rowspan || 0;
             const removeRow = swimlane.rows[index];
-            let newCells = swimlane.cells.filter(item => item.rowId !== removeRow.id);
-            newCells[0] = {
-                ...newCells[0],
-                rowspan: rowspan > 1 ? rowspan - 1 : undefined
-            };
+            const newCells = swimlane.cells.filter(item => item.rowId !== removeRow.id);
             let removeRowHeight = removeRow.height;
             if (!removeRowHeight) {
                 const cellPoints = getCellWithPoints(swimlane, swimlane.cells[index].id).points;
@@ -85,13 +70,8 @@ export const removeSwimlaneColumn = (board: PlaitBoard, swimlane: PlaitSwimlane,
             const path = PlaitBoard.findPath(board, swimlane);
             Transforms.removeNode(board, path);
         } else {
-            const colspan = swimlane.cells[0].colspan || 0;
             const removeColumn = swimlane.columns[index];
-            let newCells = swimlane.cells.filter(item => item.columnId !== removeColumn.id);
-            newCells[0] = {
-                ...newCells[0],
-                colspan: colspan > 1 ? colspan - 1 : undefined
-            };
+            const newCells = swimlane.cells.filter(item => item.columnId !== removeColumn.id);
             let removeColumnWidth = removeColumn.width;
             if (!removeColumnWidth) {
                 const cellPoints = getCellWithPoints(swimlane, swimlane.cells[index].id).points;
@@ -117,15 +97,6 @@ const createNewRowCells = (swimlane: PlaitSwimlane, newRowId: string): PlaitTabl
         rowId: newRowId,
         columnId: column.id
     }));
-};
-
-const setInitialCellProperties = (cell: PlaitTableCell, direction: 'horizontal' | 'vertical') => {
-    cell.textHeight = DEFAULT_TEXT_HEIGHT;
-    cell.text = {
-        children: [{ text: '' }],
-        align: Alignment.center,
-        ...(direction === 'vertical' && { direction: 'vertical' })
-    };
 };
 
 const updateSwimlane = (
