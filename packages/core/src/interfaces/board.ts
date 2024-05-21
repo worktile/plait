@@ -6,7 +6,6 @@ import { PlaitOperation } from './operation';
 import { Selection } from './selection';
 import { Viewport } from './viewport';
 import {
-    BOARD_TO_COMPONENT,
     BOARD_TO_ELEMENT_HOST,
     BOARD_TO_HOST,
     BOARD_TO_MOVING_POINT,
@@ -19,7 +18,6 @@ import {
     NODE_TO_PARENT
 } from '../utils/weak-maps';
 import { RoughSVG } from 'roughjs/bin/svg';
-import { BoardComponentInterface } from '../board/board.component.interface';
 import { Point } from './point';
 import { RectangleClient } from './rectangle-client';
 import { getRectangleByElements } from '../utils/element';
@@ -96,14 +94,6 @@ export interface PlaitBoard {
     globalPointerUp: (pointer: PointerEvent) => void;
 }
 
-export interface PlaitBoardChangeEvent {
-    children: PlaitElement[];
-    operations: PlaitOperation[];
-    viewport: Viewport;
-    selection: Selection | null;
-    theme: PlaitTheme;
-}
-
 export interface PlaitBoardOptions {
     readonly?: boolean;
     hideScrollbar?: boolean;
@@ -168,12 +158,6 @@ export const PlaitBoard = {
     },
     getRoughSVG(board: PlaitBoard) {
         return BOARD_TO_ROUGH_SVG.get(board) as RoughSVG;
-    },
-    getComponent(board: PlaitBoard) {
-        return BOARD_TO_COMPONENT.get(board) as BoardComponentInterface;
-    },
-    getViewContainerRef(board: PlaitBoard) {
-        return (BOARD_TO_COMPONENT.get(board) as BoardComponentInterface).viewContainerRef;
     },
     getBoardContainer(board: PlaitBoard) {
         return BOARD_TO_ELEMENT_HOST.get(board)?.container as HTMLElement;

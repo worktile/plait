@@ -33,9 +33,10 @@ export class ListRender {
             this.instances.push(instance);
             this.contexts.push(context);
         });
-        const newDiffers = PlaitBoard.getViewContainerRef(this.board).injector.get(IterableDiffers);
-        this.differ = newDiffers.find(children).create(trackBy);
-        this.differ.diff(children);
+        // TODO
+        // const newDiffers = PlaitBoard.getViewContainerRef(this.board).injector.get(IterableDiffers);
+        // this.differ = newDiffers.find(children).create(trackBy);
+        // this.differ.diff(children);
     }
 
     public update(children: PlaitElement[], childrenContext: PlaitChildrenContext) {

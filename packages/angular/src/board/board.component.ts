@@ -24,65 +24,60 @@ import rough from 'roughjs/bin/rough';
 import { RoughSVG } from 'roughjs/bin/svg';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil, tap } from 'rxjs/operators';
-import { PlaitBoard, PlaitBoardChangeEvent, PlaitBoardOptions } from '../interfaces/board';
-import { PlaitElement } from '../interfaces/element';
-import { PlaitPlugin } from '../interfaces/plugin';
-import { Viewport } from '../interfaces/viewport';
-import { createBoard } from '../plugins/create-board';
-import { withBoard } from '../plugins/with-board';
-import { withHistory } from '../plugins/with-history';
-import { withHandPointer } from '../plugins/with-hand';
-import { withSelection } from '../plugins/with-selection';
+import { BoardComponentInterface } from './board.component.interface';
 import {
+    BOARD_TO_AFTER_CHANGE,
+    BOARD_TO_ELEMENT_HOST,
+    BOARD_TO_HOST,
+    BOARD_TO_MOVING_POINT,
+    BOARD_TO_MOVING_POINT_IN_BOARD,
+    BOARD_TO_ON_CHANGE,
+    BOARD_TO_ROUGH_SVG,
+    BoardTransforms,
+    HOST_CLASS_NAME,
+    IS_BOARD_ALIVE,
     IS_CHROME,
     IS_FIREFOX,
     IS_SAFARI,
+    ListRender,
+    PlaitBoard,
+    PlaitBoardOptions,
+    PlaitChildrenContext,
+    PlaitElement,
+    PlaitPlugin,
+    PlaitTheme,
+    Viewport,
     WritableClipboardOperationType,
+    ZOOM_STEP,
+    createBoard,
     deleteFragment,
     getClipboardData,
-    getRectangleByElements,
-    getSelectedElements,
-    setClipboardData,
-    setFragment,
-    toHostPoint,
-    toViewBoxPoint
-} from '../utils';
-import {
-    BOARD_TO_ON_CHANGE,
-    BOARD_TO_COMPONENT,
-    BOARD_TO_ELEMENT_HOST,
-    BOARD_TO_HOST,
-    BOARD_TO_ROUGH_SVG,
-    BOARD_TO_MOVING_POINT_IN_BOARD,
-    BOARD_TO_MOVING_POINT,
-    BOARD_TO_AFTER_CHANGE,
-    IS_BOARD_ALIVE
-} from '../utils/weak-maps';
-import { BoardComponentInterface } from './board.component.interface';
-import {
-    initializeViewportOffset,
+    hasInputOrTextareaTarget,
     initializeViewBox,
-    isFromViewportChange,
-    setIsFromViewportChange,
     initializeViewportContainer,
+    initializeViewportOffset,
+    isFromViewportChange,
+    isPreventTouchMove,
+    setFragment,
+    setIsFromViewportChange,
+    toHostPoint,
+    toViewBoxPoint,
+    updateViewportByScrolling,
     updateViewportOffset,
-    updateViewportByScrolling
-} from '../utils/viewport';
-import { withViewport } from '../plugins/with-viewport';
-import { withMoving } from '../plugins/with-moving';
-import { hasInputOrTextareaTarget } from '../utils/dom/common';
-import { withOptions } from '../plugins/with-options';
-import { PlaitIslandBaseComponent, hasOnBoardChange } from '../core/island/island-base.component';
-import { BoardTransforms } from '../transforms/board';
-import { PlaitTheme } from '../interfaces/theme';
-import { withHotkey } from '../plugins/with-hotkey';
-import { HOST_CLASS_NAME } from '../constants';
+    withBoard,
+    withHandPointer,
+    withHistory,
+    withHotkey,
+    withMoving,
+    withOptions,
+    withRelatedFragment,
+    withSelection,
+    withViewport
+} from '@plait/core';
+import { AngularBoardChangeEvent } from '../interfaces/board';
 import { PlaitContextService } from '../services/context.service';
-import { isPreventTouchMove } from '../utils/touch';
-import { ZOOM_STEP } from '../constants/zoom';
-import { withRelatedFragment } from '../plugins/with-related-fragment';
-import { ListRender } from '../core/list-render';
-import { PlaitChildrenContext } from '../interfaces';
+import { PlaitIslandBaseComponent, hasOnBoardChange } from '../island/island-base.component';
+import { BOARD_TO_COMPONENT } from '../utils/weak-maps';
 
 const ElementLowerHostClass = 'element-lower-host';
 const ElementHostClass = 'element-host';
@@ -127,7 +122,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
 
     @Input() plaitTheme?: PlaitTheme;
 
-    @Output() plaitChange: EventEmitter<PlaitBoardChangeEvent> = new EventEmitter();
+    @Output() plaitChange: EventEmitter<AngularBoardChangeEvent> = new EventEmitter();
 
     @Output() plaitBoardInitialized: EventEmitter<PlaitBoard> = new EventEmitter();
 
@@ -135,10 +130,11 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         return this.svg.nativeElement;
     }
 
-    @HostBinding('class')
-    get hostClass() {
-        return `${HOST_CLASS_NAME} pointer-${this.board.pointer} theme-${this.board.theme.themeColorMode} ${this.getBrowserClassName()}`;
-    }
+    // TODO 改为操作 DOM
+    // @HostBinding('class')
+    // get hostClass() {
+    //     return `${HOST_CLASS_NAME} pointer-${this.board.pointer} theme-${this.board.theme.themeColorMode} ${this.getBrowserClassName()}`;
+    // }
 
     getBrowserClassName() {
         if (IS_SAFARI) {
@@ -232,7 +228,7 @@ export class PlaitBoardComponent implements BoardComponentInterface, OnInit, OnC
         });
         BOARD_TO_AFTER_CHANGE.set(this.board, () => {
             this.ngZone.run(() => {
-                const changeEvent: PlaitBoardChangeEvent = {
+                const changeEvent: AngularBoardChangeEvent = {
                     children: this.board.children,
                     operations: this.board.operations,
                     viewport: this.board.viewport,

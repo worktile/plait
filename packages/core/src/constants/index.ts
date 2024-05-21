@@ -1,6 +1,7 @@
 export * from './keycodes';
 export * from './cursor';
 export * from './selection';
+export * from './zoom';
 
 export const HOST_CLASS_NAME = 'plait-board-container';
 
