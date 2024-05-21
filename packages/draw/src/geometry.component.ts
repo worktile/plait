@@ -123,23 +123,23 @@ export class GeometryComponent extends CommonElementFlavour<PlaitCommonGeometry,
     }
 
     initializeTextManage() {
-        const onTextValueChangeHandle = (textManageRef: TextManageRef, text: PlaitDrawShapeText) => {
+        const onTextValueChangeHandle = (element: PlaitCommonGeometry, textManageRef: TextManageRef, text: PlaitDrawShapeText) => {
             const height = textManageRef.height / this.board.viewport.zoom;
             const width = textManageRef.width / this.board.viewport.zoom;
             if (textManageRef.newValue) {
-                if (isMultipleTextGeometry(this.element)) {
-                    DrawTransforms.setDrawShapeText(this.board, this.element, {
+                if (isMultipleTextGeometry(element)) {
+                    DrawTransforms.setDrawShapeText(this.board, element, {
                         key: text.key,
                         text: textManageRef.newValue,
                         textHeight: height
                     });
                 } else {
-                    DrawTransforms.setText(this.board, this.element as PlaitGeometry, textManageRef.newValue, width, height);
+                    DrawTransforms.setText(this.board, element as PlaitGeometry, textManageRef.newValue, width, height);
                 }
             } else {
-                DrawTransforms.setTextSize(this.board, this.element as PlaitGeometry, width, height);
+                DrawTransforms.setTextSize(this.board, element as PlaitGeometry, width, height);
             }
-            textManageRef.operations && memorizeLatestText(this.element, textManageRef.operations);
+            textManageRef.operations && memorizeLatestText(element, textManageRef.operations);
         };
 
         if (isMultipleTextGeometry(this.element)) {

@@ -1,5 +1,5 @@
 import { TableComponent } from '../table.component';
-import { PlaitTableElement } from '../interfaces/table';
+import { PlaitTable, PlaitTableElement } from '../interfaces/table';
 import {
     PlaitBoard,
     PlaitPluginElementContext,
@@ -14,17 +14,23 @@ import {
 } from '@plait/core';
 import { editCell, getHitCell } from '../utils/table';
 
+export interface PlaitTableBoard extends PlaitBoard {
+    buildTable: (element: PlaitTable) => PlaitTable;
+}
+
 export const withTable = (board: PlaitBoard) => {
-    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, getDeletedFragment, dblClick } = board;
- 
-    board.drawElement = (context: PlaitPluginElementContext) => {
+    const tableBoard = board as PlaitTableBoard;
+
+    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, getDeletedFragment, dblClick } = tableBoard;
+
+    tableBoard.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitTableElement.isTable(context.element)) {
             return TableComponent;
         }
         return drawElement(context);
     };
 
-    board.getDeletedFragment = (data: PlaitElement[]) => {
+    tableBoard.getDeletedFragment = (data: PlaitElement[]) => {
         const elements = getSelectedElements(board);
         if (elements.length) {
             const tableElements = elements.filter(value => PlaitTableElement.isTable(value));
@@ -33,7 +39,7 @@ export const withTable = (board: PlaitBoard) => {
         return getDeletedFragment(data);
     };
 
-    board.isHit = (element, point) => {
+    tableBoard.isHit = (element, point) => {
         if (PlaitTableElement.isTable(element)) {
             const client = RectangleClient.getRectangleByPoints(element.points);
             return RectangleClient.isPointInRectangle(client, point);
@@ -41,14 +47,14 @@ export const withTable = (board: PlaitBoard) => {
         return isHit(element, point);
     };
 
-    board.getRectangle = (element: PlaitElement) => {
+    tableBoard.getRectangle = (element: PlaitElement) => {
         if (PlaitTableElement.isTable(element)) {
             return RectangleClient.getRectangleByPoints(element.points);
         }
         return getRectangle(element);
     };
 
-    board.isMovable = (element: PlaitElement) => {
+    tableBoard.isMovable = (element: PlaitElement) => {
         if (PlaitTableElement.isTable(element)) {
             return true;
         }
@@ -56,7 +62,7 @@ export const withTable = (board: PlaitBoard) => {
         return isMovable(element);
     };
 
-    board.isRectangleHit = (element: PlaitElement, selection: Selection) => {
+    tableBoard.isRectangleHit = (element: PlaitElement, selection: Selection) => {
         if (PlaitTableElement.isTable(element)) {
             const rangeRectangle = RectangleClient.getRectangleByPoints([selection.anchor, selection.focus]);
             return isPolylineHitRectangle(element.points, rangeRectangle);
@@ -64,13 +70,13 @@ export const withTable = (board: PlaitBoard) => {
         return isRectangleHit(element, selection);
     };
 
-    board.dblClick = (event: MouseEvent) => {
+    tableBoard.dblClick = (event: MouseEvent) => {
         event.preventDefault();
         if (!PlaitBoard.isReadonly(board)) {
             const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             const hitElement = getHitElementByPoint(board, point);
             if (hitElement && PlaitTableElement.isTable(hitElement)) {
-                const hitCell = getHitCell(hitElement, point);
+                const hitCell = getHitCell(tableBoard, hitElement, point);
                 if (hitCell && hitCell.text && hitCell.textHeight) {
                     editCell(hitCell);
                 }
@@ -78,6 +84,10 @@ export const withTable = (board: PlaitBoard) => {
         }
         dblClick(event);
     };
-    
-    return board;
+
+    tableBoard.buildTable = (element: PlaitTable) => {
+        return element;
+    };
+
+    return tableBoard;
 };

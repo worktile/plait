@@ -10,10 +10,11 @@ export interface PlaitDrawShapeText extends EngineExtraData {
     key: string;
     text: ParagraphElement;
     textHeight: number;
+    board?: PlaitBoard;
 }
 
 export interface TextGeneratorOptions<T> {
-    onValueChangeHandle: (textChangeRef: TextManageRef, text: PlaitDrawShapeText) => void;
+    onValueChangeHandle: (element: T, textChangeRef: TextManageRef, text: PlaitDrawShapeText) => void;
     getRenderRectangle?: (element: T, text: PlaitDrawShapeText) => RectangleClient;
     getMaxWidth?: () => number;
 }
@@ -97,11 +98,34 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         this.element = element;
         ELEMENT_TO_TEXT_MANAGES.set(this.element, this.textManages);
         const centerPoint = RectangleClient.getCenterPoint(this.board.getRectangle(this.element)!);
+        const textPlugins = ((this.board as PlaitOptionsBoard).getPluginOptions<WithTextOptions>(WithTextPluginKey) || {}).textPlugins;
+        const removedTexts = previousDrawShapeTexts.filter(value => {
+            return !currentDrawShapeTexts.find(item => item.key === value.key);
+        });
+        if (removedTexts.length) {
+            removedTexts.forEach(item => {
+                const textManage = getTextManage(item.key);
+                const index = this.textManages.findIndex(value => value === textManage);
+                if (index > -1 && item.text && item.textHeight) {
+                    this.textManages.splice(index, 1);
+                }
+                textManage?.destroy();
+                deleteTextManage(item.key);
+            });
+        }
         currentDrawShapeTexts.forEach(drawShapeText => {
-            const textManage = getTextManage(this.getTextKey(drawShapeText));
-            if (drawShapeText.text && textManage) {
-                textManage.updateText(drawShapeText.text);
-                textManage.updateRectangle();
+            if (drawShapeText.text) {
+                let textManage = getTextManage(this.getTextKey(drawShapeText));
+                if (!textManage) {
+                    textManage = this.createTextManage(drawShapeText, textPlugins);
+                    setTextManage(drawShapeText.key, textManage);
+                    textManage.draw(drawShapeText.text);
+                    elementG.append(textManage.g);
+                    this.textManages.push(textManage);
+                } else {
+                    textManage.updateText(drawShapeText.text);
+                    textManage.updateRectangle();
+                }
                 (this.element.angle || this.element.angle === 0) && textManage.updateAngle(centerPoint, this.element.angle);
             }
         });
@@ -135,7 +159,7 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
     }
 
     onValueChangeHandle(textManageRef: TextManageRef, text: PlaitDrawShapeText) {
-        return this.options.onValueChangeHandle(textManageRef, text);
+        return this.options.onValueChangeHandle(this.element, textManageRef, text);
     }
 
     getMaxWidth(text: PlaitDrawShapeText) {
@@ -148,6 +172,8 @@ export class TextGenerator<T extends PlaitElement = PlaitGeometry> {
         });
         this.textManages = [];
         ELEMENT_TO_TEXT_MANAGES.delete(this.element);
-        KEY_TO_TEXT_MANAGE.clear();
+        this.texts.forEach(item => {
+            deleteTextManage(item.key);
+        });
     }
 }

@@ -2,6 +2,7 @@ import { insertText, insertGeometry, resizeGeometry, switchGeometryShape, insert
 import { setText, setTextSize } from './geometry-text';
 import { insertImage } from './image';
 import { connectLineToGeometry, removeLineText, resizeLine, setLineMark, setLineShape, setLineTexts } from './line';
+import { addSwimlaneColumn, addSwimlaneRow, removeSwimlaneColumn, removeSwimlaneRow } from './swimlane';
 import { setDrawShapeText } from './multi-text-geometry-text';
 import { setTableText } from './table-text';
 
@@ -21,5 +22,9 @@ export const DrawTransforms = {
     switchGeometryShape,
     connectLineToGeometry,
     insertGeometryByVector,
-    setTableText
+    setTableText,
+    addSwimlaneRow,
+    addSwimlaneColumn,
+    removeSwimlaneRow,
+    removeSwimlaneColumn
 };

@@ -21,3 +21,8 @@ export const getSelectedImageElements = (board: PlaitBoard) => {
     const selectedElements = getSelectedElements(board).filter(value => PlaitDrawElement.isImage(value)) as PlaitImage[];
     return selectedElements;
 };
+
+export const isSingleSelectSwimlane = (board: PlaitBoard) => {
+    const selectedElements = getSelectedElements(board);
+    return selectedElements && selectedElements.length === 1 && PlaitDrawElement.isSwimlane(selectedElements[0]);
+};

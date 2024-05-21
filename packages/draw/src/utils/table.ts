@@ -1,8 +1,11 @@
-import { Point, RectangleClient } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitTable, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
 import { getTextManage } from '../generators/text.generator';
+import { PlaitTableBoard } from '../plugins/with-table';
 
-export function getCellsWithPoints(table: PlaitTable): PlaitTableCellWithPoints[] {
+
+export function getCellsWithPoints(board: PlaitBoard, element: PlaitTable): PlaitTableCellWithPoints[] {
+    const table = (board as PlaitTableBoard).buildTable(element);
     const rectangle = RectangleClient.getRectangleByPoints(table.points);
     const columnsCount = table.columns.length;
     const rowsCount = table.rows.length;
@@ -41,8 +44,8 @@ export function getCellsWithPoints(table: PlaitTable): PlaitTableCellWithPoints[
     return cells;
 }
 
-export function getCellWithPoints(table: PlaitTable, cellId: string) {
-    const cells = getCellsWithPoints(table);
+export function getCellWithPoints(board: PlaitBoard, table: PlaitTable, cellId: string) {
+    const cells = getCellsWithPoints(board as PlaitTableBoard, table);
     const cellIndex = table.cells.findIndex(item => item.id === cellId);
     return cells[cellIndex];
 }
@@ -82,8 +85,9 @@ function calculateCellSize(cell: PlaitTableCell, sizes: number[], index: number,
     return size;
 }
 
-export function getHitCell(table: PlaitTable, point: Point) {
-    const cells = getCellsWithPoints(table);
+export function getHitCell(board: PlaitTableBoard, element: PlaitTable, point: Point) {
+    const table = board.buildTable(element);
+    const cells = getCellsWithPoints(board, table);
     const rectangle = RectangleClient.getRectangleByPoints([point, point]);
     const cell = cells.find(item => {
         const cellRectangle = RectangleClient.getRectangleByPoints(item.points);
