@@ -1,5 +1,3 @@
-import { OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, Component, inject, DestroyRef } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
     OnContextChanged,
     PlaitBoard,
@@ -14,11 +12,12 @@ import {
 import { GroupGenerator } from '../generators/group.generator';
 import { ActiveGenerator } from '../generators';
 import { CommonElementFlavour } from './element-flavour';
+import { Subscription } from 'rxjs';
 
 export class GroupComponent extends CommonElementFlavour<PlaitGroup, PlaitBoard> implements OnContextChanged<PlaitGroup, PlaitBoard> {
-    contextService = inject(PlaitContextService);
+    onStableSubscription?: Subscription;
 
-    constructor(private destroyRef: DestroyRef) {
+    constructor() {
         super();
     }
 
@@ -43,20 +42,23 @@ export class GroupComponent extends CommonElementFlavour<PlaitGroup, PlaitBoard>
     initialize(): void {
         super.initialize();
         this.initializeGenerator();
-        this.contextService
-            .onStable()
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(() => {
-                const elementsInGroup = getElementsInGroup(this.board, this.element, false, true);
-                const isPartialSelectGroup =
-                    elementsInGroup.some(item => isSelectedElementOrGroup(this.board, item)) &&
-                    !elementsInGroup.every(item => isSelectedElementOrGroup(this.board, item));
-                this.groupGenerator.processDrawing(this.element, this.getElementG(), isPartialSelectGroup);
-            });
+        const contextService = PlaitBoard.getViewContainerRef(this.board).injector.get(PlaitContextService);
+        this.onStableSubscription = contextService.onStable().subscribe(() => {
+            const elementsInGroup = getElementsInGroup(this.board, this.element, false, true);
+            const isPartialSelectGroup =
+                elementsInGroup.some(item => isSelectedElementOrGroup(this.board, item)) &&
+                !elementsInGroup.every(item => isSelectedElementOrGroup(this.board, item));
+            this.groupGenerator.processDrawing(this.element, this.getElementG(), isPartialSelectGroup);
+        });
     }
 
     onContextChanged(
         value: PlaitPluginElementContext<PlaitGroup, PlaitBoard>,
         previous: PlaitPluginElementContext<PlaitGroup, PlaitBoard>
     ) {}
+
+    destroy(): void {
+        super.destroy();
+        this.onStableSubscription?.unsubscribe();
+    }
 }
