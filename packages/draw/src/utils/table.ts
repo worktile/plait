@@ -107,6 +107,18 @@ export function getTextManageByCell(cell: PlaitTableCell) {
     return getTextManage(cell.id);
 }
 
+export const updateColumns = (table: PlaitTable, columnId: string, width: number, offset: number) => {
+    const columns = table.columns.map(item => (item.id === columnId ? { ...item, width } : item));
+    const points = [table.points[0], [table.points[1][0] + offset, table.points[1][1]]] as Point[];
+    return { columns, points };
+};
+
+export const updateRows = (table: PlaitTable, rowId: string, height: number, offset: number) => {
+    const rows = table.rows.map(item => (item.id === rowId ? { ...item, height } : item));
+    const points = [table.points[0], [table.points[1][0], table.points[1][1] + offset]] as Point[];
+    return { rows, points };
+};
+
 export function updateCellIdsByRowOrColumn(cells: PlaitTableCell[], oldId: string, newId: string, type: 'row' | 'column') {
     const id: 'rowId' | 'columnId' = `${type}Id`;
     cells.forEach(item => {

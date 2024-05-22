@@ -6,7 +6,7 @@ order: 5
 思维导图节点内图片，图形，连线都有调整大小功能，并且流程基本相似，所以抽取通用插件 with-resize 处理通用功能，其他部分根据配置信息进行处理。
 
 ```
-export interface WithResizeOptions {
+export interface WithResizeOptions> {
     key: string;
   	//是否能resize
     canResize: () => boolean;	
