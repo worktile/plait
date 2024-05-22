@@ -1,8 +1,8 @@
-import { PlaitBoard, Point, RectangleClient } from '@plait/core';
+import { PlaitBoard, Point, RectangleClient, Transforms } from '@plait/core';
 import { PlaitTable, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
 import { getTextManage } from '../generators/text.generator';
 import { PlaitTableBoard } from '../plugins/with-table';
-
+import { getDirectionFactorByDirectionComponent, getUnitVectorByPointAndPoint } from '@plait/common';
 
 export function getCellsWithPoints(board: PlaitBoard, element: PlaitTable): PlaitTableCellWithPoints[] {
     const table = (board as PlaitTableBoard).buildTable(element);
@@ -107,3 +107,25 @@ export function editCell(cell: PlaitTableCell) {
 export function getTextManageByCell(cell: PlaitTableCell) {
     return getTextManage(cell.id);
 }
+
+export const updateColumns = (table: PlaitTable, columnId: string, width: number, offset: number) => {
+    const columns = table.columns.map(item => (item.id === columnId ? { ...item, width } : item));
+    let points = [table.points[0], [table.points[1][0] + offset, table.points[1][1]]] as Point[];
+    const [x] = getUnitVectorByPointAndPoint(table.points[0], table.points[1]);
+    const directionFactor = getDirectionFactorByDirectionComponent(x);
+    if (directionFactor === -1) {
+        points = [[table.points[0][0] + offset, table.points[0][1]], table.points[1]] as Point[];
+    }
+    return { columns, points };
+};
+
+export const updateRows = (table: PlaitTable, rowId: string, height: number, offset: number) => {
+    const rows = table.rows.map(item => (item.id === rowId ? { ...item, height } : item));
+    let points = [table.points[0], [table.points[1][0], table.points[1][1] + offset]] as Point[];
+    const [_, y] = getUnitVectorByPointAndPoint(table.points[0], table.points[1]);
+    const directionFactor = getDirectionFactorByDirectionComponent(y);
+    if (directionFactor === -1) {
+        points = [[table.points[0][0], table.points[0][1] + offset], table.points[1]] as Point[];
+    }
+    return { rows, points };
+};
