@@ -1,6 +1,7 @@
 import {
     Path,
     PlaitBoard,
+    PlaitElement,
     Point,
     RectangleClient,
     Transforms,

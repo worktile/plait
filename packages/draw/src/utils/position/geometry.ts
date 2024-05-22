@@ -6,16 +6,14 @@ import {
     depthFirstRecursion,
     getIsRecursionFunc,
     rotatePoints,
-    rotateAntiPointsByElement,
-    ResizeCursorClass
+    rotateAntiPointsByElement
 } from '@plait/core';
 import {
     RESIZE_HANDLE_DIAMETER,
     getRectangleResizeHandleRefs,
     getRotatedResizeCursorClassByAngle,
     ROTATE_HANDLE_SIZE,
-    ROTATE_HANDLE_DISTANCE_TO_ELEMENT,
-    ResizeHandle
+    ROTATE_HANDLE_DISTANCE_TO_ELEMENT
 } from '@plait/common';
 import { PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../../interfaces';
 import { isHitEdgeOfShape, isInsideOfShape } from '../hit';
@@ -23,18 +21,7 @@ import { LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER } from '../../constants/
 import { getNearestPoint } from '../geometry';
 import { getHitConnectorPoint } from '../line/line-basic';
 
-export interface ResizeHandleRef {
-    rectangle: RectangleClient;
-    handle: ResizeHandle;
-    cursorClass: ResizeCursorClass;
-}
-
-export const getHitRectangleResizeHandleRef = (
-    board: PlaitBoard,
-    rectangle: RectangleClient,
-    point: Point,
-    angle: number = 0
-): ResizeHandleRef | undefined => {
+export const getHitRectangleResizeHandleRef = (board: PlaitBoard, rectangle: RectangleClient, point: Point, angle: number = 0) => {
     const centerPoint = RectangleClient.getCenterPoint(rectangle);
     const resizeHandleRefs = getRectangleResizeHandleRefs(rectangle, RESIZE_HANDLE_DIAMETER);
     if (angle) {

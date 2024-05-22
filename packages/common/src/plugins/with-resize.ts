@@ -15,7 +15,7 @@ import {
 } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
 import { addResizing, isResizing, removeResizing } from '../utils/resize';
-import { PlaitElementOrArray, PlaitExtraData, ResizeHitTestRef, ResizeRef, WithResizeOptions } from '../types/resize';
+import { PlaitElementOrArray, ResizeHitTestRef, ResizeRef, WithResizeOptions } from '../types/resize';
 
 const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
     return (
@@ -23,15 +23,15 @@ const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
     );
 };
 
-export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle, P = PlaitExtraData>(
+export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle>(
     board: PlaitBoard,
-    options: WithResizeOptions<T, K, P>
+    options: WithResizeOptions<T, K>
 ) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;
-    let resizeHitTestRef: ResizeHitTestRef<T, K, P> | null = null;
-    let resizeRef: ResizeRef<T, K, P> | null = null;
+    let resizeHitTestRef: ResizeHitTestRef<T, K> | null = null;
+    let resizeRef: ResizeRef<T, K> | null = null;
     let startPoint: Point | null = null;
-    let hoverHitTestRef: ResizeHitTestRef<T, K, P> | null = null;
+    let hoverHitTestRef: ResizeHitTestRef<T, K> | null = null;
 
     board.pointerDown = (event: PointerEvent) => {
         if (!options.canResize() || !generalCanResize(board, event) || !isMainPointer(event)) {
@@ -53,8 +53,7 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
                 element: resizeHitTestRef.element,
                 handle: resizeHitTestRef.handle,
                 handleIndex: resizeHitTestRef.handleIndex,
-                rectangle: resizeHitTestRef.rectangle,
-                options: resizeHitTestRef.options
+                rectangle: resizeHitTestRef.rectangle
             };
             preventTouchMove(board, event, true);
             // prevent text from being selected when user pressed shift and pointer down
@@ -137,7 +136,7 @@ export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, 
             }
             hoverHitTestRef = null;
         }
-    };
+    }
 
     return board;
 };
