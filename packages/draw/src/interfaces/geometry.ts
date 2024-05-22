@@ -91,7 +91,6 @@ export interface PlaitCommonGeometry extends PlaitElement {
     strokeColor?: string;
     strokeWidth?: number;
     strokeStyle?: StrokeStyle;
-
     angle: number;
     opacity: number;
 }

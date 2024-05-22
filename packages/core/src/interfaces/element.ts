@@ -10,6 +10,7 @@ export interface PlaitElement {
     points?: Point[];
     type?: string;
     groupId?: string;
+    angle?: number;
 }
 
 export const PlaitElement = {
