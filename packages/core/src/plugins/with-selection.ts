@@ -6,10 +6,9 @@ import { RectangleClient } from '../interfaces/rectangle-client';
 import {
     cacheSelectedElements,
     clearSelectedElement,
-    getHitElementByPoint,
     getHitElementsBySelection,
-    getHitSelectedElements,
     getSelectedElements,
+    isHitElement,
     removeSelectedElement
 } from '../utils/selected-element';
 import { PlaitElement, PlaitPointerType, SELECTION_BORDER_COLOR, SELECTION_FILL_COLOR } from '../interfaces';
@@ -66,18 +65,13 @@ export function withSelection(board: PlaitBoard) {
         }
 
         const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
-        const selectedElements = getSelectedElements(board);
-        const hitElement = getHitElementByPoint(board, point);
-        const hitSelectedElements = selectedElements.length > 1 ? getHitSelectedElements(board, point) : [];
-        const isHitTarget = hitElement || hitSelectedElements.length > 0;
+        const isHitTarget = isHitElement(board, point);
         const options = (board as PlaitOptionsBoard).getPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection);
-
         if (PlaitBoard.isPointer(board, PlaitPointerType.selection) && !isHitTarget && options.isMultiple && !options.isDisabledSelect) {
             preventTouchMove(board, event, true);
             // start rectangle selection
             start = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         }
-
         pointerDown(event);
     };
 
