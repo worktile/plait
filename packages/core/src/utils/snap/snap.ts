@@ -35,7 +35,7 @@ export function getSnapRectangles(board: PlaitBoard, activeElements: PlaitElemen
         recursion: () => true,
         isReverse: false
     });
-    return elements.map(item => getRectangleByAngle(board.getRectangle(item)!, item.angle) || board.getRectangle(item)!);
+    return elements.map(item => getRectangleByAngle(board.getRectangle(item)!, item.angle || 0) || board.getRectangle(item)!);
 }
 
 export function getBarPoint(point: Point, isHorizontal: boolean) {
