@@ -48,7 +48,7 @@ export function getRectangleByElements(board: PlaitBoard, elements: PlaitElement
 export function getBoundingRectangleByElements(board: PlaitBoard, elements: PlaitElement[], recursion: boolean): RectangleClient {
     const rectangle = getRectangleByElements(board, elements, recursion)!;
     const angle = getSelectionAngle(elements);
-    return getRectangleByAngle(rectangle, angle) || rectangle;
+    return getRectangleByAngle(rectangle, angle);
 }
 
 export function getBoardRectangle(board: PlaitBoard): RectangleClient {

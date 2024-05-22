@@ -96,9 +96,8 @@ export const getRectangleByAngle = (rectangle: RectangleClient, angle: number) =
         const cornerPoints = RectangleClient.getCornerPoints(rectangle);
         const centerPoint = RectangleClient.getCenterPoint(rectangle);
         return RectangleClient.getRectangleByPoints(rotatePoints(cornerPoints, centerPoint, angle));
-    } else {
-        return null;
     }
+    return rectangle;
 };
 
 export const isAxisChangedByAngle = (angle: number) => {
@@ -121,7 +120,7 @@ export function rotateElements(board: PlaitBoard, elements: PlaitElement[], angl
         const originAngle = item.angle;
         const points = rotatedDataPoints(item.points!, selectionCenterPoint, normalizeAngle(angle));
         const path = PlaitBoard.findPath(board, item);
-        Transforms.setNode(board, { points, angle: normalizeAngle(originAngle || 0 + angle) }, path);
+        Transforms.setNode(board, { points, angle: normalizeAngle((originAngle || 0) + angle) }, path);
     });
 }
 
