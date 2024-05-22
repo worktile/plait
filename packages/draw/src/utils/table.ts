@@ -1,8 +1,7 @@
-import { PlaitBoard, Point, RectangleClient } from '@plait/core';
+import { idCreator, PlaitBoard, Point, RectangleClient } from '@plait/core';
 import { PlaitTable, PlaitTableCell, PlaitTableCellWithPoints } from '../interfaces/table';
 import { getTextManage } from '../generators/text.generator';
 import { PlaitTableBoard } from '../plugins/with-table';
-
 
 export function getCellsWithPoints(board: PlaitBoard, element: PlaitTable): PlaitTableCellWithPoints[] {
     const table = (board as PlaitTableBoard).buildTable(element);
@@ -106,4 +105,28 @@ export function editCell(cell: PlaitTableCell) {
 
 export function getTextManageByCell(cell: PlaitTableCell) {
     return getTextManage(cell.id);
+}
+
+export function updateCellIdsByRowOrColumn(cells: PlaitTableCell[], oldId: string, newId: string, type: 'row' | 'column') {
+    const id: 'rowId' | 'columnId' = `${type}Id`;
+    cells.forEach(item => {
+        if (item[id] === oldId) {
+            item[id] = newId;
+        }
+    });
+}
+
+export function updateRowOrColumnIds(element: PlaitTable, type: 'row' | 'column') {
+    element[`${type}s`].forEach(item => {
+        const newId = idCreator();
+        updateCellIdsByRowOrColumn(element.cells, item.id, newId, type);
+        item.id = newId;
+    });
+}
+
+export function updateCellIds(cells: PlaitTableCell[]) {
+    cells.forEach(item => {
+        const newId = idCreator();
+        item.id = newId;
+    });
 }

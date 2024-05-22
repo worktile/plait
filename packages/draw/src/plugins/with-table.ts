@@ -10,9 +10,19 @@ import {
     getSelectedElements,
     toViewBoxPoint,
     toHostPoint,
-    getHitElementByPoint
+    getHitElementByPoint,
+    WritableClipboardContext,
+    WritableClipboardOperationType,
+    WritableClipboardType,
+    addClipboardContext,
+    createClipboardContext,
+    ClipboardData,
+    Point
 } from '@plait/core';
 import { editCell, getHitCell } from '../utils/table';
+import { getElementsText } from '@plait/common';
+import { getSelectedTableElements } from '../utils';
+import { buildTableClipboardData, insertClipboardTableData } from '../utils/clipboard';
 
 export interface PlaitTableBoard extends PlaitBoard {
     buildTable: (element: PlaitTable) => PlaitTable;
@@ -21,7 +31,17 @@ export interface PlaitTableBoard extends PlaitBoard {
 export const withTable = (board: PlaitBoard) => {
     const tableBoard = board as PlaitTableBoard;
 
-    const { drawElement, getRectangle, isRectangleHit, isHit, isMovable, getDeletedFragment, dblClick } = tableBoard;
+    const {
+        drawElement,
+        getRectangle,
+        isRectangleHit,
+        isHit,
+        isMovable,
+        getDeletedFragment,
+        dblClick,
+        buildFragment,
+        insertFragment
+    } = tableBoard;
 
     tableBoard.drawElement = (context: PlaitPluginElementContext) => {
         if (PlaitTableElement.isTable(context.element)) {
@@ -87,6 +107,42 @@ export const withTable = (board: PlaitBoard) => {
 
     tableBoard.buildTable = (element: PlaitTable) => {
         return element;
+    };
+
+    tableBoard.buildFragment = (
+        clipboardContext: WritableClipboardContext | null,
+        rectangle: RectangleClient | null,
+        operationType: WritableClipboardOperationType,
+        originData?: PlaitElement[]
+    ) => {
+        const selectedElements = getSelectedTableElements(board, originData);
+        if (selectedElements.length) {
+            // TODO: 执行 getRelatedFragment 获取内部所有关联元素
+            const elements = buildTableClipboardData(selectedElements, rectangle ? [rectangle.x, rectangle.y] : [0, 0]);
+            const text = getElementsText(selectedElements);
+            if (!clipboardContext) {
+                clipboardContext = createClipboardContext(WritableClipboardType.elements, elements, text);
+            } else {
+                clipboardContext = addClipboardContext(clipboardContext, {
+                    text,
+                    type: WritableClipboardType.elements,
+                    elements
+                });
+            }
+        }
+        return buildFragment(clipboardContext, rectangle, operationType, originData);
+    };
+
+    board.insertFragment = (clipboardData: ClipboardData | null, targetPoint: Point, operationType?: WritableClipboardOperationType) => {
+        if (clipboardData?.elements?.length) {
+            const tableElements = clipboardData.elements?.filter(value => PlaitTableElement.isTable(value)) as PlaitTable[];
+            if (clipboardData.elements && clipboardData.elements.length > 0 && tableElements.length > 0) {
+                // TODO: 修改内部关联元素的 tableId
+                insertClipboardTableData(board, tableElements, targetPoint);
+            }
+        }
+
+        insertFragment(clipboardData, targetPoint, operationType);
     };
 
     return tableBoard;
