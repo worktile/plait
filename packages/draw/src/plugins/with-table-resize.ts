@@ -3,12 +3,13 @@ import { PlaitTable, PlaitTableCellWithPoints, PlaitTableElement } from '../inte
 import {
     getIndexByResizeHandle,
     isCornerHandle,
-    PlaitExtraData,
+    ResizeOptions,
     ResizeHandle,
     ResizeRef,
     ResizeState,
     withResize,
-    WithResizeOptions
+    WithResizeOptions,
+    normalizeShapePoints
 } from '@plait/common';
 import { getCellsWithPoints, updateColumns, updateRows } from '../utils/table';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
@@ -17,7 +18,7 @@ import { getResizeOriginPointAndHandlePoint, getResizeZoom, movePointByZoomAndOr
 import { isSingleSelectTable } from '../utils';
 import { getSnapResizingRef, getSnapResizingRefOptions } from '../utils/snap-resizing';
 
-interface TaleExtraData extends PlaitExtraData {
+interface TableResizeOptions extends ResizeOptions {
     cell: PlaitTableCellWithPoints;
 }
 
@@ -26,7 +27,7 @@ const MIN_CELL_SIZE = 20;
 export function withTableResize(board: PlaitTableBoard) {
     let snapG: SVGGElement | null;
 
-    const options: WithResizeOptions<PlaitTable, ResizeHandle, TaleExtraData> = {
+    const options: WithResizeOptions<PlaitTable, ResizeHandle, TableResizeOptions> = {
         key: 'draw-table',
         canResize: () => {
             return true;
@@ -66,7 +67,7 @@ export function withTableResize(board: PlaitTableBoard) {
             }
             return null;
         },
-        onResize: (resizeRef: ResizeRef<PlaitTable, ResizeHandle, TaleExtraData>, resizeState: ResizeState) => {
+        onResize: (resizeRef: ResizeRef<PlaitTable, ResizeHandle, TableResizeOptions>, resizeState: ResizeState) => {
             snapG?.remove();
             const path = PlaitBoard.findPath(board, resizeRef.element);
             if (resizeRef.options?.cell && resizeRef.rectangle) {
@@ -82,7 +83,7 @@ export function withTableResize(board: PlaitTableBoard) {
                 const offsetY = targetPoints[1][1] - originPoints[1][1];
                 const width = targetPoints[1][0] - targetPoints[0][0];
                 const height = targetPoints[1][1] - targetPoints[0][1];
-                if (offsetX !== 0 && width > MIN_CELL_SIZE) {
+                if (offsetX !== 0 && width >= MIN_CELL_SIZE) {
                     const { columns, points } = updateColumns(resizeRef.element, resizeRef.options?.cell.columnId, width, offsetX);
                     Transforms.setNode(board, { columns, points }, path);
                 } else if (offsetY !== 0 && height >= MIN_CELL_SIZE) {
@@ -138,16 +139,16 @@ export function withTableResize(board: PlaitTableBoard) {
                         return item;
                     });
                 }
-                Transforms.setNode(board, { points, columns, rows }, path);
+                Transforms.setNode(board, { points: normalizeShapePoints(points), columns, rows }, path);
             }
         },
-        afterResize: (resizeRef: ResizeRef<PlaitTable, ResizeHandle, TaleExtraData>) => {
+        afterResize: (resizeRef: ResizeRef<PlaitTable, ResizeHandle, TableResizeOptions>) => {
             snapG?.remove();
             snapG = null;
         }
     };
 
-    withResize<PlaitTable, ResizeHandle, TaleExtraData>(board, options);
+    withResize<PlaitTable, ResizeHandle, TableResizeOptions>(board, options);
 
     return board;
 }

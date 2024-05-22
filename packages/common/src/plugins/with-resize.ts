@@ -15,7 +15,7 @@ import {
 } from '@plait/core';
 import { ResizeHandle } from '../constants/resize';
 import { addResizing, isResizing, removeResizing } from '../utils/resize';
-import { PlaitElementOrArray, PlaitExtraData, ResizeHitTestRef, ResizeRef, WithResizeOptions } from '../types/resize';
+import { PlaitElementOrArray, ResizeOptions, ResizeHitTestRef, ResizeRef, WithResizeOptions } from '../types/resize';
 
 const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
     return (
@@ -23,7 +23,7 @@ const generalCanResize = (board: PlaitBoard, event: PointerEvent) => {
     );
 };
 
-export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle, P = PlaitExtraData>(
+export const withResize = <T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle, P = ResizeOptions>(
     board: PlaitBoard,
     options: WithResizeOptions<T, K, P>
 ) => {

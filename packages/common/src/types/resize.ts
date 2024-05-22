@@ -3,8 +3,9 @@ import { ResizeHandle } from '../constants/resize';
 
 export type PlaitElementOrArray = PlaitElement | PlaitElement[];
 
-export interface PlaitExtraData {}
-export interface WithResizeOptions<T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle, P = PlaitExtraData> {
+export interface ResizeOptions {}
+
+export interface WithResizeOptions<T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle, P = ResizeOptions> {
     key: string;
     canResize: () => boolean;
     hitTest: (point: Point) => ResizeHitTestRef<T, K, P> | null;
@@ -13,7 +14,7 @@ export interface WithResizeOptions<T extends PlaitElementOrArray = PlaitElementO
     beforeResize?: (resizeRef: ResizeRef<T, K, P>) => void;
 }
 
-export interface ResizeHitTestRef<T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle, P = PlaitExtraData> {
+export interface ResizeHitTestRef<T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle, P = ResizeOptions> {
     element: T;
     rectangle?: RectangleClient;
     handle: K;
@@ -28,7 +29,7 @@ export interface ResizeState {
     isShift: boolean;
 }
 
-export interface ResizeRef<T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle,  P = PlaitExtraData> {
+export interface ResizeRef<T extends PlaitElementOrArray = PlaitElementOrArray, K = ResizeHandle, P = ResizeOptions> {
     element: T;
     rectangle?: RectangleClient;
     path: Path | Path[];
