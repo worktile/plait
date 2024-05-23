@@ -1,6 +1,8 @@
-import { PlaitElement, RectangleClient } from '@plait/core';
+import { addSelectedElement, BoardTransforms, clearSelectedElement, PlaitBoard, PlaitElement, PlaitPointerType, RectangleClient, Transforms } from '@plait/core';
 import { DefaultDrawStyle, ShapeDefaultSpace } from '../constants';
-import { PlaitDrawElement, PlaitGeometry } from '../interfaces';
+import { PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry } from '../interfaces';
+import { PlaitTable } from '../interfaces/table';
+import { memorizeLatestShape } from './memorize';
 
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(element: T) => {
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
@@ -21,4 +23,13 @@ export const getStrokeWidthByElement = (element: PlaitElement) => {
     }
     const strokeWidth = element.strokeWidth || DefaultDrawStyle.strokeWidth;
     return strokeWidth;
+};
+
+
+export const insertElement = (board: PlaitBoard, element: PlaitCommonGeometry | PlaitTable) => {
+    memorizeLatestShape(board, element.shape);
+    Transforms.insertNode(board, element, [board.children.length]);
+    clearSelectedElement(board);
+    addSelectedElement(board, element);
+    BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
 };

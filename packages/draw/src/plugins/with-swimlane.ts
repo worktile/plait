@@ -4,6 +4,7 @@ import { buildSwimlaneTable } from '../utils/swimlane';
 import { PlaitTableBoard } from './with-table';
 import { PlaitTable } from '../interfaces/table';
 import { TableComponent } from '../table.component';
+import { withSwimlaneCreateByDrag, withSwimlaneCreateByDrawing } from './with-swimlane-create';
 
 export const withSwimlane = (board: PlaitTableBoard) => {
     const { drawElement, buildTable } = board;
@@ -22,5 +23,5 @@ export const withSwimlane = (board: PlaitTableBoard) => {
         return buildTable(element);
     };
 
-    return board;
+    return withSwimlaneCreateByDrawing(withSwimlaneCreateByDrag(board));
 };

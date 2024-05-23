@@ -23,6 +23,7 @@ import { editCell, getHitCell } from '../utils/table';
 import { getElementsText } from '@plait/common';
 import { getSelectedTableElements } from '../utils';
 import { buildTableClipboardData, insertClipboardTableData } from '../utils/clipboard';
+import { withTableResize } from './with-table-resize';
 
 export interface PlaitTableBoard extends PlaitBoard {
     buildTable: (element: PlaitTable) => PlaitTable;
@@ -145,5 +146,5 @@ export const withTable = (board: PlaitBoard) => {
         insertFragment(clipboardData, targetPoint, operationType);
     };
 
-    return tableBoard;
+    return withTableResize(tableBoard);
 };
