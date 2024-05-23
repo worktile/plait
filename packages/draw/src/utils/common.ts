@@ -34,7 +34,6 @@ export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
         if (PlaitDrawElement.isImage(item)) {
             return false;
         }
-
         if (PlaitDrawElement.isGeometry(item)) {
             const shapeEngine = getEngine(item.shape);
             const textRectangle = shapeEngine.getTextRectangle ? shapeEngine.getTextRectangle(item, {}) : getTextRectangle(item);
@@ -44,7 +43,6 @@ export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
             const editors = getTextEditors(item);
             return editors.length > 0;
         }
-
         if (PlaitDrawElement.isTable(item)) {
             return item.cells.some(cell => cell.text && cell.textHeight);
         }

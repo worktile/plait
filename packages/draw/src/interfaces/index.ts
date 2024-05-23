@@ -33,7 +33,12 @@ export const PlaitDrawElement = {
         return PlaitTableElement.isTable(value);
     },
     isDrawElement: (value: any): value is PlaitDrawElement => {
-        if (PlaitDrawElement.isGeometry(value) || PlaitDrawElement.isLine(value) || PlaitDrawElement.isImage(value) || PlaitTableElement.isTable(value)) {
+        if (
+            PlaitDrawElement.isGeometry(value) ||
+            PlaitDrawElement.isLine(value) ||
+            PlaitDrawElement.isImage(value) ||
+            PlaitTableElement.isTable(value)
+        ) {
             return true;
         } else {
             return false;
