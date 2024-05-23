@@ -11,7 +11,7 @@ import {
     createClipboardContext,
     getSelectedElements
 } from '@plait/core';
-import { getSelectedDrawElements } from '../utils/selected';
+import { getSelectedDrawElementsExcludeTable } from '../utils/selected';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../interfaces';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
@@ -25,7 +25,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const { getDeletedFragment, buildFragment, insertFragment } = board;
 
     board.getDeletedFragment = (data: PlaitElement[]) => {
-        const drawElements = getSelectedDrawElements(board);
+        const drawElements = getSelectedDrawElementsExcludeTable(board);
         if (drawElements.length) {
             const geometryElements = drawElements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
             const lineElements = drawElements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
@@ -53,7 +53,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
         operationType: WritableClipboardOperationType,
         originData?: PlaitElement[]
     ) => {
-        const targetDrawElements = getSelectedDrawElements(board, originData);
+        const targetDrawElements = getSelectedDrawElementsExcludeTable(board, originData);
         let boundLineElements: PlaitLine[] = [];
         if (targetDrawElements.length) {
             if (operationType === WritableClipboardOperationType.cut) {

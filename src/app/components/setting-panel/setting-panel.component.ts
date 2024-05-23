@@ -42,7 +42,9 @@ import {
     DrawTransforms,
     getMemorizeKey,
     LineHandleKey,
-    PlaitSwimlane
+    PlaitSwimlane,
+    isDrawElementsIncludeText,
+    getSelectedDrawElements
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 
@@ -77,6 +79,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     isSelectedLine = false;
 
     isSelectSwimlane = false;
+
+    isIncludeText = false;
 
     canSetZIndex = false;
 
@@ -158,6 +162,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.lineSourceMarker = firstLine.source.marker;
             this.strokeWidth = firstLine.strokeWidth || 3;
         }
+        const selectedDrawElements = getSelectedDrawElements(this.board);
+        this.isIncludeText = selectedMindElements.length ? true : isDrawElementsIncludeText(selectedDrawElements);
     }
 
     layoutChange(event: Event) {

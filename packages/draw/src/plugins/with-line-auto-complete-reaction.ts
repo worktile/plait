@@ -13,7 +13,7 @@ import {
     toViewBoxPoint
 } from '@plait/core';
 import { PlaitDrawElement } from '../interfaces';
-import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElements } from '../utils';
+import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint, getSelectedDrawElementsExcludeTable } from '../utils';
 import { PRIMARY_COLOR, PlaitCommonElementRef } from '@plait/common';
 import { LINE_AUTO_COMPLETE_HOVERED_DIAMETER, LINE_AUTO_COMPLETE_HOVERED_OPACITY } from '../constants/line';
 import { LineAutoCompleteGenerator } from '../generators/line-auto-complete.generator';
@@ -24,7 +24,7 @@ export const withLineAutoCompleteReaction = (board: PlaitBoard) => {
     board.pointerMove = (event: PointerEvent) => {
         reactionG?.remove();
         PlaitBoard.getBoardContainer(board).classList.remove(CursorClass.crosshair);
-        const selectedElements = getSelectedDrawElements(board);
+        const selectedElements = getSelectedDrawElementsExcludeTable(board);
         const targetElement = selectedElements.length === 1 && selectedElements[0];
         const movingPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (!PlaitBoard.isReadonly(board) && !isSelectionMoving(board) && targetElement && PlaitDrawElement.isShapeElement(targetElement)) {
