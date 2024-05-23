@@ -29,6 +29,7 @@ import {
     DefaultUMLPropertyMap,
     DrawPointerType,
     DrawThemeColors,
+    GEOMETRY_WITHOUT_TEXT,
     ShapeDefaultSpace,
     getFlowchartPointers,
     getUMLPointers
@@ -38,7 +39,7 @@ import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { createLineElement } from './line/line-basic';
-import { LineMarkerType, LineShape, PlaitShapeElement } from '../interfaces';
+import { LineMarkerType, LineShape, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 import { getMemorizedLatestByPointer, memorizeLatestShape } from './memorize';
 import { PlaitDrawShapeText, getTextManage } from '../generators/text.generator';
@@ -49,6 +50,20 @@ export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 
 export type TextProperties = Partial<CustomText> & { align?: Alignment; textHeight?: number };
 
 export const createGeometryElement = (
+    shape: GeometryShapes,
+    points: [Point, Point],
+    text: string | Element,
+    options: GeometryStyleOptions = {},
+    textProperties: TextProperties = {}
+): PlaitGeometry => {
+    if (GEOMETRY_WITHOUT_TEXT.includes(shape)) {
+        return createGeometryElementWithoutText(shape, points, options);
+    } else {
+        return createGeometryElementWithText(shape, points, text, options, textProperties);
+    }
+};
+
+export const createGeometryElementWithText = (
     shape: GeometryShapes,
     points: [Point, Point],
     text: string | Element,
@@ -67,6 +82,7 @@ export const createGeometryElement = (
     textProperties?.textHeight && (textHeight = textProperties?.textHeight);
     delete textProperties?.align;
     delete textProperties?.textHeight;
+
     return {
         id: idCreator(),
         type: 'geometry',
@@ -77,6 +93,22 @@ export const createGeometryElement = (
         text: buildText(text, alignment, textProperties),
         points,
         ...textOptions,
+        ...options
+    };
+};
+
+export const createGeometryElementWithoutText = (
+    shape: GeometryShapes,
+    points: [Point, Point],
+    options: GeometryStyleOptions = {}
+): PlaitGeometry => {
+    return {
+        id: idCreator(),
+        type: 'geometry',
+        shape,
+        angle: 0,
+        opacity: 1,
+        points,
         ...options
     };
 };
@@ -393,4 +425,8 @@ export const rerenderGeometryActive = (board: PlaitBoard, element: PlaitGeometry
     const activeGenerator = elementRef.getGenerator(ActiveGenerator.key);
     const selected = getSelectedElements(board).includes(element);
     activeGenerator.processDrawing(element, PlaitBoard.getElementActiveHost(board), { selected });
+};
+
+export const isGeometryIncludeText = (element: PlaitGeometry) => {
+    return PlaitDrawElement.isGeometry(element) && element.text && element.textHeight && !GEOMETRY_WITHOUT_TEXT.includes(element.shape);
 };

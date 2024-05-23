@@ -145,7 +145,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             if (isMultipleTextGeometry(firstGeometry)) {
                 this.align = firstGeometry.texts[0].text.align || Alignment.center;
             } else {
-                this.align = (firstGeometry as PlaitGeometry).text.align || Alignment.center;
+                this.align = (firstGeometry as PlaitGeometry).text?.align || Alignment.center;
             }
             this.strokeWidth = firstGeometry.strokeWidth || 3;
         }

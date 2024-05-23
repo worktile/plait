@@ -1,14 +1,14 @@
 import { PlaitElement, RectangleClient } from '@plait/core';
 import { DefaultDrawStyle, ShapeDefaultSpace } from '../constants';
 import { PlaitDrawElement, PlaitGeometry } from '../interfaces';
-import { getEngine } from '../engines';
 import { getTextEditors } from '@plait/common';
-import { PlaitTableElement } from '../interfaces/table';
+import { isCellIncludeText } from './table';
+import { isGeometryIncludeText } from '.';
 
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(element: T) => {
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
     const strokeWidth = getStrokeWidthByElement(element);
-    const height = element.textHeight;
+    const height = element.textHeight!;
     const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
     return {
         height,
@@ -35,16 +35,14 @@ export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
             return false;
         }
         if (PlaitDrawElement.isGeometry(item)) {
-            const shapeEngine = getEngine(item.shape);
-            const textRectangle = shapeEngine.getTextRectangle ? shapeEngine.getTextRectangle(item, {}) : getTextRectangle(item);
-            return textRectangle.width > 0 && textRectangle.height > 0;
+            return isGeometryIncludeText(item);
         }
         if (PlaitDrawElement.isLine(item)) {
             const editors = getTextEditors(item);
             return editors.length > 0;
         }
         if (PlaitDrawElement.isTable(item)) {
-            return item.cells.some(cell => cell.text && cell.textHeight);
+            return item.cells.some(cell => isCellIncludeText(cell));
         }
         return true;
     });
