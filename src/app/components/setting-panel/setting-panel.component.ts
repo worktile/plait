@@ -44,8 +44,7 @@ import {
     LineHandleKey,
     PlaitSwimlane,
     isDrawElementsIncludeText,
-    getSelectedDrawElements,
-    getHitText
+    getSelectedDrawElements
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 
@@ -143,13 +142,11 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedGeometryElements = getSelectedGeometryElements(this.board);
         if (selectedGeometryElements.length) {
             const firstGeometry = selectedGeometryElements[0];
-            const a = this.board.op
-            // const text = getHitText(this.board, firstGeometry,)
-            // if (isMultipleTextGeometry(firstGeometry)) {
-            //     this.align = firstGeometry.texts[0].text.align || Alignment.center;
-            // } else {
-            //     this.align = (firstGeometry as PlaitGeometry).text?.align || Alignment.center;
-            // }
+            if (isMultipleTextGeometry(firstGeometry)) {
+                this.align = firstGeometry.texts[0].text.align || Alignment.center;
+            } else {
+                this.align = (firstGeometry as PlaitGeometry).text?.align || Alignment.center;
+            }
             this.strokeWidth = firstGeometry.strokeWidth || 3;
         }
 
