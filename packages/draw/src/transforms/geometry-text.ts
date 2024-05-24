@@ -1,9 +1,9 @@
-import { PlaitBoard, Point, Transforms } from '@plait/core';
+import { PlaitBoard, Point, Transforms, hasValidAngle, RectangleClient } from '@plait/core';
 import { Element } from 'slate';
 import { PlaitGeometry, PlaitText } from '../interfaces';
 import { ShapeDefaultSpace } from '../constants';
 import { AlignEditor, Alignment } from '@plait/text';
-import { getFirstTextEditor } from '@plait/common';
+import { getFirstTextEditor, resetPointsAfterResize } from '@plait/common';
 
 const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: number, textHeight: number) => {
     let points = element.points;
@@ -26,6 +26,15 @@ const normalizePoints = (board: PlaitBoard, element: PlaitGeometry, width: numbe
             ];
         } else {
             points = [points[0], [points[0][0] + width + defaultSpace * 2, points[0][1] + textHeight]];
+        }
+        if (hasValidAngle(element)) {
+            points = resetPointsAfterResize(
+                RectangleClient.getRectangleByPoints(element.points),
+                RectangleClient.getRectangleByPoints(points),
+                RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(element.points)),
+                RectangleClient.getCenterPoint(RectangleClient.getRectangleByPoints(points)),
+                element.angle
+            );
         }
     }
 
@@ -52,7 +61,7 @@ export const setTextSize = (board: PlaitBoard, element: PlaitGeometry, textWidth
         };
         const isPointsEqual =
             Point.isEquals(element.points[0], newElement.points[0]) && Point.isEquals(element.points[1], newElement.points[1]);
-        const isTextHeightEqual = Math.round(textHeight) === Math.round(element.textHeight);
+        const isTextHeightEqual = Math.round(textHeight) === Math.round(element.textHeight!);
         if (!isPointsEqual || !isTextHeightEqual) {
             const path = board.children.findIndex(child => child === element);
             Transforms.setNode(board, newElement, [path]);

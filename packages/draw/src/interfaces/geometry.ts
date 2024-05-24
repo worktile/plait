@@ -64,7 +64,22 @@ export enum SwimlaneSymbols {
     swimlaneHorizontal = 'swimlaneHorizontal'
 }
 
-export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols;
+export enum UMLSymbols {
+    actor = 'actor',
+    useCase = 'useCase',
+    container = 'container',
+    package = 'package',
+    combinedFragment = 'combinedFragment'
+}
+
+export enum MultipleTextGeometryCommonTextKeys {
+    name = 'name',
+    content = 'content'
+}
+
+export type GeometryShapes = BasicShapes | FlowchartSymbols | SwimlaneSymbols | UMLSymbols;
+
+export type SwimlaneDirection = 'horizontal' | 'vertical';
 
 export interface PlaitCommonGeometry extends PlaitElement {
     points: [Point, Point];
@@ -76,18 +91,18 @@ export interface PlaitCommonGeometry extends PlaitElement {
     strokeColor?: string;
     strokeWidth?: number;
     strokeStyle?: StrokeStyle;
-
+    
     angle: number;
     opacity: number;
 }
 
 export interface PlaitMultipleTextGeometry extends PlaitCommonGeometry {
-    texts?: PlaitDrawShapeText[];
+    texts: PlaitDrawShapeText[];
 }
 
 export interface PlaitGeometry extends PlaitCommonGeometry {
-    text: ParagraphElement;
-    textHeight: number;
+    text?: ParagraphElement;
+    textHeight?: number;
 }
 
 export interface PlaitRectangle extends PlaitGeometry {

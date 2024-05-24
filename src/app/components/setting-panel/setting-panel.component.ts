@@ -14,18 +14,7 @@ import {
     hasSameAngle,
     canSetZIndex
 } from '@plait/core';
-import {
-    DrawTransforms,
-    GeometryShapes,
-    LineHandleKey,
-    LineMarkerType,
-    LineShape,
-    getMemorizeKey,
-    getSelectedGeometryElements,
-    getSelectedImageElements,
-    getSelectedLineElements
-} from '@plait/draw';
-import { MindLayoutType } from '@plait/layouts';
+
 import {
     MindElement,
     MindPointerType,
@@ -39,13 +28,25 @@ import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
+import { AlignTransform, PropertyTransforms, TextTransforms, getFirstTextEditor, getTextEditors } from '@plait/common';
 import {
-    AlignTransform,
-    PropertyTransforms,
-    TextTransforms,
-    getFirstTextEditor,
-    getTextEditors
-} from '@plait/common';
+    LineShape,
+    LineMarkerType,
+    getSelectedLineElements,
+    isSingleSelectSwimlane,
+    getSelectedGeometryElements,
+    isMultipleTextGeometry,
+    PlaitGeometry,
+    getSelectedImageElements,
+    GeometryShapes,
+    DrawTransforms,
+    getMemorizeKey,
+    LineHandleKey,
+    PlaitSwimlane,
+    isDrawElementsIncludeText,
+    getSelectedDrawElements
+} from '@plait/draw';
+import { MindLayoutType } from '@plait/layouts';
 
 @Component({
     selector: 'app-setting-panel',
@@ -77,6 +78,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
 
     isSelectedLine = false;
 
+    isSelectSwimlane = false;
+
+    isIncludeText = false;
+
     canSetZIndex = false;
 
     fillColor = ['#333333', '#e48483', '#69b1e4', '#e681d4', '#a287e1', ''];
@@ -94,6 +99,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
     lineTargetMarker = LineMarkerType.openTriangle;
 
     lineSourceMarker = LineMarkerType.openTriangle;
+
+    swimlaneOperation = 'addRow';
 
     strokeWidth = 3;
 
@@ -118,6 +125,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedLineElements = getSelectedLineElements(this.board);
         this.isSelectedMind = !!selectedMindElements.length;
         this.isSelectedLine = !!selectedLineElements.length;
+        this.isSelectSwimlane = isSingleSelectSwimlane(this.board);
         this.canSetZIndex = canSetZIndex(this.board);
         if (selectedMindElements.length) {
             const firstMindElement = selectedMindElements[0];
@@ -134,7 +142,11 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedGeometryElements = getSelectedGeometryElements(this.board);
         if (selectedGeometryElements.length) {
             const firstGeometry = selectedGeometryElements[0];
-            this.align = firstGeometry.text.align || Alignment.center;
+            if (isMultipleTextGeometry(firstGeometry)) {
+                this.align = firstGeometry.texts[0].text.align || Alignment.center;
+            } else {
+                this.align = (firstGeometry as PlaitGeometry).text?.align || Alignment.center;
+            }
             this.strokeWidth = firstGeometry.strokeWidth || 3;
         }
 
@@ -150,6 +162,8 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.lineSourceMarker = firstLine.source.marker;
             this.strokeWidth = firstLine.strokeWidth || 3;
         }
+        const selectedDrawElements = getSelectedDrawElements(this.board);
+        this.isIncludeText = selectedMindElements.length ? true : isDrawElementsIncludeText(selectedDrawElements);
     }
 
     layoutChange(event: Event) {
@@ -325,5 +339,25 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         event.stopPropagation();
         event.preventDefault();
         Transforms.moveToBottom(this.board);
+    }
+
+    addSwimlaneRow(event: Event) {
+        const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
+        DrawTransforms.addSwimlaneRow(this.board, selectedElements[0], selectedElements[0].rows.length);
+    }
+
+    removeSwimlaneRow(event: Event) {
+        const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
+        DrawTransforms.removeSwimlaneRow(this.board, selectedElements[0], selectedElements[0].rows.length - 1);
+    }
+
+    addSwimlaneColumn(event: Event) {
+        const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
+        DrawTransforms.addSwimlaneColumn(this.board, selectedElements[0], selectedElements[0].columns.length);
+    }
+
+    removeSwimlaneColumn(event: Event) {
+        const selectedElements = getSelectedElements(this.board) as PlaitSwimlane[];
+        DrawTransforms.removeSwimlaneColumn(this.board, selectedElements[0], selectedElements[0].columns.length - 1);
     }
 }

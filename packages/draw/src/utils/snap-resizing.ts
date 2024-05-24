@@ -80,9 +80,8 @@ export function getSnapResizingRefOptions(
     const points = resizeOriginPoint.map(p => {
         return movePointByZoomAndOriginPoint(p, originPoint, xZoom, yZoom);
     }) as [Point, Point];
-    const activeRectangle =
-        getRectangleByAngle(RectangleClient.getRectangleByPoints(points), getSelectionAngle(activeElements)) ||
-        RectangleClient.getRectangleByPoints(points);
+    const rectangle = RectangleClient.getRectangleByPoints(points);
+    const activeRectangle = getRectangleByAngle(rectangle, getSelectionAngle(activeElements));
     const resizeHandlePoint = movePointByZoomAndOriginPoint(handlePoint, originPoint, xZoom, yZoom);
     const [x, y] = getUnitVectorByPointAndPoint(originPoint, resizeHandlePoint);
     return {
@@ -232,10 +231,8 @@ function drawResizingPointSnapLines(
     angle: number
 ) {
     debugGenerator.isDebug() && debugGenerator.clear();
-    const activeRectangle =
-        getRectangleByAngle(RectangleClient.getRectangleByPoints(activePoints), angle) ||
-        RectangleClient.getRectangleByPoints(activePoints);
-
+    const rectangle = RectangleClient.getRectangleByPoints(activePoints);
+    const activeRectangle = getRectangleByAngle(rectangle, angle);
     const { isAspectRatio, directionFactors } = resizeSnapOptions;
     const drawHorizontal = directionFactors[0] !== 0 || isAspectRatio;
     const drawVertical = directionFactors[1] !== 0 || isAspectRatio;
@@ -254,9 +251,8 @@ function drawIsometricSnapLines(
 
     const drawHorizontalLine = resizeSnapOptions.directionFactors[0] !== 0 || resizeSnapOptions.isAspectRatio;
     const drawVerticalLine = resizeSnapOptions.directionFactors[1] !== 0 || resizeSnapOptions.isAspectRatio;
-    const activeRectangle =
-        getRectangleByAngle(RectangleClient.getRectangleByPoints(activePoints), angle) ||
-        RectangleClient.getRectangleByPoints(activePoints);
+    const rectangle = RectangleClient.getRectangleByPoints(activePoints);
+    const activeRectangle = getRectangleByAngle(rectangle, angle);
     for (let snapRectangle of snapRectangles) {
         if (activeRectangle.width === snapRectangle.width && drawHorizontalLine) {
             widthIsometricPoints.push(getIsometricLinePoints(snapRectangle, true));
@@ -275,4 +271,3 @@ function drawIsometricSnapLines(
     const isometricLines = [...widthIsometricPoints, ...heightIsometricPoints];
     return drawSolidLines(board, isometricLines);
 }
-

@@ -8,5 +8,6 @@ export enum MemorizeKey {
     basicShape = 'basicShape',
     flowchart = 'flowchart',
     text = 'text',
-    line = 'line'
+    line = 'line',
+    UML = 'UML'
 }

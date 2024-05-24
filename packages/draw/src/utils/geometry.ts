@@ -18,7 +18,7 @@ import {
     getSelectedElements,
     idCreator
 } from '@plait/core';
-import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, PlaitMultipleTextGeometry } from '../interfaces/geometry';
+import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, UMLSymbols, PlaitCommonGeometry } from '../interfaces/geometry';
 import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from '@plait/text';
 import { Element } from 'slate';
 import {
@@ -26,25 +26,44 @@ import {
     DefaultBasicShapePropertyMap,
     DefaultFlowchartPropertyMap,
     DefaultTextProperty,
+    DefaultUMLPropertyMap,
     DrawPointerType,
     DrawThemeColors,
+    GEOMETRY_WITHOUT_TEXT,
     ShapeDefaultSpace,
-    getFlowchartPointers
+    getFlowchartPointers,
+    getUMLPointers
 } from '../constants';
 import { ActiveGenerator, PlaitCommonElementRef, RESIZE_HANDLE_DIAMETER, getFirstTextManage } from '@plait/common';
 import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { createLineElement } from './line/line-basic';
-import { LineMarkerType, LineShape, PlaitShapeElement } from '../interfaces';
+import { LineMarkerType, LineShape, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 import { getMemorizedLatestByPointer, memorizeLatestShape } from './memorize';
+import { PlaitDrawShapeText, getTextManage } from '../generators/text.generator';
+import { createMultipleTextGeometryElement, isMultipleTextShape } from './multi-text-geometry';
 
 export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
 
 export type TextProperties = Partial<CustomText> & { align?: Alignment; textHeight?: number };
 
 export const createGeometryElement = (
+    shape: GeometryShapes,
+    points: [Point, Point],
+    text: string | Element,
+    options: GeometryStyleOptions = {},
+    textProperties: TextProperties = {}
+): PlaitGeometry => {
+    if (GEOMETRY_WITHOUT_TEXT.includes(shape)) {
+        return createGeometryElementWithoutText(shape, points, options);
+    } else {
+        return createGeometryElementWithText(shape, points, text, options, textProperties);
+    }
+};
+
+export const createGeometryElementWithText = (
     shape: GeometryShapes,
     points: [Point, Point],
     text: string | Element,
@@ -63,6 +82,7 @@ export const createGeometryElement = (
     textProperties?.textHeight && (textHeight = textProperties?.textHeight);
     delete textProperties?.align;
     delete textProperties?.textHeight;
+
     return {
         id: idCreator(),
         type: 'geometry',
@@ -77,42 +97,20 @@ export const createGeometryElement = (
     };
 };
 
-export const drawBoundReaction = (
-    board: PlaitBoard,
-    element: PlaitGeometry,
-    options: { hasMask: boolean; hasConnector: boolean } = { hasMask: true, hasConnector: true }
-) => {
-    const g = createG();
-    const rectangle = RectangleClient.getRectangleByPoints(element.points);
-    const activeRectangle = RectangleClient.inflate(rectangle, SNAPPING_STROKE_WIDTH);
-    const shape = getElementShape(element);
-    const strokeG = drawGeometry(board, activeRectangle, shape, {
-        stroke: SELECTION_BORDER_COLOR,
-        strokeWidth: SNAPPING_STROKE_WIDTH
-    });
-    g.appendChild(strokeG);
-    if (options.hasMask) {
-        const maskG = drawGeometry(board, activeRectangle, shape, {
-            stroke: SELECTION_BORDER_COLOR,
-            strokeWidth: 0,
-            fill: SELECTION_FILL_COLOR,
-            fillStyle: 'solid'
-        });
-        g.appendChild(maskG);
-    }
-    if (options.hasConnector) {
-        const connectorPoints = getEngine(shape).getConnectorPoints(rectangle);
-        connectorPoints.forEach(point => {
-            const circleG = drawCircle(PlaitBoard.getRoughSVG(board), point, 8, {
-                stroke: SELECTION_BORDER_COLOR,
-                strokeWidth: ACTIVE_STROKE_WIDTH,
-                fill: '#FFF',
-                fillStyle: 'solid'
-            });
-            g.appendChild(circleG);
-        });
-    }
-    return g;
+export const createGeometryElementWithoutText = (
+    shape: GeometryShapes,
+    points: [Point, Point],
+    options: GeometryStyleOptions = {}
+): PlaitGeometry => {
+    return {
+        id: idCreator(),
+        type: 'geometry',
+        shape,
+        angle: 0,
+        opacity: 1,
+        points,
+        ...options
+    };
 };
 
 export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient, shape: GeometryShapes, roughOptions: Options) => {
@@ -140,6 +138,10 @@ export const getDefaultFlowchartProperty = (symbol: FlowchartSymbols) => {
 
 export const getDefaultBasicShapeProperty = (shape: BasicShapes) => {
     return DefaultBasicShapePropertyMap[shape] || DefaultBasicShapeProperty;
+};
+
+export const getDefaultUMLProperty = (shape: UMLSymbols) => {
+    return DefaultUMLPropertyMap[shape];
 };
 
 export const createDefaultFlowchart = (point: Point) => {
@@ -310,8 +312,11 @@ export const getDefaultGeometryPoints = (pointer: DrawPointerType, centerPoint: 
 
 export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
     const isFlowChart = getFlowchartPointers().includes(pointer);
+    const isUML = getUMLPointers().includes(pointer);
     if (isFlowChart) {
         return getDefaultFlowchartProperty(pointer as FlowchartSymbols);
+    } else if (isUML) {
+        return getDefaultUMLProperty(pointer as UMLSymbols);
     } else {
         return getDefaultBasicShapeProperty(pointer as BasicShapes);
     }
@@ -320,14 +325,6 @@ export const getDefaultGeometryProperty = (pointer: DrawPointerType) => {
 export const getDefaultTextPoints = (board: PlaitBoard, centerPoint: Point, fontSize?: number | string) => {
     const property = getTextShapeProperty(board, DefaultTextProperty.text, fontSize);
     return RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(centerPoint, property.width, property.height));
-};
-
-export const insertElement = (board: PlaitBoard, element: PlaitGeometry) => {
-    memorizeLatestShape(board, element.shape);
-    Transforms.insertNode(board, element, [board.children.length]);
-    clearSelectedElement(board);
-    addSelectedElement(board, element);
-    BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
 };
 
 export const createTextElement = (
@@ -347,20 +344,27 @@ export const createTextElement = (
 export const createDefaultGeometry = (board: PlaitBoard, points: [Point, Point], shape: GeometryShapes) => {
     const memorizedLatest = getMemorizedLatestByPointer(shape);
     const textHeight = getTextShapeProperty(board, DefaultTextProperty.text, memorizedLatest.textProperties['font-size']).height;
-    return createGeometryElement(
-        shape,
-        points,
-        '',
-        {
+    if (isMultipleTextShape(shape)) {
+        return createMultipleTextGeometryElement(shape, points, {
             strokeWidth: DefaultBasicShapeProperty.strokeWidth,
             ...(memorizedLatest.geometryProperties as GeometryStyleOptions)
-        },
-        { ...memorizedLatest.textProperties, textHeight }
-    );
+        });
+    } else {
+        return createGeometryElement(
+            shape,
+            points,
+            '',
+            {
+                strokeWidth: DefaultBasicShapeProperty.strokeWidth,
+                ...(memorizedLatest.geometryProperties as GeometryStyleOptions)
+            },
+            { ...memorizedLatest.textProperties, textHeight }
+        );
+    }
 };
 
-export const editText = (board: PlaitBoard, element: PlaitGeometry) => {
-    const textManage = getFirstTextManage(element);
+export const editText = (board: PlaitBoard, element: PlaitGeometry, text?: PlaitDrawShapeText) => {
+    const textManage = text ? getTextManage(`${element.id}-${text.key}`)! : getFirstTextManage(element);
     textManage.edit(() => {
         // delay to avoid blinking
         setTimeout(() => {
@@ -377,6 +381,6 @@ export const rerenderGeometryActive = (board: PlaitBoard, element: PlaitGeometry
     activeGenerator.processDrawing(element, PlaitBoard.getElementActiveHost(board), { selected });
 };
 
-export const isMultipleTextGeometry = (geometry: PlaitGeometry | PlaitMultipleTextGeometry): geometry is PlaitMultipleTextGeometry => {
-    return !!geometry.texts;
+export const isGeometryIncludeText = (element: PlaitGeometry) => {
+    return PlaitDrawElement.isGeometry(element) && element.text && element.textHeight && !GEOMETRY_WITHOUT_TEXT.includes(element.shape);
 };

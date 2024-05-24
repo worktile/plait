@@ -21,7 +21,7 @@ import {
     setFragment,
     WritableClipboardOperationType
 } from '@plait/core';
-import { mockDrawData, mockTableData, mockMindData, mockRotateData, mockGroupData } from './mock-data';
+import { mockDrawData, mockTableData, mockMindData, mockRotateData, mockGroupData, mockSwimlaneData } from './mock-data';
 import { withMind, PlaitMindBoard, PlaitMind } from '@plait/mind';
 import { AbstractResizeState, MindThemeColors } from '@plait/mind';
 import { withMindExtend } from '../plugins/with-mind-extend';
@@ -137,6 +137,9 @@ export class BasicEditorComponent implements OnInit {
                     break;
                 case 'table':
                     this.value = [...mockTableData];
+                    break;
+                case 'swimlane':
+                    this.value = [...mockSwimlaneData];
                     break;
                 case 'rotate':
                     this.value = [...mockRotateData];

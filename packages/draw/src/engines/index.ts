@@ -6,7 +6,8 @@ import {
     PlaitGeometry,
     ShapeEngine,
     SwimlaneSymbols,
-    TableSymbols
+    TableSymbols,
+    UMLSymbols
 } from '../interfaces';
 import { CommentEngine } from './basic-shapes/comment';
 import { CrossEngine } from './basic-shapes/cross';
@@ -50,6 +51,10 @@ import { DisplayEngine } from './flowchart/display';
 import { TableEngine } from './table/table';
 import { RectangleEngine } from './basic-shapes/rectangle';
 import { PlaitElement } from '@plait/core';
+import { ActorEngine } from './uml/actor';
+import { ContainerEngine } from './uml/container';
+import { PackageEngine } from './uml/package';
+import { CombinedFragmentEngine } from './uml/combined-fragment';
 
 const ShapeEngineMap: Record<DrawShapes, ShapeEngine<any, any, any>> = {
     [BasicShapes.rectangle]: RectangleEngine,
@@ -99,7 +104,12 @@ const ShapeEngineMap: Record<DrawShapes, ShapeEngine<any, any, any>> = {
     [FlowchartSymbols.display]: DisplayEngine,
     [SwimlaneSymbols.swimlaneHorizontal]: TableEngine,
     [SwimlaneSymbols.swimlaneVertical]: TableEngine,
-    [TableSymbols.table]: TableEngine
+    [TableSymbols.table]: TableEngine,
+    [UMLSymbols.actor]: ActorEngine,
+    [UMLSymbols.useCase]: EllipseEngine,
+    [UMLSymbols.container]: ContainerEngine,
+    [UMLSymbols.package]: PackageEngine,
+    [UMLSymbols.combinedFragment]: CombinedFragmentEngine
 };
 
 export const getEngine = <

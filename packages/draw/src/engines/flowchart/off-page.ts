@@ -22,7 +22,7 @@ export const OffPageEngine: ShapeEngine = createPolygonEngine({
     getTextRectangle: (element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const height = element.textHeight;
+        const height = element.textHeight!;
         const width = elementRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
         return {
             width: width > 0 ? width : 0,

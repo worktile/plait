@@ -152,3 +152,13 @@ export const temporaryDisableSelection = (board: PlaitOptionsBoard) => {
         board.setPluginOptions<WithPluginOptions>(PlaitPluginKey.withSelection, { ...currentOptions });
     }, 0);
 };
+
+export const isHitSelectedRectangle = (board: PlaitBoard, point: Point) => {
+    const hitSelectedElements = getHitSelectedElements(board, point);
+    return hitSelectedElements.length > 0;
+};
+
+export const isHitElement = (board: PlaitBoard, point: Point) => {
+    const hitElement = getHitElementByPoint(board, point);
+    return !!hitElement || isHitSelectedRectangle(board, point);
+};

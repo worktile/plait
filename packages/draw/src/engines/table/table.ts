@@ -1,11 +1,12 @@
 import { PlaitBoard, RectangleClient, Point, createG, drawLine } from '@plait/core';
 import { Options } from 'roughjs/bin/core';
-import { PlaitTable, PlaitTableDrawOptions } from '../../interfaces/table';
-import { getCellsWithPoints } from '../../utils/table';
+import { getCellsWithPoints, getCellWithPoints } from '../../utils/table';
 import { ShapeEngine } from '../../interfaces';
-import { ShapeDefaultSpace } from '../../constants';
-import { getStrokeWidthByElement } from '../../utils';
 import { PlaitDrawShapeText } from '../../generators/text.generator';
+import { PlaitTable, PlaitTableCellWithPoints, PlaitTableDrawOptions, PlaitTableElement } from '../../interfaces/table';
+import { getStrokeWidthByElement } from '../../utils';
+import { ShapeDefaultSpace } from '../../constants';
+import { getNearestPointBetweenPointAndRoundRectangle, getRoundRectangleRadius } from '../basic-shapes/round-rectangle';
 
 export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDrawShapeText> = {
     draw(board: PlaitBoard, rectangle: RectangleClient, roughOptions: Options, options?: PlaitTableDrawOptions) {
@@ -15,7 +16,7 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDr
         const tableTopBorder = drawLine(rs, [x, y], [x + width, y], roughOptions);
         const tableLeftBorder = drawLine(rs, [x, y], [x, y + height], roughOptions);
         g.append(tableTopBorder, tableLeftBorder);
-        const pointCells = getCellsWithPoints({ ...options?.element } as PlaitTable);
+        const pointCells = getCellsWithPoints(board, { ...options?.element } as PlaitTable);
         pointCells.forEach(cell => {
             const rectangle = RectangleClient.getRectangleByPoints(cell.points!);
             const { x, y, width, height } = rectangle;
@@ -33,24 +34,43 @@ export const TableEngine: ShapeEngine<PlaitTable, PlaitTableDrawOptions, PlaitDr
         return RectangleClient.getCornerPoints(rectangle);
     },
     getNearestPoint(rectangle: RectangleClient, point: Point) {
-        return [0, 0];
+        return getNearestPointBetweenPointAndRoundRectangle(point, rectangle, getRoundRectangleRadius(rectangle));
     },
     getConnectorPoints(rectangle: RectangleClient) {
         return RectangleClient.getEdgeCenterPoints(rectangle);
     },
     getTextRectangle(element: PlaitTable, options?: PlaitDrawShapeText) {
-        const cells = getCellsWithPoints(element);
-        const cellIndex = element.cells.findIndex(item => item.id === options!.key);
-        const cell = cells[cellIndex];
-        const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
-        const strokeWidth = getStrokeWidthByElement(cell);
-        const height = cell.textHeight || 0;
-        const width = cellRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
-        return {
-            height,
-            width: width > 0 ? width : 0,
-            x: cellRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
-            y: cellRectangle.y + (cellRectangle.height - height) / 2
-        };
+        const cell = getCellWithPoints(options?.board!, element, options!.key);
+        if (PlaitTableElement.isVerticalText(cell)) {
+            return getVerticalTextRectangle(cell);
+        } else {
+            return getHorizontalTextRectangle(cell);
+        }
     }
 };
+
+export function getVerticalTextRectangle(cell: PlaitTableCellWithPoints) {
+    const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
+    const strokeWidth = getStrokeWidthByElement(cell);
+    const height = cell.textHeight || 0;
+    const width = cellRectangle.height - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+    return {
+        width: width > 0 ? width : 0,
+        height,
+        x: cellRectangle.x - width / 2 + cellRectangle.width / 2,
+        y: cellRectangle.y + (cellRectangle.height - height) / 2
+    };
+}
+
+export function getHorizontalTextRectangle(cell: PlaitTableCellWithPoints) {
+    const cellRectangle = RectangleClient.getRectangleByPoints(cell.points);
+    const strokeWidth = getStrokeWidthByElement(cell);
+    const height = cell.textHeight || 0;
+    const width = cellRectangle.width - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
+    return {
+        height,
+        width: width > 0 ? width : 0,
+        x: cellRectangle.x + ShapeDefaultSpace.rectangleAndText + strokeWidth,
+        y: cellRectangle.y + (cellRectangle.height - height) / 2
+    };
+}

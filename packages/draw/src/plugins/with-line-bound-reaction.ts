@@ -12,9 +12,8 @@ import {
 } from '@plait/core';
 import { LineShape, PlaitDrawElement } from '../interfaces';
 import { isResizingByCondition } from '@plait/common';
-import { getHitGeometry, getSnappingRef } from '../utils/position/geometry';
 import { LineResizeHandle } from '../utils/position/line';
-import { drawBoundReaction } from '../utils/geometry';
+import { drawBoundReaction, getHitShape, getSnappingRef } from '../utils';
 
 export const withLineBoundReaction = (board: PlaitBoard) => {
     const { pointerMove, pointerUp } = board;
@@ -36,7 +35,7 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
             return PlaitDrawElement.isLine(element) && isSourceOrTarget;
         });
         if (isLinePointer || isLineResizing) {
-            const hitElement = getHitGeometry(board, movingPoint);
+            const hitElement = getHitShape(board, movingPoint);
             if (hitElement) {
                 const ref = getSnappingRef(board, hitElement, movingPoint);
                 const isSnapping = ref.isHitEdge || ref.isHitConnector;
@@ -51,7 +50,7 @@ export const withLineBoundReaction = (board: PlaitBoard) => {
                     boundShapeG.appendChild(circleG);
                 }
                 if (hasValidAngle(hitElement)) {
-                    setAngleForG(boundShapeG, RectangleClient.getCenterPointByPoints(hitElement.points), hitElement.angle);
+                    setAngleForG(boundShapeG, RectangleClient.getCenterPointByPoints(hitElement.points), hitElement.angle!);
                 }
                 PlaitBoard.getElementActiveHost(board).append(boundShapeG);
             }

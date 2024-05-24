@@ -160,7 +160,7 @@ export function withDrawResize(board: PlaitBoard) {
                     if (hasValidAngle(target)) {
                         needCustomActiveRectangle = true;
                     }
-                    if (hasValidAngle(target) && isAxisChangedByAngle(target.angle)) {
+                    if (hasValidAngle(target) && isAxisChangedByAngle(target.angle!)) {
                         points = getResizePointsByOtherwiseAxis(
                             board,
                             target.points,

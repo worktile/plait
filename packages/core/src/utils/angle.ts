@@ -3,7 +3,7 @@ import { Transforms } from '../transforms';
 import { getRectangleByElements } from './element';
 import { approximately, rotate } from './math';
 
-export const rotatePoints = <T>(points: T, centerPoint: Point, angle: number): T => {
+export const rotatePoints = <T>(points: T, centerPoint: Point, angle?: number): T => {
     if (!angle) {
         angle = 0;
     }
@@ -11,7 +11,7 @@ export const rotatePoints = <T>(points: T, centerPoint: Point, angle: number): T
         return rotate(points[0], points[1], centerPoint[0], centerPoint[1], angle) as T;
     } else {
         return (points as Point[]).map(point => {
-            return rotate(point[0], point[1], centerPoint[0], centerPoint[1], angle);
+            return rotate(point[0], point[1], centerPoint[0], centerPoint[1], angle || 0);
         }) as T;
     }
 };
@@ -19,7 +19,7 @@ export const rotatePoints = <T>(points: T, centerPoint: Point, angle: number): T
 export const getSelectionAngle = (elements: PlaitElement[]) => {
     let angle = elements[0]?.angle || 0;
     elements.forEach(item => {
-        if (item.angle !== angle && !approximately((item.angle % (Math.PI / 2)) - (angle % (Math.PI / 2)), 0)) {
+        if (item.angle !== angle && !approximately(((item.angle || 0) % (Math.PI / 2)) - (angle % (Math.PI / 2)), 0)) {
             angle = 0;
         }
     });
@@ -85,7 +85,7 @@ export const rotateAntiPointsByElement = <T>(points: T, element: PlaitElement): 
     if (hasValidAngle(element)) {
         let rectangle = RectangleClient.getRectangleByPoints(element.points!);
         const centerPoint = RectangleClient.getCenterPoint(rectangle);
-        return rotatePoints(points, centerPoint, -element.angle);
+        return rotatePoints(points, centerPoint, element.angle ? -element.angle : 0);
     } else {
         return null;
     }
@@ -96,9 +96,8 @@ export const getRectangleByAngle = (rectangle: RectangleClient, angle: number) =
         const cornerPoints = RectangleClient.getCornerPoints(rectangle);
         const centerPoint = RectangleClient.getCenterPoint(rectangle);
         return RectangleClient.getRectangleByPoints(rotatePoints(cornerPoints, centerPoint, angle));
-    } else {
-        return null;
     }
+    return rectangle;
 };
 
 export const isAxisChangedByAngle = (angle: number) => {
@@ -121,7 +120,7 @@ export function rotateElements(board: PlaitBoard, elements: PlaitElement[], angl
         const originAngle = item.angle;
         const points = rotatedDataPoints(item.points!, selectionCenterPoint, normalizeAngle(angle));
         const path = PlaitBoard.findPath(board, item);
-        Transforms.setNode(board, { points, angle: normalizeAngle(originAngle + angle) }, path);
+        Transforms.setNode(board, { points, angle: normalizeAngle((originAngle || 0) + angle) }, path);
     });
 }
 
@@ -141,7 +140,7 @@ export const getAngleBetweenPoints = (startPoint: Point, endPoint: Point, center
     return normalizeAngle(endAngle - startAngle);
 };
 
-export const getAngleByElement = (element: PlaitElement): number => {
+export const getAngleByElement = (element: PlaitElement): number | undefined => {
     return element?.angle;
 };
 

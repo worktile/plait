@@ -1,5 +1,5 @@
 import { PlaitBoard, Point, RectangleClient, createG, preventTouchMove, toHostPoint, toViewBoxPoint } from '@plait/core';
-import { BasicShapes, GeometryShapes, PlaitGeometry } from '../interfaces';
+import { BasicShapes, GeometryShapes, PlaitCommonGeometry, PlaitGeometry } from '../interfaces';
 import { GeometryShapeGenerator } from '../generators/geometry-shape.generator';
 import {
     createDefaultGeometry,
@@ -47,7 +47,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
 
     let geometryShapeG: SVGGElement | null = null;
 
-    let temporaryElement: PlaitGeometry | null = null;
+    let temporaryElement: PlaitCommonGeometry | null = null;
 
     let fakeCreateTextRef: FakeCreateTextRef | null = null;
 
@@ -95,7 +95,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
             } else {
                 const points = getDefaultGeometryPoints(pointer, movingPoint);
                 temporaryElement = createDefaultGeometry(board, points, pointer as GeometryShapes);
-                geometryGenerator.processDrawing(temporaryElement, geometryShapeG);
+                geometryGenerator.processDrawing(temporaryElement as PlaitGeometry, geometryShapeG);
                 PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
             }
         }
@@ -117,6 +117,7 @@ export const withGeometryCreateByDrag = (board: PlaitBoard) => {
             fakeCreateTextRef?.g.remove();
             fakeCreateTextRef = null;
         }
+        temporaryElement = null;
         geometryShapeG?.remove();
         geometryShapeG = null;
         preventTouchMove(board, event, false);
@@ -132,7 +133,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
 
     let geometryShapeG: SVGGElement | null = null;
 
-    let temporaryElement: PlaitGeometry | null = null;
+    let temporaryElement: PlaitCommonGeometry | null = null;
 
     let isShift = false;
 
@@ -189,7 +190,7 @@ export const withGeometryCreateByDrawing = (board: PlaitBoard) => {
             PlaitBoard.getElementActiveHost(board).append(snapG);
             points = normalizeShapePoints(resizeSnapRef.activePoints as [Point, Point], isShift);
             temporaryElement = createDefaultGeometry(board, points, pointer as GeometryShapes);
-            geometryGenerator.processDrawing(temporaryElement, geometryShapeG);
+            geometryGenerator.processDrawing(temporaryElement as PlaitGeometry, geometryShapeG);
             PlaitBoard.getElementActiveHost(board).append(geometryShapeG);
         }
         pointerMove(event);

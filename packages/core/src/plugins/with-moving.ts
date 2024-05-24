@@ -141,7 +141,7 @@ export function withMoving(board: PlaitBoard) {
                         x: activeElementsRectangle.x + offsetX,
                         y: activeElementsRectangle.y + offsetY
                     };
-                    const activeRectangle = getRectangleByAngle(newRectangle, getSelectionAngle(activeElements)) || newRectangle;
+                    const activeRectangle = getRectangleByAngle(newRectangle, getSelectionAngle(activeElements));
                     const ref = getSnapMovingRef(board, activeRectangle, activeElements);
                     offsetX += ref.deltaX;
                     offsetY += ref.deltaY;

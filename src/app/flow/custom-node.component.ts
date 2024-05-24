@@ -1,19 +1,12 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PlaitBoard, Point, drawCircle, normalizePoint } from '@plait/core';
 import { FlowNode, FlowNodeComponent, NodeActiveGenerator, NodeGenerator } from '@plait/flow';
 import { TextManage } from '@plait/text';
 
-@Component({
-    selector: 'custom-flow-node',
-    template: '',
-    standalone: true,
-    changeDetection: ChangeDetectionStrategy.OnPush
-})
 export class CustomFlowNodeComponent extends FlowNodeComponent {
     initializeGenerator() {
         this.nodeGenerator = new CustomNodeGenerator(this.board);
         this.nodeActiveGenerator = new CustomNodeActiveGenerator(this.board);
-        this.textManage = new TextManage(this.board, this.viewContainerRef, {
+        this.textManage = new TextManage(this.board, PlaitBoard.getViewContainerRef(this.board), {
             getRectangle: () => {
                 const { x, y } = normalizePoint(this.element.points![0]);
                 const width = this.element.width;
@@ -24,9 +17,9 @@ export class CustomFlowNodeComponent extends FlowNodeComponent {
         this.getRef().addGenerator<NodeActiveGenerator>(NodeActiveGenerator.key, this.nodeActiveGenerator);
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
-        this.render2.addClass(this.getElementG(), 'flow-custom-node');
+    initialize(): void {
+        super.initialize();
+        this.getElementG().classList.add('flow-custom-node');
     }
 }
 

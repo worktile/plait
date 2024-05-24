@@ -1,27 +1,17 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { PlaitBoard, PlaitPluginElementContext, OnContextChanged, isSelectionMoving, getSelectedElements } from '@plait/core';
+import { PlaitBoard, PlaitPluginElementContext, OnContextChanged } from '@plait/core';
 import { Subject } from 'rxjs';
-import { CommonPluginElement, ImageGenerator } from '@plait/common';
+import { CommonElementFlavour, ImageGenerator } from '@plait/common';
 import { PlaitImage } from './interfaces/image';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 
-@Component({
-    selector: 'plait-draw-image',
-    template: ``,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true
-})
-export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
-    implements OnInit, OnDestroy, OnContextChanged<PlaitImage, PlaitBoard> {
-    destroy$ = new Subject<void>();
-
+export class ImageComponent extends CommonElementFlavour<PlaitImage, PlaitBoard> implements OnContextChanged<PlaitImage, PlaitBoard> {
     get activeGenerator() {
         return this.imageGenerator.componentRef.instance.activeGenerator;
     }
 
     imageGenerator!: ImageGenerator<PlaitImage>;
 
-    lineAutoCompleteGenerator!: LineAutoCompleteGenerator;
+    lineAutoCompleteGenerator!: LineAutoCompleteGenerator<PlaitImage>;
 
     constructor() {
         super();
@@ -49,10 +39,10 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
         this.getRef().addGenerator(LineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
+    initialize(): void {
+        super.initialize();
         this.initializeGenerator();
-        this.imageGenerator.processDrawing(this.element, this.getElementG(), this.viewContainerRef);
+        this.imageGenerator.processDrawing(this.element, this.getElementG(), PlaitBoard.getViewContainerRef(this.board));
         this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
             selected: this.selected
         });
@@ -80,10 +70,8 @@ export class ImageComponent extends CommonPluginElement<PlaitImage, PlaitBoard>
         }
     }
 
-    ngOnDestroy(): void {
-        super.ngOnDestroy();
-        this.destroy$.next();
-        this.destroy$.complete();
+    destroy(): void {
+        super.destroy();
         this.imageGenerator.destroy();
         this.lineAutoCompleteGenerator.destroy();
     }
