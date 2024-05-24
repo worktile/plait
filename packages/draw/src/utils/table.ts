@@ -144,5 +144,5 @@ export function updateCellIds(cells: PlaitTableCell[]) {
 }
 
 export function isCellIncludeText(cell: PlaitTableCell) {
-   return cell.text && cell.textHeight
+    return cell.text && cell.textHeight;
 }

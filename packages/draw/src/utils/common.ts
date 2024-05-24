@@ -8,6 +8,7 @@ import {
     depthFirstRecursion,
     drawCircle,
     getIsRecursionFunc,
+    isSetSelectionOperation,
     PlaitBoard,
     PlaitElement,
     PlaitPointerType,
@@ -16,19 +17,24 @@ import {
     rotateAntiPointsByElement,
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
+    SetSelectionOperation,
     SNAPPING_STROKE_WIDTH,
     Transforms
 } from '@plait/core';
 import { DefaultDrawStyle, LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER, ShapeDefaultSpace } from '../constants';
 import { DrawShapes, EngineExtraData, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../interfaces';
-import { getTextEditors } from '@plait/common';
-import { isCellIncludeText } from './table';
-import { getHitConnectorPoint, getNearestPoint, isGeometryIncludeText, isHitEdgeOfShape, isInsideOfShape } from '.';
+import { getTextEditorsByElement } from '@plait/common';
+import { getHitCell, isCellIncludeText } from './table';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { Options } from 'roughjs/bin/core';
 import { PlaitTable } from '../interfaces/table';
 import { memorizeLatestShape } from './memorize';
+import { PlaitTableBoard } from '../plugins/with-table';
+import { ParagraphElement } from '@plait/text';
+import { isHitEdgeOfShape, isInsideOfShape } from './hit';
+import { getHitConnectorPoint } from './line';
+import { getHitGeometryText, getNearestPoint, isGeometryIncludeText } from './geometry';
 
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(element: T) => {
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
@@ -71,7 +77,7 @@ export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
             return isGeometryIncludeText(item);
         }
         if (PlaitDrawElement.isLine(item)) {
-            const editors = getTextEditors(item);
+            const editors = getTextEditorsByElement(item);
             return editors.length > 0;
         }
         if (PlaitDrawElement.isTable(item)) {
@@ -186,4 +192,28 @@ export const drawBoundReaction = (
         });
     }
     return g;
+};
+
+export const getDrawTextProperty = (
+    board: PlaitBoard,
+    element: PlaitGeometry | PlaitTable,
+    point?: Point
+): ParagraphElement | undefined => {
+    if (!point) {
+        if (isSetSelectionOperation(board)) {
+            const operation = board.operations.find(value => value.type === 'set_selection') as SetSelectionOperation;
+            point = operation?.newProperties?.anchor;
+        }
+    }
+    if (point) {
+        if (PlaitDrawElement.isGeometry(element)) {
+            return getHitGeometryText(element, point);
+        }
+
+        if (PlaitDrawElement.isTable(element)) {
+            const hitCell = getHitCell(board as PlaitTableBoard, element, point);
+            return hitCell?.text;
+        }
+    }
+    return undefined;
 };
