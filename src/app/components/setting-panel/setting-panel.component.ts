@@ -151,6 +151,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             setTimeout(() => {
                 const editor = getEditingTextEditor(this.board, [firstGeometry]);
                 this.align = (editor?.children[0] as ParagraphElement)?.align || Alignment.center;
+                this.cdr.markForCheck();
             });
             this.strokeWidth = firstGeometry.strokeWidth || 3;
         }
