@@ -6,7 +6,7 @@ import { PlaitImage } from './interfaces/image';
 import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 
 @Component({
-    selector: 'plait-draw-geometry',
+    selector: 'plait-draw-image',
     template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true
