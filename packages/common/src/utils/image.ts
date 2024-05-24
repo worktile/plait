@@ -2,9 +2,7 @@ import { ComponentType, PlaitBoard, PlaitContextService, PlaitElement } from '@p
 import { ImageBaseComponent } from '../core/image-base.component';
 
 export interface CommonImageItem {
-    url?: string;
-    sourceType?: string;
-    emojiName?: string;
+    url: string;
     width: number;
     height: number;
 }
