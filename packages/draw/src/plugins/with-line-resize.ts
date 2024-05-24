@@ -2,7 +2,6 @@ import { Path, PlaitBoard, PlaitNode, Point } from '@plait/core';
 import { ResizeRef, ResizeState, WithResizeOptions, simplifyOrthogonalPoints, withResize } from '@plait/common';
 import { getSelectedLineElements } from '../utils/selected';
 import { getHitLineResizeHandleRef, LineResizeHandle } from '../utils/position/line';
-import { getSnappingGeometry } from '../utils/position/geometry';
 import { LineHandle, LineShape, PlaitLine } from '../interfaces';
 import { DrawTransforms } from '../transforms';
 import { getElbowPoints, getNextRenderPoints, isUseDefaultOrthogonalRoute } from '../utils/line/elbow';
@@ -15,6 +14,7 @@ import {
 } from '../utils/line/line-resize';
 import { getHitConnection, getLinePoints } from '../utils/line/line-basic';
 import { getElbowLineRouteOptions } from '../utils/line';
+import { getSnappingShape } from '../utils';
 
 export const withLineResize = (board: PlaitBoard) => {
     let elbowLineIndex: number | null;
@@ -73,7 +73,7 @@ export const withLineResize = (board: PlaitBoard) => {
             let source: LineHandle = { ...resizeRef.element.source };
             let target: LineHandle = { ...resizeRef.element.target };
             let handleIndex = resizeRef.handleIndex!;
-            const hitElement = getSnappingGeometry(board, resizeState.endPoint);
+            const hitElement = getSnappingShape(board, resizeState.endPoint);
             if (resizeRef.handle === LineResizeHandle.source || resizeRef.handle === LineResizeHandle.target) {
                 const object = resizeRef.handle === LineResizeHandle.source ? source : target;
                 points[handleIndex] = resizeState.endPoint;

@@ -108,7 +108,7 @@ export const HardDiskEngine: ShapeEngine = {
     getTextRectangle: (element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
         const strokeWidth = getStrokeWidthByElement(element);
-        const height = element.textHeight;
+        const height = element.textHeight!;
         const width = elementRectangle.width - elementRectangle.width * 0.45 - ShapeDefaultSpace.rectangleAndText * 2 - strokeWidth * 2;
         return {
             height,

@@ -11,7 +11,7 @@ export class ImageComponent extends CommonElementFlavour<PlaitImage, PlaitBoard>
 
     imageGenerator!: ImageGenerator<PlaitImage>;
 
-    lineAutoCompleteGenerator!: LineAutoCompleteGenerator;
+    lineAutoCompleteGenerator!: LineAutoCompleteGenerator<PlaitImage>;
 
     constructor() {
         super();

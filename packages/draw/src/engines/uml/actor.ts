@@ -118,7 +118,7 @@ export const ActorEngine: ShapeEngine = {
     },
     getTextRectangle: (element: PlaitGeometry) => {
         const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
-        const height = element.textHeight;
+        const height = element.textHeight!;
         const width = elementRectangle.width + 40;
         return {
             height,

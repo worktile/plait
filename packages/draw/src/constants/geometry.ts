@@ -208,3 +208,5 @@ export const LINE_HIT_GEOMETRY_BUFFER = 10;
 export const LINE_SNAPPING_BUFFER = 6;
 
 export const LINE_SNAPPING_CONNECTOR_BUFFER = 8;
+
+export const GEOMETRY_WITHOUT_TEXT = [FlowchartSymbols.or, FlowchartSymbols.summingJunction] as GeometryShapes[];
