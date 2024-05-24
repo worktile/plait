@@ -2,7 +2,7 @@ import { PlaitElement, Point } from '@plait/core';
 
 export interface PlaitCommonImage extends PlaitElement {
     points: [Point, Point];
-    type: 'image';
+    type: string;
     angle: number;
 }
 
