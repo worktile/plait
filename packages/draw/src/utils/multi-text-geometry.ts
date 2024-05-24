@@ -62,7 +62,7 @@ export const buildDefaultTextsByShape = (shape: GeometryShapes, elementId: strin
     });
 };
 
-export const getHitMultipleGeometryText = (element: PlaitMultipleTextGeometry, point: Point) => {
+export const getHitText = (element: PlaitMultipleTextGeometry, point: Point) => {
     const engine = getEngine<PlaitMultipleTextGeometry>(element.shape);
     const rectangle = RectangleClient.getRectangleByPoints([point, point]);
     let hitText;

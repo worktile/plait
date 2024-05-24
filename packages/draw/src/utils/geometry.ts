@@ -1,6 +1,6 @@
 import { PlaitBoard, PlaitElement, Point, RectangleClient, ThemeColorMode, getSelectedElements, idCreator } from '@plait/core';
-import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, UMLSymbols, PlaitCommonGeometry } from '../interfaces/geometry';
-import { Alignment, CustomText, DEFAULT_FONT_SIZE, ParagraphElement, buildText, getTextSize } from '@plait/text';
+import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, UMLSymbols } from '../interfaces/geometry';
+import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from '@plait/text';
 import { Element } from 'slate';
 import {
     DefaultBasicShapeProperty,
@@ -20,16 +20,11 @@ import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { createLineElement } from './line/line-basic';
-import { LineMarkerType, LineShape, MultipleTextGeometryCommonTextKeys, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
+import { LineMarkerType, LineShape, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
 import { getMemorizedLatestByPointer } from './memorize';
 import { PlaitDrawShapeText, getTextManage } from '../generators/text.generator';
-import {
-    createMultipleTextGeometryElement,
-    getHitMultipleGeometryText,
-    isMultipleTextGeometry,
-    isMultipleTextShape
-} from './multi-text-geometry';
+import { createMultipleTextGeometryElement, isMultipleTextGeometry, isMultipleTextShape } from './multi-text-geometry';
 
 export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
 
@@ -372,17 +367,4 @@ export const isGeometryIncludeText = (element: PlaitGeometry) => {
         (PlaitDrawElement.isGeometry(element) && element.text && element.textHeight && !GEOMETRY_WITHOUT_TEXT.includes(element.shape)) ||
         isMultipleTextGeometry(element)
     );
-};
-
-export const getHitGeometryText = (element: PlaitCommonGeometry, point: Point): ParagraphElement => {
-    if (isMultipleTextGeometry(element)) {
-        const hitText =
-            getHitMultipleGeometryText(element, point) ||
-            element.texts.find(item => item.key.includes(MultipleTextGeometryCommonTextKeys.content)) ||
-            element.texts[0];
-        if (hitText) {
-            return hitText.text;
-        }
-    }
-    return element.text;
 };

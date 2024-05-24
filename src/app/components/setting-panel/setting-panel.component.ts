@@ -22,12 +22,18 @@ import {
     getDefaultMindElementFontSize,
     getSelectedMindElements
 } from '@plait/mind';
-import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText, LinkEditor, AlignEditor, Alignment, ParagraphElement } from '@plait/text';
+import { FontSizes, PlaitMarkEditor, MarkTypes, CustomText, LinkEditor, Alignment, ParagraphElement } from '@plait/text';
 import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-import { AlignTransform, PropertyTransforms, TextTransforms, getFirstTextEditor } from '@plait/common';
+import {
+    AlignTransform,
+    PropertyTransforms,
+    TextTransforms,
+    getEditingTextEditor,
+    getFirstTextEditor,
+} from '@plait/common';
 import {
     LineShape,
     LineMarkerType,
@@ -42,8 +48,7 @@ import {
     PlaitSwimlane,
     isDrawElementsIncludeText,
     getSelectedDrawElements,
-    getSelectedTableElements,
-    getDrawTextProperty
+    getSelectedTableElements
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 
@@ -143,8 +148,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedTableAndGeometryElements = [...selectedGeometryElements, ...selectedTableElements];
         if (selectedTableAndGeometryElements.length) {
             const firstGeometry = selectedTableAndGeometryElements[0];
-            const text = getDrawTextProperty(this.board, firstGeometry);
-            this.align = text?.align || Alignment.center;
+            setTimeout(() => {
+                const editor = getEditingTextEditor(this.board, [firstGeometry]);
+                this.align = (editor?.children[0] as ParagraphElement)?.align || Alignment.center;
+            });
             this.strokeWidth = firstGeometry.strokeWidth || 3;
         }
 

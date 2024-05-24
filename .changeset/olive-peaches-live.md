@@ -4,5 +4,3 @@
 ---
 
 support set partial text property for multiple text nodes
-
-support get text property by point
