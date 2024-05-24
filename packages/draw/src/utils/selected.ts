@@ -8,13 +8,6 @@ export const getSelectedDrawElements = (board: PlaitBoard, elements?: PlaitEleme
     return selectedElements.filter(value => PlaitDrawElement.isDrawElement(value)) as PlaitDrawElement[];
 };
 
-export const getSelectedDrawElementsExcludeTable = (board: PlaitBoard, elements?: PlaitElement[]) => {
-    const selectedElements = elements?.length ? elements : getSelectedElements(board);
-    return selectedElements.filter(
-        value => PlaitDrawElement.isDrawElement(value) && !PlaitDrawElement.isTable(value)
-    ) as PlaitDrawElement[];
-};
-
 export const getSelectedGeometryElements = (board: PlaitBoard) => {
     const selectedElements = getSelectedElements(board).filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
     return selectedElements;

@@ -19,6 +19,7 @@ import { getEngine } from './engines';
 import { TableSymbols } from './interfaces';
 import { getHorizontalTextRectangle } from './engines/table/table';
 import { ShapeDefaultSpace } from './constants';
+import { LineAutoCompleteGenerator } from './generators/line-auto-complete.generator';
 
 export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T, PlaitBoard> implements OnContextChanged<T, PlaitBoard> {
     activeGenerator!: ActiveGenerator<T>;
@@ -26,6 +27,8 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
     tableGenerator!: TableGenerator<T>;
 
     textGenerator!: TextGenerator<T>;
+
+    lineAutoCompleteGenerator!: LineAutoCompleteGenerator<PlaitTable>;
 
     constructor() {
         super();
@@ -48,6 +51,8 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         });
         this.tableGenerator = new TableGenerator<T>(this.board);
         this.initializeTextManage();
+        this.lineAutoCompleteGenerator = new LineAutoCompleteGenerator(this.board);
+        this.getRef().addGenerator(LineAutoCompleteGenerator.key, this.lineAutoCompleteGenerator);
     }
 
     initialize(): void {
@@ -60,6 +65,9 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         this.tableGenerator.processDrawing(this.element, this.getElementG());
         this.textGenerator.draw(this.getElementG());
         this.rotateVerticalText();
+        this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+            selected: this.selected
+        });
     }
 
     rotateVerticalText() {
@@ -94,14 +102,7 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
                 const height = textManageRef.height / this.board.viewport.zoom;
                 const width = textManageRef.width / this.board.viewport.zoom;
                 if (textManageRef.newValue) {
-                    DrawTransforms.setTableText(
-                        this.board,
-                        value,
-                        text.key,
-                        textManageRef.newValue,
-                        width,
-                        height
-                    );
+                    DrawTransforms.setTableText(this.board, value, text.key, textManageRef.newValue, width, height);
                 }
                 textManageRef.operations && memorizeLatestText(value, textManageRef.operations);
             },
@@ -143,6 +144,9 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
                 });
             }
         }
+        this.lineAutoCompleteGenerator.processDrawing(this.element, PlaitBoard.getElementActiveHost(this.board), {
+            selected: this.selected
+        });
     }
 
     destroy(): void {
@@ -150,5 +154,6 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
         this.activeGenerator.destroy();
         this.tableGenerator.destroy();
         this.textGenerator.destroy();
+        this.lineAutoCompleteGenerator.destroy();
     }
 }

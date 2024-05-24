@@ -113,44 +113,6 @@ export const createGeometryElementWithoutText = (
     };
 };
 
-export const drawBoundReaction = (
-    board: PlaitBoard,
-    element: PlaitGeometry,
-    options: { hasMask: boolean; hasConnector: boolean } = { hasMask: true, hasConnector: true }
-) => {
-    const g = createG();
-    const rectangle = RectangleClient.getRectangleByPoints(element.points);
-    const activeRectangle = RectangleClient.inflate(rectangle, SNAPPING_STROKE_WIDTH);
-    const shape = getElementShape(element);
-    const strokeG = drawGeometry(board, activeRectangle, shape, {
-        stroke: SELECTION_BORDER_COLOR,
-        strokeWidth: SNAPPING_STROKE_WIDTH
-    });
-    g.appendChild(strokeG);
-    if (options.hasMask) {
-        const maskG = drawGeometry(board, activeRectangle, shape, {
-            stroke: SELECTION_BORDER_COLOR,
-            strokeWidth: 0,
-            fill: SELECTION_FILL_COLOR,
-            fillStyle: 'solid'
-        });
-        g.appendChild(maskG);
-    }
-    if (options.hasConnector) {
-        const connectorPoints = getEngine(shape).getConnectorPoints(rectangle);
-        connectorPoints.forEach(point => {
-            const circleG = drawCircle(PlaitBoard.getRoughSVG(board), point, 8, {
-                stroke: SELECTION_BORDER_COLOR,
-                strokeWidth: ACTIVE_STROKE_WIDTH,
-                fill: '#FFF',
-                fillStyle: 'solid'
-            });
-            g.appendChild(circleG);
-        });
-    }
-    return g;
-};
-
 export const drawGeometry = (board: PlaitBoard, outerRectangle: RectangleClient, shape: GeometryShapes, roughOptions: Options) => {
     return getEngine(shape).draw(board, outerRectangle, roughOptions);
 };

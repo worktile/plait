@@ -2,12 +2,12 @@ import { PlaitBoard, Point, Transforms, getElementById, idCreator } from '@plait
 import { PlaitDrawElement, PlaitGeometry, PlaitLine } from '../interfaces';
 import { PlaitImage } from '../interfaces/image';
 import { getConnectionPoint } from './line/line-common';
-import { PlaitTable, PlaitTableElement } from '../interfaces/table';
+import { PlaitTable } from '../interfaces/table';
 import { updateCellIds, updateRowOrColumnIds } from './table';
 
 export const buildClipboardData = (board: PlaitBoard, elements: PlaitDrawElement[], startPoint: Point) => {
     return elements.map(element => {
-        if (PlaitDrawElement.isGeometry(element) || PlaitDrawElement.isImage(element)) {
+        if (PlaitDrawElement.isGeometry(element) || PlaitDrawElement.isImage(element) || PlaitDrawElement.isTable(element)) {
             const points = element.points.map(point => [point[0] - startPoint[0], point[1] - startPoint[1]]);
             return { ...element, points } as PlaitGeometry;
         }
@@ -45,6 +45,7 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElemen
         | PlaitImage
         | PlaitGeometry
     )[];
+    const tables = elements.filter(value => PlaitDrawElement.isTable(value)) as PlaitTable[];
 
     geometries.forEach(element => {
         const sourceLines: PlaitLine[] = [];
@@ -71,17 +72,8 @@ export const insertClipboardData = (board: PlaitBoard, elements: PlaitDrawElemen
         element.points = element.points.map(point => [startPoint[0] + point[0], startPoint[1] + point[1]]) as [Point, Point];
         Transforms.insertNode(board, element, [board.children.length]);
     });
+    insertClipboardTableData(board, tables, startPoint);
     Transforms.addSelectionWithTemporaryElements(board, elements);
-};
-
-export const buildTableClipboardData = (elements: PlaitTable[], startPoint: Point) => {
-    return elements.map(element => {
-        if (PlaitTableElement.isTable(element)) {
-            const points = element.points.map(point => [point[0] - startPoint[0], point[1] - startPoint[1]]);
-            return { ...element, points };
-        }
-        return element;
-    });
 };
 
 export const insertClipboardTableData = (board: PlaitBoard, elements: PlaitTable[], startPoint: Point) => {
@@ -93,5 +85,4 @@ export const insertClipboardTableData = (board: PlaitBoard, elements: PlaitTable
         element.points = element.points.map(point => [startPoint[0] + point[0], startPoint[1] + point[1]]) as [Point, Point];
         Transforms.insertNode(board, element, [board.children.length]);
     });
-    Transforms.addSelectionWithTemporaryElements(board, elements);
 };

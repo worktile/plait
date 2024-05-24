@@ -11,7 +11,7 @@ import {
     createClipboardContext,
     getSelectedElements
 } from '@plait/core';
-import { getSelectedDrawElementsExcludeTable } from '../utils/selected';
+import { getSelectedDrawElements } from '../utils/selected';
 import { PlaitDrawElement, PlaitGeometry, PlaitLine, PlaitShapeElement } from '../interfaces';
 import { buildClipboardData, insertClipboardData } from '../utils/clipboard';
 import { DrawTransforms } from '../transforms';
@@ -19,17 +19,19 @@ import { getLines } from '../utils/line/line-basic';
 import { PlaitImage } from '../interfaces/image';
 import { acceptImageTypes, buildImage, getElementOfFocusedImage, getElementsText } from '@plait/common';
 import { DEFAULT_IMAGE_WIDTH } from '../constants';
+import { PlaitTable } from '../interfaces/table';
 
 export const withDrawFragment = (baseBoard: PlaitBoard) => {
     const board = baseBoard as PlaitBoard;
     const { getDeletedFragment, buildFragment, insertFragment } = board;
 
     board.getDeletedFragment = (data: PlaitElement[]) => {
-        const drawElements = getSelectedDrawElementsExcludeTable(board);
+        const drawElements = getSelectedDrawElements(board);
         if (drawElements.length) {
             const geometryElements = drawElements.filter(value => PlaitDrawElement.isGeometry(value)) as PlaitGeometry[];
             const lineElements = drawElements.filter(value => PlaitDrawElement.isLine(value)) as PlaitLine[];
             const imageElements = drawElements.filter(value => PlaitDrawElement.isImage(value)) as PlaitImage[];
+            const tableElements = drawElements.filter(value => PlaitDrawElement.isTable(value)) as PlaitTable[];
 
             const boundLineElements = [
                 ...getBoundedLineElements(board, geometryElements),
@@ -40,6 +42,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
                     ...geometryElements,
                     ...lineElements,
                     ...imageElements,
+                    ...tableElements,
                     ...boundLineElements.filter(line => !lineElements.includes(line))
                 ]
             );
@@ -53,7 +56,7 @@ export const withDrawFragment = (baseBoard: PlaitBoard) => {
         operationType: WritableClipboardOperationType,
         originData?: PlaitElement[]
     ) => {
-        const targetDrawElements = getSelectedDrawElementsExcludeTable(board, originData);
+        const targetDrawElements = getSelectedDrawElements(board, originData);
         let boundLineElements: PlaitLine[] = [];
         if (targetDrawElements.length) {
             if (operationType === WritableClipboardOperationType.cut) {

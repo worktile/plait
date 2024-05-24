@@ -12,7 +12,7 @@ export * from './engine';
 
 export type PlaitDrawElement = PlaitGeometry | PlaitLine | PlaitImage | PlaitTable;
 
-export type PlaitShapeElement = PlaitGeometry | PlaitImage;
+export type PlaitShapeElement = PlaitGeometry | PlaitImage | PlaitTable;
 
 export type DrawShapes = GeometryShapes | TableSymbols;
 
@@ -45,7 +45,7 @@ export const PlaitDrawElement = {
         }
     },
     isShapeElement: (value: any): value is PlaitShapeElement => {
-        return PlaitDrawElement.isImage(value) || PlaitDrawElement.isGeometry(value);
+        return PlaitDrawElement.isImage(value) || PlaitDrawElement.isGeometry(value) || PlaitDrawElement.isTable(value);
     },
     isBasicShape: (value: any) => {
         return Object.keys(BasicShapes).includes(value.shape);

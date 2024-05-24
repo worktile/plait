@@ -11,18 +11,18 @@ import {
     toHostPoint,
     toViewBoxPoint
 } from '@plait/core';
-import { LineShape, PlaitGeometry, PlaitLine } from '../interfaces';
+import { LineShape, PlaitLine, PlaitShapeElement } from '../interfaces';
 import { getLinePointers } from '../constants';
-import { getSnappingGeometry } from '../utils/position/geometry';
 import { isDrawingMode } from '@plait/common';
 import { handleLineCreating } from '../utils/line/line-basic';
+import { getSnappingShape } from '../utils';
 
 export const withLineCreateByDraw = (board: PlaitBoard) => {
     const { pointerDown, pointerMove, globalPointerUp } = board;
 
     let start: Point | null = null;
 
-    let sourceElement: PlaitGeometry | null;
+    let sourceElement: PlaitShapeElement | null;
 
     let lineShapeG: SVGGElement | null = null;
 
@@ -34,7 +34,7 @@ export const withLineCreateByDraw = (board: PlaitBoard) => {
         if (!PlaitBoard.isReadonly(board) && isLinePointer && isDrawingMode(board)) {
             const point = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
             start = point;
-            const hitElement = getSnappingGeometry(board, point);
+            const hitElement = getSnappingShape(board, point);
             if (hitElement) {
                 sourceElement = hitElement;
             }

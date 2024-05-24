@@ -21,7 +21,7 @@ import { LineShape, PlaitDrawElement, PlaitLine, PlaitShapeElement } from '../in
 import { getElementShape } from '../utils/shape';
 import { getEngine } from '../engines';
 import { handleLineCreating } from '../utils/line/line-basic';
-import { getSelectedDrawElementsExcludeTable } from '../utils/selected';
+import { getSelectedDrawElements } from '../utils/selected';
 import { getAutoCompletePoints, getHitIndexOfAutoCompletePoint } from '../utils/geometry';
 
 export const WithLineAutoCompletePluginKey = 'plait-line-auto-complete-plugin-key';
@@ -39,7 +39,7 @@ export const withLineAutoComplete = (board: PlaitBoard) => {
     let temporaryElement: PlaitLine | null;
 
     board.pointerDown = (event: PointerEvent) => {
-        const selectedElements = getSelectedDrawElementsExcludeTable(board);
+        const selectedElements = getSelectedDrawElements(board);
         const targetElement = selectedElements.length === 1 && selectedElements[0];
         const clickPoint = toViewBoxPoint(board, toHostPoint(board, event.x, event.y));
         if (!PlaitBoard.isReadonly(board) && targetElement && PlaitDrawElement.isShapeElement(targetElement)) {
