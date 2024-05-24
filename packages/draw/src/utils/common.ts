@@ -1,27 +1,34 @@
 import {
     ACTIVE_STROKE_WIDTH,
+    addSelectedElement,
     Ancestor,
+    BoardTransforms,
+    clearSelectedElement,
     createG,
     depthFirstRecursion,
     drawCircle,
     getIsRecursionFunc,
     PlaitBoard,
     PlaitElement,
+    PlaitPointerType,
     Point,
     RectangleClient,
     rotateAntiPointsByElement,
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
-    SNAPPING_STROKE_WIDTH
+    SNAPPING_STROKE_WIDTH,
+    Transforms
 } from '@plait/core';
 import { DefaultDrawStyle, LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER, ShapeDefaultSpace } from '../constants';
-import { DrawShapes, EngineExtraData, PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../interfaces';
+import { DrawShapes, EngineExtraData, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../interfaces';
 import { getTextEditors } from '@plait/common';
 import { isCellIncludeText } from './table';
 import { getHitConnectorPoint, getNearestPoint, isGeometryIncludeText, isHitEdgeOfShape, isInsideOfShape } from '.';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { Options } from 'roughjs/bin/core';
+import { PlaitTable } from '../interfaces/table';
+import { memorizeLatestShape } from './memorize';
 
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(element: T) => {
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
@@ -42,6 +49,14 @@ export const getStrokeWidthByElement = (element: PlaitElement) => {
     }
     const strokeWidth = element.strokeWidth || DefaultDrawStyle.strokeWidth;
     return strokeWidth;
+};
+
+export const insertElement = (board: PlaitBoard, element: PlaitCommonGeometry | PlaitTable) => {
+    memorizeLatestShape(board, element.shape);
+    Transforms.insertNode(board, element, [board.children.length]);
+    clearSelectedElement(board);
+    addSelectedElement(board, element);
+    BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
 };
 
 export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {

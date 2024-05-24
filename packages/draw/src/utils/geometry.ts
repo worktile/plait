@@ -327,14 +327,6 @@ export const getDefaultTextPoints = (board: PlaitBoard, centerPoint: Point, font
     return RectangleClient.getPoints(RectangleClient.getRectangleByCenterPoint(centerPoint, property.width, property.height));
 };
 
-export const insertElement = (board: PlaitBoard, element: PlaitCommonGeometry) => {
-    memorizeLatestShape(board, element.shape);
-    Transforms.insertNode(board, element, [board.children.length]);
-    clearSelectedElement(board);
-    addSelectedElement(board, element);
-    BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
-};
-
 export const createTextElement = (
     board: PlaitBoard,
     points: [Point, Point],

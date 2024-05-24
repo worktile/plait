@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef } from '@angular/core';
 import { BoardCreationMode, CommonImageItem, getElementOfFocusedImage, selectImage, setCreationMode } from '@plait/common';
 import { BoardTransforms, PlaitBoard, PlaitIslandBaseComponent, PlaitPointerType, getSelectedElements } from '@plait/core';
-import { DrawPointerType, DrawTransforms, LineShape, getLinePointers, BasicShapes, FlowchartSymbols, UMLSymbols } from '@plait/draw';
+import { DrawPointerType, DrawTransforms, LineShape, getLinePointers, BasicShapes, FlowchartSymbols, UMLSymbols, SwimlaneSymbols } from '@plait/draw';
 import { MindElement, MindPointerType, MindTransforms } from '@plait/mind';
 import { fromEvent, take } from 'rxjs';
 import { NgClass, NgTemplateOutlet, NgIf } from '@angular/common';
@@ -28,6 +28,8 @@ export class AppMainToolbarComponent extends PlaitIslandBaseComponent {
     GeometryShapeType = BasicShapes;
 
     FlowchartSymbols = FlowchartSymbols;
+
+    SwimlaneSymbols = SwimlaneSymbols;
 
     UMLSymbols = UMLSymbols;
 

@@ -7,12 +7,12 @@ import {
     RectangleClient,
     Selection,
     isPolylineHitRectangle,
-    getSelectedElements,
     toViewBoxPoint,
     toHostPoint,
     getHitElementByPoint
 } from '@plait/core';
 import { editCell, getHitCell } from '../utils/table';
+import { withTableResize } from './with-table-resize';
 
 export interface PlaitTableBoard extends PlaitBoard {
     buildTable: (element: PlaitTable) => PlaitTable;
@@ -80,5 +80,5 @@ export const withTable = (board: PlaitBoard) => {
         return element;
     };
 
-    return tableBoard;
+    return withTableResize(tableBoard);
 };
