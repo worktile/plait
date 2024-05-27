@@ -95,17 +95,4 @@ export const getTextEditors = (board: PlaitBoard, elements?: PlaitElement[]) => 
     return undefined;
 };
 
-export const getEditingTextEditor = (board: PlaitBoard, elements?: PlaitElement[]) => {
-    const selectedElements = elements || getSelectedElements(board);
-    const textManages: TextManage[] = [];
-    selectedElements.forEach(item => {
-        textManages.push(...getTextManages(item));
-    });
-    const editingTextManage = textManages.find(textManage => textManage.isEditing);
-    if (editingTextManage) {
-        return editingTextManage.componentRef.instance.editor;
-    }
-    return undefined;
-};
-
 export const ELEMENT_TO_TEXT_MANAGES: WeakMap<PlaitElement, TextManage[]> = new WeakMap();

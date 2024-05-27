@@ -2,7 +2,7 @@ import { PlaitBoard, getHitElementByPoint, getSelectedElements, toHostPoint, toV
 import { isVirtualKey, isSpaceHotkey, isDelete } from '@plait/common';
 import { MultipleTextGeometryCommonTextKeys, PlaitDrawElement } from '../interfaces';
 import { editText } from '../utils/geometry';
-import { getHitText, isMultipleTextGeometry } from '../utils';
+import { getHitMultipleGeometryText, isMultipleTextGeometry } from '../utils';
 
 export const withDrawHotkey = (board: PlaitBoard) => {
     const { keyDown, dblClick } = board;
@@ -35,7 +35,7 @@ export const withDrawHotkey = (board: PlaitBoard) => {
             if (hitElement && PlaitDrawElement.isGeometry(hitElement)) {
                 if (isMultipleTextGeometry(hitElement)) {
                     const hitText =
-                        getHitText(hitElement, point) ||
+                        getHitMultipleGeometryText(hitElement, point) ||
                         hitElement.texts.find(item => item.key.includes(MultipleTextGeometryCommonTextKeys.content)) ||
                         hitElement.texts[0];
                     editText(board, hitElement, hitText);

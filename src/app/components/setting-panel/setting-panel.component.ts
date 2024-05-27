@@ -27,13 +27,7 @@ import { Node, Transforms as SlateTransforms } from 'slate';
 import { AppColorPickerComponent } from '../color-picker/color-picker.component';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-import {
-    AlignTransform,
-    PropertyTransforms,
-    TextTransforms,
-    getEditingTextEditor,
-    getFirstTextEditor,
-} from '@plait/common';
+import { AlignTransform, PropertyTransforms, TextTransforms, getFirstTextEditor } from '@plait/common';
 import {
     LineShape,
     LineMarkerType,
@@ -48,7 +42,8 @@ import {
     PlaitSwimlane,
     isDrawElementsIncludeText,
     getSelectedDrawElements,
-    getSelectedTableElements
+    getSelectedTableElements,
+    getHitTextEditor
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 
@@ -148,11 +143,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedTableAndGeometryElements = [...selectedGeometryElements, ...selectedTableElements];
         if (selectedTableAndGeometryElements.length) {
             const firstGeometry = selectedTableAndGeometryElements[0];
-            setTimeout(() => {
-                const editor = getEditingTextEditor(this.board, [firstGeometry]);
-                this.align = (editor?.children[0] as ParagraphElement)?.align || Alignment.center;
-                this.cdr.markForCheck();
-            });
+            const editor = getHitTextEditor(this.board, firstGeometry);
+            this.align = (editor?.children[0] as ParagraphElement)?.align || Alignment.center;
+            this.currentMarks = (editor && PlaitMarkEditor.getMarks(editor)) || this.currentMarks;
             this.strokeWidth = firstGeometry.strokeWidth || 3;
         }
 
@@ -167,6 +160,7 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.lineTargetMarker = firstLine.target.marker;
             this.lineSourceMarker = firstLine.source.marker;
             this.strokeWidth = firstLine.strokeWidth || 3;
+            this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstLine));
         }
         const selectedDrawElements = getSelectedDrawElements(this.board);
         this.isIncludeText = selectedMindElements.length ? true : isDrawElementsIncludeText(selectedDrawElements);

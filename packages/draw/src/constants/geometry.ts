@@ -1,6 +1,13 @@
 import { ACTIVE_STROKE_WIDTH } from '@plait/core';
 import { Alignment } from '@plait/text';
-import { BasicShapes, FlowchartSymbols, GeometryShapes, MultipleTextGeometryCommonTextKeys, SwimlaneSymbols, UMLSymbols } from '../interfaces';
+import {
+    BasicShapes,
+    FlowchartSymbols,
+    GeometryShapes,
+    MultipleTextGeometryCommonTextKeys,
+    SwimlaneSymbols,
+    UMLSymbols
+} from '../interfaces';
 
 export const ShapeDefaultSpace = {
     rectangleAndText: 4
@@ -215,7 +222,7 @@ export const MultipleTextGeometryTextKeys: { [key in GeometryShapes]?: string[] 
 
 export const DefaultSwimlanePropertyMap: Record<string, { width: number; height: number }> = {
     [SwimlaneSymbols.swimlaneHorizontal]: DefaultSwimlaneHorizontalProperty,
-    [SwimlaneSymbols.swimlaneVertical]: DefaultSwimlaneVerticalProperty,
+    [SwimlaneSymbols.swimlaneVertical]: DefaultSwimlaneVerticalProperty
 };
 
 export const LINE_HIT_GEOMETRY_BUFFER = 10;
@@ -225,3 +232,5 @@ export const LINE_SNAPPING_BUFFER = 6;
 export const LINE_SNAPPING_CONNECTOR_BUFFER = 8;
 
 export const GEOMETRY_WITHOUT_TEXT = [FlowchartSymbols.or, FlowchartSymbols.summingJunction] as GeometryShapes[];
+
+export const GEOMETRY_WITH_MULTIPLE_TEXT = [UMLSymbols.package, UMLSymbols.combinedFragment];

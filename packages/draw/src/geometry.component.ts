@@ -7,7 +7,6 @@ import {
     ACTIVE_STROKE_WIDTH,
     RectangleClient
 } from '@plait/core';
-import { Subject } from 'rxjs';
 import { PlaitCommonGeometry, PlaitGeometry, PlaitMultipleTextGeometry } from './interfaces/geometry';
 import { GeometryShapeGenerator } from './generators/geometry-shape.generator';
 import { TextManageRef } from '@plait/text';
