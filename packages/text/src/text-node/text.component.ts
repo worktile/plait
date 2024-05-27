@@ -5,9 +5,7 @@ import { CustomText } from '../custom-types';
 
 @Component({
     selector: 'span[plaitText]',
-    template: `
-        <slate-leaves [context]="context" [viewContext]="viewContext"></slate-leaves>
-    `,
+    template: ``,
     host: {
         'data-slate-node': 'text'
     },
