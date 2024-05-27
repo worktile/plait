@@ -27,6 +27,7 @@ import { PlaitDrawElement } from '../interfaces';
 import { getHitRectangleResizeHandleRef } from '../utils/position/geometry';
 import { getResizeOriginPointAndHandlePoint } from './with-draw-resize';
 import { getSnapResizingRefOptions, getSnapResizingRef } from '../utils/snap-resizing';
+import { isGeometryIncludeText } from '../utils';
 
 export const withGeometryResize = (board: PlaitBoard) => {
     let snapG: SVGGElement | null;
@@ -78,7 +79,7 @@ export const withGeometryResize = (board: PlaitBoard) => {
             snapG = resizeSnapRef.snapG;
             PlaitBoard.getElementActiveHost(board).append(snapG);
             let points = resizeSnapRef.activePoints as [Point, Point];
-            if (PlaitDrawElement.isGeometry(resizeRef.element)) {
+            if (PlaitDrawElement.isGeometry(resizeRef.element) && isGeometryIncludeText(resizeRef.element)) {
                 const { height: textHeight } = getFirstTextManage(resizeRef.element).getSize();
                 DrawTransforms.resizeGeometry(board, points, textHeight, resizeRef.path as Path);
             } else {

@@ -22,14 +22,7 @@ import {
     Transforms
 } from '@plait/core';
 import { DefaultDrawStyle, LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER, ShapeDefaultSpace } from '../constants';
-import {
-    DrawShapes,
-    EngineExtraData,
-    PlaitCommonGeometry,
-    PlaitDrawElement,
-    PlaitGeometry,
-    PlaitShapeElement
-} from '../interfaces';
+import { DrawShapes, EngineExtraData, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../interfaces';
 import { getTextEditorsByElement } from '@plait/common';
 import { getHitCell, getTextManageByCell, isCellIncludeText } from './table';
 import { getEngine } from '../engines';
@@ -73,25 +66,29 @@ export const insertElement = (board: PlaitBoard, element: PlaitCommonGeometry | 
     BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
 };
 
+export const isDrawElementIncludeText = (element: PlaitDrawElement) => {
+    if (PlaitDrawElement.isText(element)) {
+        return true;
+    }
+    if (PlaitDrawElement.isImage(element)) {
+        return false;
+    }
+    if (PlaitDrawElement.isGeometry(element)) {
+        return isGeometryIncludeText(element);
+    }
+    if (PlaitDrawElement.isLine(element)) {
+        const editors = getTextEditorsByElement(element);
+        return editors.length > 0;
+    }
+    if (PlaitDrawElement.isTable(element)) {
+        return element.cells.some(cell => isCellIncludeText(cell));
+    }
+    return true;
+};
+
 export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
     return elements.some(item => {
-        if (PlaitDrawElement.isText(item)) {
-            return true;
-        }
-        if (PlaitDrawElement.isImage(item)) {
-            return false;
-        }
-        if (PlaitDrawElement.isGeometry(item)) {
-            return isGeometryIncludeText(item);
-        }
-        if (PlaitDrawElement.isLine(item)) {
-            const editors = getTextEditorsByElement(item);
-            return editors.length > 0;
-        }
-        if (PlaitDrawElement.isTable(item)) {
-            return item.cells.some(cell => isCellIncludeText(cell));
-        }
-        return true;
+        return isDrawElementIncludeText(item);
     });
 };
 

@@ -41,6 +41,7 @@ import {
     LineHandleKey,
     PlaitSwimlane,
     isDrawElementsIncludeText,
+    isDrawElementIncludeText,
     getSelectedDrawElements,
     getSelectedTableElements
 } from '@plait/draw';
@@ -141,15 +142,15 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         const selectedTableElements = getSelectedTableElements(this.board);
         const selectedTableAndGeometryElements = [...selectedGeometryElements, ...selectedTableElements];
         if (selectedTableAndGeometryElements.length) {
-            const firstGeometry = selectedTableAndGeometryElements[0];
-            this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstGeometry));
+            const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(item));
+            this.currentMarks = firstGeometry ? PlaitMarkEditor.getMarks(getFirstTextEditor(firstGeometry)) : {};
             setTimeout(() => {
-                const editor = getEditingTextEditor(this.board, [firstGeometry]);
+                const editor = firstGeometry && getEditingTextEditor(this.board, [firstGeometry]);
                 this.align = (editor?.children[0] as ParagraphElement)?.align || Alignment.center;
                 this.currentMarks = (editor && PlaitMarkEditor.getMarks(editor)) || this.currentMarks;
                 this.cdr.markForCheck();
             });
-            this.strokeWidth = firstGeometry.strokeWidth || 3;
+            this.strokeWidth = firstGeometry?.strokeWidth || 3;
         }
 
         const selectedImageElements = getSelectedImageElements(this.board);
@@ -162,7 +163,9 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
             this.lineTargetMarker = firstLine.target.marker;
             this.lineSourceMarker = firstLine.source.marker;
             this.strokeWidth = firstLine.strokeWidth || 3;
-            this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstLine));
+            if (isDrawElementIncludeText(firstLine)) {
+                this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstLine)) || {};
+            }
             setTimeout(() => {
                 const editor = getEditingTextEditor(this.board, [firstLine]);
                 this.currentMarks = (editor && PlaitMarkEditor.getMarks(editor)) || {};
