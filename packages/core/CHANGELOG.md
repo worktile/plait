@@ -1,5 +1,19 @@
 # plait
 
+## 0.58.0
+
+### Minor Changes
+
+-   [#880](https://github.com/worktile/plait/pull/880) [`c228b0b4`](https://github.com/worktile/plait/commit/c228b0b4213f8d5a6c915650c62d87c8a4bed523) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - support element-flavour to replace plugin element (angular based-component)
+
+*   [#885](https://github.com/worktile/plait/pull/885) [`f0c9db08`](https://github.com/worktile/plait/commit/f0c9db08c5da256ee9dc4610c0432f23b62d7be5) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add angle to PlaitElement
+
+### Patch Changes
+
+-   [#887](https://github.com/worktile/plait/pull/887) [`4192c487`](https://github.com/worktile/plait/commit/4192c487c02bbf682b55a4f8d5434073585e2983) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - add isHitElement and isHitSelectedRectangle function
+
+    fix rotate error
+
 ## 0.57.0
 
 ### Minor Changes

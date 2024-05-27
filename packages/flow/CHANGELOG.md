@@ -1,5 +1,7 @@
 # @plait/flow
 
+## 0.58.0
+
 ## 0.57.0
 
 ### Minor Changes
