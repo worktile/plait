@@ -9,8 +9,3 @@ export interface PlaitCommonImage extends PlaitElement {
 export interface PlaitImage extends PlaitCommonImage {
     url: string;
 }
-
-// export interface PlaitEmojiImage extends PlaitElement {
-//     sourceType: 'emoji',
-//     emojiName: ''
-// }
