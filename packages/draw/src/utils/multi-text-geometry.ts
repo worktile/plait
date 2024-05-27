@@ -1,19 +1,23 @@
 import { Point, RectangleClient, idCreator } from '@plait/core';
-import { GeometryShapes, UMLSymbols, PlaitMultipleTextGeometry, PlaitCommonGeometry } from '../interfaces/geometry';
+import {
+    GeometryShapes,
+    UMLSymbols,
+    PlaitMultipleTextGeometry,
+    PlaitCommonGeometry
+} from '../interfaces/geometry';
 import { Alignment, buildText } from '@plait/text';
-import { DefaultTextProperty, GEOMETRY_WITH_MULTIPLE_TEXT, MultipleTextGeometryTextKeys } from '../constants';
+import { DefaultTextProperty, MultipleTextGeometryTextKeys } from '../constants';
 import { getEngine } from '../engines';
 import { getMemorizedLatestByPointer } from './memorize';
 import { PlaitDrawShapeText } from '../generators/text.generator';
 import { GeometryStyleOptions, getDefaultGeometryProperty } from './geometry';
-import { PlaitDrawElement } from '../interfaces';
 
 export const isMultipleTextShape = (shape: GeometryShapes) => {
-    return GEOMETRY_WITH_MULTIPLE_TEXT.includes(shape as UMLSymbols);
+    return [UMLSymbols.package, UMLSymbols.combinedFragment].includes(shape as UMLSymbols);
 };
 
 export const isMultipleTextGeometry = (geometry: PlaitCommonGeometry): geometry is PlaitMultipleTextGeometry => {
-    return PlaitDrawElement.isGeometry(geometry) && isMultipleTextShape(geometry.shape);
+    return !!geometry.texts;
 };
 
 export const getMultipleTextGeometryTextKeys = (shape: GeometryShapes) => {
@@ -58,7 +62,7 @@ export const buildDefaultTextsByShape = (shape: GeometryShapes, elementId: strin
     });
 };
 
-export const getHitMultipleGeometryText = (element: PlaitMultipleTextGeometry, point: Point) => {
+export const getHitText = (element: PlaitMultipleTextGeometry, point: Point) => {
     const engine = getEngine<PlaitMultipleTextGeometry>(element.shape);
     const rectangle = RectangleClient.getRectangleByPoints([point, point]);
     let hitText;
