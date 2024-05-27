@@ -8,6 +8,7 @@ import {
     depthFirstRecursion,
     drawCircle,
     getIsRecursionFunc,
+    isSetSelectionOperation,
     PlaitBoard,
     PlaitElement,
     PlaitPointerType,
@@ -16,13 +17,21 @@ import {
     rotateAntiPointsByElement,
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
+    SetSelectionOperation,
     SNAPPING_STROKE_WIDTH,
     Transforms
 } from '@plait/core';
 import { DefaultDrawStyle, LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER, ShapeDefaultSpace } from '../constants';
-import { DrawShapes, EngineExtraData, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../interfaces';
+import {
+    DrawShapes,
+    EngineExtraData,
+    PlaitCommonGeometry,
+    PlaitDrawElement,
+    PlaitGeometry,
+    PlaitShapeElement
+} from '../interfaces';
 import { getTextEditorsByElement } from '@plait/common';
-import { isCellIncludeText } from './table';
+import { getHitCell, getTextManageByCell, isCellIncludeText } from './table';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { Options } from 'roughjs/bin/core';
@@ -30,7 +39,10 @@ import { PlaitTable } from '../interfaces/table';
 import { memorizeLatestShape } from './memorize';
 import { isHitEdgeOfShape, isInsideOfShape } from './hit';
 import { getHitConnectorPoint } from './line';
-import { getNearestPoint, isGeometryIncludeText } from './geometry';
+import { getHitGeometryText, getNearestPoint, isGeometryIncludeText } from './geometry';
+import { PlaitTableBoard } from '../plugins/with-table';
+import { isMultipleTextGeometry } from './multi-text-geometry';
+import { getTextManage, PlaitDrawShapeText } from '../generators/text.generator';
 
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(element: T) => {
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
@@ -188,4 +200,38 @@ export const drawBoundReaction = (
         });
     }
     return g;
+};
+
+export const getTextKey = <T extends PlaitElement = PlaitGeometry>(element: T, text: PlaitDrawShapeText) => {
+    if (isMultipleTextGeometry((element as unknown) as PlaitCommonGeometry)) {
+        return `${element.id}-${text.key}`;
+    } else {
+        return text.key;
+    }
+};
+
+export const getHitTextEditor = (board: PlaitBoard, element: PlaitGeometry | PlaitTable, point?: Point) => {
+    if (!point) {
+        if (isSetSelectionOperation(board)) {
+            const operation = board.operations.find(value => value.type === 'set_selection') as SetSelectionOperation;
+            point = operation?.newProperties?.anchor;
+        }
+    }
+    if (point) {
+        if (PlaitDrawElement.isGeometry(element)) {
+            const text = getHitGeometryText(element, point);
+            const textKey = text && getTextKey(element, text);
+            if (textKey) {
+                return getTextManage(textKey)?.componentRef.instance.editor;
+            }
+        }
+
+        if (PlaitDrawElement.isTable(element)) {
+            const hitCell = getHitCell(board as PlaitTableBoard, element, point);
+            if (hitCell) {
+                return getTextManageByCell(hitCell)?.componentRef.instance.editor;
+            }
+        }
+    }
+    return undefined;
 };
