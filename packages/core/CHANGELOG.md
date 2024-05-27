@@ -1,5 +1,11 @@
 # plait
 
+## 0.53.1
+
+### Patch Changes
+
+-   [`a3b4052dc`](https://github.com/worktile/plait/commit/a3b4052dc2d8b9212bc2574fb4cd945f38baa342) Thanks [@pubuzhixing8](https://github.com/pubuzhixing8)! - bump immer into 10.0.3
+
 ## 0.53.0
 
 ### Minor Changes
