@@ -145,14 +145,17 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (selectedTableAndGeometryElements.length) {
             const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(item));
             if (firstGeometry && PlaitElement.hasMounted(firstGeometry)) {
-                this.currentMarks = firstGeometry ? PlaitMarkEditor.getMarks(getFirstTextEditor(firstGeometry)) : {};
-                this.align = firstGeometry ? getGeometryAlign(firstGeometry) : Alignment.center;
+                this.currentMarks = PlaitMarkEditor.getMarks(getFirstTextEditor(firstGeometry));
+                this.align = getGeometryAlign(firstGeometry);
             }
             setTimeout(() => {
                 const editor = firstGeometry && getEditingTextEditor(this.board, [firstGeometry]);
-                this.align = (editor?.children[0] as ParagraphElement)?.align || this.align;
-                this.currentMarks = (editor && PlaitMarkEditor.getMarks(editor)) || this.currentMarks;
-                this.cdr.markForCheck();
+                const isEditing = !!editor;
+                if (isEditing) {
+                    this.align = (editor.children[0] as ParagraphElement)?.align || this.align;
+                    this.currentMarks = PlaitMarkEditor.getMarks(editor);
+                    this.cdr.markForCheck();
+                }
             });
             this.strokeWidth = firstGeometry?.strokeWidth || 3;
         }
