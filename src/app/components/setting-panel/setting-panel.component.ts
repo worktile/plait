@@ -43,7 +43,8 @@ import {
     isDrawElementsIncludeText,
     isDrawElementIncludeText,
     getSelectedDrawElements,
-    getSelectedTableElements
+    getSelectedTableElements,
+    getGeometryAlign
 } from '@plait/draw';
 import { MindLayoutType } from '@plait/layouts';
 
@@ -144,9 +145,10 @@ export class AppSettingPanelComponent extends PlaitIslandBaseComponent implement
         if (selectedTableAndGeometryElements.length) {
             const firstGeometry = selectedTableAndGeometryElements.find(item => isDrawElementIncludeText(item));
             this.currentMarks = firstGeometry ? PlaitMarkEditor.getMarks(getFirstTextEditor(firstGeometry)) : {};
+            this.align = firstGeometry ? getGeometryAlign(firstGeometry) : Alignment.center;
             setTimeout(() => {
                 const editor = firstGeometry && getEditingTextEditor(this.board, [firstGeometry]);
-                this.align = (editor?.children[0] as ParagraphElement)?.align || Alignment.center;
+                this.align = (editor?.children[0] as ParagraphElement)?.align || this.align;
                 this.currentMarks = (editor && PlaitMarkEditor.getMarks(editor)) || this.currentMarks;
                 this.cdr.markForCheck();
             });

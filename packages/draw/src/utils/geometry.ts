@@ -1,6 +1,6 @@
 import { PlaitBoard, PlaitElement, Point, RectangleClient, ThemeColorMode, getSelectedElements, idCreator } from '@plait/core';
 import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, UMLSymbols } from '../interfaces/geometry';
-import { Alignment, CustomText, DEFAULT_FONT_SIZE, ParagraphElement, buildText, getTextSize } from '@plait/text';
+import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from '@plait/text';
 import { Element } from 'slate';
 import {
     DefaultBasicShapeProperty,
@@ -23,8 +23,6 @@ import { createLineElement } from './line/line-basic';
 import {
     LineMarkerType,
     LineShape,
-    MultipleTextGeometryCommonTextKeys,
-    PlaitCommonGeometry,
     PlaitDrawElement,
     PlaitShapeElement
 } from '../interfaces';
@@ -33,7 +31,6 @@ import { getMemorizedLatestByPointer } from './memorize';
 import { PlaitDrawShapeText, getTextManage } from '../generators/text.generator';
 import {
     createMultipleTextGeometryElement,
-    getHitMultipleGeometryText,
     isMultipleTextGeometry,
     isMultipleTextShape
 } from './multi-text-geometry';
@@ -384,22 +381,4 @@ export const isSingleTextShape = (shape: GeometryShapes) => {
 
 export const isSingleTextGeometry = (element: PlaitGeometry) => {
     return PlaitDrawElement.isGeometry(element) && isSingleTextShape(element.shape);
-};
-
-export const getHitGeometryText = (element: PlaitCommonGeometry, point: Point): PlaitDrawShapeText | undefined => {
-    if (isMultipleTextGeometry(element)) {
-        return (
-            getHitMultipleGeometryText(element, point) ||
-            element.texts.find(item => item.key.includes(MultipleTextGeometryCommonTextKeys.content)) ||
-            element.texts[0]
-        );
-    }
-    if (isSingleTextGeometry(element)) {
-        return {
-            key: element.id,
-            text: element.text,
-            textHeight: element.textHeight
-        };
-    }
-    return undefined;
 };
