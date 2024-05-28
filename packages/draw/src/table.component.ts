@@ -13,7 +13,7 @@ import { getTextManage, PlaitDrawShapeText, TextGenerator } from './generators/t
 import { TableGenerator } from './generators/table.generator';
 import { TextManageRef } from '@plait/text';
 import { DrawTransforms } from './transforms';
-import { getCellWithPoints } from './utils/table';
+import { getCellWithPoints, isCellIncludeText } from './utils/table';
 import { getStrokeWidthByElement, memorizeLatestText } from './utils';
 import { getEngine } from './engines';
 import { TableSymbols } from './interfaces';
@@ -85,14 +85,16 @@ export class TableComponent<T extends PlaitTable> extends CommonElementFlavour<T
     }
 
     getDrawShapeTexts(cells: PlaitTableCell[]): PlaitDrawShapeText[] {
-        return cells.map(item => {
-            return {
-                key: item.id,
-                text: item.text!,
-                textHeight: item.textHeight!,
-                board: this.board
-            };
-        });
+        return cells
+            .filter(item => isCellIncludeText(item))
+            .map(item => {
+                return {
+                    key: item.id,
+                    text: item.text!,
+                    textHeight: item.textHeight!,
+                    board: this.board
+                };
+            });
     }
 
     initializeTextManage() {

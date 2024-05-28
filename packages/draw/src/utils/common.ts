@@ -8,6 +8,7 @@ import {
     depthFirstRecursion,
     drawCircle,
     getIsRecursionFunc,
+    isSetSelectionOperation,
     PlaitBoard,
     PlaitElement,
     PlaitPointerType,
@@ -16,19 +17,34 @@ import {
     rotateAntiPointsByElement,
     SELECTION_BORDER_COLOR,
     SELECTION_FILL_COLOR,
+    SetSelectionOperation,
     SNAPPING_STROKE_WIDTH,
     Transforms
 } from '@plait/core';
 import { DefaultDrawStyle, LINE_HIT_GEOMETRY_BUFFER, LINE_SNAPPING_BUFFER, ShapeDefaultSpace } from '../constants';
-import { DrawShapes, EngineExtraData, PlaitCommonGeometry, PlaitDrawElement, PlaitGeometry, PlaitShapeElement } from '../interfaces';
-import { getTextEditors } from '@plait/common';
+import {
+    DrawShapes,
+    EngineExtraData,
+    MultipleTextGeometryCommonTextKeys,
+    PlaitCommonGeometry,
+    PlaitDrawElement,
+    PlaitGeometry,
+    PlaitMultipleTextGeometry,
+    PlaitShapeElement
+} from '../interfaces';
+import { getTextEditorsByElement } from '@plait/common';
 import { isCellIncludeText } from './table';
-import { getHitConnectorPoint, getNearestPoint, isGeometryIncludeText, isHitEdgeOfShape, isInsideOfShape } from '.';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { Options } from 'roughjs/bin/core';
 import { PlaitTable } from '../interfaces/table';
 import { memorizeLatestShape } from './memorize';
+import { isHitEdgeOfShape, isInsideOfShape } from './hit';
+import { getHitConnectorPoint } from './line';
+import { getNearestPoint, isGeometryIncludeText, isSingleTextGeometry } from './geometry';
+import { isMultipleTextGeometry } from './multi-text-geometry';
+import { PlaitDrawShapeText } from '../generators/text.generator';
+import { Alignment } from '@plait/text';
 
 export const getTextRectangle = <T extends PlaitElement = PlaitGeometry>(element: T) => {
     const elementRectangle = RectangleClient.getRectangleByPoints(element.points!);
@@ -59,25 +75,29 @@ export const insertElement = (board: PlaitBoard, element: PlaitCommonGeometry | 
     BoardTransforms.updatePointerType(board, PlaitPointerType.selection);
 };
 
+export const isDrawElementIncludeText = (element: PlaitDrawElement) => {
+    if (PlaitDrawElement.isText(element)) {
+        return true;
+    }
+    if (PlaitDrawElement.isImage(element)) {
+        return false;
+    }
+    if (PlaitDrawElement.isGeometry(element)) {
+        return isGeometryIncludeText(element);
+    }
+    if (PlaitDrawElement.isLine(element)) {
+        const editors = getTextEditorsByElement(element);
+        return editors.length > 0;
+    }
+    if (PlaitDrawElement.isTable(element)) {
+        return element.cells.some(cell => isCellIncludeText(cell));
+    }
+    return true;
+};
+
 export const isDrawElementsIncludeText = (elements: PlaitDrawElement[]) => {
     return elements.some(item => {
-        if (PlaitDrawElement.isText(item)) {
-            return true;
-        }
-        if (PlaitDrawElement.isImage(item)) {
-            return false;
-        }
-        if (PlaitDrawElement.isGeometry(item)) {
-            return isGeometryIncludeText(item);
-        }
-        if (PlaitDrawElement.isLine(item)) {
-            const editors = getTextEditors(item);
-            return editors.length > 0;
-        }
-        if (PlaitDrawElement.isTable(item)) {
-            return item.cells.some(cell => isCellIncludeText(cell));
-        }
-        return true;
+        return isDrawElementIncludeText(item);
     });
 };
 
@@ -186,4 +206,30 @@ export const drawBoundReaction = (
         });
     }
     return g;
+};
+
+export const getTextKey = <T extends PlaitElement = PlaitGeometry>(element: T, text: PlaitDrawShapeText) => {
+    if (isMultipleTextGeometry((element as unknown) as PlaitCommonGeometry)) {
+        return `${element.id}-${text.key}`;
+    } else {
+        return text.key;
+    }
+};
+
+export const getGeometryAlign = (element: PlaitCommonGeometry | PlaitTable) => {
+    if (isMultipleTextGeometry(element as PlaitCommonGeometry)) {
+        const drawShapeText = (element as PlaitMultipleTextGeometry).texts.find(item =>
+            item.key.includes(MultipleTextGeometryCommonTextKeys.content)
+        );
+        return drawShapeText?.text.align || Alignment.center;
+    }
+    if (isSingleTextGeometry(element as PlaitCommonGeometry)) {
+        return (element as PlaitGeometry).text?.align || Alignment.center;
+    }
+
+    if (PlaitDrawElement.isTable(element)) {
+        const firstTextCell = element.cells.find(item => item.text);
+        return firstTextCell?.text?.align || Alignment.center;
+    }
+    return Alignment.center;
 };

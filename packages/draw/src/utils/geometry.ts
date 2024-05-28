@@ -1,24 +1,5 @@
-import {
-    ACTIVE_STROKE_WIDTH,
-    BoardTransforms,
-    PlaitBoard,
-    PlaitElement,
-    PlaitPointerType,
-    Point,
-    RectangleClient,
-    SELECTION_BORDER_COLOR,
-    SELECTION_FILL_COLOR,
-    SNAPPING_STROKE_WIDTH,
-    ThemeColorMode,
-    Transforms,
-    addSelectedElement,
-    clearSelectedElement,
-    createG,
-    drawCircle,
-    getSelectedElements,
-    idCreator
-} from '@plait/core';
-import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, UMLSymbols, PlaitCommonGeometry } from '../interfaces/geometry';
+import { PlaitBoard, PlaitElement, Point, RectangleClient, ThemeColorMode, getSelectedElements, idCreator } from '@plait/core';
+import { GeometryShapes, BasicShapes, PlaitGeometry, FlowchartSymbols, UMLSymbols } from '../interfaces/geometry';
 import { Alignment, CustomText, DEFAULT_FONT_SIZE, buildText, getTextSize } from '@plait/text';
 import { Element } from 'slate';
 import {
@@ -39,11 +20,20 @@ import { Options } from 'roughjs/bin/core';
 import { getEngine } from '../engines';
 import { getElementShape } from './shape';
 import { createLineElement } from './line/line-basic';
-import { LineMarkerType, LineShape, PlaitDrawElement, PlaitShapeElement } from '../interfaces';
+import {
+    LineMarkerType,
+    LineShape,
+    PlaitDrawElement,
+    PlaitShapeElement
+} from '../interfaces';
 import { DefaultLineStyle } from '../constants/line';
-import { getMemorizedLatestByPointer, memorizeLatestShape } from './memorize';
+import { getMemorizedLatestByPointer } from './memorize';
 import { PlaitDrawShapeText, getTextManage } from '../generators/text.generator';
-import { createMultipleTextGeometryElement, isMultipleTextShape } from './multi-text-geometry';
+import {
+    createMultipleTextGeometryElement,
+    isMultipleTextGeometry,
+    isMultipleTextShape
+} from './multi-text-geometry';
 
 export type GeometryStyleOptions = Pick<PlaitGeometry, 'fill' | 'strokeColor' | 'strokeWidth'>;
 
@@ -382,5 +372,13 @@ export const rerenderGeometryActive = (board: PlaitBoard, element: PlaitGeometry
 };
 
 export const isGeometryIncludeText = (element: PlaitGeometry) => {
-    return PlaitDrawElement.isGeometry(element) && element.text && element.textHeight && !GEOMETRY_WITHOUT_TEXT.includes(element.shape);
+    return isSingleTextGeometry(element) || isMultipleTextGeometry(element);
+};
+
+export const isSingleTextShape = (shape: GeometryShapes) => {
+    return !GEOMETRY_WITHOUT_TEXT.includes(shape) && !isMultipleTextShape(shape);
+};
+
+export const isSingleTextGeometry = (element: PlaitGeometry) => {
+    return PlaitDrawElement.isGeometry(element) && isSingleTextShape(element.shape);
 };

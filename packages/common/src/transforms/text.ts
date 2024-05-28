@@ -1,8 +1,7 @@
 import { PlaitBoard, PlaitElement, getSelectedElements } from '@plait/core';
 import { AlignEditor, Alignment, FontSizes, MarkTypes, PlaitMarkEditor } from '@plait/text';
 import { BaseRange, Editor, Transforms as SlateTransforms } from 'slate';
-import { AngularEditor } from 'slate-angular';
-import { findFirstTextEditor, getTextEditors } from '../utils/text';
+import { findFirstTextEditor, getTextEditors, getTextEditorsByElement } from '../utils/text';
 
 const setTextMarks = (board: PlaitBoard, mark: MarkTypes) => {
     const selectedElements = getSelectedElements(board);
@@ -13,57 +12,62 @@ const setTextMarks = (board: PlaitBoard, mark: MarkTypes) => {
         }
         const activeMarks = PlaitMarkEditor.getMarks(firstEditor);
         const elements = selectedElements.filter(element => {
-            const editors = getTextEditors(element);
+            const editors = getTextEditorsByElement(element);
             return editors.some(editor => {
                 const elementMarks = PlaitMarkEditor.getMarks(editor);
                 return elementMarks[mark] === activeMarks[mark];
             });
         });
-
-        elements.forEach(element => {
-            const editors = getTextEditors(element);
-            editors.forEach(editor => PlaitMarkEditor.toggleMark(editor, mark));
-        });
+        const editors = getTextEditors(board, elements);
+        if (editors && editors.length) {
+            editors.forEach(editor => {
+                PlaitMarkEditor.toggleMark(editor, mark);
+            });
+        }
     }
 };
 
 const setFontSize = (board: PlaitBoard, size: FontSizes, defaultFontSize: number | ((element: PlaitElement) => number | undefined)) => {
-    const selectedElements = getSelectedElements(board);
-    if (selectedElements.length) {
-        selectedElements.forEach(element => {
-            const editors = getTextEditors(element);
-            const finalDefaultFontSize = typeof defaultFontSize === 'function' ? defaultFontSize(element) : defaultFontSize;
-            editors.forEach(editor => PlaitMarkEditor.setFontSizeMark(editor, size, finalDefaultFontSize));
+    const editors = getTextEditors(board);
+    if (editors && editors.length) {
+        const selectedElements = getSelectedElements(board);
+        editors.forEach(editor => {
+            let finalDefaultFontSize;
+            if (typeof defaultFontSize === 'function') {
+                const element = selectedElements.find(element => {
+                    const textEditors = getTextEditorsByElement(element);
+                    return textEditors.includes(editor);
+                });
+                finalDefaultFontSize = defaultFontSize(element!);
+            } else {
+                finalDefaultFontSize = defaultFontSize;
+            }
+
+            PlaitMarkEditor.setFontSizeMark(editor, size, finalDefaultFontSize);
         });
     }
 };
 
 const setTextColor = (board: PlaitBoard, color: string, textSelection?: BaseRange) => {
-    const selectedElements = getSelectedElements(board);
-    if (selectedElements?.length) {
-        selectedElements.forEach(element => {
-            const editors = getTextEditors(element);
-            editors.forEach(editor => {
-                if (textSelection) {
-                    SlateTransforms.select(editor, textSelection);
-                }
-                if (color === 'transparent') {
-                    Editor.removeMark(editor, MarkTypes.color);
-                } else {
-                    PlaitMarkEditor.setColorMark(editor, color);
-                }
-            });
+    const editors = getTextEditors(board);
+    if (editors && editors.length) {
+        editors.forEach(editor => {
+            if (textSelection) {
+                SlateTransforms.select(editor, textSelection);
+            }
+            if (color === 'transparent') {
+                Editor.removeMark(editor, MarkTypes.color);
+            } else {
+                PlaitMarkEditor.setColorMark(editor, color);
+            }
         });
     }
 };
 
 const setTextAlign = (board: PlaitBoard, align: Alignment) => {
-    const selectedElements = getSelectedElements(board);
-    if (selectedElements?.length) {
-        selectedElements.forEach(element => {
-            const editors = getTextEditors(element);
-            editors.forEach(editor => AlignEditor.setAlign(editor as AngularEditor, align));
-        });
+    const editors = getTextEditors(board);
+    if (editors && editors.length) {
+        editors.forEach(editor => AlignEditor.setAlign(editor, align));
     }
 };
 
