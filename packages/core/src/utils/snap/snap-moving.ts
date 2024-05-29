@@ -152,7 +152,7 @@ function getGapLinesAndDelta(activeRectangle: RectangleClient, snapRectangles: R
             const distanceRight = after[axis] - (before[axis] + before[side]);
             _center = after[axis] + after[side] + distanceRight + activeRectangle[side] / 2;
             dif = Math.abs(_center - activeRectangleCenter);
-            if (!gapDistance && dif < SNAP_TOLERANCE) {
+            if ((!gapDistance || gapDistance !== distanceRight) && dif < SNAP_TOLERANCE) {
                 gapDistance = distanceRight;
                 beforeIndex = j;
                 delta = _center - activeRectangleCenter;
@@ -163,7 +163,7 @@ function getGapLinesAndDelta(activeRectangle: RectangleClient, snapRectangles: R
             _center = before[axis] - distanceBefore - activeRectangle[side] / 2;
             dif = Math.abs(_center - activeRectangleCenter);
 
-            if (!gapDistance && dif < SNAP_TOLERANCE) {
+            if ((!gapDistance || gapDistance !== distanceBefore) && dif < SNAP_TOLERANCE) {
                 gapDistance = distanceBefore;
                 afterIndex = i;
                 delta = _center - activeRectangleCenter;
