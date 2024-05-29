@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { ImageBaseComponent } from '@plait/common';
 
 @Component({
     selector: 'app-plait-image',
     template: `
-        <img [src]="imageItem.url" [width]="imageItem.width" [height]="imageItem.height" />
+        <img [src]="imageItem.url" draggable="false" [width]="imageItem.width" [height]="imageItem.height" />
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true
