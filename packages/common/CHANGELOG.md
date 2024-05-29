@@ -1,5 +1,13 @@
 # @plait/common
 
+## 0.59.0
+
+### Minor Changes
+
+-   [#891](https://github.com/worktile/plait/pull/891) [`e9a7f04c8`](https://github.com/worktile/plait/commit/e9a7f04c8538f32a70dd3743406fff1edf02b4c4) Thanks [@huanhuanwa](https://github.com/huanhuanwa)! - support set partial text property for multiple text nodes
+
+    support get text property from multiple text nodes
+
 ## 0.58.0
 
 ### Minor Changes
