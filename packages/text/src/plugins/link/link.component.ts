@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { BaseElementComponent, SlateChildren } from 'slate-angular';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { BaseElementComponent } from 'slate-angular';
 import { LinkElement } from '../../custom-types';
 
 @Component({
     selector: 'a[plaitLink]',
     template: `
         <span contenteditable="false" class="link-break-char">{{ inlineChromiumBugfix }}</span>
-        <span><slate-children [children]="children" [context]="childrenContext" [viewContext]="viewContext"></slate-children></span>
+        <span #outletParent></span>
         <span contenteditable="false" class="link-break-char">{{ inlineChromiumBugfix }}</span>
     `,
     host: {
@@ -14,13 +14,19 @@ import { LinkElement } from '../../custom-types';
         target: '_blank',
         class: 'plait-link-node'
     },
-    standalone: true,
-    imports: [SlateChildren]
+    standalone: true
 })
 export class PlaitLinkNodeComponent extends BaseElementComponent<LinkElement> implements OnInit {
     // Put this at the start and end of an inline component to work around this Chromium bug:
     // https://bugs.chromium.org/p/chromium/issues/detail?id=1249405
     inlineChromiumBugfix = String.fromCodePoint(160);
+
+    @ViewChild('outletParent', { read: ElementRef, static: true })
+    outletParent!: ElementRef;
+
+    getOutletParent = () => {
+        return this.outletParent.nativeElement;
+    };
 
     ngOnInit() {
         super.ngOnInit();

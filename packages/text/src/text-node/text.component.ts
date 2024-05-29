@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, Renderer2 } from '@angular/core';
-import { BaseTextComponent, SlateLeaves } from 'slate-angular';
+import { BaseTextComponent } from 'slate-angular';
 import { MarkTypes } from '../constant/mark';
 import { CustomText } from '../custom-types';
 
@@ -9,8 +9,7 @@ import { CustomText } from '../custom-types';
     host: {
         'data-slate-node': 'text'
     },
-    standalone: true,
-    imports: [SlateLeaves]
+    standalone: true
 })
 export class PlaitTextNodeComponent extends BaseTextComponent<CustomText> {
     constructor(public elementRef: ElementRef, public renderer2: Renderer2, cdr: ChangeDetectorRef) {
